@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  /* Sacred Night — dark mode (default) */
+  --color-brand-bg:      #090E1A;
+  --color-brand-surface: #111829;
+  --color-brand-accent:  #C4972A;
+  --color-brand-primary: #EAE6DC;
+  --color-brand-muted:   #7A8099;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: dark;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background-color: #090E1A;
+  color: #EAE6DC;
+}
