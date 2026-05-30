@@ -54,4 +54,5 @@ async def embed_texts(texts: list[str]) -> list[list[float]]:
         model=settings.embedding_model,
         dimensions=settings.embedding_dims,
     )
-    return [r.embedding for r in response.data]
+    sorted_data = sorted(response.data, key=lambda r: r.index)
+    return [r.embedding for r in sorted_data]
