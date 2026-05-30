@@ -1,0 +1,18 @@
+# Node
+node_modules/
+.next/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Env
+.env
+.env.local
+services/api/.env
+
+# OS
+.DS_Store
