@@ -10,8 +10,17 @@ from starlette.responses import JSONResponse
 from app.config import settings
 from app.db import close_pool, get_pool, init_pool
 from app.llm import close_llm, init_llm
-from app.routes.me import router as me_router
+from app.rag.embed import close_embed, init_embed
+from app.rag.explain import close_explain, init_explain
+from app.rag.hyde import close_hyde, init_hyde
+from app.rag.rerank import close_rerank, init_rerank
+from app.routes.bookmarks import router as bookmarks_router
 from app.routes.chat import router as chat_router
+from app.routes.documents import router as documents_router
+from app.routes.feedback import router as feedback_router
+from app.routes.me import router as me_router
+from app.routes.preferences import router as preferences_router
+from app.routes.search import router as search_router
 from app.routes.sessions import router as sessions_router
 
 
@@ -27,7 +36,15 @@ async def lifespan(app: FastAPI):
     if not settings.internal_api_secret:
         logger.warning("INTERNAL_API_SECRET is not set — all requests will bypass the secret check")
     init_llm()
+    init_embed()
+    init_hyde()
+    init_rerank()
+    init_explain()
     yield
+    await close_embed()
+    await close_hyde()
+    await close_rerank()
+    await close_explain()
     await close_pool()
     await close_llm()
 
@@ -58,6 +75,11 @@ app.add_middleware(
 app.include_router(me_router, prefix="/v1")
 app.include_router(chat_router, prefix="/v1")
 app.include_router(sessions_router, prefix="/v1")
+app.include_router(search_router, prefix="/v1")
+app.include_router(documents_router, prefix="/v1")
+app.include_router(bookmarks_router, prefix="/v1")
+app.include_router(feedback_router, prefix="/v1")
+app.include_router(preferences_router, prefix="/v1")
 
 
 @app.get("/health")
