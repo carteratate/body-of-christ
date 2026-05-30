@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { updatePreferences } from "@/lib/api";
 
@@ -14,7 +14,13 @@ interface QuotaControlProps {
 export function QuotaControl({ value, onChange }: QuotaControlProps) {
   const { token } = useAppContext();
 
+  const isMounted = useRef(false);
+
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
     if (!token) return;
     const timer = setTimeout(() => {
       updatePreferences(token, { default_quota: value }).catch(() => {});
@@ -27,11 +33,12 @@ export function QuotaControl({ value, onChange }: QuotaControlProps) {
       <span className="text-[10px] font-medium uppercase tracking-widest text-brand-muted">
         Per source:
       </span>
-      <div className="flex overflow-hidden rounded-md border border-brand-surface">
+      <div className="flex overflow-hidden rounded-md border border-brand-surface" role="group" aria-label="Results per source">
         {QUOTA_OPTIONS.map((q, i) => (
           <button
             key={q}
             onClick={() => onChange(q)}
+            aria-pressed={value === q}
             className={[
               "px-3 py-1 text-xs transition-colors",
               i < QUOTA_OPTIONS.length - 1 ? "border-r border-brand-surface" : "",
