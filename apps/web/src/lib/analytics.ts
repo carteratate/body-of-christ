@@ -3,7 +3,8 @@
 import posthog from "posthog-js";
 
 // All events are fired client-side only.
-// User-typed query text is NEVER sent — only derived metadata.
+// User-typed query text is NEVER sent — only derived metadata (e.g. query length).
+// Exception: suggested query chip labels ARE sent — they are hardcoded app strings, not user input.
 
 export function trackSearchPerformed(params: {
   queryLength: number;
