@@ -34,15 +34,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="body-of-christ-api", lifespan=lifespan)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 class InternalSecretMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.url.path in ("/health", "/health/db"):
@@ -55,6 +46,14 @@ class InternalSecretMiddleware(BaseHTTPMiddleware):
 
 
 app.add_middleware(InternalSecretMiddleware)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(me_router, prefix="/v1")
 app.include_router(chat_router, prefix="/v1")

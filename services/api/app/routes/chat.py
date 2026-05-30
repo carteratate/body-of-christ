@@ -206,18 +206,22 @@ async def chat_stream(
 
         full_answer = "".join(chunks)
 
-        async with pool.acquire() as conn:
-            msg_row = await conn.fetchrow(
-                "insert into chat_messages (session_id, user_id, role, content) "
-                "values ($1, $2, 'assistant', $3) returning id",
-                session_id,
-                user.user_id,
-                full_answer,
-            )
-            await conn.execute(
-                "update chat_sessions set updated_at = now() where id = $1",
-                session_id,
-            )
+        try:
+            async with pool.acquire() as conn:
+                msg_row = await conn.fetchrow(
+                    "insert into chat_messages (session_id, user_id, role, content) "
+                    "values ($1, $2, 'assistant', $3) returning id",
+                    session_id,
+                    user.user_id,
+                    full_answer,
+                )
+                await conn.execute(
+                    "update chat_sessions set updated_at = now() where id = $1",
+                    session_id,
+                )
+        except Exception:
+            yield f"data: {json.dumps({'type': 'error', 'detail': 'Failed to save response'})}\n\n"
+            return
 
         title: str | None = None
         if is_new_session:

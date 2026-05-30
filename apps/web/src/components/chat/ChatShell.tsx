@@ -135,7 +135,7 @@ export function ChatShell() {
   }
 
   async function handleLoadSession(id: string) {
-    if (id === sessionId || loading) return;
+    if (id === sessionId || loading || !token) return;
     try {
       const msgs = await getSessionMessages(token!, id);
       setSessionId(id);
