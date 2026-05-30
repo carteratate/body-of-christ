@@ -36,19 +36,34 @@ async def submit_feedback(
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
     try:
-        row = await pool.fetchrow(
-            """
-            INSERT INTO chunk_feedback (user_id, chunk_id, feedback, search_id)
-            VALUES ($1, $2, $3, $4)
-            ON CONFLICT ON CONSTRAINT chunk_feedback_user_chunk_unique
-            DO UPDATE SET feedback = EXCLUDED.feedback, search_id = EXCLUDED.search_id
-            RETURNING id
-            """,
-            user.user_id,
-            chunk_uuid,
-            body.feedback,
-            search_uuid,
-        )
+        async with pool.acquire() as conn:
+            chunk_exists = await conn.fetchval("SELECT id FROM chunks WHERE id = $1", chunk_uuid)
+            if chunk_exists is None:
+                raise HTTPException(status_code=404, detail="Chunk not found")
+
+            if search_uuid:
+                search_exists = await conn.fetchval(
+                    "SELECT id FROM searches WHERE id = $1 AND user_id = $2",
+                    search_uuid, uuid.UUID(user.user_id),
+                )
+                if search_exists is None:
+                    raise HTTPException(status_code=404, detail="Search not found")
+
+            row = await conn.fetchrow(
+                """
+                INSERT INTO chunk_feedback (user_id, chunk_id, feedback, search_id)
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT ON CONSTRAINT chunk_feedback_user_chunk_unique
+                DO UPDATE SET feedback = EXCLUDED.feedback, search_id = EXCLUDED.search_id
+                RETURNING id
+                """,
+                user.user_id,
+                chunk_uuid,
+                body.feedback,
+                search_uuid,
+            )
+    except HTTPException:
+        raise
     except Exception as exc:
         logger.error("submit_feedback upsert failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc

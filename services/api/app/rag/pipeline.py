@@ -137,25 +137,31 @@ async def run_search_pipeline(
         # Step 7 — Persist search + retrievals to DB
         # ------------------------------------------------------------------
         pool = get_pool()
+        if pool is None:
+            logger.error("run_search_pipeline: DB pool not available, skipping persistence")
+            # Still yield done (chunks were already streamed) but without a persisted search_id
+            yield {"type": "done", "search_id": None, "result_count": len(final_results)}
+            return
         search_id = str(uuid.uuid4())
         async with pool.acquire() as conn:
-            await conn.execute(
-                "INSERT INTO searches (id, user_id, query, filters, result_count) VALUES ($1,$2,$3,$4,$5)",
-                uuid.UUID(search_id),
-                uuid.UUID(user_id),
-                query,
-                {"collections": collections, "translation": translation, "quota": quota},
-                len(final_results),
-            )
-            for rank, chunk in enumerate(final_results):
+            async with conn.transaction():
                 await conn.execute(
-                    "INSERT INTO retrievals (id, search_id, chunk_id, rank, reranker_score) VALUES ($1,$2,$3,$4,$5)",
-                    uuid.uuid4(),
+                    "INSERT INTO searches (id, user_id, query, filters, result_count) VALUES ($1,$2,$3,$4,$5)",
                     uuid.UUID(search_id),
-                    uuid.UUID(chunk.chunk_id),
-                    rank,
-                    chunk.reranker_score,
+                    uuid.UUID(user_id),
+                    query,
+                    {"collections": collections, "translation": translation, "quota": quota},
+                    len(final_results),
                 )
+                for rank, chunk in enumerate(final_results):
+                    await conn.execute(
+                        "INSERT INTO retrievals (id, search_id, chunk_id, rank, reranker_score) VALUES ($1,$2,$3,$4,$5)",
+                        uuid.uuid4(),
+                        uuid.UUID(search_id),
+                        uuid.UUID(chunk.chunk_id),
+                        rank,
+                        chunk.reranker_score,
+                    )
 
         # ------------------------------------------------------------------
         # Step 8 — Parallel explanation generation with progressive yield
@@ -170,6 +176,7 @@ async def run_search_pipeline(
         try:
             for coro in asyncio.as_completed(tasks):
                 chunk_id, explanation = await coro
+                explanation = explanation[:2000]  # prevent oversized LLM output in DB
                 yield {"type": "explanation", "chunk_id": chunk_id, "explanation": explanation}
                 # Update the retrievals row with explanation
                 async with pool.acquire() as conn:

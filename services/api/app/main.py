@@ -35,6 +35,8 @@ async def lifespan(app: FastAPI):
         logger.warning("DB pool init failed (%s); starting without DB", exc.__class__.__name__)
     if not settings.internal_api_secret:
         logger.warning("INTERNAL_API_SECRET is not set — all requests will bypass the secret check")
+        if settings.app_env == "production":
+            raise RuntimeError("INTERNAL_API_SECRET must be set in production")
     init_llm()
     init_embed()
     init_hyde()

@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 _VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "saints"}
+_VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 _DEFAULT_PREFERENCES = PreferencesResponse(
     preferred_translation="CPDV",
@@ -54,6 +55,14 @@ async def update_preferences(
     user: AuthUser = Depends(get_current_user),
 ) -> PreferencesResponse:
     """Upsert user preferences, merging with existing values."""
+    # Validate preferred_translation if provided — reject any unknown values
+    if body.preferred_translation is not None:
+        if body.preferred_translation not in _VALID_TRANSLATIONS:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Unknown translation: {body.preferred_translation!r}. Valid values: {sorted(_VALID_TRANSLATIONS)}",
+            )
+
     # Validate default_collections if provided — reject any unknown values
     if body.default_collections is not None:
         invalid = [c for c in body.default_collections if c not in _VALID_COLLECTIONS]
