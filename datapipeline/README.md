@@ -44,3 +44,10 @@ python ingest/encyclicals.py --source-url <url>
 ```bash
 python embed.py --missing-only
 ```
+
+## Run a Single Ingestion Script Directly
+
+```bash
+# Run a single ingestion script
+python ingest/catechism.py
+```
