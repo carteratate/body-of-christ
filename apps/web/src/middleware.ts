@@ -32,17 +32,23 @@ export default async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (!user && pathname.startsWith("/chat")) {
+  if (
+    !user &&
+    (pathname.startsWith("/chat") ||
+      pathname.startsWith("/search") ||
+      pathname.startsWith("/bookmarks") ||
+      pathname.startsWith("/reader"))
+  ) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   if (user && pathname === "/login") {
-    return NextResponse.redirect(new URL("/chat", request.url));
+    return NextResponse.redirect(new URL("/search", request.url));
   }
 
   return supabaseResponse;
 }
 
 export const config = {
-  matcher: ["/chat/:path*", "/login"],
+  matcher: ["/chat/:path*", "/search/:path*", "/bookmarks/:path*", "/reader/:path*", "/login"],
 };
