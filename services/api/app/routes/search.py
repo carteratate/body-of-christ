@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-_VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "saints"}
+_VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "canon-law", "saints"}
 _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 

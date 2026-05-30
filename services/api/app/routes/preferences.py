@@ -11,12 +11,12 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-_VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "saints"}
+_VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "canon-law", "saints"}
 _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 _DEFAULT_PREFERENCES = PreferencesResponse(
     preferred_translation="CPDV",
-    default_collections=["bible", "catechism", "church-fathers", "encyclicals", "saints"],
+    default_collections=["bible", "catechism", "church-fathers", "encyclicals", "canon-law", "saints"],
     default_quota=4,
 )
 

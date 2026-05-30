@@ -35,7 +35,7 @@ async def run_search_pipeline(
     # ------------------------------------------------------------------
     # Input validation — allowlist collections
     # ------------------------------------------------------------------
-    VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "saints"}
+    VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "canon-law", "saints"}
     collections = [c for c in collections if c in VALID_COLLECTIONS]
     if not collections:
         yield {"type": "error", "detail": "No valid collections selected."}
