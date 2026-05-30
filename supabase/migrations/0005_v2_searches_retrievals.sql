@@ -5,7 +5,7 @@ create table searches (
     query         text        not null,
     filters       jsonb,
     result_count  int,
-    created_at    timestamptz default now()
+    created_at    timestamptz not null default now()
 );
 
 alter table searches enable row level security;
@@ -24,10 +24,11 @@ create table retrievals (
     rank            int         not null,
     reranker_score  float,
     explanation     text,
-    created_at      timestamptz default now()
+    created_at      timestamptz not null default now()
 );
 
 create index retrievals_search_id_idx on retrievals (search_id);
+create index retrievals_chunk_id_idx on retrievals (chunk_id);
 
 alter table retrievals enable row level security;
 
