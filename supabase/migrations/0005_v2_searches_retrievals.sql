@@ -28,3 +28,15 @@ create table retrievals (
 );
 
 create index retrievals_search_id_idx on retrievals (search_id);
+
+alter table retrievals enable row level security;
+
+create policy "users own their retrievals"
+    on retrievals for all
+    using (
+        exists (
+            select 1 from searches
+            where searches.id = search_id
+              and searches.user_id = auth.uid()
+        )
+    );
