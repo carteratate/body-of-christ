@@ -30,6 +30,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 20 | Backend: main.py + rate_limit.py updates | `259aa27` | All 8 routers registered; all 4 RAG singletons in lifespan; production INTERNAL_API_SECRET guard added |
 | 21 | Frontend: api.ts extensions + analytics.ts | `eb39283` `d90c2cf` | All V2 API functions + SSE streaming; 14 PostHog event wrappers; posthog-js installed |
 | 22 | Frontend: AppShell + Sidebar + layout | `0438758` | AppShell with AppContext (token, preferences); Sidebar with search history; PostHog provider; middleware updated for /search /bookmarks /reader |
+| 23 | Canon Law + search bottom bar | `c2b006a`–`87f500b` | Migration 0007 (canon-law collection); backend allowlists updated; `collections.ts`; TranslationSelector, QuotaControl, SearchBar, CollectionToggles, BottomBar components + barrel export. Spec + security reviewed. |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -42,32 +43,15 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 23 — Frontend: search page bottom bar (SearchBar + CollectionToggles + QuotaControl)**
+**Task 24 — Frontend: EmptyState (suggested query chips) + SearchPage.tsx state orchestration**
 
-Create these components in `apps/web/src/components/search/`:
-
-**`CollectionToggles.tsx`** — Row of pill toggles for Bible, Catechism, Church Fathers, Encyclicals, Saints. Bible pill has a ▾ chevron that opens a `TranslationSelector` sub-dropdown. Each pill is gold when active, dark when inactive. Clicking toggles on/off. Calls `updatePreferences` on change (debounced). Uses `useAppContext()` for token + preferences.
-
-**`TranslationSelector.tsx`** — Dropdown beneath the Bible pill: CPDV (default), Douay-Rheims. Closes on outside click.
-
-**`QuotaControl.tsx`** — Segmented `[3 | 4 | 5]` control to the right of the source pills. Default 4. Calls `updatePreferences` on change.
-
-**`SearchBar.tsx`** — Text input + Search button anchored at the very bottom. Enter submits (no Shift+Enter newline). Disabled when `loading` prop is true. Shows a spinner/disabled state during search.
-
-**`BottomBar.tsx`** — Wrapper that stacks CollectionToggles + QuotaControl on one row, SearchBar on the next. Fixed at the bottom of the search page main area.
-
-**Validation:** If all collection toggles are off, the search button is disabled with a tooltip "Select at least one source to search."
-
-**Auto-save:** Collection state and quota auto-save to preferences via `updatePreferences(token, { default_collections, default_quota })` when changed. Use a 500ms debounce to avoid hammering the API on rapid clicks.
-
-**Design:** Sacred Night theme throughout. Toggles sit directly above the search bar. Use `bg-brand-accent text-brand-bg` for active pills, `bg-brand-surface text-brand-muted border border-brand-surface` for inactive.
+Build the search page shell: `app/search/page.tsx` rendering an `AppShell` with a flex-column main area. The main area: `EmptyState` (suggested query chips grid, fires a search on chip click) fills the results region before first query; `BottomBar` sits at the bottom. `SearchPage` manages all state: `activeCollections`, `translation`, `quota`, `searchValue`, `loading`, `results`, `searchId`. Wire `streamSearch()` to `BottomBar.onSearch`.
 
 ---
 
 ## Remaining Tasks (in order)
 
 ```
-23  Frontend: search page bottom bar — SearchBar + CollectionToggles + TranslationSelector + QuotaControl + BottomBar
 24  Frontend: EmptyState (suggested query chips) + SearchPage.tsx state orchestration
 25  Frontend: ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults (progressive SSE)
 26  Frontend: DocumentReader + ReaderToolbar + ReaderChunk  (/reader/[docId])
@@ -153,4 +137,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-30 | Completed through Task 22 | Next: Task 23 (search page bottom bar)*
+*Last updated: 2026-05-30 | Completed through Task 23 | Next: Task 24 (EmptyState + SearchPage orchestration)*
