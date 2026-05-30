@@ -67,7 +67,7 @@ export function CollectionToggles({
                   {col.label}
                 </button>
                 <button
-                  onClick={() => setTranslationOpen((o) => !o)}
+                  onClick={() => setTranslationOpen(true)}
                   aria-label="Select Bible translation"
                   aria-expanded={translationOpen}
                   className="py-1 pr-2 text-[9px] transition-opacity hover:opacity-70"
