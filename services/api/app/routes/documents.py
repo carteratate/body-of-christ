@@ -1,7 +1,7 @@
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.db import get_pool
 from app.deps.auth import get_current_user
@@ -63,8 +63,8 @@ async def get_document(
 @router.get("/documents/{doc_id}/reader", response_model=ReaderResponse)
 async def get_document_reader(
     doc_id: str,
-    chunk_id: str,
-    context: int = 10,
+    chunk_id: str = Query(..., description="UUID of the chunk to highlight"),
+    context: int = Query(default=10, ge=1, le=50, description="Chunks to show on each side of the target"),
     user: AuthUser = Depends(get_current_user),
 ) -> ReaderResponse:
     """Return a context window of chunks around a target chunk for the reader view."""
@@ -78,8 +78,7 @@ async def get_document_reader(
     except ValueError:
         raise HTTPException(status_code=422, detail="Invalid chunk_id: must be a UUID")
 
-    if context < 1 or context > 50:
-        raise HTTPException(status_code=422, detail="context must be between 1 and 50")
+    # context range enforced by Query(ge=1, le=50) above
 
     pool = get_pool()
     if not pool:

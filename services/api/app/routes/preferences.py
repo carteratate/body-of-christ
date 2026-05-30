@@ -54,17 +54,22 @@ async def update_preferences(
     user: AuthUser = Depends(get_current_user),
 ) -> PreferencesResponse:
     """Upsert user preferences, merging with existing values."""
-    # Validate and filter default_collections if provided
+    # Validate default_collections if provided — reject any unknown values
     if body.default_collections is not None:
-        filtered = [c for c in body.default_collections if c in _VALID_COLLECTIONS]
-        if not filtered:
+        invalid = [c for c in body.default_collections if c not in _VALID_COLLECTIONS]
+        if invalid:
             raise HTTPException(
                 status_code=422,
-                detail=f"No valid collections provided. Valid values: {sorted(_VALID_COLLECTIONS)}",
+                detail=f"Unknown collections: {invalid}. Valid values: {sorted(_VALID_COLLECTIONS)}",
+            )
+        if not body.default_collections:
+            raise HTTPException(
+                status_code=422,
+                detail=f"At least one collection is required. Valid values: {sorted(_VALID_COLLECTIONS)}",
             )
         body = PreferencesUpdate(
             preferred_translation=body.preferred_translation,
-            default_collections=filtered,
+            default_collections=body.default_collections,
             default_quota=body.default_quota,
         )
 
