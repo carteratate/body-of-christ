@@ -20,6 +20,7 @@ create table chunks (
     document_id          uuid        not null references documents(id) on delete cascade,
     content              text        not null,
     position             int         not null,
+    unique (document_id, position),
     reference            text,
     content_embedding    vector(1536),
     search_vector        tsvector    generated always as
