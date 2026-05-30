@@ -188,7 +188,7 @@ async def get_search_results(
         rows = await pool.fetch(
             """
             SELECT r.rank, r.reranker_score, r.explanation,
-                   c.id AS chunk_id, c.content, c.reference,
+                   c.id AS chunk_id, c.content, c.reference, c.position,
                    d.collection, d.title AS document_title, d.author, d.id AS document_id
             FROM retrievals r
             JOIN chunks c ON c.id = r.chunk_id
@@ -212,6 +212,7 @@ async def get_search_results(
                 author=row["author"],
                 reference=row["reference"],
                 document_id=str(row["document_id"]),
+                position=row["position"],
             ),
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],

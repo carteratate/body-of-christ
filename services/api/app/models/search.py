@@ -26,7 +26,7 @@ class ChunkResult(BaseModel):
     chunk_id: str
     content: str
     source: ChunkSource
-    reranker_score: float
+    reranker_score: Optional[float] = None
     explanation: Optional[str] = None
 
 
