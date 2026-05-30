@@ -2,6 +2,7 @@
 import json
 import logging
 import re
+import uuid as _uuid_mod
 from dataclasses import dataclass
 
 import anthropic
@@ -45,6 +46,14 @@ async def close_rerank() -> None:
     if _client is not None:
         await _client.close()
         _client = None
+
+
+def _is_valid_uuid(val: str) -> bool:
+    try:
+        _uuid_mod.UUID(val)
+        return True
+    except (ValueError, AttributeError):
+        return False
 
 
 def _format_passages(candidates: list[ChunkCandidate]) -> str:
@@ -103,6 +112,9 @@ async def rerank_collection(
     ranked: list[RankedChunk] = []
     for item in scored:
         chunk_id = str(item.get("chunk_id", ""))
+        if not _is_valid_uuid(chunk_id):
+            logger.warning("rerank_collection: invalid UUID '%s' in Haiku response", chunk_id)
+            continue
         score = float(item.get("score", 0.0))
         candidate = candidate_map.get(chunk_id)
         if candidate is None:

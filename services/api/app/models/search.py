@@ -8,7 +8,7 @@ class SearchFilters(BaseModel):
 
 
 class SearchRequest(BaseModel):
-    query: str = Field(..., min_length=1, max_length=2000)
+    query: str = Field(..., min_length=1, max_length=1000)
     filters: SearchFilters
     quota: int = Field(default=4, ge=3, le=5)
 

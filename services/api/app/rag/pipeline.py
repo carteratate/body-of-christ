@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 import uuid
 from collections.abc import AsyncGenerator
@@ -33,6 +32,15 @@ async def run_search_pipeline(
         - {"type": "done", ...}        — final event with search_id and result_count
         - {"type": "error", ...}       — on unrecoverable failure
     """
+    # ------------------------------------------------------------------
+    # Input validation — allowlist collections
+    # ------------------------------------------------------------------
+    VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "saints"}
+    collections = [c for c in collections if c in VALID_COLLECTIONS]
+    if not collections:
+        yield {"type": "error", "detail": "No valid collections selected."}
+        return
+
     try:
         # ------------------------------------------------------------------
         # Step 1 — Parallel HyDE + query embedding
@@ -136,7 +144,7 @@ async def run_search_pipeline(
                 uuid.UUID(search_id),
                 uuid.UUID(user_id),
                 query,
-                json.dumps({"collections": collections, "translation": translation, "quota": quota}),
+                {"collections": collections, "translation": translation, "quota": quota},
                 len(final_results),
             )
             for rank, chunk in enumerate(final_results):
@@ -159,23 +167,27 @@ async def run_search_pipeline(
             return chunk.chunk_id, explanation
 
         tasks = [asyncio.create_task(_explain_one(c)) for c in final_results]
-        for coro in asyncio.as_completed(tasks):
-            chunk_id, explanation = await coro
-            yield {"type": "explanation", "chunk_id": chunk_id, "explanation": explanation}
-            # Update the retrievals row with explanation
-            async with pool.acquire() as conn:
-                await conn.execute(
-                    "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
-                    explanation,
-                    uuid.UUID(search_id),
-                    uuid.UUID(chunk_id),
-                )
+        try:
+            for coro in asyncio.as_completed(tasks):
+                chunk_id, explanation = await coro
+                yield {"type": "explanation", "chunk_id": chunk_id, "explanation": explanation}
+                # Update the retrievals row with explanation
+                async with pool.acquire() as conn:
+                    await conn.execute(
+                        "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
+                        explanation,
+                        uuid.UUID(search_id),
+                        uuid.UUID(chunk_id),
+                    )
+        finally:
+            for t in tasks:
+                t.cancel()
 
         # ------------------------------------------------------------------
         # Step 9 — Yield done
         # ------------------------------------------------------------------
         yield {"type": "done", "search_id": search_id, "result_count": len(final_results)}
 
-    except Exception as exc:
-        logger.exception("run_search_pipeline unhandled error: %s", exc)
-        yield {"type": "error", "detail": str(exc)}
+    except Exception:
+        logger.exception("run_search_pipeline unhandled error")
+        yield {"type": "error", "detail": "Search failed. Please try again."}

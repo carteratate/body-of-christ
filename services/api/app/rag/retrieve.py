@@ -1,6 +1,7 @@
 """Candidate chunk retrieval via dual vector search + full-text search with RRF merge."""
 import asyncio
 import logging
+import math
 from dataclasses import dataclass
 
 import asyncpg
@@ -31,6 +32,8 @@ class ChunkCandidate:
 
 def _vec_to_str(vec: list[float]) -> str:
     """Format a float list as a pgvector literal: [f1,f2,...]"""
+    if any(not math.isfinite(v) for v in vec):
+        raise ValueError("Embedding vector contains non-finite values")
     return "[" + ",".join(str(v) for v in vec) + "]"
 
 
