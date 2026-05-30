@@ -19,25 +19,30 @@ export function TranslationSelector({
   onClose,
 }: TranslationSelectorProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
     function handleMouseDown(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        onClose();
+        onCloseRef.current();
       }
     }
     document.addEventListener("mousedown", handleMouseDown);
     return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, [onClose]);
+  }, []); // stable — registers once
 
   return (
     <div
       ref={ref}
-      className="absolute bottom-[calc(100%+6px)] left-0 z-20 min-w-[160px] overflow-hidden rounded-lg border border-brand-surface bg-brand-surface shadow-lg"
+      className="absolute bottom-[calc(100%+6px)] left-0 z-20 min-w-[160px] overflow-hidden rounded-lg border border-brand-bg bg-brand-surface shadow-lg"
     >
       {TRANSLATIONS.map((t) => (
         <button
           key={t.value}
+          aria-pressed={value === t.value}
           onClick={() => {
             onChange(t.value);
             onClose();
