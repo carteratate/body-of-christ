@@ -37,6 +37,7 @@ function SearchPageInner() {
 
   const searchParams = useSearchParams();
   const restoreId = searchParams.get("restore");
+  const exploreQuery = searchParams.get("explore");
 
   // ── State ─────────────────────────────────────────────────────────────────
 
@@ -97,6 +98,7 @@ function SearchPageInner() {
   // ── Restore flow ──────────────────────────────────────────────────────────
 
   const restoredForId = useRef<string | null>(null);
+  const exploredForQuery = useRef<string | null>(null);
 
   useEffect(() => {
     if (!restoreId || !token) return;
@@ -217,6 +219,20 @@ function SearchPageInner() {
       handleSearch(content);
     }, 300);
   }, [handleSearch]);
+
+  // ── Explore flow (from ?explore= query param) ──────────────────────────────
+
+  useEffect(() => {
+    if (!exploreQuery || !token) return;
+    if (exploredForQuery.current === exploreQuery) return;
+    exploredForQuery.current = exploreQuery;
+    setSearchValue(exploreQuery);
+    // Auto-submit after brief delay (same as handleExploreMore)
+    const timer = setTimeout(() => {
+      handleSearch(exploreQuery);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [exploreQuery, token, handleSearch]);
 
   // ── Render ────────────────────────────────────────────────────────────────
 
