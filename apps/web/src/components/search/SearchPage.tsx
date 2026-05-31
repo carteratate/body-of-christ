@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
+import { SearchResults } from "@/components/search/SearchResults";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import {
   streamSearch,
@@ -85,9 +86,11 @@ function SearchPageInner() {
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
   const abortRef = useRef<AbortController | null>(null);
+  const exploreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     return () => {
       abortRef.current?.abort();
+      if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
     };
   }, []);
 
@@ -207,6 +210,14 @@ function SearchPageInner() {
     handleSearch(text);
   }
 
+  function handleExploreMore(content: string) {
+    if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
+    setSearchValue(content);
+    exploreTimerRef.current = setTimeout(() => {
+      handleSearch(content);
+    }, 300);
+  }
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -227,30 +238,15 @@ function SearchPageInner() {
           </div>
         )}
 
-        {/* Loading placeholder */}
-        {loading && results.length === 0 && (
-          <div className="text-brand-muted text-sm text-center py-8">Searching...</div>
-        )}
-
-        {/* Results list */}
-        {results.length > 0 && (
-          <div className="space-y-3">
-            {/* Placeholder: Task 25 will replace with ChunkCard components */}
-            {results.map((r) => (
-              <div
-                key={r.chunk_id}
-                className="rounded-lg bg-brand-surface p-3 text-xs text-brand-muted border-l-2 border-brand-accent"
-              >
-                <div className="text-brand-primary text-sm mb-1">
-                  {r.source.reference ?? r.source.document_title}
-                </div>
-                <p className="line-clamp-3">{r.content}</p>
-                {r.explanation && (
-                  <p className="mt-2 text-brand-muted italic">{r.explanation}</p>
-                )}
-              </div>
-            ))}
-          </div>
+        {/* Search results (skeleton while loading with no results, cards once streaming) */}
+        {(loading || results.length > 0) && (
+          <SearchResults
+            results={results}
+            loading={loading}
+            searchId={searchId}
+            token={token ?? ""}
+            onExploreMore={handleExploreMore}
+          />
         )}
 
         {/* Error state */}
