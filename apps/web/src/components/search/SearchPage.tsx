@@ -212,10 +212,9 @@ function SearchPageInner() {
 
   const handleExploreMore = useCallback((content: string) => {
     if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
-    const trimmed = content.slice(0, 200).replace(/\s+\S*$/, "").trim();
-    setSearchValue(trimmed);
+    setSearchValue(content);
     exploreTimerRef.current = setTimeout(() => {
-      handleSearch(trimmed);
+      handleSearch(content);
     }, 300);
   }, [handleSearch]);
 
