@@ -13,6 +13,7 @@ from app.rag.embed import embed_text
 from app.rag.retrieve import retrieve_candidates, ChunkCandidate
 from app.rag.rerank import rerank_collection, RankedChunk
 from app.rag.explain import generate_explanation
+from app.rag.constants import VALID_COLLECTIONS
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,6 @@ async def run_search_pipeline(
     # ------------------------------------------------------------------
     # Input validation — allowlist collections
     # ------------------------------------------------------------------
-    VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "canon-law", "saints"}
     collections = [c for c in collections if c in VALID_COLLECTIONS]
     if not collections:
         yield {"type": "error", "detail": "No valid collections selected."}

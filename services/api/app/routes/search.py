@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-_VALID_COLLECTIONS = {"bible", "catechism", "church-fathers", "encyclicals", "canon-law", "saints"}
+from app.rag.constants import VALID_COLLECTIONS as _VALID_COLLECTIONS
 _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 
