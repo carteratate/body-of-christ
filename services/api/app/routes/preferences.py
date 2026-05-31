@@ -6,12 +6,12 @@ from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.preferences import PreferencesResponse, PreferencesUpdate
+from app.rag.constants import VALID_COLLECTIONS as _VALID_COLLECTIONS
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-from app.rag.constants import VALID_COLLECTIONS as _VALID_COLLECTIONS
 _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 _DEFAULT_PREFERENCES = PreferencesResponse(

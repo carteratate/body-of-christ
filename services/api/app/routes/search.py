@@ -17,13 +17,13 @@ from app.models.search import (
     SearchResultsResponse,
     SearchSummary,
 )
+from app.rag.constants import VALID_COLLECTIONS as _VALID_COLLECTIONS
 from app.rag.pipeline import run_search_pipeline
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-from app.rag.constants import VALID_COLLECTIONS as _VALID_COLLECTIONS
 _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 
