@@ -140,6 +140,7 @@ function SearchPageInner() {
       setLoading(true);
       setError(null);
       setRateLimitRetryAfter(null);
+      setRateLimitType("per_minute");
       setSubmittedQuery(query);
       setResults([]);
 

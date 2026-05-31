@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ReactDOM from "react-dom";
 import { Toast, useToast } from "@/components/common";
 import { useRouter } from "next/navigation";
 import {
@@ -220,7 +221,11 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           🔍 Explore more
         </button>
       </div>
-      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
+      {toast.visible && typeof document !== "undefined" &&
+        ReactDOM.createPortal(
+          <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />,
+          document.body
+        )}
     </div>
   );
 }

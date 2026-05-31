@@ -44,15 +44,14 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
 
   // ── Remove bookmark ───────────────────────────────────────────────────────
   async function handleRemove() {
-    onRemoved(bookmark.id);
-    if (token) {
-      try {
-        await removeBookmark(token, bookmark.id);
-      } catch {
-        showToast("Couldn't remove. Try again.", "error");
-      }
+    if (!token) return;
+    try {
+      await removeBookmark(token, bookmark.id);
+      onRemoved(bookmark.id);
+      trackBookmarkDeleted({ collection });
+    } catch {
+      showToast("Couldn't remove. Try again.", "error");
     }
-    trackBookmarkDeleted({ collection });
   }
 
   // ── Copy action ───────────────────────────────────────────────────────────
