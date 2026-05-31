@@ -34,6 +34,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 24 | EmptyState + SearchPage orchestration | `6f7b831`–`1d722db` | `EmptyState.tsx` (8 suggested query chips, 2-col grid); `SearchPage.tsx` (full state: activeCollections, translation, quota, searchValue, loading, results, searchId; SSE streaming via streamSearch; ?restore= flow; abort on unmount); `app/search/page.tsx` (AppShell wrapper). Spec, quality (abort leak fix, restore ref fix), and security reviewed (error classification, UUID param validation). |
 | 25 | ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults | `fe525de`–`f98f8c1` | `ChunkCard.tsx` (6 wired actions: bookmark toggle, clipboard copy, read more router.push, thumbs up/down, explore more; collection left border; bible badge translation; all analytics wired); `RelevanceExplanation.tsx` (null→shimmer, ""→null, string→text); `ResultsSkeleton.tsx` (4 ghost cards, animate-pulse); `SearchResults.tsx` (progressive reveal: skeleton when loading+empty, ChunkCard list otherwise). SearchPage updated with handleExploreMore (300ms debounced, cancels on keypress, stable useCallback). Spec, quality (hover token, stale closure, bookmark analytics, design system danger token, aria-labels), and security reviewed (UUID-guard on Read More nav). |
 | 26 | DocumentReader + ReaderToolbar + ReaderChunk (/reader/[docId]) | `7a999b5`–`51214ea` | `DocumentReader.tsx` (fetches getReader, loading skeleton, error/404 states, scroll origin into view, prev/next/jump navigation, ?explore= routing); `ReaderToolbar.tsx` (← Results, collection badge, position info, prev/next disabled at doc boundaries, jump by position or reference substring); `ReaderChunk.tsx` (gold border + "← Your result" for origin chunk, bookmark/copy/explore-more actions, trackExploreMoreClicked source:"reader"); `app/reader/[docId]/page.tsx` (Next.js 15 async params); `components/reader/index.ts` barrel export. SearchPage.tsx updated with ?explore= param reading (auto-fills search + 100ms auto-submit, exploredForQuery ref guard). Spec compliance (double-trim fix, missing chunk_id guard, 404 check hardening) and code quality (copy format parenthetical) reviewed and fixed. |
+| 27 | BookmarksPage + BookmarkCard (/bookmarks) | `da55cc8` | `BookmarkCard.tsx` (collection-colored left border, badge, reference, 3 actions: remove bookmark fire-and-forget, copy, explore-more; null chunk fallback; token typed string\|null with API guards; navigator.clipboard guard); `BookmarksPage.tsx` (useCallback fetch, 3-ghost-card skeleton, empty state + "Start Searching" link, error state + Retry, optimistic removal via local filter); `app/bookmarks/page.tsx` (AppShell wrapper); `components/bookmarks/index.ts` barrel export. No Read More — BookmarkChunkInfo.source has no document_id. Spec, quality (useCallback, clipboard guard, token null safety), and security reviewed. |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -46,16 +47,15 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 27 — Frontend: BookmarksPage + BookmarkCard (/bookmarks)**
+**Task 28 — Frontend: RateLimitModal + Toast + ErrorBoundary (common components)**
 
-Build the bookmarks page. `BookmarksPage.tsx` fetches `GET /v1/bookmarks`, renders a list of `BookmarkCard.tsx` components (reusing ChunkCard patterns), shows loading skeleton (3 ghost cards), empty state ("You haven't saved any passages yet. Start exploring and save passages that speak to you." + "Start Searching" link), and error state ("Couldn't load your saved passages. Please try again." + Retry button). Create `apps/web/src/app/bookmarks/page.tsx`. Create `apps/web/src/components/bookmarks/index.ts` barrel export.
+Build common UI components: `RateLimitModal.tsx` (centered modal with countdown timer for 429 rate-limit responses), `Toast.tsx` (save/copy/error feedback notifications), and `ErrorBoundary.tsx` (page-level React error boundary). Create `apps/web/src/components/common/index.ts` barrel export.
 
 ---
 
 ## Remaining Tasks (in order)
 
 ```
-27  Frontend: BookmarksPage + BookmarkCard  (/bookmarks)
 28  Frontend: RateLimitModal + Toast + ErrorBoundary (common components)
 29  Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers
 30  CLAUDE.md update with V2 invariants
@@ -138,4 +138,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-31 | Completed through Task 26 | Next: Task 27 (BookmarksPage + BookmarkCard)*
+*Last updated: 2026-05-31 | Completed through Task 27 | Next: Task 28 (RateLimitModal + Toast + ErrorBoundary)*
