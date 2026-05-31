@@ -222,15 +222,23 @@ export async function streamSearch(
   filters: SearchFilters,
   quota: number,
   callbacks: SearchStreamCallbacks,
+  signal?: AbortSignal,
 ): Promise<void> {
-  const res = await fetch(`${API_URL}/v1/search`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ query, filters, quota }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/v1/search`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query, filters, quota }),
+      signal,
+    });
+  } catch (err) {
+    if ((err as DOMException).name === "AbortError") return;
+    throw err;
+  }
 
   if (!res.ok) {
     if (res.status === 429) {
@@ -250,6 +258,7 @@ export async function streamSearch(
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
+    if (signal?.aborted) break;
 
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split("\n");

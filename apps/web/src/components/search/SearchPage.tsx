@@ -74,13 +74,23 @@ function SearchPageInner() {
     return () => clearTimeout(timer);
   }, [quota]);
 
+  // ── Abort in-flight streams on unmount ───────────────────────────────────
+
+  const abortRef = useRef<AbortController | null>(null);
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
+
   // ── Restore flow ──────────────────────────────────────────────────────────
 
-  const restored = useRef(false);
+  const restoredForId = useRef<string | null>(null);
 
   useEffect(() => {
-    if (restored.current || !restoreId || !token) return;
-    restored.current = true;
+    if (!restoreId || !token) return;
+    if (restoredForId.current === restoreId) return;
+    restoredForId.current = restoreId;
     setLoading(true);
     getSearchResults(token, restoreId)
       .then((data) => {
@@ -106,6 +116,10 @@ function SearchPageInner() {
       if (loading || activeCollections.length === 0 || !query.trim()) return;
       const currentToken = tokenRef.current;
       if (!currentToken) return;
+
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
 
       setLoading(true);
       setError(null);
@@ -151,7 +165,8 @@ function SearchPageInner() {
               setLoading(false);
               trackRateLimitHit({ limitType: "per_minute" });
             },
-          }
+          },
+          controller.signal
         );
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Search failed";
