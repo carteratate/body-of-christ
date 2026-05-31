@@ -21,18 +21,16 @@ export function RateLimitModal({ isOpen, limitType, retryAfter, onDismiss }: Rat
   }, [isOpen, limitType]);
 
   useEffect(() => {
-    if (isOpen && limitType === "per_minute" && retryAfter !== null) {
-      setCountdown(retryAfter);
+    if (!isOpen || limitType !== "per_minute" || retryAfter === null) {
+      setCountdown(null);
+      return;
     }
-  }, [isOpen, limitType, retryAfter]);
-
-  useEffect(() => {
-    if (countdown === null || countdown <= 0) return;
+    setCountdown(retryAfter);
     const id = setInterval(() => {
       setCountdown((prev) => (prev !== null && prev > 1 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(id);
-  }, [countdown]);
+  }, [isOpen, limitType, retryAfter]);
 
   if (!isOpen) return null;
 
@@ -42,10 +40,13 @@ export function RateLimitModal({ isOpen, limitType, retryAfter, onDismiss }: Rat
       onClick={onDismiss}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="rate-limit-modal-title"
         className="bg-brand-surface text-brand-primary rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold mb-3">Search Limit Reached</h2>
+        <h2 id="rate-limit-modal-title" className="text-lg font-semibold mb-3">Search Limit Reached</h2>
 
         {limitType === "per_minute" ? (
           <p className="text-brand-muted text-sm mb-5">
