@@ -127,6 +127,7 @@ export interface ChunkSource {
   reference: string | null;
   document_id: string;
   position: number | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface ChunkResult {

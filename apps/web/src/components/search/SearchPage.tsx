@@ -289,7 +289,10 @@ function SearchPageInner() {
         quota={quota}
         onQuotaChange={handleQuotaChange}
         searchValue={searchValue}
-        onSearchChange={setSearchValue}
+        onSearchChange={(val) => {
+            exploreTimerRef.current && clearTimeout(exploreTimerRef.current);
+            setSearchValue(val);
+          }}
         onSearch={() => handleSearch(searchValue)}
         loading={loading}
       />

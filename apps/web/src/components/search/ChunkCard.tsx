@@ -105,7 +105,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
-  const badgeLabel = collectionMeta?.label ?? collection;
+  const translation = collection === "bible" && source.metadata?.translation
+    ? ` · ${String(source.metadata.translation)}`
+    : "";
+  const badgeLabel = `${collectionMeta?.label ?? collection}${translation}`;
 
   return (
     <div
@@ -133,12 +136,11 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           {/* Bookmark */}
           <button
             onClick={handleBookmark}
-            title={isBookmarked ? "Remove bookmark" : "Bookmark"}
-            className={`p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
-              isBookmarked ? "text-brand-accent" : "text-brand-muted"
-            }`}
+            title={isBookmarked ? "Remove bookmark" : "Save passage"}
+            aria-label={isBookmarked ? "Remove bookmark" : "Save passage"}
+            className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
-            {isBookmarked ? "🔖" : "🔖"}
+            <span className={isBookmarked ? "text-brand-accent" : "text-brand-muted"}>🔖</span>
           </button>
 
           {/* Copy */}
@@ -172,7 +174,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         <button
           onClick={() => handleFeedback("up")}
           title="Helpful"
-          disabled={feedback !== null}
+          disabled={feedback === "up"}
           className={`p-1.5 rounded text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
             feedback === "up"
               ? "text-brand-accent"
@@ -186,7 +188,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         <button
           onClick={() => handleFeedback("down")}
           title="Not helpful"
-          disabled={feedback !== null}
+          disabled={feedback === "down"}
           className={`p-1.5 rounded text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
             feedback === "down"
               ? "text-red-400"
