@@ -35,6 +35,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 25 | ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults | `fe525de`–`f98f8c1` | `ChunkCard.tsx` (6 wired actions: bookmark toggle, clipboard copy, read more router.push, thumbs up/down, explore more; collection left border; bible badge translation; all analytics wired); `RelevanceExplanation.tsx` (null→shimmer, ""→null, string→text); `ResultsSkeleton.tsx` (4 ghost cards, animate-pulse); `SearchResults.tsx` (progressive reveal: skeleton when loading+empty, ChunkCard list otherwise). SearchPage updated with handleExploreMore (300ms debounced, cancels on keypress, stable useCallback). Spec, quality (hover token, stale closure, bookmark analytics, design system danger token, aria-labels), and security reviewed (UUID-guard on Read More nav). |
 | 26 | DocumentReader + ReaderToolbar + ReaderChunk (/reader/[docId]) | `7a999b5`–`51214ea` | `DocumentReader.tsx` (fetches getReader, loading skeleton, error/404 states, scroll origin into view, prev/next/jump navigation, ?explore= routing); `ReaderToolbar.tsx` (← Results, collection badge, position info, prev/next disabled at doc boundaries, jump by position or reference substring); `ReaderChunk.tsx` (gold border + "← Your result" for origin chunk, bookmark/copy/explore-more actions, trackExploreMoreClicked source:"reader"); `app/reader/[docId]/page.tsx` (Next.js 15 async params); `components/reader/index.ts` barrel export. SearchPage.tsx updated with ?explore= param reading (auto-fills search + 100ms auto-submit, exploredForQuery ref guard). Spec compliance (double-trim fix, missing chunk_id guard, 404 check hardening) and code quality (copy format parenthetical) reviewed and fixed. |
 | 27 | BookmarksPage + BookmarkCard (/bookmarks) | `da55cc8` | `BookmarkCard.tsx` (collection-colored left border, badge, reference, 3 actions: remove bookmark fire-and-forget, copy, explore-more; null chunk fallback; token typed string\|null with API guards; navigator.clipboard guard); `BookmarksPage.tsx` (useCallback fetch, 3-ghost-card skeleton, empty state + "Start Searching" link, error state + Retry, optimistic removal via local filter); `app/bookmarks/page.tsx` (AppShell wrapper); `components/bookmarks/index.ts` barrel export. No Read More — BookmarkChunkInfo.source has no document_id. Spec, quality (useCallback, clipboard guard, token null safety), and security reviewed. |
+| 28 | Frontend: RateLimitModal + Toast + ErrorBoundary (common components) | `3dcb3be` `5dc6a1b` `cc351c4` | `RateLimitModal.tsx` (portal via ReactDOM.createPortal, countdown timer, backdrop dismiss, trackRateLimitHit on open, ARIA role="dialog"); `Toast.tsx` + `useToast` hook (fixed bottom-right, 3s auto-dismiss, stable useCallback in hook, role="status"); `ErrorBoundary.tsx` (class component, getDerivedStateFromError, componentDidCatch fires trackErrorOccurred with hardcoded "render_error" — raw error.message never sent to PostHog); `components/common/index.ts` barrel export. Spec, quality (interval leak fix, stale closure fix, ARIA), and security (no PII in telemetry) reviewed. |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -47,9 +48,9 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 28 — Frontend: RateLimitModal + Toast + ErrorBoundary (common components)**
+**Task 29 — Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers**
 
-Build common UI components: `RateLimitModal.tsx` (centered modal with countdown timer for 429 rate-limit responses), `Toast.tsx` (save/copy/error feedback notifications), and `ErrorBoundary.tsx` (page-level React error boundary). Create `apps/web/src/components/common/index.ts` barrel export.
+Wire up all remaining frontend plumbing: redirect `/chat` → `/search`, add loading/error states to pages, wrap pages with ErrorBoundary, wire RateLimitModal into SearchPage, wire Toast into ChunkCard and BookmarksPage, and add CSP headers to next.config.ts.
 
 ---
 
@@ -138,4 +139,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-31 | Completed through Task 27 | Next: Task 28 (RateLimitModal + Toast + ErrorBoundary)*
+*Last updated: 2026-05-31 | Completed through Task 28 | Next: Task 29 (/chat redirect + page routes + loading/error states + CSP headers)*
