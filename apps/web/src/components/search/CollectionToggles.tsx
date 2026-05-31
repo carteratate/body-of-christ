@@ -20,6 +20,11 @@ export function CollectionToggles({
   onTranslationChange,
 }: CollectionTogglesProps) {
   const { token } = useAppContext();
+  const tokenRef = useRef(token);
+  useEffect(() => {
+    tokenRef.current = token;
+  });
+
   const [translationOpen, setTranslationOpen] = useState(false);
   const isMounted = useRef(false);
 
@@ -30,12 +35,12 @@ export function CollectionToggles({
       isMounted.current = true;
       return;
     }
-    if (!token) return;
+    if (!tokenRef.current) return;
     const timer = setTimeout(() => {
-      updatePreferences(token, { default_collections: activeCollections }).catch(() => {});
+      updatePreferences(tokenRef.current!, { default_collections: activeCollections }).catch(() => {});
     }, 500);
     return () => clearTimeout(timer);
-  }, [activeCollections, token]);
+  }, [activeCollections]);
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
@@ -81,8 +86,8 @@ export function CollectionToggles({
                   value={translation}
                   onChange={(t) => {
                     onTranslationChange(t);
-                    if (token) {
-                      updatePreferences(token, { preferred_translation: t }).catch(() => {});
+                    if (tokenRef.current) {
+                      updatePreferences(tokenRef.current, { preferred_translation: t }).catch(() => {});
                     }
                   }}
                   onClose={() => setTranslationOpen(false)}

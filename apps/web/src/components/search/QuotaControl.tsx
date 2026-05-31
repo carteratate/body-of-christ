@@ -13,6 +13,10 @@ interface QuotaControlProps {
 
 export function QuotaControl({ value, onChange }: QuotaControlProps) {
   const { token } = useAppContext();
+  const tokenRef = useRef(token);
+  useEffect(() => {
+    tokenRef.current = token;
+  });
 
   const isMounted = useRef(false);
 
@@ -21,12 +25,12 @@ export function QuotaControl({ value, onChange }: QuotaControlProps) {
       isMounted.current = true;
       return;
     }
-    if (!token) return;
+    if (!tokenRef.current) return;
     const timer = setTimeout(() => {
-      updatePreferences(token, { default_quota: value }).catch(() => {});
+      updatePreferences(tokenRef.current!, { default_quota: value }).catch(() => {});
     }, 500);
     return () => clearTimeout(timer);
-  }, [value, token]);
+  }, [value]);
 
   return (
     <div className="flex shrink-0 items-center gap-2">
