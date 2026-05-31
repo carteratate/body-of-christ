@@ -121,7 +121,7 @@ function SearchPageInner() {
           quota,
           {
             onChunk(chunk) {
-              setResults((prev) => [...prev, chunk]);
+              setResults((prev) => [...prev, { ...chunk, explanation: null }]);
             },
             onExplanation(chunkId, explanation) {
               setResults((prev) =>
