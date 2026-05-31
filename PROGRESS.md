@@ -31,6 +31,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 21 | Frontend: api.ts extensions + analytics.ts | `eb39283` `d90c2cf` | All V2 API functions + SSE streaming; 14 PostHog event wrappers; posthog-js installed |
 | 22 | Frontend: AppShell + Sidebar + layout | `0438758` | AppShell with AppContext (token, preferences); Sidebar with search history; PostHog provider; middleware updated for /search /bookmarks /reader |
 | 23 | Canon Law + search bottom bar | `c2b006a`–`4b9a351` | Migration 0007 (canon-law collection); backend allowlists updated; `rag/constants.py` (single VALID_COLLECTIONS source); `collections.ts` with CSS var colors; TranslationSelector, QuotaControl, SearchBar, CollectionToggles, BottomBar components + barrel export. Spec + security reviewed. |
+| 24 | EmptyState + SearchPage orchestration | `6f7b831`–`1d722db` | `EmptyState.tsx` (8 suggested query chips, 2-col grid); `SearchPage.tsx` (full state: activeCollections, translation, quota, searchValue, loading, results, searchId; SSE streaming via streamSearch; ?restore= flow; abort on unmount); `app/search/page.tsx` (AppShell wrapper). Spec, quality (abort leak fix, restore ref fix), and security reviewed (error classification, UUID param validation). |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -43,16 +44,15 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 24 — Frontend: EmptyState (suggested query chips) + SearchPage.tsx state orchestration**
+**Task 25 — Frontend: ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults (progressive SSE)**
 
-Build the search page shell: `app/search/page.tsx` rendering an `AppShell` with a flex-column main area. The main area: `EmptyState` (suggested query chips grid, fires a search on chip click) fills the results region before first query; `BottomBar` sits at the bottom. `SearchPage` manages all state: `activeCollections`, `translation`, `quota`, `searchValue`, `loading`, `results`, `searchId`. Wire `streamSearch()` to `BottomBar.onSearch`.
+Build the result rendering components: `ChunkCard` (chunk text, collection badge, all 6 actions: bookmark, copy, read more, thumbs up/down, explore more), `RelevanceExplanation` (skeleton shimmer → explanation text), `ResultsSkeleton` (ghost cards during load), `SearchResults` (list of ChunkCards). Replace the placeholder result cards in SearchPage with SearchResults. Wire all card actions to their API calls.
 
 ---
 
 ## Remaining Tasks (in order)
 
 ```
-24  Frontend: EmptyState (suggested query chips) + SearchPage.tsx state orchestration
 25  Frontend: ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults (progressive SSE)
 26  Frontend: DocumentReader + ReaderToolbar + ReaderChunk  (/reader/[docId])
 27  Frontend: BookmarksPage + BookmarkCard  (/bookmarks)
@@ -138,4 +138,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-30 | Completed through Task 23 + post-task cleanup | Next: Task 24 (EmptyState + SearchPage orchestration)*
+*Last updated: 2026-05-30 | Completed through Task 24 | Next: Task 25 (ChunkCard + SearchResults + progressive SSE rendering)*
