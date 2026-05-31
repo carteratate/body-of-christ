@@ -30,7 +30,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 20 | Backend: main.py + rate_limit.py updates | `259aa27` | All 8 routers registered; all 4 RAG singletons in lifespan; production INTERNAL_API_SECRET guard added |
 | 21 | Frontend: api.ts extensions + analytics.ts | `eb39283` `d90c2cf` | All V2 API functions + SSE streaming; 14 PostHog event wrappers; posthog-js installed |
 | 22 | Frontend: AppShell + Sidebar + layout | `0438758` | AppShell with AppContext (token, preferences); Sidebar with search history; PostHog provider; middleware updated for /search /bookmarks /reader |
-| 23 | Canon Law + search bottom bar | `c2b006a`–`87f500b` | Migration 0007 (canon-law collection); backend allowlists updated; `collections.ts`; TranslationSelector, QuotaControl, SearchBar, CollectionToggles, BottomBar components + barrel export. Spec + security reviewed. |
+| 23 | Canon Law + search bottom bar | `c2b006a`–`4b9a351` | Migration 0007 (canon-law collection); backend allowlists updated; `rag/constants.py` (single VALID_COLLECTIONS source); `collections.ts` with CSS var colors; TranslationSelector, QuotaControl, SearchBar, CollectionToggles, BottomBar components + barrel export. Spec + security reviewed. |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -60,7 +60,7 @@ Build the search page shell: `app/search/page.tsx` rendering an `AppShell` with 
 29  Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers
 30  CLAUDE.md update with V2 invariants
 --- PHASE 3 (after frontend is working) ---
-31  Fix documents schema: add `translation` column + migration 0007
+31  Fix documents schema: add `translation` column + migration 0008
 32  Datapipeline: bible.py (fix conflict key, then run)
 33  Datapipeline: catechism.py, encyclicals.py, church_fathers.py, saints.py
 34  Datapipeline: embed.py + run_all.py
@@ -72,7 +72,8 @@ Build the search page shell: `app/search/page.tsx` rendering an `AppShell` with 
 
 ### 1. documents table UNIQUE constraint needs translation column (Phase 3 blocker)
 - `documents` uses `UNIQUE(collection, title)` — conflicts when two Bible translations share a book name.
-- Fix: add migration `0007` with `translation text` column and `UNIQUE(collection, title, translation)`.
+- Fix: add migration `0008` with `translation text` column and `UNIQUE(collection, title, translation)`.
+- Note: `0007` was used for the canon-law collection addition; translation column fix is now `0008`.
 - Also update `datapipeline/load.py`'s `upsert_document()`.
 - **Do not run any datapipeline scripts until this is fixed.**
 
@@ -115,7 +116,7 @@ Using **subagent-driven development**: one implementer subagent per task → spe
 
 Skill templates at: `/home/carter/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/subagent-driven-development/`
 
-To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, then start **Task 23**.
+To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, then start **Task 24**.
 
 ---
 
@@ -124,9 +125,9 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 | Area | Path |
 |------|------|
 | Design spec + plan | `/home/carter/.claude/plans/i-want-to-develop-crispy-journal.md` |
-| DB migrations | `supabase/migrations/0004–0006_*.sql` |
+| DB migrations | `supabase/migrations/0004–0007_*.sql` |
 | Datapipeline | `datapipeline/` |
-| Backend RAG modules | `services/api/app/rag/` |
+| Backend RAG modules | `services/api/app/rag/` (incl. `constants.py` — canonical VALID_COLLECTIONS) |
 | Backend routes | `services/api/app/routes/` |
 | Frontend components | `apps/web/src/components/` |
 | Frontend pages | `apps/web/src/app/` |
@@ -137,4 +138,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-30 | Completed through Task 23 | Next: Task 24 (EmptyState + SearchPage orchestration)*
+*Last updated: 2026-05-30 | Completed through Task 23 + post-task cleanup | Next: Task 24 (EmptyState + SearchPage orchestration)*
