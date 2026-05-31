@@ -5,12 +5,12 @@ export interface CollectionMeta {
 }
 
 export const COLLECTIONS: CollectionMeta[] = [
-  { key: "bible",          label: "📖 Bible",         color: "#4caf50" },
-  { key: "catechism",      label: "⛪ Catechism",      color: "#4a6fa5" },
-  { key: "church-fathers", label: "✝ Church Fathers", color: "#7c6fa5" },
-  { key: "encyclicals",    label: "📜 Encyclicals",    color: "#b5892a" },
-  { key: "canon-law",      label: "⚖️ Canon Law",      color: "#9e4a4a" },
-  { key: "saints",         label: "👼 Saints",         color: "#4a9a8a" },
+  { key: "bible",          label: "📖 Bible",         color: "var(--color-collection-bible)" },
+  { key: "catechism",      label: "⛪ Catechism",      color: "var(--color-collection-catechism)" },
+  { key: "church-fathers", label: "✝ Church Fathers", color: "var(--color-collection-church-fathers)" },
+  { key: "encyclicals",    label: "📜 Encyclicals",    color: "var(--color-collection-encyclicals)" },
+  { key: "canon-law",      label: "⚖️ Canon Law",      color: "var(--color-collection-canon-law)" },
+  { key: "saints",         label: "👼 Saints",         color: "var(--color-collection-saints)" },
 ];
 
 export const ALL_COLLECTION_KEYS: string[] = COLLECTIONS.map((c) => c.key);

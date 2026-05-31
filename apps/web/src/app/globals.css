@@ -10,6 +10,14 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Collection accent colors */
+  --color-collection-bible:          #4caf50;
+  --color-collection-catechism:      #4a6fa5;
+  --color-collection-church-fathers: #7c6fa5;
+  --color-collection-encyclicals:    #b5892a;
+  --color-collection-canon-law:      #9e4a4a;
+  --color-collection-saints:         #4a9a8a;
 }
 
 html {
