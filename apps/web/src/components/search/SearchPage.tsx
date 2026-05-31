@@ -19,6 +19,14 @@ import {
   trackQuotaChanged,
 } from "@/lib/analytics";
 
+function classifyError(msg: string): string {
+  const lower = msg.toLowerCase();
+  if (lower.includes("rate limit") || lower.includes("429")) return "rate_limit";
+  if (lower.includes("unauthorized") || lower.includes("401") || lower.includes("403")) return "auth_error";
+  if (lower.includes("network") || lower.includes("fetch") || lower.includes("failed to fetch")) return "network_error";
+  return "server_error";
+}
+
 function SearchPageInner() {
   const { token, preferences } = useAppContext();
   const tokenRef = useRef(token);
@@ -90,6 +98,8 @@ function SearchPageInner() {
   useEffect(() => {
     if (!restoreId || !token) return;
     if (restoredForId.current === restoreId) return;
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!UUID_RE.test(restoreId)) return;
     restoredForId.current = restoreId;
     setLoading(true);
     getSearchResults(token, restoreId)
@@ -158,7 +168,7 @@ function SearchPageInner() {
             onError(msg) {
               setError(msg);
               setLoading(false);
-              trackErrorOccurred({ page: "search", errorType: msg });
+              trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
             },
             onRateLimit(retryAfter) {
               setRateLimitRetryAfter(retryAfter ?? 60);
@@ -172,7 +182,7 @@ function SearchPageInner() {
         const msg = err instanceof Error ? err.message : "Search failed";
         setError(msg);
         setLoading(false);
-        trackErrorOccurred({ page: "search", errorType: msg });
+        trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
