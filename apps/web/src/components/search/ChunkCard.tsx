@@ -66,7 +66,9 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
   }
 
   // ── Read More action ──────────────────────────────────────────────────────
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   function handleReadMore() {
+    if (!UUID_RE.test(document_id) || !UUID_RE.test(chunk_id)) return;
     trackDocumentOpened({ documentId: document_id, collection, source: "chunk_card" });
     router.push(`/reader/${document_id}?chunk_id=${chunk_id}`);
   }
