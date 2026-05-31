@@ -36,6 +36,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 26 | DocumentReader + ReaderToolbar + ReaderChunk (/reader/[docId]) | `7a999b5`–`51214ea` | `DocumentReader.tsx` (fetches getReader, loading skeleton, error/404 states, scroll origin into view, prev/next/jump navigation, ?explore= routing); `ReaderToolbar.tsx` (← Results, collection badge, position info, prev/next disabled at doc boundaries, jump by position or reference substring); `ReaderChunk.tsx` (gold border + "← Your result" for origin chunk, bookmark/copy/explore-more actions, trackExploreMoreClicked source:"reader"); `app/reader/[docId]/page.tsx` (Next.js 15 async params); `components/reader/index.ts` barrel export. SearchPage.tsx updated with ?explore= param reading (auto-fills search + 100ms auto-submit, exploredForQuery ref guard). Spec compliance (double-trim fix, missing chunk_id guard, 404 check hardening) and code quality (copy format parenthetical) reviewed and fixed. |
 | 27 | BookmarksPage + BookmarkCard (/bookmarks) | `da55cc8` | `BookmarkCard.tsx` (collection-colored left border, badge, reference, 3 actions: remove bookmark fire-and-forget, copy, explore-more; null chunk fallback; token typed string\|null with API guards; navigator.clipboard guard); `BookmarksPage.tsx` (useCallback fetch, 3-ghost-card skeleton, empty state + "Start Searching" link, error state + Retry, optimistic removal via local filter); `app/bookmarks/page.tsx` (AppShell wrapper); `components/bookmarks/index.ts` barrel export. No Read More — BookmarkChunkInfo.source has no document_id. Spec, quality (useCallback, clipboard guard, token null safety), and security reviewed. |
 | 28 | Frontend: RateLimitModal + Toast + ErrorBoundary (common components) | `3dcb3be` `5dc6a1b` `cc351c4` | `RateLimitModal.tsx` (portal via ReactDOM.createPortal, countdown timer, backdrop dismiss, trackRateLimitHit on open, ARIA role="dialog"); `Toast.tsx` + `useToast` hook (fixed bottom-right, 3s auto-dismiss, stable useCallback in hook, role="status"); `ErrorBoundary.tsx` (class component, getDerivedStateFromError, componentDidCatch fires trackErrorOccurred with hardcoded "render_error" — raw error.message never sent to PostHog); `components/common/index.ts` barrel export. Spec, quality (interval leak fix, stale closure fix, ARIA), and security (no PII in telemetry) reviewed. |
+| 29 | Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers | `8534305` `74fdf40` | `app/chat/page.tsx` (redirect → /search); `app/page.tsx` (authenticated root → /search); `api.ts` onRateLimit now passes limitType ("per_minute"\|"daily") by reading 429 body; `SearchPage.tsx` (RateLimitModal replaces inline placeholder, rateLimitType state, reset on new search); `ChunkCard.tsx` (Toast via portal on bookmark/copy success+failure); `BookmarksPage.tsx` (Toast, passes showToast to BookmarkCard); `BookmarkCard.tsx` (handleRemove post-success, Toast on remove failure and copy); ErrorBoundary wraps SearchPage/BookmarksPage/DocumentReader in page routes; loading.tsx files for /search, /bookmarks, /reader/[docId]; CSP headers in next.config.ts (no unsafe-eval, unsafe-inline for script-src required by Next.js hydration). Spec (37/37), quality (Toast portal, remove rollback, CSP), and fix re-review all passed. |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -48,17 +49,15 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 29 — Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers**
+**Task 30 — CLAUDE.md update with V2 invariants**
 
-Wire up all remaining frontend plumbing: redirect `/chat` → `/search`, add loading/error states to pages, wrap pages with ErrorBoundary, wire RateLimitModal into SearchPage, wire Toast into ChunkCard and BookmarksPage, and add CSP headers to next.config.ts.
+Update CLAUDE.md to document all V2 architectural decisions, new routes, component locations, API contracts, and design system tokens so future sessions have accurate context.
 
 ---
 
 ## Remaining Tasks (in order)
 
 ```
-28  Frontend: RateLimitModal + Toast + ErrorBoundary (common components)
-29  Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers
 30  CLAUDE.md update with V2 invariants
 --- PHASE 3 (after frontend is working) ---
 31  Fix documents schema: add `translation` column + migration 0008
@@ -139,4 +138,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-31 | Completed through Task 28 | Next: Task 29 (/chat redirect + page routes + loading/error states + CSP headers)*
+*Last updated: 2026-05-31 | Completed through Task 29 | Next: Task 30 (CLAUDE.md update with V2 invariants)*
