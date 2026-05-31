@@ -210,13 +210,14 @@ function SearchPageInner() {
     handleSearch(text);
   }
 
-  function handleExploreMore(content: string) {
+  const handleExploreMore = useCallback((content: string) => {
     if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
-    setSearchValue(content);
+    const trimmed = content.slice(0, 200).replace(/\s+\S*$/, "").trim();
+    setSearchValue(trimmed);
     exploreTimerRef.current = setTimeout(() => {
-      handleSearch(content);
+      handleSearch(trimmed);
     }, 300);
-  }
+  }, [handleSearch]);
 
   // ── Render ────────────────────────────────────────────────────────────────
 

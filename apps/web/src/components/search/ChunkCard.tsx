@@ -12,6 +12,7 @@ import {
   trackChunkLiked,
   trackChunkDisliked,
   trackBookmarkCreated,
+  trackBookmarkDeleted,
   trackDocumentOpened,
   trackExploreMoreClicked,
 } from "@/lib/analytics";
@@ -46,6 +47,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         await removeBookmark(token, bookmarkId);
         setIsBookmarked(false);
         setBookmarkId(null);
+        trackBookmarkDeleted({ collection });
       } else {
         const result = await addBookmark(token, chunk_id);
         setBookmarkId(result.id);
@@ -147,6 +149,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           <button
             onClick={handleCopy}
             title="Copy passage"
+            aria-label="Copy passage"
             className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
             📋
@@ -155,7 +158,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           {/* Read More */}
           <button
             onClick={handleReadMore}
-            className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
             Read More
           </button>
@@ -174,6 +177,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         <button
           onClick={() => handleFeedback("up")}
           title="Helpful"
+          aria-label="Mark as relevant"
           disabled={feedback === "up"}
           className={`p-1.5 rounded text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
             feedback === "up"
@@ -188,10 +192,11 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         <button
           onClick={() => handleFeedback("down")}
           title="Not helpful"
+          aria-label="Mark as not relevant"
           disabled={feedback === "down"}
           className={`p-1.5 rounded text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
             feedback === "down"
-              ? "text-red-400"
+              ? "text-brand-danger"
               : "text-brand-muted hover:text-brand-primary disabled:opacity-50"
           }`}
         >
@@ -201,6 +206,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         {/* Explore more */}
         <button
           onClick={handleExploreMore}
+          aria-label="Explore more like this"
           className="px-2 py-1 rounded text-xs text-brand-muted border border-brand-surface hover:text-brand-primary hover:border-brand-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
         >
           🔍 Explore more

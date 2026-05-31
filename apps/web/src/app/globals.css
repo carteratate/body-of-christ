@@ -7,6 +7,7 @@
   --color-brand-accent:  #C4972A;
   --color-brand-primary: #EAE6DC;
   --color-brand-muted:   #7A8099;
+  --color-brand-danger:  #e57373;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
