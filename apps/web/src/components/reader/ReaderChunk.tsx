@@ -48,7 +48,7 @@ export function ReaderChunk({ chunk, document, isOrigin, token, onExploreMore }:
 
   // ── Copy action ────────────────────────────────────────────────────────────
   function handleCopy() {
-    const text = `${chunk.content} — ${chunk.reference ?? document.title} (${document.title})`;
+    const text = `${chunk.content} — ${chunk.reference ?? document.title} (${document.collection})`;
     navigator.clipboard.writeText(text).catch(() => {});
   }
 
