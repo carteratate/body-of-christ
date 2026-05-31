@@ -32,6 +32,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 22 | Frontend: AppShell + Sidebar + layout | `0438758` | AppShell with AppContext (token, preferences); Sidebar with search history; PostHog provider; middleware updated for /search /bookmarks /reader |
 | 23 | Canon Law + search bottom bar | `c2b006a`–`4b9a351` | Migration 0007 (canon-law collection); backend allowlists updated; `rag/constants.py` (single VALID_COLLECTIONS source); `collections.ts` with CSS var colors; TranslationSelector, QuotaControl, SearchBar, CollectionToggles, BottomBar components + barrel export. Spec + security reviewed. |
 | 24 | EmptyState + SearchPage orchestration | `6f7b831`–`1d722db` | `EmptyState.tsx` (8 suggested query chips, 2-col grid); `SearchPage.tsx` (full state: activeCollections, translation, quota, searchValue, loading, results, searchId; SSE streaming via streamSearch; ?restore= flow; abort on unmount); `app/search/page.tsx` (AppShell wrapper). Spec, quality (abort leak fix, restore ref fix), and security reviewed (error classification, UUID param validation). |
+| 25 | ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults | `fe525de`–`f98f8c1` | `ChunkCard.tsx` (6 wired actions: bookmark toggle, clipboard copy, read more router.push, thumbs up/down, explore more; collection left border; bible badge translation; all analytics wired); `RelevanceExplanation.tsx` (null→shimmer, ""→null, string→text); `ResultsSkeleton.tsx` (4 ghost cards, animate-pulse); `SearchResults.tsx` (progressive reveal: skeleton when loading+empty, ChunkCard list otherwise). SearchPage updated with handleExploreMore (300ms debounced, cancels on keypress, stable useCallback). Spec, quality (hover token, stale closure, bookmark analytics, design system danger token, aria-labels), and security reviewed (UUID-guard on Read More nav). |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -44,16 +45,15 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 25 — Frontend: ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults (progressive SSE)**
+**Task 26 — Frontend: DocumentReader + ReaderToolbar + ReaderChunk (/reader/[docId])**
 
-Build the result rendering components: `ChunkCard` (chunk text, collection badge, all 6 actions: bookmark, copy, read more, thumbs up/down, explore more), `RelevanceExplanation` (skeleton shimmer → explanation text), `ResultsSkeleton` (ghost cards during load), `SearchResults` (list of ChunkCards). Replace the placeholder result cards in SearchPage with SearchResults. Wire all card actions to their API calls.
+Build the in-app document reader page. `DocumentReader.tsx` fetches `/v1/documents/{docId}/reader?chunk_id=...&context=10`, scrolls origin chunk into view with gold left border + "← Your result" label. `ReaderToolbar.tsx` (← Results, collection badge, prev/next chapter, jump input). `ReaderChunk.tsx` (single chunk in reader, highlighted if origin chunk). Wire copy, bookmark, and explore-more actions on each chunk. Create `apps/web/src/app/reader/[docId]/page.tsx`.
 
 ---
 
 ## Remaining Tasks (in order)
 
 ```
-25  Frontend: ChunkCard + RelevanceExplanation + ResultsSkeleton + SearchResults (progressive SSE)
 26  Frontend: DocumentReader + ReaderToolbar + ReaderChunk  (/reader/[docId])
 27  Frontend: BookmarksPage + BookmarkCard  (/bookmarks)
 28  Frontend: RateLimitModal + Toast + ErrorBoundary (common components)
@@ -138,4 +138,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-30 | Completed through Task 24 | Next: Task 25 (ChunkCard + SearchResults + progressive SSE rendering)*
+*Last updated: 2026-05-30 | Completed through Task 25 | Next: Task 26 (DocumentReader + ReaderToolbar + ReaderChunk)*
