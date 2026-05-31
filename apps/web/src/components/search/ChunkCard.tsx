@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Toast, useToast } from "@/components/common";
 import { useRouter } from "next/navigation";
 import {
   addBookmark,
@@ -36,6 +37,8 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
   const borderColor = collectionMeta?.color ?? "var(--color-brand-accent)";
   const displayReference = reference ?? document_title;
 
+  const { toast, showToast, dismissToast } = useToast();
+
   // ── Bookmark state ────────────────────────────────────────────────────────
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<string | null>(null);
@@ -53,16 +56,19 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         setBookmarkId(result.id);
         setIsBookmarked(true);
         trackBookmarkCreated({ collection, rankPositionWhenSaved: index });
+        showToast("Saved to your passages");
       }
     } catch {
-      // silent failure — non-critical
+      showToast("Couldn't save. Try again.", "error");
     }
   }
 
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
     const text = `${content} — ${displayReference} (${collection})`;
-    navigator.clipboard.writeText(text).catch(() => {});
+    navigator.clipboard.writeText(text)
+      .then(() => showToast("Copied"))
+      .catch(() => showToast("Copy failed", "error"));
   }
 
   // ── Read More action ──────────────────────────────────────────────────────
@@ -214,6 +220,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           🔍 Explore more
         </button>
       </div>
+      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
 import { SearchResults } from "@/components/search/SearchResults";
+import { RateLimitModal } from "@/components/common";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import {
   streamSearch,
@@ -15,7 +16,6 @@ import {
 } from "@/lib/api";
 import {
   trackSearchPerformed,
-  trackRateLimitHit,
   trackErrorOccurred,
   trackQuotaChanged,
 } from "@/lib/analytics";
@@ -51,6 +51,7 @@ function SearchPageInner() {
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rateLimitRetryAfter, setRateLimitRetryAfter] = useState<number | null>(null);
+  const [rateLimitType, setRateLimitType] = useState<"per_minute" | "daily">("per_minute");
 
   // ── Preferences init (once) ───────────────────────────────────────────────
 
@@ -175,10 +176,10 @@ function SearchPageInner() {
               setLoading(false);
               trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
             },
-            onRateLimit(retryAfter) {
+            onRateLimit(retryAfter, limitType) {
               setRateLimitRetryAfter(retryAfter ?? 60);
+              setRateLimitType(limitType);
               setLoading(false);
-              trackRateLimitHit({ limitType: "per_minute" });
             },
           },
           controller.signal
@@ -286,14 +287,6 @@ function SearchPageInner() {
           </p>
         )}
 
-        {/* Rate limit */}
-        {rateLimitRetryAfter !== null && !loading && (
-          <div className="text-center py-8">
-            <p className="text-brand-muted text-sm">
-              Search limit reached. Try again in {rateLimitRetryAfter} seconds.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Fixed bottom bar */}
@@ -311,6 +304,12 @@ function SearchPageInner() {
           }}
         onSearch={() => handleSearch(searchValue)}
         loading={loading}
+      />
+      <RateLimitModal
+        isOpen={rateLimitRetryAfter !== null}
+        limitType={rateLimitType}
+        retryAfter={rateLimitRetryAfter}
+        onDismiss={() => setRateLimitRetryAfter(null)}
       />
     </div>
   );

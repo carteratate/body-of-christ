@@ -1,7 +1,5 @@
-import { ChatShell } from "@/components/chat/ChatShell";
+import { redirect } from "next/navigation";
 
-export const metadata = { title: "Body of Christ" };
-
-export default function ChatPage() {
-  return <ChatShell />;
+export default function ChatRoute() {
+  redirect("/search");
 }

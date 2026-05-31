@@ -9,9 +9,10 @@ interface BookmarkCardProps {
   bookmark: Bookmark;
   token: string | null;
   onRemoved: (bookmarkId: string) => void;
+  showToast: (message: string, type?: "success" | "error") => void;
 }
 
-export function BookmarkCard({ bookmark, token, onRemoved }: BookmarkCardProps) {
+export function BookmarkCard({ bookmark, token, onRemoved, showToast }: BookmarkCardProps) {
   const router = useRouter();
 
   // ── Null chunk fallback ───────────────────────────────────────────────────
@@ -41,10 +42,16 @@ export function BookmarkCard({ bookmark, token, onRemoved }: BookmarkCardProps) 
   const borderColor = collectionMeta?.color ?? "var(--color-brand-accent)";
   const displayReference = reference ?? document_title;
 
-  // ── Remove bookmark (fire-and-forget) ────────────────────────────────────
-  function handleRemove() {
+  // ── Remove bookmark ───────────────────────────────────────────────────────
+  async function handleRemove() {
     onRemoved(bookmark.id);
-    if (token) removeBookmark(token, bookmark.id).catch(() => {});
+    if (token) {
+      try {
+        await removeBookmark(token, bookmark.id);
+      } catch {
+        showToast("Couldn't remove. Try again.", "error");
+      }
+    }
     trackBookmarkDeleted({ collection });
   }
 
@@ -52,7 +59,9 @@ export function BookmarkCard({ bookmark, token, onRemoved }: BookmarkCardProps) 
   function handleCopy() {
     const text = `${content} — ${displayReference} (${collection})`;
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).catch(() => {});
+      navigator.clipboard.writeText(text)
+        .then(() => showToast("Copied"))
+        .catch(() => showToast("Copy failed", "error"));
     }
   }
 

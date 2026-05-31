@@ -6,12 +6,14 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { ResultsSkeleton } from "@/components/search/ResultsSkeleton";
 import { BookmarkCard } from "./BookmarkCard";
 import { getBookmarks, type Bookmark } from "@/lib/api";
+import { Toast, useToast } from "@/components/common";
 
 export function BookmarksPage() {
   const { token } = useAppContext();
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast, showToast, dismissToast } = useToast();
 
   const fetchBookmarks = useCallback(() => {
     if (!token) return;
@@ -79,11 +81,13 @@ export function BookmarksPage() {
                 bookmark={bookmark}
                 token={token}
                 onRemoved={(id) => setBookmarks((prev) => prev.filter((b) => b.id !== id))}
+                showToast={showToast}
               />
             ))}
           </div>
         )}
       </div>
+      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </div>
   );
 }

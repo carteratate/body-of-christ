@@ -214,7 +214,7 @@ export interface SearchStreamCallbacks {
   onExplanation: (chunkId: string, explanation: string) => void;
   onDone: (searchId: string, resultCount: number) => void;
   onError: (message: string) => void;
-  onRateLimit: (retryAfter: number | null) => void;
+  onRateLimit: (retryAfter: number | null, limitType: "per_minute" | "daily") => void;
 }
 
 export async function streamSearch(
@@ -244,7 +244,9 @@ export async function streamSearch(
   if (!res.ok) {
     if (res.status === 429) {
       const retryAfter = res.headers.get("Retry-After");
-      callbacks.onRateLimit(retryAfter ? parseInt(retryAfter, 10) : null);
+      const body = await res.json().catch(() => ({})) as { detail?: string };
+      const limitType = (body.detail ?? "").toLowerCase().includes("daily") ? "daily" : "per_minute";
+      callbacks.onRateLimit(retryAfter ? parseInt(retryAfter, 10) : null, limitType);
       return;
     }
     const error = await res.json().catch(() => ({}));
