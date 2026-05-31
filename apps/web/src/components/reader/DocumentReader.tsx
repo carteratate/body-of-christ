@@ -29,6 +29,15 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
 
   const originChunkRef = useRef<HTMLDivElement | null>(null);
 
+  // ── Guard: missing chunk_id in URL ─────────────────────────────────────────
+
+  useEffect(() => {
+    if (!initialChunkId) {
+      setLoading(false);
+      setError("No chunk specified.");
+    }
+  }, []); // runs once on mount
+
   // ── Initial load ───────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -44,7 +53,7 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
       })
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : "Failed to load document";
-        if (msg.includes("404")) {
+        if (msg.includes("API error 404")) {
           setNotFound(true);
         } else {
           setError(msg);
@@ -85,8 +94,7 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
   // ── Explore more ───────────────────────────────────────────────────────────
 
   function handleExploreMore(content: string) {
-    const trimmed = content.slice(0, 200).replace(/\s+\S*$/, "");
-    router.push(`/search?explore=${encodeURIComponent(trimmed)}`);
+    router.push(`/search?explore=${encodeURIComponent(content)}`);
   }
 
   // ── Loading skeleton ───────────────────────────────────────────────────────
