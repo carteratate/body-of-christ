@@ -7,6 +7,7 @@ singleton plus upsert helpers for documents and chunks.
 from __future__ import annotations
 
 import asyncpg
+import json
 
 from config import settings
 
@@ -37,34 +38,37 @@ async def upsert_document(
     pool: asyncpg.Pool,
     collection: str,
     title: str,
+    translation: str | None = None,
     author: str | None = None,
     year: int | None = None,
     metadata: dict | None = None,
 ) -> str:
     """
-    Insert a document row or return the ID of the existing one.
+    Upsert a document row; returns the document UUID.
 
-    Upserts on the (collection, title) unique constraint.
+    Upserts on the (collection, title, translation) unique constraint.
     Returns the document UUID as a string.
     """
-    row = await pool.fetchrow(
-        """
-        INSERT INTO documents (collection, title, author, year, metadata)
-        VALUES ($1, $2, $3, $4, $5)
-        ON CONFLICT (collection, title)
-        DO UPDATE SET
-            author   = EXCLUDED.author,
-            year     = EXCLUDED.year,
-            metadata = EXCLUDED.metadata
-        RETURNING id
-        """,
-        collection,
-        title,
-        author,
-        year,
-        metadata or {},
-    )
-    return str(row["id"])
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            """
+            INSERT INTO documents (collection, title, translation, author, year, metadata)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            ON CONFLICT (collection, title, translation)
+            DO UPDATE SET
+                author      = EXCLUDED.author,
+                year        = EXCLUDED.year,
+                metadata    = EXCLUDED.metadata
+            RETURNING id
+            """,
+            collection,
+            title,
+            translation or "",
+            author,
+            year,
+            json.dumps(metadata) if metadata else None,
+        )
+        return str(row["id"])
 
 
 async def upsert_chunk(
