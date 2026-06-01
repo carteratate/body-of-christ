@@ -547,6 +547,7 @@ async def _ingest_books(pool, books: list[BookVerses], translation: str) -> None
                 pool,
                 collection="bible",
                 title=book.name,
+                translation=translation,
                 author=None,
                 year=None,
                 metadata={
