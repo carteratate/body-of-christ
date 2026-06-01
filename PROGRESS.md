@@ -38,6 +38,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 28 | Frontend: RateLimitModal + Toast + ErrorBoundary (common components) | `3dcb3be` `5dc6a1b` `cc351c4` | `RateLimitModal.tsx` (portal via ReactDOM.createPortal, countdown timer, backdrop dismiss, trackRateLimitHit on open, ARIA role="dialog"); `Toast.tsx` + `useToast` hook (fixed bottom-right, 3s auto-dismiss, stable useCallback in hook, role="status"); `ErrorBoundary.tsx` (class component, getDerivedStateFromError, componentDidCatch fires trackErrorOccurred with hardcoded "render_error" — raw error.message never sent to PostHog); `components/common/index.ts` barrel export. Spec, quality (interval leak fix, stale closure fix, ARIA), and security (no PII in telemetry) reviewed. |
 | 29 | Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers | `8534305` `74fdf40` | `app/chat/page.tsx` (redirect → /search); `app/page.tsx` (authenticated root → /search); `api.ts` onRateLimit now passes limitType ("per_minute"\|"daily") by reading 429 body; `SearchPage.tsx` (RateLimitModal replaces inline placeholder, rateLimitType state, reset on new search); `ChunkCard.tsx` (Toast via portal on bookmark/copy success+failure); `BookmarksPage.tsx` (Toast, passes showToast to BookmarkCard); `BookmarkCard.tsx` (handleRemove post-success, Toast on remove failure and copy); ErrorBoundary wraps SearchPage/BookmarksPage/DocumentReader in page routes; loading.tsx files for /search, /bookmarks, /reader/[docId]; CSP headers in next.config.ts (no unsafe-eval, unsafe-inline for script-src required by Next.js hydration). Spec (37/37), quality (Toast portal, remove rollback, CSP), and fix re-review all passed. |
 | 30 | CLAUDE.md update with V2 invariants | (see commit) | Added sections 10–17: V2 routes, component locations, AppContext, Collections canonical source (constants.py + collections.ts), SSE streaming callbacks, V2 data model actual state, CSP headers, known issues & deferred work. 7 code quality issues found and fixed (PostHog domains, redirect type, setPreferences in context, auto-save attribution, BottomBar description, PostHogProvider location, streamSearch signal param). |
+| 31 | Fix documents schema: translation column + migration 0008 | `c2dcd8a` `628ab05` `c79279b` `317c24a` | Migration 0008: `ADD COLUMN translation text NOT NULL DEFAULT ''`, `ADD CONSTRAINT UNIQUE(collection,title,translation)`. `load.py` `upsert_document()` updated (new translation param, `translation or ""` coercion, new conflict target). `bible.py` call site updated to pass `translation=translation`. datapipeline/README.md DO NOT RUN gate added. |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -50,18 +51,17 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 31 — Fix documents schema: add `translation` column + migration 0008**
+**Task 32 — Datapipeline: bible.py (run against real data)**
 
-Add a `translation text` column to the `documents` table and change the unique constraint from `UNIQUE(collection, title)` to `UNIQUE(collection, title, translation)`. Create migration `0008`. Also update `datapipeline/load.py` → `upsert_document()`. See Known Issue #1 for full context. This is the Phase 3 blocker — no datapipeline scripts can run until this is applied.
+Schema is now correct. `bible.py` draft exists at commit `1c921d7`, updated for the new translation column. **Blocked until Bible source files are available:** CPDV USFM from eBible.org + Douay-Rheims HTML from Project Gutenberg #8300. See `datapipeline/README.md` for data requirements and run order.
 
 ---
 
 ## Remaining Tasks (in order)
 
 ```
---- PHASE 3 (after frontend is working) ---
-31  Fix documents schema: add `translation` column + migration 0008
-32  Datapipeline: bible.py (fix conflict key, then run)
+--- PHASE 3 (data-blocked — see datapipeline/README.md) ---
+32  Datapipeline: bible.py — run against real data (BLOCKED: need source files)
 33  Datapipeline: catechism.py, encyclicals.py, church_fathers.py, saints.py
 34  Datapipeline: embed.py + run_all.py
 ```
@@ -70,15 +70,14 @@ Add a `translation text` column to the `documents` table and change the unique c
 
 ## Known Issues / Gotchas
 
-### 1. documents table UNIQUE constraint needs translation column (Phase 3 blocker)
-- `documents` uses `UNIQUE(collection, title)` — conflicts when two Bible translations share a book name.
-- Fix: add migration `0008` with `translation text` column and `UNIQUE(collection, title, translation)`.
-- Note: `0007` was used for the canon-law collection addition; translation column fix is now `0008`.
-- Also update `datapipeline/load.py`'s `upsert_document()`.
-- **Do not run any datapipeline scripts until this is fixed.**
+### ~~1. documents table UNIQUE constraint needs translation column~~ ✅ RESOLVED (Task 31)
+- Migration 0008 applied: `translation text NOT NULL DEFAULT ''` column + `UNIQUE(collection, title, translation)`.
+- `load.py` `upsert_document()` updated with `translation` parameter and `translation or ""` coercion.
+- `bible.py` call site updated.
 
-### 2. bible.py draft exists but deferred
-- Commit `1c921d7` has a working, real-data-verified script. Don't run it until issue #1 is fixed.
+### 2. bible.py draft exists but data-blocked
+- Commit `1c921d7` has a working, real-data-verified script, updated in Task 31.
+- **Blocked on source files:** CPDV USFM (eBible.org) + Douay-Rheims HTML (Gutenberg #8300). See `datapipeline/README.md`.
 
 ### 3. Shared rate limit counter for V1 chat and V2 search
 - Both currently share `user_usage.rate_count`/`quota_count` columns.
@@ -138,4 +137,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-31 | Completed through Task 30 | Next: Task 31 (Fix documents schema: translation column + migration 0008)*
+*Last updated: 2026-05-31 | Completed through Task 31 | Next: Task 32 (bible.py — data-blocked)*
