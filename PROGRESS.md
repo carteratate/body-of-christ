@@ -37,6 +37,7 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 27 | BookmarksPage + BookmarkCard (/bookmarks) | `da55cc8` | `BookmarkCard.tsx` (collection-colored left border, badge, reference, 3 actions: remove bookmark fire-and-forget, copy, explore-more; null chunk fallback; token typed string\|null with API guards; navigator.clipboard guard); `BookmarksPage.tsx` (useCallback fetch, 3-ghost-card skeleton, empty state + "Start Searching" link, error state + Retry, optimistic removal via local filter); `app/bookmarks/page.tsx` (AppShell wrapper); `components/bookmarks/index.ts` barrel export. No Read More — BookmarkChunkInfo.source has no document_id. Spec, quality (useCallback, clipboard guard, token null safety), and security reviewed. |
 | 28 | Frontend: RateLimitModal + Toast + ErrorBoundary (common components) | `3dcb3be` `5dc6a1b` `cc351c4` | `RateLimitModal.tsx` (portal via ReactDOM.createPortal, countdown timer, backdrop dismiss, trackRateLimitHit on open, ARIA role="dialog"); `Toast.tsx` + `useToast` hook (fixed bottom-right, 3s auto-dismiss, stable useCallback in hook, role="status"); `ErrorBoundary.tsx` (class component, getDerivedStateFromError, componentDidCatch fires trackErrorOccurred with hardcoded "render_error" — raw error.message never sent to PostHog); `components/common/index.ts` barrel export. Spec, quality (interval leak fix, stale closure fix, ARIA), and security (no PII in telemetry) reviewed. |
 | 29 | Frontend: /chat redirect + all page routes + loading/error states + next.config.ts CSP headers | `8534305` `74fdf40` | `app/chat/page.tsx` (redirect → /search); `app/page.tsx` (authenticated root → /search); `api.ts` onRateLimit now passes limitType ("per_minute"\|"daily") by reading 429 body; `SearchPage.tsx` (RateLimitModal replaces inline placeholder, rateLimitType state, reset on new search); `ChunkCard.tsx` (Toast via portal on bookmark/copy success+failure); `BookmarksPage.tsx` (Toast, passes showToast to BookmarkCard); `BookmarkCard.tsx` (handleRemove post-success, Toast on remove failure and copy); ErrorBoundary wraps SearchPage/BookmarksPage/DocumentReader in page routes; loading.tsx files for /search, /bookmarks, /reader/[docId]; CSP headers in next.config.ts (no unsafe-eval, unsafe-inline for script-src required by Next.js hydration). Spec (37/37), quality (Toast portal, remove rollback, CSP), and fix re-review all passed. |
+| 30 | CLAUDE.md update with V2 invariants | (see commit) | Added sections 10–17: V2 routes, component locations, AppContext, Collections canonical source (constants.py + collections.ts), SSE streaming callbacks, V2 data model actual state, CSP headers, known issues & deferred work. 7 code quality issues found and fixed (PostHog domains, redirect type, setPreferences in context, auto-save attribution, BottomBar description, PostHogProvider location, streamSearch signal param). |
 
 ## Deferred (Phase 3 — after frontend is working)
 
@@ -49,16 +50,15 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 
 ## Next Task to Implement
 
-**Task 30 — CLAUDE.md update with V2 invariants**
+**Task 31 — Fix documents schema: add `translation` column + migration 0008**
 
-Update CLAUDE.md to document all V2 architectural decisions, new routes, component locations, API contracts, and design system tokens so future sessions have accurate context.
+Add a `translation text` column to the `documents` table and change the unique constraint from `UNIQUE(collection, title)` to `UNIQUE(collection, title, translation)`. Create migration `0008`. Also update `datapipeline/load.py` → `upsert_document()`. See Known Issue #1 for full context. This is the Phase 3 blocker — no datapipeline scripts can run until this is applied.
 
 ---
 
 ## Remaining Tasks (in order)
 
 ```
-30  CLAUDE.md update with V2 invariants
 --- PHASE 3 (after frontend is working) ---
 31  Fix documents schema: add `translation` column + migration 0008
 32  Datapipeline: bible.py (fix conflict key, then run)
@@ -138,4 +138,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-31 | Completed through Task 29 | Next: Task 30 (CLAUDE.md update with V2 invariants)*
+*Last updated: 2026-05-31 | Completed through Task 30 | Next: Task 31 (Fix documents schema: translation column + migration 0008)*
