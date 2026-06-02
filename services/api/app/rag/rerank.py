@@ -115,7 +115,15 @@ async def rerank_collection(
         if not _is_valid_uuid(chunk_id):
             logger.warning("rerank_collection: invalid UUID '%s' in Haiku response", chunk_id)
             continue
-        score = float(item.get("score", 0.0))
+        try:
+            score = float(item.get("score", 0.0))
+        except (TypeError, ValueError):
+            logger.warning(
+                "rerank_collection: non-numeric score %r for chunk_id '%s'; defaulting to 0.0",
+                item.get("score"),
+                chunk_id,
+            )
+            score = 0.0
         candidate = candidate_map.get(chunk_id)
         if candidate is None:
             logger.warning("rerank_collection: unknown chunk_id '%s' in Haiku response", chunk_id)
