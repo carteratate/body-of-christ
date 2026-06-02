@@ -11,7 +11,6 @@ import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import {
   streamSearch,
   getSearchResults,
-  updatePreferences,
   type ChunkResult,
 } from "@/lib/api";
 import {
@@ -68,22 +67,6 @@ function SearchPageInner() {
     setTranslation(preferences.preferred_translation || "CPDV");
     setQuota(preferences.default_quota ?? 4);
   }, [preferences]);
-
-  // ── Quota persistence (debounced, skip mount) ─────────────────────────────
-
-  const quotaMounted = useRef(false);
-
-  useEffect(() => {
-    if (!quotaMounted.current) {
-      quotaMounted.current = true;
-      return;
-    }
-    if (!tokenRef.current) return;
-    const timer = setTimeout(() => {
-      updatePreferences(tokenRef.current!, { default_quota: quota }).catch(() => {});
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [quota]);
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
