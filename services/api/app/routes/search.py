@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import uuid
@@ -29,10 +30,29 @@ _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 # ── Rate limit dependency ─────────────────────────────────────────────────────
 
+async def _validate_collections(body: SearchRequest) -> list[str]:
+    """Validate collection names and return the allowed subset.
+
+    Declared as a dependency so that requests with only invalid collections
+    are rejected before the rate-limit counter is incremented.
+    """
+    valid = [c for c in body.filters.collections if c in _VALID_COLLECTIONS]
+    if not valid:
+        raise HTTPException(
+            status_code=400,
+            detail=f"No valid collections specified. Valid values: {sorted(_VALID_COLLECTIONS)}",
+        )
+    return valid
+
+
 async def check_search_rate_limit(
     user: AuthUser = Depends(get_current_user),
+    _valid: list[str] = Depends(_validate_collections),
 ) -> None:
     """Rate limit for V2 search endpoints (stricter than V1 chat).
+
+    Depends on _validate_collections so that invalid-collection requests
+    are rejected with 400 before the counter is incremented.
 
     TODO: Currently shares the same user_usage counters (rate_count / quota_count)
     as V1 chat. Add search_rate_count / search_quota_count columns in a future
@@ -73,9 +93,15 @@ async def check_search_rate_limit(
             headers={"Retry-After": "60"},
         )
     if row["quota_count"] > settings.daily_search_quota:
+        now = datetime.datetime.now(datetime.timezone.utc)
+        midnight = (now + datetime.timedelta(days=1)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        retry_after = str(max(1, int((midnight - now).total_seconds())))
         raise HTTPException(
             status_code=429,
             detail="Daily search limit reached. Try again tomorrow.",
+            headers={"Retry-After": retry_after},
         )
 
 
@@ -85,17 +111,10 @@ async def check_search_rate_limit(
 async def search(
     body: SearchRequest,
     user: AuthUser = Depends(get_current_user),
+    valid_collections: list[str] = Depends(_validate_collections),
     _: None = Depends(check_search_rate_limit),
 ) -> StreamingResponse:
     """Stream RAG search results as Server-Sent Events."""
-    # Filter out invalid collection values; reject if none remain
-    valid_collections = [c for c in body.filters.collections if c in _VALID_COLLECTIONS]
-    if not valid_collections:
-        raise HTTPException(
-            status_code=400,
-            detail=f"No valid collections specified. Valid values: {sorted(_VALID_COLLECTIONS)}",
-        )
-
     # Validate translation; default to "CPDV" if invalid (non-fatal)
     translation = body.filters.translation if body.filters.translation in _VALID_TRANSLATIONS else "CPDV"
 
