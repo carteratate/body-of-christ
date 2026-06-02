@@ -54,5 +54,13 @@ class Settings(BaseSettings):
     def strip_trailing_slash(cls, v: str) -> str:
         return v.rstrip("/")
 
+    @field_validator("app_env", mode="before")
+    @classmethod
+    def validate_app_env(cls, v: str) -> str:
+        allowed = {"development", "staging", "production"}
+        if v not in allowed:
+            raise ValueError(f"APP_ENV must be one of {sorted(allowed)}, got {v!r}")
+        return v
+
 
 settings = Settings()
