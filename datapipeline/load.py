@@ -53,7 +53,7 @@ async def upsert_document(
         row = await conn.fetchrow(
             """
             INSERT INTO documents (collection, title, translation, author, year, metadata)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            VALUES ($1, $2, $3, $4, $5, $6::jsonb)
             ON CONFLICT (collection, title, translation)
             DO UPDATE SET
                 author      = EXCLUDED.author,
