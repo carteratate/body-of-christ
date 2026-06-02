@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import uuid
 from collections.abc import AsyncGenerator
@@ -146,11 +147,11 @@ async def run_search_pipeline(
         async with pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute(
-                    "INSERT INTO searches (id, user_id, query, filters, result_count) VALUES ($1,$2,$3,$4,$5)",
+                    "INSERT INTO searches (id, user_id, query, filters, result_count) VALUES ($1,$2,$3,$4::jsonb,$5)",
                     uuid.UUID(search_id),
                     uuid.UUID(user_id),
                     query,
-                    {"collections": collections, "translation": translation, "quota": quota},
+                    json.dumps({"collections": collections, "translation": translation, "quota": quota}),
                     len(final_results),
                 )
                 for rank, chunk in enumerate(final_results):
