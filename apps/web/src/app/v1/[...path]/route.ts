@@ -41,6 +41,10 @@ async function proxy(req: NextRequest): Promise<Response> {
     "x-accel-buffering": "no",
   });
 
+  // Forward Retry-After so the rate-limit modal can display an accurate countdown.
+  const retryAfter = upstream.headers.get("retry-after");
+  if (retryAfter) responseHeaders.set("retry-after", retryAfter);
+
   return new Response(upstream.body, {
     status: upstream.status,
     headers: responseHeaders,
@@ -49,3 +53,5 @@ async function proxy(req: NextRequest): Promise<Response> {
 
 export const GET = proxy;
 export const POST = proxy;
+export const PUT = proxy;
+export const DELETE = proxy;
