@@ -35,12 +35,12 @@ export function Sidebar({ token }: SidebarProps) {
 
       {/* New search button */}
       <div className="px-3 pt-3">
-        <button
-          onClick={() => { window.location.href = "/search"; }}
+        <a
+          href="/search"
           className="block w-full text-center bg-brand-accent text-brand-bg rounded-md py-1.5 text-sm font-semibold hover:opacity-90 transition-opacity"
         >
           + New Search
-        </button>
+        </a>
       </div>
 
       {/* Recent searches */}
