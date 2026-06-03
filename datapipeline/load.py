@@ -22,6 +22,8 @@ async def get_pool() -> asyncpg.Pool:
             dsn=settings.DATABASE_URL,
             min_size=1,
             max_size=5,
+            max_inactive_connection_lifetime=60,  # recycle before pooler drops them
+            statement_cache_size=0,               # required for pgbouncer/supabase pooler
         )
     return _pool
 
