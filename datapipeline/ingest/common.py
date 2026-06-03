@@ -36,15 +36,14 @@ def _extract_p_text(elem) -> str:
 
 def _parse_author(creator: str) -> tuple[str, int | None]:
     """
-    Parse 'Augustine, Saint, Bishop of Hippo (345-430)' into
-    ('Augustine, Saint, Bishop of Hippo', 430).
-    Also handles 'Thomas Aquinas, Saint (1225?-1274)'.
+    Parse 'Augustine, Saint, Bishop of Hippo (345-430)' or
+    'Athanasius, St. (c.296-c.373)' into (cleaned_name, death_year).
     """
-    m = re.search(r"\((\d{3,4}\??)-(\d{3,4})\)\s*$", creator)
+    m = re.search(r"\(c?\.?\d{3,4}\??-c?\.?(\d{3,4})\)\s*$", creator)
     year: int | None = None
     if m:
         try:
-            year = int(m.group(2))
+            year = int(m.group(1))
         except ValueError:
             pass
         creator = creator[: m.start()].strip().rstrip(",").strip()
@@ -61,14 +60,15 @@ def _is_summa(root) -> bool:
 
 
 def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int]]:
-    """Chunk at div2 (chapter) level."""
+    """Chunk at div2 (chapter) level; falls back to div1 if no div2 content found."""
     chunks: list[tuple[str, str, int]] = []
     position = 0
-    # Use iter to find div1 elements anywhere in the tree
     for elem in root.iter():
         if elem.tag != "div1":
             continue
         div1_title = (elem.get("title") or "").strip()
+        # Try div2 children first
+        div2_chunks: list[tuple[str, str, int]] = []
         for child in elem:
             if not child.tag.startswith("div2"):
                 continue
@@ -77,8 +77,16 @@ def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int]]:
             if len(content) < min_length:
                 continue
             reference = f"{div1_title}, {div2_title}" if div1_title else div2_title
-            chunks.append((content, reference, position))
+            div2_chunks.append((content, reference, position))
             position += 1
+        if div2_chunks:
+            chunks.extend(div2_chunks)
+        else:
+            # Fallback: treat div1 itself as a chunk
+            content = _extract_p_text(elem)
+            if len(content) >= min_length:
+                chunks.append((content, div1_title or "Section", position))
+                position += 1
     return chunks
 
 

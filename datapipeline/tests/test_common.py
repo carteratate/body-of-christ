@@ -131,3 +131,34 @@ def test_parse_thml_skips_short_chapters():
     doc = parse_thml_string(short_thml)
     refs = [c[1] for c in doc.chunks]
     assert "Book I, Chapter II" not in refs
+
+def test_parse_author_handles_approximate_dates():
+    from ingest.common import _parse_author
+    author, year = _parse_author("Athanasius, St. Archbishop of Alexandria (c.296-c.373)")
+    assert year == 373
+    assert "c.296" not in author
+    assert "(c.296-c.373)" not in author
+
+def test_chunk_standard_falls_back_to_div1_when_no_div2():
+    thml = """<?xml version="1.0"?>
+<ThML>
+  <ThML.head>
+    <electronicEdInfo><authorID>athanasius</authorID><bookID>incarnation</bookID></electronicEdInfo>
+    <DC><DC.Title>On the Incarnation</DC.Title></DC>
+  </ThML.head>
+  <ThML.body>
+    <div1 title="Chapter I" n="i" id="ch1">
+      <p id="p1">The Word of God, incorporeal and incorruptible and immaterial, came into our world. He was not previously distant from it, for no part of creation had ever been without Him.</p>
+      <p id="p2">He enters the world in a new way, stooping to our level in his love and self-revealing to us. He saw the reasonable race perishing and death reigning over them.</p>
+    </div1>
+    <div1 title="Chapter II" n="ii" id="ch2">
+      <p id="p3">Let us then consider this matter from the beginning, taking up the discussion with reference to the origin of the universe and its maker, God.</p>
+    </div1>
+  </ThML.body>
+</ThML>"""
+    from ingest.common import parse_thml_string
+    doc = parse_thml_string(thml)
+    assert len(doc.chunks) == 2
+    assert doc.chunks[0][1] == "Chapter I"
+    assert doc.chunks[1][1] == "Chapter II"
+    assert "Word of God" in doc.chunks[0][0]
