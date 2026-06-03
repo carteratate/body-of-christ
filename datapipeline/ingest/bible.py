@@ -442,7 +442,21 @@ async def _ingest_books(pool, books: list[BookVerses], translation: str) -> None
 # CLI entry point
 # ---------------------------------------------------------------------------
 
-async def main() -> None:
+async def main(pool=None) -> None:
+    """Ingest both Bible translations. Accepts an external pool (from run_all.py)
+    or creates its own when run standalone."""
+    _own_pool = pool is None
+    if _own_pool:
+        pool = await get_pool()
+    try:
+        await ingest_cpdv(pool)
+        await ingest_douay_rheims(pool)
+    finally:
+        if _own_pool:
+            await close_pool()
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Ingest Catholic Bible translations into the Body of Christ RAG database."
     )
@@ -454,15 +468,14 @@ async def main() -> None:
     )
     args = parser.parse_args()
 
-    pool = await get_pool()
-    try:
-        if args.translation in (None, "CPDV"):
-            await ingest_cpdv(pool)
-        if args.translation in (None, "douay-rheims"):
-            await ingest_douay_rheims(pool)
-    finally:
-        await close_pool()
+    async def _run():
+        pool = await get_pool()
+        try:
+            if args.translation in (None, "CPDV"):
+                await ingest_cpdv(pool)
+            if args.translation in (None, "douay-rheims"):
+                await ingest_douay_rheims(pool)
+        finally:
+            await close_pool()
 
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(_run())
