@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { getSearchHistory, type SearchSummaryV2 } from "@/lib/api";
+import { useAppContext } from "./AppShell";
 
 interface SidebarProps {
   token: string | null;
@@ -13,6 +14,7 @@ interface SidebarProps {
 export function Sidebar({ token }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { newSearch } = useAppContext();
   const [searches, setSearches] = useState<SearchSummaryV2[]>([]);
 
   useEffect(() => {
@@ -35,12 +37,12 @@ export function Sidebar({ token }: SidebarProps) {
 
       {/* New search button */}
       <div className="px-3 pt-3">
-        <a
-          href="/search"
+        <button
+          onClick={newSearch}
           className="block w-full text-center bg-brand-accent text-brand-bg rounded-md py-1.5 text-sm font-semibold hover:opacity-90 transition-opacity"
         >
           + New Search
-        </a>
+        </button>
       </div>
 
       {/* Recent searches */}

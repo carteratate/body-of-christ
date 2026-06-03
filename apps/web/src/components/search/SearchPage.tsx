@@ -300,9 +300,10 @@ function SearchPageInner() {
 }
 
 export function SearchPage() {
+  const { searchKey } = useAppContext();
   return (
     <Suspense>
-      <SearchPageInner />
+      <SearchPageInner key={searchKey} />
     </Suspense>
   );
 }

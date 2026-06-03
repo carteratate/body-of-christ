@@ -11,12 +11,16 @@ export interface AppContextValue {
   token: string | null;
   preferences: Preferences | null;
   setPreferences: (p: Preferences) => void;
+  searchKey: number;
+  newSearch: () => void;
 }
 
 const AppContext = createContext<AppContextValue>({
   token: null,
   preferences: null,
   setPreferences: () => {},
+  searchKey: 0,
+  newSearch: () => {},
 });
 
 export function useAppContext() {
@@ -31,6 +35,12 @@ export function AppShell({ children }: AppShellProps) {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<Preferences | null>(null);
+  const [searchKey, setSearchKey] = useState(0);
+
+  function newSearch() {
+    router.push("/search");
+    setSearchKey((k) => k + 1);
+  }
 
   useEffect(() => {
     const supabase = createClient();
@@ -55,7 +65,7 @@ export function AppShell({ children }: AppShellProps) {
   }, [router]);
 
   return (
-    <AppContext.Provider value={{ token, preferences, setPreferences }}>
+    <AppContext.Provider value={{ token, preferences, setPreferences, searchKey, newSearch }}>
       <div className="flex h-full bg-brand-bg text-brand-primary">
         <Sidebar token={token} />
         <main className="flex flex-1 flex-col min-w-0">
