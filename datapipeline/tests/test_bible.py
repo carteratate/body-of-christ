@@ -94,3 +94,19 @@ def test_parse_cpdv_sorts_verses_within_chapter():
     assert verses[1].text == "second verse"
     assert verses[2].verse == 3
     assert verses[2].text == "third verse"
+
+def test_parse_cpdv_skips_non_integer_chapter_keys():
+    """Books like Sirach and Lamentations have a 'P' (prologue) chapter key — skip it."""
+    data = {
+        "Sirach": {
+            "P": {"1": "prologue verse"},
+            "1": {"1": "chapter one verse one", "2": "chapter one verse two"},
+        }
+    }
+    books = parse_cpdv_json(data)
+    assert len(books) == 1
+    # Only chapter 1 verses should be present; prologue skipped
+    assert all(v.chapter != 0 for v in books[0].verses)
+    assert len(books[0].verses) == 2
+    assert books[0].verses[0].chapter == 1
+    assert books[0].verses[0].verse == 1

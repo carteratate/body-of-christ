@@ -63,6 +63,17 @@ _BOOK_TESTAMENT: dict[str, str] = {
     "Hebrews": "NT", "James": "NT", "1 Peter": "NT", "2 Peter": "NT",
     "1 John": "NT", "2 John": "NT", "3 John": "NT", "Jude": "NT",
     "Revelation": "NT",
+    # CPDV JSON uses hyphens instead of spaces for numbered books; add aliases
+    # so the parser resolves all 73 books.
+    "1-Samuel": "OT", "2-Samuel": "OT", "1-Kings": "OT", "2-Kings": "OT",
+    "1-Chronicles": "OT", "2-Chronicles": "OT",
+    "1-Maccabees": "OT", "2-Maccabees": "OT",
+    "Song2": "OT",   # CPDV JSON key for Song of Solomon
+    "1-Corinthians": "NT", "2-Corinthians": "NT",
+    "1-Thessalonians": "NT", "2-Thessalonians": "NT",
+    "1-Timothy": "NT", "2-Timothy": "NT",
+    "1-Peter": "NT", "2-Peter": "NT",
+    "1-John": "NT", "2-John": "NT", "3-John": "NT",
 }
 
 # ---------------------------------------------------------------------------
@@ -184,7 +195,7 @@ def parse_cpdv_json(data: dict) -> list[BookVerses]:
         if testament is None:
             continue
         verses: list[Verse] = []
-        for ch_str in sorted(chapters.keys(), key=int):
+        for ch_str in sorted((k for k in chapters.keys() if k.isdigit()), key=int):
             verse_dict = chapters[ch_str]
             ch = int(ch_str)
             for v_str in sorted(verse_dict.keys(), key=int):
