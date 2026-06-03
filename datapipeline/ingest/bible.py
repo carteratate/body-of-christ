@@ -1,4 +1,4 @@
-"""Catholic Bible ingestion: CPDV (eBible USFM) and Douay-Rheims (Project Gutenberg).
+"""Catholic Bible ingestion: CPDV (local JSON) and Douay-Rheims (Project Gutenberg).
 
 Usage:
     python ingest/bible.py                       # both translations
@@ -10,15 +10,18 @@ Project Gutenberg #8300 format notes:
   - Verse lines:     "chapter:verse. Text" (e.g. "1:1. In the beginning...")
   - Verse text may wrap across continuation lines until a blank line.
   - Annotation/footnote lines (prose not starting with "N:N.") are skipped.
+
+CPDV source:
+  - Local file: datapipeline/sources/bible/cpdv.json
+  - Format: {"charset": "UTF-8", "Genesis": {"1": {"1": "text", ...}, ...}, ...}
 """
 from __future__ import annotations
 
 import argparse
 import asyncio
-import io
+import json
 import re
 import sys
-import zipfile
 from dataclasses import dataclass, field
 from typing import Iterator
 
@@ -34,86 +37,33 @@ from config import settings  # noqa: E402
 from load import close_pool, get_pool, upsert_chunk, upsert_document  # noqa: E402
 
 # ---------------------------------------------------------------------------
-# USFM book code → canonical Catholic book name + testament
+# Canonical book name → testament
 # Includes full 73-book Catholic canon (deuterocanonicals included).
 # ---------------------------------------------------------------------------
-USFM_BOOK_MAP: dict[str, tuple[str, str]] = {
-    # Old Testament — protocanonical
-    "GEN": ("Genesis", "OT"),
-    "EXO": ("Exodus", "OT"),
-    "LEV": ("Leviticus", "OT"),
-    "NUM": ("Numbers", "OT"),
-    "DEU": ("Deuteronomy", "OT"),
-    "JOS": ("Joshua", "OT"),
-    "JDG": ("Judges", "OT"),
-    "RUT": ("Ruth", "OT"),
-    "1SA": ("1 Samuel", "OT"),
-    "2SA": ("2 Samuel", "OT"),
-    "1KI": ("1 Kings", "OT"),
-    "2KI": ("2 Kings", "OT"),
-    "1CH": ("1 Chronicles", "OT"),
-    "2CH": ("2 Chronicles", "OT"),
-    "EZR": ("Ezra", "OT"),
-    "NEH": ("Nehemiah", "OT"),
-    "EST": ("Esther", "OT"),
-    "JOB": ("Job", "OT"),
-    "PSA": ("Psalms", "OT"),
-    "PRO": ("Proverbs", "OT"),
-    "ECC": ("Ecclesiastes", "OT"),
-    "SNG": ("Song of Solomon", "OT"),
-    "ISA": ("Isaiah", "OT"),
-    "JER": ("Jeremiah", "OT"),
-    "LAM": ("Lamentations", "OT"),
-    "EZK": ("Ezekiel", "OT"),
-    "DAN": ("Daniel", "OT"),
-    "HOS": ("Hosea", "OT"),
-    "JOL": ("Joel", "OT"),
-    "AMO": ("Amos", "OT"),
-    "OBA": ("Obadiah", "OT"),
-    "JON": ("Jonah", "OT"),
-    "MIC": ("Micah", "OT"),
-    "NAM": ("Nahum", "OT"),
-    "HAB": ("Habakkuk", "OT"),
-    "ZEP": ("Zephaniah", "OT"),
-    "HAG": ("Haggai", "OT"),
-    "ZEC": ("Zechariah", "OT"),
-    "MAL": ("Malachi", "OT"),
-    # Old Testament — deuterocanonical (Catholic)
-    "TOB": ("Tobit", "OT"),
-    "JDT": ("Judith", "OT"),
-    "1MA": ("1 Maccabees", "OT"),
-    "2MA": ("2 Maccabees", "OT"),
-    "WIS": ("Wisdom", "OT"),
-    "SIR": ("Sirach", "OT"),
-    "BAR": ("Baruch", "OT"),
-    # New Testament
-    "MAT": ("Matthew", "NT"),
-    "MRK": ("Mark", "NT"),
-    "LUK": ("Luke", "NT"),
-    "JHN": ("John", "NT"),
-    "ACT": ("Acts", "NT"),
-    "ROM": ("Romans", "NT"),
-    "1CO": ("1 Corinthians", "NT"),
-    "2CO": ("2 Corinthians", "NT"),
-    "GAL": ("Galatians", "NT"),
-    "EPH": ("Ephesians", "NT"),
-    "PHP": ("Philippians", "NT"),
-    "COL": ("Colossians", "NT"),
-    "1TH": ("1 Thessalonians", "NT"),
-    "2TH": ("2 Thessalonians", "NT"),
-    "1TI": ("1 Timothy", "NT"),
-    "2TI": ("2 Timothy", "NT"),
-    "TIT": ("Titus", "NT"),
-    "PHM": ("Philemon", "NT"),
-    "HEB": ("Hebrews", "NT"),
-    "JAS": ("James", "NT"),
-    "1PE": ("1 Peter", "NT"),
-    "2PE": ("2 Peter", "NT"),
-    "1JN": ("1 John", "NT"),
-    "2JN": ("2 John", "NT"),
-    "3JN": ("3 John", "NT"),
-    "JUD": ("Jude", "NT"),
-    "REV": ("Revelation", "NT"),
+_BOOK_TESTAMENT: dict[str, str] = {
+    # OT protocanonical
+    "Genesis": "OT", "Exodus": "OT", "Leviticus": "OT", "Numbers": "OT",
+    "Deuteronomy": "OT", "Joshua": "OT", "Judges": "OT", "Ruth": "OT",
+    "1 Samuel": "OT", "2 Samuel": "OT", "1 Kings": "OT", "2 Kings": "OT",
+    "1 Chronicles": "OT", "2 Chronicles": "OT", "Ezra": "OT", "Nehemiah": "OT",
+    "Esther": "OT", "Job": "OT", "Psalms": "OT", "Proverbs": "OT",
+    "Ecclesiastes": "OT", "Song of Solomon": "OT", "Isaiah": "OT",
+    "Jeremiah": "OT", "Lamentations": "OT", "Ezekiel": "OT", "Daniel": "OT",
+    "Hosea": "OT", "Joel": "OT", "Amos": "OT", "Obadiah": "OT",
+    "Jonah": "OT", "Micah": "OT", "Nahum": "OT", "Habakkuk": "OT",
+    "Zephaniah": "OT", "Haggai": "OT", "Zechariah": "OT", "Malachi": "OT",
+    # OT deuterocanonical
+    "Tobit": "OT", "Judith": "OT", "1 Maccabees": "OT", "2 Maccabees": "OT",
+    "Wisdom": "OT", "Sirach": "OT", "Baruch": "OT",
+    # NT
+    "Matthew": "NT", "Mark": "NT", "Luke": "NT", "John": "NT", "Acts": "NT",
+    "Romans": "NT", "1 Corinthians": "NT", "2 Corinthians": "NT",
+    "Galatians": "NT", "Ephesians": "NT", "Philippians": "NT",
+    "Colossians": "NT", "1 Thessalonians": "NT", "2 Thessalonians": "NT",
+    "1 Timothy": "NT", "2 Timothy": "NT", "Titus": "NT", "Philemon": "NT",
+    "Hebrews": "NT", "James": "NT", "1 Peter": "NT", "2 Peter": "NT",
+    "1 John": "NT", "2 John": "NT", "3 John": "NT", "Jude": "NT",
+    "Revelation": "NT",
 }
 
 # ---------------------------------------------------------------------------
@@ -200,9 +150,6 @@ DR_PG_BOOK_NAME_MAP: dict[str, str] = {
     "Apocalypse": "Revelation",
 }
 
-# Canonical book → testament lookup (derived from USFM_BOOK_MAP)
-_BOOK_TESTAMENT: dict[str, str] = {name: testament for name, testament in USFM_BOOK_MAP.values()}
-
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -219,88 +166,31 @@ class Verse:
 @dataclass
 class BookVerses:
     name: str               # canonical book name
-    book_code: str          # USFM code (empty for DR)
+    book_code: str          # USFM code (empty for DR/CPDV JSON)
     testament: str          # "OT" | "NT"
     verses: list[Verse] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
-# USFM parser (CPDV)
+# CPDV JSON parser
 # ---------------------------------------------------------------------------
 
-def _clean_usfm_text(text: str) -> str:
-    """Strip USFM inline markers from verse text."""
-    # Remove footnote/cross-ref markers: \f ... \f* and \x ... \x*
-    text = re.sub(r"\\[fx][+*]?.*?\\[fx]\*", "", text)
-    # Remove character style markers like \nd, \wj, \add, \it etc.
-    text = re.sub(r"\\[a-zA-Z]+\d*\*?", " ", text)
-    # Collapse whitespace
-    return " ".join(text.split())
-
-
-def parse_usfm_book(usfm_text: str) -> BookVerses | None:
-    """Parse a single USFM file and return a BookVerses, or None if unrecognised."""
-    book_code = ""
-    current_chapter = 0
-    verses: list[Verse] = []
-    book_name = ""
-    testament = ""
-
-    for raw_line in usfm_text.splitlines():
-        line = raw_line.strip()
-        if not line:
+def parse_cpdv_json(data: dict) -> list[BookVerses]:
+    """Parse the CPDV JSON structure {book: {chapter: {verse: text}}} into BookVerses."""
+    books: list[BookVerses] = []
+    for book_name, chapters in data.items():
+        if book_name == "charset":
             continue
-
-        # Book identifier
-        if line.startswith(r"\id "):
-            parts = line.split()
-            if len(parts) >= 2:
-                code = parts[1].upper()
-                if code in USFM_BOOK_MAP:
-                    book_code = code
-                    book_name, testament = USFM_BOOK_MAP[code]
-                else:
-                    # Unrecognised book code — skip this file
-                    return None
+        testament = _BOOK_TESTAMENT.get(book_name)
+        if testament is None:
             continue
-
-        # Chapter marker
-        if line.startswith(r"\c "):
-            parts = line.split()
-            if len(parts) >= 2:
-                try:
-                    current_chapter = int(parts[1])
-                except ValueError:
-                    pass
-            continue
-
-        # Verse marker — format: \v <num> <text...>
-        if line.startswith(r"\v "):
-            # Everything after "\v <num>" is verse text (may continue on same line)
-            parts = line.split(None, 2)  # ['\v', '1', 'In the beginning...']
-            if len(parts) < 2:
-                continue
-            try:
-                verse_num = int(parts[1])
-            except ValueError:
-                continue
-            verse_text = parts[2] if len(parts) == 3 else ""
-            verse_text = _clean_usfm_text(verse_text)
-            if verse_text and book_name and current_chapter > 0:
-                verses.append(Verse(book_name, current_chapter, verse_num, verse_text))
-            continue
-
-        # Continuation lines — if the previous verse was the last token on its line,
-        # subsequent non-marker lines belong to that verse.
-        if verses and not line.startswith("\\"):
-            text_addition = _clean_usfm_text(line)
-            if text_addition:
-                verses[-1].text = verses[-1].text + " " + text_addition
-
-    if not book_name or not verses:
-        return None
-
-    return BookVerses(name=book_name, book_code=book_code, testament=testament, verses=verses)
+        verses: list[Verse] = []
+        for ch_str, verse_dict in chapters.items():
+            ch = int(ch_str)
+            for v_str, text in verse_dict.items():
+                verses.append(Verse(book_name, ch, int(v_str), text))
+        books.append(BookVerses(name=book_name, book_code="", testament=testament, verses=verses))
+    return books
 
 
 # ---------------------------------------------------------------------------
@@ -449,7 +339,7 @@ def chunk_book(book_verses: BookVerses, group_size: int, min_length: int) -> Ite
 
 
 # ---------------------------------------------------------------------------
-# Download helpers
+# Download helper (used by Douay-Rheims)
 # ---------------------------------------------------------------------------
 
 def _download(url: str, description: str) -> bytes:
@@ -469,33 +359,18 @@ def _download(url: str, description: str) -> bytes:
 # Ingest functions
 # ---------------------------------------------------------------------------
 
-CPDV_URL = "https://ebible.org/Scriptures/eng-CPDV_readaloud.zip"
 DOUAY_RHEIMS_URL = "https://www.gutenberg.org/cache/epub/8300/pg8300.txt"
 
 
 async def ingest_cpdv(pool) -> None:
-    """Download and ingest the CPDV translation from eBible USFM zip."""
-    raw = _download(CPDV_URL, "CPDV USFM zip from eBible.org")
-
-    print("Parsing CPDV USFM files...")
-    books: list[BookVerses] = []
-    with zipfile.ZipFile(io.BytesIO(raw)) as zf:
-        usfm_files = [n for n in zf.namelist() if n.lower().endswith(".usfm")]
-        for filename in sorted(usfm_files):
-            with zf.open(filename) as fh:
-                try:
-                    usfm_text = fh.read().decode("utf-8", errors="replace")
-                except Exception:
-                    continue
-                book = parse_usfm_book(usfm_text)
-                if book is not None:
-                    books.append(book)
-
-    print(f"  Found {len(books)} books in CPDV zip.")
-
-    # Verify deuterocanonicals are present
+    """Read CPDV from sources/bible/cpdv.json and ingest."""
+    src = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "bible", "cpdv.json")
+    print(f"Reading CPDV from {src}...")
+    with open(src, encoding="utf-8") as f:
+        data = json.load(f)
+    books = parse_cpdv_json(data)
+    print(f"  Found {len(books)} books in CPDV JSON.")
     _verify_deuterocanonicals(books, "CPDV")
-
     await _ingest_books(pool, books, translation="CPDV")
 
 
