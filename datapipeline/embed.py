@@ -13,6 +13,7 @@ import sys
 from typing import Iterator
 
 import openai
+import tiktoken
 from tqdm import tqdm
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +22,16 @@ from load import close_pool, get_pool
 
 _BATCH_SIZE = 100
 _MAX_RETRIES = 3
-_MAX_CHARS = 30000  # ~7500 tokens — safely under OpenAI's 8192-token limit
+_MAX_TOKENS = 8000  # safely under OpenAI's 8192-token hard limit
+_TOKENIZER = tiktoken.get_encoding("cl100k_base")
+
+
+def _truncate(text: str) -> str:
+    """Truncate text to _MAX_TOKENS tokens using the OpenAI tokenizer."""
+    tokens = _TOKENIZER.encode(text)
+    if len(tokens) <= _MAX_TOKENS:
+        return text
+    return _TOKENIZER.decode(tokens[:_MAX_TOKENS])
 
 
 def make_batches(items: list, size: int) -> Iterator[list]:
@@ -75,7 +85,7 @@ async def _embed_chunks(pool, client: openai.AsyncOpenAI, dry_run: bool = False)
 
     with tqdm(total=len(rows), unit="chunk", desc="Embed") as pbar:
         for batch in make_batches(list(rows), _BATCH_SIZE):
-            texts = [r["content"][:_MAX_CHARS] for r in batch]
+            texts = [_truncate(r["content"]) for r in batch]
             try:
                 vectors = await embed_batch(client, texts)
             except Exception as exc:
