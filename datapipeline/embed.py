@@ -54,106 +54,68 @@ async def embed_batch(client: openai.AsyncOpenAI, texts: list[str]) -> list[list
     raise RuntimeError("embed_batch: unreachable")
 
 
+async def _embed_chunks(pool, client: openai.AsyncOpenAI, dry_run: bool = False) -> None:
+    """Core embedding logic — shared by run() and run_for_main_pool()."""
+    rows = await pool.fetch(
+        "SELECT id, content FROM chunks WHERE content_embedding IS NULL ORDER BY id"
+    )
+
+    if dry_run:
+        print(f"[dry-run] {len(rows)} chunks need embedding. Exiting.")
+        return
+
+    if not rows:
+        print("All chunks already embedded.")
+        return
+
+    print(f"Embedding {len(rows)} chunks in batches of {_BATCH_SIZE}...")
+    embedded = 0
+    failed_ids: list[str] = []
+
+    with tqdm(total=len(rows), unit="chunk", desc="Embed") as pbar:
+        for batch in make_batches(list(rows), _BATCH_SIZE):
+            texts = [r["content"] for r in batch]
+            try:
+                vectors = await embed_batch(client, texts)
+            except Exception as exc:
+                ids = [str(r["id"]) for r in batch]
+                print(f"\n  WARNING: Batch failed ({exc}). IDs: {ids[:3]}...", file=sys.stderr)
+                failed_ids.extend(ids)
+                pbar.update(len(batch))
+                continue
+
+            async with pool.acquire() as conn:
+                async with conn.transaction():
+                    for row, vec in zip(batch, vectors):
+                        await conn.execute(
+                            "UPDATE chunks SET content_embedding = $1::vector WHERE id = $2",
+                            vec_to_pg(vec),
+                            row["id"],
+                        )
+            embedded += len(batch)
+            pbar.update(len(batch))
+
+    print(f"  Done. {embedded} chunks embedded.")
+    if failed_ids:
+        print(f"  WARNING: {len(failed_ids)} chunks failed — re-run embed.py to retry.", file=sys.stderr)
+
+
 async def run(dry_run: bool = False) -> None:
-    """Standalone entry point: create pool, embed chunks, close pool."""
+    """Standalone entry point — creates and closes its own pool."""
     pool = await get_pool()
     client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-
     try:
-        rows = await pool.fetch(
-            "SELECT id, content FROM chunks WHERE content_embedding IS NULL ORDER BY id"
-        )
-
-        if dry_run:
-            print(f"[dry-run] {len(rows)} chunks need embedding. Exiting.")
-            return
-
-        if not rows:
-            print("All chunks already embedded.")
-            return
-
-        print(f"Embedding {len(rows)} chunks in batches of {_BATCH_SIZE}...")
-        embedded = 0
-        failed_ids: list[str] = []
-
-        with tqdm(total=len(rows), unit="chunk", desc="Embed") as pbar:
-            for batch in make_batches(list(rows), _BATCH_SIZE):
-                texts = [r["content"] for r in batch]
-                try:
-                    vectors = await embed_batch(client, texts)
-                except Exception as exc:
-                    ids = [str(r["id"]) for r in batch]
-                    print(f"\n  WARNING: Batch failed ({exc}). IDs: {ids[:3]}...", file=sys.stderr)
-                    failed_ids.extend(ids)
-                    pbar.update(len(batch))
-                    continue
-
-                async with pool.acquire() as conn:
-                    async with conn.transaction():
-                        for row, vec in zip(batch, vectors):
-                            await conn.execute(
-                                "UPDATE chunks SET content_embedding = $1::vector WHERE id = $2",
-                                vec_to_pg(vec),
-                                row["id"],
-                            )
-                embedded += len(batch)
-                pbar.update(len(batch))
-
-        print(f"  Done. {embedded} chunks embedded.")
-        if failed_ids:
-            print(f"  WARNING: {len(failed_ids)} chunks failed — re-run embed.py to retry.", file=sys.stderr)
+        await _embed_chunks(pool, client, dry_run)
     finally:
         await client.close()
         await close_pool()
 
 
 async def run_for_main_pool(pool, dry_run: bool = False) -> None:
-    """Version of run() that accepts an existing pool (for use by run_all.py)."""
+    """Entry point for run_all.py — accepts existing pool, does not close it."""
     client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-
     try:
-        rows = await pool.fetch(
-            "SELECT id, content FROM chunks WHERE content_embedding IS NULL ORDER BY id"
-        )
-
-        if dry_run:
-            print(f"[dry-run] {len(rows)} chunks need embedding. Exiting.")
-            return
-
-        if not rows:
-            print("All chunks already embedded.")
-            return
-
-        print(f"Embedding {len(rows)} chunks in batches of {_BATCH_SIZE}...")
-        embedded = 0
-        failed_ids: list[str] = []
-
-        with tqdm(total=len(rows), unit="chunk", desc="Embed") as pbar:
-            for batch in make_batches(list(rows), _BATCH_SIZE):
-                texts = [r["content"] for r in batch]
-                try:
-                    vectors = await embed_batch(client, texts)
-                except Exception as exc:
-                    ids = [str(r["id"]) for r in batch]
-                    print(f"\n  WARNING: Batch failed ({exc}). IDs: {ids[:3]}...", file=sys.stderr)
-                    failed_ids.extend(ids)
-                    pbar.update(len(batch))
-                    continue
-
-                async with pool.acquire() as conn:
-                    async with conn.transaction():
-                        for row, vec in zip(batch, vectors):
-                            await conn.execute(
-                                "UPDATE chunks SET content_embedding = $1::vector WHERE id = $2",
-                                vec_to_pg(vec),
-                                row["id"],
-                            )
-                embedded += len(batch)
-                pbar.update(len(batch))
-
-        print(f"  Done. {embedded} chunks embedded.")
-        if failed_ids:
-            print(f"  WARNING: {len(failed_ids)} chunks failed — re-run embed.py to retry.", file=sys.stderr)
+        await _embed_chunks(pool, client, dry_run)
     finally:
         await client.close()
 
