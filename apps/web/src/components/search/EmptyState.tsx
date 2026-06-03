@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { trackSuggestedQueryClicked } from "@/lib/analytics";
 
 const TAGLINES = [
@@ -12,8 +13,6 @@ const TAGLINES = [
   "Search the Communion of Saints",
   "Seek and You Shall Find",
 ] as const;
-
-const TAGLINE = TAGLINES[Math.floor(Math.random() * TAGLINES.length)];
 
 const SUGGESTED_QUERIES = [
   "What is the nature of the soul?",
@@ -31,6 +30,12 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ onSelectQuery }: EmptyStateProps) {
+  const [tagline, setTagline] = useState(TAGLINES[0]);
+
+  useEffect(() => {
+    setTagline(TAGLINES[Math.floor(Math.random() * TAGLINES.length)]);
+  }, []);
+
   function handleChipClick(query: string) {
     trackSuggestedQueryClicked({ queryText: query });
     onSelectQuery(query);
@@ -38,7 +43,7 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
 
   return (
     <div className="flex flex-col items-center justify-center h-full py-16 px-4">
-      <p className="text-brand-muted text-sm mb-6 tracking-wide">{TAGLINE}</p>
+      <p className="text-brand-muted text-sm mb-6 tracking-wide">{tagline}</p>
       <div className="grid grid-cols-2 gap-3 w-full max-w-2xl">
         {SUGGESTED_QUERIES.map((query) => (
           <button
