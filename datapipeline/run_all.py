@@ -23,15 +23,18 @@ PIPELINE: list[tuple[str, object]] = [
 
 
 async def run(collection: str | None = None, skip_embed: bool = False) -> None:
+    # Validate before acquiring any resources
+    valid_names = [n for n, _ in PIPELINE]
+    if collection is not None and collection not in valid_names:
+        print(f"ERROR: Unknown collection '{collection}'. "
+              f"Valid: {valid_names}", file=sys.stderr)
+        return
+
+    steps = [(name, mod) for name, mod in PIPELINE
+             if collection is None or name == collection]
+
     pool = await get_pool()
     try:
-        steps = [(name, mod) for name, mod in PIPELINE
-                 if collection is None or name == collection]
-
-        if not steps:
-            print(f"ERROR: Unknown collection '{collection}'. "
-                  f"Valid: {[n for n, _ in PIPELINE]}", file=sys.stderr)
-            return
 
         total_start = time.time()
         for name, mod in steps:
