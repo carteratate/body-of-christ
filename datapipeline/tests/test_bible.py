@@ -6,7 +6,22 @@ os.environ.setdefault("OPENAI_API_KEY", "sk-test")
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from ingest.bible import parse_cpdv_json, chunk_book, _make_reference, BookVerses, Verse
+from ingest.bible import parse_cpdv_json, parse_douay_rheims, chunk_book, _make_reference, BookVerses, Verse
+
+def test_read_dr_from_local_file():
+    """parse_douay_rheims should correctly parse the DR plain-text format."""
+    sample = (
+        "*** START OF THIS PROJECT GUTENBERG EBOOK ***\n"
+        "Genesis Chapter 1\n"
+        "\n"
+        "1:1. In the beginning God created heaven and earth.\n"
+        "\n"
+        "*** END OF THIS PROJECT GUTENBERG EBOOK ***\n"
+    )
+    books = parse_douay_rheims(sample)
+    assert len(books) == 1
+    assert books[0].name == "Genesis"
+    assert books[0].verses[0].text == "In the beginning God created heaven and earth."
 
 def test_parse_cpdv_extracts_books():
     data = {

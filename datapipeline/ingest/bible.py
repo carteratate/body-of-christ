@@ -20,16 +20,15 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import re
 import sys
 from dataclasses import dataclass, field
 from typing import Iterator
 
-import httpx
 from tqdm import tqdm
 
 # Add datapipeline root to path so config/load are importable when run directly.
-import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -341,27 +340,8 @@ def chunk_book(book_verses: BookVerses, group_size: int, min_length: int) -> Ite
 
 
 # ---------------------------------------------------------------------------
-# Download helper (used by Douay-Rheims)
-# ---------------------------------------------------------------------------
-
-def _download(url: str, description: str) -> bytes:
-    """Download a URL synchronously with progress indication. Exits on failure."""
-    print(f"Downloading {description}...")
-    try:
-        with httpx.Client(timeout=120, follow_redirects=True) as client:
-            response = client.get(url)
-            response.raise_for_status()
-            return response.content
-    except httpx.HTTPError as exc:
-        print(f"ERROR: Failed to download {description}: {exc}", file=sys.stderr)
-        sys.exit(1)
-
-
-# ---------------------------------------------------------------------------
 # Ingest functions
 # ---------------------------------------------------------------------------
-
-DOUAY_RHEIMS_URL = "https://www.gutenberg.org/cache/epub/8300/pg8300.txt"
 
 
 async def ingest_cpdv(pool) -> None:
@@ -377,23 +357,16 @@ async def ingest_cpdv(pool) -> None:
 
 
 async def ingest_douay_rheims(pool) -> None:
-    """Download and ingest the Douay-Rheims (Challoner) from Project Gutenberg."""
-    raw = _download(DOUAY_RHEIMS_URL, "Douay-Rheims Bible from Project Gutenberg (#8300)")
-
-    print("Parsing Douay-Rheims plain text...")
-    text = raw.decode("utf-8", errors="replace")
+    """Read Douay-Rheims from sources/bible/gutenberg-bible.txt and ingest."""
+    src = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "bible", "gutenberg-bible.txt")
+    print(f"Reading Douay-Rheims from {src}...")
+    with open(src, encoding="utf-8", errors="replace") as f:
+        text = f.read()
     books = parse_douay_rheims(text)
     print(f"  Found {len(books)} books in Douay-Rheims text.")
-
     if len(books) < 60:
-        print(
-            f"  WARNING: Expected ~73 books but only found {len(books)}. "
-            "The PG file structure may have changed.",
-            file=sys.stderr,
-        )
-
+        print(f"  WARNING: Expected ~73 books but only found {len(books)}.", file=sys.stderr)
     _verify_deuterocanonicals(books, "Douay-Rheims")
-
     await _ingest_books(pool, books, translation="douay-rheims")
 
 
