@@ -37,6 +37,7 @@ ENCYCLICALS: list[tuple[str, str, int, str]] = [
     ("Evangelii Gaudium",   "Pope Francis",        2013, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20131124_evangelii-gaudium.html"),
     ("Laudato Si",          "Pope Francis",        2015, "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20150524_enciclica-laudato-si.html"),
     # Amoris Laetitia removed — only available as PDF on Vatican, not scrapeable HTML
+    ("Magnifica Humanitas", "Pope Leo XIV",        2026, "https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html"),
 ]
 
 
