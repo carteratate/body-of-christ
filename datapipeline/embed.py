@@ -21,6 +21,7 @@ from load import close_pool, get_pool
 
 _BATCH_SIZE = 100
 _MAX_RETRIES = 3
+_MAX_CHARS = 30000  # ~7500 tokens — safely under OpenAI's 8192-token limit
 
 
 def make_batches(items: list, size: int) -> Iterator[list]:
@@ -74,7 +75,7 @@ async def _embed_chunks(pool, client: openai.AsyncOpenAI, dry_run: bool = False)
 
     with tqdm(total=len(rows), unit="chunk", desc="Embed") as pbar:
         for batch in make_batches(list(rows), _BATCH_SIZE):
-            texts = [r["content"] for r in batch]
+            texts = [r["content"][:_MAX_CHARS] for r in batch]
             try:
                 vectors = await embed_batch(client, texts)
             except Exception as exc:
