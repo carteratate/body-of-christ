@@ -2,6 +2,19 @@
 
 import { trackSuggestedQueryClicked } from "@/lib/analytics";
 
+const TAGLINES = [
+  "Query the Body of Christ",
+  "What Does the Church Teach?",
+  "Search Scripture and Tradition",
+  "Seek Wisdom from the Church",
+  "Explore the Catholic Tradition",
+  "Ask Across 2,000 Years",
+  "Search the Communion of Saints",
+  "Seek and You Shall Find",
+] as const;
+
+const TAGLINE = TAGLINES[Math.floor(Math.random() * TAGLINES.length)];
+
 const SUGGESTED_QUERIES = [
   "What is the nature of the soul?",
   "How do I forgive someone who hurt me?",
@@ -25,7 +38,7 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
 
   return (
     <div className="flex flex-col items-center justify-center h-full py-16 px-4">
-      <p className="text-brand-muted text-sm mb-6 tracking-wide">Explore a question</p>
+      <p className="text-brand-muted text-sm mb-6 tracking-wide">{TAGLINE}</p>
       <div className="grid grid-cols-2 gap-3 w-full max-w-2xl">
         {SUGGESTED_QUERIES.map((query) => (
           <button
