@@ -185,9 +185,11 @@ def parse_cpdv_json(data: dict) -> list[BookVerses]:
         if testament is None:
             continue
         verses: list[Verse] = []
-        for ch_str, verse_dict in chapters.items():
+        for ch_str in sorted(chapters.keys(), key=int):
+            verse_dict = chapters[ch_str]
             ch = int(ch_str)
-            for v_str, text in verse_dict.items():
+            for v_str in sorted(verse_dict.keys(), key=int):
+                text = verse_dict[v_str]
                 verses.append(Verse(book_name, ch, int(v_str), text))
         books.append(BookVerses(name=book_name, book_code="", testament=testament, verses=verses))
     return books

@@ -68,3 +68,14 @@ def test_chunk_book_skips_short_content():
     book = BookVerses("Gen", "", "OT", verses)
     chunks = list(chunk_book(book, 4, 50))
     assert len(chunks) == 0
+
+def test_parse_cpdv_sorts_verses_within_chapter():
+    data = {"Genesis": {"1": {"3": "third verse", "1": "first verse", "2": "second verse"}}}
+    books = parse_cpdv_json(data)
+    verses = books[0].verses
+    assert verses[0].verse == 1
+    assert verses[0].text == "first verse"
+    assert verses[1].verse == 2
+    assert verses[1].text == "second verse"
+    assert verses[2].verse == 3
+    assert verses[2].text == "third verse"
