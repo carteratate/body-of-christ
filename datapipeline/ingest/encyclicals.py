@@ -36,7 +36,7 @@ ENCYCLICALS: list[tuple[str, str, int, str]] = [
     ("Caritas in Veritate", "Pope Benedict XVI",   2009, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20090629_caritas-in-veritate_en.html"),
     ("Evangelii Gaudium",   "Pope Francis",        2013, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20131124_evangelii-gaudium.html"),
     ("Laudato Si",          "Pope Francis",        2015, "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20150524_enciclica-laudato-si.html"),
-    ("Amoris Laetitia",     "Pope Francis",        2016, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20160319_amoris-laetitia.html"),
+    # Amoris Laetitia removed — only available as PDF on Vatican, not scrapeable HTML
 ]
 
 
@@ -80,7 +80,7 @@ def group_paragraphs(
 
 async def main(pool) -> None:
     skipped: list[str] = []
-    with httpx.Client(timeout=30, follow_redirects=True) as client:
+    with httpx.Client(timeout=30, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}) as client:
         with tqdm(total=len(ENCYCLICALS), unit="doc", desc="Encyclicals") as pbar:
             for title, author, year, url in ENCYCLICALS:
                 time.sleep(_DELAY)
