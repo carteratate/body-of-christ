@@ -66,9 +66,10 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
 
   // ── Explore more action ───────────────────────────────────────────────────
   function handleExploreMore() {
-    const trimmed = content.slice(0, 200).replace(/\s+\S*$/, "");
     trackExploreMoreClicked({ collection, source: "chunk_card" });
-    router.push(`/search?explore=${encodeURIComponent(trimmed)}`);
+    router.push(
+      `/search?explore=${encodeURIComponent(content)}&exploreRef=${encodeURIComponent(displayReference ?? "")}`
+    );
   }
 
   return (
