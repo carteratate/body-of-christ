@@ -71,6 +71,7 @@ function SearchPageInner() {
   const [rateLimitType, setRateLimitType] = useState<"per_minute" | "daily">("per_minute");
   const [searchPhase, setSearchPhase] = useState<"searching" | "ranking" | null>(null);
   const [exploreLabel, setExploreLabel] = useState<string | null>(null);
+  const [isRestoring, setIsRestoring] = useState(false);
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
@@ -129,6 +130,7 @@ function SearchPageInner() {
     setSearchPhase(null);
     setRateLimitRetryAfter(null);
     setExploreLabel(null);
+    setIsRestoring(false);
     restoredForId.current = null;
     exploredForQuery.current = null;
     activatePendingSlot();
@@ -151,6 +153,7 @@ function SearchPageInner() {
     const tok = token;
     restoredForId.current = id;
     setLoading(true);
+    setIsRestoring(true);
     getSearchResults(tok, id)
       .then((data) => {
         setResults(data.results);
@@ -163,7 +166,7 @@ function SearchPageInner() {
         const msg = err instanceof Error ? err.message : "Failed to restore search";
         setError(msg);
       })
-      .finally(() => setLoading(false));
+      .finally(() => { setLoading(false); setIsRestoring(false); });
   }, [restoreId, token, setActiveSearchId, clearPendingSearch]);
 
   // ── Search ────────────────────────────────────────────────────────────────
@@ -338,6 +341,7 @@ function SearchPageInner() {
             onExploreMore={handleExploreMore}
             phase={searchPhase}
             collections={activeCollections}
+            isRestoring={isRestoring}
           />
         )}
 

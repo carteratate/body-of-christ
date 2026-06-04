@@ -2,6 +2,7 @@
 
 import { type ChunkResult } from "@/lib/api";
 import { ChunkCard } from "./ChunkCard";
+import { ResultsSkeleton } from "./ResultsSkeleton";
 import { SearchProgress } from "./SearchProgress";
 
 interface SearchResultsProps {
@@ -12,6 +13,7 @@ interface SearchResultsProps {
   onExploreMore: (content: string, label: string) => void;
   phase?: "searching" | "ranking" | null;
   collections?: string[];
+  isRestoring?: boolean;
 }
 
 export function SearchResults({
@@ -22,9 +24,12 @@ export function SearchResults({
   onExploreMore,
   phase = null,
   collections = [],
+  isRestoring = false,
 }: SearchResultsProps) {
   if (loading && results.length === 0) {
-    return <SearchProgress phase={phase} collections={collections} />;
+    return isRestoring
+      ? <ResultsSkeleton />
+      : <SearchProgress phase={phase} collections={collections} />;
   }
 
   return (
