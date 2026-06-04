@@ -79,6 +79,7 @@ async def upsert_chunk(
     content: str,
     position: int,
     reference: str | None = None,
+    metadata: dict | None = None,
 ) -> str:
     """
     Insert a chunk row if one does not already exist for (document_id, position).
@@ -86,19 +87,23 @@ async def upsert_chunk(
     Does NOT populate content_embedding — that is handled by embed.py.
     Returns the chunk UUID as a string.
     """
+    import json as _json
+    meta_json = _json.dumps(metadata) if metadata else None
     row = await pool.fetchrow(
         """
-        INSERT INTO chunks (document_id, content, position, reference)
-        VALUES ($1::uuid, $2, $3, $4)
+        INSERT INTO chunks (document_id, content, position, reference, metadata)
+        VALUES ($1::uuid, $2, $3, $4, $5::jsonb)
         ON CONFLICT (document_id, position)
         DO UPDATE SET
             content   = EXCLUDED.content,
-            reference = EXCLUDED.reference
+            reference = EXCLUDED.reference,
+            metadata  = EXCLUDED.metadata
         RETURNING id
         """,
         document_id,
         content,
         position,
         reference,
+        meta_json,
     )
     return str(row["id"])
