@@ -31,7 +31,7 @@ def _extract_p_text(elem) -> str:
         t = _strip_tags(raw)
         if t:
             parts.append(t)
-    return " ".join(parts)
+    return "\n\n".join(parts)
 
 
 def _parse_author(creator: str) -> tuple[str, int | None]:

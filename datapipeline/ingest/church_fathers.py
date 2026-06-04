@@ -31,6 +31,9 @@ async def main(pool) -> None:
     with tqdm(total=len(xml_files), unit="file", desc="Church Fathers") as pbar:
         for path in xml_files:
             filename = os.path.basename(path)
+            if filename == "summa.xml":
+                pbar.update(1)
+                continue
             try:
                 doc = parse_thml(path)
             except Exception as exc:
