@@ -26,17 +26,26 @@ interface ChunkCardProps {
   index: number;
   searchId: string | null;
   token: string;
-  onExploreMore: (content: string) => void;
+  onExploreMore: (content: string, label: string) => void;
 }
 
 export function ChunkCard({ result, index, searchId, token, onExploreMore }: ChunkCardProps) {
   const router = useRouter();
   const { chunk_id, content, source } = result;
-  const { collection, document_title, reference, document_id } = source;
+  const { collection, document_title, author, reference, document_id } = source;
 
   const collectionMeta = getCollectionMeta(collection);
   const borderColor = collectionMeta?.color ?? "var(--color-brand-accent)";
-  const displayReference = reference ?? document_title;
+
+  // Church Fathers: reference is only the section heading ("Book I, Chapter 3"),
+  // so prepend document_title to give full context.
+  const primaryReference =
+    collection === "church-fathers" && reference && document_title
+      ? `${document_title}, ${reference}`
+      : reference ?? document_title;
+
+  // Show author as a subtitle for collections where personal authorship is meaningful.
+  const showAuthor = !!author && (collection === "church-fathers" || collection === "encyclicals");
 
   const { toast, showToast, dismissToast } = useToast();
 
@@ -66,7 +75,8 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
 
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
-    const text = `${content} — ${displayReference} (${collection})`;
+    const citation = showAuthor ? `${primaryReference} (${author})` : primaryReference;
+    const text = `${content} — ${citation} (${collection})`;
     navigator.clipboard.writeText(text)
       .then(() => showToast("Copied"))
       .catch(() => showToast("Copy failed", "error"));
@@ -110,9 +120,8 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
 
   // ── Explore more action ───────────────────────────────────────────────────
   function handleExploreMore() {
-    const trimmed = content.slice(0, 200).replace(/\s+\S*$/, "");
     trackExploreMoreClicked({ collection, source: "chunk_card" });
-    onExploreMore(trimmed);
+    onExploreMore(content, primaryReference ?? "");
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
@@ -136,10 +145,15 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           >
             {badgeLabel}
           </span>
-          {/* Reference */}
-          <span className="text-sm text-brand-primary font-medium truncate">
-            {displayReference}
-          </span>
+          {/* Reference (+ optional author subtitle) */}
+          <div className="min-w-0">
+            {showAuthor && (
+              <p className="text-xs text-brand-muted truncate leading-tight">{author}</p>
+            )}
+            <p className="text-sm text-brand-primary font-medium truncate">
+              {primaryReference}
+            </p>
+          </div>
         </div>
 
         {/* Top-right actions */}
