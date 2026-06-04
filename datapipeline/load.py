@@ -87,8 +87,7 @@ async def upsert_chunk(
     Does NOT populate content_embedding — that is handled by embed.py.
     Returns the chunk UUID as a string.
     """
-    import json as _json
-    meta_json = _json.dumps(metadata) if metadata else None
+    meta_json = json.dumps(metadata) if metadata else None
     row = await pool.fetchrow(
         """
         INSERT INTO chunks (document_id, content, position, reference, metadata)
