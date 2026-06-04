@@ -59,16 +59,88 @@ def _is_summa(root) -> bool:
     return author_id.strip() == "aquinas" and book_id.strip() == "summa"
 
 
+_SENT_END = re.compile(r'(?<=[.!?])\s+')
+_MAX_FALLBACK_SCAN = 500
+
+
+def split_at_sentences(
+    text: str,
+    target: int = 1200,
+    overlap: int = 200,
+) -> list[str]:
+    """Split text into overlapping chunks of ~target chars at sentence boundaries.
+
+    All limits are soft — splits always happen at sentence ends. If no sentence
+    boundary is found within _MAX_FALLBACK_SCAN chars of the target, splits at
+    the nearest whitespace instead.
+    """
+    if len(text) <= target:
+        return [text]
+
+    sentences = _SENT_END.split(text)
+    if len(sentences) <= 1:
+        return _split_at_whitespace(text, target, overlap)
+
+    chunks: list[str] = []
+    current: list[str] = []
+    current_len = 0
+
+    for sent in sentences:
+        current.append(sent)
+        current_len += len(sent) + 1
+        if current_len >= target:
+            chunks.append(" ".join(current))
+            overlap_sents: list[str] = []
+            overlap_len = 0
+            for s in reversed(current):
+                if overlap_len + len(s) + 1 <= overlap:
+                    overlap_sents.insert(0, s)
+                    overlap_len += len(s) + 1
+                else:
+                    break
+            current = overlap_sents
+            current_len = overlap_len
+
+    if current:
+        last = " ".join(current)
+        if not chunks or last != chunks[-1]:
+            chunks.append(last)
+
+    return chunks
+
+
+def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = min(start + target, len(text))
+        if end < len(text):
+            ws = text.rfind(" ", start, end + _MAX_FALLBACK_SCAN)
+            if ws > start:
+                end = ws
+        chunks.append(text[start:end].strip())
+        start = end - overlap
+        if start >= end:
+            break
+    return [c for c in chunks if c]
+
+
+_MIN_MERGE_CHARS = 200
+_MAX_SECTION_CHARS = 2500
+_TARGET_CHUNK_CHARS = 1200
+_OVERLAP_CHARS = 200
+
+
 def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int]]:
-    """Chunk at div2 (chapter) level; falls back to div1 if no div2 content found."""
-    chunks: list[tuple[str, str, int]] = []
-    position = 0
+    """Hybrid chunking: natural section boundary preserved if ≤ 2500 chars,
+    sliding window applied for longer sections. Short sections merged upward."""
+    # 1. Collect raw sections
+    raw_sections: list[tuple[str, str]] = []
     for elem in root.iter():
         if elem.tag != "div1":
             continue
         div1_title = (elem.get("title") or "").strip()
-        # Try div2 children first
-        div2_chunks: list[tuple[str, str, int]] = []
+        div2_found = False
         for child in elem:
             if not child.tag.startswith("div2"):
                 continue
@@ -77,16 +149,41 @@ def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int]]:
             if len(content) < min_length:
                 continue
             reference = f"{div1_title}, {div2_title}" if div1_title else div2_title
-            div2_chunks.append((content, reference, position))
-            position += 1
-        if div2_chunks:
-            chunks.extend(div2_chunks)
-        else:
-            # Fallback: treat div1 itself as a chunk
+            raw_sections.append((content, reference))
+            div2_found = True
+        if not div2_found:
             content = _extract_p_text(elem)
             if len(content) >= min_length:
-                chunks.append((content, div1_title or "Section", position))
+                raw_sections.append((content, div1_title or "Section"))
+
+    # 2. Merge short sections into the next
+    merged: list[tuple[str, str]] = []
+    i = 0
+    while i < len(raw_sections):
+        content, ref = raw_sections[i]
+        if len(content) < _MIN_MERGE_CHARS and i + 1 < len(raw_sections):
+            next_content, next_ref = raw_sections[i + 1]
+            raw_sections[i + 1] = (content + "\n\n" + next_content, next_ref)
+            i += 1
+            continue
+        merged.append((content, ref))
+        i += 1
+
+    # 3. Emit chunks
+    chunks: list[tuple[str, str, int]] = []
+    position = 0
+    for content, ref in merged:
+        if len(content) <= _MAX_SECTION_CHARS:
+            chunks.append((content, ref, position))
+            position += 1
+        else:
+            parts = split_at_sentences(content, _TARGET_CHUNK_CHARS, _OVERLAP_CHARS)
+            total = len(parts)
+            for idx, part in enumerate(parts):
+                part_ref = f"{ref} ({idx + 1}/{total})" if total > 1 else ref
+                chunks.append((part, part_ref, position))
                 position += 1
+
     return chunks
 
 
