@@ -16,7 +16,7 @@ _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 _DEFAULT_PREFERENCES = PreferencesResponse(
     preferred_translation="CPDV",
-    default_collections=["bible", "catechism", "church-fathers", "encyclicals", "canon-law", "saints"],
+    default_collections=["bible", "catechism", "church-fathers", "encyclicals", "canon-law", "summa"],
     default_quota=4,
 )
 

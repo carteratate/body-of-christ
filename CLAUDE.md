@@ -69,6 +69,7 @@ This contract MUST NOT change across versions.
 - "catechism" — numbered CCC paragraphs, part/section/chapter structure
 - "encyclicals" — pope, year, topic tags
 - "church-fathers" — author, work, century, tradition
+- "summa" — Aquinas Summa Theologiae, part/treatise/question/article structure
 
 SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tables.
 
@@ -181,7 +182,7 @@ Use CSS custom properties via Tailwind `brand` namespace. No hardcoded hex value
 
 - **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`)
 - **Frontend mirror:** `apps/web/src/lib/collections.ts` (includes CSS var colors per collection)
-- **Current values:** `"bible"`, `"catechism"`, `"church-fathers"`, `"encyclicals"`, `"saints"`, `"canon-law"`
+- **Current values:** `"bible"`, `"catechism"`, `"church-fathers"`, `"encyclicals"`, `"summa"`, `"canon-law"`
 - **To add a new collection:** update `constants.py` first, then sync `collections.ts`
 
 ### Collection Color Coding (left border + badge)
@@ -192,7 +193,7 @@ Use CSS custom properties via Tailwind `brand` namespace. No hardcoded hex value
 | catechism | blue | `#4a6fa5` |
 | church-fathers | purple | `#7c6fa5` |
 | encyclicals | amber | `#b5892a` |
-| saints | teal | `#4a9a8a` |
+| summa | warm brown | `#8B7355` |
 | canon-law | red-brown | `#8B4513` |
 
 ---
@@ -273,6 +274,6 @@ V1 chat and V2 search share `user_usage.rate_count` / `quota_count` columns. V2 
 ### 4. Phase 3 Corpus Ingestion Deferred
 
 The following datapipeline scripts are not yet built or are blocked pending the schema fix:
-- `catechism.py`, `encyclicals.py`, `church_fathers.py`, `saints.py`, `embed.py`, `run_all.py`
+- `catechism.py`, `encyclicals.py`, `church_fathers.py`, `summa.py`, `embed.py`, `run_all.py`
 
 Build corpus ingestion after migration 0008 is applied.
