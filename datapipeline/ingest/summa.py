@@ -23,7 +23,11 @@ async def main(pool=None) -> None:
         pool = await get_pool()
     try:
         print(f"Parsing Summa Theologica from {_SRC}...")
-        doc = parse_thml(_SRC)
+        try:
+            doc = parse_thml(_SRC)
+        except Exception as exc:
+            print(f"  ERROR: Failed to parse summa.xml: {exc}", file=sys.stderr)
+            return
         print(f"  {len(doc.chunks)} article chunks extracted.")
 
         doc_id = await upsert_document(
