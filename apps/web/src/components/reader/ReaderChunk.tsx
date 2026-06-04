@@ -14,7 +14,7 @@ interface ReaderChunkProps {
   document: DocumentInfo;
   isOrigin: boolean;
   token: string;
-  onExploreMore: (content: string) => void;
+  onExploreMore: (content: string, label: string) => void;
 }
 
 export function ReaderChunk({ chunk, document, isOrigin, token, onExploreMore }: ReaderChunkProps) {
@@ -54,9 +54,9 @@ export function ReaderChunk({ chunk, document, isOrigin, token, onExploreMore }:
 
   // ── Explore more action ────────────────────────────────────────────────────
   function handleExploreMore() {
-    const trimmed = chunk.content.slice(0, 200).replace(/\s+\S*$/, "");
+    const label = chunk.reference ?? document.title;
     trackExploreMoreClicked({ collection: document.collection, source: "reader" });
-    onExploreMore(trimmed);
+    onExploreMore(chunk.content, label);
   }
 
   return (

@@ -25,9 +25,15 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [data, setData] = useState<ReaderResponse | null>(null);
-  const [currentChunkId, setCurrentChunkId] = useState<string | null>(initialChunkId);
+
+  // Tracks whether the user has clicked Prev/Next/Jump.
+  // - false (initial): gold highlight shown on origin chunk, scroll to center on load.
+  // - true (navigated): no gold highlight, scroll to top on new data.
+  const [hasNavigated, setHasNavigated] = useState(false);
+  const hasNavigatedRef = useRef(false); // sync mirror for the scroll effect
 
   const originChunkRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   // ── Guard: missing chunk_id in URL ─────────────────────────────────────────
 
@@ -41,49 +47,50 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
   // ── Initial load ───────────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (!token || !docId || !currentChunkId) return;
+    if (!token || !docId || !initialChunkId) return;
 
     setLoading(true);
     setError(null);
     setNotFound(false);
 
-    getReader(token, docId, currentChunkId, 10)
-      .then((result) => {
-        setData(result);
-      })
+    getReader(token, docId, initialChunkId, 10)
+      .then((result) => setData(result))
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : "Failed to load document";
-        if (msg.includes("API error 404")) {
-          setNotFound(true);
-        } else {
-          setError(msg);
-        }
+        if (msg.includes("API error 404")) setNotFound(true);
+        else setError(msg);
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, docId]);
 
-  // ── Scroll origin into view after data loads ───────────────────────────────
+  // ── Scroll after data changes ──────────────────────────────────────────────
+  // Initial load → scroll origin chunk into view (center).
+  // After Prev/Next/Jump → scroll content area to top.
 
   useEffect(() => {
     if (!data) return;
-    originChunkRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (hasNavigatedRef.current) {
+      contentRef.current?.scrollTo({ top: 0 });
+    } else {
+      originChunkRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }, [data]);
 
   // ── Navigation ─────────────────────────────────────────────────────────────
 
-  async function handleNavigate(chunkId: string, direction: "next" | "prev" | "jump") {
+  async function handleNavigate(chunkId: string, direction: "next" | "prev") {
     if (!token || !data) return;
     trackReaderNavigation({ documentId: docId, collection: data.document.collection, direction });
     trackDocumentOpened({ documentId: docId, collection: data.document.collection, source: "reader_nav" });
+
+    hasNavigatedRef.current = true;
+    setHasNavigated(true);
     setLoading(true);
+
     try {
       const result = await getReader(token, docId, chunkId, 10);
       setData(result);
-      setCurrentChunkId(chunkId);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Navigation failed");
     } finally {
@@ -93,8 +100,10 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
 
   // ── Explore more ───────────────────────────────────────────────────────────
 
-  function handleExploreMore(content: string) {
-    router.push(`/search?explore=${encodeURIComponent(content)}`);
+  function handleExploreMore(content: string, label: string) {
+    router.push(
+      `/search?explore=${encodeURIComponent(content)}&exploreRef=${encodeURIComponent(label)}`
+    );
   }
 
   // ── Loading skeleton ───────────────────────────────────────────────────────
@@ -147,8 +156,6 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
     );
   }
 
-  // ── Success ────────────────────────────────────────────────────────────────
-
   if (!data) return null;
 
   return (
@@ -156,11 +163,13 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
       <ReaderToolbar
         document={data.document}
         chunks={data.chunks}
+        prevNavId={data.prev_nav_chunk_id}
+        nextNavId={data.next_nav_chunk_id}
         onNavigate={handleNavigate}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-6">
-        {/* Loading overlay while navigating (data already present) */}
+      <div ref={contentRef} className="flex-1 overflow-y-auto px-4 pt-4 pb-6">
+        {/* Loading overlay while navigating */}
         {loading && (
           <div className="space-y-3 mb-4">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -174,12 +183,10 @@ function DocumentReaderInner({ docId }: DocumentReaderProps) {
         )}
 
         {data.chunks.map((chunk) => {
-          const isOrigin = chunk.id === data.highlight_chunk_id;
+          // Gold "Your result" highlight only on the initial view (not after navigation)
+          const isOrigin = !hasNavigated && chunk.id === data.highlight_chunk_id;
           return (
-            <div
-              key={chunk.id}
-              ref={isOrigin ? originChunkRef : null}
-            >
+            <div key={chunk.id} ref={isOrigin ? originChunkRef : null}>
               <ReaderChunk
                 chunk={chunk}
                 document={data.document}
