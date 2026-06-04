@@ -12,8 +12,13 @@ __pycache__/
 # Env
 .env
 .env.local
+.env.test
 services/api/.env
 
 # OS
 .DS_Store
 .superpowers/
+*.Zone.Identifier
+
+# Corpus source data (large binary/XML files — load separately)
+datapipeline/sources/

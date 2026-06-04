@@ -159,12 +159,22 @@ async def list_searches(
         logger.error("list_searches query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
+    def _parse_filters(raw) -> dict | None:
+        if raw is None:
+            return None
+        if isinstance(raw, dict):
+            return raw
+        try:
+            return json.loads(raw)
+        except Exception:
+            return None
+
     return SearchHistoryResponse(
         searches=[
             SearchSummary(
                 id=str(row["id"]),
                 query=row["query"],
-                filters=row["filters"],
+                filters=_parse_filters(row["filters"]),
                 result_count=row["result_count"],
                 created_at=row["created_at"].isoformat(),
             )

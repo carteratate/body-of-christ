@@ -1,26 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { getSearchHistory, type SearchSummaryV2 } from "@/lib/api";
 import { useAppContext } from "./AppShell";
 
-interface SidebarProps {
-  token: string | null;
-}
-
-export function Sidebar({ token }: SidebarProps) {
+export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { newSearch } = useAppContext();
-  const [searches, setSearches] = useState<SearchSummaryV2[]>([]);
+  const { newSearch, searches, pendingSearch, activeSearchId } = useAppContext();
 
-  useEffect(() => {
-    if (!token) return;
-    getSearchHistory(token).then(setSearches).catch(() => {});
-  }, [token]);
+  function handleNewSearch() {
+    router.push("/search");
+    newSearch();
+  }
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -28,18 +21,21 @@ export function Sidebar({ token }: SidebarProps) {
     router.replace("/login");
   }
 
+  const activeClass = "bg-brand-bg text-brand-accent border-l-2 border-brand-accent";
+  const inactiveClass = "text-brand-muted hover:bg-brand-bg hover:text-brand-primary";
+
   return (
     <aside className="flex flex-col w-56 shrink-0 bg-brand-surface border-r border-brand-surface h-full">
       {/* App name */}
-      <div className="px-4 pt-5 pb-3 border-b border-brand-bg">
-        <span className="text-brand-accent font-semibold text-sm tracking-wide">Body of Christ</span>
+      <div className="px-4 pt-3 pb-2 border-b border-brand-bg">
+        <span className="text-brand-accent font-semibold text-2xl whitespace-nowrap font-brand">Body of Christ</span>
       </div>
 
       {/* New search button */}
-      <div className="px-3 pt-3">
+      <div className="px-3 pt-2">
         <button
-          onClick={newSearch}
-          className="block w-full text-center bg-brand-accent text-brand-bg rounded-md py-1.5 text-sm font-semibold hover:opacity-90 transition-opacity"
+          onClick={handleNewSearch}
+          className="block w-full text-center bg-brand-accent text-brand-bg rounded-md py-1.5 text-base font-semibold hover:opacity-90 transition-opacity whitespace-nowrap font-brand"
         >
           + New Search
         </button>
@@ -50,7 +46,21 @@ export function Sidebar({ token }: SidebarProps) {
         <p className="text-brand-muted text-[10px] uppercase tracking-widest font-medium px-1 mb-2">
           Recent
         </p>
-        {searches.length === 0 && (
+
+        {/* Pending slot — shown only during a fresh/active search, never navigable */}
+        {pendingSearch && (
+          <div
+            className={`block px-2 py-1.5 rounded text-xs truncate ${
+              pendingSearch.id === activeSearchId ? activeClass : inactiveClass
+            }`}
+            title={pendingSearch.query}
+          >
+            {pendingSearch.query}
+          </div>
+        )}
+
+        {/* Real DB-backed searches */}
+        {searches.length === 0 && !pendingSearch && (
           <p className="text-brand-muted text-xs px-1">No recent searches.</p>
         )}
         {searches.map((s) => (
@@ -58,9 +68,7 @@ export function Sidebar({ token }: SidebarProps) {
             key={s.id}
             href={`/search?restore=${s.id}`}
             className={`block px-2 py-1.5 rounded text-xs truncate transition-colors ${
-              pathname.includes(s.id)
-                ? "bg-brand-bg text-brand-accent border-l-2 border-brand-accent"
-                : "text-brand-muted hover:bg-brand-bg hover:text-brand-primary"
+              s.id === activeSearchId ? activeClass : inactiveClass
             }`}
             title={s.query}
           >
@@ -74,9 +82,7 @@ export function Sidebar({ token }: SidebarProps) {
         <Link
           href="/bookmarks"
           className={`block px-2 py-1.5 rounded transition-colors ${
-            pathname === "/bookmarks"
-              ? "text-brand-accent"
-              : "text-brand-muted hover:text-brand-primary"
+            pathname === "/bookmarks" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
         >
           🔖 Saved Passages

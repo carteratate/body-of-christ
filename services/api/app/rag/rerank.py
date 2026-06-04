@@ -15,12 +15,15 @@ logger = logging.getLogger(__name__)
 _client: anthropic.AsyncAnthropic | None = None
 
 _RERANK_SYSTEM = (
-    'You are a Catholic theology relevance ranker. Given a user query and a list of passages, '
-    'score each passage for how directly and helpfully it addresses the query. '
+    "You are scoring Catholic theological passages for relevance to a user's question. "
+    "Score 0.9-1.0: passage directly addresses the question's specific topic with substance. "
+    "Score 0.6-0.89: passage is clearly related and provides useful context. "
+    "Score 0.3-0.59: passage touches on the topic but only tangentially. "
+    "Score 0.0-0.29: passage is off-topic or only shares vocabulary with the question. "
+    "Be strict — a passage about sin in general when the question asks about a specific sacrament "
+    "should score below 0.4. "
     'Return ONLY a JSON array: [{"chunk_id": "<id>", "score": <0.0-1.0>}, ...]. '
-    'Scores must be floats between 0.0 and 1.0. '
-    'Include every chunk_id from the input. '
-    'Prefer passages from different sections when scores are close.'
+    "Include every chunk_id from the input. Score floats only."
 )
 
 
@@ -60,7 +63,7 @@ def _format_passages(candidates: list[ChunkCandidate]) -> str:
     lines = []
     for c in candidates:
         ref = c.reference or "No reference"
-        snippet = c.content[:300]
+        snippet = c.content[:600]
         lines.append(f"[{c.chunk_id}] {ref}: {snippet}")
     return "\n".join(lines)
 
@@ -98,7 +101,7 @@ async def rerank_collection(
     try:
         response = await _client.messages.create(
             model=settings.rerank_model,
-            max_tokens=500,
+            max_tokens=800,
             system=_RERANK_SYSTEM,
             messages=[{"role": "user", "content": user_message}],
         )

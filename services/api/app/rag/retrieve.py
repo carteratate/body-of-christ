@@ -37,6 +37,10 @@ def _vec_to_str(vec: list[float]) -> str:
     return "[" + ",".join(str(v) for v in vec) + "]"
 
 
+_MAX_COSINE_DISTANCE = 0.50  # filter chunks with cosine similarity below 50%
+_HNSW_EF_SEARCH = 150       # wider beam search for better recall (default ~40)
+
+
 async def _search_vector(
     pool: asyncpg.Pool,
     collection: str,
@@ -47,11 +51,14 @@ async def _search_vector(
 ) -> list[asyncpg.Record]:
     """Cosine-similarity vector search against content_embedding.
 
+    Sets ef_search for better HNSW recall and excludes chunks beyond the
+    maximum cosine distance threshold.
     Returns up to *limit* rows ordered by distance ascending (closest first).
     """
-    query = """
+    sql = """
         SELECT c.id, c.content, c.reference, c.document_id,
-               d.title AS document_title, d.author, d.collection
+               d.title AS document_title, d.author, d.collection,
+               c.content_embedding <=> $3::vector AS distance
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
         WHERE d.collection = $1
@@ -66,9 +73,16 @@ async def _search_vector(
         LIMIT $4
     """
     vec_str = _vec_to_str(vec)
-    rows = await pool.fetch(query, collection, user_id, vec_str, limit)
-    logger.debug("vector search (%s): collection=%s returned %d rows", label, collection, len(rows))
-    return list(rows)
+    async with pool.acquire() as conn:
+        await conn.execute(f"SET hnsw.ef_search = {_HNSW_EF_SEARCH}")
+        rows = await conn.fetch(sql, collection, user_id, vec_str, limit)
+    # Drop chunks that are too far from the query vector
+    rows = [r for r in rows if r["distance"] < _MAX_COSINE_DISTANCE]
+    logger.debug(
+        "vector search (%s): collection=%s returned %d rows (after distance filter)",
+        label, collection, len(rows),
+    )
+    return rows
 
 
 async def _search_fts(
@@ -150,17 +164,20 @@ async def retrieve_candidates(
     query_text: str,
     query_vec: list[float],
     hyde_vec: list[float] | None,
+    extra_vecs: list[list[float]],
     collection: str,
     quota: int,
     user_id: str,
 ) -> list[ChunkCandidate]:
-    """Retrieve candidate chunks for a single collection using three parallel
-    search strategies, then merge with Reciprocal Rank Fusion.
+    """Retrieve candidate chunks for a single collection using parallel
+    search strategies (HyDE, query, expanded queries, full-text), then
+    merge with Reciprocal Rank Fusion.
 
     Args:
         query_text:  Raw user query string (used for full-text search).
         query_vec:   Embedding of the raw query.
         hyde_vec:    Embedding of the HyDE hypothetical passage, or None to skip.
+        extra_vecs:  Embeddings of expanded query variants (may be empty).
         collection:  The documents.collection value to filter by.
         quota:       Final desired chunk count (re-ranker will trim to this).
                      This function returns up to quota * settings.candidate_multiplier
@@ -177,7 +194,7 @@ async def retrieve_candidates(
 
     n = quota * settings.candidate_multiplier
 
-    # Build coroutines. Search A (HyDE) is skipped when hyde_vec is None.
+    # Build coroutines. HyDE and expanded-query paths are skipped when unavailable.
     coros: list = []
     labels: list[str] = []
 
@@ -187,6 +204,10 @@ async def retrieve_candidates(
 
     coros.append(_search_vector(pool, collection, user_id, query_vec, n, "query"))
     labels.append("query")
+
+    for i, ev in enumerate(extra_vecs):
+        coros.append(_search_vector(pool, collection, user_id, ev, n, f"expand_{i}"))
+        labels.append(f"expand_{i}")
 
     coros.append(_search_fts(pool, collection, user_id, query_text, n))
     labels.append("fts")

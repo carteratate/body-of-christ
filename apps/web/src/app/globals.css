@@ -1,6 +1,18 @@
 @import "tailwindcss";
 
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fill-bar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
 @theme {
+  --animate-fade-in: fade-in 0.35s ease-out both;
+
   /* Sacred Night — dark mode (default) */
   --color-brand-bg:      #090E1A;
   --color-brand-surface: #111829;
@@ -11,6 +23,7 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-brand: var(--font-cinzel);
 
   /* Collection accent colors */
   --color-collection-bible:          #4caf50;

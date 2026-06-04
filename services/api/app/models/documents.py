@@ -23,3 +23,7 @@ class ReaderResponse(BaseModel):
     document: DocumentResponse
     chunks: list[ReaderChunk]
     highlight_chunk_id: str
+    # Pivot IDs for non-overlapping prev/next page navigation.
+    # None means there is no previous/next page.
+    prev_nav_chunk_id: Optional[str] = None
+    next_nav_chunk_id: Optional[str] = None

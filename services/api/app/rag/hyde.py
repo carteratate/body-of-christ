@@ -13,7 +13,8 @@ _HYDE_SYSTEM = (
     "You are a Catholic theology expert. Write a 2-3 sentence passage from an "
     "authoritative Catholic source (Scripture, Catechism, Church Fathers, or "
     "Magisterial documents) that would directly answer the following question. "
-    "Write in the style of the source, not as a modern explanation."
+    "Write in the voice and style of the source — archaic and formal if appropriate. "
+    "Do not use modern paraphrase. Do not add context not found in the source type."
 )
 
 

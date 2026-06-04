@@ -180,6 +180,8 @@ export interface ReaderResponse {
   document: DocumentInfo;
   chunks: ReaderChunk[];
   highlight_chunk_id: string;
+  prev_nav_chunk_id: string | null;
+  next_nav_chunk_id: string | null;
 }
 
 // ── V2 Bookmarks ───────────────────────────────────────────────────────────
@@ -211,10 +213,11 @@ export interface Preferences {
 
 export interface SearchStreamCallbacks {
   onChunk: (chunk: ChunkResult) => void;
-  onExplanation: (chunkId: string, explanation: string) => void;
+  onExplanationDelta: (chunkId: string, delta: string) => void;
   onDone: (searchId: string, resultCount: number) => void;
   onError: (message: string) => void;
   onRateLimit: (retryAfter: number | null, limitType: "per_minute" | "daily") => void;
+  onStatus?: (phase: "searching" | "ranking", collections?: string[]) => void;
 }
 
 export async function streamSearch(
@@ -272,9 +275,10 @@ export async function streamSearch(
       try {
         const event = JSON.parse(line.slice(6)) as
           | { type: "chunk" } & ChunkResult & { reranker_score: number }
-          | { type: "explanation"; chunk_id: string; explanation: string }
+          | { type: "explanation_delta"; chunk_id: string; delta: string }
           | { type: "done"; search_id: string; result_count: number }
-          | { type: "error"; detail: string };
+          | { type: "error"; detail: string }
+          | { type: "status"; phase: "searching" | "ranking"; collections?: string[] };
 
         if (event.type === "chunk") {
           callbacks.onChunk({
@@ -284,12 +288,14 @@ export async function streamSearch(
             reranker_score: event.reranker_score ?? null,
             explanation: null,
           });
-        } else if (event.type === "explanation") {
-          callbacks.onExplanation(event.chunk_id, event.explanation);
+        } else if (event.type === "explanation_delta") {
+          callbacks.onExplanationDelta(event.chunk_id, event.delta);
         } else if (event.type === "done") {
           callbacks.onDone(event.search_id, event.result_count);
         } else if (event.type === "error") {
           callbacks.onError(event.detail ?? "Search failed");
+        } else if (event.type === "status") {
+          callbacks.onStatus?.(event.phase, event.collections);
         }
       } catch {
         // malformed SSE line — skip

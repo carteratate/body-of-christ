@@ -13,7 +13,8 @@ from app.rag.hyde import generate_hyde_passage
 from app.rag.embed import embed_text
 from app.rag.retrieve import retrieve_candidates, ChunkCandidate
 from app.rag.rerank import rerank_collection, RankedChunk
-from app.rag.explain import generate_explanation
+from app.rag.explain import stream_explanation
+from app.rag.query_expand import expand_query
 from app.rag.constants import VALID_COLLECTIONS
 
 logger = logging.getLogger(__name__)
@@ -44,11 +45,12 @@ async def run_search_pipeline(
 
     try:
         # ------------------------------------------------------------------
-        # Step 1 — Parallel HyDE + query embedding
+        # Step 1 — Parallel HyDE + query embedding + query expansion
         # ------------------------------------------------------------------
-        hyde_passage, query_vec = await asyncio.gather(
+        hyde_passage, query_vec, expanded_queries = await asyncio.gather(
             generate_hyde_passage(query),
             embed_text(query),
+            expand_query(query),
             return_exceptions=True,
         )
 
@@ -60,8 +62,11 @@ async def run_search_pipeline(
         if isinstance(hyde_passage, BaseException) or hyde_passage is None:
             hyde_passage = None  # HyDE fallback — use query_vec only
 
+        if isinstance(expanded_queries, BaseException):
+            expanded_queries = []
+
         # ------------------------------------------------------------------
-        # Step 2 — Embed HyDE passage (if available)
+        # Step 2 — Embed HyDE passage + expanded query variants (if available)
         # ------------------------------------------------------------------
         hyde_vec: list[float] | None = None
         if isinstance(hyde_passage, str) and hyde_passage:
@@ -71,11 +76,20 @@ async def run_search_pipeline(
                 logger.warning("HyDE embedding failed, falling back to query_vec only: %s", exc)
                 hyde_vec = None
 
+        extra_vecs: list[list[float]] = []
+        if expanded_queries:
+            embed_results = await asyncio.gather(
+                *[embed_text(q) for q in expanded_queries],
+                return_exceptions=True,
+            )
+            extra_vecs = [v for v in embed_results if not isinstance(v, BaseException)]
+
         # ------------------------------------------------------------------
         # Step 3 — Per-collection retrieval (parallel)
         # ------------------------------------------------------------------
+        yield {"type": "status", "phase": "searching", "collections": collections}
         retrieve_tasks = [
-            retrieve_candidates(query, query_vec, hyde_vec, col, quota, user_id)
+            retrieve_candidates(query, query_vec, hyde_vec, extra_vecs, col, quota, user_id)
             for col in collections
         ]
         retrieve_results = await asyncio.gather(*retrieve_tasks, return_exceptions=True)
@@ -98,6 +112,7 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         # Step 4 — Per-collection re-ranking (parallel)
         # ------------------------------------------------------------------
+        yield {"type": "status", "phase": "ranking"}
         rerank_tasks = [
             rerank_collection(col_candidates, query, quota)
             for col_candidates in per_collection_candidates
@@ -115,6 +130,18 @@ async def run_search_pipeline(
         # Step 5 — Global merge and sort by reranker_score descending
         # ------------------------------------------------------------------
         final_results = sorted(all_ranked, key=lambda c: c.reranker_score, reverse=True)
+
+        # Ensure every selected collection has at least one result. If a
+        # collection scored below the top results, append its best-ranked
+        # chunk so no source is completely silenced.
+        represented = {r.collection for r in final_results}
+        for col in collections:
+            if col not in represented:
+                col_best = next(
+                    (r for r in all_ranked if r.collection == col), None
+                )
+                if col_best:
+                    final_results.append(col_best)
 
         # ------------------------------------------------------------------
         # Step 6 — Yield chunk events
@@ -165,28 +192,43 @@ async def run_search_pipeline(
                     )
 
         # ------------------------------------------------------------------
-        # Step 8 — Parallel explanation generation with progressive yield
+        # Step 8 — Parallel streaming explanation generation
+        # Each explanation streams tokens via a shared queue so multiple LLM
+        # streams can run concurrently and their deltas are interleaved.
         # ------------------------------------------------------------------
-        async def _explain_one(chunk: RankedChunk) -> tuple[str, str]:
-            explanation = await generate_explanation(
-                chunk.content, chunk.reference, chunk.collection, query
-            )
-            return chunk.chunk_id, explanation
+        ExplainEvent = tuple[str, str, str]  # (kind, chunk_id, data)
+        queue: asyncio.Queue[ExplainEvent] = asyncio.Queue()
+        accumulated: dict[str, str] = {c.chunk_id: "" for c in final_results}
 
-        tasks = [asyncio.create_task(_explain_one(c)) for c in final_results]
+        async def _stream_one(chunk: RankedChunk) -> None:
+            try:
+                async for delta in stream_explanation(
+                    chunk.content, chunk.reference, chunk.collection, query
+                ):
+                    accumulated[chunk.chunk_id] += delta
+                    await queue.put(("delta", chunk.chunk_id, delta))
+            except Exception as exc:
+                logger.warning("_stream_one error for %s: %s", chunk.chunk_id, exc)
+            finally:
+                await queue.put(("done", chunk.chunk_id, ""))
+
+        tasks = [asyncio.create_task(_stream_one(c)) for c in final_results]
+        pending = len(final_results)
         try:
-            for coro in asyncio.as_completed(tasks):
-                chunk_id, explanation = await coro
-                explanation = explanation[:2000]  # prevent oversized LLM output in DB
-                yield {"type": "explanation", "chunk_id": chunk_id, "explanation": explanation}
-                # Update the retrievals row with explanation
-                async with pool.acquire() as conn:
-                    await conn.execute(
-                        "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
-                        explanation,
-                        uuid.UUID(search_id),
-                        uuid.UUID(chunk_id),
-                    )
+            while pending > 0:
+                kind, chunk_id, data = await queue.get()
+                if kind == "delta":
+                    yield {"type": "explanation_delta", "chunk_id": chunk_id, "delta": data}
+                elif kind == "done":
+                    pending -= 1
+                    full_text = accumulated[chunk_id][:2000]
+                    async with pool.acquire() as conn:
+                        await conn.execute(
+                            "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
+                            full_text,
+                            uuid.UUID(search_id),
+                            uuid.UUID(chunk_id),
+                        )
         finally:
             for t in tasks:
                 t.cancel()

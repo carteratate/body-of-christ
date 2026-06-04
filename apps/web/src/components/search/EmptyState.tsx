@@ -30,7 +30,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ onSelectQuery }: EmptyStateProps) {
-  const [tagline, setTagline] = useState(TAGLINES[0]);
+  const [tagline, setTagline] = useState<string>(TAGLINES[0]);
 
   useEffect(() => {
     setTagline(TAGLINES[Math.floor(Math.random() * TAGLINES.length)]);
@@ -43,7 +43,7 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
 
   return (
     <div className="flex flex-col items-center justify-center h-full py-16 px-4">
-      <p className="text-brand-muted text-sm mb-6 tracking-wide" suppressHydrationWarning>{tagline}</p>
+      <p className="text-brand-muted text-2xl mb-8 tracking-wide font-brand" suppressHydrationWarning>{tagline}</p>
       <div className="grid grid-cols-2 gap-3 w-full max-w-2xl">
         {SUGGESTED_QUERIES.map((query) => (
           <button

@@ -160,8 +160,31 @@ async def get_document_reader(
         for r in chunk_rows
     ]
 
+    # Nav pivot IDs for non-overlapping Prev/Next pages.
+    # Next pivot = last_visible_pos + context + 1 (centers the next page just after the window)
+    # Prev pivot = first_visible_pos - context - 1 (centers the prev page just before the window)
+    actual_first_pos = chunk_rows[0]["position"] if chunk_rows else position
+    actual_last_pos = chunk_rows[-1]["position"] if chunk_rows else position
+    try:
+        next_nav_row = await pool.fetchrow(
+            "SELECT id FROM chunks WHERE document_id = $1 AND position = $2",
+            doc_uuid,
+            actual_last_pos + context + 1,
+        )
+        prev_nav_row = await pool.fetchrow(
+            "SELECT id FROM chunks WHERE document_id = $1 AND position = $2",
+            doc_uuid,
+            actual_first_pos - context - 1,
+        )
+    except Exception as exc:
+        logger.warning("get_document_reader nav query failed (%s)", exc.__class__.__name__)
+        next_nav_row = None
+        prev_nav_row = None
+
     return ReaderResponse(
         document=document,
         chunks=chunks,
         highlight_chunk_id=chunk_id,
+        next_nav_chunk_id=str(next_nav_row["id"]) if next_nav_row else None,
+        prev_nav_chunk_id=str(prev_nav_row["id"]) if prev_nav_row else None,
     )
