@@ -80,7 +80,9 @@ def test_parse_thml_year_from_death():
 
 def test_parse_thml_standard_chunks_by_chapter():
     doc = parse_thml_string(STANDARD_THML)
-    assert len(doc.chunks) == 3  # Book I Ch I, Book I Ch II, Book II Ch I
+    # Book I Ch II is ~182 chars — below _MIN_MERGE_CHARS (200) — so it merges
+    # into Book II Ch I, yielding 2 chunks total
+    assert len(doc.chunks) == 2
 
 def test_parse_thml_chapter_content_joined():
     doc = parse_thml_string(STANDARD_THML)
@@ -93,7 +95,8 @@ def test_parse_thml_reference_format():
     _, ref0, _ = doc.chunks[0]
     _, ref1, _ = doc.chunks[1]
     assert ref0 == "Book I, Chapter I"
-    assert ref1 == "Book I, Chapter II"
+    # Ch II (short) merges into the next section; ref comes from the absorbing section
+    assert ref1 == "Book II, Chapter I"
 
 def test_parse_thml_positions_sequential():
     doc = parse_thml_string(STANDARD_THML)

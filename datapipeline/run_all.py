@@ -9,7 +9,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from load import close_pool, get_pool
 
-from ingest import bible, catechism, canon_law, encyclicals, church_fathers
+from ingest import bible, catechism, canon_law, encyclicals, church_fathers, summa
 import embed as embed_mod
 
 PIPELINE: list[tuple[str, object]] = [
@@ -18,6 +18,7 @@ PIPELINE: list[tuple[str, object]] = [
     ("canon-law",      canon_law),
     ("encyclicals",    encyclicals),
     ("church-fathers", church_fathers),
+    ("summa",          summa),
 ]
 
 
@@ -62,7 +63,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the Body of Christ data pipeline.")
     parser.add_argument(
         "--collection",
-        help="Run only this collection (bible, catechism, canon-law, encyclicals, church-fathers)"
+        help="Run only this collection (bible, catechism, canon-law, encyclicals, church-fathers, summa)"
     )
     parser.add_argument(
         "--skip-embed",

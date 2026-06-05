@@ -15,7 +15,7 @@ class ThmlDocument:
 
 def _strip_tags(text: str) -> str:
     """Remove XML/HTML tags and collapse whitespace."""
-    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"<[^>]+>", "", text)
     text = re.sub(r"&amp;", "&", text)
     text = re.sub(r"&lt;", "<", text)
     text = re.sub(r"&gt;", ">", text)
