@@ -1,19 +1,24 @@
-"""Catholic Bible ingestion: CPDV (local JSON) and Douay-Rheims (Project Gutenberg).
+"""WEB-C (World English Bible — Catholic) ingestion via USFM files.
+
+Chunking strategy:
+  - 66 canonical books:  one chunk per named pericope
+                         (boundaries from PericopeGroupedKJVVerses.json)
+  - 7 deuterocanonical books: one chunk per chapter
 
 Usage:
-    python ingest/bible.py                       # both translations
-    python ingest/bible.py --translation CPDV
-    python ingest/bible.py --translation douay-rheims
+    python ingest/bible.py                            # WEB-C (default)
+    python ingest/bible.py --translation WEB-C        # explicit
+    python ingest/bible.py --usfm-dir /path/to/dir --translation MyTranslation
 
-Project Gutenberg #8300 format notes:
-  - Chapter headers: "BookName Chapter N"  (e.g. "Genesis Chapter 1")
-  - Verse lines:     "chapter:verse. Text" (e.g. "1:1. In the beginning...")
-  - Verse text may wrap across continuation lines until a blank line.
-  - Annotation/footnote lines (prose not starting with "N:N.") are skipped.
-
-CPDV source:
-  - Local file: datapipeline/sources/bible/cpdv.json
-  - Format: {"charset": "UTF-8", "Genesis": {"1": {"1": "text", ...}, ...}, ...}
+USFM format notes:
+  - \\id CODE ...       — book identifier (e.g. MAT)
+  - \\c N               — chapter N starts
+  - \\v N text          — verse N text (may wrap to continuation lines)
+  - \\w word|strong="H1234"\\w*  — Strong's markup (word extracted, rest stripped)
+  - \\f ... \\f*        — footnote (stripped)
+  - \\x ... \\x*        — cross-reference (stripped)
+  - \\wj ... \\wj*      — words of Jesus (stripped, content kept)
+  - Other backslash markers (\\p, \\q1, \\q2, \\sp, etc.) are stripped.
 """
 from __future__ import annotations
 
@@ -29,7 +34,6 @@ from typing import Iterator
 from tqdm import tqdm
 
 # Add datapipeline root to path so config/load are importable when run directly.
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import settings  # noqa: E402
@@ -37,7 +41,7 @@ from load import close_pool, get_pool, upsert_chunk, upsert_document  # noqa: E4
 
 # ---------------------------------------------------------------------------
 # Canonical book name → testament
-# Includes full 73-book Catholic canon (deuterocanonicals included).
+# Full 73-book Catholic canon (deuterocanonicals included).
 # ---------------------------------------------------------------------------
 _BOOK_TESTAMENT: dict[str, str] = {
     # OT protocanonical
@@ -63,102 +67,51 @@ _BOOK_TESTAMENT: dict[str, str] = {
     "Hebrews": "NT", "James": "NT", "1 Peter": "NT", "2 Peter": "NT",
     "1 John": "NT", "2 John": "NT", "3 John": "NT", "Jude": "NT",
     "Revelation": "NT",
-    # CPDV JSON uses hyphens instead of spaces for numbered books; add aliases
-    # so the parser resolves all 73 books.
-    "1-Samuel": "OT", "2-Samuel": "OT", "1-Kings": "OT", "2-Kings": "OT",
-    "1-Chronicles": "OT", "2-Chronicles": "OT",
-    "1-Maccabees": "OT", "2-Maccabees": "OT",
-    "Song2": "OT",   # CPDV JSON key for Song of Solomon
-    "1-Corinthians": "NT", "2-Corinthians": "NT",
-    "1-Thessalonians": "NT", "2-Thessalonians": "NT",
-    "1-Timothy": "NT", "2-Timothy": "NT",
-    "1-Peter": "NT", "2-Peter": "NT",
-    "1-John": "NT", "2-John": "NT", "3-John": "NT",
 }
 
 # ---------------------------------------------------------------------------
-# Douay-Rheims (PG #8300) book name mapping
-#
-# PG #8300 uses "BookName Chapter N" headers. The "BookName" portion uses
-# Douay-Rheims Latinised spellings (Josue, Isaias, Tobias, etc.).
-# Map to canonical names used in the documents table.
+# USFM book code → canonical book name
+# Covers all 73 books present in the WEB-C USFM collection.
 # ---------------------------------------------------------------------------
-DR_PG_BOOK_NAME_MAP: dict[str, str] = {
-    "Genesis": "Genesis",
-    "Exodus": "Exodus",
-    "Leviticus": "Leviticus",
-    "Numbers": "Numbers",
-    "Deuteronomy": "Deuteronomy",
-    "Josue": "Joshua",
-    "Judges": "Judges",
-    "Ruth": "Ruth",
-    "1 Kings": "1 Samuel",
-    "2 Kings": "2 Samuel",
-    "3 Kings": "1 Kings",
-    "4 Kings": "2 Kings",
-    "1 Paralipomenon": "1 Chronicles",
-    "2 Paralipomenon": "2 Chronicles",
-    "1 Esdras": "Ezra",
-    "2 Esdras": "Nehemiah",
-    "Tobias": "Tobit",
-    "Judith": "Judith",
-    "Esther": "Esther",
-    "1 Machabees": "1 Maccabees",
-    "2 Machabees": "2 Maccabees",
-    "Job": "Job",
-    "Psalms": "Psalms",
-    "Proverbs": "Proverbs",
-    "Ecclesiastes": "Ecclesiastes",
-    "Canticle of Canticles": "Song of Solomon",
-    "Wisdom": "Wisdom",
-    "Ecclesiasticus": "Sirach",
-    "Isaias": "Isaiah",
-    "Jeremias": "Jeremiah",
-    "Lamentations": "Lamentations",
-    "Baruch": "Baruch",
-    "Ezechiel": "Ezekiel",
-    "Daniel": "Daniel",
-    "Osee": "Hosea",
-    "Joel": "Joel",
-    "Amos": "Amos",
-    "Abdias": "Obadiah",
-    "Jonas": "Jonah",
-    "Micheas": "Micah",
-    "Nahum": "Nahum",
-    "Habacuc": "Habakkuk",
-    "Sophonias": "Zephaniah",
-    "Aggeus": "Haggai",
-    "Zacharias": "Zechariah",
-    "Malachias": "Malachi",
-    # New Testament (same spelling as canonical)
-    "Matthew": "Matthew",
-    "Mark": "Mark",
-    "Luke": "Luke",
-    "John": "John",
-    "Acts": "Acts",
-    "Romans": "Romans",
-    "1 Corinthians": "1 Corinthians",
-    "2 Corinthians": "2 Corinthians",
-    "Galatians": "Galatians",
-    "Ephesians": "Ephesians",
-    "Philippians": "Philippians",
-    "Colossians": "Colossians",
-    "1 Thessalonians": "1 Thessalonians",
-    "2 Thessalonians": "2 Thessalonians",
-    "1 Timothy": "1 Timothy",
-    "2 Timothy": "2 Timothy",
-    "Titus": "Titus",
-    "Philemon": "Philemon",
-    "Hebrews": "Hebrews",
-    "James": "James",
-    "1 Peter": "1 Peter",
-    "2 Peter": "2 Peter",
-    "1 John": "1 John",
-    "2 John": "2 John",
-    "3 John": "3 John",
-    "Jude": "Jude",
-    "Apocalypse": "Revelation",
+_USFM_CODE_TO_BOOK: dict[str, str] = {
+    "GEN": "Genesis", "EXO": "Exodus", "LEV": "Leviticus", "NUM": "Numbers",
+    "DEU": "Deuteronomy", "JOS": "Joshua", "JDG": "Judges", "RUT": "Ruth",
+    "1SA": "1 Samuel", "2SA": "2 Samuel", "1KI": "1 Kings", "2KI": "2 Kings",
+    "1CH": "1 Chronicles", "2CH": "2 Chronicles", "EZR": "Ezra", "NEH": "Nehemiah",
+    # WEB-C uses ESG (Greek Esther) which includes deuterocanonical additions;
+    # we map it to canonical "Esther" for document title purposes.
+    "ESG": "Esther",
+    "JOB": "Job", "PSA": "Psalms", "PRO": "Proverbs", "ECC": "Ecclesiastes",
+    "SNG": "Song of Solomon",
+    "ISA": "Isaiah", "JER": "Jeremiah", "LAM": "Lamentations",
+    "EZK": "Ezekiel",
+    # WEB-C uses DAG (Daniel with Greek additions); map to canonical "Daniel".
+    "DAG": "Daniel",
+    "HOS": "Hosea", "JOL": "Joel", "AMO": "Amos", "OBA": "Obadiah",
+    "JON": "Jonah", "MIC": "Micah", "NAM": "Nahum", "HAB": "Habakkuk",
+    "ZEP": "Zephaniah", "HAG": "Haggai", "ZEC": "Zechariah", "MAL": "Malachi",
+    # Deuterocanonical
+    "TOB": "Tobit", "JDT": "Judith", "1MA": "1 Maccabees", "2MA": "2 Maccabees",
+    "WIS": "Wisdom", "SIR": "Sirach", "BAR": "Baruch",
+    # NT
+    "MAT": "Matthew", "MRK": "Mark", "LUK": "Luke", "JHN": "John",
+    "ACT": "Acts", "ROM": "Romans", "1CO": "1 Corinthians", "2CO": "2 Corinthians",
+    "GAL": "Galatians", "EPH": "Ephesians", "PHP": "Philippians",
+    "COL": "Colossians", "1TH": "1 Thessalonians", "2TH": "2 Thessalonians",
+    "1TI": "1 Timothy", "2TI": "2 Timothy", "TIT": "Titus", "PHM": "Philemon",
+    "HEB": "Hebrews", "JAS": "James", "1PE": "1 Peter", "2PE": "2 Peter",
+    "1JN": "1 John", "2JN": "2 John", "3JN": "3 John", "JUD": "Jude",
+    "REV": "Revelation",
 }
+
+# Deuterocanonical books chunked per-chapter (not by pericope).
+_DEUTEROCANONICAL_BOOKS: frozenset[str] = frozenset({
+    "Tobit", "Judith", "1 Maccabees", "2 Maccabees", "Wisdom", "Sirach", "Baruch",
+})
+
+# Default source paths (relative to the datapipeline root directory).
+_DEFAULT_USFM_SUBDIR = os.path.join("sources", "bible", "eng-web-c_usfm")
+_DEFAULT_PERICOPE_PATH = os.path.join("sources", "bible", "PericopeGroupedKJVVerses.json")
 
 
 # ---------------------------------------------------------------------------
@@ -176,263 +129,410 @@ class Verse:
 @dataclass
 class BookVerses:
     name: str               # canonical book name
-    book_code: str          # USFM code (empty for DR/CPDV JSON)
+    book_code: str          # USFM code e.g. "GEN"
     testament: str          # "OT" | "NT"
     verses: list[Verse] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
-# CPDV JSON parser
+# USFM parsing
 # ---------------------------------------------------------------------------
 
-def parse_cpdv_json(data: dict) -> list[BookVerses]:
-    """Parse the CPDV JSON structure {book: {chapter: {verse: text}}} into BookVerses."""
-    books: list[BookVerses] = []
-    for book_name, chapters in data.items():
-        if book_name == "charset":
+# Inline spanning markers: \tag ... \tag*  — strip the markers, keep inner text.
+# Footnotes and cross-refs: \f ... \f*  and \x ... \x*  — strip everything inside.
+_FOOTNOTE_RE = re.compile(r"\\f\s.*?\\f\*", re.DOTALL)
+_XREF_RE = re.compile(r"\\x\s.*?\\x\*", re.DOTALL)
+# Strong's word markup comes in two forms:
+#   \w  word|strong="H1234"\w*   (regular)
+#   \+w word|strong="G1234"\+w*  (nested, used inside \wj ... \wj*)
+# Both are captured by matching \+?w ... \+?w* with a pipe-separated strong code.
+_STRONGS_RE = re.compile(r"\\\+?w\s+([^|\\]+?)\s*\|[^*\\]*\\\+?w\*")
+# Generic backslash marker at start of a token, e.g. \p \q1 \wj \wj* \sp etc.
+_MARKER_RE = re.compile(r"\\[a-zA-Z0-9*+]+\s*")
+# Collapse runs of whitespace.
+_WS_RE = re.compile(r"\s+")
+
+
+def _clean_usfm_text(raw: str) -> str:
+    """Strip all USFM markup from a raw line fragment, returning plain text."""
+    # Remove footnotes and cross-references (including their content).
+    text = _FOOTNOTE_RE.sub("", raw)
+    text = _XREF_RE.sub("", text)
+    # Expand Strong's markup to just the word.
+    text = _STRONGS_RE.sub(r"\1", text)
+    # Strip all remaining backslash markers.
+    text = _MARKER_RE.sub(" ", text)
+    return _WS_RE.sub(" ", text).strip()
+
+
+def parse_usfm_file(path: str) -> dict[tuple[int, int], str]:
+    """Parse one USFM file and return a dict of {(chapter, verse): cleaned_text}.
+
+    Multi-line verses are joined with a single space.
+    Lines that carry no verse data (\\p, \\q1, chapter markers, etc.) are ignored
+    unless they are continuation lines for the current verse.
+    """
+    verses: dict[tuple[int, int], str] = {}
+    current_chapter: int = 0
+    current_verse: int | None = None
+
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        for raw_line in fh:
+            line = raw_line.rstrip("\n\r")
+
+            # Chapter marker: \c N
+            c_match = re.match(r"^\\c\s+(\d+)", line)
+            if c_match:
+                current_chapter = int(c_match.group(1))
+                current_verse = None
+                continue
+
+            # Verse marker: \v N text...
+            v_match = re.match(r"^\\v\s+(\d+)\s*(.*)", line)
+            if v_match and current_chapter > 0:
+                current_verse = int(v_match.group(1))
+                rest = v_match.group(2)
+                text = _clean_usfm_text(rest)
+                key = (current_chapter, current_verse)
+                verses[key] = text
+                continue
+
+            # Continuation line for current verse (non-empty, not a new marker block).
+            # Lines starting with a backslash marker that introduce structure (\\p, \\q*)
+            # may still carry text after the marker tag — we only skip if they produce
+            # no text at all after cleaning.
+            if current_verse is not None and current_chapter > 0:
+                # Skip pure structural markers with no text payload.
+                # A line is continuation if it's not a new \\c / \\v / \\id header.
+                if re.match(r"^\\(id|ide|h|toc|mt|imt|ms|mr|s|sr|r|d|sp|b|li|lim|cls)\b", line):
+                    # These are always structural — reset verse context.
+                    current_verse = None
+                    continue
+                cleaned = _clean_usfm_text(line)
+                if cleaned:
+                    key = (current_chapter, current_verse)
+                    if key in verses:
+                        verses[key] = verses[key] + " " + cleaned
+                    else:
+                        verses[key] = cleaned
+
+    return verses
+
+
+def _book_code_from_usfm(path: str) -> str | None:
+    """Read the \\id line from a USFM file and return the 3-letter book code."""
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            m = re.match(r"^\\id\s+([A-Z0-9]{2,3})", line)
+            if m:
+                return m.group(1)
+    return None
+
+
+def load_usfm_directory(usfm_dir: str) -> dict[str, BookVerses]:
+    """Load all USFM files in a directory.
+
+    Returns a dict of {canonical_book_name: BookVerses}.
+    Files that do not map to a known canonical name are skipped.
+    """
+    books: dict[str, BookVerses] = {}
+    for fname in sorted(os.listdir(usfm_dir)):
+        if not fname.endswith(".usfm"):
             continue
-        testament = _BOOK_TESTAMENT.get(book_name)
-        if testament is None:
+        path = os.path.join(usfm_dir, fname)
+        code = _book_code_from_usfm(path)
+        if code is None:
             continue
-        verses: list[Verse] = []
-        for ch_str in sorted((k for k in chapters.keys() if k.isdigit()), key=int):
-            verse_dict = chapters[ch_str]
-            ch = int(ch_str)
-            for v_str in sorted(verse_dict.keys(), key=int):
-                text = verse_dict[v_str]
-                verses.append(Verse(book_name, ch, int(v_str), text))
-        books.append(BookVerses(name=book_name, book_code="", testament=testament, verses=verses))
+        canonical = _USFM_CODE_TO_BOOK.get(code)
+        if canonical is None:
+            continue
+        testament = _BOOK_TESTAMENT.get(canonical, "OT")
+        verse_map = parse_usfm_file(path)
+        verse_list = [
+            Verse(canonical, ch, v, text)
+            for (ch, v), text in sorted(verse_map.items())
+        ]
+        books[canonical] = BookVerses(
+            name=canonical,
+            book_code=code,
+            testament=testament,
+            verses=verse_list,
+        )
     return books
 
 
 # ---------------------------------------------------------------------------
-# Project Gutenberg Douay-Rheims (#8300) parser
+# Pericope loading
 # ---------------------------------------------------------------------------
-#
-# File format:
-#   - Chapter headers: "BookName Chapter N"
-#   - Verse lines:     "chapter:verse. Text that may wrap..."
-#   - Continuation:    non-blank lines following a verse (before next blank/verse)
-#   - Annotations:     prose lines that look like continuations but are chapter
-#                      summaries — we skip them by only collecting continuation
-#                      lines that come right after a confirmed verse line.
-#
-# Verse line regex: starts with digits:digits followed by a period and space.
-# -------------------------------------------------------------------------
 
-_DR_CHAPTER_HDR_RE = re.compile(r"^(.+?)\s+Chapter\s+\d+\s*$")
-_DR_VERSE_LINE_RE = re.compile(r"^(\d+):(\d+)\.\s+(.+)$")
+@dataclass
+class Pericope:
+    title: str
+    book: str       # canonical book name extracted from "Reference Start"
+    start_chapter: int
+    start_verse: int
+    end_chapter: int
+    end_verse: int
 
 
-def parse_douay_rheims(text: str) -> list[BookVerses]:
+def _parse_ref(ref: str) -> tuple[str, int, int]:
+    """Parse 'BookName Chapter:Verse' into (book_name, chapter, verse).
+
+    Handles multi-word book names like '1 Corinthians 13:1'.
     """
-    Parse the Project Gutenberg plain-text Douay-Rheims Bible (#8300).
+    # The reference ends with 'N:N' — split on the last space to separate book + cv.
+    parts = ref.rsplit(" ", 1)
+    if len(parts) != 2:
+        raise ValueError(f"Cannot parse reference: {ref!r}")
+    book = parts[0].strip()
+    cv = parts[1].strip()
+    if ":" not in cv:
+        raise ValueError(f"No chapter:verse in reference: {ref!r}")
+    ch_str, v_str = cv.split(":", 1)
+    return book, int(ch_str), int(v_str)
 
-    Returns a list of BookVerses, one per canonical book name.
-    Books with the same canonical name (e.g. because multiple PG book names
-    map to the same canonical) have their verses merged in order.
+
+def load_pericopes(pericope_path: str) -> dict[str, list[Pericope]]:
+    """Load pericope boundaries and group by canonical book name.
+
+    Returns {canonical_book_name: [Pericope, ...]}.
     """
-    lines = text.splitlines()
+    with open(pericope_path, encoding="utf-8") as fh:
+        raw = json.load(fh)
 
-    # Skip Gutenberg preamble.
-    start_idx = 0
-    for i, line in enumerate(lines):
-        if "*** START OF" in line or "***START OF" in line:
-            start_idx = i + 1
-            break
+    grouped: dict[str, list[Pericope]] = {}
+    for item in raw:
+        book, sc, sv = _parse_ref(item["Reference Start"])
+        _, ec, ev = _parse_ref(item["Reference End"])
+        p = Pericope(
+            title=item["Pericope"],
+            book=book,
+            start_chapter=sc,
+            start_verse=sv,
+            end_chapter=ec,
+            end_verse=ev,
+        )
+        grouped.setdefault(book, []).append(p)
+    return grouped
 
-    # We accumulate verses per canonical book name to handle cases where
-    # the same book appears across multiple chapter-header entries.
-    book_order: list[str] = []          # insertion order of canonical names
-    book_verses: dict[str, BookVerses] = {}
 
-    current_canonical: str | None = None
-    last_was_verse = False              # True after a verse line, False after blank/header
+# ---------------------------------------------------------------------------
+# Reference formatting
+# ---------------------------------------------------------------------------
 
-    for line in lines[start_idx:]:
-        raw = line.rstrip()
+def _format_reference(book: str, sc: int, sv: int, ec: int, ev: int) -> str:
+    """Build a human-readable reference string using an en-dash for ranges.
 
-        # End of Project Gutenberg content
-        if "*** END OF" in raw or "***END OF" in raw:
-            break
+    Single verse:      'Matthew 5:3'
+    Same chapter:      'Matthew 5:1–4'
+    Cross-chapter:     'Genesis 1:1–2:3'
+    """
+    if sc == ec and sv == ev:
+        return f"{book} {sc}:{sv}"
+    if sc == ec:
+        return f"{book} {sc}:{sv}–{ev}"
+    return f"{book} {sc}:{sv}–{ec}:{ev}"
 
-        stripped = raw.strip()
 
-        if not stripped:
-            last_was_verse = False
+# ---------------------------------------------------------------------------
+# Chunking
+# ---------------------------------------------------------------------------
+
+def collect_pericope_verses(
+    verse_map: dict[tuple[int, int], str],
+    start_chapter: int,
+    start_verse: int,
+    end_chapter: int,
+    end_verse: int,
+) -> list[tuple[int, int, str]]:
+    """Return (chapter, verse, text) tuples within [start, end] inclusive."""
+    result = []
+    for (ch, v), text in sorted(verse_map.items()):
+        if (ch, v) < (start_chapter, start_verse):
             continue
-
-        # Try verse line first (most common content line)
-        m = _DR_VERSE_LINE_RE.match(stripped)
-        if m and current_canonical is not None:
-            ch = int(m.group(1))
-            v = int(m.group(2))
-            verse_text = m.group(3).strip()
-            book_verses[current_canonical].verses.append(
-                Verse(current_canonical, ch, v, verse_text)
-            )
-            last_was_verse = True
+        if (ch, v) > (end_chapter, end_verse):
             continue
-
-        # Try chapter header: "BookName Chapter N"
-        hm = _DR_CHAPTER_HDR_RE.match(stripped)
-        if hm:
-            pg_book_name = hm.group(1).strip()
-            canonical = DR_PG_BOOK_NAME_MAP.get(pg_book_name)
-            if canonical is not None:
-                current_canonical = canonical
-                if canonical not in book_verses:
-                    testament = _BOOK_TESTAMENT.get(canonical, "OT")
-                    book_verses[canonical] = BookVerses(
-                        name=canonical,
-                        book_code="",
-                        testament=testament,
-                    )
-                    book_order.append(canonical)
-                last_was_verse = False
-                continue
-
-        # Continuation line — append to the last verse if we're in a verse block.
-        # We only treat it as continuation if:
-        #   1. last_was_verse is True (we are still inside a verse paragraph)
-        #   2. current_canonical is set
-        #   3. the line doesn't look like a chapter summary (hard to distinguish
-        #      perfectly, but verse continuations come right after a verse line
-        #      with no blank line in between)
-        if last_was_verse and current_canonical and book_verses[current_canonical].verses:
-            book_verses[current_canonical].verses[-1].text += " " + stripped
-            # last_was_verse remains True until we hit a blank line
-
-    # Return books in insertion order, skipping empty ones
-    result = [book_verses[name] for name in book_order if book_verses[name].verses]
+        result.append((ch, v, text))
     return result
 
 
-# ---------------------------------------------------------------------------
-# Chunking helpers
-# ---------------------------------------------------------------------------
+def chunk_canonical_book(
+    book: BookVerses,
+    pericopes: list[Pericope],
+    translation: str,
+) -> Iterator[tuple[str, str, dict, int]]:
+    """Yield (content, reference, metadata, position) for a canonical book.
 
-def _make_reference(book: str, verses: list[Verse]) -> str:
-    """Build a human-readable reference string, e.g. 'John 3:14-17'."""
-    if not verses:
-        return ""
-    first = verses[0]
-    last = verses[-1]
-    if first.chapter == last.chapter:
-        if first.verse == last.verse:
-            return f"{book} {first.chapter}:{first.verse}"
-        return f"{book} {first.chapter}:{first.verse}-{last.verse}"
-    # Spans chapters
-    return f"{book} {first.chapter}:{first.verse} – {last.chapter}:{last.verse}"
-
-
-def chunk_book(book_verses: BookVerses, group_size: int, min_length: int) -> Iterator[tuple[str, str, int]]:
+    One chunk per pericope. Empty chunks are skipped.
     """
-    Yield (content, reference, position) tuples for each chunk.
-
-    Verses are grouped `group_size` at a time; chunks never span chapters.
-    """
+    verse_map: dict[tuple[int, int], str] = {
+        (v.chapter, v.verse): v.text for v in book.verses
+    }
     position = 0
-    # Group by chapter to avoid cross-chapter chunks
-    chapters: dict[int, list[Verse]] = {}
-    for v in book_verses.verses:
-        chapters.setdefault(v.chapter, []).append(v)
+    for p in pericopes:
+        verses = collect_pericope_verses(
+            verse_map, p.start_chapter, p.start_verse, p.end_chapter, p.end_verse
+        )
+        if not verses:
+            continue
+        content = " ".join(text for _, _, text in verses)
+        if not content.strip():
+            continue
+        reference = _format_reference(
+            book.name, p.start_chapter, p.start_verse, p.end_chapter, p.end_verse
+        )
+        metadata = {
+            "pericope": p.title,
+            "book": book.name,
+            "testament": book.testament,
+            "translation": translation,
+        }
+        yield content, reference, metadata, position
+        position += 1
 
-    for ch_num in sorted(chapters.keys()):
-        ch_verses = chapters[ch_num]
-        for i in range(0, len(ch_verses), group_size):
-            group = ch_verses[i : i + group_size]
-            content = " ".join(v.text for v in group)
-            if len(content) < min_length:
-                continue
-            reference = _make_reference(book_verses.name, group)
-            yield content, reference, position
-            position += 1
+
+def chunk_deuterocanonical_book(
+    book: BookVerses,
+    translation: str,
+) -> Iterator[tuple[str, str, dict, int]]:
+    """Yield (content, reference, metadata, position) for a deuterocanonical book.
+
+    One chunk per chapter. Empty chapters are skipped.
+    """
+    chapters: dict[int, list[str]] = {}
+    for v in book.verses:
+        chapters.setdefault(v.chapter, []).append(v.text)
+
+    position = 0
+    for ch in sorted(chapters):
+        texts = chapters[ch]
+        content = " ".join(texts)
+        if not content.strip():
+            continue
+        reference = f"{book.name} {ch}"
+        metadata = {
+            "book": book.name,
+            "chapter": ch,
+            "testament": book.testament,
+            "translation": translation,
+        }
+        yield content, reference, metadata, position
+        position += 1
 
 
 # ---------------------------------------------------------------------------
 # Ingest functions
 # ---------------------------------------------------------------------------
 
+async def ingest_webc(
+    pool,
+    usfm_dir: str | None = None,
+    translation: str = "WEB-C",
+) -> None:
+    """Ingest WEB-C Bible from USFM files into the database.
 
-async def ingest_cpdv(pool) -> None:
-    """Read CPDV from sources/bible/cpdv.json and ingest."""
-    src = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "bible", "cpdv.json")
-    print(f"Reading CPDV from {src}...")
-    with open(src, encoding="utf-8") as f:
-        data = json.load(f)
-    books = parse_cpdv_json(data)
-    print(f"  Found {len(books)} books in CPDV JSON.")
-    _verify_deuterocanonicals(books, "CPDV")
-    await _ingest_books(pool, books, translation="CPDV")
+    Args:
+        pool:        asyncpg connection pool.
+        usfm_dir:    Path to directory containing *.usfm files.
+                     Defaults to sources/bible/eng-web-c_usfm/ relative to datapipeline root.
+        translation: Label stored in the database; default "WEB-C".
+    """
+    datapipeline_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+    if usfm_dir is None:
+        usfm_dir = os.path.join(datapipeline_root, _DEFAULT_USFM_SUBDIR)
+    pericope_path = os.path.join(datapipeline_root, _DEFAULT_PERICOPE_PATH)
 
-async def ingest_douay_rheims(pool) -> None:
-    """Read Douay-Rheims from sources/bible/gutenberg-bible.txt and ingest."""
-    src = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "bible", "gutenberg-bible.txt")
-    print(f"Reading Douay-Rheims from {src}...")
-    with open(src, encoding="utf-8", errors="replace") as f:
-        text = f.read()
-    books = parse_douay_rheims(text)
-    print(f"  Found {len(books)} books in Douay-Rheims text.")
-    if len(books) < 60:
-        print(f"  WARNING: Expected ~73 books but only found {len(books)}.", file=sys.stderr)
-    _verify_deuterocanonicals(books, "Douay-Rheims")
-    await _ingest_books(pool, books, translation="douay-rheims")
+    print(f"Loading WEB-C USFM files from: {usfm_dir}")
+    all_books = load_usfm_directory(usfm_dir)
+    print(f"  Loaded {len(all_books)} books from USFM.")
 
+    print(f"Loading pericopes from: {pericope_path}")
+    pericope_map = load_pericopes(pericope_path)
+    print(f"  Loaded pericopes for {len(pericope_map)} books.")
 
-def _verify_deuterocanonicals(books: list[BookVerses], label: str) -> None:
-    """Warn if any deuterocanonical books are missing."""
-    deuterocanonicals = {"Tobit", "Judith", "1 Maccabees", "2 Maccabees", "Wisdom", "Sirach", "Baruch"}
-    found_names = {b.name for b in books}
-    missing = deuterocanonicals - found_names
-    if missing:
-        print(
-            f"  WARNING: Deuterocanonical books missing from {label}: {sorted(missing)}",
-            file=sys.stderr,
-        )
-    else:
-        present = sorted(deuterocanonicals & found_names)
-        print(f"  Deuterocanonical books confirmed present in {label}: {present}")
+    canonical_books = {
+        name: bv for name, bv in all_books.items()
+        if name not in _DEUTEROCANONICAL_BOOKS
+    }
+    deutero_books = {
+        name: bv for name, bv in all_books.items()
+        if name in _DEUTEROCANONICAL_BOOKS
+    }
 
+    print(
+        f"  {len(canonical_books)} canonical books (pericope chunking), "
+        f"{len(deutero_books)} deuterocanonical books (chapter chunking)."
+    )
 
-async def _ingest_books(pool, books: list[BookVerses], translation: str) -> None:
-    """Write all books and their chunks to the database."""
     total_chunks = 0
-    total_verses = sum(len(b.verses) for b in books)
-    print(f"  Ingesting {len(books)} books / ~{total_verses} verses [{translation}]...")
 
-    with tqdm(total=len(books), unit="book", desc=f"Ingesting {translation}") as pbar:
-        for book in books:
+    with tqdm(total=len(all_books), unit="book", desc=f"Ingesting {translation}") as pbar:
+        # --- Canonical books ---
+        for book_name, book in sorted(canonical_books.items()):
+            testament = book.testament
             doc_id = await upsert_document(
                 pool,
                 collection="bible",
-                title=book.name,
+                title=book_name,
                 translation=translation,
                 author=None,
                 year=None,
-                metadata={
-                    "translation": translation,
-                    "book_code": book.book_code,
-                    "testament": book.testament,
-                },
+                metadata={"translation": translation, "testament": testament},
             )
+            pericopes = pericope_map.get(book_name, [])
+            if not pericopes:
+                pbar.set_postfix({"book": book_name, "chunks": 0, "note": "no pericopes"})
+                pbar.update(1)
+                continue
 
-            chunks = list(
-                chunk_book(book, settings.BIBLE_VERSE_GROUP_SIZE, settings.MIN_CHUNK_LENGTH)
-            )
-
-            for content, reference, position in chunks:
+            book_chunks = 0
+            for content, reference, metadata, position in chunk_canonical_book(
+                book, pericopes, translation
+            ):
                 await upsert_chunk(
                     pool,
                     document_id=doc_id,
                     content=content,
                     position=position,
                     reference=reference,
+                    metadata=metadata,
                 )
                 total_chunks += 1
+                book_chunks += 1
 
-            pbar.set_postfix({"book": book.name, "chunks": len(chunks)})
+            pbar.set_postfix({"book": book_name, "chunks": book_chunks})
+            pbar.update(1)
+
+        # --- Deuterocanonical books ---
+        for book_name, book in sorted(deutero_books.items()):
+            testament = book.testament
+            doc_id = await upsert_document(
+                pool,
+                collection="bible",
+                title=book_name,
+                translation=translation,
+                author=None,
+                year=None,
+                metadata={"translation": translation, "testament": testament},
+            )
+
+            book_chunks = 0
+            for content, reference, metadata, position in chunk_deuterocanonical_book(
+                book, translation
+            ):
+                await upsert_chunk(
+                    pool,
+                    document_id=doc_id,
+                    content=content,
+                    position=position,
+                    reference=reference,
+                    metadata=metadata,
+                )
+                total_chunks += 1
+                book_chunks += 1
+
+            pbar.set_postfix({"book": book_name, "chunks": book_chunks})
             pbar.update(1)
 
     print(f"  Done. {total_chunks} chunks written for {translation}.")
@@ -442,15 +542,14 @@ async def _ingest_books(pool, books: list[BookVerses], translation: str) -> None
 # CLI entry point
 # ---------------------------------------------------------------------------
 
-async def main(pool=None) -> None:
-    """Ingest both Bible translations. Accepts an external pool (from run_all.py)
+async def main(pool=None, usfm_dir: str | None = None, translation: str = "WEB-C") -> None:
+    """Ingest WEB-C Bible. Accepts an external pool (from run_all.py)
     or creates its own when run standalone."""
     _own_pool = pool is None
     if _own_pool:
         pool = await get_pool()
     try:
-        await ingest_cpdv(pool)
-        await ingest_douay_rheims(pool)
+        await ingest_webc(pool, usfm_dir=usfm_dir, translation=translation)
     finally:
         if _own_pool:
             await close_pool()
@@ -458,24 +557,19 @@ async def main(pool=None) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Ingest Catholic Bible translations into the Body of Christ RAG database."
+        description="Ingest WEB-C Bible (USFM) into the Body of Christ RAG database."
     )
     parser.add_argument(
         "--translation",
-        choices=["CPDV", "douay-rheims"],
+        default="WEB-C",
+        help="Translation label stored in the database (default: WEB-C).",
+    )
+    parser.add_argument(
+        "--usfm-dir",
         default=None,
-        help="Which translation to ingest. Omit to ingest both.",
+        dest="usfm_dir",
+        help="Path to directory of *.usfm files. Defaults to sources/bible/eng-web-c_usfm/.",
     )
     args = parser.parse_args()
 
-    async def _run():
-        pool = await get_pool()
-        try:
-            if args.translation in (None, "CPDV"):
-                await ingest_cpdv(pool)
-            if args.translation in (None, "douay-rheims"):
-                await ingest_douay_rheims(pool)
-        finally:
-            await close_pool()
-
-    asyncio.run(_run())
+    asyncio.run(main(usfm_dir=args.usfm_dir, translation=args.translation))
