@@ -207,7 +207,9 @@ def test_split_in_brief_header_sets_flag():
     node = _make_node(
         _make_para("Regular content.", ref_ccc=100),
         _make_para("IN BRIEF"),
-        _make_para("Summary of the key points.", ref_ccc=101),  # ref_ccc → not a header
+        # ref_ccc prevents short text from being classified as a section header,
+        # so this paragraph is treated as body content inside the IN BRIEF section
+        _make_para("Summary of the key points.", ref_ccc=101),
     )
     sections = split_large_node(node)
     assert len(sections) == 2
@@ -399,6 +401,21 @@ def test_tier3_in_brief_section_flagged():
     result = chunk_nodes([node], ["toc-200"])
     brief_chunks = [c for c in result if c[2]["is_in_brief"]]
     assert len(brief_chunks) >= 1
+
+
+def test_tier3_unnumbered_section_reference_has_no_part_suffix():
+    """A Tier-3 split section with no CCC paragraph numbers gets 'CCC [node_id]',
+    not 'CCC [node_id] (part)' — make_reference ignores is_partial when list is empty."""
+    node = _make_node(
+        _make_para("Intro section."),             # no ref_ccc → first section has no paras
+        _make_para("Heading A"),                  # section header
+        _make_para("x" * 4200, ref_ccc=500),     # large body triggers Tier 3
+    )
+    result = chunk_nodes([node], ["toc-77"])
+    unnumbered = [c for c in result if not c[2]["ccc_paragraphs"]]
+    for _, ref, _, _ in unnumbered:
+        assert "(part)" not in ref
+        assert "toc-77" in ref
 
 
 def test_tier3_non_large_node_not_split():

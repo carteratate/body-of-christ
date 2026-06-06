@@ -99,6 +99,7 @@ def split_large_node(node: dict) -> list[tuple[str, list[int], bool]]:
         text = "\n\n".join(lines).strip()
         if text:
             is_brief = current_header == "IN BRIEF"
+            # list() snapshots current_paras; the name is reassigned (not mutated) after flush
             sections.append((text, list(current_paras), is_brief))
 
     for para in node.get("paragraphs", []):
@@ -198,15 +199,9 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
         # Tier 2 (Normal): one chunk per node
         content = (prefix + "\n\n" + raw_text).strip() if prefix else raw_text
 
+        # If the first paragraph text is "IN BRIEF" (header or numbered), it appears
+        # first in raw_text — so a single startswith covers both cases.
         is_brief = raw_text.lstrip().startswith("IN BRIEF")
-        if not is_brief:
-            for para in node.get("paragraphs", []):
-                ptext = _para_text(para)
-                if is_section_header(para) and ptext == "IN BRIEF":
-                    is_brief = True
-                    break
-                if ptext:
-                    break
 
         ref = make_reference(ccc_paragraphs, node_id)
         meta = {
