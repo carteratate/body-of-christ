@@ -82,16 +82,6 @@ def test_clean_returns_plain_text():
 # parse_usfm_file
 # ---------------------------------------------------------------------------
 
-def _make_usfm_file(content: str, tmp_path_factory, name: str = "test.usfm"):
-    """Write a temporary USFM file and return its path."""
-    import tempfile, os
-    tmp_dir = tempfile.mkdtemp()
-    path = os.path.join(tmp_dir, name)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(content)
-    return path
-
-
 def test_parse_usfm_strips_strongs():
     """parse_usfm_file strips Strong's markup; verse text is clean."""
     import tempfile
@@ -409,13 +399,11 @@ def test_deuterocanonical_skips_empty_chapters():
         (3, 1, "Honor your father"),
     ])
     chunks = list(chunk_deuterocanonical_book(book, "WEB-C"))
-    # Chapter 2 has empty text — should be skipped
     refs = [c[1] for c in chunks]
     assert "Sirach 1" in refs
     assert "Sirach 3" in refs
-    # Chapter 2 may or may not appear depending on whitespace; at minimum
-    # chapters 1 and 3 must be present.
-    assert len(chunks) >= 2
+    assert "Sirach 2" not in refs
+    assert len(chunks) == 2
 
 
 def test_deuterocanonical_positions_sequential():

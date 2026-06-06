@@ -138,18 +138,13 @@ class BookVerses:
 # USFM parsing
 # ---------------------------------------------------------------------------
 
-# Inline spanning markers: \tag ... \tag*  — strip the markers, keep inner text.
-# Footnotes and cross-refs: \f ... \f*  and \x ... \x*  — strip everything inside.
 _FOOTNOTE_RE = re.compile(r"\\f\s.*?\\f\*", re.DOTALL)
 _XREF_RE = re.compile(r"\\x\s.*?\\x\*", re.DOTALL)
-# Strong's word markup comes in two forms:
+# Strong's markup comes in two forms:
 #   \w  word|strong="H1234"\w*   (regular)
 #   \+w word|strong="G1234"\+w*  (nested, used inside \wj ... \wj*)
-# Both are captured by matching \+?w ... \+?w* with a pipe-separated strong code.
 _STRONGS_RE = re.compile(r"\\\+?w\s+([^|\\]+?)\s*\|[^*\\]*\\\+?w\*")
-# Generic backslash marker at start of a token, e.g. \p \q1 \wj \wj* \sp etc.
 _MARKER_RE = re.compile(r"\\[a-zA-Z0-9*+]+\s*")
-# Collapse runs of whitespace.
 _WS_RE = re.compile(r"\s+")
 
 
@@ -478,7 +473,7 @@ async def ingest_webc(
                 translation=translation,
                 author=None,
                 year=None,
-                metadata={"translation": translation, "testament": testament},
+                metadata={"testament": testament},
             )
             pericopes = pericope_map.get(book_name, [])
             if not pericopes:
@@ -514,7 +509,7 @@ async def ingest_webc(
                 translation=translation,
                 author=None,
                 year=None,
-                metadata={"translation": translation, "testament": testament},
+                metadata={"testament": testament},
             )
 
             book_chunks = 0
