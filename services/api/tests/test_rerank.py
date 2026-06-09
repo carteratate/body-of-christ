@@ -80,3 +80,20 @@ async def test_rerank_bad_score_does_not_affect_other_chunks():
 
     good_chunk = next(r for r in result if r.chunk_id == good_id)
     assert good_chunk.reranker_score == pytest.approx(0.9)
+
+
+def test_format_passages_includes_full_content():
+    """Reranker must see the full chunk, not just the first 600 chars."""
+    from app.rag.rerank import _format_passages
+    c = ChunkCandidate(
+        chunk_id="00000000-0000-0000-0000-000000000020",
+        content="A" * 1000,
+        reference="Test Ref",
+        collection="bible",
+        document_id="00000000-0000-0000-0000-000000000099",
+        document_title="Test",
+        author=None,
+        rrf_score=0.5,
+    )
+    result = _format_passages([c])
+    assert "A" * 1000 in result

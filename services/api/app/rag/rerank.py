@@ -63,7 +63,7 @@ def _format_passages(candidates: list[ChunkCandidate]) -> str:
     lines = []
     for c in candidates:
         ref = c.reference or "No reference"
-        snippet = c.content[:600]
+        snippet = c.content
         lines.append(f"[{c.chunk_id}] {ref}: {snippet}")
     return "\n".join(lines)
 
