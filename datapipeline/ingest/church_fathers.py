@@ -56,7 +56,7 @@ async def main(pool) -> None:
                 metadata={"source_file": filename},
             )
 
-            for content, reference, position in doc.chunks:
+            for content, reference, position, _meta in doc.chunks:
                 await upsert_chunk(pool, doc_id, content, position, reference)
 
             total_chunks += len(doc.chunks)

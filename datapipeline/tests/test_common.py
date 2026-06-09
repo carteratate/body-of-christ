@@ -86,14 +86,14 @@ def test_parse_thml_standard_chunks_by_chapter():
 
 def test_parse_thml_chapter_content_joined():
     doc = parse_thml_string(STANDARD_THML)
-    content, ref, pos = doc.chunks[0]
+    content, ref, pos, meta = doc.chunks[0]
     assert "Great art Thou" in content
     assert "Thee would man praise" in content  # both paragraphs merged
 
 def test_parse_thml_reference_format():
     doc = parse_thml_string(STANDARD_THML)
-    _, ref0, _ = doc.chunks[0]
-    _, ref1, _ = doc.chunks[1]
+    _, ref0, _, _ = doc.chunks[0]
+    _, ref1, _, _ = doc.chunks[1]
     assert ref0 == "Book I, Chapter I"
     # Ch II (short) merges into the next section; ref comes from the absorbing section
     assert ref1 == "Book II, Chapter I"
@@ -114,13 +114,13 @@ def test_parse_thml_summa_chunks_at_article():
 
 def test_parse_thml_summa_reference_format():
     doc = parse_thml_string(SUMMA_THML)
-    _, ref0, _ = doc.chunks[0]
+    _, ref0, _, _ = doc.chunks[0]
     assert "Article 1" in ref0
     assert "Question 1" in ref0
 
 def test_parse_thml_summa_article_content_complete():
     doc = parse_thml_string(SUMMA_THML)
-    content, _, _ = doc.chunks[0]
+    content, _, _, _ = doc.chunks[0]
     assert "Objection 1" in content
     assert "I answer that" in content
     assert "Reply to Objection" in content

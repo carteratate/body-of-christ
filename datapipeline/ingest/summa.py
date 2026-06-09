@@ -41,7 +41,7 @@ async def main(pool=None) -> None:
         )
 
         with tqdm(total=len(doc.chunks), unit="chunk", desc="Summa") as pbar:
-            for content, reference, position in doc.chunks:
+            for content, reference, position, _meta in doc.chunks:
                 await upsert_chunk(pool, doc_id, content, position, reference)
                 pbar.update(1)
 

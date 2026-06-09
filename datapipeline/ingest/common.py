@@ -10,7 +10,7 @@ class ThmlDocument:
     title: str
     author: str | None
     year: int | None
-    chunks: list[tuple[str, str, int]] = field(default_factory=list)  # (content, reference, position)
+    chunks: list[tuple[str, str, int, dict | None]] = field(default_factory=list)  # (content, reference, position, metadata)
 
 
 def _strip_tags(text: str) -> str:
@@ -131,7 +131,7 @@ _TARGET_CHUNK_CHARS = 1200
 _OVERLAP_CHARS = 200
 
 
-def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int]]:
+def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int, dict | None]]:
     """Hybrid chunking: natural section boundary preserved if ≤ 2500 chars,
     sliding window applied for longer sections. Short sections merged upward."""
     # 1. Collect raw sections
@@ -170,26 +170,26 @@ def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int]]:
         i += 1
 
     # 3. Emit chunks
-    chunks: list[tuple[str, str, int]] = []
+    chunks: list[tuple[str, str, int, dict | None]] = []
     position = 0
     for content, ref in merged:
         if len(content) <= _MAX_SECTION_CHARS:
-            chunks.append((content, ref, position))
+            chunks.append((content, ref, position, None))
             position += 1
         else:
             parts = split_at_sentences(content, _TARGET_CHUNK_CHARS, _OVERLAP_CHARS)
             total = len(parts)
             for idx, part in enumerate(parts):
                 part_ref = f"{ref} ({idx + 1}/{total})" if total > 1 else ref
-                chunks.append((part, part_ref, position))
+                chunks.append((part, part_ref, position, None))
                 position += 1
 
     return chunks
 
 
-def _chunk_summa(root, min_length: int = 50) -> list[tuple[str, str, int]]:
+def _chunk_summa(root, min_length: int = 50) -> list[tuple[str, str, int, dict | None]]:
     """Chunk at div4 (Article) level for the Summa."""
-    chunks: list[tuple[str, str, int]] = []
+    chunks: list[tuple[str, str, int, dict | None]] = []
     position = 0
     for div3 in root.iter("div3"):
         div3_title = (div3.get("title") or "").strip()
@@ -201,7 +201,7 @@ def _chunk_summa(root, min_length: int = 50) -> list[tuple[str, str, int]]:
             if len(content) < min_length:
                 continue
             reference = f"{div3_title}, {div4_title}" if div3_title else div4_title
-            chunks.append((content, reference, position))
+            chunks.append((content, reference, position, None))
             position += 1
     return chunks
 
