@@ -25,7 +25,7 @@ def test_parse_canon_page_extracts_canons():
 
 def test_parse_canon_strips_can_prefix():
     canons = parse_canon_page(SAMPLE_HTML)
-    num, text = canons[0]
+    num, text, _ = canons[0]
     assert num == 1
     assert not text.startswith("Can.")
     assert text.startswith("The canons")
@@ -58,3 +58,57 @@ def test_deduplicate_urls_strips_fragments():
     assert len(result) == 2
     assert "http://www.vatican.va/archive/cic_lib1-cann1-6_en.html" in result
     assert "http://www.vatican.va/archive/cic_lib1-cann7-22_en.html" in result
+
+
+HIERARCHY_HTML = """<html><body><table><tbody><tr><td>
+<p>BOOK II. THE PEOPLE OF GOD</p>
+<p>TITLE I. THE OBLIGATIONS AND RIGHTS OF ALL THE CHRISTIAN FAITHFUL</p>
+<p>Can. 208 In virtue of their rebirth in Christ, there exists among all the Christian faithful a true equality.</p>
+<p>Can. 209 §1. The Christian faithful, even in their own manner of acting, are always obliged to maintain communion with the Church.</p>
+<p>§2. With great diligence they are to lead a holy life.</p>
+<p>CHAPTER I. OBLIGATIONS AND RIGHTS OF THE CHRISTIAN FAITHFUL</p>
+<p>Can. 210 All the faithful must direct their efforts to lead a holy life.</p>
+</td></tr></tbody></table></body></html>"""
+
+
+def test_parse_canon_page_returns_3_tuple():
+    canons = parse_canon_page(SAMPLE_HTML)
+    assert len(canons) == 4
+    num, text, ctx = canons[0]
+    assert isinstance(num, int)
+    assert isinstance(text, str)
+    assert isinstance(ctx, dict)
+
+
+def test_parse_canon_page_context_has_required_keys():
+    canons = parse_canon_page(SAMPLE_HTML)
+    _, _, ctx = canons[0]
+    assert "book" in ctx
+    assert "part" in ctx
+    assert "title" in ctx
+    assert "chapter" in ctx
+    assert "article" in ctx
+
+
+def test_parse_canon_header_updates_context():
+    canons = parse_canon_page(HIERARCHY_HTML)
+    can208 = next(c for c in canons if c[0] == 208)
+    ctx = can208[2]
+    assert "BOOK II" in ctx["book"] or "THE PEOPLE OF GOD" in ctx["book"]
+    assert "TITLE I" in ctx["title"] or "OBLIGATIONS" in ctx["title"]
+
+
+def test_parse_canon_chapter_header_updates_chapter_context():
+    canons = parse_canon_page(HIERARCHY_HTML)
+    can210 = next(c for c in canons if c[0] == 210)
+    ctx = can210[2]
+    assert ctx["chapter"] != ""
+
+
+def test_parse_canon_header_resets_lower_levels():
+    """When a TITLE header appears, chapter and article must reset to ''."""
+    canons = parse_canon_page(HIERARCHY_HTML)
+    can208 = next(c for c in canons if c[0] == 208)
+    ctx = can208[2]
+    assert ctx["chapter"] == ""
+    assert ctx["article"] == ""

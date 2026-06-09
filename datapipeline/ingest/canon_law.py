@@ -33,29 +33,66 @@ def deduplicate_urls(hrefs: list[str], base: str = _BASE) -> list[str]:
     return result
 
 
-def parse_canon_page(html: str) -> list[tuple[int, str]]:
-    """
-    Parse a Vatican canon law HTML page.
-    Returns list of (canon_number, full_text) tuples.
+_LEVEL_ORDER = ["book", "part", "title", "chapter", "article"]
+
+_HEADER_KEYWORDS: dict[str, str] = {
+    "BOOK": "book",
+    "PART": "part",
+    "TITLE": "title",
+    "CHAPTER": "chapter",
+    "ARTICLE": "article",
+    "SECTION": "chapter",
+}
+
+_ARTICLE_RE = re.compile(r"^ART\.\s*", re.IGNORECASE)
+
+
+def _classify_header(text: str) -> str | None:
+    """Return context key if text is a structural header; else None."""
+    stripped = text.strip()
+    if _ARTICLE_RE.match(stripped):
+        return "article"
+    upper = stripped.upper()
+    for keyword, level in _HEADER_KEYWORDS.items():
+        if upper.startswith(keyword + " ") or upper == keyword:
+            return level
+    # Fallback: short or ALL-CAPS text not starting with a digit
+    if stripped.isupper() and len(stripped) > 3 and not stripped[0].isdigit():
+        return "title"
+    return None
+
+
+def _reset_below(context: dict, level: str) -> None:
+    """Clear all context levels lower than the given level."""
+    idx = _LEVEL_ORDER.index(level)
+    for key in _LEVEL_ORDER[idx + 1:]:
+        context[key] = ""
+
+
+def parse_canon_page(html: str) -> list[tuple[int, str, dict]]:
+    """Parse a Vatican canon law HTML page.
+    Returns list of (canon_number, full_text, context_snapshot) tuples.
     """
     soup = BeautifulSoup(html, "lxml")
     paragraphs = [p.get_text(strip=True) for p in soup.find_all("p")]
 
-    canons: list[tuple[int, str]] = []
+    canons: list[tuple[int, str, dict]] = []
     current_num: int | None = None
     current_parts: list[str] = []
+    context: dict = {"book": "", "part": "", "title": "", "chapter": "", "article": ""}
 
     can_re = re.compile(r"^Can\.\s*(\d+)\s*(.*)", re.DOTALL)
     sub_re = re.compile(r"^§\d+\.")
     num_re = re.compile(r"^\d+/")
 
-    def flush():
+    def flush() -> None:
         if current_num is not None and current_parts:
-            canons.append((current_num, "\n".join(current_parts)))
+            canons.append((current_num, "\n".join(current_parts), dict(context)))
 
     for text in paragraphs:
         if not text or len(text) < 3:
             continue
+
         m = can_re.match(text)
         if m:
             flush()
@@ -63,14 +100,25 @@ def parse_canon_page(html: str) -> list[tuple[int, str]]:
             body = m.group(2).strip()
             current_parts = [body] if body else []
             continue
-        if current_num is None:
-            continue
+
+        # Sub-paragraphs always attach to current canon
         if sub_re.match(text) or num_re.match(text):
-            current_parts.append(text)
-        elif text.isupper() or (len(text) < 15 and not text[0].isdigit()):
-            # Section header — skip
+            if current_num is not None:
+                current_parts.append(text)
             continue
-        else:
+
+        # Check for hierarchy header
+        header_level = _classify_header(text)
+        if header_level:
+            flush()
+            current_num = None
+            current_parts = []
+            context[header_level] = text.strip()
+            _reset_below(context, header_level)
+            continue
+
+        # Regular paragraph text
+        if current_num is not None:
             current_parts.append(text)
 
     flush()
@@ -104,7 +152,7 @@ async def main(pool) -> None:
             metadata={"source": "vatican.va"},
         )
 
-        all_canons: list[tuple[int, str]] = []
+        all_canons: list[tuple[int, str, dict]] = []
         skipped: list[str] = []
 
         with tqdm(total=len(page_urls), unit="page", desc="Canon Law") as pbar:
@@ -122,14 +170,14 @@ async def main(pool) -> None:
 
     # Deduplicate by canon number (some canons appear on multiple pages)
     seen_nums: set[int] = set()
-    unique_canons: list[tuple[int, str]] = []
-    for num, text in sorted(all_canons, key=lambda x: x[0]):
+    unique_canons: list[tuple[int, str, dict]] = []
+    for num, text, ctx in sorted(all_canons, key=lambda x: x[0]):
         if num not in seen_nums:
             seen_nums.add(num)
-            unique_canons.append((num, text))
+            unique_canons.append((num, text, ctx))
 
     print(f"  Ingesting {len(unique_canons)} unique canons...")
-    for position, (canon_num, content) in enumerate(unique_canons):
+    for position, (canon_num, content, ctx) in enumerate(unique_canons):
         await upsert_chunk(
             pool,
             document_id=doc_id,
