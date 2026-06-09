@@ -6,7 +6,11 @@ os.environ.setdefault("OPENAI_API_KEY", "sk-test")
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from ingest.canon_law import parse_canon_page, deduplicate_urls
+from ingest.canon_law import (
+    parse_canon_page, deduplicate_urls,
+    _context_key, _format_group_content, _build_canon_reference,
+    _balanced_split_canons, _emit_group_chunks,
+)
 
 SAMPLE_HTML = """<html><body><table><tbody><tr><td>
 <p align="center"><b>CODE OF CANON LAW</b></p>
@@ -112,3 +116,86 @@ def test_parse_canon_header_resets_lower_levels():
     ctx = can208[2]
     assert ctx["chapter"] == ""
     assert ctx["article"] == ""
+
+
+def test_context_key_includes_all_levels():
+    ctx = {"book": "Book I", "part": "", "title": "Title I", "chapter": "Chapter I", "article": ""}
+    key = _context_key(ctx)
+    assert key == ("Book I", "", "Title I", "Chapter I", "")
+
+
+def test_format_group_content_header_and_canons():
+    ctx = {"book": "Book II", "part": "", "title": "Title I", "chapter": "", "article": ""}
+    canons = [(208, "In virtue of their rebirth in Christ."), (209, "The faithful must act.")]
+    content = _format_group_content(ctx, canons)
+    assert "Book II" in content
+    assert "Title I" in content
+    assert "Can. 208:" in content
+    assert "Can. 209:" in content
+
+
+def test_format_group_content_omits_empty_levels():
+    ctx = {"book": "Book I", "part": "", "title": "", "chapter": "", "article": ""}
+    canons = [(1, "The canons regard only the Latin Church.")]
+    content = _format_group_content(ctx, canons)
+    assert "Book I" in content
+    assert " — \n" not in content
+
+
+def test_build_canon_reference_multi_canon():
+    ctx = {"book": "Book II", "part": "", "title": "Title I", "chapter": "", "article": ""}
+    ref = _build_canon_reference(ctx, 208, 223)
+    assert "Code of Canon Law" in ref
+    assert "Book II" in ref
+    assert "208" in ref
+    assert "223" in ref
+
+
+def test_build_canon_reference_single_canon():
+    ctx = {"book": "Book I", "part": "", "title": "", "chapter": "", "article": ""}
+    ref = _build_canon_reference(ctx, 1, 1)
+    assert "Can. 1" in ref
+    assert "Cann." not in ref
+
+
+def test_balanced_split_canons_near_midpoint():
+    canons = [(i, "x" * 100) for i in range(1, 11)]  # 10 canons, 100 chars each → 1000 total
+    left, right = _balanced_split_canons(canons)
+    assert abs(len(left) - len(right)) <= 2
+
+
+def test_emit_group_chunks_within_ceiling():
+    ctx = {"book": "Book I", "part": "", "title": "Title I", "chapter": "", "article": ""}
+    canons = [(1, "Short canon text."), (2, "Another short canon.")]
+    chunks: list = []
+    counter = [0]
+    _emit_group_chunks(canons, ctx, chunks, counter)
+    assert len(chunks) == 1
+    content, ref, pos, meta = chunks[0]
+    assert "Can. 1:" in content
+    assert "Can. 2:" in content
+    assert pos == 0
+    assert meta["canon_range"] == [1, 2]
+
+
+def test_emit_group_chunks_splits_at_ceiling():
+    ctx = {"book": "Book I", "part": "", "title": "Title I", "chapter": "", "article": ""}
+    big_text = "x " * 800  # ~1600 chars per canon
+    canons = [(i, big_text) for i in range(1, 4)]
+    chunks: list = []
+    counter = [0]
+    _emit_group_chunks(canons, ctx, chunks, counter, ceiling=3500)
+    assert len(chunks) >= 2
+    for content, _, _, _ in chunks:
+        assert len(content) <= 3500
+
+
+def test_emit_group_chunks_cross_refs_extracted():
+    ctx = {"book": "Book I", "part": "", "title": "", "chapter": "", "article": ""}
+    canons = [(1, "See can. 5 and can. 208 for details.")]
+    chunks: list = []
+    counter = [0]
+    _emit_group_chunks(canons, ctx, chunks, counter)
+    _, _, _, meta = chunks[0]
+    assert 5 in meta["cross_refs"]
+    assert 208 in meta["cross_refs"]

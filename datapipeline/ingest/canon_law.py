@@ -69,6 +69,91 @@ def _reset_below(context: dict, level: str) -> None:
         context[key] = ""
 
 
+_CROSS_REF_RE = re.compile(r"can(?:on)?\.?\s*(\d+)", re.IGNORECASE)
+_CANON_CEILING = 3500
+
+
+def _context_key(ctx: dict) -> tuple:
+    return (ctx["book"], ctx["part"], ctx["title"], ctx["chapter"], ctx["article"])
+
+
+def _format_group_content(ctx: dict, canons: list[tuple[int, str]]) -> str:
+    """Build the 2-line header + canon paragraphs content block."""
+    top_parts = [p for p in [ctx["book"], ctx["title"]] if p]
+    bottom_parts = [p for p in [ctx["chapter"], ctx["article"]] if p]
+    header_lines = []
+    if top_parts:
+        header_lines.append(" — ".join(top_parts))
+    if bottom_parts:
+        header_lines.append(" — ".join(bottom_parts))
+    header = "\n".join(header_lines)
+    canon_strs = "\n\n".join(f"Can. {n}: {t}" for n, t in canons)
+    return f"{header}\n\n{canon_strs}" if header else canon_strs
+
+
+def _build_canon_reference(ctx: dict, first_num: int, last_num: int) -> str:
+    location_parts = [p for p in [ctx["book"], ctx["title"]] if p]
+    location = ", ".join(location_parts)
+    base = "Code of Canon Law"
+    if first_num == last_num:
+        loc_str = f" — {location}" if location else ""
+        return f"{base}{loc_str} (Can. {first_num})"
+    loc_str = f" — {location}" if location else ""
+    return f"{base}{loc_str} (Cann. {first_num}–{last_num})"
+
+
+def _balanced_split_canons(
+    canons: list[tuple[int, str]],
+) -> tuple[list[tuple[int, str]], list[tuple[int, str]]]:
+    """Split canons at the boundary closest to the midpoint by total text length."""
+    total = sum(len(t) for _, t in canons)
+    running = 0
+    best_idx = max(1, len(canons) // 2)
+    best_diff = abs(total)
+    for i, (_, t) in enumerate(canons):
+        running += len(t)
+        diff = abs(running - total // 2)
+        if diff < best_diff:
+            best_diff = diff
+            best_idx = i + 1
+    split = max(1, min(best_idx, len(canons) - 1))
+    return canons[:split], canons[split:]
+
+
+def _emit_group_chunks(
+    canons: list[tuple[int, str]],
+    ctx: dict,
+    chunks: list,
+    position_counter: list,
+    ceiling: int = _CANON_CEILING,
+) -> None:
+    """Recursively emit one or more chunks for a canon group, splitting if needed."""
+    content = _format_group_content(ctx, canons)
+    if len(content) <= ceiling or len(canons) == 1:
+        first_num, last_num = canons[0][0], canons[-1][0]
+        ref = _build_canon_reference(ctx, first_num, last_num)
+        cross_refs = list(dict.fromkeys(
+            int(m)
+            for _, t in canons
+            for m in _CROSS_REF_RE.findall(t)
+        ))
+        meta = {
+            "book": ctx.get("book", ""),
+            "part": ctx.get("part", ""),
+            "title": ctx.get("title", ""),
+            "chapter": ctx.get("chapter", ""),
+            "article": ctx.get("article", ""),
+            "canon_range": [first_num, last_num],
+            "cross_refs": cross_refs,
+        }
+        chunks.append((content, ref, position_counter[0], meta))
+        position_counter[0] += 1
+    else:
+        left, right = _balanced_split_canons(canons)
+        _emit_group_chunks(left, ctx, chunks, position_counter, ceiling)
+        _emit_group_chunks(right, ctx, chunks, position_counter, ceiling)
+
+
 def parse_canon_page(html: str) -> list[tuple[int, str, dict]]:
     """Parse a Vatican canon law HTML page.
     Returns list of (canon_number, full_text, context_snapshot) tuples.
@@ -171,24 +256,52 @@ async def main(pool) -> None:
     # Deduplicate by canon number (some canons appear on multiple pages)
     seen_nums: set[int] = set()
     unique_canons: list[tuple[int, str, dict]] = []
-    for num, text, ctx in sorted(all_canons, key=lambda x: x[0]):
+    for num, text, canon_ctx in sorted(all_canons, key=lambda x: x[0]):
         if num not in seen_nums:
             seen_nums.add(num)
-            unique_canons.append((num, text, ctx))
+            unique_canons.append((num, text, canon_ctx))
 
-    print(f"  Ingesting {len(unique_canons)} unique canons...")
-    for position, (canon_num, content, ctx) in enumerate(unique_canons):
+    print(f"  Grouping {len(unique_canons)} unique canons...")
+
+    # Group consecutive canons by hierarchy context
+    groups: list[tuple[dict, list[tuple[int, str]]]] = []
+    current_key: tuple | None = None
+    current_ctx: dict = {}
+    current_group: list[tuple[int, str]] = []
+
+    for num, text, canon_ctx in unique_canons:
+        key = _context_key(canon_ctx)
+        if key != current_key:
+            if current_group:
+                groups.append((current_ctx, current_group))
+            current_key = key
+            current_ctx = canon_ctx
+            current_group = [(num, text)]
+        else:
+            current_group.append((num, text))
+
+    if current_group:
+        groups.append((current_ctx, current_group))
+
+    print(f"  Emitting {len(groups)} canon groups...")
+    all_chunks: list[tuple[str, str, int, dict]] = []
+    position_counter = [0]
+    for group_ctx, canons in groups:
+        _emit_group_chunks(canons, group_ctx, all_chunks, position_counter)
+
+    for content, ref, position, meta in all_chunks:
         await upsert_chunk(
             pool,
             document_id=doc_id,
             content=content,
             position=position,
-            reference=f"Can. {canon_num}",
+            reference=ref,
+            metadata=meta,
         )
 
     if skipped:
         print(f"  WARNING: {len(skipped)} pages failed: {skipped}", file=sys.stderr)
-    print(f"  Done. {len(unique_canons)} canons written.")
+    print(f"  Done. {len(all_chunks)} chunks written from {len(unique_canons)} unique canons.")
 
 
 if __name__ == "__main__":
