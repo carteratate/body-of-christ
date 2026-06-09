@@ -151,3 +151,17 @@ def test_parse_encyclical_no_chunk_exceeds_ceiling():
     chunks = parse_encyclical(LONG_SECTION_HTML, "Test Doc", "Pope Test", 2024)
     for content, _, _, _ in chunks:
         assert len(content) <= 3500, f"Chunk exceeds 3500 chars: {len(content)}"
+
+
+def test_detect_section_header_rejects_short_colon_label():
+    from bs4 import BeautifulSoup
+    from ingest.encyclicals import _detect_section_header
+    p = BeautifulSoup("<p><b>Note:</b></p>", "lxml").find("p")
+    assert _detect_section_header(p) is None
+
+
+def test_detect_section_header_accepts_valid_bold_section():
+    from bs4 import BeautifulSoup
+    from ingest.encyclicals import _detect_section_header
+    p = BeautifulSoup("<p><b>I. The Rights of Workers</b></p>", "lxml").find("p")
+    assert _detect_section_header(p) is not None

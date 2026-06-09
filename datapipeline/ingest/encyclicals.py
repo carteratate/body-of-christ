@@ -152,6 +152,8 @@ def parse_encyclical(
         nonlocal position, overlap_text
         if not acc:
             return
+        if all(n == -1 for n, _ in acc):
+            return
         content, ref, meta = _build_chunk(active_section, acc)
         if len(content) <= _CEILING:
             chunks.append((content, ref, position, meta))
