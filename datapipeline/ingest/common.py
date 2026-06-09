@@ -242,7 +242,7 @@ def _build_reference(
     if is_multi_author:
         if not ancestors:
             return _maybe_title_case((chunk_elem.get("title") or "Unknown").strip())
-        author_lbl = _maybe_title_case((ancestors[0].get("title") or "").strip())
+        author_lbl = _maybe_title_case((ancestors[0].get("title") or "").strip()) or "Unknown"
         path = []
         for anc in ancestors[1:]:
             lbl = (anc.get("title") or "").strip()
