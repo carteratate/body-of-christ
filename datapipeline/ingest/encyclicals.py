@@ -14,7 +14,7 @@ from load import close_pool, get_pool, upsert_chunk, upsert_document
 
 _DELAY = 1.0
 _MIN_LENGTH = 50
-_TARGET = 1200
+_TARGET = 2000
 _CEILING = 3500
 
 _SCRIPTURE_RE = re.compile(
@@ -134,8 +134,9 @@ def parse_encyclical(
         real = [(n, t) for n, t in paras if n != -1]
         first_num = real[0][0] if real else 0
         last_num = real[-1][0] if real else 0
-        ref = (f"{title}, §§{first_num}–{last_num}"
-               if first_num != last_num else f"{title}, §{first_num}")
+        section_suffix = f" ({section})" if section else ""
+        ref = (f"{title}, §§{first_num}–{last_num}{section_suffix}"
+               if first_num != last_num else f"{title}, §{first_num}{section_suffix}")
         scripture_refs = list(dict.fromkeys(
             m for _, t in real for m in _SCRIPTURE_RE.findall(t)
         ))

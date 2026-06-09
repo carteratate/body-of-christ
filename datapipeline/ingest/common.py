@@ -355,21 +355,43 @@ def _chunk_standard(root, doc: "ThmlDocument", min_length: int = 100) -> list[tu
 
 
 def _chunk_summa(root, min_length: int = 50) -> list[tuple[str, str, int, dict | None]]:
-    """Chunk at div4 (Article) level for the Summa."""
+    """Chunk at div4 (Article) level for the Summa, with full Part→Treatise→Question breadcrumb."""
+    head_elem = root.find(".//electronicEdInfo")
+    author_id = (head_elem.findtext("authorID") if head_elem is not None else "") or ""
+    book_id = (head_elem.findtext("bookID") if head_elem is not None else "") or ""
+
     chunks: list[tuple[str, str, int, dict | None]] = []
     position = 0
-    for div3 in root.iter("div3"):
-        div3_title = (div3.get("title") or "").strip()
-        for child in div3:
-            if not child.tag.startswith("div4"):
+    for div1 in root.iter("div1"):
+        div1_title = (div1.get("title") or "").strip()
+        for div2 in div1:
+            if not div2.tag.startswith("div2"):
                 continue
-            div4_title = (child.get("title") or "").strip()
-            content = _extract_p_text(child)
-            if len(content) < min_length:
-                continue
-            reference = f"{div3_title}, {div4_title}" if div3_title else div4_title
-            chunks.append((content, reference, position, None))
-            position += 1
+            div2_title = (div2.get("title") or "").strip()
+            for div3 in div2:
+                if not div3.tag.startswith("div3"):
+                    continue
+                div3_title = (div3.get("title") or "").strip()
+                for div4 in div3:
+                    if not div4.tag.startswith("div4"):
+                        continue
+                    div4_title = (div4.get("title") or "").strip()
+                    content = _extract_p_text(div4)
+                    if len(content) < min_length:
+                        continue
+                    ref_parts = [p for p in [div1_title, div2_title, div3_title, div4_title] if p]
+                    reference = ", ".join(ref_parts)
+                    metadata: dict = {
+                        "author_id": author_id,
+                        "book_id": book_id,
+                        "div_depth": 4,
+                        "part": div1_title,
+                        "treatise": div2_title,
+                        "question": div3_title,
+                        "article": div4_title,
+                    }
+                    chunks.append((content, reference, position, metadata))
+                    position += 1
     return chunks
 
 

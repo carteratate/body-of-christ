@@ -266,8 +266,11 @@ def test_parse_thml_multi_author_reference():
 def test_parse_thml_summa_reference_format():
     doc = parse_thml_string(SUMMA_THML)
     _, ref0, _, _ = doc.chunks[0]
-    assert "Article 1" in ref0
+    # Full breadcrumb: Part → Treatise → Question → Article
+    assert "First Part" in ref0
+    assert "Treatise on Sacred Doctrine" in ref0
     assert "Question 1" in ref0
+    assert "Article 1" in ref0
 
 
 def test_parse_thml_summa_article_content_complete():
@@ -276,3 +279,14 @@ def test_parse_thml_summa_article_content_complete():
     assert "Objection 1" in content
     assert "I answer that" in content
     assert "Reply to Objection" in content
+
+
+def test_parse_thml_summa_metadata_populated():
+    doc = parse_thml_string(SUMMA_THML)
+    _, _, _, meta = doc.chunks[0]
+    assert meta is not None
+    assert meta["part"] == "First Part"
+    assert meta["treatise"] == "Treatise on Sacred Doctrine"
+    assert meta["question"] == "Question 1"
+    assert "Article 1" in meta["article"]
+    assert meta["div_depth"] == 4
