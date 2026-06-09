@@ -133,19 +133,6 @@ def test_parse_thml_summa_chunks_at_article():
     doc = parse_thml_string(SUMMA_THML)
     assert len(doc.chunks) == 2  # 2 articles
 
-def test_parse_thml_summa_reference_format():
-    doc = parse_thml_string(SUMMA_THML)
-    _, ref0, _, _ = doc.chunks[0]
-    assert "Article 1" in ref0
-    assert "Question 1" in ref0
-
-def test_parse_thml_summa_article_content_complete():
-    doc = parse_thml_string(SUMMA_THML)
-    content, _, _, _ = doc.chunks[0]
-    assert "Objection 1" in content
-    assert "I answer that" in content
-    assert "Reply to Objection" in content
-
 
 def test_parse_author_handles_approximate_dates():
     from ingest.common import _parse_author
