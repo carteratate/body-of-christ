@@ -56,7 +56,9 @@ def _detect_section_header(p_tag) -> str | None:
     bare_text = "".join(str(c) for c in p_tag.children if not hasattr(c, 'name')).strip()
     if (len(real_children) == 1
             and real_children[0].name in ('b', 'strong')
-            and not bare_text):
+            and not bare_text
+            and len(text) >= 10
+            and not text.endswith(":")):
         return text
     return None
 
