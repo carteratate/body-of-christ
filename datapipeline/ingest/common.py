@@ -130,6 +130,139 @@ _MAX_SECTION_CHARS = 2500
 _TARGET_CHUNK_CHARS = 1200
 _OVERLAP_CHARS = 200
 
+_SKIP_TITLES: frozenset[str] = frozenset({
+    "title page", "contents", "table of contents", "preface",
+    "editor's preface", "introductory notice", "introductory note",
+    "elucidations", "indexes",
+})
+
+_GENERIC_CHAPTER_RE = re.compile(r"^Chapter [IVXLCDM]+$", re.IGNORECASE)
+
+_CEILING = 3500
+_CF_SPLIT_TARGET = 1800
+
+
+def _build_parent_map(root) -> dict:
+    """Return {child: parent} for every element in the tree."""
+    parent_map: dict = {}
+    for parent in root.iter():
+        for child in parent:
+            parent_map[child] = parent
+    return parent_map
+
+
+def _detect_chunk_level(root) -> int:
+    """Detect deepest div level (1-4) where most divs have direct <p> children.
+    Special case: if any div1 carries type='chapter', return 1 (incarnation.xml).
+    """
+    for d in root.iter("div1"):
+        if d.get("type") == "chapter":
+            return 1
+
+    level_total: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
+    level_with_p: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
+
+    for level in range(1, 5):
+        for elem in root.iter(f"div{level}"):
+            if (elem.get("title") or "").strip().lower() in _SKIP_TITLES:
+                continue
+            level_total[level] += 1
+            if any(child.tag == "p" for child in elem):
+                level_with_p[level] += 1
+
+    for level in range(4, 0, -1):
+        total = level_total[level]
+        if total > 0 and level_with_p[level] / total > 0.5:
+            return level
+    return 1
+
+
+def _detect_is_multi_author(root) -> bool:
+    """True when the file groups content by multiple authors at div1 level.
+
+    Heuristic: if >1 div1 exists AND none match generic chapter/book patterns,
+    assume they represent different authors.
+    """
+    titles = [(d.get("title") or "").strip() for d in root.iter("div1")]
+    titles = [t for t in titles if t]
+
+    if len(titles) <= 1:
+        return False
+
+    # Check if titles look like chapters/books (not author names)
+    # Examples: "Book I", "Chapter 1", "Part III", "Volume II"
+    generic_patterns = re.compile(r"^(Book|Chapter|Part|Volume|Treatise)\s", re.IGNORECASE)
+    generic_count = sum(1 for t in titles if generic_patterns.match(t))
+
+    # If most titles are NOT generic chapter/book names, assume multi-author
+    return generic_count <= len(titles) * 0.3
+
+
+def _maybe_title_case(s: str) -> str:
+    return s.title() if s.isupper() else s
+
+
+def _short_author_name(full_name: str) -> str:
+    """'Augustine, Saint, Bishop of Hippo' → 'Augustine'."""
+    return full_name.split(",")[0].strip()
+
+
+def _parent_label(elem) -> str:
+    """Short breadcrumb label for a div: shorttitle, then title[:30]."""
+    st = (elem.get("shorttitle") or "").strip()
+    if st:
+        return st
+    return (elem.get("title") or "").strip()[:30]
+
+
+def _chunk_label(elem) -> str:
+    """Short reference label for a chunk-level div."""
+    st = (elem.get("shorttitle") or "").strip()
+    if st:
+        return st
+    n = (elem.get("n") or "").strip()
+    if n:
+        return f"Chapter {n.upper()}"
+    return (elem.get("title") or "").strip()[:50]
+
+
+def _build_reference(
+    doc: "ThmlDocument",
+    is_multi_author: bool,
+    chunk_elem,
+    ancestors: list,
+) -> str:
+    """Build the full ancestry citation string for a chunk.
+
+    Single-author: 'Augustine — The Confessions, Book I, Chapter I'
+    Multi-author:  'Clement Of Rome — First Epistle to the Corinthians, Chapter I'
+    """
+    chunk_lbl = _chunk_label(chunk_elem)
+
+    if is_multi_author:
+        if not ancestors:
+            return _maybe_title_case((chunk_elem.get("title") or "Unknown").strip())
+        author_lbl = _maybe_title_case((ancestors[0].get("title") or "").strip())
+        path = []
+        for anc in ancestors[1:]:
+            lbl = (anc.get("title") or "").strip()
+            if lbl:
+                path.append(lbl)
+        if chunk_lbl:
+            path.append(chunk_lbl)
+        return f"{author_lbl} — {', '.join(path)}" if path else author_lbl
+    else:
+        short_author = _short_author_name(doc.author or "") or "Unknown"
+        work = doc.title or "Unknown"
+        path = []
+        for anc in ancestors:
+            lbl = _parent_label(anc)
+            if lbl:
+                path.append(lbl)
+        if chunk_lbl:
+            path.append(chunk_lbl)
+        return f"{short_author} — {work}, {', '.join(path)}" if path else f"{short_author} — {work}"
+
 
 def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int, dict | None]]:
     """Hybrid chunking: natural section boundary preserved if ≤ 2500 chars,

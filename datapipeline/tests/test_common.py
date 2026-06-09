@@ -1,7 +1,13 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from ingest.common import parse_thml_string, ThmlDocument
+import re
+import defusedxml.ElementTree as ET
+from ingest.common import (
+    parse_thml_string, ThmlDocument,
+    _detect_chunk_level, _detect_is_multi_author,
+    _short_author_name, _maybe_title_case, _build_reference,
+)
 
 STANDARD_THML = """<?xml version="1.0" encoding="UTF-8"?>
 <ThML>
@@ -165,3 +171,87 @@ def test_chunk_standard_falls_back_to_div1_when_no_div2():
     assert doc.chunks[0][1] == "Chapter I"
     assert doc.chunks[1][1] == "Chapter II"
     assert "Word of God" in doc.chunks[0][0]
+
+
+# ── Fixtures for depth-adaptive helpers ──────────────────────────────────────
+
+_CITY_THML = """<?xml version="1.0"?>
+<ThML>
+  <ThML.head><DC><DC.Title>City of God</DC.Title>
+  <DC.Creator sub="Author" scheme="file-as">Augustine, Saint (354-430)</DC.Creator></DC></ThML.head>
+  <ThML.body>
+    <div1 title="Volume I" n="i">
+      <div2 title="Book I" shorttitle="Book I" n="i">
+        <div3 title="Of the enemies of Christ" n="i"><p id="p1">When the barbarians sacked Rome, they spared all those who fled for refuge.</p></div3>
+        <div3 title="Of those who complain" n="ii"><p id="p2">But those complain of Christian times.</p></div3>
+      </div2>
+    </div1>
+  </ThML.body>
+</ThML>"""
+
+_MULTI_AUTHOR_THML = """<?xml version="1.0"?>
+<ThML>
+  <ThML.head><DC><DC.Title>Apostolic Fathers</DC.Title>
+  <DC.Creator sub="Author" scheme="file-as">Roberts, Alexander (1826-1901)</DC.Creator></DC></ThML.head>
+  <ThML.body>
+    <div1 title="CLEMENT OF ROME" n="i">
+      <div2 title="First Epistle of Clement to the Corinthians" n="i">
+        <div3 title="Chapter I. The salutation." n="i" shorttitle="Chapter I"><p id="p1">The Church of God which sojourns at Rome.</p></div3>
+      </div2>
+    </div1>
+    <div1 title="IGNATIUS OF ANTIOCH" n="ii">
+      <div2 title="Epistle to the Ephesians" n="i">
+        <div3 title="Chapter I. Praise of the Ephesians." n="i" shorttitle="Chapter I"><p id="p2">Ignatius who is also Theophorus.</p></div3>
+      </div2>
+    </div1>
+  </ThML.body>
+</ThML>"""
+
+_INCARNATION_THML = """<?xml version="1.0"?>
+<ThML>
+  <ThML.head><DC><DC.Title>On the Incarnation</DC.Title>
+  <DC.Creator sub="Author" scheme="file-as">Athanasius, Saint (c.296-c.373)</DC.Creator></DC></ThML.head>
+  <ThML.body>
+    <div1 title="Chapter 1. Creation and the Fall" type="chapter" n="i">
+      <p id="p1">The Word of God, incorporeal and incorruptible.</p>
+    </div1>
+    <div1 title="Chapter 2. The Divine Dilemma" type="chapter" n="ii">
+      <p id="p2">For God had made man thus.</p>
+    </div1>
+  </ThML.body>
+</ThML>"""
+
+
+def _root(xml_str: str):
+    xml_str = re.sub(r"<!DOCTYPE[^>]*(?:>|\[.*?\]>)", "", xml_str, flags=re.DOTALL)
+    return ET.fromstring(xml_str)
+
+
+def test_detect_chunk_level_confessions():
+    assert _detect_chunk_level(_root(STANDARD_THML)) == 2
+
+
+def test_detect_chunk_level_city_of_god():
+    assert _detect_chunk_level(_root(_CITY_THML)) == 3
+
+
+def test_detect_chunk_level_incarnation_special_case():
+    assert _detect_chunk_level(_root(_INCARNATION_THML)) == 1
+
+
+def test_detect_is_multi_author_single():
+    assert _detect_is_multi_author(_root(STANDARD_THML)) is False
+
+
+def test_detect_is_multi_author_multi():
+    assert _detect_is_multi_author(_root(_MULTI_AUTHOR_THML)) is True
+
+
+def test_short_author_name():
+    assert _short_author_name("Augustine, Saint, Bishop of Hippo") == "Augustine"
+    assert _short_author_name("Athanasius") == "Athanasius"
+
+
+def test_maybe_title_case_allcaps():
+    assert _maybe_title_case("CLEMENT OF ROME") == "Clement Of Rome"
+    assert _maybe_title_case("Clement of Rome") == "Clement of Rome"
