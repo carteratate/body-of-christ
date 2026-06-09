@@ -86,33 +86,48 @@ def test_parse_thml_year_from_death():
 
 def test_parse_thml_standard_chunks_by_chapter():
     doc = parse_thml_string(STANDARD_THML)
-    # Book I Ch II is ~182 chars — below _MIN_MERGE_CHARS (200) — so it merges
-    # into Book II Ch I, yielding 2 chunks total
-    assert len(doc.chunks) == 2
+    # New behavior: 3 chunks (Book I Ch I, Book I Ch II, Book II Ch I)
+    assert len(doc.chunks) == 3
 
-def test_parse_thml_chapter_content_joined():
-    doc = parse_thml_string(STANDARD_THML)
-    content, ref, pos, meta = doc.chunks[0]
-    assert "Great art Thou" in content
-    assert "Thee would man praise" in content  # both paragraphs merged
 
 def test_parse_thml_reference_format():
     doc = parse_thml_string(STANDARD_THML)
     _, ref0, _, _ = doc.chunks[0]
     _, ref1, _, _ = doc.chunks[1]
-    assert ref0 == "Book I, Chapter I"
-    # Ch II (short) merges into the next section; ref comes from the absorbing section
-    assert ref1 == "Book II, Chapter I"
+    _, ref2, _, _ = doc.chunks[2]
+    # New format: Author — Work, Book, Chapter
+    assert ref0 == "Augustine — The Confessions of Saint Augustine, Book I, Chapter I"
+    assert ref1 == "Augustine — The Confessions of Saint Augustine, Book I, Chapter II"
+    assert ref2 == "Augustine — The Confessions of Saint Augustine, Book II, Chapter I"
+
+
+def test_parse_thml_chapter_content_joined():
+    doc = parse_thml_string(STANDARD_THML)
+    content, _, _, _ = doc.chunks[0]
+    assert "Great art Thou" in content
+    assert "Thee would man praise" in content
+
+
+def test_parse_thml_strips_xml_tags():
+    thml = STANDARD_THML.replace('<p id="p1">', '<p id="p1"><i>Great</i> art Thou,')
+    doc = parse_thml_string(thml)
+    assert "<i>" not in doc.chunks[0][0]
+
 
 def test_parse_thml_positions_sequential():
     doc = parse_thml_string(STANDARD_THML)
     positions = [c[2] for c in doc.chunks]
     assert positions == list(range(len(doc.chunks)))
 
-def test_parse_thml_strips_xml_tags():
-    thml = STANDARD_THML.replace('<p id="p1">', '<p id="p1"><i>Great</i> art Thou,')
-    doc = parse_thml_string(thml)
-    assert "<i>" not in doc.chunks[0][0]
+
+def test_parse_thml_skips_short_chapters():
+    short_thml = STANDARD_THML.replace(
+        '<p id="p3">And how shall I call upon my God, my God and Lord, since, when I call for Him, I shall be calling Him to myself? and what room is there within me, whither my God can come into me?</p>',
+        '<p id="p3">Short.</p>'
+    )
+    doc = parse_thml_string(short_thml)
+    refs = [c[1] for c in doc.chunks]
+    assert not any("Chapter II" in r and "Book I" in r for r in refs)
 
 def test_parse_thml_summa_chunks_at_article():
     doc = parse_thml_string(SUMMA_THML)
@@ -131,15 +146,6 @@ def test_parse_thml_summa_article_content_complete():
     assert "I answer that" in content
     assert "Reply to Objection" in content
 
-def test_parse_thml_skips_short_chapters():
-    # Chapter with < 100 chars of text should be skipped
-    short_thml = STANDARD_THML.replace(
-        '<p id="p3">And how shall I call upon my God, my God and Lord, since, when I call for Him, I shall be calling Him to myself? and what room is there within me, whither my God can come into me?</p>',
-        '<p id="p3">Short.</p>'
-    )
-    doc = parse_thml_string(short_thml)
-    refs = [c[1] for c in doc.chunks]
-    assert "Book I, Chapter II" not in refs
 
 def test_parse_author_handles_approximate_dates():
     from ingest.common import _parse_author
@@ -149,27 +155,13 @@ def test_parse_author_handles_approximate_dates():
     assert "(c.296-c.373)" not in author
 
 def test_chunk_standard_falls_back_to_div1_when_no_div2():
-    thml = """<?xml version="1.0"?>
-<ThML>
-  <ThML.head>
-    <electronicEdInfo><authorID>athanasius</authorID><bookID>incarnation</bookID></electronicEdInfo>
-    <DC><DC.Title>On the Incarnation</DC.Title></DC>
-  </ThML.head>
-  <ThML.body>
-    <div1 title="Chapter I" n="i" id="ch1">
-      <p id="p1">The Word of God, incorporeal and incorruptible and immaterial, came into our world. He was not previously distant from it, for no part of creation had ever been without Him.</p>
-      <p id="p2">He enters the world in a new way, stooping to our level in his love and self-revealing to us. He saw the reasonable race perishing and death reigning over them.</p>
-    </div1>
-    <div1 title="Chapter II" n="ii" id="ch2">
-      <p id="p3">Let us then consider this matter from the beginning, taking up the discussion with reference to the origin of the universe and its maker, God.</p>
-    </div1>
-  </ThML.body>
-</ThML>"""
     from ingest.common import parse_thml_string
-    doc = parse_thml_string(thml)
+    doc = parse_thml_string(_INCARNATION_THML)
     assert len(doc.chunks) == 2
-    assert doc.chunks[0][1] == "Chapter I"
-    assert doc.chunks[1][1] == "Chapter II"
+    _, ref0, _, _ = doc.chunks[0]
+    _, ref1, _, _ = doc.chunks[1]
+    assert "Chapter 1" in ref0 or "Chapter I" in ref0
+    assert "Chapter 2" in ref1 or "Chapter II" in ref1
     assert "Word of God" in doc.chunks[0][0]
 
 
@@ -182,8 +174,8 @@ _CITY_THML = """<?xml version="1.0"?>
   <ThML.body>
     <div1 title="Volume I" n="i">
       <div2 title="Book I" shorttitle="Book I" n="i">
-        <div3 title="Of the enemies of Christ" n="i"><p id="p1">When the barbarians sacked Rome, they spared all those who fled for refuge.</p></div3>
-        <div3 title="Of those who complain" n="ii"><p id="p2">But those complain of Christian times.</p></div3>
+        <div3 title="Of the enemies of Christ" n="i"><p id="p1">When the barbarians sacked Rome, they spared all those who fled for refuge to the sanctuaries of the apostles and martyrs, and those who did not so flee were slain by the sword of the enemy.</p></div3>
+        <div3 title="Of those who complain" n="ii"><p id="p2">But those who complain of Christian times seek the pleasures and abundance of this life, not the peace of eternity, yet since God gives rain upon the just and the unjust alike, they enjoy much that belongs to our faith.</p></div3>
       </div2>
     </div1>
   </ThML.body>
@@ -196,12 +188,12 @@ _MULTI_AUTHOR_THML = """<?xml version="1.0"?>
   <ThML.body>
     <div1 title="CLEMENT OF ROME" n="i">
       <div2 title="First Epistle of Clement to the Corinthians" n="i">
-        <div3 title="Chapter I. The salutation." n="i" shorttitle="Chapter I"><p id="p1">The Church of God which sojourns at Rome.</p></div3>
+        <div3 title="Chapter I. The salutation." n="i" shorttitle="Chapter I"><p id="p1">The Church of God which sojourns at Rome, to the Church of God sojourning at Corinth, to them that are called and sanctified by the will of God, through our Lord Jesus Christ: Grace unto you, and peace, from Almighty God through Jesus Christ, be multiplied.</p></div3>
       </div2>
     </div1>
     <div1 title="IGNATIUS OF ANTIOCH" n="ii">
       <div2 title="Epistle to the Ephesians" n="i">
-        <div3 title="Chapter I. Praise of the Ephesians." n="i" shorttitle="Chapter I"><p id="p2">Ignatius who is also Theophorus.</p></div3>
+        <div3 title="Chapter I. Praise of the Ephesians." n="i" shorttitle="Chapter I"><p id="p2">Ignatius, who is also Theophorus, to the Church which is at Ephesus in Asia, deservedly most happy, being blessed in the greatness and fulness of God the Father, and predestinated before the ages of time, that it should be always for an enduring and unchangeable glory.</p></div3>
       </div2>
     </div1>
   </ThML.body>
@@ -213,10 +205,10 @@ _INCARNATION_THML = """<?xml version="1.0"?>
   <DC.Creator sub="Author" scheme="file-as">Athanasius, Saint (c.296-c.373)</DC.Creator></DC></ThML.head>
   <ThML.body>
     <div1 title="Chapter 1. Creation and the Fall" type="chapter" n="i">
-      <p id="p1">The Word of God, incorporeal and incorruptible.</p>
+      <p id="p1">The Word of God, incorporeal and incorruptible and immaterial, came into our world to renew mankind and to drive out death, manifesting Himself through a body that we might receive some understanding of the invisible Father.</p>
     </div1>
     <div1 title="Chapter 2. The Divine Dilemma" type="chapter" n="ii">
-      <p id="p2">For God had made man thus.</p>
+      <p id="p2">For God had made man thus, and willed that he should abide in incorruption; but men, having turned from the contemplation of God to evil of their own devising, had come under sentence of death and corruption.</p>
     </div1>
   </ThML.body>
 </ThML>"""
@@ -255,3 +247,45 @@ def test_short_author_name():
 def test_maybe_title_case_allcaps():
     assert _maybe_title_case("CLEMENT OF ROME") == "Clement Of Rome"
     assert _maybe_title_case("Clement of Rome") == "Clement of Rome"
+
+
+def test_parse_thml_confessions_generic_title_format():
+    doc = parse_thml_string(STANDARD_THML)
+    content, _, _, meta = doc.chunks[0]
+    # Confessions: generic chapter titles → [Book I, Chapter I] breadcrumb format
+    assert content.startswith("[Book I, Chapter I]")
+    assert "Great art Thou" in content
+    assert meta is not None
+    assert meta["div_depth"] == 2
+
+
+def test_parse_thml_city_of_god_depth_adaptive():
+    doc = parse_thml_string(_CITY_THML)
+    assert len(doc.chunks) == 2  # two div3 chapters
+    content, ref, _, meta = doc.chunks[0]
+    assert "Augustine — City of God, Book I" in ref
+    assert meta["div_depth"] == 3
+    # Content header: [Book I] chapter title (not generic)
+    assert content.startswith("[Book I]")
+
+
+def test_parse_thml_multi_author_reference():
+    doc = parse_thml_string(_MULTI_AUTHOR_THML)
+    _, ref0, _, _ = doc.chunks[0]
+    assert ref0.startswith("Clement Of Rome")
+    assert "First Epistle of Clement to the Corinthians" in ref0
+
+
+def test_parse_thml_summa_reference_format():
+    doc = parse_thml_string(SUMMA_THML)
+    _, ref0, _, _ = doc.chunks[0]
+    assert "Article 1" in ref0
+    assert "Question 1" in ref0
+
+
+def test_parse_thml_summa_article_content_complete():
+    doc = parse_thml_string(SUMMA_THML)
+    content, _, _, _ = doc.chunks[0]
+    assert "Objection 1" in content
+    assert "I answer that" in content
+    assert "Reply to Objection" in content

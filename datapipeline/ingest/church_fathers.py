@@ -56,8 +56,9 @@ async def main(pool) -> None:
                 metadata={"source_file": filename},
             )
 
-            for content, reference, position, _meta in doc.chunks:
-                await upsert_chunk(pool, doc_id, content, position, reference)
+            for content, reference, position, meta in doc.chunks:
+                chunk_meta = (meta or {}) | {"source_file": filename}
+                await upsert_chunk(pool, doc_id, content, position, reference, metadata=chunk_meta)
 
             total_chunks += len(doc.chunks)
             pbar.set_postfix({"file": filename, "chunks": len(doc.chunks)})

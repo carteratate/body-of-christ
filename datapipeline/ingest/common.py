@@ -125,9 +125,6 @@ def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
     return [c for c in chunks if c]
 
 
-_MIN_MERGE_CHARS = 200
-_MAX_SECTION_CHARS = 2500
-_TARGET_CHUNK_CHARS = 1200
 _OVERLAP_CHARS = 200
 
 _SKIP_TITLES: frozenset[str] = frozenset({
@@ -216,14 +213,21 @@ def _parent_label(elem) -> str:
 
 
 def _chunk_label(elem) -> str:
-    """Short reference label for a chunk-level div."""
+    """Short reference label for a chunk-level div.
+
+    Preference order: shorttitle → title (if non-generic) → Chapter N → title.
+    Using 'n' to fabricate 'Chapter N' only when no meaningful title exists.
+    """
     st = (elem.get("shorttitle") or "").strip()
     if st:
         return st
+    title = (elem.get("title") or "").strip()
+    if title and not _GENERIC_CHAPTER_RE.match(title):
+        return title[:50]
     n = (elem.get("n") or "").strip()
     if n:
         return f"Chapter {n.upper()}"
-    return (elem.get("title") or "").strip()[:50]
+    return title[:50]
 
 
 def _build_reference(
@@ -254,8 +258,11 @@ def _build_reference(
     else:
         short_author = _short_author_name(doc.author or "") or "Unknown"
         work = doc.title or "Unknown"
+        # When there are 2+ ancestor levels, skip the outermost (div1 volume/container)
+        # so references read "Book I, Chapter I" rather than "Volume I, Book I, Chapter I".
+        ref_ancestors = ancestors[1:] if len(ancestors) >= 2 else ancestors
         path = []
-        for anc in ancestors:
+        for anc in ref_ancestors:
             lbl = _parent_label(anc)
             if lbl:
                 path.append(lbl)
@@ -264,57 +271,84 @@ def _build_reference(
         return f"{short_author} — {work}, {', '.join(path)}" if path else f"{short_author} — {work}"
 
 
-def _chunk_standard(root, min_length: int = 100) -> list[tuple[str, str, int, dict | None]]:
-    """Hybrid chunking: natural section boundary preserved if ≤ 2500 chars,
-    sliding window applied for longer sections. Short sections merged upward."""
-    # 1. Collect raw sections
-    raw_sections: list[tuple[str, str]] = []
-    for elem in root.iter():
-        if elem.tag != "div1":
-            continue
-        div1_title = (elem.get("title") or "").strip()
-        div2_found = False
-        for child in elem:
-            if not child.tag.startswith("div2"):
-                continue
-            div2_title = (child.get("title") or "").strip()
-            content = _extract_p_text(child)
-            if len(content) < min_length:
-                continue
-            reference = f"{div1_title}, {div2_title}" if div1_title else div2_title
-            raw_sections.append((content, reference))
-            div2_found = True
-        if not div2_found:
-            content = _extract_p_text(elem)
-            if len(content) >= min_length:
-                raw_sections.append((content, div1_title or "Section"))
+def _build_content_header(
+    chunk_elem,
+    ancestors: list,
+    generic_titles: bool,
+) -> str:
+    """Return the [breadcrumb] header line for a chunk's content field."""
+    if generic_titles:
+        parts = [_parent_label(a) for a in ancestors if _parent_label(a)]
+        chunk_lbl = _chunk_label(chunk_elem)
+        if chunk_lbl:
+            parts.append(chunk_lbl)
+        return f"[{', '.join(parts)}]" if parts else ""
+    else:
+        parent = ancestors[-1] if ancestors else None
+        parent_lbl = _parent_label(parent) if parent is not None else ""
+        chunk_title = (chunk_elem.get("title") or "").strip()[:120]
+        return f"[{parent_lbl}] {chunk_title}" if parent_lbl else chunk_title
 
-    # 2. Merge short sections into the next
-    merged: list[tuple[str, str]] = []
-    i = 0
-    while i < len(raw_sections):
-        content, ref = raw_sections[i]
-        if len(content) < _MIN_MERGE_CHARS and i + 1 < len(raw_sections):
-            next_content, next_ref = raw_sections[i + 1]
-            raw_sections[i + 1] = (content + "\n\n" + next_content, next_ref)
-            i += 1
-            continue
-        merged.append((content, ref))
-        i += 1
 
-    # 3. Emit chunks
+def _chunk_standard(root, doc: "ThmlDocument", min_length: int = 100) -> list[tuple[str, str, int, dict | None]]:
+    """Depth-adaptive chapter-level chunking with ancestry references."""
+    parent_map = _build_parent_map(root)
+    chunk_level = _detect_chunk_level(root)
+    is_multi_author = _detect_is_multi_author(root)
+
+    chunk_elems = [
+        e for e in root.iter(f"div{chunk_level}")
+        if (e.get("title") or "").strip().lower() not in _SKIP_TITLES
+    ]
+
+    # Detect generic chapter titles (e.g., Confessions: "Chapter I", "Chapter II")
+    content_titles = [(e.get("title") or "").strip() for e in chunk_elems if (e.get("title") or "").strip()]
+    generic_titles = bool(content_titles) and all(
+        _GENERIC_CHAPTER_RE.match(t) for t in content_titles
+    )
+
+    head_elem = root.find(".//electronicEdInfo")
+    author_id = (head_elem.findtext("authorID") if head_elem is not None else "") or ""
+    book_id = (head_elem.findtext("bookID") if head_elem is not None else "") or ""
+
     chunks: list[tuple[str, str, int, dict | None]] = []
     position = 0
-    for content, ref in merged:
-        if len(content) <= _MAX_SECTION_CHARS:
-            chunks.append((content, ref, position, None))
+
+    for elem in chunk_elems:
+        content_text = _extract_p_text(elem)
+        if len(content_text) < min_length:
+            continue
+
+        # Collect ancestors root→parent (div elements only)
+        ancestors: list = []
+        current = parent_map.get(elem)
+        while current is not None and current.tag.startswith("div"):
+            ancestors.insert(0, current)
+            current = parent_map.get(current)
+
+        reference = _build_reference(doc, is_multi_author, elem, ancestors)
+        header = _build_content_header(elem, ancestors, generic_titles)
+        content = f"{header}\n\n{content_text}" if header else content_text
+
+        parent = ancestors[-1] if ancestors else None
+        metadata: dict = {
+            "author_id": author_id,
+            "book_id": book_id,
+            "div_depth": chunk_level,
+            "parent_shorttitle": _parent_label(parent) if parent is not None else "",
+            "chapter_title": (elem.get("title") or "").strip(),
+        }
+
+        if len(content) <= _CEILING:
+            chunks.append((content, reference, position, metadata))
             position += 1
         else:
-            parts = split_at_sentences(content, _TARGET_CHUNK_CHARS, _OVERLAP_CHARS)
+            parts = split_at_sentences(content_text, target=_CF_SPLIT_TARGET, overlap=_OVERLAP_CHARS)
             total = len(parts)
             for idx, part in enumerate(parts):
-                part_ref = f"{ref} ({idx + 1}/{total})" if total > 1 else ref
-                chunks.append((part, part_ref, position, None))
+                part_content = f"{header}\n\n{part}" if header else part
+                part_ref = f"{reference} ({idx + 1}/{total})" if total > 1 else reference
+                chunks.append((part_content, part_ref, position, metadata))
                 position += 1
 
     return chunks
@@ -341,11 +375,9 @@ def _chunk_summa(root, min_length: int = 50) -> list[tuple[str, str, int, dict |
 
 def parse_thml_string(xml_string: str) -> ThmlDocument:
     """Parse a ThML XML string into a ThmlDocument."""
-    # Strip DOCTYPE declaration to prevent network fetches
     xml_string = re.sub(r"<!DOCTYPE[^>]*(?:>|\[.*?\]>)", "", xml_string, flags=re.DOTALL)
     root = ET.fromstring(xml_string)
 
-    # Extract metadata
     title = (root.findtext(".//DC.Title") or root.findtext(".//title") or "Unknown").strip()
 
     creator = ""
@@ -359,11 +391,13 @@ def parse_thml_string(xml_string: str) -> ThmlDocument:
     if creator:
         author, year = _parse_author(creator)
 
-    # Choose chunking strategy
+    # Partial doc for reference building (no chunks yet)
+    partial_doc = ThmlDocument(title=title, author=author, year=year)
+
     if _is_summa(root):
         chunks = _chunk_summa(root)
     else:
-        chunks = _chunk_standard(root)
+        chunks = _chunk_standard(root, partial_doc)
 
     return ThmlDocument(title=title, author=author, year=year, chunks=chunks)
 
