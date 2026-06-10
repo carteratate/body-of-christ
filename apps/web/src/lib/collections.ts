@@ -11,6 +11,7 @@ export const COLLECTIONS: CollectionMeta[] = [
   { key: "encyclicals",    label: "📜 Encyclicals",    color: "var(--color-collection-encyclicals)" },
   { key: "canon-law",      label: "⚖️ Canon Law",      color: "var(--color-collection-canon-law)" },
   { key: "summa",          label: "📚 Summa Theologica", color: "var(--color-collection-summa)" },
+  { key: "medieval",       label: "🏰 Medieval",         color: "var(--color-collection-medieval)" },
 ];
 
 export const ALL_COLLECTION_KEYS: string[] = COLLECTIONS.map((c) => c.key);
