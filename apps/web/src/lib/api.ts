@@ -399,3 +399,24 @@ export async function updatePreferences(token: string, update: Partial<Preferenc
   if (!res.ok) throw new Error(`API error ${res.status}`);
   return res.json() as Promise<Preferences>;
 }
+
+// ── V2 Sources ─────────────────────────────────────────────────────────────
+
+export interface SourceDocument {
+  id: string;
+  collection: string;
+  title: string;
+  author: string | null;
+  year: number | null;
+  translation: string | null;
+  chunk_count: number;
+}
+
+export async function getSources(token: string): Promise<SourceDocument[]> {
+  const res = await fetch(`${API_URL}/v1/sources`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  const data = await res.json() as { sources: SourceDocument[] };
+  return data.sources;
+}

@@ -80,6 +80,14 @@ export function Sidebar() {
       {/* Bottom nav */}
       <div className="px-3 pb-4 pt-2 border-t border-brand-bg space-y-1 text-xs">
         <Link
+          href="/sources"
+          className={`block px-2 py-1.5 rounded transition-colors ${
+            pathname === "/sources" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
+          }`}
+        >
+          📋 List of Sources
+        </Link>
+        <Link
           href="/bookmarks"
           className={`block px-2 py-1.5 rounded transition-colors ${
             pathname === "/bookmarks" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
