@@ -32,20 +32,26 @@ _MIN_LENGTH = 40
 # Councils 1–20: one document row each.
 # (title, year, url, target)  — target controls chunk size per council.
 COUNCILS: list[tuple[str, int, str, int]] = [
-    ("Council of Nicaea",                    325,  "https://www.papalencyclicals.net/councils/ecum01.htm",  _TARGET_EARLY),
-    ("First Council of Constantinople",      381,  "https://www.papalencyclicals.net/councils/ecum02.htm",  _TARGET_EARLY),
-    ("Council of Ephesus",                   431,  "https://www.papalencyclicals.net/councils/ecum03.htm",  _TARGET_EARLY),
-    ("Council of Chalcedon",                 451,  "https://www.papalencyclicals.net/councils/ecum04.htm",  _TARGET_EARLY),
-    ("Second Council of Constantinople",     553,  "https://www.papalencyclicals.net/councils/ecum05.htm",  _TARGET_EARLY),
-    ("Third Council of Constantinople",      681,  "https://www.papalencyclicals.net/councils/ecum06.htm",  _TARGET_EARLY),
-    ("Second Council of Nicaea",             787,  "https://www.papalencyclicals.net/councils/ecum07.htm",  _TARGET_EARLY),
-    ("Fourth Council of Constantinople",     870,  "https://www.papalencyclicals.net/councils/ecum08.htm",  _TARGET_EARLY),
-    ("Lateran Councils I, II, and III",     1179,  "https://www.papalencyclicals.net/councils/ecum09-11.htm", _TARGET_EARLY),
-    ("Fourth Lateran Council",              1215,  "https://www.papalencyclicals.net/councils/ecum12-2.htm",  _TARGET_EARLY),
-    ("Councils of Lyons I and II",          1274,  "https://www.papalencyclicals.net/councils/ecum13-14.htm", _TARGET_EARLY),
-    ("Councils of Vienne through Lateran V",1517,  "https://www.papalencyclicals.net/councils/ecum15-18.htm", _TARGET_EARLY),
-    ("Council of Trent",                    1563,  "https://www.papalencyclicals.net/councils/trent.htm",    _TARGET_LATE),
-    ("First Vatican Council",               1870,  "https://www.papalencyclicals.net/councils/ecum20.htm",   _TARGET_LATE),
+    ("Council of Nicaea",                       325,  "https://www.papalencyclicals.net/councils/ecum01.htm",  _TARGET_EARLY),
+    ("First Council of Constantinople",         381,  "https://www.papalencyclicals.net/councils/ecum02.htm",  _TARGET_EARLY),
+    ("Council of Ephesus",                      431,  "https://www.papalencyclicals.net/councils/ecum03.htm",  _TARGET_EARLY),
+    ("Council of Chalcedon",                    451,  "https://www.papalencyclicals.net/councils/ecum04.htm",  _TARGET_EARLY),
+    ("Second Council of Constantinople",        553,  "https://www.papalencyclicals.net/councils/ecum05.htm",  _TARGET_EARLY),
+    ("Third Council of Constantinople",         681,  "https://www.papalencyclicals.net/councils/ecum06.htm",  _TARGET_EARLY),
+    ("Second Council of Nicaea",                787,  "https://www.papalencyclicals.net/councils/ecum07.htm",  _TARGET_EARLY),
+    ("Fourth Council of Constantinople",        870,  "https://www.papalencyclicals.net/councils/ecum08.htm",  _TARGET_EARLY),
+    ("First Lateran Council",                  1123,  "https://www.papalencyclicals.net/councils/ecum09.htm",  _TARGET_EARLY),
+    ("Second Lateran Council",                 1139,  "https://www.papalencyclicals.net/councils/ecum10.htm",  _TARGET_EARLY),
+    ("Third Lateran Council",                  1179,  "https://www.papalencyclicals.net/councils/ecum11.htm",  _TARGET_EARLY),
+    ("Fourth Lateran Council",                 1215,  "https://www.papalencyclicals.net/councils/ecum12-2.htm", _TARGET_EARLY),
+    ("First Council of Lyons",                 1245,  "https://www.papalencyclicals.net/councils/ecum13.htm",  _TARGET_EARLY),
+    ("Second Council of Lyons",                1274,  "https://www.papalencyclicals.net/councils/ecum14.htm",  _TARGET_EARLY),
+    ("Council of Vienne",                      1311,  "https://www.papalencyclicals.net/councils/ecum15.htm",  _TARGET_EARLY),
+    ("Council of Constance",                   1418,  "https://www.papalencyclicals.net/councils/ecum16.htm",  _TARGET_EARLY),
+    ("Council of Basel-Ferrara-Florence",      1445,  "https://www.papalencyclicals.net/councils/ecum17.htm",  _TARGET_EARLY),
+    ("Fifth Lateran Council",                  1517,  "https://www.papalencyclicals.net/councils/ecum18.htm",  _TARGET_EARLY),
+    ("Council of Trent",                       1563,  "https://www.papalencyclicals.net/councils/trent/the-complete-text.htm", _TARGET_LATE),
+    ("First Vatican Council",                  1870,  "https://www.papalencyclicals.net/councils/ecum20.htm",  _TARGET_LATE),
 ]
 
 # Vatican II: 16 documents, each gets its own DB row.
@@ -256,7 +262,8 @@ async def main(pool) -> None:
     """Scrape and upsert all council documents."""
     total_chunks = 0
 
-    with httpx.Client(timeout=30, follow_redirects=True) as client:
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; academic research bot)"}
+    with httpx.Client(timeout=30, follow_redirects=True, headers=headers) as client:
 
         # ── Councils 1–20 ────────────────────────────────────────────────────
         with tqdm(total=len(COUNCILS), unit="council", desc="Councils 1–20") as pbar:
