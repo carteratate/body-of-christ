@@ -6,4 +6,5 @@ VALID_COLLECTIONS: frozenset[str] = frozenset({
     "canon-law",
     "summa",
     "medieval",
+    "councils",
 })
