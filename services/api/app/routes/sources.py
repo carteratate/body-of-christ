@@ -33,6 +33,14 @@ class SourcesResponse(BaseModel):
 _SERIES_SUFFIX = re.compile(r':\s*Part\s+\w+\.?\s*$', re.IGNORECASE)
 _TRAILING_PUNCT = re.compile(r'[.:]+$')
 
+# Strip ": Book I", ": Volume II", etc. from work titles so multi-book works
+# (e.g. "Against Heresies: Book I–V") collapse into one entry.
+_BOOK_SUFFIX = re.compile(r':\s*(Book|Volume|Tome|Part)\s+[IVXLCDM\d]+\.?\s*$', re.IGNORECASE)
+
+
+def _base_work_title(ref_work: str) -> str:
+    return _BOOK_SUFFIX.sub("", ref_work).strip()
+
 # Strings that appear as ref_author in ThML files but are actually work titles.
 # Maps work title → real author name.
 _WORK_TITLE_AUTHOR = {
@@ -164,15 +172,18 @@ async def _get_church_fathers(pool) -> list[SourceDocument]:
                         chunk_count=chunk_count,
                     ))
             else:
-                # True multi-author volume: one entry per (author, work) pair.
+                # True multi-author volume: one entry per (author, base-work) pair.
+                # Multi-book works ("Against Heresies: Book I–V") collapse to one
+                # entry by stripping the ": Book X" suffix before grouping.
                 by_pair: dict[tuple[str, str], int] = defaultdict(int)
                 for r in doc_rows:
-                    by_pair[(r["ref_author"], r["ref_work"])] += r["chunk_count"]
-                for (ref_author, ref_work), chunk_count in sorted(by_pair.items()):
+                    base = _base_work_title(r["ref_work"])
+                    by_pair[(r["ref_author"], base)] += r["chunk_count"]
+                for (ref_author, base_work), chunk_count in sorted(by_pair.items()):
                     results.append(SourceDocument(
-                        id=f"{doc_id}:{ref_author}:{ref_work}",
+                        id=f"{doc_id}:{ref_author}:{base_work}",
                         collection="church-fathers",
-                        title=_clean_title(ref_work),
+                        title=_clean_title(base_work),
                         author=_clean_author(ref_author),
                         year=year,
                         chunk_count=chunk_count,
