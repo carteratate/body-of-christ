@@ -253,27 +253,13 @@ Use CSS custom properties via Tailwind `brand` namespace. No hardcoded hex value
 
 ## 17. Known Issues & Deferred Work
 
-### 1. documents UNIQUE Constraint (Phase 3 Blocker)
-
-`documents` uses `UNIQUE(collection, title)`. This conflicts when two Bible translations share a book name (e.g., "Genesis" in KJV and Douay-Rheims).
-
-**Fix:** Migration 0008 — add `translation text` column, change constraint to `UNIQUE(collection, title, translation)`. Also update `datapipeline/load.py` → `upsert_document()`.
-
-**DO NOT run any datapipeline scripts until this migration is applied.**
-
-### 2. bible.py Draft Blocked
-
-Commit `1c921d7` contains a working ingestion script. Do not run it until issue #1 (UNIQUE constraint) is resolved.
-
-### 3. Shared Rate Limit Counter
+### 1. Shared Rate Limit Counter
 
 V1 chat and V2 search share `user_usage.rate_count` / `quota_count` columns. V2 enforces 5/min; V1 enforces 10/min. This creates cross-contamination. There is a `TODO` comment in `routes/search.py` → `check_search_rate_limit`.
 
 **Future fix:** add `search_rate_count` / `search_quota_count` columns to `user_usage`.
 
-### 4. Phase 3 Corpus Ingestion Deferred
+### 2. Phase 3 Corpus Ingestion Deferred
 
-The following datapipeline scripts are not yet built or are blocked pending the schema fix:
-- `catechism.py`, `encyclicals.py`, `church_fathers.py`, `summa.py`, `embed.py`, `run_all.py`
-
-Build corpus ingestion after migration 0008 is applied.
+The following datapipeline scripts are not yet built:
+- `catechism.py`, `encyclicals.py`, `church_fathers.py`, `summa.py`, `embed.py`
