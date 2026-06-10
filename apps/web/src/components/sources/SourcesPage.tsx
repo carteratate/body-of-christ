@@ -5,17 +5,22 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { getSources, type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
 
+// Full name for Bible translation codes shown in the sources list.
+const TRANSLATION_LABELS: Record<string, string> = {
+  "WEB-C": "World English Bible, Catholic Edition",
+};
+
 function SourcesSkeleton() {
   return (
     <div className="space-y-8 animate-pulse">
-      {[5, 1, 18, 10, 1, 1].map((count, i) => (
+      {[3, 1, 18, 40, 1, 1].map((count, i) => (
         <div key={i} className="space-y-2">
           <div className="flex items-center gap-3 pb-2 border-b border-brand-surface">
             <div className="h-5 w-28 bg-brand-muted/20 rounded-full" />
             <div className="h-4 w-36 bg-brand-muted/20 rounded" />
           </div>
           <div className="space-y-1.5">
-            {Array.from({ length: Math.min(count, 5) }).map((_, j) => (
+            {Array.from({ length: Math.min(count, 6) }).map((_, j) => (
               <div key={j} className="flex items-center justify-between px-3 py-2 rounded bg-brand-surface">
                 <div
                   className="h-4 bg-brand-muted/20 rounded"
@@ -28,6 +33,60 @@ function SourcesSkeleton() {
         </div>
       ))}
     </div>
+  );
+}
+
+function BibleSection({ docs }: { docs: SourceDocument[] }) {
+  const meta = getCollectionMeta("bible");
+
+  // Group by translation code
+  const byTranslation = docs.reduce<Record<string, SourceDocument[]>>((acc, doc) => {
+    const key = doc.translation ?? "Unknown";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(doc);
+    return acc;
+  }, {});
+
+  const sectionPassages = docs.reduce((sum, d) => sum + d.chunk_count, 0);
+
+  return (
+    <section>
+      <div className="flex items-center gap-3 mb-3 pb-2 border-b border-brand-surface">
+        <span
+          className="text-xs font-semibold px-2.5 py-0.5 rounded-full border"
+          style={{ color: meta?.color, borderColor: meta?.color }}
+        >
+          {meta?.label ?? "bible"}
+        </span>
+        <span className="text-brand-muted text-xs">
+          {Object.keys(byTranslation).length === 1 ? "1 translation" : `${Object.keys(byTranslation).length} translations`}
+          {" · "}
+          {sectionPassages.toLocaleString()} passages
+        </span>
+      </div>
+      <ul className="space-y-1.5">
+        {Object.entries(byTranslation).map(([code, books]) => {
+          const totalPassages = books.reduce((sum, b) => sum + b.chunk_count, 0);
+          const label = TRANSLATION_LABELS[code] ?? code;
+          return (
+            <li
+              key={code}
+              className="flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface"
+            >
+              <div className="min-w-0">
+                <span className="text-brand-primary text-sm">{label}</span>
+                <span className="text-brand-muted text-xs ml-2">
+                  {books.length} books · {code}
+                </span>
+              </div>
+              <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
+                {totalPassages.toLocaleString()} passages
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
@@ -75,7 +134,9 @@ export function SourcesPage() {
     fetchSources();
   }, [fetchSources]);
 
+  const nonBibleSources = sources.filter((s) => s.collection !== "bible");
   const totalPassages = sources.reduce((sum, s) => sum + s.chunk_count, 0);
+  const totalDocuments = nonBibleSources.length + (sources.some((s) => s.collection === "bible") ? 1 : 0);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
@@ -83,7 +144,7 @@ export function SourcesPage() {
         <h1 className="text-2xl font-semibold text-brand-primary mb-1">List of Sources</h1>
         {!loading && !error && totalPassages > 0 && (
           <p className="text-brand-muted text-sm mb-6">
-            {sources.length} documents · {totalPassages.toLocaleString()} total passages
+            {totalDocuments} documents · {totalPassages.toLocaleString()} total passages
           </p>
         )}
         {(loading || error || totalPassages === 0) && (
@@ -109,6 +170,11 @@ export function SourcesPage() {
             {COLLECTIONS.map(({ key }) => {
               const docs = sources.filter((s) => s.collection === key);
               if (docs.length === 0) return null;
+
+              if (key === "bible") {
+                return <BibleSection key={key} docs={docs} />;
+              }
+
               const meta = getCollectionMeta(key);
               const sectionPassages = docs.reduce((sum, d) => sum + d.chunk_count, 0);
 
@@ -127,7 +193,6 @@ export function SourcesPage() {
                       {sectionPassages.toLocaleString()} passages
                     </span>
                   </div>
-
                   <ul className="space-y-1.5">
                     {docs.map((doc) => (
                       <DocRow key={doc.id} doc={doc} />

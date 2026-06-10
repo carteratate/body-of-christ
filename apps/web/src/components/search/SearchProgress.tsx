@@ -171,9 +171,9 @@ export function SearchProgress({ phase, collections }: SearchProgressProps) {
       <div className="flex flex-col items-center gap-3">
         <div className="flex items-center">
           <Dot active={dot1Active} blinking={dot1Blinking} />
-          <Segment mode={seg1Mode} duration="5s" onFillComplete={onSeg1Complete} />
+          <Segment mode={seg1Mode} duration="10s" onFillComplete={onSeg1Complete} />
           <Dot active={dot2Active} blinking={dot2Blinking} />
-          <Segment mode={seg2Mode} duration="2.5s" onFillComplete={onSeg2Complete} />
+          <Segment mode={seg2Mode} duration="5s" onFillComplete={onSeg2Complete} />
           <Dot active={dot3Active} blinking={dot3Blinking} />
         </div>
         <div className="grid grid-cols-3 w-72 text-sm">
