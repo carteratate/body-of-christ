@@ -15,15 +15,22 @@ logger = logging.getLogger(__name__)
 _client: anthropic.AsyncAnthropic | None = None
 
 _RERANK_SYSTEM = (
-    "You are scoring Catholic theological passages for relevance to a user's question. "
-    "Score 0.9-1.0: passage directly addresses the question's specific topic with substance. "
-    "Score 0.6-0.89: passage is clearly related and provides useful context. "
-    "Score 0.3-0.59: passage touches on the topic but only tangentially. "
-    "Score 0.0-0.29: passage is off-topic or only shares vocabulary with the question. "
-    "Be strict — a passage about sin in general when the question asks about a specific sacrament "
-    "should score below 0.4. "
-    'Return ONLY a JSON array: [{"chunk_id": "<id>", "score": <0.0-1.0>}, ...]. '
-    "Include every chunk_id from the input. Score floats only."
+    "You are evaluating Catholic theological passages for a user's question. "
+    "For EACH passage, assign a relevance score and decide whether to include it.\n\n"
+    "Score bands:\n"
+    "  0.9-1.0: Directly addresses the specific topic with substance.\n"
+    "  0.6-0.89: Clearly relevant, provides useful context.\n"
+    "  0.3-0.59: Tangentially related.\n"
+    "  0.0-0.29: Off-topic or shares only vocabulary with the question.\n\n"
+    "Include rules:\n"
+    "  Set include=false if score < 0.25.\n"
+    "  Set include=false if this passage makes the same argument as a higher-scoring passage "
+    "(set overlap_with to that passage's chunk_id, overlap_verdict='redundant').\n"
+    "  Keep include=true for passages on the same theme from genuinely different angles "
+    "(e.g., scripture vs. catechism vs. theology) — set overlap_verdict='complementary'.\n\n"
+    "Return ONLY a JSON array containing ALL input chunk_ids:\n"
+    '[{"chunk_id":"<id>","score":<float>,"include":<bool>,'
+    '"overlap_with":<"id" or null>,"overlap_verdict":<"redundant"|"complementary"|null>}]'
 )
 
 
@@ -37,6 +44,7 @@ class RankedChunk:
     document_title: str
     author: str | None
     reranker_score: float  # 0.0–1.0
+    include: bool = True   # False = hard-excluded by reranker (low score or redundant)
 
 
 def init_rerank() -> None:
@@ -81,14 +89,15 @@ async def rerank_collection(
     query: str,
     quota: int,
 ) -> list[RankedChunk]:
-    """Re-rank candidate chunks using Claude Haiku and return the top `quota` results.
+    """Score and filter candidate chunks using Claude Haiku.
 
-    On failure: falls back to original RRF order with decreasing scores. Never raises.
+    Returns all scored chunks with include/exclude decisions; the pipeline
+    applies the hard cutoff. Falls back to RRF order (capped at quota) on
+    failure. Never raises.
     """
     if not candidates:
         return []
 
-    # Build a lookup from chunk_id → ChunkCandidate for mapping results back
     candidate_map: dict[str, ChunkCandidate] = {c.chunk_id: c for c in candidates}
 
     if _client is None:
@@ -101,7 +110,7 @@ async def rerank_collection(
     try:
         response = await _client.messages.create(
             model=settings.rerank_model,
-            max_tokens=800,
+            max_tokens=1500,
             system=_RERANK_SYSTEM,
             messages=[{"role": "user", "content": user_message}],
         )
@@ -111,7 +120,6 @@ async def rerank_collection(
         logger.warning("rerank_collection: Haiku scoring failed: %s", exc)
         return _fallback_ranked(candidates, quota)
 
-    # Build RankedChunk objects from the scored list
     ranked: list[RankedChunk] = []
     for item in scored:
         chunk_id = str(item.get("chunk_id", ""))
@@ -131,6 +139,15 @@ async def rerank_collection(
         if candidate is None:
             logger.warning("rerank_collection: unknown chunk_id '%s' in Haiku response", chunk_id)
             continue
+
+        include = bool(item.get("include", True))
+        overlap_verdict = item.get("overlap_verdict") or None
+        # Safety nets: hard-exclude low-scoring chunks and explicit redundancy
+        if score < 0.25:
+            include = False
+        if overlap_verdict == "redundant":
+            include = False
+
         ranked.append(
             RankedChunk(
                 chunk_id=candidate.chunk_id,
@@ -141,10 +158,11 @@ async def rerank_collection(
                 document_title=candidate.document_title,
                 author=candidate.author,
                 reranker_score=max(0.0, min(1.0, score)),
+                include=include,
             )
         )
 
-    # Add any candidates that Haiku omitted (score 0.0)
+    # Chunks omitted by Haiku get score 0.0, include=False
     returned_ids = {r.chunk_id for r in ranked}
     for c in candidates:
         if c.chunk_id not in returned_ids:
@@ -158,11 +176,12 @@ async def rerank_collection(
                     document_title=c.document_title,
                     author=c.author,
                     reranker_score=0.0,
+                    include=False,
                 )
             )
 
     ranked.sort(key=lambda r: r.reranker_score, reverse=True)
-    return ranked[:quota]
+    return ranked  # All chunks returned; pipeline applies the hard cutoff
 
 
 def _fallback_ranked(candidates: list[ChunkCandidate], quota: int) -> list[RankedChunk]:

@@ -39,7 +39,7 @@ class Settings(BaseSettings):
 
     # RAG pipeline
     default_quota: int = Field(default=4, validation_alias="DEFAULT_QUOTA")
-    candidate_multiplier: int = Field(default=4, validation_alias="CANDIDATE_MULTIPLIER")
+    candidate_multiplier: int = Field(default=5, validation_alias="CANDIDATE_MULTIPLIER")
 
     # Rate limiting
     rate_limit_per_minute: int = Field(default=10, validation_alias="RATE_LIMIT_PER_MINUTE")

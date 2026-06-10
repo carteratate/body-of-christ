@@ -127,18 +127,24 @@ async def run_search_pipeline(
                 all_ranked.extend(result)
 
         # ------------------------------------------------------------------
-        # Step 5 — Global merge and sort by reranker_score descending
+        # Step 5 — Global sort, hard cutoff, conditional collection guarantee
         # ------------------------------------------------------------------
-        final_results = sorted(all_ranked, key=lambda c: c.reranker_score, reverse=True)
+        _GUARANTEE_MIN_SCORE = 0.25
+        all_sorted = sorted(all_ranked, key=lambda c: c.reranker_score, reverse=True)
 
-        # Ensure every selected collection has at least one result. If a
-        # collection scored below the top results, append its best-ranked
-        # chunk so no source is completely silenced.
+        # Drop chunks the reranker excluded (low quality or redundant with a better chunk)
+        final_results = [c for c in all_sorted if c.include]
+
+        # For each selected collection absent from results, inject its best chunk only
+        # if it clears the minimum score threshold. Collections below threshold are
+        # silenced entirely rather than injecting noise.
         represented = {r.collection for r in final_results}
         for col in collections:
             if col not in represented:
                 col_best = next(
-                    (r for r in all_ranked if r.collection == col), None
+                    (r for r in all_sorted
+                     if r.collection == col and r.reranker_score >= _GUARANTEE_MIN_SCORE),
+                    None,
                 )
                 if col_best:
                     final_results.append(col_best)
