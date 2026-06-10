@@ -193,6 +193,13 @@ def test_parse_council_page_section_creates_new_chunk():
     assert len(session_7_refs) >= 1
 
 
+def test_parse_council_page_larger_target_produces_fewer_or_equal_chunks():
+    """target=2500 should produce no more chunks than target=2000 on the same text."""
+    chunks_2000 = parse_council_page(LONG_COUNCIL_HTML, "Council of Trent", 1563, target=2000)
+    chunks_2500 = parse_council_page(LONG_COUNCIL_HTML, "Council of Trent", 1563, target=2500)
+    assert len(chunks_2500) <= len(chunks_2000)
+
+
 # ── parse_vatican2_doc ───────────────────────────────────────────────────────
 
 def test_parse_vatican2_doc_returns_chunks():
@@ -271,27 +278,28 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from load import close_pool, get_pool, upsert_chunk, upsert_document
 
 _DELAY = 1.5
-_TARGET = 2000
+_TARGET_EARLY = 2000   # Nicaea through Lateran V: short canons, denser packing
+_TARGET_LATE  = 2500   # Trent, Vatican I, Vatican II: long doctrinal prose
 _CEILING = 3800
 _MIN_LENGTH = 40
 
 # Councils 1–20: one document row each.
-# (title, year, url)
-COUNCILS: list[tuple[str, int, str]] = [
-    ("Council of Nicaea",                    325,  "https://www.papalencyclicals.net/councils/ecum01.htm"),
-    ("First Council of Constantinople",      381,  "https://www.papalencyclicals.net/councils/ecum02.htm"),
-    ("Council of Ephesus",                   431,  "https://www.papalencyclicals.net/councils/ecum03.htm"),
-    ("Council of Chalcedon",                 451,  "https://www.papalencyclicals.net/councils/ecum04.htm"),
-    ("Second Council of Constantinople",     553,  "https://www.papalencyclicals.net/councils/ecum05.htm"),
-    ("Third Council of Constantinople",      681,  "https://www.papalencyclicals.net/councils/ecum06.htm"),
-    ("Second Council of Nicaea",             787,  "https://www.papalencyclicals.net/councils/ecum07.htm"),
-    ("Fourth Council of Constantinople",     870,  "https://www.papalencyclicals.net/councils/ecum08.htm"),
-    ("Lateran Councils I, II, and III",     1179,  "https://www.papalencyclicals.net/councils/ecum09-11.htm"),
-    ("Fourth Lateran Council",              1215,  "https://www.papalencyclicals.net/councils/ecum12-2.htm"),
-    ("Councils of Lyons I and II",          1274,  "https://www.papalencyclicals.net/councils/ecum13-14.htm"),
-    ("Councils of Vienne through Lateran V",1517,  "https://www.papalencyclicals.net/councils/ecum15-18.htm"),
-    ("Council of Trent",                    1563,  "https://www.papalencyclicals.net/councils/trent.htm"),
-    ("First Vatican Council",               1870,  "https://www.papalencyclicals.net/councils/ecum20.htm"),
+# (title, year, url, target)  — target controls chunk size per council.
+COUNCILS: list[tuple[str, int, str, int]] = [
+    ("Council of Nicaea",                    325,  "https://www.papalencyclicals.net/councils/ecum01.htm",  _TARGET_EARLY),
+    ("First Council of Constantinople",      381,  "https://www.papalencyclicals.net/councils/ecum02.htm",  _TARGET_EARLY),
+    ("Council of Ephesus",                   431,  "https://www.papalencyclicals.net/councils/ecum03.htm",  _TARGET_EARLY),
+    ("Council of Chalcedon",                 451,  "https://www.papalencyclicals.net/councils/ecum04.htm",  _TARGET_EARLY),
+    ("Second Council of Constantinople",     553,  "https://www.papalencyclicals.net/councils/ecum05.htm",  _TARGET_EARLY),
+    ("Third Council of Constantinople",      681,  "https://www.papalencyclicals.net/councils/ecum06.htm",  _TARGET_EARLY),
+    ("Second Council of Nicaea",             787,  "https://www.papalencyclicals.net/councils/ecum07.htm",  _TARGET_EARLY),
+    ("Fourth Council of Constantinople",     870,  "https://www.papalencyclicals.net/councils/ecum08.htm",  _TARGET_EARLY),
+    ("Lateran Councils I, II, and III",     1179,  "https://www.papalencyclicals.net/councils/ecum09-11.htm", _TARGET_EARLY),
+    ("Fourth Lateran Council",              1215,  "https://www.papalencyclicals.net/councils/ecum12-2.htm",  _TARGET_EARLY),
+    ("Councils of Lyons I and II",          1274,  "https://www.papalencyclicals.net/councils/ecum13-14.htm", _TARGET_EARLY),
+    ("Councils of Vienne through Lateran V",1517,  "https://www.papalencyclicals.net/councils/ecum15-18.htm", _TARGET_EARLY),
+    ("Council of Trent",                    1563,  "https://www.papalencyclicals.net/councils/trent.htm",    _TARGET_LATE),
+    ("First Vatican Council",               1870,  "https://www.papalencyclicals.net/councils/ecum20.htm",   _TARGET_LATE),
 ]
 
 # Vatican II: 16 documents, each gets its own DB row.
@@ -326,10 +334,11 @@ def parse_council_page(
     html: str,
     council_name: str,
     year: int,
+    target: int = _TARGET_EARLY,
 ) -> list[tuple[str, str, int, dict]]:
     """Parse a papalencyclicals.net council page into chunks.
 
-    Groups numbered canons/paragraphs up to _TARGET chars, starting a new chunk
+    Groups numbered canons/paragraphs up to `target` chars, starting a new chunk
     at each section header (h2/h3/h4). Returns (content, reference, position, metadata).
     """
     soup = BeautifulSoup(html, "lxml")
@@ -384,7 +393,7 @@ def parse_council_page(
                 _flush()
             acc.append(body)
             acc_len += len(body)
-            if acc_len >= _TARGET:
+            if acc_len >= target:
                 _flush()
             continue
 
@@ -398,7 +407,7 @@ def parse_council_page(
                 _flush()
             acc.append(body)
             acc_len += len(body)
-            if acc_len >= _TARGET:
+            if acc_len >= target:
                 _flush()
             continue
 
@@ -408,7 +417,7 @@ def parse_council_page(
                 _flush()
             acc.append(text)
             acc_len += len(text)
-            if acc_len >= _TARGET:
+            if acc_len >= target:
                 _flush()
 
     _flush()
@@ -493,7 +502,7 @@ def parse_vatican2_doc(
                 _flush()
             acc.append((num, body))
             acc_len += len(body)
-            if acc_len >= _TARGET:
+            if acc_len >= _TARGET_LATE:
                 _flush()
 
     _flush()
@@ -508,7 +517,7 @@ async def main(pool) -> None:
 
         # ── Councils 1–20 ────────────────────────────────────────────────────
         with tqdm(total=len(COUNCILS), unit="council", desc="Councils 1–20") as pbar:
-            for council_name, year, url in COUNCILS:
+            for council_number, (council_name, year, url, target) in enumerate(COUNCILS, start=1):
                 pbar.set_postfix({"council": council_name[:30]})
                 try:
                     resp = client.get(url)
@@ -519,7 +528,7 @@ async def main(pool) -> None:
                     time.sleep(_DELAY)
                     continue
 
-                chunks = parse_council_page(resp.text, council_name, year)
+                chunks = parse_council_page(resp.text, council_name, year, target=target)
                 if not chunks:
                     print(f"\n  WARNING: No chunks from {council_name}", file=sys.stderr)
                     pbar.update(1)
@@ -533,7 +542,7 @@ async def main(pool) -> None:
                     translation="",
                     author=None,
                     year=year,
-                    metadata={"source_url": url, "council_number": COUNCILS.index((council_name, year, url)) + 1},
+                    metadata={"source_url": url, "council_number": council_number},
                 )
 
                 for content, reference, position, meta in chunks:
