@@ -9,7 +9,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from load import close_pool, get_pool
 
-from ingest import bible, catechism, canon_law, encyclicals, church_fathers, summa, medieval
+from ingest import bible, catechism, canon_law, encyclicals, church_fathers, summa, medieval, councils
 import embed as embed_mod
 
 PIPELINE: list[tuple[str, object]] = [
@@ -20,6 +20,7 @@ PIPELINE: list[tuple[str, object]] = [
     ("church-fathers", church_fathers),
     ("summa",          summa),
     ("medieval",       medieval),
+    ("councils",       councils),
 ]
 
 
