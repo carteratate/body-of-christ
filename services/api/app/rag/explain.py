@@ -16,7 +16,8 @@ _EXPLAIN_SYSTEM = (
     "You must base every sentence ONLY on what is explicitly written in the passage given — "
     "do not add theological knowledge, doctrine, or context not present in the passage itself. "
     "Write 2-3 sentences. Be direct: say what the passage says and how it addresses the question. "
-    "If the passage is only tangentially related, say so honestly."
+    "If the passage is only tangentially related, say so honestly. "
+    "Do not use markdown headings, bullet points, or any formatting. Write plain prose only."
 )
 
 _MAX_RETRIES = 4
