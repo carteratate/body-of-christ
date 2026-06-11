@@ -104,9 +104,17 @@ _USFM_CODE_TO_BOOK: dict[str, str] = {
     "REV": "Revelation",
 }
 
-# Deuterocanonical books chunked per-chapter (not by pericope).
+# Books chunked per-chapter (one chunk per chapter).
+# Psalms pericopes in the JSON only define 5 "Book of Psalms" blobs, so we
+# route it here for one-chunk-per-psalm (150 chunks total).
 _DEUTEROCANONICAL_BOOKS: frozenset[str] = frozenset({
-    "Tobit", "Judith", "1 Maccabees", "2 Maccabees", "Wisdom", "Sirach", "Baruch",
+    "Tobit", "Judith", "1 Maccabees", "2 Maccabees", "Wisdom", "Baruch",
+    "Psalms",
+})
+
+# Books chunked per USFM \b stanza marker (requires usfm_path on BookVerses).
+_STANZA_BOOKS: frozenset[str] = frozenset({
+    "Sirach",
 })
 
 # Default source paths (relative to the datapipeline root directory).
@@ -132,6 +140,7 @@ class BookVerses:
     book_code: str          # USFM code e.g. "GEN"
     testament: str          # "OT" | "NT"
     verses: list[Verse] = field(default_factory=list)
+    usfm_path: str = ""     # absolute path to source .usfm file
 
 
 # ---------------------------------------------------------------------------
@@ -214,6 +223,65 @@ def parse_usfm_file(path: str) -> dict[tuple[int, int], str]:
     return verses
 
 
+def parse_usfm_stanzas(path: str) -> list[list[tuple[int, int, str]]]:
+    """Parse a USFM file into stanza groups defined by \\b (blank-line) markers.
+
+    Returns a list of stanzas; each stanza is a list of (chapter, verse, clean_text).
+    A \\b line flushes the accumulated verses as a completed stanza.
+    A \\c (chapter) line also flushes so stanzas never cross chapter boundaries.
+    """
+    stanzas: list[list[tuple[int, int, str]]] = []
+    current: list[tuple[int, int, str]] = []
+    current_chapter: int = 0
+    current_verse: int | None = None
+
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        for raw_line in fh:
+            line = raw_line.rstrip("\n\r")
+
+            # Stanza break: \b as its own line (optional trailing whitespace).
+            if re.match(r"^\\b\s*$", line):
+                if current:
+                    stanzas.append(current)
+                    current = []
+                current_verse = None
+                continue
+
+            # Chapter marker: flush current stanza before switching chapters.
+            c_match = re.match(r"^\\c\s+(\d+)", line)
+            if c_match:
+                if current:
+                    stanzas.append(current)
+                    current = []
+                current_chapter = int(c_match.group(1))
+                current_verse = None
+                continue
+
+            # Verse marker: start a new verse entry in the current stanza.
+            v_match = re.match(r"^\\v\s+(\d+)\s*(.*)", line)
+            if v_match and current_chapter > 0:
+                current_verse = int(v_match.group(1))
+                text = _clean_usfm_text(v_match.group(2))
+                current.append((current_chapter, current_verse, text))
+                continue
+
+            # Continuation line for current verse.
+            if current_verse is not None and current_chapter > 0:
+                if re.match(r"^\\(id|ide|h|toc|mt|imt|ms|mr|s|sr|r|d|sp|li|lim|cls)\b", line):
+                    current_verse = None
+                    continue
+                cleaned = _clean_usfm_text(line)
+                if cleaned and current:
+                    ch, v, prev = current[-1]
+                    if ch == current_chapter and v == current_verse:
+                        current[-1] = (ch, v, f"{prev} {cleaned}")
+
+    if current:
+        stanzas.append(current)
+
+    return stanzas
+
+
 def _book_code_from_usfm(path: str) -> str | None:
     """Read the \\id line from a USFM file and return the 3-letter book code."""
     with open(path, encoding="utf-8", errors="replace") as fh:
@@ -252,6 +320,7 @@ def load_usfm_directory(usfm_dir: str) -> dict[str, BookVerses]:
             book_code=code,
             testament=testament,
             verses=verse_list,
+            usfm_path=path,
         )
     return books
 
@@ -415,6 +484,41 @@ def chunk_deuterocanonical_book(
         position += 1
 
 
+def chunk_stanza_book(
+    book_name: str,
+    testament: str,
+    stanzas: list[list[tuple[int, int, str]]],
+    translation: str,
+    min_chars: int = 50,
+) -> Iterator[tuple[str, str, dict, int]]:
+    """Yield (content, reference, metadata, position) for a stanza-chunked book.
+
+    One chunk per stanza. Stanzas whose joined text is shorter than min_chars
+    are skipped (handles near-empty stanzas from headings or footnote-only verses).
+    """
+    position = 0
+    for stanza_idx, stanza_verses in enumerate(stanzas):
+        if not stanza_verses:
+            continue
+        content = " ".join(text for _, _, text in stanza_verses)
+        if len(content) < min_chars:
+            continue
+
+        start_ch, start_v, _ = stanza_verses[0]
+        end_ch, end_v, _ = stanza_verses[-1]
+        reference = _format_reference(book_name, start_ch, start_v, end_ch, end_v)
+
+        metadata = {
+            "book": book_name,
+            "chapter": start_ch,
+            "stanza": stanza_idx,
+            "testament": testament,
+            "translation": translation,
+        }
+        yield content, reference, metadata, position
+        position += 1
+
+
 # ---------------------------------------------------------------------------
 # Ingest functions
 # ---------------------------------------------------------------------------
@@ -448,16 +552,21 @@ async def ingest_webc(
 
     canonical_books = {
         name: bv for name, bv in all_books.items()
-        if name not in _DEUTEROCANONICAL_BOOKS
+        if name not in _DEUTEROCANONICAL_BOOKS and name not in _STANZA_BOOKS
     }
     deutero_books = {
         name: bv for name, bv in all_books.items()
         if name in _DEUTEROCANONICAL_BOOKS
     }
+    stanza_books = {
+        name: bv for name, bv in all_books.items()
+        if name in _STANZA_BOOKS
+    }
 
     print(
         f"  {len(canonical_books)} canonical books (pericope chunking), "
-        f"{len(deutero_books)} deuterocanonical books (chapter chunking)."
+        f"{len(deutero_books)} deuterocanonical/Psalms books (chapter chunking), "
+        f"{len(stanza_books)} stanza books (stanza chunking)."
     )
 
     total_chunks = 0
@@ -515,6 +624,43 @@ async def ingest_webc(
             book_chunks = 0
             for content, reference, metadata, position in chunk_deuterocanonical_book(
                 book, translation
+            ):
+                await upsert_chunk(
+                    pool,
+                    document_id=doc_id,
+                    content=content,
+                    position=position,
+                    reference=reference,
+                    metadata=metadata,
+                )
+                total_chunks += 1
+                book_chunks += 1
+
+            pbar.set_postfix({"book": book_name, "chunks": book_chunks})
+            pbar.update(1)
+
+        # --- Stanza books (Sirach) ---
+        for book_name, book in sorted(stanza_books.items()):
+            if not book.usfm_path:
+                pbar.set_postfix({"book": book_name, "chunks": 0, "note": "no usfm_path"})
+                pbar.update(1)
+                continue
+
+            testament = book.testament
+            doc_id = await upsert_document(
+                pool,
+                collection="bible",
+                title=book_name,
+                translation=translation,
+                author=None,
+                year=None,
+                metadata={"testament": testament},
+            )
+
+            stanzas = parse_usfm_stanzas(book.usfm_path)
+            book_chunks = 0
+            for content, reference, metadata, position in chunk_stanza_book(
+                book_name, testament, stanzas, translation
             ):
                 await upsert_chunk(
                     pool,

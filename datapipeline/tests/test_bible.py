@@ -19,14 +19,18 @@ from ingest.bible import (
     _clean_usfm_text,
     _format_reference,
     _parse_ref,
+    _DEUTEROCANONICAL_BOOKS,
+    _STANZA_BOOKS,
     BookVerses,
     Verse,
     Pericope,
     collect_pericope_verses,
     chunk_canonical_book,
     chunk_deuterocanonical_book,
+    chunk_stanza_book,
     load_pericopes,
     parse_usfm_file,
+    parse_usfm_stanzas,
 )
 
 
@@ -440,3 +444,202 @@ def test_reference_format_uses_en_dash():
     ref = _format_reference("Romans", 1, 1, 1, 7)
     assert "–" in ref
     assert "-" not in ref
+
+
+# ---------------------------------------------------------------------------
+# Psalms routing
+# ---------------------------------------------------------------------------
+
+def test_psalms_in_deuterocanonical_books():
+    """Psalms must be routed through per-chapter chunking, not pericope chunking."""
+    assert "Psalms" in _DEUTEROCANONICAL_BOOKS
+
+
+# ---------------------------------------------------------------------------
+# parse_usfm_stanzas
+# ---------------------------------------------------------------------------
+
+_STANZA_USFM = textwrap.dedent(r"""
+    \id SIR
+    \c 1
+    \b
+    \q1
+    \v 1 All wisdom comes from the Lord,
+    \q2 and is with him forever.
+    \v 2 Who can count the sand of the seas,
+    \b
+    \v 3 The fear of the Lord is glory, exultation,
+    \v 4 Whoever fears the Lord, it will go well for him.
+    \c 2
+    \v 1 My son, if you come to serve the Lord,
+    \v 2 prepare your soul for temptation.
+    \b
+    \v 3 Set your heart right, and endure.
+""").lstrip()
+
+
+def _write_stanza_usfm(content: str) -> str:
+    import tempfile
+    f = tempfile.NamedTemporaryFile(suffix=".usfm", mode="w", encoding="utf-8", delete=False)
+    f.write(content)
+    f.close()
+    return f.name
+
+
+def test_parse_usfm_stanzas_count():
+    """\\b markers and chapter boundaries together define stanza count."""
+    path = _write_stanza_usfm(_STANZA_USFM)
+    try:
+        stanzas = parse_usfm_stanzas(path)
+        # ch1: 2 stanzas (each \\b flushes); ch2: 2 stanzas (\\c flush + \\b flush)
+        assert len(stanzas) == 4
+    finally:
+        os.unlink(path)
+
+
+def test_parse_usfm_stanzas_first_stanza_verses():
+    """First stanza contains exactly the verses before the first \\b in ch1."""
+    path = _write_stanza_usfm(_STANZA_USFM)
+    try:
+        stanzas = parse_usfm_stanzas(path)
+        stanza0 = stanzas[0]
+        assert len(stanza0) == 2
+        ch, v, text = stanza0[0]
+        assert ch == 1 and v == 1
+        assert "All wisdom" in text
+    finally:
+        os.unlink(path)
+
+
+def test_parse_usfm_stanzas_chapter_boundary_flush():
+    """\\c marker flushes current stanza; ch2's first verses become a new stanza."""
+    path = _write_stanza_usfm(_STANZA_USFM)
+    try:
+        stanzas = parse_usfm_stanzas(path)
+        ch2_stanzas = [s for s in stanzas if s and s[0][0] == 2]
+        assert len(ch2_stanzas) == 2
+        assert ch2_stanzas[0][0] == (2, 1, "My son, if you come to serve the Lord,")
+    finally:
+        os.unlink(path)
+
+
+def test_parse_usfm_stanzas_clean_text():
+    """Verse text in stanzas has USFM markers stripped (\\q1, \\q2, etc.)."""
+    path = _write_stanza_usfm(_STANZA_USFM)
+    try:
+        stanzas = parse_usfm_stanzas(path)
+        for stanza in stanzas:
+            for ch, v, text in stanza:
+                assert "\\q" not in text
+                assert "\\v" not in text
+    finally:
+        os.unlink(path)
+
+
+def test_parse_usfm_stanzas_verse_tuple_structure():
+    """Each verse in a stanza is a (chapter: int, verse: int, text: str) tuple."""
+    path = _write_stanza_usfm(_STANZA_USFM)
+    try:
+        stanzas = parse_usfm_stanzas(path)
+        for stanza in stanzas:
+            for item in stanza:
+                assert len(item) == 3
+                ch, v, text = item
+                assert isinstance(ch, int)
+                assert isinstance(v, int)
+                assert isinstance(text, str) and text
+    finally:
+        os.unlink(path)
+
+
+# ---------------------------------------------------------------------------
+# chunk_stanza_book
+# ---------------------------------------------------------------------------
+
+_TEST_STANZAS: list[list[tuple[int, int, str]]] = [
+    [(1, 1, "All wisdom comes from the Lord"), (1, 2, "and is with him forever")],
+    [(1, 3, "The fear of the Lord is glory exultation"), (1, 4, "Whoever fears the Lord")],
+    [(2, 1, "My son if you come to serve the Lord"), (2, 2, "prepare your soul for temptation")],
+    [(2, 3, "x")],   # too short — must be skipped
+]
+
+
+def test_chunk_stanza_book_skips_short_stanzas():
+    """Stanzas whose joined text is below min_chars are skipped."""
+    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
+    assert len(chunks) == 3
+
+
+def test_chunk_stanza_book_reference_same_chapter():
+    """Same-chapter stanza reference uses 'Book ch:sv–ev' format."""
+    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
+    _, ref, _, _ = chunks[0]
+    assert ref == "Sirach 1:1–2"
+
+
+def test_chunk_stanza_book_reference_single_verse():
+    """Single-verse stanza uses 'Book ch:v' (no range)."""
+    single = [[(3, 5, "A" * 30)]]
+    chunks = list(chunk_stanza_book("Sirach", "OT", single, "WEB-C", min_chars=20))
+    _, ref, _, _ = chunks[0]
+    assert ref == "Sirach 3:5"
+
+
+def test_chunk_stanza_book_reference_cross_chapter():
+    """Cross-chapter stanza reference spans both chapter numbers."""
+    cross = [[(1, 40, "end of chapter one content here"), (2, 1, "start of chapter two content here")]]
+    chunks = list(chunk_stanza_book("Sirach", "OT", cross, "WEB-C", min_chars=20))
+    _, ref, _, _ = chunks[0]
+    assert ref == "Sirach 1:40–2:1"
+
+
+def test_chunk_stanza_book_content_joins_verses():
+    """Content is all verse texts joined with spaces."""
+    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
+    content, _, _, _ = chunks[0]
+    assert "All wisdom comes from the Lord" in content
+    assert "and is with him forever" in content
+
+
+def test_chunk_stanza_book_metadata():
+    """Metadata contains book, chapter (of first verse), stanza index, testament, translation."""
+    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
+    _, _, meta, _ = chunks[0]
+    assert meta["book"] == "Sirach"
+    assert meta["chapter"] == 1
+    assert "stanza" in meta
+    assert meta["testament"] == "OT"
+    assert meta["translation"] == "WEB-C"
+
+
+def test_chunk_stanza_book_positions_sequential():
+    """Position values are 0-indexed and sequential across yielded chunks."""
+    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
+    positions = [c[3] for c in chunks]
+    assert positions == list(range(len(chunks)))
+
+
+def test_chunk_stanza_book_returns_iterator():
+    """chunk_stanza_book is a generator (yields lazily)."""
+    import types
+    result = chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C")
+    assert isinstance(result, types.GeneratorType)
+
+
+# ---------------------------------------------------------------------------
+# Routing constants
+# ---------------------------------------------------------------------------
+
+def test_sirach_not_in_deuterocanonical_books():
+    """Sirach must be removed from _DEUTEROCANONICAL_BOOKS once _STANZA_BOOKS exists."""
+    assert "Sirach" not in _DEUTEROCANONICAL_BOOKS
+
+
+def test_sirach_in_stanza_books():
+    """Sirach must be in _STANZA_BOOKS so ingest_webc routes it through stanza chunking."""
+    assert "Sirach" in _STANZA_BOOKS
+
+
+def test_stanza_books_not_overlap_deuterocanonical():
+    """_STANZA_BOOKS and _DEUTEROCANONICAL_BOOKS must be disjoint."""
+    assert _STANZA_BOOKS.isdisjoint(_DEUTEROCANONICAL_BOOKS)
