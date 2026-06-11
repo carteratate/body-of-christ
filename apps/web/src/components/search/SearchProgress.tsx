@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { getCollectionMeta } from "@/lib/collections";
+import { useAppContext } from "@/components/layout/AppShell";
+
+const FALLBACK_CORPUS_PASSAGES = 19_969;
 
 type SearchPhase = "searching" | "ranking" | null;
 type SegMode = "idle" | "filling" | "complete";
@@ -96,6 +99,9 @@ interface SearchProgressProps {
 }
 
 export function SearchProgress({ phase, collections }: SearchProgressProps) {
+  const { corpusPassages } = useAppContext();
+  const totalPassages = (corpusPassages ?? FALLBACK_CORPUS_PASSAGES).toLocaleString();
+
   const labelKey = phase ?? "preparing";
   const label = PHASE_LABEL[labelKey];
 
@@ -163,7 +169,7 @@ export function SearchProgress({ phase, collections }: SearchProgressProps) {
 
       {/* Corpus scale line */}
       <p className="text-brand-muted text-xs">
-        Searching 30,325 passages across {collections.length}{" "}
+        Searching {totalPassages} passages across {collections.length}{" "}
         {collections.length === 1 ? "source" : "sources"}
       </p>
 

@@ -13,7 +13,7 @@ const TRANSLATION_LABELS: Record<string, string> = {
 function SourcesSkeleton() {
   return (
     <div className="space-y-8 animate-pulse">
-      {[3, 1, 18, 40, 1, 1].map((count, i) => (
+      {[3, 1, 18, 40, 1, 1, 4, 36].map((count, i) => (
         <div key={i} className="space-y-2">
           <div className="flex items-center gap-3 pb-2 border-b border-brand-surface">
             <div className="h-5 w-28 bg-brand-muted/20 rounded-full" />
@@ -90,6 +90,69 @@ function BibleSection({ docs }: { docs: SourceDocument[] }) {
   );
 }
 
+function CouncilsSection({ docs }: { docs: SourceDocument[] }) {
+  const meta = getCollectionMeta("councils");
+
+  // Group Vatican II documents under a single "Second Vatican Council" entry,
+  // then sort everything chronologically by year.
+  const vaticanIIDocs = docs.filter((d) => d.metadata?.council === "Vatican II");
+  const otherDocs = docs.filter((d) => d.metadata?.council !== "Vatican II");
+
+  const vaticanIIEntry = vaticanIIDocs.length > 0
+    ? [{
+        id: "vatican-ii",
+        title: "Second Vatican Council",
+        year: 1965,
+        chunk_count: vaticanIIDocs.reduce((sum, d) => sum + d.chunk_count, 0),
+        subCount: vaticanIIDocs.length,
+      }]
+    : [];
+
+  const sorted = [...otherDocs.map((d) => ({ ...d, subCount: undefined })), ...vaticanIIEntry]
+    .sort((a, b) => (a.year ?? 0) - (b.year ?? 0));
+
+  const sectionPassages = docs.reduce((sum, d) => sum + d.chunk_count, 0);
+
+  return (
+    <section>
+      <div className="flex items-center gap-3 mb-3 pb-2 border-b border-brand-surface">
+        <span
+          className="text-xs font-semibold px-2.5 py-0.5 rounded-full border"
+          style={{ color: meta?.color, borderColor: meta?.color }}
+        >
+          {meta?.label ?? "councils"}
+        </span>
+        <span className="text-brand-muted text-xs">
+          {sorted.length === 1 ? "1 council" : `${sorted.length} councils`}
+          {" · "}
+          {sectionPassages.toLocaleString()} passages
+        </span>
+      </div>
+      <ul className="space-y-1.5">
+        {sorted.map((entry) => {
+          const num = (entry as SourceDocument).metadata?.council_number as number | undefined;
+          return (
+            <li key={entry.id} className="flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface">
+              <div className="min-w-0">
+                <span className="text-brand-primary text-sm">{entry.title}</span>
+                <span className="text-brand-muted text-xs ml-2">
+                  {num ? `#${num} · ` : ""}{entry.year}
+                  {"subCount" in entry && entry.subCount != null
+                    ? ` · ${entry.subCount} documents`
+                    : ""}
+                </span>
+              </div>
+              <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
+                {entry.chunk_count.toLocaleString()} passages
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 function DocRow({ doc }: { doc: SourceDocument }) {
   const parts: string[] = [];
   if (doc.author) parts.push(doc.author);
@@ -115,7 +178,7 @@ function DocRow({ doc }: { doc: SourceDocument }) {
 }
 
 export function SourcesPage() {
-  const { token } = useAppContext();
+  const { token, setCorpusPassages } = useAppContext();
   const [sources, setSources] = useState<SourceDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -125,10 +188,13 @@ export function SourcesPage() {
     setLoading(true);
     setError(null);
     getSources(token)
-      .then((data) => setSources(data))
+      .then((data) => {
+        setSources(data);
+        setCorpusPassages(data.reduce((sum, s) => sum + s.chunk_count, 0));
+      })
       .catch(() => setError("Couldn't load the sources list. Please try again."))
       .finally(() => setLoading(false));
-  }, [token]);
+  }, [token, setCorpusPassages]);
 
   useEffect(() => {
     fetchSources();
@@ -173,6 +239,10 @@ export function SourcesPage() {
 
               if (key === "bible") {
                 return <BibleSection key={key} docs={docs} />;
+              }
+
+              if (key === "councils") {
+                return <CouncilsSection key={key} docs={docs} />;
               }
 
               const meta = getCollectionMeta(key);

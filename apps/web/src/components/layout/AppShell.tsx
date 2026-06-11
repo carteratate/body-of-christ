@@ -26,6 +26,9 @@ export interface AppContextValue {
   setActiveSearchId: (id: string | null) => void;
   searchKey: number;
   newSearch: () => void;
+  // Total passages across the whole corpus — populated lazily when sources page is visited
+  corpusPassages: number | null;
+  setCorpusPassages: (n: number) => void;
 }
 
 const AppContext = createContext<AppContextValue>({
@@ -42,6 +45,8 @@ const AppContext = createContext<AppContextValue>({
   setActiveSearchId: () => {},
   searchKey: 0,
   newSearch: () => {},
+  corpusPassages: null,
+  setCorpusPassages: () => {},
 });
 
 export function useAppContext() {
@@ -56,6 +61,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState(0);
   const [ready, setReady] = useState(false);
+  const [corpusPassages, setCorpusPassages] = useState<number | null>(null);
 
   function newSearch() {
     setSearchKey((k) => k + 1);
@@ -109,6 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       pendingSearch, setPendingSearch, clearPendingSearch,
       activeSearchId, setActiveSearchId,
       searchKey, newSearch,
+      corpusPassages, setCorpusPassages,
     }}>
       <div className="flex h-full bg-brand-bg text-brand-primary">
         <Sidebar />
