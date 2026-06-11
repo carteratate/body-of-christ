@@ -206,7 +206,11 @@ async def run_search_pipeline(
         queue: asyncio.Queue[ExplainEvent] = asyncio.Queue()
         accumulated: dict[str, str] = {c.chunk_id: "" for c in final_results}
 
-        async def _stream_one(chunk: RankedChunk) -> None:
+        EXPLAIN_STAGGER_SEC = 0.6
+
+        async def _stream_one(chunk: RankedChunk, stagger: float) -> None:
+            if stagger > 0:
+                await asyncio.sleep(stagger)
             try:
                 async for delta in stream_explanation(
                     chunk.content, chunk.reference, chunk.collection, query
@@ -218,7 +222,10 @@ async def run_search_pipeline(
             finally:
                 await queue.put(("done", chunk.chunk_id, ""))
 
-        tasks = [asyncio.create_task(_stream_one(c)) for c in final_results]
+        tasks = [
+            asyncio.create_task(_stream_one(c, i * EXPLAIN_STAGGER_SEC))
+            for i, c in enumerate(final_results)
+        ]
         pending = len(final_results)
         try:
             while pending > 0:
