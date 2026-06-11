@@ -45,51 +45,70 @@ async def run_search_pipeline(
 
     try:
         # ------------------------------------------------------------------
-        # Step 1 — Parallel HyDE + query embedding + query expansion
+        # Step 1 — Parallel: query embedding + query expansion + per-collection HyDE
+        # One HyDE passage is generated per collection so each embedding lands
+        # close to that collection's prose style.
         # ------------------------------------------------------------------
-        hyde_passage, query_vec, expanded_queries = await asyncio.gather(
-            generate_hyde_passage(query),
+        step1_results = await asyncio.gather(
             embed_text(query),
             expand_query(query),
+            *[generate_hyde_passage(query, col) for col in collections],
             return_exceptions=True,
         )
 
-        if isinstance(query_vec, BaseException):
-            logger.error("Query embedding failed: %s", query_vec)
+        query_vec_result = step1_results[0]
+        expanded_queries_result = step1_results[1]
+        hyde_passage_results = step1_results[2:]  # one entry per collection, in order
+
+        if isinstance(query_vec_result, BaseException):
+            logger.error("Query embedding failed: %s", query_vec_result)
             yield {"type": "error", "detail": "Embedding failed"}
             return
+        query_vec: list[float] = query_vec_result
 
-        if isinstance(hyde_passage, BaseException) or hyde_passage is None:
-            hyde_passage = None  # HyDE fallback — use query_vec only
-
-        if isinstance(expanded_queries, BaseException):
-            expanded_queries = []
+        if isinstance(expanded_queries_result, BaseException):
+            expanded_queries: list[str] = []
+        else:
+            expanded_queries = expanded_queries_result
 
         # ------------------------------------------------------------------
-        # Step 2 — Embed HyDE passage + expanded query variants (if available)
+        # Step 2 — Embed all valid HyDE passages + expanded query variants
         # ------------------------------------------------------------------
-        hyde_vec: list[float] | None = None
-        if isinstance(hyde_passage, str) and hyde_passage:
-            try:
-                hyde_vec = await embed_text(hyde_passage)
-            except Exception as exc:
-                logger.warning("HyDE embedding failed, falling back to query_vec only: %s", exc)
-                hyde_vec = None
+        # Collect (collection, passage) pairs that are valid strings
+        valid_hyde: list[tuple[str, str]] = [
+            (col, passage)
+            for col, passage in zip(collections, hyde_passage_results)
+            if isinstance(passage, str) and passage
+        ]
 
+        embed_inputs = [p for _, p in valid_hyde] + list(expanded_queries)
+        embed_results: list = list(await asyncio.gather(
+            *[embed_text(t) for t in embed_inputs],
+            return_exceptions=True,
+        )) if embed_inputs else []
+
+        # Build per-collection hyde vec map (None = fallback to query_vec at retrieval)
+        per_col_hyde_vec: dict[str, list[float] | None] = {col: None for col in collections}
+        for i, (col, _) in enumerate(valid_hyde):
+            result = embed_results[i]
+            if not isinstance(result, BaseException):
+                per_col_hyde_vec[col] = result
+            else:
+                logger.warning("HyDE embedding failed for collection=%s: %s", col, result)
+
+        # Build extra_vecs from expanded queries
         extra_vecs: list[list[float]] = []
-        if expanded_queries:
-            embed_results = await asyncio.gather(
-                *[embed_text(q) for q in expanded_queries],
-                return_exceptions=True,
-            )
-            extra_vecs = [v for v in embed_results if not isinstance(v, BaseException)]
+        for j in range(len(expanded_queries)):
+            idx = len(valid_hyde) + j
+            if idx < len(embed_results) and not isinstance(embed_results[idx], BaseException):
+                extra_vecs.append(embed_results[idx])
 
         # ------------------------------------------------------------------
         # Step 3 — Per-collection retrieval (parallel)
         # ------------------------------------------------------------------
         yield {"type": "status", "phase": "searching", "collections": collections}
         retrieve_tasks = [
-            retrieve_candidates(query, query_vec, hyde_vec, extra_vecs, col, quota, user_id)
+            retrieve_candidates(query, query_vec, per_col_hyde_vec[col], extra_vecs, col, quota, user_id)
             for col in collections
         ]
         retrieve_results = await asyncio.gather(*retrieve_tasks, return_exceptions=True)
