@@ -3,8 +3,10 @@
 import { CollectionToggles } from "./CollectionToggles";
 import { QuotaControl } from "./QuotaControl";
 import { SearchBar } from "./SearchBar";
+import { ResultFilterBar } from "./ResultFilterBar";
 
 interface BottomBarProps {
+  // Pre-search
   activeCollections: string[];
   onToggleCollection: (c: string) => void;
   translation: string;
@@ -15,6 +17,11 @@ interface BottomBarProps {
   onSearchChange: (v: string) => void;
   onSearch: () => void;
   loading: boolean;
+  // Post-search
+  isSearchActive: boolean;
+  submittedCollections: string[];
+  visibleCollections: string[];
+  onToggleVisible: (c: string) => void;
 }
 
 export function BottomBar({
@@ -28,8 +35,22 @@ export function BottomBar({
   onSearchChange,
   onSearch,
   loading,
+  isSearchActive,
+  submittedCollections,
+  visibleCollections,
+  onToggleVisible,
 }: BottomBarProps) {
-  const noCollections = activeCollections.length === 0;
+  if (isSearchActive) {
+    return (
+      <div className="border-t border-brand-surface bg-brand-bg px-4 py-4 pb-5">
+        <ResultFilterBar
+          submittedCollections={submittedCollections}
+          visibleCollections={visibleCollections}
+          onToggleVisible={onToggleVisible}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="border-t border-brand-surface bg-brand-bg px-4 py-3 pb-4">
@@ -47,7 +68,7 @@ export function BottomBar({
         onChange={onSearchChange}
         onSubmit={onSearch}
         loading={loading}
-        disabled={noCollections}
+        disabled={activeCollections.length === 0}
       />
     </div>
   );

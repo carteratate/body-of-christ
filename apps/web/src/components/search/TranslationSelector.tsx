@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 
 const TRANSLATIONS = [
-  { value: "CPDV",         label: "CPDV (default)" },
-  { value: "douay-rheims", label: "Douay-Rheims" },
+  { value: "WEB-C", label: "World English Bible, Catholic Edition" },
 ];
 
 interface TranslationSelectorProps {

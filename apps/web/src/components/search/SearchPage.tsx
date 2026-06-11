@@ -72,6 +72,8 @@ function SearchPageInner() {
   const [searchPhase, setSearchPhase] = useState<"searching" | "ranking" | null>(null);
   const [exploreLabel, setExploreLabel] = useState<string | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [submittedCollections, setSubmittedCollections] = useState<string[]>([]);
+  const [visibleCollections, setVisibleCollections] = useState<string[]>([]);
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
@@ -131,6 +133,8 @@ function SearchPageInner() {
     setRateLimitRetryAfter(null);
     setExploreLabel(null);
     setIsRestoring(false);
+    setSubmittedCollections([]);
+    setVisibleCollections([]);
     restoredForId.current = null;
     exploredForQuery.current = null;
     activatePendingSlot();
@@ -161,6 +165,8 @@ function SearchPageInner() {
         setSubmittedQuery(data.query);
         setSearchValue(data.query);
         setActiveSearchId(id);
+        setSubmittedCollections(ALL_COLLECTION_KEYS);
+        setVisibleCollections(ALL_COLLECTION_KEYS);
       })
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : "Failed to restore search";
@@ -197,6 +203,9 @@ function SearchPageInner() {
       setSearchValue("");
       setResults([]);
       setExploreLabel(newExploreLabel ?? null);
+      const snapshot = [...activeCollections];
+      setSubmittedCollections(snapshot);
+      setVisibleCollections(snapshot);
 
       try {
         await streamSearch(
@@ -274,6 +283,12 @@ function SearchPageInner() {
     );
   }
 
+  function handleToggleVisible(c: string) {
+    setVisibleCollections((prev) =>
+      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
+    );
+  }
+
   function handleQuotaChange(q: number) {
     trackQuotaChanged({ from: quota, to: q });
     setQuota(q);
@@ -332,7 +347,7 @@ function SearchPageInner() {
           </div>
         )}
 
-        {(loading || results.length > 0) && (
+        {(loading || submittedQuery) && (
           <SearchResults
             results={results}
             loading={loading}
@@ -340,7 +355,8 @@ function SearchPageInner() {
             token={token ?? ""}
             onExploreMore={handleExploreMore}
             phase={searchPhase}
-            collections={activeCollections}
+            submittedCollections={submittedCollections}
+            visibleCollections={visibleCollections}
             isRestoring={isRestoring}
           />
         )}
@@ -357,12 +373,6 @@ function SearchPageInner() {
           </div>
         )}
 
-        {!loading && !error && submittedQuery && results.length === 0 && searchId && (
-          <p className="text-brand-muted text-sm text-center py-8">
-            No passages found for your query in the selected sources. Try enabling more
-            collections or rephrasing your question.
-          </p>
-        )}
       </div>
 
       <BottomBar
@@ -379,6 +389,10 @@ function SearchPageInner() {
         }}
         onSearch={() => handleSearch(searchValue)}
         loading={loading}
+        isSearchActive={submittedQuery !== null}
+        submittedCollections={submittedCollections}
+        visibleCollections={visibleCollections}
+        onToggleVisible={handleToggleVisible}
       />
       <RateLimitModal
         isOpen={rateLimitRetryAfter !== null}

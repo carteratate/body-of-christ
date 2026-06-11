@@ -229,10 +229,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
         {/* Explore more */}
         <button
           onClick={handleExploreMore}
-          aria-label="Explore more like this"
+          aria-label="Query more sources like this"
           className="px-2 py-1 rounded text-xs text-brand-muted border border-brand-surface hover:text-brand-primary hover:border-brand-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
         >
-          🔍 Explore more
+          Query more sources like this
         </button>
       </div>
       {toast.visible && typeof document !== "undefined" &&
