@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, Suspense } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
@@ -320,6 +320,13 @@ function SearchPageInner() {
     return () => clearTimeout(timer);
   }, [exploreQuery, exploreRef, token, handleSearch]);
 
+  // Collections that actually have results — used for filter bar pills only.
+  // Derived from results so it never shows buttons for collections that returned nothing.
+  const filterBarCollections = useMemo(
+    () => [...new Set(results.map((r) => r.source.collection))],
+    [results]
+  );
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -390,7 +397,7 @@ function SearchPageInner() {
         onSearch={() => handleSearch(searchValue)}
         loading={loading}
         isSearchActive={submittedQuery !== null}
-        submittedCollections={submittedCollections}
+        submittedCollections={filterBarCollections}
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
       />
