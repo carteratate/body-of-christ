@@ -13,11 +13,13 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
+_VALID_THEMES = {"dark", "light"}
 
 _DEFAULT_PREFERENCES = PreferencesResponse(
     preferred_translation="CPDV",
     default_collections=["bible", "catechism", "church-fathers", "encyclicals", "canon-law", "summa"],
     default_quota=4,
+    theme="dark",
 )
 
 
@@ -32,7 +34,7 @@ async def get_preferences(
 
     try:
         row = await pool.fetchrow(
-            "SELECT preferred_translation, default_collections, default_quota FROM user_preferences WHERE user_id = $1",
+            "SELECT preferred_translation, default_collections, default_quota, theme FROM user_preferences WHERE user_id = $1",
             user.user_id,
         )
     except Exception as exc:
@@ -46,6 +48,7 @@ async def get_preferences(
         preferred_translation=row["preferred_translation"],
         default_collections=list(row["default_collections"]),
         default_quota=row["default_quota"],
+        theme=row["theme"],
     )
 
 
@@ -55,7 +58,6 @@ async def update_preferences(
     user: AuthUser = Depends(get_current_user),
 ) -> PreferencesResponse:
     """Upsert user preferences, merging with existing values."""
-    # Validate preferred_translation if provided — reject any unknown values
     if body.preferred_translation is not None:
         if body.preferred_translation not in _VALID_TRANSLATIONS:
             raise HTTPException(
@@ -63,7 +65,6 @@ async def update_preferences(
                 detail=f"Unknown translation: {body.preferred_translation!r}. Valid values: {sorted(_VALID_TRANSLATIONS)}",
             )
 
-    # Validate default_collections if provided — reject any unknown values
     if body.default_collections is not None:
         invalid = [c for c in body.default_collections if c not in _VALID_COLLECTIONS]
         if invalid:
@@ -80,16 +81,22 @@ async def update_preferences(
             preferred_translation=body.preferred_translation,
             default_collections=body.default_collections,
             default_quota=body.default_quota,
+            theme=body.theme,
+        )
+
+    if body.theme is not None and body.theme not in _VALID_THEMES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unknown theme: {body.theme!r}. Valid values: {sorted(_VALID_THEMES)}",
         )
 
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
-    # Fetch current preferences to merge with the incoming update
     try:
         current_row = await pool.fetchrow(
-            "SELECT preferred_translation, default_collections, default_quota FROM user_preferences WHERE user_id = $1",
+            "SELECT preferred_translation, default_collections, default_quota, theme FROM user_preferences WHERE user_id = $1",
             user.user_id,
         )
     except Exception as exc:
@@ -100,27 +107,31 @@ async def update_preferences(
         merged_translation = body.preferred_translation if body.preferred_translation is not None else current_row["preferred_translation"]
         merged_collections = body.default_collections if body.default_collections is not None else list(current_row["default_collections"])
         merged_quota = body.default_quota if body.default_quota is not None else current_row["default_quota"]
+        merged_theme = body.theme if body.theme is not None else current_row["theme"]
     else:
         merged_translation = body.preferred_translation if body.preferred_translation is not None else _DEFAULT_PREFERENCES.preferred_translation
         merged_collections = body.default_collections if body.default_collections is not None else list(_DEFAULT_PREFERENCES.default_collections)
         merged_quota = body.default_quota if body.default_quota is not None else _DEFAULT_PREFERENCES.default_quota
+        merged_theme = body.theme if body.theme is not None else _DEFAULT_PREFERENCES.theme
 
     try:
         row = await pool.fetchrow(
             """
-            INSERT INTO user_preferences (user_id, preferred_translation, default_collections, default_quota)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO user_preferences (user_id, preferred_translation, default_collections, default_quota, theme)
+            VALUES ($1, $2, $3, $4, $5)
             ON CONFLICT (user_id) DO UPDATE SET
                 preferred_translation = EXCLUDED.preferred_translation,
                 default_collections = EXCLUDED.default_collections,
                 default_quota = EXCLUDED.default_quota,
+                theme = EXCLUDED.theme,
                 updated_at = now()
-            RETURNING preferred_translation, default_collections, default_quota
+            RETURNING preferred_translation, default_collections, default_quota, theme
             """,
             user.user_id,
             merged_translation,
             merged_collections,
             merged_quota,
+            merged_theme,
         )
     except Exception as exc:
         logger.error("update_preferences upsert failed (%s)", exc.__class__.__name__)
@@ -130,4 +141,5 @@ async def update_preferences(
         preferred_translation=row["preferred_translation"],
         default_collections=list(row["default_collections"]),
         default_quota=row["default_quota"],
+        theme=row["theme"],
     )

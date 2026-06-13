@@ -4,6 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "./AppShell";
+import { Library, Bookmark, Settings } from "lucide-react";
 
 export function Sidebar() {
   const router = useRouter();
@@ -81,19 +82,27 @@ export function Sidebar() {
       <div className="px-3 pb-4 pt-2 border-t border-brand-bg space-y-1 text-xs">
         <Link
           href="/sources"
-          className={`block px-2 py-1.5 rounded transition-colors ${
+          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/sources" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
         >
-          📋 List of Sources
+          <Library size={12} /> List of Sources
         </Link>
         <Link
           href="/bookmarks"
-          className={`block px-2 py-1.5 rounded transition-colors ${
+          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/bookmarks" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
         >
-          🔖 Saved Passages
+          <Bookmark size={12} /> Saved Passages
+        </Link>
+        <Link
+          href="/settings"
+          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
+            pathname === "/settings" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
+          }`}
+        >
+          <Settings size={12} /> Settings
         </Link>
         <button
           onClick={handleSignOut}

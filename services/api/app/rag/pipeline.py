@@ -9,7 +9,7 @@ from collections.abc import AsyncGenerator
 
 from app.config import settings
 from app.db import get_pool
-from app.rag.hyde import generate_hyde_passage
+from app.rag.hyde import generate_hyde_passages
 from app.rag.embed import embed_text
 from app.rag.retrieve import retrieve_candidates, ChunkCandidate
 from app.rag.rerank import rerank_collection, RankedChunk
@@ -52,7 +52,7 @@ async def run_search_pipeline(
         step1_results = await asyncio.gather(
             embed_text(query),
             expand_query(query),
-            *[generate_hyde_passage(query, col) for col in collections],
+            *[generate_hyde_passages(query, col) for col in collections],
             return_exceptions=True,
         )
 
@@ -74,29 +74,37 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         # Step 2 — Embed all valid HyDE passages + expanded query variants
         # ------------------------------------------------------------------
-        # Collect (collection, passage) pairs that are valid strings
-        valid_hyde: list[tuple[str, str]] = [
-            (col, passage)
-            for col, passage in zip(collections, hyde_passage_results)
-            if isinstance(passage, str) and passage
-        ]
+        # hyde_passage_results: one list[str] per collection (bible returns up to 3, one per detected genre)
+        valid_hyde: list[tuple[str, str, int]] = []  # (collection, passage_text, index_within_col)
+        for col, passages in zip(collections, hyde_passage_results):
+            if isinstance(passages, BaseException):
+                logger.warning("HyDE generation failed for collection=%s: %s", col, passages)
+                continue
+            for idx, passage in enumerate(passages):
+                if isinstance(passage, str) and passage:
+                    valid_hyde.append((col, passage, idx))
 
-        embed_inputs = [p for _, p in valid_hyde] + list(expanded_queries)
+        embed_inputs = [p for _, p, _ in valid_hyde] + list(expanded_queries)
         embed_results: list = list(await asyncio.gather(
             *[embed_text(t) for t in embed_inputs],
             return_exceptions=True,
         )) if embed_inputs else []
 
-        # Build per-collection hyde vec map (None = fallback to query_vec at retrieval)
+        # Build per-collection hyde vec map; additional passages (e.g. bible NT) go into
+        # per_col_extra_hyde_vecs and are appended to extra_vecs at retrieval time.
         per_col_hyde_vec: dict[str, list[float] | None] = {col: None for col in collections}
-        for i, (col, _) in enumerate(valid_hyde):
+        per_col_extra_hyde_vecs: dict[str, list[list[float]]] = {col: [] for col in collections}
+        for i, (col, _, passage_idx) in enumerate(valid_hyde):
             result = embed_results[i]
-            if not isinstance(result, BaseException):
+            if isinstance(result, BaseException):
+                logger.warning("HyDE embedding failed for collection=%s: %s", col, result)
+                continue
+            if passage_idx == 0:
                 per_col_hyde_vec[col] = result
             else:
-                logger.warning("HyDE embedding failed for collection=%s: %s", col, result)
+                per_col_extra_hyde_vecs[col].append(result)
 
-        # Build extra_vecs from expanded queries
+        # Build extra_vecs from expanded queries (shared across all collections)
         extra_vecs: list[list[float]] = []
         for j in range(len(expanded_queries)):
             idx = len(valid_hyde) + j
@@ -108,7 +116,11 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         yield {"type": "status", "phase": "searching", "collections": collections}
         retrieve_tasks = [
-            retrieve_candidates(query, query_vec, per_col_hyde_vec[col], extra_vecs, col, quota, user_id)
+            retrieve_candidates(
+                query, query_vec, per_col_hyde_vec[col],
+                extra_vecs + per_col_extra_hyde_vecs[col],
+                col, quota, user_id,
+            )
             for col in collections
         ]
         retrieve_results = await asyncio.gather(*retrieve_tasks, return_exceptions=True)
@@ -217,53 +229,30 @@ async def run_search_pipeline(
                     )
 
         # ------------------------------------------------------------------
-        # Step 8 — Parallel streaming explanation generation
-        # Each explanation streams tokens via a shared queue so multiple LLM
-        # streams can run concurrently and their deltas are interleaved.
+        # Step 8 — Sequential streaming explanation generation (score order)
+        # Running one explanation at a time ensures we never burst the rate
+        # limit — the 2-4s each explanation takes to stream naturally spaces
+        # requests, and the most important result's explanation always appears
+        # first. The queue + stagger approach has been removed.
         # ------------------------------------------------------------------
-        ExplainEvent = tuple[str, str, str]  # (kind, chunk_id, data)
-        queue: asyncio.Queue[ExplainEvent] = asyncio.Queue()
-        accumulated: dict[str, str] = {c.chunk_id: "" for c in final_results}
-
-        EXPLAIN_STAGGER_SEC = 0.6
-
-        async def _stream_one(chunk: RankedChunk, stagger: float) -> None:
-            if stagger > 0:
-                await asyncio.sleep(stagger)
+        for chunk in final_results:
+            accumulated_text = ""
             try:
                 async for delta in stream_explanation(
                     chunk.content, chunk.reference, chunk.collection, query
                 ):
-                    accumulated[chunk.chunk_id] += delta
-                    await queue.put(("delta", chunk.chunk_id, delta))
+                    accumulated_text += delta
+                    yield {"type": "explanation_delta", "chunk_id": chunk.chunk_id, "delta": delta}
             except Exception as exc:
-                logger.warning("_stream_one error for %s: %s", chunk.chunk_id, exc)
-            finally:
-                await queue.put(("done", chunk.chunk_id, ""))
+                logger.warning("explanation error for chunk %s: %s", chunk.chunk_id, exc)
 
-        tasks = [
-            asyncio.create_task(_stream_one(c, i * EXPLAIN_STAGGER_SEC))
-            for i, c in enumerate(final_results)
-        ]
-        pending = len(final_results)
-        try:
-            while pending > 0:
-                kind, chunk_id, data = await queue.get()
-                if kind == "delta":
-                    yield {"type": "explanation_delta", "chunk_id": chunk_id, "delta": data}
-                elif kind == "done":
-                    pending -= 1
-                    full_text = accumulated[chunk_id][:2000]
-                    async with pool.acquire() as conn:
-                        await conn.execute(
-                            "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
-                            full_text,
-                            uuid.UUID(search_id),
-                            uuid.UUID(chunk_id),
-                        )
-        finally:
-            for t in tasks:
-                t.cancel()
+            async with pool.acquire() as conn:
+                await conn.execute(
+                    "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
+                    accumulated_text[:2000],
+                    uuid.UUID(search_id),
+                    uuid.UUID(chunk.chunk_id),
+                )
 
         # ------------------------------------------------------------------
         # Step 9 — Yield done

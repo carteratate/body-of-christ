@@ -15,20 +15,45 @@ logger = logging.getLogger(__name__)
 _client: anthropic.AsyncAnthropic | None = None
 
 _RERANK_SYSTEM = (
-    "You are evaluating Catholic theological passages for a user's question. "
-    "For EACH passage, assign a relevance score and decide whether to include it.\n\n"
-    "Score bands:\n"
-    "  0.9-1.0: Directly addresses the specific topic with substance.\n"
-    "  0.6-0.89: Clearly relevant, provides useful context.\n"
-    "  0.3-0.59: Tangentially related.\n"
-    "  0.0-0.29: Off-topic or shares only vocabulary with the question.\n\n"
-    "Include rules:\n"
-    "  Set include=false if score < 0.25.\n"
-    "  Set include=false if this passage makes the same argument as a higher-scoring passage "
-    "(set overlap_with to that passage's chunk_id, overlap_verdict='redundant').\n"
-    "  Keep include=true for passages on the same theme from genuinely different angles "
-    "(e.g., scripture vs. catechism vs. theology) — set overlap_verdict='complementary'.\n\n"
-    "Return ONLY a JSON array containing ALL input chunk_ids:\n"
+    "You are evaluating Catholic theological passages for relevance to a user's "
+    "question. For EACH passage, assign a score and an include decision.\n\n"
+    "SCORING — use the FULL 0.0-1.0 range. Scores should spread meaningfully:\n"
+    "  0.9-1.0: Directly answers the specific question with substance. Reserve "
+    "this for passages that explicitly address the exact topic asked.\n"
+    "  0.7-0.89: Clearly relevant — addresses the topic from a useful angle even "
+    "if not the exact question. Should be shown.\n"
+    "  0.4-0.69: Tangentially related — shares theme but doesn't directly help. "
+    "Include only if better passages are scarce.\n"
+    "  0.0-0.39: Off-topic. Shares vocabulary or broad theme but does not address "
+    "the question.\n\n"
+    "SOURCE DIVERSITY: The reference label shows which book or document each passage "
+    "is from. When multiple passages from the same source (same biblical book, same "
+    "encyclical, same author and work) are present, nudge lower-scoring duplicates "
+    "down by 0.15-0.25 to prefer sourcing from different books. Do not apply this "
+    "nudge to a passage that earns 0.9+ on its own merits — a genuinely excellent "
+    "passage should not be penalized for its source. Within the same book or "
+    "category, reward passages that approach the topic from a genuinely different "
+    "angle, make a distinct argument, or offer a different kind of answer (lament vs. "
+    "resolution, question vs. declaration, narrative vs. doctrine) — these earn a "
+    "reduced or no penalty even when they share a source.\n\n"
+    "INTENT: Consider why the user is asking. A devotional or personal question "
+    "(\"How do I...\") should rank passages that are pastoral and practical higher. "
+    "A doctrinal question (\"What does the Church teach about...\") should rank "
+    "passages that define or explain Church teaching higher. A historical question "
+    "should rank primary sources and council documents higher.\n\n"
+    "INCLUDE RULES:\n"
+    "  Set include=false if score < 0.35.\n"
+    "  Set include=false if this passage makes the same argument as a higher-scoring "
+    "passage already in the list (set overlap_with to that chunk_id, "
+    "overlap_verdict=\"redundant\"). Two passages from the same book repeating the "
+    "same point are redundant.\n"
+    "  Set include=true for passages that address the same theme from different "
+    "sources, genres, or traditions — a lament, a theological epistle, and a "
+    "catechism paragraph on the same topic are three perspectives on one question, "
+    "not redundancy (overlap_verdict=\"complementary\"). Reward this kind of "
+    "cross-source coverage.\n\n"
+    "Respond with ONLY a JSON array containing ALL input chunk_ids. No text before "
+    "or after the array:\n"
     '[{"chunk_id":"<id>","score":<float>,"include":<bool>,'
     '"overlap_with":<"id" or null>,"overlap_verdict":<"redundant"|"complementary"|null>}]'
 )
@@ -110,7 +135,7 @@ async def rerank_collection(
     try:
         response = await _client.messages.create(
             model=settings.rerank_model,
-            max_tokens=1500,
+            max_tokens=1000,
             system=_RERANK_SYSTEM,
             messages=[{"role": "user", "content": user_message}],
         )

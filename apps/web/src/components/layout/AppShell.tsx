@@ -15,6 +15,7 @@ export interface AppContextValue {
   ready: boolean;
   preferences: Preferences | null;
   setPreferences: (p: Preferences) => void;
+  preferencesError: boolean;
   // Real DB-backed search history
   searches: SearchSummaryV2[];
   refreshSearches: () => void;
@@ -36,6 +37,7 @@ const AppContext = createContext<AppContextValue>({
   ready: false,
   preferences: null,
   setPreferences: () => {},
+  preferencesError: false,
   searches: [],
   refreshSearches: () => {},
   pendingSearch: null,
@@ -56,6 +58,7 @@ export function useAppContext() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<Preferences | null>(null);
+  const [preferencesError, setPreferencesError] = useState(false);
   const [searches, setSearches] = useState<SearchSummaryV2[]>([]);
   const [pendingSearch, setPendingSearchState] = useState<{ id: string; query: string } | null>(null);
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
@@ -89,7 +92,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       const t = data.session?.access_token ?? null;
       setToken(t);
       if (t) {
-        getPreferences(t).then(setPreferences).catch(() => {});
+        getPreferences(t).then(setPreferences).catch(() => setPreferencesError(true));
         getSearchHistory(t).then(setSearches).catch(() => {});
       }
       setReady(true);
@@ -108,9 +111,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const theme = preferences?.theme;
+    if (!theme) return;
+    document.documentElement.setAttribute("data-theme", theme);
+    try { localStorage.setItem("boc-theme", theme); } catch (_) {}
+  }, [preferences?.theme]);
+
   return (
     <AppContext.Provider value={{
-      token, ready, preferences, setPreferences,
+      token, ready, preferences, setPreferences, preferencesError,
       searches, refreshSearches,
       pendingSearch, setPendingSearch, clearPendingSearch,
       activeSearchId, setActiveSearchId,

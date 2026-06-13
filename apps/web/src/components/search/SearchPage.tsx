@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
+import { Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
@@ -53,7 +54,7 @@ function SearchPageInner() {
 
   const [activeCollections, setActiveCollections] = useState<string[]>(() => {
     const cols = preferences?.default_collections;
-    return cols && cols.length > 0 ? cols : ALL_COLLECTION_KEYS;
+    return cols && cols.length > 0 ? cols : [];
   });
   const [translation, setTranslation] = useState<string>(() =>
     preferences?.preferred_translation || "CPDV"
@@ -346,7 +347,7 @@ function SearchPageInner() {
 
         {exploreLabel && (
           <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
-            <span className="text-brand-accent text-sm">🔍</span>
+            <Search size={14} className="text-brand-accent shrink-0" />
             <span className="text-sm text-brand-muted">
               Exploring passages related to{" "}
               <span className="text-brand-primary font-medium">{exploreLabel}</span>

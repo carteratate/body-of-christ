@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cinzel, Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { PostHogProvider } from "@/components/layout/PostHogProvider";
 
@@ -24,14 +25,19 @@ export const metadata: Metadata = {
   description: "Explore Catholic theology through conversation",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const theme = cookieStore.get("boc-theme")?.value;
+
   return (
     <html
       lang="en"
+      suppressHydrationWarning
+      data-theme={theme === "light" ? "light" : undefined}
       className={`${cinzel.variable} ${geistSans.variable} ${geistMono.variable} h-full`}
     >
       <body className="h-full antialiased">

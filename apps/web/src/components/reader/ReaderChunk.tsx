@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Bookmark, Copy, Search } from "lucide-react";
 import { addBookmark, removeBookmark, type ReaderChunk as ReaderChunkType, type DocumentInfo } from "@/lib/api";
 import {
   trackBookmarkCreated,
@@ -85,7 +86,7 @@ export function ReaderChunk({ chunk, document, isOrigin, token, onExploreMore }:
             aria-label={isBookmarked ? "Remove bookmark" : "Save passage"}
             className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
-            <span className={isBookmarked ? "text-brand-accent" : "text-brand-muted"}>🔖</span>
+            <Bookmark size={16} className={isBookmarked ? "text-brand-accent" : "text-brand-muted"} />
           </button>
 
           {/* Copy */}
@@ -95,16 +96,17 @@ export function ReaderChunk({ chunk, document, isOrigin, token, onExploreMore }:
             aria-label="Copy passage"
             className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
-            📋
+            <Copy size={16} />
           </button>
 
           {/* Explore more */}
           <button
             onClick={handleExploreMore}
             aria-label="Explore more like this"
-            className="px-2 py-1 rounded text-xs text-brand-muted border border-brand-surface hover:text-brand-primary hover:border-brand-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-brand-muted border border-brand-surface hover:text-brand-primary hover:border-brand-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
-            🔍 Explore more
+            <Search size={12} />
+            Explore more
           </button>
         </div>
       </div>

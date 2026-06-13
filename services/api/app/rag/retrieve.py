@@ -11,7 +11,8 @@ from app.db import get_pool
 
 logger = logging.getLogger(__name__)
 
-_RRF_K = 60  # standard RRF constant
+_RRF_K = 60              # standard RRF constant
+_PER_STRATEGY_TOP_K = 3  # top-K from each strategy guaranteed into reranker candidate set
 
 
 @dataclass
@@ -122,9 +123,13 @@ def _rrf_merge(
     """Apply Reciprocal Rank Fusion across multiple ranked result lists.
 
     Each list contributes score = 1 / (_RRF_K + rank) for each chunk_id.
-    Returns the top_n chunks sorted by summed RRF score descending, as dicts
-    with keys: chunk_id, content, reference, collection, document_id,
-    document_title, author, rrf_score.
+    Returns the top_n chunks by RRF score PLUS the top-_PER_STRATEGY_TOP_K from
+    each individual strategy, deduplicated and sorted by RRF score descending.
+
+    The per-strategy guarantee prevents RRF's consistency-bias from burying
+    passages that rank #1 in one strategy (e.g. the HyDE vector) but score
+    only modestly across the others. The reranker sees them and can award them
+    correctly.
     """
     scores: dict[str, float] = {}
     # Carry the first occurrence of metadata per chunk_id so we can build
@@ -147,9 +152,19 @@ def _rrf_merge(
                     "author": row["author"],
                 }
 
-    sorted_ids = sorted(scores, key=lambda cid: scores[cid], reverse=True)[:top_n]
+    # Top-N by aggregate RRF score
+    sorted_by_rrf = sorted(scores, key=lambda cid: scores[cid], reverse=True)
+    selected_ids: set[str] = set(sorted_by_rrf[:top_n])
+
+    # Per-strategy champions: guarantee top-K from each individual ranked list
+    # reaches the reranker regardless of cross-strategy aggregate score.
+    for result_list in result_lists:
+        for row in result_list[:_PER_STRATEGY_TOP_K]:
+            selected_ids.add(str(row["id"]))
+
+    final_sorted = sorted(selected_ids, key=lambda cid: scores.get(cid, 0.0), reverse=True)
     merged = []
-    for cid in sorted_ids:
+    for cid in final_sorted:
         entry = dict(metadata[cid])
         entry["rrf_score"] = scores[cid]
         merged.append(entry)

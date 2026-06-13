@@ -1,32 +1,41 @@
-"""Generates relevance explanations for retrieved chunks using Claude Haiku."""
+"""Generates relevance explanations for retrieved chunks using OpenAI."""
 import asyncio
 import logging
 from collections.abc import AsyncGenerator
 
-import anthropic
+import openai
 
 from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-_client: anthropic.AsyncAnthropic | None = None
+_client: openai.AsyncOpenAI | None = None
 
 _EXPLAIN_SYSTEM = (
-    "You are explaining how a specific passage answers a user's question. "
-    "You must base every sentence ONLY on what is explicitly written in the passage given — "
-    "do not add theological knowledge, doctrine, or context not present in the passage itself. "
-    "Write 2-3 sentences. Be direct: say what the passage says and how it addresses the question. "
-    "If the passage is only tangentially related, say so honestly. "
-    "Do not use markdown headings, bullet points, or any formatting. Write plain prose only."
+    "You are explaining how a specific passage is relevant to a user's question. "
+    "Be faithful to what the passage actually says — do not misrepresent or exaggerate its content. "
+    "You may draw on theological knowledge and context to explain how the passage connects to the "
+    "question, but the connection must be honest: do not claim the passage addresses something it does not.\n\n"
+    "Length: 1 sentence if the passage is only tangentially related or addresses the question "
+    "indirectly; 2-3 sentences if it directly addresses the question with substance. "
+    "Err toward 1 sentence when in doubt.\n\n"
+    "Lead with the theological point — state what the passage contributes, then how that applies "
+    "to the question. Do not open with any framing device that describes the relationship instead "
+    "of stating it: avoid 'This passage...', 'The passage states...', 'That connects to...', "
+    "'This relates to...', 'In relation to the question...', or any variant. Say the thing directly.\n\n"
+    "If the connection is weak or indirect, your single sentence must name the limitation plainly. "
+    "Do not pad with general theological statements that are not grounded in what the passage "
+    "actually says.\n\n"
+    "Write plain prose. No markdown, no headings, no bullet points."
 )
 
-_MAX_RETRIES = 4
-_BASE_DELAY = 1.0  # seconds
+_MAX_RETRIES = 3
+_BASE_DELAY = 1.0  # seconds — cumulative waits: 1+2+4 = 7s
 
 
 def init_explain() -> None:
     global _client
-    _client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
+    _client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
 
 
 async def close_explain() -> None:
@@ -61,22 +70,26 @@ async def stream_explanation(
     for attempt in range(_MAX_RETRIES):
         tokens_started = False
         try:
-            async with _client.messages.stream(
-                model=settings.explain_model,
-                max_tokens=220,
-                system=_EXPLAIN_SYSTEM,
-                messages=[{"role": "user", "content": user_message}],
-            ) as stream:
-                async for delta in stream.text_stream:
+            stream = await _client.chat.completions.create(
+                model=settings.explain_openai_model,
+                max_completion_tokens=220,
+                messages=[
+                    {"role": "system", "content": _EXPLAIN_SYSTEM},
+                    {"role": "user", "content": user_message},
+                ],
+                stream=True,
+            )
+            async for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
                     tokens_started = True
-                    yield delta
+                    yield chunk.choices[0].delta.content
             return  # stream completed successfully
 
-        except anthropic.RateLimitError:
+        except openai.RateLimitError:
             if tokens_started or attempt == _MAX_RETRIES - 1:
-                # Can't retry mid-stream, or out of retries
                 if not tokens_started:
                     logger.warning("stream_explanation rate-limited after %d retries", _MAX_RETRIES)
+                    yield fallback
                 return
             delay = _BASE_DELAY * (2 ** attempt)
             logger.info(

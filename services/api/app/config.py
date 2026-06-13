@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     embedding_dims: int = Field(default=1536, validation_alias="EMBEDDING_DIMS")
     hyde_model: str = Field(default="claude-haiku-4-5", validation_alias="HYDE_MODEL")
     rerank_model: str = Field(default="claude-haiku-4-5", validation_alias="RERANK_MODEL")
-    explain_model: str = Field(default="claude-haiku-4-5", validation_alias="EXPLAIN_MODEL")
+    explain_openai_model: str = Field(default="gpt-5.4-mini", validation_alias="EXPLAIN_OPENAI_MODEL")
 
     # RAG pipeline
     default_quota: int = Field(default=4, validation_alias="DEFAULT_QUOTA")

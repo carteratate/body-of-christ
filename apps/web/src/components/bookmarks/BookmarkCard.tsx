@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Bookmark as BookmarkIcon, Copy, Search } from "lucide-react";
 import { removeBookmark, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackExploreMoreClicked } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
@@ -29,7 +30,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
           aria-label="Remove bookmark"
           className="p-1.5 rounded text-sm text-brand-accent transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
         >
-          🔖
+          <BookmarkIcon size={16} />
         </button>
       </div>
     );
@@ -102,7 +103,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
             aria-label="Remove bookmark"
             className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
-            <span className="text-brand-accent">🔖</span>
+            <BookmarkIcon size={16} className="text-brand-accent" />
           </button>
 
           {/* Copy */}
@@ -112,7 +113,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
             aria-label="Copy passage"
             className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
-            📋
+            <Copy size={16} />
           </button>
 
           {/* Explore more */}
@@ -122,7 +123,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
             aria-label="Explore more like this"
             className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
-            🔍
+            <Search size={16} />
           </button>
         </div>
       </div>

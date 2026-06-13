@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { updatePreferences } from "@/lib/api";
-import { COLLECTIONS } from "@/lib/collections";
+import { COLLECTIONS, hexToRgb } from "@/lib/collections";
 import { TranslationSelector } from "./TranslationSelector";
 
 interface CollectionTogglesProps {
@@ -51,18 +51,26 @@ export function CollectionToggles({
       {COLLECTIONS.map((col) => {
         const isActive = activeCollections.includes(col.key);
         const isBible = col.key === "bible";
+        const rgb = hexToRgb(col.hex);
+
+        const activeStyle = {
+          background: `rgba(${rgb},0.40)`,
+          border: `1px solid rgba(${rgb},0.7)`,
+          color: col.hex,
+        };
+        const inactiveStyle = {
+          background: `rgba(${rgb},0.08)`,
+          border: `1px solid rgba(${rgb},0.15)`,
+          color: `rgba(${rgb},0.65)`,
+        };
 
         if (isBible) {
           return (
             <div key={col.key} className="relative">
               {/* Split-button pill: left part toggles collection, right part opens translation dropdown */}
               <div
-                className={[
-                  "flex items-center rounded-full text-xs font-medium transition-colors",
-                  isActive
-                    ? "bg-brand-accent text-brand-bg"
-                    : "border border-brand-surface bg-brand-surface text-brand-muted",
-                ].join(" ")}
+                className="flex items-center rounded-full text-xs font-medium transition-colors"
+                style={isActive ? activeStyle : inactiveStyle}
               >
                 <button
                   onClick={() => onToggle(col.key)}
@@ -102,12 +110,8 @@ export function CollectionToggles({
             key={col.key}
             onClick={() => onToggle(col.key)}
             aria-pressed={isActive}
-            className={[
-              "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-              isActive
-                ? "bg-brand-accent text-brand-bg"
-                : "border border-brand-surface bg-brand-surface text-brand-muted hover:text-brand-primary",
-            ].join(" ")}
+            className="rounded-full px-3 py-1 text-xs font-medium transition-colors"
+            style={isActive ? activeStyle : inactiveStyle}
           >
             {col.label}
           </button>

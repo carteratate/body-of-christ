@@ -13,9 +13,9 @@
 @theme {
   --animate-fade-in: fade-in 0.35s ease-out both;
 
-  /* Sacred Night — dark mode (default) */
-  --color-brand-bg:      #090E1A;
-  --color-brand-surface: #111829;
+  /* Slate Night — dark mode (default) */
+  --color-brand-bg:      #0D1828;
+  --color-brand-surface: #172232;
   --color-brand-accent:  #C4972A;
   --color-brand-primary: #EAE6DC;
   --color-brand-muted:   #7A8099;
@@ -26,14 +26,14 @@
   --font-brand: var(--font-cinzel);
 
   /* Collection accent colors */
-  --color-collection-bible:          #4caf50;
-  --color-collection-catechism:      #4a6fa5;
-  --color-collection-church-fathers: #7c6fa5;
-  --color-collection-encyclicals:    #b5892a;
-  --color-collection-canon-law:      #9e4a4a;
-  --color-collection-summa:          #8B7355;
-  --color-collection-medieval:       #5A6670;
-  --color-collection-councils:       #4A7070;
+  --color-collection-bible:          #d4885a;
+  --color-collection-catechism:      #5b9bd4;
+  --color-collection-church-fathers: #b070d4;
+  --color-collection-encyclicals:    #e8c040;
+  --color-collection-canon-law:      #e84040;
+  --color-collection-summa:          #55cc88;
+  --color-collection-medieval:       #90a0a8;
+  --color-collection-councils:       #60d4c8;
 }
 
 html {
@@ -43,6 +43,27 @@ html {
 
 body {
   height: 100%;
-  background-color: #090E1A;
+  background-color: #0D1828;
   color: #EAE6DC;
+}
+
+/* ── Ivory Vault — light mode ───────────────────────────────────────────── */
+@layer base {
+  html[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  [data-theme="light"] {
+    --color-brand-bg:      #f0e8d8;
+    --color-brand-surface: #e3dbc8;
+    --color-brand-accent:  #C4972A;
+    --color-brand-primary: #1a1610;
+    --color-brand-muted:   #6a6050;
+    --color-brand-danger:  #c0392b;
+  }
+
+  [data-theme="light"] body {
+    background-color: #f0e8d8;
+    color: #1a1610;
+  }
 }

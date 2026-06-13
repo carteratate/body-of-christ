@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Check } from "lucide-react";
 
 const TRANSLATIONS = [
   { value: "WEB-C", label: "World English Bible, Catholic Edition" },
@@ -48,9 +49,10 @@ export function TranslationSelector({
           }}
           className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-brand-primary transition-colors hover:bg-brand-bg"
         >
-          <span className={value === t.value ? "text-brand-accent" : "invisible"}>
-            ✓
-          </span>
+          <Check
+            size={12}
+            className={value === t.value ? "text-brand-accent" : "invisible"}
+          />
           {t.label}
         </button>
       ))}

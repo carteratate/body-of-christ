@@ -209,6 +209,7 @@ export interface Preferences {
   preferred_translation: string;
   default_collections: string[];
   default_quota: number;
+  theme: "dark" | "light";
 }
 
 export interface SearchStreamCallbacks {
@@ -409,6 +410,7 @@ export interface SourceDocument {
   author: string | null;
   year: number | null;
   translation: string | null;
+  metadata: Record<string, unknown> | null;
   chunk_count: number;
 }
 

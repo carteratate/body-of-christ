@@ -1,5 +1,8 @@
 """HyDE (Hypothetical Document Embedding) passage generation."""
+import asyncio
+import json
 import logging
+import re
 
 import anthropic
 
@@ -9,61 +12,289 @@ logger = logging.getLogger(__name__)
 
 _client: anthropic.AsyncAnthropic | None = None
 
-# Fallback used when no collection is specified or collection is unknown.
+# ---------------------------------------------------------------------------
+# Default prompt (non-Bible, unknown collection)
+# ---------------------------------------------------------------------------
+
 _HYDE_SYSTEM_DEFAULT = (
-    "You are a Catholic theology expert. Write a 2-3 sentence passage from an "
-    "authoritative Catholic source (Scripture, Catechism, Church Fathers, or "
-    "Magisterial documents) that would directly answer the following question. "
-    "Write in the voice and style of the source — archaic and formal if appropriate. "
-    "Do not use modern paraphrase. Do not add context not found in the source type."
+    "You are a Catholic theology expert. Given a question, write a passage of "
+    "approximately 150 words from whichever authoritative Catholic source would "
+    "most naturally address it — Scripture, Catechism, Church Fathers, or a "
+    "Magisterial document. Choose the source type based on what kind of answer the "
+    "question calls for: a doctrinal question calls for catechism or encyclical "
+    "style, a scriptural question calls for biblical prose, a devotional question "
+    "may call for patristic voice. Write in the authentic voice and style of that "
+    "source — formal and archaic where appropriate. Do not use modern paraphrase. "
+    "Return only the passage text. Do not include any attribution, labels, headings, "
+    "or explanation."
 )
 
-# Per-collection prompts — each targets the prose style of that corpus so the
-# resulting embedding lands closer to real chunks from that collection.
+# ---------------------------------------------------------------------------
+# Bible: free-form prompt (unconstrained — goes wherever the query leads)
+# ---------------------------------------------------------------------------
+
+_HYDE_BIBLE_FREE_PROMPT = (
+    "You are a biblical scholar. Given a question, write a passage of approximately "
+    "120-150 words from whichever part of the Bible would most naturally and directly "
+    "address it. Choose the book, genre, and style entirely on the basis of what fits "
+    "the question best — Psalms, wisdom literature, prophecy, Gospel narrative, "
+    "epistle, or OT story. Write in the authentic voice of that genre and in the "
+    "formal, archaic prose of a traditional biblical translation (Douay-Rheims or "
+    "King James register). Return only the passage text. Do not include book names, "
+    "verse numbers, headings, or attribution."
+)
+
+# ---------------------------------------------------------------------------
+# Bible: genre detection
+# ---------------------------------------------------------------------------
+
+_BIBLE_GENRES: frozenset[str] = frozenset({
+    "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
+    "nt-stories", "nt-epistles", "nt-teachings",
+})
+
+_BIBLE_FALLBACK_GENRES: list[str] = ["nt-epistles", "psalms", "ot-wisdom"]
+
+_GENRE_DETECT_SYSTEM = (
+    "You are classifying a theological search query to identify which genres of "
+    "biblical literature are most likely to contain directly relevant passages.\n\n"
+    "Genres (use exactly these identifiers):\n"
+    "  \"psalms\"       — Psalms: prayers, hymns, laments, praise poetry\n"
+    "  \"ot-wisdom\"    — Proverbs, Ecclesiastes, Job, Sirach: sayings, fear of the "
+    "Lord, moral instruction\n"
+    "  \"ot-prophets\"  — Isaiah, Jeremiah, Ezekiel, minor prophets: oracles, "
+    "judgment, covenant, Messianic hope\n"
+    "  \"ot-stories\"   — Genesis, Exodus, Samuel, Kings: narratives of Adam, "
+    "Abraham, Moses, David, the patriarchs\n"
+    "  \"nt-stories\"   — Gospels and Acts narrative: healings, miracles, Passion, "
+    "Resurrection, early Church events\n"
+    "  \"nt-epistles\"  — Pauline and general letters: doctrine, ethics, "
+    "theological argument, church life\n"
+    "  \"nt-teachings\" — Jesus's direct speech: Sermon on the Mount, Beatitudes, "
+    "parables, \"I am\" sayings, discourses\n\n"
+    "Return ONLY a JSON array of exactly 3 identifiers, ordered most to least "
+    "relevant. No explanation, no text outside the array."
+)
+
+# ---------------------------------------------------------------------------
+# Bible: per-genre HyDE prompts
+# ---------------------------------------------------------------------------
+
+_HYDE_PSALMS_PROMPT = (
+    "Write a passage of approximately 120-150 words in the style of the Psalms that "
+    "would directly address the following question. The passage should read like a "
+    "psalm — a psalm of praise (celebrating God's character or deeds), lament (crying "
+    "out from distress with hope), trust, or thanksgiving. Use the distinctive "
+    "vocabulary of the Psalms: steadfast love, refuge, fortress, shepherd, the LORD "
+    "reigns, my soul, I will sing, praise the LORD, everlasting, enemies, deliver. "
+    "Use parallelism: the second line restates or develops the first. Use the formal, "
+    "archaic prose of a traditional biblical translation (Douay-Rheims or King James "
+    "register). Return only the passage text. Do not include psalm numbers, headings, "
+    "or attribution."
+)
+
+_HYDE_OT_WISDOM_PROMPT = (
+    "Write a passage of approximately 120-150 words in the style of Old Testament "
+    "wisdom literature (Proverbs, Ecclesiastes, Sirach, Wisdom of Solomon, or Job's "
+    "dialogues) that would directly address the following question. The passage should "
+    "read like wisdom teaching — aphoristic sayings about human nature, the fear of "
+    "the Lord as the beginning of wisdom, the contrast between the wise and the "
+    "foolish, the vanity of earthly things, or practical moral instruction. Use the "
+    "characteristic vocabulary: fear of the Lord, folly, prudence, understanding, "
+    "instruction, vanity, the way of the righteous. Use the formal, archaic prose of "
+    "a traditional biblical translation. Return only the passage text. Do not include "
+    "chapter headings, verse numbers, or attribution."
+)
+
+_HYDE_OT_PROPHETS_PROMPT = (
+    "Write a passage of approximately 120-150 words in the style of an Old Testament "
+    "prophetic book (Isaiah, Jeremiah, Ezekiel, or one of the twelve minor prophets) "
+    "that would directly address the following question. The passage should read like "
+    "a prophetic oracle — often opening with 'Thus says the LORD' or 'Hear, O Israel,' "
+    "declaring God's word about sin and judgment, covenant faithfulness, restoration "
+    "and hope, the coming Messiah, or social justice. Use the distinctive register: "
+    "'says the LORD of hosts,' the remnant, the servant of the LORD, 'in that day,' "
+    "covenant, restoration. Use the formal, archaic prose of a traditional biblical "
+    "translation. Return only the passage text. Do not include book names, chapter "
+    "headings, or attribution."
+)
+
+_HYDE_OT_STORIES_PROMPT = (
+    "Write a passage of approximately 120-150 words in the style of an Old Testament "
+    "narrative (Genesis, Exodus, Samuel, Kings, or similar historical books) that "
+    "would directly address the following question. The passage should read like a "
+    "biblical narrative episode involving figures such as Adam and Eve, Abraham, "
+    "Moses, David, Solomon, or the patriarchs and kings of Israel. The narrative "
+    "voice is simple, direct, and spare: 'And the LORD said...,' 'And he arose...,' "
+    "'And it came to pass...'. The passage may show God acting in history, testing "
+    "faith, making covenant, or delivering his people. Use the formal, archaic prose "
+    "of a traditional biblical translation (Douay-Rheims or King James register). "
+    "Return only the passage text. Do not include chapter headings, verse numbers, "
+    "or attribution."
+)
+
+_HYDE_NT_STORIES_PROMPT = (
+    "Write a passage of approximately 120-150 words in the style of a New Testament "
+    "narrative (the Gospels or Acts of the Apostles) that would directly address the "
+    "following question. The passage should read like a Gospel episode or Acts scene — "
+    "a healing, a miracle, an encounter between Jesus and a person, a scene from the "
+    "Passion or Resurrection, or an event from the early Church. The narrative voice "
+    "is direct and spare, as in the Synoptic Gospels: 'And Jesus said...,' 'And he "
+    "came...,' 'And it came to pass...'; or the more reflective voice of John. Use "
+    "the formal, archaic prose of a traditional biblical translation. Return only the "
+    "passage text. Do not include chapter headings, verse numbers, or attribution."
+)
+
+_HYDE_NT_EPISTLES_PROMPT = (
+    "Write a passage of approximately 120-150 words in the style of a New Testament "
+    "epistle that would directly address the following question. The passage should "
+    "read like a section of a Pauline letter (Romans, Corinthians, Galatians, "
+    "Ephesians, Philippians, Colossians, Thessalonians) or a general epistle (James, "
+    "Peter, John, Jude) — a theological argument, a doctrinal exposition, or a "
+    "pastoral exhortation. Use the vocabulary and cadence of the epistles: grace, "
+    "tribulation, endurance, sanctification, justification, glory, hope, sharing in "
+    "Christ's sufferings, bearing one another's burdens, the Spirit interceding, the "
+    "groaning of creation. Use the formal, archaic prose of a traditional biblical "
+    "translation (Douay-Rheims or King James register). Return only the passage text. "
+    "Do not include verse numbers, chapter headings, book names, or attribution."
+)
+
+_HYDE_NT_TEACHINGS_PROMPT = (
+    "Write a passage of approximately 120-150 words in the style of Jesus's direct "
+    "teaching as recorded in the Gospels — the Sermon on the Mount, the Beatitudes, "
+    "parables, discourses, or the 'I am' sayings in John — that would directly "
+    "address the following question. The passage should read like Jesus speaking: "
+    "'Blessed are...,' 'You have heard it said... but I say to you...,' 'The kingdom "
+    "of heaven is like...,' 'I am the...,' 'Truly, truly I say to you...'. The "
+    "passage represents Jesus's own words and teaching rather than narrative about "
+    "him. Use the formal, archaic prose of a traditional biblical translation. Return "
+    "only the passage text. Do not include chapter headings, verse numbers, or "
+    "attribution."
+)
+
+_GENRE_HYDE_PROMPTS: dict[str, str] = {
+    "psalms": _HYDE_PSALMS_PROMPT,
+    "ot-wisdom": _HYDE_OT_WISDOM_PROMPT,
+    "ot-prophets": _HYDE_OT_PROPHETS_PROMPT,
+    "ot-stories": _HYDE_OT_STORIES_PROMPT,
+    "nt-stories": _HYDE_NT_STORIES_PROMPT,
+    "nt-epistles": _HYDE_NT_EPISTLES_PROMPT,
+    "nt-teachings": _HYDE_NT_TEACHINGS_PROMPT,
+}
+
+# ---------------------------------------------------------------------------
+# Non-Bible collection prompts
+# ---------------------------------------------------------------------------
+
 _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
-    "bible": (
-        "Write 1-2 sentences in the style of a Bible verse or short Scripture passage "
-        "(Old or New Testament) that would directly address the following question. "
-        "Use formal, Scripture-like language. Return only the passage text, no labels or attribution."
-    ),
     "catechism": (
-        "Write 2-3 sentences in the style of the Catechism of the Catholic Church — "
-        "doctrinal, systematic, clear — that would directly answer the following question. "
-        "Return only the passage text, no labels or attribution."
+        "Write a passage of approximately 120-150 words in the style of the Catechism "
+        "of the Catholic Church (CCC). The CCC has a distinctive three-part rhythm: "
+        "first a doctrinal statement, then its grounding in Scripture and Tradition, "
+        "then a practical or spiritual application. Numbered paragraph references (e.g. "
+        "§1234) are appropriate. Use the CCC's characteristic style: formal but "
+        "accessible, authoritative, cross-referencing Scripture and the Church Fathers, "
+        "never polemical. The passage should directly address the question. Return only "
+        "the passage text. Do not include headings, labels, or attribution."
     ),
     "encyclicals": (
-        "Write 2-3 sentences in the style of a papal encyclical — authoritative, pastoral, "
-        "formal prose with Latin-influenced cadence — that would directly address the following question. "
-        "Return only the passage text, no labels or attribution."
+        "Write a passage of approximately 180-200 words in the style of a papal "
+        "encyclical. Papal encyclicals have a distinctive argumentative shape: they "
+        "address a question or problem facing the faithful, invoke Scripture and/or "
+        "prior Church teaching to frame the answer, develop the theological argument "
+        "in flowing paragraphs, and conclude with a directive or encouragement to the "
+        "faithful. The prose is elevated, formal, and authoritative — neither "
+        "conversational nor academic — with the measured cadence of Latin translated "
+        "into dignified English. Direct scriptural quotations are common. The passage "
+        "should directly address the question. Return only the passage text. Do not "
+        "include papal signature, encyclical title, attribution, or headings."
     ),
     "church-fathers": (
-        "Write 2-3 sentences in the style of an early Church Father (such as Augustine, "
-        "Chrysostom, or Basil) — theological, exhortative, patristic — that would directly address "
-        "the following question. Return only the passage text, no labels or attribution."
+        "Write a passage of approximately 180-200 words in the style of an early Church "
+        "Father as rendered in a Victorian-era English translation (the style of the "
+        "Ante-Nicene Fathers or Nicene and Post-Nicene Fathers series). Patristic "
+        "writing is characteristically dense with Scripture quotation — a theological "
+        "point is rarely made without immediate reference to a Gospel verse, an epistle, "
+        "or a psalm. The argument builds through scriptural exposition: cite a verse, "
+        "interpret it theologically, draw a spiritual application, cite another verse. "
+        "The register is formal and elevated, sometimes homiletic (addressing 'beloved' "
+        "or 'brethren'), sometimes disputational, always theologically earnest. The "
+        "passage should directly address the question. Return only the passage text. "
+        "Do not include author name, work title, attribution, or headings."
     ),
     "summa": (
-        "Write 2-3 sentences in the scholastic style of Aquinas's Summa Theologiae — precise, "
-        "structured, using phrases such as 'I answer that' or 'It must be said that' — that would "
-        "directly address the following question. Return only the passage text, no labels or attribution."
+        "Write a Summa Theologiae-style article of approximately 250 words on the "
+        "following question. A Summa article has a precise five-part structure:\n"
+        "1. The question, stated as 'Whether [proposition]...'\n"
+        "2. One or two objections, each beginning 'Objection N. It seems that...' "
+        "with a brief argument\n"
+        "3. The sed contra, beginning 'On the contrary...' citing Scripture, Augustine, "
+        "or Aristotle\n"
+        "4. The respondeo, beginning 'I answer that...' — the core theological argument, "
+        "developed in Aquinas's analytic style, drawing distinctions (e.g., 'in one "
+        "sense... in another sense'), citing authority, arriving at a precise conclusion\n"
+        "5. One brief reply to an objection: 'Reply to Objection N...'\n"
+        "Use Aquinas's characteristic vocabulary: act and potency, essence and existence, "
+        "formal and material cause, virtue, habit, will, intellect. Cite Aristotle "
+        "('the Philosopher') and Augustine where natural. Return only the article text. "
+        "Do not include attribution or headings outside the article structure."
     ),
     "councils": (
-        "Write 2-3 sentences in the style of an ecumenical council decree or Vatican II document — "
-        "authoritative, declarative, doctrinal — that would directly address the following question. "
-        "Return only the passage text, no labels or attribution."
+        "Write a passage of approximately 200-220 words in the style of an ecumenical "
+        "council document. Use judgment about which style fits the question: "
+        "if the question concerns a specific doctrinal definition or condemnation "
+        "(heresy, sacramental validity, scripture vs. tradition), write in the style "
+        "of the Council of Trent or an early ecumenical council — formal canons or "
+        "decrees, often structured as 'If anyone says X, let him be anathema' or "
+        "'The holy council declares that...'; "
+        "if the question concerns the nature of the Church, the laity, liturgy, "
+        "ecumenism, or the Church in the modern world, write in the style of Vatican "
+        "II — longer pastoral paragraphs, warmer in register, developing an argument "
+        "rather than issuing crisp definitions, citing Scripture and Tradition "
+        "throughout. Either way: formal, authoritative, doctrinal. Return only the "
+        "passage text. Do not include council name, document title, attribution, or headings."
     ),
     "medieval": (
-        "Write 2-3 sentences in the style of medieval Christian theological writing "
-        "(such as Boethius, Anselm, or Bernard of Clairvaux) — contemplative, philosophical, "
-        "devotional — that would directly address the following question. "
-        "Return only the passage text, no labels or attribution."
+        "Write a passage of approximately 150-180 words in the style of medieval "
+        "Christian theological or devotional writing. Use judgment about register based "
+        "on the question: a question about the soul, reason, or divine nature calls for "
+        "philosophical prose in the tradition of Boethius or Anselm — rigorous, "
+        "analytic, drawing on Platonic categories; a question about love of God, prayer, "
+        "or the spiritual life calls for the affective, devotional voice of Bernard of "
+        "Clairvaux or Thomas à Kempis — warm, personal, addressed directly to the soul, "
+        "rich in the vocabulary of love, union, and longing. Either way: formal "
+        "English, elevated register, pre-Reformation Catholic piety. Return only the "
+        "passage text. Do not include author name, title, attribution, or headings."
     ),
     "canon-law": (
-        "Write 1-2 sentences in the style of a canon law statute — prescriptive, legal, precise — "
-        "that would directly address the following question. "
-        "Return only the passage text, no labels or attribution."
+        "Write a passage of 3-5 canons in the style of the 1983 Code of Canon Law. "
+        "Each canon follows a precise format: 'Can. [number] §[paragraph number].' and "
+        "then a prescriptive legal sentence. The language is formal and unambiguous: "
+        "'The Christian faithful are bound...', 'No one may lawfully...', "
+        "'It is the right and duty of...', 'The competent authority shall...', "
+        "'A person who commits [act] is to be punished with...'. Multiple canons on "
+        "related topics are grouped with sub-paragraphs (§1, §2, §3) for different "
+        "conditions or exceptions. The passage should directly address the question "
+        "in prescriptive legal terms. Return only the canon text. Do not include "
+        "title, section headings, attribution, or explanatory notes."
     ),
 }
 
+_COLLECTION_MAX_TOKENS: dict[str, int] = {
+    "bible": 300,
+    "catechism": 250,
+    "encyclicals": 400,
+    "church-fathers": 400,
+    "summa": 500,
+    "councils": 450,
+    "medieval": 350,
+    "canon-law": 350,
+}
+_DEFAULT_MAX_TOKENS = 300
+
+# ---------------------------------------------------------------------------
+# Lifecycle
+# ---------------------------------------------------------------------------
 
 def init_hyde() -> None:
     global _client
@@ -76,31 +307,81 @@ async def close_hyde() -> None:
         await _client.close()
         _client = None
 
+# ---------------------------------------------------------------------------
+# Internal helpers
+# ---------------------------------------------------------------------------
 
-async def generate_hyde_passage(query: str, collection: str | None = None) -> str | None:
-    """Return a hypothetical passage or None if generation fails.
-
-    When *collection* is provided, uses a collection-specific style prompt so
-    the generated passage embeds closer to real chunks from that corpus.
-    Falls back to the generic prompt for unknown collections.
-
-    On failure: logs the error, returns None (caller falls back to raw query vec).
-    Never raises.
-    """
-    if _client is None:
-        logger.warning("HyDE client not initialized; skipping passage generation")
-        return None
-
-    system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
-
+async def _generate_single(system: str, query: str, max_tokens: int) -> str | None:
+    """Generate one HyDE passage. Returns None on failure."""
     try:
-        response = await _client.messages.create(
+        response = await _client.messages.create(  # type: ignore[union-attr]
             model=settings.hyde_model,
-            max_tokens=200,
+            max_tokens=max_tokens,
             system=system,
             messages=[{"role": "user", "content": query}],
         )
         return response.content[0].text
     except Exception as exc:
-        logger.warning("HyDE passage generation failed (collection=%s): %s", collection, exc)
+        logger.warning("HyDE passage generation failed: %s", exc)
         return None
+
+
+async def _detect_bible_genres(query: str) -> list[str]:
+    """Return the 3 most relevant Bible genres for the query.
+
+    Falls back to _BIBLE_FALLBACK_GENRES on any failure.
+    """
+    try:
+        response = await _client.messages.create(  # type: ignore[union-attr]
+            model=settings.hyde_model,
+            max_tokens=50,
+            system=_GENRE_DETECT_SYSTEM,
+            messages=[{"role": "user", "content": query}],
+        )
+        raw = response.content[0].text
+        match = re.search(r"\[.*?\]", raw, re.DOTALL)
+        if not match:
+            raise ValueError("no JSON array in genre detection response")
+        genres: list = json.loads(match.group(0))
+        valid = [g for g in genres if g in _BIBLE_GENRES]
+        if len(valid) < 3:
+            for fb in _BIBLE_FALLBACK_GENRES:
+                if fb not in valid:
+                    valid.append(fb)
+                if len(valid) == 3:
+                    break
+        return valid[:3]
+    except Exception as exc:
+        logger.warning("_detect_bible_genres failed (%s); using fallback", exc)
+        return list(_BIBLE_FALLBACK_GENRES)
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+
+async def generate_hyde_passages(query: str, collection: str | None = None) -> list[str]:
+    """Return hypothetical passages for the given collection.
+
+    For 'bible', generates 4 passages in parallel: one unconstrained "free" passage
+    that goes wherever the query naturally leads, plus one passage per the 3
+    genre-detected genres for breadth. For all other collections, returns a
+    single-item list. On failure returns an empty list. Never raises.
+    """
+    if _client is None:
+        logger.warning("HyDE client not initialized; skipping passage generation")
+        return []
+
+    max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
+
+    if collection == "bible":
+        genres = await _detect_bible_genres(query)
+        genre_prompts = [_GENRE_HYDE_PROMPTS[g] for g in genres if g in _GENRE_HYDE_PROMPTS]
+        results = await asyncio.gather(
+            _generate_single(_HYDE_BIBLE_FREE_PROMPT, query, max_tokens),
+            *[_generate_single(p, query, max_tokens) for p in genre_prompts],
+        )
+        return [r for r in results if r is not None]
+
+    system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
+    result = await _generate_single(system, query, max_tokens)
+    return [result] if result is not None else []

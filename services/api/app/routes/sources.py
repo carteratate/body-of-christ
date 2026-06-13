@@ -22,6 +22,7 @@ class SourceDocument(BaseModel):
     author: Optional[str] = None
     year: Optional[int] = None
     translation: Optional[str] = None
+    metadata: Optional[dict] = None
     chunk_count: int
 
 
@@ -208,6 +209,7 @@ async def get_sources(
             """
             SELECT d.id::text, d.collection, d.title, d.author, d.year,
                    NULLIF(d.translation, '') AS translation,
+                   d.metadata,
                    COUNT(c.id)::int AS chunk_count
             FROM documents d
             LEFT JOIN chunks c ON c.document_id = d.id
@@ -231,6 +233,7 @@ async def get_sources(
             author=row["author"] or None,
             year=row["year"],
             translation=row["translation"],
+            metadata=dict(row["metadata"]) if row["metadata"] else None,
             chunk_count=row["chunk_count"],
         )
         for row in doc_rows
