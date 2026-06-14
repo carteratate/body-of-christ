@@ -395,6 +395,46 @@ def _chunk_summa(root, min_length: int = 50) -> list[tuple[str, str, int, dict |
     return chunks
 
 
+_SKIP_WORK_TITLES = _SKIP_TITLES | frozenset({
+    "introductory notice", "introductory notice.", "title pages", "title pages.",
+    "subject index", "subject indexes", "appendix", "indexes.", "errata",
+})
+
+
+def _cf_skippable(title: str) -> bool:
+    """True for ThML div titles that are front-matter, not a work/father/chapter."""
+    t = (title or "").strip().lower()
+    if t in _SKIP_WORK_TITLES:
+        return True
+    return t.startswith("introductory note") or t.startswith("introductory notice")
+
+
+def iter_works(root):
+    """Yield (father_label, work_label, [chunk_div_elements]) for a ThML volume.
+
+    Multi-author volume (div1 = father, div2 = work, chapters = div3): one tuple
+    per (father, work). Otherwise (single author / generic div1s): one tuple per
+    div1, with father == work and chapters = the chunk-level divs beneath it.
+    """
+    div1s = [d for d in root.iter("div1") if not _cf_skippable(d.get("title") or "")]
+    multi = _detect_is_multi_author(root)
+    chunk_level = _detect_chunk_level(root)
+    for d1 in div1s:
+        father = (d1.get("title") or "").strip()
+        div2s = [d for d in d1.iter("div2") if not _cf_skippable(d.get("title") or "")]
+        if multi and div2s and chunk_level >= 3:
+            for d2 in div2s:
+                chapters = [e for e in d2.iter(f"div{chunk_level}")
+                            if not _cf_skippable(e.get("title") or "")]
+                if chapters:
+                    yield father, (d2.get("title") or "").strip(), chapters
+        else:
+            chapters = [e for e in d1.iter(f"div{chunk_level}")
+                        if not _cf_skippable(e.get("title") or "")]
+            if chapters:
+                yield father, father, chapters
+
+
 def parse_thml_string(xml_string: str) -> ThmlDocument:
     """Parse a ThML XML string into a ThmlDocument."""
     xml_string = re.sub(r"<!DOCTYPE[^>]*(?:>|\[.*?\]>)", "", xml_string, flags=re.DOTALL)

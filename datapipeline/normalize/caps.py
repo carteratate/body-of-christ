@@ -23,3 +23,14 @@ def title_case_shouting(text: str) -> str:
         words = m.group(0).split()
         return " ".join(_title_word(w, i == 0) for i, w in enumerate(words))
     return _CAPS_RUN.sub(repl, text)
+
+
+def smart_title_case(text: str) -> str:
+    """Title-case a label whose letters are ALL uppercase (a shouting proper
+    name/title like "POLYCARP" or "CLEMENT OF ROME"); otherwise fix only
+    embedded all-caps runs via title_case_shouting."""
+    letters = [c for c in text if c.isalpha()]
+    if letters and all(c.isupper() for c in letters):
+        words = text.split()
+        return " ".join(_title_word(w, i == 0) for i, w in enumerate(words))
+    return title_case_shouting(text)
