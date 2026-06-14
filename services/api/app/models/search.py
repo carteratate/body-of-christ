@@ -20,6 +20,7 @@ class ChunkSource(BaseModel):
     reference: Optional[str] = None
     document_id: str
     position: Optional[int] = None
+    anchor: Optional[str] = None
 
 
 class ChunkResult(BaseModel):
