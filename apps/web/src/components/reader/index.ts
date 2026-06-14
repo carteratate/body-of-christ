@@ -1,3 +1,5 @@
 export { DocumentReader } from "./DocumentReader";
-export { ReaderChunk } from "./ReaderChunk";
-export { ReaderToolbar } from "./ReaderToolbar";
+export { ChapterSection } from "./ChapterSection";
+export { ReaderChrome } from "./ReaderChrome";
+export { ContentsDrawer } from "./ContentsDrawer";
+export { Passage } from "./Passage";

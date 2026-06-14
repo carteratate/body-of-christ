@@ -200,21 +200,6 @@ export interface TocResponse {
   chapters: TocEntry[];
 }
 
-export interface ReaderChunk {
-  id: string;
-  position: number;
-  reference: string | null;
-  content: string;
-}
-
-export interface ReaderResponse {
-  document: DocumentInfo;
-  chunks: ReaderChunk[];
-  highlight_chunk_id: string;
-  prev_nav_chunk_id: string | null;
-  next_nav_chunk_id: string | null;
-}
-
 // ── V2 Bookmarks ───────────────────────────────────────────────────────────
 
 export interface BookmarkChunkInfo {
@@ -361,16 +346,28 @@ export async function getDocument(token: string, docId: string): Promise<Documen
   return res.json() as Promise<DocumentInfo>;
 }
 
-export async function getReader(
+export async function getToc(token: string, docId: string): Promise<TocResponse> {
+  const res = await fetch(`${API_URL}/v1/documents/${docId}/toc`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return res.json() as Promise<TocResponse>;
+}
+
+export async function getReaderChapter(
   token: string,
   docId: string,
-  chunkId: string,
-  context = 10,
-): Promise<ReaderResponse> {
-  const url = `${API_URL}/v1/documents/${docId}/reader?chunk_id=${encodeURIComponent(chunkId)}&context=${context}`;
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  opts: { anchor?: string; chapter?: string },
+): Promise<ReaderChapter> {
+  const params = new URLSearchParams();
+  if (opts.anchor) params.set("anchor", opts.anchor);
+  if (opts.chapter) params.set("chapter", opts.chapter);
+  const qs = params.toString();
+  const res = await fetch(`${API_URL}/v1/documents/${docId}/reader${qs ? `?${qs}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   if (!res.ok) throw new Error(`API error ${res.status}`);
-  return res.json() as Promise<ReaderResponse>;
+  return res.json() as Promise<ReaderChapter>;
 }
 
 export async function getBookmarks(token: string): Promise<Bookmark[]> {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { getSources, type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
@@ -9,6 +10,8 @@ import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
 const TRANSLATION_LABELS: Record<string, string> = {
   "WEB-C": "World English Bible, Catholic Edition",
 };
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function SourcesSkeleton() {
   return (
@@ -36,8 +39,9 @@ function SourcesSkeleton() {
   );
 }
 
-function BibleSection({ docs }: { docs: SourceDocument[] }) {
+function BibleSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id: string) => void }) {
   const meta = getCollectionMeta("bible");
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   // Group by translation code
   const byTranslation = docs.reduce<Record<string, SourceDocument[]>>((acc, doc) => {
@@ -68,20 +72,36 @@ function BibleSection({ docs }: { docs: SourceDocument[] }) {
         {Object.entries(byTranslation).map(([code, books]) => {
           const totalPassages = books.reduce((sum, b) => sum + b.chunk_count, 0);
           const label = TRANSLATION_LABELS[code] ?? code;
+          const isOpen = expanded === code;
           return (
-            <li
-              key={code}
-              className="flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface"
-            >
-              <div className="min-w-0">
-                <span className="text-brand-primary text-sm">{label}</span>
-                <span className="text-brand-muted text-xs ml-2">
-                  {books.length} books · {code}
+            <li key={code} className="rounded bg-brand-surface overflow-hidden">
+              <button
+                onClick={() => setExpanded(isOpen ? null : code)}
+                className="w-full flex items-start justify-between gap-4 px-3 py-2 text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              >
+                <div className="min-w-0">
+                  <span className="text-brand-primary text-sm">{label}</span>
+                  <span className="text-brand-muted text-xs ml-2">
+                    {books.length} books · {code}
+                  </span>
+                </div>
+                <span className="shrink-0 text-xs text-brand-accent whitespace-nowrap mt-0.5">
+                  {isOpen ? "▾" : "▸"} {totalPassages.toLocaleString()} passages
                 </span>
-              </div>
-              <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
-                {totalPassages.toLocaleString()} passages
-              </span>
+              </button>
+              {isOpen && (
+                <div className="flex flex-wrap gap-1.5 px-3 pb-3 pt-1 border-t border-brand-bg/40">
+                  {books.map((book) => (
+                    <button
+                      key={book.id}
+                      onClick={() => onOpen(book.id)}
+                      className="text-xs text-brand-primary bg-brand-bg/60 rounded px-2 py-1 hover:text-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                    >
+                      {book.title}
+                    </button>
+                  ))}
+                </div>
+              )}
             </li>
           );
         })}
@@ -90,11 +110,9 @@ function BibleSection({ docs }: { docs: SourceDocument[] }) {
   );
 }
 
-function CouncilsSection({ docs }: { docs: SourceDocument[] }) {
+function CouncilsSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id: string) => void }) {
   const meta = getCollectionMeta("councils");
 
-  // Group Vatican II documents under a single "Second Vatican Council" entry,
-  // then sort everything chronologically by year.
   const vaticanIIDocs = docs.filter((d) => d.metadata?.council === "Vatican II");
   const otherDocs = docs.filter((d) => d.metadata?.council !== "Vatican II");
 
@@ -131,8 +149,9 @@ function CouncilsSection({ docs }: { docs: SourceDocument[] }) {
       <ul className="space-y-1.5">
         {sorted.map((entry) => {
           const num = (entry as SourceDocument).metadata?.council_number as number | undefined;
-          return (
-            <li key={entry.id} className="flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface">
+          const clickable = UUID_RE.test(entry.id);
+          const inner = (
+            <>
               <div className="min-w-0">
                 <span className="text-brand-primary text-sm">{entry.title}</span>
                 <span className="text-brand-muted text-xs ml-2">
@@ -145,6 +164,20 @@ function CouncilsSection({ docs }: { docs: SourceDocument[] }) {
               <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
                 {entry.chunk_count.toLocaleString()} passages
               </span>
+            </>
+          );
+          return clickable ? (
+            <li key={entry.id}>
+              <button
+                onClick={() => onOpen(entry.id)}
+                className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              >
+                {inner}
+              </button>
+            </li>
+          ) : (
+            <li key={entry.id} className="flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface">
+              {inner}
             </li>
           );
         })}
@@ -153,35 +186,43 @@ function CouncilsSection({ docs }: { docs: SourceDocument[] }) {
   );
 }
 
-function DocRow({ doc }: { doc: SourceDocument }) {
+function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => void }) {
   const parts: string[] = [];
   if (doc.author) parts.push(doc.author);
   if (doc.year) parts.push(String(doc.year));
   const attribution = parts.join(", ");
 
   return (
-    <li className="flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface">
-      <div className="min-w-0">
-        <span className="text-brand-primary text-sm">{doc.title}</span>
-        {attribution && (
-          <span className="text-brand-muted text-xs ml-2">{attribution}</span>
-        )}
-        {doc.translation && (
-          <span className="text-brand-muted text-xs ml-1">· {doc.translation}</span>
-        )}
-      </div>
-      <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
-        {doc.chunk_count.toLocaleString()} passages
-      </span>
+    <li>
+      <button
+        onClick={() => onOpen(doc.id)}
+        className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+      >
+        <div className="min-w-0">
+          <span className="text-brand-primary text-sm">{doc.title}</span>
+          {attribution && (
+            <span className="text-brand-muted text-xs ml-2">{attribution}</span>
+          )}
+          {doc.translation && (
+            <span className="text-brand-muted text-xs ml-1">· {doc.translation}</span>
+          )}
+        </div>
+        <span className="shrink-0 text-xs text-brand-accent whitespace-nowrap mt-0.5">›</span>
+      </button>
     </li>
   );
 }
 
 export function SourcesPage() {
   const { token, setCorpusPassages } = useAppContext();
+  const router = useRouter();
   const [sources, setSources] = useState<SourceDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const openDoc = useCallback((id: string) => {
+    router.push(`/reader/${id}`);
+  }, [router]);
 
   const fetchSources = useCallback(() => {
     if (!token) return;
@@ -197,6 +238,7 @@ export function SourcesPage() {
   }, [token, setCorpusPassages]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount
     fetchSources();
   }, [fetchSources]);
 
@@ -238,11 +280,11 @@ export function SourcesPage() {
               if (docs.length === 0) return null;
 
               if (key === "bible") {
-                return <BibleSection key={key} docs={docs} />;
+                return <BibleSection key={key} docs={docs} onOpen={openDoc} />;
               }
 
               if (key === "councils") {
-                return <CouncilsSection key={key} docs={docs} />;
+                return <CouncilsSection key={key} docs={docs} onOpen={openDoc} />;
               }
 
               const meta = getCollectionMeta(key);
@@ -265,7 +307,7 @@ export function SourcesPage() {
                   </div>
                   <ul className="space-y-1.5">
                     {docs.map((doc) => (
-                      <DocRow key={doc.id} doc={doc} />
+                      <DocRow key={doc.id} doc={doc} onOpen={openDoc} />
                     ))}
                   </ul>
                 </section>
