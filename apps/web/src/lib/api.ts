@@ -127,6 +127,7 @@ export interface ChunkSource {
   reference: string | null;
   document_id: string;
   position: number | null;
+  anchor?: string | null;
   metadata?: Record<string, unknown> | null;
 }
 
@@ -167,6 +168,36 @@ export interface DocumentInfo {
   year: number | null;
   metadata: Record<string, unknown> | null;
   chunk_count: number;
+}
+
+export interface ReaderPassage {
+  id: string;
+  anchor: string;
+  chapter_key: string;
+  chapter_label: string;
+  unit_label: string | null;
+  reference: string | null;
+  content: string;
+}
+
+export interface ReaderChapter {
+  document: DocumentInfo;
+  chapter_key: string;
+  chapter_label: string;
+  passages: ReaderPassage[];
+  prev_chapter_key: string | null;
+  next_chapter_key: string | null;
+  highlight_anchor: string | null;
+}
+
+export interface TocEntry {
+  chapter_key: string;
+  chapter_label: string;
+}
+
+export interface TocResponse {
+  document: DocumentInfo;
+  chapters: TocEntry[];
 }
 
 export interface ReaderChunk {
