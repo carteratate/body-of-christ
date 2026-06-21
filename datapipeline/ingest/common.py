@@ -24,13 +24,29 @@ def _strip_tags(text: str) -> str:
 
 
 def _extract_p_text(elem) -> str:
-    """Concatenate text from all <p> children of elem."""
+    """Concatenate text from all <p> descendants of elem (recursive)."""
     parts = []
     for p in elem.iter("p"):
         raw = et_tostring(p, encoding="unicode", method="xml")
         t = _strip_tags(raw)
         if t:
             parts.append(t)
+    return "\n\n".join(parts)
+
+
+def _direct_p_text(elem) -> str:
+    """Concatenate text from only the DIRECT <p> children of elem.
+
+    Used for chapter content so a book-level div that has both intro paragraphs
+    and chapter sub-divs does not duplicate its chapters' text.
+    """
+    parts = []
+    for child in elem:
+        if child.tag == "p":
+            raw = et_tostring(child, encoding="unicode", method="xml")
+            t = _strip_tags(raw)
+            if t:
+                parts.append(t)
     return "\n\n".join(parts)
 
 
@@ -433,6 +449,59 @@ def iter_works(root):
                         if not _cf_skippable(e.get("title") or "")]
             if chapters:
                 yield father, father, chapters
+
+
+_BOOK_RE = re.compile(r"^\s*Book\s+[IVXLCDM0-9]", re.IGNORECASE)
+
+
+def _has_direct_p(elem) -> bool:
+    return any(child.tag == "p" for child in elem)
+
+
+def _book_label(elem) -> str | None:
+    """Return a clean book label ('Book I') if elem is a book division, else None.
+
+    ThML marks books via type="Book" and carries the readable label in shorttitle
+    ('Book I'); the title attribute is a long descriptive sentence.
+    """
+    if (elem.get("type") or "").strip().lower() == "book":
+        st = (elem.get("shorttitle") or "").strip()
+        if st:
+            return st
+        n = (elem.get("n") or "").strip()
+        return f"Book {n.upper()}" if n else "Book"
+    for attr in ("shorttitle", "title"):
+        v = (elem.get(attr) or "").strip()
+        if _BOOK_RE.match(v):
+            return v
+    return None
+
+
+def iter_chapters(work_root, parent_map):
+    """Yield (book_label|None, chapter_elem) for the content-bearing divs under
+    work_root, at whatever depth they occur (work→chapter or work→book→chapter).
+    A chapter is any div with direct <p> children; its book is the nearest ancestor
+    book division. Chapters under skippable front-matter ancestors are omitted.
+    """
+    for elem in work_root.iter():
+        tag = elem.tag
+        if elem is work_root or not (isinstance(tag, str) and tag.startswith("div")):
+            continue
+        if not _has_direct_p(elem):
+            continue
+        skip = _cf_skippable(elem.get("title") or "")
+        book = None
+        cur = parent_map.get(elem)
+        while cur is not None and cur is not work_root:
+            if _cf_skippable(cur.get("title") or ""):
+                skip = True
+                break
+            if book is None:
+                book = _book_label(cur)
+            cur = parent_map.get(cur)
+        if skip:
+            continue
+        yield book, elem
 
 
 def parse_thml_string(xml_string: str) -> ThmlDocument:
