@@ -1,6 +1,8 @@
 """Qdrant client + helpers for the search pipeline."""
 from __future__ import annotations
 
+import asyncio
+
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import (
     Distance, FieldCondition, Filter, HnswConfigDiff, MatchValue,
@@ -44,5 +46,14 @@ async def delete_collection_points(client: AsyncQdrantClient, collection: str) -
 
 
 async def upsert_points(client: AsyncQdrantClient, points: list[PointStruct]) -> None:
-    if points:
-        await client.upsert(collection_name=QDRANT_COLLECTION, points=points, wait=True)
+    if not points:
+        return
+    # Retry transient network/timeout errors (long runs make occasional blips likely).
+    for attempt in range(4):
+        try:
+            await client.upsert(collection_name=QDRANT_COLLECTION, points=points, wait=True)
+            return
+        except Exception:
+            if attempt == 3:
+                raise
+            await asyncio.sleep(2 ** attempt)
