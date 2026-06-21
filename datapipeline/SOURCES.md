@@ -3,27 +3,37 @@
 Status of each collection's source material and its dual-pipeline ingestion
 (`run_collection.py --collection <name> --target both --clean`).
 
-| Collection | Local source | Re-ingested (dual pipeline) | Notes |
+| Collection | Source | Re-ingested (dual pipeline) | Notes |
 |---|---|---|---|
-| **bible** | `sources/bible/eng-web-c_usfm/` (+ `PericopeGroupedKJVVerses.json`) | ✅ | WEB-C; passage = pericope clamped to chapter |
-| **catechism** | `sources/catechism/ccc.json` (nossbigg/catechism-ccc-json) | ✅ | three-tier chunking; TOC fragments dropped |
-| **church-fathers** | `sources/church-fathers/*.xml` (ANF/NPNF ThML) | ✅ | one document per (father, work); book-structured works (City of God, etc.) flattened to `Book N · Chapter M` |
-| **summa** | `sources/church-fathers/summa.xml` (ThML) | ✅ | one passage per article part (Objection / On the contrary / I answer that / Reply); apparatus expanded |
-| **encyclicals** | ❌ **MISSING — re-acquire** | ⛔ blocked | data exists in DB from a prior ingest; no local source to rebuild through the dual pipeline |
-| **canon-law** | ❌ **MISSING — re-acquire** | ⛔ blocked | same as above |
-| **councils** | ❌ **MISSING — re-acquire** | ⛔ blocked | same as above; Vatican II grouped on the Sources page |
-| **medieval** | ⤓ **re-download** from ccel.org (URLs in `ingest/medieval.py`) | ⛔ blocked | basic_works.xml (Anselm), consolation.xml (Boethius), loving_god.xml (Bernard), imitation.xml (Kempis) |
+| **bible** | local `sources/bible/eng-web-c_usfm/` (+ pericope JSON) | ✅ | WEB-C; passage = pericope clamped to chapter |
+| **catechism** | local `sources/catechism/ccc.json` (nossbigg/catechism-ccc-json) | ✅ | three-tier chunking; TOC fragments dropped |
+| **church-fathers** | local `sources/church-fathers/*.xml` (ANF/NPNF ThML) | ✅ | one document per (father, work); book-structured works (City of God, etc.) flattened to `Book N · Chapter M` |
+| **summa** | local `sources/church-fathers/summa.xml` (ThML) | ✅ | one passage per article part; apparatus expanded |
+| **encyclicals** | 🌐 web-fetched at ingest (papalencyclicals.net) | ⛔ not yet | needs a dual-pipeline `build_documents()` adapter |
+| **canon-law** | 🌐 web-fetched at ingest (vatican.va) | ⛔ not yet | needs adapter |
+| **councils** | 🌐 web-fetched at ingest (papalencyclicals.net) | ⛔ not yet | needs adapter; Vatican II grouped on the Sources page |
+| **medieval** | 🌐 web-fetched at ingest (ccel.org ThML) | ⛔ not yet | needs adapter (ThML — closest to church-fathers) |
 
-## To complete the remaining collections
+## Reality of the remaining four
 
-1. **medieval** — re-download the ccel.org XML listed in `ingest/medieval.py` into
-   `sources/medieval/`, then write a `build_documents()` adapter following the
-   church-fathers pattern (ThML → per-work passages) and run the orchestrator.
-2. **encyclicals / canon-law / councils** — locate and vendor the original sources
-   under `sources/<collection>/`, add a `build_document(s)` adapter (see
-   `ingest/catechism.py` and `ingest/church_fathers.py` for patterns), then run
-   `run_collection.py --collection <name> --target both --clean`.
+These collections are **not** sourced from local files — their old ingest scripts
+(`ingest/encyclicals.py`, `canon_law.py`, `councils.py`, `medieval.py`) **download
+from live web URLs** at ingest time (URLs hard-coded in each script) and parse them
+(HTML via BeautifulSoup for the first three; ThML for medieval). They still hold their
+**pre-rework** chunks in Supabase/Qdrant — no `anchor`/`chapter_key`, old-style
+references/casing — so the new reader cannot open them (they remain searchable via the
+legacy Qdrant points).
 
-Until then these four keep their **pre-rework** chunks in Supabase/Qdrant (no
-`anchor`/`chapter_key`), so the new reader will not open them; they remain
-searchable via the legacy points.
+## To complete each one
+
+Add a `build_documents()` adapter returning `list[Document]` of clean `Passage`s
+(anchors, chapter_keys, cleaning), register it in `run_collection.py` `BUILDERS`, then
+run `python3 run_collection.py --collection <name> --target both --clean`.
+
+The old scripts already contain the fetch + parse logic to reuse:
+- **medieval** — uses `parse_thml_string()`; closest to the church-fathers adapter. Lowest effort.
+- **encyclicals / councils / canon-law** — each has a custom BeautifulSoup parser that
+  emits `(content, reference, position, metadata)`; the adapter wraps that, applies the
+  cleaners, and assigns anchors/chapter_keys.
+
+Risk: ingestion depends on those external sites still serving the same pages.
