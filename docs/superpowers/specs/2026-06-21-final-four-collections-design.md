@@ -53,17 +53,28 @@ this design (kept for future re-audits).
 
 ## 3. Structural findings that shaped the design
 
-- **Encyclicals (18):** three numbering layouts must be handled — inline (`12. body…`, Rerum
-  Novarum), **bold number-heading + body in the next `<p>`** (Redemptor Hominis, Laborem Exercens —
-  these produced *zero* paragraphs under the old inline-only regex), and Roman/bold **section
-  headers**. ~8 are richly sectioned, ~7 are flat numbered runs, 2 are heading+body. Footnote `[N]`
-  density is high (≤225/doc). A few single paragraphs exceed 3,500 chars (Spe Salvi 4,458).
+- **Encyclicals (18) — per-document layout study:** three numbering layouts must be handled —
+  **A inline** (`12. body…`, 14 docs), **B heading+body** (a short/bold `N.` line with the body in
+  the following `<p>`s — Redemptor Hominis & Laborem Exercens, which produced *zero* paragraphs under
+  the old inline-only regex), and **A+B mixed** (Evangelii Nuntiandi, Evangelium Vitae). Only these
+  **4 documents** are non-trivial; the rest are pure inline. Section structure: ~8 are genuinely
+  sectioned (Roman/bold headers interspersed among paragraphs), the rest flat. Critically, the
+  `bold=2` seen on every flat document is **title/subtitle noise** rendered before §1, not a section
+  → rule: **ignore Roman/bold headers that occur before the first numbered paragraph** (title +
+  preamble); only headers between numbered paragraphs are chapters. Footnote `[N]` density is high
+  (≤225/doc). A few single paragraphs exceed 3,500 chars (Spe Salvi 4,458). Every doc has a preamble
+  (greeting) before §1.
 - **Councils (36):** heterogeneous. Ecumenical 1–20 split into header-prose (h2/h3/h4), numbered
   canons (`Canon N`), and plain prose; Vatican II is numbered `§` paragraphs under `CHAPTER N`
   headers. ALL-CAPS headings throughout; some footnote dumps.
 - **Canon-law (1,747 canons):** **max canon = 2,031 chars — none exceed the cap**, so
-  one-passage-per-canon never sub-splits. 249 full Book/Title/Chapter context groups (~7 canons
-  each). Hierarchy header text is inconsistent and ALL-CAPS ("BOOK I." vs "BOOK I. GENERAL NORMS").
+  one-passage-per-canon never sub-splits. **Structural correction:** vatican.va serves the Code as 44
+  canon-range pages and **Book/Title headers appear only on the page where a section starts** —
+  continuation pages carry no header, so the current per-page parse loses the Book for ~40% of canons
+  (the `?` bucket). Fix: assign **Book by canon-number range** (the 7 books have fixed ranges) and
+  **carry Title/Chapter context across page boundaries** in canon order. With that fix, the
+  Book+Title+Chapter grouping yields **237 chapters, median ~2.2k chars / 6 canons** (max 21k / 38
+  canons). Hierarchy header text is inconsistent and ALL-CAPS ("BOOK I." vs "BOOK I. GENERAL NORMS").
 - **Medieval (4):** CCEL ThML — identical format to church-fathers. Anselm `basic_works.xml` is
   multi-work/single-author (div1=work); Boethius/Bernard/Imitation are single works whose div1/div2
   are chapters/books.
@@ -76,8 +87,9 @@ this design (kept for future re-audits).
    anchors, `unit_label`, embedding overlap restores context. Oversized units sub-split.
 2. **Header-less fallback:** paragraph-range buckets (chapter = `§§1–20`, …) so long flat documents
    stay navigable. Documents *with* headers group by header.
-3. **Canon-law reader chapter:** full Book/Title/Chapter context (~249 chapters, ~7 canons each),
-   `chapter_label` = cleaned breadcrumb.
+3. **Canon-law reader chapter:** Book + Title + Chapter (option C — 237 chapters, ~6 canons each),
+   `chapter_label` = cleaned breadcrumb that **matches the grouping level**
+   ("Book III: The Teaching Function of the Church — {Title} — {Chapter}").
 4. **Medieval Imitation:** keep one passage per chapter (no merge); overlap supplies search context.
 
 ---
@@ -103,8 +115,13 @@ this design (kept for future re-audits).
 - `build_documents()` iterates `sources/encyclicals/manifest.json`; one Document per encyclical
   (`document_id("encyclicals", slug)`), title/author(=Pope)/year from manifest.
 - **Tokenizer** over `<p>` produces a typed stream: `section` (Roman `^[IVX]+\.` or bold-only header),
-  `para` (a numbered unit — assembled from inline `N. body…` OR a bold `N.`/`N. title` heading plus
-  the following body `<p>`s until the next number/header), and `preamble` (leading unnumbered prose).
+  `para` (a numbered unit — assembled from inline `N. body…` OR a bold/short `N.`/`N. title` heading
+  plus the following body `<p>`s until the next number/header), and `preamble` (leading unnumbered
+  prose). **Per-document layout study (all 18) drives this:** only 4 docs are non-trivial — Redemptor
+  Hominis & Laborem Exercens are pure heading+body (layout B); Evangelii Nuntiandi & Evangelium Vitae
+  are mixed; the other 14 are inline. **Rule:** headers (Roman/bold) appearing *before* the first
+  numbered paragraph are title/preamble, not chapters, and are excluded from section detection (this
+  removes the title-noise that otherwise looks like 2 sections on every flat doc).
 - **Passage = one numbered §** → `anchor = {slug}/{N}`, `unit_label = "§N"`,
   `reference = "{title}, §{N}"`. Oversized § sub-split → `{slug}/{N}/pK`. Leading preamble (greeting)
   becomes a single "Preamble" passage when present (`anchor = {slug}/preamble`).
@@ -133,18 +150,22 @@ this design (kept for future re-audits).
 
 ### 5.4 canon-law (`ingest/canon_law.py` → rewrite)
 
-- `build_documents()` reads `sources/canon-law/pages.json`, parses each page with the existing
-  `parse_canon_page`, dedups by canon number (sorted) → one Document (`document_id("canon-law")`;
-  title "Code of Canon Law (1983)", author "Catholic Church", year 1983).
+- `build_documents()` reads `sources/canon-law/pages.json`, parses each page with `parse_canon_page`,
+  dedups by canon number (sorted) → one Document (`document_id("canon-law")`; title "Code of Canon
+  Law (1983)", author "Catholic Church", year 1983).
 - **Passage = one per canon** (never split, max 2,031 < cap): `anchor = can/{N}`,
   `unit_label = "Can. N"`, `position` = global order by canon number,
   `reference = "Code of Canon Law, Can. {N}"`. Content = cleaned canon body (`clean_text`;
   `§`-subparagraph markers preserved as paragraph breaks).
-- **chapter_key** = full cleaned hierarchy path `book/title/chapter/article`;
-  `chapter_label` = breadcrumb "Book III: The Teaching Function — The Ministry of the Divine Word".
-  A small **hierarchy canonicalizer** maps the inconsistent ALL-CAPS Book/Title/Chapter headers to
-  stable Title-Case forms (CIC has 7 fixed books → canonical English names; `title_case_shouting`
-  for Titles/Chapters). Lives collection-specific (in the adapter, reusing `normalize/caps.py`).
+- **Hierarchy assignment (the structural fix):** Book is assigned by **canon-number range** from a
+  fixed 7-entry table (I:1–203, II:204–746, III:747–833, IV:834–1253, V:1254–1310, VI:1311–1399,
+  VII:1400–1752) with canonical English names — not from page headers (which are missing on
+  continuation pages). Title/Chapter are taken from the per-page detected context and
+  **forward-filled across pages** in canon order (reset at each Book boundary); ALL-CAPS Title/Chapter
+  headers are Title-cased via `title_case_shouting`.
+- **chapter_key** = `book/title/chapter` (option C — 237 chapters); `chapter_label` = the matching
+  breadcrumb "Book III: The Teaching Function of the Church — {Title} — {Chapter}" (omitting empty
+  levels). Verified by a pre-live-run print of the full chapter-label list to catch fragmentation.
 
 ---
 
@@ -170,13 +191,18 @@ overlap given small units — tuned during implementation, default acceptable).
 Per-adapter unit tests, fixtures-first then real-file smoke tests against the vendored sources:
 
 - **Parser edge cases (inline fixtures):** encyclical three layouts incl. the heading+body case
-  (Redemptor/Laborem produce numbered paragraphs); footnote `[N]` stripped; oversized § sub-splits
-  with `/pN`; bucket fallback labels; canon hierarchy canonicalization ("BOOK I." & "BOOK I. GENERAL
-  NORMS" → same cleaned label).
+  (Redemptor/Laborem produce numbered paragraphs); pre-§1 header noise excluded from sections;
+  footnote `[N]` stripped; oversized § sub-splits with `/pN`; bucket fallback labels; canon Book
+  assigned by number range; Title/Chapter forward-filled across page boundaries; ALL-CAPS Title
+  cased.
+- **Per-document encyclical assertions (from the layout study):** each of the 18 produces a non-trivial
+  passage count (so a layout-B regression fails loudly) — e.g. Redemptor Hominis & Laborem Exercens
+  yield their ~20/~25 §-passages under their Roman chapters; the flat docs yield their full §-runs in
+  §§-buckets; the 4 non-trivial docs (2 pure-B, 2 mixed) have explicit count checks.
 - **Real-file invariants:** doc counts; `content` never begins with `[`; anchors unique per
   document; `chapter_key`/`chapter_label` non-null; `unit_label` set where expected; canon-law emits
-  one passage per unique canon and ~249 chapters; medieval Anselm → 3 work documents, single-author
-  preserved.
+  one passage per unique canon (1,747), exactly 7 books, ~237 chapters, and no `?`/empty Book;
+  medieval Anselm → 3 work documents, single-author preserved.
 - Shared invariants already covered by `test_identity.py`, `test_reader_writer.py`,
   `test_search_writer.py`, `test_run_collection.py`. Do **not** introduce new failures; the
   pre-existing `test_catechism.py::test_tier3_in_brief_section_flagged` failure is out of scope.
@@ -204,11 +230,15 @@ survive (ids change) — accepted, consistent with the church-fathers rebuild.
 
 ---
 
-## 9. Risks
+## 9. Risks (both headline risks reduced by the §3 studies)
 
-- Encyclical/council parsing is heterogeneous; the typed-stream tokenizer must cover all observed
-  layouts — mitigated by real-file tests over all 18/36 vendored docs.
-- Canon-law hierarchy canonicalization is heuristic; verify chapter labels read cleanly on a sample
-  before the live run.
+- **Encyclical/council layouts** are heterogeneous, but the per-document study (§3, §5.2) reduced this
+  to 4 known non-trivial encyclicals; the unified tokenizer is guarded by **per-document count
+  assertions**, so any layout regression fails a specific test rather than silently dropping a doc.
+  Councils get the same treatment over the 36 vendored docs.
+- **Canon-law hierarchy** is now mostly **deterministic** (Book by canon-number range, not header
+  scraping); only Title/Chapter labels rely on cross-page forward-fill + Title-casing. A pre-live-run
+  print of the 237 chapter labels is the final eyeball before any embedding spend. A bug here affects
+  only grouping/labels — never anchors (`can/{N}`) or content.
 - Per-collection embedding overlap defaults may need tuning for very short canons (config knob, no
   re-architecture).
