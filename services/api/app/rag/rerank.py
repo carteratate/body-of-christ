@@ -70,6 +70,7 @@ class RankedChunk:
     author: str | None
     reranker_score: float  # 0.0–1.0
     include: bool = True   # False = hard-excluded by reranker (low score or redundant)
+    anchor: str | None = None
 
 
 def init_rerank() -> None:
@@ -96,8 +97,7 @@ def _format_passages(candidates: list[ChunkCandidate]) -> str:
     lines = []
     for c in candidates:
         ref = c.reference or "No reference"
-        snippet = c.content
-        lines.append(f"[{c.chunk_id}] {ref}: {snippet}")
+        lines.append(f"[{c.chunk_id}] {ref}: {c.content}")
     return "\n".join(lines)
 
 
@@ -131,11 +131,15 @@ async def rerank_collection(
 
     formatted_passages = _format_passages(candidates)
     user_message = f"Query: {query}\n\nPassages:\n{formatted_passages}"
+    logger.info(
+        "rerank_collection: sending %d candidates, user_message_len=%d chars",
+        len(candidates), len(user_message),
+    )
 
     try:
         response = await _client.messages.create(
             model=settings.rerank_model,
-            max_tokens=1000,
+            max_tokens=2000,
             system=_RERANK_SYSTEM,
             messages=[{"role": "user", "content": user_message}],
         )
@@ -143,6 +147,7 @@ async def rerank_collection(
         scored = _extract_json_array(raw_text)
     except Exception as exc:
         logger.warning("rerank_collection: Haiku scoring failed: %s", exc)
+        logger.debug("rerank_collection: raw response was: %.500s", locals().get("raw_text", "<no response>"))
         return _fallback_ranked(candidates, quota)
 
     ranked: list[RankedChunk] = []
@@ -184,6 +189,7 @@ async def rerank_collection(
                 author=candidate.author,
                 reranker_score=max(0.0, min(1.0, score)),
                 include=include,
+                anchor=candidate.anchor,
             )
         )
 
@@ -202,6 +208,7 @@ async def rerank_collection(
                     author=c.author,
                     reranker_score=0.0,
                     include=False,
+                    anchor=c.anchor,
                 )
             )
 
@@ -224,6 +231,7 @@ def _fallback_ranked(candidates: list[ChunkCandidate], quota: int) -> list[Ranke
                 document_title=c.document_title,
                 author=c.author,
                 reranker_score=score,
+                anchor=c.anchor,
             )
         )
     return results

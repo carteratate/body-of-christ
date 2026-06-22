@@ -1,16 +1,24 @@
 import sys, os
 
-# Set required env vars before importing ingest.canon_law, which imports load → config at module level.
+# Set required env vars before importing ingest.canon_law, which imports config at module level.
 os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
 os.environ.setdefault("OPENAI_API_KEY", "sk-test")
+os.environ.setdefault("QDRANT_URL", "http://localhost")
+os.environ.setdefault("QDRANT_API_KEY", "x")
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+import pytest
 
 from ingest.canon_law import (
     parse_canon_page, deduplicate_urls,
     _context_key, _format_group_content, _build_canon_reference,
     _balanced_split_canons, _emit_group_chunks,
+    _book_for, build_documents,
 )
+
+_SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "canon-law")
+_vendored = os.path.exists(os.path.join(_SRC, "pages.json"))
 
 SAMPLE_HTML = """<html><body><table><tbody><tr><td>
 <p align="center"><b>CODE OF CANON LAW</b></p>
@@ -199,3 +207,50 @@ def test_emit_group_chunks_cross_refs_extracted():
     _, _, _, meta = chunks[0]
     assert 5 in meta["cross_refs"]
     assert 208 in meta["cross_refs"]
+
+
+# ── Dual-pipeline build_documents (one passage per canon) ────────────────────
+
+def test_book_for_assigns_by_canon_range():
+    assert _book_for(1).startswith("Book I")
+    assert _book_for(203).startswith("Book I")
+    assert _book_for(204).startswith("Book II")
+    assert _book_for(750).startswith("Book III")
+    assert _book_for(1752).startswith("Book VII")
+
+
+@pytest.mark.skipif(not _vendored, reason="canon-law not vendored")
+def test_single_document_one_passage_per_canon():
+    docs = build_documents()
+    assert len(docs) == 1
+    d = docs[0]
+    assert d.collection == "canon-law"
+    units = [p.unit_label for p in d.passages]
+    assert len(units) == len(set(units))            # one passage per canon, no dups
+    assert all(u.startswith("Can. ") for u in units)
+    assert len(units) > 1700
+
+
+@pytest.mark.skipif(not _vendored, reason="canon-law not vendored")
+def test_exactly_seven_books_no_empty_and_breadcrumb():
+    d = build_documents()[0]
+    books = {p.metadata["book"] for p in d.passages}
+    assert len(books) == 7, books
+    assert all(b and "?" not in b for b in books)
+    assert all(p.chapter_label.startswith("Book ") for p in d.passages)
+    for p in d.passages:
+        assert p.anchor.startswith("can/")
+        assert not p.content.lstrip().startswith("[")
+
+
+@pytest.mark.skipif(not _vendored, reason="canon-law not vendored")
+def test_no_latin_book_title_leaks_into_chapter_labels():
+    d = build_documents()[0]
+    labels = {p.chapter_label for p in d.passages}
+    # No raw Latin "Liber …" book title nor a redundant "Book X: Name — Name".
+    for label in labels:
+        assert "Liber" not in label and "LIBER" not in label, label
+        parts = [s.strip() for s in label.split("—")]
+        if len(parts) >= 2:
+            book_desc = parts[0].split(":", 1)[-1].strip().lower()
+            assert parts[1].lower() != book_desc, f"redundant Title repeats Book: {label}"

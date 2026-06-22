@@ -1,6 +1,10 @@
 """
 Batch embed all un-embedded chunks via OpenAI Embeddings API.
 
+DEPRECATED: superseded by the dual pipeline — datapipeline/writers/search_writer.py
+embeds passages and writes vectors directly to Qdrant (no Supabase round-trip).
+Kept for reference only.
+
 Reads chunks with NULL content_embedding from the database, sends them to
 OpenAI in batches, and updates the database with the resulting vectors.
 """

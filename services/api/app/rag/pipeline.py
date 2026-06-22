@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import time
 import uuid
 from collections.abc import AsyncGenerator
 
@@ -14,10 +15,24 @@ from app.rag.embed import embed_text
 from app.rag.retrieve import retrieve_candidates, ChunkCandidate
 from app.rag.rerank import rerank_collection, RankedChunk
 from app.rag.explain import stream_explanation
-from app.rag.query_expand import expand_query
 from app.rag.constants import VALID_COLLECTIONS
 
 logger = logging.getLogger(__name__)
+
+
+async def _hyde_and_embed(query: str, col: str) -> tuple[str, list[list[float]]]:
+    """Generate HyDE passages for one collection then embed them immediately.
+
+    Chaining these per-collection allows non-bible collections (~2s) to finish
+    embedding before bible's sequential genre detection (~6.5s) completes,
+    instead of blocking all embedding on the slowest HyDE call.
+    Returns (collection, [embedding_vectors]) — empty list on any failure.
+    """
+    passages = await generate_hyde_passages(query, col)
+    if not passages:
+        return col, []
+    results = await asyncio.gather(*[embed_text(p) for p in passages], return_exceptions=True)
+    return col, [v for v in results if not isinstance(v, BaseException)]
 
 
 async def run_search_pipeline(
@@ -44,21 +59,29 @@ async def run_search_pipeline(
         return
 
     try:
+        _t0 = time.perf_counter()
         # ------------------------------------------------------------------
-        # Step 1 — Parallel: query embedding + query expansion + per-collection HyDE
-        # One HyDE passage is generated per collection so each embedding lands
-        # close to that collection's prose style.
+        # Steps 1+2 — Concurrent: query embedding + per-collection HyDE→embed
+        #
+        # Each collection runs its own _hyde_and_embed pipeline concurrently
+        # with the query embedding. Non-bible collections (~2s) start embedding
+        # immediately after their HyDE call returns rather than waiting for
+        # bible's sequential genre detection (~6.5s) to finish first.
         # ------------------------------------------------------------------
-        step1_results = await asyncio.gather(
+        all_results = await asyncio.gather(
             embed_text(query),
-            expand_query(query),
-            *[generate_hyde_passages(query, col) for col in collections],
+            *[_hyde_and_embed(query, col) for col in collections],
             return_exceptions=True,
         )
 
-        query_vec_result = step1_results[0]
-        expanded_queries_result = step1_results[1]
-        hyde_passage_results = step1_results[2:]  # one entry per collection, in order
+        query_vec_result = all_results[0]
+        hyde_embed_results = all_results[1:]  # one (col, [vecs]) tuple per collection
+
+        _t1 = time.perf_counter()
+        logger.info(
+            "pipeline timing: steps1_2(hyde_embed)=%.2fs collections=%s",
+            _t1 - _t0, collections,
+        )
 
         if isinstance(query_vec_result, BaseException):
             logger.error("Query embedding failed: %s", query_vec_result)
@@ -66,50 +89,19 @@ async def run_search_pipeline(
             return
         query_vec: list[float] = query_vec_result
 
-        if isinstance(expanded_queries_result, BaseException):
-            expanded_queries: list[str] = []
-        else:
-            expanded_queries = expanded_queries_result
-
-        # ------------------------------------------------------------------
-        # Step 2 — Embed all valid HyDE passages + expanded query variants
-        # ------------------------------------------------------------------
-        # hyde_passage_results: one list[str] per collection (bible returns up to 3, one per detected genre)
-        valid_hyde: list[tuple[str, str, int]] = []  # (collection, passage_text, index_within_col)
-        for col, passages in zip(collections, hyde_passage_results):
-            if isinstance(passages, BaseException):
-                logger.warning("HyDE generation failed for collection=%s: %s", col, passages)
-                continue
-            for idx, passage in enumerate(passages):
-                if isinstance(passage, str) and passage:
-                    valid_hyde.append((col, passage, idx))
-
-        embed_inputs = [p for _, p, _ in valid_hyde] + list(expanded_queries)
-        embed_results: list = list(await asyncio.gather(
-            *[embed_text(t) for t in embed_inputs],
-            return_exceptions=True,
-        )) if embed_inputs else []
-
-        # Build per-collection hyde vec map; additional passages (e.g. bible NT) go into
-        # per_col_extra_hyde_vecs and are appended to extra_vecs at retrieval time.
+        # Build per-collection vec maps from (col, [vecs]) results.
+        # vecs[0] = primary HyDE vec; vecs[1:] = extra genre vecs (bible only).
         per_col_hyde_vec: dict[str, list[float] | None] = {col: None for col in collections}
         per_col_extra_hyde_vecs: dict[str, list[list[float]]] = {col: [] for col in collections}
-        for i, (col, _, passage_idx) in enumerate(valid_hyde):
-            result = embed_results[i]
-            if isinstance(result, BaseException):
-                logger.warning("HyDE embedding failed for collection=%s: %s", col, result)
+        for item in hyde_embed_results:
+            if isinstance(item, BaseException):
+                logger.warning("_hyde_and_embed failed: %s", item)
                 continue
-            if passage_idx == 0:
-                per_col_hyde_vec[col] = result
-            else:
-                per_col_extra_hyde_vecs[col].append(result)
-
-        # Build extra_vecs from expanded queries (shared across all collections)
-        extra_vecs: list[list[float]] = []
-        for j in range(len(expanded_queries)):
-            idx = len(valid_hyde) + j
-            if idx < len(embed_results) and not isinstance(embed_results[idx], BaseException):
-                extra_vecs.append(embed_results[idx])
+            col, vecs = item
+            if not vecs:
+                continue
+            per_col_hyde_vec[col] = vecs[0]
+            per_col_extra_hyde_vecs[col] = vecs[1:]
 
         # ------------------------------------------------------------------
         # Step 3 — Per-collection retrieval (parallel)
@@ -118,7 +110,7 @@ async def run_search_pipeline(
         retrieve_tasks = [
             retrieve_candidates(
                 query, query_vec, per_col_hyde_vec[col],
-                extra_vecs + per_col_extra_hyde_vecs[col],
+                per_col_extra_hyde_vecs[col],
                 col, quota, user_id,
             )
             for col in collections
@@ -135,6 +127,9 @@ async def run_search_pipeline(
             else:
                 per_collection_candidates.append(result)
 
+        _t3 = time.perf_counter()
+        logger.info("pipeline timing: step3(retrieval)=%.2fs", _t3 - _t1)
+
         if not per_collection_candidates:
             logger.warning("All collection retrievals failed; yielding done with 0 results")
             yield {"type": "done", "search_id": str(uuid.uuid4()), "result_count": 0}
@@ -150,6 +145,9 @@ async def run_search_pipeline(
         ]
         rerank_results = await asyncio.gather(*rerank_tasks, return_exceptions=True)
 
+        _t4 = time.perf_counter()
+        logger.info("pipeline timing: step4(rerank)=%.2fs", _t4 - _t3)
+
         all_ranked: list[RankedChunk] = []
         for result in rerank_results:
             if isinstance(result, BaseException):
@@ -163,8 +161,14 @@ async def run_search_pipeline(
         _GUARANTEE_MIN_SCORE = 0.25
         all_sorted = sorted(all_ranked, key=lambda c: c.reranker_score, reverse=True)
 
-        # Drop chunks the reranker excluded (low quality or redundant with a better chunk)
-        final_results = [c for c in all_sorted if c.include]
+        # Drop chunks the reranker excluded; cap each collection at quota results (best-first).
+        col_counts: dict[str, int] = {}
+        final_results: list[RankedChunk] = []
+        for c in all_sorted:
+            if c.include:
+                col_counts[c.collection] = col_counts.get(c.collection, 0) + 1
+                if col_counts[c.collection] <= quota:
+                    final_results.append(c)
 
         # For each selected collection absent from results, inject its best chunk only
         # if it clears the minimum score threshold. Collections below threshold are
@@ -194,6 +198,7 @@ async def run_search_pipeline(
                     "author": chunk.author,
                     "reference": chunk.reference,
                     "document_id": chunk.document_id,
+                    "anchor": chunk.anchor,
                 },
                 "reranker_score": chunk.reranker_score,
             }
@@ -218,22 +223,33 @@ async def run_search_pipeline(
                     json.dumps({"collections": collections, "translation": translation, "quota": quota}),
                     len(final_results),
                 )
-                for rank, chunk in enumerate(final_results):
-                    await conn.execute(
+                if final_results:
+                    await conn.executemany(
                         "INSERT INTO retrievals (id, search_id, chunk_id, rank, reranker_score) VALUES ($1,$2,$3,$4,$5)",
-                        uuid.uuid4(),
-                        uuid.UUID(search_id),
-                        uuid.UUID(chunk.chunk_id),
-                        rank,
-                        chunk.reranker_score,
+                        [
+                            (uuid.uuid4(), uuid.UUID(search_id), uuid.UUID(chunk.chunk_id), rank, chunk.reranker_score)
+                            for rank, chunk in enumerate(final_results)
+                        ],
                     )
 
         # ------------------------------------------------------------------
-        # Step 8 — Sequential streaming explanation generation (score order)
-        # Running one explanation at a time ensures we never burst the rate
-        # limit — the 2-4s each explanation takes to stream naturally spaces
-        # requests, and the most important result's explanation always appears
-        # first. The queue + stagger approach has been removed.
+        _t7 = time.perf_counter()
+        logger.info(
+            "pipeline timing: step7(db_insert)=%.2fs total_before_done=%.2fs results=%d",
+            _t7 - _t4, _t7 - _t0, len(final_results),
+        )
+
+        # Step 8 — Yield done (before explanations so the frontend can show
+        # results immediately; explanation_delta events follow on the same
+        # open SSE stream and are applied progressively by the client).
+        # ------------------------------------------------------------------
+        yield {"type": "done", "search_id": search_id, "result_count": len(final_results)}
+
+        # ------------------------------------------------------------------
+        # Step 9 — Sequential streaming explanation generation (score order)
+        # Running one explanation at a time stays under the OpenAI rate limit.
+        # The 2-4s per explanation naturally spaces requests; the most important
+        # result's explanation always appears first.
         # ------------------------------------------------------------------
         for chunk in final_results:
             accumulated_text = ""
@@ -253,11 +269,6 @@ async def run_search_pipeline(
                     uuid.UUID(search_id),
                     uuid.UUID(chunk.chunk_id),
                 )
-
-        # ------------------------------------------------------------------
-        # Step 9 — Yield done
-        # ------------------------------------------------------------------
-        yield {"type": "done", "search_id": search_id, "result_count": len(final_results)}
 
     except Exception:
         logger.exception("run_search_pipeline unhandled error")

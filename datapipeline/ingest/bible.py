@@ -38,6 +38,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import settings  # noqa: E402
 from load import close_pool, get_pool, upsert_chunk, upsert_document  # noqa: E402
+from itertools import groupby  # noqa: E402
+from identity import document_id, anchor as make_anchor, slugify  # noqa: E402
+from model import Document, Passage  # noqa: E402
+from normalize.text import clean_text  # noqa: E402
+from ingest.common import split_at_sentences, _split_at_whitespace  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Canonical book name → testament
@@ -714,3 +719,99 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     asyncio.run(main(usfm_dir=args.usfm_dir, translation=args.translation))
+
+
+# ---------------------------------------------------------------------------
+# Dual-pipeline passage builder — passage = pericope clamped to chapter
+# ---------------------------------------------------------------------------
+
+def clamp_pericopes_to_chapters(title, verses):
+    """Group a pericope's (chapter, verse, text) list into per-chapter parts so
+    a passage never crosses a chapter boundary. Returns [(chapter, [verses...])]."""
+    out = []
+    for chapter, group in groupby(verses, key=lambda v: v[0]):
+        out.append((chapter, list(group)))
+    return out
+
+
+def slugify_book(name: str) -> str:
+    return slugify(name)
+
+
+def _cap(text: str, maxc: int) -> list[str]:
+    """Split text so no piece exceeds the char budget (sentence-first, then a
+    hard whitespace split for any over-long remainder)."""
+    if len(text) <= maxc:
+        return [text]
+    out: list[str] = []
+    for p in split_at_sentences(text, target=maxc, overlap=0):
+        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
+    return out
+
+
+def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> list[Document]:
+    """Build one Document per book; passages = pericope sections clamped to chapters."""
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    usfm_dir = usfm_dir or os.path.join(root_dir, _DEFAULT_USFM_SUBDIR)
+    pericope_map = load_pericopes(os.path.join(root_dir, _DEFAULT_PERICOPE_PATH))
+    books = load_usfm_directory(usfm_dir)
+
+    docs: list[Document] = []
+    for name, book in sorted(books.items()):
+        did = document_id("bible", translation, name)
+        book_slug = slugify_book(name)
+        verse_map = {(v.chapter, v.verse): v.text for v in book.verses}
+        passages: list[Passage] = []
+        pos = 0
+
+        for p in pericope_map.get(name, []):
+            verses = collect_pericope_verses(verse_map, p.start_chapter, p.start_verse,
+                                             p.end_chapter, p.end_verse)
+            if not verses:
+                continue
+            for chapter, chap_verses in clamp_pericopes_to_chapters(p.title, verses):
+                content = clean_text(" ".join(t for _, _, t in chap_verses))
+                if not content:
+                    continue
+                first_v = chap_verses[0][1]
+                ref = _format_reference(name, chapter, first_v, chapter, chap_verses[-1][1])
+                base_anchor = make_anchor(book_slug, chapter, first_v)
+                pieces = _cap(content, settings.MAX_PASSAGE_CHARS)
+                for j, piece in enumerate(pieces):
+                    sfx = f"-{j + 1}" if len(pieces) > 1 else ""
+                    passages.append(Passage(
+                        content=piece, reference=ref, anchor=base_anchor + sfx,
+                        chapter_key=make_anchor(book_slug, chapter),
+                        chapter_label=f"{name} {chapter}", position=pos,
+                        unit_label=str(first_v),
+                        metadata={"pericope": p.title, "testament": book.testament,
+                                  "translation": translation},
+                    ))
+                    pos += 1
+
+        # Books without pericopes (deuterocanonical, Psalms): one passage per chapter.
+        if not passages:
+            for chapter, items in groupby(sorted(verse_map.items()),
+                                          key=lambda kv: kv[0][0]):
+                cv = list(items)
+                content = clean_text(" ".join(t for _, t in cv))
+                if not content:
+                    continue
+                first_v = cv[0][0][1]
+                base_anchor = make_anchor(book_slug, chapter, first_v)
+                pieces = _cap(content, settings.MAX_PASSAGE_CHARS)
+                for j, piece in enumerate(pieces):
+                    sfx = f"-{j + 1}" if len(pieces) > 1 else ""
+                    passages.append(Passage(
+                        content=piece, reference=f"{name} {chapter}",
+                        anchor=base_anchor + sfx,
+                        chapter_key=make_anchor(book_slug, chapter),
+                        chapter_label=f"{name} {chapter}", position=pos,
+                        unit_label=str(first_v),
+                        metadata={"testament": book.testament, "translation": translation},
+                    ))
+                    pos += 1
+
+        docs.append(Document(id=did, collection="bible", title=name, translation=translation,
+                             metadata={"testament": book.testament}, passages=passages))
+    return docs

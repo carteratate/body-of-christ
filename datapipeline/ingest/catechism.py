@@ -4,12 +4,15 @@ Source: nossbigg/catechism-ccc-json (v0.0.2)
 
 Three-tier strategy
 -------------------
-  Tier 1 (Stub):   raw_text < 500 chars AND no CCC paragraph numbers.
+  Tier 1 (Stub):   No CCC paragraph numbers (any length).
                    Stub text is merged forward into the next non-stub node.
-  Tier 2 (Normal): 500 <= len(raw_text) <= 4000 OR has CCC paragraph numbers.
+                   Nodes without CCC refs are structural (headers, TOC titles).
+  Tier 2 (Normal): Has CCC paragraph numbers AND raw_text <= 4000 chars.
                    One chunk per node.
-  Tier 3 (Large):  raw_text > 4000 chars AND has CCC paragraph numbers.
-                   Split at internal section headers.
+  Tier 3 (Large):  Has CCC paragraph numbers AND raw_text > 4000 chars.
+                   Split at internal section headers; header-only split sections
+                   with no CCC refs are skipped (trailing title, content follows
+                   in the next node).
 
 IN BRIEF rule: any chunk whose leading section header is exactly "IN BRIEF",
 or whose raw_text begins with "IN BRIEF", is flagged is_in_brief=True.
@@ -25,6 +28,11 @@ from tqdm import tqdm
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from load import close_pool, get_pool, upsert_chunk, upsert_document  # noqa: E402
+from identity import document_id, anchor as make_anchor  # noqa: E402
+from model import Document, Passage  # noqa: E402
+from normalize.text import clean_text  # noqa: E402
+from config import settings  # noqa: E402
+from ingest.common import split_at_sentences, _split_at_whitespace  # noqa: E402
 
 _DEFAULT_SRC = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "sources", "catechism", "ccc.json"
@@ -163,8 +171,10 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
     for node, node_id in zip(nodes, node_ids):
         raw_text, ccc_paragraphs = extract_node_text(node)
 
-        # Tier 1 (Stub): no numbered paragraphs and short text — merge forward
-        if len(raw_text) < _STUB_THRESHOLD and len(ccc_paragraphs) == 0:
+        # Tier 1 (Stub): no numbered CCC paragraphs — merge forward regardless of length.
+        # Nodes without CCC paragraph refs are structural elements (headers, TOC titles)
+        # that should prefix the next substantive chunk rather than stand alone.
+        if len(ccc_paragraphs) == 0:
             if raw_text:
                 pending_prefix = (
                     pending_prefix + "\n\n" + raw_text if pending_prefix else raw_text
@@ -180,6 +190,12 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
             n_sections = len(sections)
 
             for i, (sec_text, sec_paras, is_brief) in enumerate(sections):
+                # Skip header-only trailing sections that have no CCC paragraph content.
+                # These arise when a section title appears at the end of a large node
+                # with no following body paragraphs — the actual content is in the next node.
+                if not sec_paras:
+                    continue
+
                 if i == 0 and prefix:
                     sec_content = (prefix + "\n\n" + sec_text).strip()
                 else:
@@ -269,6 +285,67 @@ async def ingest_catechism(pool, source_path: str | None = None) -> None:
             pbar.update(1)
 
     print(f"  Done. {len(chunks)} chunks written for catechism.")
+
+
+_MIN_CONTENT = 30
+
+
+def _cap(text: str, maxc: int) -> list[str]:
+    if len(text) <= maxc:
+        return [text]
+    out: list[str] = []
+    for p in split_at_sentences(text, target=maxc, overlap=0):
+        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
+    return out
+
+
+def build_document(source_path: str | None = None) -> Document:
+    """Build the CCC as one Document of clean numbered passages (reuses the
+    three-tier chunker, drops tiny TOC-only fragments, normalizes ellipses)."""
+    src = source_path or _DEFAULT_SRC
+    with open(src, encoding="utf-8") as f:
+        data = json.load(f)
+    page_nodes = data.get("page_nodes", {})
+
+    def _key(k: str) -> int:
+        try:
+            return int(k.split("-", 1)[1])
+        except (IndexError, ValueError):
+            return 0
+
+    ids = sorted(page_nodes.keys(), key=_key)
+    raw_chunks = chunk_nodes([page_nodes[k] for k in ids], ids)  # (content, ref, meta, pos)
+
+    did = document_id("catechism")
+    passages: list[Passage] = []
+    pos = 0
+    seen: set[str] = set()
+    for content, reference, meta, _ in raw_chunks:
+        clean = clean_text(content)
+        if len(clean) < _MIN_CONTENT:
+            continue                      # drop TOC-only fragments ("Article 2")
+        paras = meta.get("ccc_paragraphs") or []
+        first = paras[0] if paras else None
+        chapter_no = (first // 100) if first else 0
+        base = make_anchor("ccc", first) if first else make_anchor("ccc", meta.get("path", str(pos)))
+        pieces = _cap(clean, settings.MAX_PASSAGE_CHARS)
+        for j, piece in enumerate(pieces):
+            anchor = base + (f"-p{j + 1}" if len(pieces) > 1 else "")
+            k = 1
+            while anchor in seen:
+                k += 1
+                anchor = f"{base}-p{j + 1}-{k}" if len(pieces) > 1 else f"{base}-{k}"
+            seen.add(anchor)
+            passages.append(Passage(
+                content=piece, reference=reference, anchor=anchor,
+                chapter_key=make_anchor("ccc", "part", str(chapter_no)),
+                chapter_label=(f"CCC §§{chapter_no * 100}–{chapter_no * 100 + 99}" if first else "CCC"),
+                position=pos, unit_label=(f"§{first}" if first else None), metadata=meta))
+            pos += 1
+    return Document(id=did, collection="catechism",
+                    title="Catechism of the Catholic Church", author="Catholic Church",
+                    year=1992, metadata={"source": "nossbigg/catechism-ccc-json"},
+                    passages=passages)
 
 
 async def main(pool) -> None:

@@ -1,128 +1,113 @@
-# datapipeline/tests/test_councils.py
-import sys, os
+import os, sys, re
 os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
 os.environ.setdefault("OPENAI_API_KEY", "sk-test")
+os.environ.setdefault("QDRANT_URL", "http://localhost")
+os.environ.setdefault("QDRANT_API_KEY", "x")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from ingest.councils import parse_council_page, parse_vatican2_doc
+import pytest
+from bs4 import BeautifulSoup
+from ingest.councils import build_ecumenical, build_vatican2, build_documents
 
+_SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "councils")
+_vendored = os.path.exists(os.path.join(_SRC, "manifest.json"))
 
-# ── Fixtures ─────────────────────────────────────────────────────────────────
-
-SIMPLE_COUNCIL_HTML = """<html><body>
-<h1>Council of Nicaea — 325 A.D.</h1>
-<h3>Introduction</h3>
-<p>The Council of Nicaea was convoked by Constantine in 325 AD to resolve the Arian controversy and define orthodox Christian teaching about the nature of Christ.</p>
-<h3>Canons</h3>
-<p>Canon 1: If anyone in sickness has undergone surgery at the hands of physicians or has been castrated by barbarians, let him remain among the clergy.</p>
-<p>Canon 2: If anyone has recently joined the faith and been catechized briefly, or if he has changed directly from a dissolute life, it is not right for him to be immediately promoted to bishop, priest, or deacon.</p>
-<p>Canon 3: The great Synod strictly forbids bishops, priests, and deacons to have with them a woman who has been introduced to live with them, with the exception of a mother or sister or aunt.</p>
-</body></html>"""
-
-LONG_COUNCIL_HTML = """<html><body>
-<h1>Council of Trent</h1>
-<h3>Session VI — Decree on Justification</h3>
-""" + "\n".join(
-    f"<p>Canon {i}: {'This is a substantial canon with enough content to matter for chunking. ' * 5}</p>"
-    for i in range(1, 25)
-) + """
-<h3>Session VII — Canons on the Sacraments</h3>
-<p>Canon 1: If anyone says that the sacraments of the New Law were not all instituted by Jesus Christ our Lord, or that there are more or fewer than seven, let him be anathema.</p>
+CANON_HTML = """<html><body>
+<h2>Canons</h2>
+<p>Canon 1. If anyone says that the world was not created, let him be anathema and rejected.</p>
+<p>Canon 2. If anyone denies the divine nature, let him be condemned by the holy synod here.</p>
 </body></html>"""
 
 VAT2_HTML = """<html><body>
-<h3>CHAPTER I</h3>
-<h4>REVELATION ITSELF</h4>
-<p>1. In His goodness and wisdom God chose to reveal Himself and to make known to us the hidden purpose of His will by which through Christ, the Word made flesh, man might have access to the Father in the Holy Spirit and come to share in the divine nature.</p>
-<p>2. The most intimate truth which this revelation gives us about God and the salvation of man is made clear to us in Christ, Who is the Mediator and at the same time the fullness of all revelation.</p>
-<h3>CHAPTER II</h3>
-<h4>HOW DIVINE REVELATION IS HANDED ON</h4>
-<p>3. God has seen to it that what He had revealed for the salvation of all nations would abide perpetually in its full integrity and be handed on to all generations.</p>
-<p>4. Sacred tradition and Sacred Scripture form one sacred deposit of the word of God, committed to the Church.</p>
+<p><strong>CHAPTER I</strong></p>
+<p>1. In His goodness and wisdom God chose to reveal Himself and to make known the mystery of His will.</p>
+<p>2. By this revelation the invisible God out of the abundance of His love speaks to men as friends.</p>
 </body></html>"""
 
 
-# ── parse_council_page ───────────────────────────────────────────────────────
-
-def test_parse_council_page_returns_chunks():
-    chunks = parse_council_page(SIMPLE_COUNCIL_HTML, "Council of Nicaea", 325)
-    assert len(chunks) >= 1
-
-
-def test_parse_council_page_chunk_is_4_tuple():
-    chunks = parse_council_page(SIMPLE_COUNCIL_HTML, "Council of Nicaea", 325)
-    content, ref, pos, meta = chunks[0]
-    assert isinstance(content, str) and len(content) > 0
-    assert isinstance(ref, str) and len(ref) > 0
-    assert isinstance(pos, int)
-    assert isinstance(meta, dict)
+def test_ecumenical_canon_passages_have_unit_and_anchor():
+    entry = {"council": "Council of Trent", "document": "Council of Trent", "year": 1563,
+             "group": "ecumenical-1-20", "file": "x.html", "url": "http://example"}
+    passages = build_ecumenical(entry, BeautifulSoup(CANON_HTML, "lxml")).passages
+    assert [p.unit_label for p in passages] == ["Canon 1", "Canon 2"]
+    assert passages[0].anchor.startswith("council-of-trent/canon/1")
+    assert not passages[0].content.lstrip().startswith("[")
 
 
-def test_parse_council_page_ref_includes_council_name():
-    chunks = parse_council_page(SIMPLE_COUNCIL_HTML, "Council of Nicaea", 325)
-    for _, ref, _, _ in chunks:
-        assert "Council of Nicaea" in ref
+def test_vatican2_numbered_paragraphs_under_chapter():
+    entry = {"council": "Second Vatican Council", "document": "Dei Verbum",
+             "document_type": "constitution", "year": 1965, "group": "vatican-ii",
+             "file": "x.html", "url": "http://example"}
+    d = build_vatican2(entry, BeautifulSoup(VAT2_HTML, "lxml"))
+    assert d.title == "Dei Verbum"
+    assert d.metadata["council"] == "Second Vatican Council"
+    assert [p.unit_label for p in d.passages] == ["§1", "§2"]
+    assert any("Chapter" in p.chapter_label for p in d.passages)
 
 
-def test_parse_council_page_metadata_has_council_and_year():
-    chunks = parse_council_page(SIMPLE_COUNCIL_HTML, "Council of Nicaea", 325)
-    for _, _, _, meta in chunks:
-        assert meta["council"] == "Council of Nicaea"
-        assert meta["year"] == 325
+# Bug 1+4: chapters marked with <b>, a trailing table-of-contents copy, and a
+# <p><b> double-hit must all be handled — content split onto the real chapters,
+# trailing TOC ignored, no phantom/duplicated chapters.
+VAT2_BOLD_HTML = """<html><body>
+<p><b>CHAPTER I</b></p>
+<p>1. In His goodness God chose to reveal Himself and to make known the mystery of His will to men.</p>
+<p>2. By this revelation the invisible God speaks to men as friends and lives among them in friendship.</p>
+<b>CHAPTER II</b>
+<p>3. In His gracious goodness God has seen to it that what He had revealed for salvation would abide.</p>
+<p>Chapter I</p>
+<p>Chapter II</p>
+</body></html>"""
 
 
-def test_parse_council_page_positions_are_sequential():
-    chunks = parse_council_page(LONG_COUNCIL_HTML, "Council of Trent", 1563)
-    positions = [pos for _, _, pos, _ in chunks]
-    assert positions == list(range(len(positions)))
+def test_vatican2_detects_bold_chapters_ignores_trailing_toc():
+    entry = {"council": "Second Vatican Council", "document": "Dei Verbum",
+             "document_type": "constitution", "year": 1965, "group": "vatican-ii",
+             "file": "x.html", "url": "http://example"}
+    d = build_vatican2(entry, BeautifulSoup(VAT2_BOLD_HTML, "lxml"))
+    labels = [p.chapter_label for p in d.passages]
+    assert [p.unit_label for p in d.passages] == ["§1", "§2", "§3"]
+    # §1,§2 under Chapter I; §3 under Chapter II — two distinct real chapters.
+    assert labels[0] == labels[1] == "Chapter I"
+    assert labels[2] == "Chapter II"
+    # exactly two chapters (no phantom from the <p><b> double-hit or trailing TOC)
+    assert len({p.chapter_key for p in d.passages}) == 2
 
 
-def test_parse_council_page_no_chunk_exceeds_ceiling():
-    chunks = parse_council_page(LONG_COUNCIL_HTML, "Council of Trent", 1563)
-    for content, _, _, _ in chunks:
-        assert len(content) <= 4000  # ceiling is 3800, allow header overhead
+VAT2_FLAT_HTML = """<html><body>
+""" + "\n".join(
+    f"<p>{i}. This is numbered paragraph {i} of a declaration with no chapter headings at all here.</p>"
+    for i in range(1, 26)
+) + """
+</body></html>"""
 
 
-def test_parse_council_page_section_creates_new_chunk():
-    """A section header should start a new chunk boundary."""
-    chunks = parse_council_page(LONG_COUNCIL_HTML, "Council of Trent", 1563)
-    refs = [ref for _, ref, _, _ in chunks]
-    # Session VI and Session VII should appear in separate chunks
-    session_6_refs = [r for r in refs if "Session VI" in r]
-    session_7_refs = [r for r in refs if "Session VII" in r]
-    assert len(session_6_refs) >= 1
-    assert len(session_7_refs) >= 1
+def test_vatican2_headerless_falls_back_to_paragraph_buckets():
+    entry = {"council": "Second Vatican Council", "document": "Dignitatis Humanae",
+             "document_type": "declaration", "year": 1965, "group": "vatican-ii",
+             "file": "x.html", "url": "http://example"}
+    d = build_vatican2(entry, BeautifulSoup(VAT2_FLAT_HTML, "lxml"))
+    assert len(d.passages) == 25
+    labels = {p.chapter_label for p in d.passages}
+    # 25 paragraphs in buckets of 20 → "Paragraphs 1–20" and "Paragraphs 21–40"
+    assert labels == {"Paragraphs 1–20", "Paragraphs 21–40"}
+    assert all(p.anchor and p.chapter_key for p in d.passages)
 
 
-def test_parse_council_page_larger_target_produces_fewer_or_equal_chunks():
-    """target=2500 should produce no more chunks than target=2000 on the same text."""
-    chunks_2000 = parse_council_page(LONG_COUNCIL_HTML, "Council of Trent", 1563, target=2000)
-    chunks_2500 = parse_council_page(LONG_COUNCIL_HTML, "Council of Trent", 1563, target=2500)
-    assert len(chunks_2500) <= len(chunks_2000)
+@pytest.mark.skipif(not _vendored, reason="councils not vendored")
+def test_all_documents_build_and_are_clean():
+    docs = build_documents()
+    assert len(docs) == 36          # 20 ecumenical + 16 Vatican II
+    for d in docs:
+        assert d.passages, d.title
+        anchors = [p.anchor for p in d.passages]
+        assert len(anchors) == len(set(anchors)), f"dup anchors in {d.title}"
+        for p in d.passages:
+            assert p.chapter_key and p.chapter_label
+            assert not p.content.lstrip().startswith("[")
+            assert not re.search(r"\[\d+\]", p.content)
 
 
-# ── parse_vatican2_doc ───────────────────────────────────────────────────────
-
-def test_parse_vatican2_doc_returns_chunks():
-    chunks = parse_vatican2_doc(VAT2_HTML, "Dei Verbum", "constitution", 1965)
-    assert len(chunks) >= 1
-
-
-def test_parse_vatican2_doc_metadata_has_council_and_type():
-    chunks = parse_vatican2_doc(VAT2_HTML, "Dei Verbum", "constitution", 1965)
-    for _, _, _, meta in chunks:
-        assert meta["council"] == "Vatican II"
-        assert meta["document_type"] == "constitution"
-        assert meta["year"] == 1965
-
-
-def test_parse_vatican2_doc_ref_includes_doc_title():
-    chunks = parse_vatican2_doc(VAT2_HTML, "Dei Verbum", "constitution", 1965)
-    for _, ref, _, _ in chunks:
-        assert "Dei Verbum" in ref
-
-
-def test_parse_vatican2_doc_positions_sequential():
-    chunks = parse_vatican2_doc(VAT2_HTML, "Dei Verbum", "constitution", 1965)
-    positions = [p for _, _, p, _ in chunks]
-    assert positions == list(range(len(positions)))
+@pytest.mark.skipif(not _vendored, reason="councils not vendored")
+def test_document_ids_unique():
+    ids = [d.id for d in build_documents()]
+    assert len(ids) == len(set(ids))

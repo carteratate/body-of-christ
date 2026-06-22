@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useAppContext } from "@/components/layout/AppShell";
-import { updatePreferences } from "@/lib/api";
+import { useState } from "react";
 import { COLLECTIONS, hexToRgb } from "@/lib/collections";
 import { TranslationSelector } from "./TranslationSelector";
 
@@ -19,28 +17,7 @@ export function CollectionToggles({
   translation,
   onTranslationChange,
 }: CollectionTogglesProps) {
-  const { token } = useAppContext();
-  const tokenRef = useRef(token);
-  useEffect(() => {
-    tokenRef.current = token;
-  });
-
   const [translationOpen, setTranslationOpen] = useState(false);
-  const isMounted = useRef(false);
-
-  // Debounced sync: when activeCollections changes, persist after 500ms.
-  // Skip on mount to avoid a spurious API call on load.
-  useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      return;
-    }
-    if (!tokenRef.current) return;
-    const timer = setTimeout(() => {
-      updatePreferences(tokenRef.current!, { default_collections: activeCollections }).catch(() => {});
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [activeCollections]);
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
@@ -94,9 +71,6 @@ export function CollectionToggles({
                   value={translation}
                   onChange={(t) => {
                     onTranslationChange(t);
-                    if (tokenRef.current) {
-                      updatePreferences(tokenRef.current, { preferred_translation: t }).catch(() => {});
-                    }
                   }}
                   onClose={() => setTranslationOpen(false)}
                 />

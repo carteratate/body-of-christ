@@ -94,9 +94,11 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
   // ── Read More action ──────────────────────────────────────────────────────
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   function handleReadMore() {
-    if (!UUID_RE.test(document_id) || !UUID_RE.test(chunk_id)) return;
+    if (!UUID_RE.test(document_id)) return;
     trackDocumentOpened({ documentId: document_id, collection, source: "chunk_card" });
-    router.push(`/reader/${document_id}?chunk_id=${chunk_id}`);
+    const anchor = source.anchor;
+    const qs = anchor ? `?anchor=${encodeURIComponent(anchor)}` : "";
+    router.push(`/reader/${document_id}${qs}`);
   }
 
   // ── Feedback state ────────────────────────────────────────────────────────
@@ -164,15 +166,34 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           </span>
           <div className="min-w-0">
             {showAuthor && (
-              <p className="text-xs text-brand-muted truncate leading-tight">{author}</p>
+              <p className="text-xs text-brand-primary truncate leading-tight">{author}</p>
             )}
             <p className="text-sm text-brand-primary font-semibold truncate">{primaryReference}</p>
           </div>
         </div>
-        {isExpanded
-          ? <ChevronUp size={15} className="text-brand-muted shrink-0 ml-3" />
-          : <ChevronDown size={15} className="text-brand-muted shrink-0 ml-3" />
-        }
+        <div className="flex items-center gap-2 shrink-0 ml-3">
+          {result.reranker_score !== null && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-brand-primary" style={{ fontSize: "11px" }}>Relevance Score:</span>
+              <span
+                style={{
+                  fontSize: "11px",
+                  color: "var(--color-brand-primary)",
+                  background: `rgba(${rgb},0.12)`,
+                  border: `2px solid rgba(${rgb},0.8)`,
+                  borderRadius: "4px",
+                  padding: "1px 6px",
+                }}
+              >
+                {Math.round(result.reranker_score * 100)}%
+              </span>
+            </div>
+          )}
+          {isExpanded
+            ? <ChevronUp size={15} className="text-brand-muted" />
+            : <ChevronDown size={15} className="text-brand-muted" />
+          }
+        </div>
       </button>
 
       {/* ── Expanded body ── */}

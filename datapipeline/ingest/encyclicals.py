@@ -1,272 +1,227 @@
+"""Encyclicals ingestion (dual pipeline).
+
+One Document per encyclical from vendored HTML. A typed-stream tokenizer over
+<p> handles three numbering layouts (inline `N. body`, bold heading + following
+body, and section headers). One passage per numbered paragraph; chapters group
+by section header, falling back to paragraph-range buckets.
+"""
 from __future__ import annotations
-import asyncio
+
+import json
 import os
 import re
-import sys
-import time
 
-import httpx
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from load import close_pool, get_pool, upsert_chunk, upsert_document
+from config import settings
+from identity import document_id, anchor as make_anchor
+from model import Document, Passage
+from normalize.text import clean_text
+from normalize.caps import title_case_shouting
+from normalize.footnotes import strip_footnote_markers
+from normalize.boilerplate import strip_boilerplate
+from ingest.common import split_at_sentences, _split_at_whitespace
 
-_DELAY = 1.0
-_MIN_LENGTH = 50
-_TARGET = 2000
-_CEILING = 3500
-
-_SCRIPTURE_RE = re.compile(
-    r'\b(?:[1-3]\s*[A-Z][a-z]+|[A-Z][a-z]+)\s+\d+:\d+(?:[–\-]\d+)?'
-)
-
-ENCYCLICALS: list[tuple[str, str, int, str]] = [
-    ("Rerum Novarum",       "Pope Leo XIII",       1891, "https://www.papalencyclicals.net/leo13/l13rerum.htm"),
-    ("Quadragesimo Anno",   "Pope Pius XI",        1931, "https://www.papalencyclicals.net/pius11/p11quadr.htm"),
-    ("Humani Generis",      "Pope Pius XII",       1950, "https://www.papalencyclicals.net/pius12/p12human.htm"),
-    ("Mater et Magistra",   "Pope John XXIII",     1961, "https://www.papalencyclicals.net/john23/j23mater.htm"),
-    ("Pacem in Terris",     "Pope John XXIII",     1963, "https://www.papalencyclicals.net/john23/j23pacem.htm"),
-    ("Humanae Vitae",       "Pope Paul VI",        1968, "https://www.papalencyclicals.net/paul06/p6humana.htm"),
-    ("Evangelii Nuntiandi", "Pope Paul VI",        1975, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19751208_evangelii-nuntiandi.html"),
-    ("Redemptor Hominis",   "Pope John Paul II",   1979, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_04031979_redemptor-hominis.html"),
-    ("Laborem Exercens",    "Pope John Paul II",   1981, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_14091981_laborem-exercens.html"),
-    ("Veritatis Splendor",  "Pope John Paul II",   1993, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_06081993_veritatis-splendor.html"),
-    ("Evangelium Vitae",    "Pope John Paul II",   1995, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_25031995_evangelium-vitae.html"),
-    ("Fides et Ratio",      "Pope John Paul II",   1998, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_14091998_fides-et-ratio.html"),
-    ("Deus Caritas Est",    "Pope Benedict XVI",   2005, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20051225_deus-caritas-est_en.html"),
-    ("Spe Salvi",           "Pope Benedict XVI",   2007, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20071130_spe-salvi_en.html"),
-    ("Caritas in Veritate", "Pope Benedict XVI",   2009, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20090629_caritas-in-veritate_en.html"),
-    ("Evangelii Gaudium",   "Pope Francis",        2013, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20131124_evangelii-gaudium.html"),
-    ("Laudato Si",          "Pope Francis",        2015, "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20150524_enciclica-laudato-si.html"),
-    ("Magnifica Humanitas", "Pope Leo XIV",        2026, "https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html"),
-]
+_SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "encyclicals")
+_NUM = re.compile(r"^(\d+)\s*\.\s*(.*)", re.DOTALL)  # tolerate "10 ." (space before dot)
+_ROMAN = re.compile(r"^[IVX]+\.\s+\S")
+_BUCKET = 20
+# papalencyclicals.net page chrome (nav/footer boilerplate that pollutes the
+# <p> stream and otherwise masquerades as bold section headers).
+_CHROME = re.compile(
+    r"automatically notified|more information about this site|fan of our facebook"
+    r"|^search tips$|^sitemap$|return to (?:the )?home", re.IGNORECASE)
 
 
-def _detect_section_header(p_tag) -> str | None:
-    """Return the section label if the <p> element is a section header; else None."""
-    text = p_tag.get_text(strip=True)
-    if not text or len(text) < 3:
-        return None
-    # Roman numeral pattern: "I. Title text" or "IV. Something"
-    if re.match(r'^[IVX]+\.\s+\w', text):
-        return text
-    # Entire content is a single <b> or <strong> child with no surrounding text
-    real_children = [c for c in p_tag.children if hasattr(c, 'name') and c.name is not None]
-    bare_text = "".join(str(c) for c in p_tag.children if not hasattr(c, 'name')).strip()
-    if (len(real_children) == 1
-            and real_children[0].name in ('b', 'strong')
-            and not bare_text
-            and len(text) >= 10
-            and not text.endswith(":")):
-        return text
-    return None
+def _strip_leading_caps(text: str) -> str:
+    """Drop a leading run of ALL-CAPS words (a Latin incipit / title masthead that
+    shares a paragraph with the greeting, e.g. 'IOANNES PAULUS PP. II EVANGELIUM
+    VITAE To the Bishops…' → 'To the Bishops…'). Stops at the first word with a
+    lowercase letter, so normal greetings ('To Our…', 'Venerable…') are untouched."""
+    words = text.split()
+    i = 0
+    while i < len(words):
+        letters = [c for c in words[i] if c.isalpha()]
+        if letters and all(c.isupper() for c in letters):
+            i += 1
+        else:
+            break
+    return " ".join(words[i:])
 
 
-def parse_encyclical(
-    html: str,
-    title: str,
-    author: str,
-    year: int,
-) -> list[tuple[str, str, int, dict]]:
-    """Parse an encyclical HTML page into chunks.
+def _is_shouting(text: str) -> bool:
+    """True for an ALL-CAPS masthead line (e.g. 'ENCYCLICAL LETTER … OF THE
+    SUPREME PONTIFF …'); used to keep the document title block out of the
+    preamble passage. Mixed-case greetings (~0–15% caps) are kept."""
+    letters = [c for c in text if c.isalpha()]
+    if len(letters) < 8:
+        return False
+    return sum(c.isupper() for c in letters) / len(letters) >= 0.7
 
-    Returns list of (content, reference, position, metadata).
-    Position 0 is the intro/overview chunk when preamble or sections exist.
-    """
-    soup = BeautifulSoup(html, "lxml")
 
-    # ── Pass 1: tokenise ─────────────────────────────────────────────────────
-    tokens: list[dict] = []
-    first_numbered = False
-    all_sections: list[str] = []
+def _is_bold_only(p) -> bool:
+    kids = [c for c in p.children if getattr(c, "name", None)]
+    bare = "".join(str(c) for c in p.children if not getattr(c, "name", None)).strip()
+    t = p.get_text(strip=True)
+    return (len(kids) == 1 and kids[0].name in ("b", "strong")
+            and not bare and len(t) >= 8 and not t.endswith(":"))
 
-    for p in soup.find_all("p"):
-        section_label = _detect_section_header(p)
-        if section_label:
-            tokens.append({"kind": "section", "num": None, "text": section_label})
-            all_sections.append(section_label)
-            continue
 
-        raw = p.get_text(separator=" ", strip=True)
-        m = re.match(r"^(\d+)\.\s*(.+)", raw, re.DOTALL)
-        if m:
-            first_numbered = True
-            num = int(m.group(1))
-            body = m.group(2).strip()
-            if len(body) >= _MIN_LENGTH:
-                tokens.append({"kind": "para", "num": num, "text": body})
-        elif not first_numbered and len(raw) >= _MIN_LENGTH:
-            tokens.append({"kind": "preamble", "num": None, "text": raw})
-
-    # ── Intro chunk ───────────────────────────────────────────────────────────
-    chunks: list[tuple[str, str, int, dict]] = []
-    position = 0
-
-    preamble = "\n\n".join(t["text"] for t in tokens if t["kind"] == "preamble")[:600]
-    sections_summary = ", ".join(all_sections)[:400]
-
-    if preamble or sections_summary:
-        lines = [f"{title} — {author}, {year}"]
-        if preamble:
-            lines.append(preamble)
-        if sections_summary:
-            lines.append(f"Sections: {sections_summary}")
-        chunks.append((
-            "\n\n".join(lines),
-            f"{title} — Overview",
-            0,
-            {"section": None, "para_range": None, "scripture_refs": [], "year": year, "pope": author},
-        ))
-        position = 1
-
-    # ── Pass 2: accumulate chunks ────────────────────────────────────────────
-    prefix = f"In {title} ({author}, {year})"
-    active_section: str | None = None
-    acc: list[tuple[int, str]] = []   # (para_num, text); overlap uses num=-1
-    acc_len = 0
-    overlap_text: str | None = None
-
-    def _build_chunk(section: str | None, paras: list[tuple[int, str]]) -> tuple[str, str, dict]:
-        section_part = f", §{section}" if section else ""
-        body = "\n\n".join(text for _, text in paras)
-        content = f"{prefix}{section_part}:\n\n{body}"
-        real = [(n, t) for n, t in paras if n != -1]
-        first_num = real[0][0] if real else 0
-        last_num = real[-1][0] if real else 0
-        section_suffix = f" ({section})" if section else ""
-        ref = (f"{title}, §§{first_num}–{last_num}{section_suffix}"
-               if first_num != last_num else f"{title}, §{first_num}{section_suffix}")
-        scripture_refs = list(dict.fromkeys(
-            m for _, t in real for m in _SCRIPTURE_RE.findall(t)
-        ))
-        meta = {
-            "section": section,
-            "para_range": [first_num, last_num],
-            "scripture_refs": scripture_refs,
-            "year": year,
-            "pope": author,
-        }
-        return content, ref, meta
+def _tokens(soup) -> list[tuple[str, int | None, str]]:
+    """Return an ordered list of ('preamble'|'section'|'para', num|None, text)."""
+    for tag in soup.find_all(["script", "style", "nav", "header", "footer", "form"]):
+        tag.decompose()
+    items = [(p, p.get_text(" ", strip=True)) for p in soup.find_all("p")]
+    items = [(p, t) for p, t in items if t and not _CHROME.search(t)]
+    toks: list[tuple[str, int | None, str]] = []
+    seen = False
+    cur: list | None = None   # [num, [parts]]
 
     def flush() -> None:
-        nonlocal position, overlap_text
-        if not acc:
-            return
-        if all(n == -1 for n, _ in acc):
-            return
-        content, ref, meta = _build_chunk(active_section, acc)
-        if len(content) <= _CEILING:
-            chunks.append((content, ref, position, meta))
-            position += 1
-        else:
-            real = [(n, t) for n, t in acc if n != -1]
-            total_len = sum(len(t) for _, t in real)
-            running = 0
-            split_at = max(1, len(real) // 2)
-            for i, (_, t) in enumerate(real):
-                running += len(t)
-                if running >= total_len // 2:
-                    split_at = i + 1
-                    break
-            for half in [real[:split_at], real[split_at:]]:
-                if half:
-                    c, r, m = _build_chunk(active_section, half)
-                    chunks.append((c, r, position, m))
-                    position += 1
-        real_paras = [(n, t) for n, t in acc if n != -1]
-        overlap_text = real_paras[-1][1] if real_paras else None
+        nonlocal cur
+        if cur is not None:
+            toks.append(("para", cur[0], "\n\n".join(x for x in cur[1] if x)))
+            cur = None
 
-    for token in tokens:
-        if token["kind"] == "preamble":
+    for p, t in items:
+        m = _NUM.match(t)
+        is_roman = bool(_ROMAN.match(t))
+        is_bold = _is_bold_only(p)
+        if not seen:
+            if m:
+                seen = True
+                body = m.group(2).strip()
+                cur = [int(m.group(1)), [body] if body else []]
+            elif is_roman:
+                # A genuine Roman-numeral section can open the document before §1.
+                toks.append(("section", None, t))
+            else:
+                # Title/subtitle/greeting (incl. bold-only) before §1 is noise.
+                toks.append(("preamble", None, t))
             continue
-
-        if token["kind"] == "section":
+        if m:
             flush()
-            active_section = token["text"]
-            acc = []
-            acc_len = 0
-            overlap_text = None   # no overlap across section boundaries
+            body = m.group(2).strip()
+            cur = [int(m.group(1)), [body] if body else []]
             continue
-
-        # "para" kind
-        num, text = token["num"], token["text"]
-
-        if acc_len + len(text) > _TARGET and acc:
+        if is_roman or is_bold:
             flush()
-            acc = []
-            acc_len = 0
-            if overlap_text is not None:
-                acc.append((-1, overlap_text))
-                acc_len = len(overlap_text)
-
-        acc.append((num, text))
-        acc_len += len(text)
-
+            toks.append(("section", None, t))
+            continue
+        if cur is not None:        # stray prose => body of the open paragraph
+            cur[1].append(t)
     flush()
-    return chunks
+    # Drop sections that have no paragraph before the next section/EOF — leftover
+    # nav/footer headers that slipped past the chrome filter add no real chapter.
+    cleaned: list[tuple[str, int | None, str]] = []
+    for i, tok in enumerate(toks):
+        if tok[0] == "section":
+            following = toks[i + 1:]
+            nxt_sec = next((j for j, x in enumerate(following) if x[0] == "section"), len(following))
+            if not any(x[0] == "para" for x in following[:nxt_sec]):
+                continue
+        cleaned.append(tok)
+    return cleaned
 
 
-async def main(pool) -> None:
-    skipped: list[str] = []
-    with httpx.Client(
-        timeout=30,
-        follow_redirects=True,
-        headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
-    ) as client:
-        with tqdm(total=len(ENCYCLICALS), unit="doc", desc="Encyclicals") as pbar:
-            for title, author, year, url in ENCYCLICALS:
-                time.sleep(_DELAY)
-                try:
-                    resp = client.get(url)
-                    resp.raise_for_status()
-                except Exception as exc:
-                    print(f"\n  WARNING: Failed to fetch {title}: {exc}", file=sys.stderr)
-                    skipped.append(title)
-                    pbar.update(1)
-                    continue
-
-                chunks = parse_encyclical(resp.text, title, author, year)
-
-                if not chunks:
-                    print(f"\n  WARNING: No chunks extracted for {title}", file=sys.stderr)
-                    skipped.append(title)
-                    pbar.update(1)
-                    continue
-
-                doc_id = await upsert_document(
-                    pool,
-                    collection="encyclicals",
-                    title=title,
-                    translation="",
-                    author=author,
-                    year=year,
-                    metadata={"url": url, "pope": author},
-                )
-
-                for content, reference, position, meta in chunks:
-                    await upsert_chunk(
-                        pool,
-                        document_id=doc_id,
-                        content=content,
-                        position=position,
-                        reference=reference,
-                        metadata=meta,
-                    )
-
-                pbar.set_postfix({"doc": title, "chunks": len(chunks)})
-                pbar.update(1)
-
-    if skipped:
-        print(f"\n  WARNING: {len(skipped)} documents failed: {skipped}", file=sys.stderr)
-    print(f"  Done. {len(ENCYCLICALS) - len(skipped)} encyclicals written.")
+def _cap(text: str, maxc: int) -> list[str]:
+    if len(text) <= maxc:
+        return [text]
+    out: list[str] = []
+    for p in split_at_sentences(text, target=maxc, overlap=0):
+        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
+    return out
 
 
-if __name__ == "__main__":
-    async def _run():
-        pool = await get_pool()
-        try:
-            await main(pool)
-        finally:
-            await close_pool()
-    asyncio.run(_run())
+def build_document(entry: dict) -> Document:
+    path = os.path.join(_SRC, entry["file"])
+    with open(path, "rb") as f:
+        soup = BeautifulSoup(f.read(), "lxml")
+    toks = _tokens(soup)
+    slug, title, author = entry["slug"], entry["title"], entry["author"]
+    did = document_id("encyclicals", slug)
+    has_sec = any(k == "section" for k, _, _ in toks)
+    meta = {"pope": author, "url": entry["url"]}
+    passages: list[Passage] = []
+    pos = 0
+    seen_anchors: set[str] = set()
+
+    def emit(content: str, ref: str, base_anchor: str, ckey: str, clabel: str,
+             unit: str | None) -> None:
+        nonlocal pos
+        content = clean_text(strip_footnote_markers(strip_boilerplate(content)))
+        if not content:
+            return
+        pieces = _cap(content, settings.MAX_PASSAGE_CHARS)
+        for j, piece in enumerate(pieces):
+            anc = base_anchor + (f"/p{j + 1}" if len(pieces) > 1 else "")
+            k = 1
+            while anc in seen_anchors:
+                k += 1
+                anc = f"{base_anchor}-{k}" if len(pieces) == 1 else f"{base_anchor}/p{j + 1}-{k}"
+            seen_anchors.add(anc)
+            passages.append(Passage(content=piece, reference=ref, anchor=anc,
+                                    chapter_key=ckey, chapter_label=clabel,
+                                    position=pos, unit_label=unit, metadata=meta))
+            pos += 1
+
+    # The preamble is the greeting/salutation before §1. Take preamble tokens only
+    # up to the first ALL-CAPS line: a shouting line is the title masthead or an
+    # embedded table-of-contents header (modern vatican.va docs), never greeting
+    # prose — so it marks the end of any real preamble. Masthead-first documents
+    # (Caritas, Laudato, Magnifica Humanitas) yield no preamble passage.
+    pre_parts: list[str] = []
+    for k, _, t in toks:
+        if k != "preamble":
+            continue
+        if _is_shouting(t):
+            break
+        pre_parts.append(t)
+    pre = _strip_leading_caps("\n\n".join(pre_parts).strip()).strip()
+    if pre:
+        emit(pre, f"{title} — Preamble", make_anchor(slug, "preamble"),
+             make_anchor(slug, "preamble"), "Preamble", None)
+
+    # For bucket-labeled docs (no section headers), label each bucket by the
+    # ACTUAL paragraph range present, not the fixed bucket width — so a final
+    # partial bucket reads e.g. "Paragraphs 61–64", not "Paragraphs 61–80".
+    bucket_range: dict[int, tuple[int, int]] = {}
+    if not has_sec:
+        for k, n, _ in toks:
+            if k != "para":
+                continue
+            b = (n - 1) // _BUCKET
+            lo, hi = bucket_range.get(b, (n, n))
+            bucket_range[b] = (min(lo, n), max(hi, n))
+
+    sec_ord = 0
+    cur_key = cur_label = None
+    for k, n, t in toks:
+        if k == "preamble":
+            continue
+        if k == "section":
+            sec_ord += 1
+            cur_key = make_anchor(slug, f"sec-{sec_ord}")
+            cur_label = title_case_shouting(clean_text(t))
+            continue
+        # k == "para"
+        if has_sec:
+            if cur_key is None:
+                cur_key, cur_label = make_anchor(slug, "sec-0"), "Introduction"
+            ckey, clabel = cur_key, cur_label
+        else:
+            b = (n - 1) // _BUCKET
+            lo, hi = bucket_range[b]
+            clabel = f"Paragraphs {lo}–{hi}" if lo != hi else f"Paragraph {lo}"
+            ckey = make_anchor(slug, f"bucket-{b}")
+        emit(t, f"{title}, §{n}", make_anchor(slug, n), ckey, clabel, f"§{n}")
+
+    return Document(id=did, collection="encyclicals", title=title, author=author,
+                    year=entry["year"], metadata={"url": entry["url"], "pope": author},
+                    passages=passages)
+
+
+def build_documents() -> list[Document]:
+    with open(os.path.join(_SRC, "manifest.json"), encoding="utf-8") as f:
+        manifest = json.load(f)
+    return [build_document(e) for e in manifest]

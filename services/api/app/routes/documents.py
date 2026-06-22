@@ -6,7 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
-from app.models.documents import DocumentResponse, ReaderChunk, ReaderResponse
+from app.models.documents import (
+    DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -60,131 +62,129 @@ async def get_document(
     )
 
 
-@router.get("/documents/{doc_id}/reader", response_model=ReaderResponse)
-async def get_document_reader(
+def _document_response(doc_row) -> DocumentResponse:
+    return DocumentResponse(
+        id=str(doc_row["id"]), collection=doc_row["collection"], title=doc_row["title"],
+        author=doc_row["author"], year=doc_row["year"], metadata=doc_row["metadata"],
+        chunk_count=doc_row["cnt"],
+    )
+
+
+@router.get("/documents/{doc_id}/toc", response_model=TocResponse)
+async def get_document_toc(
     doc_id: str,
-    chunk_id: str = Query(..., description="UUID of the chunk to highlight"),
-    context: int = Query(default=10, ge=1, le=50, description="Chunks to show on each side of the target"),
     user: AuthUser = Depends(get_current_user),
-) -> ReaderResponse:
-    """Return a context window of chunks around a target chunk for the reader view."""
+) -> TocResponse:
+    """Ordered chapter list for the reader's pickers + Contents drawer."""
     try:
         doc_uuid = uuid.UUID(doc_id)
     except ValueError:
         raise HTTPException(status_code=422, detail="Invalid doc_id: must be a UUID")
-
-    try:
-        chunk_uuid = uuid.UUID(chunk_id)
-    except ValueError:
-        raise HTTPException(status_code=422, detail="Invalid chunk_id: must be a UUID")
-
-    # context range enforced by Query(ge=1, le=50) above
-
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
-    # Fetch document metadata
     try:
         doc_row = await pool.fetchrow(
-            "SELECT id, collection, title, author, year, metadata FROM documents WHERE id = $1",
+            """SELECT d.id, d.collection, d.title, d.author, d.year, d.metadata,
+                      (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
+               FROM documents d WHERE d.id = $1""",
             doc_uuid,
         )
+        if doc_row is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+        chapter_rows = await pool.fetch(
+            """SELECT chapter_key, chapter_label
+               FROM chunks WHERE document_id = $1 AND chapter_key IS NOT NULL
+               GROUP BY chapter_key, chapter_label
+               ORDER BY min(position)""",
+            doc_uuid,
+        )
+    except HTTPException:
+        raise
     except Exception as exc:
-        logger.error("get_document_reader doc query failed (%s)", exc.__class__.__name__)
+        logger.error("get_document_toc query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
-    if doc_row is None:
-        raise HTTPException(status_code=404, detail="Document not found")
+    chapters = [TocEntry(chapter_key=r["chapter_key"], chapter_label=r["chapter_label"])
+                for r in chapter_rows]
+    return TocResponse(document=_document_response(doc_row), chapters=chapters)
 
-    # Get the target chunk's position
+
+@router.get("/documents/{doc_id}/reader", response_model=ReaderChapter)
+async def get_document_reader(
+    doc_id: str,
+    anchor: str | None = Query(default=None, description="Deep-link passage anchor"),
+    chapter: str | None = Query(default=None, description="chapter_key to load directly"),
+    user: AuthUser = Depends(get_current_user),
+) -> ReaderChapter:
+    """Return one chapter section of clean passages, with prev/next chapter keys."""
     try:
-        target_row = await pool.fetchrow(
-            "SELECT position FROM chunks WHERE id = $1 AND document_id = $2",
-            chunk_uuid,
-            doc_uuid,
-        )
-    except Exception as exc:
-        logger.error("get_document_reader chunk position query failed (%s)", exc.__class__.__name__)
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+        doc_uuid = uuid.UUID(doc_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid doc_id: must be a UUID")
+    pool = get_pool()
+    if not pool:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
-    if target_row is None:
-        raise HTTPException(status_code=404, detail="Chunk not found in this document")
-
-    position = target_row["position"]
-
-    # Fetch chunks within ±context window
     try:
-        chunk_rows = await pool.fetch(
-            """
-            SELECT id, position, reference, content
-            FROM chunks
-            WHERE document_id = $1 AND position BETWEEN $2 AND $3
-            ORDER BY position ASC
-            """,
-            doc_uuid,
-            position - context,
-            position + context,
-        )
-    except Exception as exc:
-        logger.error("get_document_reader context query failed (%s)", exc.__class__.__name__)
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
-
-    # Count total chunks for the document metadata
-    try:
-        chunk_count_row = await pool.fetchrow(
-            "SELECT count(*) AS cnt FROM chunks WHERE document_id = $1",
+        doc_row = await pool.fetchrow(
+            """SELECT d.id, d.collection, d.title, d.author, d.year, d.metadata,
+                      (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
+               FROM documents d WHERE d.id = $1""",
             doc_uuid,
         )
+        if doc_row is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+
+        # Resolve target chapter_key (explicit chapter > anchor > first chapter).
+        chapter_key = chapter
+        if chapter_key is None and anchor:
+            row = await pool.fetchrow(
+                "SELECT chapter_key FROM chunks WHERE document_id=$1 AND anchor=$2",
+                doc_uuid, anchor)
+            chapter_key = row["chapter_key"] if row else None
+        if chapter_key is None:
+            row = await pool.fetchrow(
+                "SELECT chapter_key FROM chunks WHERE document_id=$1 AND chapter_key IS NOT NULL "
+                "ORDER BY position LIMIT 1", doc_uuid)
+            if row is None:
+                raise HTTPException(status_code=404, detail="Document has no readable passages")
+            chapter_key = row["chapter_key"]
+
+        passage_rows = await pool.fetch(
+            """SELECT id, anchor, chapter_key, chapter_label, unit_label, reference, content
+               FROM chunks WHERE document_id=$1 AND chapter_key=$2 ORDER BY position""",
+            doc_uuid, chapter_key,
+        )
+        if not passage_rows:
+            raise HTTPException(status_code=404, detail="Chapter not found")
+
+        key_rows = await pool.fetch(
+            """SELECT chapter_key FROM chunks WHERE document_id=$1 AND chapter_key IS NOT NULL
+               GROUP BY chapter_key ORDER BY min(position)""",
+            doc_uuid,
+        )
+    except HTTPException:
+        raise
     except Exception as exc:
-        logger.error("get_document_reader chunk_count query failed (%s)", exc.__class__.__name__)
+        logger.error("get_document_reader query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
-    document = DocumentResponse(
-        id=str(doc_row["id"]),
-        collection=doc_row["collection"],
-        title=doc_row["title"],
-        author=doc_row["author"],
-        year=doc_row["year"],
-        metadata=doc_row["metadata"],
-        chunk_count=chunk_count_row["cnt"],
-    )
+    keys = [r["chapter_key"] for r in key_rows]
+    idx = keys.index(chapter_key) if chapter_key in keys else 0
+    prev_key = keys[idx - 1] if idx > 0 else None
+    next_key = keys[idx + 1] if idx + 1 < len(keys) else None
 
-    chunks = [
-        ReaderChunk(
-            id=str(r["id"]),
-            position=r["position"],
-            reference=r["reference"],
-            content=r["content"],
-        )
-        for r in chunk_rows
+    passages = [
+        ReaderPassage(
+            id=str(r["id"]), anchor=r["anchor"], chapter_key=r["chapter_key"],
+            chapter_label=r["chapter_label"], unit_label=r["unit_label"],
+            reference=r["reference"], content=r["content"],
+        ) for r in passage_rows
     ]
-
-    # Nav pivot IDs for non-overlapping Prev/Next pages.
-    # Next pivot = last_visible_pos + context + 1 (centers the next page just after the window)
-    # Prev pivot = first_visible_pos - context - 1 (centers the prev page just before the window)
-    actual_first_pos = chunk_rows[0]["position"] if chunk_rows else position
-    actual_last_pos = chunk_rows[-1]["position"] if chunk_rows else position
-    try:
-        next_nav_row = await pool.fetchrow(
-            "SELECT id FROM chunks WHERE document_id = $1 AND position = $2",
-            doc_uuid,
-            actual_last_pos + context + 1,
-        )
-        prev_nav_row = await pool.fetchrow(
-            "SELECT id FROM chunks WHERE document_id = $1 AND position = $2",
-            doc_uuid,
-            actual_first_pos - context - 1,
-        )
-    except Exception as exc:
-        logger.warning("get_document_reader nav query failed (%s)", exc.__class__.__name__)
-        next_nav_row = None
-        prev_nav_row = None
-
-    return ReaderResponse(
-        document=document,
-        chunks=chunks,
-        highlight_chunk_id=chunk_id,
-        next_nav_chunk_id=str(next_nav_row["id"]) if next_nav_row else None,
-        prev_nav_chunk_id=str(prev_nav_row["id"]) if prev_nav_row else None,
+    return ReaderChapter(
+        document=_document_response(doc_row), chapter_key=chapter_key,
+        chapter_label=passage_rows[0]["chapter_label"], passages=passages,
+        prev_chapter_key=prev_key, next_chapter_key=next_key, highlight_anchor=anchor,
     )

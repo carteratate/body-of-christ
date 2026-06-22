@@ -1,211 +1,168 @@
 "use client";
 
-import { useEffect, useRef, useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
-import { getReader, type ReaderResponse } from "@/lib/api";
 import {
-  trackDocumentOpened,
-  trackReaderNavigation,
-} from "@/lib/analytics";
-import { ReaderToolbar } from "./ReaderToolbar";
-import { ReaderChunk } from "./ReaderChunk";
+  getToc,
+  getReaderChapter,
+  type ReaderChapter,
+  type TocEntry,
+  type DocumentInfo,
+} from "@/lib/api";
+import { ReaderChrome } from "./ReaderChrome";
+import { ContentsDrawer } from "./ContentsDrawer";
+import { ChapterSection } from "./ChapterSection";
 
-interface DocumentReaderProps {
-  docId: string;
-}
-
-function DocumentReaderInner({ docId }: DocumentReaderProps) {
+function Inner({ docId }: { docId: string }) {
   const { token } = useAppContext();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const initialChunkId = searchParams.get("chunk_id");
+  const params = useSearchParams();
+  const initialAnchor = params.get("anchor");
+  const initialChapter = params.get("chapter");
 
+  const [doc, setDoc] = useState<DocumentInfo | null>(null);
+  const [toc, setToc] = useState<TocEntry[]>([]);
+  const [chapters, setChapters] = useState<ReaderChapter[]>([]); // ordered buffer
+  const [currentKey, setCurrentKey] = useState<string | null>(null);
+  const [highlight, setHighlight] = useState<string | null>(initialAnchor);
+  const [contentsOpen, setContentsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
-  const [data, setData] = useState<ReaderResponse | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  // Chapter keys already requested for append — a synchronous guard against the
+  // infinite-scroll race where many scroll events fire before state settles and
+  // each re-appends the same next chapter. Refs update immediately, unlike state.
+  const requestedRef = useRef<Set<string>>(new Set());
 
-  // Tracks whether the user has clicked Prev/Next/Jump.
-  // - false (initial): gold highlight shown on origin chunk, scroll to center on load.
-  // - true (navigated): no gold highlight, scroll to top on new data.
-  const [hasNavigated, setHasNavigated] = useState(false);
-  const hasNavigatedRef = useRef(false); // sync mirror for the scroll effect
-
-  const originChunkRef = useRef<HTMLDivElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-
-  // ── Guard: missing chunk_id in URL ─────────────────────────────────────────
-
+  // Initial load: TOC + first/target chapter.
   useEffect(() => {
-    if (!initialChunkId) {
-      setLoading(false);
-      setError("No chunk specified.");
-    }
-  }, []); // runs once on mount
-
-  // ── Initial load ───────────────────────────────────────────────────────────
-
-  useEffect(() => {
-    if (!token || !docId || !initialChunkId) return;
-
-    setLoading(true);
-    setError(null);
-    setNotFound(false);
-
-    getReader(token, docId, initialChunkId, 10)
-      .then((result) => setData(result))
-      .catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : "Failed to load document";
-        if (msg.includes("API error 404")) setNotFound(true);
-        else setError(msg);
-      })
-      .finally(() => setLoading(false));
+    if (!token) return;
+    let alive = true;
+    (async () => {
+      try {
+        setLoading(true);
+        const [tocResp, chapter] = await Promise.all([
+          getToc(token, docId),
+          getReaderChapter(token, docId, {
+            anchor: initialAnchor ?? undefined,
+            chapter: initialChapter ?? undefined,
+          }),
+        ]);
+        if (!alive) return;
+        setDoc(tocResp.document);
+        setToc(tocResp.chapters);
+        setChapters([chapter]);
+        setCurrentKey(chapter.chapter_key);
+        requestedRef.current = new Set([chapter.chapter_key]);
+      } catch (e) {
+        if (alive) setError(e instanceof Error ? e.message : "Failed to load");
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, docId]);
 
-  // ── Scroll after data changes ──────────────────────────────────────────────
-  // Initial load → scroll origin chunk into view (center).
-  // After Prev/Next/Jump → scroll content area to top.
-
+  // Scroll the highlighted passage into view after first render.
   useEffect(() => {
-    if (!data) return;
-    if (hasNavigatedRef.current) {
-      contentRef.current?.scrollTo({ top: 0 });
-    } else {
-      originChunkRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (highlight && chapters.length === 1) {
+      document
+        .getElementById(`anchor-${highlight}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [data]);
+  }, [chapters, highlight]);
 
-  // ── Navigation ─────────────────────────────────────────────────────────────
+  const loadChapter = useCallback(async (key: string, mode: "append" | "replace") => {
+    if (!token) return;
+    // Synchronous dedupe: skip if this append was already requested this session.
+    if (mode === "append" && requestedRef.current.has(key)) return;
+    requestedRef.current.add(key);
+    const chapter = await getReaderChapter(token, docId, { chapter: key });
+    setChapters((prev) => {
+      if (mode === "replace") return [chapter];
+      if (prev.some((c) => c.chapter_key === key)) return prev; // idempotent append
+      return [...prev, chapter];
+    });
+    if (mode === "replace") setCurrentKey(key);
+  }, [token, docId]);
 
-  async function handleNavigate(chunkId: string, direction: "next" | "prev") {
-    if (!token || !data) return;
-    trackReaderNavigation({ documentId: docId, collection: data.document.collection, direction });
-    trackDocumentOpened({ documentId: docId, collection: data.document.collection, source: "reader_nav" });
+  const jump = useCallback((key: string) => {
+    requestedRef.current = new Set([key]); // reset append history for the new anchor
+    setHighlight(null);
+    loadChapter(key, "replace");
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [loadChapter]);
 
-    hasNavigatedRef.current = true;
-    setHasNavigated(true);
-    setLoading(true);
-
-    try {
-      const result = await getReader(token, docId, chunkId, 10);
-      setData(result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Navigation failed");
-    } finally {
-      setLoading(false);
+  // Infinite scroll + current-chapter tracking.
+  function onScroll(e: React.UIEvent<HTMLDivElement>) {
+    const el = e.currentTarget;
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < 600) {
+      const last = chapters[chapters.length - 1];
+      if (last?.next_chapter_key && !chapters.some((c) => c.chapter_key === last.next_chapter_key)) {
+        loadChapter(last.next_chapter_key, "append");
+      }
     }
+    // Track which chapter heading is at/above the top of the viewport.
+    const contTop = el.getBoundingClientRect().top;
+    let cur = currentKey;
+    el.querySelectorAll("section[data-chapter-key]").forEach((s) => {
+      if (s.getBoundingClientRect().top - contTop <= 80) {
+        cur = s.getAttribute("data-chapter-key");
+      }
+    });
+    if (cur && cur !== currentKey) setCurrentKey(cur);
   }
-
-  // ── Explore more ───────────────────────────────────────────────────────────
-
-  function handleExploreMore(content: string, label: string) {
-    router.push(
-      `/search?explore=${encodeURIComponent(content)}&exploreRef=${encodeURIComponent(label)}`
-    );
-  }
-
-  // ── Loading skeleton ───────────────────────────────────────────────────────
-
-  if (loading && !data) {
-    return (
-      <div className="flex flex-col h-full bg-brand-bg">
-        <div className="px-4 pt-6 space-y-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="animate-pulse bg-brand-surface rounded h-4"
-              style={{ width: `${75 + (i % 3) * 10}%` }}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // ── Error state ────────────────────────────────────────────────────────────
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full bg-brand-bg gap-4">
         <p className="text-brand-muted text-sm">This document couldn&apos;t be loaded.</p>
-        <button
-          onClick={() => router.back()}
-          className="text-brand-accent text-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-        >
-          ← Back
-        </button>
+        <button onClick={() => router.back()} className="text-brand-accent text-sm hover:underline">← Back</button>
       </div>
     );
   }
-
-  // ── 404 state ──────────────────────────────────────────────────────────────
-
-  if (notFound) {
+  if (loading && !doc) {
     return (
-      <div className="flex flex-col items-center justify-center h-full bg-brand-bg gap-4">
-        <p className="text-brand-muted text-sm">This document is no longer available.</p>
-        <button
-          onClick={() => router.back()}
-          className="text-brand-accent text-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-        >
-          ← Back
-        </button>
+      <div className="flex flex-col h-full bg-brand-bg px-6 pt-8 space-y-3">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="animate-pulse bg-brand-surface rounded h-4" style={{ width: `${70 + (i % 3) * 10}%` }} />
+        ))}
       </div>
     );
   }
-
-  if (!data) return null;
+  if (!doc) return null;
 
   return (
     <div className="flex flex-col h-full bg-brand-bg">
-      <ReaderToolbar
-        document={data.document}
-        chunks={data.chunks}
-        prevNavId={data.prev_nav_chunk_id}
-        nextNavId={data.next_nav_chunk_id}
-        onNavigate={handleNavigate}
+      <ReaderChrome
+        document={doc}
+        toc={toc}
+        currentChapterKey={currentKey}
+        onToggleContents={() => setContentsOpen((v) => !v)}
+        onJump={jump}
       />
-
-      <div ref={contentRef} className="flex-1 overflow-y-auto px-4 pt-4 pb-6">
-        {/* Loading overlay while navigating */}
-        {loading && (
-          <div className="space-y-3 mb-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="animate-pulse bg-brand-surface rounded h-4"
-                style={{ width: `${75 + (i % 3) * 10}%` }}
-              />
-            ))}
-          </div>
-        )}
-
-        {data.chunks.map((chunk) => {
-          // Gold "Your result" highlight only on the initial view (not after navigation)
-          const isOrigin = !hasNavigated && chunk.id === data.highlight_chunk_id;
-          return (
-            <div key={chunk.id} ref={isOrigin ? originChunkRef : null}>
-              <ReaderChunk
-                chunk={chunk}
-                document={data.document}
-                isOrigin={isOrigin}
-                token={token ?? ""}
-                onExploreMore={handleExploreMore}
-              />
-            </div>
-          );
-        })}
+      <ContentsDrawer
+        open={contentsOpen}
+        toc={toc}
+        currentChapterKey={currentKey}
+        onJump={jump}
+        onClose={() => setContentsOpen(false)}
+      />
+      <div ref={scrollRef} onScroll={onScroll} className="flex-1 overflow-y-auto">
+        {chapters.map((ch) => (
+          <ChapterSection key={ch.chapter_key} chapter={ch} highlightAnchor={highlight} />
+        ))}
       </div>
     </div>
   );
 }
 
-export function DocumentReader({ docId }: DocumentReaderProps) {
+export function DocumentReader({ docId }: { docId: string }) {
   return (
     <Suspense>
-      <DocumentReaderInner docId={docId} />
+      <Inner docId={docId} />
     </Suspense>
   );
 }
