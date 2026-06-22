@@ -19,6 +19,7 @@ from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
+from normalize.boilerplate import strip_boilerplate
 from ingest.common import split_at_sentences, _split_at_whitespace
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "councils")
@@ -69,7 +70,7 @@ class _Builder:
 
     def add(self, *, body: str, ref: str, base_anchor: str, ckey: str,
             clabel: str, unit: str | None, meta: dict) -> None:
-        body = clean_text(strip_footnote_markers(_declutter(body)))
+        body = clean_text(strip_footnote_markers(strip_boilerplate(_declutter(body))))
         if len(body) < 1:
             return
         pieces = _cap(body, settings.MAX_PASSAGE_CHARS)

@@ -19,6 +19,7 @@ from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
+from normalize.boilerplate import strip_boilerplate
 from ingest.common import split_at_sentences, _split_at_whitespace
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "encyclicals")
@@ -148,7 +149,7 @@ def build_document(entry: dict) -> Document:
     def emit(content: str, ref: str, base_anchor: str, ckey: str, clabel: str,
              unit: str | None) -> None:
         nonlocal pos
-        content = clean_text(strip_footnote_markers(content))
+        content = clean_text(strip_footnote_markers(strip_boilerplate(content)))
         if not content:
             return
         pieces = _cap(content, settings.MAX_PASSAGE_CHARS)
@@ -181,6 +182,18 @@ def build_document(entry: dict) -> Document:
         emit(pre, f"{title} — Preamble", make_anchor(slug, "preamble"),
              make_anchor(slug, "preamble"), "Preamble", None)
 
+    # For bucket-labeled docs (no section headers), label each bucket by the
+    # ACTUAL paragraph range present, not the fixed bucket width — so a final
+    # partial bucket reads e.g. "Paragraphs 61–64", not "Paragraphs 61–80".
+    bucket_range: dict[int, tuple[int, int]] = {}
+    if not has_sec:
+        for k, n, _ in toks:
+            if k != "para":
+                continue
+            b = (n - 1) // _BUCKET
+            lo, hi = bucket_range.get(b, (n, n))
+            bucket_range[b] = (min(lo, n), max(hi, n))
+
     sec_ord = 0
     cur_key = cur_label = None
     for k, n, t in toks:
@@ -198,8 +211,9 @@ def build_document(entry: dict) -> Document:
             ckey, clabel = cur_key, cur_label
         else:
             b = (n - 1) // _BUCKET
-            lo, hi = b * _BUCKET + 1, b * _BUCKET + _BUCKET
-            ckey, clabel = make_anchor(slug, f"bucket-{b}"), f"Paragraphs {lo}–{hi}"
+            lo, hi = bucket_range[b]
+            clabel = f"Paragraphs {lo}–{hi}" if lo != hi else f"Paragraph {lo}"
+            ckey = make_anchor(slug, f"bucket-{b}")
         emit(t, f"{title}, §{n}", make_anchor(slug, n), ckey, clabel, f"§{n}")
 
     return Document(id=did, collection="encyclicals", title=title, author=author,
