@@ -49,6 +49,10 @@ class Settings:
         "summa": (0, 0),       # articles are self-contained; sub-passages carry their own context
         "catechism": (200, 200),
         "church-fathers": (200, 200),
+        "medieval": (200, 200),
+        "encyclicals": (250, 250),   # small numbered units benefit from neighbor context
+        "councils": (250, 250),
+        "canon-law": (300, 300),     # short canons: wider neighbor window
     })
 
     def overlap_for(self, collection: str) -> tuple[int, int]:
