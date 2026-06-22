@@ -12,16 +12,24 @@ export function LoginForm() {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        router.replace("/chat");
+      if (event === "PASSWORD_RECOVERY") {
+        router.replace("/update-password");
+      } else if (session) {
+        router.replace("/search");
       }
     });
     return () => subscription.unsubscribe();
   }, [router, supabase]);
 
+  const redirectTo =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/update-password`
+      : undefined;
+
   return (
     <Auth
       supabaseClient={supabase}
+      redirectTo={redirectTo}
       appearance={{
         theme: ThemeSupa,
         variables: {
