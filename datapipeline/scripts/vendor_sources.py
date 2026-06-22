@@ -55,24 +55,65 @@ MEDIEVAL = [
 ]
 
 ENCYCLICALS = [
-    ("Rerum Novarum",       "Pope Leo XIII",     1891, "https://www.papalencyclicals.net/leo13/l13rerum.htm"),
-    ("Quadragesimo Anno",   "Pope Pius XI",      1931, "https://www.papalencyclicals.net/pius11/p11quadr.htm"),
-    ("Humani Generis",      "Pope Pius XII",     1950, "https://www.papalencyclicals.net/pius12/p12human.htm"),
-    ("Mater et Magistra",   "Pope John XXIII",   1961, "https://www.papalencyclicals.net/john23/j23mater.htm"),
-    ("Pacem in Terris",     "Pope John XXIII",   1963, "https://www.papalencyclicals.net/john23/j23pacem.htm"),
-    ("Humanae Vitae",       "Pope Paul VI",      1968, "https://www.papalencyclicals.net/paul06/p6humana.htm"),
-    ("Evangelii Nuntiandi", "Pope Paul VI",      1975, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19751208_evangelii-nuntiandi.html"),
-    ("Redemptor Hominis",   "Pope John Paul II", 1979, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_04031979_redemptor-hominis.html"),
-    ("Laborem Exercens",    "Pope John Paul II", 1981, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_14091981_laborem-exercens.html"),
-    ("Veritatis Splendor",  "Pope John Paul II", 1993, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_06081993_veritatis-splendor.html"),
-    ("Evangelium Vitae",    "Pope John Paul II", 1995, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_25031995_evangelium-vitae.html"),
-    ("Fides et Ratio",      "Pope John Paul II", 1998, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_14091998_fides-et-ratio.html"),
-    ("Deus Caritas Est",    "Pope Benedict XVI", 2005, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20051225_deus-caritas-est_en.html"),
-    ("Spe Salvi",           "Pope Benedict XVI", 2007, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20071130_spe-salvi_en.html"),
-    ("Caritas in Veritate", "Pope Benedict XVI", 2009, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20090629_caritas-in-veritate_en.html"),
-    ("Evangelii Gaudium",   "Pope Francis",      2013, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20131124_evangelii-gaudium.html"),
-    ("Laudato Si",          "Pope Francis",      2015, "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20150524_enciclica-laudato-si.html"),
-    ("Magnifica Humanitas", "Pope Leo XIV",      2026, "https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html"),
+    # Pope Leo XIII (1878–1903)
+    ("Aeterni Patris",            "Pope Leo XIII",     1879, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_04081879_aeterni-patris.html"),
+    ("Immortale Dei",             "Pope Leo XIII",     1885, "https://www.papalencyclicals.net/leo13/l13sta.htm"),
+    ("Libertas",                  "Pope Leo XIII",     1888, "https://www.papalencyclicals.net/leo13/l13liber.htm"),
+    ("Rerum Novarum",             "Pope Leo XIII",     1891, "https://www.papalencyclicals.net/leo13/l13rerum.htm"),
+    ("Providentissimus Deus",     "Pope Leo XIII",     1893, "https://www.papalencyclicals.net/leo13/l13provi.htm"),
+    ("Divinum Illud Munus",       "Pope Leo XIII",     1897, "https://www.papalencyclicals.net/leo13/l13divin.htm"),
+    ("Mirae Caritatis",           "Pope Leo XIII",     1902, "https://www.papalencyclicals.net/leo13/l13mirae.htm"),
+    # Pope Pius X (1903–1914)
+    ("Pascendi Dominici Gregis",  "Pope Pius X",       1907, "https://www.papalencyclicals.net/pius10/p10pasce.htm"),
+    # Pope Benedict XV (1914–1922)
+    ("Spiritus Paraclitus",       "Pope Benedict XV",  1920, "https://www.papalencyclicals.net/ben15/b15sp.htm"),
+    # Pope Pius XI (1922–1939)
+    ("Quas Primas",               "Pope Pius XI",      1925, "https://www.papalencyclicals.net/pius11/p11prima.htm"),
+    ("Casti Connubii",            "Pope Pius XI",      1930, "https://www.papalencyclicals.net/pius11/p11casti.htm"),
+    ("Quadragesimo Anno",         "Pope Pius XI",      1931, "https://www.papalencyclicals.net/pius11/p11quadr.htm"),
+    ("Mit Brennender Sorge",      "Pope Pius XI",      1937, "https://www.papalencyclicals.net/pius11/p11brenn.htm"),
+    ("Divini Redemptoris",        "Pope Pius XI",      1937, "https://www.papalencyclicals.net/pius11/p11divin.htm"),
+    # Pope Pius XII (1939–1958)
+    ("Mystici Corporis Christi",  "Pope Pius XII",     1943, "https://www.papalencyclicals.net/pius12/p12mysti.htm"),
+    ("Divino Afflante Spiritu",   "Pope Pius XII",     1943, "https://www.papalencyclicals.net/pius12/p12divin.htm"),
+    ("Mediator Dei",              "Pope Pius XII",     1947, "https://www.papalencyclicals.net/pius12/p12media.htm"),
+    ("Humani Generis",            "Pope Pius XII",     1950, "https://www.papalencyclicals.net/pius12/p12human.htm"),
+    ("Munificentissimus Deus",    "Pope Pius XII",     1950, "https://www.papalencyclicals.net/pius12/p12munif.htm"),
+    # Pope John XXIII (1958–1963)
+    ("Mater et Magistra",         "Pope John XXIII",   1961, "https://www.papalencyclicals.net/john23/j23mater.htm"),
+    ("Pacem in Terris",           "Pope John XXIII",   1963, "https://www.papalencyclicals.net/john23/j23pacem.htm"),
+    # Pope Paul VI (1963–1978)
+    ("Ecclesiam Suam",            "Pope Paul VI",      1964, "https://www.papalencyclicals.net/paul06/p6eccles.htm"),
+    ("Mysterium Fidei",           "Pope Paul VI",      1965, "https://www.papalencyclicals.net/paul06/p6myster.htm"),
+    ("Populorum Progressio",      "Pope Paul VI",      1967, "https://www.vatican.va/content/paul-vi/en/encyclicals/documents/hf_p-vi_enc_26031967_populorum.html"),
+    ("Humanae Vitae",             "Pope Paul VI",      1968, "https://www.papalencyclicals.net/paul06/p6humana.htm"),
+    ("Evangelii Nuntiandi",       "Pope Paul VI",      1975, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19751208_evangelii-nuntiandi.html"),
+    # Pope John Paul II (1978–2005)
+    ("Redemptor Hominis",         "Pope John Paul II", 1979, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_04031979_redemptor-hominis.html"),
+    ("Dives in Misericordia",     "Pope John Paul II", 1980, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_30111980_dives-in-misericordia.html"),
+    ("Laborem Exercens",          "Pope John Paul II", 1981, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_14091981_laborem-exercens.html"),
+    ("Dominum et Vivificantem",   "Pope John Paul II", 1986, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_18051986_dominum-et-vivificantem.html"),
+    ("Redemptoris Mater",         "Pope John Paul II", 1987, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_25031987_redemptoris-mater.html"),
+    ("Sollicitudo Rei Socialis",  "Pope John Paul II", 1987, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_30121987_sollicitudo-rei-socialis.html"),
+    ("Redemptoris Missio",        "Pope John Paul II", 1990, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_07121990_redemptoris-missio.html"),
+    ("Centesimus Annus",          "Pope John Paul II", 1991, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_01051991_centesimus-annus.html"),
+    ("Veritatis Splendor",        "Pope John Paul II", 1993, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_06081993_veritatis-splendor.html"),
+    ("Evangelium Vitae",          "Pope John Paul II", 1995, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_25031995_evangelium-vitae.html"),
+    ("Ut Unum Sint",              "Pope John Paul II", 1995, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_25051995_ut-unum-sint.html"),
+    ("Fides et Ratio",            "Pope John Paul II", 1998, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_14091998_fides-et-ratio.html"),
+    ("Ecclesia de Eucharistia",   "Pope John Paul II", 2003, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_20030417_eccl-de-euch.html"),
+    # Pope Benedict XVI (2005–2013)
+    ("Deus Caritas Est",          "Pope Benedict XVI", 2005, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20051225_deus-caritas-est_en.html"),
+    ("Spe Salvi",                 "Pope Benedict XVI", 2007, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20071130_spe-salvi_en.html"),
+    ("Caritas in Veritate",       "Pope Benedict XVI", 2009, "http://www.vatican.va/holy_father/benedict_xvi/encyclicals/documents/hf_ben-xvi_enc_20090629_caritas-in-veritate_en.html"),
+    # Pope Francis (2013–2025)
+    ("Lumen Fidei",               "Pope Francis",      2013, "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20130629_enciclica-lumen-fidei.html"),
+    ("Evangelii Gaudium",         "Pope Francis",      2013, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20131124_evangelii-gaudium.html"),
+    ("Laudato Si",                "Pope Francis",      2015, "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20150524_enciclica-laudato-si.html"),
+    ("Fratelli Tutti",            "Pope Francis",      2020, "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20201003_enciclica-fratelli-tutti.html"),
+    ("Dilexit Nos",               "Pope Francis",      2024, "https://www.vatican.va/content/francesco/en/encyclicals/documents/20241024-enciclica-dilexit-nos.html"),
+    # Pope Leo XIV (2025–present)
+    ("Magnifica Humanitas",       "Pope Leo XIV",      2026, "https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html"),
 ]
 
 COUNCILS = [
