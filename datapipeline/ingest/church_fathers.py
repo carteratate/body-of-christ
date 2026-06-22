@@ -15,15 +15,10 @@ from glob import glob
 
 import defusedxml.ElementTree as ET
 
-from config import settings
-from identity import document_id, anchor as make_anchor, slugify
-from model import Document, Passage
-from normalize.text import clean_text
+from model import Document
 from normalize.caps import smart_title_case
-from ingest.common import (
-    iter_chapters, _direct_p_text, _book_label, split_at_sentences, _split_at_whitespace,
-    _build_parent_map, _cf_skippable,
-)
+from ingest.common import iter_chapters, _build_parent_map, _cf_skippable
+from ingest.thml_doc import make_doc
 
 _SRC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "church-fathers")
 _SINGLE_AUTHOR = {"confessions.xml": "Augustine", "incarnation.xml": "Athanasius"}
@@ -39,85 +34,9 @@ def _read_root(path: str):
         return ET.fromstring(_strip_doctype(f.read()))
 
 
-def _chapter_label(elem) -> str:
-    """A short, clean chapter heading. ThML carries a concise label in shorttitle
-    ('Chapter 1') and a long descriptive sentence in title; prefer the former."""
-    st = (elem.get("shorttitle") or "").strip()
-    title = (elem.get("title") or "").strip()
-    n = (elem.get("n") or "").strip()
-    typ = (elem.get("type") or "").strip().lower()
-    if st and not st.endswith("...") and len(st) <= 45:
-        return smart_title_case(st)
-    if typ == "chapter" and n:
-        return f"Chapter {n}"
-    head = re.split(r"\.?—|—", title)[0].strip().rstrip(".")
-    if head:
-        return smart_title_case(head[:60])
-    return f"Chapter {n}" if n else "Section"
-
-
-def _cap_pieces(text: str, maxc: int) -> list[str]:
-    if len(text) <= maxc:
-        return [text]
-    out: list[str] = []
-    for p in split_at_sentences(text, target=maxc, overlap=0):
-        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
-    return out
-
-
 def _make_doc(filename, author, title, chapters):
-    if not chapters:
-        return None
-    work_slug = slugify(title) or slugify(author) or "work"
-    maxc = settings.MAX_PASSAGE_CHARS
-    passages: list[Passage] = []
-    pos = 0
-    seen_keys: dict[str, int] = {}
-    for book, elem in chapters:
-        raw = _direct_p_text(elem)
-        if len(raw) < 100:
-            continue
-        self_book = _book_label(elem)
-        if book is None and self_book:
-            # The div is itself a book carrying intro paragraphs before its chapters.
-            book = self_book
-            core = "Introduction"
-        else:
-            core = _chapter_label(elem)
-        if book:
-            book_clean = smart_title_case(book)
-            label = f"{book_clean} · {core}"
-            base_key = make_anchor(work_slug, slugify(book_clean), slugify(core) or "sec")
-        else:
-            book_clean = None
-            label = core
-            base_key = make_anchor(work_slug, slugify(core) or "sec")
-        # Ensure a stable, unique chapter_key even if two chapters share a label.
-        # '--N' for the dedup suffix is kept distinct from the '/pN' split suffix
-        # below so the two never collide.
-        if base_key in seen_keys:
-            seen_keys[base_key] += 1
-            ch_key = f"{base_key}--{seen_keys[base_key]}"
-        else:
-            seen_keys[base_key] = 1
-            ch_key = base_key
-        meta = {"source_file": filename}
-        if book_clean:
-            meta["book"] = book_clean
-        parts = _cap_pieces(raw, maxc)
-        for i, part in enumerate(parts):
-            sub = f"/p{i + 1}" if len(parts) > 1 else ""
-            passages.append(Passage(
-                content=clean_text(part),
-                reference=f"{author} — {title}, {label}",
-                anchor=ch_key + sub, chapter_key=ch_key, chapter_label=label,
-                position=pos, unit_label=None, metadata=meta))
-            pos += 1
-    if not passages:
-        return None
-    return Document(id=document_id("church-fathers", author, title),
-                    collection="church-fathers", title=title, author=author,
-                    metadata={"source_file": filename}, passages=passages)
+    return make_doc(collection="church-fathers", filename=filename,
+                    author=author, title=title, chapters=chapters)
 
 
 def build_documents(path: str) -> list[Document]:
