@@ -30,6 +30,10 @@ function Inner({ docId }: { docId: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  // Chapter keys already requested for append — a synchronous guard against the
+  // infinite-scroll race where many scroll events fire before state settles and
+  // each re-appends the same next chapter. Refs update immediately, unlike state.
+  const requestedRef = useRef<Set<string>>(new Set());
 
   // Initial load: TOC + first/target chapter.
   useEffect(() => {
@@ -50,6 +54,7 @@ function Inner({ docId }: { docId: string }) {
         setToc(tocResp.chapters);
         setChapters([chapter]);
         setCurrentKey(chapter.chapter_key);
+        requestedRef.current = new Set([chapter.chapter_key]);
       } catch (e) {
         if (alive) setError(e instanceof Error ? e.message : "Failed to load");
       } finally {
@@ -71,12 +76,20 @@ function Inner({ docId }: { docId: string }) {
 
   const loadChapter = useCallback(async (key: string, mode: "append" | "replace") => {
     if (!token) return;
+    // Synchronous dedupe: skip if this append was already requested this session.
+    if (mode === "append" && requestedRef.current.has(key)) return;
+    requestedRef.current.add(key);
     const chapter = await getReaderChapter(token, docId, { chapter: key });
-    setChapters((prev) => (mode === "replace" ? [chapter] : [...prev, chapter]));
+    setChapters((prev) => {
+      if (mode === "replace") return [chapter];
+      if (prev.some((c) => c.chapter_key === key)) return prev; // idempotent append
+      return [...prev, chapter];
+    });
     if (mode === "replace") setCurrentKey(key);
   }, [token, docId]);
 
   const jump = useCallback((key: string) => {
+    requestedRef.current = new Set([key]); // reset append history for the new anchor
     setHighlight(null);
     loadChapter(key, "replace");
     scrollRef.current?.scrollTo({ top: 0 });
