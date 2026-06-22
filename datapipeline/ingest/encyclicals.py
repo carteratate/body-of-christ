@@ -32,6 +32,32 @@ _CHROME = re.compile(
     r"|^search tips$|^sitemap$|return to (?:the )?home", re.IGNORECASE)
 
 
+def _strip_leading_caps(text: str) -> str:
+    """Drop a leading run of ALL-CAPS words (a Latin incipit / title masthead that
+    shares a paragraph with the greeting, e.g. 'IOANNES PAULUS PP. II EVANGELIUM
+    VITAE To the Bishops…' → 'To the Bishops…'). Stops at the first word with a
+    lowercase letter, so normal greetings ('To Our…', 'Venerable…') are untouched."""
+    words = text.split()
+    i = 0
+    while i < len(words):
+        letters = [c for c in words[i] if c.isalpha()]
+        if letters and all(c.isupper() for c in letters):
+            i += 1
+        else:
+            break
+    return " ".join(words[i:])
+
+
+def _is_shouting(text: str) -> bool:
+    """True for an ALL-CAPS masthead line (e.g. 'ENCYCLICAL LETTER … OF THE
+    SUPREME PONTIFF …'); used to keep the document title block out of the
+    preamble passage. Mixed-case greetings (~0–15% caps) are kept."""
+    letters = [c for c in text if c.isalpha()]
+    if len(letters) < 8:
+        return False
+    return sum(c.isupper() for c in letters) / len(letters) >= 0.7
+
+
 def _is_bold_only(p) -> bool:
     kids = [c for c in p.children if getattr(c, "name", None)]
     bare = "".join(str(c) for c in p.children if not getattr(c, "name", None)).strip()
@@ -138,7 +164,19 @@ def build_document(entry: dict) -> Document:
                                     position=pos, unit_label=unit, metadata=meta))
             pos += 1
 
-    pre = "\n\n".join(t for k, _, t in toks if k == "preamble").strip()
+    # The preamble is the greeting/salutation before §1. Take preamble tokens only
+    # up to the first ALL-CAPS line: a shouting line is the title masthead or an
+    # embedded table-of-contents header (modern vatican.va docs), never greeting
+    # prose — so it marks the end of any real preamble. Masthead-first documents
+    # (Caritas, Laudato, Magnifica Humanitas) yield no preamble passage.
+    pre_parts: list[str] = []
+    for k, _, t in toks:
+        if k != "preamble":
+            continue
+        if _is_shouting(t):
+            break
+        pre_parts.append(t)
+    pre = _strip_leading_caps("\n\n".join(pre_parts).strip()).strip()
     if pre:
         emit(pre, f"{title} — Preamble", make_anchor(slug, "preamble"),
              make_anchor(slug, "preamble"), "Preamble", None)

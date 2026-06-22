@@ -31,6 +31,7 @@ _LEAD_CANON = re.compile(r"^\[(\d+[a-z]?)\]\s*\.?\s*(.*)", re.DOTALL)
 _BRACKET = re.compile(r"\[[^\]]*\]")
 _MIN = 40
 _TARGET = 2200
+_BUCKET = 20   # §-paragraphs per chapter when a doc has no chapter headings
 
 
 def _declutter(text: str) -> str:
@@ -159,17 +160,37 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
     meta = {"council": "Second Vatican Council",
             "document_type": entry.get("document_type"), "year": entry["year"],
             "url": entry["url"]}
-    chap_ord, chap_key, chap_label = 0, make_anchor(dslug, "chap-0"), title
+    # Chapter headings appear as <b>/<strong>/<p> "CHAPTER N". A copy of them often
+    # reappears as a trailing table of contents AFTER the last numbered paragraph;
+    # those must be ignored so content isn't split onto phantom chapters. A heading
+    # wrapped as <p><b>… is also visited twice (parent + child) — dedupe by label.
+    els = soup.find_all(["h1", "h2", "h3", "h4", "p", "strong", "b"])
+    last_num_idx = max((i for i, el in enumerate(els)
+                        if el.name == "p" and _NUM.match(el.get_text(" ", strip=True))),
+                       default=-1)
+    headings: dict[int, str] = {}
+    last_label: str | None = None
+    for i, el in enumerate(els):
+        if i > last_num_idx:
+            break
+        t = el.get_text(" ", strip=True)
+        mch = _CHAPTER.match(t) if t else None
+        if mch:
+            label = _chapter_label_from(mch)
+            if label != last_label:          # dedupe a <p><b> double-hit
+                headings[i] = label
+                last_label = label
+    has_chapters = bool(headings)
 
-    for el in soup.find_all(["h1", "h2", "h3", "h4", "p", "strong"]):
+    chap_ord, chap_key, chap_label = 0, make_anchor(dslug, "chap-0"), title
+    for i, el in enumerate(els):
         t = el.get_text(" ", strip=True)
         if not t:
             continue
-        mch = _CHAPTER.match(t)
-        if mch:
+        if i in headings:
             chap_ord += 1
             chap_key = make_anchor(dslug, f"chap-{chap_ord}")
-            chap_label = _chapter_label_from(mch)
+            chap_label = headings[i]
             continue
         if el.name != "p":
             continue
@@ -180,9 +201,18 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
         if len(body) < _MIN:
             continue
         num = mn.group(1)
-        b.add(body=body, ref=f"{title}, §{num}",
-              base_anchor=make_anchor(dslug, f"chap-{chap_ord}", num),
-              ckey=chap_key, clabel=chap_label, unit=f"§{num}", meta=meta)
+        if has_chapters:
+            ckey, clabel = chap_key, chap_label
+        else:
+            # Header-less declaration/decree: fall back to §-number buckets so the
+            # reader still has navigable chapters (mirrors the encyclicals fallback).
+            bk = (int(num) - 1) // _BUCKET
+            lo, hi = bk * _BUCKET + 1, bk * _BUCKET + _BUCKET
+            ckey, clabel = make_anchor(dslug, f"bucket-{bk}"), f"Paragraphs {lo}–{hi}"
+        # Anchor is the stable structural key (the paragraph number), independent
+        # of chapter grouping, so deep links survive a re-chaptering.
+        b.add(body=body, ref=f"{title}, §{num}", base_anchor=make_anchor(dslug, num),
+              ckey=ckey, clabel=clabel, unit=f"§{num}", meta=meta)
     return Document(id=did, collection="councils", title=title, author=None,
                     year=entry["year"], metadata=meta, passages=b.passages)
 

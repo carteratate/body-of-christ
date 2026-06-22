@@ -52,11 +52,17 @@ def _fix_romans(label: str) -> str:
         for w in label.split())
 
 
+# Book-level headers carry the Latin book title ('… LIBER IV. DE ECCLESIAE …')
+# alongside (or instead of) the English one; the Latin clause is noise.
+_LATIN_BOOK = re.compile(r"\bLIBER\b.*$", re.IGNORECASE | re.DOTALL)
+
+
 def _clean_label(text: str) -> str:
     """Title-case an ALL-CAPS hierarchy header. Trailing punctuation is trimmed
     BEFORE casing so trailing-dot Roman numerals ('TITLE II.') keep their case;
-    Roman numerals beyond X are re-uppercased after casing."""
-    trimmed = clean_text(text).strip().rstrip(".:").strip()
+    Roman numerals beyond X are re-uppercased after casing; a trailing Latin
+    'LIBER …' book-title clause is dropped."""
+    trimmed = _LATIN_BOOK.sub("", clean_text(text)).strip().rstrip(".:").strip()
     return _fix_romans(smart_title_case(trimmed))
 
 
@@ -84,11 +90,15 @@ def build_documents() -> list[Document]:
     pos = 0
     for num, text, ctx in uniq:
         book = _book_for(num)
+        book_desc = book.split(":", 1)[1].strip().lower() if ":" in book else ""
         if book != prev_book:            # reset sub-levels at each Book boundary
             fill = {"title": "", "chapter": ""}
             prev_book = book
         if ctx.get("title"):
-            fill["title"] = _clean_label(ctx["title"])
+            ct = _clean_label(ctx["title"])
+            # A Title header that just repeats the Book's own name (the book
+            # heading, English and/or Latin) is not a real subdivision — drop it.
+            fill["title"] = "" if ct.lower() == book_desc else ct
         if ctx.get("chapter"):
             fill["chapter"] = _clean_label(ctx["chapter"])
         label_parts = [book] + [v for v in (fill["title"], fill["chapter"]) if v]

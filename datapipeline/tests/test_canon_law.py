@@ -241,3 +241,16 @@ def test_exactly_seven_books_no_empty_and_breadcrumb():
     for p in d.passages:
         assert p.anchor.startswith("can/")
         assert not p.content.lstrip().startswith("[")
+
+
+@pytest.mark.skipif(not _vendored, reason="canon-law not vendored")
+def test_no_latin_book_title_leaks_into_chapter_labels():
+    d = build_documents()[0]
+    labels = {p.chapter_label for p in d.passages}
+    # No raw Latin "Liber …" book title nor a redundant "Book X: Name — Name".
+    for label in labels:
+        assert "Liber" not in label and "LIBER" not in label, label
+        parts = [s.strip() for s in label.split("—")]
+        if len(parts) >= 2:
+            book_desc = parts[0].split(":", 1)[-1].strip().lower()
+            assert parts[1].lower() != book_desc, f"redundant Title repeats Book: {label}"

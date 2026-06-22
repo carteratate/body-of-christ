@@ -45,6 +45,54 @@ def test_vatican2_numbered_paragraphs_under_chapter():
     assert any("Chapter" in p.chapter_label for p in d.passages)
 
 
+# Bug 1+4: chapters marked with <b>, a trailing table-of-contents copy, and a
+# <p><b> double-hit must all be handled — content split onto the real chapters,
+# trailing TOC ignored, no phantom/duplicated chapters.
+VAT2_BOLD_HTML = """<html><body>
+<p><b>CHAPTER I</b></p>
+<p>1. In His goodness God chose to reveal Himself and to make known the mystery of His will to men.</p>
+<p>2. By this revelation the invisible God speaks to men as friends and lives among them in friendship.</p>
+<b>CHAPTER II</b>
+<p>3. In His gracious goodness God has seen to it that what He had revealed for salvation would abide.</p>
+<p>Chapter I</p>
+<p>Chapter II</p>
+</body></html>"""
+
+
+def test_vatican2_detects_bold_chapters_ignores_trailing_toc():
+    entry = {"council": "Second Vatican Council", "document": "Dei Verbum",
+             "document_type": "constitution", "year": 1965, "group": "vatican-ii",
+             "file": "x.html", "url": "http://example"}
+    d = build_vatican2(entry, BeautifulSoup(VAT2_BOLD_HTML, "lxml"))
+    labels = [p.chapter_label for p in d.passages]
+    assert [p.unit_label for p in d.passages] == ["§1", "§2", "§3"]
+    # §1,§2 under Chapter I; §3 under Chapter II — two distinct real chapters.
+    assert labels[0] == labels[1] == "Chapter I"
+    assert labels[2] == "Chapter II"
+    # exactly two chapters (no phantom from the <p><b> double-hit or trailing TOC)
+    assert len({p.chapter_key for p in d.passages}) == 2
+
+
+VAT2_FLAT_HTML = """<html><body>
+""" + "\n".join(
+    f"<p>{i}. This is numbered paragraph {i} of a declaration with no chapter headings at all here.</p>"
+    for i in range(1, 26)
+) + """
+</body></html>"""
+
+
+def test_vatican2_headerless_falls_back_to_paragraph_buckets():
+    entry = {"council": "Second Vatican Council", "document": "Dignitatis Humanae",
+             "document_type": "declaration", "year": 1965, "group": "vatican-ii",
+             "file": "x.html", "url": "http://example"}
+    d = build_vatican2(entry, BeautifulSoup(VAT2_FLAT_HTML, "lxml"))
+    assert len(d.passages) == 25
+    labels = {p.chapter_label for p in d.passages}
+    # 25 paragraphs in buckets of 20 → "Paragraphs 1–20" and "Paragraphs 21–40"
+    assert labels == {"Paragraphs 1–20", "Paragraphs 21–40"}
+    assert all(p.anchor and p.chapter_key for p in d.passages)
+
+
 @pytest.mark.skipif(not _vendored, reason="councils not vendored")
 def test_all_documents_build_and_are_clean():
     docs = build_documents()
