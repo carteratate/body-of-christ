@@ -16,7 +16,9 @@ EMBEDDING_DIMS = 1536
 
 
 def get_client() -> AsyncQdrantClient:
-    return AsyncQdrantClient(url=settings.QDRANT_URL, api_key=settings.QDRANT_API_KEY)
+    return AsyncQdrantClient(
+        url=settings.QDRANT_URL, api_key=settings.QDRANT_API_KEY, timeout=120,
+    )
 
 
 def collection_filter(collection: str) -> Filter:
