@@ -1,5 +1,6 @@
 import logging
 import uuid
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 
@@ -17,6 +18,12 @@ from app.models.bookmarks import (
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+_bookmarks_cache: dict[uuid.UUID, BookmarkListResponse] = {}
+
+
+def _invalidate_bookmarks(user_id: uuid.UUID) -> None:
+    _bookmarks_cache.pop(user_id, None)
 
 
 @router.post("/bookmarks", response_model=BookmarkResponse, status_code=201)
@@ -75,6 +82,8 @@ async def create_bookmark(
             logger.error("create_bookmark fetch existing failed (%s)", exc.__class__.__name__)
             raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
+    _invalidate_bookmarks(user.user_id)
+
     return BookmarkResponse(
         id=str(row["id"]),
         chunk_id=body.chunk_id,
@@ -87,6 +96,10 @@ async def list_bookmarks(
     user: AuthUser = Depends(get_current_user),
 ) -> BookmarkListResponse:
     """Return all bookmarks for the authenticated user."""
+    cached = _bookmarks_cache.get(user.user_id)
+    if cached is not None:
+        return cached
+
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
@@ -109,7 +122,7 @@ async def list_bookmarks(
         logger.error("list_bookmarks query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
-    return BookmarkListResponse(
+    response = BookmarkListResponse(
         bookmarks=[
             BookmarkResponse(
                 id=str(row["id"]),
@@ -128,6 +141,8 @@ async def list_bookmarks(
             for row in rows
         ]
     )
+    _bookmarks_cache[user.user_id] = response
+    return response
 
 
 @router.delete("/bookmarks/{bookmark_id}")
@@ -159,5 +174,7 @@ async def delete_bookmark(
     deleted_count = int(result.split()[-1])
     if deleted_count == 0:
         raise HTTPException(status_code=404, detail="Bookmark not found")
+
+    _invalidate_bookmarks(user.user_id)
 
     return Response(status_code=204)

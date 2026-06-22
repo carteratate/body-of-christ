@@ -20,6 +20,7 @@ import {
   trackExploreMoreClicked,
 } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
+import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 
 function hexToRgb(color: string): string {
   if (!color.startsWith("#") || color.length < 7) return "196,151,42";
@@ -85,7 +86,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
     const citation = showAuthor ? `${primaryReference} (${author})` : primaryReference;
-    const text = `${content} — ${citation} (${collection})`;
+    const text = `${stripVerseMarkers(content)} — ${citation} (${collection})`;
     navigator.clipboard.writeText(text)
       .then(() => showToast("Copied"))
       .catch(() => showToast("Copy failed", "error"));
@@ -122,7 +123,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
   // ── Explore more action ───────────────────────────────────────────────────
   function handleExploreMore() {
     trackExploreMoreClicked({ collection, source: "chunk_card" });
-    onExploreMore(content, primaryReference ?? "");
+    onExploreMore(stripVerseMarkers(content), primaryReference ?? "");
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
@@ -200,7 +201,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
       {isExpanded && (
         <div style={{ background: "transparent", padding: "16px" }}>
           {/* Content */}
-          <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">{content}</p>
+          <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">{renderVerseMarkers(content)}</p>
 
           {/* Relevance explanation */}
           {result.explanation !== "" && (

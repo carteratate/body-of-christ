@@ -725,6 +725,20 @@ if __name__ == "__main__":
 # Dual-pipeline passage builder — passage = pericope clamped to chapter
 # ---------------------------------------------------------------------------
 
+def _join_with_verse_markers(verse_tuples: list[tuple[int, int, str]]) -> str:
+    """Join verse texts, prepending {{v:N}} markers for all verses after the first.
+
+    The first verse relies on the passage's unit_label field instead.
+    """
+    parts = []
+    for i, (_ch, v, text) in enumerate(verse_tuples):
+        if i == 0:
+            parts.append(text)
+        else:
+            parts.append("{{v:%d}} %s" % (v, text))
+    return " ".join(parts)
+
+
 def clamp_pericopes_to_chapters(title, verses):
     """Group a pericope's (chapter, verse, text) list into per-chapter parts so
     a passage never crosses a chapter boundary. Returns [(chapter, [verses...])]."""
@@ -770,7 +784,7 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
             if not verses:
                 continue
             for chapter, chap_verses in clamp_pericopes_to_chapters(p.title, verses):
-                content = clean_text(" ".join(t for _, _, t in chap_verses))
+                content = clean_text(_join_with_verse_markers(chap_verses))
                 if not content:
                     continue
                 first_v = chap_verses[0][1]
@@ -794,7 +808,8 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
             for chapter, items in groupby(sorted(verse_map.items()),
                                           key=lambda kv: kv[0][0]):
                 cv = list(items)
-                content = clean_text(" ".join(t for _, t in cv))
+                cv_as_triples = [(ch, v, t) for (ch, v), t in cv]
+                content = clean_text(_join_with_verse_markers(cv_as_triples))
                 if not content:
                     continue
                 first_v = cv[0][0][1]

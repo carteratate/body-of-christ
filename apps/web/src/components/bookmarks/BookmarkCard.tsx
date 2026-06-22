@@ -5,6 +5,7 @@ import { Bookmark as BookmarkIcon, Copy, Search } from "lucide-react";
 import { removeBookmark, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackExploreMoreClicked } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
+import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 
 interface BookmarkCardProps {
   bookmark: Bookmark;
@@ -57,7 +58,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
 
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
-    const text = `${content} — ${displayReference} (${collection})`;
+    const text = `${stripVerseMarkers(content)} — ${displayReference} (${collection})`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text)
         .then(() => showToast("Copied"))
@@ -69,7 +70,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
   function handleExploreMore() {
     trackExploreMoreClicked({ collection, source: "chunk_card" });
     router.push(
-      `/search?explore=${encodeURIComponent(content)}&exploreRef=${encodeURIComponent(displayReference ?? "")}`
+      `/search?explore=${encodeURIComponent(stripVerseMarkers(content))}&exploreRef=${encodeURIComponent(displayReference ?? "")}`
     );
   }
 
@@ -129,7 +130,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, showToast }: Bookmark
       </div>
 
       {/* Content */}
-      <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">{content}</p>
+      <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">{renderVerseMarkers(content)}</p>
     </div>
   );
 }

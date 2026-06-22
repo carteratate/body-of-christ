@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReaderPassage } from "@/lib/api";
+import { renderVerseMarkers } from "@/lib/verse-markers";
 
 export function Passage({ passage, highlighted }: { passage: ReaderPassage; highlighted: boolean }) {
   return (
@@ -15,7 +16,7 @@ export function Passage({ passage, highlighted }: { passage: ReaderPassage; high
       {passage.unit_label && (
         <sup className="text-brand-muted mr-1" style={{ fontSize: 10 }}>{passage.unit_label}</sup>
       )}
-      {passage.content}
+      {renderVerseMarkers(passage.content)}
     </p>
   );
 }

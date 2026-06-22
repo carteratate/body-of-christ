@@ -7,6 +7,7 @@ vector + FTS paths is correct.
 from __future__ import annotations
 
 import asyncio
+import re
 
 import openai
 from qdrant_client.models import PointStruct
@@ -15,6 +16,12 @@ from config import settings
 from identity import passage_id
 from model import Document, Passage
 from writers.qdrant import upsert_points
+
+_VERSE_MARKER_RE = re.compile(r"\{\{v:\d+\}\}\s*")
+
+
+def _strip_verse_markers(text: str) -> str:
+    return _VERSE_MARKER_RE.sub("", text)
 
 
 def build_embedding_input(passages: list[Passage], idx: int,
@@ -26,7 +33,7 @@ def build_embedding_input(passages: list[Passage], idx: int,
     parts.append(p.content)
     if k_next and idx + 1 < len(passages) and passages[idx + 1].chapter_key == p.chapter_key:
         parts.append(passages[idx + 1].content[:k_next])
-    return " ".join(parts).strip()
+    return _strip_verse_markers(" ".join(parts).strip())
 
 
 def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:

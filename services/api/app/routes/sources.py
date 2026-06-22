@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,6 +11,10 @@ from app.models.auth import AuthUser
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+_sources_cache: "SourcesResponse | None" = None
+_sources_cache_ts: float = 0.0
+_SOURCES_TTL: float = 3600.0
 
 
 class SourceDocument(BaseModel):
@@ -33,7 +38,16 @@ async def get_sources(user: AuthUser = Depends(get_current_user)) -> SourcesResp
 
     Every row carries a real document_id (the reader opens it directly). Bible is
     returned as book-level documents grouped by translation on the frontend.
+
+    Response is cached in-memory for 1 hour since the corpus changes only at
+    ingestion time.
     """
+    global _sources_cache, _sources_cache_ts
+
+    now = time.monotonic()
+    if _sources_cache is not None and (now - _sources_cache_ts) < _SOURCES_TTL:
+        return _sources_cache
+
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
@@ -61,4 +75,7 @@ async def get_sources(user: AuthUser = Depends(get_current_user)) -> SourcesResp
             chunk_count=r["chunk_count"],
         ) for r in rows
     ]
-    return SourcesResponse(sources=sources)
+    response = SourcesResponse(sources=sources)
+    _sources_cache = response
+    _sources_cache_ts = now
+    return response
