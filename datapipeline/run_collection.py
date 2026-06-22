@@ -14,7 +14,7 @@ from model import Document
 from writers import reader_writer
 from writers import search_writer
 from writers.qdrant import get_client, ensure_collection, delete_collection_points
-from ingest import church_fathers, summa, bible, catechism, medieval
+from ingest import church_fathers, summa, bible, catechism, medieval, encyclicals
 
 BUILDERS = {
     "church-fathers": church_fathers.build_all,
@@ -22,6 +22,7 @@ BUILDERS = {
     "bible": bible.build_documents,
     "catechism": lambda: [catechism.build_document()],
     "medieval": medieval.build_documents,
+    "encyclicals": encyclicals.build_documents,
 }
 
 
