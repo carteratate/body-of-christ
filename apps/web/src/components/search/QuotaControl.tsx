@@ -1,9 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useAppContext } from "@/components/layout/AppShell";
-import { updatePreferences } from "@/lib/api";
-
 const QUOTA_OPTIONS = [3, 4, 5] as const;
 
 interface QuotaControlProps {
@@ -12,25 +8,6 @@ interface QuotaControlProps {
 }
 
 export function QuotaControl({ value, onChange }: QuotaControlProps) {
-  const { token } = useAppContext();
-  const tokenRef = useRef(token);
-  useEffect(() => {
-    tokenRef.current = token;
-  });
-
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      return;
-    }
-    if (!tokenRef.current) return;
-    const timer = setTimeout(() => {
-      updatePreferences(tokenRef.current!, { default_quota: value }).catch(() => {});
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [value]);
 
   return (
     <div className="flex shrink-0 items-center gap-2">

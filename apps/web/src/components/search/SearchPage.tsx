@@ -7,11 +7,13 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
 import { SearchResults } from "@/components/search/SearchResults";
+import { LoadingAnimation } from "@/components/search/LoadingAnimation";
 import { RateLimitModal } from "@/components/common";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import {
   streamSearch,
   getSearchResults,
+  updatePreferences,
   type ChunkResult,
 } from "@/lib/api";
 import {
@@ -72,6 +74,11 @@ function SearchPageInner() {
   const [rateLimitType, setRateLimitType] = useState<"per_minute" | "daily">("per_minute");
   const [searchPhase, setSearchPhase] = useState<"searching" | "ranking" | null>(null);
   const [exploreLabel, setExploreLabel] = useState<string | null>(null);
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [queryDone, setQueryDone] = useState(false);
+  // Controls when BottomBar switches from search input → filter pills during animation.
+  // Starts false (search input visible), becomes true ~1.4s in (when the gold line arrives).
+  const [animFilterBarActive, setAnimFilterBarActive] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [submittedCollections, setSubmittedCollections] = useState<string[]>([]);
   const [visibleCollections, setVisibleCollections] = useState<string[]>([]);
@@ -80,12 +87,43 @@ function SearchPageInner() {
 
   const abortRef = useRef<AbortController | null>(null);
   const exploreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const filterTransitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prefsSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prefsMountedRef = useRef(false);
+  const bufferedChunksRef = useRef<ChunkResult[]>([]);
+  const bufferedExplRef   = useRef<Record<string, string>>({});
+  // True once handleAnimReadyToShow has run — explanation deltas that arrive
+  // after the animation resolves update results state directly (live streaming).
+  const resolvedRef = useRef(false);
   useEffect(() => {
     return () => {
       abortRef.current?.abort();
       if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
+      if (filterTransitionTimerRef.current) clearTimeout(filterTransitionTimerRef.current);
+      if (prefsSaveTimerRef.current) clearTimeout(prefsSaveTimerRef.current);
     };
   }, []);
+
+  // ── Unified preferences save ──────────────────────────────────────────────
+  // Single debounced effect for all three preference fields. Saves in one call
+  // so rapid collection/quota/translation changes collapse to one API request.
+  // Guard skips empty-collections state (avoids 422 when all are deselected).
+  useEffect(() => {
+    if (!prefsMountedRef.current) {
+      prefsMountedRef.current = true;
+      return;
+    }
+    if (!token || activeCollections.length === 0) return;
+    if (prefsSaveTimerRef.current) clearTimeout(prefsSaveTimerRef.current);
+    prefsSaveTimerRef.current = setTimeout(() => {
+      updatePreferences(token, {
+        default_collections: activeCollections,
+        default_quota: quota,
+        preferred_translation: translation,
+      }).catch(() => {});
+    }, 800);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCollections, quota, translation]); // token is stable for a session
 
   // ── Pending sidebar slot ──────────────────────────────────────────────────
   // Tracks the ID of the current "New Search" placeholder. null = no placeholder
@@ -136,6 +174,13 @@ function SearchPageInner() {
     setIsRestoring(false);
     setSubmittedCollections([]);
     setVisibleCollections([]);
+    setShowAnimation(false);
+    setQueryDone(false);
+    setAnimFilterBarActive(false);
+    if (filterTransitionTimerRef.current) { clearTimeout(filterTransitionTimerRef.current); filterTransitionTimerRef.current = null; }
+    bufferedChunksRef.current = [];
+    bufferedExplRef.current   = {};
+    resolvedRef.current = false;
     restoredForId.current = null;
     exploredForQuery.current = null;
     activatePendingSlot();
@@ -195,6 +240,11 @@ function SearchPageInner() {
       setPendingSearch(pid, query);
       setActiveSearchId(pid);
 
+      bufferedChunksRef.current = [];
+      bufferedExplRef.current   = {};
+      resolvedRef.current = false;
+      if (filterTransitionTimerRef.current) clearTimeout(filterTransitionTimerRef.current);
+      setAnimFilterBarActive(false);
       setLoading(true);
       setSearchPhase(null);
       setError(null);
@@ -203,6 +253,10 @@ function SearchPageInner() {
       setSubmittedQuery(query);
       setSearchValue("");
       setResults([]);
+      setShowAnimation(true);
+      setQueryDone(false);
+      // Switch BottomBar from search input → filter pills when the gold line fades (~3.2s)
+      filterTransitionTimerRef.current = setTimeout(() => setAnimFilterBarActive(true), 3200);
       setExploreLabel(newExploreLabel ?? null);
       const snapshot = [...activeCollections];
       setSubmittedCollections(snapshot);
@@ -219,22 +273,26 @@ function SearchPageInner() {
               setSearchPhase(phase);
             },
             onChunk(chunk) {
-              setResults((prev) => [...prev, { ...chunk, explanation: null }]);
+              bufferedChunksRef.current.push({ ...chunk, explanation: null });
             },
             onExplanationDelta(chunkId, delta) {
-              setResults((prev) =>
-                prev.map((r) =>
+              if (resolvedRef.current) {
+                // Animation is done — update results state directly for live streaming
+                setResults(prev => prev.map(r =>
                   r.chunk_id === chunkId
                     ? { ...r, explanation: (r.explanation ?? "") + delta }
                     : r
-                )
-              );
+                ));
+              } else {
+                bufferedExplRef.current[chunkId] = (bufferedExplRef.current[chunkId] ?? "") + delta;
+              }
             },
             onDone(sid, resultCount) {
               setSearchPhase(null);
               setSearchId(sid);
-              setLoading(false);
-              // Search is now saved in DB — replace pending slot with real entry
+              // Results flush after animation completes — don't setLoading(false) here
+              setQueryDone(true);
+              // Search saved in DB — replace pending slot with real entry
               pendingIdRef.current = null;
               clearPendingSearch();
               if (sid) {
@@ -253,7 +311,8 @@ function SearchPageInner() {
               setSearchPhase(null);
               setError(msg);
               setLoading(false);
-              // Keep the pending slot — user is still in this fresh-search state
+              setShowAnimation(false);
+              setAnimFilterBarActive(false);
               trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
             },
             onRateLimit(retryAfter, limitType) {
@@ -261,6 +320,8 @@ function SearchPageInner() {
               setRateLimitRetryAfter(retryAfter ?? 60);
               setRateLimitType(limitType);
               setLoading(false);
+              setShowAnimation(false);
+              setAnimFilterBarActive(false);
             },
           },
           controller.signal
@@ -269,12 +330,32 @@ function SearchPageInner() {
         const msg = err instanceof Error ? err.message : "Search failed";
         setError(msg);
         setLoading(false);
+        setShowAnimation(false);
+        setAnimFilterBarActive(false);
         trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [loading, activeCollections, translation, quota, searchValue, setPendingSearch, setActiveSearchId, clearPendingSearch]
   );
+
+  // ── Animation ─────────────────────────────────────────────────────────────
+
+  function handleAnimReadyToShow() {
+    const merged = bufferedChunksRef.current.map(chunk => ({
+      ...chunk,
+      explanation: bufferedExplRef.current[chunk.chunk_id] ?? null,
+    }));
+    resolvedRef.current = true;  // subsequent explanation deltas go directly to results
+    setResults(merged);
+    setLoading(false);
+    // showAnimation stays true so the overlay can fade out over the results
+    setQueryDone(false);
+  }
+
+  function handleAnimFadeComplete() {
+    setShowAnimation(false);
+  }
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -332,7 +413,26 @@ function SearchPageInner() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-2">
+      <div className="relative flex-1 overflow-y-auto px-4 pt-4 pb-2">
+        {/* Animation overlay — scoped to content area only, BottomBar stays visible */}
+        {showAnimation && (
+          <LoadingAnimation
+            collections={activeCollections}
+            isQueryDone={queryDone}
+            onReadyToShow={handleAnimReadyToShow}
+            onFadeComplete={handleAnimFadeComplete}
+          />
+        )}
+
+        {/* Query bubble rendered above animation (z-20 > z-10) — same markup as post-animation bubble */}
+        {showAnimation && submittedQuery && !exploreLabel && (
+          <div className="absolute top-4 right-4 z-20 max-w-[70%] pointer-events-none">
+            <div className="rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
+              {submittedQuery}
+            </div>
+          </div>
+        )}
+
         {!submittedQuery && !loading && !error && (
           <EmptyState onSelectQuery={handleSelectQuery} />
         )}
@@ -397,8 +497,8 @@ function SearchPageInner() {
         }}
         onSearch={() => handleSearch(searchValue)}
         loading={loading}
-        isSearchActive={submittedQuery !== null}
-        submittedCollections={filterBarCollections}
+        isSearchActive={showAnimation ? animFilterBarActive : submittedQuery !== null}
+        submittedCollections={showAnimation ? submittedCollections : filterBarCollections}
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
       />

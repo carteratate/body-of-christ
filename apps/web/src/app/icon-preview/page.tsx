@@ -51,7 +51,7 @@ const SRC_R       = 21;
 const CHK_R       = 7;
 const SOURCE_RING = 175;
 const CHUNK_RING  = 50;
-const N_CHUNKS    = 15;
+const N_CHUNKS: number = 15;
 
 // Search bar — rendered at bottom, fades on submit
 const SB_W      = 296;

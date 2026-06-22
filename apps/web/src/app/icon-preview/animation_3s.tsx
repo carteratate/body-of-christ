@@ -49,7 +49,7 @@ const SRC_R       = 21;
 const CHK_R       = 7;
 const SOURCE_RING = 140;
 const CHUNK_RING  = 62;
-const N_CHUNKS    = 10;
+const N_CHUNKS: number = 10;
 
 // Search bar — rendered at bottom, fades on submit
 const SB_W      = 296;
