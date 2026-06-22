@@ -1,20 +1,112 @@
+"""Code of Canon Law (1983) ingestion (dual pipeline).
+
+Reads the vendored vatican.va canon pages from sources/canon-law/ and builds a
+single Document with one clean Passage per canon. Book is assigned by canon-
+number range (the 7 books have fixed ranges); Title/Chapter context is forward-
+filled across page boundaries (vatican.va only emits the header on the page
+where a section starts). The legacy parse helpers (parse_canon_page, grouping)
+are retained for their unit tests.
+"""
 from __future__ import annotations
-import asyncio
-import re
-import sys
-import time
+import json
 import os
+import re
 
-import httpx
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from load import close_pool, get_pool, upsert_chunk, upsert_document
+from identity import document_id, anchor as make_anchor
+from model import Document, Passage
+from normalize.text import clean_text
+from normalize.caps import smart_title_case
 
 _BASE = "http://www.vatican.va"
-_INDEX_URL = f"{_BASE}/archive/cod-iuris-canonici/cic_index_en.html"
-_DELAY = 1.0
+_SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "canon-law")
+
+# 1983 CIC: fixed Book canon-number ranges + canonical English titles.
+_BOOKS = [
+    (1, 203, "Book I: General Norms"),
+    (204, 746, "Book II: The People of God"),
+    (747, 833, "Book III: The Teaching Function of the Church"),
+    (834, 1253, "Book IV: The Sanctifying Function of the Church"),
+    (1254, 1310, "Book V: The Temporal Goods of the Church"),
+    (1311, 1399, "Book VI: Sanctions in the Church"),
+    (1400, 1752, "Book VII: Processes"),
+]
+
+
+def _book_for(num: int) -> str:
+    for lo, hi, name in _BOOKS:
+        if lo <= num <= hi:
+            return name
+    return "Book ?: Unknown"
+
+
+# Matches a full Roman numeral (used to re-uppercase ones smart_title_case
+# lowercased — its acronym set only covers I–X, so XI+ come back as 'Xi').
+_ROMAN_WORD = re.compile(r"^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")
+
+
+def _fix_romans(label: str) -> str:
+    return " ".join(
+        w.upper() if len(w) > 1 and _ROMAN_WORD.match(w.upper()) else w
+        for w in label.split())
+
+
+def _clean_label(text: str) -> str:
+    """Title-case an ALL-CAPS hierarchy header. Trailing punctuation is trimmed
+    BEFORE casing so trailing-dot Roman numerals ('TITLE II.') keep their case;
+    Roman numerals beyond X are re-uppercased after casing."""
+    trimmed = clean_text(text).strip().rstrip(".:").strip()
+    return _fix_romans(smart_title_case(trimmed))
+
+
+def build_documents() -> list[Document]:
+    with open(os.path.join(_SRC, "pages.json"), encoding="utf-8") as f:
+        pages = json.load(f)
+    raw: list[tuple[int, str, dict]] = []
+    for page in pages:
+        with open(os.path.join(_SRC, page["file"]), "rb") as fh:
+            html = fh.read().decode("utf-8", "replace")
+        raw.extend(parse_canon_page(html))
+
+    # Dedup by canon number, sorted ascending.
+    seen: set[int] = set()
+    uniq: list[tuple[int, str, dict]] = []
+    for num, text, ctx in sorted(raw, key=lambda x: x[0]):
+        if num not in seen:
+            seen.add(num)
+            uniq.append((num, text, ctx))
+
+    did = document_id("canon-law")
+    passages: list[Passage] = []
+    fill = {"title": "", "chapter": ""}
+    prev_book: str | None = None
+    pos = 0
+    for num, text, ctx in uniq:
+        book = _book_for(num)
+        if book != prev_book:            # reset sub-levels at each Book boundary
+            fill = {"title": "", "chapter": ""}
+            prev_book = book
+        if ctx.get("title"):
+            fill["title"] = _clean_label(ctx["title"])
+        if ctx.get("chapter"):
+            fill["chapter"] = _clean_label(ctx["chapter"])
+        label_parts = [book] + [v for v in (fill["title"], fill["chapter"]) if v]
+        chapter_label = " — ".join(label_parts)
+        chapter_key = make_anchor("canon-law", book.split(":")[0],
+                                  fill["title"] or "t", fill["chapter"] or "c")
+        passages.append(Passage(
+            content=clean_text(text),
+            reference=f"Code of Canon Law, Can. {num}",
+            anchor=make_anchor("can", num),
+            chapter_key=chapter_key, chapter_label=chapter_label,
+            position=pos, unit_label=f"Can. {num}",
+            metadata={"book": book, "title": fill["title"], "chapter": fill["chapter"],
+                      "canon": num}))
+        pos += 1
+    return [Document(id=did, collection="canon-law", title="Code of Canon Law (1983)",
+                     author="Catholic Church", year=1983, metadata={"source": "vatican.va"},
+                     passages=passages)]
 
 
 def deduplicate_urls(hrefs: list[str], base: str = _BASE) -> list[str]:
@@ -208,107 +300,3 @@ def parse_canon_page(html: str) -> list[tuple[int, str, dict]]:
 
     flush()
     return canons
-
-
-def _discover_page_urls(index_html: str) -> list[str]:
-    soup = BeautifulSoup(index_html, "lxml")
-    hrefs = [
-        a["href"] for a in soup.find_all("a", href=True)
-        if "cic_lib" in a["href"] and "_en.html" in a["href"]
-    ]
-    return deduplicate_urls(hrefs)
-
-
-async def main(pool) -> None:
-    print("Fetching Canon Law index...")
-    with httpx.Client(timeout=30, follow_redirects=True) as client:
-        resp = client.get(_INDEX_URL)
-        resp.raise_for_status()
-        page_urls = _discover_page_urls(resp.text)
-        print(f"  Found {len(page_urls)} canon pages.")
-
-        doc_id = await upsert_document(
-            pool,
-            collection="canon-law",
-            title="Code of Canon Law (1983)",
-            translation="",
-            author="Catholic Church",
-            year=1983,
-            metadata={"source": "vatican.va"},
-        )
-
-        all_canons: list[tuple[int, str, dict]] = []
-        skipped: list[str] = []
-
-        with tqdm(total=len(page_urls), unit="page", desc="Canon Law") as pbar:
-            for url in page_urls:
-                time.sleep(_DELAY)
-                try:
-                    r = client.get(url)
-                    r.raise_for_status()
-                    canons = parse_canon_page(r.text)
-                    all_canons.extend(canons)
-                except Exception as exc:
-                    print(f"\n  WARNING: Failed {url}: {exc}", file=sys.stderr)
-                    skipped.append(url)
-                pbar.update(1)
-
-    # Deduplicate by canon number (some canons appear on multiple pages)
-    seen_nums: set[int] = set()
-    unique_canons: list[tuple[int, str, dict]] = []
-    for num, text, canon_ctx in sorted(all_canons, key=lambda x: x[0]):
-        if num not in seen_nums:
-            seen_nums.add(num)
-            unique_canons.append((num, text, canon_ctx))
-
-    print(f"  Grouping {len(unique_canons)} unique canons...")
-
-    # Group consecutive canons by hierarchy context
-    groups: list[tuple[dict, list[tuple[int, str]]]] = []
-    current_key: tuple | None = None
-    current_ctx: dict = {}
-    current_group: list[tuple[int, str]] = []
-
-    for num, text, canon_ctx in unique_canons:
-        key = _context_key(canon_ctx)
-        if key != current_key:
-            if current_group:
-                groups.append((current_ctx, current_group))
-            current_key = key
-            current_ctx = canon_ctx
-            current_group = [(num, text)]
-        else:
-            current_group.append((num, text))
-
-    if current_group:
-        groups.append((current_ctx, current_group))
-
-    print(f"  Emitting {len(groups)} canon groups...")
-    all_chunks: list[tuple[str, str, int, dict]] = []
-    position_counter = [0]
-    for group_ctx, canons in groups:
-        _emit_group_chunks(canons, group_ctx, all_chunks, position_counter)
-
-    for content, ref, position, meta in all_chunks:
-        await upsert_chunk(
-            pool,
-            document_id=doc_id,
-            content=content,
-            position=position,
-            reference=ref,
-            metadata=meta,
-        )
-
-    if skipped:
-        print(f"  WARNING: {len(skipped)} pages failed: {skipped}", file=sys.stderr)
-    print(f"  Done. {len(all_chunks)} chunks written from {len(unique_canons)} unique canons.")
-
-
-if __name__ == "__main__":
-    async def _run():
-        pool = await get_pool()
-        try:
-            await main(pool)
-        finally:
-            await close_pool()
-    asyncio.run(_run())
