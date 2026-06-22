@@ -60,7 +60,7 @@ def test_pre_first_number_header_not_a_section():
 @pytest.mark.skipif(not _vendored, reason="encyclicals not vendored")
 def test_all_documents_produce_passages():
     docs = build_documents()
-    assert len(docs) == 48
+    assert len(docs) == 131
     for d in docs:
         assert d.passages, f"{d.title} produced no passages"
 

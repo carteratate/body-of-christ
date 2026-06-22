@@ -55,8 +55,100 @@ MEDIEVAL = [
 ]
 
 ENCYCLICALS = [
+    # Pope Benedict XIV (1740–1758)
+    ("Ubi Primum",                "Pope Benedict XIV",  1740, "https://www.papalencyclicals.net/ben14/b14ubipr.htm"),
+    ("Quanta Cura",               "Pope Benedict XIV",  1741, "https://www.papalencyclicals.net/ben14/b14quant.htm"),
+    ("Nimiam Licentiam",          "Pope Benedict XIV",  1743, "https://www.papalencyclicals.net/ben14/b14nimia.htm"),
+    ("Vix Pervenit",              "Pope Benedict XIV",  1745, "https://www.papalencyclicals.net/ben14/b14vixpe.htm"),
+    ("Magnae Nobis",              "Pope Benedict XIV",  1748, "https://www.papalencyclicals.net/ben14/b14magna.htm"),
+    ("Annus Qui Hunc",            "Pope Benedict XIV",  1749, "https://www.papalencyclicals.net/ben14/annus-qui-hunc.htm"),
+    ("Apostolica Constitutio",    "Pope Benedict XIV",  1749, "https://www.papalencyclicals.net/ben14/b14apost.htm"),
+    ("Peregrinantes",             "Pope Benedict XIV",  1749, "https://www.papalencyclicals.net/ben14/b14pereg.htm"),
+    ("A Quo Primum",              "Pope Benedict XIV",  1751, "https://www.papalencyclicals.net/ben14/b14aquo.htm"),
+    ("Cum Religiosi",             "Pope Benedict XIV",  1754, "https://www.papalencyclicals.net/ben14/b14cumre.htm"),
+    ("Quod Provinciale",          "Pope Benedict XIV",  1754, "https://www.papalencyclicals.net/ben14/b14quod.htm"),
+    ("Allatae Sunt",              "Pope Benedict XIV",  1755, "https://www.papalencyclicals.net/ben14/b14allat.htm"),
+    ("Ex Omnibus",                "Pope Benedict XIV",  1756, "https://www.papalencyclicals.net/ben14/b14exomn.htm"),
+    ("Ex Quo",                    "Pope Benedict XIV",  1756, "https://www.papalencyclicals.net/ben14/b14exquo.htm"),
+    # Pope Clement XIII (1758–1769)
+    ("A Quo Die",                 "Pope Clement XIII",  1758, "https://www.papalencyclicals.net/clem13/c13aquod.htm"),
+    ("Cum Primum",                "Pope Clement XIII",  1759, "https://www.papalencyclicals.net/clem13/c13cumpr.htm"),
+    ("Appetente Sacro",           "Pope Clement XIII",  1759, "https://www.papalencyclicals.net/clem13/c13appet.htm"),
+    ("In Dominico Agro",          "Pope Clement XIII",  1761, "https://www.papalencyclicals.net/clem13/c13indom.htm"),
+    ("Christianae Reipublicae",   "Pope Clement XIII",  1766, "https://www.papalencyclicals.net/clem13/c13chris.htm"),
+    ("Summa Quae",                "Pope Clement XIII",  1768, "https://www.papalencyclicals.net/clem13/c13summa.htm"),
+    # Pope Clement XIV (1769–1774)
+    ("Cum Summi",                         "Pope Clement XIV",  1769, "https://www.papalencyclicals.net/clem14/c14cumsu.htm"),
+    ("Decet Quam Maxime",                 "Pope Clement XIV",  1769, "https://www.papalencyclicals.net/clem14/c14decet.htm"),
+    ("Inscrutabili Divinae Sapientiae",   "Pope Clement XIV",  1769, "https://www.papalencyclicals.net/clem14/c14inscr.htm"),
+    ("Salutis Nostrae",                   "Pope Clement XIV",  1774, "https://www.papalencyclicals.net/clem14/c14salut.htm"),
+    # Pope Pius VI (1775–1799)
+    ("Inscrutabile",              "Pope Pius VI",       1775, "https://www.papalencyclicals.net/pius06/p6inscru.htm"),
+    ("Charitas",                  "Pope Pius VI",       1791, "https://www.papalencyclicals.net/pius06/p6charit.htm"),
+    ("Ubi Lutetiam",              "Pope Pius VI",       1792, "https://www.papalencyclicals.net/pius06/p6ubilu-i.htm"),
+    # Pope Pius VII (1800–1823)
+    ("Diu Satis",                 "Pope Pius VII",      1800, "https://www.papalencyclicals.net/pius07/p7diusat.htm"),
+    # Pope Leo XII (1823–1829)
+    ("Ubi Primum",                "Pope Leo XII",       1824, "https://www.papalencyclicals.net/leo12/l12ubipr.htm"),
+    ("Quod Hoc Ineunte",          "Pope Leo XII",       1824, "https://www.papalencyclicals.net/leo12/l12quodh.htm"),
+    ("Charitate Christi",         "Pope Leo XII",       1825, "https://www.papalencyclicals.net/leo12/l12chari.htm"),
+    ("Quo Graviora",              "Pope Leo XII",       1826, "https://www.papalencyclicals.net/leo12/l12quogr.htm"),
+    # Pope Pius VIII (1829–1830)
+    ("Traditi Humilitati",        "Pope Pius VIII",     1829, "https://www.papalencyclicals.net/pius08/p8tradit.htm"),
+    # Pope Gregory XVI (1831–1846)
+    ("Mirari Vos",                "Pope Gregory XVI",   1832, "https://www.papalencyclicals.net/greg16/g16mirar.htm"),
+    ("Cum Primum",                "Pope Gregory XVI",   1832, "https://www.papalencyclicals.net/greg16/g16cumpr.htm"),
+    ("Summo Iugiter Studio",      "Pope Gregory XVI",   1832, "https://www.papalencyclicals.net/greg16/g16summo.htm"),
+    ("Quo Graviora",              "Pope Gregory XVI",   1833, "https://www.papalencyclicals.net/greg16/g16quogr.htm"),
+    ("Singulari Nos",             "Pope Gregory XVI",   1834, "https://www.papalencyclicals.net/greg16/g16singu.htm"),
+    ("Commissum Divinitus",       "Pope Gregory XVI",   1835, "https://www.papalencyclicals.net/greg16/g16commi.htm"),
+    ("In Supremo Apostolatus",    "Pope Gregory XVI",   1839, "https://www.papalencyclicals.net/greg16/g16sup.htm"),
+    ("Probe Nostis",              "Pope Gregory XVI",   1840, "https://www.papalencyclicals.net/greg16/g16probe.htm"),
+    ("Quas Vestro",               "Pope Gregory XVI",   1841, "https://www.papalencyclicals.net/greg16/g16quasv.htm"),
+    ("Inter Praecipuas",          "Pope Gregory XVI",   1844, "https://www.papalencyclicals.net/greg16/g16inter.htm"),
+    # Pope Pius IX (1846–1878)
+    ("Qui Pluribus",              "Pope Pius IX",       1846, "https://www.papalencyclicals.net/pius09/p9quiplu.htm"),
+    ("Praedecessores Nostros",    "Pope Pius IX",       1847, "https://www.papalencyclicals.net/pius09/p9praede.htm"),
+    ("Ubi Primum",                "Pope Pius IX",       1847, "https://www.papalencyclicals.net/pius09/p9ubipr1.htm"),
+    ("Nostis Et Nobiscum",        "Pope Pius IX",       1849, "https://www.papalencyclicals.net/pius09/p9nostis.htm"),
+    ("Ubi Primum",                "Pope Pius IX",       1849, "https://www.papalencyclicals.net/pius09/p9ubipr2.htm"),
+    ("Exultavit Cor Nostrum",     "Pope Pius IX",       1851, "https://www.papalencyclicals.net/pius09/p9exulta.htm"),
+    ("Nemo Certe Ignorat",        "Pope Pius IX",       1852, "https://www.papalencyclicals.net/pius09/p9nemoce.htm"),
+    ("Probe Noscitis Venerabiles","Pope Pius IX",       1852, "https://www.papalencyclicals.net/pius09/p9proben.htm"),
+    ("Inter Multiplices",         "Pope Pius IX",       1853, "https://www.papalencyclicals.net/pius09/p9interm.htm"),
+    ("Apostolicae Nostrae Caritatis","Pope Pius IX",    1854, "https://www.papalencyclicals.net/pius09/p9aposto.htm"),
+    ("Ineffabilis Deus",          "Pope Pius IX",       1854, "https://www.papalencyclicals.net/pius09/p9ineff.htm"),
+    ("Neminem Vestrum",           "Pope Pius IX",       1854, "https://www.papalencyclicals.net/pius09/p9nemini.htm"),
+    ("Optime Noscitis",           "Pope Pius IX",       1854, "https://www.papalencyclicals.net/pius09/p9optim1.htm"),
+    ("Optime Noscitis",           "Pope Pius IX",       1855, "https://www.papalencyclicals.net/pius09/p9optim2.htm"),
+    ("Singulari Quidem",          "Pope Pius IX",       1856, "https://www.papalencyclicals.net/pius09/p9singul.htm"),
+    ("Amantissimi Redemptoris",   "Pope Pius IX",       1858, "https://www.papalencyclicals.net/pius09/p9amant1.htm"),
+    ("Cum Nuper",                 "Pope Pius IX",       1858, "https://www.papalencyclicals.net/pius09/p9cumnup.htm"),
+    ("Cum Sancta Mater Ecclesia", "Pope Pius IX",       1858, "https://www.papalencyclicals.net/pius09/p9cumsan.htm"),
+    ("Qui Nuper",                 "Pope Pius IX",       1859, "https://www.papalencyclicals.net/pius09/p9quinup.htm"),
+    ("Nullis Certe Verbis",       "Pope Pius IX",       1860, "https://www.papalencyclicals.net/pius09/p9nullis.htm"),
+    ("Amantissimus",              "Pope Pius IX",       1862, "https://www.papalencyclicals.net/pius09/p9amant2.htm"),
+    ("Incredibili",               "Pope Pius IX",       1863, "https://www.papalencyclicals.net/pius09/p9incred.htm"),
+    ("Quanto Conficiamur Moerore","Pope Pius IX",       1863, "https://www.papalencyclicals.net/pius09/p9quanto.htm"),
+    ("Maximae Quidem",            "Pope Pius IX",       1864, "https://www.papalencyclicals.net/pius09/p9maxima.htm"),
+    ("Quanta Cura",               "Pope Pius IX",       1864, "https://www.papalencyclicals.net/pius09/p9quanta.htm"),
+    ("Syllabus of Errors",        "Pope Pius IX",       1864, "https://www.papalencyclicals.net/pius09/p9syll.htm"),
+    ("Meridionali Americae",      "Pope Pius IX",       1865, "https://www.papalencyclicals.net/pius09/p9meridi.htm"),
+    ("Levate",                    "Pope Pius IX",       1867, "https://www.papalencyclicals.net/pius09/p9levate.htm"),
+    ("Respicientes",              "Pope Pius IX",       1870, "https://www.papalencyclicals.net/pius09/p9respic.htm"),
+    ("Beneficia Dei",             "Pope Pius IX",       1871, "https://www.papalencyclicals.net/pius09/p9benefi.htm"),
+    ("Saepe Venerabiles Fratres", "Pope Pius IX",       1871, "https://www.papalencyclicals.net/pius09/p9saepev.htm"),
+    ("Ubi Nos",                   "Pope Pius IX",       1871, "https://www.papalencyclicals.net/pius09/p9ubinos.htm"),
+    ("Quae In Patriarchatu",      "Pope Pius IX",       1872, "https://www.papalencyclicals.net/pius09/p9quaein.htm"),
+    ("Etsi Multa",                "Pope Pius IX",       1873, "https://www.papalencyclicals.net/pius09/p9etsimu.htm"),
+    ("Quartus Supra",             "Pope Pius IX",       1873, "https://www.papalencyclicals.net/pius09/p9quartu.htm"),
+    ("Gravibus Ecclesiae",        "Pope Pius IX",       1874, "https://www.papalencyclicals.net/pius09/p9gravib.htm"),
+    ("Omnem Sollicitudinem",      "Pope Pius IX",       1874, "https://www.papalencyclicals.net/pius09/p9omnems.htm"),
+    ("Vix Dum A Nobis",           "Pope Pius IX",       1874, "https://www.papalencyclicals.net/pius09/p9vixdum.htm"),
+    ("Graves Ac Diuturnae",       "Pope Pius IX",       1875, "https://www.papalencyclicals.net/pius09/p9graves.htm"),
+    ("Quod Nunquam",              "Pope Pius IX",       1875, "https://www.papalencyclicals.net/pius09/p9quodnu.htm"),
     # Pope Leo XIII (1878–1903)
-    ("Aeterni Patris",            "Pope Leo XIII",     1879, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_04081879_aeterni-patris.html"),
+    ("Aeterni Patris",            "Pope Leo XIII",      1879, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_04081879_aeterni-patris.html"),
     ("Immortale Dei",             "Pope Leo XIII",     1885, "https://www.papalencyclicals.net/leo13/l13sta.htm"),
     ("Libertas",                  "Pope Leo XIII",     1888, "https://www.papalencyclicals.net/leo13/l13liber.htm"),
     ("Rerum Novarum",             "Pope Leo XIII",     1891, "https://www.papalencyclicals.net/leo13/l13rerum.htm"),
@@ -210,9 +302,13 @@ def vendor_encyclicals(force: bool) -> None:
     d = os.path.join(_SOURCES, "encyclicals")
     os.makedirs(d, exist_ok=True)
     manifest = []
+    seen_slugs: set[str] = set()
     with _client() as client:
         for title, author, year, url in ENCYCLICALS:
-            fname = _slug(title) + ".html"
+            base_slug = _slug(title)
+            slug = base_slug if base_slug not in seen_slugs else f"{base_slug}-{year}"
+            seen_slugs.add(slug)
+            fname = slug + ".html"
             if not (os.path.exists(os.path.join(d, fname)) and not force):
                 data = _fetch(client, url)
                 if data is None:
@@ -222,7 +318,118 @@ def vendor_encyclicals(force: bool) -> None:
             else:
                 print(f"  skip (exists): {fname}")
             manifest.append({"title": title, "author": author, "year": year,
-                             "url": url, "slug": _slug(title), "file": fname})
+                             "url": url, "slug": slug, "file": fname})
+    _write_manifest(d, manifest)
+
+
+APOSTOLIC_EXHORTATIONS = [
+    # Pope Pius X
+    ("Haerent Animo",               "Pope Pius X",       1908, "https://www.papalencyclicals.net/pius10/p10haer.htm"),
+    # Pope Pius XII
+    ("Menti Nostrae",               "Pope Pius XII",     1950, "https://www.papalencyclicals.net/pius12/p12clerg.htm"),
+    # Pope Paul VI
+    ("Signum Magnum",               "Pope Paul VI",      1967, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19670513_signum-magnum.html"),
+    ("Evangelica Testificatio",     "Pope Paul VI",      1971, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19710629_evangelica-testificatio.html"),
+    ("Marialis Cultus",             "Pope Paul VI",      1974, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19740202_marialis-cultus.html"),
+    ("Gaudete in Domino",           "Pope Paul VI",      1975, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19750509_gaudete-in-domino.html"),
+    # Pope John Paul II
+    ("Catechesi Tradendae",         "Pope John Paul II", 1979, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_16101979_catechesi-tradendae.html"),
+    ("Familiaris Consortio",        "Pope John Paul II", 1981, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_19811122_familiaris-consortio.html"),
+    ("Redemptionis Donum",          "Pope John Paul II", 1984, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_25031984_redemptionis-donum.html"),
+    ("Reconciliatio et Paenitentia","Pope John Paul II", 1984, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_02121984_reconciliatio-et-paenitentia.html"),
+    ("Christifideles Laici",        "Pope John Paul II", 1988, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_30121988_christifideles-laici.html"),
+    ("Redemptoris Custos",          "Pope John Paul II", 1989, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_15081989_redemptoris-custos.html"),
+    ("Pastores Dabo Vobis",         "Pope John Paul II", 1992, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_25031992_pastores-dabo-vobis.html"),
+    ("Ecclesia in Africa",          "Pope John Paul II", 1995, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_14091995_ecclesia-in-africa.html"),
+    ("Vita Consecrata",             "Pope John Paul II", 1996, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_25031996_vita-consecrata.html"),
+    ("Ecclesia in America",         "Pope John Paul II", 1999, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_22011999_ecclesia-in-america.html"),
+    ("Ecclesia in Asia",            "Pope John Paul II", 1999, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_06111999_ecclesia-in-asia.html"),
+    ("Ecclesia in Oceania",         "Pope John Paul II", 2001, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_20011122_ecclesia-in-oceania.html"),
+    ("Ecclesia in Europa",          "Pope John Paul II", 2003, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_20030628_ecclesia-in-europa.html"),
+    ("Pastores Gregis",             "Pope John Paul II", 2003, "https://www.vatican.va/content/john-paul-ii/en/apost_exhortations/documents/hf_jp-ii_exh_20031016_pastores-gregis.html"),
+    # Pope Benedict XVI
+    ("Sacramentum Caritatis",       "Pope Benedict XVI", 2007, "https://www.vatican.va/content/benedict-xvi/en/apost_exhortations/documents/hf_ben-xvi_exh_20070222_sacramentum-caritatis.html"),
+    ("Verbum Domini",               "Pope Benedict XVI", 2010, "https://www.vatican.va/content/benedict-xvi/en/apost_exhortations/documents/hf_ben-xvi_exh_20100930_verbum-domini.html"),
+    ("Africae Munus",               "Pope Benedict XVI", 2011, "https://www.vatican.va/content/benedict-xvi/en/apost_exhortations/documents/hf_ben-xvi_exh_20111119_africae-munus.html"),
+    ("Ecclesia in Medio Oriente",   "Pope Benedict XVI", 2012, "https://www.vatican.va/content/benedict-xvi/en/apost_exhortations/documents/hf_ben-xvi_exh_20120914_ecclesia-in-medio-oriente.html"),
+    # Pope Francis
+    ("Gaudete et Exsultate",        "Pope Francis",      2018, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20180319_gaudete-et-exsultate.html"),
+    ("Christus Vivit",              "Pope Francis",      2019, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20190325_christus-vivit.html"),
+    ("Querida Amazonia",            "Pope Francis",      2020, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20200202_querida-amazonia.html"),
+    ("Laudate Deum",                "Pope Francis",      2023, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/20231004-laudate-deum.html"),
+    ("C'est la confiance",          "Pope Francis",      2023, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/20231015-santateresa-delbambinogesu.html"),
+    # Pope Leo XIV
+    ("Dilexi te",                   "Pope Leo XIV",      2025, "https://www.vatican.va/content/leo-xiv/en/apost_exhortations/documents/20251004-dilexi-te.html"),
+]
+
+
+def vendor_apostolic_exhortations(force: bool) -> None:
+    d = os.path.join(_SOURCES, "apostolic-exhortations")
+    os.makedirs(d, exist_ok=True)
+    manifest = []
+    seen_slugs: set[str] = set()
+    with _client() as client:
+        for title, author, year, url in APOSTOLIC_EXHORTATIONS:
+            base_slug = _slug(title)
+            slug = base_slug if base_slug not in seen_slugs else f"{base_slug}-{year}"
+            seen_slugs.add(slug)
+            fname = slug + ".html"
+            if not (os.path.exists(os.path.join(d, fname)) and not force):
+                data = _fetch(client, url)
+                if data is None:
+                    continue
+                _save(d, fname, data, force)
+                time.sleep(_DELAY)
+            else:
+                print(f"  skip (exists): {fname}")
+            manifest.append({"title": title, "author": author, "year": year,
+                             "url": url, "slug": slug, "file": fname})
+    _write_manifest(d, manifest)
+
+
+PAPAL_DOCUMENTS = [
+    # Historical Papal Bulls
+    ("Unam Sanctam",               "Pope Boniface VIII",  1302, "https://www.papalencyclicals.net/bon08/b8unam.htm"),
+    ("Exsurge Domine",             "Pope Leo X",          1520, "https://www.papalencyclicals.net/leo10/l10exdom.htm"),
+    ("Sublimis Deus",              "Pope Paul III",       1537, "https://www.papalencyclicals.net/paul03/p3subli.htm"),
+    # Apostolic Letters — John Paul II
+    ("Salvifici Doloris",          "Pope John Paul II",   1984, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/1984/documents/hf_jp-ii_apl_11021984_salvifici-doloris.html"),
+    ("Mulieris Dignitatem",        "Pope John Paul II",   1988, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/1988/documents/hf_jp-ii_apl_15081988_mulieris-dignitatem.html"),
+    ("Ordinatio Sacerdotalis",     "Pope John Paul II",   1994, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/1994/documents/hf_jp-ii_apl_19940522_ordinatio-sacerdotalis.html"),
+    ("Tertio Millennio Adveniente","Pope John Paul II",   1994, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/1994/documents/hf_jp-ii_apl_19941110_tertio-millennio-adveniente.html"),
+    ("Orientale Lumen",            "Pope John Paul II",   1995, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/1995/documents/hf_jp-ii_apl_19950502_orientale-lumen.html"),
+    ("Dies Domini",                "Pope John Paul II",   1998, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/1998/documents/hf_jp-ii_apl_05071998_dies-domini.html"),
+    ("Novo Millennio Ineunte",     "Pope John Paul II",   2001, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2001/documents/hf_jp-ii_apl_20010106_novo-millennio-ineunte.html"),
+    ("Rosarium Virginis Mariae",   "Pope John Paul II",   2002, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html"),
+    # Apostolic Letters — Benedict XVI
+    ("Porta Fidei",                "Pope Benedict XVI",   2011, "https://www.vatican.va/content/benedict-xvi/en/motu_proprio/documents/hf_ben-xvi_motu-proprio_20111011_porta-fidei.html"),
+    # Apostolic Letters — Francis
+    ("Misericordia et Misera",     "Pope Francis",        2016, "https://www.vatican.va/content/francesco/en/apost_letters/documents/papa-francesco-lettera-ap_20161120_misericordia-et-misera.html"),
+    ("Patris Corde",               "Pope Francis",        2020, "https://www.vatican.va/content/francesco/en/apost_letters/documents/papa-francesco-lettera-ap_20201208_patris-corde.html"),
+]
+
+
+def vendor_papal_documents(force: bool) -> None:
+    d = os.path.join(_SOURCES, "papal-documents")
+    os.makedirs(d, exist_ok=True)
+    manifest = []
+    seen_slugs: set[str] = set()
+    with _client() as client:
+        for title, author, year, url in PAPAL_DOCUMENTS:
+            base_slug = _slug(title)
+            slug = base_slug if base_slug not in seen_slugs else f"{base_slug}-{year}"
+            seen_slugs.add(slug)
+            fname = slug + ".html"
+            if not (os.path.exists(os.path.join(d, fname)) and not force):
+                data = _fetch(client, url)
+                if data is None:
+                    continue
+                _save(d, fname, data, force)
+                time.sleep(_DELAY)
+            else:
+                print(f"  skip (exists): {fname}")
+            manifest.append({"title": title, "author": author, "year": year,
+                             "url": url, "slug": slug, "file": fname})
     _write_manifest(d, manifest)
 
 
@@ -310,6 +517,8 @@ def _write_manifest(coll_dir: str, manifest: list, name: str = "manifest.json") 
 VENDORS = {
     "medieval": vendor_medieval,
     "encyclicals": vendor_encyclicals,
+    "apostolic-exhortations": vendor_apostolic_exhortations,
+    "papal-documents": vendor_papal_documents,
     "councils": vendor_councils,
     "canon-law": vendor_canon_law,
 }

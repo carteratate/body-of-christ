@@ -30,10 +30,12 @@
   --color-collection-catechism:      #5b9bd4;
   --color-collection-church-fathers: #b070d4;
   --color-collection-encyclicals:    #e8c040;
-  --color-collection-canon-law:      #e84040;
-  --color-collection-summa:          #55cc88;
-  --color-collection-medieval:       #90a0a8;
-  --color-collection-councils:       #60d4c8;
+  --color-collection-canon-law:               #e84040;
+  --color-collection-apostolic-exhortations: #c87840;
+  --color-collection-papal-documents:        #6070c8;
+  --color-collection-summa:                  #55cc88;
+  --color-collection-medieval:               #90a0a8;
+  --color-collection-councils:               #60d4c8;
 }
 
 html {

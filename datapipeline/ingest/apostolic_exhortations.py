@@ -1,9 +1,8 @@
-"""Encyclicals ingestion (dual pipeline).
+"""Apostolic Exhortations ingestion (dual pipeline).
 
-One Document per encyclical from vendored HTML. A typed-stream tokenizer over
-<p> handles three numbering layouts (inline `N. body`, bold heading + following
-body, and section headers). One passage per numbered paragraph; chapters group
-by section header, falling back to paragraph-range buckets.
+One Document per exhortation from vendored HTML. Same typed-stream tokenizer
+as encyclicals — handles three numbering layouts (inline `N. body`, bold
+heading + following body, and section headers).
 """
 from __future__ import annotations
 
@@ -22,22 +21,16 @@ from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
 from ingest.common import split_at_sentences, _split_at_whitespace
 
-_SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "encyclicals")
-_NUM = re.compile(r"^(\d+)\s*\.\s*(.*)", re.DOTALL)  # tolerate "10 ." (space before dot)
+_SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "apostolic-exhortations")
+_NUM = re.compile(r"^(\d+)\s*\.\s*(.*)", re.DOTALL)
 _ROMAN = re.compile(r"^[IVX]+\.\s+\S")
 _BUCKET = 20
-# papalencyclicals.net page chrome (nav/footer boilerplate that pollutes the
-# <p> stream and otherwise masquerades as bold section headers).
 _CHROME = re.compile(
     r"automatically notified|more information about this site|fan of our facebook"
     r"|^search tips$|^sitemap$|return to (?:the )?home", re.IGNORECASE)
 
 
 def _strip_leading_caps(text: str) -> str:
-    """Drop a leading run of ALL-CAPS words (a Latin incipit / title masthead that
-    shares a paragraph with the greeting, e.g. 'IOANNES PAULUS PP. II EVANGELIUM
-    VITAE To the Bishops…' → 'To the Bishops…'). Stops at the first word with a
-    lowercase letter, so normal greetings ('To Our…', 'Venerable…') are untouched."""
     words = text.split()
     i = 0
     while i < len(words):
@@ -50,9 +43,6 @@ def _strip_leading_caps(text: str) -> str:
 
 
 def _is_shouting(text: str) -> bool:
-    """True for an ALL-CAPS masthead line (e.g. 'ENCYCLICAL LETTER … OF THE
-    SUPREME PONTIFF …'); used to keep the document title block out of the
-    preamble passage. Mixed-case greetings (~0–15% caps) are kept."""
     letters = [c for c in text if c.isalpha()]
     if len(letters) < 8:
         return False
@@ -68,14 +58,13 @@ def _is_bold_only(p) -> bool:
 
 
 def _tokens(soup) -> list[tuple[str, int | None, str]]:
-    """Return an ordered list of ('preamble'|'section'|'para', num|None, text)."""
     for tag in soup.find_all(["script", "style", "nav", "header", "footer", "form"]):
         tag.decompose()
     items = [(p, p.get_text(" ", strip=True)) for p in soup.find_all("p")]
     items = [(p, t) for p, t in items if t and not _CHROME.search(t)]
     toks: list[tuple[str, int | None, str]] = []
     seen = False
-    cur: list | None = None   # [num, [parts]]
+    cur: list | None = None
 
     def flush() -> None:
         nonlocal cur
@@ -93,10 +82,8 @@ def _tokens(soup) -> list[tuple[str, int | None, str]]:
                 body = m.group(2).strip()
                 cur = [int(m.group(1)), [body] if body else []]
             elif is_roman:
-                # A genuine Roman-numeral section can open the document before §1.
                 toks.append(("section", None, t))
             else:
-                # Title/subtitle/greeting (incl. bold-only) before §1 is noise.
                 toks.append(("preamble", None, t))
             continue
         if m:
@@ -108,11 +95,9 @@ def _tokens(soup) -> list[tuple[str, int | None, str]]:
             flush()
             toks.append(("section", None, t))
             continue
-        if cur is not None:        # stray prose => body of the open paragraph
+        if cur is not None:
             cur[1].append(t)
     flush()
-    # Drop sections that have no paragraph before the next section/EOF — leftover
-    # nav/footer headers that slipped past the chrome filter add no real chapter.
     cleaned: list[tuple[str, int | None, str]] = []
     for i, tok in enumerate(toks):
         if tok[0] == "section":
@@ -145,7 +130,7 @@ def build_document(entry: dict) -> Document:
     toks = _tokens(soup)
     slug, author = entry["slug"], entry["author"]
     title = _disambiguate_title(entry["title"], slug, entry["year"])
-    did = document_id("encyclicals", slug)
+    did = document_id("apostolic-exhortations", slug)
     has_sec = any(k == "section" for k, _, _ in toks)
     meta = {"pope": author, "url": entry["url"]}
     passages: list[Passage] = []
@@ -171,11 +156,6 @@ def build_document(entry: dict) -> Document:
                                     position=pos, unit_label=unit, metadata=meta))
             pos += 1
 
-    # The preamble is the greeting/salutation before §1. Take preamble tokens only
-    # up to the first ALL-CAPS line: a shouting line is the title masthead or an
-    # embedded table-of-contents header (modern vatican.va docs), never greeting
-    # prose — so it marks the end of any real preamble. Masthead-first documents
-    # (Caritas, Laudato, Magnifica Humanitas) yield no preamble passage.
     pre_parts: list[str] = []
     for k, _, t in toks:
         if k != "preamble":
@@ -188,9 +168,6 @@ def build_document(entry: dict) -> Document:
         emit(pre, f"{title} — Preamble", make_anchor(slug, "preamble"),
              make_anchor(slug, "preamble"), "Preamble", None)
 
-    # For bucket-labeled docs (no section headers), label each bucket by the
-    # ACTUAL paragraph range present, not the fixed bucket width — so a final
-    # partial bucket reads e.g. "Paragraphs 61–64", not "Paragraphs 61–80".
     bucket_range: dict[int, tuple[int, int]] = {}
     if not has_sec:
         for k, n, _ in toks:
@@ -210,7 +187,6 @@ def build_document(entry: dict) -> Document:
             cur_key = make_anchor(slug, f"sec-{sec_ord}")
             cur_label = title_case_shouting(clean_text(t))
             continue
-        # k == "para"
         if has_sec:
             if cur_key is None:
                 cur_key, cur_label = make_anchor(slug, "sec-0"), "Introduction"
@@ -222,7 +198,7 @@ def build_document(entry: dict) -> Document:
             ckey = make_anchor(slug, f"bucket-{b}")
         emit(t, f"{title}, §{n}", make_anchor(slug, n), ckey, clabel, f"§{n}")
 
-    return Document(id=did, collection="encyclicals", title=title, author=author,
+    return Document(id=did, collection="apostolic-exhortations", title=title, author=author,
                     year=entry["year"], metadata={"url": entry["url"], "pope": author},
                     passages=passages)
 

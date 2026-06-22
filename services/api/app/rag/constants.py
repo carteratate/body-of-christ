@@ -3,6 +3,8 @@ VALID_COLLECTIONS: frozenset[str] = frozenset({
     "catechism",
     "church-fathers",
     "encyclicals",
+    "apostolic-exhortations",
+    "papal-documents",
     "canon-law",
     "summa",
     "medieval",
