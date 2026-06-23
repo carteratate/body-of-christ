@@ -120,12 +120,12 @@ async def update_bookmark_note(
     user: AuthUser = Depends(get_current_user),
 ) -> BookmarkResponse:
     """Update the personal note on a bookmark owned by the authenticated user."""
-    _check_write_rate_limit(str(user.user_id))
-
     try:
         bookmark_uuid = uuid.UUID(bookmark_id)
     except ValueError:
         raise HTTPException(status_code=422, detail="Invalid bookmark_id: must be a UUID")
+
+    _check_write_rate_limit(str(user.user_id))
 
     pool = get_pool()
     if not pool:
