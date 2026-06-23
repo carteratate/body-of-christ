@@ -1,5 +1,7 @@
 import logging
+import time
 import uuid
+from collections import defaultdict
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -11,6 +13,7 @@ from app.models.bookmarks import (
     BookmarkChunk,
     BookmarkCreate,
     BookmarkListResponse,
+    BookmarkNoteUpdate,
     BookmarkResponse,
     BookmarkSource,
 )
@@ -24,6 +27,25 @@ _bookmarks_cache: dict[uuid.UUID, BookmarkListResponse] = {}
 
 def _invalidate_bookmarks(user_id: uuid.UUID) -> None:
     _bookmarks_cache.pop(user_id, None)
+
+
+# In-memory per-user write rate limiter (20 writes/min).
+# Uses a separate bucket from search/chat quotas to avoid cross-contamination.
+_write_rate_timestamps: dict[str, list[float]] = defaultdict(list)
+_WRITE_RATE_LIMIT = 20
+
+
+def _check_write_rate_limit(user_id: str) -> None:
+    now = time.time()
+    window = [t for t in _write_rate_timestamps[user_id] if now - t < 60]
+    _write_rate_timestamps[user_id] = window
+    if len(window) >= _WRITE_RATE_LIMIT:
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests. Try again in a moment.",
+            headers={"Retry-After": "60"},
+        )
+    _write_rate_timestamps[user_id].append(now)
 
 
 @router.post("/bookmarks", response_model=BookmarkResponse, status_code=201)
@@ -91,6 +113,53 @@ async def create_bookmark(
     )
 
 
+@router.patch("/bookmarks/{bookmark_id}", response_model=BookmarkResponse)
+async def update_bookmark_note(
+    bookmark_id: str,
+    body: BookmarkNoteUpdate,
+    user: AuthUser = Depends(get_current_user),
+) -> BookmarkResponse:
+    """Update the personal note on a bookmark owned by the authenticated user."""
+    _check_write_rate_limit(str(user.user_id))
+
+    try:
+        bookmark_uuid = uuid.UUID(bookmark_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid bookmark_id: must be a UUID")
+
+    pool = get_pool()
+    if not pool:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+
+    try:
+        row = await pool.fetchrow(
+            """
+            UPDATE bookmarks
+            SET note = $1
+            WHERE id = $2 AND user_id = $3
+            RETURNING id, chunk_id, created_at, note
+            """,
+            body.note,
+            bookmark_uuid,
+            user.user_id,
+        )
+    except Exception as exc:
+        logger.error("update_bookmark_note failed (%s)", exc.__class__.__name__)
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+
+    if row is None:
+        raise HTTPException(status_code=404, detail="Bookmark not found")
+
+    _invalidate_bookmarks(user.user_id)
+
+    return BookmarkResponse(
+        id=str(row["id"]),
+        chunk_id=str(row["chunk_id"]),
+        created_at=row["created_at"].isoformat(),
+        note=row["note"],
+    )
+
+
 @router.get("/bookmarks", response_model=BookmarkListResponse)
 async def list_bookmarks(
     user: AuthUser = Depends(get_current_user),
@@ -107,7 +176,7 @@ async def list_bookmarks(
     try:
         rows = await pool.fetch(
             """
-            SELECT b.id, b.chunk_id, b.created_at,
+            SELECT b.id, b.chunk_id, b.created_at, b.note,
                    c.content, c.reference,
                    d.collection, d.title AS document_title, d.author
             FROM bookmarks b
@@ -128,6 +197,7 @@ async def list_bookmarks(
                 id=str(row["id"]),
                 chunk_id=str(row["chunk_id"]),
                 created_at=row["created_at"].isoformat(),
+                note=row["note"],
                 chunk=BookmarkChunk(
                     content=row["content"],
                     source=BookmarkSource(
