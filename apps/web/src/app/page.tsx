@@ -36,7 +36,7 @@ export default async function HomePage() {
             surrounding suffering, virtue, justice, grace, salvation, human
             nature, and more. Those conversations have occurred over
             Scripture, catechisms, encyclicals, writings of the early church
-            fathers, church counsels, and more. The Body of Christ
+            fathers, church counsels, etc. The Body of Christ
             brings their wisdom together into one place, allowing you to explore
             the Catholic tradition through the people who built, defended,
             and passed down the fullness of the faith.
