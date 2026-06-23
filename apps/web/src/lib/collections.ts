@@ -14,8 +14,8 @@ export const COLLECTIONS: CollectionMeta[] = [
   { key: "church-fathers", label: "Church Fathers",   color: "var(--color-collection-church-fathers)", hex: "#b070d4" },
   { key: "medieval",       label: "Medieval",         color: "var(--color-collection-medieval)",       hex: "#90a0a8" },
   { key: "canon-law",               label: "Canon Law",             color: "var(--color-collection-canon-law)",               hex: "#e84040" },
-  { key: "apostolic-exhortations", label: "Apostolic Exhortations", color: "var(--color-collection-apostolic-exhortations)", hex: "#c87840" },
-  { key: "papal-documents",        label: "Papal Documents",        color: "var(--color-collection-papal-documents)",        hex: "#6070c8" },
+  { key: "apostolic-exhortations", label: "Apostolic Exhortations", color: "var(--color-collection-apostolic-exhortations)", hex: "#4858c8" },
+  { key: "papal-documents",        label: "Papal Documents",        color: "var(--color-collection-papal-documents)",        hex: "#b86080" },
 ];
 
 export const ALL_COLLECTION_KEYS: string[] = COLLECTIONS.map((c) => c.key);
