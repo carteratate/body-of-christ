@@ -13,19 +13,18 @@ from model import Document
 from identity import passage_id
 
 
-async def clear_collection(pool: asyncpg.Pool, collection: str) -> None:
+async def clear_collection(conn: asyncpg.Connection, collection: str) -> None:
     """Delete a collection's chunks + documents before a clean re-ingest."""
-    async with pool.acquire() as conn:
-        await conn.execute(
-            "DELETE FROM chunks WHERE document_id IN "
-            "(SELECT id FROM documents WHERE collection = $1)",
-            collection,
-        )
-        await conn.execute("DELETE FROM documents WHERE collection = $1", collection)
+    await conn.execute(
+        "DELETE FROM chunks WHERE document_id IN "
+        "(SELECT id FROM documents WHERE collection = $1)",
+        collection,
+    )
+    await conn.execute("DELETE FROM documents WHERE collection = $1", collection)
 
 
-async def write_document(pool: asyncpg.Pool, doc: Document) -> None:
-    async with pool.acquire() as conn:
+async def write_document(conn: asyncpg.Connection, doc: Document) -> None:
+    async with conn.transaction():
         await conn.execute(
             """
             INSERT INTO documents (id, collection, title, translation, author, year, metadata)

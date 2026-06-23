@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Apostolic Exhortations — Color Explorer</title>
+<style>
+  body { background: #090E1A; color: #EAE6DC; font-family: system-ui, -apple-system, sans-serif; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  h1 { color: #C4972A; margin-bottom: 0.25rem; }
+  .subtitle { color: #7A8099; margin-bottom: 2rem; font-size: 0.9rem; }
+  .section-title { color: #C4972A; font-size: 1.1rem; border-bottom: 1px solid #222; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 0.75rem; }
+
+  .palette-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2rem; }
+  .palette-chip { padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: #090E1A; }
+
+  .trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+
+  .chunk-card { border-radius: 8px; overflow: hidden; }
+  .chunk-card .header {
+    padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .chunk-card .header-left { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .chunk-card .badge {
+    display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 8px;
+    font-size: 0.7rem; font-weight: 500; border: 1px solid var(--c); color: var(--c);
+    background: transparent; white-space: nowrap; flex-shrink: 0;
+  }
+  .chunk-card .ref { font-size: 0.8rem; font-weight: 600; color: #EAE6DC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chunk-card .author-line { font-size: 0.7rem; color: #EAE6DC; line-height: 1.2; }
+  .chunk-card .score-box { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .chunk-card .score-val {
+    font-size: 10px; color: #EAE6DC; border-radius: 4px; padding: 1px 5px;
+  }
+  .chunk-card .body { padding: 12px 14px; }
+  .chunk-card .body p { font-size: 0.8rem; color: #EAE6DC; line-height: 1.55; }
+  .chunk-card .actions {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
+  }
+  .chunk-card .icon-btn { padding: 3px; color: #7A8099; background: none; border: none; font-size: 12px; }
+  .chunk-card .text-btn {
+    padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; color: #C4972A;
+    border: 1px solid #C4972A; background: none;
+  }
+  .option-label {
+    font-size: 0.75rem; color: #7A8099; margin-bottom: 3px; font-weight: 600;
+    text-align: center;
+  }
+  .option-label.candidate { color: #EAE6DC; font-size: 0.85rem; }
+  .option-label .hex { font-family: monospace; color: #555; font-weight: 400; }
+  .vs-arrow { color: #333; font-size: 0.7rem; text-align: center; margin-bottom: 3px; }
+</style>
+</head>
+<body>
+
+<h1>Apostolic Exhortations — Color Comparison</h1>
+<p class="subtitle">Each candidate (center, labeled) flanked by its two closest existing colors. Judge how distinct it reads.</p>
+
+<p style="color:#C4972A; font-size:0.85rem; margin-bottom:6px; font-weight:600;">Full existing palette:</p>
+<div class="palette-row">
+  <span class="palette-chip" style="background:#d4885a;">Bible</span>
+  <span class="palette-chip" style="background:#5b9bd4;">Catechism</span>
+  <span class="palette-chip" style="background:#b070d4; color:#fff;">Ch. Fathers</span>
+  <span class="palette-chip" style="background:#e8c040;">Encyclicals</span>
+  <span class="palette-chip" style="background:#55cc88;">Summa</span>
+  <span class="palette-chip" style="background:#e84040; color:#fff;">Canon Law</span>
+  <span class="palette-chip" style="background:#90a0a8;">Medieval</span>
+  <span class="palette-chip" style="background:#60d4c8;">Councils</span>
+  <span class="palette-chip" style="background:#b86080; color:#fff;">Papal Docs</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<p class="section-title">Orange Family</p>
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- 1. Vermillion vs Canon Law + Bible -->
+<div class="trio">
+  <div>
+    <div class="option-label">Canon Law <span class="hex">#e84040</span></div>
+    <div class="chunk-card" style="--c:#e84040; border: 1px solid rgba(232,64,64,0.7); background: rgba(232,64,64,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Canon Law</span><div><div class="ref">Canon 1, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(232,64,64,0.12); border:2px solid rgba(232,64,64,0.8);">78%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(232,64,64,0.25);"><p>The canons of this Code regard only the Latin Church. They bind all and only those who have been baptized in the Catholic Church.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">1. Vermillion <span class="hex">#e84e20</span></div>
+    <div class="chunk-card" style="--c:#e84e20; border: 1px solid rgba(232,78,32,0.7); background: rgba(232,78,32,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(232,78,32,0.12); border:2px solid rgba(232,78,32,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(232,78,32,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Bible <span class="hex">#d4885a</span></div>
+    <div class="chunk-card" style="--c:#d4885a; border: 1px solid rgba(212,136,90,0.7); background: rgba(212,136,90,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Bible</span><div><div class="ref">Genesis 1:1-3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(212,136,90,0.12); border:2px solid rgba(212,136,90,0.8);">92%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(212,136,90,0.25);"><p>In the beginning God created the heavens and the earth. The earth was without form and void, and darkness was over the face of the deep.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Cadmium Orange vs Bible + Encyclicals -->
+<div class="trio">
+  <div>
+    <div class="option-label">Bible <span class="hex">#d4885a</span></div>
+    <div class="chunk-card" style="--c:#d4885a; border: 1px solid rgba(212,136,90,0.7); background: rgba(212,136,90,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Bible</span><div><div class="ref">Genesis 1:1-3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(212,136,90,0.12); border:2px solid rgba(212,136,90,0.8);">92%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(212,136,90,0.25);"><p>In the beginning God created the heavens and the earth. The earth was without form and void, and darkness was over the face of the deep.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">2. Cadmium Orange <span class="hex">#f58820</span></div>
+    <div class="chunk-card" style="--c:#f58820; border: 1px solid rgba(245,136,32,0.7); background: rgba(245,136,32,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(245,136,32,0.12); border:2px solid rgba(245,136,32,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(245,136,32,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Encyclicals <span class="hex">#e8c040</span></div>
+    <div class="chunk-card" style="--c:#e8c040; border: 1px solid rgba(232,192,64,0.7); background: rgba(232,192,64,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Encyclicals</span><div><div class="author-line">Pope Leo XIII</div><div class="ref">Rerum Novarum, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(232,192,64,0.12); border:2px solid rgba(232,192,64,0.8);">85%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(232,192,64,0.25);"><p>The spirit of revolutionary change which has long been disturbing the nations of the world has passed beyond the sphere of politics.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Flame vs Canon Law + Bible -->
+<div class="trio">
+  <div>
+    <div class="option-label">Canon Law <span class="hex">#e84040</span></div>
+    <div class="chunk-card" style="--c:#e84040; border: 1px solid rgba(232,64,64,0.7); background: rgba(232,64,64,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Canon Law</span><div><div class="ref">Canon 1, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(232,64,64,0.12); border:2px solid rgba(232,64,64,0.8);">78%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(232,64,64,0.25);"><p>The canons of this Code regard only the Latin Church. They bind all and only those who have been baptized in the Catholic Church.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">3. Flame <span class="hex">#e25828</span></div>
+    <div class="chunk-card" style="--c:#e25828; border: 1px solid rgba(226,88,40,0.7); background: rgba(226,88,40,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(226,88,40,0.12); border:2px solid rgba(226,88,40,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(226,88,40,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Bible <span class="hex">#d4885a</span></div>
+    <div class="chunk-card" style="--c:#d4885a; border: 1px solid rgba(212,136,90,0.7); background: rgba(212,136,90,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Bible</span><div><div class="ref">Genesis 1:1-3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(212,136,90,0.12); border:2px solid rgba(212,136,90,0.8);">92%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(212,136,90,0.25);"><p>In the beginning God created the heavens and the earth. The earth was without form and void, and darkness was over the face of the deep.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Apricot Glow vs Bible + Encyclicals -->
+<div class="trio">
+  <div>
+    <div class="option-label">Bible <span class="hex">#d4885a</span></div>
+    <div class="chunk-card" style="--c:#d4885a; border: 1px solid rgba(212,136,90,0.7); background: rgba(212,136,90,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Bible</span><div><div class="ref">Genesis 1:1-3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(212,136,90,0.12); border:2px solid rgba(212,136,90,0.8);">92%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(212,136,90,0.25);"><p>In the beginning God created the heavens and the earth. The earth was without form and void, and darkness was over the face of the deep.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">4. Apricot Glow <span class="hex">#f0a050</span></div>
+    <div class="chunk-card" style="--c:#f0a050; border: 1px solid rgba(240,160,80,0.7); background: rgba(240,160,80,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(240,160,80,0.12); border:2px solid rgba(240,160,80,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(240,160,80,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Encyclicals <span class="hex">#e8c040</span></div>
+    <div class="chunk-card" style="--c:#e8c040; border: 1px solid rgba(232,192,64,0.7); background: rgba(232,192,64,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Encyclicals</span><div><div class="author-line">Pope Leo XIII</div><div class="ref">Rerum Novarum, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(232,192,64,0.12); border:2px solid rgba(232,192,64,0.8);">85%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(232,192,64,0.25);"><p>The spirit of revolutionary change which has long been disturbing the nations of the world has passed beyond the sphere of politics.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<p class="section-title">Yellow-Green Gap</p>
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- 5. Chartreuse vs Encyclicals + Summa -->
+<div class="trio">
+  <div>
+    <div class="option-label">Encyclicals <span class="hex">#e8c040</span></div>
+    <div class="chunk-card" style="--c:#e8c040; border: 1px solid rgba(232,192,64,0.7); background: rgba(232,192,64,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Encyclicals</span><div><div class="author-line">Pope Leo XIII</div><div class="ref">Rerum Novarum, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(232,192,64,0.12); border:2px solid rgba(232,192,64,0.8);">85%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(232,192,64,0.25);"><p>The spirit of revolutionary change which has long been disturbing the nations of the world has passed beyond the sphere of politics.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">5. Chartreuse <span class="hex">#a0c830</span></div>
+    <div class="chunk-card" style="--c:#a0c830; border: 1px solid rgba(160,200,48,0.7); background: rgba(160,200,48,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(160,200,48,0.12); border:2px solid rgba(160,200,48,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(160,200,48,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Summa <span class="hex">#55cc88</span></div>
+    <div class="chunk-card" style="--c:#55cc88; border: 1px solid rgba(85,204,136,0.7); background: rgba(85,204,136,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Summa Theologica</span><div><div class="ref">I, Q.2, Art.3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(85,204,136,0.12); border:2px solid rgba(85,204,136,0.8);">90%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(85,204,136,0.25);"><p>The existence of God can be proved in five ways. The first and more manifest way is the argument from motion.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Lime Gold vs Encyclicals + Summa -->
+<div class="trio">
+  <div>
+    <div class="option-label">Encyclicals <span class="hex">#e8c040</span></div>
+    <div class="chunk-card" style="--c:#e8c040; border: 1px solid rgba(232,192,64,0.7); background: rgba(232,192,64,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Encyclicals</span><div><div class="author-line">Pope Leo XIII</div><div class="ref">Rerum Novarum, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(232,192,64,0.12); border:2px solid rgba(232,192,64,0.8);">85%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(232,192,64,0.25);"><p>The spirit of revolutionary change which has long been disturbing the nations of the world has passed beyond the sphere of politics.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">6. Lime Gold <span class="hex">#c8d038</span></div>
+    <div class="chunk-card" style="--c:#c8d038; border: 1px solid rgba(200,208,56,0.7); background: rgba(200,208,56,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(200,208,56,0.12); border:2px solid rgba(200,208,56,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(200,208,56,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Summa <span class="hex">#55cc88</span></div>
+    <div class="chunk-card" style="--c:#55cc88; border: 1px solid rgba(85,204,136,0.7); background: rgba(85,204,136,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Summa Theologica</span><div><div class="ref">I, Q.2, Art.3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(85,204,136,0.12); border:2px solid rgba(85,204,136,0.8);">90%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(85,204,136,0.25);"><p>The existence of God can be proved in five ways. The first and more manifest way is the argument from motion.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<p class="section-title">Blue-Violet Gap</p>
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- 7. Indigo vs Catechism + Church Fathers -->
+<div class="trio">
+  <div>
+    <div class="option-label">Catechism <span class="hex">#5b9bd4</span></div>
+    <div class="chunk-card" style="--c:#5b9bd4; border: 1px solid rgba(91,155,212,0.7); background: rgba(91,155,212,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Catechism</span><div><div class="ref">CCC §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(91,155,212,0.12); border:2px solid rgba(91,155,212,0.8);">88%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(91,155,212,0.25);"><p>God, infinitely perfect and blessed in himself, in a plan of sheer goodness freely created man to make him share in his own blessed life.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">7. Indigo <span class="hex">#6868d0</span></div>
+    <div class="chunk-card" style="--c:#6868d0; border: 1px solid rgba(104,104,208,0.7); background: rgba(104,104,208,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(104,104,208,0.12); border:2px solid rgba(104,104,208,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(104,104,208,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Church Fathers <span class="hex">#b070d4</span></div>
+    <div class="chunk-card" style="--c:#b070d4; border: 1px solid rgba(176,112,212,0.7); background: rgba(176,112,212,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Church Fathers</span><div><div class="author-line">St. Augustine</div><div class="ref">Confessions, Bk. I</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(176,112,212,0.12); border:2px solid rgba(176,112,212,0.8);">84%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(176,112,212,0.25);"><p>Great art Thou, O Lord, and greatly to be praised; great is Thy power, and Thy wisdom infinite.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. Royal Blue vs Catechism + Church Fathers -->
+<div class="trio">
+  <div>
+    <div class="option-label">Catechism <span class="hex">#5b9bd4</span></div>
+    <div class="chunk-card" style="--c:#5b9bd4; border: 1px solid rgba(91,155,212,0.7); background: rgba(91,155,212,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Catechism</span><div><div class="ref">CCC §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(91,155,212,0.12); border:2px solid rgba(91,155,212,0.8);">88%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(91,155,212,0.25);"><p>God, infinitely perfect and blessed in himself, in a plan of sheer goodness freely created man to make him share in his own blessed life.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">8. Royal Blue <span class="hex">#4858c8</span></div>
+    <div class="chunk-card" style="--c:#4858c8; border: 1px solid rgba(72,88,200,0.7); background: rgba(72,88,200,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(72,88,200,0.12); border:2px solid rgba(72,88,200,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(72,88,200,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Church Fathers <span class="hex">#b070d4</span></div>
+    <div class="chunk-card" style="--c:#b070d4; border: 1px solid rgba(176,112,212,0.7); background: rgba(176,112,212,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Church Fathers</span><div><div class="author-line">St. Augustine</div><div class="ref">Confessions, Bk. I</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(176,112,212,0.12); border:2px solid rgba(176,112,212,0.8);">84%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(176,112,212,0.25);"><p>Great art Thou, O Lord, and greatly to be praised; great is Thy power, and Thy wisdom infinite.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<p class="section-title">Magenta Gap</p>
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- 9. Warm Magenta vs Church Fathers + Papal Docs -->
+<div class="trio">
+  <div>
+    <div class="option-label">Church Fathers <span class="hex">#b070d4</span></div>
+    <div class="chunk-card" style="--c:#b070d4; border: 1px solid rgba(176,112,212,0.7); background: rgba(176,112,212,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Church Fathers</span><div><div class="author-line">St. Augustine</div><div class="ref">Confessions, Bk. I</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(176,112,212,0.12); border:2px solid rgba(176,112,212,0.8);">84%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(176,112,212,0.25);"><p>Great art Thou, O Lord, and greatly to be praised; great is Thy power, and Thy wisdom infinite.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">9. Warm Magenta <span class="hex">#c848a0</span></div>
+    <div class="chunk-card" style="--c:#c848a0; border: 1px solid rgba(200,72,160,0.7); background: rgba(200,72,160,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(200,72,160,0.12); border:2px solid rgba(200,72,160,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(200,72,160,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Papal Docs <span class="hex">#b86080</span></div>
+    <div class="chunk-card" style="--c:#b86080; border: 1px solid rgba(184,96,128,0.7); background: rgba(184,96,128,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Papal Documents</span><div><div class="author-line">Pope Pius IX</div><div class="ref">Ineffabilis Deus, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(184,96,128,0.12); border:2px solid rgba(184,96,128,0.8);">80%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(184,96,128,0.25);"><p>God Ineffable, whose ways are mercy and truth, whose will is omnipotence itself, and whose divine power no obstacle can withstand.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 10. Deep Orchid vs Church Fathers + Papal Docs -->
+<div class="trio">
+  <div>
+    <div class="option-label">Church Fathers <span class="hex">#b070d4</span></div>
+    <div class="chunk-card" style="--c:#b070d4; border: 1px solid rgba(176,112,212,0.7); background: rgba(176,112,212,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Church Fathers</span><div><div class="author-line">St. Augustine</div><div class="ref">Confessions, Bk. I</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(176,112,212,0.12); border:2px solid rgba(176,112,212,0.8);">84%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(176,112,212,0.25);"><p>Great art Thou, O Lord, and greatly to be praised; great is Thy power, and Thy wisdom infinite.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">10. Deep Orchid <span class="hex">#d050b0</span></div>
+    <div class="chunk-card" style="--c:#d050b0; border: 1px solid rgba(208,80,176,0.7); background: rgba(208,80,176,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(208,80,176,0.12); border:2px solid rgba(208,80,176,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(208,80,176,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Papal Docs <span class="hex">#b86080</span></div>
+    <div class="chunk-card" style="--c:#b86080; border: 1px solid rgba(184,96,128,0.7); background: rgba(184,96,128,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Papal Documents</span><div><div class="author-line">Pope Pius IX</div><div class="ref">Ineffabilis Deus, §1</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(184,96,128,0.12); border:2px solid rgba(184,96,128,0.8);">80%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(184,96,128,0.25);"><p>God Ineffable, whose ways are mercy and truth, whose will is omnipotence itself, and whose divine power no obstacle can withstand.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<p class="section-title">Spring Green Gap</p>
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- 11. Sea Glass vs Summa + Councils -->
+<div class="trio">
+  <div>
+    <div class="option-label">Summa <span class="hex">#55cc88</span></div>
+    <div class="chunk-card" style="--c:#55cc88; border: 1px solid rgba(85,204,136,0.7); background: rgba(85,204,136,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Summa Theologica</span><div><div class="ref">I, Q.2, Art.3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(85,204,136,0.12); border:2px solid rgba(85,204,136,0.8);">90%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(85,204,136,0.25);"><p>The existence of God can be proved in five ways. The first and more manifest way is the argument from motion.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">11. Sea Glass <span class="hex">#40b890</span></div>
+    <div class="chunk-card" style="--c:#40b890; border: 1px solid rgba(64,184,144,0.7); background: rgba(64,184,144,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(64,184,144,0.12); border:2px solid rgba(64,184,144,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(64,184,144,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Councils <span class="hex">#60d4c8</span></div>
+    <div class="chunk-card" style="--c:#60d4c8; border: 1px solid rgba(96,212,200,0.7); background: rgba(96,212,200,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Councils</span><div><div class="ref">Vatican II, Lumen Gentium</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(96,212,200,0.12); border:2px solid rgba(96,212,200,0.8);">86%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(96,212,200,0.25);"><p>Christ is the Light of nations. Because this is so, this Sacred Synod gathered together in the Holy Spirit eagerly desires to shed on all men.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 12. Jade vs Summa + Councils -->
+<div class="trio">
+  <div>
+    <div class="option-label">Summa <span class="hex">#55cc88</span></div>
+    <div class="chunk-card" style="--c:#55cc88; border: 1px solid rgba(85,204,136,0.7); background: rgba(85,204,136,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Summa Theologica</span><div><div class="ref">I, Q.2, Art.3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(85,204,136,0.12); border:2px solid rgba(85,204,136,0.8);">90%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(85,204,136,0.25);"><p>The existence of God can be proved in five ways. The first and more manifest way is the argument from motion.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label candidate">12. Jade <span class="hex">#38a870</span></div>
+    <div class="chunk-card" style="--c:#38a870; border: 1px solid rgba(56,168,112,0.7); background: rgba(56,168,112,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Apostolic Exhortations</span><div><div class="author-line">Pope John Paul II</div><div class="ref">Familiaris Consortio, §3</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(56,168,112,0.12); border:2px solid rgba(56,168,112,0.8);">87%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(56,168,112,0.25);"><p>The family in the modern world, as much as and perhaps more than any other institution, has been beset by the many profound and rapid changes.</p></div>
+    </div>
+  </div>
+  <div>
+    <div class="option-label">Councils <span class="hex">#60d4c8</span></div>
+    <div class="chunk-card" style="--c:#60d4c8; border: 1px solid rgba(96,212,200,0.7); background: rgba(96,212,200,0.32);">
+      <div class="header"><div class="header-left"><span class="badge">Councils</span><div><div class="ref">Vatican II, Lumen Gentium</div></div></div>
+        <div class="score-box"><span class="score-val" style="background:rgba(96,212,200,0.12); border:2px solid rgba(96,212,200,0.8);">86%</span></div>
+      </div>
+      <div class="body" style="border-top: 1px solid rgba(96,212,200,0.25);"><p>Christ is the Light of nations. Because this is so, this Sacred Synod gathered together in the Holy Spirit eagerly desires to shed on all men.</p></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

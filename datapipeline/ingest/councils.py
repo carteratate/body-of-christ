@@ -30,6 +30,9 @@ _CHAPTER = re.compile(r"^CHAPTER\s+([IVXLCDM]+)\b\.?\s*(.*)", re.IGNORECASE | re
 _LEAD_CANON = re.compile(r"^\[(\d+[a-z]?)\]\s*\.?\s*(.*)", re.DOTALL)
 # Editorial brackets: page markers ([Page 45]), footnote refs ([3]), notes.
 _BRACKET = re.compile(r"\[[^\]]*\]")
+_CHROME = re.compile(
+    r"automatically notified|more information about this site|fan of our facebook"
+    r"|^search tips$|^sitemap$|return to (?:the )?home", re.IGNORECASE)
 _MIN = 40
 _TARGET = 2200
 _BUCKET = 20   # §-paragraphs per chapter when a doc has no chapter headings
@@ -110,7 +113,7 @@ def build_ecumenical(entry: dict, soup: BeautifulSoup) -> Document:
 
     for el in soup.find_all(["h1", "h2", "h3", "h4", "p"]):
         t = el.get_text(" ", strip=True)
-        if not t:
+        if not t or _CHROME.search(t):
             continue
         if el.name in ("h2", "h3", "h4"):
             flush_prose()
@@ -167,7 +170,8 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
     # wrapped as <p><b>… is also visited twice (parent + child) — dedupe by label.
     els = soup.find_all(["h1", "h2", "h3", "h4", "p", "strong", "b"])
     last_num_idx = max((i for i, el in enumerate(els)
-                        if el.name == "p" and _NUM.match(el.get_text(" ", strip=True))),
+                        if el.name == "p" and _NUM.match(el.get_text(" ", strip=True))
+                        and not _CHROME.search(el.get_text(" ", strip=True))),
                        default=-1)
     headings: dict[int, str] = {}
     last_label: str | None = None
@@ -186,7 +190,7 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
     chap_ord, chap_key, chap_label = 0, make_anchor(dslug, "chap-0"), title
     for i, el in enumerate(els):
         t = el.get_text(" ", strip=True)
-        if not t:
+        if not t or _CHROME.search(t):
             continue
         if i in headings:
             chap_ord += 1

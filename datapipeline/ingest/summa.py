@@ -63,7 +63,7 @@ def _split_article(text: str) -> list[tuple[str | None, str]]:
     # pieces alternate: [pre, marker, body, marker, body, ...]
     for i in range(1, len(pieces), 2):
         marker = pieces[i].strip().rstrip(":,")
-        body = (marker + " " + pieces[i + 1].strip()).strip() if i + 1 < len(pieces) else marker
+        body = pieces[i + 1].strip() if i + 1 < len(pieces) else ""
         out.append((marker, body))
     return out
 

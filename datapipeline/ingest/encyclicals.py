@@ -67,12 +67,20 @@ def _is_bold_only(p) -> bool:
             and not bare and len(t) >= 8 and not t.endswith(":"))
 
 
+_NOTES_HEADING = re.compile(r"^(?:END)?NOTES?$|^FOOTNOTES?$", re.IGNORECASE)
+
+
 def _tokens(soup) -> list[tuple[str, int | None, str]]:
     """Return an ordered list of ('preamble'|'section'|'para', num|None, text)."""
     for tag in soup.find_all(["script", "style", "nav", "header", "footer", "form"]):
         tag.decompose()
     items = [(p, p.get_text(" ", strip=True)) for p in soup.find_all("p")]
     items = [(p, t) for p, t in items if t and not _CHROME.search(t)]
+    # Trim footnotes/endnotes sections at the end of the document.
+    for i, (_, t) in enumerate(items):
+        if _NOTES_HEADING.match(t.strip()):
+            items = items[:i]
+            break
     toks: list[tuple[str, int | None, str]] = []
     seen = False
     cur: list | None = None   # [num, [parts]]
@@ -111,6 +119,31 @@ def _tokens(soup) -> list[tuple[str, int | None, str]]:
         if cur is not None:        # stray prose => body of the open paragraph
             cur[1].append(t)
     flush()
+    # Detect inline footnotes via numbering reset (e.g. §34 → §1 with short text).
+    last_para_num = 0
+    for i, (k, n, t) in enumerate(toks):
+        if k == "para" and n is not None:
+            if n < last_para_num and n <= 3:
+                remaining = [tt for kk, _, tt in toks[i:] if kk == "para"]
+                if remaining and sum(len(tt) for tt in remaining) / len(remaining) < 150:
+                    toks = toks[:i]
+                    break
+            last_para_num = n
+    # Unnumbered fallback: if no numbered paragraphs were found, re-classify
+    # preamble tokens so the body text isn't silently dropped.
+    if not any(k == "para" for k, _, _ in toks):
+        retyped: list[tuple[str, int | None, str]] = []
+        n = 1
+        for k, _, t in toks:
+            if k != "preamble":
+                retyped.append((k, None, t))
+                continue
+            if _is_shouting(t):
+                retyped.append(("section", None, t))
+            else:
+                retyped.append(("para", n, t))
+                n += 1
+        toks = retyped
     # Drop sections that have no paragraph before the next section/EOF — leftover
     # nav/footer headers that slipped past the chrome filter add no real chapter.
     cleaned: list[tuple[str, int | None, str]] = []

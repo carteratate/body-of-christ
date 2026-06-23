@@ -39,15 +39,14 @@ async def run(collection: str, target: str, clean: bool, limit: int | None) -> N
     print(f"{collection}: {len(docs)} documents, "
           f"{sum(len(d.passages) for d in docs)} passages")
 
-    pool = await asyncpg.create_pool(settings.DATABASE_URL, min_size=1, max_size=5,
-                                     statement_cache_size=0)
+    conn = await asyncpg.connect(settings.DATABASE_URL)
     qdrant = get_client()
     try:
         await ensure_collection(qdrant)
         if target in ("reader", "both"):
-            await reader_writer.clear_collection(pool, collection)
+            await reader_writer.clear_collection(conn, collection)
             for d in docs:
-                await reader_writer.write_document(pool, d)
+                await reader_writer.write_document(conn, d)
             print(f"  reader: wrote {len(docs)} documents to Supabase")
         if target in ("search", "both"):
             if clean:
@@ -57,7 +56,7 @@ async def run(collection: str, target: str, clean: bool, limit: int | None) -> N
                 await search_writer.write_document(qdrant, d)
             print(f"  search: embedded + upserted points to Qdrant")
     finally:
-        await pool.close()
+        await conn.close()
         await qdrant.close()
 
 

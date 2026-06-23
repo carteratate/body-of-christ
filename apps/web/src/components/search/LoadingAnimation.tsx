@@ -21,12 +21,16 @@ function rim(fx: number, fy: number, tx: number, ty: number, r: number) {
 // ── Palette ───────────────────────────────────────────────────────────────
 
 const PALETTE: Record<string, { hex: string; label: string; short: string }> = {
-  "bible":          { hex: "#d4885a", label: "Bible",       short: "Bib" },
-  "catechism":      { hex: "#5b9bd4", label: "Catechism",   short: "CCC" },
-  "church-fathers": { hex: "#b070d4", label: "Ch. Fathers", short: "CF"  },
-  "encyclicals":    { hex: "#e8c040", label: "Encyclicals", short: "Enc" },
-  "summa":          { hex: "#55cc88", label: "Summa",       short: "ST"  },
-  "canon-law":      { hex: "#e84040", label: "Canon Law",   short: "CL"  },
+  "bible":                    { hex: "#d4885a", label: "Bible",          short: "Bib" },
+  "catechism":                { hex: "#5b9bd4", label: "Catechism",      short: "CCC" },
+  "church-fathers":           { hex: "#b070d4", label: "Ch. Fathers",    short: "CF"  },
+  "encyclicals":              { hex: "#e8c040", label: "Encyclicals",    short: "Enc" },
+  "summa":                    { hex: "#55cc88", label: "Summa",          short: "ST"  },
+  "canon-law":                { hex: "#e84040", label: "Canon Law",      short: "CL"  },
+  "medieval":                 { hex: "#90a0a8", label: "Medieval",       short: "Med" },
+  "councils":                 { hex: "#60d4c8", label: "Councils",       short: "Cou" },
+  "apostolic-exhortations":   { hex: "#4858c8", label: "Apost. Exhort.", short: "AE"  },
+  "papal-documents":          { hex: "#b86080", label: "Papal Docs",     short: "PD"  },
 };
 
 const ACCENT = "#C4972A";
@@ -92,13 +96,12 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
   const BOC_X = W / 2;
   const BOC_Y = H / 2;
 
-  // Reference values: SOURCE_RING_75=131, CHUNK_RING_75=38 (75% of originals)
-  const OUTER_R_BASE = 131 + 38;
+  const OUTER_R_BASE = 140 + 32;
   const availR       = Math.min(W / 2, H / 2) * 0.85;
   const k            = availR / OUTER_R_BASE;
 
-  const SOURCE_RING = 131 * k;
-  const CHUNK_RING  = 38 * k;
+  const SOURCE_RING = 140 * k;
+  const CHUNK_RING  = 32 * k;
   const BOC_R       = 32 * k;
   const SRC_R       = 16 * k;
   const CHK_R       = 5 * k;
