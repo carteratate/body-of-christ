@@ -402,7 +402,7 @@ export async function updateBookmarkNote(
   token: string,
   bookmarkId: string,
   note: string | null,
-): Promise<Bookmark> {
+): Promise<void> {
   const res = await fetch(`${API_URL}/v1/bookmarks/${bookmarkId}`, {
     method: "PATCH",
     headers: {
@@ -412,7 +412,6 @@ export async function updateBookmarkNote(
     body: JSON.stringify({ note }),
   });
   if (!res.ok) throw new Error(`Failed to update note: ${res.status}`);
-  return res.json() as Promise<Bookmark>;
 }
 
 export async function submitFeedback(
