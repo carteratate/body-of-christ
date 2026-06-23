@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Settings as SettingsIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Settings as SettingsIcon, Church, LogOut } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/components/layout/AppShell";
 import { updatePreferences } from "@/lib/api";
 
@@ -36,9 +39,16 @@ function SettingsError({ onRetry }: { onRetry: () => void }) {
 }
 
 export function SettingsPage() {
+  const router = useRouter();
   const { ready, token, preferences, setPreferences, preferencesError } = useAppContext();
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.replace("/login");
+  }
 
   const isLoading = !ready || (ready && !!token && preferences === null && !preferencesError);
 
@@ -117,6 +127,34 @@ export function SettingsPage() {
       {saving && (
         <p className="text-brand-muted text-xs mt-3">Saving…</p>
       )}
+
+      {/* About */}
+      <section className="rounded-lg bg-brand-surface p-4 mt-4">
+        <h2 className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-3">
+          Info
+        </h2>
+        <Link
+          href="/about"
+          className="flex items-center gap-2 text-sm text-brand-primary hover:text-brand-accent transition-colors"
+        >
+          <Church size={16} />
+          About
+        </Link>
+      </section>
+
+      {/* Sign out */}
+      <section className="rounded-lg bg-brand-surface p-4 mt-4">
+        <h2 className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-3">
+          Account
+        </h2>
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-2 text-sm text-brand-primary hover:text-red-400 transition-colors"
+        >
+          <LogOut size={16} />
+          Sign out
+        </button>
+      </section>
     </div>
   );
 }

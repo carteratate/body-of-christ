@@ -236,8 +236,8 @@ export function BookmarkCard({ bookmark, token, onRemoved, onNoteUpdated, showTo
               Note
             </button>
             {noteOpen && (
-              <div className="mt-2">
-                <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">
+              <div className="mt-2 pl-3 border-l-2 border-brand-muted/30">
+                <p className="text-xs text-brand-muted leading-relaxed whitespace-pre-wrap">
                   {bookmark.note}
                 </p>
                 <button

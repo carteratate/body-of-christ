@@ -2,9 +2,8 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "./AppShell";
-import { Library, Bookmark, Info, Settings } from "lucide-react";
+import { Library, Bookmark, Church, Settings } from "lucide-react";
 
 export function Sidebar() {
   const router = useRouter();
@@ -14,12 +13,6 @@ export function Sidebar() {
   function handleNewSearch() {
     router.push("/search");
     newSearch();
-  }
-
-  async function handleSignOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.replace("/login");
   }
 
   const activeClass = "bg-brand-bg text-brand-accent border-l-2 border-brand-accent";
@@ -102,7 +95,7 @@ export function Sidebar() {
             pathname === "/about" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
         >
-          <Info size={12} /> About
+          <Church size={12} /> About
         </Link>
         <Link
           href="/settings"
@@ -112,12 +105,6 @@ export function Sidebar() {
         >
           <Settings size={12} /> Settings
         </Link>
-        <button
-          onClick={handleSignOut}
-          className="block w-full text-left px-2 py-1.5 rounded text-brand-muted hover:text-brand-primary transition-colors"
-        >
-          Sign out
-        </button>
       </div>
     </aside>
   );

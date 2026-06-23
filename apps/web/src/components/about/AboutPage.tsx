@@ -27,28 +27,23 @@ export function AboutPage() {
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="px-6 py-6 max-w-3xl w-full mx-auto">
-        <h1 className="text-2xl font-semibold text-brand-primary mb-1">About</h1>
-        <p className="text-brand-muted text-sm mb-8">
-          What Body of Christ is and what&apos;s in the corpus.
-        </p>
+        <h1 className="text-2xl font-semibold text-brand-primary mb-4">About</h1>
 
         {/* Mission */}
         <section className="mb-10">
           <p className="text-brand-muted text-[10px] uppercase tracking-widest font-medium mb-3 pb-2 border-b border-brand-surface">
             Our Mission
           </p>
-          <div className="text-brand-primary text-sm leading-relaxed">
-            <p>
-              For over two thousand years, Christians have wrestled with questions
-              surrounding suffering, virtue, justice, grace, salvation, human
-              nature, and more. Those conversations have occurred over
-              Scripture, catechisms, encyclicals, writings of the early church
-              fathers, church counsels, etc. The Body of Christ
-              brings their wisdom together into one place, allowing you to explore
-              the Catholic tradition through the people who built, defended, and
-              passed down the fullness of the faith.
-            </p>
-          </div>
+          <p className="text-brand-primary text-sm leading-relaxed">
+            For over two thousand years, Christians have wrestled with questions
+            surrounding suffering, virtue, justice, grace, salvation, human
+            nature, and more. Those conversations have occurred over
+            Scripture, catechisms, encyclicals, writings of the early church
+            fathers, church counsels, etc. The Body of Christ
+            brings their wisdom together into one place, allowing you to explore
+            the Catholic tradition through the people who built, defended, and
+            passed down the fullness of the faith.
+          </p>
         </section>
 
         {/* Collections */}
