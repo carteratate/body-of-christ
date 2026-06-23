@@ -1,5 +1,3 @@
-"use client";
-
 import { COLLECTIONS } from "@/lib/collections";
 
 const COLLECTION_DESCRIPTIONS: Record<string, string> = {
