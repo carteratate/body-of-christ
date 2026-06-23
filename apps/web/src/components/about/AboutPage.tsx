@@ -37,15 +37,7 @@ export function AboutPage() {
           <p className="text-brand-muted text-[10px] uppercase tracking-widest font-medium mb-3 pb-2 border-b border-brand-surface">
             Our Mission
           </p>
-          <div className="space-y-4 text-brand-primary text-sm leading-relaxed">
-            <p>
-              At the Body of Christ, we believe that while AI and LLMs are
-              incredibly useful tools, fields centered around truth, meaning,
-              morality, theology, and the human condition are better served to be
-              studied through the wisdom of real people. The goal of this project
-              is to make the accumulated knowledge of the Church more accessible
-              to everyone.
-            </p>
+          <div className="text-brand-primary text-sm leading-relaxed">
             <p>
               For over two thousand years, Christians have wrestled with questions
               surrounding suffering, virtue, justice, grace, salvation, human

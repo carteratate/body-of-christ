@@ -30,15 +30,7 @@ export default async function HomePage() {
         </h1>
 
         {/* Mission statement */}
-        <div className="space-y-5 text-brand-primary text-base leading-relaxed mb-12">
-          <p>
-            At the Body of Christ, we believe that while AI and LLMs are
-            incredibly useful tools, fields centered around truth, meaning,
-            morality, theology, and the human condition are better served to be
-            studied through the wisdom of real people. The goal of this project
-            is to make the accumulated knowledge of the Church more accessible
-            to everyone.
-          </p>
+        <div className="text-brand-primary text-base leading-relaxed mb-12">
           <p>
             For over two thousand years, Christians have wrestled with questions
             surrounding suffering, virtue, justice, grace, salvation, human
