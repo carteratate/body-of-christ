@@ -35,16 +35,19 @@ export function BookmarksPage() {
     fetchBookmarks();
   }, [fetchBookmarks]);
 
+  function handleNoteUpdated(bookmarkId: string, note: string | null) {
+    setBookmarks((prev) =>
+      prev.map((b) => (b.id === bookmarkId ? { ...b, note } : b))
+    );
+  }
+
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="px-6 py-6 max-w-3xl w-full mx-auto">
-        {/* Page heading */}
         <h1 className="text-2xl font-semibold text-brand-primary mb-6">Saved Passages</h1>
 
-        {/* Loading state */}
         {loading && <ResultsSkeleton count={3} />}
 
-        {/* Error state */}
         {!loading && error && (
           <div className="text-center py-12">
             <p className="text-brand-muted text-sm mb-4">{error}</p>
@@ -57,7 +60,6 @@ export function BookmarksPage() {
           </div>
         )}
 
-        {/* Empty state */}
         {!loading && !error && bookmarks.length === 0 && (
           <div className="text-center py-16">
             <p className="text-brand-muted text-sm mb-4 max-w-sm mx-auto">
@@ -72,7 +74,6 @@ export function BookmarksPage() {
           </div>
         )}
 
-        {/* Results */}
         {!loading && !error && bookmarks.length > 0 && (
           <div className="space-y-3">
             {bookmarks.map((bookmark) => (
@@ -81,6 +82,7 @@ export function BookmarksPage() {
                 bookmark={bookmark}
                 token={token}
                 onRemoved={(id) => setBookmarks((prev) => prev.filter((b) => b.id !== id))}
+                onNoteUpdated={handleNoteUpdated}
                 showToast={showToast}
               />
             ))}
