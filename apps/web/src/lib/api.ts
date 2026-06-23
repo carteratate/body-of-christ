@@ -216,6 +216,7 @@ export interface Bookmark {
   id: string;
   chunk_id: string;
   created_at: string;
+  note: string | null;
   chunk: BookmarkChunkInfo | null;
 }
 
@@ -395,6 +396,23 @@ export async function removeBookmark(token: string, bookmarkId: string): Promise
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
+}
+
+export async function updateBookmarkNote(
+  token: string,
+  bookmarkId: string,
+  note: string | null,
+): Promise<Bookmark> {
+  const res = await fetch(`${API_URL}/v1/bookmarks/${bookmarkId}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ note }),
+  });
+  if (!res.ok) throw new Error(`Failed to update note: ${res.status}`);
+  return res.json() as Promise<Bookmark>;
 }
 
 export async function submitFeedback(
