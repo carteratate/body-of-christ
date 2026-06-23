@@ -1,9 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 
 class BookmarkCreate(BaseModel):
     chunk_id: str
+
+
+class BookmarkNoteUpdate(BaseModel):
+    note: Optional[str] = Field(None, max_length=3000)
 
 
 class BookmarkSource(BaseModel):
@@ -22,6 +26,7 @@ class BookmarkResponse(BaseModel):
     id: str
     chunk_id: str
     created_at: str
+    note: Optional[str] = None
     chunk: Optional[BookmarkChunk] = None
 
 
