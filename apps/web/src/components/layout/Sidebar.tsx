@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "./AppShell";
-import { Library, Bookmark, Settings } from "lucide-react";
+import { Library, Bookmark, Info, Settings } from "lucide-react";
 
 export function Sidebar() {
   const router = useRouter();
@@ -95,6 +95,14 @@ export function Sidebar() {
           }`}
         >
           <Bookmark size={12} /> Saved Passages
+        </Link>
+        <Link
+          href="/about"
+          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
+            pathname === "/about" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
+          }`}
+        >
+          <Info size={12} /> About
         </Link>
         <Link
           href="/settings"
