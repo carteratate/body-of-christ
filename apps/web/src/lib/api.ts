@@ -467,3 +467,48 @@ export async function getSources(token: string): Promise<SourceDocument[]> {
   const data = await res.json() as { sources: SourceDocument[] };
   return data.sources;
 }
+
+// ── V2 Evaluate (Custom Source Scores) ────────────────────────────────────
+
+export class EvaluateRateLimitError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "EvaluateRateLimitError";
+  }
+}
+
+export interface CollectionScore {
+  collection: string;
+  score: number;
+  explanation: string;
+}
+
+export interface EvaluateResponse {
+  query: string;
+  remaining: number;
+  scores: CollectionScore[];
+}
+
+export async function evaluateCollections(
+  token: string,
+  query: string,
+): Promise<EvaluateResponse> {
+  const res = await fetch(`${API_URL}/v1/evaluate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ query }),
+  });
+  if (!res.ok) {
+    if (res.status === 429) {
+      throw new EvaluateRateLimitError("Daily evaluation limit reached");
+    }
+    const error = await res.json().catch(() => ({}));
+    throw new Error(
+      (error as { detail?: string }).detail ?? `API error ${res.status}`,
+    );
+  }
+  return res.json() as Promise<EvaluateResponse>;
+}
