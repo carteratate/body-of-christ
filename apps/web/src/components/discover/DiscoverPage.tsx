@@ -55,13 +55,10 @@ export function DiscoverPage() {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto px-4 pt-6 pb-4">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-lg font-semibold text-brand-primary mb-1 font-brand">
-            Custom Source Scores
-          </h1>
-          <p className="text-sm text-brand-muted mb-6">
+    <div className="flex flex-col h-full overflow-y-auto">
+      <div className="px-6 py-6 max-w-3xl w-full mx-auto">
+          <h1 className="text-2xl font-semibold text-brand-primary mb-1">Custom Source Scores</h1>
+          <p className="text-brand-muted text-sm mb-6">
             Type a question to see which sources are most likely to have relevant answers.
           </p>
 
@@ -125,7 +122,6 @@ export function DiscoverPage() {
               in the corpus are best equipped to answer it.
             </div>
           )}
-        </div>
       </div>
     </div>
   );
