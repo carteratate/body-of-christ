@@ -103,34 +103,41 @@ export function DiscoverPage() {
 
           {/* Loading skeleton — mirrors RelevanceChart layout exactly */}
           {loading && (
-            <div className="space-y-3 py-4">
-              <p className="text-sm text-brand-muted mb-4 animate-pulse">
-                Evaluating {COLLECTIONS.length} sources...
-              </p>
-              {COLLECTIONS.map((c, i) => (
-                <div key={c.key}>
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-sm text-brand-muted w-44 shrink-0 truncate">
-                      {c.label}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-44 shrink-0" />
-                    <div className="flex-1 h-6 bg-brand-bg rounded-md overflow-hidden">
-                      <div
-                        className="h-full rounded-md animate-pulse"
-                        style={{
-                          width: `${30 + ((i * 17) % 50)}%`,
-                          backgroundColor: c.hex,
-                          opacity: 0.35,
-                          animationDelay: `${i * 150}ms`,
-                        }}
-                      />
+            <>
+              <style>{`
+                @keyframes bar-pulse {
+                  0%, 100% { opacity: 0.2; transform: scaleX(0.85); }
+                  50% { opacity: 0.7; transform: scaleX(1); }
+                }
+              `}</style>
+              <div className="space-y-3 py-4">
+                <p className="text-sm text-brand-muted mb-4 animate-pulse">
+                  Evaluating {COLLECTIONS.length} sources...
+                </p>
+                {COLLECTIONS.map((c, i) => (
+                  <div key={c.key}>
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className="text-sm text-brand-muted w-44 shrink-0 truncate">
+                        {c.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-44 shrink-0" />
+                      <div className="flex-1 h-6 bg-brand-bg rounded-md overflow-hidden">
+                        <div
+                          className="h-full rounded-md origin-left"
+                          style={{
+                            width: `${30 + ((i * 17) % 50)}%`,
+                            backgroundColor: c.hex,
+                            animation: `bar-pulse 1.5s ease-in-out ${i * 120}ms infinite`,
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
 
           {/* Results */}
