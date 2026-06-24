@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { RelevanceChart } from "@/components/discover/RelevanceChart";
 import { COLLECTIONS } from "@/lib/collections";
@@ -12,13 +12,20 @@ import {
 
 export function DiscoverPage() {
   const { token } = useAppContext();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [scores, setScores] = useState<CollectionScore[] | null>(null);
-  const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  function autoResize() {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }
 
   const handleSubmit = useCallback(async () => {
     const q = query.trim();
@@ -27,13 +34,11 @@ export function DiscoverPage() {
     setLoading(true);
     setError(null);
     setScores(null);
-    setSubmittedQuery(q);
 
     try {
       const res = await evaluateCollections(token, q);
       setScores(res.scores);
       setRemaining(res.remaining);
-      setQuery("");
     } catch (err) {
       if (err instanceof EvaluateRateLimitError) {
         setError("You've reached the daily limit of 10 evaluations. Try again tomorrow.");
@@ -63,21 +68,22 @@ export function DiscoverPage() {
           </p>
 
           {/* Input */}
-          <div className="flex gap-2 mb-6">
-            <input
-              type="text"
+          <div className="flex gap-2 items-end mb-6">
+            <textarea
+              ref={textareaRef}
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setQuery(e.target.value); autoResize(); }}
               onKeyDown={handleKeyDown}
               placeholder="e.g. What does the Church teach about the Eucharist?"
-              className="flex-1 bg-brand-surface border border-brand-bg rounded-lg px-3 py-2 text-sm text-brand-primary placeholder:text-brand-muted focus:outline-none focus:border-brand-accent"
+              className="flex-1 bg-brand-surface border border-brand-bg rounded-lg px-3 py-2 text-sm text-brand-primary placeholder:text-brand-muted focus:outline-none focus:border-brand-accent resize-none overflow-hidden"
               disabled={loading}
               maxLength={500}
+              rows={1}
             />
             <button
               onClick={handleSubmit}
               disabled={loading || !query.trim()}
-              className="bg-brand-accent text-brand-bg rounded-lg px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-40 font-brand"
+              className="bg-brand-accent text-brand-bg rounded-lg px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-40 font-brand shrink-0"
             >
               {loading ? "Scoring..." : "Score"}
             </button>
@@ -95,27 +101,32 @@ export function DiscoverPage() {
             <div className="text-sm text-red-400 mb-4">{error}</div>
           )}
 
-          {/* Loading skeleton — mirrors chart layout with shimmer bars */}
+          {/* Loading skeleton — mirrors RelevanceChart layout exactly */}
           {loading && (
             <div className="space-y-3 py-4">
               <p className="text-sm text-brand-muted mb-4 animate-pulse">
                 Evaluating {COLLECTIONS.length} sources...
               </p>
               {COLLECTIONS.map((c, i) => (
-                <div key={c.key} className="flex items-center gap-3">
-                  <span className="text-sm text-brand-muted w-44 shrink-0 truncate">
-                    {c.label}
-                  </span>
-                  <div className="flex-1 h-6 bg-brand-bg rounded-md overflow-hidden">
-                    <div
-                      className="h-full rounded-md animate-pulse"
-                      style={{
-                        width: `${30 + ((i * 17) % 50)}%`,
-                        backgroundColor: c.hex,
-                        opacity: 0.35,
-                        animationDelay: `${i * 150}ms`,
-                      }}
-                    />
+                <div key={c.key}>
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="text-sm text-brand-muted w-44 shrink-0 truncate">
+                      {c.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-44 shrink-0" />
+                    <div className="flex-1 h-6 bg-brand-bg rounded-md overflow-hidden">
+                      <div
+                        className="h-full rounded-md animate-pulse"
+                        style={{
+                          width: `${30 + ((i * 17) % 50)}%`,
+                          backgroundColor: c.hex,
+                          opacity: 0.35,
+                          animationDelay: `${i * 150}ms`,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -123,19 +134,12 @@ export function DiscoverPage() {
           )}
 
           {/* Results */}
-          {scores && submittedQuery && (
-            <div>
-              <div className="flex justify-end mb-4">
-                <div className="max-w-[70%] rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
-                  {submittedQuery}
-                </div>
-              </div>
-              <RelevanceChart scores={scores} />
-            </div>
+          {scores && !loading && (
+            <RelevanceChart scores={scores} />
           )}
 
           {/* Empty state */}
-          {!scores && !loading && !error && !submittedQuery && (
+          {!scores && !loading && !error && (
             <div className="text-center py-12 text-brand-muted text-sm">
               Enter a theological question above to discover which sources
               in the corpus are best equipped to answer it.
