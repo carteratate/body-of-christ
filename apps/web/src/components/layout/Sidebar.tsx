@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAppContext } from "./AppShell";
-import { Library, Bookmark, Church, Settings } from "lucide-react";
+import { Library, Bookmark, Church, Settings, BarChart3 } from "lucide-react";
 
 export function Sidebar() {
   const router = useRouter();
@@ -80,6 +80,14 @@ export function Sidebar() {
           }`}
         >
           <Library size={12} /> List of Sources
+        </Link>
+        <Link
+          href="/discover"
+          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
+            pathname === "/discover" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
+          }`}
+        >
+          <BarChart3 size={12} /> Custom Source Scores
         </Link>
         <Link
           href="/bookmarks"
