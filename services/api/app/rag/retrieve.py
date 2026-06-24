@@ -197,6 +197,7 @@ async def retrieve_candidates(
     collection: str,
     quota: int,
     user_id: str,
+    expansion_queries: list[str] | None = None,
 ) -> list[ChunkCandidate]:
     """Retrieve candidate chunks for a single collection using parallel
     search strategies (HyDE + query vector search via Qdrant, full-text via
@@ -210,6 +211,8 @@ async def retrieve_candidates(
         collection:  The collection name to filter by.
         quota:       Final desired chunk count; returns up to quota * candidate_multiplier.
         user_id:     Authenticated user — chunks with 'down' feedback are excluded.
+        expansion_queries: Optional list of alternative query phrasings (synonym,
+            related concept) to run as additional FTS searches. None = no expansion.
     """
     pool = get_pool()
     n = quota * settings.candidate_multiplier
@@ -236,6 +239,9 @@ async def retrieve_candidates(
     if pool is not None:
         coros.append(_search_fts(pool, collection, user_id, query_text, n))
         labels.append("fts")
+        for i, eq in enumerate(expansion_queries or []):
+            coros.append(_search_fts(pool, collection, user_id, eq, n))
+            labels.append(f"fts_expand_{i}")
     else:
         logger.warning(
             "retrieve_candidates: no DB pool — skipping FTS for collection '%s'", collection

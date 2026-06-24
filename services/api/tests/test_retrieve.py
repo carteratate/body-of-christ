@@ -330,3 +330,74 @@ def test_build_point():
     assert len(point.vector) == 1536
     assert point.payload["collection"] == "bible"
     assert point.payload["content"] == "Test content"
+
+
+# ---------------------------------------------------------------------------
+# expansion_queries parameter
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_retrieve_candidates_calls_fts_for_each_expansion():
+    """FTS is called once per expansion query plus once for the original query."""
+    mock_client = AsyncMock()
+    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
+
+    mock_pool = MagicMock()
+    mock_pool.fetch = AsyncMock(return_value=[])  # _get_excluded_ids
+
+    with (
+        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
+        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
+        patch("app.rag.retrieve.settings") as mock_settings,
+        patch("app.rag.retrieve._search_fts", new_callable=AsyncMock) as mock_fts,
+    ):
+        mock_settings.candidate_multiplier = 3
+        mock_fts.return_value = []
+
+        await retrieve_candidates(
+            query_text="Holy Spirit",
+            query_vec=[0.1] * 1536,
+            hyde_vec=None,
+            extra_vecs=[],
+            collection="catechism",
+            quota=4,
+            user_id="00000000-0000-0000-0000-000000000001",
+            expansion_queries=["Holy Ghost", "divine grace"],
+        )
+
+    # original + 2 expansion = 3 FTS calls
+    assert mock_fts.call_count == 3
+    fts_texts = {call.args[3] for call in mock_fts.call_args_list}
+    assert fts_texts == {"Holy Spirit", "Holy Ghost", "divine grace"}
+
+
+@pytest.mark.asyncio
+async def test_retrieve_candidates_no_expansion_by_default():
+    """Without expansion_queries, only the original FTS call is made."""
+    mock_client = AsyncMock()
+    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
+
+    mock_pool = MagicMock()
+    mock_pool.fetch = AsyncMock(return_value=[])
+
+    with (
+        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
+        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
+        patch("app.rag.retrieve.settings") as mock_settings,
+        patch("app.rag.retrieve._search_fts", new_callable=AsyncMock) as mock_fts,
+    ):
+        mock_settings.candidate_multiplier = 3
+        mock_fts.return_value = []
+
+        await retrieve_candidates(
+            query_text="grace",
+            query_vec=[0.1] * 1536,
+            hyde_vec=None,
+            extra_vecs=[],
+            collection="catechism",
+            quota=4,
+            user_id="00000000-0000-0000-0000-000000000001",
+        )
+
+    assert mock_fts.call_count == 1
+    assert mock_fts.call_args.args[3] == "grace"
