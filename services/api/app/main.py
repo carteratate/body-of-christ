@@ -29,6 +29,7 @@ from app.routes.preferences import router as preferences_router
 from app.routes.search import router as search_router
 from app.routes.sessions import router as sessions_router
 from app.routes.sources import router as sources_router
+from app.routes.evaluate import router as evaluate_router
 
 
 logger = logging.getLogger(__name__)
@@ -95,6 +96,7 @@ app.include_router(bookmarks_router, prefix="/v1")
 app.include_router(feedback_router, prefix="/v1")
 app.include_router(preferences_router, prefix="/v1")
 app.include_router(sources_router, prefix="/v1")
+app.include_router(evaluate_router, prefix="/v1")
 
 
 @app.get("/health")
