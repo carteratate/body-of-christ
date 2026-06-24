@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { RelevanceChart } from "@/components/discover/RelevanceChart";
+import { COLLECTIONS } from "@/lib/collections";
 import {
   evaluateCollections,
   EvaluateRateLimitError,
@@ -95,11 +95,30 @@ export function DiscoverPage() {
             <div className="text-sm text-red-400 mb-4">{error}</div>
           )}
 
-          {/* Loading state */}
+          {/* Loading skeleton — mirrors chart layout with shimmer bars */}
           {loading && (
-            <div className="flex items-center gap-2 text-sm text-brand-muted py-8">
-              <Search size={14} className="animate-pulse" />
-              Evaluating sources...
+            <div className="space-y-3 py-4">
+              <p className="text-sm text-brand-muted mb-4 animate-pulse">
+                Evaluating {COLLECTIONS.length} sources...
+              </p>
+              {COLLECTIONS.map((c, i) => (
+                <div key={c.key} className="flex items-center gap-3">
+                  <span className="text-sm text-brand-muted w-44 shrink-0 truncate">
+                    {c.label}
+                  </span>
+                  <div className="flex-1 h-6 bg-brand-bg rounded-md overflow-hidden">
+                    <div
+                      className="h-full rounded-md animate-pulse"
+                      style={{
+                        width: `${30 + ((i * 17) % 50)}%`,
+                        backgroundColor: c.hex,
+                        opacity: 0.35,
+                        animationDelay: `${i * 150}ms`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { getCollectionMeta } from "@/lib/collections";
 import type { CollectionScore } from "@/lib/api";
@@ -11,41 +11,39 @@ interface RelevanceChartProps {
 
 export function RelevanceChart({ scores }: RelevanceChartProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setAnimated(true), 50);
+    return () => clearTimeout(t);
+  }, [scores]);
 
   function toggle(key: string) {
     setExpanded((prev) => (prev === key ? null : key));
   }
 
+  const maxScore = Math.max(...scores.map((s) => s.score), 0.01);
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {scores.map((s, i) => {
         const meta = getCollectionMeta(s.collection);
         const label = meta?.label ?? s.collection;
         const color = meta?.hex ?? "#C4972A";
         const isOpen = expanded === s.collection;
+        const barWidth = animated ? (s.score / maxScore) * 100 : 0;
 
         return (
           <div key={s.collection}>
             <button
               onClick={() => toggle(s.collection)}
-              className="w-full text-left group"
+              className="w-full text-left"
             >
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-brand-muted w-32 shrink-0 truncate">
+              <div className="flex items-center gap-3 mb-1">
+                <span className="text-sm text-brand-primary w-44 shrink-0 truncate font-medium">
                   {label}
                 </span>
-                <div className="flex-1 h-7 bg-brand-bg rounded overflow-hidden relative">
-                  <div
-                    className="h-full rounded transition-all duration-700 ease-out"
-                    style={{
-                      width: `${Math.max(2, s.score * 100)}%`,
-                      backgroundColor: color,
-                      opacity: 0.85,
-                      transitionDelay: `${i * 80}ms`,
-                    }}
-                  />
-                </div>
-                <span className="text-xs text-brand-muted w-10 text-right tabular-nums">
+                <span className="text-xs text-brand-muted w-10 text-right tabular-nums shrink-0">
                   {s.score.toFixed(2)}
                 </span>
                 {isOpen ? (
@@ -54,11 +52,24 @@ export function RelevanceChart({ scores }: RelevanceChartProps) {
                   <ChevronDown size={14} className="text-brand-muted shrink-0" />
                 )}
               </div>
+              <div className="flex items-center gap-3">
+                <div className="w-44 shrink-0" />
+                <div className="flex-1 h-6 bg-brand-bg rounded-md overflow-hidden">
+                  <div
+                    className="h-full rounded-md"
+                    style={{
+                      width: `${Math.max(1, barWidth)}%`,
+                      backgroundColor: color,
+                      transition: `width 800ms cubic-bezier(0.4, 0, 0.2, 1) ${i * 100}ms`,
+                    }}
+                  />
+                </div>
+              </div>
             </button>
             {isOpen && (
-              <div className="ml-[calc(8rem+0.75rem)] mr-14 mt-1 mb-2 text-xs text-brand-muted leading-relaxed">
+              <p className="ml-[calc(11rem+0.75rem)] mt-1.5 mb-1 text-xs text-brand-muted leading-relaxed pr-8">
                 {s.explanation}
-              </div>
+              </p>
             )}
           </div>
         );
