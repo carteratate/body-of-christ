@@ -16,6 +16,7 @@ from app.rag.retrieve import retrieve_candidates, ChunkCandidate
 from app.rag.rerank import rerank_collection, RankedChunk
 from app.rag.explain import stream_explanation
 from app.rag.constants import VALID_COLLECTIONS
+from app.rag.query_expand import expand_query
 
 logger = logging.getLogger(__name__)
 
@@ -70,12 +71,20 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         all_results = await asyncio.gather(
             embed_text(query),
+            expand_query(query),
             *[_hyde_and_embed(query, col) for col in collections],
             return_exceptions=True,
         )
 
         query_vec_result = all_results[0]
-        hyde_embed_results = all_results[1:]  # one (col, [vecs]) tuple per collection
+        expansion_result = all_results[1]
+        hyde_embed_results = all_results[2:]  # one (col, [vecs]) tuple per collection
+
+        expansion_queries: list[str] = (
+            expansion_result
+            if not isinstance(expansion_result, BaseException)
+            else []
+        )
 
         _t1 = time.perf_counter()
         logger.info(
@@ -112,6 +121,7 @@ async def run_search_pipeline(
                 query, query_vec, per_col_hyde_vec[col],
                 per_col_extra_hyde_vecs[col],
                 col, quota, user_id,
+                expansion_queries=expansion_queries,
             )
             for col in collections
         ]
