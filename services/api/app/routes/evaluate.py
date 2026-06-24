@@ -4,12 +4,18 @@ import logging
 import re
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 
 from app.config import settings
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
-from app.models.evaluate import CollectionScore, EvaluateRequest, EvaluateResponse
+from app.models.evaluate import (
+    CollectionScore,
+    EvaluateRequest,
+    EvaluateResponse,
+    ExplainRequest,
+)
 import app.rag.rerank as _rerank_mod
 
 logger = logging.getLogger(__name__)
@@ -18,6 +24,7 @@ router = APIRouter()
 
 _DAILY_EVALUATE_LIMIT = 10
 
+# Shared system prompt — cached for both Phase 1 (scores) and Phase 2 (explain).
 _EVALUATE_SYSTEM = (
     "You are evaluating which Catholic theological source collections are most "
     "likely to contain passages that directly answer a user's question. You have "
@@ -166,13 +173,25 @@ _EVALUATE_SYSTEM = (
     '  - Philosophical ("Does God exist?", "What is the soul?", "faith and reason"): '
     "weight summa, medieval, church-fathers.\n\n"
     "Respond with ONLY a JSON array of all 10 collections, ordered by score "
-    "descending. Each element: {\"collection\": \"<key>\", \"score\": <float>, "
-    "\"explanation\": \"<1-2 sentences>\"}. No text before or after the array."
+    "descending. Each element: {\"collection\": \"<key>\", \"score\": <float>}. "
+    "No text before or after the array. No explanations in this response."
+)
+
+_EXPLAIN_USER_TEMPLATE = (
+    "Query: {query}\n\n"
+    "Relevance scores for this query (highest to lowest):\n{score_lines}\n\n"
+    "For each collection above, write 1-2 sentences explaining the score. "
+    "For high scores (0.7+): explain what specific content in that collection "
+    "makes it directly useful for this question. "
+    "For low scores (below 0.4): explain specifically what this collection covers "
+    "and why that content does not address this particular question.\n\n"
+    "Output ONLY JSONL — one JSON object per line in the exact order listed above, "
+    "no other text before or after:\n"
+    '{{"collection": "<key>", "explanation": "<1-2 sentences>"}}'
 )
 
 
 def _extract_scores(text: str) -> list[dict]:
-    """Extract the JSON array from the LLM response, stripping markdown fences."""
     match = re.search(r"\[.*\]", text, re.DOTALL)
     if not match:
         raise ValueError("No JSON array found in evaluate response")
@@ -180,10 +199,6 @@ def _extract_scores(text: str) -> list[dict]:
 
 
 async def _check_evaluate_rate_limit(user_id: str) -> int:
-    """Increment and check the daily evaluate counter.
-
-    Returns the updated count. Raises HTTPException(429) if limit exceeded.
-    """
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
@@ -228,7 +243,7 @@ async def evaluate_collections(
     body: EvaluateRequest,
     user: AuthUser = Depends(get_current_user),
 ) -> EvaluateResponse:
-    """Score how relevant each source collection is to the user's question."""
+    """Phase 1 — return scores only (fast). Phase 2 explain is a separate SSE stream."""
     count = await _check_evaluate_rate_limit(user.user_id)
 
     if _rerank_mod._client is None:
@@ -236,14 +251,22 @@ async def evaluate_collections(
 
     try:
         response = await _rerank_mod._client.messages.create(
-            model=settings.rerank_model,
-            max_tokens=2000,
+            model=settings.evaluate_model,
+            max_tokens=400,
             system=[{
                 "type": "text",
                 "text": _EVALUATE_SYSTEM,
                 "cache_control": {"type": "ephemeral"},
             }],
             messages=[{"role": "user", "content": body.query}],
+        )
+        usage = response.usage
+        logger.info(
+            "evaluate: input=%d cache_create=%d cache_read=%d output=%d",
+            getattr(usage, "input_tokens", 0),
+            getattr(usage, "cache_creation_input_tokens", 0),
+            getattr(usage, "cache_read_input_tokens", 0),
+            getattr(usage, "output_tokens", 0),
         )
         raw_text = response.content[0].text
         scored = _extract_scores(raw_text)
@@ -257,7 +280,6 @@ async def evaluate_collections(
         CollectionScore(
             collection=str(item.get("collection", "")),
             score=max(0.0, min(1.0, float(item.get("score", 0.0)))),
-            explanation=str(item.get("explanation", "")),
         )
         for item in scored
     ]
@@ -267,4 +289,71 @@ async def evaluate_collections(
         query=body.query,
         remaining=max(0, _DAILY_EVALUATE_LIMIT - count),
         scores=scores,
+    )
+
+
+@router.post("/evaluate/explain")
+async def explain_collections(
+    body: ExplainRequest,
+    user: AuthUser = Depends(get_current_user),
+) -> StreamingResponse:
+    """Phase 2 — stream explanations for each collection, highest score first."""
+    if _rerank_mod._client is None:
+        raise HTTPException(status_code=503, detail="LLM client not available")
+
+    score_lines = "\n".join(
+        f"- {item.collection}: {item.score:.2f}"
+        for item in body.scores
+    )
+    user_message = _EXPLAIN_USER_TEMPLATE.format(
+        query=body.query,
+        score_lines=score_lines,
+    )
+
+    async def generate():
+        try:
+            buffer = ""
+            async with _rerank_mod._client.messages.stream(
+                model=settings.evaluate_model,
+                max_tokens=1200,
+                system=[{
+                    "type": "text",
+                    "text": _EVALUATE_SYSTEM,
+                    "cache_control": {"type": "ephemeral"},
+                }],
+                messages=[{"role": "user", "content": user_message}],
+            ) as stream:
+                async for text in stream.text_stream:
+                    buffer += text
+                    while "\n" in buffer:
+                        line, buffer = buffer.split("\n", 1)
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            data = json.loads(line)
+                            if "collection" in data and "explanation" in data:
+                                yield f"event: explanation\ndata: {json.dumps(data)}\n\n"
+                        except json.JSONDecodeError:
+                            pass
+                # flush remaining buffer
+                if buffer.strip():
+                    try:
+                        data = json.loads(buffer.strip())
+                        if "collection" in data and "explanation" in data:
+                            yield f"event: explanation\ndata: {json.dumps(data)}\n\n"
+                    except json.JSONDecodeError:
+                        pass
+            yield "event: done\ndata: {}\n\n"
+        except Exception as exc:
+            logger.error("explain stream failed: %s", exc)
+            yield f"event: error\ndata: {json.dumps({'message': 'Explanation stream failed'})}\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
     )

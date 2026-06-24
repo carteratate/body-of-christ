@@ -1,8 +1,6 @@
 """HyDE (Hypothetical Document Embedding) passage generation."""
 import asyncio
-import json
 import logging
-import re
 
 import anthropic
 
@@ -48,33 +46,6 @@ _HYDE_BIBLE_FREE_PROMPT = (
 # Bible: genre detection
 # ---------------------------------------------------------------------------
 
-_BIBLE_GENRES: frozenset[str] = frozenset({
-    "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
-    "nt-stories", "nt-epistles", "nt-teachings",
-})
-
-_BIBLE_FALLBACK_GENRES: list[str] = ["nt-epistles", "psalms", "ot-wisdom"]
-
-_GENRE_DETECT_SYSTEM = (
-    "You are classifying a theological search query to identify which genres of "
-    "biblical literature are most likely to contain directly relevant passages.\n\n"
-    "Genres (use exactly these identifiers):\n"
-    "  \"psalms\"       — Psalms: prayers, hymns, laments, praise poetry\n"
-    "  \"ot-wisdom\"    — Proverbs, Ecclesiastes, Job, Sirach: sayings, fear of the "
-    "Lord, moral instruction\n"
-    "  \"ot-prophets\"  — Isaiah, Jeremiah, Ezekiel, minor prophets: oracles, "
-    "judgment, covenant, Messianic hope\n"
-    "  \"ot-stories\"   — Genesis, Exodus, Samuel, Kings: narratives of Adam, "
-    "Abraham, Moses, David, the patriarchs\n"
-    "  \"nt-stories\"   — Gospels and Acts narrative: healings, miracles, Passion, "
-    "Resurrection, early Church events\n"
-    "  \"nt-epistles\"  — Pauline and general letters: doctrine, ethics, "
-    "theological argument, church life\n"
-    "  \"nt-teachings\" — Jesus's direct speech: Sermon on the Mount, Beatitudes, "
-    "parables, \"I am\" sayings, discourses\n\n"
-    "Return ONLY a JSON array of exactly 3 identifiers, ordered most to least "
-    "relevant. No explanation, no text outside the array."
-)
 
 # ---------------------------------------------------------------------------
 # Bible: per-genre HyDE prompts
@@ -223,21 +194,13 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
         "Do not include author name, work title, attribution, or headings."
     ),
     "summa": (
-        "Write a Summa Theologiae-style article of approximately 250 words on the "
-        "following question. A Summa article has a precise five-part structure:\n"
-        "1. The question, stated as 'Whether [proposition]...'\n"
-        "2. One or two objections, each beginning 'Objection N. It seems that...' "
-        "with a brief argument\n"
-        "3. The sed contra, beginning 'On the contrary...' citing Scripture, Augustine, "
-        "or Aristotle\n"
-        "4. The respondeo, beginning 'I answer that...' — the core theological argument, "
-        "developed in Aquinas's analytic style, drawing distinctions (e.g., 'in one "
-        "sense... in another sense'), citing authority, arriving at a precise conclusion\n"
-        "5. One brief reply to an objection: 'Reply to Objection N...'\n"
-        "Use Aquinas's characteristic vocabulary: act and potency, essence and existence, "
-        "formal and material cause, virtue, habit, will, intellect. Cite Aristotle "
-        "('the Philosopher') and Augustine where natural. Return only the article text. "
-        "Do not include attribution or headings outside the article structure."
+        "Write a Summa Theologiae article of approximately 180 words on the following "
+        "question using the exact structure: state the question as 'Whether [proposition]...'; "
+        "one objection beginning 'Objection 1. It seems that...'; the sed contra beginning "
+        "'On the contrary,'; the respondeo beginning 'I answer that...' drawing distinctions "
+        "using act and potency, essence and existence, will, intellect; cite Aristotle "
+        "or Augustine. Close with 'Reply to Objection 1...'. "
+        "Return only the article text."
     ),
     "councils": (
         "Write a passage of approximately 200-220 words in the style of an ecumenical "
@@ -285,7 +248,7 @@ _COLLECTION_MAX_TOKENS: dict[str, int] = {
     "catechism": 250,
     "encyclicals": 400,
     "church-fathers": 400,
-    "summa": 500,
+    "summa": 300,
     "councils": 450,
     "medieval": 350,
     "canon-law": 350,
@@ -326,35 +289,6 @@ async def _generate_single(system: str, query: str, max_tokens: int) -> str | No
         return None
 
 
-async def _detect_bible_genres(query: str) -> list[str]:
-    """Return the 3 most relevant Bible genres for the query.
-
-    Falls back to _BIBLE_FALLBACK_GENRES on any failure.
-    """
-    try:
-        response = await _client.messages.create(  # type: ignore[union-attr]
-            model=settings.hyde_model,
-            max_tokens=50,
-            system=_GENRE_DETECT_SYSTEM,
-            messages=[{"role": "user", "content": query}],
-        )
-        raw = response.content[0].text
-        match = re.search(r"\[.*?\]", raw, re.DOTALL)
-        if not match:
-            raise ValueError("no JSON array in genre detection response")
-        genres: list = json.loads(match.group(0))
-        valid = [g for g in genres if g in _BIBLE_GENRES]
-        if len(valid) < 3:
-            for fb in _BIBLE_FALLBACK_GENRES:
-                if fb not in valid:
-                    valid.append(fb)
-                if len(valid) == 3:
-                    break
-        return valid[:3]
-    except Exception as exc:
-        logger.warning("_detect_bible_genres failed (%s); using fallback", exc)
-        return list(_BIBLE_FALLBACK_GENRES)
-
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -362,10 +296,9 @@ async def _detect_bible_genres(query: str) -> list[str]:
 async def generate_hyde_passages(query: str, collection: str | None = None) -> list[str]:
     """Return hypothetical passages for the given collection.
 
-    For 'bible', generates 4 passages in parallel: one unconstrained "free" passage
-    that goes wherever the query naturally leads, plus one passage per the 3
-    genre-detected genres for breadth. For all other collections, returns a
-    single-item list. On failure returns an empty list. Never raises.
+    For 'bible', generates 8 passages in parallel: one unconstrained "free" passage
+    plus one per genre (all 7 genres simultaneously). For all other collections,
+    returns a single-item list. On failure returns an empty list. Never raises.
     """
     if _client is None:
         logger.warning("HyDE client not initialized; skipping passage generation")
@@ -374,11 +307,9 @@ async def generate_hyde_passages(query: str, collection: str | None = None) -> l
     max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
 
     if collection == "bible":
-        genres = await _detect_bible_genres(query)
-        genre_prompts = [_GENRE_HYDE_PROMPTS[g] for g in genres if g in _GENRE_HYDE_PROMPTS]
         results = await asyncio.gather(
             _generate_single(_HYDE_BIBLE_FREE_PROMPT, query, max_tokens),
-            *[_generate_single(p, query, max_tokens) for p in genre_prompts],
+            *[_generate_single(p, query, max_tokens) for p in _GENRE_HYDE_PROMPTS.values()],
         )
         return [r for r in results if r is not None]
 

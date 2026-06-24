@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
-import { getSources, type SourceDocument } from "@/lib/api";
+import { type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
 
 // Full name for Bible translation codes shown in the sources list.
@@ -219,7 +219,7 @@ function CouncilsSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id
               <ExpandableGroup
                 key="second-vatican-council"
                 open={vat2Open}
-                onToggle={() => setVat2Open((v) => !v)}
+                onToggle={() => setVat2Open((v: boolean) => !v)}
                 title="Second Vatican Council"
                 subLabel={`${vat2Range} · ${vaticanIIDocs.length} documents`}
                 rightLabel={`${vat2Passages.toLocaleString()} passages`}
@@ -282,33 +282,12 @@ function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => 
 }
 
 export function SourcesPage() {
-  const { token, setCorpusPassages } = useAppContext();
+  const { sources, sourcesLoading: loading, sourcesError, reloadSources } = useAppContext();
   const router = useRouter();
-  const [sources, setSources] = useState<SourceDocument[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const openDoc = useCallback((id: string) => {
     router.push(`/reader/${id}`);
   }, [router]);
-
-  const fetchSources = useCallback(() => {
-    if (!token) return;
-    setLoading(true);
-    setError(null);
-    getSources(token)
-      .then((data) => {
-        setSources(data);
-        setCorpusPassages(data.reduce((sum, s) => sum + s.chunk_count, 0));
-      })
-      .catch(() => setError("Couldn't load the sources list. Please try again."))
-      .finally(() => setLoading(false));
-  }, [token, setCorpusPassages]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount
-    fetchSources();
-  }, [fetchSources]);
 
   const nonBibleSources = sources.filter((s) => s.collection !== "bible");
   const totalPassages = sources.reduce((sum, s) => sum + s.chunk_count, 0);
@@ -318,22 +297,22 @@ export function SourcesPage() {
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="px-6 py-6 max-w-3xl w-full mx-auto">
         <h1 className="text-2xl font-semibold text-brand-primary mb-1">List of Sources</h1>
-        {!loading && !error && totalPassages > 0 && (
+        {!loading && !sourcesError && totalPassages > 0 && (
           <p className="text-brand-muted text-sm mb-6">
             {totalDocuments} documents · {totalPassages.toLocaleString()} total passages
           </p>
         )}
-        {(loading || error || totalPassages === 0) && (
+        {(loading || sourcesError || totalPassages === 0) && (
           <p className="text-brand-muted text-sm mb-6">All documents included in the search corpus.</p>
         )}
 
         {loading && <SourcesSkeleton />}
 
-        {!loading && error && (
+        {!loading && sourcesError && (
           <div className="text-center py-12">
-            <p className="text-brand-muted text-sm mb-4">{error}</p>
+            <p className="text-brand-muted text-sm mb-4">Couldn&apos;t load the sources list. Please try again.</p>
             <button
-              onClick={fetchSources}
+              onClick={() => reloadSources()}
               className="px-4 py-2 rounded text-sm text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             >
               Retry
@@ -341,7 +320,7 @@ export function SourcesPage() {
           </div>
         )}
 
-        {!loading && !error && (
+        {!loading && !sourcesError && (
           <div className="space-y-8">
             {COLLECTIONS.map(({ key }) => {
               const docs = sources.filter((s) => s.collection === key);

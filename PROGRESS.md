@@ -5,7 +5,7 @@
 ---
 
 ## Branch
-`feature/v2-rag` (based off `master`)
+`master` (V2 feature branch was merged)
 
 ## Plan File
 `/home/carter/.claude/plans/i-want-to-develop-crispy-journal.md`
@@ -40,72 +40,61 @@ Full V2 design spec + build sequence. Read it before making architectural decisi
 | 30 | CLAUDE.md update with V2 invariants | (see commit) | Added sections 10–17: V2 routes, component locations, AppContext, Collections canonical source (constants.py + collections.ts), SSE streaming callbacks, V2 data model actual state, CSP headers, known issues & deferred work. 7 code quality issues found and fixed (PostHog domains, redirect type, setPreferences in context, auto-save attribution, BottomBar description, PostHogProvider location, streamSearch signal param). |
 | 31 | Fix documents schema: translation column + migration 0008 | `c2dcd8a` `628ab05` `c79279b` `317c24a` | Migration 0008: `ADD COLUMN translation text NOT NULL DEFAULT ''`, `ADD CONSTRAINT UNIQUE(collection,title,translation)`. `load.py` `upsert_document()` updated (new translation param, `translation or ""` coercion, new conflict target). `bible.py` call site updated to pass `translation=translation`. datapipeline/README.md DO NOT RUN gate added. |
 
-## Deferred (Phase 3 — after frontend is working)
+## Phase 3 — Datapipeline (completed)
 
-| # | Task | Notes |
-|---|------|-------|
-| 11 | catechism + encyclicals + church_fathers + saints | Build frontend first |
-| 12 | embed.py + run_all.py | Build frontend first |
+All corpus ingestion scripts are built and live in `datapipeline/ingest/`:
 
----
+| Script | Collection |
+|---|---|
+| `bible.py` | Bible (CPDV + Douay-Rheims) |
+| `catechism.py` | Catechism of the Catholic Church |
+| `encyclicals.py` | Papal encyclicals (1740–2025) |
+| `church_fathers.py` | Ante-Nicene + Nicene/Post-Nicene Fathers |
+| `summa.py` | Summa Theologiae |
+| `canon_law.py` | 1983 Code of Canon Law |
+| `medieval.py` | Medieval theology (Anselm, Boethius, à Kempis…) |
+| `councils.py` | Ecumenical councils + Vatican II |
+| `apostolic_exhortations.py` | Post-synodal apostolic exhortations |
+| `papal_documents.py` | Papal bulls and apostolic letters |
+| `saints.py` | Hagiography collection |
+| `thml_doc.py` | THML format parser (CCEL sources) |
 
-## Next Task to Implement
-
-**Task 32 — Datapipeline: bible.py (run against real data)**
-
-Schema is now correct. `bible.py` draft exists at commit `1c921d7`, updated for the new translation column. **Blocked until Bible source files are available:** CPDV USFM from eBible.org + Douay-Rheims HTML from Project Gutenberg #8300. See `datapipeline/README.md` for data requirements and run order.
-
----
-
-## Remaining Tasks (in order)
-
-```
---- PHASE 3 (data-blocked — see datapipeline/README.md) ---
-32  Datapipeline: bible.py — run against real data (BLOCKED: need source files)
-33  Datapipeline: catechism.py, encyclicals.py, church_fathers.py, saints.py
-34  Datapipeline: embed.py + run_all.py
-```
+Supporting: `embed.py` (push to Qdrant), `load.py` (upsert to Supabase), `normalize/` (text cleaning)
 
 ---
 
 ## Known Issues / Gotchas
 
-### ~~1. documents table UNIQUE constraint needs translation column~~ ✅ RESOLVED (Task 31)
-- Migration 0008 applied: `translation text NOT NULL DEFAULT ''` column + `UNIQUE(collection, title, translation)`.
-- `load.py` `upsert_document()` updated with `translation` parameter and `translation or ""` coercion.
-- `bible.py` call site updated.
+### ~~1. documents table UNIQUE constraint needs translation column~~ ✅ RESOLVED (Migration 0008)
 
-### 2. bible.py draft exists but data-blocked
-- Commit `1c921d7` has a working, real-data-verified script, updated in Task 31.
-- **Blocked on source files:** CPDV USFM (eBible.org) + Douay-Rheims HTML (Gutenberg #8300). See `datapipeline/README.md`.
+### ~~2. bible.py data-blocked~~ ✅ RESOLVED — bible.py complete with CPDV + Douay-Rheims
 
 ### 3. Shared rate limit counter for V1 chat and V2 search
 - Both currently share `user_usage.rate_count`/`quota_count` columns.
 - V2 uses `rate_limit_search_per_minute=5`, V1 uses `rate_limit_per_minute=10`.
 - A `TODO` comment is in `routes/search.py`'s `check_search_rate_limit`.
-- Future improvement: add `search_rate_count`/`search_quota_count` columns in migration 0007.
+- Future fix: add `search_rate_count`/`search_quota_count` columns in a new migration.
 
 ### 4. JWKS cache thundering herd (pre-existing V1 issue)
 - Under concurrent load, multiple coroutines can all find the JWKS cache stale and fire simultaneous HTTP requests to Supabase.
-- Low priority for V2 launch; fix in V2.1 with double-checked locking.
+- Low priority; fix with double-checked locking in a future maintenance pass.
 
 ---
 
 ## Key Architecture Decisions
 
-- **RAG strategy:** Option B — HyDE + dual vector search + full-text + per-collection re-ranking + parallel explanations
-- **Re-ranking:** Haiku per collection; quota×4 candidates → top quota; scores 0.0–1.0; fallback to RRF order on failure
-- **Progressive loading:** SSE stream — chunk events first, explanations fill in as each Haiku call completes
+- **RAG strategy:** HyDE + concurrent per-collection Qdrant vector search + Supabase FTS + RRF merge + per-collection Haiku re-ranking + streaming explanation deltas
+- **Vector store:** Qdrant (cosine HNSW). `chunks.content_embedding` in Postgres is vestigial — not used for retrieval.
+- **Re-ranking:** Claude Haiku per collection; quota×candidate_multiplier candidates → top quota; scores 0.0–1.0; fallback to RRF order on failure
+- **Progressive loading:** SSE stream — `chunk` events first, `done` event, then `explanation_delta` events stream in sequentially
 - **Per-source quota:** [3|4|5] control, default 4; total = quota × active collections
 - **Embedding model:** text-embedding-3-large (OpenAI, 1536 dims)
-- **HNSW index:** m=16, ef_construction=64 on chunks(content_embedding)
-- **Option C stubs:** `annotation`/`annotation_embedding` columns NULL — no code change needed to activate
 - **V1 API contract preserved:** `/v1/chat`, `/v1/sessions` unchanged
-- **AppContext:** Token + preferences managed in AppShell, shared via React context to all child components
-- **Preferences auto-save:** Changes to collection toggles and quota debounce-save via `PUT /v1/preferences`
-- **Mobile:** Deferred post-V2. React Native + Expo planned. Backend needs no changes.
+- **AppContext:** Token, preferences, search history, pending search slot, active search ID, corpus passage count — all in AppShell
+- **Preferences auto-save:** Collection toggles and quota debounce-save via `PUT /v1/preferences`
+- **Mobile:** Deferred. React Native + Expo planned. Backend needs no changes.
 - **Analytics:** PostHog (frontend only, no user query text sent)
-- **Rate limits:** 5/min, 30/day for search
+- **Rate limits:** Search: 5/min, 30/day | Evaluate: 10/day | Bookmark writes: 20/min
 
 ---
 
@@ -124,7 +113,7 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 | Area | Path |
 |------|------|
 | Design spec + plan | `/home/carter/.claude/plans/i-want-to-develop-crispy-journal.md` |
-| DB migrations | `supabase/migrations/0004–0007_*.sql` |
+| DB migrations | `supabase/migrations/0001–0017_*.sql` |
 | Datapipeline | `datapipeline/` |
 | Backend RAG modules | `services/api/app/rag/` (incl. `constants.py` — canonical VALID_COLLECTIONS) |
 | Backend routes | `services/api/app/routes/` |
@@ -137,4 +126,4 @@ To resume: read this file, then `git log --oneline -15` on `feature/v2-rag`, the
 
 ---
 
-*Last updated: 2026-05-31 | Completed through Task 31 | Next: Task 32 (bible.py — data-blocked)*
+*Last updated: 2026-06-23 | V2 fully shipped to master | All datapipeline scripts built | 10 collections live | Migrations 0001–0017 applied*

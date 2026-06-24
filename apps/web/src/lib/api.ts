@@ -480,7 +480,6 @@ export class EvaluateRateLimitError extends Error {
 export interface CollectionScore {
   collection: string;
   score: number;
-  explanation: string;
 }
 
 export interface EvaluateResponse {
@@ -511,4 +510,86 @@ export async function evaluateCollections(
     );
   }
   return res.json() as Promise<EvaluateResponse>;
+}
+
+interface ExplainCallbacks {
+  onExplanation: (collection: string, explanation: string) => void;
+  onDone: () => void;
+  onError: (message: string) => void;
+}
+
+export async function streamExplanations(
+  token: string,
+  query: string,
+  scores: CollectionScore[],
+  callbacks: ExplainCallbacks,
+  signal?: AbortSignal,
+): Promise<void> {
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/v1/evaluate/explain`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query, scores }),
+      signal,
+    });
+  } catch {
+    if (signal?.aborted) return;
+    callbacks.onError("Explanation stream failed");
+    return;
+  }
+
+  if (!res.ok || !res.body) {
+    callbacks.onError("Explanation stream failed");
+    return;
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const parts = buffer.split("\n\n");
+      buffer = parts.pop() ?? "";
+
+      for (const part of parts) {
+        const lines = part.trim().split("\n");
+        let event = "";
+        let data = "";
+        for (const line of lines) {
+          if (line.startsWith("event: ")) event = line.slice(7).trim();
+          if (line.startsWith("data: ")) data = line.slice(6).trim();
+        }
+        if (event === "explanation" && data) {
+          try {
+            const parsed = JSON.parse(data) as { collection: string; explanation: string };
+            callbacks.onExplanation(parsed.collection, parsed.explanation);
+          } catch { /* malformed line — skip */ }
+        } else if (event === "done") {
+          callbacks.onDone();
+          return;
+        } else if (event === "error" && data) {
+          try {
+            const parsed = JSON.parse(data) as { message?: string };
+            callbacks.onError(parsed.message ?? "Explanation failed");
+          } catch {
+            callbacks.onError("Explanation failed");
+          }
+          return;
+        }
+      }
+    }
+    callbacks.onDone();
+  } catch {
+    if (signal?.aborted) return;
+    callbacks.onError("Explanation stream interrupted");
+  }
 }

@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
-import { getPreferences, getSearchHistory, type Preferences, type SearchSummaryV2 } from "@/lib/api";
+import { getPreferences, getSearchHistory, getSources, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
 
 const Sidebar = dynamic(
   () => import("./Sidebar").then((m) => ({ default: m.Sidebar })),
@@ -27,9 +27,12 @@ export interface AppContextValue {
   setActiveSearchId: (id: string | null) => void;
   searchKey: number;
   newSearch: () => void;
-  // Total passages across the whole corpus — populated lazily when sources page is visited
+  // Source corpus — fetched once on login, cached for the session
+  sources: SourceDocument[];
+  sourcesLoading: boolean;
+  sourcesError: boolean;
+  reloadSources: () => void;
   corpusPassages: number | null;
-  setCorpusPassages: (n: number) => void;
 }
 
 const AppContext = createContext<AppContextValue>({
@@ -47,8 +50,11 @@ const AppContext = createContext<AppContextValue>({
   setActiveSearchId: () => {},
   searchKey: 0,
   newSearch: () => {},
+  sources: [],
+  sourcesLoading: false,
+  sourcesError: false,
+  reloadSources: () => {},
   corpusPassages: null,
-  setCorpusPassages: () => {},
 });
 
 export function useAppContext() {
@@ -64,12 +70,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState(0);
   const [ready, setReady] = useState(false);
-  const [corpusPassages, setCorpusPassages] = useState<number | null>(null);
+  const [sources, setSources] = useState<SourceDocument[]>([]);
+  const [sourcesLoading, setSourcesLoading] = useState(false);
+  const [sourcesError, setSourcesError] = useState(false);
 
   function newSearch() {
     setSearchKey((k) => k + 1);
     setActiveSearchId(null);
   }
+
+  const reloadSources = useCallback((tok?: string) => {
+    const t = tok ?? token;
+    if (!t) return;
+    setSourcesLoading(true);
+    setSourcesError(false);
+    getSources(t)
+      .then(setSources)
+      .catch(() => setSourcesError(true))
+      .finally(() => setSourcesLoading(false));
+  }, [token]);
 
   const refreshSearches = useCallback(() => {
     if (!token) return;
@@ -94,6 +113,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       if (t) {
         getPreferences(t).then(setPreferences).catch(() => setPreferencesError(true));
         getSearchHistory(t).then(setSearches).catch(() => {});
+        reloadSources(t);
       }
       setReady(true);
     });
@@ -125,7 +145,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       pendingSearch, setPendingSearch, clearPendingSearch,
       activeSearchId, setActiveSearchId,
       searchKey, newSearch,
-      corpusPassages, setCorpusPassages,
+      sources, sourcesLoading, sourcesError, reloadSources,
+      corpusPassages: sources.length > 0 ? sources.reduce((sum, s) => sum + s.chunk_count, 0) : null,
     }}>
       <div className="flex h-full bg-brand-bg text-brand-primary">
         <Sidebar />

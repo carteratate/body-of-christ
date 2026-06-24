@@ -28,7 +28,7 @@ from normalize.summa import expand_apparatus
 from ingest.common import _extract_p_text, split_at_sentences, _split_at_whitespace
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                    "sources", "church-fathers", "summa.xml")
+                    "sources", "summa", "summa.xml")
 
 # Splits an article body into its dialectical parts.
 _PART_RE = re.compile(

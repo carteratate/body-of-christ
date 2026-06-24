@@ -7,9 +7,11 @@ import type { CollectionScore } from "@/lib/api";
 
 interface RelevanceChartProps {
   scores: CollectionScore[];
+  explanations: Record<string, string>;
+  explanationsDone: boolean;
 }
 
-export function RelevanceChart({ scores }: RelevanceChartProps) {
+export function RelevanceChart({ scores, explanations, explanationsDone }: RelevanceChartProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [animated, setAnimated] = useState(false);
 
@@ -32,6 +34,8 @@ export function RelevanceChart({ scores }: RelevanceChartProps) {
         const color = meta?.hex ?? "#C4972A";
         const isOpen = expanded === s.collection;
         const barWidth = animated ? (s.score / maxScore) * 100 : 0;
+        const explanation = explanations[s.collection];
+        const isExplaining = isOpen && !explanation && !explanationsDone;
 
         return (
           <div key={s.collection}>
@@ -68,7 +72,13 @@ export function RelevanceChart({ scores }: RelevanceChartProps) {
             </button>
             {isOpen && (
               <p className="ml-[calc(11rem+0.75rem)] mt-1.5 mb-1 text-xs text-brand-muted leading-relaxed pr-8">
-                {s.explanation}
+                {explanation ?? (
+                  isExplaining ? (
+                    <span className="animate-pulse">Loading explanation...</span>
+                  ) : (
+                    <span className="opacity-40">No explanation available.</span>
+                  )
+                )}
               </p>
             )}
           </div>
