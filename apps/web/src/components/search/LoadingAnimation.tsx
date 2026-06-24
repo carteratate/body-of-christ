@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -67,11 +67,12 @@ function getChunkPos(
 interface Props {
   collections: string[];
   isQueryDone: boolean;
+  retrievalStarted: boolean;
   onReadyToShow: () => void;
   onFadeComplete: () => void;
 }
 
-export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFadeComplete }: Props) {
+export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, onReadyToShow, onFadeComplete }: Props) {
   const active = collections.filter(k => k in PALETTE);
 
   // ── Container measurement ───────────────────────────────────────────────
@@ -136,40 +137,74 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
 
   const timers           = useRef<ReturnType<typeof setTimeout>[]>([]);
   const isQueryDoneRef   = useRef(isQueryDone);
-  const waitingRef       = useRef(false);
-  const pulseIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const retrievalStartedRef = useRef(retrievalStarted);
+  const stretchPhaseRef = useRef<"gate1" | "gate2" | null>(null);
+  const stretchIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => { isQueryDoneRef.current = isQueryDone; });
-
-  // Resolve waiting pulse when query completes after animation finishes
-  useEffect(() => {
-    if (isQueryDone && waitingRef.current) {
-      waitingRef.current = false;
-      if (pulseIntervalRef.current) { clearInterval(pulseIntervalRef.current); pulseIntervalRef.current = null; }
-      setFading(true);
-      onReadyToShow();
-      timers.current.push(setTimeout(() => onFadeComplete(), 1500));
-    }
-  }, [isQueryDone, onReadyToShow, onFadeComplete]);
+  useEffect(() => { retrievalStartedRef.current = retrievalStarted; }, [retrievalStarted]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       timers.current.forEach(clearTimeout);
-      if (pulseIntervalRef.current) clearInterval(pulseIntervalRef.current);
+      if (stretchIntervalRef.current) clearInterval(stretchIntervalRef.current);
     };
   }, []);
 
   function at(fn: () => void, ms: number) { timers.current.push(setTimeout(fn, ms)); }
 
-  function startWaitingPulse() {
-    waitingRef.current = true;
-    let on = true;
-    setBorderFlash(true);
-    pulseIntervalRef.current = setInterval(() => { on = !on; setBorderFlash(on); }, 1500);
-  }
+  // ── Sequence 2 (post-gate-1) ──────────────────────────────────────────────
 
-  // Auto-start on mount — timing from animation_3s.tsx
+  const startSequence2 = useCallback(() => {
+    const act = active.length > 0 ? active : Object.keys(PALETTE).slice(0, 4);
+    const perSource = Math.min(300, Math.floor(1500 / act.length));
+
+    // Source→BoC colored lines start (0.6s CSS, arrive at t=600)
+    setPhase(7);
+
+    // Sequential per-source flash — starts 120ms before lines arrive (80% drawn)
+    act.forEach((key, i) => {
+      const t = 480 + i * perSource;
+      at(() => setQPulse(PALETTE[key]?.hex ?? ACCENT), t);
+      at(() => { setQPulse(null); setDismissedLines(prev => [...prev, key]); }, t + Math.min(200, perSource - 50));
+    });
+
+    const seqEnd = 480 + act.length * perSource;
+
+    // After sequential: gold pulse, sources gone, return line
+    at(() => setQPulse(ACCENT), seqEnd);
+    at(() => setSourcesGone(true), seqEnd + 200);
+    at(() => { setQPulse(null); setReturnLineDone(true); }, seqEnd + 400); // return line (0.6s CSS), arrives seqEnd+1000
+
+    // Border flash 120ms before return line arrives (80% drawn)
+    at(() => setBorderFlash(true), seqEnd + 880);
+
+    // BoC fades 50ms after return line arrives
+    at(() => setBocGone(true), seqEnd + 1050);
+
+    // Enter stretch 2
+    at(() => {
+      if (isQueryDoneRef.current) {
+        // Gate 2 already open — resolve immediately
+        at(() => {
+          setFading(true);
+          onReadyToShow();
+          at(() => onFadeComplete(), 1500);
+        }, 200);
+      } else {
+        stretchPhaseRef.current = "gate2";
+        let on = true;
+        stretchIntervalRef.current = setInterval(() => {
+          on = !on;
+          setBorderFlash(on);
+        }, 1500);
+      }
+    }, seqEnd + 1100);
+  }, [active, onReadyToShow, onFadeComplete]);
+
+  // ── Effect 1: Sequence 1 (pre-gate, runs on mount) ────────────────────────
+
   useEffect(() => {
     const act = active.length > 0 ? active : Object.keys(PALETTE).slice(0, 4);
 
@@ -184,64 +219,69 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
     });
     setWinners(w);
 
-    at(() => { setPhase(1); setSearchLineDone(true); }, 100);
-    // Search line arrives at BoC at t=3100 — pulse 200ms early.
-    at(() => setOpeningPulse(true),  2900);
-    at(() => setSearchGone(true),    3200);
-    at(() => { setOpeningPulse(false); setPhase(2); setSourcesReady(true); }, 5500);
-    // BoC→source lines arrive at sources at t=6500 — glow 200ms early.
-    // Outgoing source→chunk lines (phase 3) start 100ms after glow ends, matching original gap.
-    at(() => setGlowColor(true),  6300);
-    at(() => setGlowColor(false), 7300);
-    at(() => setPhase(3), 7400);
-    // Source→chunk lines arrive at chunks at t=8400 — flash ~600ms after arrival.
-    at(() => setChunkFlash(true),   9000);
-    at(() => setChunkFlash(false),  9500);
-    at(() => setChunkFlash(true),   9900);
-    at(() => setChunkFlash(false), 10400);
-    // Chunk→source colored lines start 75ms after second flash ends.
-    at(() => setPhase(5), 10475);
-    // Chunk→source lines arrive at sources at t=11475 — glow 200ms early.
-    // Outgoing source→BoC lines (phase 7) start 100ms after glow ends.
-    at(() => setGlowColor(true),  11275);
-    at(() => setGlowColor(false), 12275);
-    at(() => setPhase(7), 12375);
-
-    // Source→BoC lines arrive at BoC at t=13375 — pulse 200ms early.
-    const bocPulseStart = 13175;
-    act.forEach((key, i) => {
-      const t = bocPulseStart + i * 800;
-      at(() => setQPulse(PALETTE[key]?.hex ?? ACCENT), t);
-      at(() => { setQPulse(null); setDismissedLines(prev => [...prev, key]); }, t + 200);
-    });
-
-    const goldT = bocPulseStart + act.length * 800;
-    at(() => setQPulse(ACCENT), goldT);
-    at(() => setQPulse(null),         goldT + 2650);
-    at(() => setSourcesGone(true),    goldT + 800);
-    at(() => setReturnLineDone(true), goldT + 2650);
-
-    // Return line (1s CSS, starts goldT+2650) arrives at y=0 at goldT+3650.
-    // Border flash blooms 50ms before arrival; bocGone fires 50ms after.
-    at(() => setBorderFlash(true),  goldT + 3600);
-    at(() => setBocGone(true),      goldT + 3700);
-
-    // Results appear at goldT+4200 while border is fully bright.
-    // The overlay then fades over 1.5s, dissolving border + background together.
-    // onFadeComplete fires when fade is done so SearchPage unmounts the overlay.
+    // Sequence 1: gold line → BoC → sources → chunks → winners → sources
+    // Pulse timing: 200ms before arrival for gold line (87%), 120ms for 0.6s lines (80%)
+    // Chunk flash: reaction pattern — 300ms AFTER arrival, double flash
+    at(() => { setPhase(1); setSearchLineDone(true); }, 100);       // gold line starts (1.5s CSS)
+    at(() => setOpeningPulse(true), 1400);                           // 200ms before gold arrives at 1600
+    at(() => setSearchGone(true), 1700);                             // line fades 100ms after arrival
+    at(() => { setOpeningPulse(false); setPhase(2); setSourcesReady(true); }, 2100); // BoC→source (0.6s CSS)
+    at(() => setGlowColor(true), 2580);                              // 120ms before sources arrive at 2700
+    at(() => { setGlowColor(false); setPhase(3); }, 2800);          // source→chunk lines (0.6s CSS)
+    at(() => setChunkFlash(true), 3700);                             // 300ms after chunks arrive at 3400
+    at(() => setChunkFlash(false), 3900);                            // flash #1 off
+    at(() => setChunkFlash(true), 4000);                             // flash #2 on
+    at(() => { setChunkFlash(false); setPhase(5); }, 4200);         // winner→source colored (0.6s CSS)
+    at(() => setGlowColor(true), 4680);                              // 120ms before winners arrive at 4800
     at(() => {
-      setPhase(9);
-      if (isQueryDoneRef.current) {
-        setFading(true);
-        onReadyToShow();
-        at(() => onFadeComplete(), 1500);
+      setGlowColor(false);
+      // Enter stretch 1 — sources pulse until Gate 1 opens
+      if (retrievalStartedRef.current) {
+        // Gate 1 already open — brief pause then advance
+        at(() => startSequence2(), 200);
       } else {
-        startWaitingPulse();
+        stretchPhaseRef.current = "gate1";
+        stretchIntervalRef.current = setInterval(() => {
+          setGlowColor(prev => !prev);
+        }, 1200);
       }
-    }, goldT + 4200);
+    }, 4900);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ── Effect 2: Gate 1 watcher (advances stretch 1 → sequence 2) ───────────
+
+  useEffect(() => {
+    if (retrievalStarted && stretchPhaseRef.current === "gate1") {
+      stretchPhaseRef.current = null;
+      if (stretchIntervalRef.current) {
+        clearInterval(stretchIntervalRef.current);
+        stretchIntervalRef.current = null;
+      }
+      setGlowColor(false);
+      // Brief pause before advancing (prevents visual jump)
+      at(() => startSequence2(), 200);
+    }
+  }, [retrievalStarted]);
+
+  // ── Effect 3: Gate 2 watcher (advances stretch 2 → resolve) ──────────────
+
+  useEffect(() => {
+    if (isQueryDone && stretchPhaseRef.current === "gate2") {
+      stretchPhaseRef.current = null;
+      if (stretchIntervalRef.current) {
+        clearInterval(stretchIntervalRef.current);
+        stretchIntervalRef.current = null;
+      }
+      setBorderFlash(true); // ensure border is on for final flash
+      at(() => {
+        setFading(true);
+        onReadyToShow();
+        at(() => onFadeComplete(), 1500);
+      }, 200);
+    }
+  }, [isQueryDone, onReadyToShow, onFadeComplete]);
 
   // ── Derived positions ────────────────────────────────────────────────────
 
@@ -280,7 +320,7 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
           style={{
             strokeDashoffset: searchLineDone ? 0 : SL_LEN,
             transition: searchLineDone
-              ? "stroke-dashoffset 3s linear, opacity 0.4s ease"
+              ? "stroke-dashoffset 1.5s linear, opacity 0.4s ease"
               : "none",
           }}
         />
@@ -298,7 +338,7 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
               opacity={phase >= 2 && phase < 5 && !sourcesGone ? 1 : 0}
               style={{
                 strokeDashoffset: phase >= 2 ? 0 : len,
-                transition: phase >= 2 ? "stroke-dashoffset 1s linear" : "none",
+                transition: phase >= 2 ? "stroke-dashoffset 0.6s linear" : "none",
               }}
             />
           );
@@ -318,7 +358,7 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
               opacity={phase >= 3 && phase < 5 && !sourcesGone ? 1 : 0}
               style={{
                 strokeDashoffset: phase >= 3 ? 0 : len,
-                transition: phase >= 3 ? "stroke-dashoffset 1s linear" : "none",
+                transition: phase >= 3 ? "stroke-dashoffset 0.6s linear" : "none",
               }}
             />
           );
@@ -343,7 +383,7 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
                 opacity={phase >= 5 && !sourcesGone ? 1 : 0}
                 style={{
                   strokeDashoffset: phase >= 5 ? 0 : len,
-                  transition: phase >= 5 ? "stroke-dashoffset 1s linear" : "none",
+                  transition: phase >= 5 ? "stroke-dashoffset 0.6s linear" : "none",
                 }}
               />
             );
@@ -365,8 +405,8 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
               style={{
                 strokeDashoffset: phase >= 7 ? 0 : len,
                 transition: dismissedLines.includes(s.key)
-                  ? "stroke-dashoffset 1s linear, opacity 0.3s ease-out"
-                  : phase >= 7 ? "stroke-dashoffset 1s linear" : "none",
+                  ? "stroke-dashoffset 0.6s linear, opacity 0.3s ease-out"
+                  : phase >= 7 ? "stroke-dashoffset 0.6s linear" : "none",
               }}
             />
           );
@@ -380,7 +420,7 @@ export function LoadingAnimation({ collections, isQueryDone, onReadyToShow, onFa
           opacity={returnLineDone && !bocGone ? 1 : 0}
           style={{
             strokeDashoffset: returnLineDone ? 0 : RL_LEN,
-            transition: returnLineDone ? "stroke-dashoffset 1s linear" : "none",
+            transition: returnLineDone ? "stroke-dashoffset 0.6s linear" : "none",
           }}
         />
 

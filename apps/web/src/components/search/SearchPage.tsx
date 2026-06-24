@@ -419,6 +419,7 @@ function SearchPageInner() {
           <LoadingAnimation
             collections={activeCollections}
             isQueryDone={queryDone}
+            retrievalStarted={searchPhase !== null || queryDone}
             onReadyToShow={handleAnimReadyToShow}
             onFadeComplete={handleAnimFadeComplete}
           />
