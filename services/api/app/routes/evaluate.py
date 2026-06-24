@@ -10,7 +10,7 @@ from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.evaluate import CollectionScore, EvaluateRequest, EvaluateResponse
-from app.rag.rerank import _client as _rerank_client
+import app.rag.rerank as _rerank_mod
 
 logger = logging.getLogger(__name__)
 
@@ -231,11 +231,11 @@ async def evaluate_collections(
     """Score how relevant each source collection is to the user's question."""
     count = await _check_evaluate_rate_limit(user.user_id)
 
-    if _rerank_client is None:
+    if _rerank_mod._client is None:
         raise HTTPException(status_code=503, detail="LLM client not available")
 
     try:
-        response = await _rerank_client.messages.create(
+        response = await _rerank_mod._client.messages.create(
             model=settings.rerank_model,
             max_tokens=2000,
             system=[{
