@@ -23,7 +23,7 @@ export function LoginForm() {
 
   const redirectTo =
     typeof window !== "undefined"
-      ? `${window.location.origin}/auth/callback?next=/update-password`
+      ? `${window.location.origin}/update-password`
       : undefined;
 
   return (

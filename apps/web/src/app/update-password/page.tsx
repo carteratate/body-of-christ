@@ -16,6 +16,20 @@ export default function UpdatePasswordPage() {
   const didRecover = useRef(false);
 
   useEffect(() => {
+    // PKCE flow: email link delivers ?code= — exchange it client-side
+    const code = new URLSearchParams(window.location.search).get("code");
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (!error) {
+          didRecover.current = true;
+          setReady(true);
+        } else {
+          router.replace("/login");
+        }
+      });
+    }
+
+    // Implicit flow: Supabase fires PASSWORD_RECOVERY via hash token
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
         didRecover.current = true;
@@ -23,7 +37,7 @@ export default function UpdatePasswordPage() {
       }
     });
 
-    // If no recovery token is present, bail to login after 5 s.
+    // If neither fires within 5 s, bail to login
     const timeout = setTimeout(() => {
       if (!didRecover.current) router.replace("/login");
     }, 5000);
