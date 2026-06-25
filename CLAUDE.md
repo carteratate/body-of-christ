@@ -41,6 +41,9 @@ docker run --env-file services/api/.env -p 8000:8000 boc-api
 - **Qdrant** — vector store for cosine-similarity search (HNSW). Embeddings live here, NOT in pgvector.
 - The frontend NEVER talks directly to the database.
 - ALL client data access goes through FastAPI.
+- **The frontend NEVER calls Railway directly from the browser.** All API calls go through the Vercel proxy at `apps/web/src/app/v1/[...path]/route.ts`, which forwards to Railway using the server-side `API_URL` env var. This is intentional — it avoids CORS, keeps the Railway URL private, and allows `x-internal-secret` to be added server-side.
+- **`const API_URL = ""` in `apps/web/src/lib/api.ts` is correct and intentional.** The empty string causes all fetch calls to use relative paths (`/v1/...`), which hit the Vercel proxy. Do NOT change this to read from an env var. The env var that matters is server-side `API_URL` (no `NEXT_PUBLIC_` prefix), set in Vercel, used only by the proxy route.
+- **`NEXT_PUBLIC_API_URL` is used only in `next.config.ts` for CSP headers.** It does NOT control where API calls are routed. Do not use it in `api.ts`.
 
 ---
 
