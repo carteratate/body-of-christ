@@ -8,8 +8,6 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-_client: anthropic.AsyncAnthropic | None = None
-
 # ---------------------------------------------------------------------------
 # Default prompt (non-Bible, unknown collection)
 # ---------------------------------------------------------------------------
@@ -256,28 +254,18 @@ _COLLECTION_MAX_TOKENS: dict[str, int] = {
 _DEFAULT_MAX_TOKENS = 300
 
 # ---------------------------------------------------------------------------
-# Lifecycle
-# ---------------------------------------------------------------------------
-
-def init_hyde() -> None:
-    global _client
-    _client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
-
-
-async def close_hyde() -> None:
-    global _client
-    if _client is not None:
-        await _client.close()
-        _client = None
-
-# ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-async def _generate_single(system: str, query: str, max_tokens: int) -> str | None:
+async def _generate_single(
+    client: anthropic.AsyncAnthropic,
+    system: str,
+    query: str,
+    max_tokens: int,
+) -> str | None:
     """Generate one HyDE passage. Returns None on failure."""
     try:
-        response = await _client.messages.create(  # type: ignore[union-attr]
+        response = await client.messages.create(
             model=settings.hyde_model,
             max_tokens=max_tokens,
             system=system,
@@ -293,26 +281,32 @@ async def _generate_single(system: str, query: str, max_tokens: int) -> str | No
 # Public API
 # ---------------------------------------------------------------------------
 
-async def generate_hyde_passages(query: str, collection: str | None = None) -> list[str]:
+async def generate_hyde_passages(
+    query: str,
+    collection: str | None,
+    client: anthropic.AsyncAnthropic,
+    semaphore: asyncio.Semaphore,
+) -> list[str]:
     """Return hypothetical passages for the given collection.
 
-    For 'bible', generates 8 passages in parallel: one unconstrained "free" passage
-    plus one per genre (all 7 genres simultaneously). For all other collections,
-    returns a single-item list. On failure returns an empty list. Never raises.
+    For 'bible', generates 8 passages in parallel: one unconstrained free passage
+    plus one per genre (all 7 genres simultaneously), gated by the semaphore.
+    For all other collections, returns a single-item list. Never raises.
     """
-    if _client is None:
-        logger.warning("HyDE client not initialized; skipping passage generation")
-        return []
-
     max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
 
     if collection == "bible":
+        async def _guarded(system: str) -> str | None:
+            async with semaphore:
+                return await _generate_single(client, system, query, max_tokens)
+
         results = await asyncio.gather(
-            _generate_single(_HYDE_BIBLE_FREE_PROMPT, query, max_tokens),
-            *[_generate_single(p, query, max_tokens) for p in _GENRE_HYDE_PROMPTS.values()],
+            _guarded(_HYDE_BIBLE_FREE_PROMPT),
+            *[_guarded(p) for p in _GENRE_HYDE_PROMPTS.values()],
         )
         return [r for r in results if r is not None]
 
     system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
-    result = await _generate_single(system, query, max_tokens)
+    async with semaphore:
+        result = await _generate_single(client, system, query, max_tokens)
     return [result] if result is not None else []

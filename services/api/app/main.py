@@ -15,12 +15,11 @@ from starlette.responses import JSONResponse
 from app.config import settings
 from app.db import close_pool, get_pool, init_pool
 from app.llm import close_llm, init_llm
+from app.rag.api_keys import close_api_keys, init_api_keys
+from app.rag.cross_encoder import close_cross_encoder, init_cross_encoder
 from app.rag.embed import close_embed, init_embed
 from app.rag.explain import close_explain, init_explain
-from app.rag.hyde import close_hyde, init_hyde
-from app.rag.query_expand import close_query_expand, init_query_expand
 from app.rag.qdrant_client import close_qdrant, init_qdrant
-from app.rag.rerank import close_rerank, init_rerank
 from app.routes.bookmarks import router as bookmarks_router
 from app.routes.chat import router as chat_router
 from app.routes.documents import router as documents_router
@@ -51,17 +50,15 @@ async def lifespan(app: FastAPI):
             )
     init_llm()
     init_embed()
-    init_hyde()
-    init_query_expand()
     init_qdrant()
-    init_rerank()
+    init_cross_encoder()
+    init_api_keys()
     init_explain()
     yield
+    await close_api_keys()
+    await close_cross_encoder()
     await close_embed()
-    await close_hyde()
-    await close_query_expand()
     await close_qdrant()
-    await close_rerank()
     await close_explain()
     await close_pool()
     await close_llm()

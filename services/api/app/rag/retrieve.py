@@ -31,6 +31,8 @@ class ChunkCandidate:
     author: str | None
     rrf_score: float
     anchor: str | None = None
+    position: int | None = None
+    annotation: dict | None = None   # populated post-enrichment; None until then
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +121,9 @@ async def _search_fts(
 ) -> list[dict]:
     """Full-text search against search_vector using plainto_tsquery (Supabase/Postgres)."""
     query = """
-        SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.document_id::text AS document_id,
+        SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.position,
+               c.annotation,
+               c.document_id::text AS document_id,
                d.title AS document_title, d.author, d.collection
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
@@ -167,6 +171,8 @@ def _rrf_merge(result_lists: list[list[dict]], top_n: int) -> list[dict]:
                     "document_title": row["document_title"],
                     "author": row["author"],
                     "anchor": row.get("anchor"),
+                    "position": row.get("position"),
+                    "annotation": row.get("annotation"),
                 }
 
     sorted_by_rrf = sorted(scores, key=lambda cid: scores[cid], reverse=True)
@@ -197,7 +203,6 @@ async def retrieve_candidates(
     collection: str,
     quota: int,
     user_id: str,
-    expansion_queries: list[str] | None = None,
 ) -> list[ChunkCandidate]:
     """Retrieve candidate chunks for a single collection using parallel
     search strategies (HyDE + query vector search via Qdrant, full-text via
@@ -211,8 +216,6 @@ async def retrieve_candidates(
         collection:  The collection name to filter by.
         quota:       Final desired chunk count; returns up to quota * candidate_multiplier.
         user_id:     Authenticated user — chunks with 'down' feedback are excluded.
-        expansion_queries: Optional list of alternative query phrasings (synonym,
-            related concept) to run as additional FTS searches. None = no expansion.
     """
     pool = get_pool()
     n = quota * settings.candidate_multiplier
@@ -239,9 +242,6 @@ async def retrieve_candidates(
     if pool is not None:
         coros.append(_search_fts(pool, collection, user_id, query_text, n))
         labels.append("fts")
-        for i, eq in enumerate(expansion_queries or []):
-            coros.append(_search_fts(pool, collection, user_id, eq, n))
-            labels.append(f"fts_expand_{i}")
     else:
         logger.warning(
             "retrieve_candidates: no DB pool — skipping FTS for collection '%s'", collection
@@ -267,6 +267,22 @@ async def retrieve_candidates(
 
     merged = _rrf_merge(result_lists, top_n=n)
 
+    # Qdrant payload does not include position. Batch-fetch from DB for any
+    # candidate that arrived via vector search (position will be None).
+    missing_ids = [e["chunk_id"] for e in merged if e.get("position") is None]
+    if missing_ids and pool is not None:
+        try:
+            pos_rows = await pool.fetch(
+                "SELECT id::text, position FROM chunks WHERE id::text = ANY($1)",
+                missing_ids,
+            )
+            pos_map = {r["id"]: r["position"] for r in pos_rows}
+            for e in merged:
+                if e.get("position") is None:
+                    e["position"] = pos_map.get(e["chunk_id"])
+        except Exception as exc:
+            logger.warning("retrieve_candidates: position batch lookup failed: %s", exc)
+
     candidates = [
         ChunkCandidate(
             chunk_id=entry["chunk_id"],
@@ -278,6 +294,8 @@ async def retrieve_candidates(
             author=entry["author"],
             rrf_score=entry["rrf_score"],
             anchor=entry.get("anchor"),
+            position=entry.get("position"),
+            annotation=entry.get("annotation"),
         )
         for entry in merged
     ]

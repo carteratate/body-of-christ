@@ -71,6 +71,7 @@ class RankedChunk:
     reranker_score: float  # 0.0–1.0
     include: bool = True   # False = hard-excluded by reranker (low score or redundant)
     anchor: str | None = None
+    position: int | None = None
 
 
 def init_rerank() -> None:

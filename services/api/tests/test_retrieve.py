@@ -332,64 +332,76 @@ def test_build_point():
     assert point.payload["content"] == "Test content"
 
 
+
+
 # ---------------------------------------------------------------------------
-# expansion_queries parameter
+# position / annotation plumbing
 # ---------------------------------------------------------------------------
+
+def test_chunk_candidate_has_position_field():
+    """ChunkCandidate must carry position for dedup."""
+    c = ChunkCandidate(
+        chunk_id="aaaa0000-0000-0000-0000-000000000001",
+        content="test",
+        reference=None,
+        collection="bible",
+        document_id="00000000-0000-0000-0000-000000000099",
+        document_title="Genesis",
+        author=None,
+        rrf_score=0.5,
+        position=7,
+    )
+    assert c.position == 7
+
+
+def test_chunk_candidate_position_defaults_to_none():
+    c = ChunkCandidate(
+        chunk_id="aaaa0000-0000-0000-0000-000000000002",
+        content="test",
+        reference=None,
+        collection="catechism",
+        document_id="00000000-0000-0000-0000-000000000099",
+        document_title="CCC",
+        author=None,
+        rrf_score=0.5,
+    )
+    assert c.position is None
+
 
 @pytest.mark.asyncio
-async def test_retrieve_candidates_calls_fts_for_each_expansion():
-    """FTS is called once per expansion query plus once for the original query."""
+async def test_retrieve_candidates_populates_position_from_fts():
+    """FTS results must include position; it must reach ChunkCandidate.position."""
+    chunk_id = "fts00000-0000-0000-0000-000000000001"
+    fts_row = {
+        "id": chunk_id,
+        "content": "FTS result",
+        "reference": "Test 1:1",
+        "collection": "catechism",
+        "document_id": "00000000-0000-0000-0000-000000000099",
+        "document_title": "CCC",
+        "author": None,
+        "anchor": None,
+        "position": 42,
+        "annotation": None,
+    }
+
     mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
+    mock_client.query_points = AsyncMock(side_effect=RuntimeError("no qdrant"))
 
     mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(return_value=[])  # _get_excluded_ids
+    mock_pool.fetch = AsyncMock(side_effect=[
+        [],           # _get_excluded_ids
+        [fts_row],    # _search_fts
+        # No batch position lookup needed — FTS already has position
+    ])
 
     with (
         patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
         patch("app.rag.retrieve.get_pool", return_value=mock_pool),
         patch("app.rag.retrieve.settings") as mock_settings,
-        patch("app.rag.retrieve._search_fts", new_callable=AsyncMock) as mock_fts,
     ):
         mock_settings.candidate_multiplier = 3
-        mock_fts.return_value = []
-
-        await retrieve_candidates(
-            query_text="Holy Spirit",
-            query_vec=[0.1] * 1536,
-            hyde_vec=None,
-            extra_vecs=[],
-            collection="catechism",
-            quota=4,
-            user_id="00000000-0000-0000-0000-000000000001",
-            expansion_queries=["Holy Ghost", "divine grace"],
-        )
-
-    # original + 2 expansion = 3 FTS calls
-    assert mock_fts.call_count == 3
-    fts_texts = {call.args[3] for call in mock_fts.call_args_list}
-    assert fts_texts == {"Holy Spirit", "Holy Ghost", "divine grace"}
-
-
-@pytest.mark.asyncio
-async def test_retrieve_candidates_no_expansion_by_default():
-    """Without expansion_queries, only the original FTS call is made."""
-    mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
-
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(return_value=[])
-
-    with (
-        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
-        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
-        patch("app.rag.retrieve.settings") as mock_settings,
-        patch("app.rag.retrieve._search_fts", new_callable=AsyncMock) as mock_fts,
-    ):
-        mock_settings.candidate_multiplier = 3
-        mock_fts.return_value = []
-
-        await retrieve_candidates(
+        results = await retrieve_candidates(
             query_text="grace",
             query_vec=[0.1] * 1536,
             hyde_vec=None,
@@ -399,5 +411,41 @@ async def test_retrieve_candidates_no_expansion_by_default():
             user_id="00000000-0000-0000-0000-000000000001",
         )
 
-    assert mock_fts.call_count == 1
-    assert mock_fts.call_args.args[3] == "grace"
+    assert len(results) == 1
+    assert results[0].position == 42
+
+
+@pytest.mark.asyncio
+async def test_retrieve_candidates_batch_fetches_position_for_qdrant_results():
+    """Qdrant-sourced candidates have no position in payload; must be fetched from DB."""
+    chunk_id = "qdrant00-0000-0000-0000-000000000001"
+    mock_client = AsyncMock()
+    mock_client.query_points = AsyncMock(return_value=_mock_query_response([
+        _scored_point(chunk_id),
+    ]))
+
+    mock_pool = MagicMock()
+    mock_pool.fetch = AsyncMock(side_effect=[
+        [],   # _get_excluded_ids
+        [],   # _search_fts (empty)
+        [{"id": chunk_id, "position": 17}],  # batch position lookup
+    ])
+
+    with (
+        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
+        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
+        patch("app.rag.retrieve.settings") as mock_settings,
+    ):
+        mock_settings.candidate_multiplier = 3
+        results = await retrieve_candidates(
+            query_text="test",
+            query_vec=[0.1] * 1536,
+            hyde_vec=None,
+            extra_vecs=[],
+            collection="bible",
+            quota=4,
+            user_id="00000000-0000-0000-0000-000000000001",
+        )
+
+    assert len(results) >= 1
+    assert results[0].position == 17

@@ -19,6 +19,13 @@ class Settings(BaseSettings):
 
     # LLM
     anthropic_api_key: str = Field(validation_alias="ANTHROPIC_API_KEY")
+    # API keys for per-key HyDE semaphoring
+    # Key A (anthropic_api_key) = Bible dedicated
+    # Keys B/C/D = non-Bible collections, round-robin per query
+    # All default to None; runtime falls back to anthropic_api_key when unset
+    anthropic_api_key_b: str | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY_B")
+    anthropic_api_key_c: str | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY_C")
+    anthropic_api_key_d: str | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY_D")
     anthropic_model: str = Field(default="claude-sonnet-4-6", validation_alias="ANTHROPIC_MODEL")
     anthropic_title_model: str = Field(default="claude-haiku-4-5", validation_alias="ANTHROPIC_TITLE_MODEL")
     llm_max_tokens: int = Field(default=1024, validation_alias="LLM_MAX_TOKENS")
