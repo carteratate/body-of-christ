@@ -16,26 +16,20 @@ export default function UpdatePasswordPage() {
   const didRecover = useRef(false);
 
   useEffect(() => {
-    const hasCode = new URLSearchParams(window.location.search).has("code");
-    const hasHashRecovery = window.location.hash.includes("type=recovery");
-    const isRecoveryFlow = hasCode || hasHashRecovery;
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      // PASSWORD_RECOVERY fires for implicit flow.
-      // SIGNED_IN fires when createBrowserClient auto-exchanges the PKCE ?code=.
-      if (
-        event === "PASSWORD_RECOVERY" ||
-        (event === "SIGNED_IN" && isRecoveryFlow)
-      ) {
+    // createBrowserClient clears ?code= from the URL synchronously on init,
+    // before useEffect runs — so we cannot use URL params to detect recovery.
+    // Instead: any session found on this page came from a reset link (nothing
+    // else navigates here), so treat any session as a valid recovery.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === "SIGNED_IN" || event === "PASSWORD_RECOVERY") && session) {
         didRecover.current = true;
         setReady(true);
       }
     });
 
-    // Race condition fix: auto-exchange may have already completed before the
-    // listener above was registered. Check for an existing session immediately.
+    // Fallback: exchange may have completed before listener registered
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session && !didRecover.current && isRecoveryFlow) {
+      if (session && !didRecover.current) {
         didRecover.current = true;
         setReady(true);
       }
