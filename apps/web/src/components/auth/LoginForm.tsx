@@ -51,7 +51,11 @@ export function LoginForm() {
               anchorTextColor:              "#C4972A",
               anchorTextHoverColor:         "#b38824",
               messageText:                  "#EAE6DC",
-              messageTextDanger:            "#f87171",
+              messageTextDanger:            "#fca5a5",
+              messageBackground:            "#111829",
+              messageBackgroundDanger:      "#1C1118",
+              messageBorder:                "#1C2A40",
+              messageBorderDanger:          "#4a1a1a",
             },
             radii: {
               borderRadiusButton: "6px",
