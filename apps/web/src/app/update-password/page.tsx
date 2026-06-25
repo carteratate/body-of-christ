@@ -16,28 +16,31 @@ export default function UpdatePasswordPage() {
   const didRecover = useRef(false);
 
   useEffect(() => {
-    // PKCE flow: email link delivers ?code= — exchange it client-side
-    const code = new URLSearchParams(window.location.search).get("code");
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (!error) {
-          didRecover.current = true;
-          setReady(true);
-        } else {
-          router.replace("/login");
-        }
-      });
-    }
+    const hasCode = new URLSearchParams(window.location.search).has("code");
+    const hasHashRecovery = window.location.hash.includes("type=recovery");
+    const isRecoveryFlow = hasCode || hasHashRecovery;
 
-    // Implicit flow: Supabase fires PASSWORD_RECOVERY via hash token
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
+      // PASSWORD_RECOVERY fires for implicit flow.
+      // SIGNED_IN fires when createBrowserClient auto-exchanges the PKCE ?code=.
+      if (
+        event === "PASSWORD_RECOVERY" ||
+        (event === "SIGNED_IN" && isRecoveryFlow)
+      ) {
         didRecover.current = true;
         setReady(true);
       }
     });
 
-    // If neither fires within 5 s, bail to login
+    // Race condition fix: auto-exchange may have already completed before the
+    // listener above was registered. Check for an existing session immediately.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session && !didRecover.current && isRecoveryFlow) {
+        didRecover.current = true;
+        setReady(true);
+      }
+    });
+
     const timeout = setTimeout(() => {
       if (!didRecover.current) router.replace("/login");
     }, 5000);
