@@ -154,34 +154,35 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
 
   function at(fn: () => void, ms: number) { timers.current.push(setTimeout(fn, ms)); }
 
-  // ── Sequence 2 (post-gate-1) ──────────────────────────────────────────────
+  // ── Sequence 2 (post-gate-1 → sequential flash → border) ─────────────────
 
   const startSequence2 = useCallback(() => {
     const act = active.length > 0 ? active : Object.keys(PALETTE).slice(0, 4);
-    const perSource = Math.min(300, Math.floor(1500 / act.length));
+    const perSource = 800;
 
-    // Source→BoC colored lines start (0.6s CSS, arrive at t=600)
+    // Source→BoC colored lines start (1s CSS, arrive at t=1000)
     setPhase(7);
 
-    // Sequential per-source flash — starts 120ms before lines arrive (80% drawn)
+    // Sequential per-source flash — starts 100ms after lines arrive (let lines settle)
+    // Line disappears at same moment BoC pulses that color
     act.forEach((key, i) => {
-      const t = 480 + i * perSource;
-      at(() => setQPulse(PALETTE[key]?.hex ?? ACCENT), t);
-      at(() => { setQPulse(null); setDismissedLines(prev => [...prev, key]); }, t + Math.min(200, perSource - 50));
+      const t = 1100 + i * perSource;
+      at(() => { setQPulse(PALETTE[key]?.hex ?? ACCENT); setDismissedLines(prev => [...prev, key]); }, t);
+      at(() => setQPulse(null), t + 600);
     });
 
-    const seqEnd = 480 + act.length * perSource;
+    const seqEnd = 1100 + act.length * perSource;
 
-    // After sequential: gold pulse, sources gone, return line
+    // After sequential: gold BoC pulse at 80% (2120ms), sources gone, return line
     at(() => setQPulse(ACCENT), seqEnd);
-    at(() => setSourcesGone(true), seqEnd + 200);
-    at(() => { setQPulse(null); setReturnLineDone(true); }, seqEnd + 400); // return line (0.6s CSS), arrives seqEnd+1000
+    at(() => setSourcesGone(true), seqEnd + 800);
+    at(() => { setQPulse(null); setReturnLineDone(true); }, seqEnd + 2120); // return line (1s CSS), arrives seqEnd+3120
 
-    // Border flash 120ms before return line arrives (80% drawn)
-    at(() => setBorderFlash(true), seqEnd + 880);
+    // Border flash 200ms before return line arrives (80% drawn)
+    at(() => setBorderFlash(true), seqEnd + 2920);
 
     // BoC fades 50ms after return line arrives
-    at(() => setBocGone(true), seqEnd + 1050);
+    at(() => setBocGone(true), seqEnd + 3170);
 
     // Enter stretch 2
     at(() => {
@@ -200,8 +201,24 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           setBorderFlash(on);
         }, 1500);
       }
-    }, seqEnd + 1100);
+    }, seqEnd + 3220);
   }, [active, onReadyToShow, onFadeComplete]);
+
+  // ── Post-gate-1: chunks → winners back to sources → source glow → sequence 2 ───
+
+  const startPostGate1 = useCallback(() => {
+    setGlowColor(false);                                             // stop source pulse immediately
+    at(() => setPhase(3), 200);                                      // source→chunk lines (1s CSS), arrives ~1200
+    at(() => setChunkFlash(true), 1500);                             // 300ms after chunks arrive, flash #1
+    at(() => setChunkFlash(false), 2100);                            // flash #1: 600ms on
+    at(() => setChunkFlash(true), 2700);                             // 600ms gap, flash #2
+    at(() => { setChunkFlash(false); setPhase(5); }, 3300);          // flash #2 done, colored chunk→source lines start
+    at(() => setGlowColor(true), 4100);                              // 200ms before colored lines arrive at ~4300
+    at(() => {
+      setGlowColor(false);
+      at(() => startSequence2(), 100);
+    }, 5500);
+  }, [startSequence2]);
 
   // ── Effect 1: Sequence 1 (pre-gate, runs on mount) ────────────────────────
 
@@ -219,33 +236,26 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
     });
     setWinners(w);
 
-    // Sequence 1: gold line → BoC → sources → chunks → winners → sources
-    // Pulse timing: 200ms before arrival for gold line (87%), 120ms for 0.6s lines (80%)
-    // Chunk flash: reaction pattern — 300ms AFTER arrival, double flash
-    at(() => { setPhase(1); setSearchLineDone(true); }, 100);       // gold line starts (1.5s CSS)
-    at(() => setOpeningPulse(true), 1400);                           // 200ms before gold arrives at 1600
-    at(() => setSearchGone(true), 1700);                             // line fades 100ms after arrival
-    at(() => { setOpeningPulse(false); setPhase(2); setSourcesReady(true); }, 2100); // BoC→source (0.6s CSS)
-    at(() => setGlowColor(true), 2580);                              // 120ms before sources arrive at 2700
-    at(() => { setGlowColor(false); setPhase(3); }, 2800);          // source→chunk lines (0.6s CSS)
-    at(() => setChunkFlash(true), 3700);                             // 300ms after chunks arrive at 3400
-    at(() => setChunkFlash(false), 3900);                            // flash #1 off
-    at(() => setChunkFlash(true), 4000);                             // flash #2 on
-    at(() => { setChunkFlash(false); setPhase(5); }, 4200);         // winner→source colored (0.6s CSS)
-    at(() => setGlowColor(true), 4680);                              // 120ms before winners arrive at 4800
+    // Sequence 1: gold line → BoC → sources (GATE 1 STRETCH on sources) → chunks → winners → sources
+    // All lines travel at 1s. BoC gold pulse: 2600ms. Source glow: 1400ms.
+    at(() => { setPhase(1); setSearchLineDone(true); }, 100);       // gold line starts (1s CSS), arrives t=1100
+    at(() => setOpeningPulse(true), 900);                            // 200ms before gold arrives at 1100
+    at(() => setSearchGone(true), 1200);                             // line fades 100ms after arrival
+    at(() => setOpeningPulse(false), 3500);                          // gold pulse off (2600ms hold)
+    at(() => { setPhase(2); setSourcesReady(true); }, 3800);        // BoC→source (1s CSS), arrives t=4800
+    at(() => setGlowColor(true), 4600);                              // 200ms before sources arrive at 4800
+    at(() => setGlowColor(false), 6000);                             // source glow 1400ms
+    // Enter Gate 1 stretch — source nodes pulse until HyDE + embed done
     at(() => {
-      setGlowColor(false);
-      // Enter stretch 1 — sources pulse until Gate 1 opens
       if (retrievalStartedRef.current) {
-        // Gate 1 already open — brief pause then advance
-        at(() => startSequence2(), 200);
+        startPostGate1();
       } else {
         stretchPhaseRef.current = "gate1";
         stretchIntervalRef.current = setInterval(() => {
           setGlowColor(prev => !prev);
         }, 1200);
       }
-    }, 4900);
+    }, 6200);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -260,10 +270,9 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
         stretchIntervalRef.current = null;
       }
       setGlowColor(false);
-      // Brief pause before advancing (prevents visual jump)
-      at(() => startSequence2(), 200);
+      startPostGate1();
     }
-  }, [retrievalStarted]);
+  }, [retrievalStarted, startPostGate1]);
 
   // ── Effect 3: Gate 2 watcher (advances stretch 2 → resolve) ──────────────
 
@@ -320,7 +329,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           style={{
             strokeDashoffset: searchLineDone ? 0 : SL_LEN,
             transition: searchLineDone
-              ? "stroke-dashoffset 1.5s linear, opacity 0.4s ease"
+              ? "stroke-dashoffset 1s linear, opacity 0.4s ease"
               : "none",
           }}
         />
@@ -338,7 +347,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
               opacity={phase >= 2 && phase < 5 && !sourcesGone ? 1 : 0}
               style={{
                 strokeDashoffset: phase >= 2 ? 0 : len,
-                transition: phase >= 2 ? "stroke-dashoffset 0.6s linear" : "none",
+                transition: phase >= 2 ? "stroke-dashoffset 1s linear" : "none",
               }}
             />
           );
@@ -358,7 +367,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
               opacity={phase >= 3 && phase < 5 && !sourcesGone ? 1 : 0}
               style={{
                 strokeDashoffset: phase >= 3 ? 0 : len,
-                transition: phase >= 3 ? "stroke-dashoffset 0.6s linear" : "none",
+                transition: phase >= 3 ? "stroke-dashoffset 1s linear" : "none",
               }}
             />
           );
@@ -383,7 +392,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
                 opacity={phase >= 5 && !sourcesGone ? 1 : 0}
                 style={{
                   strokeDashoffset: phase >= 5 ? 0 : len,
-                  transition: phase >= 5 ? "stroke-dashoffset 0.6s linear" : "none",
+                  transition: phase >= 5 ? "stroke-dashoffset 1s linear" : "none",
                 }}
               />
             );
@@ -405,8 +414,8 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
               style={{
                 strokeDashoffset: phase >= 7 ? 0 : len,
                 transition: dismissedLines.includes(s.key)
-                  ? "stroke-dashoffset 0.6s linear, opacity 0.3s ease-out"
-                  : phase >= 7 ? "stroke-dashoffset 0.6s linear" : "none",
+                  ? "stroke-dashoffset 1s linear, opacity 0.3s ease-out"
+                  : phase >= 7 ? "stroke-dashoffset 1s linear" : "none",
               }}
             />
           );
@@ -420,7 +429,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           opacity={returnLineDone && !bocGone ? 1 : 0}
           style={{
             strokeDashoffset: returnLineDone ? 0 : RL_LEN,
-            transition: returnLineDone ? "stroke-dashoffset 0.6s linear" : "none",
+            transition: returnLineDone ? "stroke-dashoffset 1s linear" : "none",
           }}
         />
 
@@ -449,9 +458,9 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
         {sources.map(s => {
           const pal    = PALETTE[s.key];
           const rgb    = hexToRgb(pal.hex);
-          const sw     = glowColor ? 2.5 : 1.5;
+          const sw     = glowColor ? 3.5 : 1.5;
           const filter = glowColor
-            ? `drop-shadow(0 0 8px ${pal.hex})`
+            ? `drop-shadow(0 0 14px ${pal.hex})`
             : `drop-shadow(0 0 4px ${pal.hex}50)`;
           return (
             <g key={`src-${s.key}`}
