@@ -20,19 +20,7 @@ _MAX_COSINE_DISTANCE = 0.50
 _QDRANT_SCORE_THRESHOLD = 1.0 - _MAX_COSINE_DISTANCE  # 0.50
 
 
-@dataclass
-class ChunkCandidate:
-    chunk_id: str
-    content: str
-    reference: str | None
-    collection: str
-    document_id: str
-    document_title: str
-    author: str | None
-    rrf_score: float
-    anchor: str | None = None
-    position: int | None = None
-    annotation: dict | None = None   # populated post-enrichment; None until then
+from app.rag.steps.types import ChunkCandidate  # noqa: F401
 
 
 # ---------------------------------------------------------------------------

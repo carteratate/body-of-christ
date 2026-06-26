@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import anthropic
 
 from app.config import settings
-from app.rag.retrieve import ChunkCandidate
+from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 logger = logging.getLogger(__name__)
 
@@ -59,19 +59,7 @@ _RERANK_SYSTEM = (
 )
 
 
-@dataclass
-class RankedChunk:
-    chunk_id: str
-    content: str
-    reference: str | None
-    collection: str
-    document_id: str
-    document_title: str
-    author: str | None
-    reranker_score: float  # 0.0–1.0
-    include: bool = True   # False = hard-excluded by reranker (low score or redundant)
-    anchor: str | None = None
-    position: int | None = None
+# RankedChunk imported from app.rag.steps.types above
 
 
 def init_rerank() -> None:
