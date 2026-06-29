@@ -23,3 +23,5 @@ services/api/.env
 # Corpus source data (large binary/XML files — load separately)
 datapipeline/sources/
 .worktrees/
+.claude/
+docs/superpowers/
