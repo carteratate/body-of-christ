@@ -33,6 +33,7 @@ from app.routes.sessions import router as sessions_router
 from app.routes.sources import router as sources_router
 from app.routes.evaluate import router as evaluate_router
 from app.routes.compare import router as compare_router
+from app.routes.compare_stats import router as compare_stats_router
 
 
 logger = logging.getLogger(__name__)
@@ -70,7 +71,7 @@ app = FastAPI(title="body-of-christ-api", lifespan=lifespan)
 
 class InternalSecretMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in ("/health", "/health/db", "/v1/search/compare/view", "/v1/search/compare"):
+        if request.url.path in ("/health", "/health/db", "/v1/search/compare/view", "/v1/search/compare", "/v1/search/compare/stats"):
             return await call_next(request)
         if not settings.internal_api_secret:
             return await call_next(request)
@@ -100,6 +101,7 @@ app.include_router(preferences_router, prefix="/v1")
 app.include_router(sources_router, prefix="/v1")
 app.include_router(evaluate_router, prefix="/v1")
 app.include_router(compare_router, prefix="/v1")
+app.include_router(compare_stats_router, prefix="/v1")
 
 
 @app.get("/health")

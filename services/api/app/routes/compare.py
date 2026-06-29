@@ -2,6 +2,7 @@
 """Compare endpoint: runs N pipelines sequentially and scores results."""
 from __future__ import annotations
 
+import asyncio
 import dataclasses
 import logging
 
@@ -14,6 +15,7 @@ from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.rag.compare import judge, overlap
 from app.rag.compare import runner as compare_runner
+from app.rag.compare.persist import save_compare_runs
 from app.rag.pipelines.registry import PIPELINES
 
 logger = logging.getLogger(__name__)
@@ -68,6 +70,11 @@ async def compare_search(
 
     overlap_report = overlap.run(pipeline_results)
     judge_report = await judge.run(body.query, pipeline_results, overlap_report)
+
+    # Fire-and-forget persistence — doesn't block response
+    asyncio.create_task(
+        save_compare_runs(body.query, body.collections, body.quota, pipeline_results)
+    )
 
     return {
         "query": body.query,
@@ -128,8 +135,10 @@ _HTML_VIEWER = """<!DOCTYPE html>
   <input type="number" id="quota" value="4" min="1" max="10">
   <br>
   <button type="submit">Run Compare</button>
+  <button type="button" onclick="loadStats()" style="margin-left:8px;background:#111829;color:#C4972A;border:1px solid #C4972A;padding:10px 24px;cursor:pointer;font-weight:bold;font-size:14px;">Stats</button>
 </form>
 <div id="status"></div>
+<div id="stats" style="margin-top:24px;display:none"></div>
 <div id="results"></div>
 
 <script>
@@ -174,6 +183,51 @@ document.getElementById("compareForm").addEventListener("submit", async (e) => {
     document.getElementById("status").textContent = `Error: ${err.message}`;
   }
 });
+
+async function loadStats() {
+  const statsDiv = document.getElementById("stats");
+  statsDiv.style.display = "block";
+  statsDiv.innerHTML = "<div style='color:#7A8099'>Loading stats...</div>";
+  try {
+    const res = await fetch("/v1/search/compare/stats");
+    if (!res.ok) { statsDiv.innerHTML = `<div style='color:#e84040'>Stats error: ${res.status}</div>`; return; }
+    const data = await res.json();
+    if (!data.pipelines.length) {
+      statsDiv.innerHTML = "<div class='section'><h3>Pipeline Performance (all-time)</h3><div style='color:#7A8099'>No runs recorded yet.</div></div>";
+      return;
+    }
+    let html = `<div class="section"><h3>Pipeline Performance (all-time)</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr style="color:#7A8099;border-bottom:1px solid #333">
+        <th style="text-align:left;padding:6px">Pipeline</th>
+        <th style="padding:6px">Runs</th>
+        <th style="padding:6px">avg_s</th>
+        <th style="padding:6px">p50_s</th>
+        <th style="padding:6px">p95_s</th>
+        <th style="padding:6px">avg_cost</th>
+        <th style="padding:6px">p50_cost</th>
+        <th style="padding:6px">p95_cost</th>
+        <th style="padding:6px">avg_chunks</th>
+      </tr>`;
+    data.pipelines.forEach(p => {
+      html += `<tr style="border-bottom:1px solid #1a2030">
+        <td style="padding:6px;color:#C4972A">${p.pipeline}</td>
+        <td style="padding:6px;text-align:center">${p.run_count}</td>
+        <td style="padding:6px;text-align:center">${p.avg_duration_s.toFixed(2)}</td>
+        <td style="padding:6px;text-align:center">${p.p50_duration_s.toFixed(2)}</td>
+        <td style="padding:6px;text-align:center">${p.p95_duration_s.toFixed(2)}</td>
+        <td style="padding:6px;text-align:center">$${p.avg_cost.toFixed(5)}</td>
+        <td style="padding:6px;text-align:center">$${p.p50_cost.toFixed(5)}</td>
+        <td style="padding:6px;text-align:center">$${p.p95_cost.toFixed(5)}</td>
+        <td style="padding:6px;text-align:center">${p.avg_chunks.toFixed(1)}</td>
+      </tr>`;
+    });
+    html += '</table></div>';
+    statsDiv.innerHTML = html;
+  } catch(err) {
+    statsDiv.innerHTML = `<div style='color:#e84040'>Stats failed: ${err.message}</div>`;
+  }
+}
 
 function renderResults(data) {
   const sharedIds = new Set(data.overlap.shared || []);
