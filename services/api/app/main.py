@@ -17,7 +17,7 @@ from app.db import close_pool, get_pool, init_pool
 from app.llm import close_llm, init_llm
 from app.rag.api_keys import close_api_keys, init_api_keys
 from app.rag.cross_encoder import close_cross_encoder, init_cross_encoder
-from app.rag.embed import close_embed, init_embed
+from app.rag.steps.embed import close_embed, init_embed
 from app.rag.explain import close_explain, init_explain
 from app.rag.qdrant_client import close_qdrant, init_qdrant
 from app.routes.bookmarks import router as bookmarks_router

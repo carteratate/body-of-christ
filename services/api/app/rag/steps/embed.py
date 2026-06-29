@@ -1,9 +1,12 @@
 """Text embedding via OpenAI text-embedding-3-large."""
+from __future__ import annotations
+
 import logging
 
 import openai
 
 from app.config import settings
+from app.rag.steps.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
 
@@ -22,37 +25,28 @@ async def close_embed() -> None:
         _client = None
 
 
-async def embed_text(text: str) -> list[float]:
-    """Embed a single text string. Returns a list of 1536 floats.
-
-    Raises RuntimeError if the client is not initialized.
-    Raises on API failure (let callers handle).
-    """
+async def run(text: str, cost_tracker: CostTracker | None = None) -> list[float]:
+    """Embed a single text string. Returns a list of floats."""
     if _client is None:
         raise RuntimeError("Embed client not initialized")
-
     response = await _client.embeddings.create(
         input=text,
         model=settings.embedding_model,
         dimensions=settings.embedding_dims,
     )
+    if cost_tracker is not None and response.usage:
+        cost_tracker.record("embed", settings.embedding_model,
+                            input_tokens=response.usage.prompt_tokens, output_tokens=0)
     return response.data[0].embedding
 
 
 async def embed_texts(texts: list[str]) -> list[list[float]]:
-    """Embed multiple texts in a single API call (batch).
-
-    Returns list of vectors in same order as input.
-    Raises RuntimeError if the client is not initialized.
-    Raises on API failure (let callers handle).
-    """
+    """Batch embed multiple texts (used by datapipeline, not pipeline steps)."""
     if _client is None:
         raise RuntimeError("Embed client not initialized")
-
     response = await _client.embeddings.create(
         input=texts,
         model=settings.embedding_model,
         dimensions=settings.embedding_dims,
     )
-    sorted_data = sorted(response.data, key=lambda r: r.index)
-    return [r.embedding for r in sorted_data]
+    return [r.embedding for r in sorted(response.data, key=lambda r: r.index)]

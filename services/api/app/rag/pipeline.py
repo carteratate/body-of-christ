@@ -12,7 +12,7 @@ from app.db import get_pool
 from app.rag.api_keys import get_client, get_key_for, get_semaphore
 from app.rag.cross_encoder import score_candidates
 from app.rag.dedup import apply_dedup
-from app.rag.embed import embed_text
+from app.rag.steps.embed import run as embed_text
 from app.rag.explain import stream_explanation
 from app.rag.hyde import generate_hyde_passages
 from app.rag.retrieve import retrieve_candidates, ChunkCandidate
