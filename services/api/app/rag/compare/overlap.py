@@ -2,7 +2,7 @@
 """Structural overlap analysis across pipeline results. No LLM calls."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from app.rag.steps.types import PipelineResult
 
