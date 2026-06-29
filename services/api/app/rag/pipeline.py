@@ -10,13 +10,12 @@ import uuid
 from app.config import settings
 from app.db import get_pool
 from app.rag.api_keys import get_client, get_key_for, get_semaphore
-from app.rag.cross_encoder import score_candidates
 from app.rag.dedup import apply_dedup
 from app.rag.steps.embed import run as embed_text
 from app.rag.explain import stream_explanation
-from app.rag.hyde import generate_hyde_passages
+from app.rag.hyde import generate_hyde_passages, choose_bible_hyde_genres
 from app.rag.retrieve import retrieve_candidates, ChunkCandidate
-from app.rag.rerank import RankedChunk
+from app.rag.rerank import rerank_collection, RankedChunk
 from app.rag.constants import VALID_COLLECTIONS
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,14 @@ async def _hyde_and_embed(
     client = get_client(key)
     semaphore = get_semaphore(key)
 
-    passages = await generate_hyde_passages(query, col, client, semaphore)
+    if col == "bible":
+        # S2.5: one Haiku call picks 3 genres before generation, so only 4 calls
+        # total for bible (1 selector + 3 generators) instead of 8.
+        selected_genres = await choose_bible_hyde_genres(query, client)
+        passages = await generate_hyde_passages(query, col, client, semaphore, selected_genres=selected_genres)
+    else:
+        passages = await generate_hyde_passages(query, col, client, semaphore)
+
     if not passages:
         return col, []
     results = await asyncio.gather(*[embed_text(p) for p in passages], return_exceptions=True)
@@ -123,17 +129,16 @@ async def run_search_pipeline(
             return
 
         # ------------------------------------------------------------------
-        # Step 4 — BGE cross-encoder scoring per collection (parallel, in executor)
+        # Step 4 — Haiku reranking per collection (parallel)
         # ------------------------------------------------------------------
         yield {"type": "status", "phase": "ranking"}
-        loop = asyncio.get_event_loop()
         score_results = await asyncio.gather(*[
-            loop.run_in_executor(None, score_candidates, col_candidates, query)
+            rerank_collection(col_candidates, query, quota)
             for col_candidates in per_collection_candidates
         ], return_exceptions=True)
 
         _t4 = time.perf_counter()
-        logger.info("pipeline timing: step4(cross_encoder)=%.2fs", _t4 - _t3)
+        logger.info("pipeline timing: step4(rerank)=%.2fs", _t4 - _t3)
 
         all_scored: list[RankedChunk] = []
         for result in score_results:

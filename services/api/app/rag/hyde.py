@@ -1,5 +1,6 @@
 """HyDE (Hypothetical Document Embedding) passage generation."""
 import asyncio
+import json
 import logging
 
 import anthropic
@@ -241,6 +242,22 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
     ),
 }
 
+_BIBLE_GENRE_SELECT_SYSTEM = (
+    "You are choosing which biblical genres to search for a theological query. "
+    "Given a query, select the 3 genres most likely to contain directly relevant biblical passages.\n\n"
+    "Available genres:\n"
+    "  free        — unconstrained; picks the most fitting part of the Bible for the query\n"
+    "  psalms      — Psalms: lament, praise, trust, thanksgiving, worship\n"
+    "  ot-wisdom   — Proverbs, Ecclesiastes, Sirach, Job: moral instruction, fear of the Lord\n"
+    "  ot-prophets — Isaiah, Jeremiah, Ezekiel, minor prophets: oracles, judgment, restoration\n"
+    "  ot-stories  — Genesis, Exodus, Kings, etc.: narrative, covenant, salvation history\n"
+    "  nt-stories  — Gospels and Acts: miracles, Passion, Resurrection, early Church events\n"
+    "  nt-epistles — Paul and general epistles: theological argument, pastoral instruction\n"
+    "  nt-teachings — Jesus's direct teaching: Sermon on the Mount, parables, I am sayings\n\n"
+    "Return ONLY a JSON array of exactly 3 genre keys, e.g. [\"psalms\", \"nt-teachings\", \"free\"]. "
+    "No explanation, no other text."
+)
+
 _COLLECTION_MAX_TOKENS: dict[str, int] = {
     "bible": 300,
     "catechism": 250,
@@ -286,27 +303,71 @@ async def generate_hyde_passages(
     collection: str | None,
     client: anthropic.AsyncAnthropic,
     semaphore: asyncio.Semaphore,
+    selected_genres: list[str] | None = None,
 ) -> list[str]:
     """Return hypothetical passages for the given collection.
 
-    For 'bible', generates 8 passages in parallel: one unconstrained free passage
-    plus one per genre (all 7 genres simultaneously), gated by the semaphore.
+    For 'bible' with no selected_genres, generates all 8 passages in parallel
+    (free-form + 7 genre variants). With selected_genres, generates only the
+    specified subset (used by S2.5 after choose_bible_hyde_genres selects 3).
     For all other collections, returns a single-item list. Never raises.
     """
     max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
 
     if collection == "bible":
+        all_bible_prompts: dict[str, str] = {
+            "free": _HYDE_BIBLE_FREE_PROMPT,
+            **_GENRE_HYDE_PROMPTS,
+        }
+        prompts = (
+            {g: all_bible_prompts[g] for g in selected_genres if g in all_bible_prompts}
+            if selected_genres
+            else all_bible_prompts
+        )
+
         async def _guarded(system: str) -> str | None:
             async with semaphore:
                 return await _generate_single(client, system, query, max_tokens)
 
-        results = await asyncio.gather(
-            _guarded(_HYDE_BIBLE_FREE_PROMPT),
-            *[_guarded(p) for p in _GENRE_HYDE_PROMPTS.values()],
-        )
+        results = await asyncio.gather(*[_guarded(p) for p in prompts.values()])
         return [r for r in results if r is not None]
 
     system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
     async with semaphore:
         result = await _generate_single(client, system, query, max_tokens)
     return [result] if result is not None else []
+
+
+async def choose_bible_hyde_genres(
+    query: str,
+    client: anthropic.AsyncAnthropic,
+    k: int = 3,
+) -> list[str]:
+    """Pre-select k bible genres before any HyDE generation (S2.5).
+
+    One Haiku call decides which genres to generate, so only k generation
+    calls follow instead of all 8. Falls back to a sensible default on error.
+    """
+    _VALID = {"free", "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
+              "nt-stories", "nt-epistles", "nt-teachings"}
+    _DEFAULT = ["free", "nt-epistles", "psalms"]
+
+    try:
+        response = await client.messages.create(
+            model=settings.hyde_model,
+            max_tokens=50,
+            system=_BIBLE_GENRE_SELECT_SYSTEM,
+            messages=[{"role": "user", "content": query}],
+        )
+        genres = json.loads(response.content[0].text.strip())
+        selected = [g for g in genres if isinstance(g, str) and g in _VALID]
+        if len(selected) == k:
+            return selected
+        logger.warning(
+            "choose_bible_hyde_genres: expected %d valid genres, got %d; using defaults",
+            k, len(selected),
+        )
+    except Exception as exc:
+        logger.warning("choose_bible_hyde_genres: failed (%s); using defaults", exc)
+
+    return _DEFAULT[:k]
