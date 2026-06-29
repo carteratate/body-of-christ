@@ -35,7 +35,7 @@ async def run(text: str, cost_tracker: CostTracker | None = None) -> list[float]
         dimensions=settings.embedding_dims,
     )
     if cost_tracker is not None and response.usage:
-        cost_tracker.record("embed", settings.embedding_model,
+        cost_tracker.record(step="embed", model=settings.embedding_model,
                             input_tokens=response.usage.prompt_tokens, output_tokens=0)
     return response.data[0].embedding
 

@@ -46,12 +46,10 @@ async def lifespan(app: FastAPI):
     init_llm()
     init_embed()
     init_qdrant()
-    init_rerank()
     init_api_keys()
     init_explain()
     yield
     await close_api_keys()
-    await close_rerank()
     await close_embed()
     await close_qdrant()
     await close_explain()
