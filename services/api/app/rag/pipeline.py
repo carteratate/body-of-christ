@@ -13,7 +13,7 @@ from app.rag.api_keys import get_client, get_key_for, get_semaphore
 from app.rag.dedup import apply_dedup
 from app.rag.steps.embed import run as embed_text
 from app.rag.explain import stream_explanation
-from app.rag.hyde import generate_hyde_passages, choose_bible_hyde_genres
+from app.rag.steps.hyde_s25 import generate_hyde_passages, choose_bible_hyde_genres
 from app.rag.retrieve import retrieve_candidates, ChunkCandidate
 from app.rag.rerank import rerank_collection, RankedChunk
 from app.rag.constants import VALID_COLLECTIONS

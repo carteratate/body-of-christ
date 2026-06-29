@@ -1,4 +1,6 @@
-"""HyDE (Hypothetical Document Embedding) passage generation."""
+"""S2.5 HyDE strategy: genre-selected bible passages + 1 per other collection."""
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
@@ -6,6 +8,9 @@ import logging
 import anthropic
 
 from app.config import settings
+from app.rag.api_keys import get_client, get_key_for, get_semaphore
+from app.rag.steps.cost_tracker import CostTracker
+from app.rag.steps.embed import run as embed_run
 
 logger = logging.getLogger(__name__)
 
@@ -274,13 +279,16 @@ _DEFAULT_MAX_TOKENS = 300
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+
 async def _generate_single(
     client: anthropic.AsyncAnthropic,
     system: str,
     query: str,
     max_tokens: int,
+    cost_tracker: CostTracker | None = None,
+    cost_step: str = "hyde",
 ) -> str | None:
-    """Generate one HyDE passage. Returns None on failure."""
+    """Generate one HyDE passage and optionally record token cost."""
     try:
         response = await client.messages.create(
             model=settings.hyde_model,
@@ -288,6 +296,12 @@ async def _generate_single(
             system=system,
             messages=[{"role": "user", "content": query}],
         )
+        if cost_tracker is not None:
+            cost_tracker.record(
+                cost_step, settings.hyde_model,
+                input_tokens=response.usage.input_tokens,
+                output_tokens=response.usage.output_tokens,
+            )
         return response.content[0].text
     except Exception as exc:
         logger.warning("HyDE passage generation failed: %s", exc)
@@ -297,45 +311,6 @@ async def _generate_single(
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
-
-async def generate_hyde_passages(
-    query: str,
-    collection: str | None,
-    client: anthropic.AsyncAnthropic,
-    semaphore: asyncio.Semaphore,
-    selected_genres: list[str] | None = None,
-) -> list[str]:
-    """Return hypothetical passages for the given collection.
-
-    For 'bible' with no selected_genres, generates all 8 passages in parallel
-    (free-form + 7 genre variants). With selected_genres, generates only the
-    specified subset (used by S2.5 after choose_bible_hyde_genres selects 3).
-    For all other collections, returns a single-item list. Never raises.
-    """
-    max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
-
-    if collection == "bible":
-        all_bible_prompts: dict[str, str] = {
-            "free": _HYDE_BIBLE_FREE_PROMPT,
-            **_GENRE_HYDE_PROMPTS,
-        }
-        prompts = (
-            {g: all_bible_prompts[g] for g in selected_genres if g in all_bible_prompts}
-            if selected_genres
-            else all_bible_prompts
-        )
-
-        async def _guarded(system: str) -> str | None:
-            async with semaphore:
-                return await _generate_single(client, system, query, max_tokens)
-
-        results = await asyncio.gather(*[_guarded(p) for p in prompts.values()])
-        return [r for r in results if r is not None]
-
-    system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
-    async with semaphore:
-        result = await _generate_single(client, system, query, max_tokens)
-    return [result] if result is not None else []
 
 
 async def choose_bible_hyde_genres(
@@ -371,3 +346,107 @@ async def choose_bible_hyde_genres(
         logger.warning("choose_bible_hyde_genres: failed (%s); using defaults", exc)
 
     return _DEFAULT[:k]
+
+
+async def generate_hyde_passages(
+    query: str,
+    collection: str | None,
+    client: anthropic.AsyncAnthropic,
+    semaphore: asyncio.Semaphore,
+    selected_genres: list[str] | None = None,
+    cost_tracker: CostTracker | None = None,
+) -> list[str]:
+    """Return hypothetical passages for the given collection, tracking LLM cost."""
+    max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
+
+    if collection == "bible":
+        all_bible_prompts: dict[str, str] = {"free": _HYDE_BIBLE_FREE_PROMPT, **_GENRE_HYDE_PROMPTS}
+        prompts = (
+            {g: all_bible_prompts[g] for g in selected_genres if g in all_bible_prompts}
+            if selected_genres
+            else all_bible_prompts
+        )
+
+        async def _guarded(system: str) -> str | None:
+            async with semaphore:
+                return await _generate_single(client, system, query, max_tokens,
+                                              cost_tracker=cost_tracker, cost_step="hyde")
+
+        results = await asyncio.gather(*[_guarded(p) for p in prompts.values()])
+        return [r for r in results if r is not None]
+
+    system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
+    async with semaphore:
+        result = await _generate_single(client, system, query, max_tokens,
+                                        cost_tracker=cost_tracker, cost_step="hyde")
+    return [result] if result is not None else []
+
+
+async def run(
+    query: str,
+    collections: list[str],
+    cost_tracker: CostTracker,
+) -> dict[str, list[list[float]]]:
+    """Generate HyDE passages and embed them per collection.
+
+    Returns dict[collection, list[embedding_vectors]].
+    Bible gets 3 vectors (1 selector call + 3 genre generators).
+    Each other collection gets 1 vector.
+    """
+    async def _hyde_and_embed(col: str) -> tuple[str, list[list[float]]]:
+        key = get_key_for(col)
+        client = get_client(key)
+        semaphore = get_semaphore(key)
+
+        if col == "bible":
+            response = await client.messages.create(
+                model=settings.hyde_model,
+                max_tokens=50,
+                system=_BIBLE_GENRE_SELECT_SYSTEM,
+                messages=[{"role": "user", "content": query}],
+            )
+            cost_tracker.record(
+                "hyde_genre_select", settings.hyde_model,
+                input_tokens=response.usage.input_tokens,
+                output_tokens=response.usage.output_tokens,
+            )
+            try:
+                _VALID = {"free", "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
+                          "nt-stories", "nt-epistles", "nt-teachings"}
+                genres = json.loads(response.content[0].text.strip())
+                selected = [g for g in genres if isinstance(g, str) and g in _VALID]
+                if len(selected) != 3:
+                    selected = ["free", "nt-epistles", "psalms"]
+            except Exception:
+                selected = ["free", "nt-epistles", "psalms"]
+            passages = await generate_hyde_passages(
+                query, col, client, semaphore, selected_genres=selected,
+                cost_tracker=cost_tracker,
+            )
+        else:
+            passages = await generate_hyde_passages(
+                query, col, client, semaphore, cost_tracker=cost_tracker,
+            )
+
+        if not passages:
+            return col, []
+        embed_results = await asyncio.gather(
+            *[embed_run(p, cost_tracker) for p in passages],
+            return_exceptions=True,
+        )
+        vecs = [v for v in embed_results if not isinstance(v, BaseException)]
+        return col, vecs
+
+    results = await asyncio.gather(
+        *[_hyde_and_embed(col) for col in collections],
+        return_exceptions=True,
+    )
+    output: dict[str, list[list[float]]] = {}
+    for item in results:
+        if isinstance(item, BaseException):
+            logger.warning("hyde_s25: collection failed: %s", item)
+            continue
+        col, vecs = item
+        if vecs:
+            output[col] = vecs
+    return output
