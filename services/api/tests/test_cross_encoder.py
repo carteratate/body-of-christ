@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from app.rag.cross_encoder import _sigmoid, score_candidates
-from app.rag.retrieve import ChunkCandidate
+from app.rag.steps.types import ChunkCandidate
 from app.rag.rerank import RankedChunk
 
 

@@ -14,7 +14,7 @@ import math
 
 from sentence_transformers import CrossEncoder
 
-from app.rag.retrieve import ChunkCandidate
+from app.rag.steps.types import ChunkCandidate
 from app.rag.rerank import RankedChunk
 
 logger = logging.getLogger(__name__)

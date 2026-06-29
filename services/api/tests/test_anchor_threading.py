@@ -1,4 +1,4 @@
-from app.rag.retrieve import ChunkCandidate
+from app.rag.steps.types import ChunkCandidate
 from app.rag.rerank import RankedChunk
 
 

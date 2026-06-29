@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.rag.rerank import rerank_collection
-from app.rag.retrieve import ChunkCandidate
+from app.rag.steps.types import ChunkCandidate
 
 
 def _make_candidate(chunk_id: str) -> ChunkCandidate:

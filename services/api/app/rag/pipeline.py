@@ -14,7 +14,11 @@ from app.rag.dedup import apply_dedup
 from app.rag.steps.embed import run as embed_text
 from app.rag.explain import stream_explanation
 from app.rag.steps.hyde_s25 import generate_hyde_passages, choose_bible_hyde_genres
-from app.rag.retrieve import retrieve_candidates, ChunkCandidate
+from app.rag.steps.retrieve_vector import run as retrieve_vector
+from app.rag.steps.retrieve_fts import run as retrieve_fts
+from app.rag.steps.rrf import run as rrf_merge
+from app.rag.steps.fetch_positions import run as fetch_positions
+from app.rag.steps.types import ChunkCandidate
 from app.rag.rerank import rerank_collection, RankedChunk
 from app.rag.constants import VALID_COLLECTIONS
 
@@ -101,25 +105,24 @@ async def run_search_pipeline(
             per_col_extra_hyde_vecs[col] = vecs[1:]
 
         # ------------------------------------------------------------------
-        # Step 3 — Per-collection retrieval (parallel)
+        # Step 3 — Retrieval (vector + FTS) → RRF merge → position fill
         # ------------------------------------------------------------------
         yield {"type": "status", "phase": "searching", "collections": collections}
-        retrieve_tasks = [
-            retrieve_candidates(
-                query, query_vec, per_col_hyde_vec[col],
-                per_col_extra_hyde_vecs[col],
-                col, quota, user_id,
-            )
-            for col in collections
-        ]
-        retrieve_results = await asyncio.gather(*retrieve_tasks, return_exceptions=True)
 
-        per_collection_candidates: list[list[ChunkCandidate]] = []
-        for col, result in zip(collections, retrieve_results):
-            if isinstance(result, BaseException):
-                logger.warning("retrieve_candidates failed for '%s': %s", col, result)
-            else:
-                per_collection_candidates.append(result)
+        per_col_hyde_vecs: dict[str, list[list[float]]] = {}
+        for col in collections:
+            vecs = []
+            if per_col_hyde_vec.get(col) is not None:
+                vecs.append(per_col_hyde_vec[col])
+            vecs.extend(per_col_extra_hyde_vecs.get(col, []))
+            if vecs:
+                per_col_hyde_vecs[col] = vecs
+
+        vec_raw = await retrieve_vector(query_vec, per_col_hyde_vecs, collections, quota, user_id)
+        fts_raw = await retrieve_fts(query, collections, quota, user_id)
+        merged_per_col = rrf_merge(vec_raw, fts_raw, quota)
+        await fetch_positions(merged_per_col)
+        per_collection_candidates = list(merged_per_col.values())
 
         _t3 = time.perf_counter()
         logger.info("pipeline timing: step3(retrieval)=%.2fs", _t3 - _t1)

@@ -1,16 +1,14 @@
-"""Tests for the Qdrant-backed retrieve module."""
+"""Tests for the retrieve steps (retrieve_vector, retrieve_fts, rrf, fetch_positions)."""
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from app.rag.retrieve import (
-    ChunkCandidate,
-    _get_excluded_ids,
-    _rrf_merge,
-    _search_vector,
-    retrieve_candidates,
-)
+from app.rag.steps.types import ChunkCandidate
+from app.rag.steps.rrf import _rrf_merge, run as rrf_run
+from app.rag.steps.retrieve_vector import _search_vector, run as retrieve_vector
+from app.rag.steps.retrieve_fts import run as retrieve_fts
+from app.rag.steps.fetch_positions import run as fetch_positions
 
 
 # ---------------------------------------------------------------------------
@@ -118,7 +116,7 @@ async def test_search_vector_applies_collection_filter():
         _scored_point("aaaaaaaa-0000-0000-0000-000000000001", "bible"),
     ]))
 
-    with patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client):
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
         rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query", excluded_ids=[])
 
     assert len(rows) == 1
@@ -143,7 +141,7 @@ async def test_search_vector_excludes_downvoted_ids():
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
 
     excluded = ["bbbbbbbb-0000-0000-0000-000000000001"]
-    with patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client):
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
         await _search_vector("bible", [0.1] * 1536, limit=5, label="hyde", excluded_ids=excluded)
 
     call_kwargs = mock_client.query_points.call_args.kwargs
@@ -158,7 +156,7 @@ async def test_search_vector_no_must_not_when_no_exclusions():
     mock_client = AsyncMock()
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
 
-    with patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client):
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
         await _search_vector("bible", [0.1] * 1536, limit=5, label="query", excluded_ids=[])
 
     filt = mock_client.query_points.call_args.kwargs["query_filter"]
@@ -167,61 +165,50 @@ async def test_search_vector_no_must_not_when_no_exclusions():
 
 @pytest.mark.asyncio
 async def test_search_vector_raises_when_client_not_initialised():
-    with patch("app.rag.retrieve.get_qdrant_client", return_value=None):
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=None):
         with pytest.raises(RuntimeError, match="Qdrant client not initialised"):
             await _search_vector("bible", [0.1] * 1536, limit=5, label="query", excluded_ids=[])
 
 
 # ---------------------------------------------------------------------------
-# retrieve_candidates integration
+# Step integration: retrieve_vector + rrf_merge
 # ---------------------------------------------------------------------------
 
-def _make_pool_mock(excluded_ids: list[str] | None = None):
-    pool = MagicMock()
-    pool.fetch = AsyncMock(return_value=[
-        {"chunk_id": cid} for cid in (excluded_ids or [])
-    ])
-    return pool
-
-
 @pytest.mark.asyncio
-async def test_retrieve_candidates_returns_chunk_candidates():
-    """retrieve_candidates should return a list of ChunkCandidate on success."""
+async def test_retrieve_vector_run_returns_chunk_candidates():
+    """retrieve_vector.run + rrf_merge should produce ChunkCandidates on success."""
     chunk_id = "cccccccc-0000-0000-0000-000000000001"
     mock_client = AsyncMock()
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([_scored_point(chunk_id)]))
 
-    mock_pool = _make_pool_mock()
-    # FTS returns empty — only vector results matter here
-    mock_pool.fetch = AsyncMock(side_effect=[
-        [],           # _get_excluded_ids
-        [],           # _search_fts
-    ])
+    mock_pool = MagicMock()
+    mock_pool.fetch = AsyncMock(return_value=[])  # no excluded IDs
 
     with (
-        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
-        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
-        patch("app.rag.retrieve.settings") as mock_settings,
+        patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client),
+        patch("app.rag.steps.retrieve_vector.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_vector.settings") as mock_settings,
     ):
         mock_settings.candidate_multiplier = 3
-        results = await retrieve_candidates(
-            query_text="test query",
+        vec_raw = await retrieve_vector(
             query_vec=[0.1] * 1536,
-            hyde_vec=[0.2] * 1536,
-            extra_vecs=[],
-            collection="bible",
+            hyde_vecs={},
+            collections=["bible"],
             quota=4,
             user_id="00000000-0000-0000-0000-000000000001",
         )
 
+    merged = rrf_run(vec_raw, {}, quota=4)
+    assert "bible" in merged
+    results = merged["bible"]
     assert len(results) > 0
     assert all(isinstance(r, ChunkCandidate) for r in results)
     assert results[0].chunk_id == chunk_id
 
 
 @pytest.mark.asyncio
-async def test_retrieve_candidates_graceful_on_qdrant_failure():
-    """If all Qdrant searches fail but FTS works, should still return results."""
+async def test_retrieve_fts_run_returns_results_without_vector():
+    """retrieve_fts.run should return results even when vector search is absent."""
     chunk_id = "dddddddd-0000-0000-0000-000000000001"
     fts_row = {
         "id": chunk_id,
@@ -231,63 +218,30 @@ async def test_retrieve_candidates_graceful_on_qdrant_failure():
         "document_id": "00000000-0000-0000-0000-000000000099",
         "document_title": "CCC",
         "author": None,
+        "anchor": None,
+        "position": 5,
+        "annotation": None,
     }
 
-    mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(side_effect=RuntimeError("Qdrant down"))
-
     mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(side_effect=[
-        [],           # _get_excluded_ids
-        [fts_row],    # _search_fts
-    ])
+    mock_pool.fetch = AsyncMock(return_value=[fts_row])
 
     with (
-        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
-        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
-        patch("app.rag.retrieve.settings") as mock_settings,
+        patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_fts.settings") as mock_settings,
     ):
         mock_settings.candidate_multiplier = 3
-        results = await retrieve_candidates(
-            query_text="test",
-            query_vec=[0.1] * 1536,
-            hyde_vec=None,
-            extra_vecs=[],
-            collection="catechism",
-            quota=4,
-            user_id="00000000-0000-0000-0000-000000000001",
-        )
+        fts_raw = await retrieve_fts("test", ["catechism"], 4, "00000000-0000-0000-0000-000000000001")
 
-    assert len(results) == 1
-    assert results[0].chunk_id == chunk_id
+    merged = rrf_run({}, fts_raw, quota=4)
+    assert "catechism" in merged
+    assert merged["catechism"][0].chunk_id == chunk_id
 
 
-@pytest.mark.asyncio
-async def test_retrieve_candidates_returns_empty_on_all_failures():
-    """If every search strategy fails, returns empty list without raising."""
-    mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(side_effect=RuntimeError("Qdrant down"))
-
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(side_effect=Exception("DB down"))
-
-    with (
-        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
-        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
-        patch("app.rag.retrieve.settings") as mock_settings,
-    ):
-        mock_settings.candidate_multiplier = 3
-        results = await retrieve_candidates(
-            query_text="test",
-            query_vec=[0.1] * 1536,
-            hyde_vec=None,
-            extra_vecs=[],
-            collection="bible",
-            quota=4,
-            user_id="00000000-0000-0000-0000-000000000001",
-        )
-
-    assert results == []
+def test_rrf_run_empty_on_empty_inputs():
+    """rrf.run with both inputs empty returns empty dict."""
+    merged = rrf_run({}, {}, quota=4)
+    assert merged == {}
 
 
 # ---------------------------------------------------------------------------
@@ -332,8 +286,6 @@ def test_build_point():
     assert point.payload["content"] == "Test content"
 
 
-
-
 # ---------------------------------------------------------------------------
 # position / annotation plumbing
 # ---------------------------------------------------------------------------
@@ -369,8 +321,8 @@ def test_chunk_candidate_position_defaults_to_none():
 
 
 @pytest.mark.asyncio
-async def test_retrieve_candidates_populates_position_from_fts():
-    """FTS results must include position; it must reach ChunkCandidate.position."""
+async def test_retrieve_fts_run_propagates_position():
+    """FTS results include position; it must reach ChunkCandidate.position."""
     chunk_id = "fts00000-0000-0000-0000-000000000001"
     fts_row = {
         "id": chunk_id,
@@ -385,67 +337,41 @@ async def test_retrieve_candidates_populates_position_from_fts():
         "annotation": None,
     }
 
-    mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(side_effect=RuntimeError("no qdrant"))
-
     mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(side_effect=[
-        [],           # _get_excluded_ids
-        [fts_row],    # _search_fts
-        # No batch position lookup needed — FTS already has position
-    ])
+    mock_pool.fetch = AsyncMock(return_value=[fts_row])
 
     with (
-        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
-        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
-        patch("app.rag.retrieve.settings") as mock_settings,
+        patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_fts.settings") as mock_settings,
     ):
         mock_settings.candidate_multiplier = 3
-        results = await retrieve_candidates(
-            query_text="grace",
-            query_vec=[0.1] * 1536,
-            hyde_vec=None,
-            extra_vecs=[],
-            collection="catechism",
-            quota=4,
-            user_id="00000000-0000-0000-0000-000000000001",
-        )
+        fts_raw = await retrieve_fts("grace", ["catechism"], 4, "00000000-0000-0000-0000-000000000001")
 
-    assert len(results) == 1
-    assert results[0].position == 42
+    merged = rrf_run({}, fts_raw, quota=4)
+    assert "catechism" in merged
+    assert merged["catechism"][0].position == 42
 
 
 @pytest.mark.asyncio
-async def test_retrieve_candidates_batch_fetches_position_for_qdrant_results():
-    """Qdrant-sourced candidates have no position in payload; must be fetched from DB."""
+async def test_fetch_positions_run_fills_missing_positions():
+    """fetch_positions.run must batch-fetch positions for Qdrant-sourced candidates."""
     chunk_id = "qdrant00-0000-0000-0000-000000000001"
-    mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(return_value=_mock_query_response([
-        _scored_point(chunk_id),
-    ]))
+    candidate = ChunkCandidate(
+        chunk_id=chunk_id,
+        content="Vector result",
+        reference=None,
+        collection="bible",
+        document_id="00000000-0000-0000-0000-000000000099",
+        document_title="Genesis",
+        author=None,
+        rrf_score=0.5,
+        position=None,
+    )
 
     mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(side_effect=[
-        [],   # _get_excluded_ids
-        [],   # _search_fts (empty)
-        [{"id": chunk_id, "position": 17}],  # batch position lookup
-    ])
+    mock_pool.fetch = AsyncMock(return_value=[{"id": chunk_id, "position": 17}])
 
-    with (
-        patch("app.rag.retrieve.get_qdrant_client", return_value=mock_client),
-        patch("app.rag.retrieve.get_pool", return_value=mock_pool),
-        patch("app.rag.retrieve.settings") as mock_settings,
-    ):
-        mock_settings.candidate_multiplier = 3
-        results = await retrieve_candidates(
-            query_text="test",
-            query_vec=[0.1] * 1536,
-            hyde_vec=None,
-            extra_vecs=[],
-            collection="bible",
-            quota=4,
-            user_id="00000000-0000-0000-0000-000000000001",
-        )
+    with patch("app.rag.steps.fetch_positions.get_pool", return_value=mock_pool):
+        result = await fetch_positions({"bible": [candidate]})
 
-    assert len(results) >= 1
-    assert results[0].position == 17
+    assert result["bible"][0].position == 17
