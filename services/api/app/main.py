@@ -21,6 +21,7 @@ from app.rag.steps.rerank_haiku import close_rerank, init_rerank
 from app.rag.steps.rerank_cohere import close_cohere, init_cohere
 from app.rag.steps.explain import close_explain, init_explain
 from app.rag.qdrant_client import close_qdrant, init_qdrant
+from app.rag.compare.judge import close_judge, init_judge
 from app.routes.bookmarks import router as bookmarks_router
 from app.routes.chat import router as chat_router
 from app.routes.documents import router as documents_router
@@ -31,6 +32,7 @@ from app.routes.search import router as search_router
 from app.routes.sessions import router as sessions_router
 from app.routes.sources import router as sources_router
 from app.routes.evaluate import router as evaluate_router
+from app.routes.compare import router as compare_router
 
 
 logger = logging.getLogger(__name__)
@@ -51,7 +53,9 @@ async def lifespan(app: FastAPI):
     init_rerank()
     init_cohere()
     init_explain()
+    init_judge()
     yield
+    await close_judge()
     await close_cohere()
     await close_rerank()
     await close_api_keys()
@@ -66,7 +70,7 @@ app = FastAPI(title="body-of-christ-api", lifespan=lifespan)
 
 class InternalSecretMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in ("/health", "/health/db"):
+        if request.url.path in ("/health", "/health/db", "/v1/search/compare/view", "/v1/search/compare"):
             return await call_next(request)
         if not settings.internal_api_secret:
             return await call_next(request)
@@ -95,6 +99,7 @@ app.include_router(feedback_router, prefix="/v1")
 app.include_router(preferences_router, prefix="/v1")
 app.include_router(sources_router, prefix="/v1")
 app.include_router(evaluate_router, prefix="/v1")
+app.include_router(compare_router, prefix="/v1")
 
 
 @app.get("/health")
