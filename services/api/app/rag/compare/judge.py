@@ -1,4 +1,4 @@
-"""LLM-as-judge scoring using Claude Sonnet."""
+"""LLM-as-judge scoring using Claude Haiku."""
 from __future__ import annotations
 
 import json
@@ -82,7 +82,7 @@ async def run(
     results: list[PipelineResult],
     overlap: OverlapReport,
 ) -> JudgeReport:
-    """Score pipeline results using Claude Sonnet. Called after overlap.run()."""
+    """Score pipeline results using Claude Haiku. Called after overlap.run()."""
     if _client is None:
         init_judge()
 

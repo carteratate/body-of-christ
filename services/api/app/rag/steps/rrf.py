@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 
+from app.config import settings
 from app.rag.steps.types import ChunkCandidate
 
 logger = logging.getLogger(__name__)
@@ -65,7 +66,7 @@ def run(
         if not all_lists:
             continue
 
-        top_n = quota * 3  # candidate_multiplier
+        top_n = quota * settings.candidate_multiplier
         merged = _rrf_merge(all_lists, top_n=top_n)
         output[col] = [
             ChunkCandidate(

@@ -71,7 +71,7 @@ app = FastAPI(title="body-of-christ-api", lifespan=lifespan)
 
 class InternalSecretMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in ("/health", "/health/db", "/v1/search/compare/view", "/v1/search/compare", "/v1/search/compare/stats"):
+        if request.url.path in ("/health", "/health/db"):
             return await call_next(request)
         if not settings.internal_api_secret:
             return await call_next(request)
