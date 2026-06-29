@@ -52,7 +52,7 @@ async def test_judge_returns_report():
 
     assert isinstance(report, JudgeReport)
     assert len(report.scores) == 2
-    assert report.model == "claude-sonnet-4-6"
+    assert report.model == "claude-haiku-4-5"
     assert report.cost > 0
 
 
@@ -71,7 +71,7 @@ async def test_judge_falls_back_on_llm_error():
     report = await judge_run("what is love?", results, overlap)
 
     assert isinstance(report, JudgeReport)
-    assert report.model == "claude-sonnet-4-6"
+    assert report.model == "claude-haiku-4-5"
     # Scores still contain one entry per pipeline with 0.0 score
     assert len(report.scores) == 2
     assert all(s.score == 0.0 for s in report.scores)

@@ -14,7 +14,7 @@ from app.rag.steps.types import PipelineResult
 
 logger = logging.getLogger(__name__)
 
-_JUDGE_MODEL = "claude-sonnet-4-6"
+_JUDGE_MODEL = "claude-haiku-4-5"
 _client: anthropic.AsyncAnthropic | None = None
 
 
