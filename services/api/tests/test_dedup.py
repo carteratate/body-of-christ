@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from app.rag.dedup import _cosine_sim, apply_dedup
-from app.rag.rerank import RankedChunk
+from app.rag.steps.types import RankedChunk
 
 
 def _chunk(chunk_id: str, doc_id: str, doc_title: str, score: float, position: int | None = None) -> RankedChunk:

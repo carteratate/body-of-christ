@@ -18,8 +18,9 @@ from app.rag.steps.retrieve_vector import run as retrieve_vector
 from app.rag.steps.retrieve_fts import run as retrieve_fts
 from app.rag.steps.rrf import run as rrf_merge
 from app.rag.steps.fetch_positions import run as fetch_positions
-from app.rag.steps.types import ChunkCandidate
-from app.rag.rerank import rerank_collection, RankedChunk
+from app.rag.steps.types import ChunkCandidate, RankedChunk
+from app.rag.steps.rerank_haiku import _rerank_single_collection as rerank_collection
+from app.rag.steps.cost_tracker import CostTracker
 from app.rag.constants import VALID_COLLECTIONS
 
 logger = logging.getLogger(__name__)
@@ -135,8 +136,9 @@ async def run_search_pipeline(
         # Step 4 — Haiku reranking per collection (parallel)
         # ------------------------------------------------------------------
         yield {"type": "status", "phase": "ranking"}
+        _dummy_tracker = CostTracker()
         score_results = await asyncio.gather(*[
-            rerank_collection(col_candidates, query, quota)
+            rerank_collection(col_candidates, query, quota, _dummy_tracker)
             for col_candidates in per_collection_candidates
         ], return_exceptions=True)
 

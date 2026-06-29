@@ -1,13 +1,16 @@
-"""Per-collection re-ranking of candidate chunks using Claude Haiku."""
+"""Per-collection re-ranking using Claude Haiku (parallel across collections)."""
+from __future__ import annotations
+
+import asyncio
 import json
 import logging
 import re
 import uuid as _uuid_mod
-from dataclasses import dataclass
 
 import anthropic
 
 from app.config import settings
+from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 logger = logging.getLogger(__name__)
@@ -59,9 +62,6 @@ _RERANK_SYSTEM = (
 )
 
 
-# RankedChunk imported from app.rag.steps.types above
-
-
 def init_rerank() -> None:
     global _client
     _client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
@@ -98,10 +98,32 @@ def _extract_json_array(text: str) -> list[dict]:
     return json.loads(match.group(0))
 
 
-async def rerank_collection(
+def _fallback_ranked(candidates: list[ChunkCandidate], quota: int) -> list[RankedChunk]:
+    """Return candidates in RRF order with decreasing scores as a fallback."""
+    results = []
+    for i, c in enumerate(candidates[:quota]):
+        score = max(0.0, 1.0 - i * 0.01)
+        results.append(
+            RankedChunk(
+                chunk_id=c.chunk_id,
+                content=c.content,
+                reference=c.reference,
+                collection=c.collection,
+                document_id=c.document_id,
+                document_title=c.document_title,
+                author=c.author,
+                reranker_score=score,
+                anchor=c.anchor,
+            )
+        )
+    return results
+
+
+async def _rerank_single_collection(
     candidates: list[ChunkCandidate],
     query: str,
     quota: int,
+    cost_tracker: CostTracker,
 ) -> list[RankedChunk]:
     """Score and filter candidate chunks using Claude Haiku.
 
@@ -109,19 +131,14 @@ async def rerank_collection(
     applies the hard cutoff. Falls back to RRF order (capped at quota) on
     failure. Never raises.
     """
-    if not candidates:
-        return []
-
-    candidate_map: dict[str, ChunkCandidate] = {c.chunk_id: c for c in candidates}
-
-    if _client is None:
-        logger.warning("rerank client not initialized; falling back to RRF order")
+    if not candidates or _client is None:
+        logger.warning("rerank_haiku: client not initialized or no candidates; falling back to RRF order")
         return _fallback_ranked(candidates, quota)
 
-    formatted_passages = _format_passages(candidates)
-    user_message = f"Query: {query}\n\nPassages:\n{formatted_passages}"
+    candidate_map: dict[str, ChunkCandidate] = {c.chunk_id: c for c in candidates}
+    user_message = f"Query: {query}\n\nPassages:\n{_format_passages(candidates)}"
     logger.info(
-        "rerank_collection: sending %d candidates, user_message_len=%d chars",
+        "rerank_haiku: sending %d candidates, user_message_len=%d chars",
         len(candidates), len(user_message),
     )
 
@@ -132,31 +149,36 @@ async def rerank_collection(
             system=_RERANK_SYSTEM,
             messages=[{"role": "user", "content": user_message}],
         )
+        cost_tracker.record(
+            "rerank_haiku", settings.rerank_model,
+            input_tokens=response.usage.input_tokens,
+            output_tokens=response.usage.output_tokens,
+        )
         raw_text = response.content[0].text
         scored = _extract_json_array(raw_text)
     except Exception as exc:
-        logger.warning("rerank_collection: Haiku scoring failed: %s", exc)
-        logger.debug("rerank_collection: raw response was: %.500s", locals().get("raw_text", "<no response>"))
+        logger.warning("rerank_haiku: Haiku scoring failed: %s", exc)
+        logger.debug("rerank_haiku: raw response was: %.500s", locals().get("raw_text", "<no response>"))
         return _fallback_ranked(candidates, quota)
 
     ranked: list[RankedChunk] = []
     for item in scored:
         chunk_id = str(item.get("chunk_id", ""))
         if not _is_valid_uuid(chunk_id):
-            logger.warning("rerank_collection: invalid UUID '%s' in Haiku response", chunk_id)
+            logger.warning("rerank_haiku: invalid UUID '%s' in response", chunk_id)
             continue
         try:
             score = float(item.get("score", 0.0))
         except (TypeError, ValueError):
             logger.warning(
-                "rerank_collection: non-numeric score %r for chunk_id '%s'; defaulting to 0.0",
+                "rerank_haiku: non-numeric score %r for chunk_id '%s'; defaulting to 0.0",
                 item.get("score"),
                 chunk_id,
             )
             score = 0.0
         candidate = candidate_map.get(chunk_id)
         if candidate is None:
-            logger.warning("rerank_collection: unknown chunk_id '%s' in Haiku response", chunk_id)
+            logger.warning("rerank_haiku: unknown chunk_id '%s' in response", chunk_id)
             continue
 
         include = bool(item.get("include", True))
@@ -202,25 +224,26 @@ async def rerank_collection(
             )
 
     ranked.sort(key=lambda r: r.reranker_score, reverse=True)
-    return ranked  # All chunks returned; pipeline applies the hard cutoff
+    return ranked
 
 
-def _fallback_ranked(candidates: list[ChunkCandidate], quota: int) -> list[RankedChunk]:
-    """Return candidates in RRF order with decreasing scores as a fallback."""
-    results = []
-    for i, c in enumerate(candidates[:quota]):
-        score = max(0.0, 1.0 - i * 0.01)
-        results.append(
-            RankedChunk(
-                chunk_id=c.chunk_id,
-                content=c.content,
-                reference=c.reference,
-                collection=c.collection,
-                document_id=c.document_id,
-                document_title=c.document_title,
-                author=c.author,
-                reranker_score=score,
-                anchor=c.anchor,
-            )
-        )
-    return results
+async def run(
+    candidates: dict[str, list[ChunkCandidate]],
+    query: str,
+    quota: int,
+    cost_tracker: CostTracker,
+) -> list[RankedChunk]:
+    """Rerank all collections in parallel, return globally sorted list."""
+    results = await asyncio.gather(
+        *[_rerank_single_collection(col_cands, query, quota, cost_tracker)
+          for col_cands in candidates.values()],
+        return_exceptions=True,
+    )
+    all_ranked: list[RankedChunk] = []
+    for result in results:
+        if isinstance(result, BaseException):
+            logger.warning("rerank_haiku: collection failed: %s", result)
+        else:
+            all_ranked.extend(result)
+    all_ranked.sort(key=lambda r: r.reranker_score, reverse=True)
+    return all_ranked

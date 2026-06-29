@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     # OpenAI (embeddings)
     openai_api_key: str = Field(validation_alias="OPENAI_API_KEY")
 
+    # Cohere (optional — rerank_cohere step only)
+    cohere_api_key: str | None = Field(default=None, validation_alias="COHERE_API_KEY")
+
     # RAG models
     embedding_model: str = Field(default="text-embedding-3-large", validation_alias="EMBEDDING_MODEL")
     embedding_dims: int = Field(default=1536, validation_alias="EMBEDDING_DIMS")

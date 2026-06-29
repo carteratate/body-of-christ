@@ -1,5 +1,4 @@
-from app.rag.steps.types import ChunkCandidate
-from app.rag.rerank import RankedChunk
+from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 
 def test_chunk_candidate_has_anchor():

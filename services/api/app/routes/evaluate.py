@@ -16,7 +16,7 @@ from app.models.evaluate import (
     EvaluateResponse,
     ExplainRequest,
 )
-import app.rag.rerank as _rerank_mod
+import app.rag.steps.rerank_haiku as _rerank_mod
 
 logger = logging.getLogger(__name__)
 

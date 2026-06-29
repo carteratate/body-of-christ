@@ -18,6 +18,8 @@ from app.llm import close_llm, init_llm
 from app.rag.api_keys import close_api_keys, init_api_keys
 from app.rag.cross_encoder import close_cross_encoder, init_cross_encoder
 from app.rag.steps.embed import close_embed, init_embed
+from app.rag.steps.rerank_haiku import close_rerank, init_rerank
+from app.rag.steps.rerank_cohere import close_cohere, init_cohere
 from app.rag.explain import close_explain, init_explain
 from app.rag.qdrant_client import close_qdrant, init_qdrant
 from app.routes.bookmarks import router as bookmarks_router
@@ -46,10 +48,16 @@ async def lifespan(app: FastAPI):
     init_llm()
     init_embed()
     init_qdrant()
+    init_cross_encoder()
     init_api_keys()
+    init_rerank()
+    init_cohere()
     init_explain()
     yield
+    await close_cohere()
+    await close_rerank()
     await close_api_keys()
+    await close_cross_encoder()
     await close_embed()
     await close_qdrant()
     await close_explain()

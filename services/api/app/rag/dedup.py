@@ -11,7 +11,7 @@ import logging
 import math
 
 from app.rag.qdrant_client import QDRANT_COLLECTION, get_qdrant_client
-from app.rag.rerank import RankedChunk
+from app.rag.steps.types import RankedChunk
 
 logger = logging.getLogger(__name__)
 
