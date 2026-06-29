@@ -19,7 +19,7 @@ from app.rag.steps.retrieve_fts import run as retrieve_fts
 from app.rag.steps.rrf import run as rrf_merge
 from app.rag.steps.fetch_positions import run as fetch_positions
 from app.rag.steps.types import ChunkCandidate, RankedChunk
-from app.rag.steps.rerank_haiku import _rerank_single_collection as rerank_collection
+from app.rag.steps.rerank_haiku import run as rerank_haiku
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.constants import VALID_COLLECTIONS
 
@@ -137,20 +137,15 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         yield {"type": "status", "phase": "ranking"}
         _dummy_tracker = CostTracker()
-        score_results = await asyncio.gather(*[
-            rerank_collection(col_candidates, query, quota, _dummy_tracker)
-            for col_candidates in per_collection_candidates
-        ], return_exceptions=True)
+        candidates_by_col = {
+            cands[0].collection: cands
+            for cands in per_collection_candidates
+            if cands
+        }
+        all_scored = await rerank_haiku(candidates_by_col, query, quota, _dummy_tracker)
 
         _t4 = time.perf_counter()
         logger.info("pipeline timing: step4(rerank)=%.2fs", _t4 - _t3)
-
-        all_scored: list[RankedChunk] = []
-        for result in score_results:
-            if isinstance(result, BaseException):
-                logger.warning("score_candidates failed: %s", result)
-            else:
-                all_scored.extend(result)
 
         # ------------------------------------------------------------------
         # Step 5 — Global sort → dedup → per-collection guarantee + quota
