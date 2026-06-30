@@ -1,4 +1,4 @@
-"""Global re-ranking using Cohere Rerank v3.5."""
+"""Global re-ranking using Cohere Rerank v4.0 Pro."""
 from __future__ import annotations
 
 import logging
@@ -22,9 +22,7 @@ def init_cohere() -> None:
 
 async def close_cohere() -> None:
     global _client
-    if _client is not None:
-        await _client.close()
-        _client = None
+    _client = None
 
 
 async def run(
@@ -33,7 +31,7 @@ async def run(
     quota: int,
     cost_tracker: CostTracker,
 ) -> list[RankedChunk]:
-    """Rerank all candidates globally using Cohere Rerank v3.5."""
+    """Rerank all candidates globally using Cohere Rerank v4.0 Pro."""
     if _client is None:
         raise RuntimeError(
             "Cohere client not initialized. Set COHERE_API_KEY environment variable."
@@ -53,13 +51,13 @@ async def run(
     ]
 
     response = await _client.rerank(
-        model="rerank-v3.5",
+        model="rerank-v4.0-pro",
         query=query,
         documents=documents,
         top_n=len(all_candidates),
     )
 
-    cost_tracker.record_cohere("rerank_cohere", search_units=len(documents))
+    cost_tracker.record_cohere("rerank_cohere")
 
     score_map: dict[int, float] = {
         r.index: r.relevance_score for r in response.results
