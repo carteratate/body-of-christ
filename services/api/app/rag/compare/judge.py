@@ -1,4 +1,4 @@
-"""LLM-as-judge scoring using Claude Haiku."""
+"""LLM-as-judge scoring using Claude Sonnet."""
 from __future__ import annotations
 
 import json
@@ -14,7 +14,7 @@ from app.rag.steps.types import PipelineResult
 
 logger = logging.getLogger(__name__)
 
-_JUDGE_MODEL = "claude-haiku-4-5"
+_JUDGE_MODEL = "claude-sonnet-4-6"
 _client: anthropic.AsyncAnthropic | None = None
 
 
@@ -71,8 +71,7 @@ def _build_prompt(
         f"Score each pipeline 0.0-1.0 for retrieval quality relative to the query. "
         f"Consider: relevance of unique chunks, whether shared chunks confirm quality, "
         f"diversity of sources. "
-        f'Return JSON only: {{"scores": [{{"pipeline": "<name>", "score": <float>, "reasoning": "<str>"}}], "overall_reasoning": "<str>"}}'
-        f"\nPipelines to score: {pipelines}"
+        f"Pipelines to score: {pipelines}"
     )
     return "\n".join(lines)
 
@@ -89,11 +88,37 @@ async def run(
     prompt = _build_prompt(query, results, overlap)
     tracker = CostTracker()
 
+    _tool = {
+        "name": "score_pipelines",
+        "description": "Return retrieval quality scores for each pipeline.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "scores": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "pipeline": {"type": "string"},
+                            "score": {"type": "number"},
+                            "reasoning": {"type": "string"},
+                        },
+                        "required": ["pipeline", "score", "reasoning"],
+                    },
+                },
+                "overall_reasoning": {"type": "string"},
+            },
+            "required": ["scores", "overall_reasoning"],
+        },
+    }
+
     response = None
     try:
         response = await _client.messages.create(  # type: ignore[union-attr]
             model=_JUDGE_MODEL,
-            max_tokens=1500,
+            max_tokens=4096,
+            tools=[_tool],
+            tool_choice={"type": "tool", "name": "score_pipelines"},
             messages=[{"role": "user", "content": prompt}],
         )
         tracker.record(
@@ -102,7 +127,8 @@ async def run(
             input_tokens=response.usage.input_tokens,
             output_tokens=response.usage.output_tokens,
         )
-        parsed = json.loads(response.content[0].text)
+        tool_block = next(b for b in response.content if b.type == "tool_use")
+        parsed = tool_block.input
         scores = [
             JudgeScore(
                 pipeline=s["pipeline"],
