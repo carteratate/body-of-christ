@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -39,6 +40,18 @@ from app.routes.compare_stats import router as compare_stats_router
 logger = logging.getLogger(__name__)
 
 
+async def _db_keepalive() -> None:
+    """Ping the DB every 90s to keep the asyncpg connection pool warm."""
+    while True:
+        await asyncio.sleep(90)
+        pool = get_pool()
+        if pool is not None:
+            try:
+                await pool.fetchval("SELECT 1")
+            except Exception as exc:
+                logger.warning("db_keepalive: ping failed (%s)", exc.__class__.__name__)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
@@ -55,7 +68,9 @@ async def lifespan(app: FastAPI):
     init_cohere()
     init_explain()
     init_judge()
+    keepalive_task = asyncio.create_task(_db_keepalive())
     yield
+    keepalive_task.cancel()
     await close_judge()
     await close_cohere()
     await close_rerank()

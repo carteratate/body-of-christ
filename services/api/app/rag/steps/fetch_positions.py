@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import time
 
 from app.db import get_pool
 from app.rag.steps.types import ChunkCandidate
@@ -30,14 +31,29 @@ async def run(
     if not missing_ids:
         return candidates
 
+    t0 = time.perf_counter()
     try:
-        rows = await pool.fetch(
-            "SELECT id::text, position FROM chunks WHERE id::text = ANY($1)",
-            missing_ids,
-        )
+        async with pool.acquire() as conn:
+            t_acquired = time.perf_counter()
+            rows = await conn.fetch(
+                "SELECT id::text, position FROM chunks WHERE id = ANY($1::uuid[])",
+                missing_ids,
+            )
+            t_queried = time.perf_counter()
         pos_map = {r["id"]: r["position"] for r in rows}
+        logger.info(
+            "fetch_positions: ids=%d acquire=%.3fs query=%.3fs total=%.3fs",
+            len(missing_ids),
+            t_acquired - t0,
+            t_queried - t_acquired,
+            time.perf_counter() - t0,
+        )
     except Exception as exc:
-        logger.warning("fetch_positions: batch lookup failed: %s", exc)
+        logger.warning(
+            "fetch_positions: batch lookup failed after %.3fs: %s",
+            time.perf_counter() - t0,
+            exc,
+        )
         return candidates
 
     for col_list in candidates.values():
