@@ -189,7 +189,7 @@ async function loadStats() {
   statsDiv.style.display = "block";
   statsDiv.innerHTML = "<div style='color:#7A8099'>Loading stats...</div>";
   try {
-    const res = await fetch("/v1/search/compare/stats");
+    const res = await fetch("/v1/search/compare/stats", {headers: {"Authorization": "Bearer " + token}});
     if (!res.ok) { statsDiv.innerHTML = `<div style='color:#e84040'>Stats error: ${res.status}</div>`; return; }
     const data = await res.json();
     if (!data.pipelines.length) {
@@ -241,7 +241,19 @@ function renderResults(data) {
     col.className = "pipeline-col";
     const timing = pr.total_duration_s.toFixed(2);
     const cost = pr.total_cost.toFixed(5);
-    col.innerHTML = `<h2>${pr.pipeline} <small style="color:#7A8099;font-size:12px">${timing}s | $${cost}</small></h2>`;
+    const stepRows = (pr.step_timings || []).map(st => {
+      const stepCost = (pr.cost_breakdown || {})[st.step];
+      const costStr = stepCost != null ? ` · $${stepCost.toFixed(5)}` : "";
+      return `<tr><td>${st.step}</td><td>${st.duration_s.toFixed(3)}s${costStr}</td></tr>`;
+    }).join("");
+    col.innerHTML = `<h2>${pr.pipeline} <small style="color:#7A8099;font-size:12px">${timing}s | $${cost}</small></h2>
+    <details style="margin-bottom:8px;font-size:11px;color:#7A8099">
+      <summary style="cursor:pointer">Step breakdown</summary>
+      <table style="width:100%;border-collapse:collapse;margin-top:4px">
+        <thead><tr><th style="text-align:left">Step</th><th style="text-align:left">Time · Cost</th></tr></thead>
+        <tbody>${stepRows}</tbody>
+      </table>
+    </details>`;
     (pr.chunks || []).forEach(chunk => {
       const isShared = sharedIds.has(chunk.chunk_id);
       const isUnique = uniqueIds.has(chunk.chunk_id);

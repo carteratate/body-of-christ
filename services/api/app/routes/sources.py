@@ -52,6 +52,8 @@ async def get_sources(user: AuthUser = Depends(get_current_user)) -> SourcesResp
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
     try:
+        # TODO(next-ingest): add chunk_count column to documents table so this
+        # becomes a simple SELECT with no JOIN/GROUP BY. See memory: next-ingest-todo.
         rows = await pool.fetch(
             """
             SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
