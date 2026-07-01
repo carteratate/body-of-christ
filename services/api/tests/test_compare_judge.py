@@ -1,5 +1,6 @@
+import json
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 from app.rag.compare.judge import (
     run as judge_run,
     JudgeReport,
@@ -33,115 +34,148 @@ def _make_result(pipeline: str) -> PipelineResult:
     )
 
 
+def _make_tool_input(pipelines: list[str]) -> dict:
+    """Build a valid score_pipelines tool input for the given pipeline names."""
+    return {
+        "pipeline_scores": [
+            {
+                "pipeline": p,
+                "retrieval_relevance_reasoning": "All chunks are on-topic.",
+                "retrieval_relevance_score": 0.9,
+                "best_passage_selection_reasoning": "Canonical sections found.",
+                "best_passage_selection_score": 0.8,
+                "multi_angle_coverage_reasoning": "Three angles covered.",
+                "multi_angle_coverage_score": 0.85,
+                "doctrinal_completeness_reasoning": "Non-contested topic; default 1.0.",
+                "doctrinal_completeness_score": 1.0,
+                "redundancy_rate_reasoning": "No same-source repeats.",
+                "redundancy_rate_score": 1.0,
+                "summary": f"{p} retrieval is strong.",
+            }
+            for p in pipelines
+        ],
+        "comparative_analysis": f"Comparing {len(pipelines)} pipeline(s).",
+    }
+
+
+def _mock_tool_response(tool_input: dict) -> MagicMock:
+    tool_block = MagicMock()
+    tool_block.type = "tool_use"
+    tool_block.input = tool_input
+
+    response = MagicMock()
+    response.content = [tool_block]
+    response.usage = MagicMock(input_tokens=500, output_tokens=200)
+    return response
+
+
 @pytest.mark.asyncio
-async def test_judge_returns_report():
+async def test_judge_returns_multidimensional_report():
     overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
     results = [_make_result("s2_5_haiku"), _make_result("s4_haiku")]
+    mock_response = _mock_tool_response(_make_tool_input(["s2_5_haiku", "s4_haiku"]))
 
-    mock_response = MagicMock()
-    mock_response.content = [
-        MagicMock(
-            text='{"scores": [{"pipeline": "s2_5_haiku", "score": 0.8, "reasoning": "good"}, '
-                 '{"pipeline": "s4_haiku", "score": 0.7, "reasoning": "ok"}], '
-                 '"overall_reasoning": "s2_5 wins"}'
-        )
-    ]
-    mock_response.usage = MagicMock(input_tokens=500, output_tokens=200)
+    import app.rag.compare.judge as judge_module
+    judge_module._client = AsyncMock()
+    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
 
-    with patch("anthropic.AsyncAnthropic"):
-        mock_client = AsyncMock()
-        mock_client.messages.create = AsyncMock(return_value=mock_response)
-
-        import app.rag.compare.judge as judge_module
-        judge_module._client = mock_client
-
-        report = await judge_run("what is love?", results, overlap)
+    report = await judge_run("what is love?", results, overlap)
 
     assert isinstance(report, JudgeReport)
     assert len(report.scores) == 2
     assert report.model == "claude-sonnet-4-6"
     assert report.cost > 0
+    assert report.tokens_used == 700
+    assert report.comparative_analysis == "Comparing 2 pipeline(s)."
+
+
+@pytest.mark.asyncio
+async def test_judge_dimension_scores_parsed_correctly():
+    overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
+    results = [_make_result("s2_5_haiku")]
+    mock_response = _mock_tool_response(_make_tool_input(["s2_5_haiku"]))
+
+    import app.rag.compare.judge as judge_module
+    judge_module._client = AsyncMock()
+    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
+
+    report = await judge_run("what is grace?", results, overlap)
+
+    score = report.scores[0]
+    assert score.pipeline == "s2_5_haiku"
+    assert set(score.dimensions.keys()) == set(WEIGHTS.keys())
+    assert score.dimensions["retrieval_relevance"].score == 0.9
+    assert score.dimensions["retrieval_relevance"].reasoning == "All chunks are on-topic."
+    assert score.dimensions["doctrinal_completeness"].score == 1.0
+    # weighted_total: 0.9*0.30 + 0.8*0.20 + 0.85*0.20 + 1.0*0.15 + 1.0*0.15
+    expected_total = 0.9*0.30 + 0.8*0.20 + 0.85*0.20 + 1.0*0.15 + 1.0*0.15
+    assert abs(score.weighted_total - expected_total) < 1e-4
+    assert score.summary == "s2_5_haiku retrieval is strong."
 
 
 @pytest.mark.asyncio
 async def test_judge_falls_back_on_llm_error():
-    """If the LLM call raises, judge returns a report with zero scores and no cost."""
     overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
     results = [_make_result("s2_5_haiku"), _make_result("s4_haiku")]
 
-    mock_client = AsyncMock()
-    mock_client.messages.create = AsyncMock(side_effect=RuntimeError("network error"))
-
     import app.rag.compare.judge as judge_module
-    judge_module._client = mock_client
+    judge_module._client = AsyncMock()
+    judge_module._client.messages.create = AsyncMock(side_effect=RuntimeError("network error"))
 
     report = await judge_run("what is love?", results, overlap)
 
     assert isinstance(report, JudgeReport)
-    assert report.model == "claude-sonnet-4-6"
-    # Scores still contain one entry per pipeline with 0.0 score
     assert len(report.scores) == 2
-    assert all(s.score == 0.0 for s in report.scores)
-    # No tokens used when the call failed
+    assert all(s.weighted_total == 0.0 for s in report.scores)
+    assert all(
+        all(ds.score == 0.0 for ds in s.dimensions.values())
+        for s in report.scores
+    )
     assert report.tokens_used == 0
-    # Cost is zero when no successful LLM call
     assert report.cost == 0.0
-    # overall_reasoning explains the failure
-    assert "failed" in report.overall_reasoning.lower() or "Judge" in report.overall_reasoning
+    assert "failed" in report.comparative_analysis.lower()
 
 
 @pytest.mark.asyncio
-async def test_judge_falls_back_on_json_parse_error():
-    """If the LLM returns malformed JSON, judge returns fallback scores."""
+async def test_judge_falls_back_on_missing_tool_block():
     overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
     results = [_make_result("s2_5_haiku")]
 
+    # Response with no tool_use block (e.g., text-only response)
+    text_block = MagicMock()
+    text_block.type = "text"
     mock_response = MagicMock()
-    mock_response.content = [MagicMock(text="this is not json")]
+    mock_response.content = [text_block]
     mock_response.usage = MagicMock(input_tokens=100, output_tokens=20)
 
-    mock_client = AsyncMock()
-    mock_client.messages.create = AsyncMock(return_value=mock_response)
-
     import app.rag.compare.judge as judge_module
-    judge_module._client = mock_client
+    judge_module._client = AsyncMock()
+    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
 
     report = await judge_run("grace?", results, overlap)
 
     assert isinstance(report, JudgeReport)
     assert len(report.scores) == 1
-    assert report.scores[0].score == 0.0
+    assert report.scores[0].weighted_total == 0.0
 
 
 @pytest.mark.asyncio
 async def test_judge_scores_include_pipeline_names():
-    """Scores are tied to pipeline names from the input results."""
     overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
     results = [_make_result("pipeline_a"), _make_result("pipeline_b")]
-
-    mock_response = MagicMock()
-    mock_response.content = [
-        MagicMock(
-            text='{"scores": [{"pipeline": "pipeline_a", "score": 0.9, "reasoning": "best"}, '
-                 '{"pipeline": "pipeline_b", "score": 0.6, "reasoning": "ok"}], '
-                 '"overall_reasoning": "pipeline_a wins"}'
-        )
-    ]
-    mock_response.usage = MagicMock(input_tokens=300, output_tokens=100)
-
-    mock_client = AsyncMock()
-    mock_client.messages.create = AsyncMock(return_value=mock_response)
+    mock_response = _mock_tool_response(_make_tool_input(["pipeline_a", "pipeline_b"]))
 
     import app.rag.compare.judge as judge_module
-    judge_module._client = mock_client
+    judge_module._client = AsyncMock()
+    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
 
     report = await judge_run("what is faith?", results, overlap)
 
     pipeline_names = {s.pipeline for s in report.scores}
     assert "pipeline_a" in pipeline_names
     assert "pipeline_b" in pipeline_names
-    assert report.overall_reasoning == "pipeline_a wins"
-    assert report.tokens_used == 400  # 300 + 100
+    assert report.comparative_analysis == "Comparing 2 pipeline(s)."
+    assert report.tokens_used == 700
 
 
 # ============================================================================
