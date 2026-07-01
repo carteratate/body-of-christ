@@ -289,7 +289,7 @@ function renderResults(data) {
   };
   const judgeSec = document.createElement("div");
   judgeSec.className = "section";
-  judgeSec.innerHTML = `<h3>Judge (${data.judge.model}) — $${(data.judge.cost||0).toFixed(5)}</h3>`;
+  let judgeHtml = `<h3>Judge (${data.judge.model}) — $${(data.judge.cost||0).toFixed(5)}</h3>`;
   (data.judge.scores||[]).forEach(s => {
     const total = (s.weighted_total||0).toFixed(3);
     const barWidth = Math.round((s.weighted_total||0)*200);
@@ -305,7 +305,7 @@ function renderResults(data) {
         <td style="padding:3px 0 3px 8px;color:#7A8099;font-size:11px">${esc(dim.reasoning)}</td>
       </tr>`;
     });
-    judgeSec.innerHTML += `<div class="score-bar" style="margin-bottom:12px">
+    judgeHtml += `<div class="score-bar" style="margin-bottom:12px">
       <div style="margin-bottom:6px">
         <span class="judge-score" style="font-weight:bold">${s.pipeline}: ${total}</span>
         <span class="score-fill" style="width:${barWidth}px;margin-left:8px;vertical-align:middle"></span>
@@ -317,7 +317,8 @@ function renderResults(data) {
       <div class="judge-reasoning" style="margin-top:4px">${esc(s.summary)}</div>
     </div>`;
   });
-  judgeSec.innerHTML += `<div style="margin-top:8px;color:#7A8099;font-size:12px">${esc(data.judge.comparative_analysis)}</div>`;
+  judgeHtml += `<div style="margin-top:8px;color:#7A8099;font-size:12px">${esc(data.judge.comparative_analysis)}</div>`;
+  judgeSec.innerHTML = judgeHtml;
   out.appendChild(judgeSec);
 
   // Raw JSON
