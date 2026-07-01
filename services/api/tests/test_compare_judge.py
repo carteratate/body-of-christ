@@ -1,6 +1,13 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from app.rag.compare.judge import run as judge_run, JudgeReport
+from app.rag.compare.judge import (
+    run as judge_run,
+    JudgeReport,
+    DimensionScore,
+    JudgeScore,
+    WEIGHTS,
+    compute_weighted_total,
+)
 from app.rag.compare.overlap import OverlapReport
 from app.rag.steps.types import RankedChunk, PipelineResult, StepTiming
 
@@ -135,3 +142,83 @@ async def test_judge_scores_include_pipeline_names():
     assert "pipeline_b" in pipeline_names
     assert report.overall_reasoning == "pipeline_a wins"
     assert report.tokens_used == 400  # 300 + 100
+
+
+# ============================================================================
+# Task 1: New tests for DimensionScore, weights, and compute_weighted_total
+# ============================================================================
+
+
+def test_weights_sum_to_one():
+    assert abs(sum(WEIGHTS.values()) - 1.0) < 1e-9
+
+
+def test_weights_contain_all_dimensions():
+    expected = {
+        "retrieval_relevance",
+        "best_passage_selection",
+        "multi_angle_coverage",
+        "doctrinal_completeness",
+        "redundancy_rate",
+    }
+    assert set(WEIGHTS.keys()) == expected
+
+
+def test_compute_weighted_total_perfect_scores():
+    scores = {dim: 1.0 for dim in WEIGHTS}
+    assert compute_weighted_total(scores) == 1.0
+
+
+def test_compute_weighted_total_zero_scores():
+    scores = {dim: 0.0 for dim in WEIGHTS}
+    assert compute_weighted_total(scores) == 0.0
+
+
+def test_compute_weighted_total_mixed():
+    scores = {
+        "retrieval_relevance": 1.0,
+        "best_passage_selection": 0.0,
+        "multi_angle_coverage": 0.0,
+        "doctrinal_completeness": 0.0,
+        "redundancy_rate": 0.0,
+    }
+    # Only retrieval_relevance (weight 0.30) contributes
+    assert abs(compute_weighted_total(scores) - 0.30) < 1e-9
+
+
+def test_dimension_score_dataclass():
+    ds = DimensionScore(score=0.8, reasoning="Good coverage.")
+    assert ds.score == 0.8
+    assert ds.reasoning == "Good coverage."
+
+
+def test_judge_score_dataclass():
+    dims = {
+        "retrieval_relevance": DimensionScore(0.9, "On-target."),
+        "best_passage_selection": DimensionScore(0.8, "Canonical sections."),
+        "multi_angle_coverage": DimensionScore(0.7, "Three angles."),
+        "doctrinal_completeness": DimensionScore(1.0, "Non-contested topic."),
+        "redundancy_rate": DimensionScore(1.0, "No same-source repeats."),
+    }
+    total = compute_weighted_total({k: v.score for k, v in dims.items()})
+    js = JudgeScore(
+        pipeline="s2_5_haiku",
+        dimensions=dims,
+        weighted_total=total,
+        summary="Strong retrieval.",
+    )
+    assert js.pipeline == "s2_5_haiku"
+    assert abs(js.weighted_total - (0.9*0.30 + 0.8*0.20 + 0.7*0.20 + 1.0*0.15 + 1.0*0.15)) < 1e-9
+    assert js.summary == "Strong retrieval."
+
+
+def test_judge_report_dataclass():
+    report = JudgeReport(
+        scores=[],
+        comparative_analysis="No pipelines compared.",
+        tokens_used=0,
+        cost=0.0,
+        model="claude-sonnet-4-6",
+    )
+    assert report.comparative_analysis == "No pipelines compared."
+    assert not hasattr(report, "overall_reasoning")

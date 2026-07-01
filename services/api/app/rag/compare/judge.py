@@ -30,17 +30,37 @@ async def close_judge() -> None:
         _client = None
 
 
+WEIGHTS: dict[str, float] = {
+    "retrieval_relevance":    0.30,
+    "best_passage_selection": 0.20,
+    "multi_angle_coverage":   0.20,
+    "doctrinal_completeness": 0.15,
+    "redundancy_rate":        0.15,
+}
+
+
+def compute_weighted_total(dimension_scores: dict[str, float]) -> float:
+    return round(sum(dimension_scores[dim] * weight for dim, weight in WEIGHTS.items()), 4)
+
+
 @dataclass
-class JudgeScore:
-    pipeline: str
+class DimensionScore:
     score: float
     reasoning: str
 
 
 @dataclass
+class JudgeScore:
+    pipeline: str
+    dimensions: dict[str, DimensionScore]
+    weighted_total: float
+    summary: str
+
+
+@dataclass
 class JudgeReport:
     scores: list[JudgeScore]
-    overall_reasoning: str
+    comparative_analysis: str
     tokens_used: int
     cost: float
     model: str
