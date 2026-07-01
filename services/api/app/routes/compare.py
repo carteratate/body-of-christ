@@ -279,17 +279,44 @@ function renderResults(data) {
   out.appendChild(overlapSec);
 
   // Judge section
+  const DIMENSION_LABELS = {
+    retrieval_relevance: "Retrieval Relevance (30%)",
+    best_passage_selection: "Best-Passage Selection (20%)",
+    multi_angle_coverage: "Multi-angle Coverage (20%)",
+    doctrinal_completeness: "Doctrinal Completeness (15%)",
+    redundancy_rate: "Redundancy Rate (15%)",
+  };
   const judgeSec = document.createElement("div");
   judgeSec.className = "section";
   judgeSec.innerHTML = `<h3>Judge (${data.judge.model}) — $${(data.judge.cost||0).toFixed(5)}</h3>`;
   (data.judge.scores||[]).forEach(s => {
-    judgeSec.innerHTML += `<div class="score-bar">
-      <span class="judge-score">${s.pipeline}: ${s.score.toFixed(2)} </span>
-      <span class="score-fill" style="width:${Math.round(s.score*200)}px"></span>
-      <div class="judge-reasoning">${s.reasoning}</div>
+    const total = (s.weighted_total||0).toFixed(3);
+    const barWidth = Math.round((s.weighted_total||0)*200);
+    let dimRows = "";
+    Object.entries(DIMENSION_LABELS).forEach(([key, label]) => {
+      const dim = (s.dimensions||{})[key] || {};
+      const dimScore = (dim.score||0).toFixed(2);
+      const dimBar = Math.round((dim.score||0)*100);
+      dimRows += `<tr>
+        <td style="padding:3px 8px 3px 0;color:#7A8099;font-size:11px;white-space:nowrap">${label}</td>
+        <td style="padding:3px 8px;font-size:11px;width:30px;text-align:right">${dimScore}</td>
+        <td style="padding:3px 0;width:100px"><div style="background:#1a2030;height:6px;width:100px"><div style="background:#C4972A;height:6px;width:${dimBar}px"></div></div></td>
+        <td style="padding:3px 0 3px 8px;color:#7A8099;font-size:11px">${dim.reasoning||""}</td>
+      </tr>`;
+    });
+    judgeSec.innerHTML += `<div class="score-bar" style="margin-bottom:12px">
+      <div style="margin-bottom:6px">
+        <span class="judge-score" style="font-weight:bold">${s.pipeline}: ${total}</span>
+        <span class="score-fill" style="width:${barWidth}px;margin-left:8px;vertical-align:middle"></span>
+      </div>
+      <details>
+        <summary style="cursor:pointer;color:#7A8099;font-size:11px">Dimension breakdown</summary>
+        <table style="width:100%;border-collapse:collapse;margin-top:6px">${dimRows}</table>
+      </details>
+      <div class="judge-reasoning" style="margin-top:4px">${s.summary||""}</div>
     </div>`;
   });
-  judgeSec.innerHTML += `<div style="margin-top:8px;color:#7A8099">${data.judge.overall_reasoning||""}</div>`;
+  judgeSec.innerHTML += `<div style="margin-top:8px;color:#7A8099;font-size:12px">${data.judge.comparative_analysis||""}</div>`;
   out.appendChild(judgeSec);
 
   // Raw JSON
