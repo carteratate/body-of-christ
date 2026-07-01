@@ -234,8 +234,9 @@ async def run(
     cost_tracker: CostTracker,
 ) -> list[RankedChunk]:
     """Rerank all collections in parallel, return globally sorted list."""
+    max_per_col = quota * 3
     results = await asyncio.gather(
-        *[_rerank_single_collection(col_cands, query, quota, cost_tracker)
+        *[_rerank_single_collection(col_cands[:max_per_col], query, quota, cost_tracker)
           for col_cands in candidates.values()],
         return_exceptions=True,
     )

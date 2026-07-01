@@ -279,6 +279,7 @@ function renderResults(data) {
   out.appendChild(overlapSec);
 
   // Judge section
+  const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   const DIMENSION_LABELS = {
     retrieval_relevance: "Retrieval Relevance (30%)",
     best_passage_selection: "Best-Passage Selection (20%)",
@@ -301,7 +302,7 @@ function renderResults(data) {
         <td style="padding:3px 8px 3px 0;color:#7A8099;font-size:11px;white-space:nowrap">${label}</td>
         <td style="padding:3px 8px;font-size:11px;width:30px;text-align:right">${dimScore}</td>
         <td style="padding:3px 0;width:100px"><div style="background:#1a2030;height:6px;width:100px"><div style="background:#C4972A;height:6px;width:${dimBar}px"></div></div></td>
-        <td style="padding:3px 0 3px 8px;color:#7A8099;font-size:11px">${dim.reasoning||""}</td>
+        <td style="padding:3px 0 3px 8px;color:#7A8099;font-size:11px">${esc(dim.reasoning)}</td>
       </tr>`;
     });
     judgeSec.innerHTML += `<div class="score-bar" style="margin-bottom:12px">
@@ -313,10 +314,10 @@ function renderResults(data) {
         <summary style="cursor:pointer;color:#7A8099;font-size:11px">Dimension breakdown</summary>
         <table style="width:100%;border-collapse:collapse;margin-top:6px">${dimRows}</table>
       </details>
-      <div class="judge-reasoning" style="margin-top:4px">${s.summary||""}</div>
+      <div class="judge-reasoning" style="margin-top:4px">${esc(s.summary)}</div>
     </div>`;
   });
-  judgeSec.innerHTML += `<div style="margin-top:8px;color:#7A8099;font-size:12px">${data.judge.comparative_analysis||""}</div>`;
+  judgeSec.innerHTML += `<div style="margin-top:8px;color:#7A8099;font-size:12px">${esc(data.judge.comparative_analysis)}</div>`;
   out.appendChild(judgeSec);
 
   // Raw JSON
