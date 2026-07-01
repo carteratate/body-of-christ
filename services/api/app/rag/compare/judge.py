@@ -1,6 +1,7 @@
 """LLM-as-judge scoring using Claude Sonnet with a five-dimension rubric."""
 from __future__ import annotations
 
+import json
 import logging
 from dataclasses import dataclass
 
@@ -220,7 +221,6 @@ def _build_prompt(
     results: list[PipelineResult],
     overlap: OverlapReport,
 ) -> str:
-    import json
     lines = [f"Query: {query}\n"]
     lines.append(f"Shared chunks (in ALL pipelines): {overlap.shared}")
     lines.append(f"Unique chunks per pipeline: {json.dumps(overlap.unique, indent=2)}\n")
@@ -237,7 +237,7 @@ def _build_prompt(
     return "\n".join(lines)
 
 
-def _fallback_scores(results: list[PipelineResult], reason: str) -> list[JudgeScore]:
+def _fallback_scores(results: list[PipelineResult]) -> list[JudgeScore]:
     return [
         JudgeScore(
             pipeline=r.pipeline,
@@ -306,7 +306,7 @@ async def run(
 
     except Exception as exc:
         logger.warning("judge: failed (%s); returning empty scores", exc)
-        scores = _fallback_scores(results, str(exc))
+        scores = _fallback_scores(results)
         comparative = f"Judge call failed: {exc}"
 
     tokens_used = 0

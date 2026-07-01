@@ -1,4 +1,3 @@
-import json
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 from app.rag.compare.judge import (
@@ -157,6 +156,9 @@ async def test_judge_falls_back_on_missing_tool_block():
     assert isinstance(report, JudgeReport)
     assert len(report.scores) == 1
     assert report.scores[0].weighted_total == 0.0
+    # API call succeeded before StopIteration, so tokens and cost are recorded
+    assert report.tokens_used == 120
+    assert report.cost > 0
 
 
 @pytest.mark.asyncio
