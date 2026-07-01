@@ -268,7 +268,7 @@ async def run(
     try:
         response = await _client.messages.create(  # type: ignore[union-attr]
             model=_JUDGE_MODEL,
-            max_tokens=4096,
+            max_tokens=8192,
             temperature=0.1,
             system=[{
                 "type": "text",
@@ -285,6 +285,10 @@ async def run(
             input_tokens=response.usage.input_tokens,
             output_tokens=response.usage.output_tokens,
         )
+        if response.stop_reason == "max_tokens":
+            raise RuntimeError(
+                f"judge output truncated at {response.usage.output_tokens} tokens"
+            )
         tool_block = next(b for b in response.content if b.type == "tool_use")
         parsed = tool_block.input
 
