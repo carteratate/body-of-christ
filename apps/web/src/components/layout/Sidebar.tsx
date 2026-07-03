@@ -26,6 +26,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
 
   return (
     <aside
+      id="mobile-nav-drawer"
       className={`flex flex-col w-56 shrink-0 bg-brand-surface border-r border-brand-surface h-full max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-72 max-md:transition-transform max-md:duration-200 ${
         isMobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full"
       }`}

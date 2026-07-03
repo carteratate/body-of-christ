@@ -142,6 +142,51 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     try { localStorage.setItem("boc-theme", theme); } catch (_) {}
   }, [preferences?.theme]);
 
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+
+    document.body.style.overflow = "hidden";
+    const drawer = document.getElementById("mobile-nav-drawer");
+
+    const focusables = drawer?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+    focusables?.[0]?.focus();
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMobileNavOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !drawer) return;
+      const items = Array.from(drawer.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleKeyDown);
+      document.getElementById("mobile-nav-trigger")?.focus();
+    };
+  }, [mobileNavOpen]);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px)");
+    function handleChange(e: MediaQueryListEvent) {
+      if (e.matches) setMobileNavOpen(false);
+    }
+    mql.addEventListener("change", handleChange);
+    return () => mql.removeEventListener("change", handleChange);
+  }, []);
+
   return (
     <AppContext.Provider value={{
       token, ready, preferences, setPreferences, preferencesError,
@@ -162,7 +207,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           />
         )}
         <main className="flex flex-1 flex-col min-w-0">
-          <MobileTopBar onOpenMenu={() => setMobileNavOpen(true)} />
+          <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => setMobileNavOpen(true)} />
           {ready ? children : null}
         </main>
       </div>
