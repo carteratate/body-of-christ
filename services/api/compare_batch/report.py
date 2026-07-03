@@ -43,6 +43,11 @@ def _score_td(val: float) -> str:
     )
 
 
+def _th(label: str) -> str:
+    """Generate a table header cell with escaped label."""
+    return f'<th style="padding:6px 12px;color:#C4972A">{_html.escape(label)}</th>'
+
+
 def render_report(stats: AggregateStats, records: list[dict]) -> str:
     pipelines = [p.pipeline for p in stats.pipelines]
     p_map = {p.pipeline: p for p in stats.pipelines}
@@ -53,8 +58,7 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
         for r in records
     )
 
-    th = lambda label: f'<th style="padding:6px 12px;color:#C4972A">{label}</th>'
-    pipeline_headers = "".join(th(p) for p in pipelines)
+    pipeline_headers = "".join(_th(p) for p in pipelines)
 
     def stat_row(label, cell_fn):
         cells = "".join(cell_fn(p_map[p]) for p in pipelines)
@@ -93,7 +97,7 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
             for p in pipelines
         )
         q_text = _html.escape(r.get("query", ""))
-        cat = r.get("category", "")
+        cat = _html.escape(r.get("category", ""))
         dur = r.get("duration_s", 0)
         query_rows += (
             f'<tr>'

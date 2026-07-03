@@ -67,10 +67,10 @@ def _parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
-def _print_summary(stats) -> None:
+def _print_summary(stats: "AggregateStats") -> None:
     dims = ["retrieval_relevance", "best_passage_selection",
             "multi_angle_coverage", "doctrinal_completeness", "redundancy_rate"]
-    short = ["RR", "BPS", "MAC", "DC", "RR%"]
+    short = ["RR", "BPS", "MAC", "DC", "RdR"]
     header = f"{'Pipeline':<20} {'Mean':>6}  " + "  ".join(f"{s:>4}" for s in short) + "  Win%"
     print(f"\n{header}")
     print("-" * len(header))
@@ -100,13 +100,12 @@ async def _run_mode(args: argparse.Namespace) -> None:
     from compare_batch.queries import QUERIES
     from compare_batch.runner import run_batch
 
-    queries = QUERIES
-    if args.queries:
-        queries = [QUERIES[i] for i in args.queries if i < len(QUERIES)]
+    valid_indices = [i for i in args.queries if i < len(QUERIES)] if args.queries else None
+    queries = [QUERIES[i] for i in valid_indices] if valid_indices else QUERIES
 
     if args.dry_run:
-        for i, q in enumerate(queries):
-            idx = args.queries[i] if args.queries else i
+        for pos, q in enumerate(queries):
+            idx = valid_indices[pos] if valid_indices else pos
             print(f"[{idx:02d}] ({q.category:<12}) {q.query}")
         est = len(queries) * _COST_PER_QUERY_EST * (len(args.pipelines) / 4)
         print(f"\n{len(queries)} queries · estimated cost: ${est:.2f}")
