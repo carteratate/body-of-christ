@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { getPreferences, getSearchHistory, getSources, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
+import { MobileTopBar } from "./MobileTopBar";
 
 const Sidebar = dynamic(
   () => import("./Sidebar").then((m) => ({ default: m.Sidebar })),
@@ -73,6 +74,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [sources, setSources] = useState<SourceDocument[]>([]);
   const [sourcesLoading, setSourcesLoading] = useState(false);
   const [sourcesError, setSourcesError] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
 
   function newSearch() {
     setSearchKey((k) => k + 1);
@@ -149,8 +153,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       corpusPassages: sources.length > 0 ? sources.reduce((sum, s) => sum + s.chunk_count, 0) : null,
     }}>
       <div className="flex h-full bg-brand-bg text-brand-primary">
-        <Sidebar />
+        <Sidebar isMobileOpen={mobileNavOpen} onCloseMobile={closeMobileNav} />
+        {mobileNavOpen && (
+          <div
+            className="max-md:fixed max-md:inset-0 max-md:z-30 max-md:bg-black/50"
+            onClick={closeMobileNav}
+            aria-hidden="true"
+          />
+        )}
         <main className="flex flex-1 flex-col min-w-0">
+          <MobileTopBar onOpenMenu={() => setMobileNavOpen(true)} />
           {ready ? children : null}
         </main>
       </div>

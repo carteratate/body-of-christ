@@ -5,7 +5,12 @@ import Link from "next/link";
 import { useAppContext } from "./AppShell";
 import { Library, Bookmark, Church, Settings, BarChart3 } from "lucide-react";
 
-export function Sidebar() {
+interface SidebarProps {
+  isMobileOpen: boolean;
+  onCloseMobile: () => void;
+}
+
+export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { newSearch, searches, pendingSearch, activeSearchId } = useAppContext();
@@ -13,13 +18,18 @@ export function Sidebar() {
   function handleNewSearch() {
     router.push("/search");
     newSearch();
+    onCloseMobile();
   }
 
   const activeClass = "bg-brand-bg text-brand-accent border-l-2 border-brand-accent";
   const inactiveClass = "text-brand-muted hover:bg-brand-bg hover:text-brand-primary";
 
   return (
-    <aside className="flex flex-col w-56 shrink-0 bg-brand-surface border-r border-brand-surface h-full">
+    <aside
+      className={`flex flex-col w-56 shrink-0 bg-brand-surface border-r border-brand-surface h-full max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-72 max-md:transition-transform max-md:duration-200 ${
+        isMobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full"
+      }`}
+    >
       {/* App name */}
       <div className="px-4 pt-3 pb-2 border-b border-brand-bg">
         <span className="text-brand-accent font-semibold text-2xl whitespace-nowrap font-brand">Body of Christ</span>
@@ -61,6 +71,7 @@ export function Sidebar() {
           <Link
             key={s.id}
             href={`/search?restore=${s.id}`}
+            onClick={onCloseMobile}
             className={`block px-2 py-1.5 rounded text-xs truncate transition-colors ${
               s.id === activeSearchId ? activeClass : inactiveClass
             }`}
@@ -75,6 +86,7 @@ export function Sidebar() {
       <div className="px-3 pb-4 pt-2 border-t border-brand-bg space-y-1 text-xs">
         <Link
           href="/sources"
+          onClick={onCloseMobile}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/sources" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -83,6 +95,7 @@ export function Sidebar() {
         </Link>
         <Link
           href="/discover"
+          onClick={onCloseMobile}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/discover" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -91,6 +104,7 @@ export function Sidebar() {
         </Link>
         <Link
           href="/bookmarks"
+          onClick={onCloseMobile}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/bookmarks" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -99,6 +113,7 @@ export function Sidebar() {
         </Link>
         <Link
           href="/about"
+          onClick={onCloseMobile}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/about" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -107,6 +122,7 @@ export function Sidebar() {
         </Link>
         <Link
           href="/settings"
+          onClick={onCloseMobile}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/settings" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
