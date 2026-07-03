@@ -60,8 +60,8 @@ async def _run_one(
         "quota": quota,
         "pipelines": pipelines,
     }
-    t0 = time.monotonic()
     async with sem:
+        t0 = time.monotonic()
         logger.info("[%d/%d] starting: %s", idx + 1, total, spec.query[:60])
         try:
             async with session.post(
@@ -143,7 +143,10 @@ async def run_batch(
             )
             for idx, spec in remaining
         ]
-        await asyncio.gather(*tasks)
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for i, r in enumerate(results):
+            if isinstance(r, BaseException):
+                logger.error("_run_one[%d] raised unexpectedly: %s", i, r)
 
     total_done = len(_load_completed_indices(output_path))
     logger.info(
