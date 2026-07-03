@@ -427,7 +427,7 @@ function SearchPageInner() {
 
         {/* Query bubble rendered above animation (z-20 > z-10) — same markup as post-animation bubble */}
         {showAnimation && submittedQuery && !exploreLabel && (
-          <div className="absolute top-4 right-4 z-20 max-w-[70%] pointer-events-none">
+          <div className="absolute top-4 right-4 z-20 max-w-[70%] max-md:max-w-[85%] pointer-events-none">
             <div className="rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
               {submittedQuery}
             </div>
@@ -440,7 +440,7 @@ function SearchPageInner() {
 
         {submittedQuery && !exploreLabel && (
           <div className="flex justify-end mb-4">
-            <div className="max-w-[70%] rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
+            <div className="max-w-[70%] max-md:max-w-[85%] rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
               {submittedQuery}
             </div>
           </div>
