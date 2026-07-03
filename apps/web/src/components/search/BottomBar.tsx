@@ -54,7 +54,7 @@ export function BottomBar({
 
   return (
     <div className="border-t border-brand-surface bg-brand-bg px-4 py-3 pb-4">
-      <div className="mb-2 flex items-center justify-between gap-3">
+      <div className="mb-2 flex items-center justify-between gap-3 max-md:flex-col max-md:items-stretch max-md:gap-2">
         <CollectionToggles
           activeCollections={activeCollections}
           onToggle={onToggleCollection}
