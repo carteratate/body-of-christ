@@ -120,7 +120,7 @@ Your score must follow your reasoning — do not assign a number and then justif
 ```
 
 **Section 2 — Rubric definitions with anchors:**
-One block per dimension containing the definition and the three anchor examples (1.0 / 0.5 / 0.0) from the Scoring Anchors section above. The anchor examples serve as the few-shot calibration — they define the scale concretely rather than abstractly.
+One block per dimension containing the definition and the three anchor examples (1.0 / 0.5 / 0.0) from the Scoring Anchors section above, reproduced verbatim. The anchor examples serve as the few-shot calibration — they define the scale concretely rather than abstractly. The implementation must copy the anchor text from the Scoring Anchors section exactly; do not paraphrase.
 
 **Section 3 — Scoring rules:**
 ```
