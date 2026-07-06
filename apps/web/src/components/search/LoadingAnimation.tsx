@@ -70,9 +70,14 @@ interface Props {
   retrievalStarted: boolean;
   onReadyToShow: () => void;
   onFadeComplete: () => void;
+  // Footprint of the query bubble pinned at top-4/right-4 of this same container
+  // (in that container's own pixel space). When present, the radial constellation's
+  // size is capped so it never overlaps that corner — the two straight vertical
+  // gold lines are unaffected and still reach the container's top/bottom edges.
+  reservedTopRight?: { width: number; height: number } | null;
 }
 
-export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, onReadyToShow, onFadeComplete }: Props) {
+export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, onReadyToShow, onFadeComplete, reservedTopRight }: Props) {
   const active = collections.filter(k => k in PALETTE);
 
   // ── Container measurement ───────────────────────────────────────────────
@@ -98,8 +103,28 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
   const BOC_Y = H / 2;
 
   const OUTER_R_BASE = 140 + 32;
-  const availR       = Math.min(W / 2, H / 2) * 0.85;
-  const k            = availR / OUTER_R_BASE;
+  let availR = Math.min(W / 2, H / 2) * 0.85;
+
+  // Shrink the constellation's radius so it never reaches into the query bubble's
+  // corner. The bubble sits at a fixed 16px inset from the top-right (top-4 right-4
+  // in the same box this component measures), so its box is derivable from just its
+  // width/height. Distance from the constellation's center to the nearest point of
+  // that (padded) box gives the largest safe radius; the two straight vertical gold
+  // lines don't use availR/k for their length and are unaffected by this.
+  if (reservedTopRight && reservedTopRight.width > 0 && reservedTopRight.height > 0) {
+    const INSET = 16;
+    const PAD = 16;
+    const rLeft   = W - INSET - reservedTopRight.width - PAD;
+    const rTop    = INSET - PAD;
+    const rRight  = W;
+    const rBottom = INSET + reservedTopRight.height + PAD;
+    const nearestX = Math.min(Math.max(BOC_X, rLeft), rRight);
+    const nearestY = Math.min(Math.max(BOC_Y, rTop), rBottom);
+    const dMin = eucl(BOC_X, BOC_Y, nearestX, nearestY);
+    availR = Math.min(availR, Math.max(dMin, 60));
+  }
+
+  const k = availR / OUTER_R_BASE;
 
   const SOURCE_RING = 140 * k;
   const CHUNK_RING  = 32 * k;

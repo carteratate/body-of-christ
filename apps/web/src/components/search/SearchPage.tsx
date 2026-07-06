@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense } from "react";
 import { Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
@@ -82,6 +82,9 @@ function SearchPageInner() {
   const [isRestoring, setIsRestoring] = useState(false);
   const [submittedCollections, setSubmittedCollections] = useState<string[]>([]);
   const [visibleCollections, setVisibleCollections] = useState<string[]>([]);
+  // Measured footprint of the query bubble shown during the animation — passed to
+  // LoadingAnimation so its radial constellation shrinks to never overlap the bubble.
+  const [bubbleSize, setBubbleSize] = useState<{ width: number; height: number } | null>(null);
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
@@ -95,6 +98,21 @@ function SearchPageInner() {
   // True once handleAnimReadyToShow has run — explanation deltas that arrive
   // after the animation resolves update results state directly (live streaming).
   const resolvedRef = useRef(false);
+  const bubbleRef = useRef<HTMLDivElement>(null);
+
+  // useLayoutEffect (not useEffect) so LoadingAnimation's first paint already
+  // knows the bubble's footprint — avoids a visible resize/jump of the constellation.
+  useLayoutEffect(() => {
+    if (!showAnimation || !submittedQuery || exploreLabel) {
+      setBubbleSize(null);
+      return;
+    }
+    const el = bubbleRef.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    if (width > 0 && height > 0) setBubbleSize({ width, height });
+  }, [showAnimation, submittedQuery, exploreLabel]);
+
   useEffect(() => {
     return () => {
       abortRef.current?.abort();
@@ -422,12 +440,13 @@ function SearchPageInner() {
             retrievalStarted={searchPhase !== null || queryDone}
             onReadyToShow={handleAnimReadyToShow}
             onFadeComplete={handleAnimFadeComplete}
+            reservedTopRight={bubbleSize}
           />
         )}
 
         {/* Query bubble rendered above animation (z-20 > z-10) — same markup as post-animation bubble */}
         {showAnimation && submittedQuery && !exploreLabel && (
-          <div className="absolute top-4 right-4 z-20 max-w-[70%] max-md:max-w-[85%] pointer-events-none">
+          <div ref={bubbleRef} className="absolute top-4 right-4 z-20 max-w-[70%] max-md:max-w-[85%] pointer-events-none">
             <div className="rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
               {submittedQuery}
             </div>
