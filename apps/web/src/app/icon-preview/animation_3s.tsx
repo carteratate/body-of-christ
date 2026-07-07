@@ -39,7 +39,7 @@ const ACCENT = "#C4972A";
 const W = 660;
 const H = 520;
 
-// Body of Christ — center node
+// TheoCorpus — center node
 const BOC_X = W / 2;   // 330
 const BOC_Y = 240;
 const BOC_R = 42;
@@ -441,7 +441,7 @@ export default function LoadingPreview() {
             );
           })}
 
-          {/* ── Body of Christ — center node ─────────────────────────── */}
+          {/* ── TheoCorpus — center node ──────────────────────────────── */}
           {(() => {
             const pulsing = qPulse !== null || openingPulse;
             const color   = qPulse ?? ACCENT;
@@ -466,14 +466,14 @@ export default function LoadingPreview() {
                   fontSize={9} fontWeight={700} fill={color}
                   style={{ userSelect: "none", transition: `fill ${bocTrans}` }}
                 >
-                  Body of
+                  Theo
                 </text>
                 <text suppressHydrationWarning x={BOC_X} y={BOC_Y + 7}
                   textAnchor="middle" dominantBaseline="central"
                   fontSize={9} fontWeight={700} fill={color}
                   style={{ userSelect: "none", transition: `fill ${bocTrans}` }}
                 >
-                  Christ
+                  Corpus
                 </text>
               </g>
             );

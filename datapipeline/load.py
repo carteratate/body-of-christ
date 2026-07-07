@@ -1,5 +1,5 @@
 """
-Async database utility functions for the Body of Christ data pipeline.
+Async database utility functions for the TheoCorpus data pipeline.
 
 Uses asyncpg directly (no ORM). Provides a module-level connection pool
 singleton plus upsert helpers for documents and chunks.

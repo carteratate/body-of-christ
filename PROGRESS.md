@@ -1,4 +1,4 @@
-# Body of Christ V2 — Implementation Progress
+# TheoCorpus V2 — Implementation Progress
 
 > **Purpose:** Continuity file for implementation sessions. If you are a new Claude instance picking this up, read this first — it tells you exactly where things stand and what to do next.
 

@@ -1,6 +1,6 @@
 import { LoginForm } from "@/components/auth/LoginForm";
 
-export const metadata = { title: "Sign in — Body of Christ" };
+export const metadata = { title: "Sign in — TheoCorpus" };
 
 export default function LoginPage() {
   return (
@@ -8,7 +8,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-semibold text-brand-accent" style={{ fontFamily: "var(--font-cinzel)" }}>
-            Body of Christ
+            TheoCorpus
           </h1>
           <p className="mt-2 text-sm text-brand-muted">
             Explore Catholic theology through conversation

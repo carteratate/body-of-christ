@@ -62,7 +62,7 @@ async def run(collection: str | None = None, skip_embed: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run the Body of Christ data pipeline.")
+    parser = argparse.ArgumentParser(description="Run the TheoCorpus data pipeline.")
     parser.add_argument(
         "--collection",
         help="Run only this collection (bible, catechism, canon-law, encyclicals, church-fathers, summa)"

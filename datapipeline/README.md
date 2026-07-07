@@ -1,4 +1,4 @@
-# Body of Christ — Data Pipeline
+# TheoCorpus — Data Pipeline
 
 Ingests Catholic theology source texts (Bible, Catechism, Encyclicals, Church Fathers, Lives of Saints) into the Supabase Postgres + pgvector database for the V2 RAG feature.
 

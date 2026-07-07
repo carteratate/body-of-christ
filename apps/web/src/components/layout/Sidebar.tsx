@@ -33,7 +33,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
     >
       {/* App name */}
       <div className="px-4 pt-3 pb-2 border-b border-brand-bg">
-        <span className="text-brand-accent font-semibold text-2xl whitespace-nowrap font-brand">Body of Christ</span>
+        <span className="text-brand-accent font-semibold text-2xl whitespace-nowrap font-brand">TheoCorpus</span>
       </div>
 
       {/* New search button */}

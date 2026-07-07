@@ -82,7 +82,7 @@ async def lifespan(app: FastAPI):
     await close_llm()
 
 
-app = FastAPI(title="body-of-christ-api", lifespan=lifespan)
+app = FastAPI(title="theocorpus-api", lifespan=lifespan)
 
 class InternalSecretMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):

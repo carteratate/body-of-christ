@@ -20,7 +20,7 @@ export function MobileTopBar({ isOpen, onOpenMenu }: MobileTopBarProps) {
       >
         <Menu size={20} />
       </button>
-      <span className="text-brand-accent font-semibold text-lg font-brand">Body of Christ</span>
+      <span className="text-brand-accent font-semibold text-lg font-brand">TheoCorpus</span>
     </div>
   );
 }

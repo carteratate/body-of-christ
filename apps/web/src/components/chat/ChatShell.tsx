@@ -164,7 +164,7 @@ export function ChatShell() {
       {/* Sidebar */}
       <aside className="flex w-60 flex-col border-r border-brand-surface bg-brand-surface">
         <div className="flex-shrink-0 px-4 pt-4 pb-2">
-          <div className="text-xl font-semibold tracking-tight text-brand-accent">Body of Christ</div>
+          <div className="text-xl font-semibold tracking-tight text-brand-accent">TheoCorpus</div>
         </div>
 
         <div className="flex-shrink-0 px-4 pb-2">
@@ -227,7 +227,7 @@ export function ChatShell() {
         >
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-              <p className="text-3xl font-semibold text-brand-accent">Body of Christ</p>
+              <p className="text-3xl font-semibold text-brand-accent">TheoCorpus</p>
               <p className="max-w-sm text-brand-muted">
                 Ask about scripture, doctrine, or Catholic tradition.
               </p>
@@ -242,7 +242,7 @@ export function ChatShell() {
                   }`}
                 >
                   <span className="text-xs text-brand-muted">
-                    {msg.role === "user" ? "You" : "Body of Christ"}
+                    {msg.role === "user" ? "You" : "TheoCorpus"}
                   </span>
                   <div
                     className={`max-w-prose rounded-xl px-4 py-3 text-sm leading-relaxed ${
@@ -284,7 +284,7 @@ export function ChatShell() {
 
               {loading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex flex-col items-start gap-1">
-                  <span className="text-xs text-brand-muted">Body of Christ</span>
+                  <span className="text-xs text-brand-muted">TheoCorpus</span>
                   <div className="rounded-xl bg-brand-surface px-4 py-3">
                     <span className="inline-flex gap-1">
                       <span className="animate-bounce text-brand-accent" style={{ animationDelay: "0ms" }}>·</span>

@@ -87,7 +87,7 @@ export default function UpdatePasswordPage() {
             className="text-3xl font-semibold text-brand-accent"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
-            Body of Christ
+            TheoCorpus
           </h1>
           <p className="mt-2 text-sm text-brand-muted">Set your new password</p>
         </div>

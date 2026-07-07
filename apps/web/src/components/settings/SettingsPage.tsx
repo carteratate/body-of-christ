@@ -63,8 +63,8 @@ export function SettingsPage() {
 
     // Apply immediately — no round-trip delay
     document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("boc-theme", next); } catch (_) {}
-    document.cookie = `boc-theme=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    try { localStorage.setItem("theocorpus-theme", next); } catch (_) {}
+    document.cookie = `theocorpus-theme=${next}; path=/; max-age=31536000; SameSite=Lax`;
     setPreferences({ ...preferences, theme: next });
 
     setSaving(true);

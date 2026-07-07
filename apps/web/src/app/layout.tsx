@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Body of Christ",
+  title: "TheoCorpus",
   description: "Explore Catholic theology through conversation",
 };
 
@@ -31,7 +31,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const theme = cookieStore.get("boc-theme")?.value;
+  const theme = cookieStore.get("theocorpus-theme")?.value;
 
   return (
     <html

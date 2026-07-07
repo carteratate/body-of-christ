@@ -703,7 +703,7 @@ async def main(pool=None, usfm_dir: str | None = None, translation: str = "WEB-C
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Ingest WEB-C Bible (USFM) into the Body of Christ RAG database."
+        description="Ingest WEB-C Bible (USFM) into the TheoCorpus RAG database."
     )
     parser.add_argument(
         "--translation",

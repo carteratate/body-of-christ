@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { trackSuggestedQueryClicked } from "@/lib/analytics";
 
 const TAGLINES = [
-  "Query the Body of Christ",
+  "Query TheoCorpus",
   "What Does the Church Teach?",
   "Search Scripture and Tradition",
   "Seek Wisdom from the Church",

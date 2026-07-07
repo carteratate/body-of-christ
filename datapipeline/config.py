@@ -1,5 +1,5 @@
 """
-Shared configuration for the Body of Christ data pipeline.
+Shared configuration for the TheoCorpus data pipeline.
 
 Reads settings from environment variables (and an optional .env file).
 Raises a clear error at import time if required variables are missing.

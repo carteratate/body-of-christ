@@ -1,7 +1,7 @@
 # CLAUDE.md — Project Rules & Invariants
 
 This repository (body-of-christ) implements a Catholic theology RAG search application.
-The user-facing product name is **Body of Christ**.
+The user-facing product name is **TheoCorpus**.
 All changes MUST respect the following architectural, security, and design constraints.
 
 ---
@@ -23,8 +23,8 @@ cd datapipeline && python load.py          # upsert documents/chunks to Supabase
 cd datapipeline && python embed.py         # push embeddings to Qdrant
 
 # Docker (prod-like)
-docker build -t boc-api services/api
-docker run --env-file services/api/.env -p 8000:8000 boc-api
+docker build -t theocorpus-api services/api
+docker run --env-file services/api/.env -p 8000:8000 theocorpus-api
 ```
 
 ---

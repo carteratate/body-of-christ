@@ -3,7 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
-  title: "Body of Christ",
+  title: "TheoCorpus",
   description:
     "Explore two thousand years of Catholic wisdom — Scripture, catechisms, encyclicals, the Church Fathers, and more.",
 };
@@ -26,7 +26,7 @@ export default async function HomePage() {
           className="text-brand-accent font-semibold leading-tight mb-10 text-center"
           style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2.5rem, 8vw, 5rem)" }}
         >
-          Body of Christ
+          TheoCorpus
         </h1>
 
         {/* Mission statement */}
@@ -36,7 +36,7 @@ export default async function HomePage() {
             surrounding suffering, virtue, justice, grace, salvation, human
             nature, and more. Those conversations have occurred over
             Scripture, catechisms, encyclicals, writings of the early church
-            fathers, church counsels, etc. The Body of Christ
+            fathers, church counsels, etc. TheoCorpus
             brings their wisdom together into one place, allowing you to explore
             the Catholic tradition through the people who built, defended,
             and passed down the fullness of the faith.

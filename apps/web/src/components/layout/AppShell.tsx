@@ -139,7 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const theme = preferences?.theme;
     if (!theme) return;
     document.documentElement.setAttribute("data-theme", theme);
-    try { localStorage.setItem("boc-theme", theme); } catch (_) {}
+    try { localStorage.setItem("theocorpus-theme", theme); } catch (_) {}
   }, [preferences?.theme]);
 
   useEffect(() => {
