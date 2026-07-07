@@ -279,46 +279,57 @@ export async function streamSearch(
   const decoder = new TextDecoder();
   let buffer = "";
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    if (signal?.aborted) break;
+  // The backend keeps this stream open well past the "done" event to stream
+  // per-chunk explanations one at a time — so an abort (e.g. the user starting
+  // a new search) very often lands while a reader.read() is still pending.
+  // That rejects with an AbortError same as the initial fetch() above; without
+  // this try/catch it propagates uncaught out of streamSearch and gets treated
+  // as a real search failure by the caller.
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (signal?.aborted) break;
 
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
 
-    for (const line of lines) {
-      if (!line.startsWith("data: ")) continue;
-      try {
-        const event = JSON.parse(line.slice(6)) as
-          | { type: "chunk" } & ChunkResult & { reranker_score: number }
-          | { type: "explanation_delta"; chunk_id: string; delta: string }
-          | { type: "done"; search_id: string; result_count: number }
-          | { type: "error"; detail: string }
-          | { type: "status"; phase: "searching" | "ranking"; collections?: string[] };
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        try {
+          const event = JSON.parse(line.slice(6)) as
+            | { type: "chunk" } & ChunkResult & { reranker_score: number }
+            | { type: "explanation_delta"; chunk_id: string; delta: string }
+            | { type: "done"; search_id: string; result_count: number }
+            | { type: "error"; detail: string }
+            | { type: "status"; phase: "searching" | "ranking"; collections?: string[] };
 
-        if (event.type === "chunk") {
-          callbacks.onChunk({
-            chunk_id: event.chunk_id,
-            content: event.content,
-            source: event.source,
-            reranker_score: event.reranker_score ?? null,
-            explanation: null,
-          });
-        } else if (event.type === "explanation_delta") {
-          callbacks.onExplanationDelta(event.chunk_id, event.delta);
-        } else if (event.type === "done") {
-          callbacks.onDone(event.search_id, event.result_count);
-        } else if (event.type === "error") {
-          callbacks.onError(event.detail ?? "Search failed");
-        } else if (event.type === "status") {
-          callbacks.onStatus?.(event.phase, event.collections);
+          if (event.type === "chunk") {
+            callbacks.onChunk({
+              chunk_id: event.chunk_id,
+              content: event.content,
+              source: event.source,
+              reranker_score: event.reranker_score ?? null,
+              explanation: null,
+            });
+          } else if (event.type === "explanation_delta") {
+            callbacks.onExplanationDelta(event.chunk_id, event.delta);
+          } else if (event.type === "done") {
+            callbacks.onDone(event.search_id, event.result_count);
+          } else if (event.type === "error") {
+            callbacks.onError(event.detail ?? "Search failed");
+          } else if (event.type === "status") {
+            callbacks.onStatus?.(event.phase, event.collections);
+          }
+        } catch {
+          // malformed SSE line — skip
         }
-      } catch {
-        // malformed SSE line — skip
       }
     }
+  } catch (err) {
+    if ((err as DOMException).name === "AbortError") return;
+    throw err;
   }
 }
 
