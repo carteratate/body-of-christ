@@ -21,16 +21,16 @@ function rim(fx: number, fy: number, tx: number, ty: number, r: number) {
 // ── Palette ───────────────────────────────────────────────────────────────
 
 const PALETTE: Record<string, { hex: string; label: string; short: string }> = {
-  "bible":                    { hex: "#d4885a", label: "Bible",          short: "Bib" },
-  "catechism":                { hex: "#5b9bd4", label: "Catechism",      short: "CCC" },
-  "church-fathers":           { hex: "#b070d4", label: "Ch. Fathers",    short: "CF"  },
-  "encyclicals":              { hex: "#e8c040", label: "Encyclicals",    short: "Enc" },
-  "summa":                    { hex: "#55cc88", label: "Summa",          short: "ST"  },
-  "canon-law":                { hex: "#e84040", label: "Canon Law",      short: "CL"  },
-  "medieval":                 { hex: "#90a0a8", label: "Medieval",       short: "Med" },
-  "councils":                 { hex: "#60d4c8", label: "Councils",       short: "Cou" },
-  "apostolic-exhortations":   { hex: "#4858c8", label: "Apost. Exhort.", short: "AE"  },
-  "papal-documents":          { hex: "#b86080", label: "Papal Docs",     short: "PD"  },
+  "bible":                    { hex: "#d4885a", label: "Bible",          short: "BI" },
+  "catechism":                { hex: "#5b9bd4", label: "Catechism",      short: "CA" },
+  "church-fathers":           { hex: "#b070d4", label: "Ch. Fathers",    short: "CF" },
+  "encyclicals":              { hex: "#e8c040", label: "Encyclicals",    short: "EN" },
+  "summa":                    { hex: "#55cc88", label: "Summa",          short: "ST" },
+  "canon-law":                { hex: "#e84040", label: "Canon Law",      short: "CL" },
+  "medieval":                 { hex: "#90a0a8", label: "Medieval",       short: "ME" },
+  "councils":                 { hex: "#60d4c8", label: "Councils",       short: "CO" },
+  "apostolic-exhortations":   { hex: "#4858c8", label: "Apost. Exhort.", short: "AE" },
+  "papal-documents":          { hex: "#b86080", label: "Papal Docs",     short: "PD" },
 };
 
 const ACCENT = "#C4972A";
@@ -183,31 +183,35 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
 
   const startSequence2 = useCallback(() => {
     const act = active.length > 0 ? active : Object.keys(PALETTE).slice(0, 4);
-    const perSource = 800;
+    // 250ms fade-in + 250ms hold at full color = 500ms dwell, + 250ms fade-out
+    // (see bocTrans below) = 750ms total, with zero rest — the next pulse's
+    // onset fires the instant the previous fade finishes.
+    const perSource = 750;
 
-    // Source→BoC colored lines start (1s CSS, arrive at t=1000)
+    // Source→BoC colored lines start (0.8s CSS, arrive at t=800)
     setPhase(7);
 
     // Sequential per-source flash — starts 100ms after lines arrive (let lines settle)
-    // Line disappears at same moment BoC pulses that color
+    // Line stays fully drawn through the flash; it only starts disappearing once
+    // its BoC flash for that source has ended.
     act.forEach((key, i) => {
       const t = 1100 + i * perSource;
-      at(() => { setQPulse(PALETTE[key]?.hex ?? ACCENT); setDismissedLines(prev => [...prev, key]); }, t);
-      at(() => setQPulse(null), t + 600);
+      at(() => setQPulse(PALETTE[key]?.hex ?? ACCENT), t);
+      at(() => { setQPulse(null); setDismissedLines(prev => [...prev, key]); }, t + 500);
     });
 
     const seqEnd = 1100 + act.length * perSource;
 
-    // After sequential: gold BoC pulse at 80% (2120ms), sources gone, return line
+    // After sequential: gold BoC pulse (0.5s fade-in + 800ms hold + 0.5s fade-out), sources gone, return line
     at(() => setQPulse(ACCENT), seqEnd);
     at(() => setSourcesGone(true), seqEnd + 800);
-    at(() => { setQPulse(null); setReturnLineDone(true); }, seqEnd + 2120); // return line (1s CSS), arrives seqEnd+3120
+    at(() => { setQPulse(null); setReturnLineDone(true); }, seqEnd + 1300); // return line (0.8s CSS), arrives seqEnd+2100
 
     // Border flash 200ms before return line arrives (80% drawn)
-    at(() => setBorderFlash(true), seqEnd + 2920);
+    at(() => setBorderFlash(true), seqEnd + 1900);
 
     // BoC fades 50ms after return line arrives
-    at(() => setBocGone(true), seqEnd + 3170);
+    at(() => setBocGone(true), seqEnd + 2150);
 
     // Enter stretch 2
     at(() => {
@@ -226,23 +230,23 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           setBorderFlash(on);
         }, 1500);
       }
-    }, seqEnd + 3220);
+    }, seqEnd + 2200);
   }, [active, onReadyToShow, onFadeComplete]);
 
   // ── Post-gate-1: chunks → winners back to sources → source glow → sequence 2 ───
 
   const startPostGate1 = useCallback(() => {
     setGlowColor(false);                                             // stop source pulse immediately
-    at(() => setPhase(3), 200);                                      // source→chunk lines (1s CSS), arrives ~1200
-    at(() => setChunkFlash(true), 1500);                             // 300ms after chunks arrive, flash #1
-    at(() => setChunkFlash(false), 2100);                            // flash #1: 600ms on
-    at(() => setChunkFlash(true), 2700);                             // 600ms gap, flash #2
-    at(() => { setChunkFlash(false); setPhase(5); }, 3300);          // flash #2 done, colored chunk→source lines start
-    at(() => setGlowColor(true), 4100);                              // 200ms before colored lines arrive at ~4300
+    at(() => setPhase(3), 100);                                      // source→chunk lines (0.6s CSS), arrive ~700
+    at(() => setChunkFlash(true), 1100);                             // 400ms settle after chunks arrive, flash #1
+    at(() => setChunkFlash(false), 1600);                            // flash #1: 500ms on (down from 600ms)
+    at(() => setChunkFlash(true), 2100);                             // 500ms gap, flash #2 (down from 600ms)
+    at(() => { setChunkFlash(false); setPhase(5); }, 2600);          // flash #2 done (500ms on), colored chunk→source lines start (0.6s CSS)
+    at(() => setGlowColor(true), 3000);                              // 200ms before colored lines arrive at ~3200
     at(() => {
       setGlowColor(false);
       at(() => startSequence2(), 100);
-    }, 5500);
+    }, 4000);                                                        // 1000ms glow hold, matches Effect 1's source-glow
   }, [startSequence2]);
 
   // ── Effect 1: Sequence 1 (pre-gate, runs on mount) ────────────────────────
@@ -262,14 +266,14 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
     setWinners(w);
 
     // Sequence 1: gold line → BoC → sources (GATE 1 STRETCH on sources) → chunks → winners → sources
-    // All lines travel at 1s. BoC gold pulse: 2600ms. Source glow: 1400ms.
-    at(() => { setPhase(1); setSearchLineDone(true); }, 100);       // gold line starts (1s CSS), arrives t=1100
-    at(() => setOpeningPulse(true), 900);                            // 200ms before gold arrives at 1100
-    at(() => setSearchGone(true), 1200);                             // line fades 100ms after arrival
-    at(() => setOpeningPulse(false), 3500);                          // gold pulse off (2600ms hold)
-    at(() => { setPhase(2); setSourcesReady(true); }, 3800);        // BoC→source (1s CSS), arrives t=4800
-    at(() => setGlowColor(true), 4600);                              // 200ms before sources arrive at 4800
-    at(() => setGlowColor(false), 6000);                             // source glow 1400ms
+    // All lines travel at 0.8s. BoC gold pulse: 0.75s fade-in + 1s hold. Source glow: 1000ms.
+    at(() => { setPhase(1); setSearchLineDone(true); }, 100);       // gold line starts (0.8s CSS), arrives t=900
+    at(() => setOpeningPulse(true), 700);                            // 200ms before gold arrives at 900
+    at(() => setSearchGone(true), 1000);                             // line fades 100ms after arrival
+    at(() => setOpeningPulse(false), 2450);                          // gold pulse off (0.75s fade-in + 1s hold = 1750ms dwell)
+    at(() => { setPhase(2); setSourcesReady(true); }, 2850);        // BoC→source (0.8s CSS) starts 400ms after pulse-off, arrives t=3650
+    at(() => setGlowColor(true), 3450);                              // 200ms before sources arrive at 3650
+    at(() => setGlowColor(false), 4450);                             // source glow 1000ms
     // Enter Gate 1 stretch — source nodes pulse until HyDE + embed done
     at(() => {
       if (retrievalStartedRef.current) {
@@ -280,7 +284,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           setGlowColor(prev => !prev);
         }, 1200);
       }
-    }, 6200);
+    }, 4650);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -354,7 +358,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           style={{
             strokeDashoffset: searchLineDone ? 0 : SL_LEN,
             transition: searchLineDone
-              ? "stroke-dashoffset 1s linear, opacity 0.4s ease"
+              ? "stroke-dashoffset 0.8s linear, opacity 0.4s ease"
               : "none",
           }}
         />
@@ -372,7 +376,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
               opacity={phase >= 2 && phase < 5 && !sourcesGone ? 1 : 0}
               style={{
                 strokeDashoffset: phase >= 2 ? 0 : len,
-                transition: phase >= 2 ? "stroke-dashoffset 1s linear" : "none",
+                transition: phase >= 2 ? "stroke-dashoffset 0.8s linear" : "none",
               }}
             />
           );
@@ -392,7 +396,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
               opacity={phase >= 3 && phase < 5 && !sourcesGone ? 1 : 0}
               style={{
                 strokeDashoffset: phase >= 3 ? 0 : len,
-                transition: phase >= 3 ? "stroke-dashoffset 1s linear" : "none",
+                transition: phase >= 3 ? "stroke-dashoffset 0.6s linear" : "none",
               }}
             />
           );
@@ -417,7 +421,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
                 opacity={phase >= 5 && !sourcesGone ? 1 : 0}
                 style={{
                   strokeDashoffset: phase >= 5 ? 0 : len,
-                  transition: phase >= 5 ? "stroke-dashoffset 1s linear" : "none",
+                  transition: phase >= 5 ? "stroke-dashoffset 0.6s linear" : "none",
                 }}
               />
             );
@@ -439,8 +443,8 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
               style={{
                 strokeDashoffset: phase >= 7 ? 0 : len,
                 transition: dismissedLines.includes(s.key)
-                  ? "stroke-dashoffset 1s linear, opacity 0.3s ease-out"
-                  : phase >= 7 ? "stroke-dashoffset 1s linear" : "none",
+                  ? "stroke-dashoffset 0.8s linear, opacity 0.3s ease-out"
+                  : phase >= 7 ? "stroke-dashoffset 0.8s linear" : "none",
               }}
             />
           );
@@ -454,7 +458,7 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           opacity={returnLineDone && !bocGone ? 1 : 0}
           style={{
             strokeDashoffset: returnLineDone ? 0 : RL_LEN,
-            transition: returnLineDone ? "stroke-dashoffset 1s linear" : "none",
+            transition: returnLineDone ? "stroke-dashoffset 0.8s linear" : "none",
           }}
         />
 
@@ -509,42 +513,65 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
           );
         })}
 
-        {/* ── Body of Christ — center node ─────────────────────────────── */}
+        {/* ── TheoCorpus — center node: pulsing circle + static logo inside ─── */}
         {(() => {
           const pulsing  = qPulse !== null || openingPulse;
           const color    = qPulse ?? ACCENT;
-          const bocTrans = openingPulse || qPulse === ACCENT
-            ? "1.5s ease-out"
+          // Opening pulse: 0.75s fade-in, 0.75s fade-out. Final gold pulse
+          // (qPulse===ACCENT): 0.5s fade-in, 0.5s fade-out. Colored per-source
+          // pulses: 0.25s fade-in, 0.25s fade-out (see perSource/dwell above).
+          // returnLineDone flips true in the same timer that ends the final
+          // pulse, and sourcesReady is still false only during the opening
+          // pulse — both used to tell the three fade-outs apart once qPulse
+          // has already gone null (same shared state at that point otherwise).
+          const bocTrans = openingPulse
+            ? "0.75s ease-out"
+            : qPulse === ACCENT ? "0.5s ease-out"
             : qPulse !== null ? "0.25s ease-in-out"
-            :                   "1.0s ease-in-out";
-          const filter = pulsing ? `drop-shadow(0 0 6px ${color})` : undefined;
+            : returnLineDone ? "0.5s ease-in-out"
+            : !sourcesReady ? "0.75s ease-in-out"
+            :                  "0.25s ease-in-out";
+          // Two stacked drop-shadows — a tighter bright core plus a wider soft
+          // bloom — read as a much bigger halo than a single flat blur value.
+          const filter = pulsing ? `drop-shadow(0 0 10px ${color}) drop-shadow(0 0 22px ${color})` : undefined;
+
+          // Logo (rounded "C" + bridging cross) is drawn smaller than BOC_R so
+          // it sits inside the circle with margin, rather than replacing it.
+          // It's static — fixed color, no glow, no transitions — independent
+          // of the circle's pulse state.
+          const logoR = BOC_R * 0.3;
+          const gapHalfAngle = 48 * Math.PI / 180;
+          const arcX  = BOC_X + logoR * Math.cos(gapHalfAngle);
+          const arcY1 = BOC_Y + logoR * Math.sin(gapHalfAngle);
+          const arcY2 = BOC_Y - logoR * Math.sin(gapHalfAngle);
+          const ringSW = logoR * 0.225;
+          const crossVHalf   = logoR * 0.55;
+          const crossHHalf   = logoR * 0.37;
+          const crossYOffset = logoR * 0.18;
+          const crossSW      = logoR * 0.1625;
+
           return (
-            <g suppressHydrationWarning
-              opacity={phase >= 1 && !bocGone ? 1 : 0}
-              style={{ filter, transition: `opacity 0.4s ease, filter ${bocTrans}` }}
-            >
-              <circle suppressHydrationWarning
-                cx={BOC_X} cy={BOC_Y} r={BOC_R}
-                fill="var(--color-brand-bg)"
-                stroke={color} strokeWidth={pulsing ? 3 : 1.5}
-                style={{ transition: `stroke ${bocTrans}, stroke-width ${bocTrans}` }}
+            <g suppressHydrationWarning opacity={phase >= 1 && !bocGone ? 1 : 0} style={{ transition: "opacity 0.4s ease" }}>
+              <g suppressHydrationWarning style={{ filter, transition: `filter ${bocTrans}` }}>
+                <circle suppressHydrationWarning
+                  cx={BOC_X} cy={BOC_Y} r={BOC_R}
+                  fill="var(--color-brand-bg)"
+                  stroke={color} strokeWidth={pulsing ? 3 : 1.5}
+                  style={{ transition: `stroke ${bocTrans}, stroke-width ${bocTrans}` }}
+                />
+              </g>
+              <path suppressHydrationWarning
+                d={`M${arcX},${arcY1} A${logoR},${logoR} 0 1 1 ${arcX},${arcY2}`}
+                fill="none" stroke={ACCENT} strokeWidth={ringSW} strokeLinecap="round"
               />
-              <text suppressHydrationWarning
-                x={BOC_X} y={BOC_Y - fontSize * 0.9}
-                textAnchor="middle" dominantBaseline="central"
-                fontSize={fontSize} fontWeight={700} fill={color}
-                style={{ userSelect: "none", transition: `fill ${bocTrans}` }}
-              >
-                Body of
-              </text>
-              <text suppressHydrationWarning
-                x={BOC_X} y={BOC_Y + fontSize * 0.9}
-                textAnchor="middle" dominantBaseline="central"
-                fontSize={fontSize} fontWeight={700} fill={color}
-                style={{ userSelect: "none", transition: `fill ${bocTrans}` }}
-              >
-                Christ
-              </text>
+              <line suppressHydrationWarning
+                x1={BOC_X} y1={BOC_Y - crossVHalf} x2={BOC_X} y2={BOC_Y + crossVHalf}
+                stroke={ACCENT} strokeWidth={crossSW} strokeLinecap="round"
+              />
+              <line suppressHydrationWarning
+                x1={BOC_X - crossHHalf} y1={BOC_Y - crossYOffset} x2={BOC_X + crossHHalf} y2={BOC_Y - crossYOffset}
+                stroke={ACCENT} strokeWidth={crossSW} strokeLinecap="round"
+              />
             </g>
           );
         })()}
