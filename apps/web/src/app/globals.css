@@ -41,10 +41,16 @@
 html {
   color-scheme: dark;
   height: 100%;
+  /* dvh accounts for Safari's collapsing address bar; without it, real iOS
+     devices can report a taller-than-visible viewport, clipping bottom
+     content until the user scrolls. Kept after 100% as a layered fallback —
+     browsers without dvh support simply ignore this line. */
+  height: 100dvh;
 }
 
 body {
   height: 100%;
+  height: 100dvh;
   background-color: #0D1828;
   color: #EAE6DC;
 }
@@ -67,5 +73,16 @@ body {
   [data-theme="light"] body {
     background-color: #f0e8d8;
     color: #1a1610;
+  }
+}
+
+/* iOS Safari auto-zooms the viewport on focus for any text input/textarea
+   rendered under 16px. Forcing 16px below the mobile breakpoint prevents the
+   zoom entirely (desktop sizing is untouched). !important is required here:
+   Tailwind's text-size utilities are single class selectors, which outrank a
+   bare tag selector without it. */
+@media (max-width: 767px) {
+  input, textarea, select {
+    font-size: 16px !important;
   }
 }
