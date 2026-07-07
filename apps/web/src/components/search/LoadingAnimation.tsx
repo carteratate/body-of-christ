@@ -531,24 +531,13 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
             : returnLineDone ? "0.5s ease-in-out"
             : !sourcesReady ? "0.75s ease-in-out"
             :                  "0.25s ease-in-out";
-          // Two stacked drop-shadows — a tighter bright core plus a wider soft
-          // bloom — read as a much bigger halo than a single flat blur value.
-          const filter = pulsing ? `drop-shadow(0 0 10px ${color}) drop-shadow(0 0 22px ${color})` : undefined;
+          // Two stacked drop-shadows — a tighter bright core plus a much wider
+          // soft bloom — read as a large halo rather than a tight glow ring.
+          const filter = pulsing ? `drop-shadow(0 0 22px ${color}) drop-shadow(0 0 48px ${color})` : undefined;
 
-          // Logo (rounded "C" + bridging cross) is drawn smaller than BOC_R so
-          // it sits inside the circle with margin, rather than replacing it.
-          // It's static — fixed color, no glow, no transitions — independent
-          // of the circle's pulse state.
-          const logoR = BOC_R * 0.3;
-          const gapHalfAngle = 48 * Math.PI / 180;
-          const arcX  = BOC_X + logoR * Math.cos(gapHalfAngle);
-          const arcY1 = BOC_Y + logoR * Math.sin(gapHalfAngle);
-          const arcY2 = BOC_Y - logoR * Math.sin(gapHalfAngle);
-          const ringSW = logoR * 0.225;
-          const crossVHalf   = logoR * 0.55;
-          const crossHHalf   = logoR * 0.37;
-          const crossYOffset = logoR * 0.18;
-          const crossSW      = logoR * 0.1625;
+          // "TC" label is static — fixed color, no glow, no transitions —
+          // independent of the circle's pulse state, sized proportionally to BOC_R.
+          const logoFontSize = BOC_R * 0.55;
 
           return (
             <g suppressHydrationWarning opacity={phase >= 1 && !bocGone ? 1 : 0} style={{ transition: "opacity 0.4s ease" }}>
@@ -560,18 +549,14 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
                   style={{ transition: `stroke ${bocTrans}, stroke-width ${bocTrans}` }}
                 />
               </g>
-              <path suppressHydrationWarning
-                d={`M${arcX},${arcY1} A${logoR},${logoR} 0 1 1 ${arcX},${arcY2}`}
-                fill="none" stroke={ACCENT} strokeWidth={ringSW} strokeLinecap="round"
-              />
-              <line suppressHydrationWarning
-                x1={BOC_X} y1={BOC_Y - crossVHalf} x2={BOC_X} y2={BOC_Y + crossVHalf}
-                stroke={ACCENT} strokeWidth={crossSW} strokeLinecap="round"
-              />
-              <line suppressHydrationWarning
-                x1={BOC_X - crossHHalf} y1={BOC_Y - crossYOffset} x2={BOC_X + crossHHalf} y2={BOC_Y - crossYOffset}
-                stroke={ACCENT} strokeWidth={crossSW} strokeLinecap="round"
-              />
+              <text suppressHydrationWarning
+                x={BOC_X} y={BOC_Y}
+                textAnchor="middle" dominantBaseline="central"
+                fontSize={logoFontSize} fontWeight={700} fill={ACCENT}
+                style={{ userSelect: "none" }}
+              >
+                TC
+              </text>
             </g>
           );
         })()}
