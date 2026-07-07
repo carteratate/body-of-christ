@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { RelevanceChart } from "@/components/discover/RelevanceChart";
 import { COLLECTIONS } from "@/lib/collections";
@@ -35,6 +35,12 @@ export function DiscoverPage() {
     el.style.height = "auto";
     el.style.height = `${el.scrollHeight}px`;
   }
+
+  // Runs before first paint too (not just on value change), so the box already
+  // accounts for the wrapped "e.g. ..." placeholder height on initial render.
+  useLayoutEffect(() => {
+    autoResize();
+  }, [query]);
 
   const handleSubmit = useCallback(async () => {
     const q = query.trim();
@@ -119,7 +125,7 @@ export function DiscoverPage() {
           <textarea
             ref={textareaRef}
             value={query}
-            onChange={(e) => { setQuery(e.target.value); autoResize(); }}
+            onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="e.g. What does the Church teach about the Eucharist?"
             className="flex-1 bg-brand-surface border border-brand-bg rounded-lg px-3 py-2 text-sm text-brand-primary placeholder:text-brand-muted focus:outline-none focus:border-brand-accent resize-none overflow-hidden"
