@@ -1,6 +1,7 @@
 """BM25 index stage: encode chunk content + annotation, upsert named sparse vectors to Qdrant."""
 from __future__ import annotations
 
+import json
 import logging
 
 from qdrant_client.models import PointVectors, SparseVector
@@ -37,7 +38,7 @@ async def index_collection(collection, conn, qdrant, content_model, annotation_m
             logging.warning("bm25-index: chunk %s has no annotation — run enrich first", r["id"])
             continue
         ci, cv = encode(content_model, r["content"])
-        ai, av = encode(annotation_model, annotation_prose(r["annotation"]))
+        ai, av = encode(annotation_model, annotation_prose(json.loads(r["annotation"])))
         upd = build_sparse_update(str(r["id"]), ci, cv, ai, av)
         updates.append(PointVectors(id=upd["id"], vector=upd["vector"]))
     if updates:

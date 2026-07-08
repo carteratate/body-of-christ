@@ -33,7 +33,7 @@ _MODEL_CONFIG = {
 async def load_annotation_corpus(conn) -> list[str]:
     rows = await conn.fetch(
         "SELECT annotation FROM chunks WHERE annotation IS NOT NULL ORDER BY id")
-    return [annotation_prose(r["annotation"]) for r in rows]
+    return [annotation_prose(json.loads(r["annotation"])) for r in rows]
 
 
 def fit(corpus: list[str], out_path: str = DEFAULT_OUT) -> None:
