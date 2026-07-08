@@ -1,70 +1,51 @@
-import importlib
+import os
+
+# config.py constructs its module-level singleton at import time via
+# _require_env(), which raises if these vars are absent. The real
+# datapipeline/.env does not define QDRANT_URL/QDRANT_API_KEY, so we need
+# placeholders present before the first `import config` in this process
+# (matching the convention used by other test files, e.g.
+# tests/test_apostolic_exhortations.py). setdefault() never overwrites a
+# real value and is a one-time bootstrap, not per-test monkeypatching.
+os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
+os.environ.setdefault("OPENAI_API_KEY", "sk-test")
+os.environ.setdefault("QDRANT_URL", "http://localhost")
+os.environ.setdefault("QDRANT_API_KEY", "x")
+
 import pytest
 
-
-@pytest.fixture(autouse=True)
-def restore_config_after_test():
-    """Restore config singleton after each test that reloads it.
-
-    Tests in this file reload the config module with monkeypatched environment
-    variables. monkeypatch automatically restores the environment after the test,
-    but the config module remains in sys.modules with a stale singleton created
-    from fake values. This fixture reloads config one more time after each test
-    to restore the singleton for subsequent tests. If the reload fails due to
-    missing env vars, that's okay—the important thing is we've cleared the stale
-    singleton, allowing the next test to set its own monkeypatched environment.
-    """
-    yield
-    # After the test completes and monkeypatch has restored the environment,
-    # reload config to restore the settings singleton.
-    import config
-    try:
-        importlib.reload(config)
-    except EnvironmentError:
-        # Reload may fail if real env vars are incomplete. That's fine—the
-        # stale singleton has been cleared, and the next test will set its own env.
-        pass
+from config import Settings
 
 
-def test_embedding_dims_is_3072(monkeypatch):
-    monkeypatch.setenv("DATABASE_URL", "postgres://x")
-    monkeypatch.setenv("OPENAI_API_KEY", "sk-x")
-    monkeypatch.setenv("QDRANT_URL", "https://q")
-    monkeypatch.setenv("QDRANT_API_KEY", "qk")
-    import config
-    importlib.reload(config)
-    assert config.settings.EMBEDDING_DIMS == 3072
+def _base_kwargs(**overrides):
+    kwargs = dict(
+        DATABASE_URL="postgres://x",
+        OPENAI_API_KEY="sk-x",
+        QDRANT_URL="https://q",
+        QDRANT_API_KEY="qk",
+    )
+    kwargs.update(overrides)
+    return kwargs
 
 
-def test_enrich_model_default(monkeypatch):
-    monkeypatch.setenv("DATABASE_URL", "postgres://x")
-    monkeypatch.setenv("OPENAI_API_KEY", "sk-x")
-    monkeypatch.setenv("QDRANT_URL", "https://q")
-    monkeypatch.setenv("QDRANT_API_KEY", "qk")
-    import config
-    importlib.reload(config)
-    assert config.settings.ANTHROPIC_ENRICH_MODEL == "claude-opus-4-8"
+def test_embedding_dims_is_3072():
+    s = Settings(**_base_kwargs())
+    assert s.EMBEDDING_DIMS == 3072
 
 
-def test_require_anthropic_raises_when_missing(monkeypatch):
-    monkeypatch.setenv("DATABASE_URL", "postgres://x")
-    monkeypatch.setenv("OPENAI_API_KEY", "sk-x")
-    monkeypatch.setenv("QDRANT_URL", "https://q")
-    monkeypatch.setenv("QDRANT_API_KEY", "qk")
-    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    import config
-    reloaded = importlib.reload(config)
+def test_enrich_model_default():
+    s = Settings(**_base_kwargs())
+    assert s.ANTHROPIC_ENRICH_MODEL == "claude-opus-4-8"
+
+
+def test_require_anthropic_raises_when_missing():
+    s = Settings(**_base_kwargs(ANTHROPIC_API_KEY=None))
     with pytest.raises(EnvironmentError):
-        reloaded.settings.require_anthropic()
+        s.require_anthropic()
 
 
-def test_cost_constants_present(monkeypatch):
-    monkeypatch.setenv("DATABASE_URL", "postgres://x")
-    monkeypatch.setenv("OPENAI_API_KEY", "sk-x")
-    monkeypatch.setenv("QDRANT_URL", "https://q")
-    monkeypatch.setenv("QDRANT_API_KEY", "qk")
-    import config
-    importlib.reload(config)
-    assert config.settings.OPUS_INPUT_COST_PER_M == 5.0
-    assert config.settings.OPUS_OUTPUT_COST_PER_M == 25.0
-    assert config.settings.EMBED_COST_PER_M == 0.13
+def test_cost_constants_present():
+    s = Settings(**_base_kwargs())
+    assert s.OPUS_INPUT_COST_PER_M == 5.0
+    assert s.OPUS_OUTPUT_COST_PER_M == 25.0
+    assert s.EMBED_COST_PER_M == 0.13
