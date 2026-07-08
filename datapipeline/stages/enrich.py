@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from cache import Cache
 from config import settings
@@ -16,6 +17,8 @@ from enrichment.render import build_context
 from enrichment.prompts.generation import generation_system
 from enrichment.prompts.classification import CLASSIFICATION_SYSTEM
 from enrichment.schema import GenerationOutput, MergedEnrichment
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -31,6 +34,7 @@ class EnrichStats:
     processed: int
     from_cache: int
     usage: Usage
+    failed: list[tuple[str, str]] = field(default_factory=list)
 
 
 async def enrich_one(doc: Document, passage: Passage, deps: EnrichDeps,
@@ -95,12 +99,21 @@ async def enrich_collection(docs: list[Document], collection: str, deps: EnrichD
     passages = [(d, p) for d in docs for p in d.passages]
     total = Usage(0, 0)
     from_cache = 0
+    failed: list[tuple[str, str]] = []
     sem = asyncio.Semaphore(settings.OPUS_CONCURRENCY)
 
     async def _run(d, p):
         nonlocal total, from_cache
         async with sem:
-            _, usage = await enrich_one(d, p, deps, sample=sample)
+            try:
+                _, usage = await enrich_one(d, p, deps, sample=sample)
+            except Exception as exc:
+                cid = passage_id(d.id, p.anchor)
+                logger.warning(
+                    "enrich: chunk %s (%s) failed and was skipped: %s",
+                    cid, p.reference, exc)
+                failed.append((cid, p.reference))
+                return
         total = Usage(total.input_tokens + usage.input_tokens,
                       total.output_tokens + usage.output_tokens)
         if usage.input_tokens == 0:
@@ -110,5 +123,5 @@ async def enrich_collection(docs: list[Document], collection: str, deps: EnrichD
     if not sample:
         deps.cache.set_collection_status(
             collection, total_chunks=len(passages),
-            enriched=len(passages), complete=True)
-    return EnrichStats(processed=len(passages), from_cache=from_cache, usage=total)
+            enriched=len(passages) - len(failed), complete=(len(failed) == 0))
+    return EnrichStats(processed=len(passages), from_cache=from_cache, usage=total, failed=failed)

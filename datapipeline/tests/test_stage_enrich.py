@@ -155,6 +155,80 @@ async def test_enrich_collection_sample_mode_skips_status_and_writes(tmp_path):
     assert not os.path.exists(os.path.join(deps.backup.dir_path, "bible.jsonl"))
 
 
+class _PartiallyFailingStubClient:
+    """Like _StubClient, but returns a mismatched facet/label count for one
+    specific chunk (identified by reference), causing merge() to raise
+    MergeError for that chunk only."""
+
+    def __init__(self, bad_reference):
+        self.bad_reference = bad_reference
+        self.gen_calls = 0
+        self.cls_calls = 0
+
+    async def generate(self, system, context):
+        self.gen_calls += 1
+        from enrichment.schema import GenerationOutput
+        return GenerationOutput.model_validate(
+            {"facets": [{"text": "t0", "question": "q0"}, {"text": "t1", "question": "q1"}],
+             "annotation": "SUMMARY: x"}), Usage(10, 5)
+
+    async def classify(self, system, context, facet_texts):
+        self.cls_calls += 1
+        from enrichment.schema import ClassificationOutput
+        if f"reference: {self.bad_reference}" in context:
+            # Only one label for two facets -> merge() raises MergeError.
+            return ClassificationOutput.model_validate(
+                {"labels": [{"confidence": "explicit", "kind": "doctrinal"}]}), Usage(8, 3)
+        return ClassificationOutput.model_validate(
+            {"labels": [{"confidence": "explicit", "kind": "doctrinal"},
+                        {"confidence": "traditional", "kind": "typological"}]}), Usage(8, 3)
+
+
+@pytest.mark.asyncio
+async def test_enrich_collection_isolates_per_chunk_failures(tmp_path):
+    cache = Cache(str(tmp_path / "c.db")); cache.init_schema()
+    async def writer(chunk_id, annotation): pass
+    client = _PartiallyFailingStubClient(bad_reference="Gen 1:1")
+    deps = EnrichDeps(cache=cache, client=client, backup=Backup(str(tmp_path / "bak")),
+                      annotation_writer=writer)
+
+    docs = []
+    for i in range(3):
+        p = Passage(content=f"In the beginning {i}", reference=f"Gen 1:{i}",
+                    anchor=f"genesis/1/{i}", chapter_key="genesis/1",
+                    chapter_label="Genesis 1", position=i)
+        docs.append(Document(id=f"d{i}", collection="bible", title="Genesis",
+                             author="Moses", passages=[p]))
+
+    stats = await enrich_collection(docs, "bible", deps, sample=False)
+
+    from identity import passage_id
+    good_ids = [passage_id(f"d{i}", f"genesis/1/{i}") for i in (0, 2)]
+    bad_id = passage_id("d1", "genesis/1/1")
+
+    # whole batch does not raise; successes are cached
+    for cid, i in zip(good_ids, (0, 2)):
+        ch = Cache.content_hash(f"In the beginning {i}")
+        assert cache.get_enrichment(cid, ch) is not None
+
+    # failed chunk's enrichment is not cached
+    ch_bad = Cache.content_hash("In the beginning 1")
+    assert cache.get_enrichment(bad_id, ch_bad) is None
+
+    # collection status reflects the failure
+    status = cache.get_collection_status("bible")
+    assert status is not None
+    assert status["complete"] == 0
+    assert status["total_chunks"] == 3
+    assert status["enriched"] == 2
+
+    # failure surfaced on stats
+    assert stats.processed == 3
+    assert len(stats.failed) == 1
+    assert stats.failed[0][0] == bad_id
+    assert stats.failed[0][1] == "Gen 1:1"
+
+
 @pytest.mark.asyncio
 async def test_enrich_collection_sets_status_when_not_sample(tmp_path):
     deps, _ = _deps(tmp_path)

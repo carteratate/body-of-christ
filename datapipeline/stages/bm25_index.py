@@ -6,7 +6,6 @@ import logging
 
 from qdrant_client.models import PointVectors, SparseVector
 
-from identity import passage_id
 from writers.qdrant import QDRANT_COLLECTION
 from stages.enrich_io import annotation_prose
 
