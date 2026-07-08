@@ -35,8 +35,9 @@ class Settings:
 
     # --- Embedding ---
     EMBEDDING_MODEL: str = "text-embedding-3-large"
-    EMBEDDING_DIMS: int = 1536
+    EMBEDDING_DIMS: int = 3072            # native text-embedding-3-large; do NOT pass dimensions= to OpenAI
     EMBEDDING_BATCH_SIZE: int = 100
+    EMBED_CONCURRENCY: int = 4
 
     # --- Chunking / cleaning ---
     BIBLE_VERSE_GROUP_SIZE: int = 4   # legacy; retained for compatibility
@@ -55,8 +56,29 @@ class Settings:
         "canon-law": (300, 300),     # short canons: wider neighbor window
     })
 
+    # --- Enrichment (Opus 4.8) ---
+    ANTHROPIC_API_KEY: str | None = None
+    ANTHROPIC_ENRICH_MODEL: str = "claude-opus-4-8"
+    OPUS_CONCURRENCY: int = 4
+    OPUS_MAX_TOKENS: int = 4096
+    MIN_FACETS: int = 2
+    MAX_FACETS: int = 12
+
+    # --- Cost estimation constants (USD per 1M tokens) ---
+    OPUS_INPUT_COST_PER_M: float = 5.0
+    OPUS_OUTPUT_COST_PER_M: float = 25.0
+    EMBED_COST_PER_M: float = 0.13
+
     def overlap_for(self, collection: str) -> tuple[int, int]:
         return self.PER_COLLECTION_OVERLAP.get(collection, self.DEFAULT_OVERLAP)
+
+    def require_anthropic(self) -> str:
+        if not self.ANTHROPIC_API_KEY:
+            raise EnvironmentError(
+                "ANTHROPIC_API_KEY is not set. Required for the enrich stage. "
+                "Add it to datapipeline/.env."
+            )
+        return self.ANTHROPIC_API_KEY
 
 
 settings = Settings(
@@ -64,4 +86,5 @@ settings = Settings(
     OPENAI_API_KEY=_require_env("OPENAI_API_KEY"),
     QDRANT_URL=_require_env("QDRANT_URL"),
     QDRANT_API_KEY=_require_env("QDRANT_API_KEY"),
+    ANTHROPIC_API_KEY=os.getenv("ANTHROPIC_API_KEY"),
 )
