@@ -31,6 +31,7 @@ def test_content_input_no_author():
     s = content_embedding_input(doc.passages, 0, doc)
     assert s.startswith("Summa, Chap ")
     assert not s.startswith(" —")
+    assert "  " not in s  # no double-spaces
     assert "content 0" in s
 
 

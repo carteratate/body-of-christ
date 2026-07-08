@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 def content_embedding_input(passages: list[Passage], idx: int, doc: Document) -> str:
     k_prev, k_next = settings.overlap_for(doc.collection)
     author_part = f"{doc.author} — " if doc.author else ""
-    prefix = f"{author_part}{doc.title}, {passages[idx].chapter_label} "
+    prefix = f"{author_part}{doc.title}, {passages[idx].chapter_label}"
     return build_embedding_input(passages, idx, k_prev, k_next, prefix)
 
 
