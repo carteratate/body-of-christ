@@ -24,6 +24,16 @@ def test_content_input_has_prefix():
     assert "content 0" in s
 
 
+def test_content_input_no_author():
+    ps = [Passage(content=f"content {i}", reference=f"r{i}", anchor=f"a{i}",
+                  chapter_key="c", chapter_label="Chap", position=i) for i in range(2)]
+    doc = Document(id="d1", collection="summa", title="Summa", author=None, passages=ps)
+    s = content_embedding_input(doc.passages, 0, doc)
+    assert s.startswith("Summa, Chap ")
+    assert not s.startswith(" —")
+    assert "content 0" in s
+
+
 @pytest.mark.asyncio
 async def test_embed_chunk_embeds_content_facets_questions(tmp_path):
     doc = _doc()
