@@ -12,7 +12,7 @@ from qdrant_client.models import (
 from config import settings
 
 QDRANT_COLLECTION = "chunks"
-EMBEDDING_DIMS = 1536
+EMBEDDING_DIMS = settings.EMBEDDING_DIMS   # 3072 in V5
 
 
 def get_client() -> AsyncQdrantClient:
