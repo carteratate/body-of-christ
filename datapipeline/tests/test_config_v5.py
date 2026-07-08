@@ -2,6 +2,30 @@ import importlib
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def restore_config_after_test():
+    """Restore config singleton after each test that reloads it.
+
+    Tests in this file reload the config module with monkeypatched environment
+    variables. monkeypatch automatically restores the environment after the test,
+    but the config module remains in sys.modules with a stale singleton created
+    from fake values. This fixture reloads config one more time after each test
+    to restore the singleton for subsequent tests. If the reload fails due to
+    missing env vars, that's okay—the important thing is we've cleared the stale
+    singleton, allowing the next test to set its own monkeypatched environment.
+    """
+    yield
+    # After the test completes and monkeypatch has restored the environment,
+    # reload config to restore the settings singleton.
+    import config
+    try:
+        importlib.reload(config)
+    except EnvironmentError:
+        # Reload may fail if real env vars are incomplete. That's fine—the
+        # stale singleton has been cleared, and the next test will set its own env.
+        pass
+
+
 def test_embedding_dims_is_3072(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "postgres://x")
     monkeypatch.setenv("OPENAI_API_KEY", "sk-x")
