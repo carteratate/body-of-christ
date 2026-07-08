@@ -12,12 +12,17 @@ os.environ.setdefault("OPENAI_API_KEY", "sk-test")
 os.environ.setdefault("QDRANT_URL", "http://localhost")
 os.environ.setdefault("QDRANT_API_KEY", "x")
 
+import asyncio
+import dataclasses
+
 import pytest
 from model import Document, Passage
 from cache import Cache
+from config import settings as base_settings
 from enrichment.backup import Backup
 from enrichment.client import Usage
-from stages.enrich import enrich_one, EnrichDeps
+import stages.enrich as enrich_mod
+from stages.enrich import enrich_one, enrich_collection, EnrichDeps
 
 
 class _StubClient:
@@ -91,7 +96,73 @@ async def test_sample_mode_writes_nothing(tmp_path):
     cid = passage_id(doc.id, doc.passages[0].anchor)
     ch = Cache.content_hash(doc.passages[0].content)
     assert deps.cache.get_generation(cid, ch) is None
+    assert deps.cache.get_classification(cid, ch) is None
     assert deps.cache.get_enrichment(cid, ch) is None
     assert writes == []
     import os
     assert not os.path.exists(os.path.join(deps.backup.dir_path, "bible.jsonl"))
+
+
+@pytest.mark.asyncio
+async def test_enrich_collection_bounds_concurrency(tmp_path, monkeypatch):
+    deps, _ = _deps(tmp_path)
+    docs = []
+    for i in range(3):
+        p = Passage(content=f"In the beginning {i}", reference=f"Gen 1:{i}",
+                    anchor=f"genesis/1/{i}", chapter_key="genesis/1",
+                    chapter_label="Genesis 1", position=i)
+        docs.append(Document(id=f"d{i}", collection="bible", title="Genesis",
+                             author="Moses", passages=[p]))
+
+    concurrent = 0
+    max_concurrent = 0
+    orig_generate = deps.client.generate
+
+    async def tracked_generate(system, context):
+        nonlocal concurrent, max_concurrent
+        concurrent += 1
+        max_concurrent = max(max_concurrent, concurrent)
+        await asyncio.sleep(0.01)
+        result = await orig_generate(system, context)
+        concurrent -= 1
+        return result
+
+    deps.client.generate = tracked_generate
+
+    patched_settings = dataclasses.replace(base_settings, OPUS_CONCURRENCY=2)
+    monkeypatch.setattr(enrich_mod, "settings", patched_settings)
+
+    stats = await enrich_collection(docs, "bible", deps, sample=False)
+
+    assert max_concurrent <= 2
+    assert stats.processed == 3
+
+
+@pytest.mark.asyncio
+async def test_enrich_collection_sample_mode_skips_status_and_writes(tmp_path):
+    deps, writes = _deps(tmp_path)
+    doc = _doc()
+    await enrich_collection([doc], "bible", deps, sample=True)
+    from identity import passage_id
+    cid = passage_id(doc.id, doc.passages[0].anchor)
+    ch = Cache.content_hash(doc.passages[0].content)
+    assert deps.cache.get_generation(cid, ch) is None
+    assert deps.cache.get_classification(cid, ch) is None
+    assert deps.cache.get_enrichment(cid, ch) is None
+    assert deps.cache.get_collection_status("bible") is None
+    assert writes == []
+    import os
+    assert not os.path.exists(os.path.join(deps.backup.dir_path, "bible.jsonl"))
+
+
+@pytest.mark.asyncio
+async def test_enrich_collection_sets_status_when_not_sample(tmp_path):
+    deps, _ = _deps(tmp_path)
+    doc = _doc()
+    stats = await enrich_collection([doc], "bible", deps, sample=False)
+    status = deps.cache.get_collection_status("bible")
+    assert status is not None
+    assert status["complete"] == 1
+    assert status["total_chunks"] == 1
+    assert status["enriched"] == 1
+    assert stats.processed == 1
