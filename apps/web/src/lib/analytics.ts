@@ -22,14 +22,6 @@ export function trackSearchPerformed(params: {
   });
 }
 
-export function trackChunkLiked(params: { collection: string; documentTitle: string; rankPosition: number; searchId: string }) {
-  posthog.capture("chunk_liked", { collection: params.collection, document_title: params.documentTitle, rank_position: params.rankPosition, search_id: params.searchId });
-}
-
-export function trackChunkDisliked(params: { collection: string; documentTitle: string; rankPosition: number; searchId: string }) {
-  posthog.capture("chunk_disliked", { collection: params.collection, document_title: params.documentTitle, rank_position: params.rankPosition, search_id: params.searchId });
-}
-
 export function trackDocumentOpened(params: { documentId: string; collection: string; source: "chunk_card" | "reader_nav" | "explore_more" }) {
   posthog.capture("document_opened", { document_id: params.documentId, collection: params.collection, source: params.source });
 }

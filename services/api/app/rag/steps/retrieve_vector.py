@@ -5,7 +5,6 @@ import asyncio
 import logging
 
 from app.config import settings
-from app.db import get_pool
 from app.rag.qdrant_client import QDRANT_COLLECTION, get_qdrant_client
 
 logger = logging.getLogger(__name__)
@@ -14,41 +13,23 @@ _MAX_COSINE_DISTANCE = 0.50
 _QDRANT_SCORE_THRESHOLD = 1.0 - _MAX_COSINE_DISTANCE
 
 
-async def _get_excluded_ids(user_id: str) -> list[str]:
-    pool = get_pool()
-    if pool is None:
-        return []
-    try:
-        rows = await pool.fetch(
-            "SELECT chunk_id::text FROM chunk_feedback WHERE user_id = $1 AND feedback = 'down'",
-            user_id,
-        )
-        return [r["chunk_id"] for r in rows]
-    except Exception as exc:
-        logger.warning("retrieve_vector: _get_excluded_ids failed: %s", exc)
-        return []
-
-
 async def _search_vector(
     collection: str,
     vec: list[float],
     limit: int,
     label: str,
-    excluded_ids: list[str],
 ) -> list[dict]:
-    from qdrant_client.models import FieldCondition, Filter, HasIdCondition, MatchValue
+    from qdrant_client.models import FieldCondition, Filter, MatchValue
 
     client = get_qdrant_client()
     if client is None:
         raise RuntimeError("Qdrant client not initialised")
 
-    must_not = [HasIdCondition(has_id=excluded_ids)] if excluded_ids else None
     response = await client.query_points(
         collection_name=QDRANT_COLLECTION,
         query=vec,
         query_filter=Filter(
             must=[FieldCondition(key="collection", match=MatchValue(value=collection))],
-            must_not=must_not,
         ),
         limit=limit,
         with_payload=True,
@@ -76,17 +57,14 @@ async def run(
     hyde_vecs: dict[str, list[list[float]]],
     collections: list[str],
     quota: int,
-    user_id: str | None,
+    user_id: str | None = None,
 ) -> dict[str, list[list[dict]]]:
     """Run all Qdrant vector searches per collection.
 
     hyde_vecs may be {} (S4/hyde_none) — falls back to query_vec only.
     Returns col → list of per-strategy result lists (input to rrf.run).
+    user_id is accepted but unused (retained for caller compatibility).
     """
-    excluded_ids: list[str] = []
-    if user_id is not None:
-        excluded_ids = await _get_excluded_ids(user_id)
-
     n = quota * settings.candidate_multiplier
 
     async def _search_collection(col: str) -> tuple[str, list[list[dict]]]:
@@ -95,9 +73,9 @@ async def run(
         labels = []
         for i, vec in enumerate(col_vecs):
             label = "hyde" if i == 0 else f"hyde_{i}"
-            coros.append(_search_vector(col, vec, n, label, excluded_ids))
+            coros.append(_search_vector(col, vec, n, label))
             labels.append(label)
-        coros.append(_search_vector(col, query_vec, n, "query", excluded_ids))
+        coros.append(_search_vector(col, query_vec, n, "query"))
         labels.append("query")
 
         raw = await asyncio.gather(*coros, return_exceptions=True)
