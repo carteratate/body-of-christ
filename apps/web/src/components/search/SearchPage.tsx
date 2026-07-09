@@ -372,7 +372,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [loading, activeCollections, translation, quota, searchValue, setPendingSearch, setActiveSearchId, clearPendingSearch]
+    [loading, activeCollections, translation, quota, searchValue, guestSearchDone, setPendingSearch, setActiveSearchId, clearPendingSearch]
   );
 
   // ── Animation ─────────────────────────────────────────────────────────────
