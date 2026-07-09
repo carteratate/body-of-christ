@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
@@ -16,6 +17,10 @@ export default async function HomePage() {
 
   // Returning users go straight to the app.
   if (user) redirect("/search");
+
+  const cookieStore = await cookies();
+  const trialUsed = cookieStore.get("tc_trial")?.value === "used";
+  const ctaHref = trialUsed ? "/login" : "/search/guest";
 
   return (
     <div className="min-h-full bg-brand-bg flex flex-col items-center justify-center px-6 py-16">
@@ -46,7 +51,7 @@ export default async function HomePage() {
         {/* CTA */}
         <div className="flex justify-center">
           <Link
-            href="/login"
+            href={ctaHref}
             className="inline-block bg-brand-accent text-brand-bg rounded-lg px-10 py-3 text-lg font-semibold hover:opacity-90 transition-opacity"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
