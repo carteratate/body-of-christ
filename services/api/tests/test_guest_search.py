@@ -48,6 +48,43 @@ def test_get_client_ip_falls_back_to_client_host():
     assert _get_client_ip(req) == "192.168.1.5"
 
 
+# ── _try_record_trial unit tests ──────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_trial_slot_taken():
+    """DB returns a row → slot was successfully claimed → returns True."""
+    from app.routes.guest_search import _try_record_trial
+
+    mock_row = {"id": "some-uuid"}
+    mock_conn = AsyncMock()
+    mock_conn.fetchrow = AsyncMock(return_value=mock_row)
+
+    mock_pool = MagicMock()
+    mock_pool.acquire = MagicMock(return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_conn), __aexit__=AsyncMock(return_value=False)))
+
+    with patch("app.routes.guest_search.get_pool", return_value=mock_pool):
+        result = await _try_record_trial("somehash")
+
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_trial_slot_exhausted():
+    """DB returns None (INSERT skipped) → trial already used → returns False."""
+    from app.routes.guest_search import _try_record_trial
+
+    mock_conn = AsyncMock()
+    mock_conn.fetchrow = AsyncMock(return_value=None)
+
+    mock_pool = MagicMock()
+    mock_pool.acquire = MagicMock(return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_conn), __aexit__=AsyncMock(return_value=False)))
+
+    with patch("app.routes.guest_search.get_pool", return_value=mock_pool):
+        result = await _try_record_trial("somehash")
+
+    assert result is False
+
+
 # ── Route-level integration tests ─────────────────────────────────────────────
 
 @pytest.fixture
@@ -63,8 +100,7 @@ def test_guest_search_success_returns_sse(client):
         }, "reranker_score": 0.9}
         yield {"type": "done", "search_id": "search-1", "result_count": 1}
 
-    with patch("app.routes.guest_search._has_used_trial", AsyncMock(return_value=False)), \
-         patch("app.routes.guest_search._record_trial", AsyncMock()), \
+    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=True)), \
          patch("app.routes.guest_search.run_search_pipeline", fake_pipeline):
         response = client.post(
             "/v1/search/guest",
@@ -77,7 +113,7 @@ def test_guest_search_success_returns_sse(client):
 
 
 def test_guest_search_429_when_trial_exhausted(client):
-    with patch("app.routes.guest_search._has_used_trial", AsyncMock(return_value=True)):
+    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=False)):
         response = client.post(
             "/v1/search/guest",
             json={"query": "What is grace?", "filters": {"collections": ["bible"]}},
@@ -88,8 +124,7 @@ def test_guest_search_429_when_trial_exhausted(client):
 
 
 def test_guest_search_400_for_invalid_collections(client):
-    with patch("app.routes.guest_search._has_used_trial", AsyncMock(return_value=False)), \
-         patch("app.routes.guest_search._record_trial", AsyncMock()):
+    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=True)):
         response = client.post(
             "/v1/search/guest",
             json={"query": "test", "filters": {"collections": ["not-a-real-collection"]}},
@@ -105,8 +140,7 @@ def test_guest_search_caps_quota_at_guest_maximum(client):
         captured["quota"] = quota
         yield {"type": "done", "search_id": "x", "result_count": 0}
 
-    with patch("app.routes.guest_search._has_used_trial", AsyncMock(return_value=False)), \
-         patch("app.routes.guest_search._record_trial", AsyncMock()), \
+    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=True)), \
          patch("app.routes.guest_search.run_search_pipeline", fake_pipeline):
         client.post(
             "/v1/search/guest",

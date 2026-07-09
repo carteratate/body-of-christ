@@ -248,7 +248,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const handleSearch = useCallback(
     async (queryOverride?: string, newExploreLabel?: string) => {
       const query = queryOverride ?? searchValue;
-      if (loading || activeCollections.length === 0 || !query.trim()) return;
+      if (loading || activeCollections.length === 0 || !query.trim() || guestSearchDone) return;
       const currentToken = tokenRef.current;
       if (!isGuest && !currentToken) return;
 
