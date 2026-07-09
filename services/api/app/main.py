@@ -26,7 +26,7 @@ from app.rag.compare.judge import close_judge, init_judge
 from app.routes.bookmarks import router as bookmarks_router
 from app.routes.chat import router as chat_router
 from app.routes.documents import router as documents_router
-from app.routes.feedback import router as feedback_router
+from app.routes.labels import router as labels_router
 from app.routes.me import router as me_router
 from app.routes.preferences import router as preferences_router
 from app.routes.search import router as search_router
@@ -112,7 +112,7 @@ app.include_router(sessions_router, prefix="/v1")
 app.include_router(search_router, prefix="/v1")
 app.include_router(documents_router, prefix="/v1")
 app.include_router(bookmarks_router, prefix="/v1")
-app.include_router(feedback_router, prefix="/v1")
+app.include_router(labels_router, prefix="/v1")
 app.include_router(preferences_router, prefix="/v1")
 app.include_router(sources_router, prefix="/v1")
 app.include_router(evaluate_router, prefix="/v1")

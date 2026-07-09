@@ -110,14 +110,14 @@ def _mock_query_response(points):
 
 @pytest.mark.asyncio
 async def test_search_vector_applies_collection_filter():
-    """Qdrant search must use a collection filter and return dicts with correct keys."""
+    """Qdrant search must use a collection filter, return correct keys, and have no must_not."""
     mock_client = AsyncMock()
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([
         _scored_point("aaaaaaaa-0000-0000-0000-000000000001", "bible"),
     ]))
 
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query", excluded_ids=[])
+        rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
 
     assert len(rows) == 1
     assert rows[0]["id"] == "aaaaaaaa-0000-0000-0000-000000000001"
@@ -130,36 +130,6 @@ async def test_search_vector_applies_collection_filter():
         hasattr(cond, "key") and cond.key == "collection"
         for cond in filt.must
     )
-
-
-@pytest.mark.asyncio
-async def test_search_vector_excludes_downvoted_ids():
-    """Downvoted IDs must be passed to Qdrant as must_not HasIdCondition."""
-    from qdrant_client.models import HasIdCondition
-
-    mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
-
-    excluded = ["bbbbbbbb-0000-0000-0000-000000000001"]
-    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        await _search_vector("bible", [0.1] * 1536, limit=5, label="hyde", excluded_ids=excluded)
-
-    call_kwargs = mock_client.query_points.call_args.kwargs
-    filt = call_kwargs["query_filter"]
-    assert filt.must_not is not None
-    assert any(isinstance(c, HasIdCondition) for c in filt.must_not)
-
-
-@pytest.mark.asyncio
-async def test_search_vector_no_must_not_when_no_exclusions():
-    """When excluded_ids is empty, must_not must be None (not an empty list)."""
-    mock_client = AsyncMock()
-    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
-
-    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        await _search_vector("bible", [0.1] * 1536, limit=5, label="query", excluded_ids=[])
-
-    filt = mock_client.query_points.call_args.kwargs["query_filter"]
     assert filt.must_not is None
 
 
@@ -167,7 +137,7 @@ async def test_search_vector_no_must_not_when_no_exclusions():
 async def test_search_vector_raises_when_client_not_initialised():
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=None):
         with pytest.raises(RuntimeError, match="Qdrant client not initialised"):
-            await _search_vector("bible", [0.1] * 1536, limit=5, label="query", excluded_ids=[])
+            await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
 
 
 # ---------------------------------------------------------------------------
@@ -181,12 +151,8 @@ async def test_retrieve_vector_run_returns_chunk_candidates():
     mock_client = AsyncMock()
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([_scored_point(chunk_id)]))
 
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(return_value=[])  # no excluded IDs
-
     with (
         patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client),
-        patch("app.rag.steps.retrieve_vector.get_pool", return_value=mock_pool),
         patch("app.rag.steps.retrieve_vector.settings") as mock_settings,
     ):
         mock_settings.candidate_multiplier = 3
@@ -195,7 +161,6 @@ async def test_retrieve_vector_run_returns_chunk_candidates():
             hyde_vecs={},
             collections=["bible"],
             quota=4,
-            user_id="00000000-0000-0000-0000-000000000001",
         )
 
     merged = rrf_run(vec_raw, {}, quota=4)

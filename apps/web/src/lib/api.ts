@@ -503,16 +503,17 @@ export async function updateBookmarkNote(
   if (!res.ok) throw new Error(`Failed to update note: ${res.status}`);
 }
 
-export async function submitFeedback(
+export async function submitLabel(
   token: string,
   chunkId: string,
-  feedback: "up" | "down",
-  searchId?: string,
+  label: "up" | "down",
+  searchId: string,
+  rank: number,
 ): Promise<void> {
-  const res = await fetch(`${API_URL}/v1/feedback`, {
+  const res = await fetch(`${API_URL}/v1/labels`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ chunk_id: chunkId, feedback, search_id: searchId }),
+    body: JSON.stringify({ chunk_id: chunkId, label, search_id: searchId, rank }),
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
 }

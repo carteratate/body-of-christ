@@ -8,12 +8,10 @@ import { useRouter } from "next/navigation";
 import {
   addBookmark,
   removeBookmark,
-  submitFeedback,
+  submitLabel,
   type ChunkResult,
 } from "@/lib/api";
 import {
-  trackChunkLiked,
-  trackChunkDisliked,
   trackBookmarkCreated,
   trackBookmarkDeleted,
   trackDocumentOpened,
@@ -107,15 +105,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
 
   async function handleFeedback(direction: "up" | "down") {
-    if (!token || feedback === direction) return;
+    if (!token || !searchId || feedback === direction) return;
     try {
-      await submitFeedback(token, chunk_id, direction, searchId ?? undefined);
+      await submitLabel(token, chunk_id, direction, searchId, index + 1);
       setFeedback(direction);
-      if (direction === "up") {
-        trackChunkLiked({ collection, documentTitle: document_title, rankPosition: index, searchId: searchId ?? "" });
-      } else {
-        trackChunkDisliked({ collection, documentTitle: document_title, rankPosition: index, searchId: searchId ?? "" });
-      }
     } catch {
       // silent failure
     }
