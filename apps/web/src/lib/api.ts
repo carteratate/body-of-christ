@@ -333,6 +333,84 @@ export async function streamSearch(
   }
 }
 
+export async function streamGuestSearch(
+  query: string,
+  filters: SearchFilters,
+  quota: number,
+  callbacks: SearchStreamCallbacks,
+  signal?: AbortSignal,
+): Promise<void> {
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/v1/search/guest`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, filters, quota }),
+      signal,
+    });
+  } catch (err) {
+    if ((err as DOMException).name === "AbortError") return;
+    throw err;
+  }
+
+  if (!res.ok) {
+    if (res.status === 429) {
+      const body = await res.json().catch(() => ({})) as { detail?: string };
+      if ((body.detail ?? "") === "trial_exhausted") {
+        callbacks.onError("trial_exhausted");
+        return;
+      }
+      callbacks.onRateLimit(null, "per_minute");
+      return;
+    }
+    const error = await res.json().catch(() => ({}));
+    callbacks.onError((error as { detail?: string }).detail ?? `API error ${res.status}`);
+    return;
+  }
+
+  const reader = res.body!.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (signal?.aborted) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        const raw = line.slice(6).trim();
+        if (!raw) continue;
+        let evt: Record<string, unknown>;
+        try { evt = JSON.parse(raw); } catch { continue; }
+
+        const type = evt.type as string;
+        if (type === "status" && callbacks.onStatus) {
+          callbacks.onStatus(
+            evt.phase as "searching" | "ranking",
+            evt.collections as string[] | undefined,
+          );
+        } else if (type === "chunk") {
+          callbacks.onChunk(evt as unknown as ChunkResult);
+        } else if (type === "explanation_delta") {
+          callbacks.onExplanationDelta(evt.chunk_id as string, evt.delta as string);
+        } else if (type === "done") {
+          callbacks.onDone(evt.search_id as string, evt.result_count as number);
+        } else if (type === "error") {
+          callbacks.onError(evt.detail as string);
+        }
+      }
+    }
+  } catch (err) {
+    if ((err as DOMException).name !== "AbortError") throw err;
+  }
+}
+
 export async function getSearchHistory(token: string): Promise<SearchSummaryV2[]> {
   const res = await fetch(`${API_URL}/v1/searches`, {
     headers: { Authorization: `Bearer ${token}` },
