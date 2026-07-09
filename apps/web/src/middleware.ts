@@ -32,6 +32,22 @@ export default async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  // ── Guest search page rules ──────────────────────────────────────────────
+  if (pathname.startsWith("/search/guest")) {
+    if (user) {
+      // Logged-in users get the full experience
+      return NextResponse.redirect(new URL("/search", request.url));
+    }
+    const trialCookie = request.cookies.get("tc_trial")?.value;
+    if (trialCookie === "used") {
+      // Trial exhausted — send to login
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    // Trial available — allow through
+    return supabaseResponse;
+  }
+
+  // ── Authenticated-only routes ────────────────────────────────────────────
   if (
     !user &&
     (pathname.startsWith("/chat") ||
@@ -50,5 +66,11 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/chat/:path*", "/search/:path*", "/bookmarks/:path*", "/reader/:path*", "/login"],
+  matcher: [
+    "/chat/:path*",
+    "/search/:path*",
+    "/bookmarks/:path*",
+    "/reader/:path*",
+    "/login",
+  ],
 };
