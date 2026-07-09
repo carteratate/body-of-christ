@@ -17,6 +17,7 @@ interface SearchResultsProps {
   submittedCollections: string[];
   visibleCollections: string[];
   isRestoring?: boolean;
+  isGuest?: boolean;
 }
 
 function CollectionThresholdNotice({ collectionKey }: { collectionKey: string }) {
@@ -40,6 +41,7 @@ export function SearchResults({
   submittedCollections,
   visibleCollections,
   isRestoring = false,
+  isGuest = false,
 }: SearchResultsProps) {
   if (loading && results.length === 0) {
     return isRestoring
@@ -75,6 +77,7 @@ export function SearchResults({
           searchId={searchId}
           token={token}
           onExploreMore={onExploreMore}
+          isGuest={isGuest}
         />
       ))}
       {emptyCollections.map((col) => (

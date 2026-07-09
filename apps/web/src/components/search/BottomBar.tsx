@@ -22,6 +22,7 @@ interface BottomBarProps {
   submittedCollections: string[];
   visibleCollections: string[];
   onToggleVisible: (c: string) => void;
+  searchDisabled?: boolean;
 }
 
 export function BottomBar({
@@ -39,6 +40,7 @@ export function BottomBar({
   submittedCollections,
   visibleCollections,
   onToggleVisible,
+  searchDisabled = false,
 }: BottomBarProps) {
   if (isSearchActive) {
     return (
@@ -68,7 +70,7 @@ export function BottomBar({
         onChange={onSearchChange}
         onSubmit={onSearch}
         loading={loading}
-        disabled={activeCollections.length === 0}
+        disabled={activeCollections.length === 0 || searchDisabled}
       />
     </div>
   );

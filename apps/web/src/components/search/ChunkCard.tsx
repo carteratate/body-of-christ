@@ -36,9 +36,10 @@ interface ChunkCardProps {
   searchId: string | null;
   token: string;
   onExploreMore: (content: string, label: string) => void;
+  isGuest?: boolean;
 }
 
-export function ChunkCard({ result, index, searchId, token, onExploreMore }: ChunkCardProps) {
+export function ChunkCard({ result, index, searchId, token, onExploreMore, isGuest = false }: ChunkCardProps) {
   const router = useRouter();
   const { chunk_id, content, source } = result;
   const { collection, document_title, author, reference, document_id } = source;
@@ -233,67 +234,69 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore }: Chu
           )}
 
           {/* Action row */}
-          <div className="flex items-center justify-between mt-3 gap-2 max-md:flex-wrap">
-            {/* Left: bookmark + copy */}
-            <div className="flex items-center gap-0.5">
-              <button
-                onClick={handleBookmark}
-                title={isBookmarked ? "Remove bookmark" : "Save passage"}
-                aria-label={isBookmarked ? "Remove bookmark" : "Save passage"}
-                className="p-1.5 rounded transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-              >
-                <Bookmark size={15} className={isBookmarked ? "text-brand-accent" : "text-brand-muted"} />
-              </button>
-              <button
-                onClick={handleCopy}
-                title="Copy passage"
-                aria-label="Copy passage"
-                className="p-1.5 rounded text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-              >
-                <Copy size={15} />
-              </button>
-            </div>
+          {!isGuest && (
+            <div className="flex items-center justify-between mt-3 gap-2 max-md:flex-wrap">
+              {/* Left: bookmark + copy */}
+              <div className="flex items-center gap-0.5">
+                <button
+                  onClick={handleBookmark}
+                  title={isBookmarked ? "Remove bookmark" : "Save passage"}
+                  aria-label={isBookmarked ? "Remove bookmark" : "Save passage"}
+                  className="p-1.5 rounded transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                >
+                  <Bookmark size={15} className={isBookmarked ? "text-brand-accent" : "text-brand-muted"} />
+                </button>
+                <button
+                  onClick={handleCopy}
+                  title="Copy passage"
+                  aria-label="Copy passage"
+                  className="p-1.5 rounded text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                >
+                  <Copy size={15} />
+                </button>
+              </div>
 
-            {/* Right: feedback + read more + explore more */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => handleFeedback("up")}
-                title="Helpful"
-                aria-label="Mark as relevant"
-                disabled={feedback === "up"}
-                className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
-                  feedback === "up" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"
-                }`}
-              >
-                <ThumbsUp size={15} />
-              </button>
-              <button
-                onClick={() => handleFeedback("down")}
-                title="Not helpful"
-                aria-label="Mark as not relevant"
-                disabled={feedback === "down"}
-                className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
-                  feedback === "down" ? "text-brand-danger" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"
-                }`}
-              >
-                <ThumbsDown size={15} />
-              </button>
-              <button
-                onClick={handleReadMore}
-                className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-              >
-                Read More
-              </button>
-              <button
-                onClick={handleExploreMore}
-                aria-label="Query more sources like this"
-                className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-              >
-                <span className="max-md:hidden">Query more sources like this</span>
-                <span className="hidden max-md:inline">Explore more</span>
-              </button>
+              {/* Right: feedback + read more + explore more */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => handleFeedback("up")}
+                  title="Helpful"
+                  aria-label="Mark as relevant"
+                  disabled={feedback === "up"}
+                  className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
+                    feedback === "up" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"
+                  }`}
+                >
+                  <ThumbsUp size={15} />
+                </button>
+                <button
+                  onClick={() => handleFeedback("down")}
+                  title="Not helpful"
+                  aria-label="Mark as not relevant"
+                  disabled={feedback === "down"}
+                  className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
+                    feedback === "down" ? "text-brand-danger" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"
+                  }`}
+                >
+                  <ThumbsDown size={15} />
+                </button>
+                <button
+                  onClick={handleReadMore}
+                  className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                >
+                  Read More
+                </button>
+                <button
+                  onClick={handleExploreMore}
+                  aria-label="Query more sources like this"
+                  className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                >
+                  <span className="max-md:hidden">Query more sources like this</span>
+                  <span className="hidden max-md:inline">Explore more</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
