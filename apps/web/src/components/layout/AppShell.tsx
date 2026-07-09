@@ -36,7 +36,7 @@ export interface AppContextValue {
   corpusPassages: number | null;
 }
 
-const AppContext = createContext<AppContextValue>({
+export const AppContext = createContext<AppContextValue>({
   token: null,
   ready: false,
   preferences: null,
