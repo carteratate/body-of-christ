@@ -35,6 +35,7 @@ from app.routes.sources import router as sources_router
 from app.routes.evaluate import router as evaluate_router
 from app.routes.compare import router as compare_router
 from app.routes.compare_stats import router as compare_stats_router
+from app.routes.guest_search import router as guest_search_router
 
 
 logger = logging.getLogger(__name__)
@@ -117,6 +118,7 @@ app.include_router(sources_router, prefix="/v1")
 app.include_router(evaluate_router, prefix="/v1")
 app.include_router(compare_router, prefix="/v1")
 app.include_router(compare_stats_router, prefix="/v1")
+app.include_router(guest_search_router, prefix="/v1")
 
 
 @app.get("/health")
