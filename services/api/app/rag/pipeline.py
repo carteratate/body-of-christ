@@ -26,7 +26,7 @@ async def run_search_pipeline(
     collections: list[str],
     translation: str,
     quota: int,
-    user_id: str,
+    user_id: str | None,
 ):
     """Async generator yielding SSE-compatible dicts.
 
@@ -87,39 +87,42 @@ async def run_search_pipeline(
             }
 
         # ------------------------------------------------------------------
-        # Step 7 — Persist search + retrievals to DB
+        # Step 7 — Persist search + retrievals to DB (authenticated users only)
         # ------------------------------------------------------------------
-        pool = get_pool()
-        if pool is None:
-            logger.error("DB pool not available, skipping persistence")
-            yield {"type": "done", "search_id": None, "result_count": len(final_results)}
-            return
+        if user_id is not None:
+            pool = get_pool()
+            if pool is None:
+                logger.error("DB pool not available, skipping persistence")
+                yield {"type": "done", "search_id": None, "result_count": len(final_results)}
+                return
 
-        search_id = str(uuid.uuid4())
-        async with pool.acquire() as conn:
-            async with conn.transaction():
-                await conn.execute(
-                    "INSERT INTO searches (id, user_id, query, filters, result_count) VALUES ($1,$2,$3,$4::jsonb,$5)",
-                    uuid.UUID(search_id),
-                    uuid.UUID(user_id),
-                    query,
-                    json.dumps({"collections": collections, "translation": translation, "quota": quota}),
-                    len(final_results),
-                )
-                if final_results:
-                    await conn.executemany(
-                        "INSERT INTO retrievals (id, search_id, chunk_id, rank, reranker_score) VALUES ($1,$2,$3,$4,$5)",
-                        [
-                            (uuid.uuid4(), uuid.UUID(search_id), uuid.UUID(chunk.chunk_id), rank, chunk.reranker_score)
-                            for rank, chunk in enumerate(final_results)
-                        ],
+            search_id = str(uuid.uuid4())
+            async with pool.acquire() as conn:
+                async with conn.transaction():
+                    await conn.execute(
+                        "INSERT INTO searches (id, user_id, query, filters, result_count) VALUES ($1,$2,$3,$4::jsonb,$5)",
+                        uuid.UUID(search_id),
+                        uuid.UUID(user_id),
+                        query,
+                        json.dumps({"collections": collections, "translation": translation, "quota": quota}),
+                        len(final_results),
                     )
+                    if final_results:
+                        await conn.executemany(
+                            "INSERT INTO retrievals (id, search_id, chunk_id, rank, reranker_score) VALUES ($1,$2,$3,$4,$5)",
+                            [
+                                (uuid.uuid4(), uuid.UUID(search_id), uuid.UUID(chunk.chunk_id), rank, chunk.reranker_score)
+                                for rank, chunk in enumerate(final_results)
+                            ],
+                        )
 
-        _t7 = time.perf_counter()
-        logger.info(
-            "pipeline timing: step7(db)=%.2fs total=%.2fs results=%d",
-            _t7 - _t_pipeline, _t7 - _t0, len(final_results),
-        )
+            _t7 = time.perf_counter()
+            logger.info(
+                "pipeline timing: step7(db)=%.2fs total=%.2fs results=%d",
+                _t7 - _t_pipeline, _t7 - _t0, len(final_results),
+            )
+        else:
+            search_id = str(uuid.uuid4())
 
         # ------------------------------------------------------------------
         # Step 8 — Yield done
@@ -140,13 +143,16 @@ async def run_search_pipeline(
             except Exception as exc:
                 logger.warning("explanation error for chunk %s: %s", chunk.chunk_id, exc)
 
-            async with pool.acquire() as conn:
-                await conn.execute(
-                    "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
-                    accumulated_text[:2000],
-                    uuid.UUID(search_id),
-                    uuid.UUID(chunk.chunk_id),
-                )
+            if user_id is not None:
+                pool = get_pool()
+                if pool is not None:
+                    async with pool.acquire() as conn:
+                        await conn.execute(
+                            "UPDATE retrievals SET explanation = $1 WHERE search_id = $2 AND chunk_id = $3",
+                            accumulated_text[:2000],
+                            uuid.UUID(search_id),
+                            uuid.UUID(chunk.chunk_id),
+                        )
 
     except Exception:
         logger.exception("run_search_pipeline unhandled error")
