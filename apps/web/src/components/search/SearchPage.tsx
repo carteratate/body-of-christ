@@ -8,14 +8,16 @@ import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
 import { SearchResults } from "@/components/search/SearchResults";
 import { LoadingAnimation } from "@/components/search/LoadingAnimation";
-import { RateLimitModal } from "@/components/common";
+import { RateLimitModal, GuestSignupModal } from "@/components/common";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import {
   streamSearch,
+  streamGuestSearch,
   getSearchResults,
   updatePreferences,
   type ChunkResult,
 } from "@/lib/api";
+import { markTrialUsed } from "@/lib/trial";
 import {
   trackSearchPerformed,
   trackErrorOccurred,
@@ -30,7 +32,7 @@ function classifyError(msg: string): string {
   return "server_error";
 }
 
-function SearchPageInner() {
+function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const {
     token, preferences,
     searchKey,
@@ -85,6 +87,8 @@ function SearchPageInner() {
   // Measured footprint of the query bubble shown during the animation — passed to
   // LoadingAnimation so its radial constellation shrinks to never overlap the bubble.
   const [bubbleSize, setBubbleSize] = useState<{ width: number; height: number } | null>(null);
+  const [guestSearchDone, setGuestSearchDone] = useState(false);
+  const [showGuestModal, setShowGuestModal] = useState(false);
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
@@ -246,7 +250,7 @@ function SearchPageInner() {
       const query = queryOverride ?? searchValue;
       if (loading || activeCollections.length === 0 || !query.trim()) return;
       const currentToken = tokenRef.current;
-      if (!currentToken) return;
+      if (!isGuest && !currentToken) return;
 
       abortRef.current?.abort();
       const controller = new AbortController();
@@ -281,69 +285,83 @@ function SearchPageInner() {
       setVisibleCollections(snapshot);
 
       try {
-        await streamSearch(
-          currentToken,
-          query,
-          { collections: activeCollections, translation },
-          quota,
-          {
-            onStatus(phase) {
-              setSearchPhase(phase);
-            },
-            onChunk(chunk) {
-              bufferedChunksRef.current.push({ ...chunk, explanation: null });
-            },
-            onExplanationDelta(chunkId, delta) {
-              if (resolvedRef.current) {
-                // Animation is done — update results state directly for live streaming
-                setResults(prev => prev.map(r =>
-                  r.chunk_id === chunkId
-                    ? { ...r, explanation: (r.explanation ?? "") + delta }
-                    : r
-                ));
-              } else {
-                bufferedExplRef.current[chunkId] = (bufferedExplRef.current[chunkId] ?? "") + delta;
-              }
-            },
-            onDone(sid, resultCount) {
-              setSearchPhase(null);
-              setSearchId(sid);
-              // Results flush after animation completes — don't setLoading(false) here
-              setQueryDone(true);
-              // Search saved in DB — replace pending slot with real entry
-              pendingIdRef.current = null;
-              clearPendingSearch();
-              if (sid) {
-                setActiveSearchId(sid);
-                refreshSearchesRef.current();
-              }
-              trackSearchPerformed({
-                queryLength: query.length,
-                collectionsUsed: activeCollections,
-                quotaPerSource: quota,
-                resultCount,
-                translation,
-              });
-            },
-            onError(msg) {
-              setSearchPhase(null);
-              setError(msg);
-              setLoading(false);
-              setShowAnimation(false);
-              setAnimFilterBarActive(false);
-              trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
-            },
-            onRateLimit(retryAfter, limitType) {
-              setSearchPhase(null);
-              setRateLimitRetryAfter(retryAfter ?? 60);
-              setRateLimitType(limitType);
-              setLoading(false);
-              setShowAnimation(false);
-              setAnimFilterBarActive(false);
-            },
+        const streamCallbacks = {
+          onStatus(phase: "searching" | "ranking") {
+            setSearchPhase(phase);
           },
-          controller.signal
-        );
+          onChunk(chunk: ChunkResult) {
+            bufferedChunksRef.current.push({ ...chunk, explanation: null });
+          },
+          onExplanationDelta(chunkId: string, delta: string) {
+            if (resolvedRef.current) {
+              setResults(prev => prev.map(r =>
+                r.chunk_id === chunkId
+                  ? { ...r, explanation: (r.explanation ?? "") + delta }
+                  : r
+              ));
+            } else {
+              bufferedExplRef.current[chunkId] = (bufferedExplRef.current[chunkId] ?? "") + delta;
+            }
+          },
+          onDone(sid: string, resultCount: number) {
+            setSearchPhase(null);
+            setSearchId(sid);
+            setQueryDone(true);
+            pendingIdRef.current = null;
+            clearPendingSearch();
+            if (sid && !isGuest) {
+              setActiveSearchId(sid);
+              refreshSearchesRef.current();
+            }
+            if (isGuest) {
+              markTrialUsed();
+              setGuestSearchDone(true);
+              setShowGuestModal(true);
+            }
+            trackSearchPerformed({
+              queryLength: query.length,
+              collectionsUsed: activeCollections,
+              quotaPerSource: quota,
+              resultCount,
+              translation,
+            });
+          },
+          onError(msg: string) {
+            setSearchPhase(null);
+            setError(msg);
+            setLoading(false);
+            setShowAnimation(false);
+            setAnimFilterBarActive(false);
+            trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
+          },
+          onRateLimit(retryAfter: number | null, limitType: "per_minute" | "daily") {
+            setSearchPhase(null);
+            setRateLimitRetryAfter(retryAfter ?? 60);
+            setRateLimitType(limitType);
+            setLoading(false);
+            setShowAnimation(false);
+            setAnimFilterBarActive(false);
+          },
+        };
+
+        if (isGuest) {
+          await streamGuestSearch(
+            query,
+            { collections: activeCollections, translation },
+            quota,
+            streamCallbacks,
+            controller.signal,
+          );
+        } else {
+          await streamSearch(
+            currentToken!,
+            query,
+            { collections: activeCollections, translation },
+            quota,
+            streamCallbacks,
+            controller.signal,
+          );
+        }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Search failed";
         setError(msg);
@@ -486,6 +504,7 @@ function SearchPageInner() {
             submittedCollections={submittedCollections}
             visibleCollections={visibleCollections}
             isRestoring={isRestoring}
+            isGuest={isGuest}
           />
         )}
 
@@ -521,6 +540,7 @@ function SearchPageInner() {
         submittedCollections={showAnimation ? submittedCollections : filterBarCollections}
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
+        searchDisabled={guestSearchDone}
       />
       <RateLimitModal
         isOpen={rateLimitRetryAfter !== null}
@@ -528,14 +548,18 @@ function SearchPageInner() {
         retryAfter={rateLimitRetryAfter}
         onDismiss={() => setRateLimitRetryAfter(null)}
       />
+      <GuestSignupModal
+        isOpen={showGuestModal}
+        onDismiss={() => setShowGuestModal(false)}
+      />
     </div>
   );
 }
 
-export function SearchPage() {
+export function SearchPage({ isGuest = false }: { isGuest?: boolean }) {
   return (
     <Suspense>
-      <SearchPageInner />
+      <SearchPageInner isGuest={isGuest} />
     </Suspense>
   );
 }
