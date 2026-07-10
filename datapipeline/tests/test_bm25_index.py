@@ -58,7 +58,7 @@ def test_index_collection_decodes_jsonb_annotation_before_encoding():
     # r["annotation"] as returned by asyncpg for a jsonb column is the raw JSON-encoded
     # text (quotes + literal \n escapes), since no set_type_codec is registered in this
     # codebase. index_collection must json.loads() it before annotation_prose() strips
-    # the [KIND | confidence]: label — otherwise the sparse annotation embedding would
+    # the [KIND | grounding]: label — otherwise the sparse annotation embedding would
     # be built from mangled text instead of clean prose.
     from stages.enrich_io import annotation_prose
 

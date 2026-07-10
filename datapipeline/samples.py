@@ -24,9 +24,13 @@ class SampleWriter:
             "── Facets " + "─" * 20,
         ]
         for i, f in enumerate(merged.facets, 1):
-            lines.append(f"[{i}] {f.kind} | {f.confidence}")
-            lines.append(f"    TEXT: {f.text}")
-            lines.append(f"    Q:    {f.question}")
+            kind = f"{f.kind}/{f.kind_secondary}" if f.kind_secondary else f.kind
+            lines.append(f"[{i}] {kind} | {f.grounding}")
+            lines.append(f"    TEXT:     {f.text}")
+            lines.append(f"    Q:        {f.question}")
+            lines.append(f"    EVIDENCE: {f.evidence}")
+            if f.working_text:
+                lines.append(f"    WORKING:  {f.working_text}")
         lines.append("── Annotation " + "─" * 20)
         lines.append(merged.annotation)
         lines.append("━" * 40)

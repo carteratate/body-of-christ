@@ -14,7 +14,7 @@ os.environ.setdefault("QDRANT_API_KEY", "x")
 
 import pytest
 
-from config import Settings
+from config import Settings, _env_bool
 
 
 def _base_kwargs(**overrides):
@@ -49,3 +49,31 @@ def test_cost_constants_present():
     assert s.OPUS_INPUT_COST_PER_M == 5.0
     assert s.OPUS_OUTPUT_COST_PER_M == 25.0
     assert s.EMBED_COST_PER_M == 0.13
+
+
+def test_pilot_mode_defaults_false():
+    s = Settings(**_base_kwargs())
+    assert s.PILOT_MODE is False
+
+
+def test_pilot_mode_can_be_set_true():
+    s = Settings(**_base_kwargs(PILOT_MODE=True))
+    assert s.PILOT_MODE is True
+
+
+@pytest.mark.parametrize("value,expected", [
+    ("1", True), ("true", True), ("True", True), ("yes", True), ("on", True),
+    ("0", False), ("false", False), ("no", False), ("", False),
+])
+def test_env_bool_parses_common_truthy_falsy_strings(value, expected):
+    os.environ["_TEST_ENV_BOOL"] = value
+    try:
+        assert _env_bool("_TEST_ENV_BOOL", False) is expected
+    finally:
+        del os.environ["_TEST_ENV_BOOL"]
+
+
+def test_env_bool_uses_default_when_unset():
+    os.environ.pop("_TEST_ENV_BOOL_UNSET", None)
+    assert _env_bool("_TEST_ENV_BOOL_UNSET", True) is True
+    assert _env_bool("_TEST_ENV_BOOL_UNSET", False) is False

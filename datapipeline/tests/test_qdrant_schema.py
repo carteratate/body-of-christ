@@ -39,4 +39,8 @@ async def test_ensure_facets_and_questions_indexes():
     await qdrant_schema.ensure_questions(c)
     assert c.created["facets"]["vectors_config"].size == 3072
     assert ("facets", "kind") in c.indexes
+    assert ("facets", "grounding") in c.indexes
+    assert ("facets", "kind_secondary") in c.indexes
     assert ("questions", "facet_kind") in c.indexes
+    assert ("questions", "facet_grounding") in c.indexes
+    assert ("questions", "facet_kind_secondary") in c.indexes

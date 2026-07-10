@@ -64,14 +64,19 @@ async def embed_chunk(doc: Document, passages: list[Passage], idx: int,
             id=passage_id(cid, f"facet/{i}"),
             vector=fvec,
             payload={"chunk_id": cid, "document_id": doc.id, "collection": doc.collection,
-                     "facet_index": i, "confidence": f["confidence"], "kind": f["kind"],
-                     "facet_text": f["text"]}))
+                     "facet_index": i, "grounding": f["grounding"], "kind": f["kind"],
+                     "kind_secondary": f.get("kind_secondary"), "evidence": f["evidence"],
+                     "facet_text": f["text"],
+                     # Pilot-only debug field (Pass 1's raw working treatment,
+                     # before takeaway compression); None outside PILOT_MODE.
+                     "working_text": f.get("working_text")}))
         qvec = await _cached_embed(deps, cid, ch, f"question:{i}", f["question"])
         question_points.append(PointStruct(
             id=passage_id(cid, f"question/{i}"),
             vector=qvec,
             payload={"chunk_id": cid, "document_id": doc.id, "collection": doc.collection,
-                     "facet_index": i, "facet_confidence": f["confidence"], "facet_kind": f["kind"],
+                     "facet_index": i, "facet_grounding": f["grounding"], "facet_kind": f["kind"],
+                     "facet_kind_secondary": f.get("kind_secondary"),
                      "facet_text": f["text"], "question": f["question"]}))
     await deps.upsert_points_named(FACETS, facet_points)
     await deps.upsert_points_named(QUESTIONS, question_points)

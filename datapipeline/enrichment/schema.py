@@ -1,16 +1,16 @@
-"""Pydantic models for the two-call Opus enrichment (generation + classification)."""
+"""Pydantic models for the three-pass enrichment (generation, classification, annotation)."""
 from __future__ import annotations
 
 from typing import Literal
 from pydantic import BaseModel, Field
 
-CONFIDENCE_VALUES: tuple[str, ...] = ("explicit", "traditional", "inferential")
+GROUNDING_VALUES: tuple[str, ...] = ("explicit", "settled", "inferential")
 KIND_VALUES: tuple[str, ...] = (
     "doctrinal", "scriptural", "typological", "philosophical",
     "moral", "historical", "devotional",
 )
 
-Confidence = Literal["explicit", "traditional", "inferential"]
+Grounding = Literal["explicit", "settled", "inferential"]
 Kind = Literal[
     "doctrinal", "scriptural", "typological", "philosophical",
     "moral", "historical", "devotional",
@@ -18,29 +18,51 @@ Kind = Literal[
 
 
 class GenFacet(BaseModel):
-    text: str = Field(description="2-4 sentence assertion; one angle only.")
-    question: str = Field(description="The single canonical question this facet answers.")
+    """Field order (text -> takeaway -> question) is intentional and matches the
+    prompt's instructions: the takeaway is generated conditioned on the text.
+    `text` is the working treatment, discarded downstream unless PILOT_MODE is on.
+    `takeaway` is the indexed/classified artifact — everything downstream of Pass 1
+    (Pass 2, Pass 3, embedding) consumes the takeaway, never `text`."""
+    text: str = Field(description="2-5 sentence working treatment of the insight.")
+    takeaway: str = Field(description="1-2 sentence, 30-70 word distilled claim; the indexed artifact.")
+    question: str = Field(description="The single canonical question this facet's takeaway answers.")
 
 
 class GenerationOutput(BaseModel):
+    """Pass 1 output. No annotation — that is assembled in Pass 3 from Pass 2's labels."""
     facets: list[GenFacet]
-    annotation: str
 
 
 class Label(BaseModel):
-    confidence: Confidence
+    grounding: Grounding
+    evidence: str
     kind: Kind
+    kind_secondary: Kind | None = None
 
 
 class ClassificationOutput(BaseModel):
+    """Pass 2 output. `labels` is parallel to Pass 1's `facets`."""
     labels: list[Label]
 
 
+class AnnotationOutput(BaseModel):
+    """Pass 3 output."""
+    annotation: str
+
+
 class MergedFacet(BaseModel):
-    confidence: Confidence
+    """`text` holds Pass 1's `takeaway` (the naming convention downstream of Pass 1
+    is that "facet"/"text" means the takeaway — there is no separate `takeaway`
+    field here, by design, to avoid two names for one artifact).
+    `working_text` is Pass 1's raw working treatment, nullable; populated only
+    when PILOT_MODE is on (see stages/enrich.py), for pilot-batch review only."""
+    grounding: Grounding
+    evidence: str
     kind: Kind
+    kind_secondary: Kind | None = None
     text: str
     question: str
+    working_text: str | None = None
 
 
 class MergedEnrichment(BaseModel):
@@ -54,3 +76,7 @@ def generation_tool_schema() -> dict:
 
 def classification_tool_schema() -> dict:
     return ClassificationOutput.model_json_schema()
+
+
+def annotation_tool_schema() -> dict:
+    return AnnotationOutput.model_json_schema()

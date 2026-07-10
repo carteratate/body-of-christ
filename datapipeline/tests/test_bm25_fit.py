@@ -46,7 +46,7 @@ def test_load_annotation_corpus_decodes_jsonb_round_trip():
     # set_type_codec is registered anywhere in this codebase, asyncpg returns the raw
     # JSON-encoded text (surrounding quotes, escaped quotes, literal \n sequences) as a
     # plain str, not the original prose. load_annotation_corpus must json.loads() it
-    # before stripping the [KIND | confidence]: labels via annotation_prose().
+    # before stripping the [KIND | grounding]: labels via annotation_prose().
     from stages.enrich_io import annotation_prose
 
     raw_prose = "SUMMARY: test\n\n[DOCTRINAL | explicit]: body"

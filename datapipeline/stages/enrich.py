@@ -1,22 +1,42 @@
-"""Enrich stage: two-call Opus per chunk -> cache + JSONL backup + Supabase annotation."""
+"""Enrich stage: 3-pass Anthropic pipeline per chunk -> cache + JSONL backup +
+Supabase annotation.
+
+Pass 1 (generation, Opus) produces facets, each with a working `text` treatment
+and a distilled `takeaway`, with hard validation (sentence/word-count bounds,
+banned openers, concreteness, anti-copy) and a retry-once-then-mark-failed
+policy. Downstream of Pass 1, "facet"/"text" always means the takeaway — Pass 2
+(classification, Sonnet) and Pass 3 (annotation assembly, Sonnet) never see
+Pass 1's raw working text, only the takeaway. Pass 2 assigns grounding/kind/
+evidence per facet, with hard validation and the same retry-once policy. Pass 3
+writes the retrieval annotation from Pass 2's authoritative labels, with the
+same validation/retry policy. Each pass is cached independently (keyed on its
+own prompt_hash) so any later pass can be re-run without re-running earlier ones.
+"""
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
+from typing import Any
 
 from cache import Cache
 from config import settings
 from identity import passage_id
 from model import Document, Passage
 from enrichment.backup import Backup
-from enrichment.client import Usage
+from enrichment.client import SchemaValidationError, Usage
 from enrichment.merge import merge
-from enrichment.render import build_context
+from enrichment.render import build_context, enrichment_content
+from enrichment.prompts.annotation import ANNOTATION_SYSTEM
+from enrichment.prompts.classification import classification_system
 from enrichment.prompts.generation import generation_system
-from enrichment.prompts.classification import CLASSIFICATION_SYSTEM
-from enrichment.schema import GenerationOutput, MergedEnrichment
+from enrichment.schema import ClassificationOutput, GenerationOutput, MergedEnrichment
+from enrichment.validation import (
+    ValidationFailedError, validate_annotation, validate_classification,
+    validate_evidence_style, validate_generation,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +44,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EnrichDeps:
     cache: Cache
-    client: object                      # EnrichmentClient (duck-typed for tests)
+    gen_client: object                  # EnrichmentClient (Opus) — Pass 1
+    classify_client: object             # EnrichmentClient (Sonnet) — Pass 2 & Pass 3
     backup: Backup
     annotation_writer: Callable[[str, str], Awaitable[None]]
 
@@ -37,13 +58,121 @@ class EnrichStats:
     failed: list[tuple[str, str]] = field(default_factory=list)
 
 
+def _add_usage(a: Usage, b: Usage) -> Usage:
+    return Usage(a.input_tokens + b.input_tokens, a.output_tokens + b.output_tokens)
+
+
+async def _call_with_retry(call_fn, validate_fn, *, sample: bool, cache: Cache,
+                           chunk_id: str, content_hash: str, status_name: str):
+    """Runs call_fn(retry_errors) -> (output, usage) once; validates the output
+    with validate_fn(output) -> list[str] warnings (raises ValidationFailedError
+    on hard failure). On any failure (schema-level or business-rule), retries
+    once with the error text appended. If the retry also fails, persists the
+    raw response via cache.set_chunk_status(..., status_name) (unless sample)
+    and re-raises ValidationFailedError. Never swallows a validation failure.
+    """
+    total_usage = Usage(0, 0)
+    error_text: str | None = None
+    for attempt in range(2):
+        try:
+            output, usage = await call_fn(error_text)
+        except SchemaValidationError as exc:
+            total_usage = _add_usage(total_usage, exc.usage)
+            error_text = str(exc.original)
+            if attempt == 1:
+                if not sample:
+                    cache.set_chunk_status(chunk_id, content_hash, status_name,
+                                           raw_response=json.dumps(exc.raw),
+                                           validation_errors=error_text)
+                raise ValidationFailedError([error_text]) from exc
+            continue
+
+        total_usage = _add_usage(total_usage, usage)
+        try:
+            warnings = validate_fn(output)
+        except ValidationFailedError as exc:
+            error_text = str(exc)
+            if attempt == 1:
+                if not sample:
+                    cache.set_chunk_status(chunk_id, content_hash, status_name,
+                                           raw_response=json.dumps(output.model_dump()),
+                                           validation_errors=error_text)
+                raise
+            continue
+
+        return output, total_usage, warnings
+
+    raise RuntimeError("unreachable")  # pragma: no cover
+
+
+async def _run_generation(deps: EnrichDeps, chunk_id: str, content_hash: str,
+                          gen_system: str, context: str, passage_content: str,
+                          *, sample: bool) -> tuple[GenerationOutput, Usage]:
+    async def call_fn(retry_errors):
+        return await deps.gen_client.generate(gen_system, context, retry_errors=retry_errors)
+
+    def validate_fn(output) -> list[str]:
+        validate_generation(output.facets, passage_content)
+        return []
+
+    generation, usage, _warnings = await _call_with_retry(
+        call_fn, validate_fn, sample=sample, cache=deps.cache,
+        chunk_id=chunk_id, content_hash=content_hash, status_name="generation_failed")
+    return generation, usage
+
+
+async def _run_classification(deps: EnrichDeps, chunk_id: str, content_hash: str,
+                              cls_system: str, context: str, facets, content: str,
+                              *, sample: bool) -> tuple[ClassificationOutput, Usage]:
+    # Downstream of Pass 1, "facet text" means the takeaway — Pass 2 never sees
+    # Pass 1's raw working text.
+    facets_for_call = [(f.takeaway, f.question) for f in facets]
+
+    async def call_fn(retry_errors):
+        return await deps.classify_client.classify(
+            cls_system, context, facets_for_call, retry_errors=retry_errors)
+
+    def validate_fn(output) -> list[str]:
+        validate_classification(facets, output.labels, content)
+        return []
+
+    classification, usage, _warnings = await _call_with_retry(
+        call_fn, validate_fn, sample=sample, cache=deps.cache,
+        chunk_id=chunk_id, content_hash=content_hash, status_name="classification_failed")
+
+    for w in validate_evidence_style(classification.labels):
+        logger.warning("enrich: chunk %s classification warning: %s", chunk_id, w)
+
+    return classification, usage
+
+
+async def _run_annotation(deps: EnrichDeps, chunk_id: str, content_hash: str,
+                          context: str, facets_with_labels: list[dict[str, Any]],
+                          *, sample: bool) -> tuple[str, Usage]:
+    async def call_fn(retry_errors):
+        return await deps.classify_client.assemble_annotation(
+            ANNOTATION_SYSTEM, context, facets_with_labels, retry_errors=retry_errors)
+
+    def validate_fn(output) -> list[str]:
+        return validate_annotation(facets_with_labels, output.annotation)
+
+    annotation_out, usage, warnings = await _call_with_retry(
+        call_fn, validate_fn, sample=sample, cache=deps.cache,
+        chunk_id=chunk_id, content_hash=content_hash, status_name="annotation_failed")
+    for w in warnings:
+        logger.warning("enrich: chunk %s annotation warning: %s", chunk_id, w)
+    return annotation_out.annotation, usage
+
+
 async def enrich_one(doc: Document, passage: Passage, deps: EnrichDeps,
                      *, sample: bool) -> tuple[MergedEnrichment, Usage]:
     cid = passage_id(doc.id, passage.anchor)
     ch = Cache.content_hash(passage.content)
     gen_system = generation_system(doc.collection)
     gen_prompt_hash = Cache.prompt_hash(gen_system)
-    cls_prompt_hash = Cache.prompt_hash(CLASSIFICATION_SYSTEM)
+    cls_system = classification_system(doc.collection)
+    cls_prompt_hash = Cache.prompt_hash(cls_system)
+    ann_prompt_hash = Cache.prompt_hash(ANNOTATION_SYSTEM)
     context = build_context(doc, passage)
     total = Usage(0, 0)
 
@@ -53,41 +182,72 @@ async def enrich_one(doc: Document, passage: Passage, deps: EnrichDeps,
         if cached is not None:
             return MergedEnrichment.model_validate(cached), total
 
-    # 1. generation (cache unless prompt changed)
+    # 1. generation (Pass 1; cache unless prompt changed); hard validation + retry-once
     gen_cached = None if sample else deps.cache.get_generation(cid, ch)
     if gen_cached is not None and gen_cached["prompt_hash"] == gen_prompt_hash:
-        generation = GenerationOutput.model_validate(
-            {"facets": gen_cached["raw_facets"], "annotation": gen_cached["annotation"]})
+        generation = GenerationOutput.model_validate({"facets": gen_cached["raw_facets"]})
     else:
-        generation, gu = await deps.client.generate(gen_system, context)
-        total = Usage(total.input_tokens + gu.input_tokens, total.output_tokens + gu.output_tokens)
+        generation, gu = await _run_generation(
+            deps, cid, ch, gen_system, context, enrichment_content(passage), sample=sample)
+        total = _add_usage(total, gu)
         raw_facets = [f.model_dump() for f in generation.facets]
         if not sample:
             deps.backup.write(doc.collection, {
                 "chunk_id": cid, "content_hash": ch, "stage": "generation",
                 "collection": doc.collection, "reference": passage.reference,
-                "raw_facets": raw_facets, "annotation": generation.annotation,
-                "prompt_hash": gen_prompt_hash})
-            deps.cache.put_generation(cid, ch, raw_facets, generation.annotation, gen_prompt_hash)
+                "raw_facets": raw_facets, "prompt_hash": gen_prompt_hash,
+                "model": settings.ANTHROPIC_ENRICH_MODEL})
+            deps.cache.put_generation(cid, ch, raw_facets, gen_prompt_hash,
+                                      settings.ANTHROPIC_ENRICH_MODEL)
 
-    # 2. classification (cache unless prompt changed)
+    # 2. classification (Pass 2; cache unless prompt changed); hard validation + retry-once
     cls_cached = None if sample else deps.cache.get_classification(cid, ch)
     if cls_cached is not None and cls_cached["prompt_hash"] == cls_prompt_hash:
-        from enrichment.schema import ClassificationOutput
         classification = ClassificationOutput.model_validate({"labels": cls_cached["labels"]})
     else:
-        classification, cu = await deps.client.classify(
-            CLASSIFICATION_SYSTEM, context, [f.text for f in generation.facets])
-        total = Usage(total.input_tokens + cu.input_tokens, total.output_tokens + cu.output_tokens)
+        classification, cu = await _run_classification(
+            deps, cid, ch, cls_system, context, generation.facets,
+            enrichment_content(passage), sample=sample)
+        total = _add_usage(total, cu)
         labels = [lab.model_dump() for lab in classification.labels]
         if not sample:
             deps.backup.write(doc.collection, {
                 "chunk_id": cid, "content_hash": ch, "stage": "classification",
-                "collection": doc.collection, "labels": labels, "prompt_hash": cls_prompt_hash})
-            deps.cache.put_classification(cid, ch, labels, cls_prompt_hash)
+                "collection": doc.collection, "labels": labels, "prompt_hash": cls_prompt_hash,
+                "model": settings.ANTHROPIC_CLASSIFY_MODEL})
+            deps.cache.put_classification(cid, ch, labels, cls_prompt_hash,
+                                          settings.ANTHROPIC_CLASSIFY_MODEL)
 
-    # 3. merge + persist
-    merged = merge(generation, classification)
+    # 3. annotation assembly (Pass 3; cache unless prompt changed); hard validation + retry-once
+    # "text" here is the takeaway — Pass 3 never sees Pass 1's raw working text.
+    facets_with_labels = [
+        {"text": f.takeaway, "question": f.question, "grounding": lab.grounding,
+         "evidence": lab.evidence, "kind": lab.kind, "kind_secondary": lab.kind_secondary}
+        for f, lab in zip(generation.facets, classification.labels)
+    ]
+    ann_cached = None if sample else deps.cache.get_annotation(cid, ch)
+    if ann_cached is not None and ann_cached["prompt_hash"] == ann_prompt_hash:
+        annotation_text = ann_cached["annotation"]
+    else:
+        annotation_text, au = await _run_annotation(
+            deps, cid, ch, context, facets_with_labels, sample=sample)
+        total = _add_usage(total, au)
+        if not sample:
+            deps.backup.write(doc.collection, {
+                "chunk_id": cid, "content_hash": ch, "stage": "annotation",
+                "collection": doc.collection, "annotation": annotation_text,
+                "prompt_hash": ann_prompt_hash, "model": settings.ANTHROPIC_CLASSIFY_MODEL})
+            deps.cache.put_annotation(cid, ch, annotation_text, ann_prompt_hash,
+                                      settings.ANTHROPIC_CLASSIFY_MODEL)
+
+    # 4. merge + persist
+    merged = merge(generation, classification, annotation_text)
+    # merge() always populates working_text (Pass 1's raw treatment) — drop it
+    # here unless PILOT_MODE is on, so it's never persisted or embedded downstream
+    # by default.
+    if not settings.PILOT_MODE:
+        for f in merged.facets:
+            f.working_text = None
     if not sample:
         deps.cache.put_enrichment(cid, ch, [f.model_dump() for f in merged.facets], merged.annotation)
         await deps.annotation_writer(cid, merged.annotation)

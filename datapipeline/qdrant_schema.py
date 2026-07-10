@@ -38,7 +38,7 @@ async def ensure_facets(client) -> None:
     await client.create_collection(
         collection_name=FACETS,
         vectors_config=VectorParams(size=settings.EMBEDDING_DIMS, distance=Distance.COSINE))
-    for field in ("collection", "chunk_id", "confidence", "kind"):
+    for field in ("collection", "chunk_id", "grounding", "kind", "kind_secondary"):
         await client.create_payload_index(
             collection_name=FACETS, field_name=field, field_schema=PayloadSchemaType.KEYWORD)
 
@@ -49,6 +49,7 @@ async def ensure_questions(client) -> None:
     await client.create_collection(
         collection_name=QUESTIONS,
         vectors_config=VectorParams(size=settings.EMBEDDING_DIMS, distance=Distance.COSINE))
-    for field in ("collection", "chunk_id", "facet_index", "facet_confidence", "facet_kind"):
+    for field in ("collection", "chunk_id", "facet_index", "facet_grounding",
+                 "facet_kind", "facet_kind_secondary"):
         await client.create_payload_index(
             collection_name=QUESTIONS, field_name=field, field_schema=PayloadSchemaType.KEYWORD)

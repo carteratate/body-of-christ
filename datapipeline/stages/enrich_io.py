@@ -9,7 +9,7 @@ _SEGMENT_LABEL_RE = re.compile(r"\[[^\]]*\]:\s*")
 
 
 def annotation_prose(annotation: str) -> str:
-    """Strip `[KIND | confidence]:` segment labels to plain prose for tsvector indexing."""
+    """Strip `[KIND | grounding]:` segment labels to plain prose for tsvector indexing."""
     cleaned = _SEGMENT_LABEL_RE.sub("", annotation)
     cleaned = cleaned.replace("SUMMARY:", " ")
     return re.sub(r"\s+", " ", cleaned).strip()

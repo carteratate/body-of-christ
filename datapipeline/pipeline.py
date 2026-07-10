@@ -27,6 +27,7 @@ ANNOTATION_MODEL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bm2
 # per-chunk token priors from the spec's cost estimate
 _GEN_IN, _GEN_OUT = 350, 250
 _CLS_IN, _CLS_OUT = 250, 80
+_ANN_IN, _ANN_OUT = 300, 150
 
 
 class PipelineError(Exception):
@@ -90,11 +91,18 @@ def validate_dependencies(collection, stage, cache, model_paths: dict) -> None:
 
 
 def estimate_enrich_cost(chunk_count: int) -> dict:
-    input_tokens = chunk_count * (_GEN_IN + _CLS_IN)
-    output_tokens = chunk_count * (_GEN_OUT + _CLS_OUT)
-    usd = (input_tokens / 1_000_000) * settings.OPUS_INPUT_COST_PER_M + \
-          (output_tokens / 1_000_000) * settings.OPUS_OUTPUT_COST_PER_M
-    return {"input_tokens": input_tokens, "output_tokens": output_tokens, "usd": round(usd, 2)}
+    # Pass 1 (generation) runs on Opus; Pass 2 (classification) + Pass 3 (annotation
+    # assembly) both run on Sonnet.
+    gen_input = chunk_count * _GEN_IN
+    gen_output = chunk_count * _GEN_OUT
+    sonnet_input = chunk_count * (_CLS_IN + _ANN_IN)
+    sonnet_output = chunk_count * (_CLS_OUT + _ANN_OUT)
+    usd = (gen_input / 1_000_000) * settings.OPUS_INPUT_COST_PER_M + \
+          (gen_output / 1_000_000) * settings.OPUS_OUTPUT_COST_PER_M + \
+          (sonnet_input / 1_000_000) * settings.SONNET_INPUT_COST_PER_M + \
+          (sonnet_output / 1_000_000) * settings.SONNET_OUTPUT_COST_PER_M
+    return {"input_tokens": gen_input + sonnet_input, "output_tokens": gen_output + sonnet_output,
+            "usd": round(usd, 2)}
 
 
 # ---- runtime wiring (integration; exercised by the Task 19 smoke run) ----
@@ -109,11 +117,14 @@ async def _run_enrich(collection: str, docs, *, sample: int | None, yes: bool) -
     import asyncpg
 
     api_key = settings.require_anthropic()
-    client = EnrichmentClient(api_key, settings.ANTHROPIC_ENRICH_MODEL, settings.OPUS_CONCURRENCY)
+    gen_client = EnrichmentClient(api_key, settings.ANTHROPIC_ENRICH_MODEL, settings.OPUS_CONCURRENCY)
+    classify_client = EnrichmentClient(api_key, settings.ANTHROPIC_CLASSIFY_MODEL,
+                                       settings.CLASSIFY_CONCURRENCY)
 
     if sample is not None:
         writer = SampleWriter(collection, SAMPLE_DIR)
-        deps = EnrichDeps(cache=None, client=client, backup=None, annotation_writer=None)
+        deps = EnrichDeps(cache=None, gen_client=gen_client, classify_client=classify_client,
+                          backup=None, annotation_writer=None)
         chosen = [(d, p) for d in docs for p in d.passages][:sample]
         try:
             for d, p in chosen:
@@ -123,7 +134,7 @@ async def _run_enrich(collection: str, docs, *, sample: int | None, yes: bool) -
                 writer.write(rec)
                 print(writer.preview(merged, p))
         finally:
-            await client.close()
+            await gen_client.close(); await classify_client.close()
         print(f"\nSample written to {writer.path}")
         return
 
@@ -133,19 +144,20 @@ async def _run_enrich(collection: str, docs, *, sample: int | None, yes: bool) -
           f"({est['input_tokens']:,} in / {est['output_tokens']:,} out tokens)")
     if not yes:
         if input("Proceed? [y/N] ").strip().lower() != "y":
-            print("aborted."); await client.close(); return
+            print("aborted."); await gen_client.close(); await classify_client.close(); return
 
     cache = Cache(CACHE_PATH); cache.init_schema()
     pool = await asyncpg.create_pool(dsn=settings.DATABASE_URL, min_size=1, max_size=5,
                                      statement_cache_size=0)
-    deps = EnrichDeps(cache=cache, client=client, backup=Backup(ENRICH_DIR),
-                      annotation_writer=make_annotation_writer(pool))
+    deps = EnrichDeps(cache=cache, gen_client=gen_client, classify_client=classify_client,
+                      backup=Backup(ENRICH_DIR), annotation_writer=make_annotation_writer(pool))
     try:
         stats = await enrich_collection(docs, collection, deps, sample=False)
+        gen_cost = stats.usage.cost(settings.OPUS_INPUT_COST_PER_M, settings.OPUS_OUTPUT_COST_PER_M)
         print(f"enrich {collection}: {stats.processed} processed, {stats.from_cache} from cache, "
-              f"${stats.usage.cost(settings.OPUS_INPUT_COST_PER_M, settings.OPUS_OUTPUT_COST_PER_M):.2f}")
+              f"~${gen_cost:.2f} (approximate — mixed Opus/Sonnet usage)")
     finally:
-        await client.close(); await pool.close(); cache.close()
+        await gen_client.close(); await classify_client.close(); await pool.close(); cache.close()
 
 
 def _parse_args(argv=None) -> argparse.Namespace:
@@ -175,10 +187,13 @@ async def _main(args: argparse.Namespace) -> None:
         for rec in import_backup(args.import_backup):
             if rec.get("stage") == "generation":
                 cache.put_generation(rec["chunk_id"], rec["content_hash"],
-                                     rec["raw_facets"], rec["annotation"], rec["prompt_hash"])
+                                     rec["raw_facets"], rec["prompt_hash"], rec["model"])
             elif rec.get("stage") == "classification":
                 cache.put_classification(rec["chunk_id"], rec["content_hash"],
-                                         rec["labels"], rec["prompt_hash"])
+                                         rec["labels"], rec["prompt_hash"], rec["model"])
+            elif rec.get("stage") == "annotation":
+                cache.put_annotation(rec["chunk_id"], rec["content_hash"],
+                                     rec["annotation"], rec["prompt_hash"], rec["model"])
             n += 1
         cache.close()
         print(f"imported {n} backup records into {CACHE_PATH}")

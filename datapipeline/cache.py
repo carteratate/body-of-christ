@@ -44,13 +44,26 @@ class Cache:
 
             CREATE TABLE IF NOT EXISTS enrichment_generation (
                 chunk_id TEXT NOT NULL, content_hash TEXT NOT NULL,
-                raw_facets TEXT NOT NULL, annotation TEXT NOT NULL,
-                prompt_hash TEXT NOT NULL, created_at TEXT NOT NULL,
+                raw_facets TEXT NOT NULL,
+                prompt_hash TEXT NOT NULL, model TEXT NOT NULL,
+                created_at TEXT NOT NULL,
                 PRIMARY KEY (chunk_id, content_hash));
 
             CREATE TABLE IF NOT EXISTS enrichment_classification (
                 chunk_id TEXT NOT NULL, content_hash TEXT NOT NULL,
-                labels TEXT NOT NULL, prompt_hash TEXT NOT NULL,
+                labels TEXT NOT NULL, prompt_hash TEXT NOT NULL, model TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                PRIMARY KEY (chunk_id, content_hash));
+
+            CREATE TABLE IF NOT EXISTS enrichment_annotation (
+                chunk_id TEXT NOT NULL, content_hash TEXT NOT NULL,
+                annotation TEXT NOT NULL, prompt_hash TEXT NOT NULL, model TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                PRIMARY KEY (chunk_id, content_hash));
+
+            CREATE TABLE IF NOT EXISTS chunk_enrichment_status (
+                chunk_id TEXT NOT NULL, content_hash TEXT NOT NULL,
+                status TEXT NOT NULL, raw_response TEXT, validation_errors TEXT,
                 created_at TEXT NOT NULL,
                 PRIMARY KEY (chunk_id, content_hash));
 
@@ -68,38 +81,72 @@ class Cache:
         )
         self.conn.commit()
 
-    # --- generation ---
+    # --- generation (Pass 1) ---
     def get_generation(self, chunk_id: str, content_hash: str) -> dict | None:
         row = self.conn.execute(
-            "SELECT raw_facets, annotation, prompt_hash FROM enrichment_generation "
+            "SELECT raw_facets, prompt_hash, model FROM enrichment_generation "
             "WHERE chunk_id=? AND content_hash=?", (chunk_id, content_hash)).fetchone()
         if row is None:
             return None
         return {"raw_facets": json.loads(row["raw_facets"]),
-                "annotation": row["annotation"], "prompt_hash": row["prompt_hash"]}
+                "prompt_hash": row["prompt_hash"], "model": row["model"]}
 
-    def put_generation(self, chunk_id, content_hash, raw_facets, annotation, prompt_hash) -> None:
+    def put_generation(self, chunk_id, content_hash, raw_facets, prompt_hash, model) -> None:
         self.conn.execute(
             "INSERT OR REPLACE INTO enrichment_generation "
-            "(chunk_id, content_hash, raw_facets, annotation, prompt_hash, created_at) "
+            "(chunk_id, content_hash, raw_facets, prompt_hash, model, created_at) "
             "VALUES (?,?,?,?,?,?)",
-            (chunk_id, content_hash, json.dumps(raw_facets), annotation, prompt_hash, _now()))
+            (chunk_id, content_hash, json.dumps(raw_facets), prompt_hash, model, _now()))
         self.conn.commit()
 
-    # --- classification ---
+    # --- classification (Pass 2) ---
     def get_classification(self, chunk_id, content_hash) -> dict | None:
         row = self.conn.execute(
-            "SELECT labels, prompt_hash FROM enrichment_classification "
+            "SELECT labels, prompt_hash, model FROM enrichment_classification "
             "WHERE chunk_id=? AND content_hash=?", (chunk_id, content_hash)).fetchone()
         if row is None:
             return None
-        return {"labels": json.loads(row["labels"]), "prompt_hash": row["prompt_hash"]}
+        return {"labels": json.loads(row["labels"]), "prompt_hash": row["prompt_hash"],
+                "model": row["model"]}
 
-    def put_classification(self, chunk_id, content_hash, labels, prompt_hash) -> None:
+    def put_classification(self, chunk_id, content_hash, labels, prompt_hash, model) -> None:
         self.conn.execute(
             "INSERT OR REPLACE INTO enrichment_classification "
-            "(chunk_id, content_hash, labels, prompt_hash, created_at) VALUES (?,?,?,?,?)",
-            (chunk_id, content_hash, json.dumps(labels), prompt_hash, _now()))
+            "(chunk_id, content_hash, labels, prompt_hash, model, created_at) VALUES (?,?,?,?,?,?)",
+            (chunk_id, content_hash, json.dumps(labels), prompt_hash, model, _now()))
+        self.conn.commit()
+
+    # --- annotation (Pass 3) ---
+    def get_annotation(self, chunk_id, content_hash) -> dict | None:
+        row = self.conn.execute(
+            "SELECT annotation, prompt_hash, model FROM enrichment_annotation "
+            "WHERE chunk_id=? AND content_hash=?", (chunk_id, content_hash)).fetchone()
+        if row is None:
+            return None
+        return {"annotation": row["annotation"], "prompt_hash": row["prompt_hash"],
+                "model": row["model"]}
+
+    def put_annotation(self, chunk_id, content_hash, annotation, prompt_hash, model) -> None:
+        self.conn.execute(
+            "INSERT OR REPLACE INTO enrichment_annotation "
+            "(chunk_id, content_hash, annotation, prompt_hash, model, created_at) VALUES (?,?,?,?,?,?)",
+            (chunk_id, content_hash, annotation, prompt_hash, model, _now()))
+        self.conn.commit()
+
+    # --- per-chunk failure status (classification_failed / annotation_failed) ---
+    def get_chunk_status(self, chunk_id, content_hash) -> dict | None:
+        row = self.conn.execute(
+            "SELECT status, raw_response, validation_errors FROM chunk_enrichment_status "
+            "WHERE chunk_id=? AND content_hash=?", (chunk_id, content_hash)).fetchone()
+        return dict(row) if row else None
+
+    def set_chunk_status(self, chunk_id, content_hash, status, *,
+                         raw_response=None, validation_errors=None) -> None:
+        self.conn.execute(
+            "INSERT OR REPLACE INTO chunk_enrichment_status "
+            "(chunk_id, content_hash, status, raw_response, validation_errors, created_at) "
+            "VALUES (?,?,?,?,?,?)",
+            (chunk_id, content_hash, status, raw_response, validation_errors, _now()))
         self.conn.commit()
 
     # --- merged enrichment ---

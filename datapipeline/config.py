@@ -25,6 +25,13 @@ def _require_env(name: str) -> str:
     return value
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in ("1", "true", "yes", "on")
+
+
 @dataclass(frozen=True)
 class Settings:
     # --- Required ---
@@ -56,17 +63,29 @@ class Settings:
         "canon-law": (300, 300),     # short canons: wider neighbor window
     })
 
-    # --- Enrichment (Opus 4.8) ---
+    # --- Enrichment (3-pass: Opus generation, Sonnet classification + annotation) ---
     ANTHROPIC_API_KEY: str | None = None
-    ANTHROPIC_ENRICH_MODEL: str = "claude-opus-4-8"
+    ANTHROPIC_ENRICH_MODEL: str = "claude-opus-4-8"        # Pass 1 — generation
+    ANTHROPIC_CLASSIFY_MODEL: str = "claude-sonnet-4-6"    # Pass 2 — classification; Pass 3 — annotation assembly
     OPUS_CONCURRENCY: int = 4
+    CLASSIFY_CONCURRENCY: int = 4
     OPUS_MAX_TOKENS: int = 4096
     MIN_FACETS: int = 2
     MAX_FACETS: int = 12
 
+    # --- Pass 1 takeaway pilot ---
+    # When on: MergedFacet.working_text (Pass 1's raw working treatment) is
+    # persisted alongside the takeaway (cache.enrichment + Qdrant facets payload)
+    # for pilot-batch review (scripts/pass1_pilot_diff_report.py). When off
+    # (default, for full runs): working_text is dropped at merge time — never
+    # embedded, never persisted downstream.
+    PILOT_MODE: bool = False
+
     # --- Cost estimation constants (USD per 1M tokens) ---
     OPUS_INPUT_COST_PER_M: float = 5.0
     OPUS_OUTPUT_COST_PER_M: float = 25.0
+    SONNET_INPUT_COST_PER_M: float = 3.0
+    SONNET_OUTPUT_COST_PER_M: float = 15.0
     EMBED_COST_PER_M: float = 0.13
 
     def overlap_for(self, collection: str) -> tuple[int, int]:
@@ -87,4 +106,5 @@ settings = Settings(
     QDRANT_URL=_require_env("QDRANT_URL"),
     QDRANT_API_KEY=_require_env("QDRANT_API_KEY"),
     ANTHROPIC_API_KEY=os.getenv("ANTHROPIC_API_KEY"),
+    PILOT_MODE=_env_bool("PILOT_MODE", False),
 )
