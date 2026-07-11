@@ -3,7 +3,9 @@
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAppContext } from "./AppShell";
-import { Library, Bookmark, Church, Settings, BarChart3 } from "lucide-react";
+import { Library, Bookmark, Church, Settings, BarChart3, X } from "lucide-react";
+import { deleteSearch } from "@/lib/api";
+import { Toast, useToast } from "@/components/common";
 
 interface SidebarProps {
   isMobileOpen: boolean;
@@ -13,12 +15,28 @@ interface SidebarProps {
 export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { newSearch, searches, pendingSearch, activeSearchId } = useAppContext();
+  const { newSearch, searches, pendingSearch, activeSearchId, token, removeSearch, refreshSearches } =
+    useAppContext();
+  const { toast, showToast, dismissToast } = useToast();
 
   function handleNewSearch() {
     router.push("/search");
     newSearch();
     onCloseMobile();
+  }
+
+  async function handleDeleteSearch(e: React.MouseEvent, id: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!token) return;
+    removeSearch(id);
+    if (id === activeSearchId) newSearch();
+    try {
+      await deleteSearch(token, id);
+    } catch {
+      refreshSearches();
+      showToast("Couldn't delete search. Restored.", "error");
+    }
   }
 
   const activeClass = "bg-brand-bg text-brand-accent border-l-2 border-brand-accent";
@@ -69,17 +87,29 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           <p className="text-brand-muted text-xs px-1">No recent searches.</p>
         )}
         {searches.map((s) => (
-          <Link
+          <div
             key={s.id}
-            href={`/search?restore=${s.id}`}
-            onClick={onCloseMobile}
-            className={`block px-2 py-1.5 rounded text-xs truncate transition-colors ${
+            className={`group relative flex items-center rounded transition-colors ${
               s.id === activeSearchId ? activeClass : inactiveClass
             }`}
-            title={s.query}
           >
-            {s.query}
-          </Link>
+            <Link
+              href={`/search?restore=${s.id}`}
+              onClick={onCloseMobile}
+              className="block flex-1 min-w-0 px-2 py-1.5 text-xs truncate"
+              title={s.query}
+            >
+              {s.query}
+            </Link>
+            <button
+              type="button"
+              onClick={(e) => handleDeleteSearch(e, s.id)}
+              aria-label="Delete search"
+              className="shrink-0 px-1.5 py-1.5 rounded text-brand-muted hover:text-brand-danger opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-60 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            >
+              <X size={12} />
+            </button>
+          </div>
         ))}
       </div>
 
@@ -131,6 +161,8 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           <Settings size={12} /> Settings
         </Link>
       </div>
+
+      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </aside>
   );
 }
