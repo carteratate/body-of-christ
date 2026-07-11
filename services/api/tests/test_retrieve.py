@@ -317,11 +317,20 @@ async def test_retrieve_fts_run_propagates_position():
     assert merged["catechism"][0].position == 42
 
 
-@pytest.mark.asyncio
-async def test_fetch_positions_run_fills_missing_positions():
-    """fetch_positions.run must batch-fetch positions for Qdrant-sourced candidates."""
-    chunk_id = "qdrant00-0000-0000-0000-000000000001"
-    candidate = ChunkCandidate(
+def _mock_pool_returning(rows):
+    """Build a pool mock whose acquire() -> conn.fetch(...) yields `rows`."""
+    conn = MagicMock()
+    conn.fetch = AsyncMock(return_value=rows)
+    acquire_cm = MagicMock()
+    acquire_cm.__aenter__ = AsyncMock(return_value=conn)
+    acquire_cm.__aexit__ = AsyncMock(return_value=False)
+    pool = MagicMock()
+    pool.acquire = MagicMock(return_value=acquire_cm)
+    return pool
+
+
+def _candidate(chunk_id: str) -> ChunkCandidate:
+    return ChunkCandidate(
         chunk_id=chunk_id,
         content="Vector result",
         reference=None,
@@ -333,10 +342,35 @@ async def test_fetch_positions_run_fills_missing_positions():
         position=None,
     )
 
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(return_value=[{"id": chunk_id, "position": 17}])
+
+@pytest.mark.asyncio
+async def test_fetch_positions_run_fills_missing_positions():
+    """fetch_positions.run must batch-fetch positions for Qdrant-sourced candidates."""
+    chunk_id = "00000000-0000-0000-0000-000000000001"
+    candidate = _candidate(chunk_id)
+    mock_pool = _mock_pool_returning([{"id": chunk_id, "position": 17}])
 
     with patch("app.rag.steps.fetch_positions.get_pool", return_value=mock_pool):
         result = await fetch_positions({"bible": [candidate]})
 
     assert result["bible"][0].position == 17
+
+
+@pytest.mark.asyncio
+async def test_fetch_positions_drops_orphaned_candidates():
+    """A position=None candidate absent from the chunks table (orphaned Qdrant
+    vector) must be dropped so it cannot crash retrievals persistence."""
+    present_id = "00000000-0000-0000-0000-000000000001"
+    orphan_id = "7e430ae4-ac20-5a8d-a587-b17bfdde8761"
+    present = _candidate(present_id)
+    orphan = _candidate(orphan_id)
+    # DB only knows about the present id; orphan_id is not returned.
+    mock_pool = _mock_pool_returning([{"id": present_id, "position": 9}])
+
+    with patch("app.rag.steps.fetch_positions.get_pool", return_value=mock_pool):
+        result = await fetch_positions({"bible": [present, orphan]})
+
+    kept_ids = {c.chunk_id for c in result["bible"]}
+    assert present_id in kept_ids
+    assert orphan_id not in kept_ids
+    assert result["bible"][0].position == 9

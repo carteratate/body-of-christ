@@ -13,10 +13,14 @@ logger = logging.getLogger(__name__)
 async def run(
     candidates: dict[str, list[ChunkCandidate]],
 ) -> dict[str, list[ChunkCandidate]]:
-    """Fill in position=None candidates by querying Postgres.
+    """Fill in position=None candidates by querying Postgres, and drop orphans.
 
-    Qdrant payloads omit position; FTS rows already have it.
-    Mutates the ChunkCandidate objects in place and returns the same dict.
+    Qdrant payloads omit position; FTS rows already have it. A position=None
+    candidate whose id is absent from the `chunks` table is an orphaned Qdrant
+    vector (stale from a prior ingest). Such candidates are dropped here: they
+    have no `chunks` row, so surfacing them would break the reader, and
+    persisting them fails the retrievals/bookmarks/feedback FK on chunks.id —
+    aborting the whole search. Fills positions in place; returns a filtered dict.
     """
     pool = get_pool()
     if pool is None:
@@ -56,9 +60,26 @@ async def run(
         )
         return candidates
 
-    for col_list in candidates.values():
+    # Any looked-up id NOT returned by the query has no chunks row → orphan.
+    present_ids = set(pos_map)
+    filtered: dict[str, list[ChunkCandidate]] = {}
+    dropped = 0
+    for col, col_list in candidates.items():
+        kept: list[ChunkCandidate] = []
         for c in col_list:
-            if c.position is None and c.chunk_id in pos_map:
+            if c.position is None:
+                if c.chunk_id not in present_ids:
+                    dropped += 1
+                    continue
                 c.position = pos_map[c.chunk_id]
+            kept.append(c)
+        filtered[col] = kept
 
-    return candidates
+    if dropped:
+        logger.warning(
+            "fetch_positions: dropped %d orphaned candidate(s) absent from chunks "
+            "table (stale Qdrant vectors)",
+            dropped,
+        )
+
+    return filtered
