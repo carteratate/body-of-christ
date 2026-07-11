@@ -420,6 +420,14 @@ export async function getSearchHistory(token: string): Promise<SearchSummaryV2[]
   return data.searches;
 }
 
+export async function deleteSearch(token: string, searchId: string): Promise<void> {
+  const res = await fetch(`${API_URL}/v1/searches/${searchId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+}
+
 export async function getSearchResults(token: string, searchId: string): Promise<SearchResultsResponse> {
   const res = await fetch(`${API_URL}/v1/searches/${searchId}/results`, {
     headers: { Authorization: `Bearer ${token}` },

@@ -74,6 +74,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     preferencesError: false,
     searches: [],
     refreshSearches: () => {},
+    removeSearch: () => {},
     pendingSearch,
     setPendingSearch,
     clearPendingSearch,

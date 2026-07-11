@@ -20,6 +20,7 @@ export interface AppContextValue {
   // Real DB-backed search history
   searches: SearchSummaryV2[];
   refreshSearches: () => void;
+  removeSearch: (id: string) => void;
   // Separate pending slot — never conflicts with the DB list
   pendingSearch: { id: string; query: string } | null;
   setPendingSearch: (id: string, query: string) => void;
@@ -46,6 +47,7 @@ export const AppContext = createContext<AppContextValue>({
   preferencesError: false,
   searches: [],
   refreshSearches: () => {},
+  removeSearch: () => {},
   pendingSearch: null,
   setPendingSearch: () => {},
   clearPendingSearch: () => {},
@@ -104,6 +106,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     // Only updates the real DB list — pendingSearch is managed separately
     getSearchHistory(token).then(setSearches).catch(() => {});
   }, [token]);
+
+  const removeSearch = useCallback((id: string) => {
+    setSearches((prev) => prev.filter((s) => s.id !== id));
+  }, []);
 
   const setPendingSearch = useCallback((id: string, query: string) => {
     setPendingSearchState({ id, query });
@@ -222,7 +228,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider value={{
       token, ready, preferences, setPreferences, preferencesError,
-      searches, refreshSearches,
+      searches, refreshSearches, removeSearch,
       pendingSearch, setPendingSearch, clearPendingSearch,
       activeSearchId, setActiveSearchId,
       searchKey, newSearch,
