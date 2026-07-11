@@ -1,12 +1,13 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict
 from typing import Literal
 
 
 class RetrievalLabelCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     chunk_id: str
     search_id: str
     label: Literal["up", "down"]
-    rank: int = Field(ge=1)
 
 
 class RetrievalLabelResponse(BaseModel):

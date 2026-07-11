@@ -508,12 +508,11 @@ export async function submitLabel(
   chunkId: string,
   label: "up" | "down",
   searchId: string,
-  rank: number,
 ): Promise<void> {
   const res = await fetch(`${API_URL}/v1/labels`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ chunk_id: chunkId, label, search_id: searchId, rank }),
+    body: JSON.stringify({ chunk_id: chunkId, label, search_id: searchId }),
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
 }

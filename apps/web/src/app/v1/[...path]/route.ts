@@ -22,6 +22,12 @@ async function proxy(req: NextRequest): Promise<Response> {
   if (contentType) headers.set("content-type", contentType);
   if (process.env.INTERNAL_API_SECRET) {
     headers.set("x-internal-secret", process.env.INTERNAL_API_SECRET);
+    // Vercel supplies the visitor address. Convert it to an app-owned header;
+    // the API accepts it only on an authenticated proxy hop.
+    const forwardedFor = req.headers.get("x-vercel-forwarded-for")
+      ?? req.headers.get("x-forwarded-for");
+    const clientIp = forwardedFor?.split(",", 1)[0]?.trim();
+    if (clientIp) headers.set("x-theocorpus-client-ip", clientIp);
   }
 
   const upstream = await fetch(target, {

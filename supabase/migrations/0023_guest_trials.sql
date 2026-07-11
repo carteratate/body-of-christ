@@ -1,4 +1,4 @@
--- supabase/migrations/0022_guest_trials.sql
+-- supabase/migrations/0023_guest_trials.sql
 -- IP-hash store for guest trial rate limiting. No RLS — server-side writes only.
 
 CREATE TABLE IF NOT EXISTS guest_trials (

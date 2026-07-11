@@ -35,16 +35,27 @@ async def submit_label(
 
     try:
         async with pool.acquire() as conn:
-            chunk_exists = await conn.fetchval("SELECT id FROM chunks WHERE id = $1", chunk_uuid)
-            if chunk_exists is None:
-                raise HTTPException(status_code=404, detail="Chunk not found")
-
             search_exists = await conn.fetchval(
                 "SELECT id FROM searches WHERE id = $1 AND user_id = $2",
                 search_uuid, uuid.UUID(user.user_id),
             )
             if search_exists is None:
                 raise HTTPException(status_code=404, detail="Search not found")
+
+            # Rank is training data, so derive it from the persisted retrieval
+            # rather than accepting a client-provided value. This also proves
+            # that the chunk was actually returned by this search.
+            rank = await conn.fetchval(
+                """
+                SELECT rank
+                FROM retrievals
+                WHERE search_id = $1 AND chunk_id = $2
+                """,
+                search_uuid,
+                chunk_uuid,
+            )
+            if rank is None:
+                raise HTTPException(status_code=404, detail="Retrieval not found")
 
             row = await conn.fetchrow(
                 """
@@ -58,7 +69,7 @@ async def submit_label(
                 chunk_uuid,
                 search_uuid,
                 body.label,
-                body.rank,
+                rank,
             )
     except HTTPException:
         raise

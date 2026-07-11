@@ -24,20 +24,40 @@ def test_hash_ip_is_64_hex_chars():
     assert "1.2.3.4" not in result  # must not contain plaintext IP
 
 
-def test_get_client_ip_prefers_x_forwarded_for():
+def test_get_client_ip_accepts_app_header_from_authenticated_proxy():
     req = MagicMock()
-    req.headers.get = lambda key, default=None: "10.0.0.1, 172.16.0.1" if key == "x-forwarded-for" else default
+    req.headers = {
+        "x-theocorpus-client-ip": "10.0.0.1",
+        "x-internal-secret": "proxy-secret",
+    }
     req.client = MagicMock()
     req.client.host = "127.0.0.1"
-    assert _get_client_ip(req) == "10.0.0.1"
+    with patch("app.routes.guest_search.settings.internal_api_secret", "proxy-secret"):
+        assert _get_client_ip(req) == "10.0.0.1"
 
 
-def test_get_client_ip_strips_whitespace_from_xff():
+def test_get_client_ip_ignores_spoofed_forwarding_headers():
     req = MagicMock()
-    req.headers.get = lambda key, default=None: "  10.0.0.1  , 172.16.0.1" if key == "x-forwarded-for" else default
+    req.headers = {
+        "x-forwarded-for": "10.0.0.1",
+        "x-theocorpus-client-ip": "10.0.0.2",
+        "x-internal-secret": "wrong-secret",
+    }
     req.client = MagicMock()
     req.client.host = "127.0.0.1"
-    assert _get_client_ip(req) == "10.0.0.1"
+    with patch("app.routes.guest_search.settings.internal_api_secret", "proxy-secret"):
+        assert _get_client_ip(req) == "127.0.0.1"
+
+
+def test_get_client_ip_rejects_invalid_trusted_proxy_value():
+    req = MagicMock()
+    req.headers = {
+        "x-theocorpus-client-ip": "not-an-ip",
+        "x-internal-secret": "proxy-secret",
+    }
+    req.client = MagicMock(host="127.0.0.1")
+    with patch("app.routes.guest_search.settings.internal_api_secret", "proxy-secret"):
+        assert _get_client_ip(req) == "127.0.0.1"
 
 
 def test_get_client_ip_falls_back_to_client_host():
@@ -58,6 +78,8 @@ async def test_trial_slot_taken():
     mock_row = {"id": "some-uuid"}
     mock_conn = AsyncMock()
     mock_conn.fetchrow = AsyncMock(return_value=mock_row)
+    mock_conn.transaction = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False)))
 
     mock_pool = MagicMock()
     mock_pool.acquire = MagicMock(return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_conn), __aexit__=AsyncMock(return_value=False)))
@@ -66,6 +88,10 @@ async def test_trial_slot_taken():
         result = await _try_record_trial("somehash")
 
     assert result is True
+    lock_sql = mock_conn.execute.await_args.args[0]
+    assert "pg_advisory_xact_lock" in lock_sql
+    assert "hashtextextended" in lock_sql
+    mock_conn.transaction.assert_called_once_with()
 
 
 @pytest.mark.asyncio
@@ -75,6 +101,8 @@ async def test_trial_slot_exhausted():
 
     mock_conn = AsyncMock()
     mock_conn.fetchrow = AsyncMock(return_value=None)
+    mock_conn.transaction = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False)))
 
     mock_pool = MagicMock()
     mock_pool.acquire = MagicMock(return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_conn), __aexit__=AsyncMock(return_value=False)))
@@ -123,14 +151,47 @@ def test_guest_search_429_when_trial_exhausted(client):
     assert response.json()["detail"] == "trial_exhausted"
 
 
-def test_guest_search_400_for_invalid_collections(client):
-    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=True)):
+@pytest.mark.parametrize("collections", [[], ["not-a-real-collection"], ["bible", "fake"]])
+def test_guest_search_rejects_invalid_collections_without_consuming_trial(client, collections):
+    record_trial = AsyncMock(return_value=True)
+    with patch("app.routes.guest_search._try_record_trial", record_trial):
         response = client.post(
             "/v1/search/guest",
-            json={"query": "test", "filters": {"collections": ["not-a-real-collection"]}},
+            json={"query": "test", "filters": {"collections": collections}},
         )
 
-    assert response.status_code == 400
+    assert response.status_code == 422
+    record_trial.assert_not_awaited()
+
+
+def test_guest_search_rejects_blank_query_without_consuming_trial(client):
+    record_trial = AsyncMock(return_value=True)
+    with patch("app.routes.guest_search._try_record_trial", record_trial):
+        response = client.post(
+            "/v1/search/guest",
+            json={"query": "   \t ", "filters": {"collections": ["bible"]}},
+        )
+
+    assert response.status_code == 422
+    record_trial.assert_not_awaited()
+
+
+def test_guest_search_strips_query_before_pipeline(client):
+    captured = {}
+
+    async def fake_pipeline(**kwargs):
+        captured.update(kwargs)
+        yield {"type": "done", "search_id": "x", "result_count": 0}
+
+    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=True)), \
+         patch("app.routes.guest_search.run_search_pipeline", fake_pipeline):
+        response = client.post(
+            "/v1/search/guest",
+            json={"query": "  grace  ", "filters": {"collections": ["bible"]}},
+        )
+
+    assert response.status_code == 200
+    assert captured["query"] == "grace"
 
 
 def test_guest_search_caps_quota_at_guest_maximum(client):

@@ -107,7 +107,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
   async function handleFeedback(direction: "up" | "down") {
     if (!token || !searchId || feedback === direction) return;
     try {
-      await submitLabel(token, chunk_id, direction, searchId, index + 1);
+      await submitLabel(token, chunk_id, direction, searchId);
       setFeedback(direction);
     } catch {
       // silent failure

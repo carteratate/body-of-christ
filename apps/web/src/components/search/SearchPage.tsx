@@ -64,7 +64,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     preferences?.preferred_translation || "CPDV"
   );
   const [quota, setQuota] = useState<number>(() =>
-    preferences?.default_quota ?? 4
+    isGuest ? 3 : (preferences?.default_quota ?? 4)
   );
   const [searchValue, setSearchValue] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -541,6 +541,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
         searchDisabled={guestSearchDone}
+        fixedQuota={isGuest}
       />
       <RateLimitModal
         isOpen={rateLimitRetryAfter !== null}
