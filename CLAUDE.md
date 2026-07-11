@@ -180,6 +180,7 @@ Use CSS custom properties via Tailwind `brand` namespace. No hardcoded hex value
 | POST | `/v1/search` | SSE stream; rate-limited (5/min, 30/day) |
 | GET | `/v1/searches` | Search history (last 50) |
 | GET | `/v1/searches/{id}/results` | Restore past search from retrievals |
+| DELETE | `/v1/searches/{id}` | Delete one search (retrievals cascade) |
 | GET | `/v1/documents/{id}` | Document metadata + chunk count |
 | GET | `/v1/documents/{id}/toc` | Ordered chapter list for reader |
 | GET | `/v1/documents/{id}/reader` | One chapter of passages (anchor or chapter param) |
