@@ -43,10 +43,20 @@ export function SettingsPage() {
   const { ready, token, preferences, setPreferences, preferencesError } = useAppContext();
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
 
   async function handleSignOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    setSignOutError(null);
     const supabase = createClient();
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      setSignOutError("Couldn't sign out. Please try again.");
+      setSigningOut(false);
+      return;
+    }
     router.replace("/login");
   }
 
@@ -63,7 +73,7 @@ export function SettingsPage() {
 
     // Apply immediately — no round-trip delay
     document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("theocorpus-theme", next); } catch (_) {}
+    try { localStorage.setItem("theocorpus-theme", next); } catch {}
     document.cookie = `theocorpus-theme=${next}; path=/; max-age=31536000; SameSite=Lax`;
     setPreferences({ ...preferences, theme: next });
 
@@ -147,13 +157,15 @@ export function SettingsPage() {
         <h2 className="text-xs font-semibold text-brand-muted uppercase tracking-widest mb-3">
           Account
         </h2>
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-2 text-sm text-brand-primary hover:text-red-400 transition-colors"
+          <button
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="flex items-center gap-2 text-sm text-brand-primary hover:text-red-400 transition-colors disabled:opacity-50"
         >
           <LogOut size={16} />
-          Sign out
-        </button>
+          {signingOut ? "Signing out…" : "Sign out"}
+          </button>
+          {signOutError && <p className="text-brand-danger text-xs mt-2">{signOutError}</p>}
       </section>
     </div>
   );

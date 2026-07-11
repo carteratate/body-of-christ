@@ -86,6 +86,8 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     sourcesError: false,
     reloadSources: () => {},
     corpusPassages: null,
+    bookmarkIds: {},
+    setBookmarkForChunk: () => {},
   };
 
   return (

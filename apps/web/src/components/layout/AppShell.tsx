@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
-import { getPreferences, getSearchHistory, getSources, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
+import { getBookmarks, getPreferences, getSearchHistory, getSources, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
 import { MobileTopBar } from "./MobileTopBar";
 
 const Sidebar = dynamic(
@@ -34,6 +34,8 @@ export interface AppContextValue {
   sourcesError: boolean;
   reloadSources: () => void;
   corpusPassages: number | null;
+  bookmarkIds: Record<string, string>;
+  setBookmarkForChunk: (chunkId: string, bookmarkId: string | null) => void;
 }
 
 export const AppContext = createContext<AppContextValue>({
@@ -56,6 +58,8 @@ export const AppContext = createContext<AppContextValue>({
   sourcesError: false,
   reloadSources: () => {},
   corpusPassages: null,
+  bookmarkIds: {},
+  setBookmarkForChunk: () => {},
 });
 
 export function useAppContext() {
@@ -75,6 +79,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [sourcesLoading, setSourcesLoading] = useState(false);
   const [sourcesError, setSourcesError] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [bookmarkIds, setBookmarkIds] = useState<Record<string, string>>({});
 
   const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
 
@@ -108,6 +113,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setPendingSearchState(null);
   }, []);
 
+  const setBookmarkForChunk = useCallback((chunkId: string, bookmarkId: string | null) => {
+    setBookmarkIds((prev) => {
+      if (bookmarkId) return { ...prev, [chunkId]: bookmarkId };
+      const next = { ...prev };
+      delete next[chunkId];
+      return next;
+    });
+  }, []);
+
   useEffect(() => {
     const supabase = createClient();
 
@@ -115,9 +129,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       const t = data.session?.access_token ?? null;
       setToken(t);
       if (t) {
-        getPreferences(t).then(setPreferences).catch(() => setPreferencesError(true));
-        getSearchHistory(t).then(setSearches).catch(() => {});
-        reloadSources(t);
+        const critical = Promise.allSettled([
+          getPreferences(t).then(setPreferences).catch(() => setPreferencesError(true)),
+          getSearchHistory(t).then(setSearches).catch(() => {}),
+        ]);
+        critical.finally(() => {
+          const warmCaches = () => {
+            setSourcesLoading(true);
+            getSources(t)
+              .then(setSources)
+              .catch(() => setSourcesError(true))
+              .finally(() => setSourcesLoading(false));
+            getBookmarks(t)
+              .then((items) => setBookmarkIds(Object.fromEntries(items.map((b) => [b.chunk_id, b.id]))))
+              .catch(() => {});
+          };
+          if ("requestIdleCallback" in window) {
+            window.requestIdleCallback(warmCaches, { timeout: 1500 });
+          } else {
+            setTimeout(warmCaches, 0);
+          }
+        });
       }
       setReady(true);
     });
@@ -139,7 +171,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const theme = preferences?.theme;
     if (!theme) return;
     document.documentElement.setAttribute("data-theme", theme);
-    try { localStorage.setItem("theocorpus-theme", theme); } catch (_) {}
+    try { localStorage.setItem("theocorpus-theme", theme); } catch {}
   }, [preferences?.theme]);
 
   useEffect(() => {
@@ -196,6 +228,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       searchKey, newSearch,
       sources, sourcesLoading, sourcesError, reloadSources,
       corpusPassages: sources.length > 0 ? sources.reduce((sum, s) => sum + s.chunk_count, 0) : null,
+      bookmarkIds, setBookmarkForChunk,
     }}>
       <div className="flex h-full bg-brand-bg text-brand-primary">
         <Sidebar isMobileOpen={mobileNavOpen} onCloseMobile={closeMobileNav} />

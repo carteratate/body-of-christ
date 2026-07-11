@@ -19,6 +19,7 @@ import {
 } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
+import { useAppContext } from "@/components/layout/AppShell";
 
 function hexToRgb(color: string): string {
   if (!color.startsWith("#") || color.length < 7) return "196,151,42";
@@ -55,30 +56,36 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
   const showAuthor = !!author && (collection === "church-fathers" || collection === "encyclicals");
 
   const { toast, showToast, dismissToast } = useToast();
+  const { bookmarkIds, setBookmarkForChunk } = useAppContext();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   // ── Bookmark state ────────────────────────────────────────────────────────
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [bookmarkId, setBookmarkId] = useState<string | null>(null);
+  const bookmarkId = bookmarkIds[chunk_id] ?? null;
+  const isBookmarked = bookmarkId !== null;
+  const [bookmarkPending, setBookmarkPending] = useState(false);
 
   async function handleBookmark() {
-    if (!token) return;
+    if (!token || bookmarkPending) return;
+    const previousId = bookmarkId;
+    setBookmarkPending(true);
     try {
       if (isBookmarked && bookmarkId) {
+        setBookmarkForChunk(chunk_id, null);
         await removeBookmark(token, bookmarkId);
-        setIsBookmarked(false);
-        setBookmarkId(null);
         trackBookmarkDeleted({ collection });
       } else {
+        setBookmarkForChunk(chunk_id, "pending");
         const res = await addBookmark(token, chunk_id);
-        setBookmarkId(res.id);
-        setIsBookmarked(true);
+        setBookmarkForChunk(chunk_id, res.id);
         trackBookmarkCreated({ collection, rankPositionWhenSaved: index });
         showToast("Saved to your passages");
       }
     } catch {
+      setBookmarkForChunk(chunk_id, previousId);
       showToast("Couldn't save. Try again.", "error");
+    } finally {
+      setBookmarkPending(false);
     }
   }
 
@@ -103,14 +110,20 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
 
   // ── Feedback state ────────────────────────────────────────────────────────
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
+  const [feedbackPending, setFeedbackPending] = useState(false);
 
   async function handleFeedback(direction: "up" | "down") {
-    if (!token || !searchId || feedback === direction) return;
+    if (!token || !searchId || feedback === direction || feedbackPending) return;
+    const previous = feedback;
+    setFeedback(direction);
+    setFeedbackPending(true);
     try {
       await submitLabel(token, chunk_id, direction, searchId);
-      setFeedback(direction);
     } catch {
-      // silent failure
+      setFeedback(previous);
+      showToast("Couldn't record feedback. Try again.", "error");
+    } finally {
+      setFeedbackPending(false);
     }
   }
 
@@ -235,7 +248,9 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
                   onClick={handleBookmark}
                   title={isBookmarked ? "Remove bookmark" : "Save passage"}
                   aria-label={isBookmarked ? "Remove bookmark" : "Save passage"}
-                  className="p-1.5 rounded transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                  aria-busy={bookmarkPending}
+                  disabled={bookmarkPending}
+                  className="p-1.5 rounded transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:opacity-60"
                 >
                   <Bookmark size={15} className={isBookmarked ? "text-brand-accent" : "text-brand-muted"} />
                 </button>
@@ -255,7 +270,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
                   onClick={() => handleFeedback("up")}
                   title="Helpful"
                   aria-label="Mark as relevant"
-                  disabled={feedback === "up"}
+                  disabled={feedbackPending || feedback === "up"}
                   className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
                     feedback === "up" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"
                   }`}
@@ -266,7 +281,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
                   onClick={() => handleFeedback("down")}
                   title="Not helpful"
                   aria-label="Mark as not relevant"
-                  disabled={feedback === "down"}
+                  disabled={feedbackPending || feedback === "down"}
                   className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
                     feedback === "down" ? "text-brand-danger" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"
                   }`}

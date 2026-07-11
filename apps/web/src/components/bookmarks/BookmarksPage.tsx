@@ -1,21 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAppContext } from "@/components/layout/AppShell";
 import { ResultsSkeleton } from "@/components/search/ResultsSkeleton";
 import { BookmarkCard } from "./BookmarkCard";
-import { getBookmarks, type Bookmark } from "@/lib/api";
+import { getBookmarks, removeBookmark, updateCachedBookmarks, type Bookmark } from "@/lib/api";
 import { Toast, useToast } from "@/components/common";
 
 export function BookmarksPage() {
-  const { token } = useAppContext();
+  const { token, setBookmarkForChunk } = useAppContext();
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { toast, showToast, dismissToast } = useToast();
 
-  const fetchBookmarks = useCallback(() => {
+  function fetchBookmarks() {
     if (!token) return;
     setLoading(true);
     setError(null);
@@ -29,16 +29,39 @@ export function BookmarksPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [token]);
+  }
 
   useEffect(() => {
-    fetchBookmarks();
-  }, [fetchBookmarks]);
+    if (!token) return;
+    getBookmarks(token)
+      .then(setBookmarks)
+      .catch(() => setError("Couldn't load your saved passages. Please try again."))
+      .finally(() => setLoading(false));
+  }, [token]);
 
   function handleNoteUpdated(bookmarkId: string, note: string | null) {
     setBookmarks((prev) =>
       prev.map((b) => (b.id === bookmarkId ? { ...b, note } : b))
     );
+  }
+
+  async function handleRemove(bookmark: Bookmark) {
+    if (!token) return;
+    const index = bookmarks.findIndex((b) => b.id === bookmark.id);
+    setBookmarks((prev) => prev.filter((b) => b.id !== bookmark.id));
+    setBookmarkForChunk(bookmark.chunk_id, null);
+    try {
+      await removeBookmark(token, bookmark.id);
+      updateCachedBookmarks((items) => items.filter((b) => b.id !== bookmark.id));
+    } catch {
+      setBookmarks((prev) => {
+        const next = [...prev];
+        next.splice(Math.max(0, index), 0, bookmark);
+        return next;
+      });
+      setBookmarkForChunk(bookmark.chunk_id, bookmark.id);
+      showToast("Couldn't remove passage. Restored.", "error");
+    }
   }
 
   return (
@@ -81,7 +104,7 @@ export function BookmarksPage() {
                 key={bookmark.id}
                 bookmark={bookmark}
                 token={token}
-                onRemoved={(id) => setBookmarks((prev) => prev.filter((b) => b.id !== id))}
+                onRemove={handleRemove}
                 onNoteUpdated={handleNoteUpdated}
                 showToast={showToast}
               />

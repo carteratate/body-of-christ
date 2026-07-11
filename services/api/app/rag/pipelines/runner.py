@@ -51,7 +51,7 @@ async def run(
     vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(query_vec, hyde_vecs, collections, quota, user_id))
     fts_raw   = await _timed_async("retrieve_fts", retrieve_fts.run(query, collections, quota, user_id))
     merged    = _timed_sync("rrf", lambda: rrf.run(vec_raw, fts_raw, quota))
-    _         = await _timed_async("fetch_positions", fetch_positions.run(merged))
+    merged    = await _timed_async("fetch_positions", fetch_positions.run(merged))
     ranked    = await _timed_async("rerank", config.rerank_module.run(merged, query, quota, tracker))
     deduped   = await _timed_async("dedup", dedup.run(ranked))
     guaranteed = _timed_sync("collection_guarantee", lambda: collection_guarantee.run(deduped, ranked, collections))

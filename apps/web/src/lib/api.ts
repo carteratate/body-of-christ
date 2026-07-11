@@ -461,12 +461,51 @@ export async function getReaderChapter(
 }
 
 export async function getBookmarks(token: string): Promise<Bookmark[]> {
+  if (bookmarksCacheToken !== token) {
+    bookmarksCache = null;
+    bookmarksRequest = null;
+    bookmarksCacheToken = token;
+    bookmarksCacheGeneration += 1;
+  }
+  if (bookmarksCache) return bookmarksCache;
+  if (bookmarksRequest) return bookmarksRequest;
+  const generation = bookmarksCacheGeneration;
+  const request = fetchBookmarks(token);
+  bookmarksRequest = request;
+  try {
+    const bookmarks = await request;
+    if (generation !== bookmarksCacheGeneration || bookmarksCacheToken !== token) {
+      return getBookmarks(token);
+    }
+    bookmarksCache = bookmarks;
+    return bookmarks;
+  } finally {
+    if (bookmarksRequest === request) bookmarksRequest = null;
+  }
+}
+
+let bookmarksCache: Bookmark[] | null = null;
+let bookmarksRequest: Promise<Bookmark[]> | null = null;
+let bookmarksCacheToken: string | null = null;
+let bookmarksCacheGeneration = 0;
+
+async function fetchBookmarks(token: string): Promise<Bookmark[]> {
   const res = await fetch(`${API_URL}/v1/bookmarks`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
   const data = await res.json() as { bookmarks: Bookmark[] };
   return data.bookmarks;
+}
+
+export function updateCachedBookmarks(updater: (items: Bookmark[]) => Bookmark[]): void {
+  if (bookmarksCache) bookmarksCache = updater(bookmarksCache);
+}
+
+export function invalidateBookmarksCache(): void {
+  bookmarksCache = null;
+  bookmarksRequest = null;
+  bookmarksCacheGeneration += 1;
 }
 
 export async function addBookmark(token: string, chunkId: string): Promise<{ id: string; created_at: string }> {
@@ -476,7 +515,9 @@ export async function addBookmark(token: string, chunkId: string): Promise<{ id:
     body: JSON.stringify({ chunk_id: chunkId }),
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
-  return res.json() as Promise<{ id: string; created_at: string }>;
+  const bookmark = await res.json() as { id: string; chunk_id: string; created_at: string };
+  invalidateBookmarksCache();
+  return bookmark;
 }
 
 export async function removeBookmark(token: string, bookmarkId: string): Promise<void> {
@@ -485,6 +526,7 @@ export async function removeBookmark(token: string, bookmarkId: string): Promise
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
+  updateCachedBookmarks((items) => items.filter((b) => b.id !== bookmarkId));
 }
 
 export async function updateBookmarkNote(
@@ -501,6 +543,7 @@ export async function updateBookmarkNote(
     body: JSON.stringify({ note }),
   });
   if (!res.ok) throw new Error(`Failed to update note: ${res.status}`);
+  updateCachedBookmarks((items) => items.map((b) => b.id === bookmarkId ? { ...b, note } : b));
 }
 
 export async function submitLabel(
@@ -549,6 +592,21 @@ export interface SourceDocument {
 }
 
 export async function getSources(token: string): Promise<SourceDocument[]> {
+  if (sourcesCache) return sourcesCache;
+  if (sourcesRequest) return sourcesRequest;
+  sourcesRequest = fetchSources(token);
+  try {
+    sourcesCache = await sourcesRequest;
+    return sourcesCache;
+  } finally {
+    sourcesRequest = null;
+  }
+}
+
+let sourcesCache: SourceDocument[] | null = null;
+let sourcesRequest: Promise<SourceDocument[]> | null = null;
+
+async function fetchSources(token: string): Promise<SourceDocument[]> {
   const res = await fetch(`${API_URL}/v1/sources`, {
     headers: { Authorization: `Bearer ${token}` },
   });

@@ -59,50 +59,36 @@ async def create_bookmark(
     except ValueError:
         raise HTTPException(status_code=422, detail="Invalid chunk_id: must be a UUID")
 
+    started = time.perf_counter()
+    _check_write_rate_limit(str(user.user_id))
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
-    # Verify chunk exists
-    try:
-        chunk_row = await pool.fetchrow(
-            "SELECT id FROM chunks WHERE id = $1",
-            chunk_uuid,
-        )
-    except Exception as exc:
-        logger.error("create_bookmark chunk check failed (%s)", exc.__class__.__name__)
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
-
-    if chunk_row is None:
-        raise HTTPException(status_code=404, detail="Chunk not found")
-
-    # Insert bookmark; silently handle duplicate
+    acquired = time.perf_counter()
     try:
         row = await pool.fetchrow(
             """
             INSERT INTO bookmarks (user_id, chunk_id)
             VALUES ($1, $2)
-            ON CONFLICT (user_id, chunk_id) DO NOTHING
+            ON CONFLICT (user_id, chunk_id)
+            DO UPDATE SET chunk_id = EXCLUDED.chunk_id
             RETURNING id, created_at
             """,
             user.user_id,
             chunk_uuid,
         )
     except Exception as exc:
+        if exc.__class__.__name__ == "ForeignKeyViolationError":
+            raise HTTPException(status_code=404, detail="Chunk not found") from exc
         logger.error("create_bookmark insert failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
-    if row is None:
-        # Already bookmarked — fetch the existing record
-        try:
-            row = await pool.fetchrow(
-                "SELECT id, created_at FROM bookmarks WHERE user_id = $1 AND chunk_id = $2",
-                user.user_id,
-                chunk_uuid,
-            )
-        except Exception as exc:
-            logger.error("create_bookmark fetch existing failed (%s)", exc.__class__.__name__)
-            raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+    completed = time.perf_counter()
+    logger.info(
+        "create_bookmark timing: setup=%.3fs sql=%.3fs total=%.3fs",
+        acquired - started, completed - acquired, completed - started,
+    )
 
     _invalidate_bookmarks(user.user_id)
 
@@ -226,6 +212,7 @@ async def delete_bookmark(
     except ValueError:
         raise HTTPException(status_code=422, detail="Invalid bookmark_id: must be a UUID")
 
+    _check_write_rate_limit(str(user.user_id))
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")

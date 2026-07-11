@@ -113,7 +113,7 @@ async def run_search_pipeline(
                                     "INSERT INTO retrievals (id, search_id, chunk_id, rank, reranker_score) VALUES ($1,$2,$3,$4,$5)",
                                     [
                                         (uuid.uuid4(), uuid.UUID(search_id), uuid.UUID(chunk.chunk_id), rank, chunk.reranker_score)
-                                        for rank, chunk in enumerate(final_results)
+                                        for rank, chunk in enumerate(final_results, start=1)
                                     ],
                                 )
                     _t7 = time.perf_counter()

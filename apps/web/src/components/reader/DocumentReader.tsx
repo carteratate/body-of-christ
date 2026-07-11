@@ -29,6 +29,8 @@ function Inner({ docId }: { docId: string }) {
   const [contentsOpen, setContentsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chapterLoading, setChapterLoading] = useState<string | null>(null);
+  const [chapterError, setChapterError] = useState<{ key: string; mode: "append" | "replace" } | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   // Chapter keys already requested for append — a synchronous guard against the
   // infinite-scroll race where many scroll events fire before state settles and
@@ -79,17 +81,27 @@ function Inner({ docId }: { docId: string }) {
     // Synchronous dedupe: skip if this append was already requested this session.
     if (mode === "append" && requestedRef.current.has(key)) return;
     requestedRef.current.add(key);
-    const chapter = await getReaderChapter(token, docId, { chapter: key });
-    setChapters((prev) => {
-      if (mode === "replace") return [chapter];
-      if (prev.some((c) => c.chapter_key === key)) return prev; // idempotent append
-      return [...prev, chapter];
-    });
-    if (mode === "replace") setCurrentKey(key);
+    setChapterLoading(key);
+    setChapterError(null);
+    try {
+      const chapter = await getReaderChapter(token, docId, { chapter: key });
+      setChapters((prev) => {
+        if (mode === "replace") return [chapter];
+        if (prev.some((c) => c.chapter_key === key)) return prev;
+        return [...prev, chapter];
+      });
+      if (mode === "replace") setCurrentKey(key);
+    } catch {
+      requestedRef.current.delete(key);
+      setChapterError({ key, mode });
+    } finally {
+      setChapterLoading(null);
+    }
   }, [token, docId]);
 
   const jump = useCallback((key: string) => {
     requestedRef.current = new Set([key]); // reset append history for the new anchor
+    setCurrentKey(key);
     setHighlight(null);
     loadChapter(key, "replace");
     scrollRef.current?.scrollTo({ top: 0 });
@@ -154,6 +166,19 @@ function Inner({ docId }: { docId: string }) {
         {chapters.map((ch) => (
           <ChapterSection key={ch.chapter_key} chapter={ch} highlightAnchor={highlight} />
         ))}
+        {chapterLoading && (
+          <div className="px-6 py-8 space-y-3 animate-pulse" aria-label="Loading chapter">
+            <div className="h-4 w-2/3 rounded bg-brand-surface" />
+            <div className="h-4 w-full rounded bg-brand-surface" />
+            <div className="h-4 w-5/6 rounded bg-brand-surface" />
+          </div>
+        )}
+        {chapterError && (
+          <div className="px-6 py-6 text-center">
+            <p className="text-sm text-brand-muted mb-2">Chapter couldn&apos;t be loaded.</p>
+            <button className="text-sm text-brand-accent hover:underline" onClick={() => loadChapter(chapterError.key, chapterError.mode)}>Retry</button>
+          </div>
+        )}
       </div>
     </div>
   );

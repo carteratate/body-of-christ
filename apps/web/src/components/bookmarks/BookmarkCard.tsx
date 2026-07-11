@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bookmark as BookmarkIcon, ChevronDown, ChevronUp, Copy, Pencil, Search } from "lucide-react";
-import { removeBookmark, updateBookmarkNote, type Bookmark } from "@/lib/api";
+import { updateBookmarkNote, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackExploreMoreClicked } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
@@ -13,17 +13,18 @@ const NOTE_MAX = 3000;
 interface BookmarkCardProps {
   bookmark: Bookmark;
   token: string | null;
-  onRemoved: (bookmarkId: string) => void;
+  onRemove: (bookmark: Bookmark) => Promise<void>;
   onNoteUpdated: (bookmarkId: string, note: string | null) => void;
   showToast: (message: string, type?: "success" | "error") => void;
 }
 
-export function BookmarkCard({ bookmark, token, onRemoved, onNoteUpdated, showToast }: BookmarkCardProps) {
+export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToast }: BookmarkCardProps) {
   const router = useRouter();
   const [noteOpen, setNoteOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [draftNote, setDraftNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [removing, setRemoving] = useState(false);
 
   // ── Null chunk fallback ───────────────────────────────────────────────────
   if (bookmark.chunk === null) {
@@ -32,8 +33,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, onNoteUpdated, showTo
         <p className="text-sm text-brand-muted italic">Passage unavailable</p>
         <button
           onClick={() => {
-            onRemoved(bookmark.id);
-            if (token) removeBookmark(token, bookmark.id).catch(() => {});
+            if (token && !removing) void onRemove(bookmark);
           }}
           title="Remove bookmark"
           aria-label="Remove bookmark"
@@ -53,14 +53,11 @@ export function BookmarkCard({ bookmark, token, onRemoved, onNoteUpdated, showTo
 
   // ── Remove bookmark ───────────────────────────────────────────────────────
   async function handleRemove() {
-    if (!token) return;
-    try {
-      await removeBookmark(token, bookmark.id);
-      onRemoved(bookmark.id);
-      trackBookmarkDeleted({ collection });
-    } catch {
-      showToast("Couldn't remove. Try again.", "error");
-    }
+    if (!token || removing) return;
+    setRemoving(true);
+    trackBookmarkDeleted({ collection });
+    await onRemove(bookmark);
+    setRemoving(false);
   }
 
   // ── Copy action ───────────────────────────────────────────────────────────
@@ -138,6 +135,7 @@ export function BookmarkCard({ bookmark, token, onRemoved, onNoteUpdated, showTo
         <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={handleRemove}
+            disabled={removing}
             title="Remove bookmark"
             aria-label="Remove bookmark"
             className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
