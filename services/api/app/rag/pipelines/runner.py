@@ -11,6 +11,7 @@ from app.rag.steps import (
     dedup,
     embed,
     fetch_positions,
+    min_floor,
     quota_cap,
     retrieve_fts,
     retrieve_vector,
@@ -55,6 +56,11 @@ async def run(
     deduped   = await _timed_async("dedup", dedup.run(ranked))
     guaranteed = _timed_sync("collection_guarantee", lambda: collection_guarantee.run(deduped, ranked, collections))
     final     = _timed_sync("quota_cap", lambda: quota_cap.run(guaranteed, quota))
+
+    # Last-resort floor: if scoring excluded everything, surface best-effort
+    # candidates rather than returning a silent "no results" (see min_floor).
+    if not final and ranked:
+        final = _timed_sync("min_floor", lambda: min_floor.run(ranked, quota))
 
     total_duration = time.perf_counter() - t_total
     logger.info(

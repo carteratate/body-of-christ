@@ -47,9 +47,8 @@ _RERANK_SYSTEM = (
     "INCLUDE RULES:\n"
     "  Set include=false if score < 0.35.\n"
     "  Set include=false if this passage makes the same argument as a higher-scoring "
-    "passage already in the list (set overlap_with to that chunk_id, "
-    "overlap_verdict=\"redundant\"). Two passages from the same book repeating the "
-    "same point are redundant.\n"
+    "passage already in the list (set overlap_verdict=\"redundant\"). Two passages "
+    "from the same book repeating the same point are redundant.\n"
     "  Set include=true for passages that address the same theme from different "
     "sources, genres, or traditions — a lament, a theological epistle, and a "
     "catechism paragraph on the same topic are three perspectives on one question, "
@@ -58,7 +57,7 @@ _RERANK_SYSTEM = (
     "Respond with ONLY a JSON array containing ALL input chunk_ids. No text before "
     "or after the array:\n"
     '[{"chunk_id":"<id>","score":<float>,"include":<bool>,'
-    '"overlap_with":<"id" or null>,"overlap_verdict":<"redundant"|"complementary"|null>}]'
+    '"overlap_verdict":<"redundant"|"complementary"|null>}]'
 )
 
 
@@ -145,7 +144,8 @@ async def _rerank_single_collection(
     try:
         response = await _client.messages.create(
             model=settings.rerank_model,
-            max_tokens=2000,
+            max_tokens=4096,
+            temperature=0,
             system=_RERANK_SYSTEM,
             messages=[{"role": "user", "content": user_message}],
         )
@@ -224,6 +224,24 @@ async def _rerank_single_collection(
             )
 
     ranked.sort(key=lambda r: r.reranker_score, reverse=True)
+
+    # Instrumentation: surface per-chunk scores + include decisions so intermittent
+    # all-excluded outcomes can be diagnosed. Distinguishes score variance (max_score
+    # low → everything genuinely scored below threshold) from dropped/mangled ids
+    # (haiku_matched << candidates → model failed to echo chunk_ids back).
+    col_name = candidates[0].collection if candidates else "?"
+    included_n = sum(1 for r in ranked if r.include)
+    logger.info(
+        "rerank_haiku scores: collection=%s candidates=%d haiku_matched=%d "
+        "included=%d excluded=%d max_score=%.2f top=%s",
+        col_name,
+        len(candidates),
+        len(returned_ids),
+        included_n,
+        len(ranked) - included_n,
+        ranked[0].reranker_score if ranked else 0.0,
+        [(round(r.reranker_score, 2), r.include) for r in ranked[:15]],
+    )
     return ranked
 
 

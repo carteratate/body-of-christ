@@ -293,6 +293,7 @@ async def _generate_single(
         response = await client.messages.create(
             model=settings.hyde_model,
             max_tokens=max_tokens,
+            temperature=0,
             system=system,
             messages=[{"role": "user", "content": query}],
         )
@@ -331,6 +332,7 @@ async def choose_bible_hyde_genres(
         response = await client.messages.create(
             model=settings.hyde_model,
             max_tokens=50,
+            temperature=0,
             system=_BIBLE_GENRE_SELECT_SYSTEM,
             messages=[{"role": "user", "content": query}],
         )
@@ -402,6 +404,7 @@ async def run(
             response = await client.messages.create(
                 model=settings.hyde_model,
                 max_tokens=50,
+                temperature=0,
                 system=_BIBLE_GENRE_SELECT_SYSTEM,
                 messages=[{"role": "user", "content": query}],
             )
