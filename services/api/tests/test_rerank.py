@@ -86,6 +86,46 @@ async def test_rerank_bad_score_does_not_affect_other_chunks():
     assert good_chunk.reranker_score == pytest.approx(0.9)
 
 
+@pytest.mark.asyncio
+async def test_rerank_propagates_position_for_dedup():
+    """RankedChunk must carry ChunkCandidate.position (scored AND omitted paths)
+    so the downstream cosine dedup can compute passage proximity."""
+    scored_id = "00000000-0000-0000-0000-000000000030"
+    omitted_id = "00000000-0000-0000-0000-000000000031"
+    c_scored = _make_candidate(scored_id)
+    c_scored.position = 10
+    c_omitted = _make_candidate(omitted_id)
+    c_omitted.position = 20
+
+    mock_response = MagicMock()
+    # Model returns only the scored chunk; the other falls through the omitted path.
+    mock_response.content = [
+        MagicMock(text=f'[{{"chunk_id": "{scored_id}", "score": 0.8, "include": true}}]')
+    ]
+    mock_response.usage = MagicMock(input_tokens=100, output_tokens=50)
+
+    with patch("app.rag.steps.rerank_haiku._client") as mock_client:
+        mock_client.messages.create = AsyncMock(return_value=mock_response)
+        result = await rerank_collection([c_scored, c_omitted], "grace", 3, CostTracker())
+
+    positions = {r.chunk_id: r.position for r in result}
+    assert positions[scored_id] == 10
+    assert positions[omitted_id] == 20
+
+
+@pytest.mark.asyncio
+async def test_rerank_fallback_propagates_position():
+    """The RRF fallback (client unavailable) must also carry position."""
+    chunk_id = "00000000-0000-0000-0000-000000000032"
+    candidate = _make_candidate(chunk_id)
+    candidate.position = 7
+
+    with patch("app.rag.steps.rerank_haiku._client", None):
+        result = await rerank_collection([candidate], "grace", 3, CostTracker())
+
+    assert result[0].position == 7
+
+
 def test_format_passages_includes_full_content():
     """Reranker must see the full chunk, not just the first 600 chars."""
     from app.rag.steps.rerank_haiku import _format_passages

@@ -15,9 +15,14 @@ def run(
 
     For any collection that is absent from `deduped`, inject the highest-scoring
     chunk from `all_scored` whose reranker_score >= _GUARANTEE_MIN_SCORE.
+
+    Injected chunks are merged back in score-descending order: `deduped` is already
+    sorted, but appending would leave the list out of order, and the downstream
+    `quota_cap` assumes (and the client streams / persists) score-descending order.
     """
     represented = {r.collection for r in deduped}
     result = list(deduped)
+    injected = False
     for col in collections:
         if col not in represented:
             best = next(
@@ -30,4 +35,7 @@ def run(
             )
             if best:
                 result.append(best)
+                injected = True
+    if injected:
+        result.sort(key=lambda r: r.reranker_score, reverse=True)
     return result

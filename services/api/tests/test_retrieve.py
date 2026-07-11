@@ -140,6 +140,44 @@ async def test_search_vector_raises_when_client_not_initialised():
             await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
 
 
+@pytest.mark.asyncio
+async def test_search_vector_skips_malformed_point_keeps_good_ones():
+    """A point with an incomplete payload must be dropped individually, not take
+    down the whole strategy's result list."""
+    good = _scored_point("aaaaaaaa-0000-0000-0000-000000000001", "bible")
+    malformed = MagicMock()
+    malformed.id = "bbbbbbbb-0000-0000-0000-000000000002"
+    malformed.score = 0.8
+    malformed.payload = {"collection": "bible"}  # missing content/document_id/document_title
+
+    mock_client = AsyncMock()
+    mock_client.query_points = AsyncMock(return_value=_mock_query_response([good, malformed]))
+
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
+        rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+
+    ids = [r["id"] for r in rows]
+    assert "aaaaaaaa-0000-0000-0000-000000000001" in ids
+    assert "bbbbbbbb-0000-0000-0000-000000000002" not in ids
+
+
+@pytest.mark.asyncio
+async def test_search_vector_handles_none_payload():
+    """A point with no payload at all must be skipped, not raise."""
+    pt = MagicMock()
+    pt.id = "cccccccc-0000-0000-0000-000000000003"
+    pt.score = 0.7
+    pt.payload = None
+
+    mock_client = AsyncMock()
+    mock_client.query_points = AsyncMock(return_value=_mock_query_response([pt]))
+
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
+        rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+
+    assert rows == []
+
+
 # ---------------------------------------------------------------------------
 # Step integration: retrieve_vector + rrf_merge
 # ---------------------------------------------------------------------------

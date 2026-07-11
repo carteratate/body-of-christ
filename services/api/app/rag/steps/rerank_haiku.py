@@ -114,6 +114,7 @@ def _fallback_ranked(candidates: list[ChunkCandidate], quota: int) -> list[Ranke
                 author=c.author,
                 reranker_score=score,
                 anchor=c.anchor,
+                position=c.position,
             )
         )
     return results
@@ -202,6 +203,7 @@ async def _rerank_single_collection(
                 reranker_score=max(0.0, min(1.0, score)),
                 include=include,
                 anchor=candidate.anchor,
+                position=candidate.position,
             )
         )
 
@@ -221,6 +223,7 @@ async def _rerank_single_collection(
                     reranker_score=0.0,
                     include=False,
                     anchor=c.anchor,
+                    position=c.position,
                 )
             )
 
@@ -253,7 +256,7 @@ async def run(
     cost_tracker: CostTracker,
 ) -> list[RankedChunk]:
     """Rerank all collections in parallel, return globally sorted list."""
-    max_per_col = quota * 3
+    max_per_col = quota * settings.candidate_multiplier
     results = await asyncio.gather(
         *[_rerank_single_collection(col_cands[:max_per_col], query, quota, cost_tracker)
           for col_cands in candidates.values()],

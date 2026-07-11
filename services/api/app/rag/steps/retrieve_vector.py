@@ -35,21 +35,27 @@ async def _search_vector(
         with_payload=True,
         score_threshold=_QDRANT_SCORE_THRESHOLD,
     )
-    return [
-        {
+    results: list[dict] = []
+    for r in response.points:
+        payload = r.payload or {}
+        # Drop only a malformed point (missing required field), not the whole
+        # strategy result — a single bad Qdrant payload shouldn't erase recall.
+        if any(payload.get(k) is None for k in ("content", "collection", "document_id", "document_title")):
+            logger.warning("retrieve_vector: skipping point %s with incomplete payload", r.id)
+            continue
+        results.append({
             "id": str(r.id),
-            "content": r.payload["content"],
-            "reference": r.payload.get("reference"),
-            "collection": r.payload["collection"],
-            "document_id": r.payload["document_id"],
-            "document_title": r.payload["document_title"],
-            "author": r.payload.get("author"),
-            "anchor": r.payload.get("anchor"),
+            "content": payload["content"],
+            "reference": payload.get("reference"),
+            "collection": payload["collection"],
+            "document_id": payload["document_id"],
+            "document_title": payload["document_title"],
+            "author": payload.get("author"),
+            "anchor": payload.get("anchor"),
             "position": None,
             "annotation": None,
-        }
-        for r in response.points
-    ]
+        })
+    return results
 
 
 async def run(

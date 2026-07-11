@@ -9,8 +9,6 @@ from app.config import settings
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.types import ChunkCandidate, RankedChunk
 
-_MAX_PER_COLLECTION_MULTIPLIER = 3  # cap = quota * this, per collection
-
 logger = logging.getLogger(__name__)
 
 _client: cohere.AsyncClientV2 | None = None
@@ -41,7 +39,7 @@ async def run(
 
     # Flatten candidates with a per-collection cap so HyDE pipelines don't
     # send hundreds of documents to Cohere when extra RRF strategies fire.
-    max_per_col = quota * _MAX_PER_COLLECTION_MULTIPLIER
+    max_per_col = quota * settings.candidate_multiplier
     all_candidates: list[ChunkCandidate] = []
     for col_cands in candidates.values():
         all_candidates.extend(col_cands[:max_per_col])
@@ -81,6 +79,7 @@ async def run(
             reranker_score=score,
             include=score >= 0.25,
             anchor=candidate.anchor,
+            position=candidate.position,
         ))
 
     ranked.sort(key=lambda r: r.reranker_score, reverse=True)
