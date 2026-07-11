@@ -71,6 +71,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const [results, setResults] = useState<ChunkResult[]>([]);
   const [searchId, setSearchId] = useState<string | null>(null);
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
+  const [queryBubbleVisible, setQueryBubbleVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rateLimitRetryAfter, setRateLimitRetryAfter] = useState<number | null>(null);
   const [rateLimitType, setRateLimitType] = useState<"per_minute" | "daily">("per_minute");
@@ -107,7 +108,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // useLayoutEffect (not useEffect) so LoadingAnimation's first paint already
   // knows the bubble's footprint — avoids a visible resize/jump of the constellation.
   useLayoutEffect(() => {
-    if (!showAnimation || !submittedQuery || exploreLabel) {
+    if (!showAnimation || !queryBubbleVisible || !submittedQuery || exploreLabel) {
       setBubbleSize(null);
       return;
     }
@@ -115,7 +116,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (!el) return;
     const { width, height } = el.getBoundingClientRect();
     if (width > 0 && height > 0) setBubbleSize({ width, height });
-  }, [showAnimation, submittedQuery, exploreLabel]);
+  }, [showAnimation, queryBubbleVisible, submittedQuery, exploreLabel]);
 
   useEffect(() => {
     return () => {
@@ -186,6 +187,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
     setResults([]);
     setSubmittedQuery(null);
+    setQueryBubbleVisible(false);
     setSearchId(null);
     setError(null);
     setLoading(false);
@@ -231,6 +233,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         setResults(data.results);
         setSearchId(data.search_id);
         setSubmittedQuery(data.query);
+        setQueryBubbleVisible(true);
         setSearchValue(data.query);
         setActiveSearchId(id);
         setSubmittedCollections(ALL_COLLECTION_KEYS);
@@ -273,6 +276,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       setRateLimitRetryAfter(null);
       setRateLimitType("per_minute");
       setSubmittedQuery(query);
+      setQueryBubbleVisible(false);
       setSearchValue("");
       setResults([]);
       setShowAnimation(true);
@@ -332,6 +336,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             setLoading(false);
             setShowAnimation(false);
             setAnimFilterBarActive(false);
+            setQueryBubbleVisible(true);
             trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
           },
           onRateLimit(retryAfter: number | null, limitType: "per_minute" | "daily") {
@@ -341,6 +346,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             setLoading(false);
             setShowAnimation(false);
             setAnimFilterBarActive(false);
+            setQueryBubbleVisible(true);
           },
         };
 
@@ -368,6 +374,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         setLoading(false);
         setShowAnimation(false);
         setAnimFilterBarActive(false);
+        setQueryBubbleVisible(true);
         trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
       }
     },
@@ -385,6 +392,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     resolvedRef.current = true;  // subsequent explanation deltas go directly to results
     setResults(merged);
     setLoading(false);
+    setQueryBubbleVisible(true);
     // showAnimation stays true so the overlay can fade out over the results
     setQueryDone(false);
   }
@@ -462,21 +470,17 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           />
         )}
 
-        {/* Query bubble rendered above animation (z-20 > z-10) — same markup as post-animation bubble */}
-        {showAnimation && submittedQuery && !exploreLabel && (
-          <div ref={bubbleRef} className="absolute top-4 right-4 z-20 max-w-[70%] max-md:max-w-[85%] pointer-events-none">
-            <div className="rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
-              {submittedQuery}
-            </div>
-          </div>
-        )}
-
         {!submittedQuery && !loading && !error && (
           <EmptyState onSelectQuery={handleSelectQuery} />
         )}
 
-        {submittedQuery && !exploreLabel && (
-          <div className="flex justify-end mb-4">
+        {/* Keep the revealed query in normal flow so results reserve its height.
+            During the animation fade, z-20 places it above the z-10 overlay. */}
+        {queryBubbleVisible && submittedQuery && !exploreLabel && (
+          <div
+            ref={bubbleRef}
+            className={`relative flex justify-end mb-4 ${showAnimation ? "z-20 pointer-events-none" : ""}`}
+          >
             <div className="max-w-[70%] max-md:max-w-[85%] rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
               {submittedQuery}
             </div>
