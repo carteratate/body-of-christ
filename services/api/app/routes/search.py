@@ -3,7 +3,7 @@ import json
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.responses import StreamingResponse
 
 from app.config import settings
@@ -255,3 +255,36 @@ async def get_search_results(
         query=search_row["query"],
         results=results,
     )
+
+
+@router.delete("/searches/{search_id}", status_code=204)
+async def delete_search(
+    search_id: str,
+    user: AuthUser = Depends(get_current_user),
+) -> Response:
+    """Delete a search (and its retrievals, via cascade) owned by the user."""
+    try:
+        search_uuid = uuid.UUID(search_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid search_id: must be a UUID")
+
+    pool = get_pool()
+    if not pool:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+
+    try:
+        result = await pool.execute(
+            "DELETE FROM searches WHERE id = $1 AND user_id = $2",
+            search_uuid,
+            user.user_id,
+        )
+    except Exception as exc:
+        logger.error("delete_search query failed (%s)", exc.__class__.__name__)
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+
+    # asyncpg returns "DELETE N" where N is the number of rows deleted
+    deleted_count = int(result.split()[-1])
+    if deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Search not found")
+
+    return Response(status_code=204)
