@@ -17,6 +17,7 @@ def init_qdrant() -> None:
     _client = AsyncQdrantClient(
         url=settings.qdrant_url,
         api_key=settings.qdrant_api_key,
+        timeout=30,
     )
     logger.info("Qdrant client initialised (url=%s)", settings.qdrant_url)
 

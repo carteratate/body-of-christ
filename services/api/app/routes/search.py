@@ -126,7 +126,7 @@ async def search(
             quota=body.quota,
             user_id=user.user_id,
         ):
-            yield f"data: {json.dumps(event)}\n\n"
+            yield f"data: {json.dumps(event, default=str)}\n\n"
 
     return StreamingResponse(
         event_stream(),

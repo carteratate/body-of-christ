@@ -63,7 +63,8 @@ _RERANK_SYSTEM = (
 
 def init_rerank() -> None:
     global _client
-    _client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
+    # timeout bounds a hung rerank call (has an RRF fallback on failure).
+    _client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key, timeout=45.0)
 
 
 async def close_rerank() -> None:

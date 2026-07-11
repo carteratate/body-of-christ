@@ -15,7 +15,10 @@ _client: openai.AsyncOpenAI | None = None
 
 def init_embed() -> None:
     global _client
-    _client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
+    # Query embedding is the one compute step with no fallback — a transient
+    # OpenAI error would fail the whole search. max_retries adds SDK-level
+    # exponential-backoff retries; timeout bounds any hang.
+    _client = openai.AsyncOpenAI(api_key=settings.openai_api_key, timeout=30.0, max_retries=3)
 
 
 async def close_embed() -> None:

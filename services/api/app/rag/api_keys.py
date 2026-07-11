@@ -43,7 +43,8 @@ def init_api_keys() -> None:
     _clients.clear()
     _semaphores.clear()
     for letter, api_key in key_values.items():
-        _clients[letter] = anthropic.AsyncAnthropic(api_key=api_key)
+        # timeout bounds a hung HyDE call (per-collection gather already isolates failures).
+        _clients[letter] = anthropic.AsyncAnthropic(api_key=api_key, timeout=45.0)
         _semaphores[letter] = asyncio.Semaphore(semaphore_sizes[letter])
 
     logger.info(

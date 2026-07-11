@@ -35,7 +35,8 @@ _BASE_DELAY = 1.0  # seconds — cumulative waits: 1+2+4 = 7s
 
 def init_explain() -> None:
     global _client
-    _client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
+    # timeout bounds a hung explanation stream (already best-effort/guarded downstream).
+    _client = openai.AsyncOpenAI(api_key=settings.openai_api_key, timeout=45.0)
 
 
 async def close_explain() -> None:
