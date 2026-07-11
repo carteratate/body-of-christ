@@ -43,6 +43,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const inactiveClass = "text-brand-muted hover:bg-brand-bg hover:text-brand-primary";
 
   return (
+    <>
     <aside
       id="mobile-nav-drawer"
       className={`flex flex-col w-56 shrink-0 bg-brand-surface border-r border-brand-surface h-full max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-72 max-md:transition-transform max-md:duration-200 ${
@@ -89,7 +90,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
         {searches.map((s) => (
           <div
             key={s.id}
-            className={`group relative flex items-center rounded transition-colors ${
+            className={`group flex items-center rounded transition-colors ${
               s.id === activeSearchId ? activeClass : inactiveClass
             }`}
           >
@@ -161,8 +162,9 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           <Settings size={12} /> Settings
         </Link>
       </div>
-
-      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </aside>
+
+    {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
+    </>
   );
 }
