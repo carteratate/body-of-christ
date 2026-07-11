@@ -1,4 +1,5 @@
-from writers.qdrant import collection_filter, QDRANT_COLLECTION, EMBEDDING_DIMS
+from config import settings
+from writers.qdrant import collection_filter, QDRANT_COLLECTION
 
 
 def test_collection_filter_targets_payload_collection():
@@ -10,4 +11,4 @@ def test_collection_filter_targets_payload_collection():
 
 def test_constants():
     assert QDRANT_COLLECTION == "chunks"
-    assert EMBEDDING_DIMS == 1536
+    assert settings.EMBEDDING_DIMS == 3072

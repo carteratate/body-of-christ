@@ -5,14 +5,13 @@ import asyncio
 
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import (
-    Distance, FieldCondition, Filter, HnswConfigDiff, MatchValue,
-    PayloadSchemaType, PointStruct, VectorParams,
+    FieldCondition, Filter, MatchValue, PointStruct,
 )
 
 from config import settings
+from qdrant_schema import recreate_chunks
 
 QDRANT_COLLECTION = "chunks"
-EMBEDDING_DIMS = 1536
 
 
 def get_client() -> AsyncQdrantClient:
@@ -28,15 +27,7 @@ def collection_filter(collection: str) -> Filter:
 async def ensure_collection(client: AsyncQdrantClient) -> None:
     if await client.collection_exists(QDRANT_COLLECTION):
         return
-    await client.create_collection(
-        collection_name=QDRANT_COLLECTION,
-        vectors_config=VectorParams(size=EMBEDDING_DIMS, distance=Distance.COSINE),
-        hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
-    )
-    await client.create_payload_index(
-        collection_name=QDRANT_COLLECTION, field_name="collection",
-        field_schema=PayloadSchemaType.KEYWORD,
-    )
+    await recreate_chunks(client)
 
 
 async def delete_collection_points(client: AsyncQdrantClient, collection: str) -> None:

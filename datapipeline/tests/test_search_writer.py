@@ -22,11 +22,11 @@ def test_embedding_input_does_not_cross_chapter():
     assert "Aaa." not in out  # previous passage is a different chapter
 
 
-def test_build_point_uses_clean_content_and_matching_id():
-    doc = Document(id="d", collection="bible", title="John")
-    p = _p(0, "Clean text", "john/3/16")
-    point = build_point(doc, p, vector=[0.0] * 1536)
-    assert point.payload["content"] == "Clean text"
-    assert point.payload["anchor"] == "john/3/16"
-    assert point.payload["collection"] == "bible"
-    assert point.payload["document_id"] == "d"
+def test_build_point_uses_named_dense_vector():
+    doc = Document(id="d1", collection="bible", title="Genesis", author="Moses")
+    p = Passage(content="x", reference="Gen 1:1", anchor="genesis/1/1",
+                chapter_key="genesis/1", chapter_label="Genesis 1", position=0)
+    pt = build_point(doc, p, [0.1, 0.2, 0.3])
+    assert pt.vector == {"dense": [0.1, 0.2, 0.3]}
+    assert pt.payload["collection"] == "bible"
+    assert pt.payload["content"] == "x"

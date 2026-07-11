@@ -39,7 +39,7 @@ def build_embedding_input(passages: list[Passage], idx: int,
 def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
     return PointStruct(
         id=passage_id(doc.id, p.anchor),
-        vector=vector,
+        vector={"dense": vector},          # named vector (was a bare list)
         payload={
             "collection": doc.collection,
             "document_id": doc.id,
@@ -57,7 +57,7 @@ async def _embed(client: openai.AsyncOpenAI, texts: list[str]) -> list[list[floa
     for attempt in range(3):
         try:
             resp = await client.embeddings.create(
-                input=texts, model=settings.EMBEDDING_MODEL, dimensions=settings.EMBEDDING_DIMS,
+                input=texts, model=settings.EMBEDDING_MODEL,
             )
             return [r.embedding for r in sorted(resp.data, key=lambda r: r.index)]
         except openai.RateLimitError:
@@ -75,9 +75,10 @@ async def write_document(client_qdrant, doc: Document) -> None:
         batch = settings.EMBEDDING_BATCH_SIZE
         for start in range(0, len(doc.passages), batch):
             window = doc.passages[start:start + batch]
+            author_part = f"{doc.author} — " if doc.author else ""
             inputs = [
                 build_embedding_input(doc.passages, start + i, k_prev, k_next,
-                                      f"[{p.chapter_label}] ")
+                                      f"{author_part}{doc.title}, {p.chapter_label}")
                 for i, p in enumerate(window)
             ]
             vectors = await _embed(oa, inputs)
