@@ -19,26 +19,21 @@ Status of each collection's source material and its dual-pipeline ingestion
 `scripts/vendor_sources.py`; adapters read these local files, not the network.
 Re-acquire with `python3 scripts/vendor_sources.py --collection all`.
 
-## Reality of the remaining four
+## Re-ingesting a collection
 
-These collections are **not** sourced from local files — their old ingest scripts
-(`ingest/encyclicals.py`, `canon_law.py`, `councils.py`, `medieval.py`) **download
-from live web URLs** at ingest time (URLs hard-coded in each script) and parse them
-(HTML via BeautifulSoup for the first three; ThML for medieval). They still hold their
-**pre-rework** chunks in Supabase/Qdrant — no `anchor`/`chapter_key`, old-style
-references/casing — so the new reader cannot open them (they remain searchable via the
-legacy Qdrant points).
+Each collection has a `build_documents()` adapter (returning `list[Document]` of clean
+`Passage`s with anchors, chapter_keys, and cleaning) registered in `run_collection.py`
+`BUILDERS`. To (re-)ingest one:
 
-## To complete each one
+```bash
+python3 run_collection.py --collection <name> --target both --clean
+```
 
-Add a `build_documents()` adapter returning `list[Document]` of clean `Passage`s
-(anchors, chapter_keys, cleaning), register it in `run_collection.py` `BUILDERS`, then
-run `python3 run_collection.py --collection <name> --target both --clean`.
+`--clean` clears the collection's existing rows (via `reader_writer.clear_collection`)
+and deletes its old Qdrant points (via `delete_collection_points`) before writing, so a
+re-chunk never leaves superseded vectors behind.
 
-The old scripts already contain the fetch + parse logic to reuse:
-- **medieval** — uses `parse_thml_string()`; closest to the church-fathers adapter. Lowest effort.
-- **encyclicals / councils / canon-law** — each has a custom BeautifulSoup parser that
-  emits `(content, reference, position, metadata)`; the adapter wraps that, applies the
-  cleaners, and assigns anchors/chapter_keys.
-
-Risk: ingestion depends on those external sites still serving the same pages.
+Note on the four vendored web collections (`encyclicals`, `canon-law`, `councils`,
+`medieval`): adapters read the vendored local files under `sources/<collection>/`, not
+the network. Re-acquire the raw sources with
+`python3 scripts/vendor_sources.py --collection all` if they are missing.
