@@ -30,7 +30,10 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
     e.stopPropagation();
     if (!token) return;
     removeSearch(id);
-    if (id === activeSearchId) newSearch();
+    if (id === activeSearchId) {
+      router.push("/search");
+      newSearch();
+    }
     try {
       await deleteSearch(token, id);
     } catch {
