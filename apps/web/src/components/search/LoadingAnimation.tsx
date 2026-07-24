@@ -36,6 +36,18 @@ const PALETTE: Record<string, { hex: string; label: string; short: string }> = {
 const ACCENT = "#C4972A";
 const N_CHUNKS: number = 15;
 
+// Pick `count` distinct indices from [0, max) uniformly (partial Fisher–Yates).
+// Returned sorted for stable rendering. `count` is clamped to [1, max].
+function pickDistinct(count: number, max: number): number[] {
+  const k = Math.max(1, Math.min(count, max));
+  const pool = Array.from({ length: max }, (_, i) => i);
+  for (let i = 0; i < k; i++) {
+    const j = i + Math.floor(Math.random() * (max - i));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, k).sort((a, b) => a - b);
+}
+
 // ── Position helpers (parameterized — no global layout constants) ──────────
 
 function getSourcePos(
@@ -66,6 +78,7 @@ function getChunkPos(
 
 interface Props {
   collections: string[];
+  quota: number;
   isQueryDone: boolean;
   retrievalStarted: boolean;
   onReadyToShow: () => void;
@@ -77,7 +90,7 @@ interface Props {
   reservedTopRight?: { width: number; height: number } | null;
 }
 
-export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, onReadyToShow, onFadeComplete, reservedTopRight }: Props) {
+export function LoadingAnimation({ collections, quota, isQueryDone, retrievalStarted, onReadyToShow, onFadeComplete, reservedTopRight }: Props) {
   const active = collections.filter(k => k in PALETTE);
 
   // ── Container measurement ───────────────────────────────────────────────
@@ -256,12 +269,8 @@ export function LoadingAnimation({ collections, isQueryDone, retrievalStarted, o
 
     const w: Record<string, number[]> = {};
     act.forEach(key => {
-      const a = Math.floor(Math.random() * N_CHUNKS);
-      let b = Math.floor(Math.random() * (N_CHUNKS - 1)); if (b >= a) b++;
-      let c = Math.floor(Math.random() * (N_CHUNKS - 2));
-      if (c >= Math.min(a, b)) c++;
-      if (c >= Math.max(a, b)) c++;
-      w[key] = [a, b, c];
+      // One winner per requested passage (quota): 3, 4, or 5 distinct bubbles.
+      w[key] = pickDistinct(quota, N_CHUNKS);
     });
     setWinners(w);
 

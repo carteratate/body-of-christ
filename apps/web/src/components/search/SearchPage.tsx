@@ -463,6 +463,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         {showAnimation && (
           <LoadingAnimation
             collections={activeCollections}
+            quota={quota}
             isQueryDone={queryDone}
             retrievalStarted={searchPhase !== null || queryDone}
             onReadyToShow={handleAnimReadyToShow}
