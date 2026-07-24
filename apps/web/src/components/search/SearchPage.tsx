@@ -8,7 +8,7 @@ import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
 import { SearchResults } from "@/components/search/SearchResults";
 import { LoadingAnimation } from "@/components/search/LoadingAnimation";
-import { RateLimitModal, GuestSignupModal } from "@/components/common";
+import { RateLimitModal } from "@/components/common";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import {
   streamSearch,
@@ -89,7 +89,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // LoadingAnimation so its radial constellation shrinks to never overlap the bubble.
   const [bubbleSize, setBubbleSize] = useState<{ width: number; height: number } | null>(null);
   const [guestSearchDone, setGuestSearchDone] = useState(false);
-  const [showGuestModal, setShowGuestModal] = useState(false);
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
@@ -318,9 +317,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
               refreshSearchesRef.current();
             }
             if (isGuest) {
+              // Consume the free trial silently — let the guest read and explore
+              // the results. The signup modal is deferred until they attempt a
+              // next action (New Search / nav link), handled in GuestShell.
               markTrialUsed();
               setGuestSearchDone(true);
-              setShowGuestModal(true);
             }
             trackSearchPerformed({
               queryLength: query.length,
@@ -552,10 +553,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         limitType={rateLimitType}
         retryAfter={rateLimitRetryAfter}
         onDismiss={() => setRateLimitRetryAfter(null)}
-      />
-      <GuestSignupModal
-        isOpen={showGuestModal}
-        onDismiss={() => setShowGuestModal(false)}
       />
     </div>
   );

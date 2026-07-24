@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAppContext } from "./AppShell";
+import { useGuestGate } from "./guestGate";
 import { Library, Bookmark, Church, Settings, BarChart3, X } from "lucide-react";
 import { deleteSearch } from "@/lib/api";
 import { Toast, useToast } from "@/components/common";
@@ -17,11 +18,27 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { newSearch, searches, pendingSearch, activeSearchId, token, removeSearch, refreshSearches } =
     useAppContext();
+  const guestGate = useGuestGate();
   const { toast, showToast, dismissToast } = useToast();
 
   function handleNewSearch() {
+    // Guest funnel: New Search prompts signup instead of starting another search.
+    if (guestGate) {
+      guestGate.requestSignup();
+      return;
+    }
     router.push("/search");
     newSearch();
+    onCloseMobile();
+  }
+
+  // Guest funnel: nav links lead to gated areas, so they prompt signup instead.
+  function handleNavClick(e: React.MouseEvent) {
+    if (guestGate) {
+      e.preventDefault();
+      guestGate.requestSignup();
+      return;
+    }
     onCloseMobile();
   }
 
@@ -99,7 +116,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           >
             <Link
               href={`/search?restore=${s.id}`}
-              onClick={onCloseMobile}
+              onClick={handleNavClick}
               className="block flex-1 min-w-0 px-2 py-1.5 text-xs truncate"
               title={s.query}
             >
@@ -121,7 +138,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
       <div className="px-3 pb-4 pt-2 border-t border-brand-bg space-y-1 text-xs">
         <Link
           href="/sources"
-          onClick={onCloseMobile}
+          onClick={handleNavClick}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/sources" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -130,7 +147,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
         </Link>
         <Link
           href="/discover"
-          onClick={onCloseMobile}
+          onClick={handleNavClick}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/discover" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -139,7 +156,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
         </Link>
         <Link
           href="/bookmarks"
-          onClick={onCloseMobile}
+          onClick={handleNavClick}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/bookmarks" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -148,7 +165,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
         </Link>
         <Link
           href="/about"
-          onClick={onCloseMobile}
+          onClick={handleNavClick}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/about" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}
@@ -157,7 +174,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
         </Link>
         <Link
           href="/settings"
-          onClick={onCloseMobile}
+          onClick={handleNavClick}
           className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
             pathname === "/settings" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
           }`}

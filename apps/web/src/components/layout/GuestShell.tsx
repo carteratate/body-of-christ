@@ -1,10 +1,12 @@
 // apps/web/src/components/layout/GuestShell.tsx
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { AppContext, type AppContextValue } from "./AppShell";
 import { MobileTopBar } from "./MobileTopBar";
+import { GuestGateContext, type GuestGate } from "./guestGate";
+import { GuestSignupModal } from "@/components/common";
 
 const Sidebar = dynamic(
   () => import("./Sidebar").then((m) => ({ default: m.Sidebar })),
@@ -16,8 +18,19 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
   const [pendingSearch, setPendingSearchState] = useState<{ id: string; query: string } | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
 
   const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
+
+  // Any further navigation (New Search, nav links, a second query) opens the
+  // signup modal once the free trial search has been read. Also dismiss the
+  // mobile drawer so the modal isn't stacked behind it.
+  const requestSignup = useCallback(() => {
+    setMobileNavOpen(false);
+    setShowSignup(true);
+  }, []);
+
+  const guestGate = useMemo<GuestGate>(() => ({ requestSignup }), [requestSignup]);
 
   const newSearch = useCallback(() => {
     setSearchKey((k) => k + 1);
@@ -93,20 +106,23 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={value}>
-      <div className="flex h-full bg-brand-bg text-brand-primary">
-        <Sidebar isMobileOpen={mobileNavOpen} onCloseMobile={closeMobileNav} />
-        {mobileNavOpen && (
-          <div
-            className="max-md:fixed max-md:inset-0 max-md:z-30 max-md:bg-black/50"
-            onClick={closeMobileNav}
-            aria-hidden="true"
-          />
-        )}
-        <main className="flex flex-1 flex-col min-w-0">
-          <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => setMobileNavOpen(true)} />
-          {children}
-        </main>
-      </div>
+      <GuestGateContext.Provider value={guestGate}>
+        <div className="flex h-full bg-brand-bg text-brand-primary">
+          <Sidebar isMobileOpen={mobileNavOpen} onCloseMobile={closeMobileNav} />
+          {mobileNavOpen && (
+            <div
+              className="max-md:fixed max-md:inset-0 max-md:z-30 max-md:bg-black/50"
+              onClick={closeMobileNav}
+              aria-hidden="true"
+            />
+          )}
+          <main className="flex flex-1 flex-col min-w-0">
+            <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => setMobileNavOpen(true)} />
+            {children}
+          </main>
+        </div>
+        <GuestSignupModal isOpen={showSignup} onDismiss={() => setShowSignup(false)} />
+      </GuestGateContext.Provider>
     </AppContext.Provider>
   );
 }
