@@ -36,6 +36,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const {
     token, preferences,
     searchKey,
+    searches,
     setActiveSearchId,
     setPendingSearch, clearPendingSearch,
     refreshSearches,
@@ -48,6 +49,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // so the onDone closure always calls the up-to-date function.
   const refreshSearchesRef = useRef(refreshSearches);
   useEffect(() => { refreshSearchesRef.current = refreshSearches; });
+
+  // History list, kept in a ref so the restore effect can recover a past
+  // search's requested collections without re-running when the list refreshes.
+  const searchesRef = useRef(searches);
+  useEffect(() => { searchesRef.current = searches; });
 
   const searchParams = useSearchParams();
   const restoreId = searchParams.get("restore");
@@ -212,7 +218,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   // ── Restore flow ──────────────────────────────────────────────────────────
 
-  useEffect(() => {
+  // useLayoutEffect (not useEffect): when switching to another past search, the
+  // results are cleared below before the browser paints, so the loading
+  // placeholders appear on the same frame as the click — no stale-results flash.
+  useLayoutEffect(() => {
     if (!restoreId || !token) return;
     if (restoredForId.current === restoreId) return;
     const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -221,6 +230,14 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     // Entering an old conversation — remove the "New Search" placeholder
     pendingIdRef.current = null;
     clearPendingSearch();
+
+    // Clear the currently-shown search up front so loading placeholders appear
+    // immediately on click. Without this, the previous search's results (and
+    // query bubble) linger until getSearchResults resolves — a visible flash of
+    // stale content when switching between history items.
+    setResults([]);
+    setError(null);
+    setQueryBubbleVisible(false);
 
     const id = restoreId;
     const tok = token;
@@ -235,8 +252,20 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         setQueryBubbleVisible(true);
         setSearchValue(data.query);
         setActiveSearchId(id);
-        setSubmittedCollections(ALL_COLLECTION_KEYS);
-        setVisibleCollections(ALL_COLLECTION_KEYS);
+        // Restore the collections this search actually requested, so the
+        // "no passages met the threshold" notices only appear for sources that
+        // were asked for. Prefer the stored filters from history; if unavailable
+        // (e.g. deep-linked before history loaded), fall back to the collections
+        // present in the results — which yields no spurious notices.
+        const storedCollections = searchesRef.current.find((s) => s.id === id)?.filters?.collections;
+        const asked = Array.isArray(storedCollections)
+          ? storedCollections.filter((c): c is string => typeof c === "string" && ALL_COLLECTION_KEYS.includes(c))
+          : [];
+        const restored = asked.length > 0
+          ? asked
+          : [...new Set(data.results.map((r) => r.source.collection))];
+        setSubmittedCollections(restored);
+        setVisibleCollections(restored);
       })
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : "Failed to restore search";
