@@ -152,8 +152,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
           </button>
           <button
             onClick={handleExploreMore}
-            title="Explore more like this"
-            aria-label="Explore more like this"
+            title="Query more like this"
+            aria-label="Query more like this"
             className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           >
             <Search size={16} />

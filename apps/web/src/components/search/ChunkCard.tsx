@@ -292,15 +292,14 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
                   onClick={handleReadMore}
                   className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
-                  Read More
+                  Read in Context
                 </button>
                 <button
                   onClick={handleExploreMore}
-                  aria-label="Query more sources like this"
+                  aria-label="Query more like this"
                   className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
-                  <span className="max-md:hidden">Query more sources like this</span>
-                  <span className="hidden max-md:inline">Explore more</span>
+                  Query More Like This
                 </button>
               </div>
             </div>
