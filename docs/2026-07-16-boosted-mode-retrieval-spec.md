@@ -1,5 +1,14 @@
 # TheoCorpus V5 — Boosted Mode: Complete Hyperparameter Specification
 
+> **Status: design spec — NOT implemented.** This describes the intended
+> retrieval architecture, not live behavior. As of 2026-07-16 no retrieval code
+> implements Stage 3's kind/grounding weighting (`services/api/app/rag/steps/rrf.py`
+> has no kind, grounding, or weight references at all), and Stages 4-7 as
+> specified here do not exist. The enrichment side that feeds this — facet
+> kinds, grounding tiers, the `juridical` kind — IS built, in `datapipeline/`.
+> Previously kept as `services/api/app/rag/BOOSTED_PLAN.md`; moved here so it
+> is not mistaken for a description of the code it sat next to.
+
 Architecture: per-source through Cohere → global merge → single global Haiku rerank → composition.
 Modes: **Direct** / **Reflective**. All values are starting points pending gold-set tuning.
 
@@ -15,7 +24,18 @@ Modes: **Direct** / **Reflective**. All values are starting points pending gold-
 | Classification gate | confidence below **high** → intent modifiers no-op; mode defaults carry the query |
 | HyDE (Haiku) | collection-specific hypothetical passage; **Bible: one call returning all 3 style variants**, each embedded separately |
 
-Intent labels: `doctrinal_lookup`, `passage_meaning`, `moral_practical`, `devotional_exploratory`, `typological_connection`, `historical_factual`.
+Intent labels: `doctrinal_lookup`, `passage_meaning`, `moral_practical`, `devotional_exploratory`, `typological_connection`, `historical_factual`, `juridical_lookup`.
+
+`juridical_lookup` covers queries about validity/liceity, canonical obligations,
+permissions and prohibitions, jurisdiction or competence, ecclesiastical office,
+penalties or procedures, and what an operative decree establishes or suppresses
+— e.g. "Who can validly witness a Catholic marriage?", "What penalty applies to
+this canonical delict?". It is a distinct intent from `doctrinal_lookup`
+("Why does the Church teach marriage is indissoluble?" stays doctrinal even
+though canon law also addresses marriage) and from `moral_practical` ("What
+virtues should spouses practice?" is moral, not juridical). A query about what
+a decree changed historically stays `historical_factual` unless the requested
+answer is specifically the operative legal effect.
 
 ---
 
@@ -80,21 +100,43 @@ Rule preserved from spec: sparse annotation path active only for fully enriched 
 | doctrinal | 1.00 | 0.90 |
 | scriptural | 1.00 | 0.95 |
 | moral | 1.00 | 0.90 |
+| juridical | 1.00 | 0.90 |
 | philosophical | 0.90 | 1.00 |
 | historical | 0.90 | 0.95 |
 | typological | 0.85 | 1.00 |
 | devotional | 0.85 | 1.00 |
 
+`juridical` (legal/ecclesial norms — validity, obligation, permission,
+competence, penalty; see `enrichment/schema.py` KIND_VALUES) is new as of the
+enrichment taxonomy update; it did not exist when this table was first
+written, so it's placed alongside `moral`/`doctrinal` under the same
+reasoning — a norm-stating, answer-seeking kind best served at full weight in
+Direct mode. A separate, older planning doc used the name `legal_effect` for
+this kind; `juridical` is the one canonical name going forward — do not
+reintroduce `legal_effect` as a second runtime value.
+
 **Intent × kind modifier table** (unlisted cells = 1.0; keep sparse):
 
-| intent ↓ / kind → | doctrinal | scriptural | typological | devotional | moral | historical |
-|---|---|---|---|---|---|---|
-| doctrinal_lookup | 1.10 | 1.05 | 0.90 | 0.90 | — | — |
-| passage_meaning | — | 1.10 | 1.05 | — | — | — |
-| moral_practical | 1.05 | — | 0.85 | 0.90 | 1.20 | — |
-| devotional_exploratory | 0.90 | — | 1.10 | 1.20 | 0.90 | — |
-| typological_connection | 0.90 | 1.10 | 1.20 | — | 0.85 | — |
-| historical_factual | — | — | 0.85 | 0.85 | — | 1.20 |
+| intent ↓ / kind → | doctrinal | scriptural | typological | devotional | moral | historical | juridical |
+|---|---|---|---|---|---|---|---|
+| doctrinal_lookup | 1.10 | 1.05 | 0.90 | 0.90 | — | — | 1.05 |
+| passage_meaning | — | 1.10 | 1.05 | — | — | — | — |
+| moral_practical | 1.05 | — | 0.85 | 0.90 | 1.20 | — | — |
+| devotional_exploratory | 0.90 | — | 1.10 | 1.20 | 0.90 | — | 0.85 |
+| typological_connection | 0.90 | 1.10 | 1.20 | — | 0.85 | — | 0.85 |
+| historical_factual | — | — | 0.85 | 0.85 | — | 1.20 | 1.05 |
+| juridical_lookup | 0.90 | 0.85 | 0.80 | 0.80 | 0.95 | 1.05 | 1.20 |
+
+`juridical_lookup` is a new row (see Stage 0's intent labels): it strongly
+boosts the `juridical` kind itself, mildly boosts `historical` (juridical
+facts are often historically framed — a canon's promulgation date, a
+suppressed office), and deprioritizes `typological`/`devotional` (least
+relevant when the user wants a validity/competence/penalty answer). The other
+intent rows each get a `juridical` cell for the same reason every other kind
+has one — `moral_practical` deliberately gets no boost, since a query about
+virtue is moral, not juridical, even when canon law also touches the same
+topic (e.g. "What virtues should spouses practice?" vs. "What makes a
+marriage canonically valid?").
 
 **Combination formulas (order of operations):**
 
@@ -106,9 +148,45 @@ Rule preserved from spec: sparse annotation path active only for fully enriched 
 2. Per-kind weight:
    kw(kind) = clamp( mode_base(kind) × intent_mod(kind), 0.80, 1.25 )
 
-3. Secondary-kind max rule (facet side):
-   w = max( kw(primary_kind), (kw(primary_kind) + kw(secondary_kind)) / 2 )
-   (a dual-kind facet is never worse off than a single-kind one)
+3. Secondary-kind gated, capped bonus (facet side) — REVISED. The original
+   rule here was `w = max(kw(primary), (kw(primary)+kw(secondary))/2)`, which
+   made a secondary kind pure, unconditional upside: it could never score a
+   facet worse than a single-kind one, so as secondary-kind assignment became
+   common (a 26-chunk enrichment trial saw secondary kinds on the large
+   majority of facets in several collections — e.g. 50/52 Bible, 11/11
+   papal-documents) the max() rule stopped discriminating between facets that
+   genuinely serve a second query intent and facets that merely tolerate a
+   second label. Replaced with:
+
+   secondary_bonus_cap    = 0.10   (tunable; starting point, pending gold-set)
+   secondary_match_factor = 0.5    (tunable; starting point, pending gold-set)
+
+   secondary_matches_intent = intent_mod(secondary_kind) > 1.0
+       (this query's classified intent must itself favor the secondary kind
+        per the intent × kind modifier table above — not merely "the facet
+        happens to carry a second label")
+
+   w = kw(primary_kind) + (
+         0                                                    if not secondary_matches_intent
+         else min(secondary_bonus_cap,
+                  secondary_match_factor × max(0, kw(secondary_kind) − kw(primary_kind)))
+       )
+
+   Primary kind is the sole determinant of eligibility and always the
+   dominant weight; a secondary kind can nudge the score up by at most
+   secondary_bonus_cap, and only for queries whose classified intent actually
+   matches it — worth nothing on an intent that doesn't, instead of always
+   worth something under the old rule.
+
+   ⚠️ STATUS: no retrieval code implements Stage 3's kind/grounding weighting
+   yet (checked `services/api/app/rag/steps/rrf.py` — no kind/grounding/weight
+   references at all as of this note). This formula is the intended design
+   for when that weighting is built, not a description of live behavior.
+   When it is implemented, build it with three ablation modes selectable by
+   config: (a) primary-kind weight only, no secondary bonus at all; (b) this
+   gated capped-bonus formula; (c) [do NOT resurrect] the old unconditional
+   max() rule, kept only as a documented cautionary baseline to compare
+   against in offline evaluation, not as a production option.
 
 4. Facet RRF contribution = strategy_weight × grounding_mult × w × RRF(rank)
 ```
