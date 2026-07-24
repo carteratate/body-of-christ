@@ -73,6 +73,26 @@ class Settings:
     MIN_FACETS: int = 2
     MAX_FACETS: int = 12
 
+    # --- Per-pass temperature ---
+    # No temperature was previously set anywhere, so every call defaulted to
+    # the Anthropic API's default of 1.0 for all three passes. That's a poor
+    # fit for the two structured-extraction passes: Pass 2 requires verbatim
+    # quote fidelity and strict list/enum adherence, and a chunk with heavy
+    # nested quotation (CCC 1373's Chrysostom block-quote) reproducibly caused
+    # the model to emit `labels` as a JSON-encoded string instead of a native
+    # array at temperature 1.0.
+    #
+    # claude-opus-4-8 (Pass 1) does NOT support adjustable sampling temperature
+    # at all — the API rejects any value other than 1.0 with "`temperature` is
+    # deprecated for this model." PASS1_TEMPERATURE must stay 1.0; it exists as
+    # a named setting (rather than omitting temperature for Pass 1 specifically)
+    # so the per-pass intent stays visible here even though it's currently a
+    # no-op. Re-tune this if a future Opus generation restores temperature
+    # control. Sonnet 4.6 (Pass 2/3) does support it, confirmed empirically.
+    PASS1_TEMPERATURE: float = 1.0   # generation — fixed; Opus 4.8 rejects any other value
+    PASS2_TEMPERATURE: float = 0.0   # classification — strict extraction, deterministic
+    PASS3_TEMPERATURE: float = 0.3   # annotation — format-strict, some rephrasing variety
+
     # --- Pass 1 takeaway pilot ---
     # When on: MergedFacet.working_text (Pass 1's raw working treatment) is
     # persisted alongside the takeaway (cache.enrichment + Qdrant facets payload)
@@ -80,6 +100,14 @@ class Settings:
     # (default, for full runs): working_text is dropped at merge time — never
     # embedded, never persisted downstream.
     PILOT_MODE: bool = False
+
+    # --- Batch telemetry (non-blocking; enrichment/telemetry.py) ---
+    # Fraction of labels in a collection (or within one primary kind) carrying
+    # a secondary kind above which a warning is logged. Starting point: the
+    # Pass 2 prompt's rule 8 treats a secondary kind as an exception, so a
+    # sustained rate above 60% signals the model has drifted back toward
+    # decorative secondary-kind assignment.
+    SECONDARY_KIND_SATURATION_WARN_THRESHOLD: float = 0.60
 
     # --- Cost estimation constants (USD per 1M tokens) ---
     OPUS_INPUT_COST_PER_M: float = 5.0

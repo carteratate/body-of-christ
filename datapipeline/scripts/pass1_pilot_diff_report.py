@@ -115,7 +115,7 @@ async def _generate_with_instrumentation(gen_client, gen_system: str, context: s
     (by design, since it only needs to know success/failure), but this report
     specifically needs it.
     """
-    generation, _usage = await gen_client.generate(gen_system, context)
+    generation, _usage = await gen_client.generate(gen_system, context, settings.PASS1_TEMPERATURE)
     first_failures: dict[int, list[str]] = {}
     for i, f in enumerate(generation.facets):
         failures = check_takeaway(f.takeaway, f.text, passage_content)
@@ -128,7 +128,8 @@ async def _generate_with_instrumentation(gen_client, gen_system: str, context: s
 
     error_text = "; ".join(
         f"facet[{i}] {msg}" for i, msgs in first_failures.items() for msg in msgs)
-    retry_generation, _usage2 = await gen_client.generate(gen_system, context, retry_errors=error_text)
+    retry_generation, _usage2 = await gen_client.generate(
+        gen_system, context, settings.PASS1_TEMPERATURE, retry_errors=error_text)
     retry_failed = any(
         check_takeaway(f.takeaway, f.text, passage_content) for f in retry_generation.facets)
     final = None if retry_failed else retry_generation

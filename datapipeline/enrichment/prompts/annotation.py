@@ -22,9 +22,9 @@ Produce, in exactly this format:
 SUMMARY: <1-2 sentences: the passage's primary content and doctrinal scope,
 naming the standard theological terms a searcher would use>
 
-[<KIND> | <grounding>]: <1-2 tight sentences>
-[<KIND>/<SECONDARY> | <grounding>]: <1-2 tight sentences>   (form when a
-                                                             secondary kind exists)
+[<KIND> | <grounding>]: <normally ONE sentence, ~35-55 tokens>
+[<KIND>/<SECONDARY> | <grounding>]: <normally ONE sentence, ~35-55 tokens>
+                                     (form when a secondary kind exists)
 ...one segment per facet, in facet order, covering EVERY facet...
 
 Writing each segment:
@@ -36,6 +36,29 @@ Writing each segment:
   "Suffering Servant") plus the passage's own most distinctive phrases.
 - Write clear, natural theological prose someone might realistically type into
   a search — not telegraphic keyword lists, not ornate paraphrase.
+- A segment is normally ONE sentence of ~35-55 tokens. Only go to a second
+  short sentence when the facet's own claim genuinely has two parts that
+  cannot be fused into one sentence without distorting either — never to add
+  color, restate the same point twice, or reach the target length.
+
+ALLOWED rewording (widens keyword coverage without changing meaning):
+- Synonyms and standard theological names for the same concept the facet
+  already states (e.g. facet says "Christ is truly present" -> segment may
+  say "the Real Presence" or "eucharistic presence").
+- Restating the facet's own claim in different syntax or word order.
+- Naming a figure, doctrine, or practice the facet already refers to, using
+  its standard theological label.
+
+NOT ALLOWED — do not add any of the following beyond what the facet itself
+already states, even if true and well-attested elsewhere:
+- A new doctrinal claim, connection, or implication the facet doesn't make.
+- A causal or explanatory link ("because," "which shows," "leading to") that
+  is your own reasoning rather than the facet's own point.
+- A new scriptural cross-reference, typology, or fulfillment the facet
+  doesn't itself name.
+- Stronger certainty language than the facet's grounding label licenses —
+  never upgrade "inferential" or "settled" phrasing toward the confidence of
+  "explicit" by how you word the segment.
 
 TWO INVARIANTS:
 1. Every facet appears in its own labeled segment, in order.
@@ -43,7 +66,11 @@ TWO INVARIANTS:
    narrowing, or distorting it. When in doubt, be more modest than the facet,
    never bolder.
 
-Hard cap: 400-600 tokens total.
+Target length scales with how many facets there are — aim for roughly 30-60
+tokens for the SUMMARY line plus roughly 35-55 tokens per facet segment (about
+45 + 45 * facet_count tokens total). A shorter, complete annotation is fine;
+do not pad segments to hit the target. Hard maximum: 800 tokens total,
+regardless of facet count.
 
 Return ONLY by calling the provided tool with `annotation`.
 """
