@@ -38,7 +38,10 @@ async def ensure_facets(client) -> None:
     await client.create_collection(
         collection_name=FACETS,
         vectors_config=VectorParams(size=settings.EMBEDDING_DIMS, distance=Distance.COSINE))
-    for field in ("collection", "chunk_id", "grounding", "kind", "kind_secondary"):
+    # "facet_id" (the stable f1/f2/... id) is indexed alongside the positional
+    # "facet_index" so a re-embed's delete-by-chunk_id step, and any future
+    # by-facet_id lookup, don't have to rely on array position alone.
+    for field in ("collection", "chunk_id", "grounding", "kind", "kind_secondary", "facet_id"):
         await client.create_payload_index(
             collection_name=FACETS, field_name=field, field_schema=PayloadSchemaType.KEYWORD)
 
@@ -49,7 +52,7 @@ async def ensure_questions(client) -> None:
     await client.create_collection(
         collection_name=QUESTIONS,
         vectors_config=VectorParams(size=settings.EMBEDDING_DIMS, distance=Distance.COSINE))
-    for field in ("collection", "chunk_id", "facet_index", "facet_grounding",
+    for field in ("collection", "chunk_id", "facet_index", "facet_id", "facet_grounding",
                  "facet_kind", "facet_kind_secondary"):
         await client.create_payload_index(
             collection_name=QUESTIONS, field_name=field, field_schema=PayloadSchemaType.KEYWORD)
