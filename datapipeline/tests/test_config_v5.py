@@ -51,6 +51,15 @@ def test_cost_constants_present():
     assert s.EMBED_COST_PER_M == 0.13
 
 
+def test_per_pass_temperature_defaults():
+    s = Settings(**_base_kwargs())
+    # Pass 1 (Opus 4.8) rejects any temperature other than 1.0 outright, so
+    # this must stay 1.0 — see config.py's comment for the empirical finding.
+    assert s.PASS1_TEMPERATURE == 1.0
+    assert s.PASS2_TEMPERATURE == 0.0
+    assert s.PASS3_TEMPERATURE == 0.3
+
+
 def test_pilot_mode_defaults_false():
     s = Settings(**_base_kwargs())
     assert s.PILOT_MODE is False

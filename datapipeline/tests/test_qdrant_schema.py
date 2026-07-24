@@ -41,6 +41,8 @@ async def test_ensure_facets_and_questions_indexes():
     assert ("facets", "kind") in c.indexes
     assert ("facets", "grounding") in c.indexes
     assert ("facets", "kind_secondary") in c.indexes
+    assert ("facets", "facet_id") in c.indexes
     assert ("questions", "facet_kind") in c.indexes
     assert ("questions", "facet_grounding") in c.indexes
     assert ("questions", "facet_kind_secondary") in c.indexes
+    assert ("questions", "facet_id") in c.indexes

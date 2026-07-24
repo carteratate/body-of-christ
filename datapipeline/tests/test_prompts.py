@@ -37,14 +37,11 @@ def test_compose_describes_three_part_facet_in_order():
     assert s.index("TEXT —") < s.index("TAKEAWAY —") < s.index("QUESTION —")
 
 
-def test_compose_takeaway_word_and_sentence_bounds():
+def test_compose_takeaway_sentence_bounds():
+    # The prompt asks for 2-4 sentences; validate_generation()'s hard cap
+    # (enrichment/validation.py) matches this at 4 sentences.
     s = compose_generation_system("marker")
-    assert "1-2 sentences, 30-70 words" in s
-
-
-def test_compose_takeaway_forbids_banned_openers():
-    s = compose_generation_system("marker")
-    assert '"Thus," "Therefore," or "In this way."' in s
+    assert "2-4 sentences" in s
 
 
 def test_compose_output_contract_lists_all_three_fields():
@@ -83,8 +80,15 @@ def test_classification_prompt_lists_full_taxonomy():
     s = classification_system("bible")
     for term in ["explicit", "settled", "inferential",
                  "doctrinal", "scriptural", "typological", "philosophical",
-                 "moral", "historical", "devotional"]:
+                 "moral", "historical", "devotional", "juridical"]:
         assert term in s
+
+
+def test_classification_prompt_distinguishes_juridical_from_moral_historical_doctrinal():
+    s = classification_system("bible")
+    assert "Juridical vs moral" in s
+    assert "Juridical vs historical" in s
+    assert "Juridical vs doctrinal" in s
 
 
 def test_classification_splices_collection_note():
@@ -119,9 +123,47 @@ def test_classification_mentions_kind_secondary():
     assert "kind_secondary" in s
 
 
+def test_classification_requires_facet_id_on_every_label():
+    s = classification_system("bible")
+    assert "facet_id" in s
+    assert "no duplicates, no omissions, and no invented ids" in s
+    assert "identity is established by `facet_id`" in s
+
+
 def test_classification_forbids_distributing_for_variety():
     s = classification_system("bible")
     assert "Do not distribute labels to achieve variety" in s
+
+
+# --- Grounding: textual distance only, not tradition/authority/certainty ---
+
+def test_grounding_is_framed_as_textual_distance_only():
+    s = classification_system("bible")
+    assert "TEXTUAL DISTANCE ONLY" in s
+    assert "Judge only the relationship between the claim and this text" in s
+
+
+def test_grounding_settled_no_longer_cites_tradition_as_a_warrant():
+    s = classification_system("bible")
+    assert "tradition has long read it so" not in s
+    assert "became the standard reading" not in s
+
+
+def test_grounding_boundary_rules_reject_authority_as_shortening_distance():
+    s = classification_system("bible")
+    assert "Authority does not shorten distance" in s
+    assert "never by themselves move a claim from inferential to settled" in s
+
+
+def test_grounding_typology_and_fulfillment_are_inferential_by_default():
+    s = classification_system("bible")
+    assert "inferential by default" in s
+
+
+@pytest.mark.parametrize("collection", ALL)
+def test_collection_notes_do_not_treat_reception_as_settled(collection):
+    note = COLLECTION_NOTES[collection]
+    assert "usually settled or inferential" not in note
 
 
 # --- Pass 3: annotation assembly ---

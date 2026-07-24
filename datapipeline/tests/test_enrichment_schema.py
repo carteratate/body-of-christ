@@ -2,8 +2,8 @@
 import pytest
 from pydantic import ValidationError
 from enrichment.schema import (
-    GenFacet, GenerationOutput, ClassificationOutput, AnnotationOutput, MergedEnrichment,
-    GROUNDING_VALUES, KIND_VALUES,
+    GenFacet, GenerationOutput, IdentifiedFacet, ClassificationOutput, AnnotationOutput,
+    MergedEnrichment, GROUNDING_VALUES, KIND_VALUES, identify_facets,
     generation_tool_schema, classification_tool_schema, annotation_tool_schema,
 )
 
@@ -34,6 +34,33 @@ def test_generation_tool_schema_facet_property_order():
     assert list(facet_schema["properties"]) == ["text", "takeaway", "question"]
 
 
+# --- identify_facets(): stable, deterministic facet ids ---
+
+def test_identify_facets_assigns_sequential_ids_from_position():
+    facets = [GenFacet(text=f"t{i}", takeaway=f"tk{i}", question=f"q{i}") for i in range(3)]
+    identified = identify_facets(facets)
+    assert [f.id for f in identified] == ["f1", "f2", "f3"]
+    assert [f.text for f in identified] == ["t0", "t1", "t2"]
+    assert [f.takeaway for f in identified] == ["tk0", "tk1", "tk2"]
+    assert [f.question for f in identified] == ["q0", "q1", "q2"]
+
+
+def test_identify_facets_is_deterministic_across_calls():
+    facets = [GenFacet(text="t", takeaway="tk", question="q") for _ in range(5)]
+    ids_first = [f.id for f in identify_facets(facets)]
+    ids_second = [f.id for f in identify_facets(facets)]
+    assert ids_first == ids_second == ["f1", "f2", "f3", "f4", "f5"]
+
+
+def test_identify_facets_empty_list():
+    assert identify_facets([]) == []
+
+
+def test_identified_facet_requires_all_fields():
+    with pytest.raises(ValidationError):
+        IdentifiedFacet(id="f1", text="t", takeaway="tk")  # missing question
+
+
 def test_classification_rejects_bad_kind():
     with pytest.raises(ValidationError):
         ClassificationOutput.model_validate(
@@ -48,20 +75,33 @@ def test_classification_rejects_bad_grounding():
 
 def test_classification_label_kind_secondary_optional():
     c = ClassificationOutput.model_validate(
-        {"labels": [{"grounding": "explicit", "evidence": "x", "kind": "doctrinal"}]})
+        {"labels": [{"facet_id": "f1", "grounding": "explicit", "evidence": "x", "kind": "doctrinal"}]})
     assert c.labels[0].kind_secondary is None
 
 
 def test_classification_label_kind_secondary_accepted():
     c = ClassificationOutput.model_validate(
-        {"labels": [{"grounding": "settled", "evidence": "x", "kind": "typological",
+        {"labels": [{"facet_id": "f1", "grounding": "settled", "evidence": "x", "kind": "typological",
                     "kind_secondary": "devotional"}]})
     assert c.labels[0].kind_secondary == "devotional"
 
 
 def test_taxonomy_values():
     assert GROUNDING_VALUES == ("explicit", "settled", "inferential")
-    assert "typological" in KIND_VALUES and len(KIND_VALUES) == 7
+    assert "typological" in KIND_VALUES and len(KIND_VALUES) == 8
+    assert "juridical" in KIND_VALUES
+
+
+def test_classification_accepts_juridical_kind():
+    c = ClassificationOutput.model_validate(
+        {"labels": [{"facet_id": "f1", "grounding": "explicit", "evidence": "x", "kind": "juridical"}]})
+    assert c.labels[0].kind == "juridical"
+
+
+def test_label_requires_facet_id():
+    with pytest.raises(ValidationError):
+        ClassificationOutput.model_validate(
+            {"labels": [{"grounding": "explicit", "evidence": "x", "kind": "doctrinal"}]})
 
 
 def test_tool_schemas_are_dicts_with_properties():

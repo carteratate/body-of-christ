@@ -82,7 +82,7 @@ class _StubGenClient:
     def __init__(self):
         self.calls = 0
 
-    async def generate(self, system, context, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None):
         self.calls += 1
         from enrichment.schema import GenerationOutput
         from enrichment.client import Usage

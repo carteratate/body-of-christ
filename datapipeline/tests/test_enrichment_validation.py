@@ -6,23 +6,24 @@ os.environ.setdefault("QDRANT_URL", "http://localhost")
 os.environ.setdefault("QDRANT_API_KEY", "x")
 
 import pytest
-from enrichment.schema import GenFacet, Label
+from enrichment.schema import GenFacet, IdentifiedFacet, Label
 from enrichment.validation import (
     ValidationFailedError, normalize_for_containment,
-    validate_classification, validate_annotation, split_sentences,
-    check_takeaway, validate_generation, validate_evidence_style,
+    validate_classification, reorder_labels_by_facet_id, validate_annotation,
+    split_sentences, check_takeaway, validate_generation, validate_evidence_style,
 )
 
 CONTENT = "In the beginning God created the heavens and the earth."
 
 
-def _facet(text="f", question="q", takeaway="tk"):
-    return GenFacet(text=text, takeaway=takeaway, question=question)
+def _facet(id="f1", text="f", question="q", takeaway="tk"):
+    return IdentifiedFacet(id=id, text=text, takeaway=takeaway, question=question)
 
 
-def _label(grounding="explicit", evidence="God created the heavens and the earth",
+def _label(facet_id="f1", grounding="explicit", evidence="God created the heavens and the earth",
            kind="doctrinal", kind_secondary=None):
-    return Label(grounding=grounding, evidence=evidence, kind=kind, kind_secondary=kind_secondary)
+    return Label(facet_id=facet_id, grounding=grounding, evidence=evidence, kind=kind,
+                 kind_secondary=kind_secondary)
 
 
 # --- split_sentences: conservative splitter, must not be fooled by abbreviations
@@ -124,8 +125,8 @@ def test_classification_passes_with_matching_counts_and_explicit_quote():
 
 
 def test_classification_fails_on_facet_label_count_mismatch():
-    facets = [_facet(), _facet()]
-    labels = [_label()]
+    facets = [_facet(id="f1"), _facet(id="f2")]
+    labels = [_label(facet_id="f1")]
     with pytest.raises(ValidationFailedError):
         validate_classification(facets, labels, CONTENT)
 
@@ -154,6 +155,67 @@ def test_classification_settled_grounding_does_not_require_verbatim_quote():
     facets = [_facet()]
     labels = [_label(grounding="settled", evidence="tradition-pattern: not a literal quote")]
     validate_classification(facets, labels, CONTENT)  # should not raise
+
+
+# --- validate_classification: facet_id bijection (identity, never position) ---
+
+def test_classification_accepts_reordered_labels_matched_by_facet_id():
+    facets = [_facet(id="f1"), _facet(id="f2")]
+    # labels come back in the opposite order — still valid, joined by facet_id
+    labels = [_label(facet_id="f2", kind="moral"), _label(facet_id="f1", kind="doctrinal")]
+    validate_classification(facets, labels, CONTENT)  # should not raise
+
+
+def test_classification_fails_on_missing_facet_id():
+    facets = [_facet(id="f1"), _facet(id="f2")]
+    labels = [_label(facet_id="f1"), _label(facet_id="f1")]  # f2 never classified
+    with pytest.raises(ValidationFailedError) as exc_info:
+        validate_classification(facets, labels, CONTENT)
+    assert any("missing classification for facet_id" in e for e in exc_info.value.errors)
+
+
+def test_classification_fails_on_duplicate_facet_id():
+    facets = [_facet(id="f1"), _facet(id="f2")]
+    labels = [_label(facet_id="f1"), _label(facet_id="f1")]
+    with pytest.raises(ValidationFailedError) as exc_info:
+        validate_classification(facets, labels, CONTENT)
+    assert any("duplicate facet_id" in e for e in exc_info.value.errors)
+
+
+def test_classification_fails_on_unknown_facet_id():
+    facets = [_facet(id="f1"), _facet(id="f2")]
+    labels = [_label(facet_id="f1"), _label(facet_id="f99")]
+    with pytest.raises(ValidationFailedError) as exc_info:
+        validate_classification(facets, labels, CONTENT)
+    assert any("unknown facet_id" in e for e in exc_info.value.errors)
+
+
+def test_classification_never_silently_repairs_reordered_ids_missing_evidence():
+    # Even a facet_id mismatch that "looks fixable" (e.g. off-by-one) must be
+    # rejected outright rather than guessed at.
+    facets = [_facet(id="f1"), _facet(id="f2"), _facet(id="f3")]
+    labels = [_label(facet_id="f1"), _label(facet_id="f2")]  # missing f3, only 2 of 3
+    with pytest.raises(ValidationFailedError):
+        validate_classification(facets, labels, CONTENT)
+
+
+# --- reorder_labels_by_facet_id ---
+
+def test_reorder_labels_by_facet_id_realigns_to_facet_order():
+    facets = [_facet(id="f1"), _facet(id="f2"), _facet(id="f3")]
+    labels = [_label(facet_id="f3", kind="historical"),
+             _label(facet_id="f1", kind="doctrinal"),
+             _label(facet_id="f2", kind="moral")]
+    ordered = reorder_labels_by_facet_id(facets, labels)
+    assert [lab.facet_id for lab in ordered] == ["f1", "f2", "f3"]
+    assert [lab.kind for lab in ordered] == ["doctrinal", "moral", "historical"]
+
+
+def test_reorder_labels_by_facet_id_is_identity_when_already_in_order():
+    facets = [_facet(id="f1"), _facet(id="f2")]
+    labels = [_label(facet_id="f1", kind="doctrinal"), _label(facet_id="f2", kind="moral")]
+    ordered = reorder_labels_by_facet_id(facets, labels)
+    assert [lab.kind for lab in ordered] == ["doctrinal", "moral"]
 
 
 # --- validate_annotation ---
@@ -205,19 +267,97 @@ def test_annotation_fails_when_secondary_kind_missing_from_header():
         validate_annotation(facets, annotation)
 
 
-def test_annotation_soft_warns_when_outside_token_target():
+def test_annotation_no_warning_for_short_complete_annotation_below_target():
+    # A short, complete annotation must never be warned about merely for being
+    # shorter than the facet-aware target (target for 1 facet is 45+45=90).
     facets = [_fwl()]
     annotation = "SUMMARY: short.\n\n[DOCTRINAL | explicit]: tiny."
     warnings = validate_annotation(facets, annotation)
-    assert any("token" in w for w in warnings)
+    assert not any("token" in w for w in warnings)
 
 
-def test_annotation_no_warning_when_within_token_target():
+def test_annotation_warns_when_materially_above_facet_aware_target():
+    # 1 facet -> target 90, soft threshold max(90+75, ceil(90*1.25))=165.
+    # 500-token body is far past that, so this must warn.
     facets = [_fwl()]
     body = " ".join(["word"] * 500)
     annotation = f"SUMMARY: {body}\n\n[DOCTRINAL | explicit]: text."
     warnings = validate_annotation(facets, annotation)
+    assert any("token" in w for w in warnings)
+    assert any("target of ~90 tokens" in w for w in warnings)
+
+
+def test_annotation_hard_fails_when_exceeding_800_tokens():
+    facets = [_fwl()]
+    body = " ".join(["word"] * 850)
+    annotation = f"SUMMARY: {body}\n\n[DOCTRINAL | explicit]: text."
+    with pytest.raises(ValidationFailedError) as exc_info:
+        validate_annotation(facets, annotation)
+    assert any("800" in e for e in exc_info.value.errors)
+
+
+def _build_annotation(n_facets: int, summary_tokens: int, segment_tokens: int) -> str:
+    """Builds a structurally valid annotation (1 SUMMARY line + n_facets
+    segments, all doctrinal/explicit) with a precisely controllable token
+    count. Empirically (cl100k_base): "word" tokenizes to exactly 1 token,
+    "SUMMARY: " to 4, and each "[DOCTRINAL | explicit]: " header to 8, with a
+    constant +1 token of overhead from the blank line after SUMMARY — so the
+    total is exactly 5 + summary_tokens + n_facets * (8 + segment_tokens)."""
+    summary_body = " ".join(["word"] * summary_tokens)
+    segments = "\n".join(
+        "[DOCTRINAL | explicit]: " + " ".join(["word"] * segment_tokens)
+        for _ in range(n_facets)
+    )
+    return f"SUMMARY: {summary_body}\n\n{segments}"
+
+
+def _segment_tokens_for_total(n_facets: int, summary_tokens: int, desired_total: int) -> int:
+    """Inverts _build_annotation's exact token formula to hit `desired_total`."""
+    return max((desired_total - 5 - summary_tokens) // n_facets - 8, 1)
+
+
+def _expected_threshold(target: int) -> int:
+    import math
+    return max(target + 75, math.ceil(target * 1.25))
+
+
+@pytest.mark.parametrize("n", [2, 5, 8, 12])
+def test_annotation_target_tokens_formula_boundary(n):
+    from enrichment.validation import annotation_target_tokens
+    assert annotation_target_tokens(n) == 45 + 45 * n
+
+
+@pytest.mark.parametrize("n", [2, 5, 8, 12])
+def test_annotation_no_warning_at_facet_aware_target(n):
+    facets = [_fwl() for _ in range(n)]
+    target = 45 + 45 * n
+    # Land comfortably at/under the target (well inside the soft threshold).
+    summary_tokens = 20
+    seg_tokens = _segment_tokens_for_total(n, summary_tokens, desired_total=target - 30)
+    annotation = _build_annotation(n, summary_tokens, seg_tokens)
+    warnings = validate_annotation(facets, annotation)
     assert not any("token" in w for w in warnings)
+
+
+@pytest.mark.parametrize("n", [2, 5, 8, 12])
+def test_annotation_warns_when_materially_above_target_for_facet_count(n):
+    facets = [_fwl() for _ in range(n)]
+    target = 45 + 45 * n
+    threshold = _expected_threshold(target)
+    # Comfortably past the soft threshold, capped well under the 800 hard cap.
+    summary_tokens = 20
+    desired_total = min(threshold + 50, 795)
+    seg_tokens = _segment_tokens_for_total(n, summary_tokens, desired_total)
+    annotation = _build_annotation(n, summary_tokens, seg_tokens)
+    warnings = validate_annotation(facets, annotation)
+    assert any("token" in w for w in warnings)
+
+
+@pytest.mark.parametrize("n", [2, 5, 8, 12])
+def test_annotation_soft_threshold_formula_boundary(n):
+    from enrichment.validation import annotation_target_tokens, _annotation_soft_threshold
+    target = annotation_target_tokens(n)
+    assert _annotation_soft_threshold(target) == _expected_threshold(target)
 
 
 # --- check_takeaway / validate_generation (Pass 1 hard validation) ---
@@ -241,48 +381,21 @@ def test_check_takeaway_passes_a_well_formed_takeaway():
 
 
 def test_check_takeaway_flags_too_many_sentences():
+    # The prompt asks for 2-4 sentences; the hard cap is 4.
     takeaway = ("First sentence here now. Second sentence follows next. "
-               "Third sentence breaks the two sentence limit entirely today.")
+               "Third sentence continues the thought further still. "
+               "Fourth sentence adds one more point to consider. "
+               "Fifth sentence breaks the four sentence limit entirely today.")
     failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
     assert any(f.startswith("sentence_count") for f in failures)
 
 
-def test_check_takeaway_flags_too_few_words():
-    takeaway = " ".join(["word"] * 10) + "."
+def test_check_takeaway_allows_up_to_four_sentences():
+    takeaway = ("First sentence here now. Second sentence follows next. "
+               "Third sentence continues the thought further still. "
+               "Fourth sentence completes the takeaway about David's kingship today.")
     failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
-    assert any(f.startswith("word_count") for f in failures)
-
-
-def test_check_takeaway_flags_too_many_words():
-    takeaway = " ".join(["word"] * 80) + "."
-    failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
-    assert any(f.startswith("word_count") for f in failures)
-
-
-@pytest.mark.parametrize("opener", ["Thus", "Therefore", "Hence", "In this way"])
-def test_check_takeaway_flags_banned_openers(opener):
-    takeaway = (f"{opener}, the kingship of David over all Israel was firmly "
-               f"and permanently established through the solemn covenant at "
-               f"Hebron before the LORD and the assembled elders of the tribes.")
-    failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
-    assert any(f.startswith("banned_opener") for f in failures)
-
-
-def test_check_takeaway_banned_opener_ignores_leading_quote():
-    takeaway = ('"Thus the kingship of David over all Israel was firmly and '
-               'permanently established through the solemn covenant at Hebron '
-               'before the LORD and the assembled elders of the tribes."')
-    failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
-    assert any(f.startswith("banned_opener") for f in failures)
-
-
-def test_check_takeaway_allows_thus_mid_sentence():
-    # "Thus" is only banned as a sentence opener, not mid-sentence.
-    takeaway = ("David's kingship over Israel was established thus: a solemn "
-               "covenant sworn before the LORD at Hebron bound king and people "
-               "together under divine witness rather than mere conquest.")
-    failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
-    assert not any(f.startswith("banned_opener") for f in failures)
+    assert not any(f.startswith("sentence_count") for f in failures)
 
 
 def test_check_takeaway_flags_lack_of_concreteness():
@@ -372,11 +485,36 @@ def test_evidence_style_warns_on_semicolon():
     assert any(w.startswith("label[0] evidence_semicolon") for w in warnings)
 
 
-def test_evidence_style_warns_on_multiple_citations():
+def test_evidence_style_warns_on_multiple_citations_for_settled():
     labels = [_label(grounding="settled",
                      evidence="see John 19:36 and also CCC 613 for this reading")]
     warnings = validate_evidence_style(labels)
     assert any(w.startswith("label[0] evidence_citations") for w in warnings)
+
+
+def test_evidence_style_does_not_warn_on_multiple_citations_for_inferential():
+    # Item 6: inferential evidence is never penalized for citing external
+    # references — citing an outside connection is expected at this tier.
+    labels = [_label(grounding="inferential",
+                     evidence="see John 19:36 and also CCC 613 for this reading")]
+    warnings = validate_evidence_style(labels)
+    assert not any(w.startswith("label[0] evidence_citations") for w in warnings)
+
+
+def test_evidence_style_warns_on_settled_tradition_signal():
+    labels = [_label(grounding="settled",
+                     evidence="this follows from the Church's tradition")]
+    warnings = validate_evidence_style(labels)
+    assert any(w.startswith("label[0] settled_consistency") for w in warnings)
+
+
+def test_evidence_style_no_tradition_signal_warning_for_inferential():
+    # The consistency check only applies to settled — an inferential label
+    # naming tradition/an external connection is expected, not a smell.
+    labels = [_label(grounding="inferential",
+                     evidence="this follows from the Church's tradition")]
+    warnings = validate_evidence_style(labels)
+    assert not any(w.startswith("label[0] settled_consistency") for w in warnings)
 
 
 def test_evidence_style_allows_single_citation():

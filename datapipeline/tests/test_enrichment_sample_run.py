@@ -151,7 +151,7 @@ def _valid_facet_dict(tag):
 
 
 class _StubGenClient:
-    async def generate(self, system, context, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None):
         from enrichment.schema import GenerationOutput
         return GenerationOutput.model_validate(
             {"facets": [_valid_facet_dict("0"), _valid_facet_dict("1")]}
@@ -162,14 +162,16 @@ class _StubGenClient:
 
 
 class _StubClassifyClient:
-    async def classify(self, system, context, facets, retry_errors=None):
+    async def classify(self, system, context, facets, temperature=None, retry_errors=None):
         from enrichment.schema import ClassificationOutput
         return ClassificationOutput.model_validate(
-            {"labels": [{"grounding": "settled", "evidence": "e0", "kind": "doctrinal"},
-                       {"grounding": "settled", "evidence": "e1", "kind": "typological"}]}
+            {"labels": [{"facet_id": "f1", "grounding": "settled", "evidence": "e0",
+                        "kind": "doctrinal"},
+                       {"facet_id": "f2", "grounding": "settled", "evidence": "e1",
+                        "kind": "typological"}]}
         ), Usage(8, 3)
 
-    async def assemble_annotation(self, system, context, facets_with_labels, retry_errors=None):
+    async def assemble_annotation(self, system, context, facets_with_labels, temperature=None, retry_errors=None):
         from enrichment.schema import AnnotationOutput
         segments = "\n".join(
             f"[{f['kind'].upper()} | {f['grounding']}]: text {i}"
