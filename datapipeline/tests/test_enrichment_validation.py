@@ -398,23 +398,16 @@ def test_check_takeaway_allows_up_to_four_sentences():
     assert not any(f.startswith("sentence_count") for f in failures)
 
 
-def test_check_takeaway_flags_lack_of_concreteness():
+def test_check_takeaway_allows_abstract_takeaway_with_no_shared_vocabulary():
+    # No proper noun and no >=6-char word shared with PASSAGE. The removed
+    # `concreteness` check hard-failed exactly this shape, which the prompt no
+    # longer asks to avoid — abstract synthesis over poetic or wisdom
+    # literature routinely looks like this and must not cost a retry.
     takeaway = ("This general statement discusses something without naming any "
                "specific incident, individual, document, or location, relying "
                "only on common short terms rather than naming any concrete "
                "detail whatsoever throughout the whole passage.")
-    failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
-    assert any(f.startswith("concreteness") for f in failures)
-
-
-def test_check_takeaway_concreteness_passes_with_shared_long_word_even_without_proper_noun():
-    takeaway = ("A solemn covenant established royal authority through mutual "
-               "obligation and divine witness rather than through conquest or "
-               "inherited succession, binding ruler and community together.")
-    # "covenant" (>=6 chars) appears verbatim in PASSAGE, satisfying the
-    # content-word-overlap branch even with no capitalized non-initial token.
-    failures = check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE)
-    assert not any(f.startswith("concreteness") for f in failures)
+    assert check_takeaway(takeaway, GOOD_WORKING_TEXT, PASSAGE) == []
 
 
 def test_check_takeaway_flags_verbatim_copy_of_working_text():
@@ -444,16 +437,22 @@ def test_validate_generation_passes_well_formed_facets():
     validate_generation([_gen_facet()], PASSAGE)  # should not raise
 
 
+# Five sentences — trips `sentence_count`, the only remaining takeaway check
+# that a synthetic takeaway can violate without also copying the working text.
+_FIVE_SENTENCES = ("One sentence here. Two sentences here. Three sentences here. "
+                   "Four sentences here. Five sentences here.")
+
+
 def test_validate_generation_raises_with_facet_index_prefix():
-    bad = _gen_facet(takeaway=" ".join(["word"] * 5) + ".")
+    bad = _gen_facet(takeaway=_FIVE_SENTENCES)
     with pytest.raises(ValidationFailedError) as exc_info:
         validate_generation([_gen_facet(), bad], PASSAGE)
     assert any(m.startswith("facet[1]") for m in exc_info.value.errors)
 
 
 def test_validate_generation_aggregates_across_multiple_facets():
-    bad1 = _gen_facet(takeaway=" ".join(["word"] * 5) + ".")
-    bad2 = _gen_facet(takeaway="Thus " + " ".join(["word"] * 35) + ".")
+    bad1 = _gen_facet(takeaway=_FIVE_SENTENCES)
+    bad2 = _gen_facet(takeaway=GOOD_WORKING_TEXT)  # anti_copy: verbatim working text
     with pytest.raises(ValidationFailedError) as exc_info:
         validate_generation([bad1, bad2], PASSAGE)
     assert any(m.startswith("facet[0]") for m in exc_info.value.errors)

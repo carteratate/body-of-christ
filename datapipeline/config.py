@@ -65,13 +65,27 @@ class Settings:
 
     # --- Enrichment (3-pass: Opus generation, Sonnet classification + annotation) ---
     ANTHROPIC_API_KEY: str | None = None
-    ANTHROPIC_ENRICH_MODEL: str = "claude-opus-4-8"        # Pass 1 — generation
+    ANTHROPIC_ENRICH_MODEL: str = "claude-opus-5"           # Pass 1 — generation
     ANTHROPIC_CLASSIFY_MODEL: str = "claude-sonnet-4-6"    # Pass 2 — classification; Pass 3 — annotation assembly
     OPUS_CONCURRENCY: int = 4
     CLASSIFY_CONCURRENCY: int = 4
     OPUS_MAX_TOKENS: int = 4096
     MIN_FACETS: int = 2
     MAX_FACETS: int = 12
+
+    # --- Pass 1 thinking (Opus 5 only) ---
+    # Opus 5 turns thinking ON by default — omitting the parameter is NOT the
+    # same as disabling it, unlike Opus 4.8/4.7. That matters here because
+    # max_tokens caps thinking AND output together, and OPUS_MAX_TOKENS is a
+    # tight 4096 sized for a facets-only tool payload; leaving thinking on
+    # would let a long chain of thought truncate the tool call itself.
+    #
+    # Disabling thinking is only legal at effort `high` or below (the default
+    # is `high`); pairing it with `xhigh`/`max` is a 400. So this pairs with
+    # PASS1_EFFORT below — do not raise that above `high` without also setting
+    # PASS1_THINKING to True and raising OPUS_MAX_TOKENS well past 4096.
+    PASS1_THINKING: bool = False
+    PASS1_EFFORT: str | None = None   # None -> omit (API default `high`)
 
     # --- Per-pass temperature ---
     # No temperature was previously set anywhere, so every call defaulted to
@@ -82,14 +96,15 @@ class Settings:
     # the model to emit `labels` as a JSON-encoded string instead of a native
     # array at temperature 1.0.
     #
-    # claude-opus-4-8 (Pass 1) does NOT support adjustable sampling temperature
-    # at all — the API rejects any value other than 1.0 with "`temperature` is
-    # deprecated for this model." PASS1_TEMPERATURE must stay 1.0; it exists as
-    # a named setting (rather than omitting temperature for Pass 1 specifically)
-    # so the per-pass intent stays visible here even though it's currently a
-    # no-op. Re-tune this if a future Opus generation restores temperature
-    # control. Sonnet 4.6 (Pass 2/3) does support it, confirmed empirically.
-    PASS1_TEMPERATURE: float = 1.0   # generation — fixed; Opus 4.8 rejects any other value
+    # Pass 1 has NO temperature setting on purpose. Opus 4.8 accepted only the
+    # default 1.0 and rejected every other value; Opus 5 removes the parameter
+    # outright, so sending it at all is a 400 (the earlier PASS1_TEMPERATURE
+    # setting existed to keep the per-pass intent visible, but a named knob
+    # that must never be sent is worse than no knob — client.py now omits
+    # temperature whenever it is None). Steer Pass 1 via the prompt and
+    # PASS1_EFFORT instead. Sonnet 4.6 (Pass 2/3) does support temperature,
+    # confirmed empirically.
+    PASS1_TEMPERATURE: float | None = None   # generation — must stay None; Opus 5 rejects the param
     PASS2_TEMPERATURE: float = 0.0   # classification — strict extraction, deterministic
     PASS3_TEMPERATURE: float = 0.3   # annotation — format-strict, some rephrasing variety
 

@@ -53,7 +53,8 @@ class _StubGenClient:
     def __init__(self):
         self.gen_calls = 0
 
-    async def generate(self, system, context, temperature=None, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None,
+                       thinking=False, effort=None):
         self.gen_calls += 1
         from enrichment.schema import GenerationOutput
         return GenerationOutput.model_validate(
@@ -764,15 +765,16 @@ async def test_legacy_classification_cache_row_without_dependency_hash_is_not_re
 # --- Pass 1 (generation/takeaway) validation + retry-once-then-mark-failed policy ---
 
 class _BadThenGoodGenClient(_StubGenClient):
-    """First takeaway is far too short (fails word_count); the retry produces a
-    valid one."""
+    """First takeaway is a verbatim copy of the working text (fails anti_copy);
+    the retry produces a valid one."""
 
-    async def generate(self, system, context, temperature=None, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None,
+                       thinking=False, effort=None):
         self.gen_calls += 1
         from enrichment.schema import GenerationOutput
         if retry_errors is None:
             return GenerationOutput.model_validate(
-                {"facets": [{"text": "working text", "takeaway": "Too short.", "question": "q0"},
+                {"facets": [{"text": "working text", "takeaway": "working text", "question": "q0"},
                            _valid_facet_dict("1")]}
             ), Usage(10, 5)
         return GenerationOutput.model_validate(
@@ -791,13 +793,14 @@ async def test_generation_retries_once_on_validation_failure_then_succeeds(tmp_p
 
 
 class _AlwaysBadGenClient(_StubGenClient):
-    """Always returns a takeaway that fails word_count validation."""
+    """Always returns a takeaway that fails anti_copy validation."""
 
-    async def generate(self, system, context, temperature=None, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None,
+                       thinking=False, effort=None):
         self.gen_calls += 1
         from enrichment.schema import GenerationOutput
         return GenerationOutput.model_validate(
-            {"facets": [{"text": "working text", "takeaway": "Too short.", "question": "q0"},
+            {"facets": [{"text": "working text", "takeaway": "working text", "question": "q0"},
                        _valid_facet_dict("1")]}
         ), Usage(10, 5)
 

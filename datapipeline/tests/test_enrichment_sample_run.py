@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
+from config import settings
 from model import Document, Passage
 from enrichment.client import Usage
 from scripts.enrichment_sample_run import (
@@ -151,7 +152,8 @@ def _valid_facet_dict(tag):
 
 
 class _StubGenClient:
-    async def generate(self, system, context, temperature=None, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None,
+                       thinking=False, effort=None):
         from enrichment.schema import GenerationOutput
         return GenerationOutput.model_validate(
             {"facets": [_valid_facet_dict("0"), _valid_facet_dict("1")]}
@@ -200,7 +202,8 @@ async def test_run_end_to_end_against_single_mocked_chunk(tmp_path, monkeypatch)
     monkeypatch.setattr(
         "enrichment.client.EnrichmentClient",
         lambda api_key, model, concurrency: (
-            _StubGenClient() if model == "claude-opus-4-8" else _StubClassifyClient()
+            _StubGenClient() if model == settings.ANTHROPIC_ENRICH_MODEL
+            else _StubClassifyClient()
         ),
     )
 
@@ -229,7 +232,8 @@ async def test_run_isolates_failures_and_continues(tmp_path, monkeypatch):
     monkeypatch.setattr(
         "enrichment.client.EnrichmentClient",
         lambda api_key, model, concurrency: (
-            _StubGenClient() if model == "claude-opus-4-8" else _StubClassifyClient()
+            _StubGenClient() if model == settings.ANTHROPIC_ENRICH_MODEL
+            else _StubClassifyClient()
         ),
     )
 

@@ -65,14 +65,18 @@ def _good_facet(tag="0"):
 
 
 def _bad_facet(tag="0"):
-    return {"text": "short working text", "takeaway": "Too short.", "question": f"q{tag}"}
+    # Takeaway is a verbatim copy of the working text -> fails anti_copy, one of
+    # the two takeaway checks that survived the Pass 1 prompt loosening.
+    return {"text": "short working text", "takeaway": "short working text",
+            "question": f"q{tag}"}
 
 
 class _AlwaysGoodClient:
     def __init__(self):
         self.calls = 0
 
-    async def generate(self, system, context, temperature=None, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None,
+                       thinking=False, effort=None):
         self.calls += 1
         from enrichment.schema import GenerationOutput
         from enrichment.client import Usage
@@ -87,7 +91,8 @@ class _BadThenGoodClient:
     def __init__(self):
         self.calls = 0
 
-    async def generate(self, system, context, temperature=None, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None,
+                       thinking=False, effort=None):
         self.calls += 1
         from enrichment.schema import GenerationOutput
         from enrichment.client import Usage
@@ -102,7 +107,8 @@ class _AlwaysBadClient:
     def __init__(self):
         self.calls = 0
 
-    async def generate(self, system, context, temperature=None, retry_errors=None):
+    async def generate(self, system, context, temperature=None, retry_errors=None,
+                       thinking=False, effort=None):
         self.calls += 1
         from enrichment.schema import GenerationOutput
         from enrichment.client import Usage

@@ -94,53 +94,38 @@ def normalize_for_containment(s: str) -> str:
     return " ".join(s.split())
 
 
-_WORD_RE = re.compile(r"[A-Za-z']+")
-
-
 def _word_count(text: str) -> int:
     return len(text.translate(_PUNCTUATION_TABLE).split())
-
-
-def _has_concrete_referent(takeaway: str, passage_content: str) -> bool:
-    for sentence in split_sentences(takeaway) or [takeaway]:
-        words = _WORD_RE.findall(sentence)
-        for i, w in enumerate(words):
-            if i == 0:
-                continue
-            if w[:1].isupper():
-                return True  # capitalized, non-sentence-initial -> proxy proper noun
-    normalized_passage = normalize_for_containment(passage_content)
-    for w in _WORD_RE.findall(takeaway):
-        if len(w) >= 6 and w.casefold() in normalized_passage:
-            return True
-    return False
 
 
 def check_takeaway(takeaway: str, working_text: str, passage_content: str) -> list[str]:
     """Returns a list of failed-check descriptions (empty if the takeaway passes
     every check). Each description starts with one of the fixed tags —
-    sentence_count, concreteness, anti_copy — which the pilot diff-report
-    script parses to build per-check statistics.
+    sentence_count, anti_copy — which the pilot diff-report script parses to
+    build per-check statistics.
 
-    Sentence count and the word/opener checks originally mirrored the Pass 1
-    prompt's "1-2 sentences, 30-70 words, no Thus/Therefore/In this way"
-    instruction. The prompt (enrichment/prompts/base.py) now asks for 2-4
-    sentences and no longer specifies a word target or banned openers, so the
-    word-count and banned-opener checks were removed — they'd otherwise reject
-    output the model was never told to avoid, exactly the prompt/validator
-    mismatch this change exists to fix. The sentence cap moved to 4 to match.
+    Every check here has to correspond to something the Pass 1 prompt actually
+    asks for (enrichment/prompts/base.py); a hard failure the model was never
+    told to avoid burns an Opus retry and then drops the chunk. Three checks
+    were removed for that reason when the prompt loosened:
+
+    - word_count and banned_opener mirrored "30-70 words" and "no Thus/
+      Therefore/In this way", neither of which the prompt states any more.
+    - concreteness required either a capitalized non-initial token or a >=6
+      char word shared verbatim with the passage. It was safe only while the
+      prompt carried the "keep the concrete referents" bullet, which is also
+      gone. It matched by exact substring, so inflection alone could fail a
+      good takeaway ("weeping/laughing" against a passage reading "to weep...
+      to laugh"), and abstract synthesis over poetic or wisdom literature has
+      neither a proper noun nor shared vocabulary to offer.
+
+    `sentence_count` stays because the prompt does state a range (2-4).
     """
     failures: list[str] = []
 
     sentences = split_sentences(takeaway)
     if len(sentences) > 4:
         failures.append(f"sentence_count: takeaway has {len(sentences)} sentences (max 4)")
-
-    if not _has_concrete_referent(takeaway, passage_content):
-        failures.append(
-            "concreteness: no capitalized non-initial token (proxy proper noun) and no "
-            "content word >=6 chars shared with the passage"
-        )
 
     normalized_takeaway = normalize_for_containment(takeaway)
     normalized_working_text = normalize_for_containment(working_text)

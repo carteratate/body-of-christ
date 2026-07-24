@@ -128,6 +128,11 @@ class Cache:
         # Additive dependency-hash / config-identity columns (see module docstring).
         self._ensure_column("enrichment_generation", "temperature", "REAL")
         self._ensure_column("enrichment_generation", "schema_version", "INTEGER")
+        # Pass 1 sampling identity beyond temperature: on Opus 5 thinking is on
+        # unless disabled, and effort replaces temperature as the depth knob, so
+        # both change the output and must invalidate the cache like model does.
+        self._ensure_column("enrichment_generation", "thinking", "INTEGER")
+        self._ensure_column("enrichment_generation", "effort", "TEXT")
 
         self._ensure_column("enrichment_classification", "temperature", "REAL")
         self._ensure_column("enrichment_classification", "schema_version", "INTEGER")
@@ -147,23 +152,31 @@ class Cache:
     # --- generation (Pass 1) ---
     def get_generation(self, chunk_id: str, content_hash: str) -> dict | None:
         row = self.conn.execute(
-            "SELECT raw_facets, prompt_hash, model, temperature, schema_version "
+            "SELECT raw_facets, prompt_hash, model, temperature, schema_version, "
+            "thinking, effort "
             "FROM enrichment_generation WHERE chunk_id=? AND content_hash=?",
             (chunk_id, content_hash)).fetchone()
         if row is None:
             return None
         return {"raw_facets": json.loads(row["raw_facets"]),
                 "prompt_hash": row["prompt_hash"], "model": row["model"],
-                "temperature": row["temperature"], "schema_version": row["schema_version"]}
+                "temperature": row["temperature"], "schema_version": row["schema_version"],
+                # Stored 0/1 in SQLite; normalized back to bool so the caller can
+                # compare against the bool setting directly. NULL on legacy rows
+                # stays None, which never equals a real bool -> safe miss.
+                "thinking": None if row["thinking"] is None else bool(row["thinking"]),
+                "effort": row["effort"]}
 
     def put_generation(self, chunk_id, content_hash, raw_facets, prompt_hash, model, *,
-                       temperature=None, schema_version=None) -> None:
+                       temperature=None, schema_version=None,
+                       thinking=None, effort=None) -> None:
         self.conn.execute(
             "INSERT OR REPLACE INTO enrichment_generation "
             "(chunk_id, content_hash, raw_facets, prompt_hash, model, temperature, "
-            "schema_version, created_at) VALUES (?,?,?,?,?,?,?,?)",
+            "schema_version, thinking, effort, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
             (chunk_id, content_hash, json.dumps(raw_facets), prompt_hash, model,
-             temperature, schema_version, _now()))
+             temperature, schema_version,
+             None if thinking is None else int(thinking), effort, _now()))
         self.conn.commit()
 
     # --- classification (Pass 2) ---

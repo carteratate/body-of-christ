@@ -5,8 +5,10 @@ Runs ONLY Pass 1 (generation) for a small, explicit list of chunks (via
 scripts/enrichment_sample_run.py) and reports, per collection:
 
 - % of takeaways failing each hard-validation check on the first attempt
-  (sentence_count, word_count, banned_opener, concreteness, anti_copy), and
-  the retry-success rate (how often the one allowed retry fixes it).
+  (sentence_count, anti_copy — word_count, banned_opener, and concreteness
+  were removed once the Pass 1 prompt stopped asking for them; the report
+  tolerates tags it doesn't know, so it stays correct if the set changes
+  again), and the retry-success rate (how often the one allowed retry fixes it).
 - The anti-copy rate specifically, as a named canary (should be ~0 after the
   hard check — this duplicates one column of the per-check breakdown above,
   surfaced on its own since it's the check most likely to silently regress).

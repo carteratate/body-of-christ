@@ -2,9 +2,8 @@
 Supabase annotation.
 
 Pass 1 (generation, Opus) produces facets, each with a working `text` treatment
-and a distilled `takeaway`, with hard validation (sentence/word-count bounds,
-banned openers, concreteness, anti-copy) and a retry-once-then-mark-failed
-policy. Downstream of Pass 1, "facet"/"text" always means the takeaway — Pass 2
+and a distilled `takeaway`, with hard validation (sentence-count bound,
+anti-copy) and a retry-once-then-mark-failed policy. Downstream of Pass 1, "facet"/"text" always means the takeaway — Pass 2
 (classification, Sonnet) and Pass 3 (annotation assembly, Sonnet) never see
 Pass 1's raw working text, only the takeaway. Pass 2 assigns grounding/kind/
 evidence per facet, with hard validation and the same retry-once policy. Pass 3
@@ -128,7 +127,8 @@ async def _run_generation(deps: EnrichDeps, chunk_id: str, content_hash: str,
                           *, sample: bool) -> tuple[GenerationOutput, Usage]:
     async def call_fn(retry_errors):
         return await deps.gen_client.generate(
-            gen_system, context, settings.PASS1_TEMPERATURE, retry_errors=retry_errors)
+            gen_system, context, settings.PASS1_TEMPERATURE, retry_errors=retry_errors,
+            thinking=settings.PASS1_THINKING, effort=settings.PASS1_EFFORT)
 
     def validate_fn(output) -> list[str]:
         validate_generation(output.facets, passage_content)
@@ -216,6 +216,8 @@ async def enrich_one(doc: Document, passage: Passage, deps: EnrichDeps,
             and gen_cached["prompt_hash"] == gen_prompt_hash
             and gen_cached["model"] == settings.ANTHROPIC_ENRICH_MODEL
             and gen_cached["temperature"] == settings.PASS1_TEMPERATURE
+            and gen_cached["thinking"] == settings.PASS1_THINKING
+            and gen_cached["effort"] == settings.PASS1_EFFORT
             and gen_cached["schema_version"] == ENRICHMENT_SCHEMA_VERSION):
         generation = GenerationOutput.model_validate({"facets": gen_cached["raw_facets"]})
         # identify_facets() always recomputes ids from position (f1, f2, ...),
@@ -237,7 +239,9 @@ async def enrich_one(doc: Document, passage: Passage, deps: EnrichDeps,
             deps.cache.put_generation(cid, ch, raw_facets, gen_prompt_hash,
                                       settings.ANTHROPIC_ENRICH_MODEL,
                                       temperature=settings.PASS1_TEMPERATURE,
-                                      schema_version=ENRICHMENT_SCHEMA_VERSION)
+                                      schema_version=ENRICHMENT_SCHEMA_VERSION,
+                                      thinking=settings.PASS1_THINKING,
+                                      effort=settings.PASS1_EFFORT)
 
     # Recomputed fresh every time (cheap — a small JSON list) rather than
     # trusted from a stored column, so it always reflects the facets actually

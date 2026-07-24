@@ -35,7 +35,7 @@ def test_embedding_dims_is_3072():
 
 def test_enrich_model_default():
     s = Settings(**_base_kwargs())
-    assert s.ANTHROPIC_ENRICH_MODEL == "claude-opus-4-8"
+    assert s.ANTHROPIC_ENRICH_MODEL == "claude-opus-5"
 
 
 def test_require_anthropic_raises_when_missing():
@@ -53,11 +53,21 @@ def test_cost_constants_present():
 
 def test_per_pass_temperature_defaults():
     s = Settings(**_base_kwargs())
-    # Pass 1 (Opus 4.8) rejects any temperature other than 1.0 outright, so
-    # this must stay 1.0 — see config.py's comment for the empirical finding.
-    assert s.PASS1_TEMPERATURE == 1.0
+    # Pass 1 must stay None: Opus 5 removed `temperature`, so sending it at all
+    # is a 400, and client.py omits the parameter entirely when it is None.
+    assert s.PASS1_TEMPERATURE is None
     assert s.PASS2_TEMPERATURE == 0.0
     assert s.PASS3_TEMPERATURE == 0.3
+
+
+def test_pass1_thinking_defaults_off_at_default_effort():
+    s = Settings(**_base_kwargs())
+    # Opus 5 thinks by default and max_tokens caps thinking + output together,
+    # so Pass 1 disables it to protect a 4096-token tool payload. Disabling is
+    # only legal at effort `high` or below, and None means "omit" (API default
+    # `high`) — so these two defaults are only valid together.
+    assert s.PASS1_THINKING is False
+    assert s.PASS1_EFFORT is None
 
 
 def test_pilot_mode_defaults_false():

@@ -92,18 +92,43 @@ class SchemaValidationError(Exception):
 
 
 class EnrichmentClient:
+    # Models that accept `thinking: {"type": "disabled"}` — i.e. the ones where
+    # thinking is on unless we say otherwise. Matched by prefix so a future
+    # dated snapshot of the same family still resolves.
+    _THINKING_ON_BY_DEFAULT = ("claude-opus-5", "claude-sonnet-5", "claude-fable-5")
+
     def __init__(self, api_key: str, model: str, concurrency: int) -> None:
         self._client = anthropic.AsyncAnthropic(api_key=api_key)
         self._model = model
         self._sem = asyncio.Semaphore(concurrency)
+        self._supports_thinking = model.startswith(self._THINKING_ON_BY_DEFAULT)
 
     async def close(self) -> None:
         await self._client.close()
 
     async def _call(self, system: str, user: str, tool_name: str, schema: dict,
-                    temperature: float) -> tuple[dict, Usage]:
+                    temperature: float | None,
+                    thinking: bool = False, effort: str | None = None) -> tuple[dict, Usage]:
         tool = {"name": tool_name, "description": "Emit the structured result.",
                 "input_schema": schema}
+        # Every one of these is omitted rather than defaulted, because on the
+        # newest models sending the parameter at all is a 400 even with a value
+        # the model would otherwise accept: Opus 5 removed `temperature`, and
+        # `thinking: disabled` is rejected above `high` effort. Omission is the
+        # only universally safe representation of "leave this alone".
+        optional: dict = {}
+        if temperature is not None:
+            optional["temperature"] = temperature
+        if thinking:
+            optional["thinking"] = {"type": "adaptive"}
+        elif self._supports_thinking:
+            # Opus 5 thinks by default, so "off" must be stated explicitly;
+            # older models treat an omitted `thinking` as off already and
+            # reject the disabled form outright.
+            optional["thinking"] = {"type": "disabled"}
+        if effort is not None:
+            optional["output_config"] = {"effort": effort}
+
         last_exc: Exception | None = None
         async with self._sem:
             for attempt in range(3):
@@ -111,11 +136,11 @@ class EnrichmentClient:
                     resp = await self._client.messages.create(
                         model=self._model,
                         max_tokens=settings.OPUS_MAX_TOKENS,
-                        temperature=temperature,
                         system=system,
                         tools=[tool],
                         tool_choice={"type": "tool", "name": tool_name},
                         messages=[{"role": "user", "content": user}],
+                        **optional,
                     )
                     block = next(b for b in resp.content if getattr(b, "type", None) == "tool_use")
                     usage = Usage(resp.usage.input_tokens, resp.usage.output_tokens)
@@ -127,12 +152,15 @@ class EnrichmentClient:
                     await asyncio.sleep(2 ** (attempt + 1))
         raise RuntimeError("unreachable") from last_exc
 
-    async def generate(self, system: str, context: str, temperature: float,
-                       retry_errors: str | None = None) -> tuple[GenerationOutput, Usage]:
+    async def generate(self, system: str, context: str, temperature: float | None,
+                       retry_errors: str | None = None,
+                       thinking: bool = False, effort: str | None = None,
+                       ) -> tuple[GenerationOutput, Usage]:
         user = context
         if retry_errors:
             user = f"{user}\n\nYour previous response was invalid:\n{retry_errors}\nPlease correct it."
-        data, usage = await self._call(system, user, _GEN_TOOL, generation_tool_schema(), temperature)
+        data, usage = await self._call(system, user, _GEN_TOOL, generation_tool_schema(),
+                                       temperature, thinking=thinking, effort=effort)
         try:
             return GenerationOutput.model_validate(data), usage
         except pydantic.ValidationError as exc:
