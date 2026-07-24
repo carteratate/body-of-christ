@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from config import settings
 from enrichment.schema import (
-    GenerationOutput, ClassificationOutput, MergedEnrichment, MergedFacet,
+    ClassificationOutput, IdentifiedFacet, MergedEnrichment, MergedFacet,
 )
 
 
@@ -14,9 +14,13 @@ class MergeError(Exception):
     pass
 
 
-def merge(generation: GenerationOutput, classification: ClassificationOutput,
+def merge(facets: list[IdentifiedFacet], classification: ClassificationOutput,
           annotation: str) -> MergedEnrichment:
-    facets = generation.facets
+    """`facets` and `classification.labels` must already be aligned by
+    `facet_id` (see `stages.enrich._run_classification`, which validates and
+    reorders Pass 2's output before merge() ever sees it) — merge() trusts
+    that alignment and zips positionally; it does not re-check facet_id
+    itself, staying a pure function over already-validated passes."""
     labels = classification.labels
     if len(facets) != len(labels):
         raise MergeError(
@@ -30,7 +34,7 @@ def merge(generation: GenerationOutput, classification: ClassificationOutput,
     # and pilot-unaware; stages/enrich.py decides whether to null it out before
     # persisting, based on settings.PILOT_MODE).
     merged = [
-        MergedFacet(grounding=lab.grounding, evidence=lab.evidence, kind=lab.kind,
+        MergedFacet(id=f.id, grounding=lab.grounding, evidence=lab.evidence, kind=lab.kind,
                     kind_secondary=lab.kind_secondary, text=f.takeaway, question=f.question,
                     working_text=f.text)
         for f, lab in zip(facets, labels)
