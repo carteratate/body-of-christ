@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
-  const supabase = createClient();
+  const [supabase] = useState(createClient);
   const [ready, setReady] = useState(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -59,16 +59,21 @@ export default function UpdatePasswordPage() {
     }
 
     setLoading(true);
-    const { error: updateError } = await supabase.auth.updateUser({ password });
-    setLoading(false);
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password });
 
-    if (updateError) {
-      setError(updateError.message);
-      return;
+      if (updateError) {
+        setError(updateError.message);
+        return;
+      }
+
+      setSuccess(true);
+      setTimeout(() => router.replace("/search"), 1500);
+    } catch {
+      setError("We couldn't update your password. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(true);
-    setTimeout(() => router.replace("/search"), 1500);
   }
 
   if (!ready) {
@@ -108,6 +113,7 @@ export default function UpdatePasswordPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
                   required
                   minLength={8}
                   className="w-full rounded-md border border-brand-surface bg-brand-bg px-3 py-2 text-brand-primary placeholder:text-brand-muted focus:border-brand-accent focus:outline-none"
@@ -123,6 +129,7 @@ export default function UpdatePasswordPage() {
                   type="password"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
+                  disabled={loading}
                   required
                   className="w-full rounded-md border border-brand-surface bg-brand-bg px-3 py-2 text-brand-primary placeholder:text-brand-muted focus:border-brand-accent focus:outline-none"
                   placeholder="Repeat new password"

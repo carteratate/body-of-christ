@@ -229,6 +229,14 @@ never commit real secrets.
 > ⚠️ `const API_URL = ""` in `apps/web/src/lib/api.ts` is intentional — the empty
 > string forces relative `/v1/...` paths through the Vercel proxy. Do not change it.
 
+**Supabase Auth URL configuration:**
+
+Add the following URLs under **Authentication → URL Configuration → Redirect URLs**,
+using both the production origin and `http://localhost:3000` for local development:
+
+- `<origin>/auth/callback?next=/search` — email confirmation
+- `<origin>/update-password` — password recovery
+
 ---
 
 ## Development

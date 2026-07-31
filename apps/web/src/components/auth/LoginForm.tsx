@@ -18,6 +18,15 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("error") === "auth") {
+      setError(
+        "This confirmation link is invalid or has expired. Please sign up again or request a new link.",
+      );
+      url.searchParams.delete("error");
+      window.history.replaceState(window.history.state, "", url);
+    }
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -31,6 +40,7 @@ export function LoginForm() {
   }, [router, supabase]);
 
   function changeMode(nextMode: AuthMode) {
+    if (loading) return;
     setMode(nextMode);
     setPassword("");
     setConfirmPassword("");
@@ -50,35 +60,44 @@ export function LoginForm() {
 
     setLoading(true);
 
-    if (mode === "sign-in") {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (signInError) setError(signInError.message);
-    } else if (mode === "sign-up") {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/search` },
-      });
-      if (signUpError) {
-        setError(signUpError.message);
-      } else if (!data.session) {
-        setMessage("Check your email to confirm your account.");
-      }
-    } else {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/update-password`,
-      });
-      if (resetError) {
-        setError(resetError.message);
+    try {
+      if (mode === "sign-in") {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (signInError) setError(signInError.message);
+      } else if (mode === "sign-up") {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/search`,
+          },
+        });
+        if (signUpError) {
+          setError(signUpError.message);
+        } else if (!data.session) {
+          setMessage("Check your email to confirm your account.");
+        }
       } else {
-        setMessage("Check your email for a password reset link.");
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+          email,
+          {
+            redirectTo: `${window.location.origin}/update-password`,
+          },
+        );
+        if (resetError) {
+          setError(resetError.message);
+        } else {
+          setMessage("Check your email for a password reset link.");
+        }
       }
+    } catch {
+      setError("We couldn't reach the authentication service. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   const isSignUp = mode === "sign-up";
@@ -105,6 +124,7 @@ export function LoginForm() {
           autoComplete="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
+          disabled={loading}
           required
           className="w-full rounded-md border border-brand-surface bg-brand-bg px-3 py-2 text-brand-primary placeholder:text-brand-muted focus:border-brand-accent focus:outline-none"
           placeholder="you@example.com"
@@ -122,8 +142,9 @@ export function LoginForm() {
             autoComplete={isSignUp ? "new-password" : "current-password"}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+            disabled={loading}
             required
-            minLength={8}
+            minLength={isSignUp ? 8 : undefined}
             className="w-full rounded-md border border-brand-surface bg-brand-bg px-3 py-2 text-brand-primary placeholder:text-brand-muted focus:border-brand-accent focus:outline-none"
             placeholder={isSignUp ? "At least 8 characters" : "Your password"}
           />
@@ -144,6 +165,7 @@ export function LoginForm() {
             autoComplete="new-password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
+            disabled={loading}
             required
             minLength={8}
             aria-invalid={passwordMismatch}
@@ -190,7 +212,8 @@ export function LoginForm() {
             <button
               type="button"
               onClick={() => changeMode("forgot-password")}
-              className="block w-full text-brand-accent hover:opacity-80"
+              disabled={loading}
+              className="block w-full text-brand-accent hover:opacity-80 disabled:opacity-50"
             >
               Forgot your password?
             </button>
@@ -199,7 +222,8 @@ export function LoginForm() {
               <button
                 type="button"
                 onClick={() => changeMode("sign-up")}
-                className="text-brand-accent hover:opacity-80"
+                disabled={loading}
+                className="text-brand-accent hover:opacity-80 disabled:opacity-50"
               >
                 Sign up
               </button>
@@ -210,7 +234,8 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => changeMode("sign-in")}
-            className="text-brand-accent hover:opacity-80"
+            disabled={loading}
+            className="text-brand-accent hover:opacity-80 disabled:opacity-50"
           >
             Back to sign in
           </button>
