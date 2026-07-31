@@ -486,8 +486,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="relative flex-1 overflow-y-auto px-4 pt-4 pb-2">
+    <div className="flex flex-1 min-h-0 flex-col">
+      <div className="relative flex-1 min-h-0 overflow-y-auto px-4 pt-4 pb-2">
         {/* Animation overlay — scoped to content area only, BottomBar stays visible */}
         {showAnimation && (
           <LoadingAnimation

@@ -116,7 +116,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
               aria-hidden="true"
             />
           )}
-          <main className="flex flex-1 flex-col min-w-0">
+          <main className="flex flex-1 min-h-0 min-w-0 flex-col overflow-hidden">
             <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => setMobileNavOpen(true)} />
             {children}
           </main>

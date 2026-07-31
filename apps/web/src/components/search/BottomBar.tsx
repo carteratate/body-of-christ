@@ -46,7 +46,7 @@ export function BottomBar({
 }: BottomBarProps) {
   if (isSearchActive) {
     return (
-      <div className="border-t border-brand-surface bg-brand-bg px-4 py-4 pb-5">
+      <div className="shrink-0 border-t border-brand-surface bg-brand-bg px-4 py-4 pb-5 max-md:pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
         <ResultFilterBar
           submittedCollections={submittedCollections}
           visibleCollections={visibleCollections}
@@ -57,7 +57,7 @@ export function BottomBar({
   }
 
   return (
-    <div className="border-t border-brand-surface bg-brand-bg px-4 py-3 pb-4">
+    <div className="shrink-0 border-t border-brand-surface bg-brand-bg px-4 py-3 pb-4 max-md:pb-[calc(1rem+env(safe-area-inset-bottom))]">
       <div className="mb-2 flex items-center justify-between gap-3 max-md:flex-col max-md:items-stretch max-md:gap-2">
         <CollectionToggles
           activeCollections={activeCollections}
