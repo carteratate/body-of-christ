@@ -1,9 +1,11 @@
-"""LLM-as-judge scoring using Claude Sonnet with a five-dimension rubric."""
+"""LLM-as-judge scoring using Claude Opus 5 with a five-dimension rubric."""
 from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass
+import math
+import random
+from dataclasses import dataclass, field
 
 import anthropic
 
@@ -14,13 +16,36 @@ from app.rag.steps.types import PipelineResult
 
 logger = logging.getLogger(__name__)
 
-_JUDGE_MODEL = "claude-sonnet-4-6"
+# Opus 5 as judge: this is the model that decides which retrieval strategy ships,
+# so it gets the strongest available judgment. Note switching the judge model makes
+# scores non-comparable with anything judged by a previous model — the model is
+# recorded on every report and persisted row for exactly that reason.
+_JUDGE_MODEL = "claude-opus-5"
 _client: anthropic.AsyncAnthropic | None = None
 
+# Must sum to 1.0 (asserted in tests). Weights are deliberately NOT fitted to
+# observed spread — that would tune the ruler to the object being measured. They
+# encode what the comparison is *for*:
+#
+#   best_passage_selection is raised because this is a RERANK comparison. Every
+#     pipeline draws from a similar RRF pool; what differs is the ordering, and this
+#     is the only dimension that measures ordering directly. It also has by far the
+#     best signal-to-noise ratio measured across round 1 (between-pipeline sd 0.054
+#     vs between-query sd 0.029 = 1.86x; retrieval_relevance is 0.78x, i.e. query
+#     difficulty moves it more than pipeline choice does).
+#   multi_angle_coverage is cut because it rewards breadth while result-set size
+#     varies structurally by mode (12.6 vs ~15.6 results in round 1), so part of its
+#     variance is a confound rather than quality. It is kept non-zero because it
+#     still guards a real failure mode: every result making the same point.
+#
+# Changing these does NOT invalidate past runs: per-dimension scores are persisted,
+# so any stored run can be re-scored under current weights (scripts/analyze_eval.py
+# does exactly that). Round 1 was scored under 0.30/0.20/0.20/0.15/0.15; re-scoring
+# it under these weights left the pipeline ordering unchanged.
 WEIGHTS: dict[str, float] = {
-    "retrieval_relevance":    0.30,
-    "best_passage_selection": 0.20,
-    "multi_angle_coverage":   0.20,
+    "retrieval_relevance":    0.35,
+    "best_passage_selection": 0.25,
+    "multi_angle_coverage":   0.10,
     "doctrinal_completeness": 0.15,
     "redundancy_rate":        0.15,
 }
@@ -51,6 +76,11 @@ class JudgeReport:
     tokens_used: int
     cost: float
     model: str
+    # Order the pipelines were presented to the judge, first to last. Randomised per
+    # call; recorded so a narrow score margin can be weighed against position bias.
+    presentation_order: list[str] = field(default_factory=list)
+    valid: bool = True
+    error: str | None = None
 
 
 _JUDGE_SYSTEM = (
@@ -221,6 +251,8 @@ def _build_prompt(
     results: list[PipelineResult],
     overlap: OverlapReport,
 ) -> str:
+    """Render the judge prompt. `results` must already be in presentation order —
+    `run()` shuffles it so the order can be recorded alongside the scores."""
     lines = [f"Query: {query}\n"]
     lines.append(f"Shared chunks (in ALL pipelines): {overlap.shared}")
     lines.append(f"Unique chunks per pipeline: {json.dumps(overlap.unique, indent=2)}\n")
@@ -261,15 +293,49 @@ async def run(
     if _client is None:
         init_judge()
 
-    prompt = _build_prompt(query, results, overlap)
+    # Randomise presentation order per call. An LLM comparing candidates in one
+    # prompt weights earlier items more, so a fixed order would hand whichever
+    # pipeline sorts first a permanent advantage across every query — the same
+    # position bias the listwise reranker randomises against. The order used is
+    # returned on the report so a narrow margin can be read with that in mind.
+    presented = list(results)
+    random.shuffle(presented)
+    presentation_order = [r.pipeline for r in presented]
+    logger.info("judge: presentation order=%s", presentation_order)
+
+    prompt = _build_prompt(query, presented, overlap)
     tracker = CostTracker()
     response = None
+    valid = True
+    error = None
 
     try:
-        response = await _client.messages.create(  # type: ignore[union-attr]
+        # STREAMED, with an explicit deadline. A non-streaming call here hung for
+        # 35 minutes in a batch run: Opus 5 with adaptive thinking and a large
+        # multi-pipeline prompt exceeded the SDK's 10-minute default timeout, which
+        # then retried twice (3 x 10 min). Anthropic's guidance is to stream any
+        # request with long output or high max_tokens — streaming keeps the
+        # connection active so the timeout does not fire mid-generation. The
+        # explicit timeout + max_retries=0 bounds the worst case so a stuck judge
+        # fails fast into _fallback_scores instead of stalling an entire suite.
+        client = _client.with_options(  # type: ignore[union-attr]
+            timeout=settings.judge_timeout_s,
+            # A stalled streamed response must not be retried inside the SDK. The
+            # artifact-aware suite can retry the query later without recapturing
+            # retrieval, while an SDK retry invisibly doubles the deadline.
+            max_retries=0,
+        )
+        async with client.messages.stream(
             model=_JUDGE_MODEL,
-            max_tokens=8192,
-            temperature=0.1,
+            # Thinking is ON by default on Opus 5 and must stay on: with
+            # `thinking: disabled` the model occasionally emits a tool call as plain
+            # text instead of a tool_use block, which this judge would read as a
+            # missing tool block and silently fall back to all-zero scores. Budget is
+            # raised because thinking bills as output and shares max_tokens with the
+            # tool result.
+            max_tokens=16000,
+            # No `temperature` — Opus 5 removed the parameter and returns
+            # 400 "`temperature` is deprecated for this model" if it is sent.
             system=[{
                 "type": "text",
                 "text": _JUDGE_SYSTEM,
@@ -278,7 +344,8 @@ async def run(
             tools=[_TOOL],
             tool_choice={"type": "tool", "name": "score_pipelines"},
             messages=[{"role": "user", "content": prompt}],
-        )
+        ) as stream:
+            response = await stream.get_final_message()
         tracker.record(
             "judge",
             _JUDGE_MODEL,
@@ -296,8 +363,13 @@ async def run(
         for s in parsed.get("pipeline_scores", []):
             dims: dict[str, DimensionScore] = {}
             for dim in WEIGHTS:
+                raw_score = float(s.get(f"{dim}_score", 0.0))
+                if not math.isfinite(raw_score):
+                    raise ValueError(
+                        f"judge returned non-finite {dim} score for {s.get('pipeline')}"
+                    )
                 dims[dim] = DimensionScore(
-                    score=max(0.0, min(1.0, float(s.get(f"{dim}_score", 0.0)))),
+                    score=max(0.0, min(1.0, raw_score)),
                     reasoning=s.get(f"{dim}_reasoning", ""),
                 )
             scores.append(JudgeScore(
@@ -309,13 +381,44 @@ async def run(
         comparative = parsed.get("comparative_analysis", "")
 
     except Exception as exc:
-        logger.warning("judge: failed (%s); returning empty scores", exc)
+        error = f"{type(exc).__name__}: {exc}" if str(exc) else type(exc).__name__
+        logger.warning("judge: failed (%s); returning empty scores", error)
         scores = _fallback_scores(results)
-        comparative = f"Judge call failed: {exc}"
+        comparative = f"Judge call failed: {error}"
+        valid = False
 
     tokens_used = 0
     if response is not None:
         tokens_used = response.usage.input_tokens + response.usage.output_tokens
+
+    # The judge is a model: it can skip a pipeline on a long comparison prompt, or
+    # label one with a name that was never sent. Either is silent — a missing row is
+    # not a zero, so the all-zeros guard in the batch harness does not catch it, and
+    # the aggregate then averages that pipeline over a self-selected subset of
+    # queries while its win rate is divided by the full count.
+    expected = {r.pipeline for r in results}
+    got = {s.pipeline for s in scores}
+    duplicate_names = sorted(
+        name for name in got if sum(s.pipeline == name for s in scores) > 1
+    )
+    if got != expected or duplicate_names:
+        valid = False
+        error = (
+            f"incomplete judge output: missing={sorted(expected - got)} "
+            f"unknown={sorted(got - expected)} duplicates={duplicate_names}"
+        )
+        missing, unknown = sorted(expected - got), sorted(got - expected)
+        logger.warning(
+            "judge: scored %d of %d pipelines (missing=%s unknown=%s duplicates=%s) — the caller "
+            "should discard this query rather than aggregate a partial result",
+            len(got & expected), len(expected), missing, unknown, duplicate_names,
+        )
+        # Unknown names can be dropped without damaging complete expected scores.
+        if unknown:
+            scores = [s for s in scores if s.pipeline in expected]
+        # Duplicate expected names are ambiguous and must reject the response.
+        if duplicate_names:
+            scores = []
 
     return JudgeReport(
         scores=scores,
@@ -323,4 +426,7 @@ async def run(
         tokens_used=tokens_used,
         cost=tracker.total_cost(),
         model=_JUDGE_MODEL,
+        presentation_order=presentation_order,
+        valid=valid,
+        error=error,
     )

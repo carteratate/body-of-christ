@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html as _html
 
+from app.rag.compare.judge import WEIGHTS as _DIM_WEIGHTS
 from compare_batch.aggregate import AggregateStats, DIMENSIONS
 
 _DIM_LABELS = {
@@ -13,13 +14,9 @@ _DIM_LABELS = {
     "redundancy_rate":        "Redundancy Rate",
 }
 
-_DIM_WEIGHTS = {
-    "retrieval_relevance":    0.30,
-    "best_passage_selection": 0.20,
-    "multi_angle_coverage":   0.20,
-    "doctrinal_completeness": 0.15,
-    "redundancy_rate":        0.15,
-}
+# _DIM_WEIGHTS is imported, not redeclared: it was a second copy of the judge's
+# weights and the report renders them as percentages next to each column header, so
+# a drift would label every column with a weight the scores were not computed under.
 
 
 def _score_color(val: float) -> str:

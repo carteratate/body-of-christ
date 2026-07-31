@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 from app.rag.compare.judge import (
     run as judge_run,
     JudgeReport,
@@ -68,6 +68,45 @@ def _mock_tool_response(tool_input: dict) -> MagicMock:
     return response
 
 
+
+def _stub_streaming_client(response, capture: list | None = None):
+    """Client double for the judge's streamed call.
+
+    The judge uses `client.with_options(...).messages.stream(...)` as an async
+    context manager and awaits `get_final_message()`. Mirrors that shape so the
+    tests exercise the real call path rather than a create() that no longer exists.
+    """
+
+    class _Stream:
+        def __init__(self, **kwargs):
+            if capture is not None:
+                capture.append(kwargs)
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def get_final_message(self):
+            if isinstance(response, Exception):
+                raise response
+            return response
+
+    class _Messages:
+        @staticmethod
+        def stream(**kwargs):
+            return _Stream(**kwargs)
+
+    class _Client:
+        messages = _Messages()
+
+        def with_options(self, **_kw):
+            return self
+
+    return _Client()
+
+
 @pytest.mark.asyncio
 async def test_judge_returns_multidimensional_report():
     overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
@@ -75,14 +114,13 @@ async def test_judge_returns_multidimensional_report():
     mock_response = _mock_tool_response(_make_tool_input(["s2_5_haiku", "s4_haiku"]))
 
     import app.rag.compare.judge as judge_module
-    judge_module._client = AsyncMock()
-    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
+    judge_module._client = _stub_streaming_client(mock_response)
 
     report = await judge_run("what is love?", results, overlap)
 
     assert isinstance(report, JudgeReport)
     assert len(report.scores) == 2
-    assert report.model == "claude-sonnet-4-6"
+    assert report.model == "claude-opus-5"
     assert report.cost > 0
     assert report.tokens_used == 700
     assert report.comparative_analysis == "Comparing 2 pipeline(s)."
@@ -95,8 +133,7 @@ async def test_judge_dimension_scores_parsed_correctly():
     mock_response = _mock_tool_response(_make_tool_input(["s2_5_haiku"]))
 
     import app.rag.compare.judge as judge_module
-    judge_module._client = AsyncMock()
-    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
+    judge_module._client = _stub_streaming_client(mock_response)
 
     report = await judge_run("what is grace?", results, overlap)
 
@@ -106,8 +143,16 @@ async def test_judge_dimension_scores_parsed_correctly():
     assert score.dimensions["retrieval_relevance"].score == 0.9
     assert score.dimensions["retrieval_relevance"].reasoning == "All chunks are on-topic."
     assert score.dimensions["doctrinal_completeness"].score == 1.0
-    # weighted_total: 0.9*0.30 + 0.8*0.20 + 0.85*0.20 + 1.0*0.15 + 1.0*0.15
-    expected_total = 0.9*0.30 + 0.8*0.20 + 0.85*0.20 + 1.0*0.15 + 1.0*0.15
+    # Weight values come from WEIGHTS so a re-weighting cannot silently break this,
+    # but each dimension is still paired with its own weight by hand — that pairing
+    # is the thing that could actually go wrong.
+    expected_total = (
+        0.9 * WEIGHTS["retrieval_relevance"]
+        + 0.8 * WEIGHTS["best_passage_selection"]
+        + 0.85 * WEIGHTS["multi_angle_coverage"]
+        + 1.0 * WEIGHTS["doctrinal_completeness"]
+        + 1.0 * WEIGHTS["redundancy_rate"]
+    )
     assert abs(score.weighted_total - expected_total) < 1e-4
     assert score.summary == "s2_5_haiku retrieval is strong."
 
@@ -118,8 +163,7 @@ async def test_judge_falls_back_on_llm_error():
     results = [_make_result("s2_5_haiku"), _make_result("s4_haiku")]
 
     import app.rag.compare.judge as judge_module
-    judge_module._client = AsyncMock()
-    judge_module._client.messages.create = AsyncMock(side_effect=RuntimeError("network error"))
+    judge_module._client = _stub_streaming_client(RuntimeError("network error"))
 
     report = await judge_run("what is love?", results, overlap)
 
@@ -148,8 +192,7 @@ async def test_judge_falls_back_on_missing_tool_block():
     mock_response.usage = MagicMock(input_tokens=100, output_tokens=20)
 
     import app.rag.compare.judge as judge_module
-    judge_module._client = AsyncMock()
-    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
+    judge_module._client = _stub_streaming_client(mock_response)
 
     report = await judge_run("grace?", results, overlap)
 
@@ -168,8 +211,7 @@ async def test_judge_scores_include_pipeline_names():
     mock_response = _mock_tool_response(_make_tool_input(["pipeline_a", "pipeline_b"]))
 
     import app.rag.compare.judge as judge_module
-    judge_module._client = AsyncMock()
-    judge_module._client.messages.create = AsyncMock(return_value=mock_response)
+    judge_module._client = _stub_streaming_client(mock_response)
 
     report = await judge_run("what is faith?", results, overlap)
 
@@ -218,8 +260,8 @@ def test_compute_weighted_total_mixed():
         "doctrinal_completeness": 0.0,
         "redundancy_rate": 0.0,
     }
-    # Only retrieval_relevance (weight 0.30) contributes
-    assert abs(compute_weighted_total(scores) - 0.30) < 1e-9
+    # Only retrieval_relevance contributes, so the total must be exactly its weight.
+    assert abs(compute_weighted_total(scores) - WEIGHTS["retrieval_relevance"]) < 1e-9
 
 
 def test_dimension_score_dataclass():
@@ -244,7 +286,14 @@ def test_judge_score_dataclass():
         summary="Strong retrieval.",
     )
     assert js.pipeline == "s2_5_haiku"
-    assert abs(js.weighted_total - (0.9*0.30 + 0.8*0.20 + 0.7*0.20 + 1.0*0.15 + 1.0*0.15)) < 1e-9
+    expected = (
+        0.9 * WEIGHTS["retrieval_relevance"]
+        + 0.8 * WEIGHTS["best_passage_selection"]
+        + 0.7 * WEIGHTS["multi_angle_coverage"]
+        + 1.0 * WEIGHTS["doctrinal_completeness"]
+        + 1.0 * WEIGHTS["redundancy_rate"]
+    )
+    assert abs(js.weighted_total - expected) < 1e-9
     assert js.summary == "Strong retrieval."
 
 
@@ -258,3 +307,135 @@ def test_judge_report_dataclass():
     )
     assert report.comparative_analysis == "No pipelines compared."
     assert not hasattr(report, "overall_reasoning")
+
+
+# --- position bias: presentation order must be randomised and recorded ---
+
+def test_judge_prompt_does_not_send_temperature():
+    """Opus 5 removed `temperature` — sending it returns 400 '`temperature` is
+    deprecated for this model', which would fail every judge call."""
+    import inspect
+
+    from app.rag.compare import judge
+
+    src = inspect.getsource(judge.run)
+    # Strip comments so the explanatory note about temperature doesn't self-match.
+    code = "\n".join(
+        ln for ln in src.splitlines() if not ln.strip().startswith("#")
+    )
+    assert "temperature=" not in code
+
+
+def test_judge_leaves_thinking_enabled():
+    """Thinking is on by default on Opus 5 and must stay on: with thinking disabled
+    the model occasionally emits a tool call as plain text, which this judge would
+    read as a missing tool block and silently fall back to all-zero scores."""
+    import inspect
+
+    from app.rag.compare import judge
+
+    src = inspect.getsource(judge.run)
+    code = "\n".join(
+        ln for ln in src.splitlines() if not ln.strip().startswith("#")
+    )
+    assert "disabled" not in code
+
+
+@pytest.mark.asyncio
+async def test_judge_randomises_presentation_order_and_records_it():
+    """A listwise judge weights earlier items more, so a fixed order would give
+    whichever pipeline sorts first a permanent advantage."""
+    from app.rag.compare import judge
+
+    results = [_make_result(f"p{i}") for i in range(6)]
+    mock_response = _mock_tool_response(_make_tool_input([f"p{i}" for i in range(6)]))
+
+    orders: list[list[str]] = []
+
+    captured: list[dict] = []
+    stub = _stub_streaming_client(mock_response, capture=captured)
+
+    with patch.object(judge, "_client", stub):
+        for _ in range(12):
+            report = await judge.run("q", results, OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={}))
+            orders.append(report.presentation_order)
+
+    # The recorded order must match the order actually rendered into the prompt.
+    prompts = [c["messages"][0]["content"] for c in captured]
+    for prompt, order in zip(prompts, orders):
+        positions = [prompt.index(f"=== Pipeline: {p} ===") for p in order]
+        assert positions == sorted(positions), "recorded order != prompt order"
+
+    # And it must actually vary across calls.
+    assert len({tuple(o) for o in orders}) > 1, "presentation order never varied"
+
+
+@pytest.mark.asyncio
+async def test_judge_streams_and_bounds_the_call():
+    """A non-streaming judge call hung for 35 minutes in a batch run: Opus 5 with
+    adaptive thinking on a large multi-pipeline prompt exceeded the SDK's 10-minute
+    default, which then retried twice. Streaming keeps the connection active, and an
+    explicit timeout with no retries bounds the worst case."""
+    import inspect
+
+    from app.config import settings
+    from app.rag.compare import judge
+
+    src = inspect.getsource(judge.run)
+    assert "messages.stream(" in src
+    assert "get_final_message" in src
+    assert "messages.create(" not in src
+    assert "max_retries=0" in src  # retry later from cached artifacts
+    assert settings.judge_timeout_s > 0
+
+
+@pytest.mark.asyncio
+async def test_judge_warns_when_a_pipeline_is_missing_from_its_scores(caplog):
+    """A skipped pipeline is not a zero, so the batch harness's all-zeros guard
+    cannot catch it; the aggregate would then average that pipeline over a
+    self-selected subset of queries."""
+    import app.rag.compare.judge as judge_module
+
+    overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
+    results = [_make_result("hyde_haiku"), _make_result("hyde_cohere")]
+    # Judge returns only one of the two pipelines.
+    resp = _mock_tool_response(_make_tool_input(["hyde_haiku"]))
+    judge_module._client = _stub_streaming_client(resp)
+
+    with caplog.at_level("WARNING"):
+        report = await judge_run("q", results, overlap)
+
+    assert "scored 1 of 2 pipelines" in caplog.text
+    assert "hyde_cohere" in caplog.text
+    assert {s.pipeline for s in report.scores} == {"hyde_haiku"}
+
+
+@pytest.mark.asyncio
+async def test_judge_drops_hallucinated_pipeline_names(caplog):
+    """A name that was never sent would become a phantom pipeline in the aggregate."""
+    import app.rag.compare.judge as judge_module
+
+    overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
+    results = [_make_result("hyde_haiku")]
+    resp = _mock_tool_response(_make_tool_input(["hyde_haiku", "Pipeline 3"]))
+    judge_module._client = _stub_streaming_client(resp)
+
+    with caplog.at_level("WARNING"):
+        report = await judge_run("q", results, overlap)
+
+    assert {s.pipeline for s in report.scores} == {"hyde_haiku"}
+    assert "Pipeline 3" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_judge_is_silent_when_every_pipeline_is_scored(caplog):
+    import app.rag.compare.judge as judge_module
+
+    overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
+    results = [_make_result("a"), _make_result("b")]
+    judge_module._client = _stub_streaming_client(
+        _mock_tool_response(_make_tool_input(["a", "b"])))
+
+    with caplog.at_level("WARNING"):
+        await judge_run("q", results, overlap)
+    assert "pipelines (missing" not in caplog.text

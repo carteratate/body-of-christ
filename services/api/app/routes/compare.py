@@ -143,7 +143,7 @@ _HTML_VIEWER = """<!DOCTYPE html>
 
 <script>
 const COLLECTIONS = ["bible","catechism","summa","encyclicals","councils","church-fathers","medieval","canon-law","apostolic-exhortations","papal-documents"];
-const PIPELINES = ["s2_5_cohere","s2_5_haiku","s4_cohere","s4_haiku"];
+const PIPELINES = ["hyde_haiku","hyde_luna","hyde_cohere","hyde_cohere_haiku","hyde_cohere_luna","nohyde_haiku","nohyde_cohere","nohyde_cohere_haiku","hyde_nolex_cohere_haiku"];
 
 const collDiv = document.getElementById("collectionChecks");
 COLLECTIONS.forEach(c => {
@@ -154,7 +154,7 @@ COLLECTIONS.forEach(c => {
 const pipeDiv = document.getElementById("pipelineChecks");
 PIPELINES.forEach(p => {
   const l = document.createElement("label");
-  l.innerHTML = `<input type="checkbox" value="${p}" ${["s2_5_haiku","s4_haiku"].includes(p) ? "checked" : ""}> ${p}`;
+  l.innerHTML = `<input type="checkbox" value="${p}" ${["hyde_haiku","hyde_cohere_haiku","hyde_cohere_luna"].includes(p) ? "checked" : ""}> ${p}`;
   pipeDiv.appendChild(l);
 });
 
@@ -242,7 +242,16 @@ function renderResults(data) {
     const timing = pr.total_duration_s.toFixed(2);
     const cost = pr.total_cost.toFixed(5);
     const stepRows = (pr.step_timings || []).map(st => {
-      const stepCost = (pr.cost_breakdown || {})[st.step];
+      // Timing step names are coarse ("rerank") while cost keys are specific
+      // ("rerank_cohere", "rerank_listwise_luna", ...), so an exact lookup silently
+      // renders blank for the rerank row — the one number this viewer exists to
+      // compare. Fall back to summing every cost key prefixed by the step name.
+      const cb = pr.cost_breakdown || {};
+      let stepCost = cb[st.step];
+      if (stepCost == null) {
+        const parts = Object.keys(cb).filter(k => k.startsWith(st.step));
+        if (parts.length) stepCost = parts.reduce((a, k) => a + cb[k], 0);
+      }
       const costStr = stepCost != null ? ` · $${stepCost.toFixed(5)}` : "";
       return `<tr><td>${st.step}</td><td>${st.duration_s.toFixed(3)}s${costStr}</td></tr>`;
     }).join("");
@@ -290,6 +299,12 @@ function renderResults(data) {
   const judgeSec = document.createElement("div");
   judgeSec.className = "section";
   let judgeHtml = `<h3>Judge (${data.judge.model}) — $${(data.judge.cost||0).toFixed(5)}</h3>`;
+  // Presentation order is randomised per call; a listwise judge weights earlier
+  // items more, so a narrow margin should be read against this order.
+  if (data.judge.presentation_order && data.judge.presentation_order.length) {
+    judgeHtml += `<div class="judge-reasoning">Presented to judge in this order (position bias \u2014 read narrow margins with care): `
+      + data.judge.presentation_order.map((p,i) => `${i+1}. ${p}`).join(" &middot; ") + `</div>`;
+  }
   (data.judge.scores||[]).forEach(s => {
     const total = (s.weighted_total||0).toFixed(3);
     const barWidth = Math.round((s.weighted_total||0)*200);

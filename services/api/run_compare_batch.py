@@ -19,7 +19,7 @@ Usage:
   python run_compare_batch.py --output /tmp/test.jsonl --queries 0 1 2
 
   # Subset of pipelines
-  python run_compare_batch.py --output results/haiku_only.jsonl --pipelines s2_5_haiku s4_haiku
+  python run_compare_batch.py --output results/haiku_only.jsonl --pipelines hyde_haiku nohyde_haiku
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-_ALL_PIPELINES = ["s2_5_cohere", "s2_5_haiku", "s4_cohere", "s4_haiku"]
+_ALL_PIPELINES = ["hyde_haiku", "hyde_cohere", "hyde_cohere_haiku", "hyde_cohere_luna"]
 _ALL_COLLECTIONS = [
     "bible", "catechism", "summa", "encyclicals", "councils",
     "church-fathers", "medieval", "canon-law", "apostolic-exhortations",

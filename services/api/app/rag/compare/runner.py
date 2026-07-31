@@ -7,6 +7,7 @@ import logging
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.pipelines.runner import run as run_pipeline
 from app.rag.steps.types import PipelineResult
+from app.rag.steps.degradation import DegradationPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ async def run(
     quota: int,
     pipeline_names: list[str],
     user_id: str | None = None,
+    degradation_policy: DegradationPolicy = DegradationPolicy.ALLOW,
 ) -> list[PipelineResult]:
     """Run each named pipeline sequentially. Returns results in order.
 
@@ -28,7 +30,10 @@ async def run(
         if config is None:
             raise ValueError(f"Unknown pipeline: {name!r}. Valid: {sorted(PIPELINES)}")
         logger.info("compare/runner: starting pipeline=%s", name)
-        result = await run_pipeline(config, query, collections, quota, user_id)
+        result = await run_pipeline(
+            config, query, collections, quota, user_id,
+            degradation_policy=degradation_policy,
+        )
         results.append(result)
         logger.info(
             "compare/runner: finished pipeline=%s duration=%.2fs cost=$%.6f",

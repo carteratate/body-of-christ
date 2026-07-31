@@ -20,7 +20,7 @@ ALL_COLLECTIONS = [
     "papal-documents",
 ]
 
-ALL_PIPELINES = ["s2_5_cohere", "s2_5_haiku", "s4_cohere", "s4_haiku"]
+ALL_PIPELINES = ["hyde_haiku", "hyde_cohere", "hyde_cohere_haiku", "hyde_cohere_luna"]
 
 
 def _load_completed_indices(output_path: Path) -> set[int]:

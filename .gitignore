@@ -25,3 +25,9 @@ datapipeline/sources/
 .worktrees/
 .claude/
 docs/superpowers/
+
+# Generated retrieval-evaluation artifacts (large, reproducible, and may contain
+# corpus passage text). Keep the compact report and final scored JSONL explicitly.
+docs/eval/*
+!docs/eval/ROUND3_REPORT.md
+!docs/eval/eval80-round3-final.jsonl
