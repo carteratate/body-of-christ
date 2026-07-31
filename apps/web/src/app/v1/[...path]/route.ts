@@ -2,6 +2,10 @@ import { NextRequest } from "next/server";
 
 const API_URL = process.env.API_URL;
 
+// Search is an SSE request that includes retrieval, reranking, and streamed
+// explanations. Give the proxy enough lifetime for the upstream stream to finish.
+export const maxDuration = 300;
+
 async function proxy(req: NextRequest): Promise<Response> {
   if (!API_URL) {
     return new Response(JSON.stringify({ detail: "API unavailable" }), {

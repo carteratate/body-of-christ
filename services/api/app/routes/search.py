@@ -202,7 +202,7 @@ async def get_search_results(
     try:
         # Verify the search exists and belongs to this user
         search_row = await pool.fetchrow(
-            "SELECT id, query FROM searches WHERE id = $1 AND user_id = $2",
+            "SELECT id, query, result_count FROM searches WHERE id = $1 AND user_id = $2",
             search_uuid,
             user.user_id,
         )
@@ -250,10 +250,26 @@ async def get_search_results(
         for row in rows
     ]
 
+    expected_count = int(search_row["result_count"] or 0)
+    restore_status = (
+        "complete"
+        if len(results) == expected_count
+        else "results_unavailable"
+    )
+    if restore_status != "complete":
+        logger.warning(
+            "restore incomplete: search=%s expected=%d available=%d",
+            search_id,
+            expected_count,
+            len(results),
+        )
+
     return SearchResultsResponse(
         search_id=search_id,
         query=search_row["query"],
         results=results,
+        restore_status=restore_status,
+        expected_result_count=expected_count,
     )
 
 

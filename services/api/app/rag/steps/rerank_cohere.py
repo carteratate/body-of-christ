@@ -155,8 +155,17 @@ async def _rerank_with_retry(**kwargs):
 
 def init_cohere() -> None:
     global _client
+    _client = None
     if settings.cohere_api_key:
         _client = cohere.AsyncClientV2(api_key=settings.cohere_api_key)
+    else:
+        logger.warning(
+            "COHERE_API_KEY is not set; searches will use the RRF fallback before terminal reranking"
+        )
+
+
+def is_ready() -> bool:
+    return _client is not None
 
 
 async def close_cohere() -> None:
@@ -286,14 +295,29 @@ async def run_per_collection(
     Per-collection rather than flat so the caller can slice `quota` (terminal) or
     `quota + extra` (feeding an LLM reranker) independently per collection.
     """
-    if _client is None:
-        raise RuntimeError(
-            "Cohere client not initialized. Set COHERE_API_KEY environment variable."
-        )
-
     active = {c: cands for c, cands in candidates.items() if cands}
     if not active:
         return {}
+
+    if _client is None:
+        # A missing or temporarily unavailable optional reranker must not erase a
+        # healthy retrieval result. Preserve each collection's RRF order and let
+        # the terminal LLM reranker improve it when that stage is configured.
+        logger.error(
+            "rerank_cohere: client not initialized — using RRF fallback for %d collections",
+            len(active),
+        )
+        out: dict[str, list[RankedChunk]] = {}
+        for col, col_candidates in active.items():
+            degradation.record(
+                "rerank_cohere",
+                "client_not_initialized",
+                "rrf_fallback_used",
+                scope=col,
+                details={"hint": "Set COHERE_API_KEY to enable Cohere reranking."},
+            )
+            out[col] = _fallback_ranked(col_candidates)
+        return out
 
     semaphore = asyncio.Semaphore(settings.cohere_concurrency)
     cols = list(active)

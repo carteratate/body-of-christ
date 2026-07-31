@@ -156,7 +156,19 @@ export interface SearchResultsResponse {
   search_id: string;
   query: string;
   results: ChunkResult[];
+  restore_status: "complete" | "results_unavailable";
+  expected_result_count: number;
 }
+
+export type SearchOutcome = "success" | "degraded_success" | "no_candidates";
+export type CollectionOutcome =
+  | "results"
+  | "results_degraded"
+  | "no_candidates"
+  | "below_threshold"
+  | "retrieval_failed"
+  | "corpus_sync_failed"
+  | "ranking_failed";
 
 // ── V2 Documents ───────────────────────────────────────────────────────────
 
@@ -232,8 +244,19 @@ export interface Preferences {
 export interface SearchStreamCallbacks {
   onChunk: (chunk: ChunkResult) => void;
   onExplanationDelta: (chunkId: string, delta: string) => void;
-  onDone: (searchId: string, resultCount: number) => void;
-  onError: (message: string) => void;
+  onDone: (
+    searchId: string | null,
+    resultCount: number,
+    outcome: SearchOutcome,
+    collectionOutcomes: Record<string, CollectionOutcome>,
+    persisted: boolean,
+  ) => void;
+  onError: (
+    message: string,
+    code?: string,
+    stage?: string,
+    collectionOutcomes?: Record<string, CollectionOutcome>,
+  ) => void;
   onRateLimit: (retryAfter: number | null, limitType: "per_minute" | "daily") => void;
   onStatus?: (phase: "searching" | "ranking", collections?: string[]) => void;
 }
@@ -278,6 +301,7 @@ export async function streamSearch(
   const reader = res.body!.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
+  let terminalEventReceived = false;
 
   // The backend keeps this stream open well past the "done" event to stream
   // per-chunk explanations one at a time — so an abort (e.g. the user starting
@@ -301,8 +325,8 @@ export async function streamSearch(
           const event = JSON.parse(line.slice(6)) as
             | { type: "chunk" } & ChunkResult & { reranker_score: number }
             | { type: "explanation_delta"; chunk_id: string; delta: string }
-            | { type: "done"; search_id: string; result_count: number }
-            | { type: "error"; detail: string }
+            | { type: "done"; search_id: string | null; persisted?: boolean; result_count: number; outcome?: SearchOutcome; collection_outcomes?: Record<string, CollectionOutcome> }
+            | { type: "error"; detail: string; code?: string; stage?: string; collection_outcomes?: Record<string, CollectionOutcome> }
             | { type: "status"; phase: "searching" | "ranking"; collections?: string[] };
 
           if (event.type === "chunk") {
@@ -316,20 +340,46 @@ export async function streamSearch(
           } else if (event.type === "explanation_delta") {
             callbacks.onExplanationDelta(event.chunk_id, event.delta);
           } else if (event.type === "done") {
-            callbacks.onDone(event.search_id, event.result_count);
+            terminalEventReceived = true;
+            callbacks.onDone(
+              event.search_id,
+              event.result_count,
+              event.outcome ?? (event.result_count > 0 ? "success" : "no_candidates"),
+              event.collection_outcomes ?? {},
+              event.persisted ?? Boolean(event.search_id),
+            );
           } else if (event.type === "error") {
-            callbacks.onError(event.detail ?? "Search failed");
+            terminalEventReceived = true;
+            callbacks.onError(
+              event.detail ?? "Search failed",
+              event.code,
+              event.stage,
+              event.collection_outcomes,
+            );
           } else if (event.type === "status") {
             callbacks.onStatus?.(event.phase, event.collections);
+          } else {
+            throw new Error("The search service sent an unknown stream event.");
           }
-        } catch {
-          // malformed SSE line — skip
+        } catch (err) {
+          if (err instanceof SyntaxError) {
+            throw new Error("The search service sent an invalid stream event.");
+          }
+          throw err;
         }
       }
     }
   } catch (err) {
     if ((err as DOMException).name === "AbortError") return;
+    if (terminalEventReceived) return;
     throw err;
+  }
+  if (!signal?.aborted && !terminalEventReceived) {
+    callbacks.onError(
+      "The connection closed before the search finished.",
+      "stream_interrupted",
+      "connection",
+    );
   }
 }
 
@@ -371,6 +421,7 @@ export async function streamGuestSearch(
   const reader = res.body!.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
+  let terminalEventReceived = false;
 
   try {
     while (true) {
@@ -387,7 +438,11 @@ export async function streamGuestSearch(
         const raw = line.slice(6).trim();
         if (!raw) continue;
         let evt: Record<string, unknown>;
-        try { evt = JSON.parse(raw); } catch { continue; }
+        try {
+          evt = JSON.parse(raw);
+        } catch {
+          throw new Error("The search service sent an invalid stream event.");
+        }
 
         const type = evt.type as string;
         if (type === "status" && callbacks.onStatus) {
@@ -400,14 +455,37 @@ export async function streamGuestSearch(
         } else if (type === "explanation_delta") {
           callbacks.onExplanationDelta(evt.chunk_id as string, evt.delta as string);
         } else if (type === "done") {
-          callbacks.onDone(evt.search_id as string, evt.result_count as number);
+          terminalEventReceived = true;
+          callbacks.onDone(
+            (evt.search_id as string | null | undefined) ?? null,
+            evt.result_count as number,
+            (evt.outcome as SearchOutcome | undefined)
+              ?? ((evt.result_count as number) > 0 ? "success" : "no_candidates"),
+            (evt.collection_outcomes as Record<string, CollectionOutcome> | undefined) ?? {},
+            (evt.persisted as boolean | undefined) ?? Boolean(evt.search_id),
+          );
         } else if (type === "error") {
-          callbacks.onError(evt.detail as string);
+          terminalEventReceived = true;
+          callbacks.onError(
+            evt.detail as string,
+            evt.code as string | undefined,
+            evt.stage as string | undefined,
+            evt.collection_outcomes as Record<string, CollectionOutcome> | undefined,
+          );
+        } else {
+          throw new Error("The search service sent an unknown stream event.");
         }
       }
     }
   } catch (err) {
-    if ((err as DOMException).name !== "AbortError") throw err;
+    if ((err as DOMException).name !== "AbortError" && !terminalEventReceived) throw err;
+  }
+  if (!signal?.aborted && !terminalEventReceived) {
+    callbacks.onError(
+      "The connection closed before the search finished.",
+      "stream_interrupted",
+      "connection",
+    );
   }
 }
 
@@ -428,9 +506,14 @@ export async function deleteSearch(token: string, searchId: string): Promise<voi
   if (!res.ok) throw new Error(`API error ${res.status}`);
 }
 
-export async function getSearchResults(token: string, searchId: string): Promise<SearchResultsResponse> {
+export async function getSearchResults(
+  token: string,
+  searchId: string,
+  signal?: AbortSignal,
+): Promise<SearchResultsResponse> {
   const res = await fetch(`${API_URL}/v1/searches/${searchId}/results`, {
     headers: { Authorization: `Bearer ${token}` },
+    signal,
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
   return res.json() as Promise<SearchResultsResponse>;

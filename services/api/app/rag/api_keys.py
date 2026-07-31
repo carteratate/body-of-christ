@@ -54,6 +54,10 @@ def init_api_keys() -> None:
     )
 
 
+def is_ready() -> bool:
+    return bool(_clients) and bool(_semaphores)
+
+
 async def close_api_keys() -> None:
     """Close all Anthropic clients. Call at shutdown."""
     for client in _clients.values():

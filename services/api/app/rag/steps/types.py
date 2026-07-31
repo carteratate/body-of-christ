@@ -78,3 +78,9 @@ class PipelineResult:
     # aggregate as if every configured stage ran successfully.
     quality_eligible: bool = True
     latency_eligible: bool = True
+    # User-facing terminal classification. The frontend must never infer this
+    # merely from chunks == [] because infrastructure failures can also be empty.
+    outcome: str = "success"
+    # Per requested collection: results | results_degraded | no_candidates |
+    # below_threshold | retrieval_failed | corpus_sync_failed | ranking_failed.
+    collection_outcomes: dict[str, str] = field(default_factory=dict)

@@ -11,6 +11,16 @@ from app.rag.steps.types import ChunkCandidate
 logger = logging.getLogger(__name__)
 
 
+def _collections_missing_positions(
+    candidates: dict[str, list[ChunkCandidate]],
+) -> list[str]:
+    return [
+        collection
+        for collection, values in candidates.items()
+        if any(candidate.position is None for candidate in values)
+    ]
+
+
 async def run(
     candidates: dict[str, list[ChunkCandidate]],
 ) -> dict[str, list[ChunkCandidate]]:
@@ -25,9 +35,10 @@ async def run(
     """
     pool = get_pool()
     if pool is None:
-        if any(c.position is None for values in candidates.values() for c in values):
+        for collection in _collections_missing_positions(candidates):
             degradation.record(
                 "fetch_positions", "pool_unavailable", "enrichment_skipped",
+                scope=collection,
             )
         return candidates
 
@@ -66,22 +77,26 @@ async def run(
             time.perf_counter() - t0,
             exc,
         )
-        degradation.record(
-            "fetch_positions", type(exc).__name__, "enrichment_skipped",
-            details={"message": str(exc)[:300], "candidate_count": len(missing_ids)},
-        )
+        for collection in _collections_missing_positions(candidates):
+            degradation.record(
+                "fetch_positions", type(exc).__name__, "enrichment_skipped",
+                scope=collection,
+                details={"message": str(exc)[:300], "candidate_count": len(missing_ids)},
+            )
         return candidates
 
     # Any looked-up id NOT returned by the query has no chunks row → orphan.
     present_ids = set(pos_map)
     filtered: dict[str, list[ChunkCandidate]] = {}
     dropped = 0
+    dropped_by_collection: dict[str, int] = {}
     for col, col_list in candidates.items():
         kept: list[ChunkCandidate] = []
         for c in col_list:
             if c.position is None:
                 if c.chunk_id not in present_ids:
                     dropped += 1
+                    dropped_by_collection[col] = dropped_by_collection.get(col, 0) + 1
                     continue
                 c.position = pos_map[c.chunk_id]
                 # Qdrant payloads carry no annotation; FTS rows already have one
@@ -98,9 +113,11 @@ async def run(
             "table (stale Qdrant vectors)",
             dropped,
         )
-        degradation.record(
-            "fetch_positions", "orphaned_candidates", "candidates_omitted",
-            details={"count": dropped},
-        )
+        for collection, count in dropped_by_collection.items():
+            degradation.record(
+                "fetch_positions", "orphaned_candidates", "candidates_omitted",
+                scope=collection,
+                details={"count": count},
+            )
 
     return filtered

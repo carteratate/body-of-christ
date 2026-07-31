@@ -30,6 +30,115 @@ from app.rag.steps.types import ChunkCandidate, PipelineResult, StepTiming
 
 logger = logging.getLogger(__name__)
 
+_RETRIEVAL_STAGES = {"retrieve_vector", "retrieve_fts"}
+_HYDE_STAGES = {"hyde", "hyde_embed", "hyde_genre_select"}
+_NON_QUALITY_ACTIONS = {"cost_estimated", "actual_cost_recorded"}
+_RANKING_FAILURE_ACTIONS = {"collection_omitted"}
+
+
+class PipelineExecutionError(RuntimeError):
+    def __init__(self, stage: str):
+        super().__init__(f"pipeline stage failed: {stage}")
+        self.stage = stage
+
+
+def _classify_outcomes(
+    *,
+    collections: list[str],
+    pre_enrichment: dict[str, list[ChunkCandidate]],
+    candidates: dict[str, list[ChunkCandidate]],
+    ranked_count: int,
+    ranked_collections: set[str],
+    final_collections: set[str],
+    events: list[dict],
+) -> tuple[str, dict[str, str]]:
+    """Classify empty/partial output from evidence only the backend possesses."""
+    collection_outcomes: dict[str, str] = {}
+    retrieval_degraded: set[str] = set()
+    ranking_degraded: set[str] = set()
+    ranking_failed: set[str] = set()
+    global_retrieval_degraded = False
+    global_ranking_degraded = False
+    enrichment_degraded: set[str] = set()
+    global_enrichment_degraded = False
+    orphaned = False
+    for event in events:
+        stage = event.get("stage")
+        scope = event.get("scope")
+        if stage in _RETRIEVAL_STAGES or stage in _HYDE_STAGES:
+            if scope:
+                retrieval_degraded.add(str(scope).split("/", 1)[0])
+            else:
+                global_retrieval_degraded = True
+        if (
+            stage
+            and (stage == "rerank_cohere" or str(stage).startswith("rerank_"))
+            and event.get("action") not in _NON_QUALITY_ACTIONS
+        ):
+            if scope:
+                ranking_degraded.add(str(scope).split("/", 1)[0])
+            else:
+                global_ranking_degraded = True
+            if event.get("action") in _RANKING_FAILURE_ACTIONS:
+                if scope:
+                    ranking_failed.add(str(scope).split("/", 1)[0])
+        if stage == "fetch_positions":
+            orphaned = orphaned or event.get("reason") == "orphaned_candidates"
+            if scope:
+                enrichment_degraded.add(str(scope).split("/", 1)[0])
+            else:
+                global_enrichment_degraded = True
+
+    for collection in collections:
+        if collection in final_collections:
+            collection_outcomes[collection] = (
+                "results_degraded"
+                if (
+                    global_retrieval_degraded
+                    or collection in retrieval_degraded
+                    or global_enrichment_degraded
+                    or collection in enrichment_degraded
+                    or global_ranking_degraded
+                    or collection in ranking_degraded
+                )
+                else "results"
+            )
+        elif pre_enrichment.get(collection) and not candidates.get(collection):
+            collection_outcomes[collection] = "corpus_sync_failed"
+        elif not candidates.get(collection) and (
+            global_retrieval_degraded or collection in retrieval_degraded
+        ):
+            collection_outcomes[collection] = "retrieval_failed"
+        elif candidates.get(collection) and (
+            ranked_count == 0
+            or collection not in ranked_collections
+            or collection in ranking_failed
+        ):
+            collection_outcomes[collection] = "ranking_failed"
+        elif candidates.get(collection):
+            collection_outcomes[collection] = "below_threshold"
+        else:
+            collection_outcomes[collection] = "no_candidates"
+
+    if final_collections:
+        degraded_outcomes = {
+            "results_degraded", "retrieval_failed", "corpus_sync_failed", "ranking_failed"
+        }
+        outcome = (
+            "degraded_success"
+            if any(value in degraded_outcomes for value in collection_outcomes.values())
+            else "success"
+        )
+    elif any(value == "corpus_sync_failed" for value in collection_outcomes.values()) or orphaned:
+        outcome = "corpus_sync_failed"
+    elif any(value == "retrieval_failed" for value in collection_outcomes.values()):
+        outcome = "retrieval_failed"
+    elif any(value == "ranking_failed" for value in collection_outcomes.values()):
+        outcome = "ranking_failed"
+    else:
+        outcome = "no_candidates"
+    return outcome, collection_outcomes
+
 
 def _pool_sizes(config: PipelineConfig, quota: int) -> tuple[int | None, int | None]:
     """(per-strategy retrieval k, RRF top_n) for this pipeline, or (None, None).
@@ -134,13 +243,19 @@ async def run(
 
     def _timed_sync(step: str, fn_lambda):
         t0 = time.perf_counter()
-        result = fn_lambda()
+        try:
+            result = fn_lambda()
+        except Exception as exc:
+            raise PipelineExecutionError(step) from exc
         timings.append(StepTiming(step=step, duration_s=time.perf_counter() - t0))
         return result
 
     async def _timed_async(step: str, coro):
         t0 = time.perf_counter()
-        result = await coro
+        try:
+            result = await coro
+        except Exception as exc:
+            raise PipelineExecutionError(step) from exc
         timings.append(StepTiming(step=step, duration_s=time.perf_counter() - t0))
         return result
 
@@ -156,6 +271,7 @@ async def run(
         # Lexical ablation — dense only. RRF handles a missing path natively.
         fts_raw = {}
     merged    = _timed_sync("rrf", lambda: rrf.run(vec_raw, fts_raw, quota, top_n=top_n))
+    pre_enrichment = {col: list(chunks) for col, chunks in merged.items()}
     merged    = await _timed_async("fetch_positions", fetch_positions.run(merged))
     ranked, all_scored = await _timed_async(
         "rerank", rerank.run(config.rerank, merged, query, quota, tracker),
@@ -174,6 +290,15 @@ async def run(
     degraded = degradation.degradations()
     degradation_events = degradation.event_dicts()
     recovery_events = degradation.recovery_event_dicts()
+    outcome, collection_outcomes = _classify_outcomes(
+        collections=collections,
+        pre_enrichment=pre_enrichment,
+        candidates=merged,
+        ranked_count=len(ranked),
+        ranked_collections={chunk.collection for chunk in ranked},
+        final_collections={chunk.collection for chunk in final},
+        events=degradation_events,
+    )
     if degraded:
         logger.warning(
             "pipeline_runner: pipeline=%s DEGRADED %s — rerank did not fully run; "
@@ -211,4 +336,6 @@ async def run(
         recovery_events=recovery_events,
         quality_eligible=not bool(degraded),
         latency_eligible=not bool(degraded) and throttle_wait <= 1.0,
+        outcome=outcome,
+        collection_outcomes=collection_outcomes,
     )

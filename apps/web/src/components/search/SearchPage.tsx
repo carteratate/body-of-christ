@@ -8,6 +8,7 @@ import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
 import { SearchResults } from "@/components/search/SearchResults";
 import { LoadingAnimation } from "@/components/search/LoadingAnimation";
+import { SearchFailureScreen } from "@/components/search/SearchFailureScreen";
 import { RateLimitModal } from "@/components/common";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import {
@@ -16,6 +17,8 @@ import {
   getSearchResults,
   updatePreferences,
   type ChunkResult,
+  type CollectionOutcome,
+  type SearchOutcome,
 } from "@/lib/api";
 import { markTrialUsed } from "@/lib/trial";
 import {
@@ -79,11 +82,17 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
   const [queryBubbleVisible, setQueryBubbleVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [errorStage, setErrorStage] = useState<string | null>(null);
+  const [outcome, setOutcome] = useState<SearchOutcome | null>(null);
+  const [collectionOutcomes, setCollectionOutcomes] = useState<Record<string, CollectionOutcome>>({});
+  const [saveWarning, setSaveWarning] = useState<string | null>(null);
   const [rateLimitRetryAfter, setRateLimitRetryAfter] = useState<number | null>(null);
   const [rateLimitType, setRateLimitType] = useState<"per_minute" | "daily">("per_minute");
   const [searchPhase, setSearchPhase] = useState<"searching" | "ranking" | null>(null);
   const [exploreLabel, setExploreLabel] = useState<string | null>(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [animationRequestId, setAnimationRequestId] = useState(0);
   const [queryDone, setQueryDone] = useState(false);
   // Controls when BottomBar switches from search input → filter pills during animation.
   // Starts false (search input visible), becomes true ~1.4s in (when the gold line arrives).
@@ -99,6 +108,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
   const abortRef = useRef<AbortController | null>(null);
+  const activeRequestRef = useRef(0);
   const exploreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const filterTransitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefsSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -125,6 +135,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   useEffect(() => {
     return () => {
+      activeRequestRef.current += 1;
       abortRef.current?.abort();
       if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
       if (filterTransitionTimerRef.current) clearTimeout(filterTransitionTimerRef.current);
@@ -189,12 +200,18 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (prevSearchKey.current === searchKey) return;
     prevSearchKey.current = searchKey;
     abortRef.current?.abort();
+    activeRequestRef.current += 1;
     if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
     setResults([]);
     setSubmittedQuery(null);
     setQueryBubbleVisible(false);
     setSearchId(null);
     setError(null);
+    setErrorCode(null);
+    setErrorStage(null);
+    setOutcome(null);
+    setCollectionOutcomes({});
+    setSaveWarning(null);
     setLoading(false);
     setSearchValue("");
     setSearchPhase(null);
@@ -228,6 +245,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (!UUID_RE.test(restoreId)) return;
 
     // Entering an old conversation — remove the "New Search" placeholder
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const requestId = activeRequestRef.current + 1;
+    activeRequestRef.current = requestId;
+    const isCurrentRequest = () => activeRequestRef.current === requestId;
     pendingIdRef.current = null;
     clearPendingSearch();
 
@@ -237,6 +260,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     // stale content when switching between history items.
     setResults([]);
     setError(null);
+    setErrorCode(null);
+    setErrorStage(null);
+    setOutcome(null);
+    setCollectionOutcomes({});
+    setSaveWarning(null);
     setQueryBubbleVisible(false);
 
     const id = restoreId;
@@ -244,8 +272,9 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     restoredForId.current = id;
     setLoading(true);
     setIsRestoring(true);
-    getSearchResults(tok, id)
+    getSearchResults(tok, id, controller.signal)
       .then((data) => {
+        if (!isCurrentRequest()) return;
         setResults(data.results);
         setSearchId(data.search_id);
         setSubmittedQuery(data.query);
@@ -266,12 +295,32 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           : [...new Set(data.results.map((r) => r.source.collection))];
         setSubmittedCollections(restored);
         setVisibleCollections(restored);
+        if (data.restore_status === "results_unavailable") {
+          setError(
+            `This saved search originally had ${data.expected_result_count} results, but only ${data.results.length} remain available.`
+          );
+          setErrorCode("restore_unavailable");
+          setErrorStage("restore");
+        } else {
+          setOutcome(data.results.length > 0 ? "success" : "no_candidates");
+        }
       })
       .catch((err: unknown) => {
+        if (!isCurrentRequest() || (err as DOMException).name === "AbortError") return;
         const msg = err instanceof Error ? err.message : "Failed to restore search";
         setError(msg);
+        setErrorCode("restore_failed");
+        setErrorStage("restore");
       })
-      .finally(() => { setLoading(false); setIsRestoring(false); });
+      .finally(() => {
+        if (!isCurrentRequest()) return;
+        setLoading(false);
+        setIsRestoring(false);
+      });
+    return () => {
+      if (activeRequestRef.current === requestId) activeRequestRef.current += 1;
+      controller.abort();
+    };
   }, [restoreId, token, setActiveSearchId, clearPendingSearch]);
 
   // ── Search ────────────────────────────────────────────────────────────────
@@ -286,6 +335,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
+      const requestId = activeRequestRef.current + 1;
+      activeRequestRef.current = requestId;
+      setAnimationRequestId(requestId);
+      let terminalReceived = false;
+      const isCurrentRequest = () => activeRequestRef.current === requestId;
 
       // Update the pending slot title from "New Search" → actual query
       const pid = pendingIdRef.current ?? crypto.randomUUID();
@@ -301,6 +355,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       setLoading(true);
       setSearchPhase(null);
       setError(null);
+      setErrorCode(null);
+      setErrorStage(null);
+      setOutcome(null);
+      setCollectionOutcomes({});
+      setSaveWarning(null);
       setRateLimitRetryAfter(null);
       setRateLimitType("per_minute");
       setSubmittedQuery(query);
@@ -319,12 +378,15 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       try {
         const streamCallbacks = {
           onStatus(phase: "searching" | "ranking") {
+            if (!isCurrentRequest() || terminalReceived) return;
             setSearchPhase(phase);
           },
           onChunk(chunk: ChunkResult) {
+            if (!isCurrentRequest() || terminalReceived) return;
             bufferedChunksRef.current.push({ ...chunk, explanation: null });
           },
           onExplanationDelta(chunkId: string, delta: string) {
+            if (!isCurrentRequest()) return;
             if (resolvedRef.current) {
               setResults(prev => prev.map(r =>
                 r.chunk_id === chunkId
@@ -335,9 +397,24 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
               bufferedExplRef.current[chunkId] = (bufferedExplRef.current[chunkId] ?? "") + delta;
             }
           },
-          onDone(sid: string, resultCount: number) {
+          onDone(
+            sid: string | null,
+            resultCount: number,
+            searchOutcome: SearchOutcome,
+            perCollection: Record<string, CollectionOutcome>,
+            persisted: boolean,
+          ) {
+            if (!isCurrentRequest() || terminalReceived) return;
+            terminalReceived = true;
             setSearchPhase(null);
             setSearchId(sid);
+            setOutcome(searchOutcome);
+            setCollectionOutcomes(perCollection);
+            setSaveWarning(
+              !isGuest && !persisted
+                ? "Results are available now, but search history could not be saved. They will not be restorable after you leave this page."
+                : null
+            );
             setQueryDone(true);
             pendingIdRef.current = null;
             clearPendingSearch();
@@ -360,9 +437,19 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
               translation,
             });
           },
-          onError(msg: string) {
+          onError(
+            msg: string,
+            code?: string,
+            stage?: string,
+            perCollection?: Record<string, CollectionOutcome>,
+          ) {
+            if (!isCurrentRequest() || terminalReceived) return;
+            terminalReceived = true;
             setSearchPhase(null);
             setError(msg);
+            setErrorCode(code ?? classifyError(msg));
+            setErrorStage(stage ?? null);
+            setCollectionOutcomes(perCollection ?? {});
             setLoading(false);
             setShowAnimation(false);
             setAnimFilterBarActive(false);
@@ -370,6 +457,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
           },
           onRateLimit(retryAfter: number | null, limitType: "per_minute" | "daily") {
+            if (!isCurrentRequest() || terminalReceived) return;
+            terminalReceived = true;
             setSearchPhase(null);
             setRateLimitRetryAfter(retryAfter ?? 60);
             setRateLimitType(limitType);
@@ -377,6 +466,13 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             setShowAnimation(false);
             setAnimFilterBarActive(false);
             setQueryBubbleVisible(true);
+            setError(
+              limitType === "daily"
+                ? "You have reached today’s search limit."
+                : "Too many searches were submitted in a short period."
+            );
+            setErrorCode("rate_limit");
+            setErrorStage("rate_limit");
           },
         };
 
@@ -399,8 +495,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           );
         }
       } catch (err: unknown) {
+        if (!isCurrentRequest() || terminalReceived) return;
+        terminalReceived = true;
         const msg = err instanceof Error ? err.message : "Search failed";
         setError(msg);
+        setErrorCode(classifyError(msg));
+        setErrorStage("connection");
         setLoading(false);
         setShowAnimation(false);
         setAnimFilterBarActive(false);
@@ -414,7 +514,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   // ── Animation ─────────────────────────────────────────────────────────────
 
-  function handleAnimReadyToShow() {
+  function handleAnimReadyToShow(requestId: number) {
+    if (activeRequestRef.current !== requestId) return;
     const merged = bufferedChunksRef.current.map(chunk => ({
       ...chunk,
       explanation: bufferedExplRef.current[chunk.chunk_id] ?? null,
@@ -427,7 +528,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     setQueryDone(false);
   }
 
-  function handleAnimFadeComplete() {
+  function handleAnimFadeComplete(requestId: number) {
+    if (activeRequestRef.current !== requestId) return;
     setShowAnimation(false);
   }
 
@@ -491,12 +593,13 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         {/* Animation overlay — scoped to content area only, BottomBar stays visible */}
         {showAnimation && (
           <LoadingAnimation
+            key={animationRequestId}
             collections={activeCollections}
             quota={quota}
             isQueryDone={queryDone}
             retrievalStarted={searchPhase !== null || queryDone}
-            onReadyToShow={handleAnimReadyToShow}
-            onFadeComplete={handleAnimFadeComplete}
+            onReadyToShow={() => handleAnimReadyToShow(animationRequestId)}
+            onFadeComplete={() => handleAnimFadeComplete(animationRequestId)}
             reservedTopRight={bubbleSize}
           />
         )}
@@ -528,7 +631,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           </div>
         )}
 
-        {(loading || submittedQuery) && (
+        {!error && (loading || submittedQuery) && (
           <SearchResults
             results={results}
             loading={loading}
@@ -538,21 +641,26 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             phase={searchPhase}
             submittedCollections={submittedCollections}
             visibleCollections={visibleCollections}
+            outcome={outcome}
+            collectionOutcomes={collectionOutcomes}
             isRestoring={isRestoring}
             isGuest={isGuest}
           />
         )}
 
-        {error && !loading && (
-          <div className="text-center py-8">
-            <p className="text-brand-muted text-sm mb-3">Search failed. Please try again.</p>
-            <button
-              onClick={() => submittedQuery && handleSearch(submittedQuery)}
-              className="text-brand-accent text-sm hover:underline"
-            >
-              Retry
-            </button>
+        {saveWarning && !loading && !error && (
+          <div className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-muted">
+            {saveWarning}
           </div>
+        )}
+
+        {error && !loading && (
+          <SearchFailureScreen
+            message={error}
+            code={errorCode}
+            stage={errorStage}
+            onRetry={() => submittedQuery && handleSearch(submittedQuery)}
+          />
         )}
 
       </div>
@@ -566,7 +674,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         onQuotaChange={handleQuotaChange}
         searchValue={searchValue}
         onSearchChange={(val) => {
-          exploreTimerRef.current && clearTimeout(exploreTimerRef.current);
+          if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
           setSearchValue(val);
         }}
         onSearch={() => handleSearch(searchValue)}

@@ -21,6 +21,10 @@ def init_embed() -> None:
     _client = openai.AsyncOpenAI(api_key=settings.openai_api_key, timeout=30.0, max_retries=3)
 
 
+def is_ready() -> bool:
+    return _client is not None
+
+
 async def close_embed() -> None:
     global _client
     if _client is not None:

@@ -52,3 +52,5 @@ class SearchResultsResponse(BaseModel):
     search_id: str
     query: str
     results: list[ChunkResult]
+    restore_status: str = "complete"
+    expected_result_count: int = 0

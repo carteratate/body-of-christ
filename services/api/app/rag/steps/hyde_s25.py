@@ -288,6 +288,7 @@ async def _generate_single(
     max_tokens: int,
     cost_tracker: CostTracker | None = None,
     cost_step: str = "hyde",
+    scope: str | None = None,
 ) -> str | None:
     """Generate one HyDE passage and optionally record token cost."""
     try:
@@ -309,6 +310,7 @@ async def _generate_single(
         logger.warning("HyDE passage generation failed: %s", exc)
         degradation.record(
             "hyde", type(exc).__name__, "passage_omitted",
+            scope=scope,
             details={"message": str(exc)[:300]},
         )
         return None
@@ -377,7 +379,8 @@ async def generate_hyde_passages(
         async def _guarded(system: str) -> str | None:
             async with semaphore:
                 return await _generate_single(client, system, query, max_tokens,
-                                              cost_tracker=cost_tracker, cost_step="hyde")
+                                              cost_tracker=cost_tracker, cost_step="hyde",
+                                              scope=collection)
 
         results = await asyncio.gather(*[_guarded(p) for p in prompts.values()])
         return [r for r in results if r is not None]
@@ -385,7 +388,8 @@ async def generate_hyde_passages(
     system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
     async with semaphore:
         result = await _generate_single(client, system, query, max_tokens,
-                                        cost_tracker=cost_tracker, cost_step="hyde")
+                                        cost_tracker=cost_tracker, cost_step="hyde",
+                                        scope=collection)
     return [result] if result is not None else []
 
 
@@ -424,6 +428,11 @@ async def run(
                 genres = json.loads(response.content[0].text.strip())
                 selected = [g for g in genres if isinstance(g, str) and g in _VALID]
                 if len(selected) != 3:
+                    degradation.record(
+                        "hyde_genre_select", "invalid_response", "defaults_used",
+                        scope="bible",
+                        details={"valid_genre_count": len(selected)},
+                    )
                     selected = ["free", "nt-epistles", "psalms"]
             except Exception:
                 degradation.record(
@@ -460,11 +469,12 @@ async def run(
         return_exceptions=True,
     )
     output: dict[str, list[list[float]]] = {}
-    for item in results:
+    for col, item in zip(collections, results):
         if isinstance(item, BaseException):
             logger.warning("hyde_s25: collection failed: %s", item)
             degradation.record(
                 "hyde", type(item).__name__, "collection_omitted",
+                scope=col,
                 details={"message": str(item)[:300]},
             )
             continue

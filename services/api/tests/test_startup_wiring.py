@@ -66,3 +66,45 @@ def test_evaluate_route_shares_the_haiku_client_rather_than_opening_its_own():
     import app.rag.steps.rerank_haiku as rerank_haiku
 
     assert rerank.PROVIDERS["haiku"] is rerank_haiku.PROVIDER
+
+
+def test_search_readiness_covers_every_production_dependency():
+    from app import main
+
+    with (
+        patch.object(main, "get_pool", return_value=object()),
+        patch.object(main, "embed_is_ready", return_value=True),
+        patch.object(main, "hyde_is_ready", return_value=True),
+        patch.object(main, "get_qdrant_client", return_value=object()),
+        patch.object(main, "cohere_is_ready", return_value=True),
+        patch.object(main.luna_provider, "is_ready", return_value=True),
+    ):
+        readiness = main._search_readiness()
+
+    assert readiness == {
+        "database": True,
+        "embeddings": True,
+        "hyde": True,
+        "qdrant": True,
+        "cohere": True,
+        "terminal_reranker": True,
+    }
+
+
+@pytest.mark.asyncio
+async def test_live_search_readiness_checks_database_and_qdrant():
+    from app import main
+
+    pool = AsyncMock()
+    pool.fetchval.return_value = 1
+    qdrant = AsyncMock()
+    qdrant.get_collection.return_value = object()
+    with (
+        patch.object(main, "get_pool", return_value=pool),
+        patch.object(main, "get_qdrant_client", return_value=qdrant),
+    ):
+        live = await main._live_search_readiness()
+
+    assert live == {"database": True, "qdrant": True}
+    pool.fetchval.assert_awaited_once_with("SELECT 1")
+    qdrant.get_collection.assert_awaited_once_with("chunks")

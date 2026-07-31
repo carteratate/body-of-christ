@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 
 from app.config import settings
-from app.rag.steps import rerank_cohere
+from app.rag.steps import degradation, rerank_cohere
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.types import ChunkCandidate
 
@@ -149,12 +149,18 @@ async def test_empty_candidates_makes_no_calls():
 
 
 @pytest.mark.asyncio
-async def test_uninitialised_client_raises_rather_than_silently_returning_nothing():
+async def test_uninitialised_client_falls_back_to_rrf_results():
+    degradation.begin_degradation_accounting()
     with patch.object(rerank_cohere, "_client", None):
-        with pytest.raises(RuntimeError, match="Cohere client not initialized"):
-            await rerank_cohere.run_per_collection(
-                {"bible": [_cand(0, "bible")]}, "q", 4, CostTracker(),
-            )
+        out = await rerank_cohere.run_per_collection(
+            {"bible": [_cand(0, "bible")]}, "q", 4, CostTracker(),
+        )
+
+    assert len(out["bible"]) == 1
+    assert out["bible"][0].score_source == "rrf_fallback"
+    assert degradation.degradations() == [
+        "rerank_cohere:bible:client_not_initialized"
+    ]
 
 
 @pytest.mark.asyncio

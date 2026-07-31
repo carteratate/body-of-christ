@@ -97,3 +97,38 @@ def test_delete_search_rejects_invalid_uuid_without_db_call():
 
     assert response.status_code == 422
     pool.execute.assert_not_awaited()
+
+
+def test_restore_reports_missing_historical_results():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "grace",
+        "result_count": 3,
+    }
+    pool.fetch.return_value = []
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["restore_status"] == "results_unavailable"
+    assert body["expected_result_count"] == 3
+    assert body["results"] == []
+
+
+def test_restore_of_genuine_empty_search_is_complete():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "grace",
+        "result_count": 0,
+    }
+    pool.fetch.return_value = []
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["restore_status"] == "complete"
+    assert body["expected_result_count"] == 0

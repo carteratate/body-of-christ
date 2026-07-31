@@ -40,6 +40,238 @@ def test_production_pipeline_is_round_three_winner():
     assert _PRODUCTION_PIPELINE == "hyde_cohere_luna"
 
 
+def test_empty_healthy_retrieval_is_not_misclassified_as_threshold_filtering():
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={},
+        candidates={},
+        ranked_count=0,
+        ranked_collections=set(),
+        final_collections=set(),
+        events=[],
+    )
+    assert outcome == "no_candidates"
+    assert collections == {"bible": "no_candidates"}
+
+
+def test_empty_degraded_retrieval_is_a_failure():
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={},
+        candidates={},
+        ranked_count=0,
+        ranked_collections=set(),
+        final_collections=set(),
+        events=[{
+            "stage": "retrieve_vector",
+            "scope": "bible/query",
+            "reason": "TimeoutError",
+            "action": "path_omitted",
+        }],
+    )
+    assert outcome == "retrieval_failed"
+    assert collections == {"bible": "retrieval_failed"}
+
+
+def test_candidates_lost_during_enrichment_are_corpus_sync_failure():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={"bible": [candidate]},
+        candidates={"bible": []},
+        ranked_count=0,
+        ranked_collections=set(),
+        final_collections=set(),
+        events=[{
+            "stage": "fetch_positions",
+            "scope": None,
+            "reason": "orphaned_candidates",
+            "action": "candidates_omitted",
+        }],
+    )
+    assert outcome == "corpus_sync_failed"
+    assert collections == {"bible": "corpus_sync_failed"}
+
+
+def test_candidates_without_ranked_output_are_ranking_failure():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={"bible": [candidate]},
+        candidates={"bible": [candidate]},
+        ranked_count=0,
+        ranked_collections=set(),
+        final_collections=set(),
+        events=[],
+    )
+    assert outcome == "ranking_failed"
+    assert collections == {"bible": "ranking_failed"}
+
+
+def test_unranked_collection_in_partial_success_is_not_called_below_threshold():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible", "summa"],
+        pre_enrichment={"bible": [candidate], "summa": [candidate]},
+        candidates={"bible": [candidate], "summa": [candidate]},
+        ranked_count=1,
+        ranked_collections={"bible"},
+        final_collections={"bible"},
+        events=[],
+    )
+    assert outcome == "degraded_success"
+    assert collections == {"bible": "results", "summa": "ranking_failed"}
+
+
+def test_successful_ranking_fallback_is_visible_but_not_called_failure():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={"bible": [candidate]},
+        candidates={"bible": [candidate]},
+        ranked_count=1,
+        ranked_collections={"bible"},
+        final_collections={"bible"},
+        events=[{
+            "stage": "rerank_cohere",
+            "scope": "bible",
+            "reason": "TimeoutError",
+            "action": "rrf_fallback_used",
+        }],
+    )
+    assert outcome == "degraded_success"
+    assert collections == {"bible": "results_degraded"}
+
+
+def test_cost_accounting_event_does_not_degrade_success():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={"bible": [candidate]},
+        candidates={"bible": [candidate]},
+        ranked_count=1,
+        ranked_collections={"bible"},
+        final_collections={"bible"},
+        events=[{
+            "stage": "rerank_cohere",
+            "scope": "bible",
+            "reason": "billing_metadata_missing",
+            "action": "cost_estimated",
+        }],
+    )
+    assert outcome == "success"
+    assert collections == {"bible": "results"}
+
+
+def test_global_terminal_fallback_marks_all_returned_collections_degraded():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible", "summa"],
+        pre_enrichment={"bible": [candidate], "summa": [candidate]},
+        candidates={"bible": [candidate], "summa": [candidate]},
+        ranked_count=2,
+        ranked_collections={"bible", "summa"},
+        final_collections={"bible", "summa"},
+        events=[{
+            "stage": "rerank_listwise_luna",
+            "scope": None,
+            "reason": "incomplete_output",
+            "action": "upstream_order_used",
+        }],
+    )
+    assert outcome == "degraded_success"
+    assert collections == {
+        "bible": "results_degraded",
+        "summa": "results_degraded",
+    }
+
+
+def test_partial_retrieval_path_failure_marks_returned_results_degraded():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={"bible": [candidate]},
+        candidates={"bible": [candidate]},
+        ranked_count=1,
+        ranked_collections={"bible"},
+        final_collections={"bible"},
+        events=[{
+            "stage": "retrieve_vector",
+            "scope": "bible/query",
+            "reason": "TimeoutError",
+            "action": "path_omitted",
+        }],
+    )
+    assert outcome == "degraded_success"
+    assert collections == {"bible": "results_degraded"}
+
+
+def test_skipped_position_enrichment_marks_results_degraded():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible"],
+        pre_enrichment={"bible": [candidate]},
+        candidates={"bible": [candidate]},
+        ranked_count=1,
+        ranked_collections={"bible"},
+        final_collections={"bible"},
+        events=[{
+            "stage": "fetch_positions",
+            "scope": "bible",
+            "reason": "pool_unavailable",
+            "action": "enrichment_skipped",
+        }],
+    )
+    assert outcome == "degraded_success"
+    assert collections == {"bible": "results_degraded"}
+
+
+def test_collection_scoped_hyde_failure_marks_results_degraded():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible", "summa"],
+        pre_enrichment={"bible": [candidate], "summa": [candidate]},
+        candidates={"bible": [candidate], "summa": [candidate]},
+        ranked_count=2,
+        ranked_collections={"bible", "summa"},
+        final_collections={"bible", "summa"},
+        events=[{
+            "stage": "hyde_embed",
+            "scope": "summa",
+            "reason": "TimeoutError",
+            "action": "vector_omitted",
+        }],
+    )
+    assert outcome == "degraded_success"
+    assert collections == {
+        "bible": "results",
+        "summa": "results_degraded",
+    }
+
+
+def test_global_hyde_failure_marks_all_results_degraded_for_legacy_events():
+    candidate = MagicMock()
+    outcome, collections = runner._classify_outcomes(
+        collections=["bible", "summa"],
+        pre_enrichment={"bible": [candidate], "summa": [candidate]},
+        candidates={"bible": [candidate], "summa": [candidate]},
+        ranked_count=2,
+        ranked_collections={"bible", "summa"},
+        final_collections={"bible", "summa"},
+        events=[{
+            "stage": "hyde",
+            "scope": None,
+            "reason": "RuntimeError",
+            "action": "collection_omitted",
+        }],
+    )
+    assert outcome == "degraded_success"
+    assert collections == {
+        "bible": "results_degraded",
+        "summa": "results_degraded",
+    }
+
+
 @pytest.mark.asyncio
 async def test_runner_returns_pipeline_result():
     config = PIPELINES["nohyde_haiku"]

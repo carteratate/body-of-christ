@@ -1,4 +1,4 @@
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -145,6 +145,73 @@ class Settings(BaseSettings):
         if v not in allowed:
             raise ValueError(f"APP_ENV must be one of {sorted(allowed)}, got {v!r}")
         return v
+
+    @field_validator(
+        "default_quota",
+        "candidate_multiplier",
+        "embedding_dims",
+        "cohere_max_pool",
+        "cohere_max_tokens_per_doc",
+        "cohere_concurrency",
+        "llm_pool_global_cap",
+        "llm_pool_floor_per_col",
+        "llm_rerank_max_tokens",
+        "retrieval_k_min",
+        "retrieval_k_max",
+        "rate_limit_per_minute",
+        "daily_message_quota",
+        "rate_limit_search_per_minute",
+        "daily_search_quota",
+    )
+    @classmethod
+    def positive_pipeline_integer(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("pipeline limits and concurrency values must be positive")
+        return value
+
+    @field_validator(
+        "cohere_max_calls_per_minute",
+        "cohere_max_retries_429",
+        "cohere_keep_extra",
+    )
+    @classmethod
+    def nonnegative_pipeline_integer(cls, value: int) -> int:
+        if value < 0:
+            raise ValueError("Cohere rate and retry values must be nonnegative")
+        return value
+
+    @field_validator(
+        "guarantee_min_score",
+        "cohere_include_floor",
+        "pointwise_score_cutoff",
+        "cohere_keep_score_floor",
+        "listwise_include_floor",
+        "listwise_min_coverage",
+        "cohere_fallback_score_base",
+        "llm_fallback_score_base",
+    )
+    @classmethod
+    def unit_interval(cls, value: float) -> float:
+        if not 0.0 <= value <= 1.0:
+            raise ValueError("score thresholds must be between 0 and 1")
+        return value
+
+    @field_validator("cohere_pool_safety")
+    @classmethod
+    def valid_pool_safety(cls, value: float) -> float:
+        if not 0.0 < value <= 1.0:
+            raise ValueError("COHERE_POOL_SAFETY must be greater than 0 and at most 1")
+        return value
+
+    @model_validator(mode="after")
+    def validate_pipeline_ranges(self):
+        if self.retrieval_k_min > self.retrieval_k_max:
+            raise ValueError("RETRIEVAL_K_MIN cannot exceed RETRIEVAL_K_MAX")
+        if self.llm_pool_floor_per_col > self.llm_pool_global_cap:
+            raise ValueError(
+                "LLM_POOL_FLOOR_PER_COL cannot exceed LLM_POOL_GLOBAL_CAP"
+            )
+        return self
 
 
 settings = Settings()
