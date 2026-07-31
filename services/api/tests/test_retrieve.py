@@ -2,6 +2,7 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import asyncpg
 import pytest
 
 from app.rag.steps.types import ChunkCandidate
@@ -241,6 +242,44 @@ async def test_retrieve_fts_run_returns_results_without_vector():
     assert merged["catechism"][0].chunk_id == chunk_id
 
 
+@pytest.mark.asyncio
+async def test_retrieve_fts_reacquires_after_transient_connection_loss():
+    """A stale Supabase-pooler socket is retried once and never recorded degraded."""
+    fts_row = _row("dddddddd-0000-0000-0000-000000000002", "catechism")
+    mock_pool = MagicMock()
+    mock_pool.fetch = AsyncMock(side_effect=[
+        asyncpg.ConnectionDoesNotExistError("connection was closed"),
+        [fts_row],
+    ])
+
+    with (
+        patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_fts.asyncio.sleep", new=AsyncMock()),
+        patch("app.rag.steps.retrieve_fts.settings") as mock_settings,
+    ):
+        mock_settings.candidate_multiplier = 3
+        rows = await retrieve_fts("test", ["catechism"], 4)
+
+    assert rows["catechism"][0]["id"] == fts_row["id"]
+    assert mock_pool.fetch.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_retrieve_fts_does_not_retry_non_connection_error():
+    mock_pool = MagicMock()
+    mock_pool.fetch = AsyncMock(side_effect=asyncpg.PostgresSyntaxError("bad SQL"))
+
+    with (
+        patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_fts.settings") as mock_settings,
+    ):
+        mock_settings.candidate_multiplier = 3
+        rows = await retrieve_fts("test", ["catechism"], 4)
+
+    assert rows == {}
+    assert mock_pool.fetch.await_count == 1
+
+
 def test_rrf_run_empty_on_empty_inputs():
     """rrf.run with both inputs empty returns empty dict."""
     merged = rrf_run({}, {}, quota=4)
@@ -412,3 +451,35 @@ async def test_fetch_positions_drops_orphaned_candidates():
     assert present_id in kept_ids
     assert orphan_id not in kept_ids
     assert result["bible"][0].position == 9
+
+
+@pytest.mark.asyncio
+async def test_fetch_positions_populates_annotation_from_the_chunks_table():
+    """Qdrant payloads carry no annotation, so the batch position lookup is where an
+    enriched candidate picks one up. Guards the SELECT actually including the column."""
+    chunk_id = "00000000-0000-0000-0000-000000000001"
+    annotation = "SUMMARY: x\n[doctrinal | explicit]: y"
+    candidate = _candidate(chunk_id)
+    mock_pool = _mock_pool_returning(
+        [{"id": chunk_id, "position": 3, "annotation": annotation}]
+    )
+
+    with patch("app.rag.steps.fetch_positions.get_pool", return_value=mock_pool):
+        result = await fetch_positions({"bible": [candidate]})
+
+    assert result["bible"][0].annotation == annotation
+
+
+@pytest.mark.asyncio
+async def test_fetch_positions_does_not_overwrite_an_existing_annotation():
+    """FTS rows already carry their annotation (retrieve_fts selects it); the lookup
+    must not clobber it with a NULL from a partial row."""
+    chunk_id = "00000000-0000-0000-0000-000000000001"
+    candidate = _candidate(chunk_id)
+    candidate.annotation = "already here"
+    mock_pool = _mock_pool_returning([{"id": chunk_id, "position": 3, "annotation": None}])
+
+    with patch("app.rag.steps.fetch_positions.get_pool", return_value=mock_pool):
+        result = await fetch_positions({"bible": [candidate]})
+
+    assert result["bible"][0].annotation == "already here"

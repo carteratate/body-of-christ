@@ -35,6 +35,11 @@ async def init_pool() -> None:
         min_size=2,
         max_size=10,
         statement_cache_size=0,
+        # Supabase's transaction pooler may retire an idle upstream socket while a
+        # long LLM call is running. Retire our idle connections first so the next
+        # search opens a fresh socket instead of discovering the stale one mid-query.
+        max_inactive_connection_lifetime=60.0,
+        command_timeout=30.0,
         init=_init_connection,
     )
 

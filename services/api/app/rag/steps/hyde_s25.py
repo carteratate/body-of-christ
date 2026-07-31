@@ -11,6 +11,7 @@ from app.config import settings
 from app.rag.api_keys import get_client, get_key_for, get_semaphore
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.embed import run as embed_run
+from app.rag.steps import degradation
 
 logger = logging.getLogger(__name__)
 
@@ -306,6 +307,10 @@ async def _generate_single(
         return response.content[0].text
     except Exception as exc:
         logger.warning("HyDE passage generation failed: %s", exc)
+        degradation.record(
+            "hyde", type(exc).__name__, "passage_omitted",
+            details={"message": str(exc)[:300]},
+        )
         return None
 
 
@@ -421,6 +426,10 @@ async def run(
                 if len(selected) != 3:
                     selected = ["free", "nt-epistles", "psalms"]
             except Exception:
+                degradation.record(
+                    "hyde_genre_select", "invalid_response", "defaults_used",
+                    scope="bible",
+                )
                 selected = ["free", "nt-epistles", "psalms"]
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, selected_genres=selected,
@@ -437,6 +446,12 @@ async def run(
             *[embed_run(p, cost_tracker) for p in passages],
             return_exceptions=True,
         )
+        for result in embed_results:
+            if isinstance(result, BaseException):
+                degradation.record(
+                    "hyde_embed", type(result).__name__, "vector_omitted",
+                    scope=col, details={"message": str(result)[:300]},
+                )
         vecs = [v for v in embed_results if not isinstance(v, BaseException)]
         return col, vecs
 
@@ -448,6 +463,10 @@ async def run(
     for item in results:
         if isinstance(item, BaseException):
             logger.warning("hyde_s25: collection failed: %s", item)
+            degradation.record(
+                "hyde", type(item).__name__, "collection_omitted",
+                details={"message": str(item)[:300]},
+            )
             continue
         col, vecs = item
         if vecs:

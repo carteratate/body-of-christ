@@ -6,6 +6,7 @@ import logging
 
 from app.config import settings
 from app.rag.qdrant_client import QDRANT_COLLECTION, get_qdrant_client
+from app.rag.steps import degradation
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,10 @@ async def _search_vector(
         # strategy result — a single bad Qdrant payload shouldn't erase recall.
         if any(payload.get(k) is None for k in ("content", "collection", "document_id", "document_title")):
             logger.warning("retrieve_vector: skipping point %s with incomplete payload", r.id)
+            degradation.record(
+                "retrieve_vector", "incomplete_payload", "candidate_omitted",
+                scope=collection, details={"point_id": str(r.id), "strategy": label},
+            )
             continue
         results.append({
             "id": str(r.id),
@@ -64,6 +69,7 @@ async def run(
     collections: list[str],
     quota: int,
     user_id: str | None = None,
+    k: int | None = None,
 ) -> dict[str, list[list[dict]]]:
     """Run all Qdrant vector searches per collection.
 
@@ -71,7 +77,9 @@ async def run(
     Returns col → list of per-strategy result lists (input to rrf.run).
     user_id is accepted but unused (retained for caller compatibility).
     """
-    n = quota * settings.candidate_multiplier
+    # k is supplied by budget.retrieval_k() in dynamic modes; None keeps the
+    # historical sizing that llm_only depends on for A/B comparability.
+    n = k if k is not None else quota * settings.candidate_multiplier
 
     async def _search_collection(col: str) -> tuple[str, list[list[dict]]]:
         col_vecs = hyde_vecs.get(col, [])
@@ -89,6 +97,10 @@ async def run(
         for label, result in zip(labels, raw):
             if isinstance(result, BaseException):
                 logger.warning("retrieve_vector: %s/%s failed: %s", col, label, result)
+                degradation.record(
+                    "retrieve_vector", type(result).__name__, "path_omitted",
+                    scope=f"{col}/{label}", details={"message": str(result)[:300]},
+                )
             else:
                 strategy_lists.append(result)
         return col, strategy_lists
@@ -101,6 +113,10 @@ async def run(
     for item in results:
         if isinstance(item, BaseException):
             logger.warning("retrieve_vector: collection search failed: %s", item)
+            degradation.record(
+                "retrieve_vector", type(item).__name__, "collection_omitted",
+                details={"message": str(item)[:300]},
+            )
             continue
         col, strategy_lists = item
         if strategy_lists:

@@ -20,6 +20,7 @@ from app.rag.api_keys import close_api_keys, init_api_keys
 from app.rag.steps.embed import close_embed, init_embed
 from app.rag.steps.rerank_haiku import close_rerank, init_rerank
 from app.rag.steps.rerank_cohere import close_cohere, init_cohere
+from app.rag.steps.llm_rerank.openai_provider import close as close_luna, init as init_luna
 from app.rag.steps.explain import close_explain, init_explain
 from app.rag.qdrant_client import close_qdrant, init_qdrant
 from app.rag.compare.judge import close_judge, init_judge
@@ -67,12 +68,14 @@ async def lifespan(app: FastAPI):
     init_api_keys()
     init_rerank()
     init_cohere()
+    init_luna()
     init_explain()
     init_judge()
     keepalive_task = asyncio.create_task(_db_keepalive())
     yield
     keepalive_task.cancel()
     await close_judge()
+    await close_luna()
     await close_cohere()
     await close_rerank()
     await close_api_keys()

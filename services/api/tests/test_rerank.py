@@ -21,8 +21,7 @@ def _make_candidate(chunk_id: str) -> ChunkCandidate:
 
 
 @pytest.mark.asyncio
-async def test_rerank_null_score_defaults_to_zero_not_dropped():
-    """A null score from the LLM should default to 0.0; the chunk must still appear in results."""
+async def test_rerank_null_score_rejects_response_and_uses_fallback():
     chunk_id = "00000000-0000-0000-0000-000000000001"
     candidate = _make_candidate(chunk_id)
     mock_response = MagicMock()
@@ -37,12 +36,12 @@ async def test_rerank_null_score_defaults_to_zero_not_dropped():
 
     assert len(result) == 1
     assert result[0].chunk_id == chunk_id
-    assert result[0].reranker_score == 0.0
+    assert result[0].reranker_score == 0.4
+    assert result[0].score_source == "rrf_fallback"
 
 
 @pytest.mark.asyncio
-async def test_rerank_string_score_defaults_to_zero_not_dropped():
-    """A non-numeric string score like 'high' should default to 0.0; the chunk must still appear."""
+async def test_rerank_string_score_rejects_response_and_uses_fallback():
     chunk_id = "00000000-0000-0000-0000-000000000002"
     candidate = _make_candidate(chunk_id)
     mock_response = MagicMock()
@@ -57,12 +56,12 @@ async def test_rerank_string_score_defaults_to_zero_not_dropped():
 
     assert len(result) == 1
     assert result[0].chunk_id == chunk_id
-    assert result[0].reranker_score == 0.0
+    assert result[0].reranker_score == 0.4
+    assert result[0].score_source == "rrf_fallback"
 
 
 @pytest.mark.asyncio
-async def test_rerank_bad_score_does_not_affect_other_chunks():
-    """A bad score for one chunk must not drop the other chunks in the same batch."""
+async def test_rerank_bad_score_rejects_entire_partial_response():
     bad_id = "00000000-0000-0000-0000-000000000003"
     good_id = "00000000-0000-0000-0000-000000000004"
     candidates = [_make_candidate(bad_id), _make_candidate(good_id)]
@@ -82,8 +81,7 @@ async def test_rerank_bad_score_does_not_affect_other_chunks():
     assert bad_id in result_ids
     assert good_id in result_ids
 
-    good_chunk = next(r for r in result if r.chunk_id == good_id)
-    assert good_chunk.reranker_score == pytest.approx(0.9)
+    assert all(r.score_source == "rrf_fallback" for r in result)
 
 
 @pytest.mark.asyncio

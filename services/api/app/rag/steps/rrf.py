@@ -49,6 +49,7 @@ def run(
     vector_results: dict[str, list[list[dict]]],
     fts_results: dict[str, list[dict]],
     quota: int,
+    top_n: int | None = None,
 ) -> dict[str, list[ChunkCandidate]]:
     """Merge per-collection vector strategy lists + fts list using RRF.
 
@@ -66,8 +67,10 @@ def run(
         if not all_lists:
             continue
 
-        top_n = quota * settings.candidate_multiplier
-        merged = _rrf_merge(all_lists, top_n=top_n)
+        effective_top_n = (
+            top_n if top_n is not None else quota * settings.candidate_multiplier
+        )
+        merged = _rrf_merge(all_lists, top_n=effective_top_n)
         output[col] = [
             ChunkCandidate(
                 chunk_id=e["chunk_id"],

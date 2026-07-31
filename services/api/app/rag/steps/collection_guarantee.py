@@ -1,9 +1,8 @@
 """Inject best chunk for any selected collection absent after dedup."""
 from __future__ import annotations
 
+from app.config import settings
 from app.rag.steps.types import RankedChunk
-
-_GUARANTEE_MIN_SCORE = 0.25
 
 
 def run(
@@ -14,7 +13,7 @@ def run(
     """Ensure each selected collection has at least one result if it scored above threshold.
 
     For any collection that is absent from `deduped`, inject the highest-scoring
-    chunk from `all_scored` whose reranker_score >= _GUARANTEE_MIN_SCORE.
+    chunk from `all_scored` whose reranker_score >= settings.guarantee_min_score.
 
     Injected chunks are merged back in score-descending order: `deduped` is already
     sorted, but appending would leave the list out of order, and the downstream
@@ -29,7 +28,7 @@ def run(
                 (
                     r
                     for r in all_scored
-                    if r.collection == col and r.reranker_score >= _GUARANTEE_MIN_SCORE
+                    if r.collection == col and r.reranker_score >= settings.guarantee_min_score
                 ),
                 None,
             )

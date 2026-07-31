@@ -18,7 +18,7 @@ from app.rag.steps.explain import stream as stream_explanation
 
 logger = logging.getLogger(__name__)
 
-_PRODUCTION_PIPELINE = "s2_5_haiku"
+_PRODUCTION_PIPELINE = "hyde_cohere_luna"
 
 
 async def run_search_pipeline(
@@ -59,8 +59,14 @@ async def run_search_pipeline(
 
         _t_pipeline = time.perf_counter()
         logger.info(
-            "pipeline timing: runner=%.2fs chunks=%d pipeline=%s",
-            _t_pipeline - _t0, len(final_results), config.name,
+            "pipeline timing: runner=%.2fs chunks=%d pipeline=%s recoveries=%d "
+            "degradations=%d quality_eligible=%s",
+            _t_pipeline - _t0,
+            len(final_results),
+            config.name,
+            len(pipeline_result.recovery_events),
+            len(pipeline_result.degradation_events),
+            pipeline_result.quality_eligible,
         )
 
         if not final_results:
@@ -83,7 +89,10 @@ async def run_search_pipeline(
                     "document_id": chunk.document_id,
                     "anchor": chunk.anchor,
                 },
-                "reranker_score": chunk.reranker_score,
+                "reranker_score": (
+                    None if chunk.score_source == "rrf_fallback"
+                    else chunk.reranker_score
+                ),
             }
 
         # ------------------------------------------------------------------
@@ -112,7 +121,12 @@ async def run_search_pipeline(
                                 await conn.executemany(
                                     "INSERT INTO retrievals (id, search_id, chunk_id, rank, reranker_score) VALUES ($1,$2,$3,$4,$5)",
                                     [
-                                        (uuid.uuid4(), uuid.UUID(search_id), uuid.UUID(chunk.chunk_id), rank, chunk.reranker_score)
+                                        (
+                                            uuid.uuid4(), uuid.UUID(search_id),
+                                            uuid.UUID(chunk.chunk_id), rank,
+                                            None if chunk.score_source == "rrf_fallback"
+                                            else chunk.reranker_score,
+                                        )
                                         for rank, chunk in enumerate(final_results, start=1)
                                     ],
                                 )

@@ -56,6 +56,75 @@ class Settings(BaseSettings):
     default_quota: int = Field(default=4, validation_alias="DEFAULT_QUOTA")
     candidate_multiplier: int = Field(default=3, validation_alias="CANDIDATE_MULTIPLIER")
 
+    # --- Rerank thresholds hoisted from module constants ---
+    # Defaults are the previous literals exactly; hoisted so the post-enrichment
+    # re-tuning pass is a config change rather than a code edit. Annotation+content
+    # documents shift reranker score distributions, so these will need revisiting
+    # once enrichment lands (nothing breaks loudly — results just quietly include
+    # more or fewer passages than intended).
+    guarantee_min_score: float = Field(default=0.25, validation_alias="GUARANTEE_MIN_SCORE")
+    cohere_include_floor: float = Field(default=0.25, validation_alias="COHERE_INCLUDE_FLOOR")
+    pointwise_score_cutoff: float = Field(default=0.25, validation_alias="POINTWISE_SCORE_CUTOFF")
+
+    # --- Cohere rerank (new code paths only) ---
+    # Cohere bills 1 search unit per query + 100 documents, splitting any document
+    # over 500 tokens (including the query) into chunks that each count toward that
+    # 100. cohere_max_pool caps documents per call; the greedy packer in
+    # steps/budget.py keeps the estimated chunk total inside one billing unit.
+    cohere_max_pool: int = Field(default=100, validation_alias="COHERE_MAX_POOL")
+    cohere_pool_safety: float = Field(default=0.9, validation_alias="COHERE_POOL_SAFETY")
+    cohere_keep_extra: int = Field(default=3, validation_alias="COHERE_KEEP_EXTRA")
+    # Distinct from cohere_include_floor above: this gates which candidates survive
+    # Cohere to reach the LLM pool in `both` mode (BOOSTED Stage 4).
+    cohere_keep_score_floor: float = Field(default=0.30, validation_alias="COHERE_KEEP_SCORE_FLOOR")
+    cohere_max_tokens_per_doc: int = Field(default=1500, validation_alias="COHERE_MAX_TOKENS_PER_DOC")
+    cohere_concurrency: int = Field(default=4, validation_alias="COHERE_CONCURRENCY")
+    # Client-side throttle. Cohere Trial keys allow 10 requests/minute; Production
+    # keys allow 1000. Per-collection fan-out issues one call per collection, so a
+    # multi-pipeline batch run trips a Trial limit almost immediately — and a 429
+    # degrades that collection to unreranked RRF order, which silently corrupts any
+    # evaluation. Set to 0 to disable throttling entirely.
+    cohere_max_calls_per_minute: int = Field(
+        default=10, validation_alias="COHERE_MAX_CALLS_PER_MINUTE",
+    )
+    # Bounded retry on 429 only. Other errors fail fast to the RRF fallback.
+    cohere_max_retries_429: int = Field(default=4, validation_alias="COHERE_MAX_RETRIES_429")
+    # Synthetic score band for a collection whose Cohere call failed. Above the
+    # include floors (0.25/0.30) so the collection is still represented, but below
+    # what a genuinely strong Cohere match earns so an UNRERANKED collection cannot
+    # outrank reranked ones. These values reach the UI and retrievals.reranker_score.
+    cohere_fallback_score_base: float = Field(
+        default=0.40, validation_alias="COHERE_FALLBACK_SCORE_BASE",
+    )
+
+    # --- LLM rerank ---
+    llm_pool_global_cap: int = Field(default=40, validation_alias="LLM_POOL_GLOBAL_CAP")
+    llm_pool_floor_per_col: int = Field(default=2, validation_alias="LLM_POOL_FLOOR_PER_COL")
+    llm_rerank_max_tokens: int = Field(default=8192, validation_alias="LLM_RERANK_MAX_TOKENS")
+    listwise_include_floor: float = Field(default=0.30, validation_alias="LISTWISE_INCLUDE_FLOOR")
+    # Warn below this fraction of the pool being scored. A model that filters rather
+    # than scores silently shrinks the result set and makes a provider A/B compare
+    # two different tasks.
+    listwise_min_coverage: float = Field(default=0.90, validation_alias="LISTWISE_MIN_COVERAGE")
+    # Synthetic band for a collection the LLM failed to score, mirroring
+    # cohere_fallback_score_base. Above the include floor so the collection is still
+    # represented; below real scores so an UNSCORED collection cannot outrank scored
+    # ones after the global sort.
+    llm_fallback_score_base: float = Field(
+        default=0.40, validation_alias="LLM_FALLBACK_SCORE_BASE",
+    )
+    rerank_luna_model: str = Field(default="gpt-5.6-luna", validation_alias="RERANK_LUNA_MODEL")
+
+    # Hard deadline for one judge call. The judge streams, so this bounds a stuck
+    # request rather than normal generation; a batch suite must not stall on one
+    # query. Exceeding it falls back to zero scores for that query, which is visible
+    # in the report rather than silent.
+    judge_timeout_s: float = Field(default=180.0, validation_alias="JUDGE_TIMEOUT_S")
+
+    # --- Dynamic retrieval sizing (cohere_only / both; llm_only keeps quota x multiplier) ---
+    retrieval_k_min: int = Field(default=10, validation_alias="RETRIEVAL_K_MIN")
+    retrieval_k_max: int = Field(default=60, validation_alias="RETRIEVAL_K_MAX")
+
     # Rate limiting
     rate_limit_per_minute: int = Field(default=10, validation_alias="RATE_LIMIT_PER_MINUTE")
     daily_message_quota: int = Field(default=50, validation_alias="DAILY_MESSAGE_QUOTA")
