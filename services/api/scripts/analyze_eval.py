@@ -30,6 +30,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.rag.compare.judge import WEIGHTS  # noqa: E402
+from app.rag.steps.cost_tracker import pricing_snapshot  # noqa: E402
 
 DIMS = list(WEIGHTS)
 
@@ -74,6 +75,13 @@ def main() -> None:
     fp = rows[0].get("fingerprint")
     if fp:
         print(f"judge   : {fp['judge_model']}   quota={fp['quota']}")
+        run_pricing = fp.get("pricing")
+        if run_pricing:
+            print(f"pricing : effective {run_pricing['effective_date']} ({run_pricing['currency']})")
+            if run_pricing != pricing_snapshot():
+                print("          ⚠️ differs from current pricing; recorded costs are historical")
+        else:
+            print("pricing : not recorded (historical artifact; costs use run-time rates)")
         judged_under = fp.get("judge_weights")
         if judged_under and judged_under != WEIGHTS:
             changed = [f"{d} {judged_under.get(d)}->{WEIGHTS[d]}"

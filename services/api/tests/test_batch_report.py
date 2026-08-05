@@ -1,6 +1,7 @@
 """Minimal smoke tests for compare_batch.report.render_report."""
 from compare_batch.aggregate import compute_stats, DIMENSIONS
 from compare_batch.report import render_report
+from app.rag.steps.cost_tracker import pricing_snapshot
 
 WEIGHTS = {
     "retrieval_relevance": 0.30,
@@ -32,6 +33,7 @@ def _make_record(query_idx, query, category, scores_by_pipeline):
         "query": query,
         "category": category,
         "expected_collections": [],
+        "pricing": pricing_snapshot(),
         "judge": {"scores": judge_scores, "cost": 0.05},
         "pipeline_results": [
             {"pipeline": p, "total_duration_s": 5.0, "total_cost": 0.01, "chunk_count": 10}
@@ -78,6 +80,33 @@ def test_render_report_contains_query_text():
     result = render_report(stats, records)
     assert "What is the Trinity?" in result
     assert "What is grace?" in result
+
+
+def test_render_report_identifies_pricing_schedule():
+    stats, records = _make_stats_and_records()
+    result = render_report(stats, records)
+    assert "Pricing effective 2026-07-30 (USD)" in result
+
+
+def test_render_report_flags_historical_pricing():
+    stats, records = _make_stats_and_records()
+    for record in records:
+        record["pricing"] = {
+            **pricing_snapshot(),
+            "effective_date": "2026-07-09",
+        }
+    result = render_report(stats, records)
+    assert "historical rates; current rates differ" in result
+
+
+def test_render_report_flags_mixed_pricing_schedules():
+    stats, records = _make_stats_and_records()
+    records[0]["pricing"] = {
+        **pricing_snapshot(),
+        "effective_date": "2026-07-09",
+    }
+    result = render_report(stats, records)
+    assert "aggregate costs are not comparable" in result
 
 
 def test_render_report_empty_records():

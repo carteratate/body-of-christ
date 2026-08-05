@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import html as _html
+import json
 
 from app.rag.compare.judge import WEIGHTS as _DIM_WEIGHTS
+from app.rag.steps.cost_tracker import pricing_snapshot as _current_pricing
 from compare_batch.aggregate import AggregateStats, DIMENSIONS
 
 _DIM_LABELS = {
@@ -54,6 +56,31 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
         + sum(pr.get("total_cost", 0.0) for pr in (r.get("pipeline_results") or []))
         for r in records
     )
+
+    pricing_schedules = {
+        json.dumps(record.get("pricing"), sort_keys=True)
+        for record in records
+        if record.get("pricing")
+    }
+    missing_pricing = any(not record.get("pricing") for record in records)
+    recorded_pricing = (
+        json.loads(next(iter(pricing_schedules)))
+        if len(pricing_schedules) == 1 and not missing_pricing
+        else None
+    )
+    if len(pricing_schedules) > 1 or (pricing_schedules and missing_pricing):
+        pricing_label = (
+            "WARNING: mixed or missing pricing schedules; aggregate costs are not comparable"
+        )
+    elif recorded_pricing:
+        pricing_label = (
+            f"Pricing effective {_html.escape(recorded_pricing['effective_date'])} "
+            f"({_html.escape(recorded_pricing['currency'])})"
+        )
+        if recorded_pricing != _current_pricing():
+            pricing_label += " — historical rates; current rates differ"
+    else:
+        pricing_label = "Pricing schedule not recorded (historical artifact)"
 
     pipeline_headers = "".join(_th(p) for p in pipelines)
 
@@ -125,7 +152,8 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
 <h1>Pipeline Compare — Batch Report</h1>
 <div class="meta">
   {stats.n_queries} queries &nbsp;·&nbsp; {len(pipelines)} pipelines &nbsp;·&nbsp;
-  Total cost: <strong style="color:#C4972A">${total_cost:.2f}</strong>
+  Total cost: <strong style="color:#C4972A">${total_cost:.2f}</strong><br>
+  <span style="color:#7A8099">{pricing_label}</span>
 </div>
 
 <div class="section">

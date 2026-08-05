@@ -17,6 +17,7 @@ from app.rag.compare import judge, overlap
 from app.rag.compare import runner as compare_runner
 from app.rag.compare.persist import save_compare_runs
 from app.rag.pipelines.registry import PIPELINES
+from app.rag.steps.cost_tracker import pricing_snapshot
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -78,6 +79,7 @@ async def compare_search(
 
     return {
         "query": body.query,
+        "pricing": pricing_snapshot(),
         "pipeline_results": [dataclasses.asdict(r) for r in pipeline_results],
         "overlap": dataclasses.asdict(overlap_report),
         "judge": dataclasses.asdict(judge_report),
@@ -177,7 +179,8 @@ document.getElementById("compareForm").addEventListener("submit", async (e) => {
     });
     if (!res.ok) { document.getElementById("status").textContent = `Error: ${res.status} ${await res.text()}`; return; }
     const data = await res.json();
-    document.getElementById("status").textContent = `Done. ${data.pipeline_results.length} pipelines compared.`;
+    const priced = data.pricing ? ` Pricing effective ${data.pricing.effective_date}.` : " Pricing schedule not recorded.";
+    document.getElementById("status").textContent = `Done. ${data.pipeline_results.length} pipelines compared.${priced}`;
     renderResults(data);
   } catch(err) {
     document.getElementById("status").textContent = `Error: ${err.message}`;
@@ -201,6 +204,7 @@ async function loadStats() {
       <tr style="color:#7A8099;border-bottom:1px solid #333">
         <th style="text-align:left;padding:6px">Pipeline</th>
         <th style="padding:6px">Runs</th>
+        <th style="padding:6px">pricing</th>
         <th style="padding:6px">avg_s</th>
         <th style="padding:6px">p50_s</th>
         <th style="padding:6px">p95_s</th>
@@ -213,6 +217,7 @@ async function loadStats() {
       html += `<tr style="border-bottom:1px solid #1a2030">
         <td style="padding:6px;color:#C4972A">${p.pipeline}</td>
         <td style="padding:6px;text-align:center">${p.run_count}</td>
+        <td style="padding:6px;text-align:center">${p.pricing_effective_date || "historical/unknown"}</td>
         <td style="padding:6px;text-align:center">${p.avg_duration_s.toFixed(2)}</td>
         <td style="padding:6px;text-align:center">${p.p50_duration_s.toFixed(2)}</td>
         <td style="padding:6px;text-align:center">${p.p95_duration_s.toFixed(2)}</td>

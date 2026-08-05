@@ -85,6 +85,7 @@ async def _run_one(
         "category": spec.category,
         "expected_collections": spec.expected_collections,
         "duration_s": round(duration, 2),
+        "pricing": data.get("pricing"),
         "judge": data.get("judge"),
         "pipeline_results": [
             {

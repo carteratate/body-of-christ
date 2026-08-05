@@ -67,6 +67,12 @@ async def test_save_compare_runs_inserts_rows():
     # chunk_count should be 1 for each (one chunk per result)
     assert rows[0][6] == 1
     assert rows[1][6] == 1
+    pricing = json.loads(rows[0][9])
+    assert pricing["effective_date"] == "2026-07-30"
+    assert pricing["token_rates_per_million"]["gpt-5.6-luna"] == {
+        "input": 0.20,
+        "output": 1.20,
+    }
 
 
 @pytest.mark.asyncio
@@ -135,6 +141,47 @@ def test_stats_endpoint_returns_empty_when_no_runs(monkeypatch):
 
     assert response.status_code == 200
     assert response.json()["pipelines"] == []
+
+
+def test_stats_endpoint_separates_and_labels_pricing_eras(monkeypatch):
+    monkeypatch.setenv("APP_ENV", "development")
+
+    from app.main import app
+
+    client = TestClient(app)
+    row = {
+        "pipeline": "hyde_cohere_luna",
+        "pricing_effective_date": "2026-07-30",
+        "run_count": 10,
+        "avg_duration_s": 23.7,
+        "p50_duration_s": 22.0,
+        "p95_duration_s": 31.2,
+        "avg_cost": 0.0286,
+        "p50_cost": 0.0280,
+        "p95_cost": 0.0310,
+        "avg_chunks": 14.6,
+    }
+    mock_conn = AsyncMock()
+    mock_conn.fetch = AsyncMock(return_value=[row])
+    mock_ctx = AsyncMock()
+    mock_ctx.__aenter__ = AsyncMock(return_value=mock_conn)
+    mock_ctx.__aexit__ = AsyncMock(return_value=False)
+    mock_pool = MagicMock()
+    mock_pool.acquire = MagicMock(return_value=mock_ctx)
+
+    with patch("app.routes.compare_stats.get_pool", return_value=mock_pool), \
+         patch("app.deps.auth.verify_supabase_jwt", new_callable=AsyncMock) as mock_verify:
+        from app.models.auth import AuthUser
+        mock_verify.return_value = AuthUser(user_id="u1")
+        response = client.get(
+            "/v1/search/compare/stats",
+            headers={"x-internal-secret": "test", "Authorization": "Bearer fake-token"},
+        )
+
+    assert response.status_code == 200
+    result = response.json()["pipelines"][0]
+    assert result["pipeline"] == "hyde_cohere_luna"
+    assert result["pricing_effective_date"] == "2026-07-30"
 
 
 def test_stats_endpoint_no_pool_returns_empty(monkeypatch):

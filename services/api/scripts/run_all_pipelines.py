@@ -48,6 +48,7 @@ async def main() -> None:
     from app.rag.steps.embed import close_embed, init_embed
     from app.rag.steps.llm_rerank.openai_provider import close as close_luna
     from app.rag.steps.llm_rerank.openai_provider import init as init_luna
+    from app.rag.steps.cost_tracker import pricing_snapshot
     from app.rag.steps.rerank_cohere import close_cohere, init_cohere
     from app.rag.steps.rerank_haiku import close_rerank, init_rerank
 
@@ -61,6 +62,7 @@ async def main() -> None:
         "query": args.query,
         "collections": args.collections,
         "quota": args.quota,
+        "pricing": pricing_snapshot(),
         "runs": [],
     }
 

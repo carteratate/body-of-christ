@@ -2,6 +2,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Pricing is part of an evaluation's methodology, not just an implementation
+# detail. Keep the effective date with the rates so persisted test artifacts can
+# state which schedule produced their cost figures.
+PRICING_EFFECTIVE_DATE = "2026-07-30"
+
 # Pricing: (input $/MTok, output $/MTok)
 _ANTHROPIC_PRICING: dict[str, tuple[float, float]] = {
     "claude-haiku-4-5": (1.00, 5.00),
@@ -16,13 +21,27 @@ _ANTHROPIC_PRICING: dict[str, tuple[float, float]] = {
 _OPENAI_PRICING: dict[str, tuple[float, float]] = {
     "text-embedding-3-large": (0.13, 0.0),
     "gpt-5.4-mini": (0.15, 0.60),
-    "gpt-5.6-luna": (1.00, 6.00),
+    "gpt-5.6-luna": (0.20, 1.20),
 }
 # rerank-v4.0-pro: $2.50 per 1K search units. A search unit is one query plus up
 # to 100 documents; any document over 500 tokens (including the query) is split
 # into chunks that each count toward that 100. So a single call can bill several
 # units — never assume one call is one unit.
 _COHERE_PER_SEARCH_UNIT = 0.0025
+
+
+def pricing_snapshot() -> dict:
+    """Return the exact rates used for cost estimates in JSON-safe form."""
+    models = {**_ANTHROPIC_PRICING, **_OPENAI_PRICING}
+    return {
+        "effective_date": PRICING_EFFECTIVE_DATE,
+        "currency": "USD",
+        "token_rates_per_million": {
+            model: {"input": rates[0], "output": rates[1]}
+            for model, rates in sorted(models.items())
+        },
+        "cohere_rerank_per_search_unit": _COHERE_PER_SEARCH_UNIT,
+    }
 
 
 class CostTracker:

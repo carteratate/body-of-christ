@@ -48,3 +48,12 @@ def test_fatal_match_is_case_insensitive():
 
 def test_none_message_is_survivable():
     suite._abort_if_fatal(None, "q0")
+
+
+def test_experiment_fingerprint_records_pricing_schedule():
+    pricing = suite._fingerprint(["hyde_cohere_luna"], 4)["pricing"]
+    assert pricing["effective_date"] == "2026-07-30"
+    assert pricing["token_rates_per_million"]["gpt-5.6-luna"] == {
+        "input": 0.20,
+        "output": 1.20,
+    }

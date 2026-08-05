@@ -11,6 +11,7 @@ import logging
 
 from app.db import get_pool
 from app.rag.steps.types import PipelineResult
+from app.rag.steps.cost_tracker import pricing_snapshot
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,7 @@ async def save_compare_runs(
                 [{"step": t.step, "duration_s": t.duration_s} for t in r.step_timings]
             ),
             json.dumps(r.cost_breakdown),
+            json.dumps(pricing_snapshot()),
         )
         for r in results
     ]
@@ -52,8 +54,9 @@ async def save_compare_runs(
             await conn.executemany(
                 """INSERT INTO compare_runs
                    (query, collections, quota, pipeline, total_duration_s, total_cost,
-                    chunk_count, step_timings, cost_breakdown)
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9::jsonb)""",
+                    chunk_count, step_timings, cost_breakdown, pricing)
+                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9::jsonb,
+                           $10::jsonb)""",
                 rows,
             )
     except Exception as exc:

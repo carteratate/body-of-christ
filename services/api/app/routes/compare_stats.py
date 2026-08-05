@@ -16,6 +16,7 @@ router = APIRouter()
 _STATS_SQL = """
 SELECT
     pipeline,
+    pricing->>'effective_date'                                                       AS pricing_effective_date,
     COUNT(*)                                                                            AS run_count,
     ROUND(AVG(total_duration_s)::numeric, 3)                                            AS avg_duration_s,
     ROUND(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY total_duration_s)::numeric, 3)  AS p50_duration_s,
@@ -25,8 +26,8 @@ SELECT
     ROUND(PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY total_cost)::numeric, 6)        AS p95_cost,
     ROUND(AVG(chunk_count)::numeric, 1)                                                 AS avg_chunks
 FROM compare_runs
-GROUP BY pipeline
-ORDER BY pipeline
+GROUP BY pipeline, pricing->>'effective_date'
+ORDER BY pipeline, pricing_effective_date NULLS FIRST
 """
 
 
@@ -46,6 +47,7 @@ async def compare_stats(
         "pipelines": [
             {
                 "pipeline": r["pipeline"],
+                "pricing_effective_date": r["pricing_effective_date"],
                 "run_count": r["run_count"],
                 "avg_duration_s": float(r["avg_duration_s"] or 0),
                 "p50_duration_s": float(r["p50_duration_s"] or 0),

@@ -395,6 +395,7 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
     from app.config import settings
     from app.rag.compare.judge import WEIGHTS, _JUDGE_MODEL
     from app.rag.pipelines.registry import PIPELINES as REGISTRY
+    from app.rag.steps.cost_tracker import pricing_snapshot
 
     implementation_files = [
         Path(__file__),
@@ -406,6 +407,7 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
         Path(__file__).parents[1] / "app/rag/steps/llm_rerank/listwise.py",
         Path(__file__).parents[1] / "app/rag/steps/llm_rerank/pointwise.py",
         Path(__file__).parents[1] / "app/rag/compare/judge.py",
+        Path(__file__).parents[1] / "app/rag/steps/cost_tracker.py",
     ]
     implementation_hash = _hash_files(implementation_files)
     query_hash = hashlib.sha256(
@@ -428,6 +430,7 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
             "hyde": settings.hyde_model,
             "rerank_luna": settings.rerank_luna_model,
         },
+        "pricing": pricing_snapshot(),
         "thresholds": {
             "cohere_keep_score_floor": settings.cohere_keep_score_floor,
             "listwise_include_floor": settings.listwise_include_floor,

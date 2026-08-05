@@ -58,6 +58,14 @@ The evaluation judge is excluded from production estimates.
 | Median latency | 17.8s | 30.0s | 22.0s |
 | P95 latency | 21.3s | 47.6s | 31.2s |
 
+> **Pricing update (effective July 30, 2026):** This run was recorded under
+> GPT-5.6 Luna's launch pricing of $1.00/MTok input and $6.00/MTok output.
+> OpenAI subsequently reduced Luna to $0.20/MTok input and $1.20/MTok output.
+> Repricing the persisted Luna usage lowers Cohere + Luna from $0.0478 to
+> approximately **$0.0286 per search**. Quality and latency measurements are
+> unchanged. The historical cost above is retained so the original run remains
+> auditable.
+
 Cohere + Luna improved mean quality by approximately 8% while costing approximately
 28% less than the previous production pipeline. It added roughly four seconds at the
 median and ten seconds at P95.

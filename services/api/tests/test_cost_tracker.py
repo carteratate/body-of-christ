@@ -1,5 +1,5 @@
 import pytest
-from app.rag.steps.cost_tracker import CostTracker
+from app.rag.steps.cost_tracker import CostTracker, pricing_snapshot
 
 
 def test_record_anthropic_accumulates_cost():
@@ -65,4 +65,13 @@ def test_unknown_model_warns_rather_than_silently_costing_zero(caplog):
 def test_luna_is_priced():
     t = CostTracker()
     t.record("rerank", "gpt-5.6-luna", input_tokens=1_000_000, output_tokens=1_000_000)
-    assert t.breakdown()["rerank"] == pytest.approx(1.00 + 6.00)
+    assert t.breakdown()["rerank"] == pytest.approx(0.20 + 1.20)
+
+
+def test_pricing_snapshot_records_effective_luna_rates():
+    snapshot = pricing_snapshot()
+    assert snapshot["effective_date"] == "2026-07-30"
+    assert snapshot["token_rates_per_million"]["gpt-5.6-luna"] == {
+        "input": 0.20,
+        "output": 1.20,
+    }
