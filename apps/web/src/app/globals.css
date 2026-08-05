@@ -20,6 +20,7 @@
   --color-brand-primary: #EAE6DC;
   --color-brand-muted:   #7A8099;
   --color-brand-danger:  #e57373;
+  --color-brand-delete:  #b91c1c;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -68,6 +69,7 @@ body {
     --color-brand-primary: #1a1610;
     --color-brand-muted:   #6a6050;
     --color-brand-danger:  #c0392b;
+    --color-brand-delete:  #b91c1c;
   }
 
   [data-theme="light"] body {
