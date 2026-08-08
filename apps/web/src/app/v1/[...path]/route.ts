@@ -32,6 +32,8 @@ async function proxy(req: NextRequest): Promise<Response> {
       ?? req.headers.get("x-forwarded-for");
     const clientIp = forwardedFor?.split(",", 1)[0]?.trim();
     if (clientIp) headers.set("x-theocorpus-client-ip", clientIp);
+    const userAgent = req.headers.get("user-agent");
+    if (userAgent) headers.set("x-theocorpus-user-agent", userAgent.slice(0, 512));
   }
 
   const upstream = await fetch(target, {

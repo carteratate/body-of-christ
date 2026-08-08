@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BookOpen, Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
-import { type SourceDocument } from "@/lib/api";
+import { listReadingProgress, type ReadingProgress, type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
 
 // Full name for Bible translation codes shown in the sources list.
@@ -282,12 +283,72 @@ function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => 
 }
 
 export function SourcesPage() {
-  const { sources, sourcesLoading: loading, sourcesError, reloadSources } = useAppContext();
+  const { token, sources, sourcesLoading: loading, sourcesError, reloadSources } = useAppContext();
   const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [collection, setCollection] = useState("all");
+  const [progress, setProgress] = useState<ReadingProgress[]>([]);
+  const [progressLoading, setProgressLoading] = useState(true);
+  const [progressError, setProgressError] = useState(false);
+  const [progressToken, setProgressToken] = useState<string | null>(null);
+  const progressRequestRef = useRef(0);
 
-  const openDoc = useCallback((id: string) => {
-    router.push(`/reader/${id}`);
+  const openDoc = useCallback((id: string, chapter?: string) => {
+    const params = new URLSearchParams({ from: "library" });
+    if (chapter) params.set("chapter", chapter);
+    router.push(`/reader/${id}?${params.toString()}`);
   }, [router]);
+
+  const fetchProgress = useCallback((signal?: AbortSignal) => {
+    if (!token) return Promise.resolve();
+    const requestId = ++progressRequestRef.current;
+    return listReadingProgress(token, 6, signal)
+      .then((items) => {
+        if (requestId !== progressRequestRef.current) return;
+        setProgress(items);
+        setProgressError(false);
+        setProgressToken(token);
+      })
+      .catch((caught) => {
+        if ((caught as DOMException).name === "AbortError" || requestId !== progressRequestRef.current) return;
+        setProgressError(true);
+        setProgressToken(token);
+      })
+      .finally(() => {
+        if (!signal?.aborted && requestId === progressRequestRef.current) setProgressLoading(false);
+      });
+  }, [token]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchProgress(controller.signal);
+    return () => {
+      controller.abort();
+      progressRequestRef.current += 1;
+    };
+  }, [fetchProgress]);
+
+  const retryProgress = useCallback(() => {
+    setProgressLoading(true);
+    setProgressError(false);
+    setProgressToken(null);
+    void fetchProgress();
+  }, [fetchProgress]);
+
+  const visibleProgress = progressToken === token ? progress : [];
+  const visibleProgressLoading = progressToken !== token || progressLoading;
+  const visibleProgressError = progressToken === token && progressError;
+
+  const filteredSources = useMemo(() => {
+    const term = query.trim().toLocaleLowerCase();
+    return sources.filter((source) => {
+      if (collection !== "all" && source.collection !== collection) return false;
+      if (!term) return true;
+      return [source.title, source.author, source.translation, getCollectionMeta(source.collection)?.label]
+        .some((value) => value?.toLocaleLowerCase().includes(term));
+    });
+  }, [collection, query, sources]);
+  const filteredMode = query.trim().length > 0 || collection !== "all";
 
   const nonBibleSources = sources.filter((s) => s.collection !== "bible");
   const totalPassages = sources.reduce((sum, s) => sum + s.chunk_count, 0);
@@ -296,7 +357,7 @@ export function SourcesPage() {
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="px-6 py-6 max-w-3xl w-full mx-auto">
-        <h1 className="text-2xl font-semibold text-brand-primary mb-1">List of Sources</h1>
+        <h1 className="text-2xl font-semibold text-brand-primary mb-1">Library</h1>
         {!loading && !sourcesError && totalPassages > 0 && (
           <p className="text-brand-muted text-sm mb-6">
             {totalDocuments} documents · {totalPassages.toLocaleString()} total passages
@@ -304,6 +365,51 @@ export function SourcesPage() {
         )}
         {(loading || sourcesError || totalPassages === 0) && (
           <p className="text-brand-muted text-sm mb-6">All documents included in the search corpus.</p>
+        )}
+
+        {!loading && !sourcesError && (
+          <div className="mb-7 space-y-3">
+            <label className="flex items-center gap-2 rounded-md border border-brand-muted/30 bg-brand-surface px-3 focus-within:border-brand-accent">
+              <Search size={17} className="shrink-0 text-brand-muted" aria-hidden="true" />
+              <span className="sr-only">Search the Library</span>
+              <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search documents, authors, or collections" className="min-w-0 flex-1 bg-transparent py-3 text-brand-primary outline-none placeholder:text-brand-muted" />
+            </label>
+            <label className="flex items-center gap-3 text-sm text-brand-muted">
+              <span>Collection</span>
+              <select value={collection} onChange={(event) => setCollection(event.target.value)} className="min-w-0 flex-1 rounded-md border border-brand-muted/30 bg-brand-surface px-3 py-2 text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                <option value="all">All collections</option>
+                {COLLECTIONS.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}
+              </select>
+            </label>
+          </div>
+        )}
+
+        {!loading && !sourcesError && !filteredMode && (visibleProgressLoading || visibleProgress.length > 0 || visibleProgressError) && (
+          <section className="mb-8" aria-labelledby="continue-reading-heading">
+            <div className="mb-3 flex items-center gap-2">
+              <BookOpen size={17} className="text-brand-accent" aria-hidden="true" />
+              <h2 id="continue-reading-heading" className="text-base font-semibold text-brand-primary">Continue Reading</h2>
+            </div>
+            {visibleProgressLoading ? (
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[0, 1].map((item) => <div key={item} className="h-20 animate-pulse rounded-md bg-brand-surface" />)}
+              </div>
+            ) : visibleProgressError ? (
+              <div className="rounded-md border border-brand-muted/20 bg-brand-surface p-4">
+                <p className="text-sm text-brand-muted">Your recent reading places couldn&apos;t be loaded.</p>
+                <button type="button" onClick={retryProgress} className="mt-2 text-sm font-medium text-brand-accent hover:underline">Retry</button>
+              </div>
+            ) : (
+              <div className="grid gap-2 sm:grid-cols-2">
+                {visibleProgress.map((item) => (
+                  <button key={item.document_id} type="button" onClick={() => openDoc(item.document_id, item.chapter_key)} className="rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                    <span className="block truncate text-sm font-medium text-brand-primary">{item.document_title}</span>
+                    <span className="mt-1 block truncate text-xs text-brand-muted">{item.chapter_label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
         )}
 
         {loading && <SourcesSkeleton />}
@@ -320,7 +426,23 @@ export function SourcesPage() {
           </div>
         )}
 
-        {!loading && !sourcesError && (
+        {!loading && !sourcesError && filteredMode && filteredSources.length === 0 && (
+          <div className="py-12 text-center">
+            <p className="text-sm text-brand-muted">No Library documents match those filters.</p>
+            <button type="button" onClick={() => { setQuery(""); setCollection("all"); }} className="mt-3 text-sm text-brand-accent hover:underline">Clear filters</button>
+          </div>
+        )}
+
+        {!loading && !sourcesError && filteredMode && filteredSources.length > 0 && (
+          <section>
+            <p className="mb-3 text-xs text-brand-muted">{filteredSources.length} {filteredSources.length === 1 ? "document" : "documents"}</p>
+            <ul className="space-y-1.5">
+              {filteredSources.map((doc) => <DocRow key={doc.id} doc={doc} onOpen={openDoc} />)}
+            </ul>
+          </section>
+        )}
+
+        {!loading && !sourcesError && !filteredMode && (
           <div className="space-y-8">
             {COLLECTIONS.map(({ key }) => {
               const docs = sources.filter((s) => s.collection === key);

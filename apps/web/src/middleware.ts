@@ -52,6 +52,8 @@ export default async function middleware(request: NextRequest) {
     !user &&
     (pathname.startsWith("/chat") ||
       pathname.startsWith("/search") ||
+      pathname.startsWith("/history") ||
+      pathname.startsWith("/feedback") ||
       pathname.startsWith("/bookmarks") ||
       pathname.startsWith("/reader"))
   ) {
@@ -69,6 +71,8 @@ export const config = {
   matcher: [
     "/chat/:path*",
     "/search/:path*",
+    "/history/:path*",
+    "/feedback/:path*",
     "/bookmarks/:path*",
     "/reader/:path*",
     "/login",

@@ -115,7 +115,7 @@ export function DiscoverPage() {
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="px-6 py-6 max-w-3xl w-full mx-auto">
-        <h1 className="text-2xl font-semibold text-brand-primary mb-1">Custom Source Scores</h1>
+        <h1 className="text-2xl font-semibold text-brand-primary mb-1">Source Guide</h1>
         <p className="text-brand-muted text-sm mb-6">
           Type a question to see which sources are most likely to have relevant answers.
         </p>

@@ -56,7 +56,7 @@ async def run(
         async with pool.acquire() as conn:
             t_acquired = time.perf_counter()
             rows = await conn.fetch(
-                "SELECT id::text, position, annotation FROM chunks WHERE id = ANY($1::uuid[])",
+                "SELECT id::text, position, annotation, chapter_key FROM chunks WHERE id = ANY($1::uuid[])",
                 missing_ids,
             )
             t_queried = time.perf_counter()
@@ -64,6 +64,7 @@ async def run(
         # .get() so a caller mocking this pool need not model every selected
         # column; test_fetch_positions_populates_annotation covers the real path.
         ann_map = {r["id"]: r.get("annotation") for r in rows}
+        chapter_map = {r["id"]: r.get("chapter_key") for r in rows}
         logger.info(
             "fetch_positions: ids=%d acquire=%.3fs query=%.3fs total=%.3fs",
             len(missing_ids),
@@ -104,6 +105,8 @@ async def run(
                 # position filter rather than looking up every candidate.
                 if c.annotation is None:
                     c.annotation = ann_map.get(c.chunk_id)
+                if c.chapter_key is None:
+                    c.chapter_key = chapter_map.get(c.chunk_id)
             kept.append(c)
         filtered[col] = kept
 

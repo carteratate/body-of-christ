@@ -7,6 +7,7 @@ interface SearchFailureScreenProps {
   code?: string | null;
   stage?: string | null;
   onRetry: () => void;
+  onReport?: () => void;
 }
 
 export function SearchFailureScreen({
@@ -14,6 +15,7 @@ export function SearchFailureScreen({
   code,
   stage,
   onRetry,
+  onReport,
 }: SearchFailureScreenProps) {
   const connectionFailure = code === "stream_interrupted" || stage === "connection";
   const authFailure = code === "auth_error" || stage === "authentication";
@@ -61,6 +63,11 @@ export function SearchFailureScreen({
         >
           <RotateCcw size={14} aria-hidden="true" />
           Retry search
+        </button>
+      )}
+      {onReport && (
+        <button type="button" onClick={onReport} className="mt-3 text-xs text-brand-muted hover:text-brand-accent hover:underline">
+          Report this problem
         </button>
       )}
     </div>

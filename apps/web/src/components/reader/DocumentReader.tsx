@@ -1,18 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState, Suspense, useCallback } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import {
-  getToc,
+  getReadingProgress,
   getReaderChapter,
+  getToc,
+  putReadingProgress,
+  type DocumentInfo,
   type ReaderChapter,
   type TocEntry,
-  type DocumentInfo,
 } from "@/lib/api";
-import { ReaderChrome } from "./ReaderChrome";
-import { ContentsDrawer } from "./ContentsDrawer";
 import { ChapterSection } from "./ChapterSection";
+import { ContentsDrawer } from "./ContentsDrawer";
+import { ReaderChrome, type ReaderFontSize, type ReaderSpacing } from "./ReaderChrome";
+import { saveFeedbackContext } from "@/lib/feedbackContext";
+
+const ORIGINS = new Set(["search", "saved", "library", "history"]);
+
+interface ProgressWriter {
+  token: string;
+  docId: string;
+  inFlight: boolean;
+  queued: string | null;
+  failed: string | null;
+}
 
 function Inner({ docId }: { docId: string }) {
   const { token } = useAppContext();
@@ -20,10 +33,12 @@ function Inner({ docId }: { docId: string }) {
   const params = useSearchParams();
   const initialAnchor = params.get("anchor");
   const initialChapter = params.get("chapter");
+  const originParam = params.get("from");
+  const origin = originParam && ORIGINS.has(originParam) ? originParam : "library";
 
   const [doc, setDoc] = useState<DocumentInfo | null>(null);
   const [toc, setToc] = useState<TocEntry[]>([]);
-  const [chapters, setChapters] = useState<ReaderChapter[]>([]); // ordered buffer
+  const [chapters, setChapters] = useState<ReaderChapter[]>([]);
   const [currentKey, setCurrentKey] = useState<string | null>(null);
   const [highlight, setHighlight] = useState<string | null>(initialAnchor);
   const [contentsOpen, setContentsOpen] = useState(false);
@@ -31,143 +46,268 @@ function Inner({ docId }: { docId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [chapterLoading, setChapterLoading] = useState<string | null>(null);
   const [chapterError, setChapterError] = useState<{ key: string; mode: "append" | "replace" } | null>(null);
+  const [progressError, setProgressError] = useState(false);
+  const [initialResolved, setInitialResolved] = useState(false);
+  const [resolvedDocId, setResolvedDocId] = useState<string | null>(null);
+  const [fontSize, setFontSize] = useState<ReaderFontSize>("medium");
+  const [spacing, setSpacing] = useState<ReaderSpacing>("comfortable");
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  // Chapter keys already requested for append — a synchronous guard against the
-  // infinite-scroll race where many scroll events fire before state settles and
-  // each re-appends the same next chapter. Refs update immediately, unlike state.
   const requestedRef = useRef<Set<string>>(new Set());
+  const pendingAppendsRef = useRef<Map<string, number>>(new Map());
+  const chapterRequestRef = useRef(0);
+  const replacePendingRef = useRef(false);
+  const progressWriterRef = useRef<ProgressWriter | null>(null);
 
-  // Initial load: TOC + first/target chapter.
+  useEffect(() => {
+    try {
+      const storedFont = localStorage.getItem("theocorpus-reader-font");
+      const storedSpacing = localStorage.getItem("theocorpus-reader-spacing");
+      if (storedFont === "small" || storedFont === "medium" || storedFont === "large") setFontSize(storedFont);
+      if (storedSpacing === "compact" || storedSpacing === "comfortable" || storedSpacing === "relaxed") setSpacing(storedSpacing);
+    } catch {}
+  }, []);
+
+  function changeFontSize(value: ReaderFontSize) {
+    setFontSize(value);
+    try { localStorage.setItem("theocorpus-reader-font", value); } catch {}
+  }
+
+  function changeSpacing(value: ReaderSpacing) {
+    setSpacing(value);
+    try { localStorage.setItem("theocorpus-reader-spacing", value); } catch {}
+  }
+
   useEffect(() => {
     if (!token) return;
+    const controller = new AbortController();
     let alive = true;
+    chapterRequestRef.current += 1;
+    replacePendingRef.current = false;
+    setInitialResolved(false);
+    setResolvedDocId(null);
+    setError(null);
+    setLoading(true);
+    setDoc(null);
+    setToc([]);
+    setChapters([]);
+    setCurrentKey(null);
+    pendingAppendsRef.current.clear();
+    setHighlight(initialAnchor);
     (async () => {
       try {
-        setLoading(true);
-        const [tocResp, chapter] = await Promise.all([
-          getToc(token, docId),
-          getReaderChapter(token, docId, {
-            anchor: initialAnchor ?? undefined,
-            chapter: initialChapter ?? undefined,
-          }),
-        ]);
+        const tocResponse = await getToc(token, docId);
+        const options: { anchor?: string; chapter?: string; signal?: AbortSignal } = { signal: controller.signal };
+        if (initialAnchor) {
+          options.anchor = initialAnchor;
+        } else if (initialChapter) {
+          options.chapter = initialChapter;
+        } else {
+          try {
+            const progress = await getReadingProgress(token, docId, controller.signal);
+            if (progress) options.chapter = progress.chapter_key;
+          } catch {
+            // Progress is optional; the document still opens at its first chapter.
+          }
+        }
+        let chapter: ReaderChapter;
+        try {
+          chapter = await getReaderChapter(token, docId, options);
+        } catch {
+          if (!options.chapter || initialChapter) throw new Error("Failed to load requested chapter");
+          chapter = await getReaderChapter(token, docId, { signal: controller.signal });
+        }
         if (!alive) return;
-        setDoc(tocResp.document);
-        setToc(tocResp.chapters);
+        setDoc(tocResponse.document);
+        setToc(tocResponse.chapters);
         setChapters([chapter]);
         setCurrentKey(chapter.chapter_key);
         requestedRef.current = new Set([chapter.chapter_key]);
-      } catch (e) {
-        if (alive) setError(e instanceof Error ? e.message : "Failed to load");
+        setInitialResolved(true);
+        setResolvedDocId(docId);
+      } catch (caught) {
+        if (alive && (caught as DOMException).name !== "AbortError") setError("Failed to load");
       } finally {
         if (alive) setLoading(false);
       }
     })();
-    return () => { alive = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, docId]);
+    return () => {
+      alive = false;
+      controller.abort();
+      chapterRequestRef.current += 1;
+      replacePendingRef.current = false;
+    };
+  }, [docId, initialAnchor, initialChapter, token]);
 
-  // Scroll the highlighted passage into view after first render.
+  useEffect(() => {
+    progressWriterRef.current = token
+      ? { token, docId, inFlight: false, queued: null, failed: null }
+      : null;
+    setProgressError(false);
+  }, [docId, token]);
+
+  const drainProgress = useCallback(async (writer: ProgressWriter) => {
+    if (writer.inFlight) return;
+    writer.inFlight = true;
+    try {
+      while (writer.queued) {
+        const chapterKey = writer.queued;
+        writer.queued = null;
+        try {
+          await putReadingProgress(writer.token, writer.docId, chapterKey);
+        } catch {
+          // If the user moved again while this save was in flight, discard the
+          // older failed location and try the already-coalesced latest one.
+          if (writer.queued) continue;
+          writer.failed = chapterKey;
+          if (progressWriterRef.current === writer) setProgressError(true);
+          break;
+        }
+      }
+    } finally {
+      writer.inFlight = false;
+      if (writer.queued && !writer.failed) void drainProgress(writer);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!initialResolved || resolvedDocId !== docId || !currentKey) return;
+    const writer = progressWriterRef.current;
+    if (!writer || writer.docId !== docId || writer.token !== token) return;
+    writer.queued = currentKey;
+    writer.failed = null;
+    setProgressError(false);
+    void drainProgress(writer);
+  }, [currentKey, docId, drainProgress, initialResolved, resolvedDocId, token]);
+
+  const retryProgress = useCallback(() => {
+    const writer = progressWriterRef.current;
+    if (!writer?.failed) return;
+    writer.queued = writer.failed;
+    writer.failed = null;
+    setProgressError(false);
+    void drainProgress(writer);
+  }, [drainProgress]);
+
   useEffect(() => {
     if (highlight && chapters.length === 1) {
-      document
-        .getElementById(`anchor-${highlight}`)
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      document.getElementById(`anchor-${highlight}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [chapters, highlight]);
 
   const loadChapter = useCallback(async (key: string, mode: "append" | "replace") => {
     if (!token) return;
-    // Synchronous dedupe: skip if this append was already requested this session.
-    if (mode === "append" && requestedRef.current.has(key)) return;
-    requestedRef.current.add(key);
+    if (mode === "append" && replacePendingRef.current) return;
+    if (mode === "append" && (requestedRef.current.has(key) || pendingAppendsRef.current.has(key))) return;
+    const requestId = ++chapterRequestRef.current;
+    if (mode === "replace") replacePendingRef.current = true;
+    else pendingAppendsRef.current.set(key, requestId);
     setChapterLoading(key);
     setChapterError(null);
     try {
       const chapter = await getReaderChapter(token, docId, { chapter: key });
-      setChapters((prev) => {
+      if (requestId !== chapterRequestRef.current) return;
+      setChapters((previous) => {
         if (mode === "replace") return [chapter];
-        if (prev.some((c) => c.chapter_key === key)) return prev;
-        return [...prev, chapter];
+        if (previous.some((item) => item.chapter_key === key)) return previous;
+        return [...previous, chapter];
       });
-      if (mode === "replace") setCurrentKey(key);
+      if (mode === "append") requestedRef.current.add(chapter.chapter_key);
+      if (mode === "replace") {
+        requestedRef.current = new Set([chapter.chapter_key]);
+        setCurrentKey(chapter.chapter_key);
+        setHighlight(null);
+        scrollRef.current?.scrollTo({ top: 0 });
+      }
     } catch {
-      requestedRef.current.delete(key);
+      if (requestId !== chapterRequestRef.current) return;
       setChapterError({ key, mode });
     } finally {
-      setChapterLoading(null);
+      if (mode === "append" && pendingAppendsRef.current.get(key) === requestId) {
+        pendingAppendsRef.current.delete(key);
+      }
+      if (requestId === chapterRequestRef.current) {
+        replacePendingRef.current = false;
+        setChapterLoading(null);
+      }
     }
-  }, [token, docId]);
+  }, [docId, token]);
 
   const jump = useCallback((key: string) => {
-    requestedRef.current = new Set([key]); // reset append history for the new anchor
-    setCurrentKey(key);
-    setHighlight(null);
-    loadChapter(key, "replace");
-    scrollRef.current?.scrollTo({ top: 0 });
+    void loadChapter(key, "replace");
   }, [loadChapter]);
 
-  // Infinite scroll + current-chapter tracking.
-  function onScroll(e: React.UIEvent<HTMLDivElement>) {
-    const el = e.currentTarget;
-    if (el.scrollHeight - el.scrollTop - el.clientHeight < 600) {
+  function onScroll(event: React.UIEvent<HTMLDivElement>) {
+    const element = event.currentTarget;
+    if (!replacePendingRef.current && element.scrollHeight - element.scrollTop - element.clientHeight < 600) {
       const last = chapters[chapters.length - 1];
-      if (last?.next_chapter_key && !chapters.some((c) => c.chapter_key === last.next_chapter_key)) {
-        loadChapter(last.next_chapter_key, "append");
+      if (last?.next_chapter_key && !chapters.some((chapter) => chapter.chapter_key === last.next_chapter_key)) {
+        void loadChapter(last.next_chapter_key, "append");
       }
     }
-    // Track which chapter heading is at/above the top of the viewport.
-    const contTop = el.getBoundingClientRect().top;
-    let cur = currentKey;
-    el.querySelectorAll("section[data-chapter-key]").forEach((s) => {
-      if (s.getBoundingClientRect().top - contTop <= 80) {
-        cur = s.getAttribute("data-chapter-key");
-      }
+    const containerTop = element.getBoundingClientRect().top;
+    let visibleKey = currentKey;
+    element.querySelectorAll("section[data-chapter-key]").forEach((section) => {
+      if (section.getBoundingClientRect().top - containerTop <= 80) visibleKey = section.getAttribute("data-chapter-key");
     });
-    if (cur && cur !== currentKey) setCurrentKey(cur);
+    if (visibleKey && visibleKey !== currentKey) setCurrentKey(visibleKey);
+  }
+
+  function goBack() {
+    const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
+    if (originParam && ORIGINS.has(originParam) && window.history.length > 1) router.back();
+    else router.push(fallback);
+  }
+
+  function reportContent() {
+    saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });
+    router.push("/feedback");
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full bg-brand-bg gap-4">
-        <p className="text-brand-muted text-sm">This document couldn&apos;t be loaded.</p>
-        <button onClick={() => router.back()} className="text-brand-accent text-sm hover:underline">← Back</button>
+      <div className="flex h-full flex-col items-center justify-center gap-4 bg-brand-bg">
+        <p className="text-sm text-brand-muted">This document couldn&apos;t be loaded.</p>
+        <button onClick={goBack} className="text-sm text-brand-accent hover:underline">← Back</button>
       </div>
     );
   }
   if (loading && !doc) {
     return (
-      <div className="flex flex-col h-full bg-brand-bg px-6 pt-8 space-y-3">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="animate-pulse bg-brand-surface rounded h-4" style={{ width: `${70 + (i % 3) * 10}%` }} />
-        ))}
+      <div className="flex h-full flex-col space-y-3 bg-brand-bg px-6 pt-8">
+        {Array.from({ length: 8 }).map((_, index) => <div key={index} className="h-4 animate-pulse rounded bg-brand-surface" style={{ width: `${70 + (index % 3) * 10}%` }} />)}
       </div>
     );
   }
   if (!doc) return null;
 
+  const fontPixels = fontSize === "small" ? "14px" : fontSize === "large" ? "18px" : "16px";
+  const lineHeight = spacing === "compact" ? "1.55" : spacing === "relaxed" ? "2.1" : "1.8";
+
   return (
-    <div className="flex flex-col h-full bg-brand-bg">
+    <div className="flex h-full flex-col bg-brand-bg">
       <ReaderChrome
         document={doc}
         toc={toc}
         currentChapterKey={currentKey}
-        onToggleContents={() => setContentsOpen((v) => !v)}
+        onBack={goBack}
+        onToggleContents={() => setContentsOpen((open) => !open)}
         onJump={jump}
+        fontSize={fontSize}
+        spacing={spacing}
+        onFontSizeChange={changeFontSize}
+        onSpacingChange={changeSpacing}
+        onReportContent={reportContent}
       />
-      <ContentsDrawer
-        open={contentsOpen}
-        toc={toc}
-        currentChapterKey={currentKey}
-        onJump={jump}
-        onClose={() => setContentsOpen(false)}
-      />
-      <div ref={scrollRef} onScroll={onScroll} className="flex-1 overflow-y-auto">
-        {chapters.map((ch) => (
-          <ChapterSection key={ch.chapter_key} chapter={ch} highlightAnchor={highlight} />
-        ))}
+      <ContentsDrawer open={contentsOpen} toc={toc} currentChapterKey={currentKey} onJump={jump} onClose={() => setContentsOpen(false)} />
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        className="reader-content flex-1 overflow-y-auto"
+        style={{ "--reader-font-size": fontPixels, "--reader-line-height": lineHeight } as React.CSSProperties}
+      >
+        {chapters.map((chapter) => <ChapterSection key={chapter.chapter_key} chapter={chapter} highlightAnchor={highlight} />)}
         {chapterLoading && (
-          <div className="px-6 py-8 space-y-3 animate-pulse" aria-label="Loading chapter">
+          <div className="animate-pulse space-y-3 px-6 py-8" aria-label="Loading chapter">
             <div className="h-4 w-2/3 rounded bg-brand-surface" />
             <div className="h-4 w-full rounded bg-brand-surface" />
             <div className="h-4 w-5/6 rounded bg-brand-surface" />
@@ -175,8 +315,14 @@ function Inner({ docId }: { docId: string }) {
         )}
         {chapterError && (
           <div className="px-6 py-6 text-center">
-            <p className="text-sm text-brand-muted mb-2">Chapter couldn&apos;t be loaded.</p>
-            <button className="text-sm text-brand-accent hover:underline" onClick={() => loadChapter(chapterError.key, chapterError.mode)}>Retry</button>
+            <p className="mb-2 text-sm text-brand-muted">Chapter couldn&apos;t be loaded.</p>
+            <button className="text-sm text-brand-accent hover:underline" onClick={() => void loadChapter(chapterError.key, chapterError.mode)}>Retry</button>
+          </div>
+        )}
+        {progressError && (
+          <div role="status" className="sticky bottom-3 mx-auto mb-3 flex w-fit items-center gap-3 rounded-md border border-brand-muted/30 bg-brand-surface px-3 py-2 text-xs text-brand-muted shadow-lg">
+            <span>Your reading place has not synced yet.</span>
+            <button type="button" onClick={retryProgress} className="font-medium text-brand-accent hover:underline">Retry</button>
           </div>
         )}
       </div>
@@ -185,9 +331,5 @@ function Inner({ docId }: { docId: string }) {
 }
 
 export function DocumentReader({ docId }: { docId: string }) {
-  return (
-    <Suspense>
-      <Inner docId={docId} />
-    </Suspense>
-  );
+  return <Suspense><Inner docId={docId} /></Suspense>;
 }

@@ -4,7 +4,9 @@ import { useState } from "react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { HistorySearchRow } from "./Sidebar";
+import { HistorySearchRow } from "@/components/history";
+import { Sidebar } from "./Sidebar";
+import { useAppContext } from "./AppShell";
 
 vi.mock("next/link", () => ({
   default: ({ children, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
@@ -29,12 +31,15 @@ function RowHarness({ onDelete = vi.fn() }: { onDelete?: () => void }) {
   const [revealed, setRevealed] = useState(false);
   return (
     <HistorySearchRow
-      id="search-1"
-      query="What is grace?"
-      href="/search?restore=search-1"
+      search={{
+        id: "search-1",
+        query: "What is grace?",
+        filters: null,
+        result_count: 4,
+        created_at: "2026-08-04T12:00:00Z",
+      }}
       active={false}
       revealed={revealed}
-      onNavigate={vi.fn()}
       onReveal={() => setRevealed(true)}
       onClose={() => setRevealed(false)}
       onDelete={onDelete}
@@ -42,7 +47,18 @@ function RowHarness({ onDelete = vi.fn() }: { onDelete?: () => void }) {
   );
 }
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
+
+function mockMatchMedia(matches: boolean) {
+  vi.stubGlobal("matchMedia", vi.fn().mockReturnValue({
+    matches,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }));
+}
 
 describe("HistorySearchRow", () => {
   it("requires a reveal click before desktop deletion", async () => {
@@ -182,5 +198,34 @@ describe("HistorySearchRow", () => {
     expect(hiddenDelete?.getAttribute("aria-hidden")).toBe("true");
     await waitFor(() => expect(document.activeElement).toBe(reveal));
     expect(reveal.tabIndex).toBe(0);
+  });
+});
+
+describe("Sidebar mobile accessibility", () => {
+  it("removes the closed offscreen drawer from keyboard and accessibility navigation", async () => {
+    mockMatchMedia(true);
+    vi.mocked(useAppContext).mockReturnValue({
+      newSearch: vi.fn(),
+      searches: [],
+      pendingSearch: null,
+      activeSearchId: null,
+      token: "token",
+      removeSearch: vi.fn(),
+      restoreSearch: vi.fn(),
+      refreshSearches: vi.fn(),
+      invalidateSearchHistory: vi.fn(),
+    } as unknown as ReturnType<typeof useAppContext>);
+
+    const { rerender } = render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+    await waitFor(() => expect(document.getElementById("mobile-nav-drawer")?.getAttribute("aria-hidden")).toBe("true"));
+    const closed = document.getElementById("mobile-nav-drawer")!;
+    expect(closed.hasAttribute("inert")).toBe(true);
+    expect(closed.getAttribute("role")).toBeNull();
+
+    rerender(<Sidebar isMobileOpen onCloseMobile={vi.fn()} />);
+    await waitFor(() => expect(document.getElementById("mobile-nav-drawer")?.getAttribute("role")).toBe("dialog"));
+    const open = document.getElementById("mobile-nav-drawer")!;
+    expect(open.hasAttribute("inert")).toBe(false);
+    expect(open.getAttribute("aria-hidden")).toBeNull();
   });
 });

@@ -1,4 +1,5 @@
-"""Tests for _validate_collections dependency and delete endpoint in search routes."""
+"""Tests for search validation, history, restore, and deletion routes."""
+import datetime
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -13,6 +14,8 @@ from app.routes.search import _validate_collections, router
 
 USER_ID = "00000000-0000-0000-0000-000000000001"
 SEARCH_ID = "00000000-0000-0000-0000-000000000009"
+SEARCH_ID_2 = "00000000-0000-0000-0000-000000000010"
+SEARCH_ID_3 = "00000000-0000-0000-0000-000000000011"
 
 
 def _client() -> TestClient:
@@ -79,6 +82,69 @@ def test_delete_search_returns_204_on_success():
 
     assert response.status_code == 204
     assert "WHERE id = $1 AND user_id = $2" in pool.execute.await_args.args[0]
+
+
+def test_search_history_returns_an_opaque_next_cursor():
+    pool = AsyncMock()
+    now = datetime.datetime(2026, 8, 4, 16, 0, tzinfo=datetime.timezone.utc)
+    pool.fetch.return_value = [
+        {"id": SEARCH_ID, "query": "grace", "filters": {}, "result_count": 3, "created_at": now},
+        {"id": SEARCH_ID_2, "query": "hope", "filters": {}, "result_count": 2, "created_at": now - datetime.timedelta(minutes=1)},
+        {"id": SEARCH_ID_3, "query": "charity", "filters": {}, "result_count": 1, "created_at": now - datetime.timedelta(minutes=2)},
+    ]
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get("/v1/searches?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert [item["id"] for item in body["searches"]] == [SEARCH_ID, SEARCH_ID_2]
+    assert body["next_cursor"]
+    assert pool.fetch.await_args.args[-1] == 3
+
+
+def test_search_history_rejects_an_invalid_cursor_without_db_call():
+    pool = AsyncMock()
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get("/v1/searches?cursor=not-a-valid-cursor")
+
+    assert response.status_code == 422
+    pool.fetch.assert_not_awaited()
+
+
+def test_search_history_cursor_uses_timestamp_and_id_tie_breaker():
+    pool = AsyncMock()
+    same_time = datetime.datetime(2026, 8, 4, 16, 0, tzinfo=datetime.timezone.utc)
+    pool.fetch.side_effect = [
+        [
+            {"id": SEARCH_ID_3, "query": "three", "filters": {}, "result_count": 1, "created_at": same_time},
+            {"id": SEARCH_ID_2, "query": "two", "filters": {}, "result_count": 1, "created_at": same_time},
+            {"id": SEARCH_ID, "query": "one", "filters": {}, "result_count": 1, "created_at": same_time},
+        ],
+        [
+            {"id": SEARCH_ID, "query": "one", "filters": {}, "result_count": 1, "created_at": same_time},
+        ],
+    ]
+    with patch("app.routes.search.get_pool", return_value=pool):
+        first = _client().get("/v1/searches?limit=2").json()
+        second = _client().get(f"/v1/searches?limit=2&cursor={first['next_cursor']}").json()
+
+    assert [item["id"] for item in first["searches"]] == [SEARCH_ID_3, SEARCH_ID_2]
+    assert [item["id"] for item in second["searches"]] == [SEARCH_ID]
+    second_args = pool.fetch.await_args_list[1].args
+    assert second_args[2] == same_time
+    assert str(second_args[3]) == SEARCH_ID_2
+
+
+def test_search_history_query_uses_literal_substring_matching():
+    pool = AsyncMock()
+    pool.fetch.return_value = []
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get("/v1/searches?q=%25_%5C")
+
+    assert response.status_code == 200
+    sql = pool.fetch.await_args.args[0]
+    assert "strpos(lower(query), lower($4))" in sql
+    assert pool.fetch.await_args.args[4] == "%_\\"
 
 
 def test_delete_search_missing_row_returns_404():

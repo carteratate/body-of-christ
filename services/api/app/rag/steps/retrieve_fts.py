@@ -14,7 +14,7 @@ from app.rag.steps import degradation
 logger = logging.getLogger(__name__)
 
 _SQL = """
-    SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.position,
+    SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.chapter_key, c.position,
            c.annotation, c.document_id::text AS document_id,
            d.title AS document_title, d.author, d.collection
     FROM chunks c

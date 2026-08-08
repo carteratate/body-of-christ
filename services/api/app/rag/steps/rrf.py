@@ -31,6 +31,7 @@ def _rrf_merge(result_lists: list[list[dict]], top_n: int) -> list[dict]:
                     "document_title": row["document_title"],
                     "author": row.get("author"),
                     "anchor": row.get("anchor"),
+                    "chapter_key": row.get("chapter_key"),
                     "position": row.get("position"),
                     "annotation": row.get("annotation"),
                 }
@@ -82,6 +83,7 @@ def run(
                 author=e.get("author"),
                 rrf_score=e["rrf_score"],
                 anchor=e.get("anchor"),
+                chapter_key=e.get("chapter_key"),
                 position=e.get("position"),
                 annotation=e.get("annotation"),
             )

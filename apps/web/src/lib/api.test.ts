@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { streamGuestSearch, streamSearch, type SearchStreamCallbacks } from "./api";
+import { deleteSearch, getReadingProgress, getSearchHistoryPage, putReadingProgress, streamGuestSearch, streamSearch, submitProductFeedback, type SearchStreamCallbacks } from "./api";
 
 function callbacks() {
   return {
@@ -133,5 +133,85 @@ describe("streamGuestSearch", () => {
     await expect(
       streamGuestSearch("grace", { collections: ["bible"] }, 3, cb),
     ).rejects.toThrow("invalid stream event");
+  });
+});
+
+describe("getSearchHistoryPage", () => {
+  it("uses the relative proxy path and carries cursor and query parameters", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ searches: [], next_cursor: null }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await getSearchHistoryPage("token", { cursor: "opaque", limit: 20, query: "grace" });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/v1/searches?cursor=opaque&limit=20&q=grace",
+      expect.objectContaining({ headers: { Authorization: "Bearer token" } }),
+    );
+  });
+});
+
+describe("deleteSearch", () => {
+  it("treats an already-deleted search as an idempotent success", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
+
+    await expect(deleteSearch("token", "search-1")).resolves.toBeUndefined();
+  });
+
+  it("still reports service failures", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 503 })));
+
+    await expect(deleteSearch("token", "search-1")).rejects.toThrow("API error 503");
+  });
+});
+
+describe("reading progress", () => {
+  it("uses relative authenticated routes for reads and writes", async () => {
+    const item = {
+      document_id: "doc-1", chapter_key: "chapter-1", chapter_label: "Chapter 1",
+      anchor: null, updated_at: "2026-08-04T00:00:00Z", collection: "summa",
+      document_title: "Summa", author: null,
+    };
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify(item), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify(item), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await getReadingProgress("token", "doc-1");
+    await putReadingProgress("token", "doc-1", "chapter-1");
+
+    expect(fetchMock.mock.calls[0][0]).toBe("/v1/reading-progress/doc-1");
+    expect(fetchMock.mock.calls[1][0]).toBe("/v1/reading-progress/doc-1");
+    expect(fetchMock.mock.calls[1][1]).toEqual(expect.objectContaining({
+      method: "PUT",
+      body: JSON.stringify({ chapter_key: "chapter-1", anchor: null }),
+    }));
+  });
+
+  it("treats missing progress as an empty optional state", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
+    await expect(getReadingProgress("token", "doc-1")).resolves.toBeNull();
+  });
+});
+
+describe("product feedback", () => {
+  it("uses the relative authenticated proxy and preserves only the supplied bounded context", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ feedback_id: "feedback-1" }), { status: 201 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await submitProductFeedback("token", {
+      category: "bug",
+      message: "The reader did not advance.",
+      contact_allowed: false,
+      route: "/reader",
+      error_code: "unknown",
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith("/v1/product-feedback", expect.objectContaining({
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer token" },
+    }));
+    const payload = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(payload).not.toHaveProperty("query");
+    expect(payload).not.toHaveProperty("content");
   });
 });

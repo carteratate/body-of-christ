@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bookmark, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Bookmark, BookOpen, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import ReactDOM from "react-dom";
 import { Toast, useToast } from "@/components/common";
 import { useRouter } from "next/navigation";
@@ -20,6 +20,7 @@ import {
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
+import { saveFeedbackContext } from "@/lib/feedbackContext";
 
 function hexToRgb(color: string): string {
   if (!color.startsWith("#") || color.length < 7) return "196,151,42";
@@ -103,14 +104,16 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
   function handleReadMore() {
     if (!UUID_RE.test(document_id)) return;
     trackDocumentOpened({ documentId: document_id, collection, source: "chunk_card" });
-    const anchor = source.anchor;
-    const qs = anchor ? `?anchor=${encodeURIComponent(anchor)}` : "";
-    router.push(`/reader/${document_id}${qs}`);
+    const params = new URLSearchParams({ from: "search" });
+    if (source.anchor) params.set("anchor", source.anchor);
+    else if (source.chapter_key) params.set("chapter", source.chapter_key);
+    router.push(`/reader/${document_id}?${params.toString()}`);
   }
 
   // ── Feedback state ────────────────────────────────────────────────────────
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
   const [feedbackPending, setFeedbackPending] = useState(false);
+  const [showReportPrompt, setShowReportPrompt] = useState(false);
 
   async function handleFeedback(direction: "up" | "down") {
     if (!token || !searchId || feedback === direction || feedbackPending) return;
@@ -119,12 +122,26 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
     setFeedbackPending(true);
     try {
       await submitLabel(token, chunk_id, direction, searchId);
+      setShowReportPrompt(direction === "down");
     } catch {
       setFeedback(previous);
       showToast("Couldn't record feedback. Try again.", "error");
     } finally {
       setFeedbackPending(false);
     }
+  }
+
+  function reportResultProblem() {
+    if (!searchId) return;
+    saveFeedbackContext({
+      category: "content",
+      origin: "search_result",
+      route: "/search",
+      search_id: searchId,
+      chunk_id,
+      document_id,
+    });
+    router.push("/feedback");
   }
 
   // ── Explore more action ───────────────────────────────────────────────────
@@ -148,65 +165,44 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
         background: `rgba(${rgb},0.32)`,
       }}
     >
-      {/* ── Header — always visible, click to expand ── */}
-      <button
-        onClick={() => setIsExpanded((v) => !v)}
-        style={{
-          width: "100%",
-          background: "transparent",
-          border: "none",
-          borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none",
-          padding: "10px 14px",
-          cursor: "pointer",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          textAlign: "left",
-          userSelect: "none",
-        }}
-      >
-        <div className="flex items-center gap-2 flex-wrap min-w-0">
-          <span
-            className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border shrink-0"
-            style={{ borderColor: color, color }}
-          >
-            {badgeLabel}
-          </span>
-          <div className="min-w-0">
-            {showAuthor && (
-              <p className="text-xs text-brand-primary truncate leading-tight">{author}</p>
-            )}
-            <p className="text-sm text-brand-primary font-semibold truncate">{primaryReference}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0 ml-3">
-          {result.reranker_score !== null && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-brand-primary max-md:hidden" style={{ fontSize: "11px" }}>Relevance Score:</span>
-              <span
-                style={{
-                  fontSize: "11px",
-                  color: "var(--color-brand-primary)",
-                  background: `rgba(${rgb},0.12)`,
-                  border: `2px solid rgba(${rgb},0.8)`,
-                  borderRadius: "4px",
-                  padding: "1px 6px",
-                }}
-              >
-                {Math.round(result.reranker_score * 100)}%
-              </span>
+      {/* ── Header — disclosure and context navigation are sibling controls ── */}
+      <div className="flex items-center" style={{ borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none" }}>
+        <button
+          type="button"
+          onClick={() => setIsExpanded((v) => !v)}
+          aria-expanded={isExpanded}
+          aria-controls={`chunk-body-${chunk_id}`}
+          className="flex min-w-0 flex-1 items-center justify-between bg-transparent px-3.5 py-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-accent"
+        >
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
+            <div className="min-w-0">
+              {showAuthor && <p className="truncate text-xs leading-tight text-brand-primary">{author}</p>}
+              <p className="truncate text-sm font-semibold text-brand-primary">{primaryReference}</p>
             </div>
-          )}
-          {isExpanded
-            ? <ChevronUp size={15} className="text-brand-muted" />
-            : <ChevronDown size={15} className="text-brand-muted" />
-          }
-        </div>
-      </button>
+          </div>
+          <div className="ml-3 flex shrink-0 items-center gap-2">
+            {result.reranker_score !== null && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-brand-primary max-md:hidden" style={{ fontSize: "11px" }}>Relevance Score:</span>
+                <span style={{ fontSize: "11px", color: "var(--color-brand-primary)", background: `rgba(${rgb},0.12)`, border: `2px solid rgba(${rgb},0.8)`, borderRadius: "4px", padding: "1px 6px" }}>{Math.round(result.reranker_score * 100)}%</span>
+              </div>
+            )}
+            {isExpanded ? <ChevronUp size={15} className="text-brand-muted" /> : <ChevronDown size={15} className="text-brand-muted" />}
+          </div>
+        </button>
+        {!isGuest && UUID_RE.test(document_id) && (
+          <button type="button" onClick={handleReadMore} className="mr-2 flex min-h-10 shrink-0 items-center gap-1 rounded-md border border-brand-accent px-2 text-xs text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+            <BookOpen size={15} />
+            <span className="max-sm:sr-only">Open in context</span>
+            <span className="sm:hidden" aria-hidden="true">Context</span>
+          </button>
+        )}
+      </div>
 
       {/* ── Expanded body ── */}
       {isExpanded && (
-        <div style={{ background: "transparent", padding: "16px" }}>
+        <div id={`chunk-body-${chunk_id}`} style={{ background: "transparent", padding: "16px" }}>
           {/* Content */}
           <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">{renderVerseMarkers(content)}</p>
 
@@ -302,6 +298,15 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
                   Query More Like This
                 </button>
               </div>
+            </div>
+          )}
+          {showReportPrompt && (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-brand-muted/25 bg-brand-bg/40 px-3 py-2 text-xs text-brand-muted">
+              <span>Thanks. Is there a specific problem with this result?</span>
+              <span className="flex gap-3">
+                <button type="button" onClick={() => setShowReportPrompt(false)} className="hover:text-brand-primary">No, thanks</button>
+                <button type="button" onClick={reportResultProblem} className="font-medium text-brand-accent hover:underline">Report a problem</button>
+              </span>
             </div>
           )}
         </div>

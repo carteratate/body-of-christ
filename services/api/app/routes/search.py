@@ -1,9 +1,11 @@
+import base64
+import binascii
 import datetime
 import json
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 
 from app.config import settings
@@ -135,25 +137,56 @@ async def search(
     )
 
 
+def _encode_history_cursor(created_at: datetime.datetime, search_id: uuid.UUID) -> str:
+    raw = f"{created_at.isoformat()}|{search_id}".encode()
+    return base64.urlsafe_b64encode(raw).decode().rstrip("=")
+
+
+def _decode_history_cursor(cursor: str) -> tuple[datetime.datetime, uuid.UUID]:
+    try:
+        padded = cursor + "=" * (-len(cursor) % 4)
+        raw = base64.urlsafe_b64decode(padded.encode()).decode()
+        created_at_raw, search_id_raw = raw.rsplit("|", 1)
+        created_at = datetime.datetime.fromisoformat(created_at_raw)
+        if created_at.tzinfo is None:
+            raise ValueError("cursor timestamp must include a timezone")
+        return created_at, uuid.UUID(search_id_raw)
+    except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
+        raise HTTPException(status_code=422, detail="Invalid history cursor") from exc
+
+
 @router.get("/searches", response_model=SearchHistoryResponse)
 async def list_searches(
+    limit: int = Query(default=50, ge=1, le=50),
+    cursor: str | None = Query(default=None, max_length=256),
+    q: str | None = Query(default=None, min_length=1, max_length=200),
     user: AuthUser = Depends(get_current_user),
 ) -> SearchHistoryResponse:
-    """Return the last 50 searches for the authenticated user."""
+    """Return one cursor-paginated page of the user's search history."""
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
+    cursor_values = _decode_history_cursor(cursor) if cursor else None
+    cursor_created_at = cursor_values[0] if cursor_values else None
+    cursor_id = cursor_values[1] if cursor_values else None
+    normalized_query = q.strip() if q else None
     try:
         rows = await pool.fetch(
             """
             SELECT id, query, filters, result_count, created_at
             FROM searches
             WHERE user_id = $1
-            ORDER BY created_at DESC
-            LIMIT 50
+              AND ($2::timestamptz IS NULL OR (created_at, id) < ($2, $3::uuid))
+              AND ($4::text IS NULL OR strpos(lower(query), lower($4)) > 0)
+            ORDER BY created_at DESC, id DESC
+            LIMIT $5
             """,
             user.user_id,
+            cursor_created_at,
+            cursor_id,
+            normalized_query,
+            limit + 1,
         )
     except Exception as exc:
         logger.error("list_searches query failed (%s)", exc.__class__.__name__)
@@ -169,6 +202,13 @@ async def list_searches(
         except Exception:
             return None
 
+    has_more = len(rows) > limit
+    page_rows = rows[:limit]
+    next_cursor = None
+    if has_more and page_rows:
+        last = page_rows[-1]
+        next_cursor = _encode_history_cursor(last["created_at"], last["id"])
+
     return SearchHistoryResponse(
         searches=[
             SearchSummary(
@@ -178,8 +218,9 @@ async def list_searches(
                 result_count=row["result_count"],
                 created_at=row["created_at"].isoformat(),
             )
-            for row in rows
-        ]
+            for row in page_rows
+        ],
+        next_cursor=next_cursor,
     )
 
 
@@ -217,7 +258,7 @@ async def get_search_results(
         rows = await pool.fetch(
             """
             SELECT r.rank, r.reranker_score, r.explanation,
-                   c.id AS chunk_id, c.content, c.reference, c.position, c.anchor,
+                   c.id AS chunk_id, c.content, c.reference, c.position, c.anchor, c.chapter_key,
                    d.collection, d.title AS document_title, d.author, d.id AS document_id
             FROM retrievals r
             JOIN chunks c ON c.id = r.chunk_id
@@ -243,6 +284,7 @@ async def get_search_results(
                 document_id=str(row["document_id"]),
                 position=row["position"],
                 anchor=row["anchor"],
+                chapter_key=row["chapter_key"],
             ),
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],

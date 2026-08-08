@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense } from "react";
 import { Search } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
@@ -21,6 +21,7 @@ import {
   type SearchOutcome,
 } from "@/lib/api";
 import { markTrialUsed } from "@/lib/trial";
+import { saveFeedbackContext } from "@/lib/feedbackContext";
 import {
   trackSearchPerformed,
   trackErrorOccurred,
@@ -36,6 +37,7 @@ function classifyError(msg: string): string {
 }
 
 function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
+  const router = useRouter();
   const {
     token, preferences,
     searchKey,
@@ -262,6 +264,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     setError(null);
     setErrorCode(null);
     setErrorStage(null);
+    setSearchId(null);
     setOutcome(null);
     setCollectionOutcomes({});
     setSaveWarning(null);
@@ -357,6 +360,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       setError(null);
       setErrorCode(null);
       setErrorStage(null);
+      setSearchId(null);
       setOutcome(null);
       setCollectionOutcomes({});
       setSaveWarning(null);
@@ -660,6 +664,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             code={errorCode}
             stage={errorStage}
             onRetry={() => submittedQuery && handleSearch(submittedQuery)}
+            onReport={isGuest ? undefined : () => {
+              const safeCode = (["auth_error", "network_error", "rate_limit", "restore_unavailable", "server_error", "stream_interrupted"] as const)
+                .find((value) => value === errorCode) ?? "unknown";
+              saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: searchId ?? undefined, error_code: safeCode });
+              router.push("/feedback");
+            }}
           />
         )}
 

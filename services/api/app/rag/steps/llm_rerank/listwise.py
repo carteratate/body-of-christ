@@ -119,6 +119,7 @@ def _as_ranked(
         reranker_score=max(0.0, min(1.0, score)),
         include=include,
         anchor=candidate.anchor,
+        chapter_key=candidate.chapter_key,
         position=candidate.position,
         annotation=candidate.annotation,
         score_source=score_source,

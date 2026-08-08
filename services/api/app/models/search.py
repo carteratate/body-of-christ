@@ -21,6 +21,7 @@ class ChunkSource(BaseModel):
     document_id: str
     position: Optional[int] = None
     anchor: Optional[str] = None
+    chapter_key: Optional[str] = None
 
 
 class ChunkResult(BaseModel):
@@ -46,6 +47,7 @@ class SearchSummary(BaseModel):
 
 class SearchHistoryResponse(BaseModel):
     searches: list[SearchSummary]
+    next_cursor: Optional[str] = None
 
 
 class SearchResultsResponse(BaseModel):

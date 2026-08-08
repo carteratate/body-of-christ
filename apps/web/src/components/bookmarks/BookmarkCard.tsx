@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Bookmark as BookmarkIcon, ChevronDown, ChevronUp, Copy, Pencil, Search } from "lucide-react";
+import { Bookmark as BookmarkIcon, BookOpen, ChevronDown, ChevronUp, Copy, Pencil, Search } from "lucide-react";
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
-import { trackBookmarkDeleted, trackExploreMoreClicked } from "@/lib/analytics";
+import { trackBookmarkDeleted, trackDocumentOpened, trackExploreMoreClicked } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 
@@ -78,6 +78,14 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
     );
   }
 
+  function handleOpenContext() {
+    const params = new URLSearchParams({ from: "saved" });
+    if (source.anchor) params.set("anchor", source.anchor);
+    else if (source.chapter_key) params.set("chapter", source.chapter_key);
+    trackDocumentOpened({ documentId: source.document_id, collection, source: "saved" });
+    router.push(`/reader/${source.document_id}?${params.toString()}`);
+  }
+
   // ── Note actions ──────────────────────────────────────────────────────────
   function startAddNote() {
     setDraftNote("");
@@ -133,6 +141,14 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={handleOpenContext}
+            title="Open in context"
+            aria-label="Open passage in context"
+            className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          >
+            <BookOpen size={16} />
+          </button>
           <button
             onClick={handleRemove}
             disabled={removing}

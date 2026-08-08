@@ -187,6 +187,7 @@ def _as_ranked(
         reranker_score=score,
         include=score >= settings.cohere_include_floor,
         anchor=candidate.anchor,
+        chapter_key=candidate.chapter_key,
         position=candidate.position,
         annotation=candidate.annotation,
         score_source=score_source,

@@ -57,6 +57,7 @@ async def _search_vector(
             "document_title": payload["document_title"],
             "author": payload.get("author"),
             "anchor": payload.get("anchor"),
+            "chapter_key": payload.get("chapter_key"),
             "position": None,
             "annotation": None,
         })

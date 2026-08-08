@@ -184,6 +184,7 @@ async def run_search_pipeline(
                     "reference": chunk.reference,
                     "document_id": chunk.document_id,
                     "anchor": chunk.anchor,
+                    "chapter_key": chunk.chapter_key,
                 },
                 "reranker_score": (
                     None if chunk.score_source == "rrf_fallback"

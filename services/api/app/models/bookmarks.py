@@ -15,6 +15,9 @@ class BookmarkSource(BaseModel):
     document_title: str
     author: Optional[str] = None
     reference: Optional[str] = None
+    document_id: str
+    anchor: Optional[str] = None
+    chapter_key: Optional[str] = None
 
 
 class BookmarkChunk(BaseModel):

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { BookOpen } from "lucide-react";
 import { trackSuggestedQueryClicked } from "@/lib/analytics";
 
 const TAGLINES = [
@@ -42,21 +43,9 @@ interface EmptyStateProps {
   onSelectQuery: (query: string) => void;
 }
 
-function pickRandom<T>(arr: readonly T[], n: number): T[] {
-  const shuffled = [...arr].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, n);
-}
-
 export function EmptyState({ onSelectQuery }: EmptyStateProps) {
-  const [tagline, setTagline] = useState<string>(TAGLINES[0]);
-  const [displayedQueries, setDisplayedQueries] = useState<string[]>(
-    SUGGESTED_QUERIES.slice(0, 6) as unknown as string[]
-  );
-
-  useEffect(() => {
-    setTagline(TAGLINES[Math.floor(Math.random() * TAGLINES.length)]);
-    setDisplayedQueries(pickRandom(SUGGESTED_QUERIES, 6));
-  }, []);
+  const tagline = TAGLINES[0];
+  const displayedQueries = SUGGESTED_QUERIES.slice(0, 4);
 
   function handleChipClick(query: string) {
     trackSuggestedQueryClicked({ queryText: query });
@@ -64,9 +53,9 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full py-16 px-4">
-      <p className="text-brand-muted text-2xl mb-8 tracking-wide font-brand" suppressHydrationWarning>{tagline}</p>
-      <div className="grid grid-cols-2 gap-3 w-full max-w-2xl">
+    <div className="flex flex-col items-center justify-center h-full py-12 px-4">
+      <p className="text-brand-muted text-2xl mb-7 tracking-wide font-brand">{tagline}</p>
+      <div className="grid grid-cols-2 gap-3 w-full max-w-2xl max-sm:grid-cols-1">
         {displayedQueries.map((query) => (
           <button
             key={query}
@@ -77,6 +66,9 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
           </button>
         ))}
       </div>
+      <Link href="/sources" className="mt-6 flex min-h-11 items-center gap-2 rounded-md border border-brand-muted/30 px-4 text-sm text-brand-muted transition-colors hover:border-brand-accent hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+        <BookOpen size={17} /> Browse the Library
+      </Link>
     </div>
   );
 }

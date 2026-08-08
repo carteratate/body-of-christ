@@ -14,6 +14,7 @@ class ChunkCandidate:
     author: str | None
     rrf_score: float
     anchor: str | None = None
+    chapter_key: str | None = None
     position: int | None = None
     # jsonb in Postgres, but the stored value is a JSON-encoded *string* (see
     # datapipeline enrich_io.py) and app/db.py registers a jsonb codec, so this
@@ -33,6 +34,7 @@ class RankedChunk:
     reranker_score: float
     include: bool = True
     anchor: str | None = None
+    chapter_key: str | None = None
     position: int | None = None
     # Carried through reranking so a second-stage reranker still sees it (the
     # listwise card needs it). Same decoded-string shape as ChunkCandidate's.

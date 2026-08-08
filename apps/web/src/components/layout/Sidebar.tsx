@@ -1,234 +1,84 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { BarChart3, Bookmark, Church, History, Library, MessageSquareText, Search, Settings } from "lucide-react";
+import { Toast, useToast } from "@/components/common";
+import { HistorySearchRow } from "@/components/history";
+import { useSearchDeletion } from "@/components/history/useSearchDeletion";
+import { trackNavigationSelected } from "@/lib/analytics";
+import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { useAppContext } from "./AppShell";
 import { useGuestGate } from "./guestGate";
-import { Library, Bookmark, Church, Settings, BarChart3, X } from "lucide-react";
-import { deleteSearch } from "@/lib/api";
-import { Toast, useToast } from "@/components/common";
 
 interface SidebarProps {
   isMobileOpen: boolean;
   onCloseMobile: () => void;
 }
 
-const DELETE_REVEAL_PX = 88;
-const SWIPE_THRESHOLD_PX = 44;
-
-interface HistorySearchRowProps {
-  id: string;
-  query: string;
+interface NavLinkProps {
   href: string;
+  label: string;
+  icon: React.ReactNode;
   active: boolean;
-  revealed: boolean;
-  onNavigate: (event: React.MouseEvent) => void;
-  onReveal: () => void;
-  onClose: () => void;
-  onDelete: (event: React.MouseEvent) => void;
+  onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
-export function HistorySearchRow({
-  id,
-  query,
-  href,
-  active,
-  revealed,
-  onNavigate,
-  onReveal,
-  onClose,
-  onDelete,
-}: HistorySearchRowProps) {
-  const deleteButtonRef = useRef<HTMLButtonElement>(null);
-  const revealButtonRef = useRef<HTMLButtonElement>(null);
-  const dragStart = useRef<{ x: number; y: number; initialX: number } | null>(null);
-  const dragCurrentX = useRef<number | null>(null);
-  const dragged = useRef(false);
-  const focusDeleteAfterReveal = useRef(false);
-  const deletePointerArmed = useRef(false);
-  const [dragX, setDragX] = useState<number | null>(null);
-
-  const activeClass = "bg-brand-bg text-brand-accent border-l-2 border-brand-accent";
-  const inactiveClass = "bg-brand-surface text-brand-muted hover:bg-brand-bg hover:text-brand-primary";
-  const translateX = dragX ?? (revealed ? -DELETE_REVEAL_PX : 0);
-
-  useEffect(() => {
-    if (revealed && focusDeleteAfterReveal.current) {
-      focusDeleteAfterReveal.current = false;
-      deleteButtonRef.current?.focus();
-    }
-  }, [revealed]);
-
-  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse") return;
-    dragStart.current = {
-      x: event.clientX,
-      y: event.clientY,
-      initialX: revealed ? -DELETE_REVEAL_PX : 0,
-    };
-    dragged.current = false;
-    event.currentTarget.setPointerCapture?.(event.pointerId);
-  }
-
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const start = dragStart.current;
-    if (!start) return;
-    const deltaX = event.clientX - start.x;
-    const deltaY = event.clientY - start.y;
-    if (Math.abs(deltaY) > Math.abs(deltaX) && !dragged.current) return;
-    if (Math.abs(deltaX) > 6) dragged.current = true;
-    const nextX = Math.max(-DELETE_REVEAL_PX, Math.min(0, start.initialX + deltaX));
-    dragCurrentX.current = nextX;
-    setDragX(nextX);
-  }
-
-  function finishPointerGesture() {
-    if (!dragStart.current) return;
-    const finalX = dragCurrentX.current ?? dragStart.current.initialX;
-    dragStart.current = null;
-    dragCurrentX.current = null;
-    setDragX(null);
-    if (finalX <= -SWIPE_THRESHOLD_PX) onReveal();
-    else onClose();
-  }
-
-  function cancelPointerGesture() {
-    dragStart.current = null;
-    dragCurrentX.current = null;
-    dragged.current = false;
-    setDragX(null);
-  }
-
-  function closeAndRestoreFocus() {
-    onClose();
-    requestAnimationFrame(() => revealButtonRef.current?.focus());
-  }
-
-  function handleLinkClick(event: React.MouseEvent) {
-    if (dragged.current || revealed) {
-      event.preventDefault();
-      event.stopPropagation();
-      dragged.current = false;
-      onClose();
-      return;
-    }
-    onNavigate(event);
-  }
-
+function NavLink({ href, label, icon, active, onClick }: NavLinkProps) {
   return (
-    <div
-      data-history-row={id}
-      className="group relative overflow-hidden rounded"
-      onContextMenu={(event) => {
-        event.preventDefault();
-        onReveal();
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "Escape" && revealed) {
-          event.preventDefault();
-          closeAndRestoreFocus();
-        }
-      }}
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`flex min-h-10 items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
+        active
+          ? "bg-brand-bg text-brand-accent"
+          : "text-brand-muted hover:bg-brand-bg hover:text-brand-primary"
+      }`}
     >
-      <div
-        className={`relative z-10 flex min-w-0 items-center rounded transition-[transform,background-color,color] duration-200 touch-pan-y ${
-          active ? activeClass : inactiveClass
-        }`}
-        style={{
-          transform: `translateX(${translateX}px)`,
-          transitionDuration: dragX === null ? undefined : "0ms",
-        }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={finishPointerGesture}
-        onPointerCancel={cancelPointerGesture}
-      >
-        <Link
-          href={href}
-          onClick={handleLinkClick}
-          className="block min-w-0 flex-1 truncate px-2 py-1.5 text-xs"
-          title={query}
-        >
-          {query}
-        </Link>
-        <button
-          ref={revealButtonRef}
-          type="button"
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            focusDeleteAfterReveal.current = event.detail === 0;
-            onReveal();
-          }}
-          tabIndex={revealed ? -1 : 0}
-          aria-label={`Show delete option for ${query}`}
-          className={`shrink-0 rounded px-1.5 py-1.5 text-brand-muted transition-opacity hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary [@media(hover:none)]:sr-only [@media(hover:none)]:focus-visible:ring-0 ${
-            revealed
-              ? "pointer-events-none opacity-0"
-              : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-          }`}
-        >
-          <X size={12} />
-        </button>
-      </div>
-
-      <button
-        ref={deleteButtonRef}
-        type="button"
-        tabIndex={revealed ? 0 : -1}
-        aria-hidden={!revealed}
-        aria-label={`Delete search: ${query}`}
-        onPointerDown={() => {
-          deletePointerArmed.current = revealed;
-        }}
-        onPointerCancel={() => {
-          deletePointerArmed.current = false;
-        }}
-        onClick={(event) => {
-          const isKeyboardActivation = event.detail === 0;
-          const canDelete = isKeyboardActivation || deletePointerArmed.current;
-          deletePointerArmed.current = false;
-          if (!canDelete) {
-            event.preventDefault();
-            event.stopPropagation();
-            return;
-          }
-          onDelete(event);
-        }}
-        className={`absolute inset-y-0 right-0 z-20 flex w-[88px] items-center justify-center bg-brand-delete px-3 text-sm font-semibold text-white transition-transform duration-200 hover:brightness-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white ${
-          revealed ? "translate-x-0" : "pointer-events-none translate-x-full"
-        }`}
-      >
-        Delete
-      </button>
-    </div>
+      {icon}
+      <span>{label}</span>
+    </Link>
   );
 }
 
 export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { newSearch, searches, pendingSearch, activeSearchId, token, removeSearch, refreshSearches } =
-    useAppContext();
+  const {
+    newSearch,
+    searches,
+    pendingSearch,
+    activeSearchId,
+    removeSearch,
+    restoreSearch,
+    refreshSearches,
+    invalidateSearchHistory,
+  } = useAppContext();
   const guestGate = useGuestGate();
   const { toast, showToast, dismissToast } = useToast();
   const [revealedSearchId, setRevealedSearchId] = useState<string | null>(null);
+  const [mobileViewport, setMobileViewport] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => setMobileViewport(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     if (!revealedSearchId) return;
     function closeWhenClickingElsewhere(event: PointerEvent) {
       const row = (event.target as Element | null)?.closest?.("[data-history-row]");
-      if (row?.getAttribute("data-history-row") !== revealedSearchId) {
-        setRevealedSearchId(null);
-      }
+      if (row?.getAttribute("data-history-row") !== revealedSearchId) setRevealedSearchId(null);
     }
     document.addEventListener("pointerdown", closeWhenClickingElsewhere);
     return () => document.removeEventListener("pointerdown", closeWhenClickingElsewhere);
   }, [revealedSearchId]);
 
   function handleNewSearch() {
-    // Guest funnel: New Search prompts signup instead of starting another search.
     if (guestGate) {
       guestGate.requestSignup();
       return;
@@ -239,151 +89,147 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
     onCloseMobile();
   }
 
-  // Guest funnel: nav links lead to gated areas, so they prompt signup instead.
-  function handleNavClick(e: React.MouseEvent) {
+  function handleNavClick(event: React.MouseEvent<HTMLAnchorElement>) {
     if (guestGate) {
-      e.preventDefault();
+      event.preventDefault();
       guestGate.requestSignup();
       return;
     }
+    const destination = new URL(event.currentTarget.href).pathname;
+    if (destination === "/feedback") clearFeedbackContext();
+    trackNavigationSelected({
+      destination,
+      surface: mobileViewport ? "mobile_drawer" : "desktop_sidebar",
+    });
     setRevealedSearchId(null);
     onCloseMobile();
   }
 
-  async function handleDeleteSearch(e: React.MouseEvent, id: string) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!token) return;
+  function removeLocally(id: string) {
     setRevealedSearchId(null);
     removeSearch(id);
-    if (id === activeSearchId) {
-      router.push("/search");
-      newSearch();
-    }
-    try {
-      await deleteSearch(token, id);
-      showToast("Search deleted.", "success");
-    } catch {
-      refreshSearches();
-      showToast("Couldn't delete search. Restored.", "error");
-    }
   }
 
-  const activeClass = "bg-brand-bg text-brand-accent border-l-2 border-brand-accent";
-  const inactiveClass = "text-brand-muted hover:bg-brand-bg hover:text-brand-primary";
+  const { deletingId, deleteById } = useSearchDeletion({
+    searches,
+    removeLocally,
+    restoreLocally: restoreSearch,
+    onSuccess: () => {
+      refreshSearches();
+      invalidateSearchHistory();
+    },
+    showToast,
+    origin: "sidebar",
+    focusAfterRemove: (index) => {
+      requestAnimationFrame(() => {
+        const rows = document.querySelectorAll<HTMLElement>("#sidebar-recent-searches [data-history-row] a");
+        rows[Math.min(index, rows.length - 1)]?.focus();
+        if (rows.length === 0) document.getElementById("sidebar-history-link")?.focus();
+      });
+    },
+    focusAfterRestore: (id) => {
+      requestAnimationFrame(() => {
+        const row = Array.from(document.querySelectorAll<HTMLElement>("#sidebar-recent-searches [data-history-row]"))
+          .find((item) => item.dataset.historyRow === id);
+        row?.querySelector<HTMLElement>("a")?.focus();
+      });
+    },
+  });
+
+  const primary = [
+    { href: "/sources", label: "Library", icon: <Library size={17} /> },
+    { href: "/bookmarks", label: "Saved Passages", icon: <Bookmark size={17} /> },
+    { href: "/history", label: "Search History", icon: <History size={17} /> },
+  ];
 
   return (
     <>
-    <aside
-      id="mobile-nav-drawer"
-      className={`flex flex-col w-56 shrink-0 bg-brand-surface border-r border-brand-surface h-full max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-72 max-md:transition-transform max-md:duration-200 ${
-        isMobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full"
-      }`}
-    >
-      {/* App name */}
-      <div className="px-4 pt-3 pb-2 border-b border-brand-bg">
-        <span className="text-brand-accent font-semibold text-2xl whitespace-nowrap font-brand">TheoCorpus</span>
-      </div>
+      <aside
+        id="mobile-nav-drawer"
+        role={mobileViewport ? (isMobileOpen ? "dialog" : undefined) : "complementary"}
+        aria-modal={mobileViewport && isMobileOpen ? true : undefined}
+        aria-hidden={mobileViewport && !isMobileOpen ? true : undefined}
+        inert={mobileViewport && !isMobileOpen ? true : undefined}
+        aria-label={mobileViewport ? "TheoCorpus navigation" : "Primary navigation"}
+        className={`flex h-full w-56 shrink-0 flex-col border-r border-brand-bg bg-brand-surface max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-72 max-md:transition-transform max-md:duration-200 ${
+          isMobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full"
+        }`}
+      >
+        <div className="border-b border-brand-bg px-4 pb-3 pt-4">
+          <span className="whitespace-nowrap font-brand text-2xl font-semibold text-brand-accent">TheoCorpus</span>
+        </div>
 
-      {/* New search button */}
-      <div className="px-3 pt-2">
-        <button
-          onClick={handleNewSearch}
-          className="block w-full text-center bg-brand-accent text-brand-bg rounded-md py-1.5 text-base font-semibold hover:opacity-90 transition-opacity whitespace-nowrap font-brand"
-        >
-          + New Search
-        </button>
-      </div>
-
-      {/* Recent searches */}
-      <div className="flex-1 overflow-y-auto px-3 pt-3 space-y-1">
-        <p className="text-brand-muted text-[10px] uppercase tracking-widest font-medium px-1 mb-2">
-          Recent
-        </p>
-
-        {/* Pending slot — shown only during a fresh/active search, never navigable */}
-        {pendingSearch && (
-          <div
-            className={`block px-2 py-1.5 rounded text-xs truncate ${
-              pendingSearch.id === activeSearchId ? activeClass : inactiveClass
-            }`}
-            title={pendingSearch.query}
+        <div className="px-3 pt-3">
+          <button
+            type="button"
+            onClick={handleNewSearch}
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-brand-accent px-3 py-2 font-brand text-base font-semibold text-brand-bg transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
           >
-            {pendingSearch.query}
+            <Search size={17} aria-hidden="true" />
+            New Search
+          </button>
+        </div>
+
+        <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="TheoCorpus">
+          <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Explore</p>
+          <div className="space-y-1">
+            {primary.map((item) => (
+              <NavLink
+                key={item.href}
+                {...item}
+                active={pathname === item.href || (item.href === "/sources" && pathname.startsWith("/reader/"))}
+                onClick={handleNavClick}
+              />
+            ))}
           </div>
-        )}
 
-        {/* Real DB-backed searches */}
-        {searches.length === 0 && !pendingSearch && (
-          <p className="text-brand-muted text-xs px-1">No recent searches.</p>
-        )}
-        {searches.map((s) => (
-          <HistorySearchRow
-            key={s.id}
-            id={s.id}
-            query={s.query}
-            href={`/search?restore=${s.id}`}
-            active={s.id === activeSearchId}
-            revealed={revealedSearchId === s.id}
-            onNavigate={handleNavClick}
-            onReveal={() => setRevealedSearchId(s.id)}
-            onClose={() => setRevealedSearchId(null)}
-            onDelete={(event) => handleDeleteSearch(event, s.id)}
-          />
-        ))}
-      </div>
+          <section id="sidebar-recent-searches" className="mt-5 hidden md:block" aria-labelledby="recent-searches-heading">
+            <div className="mb-2 flex items-center justify-between px-2">
+              <p id="recent-searches-heading" className="text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Recent</p>
+              <Link id="sidebar-history-link" href="/history" onClick={handleNavClick} className="text-[11px] text-brand-accent hover:underline">View all</Link>
+            </div>
+            <div className="space-y-1">
+              {pendingSearch && (
+                <div className={`truncate rounded px-2 py-1.5 text-xs ${pendingSearch.id === activeSearchId ? "bg-brand-bg text-brand-accent" : "text-brand-muted"}`} title={pendingSearch.query}>
+                  {pendingSearch.query}
+                </div>
+              )}
+              {!pendingSearch && searches.length === 0 && <p className="px-2 py-1 text-xs text-brand-muted">No recent searches.</p>}
+              {searches.slice(0, 5).map((search) => (
+                <HistorySearchRow
+                  key={search.id}
+                  search={search}
+                  compact
+                  origin="sidebar"
+                  active={search.id === activeSearchId}
+                  revealed={revealedSearchId === search.id}
+                  deleting={deletingId === search.id}
+                  onNavigate={handleNavClick}
+                  onReveal={() => setRevealedSearchId(search.id)}
+                  onClose={() => setRevealedSearchId(null)}
+                  onDelete={() => void deleteById(search.id)}
+                />
+              ))}
+            </div>
+          </section>
 
-      {/* Bottom nav */}
-      <div className="px-3 pb-4 pt-2 border-t border-brand-bg space-y-1 text-xs">
-        <Link
-          href="/sources"
-          onClick={handleNavClick}
-          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
-            pathname === "/sources" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
-          }`}
-        >
-          <Library size={12} /> List of Sources
-        </Link>
-        <Link
-          href="/discover"
-          onClick={handleNavClick}
-          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
-            pathname === "/discover" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
-          }`}
-        >
-          <BarChart3 size={12} /> Custom Source Scores
-        </Link>
-        <Link
-          href="/bookmarks"
-          onClick={handleNavClick}
-          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
-            pathname === "/bookmarks" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
-          }`}
-        >
-          <Bookmark size={12} /> Saved Passages
-        </Link>
-        <Link
-          href="/about"
-          onClick={handleNavClick}
-          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
-            pathname === "/about" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
-          }`}
-        >
-          <Church size={12} /> About
-        </Link>
-        <Link
-          href="/settings"
-          onClick={handleNavClick}
-          className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors ${
-            pathname === "/settings" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary"
-          }`}
-        >
-          <Settings size={12} /> Settings
-        </Link>
-      </div>
-    </aside>
+          <div className="mt-5 border-t border-brand-bg pt-4">
+            <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Tools</p>
+            <NavLink href="/discover" label="Source Guide" icon={<BarChart3 size={17} />} active={pathname === "/discover"} onClick={handleNavClick} />
+          </div>
 
-    {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
+          <div className="mt-5 border-t border-brand-bg pt-4">
+            <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Information</p>
+            <div className="space-y-1">
+              <NavLink href="/about" label="About" icon={<Church size={17} />} active={pathname === "/about"} onClick={handleNavClick} />
+              <NavLink href="/feedback" label="Feedback" icon={<MessageSquareText size={17} />} active={pathname === "/feedback"} onClick={handleNavClick} />
+              <NavLink href="/settings" label="Settings" icon={<Settings size={17} />} active={pathname === "/settings"} onClick={handleNavClick} />
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </>
   );
 }

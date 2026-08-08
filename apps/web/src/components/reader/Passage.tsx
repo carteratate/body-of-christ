@@ -7,7 +7,7 @@ export function Passage({ passage, highlighted }: { passage: ReaderPassage; high
   return (
     <p
       id={`anchor-${passage.anchor}`}
-      className="text-[15px] leading-[1.9] text-brand-primary mb-3"
+      className="text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] text-brand-primary mb-3"
       style={{
         fontFamily: "Georgia, serif",
         ...(highlighted ? { background: "rgba(196,151,42,0.16)", borderRadius: 4, padding: "2px 4px" } : {}),

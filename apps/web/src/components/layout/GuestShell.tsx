@@ -7,6 +7,7 @@ import { AppContext, type AppContextValue } from "./AppShell";
 import { MobileTopBar } from "./MobileTopBar";
 import { GuestGateContext, type GuestGate } from "./guestGate";
 import { GuestSignupModal } from "@/components/common";
+import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
 
 const Sidebar = dynamic(
   () => import("./Sidebar").then((m) => ({ default: m.Sidebar })),
@@ -21,6 +22,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
   const [showSignup, setShowSignup] = useState(false);
 
   const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
+  useMobileNavigationDrawer(mobileNavOpen, closeMobileNav);
 
   // Any further navigation (New Search, nav links, a second query) opens the
   // signup modal once the free trial search has been read. Also dismiss the
@@ -53,32 +55,6 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     return () => mql.removeEventListener("change", handleChange);
   }, []);
 
-  // Mobile nav focus trap + scroll lock (mirrors AppShell)
-  useEffect(() => {
-    if (!mobileNavOpen) return;
-    document.body.style.overflow = "hidden";
-    const drawer = document.getElementById("mobile-nav-drawer");
-    const focusables = drawer?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
-    focusables?.[0]?.focus();
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") { setMobileNavOpen(false); return; }
-      if (e.key !== "Tab" || !drawer) return;
-      const items = Array.from(drawer.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
-      if (items.length === 0) return;
-      const first = items[0]; const last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = "";
-      document.removeEventListener("keydown", handleKeyDown);
-      document.getElementById("mobile-nav-trigger")?.focus();
-    };
-  }, [mobileNavOpen]);
-
   const value: AppContextValue = {
     token: null,
     ready: true,
@@ -88,6 +64,9 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     searches: [],
     refreshSearches: () => {},
     removeSearch: () => {},
+    restoreSearch: () => {},
+    historyRevision: 0,
+    invalidateSearchHistory: () => {},
     pendingSearch,
     setPendingSearch,
     clearPendingSearch,
@@ -102,6 +81,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     corpusPassages: null,
     bookmarkIds: {},
     setBookmarkForChunk: () => {},
+    openMobileNavigation: () => setMobileNavOpen(true),
   };
 
   return (
@@ -116,7 +96,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
               aria-hidden="true"
             />
           )}
-          <main className="flex flex-1 min-h-0 min-w-0 flex-col overflow-hidden">
+          <main inert={mobileNavOpen ? true : undefined} className="flex flex-1 min-h-0 min-w-0 flex-col overflow-hidden">
             <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => setMobileNavOpen(true)} />
             {children}
           </main>

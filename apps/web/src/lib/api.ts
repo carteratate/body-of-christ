@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+const API_URL = "";
 
 export interface SessionSummary {
   id: string;
@@ -128,6 +128,7 @@ export interface ChunkSource {
   document_id: string;
   position: number | null;
   anchor?: string | null;
+  chapter_key?: string | null;
   metadata?: Record<string, unknown> | null;
 }
 
@@ -141,7 +142,7 @@ export interface ChunkResult {
 
 export interface SearchFilters {
   collections: string[];
-  translation: string;
+  translation?: string;
 }
 
 export interface SearchSummaryV2 {
@@ -150,6 +151,11 @@ export interface SearchSummaryV2 {
   filters: Record<string, unknown> | null;
   result_count: number | null;
   created_at: string;
+}
+
+export interface SearchHistoryPage {
+  searches: SearchSummaryV2[];
+  next_cursor: string | null;
 }
 
 export interface SearchResultsResponse {
@@ -221,6 +227,9 @@ export interface BookmarkChunkInfo {
     document_title: string;
     author: string | null;
     reference: string | null;
+    document_id: string;
+    anchor: string | null;
+    chapter_key: string | null;
   };
 }
 
@@ -490,12 +499,25 @@ export async function streamGuestSearch(
 }
 
 export async function getSearchHistory(token: string): Promise<SearchSummaryV2[]> {
-  const res = await fetch(`${API_URL}/v1/searches`, {
+  const page = await getSearchHistoryPage(token);
+  return page.searches;
+}
+
+export async function getSearchHistoryPage(
+  token: string,
+  options: { cursor?: string; limit?: number; query?: string } = {},
+): Promise<SearchHistoryPage> {
+  const params = new URLSearchParams();
+  if (options.cursor) params.set("cursor", options.cursor);
+  if (options.limit) params.set("limit", String(options.limit));
+  if (options.query?.trim()) params.set("q", options.query.trim());
+  const query = params.toString();
+  const res = await fetch(`${API_URL}/v1/searches${query ? `?${query}` : ""}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
-  const data = await res.json() as { searches: SearchSummaryV2[] };
-  return data.searches;
+  const data = await res.json() as SearchHistoryPage;
+  return { searches: data.searches, next_cursor: data.next_cursor ?? null };
 }
 
 export async function deleteSearch(token: string, searchId: string): Promise<void> {
@@ -503,6 +525,9 @@ export async function deleteSearch(token: string, searchId: string): Promise<voi
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   });
+  // Deletion is intentionally idempotent on the client. The same history row
+  // can be visible in both the desktop sidebar and the full History page.
+  if (res.status === 404) return;
   if (!res.ok) throw new Error(`API error ${res.status}`);
 }
 
@@ -538,7 +563,7 @@ export async function getToc(token: string, docId: string): Promise<TocResponse>
 export async function getReaderChapter(
   token: string,
   docId: string,
-  opts: { anchor?: string; chapter?: string },
+  opts: { anchor?: string; chapter?: string; signal?: AbortSignal },
 ): Promise<ReaderChapter> {
   const params = new URLSearchParams();
   if (opts.anchor) params.set("anchor", opts.anchor);
@@ -546,9 +571,95 @@ export async function getReaderChapter(
   const qs = params.toString();
   const res = await fetch(`${API_URL}/v1/documents/${docId}/reader${qs ? `?${qs}` : ""}`, {
     headers: { Authorization: `Bearer ${token}` },
+    signal: opts.signal,
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
   return res.json() as Promise<ReaderChapter>;
+}
+
+// ── Reading progress ───────────────────────────────────────────────────────
+
+export interface ReadingProgress {
+  document_id: string;
+  chapter_key: string;
+  chapter_label: string;
+  anchor: string | null;
+  updated_at: string;
+  collection: string;
+  document_title: string;
+  author: string | null;
+}
+
+export async function listReadingProgress(token: string, limit = 6, signal?: AbortSignal): Promise<ReadingProgress[]> {
+  const res = await fetch(`${API_URL}/v1/reading-progress?limit=${limit}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    signal,
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  const data = await res.json() as { items: ReadingProgress[] };
+  return data.items;
+}
+
+export async function getReadingProgress(
+  token: string,
+  docId: string,
+  signal?: AbortSignal,
+): Promise<ReadingProgress | null> {
+  const res = await fetch(`${API_URL}/v1/reading-progress/${docId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    signal,
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return res.json() as Promise<ReadingProgress>;
+}
+
+export async function putReadingProgress(
+  token: string,
+  docId: string,
+  chapterKey: string,
+  anchor?: string | null,
+): Promise<ReadingProgress> {
+  const res = await fetch(`${API_URL}/v1/reading-progress/${docId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ chapter_key: chapterKey, anchor: anchor ?? null }),
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return res.json() as Promise<ReadingProgress>;
+}
+
+// ── Product feedback ───────────────────────────────────────────────────────
+
+export type ProductFeedbackCategory = "bug" | "content" | "feature" | "general";
+
+export interface ProductFeedbackInput {
+  category: ProductFeedbackCategory;
+  message: string;
+  contact_allowed: boolean;
+  route?: string;
+  viewport_width?: number;
+  viewport_height?: number;
+  search_id?: string;
+  chunk_id?: string;
+  document_id?: string;
+  error_code?: "auth_error" | "network_error" | "rate_limit" | "restore_unavailable" | "server_error" | "stream_interrupted" | "unknown";
+}
+
+export async function submitProductFeedback(
+  token: string,
+  input: ProductFeedbackInput,
+): Promise<{ feedback_id: string }> {
+  const res = await fetch(`${API_URL}/v1/product-feedback`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as { detail?: string };
+    throw new Error(body.detail ?? `API error ${res.status}`);
+  }
+  return res.json() as Promise<{ feedback_id: string }>;
 }
 
 export async function getBookmarks(token: string): Promise<Bookmark[]> {
