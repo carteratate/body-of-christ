@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, ChevronLeft, ChevronRight, Flag, List, Menu, Settings2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flag, Menu, Settings2 } from "lucide-react";
 import type { DocumentInfo, TocEntry } from "@/lib/api";
 import { useAppContext } from "@/components/layout/AppShell";
 
@@ -11,8 +11,9 @@ interface Props {
   document: DocumentInfo;
   toc: TocEntry[];
   currentChapterKey: string | null;
+  backLabel: string;
   onBack: () => void;
-  onToggleContents: () => void;
+  onBrowseSections: () => void;
   onJump: (chapterKey: string) => void;
   fontSize: ReaderFontSize;
   spacing: ReaderSpacing;
@@ -25,8 +26,9 @@ export function ReaderChrome({
   document,
   toc,
   currentChapterKey,
+  backLabel,
   onBack,
-  onToggleContents,
+  onBrowseSections,
   onJump,
   fontSize,
   spacing,
@@ -34,43 +36,42 @@ export function ReaderChrome({
   onSpacingChange,
   onReportContent,
 }: Props) {
-  const { openMobileNavigation } = useAppContext();
+  const { mobileNavigationOpen, openMobileNavigation } = useAppContext();
   const currentIndex = toc.findIndex((entry) => entry.chapter_key === currentChapterKey);
   const previous = currentIndex > 0 ? toc[currentIndex - 1] : null;
   const next = currentIndex >= 0 && currentIndex + 1 < toc.length ? toc[currentIndex + 1] : null;
+  const browseLabel = document.collection === "bible"
+    ? "Browse Chapters"
+    : document.collection === "catechism"
+      ? "Browse Paragraphs"
+      : document.collection === "summa"
+        ? "Browse Articles"
+        : document.collection === "canon-law"
+          ? "Browse Books & Sections"
+          : "Browse Sections";
 
   return (
     <header className="relative z-10 border-b border-brand-surface bg-brand-bg px-2 py-2 sm:px-4">
-      <div className="flex min-h-10 items-center gap-1.5">
+      <div className="flex min-h-10 items-center gap-1.5 md:hidden">
         <button
           id="reader-app-nav-trigger"
           type="button"
           onClick={() => openMobileNavigation("reader-app-nav-trigger")}
-          className="rounded p-2 text-brand-muted hover:bg-brand-surface hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent md:hidden"
+          className="rounded p-2 text-brand-muted hover:bg-brand-surface hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
           aria-label="Open app navigation"
+          aria-controls="mobile-nav-drawer"
+          aria-expanded={mobileNavigationOpen}
         >
           <Menu size={19} />
         </button>
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded p-2 text-brand-muted hover:bg-brand-surface hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-          aria-label="Back"
-        >
-          <ChevronLeft size={19} />
-        </button>
-        <button
-          id="reader-contents-trigger"
-          type="button"
-          onClick={onToggleContents}
-          className="flex min-h-10 items-center gap-1.5 rounded px-2 text-sm text-brand-muted hover:bg-brand-surface hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-        >
-          <List size={17} />
-          <span className="max-sm:sr-only">Contents</span>
-        </button>
+        <span className="min-w-0 flex-1 truncate font-brand text-lg font-semibold text-brand-accent">
+          TheoCorpus
+        </span>
+      </div>
 
-        <div className="min-w-0 flex-1 px-1">
-          <p className="truncate text-sm font-medium text-brand-primary">{document.title}</p>
+      <div className="mt-1 flex min-h-10 flex-wrap items-center gap-2 md:mt-0 md:flex-nowrap">
+        <div className="min-w-0 basis-full px-1 md:max-w-[18rem] md:basis-auto md:shrink">
+          <p className="truncate text-sm font-medium text-brand-accent">{document.title}</p>
           {currentIndex >= 0 && (
             <p className="truncate text-[11px] text-brand-muted">
               {toc[currentIndex].chapter_label} · {currentIndex + 1} of {toc.length}
@@ -78,9 +79,27 @@ export function ReaderChrome({
           )}
         </div>
 
-        <details className="relative">
+        <button
+          type="button"
+          onClick={onBack}
+          className="flex min-h-9 shrink-0 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          aria-label={backLabel}
+        >
+          <ChevronLeft size={16} aria-hidden="true" />
+          {backLabel}
+        </button>
+
+        <button
+          type="button"
+          onClick={onBrowseSections}
+          className="min-h-9 shrink-0 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          {browseLabel}
+        </button>
+
+        <details className="relative ml-auto">
           <summary
-            className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded text-brand-muted hover:bg-brand-surface hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-md border-[0.5px] border-brand-accent text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             aria-label="Reading settings"
           >
             <Settings2 size={18} />
@@ -110,11 +129,10 @@ export function ReaderChrome({
       </div>
 
       <div className="mt-1 flex items-center justify-between gap-2 border-t border-brand-surface pt-2">
-        <button type="button" disabled={!previous} onClick={() => previous && onJump(previous.chapter_key)} className="flex min-h-9 items-center gap-1 rounded px-2 text-xs text-brand-muted hover:text-brand-primary disabled:invisible">
+        <button type="button" disabled={!previous} onClick={() => previous && onJump(previous.chapter_key)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
           <ChevronLeft size={15} /> Previous
         </button>
-        <BookOpen size={15} className="text-brand-accent" aria-hidden="true" />
-        <button type="button" disabled={!next} onClick={() => next && onJump(next.chapter_key)} className="flex min-h-9 items-center gap-1 rounded px-2 text-xs text-brand-muted hover:text-brand-primary disabled:invisible">
+        <button type="button" disabled={!next} onClick={() => next && onJump(next.chapter_key)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
           Next <ChevronRight size={15} />
         </button>
       </div>

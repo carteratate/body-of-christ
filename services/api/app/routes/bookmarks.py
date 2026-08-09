@@ -22,21 +22,25 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-_bookmarks_cache: dict[uuid.UUID, BookmarkListResponse] = {}
-
-
-def _invalidate_bookmarks(user_id: uuid.UUID) -> None:
-    _bookmarks_cache.pop(user_id, None)
-
-
-# In-memory per-user write rate limiter (20 writes/min).
-# Uses a separate bucket from search/chat quotas to avoid cross-contamination.
+# Best-effort guard against accidental/repeated writes within one API process.
+# Bookmark writes are cheap, user-scoped, and idempotent; this is not treated as
+# a security boundary. A bounded sweep prevents inactive user keys accumulating.
 _write_rate_timestamps: dict[str, list[float]] = defaultdict(list)
 _WRITE_RATE_LIMIT = 20
+_write_rate_check_count = 0
 
 
 def _check_write_rate_limit(user_id: str) -> None:
+    global _write_rate_check_count
     now = time.time()
+    _write_rate_check_count += 1
+    if _write_rate_check_count % 100 == 0:
+        stale_users = [
+            key for key, timestamps in _write_rate_timestamps.items()
+            if not timestamps or now - timestamps[-1] >= 60
+        ]
+        for key in stale_users:
+            _write_rate_timestamps.pop(key, None)
     window = [t for t in _write_rate_timestamps[user_id] if now - t < 60]
     _write_rate_timestamps[user_id] = window
     if len(window) >= _WRITE_RATE_LIMIT:
@@ -90,8 +94,6 @@ async def create_bookmark(
         acquired - started, completed - acquired, completed - started,
     )
 
-    _invalidate_bookmarks(user.user_id)
-
     return BookmarkResponse(
         id=str(row["id"]),
         chunk_id=body.chunk_id,
@@ -136,8 +138,6 @@ async def update_bookmark_note(
     if row is None:
         raise HTTPException(status_code=404, detail="Bookmark not found")
 
-    _invalidate_bookmarks(user.user_id)
-
     return BookmarkResponse(
         id=str(row["id"]),
         chunk_id=str(row["chunk_id"]),
@@ -151,10 +151,6 @@ async def list_bookmarks(
     user: AuthUser = Depends(get_current_user),
 ) -> BookmarkListResponse:
     """Return all bookmarks for the authenticated user."""
-    cached = _bookmarks_cache.get(user.user_id)
-    if cached is not None:
-        return cached
-
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
@@ -169,7 +165,7 @@ async def list_bookmarks(
             JOIN chunks c ON c.id = b.chunk_id
             JOIN documents d ON d.id = c.document_id
             WHERE b.user_id = $1
-            ORDER BY b.created_at DESC
+            ORDER BY b.created_at DESC, b.id DESC
             """,
             user.user_id,
         )
@@ -177,7 +173,7 @@ async def list_bookmarks(
         logger.error("list_bookmarks query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
-    response = BookmarkListResponse(
+    return BookmarkListResponse(
         bookmarks=[
             BookmarkResponse(
                 id=str(row["id"]),
@@ -200,8 +196,6 @@ async def list_bookmarks(
             for row in rows
         ]
     )
-    _bookmarks_cache[user.user_id] = response
-    return response
 
 
 @router.delete("/bookmarks/{bookmark_id}")
@@ -234,7 +228,5 @@ async def delete_bookmark(
     deleted_count = int(result.split()[-1])
     if deleted_count == 0:
         raise HTTPException(status_code=404, detail="Bookmark not found")
-
-    _invalidate_bookmarks(user.user_id)
 
     return Response(status_code=204)

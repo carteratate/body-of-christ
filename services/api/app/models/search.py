@@ -53,6 +53,7 @@ class SearchHistoryResponse(BaseModel):
 class SearchResultsResponse(BaseModel):
     search_id: str
     query: str
+    filters: Optional[dict] = None
     results: list[ChunkResult]
     restore_status: str = "complete"
     expected_result_count: int = 0

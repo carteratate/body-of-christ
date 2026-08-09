@@ -32,7 +32,7 @@ async def get_document(
 
     try:
         row = await pool.fetchrow(
-            "SELECT id, collection, title, author, year, metadata FROM documents WHERE id = $1",
+            "SELECT id, collection, title, author, year, translation, metadata FROM documents WHERE id = $1",
             doc_uuid,
         )
     except Exception as exc:
@@ -57,6 +57,7 @@ async def get_document(
         title=row["title"],
         author=row["author"],
         year=row["year"],
+        translation=row["translation"],
         metadata=row["metadata"],
         chunk_count=chunk_count_row["cnt"],
     )
@@ -65,7 +66,7 @@ async def get_document(
 def _document_response(doc_row) -> DocumentResponse:
     return DocumentResponse(
         id=str(doc_row["id"]), collection=doc_row["collection"], title=doc_row["title"],
-        author=doc_row["author"], year=doc_row["year"], metadata=doc_row["metadata"],
+        author=doc_row["author"], year=doc_row["year"], translation=doc_row.get("translation"), metadata=doc_row["metadata"],
         chunk_count=doc_row["cnt"],
     )
 
@@ -86,7 +87,7 @@ async def get_document_toc(
 
     try:
         doc_row = await pool.fetchrow(
-            """SELECT d.id, d.collection, d.title, d.author, d.year, d.metadata,
+            """SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
                       (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
                FROM documents d WHERE d.id = $1""",
             doc_uuid,
@@ -129,7 +130,7 @@ async def get_document_reader(
 
     try:
         doc_row = await pool.fetchrow(
-            """SELECT d.id, d.collection, d.title, d.author, d.year, d.metadata,
+            """SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
                       (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
                FROM documents d WHERE d.id = $1""",
             doc_uuid,

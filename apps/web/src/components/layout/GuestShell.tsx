@@ -56,7 +56,8 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value: AppContextValue = {
-    token: null,
+        token: null,
+        userId: null,
     ready: true,
     preferences: null,
     setPreferences: () => {},
@@ -81,6 +82,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     corpusPassages: null,
     bookmarkIds: {},
     setBookmarkForChunk: () => {},
+    mobileNavigationOpen: mobileNavOpen,
     openMobileNavigation: () => setMobileNavOpen(true),
   };
 

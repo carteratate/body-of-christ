@@ -16,6 +16,7 @@ const Sidebar = dynamic(
 
 export interface AppContextValue {
   token: string | null;
+  userId: string | null;
   ready: boolean;
   preferences: Preferences | null;
   setPreferences: (p: Preferences) => void;
@@ -43,11 +44,13 @@ export interface AppContextValue {
   corpusPassages: number | null;
   bookmarkIds: Record<string, string>;
   setBookmarkForChunk: (chunkId: string, bookmarkId: string | null) => void;
+  mobileNavigationOpen: boolean;
   openMobileNavigation: (triggerId?: string) => void;
 }
 
 export const AppContext = createContext<AppContextValue>({
   token: null,
+  userId: null,
   ready: false,
   preferences: null,
   setPreferences: () => {},
@@ -72,6 +75,7 @@ export const AppContext = createContext<AppContextValue>({
   corpusPassages: null,
   bookmarkIds: {},
   setBookmarkForChunk: () => {},
+  mobileNavigationOpen: false,
   openMobileNavigation: () => {},
 });
 
@@ -82,6 +86,7 @@ export function useAppContext() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<Preferences | null>(null);
   const [preferencesError, setPreferencesError] = useState(false);
   const [searches, setSearches] = useState<SearchSummaryV2[]>([]);
@@ -179,7 +184,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const supabase = createClient();
 
     supabase.auth.getSession().then(({ data }) => {
-      authUserIdRef.current = data.session?.user.id ?? null;
+      const initialUserId = data.session?.user.id ?? null;
+      authUserIdRef.current = initialUserId;
+      setUserId(initialUserId);
       const t = data.session?.access_token ?? null;
       setToken(t);
       if (t) {
@@ -226,6 +233,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         userResourceGeneration.current += 1;
         searchHistoryRequestGeneration.current += 1;
         setToken(null);
+        setUserId(null);
         setPreferences(null);
         setPreferencesError(false);
         setSearches([]);
@@ -240,6 +248,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         return;
       }
       authUserIdRef.current = nextUserId;
+      setUserId(nextUserId);
       const t = session?.access_token ?? null;
       setToken(t);
       if (!session) {
@@ -269,7 +278,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{
-      token, ready, preferences, setPreferences, preferencesError,
+      token, userId, ready, preferences, setPreferences, preferencesError,
       searches, refreshSearches, removeSearch, restoreSearch,
       historyRevision, invalidateSearchHistory,
       pendingSearch, setPendingSearch, clearPendingSearch,
@@ -278,6 +287,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       sources, sourcesLoading, sourcesError, reloadSources,
       corpusPassages: sources.length > 0 ? sources.reduce((sum, s) => sum + s.chunk_count, 0) : null,
       bookmarkIds, setBookmarkForChunk,
+      mobileNavigationOpen: mobileNavOpen,
       openMobileNavigation,
     }}>
       <div className="flex h-full bg-brand-bg text-brand-primary">

@@ -15,7 +15,7 @@ class ProductFeedbackCreate(BaseModel):
     chunk_id: Optional[str] = None
     document_id: Optional[str] = None
     error_code: Optional[Literal[
-        "auth_error", "network_error", "rate_limit", "restore_unavailable",
+        "auth_error", "network_error", "rate_limit", "restore_not_found", "restore_unavailable",
         "server_error", "stream_interrupted", "unknown",
     ]] = None
 

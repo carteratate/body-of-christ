@@ -8,6 +8,7 @@ class DocumentResponse(BaseModel):
     title: str
     author: Optional[str] = None
     year: Optional[int] = None
+    translation: Optional[str] = None
     metadata: Optional[dict] = None
     chunk_count: int
 

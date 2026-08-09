@@ -8,6 +8,8 @@ import { HistorySearchRow } from "@/components/history";
 import { Sidebar } from "./Sidebar";
 import { useAppContext } from "./AppShell";
 
+const navigationState = vi.hoisted(() => ({ pathname: "/search", params: "" }));
+
 vi.mock("next/link", () => ({
   default: ({ children, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a href={String(href)} {...props}>{children}</a>
@@ -16,7 +18,8 @@ vi.mock("next/link", () => ({
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
-  usePathname: () => "/search",
+  usePathname: () => navigationState.pathname,
+  useSearchParams: () => new URLSearchParams(navigationState.params),
 }));
 
 vi.mock("./AppShell", () => ({
@@ -50,6 +53,8 @@ function RowHarness({ onDelete = vi.fn() }: { onDelete?: () => void }) {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  navigationState.pathname = "/search";
+  navigationState.params = "";
 });
 
 function mockMatchMedia(matches: boolean) {
@@ -99,14 +104,15 @@ describe("HistorySearchRow", () => {
     expect(onDelete).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps an assistive reveal action available on no-hover devices", () => {
+  it("keeps the reveal X visibly available on every device", () => {
     render(<RowHarness />);
 
     const reveal = screen.getByRole("button", {
       name: "Show delete option for What is grace?",
     });
-    expect(reveal.className).toContain("[@media(hover:none)]:sr-only");
-    expect(reveal.className).not.toContain("[@media(hover:none)]:hidden");
+    expect(reveal.className).toContain("opacity-100");
+    expect(reveal.className).not.toContain("group-hover");
+    expect(reveal.className).not.toContain("sr-only");
   });
 
   it("does not finish a swipe when the browser cancels the pointer", () => {
@@ -202,6 +208,30 @@ describe("HistorySearchRow", () => {
 });
 
 describe("Sidebar mobile accessibility", () => {
+  it("uses Search History as the only history surface in the sidebar", async () => {
+    mockMatchMedia(false);
+    vi.mocked(useAppContext).mockReturnValue({
+      newSearch: vi.fn(),
+      token: "token",
+    } as unknown as ReturnType<typeof useAppContext>);
+
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    expect(await screen.findByRole("link", { name: "Search History" })).toBeTruthy();
+    expect(screen.queryByText("RECENT")).toBeNull();
+    expect(document.getElementById("sidebar-recent-searches")).toBeNull();
+  });
+
+  it("keeps Search History active while a restored result is shown", async () => {
+    mockMatchMedia(false);
+    navigationState.params = "restore=11111111-1111-4111-8111-111111111111";
+    vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: "token" } as unknown as ReturnType<typeof useAppContext>);
+
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    expect((await screen.findByRole("link", { name: "Search History" })).className).toContain("text-brand-accent");
+  });
+
   it("removes the closed offscreen drawer from keyboard and accessibility navigation", async () => {
     mockMatchMedia(true);
     vi.mocked(useAppContext).mockReturnValue({

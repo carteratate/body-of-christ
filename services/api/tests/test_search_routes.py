@@ -170,6 +170,7 @@ def test_restore_reports_missing_historical_results():
     pool.fetchrow.return_value = {
         "id": SEARCH_ID,
         "query": "grace",
+        "filters": {"collections": ["bible", "catechism"], "translation": "WEB-C", "quota": 5},
         "result_count": 3,
     }
     pool.fetch.return_value = []
@@ -181,6 +182,7 @@ def test_restore_reports_missing_historical_results():
     assert body["restore_status"] == "results_unavailable"
     assert body["expected_result_count"] == 3
     assert body["results"] == []
+    assert body["filters"] == {"collections": ["bible", "catechism"], "translation": "WEB-C", "quota": 5}
 
 
 def test_restore_of_genuine_empty_search_is_complete():
@@ -198,3 +200,45 @@ def test_restore_of_genuine_empty_search_is_complete():
     body = response.json()
     assert body["restore_status"] == "complete"
     assert body["expected_result_count"] == 0
+
+
+def test_restore_preserves_document_author_on_result_cards():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "providence",
+        "filters": {"collections": ["summa"]},
+        "result_count": 1,
+    }
+    pool.fetch.return_value = [
+        {
+            "rank": 1,
+            "reranker_score": 0.91,
+            "explanation": "Directly relevant",
+            "chunk_id": "00000000-0000-0000-0000-000000000012",
+            "content": "All things are subject to divine providence.",
+            "reference": "Summa Theologiae, First Part, Question 22, Article 2",
+            "position": 1,
+            "anchor": "summa-1-22-2",
+            "chapter_key": "first-part-question-22",
+            "collection": "summa",
+            "document_title": "Summa Theologiae",
+            "author": "Thomas Aquinas",
+            "document_id": "00000000-0000-0000-0000-000000000013",
+        }
+    ]
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    assert response.json()["results"][0]["source"]["author"] == "Thomas Aquinas"
+
+
+def test_restore_timeout_returns_bounded_gateway_timeout():
+    pool = AsyncMock()
+    pool.fetchrow.side_effect = TimeoutError
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 504
+    assert response.json()["detail"] == "Saved search took too long to load"

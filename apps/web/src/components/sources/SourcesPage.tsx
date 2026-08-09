@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { listReadingProgress, type ReadingProgress, type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
+import { createReaderReturnKey } from "@/lib/readerNavigation";
 
 // Full name for Bible translation codes shown in the sources list.
 const TRANSLATION_LABELS: Record<string, string> = {
@@ -295,6 +296,8 @@ export function SourcesPage() {
 
   const openDoc = useCallback((id: string, chapter?: string) => {
     const params = new URLSearchParams({ from: "library" });
+    const returnKey = createReaderReturnKey("library");
+    if (returnKey) params.set("returnKey", returnKey);
     if (chapter) params.set("chapter", chapter);
     router.push(`/reader/${id}?${params.toString()}`);
   }, [router]);
@@ -302,7 +305,7 @@ export function SourcesPage() {
   const fetchProgress = useCallback((signal?: AbortSignal) => {
     if (!token) return Promise.resolve();
     const requestId = ++progressRequestRef.current;
-    return listReadingProgress(token, 6, signal)
+    return listReadingProgress(token, 3, signal)
       .then((items) => {
         if (requestId !== progressRequestRef.current) return;
         setProgress(items);
@@ -335,7 +338,7 @@ export function SourcesPage() {
     void fetchProgress();
   }, [fetchProgress]);
 
-  const visibleProgress = progressToken === token ? progress : [];
+  const visibleProgress = progressToken === token ? progress.slice(0, 3) : [];
   const visibleProgressLoading = progressToken !== token || progressLoading;
   const visibleProgressError = progressToken === token && progressError;
 
@@ -356,7 +359,7 @@ export function SourcesPage() {
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
-      <div className="px-6 py-6 max-w-3xl w-full mx-auto">
+      <div className="mx-auto w-full min-w-0 max-w-3xl px-4 py-5 sm:px-6 sm:py-6">
         <h1 className="text-2xl font-semibold text-brand-primary mb-1">Library</h1>
         {!loading && !sourcesError && totalPassages > 0 && (
           <p className="text-brand-muted text-sm mb-6">
@@ -387,11 +390,10 @@ export function SourcesPage() {
         {!loading && !sourcesError && !filteredMode && (visibleProgressLoading || visibleProgress.length > 0 || visibleProgressError) && (
           <section className="mb-8" aria-labelledby="continue-reading-heading">
             <div className="mb-3 flex items-center gap-2">
-              <BookOpen size={17} className="text-brand-accent" aria-hidden="true" />
               <h2 id="continue-reading-heading" className="text-base font-semibold text-brand-primary">Continue Reading</h2>
             </div>
             {visibleProgressLoading ? (
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                 {[0, 1].map((item) => <div key={item} className="h-20 animate-pulse rounded-md bg-brand-surface" />)}
               </div>
             ) : visibleProgressError ? (
@@ -400,9 +402,9 @@ export function SourcesPage() {
                 <button type="button" onClick={retryProgress} className="mt-2 text-sm font-medium text-brand-accent hover:underline">Retry</button>
               </div>
             ) : (
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                 {visibleProgress.map((item) => (
-                  <button key={item.document_id} type="button" onClick={() => openDoc(item.document_id, item.chapter_key)} className="rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                  <button key={item.document_id} type="button" onClick={() => openDoc(item.document_id, item.chapter_key)} className="w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
                     <span className="block truncate text-sm font-medium text-brand-primary">{item.document_title}</span>
                     <span className="mt-1 block truncate text-xs text-brand-muted">{item.chapter_label}</span>
                   </button>

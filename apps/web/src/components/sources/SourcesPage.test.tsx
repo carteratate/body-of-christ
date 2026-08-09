@@ -36,16 +36,16 @@ describe("SourcesPage Continue Reading", () => {
   it("clears a prior user's error after the new user's request succeeds", async () => {
     state.listReadingProgress.mockImplementation(async (token: string) => {
       if (token === "user-a") throw new Error("offline");
-      return [{
-        document_id: "doc-b",
-        chapter_key: "chapter-b",
-        chapter_label: "Chapter B",
+      return Array.from({ length: 5 }, (_, index) => ({
+        document_id: `doc-b-${index}`,
+        chapter_key: `chapter-b-${index}`,
+        chapter_label: `Chapter B ${index}`,
         anchor: null,
-        updated_at: "2026-08-04T12:00:00Z",
+        updated_at: `2026-08-0${index + 1}T12:00:00Z`,
         collection: "bible",
-        document_title: "User B document",
+        document_title: `User B document ${index}`,
         author: null,
-      }];
+      }));
     });
 
     const view = render(<SourcesPage />);
@@ -54,8 +54,10 @@ describe("SourcesPage Continue Reading", () => {
     state.token = "user-b";
     view.rerender(<SourcesPage />);
 
-    await screen.findByText("User B document");
+    await screen.findByText("User B document 0");
+    expect(screen.getAllByRole("button", { name: /User B document/ })).toHaveLength(3);
+    expect(screen.queryByText("User B document 3")).toBeNull();
     expect(screen.queryByText("Your recent reading places couldn't be loaded.")).toBeNull();
-    await waitFor(() => expect(state.listReadingProgress).toHaveBeenCalledWith("user-b", 6, expect.any(AbortSignal)));
+    await waitFor(() => expect(state.listReadingProgress).toHaveBeenCalledWith("user-b", 3, expect.any(AbortSignal)));
   });
 });

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { deleteSearch, getReadingProgress, getSearchHistoryPage, putReadingProgress, streamGuestSearch, streamSearch, submitProductFeedback, type SearchStreamCallbacks } from "./api";
+import { deleteSearch, getBookmarks, getReadingProgress, getSearchHistoryPage, getSearchResults, invalidateBookmarksCache, putReadingProgress, removeBookmark, SearchRestoreHttpError, streamGuestSearch, streamSearch, submitProductFeedback, type Bookmark, type SearchStreamCallbacks } from "./api";
 
 function callbacks() {
   return {
@@ -19,7 +19,137 @@ function response(...events: unknown[]): Response {
 }
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllGlobals();
+  invalidateBookmarksCache();
+});
+
+function bookmarkFixture(id: string): Bookmark {
+  return {
+    id,
+    chunk_id: `chunk-${id}`,
+    created_at: "2026-08-08T00:00:00Z",
+    note: null,
+    chunk: null,
+  };
+}
+
+function jwtForSubject(subject: string, suffix: string): string {
+  const payload = btoa(JSON.stringify({ sub: subject })).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  return `header.${payload}.${suffix}`;
+}
+
+describe("bookmark cache", () => {
+  it("does not let an older token request replace the active token cache", async () => {
+    let resolveOld!: (response: Response) => void;
+    let resolveCurrent!: (response: Response) => void;
+    const oldRequest = new Promise<Response>((resolve) => { resolveOld = resolve; });
+    const currentRequest = new Promise<Response>((resolve) => { resolveCurrent = resolve; });
+    const fetchMock = vi.fn()
+      .mockReturnValueOnce(oldRequest)
+      .mockReturnValueOnce(currentRequest);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const oldResult = getBookmarks("old-token");
+    const currentResult = getBookmarks("current-token");
+    resolveCurrent(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("current")] }), { status: 200 }));
+    await expect(currentResult).resolves.toEqual([bookmarkFixture("current")]);
+    resolveOld(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("old")] }), { status: 200 }));
+    await expect(oldResult).resolves.toEqual([bookmarkFixture("old")]);
+
+    await expect(getBookmarks("current-token")).resolves.toEqual([bookmarkFixture("current")]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("can force a fresh read without waiting for the cache TTL", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("old")] }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("fresh")] }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(getBookmarks("token")).resolves.toEqual([bookmarkFixture("old")]);
+    await expect(getBookmarks("token", true)).resolves.toEqual([bookmarkFixture("fresh")]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("makes a forced page read supersede an older warm-cache request", async () => {
+    let resolveWarm!: (response: Response) => void;
+    let resolveFresh!: (response: Response) => void;
+    const fetchMock = vi.fn()
+      .mockReturnValueOnce(new Promise<Response>((resolve) => { resolveWarm = resolve; }))
+      .mockReturnValueOnce(new Promise<Response>((resolve) => { resolveFresh = resolve; }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const warmRead = getBookmarks("token");
+    const forcedRead = getBookmarks("token", true);
+    resolveFresh(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("fresh")] }), { status: 200 }));
+    await expect(forcedRead).resolves.toEqual([bookmarkFixture("fresh")]);
+    resolveWarm(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("old")] }), { status: 200 }));
+    await expect(warmRead).resolves.toEqual([bookmarkFixture("fresh")]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("gives every coalesced caller fresh data when a mutation overlaps a list read", async () => {
+    let resolveList!: (response: Response) => void;
+    let resolveDelete!: (response: Response) => void;
+    let resolveFreshList!: (response: Response) => void;
+    const fetchMock = vi.fn()
+      .mockReturnValueOnce(new Promise<Response>((resolve) => { resolveList = resolve; }))
+      .mockReturnValueOnce(new Promise<Response>((resolve) => { resolveDelete = resolve; }))
+      .mockReturnValueOnce(new Promise<Response>((resolve) => { resolveFreshList = resolve; }));
+    vi.stubGlobal("fetch", fetchMock);
+    const firstCaller = getBookmarks("token");
+    const coalescedCaller = getBookmarks("token");
+    const deletion = removeBookmark("token", "removed");
+
+    resolveList(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("removed")] }), { status: 200 }));
+    resolveDelete(new Response(null, { status: 204 }));
+    await deletion;
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    resolveFreshList(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("kept")] }), { status: 200 }));
+    await expect(firstCaller).resolves.toEqual([bookmarkFixture("kept")]);
+    await expect(coalescedCaller).resolves.toEqual([bookmarkFixture("kept")]);
+
+    await expect(getBookmarks("token")).resolves.toEqual([bookmarkFixture("kept")]);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+
+  it("coordinates a mutation across access-token rotation for the same user", async () => {
+    const oldToken = jwtForSubject("user-1", "old");
+    const newToken = jwtForSubject("user-1", "new");
+    let resolveDelete!: (response: Response) => void;
+    const fetchMock = vi.fn()
+      .mockReturnValueOnce(new Promise<Response>((resolve) => { resolveDelete = resolve; }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("kept")] }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const deletion = removeBookmark(oldToken, "removed");
+    const rotatedRead = getBookmarks(newToken);
+    expect(fetchMock).toHaveBeenCalledOnce();
+    resolveDelete(new Response(null, { status: 204 }));
+
+    await deletion;
+    await expect(rotatedRead).resolves.toEqual([bookmarkFixture("kept")]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("times out a hung mutation and allows later reads to recover", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.fn()
+      .mockImplementationOnce((_url: string, options?: RequestInit) => new Promise<Response>((_resolve, reject) => {
+        options?.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+      }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ bookmarks: [bookmarkFixture("kept")] }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const removalResult = expect(removeBookmark("token", "removed")).rejects.toThrow("timed out");
+    const recoveredRead = getBookmarks("token");
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    await removalResult;
+    await expect(recoveredRead).resolves.toEqual([bookmarkFixture("kept")]);
+    vi.useRealTimers();
+  });
 });
 
 describe("streamSearch", () => {
@@ -161,6 +291,48 @@ describe("deleteSearch", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 503 })));
 
     await expect(deleteSearch("token", "search-1")).rejects.toThrow("API error 503");
+  });
+});
+
+describe("getSearchResults", () => {
+  it("preserves HTTP status and backend detail for restore failures", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "Search not found" }),
+      { status: 404, headers: { "Content-Type": "application/json" } },
+    )));
+
+    await expect(getSearchResults("token", "search-1")).rejects.toEqual(
+      expect.objectContaining<SearchRestoreHttpError>({
+        name: "SearchRestoreHttpError",
+        status: 404,
+        message: "Search not found",
+      }),
+    );
+  });
+
+  it("bounds a restore request that never settles", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("fetch", vi.fn((_url: string, options?: RequestInit) => new Promise((_resolve, reject) => {
+      options?.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+    })));
+
+    const result = expect(getSearchResults("token", "search-1", undefined, 25))
+      .rejects.toThrow("took too long");
+    await vi.advanceTimersByTimeAsync(25);
+    await result;
+    vi.useRealTimers();
+  });
+
+  it("preserves caller cancellation as AbortError", async () => {
+    const caller = new AbortController();
+    vi.stubGlobal("fetch", vi.fn((_url: string, options?: RequestInit) => new Promise((_resolve, reject) => {
+      options?.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+    })));
+
+    const result = expect(getSearchResults("token", "search-1", caller.signal, 1_000))
+      .rejects.toMatchObject({ name: "AbortError" });
+    caller.abort();
+    await result;
   });
 });
 

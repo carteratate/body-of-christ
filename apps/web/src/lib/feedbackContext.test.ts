@@ -31,4 +31,14 @@ describe("feedback context", () => {
     expect(parseFeedbackContext(JSON.stringify({ origin: "reader", route: "https://evil.example", created_at: now }))).toBeNull();
     expect(parseFeedbackContext(JSON.stringify({ origin: "reader", route: "/reader", document_id: "not-a-uuid", created_at: now }))).toBeNull();
   });
+
+  it("preserves the saved-search-not-found diagnostic code", () => {
+    const parsed = parseFeedbackContext(JSON.stringify({
+      origin: "search_error",
+      route: "/search",
+      error_code: "restore_not_found",
+      created_at: Date.now(),
+    }));
+    expect(parsed?.error_code).toBe("restore_not_found");
+  });
 });

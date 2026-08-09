@@ -7,6 +7,8 @@ import { updateBookmarkNote, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackDocumentOpened, trackExploreMoreClicked } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
+import { createReaderReturnKey } from "@/lib/readerNavigation";
+import { ThemedTooltip } from "@/components/common";
 
 const NOTE_MAX = 3000;
 
@@ -31,16 +33,17 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
     return (
       <div className="rounded-lg bg-brand-surface border-l-4 border-brand-surface p-4 flex items-center justify-between gap-3">
         <p className="text-sm text-brand-muted italic">Passage unavailable</p>
-        <button
-          onClick={() => {
-            if (token && !removing) void onRemove(bookmark);
-          }}
-          title="Remove bookmark"
-          aria-label="Remove bookmark"
-          className="p-1.5 rounded text-sm text-brand-accent transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-        >
-          <BookmarkIcon size={16} />
-        </button>
+        <ThemedTooltip label="Remove this unavailable passage from Saved Passages.">
+          <button
+            onClick={() => {
+              if (token && !removing) void onRemove(bookmark);
+            }}
+            aria-label="Remove bookmark"
+            className="p-1.5 rounded text-sm text-brand-accent transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          >
+            <BookmarkIcon size={16} />
+          </button>
+        </ThemedTooltip>
       </div>
     );
   }
@@ -80,6 +83,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
   function handleOpenContext() {
     const params = new URLSearchParams({ from: "saved" });
+    const returnKey = createReaderReturnKey("saved");
+    if (returnKey) params.set("returnKey", returnKey);
     if (source.anchor) params.set("anchor", source.anchor);
     else if (source.chapter_key) params.set("chapter", source.chapter_key);
     trackDocumentOpened({ documentId: source.document_id, collection, source: "saved" });
@@ -141,39 +146,18 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
-          <button
-            onClick={handleOpenContext}
-            title="Open in context"
-            aria-label="Open passage in context"
-            className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-          >
-            <BookOpen size={16} />
-          </button>
-          <button
-            onClick={handleRemove}
-            disabled={removing}
-            title="Remove bookmark"
-            aria-label="Remove bookmark"
-            className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-          >
-            <BookmarkIcon size={16} className="text-brand-accent" />
-          </button>
-          <button
-            onClick={handleCopy}
-            title="Copy passage"
-            aria-label="Copy passage"
-            className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-          >
-            <Copy size={16} />
-          </button>
-          <button
-            onClick={handleExploreMore}
-            title="Query more like this"
-            aria-label="Query more like this"
-            className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-          >
-            <Search size={16} />
-          </button>
+          <ThemedTooltip label="Open this passage in the context of the full source">
+            <button onClick={handleOpenContext} aria-label="Open passage in context" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><BookOpen size={16} /></button>
+          </ThemedTooltip>
+          <ThemedTooltip label="Remove this passage from Saved Passages.">
+            <button onClick={handleRemove} disabled={removing} aria-label="Remove bookmark" className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><BookmarkIcon size={16} className="text-brand-accent" /></button>
+          </ThemedTooltip>
+          <ThemedTooltip label="Copy">
+            <button onClick={handleCopy} aria-label="Copy passage" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><Copy size={16} /></button>
+          </ThemedTooltip>
+          <ThemedTooltip label="Start a new search to find passages similar to this one">
+            <button onClick={handleExploreMore} aria-label="Query more like this" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><Search size={16} /></button>
+          </ThemedTooltip>
         </div>
       </div>
 
@@ -188,7 +172,11 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         {/* Inline editor (add or edit) */}
         {editing && (
           <div className="flex flex-col gap-2">
+            <label htmlFor={`bookmark-note-${bookmark.id}`} className="sr-only">
+              Personal note for this saved passage
+            </label>
             <textarea
+              id={`bookmark-note-${bookmark.id}`}
               value={draftNote}
               onChange={(e) => setDraftNote(e.target.value)}
               maxLength={NOTE_MAX}
@@ -244,13 +232,15 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
           <div>
             <button
               onClick={() => setNoteOpen((o) => !o)}
+              aria-expanded={noteOpen}
+              aria-controls={`bookmark-note-content-${bookmark.id}`}
               className="flex items-center gap-1.5 text-xs text-brand-muted hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent rounded"
             >
               {noteOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
               Note
             </button>
             {noteOpen && (
-              <div className="mt-2 pl-3 border-l-2 border-brand-muted/30">
+              <div id={`bookmark-note-content-${bookmark.id}`} className="mt-2 pl-3 border-l-2 border-brand-muted/30">
                 <p className="text-xs text-brand-muted leading-relaxed whitespace-pre-wrap">
                   {bookmark.note}
                 </p>

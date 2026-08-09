@@ -2,6 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Menu } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import {
   getReadingProgress,
@@ -13,11 +14,32 @@ import {
   type TocEntry,
 } from "@/lib/api";
 import { ChapterSection } from "./ChapterSection";
-import { ContentsDrawer } from "./ContentsDrawer";
 import { ReaderChrome, type ReaderFontSize, type ReaderSpacing } from "./ReaderChrome";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
+import { DocumentOverview } from "./DocumentOverview";
+import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
+
+function ReaderMobileStatusHeader() {
+  const { mobileNavigationOpen, openMobileNavigation } = useAppContext();
+  return (
+    <header className="flex h-[52px] shrink-0 items-center gap-2 border-b border-brand-bg bg-brand-surface px-3 md:hidden">
+      <button
+        id="reader-app-nav-trigger"
+        type="button"
+        onClick={() => openMobileNavigation("reader-app-nav-trigger")}
+        aria-label="Open app navigation"
+        aria-controls="mobile-nav-drawer"
+        aria-expanded={mobileNavigationOpen}
+        className="-ml-1 rounded p-2 text-brand-primary transition-colors hover:bg-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+      >
+        <Menu size={20} aria-hidden="true" />
+      </button>
+      <span className="min-w-0 flex-1 truncate font-brand text-lg font-semibold text-brand-accent">TheoCorpus</span>
+    </header>
+  );
+}
 
 interface ProgressWriter {
   token: string;
@@ -34,14 +56,21 @@ function Inner({ docId }: { docId: string }) {
   const initialAnchor = params.get("anchor");
   const initialChapter = params.get("chapter");
   const originParam = params.get("from");
-  const origin = originParam && ORIGINS.has(originParam) ? originParam : "library";
+  const origin = (originParam && ORIGINS.has(originParam) ? originParam : "library") as ReaderOrigin;
+  const returnKey = params.get("returnKey");
+  const backLabel = origin === "saved"
+    ? "Back to Saved Passages"
+    : origin === "history"
+      ? "Back to Search History"
+      : origin === "search"
+        ? "Back to Search"
+        : "Back to Library";
 
   const [doc, setDoc] = useState<DocumentInfo | null>(null);
   const [toc, setToc] = useState<TocEntry[]>([]);
   const [chapters, setChapters] = useState<ReaderChapter[]>([]);
   const [currentKey, setCurrentKey] = useState<string | null>(null);
   const [highlight, setHighlight] = useState<string | null>(initialAnchor);
-  const [contentsOpen, setContentsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chapterLoading, setChapterLoading] = useState<string | null>(null);
@@ -95,7 +124,7 @@ function Inner({ docId }: { docId: string }) {
     setHighlight(initialAnchor);
     (async () => {
       try {
-        const tocResponse = await getToc(token, docId);
+        const tocResponse = await getToc(token, docId, controller.signal);
         const options: { anchor?: string; chapter?: string; signal?: AbortSignal } = { signal: controller.signal };
         if (initialAnchor) {
           options.anchor = initialAnchor;
@@ -254,8 +283,14 @@ function Inner({ docId }: { docId: string }) {
 
   function goBack() {
     const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
-    if (originParam && ORIGINS.has(originParam) && window.history.length > 1) router.back();
+    if (consumeReaderReturnKey(returnKey, origin)) router.back();
     else router.push(fallback);
+  }
+
+  function browseSections() {
+    const next = new URLSearchParams({ from: origin });
+    if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
+    router.replace(`/reader/${docId}?${next.toString()}`);
   }
 
   function reportContent() {
@@ -265,20 +300,26 @@ function Inner({ docId }: { docId: string }) {
 
   if (error) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-4 bg-brand-bg">
-        <p className="text-sm text-brand-muted">This document couldn&apos;t be loaded.</p>
-        <button onClick={goBack} className="text-sm text-brand-accent hover:underline">← Back</button>
+      <div className="flex h-full flex-col bg-brand-bg">
+        <ReaderMobileStatusHeader />
+        <div className="flex flex-1 flex-col items-center justify-center gap-4">
+          <p className="text-sm text-brand-muted">This document couldn&apos;t be loaded.</p>
+          <button onClick={goBack} className="text-sm text-brand-accent hover:underline">← Back</button>
+        </div>
       </div>
     );
   }
   if (loading && !doc) {
     return (
-      <div className="flex h-full flex-col space-y-3 bg-brand-bg px-6 pt-8">
-        {Array.from({ length: 8 }).map((_, index) => <div key={index} className="h-4 animate-pulse rounded bg-brand-surface" style={{ width: `${70 + (index % 3) * 10}%` }} />)}
+      <div className="flex h-full flex-col bg-brand-bg">
+        <ReaderMobileStatusHeader />
+        <div className="flex-1 space-y-3 px-6 pt-8">
+          {Array.from({ length: 8 }).map((_, index) => <div key={index} className="h-4 animate-pulse rounded bg-brand-surface" style={{ width: `${70 + (index % 3) * 10}%` }} />)}
+        </div>
       </div>
     );
   }
-  if (!doc) return null;
+  if (!doc) return <ReaderMobileStatusHeader />;
 
   const fontPixels = fontSize === "small" ? "14px" : fontSize === "large" ? "18px" : "16px";
   const lineHeight = spacing === "compact" ? "1.55" : spacing === "relaxed" ? "2.1" : "1.8";
@@ -289,8 +330,9 @@ function Inner({ docId }: { docId: string }) {
         document={doc}
         toc={toc}
         currentChapterKey={currentKey}
+        backLabel={backLabel}
         onBack={goBack}
-        onToggleContents={() => setContentsOpen((open) => !open)}
+        onBrowseSections={browseSections}
         onJump={jump}
         fontSize={fontSize}
         spacing={spacing}
@@ -298,7 +340,6 @@ function Inner({ docId }: { docId: string }) {
         onSpacingChange={changeSpacing}
         onReportContent={reportContent}
       />
-      <ContentsDrawer open={contentsOpen} toc={toc} currentChapterKey={currentKey} onJump={jump} onClose={() => setContentsOpen(false)} />
       <div
         ref={scrollRef}
         onScroll={onScroll}
@@ -331,5 +372,13 @@ function Inner({ docId }: { docId: string }) {
 }
 
 export function DocumentReader({ docId }: { docId: string }) {
-  return <Suspense><Inner docId={docId} /></Suspense>;
+  return <Suspense><ReaderEntry docId={docId} /></Suspense>;
+}
+
+function ReaderEntry({ docId }: { docId: string }) {
+  const params = useSearchParams();
+  if (!params.get("anchor") && !params.get("chapter")) {
+    return <DocumentOverview docId={docId} mobileHeader={<ReaderMobileStatusHeader />} />;
+  }
+  return <Inner docId={docId} />;
 }

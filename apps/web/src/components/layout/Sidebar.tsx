@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BarChart3, Bookmark, Church, History, Library, MessageSquareText, Search, Settings } from "lucide-react";
-import { Toast, useToast } from "@/components/common";
-import { HistorySearchRow } from "@/components/history";
-import { useSearchDeletion } from "@/components/history/useSearchDeletion";
 import { trackNavigationSelected } from "@/lib/analytics";
 import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { useAppContext } from "./AppShell";
@@ -45,19 +42,9 @@ function NavLink({ href, label, icon, active, onClick }: NavLinkProps) {
 export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const {
-    newSearch,
-    searches,
-    pendingSearch,
-    activeSearchId,
-    removeSearch,
-    restoreSearch,
-    refreshSearches,
-    invalidateSearchHistory,
-  } = useAppContext();
+  const searchParams = useSearchParams();
+  const { newSearch } = useAppContext();
   const guestGate = useGuestGate();
-  const { toast, showToast, dismissToast } = useToast();
-  const [revealedSearchId, setRevealedSearchId] = useState<string | null>(null);
   const [mobileViewport, setMobileViewport] = useState(false);
 
   useEffect(() => {
@@ -68,16 +55,6 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
     return () => media.removeEventListener("change", update);
   }, []);
 
-  useEffect(() => {
-    if (!revealedSearchId) return;
-    function closeWhenClickingElsewhere(event: PointerEvent) {
-      const row = (event.target as Element | null)?.closest?.("[data-history-row]");
-      if (row?.getAttribute("data-history-row") !== revealedSearchId) setRevealedSearchId(null);
-    }
-    document.addEventListener("pointerdown", closeWhenClickingElsewhere);
-    return () => document.removeEventListener("pointerdown", closeWhenClickingElsewhere);
-  }, [revealedSearchId]);
-
   function handleNewSearch() {
     if (guestGate) {
       guestGate.requestSignup();
@@ -85,7 +62,6 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
     }
     router.push("/search");
     newSearch();
-    setRevealedSearchId(null);
     onCloseMobile();
   }
 
@@ -101,46 +77,15 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
       destination,
       surface: mobileViewport ? "mobile_drawer" : "desktop_sidebar",
     });
-    setRevealedSearchId(null);
     onCloseMobile();
   }
-
-  function removeLocally(id: string) {
-    setRevealedSearchId(null);
-    removeSearch(id);
-  }
-
-  const { deletingId, deleteById } = useSearchDeletion({
-    searches,
-    removeLocally,
-    restoreLocally: restoreSearch,
-    onSuccess: () => {
-      refreshSearches();
-      invalidateSearchHistory();
-    },
-    showToast,
-    origin: "sidebar",
-    focusAfterRemove: (index) => {
-      requestAnimationFrame(() => {
-        const rows = document.querySelectorAll<HTMLElement>("#sidebar-recent-searches [data-history-row] a");
-        rows[Math.min(index, rows.length - 1)]?.focus();
-        if (rows.length === 0) document.getElementById("sidebar-history-link")?.focus();
-      });
-    },
-    focusAfterRestore: (id) => {
-      requestAnimationFrame(() => {
-        const row = Array.from(document.querySelectorAll<HTMLElement>("#sidebar-recent-searches [data-history-row]"))
-          .find((item) => item.dataset.historyRow === id);
-        row?.querySelector<HTMLElement>("a")?.focus();
-      });
-    },
-  });
 
   const primary = [
     { href: "/sources", label: "Library", icon: <Library size={17} /> },
     { href: "/bookmarks", label: "Saved Passages", icon: <Bookmark size={17} /> },
     { href: "/history", label: "Search History", icon: <History size={17} /> },
   ];
+  const isRestoredSearch = pathname === "/search" && searchParams.has("restore");
 
   return (
     <>
@@ -177,41 +122,15 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
               <NavLink
                 key={item.href}
                 {...item}
-                active={pathname === item.href || (item.href === "/sources" && pathname.startsWith("/reader/"))}
+                active={
+                  pathname === item.href
+                  || (item.href === "/sources" && pathname.startsWith("/reader/"))
+                  || (item.href === "/history" && isRestoredSearch)
+                }
                 onClick={handleNavClick}
               />
             ))}
           </div>
-
-          <section id="sidebar-recent-searches" className="mt-5 hidden md:block" aria-labelledby="recent-searches-heading">
-            <div className="mb-2 flex items-center justify-between px-2">
-              <p id="recent-searches-heading" className="text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Recent</p>
-              <Link id="sidebar-history-link" href="/history" onClick={handleNavClick} className="text-[11px] text-brand-accent hover:underline">View all</Link>
-            </div>
-            <div className="space-y-1">
-              {pendingSearch && (
-                <div className={`truncate rounded px-2 py-1.5 text-xs ${pendingSearch.id === activeSearchId ? "bg-brand-bg text-brand-accent" : "text-brand-muted"}`} title={pendingSearch.query}>
-                  {pendingSearch.query}
-                </div>
-              )}
-              {!pendingSearch && searches.length === 0 && <p className="px-2 py-1 text-xs text-brand-muted">No recent searches.</p>}
-              {searches.slice(0, 5).map((search) => (
-                <HistorySearchRow
-                  key={search.id}
-                  search={search}
-                  compact
-                  origin="sidebar"
-                  active={search.id === activeSearchId}
-                  revealed={revealedSearchId === search.id}
-                  deleting={deletingId === search.id}
-                  onNavigate={handleNavClick}
-                  onReveal={() => setRevealedSearchId(search.id)}
-                  onClose={() => setRevealedSearchId(null)}
-                  onDelete={() => void deleteById(search.id)}
-                />
-              ))}
-            </div>
-          </section>
 
           <div className="mt-5 border-t border-brand-bg pt-4">
             <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Tools</p>
@@ -228,8 +147,6 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           </div>
         </nav>
       </aside>
-
-      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </>
   );
 }

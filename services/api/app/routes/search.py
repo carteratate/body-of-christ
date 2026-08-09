@@ -2,6 +2,7 @@ import base64
 import binascii
 import datetime
 import json
+import asyncio
 import logging
 import uuid
 
@@ -241,35 +242,36 @@ async def get_search_results(
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
     try:
-        # Verify the search exists and belongs to this user
-        search_row = await pool.fetchrow(
-            "SELECT id, query, result_count FROM searches WHERE id = $1 AND user_id = $2",
-            search_uuid,
-            user.user_id,
-        )
+        async with asyncio.timeout(8):
+            # Keep the server bound below the browser timeout. A saturated pool
+            # or stalled database must not leave History loading indefinitely.
+            search_row = await pool.fetchrow(
+                "SELECT id, query, filters, result_count FROM searches WHERE id = $1 AND user_id = $2",
+                search_uuid,
+                user.user_id,
+            )
+            if search_row is None:
+                raise HTTPException(status_code=404, detail="Search not found")
+            rows = await pool.fetch(
+                """
+                SELECT r.rank, r.reranker_score, r.explanation,
+                       c.id AS chunk_id, c.content, c.reference, c.position, c.anchor, c.chapter_key,
+                       d.collection, d.title AS document_title, d.author, d.id AS document_id
+                FROM retrievals r
+                JOIN chunks c ON c.id = r.chunk_id
+                JOIN documents d ON d.id = c.document_id
+                WHERE r.search_id = $1
+                ORDER BY r.rank ASC
+                """,
+                search_uuid,
+            )
+    except HTTPException:
+        raise
+    except TimeoutError as exc:
+        logger.warning("get_search_results timed out: search=%s", search_id)
+        raise HTTPException(status_code=504, detail="Saved search took too long to load") from exc
     except Exception as exc:
-        logger.error("get_search_results ownership check failed (%s)", exc.__class__.__name__)
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
-
-    if search_row is None:
-        raise HTTPException(status_code=404, detail="Search not found")
-
-    try:
-        rows = await pool.fetch(
-            """
-            SELECT r.rank, r.reranker_score, r.explanation,
-                   c.id AS chunk_id, c.content, c.reference, c.position, c.anchor, c.chapter_key,
-                   d.collection, d.title AS document_title, d.author, d.id AS document_id
-            FROM retrievals r
-            JOIN chunks c ON c.id = r.chunk_id
-            JOIN documents d ON d.id = c.document_id
-            WHERE r.search_id = $1
-            ORDER BY r.rank ASC
-            """,
-            search_uuid,
-        )
-    except Exception as exc:
-        logger.error("get_search_results retrieval query failed (%s)", exc.__class__.__name__)
+        logger.error("get_search_results query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
     results = [
@@ -309,6 +311,13 @@ async def get_search_results(
     return SearchResultsResponse(
         search_id=search_id,
         query=search_row["query"],
+        filters=(
+            search_row.get("filters")
+            if isinstance(search_row.get("filters"), dict)
+            else json.loads(search_row.get("filters"))
+            if search_row.get("filters")
+            else None
+        ),
         results=results,
         restore_status=restore_status,
         expected_result_count=expected_count,

@@ -16,7 +16,7 @@ export function ResultFilterBar({
   const ordered = COLLECTIONS.filter((c) => submittedCollections.includes(c.key));
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-1.5">
       <span className="text-[10px] font-medium uppercase tracking-widest text-brand-muted">
         Filter:
       </span>
@@ -38,7 +38,7 @@ export function ResultFilterBar({
             key={col.key}
             onClick={() => onToggleVisible(col.key)}
             aria-pressed={isVisible}
-            className="rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            className="rounded-full px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             style={isVisible ? activeStyle : inactiveStyle}
           >
             {col.label}

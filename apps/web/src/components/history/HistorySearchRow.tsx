@@ -170,8 +170,8 @@ export function HistorySearchRow({
           disabled={deleting}
           tabIndex={revealed ? -1 : 0}
           aria-label={`Show delete option for ${search.query}`}
-          className={`mr-1 shrink-0 rounded p-2 text-brand-muted transition-opacity hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent [@media(hover:none)]:sr-only [@media(hover:none)]:focus-visible:ring-0 ${
-            revealed ? "pointer-events-none opacity-0" : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+          className={`mr-1 shrink-0 rounded p-2 text-brand-muted transition-colors hover:bg-brand-delete/15 hover:text-brand-delete focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
+            revealed ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
         >
           <X size={compact ? 12 : 16} />

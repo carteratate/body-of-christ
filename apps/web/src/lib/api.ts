@@ -161,6 +161,7 @@ export interface SearchHistoryPage {
 export interface SearchResultsResponse {
   search_id: string;
   query: string;
+  filters: Record<string, unknown> | null;
   results: ChunkResult[];
   restore_status: "complete" | "results_unavailable";
   expected_result_count: number;
@@ -184,6 +185,7 @@ export interface DocumentInfo {
   title: string;
   author: string | null;
   year: number | null;
+  translation?: string | null;
   metadata: Record<string, unknown> | null;
   chunk_count: number;
 }
@@ -531,17 +533,51 @@ export async function deleteSearch(token: string, searchId: string): Promise<voi
   if (!res.ok) throw new Error(`API error ${res.status}`);
 }
 
+export class SearchRestoreHttpError extends Error {
+  constructor(public readonly status: number, message: string) {
+    super(message);
+    this.name = "SearchRestoreHttpError";
+  }
+}
+
 export async function getSearchResults(
   token: string,
   searchId: string,
   signal?: AbortSignal,
+  timeoutMs = 10_000,
 ): Promise<SearchResultsResponse> {
-  const res = await fetch(`${API_URL}/v1/searches/${searchId}/results`, {
-    headers: { Authorization: `Bearer ${token}` },
-    signal,
-  });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  return res.json() as Promise<SearchResultsResponse>;
+  const controller = new AbortController();
+  let timedOut = false;
+  const forwardAbort = () => controller.abort(signal?.reason);
+  if (signal?.aborted) forwardAbort();
+  else signal?.addEventListener("abort", forwardAbort, { once: true });
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, timeoutMs);
+
+  try {
+    const res = await fetch(`${API_URL}/v1/searches/${searchId}/results`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({})) as { detail?: unknown };
+      const detail = typeof body.detail === "string" ? body.detail : `API error ${res.status}`;
+      throw new SearchRestoreHttpError(res.status, detail);
+    }
+    return await res.json() as SearchResultsResponse;
+  } catch (error) {
+    if (timedOut) {
+      const timeoutError = new Error("This saved search took too long to load. Please try again.");
+      timeoutError.name = "TimeoutError";
+      throw timeoutError;
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+    signal?.removeEventListener("abort", forwardAbort);
+  }
 }
 
 export async function getDocument(token: string, docId: string): Promise<DocumentInfo> {
@@ -552,9 +588,10 @@ export async function getDocument(token: string, docId: string): Promise<Documen
   return res.json() as Promise<DocumentInfo>;
 }
 
-export async function getToc(token: string, docId: string): Promise<TocResponse> {
+export async function getToc(token: string, docId: string, signal?: AbortSignal): Promise<TocResponse> {
   const res = await fetch(`${API_URL}/v1/documents/${docId}/toc`, {
     headers: { Authorization: `Bearer ${token}` },
+    signal,
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
   return res.json() as Promise<TocResponse>;
@@ -643,7 +680,7 @@ export interface ProductFeedbackInput {
   search_id?: string;
   chunk_id?: string;
   document_id?: string;
-  error_code?: "auth_error" | "network_error" | "rate_limit" | "restore_unavailable" | "server_error" | "stream_interrupted" | "unknown";
+  error_code?: "auth_error" | "network_error" | "rate_limit" | "restore_not_found" | "restore_unavailable" | "server_error" | "stream_interrupted" | "unknown";
 }
 
 export async function submitProductFeedback(
@@ -662,37 +699,118 @@ export async function submitProductFeedback(
   return res.json() as Promise<{ feedback_id: string }>;
 }
 
-export async function getBookmarks(token: string): Promise<Bookmark[]> {
-  if (bookmarksCacheToken !== token) {
+const BOOKMARKS_CACHE_TTL_MS = 30_000;
+const BOOKMARK_REQUEST_TIMEOUT_MS = 10_000;
+const bookmarkMutations = new Map<string, Set<Promise<unknown>>>();
+
+function bookmarkScope(token: string): string {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return `token:${token}`;
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+    const subject = (JSON.parse(atob(padded)) as { sub?: unknown }).sub;
+    return typeof subject === "string" && subject ? `user:${subject}` : `token:${token}`;
+  } catch {
+    return `token:${token}`;
+  }
+}
+
+async function fetchBookmarkEndpoint(url: string, init: RequestInit = {}): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), BOOKMARK_REQUEST_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Bookmark request timed out. Please try again.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function trackBookmarkMutation<T>(token: string, mutation: Promise<T>): Promise<T> {
+  const scope = bookmarkScope(token);
+  let active = bookmarkMutations.get(scope);
+  if (!active) {
+    active = new Set();
+    bookmarkMutations.set(scope, active);
+  }
+  active.add(mutation);
+  const cleanup = () => {
+    active.delete(mutation);
+    if (active.size === 0) bookmarkMutations.delete(scope);
+    invalidateBookmarksCache(token);
+  };
+  void mutation.then(cleanup, cleanup);
+  return mutation;
+}
+
+export async function getBookmarks(token: string, forceRefresh = false): Promise<Bookmark[]> {
+  const scope = bookmarkScope(token);
+  const activeMutations = bookmarkMutations.get(scope);
+  if (activeMutations?.size) {
+    await Promise.allSettled([...activeMutations]);
+    return getBookmarks(token, forceRefresh);
+  }
+  if (bookmarksCacheScope !== scope) {
     bookmarksCache = null;
     bookmarksRequest = null;
-    bookmarksCacheToken = token;
+    bookmarksRequestScope = null;
+    bookmarksCacheScope = scope;
+    bookmarksCacheUpdatedAt = 0;
+    bookmarksCacheGeneration += 1;
+  } else if (forceRefresh) {
+    bookmarksCache = null;
+    bookmarksRequest = null;
+    bookmarksRequestScope = null;
+    bookmarksCacheUpdatedAt = 0;
     bookmarksCacheGeneration += 1;
   }
-  if (bookmarksCache) return bookmarksCache;
-  if (bookmarksRequest) return bookmarksRequest;
+  if (
+    !forceRefresh
+    && bookmarksCache
+    && Date.now() - bookmarksCacheUpdatedAt < BOOKMARKS_CACHE_TTL_MS
+  ) return bookmarksCache;
+  if (bookmarksRequest && bookmarksRequestScope === scope) return bookmarksRequest;
   const generation = bookmarksCacheGeneration;
-  const request = fetchBookmarks(token);
-  bookmarksRequest = request;
-  try {
-    const bookmarks = await request;
-    if (generation !== bookmarksCacheGeneration || bookmarksCacheToken !== token) {
+  const request = fetchBookmarks(token).then((bookmarks) => {
+    if (bookmarksCacheScope === scope && bookmarksCacheGeneration !== generation) {
+      if (bookmarksRequest === request) {
+        bookmarksRequest = null;
+        bookmarksRequestScope = null;
+      }
       return getBookmarks(token);
     }
-    bookmarksCache = bookmarks;
+    if (bookmarksCacheScope === scope) {
+      bookmarksCache = bookmarks;
+      bookmarksCacheUpdatedAt = Date.now();
+    }
     return bookmarks;
+  });
+  bookmarksRequest = request;
+  bookmarksRequestScope = scope;
+  try {
+    return await request;
   } finally {
-    if (bookmarksRequest === request) bookmarksRequest = null;
+    if (bookmarksRequest === request) {
+      bookmarksRequest = null;
+      bookmarksRequestScope = null;
+    }
   }
 }
 
 let bookmarksCache: Bookmark[] | null = null;
 let bookmarksRequest: Promise<Bookmark[]> | null = null;
-let bookmarksCacheToken: string | null = null;
+let bookmarksCacheScope: string | null = null;
+let bookmarksRequestScope: string | null = null;
 let bookmarksCacheGeneration = 0;
+let bookmarksCacheUpdatedAt = 0;
 
 async function fetchBookmarks(token: string): Promise<Bookmark[]> {
-  const res = await fetch(`${API_URL}/v1/bookmarks`, {
+  const res = await fetchBookmarkEndpoint(`${API_URL}/v1/bookmarks`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
@@ -700,35 +818,37 @@ async function fetchBookmarks(token: string): Promise<Bookmark[]> {
   return data.bookmarks;
 }
 
-export function updateCachedBookmarks(updater: (items: Bookmark[]) => Bookmark[]): void {
-  if (bookmarksCache) bookmarksCache = updater(bookmarksCache);
-}
-
-export function invalidateBookmarksCache(): void {
+export function invalidateBookmarksCache(token?: string): void {
+  if (token && bookmarksCacheScope !== bookmarkScope(token)) return;
   bookmarksCache = null;
+  bookmarksCacheUpdatedAt = 0;
   bookmarksRequest = null;
+  bookmarksRequestScope = null;
   bookmarksCacheGeneration += 1;
 }
 
 export async function addBookmark(token: string, chunkId: string): Promise<{ id: string; created_at: string }> {
-  const res = await fetch(`${API_URL}/v1/bookmarks`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ chunk_id: chunkId }),
-  });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  const bookmark = await res.json() as { id: string; chunk_id: string; created_at: string };
-  invalidateBookmarksCache();
-  return bookmark;
+  invalidateBookmarksCache(token);
+  return trackBookmarkMutation(token, (async () => {
+    const res = await fetchBookmarkEndpoint(`${API_URL}/v1/bookmarks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ chunk_id: chunkId }),
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    return res.json() as Promise<{ id: string; chunk_id: string; created_at: string }>;
+  })());
 }
 
 export async function removeBookmark(token: string, bookmarkId: string): Promise<void> {
-  const res = await fetch(`${API_URL}/v1/bookmarks/${bookmarkId}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  updateCachedBookmarks((items) => items.filter((b) => b.id !== bookmarkId));
+  invalidateBookmarksCache(token);
+  return trackBookmarkMutation(token, (async () => {
+    const res = await fetchBookmarkEndpoint(`${API_URL}/v1/bookmarks/${bookmarkId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+  })());
 }
 
 export async function updateBookmarkNote(
@@ -736,16 +856,18 @@ export async function updateBookmarkNote(
   bookmarkId: string,
   note: string | null,
 ): Promise<void> {
-  const res = await fetch(`${API_URL}/v1/bookmarks/${bookmarkId}`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ note }),
-  });
-  if (!res.ok) throw new Error(`Failed to update note: ${res.status}`);
-  updateCachedBookmarks((items) => items.map((b) => b.id === bookmarkId ? { ...b, note } : b));
+  invalidateBookmarksCache(token);
+  return trackBookmarkMutation(token, (async () => {
+    const res = await fetchBookmarkEndpoint(`${API_URL}/v1/bookmarks/${bookmarkId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ note }),
+    });
+    if (!res.ok) throw new Error(`Failed to update note: ${res.status}`);
+  })());
 }
 
 export async function submitLabel(

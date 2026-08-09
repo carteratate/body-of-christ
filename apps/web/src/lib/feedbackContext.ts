@@ -22,7 +22,7 @@ const MAX_CONTEXT_AGE_MS = 30 * 60 * 1000;
 const ORIGINS: FeedbackOrigin[] = ["navigation", "search_result", "search_error", "reader"];
 const ROUTES: FeedbackRoute[] = ["/feedback", "/search", "/reader"];
 const CATEGORIES: ProductFeedbackCategory[] = ["bug", "content", "feature", "general"];
-const ERROR_CODES = ["auth_error", "network_error", "rate_limit", "restore_unavailable", "server_error", "stream_interrupted", "unknown"];
+const ERROR_CODES = ["auth_error", "network_error", "rate_limit", "restore_not_found", "restore_unavailable", "server_error", "stream_interrupted", "unknown"];
 
 export function saveFeedbackContext(context: FeedbackContext): void {
   try {

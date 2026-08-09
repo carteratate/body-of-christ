@@ -58,3 +58,17 @@ def test_create_bookmark_rejects_invalid_uuid_without_db_call():
 
     assert response.status_code == 422
     pool.fetchrow.assert_not_awaited()
+
+
+def test_list_bookmarks_queries_each_request_and_has_deterministic_newest_order():
+    pool = AsyncMock()
+    pool.fetch.return_value = []
+    with patch("app.routes.bookmarks.get_pool", return_value=pool):
+        client = _client()
+        first = client.get("/v1/bookmarks")
+        second = client.get("/v1/bookmarks")
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert pool.fetch.await_count == 2
+    assert "ORDER BY b.created_at DESC, b.id DESC" in pool.fetch.await_args.args[0]

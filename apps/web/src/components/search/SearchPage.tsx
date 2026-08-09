@@ -15,6 +15,7 @@ import {
   streamSearch,
   streamGuestSearch,
   getSearchResults,
+  SearchRestoreHttpError,
   updatePreferences,
   type ChunkResult,
   type CollectionOutcome,
@@ -39,7 +40,7 @@ function classifyError(msg: string): string {
 function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const router = useRouter();
   const {
-    token, preferences,
+    token, userId, preferences,
     searchKey,
     searches,
     setActiveSearchId,
@@ -62,6 +63,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   const searchParams = useSearchParams();
   const restoreId = searchParams.get("restore");
+  const restoreScope = restoreId && userId ? `${userId}:${restoreId}` : null;
   const exploreQuery = searchParams.get("explore");
   const exploreRef = searchParams.get("exploreRef");
 
@@ -74,6 +76,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const [translation, setTranslation] = useState<string>(() =>
     preferences?.preferred_translation || "CPDV"
   );
+  const [submittedTranslation, setSubmittedTranslation] = useState<string>("");
   const [quota, setQuota] = useState<number>(() =>
     isGuest ? 3 : (preferences?.default_quota ?? 4)
   );
@@ -100,12 +103,21 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // Starts false (search input visible), becomes true ~1.4s in (when the gold line arrives).
   const [animFilterBarActive, setAnimFilterBarActive] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [restoreAttempt, setRestoreAttempt] = useState(0);
   const [submittedCollections, setSubmittedCollections] = useState<string[]>([]);
+  const [submittedQuota, setSubmittedQuota] = useState<number | null>(null);
   const [visibleCollections, setVisibleCollections] = useState<string[]>([]);
   // Measured footprint of the query bubble shown during the animation — passed to
   // LoadingAnimation so its radial constellation shrinks to never overlap the bubble.
   const [bubbleSize, setBubbleSize] = useState<{ width: number; height: number } | null>(null);
   const [guestSearchDone, setGuestSearchDone] = useState(false);
+  const [queuedRestoreExplore, setQueuedRestoreExplore] = useState<{
+    content: string;
+    label: string;
+    collections: string[];
+    translation: string;
+    quota: number;
+  } | null>(null);
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
@@ -196,7 +208,47 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   const prevSearchKey = useRef(searchKey);
   const restoredForId = useRef<string | null>(null);
+  const previousRestoreParam = useRef(restoreId);
   const exploredForQuery = useRef<string | null>(null);
+
+  const resetRestorePresentation = useCallback(() => {
+    pendingIdRef.current = null;
+    clearPendingSearch();
+    setActiveSearchId(null);
+    setResults([]);
+    setSubmittedQuery(null);
+    setQueryBubbleVisible(false);
+    setSearchValue("");
+    setSearchId(null);
+    setOutcome(null);
+    setCollectionOutcomes({});
+    setSubmittedCollections([]);
+    setSubmittedTranslation("");
+    setSubmittedQuota(null);
+    setVisibleCollections([]);
+    setError(null);
+    setErrorCode(null);
+    setErrorStage(null);
+    setSaveWarning(null);
+    setSearchPhase(null);
+    setRateLimitRetryAfter(null);
+    setExploreLabel(null);
+    setShowAnimation(false);
+    setQueryDone(false);
+    setAnimFilterBarActive(false);
+    if (exploreTimerRef.current) {
+      clearTimeout(exploreTimerRef.current);
+      exploreTimerRef.current = null;
+    }
+    if (filterTransitionTimerRef.current) {
+      clearTimeout(filterTransitionTimerRef.current);
+      filterTransitionTimerRef.current = null;
+    }
+    bufferedChunksRef.current = [];
+    bufferedExplRef.current = {};
+    resolvedRef.current = false;
+    exploredForQuery.current = null;
+  }, [clearPendingSearch, setActiveSearchId]);
 
   useEffect(() => {
     if (prevSearchKey.current === searchKey) return;
@@ -241,10 +293,40 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // results are cleared below before the browser paints, so the loading
   // placeholders appear on the same frame as the click — no stale-results flash.
   useLayoutEffect(() => {
-    if (!restoreId || !token) return;
-    if (restoredForId.current === restoreId) return;
+    const priorRestoreId = previousRestoreParam.current;
+    previousRestoreParam.current = restoreId;
+    if (!restoreId) {
+      if (priorRestoreId) {
+        abortRef.current?.abort();
+        activeRequestRef.current += 1;
+        restoredForId.current = null;
+        resetRestorePresentation();
+        setLoading(false);
+        setIsRestoring(false);
+      }
+      return;
+    }
     const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!UUID_RE.test(restoreId)) return;
+    if (!UUID_RE.test(restoreId)) {
+      abortRef.current?.abort();
+      activeRequestRef.current += 1;
+      resetRestorePresentation();
+      setLoading(false);
+      setIsRestoring(false);
+      setError("This saved search link is invalid.");
+      setErrorCode("restore_not_found");
+      setErrorStage("restore");
+      return;
+    }
+    if (!token || !userId || !restoreScope) {
+      restoredForId.current = null;
+      resetRestorePresentation();
+      setLoading(false);
+      setIsRestoring(false);
+      return;
+    }
+    if (restoredForId.current === restoreScope) return;
+    resetRestorePresentation();
 
     // Entering an old conversation — remove the "New Search" placeholder
     abortRef.current?.abort();
@@ -253,26 +335,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     const requestId = activeRequestRef.current + 1;
     activeRequestRef.current = requestId;
     const isCurrentRequest = () => activeRequestRef.current === requestId;
-    pendingIdRef.current = null;
-    clearPendingSearch();
-
-    // Clear the currently-shown search up front so loading placeholders appear
-    // immediately on click. Without this, the previous search's results (and
-    // query bubble) linger until getSearchResults resolves — a visible flash of
-    // stale content when switching between history items.
-    setResults([]);
-    setError(null);
-    setErrorCode(null);
-    setErrorStage(null);
-    setSearchId(null);
-    setOutcome(null);
-    setCollectionOutcomes({});
-    setSaveWarning(null);
-    setQueryBubbleVisible(false);
-
     const id = restoreId;
     const tok = token;
-    restoredForId.current = id;
+    let requestFinished = false;
+    restoredForId.current = restoreScope;
     setLoading(true);
     setIsRestoring(true);
     getSearchResults(tok, id, controller.signal)
@@ -289,7 +355,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         // were asked for. Prefer the stored filters from history; if unavailable
         // (e.g. deep-linked before history loaded), fall back to the collections
         // present in the results — which yields no spurious notices.
-        const storedCollections = searchesRef.current.find((s) => s.id === id)?.filters?.collections;
+        const responseCollections = data.filters?.collections;
+        const storedCollections = Array.isArray(responseCollections)
+          ? responseCollections
+          : searchesRef.current.find((s) => s.id === id)?.filters?.collections;
         const asked = Array.isArray(storedCollections)
           ? storedCollections.filter((c): c is string => typeof c === "string" && ALL_COLLECTION_KEYS.includes(c))
           : [];
@@ -297,6 +366,16 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           ? asked
           : [...new Set(data.results.map((r) => r.source.collection))];
         setSubmittedCollections(restored);
+        setSubmittedTranslation(
+          typeof data.filters?.translation === "string" && data.filters.translation
+            ? data.filters.translation
+            : translation,
+        );
+        setSubmittedQuota(
+          typeof data.filters?.quota === "number" && [3, 4, 5].includes(data.filters.quota)
+            ? data.filters.quota
+            : quota,
+        );
         setVisibleCollections(restored);
         if (data.restore_status === "results_unavailable") {
           setError(
@@ -311,27 +390,56 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       .catch((err: unknown) => {
         if (!isCurrentRequest() || (err as DOMException).name === "AbortError") return;
         const msg = err instanceof Error ? err.message : "Failed to restore search";
+        restoredForId.current = null;
         setError(msg);
-        setErrorCode("restore_failed");
-        setErrorStage("restore");
+        if (err instanceof SearchRestoreHttpError && (err.status === 401 || err.status === 403)) {
+          setErrorCode("auth_error");
+          setErrorStage("authentication");
+        } else {
+          setErrorCode(
+            err instanceof SearchRestoreHttpError && err.status === 404
+              ? "restore_not_found"
+              : (err as Error).name === "TimeoutError"
+                ? "network_error"
+                : "server_error"
+          );
+          setErrorStage("restore");
+        }
       })
       .finally(() => {
+        requestFinished = true;
         if (!isCurrentRequest()) return;
         setLoading(false);
         setIsRestoring(false);
       });
     return () => {
-      if (activeRequestRef.current === requestId) activeRequestRef.current += 1;
+      if (activeRequestRef.current === requestId && !requestFinished) {
+        // React Strict Mode replays layout effects in development, and the auth
+        // token can also rotate while a restore is in flight. Let the replayed
+        // effect start the same restore again instead of leaving the page on an
+        // orphaned loading state after this request is invalidated.
+        restoredForId.current = null;
+        activeRequestRef.current += 1;
+      }
       controller.abort();
     };
-  }, [restoreId, token, setActiveSearchId, clearPendingSearch]);
+  }, [restoreId, restoreScope, token, userId, restoreAttempt, resetRestorePresentation, setActiveSearchId, translation, quota]);
 
   // ── Search ────────────────────────────────────────────────────────────────
 
   const handleSearch = useCallback(
-    async (queryOverride?: string, newExploreLabel?: string) => {
+    async (
+      queryOverride?: string,
+      newExploreLabel?: string,
+      collectionsOverride?: string[],
+      translationOverride?: string,
+      quotaOverride?: number,
+    ) => {
       const query = queryOverride ?? searchValue;
-      if (loading || activeCollections.length === 0 || !query.trim() || guestSearchDone) return;
+      const searchCollections = collectionsOverride ?? activeCollections;
+      const searchTranslation = translationOverride ?? translation;
+      const searchQuota = quotaOverride ?? quota;
+      if (loading || searchCollections.length === 0 || !query.trim() || guestSearchDone) return;
       const currentToken = tokenRef.current;
       if (!isGuest && !currentToken) return;
 
@@ -375,8 +483,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       // Switch BottomBar from search input → filter pills when the gold line fades (~3.2s)
       filterTransitionTimerRef.current = setTimeout(() => setAnimFilterBarActive(true), 3200);
       setExploreLabel(newExploreLabel ?? null);
-      const snapshot = [...activeCollections];
+      const snapshot = [...searchCollections];
       setSubmittedCollections(snapshot);
+      setSubmittedTranslation(searchTranslation);
+      setSubmittedQuota(searchQuota);
       setVisibleCollections(snapshot);
 
       try {
@@ -435,10 +545,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             }
             trackSearchPerformed({
               queryLength: query.length,
-              collectionsUsed: activeCollections,
-              quotaPerSource: quota,
+              collectionsUsed: snapshot,
+              quotaPerSource: searchQuota,
               resultCount,
-              translation,
+              translation: searchTranslation,
             });
           },
           onError(
@@ -483,8 +593,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         if (isGuest) {
           await streamGuestSearch(
             query,
-            { collections: activeCollections, translation },
-            quota,
+            { collections: snapshot, translation: searchTranslation },
+            searchQuota,
             streamCallbacks,
             controller.signal,
           );
@@ -492,8 +602,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           await streamSearch(
             currentToken!,
             query,
-            { collections: activeCollections, translation },
-            quota,
+            { collections: snapshot, translation: searchTranslation },
+            searchQuota,
             streamCallbacks,
             controller.signal,
           );
@@ -562,11 +672,29 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   }
 
   const handleExploreMore = useCallback((content: string, label: string) => {
+    if (restoreId) {
+      setQueuedRestoreExplore({
+        content,
+        label,
+        collections: submittedCollections,
+        translation: submittedTranslation || translation,
+        quota: submittedQuota ?? quota,
+      });
+      router.replace("/search");
+      return;
+    }
     if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
     exploreTimerRef.current = setTimeout(() => {
       handleSearch(content, label);
     }, 300);
-  }, [handleSearch]);
+  }, [handleSearch, quota, restoreId, router, submittedCollections, submittedQuota, submittedTranslation, translation]);
+
+  useEffect(() => {
+    if (!queuedRestoreExplore || restoreId) return;
+    const request = queuedRestoreExplore;
+    setQueuedRestoreExplore(null);
+    void handleSearch(request.content, request.label, request.collections, request.translation, request.quota);
+  }, [handleSearch, queuedRestoreExplore, restoreId]);
 
   // ── Explore flow (from ?explore= query param) ──────────────────────────────
 
@@ -576,11 +704,9 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     exploredForQuery.current = exploreQuery;
     const label = exploreRef?.trim()
       || (exploreQuery.slice(0, 60).replace(/\s+\S*$/, "") + (exploreQuery.length > 60 ? "…" : ""));
-    const timer = setTimeout(() => {
-      handleSearch(exploreQuery, label);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [exploreQuery, exploreRef, token, handleSearch]);
+    void handleSearch(exploreQuery, label);
+    router.replace("/search");
+  }, [exploreQuery, exploreRef, token, handleSearch, router]);
 
   // Collections that actually have results — used for filter bar pills only.
   // Derived from results so it never shows buttons for collections that returned nothing.
@@ -598,8 +724,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         {showAnimation && (
           <LoadingAnimation
             key={animationRequestId}
-            collections={activeCollections}
-            quota={quota}
+            collections={submittedCollections.length > 0 ? submittedCollections : activeCollections}
+            quota={submittedQuota ?? quota}
             isQueryDone={queryDone}
             retrievalStarted={searchPhase !== null || queryDone}
             onReadyToShow={() => handleAnimReadyToShow(animationRequestId)}
@@ -663,9 +789,22 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             message={error}
             code={errorCode}
             stage={errorStage}
-            onRetry={() => submittedQuery && handleSearch(submittedQuery)}
+            onRetry={() => {
+              if (errorStage === "restore" && restoreId) {
+                restoredForId.current = null;
+                setRestoreAttempt((attempt) => attempt + 1);
+                return;
+              }
+              if (submittedQuery) void handleSearch(
+                submittedQuery,
+                exploreLabel ?? undefined,
+                submittedCollections,
+                submittedTranslation || translation,
+                submittedQuota ?? quota,
+              );
+            }}
             onReport={isGuest ? undefined : () => {
-              const safeCode = (["auth_error", "network_error", "rate_limit", "restore_unavailable", "server_error", "stream_interrupted"] as const)
+              const safeCode = (["auth_error", "network_error", "rate_limit", "restore_not_found", "restore_unavailable", "server_error", "stream_interrupted"] as const)
                 .find((value) => value === errorCode) ?? "unknown";
               saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: searchId ?? undefined, error_code: safeCode });
               router.push("/feedback");
@@ -676,11 +815,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       </div>
 
       <BottomBar
-        activeCollections={activeCollections}
+        activeCollections={loading && submittedCollections.length > 0 ? submittedCollections : activeCollections}
         onToggleCollection={handleToggleCollection}
-        translation={translation}
+        translation={loading && submittedTranslation ? submittedTranslation : translation}
         onTranslationChange={setTranslation}
-        quota={quota}
+        quota={loading && submittedQuota !== null ? submittedQuota : quota}
         onQuotaChange={handleQuotaChange}
         searchValue={searchValue}
         onSearchChange={(val) => {
