@@ -88,12 +88,10 @@ describe("ChunkCard feedback", () => {
     expect(persistentContext.querySelector("svg")).toBeNull();
     expect(persistentContext.textContent).toContain("Open in");
     expect(persistentContext.textContent).toContain("Context");
-    expect(expand.getAttribute("aria-describedby")).toBeTruthy();
+    expect(expand.getAttribute("aria-describedby")).toBeNull();
     expect(expand.getAttribute("title")).toBeNull();
     expand.focus();
-    expect((await screen.findByRole("tooltip")).textContent).toBe("Show this passage.");
-    await userEvent.keyboard("{Escape}");
-    await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
+    expect(screen.queryByRole("tooltip")).toBeNull();
 
     await userEvent.click(expand);
     for (const name of ["Save passage", "Copy passage", "Mark as relevant", "Mark as not relevant", "Query more like this"]) {
