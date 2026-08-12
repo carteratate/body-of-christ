@@ -84,10 +84,9 @@ describe("ChunkCard feedback", () => {
     );
 
     const expand = screen.getByRole("button", { name: "Expand result: Bible, Genesis 1:1, 90% relevance" });
-    const persistentContext = screen.getByRole("button", { name: "Open in Context" });
-    expect(persistentContext.querySelector("svg")).toBeNull();
-    expect(persistentContext.textContent).toContain("Open in");
-    expect(persistentContext.textContent).toContain("Context");
+    expect(screen.queryByRole("button", { name: "Open in Context" })).toBeNull();
+    expect(screen.queryByText("Relevance Score:")).toBeNull();
+    expect(screen.getAllByText("90%")).toHaveLength(2);
     expect(expand.getAttribute("aria-describedby")).toBeNull();
     expect(expand.getAttribute("title")).toBeNull();
     expand.focus();
@@ -111,7 +110,7 @@ describe("ChunkCard feedback", () => {
       await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
     }
     const contextButtons = screen.getAllByRole("button", { name: "Open in Context" });
-    expect(contextButtons).toHaveLength(2);
+    expect(contextButtons).toHaveLength(1);
     for (const contextButton of contextButtons) {
       contextButton.focus();
       expect((await screen.findByRole("tooltip")).textContent).toBe("Open this passage in the context of the full source");

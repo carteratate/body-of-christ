@@ -202,54 +202,56 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
         background: `rgba(${rgb},0.32)`,
       }}
     >
-      {/* ── Header — disclosure and context navigation are sibling controls ── */}
-      <div className="flex h-[96px] items-stretch gap-3 p-3 sm:h-[68px]" style={{ borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none" }}>
+      {/* ── Header disclosure ── */}
+      <div className="flex h-[96px] items-stretch p-3 sm:h-[68px]" style={{ borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none" }}>
         <button
           type="button"
           onClick={() => setIsExpanded((v) => !v)}
           aria-label={isExpanded ? `Collapse result: ${accessibleSummary}` : `Expand result: ${accessibleSummary}`}
           aria-expanded={isExpanded}
           aria-controls={`chunk-body-${chunk_id}`}
-          className="flex min-h-11 min-w-0 flex-1 items-center rounded-md bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-accent"
+          className="relative flex min-h-11 min-w-0 flex-1 items-center rounded-md bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-accent"
         >
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 sm:hidden">
-            <div className="flex min-w-0 items-center gap-2">
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 pr-12 sm:hidden">
+            <div className="flex min-w-0 items-center gap-2 pr-4">
               <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
               {displayAuthor && <span className="min-w-0 flex-1 truncate text-xs leading-tight text-brand-muted">{displayAuthor}</span>}
-              {isExpanded ? <ChevronUp size={15} className="ml-auto shrink-0 text-brand-muted" /> : <ChevronDown size={15} className="ml-auto shrink-0 text-brand-muted" />}
             </div>
             <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-primary">{compactReference}</p>
           </div>
-          <div className="hidden min-w-0 flex-1 items-center justify-between sm:flex">
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+          {result.reranker_score !== null && (
+            <span
+              className="absolute right-0 top-1/2 -translate-y-1/2 sm:hidden"
+              style={{ fontSize: "11px", color: "var(--color-brand-primary)", background: `rgba(${rgb},0.12)`, border: `2px solid rgba(${rgb},0.8)`, borderRadius: "4px", padding: "1px 6px" }}
+            >
+              {Math.round(result.reranker_score * 100)}%
+            </span>
+          )}
+          {isExpanded
+            ? <ChevronUp size={15} className="absolute right-0 top-[-3px] text-brand-muted sm:hidden" />
+            : <ChevronDown size={15} className="absolute right-0 top-[-3px] text-brand-muted sm:hidden" />}
+
+          <div className="hidden min-w-0 flex-1 items-center sm:flex">
+            <div className="flex min-w-0 flex-1 items-center gap-2 pr-[70px]">
               <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
               <div className="grid min-w-0 flex-1 grid-rows-[1rem_1rem] content-center overflow-hidden">
                 <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
                 <p className="truncate text-sm font-semibold leading-tight text-brand-primary">{primaryReference}</p>
               </div>
             </div>
-            <div className="ml-3 flex shrink-0 items-center gap-2">
-              {result.reranker_score !== null && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-brand-primary max-md:hidden" style={{ fontSize: "11px" }}>Relevance Score:</span>
-                  <span style={{ fontSize: "11px", color: "var(--color-brand-primary)", background: `rgba(${rgb},0.12)`, border: `2px solid rgba(${rgb},0.8)`, borderRadius: "4px", padding: "1px 6px" }}>{Math.round(result.reranker_score * 100)}%</span>
-                </div>
-              )}
-              {isExpanded ? <ChevronUp size={15} className="text-brand-muted" /> : <ChevronDown size={15} className="text-brand-muted" />}
-            </div>
           </div>
+          {result.reranker_score !== null && (
+            <span
+              className="absolute right-[18px] top-1/2 hidden -translate-y-1/2 sm:block"
+              style={{ fontSize: "11px", color: "var(--color-brand-primary)", background: `rgba(${rgb},0.12)`, border: `2px solid rgba(${rgb},0.8)`, borderRadius: "4px", padding: "1px 6px" }}
+            >
+              {Math.round(result.reranker_score * 100)}%
+            </span>
+          )}
+          {isExpanded
+            ? <ChevronUp size={15} className="absolute right-0 top-[-5px] hidden text-brand-muted sm:block" />
+            : <ChevronDown size={15} className="absolute right-0 top-[-5px] hidden text-brand-muted sm:block" />}
         </button>
-        {!isGuest && UUID_RE.test(document_id) && (
-          <ThemedTooltip label="Open this passage in the context of the full source" side="bottom" className="shrink-0 self-stretch">
-            <button type="button" onClick={handleReadMore} className="flex h-full min-h-11 shrink-0 items-center justify-center rounded-md border border-brand-accent px-2 text-center text-xs font-medium leading-tight text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent max-sm:w-[4.5rem]">
-              <span className="max-sm:hidden">Open in Context</span>
-              <span className="flex flex-col sm:hidden" aria-hidden="true">
-                <span>Open in</span>
-                <span>Context</span>
-              </span>
-            </button>
-          </ThemedTooltip>
-        )}
       </div>
 
       {/* ── Expanded body ── */}
