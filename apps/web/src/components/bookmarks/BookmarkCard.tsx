@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Bookmark as BookmarkIcon, BookOpen, ChevronDown, ChevronUp, Copy, Pencil, Search } from "lucide-react";
+import { Bookmark as BookmarkIcon, BookOpen, Copy, Pencil, Plus, Search } from "lucide-react";
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackDocumentOpened, trackExploreMoreClicked } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
@@ -22,7 +22,6 @@ interface BookmarkCardProps {
 
 export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToast }: BookmarkCardProps) {
   const router = useRouter();
-  const [noteOpen, setNoteOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [draftNote, setDraftNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -115,7 +114,6 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
       await updateBookmarkNote(token, bookmark.id, trimmed);
       onNoteUpdated(bookmark.id, trimmed);
       setEditing(false);
-      setNoteOpen(trimmed !== null);
       showToast(trimmed ? "Note saved" : "Note removed");
     } catch {
       showToast("Couldn't save note. Try again.", "error");
@@ -128,7 +126,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
   return (
     <div
-      className="rounded-lg bg-brand-surface border-l-4 p-4"
+      className="overflow-hidden rounded-lg bg-brand-surface border-l-4 p-4"
       style={{ borderLeftColor: borderColor }}
     >
       {/* Top row: badge + reference + action buttons */}
@@ -167,13 +165,18 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
       </p>
 
       {/* ── Note section ──────────────────────────────────────────────────── */}
-      <div className="mt-3 pt-3 border-t border-brand-surface/60">
+      <div
+        className={`mt-3 ${editing || bookmark.note
+          ? "-mx-4 -mb-4 border-t border-brand-muted/20 bg-brand-bg/20 px-4 py-3"
+          : "pt-1"
+        }`}
+      >
 
         {/* Inline editor (add or edit) */}
         {editing && (
           <div className="flex flex-col gap-2">
-            <label htmlFor={`bookmark-note-${bookmark.id}`} className="sr-only">
-              Personal note for this saved passage
+            <label htmlFor={`bookmark-note-${bookmark.id}`} className="text-xs font-medium text-brand-accent">
+              Your note
             </label>
             <textarea
               id={`bookmark-note-${bookmark.id}`}
@@ -181,14 +184,14 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
               onChange={(e) => setDraftNote(e.target.value)}
               maxLength={NOTE_MAX}
               rows={4}
-              placeholder="Write your reflection..."
+              placeholder="Add context, a question, or why this passage matters..."
               autoFocus
               className="w-full min-h-[100px] resize-y rounded bg-brand-bg border border-brand-muted/40 px-3 py-2 text-sm text-brand-primary placeholder:text-brand-muted focus:outline-none focus:ring-1 focus:ring-brand-accent"
             />
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-col">
                 <span className={`text-xs ${atLimit ? "text-brand-accent font-medium" : "text-brand-muted"}`}>
-                  {draftNote.length.toLocaleString()} / {NOTE_MAX.toLocaleString()}
+                  Private · {draftNote.length.toLocaleString()} / {NOTE_MAX.toLocaleString()}
                 </span>
                 {atLimit && (
                   <span className="text-xs text-brand-accent">
@@ -196,7 +199,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
                   </span>
                 )}
               </div>
-              <div className="flex gap-2">
+              <div className="flex justify-end gap-2">
                 <button
                   onClick={cancelEdit}
                   disabled={saving}
@@ -209,7 +212,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
                   disabled={saving}
                   className="px-3 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent disabled:opacity-50"
                 >
-                  {saving ? "Saving…" : "Save"}
+                  {saving ? "Saving…" : "Save note"}
                 </button>
               </div>
             </div>
@@ -220,39 +223,31 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         {!editing && !bookmark.note && (
           <button
             onClick={startAddNote}
-            className="flex items-center gap-1.5 text-xs text-brand-muted hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent rounded"
+            className="flex items-center gap-1.5 rounded text-xs text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent"
           >
-            <Pencil size={13} />
-            Add note
+            <Plus size={13} className="text-brand-accent" />
+            Add a note
           </button>
         )}
 
-        {/* Note exists + not editing: collapse/expand toggle */}
+        {/* Saved notes remain visible so passage and annotation read together. */}
         {!editing && bookmark.note && (
-          <div>
-            <button
-              onClick={() => setNoteOpen((o) => !o)}
-              aria-expanded={noteOpen}
-              aria-controls={`bookmark-note-content-${bookmark.id}`}
-              className="flex items-center gap-1.5 text-xs text-brand-muted hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent rounded"
-            >
-              {noteOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-              Note
-            </button>
-            {noteOpen && (
-              <div id={`bookmark-note-content-${bookmark.id}`} className="mt-2 pl-3 border-l-2 border-brand-muted/30">
-                <p className="text-xs text-brand-muted leading-relaxed whitespace-pre-wrap">
-                  {bookmark.note}
-                </p>
-                <button
-                  onClick={startEditNote}
-                  className="mt-2 flex items-center gap-1.5 text-xs text-brand-muted hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent rounded"
-                >
-                  <Pencil size={13} />
-                  Edit
-                </button>
-              </div>
-            )}
+          <div id={`bookmark-note-content-${bookmark.id}`}>
+            <div className="mb-1.5 flex items-center justify-between gap-3">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand-accent">
+                Note
+              </span>
+              <button
+                onClick={startEditNote}
+                className="flex items-center gap-1.5 rounded text-xs text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent"
+              >
+                <Pencil size={12} />
+                Edit
+              </button>
+            </div>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-brand-muted">
+              {bookmark.note}
+            </p>
           </div>
         )}
       </div>
