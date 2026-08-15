@@ -120,12 +120,19 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   function openChapter(chapterKey: string) {
     const next = new URLSearchParams({ from: origin, chapter: chapterKey });
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
+    if (isGuest && params.get("preview") === "1") next.set("preview", "1");
+    if (isGuest && params.get("guideBack") === "1") next.set("guideBack", "1");
     const destination = `${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`;
     if (isReaderReturnKey(returnKey)) router.replace(destination);
     else router.push(destination);
   }
 
   function goBack() {
+    if (isGuest) {
+      consumeReaderReturnKey(returnKey, origin);
+      router.push(params.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
+      return;
+    }
     const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
     if (consumeReaderReturnKey(returnKey, origin)) router.back();
     else router.push(fallback);

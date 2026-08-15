@@ -2,7 +2,6 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Menu } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import {
   getReadingProgress,
@@ -16,31 +15,14 @@ import {
 import { ChapterSection } from "./ChapterSection";
 import { ReaderChrome, type ReaderFontSize, type ReaderSpacing } from "./ReaderChrome";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
+import { ReaderChapterSkeleton, ReaderOverviewSkeleton, ReaderPageSkeleton } from "@/components/common/PageSkeletons";
 import { DocumentOverview } from "./DocumentOverview";
 import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 import { getGuestSessionToken } from "@/lib/trial";
+import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
+import { useGuestGate } from "@/components/layout/guestGate";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
-
-function ReaderMobileStatusHeader() {
-  const { mobileNavigationOpen, openMobileNavigation } = useAppContext();
-  return (
-    <header className="flex h-[52px] shrink-0 items-center gap-2 border-b border-brand-bg bg-brand-surface px-3 md:hidden">
-      <button
-        id="reader-app-nav-trigger"
-        type="button"
-        onClick={() => openMobileNavigation("reader-app-nav-trigger")}
-        aria-label="Open app navigation"
-        aria-controls="mobile-nav-drawer"
-        aria-expanded={mobileNavigationOpen}
-        className="-ml-1 rounded p-2 text-brand-primary transition-colors hover:bg-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-      >
-        <Menu size={20} aria-hidden="true" />
-      </button>
-      <span className="min-w-0 flex-1 truncate font-brand text-lg font-semibold text-brand-accent">TheoCorpus</span>
-    </header>
-  );
-}
 
 interface ProgressWriter {
   token: string;
@@ -52,6 +34,7 @@ interface ProgressWriter {
 
 function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean }) {
   const { token } = useAppContext();
+  const guestGate = useGuestGate();
   const [guestToken, setGuestToken] = useState("");
   const router = useRouter();
   const params = useSearchParams();
@@ -289,12 +272,12 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
 
   function goBack() {
     setShowBackGuide(false);
-    const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
-    if (isGuest && origin === "search") {
+    if (isGuest) {
       consumeReaderReturnKey(returnKey, origin);
       router.push(params.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
       return;
     }
+    const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
     if (consumeReaderReturnKey(returnKey, origin)) router.back();
     else router.push(fallback);
   }
@@ -302,10 +285,16 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   function browseSections() {
     const next = new URLSearchParams({ from: origin });
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
+    if (isGuest && params.get("preview") === "1") next.set("preview", "1");
+    if (isGuest && params.get("guideBack") === "1") next.set("guideBack", "1");
     router.replace(`${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`);
   }
 
   function reportContent() {
+    if (isGuest) {
+      guestGate?.requestSignup("feature");
+      return;
+    }
     saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });
     router.push("/feedback");
   }
@@ -325,14 +314,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     );
   }
   if (loading && !doc) {
-    return (
-      <div className="flex h-full flex-col bg-brand-bg">
-        <ReaderMobileStatusHeader />
-        <div className="flex-1 space-y-3 px-6 pt-8">
-          {Array.from({ length: 8 }).map((_, index) => <div key={index} className="h-4 animate-pulse rounded bg-brand-surface" style={{ width: `${70 + (index % 3) * 10}%` }} />)}
-        </div>
-      </div>
-    );
+    return <ReaderPageSkeleton />;
   }
   if (!doc) return <ReaderMobileStatusHeader />;
 
@@ -388,8 +370,9 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   );
 }
 
-export function DocumentReader({ docId, isGuest = false }: { docId: string; isGuest?: boolean }) {
-  return <Suspense><ReaderEntry docId={docId} isGuest={isGuest} /></Suspense>;
+export function DocumentReader({ docId, isGuest = false, initialMode = "overview" }: { docId: string; isGuest?: boolean; initialMode?: "overview" | "chapter" }) {
+  const fallback = initialMode === "chapter" ? <ReaderChapterSkeleton /> : <ReaderOverviewSkeleton />;
+  return <Suspense fallback={fallback}><ReaderEntry docId={docId} isGuest={isGuest} /></Suspense>;
 }
 
 function ReaderEntry({ docId, isGuest }: { docId: string; isGuest: boolean }) {
