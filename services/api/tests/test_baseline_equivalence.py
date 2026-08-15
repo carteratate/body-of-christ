@@ -150,11 +150,7 @@ def test_pointwise_passage_format_uses_position_and_data_boundary():
 
 def test_pointwise_uses_a_4096_token_budget_not_the_listwise_one():
     """The listwise cap (8192) must not leak into the pointwise baseline."""
-    import inspect
-
-    src = inspect.getsource(pointwise.rerank_collection)
-    assert "4096" in src
-    assert "llm_rerank_max_tokens" not in src
+    assert pointwise.POINTWISE_MAX_TOKENS == 4096
 
 
 def test_hoisted_thresholds_default_to_their_previous_literals():
@@ -204,12 +200,14 @@ def test_pointwise_fallback_cannot_outrank_a_real_score():
     from app.rag.steps.llm_rerank.pointwise import fallback_ranked
 
     fb = fallback_ranked([_cand(i) for i in range(5)], quota=5)
-    assert max(r.reranker_score for r in fb) < 0.6
-    assert all(r.reranker_score >= settings.pointwise_score_cutoff for r in fb)
+    assert max(r.reranker_score for r in fb) < settings.pointwise_score_cutoff
+    assert all(r.include for r in fb)
 
 
 def test_pointwise_fallback_preserves_dedup_slack_beyond_quota():
     from app.rag.steps.llm_rerank.pointwise import fallback_ranked
 
-    candidates = [_cand(i) for i in range(12)]
-    assert len(fallback_ranked(candidates, quota=4)) == len(candidates)
+    candidates = [_cand(i) for i in range(30)]
+    fallback = fallback_ranked(candidates, quota=4)
+    assert len(fallback) == len(candidates)
+    assert all(chunk.include for chunk in fallback)

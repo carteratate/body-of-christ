@@ -7,13 +7,23 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
+
+
+@pytest.fixture(autouse=True)
+def _evaluation_identity(monkeypatch):
+    from app.config import settings
+    monkeypatch.setattr(settings, "evaluation_build_id", "test-build")
+    monkeypatch.setattr(settings, "evaluation_corpus_id", "test-corpus")
 
 
 # ---------------------------------------------------------------------------
 # save_compare_runs tests
 # ---------------------------------------------------------------------------
 
-def _make_pipeline_result(pipeline: str = "s2_5_haiku"):
+def _make_pipeline_result(
+    pipeline: str = "s2_5_haiku", contract_version: str | None = None,
+):
     """Build a minimal PipelineResult-like object for mocking."""
     from app.rag.steps.types import PipelineResult, RankedChunk, StepTiming
 
@@ -34,7 +44,18 @@ def _make_pipeline_result(pipeline: str = "s2_5_haiku"):
         total_duration_s=1.2,
         cost_breakdown={"haiku": 0.0001},
         total_cost=0.0001,
+        rerank_contract_version=contract_version,
     )
+
+
+def test_compare_request_rejects_duplicate_pipelines():
+    from app.routes.compare import CompareRequest
+
+    with pytest.raises(ValidationError, match="must be unique"):
+        CompareRequest(
+            query="q", collections=["bible"], quota=4,
+            pipelines=["hyde_haiku", "hyde_haiku"],
+        )
 
 
 @pytest.mark.asyncio
@@ -62,8 +83,8 @@ async def test_save_compare_runs_inserts_rows():
     rows = call_args[0][1]  # second positional arg is the list of rows
     assert len(rows) == 2
     # First row should be for s2_5_haiku
-    assert rows[0][3] == "s2_5_haiku"
-    assert rows[1][3] == "s4_haiku"
+    assert rows[0][3].startswith("s2_5_haiku#")
+    assert rows[1][3].startswith("s4_haiku#")
     # chunk_count should be 1 for each (one chunk per result)
     assert rows[0][6] == 1
     assert rows[1][6] == 1
@@ -76,6 +97,56 @@ async def test_save_compare_runs_inserts_rows():
 
 
 @pytest.mark.asyncio
+async def test_save_compare_runs_segments_rerank_contract_versions():
+    from app.rag.compare.persist import save_compare_runs
+
+    mock_conn = AsyncMock()
+    mock_ctx = AsyncMock()
+    mock_ctx.__aenter__ = AsyncMock(return_value=mock_conn)
+    mock_ctx.__aexit__ = AsyncMock(return_value=False)
+    mock_pool = MagicMock()
+    mock_pool.acquire = MagicMock(return_value=mock_ctx)
+    result = _make_pipeline_result("hyde_haiku", "structured-positional-v1")
+
+    with patch("app.rag.compare.persist.get_pool", return_value=mock_pool):
+        await save_compare_runs("q", ["bible"], 4, [result])
+
+    rows = mock_conn.executemany.call_args[0][1]
+    assert rows[0][3].startswith("hyde_haiku@structured-positional-v1#")
+
+
+@pytest.mark.asyncio
+async def test_save_compare_runs_segments_complete_methodology(monkeypatch):
+    from app.config import settings
+    from app.rag.compare.persist import _persisted_pipeline_key
+
+    result = _make_pipeline_result("hyde_haiku", "structured-positional-v1")
+    first = _persisted_pipeline_key(result)
+    monkeypatch.setattr(settings, "evaluation_corpus_id", "different-corpus")
+
+    assert _persisted_pipeline_key(result) != first
+
+
+@pytest.mark.asyncio
+async def test_save_compare_runs_skips_ineligible_results():
+    from app.rag.compare.persist import save_compare_runs
+
+    mock_conn = AsyncMock()
+    mock_ctx = AsyncMock()
+    mock_ctx.__aenter__ = AsyncMock(return_value=mock_conn)
+    mock_ctx.__aexit__ = AsyncMock(return_value=False)
+    mock_pool = MagicMock()
+    mock_pool.acquire = MagicMock(return_value=mock_ctx)
+    result = _make_pipeline_result()
+    result.quality_eligible = False
+
+    with patch("app.rag.compare.persist.get_pool", return_value=mock_pool):
+        await save_compare_runs("q", ["bible"], 4, [result])
+
+    mock_conn.executemany.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_save_compare_runs_skips_when_pool_none():
     """save_compare_runs returns silently when pool is unavailable."""
     from app.rag.compare.persist import save_compare_runs
@@ -84,6 +155,20 @@ async def test_save_compare_runs_skips_when_pool_none():
     with patch("app.rag.compare.persist.get_pool", return_value=None):
         # Should not raise
         await save_compare_runs("query", ["bible"], 4, results)
+
+
+@pytest.mark.asyncio
+async def test_save_compare_runs_skips_unidentifiable_methodology(monkeypatch):
+    from app.config import settings
+    from app.rag.compare.persist import save_compare_runs
+
+    monkeypatch.setattr(settings, "evaluation_build_id", None)
+    mock_pool = MagicMock()
+
+    with patch("app.rag.compare.persist.get_pool", return_value=mock_pool):
+        await save_compare_runs("query", ["bible"], 4, [_make_pipeline_result()])
+
+    mock_pool.acquire.assert_not_called()
 
 
 @pytest.mark.asyncio

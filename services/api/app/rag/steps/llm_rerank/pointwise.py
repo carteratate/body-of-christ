@@ -14,6 +14,7 @@ from app.rag.steps.llm_rerank.structured import (
 from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 logger = logging.getLogger(__name__)
+POINTWISE_MAX_TOKENS = 4096
 
 _RERANK_SYSTEM = (
     "You are evaluating Catholic theological passages for relevance to a user's "
@@ -82,8 +83,9 @@ def fallback_ranked(candidates: list[ChunkCandidate], quota: int) -> list[Ranked
     base = settings.llm_fallback_score_base
     for index, candidate in enumerate(candidates):
         score = max(0.0, base - index * 0.01)
-        results.append(_ranked(candidate, score, score >= settings.pointwise_score_cutoff,
-                               "rrf_fallback"))
+        # These are ordering surrogates, not relevance judgments. Keep every
+        # candidate eligible so downstream dedup/quota_cap can consume the slack.
+        results.append(_ranked(candidate, score, True, "rrf_fallback"))
     return results
 
 
@@ -134,7 +136,9 @@ async def rerank_collection(
     step: str = "rerank_llm",
 ) -> list[RankedChunk]:
     """Score one collection; fall back transactionally when output is not exact."""
-    if not candidates or not provider.is_ready():
+    if not candidates:
+        return []
+    if not provider.is_ready():
         logger.warning("%s: provider not ready or no candidates; using RRF fallback", step)
         degradation.record(step, "provider_not_ready", "rrf_fallback_used")
         return fallback_ranked(candidates, quota)
@@ -150,7 +154,7 @@ async def rerank_collection(
     try:
         result = await call_provider(
             provider,
-            _RERANK_SYSTEM, user_message, 4096,
+            _RERANK_SYSTEM, user_message, POINTWISE_MAX_TOKENS,
             score_schema(len(candidates), pointwise=True),
         )
     except Exception as exc:

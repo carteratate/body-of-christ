@@ -1,4 +1,9 @@
-from compare_batch.aggregate import compute_stats, AggregateStats, PipelineStats, DIMENSIONS
+import json
+import pytest
+
+from compare_batch.aggregate import (
+    compute_stats, load_records, AggregateStats, PipelineStats, DIMENSIONS,
+)
 
 DIMENSION_KEYS = [
     "retrieval_relevance",
@@ -38,9 +43,13 @@ def _make_record(query_idx, query, category, scores_by_pipeline):
         "query": query,
         "category": category,
         "expected_collections": [],
-        "judge": {"scores": judge_scores, "cost": 0.12},
+        "judge": {"scores": judge_scores, "cost": 0.12, "valid": True},
         "pipeline_results": [
-            {"pipeline": p, "total_duration_s": 10.0, "total_cost": 0.02, "chunk_count": 10}
+            {
+                "pipeline": p, "total_duration_s": 10.0, "total_cost": 0.02,
+                "chunk_count": 10, "quality_eligible": True,
+                "latency_eligible": True, "cost_eligible": True,
+            }
             for p in scores_by_pipeline
         ],
     }
@@ -157,3 +166,127 @@ def test_dimensions_constant_matches_expected():
         "doctrinal_completeness",
         "redundancy_rate",
     ]
+
+
+def test_contract_versions_are_aggregated_separately():
+    legacy = _make_record(0, "q1", "doctrinal", {"hyde_haiku": _perfect()})
+    structured = _make_record(1, "q2", "doctrinal", {"hyde_haiku": _perfect()})
+    structured["pipeline_results"][0]["rerank_contract_version"] = (
+        "structured-positional-v1"
+    )
+
+    stats = compute_stats([legacy, structured])
+    assert {pipeline.pipeline for pipeline in stats.pipelines} == {
+        "hyde_haiku",
+        "hyde_haiku@structured-positional-v1",
+    }
+    assert all(pipeline.n == 1 for pipeline in stats.pipelines)
+
+
+def test_ineligible_and_unversioned_legacy_results_are_quarantined():
+    degraded = _make_record(0, "q1", "doctrinal", {"a": _perfect()})
+    degraded["pipeline_results"][0]["quality_eligible"] = False
+    legacy = _make_record(1, "q2", "doctrinal", {"a": _perfect()})
+    del legacy["pipeline_results"][0]["quality_eligible"]
+
+    stats = compute_stats([degraded, legacy])
+
+    assert stats.pipelines == []
+    assert stats.quarantined_results == 2
+
+
+def test_invalid_judge_scores_are_quarantined():
+    record = _make_record(0, "q", "doctrinal", {"a": _zero(), "b": _zero()})
+    record["judge"]["valid"] = False
+
+    stats = compute_stats([record])
+
+    assert stats.pipelines == []
+    assert stats.quarantined_results == 2
+
+
+def test_invalid_judge_counts_expected_results_when_scores_are_missing():
+    record = _make_record(0, "q", "doctrinal", {"a": _zero(), "b": _zero()})
+    record["judge"] = {"scores": [], "valid": False}
+
+    stats = compute_stats([record])
+
+    assert stats.pipelines == []
+    assert stats.quarantined_results == 2
+
+
+def test_versioned_win_rate_uses_eligible_appearances_not_all_queries():
+    legacy = _make_record(0, "q1", "doctrinal", {"a": _perfect()})
+    versioned = _make_record(1, "q2", "doctrinal", {"a": _perfect()})
+    versioned["pipeline_results"][0]["rerank_contract_version"] = "v2"
+
+    stats = compute_stats([legacy, versioned])
+
+    assert all(pipeline.win_rate == 1.0 for pipeline in stats.pipelines)
+
+
+def test_degraded_competitor_does_not_award_an_uncontested_win():
+    record = _make_record(0, "q", "doctrinal", {"a": _perfect(), "b": _zero()})
+    record["pipeline_results"][1]["quality_eligible"] = False
+
+    stats = compute_stats([record])
+
+    a = next(pipeline for pipeline in stats.pipelines if pipeline.pipeline == "a")
+    assert a.n == 1
+    assert a.win_rate == 0.0
+
+
+def test_ineligible_latency_and_cost_are_unavailable_not_zero():
+    record = _make_record(0, "q", "doctrinal", {"a": _perfect()})
+    result = record["pipeline_results"][0]
+    result["latency_eligible"] = False
+    result["cost_eligible"] = False
+
+    pipeline = compute_stats([record]).pipelines[0]
+
+    assert pipeline.mean_duration_s is None
+    assert pipeline.mean_cost is None
+
+
+def test_load_records_rejects_malformed_or_mixed_batch_artifacts(tmp_path):
+    malformed = tmp_path / "malformed.jsonl"
+    malformed.write_text('{"batch_fingerprint":"a","query_idx":0}\n{broken}\n')
+    with pytest.raises(ValueError, match="line 2"):
+        load_records(malformed)
+
+    mixed = tmp_path / "mixed.jsonl"
+    mixed.write_text("\n".join([
+        json.dumps({"batch_fingerprint": "a", "query_idx": 0}),
+        json.dumps({"batch_fingerprint": "b", "query_idx": 1}),
+    ]) + "\n")
+    with pytest.raises(ValueError, match="mixes methodologies"):
+        load_records(mixed)
+
+
+def test_load_records_rejects_duplicate_query_indices(tmp_path):
+    artifact = tmp_path / "duplicate.jsonl"
+    record = {"batch_fingerprint": "a", "query_idx": 0}
+    artifact.write_text(json.dumps(record) + "\n" + json.dumps(record) + "\n")
+
+    with pytest.raises(ValueError, match="Duplicate query_idx 0"):
+        load_records(artifact)
+
+
+def test_missing_requested_pipeline_quarantines_entire_contest():
+    record = _make_record(0, "q", "doctrinal", {"a": _perfect()})
+    record["methodology"] = {"pipelines": {"a": {}, "b": {}}}
+
+    stats = compute_stats([record])
+
+    assert stats.pipelines == []
+    assert stats.quarantined_results == 2
+
+
+def test_duplicate_judge_pipeline_quarantines_entire_contest():
+    record = _make_record(0, "q", "doctrinal", {"a": _perfect()})
+    record["judge"]["scores"].append(record["judge"]["scores"][0])
+
+    stats = compute_stats([record])
+
+    assert stats.pipelines == []
+    assert stats.quarantined_results == 1

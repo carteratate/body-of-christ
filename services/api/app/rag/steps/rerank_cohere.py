@@ -26,6 +26,7 @@ from app.rag.steps.rerank_docs import cohere_document
 from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 logger = logging.getLogger(__name__)
+COHERE_RERANK_MODEL = "rerank-v4.0-pro"
 
 _client: cohere.AsyncClientV2 | None = None
 
@@ -258,7 +259,7 @@ async def _rerank_one_collection(
 
     async with semaphore:
         response = await _rerank_with_retry(
-            model="rerank-v4.0-pro",
+            model=COHERE_RERANK_MODEL,
             query=query,
             documents=sent_docs,
             top_n=len(sent_docs),

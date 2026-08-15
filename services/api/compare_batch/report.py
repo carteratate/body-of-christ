@@ -6,7 +6,7 @@ import json
 
 from app.rag.compare.judge import WEIGHTS as _DIM_WEIGHTS
 from app.rag.steps.cost_tracker import pricing_snapshot as _current_pricing
-from compare_batch.aggregate import AggregateStats, DIMENSIONS
+from compare_batch.aggregate import AggregateStats, DIMENSIONS, _methodology_key
 
 _DIM_LABELS = {
     "retrieval_relevance":    "Retrieval Relevance",
@@ -53,9 +53,19 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
 
     total_cost = sum(
         (r.get("judge") or {}).get("cost", 0.0)
-        + sum(pr.get("total_cost", 0.0) for pr in (r.get("pipeline_results") or []))
+        + sum(
+            pr.get("total_cost", 0.0)
+            for pr in (r.get("pipeline_results") or [])
+            if pr.get("cost_eligible") is True
+        )
         for r in records
     )
+    partial_cost = any(
+        pr.get("cost_eligible") is not True
+        for record in records
+        for pr in (record.get("pipeline_results") or [])
+    )
+    total_cost_label = f"${total_cost:.2f}" + (" (partial)" if partial_cost else "")
 
     pricing_schedules = {
         json.dumps(record.get("pricing"), sort_keys=True)
@@ -92,8 +102,8 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
     leaderboard = stat_row("Mean Score (weighted)", lambda p: _score_td(p.mean_total))
     leaderboard += stat_row("Win Rate", lambda p: _score_td(p.win_rate))
     leaderboard += stat_row("Queries scored (n)", lambda p: f'<td style="text-align:right;padding:4px 10px">{p.n}</td>')
-    leaderboard += stat_row("Mean duration", lambda p: f'<td style="text-align:right;padding:4px 10px">{p.mean_duration_s:.1f}s</td>')
-    leaderboard += stat_row("Mean pipeline cost", lambda p: f'<td style="text-align:right;padding:4px 10px">${p.mean_cost:.5f}</td>')
+    leaderboard += stat_row("Mean duration", lambda p: f'<td style="text-align:right;padding:4px 10px">{f"{p.mean_duration_s:.1f}s" if p.mean_duration_s is not None else "N/A"}</td>')
+    leaderboard += stat_row("Mean pipeline cost", lambda p: f'<td style="text-align:right;padding:4px 10px">{f"${p.mean_cost:.5f}" if p.mean_cost is not None else "N/A"}</td>')
 
     # ── Dimension breakdown ────────────────────────────────────────────────
     dim_rows = ""
@@ -115,7 +125,19 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
     # ── Per-query detail ───────────────────────────────────────────────────
     query_rows = ""
     for r in sorted(records, key=lambda x: x.get("query_idx", 0)):
-        scores = {s["pipeline"]: s for s in ((r.get("judge") or {}).get("scores") or [])}
+        eligible_results = {
+            result["pipeline"]: result
+            for result in (r.get("pipeline_results") or [])
+            if result.get("quality_eligible") is True
+        }
+        judge = r.get("judge") or {}
+        scores = {}
+        if judge.get("valid") is True:
+            scores = {
+                _methodology_key(eligible_results[score["pipeline"]]): score
+                for score in (judge.get("scores") or [])
+                if score["pipeline"] in eligible_results
+            }
         score_cells = "".join(
             _score_td(scores[p]["weighted_total"]) if p in scores else '<td style="text-align:right;padding:4px 10px;color:#7A8099">—</td>'
             for p in pipelines
@@ -152,7 +174,8 @@ def render_report(stats: AggregateStats, records: list[dict]) -> str:
 <h1>Pipeline Compare — Batch Report</h1>
 <div class="meta">
   {stats.n_queries} queries &nbsp;·&nbsp; {len(pipelines)} pipelines &nbsp;·&nbsp;
-  Total cost: <strong style="color:#C4972A">${total_cost:.2f}</strong><br>
+  Total cost: <strong style="color:#C4972A">{total_cost_label}</strong><br>
+  Quality results quarantined: <strong>{stats.quarantined_results}</strong><br>
   <span style="color:#7A8099">{pricing_label}</span>
 </div>
 

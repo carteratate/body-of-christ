@@ -16,6 +16,7 @@ import pytest
 from app.rag.steps import degradation, rerank_cohere
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.llm_rerank import listwise
+from app.rag.steps.llm_rerank import pointwise
 from app.rag.steps.llm_rerank.base import ScoreResult
 from app.rag.steps.types import ChunkCandidate, RankedChunk
 
@@ -40,6 +41,16 @@ class _Resp:
 
 def test_accounting_starts_empty():
     degradation.begin_degradation_accounting()
+    assert degradation.degradations() == []
+
+
+@pytest.mark.asyncio
+async def test_empty_pointwise_collection_is_not_provider_degradation():
+    degradation.begin_degradation_accounting()
+    result = await pointwise.rerank_collection(
+        [], "q", 4, CostTracker(), _StubProvider(ready=False),
+    )
+    assert result == []
     assert degradation.degradations() == []
 
 

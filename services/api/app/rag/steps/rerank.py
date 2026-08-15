@@ -35,6 +35,11 @@ logger = logging.getLogger(__name__)
 # methodology and must be segmented in evaluation/reporting.
 LLM_RERANK_CONTRACT_VERSION = "structured-positional-v1"
 
+
+def contract_version(config: "RerankConfig") -> str | None:
+    """Return the evaluation methodology version for a rerank configuration."""
+    return LLM_RERANK_CONTRACT_VERSION if config.llm_provider is not None else None
+
 # Each provider instance is owned by the module that owns its client, so there is
 # exactly one client per API and one place it is initialised. See
 # rerank_haiku._HaikuClientProvider for why Haiku's lives outside llm_rerank/.

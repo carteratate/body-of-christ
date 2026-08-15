@@ -47,6 +47,7 @@ def pricing_snapshot() -> dict:
 class CostTracker:
     def __init__(self) -> None:
         self._breakdown: dict[str, float] = {}
+        self._cost_eligible = True
 
     def record(self, step: str, model: str, input_tokens: int, output_tokens: int) -> None:
         pricing = {**_ANTHROPIC_PRICING, **_OPENAI_PRICING}
@@ -54,8 +55,10 @@ class CostTracker:
             # Silently pricing an unknown model at $0 makes a typo'd model id look
             # free, which is worse than a noisy log during a cost comparison.
             logger.warning(
-                "cost_tracker: no pricing for model %r (step=%s) — recording $0", model, step,
+                "cost_tracker: no pricing for model %r (step=%s) — cost unavailable",
+                model, step,
             )
+            self._cost_eligible = False
         in_price, out_price = pricing.get(model, (0.0, 0.0))
         cost = (input_tokens * in_price + output_tokens * out_price) / 1_000_000
         self._breakdown[step] = self._breakdown.get(step, 0.0) + cost
@@ -77,3 +80,8 @@ class CostTracker:
 
     def breakdown(self) -> dict[str, float]:
         return dict(self._breakdown)
+
+    @property
+    def cost_eligible(self) -> bool:
+        """Whether every billed model had a trustworthy pricing rate."""
+        return self._cost_eligible

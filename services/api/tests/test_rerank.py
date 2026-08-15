@@ -2,6 +2,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from app.config import settings
 from app.rag.steps.rerank_haiku import _rerank_single_collection as rerank_collection
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.types import ChunkCandidate
@@ -36,7 +37,7 @@ async def test_rerank_null_score_rejects_response_and_uses_fallback():
 
     assert len(result) == 1
     assert result[0].chunk_id == chunk_id
-    assert result[0].reranker_score == 0.4
+    assert result[0].reranker_score == settings.llm_fallback_score_base
     assert result[0].score_source == "rrf_fallback"
 
 
@@ -56,7 +57,7 @@ async def test_rerank_string_score_rejects_response_and_uses_fallback():
 
     assert len(result) == 1
     assert result[0].chunk_id == chunk_id
-    assert result[0].reranker_score == 0.4
+    assert result[0].reranker_score == settings.llm_fallback_score_base
     assert result[0].score_source == "rrf_fallback"
 
 

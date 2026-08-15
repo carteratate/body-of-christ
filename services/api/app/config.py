@@ -115,7 +115,9 @@ class Settings(BaseSettings):
     # represented; below real scores so an UNSCORED collection cannot outrank scored
     # ones after the global sort.
     llm_fallback_score_base: float = Field(
-        default=0.40, validation_alias="LLM_FALLBACK_SCORE_BASE",
+        # Synthetic ordering only. Keep below the minimum genuine included LLM
+        # score so a failed collection cannot outrank a healthy one.
+        default=0.24, validation_alias="LLM_FALLBACK_SCORE_BASE",
     )
     rerank_luna_model: str = Field(default="gpt-5.6-luna", validation_alias="RERANK_LUNA_MODEL")
 
@@ -124,6 +126,15 @@ class Settings(BaseSettings):
     # query. Exceeding it falls back to zero scores for that query, which is visible
     # in the report rather than silent.
     judge_timeout_s: float = Field(default=180.0, validation_alias="JUDGE_TIMEOUT_S")
+    # Required by resumable evaluation batches. These deliberately describe the
+    # deployed code and indexed corpus, which ordinary model/config fingerprints
+    # cannot infer when the service remains at the same URL across a rollout.
+    evaluation_build_id: str | None = Field(
+        default=None, validation_alias="EVALUATION_BUILD_ID",
+    )
+    evaluation_corpus_id: str | None = Field(
+        default=None, validation_alias="EVALUATION_CORPUS_ID",
+    )
 
     # --- Dynamic retrieval sizing (cohere_only / both; llm_only keeps quota x multiplier) ---
     retrieval_k_min: int = Field(default=10, validation_alias="RETRIEVAL_K_MIN")

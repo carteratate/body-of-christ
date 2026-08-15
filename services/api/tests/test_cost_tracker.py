@@ -59,6 +59,7 @@ def test_unknown_model_warns_rather_than_silently_costing_zero(caplog):
     with caplog.at_level("WARNING"):
         t.record("step", "gpt-nonexistent-9", input_tokens=1000, output_tokens=100)
     assert t.total_cost() == 0.0
+    assert t.cost_eligible is False
     assert "no pricing for model" in caplog.text
 
 

@@ -295,6 +295,7 @@ async def test_runner_returns_pipeline_result():
 
     assert isinstance(result, PipelineResult)
     assert result.pipeline == "nohyde_haiku"
+    assert result.rerank_contract_version == "structured-positional-v1"
     assert len(result.chunks) == 1
     assert result.total_cost >= 0
     assert len(result.step_timings) > 0
