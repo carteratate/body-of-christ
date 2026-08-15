@@ -10,18 +10,30 @@ cannot change how a response is interpreted.
 """
 from __future__ import annotations
 
-from typing import Protocol
+import inspect
+from typing import Any, Protocol
 
 
 class ScoreResult:
     """Raw provider output plus token counts for cost tracking."""
 
-    __slots__ = ("text", "input_tokens", "output_tokens")
+    __slots__ = (
+        "text", "input_tokens", "output_tokens", "completion_error",
+        "completion_reason",
+    )
 
-    def __init__(self, text: str, input_tokens: int, output_tokens: int) -> None:
+    def __init__(
+        self, text: str, input_tokens: int, output_tokens: int,
+        completion_error: str | None = None,
+        completion_reason: str | None = None,
+    ) -> None:
         self.text = text
         self.input_tokens = input_tokens
         self.output_tokens = output_tokens
+        # Providers return billed incomplete/refusal responses so the caller can
+        # record usage before rejecting them transactionally.
+        self.completion_error = completion_error
+        self.completion_reason = completion_reason
 
 
 class RerankProvider(Protocol):
@@ -38,7 +50,32 @@ class RerankProvider(Protocol):
         """False when the client was never initialised (missing credentials)."""
         ...
 
-    async def score(self, system: str, user: str, max_tokens: int) -> ScoreResult:
+    async def score(
+        self,
+        system: str,
+        user: str,
+        max_tokens: int,
+        output_schema: dict[str, Any] | None = None,
+    ) -> ScoreResult:
         """Single completion call. Raises on transport/API failure — callers
         decide the fallback, since the right fallback differs per shape."""
         ...
+
+
+async def call_provider(
+    provider: RerankProvider,
+    system: str,
+    user: str,
+    max_tokens: int,
+    output_schema: dict[str, Any],
+) -> ScoreResult:
+    """Call new providers with a schema while retaining legacy stub compatibility.
+
+    Pre-structured-output evaluation harnesses implemented the three-argument
+    ``score`` method. Signature inspection avoids misclassifying a TypeError raised
+    *inside* a provider as an old interface and provides a clean migration bridge.
+    """
+    parameters = inspect.signature(provider.score).parameters
+    if "output_schema" in parameters or len(parameters) >= 4:
+        return await provider.score(system, user, max_tokens, output_schema)
+    return await provider.score(system, user, max_tokens)  # type: ignore[call-arg]

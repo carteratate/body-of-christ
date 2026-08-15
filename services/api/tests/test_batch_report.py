@@ -34,9 +34,13 @@ def _make_record(query_idx, query, category, scores_by_pipeline):
         "category": category,
         "expected_collections": [],
         "pricing": pricing_snapshot(),
-        "judge": {"scores": judge_scores, "cost": 0.05},
+        "judge": {"scores": judge_scores, "cost": 0.05, "valid": True},
         "pipeline_results": [
-            {"pipeline": p, "total_duration_s": 5.0, "total_cost": 0.01, "chunk_count": 10}
+            {
+                "pipeline": p, "total_duration_s": 5.0, "total_cost": 0.01,
+                "chunk_count": 10, "quality_eligible": True,
+                "latency_eligible": True, "cost_eligible": True,
+            }
             for p in scores_by_pipeline
         ],
     }
@@ -116,3 +120,42 @@ def test_render_report_empty_records():
     result = render_report(stats, [])
     assert "<html" in result
     assert isinstance(result, str)
+
+
+def test_render_report_shows_quarantined_result_count():
+    record = _make_record(0, "Degraded", "doctrinal", {"a": _perfect()})
+    record["pipeline_results"][0]["quality_eligible"] = False
+    stats = compute_stats([record])
+
+    result = render_report(stats, [record])
+
+    assert "Quality results quarantined: <strong>1</strong>" in result
+
+
+def test_render_report_marks_unavailable_metrics_and_partial_total():
+    record = _make_record(0, "Unknown cost", "doctrinal", {"a": _perfect()})
+    result_data = record["pipeline_results"][0]
+    result_data["latency_eligible"] = False
+    result_data["cost_eligible"] = False
+    stats = compute_stats([record])
+
+    result = render_report(stats, [record])
+
+    assert result.count("N/A") >= 2
+    assert "Total cost: <strong style=\"color:#C4972A\">$0.05 (partial)</strong>" in result
+
+
+def test_per_query_report_joins_versioned_methodology_key():
+    record = _make_record(0, "Versioned query", "doctrinal", {
+        "hyde_haiku": _perfect(),
+    })
+    record["pipeline_results"][0]["rerank_contract_version"] = (
+        "structured-positional-v1"
+    )
+    stats = compute_stats([record])
+
+    result = render_report(stats, [record])
+
+    assert "hyde_haiku@structured-positional-v1" in result
+    # The one pipeline score cell must render 1.000 rather than an em dash.
+    assert "1.000" in result

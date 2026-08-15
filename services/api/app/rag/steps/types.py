@@ -86,3 +86,9 @@ class PipelineResult:
     # Per requested collection: results | results_degraded | no_candidates |
     # below_threshold | retrieval_failed | corpus_sync_failed | ranking_failed.
     collection_outcomes: dict[str, str] = field(default_factory=dict)
+    # Appended to preserve positional compatibility for external dataclass callers.
+    # None means no LLM rerank contract (for example, Cohere-only).
+    rerank_contract_version: str | None = None
+    # Appended to preserve positional compatibility. False means total_cost is
+    # incomplete and must not enter persisted or aggregate cost comparisons.
+    cost_eligible: bool = True

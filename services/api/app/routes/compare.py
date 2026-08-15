@@ -16,6 +16,7 @@ from app.models.auth import AuthUser
 from app.rag.compare import judge, overlap
 from app.rag.compare import runner as compare_runner
 from app.rag.compare.persist import save_compare_runs
+from app.rag.compare.methodology import snapshot as methodology_snapshot
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.steps.cost_tracker import pricing_snapshot
 
@@ -37,6 +38,8 @@ class CompareRequest(BaseModel):
             raise ValueError(f"Unknown pipelines: {invalid}. Valid: {sorted(PIPELINES)}")
         if not v:
             raise ValueError("At least one pipeline required")
+        if len(v) != len(set(v)):
+            raise ValueError("Pipeline names must be unique")
         return v
 
 
@@ -79,6 +82,7 @@ async def compare_search(
 
     return {
         "query": body.query,
+        "methodology": methodology_snapshot(body.pipelines),
         "pricing": pricing_snapshot(),
         "pipeline_results": [dataclasses.asdict(r) for r in pipeline_results],
         "overlap": dataclasses.asdict(overlap_report),

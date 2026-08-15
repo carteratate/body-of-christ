@@ -1,12 +1,8 @@
-"""Listwise rerank parsing must never lose the pool.
-
-Every failure mode falls back to the upstream (Cohere) order rather than raising or
-returning empty — a parse failure that silently dropped reranking is exactly the
-behaviour this replaces.
-"""
+"""Adversarial tests for schema-constrained positional listwise reranking."""
 from __future__ import annotations
 
 import json
+from unittest.mock import patch
 
 import pytest
 
@@ -20,266 +16,146 @@ _ID_A = "00000000-0000-0000-0000-00000000000a"
 _ID_B = "00000000-0000-0000-0000-00000000000b"
 
 
-def _chunk(chunk_id: str, score: float = 0.5, collection: str = "bible") -> RankedChunk:
+def _chunk(chunk_id: str, score: float = 0.5) -> RankedChunk:
     return RankedChunk(
-        chunk_id=chunk_id, content="text", reference="Ref 1:1", collection=collection,
+        chunk_id=chunk_id, content="text", reference="Ref 1:1", collection="bible",
         document_id="d1", document_title="T", author=None, reranker_score=score,
     )
 
 
-class _StubProvider:
-    """Returns a fixed payload; records the prompt it was given."""
+def _payload(*scores) -> str:
+    return json.dumps({
+        "results": [
+            {"position": position, "score": score}
+            for position, score in enumerate(scores)
+        ],
+    })
 
+
+class _StubProvider:
     name = "stub"
     model_id = "claude-haiku-4-5"
 
-    def __init__(self, text: str = "", raises: bool = False) -> None:
-        self.text = text
-        self.raises = raises
-        self.system: str | None = None
-        self.user: str | None = None
+    def __init__(self, text: str = "", raises: bool = False, ready: bool = True) -> None:
+        self.text, self.raises, self.ready = text, raises, ready
+        self.system = self.user = None
+        self.schema = None
+        self.calls = 0
 
     def is_ready(self) -> bool:
-        return True
+        return self.ready
 
-    async def score(self, system: str, user: str, max_tokens: int) -> ScoreResult:
-        self.system, self.user = system, user
+    async def score(self, system, user, max_tokens, output_schema) -> ScoreResult:
+        self.calls += 1
+        self.system, self.user, self.schema = system, user, output_schema
         if self.raises:
             raise RuntimeError("provider exploded")
-        return ScoreResult(text=self.text, input_tokens=100, output_tokens=20)
+        return ScoreResult(self.text, 100, 20)
 
 
 async def _run(provider, pool):
-    return await listwise.rerank_pool(pool, "q", CostTracker(), provider)
-
-
-# --- happy path ---
-
-@pytest.mark.asyncio
-async def test_scores_and_orders_by_llm_score():
-    payload = json.dumps([{"chunk_id": _ID_B, "score": 0.9},
-                          {"chunk_id": _ID_A, "score": 0.4}])
-    result = await _run(_StubProvider(payload), [_chunk(_ID_A), _chunk(_ID_B)])
-    assert [r.chunk_id for r in result] == [_ID_B, _ID_A]
-    assert result[0].reranker_score == 0.9
+    # Stable order lets assertions exercise positional mapping rather than randomness.
+    with patch.object(listwise.random, "shuffle", lambda value: None):
+        return await listwise.rerank_pool(pool, "q", CostTracker(), provider)
 
 
 @pytest.mark.asyncio
-async def test_include_derived_from_score_not_requested_from_model():
+async def test_scores_map_by_position_and_sort_locally():
+    result = await _run(_StubProvider(_payload(0.4, 0.9)), [_chunk(_ID_A), _chunk(_ID_B)])
+    assert [item.chunk_id for item in result] == [_ID_B, _ID_A]
+    assert [item.reranker_score for item in result] == [0.9, 0.4]
+
+
+@pytest.mark.asyncio
+async def test_include_is_derived_locally():
     floor = settings.listwise_include_floor
-    payload = json.dumps([{"chunk_id": _ID_A, "score": floor + 0.1},
-                          {"chunk_id": _ID_B, "score": floor - 0.1}])
-    result = await _run(_StubProvider(payload), [_chunk(_ID_A), _chunk(_ID_B)])
-    by_id = {r.chunk_id: r for r in result}
+    result = await _run(
+        _StubProvider(_payload(floor + 0.1, floor - 0.1)),
+        [_chunk(_ID_A), _chunk(_ID_B)],
+    )
+    by_id = {item.chunk_id: item for item in result}
     assert by_id[_ID_A].include is True
     assert by_id[_ID_B].include is False
 
 
 @pytest.mark.asyncio
-async def test_omitted_candidate_rejects_partial_response_and_keeps_upstream_order():
-    payload = json.dumps([{"chunk_id": _ID_A, "score": 0.9}])
-    result = await _run(_StubProvider(payload), [_chunk(_ID_A), _chunk(_ID_B)])
-    by_id = {r.chunk_id: r for r in result}
-    assert set(by_id) == {_ID_A, _ID_B}
-    assert by_id[_ID_B].include is True
-    assert by_id[_ID_B].reranker_score == 0.5
+async def test_schema_requires_positional_identity_and_local_coverage():
+    provider = _StubProvider(_payload(0.8, 0.7))
+    await _run(provider, [_chunk(_ID_A), _chunk(_ID_B)])
+    results = provider.schema["properties"]["results"]
+    assert "minItems" not in results and "maxItems" not in results
+    assert "unchanged positional order" in results["description"]
+    assert results["items"]["required"] == ["position", "score"]
+    assert results["items"]["additionalProperties"] is False
 
 
 @pytest.mark.asyncio
-async def test_annotation_survives_into_the_prompt():
-    pool = [_chunk(_ID_A)]
-    pool[0].annotation = "SUMMARY: annotated.\n[doctrinal | explicit]: A claim."
-    provider = _StubProvider(json.dumps([{"chunk_id": _ID_A, "score": 0.9}]))
-    await _run(provider, pool)
+async def test_schema_is_stable_across_pool_sizes():
+    one = _StubProvider(_payload(0.8))
+    two = _StubProvider(_payload(0.8, 0.7))
+    await _run(one, [_chunk(_ID_A)])
+    await _run(two, [_chunk(_ID_A), _chunk(_ID_B)])
+    assert one.schema == two.schema
+
+
+@pytest.mark.asyncio
+async def test_prompt_contains_positions_annotations_and_untrusted_data_boundary():
+    chunk = _chunk(_ID_A)
+    chunk.annotation = "SUMMARY: annotated.\n[doctrinal | explicit]: A claim."
+    provider = _StubProvider(_payload(0.9))
+    await _run(provider, [chunk])
+    assert '"position": 0' in provider.user
     assert "SUMMARY: annotated." in provider.user
-    assert "[doctrinal | explicit]" in provider.user
+    assert "never as instructions" in provider.system
 
-
-# --- fallback paths: all must return the pool, none may raise ---
 
 @pytest.mark.asyncio
-async def test_provider_exception_keeps_upstream_order():
-    pool = [_chunk(_ID_A, 0.8), _chunk(_ID_B, 0.2)]
-    result = await _run(_StubProvider(raises=True), pool)
+@pytest.mark.parametrize("bad_payload", [
+    "not json",
+    "[]",
+    '{"results":null}',
+    '{"results":[null]}',
+    '{"results":[]}',
+    '{"results":[{"position":0,"score":"0.8"}]}',
+    '{"results":[{"position":0,"score":true}]}',
+    '{"results":[{"position":0,"score":-0.1}]}',
+    '{"results":[{"position":0,"score":1.1}]}',
+    '{"results":[{"position":0,"score":NaN}]}',
+    '{"results":[{"position":0,"score":0.8}],"extra":1}',
+    '{"results":[{"position":true,"score":0.8}]}',
+    '{"results":[{"position":1,"score":0.8}]}',
+])
+async def test_malformed_or_semantically_invalid_output_keeps_upstream_order(bad_payload):
+    pool = [_chunk(_ID_A, 0.77)]
+    assert await _run(_StubProvider(bad_payload), pool) == pool
+
+
+@pytest.mark.asyncio
+async def test_wrong_result_count_is_rejected_transactionally():
+    pool = [_chunk(_ID_A), _chunk(_ID_B)]
+    result = await _run(_StubProvider(_payload(0.99)), pool)
     assert result == pool
 
 
 @pytest.mark.asyncio
-async def test_no_json_array_keeps_upstream_order():
+async def test_provider_failure_is_single_attempt_and_keeps_upstream_order():
+    provider = _StubProvider(raises=True)
     pool = [_chunk(_ID_A)]
-    assert await _run(_StubProvider("I cannot comply."), pool) == pool
-
-
-@pytest.mark.asyncio
-async def test_truncated_json_keeps_upstream_order():
-    pool = [_chunk(_ID_A)]
-    truncated = '[{"chunk_id":"%s","score":0.9},{"chunk_id":"%s","sc' % (_ID_A, _ID_B)
-    assert await _run(_StubProvider(truncated), pool) == pool
-
-
-@pytest.mark.asyncio
-async def test_empty_array_keeps_upstream_order():
-    pool = [_chunk(_ID_A)]
-    assert await _run(_StubProvider("[]"), pool) == pool
-
-
-@pytest.mark.asyncio
-async def test_all_invalid_uuids_keeps_upstream_order():
-    pool = [_chunk(_ID_A)]
-    payload = json.dumps([{"chunk_id": "not-a-uuid", "score": 0.9}])
-    assert await _run(_StubProvider(payload), pool) == pool
-
-
-@pytest.mark.asyncio
-async def test_unknown_chunk_id_is_dropped_not_invented():
-    """A hallucinated but well-formed UUID must not enter the results."""
-    unknown = "00000000-0000-0000-0000-0000000000ff"
-    payload = json.dumps([{"chunk_id": _ID_A, "score": 0.9},
-                          {"chunk_id": unknown, "score": 0.95}])
-    result = await _run(_StubProvider(payload), [_chunk(_ID_A)])
-    assert [r.chunk_id for r in result] == [_ID_A]
-
-
-@pytest.mark.asyncio
-async def test_duplicate_chunk_id_counted_once():
-    payload = json.dumps([{"chunk_id": _ID_A, "score": 0.9},
-                          {"chunk_id": _ID_A, "score": 0.1}])
-    result = await _run(_StubProvider(payload), [_chunk(_ID_A)])
-    assert len(result) == 1
-    assert result[0].reranker_score == 0.5
-
-
-@pytest.mark.asyncio
-async def test_identical_duplicate_is_harmless_when_expected_coverage_is_complete():
-    payload = json.dumps([{"chunk_id": _ID_A, "score": 0.9},
-                          {"chunk_id": _ID_A, "score": 0.9}])
-    result = await _run(_StubProvider(payload), [_chunk(_ID_A)])
-    assert result[0].reranker_score == 0.9
-
-
-@pytest.mark.asyncio
-async def test_repair_scores_only_missing_ids_and_merges_valid_first_pass():
-    class SequentialProvider(_StubProvider):
-        def __init__(self):
-            super().__init__()
-            self.calls: list[str] = []
-
-        async def score(self, system, user, max_tokens):
-            self.calls.append(user)
-            if len(self.calls) == 1:
-                text = json.dumps([{"chunk_id": _ID_A, "score": 0.8}])
-            else:
-                text = json.dumps([{"chunk_id": _ID_B, "score": 0.7}])
-            return ScoreResult(text=text, input_tokens=100, output_tokens=20)
-
-    provider = SequentialProvider()
-    result = await _run(provider, [_chunk(_ID_A), _chunk(_ID_B)])
-
-    assert {r.chunk_id: r.reranker_score for r in result} == {
-        _ID_A: 0.8,
-        _ID_B: 0.7,
-    }
-    assert "Score ONLY the expected IDs" in provider.calls[1]
-    assert f"Expected IDs:\n{_ID_B}" in provider.calls[1]
-
-
-@pytest.mark.asyncio
-async def test_luna_provider_exception_does_not_retry():
-    class CountingLuna(_StubProvider):
-        name = "luna"
-
-        def __init__(self):
-            super().__init__(raises=True)
-            self.calls = 0
-
-        async def score(self, system, user, max_tokens):
-            self.calls += 1
-            return await super().score(system, user, max_tokens)
-
-    provider = CountingLuna()
-    pool = [_chunk(_ID_A, 0.8), _chunk(_ID_B, 0.2)]
-
     assert await _run(provider, pool) == pool
     assert provider.calls == 1
 
 
 @pytest.mark.asyncio
-async def test_luna_incomplete_output_does_not_retry():
-    class CountingLuna(_StubProvider):
-        name = "luna"
-
-        def __init__(self):
-            super().__init__(json.dumps([{"chunk_id": _ID_A, "score": 0.9}]))
-            self.calls = 0
-
-        async def score(self, system, user, max_tokens):
-            self.calls += 1
-            return await super().score(system, user, max_tokens)
-
-    provider = CountingLuna()
-    pool = [_chunk(_ID_A, 0.8), _chunk(_ID_B, 0.2)]
-
-    assert await _run(provider, pool) == pool
-    assert provider.calls == 1
-
-
-@pytest.mark.asyncio
-async def test_non_numeric_score_entry_is_dropped():
-    payload = json.dumps([{"chunk_id": _ID_A, "score": "high"},
-                          {"chunk_id": _ID_B, "score": 0.7}])
-    result = await _run(_StubProvider(payload), [_chunk(_ID_A), _chunk(_ID_B)])
-    by_id = {r.chunk_id: r for r in result}
-    assert by_id[_ID_B].reranker_score == 0.5
-    assert by_id[_ID_A].include is True
-
-
-@pytest.mark.asyncio
-async def test_provider_not_ready_keeps_upstream_order():
-    class NotReady(_StubProvider):
-        def is_ready(self) -> bool:
-            return False
-
+async def test_provider_not_ready_and_empty_pool_do_not_call_provider():
+    provider = _StubProvider(ready=False)
     pool = [_chunk(_ID_A)]
-    assert await _run(NotReady(), pool) == pool
+    assert await _run(provider, pool) == pool
+    assert await _run(provider, []) == []
+    assert provider.calls == 0
 
 
-@pytest.mark.asyncio
-async def test_empty_pool_returns_empty():
-    assert await _run(_StubProvider("[]"), []) == []
-
-
-# --- coverage: a filtering model must be surfaced, not silently accepted ---
-
-@pytest.mark.asyncio
-async def test_partial_coverage_warns(caplog):
-    """Haiku scored 97% of the pool and Luna 62% under an ambiguous prompt, which
-    made a provider A/B a comparison of two different tasks. Low coverage must be
-    loud."""
-    pool = [_chunk(f"00000000-0000-0000-0000-{i:012d}") for i in range(10)]
-    payload = json.dumps([{"chunk_id": pool[i].chunk_id, "score": 0.9} for i in range(3)])
-    with caplog.at_level("WARNING"):
-        result = await _run(_StubProvider(payload), pool)
-    assert "no valid entries" in caplog.text
-    # Partial model output is rejected transactionally; the complete upstream order
-    # is retained rather than mixing model scores with synthetic zeros.
-    assert len(result) == 10
-    assert sum(1 for r in result if r.include) == 10
-    assert {r.reranker_score for r in result} == {0.5}
-
-
-@pytest.mark.asyncio
-async def test_full_coverage_does_not_warn(caplog):
-    pool = [_chunk(f"00000000-0000-0000-0000-{i:012d}") for i in range(10)]
-    payload = json.dumps([{"chunk_id": c.chunk_id, "score": 0.9} for c in pool])
-    with caplog.at_level("WARNING"):
-        await _run(_StubProvider(payload), pool)
-    assert "LOW COVERAGE" not in caplog.text
-
-
-def test_listwise_prompt_demands_every_passage_be_scored():
-    """The prompt must not be readable as 'return only the good ones'."""
-    p = listwise._LISTWISE_SYSTEM
-    assert "score EVERY passage" in p
-    assert "Do NOT filter" in p
-    assert "exactly one entry per" in p
-    assert "worth returning" not in p  # the ambiguous phrasing that caused the split
+def test_prompt_demands_same_order_and_complete_coverage():
+    prompt = listwise._LISTWISE_SYSTEM
+    assert "exactly one result for every passage" in prompt
+    assert "SAME POSITIONAL ORDER" in prompt
+    assert "Do not rank, reorder, filter, or omit" in prompt

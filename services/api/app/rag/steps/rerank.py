@@ -3,8 +3,10 @@
 Three modes, selected by which rerankers a pipeline enables:
 
 - `cohere_only`  — Cohere per collection, keep top `quota`. Terminal.
-- `llm_only`     — pointwise LLM, one call per collection. The historical shape,
-                   preserved unchanged so it stays a valid A/B baseline.
+- `llm_only`     — structured pointwise LLM, one call per collection. Candidate
+                   sizing is historical, but the output contract is versioned and
+                   must not be compared across the structured-output rollout as if
+                   it were an unchanged experimental baseline.
 - `both`         — Cohere per collection keeping `quota + extra`, merged and trimmed
                    to a global cap, then ONE listwise LLM call over the whole pool.
 
@@ -28,6 +30,15 @@ from app.rag.steps.rerank_haiku import PROVIDER as HAIKU_PROVIDER
 from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 logger = logging.getLogger(__name__)
+
+# Pipeline names remain stable API, but earlier free-text UUID runs are a different
+# methodology and must be segmented in evaluation/reporting.
+LLM_RERANK_CONTRACT_VERSION = "structured-positional-v1"
+
+
+def contract_version(config: "RerankConfig") -> str | None:
+    """Return the evaluation methodology version for a rerank configuration."""
+    return LLM_RERANK_CONTRACT_VERSION if config.llm_provider is not None else None
 
 # Each provider instance is owned by the module that owns its client, so there is
 # exactly one client per API and one place it is initialised. See
@@ -136,8 +147,9 @@ async def run(
 
     if mode == "llm_only":
         provider = PROVIDERS[config.llm_provider]
-        # Historical shape: slice to quota x multiplier and score per collection.
-        # Deliberately not budget-derived — changing it would move the A/B baseline.
+        # Preserve historical candidate sizing for continuity. Scoring/output uses
+        # LLM_RERANK_CONTRACT_VERSION and is not methodologically interchangeable
+        # with runs from the former free-text UUID contract.
         max_per_col = quota * settings.candidate_multiplier
         import asyncio
 

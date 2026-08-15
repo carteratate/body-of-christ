@@ -53,7 +53,8 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
 
 
 PIPELINES: dict[str, PipelineConfig] = {
-    # Production baseline — pointwise Haiku per collection, historical behaviour.
+    # Structured pointwise control. Name retained for API compatibility; comparisons
+    # must segment across the structured-output contract rollout.
     "hyde_haiku":          _p("hyde_haiku", llm="haiku"),
     "nohyde_haiku":        _p("nohyde_haiku", hyde=False, llm="haiku"),
     # Same shape, Luna instead of Haiku.
