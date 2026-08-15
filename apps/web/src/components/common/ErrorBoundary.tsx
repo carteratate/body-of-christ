@@ -35,12 +35,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
       return (
         <div className="flex flex-col items-center justify-center gap-4 p-8">
-          <p className="text-brand-primary text-base">Something went wrong. Reload the page.</p>
+          <p className="text-center text-brand-primary text-base">We couldn&apos;t open this page. Anything you already saved is still safe.</p>
+          <p className="text-center text-sm text-brand-muted">Try loading it again.</p>
           <button
             className="text-brand-bg bg-brand-accent font-semibold py-2 px-4 rounded hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             onClick={() => window.location.reload()}
           >
-            Reload
+            Try again
           </button>
         </div>
       );

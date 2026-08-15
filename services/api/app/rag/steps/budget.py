@@ -15,8 +15,9 @@ overpay for unenriched collections, `cohere_pool` packs greedily up to the unit
 boundary — cost per collection stays pinned at one search unit and the document
 count floats to fill it.
 
-`llm_only` mode is deliberately NOT sized here: it must keep the historical
-`quota * candidate_multiplier` so it remains a valid A/B baseline. See
+`llm_only` mode is deliberately NOT sized here: it keeps the historical
+`quota * candidate_multiplier` for candidate-set continuity. Its structured output
+contract is a versioned methodology discontinuity, not an unchanged A/B baseline. See
 `retrieval_k`/`rrf_top_n` callers in pipelines/runner.py.
 """
 from __future__ import annotations

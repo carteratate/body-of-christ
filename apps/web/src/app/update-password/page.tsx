@@ -8,6 +8,7 @@ export default function UpdatePasswordPage() {
   const router = useRouter();
   const [supabase] = useState(createClient);
   const [ready, setReady] = useState(false);
+  const [verificationFailed, setVerificationFailed] = useState(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +24,7 @@ export default function UpdatePasswordPage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === "SIGNED_IN" || event === "PASSWORD_RECOVERY") && session) {
         didRecover.current = true;
+        setVerificationFailed(false);
         setReady(true);
       }
     });
@@ -31,12 +33,15 @@ export default function UpdatePasswordPage() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session && !didRecover.current) {
         didRecover.current = true;
+        setVerificationFailed(false);
         setReady(true);
       }
+    }).catch(() => {
+      if (!didRecover.current) setVerificationFailed(true);
     });
 
     const timeout = setTimeout(() => {
-      if (!didRecover.current) router.replace("/login");
+      if (!didRecover.current) setVerificationFailed(true);
     }, 5000);
 
     return () => {
@@ -63,7 +68,7 @@ export default function UpdatePasswordPage() {
       const { error: updateError } = await supabase.auth.updateUser({ password });
 
       if (updateError) {
-        setError(updateError.message);
+        setError("We couldn't update your password. Please try again.");
         return;
       }
 
@@ -76,10 +81,22 @@ export default function UpdatePasswordPage() {
     }
   }
 
-  if (!ready) {
+  if (!ready && !verificationFailed) {
     return (
       <div className="flex min-h-full items-center justify-center bg-brand-bg">
         <p className="text-brand-muted text-sm">Verifying reset link…</p>
+      </div>
+    );
+  }
+
+  if (verificationFailed) {
+    return (
+      <div className="flex min-h-full items-center justify-center bg-brand-bg px-4">
+        <div className="w-full max-w-sm rounded-xl border border-brand-muted/20 bg-brand-surface p-6 text-center">
+          <h1 className="font-brand text-xl font-semibold text-brand-primary">This reset link can&apos;t be used</h1>
+          <p className="mt-3 text-sm leading-6 text-brand-muted">It may have expired or already been used. Request a new password reset email to continue.</p>
+          <a href="/login" className="mt-6 inline-block rounded-md bg-brand-accent px-4 py-2 text-sm font-semibold text-brand-bg">Go to sign in</a>
+        </div>
       </div>
     );
   }

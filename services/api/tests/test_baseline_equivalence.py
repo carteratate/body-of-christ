@@ -1,12 +1,12 @@
-"""`hyde_haiku` must behave exactly as the pre-refactor `s2_5_haiku` did.
+"""Pin pointwise candidate sizing and ranking semantics within contract v1.
 
-If the baseline shifts, every A/B measurement against it is meaningless — a
-"cohere is better" result could just be "the baseline got worse". These assertions
-pin the properties that would silently move: candidate counts, per-collection call
-shape, document text, and the prompt itself.
+The structured positional rollout is an explicit methodology boundary from the
+former free-text UUID baseline. Within this version, these assertions pin candidate
+counts, per-collection call shape, document text, and the scoring rubric.
 """
 from __future__ import annotations
 
+import json
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -121,22 +121,31 @@ async def test_llm_only_makes_one_call_per_collection():
     assert sorted(calls) == sorted(cols)
 
 
-def test_pointwise_prompt_is_unchanged():
-    """The system prompt drives every score; a reword would silently reshape the
-    baseline. These invariants come from the pre-refactor prompt text."""
+def test_pointwise_prompt_preserves_scoring_contract_with_structured_output():
+    """Only the serialization contract may differ from the historical baseline."""
     p = pointwise._RERANK_SYSTEM
     assert "You are evaluating Catholic theological passages" in p
     assert "SCORING — use the FULL 0.0-1.0 range" in p
     assert "Set include=false if score < 0.35." in p
-    assert '"overlap_verdict"' in p
-    # 2592 chars / ~723 tokens at the time of extraction. A drift beyond a small
-    # margin means the prompt was edited, not merely reformatted.
+    assert "Reserve this for passages that explicitly address the exact topic" in p
+    assert "Include only if better passages are scarce" in p
+    assert "same biblical book, same encyclical, same author and work" in p
+    assert "reduced or no penalty even when they share a source" in p
+    assert "sources, genres, or traditions" in p
+    assert 'overlap_verdict="redundant"' in p
+    assert 'overlap_verdict="complementary"' in p
+    assert "SAME POSITIONAL ORDER" in p
+    # Historical prompt was 2,592 chars. Positional/schema instructions add only a
+    # small delta; a larger movement means ranking semantics changed too.
     assert abs(len(p) - 2592) < 50, f"prompt length moved to {len(p)}"
 
 
-def test_pointwise_passage_format_is_unchanged():
+def test_pointwise_passage_format_uses_position_and_data_boundary():
     formatted = pointwise._format_passages([_cand(1)])
-    assert formatted == "[00000000-0000-0000-0000-000000000001] Ref 1: content 1"
+    assert json.loads(formatted) == {
+        "position": 0, "source": "Ref 1", "passage": "content 1",
+    }
+    assert "00000000" not in formatted
 
 
 def test_pointwise_uses_a_4096_token_budget_not_the_listwise_one():
@@ -197,3 +206,10 @@ def test_pointwise_fallback_cannot_outrank_a_real_score():
     fb = fallback_ranked([_cand(i) for i in range(5)], quota=5)
     assert max(r.reranker_score for r in fb) < 0.6
     assert all(r.reranker_score >= settings.pointwise_score_cutoff for r in fb)
+
+
+def test_pointwise_fallback_preserves_dedup_slack_beyond_quota():
+    from app.rag.steps.llm_rerank.pointwise import fallback_ranked
+
+    candidates = [_cand(i) for i in range(12)]
+    assert len(fallback_ranked(candidates, quota=4)) == len(candidates)

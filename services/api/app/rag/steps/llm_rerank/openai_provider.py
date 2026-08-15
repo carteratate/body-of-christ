@@ -6,6 +6,7 @@ convention (steps/embed.py and steps/explain.py each hold their own).
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import openai
 
@@ -41,11 +42,25 @@ class OpenAIProvider:
     def is_ready(self) -> bool:
         return _client is not None
 
-    async def score(self, system: str, user: str, max_tokens: int) -> ScoreResult:
+    async def score(
+        self, system: str, user: str, max_tokens: int,
+        output_schema: dict[str, Any] | None = None,
+    ) -> ScoreResult:
         if _client is None:
             raise RuntimeError("OpenAI rerank client not initialised")
         # The system prompt goes in as a system message so the same prompt text works
         # unchanged across both providers — parsing stays identical downstream.
+        response_format = (
+            {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "rerank_scores",
+                    "strict": True,
+                    "schema": output_schema,
+                },
+            }
+            if output_schema is not None else openai.NOT_GIVEN
+        )
         response = await _client.chat.completions.create(
             model=settings.rerank_luna_model,
             max_completion_tokens=max_tokens,
@@ -53,12 +68,27 @@ class OpenAIProvider:
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
+            response_format=response_format,
         )
+        choice = response.choices[0]
+        completion_error = None
+        completion_reason = None
+        if choice.finish_reason != "stop":
+            completion_error = f"OpenAI rerank incomplete: finish_reason={choice.finish_reason}"
+            completion_reason = (
+                "completion_truncated" if choice.finish_reason == "length"
+                else "completion_incomplete"
+            )
+        if getattr(choice.message, "refusal", None):
+            completion_error = "OpenAI rerank refused the structured-output request"
+            completion_reason = "completion_refused"
         usage = response.usage
         return ScoreResult(
-            text=response.choices[0].message.content or "",
+            text=choice.message.content or "",
             input_tokens=usage.prompt_tokens if usage else 0,
             output_tokens=usage.completion_tokens if usage else 0,
+            completion_error=completion_error,
+            completion_reason=completion_reason,
         )
 
 

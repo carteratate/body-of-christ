@@ -167,8 +167,7 @@ async def test_collection_below_keep_floor_gets_terminal_reranker_seat():
 
 @pytest.mark.asyncio
 async def test_llm_only_slices_to_historical_candidate_multiplier():
-    """llm_only is the A/B baseline: it must keep quota x candidate_multiplier, not a
-    budget-derived pool."""
+    """Keep historical candidate sizing for continuity, not cross-version equivalence."""
     quota = 4
     expected = quota * settings.candidate_multiplier
     captured = {}

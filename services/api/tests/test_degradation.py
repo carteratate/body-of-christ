@@ -92,7 +92,7 @@ class _StubProvider:
 
     def is_ready(self): return self.ready
 
-    async def score(self, system, user, max_tokens):
+    async def score(self, system, user, max_tokens, output_schema):
         if self.raises:
             raise RuntimeError("boom")
         return ScoreResult(text=self.text, input_tokens=10, output_tokens=5)
@@ -116,19 +116,16 @@ async def test_listwise_malformed_response_is_recorded_even_though_cost_is_prese
         [_chunk(0)], "q", tracker, _StubProvider("not json at all"),
     )
     assert tracker.breakdown(), "cost was recorded before the response was parsed"
-    assert any("call_or_parse_failed" in d for d in degradation.degradations())
+    assert any("structured_decode_failed" in d for d in degradation.degradations())
     assert len(out) == 1, "upstream order must be preserved"
 
 
 @pytest.mark.asyncio
-async def test_listwise_valid_json_with_no_usable_entries_is_recorded():
-    """Distinct from a malformed response: the model returned a well-formed array
-    whose entries all reference unknown ids."""
+async def test_listwise_wrong_coverage_is_recorded():
     degradation.begin_degradation_accounting()
-    payload = json.dumps([{"chunk_id": "00000000-0000-0000-0000-0000000000ff",
-                           "score": 0.9}])
+    payload = json.dumps({"results": []})
     await listwise.rerank_pool([_chunk(0)], "q", CostTracker(), _StubProvider(payload))
-    assert any("no_valid_entries" in d for d in degradation.degradations())
+    assert any("structured_contract_failed" in d for d in degradation.degradations())
 
 
 @pytest.mark.asyncio
@@ -136,7 +133,7 @@ async def test_listwise_transport_failure_is_recorded():
     degradation.begin_degradation_accounting()
     await listwise.rerank_pool([_chunk(0)], "q", CostTracker(),
                                _StubProvider(raises=True))
-    assert any("call_or_parse_failed" in d for d in degradation.degradations())
+    assert any("provider_call_failed" in d for d in degradation.degradations())
 
 
 @pytest.mark.asyncio
@@ -150,7 +147,7 @@ async def test_listwise_not_ready_is_recorded():
 @pytest.mark.asyncio
 async def test_healthy_listwise_records_nothing():
     degradation.begin_degradation_accounting()
-    payload = json.dumps([{"chunk_id": _chunk(0).chunk_id, "score": 0.9}])
+    payload = json.dumps({"results": [{"position": 0, "score": 0.9}]})
     await listwise.rerank_pool([_chunk(0)], "q", CostTracker(), _StubProvider(payload))
     assert degradation.degradations() == []
 

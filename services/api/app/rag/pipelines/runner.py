@@ -143,8 +143,9 @@ def _classify_outcomes(
 def _pool_sizes(config: PipelineConfig, quota: int) -> tuple[int | None, int | None]:
     """(per-strategy retrieval k, RRF top_n) for this pipeline, or (None, None).
 
-    `llm_only` returns (None, None) so the retrieval steps keep their historical
-    `quota * candidate_multiplier` — that mode is the A/B baseline and must not move.
+    `llm_only` returns (None, None) so retrieval keeps its historical
+    `quota * candidate_multiplier`. This preserves candidate sizing, not scoring-
+    contract equivalence across the structured-output rollout.
     Cohere modes size the pool to fill one Cohere search unit and scale the
     per-strategy limit to the number of active paths.
     """

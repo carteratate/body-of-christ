@@ -523,6 +523,18 @@ async def claim_guest_session(
                     )
                 if incomplete:
                     raise HTTPException(status_code=409, detail="Guest search is still completing")
+                claimed_owner = await conn.fetchval(
+                    """SELECT claimed_by FROM guest_trials
+                       WHERE session_token_hash=$1 AND claimed_by IS NOT NULL
+                         AND created_at > now() - interval '30 days'
+                       ORDER BY claimed_at DESC LIMIT 1""",
+                    token_hash,
+                )
+                if claimed_owner is not None and claimed_owner != uuid.UUID(user.user_id):
+                    raise HTTPException(
+                        status_code=409,
+                        detail="This trial activity was already transferred to another account.",
+                    )
                 trials = await conn.fetch(
                     """SELECT id, query, filters, result_count, created_at
                        FROM guest_trials
