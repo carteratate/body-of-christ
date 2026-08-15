@@ -7,8 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { FeedbackPage } from "./FeedbackPage";
 
-const mocks = vi.hoisted(() => ({ submit: vi.fn(), track: vi.fn() }));
-vi.mock("@/components/layout/AppShell", () => ({ useAppContext: () => ({ token: "token" }) }));
+const mocks = vi.hoisted(() => ({ submit: vi.fn(), track: vi.fn(), token: "token" as string | null }));
+vi.mock("@/components/layout/AppShell", () => ({ useAppContext: () => ({ token: mocks.token }) }));
 vi.mock("@/lib/api", async (importOriginal) => ({
   ...await importOriginal<typeof import("@/lib/api")>(),
   submitProductFeedback: mocks.submit,
@@ -19,6 +19,7 @@ beforeEach(() => {
   sessionStorage.clear();
   mocks.submit.mockReset();
   mocks.track.mockReset();
+  mocks.token = "token";
 });
 
 afterEach(cleanup);
@@ -68,5 +69,31 @@ describe("FeedbackPage", () => {
     await screen.findByRole("alert");
     expect((details as HTMLTextAreaElement).value).toBe("Please add a better mobile reading layout.");
     await waitFor(() => expect((screen.getByRole("button", { name: "Send feedback" }) as HTMLButtonElement).disabled).toBe(false));
+  });
+
+  it("submits anonymously without account context or contact permission", async () => {
+    mocks.token = null;
+    saveFeedbackContext({
+      category: "bug",
+      origin: "reader",
+      route: "/reader",
+      search_id: "00000000-0000-0000-0000-000000000001",
+      chunk_id: "00000000-0000-0000-0000-000000000002",
+    });
+    mocks.submit.mockResolvedValue({ feedback_id: "12345678-0000-0000-0000-000000000000" });
+    render(<FeedbackPage />);
+
+    expect(screen.getByText(/This report is anonymous/)).toBeTruthy();
+    expect(screen.queryByRole("checkbox")).toBeNull();
+    await userEvent.type(screen.getByRole("textbox", { name: /Details/ }), "The guest reader stopped opening chapters.");
+    await userEvent.click(screen.getByRole("button", { name: "Send feedback" }));
+
+    await waitFor(() => expect(mocks.submit).toHaveBeenCalledWith(null, expect.objectContaining({
+      contact_allowed: false,
+      route: "/reader",
+      search_id: undefined,
+      chunk_id: undefined,
+      document_id: undefined,
+    })));
   });
 });

@@ -724,12 +724,14 @@ export interface ProductFeedbackInput {
 }
 
 export async function submitProductFeedback(
-  token: string,
+  token: string | null,
   input: ProductFeedbackInput,
 ): Promise<{ feedback_id: string }> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(`${API_URL}/v1/product-feedback`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    headers,
     body: JSON.stringify(input),
   });
   if (!res.ok) {

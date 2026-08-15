@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.deps.auth import get_current_user
+from app.deps.auth import get_optional_current_user
 from app.models.auth import AuthUser
 from app.routes.product_feedback import router
 
@@ -20,7 +20,14 @@ FEEDBACK_ID = "00000000-0000-0000-0000-000000000005"
 def _client() -> TestClient:
     app = FastAPI()
     app.include_router(router, prefix="/v1")
-    app.dependency_overrides[get_current_user] = lambda: AuthUser(user_id=USER_ID)
+    app.dependency_overrides[get_optional_current_user] = lambda: AuthUser(user_id=USER_ID)
+    return TestClient(app)
+
+
+def _anonymous_client() -> TestClient:
+    app = FastAPI()
+    app.include_router(router, prefix="/v1")
+    app.dependency_overrides[get_optional_current_user] = lambda: None
     return TestClient(app)
 
 
@@ -65,9 +72,9 @@ def test_feedback_is_rate_limited_atomically_and_stores_normalized_context():
     assert response.json() == {"feedback_id": FEEDBACK_ID}
     assert "pg_advisory_xact_lock" in conn.execute.await_args.args[0]
     insert_args = conn.fetchrow.await_args.args
-    assert insert_args[5] == "/reader"
-    assert insert_args[8] == "edge"
-    assert insert_args[9:12] == (
+    assert insert_args[6] == "/reader"
+    assert insert_args[9] == "edge"
+    assert insert_args[10:13] == (
         uuid.UUID(SEARCH_ID),
         uuid.UUID(CHUNK_ID),
         uuid.UUID(DOC_ID),
@@ -121,3 +128,47 @@ def test_feedback_database_error_is_sanitized():
     assert response.status_code == 503
     assert response.json()["detail"] == "Service temporarily unavailable"
     assert "password" not in response.text
+
+
+def test_anonymous_feedback_is_pseudonymous_rate_limited_and_context_free():
+    conn = AsyncMock()
+    conn.fetchval = AsyncMock(side_effect=[0, 0])
+    conn.fetchrow = AsyncMock(return_value={"id": FEEDBACK_ID})
+    with (
+        patch("app.routes.product_feedback.get_pool", return_value=_pool(conn)),
+        patch("app.routes.product_feedback._anonymous_rate_key", return_value="anonymous:key"),
+    ):
+        response = _anonymous_client().post("/v1/product-feedback", json=_body(route="/feedback"))
+
+    assert response.status_code == 201
+    assert conn.fetchrow.await_args.args[1] is None
+    assert conn.fetchrow.await_args.args[2] == "anonymous:key"
+    assert conn.fetchrow.await_args.args[10:13] == (None, None, None)
+
+
+def test_anonymous_feedback_rejects_contact_and_account_context():
+    client = _anonymous_client()
+    assert client.post("/v1/product-feedback", json=_body(contact_allowed=True)).status_code == 422
+    assert client.post("/v1/product-feedback", json=_body(search_id=SEARCH_ID)).status_code == 422
+
+
+def test_anonymous_feedback_has_short_and_daily_limits():
+    conn = AsyncMock()
+    conn.fetchval = AsyncMock(return_value=3)
+    with (
+        patch("app.routes.product_feedback.get_pool", return_value=_pool(conn)),
+        patch("app.routes.product_feedback._anonymous_rate_key", return_value="anonymous:key"),
+    ):
+        response = _anonymous_client().post("/v1/product-feedback", json=_body())
+    assert response.status_code == 429
+    assert response.headers["retry-after"] == "900"
+
+    conn = AsyncMock()
+    conn.fetchval = AsyncMock(side_effect=[0, 10])
+    with (
+        patch("app.routes.product_feedback.get_pool", return_value=_pool(conn)),
+        patch("app.routes.product_feedback._anonymous_rate_key", return_value="anonymous:key"),
+    ):
+        response = _anonymous_client().post("/v1/product-feedback", json=_body())
+    assert response.status_code == 429
+    assert response.headers["retry-after"] == "86400"

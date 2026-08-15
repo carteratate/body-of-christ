@@ -76,6 +76,11 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
     if (guestGate) {
       event.preventDefault();
       const destination = new URL(event.currentTarget.href).pathname;
+      if (destination === "/about" || destination === "/feedback") {
+        router.push(`/guest${destination}`);
+        onCloseMobile();
+        return;
+      }
       guestGate.requestSignup(
         destination === "/sources"
           ? "library"
@@ -156,8 +161,8 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           <div className="mt-5 border-t border-brand-bg pt-4">
             <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Information</p>
             <div className="space-y-1">
-              <NavLink href="/about" label="About" icon={<Church size={17} />} active={pathname === "/about"} onClick={handleNavClick} />
-              <NavLink href="/feedback" label="Feedback" icon={<MessageSquareText size={17} />} active={pathname === "/feedback"} onClick={handleNavClick} />
+              <NavLink href="/about" label="About" icon={<Church size={17} />} active={pathname === "/about" || pathname === "/guest/about"} onClick={handleNavClick} />
+              <NavLink href="/feedback" label="Feedback" icon={<MessageSquareText size={17} />} active={pathname === "/feedback" || pathname === "/guest/feedback"} onClick={handleNavClick} />
               <NavLink href="/settings" label="Settings" icon={<Settings size={17} />} active={pathname === "/settings"} onClick={handleNavClick} />
             </div>
           </div>

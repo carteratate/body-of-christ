@@ -50,13 +50,21 @@ export default async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
+  if (pathname === "/guest/about" || pathname === "/guest/feedback") {
+    if (user) return NextResponse.redirect(new URL(pathname.replace("/guest", ""), request.url));
+    return supabaseResponse;
+  }
+
+  if (!user && (pathname === "/about" || pathname === "/feedback")) {
+    return NextResponse.redirect(new URL(`/guest${pathname}`, request.url));
+  }
+
   // ── Authenticated-only routes ────────────────────────────────────────────
   if (
     !user &&
     (pathname.startsWith("/chat") ||
       pathname.startsWith("/search") ||
       pathname.startsWith("/history") ||
-      pathname.startsWith("/feedback") ||
       pathname.startsWith("/bookmarks") ||
       pathname.startsWith("/reader"))
   ) {
@@ -76,6 +84,8 @@ export const config = {
     "/search/:path*",
     "/history/:path*",
     "/feedback/:path*",
+    "/about/:path*",
+    "/guest/:path*",
     "/bookmarks/:path*",
     "/reader/:path*",
     "/login",

@@ -8,7 +8,7 @@ import { HistorySearchRow } from "@/components/history";
 import { Sidebar } from "./Sidebar";
 import { useAppContext } from "./AppShell";
 
-const navigationState = vi.hoisted(() => ({ pathname: "/search", params: "" }));
+const navigationState = vi.hoisted(() => ({ pathname: "/search", params: "", push: vi.fn(), guestGate: null as null | { requestSignup: ReturnType<typeof vi.fn>; searchCount: number } }));
 
 vi.mock("next/link", () => ({
   default: ({ children, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
@@ -17,7 +17,7 @@ vi.mock("next/link", () => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: navigationState.push }),
   usePathname: () => navigationState.pathname,
   useSearchParams: () => new URLSearchParams(navigationState.params),
 }));
@@ -27,7 +27,7 @@ vi.mock("./AppShell", () => ({
 }));
 
 vi.mock("./guestGate", () => ({
-  useGuestGate: () => null,
+  useGuestGate: () => navigationState.guestGate,
 }));
 
 function RowHarness({ onDelete = vi.fn() }: { onDelete?: () => void }) {
@@ -55,6 +55,8 @@ afterEach(() => {
   vi.unstubAllGlobals();
   navigationState.pathname = "/search";
   navigationState.params = "";
+  navigationState.push.mockReset();
+  navigationState.guestGate = null;
 });
 
 function mockMatchMedia(matches: boolean) {
@@ -208,6 +210,21 @@ describe("HistorySearchRow", () => {
 });
 
 describe("Sidebar mobile accessibility", () => {
+  it("lets guests open About and Feedback without showing the signup gate", async () => {
+    mockMatchMedia(false);
+    const requestSignup = vi.fn();
+    navigationState.guestGate = { requestSignup, searchCount: 0 };
+    vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: null } as unknown as ReturnType<typeof useAppContext>);
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    await userEvent.click(screen.getByRole("link", { name: "About" }));
+    await userEvent.click(screen.getByRole("link", { name: "Feedback" }));
+
+    expect(navigationState.push).toHaveBeenNthCalledWith(1, "/guest/about");
+    expect(navigationState.push).toHaveBeenNthCalledWith(2, "/guest/feedback");
+    expect(requestSignup).not.toHaveBeenCalled();
+  });
+
   it("uses Search History as the only history surface in the sidebar", async () => {
     mockMatchMedia(false);
     vi.mocked(useAppContext).mockReturnValue({

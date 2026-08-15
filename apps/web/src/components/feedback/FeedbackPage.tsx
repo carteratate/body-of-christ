@@ -29,27 +29,27 @@ export function FeedbackPage() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!token || pending || message.trim().length < 10) return;
+    if (pending || message.trim().length < 10) return;
     setPending(true);
     setError(null);
     try {
       const response = await submitProductFeedback(token, {
         category,
         message: message.trim(),
-        contact_allowed: contactAllowed,
+        contact_allowed: token ? contactAllowed : false,
         route: context?.route ?? "/feedback",
         viewport_width: window.innerWidth,
         viewport_height: window.innerHeight,
-        search_id: context?.search_id,
-        chunk_id: context?.chunk_id,
-        document_id: context?.document_id,
+        search_id: token ? context?.search_id : undefined,
+        chunk_id: token ? context?.chunk_id : undefined,
+        document_id: token ? context?.document_id : undefined,
         error_code: context?.error_code,
       });
       setReference(response.feedback_id);
       clearFeedbackContext();
       trackFeedbackSubmitted({ category, origin: context?.origin ?? "navigation" });
-    } catch {
-      setError("Your feedback couldn't be sent. Please try again.");
+    } catch (submissionError) {
+      setError(submissionError instanceof Error ? submissionError.message : "Your feedback couldn't be sent. Please try again.");
     } finally {
       setPending(false);
     }
@@ -71,7 +71,7 @@ export function FeedbackPage() {
       <div className="mx-auto w-full max-w-2xl px-5 py-8 sm:px-8">
         <h1 className="text-2xl font-semibold text-brand-primary">Feedback &amp; bug reports</h1>
         <p className="mt-2 text-sm leading-relaxed text-brand-muted">Tell us what happened or what would make TheoCorpus more useful. Reports go directly into the product review queue.</p>
-        {context && context.origin !== "navigation" && (
+        {token && context && context.origin !== "navigation" && (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-md border border-brand-accent/30 bg-brand-surface px-4 py-3 text-sm text-brand-muted">
             <span>Relevant app context will be attached securely. Your search text and passage text are not included.</span>
             <button type="button" onClick={clearFeedbackContext} className="shrink-0 text-xs font-medium text-brand-accent hover:underline">Remove attached context</button>
@@ -96,10 +96,14 @@ export function FeedbackPage() {
             <textarea value={message} onChange={(event) => setMessage(event.target.value)} minLength={10} maxLength={5000} required rows={8} placeholder="What happened, what did you expect, or what would you like to see?" className="mt-3 w-full resize-y rounded-md border border-brand-muted/30 bg-brand-surface p-3 text-sm text-brand-primary outline-none placeholder:text-brand-muted focus:border-brand-accent focus:ring-1 focus:ring-brand-accent" />
             <span className="mt-1 block text-right text-xs text-brand-muted">{message.length}/5000</span>
           </label>
-          <label className="flex items-start gap-3 rounded-md bg-brand-surface p-3 text-sm text-brand-muted">
-            <input type="checkbox" checked={contactAllowed} onChange={(event) => setContactAllowed(event.target.checked)} className="mt-0.5 accent-brand-accent" />
-            <span>You may contact me at the email connected to my account if you need more information.</span>
-          </label>
+          {token ? (
+            <label className="flex items-start gap-3 rounded-md bg-brand-surface p-3 text-sm text-brand-muted">
+              <input type="checkbox" checked={contactAllowed} onChange={(event) => setContactAllowed(event.target.checked)} className="mt-0.5 accent-brand-accent" />
+              <span>You may contact me at the email connected to my account if you need more information.</span>
+            </label>
+          ) : (
+            <p className="rounded-md bg-brand-surface p-3 text-sm text-brand-muted">This report is anonymous. Please do not include contact information or other sensitive personal details.</p>
+          )}
           {error && <div role="alert" className="rounded-md border border-brand-danger/40 bg-brand-danger/10 px-4 py-3 text-sm text-brand-danger">{error} Your draft has been kept.</div>}
           <button type="submit" disabled={pending || message.trim().length < 10} className="min-h-11 w-full rounded-md bg-brand-accent px-4 py-2 font-medium text-brand-bg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">{pending ? "Sending…" : "Send feedback"}</button>
         </form>

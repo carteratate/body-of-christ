@@ -23,7 +23,7 @@ function isRoute(pathname: string, route: string) {
 
 export function AuthenticatedRouteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isGuestRoute = isRoute(pathname, "/search/guest") || isRoute(pathname, "/reader/guest");
+  const isGuestRoute = isRoute(pathname, "/search/guest") || isRoute(pathname, "/reader/guest") || isRoute(pathname, "/guest");
   const isAuthenticatedRoute = !isGuestRoute && AUTHENTICATED_ROUTES.some((route) => isRoute(pathname, route));
 
   if (isGuestRoute) return <GuestShell>{children}</GuestShell>;

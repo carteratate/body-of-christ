@@ -67,4 +67,14 @@ describe("AuthenticatedRouteShell", () => {
     view.rerender(<AuthenticatedRouteShell><div>Near guest</div></AuthenticatedRouteShell>);
     expect(screen.getByTestId("authenticated-shell")).toBeTruthy();
   });
+
+  it("wraps public guest information pages in the guest shell", () => {
+    state.pathname = "/guest/about";
+    const view = render(<AuthenticatedRouteShell><div>About</div></AuthenticatedRouteShell>);
+    expect(screen.getByTestId("guest-shell")).toBeTruthy();
+
+    state.pathname = "/guest/feedback";
+    view.rerender(<AuthenticatedRouteShell><div>Feedback</div></AuthenticatedRouteShell>);
+    expect(screen.getByTestId("guest-shell")).toBeTruthy();
+  });
 });

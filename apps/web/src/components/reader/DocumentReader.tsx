@@ -20,7 +20,6 @@ import { DocumentOverview } from "./DocumentOverview";
 import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 import { getGuestSessionToken } from "@/lib/trial";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
-import { useGuestGate } from "@/components/layout/guestGate";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
 
@@ -34,7 +33,6 @@ interface ProgressWriter {
 
 function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean }) {
   const { token } = useAppContext();
-  const guestGate = useGuestGate();
   const [guestToken, setGuestToken] = useState("");
   const router = useRouter();
   const params = useSearchParams();
@@ -292,7 +290,8 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
 
   function reportContent() {
     if (isGuest) {
-      guestGate?.requestSignup("feature");
+      saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });
+      router.push("/guest/feedback");
       return;
     }
     saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });

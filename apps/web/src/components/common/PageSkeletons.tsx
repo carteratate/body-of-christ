@@ -80,6 +80,8 @@ export function DestinationPageSkeleton() {
   if (pathname.startsWith("/discover")) return <SourceGuideSkeleton />;
   if (pathname.startsWith("/feedback")) return <FeedbackPageSkeleton />;
   if (pathname.startsWith("/about")) return <AboutPageSkeleton />;
+  if (pathname === "/guest/about") return <AboutPageSkeleton />;
+  if (pathname === "/guest/feedback") return <FeedbackPageSkeleton />;
   if (pathname === "/login") return <AuthPageSkeleton />;
   if (pathname === "/signup") return <AuthPageSkeleton signUp />;
   if (pathname === "/update-password") return <PasswordResetSkeleton />;
