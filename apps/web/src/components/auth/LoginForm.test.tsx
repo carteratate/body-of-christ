@@ -117,6 +117,19 @@ describe("LoginForm", () => {
     expect(window.location.search).toBe("");
   });
 
+  it("explains how to recover trial activity after switching accounts", () => {
+    window.history.replaceState({}, "", "/login?reason=trial-other-account");
+
+    render(<LoginForm />);
+
+    expect(
+      screen.getByText(
+        "Sign in with the account that previously received this browser's trial searches and saved passages.",
+      ),
+    ).toBeTruthy();
+    expect(window.location.search).toBe("");
+  });
+
   it("recovers from a thrown authentication error", async () => {
     mocks.signInWithPassword.mockRejectedValue(new Error("network unavailable"));
     render(<LoginForm />);

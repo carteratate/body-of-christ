@@ -640,7 +640,7 @@ async def test_claim_imports_only_transfer_ready_searches_and_their_saved_chunks
     trial_id = uuid.UUID("00000000-0000-0000-0000-000000000321")
     chunk_id = uuid.UUID("00000000-0000-0000-0000-000000000654")
     conn = AsyncMock()
-    conn.fetchval.return_value = False
+    conn.fetchval.side_effect = [False, None]
     conn.fetch.side_effect = [
         [{
             "id": trial_id,
@@ -670,6 +670,56 @@ async def test_claim_imports_only_transfer_ready_searches_and_their_saved_chunks
 
 
 @pytest.mark.asyncio
+async def test_claim_rejects_session_already_transferred_to_another_account():
+    from app.routes.guest_search import claim_guest_session
+
+    current_user = "00000000-0000-0000-0000-000000000789"
+    other_user = uuid.UUID("00000000-0000-0000-0000-000000000456")
+    conn = AsyncMock()
+    conn.fetchval.side_effect = [False, other_user]
+    conn.transaction = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False)))
+    pool = MagicMock()
+    pool.acquire = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(return_value=conn), __aexit__=AsyncMock(return_value=False)))
+
+    with patch("app.routes.guest_search.get_pool", return_value=pool), \
+         pytest.raises(HTTPException) as exc:
+        await claim_guest_session(
+            ClaimGuestSessionRequest(session_token=GUEST_TOKEN),
+            AuthUser(user_id=current_user),
+        )
+
+    assert exc.value.status_code == 409
+    assert "another account" in exc.value.detail
+    conn.fetch.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_claim_is_idempotent_for_session_already_transferred_to_current_account():
+    from app.routes.guest_search import claim_guest_session
+
+    current_user = "00000000-0000-0000-0000-000000000789"
+    conn = AsyncMock()
+    conn.fetchval.side_effect = [False, uuid.UUID(current_user)]
+    conn.fetch.return_value = []
+    conn.transaction = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False)))
+    pool = MagicMock()
+    pool.acquire = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(return_value=conn), __aexit__=AsyncMock(return_value=False)))
+
+    with patch("app.routes.guest_search.get_pool", return_value=pool):
+        result = await claim_guest_session(
+            ClaimGuestSessionRequest(session_token=GUEST_TOKEN),
+            AuthUser(user_id=current_user),
+        )
+
+    assert result.searches_imported == 0
+    assert result.passages_saved == 0
+
+
+@pytest.mark.asyncio
 async def test_claim_recovers_displayed_search_after_finalization_failure():
     from app.routes.guest_search import claim_guest_session
 
@@ -683,7 +733,7 @@ async def test_claim_recovers_displayed_search_after_finalization_failure():
         "created_at": "2026-08-13T12:00:00Z",
     }
     conn = AsyncMock()
-    conn.fetchval.side_effect = [True, False]
+    conn.fetchval.side_effect = [True, False, None]
     conn.fetch.side_effect = [
         [{"id": trial_id}],
         [trial],

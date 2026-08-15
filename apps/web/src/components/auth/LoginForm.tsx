@@ -25,6 +25,18 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
       );
       url.searchParams.delete("error");
       window.history.replaceState(window.history.state, "", url);
+    } else if (url.searchParams.get("reason") === "session-expired") {
+      setMessage(
+        "Your session expired. Sign in again to transfer the trial searches and saved passages kept in this browser.",
+      );
+      url.searchParams.delete("reason");
+      window.history.replaceState(window.history.state, "", url);
+    } else if (url.searchParams.get("reason") === "trial-other-account") {
+      setMessage(
+        "Sign in with the account that previously received this browser's trial searches and saved passages.",
+      );
+      url.searchParams.delete("reason");
+      window.history.replaceState(window.history.state, "", url);
     }
 
     const {
@@ -66,7 +78,7 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
           email,
           password,
         });
-        if (signInError) setError(signInError.message);
+        if (signInError) setError("That email and password weren't recognized. Check them and try again.");
       } else if (mode === "sign-up") {
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
@@ -76,7 +88,7 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
           },
         });
         if (signUpError) {
-          setError(signUpError.message);
+          setError("We couldn't create your account. Check your details and try again.");
         } else if (!data.session) {
           setMessage("Check your email to confirm your account.");
         }
@@ -88,7 +100,7 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
           },
         );
         if (resetError) {
-          setError(resetError.message);
+          setError("We couldn't send the reset email. Check the address and try again.");
         } else {
           setMessage("Check your email for a password reset link.");
         }

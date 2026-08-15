@@ -95,6 +95,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     newSearch,
     sources: [],
     sourcesLoading: false,
+    sourcesReady: true,
     sourcesError: false,
     reloadSources: () => {},
     corpusPassages: null,

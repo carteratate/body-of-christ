@@ -27,7 +27,7 @@ function SettingsError({ onRetry }: { onRetry: () => void }) {
         <SettingsIcon size={20} className="text-brand-accent" />
         <h1 className="text-xl font-semibold text-brand-primary font-brand">Settings</h1>
       </div>
-      <p className="text-brand-muted text-sm mb-3">Failed to load your settings.</p>
+      <p className="text-brand-muted text-sm mb-3">We couldn&apos;t load your settings. Please try again.</p>
       <button
         onClick={onRetry}
         className="text-brand-accent text-sm hover:underline"
@@ -64,7 +64,7 @@ export function SettingsPage() {
 
   if (isLoading) return <SettingsSkeleton />;
   if (preferencesError) return <SettingsError onRetry={() => window.location.reload()} />;
-  if (!preferences) return null;
+  if (!preferences) return <SettingsError onRetry={() => window.location.reload()} />;
 
   const theme = preferences.theme ?? "dark";
 

@@ -284,7 +284,8 @@ function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => 
 }
 
 export function SourcesPage() {
-  const { token, sources, sourcesLoading: loading, sourcesError, reloadSources } = useAppContext();
+  const { token, sources, sourcesLoading, sourcesReady, sourcesError, reloadSources } = useAppContext();
+  const loading = sourcesLoading || !sourcesReady;
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");
@@ -293,7 +294,6 @@ export function SourcesPage() {
   const [progressError, setProgressError] = useState(false);
   const [progressToken, setProgressToken] = useState<string | null>(null);
   const progressRequestRef = useRef(0);
-
   const openDoc = useCallback((id: string, chapter?: string) => {
     const params = new URLSearchParams({ from: "library" });
     const returnKey = createReaderReturnKey("library");
@@ -370,7 +370,7 @@ export function SourcesPage() {
           <p className="text-brand-muted text-sm mb-6">All documents included in the search corpus.</p>
         )}
 
-        {!loading && !sourcesError && (
+        {!loading && !sourcesError && totalPassages > 0 && (
           <div className="mb-7 space-y-3">
             <label className="flex items-center gap-2 rounded-md border border-brand-muted/30 bg-brand-surface px-3 focus-within:border-brand-accent">
               <Search size={17} className="shrink-0 text-brand-muted" aria-hidden="true" />
@@ -428,6 +428,14 @@ export function SourcesPage() {
           </div>
         )}
 
+        {!loading && !sourcesError && totalPassages === 0 && (
+          <div className="rounded-md border border-brand-muted/20 bg-brand-surface px-5 py-10 text-center">
+            <p className="text-sm text-brand-primary">The Library is currently empty.</p>
+            <p className="mt-2 text-sm text-brand-muted">Please try loading it again. If this continues, the corpus may be temporarily unavailable.</p>
+            <button type="button" onClick={() => reloadSources()} className="mt-4 text-sm font-medium text-brand-accent hover:underline">Try again</button>
+          </div>
+        )}
+
         {!loading && !sourcesError && filteredMode && filteredSources.length === 0 && (
           <div className="py-12 text-center">
             <p className="text-sm text-brand-muted">No Library documents match those filters.</p>
@@ -444,7 +452,7 @@ export function SourcesPage() {
           </section>
         )}
 
-        {!loading && !sourcesError && !filteredMode && (
+        {!loading && !sourcesError && totalPassages > 0 && !filteredMode && (
           <div className="space-y-8">
             {COLLECTIONS.map(({ key }) => {
               const docs = sources.filter((s) => s.collection === key);

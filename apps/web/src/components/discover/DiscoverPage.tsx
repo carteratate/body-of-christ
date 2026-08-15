@@ -68,7 +68,7 @@ export function DiscoverPage() {
         setError("You've reached the daily limit of 10 evaluations. Try again tomorrow.");
         setRemaining(0);
       } else {
-        setError(err instanceof Error ? err.message : "Evaluation failed");
+        setError("We couldn't compare the collections right now. Please try again.");
       }
       setScores(null);
       setLoading(false);

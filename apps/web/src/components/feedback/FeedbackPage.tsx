@@ -48,8 +48,8 @@ export function FeedbackPage() {
       setReference(response.feedback_id);
       clearFeedbackContext();
       trackFeedbackSubmitted({ category, origin: context?.origin ?? "navigation" });
-    } catch (caught) {
-      setError((caught as Error).message || "Your feedback couldn't be sent. Please try again.");
+    } catch {
+      setError("Your feedback couldn't be sent. Please try again.");
     } finally {
       setPending(false);
     }

@@ -515,11 +515,13 @@ export async function claimGuestSession(
   token: string,
   sessionToken: string,
   savedChunkIds: string[],
+  signal?: AbortSignal,
 ): Promise<{ searches_imported: number; passages_saved: number }> {
   const res = await fetch(`${API_URL}/v1/guest/claim`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify({ session_token: sessionToken, saved_chunk_ids: savedChunkIds }),
+    signal,
   });
   if (!res.ok) {
     let message = `API error ${res.status}`;

@@ -76,6 +76,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   const [highlight, setHighlight] = useState<string | null>(initialAnchor);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [initialRetryKey, setInitialRetryKey] = useState(0);
   const [chapterLoading, setChapterLoading] = useState<string | null>(null);
   const [chapterError, setChapterError] = useState<{ key: string; mode: "append" | "replace" } | null>(null);
   const [progressError, setProgressError] = useState(false);
@@ -170,7 +171,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
       chapterRequestRef.current += 1;
       replacePendingRef.current = false;
     };
-  }, [docId, guestToken, initialAnchor, initialChapter, isGuest, token]);
+  }, [docId, guestToken, initialAnchor, initialChapter, initialRetryKey, isGuest, token]);
 
   useEffect(() => {
     progressWriterRef.current = token && !isGuest
@@ -315,7 +316,10 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         <ReaderMobileStatusHeader />
         <div className="flex flex-1 flex-col items-center justify-center gap-4">
           <p className="text-sm text-brand-muted">This document couldn&apos;t be loaded.</p>
-          <button onClick={goBack} className="text-sm text-brand-accent hover:underline">← Back</button>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setInitialRetryKey((value) => value + 1)} className="text-sm font-medium text-brand-accent hover:underline">Try again</button>
+            <button onClick={goBack} className="text-sm text-brand-muted hover:text-brand-accent">← Back</button>
+          </div>
         </div>
       </div>
     );

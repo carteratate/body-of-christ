@@ -16,6 +16,7 @@ vi.mock("@/components/layout/AppShell", () => ({
     token: state.token,
     sources: [],
     sourcesLoading: false,
+    sourcesReady: true,
     sourcesError: false,
     reloadSources: vi.fn(),
   }),
