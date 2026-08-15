@@ -1,9 +1,5 @@
-import { ResultsSkeleton } from "@/components/search/ResultsSkeleton";
+import { PageLoadingState } from "@/components/common/PageStates";
 
 export default function SearchLoading() {
-  return (
-    <div className="px-4 pt-4">
-      <ResultsSkeleton count={4} />
-    </div>
-  );
+  return <PageLoadingState />;
 }

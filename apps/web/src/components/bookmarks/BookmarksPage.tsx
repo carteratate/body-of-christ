@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
-import { ResultsSkeleton } from "@/components/search/ResultsSkeleton";
+import { SavedPassagesSkeleton } from "@/components/common/PageSkeletons";
 import { BookmarkCard } from "./BookmarkCard";
 import { getBookmarks, removeBookmark, type Bookmark } from "@/lib/api";
 import { Toast, useToast } from "@/components/common";
@@ -108,12 +108,12 @@ export function BookmarksPage() {
     }
   }
 
+  if (loading) return <SavedPassagesSkeleton />;
+
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="mx-auto w-full min-w-0 max-w-3xl px-4 py-5 sm:px-6 sm:py-6">
         <h1 className="mb-5 text-2xl font-semibold text-brand-primary">Saved Passages</h1>
-
-        {loading && <ResultsSkeleton count={3} />}
 
         {!loading && error && (
           <div className="text-center py-12">

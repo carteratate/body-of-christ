@@ -7,18 +7,7 @@ import { Settings as SettingsIcon, Church, LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/components/layout/AppShell";
 import { updatePreferences } from "@/lib/api";
-
-function SettingsSkeleton() {
-  return (
-    <div className="p-6 max-w-lg animate-pulse">
-      <div className="flex items-center gap-2 mb-6">
-        <div className="h-5 w-5 rounded bg-brand-surface" />
-        <div className="h-6 w-24 rounded bg-brand-surface" />
-      </div>
-      <div className="rounded-lg bg-brand-surface h-20" />
-    </div>
-  );
-}
+import { SettingsPageSkeleton } from "@/components/common/PageSkeletons";
 
 function SettingsError({ onRetry }: { onRetry: () => void }) {
   return (
@@ -62,7 +51,7 @@ export function SettingsPage() {
 
   const isLoading = !ready || (ready && !!token && preferences === null && !preferencesError);
 
-  if (isLoading) return <SettingsSkeleton />;
+  if (isLoading) return <SettingsPageSkeleton />;
   if (preferencesError) return <SettingsError onRetry={() => window.location.reload()} />;
   if (!preferences) return <SettingsError onRetry={() => window.location.reload()} />;
 

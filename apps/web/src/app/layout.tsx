@@ -3,6 +3,7 @@ import { Cinzel, Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { PostHogProvider } from "@/components/layout/PostHogProvider";
+import { AuthenticatedRouteShell } from "@/components/layout/AuthenticatedRouteShell";
 
 const cinzel = Cinzel({
   variable: "--font-cinzel",
@@ -41,7 +42,9 @@ export default async function RootLayout({
       className={`${cinzel.variable} ${geistSans.variable} ${geistMono.variable} h-full`}
     >
       <body className="h-full antialiased">
-        <PostHogProvider>{children}</PostHogProvider>
+        <PostHogProvider>
+          <AuthenticatedRouteShell>{children}</AuthenticatedRouteShell>
+        </PostHogProvider>
       </body>
     </html>
   );

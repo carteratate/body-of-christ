@@ -8,6 +8,7 @@ import { getSearchHistoryPage, type SearchSummaryV2 } from "@/lib/api";
 import { HistorySearchRow } from "./HistorySearchRow";
 import { groupSearchesByLocalDate } from "./historyGroups";
 import { useSearchDeletion } from "./useSearchDeletion";
+import { HistorySkeleton } from "@/components/common/PageSkeletons";
 
 export function HistoryPage() {
   const {
@@ -141,6 +142,8 @@ export function HistoryPage() {
 
   const groups = useMemo(() => groupSearchesByLocalDate(searches), [searches]);
 
+  if (loading) return <HistorySkeleton />;
+
   return (
     <div className="h-full overflow-y-auto">
       <div className="mx-auto w-full max-w-3xl px-4 py-5 sm:px-6 sm:py-7">
@@ -169,7 +172,6 @@ export function HistoryPage() {
           </section>
         )}
 
-        {loading && <p className="py-12 text-center text-sm text-brand-muted">Loading history…</p>}
         {!loading && error && (
           <div className="py-12 text-center">
             <p className="mb-3 text-sm text-brand-muted">Your history couldn&apos;t be loaded.</p>

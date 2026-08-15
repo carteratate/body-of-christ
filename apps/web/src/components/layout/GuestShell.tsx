@@ -2,6 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AppContext, type AppContextValue } from "./AppShell";
 import { Sidebar } from "./Sidebar";
 import { MobileTopBar } from "./MobileTopBar";
@@ -11,10 +12,12 @@ import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
 import { getGuestSavedChunkIds, getGuestSearchCount, markGuestSearchCompleted, toggleGuestSavedChunk } from "@/lib/trial";
 
 export function GuestShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [searchKey, setSearchKey] = useState(0);
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
   const [pendingSearch, setPendingSearchState] = useState<{ id: string; query: string } | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileNavTriggerId, setMobileNavTriggerId] = useState("mobile-nav-trigger");
   const [showSignup, setShowSignup] = useState(false);
   const [signupReason, setSignupReason] = useState<"limit" | "library" | "saved" | "history" | "notes" | "feature">("feature");
   const [searchCount, setSearchCount] = useState(0);
@@ -28,7 +31,11 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
-  useMobileNavigationDrawer(mobileNavOpen, closeMobileNav);
+  useMobileNavigationDrawer(mobileNavOpen, closeMobileNav, mobileNavTriggerId);
+  const openMobileNavigation = useCallback((triggerId = "mobile-nav-trigger") => {
+    setMobileNavTriggerId(triggerId);
+    setMobileNavOpen(true);
+  }, []);
 
   // Gated navigation opens a dismissible signup explanation. Also dismiss the
   // mobile drawer so the modal isn't stacked behind it.
@@ -102,7 +109,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     bookmarkIds: {},
     setBookmarkForChunk: () => {},
     mobileNavigationOpen: mobileNavOpen,
-    openMobileNavigation: () => setMobileNavOpen(true),
+    openMobileNavigation,
   };
 
   return (
@@ -118,7 +125,9 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
             />
           )}
           <main inert={mobileNavOpen ? true : undefined} className="flex flex-1 min-h-0 min-w-0 flex-col overflow-hidden">
-            <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => setMobileNavOpen(true)} />
+            {!pathname.startsWith("/reader/guest/") && (
+              <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => openMobileNavigation()} />
+            )}
             {children}
           </main>
         </div>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
+import { LibrarySkeleton } from "@/components/common/PageSkeletons";
 import { listReadingProgress, type ReadingProgress, type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
 import { createReaderReturnKey } from "@/lib/readerNavigation";
@@ -79,32 +80,6 @@ function ExpandableGroup({
         </div>
       )}
     </li>
-  );
-}
-
-function SourcesSkeleton() {
-  return (
-    <div className="space-y-8 animate-pulse">
-      {[3, 1, 18, 40, 1, 1, 4, 36].map((count, i) => (
-        <div key={i} className="space-y-2">
-          <div className="flex items-center gap-3 pb-2 border-b border-brand-surface">
-            <div className="h-5 w-28 bg-brand-muted/20 rounded-full" />
-            <div className="h-4 w-36 bg-brand-muted/20 rounded" />
-          </div>
-          <div className="space-y-1.5">
-            {Array.from({ length: Math.min(count, 6) }).map((_, j) => (
-              <div key={j} className="flex items-center justify-between px-3 py-2 rounded bg-brand-surface">
-                <div
-                  className="h-4 bg-brand-muted/20 rounded"
-                  style={{ width: `${35 + ((j * 13 + i * 7) % 45)}%` }}
-                />
-                <div className="h-4 w-20 bg-brand-muted/20 rounded shrink-0 ml-4" />
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }
 
@@ -357,6 +332,8 @@ export function SourcesPage() {
   const totalPassages = sources.reduce((sum, s) => sum + s.chunk_count, 0);
   const totalDocuments = nonBibleSources.length + (sources.some((s) => s.collection === "bible") ? 1 : 0);
 
+  if (loading) return <LibrarySkeleton />;
+
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="mx-auto w-full min-w-0 max-w-3xl px-4 py-5 sm:px-6 sm:py-6">
@@ -413,8 +390,6 @@ export function SourcesPage() {
             )}
           </section>
         )}
-
-        {loading && <SourcesSkeleton />}
 
         {!loading && sourcesError && (
           <div className="text-center py-12">

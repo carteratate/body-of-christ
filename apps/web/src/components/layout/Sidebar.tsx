@@ -62,7 +62,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
         guestGate.requestSignup("limit");
         return;
       }
-      router.push(pathname === "/search/guest" && searchParams.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
+      router.push(searchParams.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
       newSearch();
       onCloseMobile();
       return;

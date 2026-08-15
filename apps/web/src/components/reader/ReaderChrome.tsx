@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Flag, Menu, Settings2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flag, Settings2 } from "lucide-react";
 import type { DocumentInfo, TocEntry } from "@/lib/api";
-import { useAppContext } from "@/components/layout/AppShell";
+import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
 
 export type ReaderFontSize = "small" | "medium" | "large";
 export type ReaderSpacing = "compact" | "comfortable" | "relaxed";
@@ -40,7 +40,6 @@ export function ReaderChrome({
   showBackGuide = false,
   onDismissBackGuide,
 }: Props) {
-  const { mobileNavigationOpen, openMobileNavigation } = useAppContext();
   const currentIndex = toc.findIndex((entry) => entry.chapter_key === currentChapterKey);
   const previous = currentIndex > 0 ? toc[currentIndex - 1] : null;
   const next = currentIndex >= 0 && currentIndex + 1 < toc.length ? toc[currentIndex + 1] : null;
@@ -56,22 +55,7 @@ export function ReaderChrome({
 
   return (
     <header className="relative z-10 border-b border-brand-surface bg-brand-bg px-2 py-2 sm:px-4">
-      <div className="flex min-h-10 items-center gap-1.5 md:hidden">
-        <button
-          id="reader-app-nav-trigger"
-          type="button"
-          onClick={() => openMobileNavigation("reader-app-nav-trigger")}
-          className="rounded p-2 text-brand-muted hover:bg-brand-surface hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-          aria-label="Open app navigation"
-          aria-controls="mobile-nav-drawer"
-          aria-expanded={mobileNavigationOpen}
-        >
-          <Menu size={19} />
-        </button>
-        <span className="min-w-0 flex-1 truncate font-brand text-lg font-semibold text-brand-accent">
-          TheoCorpus
-        </span>
-      </div>
+      <ReaderMobileStatusHeader embedded />
 
       <div className="mt-1 flex min-h-10 flex-wrap items-center gap-2 md:mt-0 md:flex-nowrap">
         <div className="min-w-0 basis-full px-1 md:max-w-[18rem] md:basis-auto md:shrink">

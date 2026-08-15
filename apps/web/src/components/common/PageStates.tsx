@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { DestinationPageSkeleton } from "./PageSkeletons";
 
 const PAGE_NAMES: Array<[string, string]> = [
   ["/sources", "Library"],
@@ -23,34 +24,18 @@ function pageName(pathname: string): string {
 }
 
 export function PageLoadingState() {
-  const pathname = usePathname();
-  const name = pageName(pathname);
-
-  return (
-    <div className="flex min-h-full flex-1 bg-brand-bg text-brand-primary" aria-busy="true" aria-live="polite">
-      <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6">
-        <div className="mb-7">
-          <p className="font-brand text-xl font-semibold text-brand-accent">TheoCorpus</p>
-          <p className="mt-2 text-sm text-brand-muted">Loading {name}…</p>
-        </div>
-        <div className="animate-pulse space-y-4" aria-hidden="true">
-          <div className="h-8 w-48 rounded bg-brand-surface" />
-          <div className="h-12 w-full rounded-md bg-brand-surface" />
-          {[0, 1, 2, 3].map((item) => (
-            <div key={item} className="h-24 rounded-md bg-brand-surface" />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  return <DestinationPageSkeleton />;
 }
 
 export function PageErrorState({ reset }: { reset: () => void }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const name = pageName(pathname);
   const isGuest = pathname.startsWith("/search/guest") || pathname.startsWith("/reader/guest");
   const isPublic = pathname === "/" || pathname === "/login" || pathname === "/signup" || pathname === "/update-password" || pathname === "/onboarding-preview";
-  const recoveryHref = isGuest ? "/search/guest" : isPublic ? "/" : "/search";
+  const recoveryHref = isGuest
+    ? searchParams.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest"
+    : isPublic ? "/" : "/search";
   const recoveryLabel = isGuest ? "Back to Guest Search" : isPublic ? "Back to TheoCorpus" : "Go to Search";
 
   return (

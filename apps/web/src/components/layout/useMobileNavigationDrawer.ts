@@ -39,7 +39,7 @@ export function useMobileNavigationDrawer(
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
-      document.getElementById(restoreTriggerId)?.focus();
+      (document.getElementById(restoreTriggerId) ?? document.getElementById("mobile-nav-trigger"))?.focus();
     };
   }, [onClose, open, restoreTriggerId]);
 }
