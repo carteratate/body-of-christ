@@ -2,17 +2,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
 import { AppContext, type AppContextValue } from "./AppShell";
+import { Sidebar } from "./Sidebar";
 import { MobileTopBar } from "./MobileTopBar";
 import { GuestGateContext, type GuestGate } from "./guestGate";
 import { GuestSignupModal } from "@/components/common";
 import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
-
-const Sidebar = dynamic(
-  () => import("./Sidebar").then((m) => ({ default: m.Sidebar })),
-  { ssr: false }
-);
+import { getGuestSavedChunkIds, getGuestSearchCount, markGuestSearchCompleted, toggleGuestSavedChunk } from "@/lib/trial";
 
 export function GuestShell({ children }: { children: React.ReactNode }) {
   const [searchKey, setSearchKey] = useState(0);
@@ -20,19 +16,41 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
   const [pendingSearch, setPendingSearchState] = useState<{ id: string; query: string } | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [signupReason, setSignupReason] = useState<"limit" | "library" | "saved" | "history" | "notes" | "feature">("feature");
+  const [searchCount, setSearchCount] = useState(0);
+  const [savedChunkIds, setSavedChunkIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      setSearchCount(getGuestSearchCount());
+      setSavedChunkIds(getGuestSavedChunkIds());
+    });
+  }, []);
 
   const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
   useMobileNavigationDrawer(mobileNavOpen, closeMobileNav);
 
-  // Any further navigation (New Search, nav links, a second query) opens the
-  // signup modal once the free trial search has been read. Also dismiss the
+  // Gated navigation opens a dismissible signup explanation. Also dismiss the
   // mobile drawer so the modal isn't stacked behind it.
-  const requestSignup = useCallback(() => {
+  const requestSignup = useCallback((reason: "limit" | "library" | "saved" | "history" | "notes" | "feature" = "feature") => {
     setMobileNavOpen(false);
+    setSignupReason(reason);
     setShowSignup(true);
   }, []);
 
-  const guestGate = useMemo<GuestGate>(() => ({ requestSignup }), [requestSignup]);
+  const recordCompletedSearch = useCallback(() => setSearchCount(markGuestSearchCompleted()), []);
+  const toggleSaved = useCallback((chunkId: string) => {
+    const isSaved = toggleGuestSavedChunk(chunkId);
+    setSavedChunkIds(getGuestSavedChunkIds());
+    return isSaved;
+  }, []);
+  const guestGate = useMemo<GuestGate>(() => ({
+    requestSignup,
+    searchCount,
+    recordCompletedSearch,
+    savedChunkIds,
+    toggleSavedChunk: toggleSaved,
+  }), [recordCompletedSearch, requestSignup, savedChunkIds, searchCount, toggleSaved]);
 
   const newSearch = useCallback(() => {
     setSearchKey((k) => k + 1);
@@ -103,7 +121,7 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
             {children}
           </main>
         </div>
-        <GuestSignupModal isOpen={showSignup} onDismiss={() => setShowSignup(false)} />
+        <GuestSignupModal isOpen={showSignup} reason={signupReason} onDismiss={() => setShowSignup(false)} />
       </GuestGateContext.Provider>
     </AppContext.Provider>
   );

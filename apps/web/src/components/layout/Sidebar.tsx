@@ -8,6 +8,7 @@ import { trackNavigationSelected } from "@/lib/analytics";
 import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { useAppContext } from "./AppShell";
 import { useGuestGate } from "./guestGate";
+import { GUEST_SEARCH_LIMIT } from "@/lib/trial";
 
 interface SidebarProps {
   isMobileOpen: boolean;
@@ -57,7 +58,13 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
 
   function handleNewSearch() {
     if (guestGate) {
-      guestGate.requestSignup();
+      if (guestGate.searchCount >= GUEST_SEARCH_LIMIT) {
+        guestGate.requestSignup("limit");
+        return;
+      }
+      router.push(pathname === "/search/guest" && searchParams.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
+      newSearch();
+      onCloseMobile();
       return;
     }
     router.push("/search");
@@ -68,7 +75,16 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   function handleNavClick(event: React.MouseEvent<HTMLAnchorElement>) {
     if (guestGate) {
       event.preventDefault();
-      guestGate.requestSignup();
+      const destination = new URL(event.currentTarget.href).pathname;
+      guestGate.requestSignup(
+        destination === "/sources"
+          ? "library"
+          : destination === "/bookmarks"
+            ? "saved"
+            : destination === "/history"
+              ? "history"
+              : "feature",
+      );
       return;
     }
     const destination = new URL(event.currentTarget.href).pathname;

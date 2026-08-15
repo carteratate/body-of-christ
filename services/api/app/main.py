@@ -43,6 +43,7 @@ from app.routes.evaluate import router as evaluate_router
 from app.routes.compare import router as compare_router
 from app.routes.compare_stats import router as compare_stats_router
 from app.routes.guest_search import router as guest_search_router
+from app.routes.guest_search import cleanup_expired_guest_trials, drain_guest_search_tasks
 from app.routes.reading_progress import router as reading_progress_router
 from app.routes.product_feedback import router as product_feedback_router
 
@@ -101,6 +102,13 @@ async def _db_keepalive() -> None:
                 logger.warning("db_keepalive: ping failed (%s)", exc.__class__.__name__)
 
 
+async def _guest_retention_cleanup() -> None:
+    """Enforce guest-research retention even when no new guest search arrives."""
+    while True:
+        await cleanup_expired_guest_trials()
+        await asyncio.sleep(6 * 60 * 60)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
@@ -126,8 +134,14 @@ async def lifespan(app: FastAPI):
             raise RuntimeError(message)
         logger.warning(message)
     keepalive_task = asyncio.create_task(_db_keepalive())
+    guest_cleanup_task = asyncio.create_task(_guest_retention_cleanup())
     yield
     keepalive_task.cancel()
+    guest_cleanup_task.cancel()
+    # Guest SSE connections may already be gone while their explanation and
+    # transfer persistence continues. Drain those producers before closing the
+    # model and database clients they own.
+    await drain_guest_search_tasks()
     await close_judge()
     await close_luna()
     await close_cohere()

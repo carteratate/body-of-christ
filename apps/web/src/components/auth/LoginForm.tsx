@@ -6,10 +6,10 @@ import { createClient } from "@/lib/supabase/client";
 
 type AuthMode = "sign-in" | "sign-up" | "forgot-password";
 
-export function LoginForm() {
+export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in" | "sign-up" }) {
   const router = useRouter();
   const [supabase] = useState(createClient);
-  const [mode, setMode] = useState<AuthMode>("sign-in");
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

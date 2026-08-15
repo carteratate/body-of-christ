@@ -7,7 +7,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ChunkCard } from "./ChunkCard";
 
 const mocks = vi.hoisted(() => ({ submitLabel: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+}));
 vi.mock("@/components/layout/AppShell", () => ({
   useAppContext: () => ({ bookmarkIds: {}, setBookmarkForChunk: vi.fn() }),
 }));

@@ -8,7 +8,11 @@ import { createContext, useContext } from "react";
  * `requestSignup()` to open the signup modal instead of navigating.
  */
 export interface GuestGate {
-  requestSignup: () => void;
+  requestSignup: (reason?: "limit" | "library" | "saved" | "history" | "notes" | "feature") => void;
+  searchCount: number;
+  recordCompletedSearch: () => void;
+  savedChunkIds: string[];
+  toggleSavedChunk: (chunkId: string) => boolean;
 }
 
 export const GuestGateContext = createContext<GuestGate | null>(null);

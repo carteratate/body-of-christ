@@ -7,6 +7,7 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { getReadingProgress, getToc, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { getCollectionMeta } from "@/lib/collections";
 import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { getGuestSessionToken } from "@/lib/trial";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
 const SECTION_BATCH_SIZE = 30;
@@ -44,9 +45,10 @@ function matchesSection(entry: TocEntry, rawQuery: string, collection: string): 
 interface Props {
   docId: string;
   mobileHeader: ReactNode;
+  isGuest?: boolean;
 }
 
-export function DocumentOverview({ docId, mobileHeader }: Props) {
+export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props) {
   const { token } = useAppContext();
   const router = useRouter();
   const params = useSearchParams();
@@ -61,16 +63,19 @@ export function DocumentOverview({ docId, mobileHeader }: Props) {
   const [resolvedRequest, setResolvedRequest] = useState<string | null>(null);
   const [failedRequest, setFailedRequest] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+  const [guestToken, setGuestToken] = useState("");
   const requestRef = useRef(0);
-  const requestKey = `${token ?? "signed-out"}:${docId}:${retryKey}`;
+  const requestKey = `${token ?? guestToken ?? "signed-out"}:${docId}:${retryKey}`;
+
+  useEffect(() => { if (isGuest) queueMicrotask(() => setGuestToken(getGuestSessionToken())); }, [isGuest]);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token && !guestToken) return;
     const requestId = ++requestRef.current;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10_000);
-    const tocRequest = getToc(token, docId, controller.signal);
-    const progressRequest = getReadingProgress(token, docId, controller.signal);
+    const tocRequest = getToc(token ?? "", docId, controller.signal, guestToken || undefined);
+    const progressRequest = isGuest ? Promise.resolve(null) : getReadingProgress(token!, docId, controller.signal);
 
     void tocRequest.then((toc) => {
       if (requestId !== requestRef.current) return;
@@ -100,7 +105,7 @@ export function DocumentOverview({ docId, mobileHeader }: Props) {
       controller.abort();
       requestRef.current += 1;
     };
-  }, [docId, requestKey, retryKey, token]);
+  }, [docId, guestToken, isGuest, requestKey, retryKey, token]);
 
   const loading = resolvedRequest !== requestKey && failedRequest !== requestKey;
   const error = failedRequest === requestKey;
@@ -115,7 +120,7 @@ export function DocumentOverview({ docId, mobileHeader }: Props) {
   function openChapter(chapterKey: string) {
     const next = new URLSearchParams({ from: origin, chapter: chapterKey });
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
-    const destination = `/reader/${docId}?${next.toString()}`;
+    const destination = `${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`;
     if (isReaderReturnKey(returnKey)) router.replace(destination);
     else router.push(destination);
   }

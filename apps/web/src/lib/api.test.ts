@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { deleteSearch, getBookmarks, getReadingProgress, getSearchHistoryPage, getSearchResults, invalidateBookmarksCache, putReadingProgress, removeBookmark, SearchRestoreHttpError, streamGuestSearch, streamSearch, submitProductFeedback, type Bookmark, type SearchStreamCallbacks } from "./api";
+import { claimGuestSession, deleteSearch, getBookmarks, getReadingProgress, getSearchHistoryPage, getSearchResults, GuestClaimHttpError, invalidateBookmarksCache, putReadingProgress, removeBookmark, SearchRestoreHttpError, streamGuestSearch, streamSearch, submitProductFeedback, type Bookmark, type SearchStreamCallbacks } from "./api";
 
 function callbacks() {
   return {
@@ -10,6 +10,7 @@ function callbacks() {
     onError: vi.fn(),
     onRateLimit: vi.fn(),
     onStatus: vi.fn(),
+    onResultsReady: vi.fn(),
   } satisfies SearchStreamCallbacks;
 }
 
@@ -246,7 +247,7 @@ describe("streamGuestSearch", () => {
       collection_outcomes: { bible: "no_candidates" },
     })));
 
-    await streamGuestSearch("grace", { collections: ["bible"] }, 3, cb);
+    await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb);
 
     expect(cb.onDone).toHaveBeenCalledWith(
       null, 0, "no_candidates", { bible: "no_candidates" }, false,
@@ -261,8 +262,43 @@ describe("streamGuestSearch", () => {
     ));
 
     await expect(
-      streamGuestSearch("grace", { collections: ["bible"] }, 3, cb),
+      streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb),
     ).rejects.toThrow("invalid stream event");
+  });
+
+  it("releases ranked guest results before terminal transfer completion", async () => {
+    const cb = callbacks();
+    const encoder = new TextEncoder();
+    const read = vi.fn()
+      .mockResolvedValueOnce({ done: false, value: encoder.encode('data: {"type":"results_ready","result_count":4}\n\n') })
+      .mockResolvedValueOnce({ done: false, value: encoder.encode('data: {"type":"done","search_id":null,"result_count":4}\n\n') })
+      .mockResolvedValueOnce({ done: true, value: undefined });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      body: { getReader: () => ({ read }) },
+    }));
+
+    await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb);
+
+    expect(cb.onResultsReady).toHaveBeenCalledWith(4);
+    expect(cb.onDone).toHaveBeenCalledOnce();
+    expect(cb.onResultsReady.mock.invocationCallOrder[0]).toBeLessThan(cb.onDone.mock.invocationCallOrder[0]);
+  });
+});
+
+describe("claimGuestSession", () => {
+  it("preserves the response status and detail for retry decisions", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "Guest search is still completing" }),
+      { status: 409, headers: { "Content-Type": "application/json" } },
+    )));
+
+    await expect(claimGuestSession("jwt", "guest-session-token-with-at-least-32-chars", []))
+      .rejects.toEqual(expect.objectContaining<Partial<GuestClaimHttpError>>({
+        name: "GuestClaimHttpError",
+        status: 409,
+        message: "Guest search is still completing",
+      }));
   });
 });
 

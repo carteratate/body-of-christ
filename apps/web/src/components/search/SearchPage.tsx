@@ -21,7 +21,8 @@ import {
   type CollectionOutcome,
   type SearchOutcome,
 } from "@/lib/api";
-import { markTrialUsed } from "@/lib/trial";
+import { getGuestSessionToken, GUEST_SEARCH_LIMIT } from "@/lib/trial";
+import { useGuestGate } from "@/components/layout/guestGate";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import {
   trackSearchPerformed,
@@ -37,8 +38,41 @@ function classifyError(msg: string): string {
   return "server_error";
 }
 
+const GUEST_RESULTS_KEY = "theocorpus-guest-current-results";
+const GUEST_RESULTS_MAX_AGE_MS = 2 * 60 * 60 * 1000;
+
+interface GuestResultsSnapshot {
+  savedAt: number;
+  query: string;
+  results: ChunkResult[];
+  searchId: string | null;
+  collections: string[];
+  translation: string;
+  quota: number;
+  visibleCollections: string[];
+  outcome: SearchOutcome | null;
+  collectionOutcomes: Record<string, CollectionOutcome>;
+}
+
+function readGuestResultsSnapshot(): GuestResultsSnapshot | null {
+  try {
+    const value = JSON.parse(sessionStorage.getItem(GUEST_RESULTS_KEY) ?? "null") as Partial<GuestResultsSnapshot> | null;
+    if (!value || typeof value.savedAt !== "number" || Date.now() - value.savedAt > GUEST_RESULTS_MAX_AGE_MS) return null;
+    if (typeof value.query !== "string" || !Array.isArray(value.results) || !Array.isArray(value.collections)) return null;
+    if (typeof value.translation !== "string" || typeof value.quota !== "number" || !Array.isArray(value.visibleCollections)) return null;
+    return value as GuestResultsSnapshot;
+  } catch {
+    return null;
+  }
+}
+
+function clearGuestResultsSnapshot() {
+  try { sessionStorage.removeItem(GUEST_RESULTS_KEY); } catch {}
+}
+
 function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const router = useRouter();
+  const guestGate = useGuestGate();
   const {
     token, userId, preferences,
     searchKey,
@@ -70,6 +104,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // ── State ─────────────────────────────────────────────────────────────────
 
   const [activeCollections, setActiveCollections] = useState<string[]>(() => {
+    if (isGuest) return ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"];
     const cols = preferences?.default_collections;
     return cols && cols.length > 0 ? cols : [];
   });
@@ -110,7 +145,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // Measured footprint of the query bubble shown during the animation — passed to
   // LoadingAnimation so its radial constellation shrinks to never overlap the bubble.
   const [bubbleSize, setBubbleSize] = useState<{ width: number; height: number } | null>(null);
-  const [guestSearchDone, setGuestSearchDone] = useState(false);
+  const [showFirstSearchHint, setShowFirstSearchHint] = useState(false);
+  const [showFirstContextHint, setShowFirstContextHint] = useState(false);
   const [queuedRestoreExplore, setQueuedRestoreExplore] = useState<{
     content: string;
     label: string;
@@ -133,6 +169,43 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // after the animation resolves update results state directly (live streaming).
   const resolvedRef = useRef(false);
   const bubbleRef = useRef<HTMLDivElement>(null);
+
+  // The guest search page unmounts while Reader is open. Keep the currently
+  // displayed result set in same-tab storage so returning from context restores
+  // the exact query instead of presenting a blank search screen.
+  useLayoutEffect(() => {
+    if (!isGuest) return;
+    const snapshot = readGuestResultsSnapshot();
+    if (!snapshot) return;
+    setResults(snapshot.results);
+    setSearchId(snapshot.searchId);
+    setSubmittedQuery(snapshot.query);
+    setQueryBubbleVisible(true);
+    setSubmittedCollections(snapshot.collections);
+    setSubmittedTranslation(snapshot.translation);
+    setSubmittedQuota(snapshot.quota);
+    setVisibleCollections(snapshot.visibleCollections);
+    setOutcome(snapshot.outcome);
+    setCollectionOutcomes(snapshot.collectionOutcomes);
+    resolvedRef.current = true;
+  }, [isGuest]);
+
+  useEffect(() => {
+    if (!isGuest || !submittedQuery || results.length === 0 || loading) return;
+    const snapshot: GuestResultsSnapshot = {
+      savedAt: Date.now(),
+      query: submittedQuery,
+      results,
+      searchId,
+      collections: submittedCollections,
+      translation: submittedTranslation || translation,
+      quota: submittedQuota ?? quota,
+      visibleCollections,
+      outcome,
+      collectionOutcomes,
+    };
+    try { sessionStorage.setItem(GUEST_RESULTS_KEY, JSON.stringify(snapshot)); } catch {}
+  }, [isGuest, submittedQuery, results, loading, searchId, submittedCollections, submittedTranslation, translation, submittedQuota, quota, visibleCollections, outcome, collectionOutcomes]);
 
   // useLayoutEffect (not useEffect) so LoadingAnimation's first paint already
   // knows the bubble's footprint — avoids a visible resize/jump of the constellation.
@@ -253,6 +326,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   useEffect(() => {
     if (prevSearchKey.current === searchKey) return;
     prevSearchKey.current = searchKey;
+    if (isGuest) clearGuestResultsSnapshot();
     abortRef.current?.abort();
     activeRequestRef.current += 1;
     if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
@@ -439,7 +513,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       const searchCollections = collectionsOverride ?? activeCollections;
       const searchTranslation = translationOverride ?? translation;
       const searchQuota = quotaOverride ?? quota;
-      if (loading || searchCollections.length === 0 || !query.trim() || guestSearchDone) return;
+      if (loading || searchCollections.length === 0 || !query.trim()) return;
+      if (isGuest && (guestGate?.searchCount ?? 0) >= GUEST_SEARCH_LIMIT) {
+        guestGate?.requestSignup("limit");
+        return;
+      }
       const currentToken = tokenRef.current;
       if (!isGuest && !currentToken) return;
 
@@ -450,6 +528,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       activeRequestRef.current = requestId;
       setAnimationRequestId(requestId);
       let terminalReceived = false;
+      let guestCompletionRecorded = false;
       const isCurrentRequest = () => activeRequestRef.current === requestId;
 
       // Update the pending slot title from "New Search" → actual query
@@ -488,6 +567,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       setSubmittedTranslation(searchTranslation);
       setSubmittedQuota(searchQuota);
       setVisibleCollections(snapshot);
+      if (isGuest) clearGuestResultsSnapshot();
 
       try {
         const streamCallbacks = {
@@ -498,6 +578,18 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           onChunk(chunk: ChunkResult) {
             if (!isCurrentRequest() || terminalReceived) return;
             bufferedChunksRef.current.push({ ...chunk, explanation: null });
+          },
+          onResultsReady(resultCount: number) {
+            if (!isGuest || !isCurrentRequest() || terminalReceived) return;
+            // Reveal ranked cards immediately while explanation persistence and
+            // transfer readiness continue in the server-owned producer.
+            setQueryDone(true);
+            if (!guestCompletionRecorded) {
+              guestCompletionRecorded = true;
+              const completedNumber = (guestGate?.searchCount ?? 0) + 1;
+              guestGate?.recordCompletedSearch();
+              if (completedNumber === 1 && resultCount > 0) setShowFirstSearchHint(true);
+            }
           },
           onExplanationDelta(chunkId: string, delta: string) {
             if (!isCurrentRequest()) return;
@@ -537,11 +629,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
               refreshSearchesRef.current();
             }
             if (isGuest) {
-              // Consume the free trial silently — let the guest read and explore
-              // the results. The signup modal is deferred until they attempt a
-              // next action (New Search / nav link), handled in GuestShell.
-              markTrialUsed();
-              setGuestSearchDone(true);
+              if (!guestCompletionRecorded) {
+                guestCompletionRecorded = true;
+                const completedNumber = (guestGate?.searchCount ?? 0) + 1;
+                guestGate?.recordCompletedSearch();
+                if (completedNumber === 1 && resultCount > 0) setShowFirstSearchHint(true);
+              }
             }
             trackSearchPerformed({
               queryLength: query.length,
@@ -559,6 +652,14 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           ) {
             if (!isCurrentRequest() || terminalReceived) return;
             terminalReceived = true;
+            if (isGuest && msg === "trial_exhausted") {
+              setSearchPhase(null);
+              setLoading(false);
+              setShowAnimation(false);
+              setAnimFilterBarActive(false);
+              guestGate?.requestSignup("limit");
+              return;
+            }
             setSearchPhase(null);
             setError(msg);
             setErrorCode(code ?? classifyError(msg));
@@ -592,6 +693,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
         if (isGuest) {
           await streamGuestSearch(
+            getGuestSessionToken(),
             query,
             { collections: snapshot, translation: searchTranslation },
             searchQuota,
@@ -623,7 +725,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [loading, activeCollections, translation, quota, searchValue, guestSearchDone, setPendingSearch, setActiveSearchId, clearPendingSearch]
+    [loading, activeCollections, translation, quota, searchValue, isGuest, guestGate, setPendingSearch, setActiveSearchId, clearPendingSearch]
   );
 
   // ── Animation ─────────────────────────────────────────────────────────────
@@ -775,6 +877,15 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             collectionOutcomes={collectionOutcomes}
             isRestoring={isRestoring}
             isGuest={isGuest}
+            showFirstSearchHint={showFirstSearchHint}
+            onDismissFirstSearchHint={() => setShowFirstSearchHint(false)}
+            showFirstContextHint={showFirstContextHint}
+            onFirstResultExpanded={() => {
+              if (!showFirstSearchHint) return;
+              setShowFirstSearchHint(false);
+              setShowFirstContextHint(true);
+            }}
+            onDismissFirstContextHint={() => setShowFirstContextHint(false)}
           />
         )}
 
@@ -832,7 +943,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         submittedCollections={showAnimation ? submittedCollections : filterBarCollections}
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
-        searchDisabled={guestSearchDone}
+        searchDisabled={false}
         fixedQuota={isGuest}
       />
       <RateLimitModal

@@ -24,6 +24,11 @@ interface SearchResultsProps {
   collectionOutcomes: Record<string, CollectionOutcome>;
   isRestoring?: boolean;
   isGuest?: boolean;
+  showFirstSearchHint?: boolean;
+  onDismissFirstSearchHint?: () => void;
+  showFirstContextHint?: boolean;
+  onFirstResultExpanded?: () => void;
+  onDismissFirstContextHint?: () => void;
 }
 
 function CollectionOutcomeNotice({
@@ -65,6 +70,11 @@ export function SearchResults({
   collectionOutcomes,
   isRestoring = false,
   isGuest = false,
+  showFirstSearchHint = false,
+  onDismissFirstSearchHint,
+  showFirstContextHint = false,
+  onFirstResultExpanded,
+  onDismissFirstContextHint,
 }: SearchResultsProps) {
   if (loading && results.length === 0) {
     return isRestoring
@@ -97,6 +107,12 @@ export function SearchResults({
 
   return (
     <div className="space-y-3">
+      {showFirstSearchHint && (
+        <div role="status" className="relative mx-auto flex w-fit max-w-full items-center justify-between gap-3 rounded-lg border border-brand-accent/40 bg-brand-surface px-4 py-2.5 text-sm text-brand-primary shadow-lg after:absolute after:-bottom-1.5 after:left-1/2 after:h-3 after:w-3 after:-translate-x-1/2 after:rotate-45 after:border-b after:border-r after:border-brand-accent/40 after:bg-brand-surface">
+          <span>Select any source card to expand and read the passage.</span>
+          <button type="button" onClick={onDismissFirstSearchHint} aria-label="Dismiss search guidance" className="shrink-0 text-brand-muted hover:text-brand-primary">Got it</button>
+        </div>
+      )}
       {visibleResults.map((result, index) => (
         <ChunkCard
           key={result.chunk_id}
@@ -106,6 +122,9 @@ export function SearchResults({
           token={token}
           onExploreMore={onExploreMore}
           isGuest={isGuest}
+          onExpand={showFirstSearchHint ? onFirstResultExpanded : undefined}
+          showOpenContextHint={showFirstContextHint}
+          onDismissOpenContextHint={onDismissFirstContextHint}
         />
       ))}
       {emptyCollections.map((col) => (

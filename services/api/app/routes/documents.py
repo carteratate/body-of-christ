@@ -1,8 +1,11 @@
+import hashlib
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from app.auth.verify import verify_supabase_jwt
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
@@ -13,12 +16,48 @@ from app.models.documents import (
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+_bearer = HTTPBearer(auto_error=False)
+
+
+async def require_document_access(
+    doc_id: str,
+    request: Request,
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
+) -> None:
+    """Allow authenticated readers or a guest who retrieved this document."""
+    if credentials is not None:
+        await verify_supabase_jwt(credentials.credentials)
+        return
+    guest_token = request.headers.get("x-theocorpus-guest-token")
+    if not guest_token or not 32 <= len(guest_token) <= 128:
+        raise HTTPException(status_code=401, detail="Missing authorization")
+    try:
+        doc_uuid = uuid.UUID(doc_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid doc_id: must be a UUID")
+    pool = get_pool()
+    if pool is None:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+    token_hash = hashlib.sha256(guest_token.encode()).hexdigest()
+    allowed = await pool.fetchval(
+        """SELECT EXISTS (
+               SELECT 1 FROM guest_trials gt
+               JOIN guest_trial_retrievals gr ON gr.guest_trial_id=gt.id
+               JOIN chunks c ON c.id=gr.chunk_id
+               WHERE gt.session_token_hash=$1 AND c.document_id=$2
+                 AND gt.created_at > now() - interval '30 days'
+                 AND gt.claimed_by IS NULL
+           )""",
+        token_hash, doc_uuid,
+    )
+    if not allowed:
+        raise HTTPException(status_code=403, detail="Document is not part of this guest session")
 
 
 @router.get("/documents/{doc_id}", response_model=DocumentResponse)
 async def get_document(
     doc_id: str,
-    user: AuthUser = Depends(get_current_user),
+    user: AuthUser | None = Depends(require_document_access),
 ) -> DocumentResponse:
     """Return metadata for a single document."""
     try:
@@ -74,7 +113,7 @@ def _document_response(doc_row) -> DocumentResponse:
 @router.get("/documents/{doc_id}/toc", response_model=TocResponse)
 async def get_document_toc(
     doc_id: str,
-    user: AuthUser = Depends(get_current_user),
+    user: AuthUser | None = Depends(require_document_access),
 ) -> TocResponse:
     """Ordered chapter list for the reader's pickers + Contents drawer."""
     try:
@@ -117,7 +156,7 @@ async def get_document_reader(
     doc_id: str,
     anchor: str | None = Query(default=None, description="Deep-link passage anchor"),
     chapter: str | None = Query(default=None, description="chapter_key to load directly"),
-    user: AuthUser = Depends(get_current_user),
+    user: AuthUser | None = Depends(require_document_access),
 ) -> ReaderChapter:
     """Return one chapter section of clean passages, with prev/next chapter keys."""
     try:

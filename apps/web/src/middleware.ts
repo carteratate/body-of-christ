@@ -34,16 +34,19 @@ export default async function middleware(request: NextRequest) {
 
   // ── Guest search page rules ──────────────────────────────────────────────
   if (pathname.startsWith("/search/guest")) {
+    const isDevelopmentPreview = process.env.NODE_ENV === "development" && request.nextUrl.searchParams.get("preview") === "1";
+    if (isDevelopmentPreview) return supabaseResponse;
     if (user) {
       // Logged-in users get the full experience
       return NextResponse.redirect(new URL("/search", request.url));
     }
-    const trialCookie = request.cookies.get("tc_trial")?.value;
-    if (trialCookie === "used") {
-      // Trial exhausted — send to login
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-    // Trial available — allow through
+    return supabaseResponse;
+  }
+
+  if (pathname.startsWith("/reader/guest/")) {
+    const isDevelopmentPreview = process.env.NODE_ENV === "development" && request.nextUrl.searchParams.get("preview") === "1";
+    if (isDevelopmentPreview) return supabaseResponse;
+    if (user) return NextResponse.redirect(new URL(pathname.replace("/reader/guest/", "/reader/") + request.nextUrl.search, request.url));
     return supabaseResponse;
   }
 
@@ -60,7 +63,7 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (user && pathname === "/login") {
+  if (user && (pathname === "/login" || pathname === "/signup")) {
     return NextResponse.redirect(new URL("/search", request.url));
   }
 
@@ -76,5 +79,6 @@ export const config = {
     "/bookmarks/:path*",
     "/reader/:path*",
     "/login",
+    "/signup",
   ],
 };

@@ -270,6 +270,7 @@ export interface SearchStreamCallbacks {
   ) => void;
   onRateLimit: (retryAfter: number | null, limitType: "per_minute" | "daily") => void;
   onStatus?: (phase: "searching" | "ranking", collections?: string[]) => void;
+  onResultsReady?: (resultCount: number) => void;
 }
 
 export async function streamSearch(
@@ -395,6 +396,7 @@ export async function streamSearch(
 }
 
 export async function streamGuestSearch(
+  sessionToken: string,
   query: string,
   filters: SearchFilters,
   quota: number,
@@ -406,7 +408,7 @@ export async function streamGuestSearch(
     res = await fetch(`${API_URL}/v1/search/guest`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, filters, quota }),
+      body: JSON.stringify({ query, filters, quota, session_token: sessionToken }),
       signal,
     });
   } catch (err) {
@@ -463,6 +465,8 @@ export async function streamGuestSearch(
           );
         } else if (type === "chunk") {
           callbacks.onChunk(evt as unknown as ChunkResult);
+        } else if (type === "results_ready") {
+          callbacks.onResultsReady?.(evt.result_count as number);
         } else if (type === "explanation_delta") {
           callbacks.onExplanationDelta(evt.chunk_id as string, evt.delta as string);
         } else if (type === "done") {
@@ -498,6 +502,34 @@ export async function streamGuestSearch(
       "connection",
     );
   }
+}
+
+export class GuestClaimHttpError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+    this.name = "GuestClaimHttpError";
+  }
+}
+
+export async function claimGuestSession(
+  token: string,
+  sessionToken: string,
+  savedChunkIds: string[],
+): Promise<{ searches_imported: number; passages_saved: number }> {
+  const res = await fetch(`${API_URL}/v1/guest/claim`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ session_token: sessionToken, saved_chunk_ids: savedChunkIds }),
+  });
+  if (!res.ok) {
+    let message = `API error ${res.status}`;
+    try {
+      const body = await res.json() as { detail?: string };
+      if (body.detail) message = body.detail;
+    } catch {}
+    throw new GuestClaimHttpError(res.status, message);
+  }
+  return res.json();
 }
 
 export async function getSearchHistory(token: string): Promise<SearchSummaryV2[]> {
@@ -588,9 +620,15 @@ export async function getDocument(token: string, docId: string): Promise<Documen
   return res.json() as Promise<DocumentInfo>;
 }
 
-export async function getToc(token: string, docId: string, signal?: AbortSignal): Promise<TocResponse> {
+function readerHeaders(token: string, guestToken?: string): HeadersInit {
+  return guestToken
+    ? { "x-theocorpus-guest-token": guestToken }
+    : { Authorization: `Bearer ${token}` };
+}
+
+export async function getToc(token: string, docId: string, signal?: AbortSignal, guestToken?: string): Promise<TocResponse> {
   const res = await fetch(`${API_URL}/v1/documents/${docId}/toc`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: readerHeaders(token, guestToken),
     signal,
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
@@ -600,14 +638,14 @@ export async function getToc(token: string, docId: string, signal?: AbortSignal)
 export async function getReaderChapter(
   token: string,
   docId: string,
-  opts: { anchor?: string; chapter?: string; signal?: AbortSignal },
+  opts: { anchor?: string; chapter?: string; signal?: AbortSignal; guestToken?: string },
 ): Promise<ReaderChapter> {
   const params = new URLSearchParams();
   if (opts.anchor) params.set("anchor", opts.anchor);
   if (opts.chapter) params.set("chapter", opts.chapter);
   const qs = params.toString();
   const res = await fetch(`${API_URL}/v1/documents/${docId}/reader${qs ? `?${qs}` : ""}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: readerHeaders(token, opts.guestToken),
     signal: opts.signal,
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);

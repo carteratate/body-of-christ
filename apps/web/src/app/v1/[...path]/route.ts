@@ -22,8 +22,10 @@ async function proxy(req: NextRequest): Promise<Response> {
   const headers = new Headers();
   const authorization = req.headers.get("authorization");
   const contentType = req.headers.get("content-type");
+  const guestToken = req.headers.get("x-theocorpus-guest-token");
   if (authorization) headers.set("authorization", authorization);
   if (contentType) headers.set("content-type", contentType);
+  if (guestToken) headers.set("x-theocorpus-guest-token", guestToken);
   if (process.env.INTERNAL_API_SECRET) {
     headers.set("x-internal-secret", process.env.INTERNAL_API_SECRET);
     // Vercel supplies the visitor address. Convert it to an app-owned header;

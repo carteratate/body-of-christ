@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { LandingPage } from "@/components/landing/LandingPage";
 
 export const metadata = {
   title: "TheoCorpus",
@@ -18,48 +17,5 @@ export default async function HomePage() {
   // Returning users go straight to the app.
   if (user) redirect("/search");
 
-  const cookieStore = await cookies();
-  const trialUsed = cookieStore.get("tc_trial")?.value === "used";
-  const ctaHref = trialUsed ? "/login" : "/search/guest";
-
-  return (
-    <div className="min-h-full bg-brand-bg flex flex-col items-center justify-center px-6 py-16">
-      <div className="max-w-2xl w-full">
-
-        {/* Title */}
-        <h1
-          className="text-brand-accent font-semibold leading-tight mb-10 text-center"
-          style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2.5rem, 8vw, 5rem)" }}
-        >
-          TheoCorpus
-        </h1>
-
-        {/* Mission statement */}
-        <div className="text-brand-primary text-base leading-relaxed mb-12">
-          <p>
-            For over two thousand years, Christians have wrestled with questions
-            surrounding suffering, virtue, justice, grace, salvation, human
-            nature, and more. Those conversations have occurred over
-            Scripture, catechisms, encyclicals, writings of the early church
-            fathers, church counsels, etc. TheoCorpus
-            brings their wisdom together into one place, allowing you to explore
-            the Catholic tradition through the people who built, defended,
-            and passed down the fullness of the faith.
-          </p>
-        </div>
-
-        {/* CTA */}
-        <div className="flex justify-center">
-          <Link
-            href={ctaHref}
-            className="inline-block bg-brand-accent text-brand-bg rounded-lg px-10 py-3 text-lg font-semibold hover:opacity-90 transition-opacity"
-            style={{ fontFamily: "var(--font-cinzel)" }}
-          >
-            Get Started
-          </Link>
-        </div>
-
-      </div>
-    </div>
-  );
+  return <LandingPage />;
 }

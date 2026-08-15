@@ -4,7 +4,8 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getBookmarks, getPreferences, getSearchHistory, getSources, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
+import { claimGuestSession, getBookmarks, getPreferences, getSearchHistory, getSources, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
+import { clearGuestSession, getGuestSavedChunkIds, peekGuestSessionToken } from "@/lib/trial";
 import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { MobileTopBar } from "./MobileTopBar";
 import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
@@ -101,6 +102,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [mobileNavTriggerId, setMobileNavTriggerId] = useState("mobile-nav-trigger");
   const [bookmarkIds, setBookmarkIds] = useState<Record<string, string>>({});
+  const [guestTransferStatus, setGuestTransferStatus] = useState<"idle" | "transferring" | "failed">("idle");
+  const guestTransferPromiseRef = useRef<Promise<boolean> | null>(null);
   const searchHistoryRequestGeneration = useRef(0);
   const userResourceGeneration = useRef(0);
   const authUserIdRef = useRef<string | null>(null);
@@ -180,6 +183,38 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const transferGuestActivity = useCallback((accessToken: string): Promise<boolean> => {
+    const guestToken = peekGuestSessionToken();
+    if (!guestToken) {
+      setGuestTransferStatus("idle");
+      return Promise.resolve(true);
+    }
+    if (guestTransferPromiseRef.current) return guestTransferPromiseRef.current;
+    const transfer = (async () => {
+      setGuestTransferStatus("transferring");
+      const delays = [0, 1000, 2000, 4000, 8000, 15000];
+      for (let attempt = 0; attempt < delays.length; attempt += 1) {
+        if (delays[attempt] > 0) await new Promise((resolve) => setTimeout(resolve, delays[attempt]));
+        try {
+          await claimGuestSession(accessToken, guestToken, getGuestSavedChunkIds());
+          clearGuestSession();
+          setGuestTransferStatus("idle");
+          return true;
+        } catch {
+          // A 409 means the final streamed explanations are still being persisted;
+          // transient network/5xx failures use the same bounded background retry.
+        }
+      }
+      setGuestTransferStatus("failed");
+      return false;
+    })();
+    guestTransferPromiseRef.current = transfer;
+    void transfer.finally(() => {
+      if (guestTransferPromiseRef.current === transfer) guestTransferPromiseRef.current = null;
+    });
+    return transfer;
+  }, []);
+
   useEffect(() => {
     const supabase = createClient();
 
@@ -191,12 +226,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       setToken(t);
       if (t) {
         const generation = userResourceGeneration.current;
-        const critical = Promise.allSettled([
+        const transfer = transferGuestActivity(t);
+        const critical = transfer.then(() => Promise.allSettled([
           getPreferences(t)
             .then((value) => { if (generation === userResourceGeneration.current) setPreferences(value); })
             .catch(() => { if (generation === userResourceGeneration.current) setPreferencesError(true); }),
           loadSearchHistory(t),
-        ]);
+        ]));
         critical.finally(() => {
           if (generation !== userResourceGeneration.current) return;
           const warmCaches = () => {
@@ -226,8 +262,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       const nextUserId = session?.user.id ?? null;
+      if (event === "SIGNED_IN" && authUserIdRef.current === null && nextUserId) {
+        authUserIdRef.current = nextUserId;
+        // Remount through the authenticated initialization path so guest
+        // activity is claimed before history and bookmarks are displayed.
+        window.location.replace("/search");
+        return;
+      }
       if (authUserIdRef.current !== null && authUserIdRef.current !== nextUserId) {
         clearFeedbackContext();
         userResourceGeneration.current += 1;
@@ -258,7 +301,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  }, [loadSearchHistory]);
+  }, [loadSearchHistory, transferGuestActivity]);
 
   useEffect(() => {
     const theme = preferences?.theme;
@@ -302,6 +345,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main inert={mobileNavOpen ? true : undefined} className="flex flex-1 min-h-0 min-w-0 flex-col overflow-hidden">
           {!pathname.startsWith("/reader/") && (
             <MobileTopBar isOpen={mobileNavOpen} onOpenMenu={() => openMobileNavigation()} />
+          )}
+          {guestTransferStatus !== "idle" && (
+            <div role="status" className={`flex items-center justify-center gap-3 border-b px-4 py-2 text-sm ${guestTransferStatus === "failed" ? "border-brand-danger/30 bg-brand-danger/10 text-brand-primary" : "border-brand-accent/30 bg-brand-accent/10 text-brand-muted"}`}>
+              <span>
+                {guestTransferStatus === "failed"
+                  ? "Your trial activity has not transferred yet. It is still safe in this browser."
+                  : "Adding your trial searches and saved passages to your account…"}
+              </span>
+              {guestTransferStatus === "failed" && token && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    void transferGuestActivity(token).then((transferred) => {
+                      if (!transferred) return;
+                      void loadSearchHistory(token);
+                      void getBookmarks(token).then((items) => setBookmarkIds(Object.fromEntries(items.map((b) => [b.chunk_id, b.id]))));
+                    });
+                  }}
+                  className="shrink-0 font-semibold text-brand-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                >
+                  Retry transfer
+                </button>
+              )}
+            </div>
           )}
           {ready ? children : null}
         </main>

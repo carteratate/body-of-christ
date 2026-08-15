@@ -18,6 +18,7 @@ import { ReaderChrome, type ReaderFontSize, type ReaderSpacing } from "./ReaderC
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { DocumentOverview } from "./DocumentOverview";
 import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { getGuestSessionToken } from "@/lib/trial";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
 
@@ -49,8 +50,9 @@ interface ProgressWriter {
   failed: string | null;
 }
 
-function Inner({ docId }: { docId: string }) {
+function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean }) {
   const { token } = useAppContext();
+  const [guestToken, setGuestToken] = useState("");
   const router = useRouter();
   const params = useSearchParams();
   const initialAnchor = params.get("anchor");
@@ -58,6 +60,7 @@ function Inner({ docId }: { docId: string }) {
   const originParam = params.get("from");
   const origin = (originParam && ORIGINS.has(originParam) ? originParam : "library") as ReaderOrigin;
   const returnKey = params.get("returnKey");
+  const [showBackGuide, setShowBackGuide] = useState(isGuest && params.get("guideBack") === "1");
   const backLabel = origin === "saved"
     ? "Back to Saved Passages"
     : origin === "history"
@@ -87,6 +90,8 @@ function Inner({ docId }: { docId: string }) {
   const replacePendingRef = useRef(false);
   const progressWriterRef = useRef<ProgressWriter | null>(null);
 
+  useEffect(() => { if (isGuest) queueMicrotask(() => setGuestToken(getGuestSessionToken())); }, [isGuest]);
+
   useEffect(() => {
     try {
       const storedFont = localStorage.getItem("theocorpus-reader-font");
@@ -107,7 +112,7 @@ function Inner({ docId }: { docId: string }) {
   }
 
   useEffect(() => {
-    if (!token) return;
+    if (!token && !guestToken) return;
     const controller = new AbortController();
     let alive = true;
     chapterRequestRef.current += 1;
@@ -124,7 +129,7 @@ function Inner({ docId }: { docId: string }) {
     setHighlight(initialAnchor);
     (async () => {
       try {
-        const tocResponse = await getToc(token, docId, controller.signal);
+        const tocResponse = await getToc(token ?? "", docId, controller.signal, guestToken || undefined);
         const options: { anchor?: string; chapter?: string; signal?: AbortSignal } = { signal: controller.signal };
         if (initialAnchor) {
           options.anchor = initialAnchor;
@@ -132,7 +137,7 @@ function Inner({ docId }: { docId: string }) {
           options.chapter = initialChapter;
         } else {
           try {
-            const progress = await getReadingProgress(token, docId, controller.signal);
+            const progress = isGuest ? null : await getReadingProgress(token!, docId, controller.signal);
             if (progress) options.chapter = progress.chapter_key;
           } catch {
             // Progress is optional; the document still opens at its first chapter.
@@ -140,10 +145,10 @@ function Inner({ docId }: { docId: string }) {
         }
         let chapter: ReaderChapter;
         try {
-          chapter = await getReaderChapter(token, docId, options);
+          chapter = await getReaderChapter(token ?? "", docId, { ...options, guestToken: guestToken || undefined });
         } catch {
           if (!options.chapter || initialChapter) throw new Error("Failed to load requested chapter");
-          chapter = await getReaderChapter(token, docId, { signal: controller.signal });
+          chapter = await getReaderChapter(token ?? "", docId, { signal: controller.signal, guestToken: guestToken || undefined });
         }
         if (!alive) return;
         setDoc(tocResponse.document);
@@ -165,14 +170,14 @@ function Inner({ docId }: { docId: string }) {
       chapterRequestRef.current += 1;
       replacePendingRef.current = false;
     };
-  }, [docId, initialAnchor, initialChapter, token]);
+  }, [docId, guestToken, initialAnchor, initialChapter, isGuest, token]);
 
   useEffect(() => {
-    progressWriterRef.current = token
+    progressWriterRef.current = token && !isGuest
       ? { token, docId, inFlight: false, queued: null, failed: null }
       : null;
     setProgressError(false);
-  }, [docId, token]);
+  }, [docId, isGuest, token]);
 
   const drainProgress = useCallback(async (writer: ProgressWriter) => {
     if (writer.inFlight) return;
@@ -224,7 +229,7 @@ function Inner({ docId }: { docId: string }) {
   }, [chapters, highlight]);
 
   const loadChapter = useCallback(async (key: string, mode: "append" | "replace") => {
-    if (!token) return;
+    if (!token && !guestToken) return;
     if (mode === "append" && replacePendingRef.current) return;
     if (mode === "append" && (requestedRef.current.has(key) || pendingAppendsRef.current.has(key))) return;
     const requestId = ++chapterRequestRef.current;
@@ -233,7 +238,7 @@ function Inner({ docId }: { docId: string }) {
     setChapterLoading(key);
     setChapterError(null);
     try {
-      const chapter = await getReaderChapter(token, docId, { chapter: key });
+      const chapter = await getReaderChapter(token ?? "", docId, { chapter: key, guestToken: guestToken || undefined });
       if (requestId !== chapterRequestRef.current) return;
       setChapters((previous) => {
         if (mode === "replace") return [chapter];
@@ -259,7 +264,7 @@ function Inner({ docId }: { docId: string }) {
         setChapterLoading(null);
       }
     }
-  }, [docId, token]);
+  }, [docId, guestToken, token]);
 
   const jump = useCallback((key: string) => {
     void loadChapter(key, "replace");
@@ -282,7 +287,13 @@ function Inner({ docId }: { docId: string }) {
   }
 
   function goBack() {
+    setShowBackGuide(false);
     const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
+    if (isGuest && origin === "search") {
+      consumeReaderReturnKey(returnKey, origin);
+      router.push(params.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
+      return;
+    }
     if (consumeReaderReturnKey(returnKey, origin)) router.back();
     else router.push(fallback);
   }
@@ -290,7 +301,7 @@ function Inner({ docId }: { docId: string }) {
   function browseSections() {
     const next = new URLSearchParams({ from: origin });
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
-    router.replace(`/reader/${docId}?${next.toString()}`);
+    router.replace(`${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`);
   }
 
   function reportContent() {
@@ -339,6 +350,8 @@ function Inner({ docId }: { docId: string }) {
         onFontSizeChange={changeFontSize}
         onSpacingChange={changeSpacing}
         onReportContent={reportContent}
+        showBackGuide={showBackGuide}
+        onDismissBackGuide={() => setShowBackGuide(false)}
       />
       <div
         ref={scrollRef}
@@ -371,14 +384,14 @@ function Inner({ docId }: { docId: string }) {
   );
 }
 
-export function DocumentReader({ docId }: { docId: string }) {
-  return <Suspense><ReaderEntry docId={docId} /></Suspense>;
+export function DocumentReader({ docId, isGuest = false }: { docId: string; isGuest?: boolean }) {
+  return <Suspense><ReaderEntry docId={docId} isGuest={isGuest} /></Suspense>;
 }
 
-function ReaderEntry({ docId }: { docId: string }) {
+function ReaderEntry({ docId, isGuest }: { docId: string; isGuest: boolean }) {
   const params = useSearchParams();
   if (!params.get("anchor") && !params.get("chapter")) {
-    return <DocumentOverview docId={docId} mobileHeader={<ReaderMobileStatusHeader />} />;
+    return <DocumentOverview docId={docId} mobileHeader={<ReaderMobileStatusHeader />} isGuest={isGuest} />;
   }
-  return <Inner docId={docId} />;
+  return <Inner docId={docId} isGuest={isGuest} />;
 }

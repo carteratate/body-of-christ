@@ -33,6 +33,10 @@ class Settings(BaseSettings):
 
     # Internal secret — shared with Vercel proxy to reject unauthorized requests
     internal_api_secret: str | None = Field(default=None, validation_alias="INTERNAL_API_SECRET")
+    # Keyed pseudonymization for guest IP quota identifiers. Falls back to the
+    # internal proxy secret so existing production deployments remain secure;
+    # a distinct value allows independent rotation.
+    guest_ip_hash_secret: str | None = Field(default=None, validation_alias="GUEST_IP_HASH_SECRET")
 
     # Qdrant (vector search)
     qdrant_url: str = Field(validation_alias="QDRANT_URL")

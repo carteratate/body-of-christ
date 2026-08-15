@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Bookmark, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import ReactDOM from "react-dom";
 import { ThemedTooltip, Toast, useToast } from "@/components/common";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   addBookmark,
   removeBookmark,
@@ -22,6 +22,7 @@ import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { createReaderReturnKey } from "@/lib/readerNavigation";
+import { useGuestGate } from "@/components/layout/guestGate";
 
 function hexToRgb(color: string): string {
   if (!color.startsWith("#") || color.length < 7) return "196,151,42";
@@ -63,10 +64,14 @@ interface ChunkCardProps {
   token: string;
   onExploreMore: (content: string, label: string) => void;
   isGuest?: boolean;
+  onExpand?: () => void;
+  showOpenContextHint?: boolean;
+  onDismissOpenContextHint?: () => void;
 }
 
-export function ChunkCard({ result, index, searchId, token, onExploreMore, isGuest = false }: ChunkCardProps) {
+export function ChunkCard({ result, index, searchId, token, onExploreMore, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { chunk_id, content, source } = result;
   const { collection, document_title, author, reference, document_id } = source;
 
@@ -87,15 +92,24 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
 
   const { toast, showToast, dismissToast } = useToast();
   const { bookmarkIds, setBookmarkForChunk } = useAppContext();
+  const guestGate = useGuestGate();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   // ── Bookmark state ────────────────────────────────────────────────────────
   const bookmarkId = bookmarkIds[chunk_id] ?? null;
-  const isBookmarked = bookmarkId !== null;
+  const isBookmarked = isGuest ? (guestGate?.savedChunkIds.includes(chunk_id) ?? false) : bookmarkId !== null;
   const [bookmarkPending, setBookmarkPending] = useState(false);
 
   async function handleBookmark() {
+    if (isGuest) {
+      const saved = guestGate?.toggleSavedChunk(chunk_id) ?? false;
+      if (saved) {
+        showToast("Saved for this trial");
+        guestGate?.requestSignup("saved");
+      }
+      return;
+    }
     if (!token || bookmarkPending) return;
     const previousId = bookmarkId;
     setBookmarkPending(true);
@@ -132,13 +146,16 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   function handleReadMore() {
     if (!UUID_RE.test(document_id)) return;
+    onDismissOpenContextHint?.();
     trackDocumentOpened({ documentId: document_id, collection, source: "chunk_card" });
     const params = new URLSearchParams({ from: "search" });
     const returnKey = createReaderReturnKey("search");
     if (returnKey) params.set("returnKey", returnKey);
     if (source.anchor) params.set("anchor", source.anchor);
     else if (source.chapter_key) params.set("chapter", source.chapter_key);
-    router.push(`/reader/${document_id}?${params.toString()}`);
+    if (isGuest && showOpenContextHint) params.set("guideBack", "1");
+    if (isGuest && searchParams.get("preview") === "1") params.set("preview", "1");
+    router.push(`${isGuest ? "/reader/guest" : "/reader"}/${document_id}?${params.toString()}`);
   }
 
   // ── Feedback state ────────────────────────────────────────────────────────
@@ -206,7 +223,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
       <div className="flex h-[96px] items-stretch p-3 sm:h-[68px]" style={{ borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none" }}>
         <button
           type="button"
-          onClick={() => setIsExpanded((v) => !v)}
+          onClick={() => {
+            if (!isExpanded) onExpand?.();
+            setIsExpanded((value) => !value);
+          }}
           aria-label={isExpanded ? `Collapse result: ${accessibleSummary}` : `Expand result: ${accessibleSummary}`}
           aria-expanded={isExpanded}
           aria-controls={`chunk-body-${chunk_id}`}
@@ -290,43 +310,45 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
           )}
 
           {/* Action row */}
-          {!isGuest && (
-            <div className="flex items-center justify-between mt-3 gap-2 max-md:flex-wrap">
-              {/* Left: bookmark + copy */}
-              <div className="flex items-center gap-0.5">
-                <ThemedTooltip label={isBookmarked ? "Remove this passage from Saved Passages." : "Save Passage"}>
-                  <button onClick={handleBookmark} aria-label={isBookmarked ? "Remove bookmark" : "Save passage"} aria-busy={bookmarkPending} disabled={bookmarkPending} className="p-1.5 rounded transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:opacity-60">
-                    <Bookmark size={15} className={isBookmarked ? "text-brand-accent" : "text-brand-muted"} />
-                  </button>
-                </ThemedTooltip>
-                <ThemedTooltip label="Copy">
-                  <button onClick={handleCopy} aria-label="Copy passage" className="p-1.5 rounded text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
-                    <Copy size={15} />
-                  </button>
-                </ThemedTooltip>
-              </div>
+          <div className="flex items-center justify-between mt-3 gap-2 max-md:flex-wrap">
+            <div className="flex items-center gap-0.5">
+              <ThemedTooltip label={isBookmarked ? "Remove this passage from Saved Passages." : "Save Passage"}>
+                <button onClick={handleBookmark} aria-label={isBookmarked ? "Remove bookmark" : "Save passage"} aria-busy={bookmarkPending} disabled={bookmarkPending} className="p-1.5 rounded transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:opacity-60">
+                  <Bookmark size={15} className={isBookmarked ? "text-brand-accent" : "text-brand-muted"} />
+                </button>
+              </ThemedTooltip>
+              <ThemedTooltip label="Copy">
+                <button onClick={handleCopy} aria-label="Copy passage" className="p-1.5 rounded text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                  <Copy size={15} />
+                </button>
+              </ThemedTooltip>
+            </div>
 
-              {/* Right: feedback + read more + explore more */}
-              <div className="flex max-w-full flex-wrap items-center justify-end gap-1.5">
+            <div className="flex max-w-full flex-wrap items-center justify-end gap-1.5">
+              {!isGuest && <>
                 <ThemedTooltip label="Tell TheoCorpus this result helped answer your question.">
-                  <button onClick={() => handleFeedback("up")} aria-label="Mark as relevant" disabled={feedbackPending || feedback === "up"} className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${feedback === "up" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"}`}>
-                    <ThumbsUp size={15} />
-                  </button>
+                  <button onClick={() => handleFeedback("up")} aria-label="Mark as relevant" disabled={feedbackPending || feedback === "up"} className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${feedback === "up" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"}`}><ThumbsUp size={15} /></button>
                 </ThemedTooltip>
                 <ThemedTooltip label="Tell TheoCorpus this result was not useful; you can share details next.">
-                  <button onClick={() => handleFeedback("down")} aria-label="Mark as not relevant" disabled={feedbackPending || feedback === "down"} className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${feedback === "down" ? "text-brand-danger" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"}`}>
-                    <ThumbsDown size={15} />
-                  </button>
+                  <button onClick={() => handleFeedback("down")} aria-label="Mark as not relevant" disabled={feedbackPending || feedback === "down"} className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${feedback === "down" ? "text-brand-danger" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"}`}><ThumbsDown size={15} /></button>
                 </ThemedTooltip>
+              </>}
+              <div className="relative">
+                {showOpenContextHint && (
+                  <div role="status" className="absolute bottom-[calc(100%+10px)] right-0 z-20 w-56 rounded-lg border border-brand-accent/40 bg-brand-surface px-3 py-2 text-xs leading-relaxed text-brand-primary shadow-xl after:absolute after:-bottom-1.5 after:right-6 after:h-3 after:w-3 after:rotate-45 after:border-b after:border-r after:border-brand-accent/40 after:bg-brand-surface">
+                    <button type="button" onClick={onDismissOpenContextHint} aria-label="Dismiss context guidance" className="absolute right-1.5 top-1 text-brand-muted hover:text-brand-primary">×</button>
+                    <span className="block pr-3">Open the passage in its original source to read what surrounds it.</span>
+                  </div>
+                )}
                 <ThemedTooltip label="Open this passage in the context of the full source">
                   <button onClick={handleReadMore} className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Open in Context</button>
                 </ThemedTooltip>
-                <ThemedTooltip label="Start a new search to find passages similar to this one">
-                  <button onClick={handleExploreMore} aria-label="Query more like this" className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Query More Like This</button>
-                </ThemedTooltip>
               </div>
+              <ThemedTooltip label="Start a new search to find passages similar to this one">
+                <button onClick={handleExploreMore} aria-label="Query more like this" className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Query More Like This</button>
+              </ThemedTooltip>
             </div>
-          )}
+          </div>
           {showReportPrompt && (
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-brand-muted/25 bg-brand-bg/40 px-3 py-2 text-xs text-brand-muted">
               <span>Thanks. Is there a specific problem with this result?</span>
