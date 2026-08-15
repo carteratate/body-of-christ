@@ -15,9 +15,8 @@ export function HistoryPage() {
     token,
     pendingSearch,
     activeSearchId,
-    refreshSearches,
+    removeSearch,
     historyRevision,
-    invalidateSearchHistory,
   } = useAppContext();
   const [searches, setSearches] = useState<SearchSummaryV2[]>([]);
   const [query, setQuery] = useState("");
@@ -96,10 +95,10 @@ export function HistoryPage() {
     searches,
     removeLocally,
     restoreLocally,
-    onSuccess: () => {
-      refreshSearches();
-      invalidateSearchHistory();
-    },
+    // The page row is removed optimistically above. Once the API confirms the
+    // deletion, update AppShell's sidebar cache in place instead of invalidating
+    // this page and replacing it with a full loading skeleton.
+    onSuccess: removeSearch,
     showToast,
     focusAfterRemove: (index) => {
       requestAnimationFrame(() => {
