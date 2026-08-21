@@ -122,7 +122,14 @@ async def test_llm_only_makes_one_call_per_collection():
 
 
 def test_pointwise_prompt_preserves_scoring_contract_with_structured_output():
-    """Only the serialization contract may differ from the historical baseline."""
+    """The SCORING contract is unchanged from the historical baseline.
+
+    Two things have been added since that baseline and are asserted separately: the
+    positional/schema serialization contract, and (2026-08-20) PASSAGE ROLE guidance.
+    Everything below still pins the original scoring semantics — the bands, the
+    include rules, the diversity rules and the overlap verdicts — so a change to
+    THOSE still fails here.
+    """
     p = pointwise._RERANK_SYSTEM
     assert "You are evaluating Catholic theological passages" in p
     assert "SCORING — use the FULL 0.0-1.0 range" in p
@@ -135,9 +142,24 @@ def test_pointwise_prompt_preserves_scoring_contract_with_structured_output():
     assert 'overlap_verdict="redundant"' in p
     assert 'overlap_verdict="complementary"' in p
     assert "SAME POSITIONAL ORDER" in p
-    # Historical prompt was 2,592 chars. Positional/schema instructions add only a
-    # small delta; a larger movement means ranking semantics changed too.
-    assert abs(len(p) - 2592) < 50, f"prompt length moved to {len(p)}"
+    # PASSAGE ROLE guidance is a deliberate ranking-semantics change, versioned via
+    # rerank.LLM_RERANK_CONTRACT_VERSION (v1 -> v2). It must be PRESENT and must say
+    # what an objection is; dropping it silently reverts the fix that put the label
+    # in front of the model.
+    assert "PASSAGE ROLE" in p
+    assert "'Objection N'" in p
+    assert "REFUTE" in p
+    assert "'I answer that'" in p
+    # A locator label ("Can. 33", "§17") must NOT be treated as an inverting role —
+    # those cover 16,829 non-Summa chunks.
+    assert "locator" in p
+    # Role must not silently override the scoring bands (over-suppression guard).
+    assert "HOW ROLE AFFECTS SCORE" in p
+
+    # Measured, not estimated: the pre-change prompt is 2,622 chars (see
+    # `git show HEAD~:...pointwise.py`) and the role block is 1,394, giving 4,016.
+    # The band stays tight so any FURTHER drift is caught and justified the same way.
+    assert abs(len(p) - 4016) < 50, f"prompt length moved to {len(p)}"
 
 
 def test_pointwise_passage_format_uses_position_and_data_boundary():
@@ -211,3 +233,19 @@ def test_pointwise_fallback_preserves_dedup_slack_beyond_quota():
     fallback = fallback_ranked(candidates, quota=4)
     assert len(fallback) == len(candidates)
     assert all(chunk.include for chunk in fallback)
+
+
+def test_listwise_prompt_pins_its_scoring_contract_too():
+    """The listwise prompt is the PRODUCTION one (hyde_cohere_luna) and had no guard
+    at all — only the non-production pointwise prompt did. Same shape: pin the
+    scoring semantics plus the role guidance, so an unversioned edit fails here."""
+    from app.rag.steps.llm_rerank.listwise import _LISTWISE_SYSTEM as p
+
+    assert "SCORING — use the FULL 0.0-1.0 range" in p
+    assert "SOURCE DIVERSITY" in p
+    assert "SAME POSITIONAL ORDER" in p
+    assert "PASSAGE ROLE" in p
+    assert "REFUTE" in p
+    assert "locator" in p
+    assert "HOW ROLE AFFECTS SCORE" in p
+    assert abs(len(p) - 3158) < 50, f"prompt length moved to {len(p)}"

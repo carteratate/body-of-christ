@@ -185,6 +185,7 @@ async def run_search_pipeline(
                     "document_id": chunk.document_id,
                     "anchor": chunk.anchor,
                     "chapter_key": chunk.chapter_key,
+                    "unit_label": chunk.unit_label,
                 },
                 "reranker_score": (
                     None if chunk.score_source == "rrf_fallback"
@@ -257,7 +258,8 @@ async def run_search_pipeline(
             accumulated_text = ""
             try:
                 async for delta in stream_explanation(
-                    chunk.content, chunk.reference, chunk.collection, query
+                    chunk.content, chunk.reference, chunk.collection, query,
+                    unit_label=chunk.unit_label,
                 ):
                     accumulated_text += delta
                     yield {"type": "explanation_delta", "chunk_id": chunk.chunk_id, "delta": delta}

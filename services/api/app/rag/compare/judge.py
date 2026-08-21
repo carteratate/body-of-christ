@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 import anthropic
 
 from app.config import settings
+from app.rag.steps.passage_role import display_role
 from app.rag.compare.overlap import OverlapReport
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.types import PipelineResult
@@ -260,9 +261,18 @@ def _build_prompt(
         lines.append(f"=== Pipeline: {result.pipeline} ===")
         for i, chunk in enumerate(result.chunks):
             attribution = "SHARED" if chunk.chunk_id in overlap.shared else "UNIQUE"
+            # The unit label is rendered because Postgres content has the role
+            # prefix STRIPPED: a "Reply to Objection 3" and the "I answer that" of
+            # the same article otherwise reach the judge with an identical `ref=`
+            # and indistinguishable text. Without it the judge cannot see the
+            # variable LLM_RERANK_CONTRACT_VERSION v2 moved, and cannot credit (or
+            # fault) the passage-role change it exists to measure. Suppressed via
+            # display_role when the reference already carries it.
+            role = display_role(chunk.unit_label, chunk.reference)
+            role_part = f" role={role}" if role else ""
             lines.append(
                 f"  [{i+1}] ({attribution}) score={chunk.reranker_score:.3f} "
-                f"ref={chunk.reference or chunk.collection}\n"
+                f"ref={chunk.reference or chunk.collection}{role_part}\n"
                 f"      {chunk.content[:300]}"
             )
         lines.append("")

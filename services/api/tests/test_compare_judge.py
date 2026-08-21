@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from app.rag.compare.judge import (
+    _build_prompt,
     run as judge_run,
     JudgeReport,
     DimensionScore,
@@ -439,3 +440,65 @@ async def test_judge_is_silent_when_every_pipeline_is_scored(caplog):
     with caplog.at_level("WARNING"):
         await judge_run("q", results, overlap)
     assert "pipelines (missing" not in caplog.text
+
+
+def _role_result(*labels_and_text) -> PipelineResult:
+    """One pipeline result whose chunks share a reference and differ only by role."""
+    chunks = []
+    for i, (label, text) in enumerate(labels_and_text):
+        chunks.append(RankedChunk(
+            chunk_id=f"00000000-0000-0000-0000-00000000000{i+2}",
+            content=text,
+            reference="Summa Theologiae, I q19 a8",
+            collection="summa",
+            document_id="d1",
+            document_title="Summa Theologiae",
+            author="Thomas Aquinas",
+            reranker_score=0.9 - i * 0.01,
+            unit_label=label,
+        ))
+    return PipelineResult(
+        pipeline="hyde_cohere_luna", chunks=chunks,
+        step_timings=[StepTiming("embed", 0.1)], total_duration_s=1.0,
+        cost_breakdown={}, total_cost=0.0,
+    )
+
+
+def _empty_overlap() -> OverlapReport:
+    return OverlapReport(shared=[], partial={}, unique={}, rank_divergence={},
+                         score_delta={})
+
+
+def test_judge_prompt_distinguishes_dialectical_roles():
+    """Postgres content has the role prefix stripped, so a "Reply to Objection 3" and
+    the "I answer that" of the SAME article otherwise reach the judge with an identical
+    ref= and indistinguishable text. Without the role the judge cannot see the variable
+    LLM_RERANK_CONTRACT_VERSION v2 moved, and cannot credit or fault it.
+    """
+    result = _role_result(
+        ("Reply to Objection 3", "The divine will is unchangeable..."),
+        ("I answer that", "The will of God is entirely unchangeable..."),
+    )
+    prompt = _build_prompt("does God's will change?", [result], _empty_overlap())
+
+    assert "role=Reply to Objection 3" in prompt
+    assert "role=I answer that" in prompt
+
+
+def test_judge_prompt_omits_a_role_the_reference_already_carries():
+    chunk = RankedChunk(
+        chunk_id="00000000-0000-0000-0000-000000000099",
+        content="The Christian faithful are bound...",
+        reference="Code of Canon Law, Can. 33",
+        collection="canon-law", document_id="d1",
+        document_title="Code of Canon Law", author=None,
+        reranker_score=0.9, unit_label="Can. 33",
+    )
+    result = PipelineResult(
+        pipeline="hyde_cohere_luna", chunks=[chunk],
+        step_timings=[StepTiming("embed", 0.1)], total_duration_s=1.0,
+        cost_breakdown={}, total_cost=0.0,
+    )
+    prompt = _build_prompt("what does canon 33 require?", [result], _empty_overlap())
+
+    assert "role=" not in prompt

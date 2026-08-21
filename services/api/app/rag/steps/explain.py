@@ -6,6 +6,7 @@ from collections.abc import AsyncGenerator
 import openai
 
 from app.config import settings
+from app.rag.steps.passage_role import display_role
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,17 @@ _EXPLAIN_SYSTEM = (
     "If the connection is weak or indirect, your single sentence must name the limitation plainly. "
     "Do not pad with general theological statements that are not grounded in what the passage "
     "actually says.\n\n"
-    "Write plain prose. No markdown, no headings, no bullet points."
+    "Write plain prose. No markdown, no headings, no bullet points.\n\n"
+    "PASSAGE ROLE: the passage header may name its role inside its document. When "
+    "that role is 'Objection N', the passage is a position the author states IN "
+    "ORDER TO REFUTE — it argues AGAINST the conclusion the author reaches. Never "
+    "present it as what the author teaches or what the Church holds. Say whose "
+    "argument it is and that it is the view being answered (e.g. \"an objection "
+    "Aquinas raises in order to reject\"). 'On the contrary' quotes an authority "
+    "against the objections; 'I answer that' is the author's own determination; "
+    "'Reply to Objection N' is the author answering that one objection. A role that "
+    "is merely a section or verse locator ('Can. 33', '§17', '4') carries no such "
+    "inversion — treat those passages normally."
 )
 
 _MAX_RETRIES = 3
@@ -51,6 +62,7 @@ async def stream(
     chunk_reference: str | None,
     collection: str,
     query: str,
+    unit_label: str | None = None,
 ) -> AsyncGenerator[str, None]:
     """Async generator that yields text deltas from the explanation as they arrive.
 
@@ -66,6 +78,12 @@ async def stream(
         return
 
     ref_label = chunk_reference or collection
+    # The role goes in the header, never appended to the passage text, so a model told
+    # to "be faithful to what the passage says" cannot read it as part of the source.
+    # display_role() decides whether it is worth adding at all.
+    role = display_role(unit_label, ref_label)
+    if role:
+        ref_label = f"{ref_label} — {role}"
     user_message = f"Question: {query}\n\nPassage ({ref_label}): {chunk_content}"
 
     for attempt in range(_MAX_RETRIES):

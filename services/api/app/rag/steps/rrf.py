@@ -34,6 +34,12 @@ def _rrf_merge(result_lists: list[list[dict]], top_n: int) -> list[dict]:
                     "chapter_key": row.get("chapter_key"),
                     "position": row.get("position"),
                     "annotation": row.get("annotation"),
+                    # First-writer-wins, like every key here: whichever strategy list
+                    # sees the chunk first supplies it. Vector lists precede FTS and
+                    # carry unit_label only for collections the payload reconcile has
+                    # run for, so pre-reconcile this is None on the vector path and
+                    # fetch_positions backfills it from Postgres before reranking.
+                    "unit_label": row.get("unit_label"),
                 }
 
     sorted_ids = sorted(scores, key=lambda cid: scores[cid], reverse=True)
@@ -86,6 +92,7 @@ def run(
                 chapter_key=e.get("chapter_key"),
                 position=e.get("position"),
                 annotation=e.get("annotation"),
+                unit_label=e.get("unit_label"),
             )
             for e in merged
         ]

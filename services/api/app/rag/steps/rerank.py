@@ -31,14 +31,34 @@ from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 logger = logging.getLogger(__name__)
 
-# Pipeline names remain stable API, but earlier free-text UUID runs are a different
-# methodology and must be segmented in evaluation/reporting.
-LLM_RERANK_CONTRACT_VERSION = "structured-positional-v1"
+# Pipeline names remain stable API, but earlier runs are a different methodology and
+# must be segmented in evaluation/reporting.
+#   v1 -> v2 (2026-08-20): PASSAGE ROLE. Both LLM rerank prompts now tell the model
+#   that an 'Objection N' unit label marks a position the author states in order to
+#   REFUTE, and both LLM inputs now carry that label (`llm_card` for listwise,
+#   `_format_passages` for pointwise). Objections are 39.3% of the Summa, so this
+#   deliberately changes their scoring and v1/v2 quality numbers are NOT comparable.
+LLM_RERANK_CONTRACT_VERSION = "structured-positional-v2-passage-role"
+
+# Cohere has no prompt, but `rerank_docs.cohere_document` now injects the unit label
+# into the document text, so its INPUT changed on the same date. A `cohere_only`
+# pipeline therefore needs its own segmentation marker: without one, pre- and
+# post-change `hyde_cohere` runs record `None` alike and silently pool into one
+# comparison. The two versions are tracked separately because the changes are
+# independent — a future prompt-only edit must not imply Cohere's input moved.
+COHERE_RERANK_CONTRACT_VERSION = "cohere-doc-v2-passage-role"
 
 
 def contract_version(config: "RerankConfig") -> str | None:
-    """Return the evaluation methodology version for a rerank configuration."""
-    return LLM_RERANK_CONTRACT_VERSION if config.llm_provider is not None else None
+    """Return the evaluation methodology version for a rerank configuration.
+
+    `both` reports the LLM version: it is the terminal reranker and the stronger
+    statement, and a `both` run whose LLM contract matches necessarily has the
+    matching Cohere document contract too (they moved together).
+    """
+    if config.llm_provider is not None:
+        return LLM_RERANK_CONTRACT_VERSION
+    return COHERE_RERANK_CONTRACT_VERSION if config.use_cohere else None
 
 # Each provider instance is owned by the module that owns its client, so there is
 # exactly one client per API and one place it is initialised. See
@@ -187,7 +207,7 @@ async def run(
 
     if mode == "cohere_only":
         # Return every scored candidate, NOT a quota slice. dedup (cosine + a 2-per
-        # -title cap) and quota_cap run downstream and can only shrink the list, so
+        # -source cap) and quota_cap run downstream and can only shrink the list, so
         # slicing to quota here would structurally under-deliver: measured, 6 scored
         # bible chunks clustered in 2 documents yielded 4 final results unsliced and
         # only 2 when sliced to quota first. quota_cap applies the real per-collection

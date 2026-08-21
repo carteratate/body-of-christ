@@ -221,6 +221,7 @@ def test_restore_preserves_document_author_on_result_cards():
             "position": 1,
             "anchor": "summa-1-22-2",
             "chapter_key": "first-part-question-22",
+            "unit_label": "Objection 1",
             "collection": "summa",
             "document_title": "Summa Theologiae",
             "author": "Thomas Aquinas",
@@ -232,6 +233,46 @@ def test_restore_preserves_document_author_on_result_cards():
 
     assert response.status_code == 200
     assert response.json()["results"][0]["source"]["author"] == "Thomas Aquinas"
+
+
+def test_restore_preserves_unit_label_on_result_cards():
+    """A restored search must mark an objection the same way the live stream does.
+
+    The live SSE `chunk` event carries `source.unit_label`; if restore dropped it,
+    reopening a saved search would present a passage Aquinas states in order to
+    refute as though it were his teaching — the exact failure this field exists to
+    prevent, reintroduced on a different code path.
+    """
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "is it lawful to kill the innocent",
+        "filters": {"collections": ["summa"]},
+        "result_count": 1,
+    }
+    pool.fetch.return_value = [
+        {
+            "rank": 1,
+            "reranker_score": 0.42,
+            "explanation": None,
+            "chunk_id": "00000000-0000-0000-0000-000000000014",
+            "content": "It would seem that in some cases it is lawful...",
+            "reference": "Summa Theologiae, II-II, Question 64, Article 6",
+            "position": 3,
+            "anchor": "summa-2-2-64-6",
+            "chapter_key": "second-part-question-64",
+            "unit_label": "Objection 1",
+            "collection": "summa",
+            "document_title": "Summa Theologiae",
+            "author": "Thomas Aquinas",
+            "document_id": "00000000-0000-0000-0000-000000000013",
+        }
+    ]
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    assert response.json()["results"][0]["source"]["unit_label"] == "Objection 1"
 
 
 def test_restore_timeout_returns_bounded_gateway_timeout():

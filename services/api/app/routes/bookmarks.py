@@ -159,7 +159,8 @@ async def list_bookmarks(
         rows = await pool.fetch(
             """
             SELECT b.id, b.chunk_id, b.created_at, b.note,
-                   c.content, c.reference, c.anchor, c.chapter_key, c.document_id,
+                   c.content, c.reference, c.anchor, c.chapter_key, c.unit_label,
+                   c.document_id,
                    d.collection, d.title AS document_title, d.author
             FROM bookmarks b
             JOIN chunks c ON c.id = b.chunk_id
@@ -190,6 +191,7 @@ async def list_bookmarks(
                         document_id=str(row["document_id"]),
                         anchor=row["anchor"],
                         chapter_key=row["chapter_key"],
+                        unit_label=row["unit_label"],
                     ),
                 ),
             )

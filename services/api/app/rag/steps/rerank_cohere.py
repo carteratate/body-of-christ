@@ -191,6 +191,7 @@ def _as_ranked(
         chapter_key=candidate.chapter_key,
         position=candidate.position,
         annotation=candidate.annotation,
+        unit_label=candidate.unit_label,
         score_source=score_source,
     )
 

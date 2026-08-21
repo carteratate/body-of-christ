@@ -56,7 +56,8 @@ async def run(
         async with pool.acquire() as conn:
             t_acquired = time.perf_counter()
             rows = await conn.fetch(
-                "SELECT id::text, position, annotation, chapter_key FROM chunks WHERE id = ANY($1::uuid[])",
+                "SELECT id::text, position, annotation, chapter_key, unit_label "
+                "FROM chunks WHERE id = ANY($1::uuid[])",
                 missing_ids,
             )
             t_queried = time.perf_counter()
@@ -65,6 +66,7 @@ async def run(
         # column; test_fetch_positions_populates_annotation covers the real path.
         ann_map = {r["id"]: r.get("annotation") for r in rows}
         chapter_map = {r["id"]: r.get("chapter_key") for r in rows}
+        unit_map = {r["id"]: r.get("unit_label") for r in rows}
         logger.info(
             "fetch_positions: ids=%d acquire=%.3fs query=%.3fs total=%.3fs",
             len(missing_ids),
@@ -107,6 +109,11 @@ async def run(
                     c.annotation = ann_map.get(c.chunk_id)
                 if c.chapter_key is None:
                     c.chapter_key = chapter_map.get(c.chunk_id)
+                # Same conditional-fill shape as annotation/chapter_key: a payload
+                # that already carries the label (post-reconcile) is left alone, so
+                # this backfill shrinks to nothing as the reconcile rolls out.
+                if c.unit_label is None:
+                    c.unit_label = unit_map.get(c.chunk_id)
             kept.append(c)
         filtered[col] = kept
 

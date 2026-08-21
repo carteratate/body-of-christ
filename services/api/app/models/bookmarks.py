@@ -18,6 +18,10 @@ class BookmarkSource(BaseModel):
     document_id: str
     anchor: Optional[str] = None
     chapter_key: Optional[str] = None
+    # Same field, same reason, as ChunkSource.unit_label: a bookmarked Summa objection
+    # renders as ordinary teaching without it, and a bookmark is the longest-lived
+    # surface in the product.
+    unit_label: Optional[str] = None
 
 
 class BookmarkChunk(BaseModel):

@@ -58,6 +58,9 @@ async def _search_vector(
             "author": payload.get("author"),
             "anchor": payload.get("anchor"),
             "chapter_key": payload.get("chapter_key"),
+            # Present only for collections the payload reconcile has run for;
+            # fetch_positions backfills it from Postgres for the rest.
+            "unit_label": payload.get("unit_label"),
             "position": None,
             "annotation": None,
         })

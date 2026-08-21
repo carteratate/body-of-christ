@@ -129,6 +129,16 @@ export interface ChunkSource {
   position: number | null;
   anchor?: string | null;
   chapter_key?: string | null;
+  /**
+   * The passage's role inside its document — "Objection 1", "I answer that",
+   * "Reply to Objection 2", "Can. 1055 §1". Null for the collections with no such
+   * structure, and for results saved before this field existed.
+   *
+   * Worth surfacing in the UI: a Summa "Objection N" is a position Aquinas states in
+   * order to REFUTE, so rendering it unmarked presents the opposite of his teaching
+   * as though it were his. The backend already uses this to down-rank them.
+   */
+  unit_label?: string | null;
   metadata?: Record<string, unknown> | null;
 }
 
@@ -232,6 +242,10 @@ export interface BookmarkChunkInfo {
     document_id: string;
     anchor: string | null;
     chapter_key: string | null;
+    /** See ChunkSource.unit_label — a bookmarked Summa objection is a position
+     *  Aquinas states in order to refute, and a bookmark is the longest-lived
+     *  surface in the product. */
+    unit_label?: string | null;
   };
 }
 

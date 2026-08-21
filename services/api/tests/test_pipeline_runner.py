@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.pipelines import runner
+from app.rag.steps.rerank import LLM_RERANK_CONTRACT_VERSION
 from app.rag.steps.types import RankedChunk, PipelineResult
 
 
@@ -295,7 +296,12 @@ async def test_runner_returns_pipeline_result():
 
     assert isinstance(result, PipelineResult)
     assert result.pipeline == "nohyde_haiku"
-    assert result.rerank_contract_version == "structured-positional-v1"
+    # Against the constant, not a literal: this asserts the runner PROPAGATES the
+    # version, which is what would silently break. Pinning the value here instead
+    # would make every deliberate methodology bump look like a regression, while
+    # a runner that dropped the field entirely would still pass.
+    assert result.rerank_contract_version == LLM_RERANK_CONTRACT_VERSION
+    assert result.rerank_contract_version is not None
     assert len(result.chunks) == 1
     assert result.total_cost >= 0
     assert len(result.step_timings) > 0

@@ -20,6 +20,12 @@ class ChunkCandidate:
     # datapipeline enrich_io.py) and app/db.py registers a jsonb codec, so this
     # decodes to the annotation prose itself — not a dict.
     annotation: str | None = None
+    # The passage's role within its document — "Objection 1", "Reply to Objection 2",
+    # "I answer that", "Can. 1055 §1". Carried because a fragment's role can invert
+    # its meaning: 39.3% of the Summa is objections Aquinas states in order to REFUTE,
+    # and without this the reranker sees only "It would seem that..." with nothing
+    # marking it. Sourced from the Qdrant payload or backfilled by fetch_positions.
+    unit_label: str | None = None
 
 
 @dataclass
@@ -39,6 +45,9 @@ class RankedChunk:
     # Carried through reranking so a second-stage reranker still sees it (the
     # listwise card needs it). Same decoded-string shape as ChunkCandidate's.
     annotation: str | None = None
+    # Carried through reranking for the same reason as `annotation`: the listwise
+    # card and the result UI both need the passage's role. See ChunkCandidate.
+    unit_label: str | None = None
     # Provenance for interpreting reranker_score. ``rrf_fallback`` is an ordering
     # surrogate, not a measured relevance score, and must not be shown as confidence.
     score_source: str = "unknown"
@@ -87,7 +96,10 @@ class PipelineResult:
     # below_threshold | retrieval_failed | corpus_sync_failed | ranking_failed.
     collection_outcomes: dict[str, str] = field(default_factory=dict)
     # Appended to preserve positional compatibility for external dataclass callers.
-    # None means no LLM rerank contract (for example, Cohere-only).
+    # None means the row predates contract versioning (before 2026-08-20). It does
+    # NOT mean Cohere-only: since COHERE_RERANK_CONTRACT_VERSION was added, a
+    # cohere_only pipeline reports that instead, and rerank.contract_version()'s
+    # remaining None branch is unreachable (RerankConfig rejects no-reranker configs).
     rerank_contract_version: str | None = None
     # Appended to preserve positional compatibility. False means total_cost is
     # incomplete and must not enter persisted or aggregate cost comparisons.

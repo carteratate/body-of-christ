@@ -22,6 +22,11 @@ class ChunkSource(BaseModel):
     position: Optional[int] = None
     anchor: Optional[str] = None
     chapter_key: Optional[str] = None
+    # The passage's role in its document ("Objection 1", "I answer that", "Can. 6 §2").
+    # Exposed so the UI can mark a passage the author states in order to refute — 39.3%
+    # of the Summa — rather than presenting it as his teaching. Optional: most
+    # collections have no such structure, and it is null for every pre-existing row.
+    unit_label: Optional[str] = None
 
 
 class ChunkResult(BaseModel):

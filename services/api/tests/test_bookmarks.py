@@ -1,5 +1,6 @@
 """Focused tests for responsive bookmark mutations."""
 
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI
@@ -72,3 +73,37 @@ def test_list_bookmarks_queries_each_request_and_has_deterministic_newest_order(
     assert second.status_code == 200
     assert pool.fetch.await_count == 2
     assert "ORDER BY b.created_at DESC, b.id DESC" in pool.fetch.await_args.args[0]
+
+
+def test_list_bookmarks_carries_unit_label():
+    """A bookmark is the longest-lived surface in the product.
+
+    39.3% of the Summa is objections Aquinas states in order to REFUTE. Without the
+    label a bookmarked objection renders as ordinary teaching indefinitely — the same
+    gap step 3 closed on the live stream and the search-history restore.
+    """
+    pool = AsyncMock()
+    pool.fetch.return_value = [
+        {
+            "id": "00000000-0000-0000-0000-0000000000b1",
+            "chunk_id": "00000000-0000-0000-0000-0000000000c1",
+            "created_at": datetime(2026, 8, 20, tzinfo=timezone.utc),
+            "note": None,
+            "content": "It would seem that in some cases it is lawful...",
+            "reference": "Summa Theologiae, II-II, Question 64, Article 6",
+            "anchor": "summa-2-2-64-6",
+            "chapter_key": "second-part-question-64",
+            "unit_label": "Objection 1",
+            "document_id": "00000000-0000-0000-0000-0000000000d1",
+            "collection": "summa",
+            "document_title": "Summa Theologiae",
+            "author": "Thomas Aquinas",
+        }
+    ]
+    with patch("app.routes.bookmarks.get_pool", return_value=pool):
+        response = _client().get("/v1/bookmarks")
+
+    assert response.status_code == 200
+    body = response.json()
+    bookmark = body["bookmarks"][0] if isinstance(body, dict) else body[0]
+    assert bookmark["chunk"]["source"]["unit_label"] == "Objection 1"

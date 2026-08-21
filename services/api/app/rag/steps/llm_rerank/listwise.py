@@ -32,6 +32,27 @@ _LISTWISE_SYSTEM = (
     "and 'inferential' requires a further connection. A narrative passage whose "
     "annotation names the doctrinal insight being asked about is relevant even when "
     "the narrative's surface wording does not mention the topic.\n\n"
+    "PASSAGE ROLE: a passage may carry a unit label naming its role inside its "
+    "document. Some roles INVERT the passage's meaning and must not be read as the "
+    "author's teaching:\n"
+    "  'Objection N' — a position the author states in order to REFUTE. It argues "
+    "AGAINST the conclusion the author reaches. Never treat it as the author's own "
+    "view or as what the Church holds.\n"
+    "  'On the contrary' — an authority quoted against the objections; the author's "
+    "answer follows it but is not stated in it.\n"
+    "  'I answer that' — the author's own determination. This is the teaching, and "
+    "usually the best answer to a question about what the author holds.\n"
+    "  'Reply to Objection N' — the author rebutting one objection. His own view, "
+    "but narrow: it answers that objection, not the whole question.\n"
+    "A role that is only a section or verse locator ('Can. 33', '§17', '4'), or no "
+    "role at all, carries NO inversion — judge those passages purely on their text. "
+    "Only the four named above change how a passage should be read.\n"
+    "HOW ROLE AFFECTS SCORE: role does not override the scoring bands, it changes "
+    "what the passage is EVIDENCE OF. An objection is not evidence of what the "
+    "author teaches, so it scores low for 'what does X teach about...'. It IS the "
+    "right answer when the question asks what is argued against a position, what "
+    "the difficulties or objections are, or how a view is challenged — score those "
+    "on the bands as normal.\n\n"
     "SCORING — use the FULL 0.0-1.0 range and spread scores meaningfully:\n"
     "  0.9-1.0: Directly answers the specific question with substance.\n"
     "  0.7-0.89: Clearly relevant — a useful angle on the topic.\n"
@@ -63,6 +84,7 @@ def _as_ranked(candidate: RankedChunk, score: float, score_source: str) -> Ranke
         chapter_key=candidate.chapter_key,
         position=candidate.position,
         annotation=candidate.annotation,
+        unit_label=candidate.unit_label,
         score_source=score_source,
     )
 
