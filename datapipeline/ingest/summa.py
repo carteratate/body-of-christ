@@ -31,8 +31,37 @@ _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                     "sources", "summa", "summa.xml")
 
 # Splits an article body into its dialectical parts.
+#
+# The sed contra and respondeo appear in two punctuations. The comma'd form is matched
+# anywhere (unchanged — it is what produced every existing split). The comma-less form
+# is matched ONLY at a line start, because it is otherwise ambiguous with ordinary
+# prose: exactly one article contains the cross-reference "(Arg. On the contrary)."
+# inside its respondeo, and an unanchored comma-less alternative would split that
+# article in two at a parenthetical citation.
+#
+# Measured against the live corpus 2026-08-20, where a surviving marker in a chunk's
+# text proves the split missed it (a successful match consumes the marker into
+# unit_label): 12 respondeo markers and 21 sed contra markers survive, every one of
+# them comma-less and at a line start. Those 33 are what this recovers. The respondeo
+# misses are the costly ones — they leave 16 articles with no "I answer that" chunk at
+# all, so Aquinas's determination is absorbed into the preceding sed contra piece and
+# the article looks, to search, like it has no answer.
+#
+# ⚠️ NOT YET APPLIED TO THE CORPUS. This runs at ingest; the live data was built by the
+# previous pattern and still has those 33 misses. Re-ingesting solely to fix them is a
+# bad trade — `run_collection.py` clears the collection first, and `retrievals`,
+# `bookmarks`, `retrieval_labels` and `guest_trial_retrievals` all cascade on
+# `chunks.id`. Let this ride along with the next Summa re-chunk. Until then, callers
+# must tolerate an article with no respondeo chunk rather than assume one exists.
 _PART_RE = re.compile(
-    r"(Objection\s+\d+:|On the contrary,|I answer that,|Reply to Objection\s+\d+:)",
+    r"("
+    r"Objection\s+\d+:"
+    r"|Reply to Objection\s+\d+:"
+    r"|On the contrary,"
+    r"|I answer that,"
+    r"|(?<=\n)On the contrary"
+    r"|(?<=\n)I answer that"
+    r")",
 )
 
 
