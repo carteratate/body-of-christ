@@ -33,6 +33,11 @@ DRY RUN IS THE DEFAULT. `--apply` is required to write.
 
 `--allow-content-sync` is required to apply either.
 
+⚠️  ORDERING: run `scripts/reembed_drifted_vectors.py` BEFORE this. That tool
+classifies on the very field this sync overwrites, so syncing first destroys the
+evidence for 54 broken points — silently, since the re-embed would still report a
+healthy-looking selection afterwards.
+
 `--fields structural` (the default: `unit_label` + `chapter_key`) is additive TODAY,
 because no point currently carries either field — verified by a full payload census
 of all 53,747 points, which hold exactly: collection, document_id, document_title,
@@ -241,7 +246,13 @@ CONTENT_HAZARD = (
     "The remaining 30 drifts (20 trailing-boilerplate strips across councils, "
     "encyclicals, papal-documents and apostolic-exhortations, plus 10 summa edits) "
     "are the same passage and ARE safely fixed by this sync.\n"
-    "Pass --allow-content-sync only once (1) and (2) are addressed."
+    "  3. ORDERING — run `scripts/reembed_drifted_vectors.py` FIRST. This sync "
+    "overwrites Qdrant `content`, which is the signal that tool classifies on. "
+    "Simulated live, syncing first makes 54 points permanently undetectable (25 "
+    "content_unrelated, 17 of them Gaudete in Domino; all 29 minor_text) — and the "
+    "re-embed would still report selected=296 rather than nothing-to-do, so the loss "
+    "is silent.\n"
+    "Pass --allow-content-sync only once (1), (2) and (3) are addressed."
 )
 
 

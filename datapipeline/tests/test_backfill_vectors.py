@@ -225,13 +225,13 @@ def _run_backfill(rows, existing_ids, apply=True, embed=None):
         captured["texts"] = list(texts)
         return (embed or (lambda t: [[0.1] * LIVE_EMBEDDING_DIMS for _ in t]))(texts)
 
-    original = bf._embed
-    bf._embed = _fake_embed
+    original = bf.embed_texts
+    bf.embed_texts = _fake_embed
     try:
         asyncio.run(bf.backfill_collection(
             client, _FakeConn(rows), "encyclicals", apply, 100))
     finally:
-        bf._embed = original
+        bf.embed_texts = original
     return client, captured
 
 
@@ -285,7 +285,7 @@ def test_embedding_asks_for_the_live_collection_dimensionality():
     """Dropping `dimensions=` yields 3072-dim vectors the collection cannot take."""
     import inspect
 
-    source = inspect.getsource(bf._embed)
+    source = inspect.getsource(bf.embed_texts)
     assert "dimensions=LIVE_EMBEDDING_DIMS" in source
 
 
@@ -404,12 +404,12 @@ def _run_multi(existing_ids, embed_fn):
         for i in range(4)
     ]
     client = _FakeClient(existing_ids)
-    original = bf._embed
-    bf._embed = embed_fn
+    original = bf.embed_texts
+    bf.embed_texts = embed_fn
     try:
         asyncio.run(bf.backfill_collection(client, _FakeConn(rows), "encyclicals", True, 100))
     finally:
-        bf._embed = original
+        bf.embed_texts = original
     return rows, client
 
 
@@ -477,7 +477,7 @@ def test_embedding_model_is_pinned_not_read_from_settings():
     dimensionality — silently accepted by Qdrant, undetectable by any shape check."""
     import inspect
 
-    source = inspect.getsource(bf._embed)
+    source = inspect.getsource(bf.embed_texts)
     assert "model=LIVE_EMBEDDING_MODEL" in source
     assert "settings.EMBEDDING_MODEL" not in source
 

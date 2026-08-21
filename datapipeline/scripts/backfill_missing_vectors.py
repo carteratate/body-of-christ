@@ -61,7 +61,7 @@ _SQL = """
 """
 
 
-async def _qdrant_ids(client, collection: str) -> set[str]:
+async def qdrant_point_ids(client, collection: str) -> set[str]:
     from writers.qdrant import QDRANT_COLLECTION, collection_filter
 
     ids: set[str] = set()
@@ -78,7 +78,7 @@ async def _qdrant_ids(client, collection: str) -> set[str]:
             return ids
 
 
-async def _embed(texts: list[str]) -> list[list[float]]:
+async def embed_texts(texts: list[str]) -> list[list[float]]:
     """Embed with the LIVE collection's dimensionality, explicitly.
 
     `dimensions=` is passed on purpose. The current pipeline omits it and takes
@@ -177,7 +177,7 @@ async def backfill_collection(client, conn, collection: str, apply: bool,
 
     rows = [PassageRow(**dict(r)) for r in await conn.fetch(_SQL, collection)]
     pg_ids = {row.chunk_id for row in rows}
-    q_ids = await _qdrant_ids(client, collection)
+    q_ids = await qdrant_point_ids(client, collection)
 
     missing = set(missing_chunk_ids(pg_ids, q_ids))
     orphaned = q_ids - pg_ids
@@ -200,8 +200,8 @@ async def backfill_collection(client, conn, collection: str, apply: bool,
     written = 0
     for start in range(0, len(work), batch_size):
         window = work[start:start + batch_size]
-        vectors = await _embed([text for _, text in window])
-        # Guarded HERE as well as inside _embed, because this is where vectors are
+        vectors = await embed_texts([text for _, text in window])
+        # Guarded HERE as well as inside embed_texts, because this is where vectors are
         # PAIRED TO ROWS BY POSITION: `zip` would silently truncate, shifting every
         # later vector onto the wrong passage and writing plausible mispaired points.
         # The check belongs at the pairing, not only at the fetch.
