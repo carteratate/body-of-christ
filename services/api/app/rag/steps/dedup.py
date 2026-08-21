@@ -5,7 +5,7 @@ from app.rag.steps.types import RankedChunk
 
 
 async def run(ranked: list[RankedChunk]) -> list[RankedChunk]:
-    """Apply position+cosine dedup and per-title cap.
+    """Apply position+cosine dedup and the per-source cap.
 
     Delegates to the canonical implementation in app.rag.dedup.
     Input must already be sorted descending by reranker_score.

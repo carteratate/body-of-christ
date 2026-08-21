@@ -57,7 +57,7 @@ QUERIES: list[tuple[str, str, str]] = [
     ("What is the purpose of confession? How does absolution actually work?",
      "doctrinal_juridical", "sacramental mechanics"),
     ("How do grace and free will coexist? If God knows everything, how can choices be free?",
-     "philosophical", "Summa-dominant; per-title cap stress"),
+     "philosophical", "Summa-dominant; per-source cap stress"),
     ("What does the Church teach about killing in war and in self-defense?",
      "moral_contested", "doctrinal development; multi-angle stress"),
     ("What is the soul, and what happens to it after death?",

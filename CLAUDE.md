@@ -308,7 +308,7 @@ All 17 migrations (0001–0017) are applied. Notable migrations beyond the V2 fo
 | 0011 | `medieval` and `councils` collections added to DB constraints |
 | 0012 | `theme` column on `user_preferences` |
 | 0013 | `anchor`, `chapter_key`, `chapter_label`, `unit_label` passage columns on `chunks` |
-| 0014 | `UNIQUE(title, author)` on documents (title-author dedup) |
+| 0014 | `UNIQUE(collection, title, translation, author)` on documents — replaces the older 3-column constraint so distinct same-title works by different authors (Polycarp vs Ignatius, both *Epistle to the Philippians*) can coexist |
 | 0015 | `apostolic-exhortations` and `papal-documents` collections |
 | 0016 | `note text` column on `bookmarks` |
 | 0017 | `evaluate_date` + `evaluate_count` columns on `user_usage` |

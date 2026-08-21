@@ -10,9 +10,18 @@ Reports per-dimension spread and per-query rankings alongside the composite, bec
 the composite alone is not trustworthy on this rubric: `multi_angle_coverage`
 measured 0.916-0.971 across all six pipelines in round 1, `doctrinal_completeness`
 is instructed to default to 1.0 when a topic has no doctrinal tension, and
-`redundancy_rate` is floored by dedup's per-title cap. A chunk of the weight can act
+`redundancy_rate` is floored by dedup's per-source cap. A chunk of the weight can act
 as an additive constant that compresses every margin — and an additive constant
 preserves rank order, which is why MEAN RANK is the statistic to read first.
+
+METHODOLOGY BREAK (2026-08-19): that floor MOVED. `app.rag.dedup` previously capped
+2 results per `document_title`; it now caps 2 per *source*, where the three
+single-document collections (summa, catechism, canon-law) key on the reader chapter
+instead — see `dedup.source_key`. Those collections were formerly limited to 2
+results per search in total and can now return more, so `redundancy_rate` and every
+composite derived from it are NOT comparable across this boundary. Segment runs by
+date the way `rerank.LLM_RERANK_CONTRACT_VERSION` segments the scoring contract;
+do not pool pre- and post-2026-08-19 suites into one comparison.
 
 Composites are re-scored from persisted per-dimension scores under the weights
 currently in `judge.WEIGHTS`, so runs judged before and after a re-weighting stay

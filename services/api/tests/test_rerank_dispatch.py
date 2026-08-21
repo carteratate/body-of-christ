@@ -296,7 +296,7 @@ def test_llm_pool_is_globally_score_sorted():
 
 @pytest.mark.asyncio
 async def test_cohere_only_leaves_dedup_slack_rather_than_slicing_to_quota():
-    """dedup's per-title cap and cosine drop can only shrink the list, so slicing to
+    """dedup's per-source cap and cosine drop can only shrink the list, so slicing to
     quota before them structurally under-delivers. Measured pre-fix: 6 scored chunks
     across 2 documents yielded 2 final results instead of 4."""
     from app.rag.steps import collection_guarantee, dedup, quota_cap
@@ -321,7 +321,7 @@ async def test_cohere_only_leaves_dedup_slack_rather_than_slicing_to_quota():
     )
     titles = [r.document_title for r in final]
     assert len(final) == 4, f"under-delivered: {titles}"
-    assert "John" in titles, f"per-title cap starved the second document: {titles}"
+    assert "John" in titles, f"per-source cap starved the second document: {titles}"
 
 
 def test_cohere_fallback_scores_cannot_outrank_a_real_score():

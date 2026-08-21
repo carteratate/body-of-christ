@@ -243,7 +243,7 @@ if |pool| > 40:
 | Rule | Setting |
 |---|---|
 | Adjacent dedup | same document + within 2 chunks locationally + chunk-embedding cosine > 0.90 → drop lower-scored |
-| Per-title cap | 2 |
+| Per-source cap | 2 (per work; per reader chapter for the single-document collections — see `app.rag.dedup.source_key`) |
 | Per-collection cap | user quota setting |
 | Coverage guarantee | ≥1 result per active collection if score allows |
 | Direct guardrail | top-3 must not be all-inferential if traditional/explicit alternatives scored within ε (ε ≈ 0.05 Cohere score, or adjacent Haiku rank) |

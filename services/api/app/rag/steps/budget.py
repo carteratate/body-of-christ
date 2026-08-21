@@ -111,7 +111,7 @@ def retrieval_k(pool_target: int, n_paths: int) -> int:
 def cohere_keep(quota: int, *, with_llm: bool) -> int:
     """Documents Cohere keeps per collection.
 
-    `both` keeps quota+extra so downstream dedup, per-title caps and the collection
+    `both` keeps quota+extra so downstream dedup, per-source caps and the collection
     guarantee have slack; `cohere_only` is terminal, so quota is exactly right.
     """
     return quota + settings.cohere_keep_extra if with_llm else quota
