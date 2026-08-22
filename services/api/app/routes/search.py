@@ -263,26 +263,40 @@ async def _restore_context(rows) -> dict:
     # saved search renders without its context rather than failing, and a row shape this
     # did not expect would otherwise escape to get_search_results' handler and turn a
     # cosmetic gap into a 503 on a search that opened fine before this feature existed.
+    #
+    # The inner budget is what makes that promise true for the DEADLINE as well as for
+    # errors. This runs inside the route's 8s bound, and a deadline expiring here raises
+    # CancelledError — a BaseException that no `except Exception` catches — so without
+    # its own budget a slow context lookup 504s a saved search that would otherwise have
+    # rendered. Two seconds is ~75x the measured lookup; overrunning it means the pool is
+    # saturated, and then the results matter and the attachment does not.
     try:
-        chunks = [_as_chunk(row) for row in rows]
-        keys = stitch.articles_needed(chunks)
-        if not keys:
-            return {}
-        articles = await fetch_context.articles(keys)
-        assembled = stitch.assemble(chunks, articles)
-        return {
-            item.chunk.chunk_id: AttachedContext(
-                relation=item.relation,
-                parts=[ContextPart(content=part.content, reference=part.reference,
-                                   unit_label=part.unit_label, anchor=part.anchor)
-                       for part in item.parts],
-            )
-            for item in assembled
-            if item.is_stitched
-        }
+        async with asyncio.timeout(_RESTORE_CONTEXT_BUDGET_S):
+            return await _build_restore_context(rows)
     except Exception as exc:
         logger.warning("restore context failed (%s)", exc.__class__.__name__)
         return {}
+
+
+_RESTORE_CONTEXT_BUDGET_S = 2
+
+
+async def _build_restore_context(rows) -> dict:
+    chunks = [_as_chunk(row) for row in rows]
+    keys = stitch.articles_needed(chunks)
+    if not keys:
+        return {}
+    articles = await fetch_context.articles(keys)
+    return {
+        item.chunk.chunk_id: AttachedContext(
+            relation=item.relation,
+            parts=[ContextPart(content=part.content, reference=part.reference,
+                               unit_label=part.unit_label, anchor=part.anchor)
+                   for part in item.parts],
+        )
+        for item in stitch.assemble(chunks, articles)
+        if item.is_stitched
+    }
 
 
 @router.get("/searches/{search_id}/results", response_model=SearchResultsResponse)

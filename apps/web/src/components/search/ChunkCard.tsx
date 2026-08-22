@@ -64,13 +64,16 @@ function mobileCitation(
  *
  * A collapsed card is the default state and shows only a citation, so without this an
  * objection is indistinguishable from Aquinas's own teaching until the user expands it.
- * Rendered inline with the reference rather than as a separate row, so it survives the
- * card's fixed-height header at every breakpoint.
+ * Kept on the same line as the reference, so it survives the card's fixed-height header
+ * at every breakpoint — but as a SIBLING of the truncating element, never inside it.
+ * A Summa reference averages 214 characters and overflows the desktop column, so a tag
+ * appended within the truncated text is ellipsed away before it is painted: 97% of
+ * objection cards would silently lose the marker on the exact surface it exists for.
  */
 function RoleTag({ role, color }: { role: string; color: string }) {
   return (
     <span
-      className="ml-1.5 whitespace-nowrap text-xs font-medium"
+      className="ml-1.5 shrink-0 whitespace-nowrap text-xs font-medium"
       style={{ color }}
     >
       · {role}
@@ -267,12 +270,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
           <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 pr-12 sm:hidden">
             <div className="flex min-w-0 items-center gap-2 pr-4">
               <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
+              {role && <RoleTag role={role} color={color} />}
               {displayAuthor && <span className="min-w-0 flex-1 truncate text-xs leading-tight text-brand-muted">{displayAuthor}</span>}
             </div>
-            <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-primary">
-              {compactReference}
-              {role && <RoleTag role={role} color={color} />}
-            </p>
+            <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-primary">{compactReference}</p>
           </div>
           {result.reranker_score !== null && (
             <span
@@ -291,10 +292,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
               <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
               <div className="grid min-w-0 flex-1 grid-rows-[1rem_1rem] content-center overflow-hidden">
                 <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
-                <p className="truncate text-sm font-semibold leading-tight text-brand-primary">
-                  {primaryReference}
+                <div className="flex min-w-0 items-baseline">
+                  <span className="truncate text-sm font-semibold leading-tight text-brand-primary">{primaryReference}</span>
                   {role && <RoleTag role={role} color={color} />}
-                </p>
+                </div>
               </div>
             </div>
           </div>

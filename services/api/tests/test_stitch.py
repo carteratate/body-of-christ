@@ -72,6 +72,11 @@ def replace_label(chunk, unit_label):
     return replace(chunk, unit_label=unit_label)
 
 
+def replace_document(chunk, document_id):
+    from dataclasses import replace
+    return replace(chunk, document_id=document_id)
+
+
 def replace_content(chunk, content):
     from dataclasses import replace
     return replace(chunk, content=content)
@@ -277,6 +282,32 @@ def test_a_split_objection_is_attached_whole_to_its_reply():
     passages[1] = replace_label(passages[1], "Objection 1")
 
     [item] = stitch.assemble([passages[4]], _articles(passages))
+    assert [p.position for p in item.parts] == [0, 1]
+
+
+def test_a_mislabelled_second_objection_is_not_glued_to_the_first():
+    """4 keys stamp a later objection with an earlier one's number — e.g. envy a2, whose
+    second "Objection 1" opens "Further," and is plainly Objection 2. Returning both
+    would render two different arguments under one "Objection 1 — answered below"
+    heading, presenting both as the thing the reply answers."""
+    passages = _shaped("OOCARR")
+    passages[1] = replace_label(passages[1], "Objection 1")
+    passages[1] = replace_content(passages[1], "Further, envy is sorrow for another's good")
+
+    [item] = stitch.assemble([passages[4]], _articles(passages))
+
+    assert [p.position for p in item.parts] == [0]
+
+
+def test_a_genuine_continuation_is_still_attached_whole():
+    """The run exists for passages split across chunks. A continuation does not announce
+    a new argument, so it is kept."""
+    passages = _shaped("OOCARR")
+    passages[1] = replace_label(passages[1], "Objection 1")
+    passages[1] = replace_content(passages[1], "and moreover the same follows from...")
+
+    [item] = stitch.assemble([passages[4]], _articles(passages))
+
     assert [p.position for p in item.parts] == [0, 1]
 
 
@@ -889,6 +920,22 @@ def test_restore_survives_a_row_shape_it_did_not_expect():
     assert asyncio.run(_restore_context(rows)) == {}
 
 
+def test_a_document_id_mismatch_is_reported_rather_than_silent():
+    """`document_id` on the live path comes from the Qdrant payload and is never
+    reconciled against Postgres. If the two ever diverge, every bucket misses and the
+    feature turns off completely — and `fetch_context`'s missing-key counter cannot see
+    it, because the key did come back, filed under a different document."""
+    passages = _article()
+    stranger = _chunk("o1", "Objection 1", position=0)
+    stranger = replace_document(stranger, "a-different-document")
+
+    with patch.object(stitch.logger, "warning") as warned:
+        [item] = stitch.assemble([stranger], _articles(passages))
+
+    assert item.parts == []
+    assert "document_id" in warned.call_args[0][0]
+
+
 def test_a_degraded_lookup_is_not_reported_as_id_drift():
     """`fetch_context` returns {} for every key when the pool is down, and it has
     already recorded that through record_recovery. Reporting it again as drifted chunk
@@ -976,13 +1023,28 @@ def _get_results(pool, articles_impl):
             "00000000-0000-0000-0000-000000000003", user))
 
 
-def test_restore_is_bounded_by_the_request_timeout():
-    """The context lookup is a second round trip on the same pool. Outside the 8s bound
-    a stall there leaves History loading indefinitely — so a slow lookup must surface as
-    a 504, not hang.
+def test_a_slow_context_lookup_degrades_instead_of_failing_the_search():
+    """The attachment is presentation. Sharing the route's single 8s bound, a deadline
+    expiring inside the lookup raises CancelledError — a BaseException no `except
+    Exception` catches — and 504s a saved search that would otherwise have rendered. Its
+    own budget keeps the promise the docstring makes."""
+    from app.routes import search
 
-    The real bound is shortened for the test, and asserted separately, so this proves the
-    lookup is INSIDE the timeout without spending 8 seconds to do it."""
+    async def never_returns(keys):
+        await asyncio.sleep(30)
+        return {}
+
+    pool = _restore_pool([_route_row("o1", "Objection 1", 0)])
+    with patch.object(search, "_RESTORE_CONTEXT_BUDGET_S", 0.05):
+        response = _get_results(pool, never_returns)
+
+    assert response.results[0].context is None
+    assert response.results[0].content == "text"
+
+
+def test_a_stalled_result_query_still_bounds_the_request():
+    """The route's own 8s bound remains, so a saturated pool cannot leave History
+    loading indefinitely."""
     from fastapi import HTTPException
 
     requested: list[float] = []
@@ -992,16 +1054,17 @@ def test_restore_is_bounded_by_the_request_timeout():
         requested.append(seconds)
         return real_timeout(0.05)
 
-    async def never_returns(keys):
+    async def hang(*args, **kwargs):
         await asyncio.sleep(30)
-        return {}
 
-    pool = _restore_pool([_route_row("o1", "Objection 1", 0)])
+    pool = AsyncMock()
+    pool.fetchrow = hang
+
     with patch("asyncio.timeout", short_timeout), pytest.raises(HTTPException) as raised:
-        _get_results(pool, never_returns)
+        _get_results(pool, AsyncMock(return_value={}))
 
     assert raised.value.status_code == 504
-    assert requested == [8]
+    assert requested[0] == 8
 
 
 def test_the_restored_response_carries_the_context_it_rebuilt():

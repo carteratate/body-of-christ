@@ -79,6 +79,10 @@ ANSWERS = "answers"
 _DETERMINATION = "I answer that"
 _SUMMA = "summa"
 
+# How this translation opens each subsequent objection in a series. It is the corpus's
+# own signal that a passage begins a NEW argument rather than continuing the previous one.
+_NEW_ARGUMENT = "Further,"
+
 _OBJECTION_RE = re.compile(r"^Objection (\d+)$")
 _REPLY_RE = re.compile(r"^Reply to Objection (\d+)$")
 
@@ -210,6 +214,18 @@ def _objection_before(passages: list[RankedChunk], index: int,
     determination: within one article every reply follows the determination, so a reply
     on the far side of one belongs to the article before this one.
 
+    That landmark is the determination and not the objections deliberately. Backwards
+    from a reply the order is determination, sed contra, objections — so stopping at "a
+    reply seen after any objection" would fire inside the 2 keys that strand an objection
+    among the replies, cutting their later replies off from objections that are genuinely
+    theirs.
+
+    The cost is that in the 16 keys with no determination at all the guard never arms,
+    and a reply whose number is absent from its own article can scan back into the
+    previous one. No such key currently holds a second disputation, so nothing crosses
+    today — the same conditional soundness `_determination_after` documents, on the
+    mirror-image trigger.
+
     Returns the contiguous run of that number, since an objection can be split too.
     """
     seen_determination = False
@@ -224,8 +240,31 @@ def _objection_before(passages: list[RankedChunk], index: int,
             while position >= 0 and _objection_number(passages[position]) == number:
                 run.insert(0, passages[position])
                 position -= 1
-            return run
+            return _without_mislabelled_neighbours(run)
     return []
+
+
+def _without_mislabelled_neighbours(run: list[RankedChunk]) -> list[RankedChunk]:
+    """Trim a same-numbered run at the point it stops being one objection.
+
+    The run exists because a passage can be split across chunks, as 109 determinations
+    are. For objections it never is: of the 4 adjacent same-numbered pairs in the corpus,
+    all 4 have a second member opening "Further," and none begins mid-sentence. Those are
+    ingest mislabels — a later objection stamped with an earlier one's number — so
+    returning the whole run would render two different arguments under a single
+    "Objection N — answered below" heading, presenting both as the one thing the reply
+    answers.
+
+    Numbering runs top-down, so the earliest member is the one that carries the number.
+    Anything after it that opens a new argument is dropped; a genuine continuation, which
+    would not, is still returned whole.
+    """
+    kept = run[:1]
+    for part in run[1:]:
+        if (part.content or "").lstrip().startswith(_NEW_ARGUMENT):
+            break
+        kept.append(part)
+    return kept
 
 
 def assemble(chunks: list[RankedChunk],
@@ -242,7 +281,7 @@ def assemble(chunks: list[RankedChunk],
     that is a rule rather than an accident.
     """
     out: list[Stitched] = []
-    unplaceable = 0
+    unplaceable = unmatched = 0
     for chunk in chunks:
         relation = attachment_relation(chunk)
         parts: list[RankedChunk] = []
@@ -252,18 +291,26 @@ def assemble(chunks: list[RankedChunk],
             index = next((i for i, p in enumerate(passages)
                           if p.chunk_id == chunk.chunk_id), None)
             if index is None:
-                # Counted only when the article WAS fetched and does not contain the
-                # passage that matched it: the two stores then disagree about chunk ids
-                # — a re-chunk without a reconcile, the failure already recorded against
-                # this corpus. Silent, that is every Summa card quietly losing its
-                # attachment with nothing to look at.
+                # Three different causes, and only two are worth a log line.
                 #
-                # An empty `passages` is a different thing entirely: the lookup degraded
-                # (pool down, query failed) and returned {} for every key, which
-                # `fetch_context` has already reported through `record_recovery`.
-                # Counting it here would point an operator at drift that did not happen.
+                # The article was fetched and does not contain the passage that matched
+                # it: the stores disagree about chunk ids — a re-chunk without a
+                # reconcile, the failure already recorded against this corpus.
                 if passages:
                     unplaceable += 1
+                # The lookup returned articles, but none under this result's
+                # (document_id, chapter_key). `document_id` on the live path comes
+                # straight from the Qdrant payload and is never reconciled against
+                # Postgres, so a divergence there silently empties EVERY bucket: no
+                # attachment anywhere, and `fetch_context`'s own missing-key counter
+                # cannot see it, because the key did come back — filed under a different
+                # document.
+                elif articles:
+                    unmatched += 1
+                # Otherwise the lookup degraded entirely and returned {}, which
+                # `fetch_context` has already reported through `record_recovery`.
+                # Counting it again here would point an operator at drift that did not
+                # happen.
             elif relation == ANSWERED_BY:
                 parts = _determination_after(passages, index)
             else:
@@ -281,6 +328,12 @@ def assemble(chunks: list[RankedChunk],
         logger.warning(
             "stitch: %d result(s) not found in the article fetched for them; "
             "chunk ids may have drifted from the search index", unplaceable,
+        )
+    if unmatched:
+        logger.warning(
+            "stitch: %d result(s) had no article under their (document_id, chapter_key) "
+            "though other articles were returned; the search index and the database may "
+            "disagree about document_id", unmatched,
         )
     return out
 

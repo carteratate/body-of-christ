@@ -8,8 +8,9 @@ WHY WHOLE ARTICLES RATHER THAN JUST THE PIECE WANTED
 — `.../article-10-whether-the-brave-man-makes-use-of-anger...` carries both Article 10
 and the article after it, which also inherits Article 10's `reference` string. Selecting
 "the determination for this chapter_key" would return TWO unrelated determinations and
-glue them into one answer, and 10 keys carry a duplicate `Objection N` label, so
-selecting an objection by (key, number) would be a coin flip between two articles.
+glue them into one answer, and 10 keys carry a duplicate `Objection N` label across 16
+(key, label) pairs, so selecting an objection by (key, number) would be a coin flip
+between two articles.
 
 So the query returns every passage of each key and `stitch` finds what a result needs by
 scanning its neighbours. That also needs the roles this feature does not attach: a scan

@@ -385,6 +385,31 @@ describe("ChunkCard keeps the attachment out of every action", () => {
     expect(onExploreMore.mock.calls[0][0]).not.toContain("THE ATTACHED ANSWER");
   });
 
+  it("keeps the role marker out of any truncating element", () => {
+    // A Summa reference averages 214 characters and overflows the desktop column, so a
+    // marker appended INSIDE the truncated citation is ellipsed away before it paints —
+    // silently, on 97% of objection cards, on the one surface the marker exists for.
+    // jsdom has no layout, so this asserts the structural property instead: the tag is
+    // never a descendant of a `truncate` or `line-clamp` element.
+    const { container } = render(
+      <ChunkCard
+        result={summaObjection() as never}
+        index={0}
+        searchId="00000000-0000-0000-0000-000000000003"
+        token="token"
+        onExploreMore={vi.fn()}
+      />,
+    );
+
+    const tags = Array.from(container.querySelectorAll("span"))
+      .filter((el) => el.textContent?.includes("Objection 1") && el.children.length === 0);
+    expect(tags.length).toBeGreaterThan(0);
+    for (const tag of tags) {
+      expect(tag.closest(".truncate")).toBeNull();
+      expect(tag.closest("[class*='line-clamp']")).toBeNull();
+    }
+  });
+
   it("names the passage's role on the collapsed card", async () => {
     // The collapsed card is the DEFAULT state and shows only a citation. Without the
     // role, an objection is indistinguishable from Aquinas's own teaching until opened.
