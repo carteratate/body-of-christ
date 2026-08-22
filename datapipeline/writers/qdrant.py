@@ -43,14 +43,15 @@ async def ensure_collection(client: AsyncQdrantClient) -> None:
     params = info.config.params.vectors
     named = isinstance(params, dict)
     size = (next(iter(params.values())).size if named else params.size)
-    writer_named = False              # build_point emits a bare vector
+    writer_named = settings.VECTOR_IS_NAMED
 
     if named != writer_named or size != settings.EMBEDDING_DIMS:
         raise SystemExit(
             f"REFUSING to write to '{QDRANT_COLLECTION}': it holds "
             f"{'named' if named else 'unnamed'} {size}-dim vectors, but this writer "
             f"produces {'named' if writer_named else 'unnamed'} "
-            f"{settings.EMBEDDING_DIMS}-dim vectors. Reshaping the collection would "
+            f"{settings.EMBEDDING_DIMS}-dim vectors (QDRANT_FORMAT="
+            f"{settings.QDRANT_FORMAT!r}). Reshaping the collection would "
             f"delete every vector in it — do that deliberately, not as a side effect of "
             f"an ingest."
         )

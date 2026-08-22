@@ -28,9 +28,20 @@ def _base_kwargs(**overrides):
     return kwargs
 
 
-def test_embedding_dims_is_3072():
+def test_the_default_format_is_the_one_that_is_deployed():
+    """A writer configured for a shape the collection does not have cannot write to it —
+    which is exactly how the pipeline sat unusable while the app served 1536 unnamed."""
     s = Settings(**_base_kwargs())
+    assert s.QDRANT_FORMAT == "live"
+    assert s.EMBEDDING_DIMS == 1536
+    assert s.VECTOR_IS_NAMED is False
+
+
+def test_v5_dimensions_stay_reachable_by_selecting_the_format():
+    s = Settings(**_base_kwargs())
+    s = Settings(**_base_kwargs(QDRANT_FORMAT="v5"))
     assert s.EMBEDDING_DIMS == 3072
+    assert s.VECTOR_IS_NAMED is True
 
 
 def test_enrich_model_default():

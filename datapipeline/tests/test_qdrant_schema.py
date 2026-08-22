@@ -21,15 +21,38 @@ class _FakeClient:
 
 
 @pytest.mark.asyncio
-async def test_recreate_chunks_deletes_then_creates_named_and_sparse():
+async def test_recreate_chunks_makes_a_collection_the_writer_can_fill():
+    """The schema and `search_writer.build_point` must agree: a collection created here
+    that the writer cannot write to is unusable, which is the state the pipeline was in
+    while it emitted V5 against a live collection."""
+    from config import settings
+
     c = _FakeClient(); c._exists.add("chunks")
     await qdrant_schema.recreate_chunks(c)
+
     assert "chunks" in c.deleted
     cfg = c.created["chunks"]
-    assert "dense" in cfg["vectors_config"]
-    assert cfg["vectors_config"]["dense"].size == 3072
-    assert set(cfg["sparse_vectors_config"].keys()) == {"sparse_content", "sparse_annotation"}
+    assert cfg["vectors_config"].size == settings.EMBEDDING_DIMS == 1536
+    assert "sparse_vectors_config" not in cfg      # live has no sparse vectors
     assert ("chunks", "collection") in c.indexes
+
+
+@pytest.mark.asyncio
+async def test_recreate_chunks_builds_the_v5_shape_when_selected(monkeypatch):
+    """The V5 target is preserved, and reached by selecting it rather than by default."""
+    import dataclasses
+
+    from config import settings
+
+    monkeypatch.setattr(qdrant_schema, "settings",
+                        dataclasses.replace(settings, QDRANT_FORMAT="v5"))
+    c = _FakeClient(); c._exists.add("chunks")
+
+    await qdrant_schema.recreate_chunks(c)
+
+    cfg = c.created["chunks"]
+    assert cfg["vectors_config"]["dense"].size == 3072
+    assert set(cfg["sparse_vectors_config"]) == {"sparse_content", "sparse_annotation"}
 
 
 @pytest.mark.asyncio
@@ -37,7 +60,9 @@ async def test_ensure_facets_and_questions_indexes():
     c = _FakeClient()
     await qdrant_schema.ensure_facets(c)
     await qdrant_schema.ensure_questions(c)
-    assert c.created["facets"]["vectors_config"].size == 3072
+    # Facets and questions are compared against the same query vectors as `chunks`, so
+    # they follow the same width.
+    assert c.created["facets"]["vectors_config"].size == 1536
     assert ("facets", "kind") in c.indexes
     assert ("facets", "grounding") in c.indexes
     assert ("facets", "kind_secondary") in c.indexes

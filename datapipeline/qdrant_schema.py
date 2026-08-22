@@ -17,17 +17,30 @@ QUESTIONS = "questions"
 
 
 async def recreate_chunks(client) -> None:
+    """Create `chunks` in the shape `settings.QDRANT_FORMAT` selects.
+
+    Both shapes are described here so the schema and the writer cannot disagree — a
+    collection this creates must be one `writers/search_writer.build_point` can fill.
+    """
     if await client.collection_exists(CHUNKS):
         await client.delete_collection(CHUNKS)
-    await client.create_collection(
-        collection_name=CHUNKS,
-        vectors_config={"dense": VectorParams(size=settings.EMBEDDING_DIMS, distance=Distance.COSINE)},
-        sparse_vectors_config={
-            "sparse_content": SparseVectorParams(),
-            "sparse_annotation": SparseVectorParams(),
-        },
-        hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
-    )
+    dense = VectorParams(size=settings.EMBEDDING_DIMS, distance=Distance.COSINE)
+    if settings.VECTOR_IS_NAMED:
+        await client.create_collection(
+            collection_name=CHUNKS,
+            vectors_config={"dense": dense},
+            sparse_vectors_config={
+                "sparse_content": SparseVectorParams(),
+                "sparse_annotation": SparseVectorParams(),
+            },
+            hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
+        )
+    else:
+        await client.create_collection(
+            collection_name=CHUNKS,
+            vectors_config=dense,
+            hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
+        )
     await client.create_payload_index(
         collection_name=CHUNKS, field_name="collection", field_schema=PayloadSchemaType.KEYWORD)
 

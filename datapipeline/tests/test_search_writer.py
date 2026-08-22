@@ -22,11 +22,33 @@ def test_embedding_input_does_not_cross_chapter():
     assert "Aaa." not in out  # previous passage is a different chapter
 
 
-def test_build_point_uses_named_dense_vector():
+def test_build_point_uses_a_bare_vector_for_the_deployed_collection():
+    """services/api queries without `using=`, so a named vector is unreachable there."""
     doc = Document(id="d1", collection="bible", title="Genesis", author="Moses")
     p = Passage(content="x", reference="Gen 1:1", anchor="genesis/1/1",
                 chapter_key="genesis/1", chapter_label="Genesis 1", position=0)
+
     pt = build_point(doc, p, [0.1, 0.2, 0.3])
-    assert pt.vector == {"dense": [0.1, 0.2, 0.3]}
+
+    assert pt.vector == [0.1, 0.2, 0.3]
     assert pt.payload["collection"] == "bible"
     assert pt.payload["content"] == "x"
+
+
+def test_build_point_names_the_vector_under_the_v5_format(monkeypatch):
+    """The V5 shape stays reachable; it is selected, not assumed."""
+    doc = Document(id="d1", collection="bible", title="Genesis", author="Moses")
+    p = Passage(content="x", reference="Gen 1:1", anchor="genesis/1/1",
+                chapter_key="genesis/1", chapter_label="Genesis 1", position=0)
+    # Settings is frozen, so the module reference is swapped rather than the field.
+    import dataclasses
+
+    from config import settings
+
+    import writers.search_writer as sw
+    monkeypatch.setattr(sw, "settings",
+                        dataclasses.replace(settings, QDRANT_FORMAT="v5"))
+
+    pt = build_point(doc, p, [0.1, 0.2, 0.3])
+
+    assert pt.vector == {"dense": [0.1, 0.2, 0.3]}

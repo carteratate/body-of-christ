@@ -39,10 +39,10 @@ def build_embedding_input(passages: list[Passage], idx: int,
 def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
     return PointStruct(
         id=passage_id(doc.id, p.anchor),
-        # Bare, not {"dense": ...}: the live collection has a single unnamed vector, and
-        # `services/api` queries it without `using=`. The named form belongs to the V5
-        # schema in `qdrant_schema.py`, which is not what is deployed.
-        vector=vector,
+        # Shape follows settings.QDRANT_FORMAT: the live collection has one unnamed
+        # vector and services/api queries it without `using=`; V5 keys it so sparse
+        # vectors can sit alongside.
+        vector={"dense": vector} if settings.VECTOR_IS_NAMED else vector,
         payload={
             "collection": doc.collection,
             "document_id": doc.id,

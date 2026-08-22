@@ -72,7 +72,8 @@ async def test_embed_chunk_embeds_content_facets_questions(tmp_path):
                "text": "facet B", "question": "Q B?"}]
     await embed_chunk(doc, doc.passages, 0, merged, deps)
     assert len(chunk_points) == 1
-    assert chunk_points[0].vector.keys() == {"dense"}     # named vector
+    # Shape follows settings.QDRANT_FORMAT; "live" is a single unnamed vector.
+    assert isinstance(chunk_points[0].vector, list)
     assert len(facet_points) == 2 and len(question_points) == 2
     assert facet_points[0].payload["kind"] == "doctrinal"
     assert facet_points[0].payload["grounding"] == "explicit"
@@ -174,7 +175,9 @@ async def test_same_text_different_dimensions_is_a_cache_miss(tmp_path, monkeypa
     await embed_chunk(doc, doc.passages, 0, merged, deps)
     calls_before = deps.embed_client.calls
 
-    patched = dataclasses.replace(base_settings, EMBEDDING_DIMS=1536)
+    # EMBEDDING_DIMS derives from QDRANT_FORMAT, so the format is what moves it:
+    # live is 1536, v5 is 3072.
+    patched = dataclasses.replace(base_settings, QDRANT_FORMAT="v5")
     monkeypatch.setattr(embed_mod, "settings", patched)
     facet_points.clear()
     await embed_chunk(doc, doc.passages, 0, merged, deps)
