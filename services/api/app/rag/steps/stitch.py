@@ -282,9 +282,11 @@ def assemble(chunks: list[RankedChunk],
     """
     out: list[Stitched] = []
     unplaceable = unmatched = 0
+    incomplete: list[RankedChunk] = []
     for chunk in chunks:
         relation = attachment_relation(chunk)
         parts: list[RankedChunk] = []
+        located = False
 
         if relation is not None and chunk.chapter_key:
             passages = articles.get((chunk.document_id, chunk.chapter_key), [])
@@ -312,14 +314,22 @@ def assemble(chunks: list[RankedChunk],
                 # Counting it again here would point an operator at drift that did not
                 # happen.
             elif relation == ANSWERED_BY:
+                located = True
                 parts = _determination_after(passages, index)
             else:
+                located = True
                 parts = _objection_before(passages, index, _reply_number(chunk))
 
         # 21 Summa chunks hold an empty passage, 17 of them objections a reply points
         # back to. An empty attachment renders as a blank block under a header naming a
         # voice, and tells the explanation model to read a passage that is not there.
         parts = [part for part in parts if part.content and part.content.strip()]
+
+        # Located inside its own article, and the article does not hold what it needs.
+        # This is the feature failing on the passages it exists for, so it is counted
+        # even though nothing here is broken.
+        if located and not parts:
+            incomplete.append(chunk)
 
         out.append(Stitched(chunk=chunk, parts=parts,
                             relation=relation if parts else None))
@@ -334,6 +344,28 @@ def assemble(chunks: list[RankedChunk],
             "stitch: %d result(s) had no article under their (document_id, chapter_key) "
             "though other articles were returned; the search index and the database may "
             "disagree about document_id", unmatched,
+        )
+    if incomplete:
+        # INFO, not WARNING, and deliberately so. The two warnings above mean the stores
+        # have come apart and someone should act. This one means the CORPUS is missing a
+        # passage — 16 articles hold no determination (12 lost to a splitter bug whose
+        # fix is committed but unapplied, 1 phrased "I answer with Augustine", 3 absent
+        # from the source) and 26 replies name an objection number their article does not
+        # contain. Raising it to WARNING would fire on ordinary searches over known-bad
+        # data and teach an operator to skim past the two lines that do need action.
+        #
+        # Logged at all because the alternative is silence: the passage is located, the
+        # article is fetched, nothing errors, and the card simply renders without the
+        # answer — indistinguishable from a passage that never needed one.
+        articles_hit = sorted({c.chapter_key for c in incomplete if c.chapter_key})
+        logger.info(
+            "stitch: %d result(s) shown without a completing passage — %d objection(s) "
+            "whose article holds no determination, %d reply(ies) whose objection is "
+            "absent or blank; article(s): %s",
+            len(incomplete),
+            sum(1 for c in incomplete if _objection_number(c) is not None),
+            sum(1 for c in incomplete if _reply_number(c) is not None),
+            ", ".join(articles_hit[:5]) + (" …" if len(articles_hit) > 5 else ""),
         )
     return out
 

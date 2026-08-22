@@ -920,6 +920,67 @@ def test_restore_survives_a_row_shape_it_did_not_expect():
     assert asyncio.run(_restore_context(rows)) == {}
 
 
+def test_an_article_missing_its_determination_is_reported():
+    """16 articles hold no determination, so their objections render without the answer —
+    the feature failing on exactly the passages it exists for. Nothing errors and the
+    card looks ordinary, so without this it is indistinguishable from a passage that
+    never needed an attachment."""
+    passages = _shaped("OOOCRRR")
+
+    with patch.object(stitch.logger, "info") as reported:
+        [item] = stitch.assemble([passages[0]], _articles(passages))
+
+    assert item.parts == []
+    assert "no determination" in reported.call_args[0][0]
+
+
+def test_a_reply_whose_objection_is_absent_is_reported():
+    """26 replies name an objection number their article does not contain."""
+    passages = [p for p in _shaped("OOCARR") if p.unit_label != "Objection 2"]
+    reply = next(p for p in passages if p.unit_label == "Reply to Objection 2")
+
+    with patch.object(stitch.logger, "info") as reported:
+        [item] = stitch.assemble([reply], _articles(passages))
+
+    assert item.parts == []
+    assert reported.call_args[0][3] == 1        # counted as a reply, not an objection
+
+
+def test_a_complete_card_reports_nothing():
+    passages = _article()
+    with patch.object(stitch.logger, "info") as reported:
+        stitch.assemble([passages[0]], _articles(passages))
+
+    reported.assert_not_called()
+
+
+def test_a_result_needing_no_attachment_reports_nothing():
+    """Only passages that NEED something can be missing it."""
+    passages = _shaped("OOOCRRR")
+    sed_contra = next(p for p in passages if p.unit_label == "On the contrary")
+
+    with patch.object(stitch.logger, "info") as reported:
+        stitch.assemble([sed_contra], _articles(passages))
+
+    reported.assert_not_called()
+
+
+def test_a_missing_passage_is_reported_below_the_drift_warnings():
+    """A corpus gap is not an operational fault. Raised to WARNING it would fire on
+    ordinary searches over known-bad data and train an operator to skim past the two
+    lines that do mean the stores have come apart."""
+    passages = _shaped("OOOCRRR")
+
+    with (
+        patch.object(stitch.logger, "warning") as warned,
+        patch.object(stitch.logger, "info") as reported,
+    ):
+        stitch.assemble([passages[0]], _articles(passages))
+
+    reported.assert_called_once()
+    warned.assert_not_called()
+
+
 def test_a_document_id_mismatch_is_reported_rather_than_silent():
     """`document_id` on the live path comes from the Qdrant payload and is never
     reconciled against Postgres. If the two ever diverge, every bucket misses and the
