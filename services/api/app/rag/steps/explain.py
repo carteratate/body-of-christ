@@ -37,7 +37,20 @@ _EXPLAIN_SYSTEM = (
     "against the objections; 'I answer that' is the author's own determination; "
     "'Reply to Objection N' is the author answering that one objection. A role that "
     "is merely a section or verse locator ('Can. 33', '§17', '4') carries no such "
-    "inversion — treat those passages normally."
+    "inversion — treat those passages normally.\n\n"
+    "STITCHED PASSAGES: a Summa passage may arrive with a second passage attached "
+    "across a marked boundary in square brackets. The two forms are:\n"
+    "  '[Objection N — Aquinas answers:]' — everything ABOVE is the objection the "
+    "user matched, a position Aquinas rejects; everything BELOW is his answer. "
+    "Explain what the objection argues and how he answers it. Never attribute the "
+    "objection's claim to him.\n"
+    "  '[Objection N, which the passage below answers:]' followed later by "
+    "'[Reply to Objection N — Aquinas's reply:]' — the FIRST passage is the objection, "
+    "included only as context; the passage after the second marker is what the user "
+    "matched, and it is Aquinas's own reply. Explain his reply, using the objection to "
+    "say what he is answering. Do not treat the objection as the matched passage.\n"
+    "In both forms the two passages are different voices; never present them as one "
+    "continuous argument."
 )
 
 _MAX_RETRIES = 3

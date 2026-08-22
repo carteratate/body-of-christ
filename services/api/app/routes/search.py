@@ -14,8 +14,10 @@ from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.search import (
+    AttachedContext,
     ChunkResult,
     ChunkSource,
+    ContextPart,
     SearchHistoryResponse,
     SearchRequest,
     SearchResultsResponse,
@@ -23,6 +25,8 @@ from app.models.search import (
 )
 from app.rag.constants import VALID_COLLECTIONS as _VALID_COLLECTIONS
 from app.rag.pipeline import run_search_pipeline
+from app.rag.steps import fetch_context, stitch
+from app.rag.steps.types import RankedChunk
 
 logger = logging.getLogger(__name__)
 
@@ -225,6 +229,64 @@ async def list_searches(
     )
 
 
+def _as_chunk(row) -> RankedChunk:
+    """A restored database row as a RankedChunk, so `stitch`'s rules apply unchanged.
+
+    Re-stating the role rules here is how live and history drift apart — the bug class
+    this project already fixed once.
+
+    `chunk_id`, `document_id` and `position` are all load-bearing: the id both keys the
+    result back to its row and locates the passage among its neighbours, and the
+    document scopes a `chapter_key` that is only unique within one document.
+    """
+    return RankedChunk(
+        chunk_id=str(row["chunk_id"]), content="", reference=None,
+        collection=row["collection"], document_id=str(row["document_id"]),
+        document_title="", author=None,
+        reranker_score=0.0, position=row["position"],
+        unit_label=row["unit_label"], chapter_key=row["chapter_key"],
+    )
+
+
+async def _restore_context(rows) -> dict:
+    """chunk_id -> AttachedContext, rebuilt for a saved search.
+
+    Runs the same `stitch` rules over the stored rows, so a reopened search shows the
+    card a live search would. `retrievals` deliberately stores only the passage that
+    matched, so this is derived rather than persisted — and stays correct if the
+    underlying text is later corrected.
+
+    Best-effort, exactly as in the live pipeline: a failure renders the saved search
+    without its context, which is what it did before stitching existed.
+    """
+    chunks = [_as_chunk(row) for row in rows]
+    keys = stitch.articles_needed(chunks)
+    if not keys:
+        return {}
+    try:
+        articles = await fetch_context.articles(keys)
+        assembled = stitch.assemble(chunks, articles)
+    except Exception as exc:
+        logger.warning("restore context failed (%s)", exc.__class__.__name__)
+        return {}
+
+    # Keyed by chunk_id, never zipped against `rows`: a positional pairing is only
+    # correct while `assemble` returns exactly one card per input in order, and pairing
+    # the wrong context to a passage would attach one article's objection to another
+    # article's text — a fabricated attribution, the precise failure this feature exists
+    # to prevent.
+    return {
+        item.chunk.chunk_id: AttachedContext(
+            relation=item.relation,
+            parts=[ContextPart(content=part.content, reference=part.reference,
+                               unit_label=part.unit_label, anchor=part.anchor)
+                   for part in item.parts],
+        )
+        for item in assembled
+        if item.is_stitched
+    }
+
+
 @router.get("/searches/{search_id}/results", response_model=SearchResultsResponse)
 async def get_search_results(
     search_id: str,
@@ -266,6 +328,11 @@ async def get_search_results(
                 """,
                 search_uuid,
             )
+            # Inside the timeout on purpose: this is a second round trip on the same
+            # pool, and the block exists so a saturated pool cannot leave History
+            # loading indefinitely. Outside it, a stall here would hang the request
+            # past the 8s bound with nothing to stop it.
+            context = await _restore_context(rows)
     except HTTPException:
         raise
     except TimeoutError as exc:
@@ -292,6 +359,7 @@ async def get_search_results(
             ),
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],
+            context=context.get(str(row["chunk_id"])),
         )
         for row in rows
     ]

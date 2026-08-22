@@ -104,3 +104,25 @@ class PipelineResult:
     # Appended to preserve positional compatibility. False means total_cost is
     # incomplete and must not enter persisted or aggregate cost comparisons.
     cost_eligible: bool = True
+    # Appended for the same reason. Presentation attached to `chunks`, keyed by
+    # chunk_id. NOT results in their own right — fetched after quota_cap so they never
+    # consume a result slot — and kept separate so `chunks` stays exactly what was
+    # scored, persisted, bookmarked and given feedback on.
+    context: dict[str, "AttachedContext"] = field(default_factory=dict)
+
+
+@dataclass
+class AttachedContext:
+    """The passage that makes a matched Summa result intelligible.
+
+    `relation` says what the attached passage IS relative to the match, so a renderer
+    never infers placement from a label:
+
+      answered_by  the match is an objection; these parts are Aquinas's answer  -> below
+      answers      the match is a reply; this part is the objection it answers  -> above
+
+    See `app.rag.steps.stitch` for why the two roles need different passages.
+    """
+
+    relation: str
+    parts: list[RankedChunk]

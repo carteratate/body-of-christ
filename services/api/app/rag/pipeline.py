@@ -16,6 +16,7 @@ from app.db import get_pool
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.pipelines.runner import PipelineExecutionError, run as run_pipeline
+from app.rag.steps import stitch
 from app.rag.steps.explain import stream as stream_explanation
 
 logger = logging.getLogger(__name__)
@@ -191,6 +192,23 @@ async def run_search_pipeline(
                     None if chunk.score_source == "rrf_fallback"
                     else chunk.reranker_score
                 ),
+                # The passage that completes this result: Aquinas's answer beneath a
+                # matched objection, or the objection ABOVE a matched reply. `relation`
+                # says which, so the renderer never infers placement from a label.
+                # Presentation only — not a result, no score, not persisted to
+                # `retrievals`, which records the passage that actually matched.
+                "context": (
+                    {
+                        "relation": attached.relation,
+                        "parts": [
+                            {"content": part.content, "reference": part.reference,
+                             "unit_label": part.unit_label, "anchor": part.anchor}
+                            for part in attached.parts
+                        ],
+                    }
+                    if (attached := pipeline_result.context.get(chunk.chunk_id))
+                    else None
+                ),
             }
 
         # ------------------------------------------------------------------
@@ -257,8 +275,20 @@ async def run_search_pipeline(
         for chunk in final_results:
             accumulated_text = ""
             try:
+                # The ASSEMBLED card, not the fragment that matched it. This prose is
+                # persisted to `retrievals.explanation` and re-served forever, so an
+                # explanation about the objection alone would sit above the answer to
+                # it permanently.
+                attached = pipeline_result.context.get(chunk.chunk_id)
+                explain_chunk = stitch.with_stitched_content(
+                    stitch.Stitched(
+                        chunk,
+                        attached.parts if attached else [],
+                        attached.relation if attached else None,
+                    )
+                )
                 async for delta in stream_explanation(
-                    chunk.content, chunk.reference, chunk.collection, query,
+                    explain_chunk.content, chunk.reference, chunk.collection, query,
                     unit_label=chunk.unit_label,
                 ):
                     accumulated_text += delta
