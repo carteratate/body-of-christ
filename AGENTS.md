@@ -340,3 +340,19 @@ Under concurrent load, multiple coroutines can all find the JWKS cache stale and
 ### 3. `content_embedding` Column is Vestigial
 
 `chunks.content_embedding` exists in the schema but is not populated or used — Qdrant handles all vector search. Do not write code that reads from or writes to this column.
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specifications are tracked in GitHub Issues for `carteratate/body-of-christ`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default Matt Pocock triage labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use the single-context documentation layout. See `docs/agents/domain.md`.
