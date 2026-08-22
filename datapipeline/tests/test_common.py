@@ -290,3 +290,99 @@ def test_parse_thml_summa_metadata_populated():
     assert meta["question"] == "Question 1"
     assert "Article 1" in meta["article"]
     assert meta["div_depth"] == 4
+
+
+# ---------------------------------------------------------------------------
+# _split_at_whitespace — the fallback when no sentence boundary can be found.
+#
+# It carried two bugs at once, and the second hid the first: with overlap=0 it
+# discarded everything after the first piece, and with overlap>0 it looped forever,
+# so the only caller that would have exposed the truncation could never run.
+# ---------------------------------------------------------------------------
+
+import signal
+
+from ingest.common import _MIN_TAIL_CHARS, _split_at_whitespace
+
+
+def _within(seconds, fn, *args):
+    """Run fn, failing loudly instead of hanging the suite."""
+    def _raise(signum, frame):
+        raise AssertionError("did not terminate — the loop is not advancing")
+    signal.signal(signal.SIGALRM, _raise)
+    signal.alarm(seconds)
+    try:
+        return fn(*args)
+    finally:
+        signal.alarm(0)
+
+
+def test_no_text_is_discarded_when_splitting_without_overlap():
+    """Every ingest adapter calls this with overlap=0. Returning only the first piece
+    silently dropped the tail of ~4,500 chunks across nine collections."""
+    text = ("The Philosopher says that virtue is a habit. " * 120) + "FINAL CLAUSE."
+
+    pieces = _split_at_whitespace(text, 3500, 0)
+
+    assert len(pieces) > 1
+    assert "FINAL CLAUSE." in pieces[-1]
+    # Joined with the separator the split consumed, so a phrase cut at a boundary is
+    # counted once rather than lost.
+    assert " ".join(pieces).count("virtue is a habit") == 120
+
+
+def test_splitting_with_overlap_terminates():
+    """Once `end` reached the text's end, stepping back by the overlap moved `start`
+    backwards and the same tail was re-emitted forever."""
+    text = "word " * 800
+
+    pieces = _within(5, _split_at_whitespace, text, 1800, 200)
+
+    assert len(pieces) > 1
+
+
+def test_overlap_repeats_context_between_pieces():
+    """The overlap exists so a passage split mid-thought still carries its lead-in."""
+    text = " ".join(f"w{i}" for i in range(2000))
+
+    pieces = _split_at_whitespace(text, 1800, 200)
+
+    assert pieces[1].split()[0] in pieces[0]
+
+
+def test_text_within_the_budget_is_returned_whole():
+    assert _split_at_whitespace("a short passage", 3500, 0) == ["a short passage"]
+
+
+def _text_with_a_runt_tail():
+    """Long enough to split, with the final word landing just past the cap.
+
+    That is what leaves a runt: the whitespace scan looks ahead up to
+    `_MAX_FALLBACK_SCAN`, so the first piece runs to the last space in the text and the
+    remainder is a single short word.
+    """
+    body = "filler " * 507                       # ~3,549 chars
+    return body[:3550].rstrip() + " tail."
+
+
+def test_a_runt_tail_is_folded_into_the_piece_before_it():
+    """Splitting on a size budget can leave a fragment — the catechism produces a final
+    piece reading only "irrelevant." — which alone gets its own embedding and can be
+    retrieved as a result that tells the reader nothing."""
+    text = _text_with_a_runt_tail()
+
+    pieces = _split_at_whitespace(text, 3500, 0)
+
+    assert len(pieces) == 1, f"runt emitted as its own piece: {pieces[-1]!r}"
+    assert all(len(p) >= _MIN_TAIL_CHARS for p in pieces)
+
+
+def test_folding_a_runt_keeps_its_text():
+    """Folding must merge the fragment, not drop it — dropping would reintroduce the
+    truncation this function was fixed to remove."""
+    text = _text_with_a_runt_tail()
+
+    pieces = _split_at_whitespace(text, 3500, 0)
+
+    assert pieces[-1].endswith("tail.")
+    assert " ".join(pieces).count("filler") == text.count("filler")

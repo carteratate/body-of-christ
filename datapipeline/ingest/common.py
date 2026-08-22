@@ -78,6 +78,15 @@ def _is_summa(root) -> bool:
 _SENT_END = re.compile(r'(?<=[.!?])\s+')
 _MAX_FALLBACK_SCAN = 500
 
+# A trailing piece shorter than this is folded back into the one before it. Splitting on
+# a size budget can leave a runt — the catechism produces a final piece reading only
+# "irrelevant." — and a passage that short carries no meaning alone: it gets its own
+# embedding, can be retrieved as a standalone result, and tells the reader nothing.
+# Merging is always semantically safe, since a tail is by definition a continuation of
+# the piece before it; the cost is one chunk slightly over a cap that is already soft.
+# `test_catechism_passages.py` encodes the same expectation at 30 characters.
+_MIN_TAIL_CHARS = 200
+
 
 def split_at_sentences(
     text: str,
@@ -126,7 +135,28 @@ def split_at_sentences(
 
 
 def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
-    chunks = []
+    """Split text into ~target-sized pieces at whitespace, keeping ALL of it.
+
+    The fallback when no sentence boundary can be found. Two bugs lived here, and the
+    second is why the first went unnoticed for so long:
+
+      overlap == 0 — `start = end - overlap` made start equal end, which the guard
+        `if start >= end: break` then read as "the loop is not advancing". It returned
+        the FIRST piece and silently discarded the rest. Every ingest adapter calls this
+        with overlap=0, so ~4,500 chunks across nine collections are missing their tail;
+        where the text had no detectable sentence boundary at all, everything past the
+        cap was dropped.
+
+      overlap > 0 — once `end` reached the end of the text, `start = end - overlap`
+        stepped backwards and the loop re-emitted the same tail forever. The one caller
+        that passes a real overlap therefore hangs, which is presumably why nobody
+        exercised it and found the truncation.
+
+    Both come from conflating "how far to step back for overlap" with "have we
+    finished". Termination is now decided by whether `end` reached the text, and the
+    step-back only applies when it genuinely advances.
+    """
+    chunks: list[str] = []
     start = 0
     while start < len(text):
         end = min(start + target, len(text))
@@ -135,10 +165,18 @@ def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
             if ws > start:
                 end = ws
         chunks.append(text[start:end].strip())
-        start = end - overlap
-        if start >= end:
+        if end >= len(text):
             break
-    return [c for c in chunks if c]
+        # `end` always exceeds `start` (the ws guard requires it), so falling back to it
+        # guarantees progress even when the requested overlap would not.
+        next_start = end - overlap
+        start = next_start if next_start > start else end
+
+    kept = [c for c in chunks if c]
+    if len(kept) > 1 and len(kept[-1]) < _MIN_TAIL_CHARS:
+        kept[-2] = f"{kept[-2]} {kept[-1]}"
+        kept.pop()
+    return kept
 
 
 _OVERLAP_CHARS = 200
