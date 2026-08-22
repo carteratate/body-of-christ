@@ -23,7 +23,8 @@ services/api/.env
 # Corpus source data (large binary/XML files — load separately)
 datapipeline/sources/
 .worktrees/
-.claude/
+.claude/*
+!.claude/skills
 docs/superpowers/
 
 # Generated retrieval-evaluation artifacts (large, reproducible, and may contain
