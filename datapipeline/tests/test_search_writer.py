@@ -52,3 +52,23 @@ def test_build_point_names_the_vector_under_the_v5_format(monkeypatch):
     pt = build_point(doc, p, [0.1, 0.2, 0.3])
 
     assert pt.vector == {"dense": [0.1, 0.2, 0.3]}
+
+
+def test_build_point_carries_the_fields_the_pipeline_reads():
+    """`reconcile_qdrant_payloads` added chapter_key and unit_label to 53,747 live points
+    because this writer omitted them — so re-ingesting a collection silently undid that
+    repair, which is exactly what the canon-law run did.
+
+    `fetch_positions` backfills both from Postgres, but only on the healthy path: it is
+    skipped when the pipeline degrades, and `unit_label` is what tells the reranker a
+    Summa passage is an objection Aquinas refutes rather than his own teaching.
+    """
+    doc = Document(id="d1", collection="summa", title="Summa", author="Aquinas")
+    p = Passage(content="x", reference="ST I q1 a1", anchor="summa/q1/a1/0",
+                chapter_key="summa/q1/a1", chapter_label="Q1 A1", position=0,
+                unit_label="Objection 1")
+
+    payload = build_point(doc, p, [0.1]).payload
+
+    assert payload["chapter_key"] == "summa/q1/a1"
+    assert payload["unit_label"] == "Objection 1"

@@ -52,6 +52,16 @@ def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
             "reference": p.reference,
             "anchor": p.anchor,
             "chapter_label": p.chapter_label,
+            # Both are load-bearing and were missing here: `reconcile_qdrant_payloads`
+            # added them to 53,747 live points precisely because this writer omitted
+            # them, so re-ingesting a collection silently undid that.
+            #
+            # `fetch_positions` does backfill them from Postgres when a payload lacks
+            # them — but only on the healthy path. It is skipped when the pipeline
+            # degrades, and `unit_label` is what tells the reranker a Summa passage is an
+            # objection Aquinas refutes rather than his teaching.
+            "chapter_key": p.chapter_key,
+            "unit_label": p.unit_label,
         },
     )
 
