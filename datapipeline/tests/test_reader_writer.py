@@ -112,3 +112,99 @@ def test_wipe_is_reachable_but_named_for_what_it_does():
     source = inspect.getsource(run_collection)
     assert "--wipe-reader" in source
     assert "cascade" in source.lower()
+
+
+# ---------------------------------------------------------------------------
+# Qdrant orphans and the collapse guard.
+# ---------------------------------------------------------------------------
+
+def test_qdrant_prune_deletes_only_points_the_build_no_longer_makes():
+    """`search_writer.write_document` only upserts, so a renumbered or dropped passage
+    leaves its point behind — still searchable, while the pipeline's Postgres lookup for
+    that id returns nothing."""
+    from writers import qdrant as qdrant_writer
+
+    class FakePoint:
+        def __init__(self, pid): self.id = pid
+
+    class FakeQdrant:
+        def __init__(self): self.deleted = None
+        async def scroll(self, **kw):
+            return [FakePoint("keep-1"), FakePoint("stale-1"), FakePoint("keep-2")], None
+        async def delete(self, collection_name, points_selector, wait):
+            self.deleted = points_selector
+
+    client = FakeQdrant()
+    removed = asyncio.run(
+        qdrant_writer.prune_missing_points(client, "medieval", {"keep-1", "keep-2"}))
+
+    assert removed == 1
+    assert client.deleted == ["stale-1"]
+
+
+def test_qdrant_prune_deletes_nothing_when_the_build_is_complete():
+    from writers import qdrant as qdrant_writer
+
+    class FakePoint:
+        def __init__(self, pid): self.id = pid
+
+    class FakeQdrant:
+        def __init__(self): self.delete_called = False
+        async def scroll(self, **kw):
+            return [FakePoint("a"), FakePoint("b")], None
+        async def delete(self, **kw):
+            self.delete_called = True
+
+    client = FakeQdrant()
+    assert asyncio.run(qdrant_writer.prune_missing_points(client, "medieval", {"a", "b"})) == 0
+    assert client.delete_called is False
+
+
+def test_a_collapsed_build_is_refused_before_anything_is_written():
+    """Pruning to match a broken build would delete the difference from both stores. The
+    check runs before the first write, not after."""
+    import pytest
+
+    import run_collection
+
+    class FakeConn:
+        async def fetchval(self, sql, *args): return 1000
+
+    with pytest.raises(SystemExit) as raised:
+        asyncio.run(run_collection._refuse_if_build_collapsed(FakeConn(), "medieval", 500, None))
+
+    assert "REFUSING" in str(raised.value)
+
+
+def test_the_collapse_guard_runs_before_the_first_write():
+    """A guard that fires after the writes have started is not a guard: by then the
+    prune has already deleted rows and points."""
+    import inspect
+
+    import run_collection
+
+    source = inspect.getsource(run_collection.run)
+    guard = source.index("_refuse_if_build_collapsed")
+    for writer in ("write_document", "prune_missing_chunks", "prune_missing_points",
+                   "clear_collection"):
+        assert guard < source.index(writer), f"{writer} runs before the guard"
+
+
+def test_a_normal_rebuild_is_allowed_through():
+    import run_collection
+
+    class FakeConn:
+        async def fetchval(self, sql, *args): return 434
+
+    # 437 built against 434 live — the medieval rebuild's real shape.
+    asyncio.run(run_collection._refuse_if_build_collapsed(FakeConn(), "medieval", 437, None))
+
+
+def test_a_deliberate_partial_build_skips_the_check():
+    import run_collection
+
+    class FakeConn:
+        async def fetchval(self, sql, *args):
+            raise AssertionError("should not query when --limit is set")
+
+    asyncio.run(run_collection._refuse_if_build_collapsed(FakeConn(), "medieval", 5, 5))

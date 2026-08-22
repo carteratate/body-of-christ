@@ -38,6 +38,39 @@ async def delete_collection_points(client: AsyncQdrantClient, collection: str) -
     )
 
 
+async def prune_missing_points(client: AsyncQdrantClient, collection: str,
+                               keep_ids: set[str]) -> int:
+    """Delete this collection's points that the current build no longer produces.
+
+    The Qdrant counterpart to `reader_writer.prune_missing_chunks`, and the reason it
+    exists: `write_document` only ever upserts, so a re-chunk that renumbers or drops a
+    passage leaves its old point behind forever. Those orphans stay searchable, and
+    because the pipeline looks their ids up in Postgres to fill in position and role,
+    a hit on one returns a row that is not there.
+
+    Scans ids rather than trusting a count: a stale point is by definition one this
+    build did not emit, which cannot be derived from totals alone.
+
+    Returns the number deleted, so a caller can refuse a run that would remove far more
+    than the rebuild explains.
+    """
+    stale: list[str] = []
+    offset = None
+    while True:
+        points, offset = await client.scroll(
+            collection_name=QDRANT_COLLECTION,
+            scroll_filter=collection_filter(collection),
+            limit=1000, offset=offset, with_payload=False, with_vectors=False,
+        )
+        stale.extend(str(p.id) for p in points if str(p.id) not in keep_ids)
+        if offset is None:
+            break
+    if stale:
+        await client.delete(collection_name=QDRANT_COLLECTION,
+                            points_selector=stale, wait=True)
+    return len(stale)
+
+
 async def upsert_points(client: AsyncQdrantClient, points: list[PointStruct]) -> None:
     if not points:
         return

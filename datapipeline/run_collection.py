@@ -13,7 +13,10 @@ from config import settings
 from model import Document
 from writers import reader_writer
 from writers import search_writer
-from writers.qdrant import get_client, ensure_collection, delete_collection_points
+from identity import passage_id
+from writers.qdrant import (
+    delete_collection_points, ensure_collection, get_client, prune_missing_points,
+)
 from ingest import (church_fathers, summa, bible, catechism, medieval,
                     encyclicals, councils, canon_law,
                     apostolic_exhortations, papal_documents)
@@ -32,17 +35,44 @@ BUILDERS = {
 }
 
 
+# A rebuild is expected to move a few passages. Losing a large share of them means the
+# build broke — a source that failed to download, an adapter that stopped matching its
+# markup — and pruning to match would turn that into deleted rows and deleted vectors.
+# Refuse instead, and let the operator look.
+_MAX_SHRINK = 0.10
+
+
+async def _refuse_if_build_collapsed(conn, collection: str, built: int, limit: int | None) -> None:
+    if limit:
+        return          # a deliberately partial build; the comparison is meaningless
+    live = await conn.fetchval(
+        """
+        SELECT count(*) FROM chunks c JOIN documents d ON d.id = c.document_id
+        WHERE d.collection = $1
+        """,
+        collection,
+    ) or 0
+    if live and built < live * (1 - _MAX_SHRINK):
+        raise SystemExit(
+            f"REFUSING: the build produced {built} passages against {live} live rows "
+            f"({(1 - built / live):.0%} fewer). Pruning to match would delete the "
+            f"difference from Postgres and Qdrant. Check the source files and the "
+            f"adapter, or pass --limit to build a subset deliberately."
+        )
+
+
 async def run(collection: str, target: str, clean: bool, limit: int | None,
               wipe: bool = False) -> None:
     docs: list[Document] = BUILDERS[collection]()
     if limit:
         docs = docs[:limit]
-    print(f"{collection}: {len(docs)} documents, "
-          f"{sum(len(d.passages) for d in docs)} passages")
+    built = sum(len(d.passages) for d in docs)
+    print(f"{collection}: {len(docs)} documents, {built} passages")
 
     conn = await asyncpg.connect(settings.DATABASE_URL)
     qdrant = get_client()
     try:
+        await _refuse_if_build_collapsed(conn, collection, built, limit)
         await ensure_collection(qdrant)
         if target in ("reader", "both"):
             # Upsert by default. `clear_collection` cascades through retrievals,
@@ -64,7 +94,15 @@ async def run(collection: str, target: str, clean: bool, limit: int | None,
                 print(f"  search: deleted old '{collection}' Qdrant points")
             for d in docs:
                 await search_writer.write_document(qdrant, d)
-            print(f"  search: embedded + upserted points to Qdrant")
+            # Upsert alone leaves a superseded point behind forever, still searchable,
+            # while the pipeline's Postgres lookup for it returns nothing. `--clean`
+            # already emptied the collection, so there is nothing stale to find.
+            orphans = 0
+            if not clean:
+                keep = {passage_id(d.id, p.anchor) for d in docs for p in d.passages}
+                orphans = await prune_missing_points(qdrant, collection, keep)
+            print(f"  search: embedded + upserted points to Qdrant"
+                  + (f" ({orphans} orphaned point(s) deleted)" if orphans else ""))
     finally:
         await conn.close()
         await qdrant.close()
