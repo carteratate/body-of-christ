@@ -42,7 +42,15 @@ class Settings:
 
     # --- Embedding ---
     EMBEDDING_MODEL: str = "text-embedding-3-large"
-    EMBEDDING_DIMS: int = 3072            # native text-embedding-3-large; do NOT pass dimensions= to OpenAI
+    # 1536, passed explicitly to OpenAI. This is what the LIVE `chunks` collection holds
+    # and what services/api queries with (app/config.py embedding_dims, also 1536), so a
+    # writer producing anything else cannot write to the corpus the app serves.
+    #
+    # `text-embedding-3-large` is natively 3072 and `qdrant_schema.recreate_chunks` is
+    # built for that — named dense + sparse vectors. That is the V5 target and it needs a
+    # coordinated Qdrant recreate, a full re-embed and an API change. Until that happens
+    # the writer follows the data, not the plan.
+    EMBEDDING_DIMS: int = 1536
     EMBEDDING_BATCH_SIZE: int = 100
     EMBED_CONCURRENCY: int = 4
 

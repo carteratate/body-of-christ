@@ -25,9 +25,35 @@ def collection_filter(collection: str) -> Filter:
 
 
 async def ensure_collection(client: AsyncQdrantClient) -> None:
-    if await client.collection_exists(QDRANT_COLLECTION):
+    """Create `chunks` if absent, and refuse to write to one this writer cannot fill.
+
+    The check exists because its absence is what let the writer and the corpus drift
+    apart unnoticed: the writer was retargeted at the V5 schema (3072-dim named vectors,
+    per `qdrant_schema.py`) while the deployed collection stayed at 1536 unnamed, and
+    nothing compared them until an ingest was attempted.
+
+    A mismatch is refused rather than repaired. Reshaping a live collection means
+    deleting every vector in it, which is not something an ingest run should decide.
+    """
+    if not await client.collection_exists(QDRANT_COLLECTION):
+        await recreate_chunks(client)
         return
-    await recreate_chunks(client)
+
+    info = await client.get_collection(QDRANT_COLLECTION)
+    params = info.config.params.vectors
+    named = isinstance(params, dict)
+    size = (next(iter(params.values())).size if named else params.size)
+    writer_named = False              # build_point emits a bare vector
+
+    if named != writer_named or size != settings.EMBEDDING_DIMS:
+        raise SystemExit(
+            f"REFUSING to write to '{QDRANT_COLLECTION}': it holds "
+            f"{'named' if named else 'unnamed'} {size}-dim vectors, but this writer "
+            f"produces {'named' if writer_named else 'unnamed'} "
+            f"{settings.EMBEDDING_DIMS}-dim vectors. Reshaping the collection would "
+            f"delete every vector in it — do that deliberately, not as a side effect of "
+            f"an ingest."
+        )
 
 
 async def delete_collection_points(client: AsyncQdrantClient, collection: str) -> None:

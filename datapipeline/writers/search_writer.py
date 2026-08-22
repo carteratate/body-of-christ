@@ -39,7 +39,10 @@ def build_embedding_input(passages: list[Passage], idx: int,
 def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
     return PointStruct(
         id=passage_id(doc.id, p.anchor),
-        vector={"dense": vector},          # named vector (was a bare list)
+        # Bare, not {"dense": ...}: the live collection has a single unnamed vector, and
+        # `services/api` queries it without `using=`. The named form belongs to the V5
+        # schema in `qdrant_schema.py`, which is not what is deployed.
+        vector=vector,
         payload={
             "collection": doc.collection,
             "document_id": doc.id,
@@ -58,6 +61,9 @@ async def _embed(client: openai.AsyncOpenAI, texts: list[str]) -> list[list[floa
         try:
             resp = await client.embeddings.create(
                 input=texts, model=settings.EMBEDDING_MODEL,
+                # Explicit: omitting it yields the model's native 3072, which the live
+                # collection cannot store and the API cannot query.
+                dimensions=settings.EMBEDDING_DIMS,
             )
             return [r.embedding for r in sorted(resp.data, key=lambda r: r.index)]
         except openai.RateLimitError:
