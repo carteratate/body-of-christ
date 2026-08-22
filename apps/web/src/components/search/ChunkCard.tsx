@@ -17,7 +17,9 @@ import {
   trackDocumentOpened,
   trackExploreMoreClicked,
 } from "@/lib/analytics";
+import { AttachedPassage } from "./AttachedPassage";
 import { getCollectionMeta } from "@/lib/collections";
+import { displayRole } from "@/lib/passageRole";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
@@ -57,6 +59,25 @@ function mobileCitation(
   return citation;
 }
 
+/**
+ * The passage's role, shown beside its citation.
+ *
+ * A collapsed card is the default state and shows only a citation, so without this an
+ * objection is indistinguishable from Aquinas's own teaching until the user expands it.
+ * Rendered inline with the reference rather than as a separate row, so it survives the
+ * card's fixed-height header at every breakpoint.
+ */
+function RoleTag({ role, color }: { role: string; color: string }) {
+  return (
+    <span
+      className="ml-1.5 whitespace-nowrap text-xs font-medium"
+      style={{ color }}
+    >
+      · {role}
+    </span>
+  );
+}
+
 interface ChunkCardProps {
   result: ChunkResult;
   index: number;
@@ -73,7 +94,14 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
   const router = useRouter();
   const searchParams = useSearchParams();
   const { chunk_id, content, source } = result;
+  // Presentation only — never part of what is copied, bookmarked, explored or persisted,
+  // all of which address the passage the user actually matched.
+  const attached = result.context ?? null;
   const { collection, document_title, author, reference, document_id } = source;
+  // The passage's own role. Ingest moved "Objection N" out of `content`, so without this
+  // an objection reads as a flat assertion wherever it travels without its attachment —
+  // collapsed, copied, or announced.
+  const role = displayRole(collection, source.unit_label, reference);
 
   const collectionMeta = getCollectionMeta(collection);
   const color = collectionMeta?.color ?? "var(--color-brand-accent)";
@@ -136,7 +164,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
     const citation = includeAuthorInCopy ? `${primaryReference} (${author})` : primaryReference;
-    const text = `${stripVerseMarkers(content)} — ${citation} (${collection})`;
+    // The role goes in the citation, not the body: the body is the passage as written,
+    // and the clipboard is the one place this text leaves the app entirely.
+    const cited = role ? `${citation}, ${role}` : citation;
+    const text = `${stripVerseMarkers(content)} — ${cited} (${collection})`;
     navigator.clipboard.writeText(text)
       .then(() => showToast("Copied"))
       .catch(() => showToast("Copy failed", "error"));
@@ -207,6 +238,7 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
     badgeLabel,
     displayAuthor,
     primaryReference,
+    role,
     result.reranker_score !== null ? `${Math.round(result.reranker_score * 100)}% relevance` : null,
   ].filter(Boolean).join(", ");
 
@@ -237,7 +269,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
               <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
               {displayAuthor && <span className="min-w-0 flex-1 truncate text-xs leading-tight text-brand-muted">{displayAuthor}</span>}
             </div>
-            <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-primary">{compactReference}</p>
+            <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-primary">
+              {compactReference}
+              {role && <RoleTag role={role} color={color} />}
+            </p>
           </div>
           {result.reranker_score !== null && (
             <span
@@ -256,7 +291,10 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
               <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
               <div className="grid min-w-0 flex-1 grid-rows-[1rem_1rem] content-center overflow-hidden">
                 <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
-                <p className="truncate text-sm font-semibold leading-tight text-brand-primary">{primaryReference}</p>
+                <p className="truncate text-sm font-semibold leading-tight text-brand-primary">
+                  {primaryReference}
+                  {role && <RoleTag role={role} color={color} />}
+                </p>
               </div>
             </div>
           </div>
@@ -277,8 +315,16 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
       {/* ── Expanded body ── */}
       {isExpanded && (
         <div id={`chunk-body-${chunk_id}`} style={{ background: "transparent", padding: "16px" }}>
-          {/* Content */}
+          {/* Content, with the passage that completes it. `relation` decides the side:
+              a matched objection is followed by Aquinas's answer; a matched reply is
+              PRECEDED by the objection it answers, because it opens mid-thought. */}
+          {attached?.relation === "answers" && (
+            <AttachedPassage context={attached} color={color} rgb={rgb} />
+          )}
           <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">{renderVerseMarkers(content)}</p>
+          {attached?.relation === "answered_by" && (
+            <AttachedPassage context={attached} color={color} rgb={rgb} />
+          )}
 
           {/* Relevance explanation */}
           {result.explanation !== "" && (

@@ -40,6 +40,17 @@ function jwtForSubject(subject: string, suffix: string): string {
   return `header.${payload}.${suffix}`;
 }
 
+function chunkEvent(context: unknown): unknown {
+  return {
+    type: "chunk",
+    chunk_id: "c1",
+    content: "Objection 1. It seems that...",
+    reranker_score: 0.8,
+    source: { document_id: "d1", title: "Summa Theologica", collection: "summa" },
+    context,
+  };
+}
+
 describe("bookmark cache", () => {
   it("does not let an older token request replace the active token cache", async () => {
     let resolveOld!: (response: Response) => void;
@@ -233,6 +244,51 @@ describe("streamSearch", () => {
     expect(cb.onDone).toHaveBeenCalledOnce();
     expect(cb.onError).not.toHaveBeenCalled();
   });
+
+  it("forwards the attached passage to the caller", async () => {
+    // This handler rebuilds the chunk event field by field, so a dropped field is a
+    // silent runtime omission rather than a type error.
+    const cb = callbacks();
+    const context = {
+      relation: "answered_by",
+      parts: [{ content: "I answer that...", reference: "ST I q1 a1", unit_label: "I answer that", anchor: "a/1" }],
+    };
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
+      chunkEvent(context), { type: "done", search_id: "s1", result_count: 1 },
+    )));
+
+    await streamSearch("token", "grace", { collections: ["summa"] }, 3, cb);
+
+    expect(cb.onChunk.mock.calls[0][0].context).toEqual(context);
+  });
+
+  it("forwards a reply's attached objection, which renders above the match", async () => {
+    // Both relations travel the same field; a handler that special-cased one would
+    // leave the other, which is ~95% of live Summa results, without its context.
+    const cb = callbacks();
+    const context = {
+      relation: "answers",
+      parts: [{ content: "Objection 2. Further...", reference: "ST I q1 a1", unit_label: "Objection 2", anchor: "a/0" }],
+    };
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
+      chunkEvent(context), { type: "done", search_id: "s1", result_count: 1 },
+    )));
+
+    await streamSearch("token", "grace", { collections: ["summa"] }, 3, cb);
+
+    expect(cb.onChunk.mock.calls[0][0].context).toEqual(context);
+  });
+
+  it("gives an unattached result a null context rather than undefined", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
+      chunkEvent(undefined), { type: "done", search_id: "s1", result_count: 1 },
+    )));
+
+    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
+
+    expect(cb.onChunk.mock.calls[0][0].context).toBeNull();
+  });
 });
 
 describe("streamGuestSearch", () => {
@@ -283,6 +339,21 @@ describe("streamGuestSearch", () => {
     expect(cb.onResultsReady).toHaveBeenCalledWith(4);
     expect(cb.onDone).toHaveBeenCalledOnce();
     expect(cb.onResultsReady.mock.invocationCallOrder[0]).toBeLessThan(cb.onDone.mock.invocationCallOrder[0]);
+  });
+
+  it("forwards the attached passage like the authenticated path", async () => {
+    const cb = callbacks();
+    const context = {
+      relation: "answers",
+      parts: [{ content: "Objection 2. Further...", reference: "ST I q1 a1", unit_label: "Objection 2", anchor: "a/0" }],
+    };
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
+      chunkEvent(context), { type: "done", search_id: "s1", result_count: 1 },
+    )));
+
+    await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["summa"] }, 3, cb);
+
+    expect(cb.onChunk.mock.calls[0][0].context).toEqual(context);
   });
 });
 

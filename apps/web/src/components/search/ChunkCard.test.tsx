@@ -217,3 +217,171 @@ describe("ChunkCard feedback", () => {
     expect(screen.getByRole("button", { expanded: false }).getAttribute("aria-label")).not.toContain("Catholic Church");
   });
 });
+
+
+describe("ChunkCard attached passage placement", () => {
+  function summaResult(context: unknown, content: string) {
+    return {
+      chunk_id: "00000000-0000-0000-0000-000000000001",
+      content,
+      source: {
+        collection: "summa",
+        document_title: "Summa Theologiae",
+        author: "Thomas Aquinas",
+        reference: "ST I, Question 1, Article 1",
+        document_id: "00000000-0000-0000-0000-000000000002",
+        position: 1,
+        anchor: "summa-q1-a1",
+      },
+      reranker_score: 0.9,
+      explanation: "Relevant",
+      context,
+    };
+  }
+
+  async function expand(result: unknown) {
+    const { container } = render(
+      <ChunkCard
+        result={result as never}
+        index={0}
+        searchId="00000000-0000-0000-0000-000000000003"
+        token="token"
+        onExploreMore={vi.fn()}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    return Array.from(container.querySelectorAll("p")).map((p) => p.textContent);
+  }
+
+  it("puts Aquinas's answer BELOW a matched objection", async () => {
+    // The objection is the passage that matched and states a position he refutes, so it
+    // must lead. Reversing this would present his answer as the result.
+    const text = await expand(summaResult(
+      { relation: "answered_by", parts: [{ content: "THE ANSWER", reference: null, unit_label: "I answer that", anchor: "a/1" }] },
+      "THE OBJECTION",
+    ));
+
+    // Presence asserted before order: indexOf returns -1 when absent, and -1 is less
+    // than every valid index, so an ordering check ALONE passes when the attachment is
+    // not rendered at all.
+    expect(text).toContain("THE OBJECTION");
+    expect(text).toContain("THE ANSWER");
+    expect(text.indexOf("THE OBJECTION")).toBeLessThan(text.indexOf("THE ANSWER"));
+  });
+
+  it("puts the objection ABOVE a matched reply", async () => {
+    // A reply opens mid-thought — "The Philosopher is speaking of those who..." means
+    // nothing until you know what the Philosopher said. So on a reply card the matched
+    // passage is deliberately second.
+    const text = await expand(summaResult(
+      { relation: "answers", parts: [{ content: "THE OBJECTION", reference: null, unit_label: "Objection 1", anchor: "a/0" }] },
+      "THE REPLY",
+    ));
+
+    expect(text).toContain("THE OBJECTION");
+    expect(text).toContain("THE REPLY");
+    expect(text.indexOf("THE OBJECTION")).toBeLessThan(text.indexOf("THE REPLY"));
+  });
+
+  it("places from relation alone, not from the attached passage's label", async () => {
+    // A label-sniffing heuristic agrees with `relation` on the common shapes and fails
+    // exactly here: an unlabelled objection would land BELOW the reply while the
+    // boundary above still reads "answered below", pointing at nothing.
+    const text = await expand(summaResult(
+      { relation: "answers", parts: [{ content: "THE OBJECTION", reference: null, unit_label: null, anchor: "a/0" }] },
+      "THE REPLY",
+    ));
+
+    expect(text).toContain("THE OBJECTION");
+    expect(text.indexOf("THE OBJECTION")).toBeLessThan(text.indexOf("THE REPLY"));
+  });
+
+  it("shows nothing extra for a result that needs no attachment", async () => {
+    const text = await expand(summaResult(null, "I answer that, the passage stands alone."));
+
+    expect(text.some((line) => line?.includes("Aquinas answers this objection"))).toBe(false);
+  });
+});
+
+describe("ChunkCard keeps the attachment out of every action", () => {
+  // The attachment is presentation. Everything the user DOES with a card must address
+  // the passage they actually matched — it is what was ranked, persisted and cited.
+  function summaObjection() {
+    return {
+      chunk_id: "00000000-0000-0000-0000-000000000001",
+      content: "THE MATCHED OBJECTION",
+      source: {
+        collection: "summa",
+        document_title: "Summa Theologiae",
+        author: "Thomas Aquinas",
+        reference: "ST I, Question 2, Article 3",
+        document_id: "00000000-0000-0000-0000-000000000002",
+        position: 1,
+        anchor: "summa-q2-a3",
+        unit_label: "Objection 1",
+      },
+      reranker_score: 0.9,
+      explanation: "Relevant",
+      context: {
+        relation: "answered_by",
+        parts: [{ content: "THE ATTACHED ANSWER", reference: null, unit_label: "I answer that", anchor: "a/1" }],
+      },
+    };
+  }
+
+  async function renderExpanded(onExploreMore = vi.fn()) {
+    render(
+      <ChunkCard
+        result={summaObjection() as never}
+        index={0}
+        searchId="00000000-0000-0000-0000-000000000003"
+        token="token"
+        onExploreMore={onExploreMore}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    return onExploreMore;
+  }
+
+  it("copies the matched passage only, and names its role in the citation", async () => {
+    // Ingest strips "Objection N" out of `content`, so a copied objection is a bare
+    // heterodox proposition cited to the Summa. The clipboard is where this text leaves
+    // the app entirely — nothing downstream can mark it.
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+
+    await renderExpanded();
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+
+    const copied = writeText.mock.calls[0][0] as string;
+    expect(copied).toContain("THE MATCHED OBJECTION");
+    expect(copied).not.toContain("THE ATTACHED ANSWER");
+    expect(copied).toContain("Objection 1");
+  });
+
+  it("seeds Explore More from the matched passage, not the attachment", async () => {
+    const onExploreMore = await renderExpanded();
+    await userEvent.click(screen.getByRole("button", { name: "Query more like this" }));
+
+    expect(onExploreMore.mock.calls[0][0]).toContain("THE MATCHED OBJECTION");
+    expect(onExploreMore.mock.calls[0][0]).not.toContain("THE ATTACHED ANSWER");
+  });
+
+  it("names the passage's role on the collapsed card", async () => {
+    // The collapsed card is the DEFAULT state and shows only a citation. Without the
+    // role, an objection is indistinguishable from Aquinas's own teaching until opened.
+    render(
+      <ChunkCard
+        result={summaObjection() as never}
+        index={0}
+        searchId="00000000-0000-0000-0000-000000000003"
+        token="token"
+        onExploreMore={vi.fn()}
+      />,
+    );
+
+    expect(screen.getAllByText(/Objection 1/).length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { expanded: false }).getAttribute("aria-label"))
+      .toContain("Objection 1");
+  });
+});

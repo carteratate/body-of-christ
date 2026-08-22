@@ -1,3 +1,4 @@
+export { AttachedPassage } from "./AttachedPassage";
 export { BottomBar } from "./BottomBar";
 export { ChunkCard } from "./ChunkCard";
 export { CollectionToggles } from "./CollectionToggles";

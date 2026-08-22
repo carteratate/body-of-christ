@@ -142,12 +142,52 @@ export interface ChunkSource {
   metadata?: Record<string, unknown> | null;
 }
 
+/** One passage attached to a matched Summa result to make it intelligible. */
+export interface ContextPart {
+  content: string;
+  reference: string | null;
+  unit_label: string | null;
+  anchor: string | null;
+}
+
+/**
+ * What completes a matched Summa passage, and where it belongs on the card.
+ *
+ * A Summa article is a staged debate split into one chunk per move, so a result is one
+ * move. Two roles are incomplete alone, for different reasons:
+ *
+ *  - `answered_by` — the match is an **Objection**, a position Aquinas REFUTES. Shown
+ *    alone it attributes the opposite of his teaching to him. `parts` are his
+ *    determination and render BELOW the matched passage.
+ *  - `answers` — the match is a **Reply**, Aquinas's own voice, so nothing is
+ *    misattributed. But it rebuts one objection and opens mid-thought, so `parts` is
+ *    that objection and renders ABOVE the matched passage.
+ *
+ * Place it from `relation` alone — never infer from `unit_label`. Render a visible
+ * boundary between the two: they are different voices, and presenting them as
+ * continuous prose is the failure this exists to prevent.
+ *
+ * Presentation only: no score, not persisted, not bookmarkable. The matched passage is
+ * what the user addressed.
+ *
+ * An attached passage may ALSO appear elsewhere in the same result list as its own
+ * card — the backend never removes a scored result to avoid repeating text, because
+ * deleting a passage the user matched is worse than showing it twice. Do not
+ * de-duplicate across cards.
+ */
+export interface AttachedContext {
+  relation: "answered_by" | "answers";
+  parts: ContextPart[];
+}
+
 export interface ChunkResult {
   chunk_id: string;
   content: string;
   source: ChunkSource;
   reranker_score: number | null;
   explanation: string | null;
+  /** The passage completing this result, or null. See AttachedContext. */
+  context?: AttachedContext | null;
 }
 
 export interface SearchFilters {
@@ -362,6 +402,11 @@ export async function streamSearch(
               source: event.source,
               reranker_score: event.reranker_score ?? null,
               explanation: null,
+              // Forwarded explicitly: this handler rebuilds the event field by field
+              // rather than passing it through, so an omission here does not fail to
+              // compile — it silently drops the attached passage on the authenticated
+              // path only, leaving guest search the sole place the feature appears.
+              context: event.context ?? null,
             });
           } else if (event.type === "explanation_delta") {
             callbacks.onExplanationDelta(event.chunk_id, event.delta);
