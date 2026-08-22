@@ -14,13 +14,49 @@ from identity import passage_id
 
 
 async def clear_collection(conn: asyncpg.Connection, collection: str) -> None:
-    """Delete a collection's chunks + documents before a clean re-ingest."""
+    """Delete a collection's chunks + documents before a clean re-ingest.
+
+    DESTRUCTIVE BEYOND THIS COLLECTION. `retrievals`, `bookmarks`, `reading_progress`,
+    `chunk_feedback` and `guest_trial_retrievals` all reference `chunks.id` with ON
+    DELETE CASCADE, so this removes user data that the re-insert never restores — even
+    when the rebuild produces byte-identical chunk ids, which for a deterministic
+    re-ingest it usually does.
+
+    Prefer `prune_missing_chunks` after `write_document`: the upsert path keeps ids
+    stable and touches only rows the new build no longer produces.
+    """
     await conn.execute(
         "DELETE FROM chunks WHERE document_id IN "
         "(SELECT id FROM documents WHERE collection = $1)",
         collection,
     )
     await conn.execute("DELETE FROM documents WHERE collection = $1", collection)
+
+
+async def prune_missing_chunks(conn: asyncpg.Connection, doc: Document) -> int:
+    """Delete only this document's chunks that the current build no longer produces.
+
+    The non-destructive counterpart to `clear_collection`. Everything the rebuild still
+    emits keeps its id — and therefore its bookmarks, retrievals and reading progress —
+    because `write_document` upserts on `chunks.id`. Only genuinely orphaned rows are
+    removed, and those cascade because the passage they point at no longer exists.
+
+    Returns the number of rows deleted, so a caller can refuse to proceed when a build
+    unexpectedly drops a large share of a document.
+    """
+    keep = [passage_id(doc.id, p.anchor) for p in doc.passages]
+    deleted = await conn.fetchval(
+        """
+        WITH deleted AS (
+            DELETE FROM chunks
+            WHERE document_id = $1::uuid AND NOT (id = ANY($2::uuid[]))
+            RETURNING 1
+        )
+        SELECT count(*) FROM deleted
+        """,
+        doc.id, keep,
+    )
+    return int(deleted or 0)
 
 
 async def write_document(conn: asyncpg.Connection, doc: Document) -> None:

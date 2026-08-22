@@ -32,7 +32,8 @@ BUILDERS = {
 }
 
 
-async def run(collection: str, target: str, clean: bool, limit: int | None) -> None:
+async def run(collection: str, target: str, clean: bool, limit: int | None,
+              wipe: bool = False) -> None:
     docs: list[Document] = BUILDERS[collection]()
     if limit:
         docs = docs[:limit]
@@ -44,10 +45,19 @@ async def run(collection: str, target: str, clean: bool, limit: int | None) -> N
     try:
         await ensure_collection(qdrant)
         if target in ("reader", "both"):
-            await reader_writer.clear_collection(conn, collection)
+            # Upsert by default. `clear_collection` cascades through retrievals,
+            # bookmarks and reading_progress, so a routine re-ingest would destroy user
+            # data even though the rebuild produces the same chunk ids.
+            if wipe:
+                print("  reader: WIPING collection (cascades to user data)")
+                await reader_writer.clear_collection(conn, collection)
+            pruned = 0
             for d in docs:
                 await reader_writer.write_document(conn, d)
-            print(f"  reader: wrote {len(docs)} documents to Supabase")
+                if not wipe:
+                    pruned += await reader_writer.prune_missing_chunks(conn, d)
+            print(f"  reader: wrote {len(docs)} documents to Supabase"
+                  + (f" ({pruned} stale chunk(s) pruned)" if pruned else ""))
         if target in ("search", "both"):
             if clean:
                 await delete_collection_points(qdrant, collection)
@@ -65,6 +75,10 @@ if __name__ == "__main__":
     ap.add_argument("--collection", required=True, choices=list(BUILDERS))
     ap.add_argument("--target", default="both", choices=["reader", "search", "both"])
     ap.add_argument("--clean", action="store_true", help="delete the collection's Qdrant points first")
+    ap.add_argument("--wipe-reader", action="store_true",
+                    help="DELETE the collection's Supabase rows before writing. Cascades "
+                         "to retrievals, bookmarks and reading_progress. Omit to upsert, "
+                         "which keeps chunk ids and prunes only what the build dropped.")
     ap.add_argument("--limit", type=int, default=None)
     a = ap.parse_args()
-    asyncio.run(run(a.collection, a.target, a.clean, a.limit))
+    asyncio.run(run(a.collection, a.target, a.clean, a.limit, a.wipe_reader))

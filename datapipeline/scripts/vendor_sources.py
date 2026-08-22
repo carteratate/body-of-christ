@@ -14,6 +14,7 @@ Idempotent: skips a file that already exists unless --force is given.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -491,8 +492,16 @@ def vendor_canon_law(force: bool) -> None:
             print("  ABORT: could not fetch canon-law index", file=sys.stderr)
             return
         _save(d, "cic_index_en.html", index, force)
+        # Listed so `--verify` can check it too. It is the page every other entry is
+        # discovered FROM, so silent drift here changes which canons get vendored at all.
+        # `parsed: False` marks it as provenance rather than content — `canon_law.py`
+        # never reads it.
+        manifest.append({"url": _CANON_INDEX, "file": "cic_index_en.html", "parsed": False})
         pages = _discover_canon_pages(index)
-        print(f"  discovered {len(pages)} canon pages")
+        # Distinct FILES, not urls: the index links one page under both http and https,
+        # which dedup keyed on the url keeps but which map to a single filename.
+        distinct = len({u.rsplit("/", 1)[-1] for u in pages})
+        print(f"  discovered {distinct} canon pages ({len(pages)} links)")
         time.sleep(_DELAY)
         for url in pages:
             fname = url.rsplit("/", 1)[-1]
@@ -508,10 +517,57 @@ def vendor_canon_law(force: bool) -> None:
     _write_manifest(d, manifest, name="pages.json")
 
 
+def _stamp(coll_dir: str, entry: dict) -> dict:
+    """Add sha256 + byte length for the entry's file, if it is on disk.
+
+    Without this a manifest records only where a file came from, never what arrived. The
+    two collections vendored so far could be validated by diffing a rebuild against a
+    populated database — `church-fathers` has neither local sources nor rows, so when it
+    is vendored a hash is the only thing that could distinguish a faithful download from
+    a drifted or truncated one.
+    """
+    path = os.path.join(coll_dir, entry.get("file", ""))
+    if not entry.get("file") or not os.path.exists(path):
+        return entry
+    data = open(path, "rb").read()
+    return {**entry, "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)}
+
+
 def _write_manifest(coll_dir: str, manifest: list, name: str = "manifest.json") -> None:
+    stamped = [_stamp(coll_dir, e) for e in manifest]
     with open(os.path.join(coll_dir, name), "w", encoding="utf-8") as f:
-        json.dump(manifest, f, ensure_ascii=False, indent=2)
-    print(f"  manifest: {name} ({len(manifest)} entries)")
+        json.dump(stamped, f, ensure_ascii=False, indent=2)
+    hashed = sum(1 for e in stamped if "sha256" in e)
+    print(f"  manifest: {name} ({len(stamped)} entries, {hashed} hashed)")
+
+
+def verify_manifest(coll_dir: str, name: str = "manifest.json") -> list[str]:
+    """Re-hash every file a manifest names; return one message per mismatch.
+
+    Answers the question the manifest alone cannot: is what is on disk still what was
+    fetched? Entries written before hashing was added are reported as unverifiable
+    rather than silently passing.
+    """
+    path = os.path.join(coll_dir, name)
+    if not os.path.exists(path):
+        return [f"{name}: missing"]
+    problems: list[str] = []
+    for entry in json.load(open(path, encoding="utf-8")):
+        fname = entry.get("file")
+        if not fname:
+            continue
+        fpath = os.path.join(coll_dir, fname)
+        if not os.path.exists(fpath):
+            problems.append(f"{fname}: in manifest, missing on disk")
+        elif "sha256" not in entry:
+            problems.append(f"{fname}: no recorded hash — cannot verify")
+        elif hashlib.sha256(open(fpath, "rb").read()).hexdigest() != entry["sha256"]:
+            problems.append(f"{fname}: content differs from the manifest hash")
+    on_disk = {f for f in os.listdir(coll_dir) if not f.endswith(".json")}
+    named = {e.get("file") for e in json.load(open(path, encoding="utf-8"))}
+    for extra in sorted(on_disk - named):
+        problems.append(f"{extra}: on disk, absent from the manifest")
+    return problems
 
 
 VENDORS = {
@@ -527,9 +583,26 @@ VENDORS = {
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--collection", required=True, choices=list(VENDORS) + ["all"])
+    ap.add_argument("--verify", action="store_true",
+                    help="re-hash the files a manifest names and report drift, without "
+                         "fetching anything")
     ap.add_argument("--force", action="store_true", help="re-download even if file exists")
     a = ap.parse_args()
     targets = list(VENDORS) if a.collection == "all" else [a.collection]
+    if a.verify:
+        failures = 0
+        for c in targets:
+            coll_dir = os.path.join(_SOURCES, c)
+            name = "pages.json" if c == "canon-law" else "manifest.json"
+            print(f"== {c} ==")
+            problems = verify_manifest(coll_dir, name)
+            for problem in problems:
+                print(f"  ✗ {problem}")
+            if problems:
+                failures += 1
+            else:
+                print("  ok")
+        raise SystemExit(1 if failures else 0)
     for c in targets:
         print(f"== {c} ==")
         VENDORS[c](a.force)
