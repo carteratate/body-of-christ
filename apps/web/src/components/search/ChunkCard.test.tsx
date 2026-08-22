@@ -253,6 +253,13 @@ describe("ChunkCard attached passage placement", () => {
     return Array.from(container.querySelectorAll("p")).map((p) => p.textContent);
   }
 
+  /** Whether an attachment region is present at all — the heading is a span, so a
+   *  <p>-only scan can never see it, and a negative assertion over `expand()` would
+   *  hold even for a card that renders the attachment on every result. */
+  function hasAttachment(): boolean {
+    return screen.queryByRole("complementary") !== null;
+  }
+
   it("puts Aquinas's answer BELOW a matched objection", async () => {
     // The objection is the passage that matched and states a position he refutes, so it
     // must lead. Reversing this would present his answer as the result.
@@ -297,9 +304,20 @@ describe("ChunkCard attached passage placement", () => {
   });
 
   it("shows nothing extra for a result that needs no attachment", async () => {
-    const text = await expand(summaResult(null, "I answer that, the passage stands alone."));
+    await expand(summaResult(null, "I answer that, the passage stands alone."));
 
-    expect(text.some((line) => line?.includes("Aquinas answers this objection"))).toBe(false);
+    expect(hasAttachment()).toBe(false);
+  });
+
+  it("the no-attachment check can actually fail", async () => {
+    // Guards the guard: `expand()` collects only <p>, and the boundary heading is a
+    // <span>, so a negative assertion phrased over that text would be unfalsifiable.
+    await expand(summaResult(
+      { relation: "answered_by", parts: [{ content: "THE ANSWER", reference: null, unit_label: "I answer that", anchor: "a/1" }] },
+      "THE OBJECTION",
+    ));
+
+    expect(hasAttachment()).toBe(true);
   });
 });
 

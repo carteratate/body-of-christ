@@ -11,9 +11,15 @@
  * else the passage travels alone: the collapsed header, the clipboard, the accessible
  * name.
  *
- * Returns null when the role is already visible in the citation, when there is no role,
- * and for the collections whose `unit_label` is a locator rather than an argumentative
- * role ("Can. 1055 §1", "§17") — naming those adds noise without preventing anything.
+ * Returns null when there is no role, and for collections whose `unit_label` is a
+ * locator rather than an argumentative role ("Can. 1055 §1", "§17") — naming those adds
+ * noise without preventing anything. That exclusion is what the allow-list does.
+ *
+ * It also returns null when the citation already contains the role, which is currently
+ * INERT: 0 of 26,748 labelled Summa chunks have their `unit_label` inside their
+ * `reference`, and the allow-list already removes the collections whose references do
+ * carry their locator. Kept as a cheap guard against a reference format that starts
+ * naming the role, rather than as a rule that fires today.
  */
 const ROLE_BEARING_COLLECTIONS = new Set(["summa"]);
 

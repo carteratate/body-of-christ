@@ -21,13 +21,28 @@ function context(relation: "answered_by" | "answers", parts: Partial<AttachedCon
   };
 }
 
+/**
+ * The text of the element that actually labels the region.
+ *
+ * Resolved through `aria-labelledby` rather than read off the aside's textContent: the
+ * aside also contains the junction marker ("↓ Aquinas replies below"), so asserting a
+ * direction over the whole subtree is satisfied by a different element than the one
+ * under test — which is how a boundary label with no direction at all once passed.
+ */
+function boundaryLabel(): string {
+  const aside = screen.getByRole("complementary");
+  const id = aside.getAttribute("aria-labelledby");
+  if (!id) throw new Error("aside is not labelled by any element");
+  return document.getElementById(id)?.textContent ?? "";
+}
+
 describe("AttachedPassage", () => {
   it("names the attached passage as Aquinas's answer to the objection", () => {
     // The matched passage is a position he REFUTES; a boundary that failed to say so
     // would leave the card reading as one continuous argument in his voice.
     render(<AttachedPassage context={context("answered_by", [{ content: "I answer that..." }])} color="#fff" rgb="255,255,255" />);
 
-    expect(screen.getByText("Aquinas answers this objection")).toBeTruthy();
+    expect(boundaryLabel()).toMatch(/Aquinas answers/);
     expect(screen.getByText("I answer that...")).toBeTruthy();
   });
 
@@ -38,10 +53,8 @@ describe("AttachedPassage", () => {
     // the PROPERTY — that a direction is stated — so any wording carrying one passes.
     render(<AttachedPassage context={context("answers", [{ content: "It would seem...", unit_label: "Objection 2" }])} color="#fff" rgb="255,255,255" />);
 
-    const label = screen.getByRole("complementary").getAttribute("aria-label")
-      ?? screen.getByRole("complementary").textContent ?? "";
-    expect(label).toMatch(/Objection 2/);
-    expect(label).toMatch(/below/i);
+    expect(boundaryLabel()).toMatch(/Objection 2/);
+    expect(boundaryLabel()).toMatch(/below/i);
   });
 
   it("marks the junction where the objection ends and the reply begins", () => {
@@ -61,7 +74,7 @@ describe("AttachedPassage", () => {
   it("still states the direction when the corpus left the passage unlabelled", () => {
     render(<AttachedPassage context={context("answers", [{ content: "It would seem...", unit_label: null }])} color="#fff" rgb="255,255,255" />);
 
-    expect(screen.getByText(/answered below/)).toBeTruthy();
+    expect(boundaryLabel()).toMatch(/below/i);
   });
 
   it("renders every part of a split answer in the order given", () => {
@@ -113,7 +126,8 @@ describe("AttachedPassage", () => {
     // Elsewhere that palette is decorative; this label is the safety mechanism.
     render(<AttachedPassage context={context("answered_by", [{ content: "I answer that..." }])} color="#55cc88" rgb="85,204,136" />);
 
-    const label = screen.getByText(/Aquinas answers/);
+    const aside = screen.getByRole("complementary");
+    const label = document.getElementById(aside.getAttribute("aria-labelledby")!)!;
     expect(label.style.color).toBe("");
   });
 

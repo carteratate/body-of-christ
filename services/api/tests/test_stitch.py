@@ -6,7 +6,7 @@ Two roles, two different ailments, two different remedies:
   Reply to Objection N reads mid-thought when alone      -> attach the objection it answers
 
 An earlier design attached the determination to both, which applied one remedy to two
-ailments. 82 of the 86 live Summa results that need anything are replies, so the
+ailments. 86 of the 90 live Summa results that need anything are replies, so the
 dominant card read as Aquinas answering himself. Much of what follows pins that the two
 roles stay distinct.
 
@@ -450,12 +450,14 @@ def test_a_result_that_cannot_be_placed_is_left_unattached():
     assert item.parts == [] and item.relation is None
 
 
-def test_a_result_with_no_position_is_left_unattached():
+def test_a_result_absent_from_its_fetched_article_is_left_unattached():
+    """Located by chunk_id, not by position — so a passage the article does not contain
+    attaches nothing rather than guessing from an offset."""
     passages = _article(start=0)
-    [item] = stitch.assemble([_chunk("np", "Objection 1", position=None)],
+    [item] = stitch.assemble([_chunk("not-in-article", "Objection 1", position=0)],
                              _articles(passages))
 
-    assert item.parts == []
+    assert item.parts == [] and item.relation is None
 
 
 def test_an_article_with_no_determination_degrades_to_a_bare_objection():
@@ -548,8 +550,8 @@ def test_a_split_answer_reaches_the_model_in_reading_order():
     Aquinas's answer before the first, in prose persisted to retrievals.explanation and
     re-served forever.
 
-    No persisted Summa retrieval attaches more than one part today; this guards the 476
-    corpus passages that would."""
+    No persisted Summa retrieval attaches more than one part today; this guards the corpus
+    passages that would."""
     passages = _shaped("OOOCAAARRR")
     [item] = stitch.assemble([passages[0]], _articles(passages))
 
@@ -637,6 +639,21 @@ def test_the_lookup_orders_by_position():
 
 def test_the_lookup_is_restricted_to_the_summa():
     assert "d.collection = 'summa'" in fetch_context._SQL
+
+
+def test_a_fetched_part_carries_every_field_that_reaches_the_browser():
+    """`ContextPart` sends four fields; three come straight off this row. `anchor` is
+    also the React list key, so losing it degrades rendering as well as the payload."""
+    pool = AsyncMock()
+    pool.fetch.return_value = [_row("a", "I answer that", position=2)]
+    with patch("app.rag.steps.fetch_context.get_pool", return_value=pool):
+        out = asyncio.run(fetch_context.articles({"summa/q1/a1"}))
+
+    part = out[("d1", "summa/q1/a1")][0]
+    assert part.content == "text"
+    assert part.reference == "ST I q1 a1"
+    assert part.unit_label == "I answer that"
+    assert part.anchor == "a/1"
 
 
 def test_fetched_parts_are_marked_stitched_not_scored():
@@ -807,13 +824,16 @@ def test_restore_applies_the_same_role_rules_as_the_live_path():
 
 
 def test_the_restore_shim_carries_the_fields_stitching_depends_on():
-    """chunk_id keys the context back to its row; position locates the passage inside
-    its article when a chapter_key covers more than one."""
+    """`chunk_id` is how `assemble` locates the passage among its neighbours, and
+    `document_id` scopes a chapter_key that is unique only within one document. Both are
+    coerced from the uuid asyncpg returns, since the lookup keys are strings."""
     from app.routes.search import _as_chunk
 
-    chunk = _as_chunk(_restore_row(chunk_id="abc", position=7))
+    chunk = _as_chunk(_restore_row(chunk_id="abc", position=7, document_id="doc"))
 
-    assert chunk.chunk_id == "abc" and chunk.position == 7
+    assert chunk.chunk_id == "abc"
+    assert chunk.document_id == "doc"
+    assert chunk.chapter_key == "summa/q1/a1"
 
 
 def test_restore_builds_an_objection_card():
@@ -858,6 +878,28 @@ def test_restore_pairs_context_with_the_right_passage():
     assert [p.content for p in result["r1"].parts] == ["OBJECTION 1"]
 
 
+def test_restore_survives_a_row_shape_it_did_not_expect():
+    """A saved search must render without its context rather than 503. Before the guard
+    covered the whole function, a malformed row escaped to get_search_results' handler
+    and failed a search that opened fine before this feature existed."""
+    from app.routes.search import _restore_context
+
+    rows = [{"chunk_id": "c1", "collection": "summa"}]   # missing every other column
+
+    assert asyncio.run(_restore_context(rows)) == {}
+
+
+def test_a_degraded_lookup_is_not_reported_as_id_drift():
+    """`fetch_context` returns {} for every key when the pool is down, and it has
+    already recorded that through record_recovery. Reporting it again as drifted chunk
+    ids points an operator at the one failure this corpus has actually suffered, for a
+    search where nothing drifted."""
+    with patch.object(stitch.logger, "warning") as warned:
+        stitch.assemble([_chunk("o1", "Objection 1"), _chunk("r1", "Reply to Objection 1")], {})
+
+    warned.assert_not_called()
+
+
 def test_restore_fetches_nothing_when_no_row_needs_context():
     from app.routes.search import _restore_context
 
@@ -878,12 +920,38 @@ def test_restore_degrades_to_empty_when_the_lookup_fails():
 
 
 def _route_row(chunk_id, unit_label, position, rank=1):
+    """A retrievals row as asyncpg actually returns one.
+
+    `chunk_id` and `document_id` are uuid.UUID, NOT str — the route selects `c.id` and
+    `d.id`, and asyncpg maps postgres uuid to uuid.UUID. A fixture using plain strings
+    hides every missing str() coercion: the context map is keyed on str(), so the lookup
+    would miss on every row and every restored attachment would silently vanish.
+    """
     return {"rank": rank, "reranker_score": 0.9, "explanation": "why",
-            "chunk_id": chunk_id, "content": "text", "reference": "ST I q1 a1",
+            "chunk_id": _uuid(chunk_id), "content": "text", "reference": "ST I q1 a1",
             "position": position, "anchor": f"a/{position}",
             "chapter_key": "summa/q1/a1", "unit_label": unit_label,
             "collection": "summa", "document_title": "Summa Theologiae",
-            "author": "Thomas Aquinas", "document_id": "d1"}
+            "author": "Thomas Aquinas", "document_id": _uuid("d1")}
+
+
+def _uuid(seed: str):
+    """A deterministic UUID standing in for the one asyncpg returns for this row."""
+    import hashlib
+    import uuid
+
+    return uuid.UUID(hashlib.md5(seed.encode()).hexdigest())
+
+
+def _restore_articles(passages):
+    """Articles keyed the way `_as_chunk` will look them up on the restore path."""
+    from dataclasses import replace
+
+    # ids mapped through the same _uuid the rows use, so the article and the restored
+    # row agree on identity exactly as Postgres would.
+    return _articles([replace(p, document_id=str(_uuid("d1")),
+                              chunk_id=str(_uuid(p.chunk_id)))
+                      for p in passages])
 
 
 def _restore_pool(rows, context_delay=0.0):
@@ -942,7 +1010,7 @@ def test_the_restored_response_carries_the_context_it_rebuilt():
     passages = _article()
     pool = _restore_pool([_route_row("o1", "Objection 1", 0)])
 
-    response = _get_results(pool, AsyncMock(return_value=_articles(passages)))
+    response = _get_results(pool, AsyncMock(return_value=_restore_articles(passages)))
 
     assert response.results[0].context.relation == stitch.ANSWERED_BY
     assert [p.content for p in response.results[0].context.parts] == ["DETERMINATION 0"]
@@ -954,3 +1022,117 @@ def test_a_restored_result_needing_nothing_carries_no_context():
     response = _get_results(pool, AsyncMock(return_value={}))
 
     assert response.results[0].context is None
+
+
+# ---------------------------------------------------------------------------
+# Delivery — the seam between assembly and the user
+#
+# Everything above proves the right passage is FOUND. These prove it is DELIVERED.
+# `pipeline.py` hand-builds the SSE `context` dict and it never passes through the
+# Pydantic model, so a dropped or renamed key fails silently and only here. Neutering
+# this one hop ships the feature dead on BOTH live paths while History still works.
+# ---------------------------------------------------------------------------
+
+def _attached_context(relation, parts):
+    from app.rag.steps.types import AttachedContext
+
+    return AttachedContext(relation=relation, parts=parts)
+
+
+def _run_pipeline_events(chunks, context, explain_sink=None):
+    """Drive run_search_pipeline with the runner stubbed, collecting its SSE events."""
+    from app.rag import pipeline as pipeline_module
+    from app.rag.steps.types import PipelineResult
+
+    async def fake_run(**kwargs):
+        return PipelineResult(
+            pipeline="test", chunks=chunks, step_timings=[], total_duration_s=0.0,
+            cost_breakdown={}, total_cost=0.0, context=context,
+        )
+
+    async def fake_explain(content, *args, **kwargs):
+        if explain_sink is not None:
+            explain_sink.append(content)
+        yield "explained"
+
+    async def drain():
+        return [event async for event in pipeline_module.run_search_pipeline(
+            query="q", collections=["summa"], translation="", quota=5, user_id=None)]
+
+    with (
+        patch.object(pipeline_module, "run_pipeline", fake_run),
+        patch.object(pipeline_module, "stream_explanation", fake_explain),
+    ):
+        return asyncio.run(drain())
+
+
+def _chunk_event(events):
+    return next(e for e in events if e["type"] == "chunk")
+
+
+def test_the_chunk_event_carries_the_attachment_to_the_client():
+    """The SSE chunk event is the only way an attachment reaches a browser."""
+    passages = _article()
+    context = {"o1": _attached_context(stitch.ANSWERED_BY, [passages[3]])}
+
+    attached = _chunk_event(_run_pipeline_events([passages[0]], context))["context"]
+
+    assert attached["relation"] == "answered_by"
+    assert [p["content"] for p in attached["parts"]] == ["DETERMINATION 0"]
+
+
+def test_the_chunk_event_names_every_field_the_client_reads():
+    """These five names are the wire contract, mirrored in models/search.py and
+    apps/web/src/lib/api.ts. Nothing validates them on this path."""
+    passages = _article()
+    context = {"o1": _attached_context(stitch.ANSWERED_BY, [passages[3]])}
+
+    attached = _chunk_event(_run_pipeline_events([passages[0]], context))["context"]
+
+    assert set(attached) == {"relation", "parts"}
+    assert set(attached["parts"][0]) == {"content", "reference", "unit_label", "anchor"}
+
+
+def test_the_chunk_event_keeps_split_parts_in_reading_order():
+    """109 keys split the determination; reversed, the reader gets its second half
+    first."""
+    passages = _shaped("OOOCAAARRR")
+    parts = [p for p in passages if stitch.is_determination(p)]
+    context = {passages[0].chunk_id: _attached_context(stitch.ANSWERED_BY, parts)}
+
+    attached = _chunk_event(_run_pipeline_events([passages[0]], context))["context"]
+
+    assert [p["content"] for p in attached["parts"]] == [
+        "I answer that #a4", "I answer that #a5", "I answer that #a6"]
+
+
+def test_an_unattached_result_sends_a_null_context():
+    passages = _article()
+
+    assert _chunk_event(_run_pipeline_events([passages[3]], {}))["context"] is None
+
+
+def test_the_explanation_model_sees_the_assembled_card():
+    """This prose is persisted to retrievals.explanation and re-served forever. Handed
+    the bare objection, the model writes an explanation of a position Aquinas refutes,
+    and that text outlives the card that produced it."""
+    passages = _article()
+    context = {"o1": _attached_context(stitch.ANSWERED_BY, [passages[3]])}
+    seen: list[str] = []
+
+    _run_pipeline_events([passages[0]], context, explain_sink=seen)
+
+    assert "OBJECTION 1" in seen[0]
+    assert "DETERMINATION 0" in seen[0]
+    assert stitch.ANSWERED_BY_MARKER in seen[0]
+
+
+def test_the_runner_returns_the_context_it_assembled():
+    """runner.run builds the context and must put it ON the result; dropping it there
+    leaves every card unattached with the assembly step still reporting success."""
+    import inspect
+
+    from app.rag.pipelines import runner
+
+    source = inspect.getsource(runner.run)
+    assert "context=context," in source[source.index("context = await _stitching_context"):]

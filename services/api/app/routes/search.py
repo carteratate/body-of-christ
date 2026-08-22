@@ -259,32 +259,30 @@ async def _restore_context(rows) -> dict:
     Best-effort, exactly as in the live pipeline: a failure renders the saved search
     without its context, which is what it did before stitching existed.
     """
-    chunks = [_as_chunk(row) for row in rows]
-    keys = stitch.articles_needed(chunks)
-    if not keys:
-        return {}
+    # Everything is inside the guard, not just the lookup: the docstring promises a
+    # saved search renders without its context rather than failing, and a row shape this
+    # did not expect would otherwise escape to get_search_results' handler and turn a
+    # cosmetic gap into a 503 on a search that opened fine before this feature existed.
     try:
+        chunks = [_as_chunk(row) for row in rows]
+        keys = stitch.articles_needed(chunks)
+        if not keys:
+            return {}
         articles = await fetch_context.articles(keys)
         assembled = stitch.assemble(chunks, articles)
+        return {
+            item.chunk.chunk_id: AttachedContext(
+                relation=item.relation,
+                parts=[ContextPart(content=part.content, reference=part.reference,
+                                   unit_label=part.unit_label, anchor=part.anchor)
+                       for part in item.parts],
+            )
+            for item in assembled
+            if item.is_stitched
+        }
     except Exception as exc:
         logger.warning("restore context failed (%s)", exc.__class__.__name__)
         return {}
-
-    # Keyed by chunk_id, never zipped against `rows`: a positional pairing is only
-    # correct while `assemble` returns exactly one card per input in order, and pairing
-    # the wrong context to a passage would attach one article's objection to another
-    # article's text — a fabricated attribution, the precise failure this feature exists
-    # to prevent.
-    return {
-        item.chunk.chunk_id: AttachedContext(
-            relation=item.relation,
-            parts=[ContextPart(content=part.content, reference=part.reference,
-                               unit_label=part.unit_label, anchor=part.anchor)
-                   for part in item.parts],
-        )
-        for item in assembled
-        if item.is_stitched
-    }
 
 
 @router.get("/searches/{search_id}/results", response_model=SearchResultsResponse)

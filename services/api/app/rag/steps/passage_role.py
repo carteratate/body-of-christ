@@ -26,7 +26,7 @@ def display_role(unit_label: str | None, reference: str | None) -> str | None:
     ("Baruch 6") does not contain; those still emit, which is harmless because the
     prompts carve locators out explicitly.
 
-    The case this exists for always passes through: 0 of 26,748 Summa references
+    The case this exists for always passes through: 0 of 26,750 Summa references
     contain their dialectical part, because a Summa reference names the article's
     QUESTION ("Article 6 - Whether it is lawful to kill the innocent?") and never
     which side of it the passage argues.

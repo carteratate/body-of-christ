@@ -21,11 +21,11 @@ speaking of those who..." means nothing until you know what the Philosopher said
 it lacks is the OBJECTION it answers.
 
 Each role is therefore completed by a different passage. An earlier design attached the
-determination to both, applying one remedy to two different ailments: of the 86 live
-Summa results that need anything at all, 82 are replies, so the dominant card read as
+determination to both, applying one remedy to two different ailments: of the 90 live
+Summa results that need anything at all, 86 are replies, so the dominant card read as
 Aquinas answering himself.
 
-For scale, across all 202 persisted Summa retrievals: 106 determinations, 82 replies, 10
+For scale, across all 212 persisted Summa retrievals: 112 determinations, 86 replies, 10
 sed contra, 4 objections. The modal Summa result needs nothing, and the misattribution
 case this work began from is the rarest of the four.
 
@@ -252,17 +252,22 @@ def assemble(chunks: list[RankedChunk],
             index = next((i for i, p in enumerate(passages)
                           if p.chunk_id == chunk.chunk_id), None)
             if index is None:
-                # The article was fetched but does not contain the passage that matched
-                # it. That means the two stores disagree about chunk ids — a re-chunk
-                # without a reconcile, the failure already recorded against this corpus.
-                # Silent here would mean every Summa card quietly losing its attachment
-                # with nothing to look at, so it is counted.
-                unplaceable += 1
+                # Counted only when the article WAS fetched and does not contain the
+                # passage that matched it: the two stores then disagree about chunk ids
+                # — a re-chunk without a reconcile, the failure already recorded against
+                # this corpus. Silent, that is every Summa card quietly losing its
+                # attachment with nothing to look at.
+                #
+                # An empty `passages` is a different thing entirely: the lookup degraded
+                # (pool down, query failed) and returned {} for every key, which
+                # `fetch_context` has already reported through `record_recovery`.
+                # Counting it here would point an operator at drift that did not happen.
+                if passages:
+                    unplaceable += 1
+            elif relation == ANSWERED_BY:
+                parts = _determination_after(passages, index)
             else:
-                if relation == ANSWERED_BY:
-                    parts = _determination_after(passages, index)
-                else:
-                    parts = _objection_before(passages, index, _reply_number(chunk))
+                parts = _objection_before(passages, index, _reply_number(chunk))
 
         # 21 Summa chunks hold an empty passage, 17 of them objections a reply points
         # back to. An empty attachment renders as a blank block under a header naming a
