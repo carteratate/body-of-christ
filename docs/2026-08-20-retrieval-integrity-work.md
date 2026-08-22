@@ -226,3 +226,81 @@ worse corruption: **26,718 points whose Qdrant payload `content` differs from
 
 None of this blocks the backfill — every affected document has `missing=0` and the tool
 correctly leaves them alone.
+
+---
+
+# Update — 2026-08-22
+
+## Resolved since the 2026-08-20 snapshot
+
+| was open | resolved by |
+|---|---|
+| live search vs history return different text | `reconcile --fields content --allow-content-sync` applied to summa: 26,581 payloads. Verified: 54,027 points unchanged, vectors intact at 1536 dims, `unit_label` preserved. Only 22 summa payloads still lead with a marker — 21 are content-less chunks (see below), 1 is an unsplit objection whose marker is legitimately inline. |
+| content drift needing re-embed (86) | re-embed applied earlier (350 points). Post-sync dry run reports `content_drift=0` for all nine non-summa collections. |
+| `chapter_label` drift (296) | same re-embed pass. |
+| no UI renders `unit_label` | `apps/web/src/lib/passageRole.ts` + `RoleTag` in `ChunkCard`. Shown beside the citation, in the copy citation, and in the accessible name. |
+
+The preconditions the content sync warned about were both satisfied before applying:
+`unit_label` is plumbed through `ChunkCandidate`, the vector path, `retrieve_fts`, and
+both reranker card builders (commit `3f2978d`); and the re-embed ran first, as the
+ordering constraint requires.
+
+## NEW — ingest truncation defect (unfixed)
+
+`ingest/common.py:128` `_split_at_whitespace` discards every piece after the first
+whenever `overlap == 0`:
+
+```python
+start = end - overlap     # overlap=0 → start = end
+if start >= end:          # end >= end → True
+    break                 # exits after the FIRST piece
+```
+
+The guard is meant to catch a non-advancing loop, but with zero overlap `start == end`
+is the correct advance.
+
+**All nine ingest adapters call it with `overlap=0`** — the same four-line `_cap_pieces`
+was copied into `bible.py`, `summa.py`, `catechism.py`, `councils.py`, `encyclicals.py`,
+`papal_documents.py`, `apostolic_exhortations.py`, `thml_doc.py`, plus the fallback at
+`common.py:98`. Only `common.py:362` (overlap=200) is unaffected.
+
+Confirmed against the source, not a source defect: `summa.xml` contains
+`"This suffices for the Replies to the Objections."` 60 times; the DB holds it cut at
+`"...to the"`. Running the real pipeline on that article:
+
+```
+source determination:  3,548 chars
+current code:  1 piece, 3,532 chars  → ends "...Replies to the"
+fixed:         2 pieces, 3,543 chars → ends "Objections."
+lost: 11 chars
+```
+
+Chunks matching the signature (>3,300 chars, no terminal punctuation): **~4,502** —
+church-fathers 3,263, bible 294, encyclicals 236, apostolic-exhortations 222, summa 152,
+medieval 140, councils 88, catechism 58, papal-documents 49.
+
+Typical loss is a trailing fragment. **Worse path, unmeasured:** when
+`split_at_sentences` finds no sentence boundary (`len(sentences) <= 1`) it delegates
+straight to `_split_at_whitespace`, so a passage without detectable sentence ends loses
+*everything* past ~3,500 chars.
+
+**The fix is one line; the migration is not.** Anchors are `{chapter_key}/{sub}` and
+chunk ids derive from `(document_id, anchor)`, so inserting the missing piece renumbers
+every later `sub` in that unit — changing ids that `retrievals`, `bookmarks`,
+`chunk_feedback` and `guest_trial_retrievals` all cascade on. Needs an id-preserving
+migration, not a naive re-ingest.
+
+## Still open — in priority order
+
+| finding | scale | note |
+|---|---|---|
+| **V5 pipeline would destroy production search if run** | — | 3072-dim named vectors vs live 1536 unnamed; unconditional `clear_collection`. Still the highest-risk item in the repo, still unguarded. |
+| ingest truncation (above) | ~4,502 | needs id-preserving migration |
+| 21 Summa chunks with empty `content` | 21 | all objections; 17 are ones a reply points back to. Qdrant holds only the bare label for these. |
+| 16 Summa articles with no determination chunk | 16 | 12 from the comma-less-marker parse bug. Fix committed (`d6a0d5d`), **never applied to data**. Their objections render unattached. |
+| 1 Summa objection with `unit_label = NULL` | 1 | Q103 dulia; splitter missed it, marker stayed inline. Gets no attachment. |
+| 2 stranded objections | 2 | objection appears after the replies; forward scan correctly stops and attaches nothing. |
+| enrichment never run | 0 of 54,027 | complete, tested, unexecuted subsystem |
+
+| ranking shifted after the content sync | unmeasured | the reranker now reads an explicit `[Objection N]` header instead of an inline prefix for 39.3% of the Summa corpus. One query looked plausibly better; n=1. This is what a task-specific eval would settle. |
+| **LOWEST** — collection colours undefined for light theme | app-wide, cosmetic | `globals.css` themes `--color-brand-*` but not `--color-collection-*`, so a colour tuned for `#0D1828` is asked to work on `#f0e8d8`. Measured on the card background (the collection colour at 32% over the page, so text sits on a tint of itself): dark 2.2–4.8:1, light 1.3–3.2:1 across all ten collections. Affects the badge, score chip, role tag and "Why this is relevant" label. **Judged acceptable in practice** — the badge is 12px semibold with a border in the same colour, so it has shape definition independent of fill, and WCAG ratios are calibrated for body text. Kept on the list as a known deviation, not a defect to chase. The boundary label was moved to a brand token because it is the misattribution safeguard rather than decoration. |
