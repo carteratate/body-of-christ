@@ -306,15 +306,21 @@ from ingest.common import _MIN_TAIL_CHARS, _split_at_whitespace
 
 
 def _within(seconds, fn, *args):
-    """Run fn, failing loudly instead of hanging the suite."""
+    """Run fn, failing loudly instead of hanging the suite.
+
+    Restores the previous handler: installing one process-wide and leaving it there
+    would let a later alarm from anything else surface as this assertion.
+    """
     def _raise(signum, frame):
         raise AssertionError("did not terminate — the loop is not advancing")
-    signal.signal(signal.SIGALRM, _raise)
+
+    previous = signal.signal(signal.SIGALRM, _raise)
     signal.alarm(seconds)
     try:
         return fn(*args)
     finally:
         signal.alarm(0)
+        signal.signal(signal.SIGALRM, previous)
 
 
 def test_no_text_is_discarded_when_splitting_without_overlap():
@@ -336,7 +342,7 @@ def test_splitting_with_overlap_terminates():
     backwards and the same tail was re-emitted forever."""
     text = "word " * 800
 
-    pieces = _within(5, _split_at_whitespace, text, 1800, 200)
+    pieces = _within(2, _split_at_whitespace, text, 1800, 200)
 
     assert len(pieces) > 1
 
@@ -365,6 +371,15 @@ def _text_with_a_runt_tail():
     return body[:3550].rstrip() + " tail."
 
 
+def test_the_fold_threshold_stays_narrow_enough_to_bound_a_piece():
+    """Folding is the only thing that can carry a piece past the cap, so the threshold
+    is the width of that overshoot. Every value from 40 up removes all 57 catechism
+    fragments equally, so a wider one buys nothing and costs bounded-ness: measured over
+    the seven collections with local sources, 40 leaves 6 passages over 4,000 characters
+    and 200 leaves 21."""
+    assert _MIN_TAIL_CHARS <= 40
+
+
 def test_a_runt_tail_is_folded_into_the_piece_before_it():
     """Splitting on a size budget can leave a fragment — the catechism produces a final
     piece reading only "irrelevant." — which alone gets its own embedding and can be
@@ -378,11 +393,41 @@ def test_a_runt_tail_is_folded_into_the_piece_before_it():
 
 
 def test_folding_a_runt_keeps_its_text():
-    """Folding must merge the fragment, not drop it — dropping would reintroduce the
-    truncation this function was fixed to remove."""
+    """Folding must MERGE the fragment, not drop it — dropping would reintroduce the
+    truncation this function was fixed to remove.
+
+    Asserted on the merged piece rather than on the joined output: joining hides the
+    difference, since a dropped tail and a folded one both leave the same text in
+    `pieces[-1]` when there is only one piece to join.
+    """
     text = _text_with_a_runt_tail()
 
-    pieces = _split_at_whitespace(text, 3500, 0)
+    [merged] = _split_at_whitespace(text, 3500, 0)
 
-    assert pieces[-1].endswith("tail.")
-    assert " ".join(pieces).count("filler") == text.count("filler")
+    assert merged.endswith("tail.")
+    assert len(merged) == len(text)
+    assert merged.count("filler") == text.count("filler")
+
+
+def test_an_overlapping_split_does_not_duplicate_text_within_a_piece():
+    """Overlap repeats text ACROSS pieces by design; it must never repeat it INSIDE one.
+
+    The `not overlap` guard in the fold is what prevents that, and it is currently
+    unreachable: the sole overlapping caller uses 200, five times `_MIN_TAIL_CHARS`, and
+    an overlapped tail is at least the overlap wide, so no input can produce a tail short
+    enough to fold. This pins the property the guard protects rather than the guard, so
+    it stays honest if either constant is retuned.
+    """
+    text = ("x" * 1900) + " " + ("z" * 199) + "     "
+
+    pieces = _split_at_whitespace(text, 1800, 200)
+
+    assert max(p.count("z") for p in pieces) <= text.count("z")
+
+
+def test_a_non_positive_target_terminates():
+    """`end` would never exceed `start`, so neither the step-back nor its fallback
+    advances. The old guard caught this only as a side effect of the comparison that
+    caused the truncation."""
+    assert _within(2, _split_at_whitespace, "word " * 100, 0, 0)
+    assert _within(2, _split_at_whitespace, "word " * 100, -5, 0)

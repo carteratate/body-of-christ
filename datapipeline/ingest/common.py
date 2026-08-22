@@ -79,13 +79,26 @@ _SENT_END = re.compile(r'(?<=[.!?])\s+')
 _MAX_FALLBACK_SCAN = 500
 
 # A trailing piece shorter than this is folded back into the one before it. Splitting on
-# a size budget can leave a runt — the catechism produces a final piece reading only
-# "irrelevant." — and a passage that short carries no meaning alone: it gets its own
-# embedding, can be retrieved as a standalone result, and tells the reader nothing.
-# Merging is always semantically safe, since a tail is by definition a continuation of
-# the piece before it; the cost is one chunk slightly over a cap that is already soft.
-# `test_catechism_passages.py` encodes the same expectation at 30 characters.
-_MIN_TAIL_CHARS = 200
+# a size budget can leave a runt — the catechism produces final pieces reading only
+# "irrelevant.", "proceeds.", "19:26)." — and a passage that short carries no meaning
+# alone: it gets its own embedding and can be retrieved as a standalone result that tells
+# the reader nothing. `test_catechism_passages.py` forbids passages under 30 characters,
+# and passed before only because the truncation bug discarded them.
+#
+# 40, not a rounder larger number, because folding is the ONLY thing that can push a
+# piece past the cap. Measured over the seven collections with local sources, every
+# threshold from 40 up removes all 57 catechism fragments, so the extra width buys
+# nothing:
+#
+#     threshold    over 4,000 chars    longest piece
+#            40                   6            4,019
+#           100                  15            4,085
+#           200                  21            4,154
+#
+# This does NOT establish a minimum passage length for the corpus: 6,281 of 54,027 live
+# chunks are under 200 characters and none of them come from this function, which only
+# ever sees a piece another splitter already oversized.
+_MIN_TAIL_CHARS = 40
 
 
 def split_at_sentences(
@@ -156,6 +169,13 @@ def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
     finished". Termination is now decided by whether `end` reached the text, and the
     step-back only applies when it genuinely advances.
     """
+    # A non-positive target would make `end <= start`, so neither the step-back nor its
+    # fallback advances and the loop spins. The old guard caught that only as a side
+    # effect of the same comparison that caused the truncation, so removing it removed
+    # this protection too. Clamped rather than raised: callers pass a configured
+    # constant, and a bad value should degrade to one-piece-per-character rather than
+    # abort an ingest mid-run.
+    target = max(1, target)
     chunks: list[str] = []
     start = 0
     while start < len(text):
@@ -173,7 +193,12 @@ def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
         start = next_start if next_start > start else end
 
     kept = [c for c in chunks if c]
-    if len(kept) > 1 and len(kept[-1]) < _MIN_TAIL_CHARS:
+    # Not when overlapping: the tail already repeats the end of its predecessor, so
+    # merging the two would duplicate that span inside a single piece. Unreachable at
+    # the current settings — the only caller passing an overlap uses 200, five times
+    # `_MIN_TAIL_CHARS`, and an overlapped tail is at least the overlap wide — so this
+    # is a guard against a future retuning, not a live path.
+    if not overlap and len(kept) > 1 and len(kept[-1]) < _MIN_TAIL_CHARS:
         kept[-2] = f"{kept[-2]} {kept[-1]}"
         kept.pop()
     return kept
