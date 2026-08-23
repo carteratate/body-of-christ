@@ -5,16 +5,17 @@ os.environ.setdefault("QDRANT_URL", "http://localhost:6333")
 os.environ.setdefault("QDRANT_API_KEY", "test")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from ingest.thml_doc import make_doc, _cap_pieces
+from ingest.common import DISPLAY_PASSAGE_MAX_OVERSHOOT, split_display_passage
+from ingest.thml_doc import make_doc
 
 
 def test_cap_pieces_splits_oversized():
     # Sentence-delimited prose (~5600 chars) so the splitter has real boundaries
     # to break on — mirrors actual ThML passage content.
     text = "Lorem ipsum dolor sit amet. " * 200
-    pieces = _cap_pieces(text, 3500)
+    pieces = split_display_passage(text, 3500)
     assert len(pieces) >= 2
-    assert all(len(p) <= 3500 for p in pieces)
+    assert all(len(p) <= 3500 + DISPLAY_PASSAGE_MAX_OVERSHOOT for p in pieces)
 
 
 def test_make_doc_uses_collection_in_id_and_year():

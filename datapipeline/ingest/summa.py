@@ -25,7 +25,7 @@ from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.summa import expand_apparatus
-from ingest.common import _extract_p_text, split_at_sentences, _split_at_whitespace
+from ingest.common import _extract_p_text, split_display_passage
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                     "sources", "summa", "summa.xml")
@@ -71,16 +71,6 @@ def _read_root(path: str):
     return ET.fromstring(xml)
 
 
-def _cap_pieces(text: str, maxc: int) -> list[str]:
-    """Split text so no piece exceeds the char budget (sentence-first, then hard
-    whitespace split for any over-long remainder)."""
-    pieces = split_at_sentences(text, target=maxc, overlap=0) if len(text) > maxc else [text]
-    out: list[str] = []
-    for p in pieces:
-        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
-    return out
-
-
 def _split_article(text: str) -> list[tuple[str | None, str]]:
     """Return [(part_label, part_text)] split on the dialectical markers."""
     pieces = _PART_RE.split(text)
@@ -116,7 +106,7 @@ def build_document(path: str | None = None) -> Document:
                 ref = f"Summa Theologiae, {part}, {q}, {a_title}"
                 sub = 0
                 for label, ptext in _split_article(body):
-                    for piece in _cap_pieces(ptext, maxc):
+                    for piece in split_display_passage(ptext, maxc):
                         passages.append(Passage(
                             content=piece, reference=ref,
                             anchor=f"{ch_key}/{sub}", chapter_key=ch_key,

@@ -1,20 +1,18 @@
 import os
 from config import settings
-from ingest.common import _MAX_FALLBACK_SCAN, _MIN_TAIL_CHARS
+from ingest.common import DISPLAY_PASSAGE_MAX_OVERSHOOT
 from ingest.summa import build_document
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                    "sources", "church-fathers", "summa.xml")
+                    "sources", "summa", "summa.xml")
 
 
 def test_summa_builds_one_document_with_clean_refs():
     doc = build_document(_SRC)
     assert doc.collection == "summa"
     assert doc.title.startswith("Summa")
-    # Articles split into parts → many passages, none gigantic. The bound is the cap
-    # plus the widest a runt fold can add (_MAX_FALLBACK_SCAN + _MIN_TAIL_CHARS), since
-    # folding a short tail back is the one thing that can carry a piece past the cap.
-    limit = settings.MAX_PASSAGE_CHARS + _MAX_FALLBACK_SCAN + _MIN_TAIL_CHARS
+    # A nearby sentence may exceed the target slightly rather than be severed.
+    limit = settings.MAX_PASSAGE_CHARS + DISPLAY_PASSAGE_MAX_OVERSHOOT
     assert all(len(p.content) <= limit for p in doc.passages)
     # Apparatus expanded in references (no Q[..]/A[..] bracket scheme).
     sample = doc.passages[0].reference

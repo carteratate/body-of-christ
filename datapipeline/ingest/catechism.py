@@ -32,7 +32,7 @@ from identity import document_id, anchor as make_anchor  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
 from config import settings  # noqa: E402
-from ingest.common import split_at_sentences, _split_at_whitespace  # noqa: E402
+from ingest.common import split_display_passage  # noqa: E402
 
 _DEFAULT_SRC = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "sources", "catechism", "ccc.json"
@@ -82,7 +82,7 @@ def is_section_header(paragraph: dict) -> bool:
     if any(el.get("type") == "ref-ccc" for el in paragraph.get("elements", [])):
         return False
     text = _para_text(paragraph)
-    return 0 < len(text) < _HEADER_MAX_CHARS
+    return 0 < len(text) < _HEADER_MAX_CHARS and not text.endswith((":", ";"))
 
 
 # ---------------------------------------------------------------------------
@@ -190,10 +190,10 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
             n_sections = len(sections)
 
             for i, (sec_text, sec_paras, is_brief) in enumerate(sections):
-                # Skip header-only trailing sections that have no CCC paragraph content.
-                # These arise when a section title appears at the end of a large node
-                # with no following body paragraphs — the actual content is in the next node.
-                if not sec_paras:
+                # Unnumbered fragments are normally structural spillover rather than
+                # standalone Catechism passages. "IN BRIEF" is the exception: its summary
+                # body is intentionally unnumbered and must remain visible and flagged.
+                if not sec_paras and not is_brief:
                     continue
 
                 if i == 0 and prefix:
@@ -290,15 +290,6 @@ async def ingest_catechism(pool, source_path: str | None = None) -> None:
 _MIN_CONTENT = 30
 
 
-def _cap(text: str, maxc: int) -> list[str]:
-    if len(text) <= maxc:
-        return [text]
-    out: list[str] = []
-    for p in split_at_sentences(text, target=maxc, overlap=0):
-        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
-    return out
-
-
 def build_document(source_path: str | None = None) -> Document:
     """Build the CCC as one Document of clean numbered passages (reuses the
     three-tier chunker, drops tiny TOC-only fragments, normalizes ellipses)."""
@@ -328,7 +319,7 @@ def build_document(source_path: str | None = None) -> Document:
         first = paras[0] if paras else None
         chapter_no = (first // 100) if first else 0
         base = make_anchor("ccc", first) if first else make_anchor("ccc", meta.get("path", str(pos)))
-        pieces = _cap(clean, settings.MAX_PASSAGE_CHARS)
+        pieces = split_display_passage(clean, settings.MAX_PASSAGE_CHARS)
         for j, piece in enumerate(pieces):
             anchor = base + (f"-p{j + 1}" if len(pieces) > 1 else "")
             k = 1

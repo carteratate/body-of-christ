@@ -19,7 +19,7 @@ from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
-from ingest.common import split_at_sentences, _split_at_whitespace
+from ingest.common import split_display_passage
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "apostolic-exhortations")
 _NUM = re.compile(r"^(\d+)\s*\.\s*(.*)", re.DOTALL)
@@ -140,15 +140,6 @@ def _tokens(soup) -> list[tuple[str, int | None, str]]:
     return cleaned
 
 
-def _cap(text: str, maxc: int) -> list[str]:
-    if len(text) <= maxc:
-        return [text]
-    out: list[str] = []
-    for p in split_at_sentences(text, target=maxc, overlap=0):
-        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
-    return out
-
-
 def _disambiguate_title(title: str, slug: str, year: int) -> str:
     base_slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
     return title if slug == base_slug else f"{title} ({year})"
@@ -174,7 +165,7 @@ def build_document(entry: dict) -> Document:
         content = clean_text(strip_footnote_markers(strip_boilerplate(content)))
         if not content:
             return
-        pieces = _cap(content, settings.MAX_PASSAGE_CHARS)
+        pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
         for j, piece in enumerate(pieces):
             anc = base_anchor + (f"/p{j + 1}" if len(pieces) > 1 else "")
             k = 1

@@ -42,7 +42,7 @@ from itertools import groupby  # noqa: E402
 from identity import document_id, anchor as make_anchor, slugify  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
-from ingest.common import split_at_sentences, _split_at_whitespace  # noqa: E402
+from ingest.common import split_display_passage  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Canonical book name → testament
@@ -752,17 +752,6 @@ def slugify_book(name: str) -> str:
     return slugify(name)
 
 
-def _cap(text: str, maxc: int) -> list[str]:
-    """Split text so no piece exceeds the char budget (sentence-first, then a
-    hard whitespace split for any over-long remainder)."""
-    if len(text) <= maxc:
-        return [text]
-    out: list[str] = []
-    for p in split_at_sentences(text, target=maxc, overlap=0):
-        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
-    return out
-
-
 def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> list[Document]:
     """Build one Document per book; passages = pericope sections clamped to chapters."""
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -790,7 +779,7 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
                 first_v = chap_verses[0][1]
                 ref = _format_reference(name, chapter, first_v, chapter, chap_verses[-1][1])
                 base_anchor = make_anchor(book_slug, chapter, first_v)
-                pieces = _cap(content, settings.MAX_PASSAGE_CHARS)
+                pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
                 for j, piece in enumerate(pieces):
                     sfx = f"-{j + 1}" if len(pieces) > 1 else ""
                     passages.append(Passage(
@@ -814,7 +803,7 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
                     continue
                 first_v = cv[0][0][1]
                 base_anchor = make_anchor(book_slug, chapter, first_v)
-                pieces = _cap(content, settings.MAX_PASSAGE_CHARS)
+                pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
                 for j, piece in enumerate(pieces):
                     sfx = f"-{j + 1}" if len(pieces) > 1 else ""
                     passages.append(Passage(

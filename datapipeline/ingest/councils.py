@@ -20,7 +20,7 @@ from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
-from ingest.common import split_at_sentences, _split_at_whitespace
+from ingest.common import split_display_passage
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "councils")
 _CANON = re.compile(r"^(?:Canon|Can\.?)\s+(\d+|[IVXLCDM]+)[\.\:]?\s*(.*)", re.IGNORECASE | re.DOTALL)
@@ -49,15 +49,6 @@ def _chapter_label_from(m: re.Match) -> str:
     return f"Chapter {roman}" + (f": {title_case_shouting(rest)}" if rest else "")
 
 
-def _cap(text: str, maxc: int) -> list[str]:
-    if len(text) <= maxc:
-        return [text]
-    out: list[str] = []
-    for p in split_at_sentences(text, target=maxc, overlap=0):
-        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
-    return out
-
-
 def _strip_chrome(soup) -> None:
     for tag in soup.find_all(["nav", "header", "footer", "script", "style", "form"]):
         tag.decompose()
@@ -76,7 +67,7 @@ class _Builder:
         body = clean_text(strip_footnote_markers(strip_boilerplate(_declutter(body))))
         if len(body) < 1:
             return
-        pieces = _cap(body, settings.MAX_PASSAGE_CHARS)
+        pieces = split_display_passage(body, settings.MAX_PASSAGE_CHARS)
         for j, piece in enumerate(pieces):
             anc = base_anchor + (f"/p{j + 1}" if len(pieces) > 1 else "")
             k = 1

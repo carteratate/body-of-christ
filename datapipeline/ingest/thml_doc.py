@@ -13,7 +13,7 @@ from identity import document_id, anchor as make_anchor, slugify
 from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import smart_title_case
-from ingest.common import _direct_p_text, _book_label, split_at_sentences, _split_at_whitespace
+from ingest.common import _book_label, _direct_p_text, split_display_passage
 
 
 def _chapter_label(elem) -> str:
@@ -30,15 +30,6 @@ def _chapter_label(elem) -> str:
     if head:
         return smart_title_case(head[:60])
     return f"Chapter {n}" if n else "Section"
-
-
-def _cap_pieces(text: str, maxc: int) -> list[str]:
-    if len(text) <= maxc:
-        return [text]
-    out: list[str] = []
-    for p in split_at_sentences(text, target=maxc, overlap=0):
-        out.extend(_split_at_whitespace(p, maxc, 0) if len(p) > maxc else [p])
-    return out
 
 
 def make_doc(*, collection: str, filename: str, author: str, title: str,
@@ -81,7 +72,7 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             meta["book"] = book_clean
         if extra_meta:
             meta.update(extra_meta)
-        parts = _cap_pieces(raw, maxc)
+        parts = split_display_passage(raw, maxc)
         for i, part in enumerate(parts):
             sub = f"/p{i + 1}" if len(parts) > 1 else ""
             passages.append(Passage(

@@ -75,106 +75,141 @@ def _is_summa(root) -> bool:
     return author_id.strip() == "aquinas" and book_id.strip() == "summa"
 
 
-_SENT_END = re.compile(r'(?<=[.!?])\s+')
-_MAX_FALLBACK_SCAN = 500
-
-# A trailing piece shorter than this is folded back into the one before it. Splitting on
-# a size budget can leave a runt — the catechism produces final pieces reading only
-# "irrelevant.", "proceeds.", "19:26)." — and a passage that short carries no meaning
-# alone: it gets its own embedding and can be retrieved as a standalone result that tells
-# the reader nothing. `test_catechism_passages.py` forbids passages under 30 characters,
-# and passed before only because the truncation bug discarded them.
-#
-# 40, not a rounder larger number, because folding is the ONLY thing that can push a
-# piece past the cap. Measured over the seven collections with local sources, every
-# threshold from 40 up removes all 57 catechism fragments, so the extra width buys
-# nothing:
-#
-#     threshold    over 4,000 chars    longest piece
-#            40                   6            4,019
-#           100                  15            4,085
-#           200                  21            4,154
-#
-# This does NOT establish a minimum passage length for the corpus: 6,281 of 54,027 live
-# chunks are under 200 characters and none of them come from this function, which only
-# ever sees a piece another splitter already oversized.
-_MIN_TAIL_CHARS = 40
+_DISPLAY_TRAILING_CLOSERS = frozenset('"\'\u2019\u201d')
+DISPLAY_PASSAGE_MAX_OVERSHOOT = 500
 
 
-def split_at_sentences(
-    text: str,
-    target: int = 1200,
-    overlap: int = 200,
-) -> list[str]:
-    """Split text into overlapping chunks of ~target chars at sentence boundaries.
+def _display_terminal_char(text: str, position: int) -> str:
+    """Return the punctuation before any closing quote or numeric footnote."""
+    cursor = position - 1
+    while cursor >= 0:
+        char = text[cursor]
+        if char.isspace():
+            cursor -= 1
+            continue
+        if char in _DISPLAY_TRAILING_CLOSERS:
+            cursor -= 1
+            continue
+        if char in ")]":
+            opener = "(" if char == ")" else "["
+            note_cursor = cursor - 1
+            while note_cursor >= 0 and text[note_cursor].isdigit():
+                note_cursor -= 1
+            if note_cursor < cursor - 1 and note_cursor >= 0 and text[note_cursor] == opener:
+                cursor = note_cursor - 1
+                continue
+            cursor -= 1
+            continue
+        return char
+    return ""
 
-    All limits are soft — splits always happen at sentence ends. If no sentence
-    boundary is found within _MAX_FALLBACK_SCAN chars of the target, splits at
-    the nearest whitespace instead.
+
+def _display_starts_sentence(text: str, position: int, separator: str) -> bool:
+    """Distinguish a sentence break from a period inside a citation or abbreviation."""
+    cursor = position + len(separator)
+    opening = frozenset('"\'([\u2018\u201c')
+    while cursor < len(text) and text[cursor] in opening:
+        cursor += 1
+    return cursor >= len(text) or text[cursor].isupper() or text[cursor].isdigit()
+
+
+def _display_break_kind(text: str, position: int, separator: str) -> int:
+    """Rank a whitespace boundary by how natural it is to a reader."""
+    terminal = _display_terminal_char(text, position)
+    starts_sentence = _display_starts_sentence(text, position, separator)
+    if (separator.count("\n") >= 2 and starts_sentence
+            and terminal in ".!?;:"):
+        return 0
+    if terminal in ".!?" and starts_sentence:
+        return 1
+    if terminal in ";:":
+        return 2
+    if terminal == ",":
+        return 3
+    return 4
+
+
+def _choose_display_break(text: str, start: int, lower: int,
+                          hard_upper: int, soft_upper: int, max_chars: int) -> int:
+    """Choose the strongest readable break without creating a small piece."""
+    boundaries = []
+    for match in re.finditer(r"\s+", text[start:soft_upper + 1]):
+        position = start + match.start()
+        if lower <= position <= soft_upper:
+            boundaries.append(
+                (position, _display_break_kind(text, position, match.group(0)))
+            )
+    if not boundaries:
+        # Only an individual token longer than the cap reaches this path.
+        return hard_upper
+
+    # A nearby paragraph, sentence, or semicolon may exceed the target slightly because
+    # preserving that structure reads better than an arbitrary cut. Weak comma and
+    # whitespace fallbacks remain inside the configured target.
+    structural = [boundary for boundary in boundaries if boundary[1] <= 2]
+    if structural:
+        return min(structural, key=lambda boundary: (boundary[1], -boundary[0]))[0]
+    fallback = [boundary for boundary in boundaries if boundary[0] <= hard_upper]
+    if fallback:
+        return min(fallback, key=lambda boundary: (boundary[1], -boundary[0]))[0]
+    return hard_upper
+
+
+def split_display_passage(text: str, max_chars: int) -> list[str]:
+    """Split one meaningful source passage into complete, readable display pieces.
+
+    The caller supplies a passage chosen from source structure, such as a canon,
+    pericope, numbered paragraph, chapter, or Summa article role. This function owns
+    only the size cap. It keeps every word exactly once, reserves enough text for a
+    useful final piece, prefers paragraph and sentence boundaries, and falls back
+    through clause punctuation to whitespace.
+
+    A structural boundary may exceed ``max_chars`` by at most 500 characters. A single
+    token longer than ``max_chars`` is the sole case where a word can be cut.
     """
-    if len(text) <= target:
-        return [text]
+    if max_chars <= 0:
+        raise ValueError("max_chars must be positive")
+    text = text.strip()
+    if not text or len(text) <= max_chars:
+        return [text] if text else []
 
-    sentences = _SENT_END.split(text)
-    if len(sentences) <= 1:
-        return _split_at_whitespace(text, target, overlap)
+    pieces: list[str] = []
+    start = 0
+    min_split_piece = max(1, max_chars // 4)
+    while len(text) - start > max_chars:
+        lower = start + min_split_piece
+        # Leave enough text for a useful final display passage. Because the minimum is
+        # one quarter of the maximum, any larger remainder can also be partitioned into
+        # pieces within the same range.
+        hard_upper = min(start + max_chars, len(text) - min_split_piece)
+        soft_upper = min(
+            start + max_chars + DISPLAY_PASSAGE_MAX_OVERSHOOT,
+            len(text) - min_split_piece,
+        )
+        end = _choose_display_break(
+            text, start, lower, hard_upper, soft_upper, max_chars
+        )
+        piece = text[start:end].strip()
+        if piece:
+            pieces.append(piece)
+        start = end
+        while start < len(text) and text[start].isspace():
+            start += 1
 
-    chunks: list[str] = []
-    current: list[str] = []
-    current_len = 0
+    tail = text[start:].strip()
+    if tail:
+        pieces.append(tail)
+    return pieces
 
-    for sent in sentences:
-        current.append(sent)
-        current_len += len(sent) + 1
-        if current_len >= target:
-            chunks.append(" ".join(current))
-            overlap_sents: list[str] = []
-            overlap_len = 0
-            for s in reversed(current):
-                if overlap_len + len(s) + 1 <= overlap:
-                    overlap_sents.insert(0, s)
-                    overlap_len += len(s) + 1
-                else:
-                    break
-            current = overlap_sents
-            current_len = overlap_len
 
-    if current:
-        last = " ".join(current)
-        if not chunks or last != chunks[-1]:
-            chunks.append(last)
-
-    return chunks
+# Compatibility for callers outside the current collection builders. Display-passage
+# construction uses `split_display_passage`; this older overlap interface remains only
+# for legacy imports while they are retired.
+_MIN_TAIL_CHARS = 40
+_MAX_FALLBACK_SCAN = 500
 
 
 def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
-    """Split text into ~target-sized pieces at whitespace, keeping ALL of it.
-
-    The fallback when no sentence boundary can be found. Two bugs lived here, and the
-    second is why the first went unnoticed for so long:
-
-      overlap == 0 — `start = end - overlap` made start equal end, which the guard
-        `if start >= end: break` then read as "the loop is not advancing". It returned
-        the FIRST piece and silently discarded the rest. Every ingest adapter calls this
-        with overlap=0, so ~4,500 chunks across nine collections are missing their tail;
-        where the text had no detectable sentence boundary at all, everything past the
-        cap was dropped.
-
-      overlap > 0 — once `end` reached the end of the text, `start = end - overlap`
-        stepped backwards and the loop re-emitted the same tail forever. The one caller
-        that passes a real overlap therefore hangs, which is presumably why nobody
-        exercised it and found the truncation.
-
-    Both come from conflating "how far to step back for overlap" with "have we
-    finished". Termination is now decided by whether `end` reached the text, and the
-    step-back only applies when it genuinely advances.
-    """
-    # A non-positive target would make `end <= start`, so neither the step-back nor its
-    # fallback advances and the loop spins. The old guard caught that only as a side
-    # effect of the same comparison that caused the truncation, so removing it removed
-    # this protection too. Clamped rather than raised: callers pass a configured
-    # constant, and a bad value should degrade to one-piece-per-character rather than
-    # abort an ingest mid-run.
     target = max(1, target)
     chunks: list[str] = []
     start = 0
@@ -187,24 +222,13 @@ def _split_at_whitespace(text: str, target: int, overlap: int) -> list[str]:
         chunks.append(text[start:end].strip())
         if end >= len(text):
             break
-        # `end` always exceeds `start` (the ws guard requires it), so falling back to it
-        # guarantees progress even when the requested overlap would not.
         next_start = end - overlap
         start = next_start if next_start > start else end
-
-    kept = [c for c in chunks if c]
-    # Not when overlapping: the tail already repeats the end of its predecessor, so
-    # merging the two would duplicate that span inside a single piece. Unreachable at
-    # the current settings — the only caller passing an overlap uses 200, five times
-    # `_MIN_TAIL_CHARS`, and an overlapped tail is at least the overlap wide — so this
-    # is a guard against a future retuning, not a live path.
+    kept = [chunk for chunk in chunks if chunk]
     if not overlap and len(kept) > 1 and len(kept[-1]) < _MIN_TAIL_CHARS:
         kept[-2] = f"{kept[-2]} {kept[-1]}"
         kept.pop()
     return kept
-
-
-_OVERLAP_CHARS = 200
 
 _SKIP_TITLES: frozenset[str] = frozenset({
     "title page", "contents", "table of contents", "preface",
@@ -422,7 +446,7 @@ def _chunk_standard(root, doc: "ThmlDocument", min_length: int = 100) -> list[tu
             chunks.append((content, reference, position, metadata))
             position += 1
         else:
-            parts = split_at_sentences(content_text, target=_CF_SPLIT_TARGET, overlap=_OVERLAP_CHARS)
+            parts = split_display_passage(content_text, _CF_SPLIT_TARGET)
             total = len(parts)
             for idx, part in enumerate(parts):
                 part_content = f"{header}\n\n{part}" if header else part

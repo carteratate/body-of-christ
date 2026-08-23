@@ -131,6 +131,12 @@ def test_is_section_header_false_when_empty_text():
     assert is_section_header(_make_para("")) is False
 
 
+def test_is_section_header_false_for_sentence_continuation():
+    assert is_section_header(
+        _make_para("and St. Ambrose says about this conversion:")
+    ) is False
+
+
 def test_is_section_header_false_when_no_elements():
     assert is_section_header({"elements": []}) is False
 

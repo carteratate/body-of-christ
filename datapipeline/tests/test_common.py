@@ -301,8 +301,115 @@ def test_parse_thml_summa_metadata_populated():
 # ---------------------------------------------------------------------------
 
 import signal
+import time
 
-from ingest.common import _MIN_TAIL_CHARS, _split_at_whitespace
+from ingest.common import _MIN_TAIL_CHARS, _split_at_whitespace, split_display_passage
+
+
+def _words(text: str) -> list[str]:
+    return text.split()
+
+
+def test_display_passage_split_preserves_all_normalized_text():
+    text = (
+        "The first paragraph makes a complete claim.\n\n"
+        + "The second paragraph develops that claim with several clauses; " * 90
+        + "the final words remain present."
+    )
+
+    pieces = split_display_passage(text, max_chars=900)
+
+    assert len(pieces) > 1
+    assert [word for piece in pieces for word in _words(piece)] == _words(text)
+
+
+def test_display_passage_split_balances_instead_of_emitting_a_runt():
+    text = ("A long theological sentence with many connected words " * 75) + "8.21)."
+
+    pieces = split_display_passage(text, max_chars=900)
+
+    assert len(pieces) > 1
+    assert min(map(len, pieces)) >= 450
+    assert pieces[-1].endswith("8.21).")
+
+
+def test_display_passage_split_prefers_a_nearby_sentence_boundary():
+    first = "Grace perfects nature. " * 20
+    second = "Charity orders every virtue toward God. " * 20
+    text = first + second
+
+    pieces = split_display_passage(text, max_chars=600)
+
+    assert all(piece.endswith(".") for piece in pieces[:-1])
+    assert [word for piece in pieces for word in _words(piece)] == _words(text)
+
+
+def test_display_passage_split_recognizes_sentence_before_a_footnote():
+    first = 'The council teaches this doctrine with authority."(28) '
+    text = ("Supporting prose without a terminal mark " * 15) + first + (
+        "Continuation without another terminal mark " * 30
+    ) + "the passage finally ends."
+
+    pieces = split_display_passage(text, max_chars=700)
+
+    assert any(piece.endswith('authority."(28)') for piece in pieces[:-1])
+
+
+def test_display_passage_does_not_treat_citation_period_as_sentence_end():
+    citation = "as the psalm says, Ps. i. 1. even as the faithful have received it "
+    text = ("Opening material without terminal punctuation " * 14) + citation + (
+        "continued exposition without terminal punctuation " * 15
+    ) + ". A genuinely new sentence begins here. " + ("Closing material " * 35)
+
+    pieces = split_display_passage(text, max_chars=900)
+
+    assert not any(piece.endswith("Ps. i. 1.") for piece in pieces[:-1])
+
+
+def test_display_passage_does_not_split_paragraph_before_lowercase_continuation():
+    false_break = "a citation interrupted by editorial material.\n\neven as the argument continues "
+    text = ("Opening material without terminal punctuation " * 14) + false_break + (
+        "continued exposition without terminal punctuation " * 15
+    ) + ". A genuinely new paragraph begins here.\n\n" + ("Closing material " * 35)
+
+    pieces = split_display_passage(text, max_chars=900)
+
+    assert not any(piece.endswith("editorial material.") for piece in pieces[:-1])
+
+
+def test_display_passage_does_not_treat_poetry_line_as_complete_paragraph():
+    verse = "No outward sign to us is given,\n\nThe old complaint continues in this line "
+    text = ("Opening material without terminal punctuation " * 14) + verse + (
+        "continued exposition without terminal punctuation " * 8
+    ) + ". A genuinely new paragraph begins here.\n\n" + ("Closing material " * 35)
+
+    pieces = split_display_passage(text, max_chars=900)
+
+    assert not any(piece.endswith("is given,") for piece in pieces[:-1])
+
+
+def test_display_passage_split_falls_back_between_words():
+    text = " ".join(f"word{i:04d}" for i in range(500))
+
+    pieces = split_display_passage(text, max_chars=700)
+
+    assert all(piece.split()[0].startswith("word") for piece in pieces)
+    assert all(piece.split()[-1].startswith("word") for piece in pieces)
+    assert [word for piece in pieces for word in _words(piece)] == _words(text)
+
+
+def test_display_passage_split_leaves_naturally_short_text_alone():
+    assert split_display_passage("Jesus wept.", max_chars=3500) == ["Jesus wept."]
+
+
+def test_display_passage_split_is_linear_enough_for_large_source_units():
+    text = "word " * 20_000
+
+    started = time.perf_counter()
+    pieces = split_display_passage(text, max_chars=3500)
+
+    assert time.perf_counter() - started < 2
+    assert [word for piece in pieces for word in piece.split()] == text.split()
 
 
 def _within(seconds, fn, *args):
