@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Architecture review for TheoCorpus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose" });
+    </script>
+    <style>
+      .seam { border-style: dashed; }
+      .deep { background: linear-gradient(135deg, #0f172a, #1e293b); }
+      .leak { color: #b91c1c; }
+      .code { overflow-wrap: anywhere; }
+      .arrow { color: #94a3b8; font-size: 1.25rem; line-height: 1; }
+    </style>
+  </head>
+  <body class="bg-stone-50 text-slate-900 font-sans">
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-12">
+      <header class="border-b border-slate-300 pb-7">
+        <div class="flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p class="text-xs uppercase tracking-[0.22em] text-slate-500">TheoCorpus</p>
+            <h1 class="mt-2 font-serif text-4xl">Production architecture review</h1>
+            <p class="mt-2 text-sm text-slate-500">23 August 2026 · V5-only pipeline work excluded</p>
+          </div>
+          <div class="grid grid-cols-2 gap-x-5 gap-y-2 text-xs text-slate-600">
+            <span class="flex items-center gap-2"><span class="inline-block h-4 w-7 rounded border border-slate-700 bg-white"></span> module</span>
+            <span class="flex items-center gap-2"><span class="inline-block h-4 w-7 rounded border-2 border-slate-800 deep"></span> deep module</span>
+            <span class="flex items-center gap-2"><span class="inline-block h-0 w-7 border-t-2 border-dashed border-slate-500"></span> seam</span>
+            <span class="flex items-center gap-2"><span class="inline-block h-0 w-7 border-t-2 border-red-600"></span> leakage</span>
+          </div>
+        </div>
+        <div class="mt-6 grid gap-3 sm:grid-cols-4">
+          <div class="rounded border border-emerald-200 bg-emerald-50 px-4 py-3"><div class="text-2xl font-semibold">586</div><div class="text-xs text-emerald-800">backend tests pass</div></div>
+          <div class="rounded border border-emerald-200 bg-emerald-50 px-4 py-3"><div class="text-2xl font-semibold">144</div><div class="text-xs text-emerald-800">frontend tests pass</div></div>
+          <div class="rounded border border-emerald-200 bg-emerald-50 px-4 py-3"><div class="text-2xl font-semibold">770</div><div class="text-xs text-emerald-800">ingestion tests pass</div></div>
+          <div class="rounded border border-red-200 bg-red-50 px-4 py-3"><div class="text-2xl font-semibold">2</div><div class="text-xs text-red-800">frontend lint errors</div></div>
+        </div>
+      </header>
+
+      <section id="candidates" class="space-y-10">
+        <article id="ingestion" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="font-serif text-2xl">1. Retire the old Postgres-vector ingestion path</h2>
+            <div class="flex gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Strong</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700">in-process</span></div>
+          </div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">datapipeline/run_all.py · load.py · embed.py · ingest/bible.py · ingest/catechism.py · tests/test_embed.py · datapipeline/README.md · README.md · AGENTS.md</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4">
+              <p class="text-xs uppercase tracking-wider text-red-700">Before</p>
+              <pre class="mermaid mt-2">flowchart TB
+  D[Operator docs] --> A[run_all.py]
+  D --> B[embed.py deprecated]
+  A --> C[mod.main calls]
+  C --> X[6 builders have no main]
+  B --> P[(Postgres content_embedding)]
+  P -.unused.-> Q[Production search]
+  classDef bad stroke:#dc2626,stroke-width:2px,fill:#fef2f2;
+  class X,P bad</pre>
+            </div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white">
+              <p class="text-xs uppercase tracking-wider text-slate-300">After</p>
+              <div class="mt-4 rounded-lg border-2 border-slate-300 p-5">
+                <div class="text-xs uppercase tracking-wider text-slate-300">Deep ingestion module</div>
+                <div class="mt-3 rounded bg-white/10 px-3 py-2 text-sm">run_collection.py</div>
+                <div class="mt-3 grid grid-cols-2 gap-2 text-center text-xs">
+                  <div class="rounded bg-white/10 p-3">reader writer<br>Supabase</div>
+                  <div class="rounded bg-white/10 p-3">search writer<br>Qdrant</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm">
+            <p><span class="font-semibold">Problem.</span> The advertised interface is obsolete and partly broken. It writes the vestigial vector column, omits two live collections, and can call methods that do not exist.</p>
+            <p><span class="font-semibold">Solution.</span> Make the dual-writer ingestion module the sole non-V5 interface. Delete the old implementation and its tests after checking private runbooks.</p>
+          </div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>locality: one ingest path</li><li>delete false-green tests</li><li>Qdrant contract stays explicit</li></ul>
+        </article>
+
+        <article id="sse" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="font-serif text-2xl">2. One search-stream protocol module</h2>
+            <div class="flex gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Strong</span><span class="rounded-full bg-indigo-100 px-3 py-1 text-xs text-indigo-800">ports &amp; adapters</span></div>
+          </div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">apps/web/src/lib/api.ts:309-564 · apps/web/src/lib/api.test.ts:167-359</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4">
+              <p class="text-xs uppercase tracking-wider text-red-700">Before</p>
+              <pre class="mermaid mt-2">flowchart TB
+  A[Authenticated request] --> P1[SSE parser A]
+  G[Guest request] --> P2[SSE parser B]
+  P1 --> E1[events]
+  P2 --> E2[events]
+  N[new event field] -.changes twice.-> P1
+  N -.changes twice.-> P2
+  classDef bad stroke:#dc2626,stroke-width:2px,fill:#fef2f2;
+  class P1,P2 bad</pre>
+            </div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white">
+              <p class="text-xs uppercase tracking-wider text-slate-300">After</p>
+              <div class="mt-4 flex items-center justify-center gap-3">
+                <div class="space-y-2 text-xs"><div class="rounded border border-slate-400 p-2">auth adapter</div><div class="rounded border border-slate-400 p-2">guest adapter</div></div>
+                <span class="arrow">→</span>
+                <div class="rounded-lg border-2 border-white p-5 text-center"><div class="text-xs uppercase tracking-wider text-slate-300">Small interface</div><div class="mt-2 font-semibold">Search-stream protocol</div><div class="mt-2 text-xs text-slate-300">decode · terminal rules · abort</div></div>
+                <span class="arrow">→</span><div class="rounded border border-slate-400 p-3 text-xs">callbacks</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm">
+            <p><span class="font-semibold">Problem.</span> Two implementations duplicate buffering, decoding, terminal state, errors, and aborts. The authenticated path already dropped attached context once.</p>
+            <p><span class="font-semibold">Solution.</span> Put stream decoding and terminal semantics behind one seam. Keep authentication and guest-token request adapters.</p>
+          </div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>leverage: fields change once</li><li>tests hit one interface</li><li>two adapters justify seam</li></ul>
+        </article>
+
+        <article id="search-experience" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="font-serif text-2xl">3. Deepen the search-experience module</h2>
+            <div class="flex gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Strong</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700">in-process</span></div>
+          </div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">apps/web/src/components/search/SearchPage.tsx:73-805 · SearchPage.test.tsx:103-216 · RateLimitModal.tsx · SearchProgress.tsx</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4">
+              <p class="text-xs uppercase tracking-wider text-red-700">Before</p>
+              <div class="relative mt-3 min-h-[250px] rounded border border-red-300 bg-white p-4">
+                <div class="text-center text-xs uppercase tracking-wider text-red-700">SearchPageInner</div>
+                <div class="mt-3 grid grid-cols-4 gap-2 text-center text-[11px]">
+                  <div class="rounded bg-red-50 p-2">30+ state values</div><div class="rounded bg-red-50 p-2">request refs</div><div class="rounded bg-red-50 p-2">abort rules</div><div class="rounded bg-red-50 p-2">animation timers</div>
+                  <div class="rounded bg-red-50 p-2">restore</div><div class="rounded bg-red-50 p-2">guest snapshot</div><div class="rounded bg-red-50 p-2">preferences</div><div class="rounded bg-red-50 p-2">analytics</div>
+                  <div class="rounded bg-red-50 p-2">rate limits</div><div class="rounded bg-red-50 p-2">buffering</div><div class="rounded bg-red-50 p-2">history</div><div class="rounded bg-red-50 p-2">rendering</div>
+                </div>
+                <p class="mt-5 text-center text-xs text-red-700">view and lifecycle share one implementation</p>
+              </div>
+            </div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white">
+              <p class="text-xs uppercase tracking-wider text-slate-300">After</p>
+              <div class="mt-3 rounded-lg border-2 border-white p-5">
+                <div class="text-xs uppercase tracking-wider text-slate-300">Deep lifecycle module</div>
+                <div class="mt-3 grid grid-cols-3 gap-2 text-center text-xs"><div class="rounded bg-white/10 p-3">fresh</div><div class="rounded bg-white/10 p-3">guest</div><div class="rounded bg-white/10 p-3">restore</div><div class="rounded bg-white/10 p-3">retry</div><div class="rounded bg-white/10 p-3">abort</div><div class="rounded bg-white/10 p-3">terminal</div></div>
+              </div>
+              <div class="mx-auto h-5 w-px bg-slate-400"></div>
+              <div class="rounded border border-slate-400 p-3 text-center text-sm">page module renders lifecycle state</div>
+            </div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm"><p><span class="font-semibold">Problem.</span> Search lifecycle, animation, restore, guest variation, and rendering have no locality. Lint now fails in two effect-driven progress modules.</p><p><span class="font-semibold">Solution.</span> Concentrate search transitions behind one interface. Leave the page module as the rendering caller.</p></div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>locality: transitions together</li><li>fresh flows become testable</li><li>remove effect-driven resets</li></ul>
+        </article>
+
+        <article id="guest-research" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="font-serif text-2xl">4. Concentrate the guest-research lifecycle</h2>
+            <div class="flex gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Strong</span><span class="rounded-full bg-indigo-100 px-3 py-1 text-xs text-indigo-800">ports &amp; adapters</span></div>
+          </div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">services/api/app/routes/guest_search.py:124-590 · routes/documents.py:22-54 · main.py:45-46,105-144 · apps/web/src/components/layout/AppShell.tsx:224-478</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4"><p class="text-xs uppercase tracking-wider text-red-700">Before</p><pre class="mermaid mt-2">flowchart LR
+  R[guest route] --> SQL[(lease + claim SQL)]
+  M[lifespan] --> T[task ownership]
+  D[reader route] --> SQL
+  A[AppShell] --> C[claim retry rules]
+  P[search pipeline] --> W[durable writes]
+  W -.leaks.-> SQL
+  classDef bad stroke:#dc2626,stroke-width:2px,fill:#fef2f2;
+  class SQL,T,C,W bad</pre></div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white"><p class="text-xs uppercase tracking-wider text-slate-300">After</p><div class="mt-4 rounded-lg border-2 border-white p-5 text-center"><div class="text-xs uppercase tracking-wider text-slate-300">Deep guest-research module</div><div class="mt-3 grid grid-cols-3 gap-2 text-xs"><div class="rounded bg-white/10 p-2">reserve</div><div class="rounded bg-white/10 p-2">produce</div><div class="rounded bg-white/10 p-2">persist</div><div class="rounded bg-white/10 p-2">transfer</div><div class="rounded bg-white/10 p-2">retain</div><div class="rounded bg-white/10 p-2">authorize</div></div></div><div class="mt-4 flex justify-around text-xs"><span>HTTP adapter</span><span>lifespan adapter</span><span>reader adapter</span></div></div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm"><p><span class="font-semibold">Problem.</span> Locking, leases, refunds, transfer recovery, retention, reader access, and task ownership leak across several seams.</p><p><span class="font-semibold">Solution.</span> Place the complete guest-research lifecycle behind one seam. Routes and lifespan become adapters.</p></div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>locality: invariants together</li><li>tests survive route changes</li><li>SQL stops leaking</li></ul>
+        </article>
+
+        <article id="app-context" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-serif text-2xl">5. Shrink the shared workspace interface</h2><div class="flex gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Strong</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700">local-substitutable</span></div></div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">AppShell.tsx:19-84,107-613 · GuestShell.tsx:14-138 · AuthenticatedRouteShell.tsx</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4"><p class="text-xs uppercase tracking-wider text-red-700">Before</p><div class="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3"><div class="rounded border border-slate-400 bg-white p-3 text-center text-xs">Authenticated implementation</div><div class="seam border-l-2 border-slate-500 h-40"></div><div class="rounded border-2 border-red-400 bg-white p-3 text-xs"><div class="font-semibold">~30-field AppContext interface</div><div class="mt-2 text-red-700">Guest adapter supplies many no-op fields</div><div class="mt-2">preferences · sources · history · bookmarks · auth · navigation</div></div></div></div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white"><p class="text-xs uppercase tracking-wider text-slate-300">After</p><div class="mt-4 space-y-3"><div class="rounded border-2 border-white p-4 text-center"><div class="text-xs uppercase tracking-wider text-slate-300">Shared workspace seam</div><div class="mt-1 text-sm">only facts both adapters support</div></div><div class="grid grid-cols-2 gap-3 text-center text-xs"><div class="rounded border border-slate-400 p-3">authenticated resources stay private</div><div class="rounded border border-slate-400 p-3">guest gating stays private</div></div></div></div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm"><p><span class="font-semibold">Problem.</span> The shared interface is nearly as complex as both implementations. The guest adapter satisfies auth-only facts with no-ops.</p><p><span class="font-semibold">Solution.</span> Keep only genuinely shared workspace behavior at the seam. Hide auth-only and guest-only implementation details.</p></div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>interface loses no-op fields</li><li>two honest adapters</li><li>callers learn less</li></ul>
+        </article>
+
+        <article id="saved-passages" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-serif text-2xl">6. Deepen saved-passage state</h2><div class="flex gap-2"><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">Worth exploring</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700">in-process</span></div></div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">apps/web/src/lib/api.ts:820-971 · AppShell.tsx:126,215-222,407-411 · ChunkCard.tsx:124-165 · BookmarksPage.tsx:26-109 · guest_search.py:570-576</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4"><p class="text-xs uppercase tracking-wider text-red-700">Before</p><pre class="mermaid mt-2">flowchart TB
+  C1[request cache] --> T[saved truth?]
+  C2[AppContext id map] --> T
+  C3[page rows] --> T
+  C4[card optimistic state] --> T
+  G[guest claim SQL] -.bypasses.-> B[bookmark route]
+  classDef bad stroke:#dc2626,stroke-width:2px,fill:#fef2f2;
+  class C1,C2,C3,C4,G bad</pre></div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white"><p class="text-xs uppercase tracking-wider text-slate-300">After</p><div class="mt-4 rounded-lg border-2 border-white p-5 text-center"><div class="text-xs uppercase tracking-wider text-slate-300">Deep saved-passage module</div><div class="mt-3 text-sm">load · optimistic mutation · invalidation · notes · guest import</div></div><div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs"><div class="rounded border border-slate-400 p-2">cards</div><div class="rounded border border-slate-400 p-2">library</div><div class="rounded border border-slate-400 p-2">transfer</div></div></div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm"><p><span class="font-semibold">Problem.</span> Saved-passage truth exists in four frontend stores, while guest transfer writes around the canonical backend implementation.</p><p><span class="font-semibold">Solution.</span> One module owns saved state, mutation ordering, invalidation, notes, and guest import semantics.</p></div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>locality: one truth</li><li>delete double cache</li><li>optimism tested once</li></ul>
+        </article>
+
+        <article id="production-lab" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-serif text-2xl">7. Separate the retrieval lab from production startup</h2><div class="flex gap-2"><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">Worth exploring</span><span class="rounded-full bg-indigo-100 px-3 py-1 text-xs text-indigo-800">ports &amp; adapters</span></div></div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">services/api/app/main.py:32,42-44,128,145,189-191 · routes/compare.py · routes/compare_stats.py · rag/compare/* · compare_batch/*</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4"><p class="text-xs uppercase tracking-wider text-red-700">Before</p><pre class="mermaid mt-2">flowchart LR
+  S[Production startup] --> J[Opus judge client]
+  S --> C[compare routes + HTML viewer]
+  S --> P[product routes]
+  B[batch runner] --> C
+  classDef bad stroke:#dc2626,stroke-width:2px,fill:#fef2f2;
+  class J,C bad</pre></div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white"><p class="text-xs uppercase tracking-wider text-slate-300">After</p><div class="mt-4 grid grid-cols-2 gap-4 text-center"><div class="rounded-lg border-2 border-white p-5"><div class="text-xs uppercase tracking-wider text-slate-300">Production module</div><div class="mt-2 text-sm">search · reader · accounts</div></div><div class="rounded-lg border border-slate-400 p-5"><div class="text-xs uppercase tracking-wider text-slate-300">Lab adapter</div><div class="mt-2 text-sm">compare · judge · reports</div></div></div></div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm"><p><span class="font-semibold">Problem.</span> Production startup initializes a costly evaluation client and mounts a full comparison viewer even though the repository already has separate evaluation runners.</p><p><span class="font-semibold">Solution.</span> Keep comparison as a separate adapter or explicit deployment mode. Verify private evaluation workflows before unmounting it.</p></div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>production starts less code</li><li>lab changes stay local</li><li>runtime credentials shrink</li></ul>
+        </article>
+
+        <article id="deletions" class="rounded-xl border border-slate-300 bg-white p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3"><h2 class="font-serif text-2xl">8. Delete relics and shallow seams</h2><div class="flex gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Strong</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700">in-process</span></div></div>
+          <div class="code mt-4 rounded bg-slate-50 p-3 font-mono text-xs text-slate-700">icon-preview/* · public starter SVGs · ChatShell.tsx · api.ts:3-119 · RelevanceExplanation.tsx · rag/steps/persist.py · rag/steps/dedup.py</div>
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4"><p class="text-xs uppercase tracking-wider text-red-700">Before</p><div class="mt-4 grid grid-cols-2 gap-2 text-center text-xs"><div class="rounded border border-red-200 bg-white p-3">1,177-line animation draft</div><div class="rounded border border-red-200 bg-white p-3">5 unused starter assets</div><div class="rounded border border-red-200 bg-white p-3">unreachable chat view</div><div class="rounded border border-red-200 bg-white p-3">dead explanation view</div><div class="rounded border border-red-200 bg-white p-3">empty persist module</div><div class="rounded border border-red-200 bg-white p-3">dedup pass-through</div></div></div>
+            <div class="rounded-lg border border-slate-700 deep p-4 text-white"><p class="text-xs uppercase tracking-wider text-slate-300">After</p><div class="mt-8 text-center"><div class="mx-auto flex h-32 w-32 items-center justify-center rounded-full border-2 border-white text-4xl">−</div><p class="mt-4 text-sm">Complexity disappears under the deletion test.</p></div></div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-2 text-sm"><p><span class="font-semibold">Problem.</span> Drafts, unused assets, unreachable browser code, an empty module, and a pure pass-through remain tracked and linted.</p><p><span class="font-semibold">Solution.</span> Delete them. Keep `/v1/chat` as a compatibility module because the repository marks its contract non-negotiable.</p></div>
+          <ul class="mt-4 grid gap-2 text-sm sm:grid-cols-3"><li>delete 1,000+ draft lines</li><li>lint loses dead warnings</li><li>shallow seams disappear</li></ul>
+          <div class="mt-4 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">Contract constraint: backend `/v1/chat` cannot be removed under current AGENTS.md. Delete its unused browser implementation, then add a real contract test if the compatibility endpoint stays.</div>
+        </article>
+      </section>
+
+      <section class="rounded-xl border border-slate-300 bg-white p-6">
+        <h2 class="font-serif text-2xl">Separate production warning</h2>
+        <p class="mt-3 text-sm">Migration identities are duplicated at 0026 and 0027. Both pairs contain live schema. Audit the Supabase migration ledger before renaming anything. This is not a deletion candidate.</p>
+        <div class="code mt-3 grid gap-2 font-mono text-xs text-slate-700 sm:grid-cols-2"><div>0026_guest_onboarding_continuity.sql<br>0026_compare_runs_pricing.sql</div><div>0027_guest_transfer_readiness.sql<br>0027_reading_progress.sql</div></div>
+      </section>
+
+      <section id="top-recommendation" class="rounded-xl border-2 border-indigo-700 bg-indigo-950 p-8 text-white">
+        <p class="text-xs uppercase tracking-[0.22em] text-indigo-300">Top recommendation</p>
+        <h2 class="mt-2 font-serif text-3xl"><a class="underline decoration-indigo-400 underline-offset-4" href="#ingestion">Retire the old ingestion path first</a></h2>
+        <p class="mt-3 text-indigo-100">It is the highest-confidence removal, advertises a broken interface, contradicts the deployed Qdrant architecture, and preserves false confidence through passing tests.</p>
+      </section>
+    </main>
+  </body>
+</html>
