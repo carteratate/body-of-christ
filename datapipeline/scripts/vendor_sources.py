@@ -1,6 +1,6 @@
 """Vendor the web-fetched corpus sources to local files for reproducible ingest.
 
-Downloads the medieval / encyclicals / councils / canon-law raw sources into
+Downloads the church-fathers / medieval / encyclicals / councils / canon-law raw sources into
 ``sources/<collection>/`` and writes a ``manifest.json`` per collection capturing
 (title, author, year, url, file) for each document. The dual-pipeline adapters
 then read these local files instead of hitting the network at ingest time
@@ -53,6 +53,34 @@ MEDIEVAL = [
     {"url": "https://ccel.org/ccel/k/kempis/imitation.xml",
      "title": "Imitation of Christ",
      "author": "Thomas à Kempis", "year": 1441, "fix_author": False, "merge_short": True},
+]
+
+
+# Keep the historical local filenames because church_fathers.py uses them to identify
+# the two single-author works and Augustine's multi-work NPNF volumes. The URLs are the
+# original CCEL ThML downloads, not converted reader HTML.
+CHURCH_FATHERS = [
+    {"url": "https://ccel.org/ccel/a/augustine/confess.xml",
+     "file": "confessions.xml", "title": "Confessions of Saint Augustine"},
+    {"url": "https://ccel.org/ccel/s/schaff/npnf102.xml",
+     "file": "city-of-god.xml", "title": "NPNF1-02: City of God and Christian Doctrine"},
+    {"url": "https://ccel.org/ccel/s/schaff/anf01.xml",
+     "file": "apostolic fathers.xml", "title": "ANF01: Apostolic Fathers"},
+    {"url": "https://ccel.org/ccel/a/athanasius/incarnation.xml",
+     "file": "incarnation.xml", "title": "On the Incarnation of the Word"},
+    {"url": "https://ccel.org/ccel/s/schaff/npnf103.xml",
+     "file": "on-the-holy-trinity.xml", "title": "NPNF1-03: On the Holy Trinity"},
+    {"url": "https://ccel.org/ccel/s/schaff/anf02.xml",
+     "file": "second-century.xml", "title": "ANF02: Fathers of the Second Century"},
+    {"url": "https://ccel.org/ccel/s/schaff/anf04.xml",
+     "file": "third-century.xml", "title": "ANF04: Fathers of the Third Century"},
+    {"url": "https://ccel.org/ccel/s/schaff/anf05.xml",
+     "file": "third-century-2.xml", "title": "ANF05: Fathers of the Third Century"},
+    {"url": "https://ccel.org/ccel/s/schaff/anf06.xml",
+     "file": "third-century-3.xml", "title": "ANF06: Fathers of the Third Century"},
+    {"url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+     "file": "third-fourth-century.xml",
+     "title": "ANF07: Fathers of the Third and Fourth Centuries"},
 ]
 
 ENCYCLICALS = [
@@ -296,6 +324,34 @@ def vendor_medieval(force: bool) -> None:
             else:
                 print(f"  skip (exists): {fname}")
             manifest.append({**w, "file": fname})
+    _write_manifest(d, manifest)
+
+
+def vendor_church_fathers(force: bool) -> None:
+    d = os.path.join(_SOURCES, "church-fathers")
+    os.makedirs(d, exist_ok=True)
+    manifest_path = os.path.join(d, "manifest.json")
+    previous = {}
+    if os.path.exists(manifest_path):
+        previous = {
+            entry.get("file"): entry
+            for entry in json.load(open(manifest_path, encoding="utf-8"))
+        }
+    manifest = []
+    with _client() as client:
+        for work in CHURCH_FATHERS:
+            fname = work["file"]
+            source_unchanged = previous.get(fname, {}).get("url") == work["url"]
+            if not (os.path.exists(os.path.join(d, fname)) and not force
+                    and source_unchanged):
+                data = _fetch(client, work["url"])
+                if data is None:
+                    continue
+                _save(d, fname, data, force or not source_unchanged)
+                time.sleep(_DELAY)
+            else:
+                print(f"  skip (exists): {fname}")
+            manifest.append(work)
     _write_manifest(d, manifest)
 
 
@@ -571,6 +627,7 @@ def verify_manifest(coll_dir: str, name: str = "manifest.json") -> list[str]:
 
 
 VENDORS = {
+    "church-fathers": vendor_church_fathers,
     "medieval": vendor_medieval,
     "encyclicals": vendor_encyclicals,
     "apostolic-exhortations": vendor_apostolic_exhortations,
