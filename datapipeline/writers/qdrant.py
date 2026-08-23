@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from typing import Any, cast
 
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import (
@@ -42,7 +43,10 @@ async def ensure_collection(client: AsyncQdrantClient) -> None:
     info = await client.get_collection(QDRANT_COLLECTION)
     params = info.config.params.vectors
     named = isinstance(params, dict)
-    size = (next(iter(params.values())).size if named else params.size)
+    if isinstance(params, dict):
+        size = next(iter(params.values())).size
+    else:
+        size = cast(Any, params).size
 
     if named or size != settings.EMBEDDING_DIMS:
         raise SystemExit(
@@ -63,6 +67,24 @@ async def delete_collection_points(client: AsyncQdrantClient, collection: str) -
     )
 
 
+async def collection_point_ids(client: AsyncQdrantClient, collection: str) -> set[str]:
+    """Return every point identity currently published for one collection."""
+    point_ids: set[str] = set()
+    offset = None
+    while True:
+        points, offset = await client.scroll(
+            collection_name=QDRANT_COLLECTION,
+            scroll_filter=collection_filter(collection),
+            limit=1000,
+            offset=offset,
+            with_payload=False,
+            with_vectors=False,
+        )
+        point_ids.update(str(point.id) for point in points)
+        if offset is None:
+            return point_ids
+
+
 async def prune_missing_points(client: AsyncQdrantClient, collection: str,
                                keep_ids: set[str]) -> int:
     """Delete this collection's points that the current build no longer produces.
@@ -79,20 +101,10 @@ async def prune_missing_points(client: AsyncQdrantClient, collection: str,
     Returns the number deleted, so a caller can refuse a run that would remove far more
     than the rebuild explains.
     """
-    stale: list[str] = []
-    offset = None
-    while True:
-        points, offset = await client.scroll(
-            collection_name=QDRANT_COLLECTION,
-            scroll_filter=collection_filter(collection),
-            limit=1000, offset=offset, with_payload=False, with_vectors=False,
-        )
-        stale.extend(str(p.id) for p in points if str(p.id) not in keep_ids)
-        if offset is None:
-            break
+    stale = sorted(await collection_point_ids(client, collection) - keep_ids)
     if stale:
         await client.delete(collection_name=QDRANT_COLLECTION,
-                            points_selector=stale, wait=True)
+                            points_selector=cast(Any, stale), wait=True)
     return len(stale)
 
 

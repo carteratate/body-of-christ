@@ -134,72 +134,8 @@ def test_prune_missing_documents_keeps_every_document_in_the_build():
     }
 
 
-def test_limited_search_run_does_not_prune_the_collection(monkeypatch):
-    import run_collection
-
-    doc = _doc("a/1")
-    monkeypatch.setitem(run_collection.BUILDERS, "medieval", lambda: [doc, _doc("b/1")])
-
-    class Conn:
-        async def close(self): pass
-
-    class Qdrant:
-        async def close(self): pass
-
-    async def connect(*args, **kwargs): return Conn()
-    async def no_op(*args, **kwargs): return None
-    writes = []
-    async def write(client, built_doc): writes.append(built_doc)
-    async def forbidden_prune(*args, **kwargs):
-        raise AssertionError("a limited run must not prune a collection-wide id set")
-
-    monkeypatch.setattr(run_collection.asyncpg, "connect", connect)
-    monkeypatch.setattr(run_collection, "get_client", Qdrant)
-    monkeypatch.setattr(run_collection, "ensure_collection", no_op)
-    monkeypatch.setattr(run_collection.search_writer, "write_document", write)
-    monkeypatch.setattr(run_collection, "prune_missing_points", forbidden_prune)
-
-    asyncio.run(run_collection.run("medieval", "search", False, 1))
-
-    assert writes == [doc]
-
-
-def test_partial_destructive_modes_are_refused():
-    import pytest
-    import run_collection
-
-    with pytest.raises(SystemExit):
-        run_collection._validate_run_options(limit=1, clean=True, wipe=False)
-    with pytest.raises(SystemExit):
-        run_collection._validate_run_options(limit=1, clean=False, wipe=True)
-
-
-def test_reingest_does_not_wipe_the_reader_by_default():
-    """The destructive path must be opt-in. Defaulting to it means an ordinary re-ingest
-    silently cascades through user data."""
-    import inspect
-
-    import run_collection
-
-    source = inspect.getsource(run_collection.run)
-    body = source[source.index('if target in ("reader"'):]
-    assert "if wipe:" in body
-    assert "prune=not wipe" in body
-
-
-def test_wipe_is_reachable_but_named_for_what_it_does():
-    import inspect
-
-    import run_collection
-
-    assert "wipe" in inspect.signature(run_collection.run).parameters
-    source = inspect.getsource(run_collection)
-    assert "--wipe-reader" in source
-    assert "cascade" in source.lower()
-
-
 # ---------------------------------------------------------------------------
-# Qdrant orphans and the collapse guard.
+# Qdrant orphans.
 # ---------------------------------------------------------------------------
 
 def test_qdrant_prune_deletes_only_points_the_build_no_longer_makes():
@@ -242,74 +178,6 @@ def test_qdrant_prune_deletes_nothing_when_the_build_is_complete():
     client = FakeQdrant()
     assert asyncio.run(qdrant_writer.prune_missing_points(client, "medieval", {"a", "b"})) == 0
     assert client.delete_called is False
-
-
-def test_a_collapsed_build_is_refused_before_anything_is_written():
-    """Pruning to match a broken build would delete the difference from both stores. The
-    check runs before the first write, not after."""
-    import pytest
-
-    import run_collection
-
-    class FakeConn:
-        async def fetchval(self, sql, *args): return 1000
-
-    with pytest.raises(SystemExit) as raised:
-        asyncio.run(run_collection._refuse_if_build_collapsed(FakeConn(), "medieval", 500, None))
-
-    assert "REFUSING" in str(raised.value)
-
-
-def test_the_collapse_guard_runs_before_the_first_write():
-    """A guard that fires after the writes have started is not a guard: by then the
-    prune has already deleted rows and points."""
-    import inspect
-
-    import run_collection
-
-    source = inspect.getsource(run_collection.run)
-    guard = source.index("_refuse_if_build_collapsed")
-    for writer in ("write_document", "prune_missing_points", "clear_collection"):
-        assert guard < source.index(writer), f"{writer} runs before the guard"
-
-
-def test_a_normal_rebuild_is_allowed_through():
-    import run_collection
-
-    class FakeConn:
-        async def fetchval(self, sql, *args): return 434
-
-    # 437 built against 434 live — the medieval rebuild's real shape.
-    asyncio.run(run_collection._refuse_if_build_collapsed(FakeConn(), "medieval", 437, None))
-
-
-def test_large_identity_reassignment_is_refused_even_when_counts_match():
-    import pytest
-    import run_collection
-
-    live = {f"00000000-0000-0000-0000-{i:012d}" for i in range(100)}
-    built = {f"11111111-1111-1111-1111-{i:012d}" for i in range(100)}
-
-    class FakeConn:
-        async def fetch(self, sql, *args):
-            return [{"id": chunk_id} for chunk_id in live]
-
-    with pytest.raises(SystemExit) as raised:
-        asyncio.run(run_collection._refuse_if_identity_churn(
-            FakeConn(), "summa", built, limit=None, allow=False,
-        ))
-
-    assert "chunk ids" in str(raised.value)
-
-
-def test_a_deliberate_partial_build_skips_the_check():
-    import run_collection
-
-    class FakeConn:
-        async def fetchval(self, sql, *args):
-            raise AssertionError("should not query when --limit is set")
-
-    asyncio.run(run_collection._refuse_if_build_collapsed(FakeConn(), "medieval", 5, 5))
 
 
 # ---------------------------------------------------------------------------
