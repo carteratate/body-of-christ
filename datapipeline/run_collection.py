@@ -42,6 +42,14 @@ BUILDERS = {
 _MAX_SHRINK = 0.10
 
 
+def _validate_run_options(limit: int | None, clean: bool, wipe: bool) -> None:
+    if limit and (clean or wipe):
+        raise SystemExit(
+            "REFUSING: --limit cannot be combined with --clean or --wipe-reader. "
+            "Those options delete a whole collection before rebuilding only part of it."
+        )
+
+
 async def _refuse_if_build_collapsed(conn, collection: str, built: int, limit: int | None) -> None:
     if limit:
         return          # a deliberately partial build; the comparison is meaningless
@@ -61,8 +69,32 @@ async def _refuse_if_build_collapsed(conn, collection: str, built: int, limit: i
         )
 
 
+async def _refuse_if_identity_churn(conn, collection: str, built_ids: set[str],
+                                    limit: int | None, allow: bool) -> None:
+    """Refuse a same-size rebuild that silently reassigns many passage identities."""
+    if limit or allow:
+        return
+    rows = await conn.fetch(
+        """
+        SELECT c.id FROM chunks c JOIN documents d ON d.id = c.document_id
+        WHERE d.collection = $1
+        """,
+        collection,
+    )
+    live_ids = {str(row["id"]) for row in rows}
+    removed = live_ids - built_ids
+    if live_ids and len(removed) > len(live_ids) * _MAX_SHRINK:
+        raise SystemExit(
+            f"REFUSING: the build replaces {len(removed)} of {len(live_ids)} live "
+            f"chunk ids ({len(removed) / len(live_ids):.0%}). Counts alone cannot "
+            f"distinguish a planned re-key from a broken parser. Review the exact id "
+            f"diff, then use --wipe-reader only if the replacement is intentional."
+        )
+
+
 async def run(collection: str, target: str, clean: bool, limit: int | None,
               wipe: bool = False) -> None:
+    _validate_run_options(limit, clean, wipe)
     docs: list[Document] = BUILDERS[collection]()
     if limit:
         docs = docs[:limit]
@@ -73,6 +105,10 @@ async def run(collection: str, target: str, clean: bool, limit: int | None,
     qdrant = get_client()
     try:
         await _refuse_if_build_collapsed(conn, collection, built, limit)
+        built_ids = {passage_id(d.id, p.anchor) for d in docs for p in d.passages}
+        await _refuse_if_identity_churn(
+            conn, collection, built_ids, limit=limit, allow=wipe,
+        )
         await ensure_collection(qdrant)
         if target in ("reader", "both"):
             # Upsert by default. `clear_collection` cascades through retrievals,
@@ -83,11 +119,15 @@ async def run(collection: str, target: str, clean: bool, limit: int | None,
                 await reader_writer.clear_collection(conn, collection)
             pruned = 0
             for d in docs:
-                await reader_writer.write_document(conn, d)
-                if not wipe:
-                    pruned += await reader_writer.prune_missing_chunks(conn, d)
+                pruned += await reader_writer.write_document(conn, d, prune=not wipe)
+            removed_docs = 0
+            if not wipe and limit is None:
+                removed_docs = await reader_writer.prune_missing_documents(
+                    conn, collection, {d.id for d in docs}
+                )
             print(f"  reader: wrote {len(docs)} documents to Supabase"
-                  + (f" ({pruned} stale chunk(s) pruned)" if pruned else ""))
+                  + (f" ({pruned} stale chunk(s), {removed_docs} stale document(s) pruned)"
+                     if pruned or removed_docs else ""))
         if target in ("search", "both"):
             if clean:
                 await delete_collection_points(qdrant, collection)
@@ -98,9 +138,8 @@ async def run(collection: str, target: str, clean: bool, limit: int | None,
             # while the pipeline's Postgres lookup for it returns nothing. `--clean`
             # already emptied the collection, so there is nothing stale to find.
             orphans = 0
-            if not clean:
-                keep = {passage_id(d.id, p.anchor) for d in docs for p in d.passages}
-                orphans = await prune_missing_points(qdrant, collection, keep)
+            if not clean and limit is None:
+                orphans = await prune_missing_points(qdrant, collection, built_ids)
             print(f"  search: embedded + upserted points to Qdrant"
                   + (f" ({orphans} orphaned point(s) deleted)" if orphans else ""))
     finally:

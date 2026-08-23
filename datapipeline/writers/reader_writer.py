@@ -59,7 +59,36 @@ async def prune_missing_chunks(conn: asyncpg.Connection, doc: Document) -> int:
     return int(deleted or 0)
 
 
-async def write_document(conn: asyncpg.Connection, doc: Document) -> None:
+async def prune_missing_documents(conn: asyncpg.Connection, collection: str,
+                                  keep_ids: set[str]) -> int:
+    """Delete documents absent from a complete collection build.
+
+    Per-document chunk pruning cannot see a document the builder stopped returning.
+    Leaving it behind makes Postgres disagree with both the build and the collection-wide
+    Qdrant prune. The caller must use this only after a complete, non-limited build.
+    """
+    deleted = await conn.fetchval(
+        """
+        WITH deleted AS (
+            DELETE FROM documents
+            WHERE collection = $1 AND NOT (id = ANY($2::uuid[]))
+            RETURNING 1
+        )
+        SELECT count(*) FROM deleted
+        """,
+        collection, list(keep_ids),
+    )
+    return int(deleted or 0)
+
+
+async def write_document(conn: asyncpg.Connection, doc: Document,
+                         prune: bool = True) -> int:
+    """Atomically reconcile one document and return the stale chunk count.
+
+    Existing positions are staged below zero before the upserts. Without that step, a
+    newly split chunk can claim a position still occupied by the old identity and trip
+    ``UNIQUE(document_id, position)`` before the stale row is pruned.
+    """
     async with conn.transaction():
         await conn.execute(
             """
@@ -72,6 +101,11 @@ async def write_document(conn: asyncpg.Connection, doc: Document) -> None:
             doc.id, doc.collection, doc.title, doc.translation or "",
             doc.author, doc.year, json.dumps(doc.metadata) if doc.metadata else None,
         )
+        await conn.execute(
+            "UPDATE chunks SET position = -position - 1 WHERE document_id = $1::uuid",
+            doc.id,
+        )
+        pruned = await prune_missing_chunks(conn, doc) if prune else 0
         for p in doc.passages:
             pid = passage_id(doc.id, p.anchor)
             await conn.execute(
@@ -90,3 +124,4 @@ async def write_document(conn: asyncpg.Connection, doc: Document) -> None:
                 p.anchor, p.chapter_key, p.chapter_label, p.unit_label,
                 json.dumps(p.metadata) if p.metadata else None,
             )
+        return pruned

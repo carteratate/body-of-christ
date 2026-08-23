@@ -12,6 +12,11 @@ class FakeConn:
     async def fetchval(self, sql, *args):
         self.calls.append((sql, args))
         return self.fetchval_result
+    def transaction(self):
+        class _Transaction:
+            async def __aenter__(self): return None
+            async def __aexit__(self, *args): return False
+        return _Transaction()
 
 
 class FakePool:
@@ -26,7 +31,6 @@ class FakePool:
 
 def test_write_document_inserts_doc_and_passages():
     conn = FakeConn()
-    pool = FakePool(conn)
     doc = Document(
         id="11111111-1111-1111-1111-111111111111", collection="bible",
         title="John", translation="WEB-C",
@@ -34,13 +38,30 @@ def test_write_document_inserts_doc_and_passages():
                           chapter_key="john/3", chapter_label="John 3", position=0,
                           unit_label="16")],
     )
-    asyncio.run(reader_writer.write_document(pool, doc))
+    asyncio.run(reader_writer.write_document(conn, doc))
     joined = " ".join(sql for sql, _ in conn.calls)
     assert "INSERT INTO documents" in joined
+    assert "UPDATE chunks SET position = -position - 1" in joined
+    assert "DELETE FROM chunks" in joined
     assert "INSERT INTO chunks" in joined
     chunk_args = [args for sql, args in conn.calls if "INSERT INTO chunks" in sql][0]
     assert "john/3/16" in chunk_args
     assert "john/3" in chunk_args
+
+
+def test_write_document_frees_old_positions_before_inserting_new_identities():
+    conn = FakeConn()
+    conn.fetchval_result = 1
+
+    pruned = asyncio.run(reader_writer.write_document(conn, _doc("new/p1", "new/p2")))
+
+    statements = [sql for sql, _ in conn.calls]
+    staged = next(i for i, sql in enumerate(statements)
+                  if "UPDATE chunks SET position = -position - 1" in sql)
+    deleted = next(i for i, sql in enumerate(statements) if "DELETE FROM chunks" in sql)
+    inserted = next(i for i, sql in enumerate(statements) if "INSERT INTO chunks" in sql)
+    assert staged < deleted < inserted
+    assert pruned == 1
 
 
 # ---------------------------------------------------------------------------
@@ -90,6 +111,69 @@ def test_prune_is_scoped_to_one_document():
     assert args[0] == "11111111-1111-1111-1111-111111111111"
 
 
+def test_prune_missing_documents_keeps_every_document_in_the_build():
+    conn = FakeConn()
+    conn.fetchval_result = 2
+
+    removed = asyncio.run(reader_writer.prune_missing_documents(
+        conn,
+        "medieval",
+        {"11111111-1111-1111-1111-111111111111",
+         "22222222-2222-2222-2222-222222222222"},
+    ))
+
+    sql, args = conn.calls[-1]
+    assert removed == 2
+    assert "DELETE FROM documents" in sql
+    assert "collection = $1" in sql
+    assert "NOT (id = ANY" in sql
+    assert args[0] == "medieval"
+    assert set(args[1]) == {
+        "11111111-1111-1111-1111-111111111111",
+        "22222222-2222-2222-2222-222222222222",
+    }
+
+
+def test_limited_search_run_does_not_prune_the_collection(monkeypatch):
+    import run_collection
+
+    doc = _doc("a/1")
+    monkeypatch.setitem(run_collection.BUILDERS, "medieval", lambda: [doc, _doc("b/1")])
+
+    class Conn:
+        async def close(self): pass
+
+    class Qdrant:
+        async def close(self): pass
+
+    async def connect(*args, **kwargs): return Conn()
+    async def no_op(*args, **kwargs): return None
+    writes = []
+    async def write(client, built_doc): writes.append(built_doc)
+    async def forbidden_prune(*args, **kwargs):
+        raise AssertionError("a limited run must not prune a collection-wide id set")
+
+    monkeypatch.setattr(run_collection.asyncpg, "connect", connect)
+    monkeypatch.setattr(run_collection, "get_client", Qdrant)
+    monkeypatch.setattr(run_collection, "ensure_collection", no_op)
+    monkeypatch.setattr(run_collection.search_writer, "write_document", write)
+    monkeypatch.setattr(run_collection, "prune_missing_points", forbidden_prune)
+
+    asyncio.run(run_collection.run("medieval", "search", False, 1))
+
+    assert writes == [doc]
+
+
+def test_partial_destructive_modes_are_refused():
+    import pytest
+    import run_collection
+
+    with pytest.raises(SystemExit):
+        run_collection._validate_run_options(limit=1, clean=True, wipe=False)
+    with pytest.raises(SystemExit):
+        run_collection._validate_run_options(limit=1, clean=False, wipe=True)
+
+
 def test_reingest_does_not_wipe_the_reader_by_default():
     """The destructive path must be opt-in. Defaulting to it means an ordinary re-ingest
     silently cascades through user data."""
@@ -100,7 +184,7 @@ def test_reingest_does_not_wipe_the_reader_by_default():
     source = inspect.getsource(run_collection.run)
     body = source[source.index('if target in ("reader"'):]
     assert "if wipe:" in body
-    assert "prune_missing_chunks" in body
+    assert "prune=not wipe" in body
 
 
 def test_wipe_is_reachable_but_named_for_what_it_does():
@@ -185,8 +269,7 @@ def test_the_collapse_guard_runs_before_the_first_write():
 
     source = inspect.getsource(run_collection.run)
     guard = source.index("_refuse_if_build_collapsed")
-    for writer in ("write_document", "prune_missing_chunks", "prune_missing_points",
-                   "clear_collection"):
+    for writer in ("write_document", "prune_missing_points", "clear_collection"):
         assert guard < source.index(writer), f"{writer} runs before the guard"
 
 
@@ -198,6 +281,25 @@ def test_a_normal_rebuild_is_allowed_through():
 
     # 437 built against 434 live — the medieval rebuild's real shape.
     asyncio.run(run_collection._refuse_if_build_collapsed(FakeConn(), "medieval", 437, None))
+
+
+def test_large_identity_reassignment_is_refused_even_when_counts_match():
+    import pytest
+    import run_collection
+
+    live = {f"00000000-0000-0000-0000-{i:012d}" for i in range(100)}
+    built = {f"11111111-1111-1111-1111-{i:012d}" for i in range(100)}
+
+    class FakeConn:
+        async def fetch(self, sql, *args):
+            return [{"id": chunk_id} for chunk_id in live]
+
+    with pytest.raises(SystemExit) as raised:
+        asyncio.run(run_collection._refuse_if_identity_churn(
+            FakeConn(), "summa", built, limit=None, allow=False,
+        ))
+
+    assert "chunk ids" in str(raised.value)
 
 
 def test_a_deliberate_partial_build_skips_the_check():
