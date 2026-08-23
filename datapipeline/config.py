@@ -42,17 +42,10 @@ class Settings:
 
     # --- Embedding ---
     EMBEDDING_MODEL: str = "text-embedding-3-large"
-    # Which Qdrant shape this pipeline reads and writes. The repo holds two, and until
-    # now nothing chose between them — the writer emitted V5 while the deployment ran
-    # LIVE, so no ingest could touch the corpus the app serves.
-    #
-    #   live  1536-dim, single unnamed vector. What `chunks` holds today and what
-    #         services/api queries (app/config.py embedding_dims = 1536).
-    #   v5    3072-dim named "dense" plus sparse vectors, per qdrant_schema.py.
-    #         Reaching it needs a Qdrant recreate, a full re-embed, an API change, and
-    #         a writer that actually populates the sparse vectors — build_point does
-    #         not. Aspirational, and deliberately not the default.
-    QDRANT_FORMAT: str = "live"
+    # The deployed `chunks` collection and services/api both use one unnamed 1536-dim
+    # vector. A future schema migration belongs in a dedicated migration path only when
+    # the writer and reader can both complete it.
+    EMBEDDING_DIMS: int = 1536
     EMBEDDING_BATCH_SIZE: int = 100
     EMBED_CONCURRENCY: int = 4
 
@@ -140,18 +133,6 @@ class Settings:
     SONNET_INPUT_COST_PER_M: float = 3.0
     SONNET_OUTPUT_COST_PER_M: float = 15.0
     EMBED_COST_PER_M: float = 0.13
-
-    @property
-    def EMBEDDING_DIMS(self) -> int:
-        """Passed explicitly to OpenAI — text-embedding-3-large is natively 3072, so
-        omitting it silently produces vectors the live collection cannot store."""
-        return 3072 if self.QDRANT_FORMAT == "v5" else 1536
-
-    @property
-    def VECTOR_IS_NAMED(self) -> bool:
-        """V5 keys the dense vector so sparse vectors can sit beside it. The live
-        collection has one unnamed vector, and services/api queries without `using=`."""
-        return self.QDRANT_FORMAT == "v5"
 
     def overlap_for(self, collection: str) -> tuple[int, int]:
         return self.PER_COLLECTION_OVERLAP.get(collection, self.DEFAULT_OVERLAP)

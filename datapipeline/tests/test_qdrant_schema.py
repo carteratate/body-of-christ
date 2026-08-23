@@ -38,24 +38,6 @@ async def test_recreate_chunks_makes_a_collection_the_writer_can_fill():
 
 
 @pytest.mark.asyncio
-async def test_recreate_chunks_builds_the_v5_shape_when_selected(monkeypatch):
-    """The V5 target is preserved, and reached by selecting it rather than by default."""
-    import dataclasses
-
-    from config import settings
-
-    monkeypatch.setattr(qdrant_schema, "settings",
-                        dataclasses.replace(settings, QDRANT_FORMAT="v5"))
-    c = _FakeClient(); c._exists.add("chunks")
-
-    await qdrant_schema.recreate_chunks(c)
-
-    cfg = c.created["chunks"]
-    assert cfg["vectors_config"]["dense"].size == 3072
-    assert set(cfg["sparse_vectors_config"]) == {"sparse_content", "sparse_annotation"}
-
-
-@pytest.mark.asyncio
 async def test_ensure_facets_and_questions_indexes():
     c = _FakeClient()
     await qdrant_schema.ensure_facets(c)

@@ -35,25 +35,6 @@ def test_build_point_uses_a_bare_vector_for_the_deployed_collection():
     assert pt.payload["content"] == "x"
 
 
-def test_build_point_names_the_vector_under_the_v5_format(monkeypatch):
-    """The V5 shape stays reachable; it is selected, not assumed."""
-    doc = Document(id="d1", collection="bible", title="Genesis", author="Moses")
-    p = Passage(content="x", reference="Gen 1:1", anchor="genesis/1/1",
-                chapter_key="genesis/1", chapter_label="Genesis 1", position=0)
-    # Settings is frozen, so the module reference is swapped rather than the field.
-    import dataclasses
-
-    from config import settings
-
-    import writers.search_writer as sw
-    monkeypatch.setattr(sw, "settings",
-                        dataclasses.replace(settings, QDRANT_FORMAT="v5"))
-
-    pt = build_point(doc, p, [0.1, 0.2, 0.3])
-
-    assert pt.vector == {"dense": [0.1, 0.2, 0.3]}
-
-
 def test_build_point_carries_the_fields_the_pipeline_reads():
     """`reconcile_qdrant_payloads` added chapter_key and unit_label to 53,747 live points
     because this writer omitted them — so re-ingesting a collection silently undid that

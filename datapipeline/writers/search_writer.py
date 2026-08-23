@@ -39,10 +39,7 @@ def build_embedding_input(passages: list[Passage], idx: int,
 def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
     return PointStruct(
         id=passage_id(doc.id, p.anchor),
-        # Shape follows settings.QDRANT_FORMAT: the live collection has one unnamed
-        # vector and services/api queries it without `using=`; V5 keys it so sparse
-        # vectors can sit alongside.
-        vector={"dense": vector} if settings.VECTOR_IS_NAMED else vector,
+        vector=vector,
         payload={
             "collection": doc.collection,
             "document_id": doc.id,

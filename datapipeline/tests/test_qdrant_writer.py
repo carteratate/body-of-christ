@@ -11,4 +11,4 @@ def test_collection_filter_targets_payload_collection():
 
 def test_constants():
     assert QDRANT_COLLECTION == "chunks"
-    assert settings.EMBEDDING_DIMS == 1536      # live; 3072 under QDRANT_FORMAT=v5
+    assert settings.EMBEDDING_DIMS == 1536

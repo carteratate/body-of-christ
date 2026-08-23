@@ -1,13 +1,11 @@
-"""Create the V5 Qdrant collections: chunks (named dense + 2 sparse), facets, questions.
+"""Create the Qdrant collections used by the data pipeline.
 
 recreate_chunks() is a BREAKING change: it deletes and recreates `chunks` because
 named sparse vectors cannot be added to an existing collection. All chunks are re-ingested.
 """
 from __future__ import annotations
 
-from qdrant_client.models import (
-    Distance, HnswConfigDiff, PayloadSchemaType, SparseVectorParams, VectorParams,
-)
+from qdrant_client.models import Distance, HnswConfigDiff, PayloadSchemaType, VectorParams
 
 from config import settings
 
@@ -17,30 +15,16 @@ QUESTIONS = "questions"
 
 
 async def recreate_chunks(client) -> None:
-    """Create `chunks` in the shape `settings.QDRANT_FORMAT` selects.
-
-    Both shapes are described here so the schema and the writer cannot disagree — a
-    collection this creates must be one `writers/search_writer.build_point` can fill.
-    """
+    """Create the unnamed 1536-dim `chunks` collection the application queries."""
     if await client.collection_exists(CHUNKS):
         await client.delete_collection(CHUNKS)
-    dense = VectorParams(size=settings.EMBEDDING_DIMS, distance=Distance.COSINE)
-    if settings.VECTOR_IS_NAMED:
-        await client.create_collection(
-            collection_name=CHUNKS,
-            vectors_config={"dense": dense},
-            sparse_vectors_config={
-                "sparse_content": SparseVectorParams(),
-                "sparse_annotation": SparseVectorParams(),
-            },
-            hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
-        )
-    else:
-        await client.create_collection(
-            collection_name=CHUNKS,
-            vectors_config=dense,
-            hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
-        )
+    await client.create_collection(
+        collection_name=CHUNKS,
+        vectors_config=VectorParams(
+            size=settings.EMBEDDING_DIMS, distance=Distance.COSINE,
+        ),
+        hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
+    )
     await client.create_payload_index(
         collection_name=CHUNKS, field_name="collection", field_schema=PayloadSchemaType.KEYWORD)
 
