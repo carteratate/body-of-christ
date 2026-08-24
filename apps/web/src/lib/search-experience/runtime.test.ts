@@ -152,7 +152,8 @@ describe("search-experience runtime", () => {
       transport: { status: "ranked-ready", resultCount: 1 },
       presentation: { status: "animating", resultsReady: true },
     });
-    expect(completed).not.toHaveBeenCalled();
+    expect(completed).toHaveBeenCalledOnce();
+    expect(completed).toHaveBeenCalledWith(1);
     runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
     runs[0].callbacks.onDone(null, 1, "success", { bible: "results" }, true);
     expect(runtime.read()).toMatchObject({
@@ -160,6 +161,29 @@ describe("search-experience runtime", () => {
       presentation: { status: "fading" },
     });
     expect(completed).toHaveBeenCalledOnce();
+  });
+
+  it("uses guest completion as a fallback readiness signal", () => {
+    const completed = vi.fn();
+    const { runtime, runs } = guestFixture({
+      guestAccess: {
+        canSearch: () => true,
+        requestSignup: vi.fn(),
+        recordCompletedSearch: completed,
+      },
+    });
+    runtime.send({ type: "submit", request: REQUEST });
+
+    runs[0].callbacks.onPassage(passage("p1"));
+    expect(() => runs[0].callbacks.onDone(null, 1, "success", { bible: "results" }, true))
+      .not.toThrow();
+
+    expect(runtime.read()).toMatchObject({
+      transport: { status: "complete", resultCount: 1 },
+      presentation: { status: "animating", resultsReady: true },
+    });
+    expect(completed).toHaveBeenCalledOnce();
+    expect(completed).toHaveBeenCalledWith(1);
   });
 
   it("preserves guest Passages when completion fails after results-ready", () => {
@@ -208,16 +232,21 @@ describe("search-experience runtime", () => {
     });
   });
 
-  it("rejects guest completion before ranked results are ready", () => {
-    const { runtime, runs } = guestFixture();
-    runtime.send({ type: "submit", request: REQUEST });
-    expect(() => runs[0].callbacks.onDone(null, 0, "no_candidates", {}, true))
-      .toThrow(/before ranked results are ready/);
-    expect(runtime.read()).toMatchObject({
-      status: "active-search",
-      transport: { status: "preparing" },
-      presentation: { status: "animating", resultsReady: false },
+  it("opens signup instead of exposing trial exhaustion as a search failure", () => {
+    const requestSignup = vi.fn();
+    const { runtime, runs } = guestFixture({
+      guestAccess: {
+        canSearch: () => true,
+        requestSignup,
+        recordCompletedSearch: vi.fn(),
+      },
     });
+    runtime.send({ type: "submit", request: REQUEST });
+
+    runs[0].callbacks.onError("trial_exhausted", "rate_limit", "rate_limit");
+
+    expect(requestSignup).toHaveBeenCalledWith("limit");
+    expect(runtime.read()).toMatchObject({ status: "idle" });
   });
 
   it("copies and freezes nested Passage metadata before exposing it", () => {
@@ -671,6 +700,38 @@ describe("search-experience runtime", () => {
     runs[0].callbacks.onDone(null, 1, "success", {}, true);
     expect(save).toHaveBeenCalledTimes(3);
     expect(save).toHaveBeenLastCalledWith(expect.objectContaining({ outcome: "success" }));
+  });
+
+  it("restores guest continuity on creation and clears it on reset", () => {
+    const clear = vi.fn();
+    const runtime = createSearchExperience({
+      audience: { kind: "guest", async search() {} },
+      guestContinuity: {
+        restore: () => ({
+          savedAt: 1234,
+          request: REQUEST,
+          searchId: "guest-search",
+          passages: [passage("p1")],
+          outcome: "success",
+          collectionOutcomes: { bible: "results" },
+        }),
+        save: vi.fn(),
+        clear,
+      },
+    });
+
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      audience: "guest",
+      request: REQUEST,
+      transport: { status: "complete", searchId: "guest-search", outcome: "success" },
+      presentation: { status: "revealed" },
+      passages: [{ chunk_id: "p1" }],
+    });
+
+    runtime.send({ type: "reset" });
+    expect(clear).toHaveBeenCalledOnce();
+    expect(runtime.read()).toMatchObject({ status: "idle" });
   });
 
   it("aborts stale restoration and exposes only the replacement result", async () => {

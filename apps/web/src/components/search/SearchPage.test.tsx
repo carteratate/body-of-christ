@@ -29,6 +29,11 @@ const appMocks = vi.hoisted(() => ({
 
 const navigationMocks = vi.hoisted(() => ({ replace: vi.fn(), push: vi.fn() }));
 const animationMocks = vi.hoisted(() => ({ onFiltersReady: null as null | (() => void) }));
+const guestGateMocks = vi.hoisted(() => ({
+  searchCount: 0,
+  requestSignup: vi.fn(),
+  recordCompletedSearch: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => navigationMocks,
@@ -60,6 +65,10 @@ vi.mock("@/components/layout/AppShell", () => ({
   }),
 }));
 
+vi.mock("@/components/layout/guestGate", () => ({
+  useGuestGate: () => guestGateMocks,
+}));
+
 vi.mock("@/lib/api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/api")>();
   return {
@@ -72,16 +81,18 @@ vi.mock("@/lib/api", async (importOriginal) => {
 });
 
 vi.mock("./BottomBar", () => ({
-  BottomBar: ({ isSearchActive, activeCollections, searchValue, onSearchChange, onSearch }: {
+  BottomBar: ({ isSearchActive, activeCollections, searchValue, onSearchChange, onSearch, onToggleVisible }: {
     isSearchActive: boolean;
     activeCollections: string[];
     searchValue: string;
     onSearchChange: (value: string) => void;
     onSearch: () => void;
+    onToggleVisible: (collection: string) => void;
   }) => (
     <div data-testid="bottom-bar" data-active={String(isSearchActive)} data-collections={activeCollections.join(",")}>
       <input aria-label="Search passages" value={searchValue} onChange={(event) => onSearchChange(event.target.value)} />
       <button onClick={onSearch}>Search</button>
+      <button onClick={() => onToggleVisible("bible")}>Toggle Bible visibility</button>
     </div>
   ),
 }));
@@ -156,7 +167,9 @@ afterEach(() => {
   testState.token = "token";
   testState.userId = "user-a";
   testState.searchKey = 0;
+  guestGateMocks.searchCount = 0;
   animationMocks.onFiltersReady = null;
+  sessionStorage.clear();
 });
 
 describe("SearchPage restore lifecycle", () => {
@@ -528,7 +541,6 @@ describe("SearchPage animation-gated stream reveal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
     expect(await screen.findByText("Grace perfects nature. — Before reveal.")).toBeTruthy();
     expect(screen.getByTestId("loading-animation")).toBeTruthy();
-
     act(() => streamCallbacks.onExplanationDelta(streamedPassage.chunk_id, " After reveal."));
     expect(await screen.findByText("Grace perfects nature. — Before reveal. After reveal.")).toBeTruthy();
 
@@ -576,11 +588,197 @@ describe("SearchPage animation-gated stream reveal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
     expect(await screen.findByText("Grace perfects nature. — Before reveal.")).toBeTruthy();
     expect(screen.getByTestId("loading-animation")).toBeTruthy();
+    expect(JSON.parse(sessionStorage.getItem("theocorpus-guest-current-results") ?? "null"))
+      .toMatchObject({ query: "grace", results: [{ explanation: "Before reveal." }] });
 
     act(() => streamCallbacks.onExplanationDelta(streamedPassage.chunk_id, " After reveal."));
     expect(await screen.findByText("Grace perfects nature. — Before reveal. After reveal.")).toBeTruthy();
+    expect(JSON.parse(sessionStorage.getItem("theocorpus-guest-current-results") ?? "null"))
+      .toMatchObject({ results: [{ explanation: "Before reveal. After reveal." }] });
 
     fireEvent.click(screen.getByRole("button", { name: "Animation faded" }));
     expect(screen.queryByTestId("loading-animation")).toBeNull();
+  });
+
+  it("keeps revealed guest Passages when final completion fails", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+      callbacks.onChunk(streamedPassage);
+      callbacks.onResultsReady?.(1);
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    expect(await screen.findByText(/Grace perfects nature/)).toBeTruthy();
+
+    act(() => streamCallbacks.onError("Transfer finalization failed", "transfer_failed", "transfer"));
+
+    expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
+    expect(screen.queryByText("Passage retrieval failed")).toBeNull();
+  });
+
+  it("records one guest trial use at results readiness and not again at done", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    expect(apiMocks.streamGuestSearch.mock.calls[0].slice(0, 4)).toEqual([
+      "guest-session-token-with-at-least-32-chars",
+      "grace",
+      {
+        collections: ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"],
+        translation: "CPDV",
+      },
+      3,
+    ]);
+
+    act(() => streamCallbacks.onResultsReady?.(1));
+    expect(guestGateMocks.recordCompletedSearch).toHaveBeenCalledOnce();
+    act(() => streamCallbacks.onDone(null, 1, "success", { bible: "results" }, true));
+    expect(guestGateMocks.recordCompletedSearch).toHaveBeenCalledOnce();
+  });
+
+  it("opens signup when the server reports an exhausted guest trial", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    act(() => streamCallbacks.onError("trial_exhausted", "rate_limit", "rate_limit"));
+
+    expect(guestGateMocks.requestSignup).toHaveBeenCalledWith("limit");
+    expect(screen.queryByTestId("loading-animation")).toBeNull();
+    expect(screen.getByText("Empty search")).toBeTruthy();
+  });
+
+  it("rejects an exhausted guest trial before opening a stream", () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    guestGateMocks.searchCount = 2;
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+
+    expect(apiMocks.streamGuestSearch).not.toHaveBeenCalled();
+    expect(guestGateMocks.requestSignup).toHaveBeenCalledWith("limit");
+  });
+
+  it("ignores guest callbacks after a replacement search takes ownership", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    const callbacks: SearchStreamCallbacks[] = [];
+    const signals: AbortSignal[] = [];
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, streamCallbacks, signal) => {
+      callbacks.push(streamCallbacks);
+      signals.push(signal!);
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "first" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "second" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledTimes(2));
+
+    expect(signals[0].aborted).toBe(true);
+    act(() => callbacks[0].onError("stale failure", "server_error", "retrieval"));
+    expect(screen.queryByText("Passage retrieval failed")).toBeNull();
+    act(() => callbacks[1].onError("current failure", "server_error", "retrieval"));
+    expect(screen.getByText("Passage retrieval failed")).toBeTruthy();
+  });
+
+  it("retries the frozen guest request after a rate limit", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    const callbacks: SearchStreamCallbacks[] = [];
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, streamCallbacks) => {
+      callbacks.push(streamCallbacks);
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "original" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    act(() => callbacks[0].onRateLimit(5, "per_minute"));
+    expect(await screen.findByRole("dialog", { name: "Search Limit Reached" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Retry search" }));
+
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledTimes(2));
+    expect(apiMocks.streamGuestSearch.mock.calls[1][1]).toBe("original");
+  });
+
+  it("aborts the guest stream when the page is disposed", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    let signal!: AbortSignal;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, _callbacks, streamSignal) => {
+      signal = streamSignal!;
+    });
+    const view = render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    view.unmount();
+
+    await waitFor(() => expect(signal.aborted).toBe(true));
+  });
+
+  it("restores, saves, and clears the compatible guest Reader snapshot", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    sessionStorage.setItem("theocorpus-guest-current-results", JSON.stringify({
+      savedAt: Date.now(),
+      query: "restored guest query",
+      results: [streamedPassage],
+      searchId: "guest-search",
+      collections: ["bible"],
+      translation: "CPDV",
+      quota: 3,
+      visibleCollections: ["bible"],
+      outcome: "success",
+      collectionOutcomes: { bible: "results" },
+    }));
+    const view = render(<SearchPage isGuest />);
+
+    expect(screen.getByText("restored guest query")).toBeTruthy();
+    expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Toggle Bible visibility" }));
+    expect(JSON.parse(sessionStorage.getItem("theocorpus-guest-current-results") ?? "null"))
+      .toMatchObject({ visibleCollections: [] });
+
+    testState.searchKey += 1;
+    view.rerender(<SearchPage isGuest />);
+    await waitFor(() => expect(sessionStorage.getItem("theocorpus-guest-current-results")).toBeNull());
+    expect(screen.getByText("Empty search")).toBeTruthy();
   });
 });

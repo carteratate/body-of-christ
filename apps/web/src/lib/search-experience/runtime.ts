@@ -123,12 +123,54 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
   let userId: string | null = null;
   let disposed = false;
   let run: ActiveRun | null = null;
+  let guestVisibleCollections: readonly string[] = Object.freeze([]);
   let snapshot: SearchExperienceSnapshot = deepFreeze({
     status: "idle",
     runId: generation,
     canSubmit: true,
     canRetry: false,
   });
+
+  if (ports.audience.kind === "guest" && ports.guestContinuity?.restore) {
+    try {
+      const continuity = ports.guestContinuity.restore();
+      if (continuity && isValidRequest(continuity.request)) {
+        const request = freezeRequest(continuity.request);
+        guestVisibleCollections = Object.freeze([
+          ...(continuity.visibleCollections ?? continuity.request.collections),
+        ]);
+        const passages = Object.freeze(continuity.passages.map(freezePassage));
+        const transport = continuity.outcome === null
+          ? {
+              status: "ranked-ready" as const,
+              resultCount: passages.length,
+              completionFailure: null,
+            }
+          : {
+              status: "complete" as const,
+              searchId: continuity.searchId,
+              resultCount: passages.length,
+              outcome: continuity.outcome,
+              collectionOutcomes: freezeOutcomes({ ...continuity.collectionOutcomes }),
+              persisted: true,
+            };
+        snapshot = deepFreeze({
+          status: "active-search",
+          runId: generation,
+          audience: "guest",
+          request,
+          transport,
+          presentation: { status: "revealed", filtersReady: true },
+          passages,
+          saveWarning: null,
+          canSubmit: true,
+          canRetry: false,
+        });
+      }
+    } catch {
+      // Invalid or unavailable same-tab continuity starts as a fresh search page.
+    }
+  }
 
   const emit = (next: SearchExperienceSnapshot) => {
     snapshot = deepFreeze(next);
@@ -196,8 +238,9 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       explanation: ownedRun.bufferedExplanations[passage.chunk_id] ?? passage.explanation,
     })));
 
-  const saveGuestContinuity = (ownedRun: ActiveRun, current: ActiveSearchSnapshot) => {
-    if (ports.audience.kind !== "guest" || !ports.guestContinuity || !ownedRun.revealed) return;
+  const saveGuestContinuity = (current: ActiveSearchSnapshot) => {
+    if (ports.audience.kind !== "guest" || !ports.guestContinuity
+      || current.presentation.status === "animating") return;
     bestEffort(() => {
       const complete = current.transport.status === "complete" ? current.transport : null;
       const continuity: GuestContinuitySnapshot = Object.freeze({
@@ -207,9 +250,18 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         passages: current.passages,
         outcome: complete?.outcome ?? null,
         collectionOutcomes: complete?.collectionOutcomes ?? EMPTY_OUTCOMES,
+        visibleCollections: guestVisibleCollections,
       });
       return ports.guestContinuity!.save(continuity);
     });
+  };
+
+  const recordGuestCompletion = (ownedRun: ActiveRun, resultCount: number) => {
+    if (ports.audience.kind !== "guest" || ownedRun.guestCompletionRecorded) return;
+    ownedRun.guestCompletionRecorded = true;
+    if (ports.guestAccess) {
+      bestEffort(() => ports.guestAccess!.recordCompletedSearch(resultCount));
+    }
   };
 
   const failSearch = (
@@ -261,7 +313,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         code: failure.code,
       }));
     }
-    saveGuestContinuity(ownedRun, next);
+    saveGuestContinuity(next);
     return true;
   };
 
@@ -306,6 +358,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           ? { ...current.presentation, resultsReady: true }
           : current.presentation,
       });
+      recordGuestCompletion(ownedRun, resultCount);
     },
     onExplanationDelta(passageId, delta) {
       if (!isCurrent(ownedRun.id)) return;
@@ -319,15 +372,12 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       ));
       const next = { ...current, passages };
       emit(next);
-      saveGuestContinuity(ownedRun, next);
+      saveGuestContinuity(next);
     },
     onDone(searchId, resultCount, outcome, collectionOutcomes, persisted) {
       if (!isCurrent(ownedRun.id)) return;
       const current = activeSnapshot(ownedRun.id);
       if (ownedRun.terminal) throw new Error("A search run cannot complete twice.");
-      if (ports.audience.kind === "guest" && current.transport.status !== "ranked-ready") {
-        throw new Error("A guest search cannot complete before ranked results are ready.");
-      }
       ownedRun.terminal = true;
       clearPending(ownedRun);
       const transport = {
@@ -341,7 +391,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       const next: ActiveSearchSnapshot = {
         ...current,
         transport,
-        presentation: ports.audience.kind === "authenticated" && current.presentation.status === "animating"
+        presentation: current.presentation.status === "animating"
           ? { ...current.presentation, resultsReady: true }
           : current.presentation,
         saveWarning: ports.audience.kind === "authenticated" && !persisted
@@ -352,10 +402,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       if (ports.audience.kind === "authenticated" && searchId && ports.pendingHistory) {
         bestEffort(() => ports.pendingHistory!.refresh());
       }
-      if (ports.audience.kind === "guest" && !ownedRun.guestCompletionRecorded) {
-        ownedRun.guestCompletionRecorded = true;
-        if (ports.guestAccess) bestEffort(() => ports.guestAccess!.recordCompletedSearch());
-      }
+      recordGuestCompletion(ownedRun, resultCount);
       const completedRequest = ownedRun.request;
       if (ports.analytics && completedRequest) {
         bestEffort(() => ports.analytics!.searchCompleted({
@@ -365,12 +412,18 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           outcome,
         }));
       }
-      saveGuestContinuity(ownedRun, next);
+      saveGuestContinuity(next);
     },
     onError(message, code, stage, collectionOutcomes) {
       if (!isCurrent(ownedRun.id)) return;
       const current = activeSnapshot(ownedRun.id);
       if (ownedRun.terminal) throw new Error("An error cannot follow a terminal search event.");
+      if (ports.audience.kind === "guest" && message === "trial_exhausted") {
+        ownedRun.terminal = true;
+        if (ports.guestAccess) bestEffort(() => ports.guestAccess!.requestSignup("limit"));
+        resetToIdle();
+        return;
+      }
       const failure = {
         kind: "search",
         message,
@@ -464,6 +517,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     }
     const ownedRun = nextRun(request, null, pendingEntryId);
     if (ports.audience.kind === "guest" && ports.guestContinuity) {
+      guestVisibleCollections = Object.freeze([...request.collections]);
       bestEffort(() => ports.guestContinuity!.clear());
     }
     if (pendingEntryId && ports.pendingHistory) {
@@ -603,7 +657,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         presentation: { status: "fading", filtersReady: true },
       };
       emit(next);
-      saveGuestContinuity(run, next);
+      saveGuestContinuity(next);
       return;
     }
     if (current.presentation.status !== "fading") {
@@ -627,8 +681,18 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         emit({ ...snapshot, failure: { ...snapshot.failure, rateLimit } });
         break;
       }
-      case "cancel":
-      case "reset": resetToIdle(); break;
+      case "guest-visible-collections-changed":
+        if (ports.audience.kind !== "guest") break;
+        guestVisibleCollections = Object.freeze([...command.collections]);
+        if (snapshot.status === "active-search") saveGuestContinuity(snapshot);
+        break;
+      case "cancel": resetToIdle(); break;
+      case "reset":
+        resetToIdle();
+        if (ports.audience.kind === "guest" && ports.guestContinuity) {
+          bestEffort(() => ports.guestContinuity!.clear());
+        }
+        break;
       case "identity-changed":
         if (command.userId !== userId) {
           userId = command.userId;

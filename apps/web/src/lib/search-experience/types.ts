@@ -139,6 +139,7 @@ export type SearchExperienceCommand =
   | { readonly type: "retry" }
   | { readonly type: "animation"; readonly runId: number; readonly milestone: AnimationMilestone }
   | { readonly type: "dismiss-rate-limit" }
+  | { readonly type: "guest-visible-collections-changed"; readonly collections: readonly string[] }
   | { readonly type: "cancel" }
   | { readonly type: "reset" }
   | { readonly type: "identity-changed"; readonly userId: string | null }
@@ -227,9 +228,10 @@ export interface GuestSearchExperiencePorts extends SharedSearchExperiencePorts 
   readonly guestAccess?: {
     readonly canSearch: () => boolean;
     readonly requestSignup: (reason: "limit") => void | Promise<void>;
-    readonly recordCompletedSearch: () => void | Promise<void>;
+    readonly recordCompletedSearch: (resultCount: number) => void | Promise<void>;
   };
   readonly guestContinuity?: {
+    readonly restore?: () => GuestContinuitySnapshot | null;
     readonly save: (snapshot: GuestContinuitySnapshot) => void | Promise<void>;
     readonly clear: () => void | Promise<void>;
   };
@@ -251,6 +253,7 @@ export interface GuestContinuitySnapshot {
   readonly passages: readonly Passage[];
   readonly outcome: SearchOutcome | null;
   readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
+  readonly visibleCollections?: readonly string[];
 }
 
 export interface SearchCompletedEvent {
