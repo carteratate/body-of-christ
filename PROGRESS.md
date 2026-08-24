@@ -56,7 +56,6 @@ All corpus ingestion scripts are built and live in `datapipeline/ingest/`:
 | `councils.py` | Ecumenical councils + Vatican II |
 | `apostolic_exhortations.py` | Post-synodal apostolic exhortations |
 | `papal_documents.py` | Papal bulls and apostolic letters |
-| `saints.py` | Hagiography collection |
 | `thml_doc.py` | THML format parser (CCEL sources) |
 
 Supporting: `embed.py` (push to Qdrant), `load.py` (upsert to Supabase), `normalize/` (text cleaning)

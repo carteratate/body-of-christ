@@ -287,48 +287,6 @@ def test_rrf_run_empty_on_empty_inputs():
 
 
 # ---------------------------------------------------------------------------
-# Migration script unit tests
-# ---------------------------------------------------------------------------
-
-def test_parse_pgvector():
-    """parse_pgvector must convert pgvector text format to a float list."""
-    import sys
-    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
-    from scripts.migrate_to_qdrant import parse_pgvector
-
-    result = parse_pgvector("[0.1,-0.2,0.3]")
-    assert result == pytest.approx([0.1, -0.2, 0.3])
-
-
-def test_build_point():
-    """build_point must produce a PointStruct with correct id, vector, and payload."""
-    import sys
-    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
-    from scripts.migrate_to_qdrant import build_point, parse_pgvector
-    from qdrant_client.models import PointStruct
-
-    vec = [0.0] * 1536
-    row = MagicMock()
-    row.__getitem__ = lambda self, k: {
-        "chunk_id": "eeeeeeee-0000-0000-0000-000000000001",
-        "content": "Test content",
-        "reference": "Gen 1:1",
-        "embedding": "[" + ",".join("0.0" for _ in range(1536)) + "]",
-        "document_id": "ffffffff-0000-0000-0000-000000000001",
-        "document_title": "Genesis",
-        "author": "Moses",
-        "collection": "bible",
-    }[k]
-
-    point = build_point(row)
-    assert isinstance(point, PointStruct)
-    assert point.id == "eeeeeeee-0000-0000-0000-000000000001"
-    assert len(point.vector) == 1536
-    assert point.payload["collection"] == "bible"
-    assert point.payload["content"] == "Test content"
-
-
-# ---------------------------------------------------------------------------
 # position / annotation plumbing
 # ---------------------------------------------------------------------------
 

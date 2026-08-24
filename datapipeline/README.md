@@ -1,6 +1,7 @@
-# TheoCorpus — Data Pipeline
+# TheoCorpus - Data Pipeline
 
-Ingests Catholic theology source texts (Bible, Catechism, Encyclicals, Church Fathers, Lives of Saints) into the Supabase Postgres + pgvector database for the V2 RAG feature.
+Publishes Catholic theology source texts to the Supabase reader store and Qdrant
+search index for the V2 RAG feature.
 
 ## ⚠️ Data Required Before Running
 
@@ -14,7 +15,6 @@ The ingestion scripts download or read source data that must be obtained separat
 | `ingest/catechism.py` | `catechism-ccc-json` GitHub repo cloned locally |
 | `ingest/encyclicals.py` | Network access to papalencyclicals.net |
 | `ingest/church_fathers.py` | CCEL ThML files |
-| `ingest/saints.py` | Network access (Butler's Lives + Wikidata SPARQL) |
 | `embed.py` | Populated `chunks` table (run ingest scripts first) |
 
 **Current status:** Schema migration 0008 must be applied to Supabase before any script will work.
@@ -36,8 +36,7 @@ Scripts must be run in this order so that document rows exist before chunks are 
 2. Catechism
 3. Encyclicals
 4. Church Fathers
-5. Saints
-6. Embed
+5. Embed
 
 ## Running the Full Pipeline
 
