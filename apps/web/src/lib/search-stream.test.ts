@@ -272,6 +272,17 @@ describe("consumeSearchStream", () => {
     await expect(consumeSearchStream(body, callbacks())).rejects.toBe(failure);
   });
 
+  it("does not mistake a transport AbortError for caller cancellation", async () => {
+    const failure = new DOMException("transport aborted", "AbortError");
+    const body = new ReadableStream<Uint8Array>({
+      pull() {
+        throw failure;
+      },
+    });
+
+    await expect(consumeSearchStream(body, callbacks())).rejects.toBe(failure);
+  });
+
   it("keeps a completed result successful when the transport later fails", async () => {
     const cb = callbacks();
     const bytes = new TextEncoder().encode(data({
@@ -287,6 +298,23 @@ describe("consumeSearchStream", () => {
 
     await expect(consumeSearchStream(body, cb)).resolves.toBeUndefined();
     expect(cb.onDone).toHaveBeenCalledOnce();
+  });
+
+  it("does not report a second failure when transport fails after an error event", async () => {
+    const cb = callbacks();
+    const bytes = new TextEncoder().encode(data({
+      type: "error", detail: "Search failed", code: "pipeline_failed",
+    }));
+    let reads = 0;
+    const body = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        if (reads++ === 0) controller.enqueue(bytes);
+        else throw new Error("connection reset");
+      },
+    });
+
+    await expect(consumeSearchStream(body, cb)).resolves.toBeUndefined();
+    expect(cb.onError).toHaveBeenCalledOnce();
   });
 
   it("silently cancels the reader and releases its lock on caller abort", async () => {

@@ -19,7 +19,7 @@ export interface ChunkSource {
   metadata?: Record<string, unknown> | null;
 }
 
-/** One passage attached to a matched Summa result to make it intelligible. */
+/** One passage attached to a matched Summa passage to make it intelligible. */
 export interface ContextPart {
   content: string;
   reference: string | null;
@@ -32,7 +32,7 @@ export interface ContextPart {
  *
  * `answered_by` attaches Aquinas's determination below a matched objection.
  * `answers` attaches the objection above a matched reply. Placement comes from this
- * relation alone; attached passages are presentation context, not scored results.
+ * relation alone; attached passages are presentation context, not scored passages.
  */
 export interface AttachedContext {
   relation: "answered_by" | "answers";
@@ -176,7 +176,7 @@ function normalizeContext(value: unknown): AttachedContext | null {
   };
 }
 
-function normalizeChunk(event: Record<string, unknown>): ChunkResult {
+function normalizePassage(event: Record<string, unknown>): ChunkResult {
   if (!isRecord(event.source)) invalid();
   const source = event.source;
   const metadata = source.metadata;
@@ -262,7 +262,7 @@ export async function consumeSearchStream(
       return;
     }
     if (type === "chunk") {
-      callbacks.onChunk(normalizeChunk(event));
+      callbacks.onChunk(normalizePassage(event));
       return;
     }
     if (type === "explanation_delta") {
@@ -309,8 +309,8 @@ export async function consumeSearchStream(
       try {
         result = await reader.read();
       } catch (error) {
-        if (signal?.aborted || (error as DOMException).name === "AbortError") return;
-        if (state.terminal === "done") return;
+        if (signal?.aborted) return;
+        if (state.terminal !== "none") return;
         throw error;
       }
       if (result.done) break;
