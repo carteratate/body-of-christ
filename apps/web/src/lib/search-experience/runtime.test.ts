@@ -256,6 +256,45 @@ describe("search-experience runtime", () => {
     });
   });
 
+  it("invalidates ownership before synchronous abort callbacks and serializes reentrant commands", () => {
+    const failed = vi.fn();
+    const runs: ScriptedRun[] = [];
+    const runtimeRef: { current: ReturnType<typeof createSearchExperience> | null } = { current: null };
+    const audience: Extract<AudienceAdapter, { kind: "authenticated" }> = {
+      kind: "authenticated",
+      search(credential, request, callbacks, signal) {
+        runs.push({ credential, request, callbacks, signal });
+        signal.addEventListener("abort", () => {
+          callbacks.onError("cancelled synchronously", "cancelled", "abort");
+          if (request.query === "First") {
+            runtimeRef.current!.send({ type: "submit", request: { ...REQUEST, query: "Reentrant" } });
+          }
+        });
+        return Promise.resolve();
+      },
+    };
+    const runtime = createSearchExperience({
+      audience,
+      credentials: { current: () => "token" },
+      analytics: { searchCompleted: vi.fn(), searchFailed: failed },
+    });
+    runtimeRef.current = runtime;
+
+    runtime.send({ type: "submit", request: { ...REQUEST, query: "First" } });
+    runtime.send({ type: "submit", request: { ...REQUEST, query: "Second" } });
+
+    expect(runs).toHaveLength(3);
+    expect(runs[0].signal.aborted).toBe(true);
+    expect(runs[1].signal.aborted).toBe(true);
+    expect(runs[2].signal.aborted).toBe(false);
+    expect(failed).not.toHaveBeenCalled();
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      request: { query: "Reentrant" },
+      runId: 3,
+    });
+  });
+
   it("aborts across search and restore replacements", () => {
     const restoreSignals: AbortSignal[] = [];
     const savedSearch = {

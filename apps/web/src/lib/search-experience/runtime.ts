@@ -153,9 +153,10 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
 
   const abortCurrent = () => {
     if (!run) return;
-    run.controller.abort();
-    clearPending(run);
+    const ownedRun = run;
     run = null;
+    ownedRun.controller.abort();
+    clearPending(ownedRun);
   };
 
   const nextRun = (
@@ -611,41 +612,67 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     emit({ ...current, presentation: { status: "revealed", filtersReady: true } });
   };
 
+  const queuedCommands: SearchExperienceCommand[] = [];
+  let dispatching = false;
+
+  const dispatch = (command: SearchExperienceCommand) => {
+    switch (command.type) {
+      case "submit": startSearch(command.request); break;
+      case "restore": startRestore(command.searchId); break;
+      case "retry": retry(); break;
+      case "animation": animation(command); break;
+      case "dismiss-rate-limit": {
+        if (snapshot.status !== "failure" || !snapshot.failure.rateLimit?.open) break;
+        const rateLimit = Object.freeze({ ...snapshot.failure.rateLimit, open: false });
+        emit({ ...snapshot, failure: { ...snapshot.failure, rateLimit } });
+        break;
+      }
+      case "cancel":
+      case "reset": resetToIdle(); break;
+      case "identity-changed":
+        if (command.userId !== userId) {
+          userId = command.userId;
+          resetToIdle();
+        }
+        break;
+      case "dispose":
+        abortCurrent();
+        generation += 1;
+        disposed = true;
+        listeners.clear();
+        snapshot = deepFreeze({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
+        break;
+    }
+  };
+
+  const send = (command: SearchExperienceCommand) => {
+    if (disposed) return;
+    if (dispatching) {
+      queuedCommands.push(command);
+      return;
+    }
+    dispatching = true;
+    try {
+      let next: SearchExperienceCommand | undefined = command;
+      while (next && !disposed) {
+        dispatch(next);
+        next = queuedCommands.shift();
+      }
+      if (disposed) queuedCommands.length = 0;
+    } catch (error: unknown) {
+      queuedCommands.length = 0;
+      throw error;
+    } finally {
+      dispatching = false;
+    }
+  };
+
   return Object.freeze({
     read: () => snapshot,
     subscribe(listener: () => void) {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
-    send(command: SearchExperienceCommand) {
-      if (disposed) return;
-      switch (command.type) {
-        case "submit": startSearch(command.request); break;
-        case "restore": startRestore(command.searchId); break;
-        case "retry": retry(); break;
-        case "animation": animation(command); break;
-        case "dismiss-rate-limit": {
-          if (snapshot.status !== "failure" || !snapshot.failure.rateLimit?.open) break;
-          const rateLimit = Object.freeze({ ...snapshot.failure.rateLimit, open: false });
-          emit({ ...snapshot, failure: { ...snapshot.failure, rateLimit } });
-          break;
-        }
-        case "cancel":
-        case "reset": resetToIdle(); break;
-        case "identity-changed":
-          if (command.userId !== userId) {
-            userId = command.userId;
-            resetToIdle();
-          }
-          break;
-        case "dispose":
-          abortCurrent();
-          generation += 1;
-          disposed = true;
-          listeners.clear();
-          snapshot = deepFreeze({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
-          break;
-      }
-    },
+    send,
   });
 }
