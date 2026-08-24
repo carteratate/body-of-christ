@@ -298,6 +298,100 @@ describe("SearchPage animation-gated stream reveal", () => {
     expect(screen.getByTestId("bottom-bar").dataset.active).toBe("true");
   });
 
+  it("clears the authenticated pending History entry when a search fails", async () => {
+    testState.params = "";
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+    });
+    render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    const placeholderEntry = appMocks.setPendingSearch.mock.calls.find((call) => call[1] === "New Search");
+    const submittedEntry = appMocks.setPendingSearch.mock.calls.find((call) => call[1] === "grace");
+    expect(submittedEntry?.[0]).toBe(placeholderEntry?.[0]);
+    appMocks.clearPendingSearch.mockClear();
+
+    act(() => streamCallbacks.onError("Retrieval failed", "retrieval_failed", "retrieval"));
+
+    expect(await screen.findByText("Passage retrieval failed")).toBeTruthy();
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+  });
+
+  it("retries the frozen authenticated request with the current access token", async () => {
+    testState.params = "";
+    const streamCallbacks: SearchStreamCallbacks[] = [];
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks.push(callbacks);
+    });
+    const view = render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "original query" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    act(() => streamCallbacks[0].onError("Network unavailable", "network_error", "connection"));
+    await screen.findByRole("button", { name: "Retry search" });
+
+    testState.token = "rotated-token";
+    view.rerender(<SearchPage />);
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "changed draft" } });
+    fireEvent.click(screen.getByRole("button", { name: "Retry search" }));
+
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledTimes(2));
+    expect(apiMocks.streamSearch.mock.calls[1].slice(0, 4)).toEqual([
+      "rotated-token",
+      "original query",
+      { collections: ["bible"], translation: "CPDV" },
+      4,
+    ]);
+  });
+
+  it("aborts and clears the owning authenticated run when identity changes", async () => {
+    testState.params = "";
+    let streamSignal!: AbortSignal;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, _callbacks, signal) => {
+      streamSignal = signal!;
+    });
+    const view = render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    appMocks.clearPendingSearch.mockClear();
+
+    testState.token = "different-user-token";
+    testState.userId = "user-b";
+    view.rerender(<SearchPage />);
+
+    expect(streamSignal.aborted).toBe(true);
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+    expect(screen.queryByTestId("loading-animation")).toBeNull();
+  });
+
+  it("cancels the authenticated runtime before starting a saved-search restore", async () => {
+    testState.params = "";
+    let streamSignal!: AbortSignal;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, _callbacks, signal) => {
+      streamSignal = signal!;
+    });
+    const view = render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    appMocks.clearPendingSearch.mockClear();
+
+    apiMocks.getSearchResults.mockResolvedValue(restored("Restored after cancellation"));
+    testState.params = "restore=11111111-1111-4111-8111-111111111111";
+    view.rerender(<SearchPage />);
+
+    expect(streamSignal.aborted).toBe(true);
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+    expect(await screen.findByText("Restored after cancellation")).toBeTruthy();
+  });
+
   it("buffers fast authenticated completion until reveal and keeps the overlay through its fade", async () => {
     testState.params = "";
     let streamCallbacks!: SearchStreamCallbacks;
@@ -325,6 +419,23 @@ describe("SearchPage animation-gated stream reveal", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Animation faded" }));
     expect(screen.queryByTestId("loading-animation")).toBeNull();
+  });
+
+  it("keeps unpersisted authenticated Passages usable with the History warning", async () => {
+    testState.params = "";
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      callbacks.onChunk(streamedPassage);
+      callbacks.onDone(null, 1, "degraded", { bible: "results_degraded" }, false);
+    });
+    render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+
+    expect(await screen.findByText(/Grace perfects nature/)).toBeTruthy();
+    expect(screen.getByText("Results are available now, but search history could not be saved. They will not be restorable after you leave this page.")).toBeTruthy();
   });
 
   it("buffers guest results-ready output until reveal and keeps the overlay through its fade", async () => {

@@ -586,6 +586,50 @@ describe("search-experience runtime", () => {
     runs[1].callbacks.onDone("search-2", 0, "no_candidates", {}, true);
     expect(clear).toHaveBeenLastCalledWith("pending-2");
     expect(refresh).toHaveBeenCalledOnce();
+    expect(clear.mock.invocationCallOrder.at(-1)).toBeLessThan(refresh.mock.invocationCallOrder[0]);
+  });
+
+  it("clears pending History for failures and rate limits before retrying with a new owner", () => {
+    const clear = vi.fn();
+    let id = 0;
+    const { runtime, runs } = authenticatedFixture({
+      pendingHistory: { begin: vi.fn(), clear, refresh: vi.fn() },
+      ids: { pendingEntry: () => `pending-${++id}` },
+    });
+
+    runtime.send({ type: "submit", request: REQUEST });
+    runs[0].callbacks.onError("Retrieval failed", "retrieval_failed", "retrieval");
+    expect(clear).toHaveBeenLastCalledWith("pending-1");
+
+    runtime.send({ type: "retry" });
+    runs[1].callbacks.onRateLimit(null, "daily");
+    expect(clear).toHaveBeenLastCalledWith("pending-2");
+    expect(clear).toHaveBeenCalledTimes(2);
+  });
+
+  it("clears each pending History owner on cancel, reset, identity change, and disposal", () => {
+    const clear = vi.fn();
+    let id = 0;
+    const { runtime } = authenticatedFixture({
+      pendingHistory: { begin: vi.fn(), clear, refresh: vi.fn() },
+      ids: { pendingEntry: () => `pending-${++id}` },
+    });
+
+    runtime.send({ type: "submit", request: REQUEST });
+    runtime.send({ type: "cancel" });
+    runtime.send({ type: "submit", request: REQUEST });
+    runtime.send({ type: "reset" });
+    runtime.send({ type: "submit", request: REQUEST });
+    runtime.send({ type: "identity-changed", userId: "different-user" });
+    runtime.send({ type: "submit", request: REQUEST });
+    runtime.send({ type: "dispose" });
+
+    expect(clear.mock.calls).toEqual([
+      ["pending-1"],
+      ["pending-2"],
+      ["pending-3"],
+      ["pending-4"],
+    ]);
   });
 
   it("does not let secondary adapter failures discard available Passages", async () => {

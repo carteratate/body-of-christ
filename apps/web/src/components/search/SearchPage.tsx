@@ -29,6 +29,12 @@ import {
   trackErrorOccurred,
   trackQuotaChanged,
 } from "@/lib/analytics";
+import {
+  createSearchExperience,
+  useSearchExperience,
+  type ActiveSearchSnapshot,
+  type FailureSnapshot,
+} from "@/lib/search-experience";
 
 function classifyError(msg: string): string {
   const lower = msg.toLowerCase();
@@ -254,6 +260,68 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // (either a real search was submitted and completed, or we're in a restored view).
 
   const pendingIdRef = useRef<string | null>(null);
+  const pendingPlaceholderRef = useRef<string | null>(null);
+
+  const [authenticatedExperience] = useState(() => createSearchExperience({
+    audience: {
+      kind: "authenticated",
+      search: (credential, request, callbacks, signal) => streamSearch(
+        credential,
+        request.query,
+        { collections: [...request.collections], translation: request.translation },
+        request.quota,
+        {
+          onStatus: callbacks.onStatus,
+          onChunk: callbacks.onPassage,
+          onExplanationDelta: callbacks.onExplanationDelta,
+          onDone: callbacks.onDone,
+          onError: callbacks.onError,
+          onRateLimit: callbacks.onRateLimit,
+        },
+        signal,
+      ),
+    },
+    credentials: { current: () => tokenRef.current },
+    pendingHistory: {
+      begin(entryId, query) {
+        pendingIdRef.current = entryId;
+        setPendingSearch(entryId, query);
+        setActiveSearchId(entryId);
+      },
+      clear(entryId) {
+        if (pendingIdRef.current !== entryId) return;
+        pendingIdRef.current = null;
+        clearPendingSearch();
+      },
+      refresh: () => refreshSearchesRef.current(),
+    },
+    ids: {
+      pendingEntry() {
+        const placeholderId = pendingPlaceholderRef.current;
+        pendingPlaceholderRef.current = null;
+        return placeholderId ?? crypto.randomUUID();
+      },
+    },
+    analytics: {
+      searchCompleted({ request, resultCount }) {
+        trackSearchPerformed({
+          queryLength: request.query.length,
+          collectionsUsed: [...request.collections],
+          quotaPerSource: request.quota,
+          resultCount,
+          translation: request.translation,
+        });
+      },
+      searchFailed({ code }) {
+        if (code === "rate_limit") return;
+        const errorType = code === "auth_error" || code === "network_error"
+          ? code
+          : "server_error";
+        trackErrorOccurred({ page: "search", errorType });
+      },
+    },
+  }));
+  const authenticatedSnapshot = useSearchExperience(authenticatedExperience);
 
   function activatePendingSlot() {
     if (pendingIdRef.current) {
@@ -262,6 +330,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     } else {
       const id = crypto.randomUUID();
       pendingIdRef.current = id;
+      pendingPlaceholderRef.current = id;
       setPendingSearch(id, "New Search");
       setActiveSearchId(id);
     }
@@ -275,6 +344,21 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentional: runs once at mount only
 
+  useLayoutEffect(() => {
+    if (isGuest) return;
+    authenticatedExperience.send({ type: "identity-changed", userId });
+  }, [authenticatedExperience, isGuest, userId]);
+
+  const activatedCompletedSearchRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (isGuest || authenticatedSnapshot.status !== "active-search") return;
+    if (authenticatedSnapshot.transport.status !== "complete") return;
+    const completedSearchId = authenticatedSnapshot.transport.searchId;
+    if (!completedSearchId || activatedCompletedSearchRef.current === completedSearchId) return;
+    activatedCompletedSearchRef.current = completedSearchId;
+    setActiveSearchId(completedSearchId);
+  }, [authenticatedSnapshot, isGuest, setActiveSearchId]);
+
   // ── Reset on New Search ───────────────────────────────────────────────────
 
   const prevSearchKey = useRef(searchKey);
@@ -283,8 +367,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const exploredForQuery = useRef<string | null>(null);
 
   const resetRestorePresentation = useCallback(() => {
+    const hadPendingEntry = pendingIdRef.current !== null;
     pendingIdRef.current = null;
-    clearPendingSearch();
+    pendingPlaceholderRef.current = null;
+    if (hadPendingEntry) clearPendingSearch();
     setActiveSearchId(null);
     setResults([]);
     setSubmittedQuery(null);
@@ -321,6 +407,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (prevSearchKey.current === searchKey) return;
     prevSearchKey.current = searchKey;
     if (isGuest) clearGuestResultsSnapshot();
+    else authenticatedExperience.send({ type: "reset" });
     abortRef.current?.abort();
     activeRequestRef.current += 1;
     if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
@@ -373,6 +460,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       }
       return;
     }
+    if (!isGuest) authenticatedExperience.send({ type: "cancel" });
     const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!UUID_RE.test(restoreId)) {
       abortRef.current?.abort();
@@ -490,7 +578,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       }
       controller.abort();
     };
-  }, [restoreId, restoreScope, token, userId, restoreAttempt, resetRestorePresentation, setActiveSearchId, translation, quota]);
+  }, [restoreId, restoreScope, token, userId, restoreAttempt, resetRestorePresentation, setActiveSearchId, translation, quota, isGuest, authenticatedExperience]);
 
   // ── Search ────────────────────────────────────────────────────────────────
 
@@ -506,14 +594,32 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       const searchCollections = collectionsOverride ?? activeCollections;
       const searchTranslation = translationOverride ?? translation;
       const searchQuota = quotaOverride ?? quota;
-      if (loading || searchCollections.length === 0 || !query.trim()) return;
+      if ((isGuest && loading) || searchCollections.length === 0 || !query.trim()) return;
       if (isGuest && (guestGate?.searchCount ?? 0) >= GUEST_SEARCH_LIMIT) {
         guestGate?.requestSignup("limit");
         return;
       }
-      const currentToken = tokenRef.current;
-      if (!isGuest && !currentToken) return;
+      if (!isGuest) {
+        abortRef.current?.abort();
+        activeRequestRef.current += 1;
+        activatedCompletedSearchRef.current = null;
+        setSearchValue("");
+        setVisibleCollections([...searchCollections]);
+        authenticatedExperience.send({
+          type: "submit",
+          request: {
+            query,
+            collections: searchCollections,
+            translation: searchTranslation,
+            quota: searchQuota,
+            origin: newExploreLabel ? "explore" : "fresh",
+            ...(newExploreLabel ? { exploreLabel: newExploreLabel } : {}),
+          },
+        });
+        return;
+      }
 
+      // Guest coordination intentionally remains on the page until ticket #14.
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
@@ -681,25 +787,14 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           },
         };
 
-        if (isGuest) {
-          await streamGuestSearch(
-            getGuestSessionToken(),
-            query,
-            { collections: snapshot, translation: searchTranslation },
-            searchQuota,
-            streamCallbacks,
-            controller.signal,
-          );
-        } else {
-          await streamSearch(
-            currentToken!,
-            query,
-            { collections: snapshot, translation: searchTranslation },
-            searchQuota,
-            streamCallbacks,
-            controller.signal,
-          );
-        }
+        await streamGuestSearch(
+          getGuestSessionToken(),
+          query,
+          { collections: snapshot, translation: searchTranslation },
+          searchQuota,
+          streamCallbacks,
+          controller.signal,
+        );
       } catch (err: unknown) {
         if (!isCurrentRequest() || terminalReceived) return;
         terminalReceived = true;
@@ -714,12 +809,16 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
       }
     },
-    [loading, activeCollections, translation, quota, searchValue, isGuest, guestGate, setPendingSearch, setActiveSearchId, clearPendingSearch]
+    [loading, activeCollections, translation, quota, searchValue, isGuest, guestGate, setPendingSearch, setActiveSearchId, clearPendingSearch, authenticatedExperience]
   );
 
   // ── Animation ─────────────────────────────────────────────────────────────
 
   function handleAnimReadyToShow(requestId: number) {
+    if (!isGuest) {
+      authenticatedExperience.send({ type: "animation", runId: requestId, milestone: "ready-to-reveal" });
+      return;
+    }
     if (activeRequestRef.current !== requestId) return;
     const merged = bufferedChunksRef.current.map(chunk => ({
       ...chunk,
@@ -734,11 +833,19 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   }
 
   function handleAnimFiltersReady(requestId: number) {
+    if (!isGuest) {
+      authenticatedExperience.send({ type: "animation", runId: requestId, milestone: "filters-ready" });
+      return;
+    }
     if (activeRequestRef.current !== requestId) return;
     setAnimFilterBarActive(true);
   }
 
   function handleAnimFadeComplete(requestId: number) {
+    if (!isGuest) {
+      authenticatedExperience.send({ type: "animation", runId: requestId, milestone: "fade-complete" });
+      return;
+    }
     if (activeRequestRef.current !== requestId) return;
     setShowAnimation(false);
   }
@@ -804,11 +911,94 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     router.replace("/search");
   }, [exploreQuery, exploreRef, token, handleSearch, router]);
 
+  const authenticatedActive: ActiveSearchSnapshot | null = !isGuest
+    && authenticatedSnapshot.status === "active-search"
+    ? authenticatedSnapshot
+    : null;
+  const authenticatedFailure: FailureSnapshot | null = !isGuest
+    && authenticatedSnapshot.status === "failure"
+    && authenticatedSnapshot.failure.kind === "search"
+    ? authenticatedSnapshot
+    : null;
+  const runtimeOwnsSearchView = authenticatedActive !== null || authenticatedFailure !== null;
+  const runtimeRequest = authenticatedActive?.request ?? authenticatedFailure?.request ?? null;
+  const runtimeTransport = authenticatedActive?.transport ?? null;
+  const renderedLoading = runtimeOwnsSearchView
+    ? authenticatedActive?.presentation.status === "animating"
+    : loading;
+  const renderedResults = useMemo(
+    () => runtimeOwnsSearchView ? [...(authenticatedActive?.passages ?? [])] : results,
+    [authenticatedActive?.passages, results, runtimeOwnsSearchView],
+  );
+  const renderedSearchId = runtimeOwnsSearchView
+    ? runtimeTransport?.status === "complete" ? runtimeTransport.searchId : null
+    : searchId;
+  const renderedSubmittedQuery = runtimeOwnsSearchView ? runtimeRequest?.query ?? null : submittedQuery;
+  const renderedQueryBubbleVisible = runtimeOwnsSearchView
+    ? authenticatedFailure !== null || authenticatedActive?.presentation.status !== "animating"
+    : queryBubbleVisible;
+  const renderedError = runtimeOwnsSearchView ? authenticatedFailure?.failure.message ?? null : error;
+  const renderedErrorCode = runtimeOwnsSearchView ? authenticatedFailure?.failure.code ?? null : errorCode;
+  const renderedErrorStage = runtimeOwnsSearchView ? authenticatedFailure?.failure.stage ?? null : errorStage;
+  const renderedOutcome = runtimeOwnsSearchView
+    ? runtimeTransport?.status === "complete" ? runtimeTransport.outcome : null
+    : outcome;
+  const renderedCollectionOutcomes = runtimeOwnsSearchView
+    ? authenticatedFailure?.failure.collectionOutcomes
+      ?? (runtimeTransport?.status === "complete" ? runtimeTransport.collectionOutcomes : {})
+    : collectionOutcomes;
+  const renderedSaveWarning = runtimeOwnsSearchView ? authenticatedActive?.saveWarning ?? null : saveWarning;
+  const renderedSearchPhase = runtimeOwnsSearchView
+    ? runtimeTransport?.status === "searching" ? runtimeTransport.phase : null
+    : searchPhase;
+  const renderedExploreLabel = runtimeOwnsSearchView ? runtimeRequest?.exploreLabel ?? null : exploreLabel;
+  const renderedShowAnimation = runtimeOwnsSearchView
+    ? authenticatedActive !== null && authenticatedActive.presentation.status !== "revealed"
+    : showAnimation;
+  const renderedAnimationRequestId = runtimeOwnsSearchView
+    ? authenticatedSnapshot.runId
+    : animationRequestId;
+  const renderedQueryDone = runtimeOwnsSearchView
+    ? authenticatedActive?.presentation.status === "animating"
+      && authenticatedActive.presentation.resultsReady
+    : queryDone;
+  const renderedRetrievalStarted = runtimeOwnsSearchView
+    ? runtimeTransport?.status !== "preparing"
+    : searchPhase !== null || queryDone;
+  const renderedFilterBarActive = runtimeOwnsSearchView
+    ? authenticatedActive?.presentation.filtersReady ?? false
+    : animFilterBarActive;
+  const renderedSubmittedCollections = runtimeOwnsSearchView
+    ? [...(runtimeRequest?.collections ?? [])]
+    : submittedCollections;
+  const renderedSubmittedTranslation = runtimeOwnsSearchView
+    ? runtimeRequest?.translation ?? ""
+    : submittedTranslation;
+  const renderedSubmittedQuota = runtimeOwnsSearchView
+    ? runtimeRequest?.quota ?? null
+    : submittedQuota;
+  const renderedRateLimit = authenticatedFailure?.failure.rateLimit?.open
+    ? authenticatedFailure.failure.rateLimit
+    : null;
+
+  useLayoutEffect(() => {
+    if (!runtimeOwnsSearchView) return;
+    if (!renderedShowAnimation || !renderedQueryBubbleVisible
+      || !renderedSubmittedQuery || renderedExploreLabel) {
+      setBubbleSize(null);
+      return;
+    }
+    const el = bubbleRef.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    if (width > 0 && height > 0) setBubbleSize({ width, height });
+  }, [runtimeOwnsSearchView, renderedShowAnimation, renderedQueryBubbleVisible, renderedSubmittedQuery, renderedExploreLabel]);
+
   // Collections that actually have results — used for filter bar pills only.
   // Derived from results so it never shows buttons for collections that returned nothing.
   const filterBarCollections = useMemo(
-    () => [...new Set(results.map((r) => r.source.collection))],
-    [results]
+    () => [...new Set(renderedResults.map((r) => r.source.collection))],
+    [renderedResults]
   );
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -817,59 +1007,59 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     <div className="flex flex-1 min-h-0 flex-col">
       <div className="relative flex-1 min-h-0 overflow-y-auto px-4 pt-4 pb-2">
         {/* Animation overlay — scoped to content area only, BottomBar stays visible */}
-        {showAnimation && (
+        {renderedShowAnimation && (
           <LoadingAnimation
-            key={animationRequestId}
-            collections={submittedCollections.length > 0 ? submittedCollections : activeCollections}
-            quota={submittedQuota ?? quota}
-            isQueryDone={queryDone}
-            retrievalStarted={searchPhase !== null || queryDone}
-            onFiltersReady={() => handleAnimFiltersReady(animationRequestId)}
-            onReadyToShow={() => handleAnimReadyToShow(animationRequestId)}
-            onFadeComplete={() => handleAnimFadeComplete(animationRequestId)}
+            key={renderedAnimationRequestId}
+            collections={renderedSubmittedCollections.length > 0 ? renderedSubmittedCollections : activeCollections}
+            quota={renderedSubmittedQuota ?? quota}
+            isQueryDone={renderedQueryDone}
+            retrievalStarted={renderedRetrievalStarted}
+            onFiltersReady={() => handleAnimFiltersReady(renderedAnimationRequestId)}
+            onReadyToShow={() => handleAnimReadyToShow(renderedAnimationRequestId)}
+            onFadeComplete={() => handleAnimFadeComplete(renderedAnimationRequestId)}
             reservedTopRight={bubbleSize}
           />
         )}
 
-        {!submittedQuery && !loading && !error && (
+        {!renderedSubmittedQuery && !renderedLoading && !renderedError && (
           <EmptyState onSelectQuery={handleSelectQuery} />
         )}
 
         {/* Keep the revealed query in normal flow so results reserve its height.
             During the animation fade, z-20 places it above the z-10 overlay. */}
-        {queryBubbleVisible && submittedQuery && !exploreLabel && (
+        {renderedQueryBubbleVisible && renderedSubmittedQuery && !renderedExploreLabel && (
           <div
             ref={bubbleRef}
-            className={`relative flex justify-end mb-4 ${showAnimation ? "z-20 pointer-events-none" : ""}`}
+            className={`relative flex justify-end mb-4 ${renderedShowAnimation ? "z-20 pointer-events-none" : ""}`}
           >
             <div className="max-w-[70%] max-md:max-w-[85%] rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
-              {submittedQuery}
+              {renderedSubmittedQuery}
             </div>
           </div>
         )}
 
-        {exploreLabel && (
+        {renderedExploreLabel && (
           <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
             <Search size={14} className="text-brand-accent shrink-0" />
             <span className="text-sm text-brand-muted">
               Exploring passages related to{" "}
-              <span className="text-brand-primary font-medium">{exploreLabel}</span>
+              <span className="text-brand-primary font-medium">{renderedExploreLabel}</span>
             </span>
           </div>
         )}
 
-        {!error && (loading || submittedQuery) && (
+        {!renderedError && (renderedLoading || renderedSubmittedQuery) && (
           <SearchResults
-            results={results}
-            loading={loading}
-            searchId={searchId}
+            results={renderedResults}
+            loading={renderedLoading}
+            searchId={renderedSearchId}
             token={token ?? ""}
             onExploreMore={handleExploreMore}
-            phase={searchPhase}
-            submittedCollections={submittedCollections}
+            phase={renderedSearchPhase}
+            submittedCollections={renderedSubmittedCollections}
             visibleCollections={visibleCollections}
-            outcome={outcome}
-            collectionOutcomes={collectionOutcomes}
+            outcome={renderedOutcome}
+            collectionOutcomes={{ ...renderedCollectionOutcomes }}
             isRestoring={isRestoring}
             isGuest={isGuest}
             showFirstSearchHint={showFirstSearchHint}
@@ -884,35 +1074,39 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           />
         )}
 
-        {saveWarning && !loading && !error && (
+        {renderedSaveWarning && !renderedLoading && !renderedError && (
           <div className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-muted">
-            {saveWarning}
+            {renderedSaveWarning}
           </div>
         )}
 
-        {error && !loading && (
+        {renderedError && !renderedLoading && (
           <SearchFailureScreen
-            message={error}
-            code={errorCode}
-            stage={errorStage}
+            message={renderedError}
+            code={renderedErrorCode}
+            stage={renderedErrorStage}
             onRetry={() => {
-              if (errorStage === "restore" && restoreId) {
+              if (authenticatedFailure) {
+                authenticatedExperience.send({ type: "retry" });
+                return;
+              }
+              if (renderedErrorStage === "restore" && restoreId) {
                 restoredForId.current = null;
                 setRestoreAttempt((attempt) => attempt + 1);
                 return;
               }
-              if (submittedQuery) void handleSearch(
-                submittedQuery,
-                exploreLabel ?? undefined,
-                submittedCollections,
-                submittedTranslation || translation,
-                submittedQuota ?? quota,
+              if (renderedSubmittedQuery) void handleSearch(
+                renderedSubmittedQuery,
+                renderedExploreLabel ?? undefined,
+                renderedSubmittedCollections,
+                renderedSubmittedTranslation || translation,
+                renderedSubmittedQuota ?? quota,
               );
             }}
             onReport={isGuest ? undefined : () => {
               const safeCode = (["auth_error", "network_error", "rate_limit", "restore_not_found", "restore_unavailable", "server_error", "stream_interrupted"] as const)
-                .find((value) => value === errorCode) ?? "unknown";
-              saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: searchId ?? undefined, error_code: safeCode });
+                .find((value) => value === renderedErrorCode) ?? "unknown";
+              saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: renderedSearchId ?? undefined, error_code: safeCode });
               router.push("/feedback");
             }}
           />
@@ -921,11 +1115,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       </div>
 
       <BottomBar
-        activeCollections={loading && submittedCollections.length > 0 ? submittedCollections : activeCollections}
+        activeCollections={renderedLoading && renderedSubmittedCollections.length > 0 ? renderedSubmittedCollections : activeCollections}
         onToggleCollection={handleToggleCollection}
-        translation={loading && submittedTranslation ? submittedTranslation : translation}
+        translation={renderedLoading && renderedSubmittedTranslation ? renderedSubmittedTranslation : translation}
         onTranslationChange={setTranslation}
-        quota={loading && submittedQuota !== null ? submittedQuota : quota}
+        quota={renderedLoading && renderedSubmittedQuota !== null ? renderedSubmittedQuota : quota}
         onQuotaChange={handleQuotaChange}
         searchValue={searchValue}
         onSearchChange={(val) => {
@@ -933,19 +1127,22 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           setSearchValue(val);
         }}
         onSearch={() => handleSearch(searchValue)}
-        loading={loading}
-        isSearchActive={showAnimation ? animFilterBarActive : submittedQuery !== null}
-        submittedCollections={showAnimation ? submittedCollections : filterBarCollections}
+        loading={renderedLoading}
+        isSearchActive={renderedShowAnimation ? renderedFilterBarActive : renderedSubmittedQuery !== null}
+        submittedCollections={renderedShowAnimation ? renderedSubmittedCollections : filterBarCollections}
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
         searchDisabled={false}
         fixedQuota={isGuest}
       />
-      {rateLimitRetryAfter !== null && (
+      {(renderedRateLimit || rateLimitRetryAfter !== null) && (
         <RateLimitModal
-          limitType={rateLimitType}
-          retryAfter={rateLimitRetryAfter}
-          onDismiss={() => setRateLimitRetryAfter(null)}
+          limitType={renderedRateLimit?.type ?? rateLimitType}
+          retryAfter={renderedRateLimit?.retryAfter ?? rateLimitRetryAfter}
+          onDismiss={() => {
+            if (renderedRateLimit) authenticatedExperience.send({ type: "dismiss-rate-limit" });
+            else setRateLimitRetryAfter(null);
+          }}
         />
       )}
     </div>

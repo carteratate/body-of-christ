@@ -345,7 +345,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           ? { ...current.presentation, resultsReady: true }
           : current.presentation,
         saveWarning: ports.audience.kind === "authenticated" && !persisted
-          ? "Results are available now, but search history could not be saved."
+          ? "Results are available now, but search history could not be saved. They will not be restorable after you leave this page."
           : null,
       };
       emit(next);
