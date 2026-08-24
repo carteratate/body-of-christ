@@ -188,6 +188,26 @@ describe("search-experience runtime", () => {
     });
   });
 
+  it("preserves revealed guest Passages after a late rate-limit callback", () => {
+    const { runtime, runs } = guestFixture();
+    runtime.send({ type: "submit", request: REQUEST });
+    const runId = runtime.read().runId;
+    runs[0].callbacks.onPassage(passage("p1"));
+    runs[0].callbacks.onResultsReady(1);
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+
+    runs[0].callbacks.onRateLimit(30, "per_minute");
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      transport: {
+        status: "ranked-ready",
+        completionFailure: { code: "rate_limit", stage: "rate_limit" },
+      },
+      passages: [{ chunk_id: "p1" }],
+      presentation: { status: "fading" },
+    });
+  });
+
   it("rejects guest completion before ranked results are ready", () => {
     const { runtime, runs } = guestFixture();
     runtime.send({ type: "submit", request: REQUEST });

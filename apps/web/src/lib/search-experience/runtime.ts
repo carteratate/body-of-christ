@@ -7,6 +7,7 @@ import type {
   SearchExperienceCommand,
   SearchExperiencePorts,
   SearchExperienceSnapshot,
+  SearchCompletionFailure,
   SearchFailure,
   SearchRequest,
   SearchTransportCallbacks,
@@ -237,6 +238,32 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     }
   };
 
+  const preserveGuestCompletionFailure = (
+    ownedRun: ActiveRun,
+    current: ActiveSearchSnapshot,
+    failure: SearchCompletionFailure,
+  ): boolean => {
+    if (ports.audience.kind !== "guest" || current.transport.status !== "ranked-ready") {
+      return false;
+    }
+    ownedRun.terminal = true;
+    clearPending(ownedRun);
+    const next: ActiveSearchSnapshot = {
+      ...current,
+      transport: { ...current.transport, completionFailure: failure },
+    };
+    emit(next);
+    if (ports.analytics && ownedRun.request) {
+      bestEffort(() => ports.analytics!.searchFailed({
+        audience: "guest",
+        request: ownedRun.request!,
+        code: failure.code,
+      }));
+    }
+    saveGuestContinuity(ownedRun, next);
+    return true;
+  };
+
   const transportCallbacks = (ownedRun: ActiveRun): SearchTransportCallbacks => ({
     onStatus(phase) {
       if (!isCurrent(ownedRun.id)) return;
@@ -351,38 +378,14 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         collectionOutcomes: freezeOutcomes(collectionOutcomes ?? {}),
         rateLimit: null,
       } as const;
-      if (ports.audience.kind === "guest" && current.transport.status === "ranked-ready") {
-        ownedRun.terminal = true;
-        clearPending(ownedRun);
-        const next: ActiveSearchSnapshot = {
-          ...current,
-          transport: {
-            ...current.transport,
-            completionFailure: {
-              message: failure.message,
-              code: failure.code,
-              stage: failure.stage,
-              collectionOutcomes: failure.collectionOutcomes,
-            },
-          },
-        };
-        emit(next);
-        if (ports.analytics && ownedRun.request) {
-          bestEffort(() => ports.analytics!.searchFailed({
-            audience: "guest",
-            request: ownedRun.request!,
-            code: failure.code,
-          }));
-        }
-        saveGuestContinuity(ownedRun, next);
-        return;
-      }
+      if (preserveGuestCompletionFailure(ownedRun, current, failure)) return;
       failSearch(ownedRun, failure);
     },
     onRateLimit(retryAfter, type) {
       if (!isCurrent(ownedRun.id)) return;
+      const current = activeSnapshot(ownedRun.id);
       if (ownedRun.terminal) throw new Error("A rate limit cannot follow a terminal search event.");
-      failSearch(ownedRun, {
+      const failure = {
         kind: "search",
         message: type === "daily"
           ? "You have reached today’s search limit."
@@ -395,7 +398,9 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           retryAfter: type === "daily" ? null : (retryAfter ?? 60),
           open: true,
         }),
-      });
+      } as const;
+      if (preserveGuestCompletionFailure(ownedRun, current, failure)) return;
+      failSearch(ownedRun, failure);
     },
   });
 

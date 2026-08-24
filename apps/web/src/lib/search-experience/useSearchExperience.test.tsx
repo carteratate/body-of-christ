@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, cleanup, renderHook } from "@testing-library/react";
+import { StrictMode, type ReactNode } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createSearchExperience } from "./runtime";
@@ -9,7 +10,7 @@ import { useSearchExperience } from "./useSearchExperience";
 afterEach(cleanup);
 
 describe("useSearchExperience", () => {
-  it("adapts subscription and disposes page-scoped work on unmount", () => {
+  it("survives Strict Mode replay and disposes page-scoped work on unmount", async () => {
     const signals: AbortSignal[] = [];
     const runtime = createSearchExperience({
       audience: {
@@ -19,7 +20,10 @@ describe("useSearchExperience", () => {
         },
       },
     });
-    const { result, unmount } = renderHook(() => useSearchExperience(runtime));
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <StrictMode>{children}</StrictMode>
+    );
+    const { result, unmount } = renderHook(() => useSearchExperience(runtime), { wrapper });
     expect(result.current.status).toBe("idle");
 
     act(() => runtime.send({
@@ -35,6 +39,7 @@ describe("useSearchExperience", () => {
     expect(result.current.status).toBe("active-search");
 
     unmount();
+    await act(() => Promise.resolve());
     expect(signals[0].aborted).toBe(true);
     const disposed = runtime.read();
     runtime.send({ type: "reset" });
