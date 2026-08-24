@@ -1,5 +1,9 @@
 # Codebase Issue Inventory
 
+> **Superseded inventory.** Paths and operational conclusions below describe the
+> repository on 2026-06-10. Use [`datapipeline/README.md`](../datapipeline/README.md)
+> for current collection publication and repair guidance.
+
 Date: 2026-06-10
 
 This file lists possible issues found during a senior-engineer read of the repository. It is intentionally an inventory, not a fix plan. Severity reflects likely product or maintenance impact.

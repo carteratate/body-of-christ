@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import sys
 from collections.abc import Sequence
 
 from publication import (
@@ -57,14 +56,6 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="COLLECTION",
         help="must exactly match --collection when --wipe-reader is used",
     )
-    parser.add_argument(
-        "--clean",
-        action="store_true",
-        help=(
-            "deprecated alias for --reset-search-index; retained during expansion "
-            "and removed by the contraction ticket"
-        ),
-    )
     return parser
 
 
@@ -75,17 +66,11 @@ def main(
 ) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.clean:
-        print(
-            "warning: --clean is deprecated; use --reset-search-index",
-            file=sys.stderr,
-        )
-
     request = PublicationRequest(
         collection=args.collection,
         target=PublicationTarget(args.target),
         limit=args.limit,
-        reset_search_index=args.reset_search_index or args.clean,
+        reset_search_index=args.reset_search_index,
         wipe_reader=args.wipe_reader,
         wipe_reader_confirmation=args.confirm_reader_wipe,
     )

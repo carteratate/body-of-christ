@@ -34,8 +34,7 @@ def test_help_describes_normal_and_destructive_publication_options():
     assert "--reset-search-index" in help_text
     assert "--wipe-reader" in help_text
     assert "--confirm-reader-wipe COLLECTION" in help_text
-    assert "--clean" in help_text
-    assert "deprecated" in help_text.lower()
+    assert "--clean" not in help_text
 
 
 def test_help_does_not_require_store_or_embedding_credentials(tmp_path):
@@ -87,19 +86,18 @@ def test_cli_builds_a_complete_publication_request(capsys):
     assert "2 documents, 12 passages" in capsys.readouterr().out
 
 
-def test_deprecated_clean_spelling_delegates_to_search_reset(capsys):
+def test_retired_clean_spelling_is_rejected_before_runner_acquisition(capsys):
     runner = RecordingRunner()
 
-    exit_code = main(
-        ["--collection", "medieval", "--target", "search", "--clean"],
-        runner=runner,
-    )
+    with pytest.raises(SystemExit) as raised:
+        main(
+            ["--collection", "medieval", "--target", "search", "--clean"],
+            runner=runner,
+        )
 
-    captured = capsys.readouterr()
-    assert exit_code == 0
-    assert runner.request.reset_search_index is True
-    assert "deprecated" in captured.err.lower()
-    assert "--reset-search-index" in captured.err
+    assert raised.value.code == 2
+    assert runner.request is None
+    assert "unrecognized arguments: --clean" in capsys.readouterr().err
 
 
 def test_runner_refusal_is_reported_as_a_cli_usage_failure(capsys):

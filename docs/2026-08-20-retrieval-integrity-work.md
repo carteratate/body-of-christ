@@ -1,5 +1,10 @@
 # Retrieval integrity work — state as of 2026-08-20
 
+> **Superseded operational guidance.** This report preserves historical production
+> findings and commands from 2026-08-20. Use
+> [`datapipeline/README.md`](../datapipeline/README.md) for the supported collection
+> publication interface, repair targets, reset behavior, and reader-wipe safeguards.
+
 Working notes for the Summa-objection / store-divergence work. Written to survive a
 session restart. Everything below is measured against `body-of-christ-dev` and the live
 Qdrant cluster unless stated otherwise.

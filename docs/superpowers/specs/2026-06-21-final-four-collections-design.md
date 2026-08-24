@@ -1,5 +1,8 @@
 # Final Four Collections — Dual-Pipeline Adapters (encyclicals, councils, canon-law, medieval)
 
+> **Superseded publication design.** Preserve this file as design history; do not run
+> its publication commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 **Date:** 2026-06-21
 **Status:** Draft (design) — awaiting owner review
 **Depends on:** [Shared Contract](2026-06-13-passage-contract-design.md) · [Dual Datapipeline](2026-06-13-dual-datapipeline-design.md)

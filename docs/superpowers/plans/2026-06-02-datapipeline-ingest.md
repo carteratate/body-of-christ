@@ -1,5 +1,8 @@
 # Datapipeline Ingest Implementation Plan
 
+> **Superseded implementation plan.** Preserve this file as history; do not execute its
+> commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implement all six collection ingest scripts, embed.py, and run_all.py so that `python run_all.py` fully populates documents, chunks, and content_embedding for all collections.

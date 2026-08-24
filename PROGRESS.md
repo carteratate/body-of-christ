@@ -1,6 +1,12 @@
 # TheoCorpus V2 — Implementation Progress
 
-> **Purpose:** Continuity file for implementation sessions. If you are a new Claude instance picking this up, read this first — it tells you exactly where things stand and what to do next.
+> **Historical implementation log.** File names and operational commands below record
+> the repository at the time of each entry. Use
+> [`datapipeline/README.md`](datapipeline/README.md) for the current collection
+> publication and repair interface.
+
+> **Purpose:** Preserve the V2 implementation sequence and decisions as a historical
+> record. Current operational guidance lives in the linked subsystem documentation.
 
 ---
 

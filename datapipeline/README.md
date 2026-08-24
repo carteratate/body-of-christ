@@ -1,70 +1,114 @@
-# TheoCorpus - Data Pipeline
+# TheoCorpus collection publication
 
-Publishes Catholic theology source texts to the Supabase reader store and Qdrant
-search index for the V2 RAG feature.
+The non-V5 data pipeline turns source material into canonical `Document` and
+`Passage` objects, then reconciles one collection into two stores:
 
-## ⚠️ Data Required Before Running
+- The **reader store** is Supabase/Postgres. It holds Documents and Passages for
+  reading, full-text retrieval, bookmarks, and search history.
+- The **search index** is Qdrant. It holds Passage vectors and search payloads.
 
-**Do not run any scripts until you have the source data files.**
+`run_collection.py` is the sole supported non-V5 publication interface. Source
+adapters build domain objects; they do not write to either store directly.
 
-The ingestion scripts download or read source data that must be obtained separately:
+## Source data
 
-| Script | Requires |
-|--------|---------|
-| `ingest/bible.py` | USFM files (CPDV from eBible.org) + Douay-Rheims HTML (Project Gutenberg #8300) |
-| `ingest/catechism.py` | `catechism-ccc-json` GitHub repo cloned locally |
-| `ingest/encyclicals.py` | Network access to papalencyclicals.net |
-| `ingest/church_fathers.py` | CCEL ThML files |
-| `embed.py` | Populated `chunks` table (run ingest scripts first) |
+Source files are required before publication. Provenance and acquisition instructions
+for all ten collections live in [`SOURCES.md`](SOURCES.md). The adapters registered in
+`publication.py` are:
 
-**Current status:** Schema migration 0008 must be applied to Supabase before any script will work.
-See `supabase/migrations/0008_documents_add_translation.sql`.
+| Collection | Source adapter |
+|---|---|
+| `apostolic-exhortations` | `ingest/apostolic_exhortations.py` |
+| `bible` | `ingest/bible.py` |
+| `canon-law` | `ingest/canon_law.py` |
+| `catechism` | `ingest/catechism.py` |
+| `church-fathers` | `ingest/church_fathers.py` |
+| `councils` | `ingest/councils.py` |
+| `encyclicals` | `ingest/encyclicals.py` |
+| `medieval` | `ingest/medieval.py` |
+| `papal-documents` | `ingest/papal_documents.py` |
+| `summa` | `ingest/summa.py` |
+
+Vendored adapters read local files under `sources/<collection>/`; they do not fetch
+from source websites during publication. Acquire missing vendored sources separately:
+
+```bash
+python scripts/vendor_sources.py --collection all
+```
 
 ## Setup
 
 ```bash
 pip install -r requirements.txt
 cp .env.example .env
-# Edit .env and fill in DATABASE_URL and OPENAI_API_KEY
+# Fill in the Supabase, Qdrant, and OpenAI values.
 ```
 
-## Run Order
+## Publish one collection
 
-Scripts must be run in this order so that document rows exist before chunks are embedded:
-
-1. Bible
-2. Catechism
-3. Encyclicals
-4. Church Fathers
-5. Embed
-
-## Running the Full Pipeline
+Routine publication safely upserts Documents and Passages before pruning stale records
+from each selected store:
 
 ```bash
-python run_all.py
+python run_collection.py --collection bible --target both
 ```
 
-## Single Collection
+Use `--target reader` or `--target search` when repairing only one store. A limited
+publication is useful for local validation and disables collection-wide pruning:
 
 ```bash
-python run_all.py --collection bible
+python run_collection.py --collection catechism --target reader --limit 1
 ```
 
-## Incremental Update (Single Source)
+The runner refuses suspicious build collapse and identity churn before writes. A
+routine publication retains stable Passage identities, preserving bookmarks and search
+history for Passages the adapter still emits.
+
+### Reset the search index
+
+Routine search publication is incremental. Use the explicit reset only when replacing
+the selected collection's Qdrant points is intentional:
 
 ```bash
-python ingest/encyclicals.py --source-url <url>
+python run_collection.py --collection bible --target search --reset-search-index
 ```
 
-## Re-Embed Missing Chunks Only
+### Wipe the reader store
+
+A reader wipe deletes the collection's reader-store records and can cascade into
+user-owned data. It requires the collection name twice, with an exact match:
 
 ```bash
-python embed.py --missing-only
+python run_collection.py \
+  --collection bible \
+  --target reader \
+  --wipe-reader \
+  --confirm-reader-wipe bible
 ```
 
-## Run a Single Ingestion Script Directly
+## Narrow repair commands
+
+Prefer the target-specific repair tools when a full collection publication would do
+unnecessary work. They dry-run by default; inspect each command's `--help` before
+authorizing writes.
 
 ```bash
-# Run a single ingestion script
-python ingest/catechism.py
+python scripts/backfill_missing_vectors.py --collection bible
+python scripts/reembed_drifted_vectors.py --collection bible
+python scripts/reconcile_qdrant_payloads.py --collection bible
 ```
+
+These repair tools use the same canonical source-adapter registry as collection
+publication. They do not make the retired Postgres `content_embedding` column active;
+all searchable vectors live in Qdrant.
+
+## Tests
+
+The non-V5 suite is local and uses fakes for store and embedding boundaries:
+
+```bash
+python -m pytest -q
+```
+
+The `stages/` pipeline is the separate V5 experiment. Its similarly named embedding
+stage is outside the non-V5 publication interface described here.

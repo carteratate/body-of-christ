@@ -18,14 +18,16 @@ cd apps/web && npm run lint         # ESLint
 cd services/api && uvicorn app.main:app --reload   # dev server on :8000
 cd services/api && pytest tests/                   # run all tests
 
-# Datapipeline
-cd datapipeline && python load.py          # upsert documents/chunks to Supabase
-cd datapipeline && python embed.py         # push embeddings to Qdrant
+# Datapipeline (one collection; use --target reader/search for a repair)
+cd datapipeline && python run_collection.py --collection bible --target both
 
 # Docker (prod-like)
 docker build -t theocorpus-api services/api
 docker run --env-file services/api/.env -p 8000:8000 theocorpus-api
 ```
+
+For collection publication, store repair, search-index reset, or reader wipe, read
+`datapipeline/README.md` before running commands.
 
 ---
 

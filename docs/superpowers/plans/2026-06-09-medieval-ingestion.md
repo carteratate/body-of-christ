@@ -1,5 +1,8 @@
 # Medieval Collection Ingestion Plan
 
+> **Superseded implementation plan.** Preserve this file as history; do not execute its
+> commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a "medieval" corpus collection containing Anselm, Boethius, Bernard of Clairvaux, and Thomas à Kempis, ingested from CCEL ThML files using the existing `parse_thml_string()` infrastructure.

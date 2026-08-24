@@ -1,5 +1,8 @@
 # Final Four Collections — Dual-Pipeline Adapters Implementation Plan
 
+> **Superseded implementation plan.** Preserve this file as history; do not execute its
+> commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a `build_documents()` adapter for each of the four remaining collections (medieval, encyclicals, councils, canon-law) so they produce clean, anchored `Passage`s readable in the new reader with Supabase↔Qdrant parity, following the established dual-pipeline pattern.

@@ -192,8 +192,8 @@ async def main(collections: list[str], fields: tuple[str, ...],
                 if report.orphaned:
                     print(f"    ⚠️  {len(report.orphaned)} orphaned point(s) in Qdrant with no "
                           f"chunks row — NOT written. They need a targeted delete BY POINT ID; "
-                          f"do NOT use scripts/delete_collection_qdrant.py, which deletes EVERY "
-                          f"point in the collection. First ids: {report.orphaned[:5]}")
+                          f"do NOT use --reset-search-index, which deletes EVERY point in the "
+                          f"collection. First ids: {report.orphaned[:5]}")
                 if report.unvectorised:
                     print(f"    ⚠️  {len(report.unvectorised)} row(s) with no Qdrant point — "
                           f"NOT written; these are reachable only by FTS until re-embedded")

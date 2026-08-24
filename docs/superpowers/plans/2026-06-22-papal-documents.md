@@ -1,5 +1,8 @@
 # Papal Documents Collection Plan
 
+> **Superseded implementation plan.** Preserve this file as history; do not execute its
+> commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add `papal-documents` as a new collection containing 15 curated apostolic letters and major papal bulls not already covered in other collections.

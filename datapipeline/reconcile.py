@@ -182,10 +182,10 @@ def build_report(
     POINT ID, an unvectorised row needs an embed run, and silently doing either from
     a payload-reconcile tool would hide a broken ingest rather than surface it.
 
-    ⚠️  Do NOT reach for `scripts/delete_collection_qdrant.py` to clear orphans — it
-    deletes EVERY point in the collection (a filter delete on `collection`), which
-    for summa means all 26,750 vectors and a full re-embed. The repo has no per-id
-    delete path; orphan ids are reported here so they can be removed deliberately.
+    ⚠️  Do NOT use collection publication's `--reset-search-index` to clear orphans —
+    it deletes EVERY point in the collection, which for summa means all 26,750 vectors
+    and a full re-embed. The repo has no per-id delete path; orphan ids are reported
+    here so they can be removed deliberately.
     """
     report = ReconcileReport(
         collection=collection,

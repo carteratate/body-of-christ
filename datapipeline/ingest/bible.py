@@ -5,11 +5,6 @@ Chunking strategy:
                          (boundaries from PericopeGroupedKJVVerses.json)
   - 7 deuterocanonical books: one chunk per chapter
 
-Usage:
-    python ingest/bible.py                            # WEB-C (default)
-    python ingest/bible.py --translation WEB-C        # explicit
-    python ingest/bible.py --usfm-dir /path/to/dir --translation MyTranslation
-
 USFM format notes:
   - \\id CODE ...       — book identifier (e.g. MAT)
   - \\c N               — chapter N starts
@@ -22,8 +17,6 @@ USFM format notes:
 """
 from __future__ import annotations
 
-import argparse
-import asyncio
 import json
 import os
 import re
@@ -31,13 +24,10 @@ import sys
 from dataclasses import dataclass, field
 from typing import Iterator
 
-from tqdm import tqdm
-
-# Add datapipeline root to path so config/load are importable when run directly.
+# Add datapipeline root to path so shared builder modules are importable.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import settings  # noqa: E402
-from load import close_pool, get_pool, upsert_chunk, upsert_document  # noqa: E402
 from itertools import groupby  # noqa: E402
 from identity import document_id, anchor as make_anchor, slugify  # noqa: E402
 from model import Document, Passage  # noqa: E402
@@ -525,204 +515,7 @@ def chunk_stanza_book(
 
 
 # ---------------------------------------------------------------------------
-# Ingest functions
-# ---------------------------------------------------------------------------
-
-async def ingest_webc(
-    pool,
-    usfm_dir: str | None = None,
-    translation: str = "WEB-C",
-) -> None:
-    """Ingest WEB-C Bible from USFM files into the database.
-
-    Args:
-        pool:        asyncpg connection pool.
-        usfm_dir:    Path to directory containing *.usfm files.
-                     Defaults to sources/bible/eng-web-c_usfm/ relative to datapipeline root.
-        translation: Label stored in the database; default "WEB-C".
-    """
-    datapipeline_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-    if usfm_dir is None:
-        usfm_dir = os.path.join(datapipeline_root, _DEFAULT_USFM_SUBDIR)
-    pericope_path = os.path.join(datapipeline_root, _DEFAULT_PERICOPE_PATH)
-
-    print(f"Loading WEB-C USFM files from: {usfm_dir}")
-    all_books = load_usfm_directory(usfm_dir)
-    print(f"  Loaded {len(all_books)} books from USFM.")
-
-    print(f"Loading pericopes from: {pericope_path}")
-    pericope_map = load_pericopes(pericope_path)
-    print(f"  Loaded pericopes for {len(pericope_map)} books.")
-
-    canonical_books = {
-        name: bv for name, bv in all_books.items()
-        if name not in _DEUTEROCANONICAL_BOOKS and name not in _STANZA_BOOKS
-    }
-    deutero_books = {
-        name: bv for name, bv in all_books.items()
-        if name in _DEUTEROCANONICAL_BOOKS
-    }
-    stanza_books = {
-        name: bv for name, bv in all_books.items()
-        if name in _STANZA_BOOKS
-    }
-
-    print(
-        f"  {len(canonical_books)} canonical books (pericope chunking), "
-        f"{len(deutero_books)} deuterocanonical/Psalms books (chapter chunking), "
-        f"{len(stanza_books)} stanza books (stanza chunking)."
-    )
-
-    total_chunks = 0
-
-    with tqdm(total=len(all_books), unit="book", desc=f"Ingesting {translation}") as pbar:
-        # --- Canonical books ---
-        for book_name, book in sorted(canonical_books.items()):
-            testament = book.testament
-            doc_id = await upsert_document(
-                pool,
-                collection="bible",
-                title=book_name,
-                translation=translation,
-                author=None,
-                year=None,
-                metadata={"testament": testament},
-            )
-            pericopes = pericope_map.get(book_name, [])
-            if not pericopes:
-                pbar.set_postfix({"book": book_name, "chunks": 0, "note": "no pericopes"})
-                pbar.update(1)
-                continue
-
-            book_chunks = 0
-            for content, reference, metadata, position in chunk_canonical_book(
-                book, pericopes, translation
-            ):
-                await upsert_chunk(
-                    pool,
-                    document_id=doc_id,
-                    content=content,
-                    position=position,
-                    reference=reference,
-                    metadata=metadata,
-                )
-                total_chunks += 1
-                book_chunks += 1
-
-            pbar.set_postfix({"book": book_name, "chunks": book_chunks})
-            pbar.update(1)
-
-        # --- Deuterocanonical books ---
-        for book_name, book in sorted(deutero_books.items()):
-            testament = book.testament
-            doc_id = await upsert_document(
-                pool,
-                collection="bible",
-                title=book_name,
-                translation=translation,
-                author=None,
-                year=None,
-                metadata={"testament": testament},
-            )
-
-            book_chunks = 0
-            for content, reference, metadata, position in chunk_deuterocanonical_book(
-                book, translation
-            ):
-                await upsert_chunk(
-                    pool,
-                    document_id=doc_id,
-                    content=content,
-                    position=position,
-                    reference=reference,
-                    metadata=metadata,
-                )
-                total_chunks += 1
-                book_chunks += 1
-
-            pbar.set_postfix({"book": book_name, "chunks": book_chunks})
-            pbar.update(1)
-
-        # --- Stanza books (Sirach) ---
-        for book_name, book in sorted(stanza_books.items()):
-            if not book.usfm_path:
-                pbar.set_postfix({"book": book_name, "chunks": 0, "note": "no usfm_path"})
-                pbar.update(1)
-                continue
-
-            testament = book.testament
-            doc_id = await upsert_document(
-                pool,
-                collection="bible",
-                title=book_name,
-                translation=translation,
-                author=None,
-                year=None,
-                metadata={"testament": testament},
-            )
-
-            stanzas = parse_usfm_stanzas(book.usfm_path)
-            book_chunks = 0
-            for content, reference, metadata, position in chunk_stanza_book(
-                book_name, testament, stanzas, translation
-            ):
-                await upsert_chunk(
-                    pool,
-                    document_id=doc_id,
-                    content=content,
-                    position=position,
-                    reference=reference,
-                    metadata=metadata,
-                )
-                total_chunks += 1
-                book_chunks += 1
-
-            pbar.set_postfix({"book": book_name, "chunks": book_chunks})
-            pbar.update(1)
-
-    print(f"  Done. {total_chunks} chunks written for {translation}.")
-
-
-# ---------------------------------------------------------------------------
-# CLI entry point
-# ---------------------------------------------------------------------------
-
-async def main(pool=None, usfm_dir: str | None = None, translation: str = "WEB-C") -> None:
-    """Ingest WEB-C Bible. Accepts an external pool (from run_all.py)
-    or creates its own when run standalone."""
-    _own_pool = pool is None
-    if _own_pool:
-        pool = await get_pool()
-    try:
-        await ingest_webc(pool, usfm_dir=usfm_dir, translation=translation)
-    finally:
-        if _own_pool:
-            await close_pool()
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Ingest WEB-C Bible (USFM) into the TheoCorpus RAG database."
-    )
-    parser.add_argument(
-        "--translation",
-        default="WEB-C",
-        help="Translation label stored in the database (default: WEB-C).",
-    )
-    parser.add_argument(
-        "--usfm-dir",
-        default=None,
-        dest="usfm_dir",
-        help="Path to directory of *.usfm files. Defaults to sources/bible/eng-web-c_usfm/.",
-    )
-    args = parser.parse_args()
-
-    asyncio.run(main(usfm_dir=args.usfm_dir, translation=args.translation))
-
-
-# ---------------------------------------------------------------------------
-# Dual-pipeline passage builder — passage = pericope clamped to chapter
+# Canonical passage builder — passage = pericope clamped to chapter
 # ---------------------------------------------------------------------------
 
 def _join_with_verse_markers(verse_tuples: list[tuple[int, int, str]]) -> str:

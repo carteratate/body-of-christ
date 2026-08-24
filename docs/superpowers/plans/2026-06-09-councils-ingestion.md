@@ -1,5 +1,8 @@
 # Councils Collection Ingestion Plan
 
+> **Superseded implementation plan.** Preserve this file as history; do not execute its
+> commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a "councils" corpus collection containing all 21 Ecumenical Councils, scraping Councils 1–20 from papalencyclicals.net and the 16 Vatican II documents from vatican.va, with one DB document row per council (or per Vatican II document), chunked structurally by canon groups and session/decree sections.

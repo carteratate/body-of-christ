@@ -1,5 +1,10 @@
 # Summa re-ingest — scope
 
+> **Superseded operational guidance.** This report records the pipeline as it existed
+> on 2026-08-22. Its direct-write recommendations and `--clean` behavior are historical.
+> Use [`datapipeline/README.md`](../datapipeline/README.md) for current collection
+> publication and repair commands.
+
 Applying `d6a0d5d` (comma-less dialectical markers) to the data. Everything below is
 measured against dev on 2026-08-22 by building the document with the fixed parser
 in-process and diffing it against the live rows.

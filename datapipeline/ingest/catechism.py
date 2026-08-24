@@ -19,15 +19,11 @@ or whose raw_text begins with "IN BRIEF", is flagged is_in_brief=True.
 """
 from __future__ import annotations
 
-import asyncio
 import json
 import os
 import sys
 
-from tqdm import tqdm
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from load import close_pool, get_pool, upsert_chunk, upsert_document  # noqa: E402
 from identity import document_id, anchor as make_anchor  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
@@ -237,56 +233,6 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
     return chunks
 
 
-# ---------------------------------------------------------------------------
-# Main entry point
-# ---------------------------------------------------------------------------
-
-async def ingest_catechism(pool, source_path: str | None = None) -> None:
-    """Ingest the Catechism of the Catholic Church into the database."""
-    src = source_path or _DEFAULT_SRC
-    print(f"Reading CCC JSON from {src}...")
-    with open(src, encoding="utf-8") as f:
-        data = json.load(f)
-
-    page_nodes_raw: dict = data.get("page_nodes", {})
-
-    def _toc_key(k: str) -> int:
-        try:
-            return int(k.split("-", 1)[1])
-        except (IndexError, ValueError):
-            return 0
-
-    sorted_ids = sorted(page_nodes_raw.keys(), key=_toc_key)
-    sorted_nodes = [page_nodes_raw[k] for k in sorted_ids]
-
-    chunks = chunk_nodes(sorted_nodes, sorted_ids)
-    print(f"  Produced {len(chunks)} chunks from {len(sorted_ids)} page nodes.")
-
-    doc_id = await upsert_document(
-        pool,
-        collection="catechism",
-        title="Catechism of the Catholic Church",
-        translation="",
-        author="Catholic Church",
-        year=1992,
-        metadata={"source": "nossbigg/catechism-ccc-json"},
-    )
-
-    with tqdm(total=len(chunks), unit="chunk", desc="Catechism") as pbar:
-        for content, reference, metadata, pos in chunks:
-            await upsert_chunk(
-                pool,
-                document_id=doc_id,
-                content=content,
-                position=pos,
-                reference=reference,
-                metadata=metadata,
-            )
-            pbar.update(1)
-
-    print(f"  Done. {len(chunks)} chunks written for catechism.")
-
-
 _MIN_CONTENT = 30
 
 
@@ -337,18 +283,3 @@ def build_document(source_path: str | None = None) -> Document:
                     title="Catechism of the Catholic Church", author="Catholic Church",
                     year=1992, metadata={"source": "nossbigg/catechism-ccc-json"},
                     passages=passages)
-
-
-async def main(pool) -> None:
-    """Entry point called by run_all.py."""
-    await ingest_catechism(pool)
-
-
-if __name__ == "__main__":
-    async def _run():
-        pool = await get_pool()
-        try:
-            await main(pool)
-        finally:
-            await close_pool()
-    asyncio.run(_run())

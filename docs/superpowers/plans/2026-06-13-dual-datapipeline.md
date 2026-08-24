@@ -1,5 +1,8 @@
 # Dual Datapipeline Implementation Plan
 
+> **Superseded implementation plan.** Preserve this file as history; do not execute its
+> commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace the 3-step ingest→embed→migrate chain with two direct pipelines fed by one parse — a reader writer (→ Supabase clean passages + FTS) and a search writer (→ neighbor-augmented embeddings in Qdrant) — plus a cleaning layer that makes every collection production-grade, and the church-fathers rebuild + Qdrant cleanup.

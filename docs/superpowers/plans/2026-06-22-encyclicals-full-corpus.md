@@ -1,5 +1,8 @@
 # Encyclicals Full Corpus Implementation Plan
 
+> **Superseded implementation plan.** Preserve this file as history; do not execute its
+> commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add 30 missing Catholic encyclicals to the Body of Christ corpus (Leo XIII through Francis), bringing the collection from 18 to 48 documents.

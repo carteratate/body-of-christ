@@ -123,11 +123,11 @@ services/api/        FastAPI backend (Railway, Docker)
 
 supabase/migrations/ SQL migrations only (0001–0025). Additive, RLS everywhere.
 
-datapipeline/        Standalone corpus ingestion scripts (run locally/CI, not deployed)
+datapipeline/        Standalone corpus publication tools (run locally/CI, not deployed)
   ingest/            Per-collection source adapters
+  publication.py     Canonical collection-publication runner
+  run_collection.py  Sole supported non-V5 publication CLI
   stages/            SQLite-cached ingest stages
-  load.py            Upsert documents/chunks → Supabase
-  embed.py           Push embeddings → Qdrant
 
 docs/                Design notes and issue inventories
 CLAUDE.md            Architectural invariants and project rules (authoritative)
@@ -252,9 +252,7 @@ cd services/api && uvicorn app.main:app --reload   # dev server on :8000
 cd services/api && pytest tests/                   # run tests
 
 # Data pipeline
-cd datapipeline && python run_collection.py --collection <name> --target both --clean
-cd datapipeline && python load.py    # upsert documents/chunks → Supabase
-cd datapipeline && python embed.py   # push embeddings → Qdrant
+cd datapipeline && python run_collection.py --collection bible --target both
 ```
 
 ---
@@ -301,7 +299,7 @@ The codebase is documented in-repo. Start here:
 | File | What it covers |
 |---|---|
 | `CLAUDE.md` | Authoritative architectural invariants, API routes, data model, and the Sacred Night design system |
-| `PROGRESS.md` | V2 implementation log and key engineering decisions |
-| `datapipeline/README.md` | Data pipeline usage, stages, and gotchas |
+| `PROGRESS.md` | Historical V2 implementation log and key engineering decisions |
+| `datapipeline/README.md` | Supported collection publication, repair, reset, and wipe commands |
 | `datapipeline/SOURCES.md` | Corpus source provenance and re-ingestion per collection |
 | `docs/` | Design notes and codebase issue inventory |

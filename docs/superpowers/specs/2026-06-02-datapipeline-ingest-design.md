@@ -1,4 +1,7 @@
 # Datapipeline Ingest Design Spec
+
+> **Superseded publication design.** Preserve this file as design history; do not run
+> its publication commands. Use [`datapipeline/README.md`](../../../datapipeline/README.md).
 **Date:** 2026-06-02  
 **Status:** Approved  
 **Scope:** All six collection ingest scripts + embed.py + run_all.py
