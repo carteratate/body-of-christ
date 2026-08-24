@@ -5,34 +5,25 @@ import ReactDOM from "react-dom";
 import { trackRateLimitHit } from "@/lib/analytics";
 
 interface RateLimitModalProps {
-  isOpen: boolean;
   limitType: "per_minute" | "daily";
   retryAfter: number | null;
   onDismiss: () => void;
 }
 
-export function RateLimitModal({ isOpen, limitType, retryAfter, onDismiss }: RateLimitModalProps) {
-  const [countdown, setCountdown] = useState<number | null>(null);
+export function RateLimitModal({ limitType, retryAfter, onDismiss }: RateLimitModalProps) {
+  const [countdown, setCountdown] = useState(() => retryAfter ?? 60);
 
   useEffect(() => {
-    if (isOpen) {
-      trackRateLimitHit({ limitType });
-    }
-  }, [isOpen, limitType]);
+    trackRateLimitHit({ limitType });
+  }, [limitType]);
 
   useEffect(() => {
-    if (!isOpen || limitType !== "per_minute" || retryAfter === null) {
-      setCountdown(null);
-      return;
-    }
-    setCountdown(retryAfter);
+    if (limitType !== "per_minute") return;
     const id = setInterval(() => {
-      setCountdown((prev) => (prev !== null && prev > 1 ? prev - 1 : 0));
+      setCountdown((prev) => (prev > 1 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(id);
-  }, [isOpen, limitType, retryAfter]);
-
-  if (!isOpen) return null;
+  }, [limitType]);
 
   const content = (
     <div
@@ -51,7 +42,7 @@ export function RateLimitModal({ isOpen, limitType, retryAfter, onDismiss }: Rat
         {limitType === "per_minute" ? (
           <p className="text-brand-muted text-sm mb-5">
             You&apos;ve reached your per-minute search limit (5 searches/minute).
-            {countdown !== null && countdown > 0
+            {countdown > 0
               ? ` Your limit resets in ${countdown} second${countdown !== 1 ? "s" : ""}.`
               : " Your limit is resetting shortly."}
           </p>

@@ -135,7 +135,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const [animationRequestId, setAnimationRequestId] = useState(0);
   const [queryDone, setQueryDone] = useState(false);
   // Controls when BottomBar switches from search input → filter pills during animation.
-  // Starts false (search input visible), becomes true ~1.4s in (when the gold line arrives).
+  // Starts false (search input visible), then follows LoadingAnimation's filters-ready milestone.
   const [animFilterBarActive, setAnimFilterBarActive] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [restoreAttempt, setRestoreAttempt] = useState(0);
@@ -160,7 +160,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const abortRef = useRef<AbortController | null>(null);
   const activeRequestRef = useRef(0);
   const exploreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const filterTransitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefsSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefsMountedRef = useRef(false);
   const bufferedChunksRef = useRef<ChunkResult[]>([]);
@@ -225,7 +224,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       activeRequestRef.current += 1;
       abortRef.current?.abort();
       if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
-      if (filterTransitionTimerRef.current) clearTimeout(filterTransitionTimerRef.current);
       if (prefsSaveTimerRef.current) clearTimeout(prefsSaveTimerRef.current);
     };
   }, []);
@@ -313,10 +311,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       clearTimeout(exploreTimerRef.current);
       exploreTimerRef.current = null;
     }
-    if (filterTransitionTimerRef.current) {
-      clearTimeout(filterTransitionTimerRef.current);
-      filterTransitionTimerRef.current = null;
-    }
     bufferedChunksRef.current = [];
     bufferedExplRef.current = {};
     resolvedRef.current = false;
@@ -351,7 +345,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     setShowAnimation(false);
     setQueryDone(false);
     setAnimFilterBarActive(false);
-    if (filterTransitionTimerRef.current) { clearTimeout(filterTransitionTimerRef.current); filterTransitionTimerRef.current = null; }
     bufferedChunksRef.current = [];
     bufferedExplRef.current   = {};
     resolvedRef.current = false;
@@ -540,7 +533,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       bufferedChunksRef.current = [];
       bufferedExplRef.current   = {};
       resolvedRef.current = false;
-      if (filterTransitionTimerRef.current) clearTimeout(filterTransitionTimerRef.current);
       setAnimFilterBarActive(false);
       setLoading(true);
       setSearchPhase(null);
@@ -559,8 +551,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       setResults([]);
       setShowAnimation(true);
       setQueryDone(false);
-      // Switch BottomBar from search input → filter pills when the gold line fades (~3.2s)
-      filterTransitionTimerRef.current = setTimeout(() => setAnimFilterBarActive(true), 3200);
       setExploreLabel(newExploreLabel ?? null);
       const snapshot = [...searchCollections];
       setSubmittedCollections(snapshot);
@@ -724,7 +714,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         trackErrorOccurred({ page: "search", errorType: classifyError(msg) });
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [loading, activeCollections, translation, quota, searchValue, isGuest, guestGate, setPendingSearch, setActiveSearchId, clearPendingSearch]
   );
 
@@ -742,6 +731,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     setQueryBubbleVisible(true);
     // showAnimation stays true so the overlay can fade out over the results
     setQueryDone(false);
+  }
+
+  function handleAnimFiltersReady(requestId: number) {
+    if (activeRequestRef.current !== requestId) return;
+    setAnimFilterBarActive(true);
   }
 
   function handleAnimFadeComplete(requestId: number) {
@@ -830,6 +824,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             quota={submittedQuota ?? quota}
             isQueryDone={queryDone}
             retrievalStarted={searchPhase !== null || queryDone}
+            onFiltersReady={() => handleAnimFiltersReady(animationRequestId)}
             onReadyToShow={() => handleAnimReadyToShow(animationRequestId)}
             onFadeComplete={() => handleAnimFadeComplete(animationRequestId)}
             reservedTopRight={bubbleSize}
@@ -946,12 +941,13 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         searchDisabled={false}
         fixedQuota={isGuest}
       />
-      <RateLimitModal
-        isOpen={rateLimitRetryAfter !== null}
-        limitType={rateLimitType}
-        retryAfter={rateLimitRetryAfter}
-        onDismiss={() => setRateLimitRetryAfter(null)}
-      />
+      {rateLimitRetryAfter !== null && (
+        <RateLimitModal
+          limitType={rateLimitType}
+          retryAfter={rateLimitRetryAfter}
+          onDismiss={() => setRateLimitRetryAfter(null)}
+        />
+      )}
     </div>
   );
 }

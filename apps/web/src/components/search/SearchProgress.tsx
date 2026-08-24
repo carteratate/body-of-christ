@@ -17,11 +17,12 @@ const PHASE_LABEL: Record<string, string> = {
 
 // blinking = line has reached this node but the SSE event hasn't confirmed it yet
 // active   = SSE event arrived, node is solid yellow
-function Dot({ active, blinking = false }: { active: boolean; blinking?: boolean }) {
+function Dot({ active, blinking = false, waitingLabel }: { active: boolean; blinking?: boolean; waitingLabel?: string }) {
   const isYellow = active || blinking;
   return (
     <div
       className={`w-4 h-4 rounded-full flex-shrink-0${blinking && !active ? " animate-pulse" : ""}`}
+      aria-label={blinking && !active ? waitingLabel : undefined}
       style={{
         backgroundColor: isYellow ? "var(--color-brand-accent)" : "var(--color-brand-muted)",
         opacity: isYellow ? 1 : 0.3,
@@ -82,7 +83,7 @@ function Segment({ mode, duration, onFillComplete }: {
   }, [onFillComplete]);
 
   return (
-    <div className="relative w-28 h-0.5 mx-2 flex-shrink-0">
+    <div className="relative w-28 h-0.5 mx-2 flex-shrink-0" data-testid="progress-segment" data-mode={mode}>
       <div className="absolute inset-0" style={{ backgroundColor: "var(--color-brand-muted)", opacity: 0.3 }} />
       <div
         ref={fillRef}
@@ -105,33 +106,15 @@ export function SearchProgress({ phase, collections }: SearchProgressProps) {
   const labelKey = phase ?? "preparing";
   const label = PHASE_LABEL[labelKey];
 
-  const [seg1Mode, setSeg1Mode] = useState<SegMode>("idle");
-  const [seg2Mode, setSeg2Mode] = useState<SegMode>("idle");
-  // true when the fill animation reached the next node before the SSE event
-  const [seg1Done, setSeg1Done] = useState(false);
-  const [seg2Done, setSeg2Done] = useState(false);
+  const seg1Mode: SegMode = phase === "searching" ? "filling" : phase === "ranking" ? "complete" : "idle";
+  const seg2Mode: SegMode = phase === "ranking" ? "filling" : "idle";
+  // Records which semantic phase reached its next node before the SSE phase advanced.
+  const [completedPhase, setCompletedPhase] = useState<SearchPhase>(null);
+  const seg1Done = phase === "searching" && completedPhase === "searching";
+  const seg2Done = phase === "ranking" && completedPhase === "ranking";
 
-  useEffect(() => {
-    if (phase === "searching") {
-      setSeg1Mode("filling");
-      setSeg1Done(false);
-      setSeg2Mode("idle");
-      setSeg2Done(false);
-    } else if (phase === "ranking") {
-      setSeg1Mode("complete");
-      setSeg1Done(false);
-      setSeg2Mode("filling");
-      setSeg2Done(false);
-    } else {
-      setSeg1Mode("idle");
-      setSeg1Done(false);
-      setSeg2Mode("idle");
-      setSeg2Done(false);
-    }
-  }, [phase]);
-
-  const onSeg1Complete = useCallback(() => setSeg1Done(true), []);
-  const onSeg2Complete = useCallback(() => setSeg2Done(true), []);
+  const onSeg1Complete = useCallback(() => setCompletedPhase("searching"), []);
+  const onSeg2Complete = useCallback(() => setCompletedPhase("ranking"), []);
 
   // Dot states
   const dot1Blinking = phase === null;                      // waiting for "searching"
@@ -176,11 +159,11 @@ export function SearchProgress({ phase, collections }: SearchProgressProps) {
       {/* Segmented progress bar + labels */}
       <div className="flex flex-col items-center gap-3">
         <div className="flex items-center">
-          <Dot active={dot1Active} blinking={dot1Blinking} />
+          <Dot active={dot1Active} blinking={dot1Blinking} waitingLabel="Waiting for search" />
           <Segment mode={seg1Mode} duration="10s" onFillComplete={onSeg1Complete} />
-          <Dot active={dot2Active} blinking={dot2Blinking} />
+          <Dot active={dot2Active} blinking={dot2Blinking} waitingLabel="Waiting for ranking" />
           <Segment mode={seg2Mode} duration="5s" onFillComplete={onSeg2Complete} />
-          <Dot active={dot3Active} blinking={dot3Blinking} />
+          <Dot active={dot3Active} blinking={dot3Blinking} waitingLabel="Waiting for results" />
         </div>
         <div className="grid grid-cols-3 w-72 text-sm">
           <span

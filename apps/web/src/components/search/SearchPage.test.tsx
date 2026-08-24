@@ -27,6 +27,7 @@ const appMocks = vi.hoisted(() => ({
 }));
 
 const navigationMocks = vi.hoisted(() => ({ replace: vi.fn(), push: vi.fn() }));
+const animationMocks = vi.hoisted(() => ({ onFiltersReady: null as null | (() => void) }));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => navigationMocks,
@@ -99,16 +100,21 @@ vi.mock("./SearchResults", () => ({
   ),
 }));
 vi.mock("./LoadingAnimation", () => ({
-  LoadingAnimation: ({ isQueryDone, onReadyToShow, onFadeComplete }: {
+  LoadingAnimation: ({ isQueryDone, onFiltersReady, onReadyToShow, onFadeComplete }: {
     isQueryDone: boolean;
+    onFiltersReady: () => void;
     onReadyToShow: () => void;
     onFadeComplete: () => void;
-  }) => (
-    <div data-testid="loading-animation" data-query-done={String(isQueryDone)}>
-      <button onClick={onReadyToShow}>Animation ready</button>
-      <button onClick={onFadeComplete}>Animation faded</button>
-    </div>
-  ),
+  }) => {
+    animationMocks.onFiltersReady = onFiltersReady;
+    return (
+      <div data-testid="loading-animation" data-query-done={String(isQueryDone)}>
+        <button onClick={onFiltersReady}>Animation filters ready</button>
+        <button onClick={onReadyToShow}>Animation ready</button>
+        <button onClick={onFadeComplete}>Animation faded</button>
+      </div>
+    );
+  },
 }));
 
 const restored = (query: string) => ({
@@ -148,6 +154,7 @@ afterEach(() => {
   testState.params = "restore=11111111-1111-4111-8111-111111111111";
   testState.token = "token";
   testState.userId = "user-a";
+  animationMocks.onFiltersReady = null;
 });
 
 describe("SearchPage restore lifecycle", () => {
@@ -266,6 +273,31 @@ describe("SearchPage restore lifecycle", () => {
 });
 
 describe("SearchPage animation-gated stream reveal", () => {
+  it("ignores a filters-ready milestone from a replaced animation", async () => {
+    testState.params = "";
+    const streamCallbacks: SearchStreamCallbacks[] = [];
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks.push(callbacks);
+    });
+    render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "first" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    const staleFiltersReady = animationMocks.onFiltersReady!;
+
+    act(() => streamCallbacks[0].onError("First search failed", "server_error", "retrieval"));
+    fireEvent.click(await screen.findByRole("button", { name: "Retry search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledTimes(2));
+    expect(screen.getByTestId("bottom-bar").dataset.active).toBe("false");
+
+    act(() => staleFiltersReady());
+    expect(screen.getByTestId("bottom-bar").dataset.active).toBe("false");
+
+    act(() => animationMocks.onFiltersReady!());
+    expect(screen.getByTestId("bottom-bar").dataset.active).toBe("true");
+  });
+
   it("buffers fast authenticated completion until reveal and keeps the overlay through its fade", async () => {
     testState.params = "";
     let streamCallbacks!: SearchStreamCallbacks;

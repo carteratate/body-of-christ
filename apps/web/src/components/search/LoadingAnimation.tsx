@@ -81,6 +81,7 @@ interface Props {
   quota: number;
   isQueryDone: boolean;
   retrievalStarted: boolean;
+  onFiltersReady: () => void;
   onReadyToShow: () => void;
   onFadeComplete: () => void;
   // Footprint of the query bubble pinned at top-4/right-4 of this same container
@@ -90,7 +91,7 @@ interface Props {
   reservedTopRight?: { width: number; height: number } | null;
 }
 
-export function LoadingAnimation({ collections, quota, isQueryDone, retrievalStarted, onReadyToShow, onFadeComplete, reservedTopRight }: Props) {
+export function LoadingAnimation({ collections, quota, isQueryDone, retrievalStarted, onFiltersReady, onReadyToShow, onFadeComplete, reservedTopRight }: Props) {
   const active = collections.filter(k => k in PALETTE);
 
   // ── Container measurement ───────────────────────────────────────────────
@@ -184,8 +185,9 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
 
   // Cleanup on unmount
   useEffect(() => {
+    const scheduledTimers = timers.current;
     return () => {
-      timers.current.forEach(clearTimeout);
+      scheduledTimers.forEach(clearTimeout);
       if (stretchIntervalRef.current) clearInterval(stretchIntervalRef.current);
     };
   }, []);
@@ -280,6 +282,7 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
     at(() => setOpeningPulse(true), 1150);                           // 200ms before gold arrives
     at(() => setSearchGone(true), 1450);                             // line fades 100ms after arrival
     at(() => setOpeningPulse(false), 2900);                          // gold pulse off (0.75s fade-in + 1s hold)
+    at(onFiltersReady, 3200);                                       // BottomBar switches at the existing presentation milestone
     at(() => { setPhase(2); setSourcesReady(true); }, 3300);        // BoC→source starts 400ms after pulse-off, arrives t=4550
     at(() => setGlowColor(true), 4350);                              // 200ms before sources arrive
     at(() => setGlowColor(false), 5350);                             // source glow 1000ms
