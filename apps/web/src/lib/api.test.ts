@@ -46,7 +46,13 @@ function chunkEvent(context: unknown): unknown {
     chunk_id: "c1",
     content: "Objection 1. It seems that...",
     reranker_score: 0.8,
-    source: { document_id: "d1", title: "Summa Theologica", collection: "summa" },
+    source: {
+      document_id: "d1",
+      document_title: "Summa Theologica",
+      collection: "summa",
+      author: "Thomas Aquinas",
+      reference: "ST I q1 a1",
+    },
     context,
   };
 }
@@ -165,129 +171,102 @@ describe("bookmark cache", () => {
 });
 
 describe("streamSearch", () => {
-  it("accepts the old done contract and derives a successful outcome", async () => {
+  it("uses the authenticated proxy endpoint and preserves the request contract", async () => {
     const cb = callbacks();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response({
-      type: "done", search_id: "search-1", result_count: 2,
-    })));
-
-    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
-
-    expect(cb.onDone).toHaveBeenCalledWith("search-1", 2, "success", {}, true);
-    expect(cb.onError).not.toHaveBeenCalled();
-  });
-
-  it("preserves new degraded and unpersisted terminal metadata", async () => {
-    const cb = callbacks();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response({
-      type: "done",
-      search_id: null,
-      persisted: false,
-      result_count: 1,
-      outcome: "degraded_success",
-      collection_outcomes: { bible: "results_degraded" },
-    })));
-
-    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
-
-    expect(cb.onDone).toHaveBeenCalledWith(
-      null, 1, "degraded_success", { bible: "results_degraded" },
-      false,
-    );
-  });
-
-  it("rejects malformed SSE instead of converting it to no results", async () => {
-    const cb = callbacks();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
-      new Response("data: {not-json}\n", { status: 200 }),
-    ));
-
-    await expect(
-      streamSearch("token", "grace", { collections: ["bible"] }, 3, cb),
-    ).rejects.toThrow("invalid stream event");
-    expect(cb.onDone).not.toHaveBeenCalled();
-  });
-
-  it("reports a stream that closes before a terminal event", async () => {
-    const cb = callbacks();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response({
-      type: "status", phase: "ranking",
-    })));
-
-    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
-
-    expect(cb.onError).toHaveBeenCalledWith(
-      "The connection closed before the search finished.",
-      "stream_interrupted",
-      "connection",
-    );
-  });
-
-  it("does not invalidate done when a later stream read fails", async () => {
-    const cb = callbacks();
-    const encoder = new TextEncoder();
-    const read = vi.fn()
-      .mockResolvedValueOnce({
-        done: false,
-        value: encoder.encode(
-          'data: {"type":"done","search_id":"search-1","result_count":1}\n',
-        ),
-      })
-      .mockRejectedValueOnce(new Error("connection reset"));
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-      ok: true,
-      body: { getReader: () => ({ read }) },
+    const fetchMock = vi.fn().mockResolvedValue(response({
+      type: "done", search_id: "search-1", result_count: 0,
     }));
+    vi.stubGlobal("fetch", fetchMock);
+    const controller = new AbortController();
+
+    await streamSearch(
+      "jwt-token",
+      "grace",
+      { collections: ["bible"], translation: "CPDV" },
+      3,
+      cb,
+      controller.signal,
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith("/v1/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer jwt-token",
+      },
+      body: JSON.stringify({
+        query: "grace",
+        filters: { collections: ["bible"], translation: "CPDV" },
+        quota: 3,
+      }),
+      signal: controller.signal,
+    });
+  });
+
+  it("rejects a successful response with no body", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 200 })));
+
+    await expect(streamSearch("token", "grace", { collections: ["bible"] }, 3, cb))
+      .rejects.toThrow();
+  });
+
+  it("reports backend details for non-success responses", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "Search service unavailable" }),
+      { status: 503, headers: { "Content-Type": "application/json" } },
+    )));
 
     await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
 
-    expect(cb.onDone).toHaveBeenCalledOnce();
+    expect(cb.onError).toHaveBeenCalledWith("Search service unavailable");
+  });
+
+  it("falls back to the HTTP status when a non-success body is unreadable", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("not-json", { status: 502 })));
+
+    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
+
+    expect(cb.onError).toHaveBeenCalledWith("API error 502");
+  });
+
+  it("classifies a daily rate limit and preserves Retry-After", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "Daily search quota exhausted" }),
+      {
+        status: 429,
+        headers: { "Content-Type": "application/json", "Retry-After": "7200" },
+      },
+    )));
+
+    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
+
+    expect(cb.onRateLimit).toHaveBeenCalledWith(7200, "daily");
+  });
+
+  it("classifies other rate limits as per-minute", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "Too many searches" }),
+      { status: 429, headers: { "Content-Type": "application/json" } },
+    )));
+
+    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
+
+    expect(cb.onRateLimit).toHaveBeenCalledWith(null, "per_minute");
+  });
+
+  it("silently returns when the authenticated request is cancelled", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new DOMException("Aborted", "AbortError")));
+
+    await expect(streamSearch("token", "grace", { collections: ["bible"] }, 3, cb))
+      .resolves.toBeUndefined();
+
     expect(cb.onError).not.toHaveBeenCalled();
-  });
-
-  it("forwards the attached passage to the caller", async () => {
-    // This handler rebuilds the chunk event field by field, so a dropped field is a
-    // silent runtime omission rather than a type error.
-    const cb = callbacks();
-    const context = {
-      relation: "answered_by",
-      parts: [{ content: "I answer that...", reference: "ST I q1 a1", unit_label: "I answer that", anchor: "a/1" }],
-    };
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
-      chunkEvent(context), { type: "done", search_id: "s1", result_count: 1 },
-    )));
-
-    await streamSearch("token", "grace", { collections: ["summa"] }, 3, cb);
-
-    expect(cb.onChunk.mock.calls[0][0].context).toEqual(context);
-  });
-
-  it("forwards a reply's attached objection, which renders above the match", async () => {
-    // Both relations travel the same field; a handler that special-cased one would
-    // leave the other, which is ~95% of live Summa results, without its context.
-    const cb = callbacks();
-    const context = {
-      relation: "answers",
-      parts: [{ content: "Objection 2. Further...", reference: "ST I q1 a1", unit_label: "Objection 2", anchor: "a/0" }],
-    };
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
-      chunkEvent(context), { type: "done", search_id: "s1", result_count: 1 },
-    )));
-
-    await streamSearch("token", "grace", { collections: ["summa"] }, 3, cb);
-
-    expect(cb.onChunk.mock.calls[0][0].context).toEqual(context);
-  });
-
-  it("gives an unattached result a null context rather than undefined", async () => {
-    const cb = callbacks();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
-      chunkEvent(undefined), { type: "done", search_id: "s1", result_count: 1 },
-    )));
-
-    await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
-
-    expect(cb.onChunk.mock.calls[0][0].context).toBeNull();
   });
 });
 

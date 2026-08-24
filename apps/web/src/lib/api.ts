@@ -1,3 +1,22 @@
+import {
+  consumeSearchStream,
+  type ChunkResult,
+  type CollectionOutcome,
+  type SearchOutcome,
+  type SearchStreamCallbacks,
+} from "./search-stream";
+
+export {
+  SearchStreamProtocolError,
+  type AttachedContext,
+  type ChunkResult,
+  type ChunkSource,
+  type CollectionOutcome,
+  type ContextPart,
+  type SearchOutcome,
+  type SearchStreamCallbacks,
+} from "./search-stream";
+
 const API_URL = "";
 
 export interface SessionSummary {
@@ -120,76 +139,6 @@ export async function getSessionMessages(
 
 // ── V2 Search ──────────────────────────────────────────────────────────────
 
-export interface ChunkSource {
-  collection: string;
-  document_title: string;
-  author: string | null;
-  reference: string | null;
-  document_id: string;
-  position: number | null;
-  anchor?: string | null;
-  chapter_key?: string | null;
-  /**
-   * The passage's role inside its document — "Objection 1", "I answer that",
-   * "Reply to Objection 2", "Can. 1055 §1". Null for the collections with no such
-   * structure, and for results saved before this field existed.
-   *
-   * Worth surfacing in the UI: a Summa "Objection N" is a position Aquinas states in
-   * order to REFUTE, so rendering it unmarked presents the opposite of his teaching
-   * as though it were his. The backend already uses this to down-rank them.
-   */
-  unit_label?: string | null;
-  metadata?: Record<string, unknown> | null;
-}
-
-/** One passage attached to a matched Summa result to make it intelligible. */
-export interface ContextPart {
-  content: string;
-  reference: string | null;
-  unit_label: string | null;
-  anchor: string | null;
-}
-
-/**
- * What completes a matched Summa passage, and where it belongs on the card.
- *
- * A Summa article is a staged debate split into one chunk per move, so a result is one
- * move. Two roles are incomplete alone, for different reasons:
- *
- *  - `answered_by` — the match is an **Objection**, a position Aquinas REFUTES. Shown
- *    alone it attributes the opposite of his teaching to him. `parts` are his
- *    determination and render BELOW the matched passage.
- *  - `answers` — the match is a **Reply**, Aquinas's own voice, so nothing is
- *    misattributed. But it rebuts one objection and opens mid-thought, so `parts` is
- *    that objection and renders ABOVE the matched passage.
- *
- * Place it from `relation` alone — never infer from `unit_label`. Render a visible
- * boundary between the two: they are different voices, and presenting them as
- * continuous prose is the failure this exists to prevent.
- *
- * Presentation only: no score, not persisted, not bookmarkable. The matched passage is
- * what the user addressed.
- *
- * An attached passage may ALSO appear elsewhere in the same result list as its own
- * card — the backend never removes a scored result to avoid repeating text, because
- * deleting a passage the user matched is worse than showing it twice. Do not
- * de-duplicate across cards.
- */
-export interface AttachedContext {
-  relation: "answered_by" | "answers";
-  parts: ContextPart[];
-}
-
-export interface ChunkResult {
-  chunk_id: string;
-  content: string;
-  source: ChunkSource;
-  reranker_score: number | null;
-  explanation: string | null;
-  /** The passage completing this result, or null. See AttachedContext. */
-  context?: AttachedContext | null;
-}
-
 export interface SearchFilters {
   collections: string[];
   translation?: string;
@@ -216,16 +165,6 @@ export interface SearchResultsResponse {
   restore_status: "complete" | "results_unavailable";
   expected_result_count: number;
 }
-
-export type SearchOutcome = "success" | "degraded_success" | "no_candidates";
-export type CollectionOutcome =
-  | "results"
-  | "results_degraded"
-  | "no_candidates"
-  | "below_threshold"
-  | "retrieval_failed"
-  | "corpus_sync_failed"
-  | "ranking_failed";
 
 // ── V2 Documents ───────────────────────────────────────────────────────────
 
@@ -306,27 +245,6 @@ export interface Preferences {
   theme: "dark" | "light";
 }
 
-export interface SearchStreamCallbacks {
-  onChunk: (chunk: ChunkResult) => void;
-  onExplanationDelta: (chunkId: string, delta: string) => void;
-  onDone: (
-    searchId: string | null,
-    resultCount: number,
-    outcome: SearchOutcome,
-    collectionOutcomes: Record<string, CollectionOutcome>,
-    persisted: boolean,
-  ) => void;
-  onError: (
-    message: string,
-    code?: string,
-    stage?: string,
-    collectionOutcomes?: Record<string, CollectionOutcome>,
-  ) => void;
-  onRateLimit: (retryAfter: number | null, limitType: "per_minute" | "daily") => void;
-  onStatus?: (phase: "searching" | "ranking", collections?: string[]) => void;
-  onResultsReady?: (resultCount: number) => void;
-}
-
 export async function streamSearch(
   token: string,
   query: string,
@@ -364,94 +282,7 @@ export async function streamSearch(
     return;
   }
 
-  const reader = res.body!.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  let terminalEventReceived = false;
-
-  // The backend keeps this stream open well past the "done" event to stream
-  // per-chunk explanations one at a time — so an abort (e.g. the user starting
-  // a new search) very often lands while a reader.read() is still pending.
-  // That rejects with an AbortError same as the initial fetch() above; without
-  // this try/catch it propagates uncaught out of streamSearch and gets treated
-  // as a real search failure by the caller.
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (signal?.aborted) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-
-      for (const line of lines) {
-        if (!line.startsWith("data: ")) continue;
-        try {
-          const event = JSON.parse(line.slice(6)) as
-            | { type: "chunk" } & ChunkResult & { reranker_score: number }
-            | { type: "explanation_delta"; chunk_id: string; delta: string }
-            | { type: "done"; search_id: string | null; persisted?: boolean; result_count: number; outcome?: SearchOutcome; collection_outcomes?: Record<string, CollectionOutcome> }
-            | { type: "error"; detail: string; code?: string; stage?: string; collection_outcomes?: Record<string, CollectionOutcome> }
-            | { type: "status"; phase: "searching" | "ranking"; collections?: string[] };
-
-          if (event.type === "chunk") {
-            callbacks.onChunk({
-              chunk_id: event.chunk_id,
-              content: event.content,
-              source: event.source,
-              reranker_score: event.reranker_score ?? null,
-              explanation: null,
-              // Forwarded explicitly: this handler rebuilds the event field by field
-              // rather than passing it through, so an omission here does not fail to
-              // compile — it silently drops the attached passage on the authenticated
-              // path only, leaving guest search the sole place the feature appears.
-              context: event.context ?? null,
-            });
-          } else if (event.type === "explanation_delta") {
-            callbacks.onExplanationDelta(event.chunk_id, event.delta);
-          } else if (event.type === "done") {
-            terminalEventReceived = true;
-            callbacks.onDone(
-              event.search_id,
-              event.result_count,
-              event.outcome ?? (event.result_count > 0 ? "success" : "no_candidates"),
-              event.collection_outcomes ?? {},
-              event.persisted ?? Boolean(event.search_id),
-            );
-          } else if (event.type === "error") {
-            terminalEventReceived = true;
-            callbacks.onError(
-              event.detail ?? "Search failed",
-              event.code,
-              event.stage,
-              event.collection_outcomes,
-            );
-          } else if (event.type === "status") {
-            callbacks.onStatus?.(event.phase, event.collections);
-          } else {
-            throw new Error("The search service sent an unknown stream event.");
-          }
-        } catch (err) {
-          if (err instanceof SyntaxError) {
-            throw new Error("The search service sent an invalid stream event.");
-          }
-          throw err;
-        }
-      }
-    }
-  } catch (err) {
-    if ((err as DOMException).name === "AbortError") return;
-    if (terminalEventReceived) return;
-    throw err;
-  }
-  if (!signal?.aborted && !terminalEventReceived) {
-    callbacks.onError(
-      "The connection closed before the search finished.",
-      "stream_interrupted",
-      "connection",
-    );
-  }
+  await consumeSearchStream(res.body!, callbacks, signal);
 }
 
 export async function streamGuestSearch(
