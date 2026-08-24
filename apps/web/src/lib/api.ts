@@ -1,8 +1,6 @@
 import {
   consumeSearchStream,
   type ChunkResult,
-  type CollectionOutcome,
-  type SearchOutcome,
   type SearchStreamCallbacks,
 } from "./search-stream";
 
@@ -321,77 +319,7 @@ export async function streamGuestSearch(
     return;
   }
 
-  const reader = res.body!.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  let terminalEventReceived = false;
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (signal?.aborted) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-
-      for (const line of lines) {
-        if (!line.startsWith("data: ")) continue;
-        const raw = line.slice(6).trim();
-        if (!raw) continue;
-        let evt: Record<string, unknown>;
-        try {
-          evt = JSON.parse(raw);
-        } catch {
-          throw new Error("The search service sent an invalid stream event.");
-        }
-
-        const type = evt.type as string;
-        if (type === "status" && callbacks.onStatus) {
-          callbacks.onStatus(
-            evt.phase as "searching" | "ranking",
-            evt.collections as string[] | undefined,
-          );
-        } else if (type === "chunk") {
-          callbacks.onChunk(evt as unknown as ChunkResult);
-        } else if (type === "results_ready") {
-          callbacks.onResultsReady?.(evt.result_count as number);
-        } else if (type === "explanation_delta") {
-          callbacks.onExplanationDelta(evt.chunk_id as string, evt.delta as string);
-        } else if (type === "done") {
-          terminalEventReceived = true;
-          callbacks.onDone(
-            (evt.search_id as string | null | undefined) ?? null,
-            evt.result_count as number,
-            (evt.outcome as SearchOutcome | undefined)
-              ?? ((evt.result_count as number) > 0 ? "success" : "no_candidates"),
-            (evt.collection_outcomes as Record<string, CollectionOutcome> | undefined) ?? {},
-            (evt.persisted as boolean | undefined) ?? Boolean(evt.search_id),
-          );
-        } else if (type === "error") {
-          terminalEventReceived = true;
-          callbacks.onError(
-            evt.detail as string,
-            evt.code as string | undefined,
-            evt.stage as string | undefined,
-            evt.collection_outcomes as Record<string, CollectionOutcome> | undefined,
-          );
-        } else {
-          throw new Error("The search service sent an unknown stream event.");
-        }
-      }
-    }
-  } catch (err) {
-    if ((err as DOMException).name !== "AbortError" && !terminalEventReceived) throw err;
-  }
-  if (!signal?.aborted && !terminalEventReceived) {
-    callbacks.onError(
-      "The connection closed before the search finished.",
-      "stream_interrupted",
-      "connection",
-    );
-  }
+  await consumeSearchStream(res.body!, callbacks, signal);
 }
 
 export class GuestClaimHttpError extends Error {

@@ -272,6 +272,10 @@ export async function consumeSearchStream(
       );
       return;
     }
+    if (type === "results_ready") {
+      callbacks.onResultsReady?.(nonnegativeInteger(event.result_count));
+      return;
+    }
     if (type === "done") {
       const resultCount = nonnegativeInteger(event.result_count);
       const searchId = nullableString(event.search_id);

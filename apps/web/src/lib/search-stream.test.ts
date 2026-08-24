@@ -171,6 +171,30 @@ describe("consumeSearchStream", () => {
     expect(cb.onDone).toHaveBeenCalledOnce();
   });
 
+  it("treats guest results readiness as optional and nonterminal", async () => {
+    const cb = callbacks();
+    const body = streamFromText(
+      data({ type: "results_ready", result_count: 2 })
+      + data({ type: "explanation_delta", chunk_id: "passage-1", delta: "Relevant" })
+      + data({ type: "done", search_id: null, result_count: 2, persisted: false })
+      + data({ type: "explanation_delta", chunk_id: "passage-1", delta: " after completion." }),
+    );
+
+    await consumeSearchStream(body, cb);
+
+    expect(cb.onResultsReady).toHaveBeenCalledWith(2);
+    expect(cb.onExplanationDelta).toHaveBeenNthCalledWith(1, "passage-1", "Relevant");
+    expect(cb.onExplanationDelta).toHaveBeenNthCalledWith(2, "passage-1", " after completion.");
+    expect(cb.onDone).toHaveBeenCalledWith(null, 2, "success", {}, false);
+
+    const callbacksWithoutReadiness = callbacks();
+    delete (callbacksWithoutReadiness as Partial<SearchStreamCallbacks>).onResultsReady;
+    await expect(consumeSearchStream(streamFromText(
+      data({ type: "results_ready", result_count: 0 })
+      + data({ type: "done", search_id: null, result_count: 0, persisted: false }),
+    ), callbacksWithoutReadiness)).resolves.toBeUndefined();
+  });
+
   it("decodes split multibyte text and arbitrary byte fragmentation", async () => {
     const cb = callbacks();
     const encoded = new TextEncoder().encode(
@@ -228,6 +252,7 @@ describe("consumeSearchStream", () => {
     ["invalid Passage", passage({ content: 42 })],
     ["invalid attached context", passage({ context: { relation: "near", parts: [] } })],
     ["invalid explanation", { type: "explanation_delta", chunk_id: "passage-1", delta: 42 }],
+    ["invalid results readiness", { type: "results_ready", result_count: -1 }],
     ["invalid completion", { type: "done", search_id: null, result_count: -1 }],
     ["invalid error", { type: "error", detail: 42 }],
   ])("rejects %s payloads with the dedicated protocol error", async (_name, event) => {

@@ -40,23 +40,6 @@ function jwtForSubject(subject: string, suffix: string): string {
   return `header.${payload}.${suffix}`;
 }
 
-function chunkEvent(context: unknown): unknown {
-  return {
-    type: "chunk",
-    chunk_id: "c1",
-    content: "Objection 1. It seems that...",
-    reranker_score: 0.8,
-    source: {
-      document_id: "d1",
-      document_title: "Summa Theologica",
-      collection: "summa",
-      author: "Thomas Aquinas",
-      reference: "ST I q1 a1",
-    },
-    context,
-  };
-}
-
 describe("bookmark cache", () => {
   it("does not let an older token request replace the active token cache", async () => {
     let resolveOld!: (response: Response) => void;
@@ -271,68 +254,98 @@ describe("streamSearch", () => {
 });
 
 describe("streamGuestSearch", () => {
-  it("uses the same terminal parsing contract as authenticated search", async () => {
+  it("uses the guest proxy endpoint and preserves the request contract", async () => {
     const cb = callbacks();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response({
+    const fetchMock = vi.fn().mockResolvedValue(response({
       type: "done",
       search_id: null,
       persisted: false,
       result_count: 0,
-      outcome: "no_candidates",
-      collection_outcomes: { bible: "no_candidates" },
-    })));
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+    const controller = new AbortController();
 
-    await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb);
-
-    expect(cb.onDone).toHaveBeenCalledWith(
-      null, 0, "no_candidates", { bible: "no_candidates" }, false,
+    await streamGuestSearch(
+      "guest-session-token-with-at-least-32-chars",
+      "grace",
+      { collections: ["bible"], translation: "CPDV" },
+      3,
+      cb,
+      controller.signal,
     );
-    expect(cb.onError).not.toHaveBeenCalled();
+
+    expect(fetchMock).toHaveBeenCalledWith("/v1/search/guest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: "grace",
+        filters: { collections: ["bible"], translation: "CPDV" },
+        quota: 3,
+        session_token: "guest-session-token-with-at-least-32-chars",
+      }),
+      signal: controller.signal,
+    });
   });
 
-  it("rejects malformed guest SSE", async () => {
+  it("rejects a successful guest response with no body", async () => {
     const cb = callbacks();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
-      new Response("data: nope\n", { status: 200 }),
-    ));
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 200 })));
 
     await expect(
       streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb),
-    ).rejects.toThrow("invalid stream event");
+    ).rejects.toThrow();
   });
 
-  it("releases ranked guest results before terminal transfer completion", async () => {
+  it("reports backend details for guest non-success responses", async () => {
     const cb = callbacks();
-    const encoder = new TextEncoder();
-    const read = vi.fn()
-      .mockResolvedValueOnce({ done: false, value: encoder.encode('data: {"type":"results_ready","result_count":4}\n\n') })
-      .mockResolvedValueOnce({ done: false, value: encoder.encode('data: {"type":"done","search_id":null,"result_count":4}\n\n') })
-      .mockResolvedValueOnce({ done: true, value: undefined });
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-      ok: true,
-      body: { getReader: () => ({ read }) },
-    }));
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "Guest search unavailable" }),
+      { status: 503, headers: { "Content-Type": "application/json" } },
+    )));
 
     await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb);
 
-    expect(cb.onResultsReady).toHaveBeenCalledWith(4);
-    expect(cb.onDone).toHaveBeenCalledOnce();
-    expect(cb.onResultsReady.mock.invocationCallOrder[0]).toBeLessThan(cb.onDone.mock.invocationCallOrder[0]);
+    expect(cb.onError).toHaveBeenCalledWith("Guest search unavailable");
   });
 
-  it("forwards the attached passage like the authenticated path", async () => {
+  it("opens the guest signup path when the trial is exhausted", async () => {
     const cb = callbacks();
-    const context = {
-      relation: "answers",
-      parts: [{ content: "Objection 2. Further...", reference: "ST I q1 a1", unit_label: "Objection 2", anchor: "a/0" }],
-    };
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(
-      chunkEvent(context), { type: "done", search_id: "s1", result_count: 1 },
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "trial_exhausted" }),
+      { status: 429, headers: { "Content-Type": "application/json" } },
     )));
 
-    await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["summa"] }, 3, cb);
+    await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb);
 
-    expect(cb.onChunk.mock.calls[0][0].context).toEqual(context);
+    expect(cb.onError).toHaveBeenCalledWith("trial_exhausted");
+    expect(cb.onRateLimit).not.toHaveBeenCalled();
+  });
+
+  it("classifies other guest limits as per-minute without Retry-After", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ detail: "Too many searches" }),
+      { status: 429, headers: { "Content-Type": "application/json", "Retry-After": "120" } },
+    )));
+
+    await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb);
+
+    expect(cb.onRateLimit).toHaveBeenCalledWith(null, "per_minute");
+  });
+
+  it("silently returns when the guest request is cancelled", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new DOMException("Aborted", "AbortError")));
+
+    await expect(streamGuestSearch(
+      "guest-session-token-with-at-least-32-chars",
+      "grace",
+      { collections: ["bible"] },
+      3,
+      cb,
+    )).resolves.toBeUndefined();
+
+    expect(cb.onError).not.toHaveBeenCalled();
   });
 });
 

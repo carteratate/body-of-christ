@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 
 import { StrictMode } from "react";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SearchPage } from "./SearchPage";
-import { SearchRestoreHttpError } from "@/lib/api";
+import { SearchRestoreHttpError, type ChunkResult, type SearchStreamCallbacks } from "@/lib/api";
 
 const testState = vi.hoisted(() => ({
   params: "restore=11111111-1111-4111-8111-111111111111",
@@ -14,6 +14,7 @@ const testState = vi.hoisted(() => ({
 
 const apiMocks = vi.hoisted(() => ({
   getSearchResults: vi.fn(),
+  streamGuestSearch: vi.fn(),
   streamSearch: vi.fn(),
   updatePreferences: vi.fn().mockResolvedValue(undefined),
 }));
@@ -30,6 +31,11 @@ const navigationMocks = vi.hoisted(() => ({ replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   useRouter: () => navigationMocks,
   useSearchParams: () => new URLSearchParams(testState.params),
+}));
+
+vi.mock("@/lib/trial", () => ({
+  getGuestSessionToken: () => "guest-session-token-with-at-least-32-chars",
+  GUEST_SEARCH_LIMIT: 2,
 }));
 
 vi.mock("@/components/layout/AppShell", () => ({
@@ -57,26 +63,53 @@ vi.mock("@/lib/api", async (importOriginal) => {
   return {
     ...actual,
     getSearchResults: apiMocks.getSearchResults,
+    streamGuestSearch: apiMocks.streamGuestSearch,
     streamSearch: apiMocks.streamSearch,
     updatePreferences: apiMocks.updatePreferences,
   };
 });
 
 vi.mock("./BottomBar", () => ({
-  BottomBar: ({ isSearchActive, activeCollections }: { isSearchActive: boolean; activeCollections: string[] }) => (
-    <div data-testid="bottom-bar" data-active={String(isSearchActive)} data-collections={activeCollections.join(",")} />
+  BottomBar: ({ isSearchActive, activeCollections, searchValue, onSearchChange, onSearch }: {
+    isSearchActive: boolean;
+    activeCollections: string[];
+    searchValue: string;
+    onSearchChange: (value: string) => void;
+    onSearch: () => void;
+  }) => (
+    <div data-testid="bottom-bar" data-active={String(isSearchActive)} data-collections={activeCollections.join(",")}>
+      <input aria-label="Search passages" value={searchValue} onChange={(event) => onSearchChange(event.target.value)} />
+      <button onClick={onSearch}>Search</button>
+    </div>
   ),
 }));
 vi.mock("./EmptyState", () => ({ EmptyState: () => <div>Empty search</div> }));
 vi.mock("./SearchResults", () => ({
-  SearchResults: ({ loading, isRestoring, onExploreMore }: { loading: boolean; isRestoring: boolean; onExploreMore: (content: string, label: string) => void }) => (
+  SearchResults: ({ results, loading, isRestoring, onExploreMore }: {
+    results: Array<{ content: string; explanation: string | null }>;
+    loading: boolean;
+    isRestoring: boolean;
+    onExploreMore: (content: string, label: string) => void;
+  }) => (
     <div>
       {loading && isRestoring ? "Restoring" : "Restored results"}
+      {results.map((result) => <div key={result.content}>{result.content} — {result.explanation}</div>)}
       {!loading && <button onClick={() => onExploreMore("A restored passage", "CCC 1000")}>Query More Like This</button>}
     </div>
   ),
 }));
-vi.mock("./LoadingAnimation", () => ({ LoadingAnimation: () => null }));
+vi.mock("./LoadingAnimation", () => ({
+  LoadingAnimation: ({ isQueryDone, onReadyToShow, onFadeComplete }: {
+    isQueryDone: boolean;
+    onReadyToShow: () => void;
+    onFadeComplete: () => void;
+  }) => (
+    <div data-testid="loading-animation" data-query-done={String(isQueryDone)}>
+      <button onClick={onReadyToShow}>Animation ready</button>
+      <button onClick={onFadeComplete}>Animation faded</button>
+    </div>
+  ),
+}));
 
 const restored = (query: string) => ({
   search_id: "11111111-1111-4111-8111-111111111111",
@@ -87,10 +120,27 @@ const restored = (query: string) => ({
   expected_result_count: 0,
 });
 
+const streamedPassage: ChunkResult = {
+  chunk_id: "passage-1",
+  content: "Grace perfects nature.",
+  source: {
+    collection: "bible",
+    document_title: "Romans",
+    author: null,
+    reference: "Romans 5:20",
+    document_id: "document-1",
+    position: 1,
+  },
+  reranker_score: 0.9,
+  explanation: null,
+  context: null,
+};
+
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
   apiMocks.getSearchResults.mockReset();
+  apiMocks.streamGuestSearch.mockReset();
   apiMocks.streamSearch.mockReset();
   apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
     callbacks.onDone("22222222-2222-4222-8222-222222222222", 1, "success", { bible: "results" }, true);
@@ -212,5 +262,67 @@ describe("SearchPage restore lifecycle", () => {
     expect(apiMocks.streamSearch.mock.calls[0][2]).toEqual({ collections: ["bible"], translation: "WEB-C" });
     expect(apiMocks.streamSearch.mock.calls[0][3]).toBe(5);
     expect(screen.getByTestId("bottom-bar").dataset.collections).toBe("bible");
+  });
+});
+
+describe("SearchPage animation-gated stream reveal", () => {
+  it("buffers fast authenticated completion until reveal and keeps the overlay through its fade", async () => {
+    testState.params = "";
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+      callbacks.onChunk(streamedPassage);
+      callbacks.onExplanationDelta(streamedPassage.chunk_id, "Before reveal.");
+      callbacks.onDone("search-1", 1, "success", { bible: "results" }, true);
+    });
+    render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    expect(screen.getByTestId("loading-animation").dataset.queryDone).toBe("true");
+    expect(screen.queryByText(/Grace perfects nature/)).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    expect(await screen.findByText("Grace perfects nature. — Before reveal.")).toBeTruthy();
+    expect(screen.getByTestId("loading-animation")).toBeTruthy();
+
+    act(() => streamCallbacks.onExplanationDelta(streamedPassage.chunk_id, " After reveal."));
+    expect(await screen.findByText("Grace perfects nature. — Before reveal. After reveal.")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Animation faded" }));
+    expect(screen.queryByTestId("loading-animation")).toBeNull();
+  });
+
+  it("buffers guest results-ready output until reveal and keeps the overlay through its fade", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+      callbacks.onChunk(streamedPassage);
+      callbacks.onExplanationDelta(streamedPassage.chunk_id, "Before reveal.");
+      callbacks.onResultsReady?.(1);
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    expect(screen.getByTestId("loading-animation").dataset.queryDone).toBe("true");
+    expect(screen.queryByText(/Grace perfects nature/)).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    expect(await screen.findByText("Grace perfects nature. — Before reveal.")).toBeTruthy();
+    expect(screen.getByTestId("loading-animation")).toBeTruthy();
+
+    act(() => streamCallbacks.onExplanationDelta(streamedPassage.chunk_id, " After reveal."));
+    expect(await screen.findByText("Grace perfects nature. — Before reveal. After reveal.")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Animation faded" }));
+    expect(screen.queryByTestId("loading-animation")).toBeNull();
   });
 });
