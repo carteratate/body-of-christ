@@ -328,7 +328,7 @@ export async function consumeSearchStream(
 
     if (signal?.aborted) return;
     buffer += decoder.decode();
-    if (buffer) dispatchLine(buffer);
+    if (buffer && state.terminal === "none") dispatchLine(buffer);
     if (state.terminal === "none") {
       callbacks.onError(
         "The connection closed before the search finished.",

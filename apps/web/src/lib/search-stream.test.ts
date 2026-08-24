@@ -325,6 +325,18 @@ describe("consumeSearchStream", () => {
     expect(cb.onDone).toHaveBeenCalledOnce();
   });
 
+  it("ignores an unterminated explanation tail after completion", async () => {
+    const cb = callbacks();
+    const body = streamFromText(
+      data({ type: "done", search_id: "search-1", result_count: 1 })
+      + 'data: {"type":"explanation_delta","chunk_id":"passage-1","delta":"partial',
+    );
+
+    await expect(consumeSearchStream(body, cb)).resolves.toBeUndefined();
+    expect(cb.onDone).toHaveBeenCalledOnce();
+    expect(cb.onExplanationDelta).not.toHaveBeenCalled();
+  });
+
   it("does not report a second failure when transport fails after an error event", async () => {
     const cb = callbacks();
     const bytes = new TextEncoder().encode(data({
