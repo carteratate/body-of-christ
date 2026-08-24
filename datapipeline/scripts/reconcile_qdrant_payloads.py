@@ -316,15 +316,15 @@ if __name__ == "__main__":
     ap.add_argument("--batch-size", type=int, default=500)
     args = ap.parse_args()
 
-    # BUILDERS is the datapipeline's canonical collection registry (run_collection.py),
-    # mirroring services/api's VALID_COLLECTIONS. Imported here, not at module scope,
-    # so importing this module for its helpers does not pull in ten ingest adapters.
-    from run_collection import BUILDERS  # noqa: E402
+    # SOURCE_ADAPTERS is the datapipeline's canonical collection registry, mirroring
+    # services/api's VALID_COLLECTIONS. Import it here so importing this module for
+    # its helpers does not pull in publication dependencies.
+    from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
         names, fields = resolve_args(
             args.fields, args.collection, args.apply,
-            args.allow_content_sync, args.batch_size, set(BUILDERS),
+            args.allow_content_sync, args.batch_size, set(SOURCE_ADAPTERS),
         )
     except ArgError as exc:
         ap.error(str(exc))

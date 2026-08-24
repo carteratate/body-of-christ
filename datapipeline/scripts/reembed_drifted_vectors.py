@@ -250,11 +250,15 @@ if __name__ == "__main__":
     ap.add_argument("--batch-size", type=int, default=100)
     args = ap.parse_args()
 
-    from run_collection import BUILDERS  # noqa: E402
+    from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
         names, categories = resolve_args(
-            args.collection, args.categories, args.batch_size, set(BUILDERS))
+            args.collection,
+            args.categories,
+            args.batch_size,
+            set(SOURCE_ADAPTERS),
+        )
     except ArgError as exc:
         ap.error(str(exc))
 

@@ -276,10 +276,12 @@ if __name__ == "__main__":
                     help="passages per embedding call (default 100)")
     args = ap.parse_args()
 
-    from run_collection import BUILDERS  # noqa: E402
+    from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
-        names = resolve_args(args.collection, args.batch_size, set(BUILDERS))
+        names = resolve_args(
+            args.collection, args.batch_size, set(SOURCE_ADAPTERS)
+        )
     except ArgError as exc:
         ap.error(str(exc))
 

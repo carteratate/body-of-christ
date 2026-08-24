@@ -23,9 +23,9 @@ Re-acquire with `python3 scripts/vendor_sources.py --collection all`.
 
 ## Publishing a collection
 
-Each collection has a `build_documents()` adapter (returning `list[Document]` of clean
-`Passage`s with anchors, chapter_keys, and cleaning) registered in `publication.py`
-`SOURCE_ADAPTERS`. To publish one:
+Each entry in `publication.py`'s `SOURCE_ADAPTERS` registry returns a `list[Document]`
+of clean `Passage`s with anchors, chapter keys, and source-specific cleaning. To
+publish one:
 
 ```bash
 python3 run_collection.py --collection <name> --target both
