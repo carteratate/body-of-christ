@@ -9,9 +9,15 @@ import { useSearchExperience } from "./useSearchExperience";
 afterEach(cleanup);
 
 describe("useSearchExperience", () => {
-  it("only adapts the runtime subscription to React", () => {
+  it("adapts subscription and disposes page-scoped work on unmount", () => {
+    const signals: AbortSignal[] = [];
     const runtime = createSearchExperience({
-      audience: { kind: "guest", search: async () => undefined },
+      audience: {
+        kind: "guest",
+        search: async (_request, _callbacks, currentSignal) => {
+          signals.push(currentSignal);
+        },
+      },
     });
     const { result, unmount } = renderHook(() => useSearchExperience(runtime));
     expect(result.current.status).toBe("idle");
@@ -29,6 +35,9 @@ describe("useSearchExperience", () => {
     expect(result.current.status).toBe("active-search");
 
     unmount();
+    expect(signals[0].aborted).toBe(true);
+    const disposed = runtime.read();
     runtime.send({ type: "reset" });
+    expect(runtime.read()).toBe(disposed);
   });
 });

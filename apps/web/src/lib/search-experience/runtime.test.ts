@@ -162,6 +162,32 @@ describe("search-experience runtime", () => {
     expect(completed).toHaveBeenCalledOnce();
   });
 
+  it("preserves guest Passages when completion fails after results-ready", () => {
+    const { runtime, runs } = guestFixture();
+    runtime.send({ type: "submit", request: REQUEST });
+    const runId = runtime.read().runId;
+    runs[0].callbacks.onPassage(passage("p1"));
+    runs[0].callbacks.onResultsReady(1);
+    runs[0].callbacks.onError("Transfer finalization failed", "transfer_failed", "transfer");
+
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      transport: {
+        status: "ranked-ready",
+        completionFailure: { code: "transfer_failed", stage: "transfer" },
+      },
+      presentation: { resultsReady: true },
+      passages: [],
+    });
+
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      passages: [{ chunk_id: "p1" }],
+      presentation: { status: "fading" },
+    });
+  });
+
   it("rejects guest completion before ranked results are ready", () => {
     const { runtime, runs } = guestFixture();
     runtime.send({ type: "submit", request: REQUEST });
@@ -280,6 +306,93 @@ describe("search-experience runtime", () => {
       failure: { kind: "restore", code: "auth_error" },
       canRetry: false,
     });
+  });
+
+  it("turns synchronous credential and search adapter throws into failure snapshots", () => {
+    const credentialFailure = createSearchExperience({
+      audience: {
+        kind: "authenticated",
+        search: () => Promise.resolve(),
+      },
+      credentials: { current: () => { throw new Error("credential exploded"); } },
+    });
+    expect(() => credentialFailure.send({ type: "submit", request: REQUEST })).not.toThrow();
+    expect(credentialFailure.read()).toMatchObject({
+      status: "failure",
+      failure: { message: "credential exploded", stage: "connection" },
+    });
+
+    const searchFailure = createSearchExperience({
+      audience: {
+        kind: "authenticated",
+        search: () => { throw new Error("search exploded"); },
+      },
+      credentials: { current: () => "token" },
+    });
+    expect(() => searchFailure.send({ type: "submit", request: REQUEST })).not.toThrow();
+    expect(searchFailure.read()).toMatchObject({
+      status: "failure",
+      failure: { message: "search exploded", stage: "connection" },
+    });
+  });
+
+  it("turns a synchronous guest-access throw into a failure snapshot", () => {
+    const { runtime } = guestFixture({
+      guestAccess: {
+        canSearch: () => { throw new Error("guest access exploded"); },
+        requestSignup: vi.fn(),
+        recordCompletedSearch: vi.fn(),
+      },
+    });
+
+    expect(() => runtime.send({ type: "submit", request: REQUEST })).not.toThrow();
+    expect(runtime.read()).toMatchObject({
+      status: "failure",
+      failure: { message: "guest access exploded", stage: "guest_access" },
+    });
+  });
+
+  it("turns synchronous restore adapter throws into a failure snapshot", () => {
+    const { runtime } = authenticatedFixture({
+      savedSearch: {
+        restore: () => { throw new Error("restore exploded"); },
+      },
+    });
+
+    expect(() => runtime.send({ type: "restore", searchId: "saved-search" })).not.toThrow();
+    expect(runtime.read()).toMatchObject({
+      status: "failure",
+      restoreId: "saved-search",
+      failure: { message: "restore exploded", stage: "restore" },
+    });
+  });
+
+  it("isolates ID and clock port failures from the lifecycle", () => {
+    const begin = vi.fn();
+    const { runtime: authenticated, runs } = authenticatedFixture({
+      pendingHistory: { begin, clear: vi.fn(), refresh: vi.fn() },
+      ids: { pendingEntry: () => { throw new Error("id exploded"); } },
+    });
+    authenticated.send({ type: "submit", request: REQUEST });
+    const firstRunId = authenticated.read().runId;
+    authenticated.send({ type: "submit", request: { ...REQUEST, query: "Replacement" } });
+    expect(runs[0].signal.aborted).toBe(true);
+    expect(authenticated.read().runId).toBe(firstRunId + 1);
+    expect(begin).toHaveBeenLastCalledWith("search-2", "Replacement");
+
+    const save = vi.fn();
+    const { runtime: guest, runs: guestRuns } = guestFixture({
+      guestContinuity: { save, clear: vi.fn() },
+      time: { now: () => { throw new Error("clock exploded"); } },
+    });
+    guest.send({ type: "submit", request: REQUEST });
+    const guestRunId = guest.read().runId;
+    guestRuns[0].callbacks.onPassage(passage("p1"));
+    guestRuns[0].callbacks.onResultsReady(1);
+    guest.send({ type: "animation", runId: guestRunId, milestone: "ready-to-reveal" });
+    expect(save).not.toHaveBeenCalled();
+    expect(() => guestRuns[0].callbacks.onExplanationDelta("p1", "still streaming")).not.toThrow();
+    expect(guest.read()).toMatchObject({ passages: [{ explanation: "still streaming" }] });
   });
 
   it("treats invalid user commands as no-ops", () => {

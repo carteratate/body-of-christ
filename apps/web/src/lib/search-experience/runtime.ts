@@ -10,6 +10,7 @@ import type {
   SearchFailure,
   SearchRequest,
   SearchTransportCallbacks,
+  SavedSearchResult,
 } from "./types";
 
 interface ActiveRun {
@@ -195,16 +196,18 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
 
   const saveGuestContinuity = (ownedRun: ActiveRun, current: ActiveSearchSnapshot) => {
     if (ports.audience.kind !== "guest" || !ports.guestContinuity || !ownedRun.revealed) return;
-    const complete = current.transport.status === "complete" ? current.transport : null;
-    const continuity: GuestContinuitySnapshot = Object.freeze({
-      savedAt: ports.time?.now() ?? Date.now(),
-      request: current.request,
-      searchId: complete?.searchId ?? null,
-      passages: current.passages,
-      outcome: complete?.outcome ?? null,
-      collectionOutcomes: complete?.collectionOutcomes ?? EMPTY_OUTCOMES,
+    bestEffort(() => {
+      const complete = current.transport.status === "complete" ? current.transport : null;
+      const continuity: GuestContinuitySnapshot = Object.freeze({
+        savedAt: ports.time?.now() ?? Date.now(),
+        request: current.request,
+        searchId: complete?.searchId ?? null,
+        passages: current.passages,
+        outcome: complete?.outcome ?? null,
+        collectionOutcomes: complete?.collectionOutcomes ?? EMPTY_OUTCOMES,
+      });
+      return ports.guestContinuity!.save(continuity);
     });
-    bestEffort(() => ports.guestContinuity!.save(continuity));
   };
 
   const failSearch = (
@@ -270,7 +273,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       }
       emit({
         ...current,
-        transport: { status: "ranked-ready", resultCount },
+        transport: { status: "ranked-ready", resultCount, completionFailure: null },
         presentation: current.presentation.status === "animating"
           ? { ...current.presentation, resultsReady: true }
           : current.presentation,
@@ -338,15 +341,43 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     },
     onError(message, code, stage, collectionOutcomes) {
       if (!isCurrent(ownedRun.id)) return;
+      const current = activeSnapshot(ownedRun.id);
       if (ownedRun.terminal) throw new Error("An error cannot follow a terminal search event.");
-      failSearch(ownedRun, {
+      const failure = {
         kind: "search",
         message,
         code: code ?? classifyError(message),
         stage: stage ?? null,
         collectionOutcomes: freezeOutcomes(collectionOutcomes ?? {}),
         rateLimit: null,
-      });
+      } as const;
+      if (ports.audience.kind === "guest" && current.transport.status === "ranked-ready") {
+        ownedRun.terminal = true;
+        clearPending(ownedRun);
+        const next: ActiveSearchSnapshot = {
+          ...current,
+          transport: {
+            ...current.transport,
+            completionFailure: {
+              message: failure.message,
+              code: failure.code,
+              stage: failure.stage,
+              collectionOutcomes: failure.collectionOutcomes,
+            },
+          },
+        };
+        emit(next);
+        if (ports.analytics && ownedRun.request) {
+          bestEffort(() => ports.analytics!.searchFailed({
+            audience: "guest",
+            request: ownedRun.request!,
+            code: failure.code,
+          }));
+        }
+        saveGuestContinuity(ownedRun, next);
+        return;
+      }
+      failSearch(ownedRun, failure);
     },
     onRateLimit(retryAfter, type) {
       if (!isCurrent(ownedRun.id)) return;
@@ -374,25 +405,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     emit({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
   };
 
-  const startSearch = (requestInput: SearchRequest) => {
-    if (!isValidRequest(requestInput)) return;
-    if (ports.audience.kind === "guest" && ports.guestAccess && !ports.guestAccess.canSearch()) {
-      resetToIdle();
-      bestEffort(() => ports.guestAccess!.requestSignup("limit"));
-      return;
-    }
-
-    const request = freezeRequest(requestInput);
-    const pendingEntryId = ports.pendingHistory
-      ? (ports.ids?.pendingEntry() ?? `search-${generation + 1}`)
-      : null;
-    const ownedRun = nextRun(request, null, pendingEntryId);
-    if (ports.audience.kind === "guest" && ports.guestContinuity) {
-      bestEffort(() => ports.guestContinuity!.clear());
-    }
-    if (pendingEntryId && ports.pendingHistory) {
-      bestEffort(() => ports.pendingHistory!.begin(pendingEntryId, request.query));
-    }
+  const emitPreparingSearch = (ownedRun: ActiveRun, request: SearchRequest) => {
     emit({
       status: "active-search",
       runId: ownedRun.id,
@@ -405,11 +418,63 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       canSubmit: true,
       canRetry: false,
     });
+  };
+
+  const startSearch = (requestInput: SearchRequest) => {
+    if (!isValidRequest(requestInput)) return;
+    const request = freezeRequest(requestInput);
+    if (ports.audience.kind === "guest" && ports.guestAccess) {
+      let canSearch: boolean;
+      try {
+        canSearch = ports.guestAccess.canSearch();
+      } catch (error: unknown) {
+        const ownedRun = nextRun(request, null, null);
+        emitPreparingSearch(ownedRun, request);
+        const message = error instanceof Error ? error.message : "Guest access could not be checked.";
+        failSearch(ownedRun, {
+          kind: "search",
+          message,
+          code: classifyError(message),
+          stage: "guest_access",
+          collectionOutcomes: EMPTY_OUTCOMES,
+          rateLimit: null,
+        });
+        return;
+      }
+      if (!canSearch) {
+        resetToIdle();
+        bestEffort(() => ports.guestAccess!.requestSignup("limit"));
+        return;
+      }
+    }
+
+    let pendingEntryId: string | null = null;
+    if (ports.pendingHistory) {
+      try {
+        pendingEntryId = ports.ids?.pendingEntry() ?? `search-${generation + 1}`;
+      } catch {
+        pendingEntryId = `search-${generation + 1}`;
+      }
+    }
+    const ownedRun = nextRun(request, null, pendingEntryId);
+    if (ports.audience.kind === "guest" && ports.guestContinuity) {
+      bestEffort(() => ports.guestContinuity!.clear());
+    }
+    if (pendingEntryId && ports.pendingHistory) {
+      bestEffort(() => ports.pendingHistory!.begin(pendingEntryId, request.query));
+    }
+    emitPreparingSearch(ownedRun, request);
 
     const callbacks = transportCallbacks(ownedRun);
     const audience = ports.audience;
-    const search = audience.kind === "authenticated"
-      ? (() => {
+    const rejectSearch = (error: unknown) => {
+      if (!isCurrent(ownedRun.id) || ownedRun.controller.signal.aborted || ownedRun.terminal) return;
+      const message = error instanceof Error ? error.message : "Search failed";
+      callbacks.onError(message, classifyError(message), "connection");
+    };
+    try {
+      const search = audience.kind === "authenticated"
+        ? (() => {
           const credential = ports.credentials!.current();
           if (!credential) {
             callbacks.onError("Authentication is required.", "auth_error", "authentication");
@@ -417,13 +482,11 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           }
           return audience.search(credential, request, callbacks, ownedRun.controller.signal);
         })
-      : (() => audience.search(request, callbacks, ownedRun.controller.signal));
-
-    void search().catch((error: unknown) => {
-      if (!isCurrent(ownedRun.id) || ownedRun.controller.signal.aborted || ownedRun.terminal) return;
-      const message = error instanceof Error ? error.message : "Search failed";
-      callbacks.onError(message, classifyError(message), "connection");
-    });
+        : (() => audience.search(request, callbacks, ownedRun.controller.signal));
+      void Promise.resolve(search()).catch(rejectSearch);
+    } catch (error: unknown) {
+      rejectSearch(error);
+    }
   };
 
   const startRestore = (searchIdInput: string) => {
@@ -437,7 +500,21 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       canSubmit: true,
       canRetry: false,
     });
-    const credential = ports.credentials.current();
+    let credential: string | null;
+    try {
+      credential = ports.credentials.current();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Authentication could not be checked.";
+      failSearch(ownedRun, {
+        kind: "restore",
+        message,
+        code: classifyError(message),
+        stage: "authentication",
+        collectionOutcomes: EMPTY_OUTCOMES,
+        rateLimit: null,
+      }, false);
+      return;
+    }
     if (!credential) {
       failSearch(ownedRun, {
         kind: "restore",
@@ -449,7 +526,22 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       }, false);
       return;
     }
-    void ports.savedSearch.restore(credential, searchId, ownedRun.controller.signal).then((result) => {
+    let restoration: Promise<SavedSearchResult>;
+    try {
+      restoration = ports.savedSearch.restore(credential, searchId, ownedRun.controller.signal);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Saved search could not be loaded.";
+      failSearch(ownedRun, {
+        kind: "restore",
+        message,
+        code: classifyError(message),
+        stage: "restore",
+        collectionOutcomes: EMPTY_OUTCOMES,
+        rateLimit: null,
+      });
+      return;
+    }
+    void Promise.resolve(restoration).then((result) => {
       if (!isCurrent(ownedRun.id)) return;
       emit({
         status: "restored-results",

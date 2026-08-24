@@ -11,6 +11,7 @@ export type {
   Passage,
   RestoredResultsSnapshot,
   SearchExperience,
+  SearchCompletionFailure,
   SearchExperienceCommand,
   SearchExperiencePorts,
   SearchExperienceSnapshot,

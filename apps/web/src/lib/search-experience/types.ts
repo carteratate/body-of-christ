@@ -20,10 +20,21 @@ export interface SearchRequest {
 
 export type SearchPhase = "searching" | "ranking";
 
+export interface SearchCompletionFailure {
+  readonly message: string;
+  readonly code: string | null;
+  readonly stage: string | null;
+  readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
+}
+
 export type SearchTransportState =
   | { readonly status: "preparing" }
   | { readonly status: "searching"; readonly phase: SearchPhase }
-  | { readonly status: "ranked-ready"; readonly resultCount: number }
+  | {
+      readonly status: "ranked-ready";
+      readonly resultCount: number;
+      readonly completionFailure: SearchCompletionFailure | null;
+    }
   | {
       readonly status: "complete";
       readonly searchId: string | null;
@@ -135,7 +146,7 @@ export type SearchExperienceCommand =
 
 export interface SearchTransportCallbacks {
   readonly onStatus: (phase: SearchPhase) => void;
-  readonly onPassage: (passage: ChunkResult) => void;
+  readonly onPassage: (passage: Passage) => void;
   readonly onResultsReady: (resultCount: number) => void;
   readonly onExplanationDelta: (passageId: string, delta: string) => void;
   readonly onDone: (
