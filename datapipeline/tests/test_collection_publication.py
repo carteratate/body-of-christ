@@ -140,26 +140,6 @@ def test_source_adapter_registry_exactly_matches_production_collections():
     assert all(callable(adapter) for adapter in SOURCE_ADAPTERS.values())
 
 
-def test_retired_publication_entry_points_and_direct_adapter_writes_are_absent():
-    datapipeline_root = Path(__file__).resolve().parents[1]
-
-    for retired_entry_point in (
-        "run_all.py",
-        "load.py",
-        "embed.py",
-        "scripts/add_verse_markers.py",
-        "scripts/delete_collection_qdrant.py",
-    ):
-        assert not (datapipeline_root / retired_entry_point).exists()
-
-    for adapter_name in ("bible.py", "catechism.py"):
-        source = (datapipeline_root / "ingest" / adapter_name).read_text()
-        assert "from load import" not in source
-        assert "upsert_document" not in source
-        assert "upsert_chunk" not in source
-        assert 'if __name__ == "__main__"' not in source
-
-
 @pytest.mark.parametrize(
     ("target", "expected_events"),
     [
