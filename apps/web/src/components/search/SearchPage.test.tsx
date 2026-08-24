@@ -10,6 +10,7 @@ const testState = vi.hoisted(() => ({
   params: "restore=11111111-1111-4111-8111-111111111111",
   token: "token" as string | null,
   userId: "user-a" as string | null,
+  searchKey: 0,
 }));
 
 const apiMocks = vi.hoisted(() => ({
@@ -44,7 +45,7 @@ vi.mock("@/components/layout/AppShell", () => ({
     token: testState.token,
     userId: testState.userId,
     preferences: { default_collections: ["bible"], preferred_translation: "CPDV", default_quota: 4 },
-    searchKey: 0,
+    searchKey: testState.searchKey,
     searches: [{
       id: "11111111-1111-4111-8111-111111111111",
       query: "Restored query",
@@ -154,6 +155,7 @@ afterEach(() => {
   testState.params = "restore=11111111-1111-4111-8111-111111111111";
   testState.token = "token";
   testState.userId = "user-a";
+  testState.searchKey = 0;
   animationMocks.onFiltersReady = null;
 });
 
@@ -390,6 +392,119 @@ describe("SearchPage animation-gated stream reveal", () => {
     expect(streamSignal.aborted).toBe(true);
     expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
     expect(await screen.findByText("Restored after cancellation")).toBeTruthy();
+  });
+
+  it("clears a rate-limited authenticated run before presenting the modal", async () => {
+    testState.params = "";
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+    });
+    render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    appMocks.clearPendingSearch.mockClear();
+
+    act(() => streamCallbacks.onRateLimit(25, "per_minute"));
+
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+    expect(await screen.findByRole("dialog", { name: "Search Limit Reached" })).toBeTruthy();
+  });
+
+  it("keeps a replacement pending entry when stale callbacks clean up the older run", async () => {
+    testState.params = "";
+    const streamCallbacks: SearchStreamCallbacks[] = [];
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks.push(callbacks);
+    });
+    render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "first" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    appMocks.clearPendingSearch.mockClear();
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "second" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledTimes(2));
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+    const firstEntry = appMocks.setPendingSearch.mock.calls.find((call) => call[1] === "first");
+    const secondEntry = appMocks.setPendingSearch.mock.calls.find((call) => call[1] === "second");
+    expect(secondEntry?.[0]).not.toBe(firstEntry?.[0]);
+
+    act(() => streamCallbacks[0].onError("stale failure"));
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+    act(() => streamCallbacks[1].onError("current failure"));
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledTimes(2);
+  });
+
+  it("clears pending History before refreshing and activates the persisted search", async () => {
+    testState.params = "";
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+    });
+    render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    appMocks.clearPendingSearch.mockClear();
+    appMocks.refreshSearches.mockClear();
+    appMocks.setActiveSearchId.mockClear();
+
+    act(() => streamCallbacks.onDone("persisted-search", 0, "no_candidates", {}, true));
+
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+    expect(appMocks.refreshSearches).toHaveBeenCalledOnce();
+    expect(appMocks.clearPendingSearch.mock.invocationCallOrder[0])
+      .toBeLessThan(appMocks.refreshSearches.mock.invocationCallOrder[0]);
+    await waitFor(() => expect(appMocks.setActiveSearchId).toHaveBeenCalledWith("persisted-search"));
+  });
+
+  it("cancels the owning run and creates a fresh placeholder on New Search", async () => {
+    testState.params = "";
+    let streamSignal!: AbortSignal;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, _callbacks, signal) => {
+      streamSignal = signal!;
+    });
+    const view = render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    const submittedEntry = appMocks.setPendingSearch.mock.calls.find((call) => call[1] === "grace");
+    appMocks.clearPendingSearch.mockClear();
+
+    testState.searchKey += 1;
+    view.rerender(<SearchPage />);
+
+    await waitFor(() => expect(streamSignal.aborted).toBe(true));
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
+    const newestPlaceholder = appMocks.setPendingSearch.mock.calls.at(-1);
+    expect(newestPlaceholder?.[1]).toBe("New Search");
+    expect(newestPlaceholder?.[0]).not.toBe(submittedEntry?.[0]);
+  });
+
+  it("clears the owning pending entry when the page is disposed", async () => {
+    testState.params = "";
+    let streamSignal!: AbortSignal;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, _callbacks, signal) => {
+      streamSignal = signal!;
+    });
+    const view = render(<SearchPage />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    appMocks.clearPendingSearch.mockClear();
+
+    view.unmount();
+
+    await waitFor(() => expect(streamSignal.aborted).toBe(true));
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
   });
 
   it("buffers fast authenticated completion until reveal and keeps the overlay through its fade", async () => {

@@ -599,7 +599,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         guestGate?.requestSignup("limit");
         return;
       }
-      if (!isGuest) {
+      if (!isGuest && !newExploreLabel) {
         abortRef.current?.abort();
         activeRequestRef.current += 1;
         activatedCompletedSearchRef.current = null;
@@ -619,7 +619,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         return;
       }
 
-      // Guest coordination intentionally remains on the page until ticket #14.
+      // Guest coordination remains here until #14. Route-driven explore
+      // handoffs retain their authenticated page path until #15.
+      const currentToken = tokenRef.current;
+      if (!isGuest && !currentToken) return;
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
@@ -787,14 +790,25 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           },
         };
 
-        await streamGuestSearch(
-          getGuestSessionToken(),
-          query,
-          { collections: snapshot, translation: searchTranslation },
-          searchQuota,
-          streamCallbacks,
-          controller.signal,
-        );
+        if (isGuest) {
+          await streamGuestSearch(
+            getGuestSessionToken(),
+            query,
+            { collections: snapshot, translation: searchTranslation },
+            searchQuota,
+            streamCallbacks,
+            controller.signal,
+          );
+        } else {
+          await streamSearch(
+            currentToken!,
+            query,
+            { collections: snapshot, translation: searchTranslation },
+            searchQuota,
+            streamCallbacks,
+            controller.signal,
+          );
+        }
       } catch (err: unknown) {
         if (!isCurrentRequest() || terminalReceived) return;
         terminalReceived = true;
@@ -926,7 +940,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const renderedLoading = runtimeOwnsSearchView
     ? authenticatedActive?.presentation.status === "animating"
     : loading;
-  const renderedResults = useMemo(
+  const renderedPassages = useMemo(
     () => runtimeOwnsSearchView ? [...(authenticatedActive?.passages ?? [])] : results,
     [authenticatedActive?.passages, results, runtimeOwnsSearchView],
   );
@@ -997,8 +1011,8 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // Collections that actually have results — used for filter bar pills only.
   // Derived from results so it never shows buttons for collections that returned nothing.
   const filterBarCollections = useMemo(
-    () => [...new Set(renderedResults.map((r) => r.source.collection))],
-    [renderedResults]
+    () => [...new Set(renderedPassages.map((passage) => passage.source.collection))],
+    [renderedPassages]
   );
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -1050,7 +1064,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
         {!renderedError && (renderedLoading || renderedSubmittedQuery) && (
           <SearchResults
-            results={renderedResults}
+            results={renderedPassages}
             loading={renderedLoading}
             searchId={renderedSearchId}
             token={token ?? ""}
