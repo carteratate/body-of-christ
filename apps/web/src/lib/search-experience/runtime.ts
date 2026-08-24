@@ -501,7 +501,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         return;
       }
       if (!canSearch) {
-        resetToIdle();
         bestEffort(() => ports.guestAccess!.requestSignup("limit"));
         return;
       }
@@ -676,9 +675,26 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       case "retry": retry(); break;
       case "animation": animation(command); break;
       case "dismiss-rate-limit": {
-        if (snapshot.status !== "failure" || !snapshot.failure.rateLimit?.open) break;
-        const rateLimit = Object.freeze({ ...snapshot.failure.rateLimit, open: false });
-        emit({ ...snapshot, failure: { ...snapshot.failure, rateLimit } });
+        if (snapshot.status === "failure" && snapshot.failure.rateLimit?.open) {
+          const rateLimit = Object.freeze({ ...snapshot.failure.rateLimit, open: false });
+          emit({ ...snapshot, failure: { ...snapshot.failure, rateLimit } });
+          break;
+        }
+        if (snapshot.status === "active-search"
+          && snapshot.transport.status === "ranked-ready"
+          && snapshot.transport.completionFailure?.rateLimit?.open) {
+          const completionFailure = {
+            ...snapshot.transport.completionFailure,
+            rateLimit: Object.freeze({
+              ...snapshot.transport.completionFailure.rateLimit,
+              open: false,
+            }),
+          };
+          emit({
+            ...snapshot,
+            transport: { ...snapshot.transport, completionFailure },
+          });
+        }
         break;
       }
       case "guest-visible-collections-changed":

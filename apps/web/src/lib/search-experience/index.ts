@@ -16,6 +16,7 @@ export type {
   SearchExperiencePorts,
   SearchExperienceSnapshot,
   SearchPresentationState,
+  SearchRateLimit,
   SearchRequest,
   SearchTransportCallbacks,
   SearchTransportState,

@@ -350,7 +350,7 @@ describe("search-experience runtime", () => {
     });
   });
 
-  it("cancels the current run when a valid replacement is denied before transport", () => {
+  it("preserves the current guest view when a replacement is denied before transport", () => {
     let canSearch = true;
     const requestSignup = vi.fn();
     const { runtime, runs } = guestFixture({
@@ -366,10 +366,10 @@ describe("search-experience runtime", () => {
     canSearch = false;
     runtime.send({ type: "submit", request: { ...REQUEST, query: "Denied replacement" } });
 
-    expect(runs[0].signal.aborted).toBe(true);
+    expect(runs[0].signal.aborted).toBe(false);
     expect(runs).toHaveLength(1);
     expect(requestSignup).toHaveBeenCalledWith("limit");
-    expect(runtime.read()).toMatchObject({ status: "idle", runId: activeRunId + 1 });
+    expect(runtime.read()).toMatchObject({ status: "active-search", runId: activeRunId });
   });
 
   it("cancels the current run before a restore fails for missing credentials", () => {

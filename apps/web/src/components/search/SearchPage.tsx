@@ -33,6 +33,7 @@ import {
   createSearchExperience,
   useSearchExperience,
   type ActiveSearchSnapshot,
+  type AuthenticatedSearchExperiencePorts,
   type FailureSnapshot,
   type GuestContinuitySnapshot,
 } from "@/lib/search-experience";
@@ -94,6 +95,25 @@ function readGuestResultsSnapshot(): { continuity: GuestContinuitySnapshot; visi
 function clearGuestResultsSnapshot() {
   try { sessionStorage.removeItem(GUEST_RESULTS_KEY); } catch {}
 }
+
+const searchAnalytics: NonNullable<AuthenticatedSearchExperiencePorts["analytics"]> = {
+  searchCompleted({ request, resultCount }) {
+    trackSearchPerformed({
+      queryLength: request.query.length,
+      collectionsUsed: [...request.collections],
+      quotaPerSource: request.quota,
+      resultCount,
+      translation: request.translation,
+    });
+  },
+  searchFailed({ code }) {
+    if (code === "rate_limit") return;
+    const errorType = code === "auth_error" || code === "network_error"
+      ? code
+      : "server_error";
+    trackErrorOccurred({ page: "search", errorType });
+  },
+};
 
 function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const router = useRouter();
@@ -287,24 +307,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         return placeholderId ?? crypto.randomUUID();
       },
     },
-    analytics: {
-      searchCompleted({ request, resultCount }) {
-        trackSearchPerformed({
-          queryLength: request.query.length,
-          collectionsUsed: [...request.collections],
-          quotaPerSource: request.quota,
-          resultCount,
-          translation: request.translation,
-        });
-      },
-      searchFailed({ code }) {
-        if (code === "rate_limit") return;
-        const errorType = code === "auth_error" || code === "network_error"
-          ? code
-          : "server_error";
-        trackErrorOccurred({ page: "search", errorType });
-      },
-    },
+    analytics: searchAnalytics,
   }));
   const authenticatedSnapshot = useSearchExperience(authenticatedExperience);
   const guestGateRef = useRef(guestGate);
@@ -359,24 +362,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       clear: clearGuestResultsSnapshot,
     },
     time: { now: Date.now },
-    analytics: {
-      searchCompleted({ request, resultCount }) {
-        trackSearchPerformed({
-          queryLength: request.query.length,
-          collectionsUsed: [...request.collections],
-          quotaPerSource: request.quota,
-          resultCount,
-          translation: request.translation,
-        });
-      },
-      searchFailed({ code }) {
-        if (code === "rate_limit") return;
-        const errorType = code === "auth_error" || code === "network_error"
-          ? code
-          : "server_error";
-        trackErrorOccurred({ page: "search", errorType });
-      },
-    },
+    analytics: searchAnalytics,
   }));
   const guestSnapshot = useSearchExperience(guestExperience);
 
@@ -997,8 +983,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const renderedOutcome = runtimeOwnsSearchView
     ? runtimeTransport?.status === "complete" ? runtimeTransport.outcome : null
     : outcome;
+  const runtimeCompletionFailure = runtimeTransport?.status === "ranked-ready"
+    ? runtimeTransport.completionFailure
+    : null;
   const renderedCollectionOutcomes = runtimeOwnsSearchView
     ? runtimeFailure?.failure.collectionOutcomes
+      ?? runtimeCompletionFailure?.collectionOutcomes
       ?? (runtimeTransport?.status === "complete" ? runtimeTransport.collectionOutcomes : {})
     : collectionOutcomes;
   const renderedSaveWarning = runtimeOwnsSearchView ? runtimeActive?.saveWarning ?? null : saveWarning;
@@ -1033,7 +1023,9 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     : submittedQuota;
   const renderedRateLimit = runtimeFailure?.failure.rateLimit?.open
     ? runtimeFailure.failure.rateLimit
-    : null;
+    : runtimeCompletionFailure?.rateLimit?.open
+      ? runtimeCompletionFailure.rateLimit
+      : null;
 
   useLayoutEffect(() => {
     if (!runtimeOwnsSearchView) return;
@@ -1131,6 +1123,15 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         {renderedSaveWarning && !renderedLoading && !renderedError && (
           <div className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-muted">
             {renderedSaveWarning}
+          </div>
+        )}
+
+        {runtimeCompletionFailure && !runtimeCompletionFailure.rateLimit && !renderedLoading && (
+          <div
+            role="status"
+            className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-muted"
+          >
+            {runtimeCompletionFailure.message}
           </div>
         )}
 

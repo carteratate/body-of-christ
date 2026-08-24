@@ -20,11 +20,18 @@ export interface SearchRequest {
 
 export type SearchPhase = "searching" | "ranking";
 
+export interface SearchRateLimit {
+  readonly type: "per_minute" | "daily";
+  readonly retryAfter: number | null;
+  readonly open: boolean;
+}
+
 export interface SearchCompletionFailure {
   readonly message: string;
   readonly code: string | null;
   readonly stage: string | null;
   readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
+  readonly rateLimit: SearchRateLimit | null;
 }
 
 export type SearchTransportState =
@@ -104,11 +111,7 @@ export interface SearchFailure {
   readonly code: string | null;
   readonly stage: string | null;
   readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
-  readonly rateLimit: {
-    readonly type: "per_minute" | "daily";
-    readonly retryAfter: number | null;
-    readonly open: boolean;
-  } | null;
+  readonly rateLimit: SearchRateLimit | null;
 }
 
 export interface FailureSnapshot extends SnapshotCapabilities {

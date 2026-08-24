@@ -622,6 +622,29 @@ describe("SearchPage animation-gated stream reveal", () => {
 
     expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
     expect(screen.queryByText("Passage retrieval failed")).toBeNull();
+    expect(screen.getByText("Transfer finalization failed")).toBeTruthy();
+  });
+
+  it("keeps revealed guest Passages visible under a late rate-limit modal", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+      callbacks.onChunk(streamedPassage);
+      callbacks.onResultsReady?.(1);
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    act(() => streamCallbacks.onRateLimit(20, "per_minute"));
+
+    expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
+    expect(screen.getByRole("dialog", { name: "Search Limit Reached" })).toBeTruthy();
   });
 
   it("records one guest trial use at results readiness and not again at done", async () => {
@@ -685,6 +708,34 @@ describe("SearchPage animation-gated stream reveal", () => {
 
     expect(apiMocks.streamGuestSearch).not.toHaveBeenCalled();
     expect(guestGateMocks.requestSignup).toHaveBeenCalledWith("limit");
+  });
+
+  it("keeps revealed guest results when a later submit reaches the local trial limit", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+      callbacks.onChunk(streamedPassage);
+      callbacks.onResultsReady?.(1);
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    expect(await screen.findByText(/Grace perfects nature/)).toBeTruthy();
+
+    guestGateMocks.searchCount = 2;
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "another" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+
+    expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce();
+    expect(guestGateMocks.requestSignup).toHaveBeenCalledWith("limit");
+    expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
+    expect(streamCallbacks).toBeTruthy();
   });
 
   it("ignores guest callbacks after a replacement search takes ownership", async () => {
