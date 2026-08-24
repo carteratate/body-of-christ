@@ -130,7 +130,7 @@ export type SearchExperienceCommand =
   | { readonly type: "dismiss-rate-limit" }
   | { readonly type: "cancel" }
   | { readonly type: "reset" }
-  | { readonly type: "identity-changed"; readonly identity: string | null }
+  | { readonly type: "identity-changed"; readonly userId: string | null }
   | { readonly type: "dispose" };
 
 export interface SearchTransportCallbacks {
@@ -183,8 +183,16 @@ export interface SavedSearchResult {
   readonly warning: string | null;
 }
 
-export interface SearchExperiencePorts {
-  readonly audience: AudienceAdapter;
+interface SharedSearchExperiencePorts {
+  readonly analytics?: {
+    readonly searchCompleted: (event: SearchCompletedEvent) => void | Promise<void>;
+    readonly searchFailed: (event: SearchFailedEvent) => void | Promise<void>;
+  };
+}
+
+export interface AuthenticatedSearchExperiencePorts extends SharedSearchExperiencePorts {
+  readonly audience: Extract<AudienceAdapter, { readonly kind: "authenticated" }>;
+  readonly credentials: { readonly current: () => string | null };
   readonly savedSearch?: {
     readonly restore: (
       credential: string,
@@ -197,6 +205,14 @@ export interface SearchExperiencePorts {
     readonly clear: (entryId: string) => void | Promise<void>;
     readonly refresh: () => void | Promise<void>;
   };
+  readonly ids?: { readonly pendingEntry: () => string };
+  readonly guestAccess?: never;
+  readonly guestContinuity?: never;
+  readonly time?: never;
+}
+
+export interface GuestSearchExperiencePorts extends SharedSearchExperiencePorts {
+  readonly audience: Extract<AudienceAdapter, { readonly kind: "guest" }>;
   readonly guestAccess?: {
     readonly canSearch: () => boolean;
     readonly requestSignup: (reason: "limit") => void | Promise<void>;
@@ -206,14 +222,16 @@ export interface SearchExperiencePorts {
     readonly save: (snapshot: GuestContinuitySnapshot) => void | Promise<void>;
     readonly clear: () => void | Promise<void>;
   };
-  readonly analytics?: {
-    readonly searchCompleted: (event: SearchCompletedEvent) => void | Promise<void>;
-    readonly searchFailed: (event: SearchFailedEvent) => void | Promise<void>;
-  };
-  readonly credentials?: { readonly current: () => string | null };
-  readonly ids?: { readonly pendingEntry: () => string };
   readonly time?: { readonly now: () => number };
+  readonly credentials?: never;
+  readonly savedSearch?: never;
+  readonly pendingHistory?: never;
+  readonly ids?: never;
 }
+
+export type SearchExperiencePorts =
+  | AuthenticatedSearchExperiencePorts
+  | GuestSearchExperiencePorts;
 
 export interface GuestContinuitySnapshot {
   readonly savedAt: number;

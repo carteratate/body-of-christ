@@ -82,11 +82,26 @@ function classifyError(message: string): string {
 }
 
 function validatePorts(ports: SearchExperiencePorts): void {
-  if (ports.audience.kind === "authenticated" && !ports.credentials) {
-    throw new Error("Authenticated search experience requires a credential port.");
+  const unchecked = ports as SearchExperiencePorts & {
+    readonly credentials?: unknown;
+    readonly savedSearch?: unknown;
+    readonly pendingHistory?: unknown;
+    readonly ids?: unknown;
+    readonly guestAccess?: unknown;
+    readonly guestContinuity?: unknown;
+    readonly time?: unknown;
+  };
+  if (ports.audience.kind === "authenticated") {
+    if (!unchecked.credentials) {
+      throw new Error("Authenticated search experience requires a credential port.");
+    }
+    if (unchecked.guestAccess || unchecked.guestContinuity || unchecked.time) {
+      throw new Error("Authenticated search experience cannot use guest capabilities.");
+    }
+    return;
   }
-  if (ports.savedSearch && !ports.credentials) {
-    throw new Error("Saved-search restoration requires a credential port.");
+  if (unchecked.credentials || unchecked.savedSearch || unchecked.pendingHistory || unchecked.ids) {
+    throw new Error("Guest search experience cannot use authenticated capabilities.");
   }
 }
 
@@ -103,7 +118,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
 
   const listeners = new Set<() => void>();
   let generation = 0;
-  let identity: string | null = null;
+  let userId: string | null = null;
   let disposed = false;
   let run: ActiveRun | null = null;
   let snapshot: SearchExperienceSnapshot = deepFreeze({
@@ -353,9 +368,16 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     },
   });
 
+  const resetToIdle = () => {
+    abortCurrent();
+    generation += 1;
+    emit({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
+  };
+
   const startSearch = (requestInput: SearchRequest) => {
     if (!isValidRequest(requestInput)) return;
     if (ports.audience.kind === "guest" && ports.guestAccess && !ports.guestAccess.canSearch()) {
+      resetToIdle();
       bestEffort(() => ports.guestAccess!.requestSignup("limit"));
       return;
     }
@@ -406,9 +428,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
 
   const startRestore = (searchIdInput: string) => {
     const searchId = searchIdInput.trim();
-    if (!searchId || !ports.savedSearch) return;
-    const credential = ports.credentials?.current();
-    if (!credential) return;
+    if (!searchId || ports.audience.kind !== "authenticated" || !ports.savedSearch) return;
     const ownedRun = nextRun(null, searchId, null);
     emit({
       status: "restoring",
@@ -417,6 +437,18 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       canSubmit: true,
       canRetry: false,
     });
+    const credential = ports.credentials.current();
+    if (!credential) {
+      failSearch(ownedRun, {
+        kind: "restore",
+        message: "Authentication is required.",
+        code: "auth_error",
+        stage: "authentication",
+        collectionOutcomes: EMPTY_OUTCOMES,
+        rateLimit: null,
+      }, false);
+      return;
+    }
     void ports.savedSearch.restore(credential, searchId, ownedRun.controller.signal).then((result) => {
       if (!isCurrent(ownedRun.id)) return;
       emit({
@@ -453,12 +485,19 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     if (!isCurrent(command.runId) || snapshot.status !== "active-search" || !run) return;
     const current = snapshot;
     if (command.milestone === "filters-ready") {
-      if (current.presentation.status !== "animating" || current.presentation.filtersReady) return;
+      if (current.presentation.status !== "animating" || current.presentation.filtersReady) {
+        throw new Error("Filters-ready must occur once while the search animation is running.");
+      }
       emit({ ...current, presentation: { ...current.presentation, filtersReady: true } });
       return;
     }
     if (command.milestone === "ready-to-reveal") {
-      if (current.presentation.status !== "animating" || !current.presentation.resultsReady) return;
+      if (current.presentation.status !== "animating") {
+        throw new Error("Ready-to-reveal must occur while the search animation is running.");
+      }
+      if (!current.presentation.resultsReady) {
+        throw new Error("Ready-to-reveal cannot occur before ranked results are ready.");
+      }
       run.revealed = true;
       const next: ActiveSearchSnapshot = {
         ...current,
@@ -469,14 +508,10 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       saveGuestContinuity(run, next);
       return;
     }
-    if (current.presentation.status !== "fading") return;
+    if (current.presentation.status !== "fading") {
+      throw new Error("Fade-complete must occur while the search animation is fading.");
+    }
     emit({ ...current, presentation: { status: "revealed", filtersReady: true } });
-  };
-
-  const reset = () => {
-    abortCurrent();
-    generation += 1;
-    emit({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
   };
 
   return Object.freeze({
@@ -499,11 +534,11 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           break;
         }
         case "cancel":
-        case "reset": reset(); break;
+        case "reset": resetToIdle(); break;
         case "identity-changed":
-          if (command.identity !== identity) {
-            identity = command.identity;
-            reset();
+          if (command.userId !== userId) {
+            userId = command.userId;
+            resetToIdle();
           }
           break;
         case "dispose":

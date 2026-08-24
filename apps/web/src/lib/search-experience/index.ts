@@ -3,8 +3,10 @@ export { useSearchExperience } from "./useSearchExperience";
 export type {
   ActiveSearchSnapshot,
   AnimationMilestone,
+  AuthenticatedSearchExperiencePorts,
   AudienceAdapter,
   FailureSnapshot,
+  GuestSearchExperiencePorts,
   GuestContinuitySnapshot,
   Passage,
   RestoredResultsSnapshot,

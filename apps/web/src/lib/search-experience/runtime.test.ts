@@ -1,9 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import type { ChunkResult } from "@/lib/search-stream";
 import { createSearchExperience } from "./runtime";
 import type {
+  AuthenticatedSearchExperiencePorts,
   AudienceAdapter,
+  GuestSearchExperiencePorts,
   SearchExperiencePorts,
   SearchRequest,
   SearchTransportCallbacks,
@@ -41,7 +43,9 @@ interface ScriptedRun {
   readonly credential?: string;
 }
 
-function authenticatedFixture(overrides: Partial<SearchExperiencePorts> = {}) {
+function authenticatedFixture(
+  overrides: Partial<Omit<AuthenticatedSearchExperiencePorts, "audience">> = {},
+) {
   const runs: ScriptedRun[] = [];
   const audience: AudienceAdapter = {
     kind: "authenticated",
@@ -49,15 +53,14 @@ function authenticatedFixture(overrides: Partial<SearchExperiencePorts> = {}) {
       runs.push({ credential, request, callbacks, signal });
     },
   };
-  const runtime = createSearchExperience({
-    audience,
-    credentials: { current: () => "current-token" },
-    ...overrides,
-  });
+  const credentials = overrides.credentials ?? { current: () => "current-token" };
+  const runtime = createSearchExperience({ ...overrides, audience, credentials });
   return { runtime, runs };
 }
 
-function guestFixture(overrides: Partial<SearchExperiencePorts> = {}) {
+function guestFixture(
+  overrides: Partial<Omit<GuestSearchExperiencePorts, "audience">> = {},
+) {
   const runs: ScriptedRun[] = [];
   const audience: AudienceAdapter = {
     kind: "guest",
@@ -207,6 +210,78 @@ describe("search-experience runtime", () => {
     });
   });
 
+  it("aborts across search and restore replacements", () => {
+    const restoreSignals: AbortSignal[] = [];
+    const savedSearch = {
+      restore: vi.fn((_credential: string, _searchId: string, signal: AbortSignal) => {
+        restoreSignals.push(signal);
+        return new Promise<never>(() => undefined);
+      }),
+    };
+    const { runtime, runs } = authenticatedFixture({ savedSearch });
+
+    runtime.send({ type: "submit", request: REQUEST });
+    const searchRunId = runtime.read().runId;
+    runtime.send({ type: "restore", searchId: "saved-search" });
+
+    expect(runs[0].signal.aborted).toBe(true);
+    expect(runtime.read()).toMatchObject({ status: "restoring", runId: searchRunId + 1 });
+
+    runtime.send({ type: "submit", request: { ...REQUEST, query: "Replacement search" } });
+    expect(restoreSignals[0].aborted).toBe(true);
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      runId: searchRunId + 2,
+      request: { query: "Replacement search" },
+    });
+  });
+
+  it("cancels the current run when a valid replacement is denied before transport", () => {
+    let canSearch = true;
+    const requestSignup = vi.fn();
+    const { runtime, runs } = guestFixture({
+      guestAccess: {
+        canSearch: () => canSearch,
+        requestSignup,
+        recordCompletedSearch: vi.fn(),
+      },
+    });
+
+    runtime.send({ type: "submit", request: REQUEST });
+    const activeRunId = runtime.read().runId;
+    canSearch = false;
+    runtime.send({ type: "submit", request: { ...REQUEST, query: "Denied replacement" } });
+
+    expect(runs[0].signal.aborted).toBe(true);
+    expect(runs).toHaveLength(1);
+    expect(requestSignup).toHaveBeenCalledWith("limit");
+    expect(runtime.read()).toMatchObject({ status: "idle", runId: activeRunId + 1 });
+  });
+
+  it("cancels the current run before a restore fails for missing credentials", () => {
+    let credential: string | null = "current-token";
+    const savedSearch = { restore: vi.fn() };
+    const { runtime, runs } = authenticatedFixture({
+      credentials: { current: () => credential },
+      savedSearch,
+    });
+
+    runtime.send({ type: "submit", request: REQUEST });
+    const activeRunId = runtime.read().runId;
+    credential = null;
+    runtime.send({ type: "restore", searchId: "saved-search" });
+
+    expect(runs[0].signal.aborted).toBe(true);
+    expect(savedSearch.restore).not.toHaveBeenCalled();
+    expect(runtime.read()).toMatchObject({
+      status: "failure",
+      runId: activeRunId + 1,
+      restoreId: "saved-search",
+      failure: { kind: "restore", code: "auth_error" },
+      canRetry: false,
+    });
+  });
+
   it("treats invalid user commands as no-ops", () => {
     const { runtime, runs } = authenticatedFixture();
     const initial = runtime.read();
@@ -225,6 +300,57 @@ describe("search-experience runtime", () => {
     expect(() => runs[0].callbacks.onResultsReady(1)).toThrow(/guest adapter/);
     runs[0].callbacks.onDone("search-1", 0, "no_candidates", {}, true);
     expect(() => runs[0].callbacks.onPassage(passage("late"))).toThrow(/terminal/);
+  });
+
+  it("fails loudly for impossible current-run animation transitions", () => {
+    const { runtime, runs } = authenticatedFixture();
+    runtime.send({ type: "submit", request: REQUEST });
+    const runId = runtime.read().runId;
+
+    expect(() => runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" }))
+      .toThrow(/before ranked results are ready/);
+    expect(() => runtime.send({ type: "animation", runId, milestone: "fade-complete" }))
+      .toThrow(/while the search animation is fading/);
+
+    runtime.send({ type: "animation", runId, milestone: "filters-ready" });
+    expect(() => runtime.send({ type: "animation", runId, milestone: "filters-ready" }))
+      .toThrow(/must occur once/);
+
+    runs[0].callbacks.onDone("search-1", 0, "no_candidates", {}, true);
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+    expect(() => runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" }))
+      .toThrow(/while the search animation is running/);
+    runtime.send({ type: "animation", runId, milestone: "fade-complete" });
+    expect(() => runtime.send({ type: "animation", runId, milestone: "fade-complete" }))
+      .toThrow(/while the search animation is fading/);
+  });
+
+  it("keeps authenticated and guest capabilities mutually exclusive", () => {
+    type AuthenticatedAdapter = Extract<AudienceAdapter, { kind: "authenticated" }>;
+    type GuestAdapter = Extract<AudienceAdapter, { kind: "guest" }>;
+
+    expectTypeOf<{
+      audience: GuestAdapter;
+      credentials: { current: () => string };
+    }>().not.toMatchTypeOf<SearchExperiencePorts>();
+    expectTypeOf<{
+      audience: GuestAdapter;
+      savedSearch: { restore: () => Promise<never> };
+    }>().not.toMatchTypeOf<SearchExperiencePorts>();
+    expectTypeOf<{
+      audience: AuthenticatedAdapter;
+      credentials: { current: () => string };
+      guestAccess: { canSearch: () => true };
+    }>().not.toMatchTypeOf<SearchExperiencePorts>();
+
+    const guestAudience: GuestAdapter = {
+      kind: "guest",
+      async search() {},
+    };
+    expect(() => createSearchExperience({
+      audience: guestAudience,
+      credentials: { current: () => "token" },
+    } as unknown as SearchExperiencePorts)).toThrow(/authenticated capabilities/);
   });
 
   it("keeps no-candidate, service failure, and rate limits as distinct outcomes", () => {
@@ -371,9 +497,9 @@ describe("search-experience runtime", () => {
 
   it("cancels work on identity changes and disposal", () => {
     const { runtime, runs } = authenticatedFixture();
-    runtime.send({ type: "identity-changed", identity: "user-1" });
+    runtime.send({ type: "identity-changed", userId: "user-1" });
     runtime.send({ type: "submit", request: REQUEST });
-    runtime.send({ type: "identity-changed", identity: "user-2" });
+    runtime.send({ type: "identity-changed", userId: "user-2" });
     expect(runs[0].signal.aborted).toBe(true);
     expect(runtime.read()).toMatchObject({ status: "idle" });
 
