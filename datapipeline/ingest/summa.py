@@ -48,11 +48,11 @@ _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
 # the article looks, to search, like it has no answer.
 #
 # ⚠️ NOT YET APPLIED TO THE CORPUS. This runs at ingest; the live data was built by the
-# previous pattern and still has those 33 misses. Re-ingesting solely to fix them is a
-# bad trade — `run_collection.py` clears the collection first, and `retrievals`,
-# `bookmarks`, `retrieval_labels` and `guest_trial_retrievals` all cascade on
-# `chunks.id`. Let this ride along with the next Summa re-chunk. Until then, callers
-# must tolerate an article with no respondeo chunk rather than assume one exists.
+# previous pattern and still has those 33 misses. Publishing solely to fix them is a
+# deliberate corpus change: rebuilding the affected passage boundaries may trigger the
+# identity-churn guard. Let this ride along with the next planned Summa re-chunk. Until
+# then, callers must tolerate an article with no respondeo passage rather than assume
+# one exists.
 _PART_RE = re.compile(
     r"("
     r"Objection\s+\d+:"

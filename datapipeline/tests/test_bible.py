@@ -636,7 +636,7 @@ def test_sirach_not_in_deuterocanonical_books():
 
 
 def test_sirach_in_stanza_books():
-    """Sirach must be in _STANZA_BOOKS so ingest_webc routes it through stanza chunking."""
+    """Sirach must be in _STANZA_BOOKS so build_documents uses stanza chunking."""
     assert "Sirach" in _STANZA_BOOKS
 
 

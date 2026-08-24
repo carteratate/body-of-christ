@@ -7,9 +7,10 @@
 
 Uses `set_payload`, which rewrites payload only — vectors, point ids and the
 collection schema are untouched, so nothing is re-embedded and no chunk id changes.
-That is the whole reason this exists rather than a re-ingest: `run_collection.py`
-would call `reader_writer.clear_collection`, and `retrievals`, `bookmarks`,
-`retrieval_labels` and `guest_trial_retrievals` all cascade on `chunks.id`.
+That is the whole reason this narrow repair exists instead of full collection
+publication, which would rebuild and reconcile every Passage in the selected target.
+Routine collection publication upserts before pruning and does not wipe the reader
+store unless the operator explicitly requests and confirms `--wipe-reader`.
 
 DRY RUN IS THE DEFAULT. `--apply` is required to write.
 

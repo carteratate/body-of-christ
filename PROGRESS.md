@@ -15,7 +15,8 @@
 
 ## Plan File
 `/home/carter/.claude/plans/i-want-to-develop-crispy-journal.md`
-Full V2 design spec + build sequence. Read it before making architectural decisions.
+Historical external plan path, retained as provenance; it is not available in this
+repository and is not current architectural guidance.
 
 ---
 
