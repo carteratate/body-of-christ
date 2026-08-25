@@ -94,7 +94,7 @@ export function useAuthenticatedSearchRoute({
       return;
     }
     if (snapshot.status === "restoring"
-      || snapshot.status === "restored-results"
+      || snapshot.status === "restored-passages"
       || (snapshot.status === "failure" && snapshot.failure.kind === "restore")) {
       experience.send({ type: "cancel" });
     }
@@ -109,7 +109,11 @@ export function useAuthenticatedSearchRoute({
   }, [credential, experience, restoreId]);
 
   useEffect(() => {
-    if (!exploreQuery || !credential) return;
+    if (!exploreQuery) {
+      consumedExploreRoute.current = null;
+      return;
+    }
+    if (!credential) return;
     const routeKey = `${exploreQuery}\u0000${exploreReference ?? ""}`;
     if (consumedExploreRoute.current === routeKey) return;
     consumedExploreRoute.current = routeKey;
@@ -131,7 +135,7 @@ export function useAuthenticatedSearchRoute({
   const queryMoreLike = useCallback((content: string, label: string) => {
     const current = experience.read();
     const submitted = current.status === "active-search"
-      || current.status === "restored-results"
+      || current.status === "restored-passages"
       || (current.status === "failure" && current.request)
       ? current.request
       : null;

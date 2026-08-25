@@ -424,6 +424,21 @@ describe("SearchPage restore lifecycle", () => {
     ]);
     expect(navigationMocks.replace).toHaveBeenCalledWith("/search");
   });
+
+  it("submits the same route-driven explore again after leaving its route", async () => {
+    const exploreParams = "explore=Grace%20perfects%20nature&exploreRef=ST%20I-II%2C%20q.%20109";
+    testState.params = exploreParams;
+    const view = render(<SearchPage />);
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+
+    testState.params = "";
+    view.rerender(<SearchPage />);
+    testState.params = exploreParams;
+    view.rerender(<SearchPage />);
+
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledTimes(2));
+    expect(navigationMocks.replace).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe("SearchPage animation-gated stream reveal", () => {
