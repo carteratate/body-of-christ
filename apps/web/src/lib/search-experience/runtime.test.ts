@@ -490,7 +490,7 @@ describe("search-experience runtime", () => {
   it("isolates ID and clock port failures from the lifecycle", () => {
     const begin = vi.fn();
     const { runtime: authenticated, runs } = authenticatedFixture({
-      pendingHistory: { begin, clear: vi.fn(), refresh: vi.fn() },
+      pendingHistory: { begin, clear: vi.fn(), activate: vi.fn(), refresh: vi.fn() },
       ids: { pendingEntry: () => { throw new Error("id exploded"); } },
     });
     authenticated.send({ type: "submit", request: REQUEST });
@@ -634,7 +634,7 @@ describe("search-experience runtime", () => {
     const refresh = vi.fn();
     let id = 0;
     const { runtime, runs } = authenticatedFixture({
-      pendingHistory: { begin, clear, refresh },
+      pendingHistory: { begin, clear, activate: vi.fn(), refresh },
       ids: { pendingEntry: () => `pending-${++id}` },
     });
 
@@ -650,11 +650,58 @@ describe("search-experience runtime", () => {
     expect(clear.mock.invocationCallOrder.at(-1)).toBeLessThan(refresh.mock.invocationCallOrder[0]);
   });
 
+  it("owns the pending History placeholder through submit, completion, and reset", () => {
+    const begin = vi.fn();
+    const clear = vi.fn();
+    const activate = vi.fn();
+    const refresh = vi.fn();
+    let id = 0;
+    const { runtime, runs } = authenticatedFixture({
+      pendingHistory: { begin, clear, activate, refresh },
+      ids: { pendingEntry: () => `pending-${++id}` },
+    });
+
+    runtime.send({ type: "prepare-pending-history" });
+    expect(begin).toHaveBeenLastCalledWith("pending-1", "New Search");
+
+    runtime.send({ type: "submit", request: REQUEST });
+    expect(begin).toHaveBeenLastCalledWith("pending-1", REQUEST.query);
+    runs[0].callbacks.onDone("search-1", 1, "success", {}, true);
+    expect(clear).toHaveBeenCalledWith("pending-1");
+    expect(activate).toHaveBeenCalledWith("search-1");
+    expect(refresh).toHaveBeenCalledOnce();
+
+    runtime.send({ type: "reset" });
+    expect(begin).toHaveBeenLastCalledWith("pending-2", "New Search");
+  });
+
+  it("owns delayed guest explore submission and cancellation", () => {
+    vi.useFakeTimers();
+    try {
+      const { runtime, runs } = guestFixture();
+      const exploreRequest = { ...REQUEST, origin: "explore" as const };
+
+      runtime.send({ type: "queue-explore", request: exploreRequest });
+      vi.advanceTimersByTime(299);
+      expect(runs).toHaveLength(0);
+      runtime.send({ type: "cancel-queued-explore" });
+      vi.advanceTimersByTime(1);
+      expect(runs).toHaveLength(0);
+
+      runtime.send({ type: "queue-explore", request: exploreRequest });
+      vi.advanceTimersByTime(300);
+      expect(runs).toHaveLength(1);
+      expect(runs[0].request).toEqual(exploreRequest);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("clears pending History for failures and rate limits before retrying with a new owner", () => {
     const clear = vi.fn();
     let id = 0;
     const { runtime, runs } = authenticatedFixture({
-      pendingHistory: { begin: vi.fn(), clear, refresh: vi.fn() },
+      pendingHistory: { begin: vi.fn(), clear, activate: vi.fn(), refresh: vi.fn() },
       ids: { pendingEntry: () => `pending-${++id}` },
     });
 
@@ -672,7 +719,7 @@ describe("search-experience runtime", () => {
     const clear = vi.fn();
     let id = 0;
     const { runtime } = authenticatedFixture({
-      pendingHistory: { begin: vi.fn(), clear, refresh: vi.fn() },
+      pendingHistory: { begin: vi.fn(), clear, activate: vi.fn(), refresh: vi.fn() },
       ids: { pendingEntry: () => `pending-${++id}` },
     });
 
@@ -696,7 +743,7 @@ describe("search-experience runtime", () => {
   it("does not let secondary adapter failures discard available Passages", async () => {
     const rejects = () => Promise.reject(new Error("secondary failed"));
     const { runtime, runs } = authenticatedFixture({
-      pendingHistory: { begin: rejects, clear: rejects, refresh: rejects },
+      pendingHistory: { begin: rejects, clear: rejects, activate: rejects, refresh: rejects },
       analytics: { searchCompleted: rejects, searchFailed: rejects },
       ids: { pendingEntry: () => "pending" },
     });

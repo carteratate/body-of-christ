@@ -123,6 +123,8 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
   let userId: string | null = null;
   let disposed = false;
   let run: ActiveRun | null = null;
+  let preparedPendingEntryId: string | null = null;
+  let queuedExploreTimer: ReturnType<typeof setTimeout> | null = null;
   let guestVisibleCollections: readonly string[] = Object.freeze([]);
   let snapshot: SearchExperienceSnapshot = deepFreeze({
     status: "idle",
@@ -191,6 +193,35 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     if (ownedRun.pendingCleared || !ownedRun.pendingEntryId || !ports.pendingHistory) return;
     ownedRun.pendingCleared = true;
     bestEffort(() => ports.pendingHistory!.clear(ownedRun.pendingEntryId!));
+  };
+
+  const clearPreparedPending = () => {
+    if (!preparedPendingEntryId || !ports.pendingHistory) return;
+    const entryId = preparedPendingEntryId;
+    preparedPendingEntryId = null;
+    bestEffort(() => ports.pendingHistory!.clear(entryId));
+  };
+
+  const allocatePendingEntry = () => {
+    try {
+      return ports.ids?.pendingEntry() ?? `search-${generation + 1}`;
+    } catch {
+      return `search-${generation + 1}`;
+    }
+  };
+
+  const preparePending = () => {
+    if (ports.audience.kind !== "authenticated" || !ports.pendingHistory
+      || preparedPendingEntryId || run) return;
+    const entryId = allocatePendingEntry();
+    preparedPendingEntryId = entryId;
+    bestEffort(() => ports.pendingHistory!.begin(entryId, "New Search"));
+  };
+
+  const cancelQueuedExplore = () => {
+    if (!queuedExploreTimer) return;
+    clearTimeout(queuedExploreTimer);
+    queuedExploreTimer = null;
   };
 
   const abortCurrent = () => {
@@ -400,6 +431,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       };
       emit(next);
       if (ports.audience.kind === "authenticated" && searchId && ports.pendingHistory) {
+        bestEffort(() => ports.pendingHistory!.activate(searchId));
         bestEffort(() => ports.pendingHistory!.refresh());
       }
       recordGuestCompletion(ownedRun, resultCount);
@@ -459,7 +491,9 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
   });
 
   const resetToIdle = () => {
+    cancelQueuedExplore();
     abortCurrent();
+    clearPreparedPending();
     generation += 1;
     emit({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
   };
@@ -481,6 +515,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
 
   const startSearch = (requestInput: SearchRequest) => {
     if (!isValidRequest(requestInput)) return;
+    cancelQueuedExplore();
     const request = freezeRequest(requestInput);
     if (ports.audience.kind === "guest" && ports.guestAccess) {
       let canSearch: boolean;
@@ -506,14 +541,10 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       }
     }
 
-    let pendingEntryId: string | null = null;
-    if (ports.pendingHistory) {
-      try {
-        pendingEntryId = ports.ids?.pendingEntry() ?? `search-${generation + 1}`;
-      } catch {
-        pendingEntryId = `search-${generation + 1}`;
-      }
-    }
+    const pendingEntryId = ports.pendingHistory
+      ? preparedPendingEntryId ?? allocatePendingEntry()
+      : null;
+    preparedPendingEntryId = null;
     const ownedRun = nextRun(request, null, pendingEntryId);
     if (ports.audience.kind === "guest" && ports.guestContinuity) {
       guestVisibleCollections = Object.freeze([...request.collections]);
@@ -552,6 +583,8 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     const searchId = searchIdInput.trim();
     if (!searchId || ports.audience.kind !== "authenticated" || !ports.savedSearch) return;
     if (!retrying && run?.restoreId === searchId) return;
+    cancelQueuedExplore();
+    clearPreparedPending();
     const ownedRun = nextRun(null, searchId, null);
     emit({
       status: "restoring",
@@ -624,6 +657,9 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         canSubmit: true,
         canRetry: false,
       });
+      if (ports.pendingHistory) {
+        bestEffort(() => ports.pendingHistory!.activate(result.searchId));
+      }
     }).catch((error: unknown) => {
       failRestoration(error);
     });
@@ -673,6 +709,17 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
 
   const dispatch = (command: SearchExperienceCommand) => {
     switch (command.type) {
+      case "prepare-pending-history": preparePending(); break;
+      case "queue-explore": {
+        cancelQueuedExplore();
+        const request = freezeRequest(command.request);
+        queuedExploreTimer = setTimeout(() => {
+          queuedExploreTimer = null;
+          send({ type: "submit", request });
+        }, 300);
+        break;
+      }
+      case "cancel-queued-explore": cancelQueuedExplore(); break;
       case "submit": startSearch(command.request); break;
       case "restore": startRestore(command.searchId); break;
       case "retry": retry(); break;
@@ -711,6 +758,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         if (ports.audience.kind === "guest" && ports.guestContinuity) {
           bestEffort(() => ports.guestContinuity!.clear());
         }
+        preparePending();
         break;
       case "identity-changed":
         if (command.userId !== userId) {
@@ -726,7 +774,9 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         }
         break;
       case "dispose":
+        cancelQueuedExplore();
         abortCurrent();
+        clearPreparedPending();
         generation += 1;
         disposed = true;
         listeners.clear();

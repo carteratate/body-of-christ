@@ -135,6 +135,9 @@ export type AnimationMilestone =
 
 export type SearchExperienceCommand =
   | { readonly type: "submit"; readonly request: SearchRequest }
+  | { readonly type: "prepare-pending-history" }
+  | { readonly type: "queue-explore"; readonly request: SearchRequest }
+  | { readonly type: "cancel-queued-explore" }
   | { readonly type: "restore"; readonly searchId: string }
   | { readonly type: "retry" }
   | { readonly type: "animation"; readonly runId: number; readonly milestone: AnimationMilestone }
@@ -224,6 +227,7 @@ export interface AuthenticatedSearchExperiencePorts extends SharedSearchExperien
   readonly pendingHistory?: {
     readonly begin: (entryId: string, query: string) => void | Promise<void>;
     readonly clear: (entryId: string) => void | Promise<void>;
+    readonly activate: (searchId: string) => void | Promise<void>;
     readonly refresh: () => void | Promise<void>;
   };
   readonly ids?: { readonly pendingEntry: () => string };
