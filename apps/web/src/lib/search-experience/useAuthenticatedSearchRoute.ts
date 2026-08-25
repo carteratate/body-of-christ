@@ -33,7 +33,7 @@ function exploreLabel(query: string, reference: string | null): string {
   return clipped + (query.length > 60 ? "…" : "");
 }
 
-function requestFrom(
+function createExploreRequest(
   query: string,
   label: string,
   defaults: SearchDefaults,
@@ -103,7 +103,7 @@ export function useAuthenticatedSearchRoute({
     consumedExploreRoute.current = routeKey;
     experience.send({
       type: "submit",
-      request: requestFrom(
+      request: createExploreRequest(
         exploreQuery,
         exploreLabel(exploreQuery, exploreReference),
         defaults,
@@ -123,7 +123,7 @@ export function useAuthenticatedSearchRoute({
       || (current.status === "failure" && current.request)
       ? current.request
       : null;
-    const request = requestFrom(content, label, submitted ?? defaults);
+    const request = createExploreRequest(content, label, submitted ?? defaults);
     if (routeRestoreId.current) {
       queuedExplore.current = request;
       replaceWithSearchRoute();
