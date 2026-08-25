@@ -33,7 +33,7 @@ export interface AppContextValue {
   // Separate pending slot — never conflicts with the DB list
   pendingSearch: { id: string; query: string } | null;
   setPendingSearch: (id: string, query: string) => void;
-  clearPendingSearch: () => void;
+  clearPendingSearch: (expectedId?: string) => void;
   activeSearchId: string | null;
   setActiveSearchId: (id: string | null) => void;
   searchKey: number;
@@ -208,8 +208,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setPendingSearchState({ id, query });
   }, []);
 
-  const clearPendingSearch = useCallback(() => {
-    setPendingSearchState(null);
+  const clearPendingSearch = useCallback((expectedId?: string) => {
+    setPendingSearchState((current) => {
+      if (expectedId && current?.id !== expectedId) return current;
+      return null;
+    });
   }, []);
 
   const setBookmarkForChunk = useCallback((chunkId: string, bookmarkId: string | null) => {

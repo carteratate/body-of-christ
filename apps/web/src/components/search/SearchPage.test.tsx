@@ -98,13 +98,14 @@ vi.mock("./BottomBar", () => ({
 }));
 vi.mock("./EmptyState", () => ({ EmptyState: () => <div>Empty search</div> }));
 vi.mock("./SearchResults", () => ({
-  SearchResults: ({ results, loading, isRestoring, onExploreMore }: {
+  SearchResults: ({ results, loading, isRestoring, visibleCollections, onExploreMore }: {
     results: Array<{ content: string; explanation: string | null }>;
     loading: boolean;
     isRestoring: boolean;
+    visibleCollections: string[];
     onExploreMore: (content: string, label: string) => void;
   }) => (
-    <div>
+    <div data-testid="search-results" data-visible-collections={visibleCollections.join(",")}>
       {loading && isRestoring ? "Restoring" : "Restored results"}
       {results.map((result) => <div key={result.content}>{result.content} — {result.explanation}</div>)}
       {!loading && <button onClick={() => onExploreMore("A restored passage", "CCC 1000")}>Query More Like This</button>}
@@ -645,19 +646,48 @@ describe("SearchPage animation-gated stream reveal", () => {
 
   it("does not let a disposed page clear the next page's pending History entry", async () => {
     testState.params = "";
+    let pendingEntryId: string | null = null;
+    appMocks.setPendingSearch.mockImplementation((entryId: string) => {
+      pendingEntryId = entryId;
+    });
+    appMocks.clearPendingSearch.mockImplementation((expectedEntryId?: string) => {
+      if (!expectedEntryId || pendingEntryId === expectedEntryId) pendingEntryId = null;
+    });
     const firstPage = render(<SearchPage />);
     await waitFor(() => expect(appMocks.setPendingSearch).toHaveBeenCalledOnce());
 
     firstPage.unmount();
     render(<SearchPage />);
     await waitFor(() => expect(appMocks.setPendingSearch).toHaveBeenCalledTimes(2));
-    const replacementOrder = appMocks.setPendingSearch.mock.invocationCallOrder[1];
+    const replacementEntryId = appMocks.setPendingSearch.mock.calls[1][0];
 
     await act(async () => { await Promise.resolve(); });
 
-    const lateClears = appMocks.clearPendingSearch.mock.invocationCallOrder
-      .filter((order) => order > replacementOrder);
-    expect(lateClears).toEqual([]);
+    expect(pendingEntryId).toBe(replacementEntryId);
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledWith(expect.any(String));
+  });
+
+  it("resets guest result filters when a queued explore search becomes active", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
+      callbacks.onChunk(streamedPassage);
+      callbacks.onResultsReady?.(1);
+    });
+    render(<SearchPage isGuest />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    fireEvent.click(screen.getByRole("button", { name: "Toggle Bible visibility" }));
+    expect(screen.getByTestId("search-results").dataset.visibleCollections).not.toContain("bible");
+
+    fireEvent.click(screen.getByRole("button", { name: "Query More Like This" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledTimes(2));
+
+    expect(screen.getByTestId("search-results").dataset.visibleCollections).toContain("bible");
   });
 
   it("buffers fast authenticated completion until reveal and keeps the overlay through its fade", async () => {

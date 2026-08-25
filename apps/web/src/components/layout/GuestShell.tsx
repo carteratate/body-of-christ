@@ -68,7 +68,12 @@ export function GuestShell({ children }: { children: React.ReactNode }) {
     setPendingSearchState({ id, query });
   }, []);
 
-  const clearPendingSearch = useCallback(() => setPendingSearchState(null), []);
+  const clearPendingSearch = useCallback((expectedId?: string) => {
+    setPendingSearchState((current) => {
+      if (expectedId && current?.id !== expectedId) return current;
+      return null;
+    });
+  }, []);
 
   // Close nav on resize to desktop
   useEffect(() => {

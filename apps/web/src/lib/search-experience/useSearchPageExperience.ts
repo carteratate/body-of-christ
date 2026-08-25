@@ -192,7 +192,7 @@ interface GuestGate {
 
 interface PagePendingHistory {
   readonly showPending: (entryId: string, query: string) => void;
-  readonly clearPending: () => void;
+  readonly clearPending: (entryId: string) => void;
   readonly activate: (searchId: string | null) => void;
   readonly refresh: () => void;
 }
@@ -202,8 +202,6 @@ interface SearchPageViewSynchronization {
   readonly clearDraft: () => void;
   readonly deactivateHistory: () => void;
 }
-
-let activePendingHistoryEntryId: string | null = null;
 
 interface SearchPageExperienceOptions {
   readonly isGuest: boolean;
@@ -311,16 +309,12 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
       },
       pendingHistory: {
         begin(entryId, query) {
-          activePendingHistoryEntryId = entryId;
           current.pendingHistory.showPending(entryId, query);
         },
         clear(entryId) {
-          if (activePendingHistoryEntryId !== entryId) return;
-          activePendingHistoryEntryId = null;
-          current.pendingHistory.clearPending();
+          current.pendingHistory.clearPending(entryId);
         },
         activate(searchId) {
-          activePendingHistoryEntryId = null;
           current.pendingHistory.activate(searchId);
         },
         refresh: () => current.pendingHistory.refresh(),
@@ -350,13 +344,13 @@ export function useSearchPageExperience(options: SearchPageExperienceOptions) {
 
   const synchronizedRun = useRef<number | null>(null);
   useLayoutEffect(() => {
-    if (options.isGuest) return;
     const synchronization = binding.read().viewSynchronization;
     if (view.active && synchronizedRun.current !== view.active.runId) {
       synchronizedRun.current = view.active.runId;
       synchronization.setVisibleCollections([...view.active.request.collections]);
       return;
     }
+    if (options.isGuest) return;
     if (view.restored && synchronizedRun.current !== view.restored.runId) {
       synchronizedRun.current = view.restored.runId;
       synchronization.setVisibleCollections([...view.restored.request.collections]);

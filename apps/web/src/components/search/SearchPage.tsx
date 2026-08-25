@@ -112,7 +112,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         setPendingSearch(entryId, query);
         setActiveSearchId(entryId);
       },
-      clearPending: clearPendingSearch,
+      clearPending: (entryId) => clearPendingSearch(entryId),
       activate: setActiveSearchId,
       refresh: refreshSearches,
     },
