@@ -81,7 +81,11 @@ export function searchExperienceView(snapshot: SearchExperienceSnapshot): Search
     errorStage: failure?.failure.stage ?? null,
     outcome: restored
       ? restored.passages.length > 0 ? "success" : "no_candidates"
-      : transport?.status === "complete" ? transport.outcome : null,
+      : transport?.status === "complete"
+        ? transport.outcome
+        : transport?.status === "ranked-ready" && transport.resultCount === 0
+          ? "no_candidates"
+          : null,
     collectionOutcomes: failure?.failure.collectionOutcomes
       ?? completionFailure?.collectionOutcomes
       ?? (transport?.status === "complete" ? transport.collectionOutcomes : {}),

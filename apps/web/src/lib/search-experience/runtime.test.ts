@@ -2,6 +2,7 @@ import { describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import type { ChunkResult } from "@/lib/search-stream";
 import { createSearchExperience } from "./runtime";
+import { searchExperienceView } from "./view";
 import type {
   AuthenticatedSearchExperiencePorts,
   AudienceAdapter,
@@ -675,26 +676,50 @@ describe("search-experience runtime", () => {
     expect(begin).toHaveBeenLastCalledWith("pending-2", "New Search");
   });
 
-  it("owns delayed guest explore submission and cancellation", () => {
+  it("owns delayed explore request selection and cancellation", () => {
     vi.useFakeTimers();
     try {
       const { runtime, runs } = guestFixture();
-      const exploreRequest = { ...REQUEST, origin: "explore" as const };
+      runtime.send({ type: "submit", request: REQUEST });
+      runs[0].callbacks.onPassagesReady(1);
 
-      runtime.send({ type: "queue-explore", request: exploreRequest });
+      runtime.send({
+        type: "queue-explore",
+        query: "A related Passage",
+        label: "CCC 1000",
+        defaults: { collections: ["summa"], translation: "CPDV", quota: 3 },
+      });
       vi.advanceTimersByTime(299);
-      expect(runs).toHaveLength(0);
+      expect(runs).toHaveLength(1);
       runtime.send({ type: "cancel-queued-explore" });
       vi.advanceTimersByTime(1);
-      expect(runs).toHaveLength(0);
-
-      runtime.send({ type: "queue-explore", request: exploreRequest });
-      vi.advanceTimersByTime(300);
       expect(runs).toHaveLength(1);
-      expect(runs[0].request).toEqual(exploreRequest);
+
+      runtime.send({
+        type: "queue-explore",
+        query: "A related Passage",
+        label: "CCC 1000",
+        defaults: { collections: ["summa"], translation: "CPDV", quota: 3 },
+      });
+      vi.advanceTimersByTime(300);
+      expect(runs).toHaveLength(2);
+      expect(runs[1].request).toEqual({
+        ...REQUEST,
+        query: "A related Passage",
+        origin: "explore",
+        exploreLabel: "CCC 1000",
+      });
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("shows no candidates as soon as a zero-Passage guest search is ready", () => {
+    const { runtime, runs } = guestFixture();
+    runtime.send({ type: "submit", request: REQUEST });
+    runs[0].callbacks.onPassagesReady(0);
+
+    expect(searchExperienceView(runtime.read()).outcome).toBe("no_candidates");
   });
 
   it("clears pending History for failures and rate limits before retrying with a new owner", () => {

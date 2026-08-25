@@ -156,7 +156,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (prevSearchKey.current === searchKey) return;
     prevSearchKey.current = searchKey;
     experience.send({ type: "reset" });
-    authenticatedRoute.cancelPendingExplore();
     setSearchValue("");
     setVisibleCollections([]);
   }, [authenticatedRoute, experience, searchKey]);
@@ -252,24 +251,13 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       authenticatedRoute.queryMoreLike(content, label);
       return;
     }
-    const currentRequest = snapshot.status === "active-search"
-      || snapshot.status === "restored-passages"
-      || (snapshot.status === "failure" && snapshot.request)
-      ? snapshot.request
-      : null;
-    const criteria = currentRequest ?? routeSearchDefaults;
     experience.send({
       type: "queue-explore",
-      request: {
-        query: content,
-        collections: criteria.collections,
-        translation: criteria.translation,
-        quota: criteria.quota,
-        origin: "explore",
-        exploreLabel: label,
-      },
+      query: content,
+      label,
+      defaults: routeSearchDefaults,
     });
-  }, [authenticatedRoute, experience, isGuest, routeSearchDefaults, snapshot]);
+  }, [authenticatedRoute, experience, isGuest, routeSearchDefaults]);
 
   useLayoutEffect(() => {
     if (!searchView.showAnimation || !searchView.queryBubbleVisible
@@ -407,7 +395,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         searchValue={searchValue}
         onSearchChange={(val) => {
           experience.send({ type: "cancel-queued-explore" });
-          authenticatedRoute.cancelPendingExplore();
           setSearchValue(val);
         }}
         onSearch={() => handleSearch(searchValue)}

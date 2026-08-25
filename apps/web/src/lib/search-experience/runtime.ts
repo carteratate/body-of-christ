@@ -123,7 +123,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
   let snapshot: SearchExperienceSnapshot = deepFreeze({
     status: "idle",
     runId: generation,
-    canSubmit: true,
     canRetry: false,
   });
 
@@ -159,7 +158,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           presentation: { status: "revealed", filtersReady: true },
           passages,
           saveWarning: null,
-          canSubmit: true,
           canRetry: false,
         });
       }
@@ -304,7 +302,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       request,
       restoreId: ownedRun.restoreId,
       failure,
-      canSubmit: true,
       canRetry: retryable,
     });
     if (request && ports.analytics) {
@@ -484,12 +481,12 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     },
   });
 
-  const resetToIdle = () => {
-    cancelQueuedExplore();
+  const resetToIdle = (preserveQueuedExplore = false) => {
+    if (!preserveQueuedExplore) cancelQueuedExplore();
     abortCurrent();
     clearPreparedPending();
     generation += 1;
-    emit({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
+    emit({ status: "idle", runId: generation, canRetry: false });
   };
 
   const emitPreparingSearch = (ownedRun: ActiveRun, request: SearchRequest) => {
@@ -502,7 +499,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       presentation: { status: "animating", filtersReady: false, resultsReady: false },
       passages: Object.freeze([]),
       saveWarning: null,
-      canSubmit: true,
       canRetry: false,
     });
   };
@@ -584,7 +580,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       status: "restoring",
       runId: ownedRun.id,
       searchId,
-      canSubmit: true,
       canRetry: false,
     });
     let credential: string | null;
@@ -648,7 +643,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         request: freezeRequest(result.request),
         passages: Object.freeze(result.passages.map(freezePassage)),
         warning: result.warning,
-        canSubmit: true,
         canRetry: false,
       });
       if (ports.pendingHistory) {
@@ -706,7 +700,20 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       case "prepare-pending-history": preparePending(); break;
       case "queue-explore": {
         cancelQueuedExplore();
-        const request = freezeRequest(command.request);
+        const currentRequest = snapshot.status === "active-search"
+          || snapshot.status === "restored-passages"
+          || (snapshot.status === "failure" && snapshot.request)
+          ? snapshot.request
+          : null;
+        const criteria = currentRequest ?? command.defaults;
+        const request = freezeRequest({
+          query: command.query,
+          collections: criteria.collections,
+          translation: criteria.translation,
+          quota: criteria.quota,
+          origin: "explore",
+          exploreLabel: command.label,
+        });
         queuedExploreTimer = setTimeout(() => {
           queuedExploreTimer = null;
           send({ type: "submit", request });
@@ -714,6 +721,13 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         break;
       }
       case "cancel-queued-explore": cancelQueuedExplore(); break;
+      case "leave-restore":
+        if (snapshot.status === "restoring"
+          || snapshot.status === "restored-passages"
+          || (snapshot.status === "failure" && snapshot.failure.kind === "restore")) {
+          resetToIdle(true);
+        }
+        break;
       case "submit": startSearch(command.request); break;
       case "restore": startRestore(command.searchId); break;
       case "retry": retry(); break;
@@ -774,7 +788,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         generation += 1;
         disposed = true;
         listeners.clear();
-        snapshot = deepFreeze({ status: "idle", runId: generation, canSubmit: true, canRetry: false });
+        snapshot = deepFreeze({ status: "idle", runId: generation, canRetry: false });
         break;
     }
   };

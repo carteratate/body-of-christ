@@ -60,9 +60,7 @@ export function useAuthenticatedSearchRoute({
   replaceWithSearchRoute,
 }: AuthenticatedSearchRouteOptions) {
   const routeRestoreId = useRef(restoreId);
-  const queuedExplore = useRef<SearchRequest | null>(null);
   const consumedExploreRoute = useRef<string | null>(null);
-  const exploreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousCredential = useRef(credential);
   const exploreOwner = useRef(userId);
 
@@ -73,12 +71,7 @@ export function useAuthenticatedSearchRoute({
   useLayoutEffect(() => {
     if (exploreOwner.current === userId && credential) return;
     exploreOwner.current = userId;
-    queuedExplore.current = null;
     consumedExploreRoute.current = null;
-    if (exploreTimer.current) {
-      clearTimeout(exploreTimer.current);
-      exploreTimer.current = null;
-    }
   }, [credential, userId]);
 
   useLayoutEffect(() => {
@@ -96,17 +89,9 @@ export function useAuthenticatedSearchRoute({
     if (snapshot.status === "restoring"
       || snapshot.status === "restored-passages"
       || (snapshot.status === "failure" && snapshot.failure.kind === "restore")) {
-      experience.send({ type: "cancel" });
+      experience.send({ type: "leave-restore" });
     }
   }, [credential, experience, restoreId, snapshot, userId]);
-
-  useEffect(() => {
-    if (restoreId || !credential) return;
-    const request = queuedExplore.current;
-    if (!request) return;
-    queuedExplore.current = null;
-    experience.send({ type: "submit", request });
-  }, [credential, experience, restoreId]);
 
   useEffect(() => {
     if (!exploreQuery) {
@@ -128,36 +113,17 @@ export function useAuthenticatedSearchRoute({
     replaceWithSearchRoute();
   }, [credential, defaults, experience, exploreQuery, exploreReference, replaceWithSearchRoute]);
 
-  useEffect(() => () => {
-    if (exploreTimer.current) clearTimeout(exploreTimer.current);
-  }, []);
-
   const queryMoreLike = useCallback((content: string, label: string) => {
-    const current = experience.read();
-    const submitted = current.status === "active-search"
-      || current.status === "restored-passages"
-      || (current.status === "failure" && current.request)
-      ? current.request
-      : null;
-    const request = createExploreRequest(content, label, submitted ?? defaults);
+    experience.send({
+      type: "queue-explore",
+      query: content,
+      label,
+      defaults,
+    });
     if (routeRestoreId.current) {
-      queuedExplore.current = request;
       replaceWithSearchRoute();
-      return;
     }
-    if (exploreTimer.current) clearTimeout(exploreTimer.current);
-    exploreTimer.current = setTimeout(() => {
-      exploreTimer.current = null;
-      experience.send({ type: "submit", request });
-    }, 300);
   }, [defaults, experience, replaceWithSearchRoute]);
 
-  const cancelPendingExplore = useCallback(() => {
-    queuedExplore.current = null;
-    if (!exploreTimer.current) return;
-    clearTimeout(exploreTimer.current);
-    exploreTimer.current = null;
-  }, []);
-
-  return { queryMoreLike, cancelPendingExplore };
+  return { queryMoreLike };
 }

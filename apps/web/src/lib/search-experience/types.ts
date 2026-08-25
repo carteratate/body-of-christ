@@ -63,14 +63,12 @@ export type SearchPresentationState =
   | { readonly status: "revealed"; readonly filtersReady: true };
 
 interface SnapshotCapabilities {
-  readonly canSubmit: boolean;
   readonly canRetry: boolean;
 }
 
 export interface IdleSnapshot extends SnapshotCapabilities {
   readonly status: "idle";
   readonly runId: number;
-  readonly canSubmit: true;
   readonly canRetry: false;
 }
 
@@ -78,7 +76,6 @@ export interface RestoringSnapshot extends SnapshotCapabilities {
   readonly status: "restoring";
   readonly runId: number;
   readonly searchId: string;
-  readonly canSubmit: true;
   readonly canRetry: false;
 }
 
@@ -92,7 +89,6 @@ export interface ActiveSearchSnapshot extends SnapshotCapabilities {
   /** Passages are empty until the owning animation reaches ready-to-reveal. */
   readonly passages: readonly Passage[];
   readonly saveWarning: string | null;
-  readonly canSubmit: true;
   readonly canRetry: false;
 }
 
@@ -103,7 +99,6 @@ export interface RestoredPassagesSnapshot extends SnapshotCapabilities {
   readonly request: SearchRequest;
   readonly passages: readonly Passage[];
   readonly warning: string | null;
-  readonly canSubmit: true;
   readonly canRetry: false;
 }
 
@@ -117,7 +112,6 @@ export interface FailureSnapshot extends SnapshotCapabilities {
   readonly request: SearchRequest | null;
   readonly restoreId: string | null;
   readonly failure: SearchFailure;
-  readonly canSubmit: true;
   readonly canRetry: boolean;
 }
 
@@ -136,8 +130,14 @@ export type AnimationMilestone =
 export type SearchExperienceCommand =
   | { readonly type: "submit"; readonly request: SearchRequest }
   | { readonly type: "prepare-pending-history" }
-  | { readonly type: "queue-explore"; readonly request: SearchRequest }
+  | {
+      readonly type: "queue-explore";
+      readonly query: string;
+      readonly label: string;
+      readonly defaults: Pick<SearchRequest, "collections" | "translation" | "quota">;
+    }
   | { readonly type: "cancel-queued-explore" }
+  | { readonly type: "leave-restore" }
   | { readonly type: "restore"; readonly searchId: string }
   | { readonly type: "retry" }
   | { readonly type: "animation"; readonly runId: number; readonly milestone: AnimationMilestone }
