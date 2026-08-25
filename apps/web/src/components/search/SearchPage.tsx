@@ -14,10 +14,6 @@ import { updatePreferences } from "@/lib/api";
 import { useGuestGate } from "@/components/layout/guestGate";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { trackQuotaChanged } from "@/lib/analytics";
-import {
-  type ActiveSearchSnapshot,
-  type FailureSnapshot,
-} from "@/lib/search-experience";
 import { useAuthenticatedSearchRoute } from "@/lib/search-experience/useAuthenticatedSearchRoute";
 import {
   readGuestSearch,
@@ -102,7 +98,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // Tracks the ID of the current "New Search" placeholder. null = no placeholder
   // (either a real search was submitted and completed, or we're in a restored view).
 
-  const { experience, snapshot } = useSearchPageExperience({
+  const { experience, snapshot, view: searchView } = useSearchPageExperience({
     isGuest,
     token,
     userId,
@@ -111,11 +107,21 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     quota,
     restoredGuestSearch: restoredGuestSearch.current,
     guestGate,
-    setPendingSearch,
-    clearPendingSearch,
-    setActiveSearchId,
-    refreshSearches,
-    onFirstGuestSearchWithResults: () => setShowFirstSearchHint(true),
+    pendingHistory: {
+      showPending(entryId, query) {
+        setPendingSearch(entryId, query);
+        setActiveSearchId(entryId);
+      },
+      clearPending: clearPendingSearch,
+      activate: setActiveSearchId,
+      refresh: refreshSearches,
+    },
+    viewSynchronization: {
+      setVisibleCollections,
+      clearDraft: () => setSearchValue(""),
+      deactivateHistory: () => setActiveSearchId(null),
+    },
+    onFirstGuestSearchWithPassages: () => setShowFirstSearchHint(true),
   });
   const replaceWithSearchRoute = useCallback(() => router.replace("/search"), [router]);
   const routeSearchDefaults = useMemo(() => ({
@@ -259,88 +265,9 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     });
   }, [activeCollections, authenticatedRoute, experience, isGuest, quota, translation]);
 
-  const runtimeActive: ActiveSearchSnapshot | null = snapshot.status === "active-search"
-    ? snapshot
-    : null;
-  const runtimeRestored = snapshot.status === "restored-results"
-    ? snapshot
-    : null;
-  const runtimeRestoring = snapshot.status === "restoring";
-  const runtimeFailure: FailureSnapshot | null = snapshot.status === "failure"
-    ? snapshot
-    : null;
-  const runtimeRequest = runtimeActive?.request
-    ?? runtimeRestored?.request
-    ?? runtimeFailure?.request
-    ?? null;
-  const runtimeTransport = runtimeActive?.transport ?? null;
-  const renderedLoading = runtimeRestoring || runtimeActive?.presentation.status === "animating";
-  const renderedPassages = useMemo(
-    () => [...(runtimeActive?.passages ?? runtimeRestored?.passages ?? [])],
-    [runtimeActive?.passages, runtimeRestored?.passages],
-  );
-  const renderedSearchId = runtimeRestored?.searchId
-    ?? (runtimeTransport?.status === "complete" ? runtimeTransport.searchId : null);
-  const renderedSubmittedQuery = runtimeRequest?.query ?? null;
-  const renderedQueryBubbleVisible = runtimeRestored !== null
-    || (runtimeFailure?.request !== null && runtimeFailure?.request !== undefined)
-    || (runtimeActive !== null && runtimeActive.presentation.status !== "animating");
-  const renderedError = runtimeFailure?.failure.message ?? null;
-  const renderedErrorCode = runtimeFailure?.failure.code ?? null;
-  const renderedErrorStage = runtimeFailure?.failure.stage ?? null;
-  const renderedOutcome = runtimeRestored
-    ? runtimeRestored.passages.length > 0 ? "success" : "no_candidates"
-    : runtimeTransport?.status === "complete" ? runtimeTransport.outcome : null;
-  const runtimeCompletionFailure = runtimeTransport?.status === "ranked-ready"
-    ? runtimeTransport.completionFailure
-    : null;
-  const renderedCollectionOutcomes = runtimeFailure?.failure.collectionOutcomes
-    ?? runtimeCompletionFailure?.collectionOutcomes
-    ?? (runtimeTransport?.status === "complete" ? runtimeTransport.collectionOutcomes : {});
-  const renderedSaveWarning = runtimeRestored?.warning ?? runtimeActive?.saveWarning ?? null;
-  const renderedSearchPhase = runtimeTransport?.status === "searching" ? runtimeTransport.phase : null;
-  const renderedExploreLabel = runtimeRequest?.exploreLabel ?? null;
-  const renderedShowAnimation = runtimeActive !== null
-    && runtimeActive.presentation.status !== "revealed";
-  const renderedAnimationRequestId = snapshot.runId;
-  const renderedQueryDone = runtimeActive?.presentation.status === "animating"
-    && runtimeActive.presentation.resultsReady;
-  const renderedRetrievalStarted = runtimeTransport !== null
-    && runtimeTransport.status !== "preparing";
-  const renderedFilterBarActive = runtimeActive?.presentation.filtersReady ?? false;
-  const renderedSubmittedCollections = [...(runtimeRequest?.collections ?? [])];
-  const renderedSubmittedTranslation = runtimeRequest?.translation ?? "";
-  const renderedSubmittedQuota = runtimeRequest?.quota ?? null;
-  const renderedRateLimit = runtimeFailure?.failure.rateLimit?.open
-    ? runtimeFailure.failure.rateLimit
-    : runtimeCompletionFailure?.rateLimit?.open
-      ? runtimeCompletionFailure.rateLimit
-      : null;
-  const visibleCollectionsRun = useRef<number | null>(null);
-
   useLayoutEffect(() => {
-    if (isGuest) return;
-    if (runtimeActive && visibleCollectionsRun.current !== runtimeActive.runId) {
-      visibleCollectionsRun.current = runtimeActive.runId;
-      setVisibleCollections([...runtimeActive.request.collections]);
-      return;
-    }
-    if (runtimeRestored) {
-      visibleCollectionsRun.current = runtimeRestored.runId;
-      setVisibleCollections([...runtimeRestored.request.collections]);
-      return;
-    }
-    if (runtimeRestoring || runtimeFailure?.failure.kind === "restore") {
-      visibleCollectionsRun.current = snapshot.runId;
-      setVisibleCollections([]);
-      setActiveSearchId(null);
-      if (runtimeRestoring) setSearchValue("");
-    }
-  }, [isGuest, runtimeActive, runtimeFailure?.failure.kind, runtimeRestored, runtimeRestoring, setActiveSearchId, snapshot.runId]);
-
-  useLayoutEffect(() => {
-    if (!renderedShowAnimation || !renderedQueryBubbleVisible
-      || !renderedSubmittedQuery || renderedExploreLabel) {
+    if (!searchView.showAnimation || !searchView.queryBubbleVisible
+      || !searchView.submittedQuery || searchView.exploreLabel) {
       setBubbleSize(null);
       return;
     }
@@ -348,13 +275,13 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (!el) return;
     const { width, height } = el.getBoundingClientRect();
     if (width > 0 && height > 0) setBubbleSize({ width, height });
-  }, [renderedShowAnimation, renderedQueryBubbleVisible, renderedSubmittedQuery, renderedExploreLabel]);
+  }, [searchView.exploreLabel, searchView.queryBubbleVisible, searchView.showAnimation, searchView.submittedQuery]);
 
   // Collections that actually have results — used for filter bar pills only.
   // Derived from results so it never shows buttons for collections that returned nothing.
   const filterBarCollections = useMemo(
-    () => [...new Set(renderedPassages.map((passage) => passage.source.collection))],
-    [renderedPassages]
+    () => [...new Set(searchView.passages.map((passage) => passage.source.collection))],
+    [searchView.passages]
   );
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -363,60 +290,60 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     <div className="flex flex-1 min-h-0 flex-col">
       <div className="relative flex-1 min-h-0 overflow-y-auto px-4 pt-4 pb-2">
         {/* Animation overlay — scoped to content area only, BottomBar stays visible */}
-        {renderedShowAnimation && (
+        {searchView.showAnimation && (
           <LoadingAnimation
-            key={renderedAnimationRequestId}
-            collections={renderedSubmittedCollections.length > 0 ? renderedSubmittedCollections : activeCollections}
-            quota={renderedSubmittedQuota ?? quota}
-            isQueryDone={renderedQueryDone}
-            retrievalStarted={renderedRetrievalStarted}
-            onFiltersReady={() => handleAnimFiltersReady(renderedAnimationRequestId)}
-            onReadyToShow={() => handleAnimReadyToShow(renderedAnimationRequestId)}
-            onFadeComplete={() => handleAnimFadeComplete(renderedAnimationRequestId)}
+            key={searchView.animationRunId}
+            collections={searchView.submittedCollections.length > 0 ? [...searchView.submittedCollections] : activeCollections}
+            quota={searchView.submittedQuota ?? quota}
+            isQueryDone={searchView.queryDone}
+            retrievalStarted={searchView.retrievalStarted}
+            onFiltersReady={() => handleAnimFiltersReady(searchView.animationRunId)}
+            onReadyToShow={() => handleAnimReadyToShow(searchView.animationRunId)}
+            onFadeComplete={() => handleAnimFadeComplete(searchView.animationRunId)}
             reservedTopRight={bubbleSize}
           />
         )}
 
-        {!renderedSubmittedQuery && !renderedLoading && !renderedError && (
+        {!searchView.submittedQuery && !searchView.loading && !searchView.error && (
           <EmptyState onSelectQuery={handleSelectQuery} />
         )}
 
         {/* Keep the revealed query in normal flow so results reserve its height.
             During the animation fade, z-20 places it above the z-10 overlay. */}
-        {renderedQueryBubbleVisible && renderedSubmittedQuery && !renderedExploreLabel && (
+        {searchView.queryBubbleVisible && searchView.submittedQuery && !searchView.exploreLabel && (
           <div
             ref={bubbleRef}
-            className={`relative flex justify-end mb-4 ${renderedShowAnimation ? "z-20 pointer-events-none" : ""}`}
+            className={`relative flex justify-end mb-4 ${searchView.showAnimation ? "z-20 pointer-events-none" : ""}`}
           >
             <div className="max-w-[70%] max-md:max-w-[85%] rounded-2xl bg-brand-surface px-4 py-2.5 text-sm text-brand-primary">
-              {renderedSubmittedQuery}
+              {searchView.submittedQuery}
             </div>
           </div>
         )}
 
-        {renderedExploreLabel && (
+        {searchView.exploreLabel && (
           <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
             <Search size={14} className="text-brand-accent shrink-0" />
             <span className="text-sm text-brand-muted">
               Exploring passages related to{" "}
-              <span className="text-brand-primary font-medium">{renderedExploreLabel}</span>
+              <span className="text-brand-primary font-medium">{searchView.exploreLabel}</span>
             </span>
           </div>
         )}
 
-        {!renderedError && (renderedLoading || renderedSubmittedQuery) && (
+        {!searchView.error && (searchView.loading || searchView.submittedQuery) && (
           <SearchResults
-            results={renderedPassages}
-            loading={renderedLoading}
-            searchId={renderedSearchId}
+            results={[...searchView.passages]}
+            loading={searchView.loading}
+            searchId={searchView.searchId}
             token={token ?? ""}
             onExploreMore={handleExploreMore}
-            phase={renderedSearchPhase}
-            submittedCollections={renderedSubmittedCollections}
+            phase={searchView.phase}
+            submittedCollections={[...searchView.submittedCollections]}
             visibleCollections={visibleCollections}
-            outcome={renderedOutcome}
-            collectionOutcomes={{ ...renderedCollectionOutcomes }}
-            isRestoring={runtimeRestoring}
+            outcome={searchView.outcome}
+            collectionOutcomes={{ ...searchView.collectionOutcomes }}
+            isRestoring={searchView.restoring}
             isGuest={isGuest}
             showFirstSearchHint={showFirstSearchHint}
             onDismissFirstSearchHint={() => setShowFirstSearchHint(false)}
@@ -430,33 +357,33 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           />
         )}
 
-        {renderedSaveWarning && !renderedLoading && !renderedError && (
+        {searchView.saveWarning && !searchView.loading && !searchView.error && (
           <div className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-muted">
-            {renderedSaveWarning}
+            {searchView.saveWarning}
           </div>
         )}
 
-        {runtimeCompletionFailure && !runtimeCompletionFailure.rateLimit && !renderedLoading && (
+        {searchView.completionFailure && !searchView.completionFailure.rateLimit && !searchView.loading && (
           <div
             role="status"
             className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-muted"
           >
-            {runtimeCompletionFailure.message}
+            {searchView.completionFailure.message}
           </div>
         )}
 
-        {renderedError && !renderedLoading && (
+        {searchView.error && !searchView.loading && (
           <SearchFailureScreen
-            message={renderedError}
-            code={renderedErrorCode}
-            stage={renderedErrorStage}
+            message={searchView.error}
+            code={searchView.errorCode}
+            stage={searchView.errorStage}
             onRetry={() => {
               experience.send({ type: "retry" });
             }}
             onReport={isGuest ? undefined : () => {
               const safeCode = (["auth_error", "network_error", "rate_limit", "restore_not_found", "restore_unavailable", "server_error", "stream_interrupted"] as const)
-                .find((value) => value === renderedErrorCode) ?? "unknown";
-              saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: renderedSearchId ?? undefined, error_code: safeCode });
+                .find((value) => value === searchView.errorCode) ?? "unknown";
+              saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: searchView.searchId ?? undefined, error_code: safeCode });
               router.push("/feedback");
             }}
           />
@@ -465,11 +392,11 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       </div>
 
       <BottomBar
-        activeCollections={renderedLoading && renderedSubmittedCollections.length > 0 ? renderedSubmittedCollections : activeCollections}
+        activeCollections={searchView.loading && searchView.submittedCollections.length > 0 ? [...searchView.submittedCollections] : activeCollections}
         onToggleCollection={handleToggleCollection}
-        translation={renderedLoading && renderedSubmittedTranslation ? renderedSubmittedTranslation : translation}
+        translation={searchView.loading && searchView.submittedTranslation ? searchView.submittedTranslation : translation}
         onTranslationChange={setTranslation}
-        quota={renderedLoading && renderedSubmittedQuota !== null ? renderedSubmittedQuota : quota}
+        quota={searchView.loading && searchView.submittedQuota !== null ? searchView.submittedQuota : quota}
         onQuotaChange={handleQuotaChange}
         searchValue={searchValue}
         onSearchChange={(val) => {
@@ -478,18 +405,18 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           setSearchValue(val);
         }}
         onSearch={() => handleSearch(searchValue)}
-        loading={renderedLoading}
-        isSearchActive={renderedShowAnimation ? renderedFilterBarActive : renderedSubmittedQuery !== null}
-        submittedCollections={renderedShowAnimation ? renderedSubmittedCollections : filterBarCollections}
+        loading={searchView.loading}
+        isSearchActive={searchView.showAnimation ? searchView.filterBarActive : searchView.submittedQuery !== null}
+        submittedCollections={searchView.showAnimation ? [...searchView.submittedCollections] : filterBarCollections}
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
         searchDisabled={false}
         fixedQuota={isGuest}
       />
-      {renderedRateLimit && (
+      {searchView.rateLimit && (
         <RateLimitModal
-          limitType={renderedRateLimit.type}
-          retryAfter={renderedRateLimit.retryAfter}
+          limitType={searchView.rateLimit.type}
+          retryAfter={searchView.rateLimit.retryAfter}
           onDismiss={() => {
             experience.send({ type: "dismiss-rate-limit" });
           }}

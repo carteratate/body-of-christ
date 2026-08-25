@@ -248,7 +248,7 @@ describe("SearchPage restore lifecycle", () => {
 
     expect(await screen.findByText(/Grace perfects nature/)).toBeTruthy();
     expect(screen.getByText(
-      "This saved search originally had 3 results, but only 1 remain available.",
+      "This saved search originally had 3 Passages, but only 1 remain available.",
     )).toBeTruthy();
   });
 
@@ -643,6 +643,23 @@ describe("SearchPage animation-gated stream reveal", () => {
     expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
   });
 
+  it("does not let a disposed page clear the next page's pending History entry", async () => {
+    testState.params = "";
+    const firstPage = render(<SearchPage />);
+    await waitFor(() => expect(appMocks.setPendingSearch).toHaveBeenCalledOnce());
+
+    firstPage.unmount();
+    render(<SearchPage />);
+    await waitFor(() => expect(appMocks.setPendingSearch).toHaveBeenCalledTimes(2));
+    const replacementOrder = appMocks.setPendingSearch.mock.invocationCallOrder[1];
+
+    await act(async () => { await Promise.resolve(); });
+
+    const lateClears = appMocks.clearPendingSearch.mock.invocationCallOrder
+      .filter((order) => order > replacementOrder);
+    expect(lateClears).toEqual([]);
+  });
+
   it("buffers fast authenticated completion until reveal and keeps the overlay through its fade", async () => {
     testState.params = "";
     let streamCallbacks!: SearchStreamCallbacks;
@@ -712,12 +729,12 @@ describe("SearchPage animation-gated stream reveal", () => {
     expect(await screen.findByText("Grace perfects nature. — Before reveal.")).toBeTruthy();
     expect(screen.getByTestId("loading-animation")).toBeTruthy();
     expect(JSON.parse(sessionStorage.getItem("theocorpus-guest-current-results") ?? "null"))
-      .toMatchObject({ query: "grace", results: [{ explanation: "Before reveal." }] });
+      .toMatchObject({ query: "grace", passages: [{ explanation: "Before reveal." }] });
 
     act(() => streamCallbacks.onExplanationDelta(streamedPassage.chunk_id, " After reveal."));
     expect(await screen.findByText("Grace perfects nature. — Before reveal. After reveal.")).toBeTruthy();
     expect(JSON.parse(sessionStorage.getItem("theocorpus-guest-current-results") ?? "null"))
-      .toMatchObject({ results: [{ explanation: "Before reveal. After reveal." }] });
+      .toMatchObject({ passages: [{ explanation: "Before reveal. After reveal." }] });
 
     fireEvent.click(screen.getByRole("button", { name: "Animation faded" }));
     expect(screen.queryByTestId("loading-animation")).toBeNull();

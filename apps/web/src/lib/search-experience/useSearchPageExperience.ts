@@ -1,13 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import {
   getSearchResults,
   SearchRestoreHttpError,
   streamGuestSearch,
   streamSearch,
-  type ChunkResult,
   type CollectionOutcome,
   type SearchOutcome,
 } from "@/lib/api";
@@ -18,16 +17,19 @@ import { createSearchExperience } from "./runtime";
 import type {
   AuthenticatedSearchExperiencePorts,
   GuestContinuitySnapshot,
+  Passage,
+  SearchTransportCallbacks,
 } from "./types";
 import { useSearchExperience } from "./useSearchExperience";
+import { searchExperienceView } from "./view";
 
-const GUEST_RESULTS_KEY = "theocorpus-guest-current-results";
-const GUEST_RESULTS_MAX_AGE_MS = 2 * 60 * 60 * 1000;
+const GUEST_CONTINUITY_KEY = "theocorpus-guest-current-results";
+const GUEST_CONTINUITY_MAX_AGE_MS = 2 * 60 * 60 * 1000;
 
-interface GuestResultsSnapshot {
+interface GuestContinuityStorage {
   savedAt: number;
   query: string;
-  results: ChunkResult[];
+  passages: Passage[];
   searchId: string | null;
   collections: string[];
   translation: string;
@@ -44,14 +46,17 @@ export interface RestoredGuestSearch {
 
 export function readGuestSearch(): RestoredGuestSearch | null {
   try {
-    const value = JSON.parse(sessionStorage.getItem(GUEST_RESULTS_KEY) ?? "null") as Partial<GuestResultsSnapshot> | null;
+    const value = JSON.parse(sessionStorage.getItem(GUEST_CONTINUITY_KEY) ?? "null") as Record<string, unknown> | null;
+    const passages = Array.isArray(value?.passages)
+      ? value.passages
+      : Array.isArray(value?.results) ? value.results : null;
     if (!value || typeof value.savedAt !== "number"
-      || Date.now() - value.savedAt > GUEST_RESULTS_MAX_AGE_MS) return null;
-    if (typeof value.query !== "string" || !Array.isArray(value.results)
+      || Date.now() - value.savedAt > GUEST_CONTINUITY_MAX_AGE_MS) return null;
+    if (typeof value.query !== "string" || !passages
       || !Array.isArray(value.collections)) return null;
     if (typeof value.translation !== "string" || typeof value.quota !== "number"
       || !Array.isArray(value.visibleCollections)) return null;
-    const snapshot = value as GuestResultsSnapshot;
+    const snapshot = value as unknown as Omit<GuestContinuityStorage, "passages">;
     return {
       continuity: {
         savedAt: snapshot.savedAt,
@@ -63,7 +68,7 @@ export function readGuestSearch(): RestoredGuestSearch | null {
           origin: "fresh",
         },
         searchId: snapshot.searchId,
-        passages: snapshot.results,
+        passages: passages as Passage[],
         outcome: snapshot.outcome,
         collectionOutcomes: snapshot.collectionOutcomes,
         visibleCollections: snapshot.visibleCollections,
@@ -76,14 +81,14 @@ export function readGuestSearch(): RestoredGuestSearch | null {
 }
 
 function clearGuestSearch() {
-  try { sessionStorage.removeItem(GUEST_RESULTS_KEY); } catch {}
+  try { sessionStorage.removeItem(GUEST_CONTINUITY_KEY); } catch {}
 }
 
 function saveGuestSearch(continuity: GuestContinuitySnapshot) {
-  const snapshot: GuestResultsSnapshot = {
+  const snapshot: GuestContinuityStorage = {
     savedAt: continuity.savedAt,
     query: continuity.request.query,
-    results: [...continuity.passages],
+    passages: [...continuity.passages],
     searchId: continuity.searchId,
     collections: [...continuity.request.collections],
     translation: continuity.request.translation,
@@ -92,7 +97,7 @@ function saveGuestSearch(continuity: GuestContinuitySnapshot) {
     outcome: continuity.outcome,
     collectionOutcomes: { ...continuity.collectionOutcomes },
   };
-  try { sessionStorage.setItem(GUEST_RESULTS_KEY, JSON.stringify(snapshot)); } catch {}
+  try { sessionStorage.setItem(GUEST_CONTINUITY_KEY, JSON.stringify(snapshot)); } catch {}
 }
 
 function classifyError(message: string): string {
@@ -162,6 +167,18 @@ const searchAnalytics: NonNullable<AuthenticatedSearchExperiencePorts["analytics
   },
 };
 
+function adaptTransportCallbacks(callbacks: SearchTransportCallbacks) {
+  return {
+    onStatus: callbacks.onStatus,
+    onChunk: callbacks.onPassage,
+    onResultsReady: callbacks.onResultsReady,
+    onExplanationDelta: callbacks.onExplanationDelta,
+    onDone: callbacks.onDone,
+    onError: callbacks.onError,
+    onRateLimit: callbacks.onRateLimit,
+  };
+}
+
 interface SearchSummary {
   readonly id: string;
   readonly filters?: { readonly collections?: readonly string[] } | null;
@@ -173,6 +190,21 @@ interface GuestGate {
   readonly recordCompletedSearch: () => void;
 }
 
+interface PagePendingHistory {
+  readonly showPending: (entryId: string, query: string) => void;
+  readonly clearPending: () => void;
+  readonly activate: (searchId: string | null) => void;
+  readonly refresh: () => void;
+}
+
+interface SearchPageViewSynchronization {
+  readonly setVisibleCollections: (collections: string[]) => void;
+  readonly clearDraft: () => void;
+  readonly deactivateHistory: () => void;
+}
+
+let activePendingHistoryEntryId: string | null = null;
+
 interface SearchPageExperienceOptions {
   readonly isGuest: boolean;
   readonly token: string | null;
@@ -182,11 +214,9 @@ interface SearchPageExperienceOptions {
   readonly quota: number;
   readonly restoredGuestSearch: RestoredGuestSearch | null;
   readonly guestGate: GuestGate | null;
-  readonly setPendingSearch: (entryId: string, query: string) => void;
-  readonly clearPendingSearch: () => void;
-  readonly setActiveSearchId: (searchId: string | null) => void;
-  readonly refreshSearches: () => void;
-  readonly onFirstGuestSearchWithResults: () => void;
+  readonly pendingHistory: PagePendingHistory;
+  readonly viewSynchronization: SearchPageViewSynchronization;
+  readonly onFirstGuestSearchWithPassages: () => void;
 }
 
 function createSearchPageExperience(options: SearchPageExperienceOptions) {
@@ -201,15 +231,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
             request.query,
             { collections: [...request.collections], translation: request.translation },
             request.quota,
-            {
-              onStatus: callbacks.onStatus,
-              onChunk: callbacks.onPassage,
-              onResultsReady: callbacks.onResultsReady,
-              onExplanationDelta: callbacks.onExplanationDelta,
-              onDone: callbacks.onDone,
-              onError: callbacks.onError,
-              onRateLimit: callbacks.onRateLimit,
-            },
+            adaptTransportCallbacks(callbacks),
             signal,
           ),
         },
@@ -221,7 +243,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
             const completedNumber = (gate?.searchCount ?? 0) + 1;
             gate?.recordCompletedSearch();
             if (completedNumber === 1 && resultCount > 0) {
-              current.onFirstGuestSearchWithResults();
+              current.onFirstGuestSearchWithPassages();
             }
           },
         },
@@ -243,14 +265,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
           request.query,
           { collections: [...request.collections], translation: request.translation },
           request.quota,
-          {
-            onStatus: callbacks.onStatus,
-            onChunk: callbacks.onPassage,
-            onExplanationDelta: callbacks.onExplanationDelta,
-            onDone: callbacks.onDone,
-            onError: callbacks.onError,
-            onRateLimit: callbacks.onRateLimit,
-          },
+          adaptTransportCallbacks(callbacks),
           signal,
         ),
       },
@@ -288,7 +303,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
             },
             passages: data.results,
             warning: data.restore_status === "results_unavailable"
-              ? `This saved search originally had ${data.expected_result_count} results, but only ${data.results.length} remain available.`
+              ? `This saved search originally had ${data.expected_result_count} Passages, but only ${data.results.length} remain available.`
               : null,
           };
         },
@@ -296,12 +311,19 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
       },
       pendingHistory: {
         begin(entryId, query) {
-          current.setPendingSearch(entryId, query);
-          current.setActiveSearchId(entryId);
+          activePendingHistoryEntryId = entryId;
+          current.pendingHistory.showPending(entryId, query);
         },
-        clear: () => current.clearPendingSearch(),
-        activate: (searchId) => current.setActiveSearchId(searchId),
-        refresh: () => current.refreshSearches(),
+        clear(entryId) {
+          if (activePendingHistoryEntryId !== entryId) return;
+          activePendingHistoryEntryId = null;
+          current.pendingHistory.clearPending();
+        },
+        activate(searchId) {
+          activePendingHistoryEntryId = null;
+          current.pendingHistory.activate(searchId);
+        },
+        refresh: () => current.pendingHistory.refresh(),
       },
       ids: { pendingEntry: () => crypto.randomUUID() },
       analytics: searchAnalytics,
@@ -310,18 +332,43 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
 
   return {
     experience,
+    read: () => current,
     update(next: SearchPageExperienceOptions) { current = next; },
   };
 }
 
 export function useSearchPageExperience(options: SearchPageExperienceOptions) {
-  const [lease] = useState(() => createSearchPageExperience(options));
-  useLayoutEffect(() => { lease.update(options); }, [lease, options]);
+  const [binding] = useState(() => createSearchPageExperience(options));
+  useLayoutEffect(() => { binding.update(options); }, [binding, options]);
 
-  const snapshot = useSearchExperience(lease.experience);
+  const snapshot = useSearchExperience(binding.experience);
+  const view = searchExperienceView(snapshot);
   useLayoutEffect(() => {
     if (options.isGuest) return;
-    lease.experience.send({ type: "identity-changed", userId: options.userId });
-  }, [lease, options.isGuest, options.userId]);
-  return { experience: lease.experience, snapshot };
+    binding.experience.send({ type: "identity-changed", userId: options.userId });
+  }, [binding, options.isGuest, options.userId]);
+
+  const synchronizedRun = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    if (options.isGuest) return;
+    const synchronization = binding.read().viewSynchronization;
+    if (view.active && synchronizedRun.current !== view.active.runId) {
+      synchronizedRun.current = view.active.runId;
+      synchronization.setVisibleCollections([...view.active.request.collections]);
+      return;
+    }
+    if (view.restored && synchronizedRun.current !== view.restored.runId) {
+      synchronizedRun.current = view.restored.runId;
+      synchronization.setVisibleCollections([...view.restored.request.collections]);
+      return;
+    }
+    if (view.restoring || view.failure?.failure.kind === "restore") {
+      synchronizedRun.current = snapshot.runId;
+      synchronization.setVisibleCollections([]);
+      synchronization.deactivateHistory();
+      if (view.restoring) synchronization.clearDraft();
+    }
+  }, [binding, options.isGuest, snapshot.runId, view.active, view.failure?.failure.kind, view.restored, view.restoring]);
+
+  return { experience: binding.experience, snapshot, view };
 }
