@@ -64,10 +64,22 @@ export function useAuthenticatedSearchRoute({
   const consumedExploreRoute = useRef<string | null>(null);
   const exploreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousCredential = useRef(credential);
+  const exploreOwner = useRef(userId);
 
   useLayoutEffect(() => {
     routeRestoreId.current = restoreId;
   }, [restoreId]);
+
+  useLayoutEffect(() => {
+    if (exploreOwner.current === userId && credential) return;
+    exploreOwner.current = userId;
+    queuedExplore.current = null;
+    consumedExploreRoute.current = null;
+    if (exploreTimer.current) {
+      clearTimeout(exploreTimer.current);
+      exploreTimer.current = null;
+    }
+  }, [credential, userId]);
 
   useLayoutEffect(() => {
     if (credential === previousCredential.current) return;

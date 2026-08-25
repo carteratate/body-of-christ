@@ -347,6 +347,22 @@ describe("SearchPage restore lifecycle", () => {
     await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
   });
 
+  it("discards a queued restored-result explore handoff when the user changes", async () => {
+    apiMocks.getSearchResults.mockResolvedValue(restored("First user's restored query"));
+    const view = render(<SearchPage />);
+    fireEvent.click(await screen.findByRole("button", { name: "Query More Like This" }));
+
+    testState.token = "user-b-token";
+    testState.userId = "user-b";
+    view.rerender(<SearchPage />);
+    await waitFor(() => expect(apiMocks.getSearchResults).toHaveBeenCalledTimes(2));
+    testState.params = "";
+    view.rerender(<SearchPage />);
+
+    await waitFor(() => expect(screen.getByText("Empty search")).toBeTruthy());
+    expect(apiMocks.streamSearch).not.toHaveBeenCalled();
+  });
+
   it("submits one route-driven explore search during Strict Mode replay", async () => {
     testState.params = "explore=Grace%20perfects%20nature&exploreRef=ST%20I-II%2C%20q.%20109";
     render(<StrictMode><SearchPage /></StrictMode>);
@@ -362,6 +378,25 @@ describe("SearchPage restore lifecycle", () => {
 });
 
 describe("SearchPage animation-gated stream reveal", () => {
+  it("discards a delayed explore submission when the user changes", async () => {
+    testState.params = "";
+    const view = render(<SearchPage />);
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Query More Like This" }));
+
+    testState.token = "user-b-token";
+    testState.userId = "user-b";
+    view.rerender(<SearchPage />);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 350));
+    });
+
+    expect(apiMocks.streamSearch).toHaveBeenCalledOnce();
+  });
+
   it("ignores a filters-ready milestone from a replaced animation", async () => {
     testState.params = "";
     const streamCallbacks: SearchStreamCallbacks[] = [];
