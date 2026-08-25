@@ -146,7 +146,7 @@ describe("search-experience runtime", () => {
     runtime.send({ type: "submit", request: REQUEST });
     const runId = runtime.read().runId;
     runs[0].callbacks.onPassage(passage("p1"));
-    runs[0].callbacks.onResultsReady(1);
+    runs[0].callbacks.onPassagesReady(1);
 
     expect(runtime.read()).toMatchObject({
       transport: { status: "ranked-ready", resultCount: 1 },
@@ -191,7 +191,7 @@ describe("search-experience runtime", () => {
     runtime.send({ type: "submit", request: REQUEST });
     const runId = runtime.read().runId;
     runs[0].callbacks.onPassage(passage("p1"));
-    runs[0].callbacks.onResultsReady(1);
+    runs[0].callbacks.onPassagesReady(1);
     runs[0].callbacks.onError("Transfer finalization failed", "transfer_failed", "transfer");
 
     expect(runtime.read()).toMatchObject({
@@ -217,7 +217,7 @@ describe("search-experience runtime", () => {
     runtime.send({ type: "submit", request: REQUEST });
     const runId = runtime.read().runId;
     runs[0].callbacks.onPassage(passage("p1"));
-    runs[0].callbacks.onResultsReady(1);
+    runs[0].callbacks.onPassagesReady(1);
     runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
 
     runs[0].callbacks.onRateLimit(30, "per_minute");
@@ -508,7 +508,7 @@ describe("search-experience runtime", () => {
     guest.send({ type: "submit", request: REQUEST });
     const guestRunId = guest.read().runId;
     guestRuns[0].callbacks.onPassage(passage("p1"));
-    guestRuns[0].callbacks.onResultsReady(1);
+    guestRuns[0].callbacks.onPassagesReady(1);
     guest.send({ type: "animation", runId: guestRunId, milestone: "ready-to-reveal" });
     expect(save).not.toHaveBeenCalled();
     expect(() => guestRuns[0].callbacks.onExplanationDelta("p1", "still streaming")).not.toThrow();
@@ -530,7 +530,7 @@ describe("search-experience runtime", () => {
   it("fails loudly for impossible current-run transport transitions", () => {
     const { runtime, runs } = authenticatedFixture();
     runtime.send({ type: "submit", request: REQUEST });
-    expect(() => runs[0].callbacks.onResultsReady(1)).toThrow(/guest adapter/);
+    expect(() => runs[0].callbacks.onPassagesReady(1)).toThrow(/guest adapter/);
     runs[0].callbacks.onDone("search-1", 0, "no_candidates", {}, true);
     expect(() => runs[0].callbacks.onPassage(passage("late"))).toThrow(/terminal/);
   });
@@ -765,7 +765,7 @@ describe("search-experience runtime", () => {
     runtime.send({ type: "submit", request: REQUEST });
     const runId = runtime.read().runId;
     runs[0].callbacks.onPassage(passage("p1"));
-    runs[0].callbacks.onResultsReady(1);
+    runs[0].callbacks.onPassagesReady(1);
     runs[0].callbacks.onExplanationDelta("p1", "before");
     expect(save).not.toHaveBeenCalled();
 
@@ -844,7 +844,7 @@ describe("search-experience runtime", () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(runtime.read()).toMatchObject({
-      status: "restored-results",
+      status: "restored-passages",
       searchId: "new",
       passages: [{ chunk_id: "new" }],
       warning: "One Passage is unavailable.",
@@ -868,7 +868,7 @@ describe("search-experience runtime", () => {
 
     expect(restore).toHaveBeenCalledOnce();
     expect(runtime.read()).toMatchObject({
-      status: "restored-results",
+      status: "restored-passages",
       searchId: "saved-search",
     });
 

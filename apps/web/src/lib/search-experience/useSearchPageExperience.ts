@@ -13,6 +13,7 @@ import {
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import { getGuestSessionToken, GUEST_SEARCH_LIMIT } from "@/lib/trial";
+import { classifySearchErrorCode } from "./failure";
 import { createSearchExperience } from "./runtime";
 import type {
   AuthenticatedSearchExperiencePorts,
@@ -100,14 +101,6 @@ function saveGuestSearch(continuity: GuestContinuitySnapshot) {
   try { sessionStorage.setItem(GUEST_CONTINUITY_KEY, JSON.stringify(snapshot)); } catch {}
 }
 
-function classifyError(message: string): string {
-  const lower = message.toLowerCase();
-  if (lower.includes("rate limit") || lower.includes("429")) return "rate_limit";
-  if (lower.includes("unauthorized") || lower.includes("401") || lower.includes("403")) return "auth_error";
-  if (lower.includes("network") || lower.includes("fetch") || lower.includes("failed to fetch")) return "network_error";
-  return "server_error";
-}
-
 class InvalidSavedSearchIdError extends Error {}
 
 function classifySavedSearchFailure(error: unknown) {
@@ -142,7 +135,7 @@ function classifySavedSearchFailure(error: unknown) {
     message,
     code: error instanceof Error && error.name === "TimeoutError"
       ? "network_error"
-      : classifyError(message),
+      : classifySearchErrorCode(message),
     stage: "restore",
     retryable: true,
   } as const;
@@ -171,7 +164,7 @@ function adaptTransportCallbacks(callbacks: SearchTransportCallbacks) {
   return {
     onStatus: callbacks.onStatus,
     onChunk: callbacks.onPassage,
-    onResultsReady: callbacks.onResultsReady,
+    onResultsReady: callbacks.onPassagesReady,
     onExplanationDelta: callbacks.onExplanationDelta,
     onDone: callbacks.onDone,
     onError: callbacks.onError,

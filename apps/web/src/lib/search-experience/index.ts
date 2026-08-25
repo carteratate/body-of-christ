@@ -9,7 +9,7 @@ export type {
   GuestSearchExperiencePorts,
   GuestContinuitySnapshot,
   Passage,
-  RestoredResultsSnapshot,
+  RestoredPassagesSnapshot,
   SearchExperience,
   SearchCompletionFailure,
   SearchExperienceCommand,

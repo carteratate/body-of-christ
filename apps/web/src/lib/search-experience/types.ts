@@ -96,8 +96,8 @@ export interface ActiveSearchSnapshot extends SnapshotCapabilities {
   readonly canRetry: false;
 }
 
-export interface RestoredResultsSnapshot extends SnapshotCapabilities {
-  readonly status: "restored-results";
+export interface RestoredPassagesSnapshot extends SnapshotCapabilities {
+  readonly status: "restored-passages";
   readonly runId: number;
   readonly searchId: string;
   readonly request: SearchRequest;
@@ -125,7 +125,7 @@ export type SearchExperienceSnapshot =
   | IdleSnapshot
   | RestoringSnapshot
   | ActiveSearchSnapshot
-  | RestoredResultsSnapshot
+  | RestoredPassagesSnapshot
   | FailureSnapshot;
 
 export type AnimationMilestone =
@@ -152,7 +152,7 @@ export type SearchExperienceCommand =
 export interface SearchTransportCallbacks {
   readonly onStatus: (phase: SearchPhase) => void;
   readonly onPassage: (passage: Passage) => void;
-  readonly onResultsReady: (resultCount: number) => void;
+  readonly onPassagesReady: (resultCount: number) => void;
   readonly onExplanationDelta: (passageId: string, delta: string) => void;
   readonly onDone: (
     searchId: string | null,

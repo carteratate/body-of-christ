@@ -1,4 +1,5 @@
 import type { AttachedContext, ChunkResult, CollectionOutcome } from "@/lib/search-stream";
+import { classifySearchErrorCode } from "./failure";
 import type {
   ActiveSearchSnapshot,
   GuestContinuitySnapshot,
@@ -74,13 +75,6 @@ function freezeOutcomes(
   outcomes: Record<string, CollectionOutcome>,
 ): Readonly<Record<string, CollectionOutcome>> {
   return Object.freeze({ ...outcomes });
-}
-
-function classifyError(message: string): string {
-  const lower = message.toLowerCase();
-  if (lower.includes("unauthorized") || lower.includes("401") || lower.includes("403")) return "auth_error";
-  if (lower.includes("network") || lower.includes("fetch")) return "network_error";
-  return "server_error";
 }
 
 function validatePorts(ports: SearchExperiencePorts): void {
@@ -372,7 +366,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       }
       ownedRun.bufferedPassages.push(freezePassage({ ...passage, explanation: null }));
     },
-    onResultsReady(resultCount) {
+    onPassagesReady(resultCount) {
       if (!isCurrent(ownedRun.id)) return;
       const current = activeSnapshot(ownedRun.id);
       if (ports.audience.kind !== "guest") {
@@ -459,7 +453,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       const failure = {
         kind: "search",
         message,
-        code: code ?? classifyError(message),
+        code: code ?? classifySearchErrorCode(message),
         stage: stage ?? null,
         collectionOutcomes: freezeOutcomes(collectionOutcomes ?? {}),
         rateLimit: null,
@@ -528,7 +522,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         failSearch(ownedRun, {
           kind: "search",
           message,
-          code: classifyError(message),
+          code: classifySearchErrorCode(message),
           stage: "guest_access",
           collectionOutcomes: EMPTY_OUTCOMES,
           rateLimit: null,
@@ -560,7 +554,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     const rejectSearch = (error: unknown) => {
       if (!isCurrent(ownedRun.id) || ownedRun.controller.signal.aborted || ownedRun.terminal) return;
       const message = error instanceof Error ? error.message : "Search failed";
-      callbacks.onError(message, classifyError(message), "connection");
+      callbacks.onError(message, classifySearchErrorCode(message), "connection");
     };
     try {
       const search = audience.kind === "authenticated"
@@ -601,7 +595,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       failSearch(ownedRun, {
         kind: "restore",
         message,
-        code: classifyError(message),
+        code: classifySearchErrorCode(message),
         stage: "authentication",
         collectionOutcomes: EMPTY_OUTCOMES,
         rateLimit: null,
@@ -632,7 +626,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       failSearch(ownedRun, {
         kind: "restore",
         message,
-        code: classified?.code ?? classifyError(message),
+        code: classified?.code ?? classifySearchErrorCode(message),
         stage: classified?.stage ?? "restore",
         collectionOutcomes: EMPTY_OUTCOMES,
         rateLimit: null,
@@ -648,7 +642,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     void Promise.resolve(restoration).then((result) => {
       if (!isCurrent(ownedRun.id)) return;
       emit({
-        status: "restored-results",
+        status: "restored-passages",
         runId: ownedRun.id,
         searchId: result.searchId,
         request: freezeRequest(result.request),

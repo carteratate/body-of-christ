@@ -3,7 +3,7 @@ import type {
   ActiveSearchSnapshot,
   FailureSnapshot,
   Passage,
-  RestoredResultsSnapshot,
+  RestoredPassagesSnapshot,
   SearchCompletionFailure,
   SearchExperienceSnapshot,
   SearchPhase,
@@ -14,7 +14,7 @@ import type {
 
 export interface SearchExperienceView {
   readonly active: ActiveSearchSnapshot | null;
-  readonly restored: RestoredResultsSnapshot | null;
+  readonly restored: RestoredPassagesSnapshot | null;
   readonly restoring: boolean;
   readonly failure: FailureSnapshot | null;
   readonly request: SearchRequest | null;
@@ -46,7 +46,7 @@ export interface SearchExperienceView {
 
 export function searchExperienceView(snapshot: SearchExperienceSnapshot): SearchExperienceView {
   const active = snapshot.status === "active-search" ? snapshot : null;
-  const restored = snapshot.status === "restored-results" ? snapshot : null;
+  const restored = snapshot.status === "restored-passages" ? snapshot : null;
   const restoring = snapshot.status === "restoring";
   const failure = snapshot.status === "failure" ? snapshot : null;
   const request = active?.request ?? restored?.request ?? failure?.request ?? null;
