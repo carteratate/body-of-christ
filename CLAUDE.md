@@ -10,16 +10,17 @@ All changes MUST respect the following architectural, security, and design const
 
 ```bash
 # Frontend (apps/web)
-cd apps/web && npm run dev          # dev server on :3000
-cd apps/web && npm run build        # production build
-cd apps/web && npm run lint         # ESLint
+npm run dev            # dev server on :3000
+npm run build          # production build
+npm run lint           # ESLint — the repo baseline is ZERO errors
+npm test               # vitest run
 
-# Backend (services/api)
-cd services/api && uvicorn app.main:app --reload   # dev server on :8000
-cd services/api && pytest tests/                   # run all tests
+# Backend (services/api) — deps in pyproject.toml; `python3` on this machine
+uvicorn app.main:app --reload   # dev server on :8000
+python3 -m pytest tests/
 
 # Datapipeline (one collection; use --target reader/search for a repair)
-cd datapipeline && python run_collection.py --collection bible --target both
+cd datapipeline && python3 run_collection.py --collection bible --target both
 
 # Docker (prod-like)
 docker build -t theocorpus-api services/api
@@ -35,7 +36,7 @@ For collection publication, store repair, search-index reset, or reader wipe, re
 
 - Monorepo with separate deploy targets:
   - `apps/web`            → Next.js (TypeScript), deployed on Vercel
-  - `services/api`        → Python FastAPI, deployed on Railway (Docker)
+  - `services/api`        → Python FastAPI, Docker
   - `supabase/migrations` → SQL migrations only
   - `datapipeline/`       → standalone Python scripts (run locally/CI, not deployed)
 
@@ -43,18 +44,19 @@ For collection publication, store repair, search-index reset, or reader wipe, re
 - **Qdrant** — vector store for cosine-similarity search (HNSW). Embeddings live here, NOT in pgvector.
 - The frontend NEVER talks directly to the database.
 - ALL client data access goes through FastAPI.
-- **The frontend NEVER calls Railway directly from the browser.** All API calls go through the Vercel proxy at `apps/web/src/app/v1/[...path]/route.ts`, which forwards to Railway using the server-side `API_URL` env var. This is intentional — it avoids CORS, keeps the Railway URL private, and allows `x-internal-secret` to be added server-side.
-- **`const API_URL = ""` in `apps/web/src/lib/api.ts` is correct and intentional.** The empty string causes all fetch calls to use relative paths (`/v1/...`), which hit the Vercel proxy. Do NOT change this to read from an env var. The env var that matters is server-side `API_URL` (no `NEXT_PUBLIC_` prefix), set in Vercel, used only by the proxy route.
-- **`NEXT_PUBLIC_API_URL` is used only in `next.config.ts` for CSP headers.** It does NOT control where API calls are routed. Do not use it in `api.ts`.
+- **The frontend NEVER calls the API host directly from the browser.** All API calls go through the Vercel proxy at `apps/web/src/app/v1/[...path]/route.ts`, which forwards using the server-side `API_URL` env var. This is intentional — it avoids CORS, keeps the API host private, and allows `x-internal-secret` to be added server-side.
+- **`const API_URL = ""` in `apps/web/src/lib/api.ts` is correct and intentional.** The empty string causes all fetch calls to use relative paths (`/v1/...`), which hit the Vercel proxy. Keep it empty. The env var that matters is server-side `API_URL` (no `NEXT_PUBLIC_` prefix), used only by the proxy route.
+- **`NEXT_PUBLIC_API_URL` is used only in `next.config.ts` for CSP headers.** It does NOT control where API calls are routed. Keep it out of `api.ts`.
 
 ---
 
 ## 2. Authentication & Authorization (CRITICAL)
 
 - Auth via Supabase Auth; frontend sends JWT as `Authorization: Bearer <token>`.
-- Backend MUST verify Supabase JWT (signature, expiration, issuer) and extract `user_id` from `sub`.
+- Backend verifies the Supabase JWT (signature, expiration, issuer) and extracts `user_id` from `sub`. Implementation is the `app/auth/` package — `jwks.py` (key cache) and `verify.py`.
 - RLS MUST be enabled on all user-owned tables.
 - Supabase service role key MUST NEVER appear in frontend code.
+- **Guests** are a separate audience with no Supabase user: a guest session token grants a limited search trial, and guest work is claimed into a real account on signup (`POST /v1/guest/claim`). Guest state lives in `guest_trials` and the guest continuity/transfer columns; it is never a JWT identity.
 
 ---
 
@@ -77,50 +79,57 @@ Response:
 - answer: string
 - sources: []   // empty in V1, populated in V2+
 
-This contract MUST NOT change across versions.
+This contract MUST NOT change across versions. Note it is a **compatibility endpoint with no live caller** — `/chat` redirects to `/search`, and the browser client (`components/chat/ChatShell.tsx`, `streamMessage` in `api.ts`) is unreachable. Keep the endpoint; treat the frontend half as a deletion candidate.
 
 ---
 
 ## 4. Data Model
 
-### V1 Tables
-- `chat_sessions` (id, user_id, title, created_at, updated_at)
-- `chat_messages` (id, session_id, user_id, role, content, created_at)
-- `user_usage` (user_id, rate_window_start, rate_count, quota_date, quota_count, evaluate_date, evaluate_count)
-
-### V2 Tables (live — migrations 0004–0017 applied)
-- `documents` (id, collection, title, author, year, translation, metadata jsonb, created_at)
-- `chunks` (id, document_id, content, position, anchor, chapter_key, chapter_label, unit_label, reference, search_vector tsvector, content_embedding vector, annotation, annotation_embedding)
-- `searches` (id, user_id, query, filters jsonb, result_count, created_at)
-- `retrievals` (id, search_id, chunk_id, rank, reranker_score, explanation)
-- `bookmarks` (id, user_id, chunk_id, note, created_at)
-- `chunk_feedback` (id, user_id, chunk_id, feedback)
-- `user_preferences` (user_id, preferred_translation, default_collections, default_quota, theme)
-
 SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tables.
+
+### Core (V1)
+- `chat_sessions`, `chat_messages`, `user_usage`
+
+### Search corpus & activity (V2)
+- `documents` (id, collection, title, author, year, translation, metadata jsonb)
+- `chunks` (id, document_id, content, position, anchor, chapter_key, chapter_label, unit_label, reference, search_vector tsvector, content_embedding vector, annotation, annotation_embedding)
+- `searches`, `retrievals`, `bookmarks`, `chunk_feedback`, `user_preferences`
+
+### Later additions
+- `compare_runs` — retrieval-lab evaluation runs (0018, 0020, 0026)
+- `retrieval_labels` — human relevance labels (0022, 0024)
+- `guest_trials` — guest session quota + continuity + transfer readiness (0023, 0025, 0026, 0027)
+- `reading_progress` — per-document reader position (0027)
+- `product_feedback` — in-app feedback, including anonymous (0028–0030)
+
+Migrations run 0001–0030. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema. Audit the Supabase migration ledger before renaming any of them.
+
+`chunks.content_embedding` exists but is **unused** — zero references in `services/api/app/`. Qdrant owns all vector search. Leave the column alone.
 
 ---
 
-## 5. RAG Pipeline (V2)
+## 5. RAG Pipeline
 
-Full pipeline in `services/api/app/rag/pipeline.py`:
+Two layers, and the split is the point:
 
-1. **HyDE** — per-collection hypothetical passage generation (`hyde.py`)
-2. **Embed** — concurrent embedding of query + HyDE passages via OpenAI `text-embedding-3-large` (`embed.py`)
-3. **Retrieve** — per-collection parallel search: Qdrant cosine vector search + Supabase FTS, merged with RRF (k=60) (`retrieve.py`)
-4. **Rerank** — per-collection Claude Haiku re-ranking (0.0–1.0 scores); global sort + collection guarantee (`rerank.py`)
-5. **Stream chunks** — yield `chunk` SSE events immediately after reranking
-6. **Persist** — insert search + retrievals to DB
-7. **Yield done** — `done` SSE event with search_id
-8. **Explain** — sequential streaming explanation per chunk via `explanation_delta` SSE events (`explain.py`)
+- `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
+- `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-No LangGraph or agent frameworks. No pgvector for retrieval (embeddings are in Qdrant only).
+Production runs the `hyde_cohere_luna` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → parallel Qdrant vector + Supabase FTS retrieval → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap. Steps live in `rag/steps/`.
+
+The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical). Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
+
+**The pipeline spans three LLM providers** — do not assume Anthropic-only. Defaults in `config.py`: HyDE `claude-haiku-4-5`, LLM rerank `claude-haiku-4-5` (`hyde_*_haiku`) or `gpt-5.6-luna` (`*_luna`), the Cohere rerank path, embeddings OpenAI `text-embedding-3-large`, explanations OpenAI `gpt-5.4-mini`. Legacy chat uses `claude-sonnet-4-6`. Every one is env-overridable; read `config.py` before naming a model.
+
+Streaming order: `chunk` events fire as soon as ranking completes, then the search and its retrievals persist, then `done`, then explanations stream per chunk via `explanation_delta`. Explanations arriving after `done` is normal and the frontend depends on it.
+
+No LangGraph or agent frameworks. No pgvector for retrieval.
 
 ---
 
 ## 6. Deployment
 
-- Backend: Docker → Railway. Same image runs locally and in prod.
+- Backend: Docker image; same image runs locally and in prod.
 - Frontend: Vercel.
 - Config via environment variables only.
 - Required health endpoints: GET /health, GET /health/db
@@ -130,7 +139,8 @@ No LangGraph or agent frameworks. No pgvector for retrieval (embeddings are in Q
 ## 7. Coding Standards
 
 - Backend: FastAPI + Pydantic, structured logging, no secrets logged.
-- Frontend: TypeScript, API calls centralized in `src/lib/api.ts`, no DB SDK in frontend.
+- Frontend: TypeScript, HTTP calls centralized in `src/lib/api.ts`, no DB SDK in frontend.
+- Lint baseline is zero errors. Leave no new warnings in files you touch.
 
 ---
 
@@ -142,207 +152,167 @@ No LangGraph or agent frameworks. No pgvector for retrieval (embeddings are in Q
 
 ---
 
-## 9. Design System — Sacred Night (dark mode, default)
+## 9. Design System
 
-| Token | Value | Usage |
+Tokens are defined in `apps/web/src/app/globals.css` under `@theme`. Use the Tailwind `brand` namespace (`bg-brand-surface`, `text-brand-muted`, …) and `var(--color-collection-*)` for collection accents. **No hardcoded hex in components.**
+
+Two themes, selected by `data-theme` on `<html>` and persisted in `user_preferences.theme`:
+
+| Token | Slate Night (dark, default) | Ivory Vault (light) |
 |---|---|---|
-| Background | `#090E1A` | Page background |
-| Surface | `#111829` | Cards, sidebar, bubbles |
-| Accent | `#C4972A` | CTAs, links, active states |
-| Text primary | `#EAE6DC` | Body text, headings |
-| Text muted | `#7A8099` | Timestamps, placeholders |
+| `brand-bg` | `#0D1828` | `#f0e8d8` |
+| `brand-surface` | `#172232` | `#e3dbc8` |
+| `brand-accent` | `#C4972A` | `#C4972A` |
+| `brand-primary` | `#EAE6DC` | `#1a1610` |
+| `brand-muted` | `#7A8099` | `#6a6050` |
 
-Use CSS custom properties via Tailwind `brand` namespace. No hardcoded hex values in components.
+Any new color must be added to **both** theme blocks.
 
 ---
 
 ## 10. Routes
 
-### Frontend Routes
+### Frontend
 
-| Route | File | Notes |
-|---|---|---|
-| `/` | `app/page.tsx` | Redirect → /search (authed) or /login |
-| `/login` | `app/login/page.tsx` | Supabase auth form |
-| `/update-password` | `app/update-password/page.tsx` | Password reset flow |
-| `/chat` | `app/chat/page.tsx` | `redirect` to /search (307) |
-| `/search` | `app/search/page.tsx` | Main V2 search interface |
-| `/bookmarks` | `app/bookmarks/page.tsx` | Saved passages |
-| `/reader/[docId]` | `app/reader/[docId]/page.tsx` | Document reader (chapter-based) |
-| `/sources` | `app/sources/page.tsx` | Corpus document browser |
-| `/discover` | `app/discover/page.tsx` | AI collection scorer (evaluate endpoint) |
-| `/about` | `app/about/page.tsx` | Product info page |
-| `/settings` | `app/settings/page.tsx` | User preferences |
+Authenticated pages live at the bare path; the guest mirror is a sibling under `/guest/` or `/search/guest`. Both must be updated together when shared behavior changes.
 
-### API Endpoints (all under /v1/, require JWT)
+| Route | Notes |
+|---|---|
+| `/` | Redirects to /search when authed; otherwise renders `LandingPage` |
+| `/search`, `/search/guest` | Main search interface — both render `SearchPage` |
+| `/reader/[docId]`, `/reader/guest/[docId]` | Document reader (chapter-based) |
+| `/history` | Search history |
+| `/bookmarks` | Saved passages |
+| `/sources` | Corpus document browser |
+| `/discover` | AI collection scorer (evaluate endpoint) |
+| `/settings` | User preferences |
+| `/about`, `/guest/about` | Product info |
+| `/feedback`, `/guest/feedback` | Product feedback form |
+| `/login`, `/signup`, `/update-password`, `/auth/callback` | Auth flows |
+| `/chat` | `redirect` to /search — legacy |
+| `/icon-preview`, `/onboarding-preview` | Design drafts, not product surface |
+| `/v1/[...path]` | The proxy route — see §1 |
+
+### API (all under `/v1/`)
 
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/v1/me` | Current user info |
-| POST | `/v1/search` | SSE stream; rate-limited (5/min, 30/day) |
-| GET | `/v1/searches` | Search history (last 50) |
-| GET | `/v1/searches/{id}/results` | Restore past search from retrievals |
-| DELETE | `/v1/searches/{id}` | Delete one search (retrievals cascade) |
-| GET | `/v1/documents/{id}` | Document metadata + chunk count |
-| GET | `/v1/documents/{id}/toc` | Ordered chapter list for reader |
-| GET | `/v1/documents/{id}/reader` | One chapter of passages (anchor or chapter param) |
-| GET | `/v1/sources` | All documents with chunk counts; 1h in-memory cache |
-| POST | `/v1/evaluate` | AI scores each collection for a query; 10/day limit |
-| POST | `/v1/bookmarks` | Body: `{chunk_id}` |
-| GET | `/v1/bookmarks` | List user bookmarks (with joined chunk content) |
-| PATCH | `/v1/bookmarks/{id}` | Body: `{note}` — update personal note |
-| DELETE | `/v1/bookmarks/{id}` | Remove bookmark |
-| POST | `/v1/feedback` | Body: `{chunk_id, feedback: "up"\|"down", search_id?}` |
-| GET | `/v1/preferences` | Fetch user preferences |
-| PUT | `/v1/preferences` | Update user preferences |
+| GET | `/me` | Current user |
+| POST | `/search` | SSE stream; 5/min, 30/day |
+| POST | `/search/guest` | SSE stream; guest session token, trial-limited |
+| POST | `/guest/claim` | Transfer guest work into a new account |
+| GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
+| DELETE | `/searches/{id}` | Retrievals cascade |
+| GET | `/documents/{id}`, `/{id}/toc`, `/{id}/reader` | Reader: metadata, chapter list, one chapter |
+| GET/PUT | `/reading-progress`, `/reading-progress/{doc_id}` | Reader position |
+| GET | `/sources` | All documents with chunk counts; 1h in-memory cache |
+| POST | `/evaluate`, `/evaluate/explain` | Collection scoring; 10/day |
+| POST/GET/PATCH/DELETE | `/bookmarks`, `/bookmarks/{id}` | PATCH body is `{note}` |
+| POST | `/feedback` | `{chunk_id, feedback: "up"\|"down", search_id?}` |
+| POST | `/product-feedback` | In-app feedback; allows anonymous |
+| POST | `/labels` | Human relevance labels (retrieval lab) |
+| GET/PUT | `/preferences` | User preferences |
+| POST/GET | `/search/compare`, `/search/compare/view`, `/search/compare/stats` | **Retrieval lab.** Mounted in production startup today; treat as a separate concern from product routes. |
+| POST | `/chat`, `/chat/stream` | Legacy — see §3 |
 
 ---
 
-## 11. Component Locations
+## 11. Frontend Layout
 
-- **Search:** `apps/web/src/components/search/`
-  - `SearchPage.tsx`, `ChunkCard.tsx`, `SearchResults.tsx`, `ResultsSkeleton.tsx`, `EmptyState.tsx`, `RelevanceExplanation.tsx`
-  - `BottomBar.tsx` — SearchBar + CollectionToggles + QuotaControl composed
-  - `SearchBar.tsx`, `CollectionToggles.tsx`, `QuotaControl.tsx`, `TranslationSelector.tsx`
-  - `SearchProgress.tsx`, `LoadingAnimation.tsx`, `NoResultsScreen.tsx`, `ResultFilterBar.tsx`
-- **Reader:** `apps/web/src/components/reader/`
-  - `DocumentReader.tsx`, `ReaderChrome.tsx`, `ChapterSection.tsx`, `Passage.tsx`, `ContentsDrawer.tsx`
-- **Bookmarks:** `apps/web/src/components/bookmarks/`
-  - `BookmarksPage.tsx`, `BookmarkCard.tsx`
-- **Discover:** `apps/web/src/components/discover/`
-  - `DiscoverPage.tsx`, `RelevanceChart.tsx`
-- **Sources:** `apps/web/src/components/sources/`
-  - `SourcesPage.tsx`
-- **About:** `apps/web/src/components/about/`
-  - `AboutPage.tsx`
-- **Settings:** `apps/web/src/components/settings/`
-  - `SettingsPage.tsx`
-- **Auth:** `apps/web/src/components/auth/`
-  - `LoginForm.tsx`
-- **Chat (legacy):** `apps/web/src/components/chat/`
-  - `ChatShell.tsx`
-- **Common:** `apps/web/src/components/common/`
-  - `RateLimitModal.tsx`, `Toast.tsx` (+ `useToast` hook), `ErrorBoundary.tsx`
-- **Layout:** `apps/web/src/components/layout/`
-  - `AppShell.tsx`, `Sidebar.tsx`, `PostHogProvider.tsx`
+Components are grouped by feature under `apps/web/src/components/<feature>/` (search, reader, history, bookmarks, sources, discover, settings, feedback, landing, auth, chat, common, layout). Read the directory rather than a list here.
+
+What is **not** discoverable by looking:
+
+- **Search lifecycle does not live in `components/search/`.** It lives in `apps/web/src/lib/search-experience/` — see §12.
+- **`lib/search-stream.ts` is the sole SSE protocol module** — see §14.
+- `components/layout/` holds three shells: `AppShell` (authenticated), `GuestShell` (guest), and `AuthenticatedRouteShell`, which picks between them by pathname against its own `AUTHENTICATED_ROUTES` list — **add new authenticated routes there or they render in the guest shell.** Guest and authenticated pages share components by receiving an `isGuest` prop, not by forking.
+- `components/chat/ChatShell.tsx` is unreachable — see §3.
 
 ---
 
-## 12. AppContext
+## 12. Search-experience runtime (`lib/search-experience/`)
 
-- Provided by `AppShell` (`apps/web/src/components/layout/AppShell.tsx`)
-- Consumed via `useAppContext()` hook exported from `AppShell.tsx`
-- **ALL authenticated pages MUST be wrapped in AppShell**
+**The search and restore lifecycle has one owner.** `createSearchExperience()` in `runtime.ts` exposes exactly three operations:
 
-| Value | Type | Notes |
-|---|---|---|
-| `token` | `string \| null` | Supabase JWT |
-| `ready` | `boolean` | True once auth state resolved |
-| `preferences` | `Preferences \| null` | Fetched on mount via GET /v1/preferences |
-| `setPreferences` | `(p: Preferences) => void` | Updates local context only |
-| `preferencesError` | `boolean` | True if preferences fetch failed |
-| `searches` | `SearchSummaryV2[]` | DB-backed search history |
-| `refreshSearches` | `() => void` | Re-fetches search history from API |
-| `pendingSearch` | `{ id, query } \| null` | In-flight search slot (separate from DB list) |
-| `setPendingSearch` | `(id, query) => void` | — |
-| `clearPendingSearch` | `() => void` | — |
-| `activeSearchId` | `string \| null` | Currently displayed search |
-| `setActiveSearchId` | `(id \| null) => void` | — |
-| `searchKey` | `number` | Increment triggers new search render |
-| `newSearch` | `() => void` | Resets searchKey + activeSearchId |
-| `corpusPassages` | `number \| null` | Total passages; populated lazily by /sources |
-| `setCorpusPassages` | `(n: number) => void` | — |
+```ts
+read:      () => SearchExperienceSnapshot   // immutable current state
+subscribe: (listener) => unsubscribe
+send:      (command: SearchExperienceCommand) => void
+```
 
-**Auto-save** on toggle/quota/translation change is handled in `SearchPage.tsx` and `CollectionToggles.tsx` via debounced `PUT /v1/preferences` calls — NOT in AppShell.
+It owns run identity, `AbortController` lifecycle, stale-event rejection, frozen submitted requests, passage/explanation buffering, terminal rules, retry, rate limits, guest continuity, pending-history ownership, and animation milestones.
+
+Everything it touches externally is an injected port: `audience` (a discriminated authenticated/guest search adapter), plus `credentials`/`savedSearch` for authenticated and `guestAccess`/`guestContinuity` for guest, and `pendingHistory`, `analytics`, `time`. Wiring lives in `useSearchPageExperience.ts`; React subscription is `useSearchExperience.ts` (`useSyncExternalStore`, no transitions).
+
+Rules when working here:
+
+- `SearchPage.tsx` renders snapshots and forwards commands. Keep AbortControllers, run generations, stream buffers, terminal flags, and animation timers out of it. Draft query/collection/translation/quota controls, route translation, result filtering, hints, and DOM measurement stay in the page.
+- Next routing and React stay outside the runtime.
+- Test through `read`/`subscribe`/`send` with scripted in-memory adapters. Do not assert on private reducer state.
+- `LoadingAnimation` owns visual timing and emits semantic milestones (`filters-ready` at 3.2s, ready-to-reveal, fade-complete). Passages stay buffered until ready-to-reveal. Do not reintroduce a page-side timer.
 
 ---
 
-## 13. Collections — Canonical Source
+## 13. AppContext
 
-- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`)
-- **Frontend mirror:** `apps/web/src/lib/collections.ts` (includes CSS var colors per collection)
-- **To add a new collection:** update `constants.py` first, then sync `collections.ts`
+- Provided by `AppShell`; consumed via `useAppContext()`.
+- **ALL authenticated pages MUST be wrapped in AppShell.** `GuestShell` supplies the guest equivalent.
+- Holds: auth (`token`, `userId`, `ready`), preferences, search history (`searches`, `refreshSearches`, `removeSearch`, `restoreSearch`, `historyRevision`, `invalidateSearchHistory`), the pending-search slot, `activeSearchId`/`searchKey`/`newSearch`, the cached source corpus, `bookmarkIds`, and mobile navigation state.
 
-### Current Collections (10)
+**`clearPendingSearch(expectedId?: string)` is generation-guarded** — it no-ops when `expectedId` does not match the current pending entry, so a stale aborted run cannot clear its replacement's row. Always pass the owning entry id.
 
-| Key | Label | Hex |
-|---|---|---|
-| `bible` | Bible | `#d4885a` |
-| `catechism` | Catechism | `#5b9bd4` |
-| `summa` | Summa Theologica | `#55cc88` |
-| `encyclicals` | Encyclicals | `#e8c040` |
-| `councils` | Councils | `#60d4c8` |
-| `church-fathers` | Church Fathers | `#b070d4` |
-| `medieval` | Medieval | `#90a0a8` |
-| `canon-law` | Canon Law | `#e84040` |
-| `apostolic-exhortations` | Apostolic Exhortations | `#4858c8` |
-| `papal-documents` | Papal Documents | `#b86080` |
-
-Colors are defined as CSS custom properties (e.g. `var(--color-collection-bible)`) — use those in components, not raw hex.
+Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` in `SearchPage.tsx` and `CollectionToggles.tsx` — NOT in AppShell.
 
 ---
 
 ## 14. SSE Streaming
 
-- **Client function:** `streamSearch()` in `apps/web/src/lib/api.ts`
-- **Signature:** `streamSearch(token, query, filters, quota, callbacks, signal?)`
-- **Callbacks:**
-  - `onChunk(chunk: ChunkResult)` — ranked result chunk
-  - `onExplanationDelta(chunkId: string, delta: string)` — streams explanation text incrementally
-  - `onDone(searchId: string, resultCount: number)` — pipeline complete
-  - `onError(message: string)` — pipeline error
-  - `onRateLimit(retryAfter: number | null, limitType: "per_minute" | "daily")` — 429 response
-  - `onStatus?(phase: "searching" | "ranking", collections?: string[])` — optional progress updates
-- **SSE event types from backend:** `"chunk"`, `"explanation_delta"`, `"done"`, `"error"`, `"status"`
-- **Rate limit detection:** 429 response body parsed; `detail` containing `"daily"` → `limitType="daily"`, else `"per_minute"`
-- **Cleanup:** Pass an `AbortController.signal`; call `controller.abort()` on component unmount
+- **`lib/search-stream.ts` is the only SSE decoder.** `consumeSearchStream(body, callbacks, signal)` owns buffering, event decoding, terminal rules, and abort. `streamSearch` (authenticated) and `streamGuestSearch` (guest) are request adapters over it and differ only in endpoint and credential.
+- Add a new event field **once**, in `search-stream.ts`.
+- **Backend event types:** `chunk`, `status`, `explanation_delta`, `done`, `error`, and `results_ready` (guest only — ranked passages are ready; guest `done` is a later completion/transfer milestone).
+- **Callbacks:** `onChunk`, `onExplanationDelta`, `onStatus?`, `onResultsReady?`, `onRateLimit(retryAfter, "per_minute" | "daily")`, plus:
+  - `onDone(searchId, resultCount, outcome, collectionOutcomes, persisted)` — `persisted: false` means results are usable but not saved to history.
+  - `onError(message, code?, stage?, collectionOutcomes?)`
+- `outcome` is `success | degraded_success | no_candidates`. **Only an explicit `no_candidates` means an empty corpus result** — an error is not a no-results screen.
+- Cleanup: pass an `AbortController.signal` and abort on unmount.
 
 ---
 
-## 15. V2 Data Model — Actual State
+## 15. Collections — Canonical Source
 
-All 17 migrations (0001–0017) are applied. Notable migrations beyond the V2 foundation:
-
-| Migration | What it adds |
-|---|---|
-| 0008 | `translation` column on `documents`; `UNIQUE(collection, title, translation)` |
-| 0010 | `metadata jsonb` on `chunks` |
-| 0011 | `medieval` and `councils` collections added to DB constraints |
-| 0012 | `theme` column on `user_preferences` |
-| 0013 | `anchor`, `chapter_key`, `chapter_label`, `unit_label` passage columns on `chunks` |
-| 0014 | `UNIQUE(collection, title, translation, author)` on documents — replaces the older 3-column constraint so distinct same-title works by different authors (Polycarp vs Ignatius, both *Epistle to the Philippians*) can coexist |
-| 0015 | `apostolic-exhortations` and `papal-documents` collections |
-| 0016 | `note text` column on `bookmarks` |
-| 0017 | `evaluate_date` + `evaluate_count` columns on `user_usage` |
-
-**`content_embedding` (vector) column exists on `chunks` but is unused for retrieval** — embeddings live in Qdrant. The column is vestigial and can be ignored.
+- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`), 10 collections.
+- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection).
+- **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 
 ---
 
 ## 16. CSP Headers
 
-- Defined in `apps/web/next.config.ts`
-- **`script-src` and `default-src` are intentionally omitted** — nonce-based CSP is deferred; `unsafe-inline` is required for Next.js hydration in the interim, so these directives are excluded rather than creating a false sense of security
+- Defined in `apps/web/next.config.ts`.
+- **`script-src` and `default-src` are intentionally omitted** — nonce-based CSP is deferred, and `unsafe-inline` is required for Next.js hydration in the interim, so these directives are excluded rather than creating a false sense of security.
 - **`connect-src` includes:** `'self'`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `https://app.posthog.com`, `https://eu.posthog.com`
-- **NEVER add `unsafe-eval` to `script-src`**
+- **NEVER add `unsafe-eval` to `script-src`.**
 
 ---
 
 ## 17. Known Issues & Deferred Work
 
-### 1. Shared Rate Limit Counter (V1 chat / V2 search)
+### 1. Shared rate-limit counter (V1 chat / V2 search)
 
-V1 chat and V2 search share `user_usage.rate_count` / `quota_count` columns. V2 enforces 5/min and 30/day; V1 enforces 10/min. This creates cross-contamination. `TODO` comment in `routes/search.py` → `check_search_rate_limit`.
+V1 chat and V2 search share `user_usage.rate_count` / `quota_count`. V2 enforces 5/min and 30/day; V1 enforces 10/min. This cross-contaminates. `TODO` in `routes/search.py` → `check_search_rate_limit`.
+**Fix:** add `search_rate_count` / `search_quota_count` columns.
 
-**Future fix:** add `search_rate_count` / `search_quota_count` columns to `user_usage`.
+### 2. JWKS refresh still stampedes
 
-### 2. JWKS Cache Thundering Herd
+`app/auth/jwks.py` has an `asyncio.Lock`, but it guards only the **cache write** — `_fetch_from_remote()` runs outside it. Concurrent coroutines that all see a stale cache still all issue HTTP requests to Supabase. Low priority; the fix is to hold the lock across the fetch with a double-check on entry.
 
-Under concurrent load, multiple coroutines can all find the JWKS cache stale and fire simultaneous HTTP requests to Supabase. Low priority; fix with double-checked locking in a future maintenance pass.
+### 3. Retrieval lab is mounted in production startup
 
-### 3. `content_embedding` Column is Vestigial
+`compare`, `compare_stats`, and the judge client initialize with the product API. Separating them into an adapter or explicit deployment mode is tracked as architecture item 7.
 
-`chunks.content_embedding` exists in the schema but is not populated or used — Qdrant handles all vector search. Do not write code that reads from or writes to this column.
+### 4. Tracked relics
+
+`app/icon-preview/` (~1,177 lines of animation draft, source of the remaining lint warnings), `components/chat/ChatShell.tsx`, `rag/steps/persist.py` (empty), and `rag/steps/dedup.py` (pass-through) are all dead. Architecture item 8.
 
 ---
 
@@ -359,3 +329,7 @@ Use the default Matt Pocock triage labels. See `docs/agents/triage-labels.md`.
 ### Domain docs
 
 Use the single-context documentation layout. See `docs/agents/domain.md`.
+
+### Architecture review
+
+The August 2026 production architecture review is `docs/architecture/architecture-review-2026-08-23.html`. Items 1–3 are implemented; items 4–8 are open and are referenced by number above.
