@@ -228,6 +228,30 @@ describe("SearchPage restore lifecycle", () => {
     await waitFor(() => expect(apiMocks.getSearchResults).toHaveBeenCalledTimes(2));
   });
 
+  it("rejects a malformed saved-search route without calling the API", async () => {
+    testState.params = "restore=not-a-search-id";
+    render(<SearchPage />);
+
+    expect(await screen.findByText("Saved search not found")).toBeTruthy();
+    expect(apiMocks.getSearchResults).not.toHaveBeenCalled();
+    expect(screen.queryByRole("button", { name: "Retry saved search" })).toBeNull();
+  });
+
+  it("keeps available Passages usable when part of a saved search is unavailable", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("Partially restored query"),
+      results: [streamedPassage],
+      restore_status: "results_unavailable",
+      expected_result_count: 3,
+    });
+    render(<SearchPage />);
+
+    expect(await screen.findByText(/Grace perfects nature/)).toBeTruthy();
+    expect(screen.getByText(
+      "This saved search originally had 3 results, but only 1 remain available.",
+    )).toBeTruthy();
+  });
+
   it("preserves a completed restore across same-user access-token rotation", async () => {
     apiMocks.getSearchResults.mockResolvedValue(restored("Stable restored query"));
     const view = render(<SearchPage />);
@@ -239,6 +263,29 @@ describe("SearchPage restore lifecycle", () => {
     expect(screen.getByText("Stable restored query")).toBeTruthy();
     expect(screen.queryByText("Restoring")).toBeNull();
     expect(apiMocks.getSearchResults).toHaveBeenCalledTimes(1);
+  });
+
+  it("reauthorizes an in-flight restore after same-user access-token rotation", async () => {
+    apiMocks.getSearchResults
+      .mockImplementationOnce((_token, _id, signal: AbortSignal) =>
+        new Promise((_resolve, reject) => signal.addEventListener(
+          "abort",
+          () => reject(new DOMException("Aborted", "AbortError")),
+          { once: true },
+        )),
+      )
+      .mockResolvedValueOnce(restored("Restored with rotated token"));
+    const view = render(<SearchPage />);
+    await waitFor(() => expect(apiMocks.getSearchResults).toHaveBeenCalledOnce());
+
+    testState.token = "refreshed-token";
+    view.rerender(<SearchPage />);
+
+    expect(await screen.findByText("Restored with rotated token")).toBeTruthy();
+    expect(apiMocks.getSearchResults.mock.calls.map((call) => call[0])).toEqual([
+      "token",
+      "refreshed-token",
+    ]);
   });
 
   it("clears and reauthorizes a restore when the authenticated user changes", async () => {
@@ -284,6 +331,19 @@ describe("SearchPage restore lifecycle", () => {
     expect(apiMocks.streamSearch.mock.calls[0][2]).toEqual({ collections: ["bible"], translation: "WEB-C" });
     expect(apiMocks.streamSearch.mock.calls[0][3]).toBe(5);
     expect(screen.getByTestId("bottom-bar").dataset.collections).toBe("bible");
+  });
+
+  it("submits one route-driven explore search during Strict Mode replay", async () => {
+    testState.params = "explore=Grace%20perfects%20nature&exploreRef=ST%20I-II%2C%20q.%20109";
+    render(<StrictMode><SearchPage /></StrictMode>);
+
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    expect(apiMocks.streamSearch.mock.calls[0].slice(1, 4)).toEqual([
+      "Grace perfects nature",
+      { collections: ["bible"], translation: "CPDV" },
+      4,
+    ]);
+    expect(navigationMocks.replace).toHaveBeenCalledWith("/search");
   });
 });
 

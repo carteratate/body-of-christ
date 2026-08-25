@@ -548,9 +548,10 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     }
   };
 
-  const startRestore = (searchIdInput: string) => {
+  const startRestore = (searchIdInput: string, retrying = false) => {
     const searchId = searchIdInput.trim();
     if (!searchId || ports.audience.kind !== "authenticated" || !ports.savedSearch) return;
+    if (!retrying && run?.restoreId === searchId) return;
     const ownedRun = nextRun(null, searchId, null);
     emit({
       status: "restoring",
@@ -585,19 +586,30 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       }, false);
       return;
     }
+    const failRestoration = (error: unknown) => {
+      if (!isCurrent(ownedRun.id) || ownedRun.controller.signal.aborted) return;
+      let classified;
+      try {
+        classified = ports.savedSearch!.classifyFailure?.(error);
+      } catch {
+        classified = undefined;
+      }
+      const message = classified?.message
+        ?? (error instanceof Error ? error.message : "Saved search could not be loaded.");
+      failSearch(ownedRun, {
+        kind: "restore",
+        message,
+        code: classified?.code ?? classifyError(message),
+        stage: classified?.stage ?? "restore",
+        collectionOutcomes: EMPTY_OUTCOMES,
+        rateLimit: null,
+      }, classified?.retryable ?? true);
+    };
     let restoration: Promise<SavedSearchResult>;
     try {
       restoration = ports.savedSearch.restore(credential, searchId, ownedRun.controller.signal);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Saved search could not be loaded.";
-      failSearch(ownedRun, {
-        kind: "restore",
-        message,
-        code: classifyError(message),
-        stage: "restore",
-        collectionOutcomes: EMPTY_OUTCOMES,
-        rateLimit: null,
-      });
+      failRestoration(error);
       return;
     }
     void Promise.resolve(restoration).then((result) => {
@@ -613,23 +625,14 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         canRetry: false,
       });
     }).catch((error: unknown) => {
-      if (!isCurrent(ownedRun.id) || ownedRun.controller.signal.aborted) return;
-      const message = error instanceof Error ? error.message : "Saved search could not be loaded.";
-      failSearch(ownedRun, {
-        kind: "restore",
-        message,
-        code: classifyError(message),
-        stage: "restore",
-        collectionOutcomes: EMPTY_OUTCOMES,
-        rateLimit: null,
-      });
+      failRestoration(error);
     });
   };
 
   const retry = () => {
     if (snapshot.status !== "failure" || !snapshot.canRetry) return;
     if (snapshot.request) startSearch(snapshot.request);
-    else if (snapshot.restoreId) startRestore(snapshot.restoreId);
+    else if (snapshot.restoreId) startRestore(snapshot.restoreId, true);
   };
 
   const animation = (command: Extract<SearchExperienceCommand, { type: "animation" }>) => {
@@ -713,6 +716,13 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         if (command.userId !== userId) {
           userId = command.userId;
           resetToIdle();
+        }
+        break;
+      case "credentials-changed":
+        if (ports.audience.kind === "authenticated"
+          && snapshot.status === "restoring"
+          && run?.restoreId) {
+          startRestore(run.restoreId, true);
         }
         break;
       case "dispose":

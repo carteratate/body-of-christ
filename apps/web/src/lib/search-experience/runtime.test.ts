@@ -455,6 +455,38 @@ describe("search-experience runtime", () => {
     });
   });
 
+  it("uses the saved-search adapter classification and retry rule", async () => {
+    const notFound = new Error("request failed");
+    const { runtime } = authenticatedFixture({
+      savedSearch: {
+        restore: async () => { throw notFound; },
+        classifyFailure: (error) => {
+          expect(error).toBe(notFound);
+          return {
+            message: "This saved search does not exist.",
+            code: "restore_not_found",
+            stage: "restore",
+            retryable: false,
+          };
+        },
+      },
+    });
+
+    runtime.send({ type: "restore", searchId: "saved-search" });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(runtime.read()).toMatchObject({
+      status: "failure",
+      failure: {
+        message: "This saved search does not exist.",
+        code: "restore_not_found",
+        stage: "restore",
+      },
+      canRetry: false,
+    });
+  });
+
   it("isolates ID and clock port failures from the lifecycle", () => {
     const begin = vi.fn();
     const { runtime: authenticated, runs } = authenticatedFixture({
@@ -770,6 +802,56 @@ describe("search-experience runtime", () => {
       passages: [{ chunk_id: "new" }],
       warning: "One Passage is unavailable.",
     });
+  });
+
+  it("treats the same saved-search route as one restore until identity changes", async () => {
+    const restore = vi.fn(async (_credential: string, searchId: string) => ({
+      searchId,
+      request: REQUEST,
+      passages: [passage("p1")],
+      warning: null,
+    }));
+    const { runtime } = authenticatedFixture({ savedSearch: { restore } });
+    runtime.send({ type: "identity-changed", userId: "user-1" });
+
+    runtime.send({ type: "restore", searchId: "saved-search" });
+    runtime.send({ type: "restore", searchId: "saved-search" });
+    await Promise.resolve();
+    runtime.send({ type: "restore", searchId: "saved-search" });
+
+    expect(restore).toHaveBeenCalledOnce();
+    expect(runtime.read()).toMatchObject({
+      status: "restored-results",
+      searchId: "saved-search",
+    });
+
+    runtime.send({ type: "identity-changed", userId: "user-2" });
+    runtime.send({ type: "restore", searchId: "saved-search" });
+    expect(restore).toHaveBeenCalledTimes(2);
+  });
+
+  it("reauthorizes only an in-flight restore when credentials rotate", () => {
+    let credential = "old-token";
+    const restores: Array<{ credential: string; signal: AbortSignal }> = [];
+    const { runtime } = authenticatedFixture({
+      credentials: { current: () => credential },
+      savedSearch: {
+        restore: (currentCredential, _searchId, signal) => {
+          restores.push({ credential: currentCredential, signal });
+          return new Promise<never>(() => undefined);
+        },
+      },
+    });
+
+    runtime.send({ type: "restore", searchId: "saved-search" });
+    credential = "rotated-token";
+    runtime.send({ type: "credentials-changed" });
+
+    expect(restores).toHaveLength(2);
+    expect(restores[0]).toMatchObject({ credential: "old-token" });
+    expect(restores[0].signal.aborted).toBe(true);
+    expect(restores[1]).toMatchObject({ credential: "rotated-token" });
+    expect(restores[1].signal.aborted).toBe(false);
   });
 
   it("cancels work on identity changes and disposal", () => {

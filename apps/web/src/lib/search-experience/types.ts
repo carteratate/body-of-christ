@@ -143,6 +143,7 @@ export type SearchExperienceCommand =
   | { readonly type: "cancel" }
   | { readonly type: "reset" }
   | { readonly type: "identity-changed"; readonly userId: string | null }
+  | { readonly type: "credentials-changed" }
   | { readonly type: "dispose" };
 
 export interface SearchTransportCallbacks {
@@ -195,6 +196,13 @@ export interface SavedSearchResult {
   readonly warning: string | null;
 }
 
+export interface SavedSearchFailure {
+  readonly message: string;
+  readonly code: string;
+  readonly stage: string;
+  readonly retryable: boolean;
+}
+
 interface SharedSearchExperiencePorts {
   readonly analytics?: {
     readonly searchCompleted: (event: SearchCompletedEvent) => void | Promise<void>;
@@ -211,6 +219,7 @@ export interface AuthenticatedSearchExperiencePorts extends SharedSearchExperien
       searchId: string,
       signal: AbortSignal,
     ) => Promise<SavedSearchResult>;
+    readonly classifyFailure?: (error: unknown) => SavedSearchFailure;
   };
   readonly pendingHistory?: {
     readonly begin: (entryId: string, query: string) => void | Promise<void>;
