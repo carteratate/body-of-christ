@@ -26,13 +26,15 @@ export interface SearchRateLimit {
   readonly open: boolean;
 }
 
-export interface SearchCompletionFailure {
+interface SearchFailureDetails {
   readonly message: string;
   readonly code: string | null;
   readonly stage: string | null;
   readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
   readonly rateLimit: SearchRateLimit | null;
 }
+
+export type SearchCompletionFailure = SearchFailureDetails;
 
 export type SearchTransportState =
   | { readonly status: "preparing" }
@@ -105,13 +107,8 @@ export interface RestoredResultsSnapshot extends SnapshotCapabilities {
   readonly canRetry: false;
 }
 
-export interface SearchFailure {
+export interface SearchFailure extends SearchFailureDetails {
   readonly kind: "search" | "restore";
-  readonly message: string;
-  readonly code: string | null;
-  readonly stage: string | null;
-  readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
-  readonly rateLimit: SearchRateLimit | null;
 }
 
 export interface FailureSnapshot extends SnapshotCapabilities {
