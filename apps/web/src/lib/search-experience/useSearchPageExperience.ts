@@ -342,7 +342,9 @@ export function useSearchPageExperience(options: SearchPageExperienceOptions) {
     binding.experience.send({ type: "identity-changed", userId: options.userId });
   }, [binding, options.isGuest, options.userId]);
 
-  const synchronizedRun = useRef<number | null>(null);
+  const synchronizedRun = useRef<number | null>(
+    options.isGuest && options.restoredGuestSearch ? snapshot.runId : null,
+  );
   useLayoutEffect(() => {
     const synchronization = binding.read().viewSynchronization;
     if (view.active && synchronizedRun.current !== view.active.runId) {

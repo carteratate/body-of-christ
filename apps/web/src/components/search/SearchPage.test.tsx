@@ -982,7 +982,7 @@ describe("SearchPage animation-gated stream reveal", () => {
       query: "restored guest query",
       results: [streamedPassage],
       searchId: "guest-search",
-      collections: ["bible"],
+      collections: ["bible", "catechism"],
       translation: "CPDV",
       quota: 3,
       visibleCollections: ["bible"],
@@ -993,6 +993,7 @@ describe("SearchPage animation-gated stream reveal", () => {
 
     expect(screen.getByText("restored guest query")).toBeTruthy();
     expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
+    expect(screen.getByTestId("search-results").dataset.visibleCollections).toBe("bible");
     fireEvent.click(screen.getByRole("button", { name: "Toggle Bible visibility" }));
     expect(JSON.parse(sessionStorage.getItem("theocorpus-guest-current-results") ?? "null"))
       .toMatchObject({ visibleCollections: [] });
