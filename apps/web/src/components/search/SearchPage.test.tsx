@@ -1022,6 +1022,34 @@ describe("SearchPage animation-gated stream reveal", () => {
     await waitFor(() => expect(signal.aborted).toBe(true));
   });
 
+  it("uses the restored guest request filters when querying more like a Passage", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    sessionStorage.setItem("theocorpus-guest-current-results", JSON.stringify({
+      savedAt: Date.now(),
+      query: "restored guest query",
+      passages: [streamedPassage],
+      searchId: "guest-search",
+      collections: ["bible"],
+      translation: "CPDV",
+      quota: 3,
+      visibleCollections: ["bible"],
+      outcome: "success",
+      collectionOutcomes: { bible: "results" },
+    }));
+    render(<SearchPage isGuest />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Query More Like This" }));
+    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
+
+    expect(apiMocks.streamGuestSearch.mock.calls[0].slice(1, 4)).toEqual([
+      "A restored passage",
+      { collections: ["bible"], translation: "CPDV" },
+      3,
+    ]);
+  });
+
   it("restores, saves, and clears the compatible guest Reader snapshot", async () => {
     testState.params = "";
     testState.token = null;

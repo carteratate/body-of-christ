@@ -1,4 +1,4 @@
-import type { AttachedContext, ChunkResult, CollectionOutcome } from "@/lib/search-stream";
+import type { AttachedContext, CollectionOutcome } from "@/lib/search-stream";
 import { classifySearchErrorCode } from "./failure";
 import type {
   ActiveSearchSnapshot,
@@ -48,7 +48,7 @@ function freezeRequest(request: SearchRequest): SearchRequest {
   });
 }
 
-function freezePassage(passage: ChunkResult): ChunkResult {
+function freezePassage(passage: Passage): Passage {
   const context: AttachedContext | null = passage.context
     ? {
         relation: passage.context.relation,

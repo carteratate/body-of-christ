@@ -252,18 +252,24 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       authenticatedRoute.queryMoreLike(content, label);
       return;
     }
+    const currentRequest = snapshot.status === "active-search"
+      || snapshot.status === "restored-passages"
+      || (snapshot.status === "failure" && snapshot.request)
+      ? snapshot.request
+      : null;
+    const criteria = currentRequest ?? routeSearchDefaults;
     experience.send({
       type: "queue-explore",
       request: {
         query: content,
-        collections: activeCollections,
-        translation,
-        quota,
+        collections: criteria.collections,
+        translation: criteria.translation,
+        quota: criteria.quota,
         origin: "explore",
         exploreLabel: label,
       },
     });
-  }, [activeCollections, authenticatedRoute, experience, isGuest, quota, translation]);
+  }, [authenticatedRoute, experience, isGuest, routeSearchDefaults, snapshot]);
 
   useLayoutEffect(() => {
     if (!searchView.showAnimation || !searchView.queryBubbleVisible
