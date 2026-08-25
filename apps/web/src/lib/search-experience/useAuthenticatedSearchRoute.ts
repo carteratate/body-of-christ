@@ -149,6 +149,7 @@ export function useAuthenticatedSearchRoute({
   }, [defaults, experience, replaceWithSearchRoute]);
 
   const cancelPendingExplore = useCallback(() => {
+    queuedExplore.current = null;
     if (!exploreTimer.current) return;
     clearTimeout(exploreTimer.current);
     exploreTimer.current = null;

@@ -363,6 +363,20 @@ describe("SearchPage restore lifecycle", () => {
     expect(apiMocks.streamSearch).not.toHaveBeenCalled();
   });
 
+  it("discards a queued restored-result explore handoff when the search resets", async () => {
+    apiMocks.getSearchResults.mockResolvedValue(restored("Restored query"));
+    const view = render(<SearchPage />);
+    fireEvent.click(await screen.findByRole("button", { name: "Query More Like This" }));
+
+    testState.searchKey += 1;
+    view.rerender(<SearchPage />);
+    testState.params = "";
+    view.rerender(<SearchPage />);
+
+    await waitFor(() => expect(screen.getByText("Empty search")).toBeTruthy());
+    expect(apiMocks.streamSearch).not.toHaveBeenCalled();
+  });
+
   it("submits one route-driven explore search during Strict Mode replay", async () => {
     testState.params = "explore=Grace%20perfects%20nature&exploreRef=ST%20I-II%2C%20q.%20109";
     render(<StrictMode><SearchPage /></StrictMode>);
