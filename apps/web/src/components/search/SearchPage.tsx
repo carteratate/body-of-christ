@@ -763,19 +763,27 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     : runtimeCompletionFailure?.rateLimit?.open
       ? runtimeCompletionFailure.rateLimit
       : null;
+  const visibleCollectionsRun = useRef<number | null>(null);
 
   useLayoutEffect(() => {
     if (isGuest) return;
+    if (runtimeActive && visibleCollectionsRun.current !== runtimeActive.runId) {
+      visibleCollectionsRun.current = runtimeActive.runId;
+      setVisibleCollections([...runtimeActive.request.collections]);
+      return;
+    }
     if (runtimeRestored) {
+      visibleCollectionsRun.current = runtimeRestored.runId;
       setVisibleCollections([...runtimeRestored.request.collections]);
       return;
     }
     if (runtimeRestoring || runtimeFailure?.failure.kind === "restore") {
+      visibleCollectionsRun.current = runtimeSnapshot.runId;
       setVisibleCollections([]);
       setActiveSearchId(null);
       if (runtimeRestoring) setSearchValue("");
     }
-  }, [isGuest, runtimeFailure?.failure.kind, runtimeRestored, runtimeRestoring, setActiveSearchId]);
+  }, [isGuest, runtimeActive, runtimeFailure?.failure.kind, runtimeRestored, runtimeRestoring, runtimeSnapshot.runId, setActiveSearchId]);
 
   useLayoutEffect(() => {
     if (!runtimeOwnsSearchView) return;
