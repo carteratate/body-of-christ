@@ -60,6 +60,7 @@ export function useAuthenticatedSearchRoute({
   replaceWithSearchRoute,
 }: AuthenticatedSearchRouteOptions) {
   const routeRestoreId = useRef(restoreId);
+  const consumedRestoreRoute = useRef<string | null>(null);
   const consumedExploreRoute = useRef<string | null>(null);
   const previousCredential = useRef(credential);
   const exploreOwner = useRef(userId);
@@ -71,6 +72,7 @@ export function useAuthenticatedSearchRoute({
   useLayoutEffect(() => {
     if (exploreOwner.current === userId && credential) return;
     exploreOwner.current = userId;
+    consumedRestoreRoute.current = null;
     consumedExploreRoute.current = null;
   }, [credential, userId]);
 
@@ -83,9 +85,14 @@ export function useAuthenticatedSearchRoute({
   useLayoutEffect(() => {
     if (!userId || !credential) return;
     if (restoreId) {
-      experience.send({ type: "restore", searchId: restoreId });
+      const routeKey = `${userId}\u0000${restoreId}`;
+      if (consumedRestoreRoute.current !== routeKey) {
+        consumedRestoreRoute.current = routeKey;
+        experience.send({ type: "restore", searchId: restoreId });
+      }
       return;
     }
+    consumedRestoreRoute.current = null;
     if (snapshot.status === "restoring"
       || snapshot.status === "restored-passages"
       || (snapshot.status === "failure" && snapshot.failure.kind === "restore")) {

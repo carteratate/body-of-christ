@@ -102,12 +102,21 @@ function saveGuestSearch(continuity: GuestContinuitySnapshot) {
 }
 
 class InvalidSavedSearchIdError extends Error {}
+class SavedPassagesUnavailableError extends Error {}
 
 function classifySavedSearchFailure(error: unknown) {
   if (error instanceof InvalidSavedSearchIdError) {
     return {
       message: "This saved search link is invalid.",
       code: "restore_not_found",
+      stage: "restore",
+      retryable: false,
+    } as const;
+  }
+  if (error instanceof SavedPassagesUnavailableError) {
+    return {
+      message: error.message,
+      code: "restore_unavailable",
       stage: "restore",
       retryable: false,
     } as const;
@@ -266,6 +275,11 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
           const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           if (!UUID_RE.test(searchId)) throw new InvalidSavedSearchIdError(searchId);
           const data = await getSearchResults(credential, searchId, signal);
+          if (data.restore_status === "results_unavailable" && data.results.length === 0) {
+            throw new SavedPassagesUnavailableError(
+              "None of the Passages linked to this saved search remain available.",
+            );
+          }
           const responseCollections = data.filters?.collections;
           const storedCollections = Array.isArray(responseCollections)
             ? responseCollections

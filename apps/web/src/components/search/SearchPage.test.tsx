@@ -287,6 +287,20 @@ describe("SearchPage restore lifecycle", () => {
     )).toBeTruthy();
   });
 
+  it("shows restore unavailable when no saved Passages remain", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("Unavailable restored query"),
+      results: [],
+      restore_status: "results_unavailable",
+      expected_result_count: 3,
+    });
+    render(<SearchPage />);
+
+    expect(await screen.findByText("Saved results are no longer available")).toBeTruthy();
+    expect(screen.queryByTestId("search-results")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Retry saved search" })).toBeNull();
+  });
+
   it("preserves a completed restore across same-user access-token rotation", async () => {
     apiMocks.getSearchResults.mockResolvedValue(restored("Stable restored query"));
     const view = render(<SearchPage />);
@@ -350,6 +364,24 @@ describe("SearchPage restore lifecycle", () => {
 
     expect(screen.queryByText("Private restored query")).toBeNull();
     expect(screen.getByText("Empty search")).toBeTruthy();
+  });
+
+  it("does not restart the old restore while New Search navigation settles", async () => {
+    apiMocks.getSearchResults.mockResolvedValue(restored("Restored query"));
+    const view = render(<SearchPage />);
+    expect(await screen.findByText("Restored query")).toBeTruthy();
+
+    testState.searchKey += 1;
+    view.rerender(<SearchPage />);
+
+    await waitFor(() => {
+      expect(appMocks.setPendingSearch.mock.calls.at(-1)?.[1]).toBe("New Search");
+    });
+    expect(apiMocks.getSearchResults).toHaveBeenCalledOnce();
+
+    testState.params = "";
+    view.rerender(<SearchPage />);
+    expect(apiMocks.getSearchResults).toHaveBeenCalledOnce();
   });
 
   it("leaves restore mode before querying more like a restored result", async () => {
