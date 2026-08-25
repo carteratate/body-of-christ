@@ -81,15 +81,21 @@ vi.mock("@/lib/api", async (importOriginal) => {
 });
 
 vi.mock("./BottomBar", () => ({
-  BottomBar: ({ isSearchActive, activeCollections, searchValue, onSearchChange, onSearch, onToggleVisible }: {
+  BottomBar: ({ isSearchActive, activeCollections, submittedCollections, searchValue, onSearchChange, onSearch, onToggleVisible }: {
     isSearchActive: boolean;
     activeCollections: string[];
+    submittedCollections: string[];
     searchValue: string;
     onSearchChange: (value: string) => void;
     onSearch: () => void;
     onToggleVisible: (collection: string) => void;
   }) => (
-    <div data-testid="bottom-bar" data-active={String(isSearchActive)} data-collections={activeCollections.join(",")}>
+    <div
+      data-testid="bottom-bar"
+      data-active={String(isSearchActive)}
+      data-collections={activeCollections.join(",")}
+      data-filter-collections={submittedCollections.join(",")}
+    >
       <input aria-label="Search passages" value={searchValue} onChange={(event) => onSearchChange(event.target.value)} />
       <button onClick={onSearch}>Search</button>
       <button onClick={() => onToggleVisible("bible")}>Toggle Bible visibility</button>
@@ -99,7 +105,7 @@ vi.mock("./BottomBar", () => ({
 vi.mock("./EmptyState", () => ({ EmptyState: () => <div>Empty search</div> }));
 vi.mock("./SearchResults", () => ({
   SearchResults: ({ results, loading, isRestoring, visibleCollections, onExploreMore }: {
-    results: Array<{ content: string; explanation: string | null }>;
+    results: Array<{ content: string; explanation: string | null; source: { collection: string } }>;
     loading: boolean;
     isRestoring: boolean;
     visibleCollections: string[];
@@ -107,7 +113,9 @@ vi.mock("./SearchResults", () => ({
   }) => (
     <div data-testid="search-results" data-visible-collections={visibleCollections.join(",")}>
       {loading && isRestoring ? "Restoring" : "Restored results"}
-      {results.map((result) => <div key={result.content}>{result.content} — {result.explanation}</div>)}
+      {results
+        .filter((passage) => visibleCollections.includes(passage.source.collection))
+        .map((passage) => <div key={passage.content}>{passage.content} — {passage.explanation}</div>)}
       {!loading && <button onClick={() => onExploreMore("A restored passage", "CCC 1000")}>Query More Like This</button>}
     </div>
   ),
@@ -174,6 +182,32 @@ afterEach(() => {
 });
 
 describe("SearchPage restore lifecycle", () => {
+  it("selects the persisted collection and shows its Passages after restoration", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("What is Christian hope?"),
+      filters: { collections: ["summa"], translation: "WEB-C", quota: 4 },
+      results: [{
+        ...streamedPassage,
+        chunk_id: "summa-passage",
+        content: "Hope is a theological virtue.",
+        source: {
+          ...streamedPassage.source,
+          collection: "summa",
+          document_title: "Summa Theologica",
+          reference: "II-II, q. 17",
+        },
+      }],
+      expected_result_count: 1,
+    });
+
+    render(<SearchPage />);
+
+    expect(await screen.findByText("What is Christian hope?")).toBeTruthy();
+    expect(screen.getByTestId("bottom-bar").dataset.filterCollections).toBe("summa");
+    expect(screen.getByTestId("search-results").dataset.visibleCollections).toBe("summa");
+    expect(screen.getByText(/Hope is a theological virtue/)).toBeTruthy();
+  });
+
   it("survives Strict Mode effect replay instead of remaining on the skeleton", async () => {
     apiMocks.getSearchResults.mockResolvedValue(restored("Strict restore"));
 

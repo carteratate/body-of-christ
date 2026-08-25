@@ -359,7 +359,6 @@ export function useSearchPageExperience(options: SearchPageExperienceOptions) {
       return;
     }
     if (view.restoring || view.failure?.failure.kind === "restore") {
-      synchronizedRun.current = snapshot.runId;
       synchronization.setVisibleCollections([]);
       synchronization.deactivateHistory();
       if (view.restoring) synchronization.clearDraft();
