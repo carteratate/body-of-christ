@@ -1,6 +1,10 @@
-import pytest
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import anthropic
+import httpx2
+import pytest
+
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps import degradation, hyde_none, hyde_s25
 
@@ -20,6 +24,40 @@ async def test_hyde_none_makes_no_llm_calls():
         result = await hyde_none.run("test", ["bible"], tracker)
     mock_client.assert_not_called()
     assert result == {}
+
+
+@pytest.mark.asyncio
+async def test_generate_single_uses_current_anthropic_messages_signature():
+    async def respond(request: httpx2.Request) -> httpx2.Response:
+        return httpx2.Response(
+            200,
+            request=request,
+            json={
+                "id": "msg_test",
+                "type": "message",
+                "role": "assistant",
+                "model": "claude-haiku-4-5",
+                "content": [{"type": "text", "text": "A useful passage."}],
+                "stop_reason": "end_turn",
+                "stop_sequence": None,
+                "usage": {"input_tokens": 3, "output_tokens": 4},
+            },
+        )
+
+    async with httpx2.AsyncClient(transport=httpx2.MockTransport(respond)) as http_client:
+        client = anthropic.AsyncAnthropic(
+            api_key="test-key",
+            http_client=http_client,
+            max_retries=0,
+        )
+        result = await hyde_s25._generate_single(
+            client,
+            "Write a passage.",
+            "What is grace?",
+            100,
+        )
+
+    assert result == "A useful passage."
 
 
 @pytest.mark.asyncio

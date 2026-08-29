@@ -110,7 +110,6 @@ class _HaikuClientProvider:
         response = await _client.messages.create(
             model=settings.rerank_model,
             max_tokens=max_tokens,
-            temperature=0,
             system=system,
             messages=[{"role": "user", "content": user}],
             # The transformer strips unsupported grammar constraints while our
