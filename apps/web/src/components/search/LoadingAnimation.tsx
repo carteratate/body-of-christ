@@ -36,6 +36,13 @@ const PALETTE: Record<string, { hex: string; label: string; short: string }> = {
 const ACCENT = "#C4972A";
 const N_CHUNKS: number = 15;
 
+type Theme = "dark" | "light";
+
+function readTheme(): Theme {
+  if (typeof document === "undefined") return "dark";
+  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+}
+
 // Pick `count` distinct indices from [0, max) uniformly (partial Fisher–Yates).
 // Returned sorted for stable rendering. `count` is clamped to [1, max].
 function pickDistinct(count: number, max: number): number[] {
@@ -93,6 +100,14 @@ interface Props {
 
 export function LoadingAnimation({ collections, quota, isQueryDone, retrievalStarted, onFiltersReady, onReadyToShow, onFadeComplete, reservedTopRight }: Props) {
   const active = collections.filter(k => k in PALETTE);
+  const [theme, setTheme] = useState<Theme>(readTheme);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => setTheme(readTheme()));
+    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
+  }, []);
 
   // ── Container measurement ───────────────────────────────────────────────
   // useLayoutEffect fires before the first paint (client-only component),
@@ -359,6 +374,12 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
         style={{ position: "absolute", top: 0, left: 0, width: W, height: H }}
         preserveAspectRatio="none"
       >
+        <defs>
+          <clipPath id="query-logo-clip">
+            <circle cx={BOC_X} cy={BOC_Y} r={Math.max(0, BOC_R - 2)} />
+          </clipPath>
+        </defs>
+
         {/* ── Gold search→BoC line ─────────────────────────────────────────
             Starts at SVG bottom (= BottomBar top edge), draws upward over 3s,
             then fades when searchGone fires at 3.2s.                          */}
@@ -547,9 +568,10 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
           // soft bloom — read as a large halo rather than a tight glow ring.
           const filter = pulsing ? `drop-shadow(0 0 22px ${color}) drop-shadow(0 0 48px ${color})` : undefined;
 
-          // "TC" label is static — fixed color, no glow, no transitions —
-          // independent of the circle's pulse state, sized proportionally to BOC_R.
-          const logoFontSize = BOC_R * 0.55;
+          // The cathedral is static and independent of the circle's pulse state.
+          // Its square canvas scales from the center-node radius so the full mark
+          // stays inside the circle at every responsive animation size.
+          const logoSize = BOC_R * 1.56;
 
           return (
             <g suppressHydrationWarning opacity={phase >= 1 && !bocGone ? 1 : 0} style={{ transition: "opacity 0.4s ease" }}>
@@ -561,14 +583,18 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
                   style={{ transition: `stroke ${bocTrans}, stroke-width ${bocTrans}` }}
                 />
               </g>
-              <text suppressHydrationWarning
-                x={BOC_X} y={BOC_Y}
-                textAnchor="middle" dominantBaseline="central"
-                fontSize={logoFontSize} fontWeight={700} fill={ACCENT}
-                style={{ userSelect: "none" }}
-              >
-                TC
-              </text>
+              <image
+                data-query-logo=""
+                href={`/query-logo-classical-serif-${theme}.png`}
+                x={BOC_X - logoSize / 2}
+                y={BOC_Y - logoSize / 2}
+                width={logoSize}
+                height={logoSize}
+                preserveAspectRatio="xMidYMid meet"
+                clipPath="url(#query-logo-clip)"
+                aria-hidden="true"
+                style={{ pointerEvents: "none", userSelect: "none" }}
+              />
             </g>
           );
         })()}
