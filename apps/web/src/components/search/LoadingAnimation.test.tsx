@@ -55,7 +55,7 @@ describe("LoadingAnimation presentation milestones", () => {
     const circleCenterY = Number(circle?.getAttribute("cy"));
     const circleRadius = Number(circle?.getAttribute("r"));
 
-    expect(logoCenterY).toBeCloseTo(circleCenterY - circleRadius * 0.2, 5);
+    expect(logoCenterY).toBeCloseTo(circleCenterY - circleRadius * 0.1, 5);
   });
 
   it("shows the light Classical Serif cathedral in the center node", () => {

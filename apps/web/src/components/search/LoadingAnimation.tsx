@@ -572,7 +572,7 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
           // Its square canvas scales from the center-node radius so the full mark
           // stays inside the circle at every responsive animation size.
           const logoSize = BOC_R * 1.56;
-          const logoVerticalOffset = BOC_R * 0.2;
+          const logoVerticalOffset = BOC_R * 0.1;
 
           return (
             <g suppressHydrationWarning opacity={phase >= 1 && !bocGone ? 1 : 0} style={{ transition: "opacity 0.4s ease" }}>
