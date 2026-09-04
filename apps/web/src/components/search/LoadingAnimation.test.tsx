@@ -40,6 +40,24 @@ describe("LoadingAnimation presentation milestones", () => {
     expect(view.queryByText("TC")).toBeNull();
   });
 
+  it("centers the Classical Serif monogram within the center node", () => {
+    const view = render(
+      <LoadingAnimation
+        {...baseProps}
+        retrievalStarted={false}
+        isQueryDone={false}
+      />,
+    );
+
+    const logo = view.container.querySelector("image[data-query-logo]");
+    const circle = logo?.parentElement?.querySelector("circle");
+    const logoCenterY = Number(logo?.getAttribute("y")) + Number(logo?.getAttribute("height")) / 2;
+    const circleCenterY = Number(circle?.getAttribute("cy"));
+    const circleRadius = Number(circle?.getAttribute("r"));
+
+    expect(logoCenterY).toBeCloseTo(circleCenterY - circleRadius * 0.2, 5);
+  });
+
   it("shows the light Classical Serif cathedral in the center node", () => {
     document.documentElement.setAttribute("data-theme", "light");
 

@@ -572,6 +572,7 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
           // Its square canvas scales from the center-node radius so the full mark
           // stays inside the circle at every responsive animation size.
           const logoSize = BOC_R * 1.56;
+          const logoVerticalOffset = BOC_R * 0.2;
 
           return (
             <g suppressHydrationWarning opacity={phase >= 1 && !bocGone ? 1 : 0} style={{ transition: "opacity 0.4s ease" }}>
@@ -587,7 +588,7 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
                 data-query-logo=""
                 href={`/query-logo-classical-serif-${theme}.png`}
                 x={BOC_X - logoSize / 2}
-                y={BOC_Y - logoSize / 2}
+                y={BOC_Y - logoSize / 2 - logoVerticalOffset}
                 width={logoSize}
                 height={logoSize}
                 preserveAspectRatio="xMidYMid meet"
