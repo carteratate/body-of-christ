@@ -146,7 +146,7 @@ No LangGraph or agent frameworks. No pgvector for retrieval (embeddings are in Q
 
 | Token | Value | Usage |
 |---|---|---|
-| Background | `#090E1A` | Page background |
+| Background | `#0D1828` | Page background |
 | Surface | `#111829` | Cards, sidebar, bubbles |
 | Accent | `#C4972A` | CTAs, links, active states |
 | Text primary | `#EAE6DC` | Body text, headings |

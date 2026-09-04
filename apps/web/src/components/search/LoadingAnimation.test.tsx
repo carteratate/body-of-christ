@@ -20,7 +20,78 @@ describe("LoadingAnimation presentation milestones", () => {
 
   afterEach(() => {
     cleanup();
+    document.documentElement.removeAttribute("data-theme");
     vi.useRealTimers();
+  });
+
+  it("shows the dark Classical Serif cathedral in the center node", () => {
+    const view = render(
+      <LoadingAnimation
+        {...baseProps}
+        retrievalStarted={false}
+        isQueryDone={false}
+      />,
+    );
+
+    const logo = view.container.querySelector("image[data-query-logo]");
+    expect(logo?.getAttribute("href")).toBe("/query-logo-classical-serif-dark.png");
+    expect(logo?.getAttribute("clip-path")).not.toBeNull();
+    expect(logo?.getAttribute("aria-hidden")).toBe("true");
+    expect(view.queryByText("TC")).toBeNull();
+  });
+
+  it("centers the Classical Serif monogram within the center node", () => {
+    const view = render(
+      <LoadingAnimation
+        {...baseProps}
+        retrievalStarted={false}
+        isQueryDone={false}
+      />,
+    );
+
+    const logo = view.container.querySelector("image[data-query-logo]");
+    const circle = logo?.parentElement?.querySelector("circle");
+    const logoCenterY = Number(logo?.getAttribute("y")) + Number(logo?.getAttribute("height")) / 2;
+    const circleCenterY = Number(circle?.getAttribute("cy"));
+    const circleRadius = Number(circle?.getAttribute("r"));
+
+    expect(logoCenterY).toBeCloseTo(circleCenterY - circleRadius * 0.1, 5);
+  });
+
+  it("shows the light Classical Serif cathedral in the center node", () => {
+    document.documentElement.setAttribute("data-theme", "light");
+
+    const view = render(
+      <LoadingAnimation
+        {...baseProps}
+        retrievalStarted={false}
+        isQueryDone={false}
+      />,
+    );
+
+    const logo = view.container.querySelector("image[data-query-logo]");
+    expect(logo?.getAttribute("href")).toBe("/query-logo-classical-serif-light.png");
+    expect(view.queryByText("TC")).toBeNull();
+  });
+
+  it("updates the cathedral when the active theme changes", async () => {
+    const view = render(
+      <LoadingAnimation
+        {...baseProps}
+        retrievalStarted={false}
+        isQueryDone={false}
+      />,
+    );
+
+    const logo = view.container.querySelector("image[data-query-logo]");
+    expect(logo?.getAttribute("href")).toBe("/query-logo-classical-serif-dark.png");
+
+    await act(async () => {
+      document.documentElement.setAttribute("data-theme", "light");
+      await Promise.resolve();
+    });
+
+    expect(logo?.getAttribute("href")).toBe("/query-logo-classical-serif-light.png");
   });
 
   it("announces filters-ready at exactly 3.2 seconds", () => {
