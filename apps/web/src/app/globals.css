@@ -78,6 +78,18 @@ body {
   }
 }
 
+.brand-logo-light {
+  display: none;
+}
+
+html[data-theme="light"] .brand-logo-dark {
+  display: none;
+}
+
+html[data-theme="light"] .brand-logo-light {
+  display: block;
+}
+
 /* iOS Safari auto-zooms the viewport on focus for any text input/textarea
    rendered under 16px. Forcing 16px below the mobile breakpoint prevents the
    zoom entirely (desktop sizing is untouched). !important is required here:

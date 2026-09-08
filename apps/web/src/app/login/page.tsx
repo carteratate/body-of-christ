@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/auth/LoginForm";
+import { BrandLogo } from "@/components/common/BrandLogo";
 
 export const metadata = { title: "Sign in — TheoCorpus" };
 
@@ -7,6 +8,7 @@ export default function LoginPage() {
     <div className="flex min-h-full items-center justify-center bg-brand-bg px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
+          <BrandLogo className="mx-auto mb-4 h-24 w-24" />
           <h1 className="text-3xl font-semibold text-brand-accent" style={{ fontFamily: "var(--font-cinzel)" }}>
             TheoCorpus
           </h1>

@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/common/BrandLogo";
 
 export function LandingPage({ href = "/search/guest" }: { href?: string }) {
   return (
     <div className="min-h-full bg-brand-bg flex flex-col items-center justify-center px-6 py-16">
       <div className="max-w-2xl w-full">
+        <BrandLogo className="mx-auto mb-6 h-28 w-28 sm:h-32 sm:w-32" />
         <h1 className="text-brand-accent font-semibold leading-tight mb-10 text-center" style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2.5rem, 8vw, 5rem)" }}>
           TheoCorpus
         </h1>
