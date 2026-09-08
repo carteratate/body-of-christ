@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense } from "react";
-import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
@@ -34,8 +33,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   const searchParams = useSearchParams();
   const restoreId = searchParams.get("restore");
-  const exploreQuery = searchParams.get("explore");
-  const exploreRef = searchParams.get("exploreRef");
   const restoredGuestSearch = useRef(isGuest ? readGuestSearch() : null);
 
   // ── State ─────────────────────────────────────────────────────────────────
@@ -123,22 +120,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     },
     onFirstGuestSearchWithPassages: () => setShowFirstSearchHint(true),
   });
-  const replaceWithSearchRoute = useCallback(() => router.replace("/search"), [router]);
-  const routeSearchDefaults = useMemo(() => ({
-    collections: activeCollections,
-    translation,
-    quota,
-  }), [activeCollections, quota, translation]);
-  const authenticatedRoute = useAuthenticatedSearchRoute({
+  useAuthenticatedSearchRoute({
     experience,
     snapshot,
     restoreId,
     userId: isGuest ? null : userId,
     credential: isGuest ? null : token,
-    exploreQuery,
-    exploreReference: exploreRef,
-    defaults: routeSearchDefaults,
-    replaceWithSearchRoute,
   });
 
   // On initial mount: show placeholder unless we're restoring a past search.
@@ -158,34 +145,23 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     experience.send({ type: "reset" });
     setSearchValue("");
     setVisibleCollections([]);
-  }, [authenticatedRoute, experience, searchKey]);
+  }, [experience, searchKey]);
 
   // ── Search ────────────────────────────────────────────────────────────────
 
   const handleSearch = useCallback(
-    async (
-      queryOverride?: string,
-      newExploreLabel?: string,
-      collectionsOverride?: string[],
-      translationOverride?: string,
-      quotaOverride?: number,
-    ) => {
+    async (queryOverride?: string) => {
       const query = queryOverride ?? searchValue;
-      const searchCollections = collectionsOverride ?? activeCollections;
-      const searchTranslation = translationOverride ?? translation;
-      const searchQuota = quotaOverride ?? quota;
-      if (searchCollections.length === 0 || !query.trim()) return;
+      if (activeCollections.length === 0 || !query.trim()) return;
       setSearchValue("");
-      setVisibleCollections([...searchCollections]);
+      setVisibleCollections([...activeCollections]);
       experience.send({
         type: "submit",
         request: {
           query,
-          collections: searchCollections,
-          translation: searchTranslation,
-          quota: searchQuota,
-          origin: newExploreLabel ? "explore" : "fresh",
-          ...(newExploreLabel ? { exploreLabel: newExploreLabel } : {}),
+          collections: activeCollections,
+          translation,
+          quota,
         },
       });
     },
@@ -246,22 +222,9 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     handleSearch(text);
   }
 
-  const handleExploreMore = useCallback((content: string, label: string) => {
-    if (!isGuest) {
-      authenticatedRoute.queryMoreLike(content, label);
-      return;
-    }
-    experience.send({
-      type: "queue-explore",
-      query: content,
-      label,
-      defaults: routeSearchDefaults,
-    });
-  }, [authenticatedRoute, experience, isGuest, routeSearchDefaults]);
-
   useLayoutEffect(() => {
     if (!searchView.showAnimation || !searchView.queryBubbleVisible
-      || !searchView.submittedQuery || searchView.exploreLabel) {
+      || !searchView.submittedQuery) {
       setBubbleSize(null);
       return;
     }
@@ -269,7 +232,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (!el) return;
     const { width, height } = el.getBoundingClientRect();
     if (width > 0 && height > 0) setBubbleSize({ width, height });
-  }, [searchView.exploreLabel, searchView.queryBubbleVisible, searchView.showAnimation, searchView.submittedQuery]);
+  }, [searchView.queryBubbleVisible, searchView.showAnimation, searchView.submittedQuery]);
 
   // Collections that actually have results — used for filter bar pills only.
   // Derived from results so it never shows buttons for collections that returned nothing.
@@ -304,7 +267,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
         {/* Keep the revealed query in normal flow so results reserve its height.
             During the animation fade, z-20 places it above the z-10 overlay. */}
-        {searchView.queryBubbleVisible && searchView.submittedQuery && !searchView.exploreLabel && (
+        {searchView.queryBubbleVisible && searchView.submittedQuery && (
           <div
             ref={bubbleRef}
             className={`relative flex justify-end mb-4 ${searchView.showAnimation ? "z-20 pointer-events-none" : ""}`}
@@ -315,23 +278,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           </div>
         )}
 
-        {searchView.exploreLabel && (
-          <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
-            <Search size={14} className="text-brand-accent shrink-0" />
-            <span className="text-sm text-brand-muted">
-              Exploring passages related to{" "}
-              <span className="text-brand-primary font-medium">{searchView.exploreLabel}</span>
-            </span>
-          </div>
-        )}
-
         {!searchView.error && (searchView.loading || searchView.submittedQuery) && (
           <SearchResults
             results={[...searchView.passages]}
             loading={searchView.loading}
             searchId={searchView.searchId}
             token={token ?? ""}
-            onExploreMore={handleExploreMore}
             phase={searchView.phase}
             submittedCollections={[...searchView.submittedCollections]}
             visibleCollections={visibleCollections}
@@ -362,20 +314,19 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
             role="status"
             className="mt-3 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-3 text-sm text-brand-muted"
           >
-            {searchView.completionFailure.message}
+            Some passages may be missing. Try the search again if you need a complete set.
           </div>
         )}
 
         {searchView.error && !searchView.loading && (
           <SearchFailureScreen
-            message={searchView.error}
             code={searchView.errorCode}
             stage={searchView.errorStage}
             onRetry={() => {
               experience.send({ type: "retry" });
             }}
             onReport={isGuest ? undefined : () => {
-              const safeCode = (["auth_error", "network_error", "rate_limit", "restore_not_found", "restore_unavailable", "server_error", "stream_interrupted"] as const)
+              const safeCode = (["auth_error", "invalid_request", "network_error", "rate_limit", "restore_not_found", "restore_unavailable", "server_error", "stream_interrupted"] as const)
                 .find((value) => value === searchView.errorCode) ?? "unknown";
               saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: searchView.searchId ?? undefined, error_code: safeCode });
               router.push("/feedback");
@@ -393,10 +344,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         quota={searchView.loading && searchView.submittedQuota !== null ? searchView.submittedQuota : quota}
         onQuotaChange={handleQuotaChange}
         searchValue={searchValue}
-        onSearchChange={(val) => {
-          experience.send({ type: "cancel-queued-explore" });
-          setSearchValue(val);
-        }}
+        onSearchChange={setSearchValue}
         onSearch={() => handleSearch(searchValue)}
         loading={searchView.loading}
         isSearchActive={searchView.showAnimation ? searchView.filterBarActive : searchView.submittedQuery !== null}

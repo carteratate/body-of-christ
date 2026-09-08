@@ -23,7 +23,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TheoCorpus",
-  description: "Explore Catholic theology through conversation",
+  description:
+    "Search Scripture, Church teaching, and two thousand years of Catholic writing. Find relevant passages and read them in context.",
 };
 
 export default async function RootLayout({

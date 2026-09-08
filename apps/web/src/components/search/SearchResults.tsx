@@ -16,7 +16,6 @@ interface SearchResultsProps {
   loading: boolean;
   searchId: string | null;
   token: string;
-  onExploreMore: (content: string, label: string) => void;
   phase?: "searching" | "ranking" | null;
   submittedCollections: string[];
   visibleCollections: string[];
@@ -41,12 +40,12 @@ function CollectionOutcomeNotice({
   const meta = getCollectionMeta(collectionKey);
   const label = meta?.label ?? collectionKey;
   const message = {
-    no_candidates: `No passages were retrieved from ${label} for this query.`,
-    below_threshold: `No passages from ${label} met the relevance threshold for this query.`,
-    retrieval_failed: `${label} could not be searched because its retrieval paths were unavailable.`,
-    corpus_sync_failed: `${label} returned passages that are not currently available in the readable corpus.`,
-    ranking_failed: `Passages from ${label} were retrieved, but could not be ranked.`,
-    results_degraded: `${label} results are shown, but part of its preferred retrieval or ranking path was unavailable.`,
+    no_candidates: `No matching passages were found in ${label}.`,
+    below_threshold: `No ${label} passages were close enough to this question.`,
+    retrieval_failed: `${label} is temporarily unavailable. Passages from other selected sources are still shown.`,
+    corpus_sync_failed: `Some ${label} passages are temporarily unavailable.`,
+    ranking_failed: `${label} could not be included in this search.`,
+    results_degraded: `Some ${label} passages may be missing. The available passages are shown.`,
     results: "",
   }[outcome];
   if (!message) return null;
@@ -62,7 +61,6 @@ export function SearchResults({
   loading,
   searchId,
   token,
-  onExploreMore,
   phase = null,
   submittedCollections,
   visibleCollections,
@@ -120,7 +118,6 @@ export function SearchResults({
           index={index}
           searchId={searchId}
           token={token}
-          onExploreMore={onExploreMore}
           isGuest={isGuest}
           onExpand={showFirstSearchHint ? onFirstResultExpanded : undefined}
           showOpenContextHint={showFirstContextHint}

@@ -43,8 +43,6 @@ function freezeRequest(request: SearchRequest): SearchRequest {
     collections: Object.freeze([...request.collections]),
     translation: request.translation,
     quota: request.quota,
-    origin: request.origin,
-    ...(request.exploreLabel === undefined ? {} : { exploreLabel: request.exploreLabel }),
   });
 }
 
@@ -118,7 +116,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
   let disposed = false;
   let run: ActiveRun | null = null;
   let preparedPendingEntryId: string | null = null;
-  let queuedExploreTimer: ReturnType<typeof setTimeout> | null = null;
   let guestVisibleCollections: readonly string[] = Object.freeze([]);
   let snapshot: SearchExperienceSnapshot = deepFreeze({
     status: "idle",
@@ -208,12 +205,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     const entryId = allocatePendingEntry();
     preparedPendingEntryId = entryId;
     bestEffort(() => ports.pendingHistory!.begin(entryId, "New Search"));
-  };
-
-  const cancelQueuedExplore = () => {
-    if (!queuedExploreTimer) return;
-    clearTimeout(queuedExploreTimer);
-    queuedExploreTimer = null;
   };
 
   const abortCurrent = () => {
@@ -481,8 +472,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     },
   });
 
-  const resetToIdle = (preserveQueuedExplore = false) => {
-    if (!preserveQueuedExplore) cancelQueuedExplore();
+  const resetToIdle = () => {
     abortCurrent();
     clearPreparedPending();
     generation += 1;
@@ -505,7 +495,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
 
   const startSearch = (requestInput: SearchRequest) => {
     if (!isValidRequest(requestInput)) return;
-    cancelQueuedExplore();
     const request = freezeRequest(requestInput);
     if (ports.audience.kind === "guest" && ports.guestAccess) {
       let canSearch: boolean;
@@ -573,7 +562,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     const searchId = searchIdInput.trim();
     if (!searchId || ports.audience.kind !== "authenticated" || !ports.savedSearch) return;
     if (!retrying && run?.restoreId === searchId) return;
-    cancelQueuedExplore();
     clearPreparedPending();
     const ownedRun = nextRun(null, searchId, null);
     emit({
@@ -698,34 +686,11 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
   const dispatch = (command: SearchExperienceCommand) => {
     switch (command.type) {
       case "prepare-pending-history": preparePending(); break;
-      case "queue-explore": {
-        cancelQueuedExplore();
-        const currentRequest = snapshot.status === "active-search"
-          || snapshot.status === "restored-passages"
-          || (snapshot.status === "failure" && snapshot.request)
-          ? snapshot.request
-          : null;
-        const criteria = currentRequest ?? command.defaults;
-        const request = freezeRequest({
-          query: command.query,
-          collections: criteria.collections,
-          translation: criteria.translation,
-          quota: criteria.quota,
-          origin: "explore",
-          exploreLabel: command.label,
-        });
-        queuedExploreTimer = setTimeout(() => {
-          queuedExploreTimer = null;
-          send({ type: "submit", request });
-        }, 300);
-        break;
-      }
-      case "cancel-queued-explore": cancelQueuedExplore(); break;
       case "leave-restore":
         if (snapshot.status === "restoring"
           || snapshot.status === "restored-passages"
           || (snapshot.status === "failure" && snapshot.failure.kind === "restore")) {
-          resetToIdle(true);
+          resetToIdle();
         }
         break;
       case "submit": startSearch(command.request); break;
@@ -782,7 +747,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         }
         break;
       case "dispose":
-        cancelQueuedExplore();
         abortCurrent();
         clearPreparedPending();
         generation += 1;

@@ -14,8 +14,6 @@ export interface SearchRequest {
   readonly collections: readonly string[];
   readonly translation: string;
   readonly quota: number;
-  readonly origin: "fresh" | "explore";
-  readonly exploreLabel?: string;
 }
 
 export type SearchPhase = "searching" | "ranking";
@@ -130,13 +128,6 @@ export type AnimationMilestone =
 export type SearchExperienceCommand =
   | { readonly type: "submit"; readonly request: SearchRequest }
   | { readonly type: "prepare-pending-history" }
-  | {
-      readonly type: "queue-explore";
-      readonly query: string;
-      readonly label: string;
-      readonly defaults: Pick<SearchRequest, "collections" | "translation" | "quota">;
-    }
-  | { readonly type: "cancel-queued-explore" }
   | { readonly type: "leave-restore" }
   | { readonly type: "restore"; readonly searchId: string }
   | { readonly type: "retry" }

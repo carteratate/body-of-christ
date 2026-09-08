@@ -33,7 +33,6 @@ describe("useSearchExperience", () => {
         collections: ["bible"],
         translation: "CPDV",
         quota: 3,
-        origin: "fresh",
       },
     }));
     expect(result.current.status).toBe("active-search");

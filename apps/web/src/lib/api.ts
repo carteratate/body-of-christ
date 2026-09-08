@@ -142,6 +142,30 @@ export interface SearchFilters {
   translation?: string;
 }
 
+function reportSearchHttpFailure(status: number, callbacks: SearchStreamCallbacks): void {
+  if (status === 401 || status === 403) {
+    callbacks.onError(
+      "Your session has expired. Sign in again to continue.",
+      "auth_error",
+      "authentication",
+    );
+    return;
+  }
+  if (status === 422) {
+    callbacks.onError(
+      "This search couldn't be submitted. Check the question and selected sources.",
+      "invalid_request",
+      "validation",
+    );
+    return;
+  }
+  callbacks.onError(
+    "We couldn't complete this search. Try again.",
+    "server_error",
+    "server",
+  );
+}
+
 export interface SearchSummaryV2 {
   id: string;
   query: string;
@@ -270,13 +294,13 @@ export async function streamSearch(
   if (!res.ok) {
     if (res.status === 429) {
       const retryAfter = res.headers.get("Retry-After");
-      const body = await res.json().catch(() => ({})) as { detail?: string };
-      const limitType = (body.detail ?? "").toLowerCase().includes("daily") ? "daily" : "per_minute";
+      const body = await res.json().catch(() => ({})) as { detail?: unknown };
+      const detail = typeof body.detail === "string" ? body.detail : "";
+      const limitType = detail.toLowerCase().includes("daily") ? "daily" : "per_minute";
       callbacks.onRateLimit(retryAfter ? parseInt(retryAfter, 10) : null, limitType);
       return;
     }
-    const error = await res.json().catch(() => ({}));
-    callbacks.onError((error as { detail?: string }).detail ?? `API error ${res.status}`);
+    reportSearchHttpFailure(res.status, callbacks);
     return;
   }
 
@@ -314,8 +338,7 @@ export async function streamGuestSearch(
       callbacks.onRateLimit(null, "per_minute");
       return;
     }
-    const error = await res.json().catch(() => ({}));
-    callbacks.onError((error as { detail?: string }).detail ?? `API error ${res.status}`);
+    reportSearchHttpFailure(res.status, callbacks);
     return;
   }
 
@@ -538,7 +561,7 @@ export interface ProductFeedbackInput {
   search_id?: string;
   chunk_id?: string;
   document_id?: string;
-  error_code?: "auth_error" | "network_error" | "rate_limit" | "restore_not_found" | "restore_unavailable" | "server_error" | "stream_interrupted" | "unknown";
+  error_code?: "auth_error" | "invalid_request" | "network_error" | "rate_limit" | "restore_not_found" | "restore_unavailable" | "server_error" | "stream_interrupted" | "unknown";
 }
 
 export async function submitProductFeedback(

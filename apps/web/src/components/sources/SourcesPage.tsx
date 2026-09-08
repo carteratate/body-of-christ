@@ -406,7 +406,7 @@ export function SourcesPage() {
         {!loading && !sourcesError && totalPassages === 0 && (
           <div className="rounded-md border border-brand-muted/20 bg-brand-surface px-5 py-10 text-center">
             <p className="text-sm text-brand-primary">The Library is currently empty.</p>
-            <p className="mt-2 text-sm text-brand-muted">Please try loading it again. If this continues, the corpus may be temporarily unavailable.</p>
+            <p className="mt-2 text-sm text-brand-muted">The Library may be temporarily unavailable. Try loading it again.</p>
             <button type="button" onClick={() => reloadSources()} className="mt-4 text-sm font-medium text-brand-accent hover:underline">Try again</button>
           </div>
         )}

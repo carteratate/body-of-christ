@@ -360,7 +360,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         )}
         {progressError && (
           <div role="status" className="sticky bottom-3 mx-auto mb-3 flex w-fit items-center gap-3 rounded-md border border-brand-muted/30 bg-brand-surface px-3 py-2 text-xs text-brand-muted shadow-lg">
-            <span>Your reading place has not synced yet.</span>
+            <span>We couldn&apos;t save your reading place yet.</span>
             <button type="button" onClick={retryProgress} className="font-medium text-brand-accent hover:underline">Retry</button>
           </div>
         )}

@@ -194,7 +194,7 @@ describe("streamSearch", () => {
       .rejects.toThrow();
   });
 
-  it("reports backend details for non-success responses", async () => {
+  it("does not expose backend details for non-success responses", async () => {
     const cb = callbacks();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
       JSON.stringify({ detail: "Search service unavailable" }),
@@ -203,16 +203,53 @@ describe("streamSearch", () => {
 
     await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
 
-    expect(cb.onError).toHaveBeenCalledWith("Search service unavailable");
+    expect(cb.onError).toHaveBeenCalledWith(
+      "We couldn't complete this search. Try again.",
+      "server_error",
+      "server",
+    );
   });
 
-  it("falls back to the HTTP status when a non-success body is unreadable", async () => {
+  it("does not expose an HTTP status when a non-success body is unreadable", async () => {
     const cb = callbacks();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("not-json", { status: 502 })));
 
     await streamSearch("token", "grace", { collections: ["bible"] }, 3, cb);
 
-    expect(cb.onError).toHaveBeenCalledWith("API error 502");
+    expect(cb.onError).toHaveBeenCalledWith(
+      "We couldn't complete this search. Try again.",
+      "server_error",
+      "server",
+    );
+  });
+
+  it("turns FastAPI validation arrays into a safe request error", async () => {
+    const cb = callbacks();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({
+        detail: [{
+          type: "string_too_long",
+          loc: ["body", "query"],
+          msg: "String should have at most 1000 characters",
+          input: "x".repeat(2990),
+        }],
+      }),
+      { status: 422, headers: { "Content-Type": "application/json" } },
+    )));
+
+    await expect(streamSearch(
+      "token",
+      "x".repeat(2990),
+      { collections: ["medieval"] },
+      3,
+      cb,
+    )).resolves.toBeUndefined();
+
+    expect(cb.onError).toHaveBeenCalledWith(
+      "This search couldn't be submitted. Check the question and selected sources.",
+      "invalid_request",
+      "validation",
+    );
   });
 
   it("classifies a daily rate limit and preserves Retry-After", async () => {
@@ -296,7 +333,7 @@ describe("streamGuestSearch", () => {
     ).rejects.toThrow();
   });
 
-  it("reports backend details for guest non-success responses", async () => {
+  it("does not expose backend details for guest non-success responses", async () => {
     const cb = callbacks();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
       JSON.stringify({ detail: "Guest search unavailable" }),
@@ -305,7 +342,11 @@ describe("streamGuestSearch", () => {
 
     await streamGuestSearch("guest-session-token-with-at-least-32-chars", "grace", { collections: ["bible"] }, 3, cb);
 
-    expect(cb.onError).toHaveBeenCalledWith("Guest search unavailable");
+    expect(cb.onError).toHaveBeenCalledWith(
+      "We couldn't complete this search. Try again.",
+      "server_error",
+      "server",
+    );
   });
 
   it("opens the guest signup path when the trial is exhausted", async () => {

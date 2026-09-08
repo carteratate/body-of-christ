@@ -11,7 +11,7 @@ export default function LoginPage() {
             TheoCorpus
           </h1>
           <p className="mt-2 text-sm text-brand-muted">
-            The Catholic tradition, in one place
+            Search Scripture and the texts of the Catholic tradition
           </p>
         </div>
 

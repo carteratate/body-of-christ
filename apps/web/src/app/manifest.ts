@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "TheoCorpus",
     short_name: "TheoCorpus",
-    description: "Explore Catholic theology through conversation",
+    description:
+      "Search Scripture, Church teaching, and two thousand years of Catholic writing. Find relevant passages and read them in context.",
     start_url: "/",
     display: "standalone",
     background_color: "#0D1828",

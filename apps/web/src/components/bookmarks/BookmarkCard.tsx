@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Bookmark as BookmarkIcon, BookOpen, Copy, Pencil, Plus, Search } from "lucide-react";
+import { Bookmark as BookmarkIcon, BookOpen, Copy, Pencil, Plus } from "lucide-react";
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
-import { trackBookmarkDeleted, trackDocumentOpened, trackExploreMoreClicked } from "@/lib/analytics";
+import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { createReaderReturnKey } from "@/lib/readerNavigation";
@@ -70,14 +70,6 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         .then(() => showToast("Copied"))
         .catch(() => showToast("Copy failed", "error"));
     }
-  }
-
-  // ── Explore more action ───────────────────────────────────────────────────
-  function handleExploreMore() {
-    trackExploreMoreClicked({ collection, source: "chunk_card" });
-    router.push(
-      `/search?explore=${encodeURIComponent(stripVerseMarkers(content))}&exploreRef=${encodeURIComponent(displayReference ?? "")}`
-    );
   }
 
   function handleOpenContext() {
@@ -152,9 +144,6 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
           </ThemedTooltip>
           <ThemedTooltip label="Copy">
             <button onClick={handleCopy} aria-label="Copy passage" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><Copy size={16} /></button>
-          </ThemedTooltip>
-          <ThemedTooltip label="Start a new search to find passages similar to this one">
-            <button onClick={handleExploreMore} aria-label="Query more like this" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><Search size={16} /></button>
           </ThemedTooltip>
         </div>
       </div>

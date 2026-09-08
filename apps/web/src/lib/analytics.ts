@@ -22,7 +22,7 @@ export function trackSearchPerformed(params: {
   });
 }
 
-export function trackDocumentOpened(params: { documentId: string; collection: string; source: "chunk_card" | "reader_nav" | "explore_more" | "saved" | "library" }) {
+export function trackDocumentOpened(params: { documentId: string; collection: string; source: "chunk_card" | "reader_nav" | "saved" | "library" }) {
   posthog.capture("document_opened", { collection: params.collection, source: params.source });
 }
 
@@ -44,10 +44,6 @@ export function trackTranslationChanged(params: { from: string; to: string }) {
 
 export function trackQuotaChanged(params: { from: number; to: number }) {
   posthog.capture("quota_changed", { from: params.from, to: params.to });
-}
-
-export function trackExploreMoreClicked(params: { collection: string; source: "chunk_card" | "reader" }) {
-  posthog.capture("explore_more_clicked", { collection: params.collection, source: params.source });
 }
 
 export function trackReaderNavigation(params: { documentId: string; collection: string; direction: "next" | "prev" | "jump" }) {

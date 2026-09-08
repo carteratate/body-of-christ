@@ -104,19 +104,17 @@ vi.mock("./BottomBar", () => ({
 }));
 vi.mock("./EmptyState", () => ({ EmptyState: () => <div>Empty search</div> }));
 vi.mock("./SearchResults", () => ({
-  SearchResults: ({ results, loading, isRestoring, visibleCollections, onExploreMore }: {
+  SearchResults: ({ results, loading, isRestoring, visibleCollections }: {
     results: Array<{ content: string; explanation: string | null; source: { collection: string } }>;
     loading: boolean;
     isRestoring: boolean;
     visibleCollections: string[];
-    onExploreMore: (content: string, label: string) => void;
   }) => (
     <div data-testid="search-results" data-visible-collections={visibleCollections.join(",")}>
       {loading && isRestoring ? "Restoring" : "Restored results"}
       {results
         .filter((passage) => visibleCollections.includes(passage.source.collection))
         .map((passage) => <div key={passage.content}>{passage.content} — {passage.explanation}</div>)}
-      {!loading && <button onClick={() => onExploreMore("A restored passage", "CCC 1000")}>Query More Like This</button>}
     </div>
   ),
 }));
@@ -384,115 +382,9 @@ describe("SearchPage restore lifecycle", () => {
     expect(apiMocks.getSearchResults).toHaveBeenCalledOnce();
   });
 
-  it("leaves restore mode before querying more like a restored result", async () => {
-    apiMocks.getSearchResults.mockResolvedValue(restored("Restored query"));
-    const view = render(<SearchPage />);
-
-    fireEvent.click(await screen.findByRole("button", { name: "Query More Like This" }));
-
-    expect(navigationMocks.replace).toHaveBeenCalledWith("/search");
-    testState.params = "";
-    view.rerender(<SearchPage />);
-    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalled());
-    expect(apiMocks.streamSearch.mock.calls[0][1]).toBe("A restored passage");
-    expect(apiMocks.streamSearch.mock.calls[0][2]).toEqual({ collections: ["bible"], translation: "WEB-C" });
-    expect(apiMocks.streamSearch.mock.calls[0][3]).toBe(5);
-    expect(screen.getByTestId("bottom-bar").dataset.collections).toBe("bible");
-  });
-
-  it("submits a queued restored-result explore handoff only once", async () => {
-    apiMocks.getSearchResults.mockResolvedValue(restored("Restored query"));
-    const view = render(<SearchPage />);
-    const queryMore = await screen.findByRole("button", { name: "Query More Like This" });
-
-    fireEvent.click(queryMore);
-    fireEvent.click(queryMore);
-    expect(apiMocks.streamSearch).not.toHaveBeenCalled();
-
-    testState.params = "";
-    view.rerender(<SearchPage />);
-    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
-  });
-
-  it("discards a queued restored-result explore handoff when the user changes", async () => {
-    apiMocks.getSearchResults.mockResolvedValue(restored("First user's restored query"));
-    const view = render(<SearchPage />);
-    fireEvent.click(await screen.findByRole("button", { name: "Query More Like This" }));
-
-    testState.token = "user-b-token";
-    testState.userId = "user-b";
-    view.rerender(<SearchPage />);
-    await waitFor(() => expect(apiMocks.getSearchResults).toHaveBeenCalledTimes(2));
-    testState.params = "";
-    view.rerender(<SearchPage />);
-
-    await waitFor(() => expect(screen.getByText("Empty search")).toBeTruthy());
-    expect(apiMocks.streamSearch).not.toHaveBeenCalled();
-  });
-
-  it("discards a queued restored-result explore handoff when the search resets", async () => {
-    apiMocks.getSearchResults.mockResolvedValue(restored("Restored query"));
-    const view = render(<SearchPage />);
-    fireEvent.click(await screen.findByRole("button", { name: "Query More Like This" }));
-
-    testState.searchKey += 1;
-    view.rerender(<SearchPage />);
-    testState.params = "";
-    view.rerender(<SearchPage />);
-
-    await waitFor(() => expect(screen.getByText("Empty search")).toBeTruthy());
-    expect(apiMocks.streamSearch).not.toHaveBeenCalled();
-  });
-
-  it("submits one route-driven explore search during Strict Mode replay", async () => {
-    testState.params = "explore=Grace%20perfects%20nature&exploreRef=ST%20I-II%2C%20q.%20109";
-    render(<StrictMode><SearchPage /></StrictMode>);
-
-    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
-    expect(apiMocks.streamSearch.mock.calls[0].slice(1, 4)).toEqual([
-      "Grace perfects nature",
-      { collections: ["bible"], translation: "CPDV" },
-      4,
-    ]);
-    expect(navigationMocks.replace).toHaveBeenCalledWith("/search");
-  });
-
-  it("submits the same route-driven explore again after leaving its route", async () => {
-    const exploreParams = "explore=Grace%20perfects%20nature&exploreRef=ST%20I-II%2C%20q.%20109";
-    testState.params = exploreParams;
-    const view = render(<SearchPage />);
-    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
-
-    testState.params = "";
-    view.rerender(<SearchPage />);
-    testState.params = exploreParams;
-    view.rerender(<SearchPage />);
-
-    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledTimes(2));
-    expect(navigationMocks.replace).toHaveBeenCalledTimes(2);
-  });
 });
 
 describe("SearchPage animation-gated stream reveal", () => {
-  it("discards a delayed explore submission when the user changes", async () => {
-    testState.params = "";
-    const view = render(<SearchPage />);
-    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
-    fireEvent.click(screen.getByRole("button", { name: "Search" }));
-    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
-    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Query More Like This" }));
-
-    testState.token = "user-b-token";
-    testState.userId = "user-b";
-    view.rerender(<SearchPage />);
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 350));
-    });
-
-    expect(apiMocks.streamSearch).toHaveBeenCalledOnce();
-  });
-
   it("ignores a filters-ready milestone from a replaced animation", async () => {
     testState.params = "";
     const streamCallbacks: SearchStreamCallbacks[] = [];
@@ -536,7 +428,8 @@ describe("SearchPage animation-gated stream reveal", () => {
 
     act(() => streamCallbacks.onError("Retrieval failed", "retrieval_failed", "retrieval"));
 
-    expect(await screen.findByText("Passage retrieval failed")).toBeTruthy();
+    expect(await screen.findByText("We couldn't complete this search")).toBeTruthy();
+    expect(screen.queryByText("Retrieval failed")).toBeNull();
     expect(appMocks.clearPendingSearch).toHaveBeenCalledOnce();
   });
 
@@ -748,29 +641,6 @@ describe("SearchPage animation-gated stream reveal", () => {
     expect(appMocks.clearPendingSearch).toHaveBeenCalledWith(expect.any(String));
   });
 
-  it("resets guest result filters when a queued explore search becomes active", async () => {
-    testState.params = "";
-    testState.token = null;
-    testState.userId = null;
-    apiMocks.streamGuestSearch.mockImplementation(async (_session, _query, _filters, _quota, callbacks) => {
-      callbacks.onChunk(streamedPassage);
-      callbacks.onResultsReady?.(1);
-    });
-    render(<SearchPage isGuest />);
-
-    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
-    fireEvent.click(screen.getByRole("button", { name: "Search" }));
-    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
-    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
-    fireEvent.click(screen.getByRole("button", { name: "Toggle Bible visibility" }));
-    expect(screen.getByTestId("search-results").dataset.visibleCollections).not.toContain("bible");
-
-    fireEvent.click(screen.getByRole("button", { name: "Query More Like This" }));
-    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledTimes(2));
-
-    expect(screen.getByTestId("search-results").dataset.visibleCollections).toContain("bible");
-  });
-
   it("buffers fast authenticated completion until reveal and keeps the overlay through its fade", async () => {
     testState.params = "";
     let streamCallbacks!: SearchStreamCallbacks;
@@ -873,7 +743,8 @@ describe("SearchPage animation-gated stream reveal", () => {
 
     expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
     expect(screen.queryByText("Passage retrieval failed")).toBeNull();
-    expect(screen.getByText("Transfer finalization failed")).toBeTruthy();
+    expect(screen.queryByText("Transfer finalization failed")).toBeNull();
+    expect(screen.getByText("Some passages may be missing. Try the search again if you need a complete set.")).toBeTruthy();
   });
 
   it("keeps revealed guest Passages visible under a late rate-limit modal", async () => {
@@ -1010,9 +881,10 @@ describe("SearchPage animation-gated stream reveal", () => {
 
     expect(signals[0].aborted).toBe(true);
     act(() => callbacks[0].onError("stale failure", "server_error", "retrieval"));
-    expect(screen.queryByText("Passage retrieval failed")).toBeNull();
+    expect(screen.queryByText("We couldn't complete this search")).toBeNull();
     act(() => callbacks[1].onError("current failure", "server_error", "retrieval"));
-    expect(screen.getByText("Passage retrieval failed")).toBeTruthy();
+    expect(screen.getByText("We couldn't complete this search")).toBeTruthy();
+    expect(screen.queryByText("current failure")).toBeNull();
   });
 
   it("retries the frozen guest request after a rate limit", async () => {
@@ -1052,34 +924,6 @@ describe("SearchPage animation-gated stream reveal", () => {
     view.unmount();
 
     await waitFor(() => expect(signal.aborted).toBe(true));
-  });
-
-  it("uses the restored guest request filters when querying more like a Passage", async () => {
-    testState.params = "";
-    testState.token = null;
-    testState.userId = null;
-    sessionStorage.setItem("theocorpus-guest-current-results", JSON.stringify({
-      savedAt: Date.now(),
-      query: "restored guest query",
-      passages: [streamedPassage],
-      searchId: "guest-search",
-      collections: ["bible"],
-      translation: "CPDV",
-      quota: 3,
-      visibleCollections: ["bible"],
-      outcome: "success",
-      collectionOutcomes: { bible: "results" },
-    }));
-    render(<SearchPage isGuest />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Query More Like This" }));
-    await waitFor(() => expect(apiMocks.streamGuestSearch).toHaveBeenCalledOnce());
-
-    expect(apiMocks.streamGuestSearch.mock.calls[0].slice(1, 4)).toEqual([
-      "A restored passage",
-      { collections: ["bible"], translation: "CPDV" },
-      3,
-    ]);
   });
 
   it("restores, saves, and clears the compatible guest Reader snapshot", async () => {

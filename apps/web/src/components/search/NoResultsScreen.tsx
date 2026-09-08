@@ -26,15 +26,13 @@ export function NoResultsScreen({ submittedCollections, allFiltered }: NoResults
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center max-w-lg mx-auto">
       <p className="text-brand-primary text-base font-medium mb-3">
-        No passages were found
+        No matching passages found
       </p>
       <p className="text-brand-muted text-sm leading-relaxed mb-4">
-        TheoCorpus completed the search successfully, but did not retrieve any candidate
-        passages from {collectionLabel}.
+        TheoCorpus searched {collectionLabel} but did not find a close match.
       </p>
       <p className="text-brand-muted text-sm leading-relaxed">
-        Try rephrasing your question, enabling additional collections, or increasing the
-        passages-per-source quota.
+        Try a shorter question, different wording, or more sources.
       </p>
     </div>
   );

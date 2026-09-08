@@ -110,6 +110,20 @@ def test_feedback_rejects_invalid_ids_routes_and_blank_messages_before_insert():
     assert client.post("/v1/product-feedback", json=_body(message="           ")).status_code == 422
 
 
+def test_feedback_accepts_invalid_search_request_context():
+    conn = AsyncMock()
+    conn.fetchval = AsyncMock(return_value=0)
+    conn.fetchrow = AsyncMock(return_value={"id": FEEDBACK_ID})
+    with patch("app.routes.product_feedback.get_pool", return_value=_pool(conn)):
+        response = _client().post(
+            "/v1/product-feedback",
+            json=_body(route="/search", error_code="invalid_request"),
+        )
+
+    assert response.status_code == 201
+    assert conn.fetchrow.await_args.args[13] == "invalid_request"
+
+
 def test_feedback_uses_shared_database_rate_limit():
     conn = AsyncMock()
     conn.fetchval = AsyncMock(return_value=5)

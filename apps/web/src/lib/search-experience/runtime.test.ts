@@ -17,7 +17,6 @@ const REQUEST: SearchRequest = {
   collections: ["bible", "catechism"],
   translation: "CPDV",
   quota: 4,
-  origin: "fresh",
 };
 
 function passage(id: string): ChunkResult {
@@ -674,44 +673,6 @@ describe("search-experience runtime", () => {
 
     runtime.send({ type: "reset" });
     expect(begin).toHaveBeenLastCalledWith("pending-2", "New Search");
-  });
-
-  it("owns delayed explore request selection and cancellation", () => {
-    vi.useFakeTimers();
-    try {
-      const { runtime, runs } = guestFixture();
-      runtime.send({ type: "submit", request: REQUEST });
-      runs[0].callbacks.onPassagesReady(1);
-
-      runtime.send({
-        type: "queue-explore",
-        query: "A related Passage",
-        label: "CCC 1000",
-        defaults: { collections: ["summa"], translation: "CPDV", quota: 3 },
-      });
-      vi.advanceTimersByTime(299);
-      expect(runs).toHaveLength(1);
-      runtime.send({ type: "cancel-queued-explore" });
-      vi.advanceTimersByTime(1);
-      expect(runs).toHaveLength(1);
-
-      runtime.send({
-        type: "queue-explore",
-        query: "A related Passage",
-        label: "CCC 1000",
-        defaults: { collections: ["summa"], translation: "CPDV", quota: 3 },
-      });
-      vi.advanceTimersByTime(300);
-      expect(runs).toHaveLength(2);
-      expect(runs[1].request).toEqual({
-        ...REQUEST,
-        query: "A related Passage",
-        origin: "explore",
-        exploreLabel: "CCC 1000",
-      });
-    } finally {
-      vi.useRealTimers();
-    }
   });
 
   it("shows no candidates as soon as a zero-Passage guest search is ready", () => {

@@ -1,4 +1,5 @@
-export function classifySearchErrorCode(message: string): string {
+export function classifySearchErrorCode(message: unknown): string {
+  if (typeof message !== "string") return "server_error";
   const lower = message.toLowerCase();
   if (lower.includes("rate limit") || lower.includes("429")) return "rate_limit";
   if (lower.includes("unauthorized") || lower.includes("401") || lower.includes("403")) {

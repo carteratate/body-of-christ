@@ -20,7 +20,7 @@ vi.mock("@/lib/api", async (importOriginal) => ({
 }));
 vi.mock("@/lib/analytics", () => ({
   trackBookmarkCreated: vi.fn(), trackBookmarkDeleted: vi.fn(),
-  trackDocumentOpened: vi.fn(), trackExploreMoreClicked: vi.fn(),
+  trackDocumentOpened: vi.fn(),
 }));
 
 beforeEach(() => mocks.submitLabel.mockResolvedValue({ label_id: "label" }));
@@ -48,7 +48,6 @@ describe("ChunkCard feedback", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
     await userEvent.click(screen.getByRole("button", { expanded: false }));
@@ -82,7 +81,6 @@ describe("ChunkCard feedback", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
 
@@ -96,7 +94,7 @@ describe("ChunkCard feedback", () => {
     expect(screen.queryByRole("tooltip")).toBeNull();
 
     await userEvent.click(expand);
-    for (const name of ["Save passage", "Copy passage", "Mark as relevant", "Mark as not relevant", "Query more like this"]) {
+    for (const name of ["Save passage", "Copy passage", "Mark as relevant", "Mark as not relevant"]) {
       const action = screen.getByRole("button", { name });
       expect(action.getAttribute("aria-describedby")).toBeTruthy();
       expect(action.getAttribute("title")).toBeNull();
@@ -104,7 +102,6 @@ describe("ChunkCard feedback", () => {
     const expectedDescriptions = new Map([
       ["Save passage", "Save Passage"],
       ["Copy passage", "Copy"],
-      ["Query more like this", "Start a new search to find passages similar to this one"],
     ]);
     for (const [name, expected] of expectedDescriptions) {
       screen.getByRole("button", { name }).focus();
@@ -143,13 +140,13 @@ describe("ChunkCard feedback", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
 
     await userEvent.click(screen.getByRole("button", { expanded: false }));
-    const queryMore = screen.getByRole("button", { name: "Query more like this" });
-    expect(queryMore.parentElement?.parentElement?.className).toContain("flex-wrap");
+    const openContext = screen.getByRole("button", { name: "Open in Context" });
+    expect(openContext.parentElement?.parentElement?.parentElement?.className).toContain("flex-wrap");
+    expect(screen.queryByRole("button", { name: "Query more like this" })).toBeNull();
     expect(container.firstElementChild?.className).toContain("overflow-hidden");
     const header = container.querySelector(".h-\\[96px\\]");
     expect(header?.className).toContain("sm:h-[68px]");
@@ -178,7 +175,6 @@ describe("ChunkCard feedback", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
 
@@ -209,7 +205,6 @@ describe("ChunkCard feedback", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
 
@@ -246,7 +241,6 @@ describe("ChunkCard attached passage placement", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
     await userEvent.click(screen.getByRole("button", { expanded: false }));
@@ -347,18 +341,16 @@ describe("ChunkCard keeps the attachment out of every action", () => {
     };
   }
 
-  async function renderExpanded(onExploreMore = vi.fn()) {
+  async function renderExpanded() {
     render(
       <ChunkCard
         result={summaObjection() as never}
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={onExploreMore}
       />,
     );
     await userEvent.click(screen.getByRole("button", { expanded: false }));
-    return onExploreMore;
   }
 
   it("copies the matched passage only, and names its role in the citation", async () => {
@@ -377,14 +369,6 @@ describe("ChunkCard keeps the attachment out of every action", () => {
     expect(copied).toContain("Objection 1");
   });
 
-  it("seeds Explore More from the matched passage, not the attachment", async () => {
-    const onExploreMore = await renderExpanded();
-    await userEvent.click(screen.getByRole("button", { name: "Query more like this" }));
-
-    expect(onExploreMore.mock.calls[0][0]).toContain("THE MATCHED OBJECTION");
-    expect(onExploreMore.mock.calls[0][0]).not.toContain("THE ATTACHED ANSWER");
-  });
-
   it("keeps the role marker out of any truncating element", () => {
     // A Summa reference averages 214 characters and overflows the desktop column, so a
     // marker appended INSIDE the truncated citation is ellipsed away before it paints —
@@ -397,7 +381,6 @@ describe("ChunkCard keeps the attachment out of every action", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
 
@@ -419,7 +402,6 @@ describe("ChunkCard keeps the attachment out of every action", () => {
         index={0}
         searchId="00000000-0000-0000-0000-000000000003"
         token="token"
-        onExploreMore={vi.fn()}
       />,
     );
 

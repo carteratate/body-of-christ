@@ -48,8 +48,8 @@ export function FeedbackPage() {
       setReference(response.feedback_id);
       clearFeedbackContext();
       trackFeedbackSubmitted({ category, origin: context?.origin ?? "navigation" });
-    } catch (submissionError) {
-      setError(submissionError instanceof Error ? submissionError.message : "Your feedback couldn't be sent. Please try again.");
+    } catch {
+      setError("We couldn't send your feedback. Your draft is still here. Try again.");
     } finally {
       setPending(false);
     }
@@ -104,7 +104,7 @@ export function FeedbackPage() {
           ) : (
             <p className="rounded-md bg-brand-surface p-3 text-sm text-brand-muted">This report is anonymous. Please do not include contact information or other sensitive personal details.</p>
           )}
-          {error && <div role="alert" className="rounded-md border border-brand-danger/40 bg-brand-danger/10 px-4 py-3 text-sm text-brand-danger">{error} Your draft has been kept.</div>}
+          {error && <div role="alert" className="rounded-md border border-brand-danger/40 bg-brand-danger/10 px-4 py-3 text-sm text-brand-danger">{error}</div>}
           <button type="submit" disabled={pending || message.trim().length < 10} className="min-h-11 w-full rounded-md bg-brand-accent px-4 py-2 font-medium text-brand-bg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">{pending ? "Sending…" : "Send feedback"}</button>
         </form>
       </div>

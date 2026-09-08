@@ -14,7 +14,6 @@ vi.mock("@/lib/api", async (importOriginal) => ({
 vi.mock("@/lib/analytics", () => ({
   trackBookmarkDeleted: vi.fn(),
   trackDocumentOpened: vi.fn(),
-  trackExploreMoreClicked: vi.fn(),
 }));
 
 afterEach(() => {
@@ -55,7 +54,6 @@ describe("BookmarkCard action descriptions", () => {
       ["Open passage in context", "Open this passage in the context of the full source"],
       ["Remove bookmark", "Remove this passage from Saved Passages."],
       ["Copy passage", "Copy"],
-      ["Query more like this", "Start a new search to find passages similar to this one"],
     ]);
     for (const [name, expected] of expectedDescriptions) {
       const action = screen.getByRole("button", { name });
@@ -67,6 +65,7 @@ describe("BookmarkCard action descriptions", () => {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
     }
+    expect(screen.queryByRole("button", { name: "Query more like this" })).toBeNull();
   });
 
   it("shows an existing passage note immediately with a direct edit action", () => {

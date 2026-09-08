@@ -175,11 +175,11 @@ describe("DocumentReader request ordering", () => {
     api.putReadingProgress.mockRejectedValueOnce(new Error("offline")).mockResolvedValue({});
     render(<DocumentReader docId="doc-a" />);
 
-    await screen.findByText("Your reading place has not synced yet.");
+    await screen.findByText("We couldn't save your reading place yet.");
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
 
     await waitFor(() => expect(api.putReadingProgress).toHaveBeenCalledTimes(2));
-    await waitFor(() => expect(screen.queryByText("Your reading place has not synced yet.")).toBeNull());
+    await waitFor(() => expect(screen.queryByText("We couldn't save your reading place yet.")).toBeNull());
   });
 
   it("prefers the newest queued location when an older save fails", async () => {
@@ -197,7 +197,7 @@ describe("DocumentReader request ordering", () => {
     saveA.reject(new Error("offline"));
 
     await waitFor(() => expect(api.putReadingProgress).toHaveBeenCalledWith("token", "doc-a", "chapter-b"));
-    expect(screen.queryByText("Your reading place has not synced yet.")).toBeNull();
+    expect(screen.queryByText("We couldn't save your reading place yet.")).toBeNull();
   });
 
   it("allows a stale append to be requested again after a replacement fails", async () => {

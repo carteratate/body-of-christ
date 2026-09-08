@@ -121,7 +121,7 @@ export function ChatShell() {
         await supabase.auth.signOut();
         return;
       }
-      setError(message);
+      setError("We couldn't send that message. Try again.");
     } finally {
       setLoading(false);
     }

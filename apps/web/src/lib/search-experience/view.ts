@@ -32,7 +32,6 @@ export interface SearchExperienceView {
   readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
   readonly saveWarning: string | null;
   readonly phase: SearchPhase | null;
-  readonly exploreLabel: string | null;
   readonly showAnimation: boolean;
   readonly animationRunId: number;
   readonly queryDone: boolean;
@@ -91,7 +90,6 @@ export function searchExperienceView(snapshot: SearchExperienceSnapshot): Search
       ?? (transport?.status === "complete" ? transport.collectionOutcomes : {}),
     saveWarning: restored?.warning ?? active?.saveWarning ?? null,
     phase: transport?.status === "searching" ? transport.phase : null,
-    exploreLabel: request?.exploreLabel ?? null,
     showAnimation: active !== null && active.presentation.status !== "revealed",
     animationRunId: snapshot.runId,
     queryDone: active?.presentation.status === "animating"

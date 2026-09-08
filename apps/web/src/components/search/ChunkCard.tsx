@@ -15,7 +15,6 @@ import {
   trackBookmarkCreated,
   trackBookmarkDeleted,
   trackDocumentOpened,
-  trackExploreMoreClicked,
 } from "@/lib/analytics";
 import { AttachedPassage } from "./AttachedPassage";
 import { getCollectionMeta } from "@/lib/collections";
@@ -86,19 +85,17 @@ interface ChunkCardProps {
   index: number;
   searchId: string | null;
   token: string;
-  onExploreMore: (content: string, label: string) => void;
   isGuest?: boolean;
   onExpand?: () => void;
   showOpenContextHint?: boolean;
   onDismissOpenContextHint?: () => void;
 }
 
-export function ChunkCard({ result, index, searchId, token, onExploreMore, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
+export function ChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { chunk_id, content, source } = result;
-  // Presentation only — never part of what is copied, bookmarked, explored or persisted,
-  // all of which address the passage the user actually matched.
+  // Presentation only. Copying and saving still address the passage the user matched.
   const attached = result.context ?? null;
   const { collection, document_title, author, reference, document_id } = source;
   // The passage's own role. Ingest moved "Objection N" out of `content`, so without this
@@ -224,12 +221,6 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
       document_id,
     });
     router.push("/feedback");
-  }
-
-  // ── Explore more action ───────────────────────────────────────────────────
-  function handleExploreMore() {
-    trackExploreMoreClicked({ collection, source: "chunk_card" });
-    onExploreMore(stripVerseMarkers(content), primaryReference ?? "");
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
@@ -391,9 +382,6 @@ export function ChunkCard({ result, index, searchId, token, onExploreMore, isGue
                   <button onClick={handleReadMore} className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Open in Context</button>
                 </ThemedTooltip>
               </div>
-              <ThemedTooltip label="Start a new search to find passages similar to this one">
-                <button onClick={handleExploreMore} aria-label="Query more like this" className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Query More Like This</button>
-              </ThemedTooltip>
             </div>
           </div>
           {showReportPrompt && (

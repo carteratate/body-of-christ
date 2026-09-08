@@ -66,7 +66,10 @@ describe("FeedbackPage", () => {
     await userEvent.type(details, "Please add a better mobile reading layout.");
     await userEvent.click(screen.getByRole("button", { name: "Send feedback" }));
 
-    await screen.findByRole("alert");
+    expect((await screen.findByRole("alert")).textContent).toBe(
+      "We couldn't send your feedback. Your draft is still here. Try again.",
+    );
+    expect(screen.queryByText(/Service temporarily unavailable/)).toBeNull();
     expect((details as HTMLTextAreaElement).value).toBe("Please add a better mobile reading layout.");
     await waitFor(() => expect((screen.getByRole("button", { name: "Send feedback" }) as HTMLButtonElement).disabled).toBe(false));
   });

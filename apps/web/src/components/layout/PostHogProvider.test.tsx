@@ -32,7 +32,7 @@ describe("PostHogProvider privacy defaults", () => {
 
   it("removes query strings and referrers from automatically-added properties", () => {
     expect(sanitizeAnalyticsProperties({
-      $current_url: "https://theocorpus.app/search?explore=private-text",
+      $current_url: "https://theocorpus.app/search?query=private-text",
       $referrer: "https://example.com/?secret=value",
       category: "bug",
     })).toEqual({ $current_url: "/search", category: "bug" });

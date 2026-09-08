@@ -47,7 +47,7 @@ export function PageErrorState({ reset }: { reset: () => void }) {
       <div className="w-full max-w-md rounded-xl border border-brand-muted/20 bg-brand-surface p-6 text-center">
         <h1 className="font-brand text-xl font-semibold">We couldn&apos;t open {name}</h1>
         <p className="mt-3 text-sm leading-6 text-brand-muted">
-          This may be a temporary connection problem. Try loading the page again.
+          TheoCorpus couldn&apos;t load this page. Try again, or use the link below to continue.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <button

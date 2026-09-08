@@ -66,7 +66,6 @@ export function readGuestSearch(): RestoredGuestSearch | null {
           collections: snapshot.collections,
           translation: snapshot.translation,
           quota: snapshot.quota,
-          origin: "fresh",
         },
         searchId: snapshot.searchId,
         passages: passages as Passage[],
@@ -304,7 +303,6 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
               collections,
               translation,
               quota,
-              origin: "fresh" as const,
             },
             passages: data.results,
             warning: data.restore_status === "results_unavailable"
