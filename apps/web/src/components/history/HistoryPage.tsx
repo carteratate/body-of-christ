@@ -195,6 +195,7 @@ export function HistoryPage() {
                   active={search.id === activeSearchId}
                   revealed={revealedId === search.id}
                   deleting={deletingId === search.id}
+                  showDate={group.showDate}
                   onReveal={() => setRevealedId(search.id)}
                   onClose={() => setRevealedId(null)}
                   onDelete={() => void deleteById(search.id)}

@@ -2,6 +2,7 @@ import type { SearchSummaryV2 } from "@/lib/api";
 
 export interface HistoryGroup {
   label: "Today" | "Yesterday" | "Earlier";
+  showDate: boolean;
   searches: SearchSummaryV2[];
 }
 
@@ -16,9 +17,9 @@ export function groupSearchesByLocalDate(
   const todayStart = localDayStart(now);
   const yesterdayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).getTime();
   const groups: HistoryGroup[] = [
-    { label: "Today", searches: [] },
-    { label: "Yesterday", searches: [] },
-    { label: "Earlier", searches: [] },
+    { label: "Today", showDate: false, searches: [] },
+    { label: "Yesterday", showDate: false, searches: [] },
+    { label: "Earlier", showDate: true, searches: [] },
   ];
 
   for (const search of searches) {
