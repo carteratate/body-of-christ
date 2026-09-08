@@ -16,10 +16,14 @@ describe("groupSearchesByLocalDate", () => {
       search("earlier", new Date(2026, 7, 2, 23, 59).toISOString()),
     ], now);
 
-    expect(groups.map((group) => [group.label, group.searches.map((item) => item.id)])).toEqual([
-      ["Today", ["today"]],
-      ["Yesterday", ["yesterday"]],
-      ["Earlier", ["earlier"]],
+    expect(groups.map((group) => [
+      group.label,
+      group.showDate,
+      group.searches.map((item) => item.id),
+    ])).toEqual([
+      ["Today", false, ["today"]],
+      ["Yesterday", false, ["yesterday"]],
+      ["Earlier", true, ["earlier"]],
     ]);
   });
 });
