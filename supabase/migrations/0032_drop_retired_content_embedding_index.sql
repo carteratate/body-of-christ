@@ -1,0 +1,17 @@
+-- supabase/migrations/0032_drop_retired_content_embedding_index.sql
+-- Drop the HNSW index over the retired `chunks.content_embedding` column.
+--
+-- All searchable vectors live in Qdrant (see datapipeline/README.md and
+-- writers/reader_writer.py). `content_embedding` and `annotation_embedding` are
+-- NULL in every row, no pgvector distance operator (<=>, <->, <#>) appears
+-- anywhere in the codebase, and this index's only other reference is migration
+-- 0004, which created it. It was 237 MB — 37% of the database.
+--
+-- The columns themselves are deliberately left in place: an all-NULL column
+-- occupies zero bytes (null bitmap only) and DROP COLUMN does not rewrite the
+-- table, so dropping them would reclaim nothing. Retiring them is hygiene, not
+-- storage, and is left as a separate decision.
+--
+-- CONCURRENTLY takes only SHARE UPDATE EXCLUSIVE, so reads and writes continue.
+-- It cannot run inside a transaction block.
+DROP INDEX CONCURRENTLY IF EXISTS chunks_content_embedding_idx;
