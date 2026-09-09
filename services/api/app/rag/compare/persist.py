@@ -6,7 +6,6 @@ is never blocked by DB issues.
 """
 from __future__ import annotations
 
-import json
 import logging
 
 from app.db import get_pool
@@ -69,11 +68,9 @@ async def save_compare_runs(
             r.total_duration_s,
             r.total_cost,
             len(r.chunks),
-            json.dumps(
-                [{"step": t.step, "duration_s": t.duration_s} for t in r.step_timings]
-            ),
-            json.dumps(r.cost_breakdown),
-            json.dumps(pricing_snapshot()),
+            [{"step": t.step, "duration_s": t.duration_s} for t in r.step_timings],
+            r.cost_breakdown,
+            pricing_snapshot(),
         )
         for r in eligible_results
     ]

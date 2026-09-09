@@ -2,7 +2,6 @@
 """Tests for compare run persistence (save_compare_runs) and stats endpoint."""
 from __future__ import annotations
 
-import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -88,7 +87,12 @@ async def test_save_compare_runs_inserts_rows():
     # chunk_count should be 1 for each (one chunk per result)
     assert rows[0][6] == 1
     assert rows[1][6] == 1
-    pricing = json.loads(rows[0][9])
+    # jsonb params are passed as plain objects; app/db.py's jsonb codec does the
+    # single serialisation. Pre-encoding here is what stored jsonb *strings*.
+    pricing = rows[0][9]
+    assert isinstance(pricing, dict)
+    assert isinstance(rows[0][7], list)   # step_timings
+    assert isinstance(rows[0][8], dict)   # cost_breakdown
     assert pricing["effective_date"] == "2026-07-30"
     assert pricing["token_rates_per_million"]["gpt-5.6-luna"] == {
         "input": 0.20,

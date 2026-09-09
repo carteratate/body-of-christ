@@ -32,6 +32,31 @@ _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 _background_guest_tasks: set[asyncio.Task[None]] = set()
 
 
+def _filters_object(filters: object) -> dict | None:
+    """Normalise a `guest_trials.filters` value to a dict for re-insertion.
+
+    app/db.py registers a jsonb codec, so asyncpg both serialises on write and
+    deserialises on read. A correctly stored object therefore arrives as a dict
+    and must be passed straight back through — calling json.dumps on it here
+    would re-serialise an already-encoded value and store a jsonb *string*
+    instead of an object, which is what produced the legacy rows below.
+
+    Rows written before that fix hold a JSON-encoded string, which decodes to
+    str rather than dict; those are parsed once more so a guest claiming an old
+    trial still lands a queryable object in `searches.filters`.
+    """
+    if filters is None or isinstance(filters, dict):
+        return filters
+    if isinstance(filters, str):
+        try:
+            parsed = json.loads(filters)
+        except (TypeError, ValueError):
+            logger.warning("guest trial filters were not decodable JSON; storing null")
+            return None
+        return parsed if isinstance(parsed, dict) else None
+    return None
+
+
 @dataclass(frozen=True)
 class TrialClaim:
     allowed: bool
@@ -205,7 +230,7 @@ async def _persist_guest_results(
                    WHERE id=$1""",
                 claim_id,
                 query,
-                json.dumps({"collections": collections, "translation": translation, "quota": quota}),
+                {"collections": collections, "translation": translation, "quota": quota},
                 len(chunks),
             )
             if chunks:
@@ -551,7 +576,7 @@ async def claim_guest_session(
                         """INSERT INTO searches (id,user_id,query,filters,result_count,created_at)
                            VALUES ($1,$2,$3,$4::jsonb,$5,$6)""",
                         search_id, uuid.UUID(user.user_id), trial["query"],
-                        json.dumps(trial["filters"]) if isinstance(trial["filters"], dict) else trial["filters"],
+                        _filters_object(trial["filters"]),
                         trial["result_count"], trial["created_at"],
                     )
                     retrievals = await conn.fetch(

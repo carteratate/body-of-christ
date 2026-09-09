@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import json
 import logging
 import time
 import uuid
@@ -48,11 +47,11 @@ async def _persist_empty_search(
                 uuid.UUID(search_id),
                 uuid.UUID(user_id),
                 query,
-                json.dumps({
+                {
                     "collections": collections,
                     "translation": translation,
                     "quota": quota,
-                }),
+                },
             )
         return True
     except Exception:
@@ -232,7 +231,7 @@ async def run_search_pipeline(
                                     uuid.UUID(search_id),
                                     uuid.UUID(user_id),
                                     query,
-                                    json.dumps({"collections": collections, "translation": translation, "quota": quota}),
+                                    {"collections": collections, "translation": translation, "quota": quota},
                                     len(final_results),
                                 )
                                 if final_results:
