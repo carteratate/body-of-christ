@@ -94,7 +94,6 @@ This contract MUST NOT change across versions.
 - `searches` (id, user_id, query, filters jsonb, result_count, created_at)
 - `retrievals` (id, search_id, chunk_id, rank, reranker_score, explanation)
 - `bookmarks` (id, user_id, chunk_id, note, created_at)
-- `chunk_feedback` (id, user_id, chunk_id, feedback)
 - `user_preferences` (user_id, preferred_translation, default_collections, default_quota, theme)
 
 SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tables.

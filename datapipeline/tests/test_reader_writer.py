@@ -67,7 +67,7 @@ def test_write_document_frees_old_positions_before_inserting_new_identities():
 # ---------------------------------------------------------------------------
 # Re-ingest must not destroy user data.
 #
-# `retrievals`, `bookmarks`, `reading_progress`, `chunk_feedback` and
+# `retrievals`, `bookmarks`, `reading_progress`, `retrieval_labels` and
 # `guest_trial_retrievals` all reference `chunks.id` ON DELETE CASCADE. A rebuild
 # produces byte-identical ids for anything it still emits, so deleting first throws
 # away user data the re-insert cannot restore.

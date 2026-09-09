@@ -287,7 +287,7 @@ Postgres (Supabase) holds the corpus and user data; Qdrant holds the vectors.
 Migrations are SQL-only and additive, with RLS on every user-owned table.
 
 Core V2 tables: `documents`, `chunks` (with `search_vector` FTS + passage anchors),
-`searches`, `retrievals`, `bookmarks`, `chunk_feedback`, `user_preferences`.
+`searches`, `retrievals`, `bookmarks`, `retrieval_labels`, `user_preferences`.
 Legacy V1 chat tables (`chat_sessions`, `chat_messages`, `user_usage`) remain in place.
 
 ---

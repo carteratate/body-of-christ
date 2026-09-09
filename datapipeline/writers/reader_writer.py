@@ -17,7 +17,7 @@ async def clear_collection(conn: asyncpg.Connection, collection: str) -> None:
     """Delete a collection's chunks + documents before a clean re-ingest.
 
     DESTRUCTIVE BEYOND THIS COLLECTION. `retrievals`, `bookmarks`, `reading_progress`,
-    `chunk_feedback` and `guest_trial_retrievals` all reference `chunks.id` with ON
+    `retrieval_labels` and `guest_trial_retrievals` all reference `chunks.id` with ON
     DELETE CASCADE, so this removes user data that the re-insert never restores — even
     when the rebuild produces byte-identical chunk ids, which for a deterministic
     re-ingest it usually does.

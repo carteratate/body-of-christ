@@ -92,8 +92,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 
 ### Search corpus & activity (V2)
 - `documents` (id, collection, title, author, year, translation, metadata jsonb)
-- `chunks` (id, document_id, content, position, anchor, chapter_key, chapter_label, unit_label, reference, search_vector tsvector, content_embedding vector, annotation, annotation_embedding)
-- `searches`, `retrievals`, `bookmarks`, `chunk_feedback`, `user_preferences`
+- `chunks` (id, document_id, content, position, anchor, chapter_key, chapter_label, unit_label, reference, search_vector tsvector, annotation, annotation_vector tsvector, content_embedding vector, annotation_embedding)
+- `searches`, `retrievals`, `bookmarks`, `user_preferences`
+  (`chunk_feedback` was dropped and replaced by `retrieval_labels` in 0022)
 
 ### Later additions
 - `compare_runs` — retrieval-lab evaluation runs (0018, 0020, 0026)
@@ -102,9 +103,20 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - `reading_progress` — per-document reader position (0027)
 - `product_feedback` — in-app feedback, including anonymous (0028–0030)
 
-Migrations run 0001–0030. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema. Audit the Supabase migration ledger before renaming any of them.
+Migrations run 0001–0033. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema. Audit the Supabase migration ledger before renaming any of them.
 
-`chunks.content_embedding` exists but is **unused** — zero references in `services/api/app/`. Qdrant owns all vector search. Leave the column alone.
+`chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
+NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
+repo. Qdrant owns all vector search, including the V5 `facets` and `questions` collections.
+The 237 MB HNSW index over `content_embedding` was dropped in 0033's sibling, 0032. Leave
+the columns themselves alone: all-NULL columns cost zero bytes, and `DROP COLUMN` does not
+rewrite the table, so removing them would reclaim nothing.
+
+**`app/db.py` registers a jsonb codec (`encoder=json.dumps`), so asyncpg serialises jsonb
+parameters itself. Never call `json.dumps` on a value bound to a jsonb column from the API** —
+that double-encodes it into a jsonb *string*, which reads back fine through the app but makes
+the column unqueryable from SQL. 0033 repaired 205 such rows. The datapipeline pools register
+no codec, so `json.dumps` there is correct.
 
 ---
 
@@ -208,7 +220,6 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | GET | `/sources` | All documents with chunk counts; 1h in-memory cache |
 | POST | `/evaluate`, `/evaluate/explain` | Collection scoring; 10/day |
 | POST/GET/PATCH/DELETE | `/bookmarks`, `/bookmarks/{id}` | PATCH body is `{note}` |
-| POST | `/feedback` | `{chunk_id, feedback: "up"\|"down", search_id?}` |
 | POST | `/product-feedback` | In-app feedback; allows anonymous |
 | POST | `/labels` | Human relevance labels (retrieval lab) |
 | GET/PUT | `/preferences` | User preferences |
