@@ -30,7 +30,13 @@ vi.mock("./guestGate", () => ({
   useGuestGate: () => navigationState.guestGate,
 }));
 
-function RowHarness({ onDelete = vi.fn() }: { onDelete?: () => void }) {
+function RowHarness({
+  onDelete = vi.fn(),
+  showDate = false,
+}: {
+  onDelete?: () => void;
+  showDate?: boolean;
+}) {
   const [revealed, setRevealed] = useState(false);
   return (
     <HistorySearchRow
@@ -43,6 +49,7 @@ function RowHarness({ onDelete = vi.fn() }: { onDelete?: () => void }) {
       }}
       active={false}
       revealed={revealed}
+      showDate={showDate}
       onReveal={() => setRevealed(true)}
       onClose={() => setRevealed(false)}
       onDelete={onDelete}
@@ -52,6 +59,7 @@ function RowHarness({ onDelete = vi.fn() }: { onDelete?: () => void }) {
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
   vi.unstubAllGlobals();
   navigationState.pathname = "/search";
   navigationState.params = "";
@@ -68,6 +76,20 @@ function mockMatchMedia(matches: boolean) {
 }
 
 describe("HistorySearchRow", () => {
+  it("shows the date only when requested", () => {
+    vi.spyOn(Date.prototype, "toLocaleDateString").mockReturnValue("Aug 4, 2026");
+    vi.spyOn(Date.prototype, "toLocaleTimeString").mockReturnValue("8:00 AM");
+
+    const { rerender } = render(<RowHarness showDate />);
+
+    expect(screen.getByText("4 results · Aug 4, 2026 · 8:00 AM")).toBeTruthy();
+
+    rerender(<RowHarness />);
+
+    expect(screen.getByText("4 results · 8:00 AM")).toBeTruthy();
+    expect(screen.queryByText(/Aug 4, 2026/)).toBeNull();
+  });
+
   it("requires a reveal click before desktop deletion", async () => {
     const onDelete = vi.fn();
     render(<RowHarness onDelete={onDelete} />);

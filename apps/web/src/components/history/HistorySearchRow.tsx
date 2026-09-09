@@ -15,6 +15,7 @@ interface HistorySearchRowProps {
   revealed: boolean;
   deleting?: boolean;
   compact?: boolean;
+  showDate?: boolean;
   origin?: "sidebar" | "history_page";
   onNavigate?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
   onReveal: () => void;
@@ -28,6 +29,7 @@ export function HistorySearchRow({
   revealed,
   deleting = false,
   compact = false,
+  showDate = false,
   origin = "history_page",
   onNavigate,
   onReveal,
@@ -49,6 +51,9 @@ export function HistorySearchRow({
   const resultLabel = search.result_count === null
     ? "Results unavailable"
     : `${search.result_count} ${search.result_count === 1 ? "result" : "results"}`;
+  const createdAt = new Date(search.created_at);
+  const dateLabel = createdAt.toLocaleDateString([], { dateStyle: "medium" });
+  const timeLabel = createdAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 
   useEffect(() => {
     if (revealed && focusDeleteAfterReveal.current) {
@@ -154,7 +159,7 @@ export function HistorySearchRow({
           </span>
           {!compact && (
             <span className="mt-1 block text-xs text-brand-muted">
-              {resultLabel} · {new Date(search.created_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+              {resultLabel} · {showDate ? `${dateLabel} · ` : ""}{timeLabel}
             </span>
           )}
         </Link>
