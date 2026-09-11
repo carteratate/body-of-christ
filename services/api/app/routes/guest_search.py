@@ -19,13 +19,14 @@ from app.config import settings
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
-from app.rag.constants import VALID_COLLECTIONS
+from app.models.search import SearchQuota
 from app.rag.pipeline import run_search_pipeline
+from app.rag.search_plan import SearchPlanError, resolve_search_plan
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-_GUEST_QUOTA = 3
+_GUEST_DEFAULT_QUOTA = 3
 _GUEST_SEARCH_LIMIT = 2
 _IP_ABUSE_LIMIT = _GUEST_SEARCH_LIMIT
 _VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
@@ -75,21 +76,11 @@ class GuestSearchFilters(BaseModel):
     collections: list[str]
     translation: str = "CPDV"
 
-    @field_validator("collections")
-    @classmethod
-    def validate_collections(cls, collections: list[str]) -> list[str]:
-        if not collections:
-            raise ValueError("At least one collection is required")
-        invalid = sorted(set(collections) - VALID_COLLECTIONS)
-        if invalid:
-            raise ValueError(f"Invalid collections: {invalid}")
-        return list(dict.fromkeys(collections))
-
 
 class GuestSearchRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=1000)
     filters: GuestSearchFilters
-    quota: int = _GUEST_QUOTA
+    quota: SearchQuota = _GUEST_DEFAULT_QUOTA
     session_token: str = Field(..., min_length=32, max_length=128)
 
     @field_validator("query")
@@ -446,6 +437,11 @@ async def drain_guest_search_tasks(timeout_seconds: float = 30.0) -> None:
 
 @router.post("/search/guest")
 async def guest_search(body: GuestSearchRequest, request: Request) -> StreamingResponse:
+    try:
+        plan = resolve_search_plan(body.filters.collections, body.quota)
+    except SearchPlanError as exc:
+        raise HTTPException(status_code=422, detail=exc.detail) from exc
+
     ip_hash = _hash_ip(_get_client_ip(request))
     token_hash = _hash_session_token(body.session_token)
     try:
@@ -456,13 +452,12 @@ async def guest_search(body: GuestSearchRequest, request: Request) -> StreamingR
         raise HTTPException(status_code=429, detail="trial_exhausted")
 
     translation = body.filters.translation if body.filters.translation in _VALID_TRANSLATIONS else "CPDV"
-    quota = max(1, min(body.quota, _GUEST_QUOTA))
     return StreamingResponse(
         _stream_guest_events(
             query=body.query,
-            collections=body.filters.collections,
+            collections=list(plan.collections),
             translation=translation,
-            quota=quota,
+            quota=plan.quota,
             ip_hash=ip_hash,
             session_token_hash=token_hash,
             claim=claim,

@@ -10,7 +10,7 @@ from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.search import SearchFilters, SearchRequest
 from app.rag.constants import VALID_COLLECTIONS
-from app.routes.search import _validate_collections, router
+from app.routes.search import _resolve_search_plan, router
 
 USER_ID = "00000000-0000-0000-0000-000000000001"
 SEARCH_ID = "00000000-0000-0000-0000-000000000009"
@@ -26,42 +26,42 @@ def _client() -> TestClient:
 
 
 @pytest.mark.asyncio
-async def test_validate_collections_returns_valid_subset():
+async def test_resolve_search_plan_returns_normalized_valid_subset():
     body = SearchRequest(
         query="grace",
         filters=SearchFilters(collections=["bible", "not-a-collection"], translation="CPDV"),
         quota=3,
     )
-    result = await _validate_collections(body)
-    assert result == ["bible"]
+    result = await _resolve_search_plan(body)
+    assert result.collections == ("bible",)
 
 
 @pytest.mark.asyncio
-async def test_validate_collections_raises_400_when_all_invalid():
+async def test_resolve_search_plan_keeps_400_when_all_collections_are_invalid():
     body = SearchRequest(
         query="grace",
         filters=SearchFilters(collections=["not-a-collection", "also-invalid"], translation="CPDV"),
         quota=3,
     )
     with pytest.raises(HTTPException) as exc_info:
-        await _validate_collections(body)
+        await _resolve_search_plan(body)
     assert exc_info.value.status_code == 400
 
 
 @pytest.mark.asyncio
-async def test_validate_collections_raises_400_when_empty():
+async def test_resolve_search_plan_keeps_400_when_collections_are_empty():
     body = SearchRequest(
         query="grace",
         filters=SearchFilters(collections=[], translation="CPDV"),
         quota=3,
     )
     with pytest.raises(HTTPException) as exc_info:
-        await _validate_collections(body)
+        await _resolve_search_plan(body)
     assert exc_info.value.status_code == 400
 
 
 @pytest.mark.asyncio
-async def test_validate_collections_accepts_all_valid():
+async def test_resolve_search_plan_accepts_all_valid():
     body = SearchRequest(
         query="grace",
         filters=SearchFilters(
@@ -70,8 +70,66 @@ async def test_validate_collections_accepts_all_valid():
         ),
         quota=3,
     )
-    result = await _validate_collections(body)
-    assert set(result) == set(VALID_COLLECTIONS)
+    result = await _resolve_search_plan(body)
+    assert set(result.collections) == set(VALID_COLLECTIONS)
+
+
+def test_focused_search_rejects_multiple_collections_before_rate_limit():
+    pool = AsyncMock()
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().post(
+            "/v1/search",
+            json={
+                "query": "grace",
+                "filters": {"collections": ["bible", "catechism"]},
+                "quota": 10,
+            },
+        )
+
+    assert response.status_code == 422
+    pool.fetchrow.assert_not_awaited()
+
+
+def test_focused_search_rejects_zero_valid_collections_with_422_before_rate_limit():
+    pool = AsyncMock()
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().post(
+            "/v1/search",
+            json={
+                "query": "grace",
+                "filters": {"collections": []},
+                "quota": 10,
+            },
+        )
+
+    assert response.status_code == 422
+    pool.fetchrow.assert_not_awaited()
+
+
+def test_focused_search_normalizes_duplicates_and_reaches_pipeline():
+    captured = {}
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {"rate_count": 1, "quota_count": 1}
+
+    async def fake_pipeline(**kwargs):
+        captured.update(kwargs)
+        yield {"type": "done", "search_id": "search-1", "result_count": 0}
+
+    with patch("app.routes.search.get_pool", return_value=pool), \
+         patch("app.routes.search.run_search_pipeline", fake_pipeline):
+        response = _client().post(
+            "/v1/search",
+            json={
+                "query": "grace",
+                "filters": {"collections": ["bible", "bible"]},
+                "quota": 10,
+            },
+        )
+
+    assert response.status_code == 200
+    assert captured["collections"] == ["bible"]
+    assert captured["quota"] == 10
+    pool.fetchrow.assert_awaited_once()
 
 
 def test_delete_search_returns_204_on_success():
