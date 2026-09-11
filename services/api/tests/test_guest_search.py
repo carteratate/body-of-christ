@@ -479,6 +479,39 @@ def test_guest_search_success_returns_sse(client):
     assert "chunk" in response.text
 
 
+def test_guest_focused_search_passes_quota_ten_to_pipeline(client):
+    captured = {}
+
+    async def fake_pipeline(*args, **kwargs):
+        captured.update(kwargs)
+        yield {"type": "done", "search_id": "search-1", "result_count": 0}
+
+    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=ALLOWED_CLAIM)), \
+         patch("app.routes.guest_search.run_search_pipeline", fake_pipeline), \
+         patch("app.routes.guest_search._persist_guest_results", AsyncMock()), \
+         patch("app.routes.guest_search._finalize_guest_results", AsyncMock()):
+        response = client.post(
+            "/v1/search/guest",
+            json={"session_token": GUEST_TOKEN, "query": "grace", "filters": {"collections": ["bible"]}, "quota": 10},
+        )
+
+    assert response.status_code == 200
+    assert captured["collections"] == ["bible"]
+    assert captured["quota"] == 10
+
+
+def test_guest_focused_search_rejects_multiple_collections_before_consuming_trial(client):
+    record_trial = AsyncMock(return_value=ALLOWED_CLAIM)
+    with patch("app.routes.guest_search._try_record_trial", record_trial):
+        response = client.post(
+            "/v1/search/guest",
+            json={"session_token": GUEST_TOKEN, "query": "grace", "filters": {"collections": ["bible", "catechism"]}, "quota": 10},
+        )
+
+    assert response.status_code == 422
+    record_trial.assert_not_awaited()
+
+
 def test_guest_search_429_when_trial_exhausted(client):
     with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=DENIED_CLAIM)):
         response = client.post(
@@ -544,7 +577,7 @@ def test_guest_pipeline_success_keeps_trial_consumed(client):
     refund.assert_not_awaited()
 
 
-@pytest.mark.parametrize("collections", [[], ["not-a-real-collection"], ["bible", "fake"]])
+@pytest.mark.parametrize("collections", [[], ["not-a-real-collection"]])
 def test_guest_search_rejects_invalid_collections_without_consuming_trial(client, collections):
     record_trial = AsyncMock(return_value=ALLOWED_CLAIM)
     with patch("app.routes.guest_search._try_record_trial", record_trial):
@@ -555,6 +588,31 @@ def test_guest_search_rejects_invalid_collections_without_consuming_trial(client
 
     assert response.status_code == 422
     record_trial.assert_not_awaited()
+
+
+def test_guest_search_normalizes_mixed_and_duplicate_collections(client):
+    captured = {}
+
+    async def fake_pipeline(*args, **kwargs):
+        captured.update(kwargs)
+        yield {"type": "done", "search_id": "search-1", "result_count": 0}
+
+    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=ALLOWED_CLAIM)), \
+         patch("app.routes.guest_search.run_search_pipeline", fake_pipeline), \
+         patch("app.routes.guest_search._persist_guest_results", AsyncMock()), \
+         patch("app.routes.guest_search._finalize_guest_results", AsyncMock()):
+        response = client.post(
+            "/v1/search/guest",
+            json={
+                "session_token": GUEST_TOKEN,
+                "query": "grace",
+                "filters": {"collections": ["missing", "bible", "bible"]},
+                "quota": 10,
+            },
+        )
+
+    assert response.status_code == 200
+    assert captured["collections"] == ["bible"]
 
 
 def test_guest_search_rejects_blank_query_without_consuming_trial(client):
@@ -589,23 +647,16 @@ def test_guest_search_strips_query_before_pipeline(client):
     assert captured["query"] == "grace"
 
 
-def test_guest_search_caps_quota_at_guest_maximum(client):
-    captured = {}
-
-    async def fake_pipeline(query, collections, translation, quota, user_id):
-        captured["quota"] = quota
-        yield {"type": "done", "search_id": "x", "result_count": 0}
-
-    with patch("app.routes.guest_search._try_record_trial", AsyncMock(return_value=ALLOWED_CLAIM)), \
-         patch("app.routes.guest_search.run_search_pipeline", fake_pipeline), \
-         patch("app.routes.guest_search._persist_guest_results", AsyncMock()), \
-         patch("app.routes.guest_search._finalize_guest_results", AsyncMock()):
-        client.post(
+def test_guest_search_rejects_disallowed_quota_without_consuming_trial(client):
+    record_trial = AsyncMock(return_value=ALLOWED_CLAIM)
+    with patch("app.routes.guest_search._try_record_trial", record_trial):
+        response = client.post(
             "/v1/search/guest",
-            json={"session_token": GUEST_TOKEN, "query": "test", "filters": {"collections": ["bible"]}, "quota": 99},
+            json={"session_token": GUEST_TOKEN, "query": "test", "filters": {"collections": ["bible"]}, "quota": 6},
         )
 
-    assert captured.get("quota") == 3  # capped at _GUEST_QUOTA
+    assert response.status_code == 422
+    record_trial.assert_not_awaited()
 
 
 @pytest.mark.asyncio

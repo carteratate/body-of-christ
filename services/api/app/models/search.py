@@ -2,6 +2,9 @@ from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
 
+SearchQuota = Literal[3, 4, 5, 10]
+
+
 class SearchFilters(BaseModel):
     collections: list[str]
     translation: str = "CPDV"
@@ -10,7 +13,7 @@ class SearchFilters(BaseModel):
 class SearchRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=1000)
     filters: SearchFilters
-    quota: int = Field(default=4, ge=3, le=5)
+    quota: SearchQuota = 4
 
 
 class ChunkSource(BaseModel):
