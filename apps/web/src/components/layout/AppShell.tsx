@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { claimGuestSession, getBookmarks, getPreferences, getSearchHistory, getSources, GuestClaimHttpError, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
-import { clearGuestSession, getGuestSavedChunkIds, peekGuestSessionToken } from "@/lib/trial";
+import { clearGuestSession, getGuestPreferenceDraft, getGuestSavedChunkIds, peekGuestSessionToken } from "@/lib/trial";
 import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { MobileTopBar } from "./MobileTopBar";
 import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
@@ -267,13 +267,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         transferController.signal.addEventListener("abort", cancelClaim, { once: true });
         const claimTimeout = window.setTimeout(() => claimController.abort(), 5000);
         try {
-          await claimGuestSession(
+          const claim = await claimGuestSession(
             claimAccessToken,
             guestToken,
             getGuestSavedChunkIds(),
+            getGuestPreferenceDraft(),
             claimController.signal,
           );
           if (!stillOwnsTransfer()) return false;
+          if (!claim.preferences) {
+            setGuestTransferStatus("failed");
+            return false;
+          }
+          setPreferences(claim.preferences);
           clearGuestSession();
           setGuestTransferStatus("idle");
           return true;

@@ -8,8 +8,10 @@ import { EmptyState } from "@/components/search/EmptyState";
 import { SearchResults } from "@/components/search/SearchResults";
 import { LoadingAnimation } from "@/components/search/LoadingAnimation";
 import { SearchFailureScreen } from "@/components/search/SearchFailureScreen";
-import { RateLimitModal } from "@/components/common";
+import { RateLimitModal, Toast, useToast } from "@/components/common";
 import { updatePreferences } from "@/lib/api";
+import { createPreferenceWriter } from "@/lib/preference-writer";
+import { getGuestPreferenceDraft, saveGuestPreferenceDraft } from "@/lib/trial";
 import { useGuestGate } from "@/components/layout/guestGate";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { trackQuotaChanged } from "@/lib/analytics";
@@ -23,7 +25,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const router = useRouter();
   const guestGate = useGuestGate();
   const {
-    token, userId, preferences,
+    token, userId, preferences, setPreferences,
     searchKey,
     searches,
     setActiveSearchId,
@@ -33,24 +35,29 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   const searchParams = useSearchParams();
   const restoreId = searchParams.get("restore");
-  const restoredGuestSearch = useRef(isGuest ? readGuestSearch() : null);
+  const [restoredGuestSearch] = useState(() => isGuest ? readGuestSearch() : null);
+  const [guestPreferences] = useState(() => isGuest ? getGuestPreferenceDraft() : null);
+  const { toast, showToast, dismissToast } = useToast();
 
   // ── State ─────────────────────────────────────────────────────────────────
 
   const [activeCollections, setActiveCollections] = useState<string[]>(() => {
-    if (isGuest) return ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"];
+    if (isGuest) return [...guestPreferences!.default_collections];
     const cols = preferences?.default_collections;
     return cols && cols.length > 0 ? cols : [];
   });
   const [translation, setTranslation] = useState<string>(() =>
-    preferences?.preferred_translation || "CPDV"
+    (isGuest ? guestPreferences?.preferred_translation : preferences?.preferred_translation) || "CPDV"
   );
   const [quota, setQuota] = useState<number>(() =>
-    isGuest ? 3 : (preferences?.default_quota ?? 4)
+    isGuest ? guestPreferences!.default_quota : (preferences?.default_quota ?? 4)
+  );
+  const [lastStandardQuota, setLastStandardQuota] = useState<3 | 4 | 5>(() =>
+    isGuest ? guestPreferences!.last_standard_quota : (preferences?.last_standard_quota ?? 4)
   );
   const [searchValue, setSearchValue] = useState<string>("");
   const [visibleCollections, setVisibleCollections] = useState<string[]>(
-    () => [...(restoredGuestSearch.current?.visibleCollections ?? [])],
+    () => [...(restoredGuestSearch?.visibleCollections ?? [])],
   );
   // Measured footprint of the query bubble shown during the animation — passed to
   // LoadingAnimation so its radial constellation shrinks to never overlap the bubble.
@@ -60,36 +67,48 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
-  const prefsSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefsMountedRef = useRef(false);
   const bubbleRef = useRef<HTMLDivElement>(null);
+  const preferenceWriter = useMemo(() => createPreferenceWriter({
+    write: () => Promise.reject(new Error("Authentication unavailable")),
+    onSaved: setPreferences,
+    onFailure: () => showToast("Your search defaults could not be saved. Try again.", "error"),
+  }), [setPreferences, showToast]);
 
   useEffect(() => {
-    return () => {
-      if (prefsSaveTimerRef.current) clearTimeout(prefsSaveTimerRef.current);
-    };
-  }, []);
+    preferenceWriter.setWrite((value) => token
+      ? updatePreferences(token, value)
+      : Promise.reject(new Error("Authentication unavailable")));
+    preferenceWriter.resume();
+    return () => preferenceWriter.dispose();
+  }, [preferenceWriter, token]);
 
   // ── Unified preferences save ──────────────────────────────────────────────
-  // Single debounced effect for all three preference fields. Saves in one call
-  // so rapid collection/quota/translation changes collapse to one API request.
-  // Guard skips empty-collections state (avoids 422 when all are deselected).
+  // Save complete snapshots so a partial response cannot restore stale UI state.
+  // The writer permits one request at a time and only confirms its newest snapshot.
   useEffect(() => {
     if (!prefsMountedRef.current) {
       prefsMountedRef.current = true;
       return;
     }
-    if (!token || activeCollections.length === 0) return;
-    if (prefsSaveTimerRef.current) clearTimeout(prefsSaveTimerRef.current);
-    prefsSaveTimerRef.current = setTimeout(() => {
-      updatePreferences(token, {
+    if (activeCollections.length === 0) return;
+    if (isGuest) {
+      saveGuestPreferenceDraft({
         default_collections: activeCollections,
         default_quota: quota,
+        last_standard_quota: lastStandardQuota,
         preferred_translation: translation,
-      }).catch(() => {});
-    }, 800);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeCollections, quota, translation]); // token is stable for a session
+      });
+      return;
+    }
+    if (!token) return;
+    preferenceWriter.save({
+      default_collections: activeCollections,
+      default_quota: quota,
+      last_standard_quota: lastStandardQuota,
+      preferred_translation: translation,
+    });
+  }, [activeCollections, isGuest, lastStandardQuota, preferenceWriter, quota, token, translation]);
 
   // ── Pending sidebar slot ──────────────────────────────────────────────────
   // Tracks the ID of the current "New Search" placeholder. null = no placeholder
@@ -102,7 +121,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     searches,
     translation,
     quota,
-    restoredGuestSearch: restoredGuestSearch.current,
+    restoredGuestSearch,
     guestGate,
     pendingHistory: {
       showPending(entryId, query) {
@@ -143,6 +162,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     if (prevSearchKey.current === searchKey) return;
     prevSearchKey.current = searchKey;
     experience.send({ type: "reset" });
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchValue("");
     setVisibleCollections([]);
   }, [experience, searchKey]);
@@ -215,6 +235,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   function handleQuotaChange(q: number) {
     trackQuotaChanged({ from: quota, to: q });
     setQuota(q);
+    if (q === 3 || q === 4 || q === 5) setLastStandardQuota(q);
   }
 
   function handleSelectQuery(text: string) {
@@ -225,6 +246,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   useLayoutEffect(() => {
     if (!searchView.showAnimation || !searchView.queryBubbleVisible
       || !searchView.submittedQuery) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBubbleSize(null);
       return;
     }
@@ -363,6 +385,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           }}
         />
       )}
+      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </div>
   );
 }

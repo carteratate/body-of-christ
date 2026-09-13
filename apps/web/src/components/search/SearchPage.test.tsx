@@ -17,7 +17,7 @@ const apiMocks = vi.hoisted(() => ({
   getSearchResults: vi.fn(),
   streamGuestSearch: vi.fn(),
   streamSearch: vi.fn(),
-  updatePreferences: vi.fn().mockResolvedValue(undefined),
+  updatePreferences: vi.fn().mockImplementation(async (_token, value) => ({ ...value, theme: "dark" })),
 }));
 
 const appMocks = vi.hoisted(() => ({
@@ -42,6 +42,13 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/lib/trial", () => ({
   getGuestSessionToken: () => "guest-session-token-with-at-least-32-chars",
+  getGuestPreferenceDraft: () => ({
+    preferred_translation: "CPDV",
+    default_collections: ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"],
+    default_quota: 3,
+    last_standard_quota: 3,
+  }),
+  saveGuestPreferenceDraft: vi.fn(),
   GUEST_SEARCH_LIMIT: 2,
 }));
 
@@ -49,7 +56,8 @@ vi.mock("@/components/layout/AppShell", () => ({
   useAppContext: () => ({
     token: testState.token,
     userId: testState.userId,
-    preferences: { default_collections: ["bible"], preferred_translation: "CPDV", default_quota: 4 },
+    preferences: { default_collections: ["bible"], preferred_translation: "CPDV", default_quota: 4, last_standard_quota: 4, theme: "dark" },
+    setPreferences: vi.fn(),
     searchKey: testState.searchKey,
     searches: [{
       id: "11111111-1111-4111-8111-111111111111",
@@ -81,13 +89,14 @@ vi.mock("@/lib/api", async (importOriginal) => {
 });
 
 vi.mock("./BottomBar", () => ({
-  BottomBar: ({ isSearchActive, activeCollections, submittedCollections, searchValue, onSearchChange, onSearch, onToggleVisible }: {
+  BottomBar: ({ isSearchActive, activeCollections, submittedCollections, searchValue, onSearchChange, onSearch, onToggleCollection, onToggleVisible }: {
     isSearchActive: boolean;
     activeCollections: string[];
     submittedCollections: string[];
     searchValue: string;
     onSearchChange: (value: string) => void;
     onSearch: () => void;
+    onToggleCollection: (collection: string) => void;
     onToggleVisible: (collection: string) => void;
   }) => (
     <div
@@ -98,6 +107,7 @@ vi.mock("./BottomBar", () => ({
     >
       <input aria-label="Search passages" value={searchValue} onChange={(event) => onSearchChange(event.target.value)} />
       <button onClick={onSearch}>Search</button>
+      <button onClick={() => onToggleCollection("catechism")}>Toggle Catechism source</button>
       <button onClick={() => onToggleVisible("bible")}>Toggle Bible visibility</button>
     </div>
   ),
@@ -180,6 +190,21 @@ afterEach(() => {
 });
 
 describe("SearchPage restore lifecycle", () => {
+  it("keeps immediate preference writes active after Strict Mode effect replay", async () => {
+    testState.params = "";
+    render(<StrictMode><SearchPage /></StrictMode>);
+    apiMocks.updatePreferences.mockClear();
+
+    fireEvent.click(screen.getByText("Toggle Catechism source"));
+
+    await waitFor(() => expect(apiMocks.updatePreferences).toHaveBeenCalledOnce());
+    expect(apiMocks.updatePreferences.mock.calls[0][1]).toEqual(expect.objectContaining({
+      default_collections: ["bible", "catechism"],
+      default_quota: 4,
+      last_standard_quota: 4,
+    }));
+  });
+
   it("selects the persisted collection and shows its Passages after restoration", async () => {
     apiMocks.getSearchResults.mockResolvedValue({
       ...restored("What is Christian hope?"),

@@ -7,7 +7,9 @@ from fastapi.testclient import TestClient
 from fastapi import HTTPException
 
 from app.main import app
+from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.models.preferences import GuestDraftPreferences
 from app.routes.guest_search import ClaimGuestSessionRequest, TrialClaim, _get_client_ip, _hash_ip
 
 CLAIM_ID = uuid.UUID("00000000-0000-0000-0000-000000000123")
@@ -718,6 +720,95 @@ async def test_claim_imports_only_transfer_ready_searches_and_their_saved_chunks
     assert result.passages_saved == 1
     assert "transfer_ready_at IS NOT NULL" in conn.fetch.await_args_list[0].args[0]
     assert any("INSERT INTO bookmarks" in call.args[0] for call in conn.execute.await_args_list)
+
+
+@pytest.mark.asyncio
+async def test_claim_saves_and_confirms_the_complete_guest_preference_draft():
+    from app.routes.guest_search import claim_guest_session
+
+    current_user = "00000000-0000-0000-0000-000000000789"
+    saved_preferences = {
+        "preferred_translation": "douay-rheims",
+        "default_collections": ["bible"],
+        "default_quota": 10,
+        "last_standard_quota": 3,
+        "theme": "dark",
+    }
+    conn = AsyncMock()
+    conn.fetchval.side_effect = [False, None]
+    conn.fetch.return_value = []
+    conn.fetchrow.return_value = saved_preferences
+    conn.transaction = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False)))
+    pool = MagicMock()
+    pool.acquire = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(return_value=conn), __aexit__=AsyncMock(return_value=False)))
+
+    with patch("app.routes.guest_search.get_pool", return_value=pool):
+        result = await claim_guest_session(
+            ClaimGuestSessionRequest(
+                session_token=GUEST_TOKEN,
+                preferences=GuestDraftPreferences(
+                    preferred_translation="douay-rheims",
+                    default_collections=["bible"],
+                    default_quota=10,
+                    last_standard_quota=3,
+                ),
+            ),
+            AuthUser(user_id=current_user),
+        )
+
+    assert result.preferences is not None
+    assert result.preferences.default_quota == 10
+    preference_upsert = conn.fetchrow.await_args
+    assert "INSERT INTO user_preferences" in preference_upsert.args[0]
+    assert preference_upsert.args[1] == uuid.UUID(current_user)
+    assert preference_upsert.args[2:] == (
+        "douay-rheims", ["bible"], 10, 3,
+    )
+
+
+def test_claim_public_route_saves_and_confirms_guest_preferences(client):
+    current_user = "00000000-0000-0000-0000-000000000789"
+    conn = AsyncMock()
+    conn.fetchval.side_effect = [False, None]
+    conn.fetch.return_value = []
+    conn.fetchrow.return_value = {
+        "preferred_translation": "CPDV",
+        "default_collections": ["bible"],
+        "default_quota": 10,
+        "last_standard_quota": 5,
+        "theme": "dark",
+    }
+    conn.transaction = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False)))
+    pool = MagicMock()
+    pool.acquire = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(return_value=conn), __aexit__=AsyncMock(return_value=False)))
+    app.dependency_overrides[get_current_user] = lambda: AuthUser(user_id=current_user)
+
+    try:
+        with patch("app.routes.guest_search.get_pool", return_value=pool):
+            response = client.post("/v1/guest/claim", json={
+                "session_token": GUEST_TOKEN,
+                "preferences": {
+                    "preferred_translation": "CPDV",
+                    "default_collections": ["bible"],
+                    "default_quota": 10,
+                    "last_standard_quota": 5,
+                },
+            })
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+
+    assert response.status_code == 200
+    assert response.json()["preferences"] == {
+        "preferred_translation": "CPDV",
+        "default_collections": ["bible"],
+        "default_quota": 10,
+        "last_standard_quota": 5,
+        "theme": "dark",
+    }
 
 
 @pytest.mark.asyncio
