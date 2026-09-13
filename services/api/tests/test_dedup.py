@@ -159,6 +159,27 @@ async def test_per_source_cap_drops_third_chunk():
 
 
 @pytest.mark.asyncio
+async def test_focused_per_source_cap_allows_four_but_drops_fifth():
+    chunks = [
+        _chunk(
+            f"chunk-{index}", "one-document", "Summa Theologiae",
+            1 - index / 10, position=index * 10, collection="summa",
+            chapter_key=f"article-{index}",
+        )
+        for index in range(5)
+    ]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(
+            chunks, per_source_cap=4, per_document_cap=4,
+        )
+
+    assert [chunk.chunk_id for chunk in result] == [
+        "chunk-0", "chunk-1", "chunk-2", "chunk-3",
+    ]
+
+
+@pytest.mark.asyncio
 async def test_per_source_cap_allows_two_different_titles():
     """Different document titles are each allowed up to 2 results."""
     a = _chunk("aaaa-0000-0000-0000-000000000012", "doc1", "Summa", 0.9, position=1)

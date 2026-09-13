@@ -353,7 +353,14 @@ async def _produce_guest_events(
     done_event: dict | None = None
     last_lease_refresh = time.monotonic()
     try:
-        async for event in run_search_pipeline(query=query, collections=collections, translation=translation, quota=quota, user_id=None):
+        async for event in run_search_pipeline(
+            query=query,
+            collections=collections,
+            translation=translation,
+            quota=quota,
+            user_id=None,
+            search_plan=resolve_search_plan(collections, quota),
+        ):
             if event.get("type") == "chunk":
                 chunks.append(event)
             elif event.get("type") == "explanation_delta":

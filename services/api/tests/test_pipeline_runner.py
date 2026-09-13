@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.pipelines import runner
+from app.rag.search_plan import resolve_search_plan
 from app.rag.steps.rerank import LLM_RERANK_CONTRACT_VERSION
 from app.rag.steps.types import RankedChunk, PipelineResult
 
@@ -333,3 +334,54 @@ async def test_runner_drives_a_cohere_pipeline_end_to_end():
     assert isinstance(result, PipelineResult)
     assert result.pipeline == "hyde_cohere_haiku"
     assert [c.chunk_id for c in result.chunks] == [fake_chunk.chunk_id]
+
+
+@pytest.mark.asyncio
+async def test_focused_plan_controls_runner_budget_cap_and_final_count():
+    config = PIPELINES["hyde_cohere_luna"]
+    chunks = [
+        RankedChunk(
+            chunk_id=f"chunk-{index}", content="test", reference=None,
+            collection="bible", document_id=f"doc-{index}",
+            document_title=f"Title {index}", author=None,
+            reranker_score=1 - index / 100,
+        )
+        for index in range(12)
+    ]
+    rerank_step = AsyncMock(return_value=(chunks, chunks))
+    dedup_step = AsyncMock(return_value=chunks)
+
+    with (
+        patch("app.rag.steps.embed.run", new=AsyncMock(return_value=[0.1] * 1536)),
+        patch("app.rag.steps.hyde_s25.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.retrieve_vector.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.retrieve_fts.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.rrf.run", return_value={"bible": []}),
+        patch("app.rag.steps.rerank.run", new=rerank_step),
+        patch("app.rag.steps.dedup.run", new=dedup_step),
+        patch("app.rag.steps.collection_guarantee.run", return_value=chunks),
+    ):
+        result = await runner.run(
+            config, "test query", ["bible"], quota=10,
+            search_plan=resolve_search_plan(["bible"], 10),
+        )
+
+    assert rerank_step.await_args.kwargs["terminal_candidate_budget"] == 25
+    assert dedup_step.await_args.kwargs["per_source_cap"] == 4
+    assert dedup_step.await_args.kwargs["per_document_cap"] == 4
+    assert len(result.chunks) == 10
+    assert result.delivery_outcome == "complete"
+
+
+@pytest.mark.parametrize(
+    ("delivered", "quota", "used_floor", "expected"),
+    [
+        (10, 10, False, "complete"),
+        (7, 10, False, "underfilled"),
+        (5, 10, True, "minimum_floor"),
+    ],
+)
+def test_delivery_outcome_distinguishes_focused_completion(
+    delivered: int, quota: int, used_floor: bool, expected: str,
+):
+    assert runner._delivery_outcome(delivered, quota, used_floor) == expected

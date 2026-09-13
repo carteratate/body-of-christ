@@ -1,6 +1,7 @@
 """Rerank dispatcher: mode selection, pool slicing, and the all_scored contract."""
 from __future__ import annotations
 
+import logging
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -109,6 +110,31 @@ async def test_both_keeps_quota_plus_extra_then_trims_to_pool_cap():
     # Guarantee candidates stay on the terminal reranker scale; Cohere-only
     # candidates outside the listwise pool are intentionally unavailable.
     assert len(all_scored) == settings.llm_pool_global_cap
+
+
+@pytest.mark.asyncio
+async def test_both_focused_mode_sends_twenty_five_terminal_candidates(caplog):
+    per_col = {"bible": [_ranked(i, 0.9 - i / 1000) for i in range(30)]}
+    captured = {}
+
+    async def _capture(pool, query, tracker, provider, step="x"):
+        captured["pool"] = pool
+        return pool
+
+    with caplog.at_level(logging.INFO), \
+         patch("app.rag.steps.rerank_cohere.run_per_collection",
+               new=AsyncMock(return_value=per_col)), \
+         patch("app.rag.steps.llm_rerank.listwise.rerank_pool", new=_capture):
+        await rerank.run(
+            RerankConfig(use_cohere=True, llm_provider="haiku"),
+            {"bible": [_cand(0)]}, "q", 10, CostTracker(),
+            terminal_candidate_budget=25,
+        )
+
+    assert len(captured["pool"]) == 25
+    assert "focused terminal rerank: candidates=25" in caplog.text
+    assert "duration_seconds=" in caplog.text
+    assert "cost=$" in caplog.text
 
 
 @pytest.mark.asyncio

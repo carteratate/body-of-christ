@@ -137,10 +137,14 @@ def _cosine_sim(a: list[float], b: list[float]) -> float:
     return dot / (mag_a * mag_b)
 
 
-async def apply_dedup(ranked: list[RankedChunk]) -> list[RankedChunk]:
-    """Drop cosine-close adjacent duplicates and apply the per-source cap.
+async def apply_dedup(
+    ranked: list[RankedChunk], *, per_source_cap: int = _PER_SOURCE_CAP,
+    per_document_cap: int | None = None,
+) -> list[RankedChunk]:
+    """Drop cosine-close adjacent duplicates and apply the requested source cap.
 
     Assumes `ranked` is already sorted descending by reranker_score.
+    Standard searches use the historical cap of two. Focused search passes four.
     """
     # 1. Find pairs within _POSITION_PROXIMITY in the same document
     by_doc: dict[str, list[RankedChunk]] = {}
@@ -198,11 +202,16 @@ async def apply_dedup(ranked: list[RankedChunk]) -> list[RankedChunk]:
     survivors = [c for c in ranked if c.include and c.chunk_id not in to_drop]
     chapter_grain = chapter_grain_collections(survivors)
     source_counts: dict[tuple[str, ...], int] = {}
+    document_counts: dict[str, int] = {}
     final: list[RankedChunk] = []
     for chunk in survivors:
+        document_count = document_counts.get(chunk.document_id, 0)
+        if per_document_cap is not None and document_count >= per_document_cap:
+            continue
         key = source_key(chunk, chapter_grain)
         count = source_counts.get(key, 0)
-        if count < _PER_SOURCE_CAP:
+        if count < per_source_cap:
             source_counts[key] = count + 1
+            document_counts[chunk.document_id] = document_count + 1
             final.append(chunk)
     return final

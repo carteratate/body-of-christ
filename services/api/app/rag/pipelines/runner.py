@@ -8,6 +8,7 @@ import copy
 
 from app.config import settings
 from app.rag.pipelines.registry import PipelineConfig
+from app.rag.search_plan import SearchPlan
 from app.rag.steps import (
     budget,
     collection_guarantee,
@@ -29,7 +30,8 @@ from app.rag.steps import (
 )
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.types import (
-    AttachedContext, ChunkCandidate, PipelineResult, RankedChunk, StepTiming,
+    AttachedContext, ChunkCandidate, DeliveryOutcome, PipelineResult, RankedChunk,
+    StepTiming,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,6 +46,14 @@ class PipelineExecutionError(RuntimeError):
     def __init__(self, stage: str):
         super().__init__(f"pipeline stage failed: {stage}")
         self.stage = stage
+
+
+def _delivery_outcome(
+    delivered: int, quota: int, used_minimum_floor: bool,
+) -> DeliveryOutcome:
+    if used_minimum_floor:
+        return "minimum_floor"
+    return "complete" if delivered >= quota else "underfilled"
 
 
 def _classify_outcomes(
@@ -297,7 +307,11 @@ async def run(
     quota: int,
     user_id: str | None = None,
     degradation_policy: degradation.DegradationPolicy = degradation.DegradationPolicy.ALLOW,
+    search_plan: SearchPlan | None = None,
 ) -> PipelineResult:
+    if search_plan is not None:
+        collections = list(search_plan.collections)
+        quota = search_plan.quota
     tracker = CostTracker()
     # Fresh throttle accounting per run so waits are attributed to this pipeline.
     rerank_cohere.begin_throttle_accounting()
@@ -337,17 +351,50 @@ async def run(
     merged    = _timed_sync("rrf", lambda: rrf.run(vec_raw, fts_raw, quota, top_n=top_n))
     pre_enrichment = {col: list(chunks) for col, chunks in merged.items()}
     merged    = await _timed_async("fetch_positions", fetch_positions.run(merged))
-    ranked, all_scored = await _timed_async(
-        "rerank", rerank.run(config.rerank, merged, query, quota, tracker),
+    terminal_budget = (
+        search_plan.terminal_candidate_budget
+        if search_plan is not None and search_plan.focused
+        else None
     )
-    deduped   = await _timed_async("dedup", dedup.run(ranked))
+    rerank_coro = (
+        rerank.run(
+            config.rerank, merged, query, quota, tracker,
+            terminal_candidate_budget=terminal_budget,
+        )
+        if terminal_budget is not None
+        else rerank.run(config.rerank, merged, query, quota, tracker)
+    )
+    ranked, all_scored = await _timed_async("rerank", rerank_coro)
+    dedup_coro = (
+        dedup.run(
+            ranked,
+            per_source_cap=search_plan.max_passages_per_document,
+            per_document_cap=search_plan.max_passages_per_document,
+        )
+        if search_plan is not None and search_plan.focused
+        else dedup.run(ranked)
+    )
+    deduped = await _timed_async("dedup", dedup_coro)
     guaranteed = _timed_sync("collection_guarantee", lambda: collection_guarantee.run(deduped, all_scored, collections))
     final     = _timed_sync("quota_cap", lambda: quota_cap.run(guaranteed, quota))
 
     # Last-resort floor: if scoring excluded everything, surface best-effort
     # candidates rather than returning a silent "no results" (see min_floor).
+    used_minimum_floor = False
     if not final and ranked:
-        final = _timed_sync("min_floor", lambda: min_floor.run(ranked, quota))
+        final = _timed_sync(
+            "min_floor",
+            lambda: min_floor.run(
+                ranked,
+                quota,
+                per_document_cap=(
+                    search_plan.max_passages_per_document
+                    if search_plan is not None and search_plan.focused
+                    else None
+                ),
+            ),
+        )
+        used_minimum_floor = bool(final)
 
     # Attach the passage that completes each Summa result. AFTER quota_cap on purpose:
     # this is presentation attached to a result, not a result itself, so it must never
@@ -413,4 +460,6 @@ async def run(
         outcome=outcome,
         collection_outcomes=collection_outcomes,
         context=context,
+        delivery_outcome=_delivery_outcome(len(final), quota, used_minimum_floor),
+        used_minimum_floor=used_minimum_floor,
     )

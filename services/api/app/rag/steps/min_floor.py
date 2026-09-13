@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 _FLOOR_N = 5
 
 
-def run(ranked: list[RankedChunk], quota: int) -> list[RankedChunk]:
+def run(
+    ranked: list[RankedChunk], quota: int, *, per_document_cap: int | None = None,
+) -> list[RankedChunk]:
     """Return up to min(quota, _FLOOR_N) best-scoring chunks, spread across sources.
 
     `ranked` is the full scored list from the reranker, already sorted descending
@@ -48,17 +50,30 @@ def run(ranked: list[RankedChunk], quota: int) -> list[RankedChunk]:
     floored: list[RankedChunk] = []
     seen_fine: set[tuple[str, ...]] = set()
     seen_works: set[tuple[str, ...]] = set()
+    document_counts: dict[str, int] = {}
+
+    def document_has_room(chunk: RankedChunk) -> bool:
+        return (
+            per_document_cap is None
+            or document_counts.get(chunk.document_id, 0) < per_document_cap
+        )
+
+    def append(chunk: RankedChunk) -> None:
+        floored.append(chunk)
+        document_counts[chunk.document_id] = (
+            document_counts.get(chunk.document_id, 0) + 1
+        )
 
     # Pass 1 — one per work (see docstring: works, not collections).
     for chunk in ranked:  # already sorted desc by reranker_score
         if len(floored) >= limit:
             break
         work = source_key(chunk, frozenset())
-        if work in seen_works:
+        if work in seen_works or not document_has_room(chunk):
             continue
         seen_works.add(work)
         seen_fine.add(source_key(chunk, chapter_grain))
-        floored.append(chunk)
+        append(chunk)
 
     # Pass 2 — fill remaining slots from distinct chapters of works already seen.
     if len(floored) < limit:
@@ -68,11 +83,13 @@ def run(ranked: list[RankedChunk], quota: int) -> list[RankedChunk]:
                 break
             if chunk.chunk_id in taken:
                 continue
+            if not document_has_room(chunk):
+                continue
             fine = source_key(chunk, chapter_grain)
             if fine in seen_fine:
                 continue
             seen_fine.add(fine)
-            floored.append(chunk)
+            append(chunk)
         # Pass 2 can add a chunk outscoring a pass-1 pick, and both the SSE stream
         # and persistence assume score-descending order.
         floored.sort(key=lambda chunk: chunk.reranker_score, reverse=True)

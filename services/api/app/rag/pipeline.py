@@ -15,7 +15,9 @@ from app.db import get_pool
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.pipelines.runner import PipelineExecutionError, run as run_pipeline
+from app.rag.search_plan import SearchPlan, resolve_search_plan
 from app.rag.steps import stitch
+from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.explain import stream as stream_explanation
 
 logger = logging.getLogger(__name__)
@@ -65,6 +67,7 @@ async def run_search_pipeline(
     translation: str,
     quota: int,
     user_id: str | None,
+    search_plan: SearchPlan | None = None,
 ):
     """Async generator yielding SSE-compatible dicts.
 
@@ -77,6 +80,10 @@ async def run_search_pipeline(
 
     try:
         _t0 = time.perf_counter()
+
+        plan = search_plan or resolve_search_plan(collections, quota)
+        collections = list(plan.collections)
+        quota = plan.quota
 
         config = PIPELINES[_PRODUCTION_PIPELINE]
 
@@ -96,6 +103,7 @@ async def run_search_pipeline(
                 collections=collections,
                 quota=quota,
                 user_id=user_id,
+                search_plan=plan,
             )
         )
         try:
@@ -166,6 +174,8 @@ async def run_search_pipeline(
                 "result_count": 0,
                 "outcome": "no_candidates",
                 "collection_outcomes": pipeline_result.collection_outcomes,
+                "delivery_outcome": pipeline_result.delivery_outcome,
+                "requested_quota": quota,
             }
             return
 
@@ -266,11 +276,15 @@ async def run_search_pipeline(
             "result_count": len(final_results),
             "outcome": pipeline_result.outcome,
             "collection_outcomes": pipeline_result.collection_outcomes,
+            "delivery_outcome": pipeline_result.delivery_outcome,
+            "requested_quota": quota,
         }
 
         # ------------------------------------------------------------------
         # Step 9 — Sequential streaming explanations
         # ------------------------------------------------------------------
+        _t_explanations = time.perf_counter()
+        explanation_cost = CostTracker()
         for chunk in final_results:
             accumulated_text = ""
             try:
@@ -289,6 +303,7 @@ async def run_search_pipeline(
                 async for delta in stream_explanation(
                     explain_chunk.content, chunk.reference, chunk.collection, query,
                     unit_label=chunk.unit_label,
+                    cost_tracker=explanation_cost,
                 ):
                     accumulated_text += delta
                     yield {"type": "explanation_delta", "chunk_id": chunk.chunk_id, "delta": delta}
@@ -310,6 +325,21 @@ async def run_search_pipeline(
                             )
                     except Exception as exc:
                         logger.warning("explanation persist failed for chunk %s: %s", chunk.chunk_id, exc)
+
+        logger.info(
+            "search delivery: focused=%s requested=%d delivered=%d delivery_outcome=%s "
+            "runner_seconds=%.2f explanation_tail_seconds=%.2f "
+            "runner_cost=$%.6f explanation_cost=$%.6f explanation_cost_eligible=%s",
+            plan.focused,
+            quota,
+            len(final_results),
+            pipeline_result.delivery_outcome,
+            _t_pipeline - _t0,
+            time.perf_counter() - _t_explanations,
+            pipeline_result.total_cost,
+            explanation_cost.total_cost(),
+            explanation_cost.cost_eligible,
+        )
 
     except PipelineExecutionError as exc:
         logger.exception("run_search_pipeline stage failed: %s", exc.stage)

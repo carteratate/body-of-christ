@@ -130,6 +130,7 @@ async def search(
             translation=translation,
             quota=plan.quota,
             user_id=user.user_id,
+            search_plan=plan,
         ):
             yield f"data: {json.dumps(event, default=str)}\n\n"
 
