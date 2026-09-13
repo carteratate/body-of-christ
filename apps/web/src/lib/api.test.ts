@@ -404,6 +404,38 @@ describe("claimGuestSession", () => {
         message: "Guest search is still completing",
       }));
   });
+
+  it("sends the complete guest preference draft and returns its confirmation", async () => {
+    const draft = {
+      preferred_translation: "CPDV",
+      default_collections: ["bible"],
+      default_quota: 10,
+      last_standard_quota: 5 as const,
+    };
+    const confirmed = {
+      ...draft,
+      theme: "dark" as const,
+    };
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      searches_imported: 2,
+      passages_saved: 1,
+      preferences: confirmed,
+    }), { status: 200, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(claimGuestSession(
+      "jwt",
+      "guest-session-token-with-at-least-32-chars",
+      [],
+      draft,
+    )).resolves.toEqual(expect.objectContaining({ preferences: confirmed }));
+
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      session_token: "guest-session-token-with-at-least-32-chars",
+      saved_chunk_ids: [],
+      preferences: draft,
+    });
+  });
 });
 
 describe("getSearchHistoryPage", () => {

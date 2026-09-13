@@ -264,8 +264,15 @@ export interface Preferences {
   preferred_translation: string;
   default_collections: string[];
   default_quota: number;
+  last_standard_quota: 3 | 4 | 5;
   theme: "dark" | "light";
 }
+
+export type SearchPreferenceDraft = Pick<
+  Preferences,
+  "preferred_translation" | "default_collections" | "default_quota" | "last_standard_quota"
+>;
+export type GuestPreferenceDraft = SearchPreferenceDraft;
 
 export async function streamSearch(
   token: string,
@@ -356,12 +363,13 @@ export async function claimGuestSession(
   token: string,
   sessionToken: string,
   savedChunkIds: string[],
+  preferences?: GuestPreferenceDraft,
   signal?: AbortSignal,
-): Promise<{ searches_imported: number; passages_saved: number }> {
+): Promise<{ searches_imported: number; passages_saved: number; preferences: Preferences | null }> {
   const res = await fetch(`${API_URL}/v1/guest/claim`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ session_token: sessionToken, saved_chunk_ids: savedChunkIds }),
+    body: JSON.stringify({ session_token: sessionToken, saved_chunk_ids: savedChunkIds, preferences }),
     signal,
   });
   if (!res.ok) {

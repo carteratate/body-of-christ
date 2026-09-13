@@ -19,6 +19,7 @@ from app.config import settings
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.models.preferences import GuestDraftPreferences, PreferencesResponse
 from app.models.search import SearchQuota
 from app.rag.pipeline import run_search_pipeline
 from app.rag.search_plan import SearchPlanError, resolve_search_plan
@@ -95,11 +96,13 @@ class GuestSearchRequest(BaseModel):
 class ClaimGuestSessionRequest(BaseModel):
     session_token: str = Field(..., min_length=32, max_length=128)
     saved_chunk_ids: list[uuid.UUID] = Field(default_factory=list, max_length=100)
+    preferences: GuestDraftPreferences | None = None
 
 
 class ClaimGuestSessionResponse(BaseModel):
     searches_imported: int
     passages_saved: int
+    preferences: PreferencesResponse | None = None
 
 
 def _get_client_ip(request: Request) -> str:
@@ -601,6 +604,27 @@ async def claim_guest_session(
                            ON CONFLICT (user_id,chunk_id) DO NOTHING""",
                         uuid.UUID(user.user_id), chunk_id,
                     )
+                saved_preferences = None
+                if body.preferences is not None:
+                    saved_preferences = await conn.fetchrow(
+                        """INSERT INTO user_preferences
+                               (user_id, preferred_translation, default_collections,
+                                default_quota, last_standard_quota)
+                           VALUES ($1,$2,$3,$4,$5)
+                           ON CONFLICT (user_id) DO UPDATE SET
+                               preferred_translation=EXCLUDED.preferred_translation,
+                               default_collections=EXCLUDED.default_collections,
+                               default_quota=EXCLUDED.default_quota,
+                               last_standard_quota=EXCLUDED.last_standard_quota,
+                               updated_at=now()
+                           RETURNING preferred_translation, default_collections,
+                                     default_quota, last_standard_quota, theme""",
+                        uuid.UUID(user.user_id),
+                        body.preferences.preferred_translation,
+                        body.preferences.default_collections,
+                        body.preferences.default_quota,
+                        body.preferences.last_standard_quota,
+                    )
                 if trials:
                     await conn.execute(
                         """UPDATE guest_trials SET claimed_by=$2, claimed_at=now()
@@ -609,7 +633,11 @@ async def claim_guest_session(
                              AND created_at > now() - interval '30 days'""",
                         token_hash, uuid.UUID(user.user_id),
                     )
-        return ClaimGuestSessionResponse(searches_imported=imported, passages_saved=len(requested))
+        return ClaimGuestSessionResponse(
+            searches_imported=imported,
+            passages_saved=len(requested),
+            preferences=(PreferencesResponse(**dict(saved_preferences)) if saved_preferences else None),
+        )
     except HTTPException:
         raise
     except Exception as exc:
