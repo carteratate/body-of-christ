@@ -7,6 +7,7 @@ import openai
 
 from app.config import settings
 from app.rag.steps.passage_role import display_role
+from app.rag.steps.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +77,7 @@ async def stream(
     collection: str,
     query: str,
     unit_label: str | None = None,
+    cost_tracker: CostTracker | None = None,
 ) -> AsyncGenerator[str, None]:
     """Async generator that yields text deltas from the explanation as they arrive.
 
@@ -110,8 +112,17 @@ async def stream(
                     {"role": "user", "content": user_message},
                 ],
                 stream=True,
+                stream_options={"include_usage": True},
             )
             async for chunk in stream_resp:
+                usage = getattr(chunk, "usage", None)
+                if cost_tracker is not None and usage is not None:
+                    cost_tracker.record(
+                        "explain",
+                        settings.explain_openai_model,
+                        input_tokens=usage.prompt_tokens,
+                        output_tokens=usage.completion_tokens,
+                    )
                 if chunk.choices and chunk.choices[0].delta.content:
                     tokens_started = True
                     yield chunk.choices[0].delta.content

@@ -9,13 +9,14 @@ from app.rag.steps.types import RankedChunk
 
 
 def _chunk(cid: str, score: float, title: str = "Doc", include: bool = False,
-           collection: str = "catechism", chapter_key: str | None = None) -> RankedChunk:
+           collection: str = "catechism", chapter_key: str | None = None,
+           document_id: str | None = None) -> RankedChunk:
     return RankedChunk(
         chunk_id=cid,
         content="content",
         reference="ref",
         collection=collection,
-        document_id=cid,
+        document_id=document_id or cid,
         document_title=title,
         author=None,
         reranker_score=score,
@@ -50,6 +51,21 @@ def test_caps_at_floor_limit():
     ]
     result = min_floor.run(ranked, quota=50)
     assert len(result) == min_floor._FLOOR_N
+
+
+def test_focused_floor_honors_four_passage_document_cap():
+    ranked = [
+        _chunk(
+            f"chunk-{index}", 1 - index / 10,
+            title="Summa Theologiae", collection="summa",
+            chapter_key=f"article-{index}", document_id="one-document",
+        )
+        for index in range(5)
+    ]
+
+    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+
+    assert len(result) == 4
 
 
 def test_respects_quota_when_smaller_than_floor():

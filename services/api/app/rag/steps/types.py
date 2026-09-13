@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Literal
+
+
+DeliveryOutcome = Literal["complete", "underfilled", "minimum_floor"]
 
 
 @dataclass
@@ -109,6 +113,10 @@ class PipelineResult:
     # consume a result slot — and kept separate so `chunks` stays exactly what was
     # scored, persisted, bookmarked and given feedback on.
     context: dict[str, "AttachedContext"] = field(default_factory=dict)
+    # Delivery status is separate from infrastructure outcome. A healthy focused
+    # search may legitimately underfill after relevance and diversity filtering.
+    delivery_outcome: DeliveryOutcome = "complete"
+    used_minimum_floor: bool = False
 
 
 @dataclass

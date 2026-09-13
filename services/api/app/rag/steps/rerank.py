@@ -19,6 +19,7 @@ silently disable it for exactly the weak collections it exists to protect.
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import dataclass
 
 from app.config import settings
@@ -101,9 +102,14 @@ class RerankConfig:
 
 
 def _llm_pool_from(
-    per_collection: dict[str, list[RankedChunk]], quota: int
+    per_collection: dict[str, list[RankedChunk]], quota: int,
+    terminal_candidate_budget: int | None = None,
 ) -> list[RankedChunk]:
-    """Slice each collection to quota+extra above the keep floor, then trim globally.
+    """Build the terminal pool above the keep floor, then trim globally.
+
+    Standard searches keep quota plus the configured slack. A focused plan supplies
+    its explicit terminal budget, which becomes both the per-collection keep and the
+    global cap. Focused mode has one collection by contract.
 
     The returned pool is sorted globally by score. That matters because it is also
     what `listwise.rerank_pool` returns on any failure, and `dedup`, `quota_cap` and
@@ -111,7 +117,11 @@ def _llm_pool_from(
     it collection-by-collection would hand them a list grouped by collection, and
     each would then keep the wrong chunks without any error.
     """
-    keep = budget.cohere_keep(quota, with_llm=True)
+    keep = (
+        terminal_candidate_budget
+        if terminal_candidate_budget is not None
+        else budget.cohere_keep(quota, with_llm=True)
+    )
     kept: dict[str, list[RankedChunk]] = {}
     for col, ranked in per_collection.items():
         eligible = [
@@ -126,7 +136,9 @@ def _llm_pool_from(
             # score into an LLM-scored global ranking.
             kept[col] = ranked[:1]
 
-    allocation = budget.llm_pool({c: len(v) for c, v in kept.items()})
+    allocation = budget.llm_pool(
+        {c: len(v) for c, v in kept.items()}, cap=terminal_candidate_budget,
+    )
     pool: list[RankedChunk] = []
     for col, n in allocation.items():
         pool.extend(kept[col][:n])
@@ -156,6 +168,7 @@ async def run(
     query: str,
     quota: int,
     cost_tracker: CostTracker,
+    terminal_candidate_budget: int | None = None,
 ) -> tuple[list[RankedChunk], list[RankedChunk]]:
     """Rerank per `config`.
 
@@ -215,9 +228,18 @@ async def run(
         return all_scored, all_scored
 
     # both
-    pool = _llm_pool_from(per_collection, quota)
+    pool = _llm_pool_from(per_collection, quota, terminal_candidate_budget)
     provider = PROVIDERS[config.llm_provider]
+    terminal_started = time.perf_counter()
+    cost_before_terminal = cost_tracker.total_cost()
     ranked = await listwise.rerank_pool(
         pool, query, cost_tracker, provider, step=f"rerank_listwise_{provider.name}",
     )
+    if terminal_candidate_budget is not None:
+        logger.info(
+            "focused terminal rerank: candidates=%d duration_seconds=%.3f cost=$%.6f",
+            len(pool),
+            time.perf_counter() - terminal_started,
+            cost_tracker.total_cost() - cost_before_terminal,
+        )
     return ranked, _all_scored_for_guarantee(per_collection, ranked)

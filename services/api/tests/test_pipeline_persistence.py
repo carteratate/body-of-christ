@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.rag.pipeline import _persist_empty_search, run_search_pipeline
 from app.rag.pipelines.runner import PipelineExecutionError
+from app.rag.search_plan import resolve_search_plan
 from app.rag.steps.types import RankedChunk
 
 
@@ -38,6 +39,39 @@ def _failing_pool():
     pool.acquire = MagicMock(return_value=AsyncMock(
         __aenter__=AsyncMock(return_value=conn), __aexit__=AsyncMock(return_value=False)))
     return pool
+
+
+@pytest.mark.asyncio
+async def test_focused_plan_reaches_runner_and_emits_delivery_metadata():
+    plan = resolve_search_plan(["bible"], 10)
+    result = MagicMock()
+    result.chunks = [_chunk(f"00000000-0000-0000-0000-{index:012d}") for index in range(10)]
+    result.outcome = "success"
+    result.collection_outcomes = {"bible": "results"}
+    result.delivery_outcome = "complete"
+    result.total_cost = 0.1
+    result.context = {}
+    run = AsyncMock(return_value=result)
+
+    with patch("app.rag.pipeline.run_pipeline", run), \
+         patch("app.rag.pipeline.get_pool", return_value=None), \
+         patch("app.rag.pipeline.stream_explanation", _no_explanation):
+        events = [
+            event async for event in run_search_pipeline(
+                query="grace",
+                collections=["bible"],
+                translation="CPDV",
+                quota=10,
+                user_id=None,
+                search_plan=plan,
+            )
+        ]
+
+    assert run.await_args.kwargs["search_plan"] is plan
+    assert sum(event["type"] == "chunk" for event in events) == 10
+    done = next(event for event in events if event["type"] == "done")
+    assert done["requested_quota"] == 10
+    assert done["delivery_outcome"] == "complete"
 
 
 async def _no_explanation(*args, **kwargs):

@@ -117,7 +117,9 @@ def cohere_keep(quota: int, *, with_llm: bool) -> int:
     return quota + settings.cohere_keep_extra if with_llm else quota
 
 
-def llm_pool(per_collection_counts: dict[str, int]) -> dict[str, int]:
+def llm_pool(
+    per_collection_counts: dict[str, int], *, cap: int | None = None,
+) -> dict[str, int]:
     """Trim per-collection Cohere keeps to a global listwise budget.
 
     Returns how many candidates to take from each collection. Every collection that
@@ -132,7 +134,7 @@ def llm_pool(per_collection_counts: dict[str, int]) -> dict[str, int]:
     if not contributing:
         return {}
 
-    cap = settings.llm_pool_global_cap
+    cap = settings.llm_pool_global_cap if cap is None else cap
     if sum(contributing.values()) <= cap:
         return contributing
 
