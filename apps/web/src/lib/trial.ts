@@ -1,44 +1,39 @@
 import type { GuestPreferenceDraft } from "./api";
-import { ALL_COLLECTION_KEYS } from "./collections";
+import {
+  createSearchDraft,
+  DEFAULT_GUEST_SEARCH_PREFERENCES,
+  type SearchDraftInitial,
+} from "./search-draft";
 
 const TOKEN_KEY = "tc_guest_session";
 const COUNT_KEY = "tc_guest_search_count";
 const SAVED_KEY = "tc_guest_saved_chunks";
 const CURRENT_RESULTS_KEY = "theocorpus-guest-current-results";
-const PREFERENCES_KEY = "tc_guest_preferences";
+const PREFERENCES_KEY = "tc_guest_preferences:v1";
+const LEGACY_PREFERENCES_KEY = "tc_guest_preferences";
 const MAX_GUEST_SEARCHES = 2;
 
-const DEFAULT_GUEST_PREFERENCES: GuestPreferenceDraft = {
-  preferred_translation: "CPDV",
-  default_collections: [
-    "bible", "catechism", "church-fathers", "summa", "councils", "encyclicals",
-  ],
-  default_quota: 3,
-  last_standard_quota: 3,
-};
+const DEFAULT_GUEST_PREFERENCES: GuestPreferenceDraft = DEFAULT_GUEST_SEARCH_PREFERENCES;
 
 export function getGuestPreferenceDraft(): GuestPreferenceDraft {
   if (typeof window === "undefined") return { ...DEFAULT_GUEST_PREFERENCES };
   try {
-    const value = JSON.parse(window.localStorage.getItem(PREFERENCES_KEY) ?? "null") as Partial<GuestPreferenceDraft> | null;
-    const collections = value?.default_collections;
-    const quota = value?.default_quota;
-    const lastStandard = value?.last_standard_quota;
-    const translation = value?.preferred_translation;
-    if (
-      !Array.isArray(collections) || collections.length === 0
-      || !collections.every((item) => typeof item === "string" && ALL_COLLECTION_KEYS.includes(item))
-      || ![3, 4, 5, 10].includes(quota ?? 0)
-      || ![3, 4, 5].includes(lastStandard ?? 0)
-      || !["CPDV", "douay-rheims"].includes(translation ?? "")
-      || (quota === 10 && new Set(collections).size !== 1)
-    ) return { ...DEFAULT_GUEST_PREFERENCES, default_collections: [...DEFAULT_GUEST_PREFERENCES.default_collections] };
-    return {
-      preferred_translation: translation!,
-      default_collections: [...new Set(collections)],
-      default_quota: quota!,
-      last_standard_quota: lastStandard as 3 | 4 | 5,
-    };
+    const currentValue = window.localStorage.getItem(PREFERENCES_KEY);
+    const legacyValue = currentValue === null
+      ? window.localStorage.getItem(LEGACY_PREFERENCES_KEY)
+      : null;
+    const value = JSON.parse(currentValue ?? legacyValue ?? "null") as unknown;
+    const initial = value !== null && typeof value === "object" && !Array.isArray(value)
+      ? value as SearchDraftInitial
+      : {};
+    const preferences = createSearchDraft(initial).preferences!;
+    if (legacyValue !== null) {
+      try {
+        window.localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+        window.localStorage.removeItem(LEGACY_PREFERENCES_KEY);
+      } catch {}
+    }
+    return preferences;
   } catch {
     return { ...DEFAULT_GUEST_PREFERENCES, default_collections: [...DEFAULT_GUEST_PREFERENCES.default_collections] };
   }
@@ -46,12 +41,17 @@ export function getGuestPreferenceDraft(): GuestPreferenceDraft {
 
 export function saveGuestPreferenceDraft(preferences: GuestPreferenceDraft): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+  try {
+    window.localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+  } catch {}
 }
 
 export function clearGuestPreferenceDraft(): void {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(PREFERENCES_KEY);
+  try {
+    window.localStorage.removeItem(PREFERENCES_KEY);
+    window.localStorage.removeItem(LEGACY_PREFERENCES_KEY);
+  } catch {}
 }
 
 function encodeToken(bytes: Uint8Array): string {
@@ -115,11 +115,15 @@ export function toggleGuestSavedChunk(chunkId: string): boolean {
 
 export function clearGuestSession(): void {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(TOKEN_KEY);
-  window.localStorage.removeItem(COUNT_KEY);
-  window.localStorage.removeItem(SAVED_KEY);
+  try {
+    window.localStorage.removeItem(TOKEN_KEY);
+    window.localStorage.removeItem(COUNT_KEY);
+    window.localStorage.removeItem(SAVED_KEY);
+  } catch {}
   clearGuestPreferenceDraft();
-  window.sessionStorage.removeItem(CURRENT_RESULTS_KEY);
+  try {
+    window.sessionStorage.removeItem(CURRENT_RESULTS_KEY);
+  } catch {}
   document.cookie = "tc_trial_count=; path=/; max-age=0; SameSite=Lax";
 }
 

@@ -12,9 +12,14 @@ import { RateLimitModal, Toast, useToast } from "@/components/common";
 import { updatePreferences } from "@/lib/api";
 import { createPreferenceWriter } from "@/lib/preference-writer";
 import { getGuestPreferenceDraft, saveGuestPreferenceDraft } from "@/lib/trial";
+import {
+  createSearchDraft,
+  DEFAULT_GUEST_SEARCH_PREFERENCES,
+  transitionSearchDraft,
+} from "@/lib/search-draft";
 import { useGuestGate } from "@/components/layout/guestGate";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
-import { trackQuotaChanged } from "@/lib/analytics";
+import { trackCollectionToggled, trackQuotaChanged } from "@/lib/analytics";
 import { useAuthenticatedSearchRoute } from "@/lib/search-experience/useAuthenticatedSearchRoute";
 import {
   readGuestSearch,
@@ -41,20 +46,18 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   // ── State ─────────────────────────────────────────────────────────────────
 
-  const [activeCollections, setActiveCollections] = useState<string[]>(() => {
-    if (isGuest) return [...guestPreferences!.default_collections];
-    const cols = preferences?.default_collections;
-    return cols && cols.length > 0 ? cols : [];
-  });
-  const [translation, setTranslation] = useState<string>(() =>
-    (isGuest ? guestPreferences?.preferred_translation : preferences?.preferred_translation) || "CPDV"
-  );
-  const [quota, setQuota] = useState<number>(() =>
-    isGuest ? guestPreferences!.default_quota : (preferences?.default_quota ?? 4)
-  );
-  const [lastStandardQuota, setLastStandardQuota] = useState<3 | 4 | 5>(() =>
-    isGuest ? guestPreferences!.last_standard_quota : (preferences?.last_standard_quota ?? 4)
-  );
+  const [draft, setDraft] = useState(() => createSearchDraft(
+    isGuest
+      ? guestPreferences!
+      : preferences ?? {
+          ...DEFAULT_GUEST_SEARCH_PREFERENCES,
+          default_quota: 4,
+          last_standard_quota: 4,
+        },
+  ));
+  const activeCollections = draft.collections;
+  const translation = draft.translation;
+  const quota = draft.quota;
   const [searchValue, setSearchValue] = useState<string>("");
   const [visibleCollections, setVisibleCollections] = useState<string[]>(
     () => [...(restoredGuestSearch?.visibleCollections ?? [])],
@@ -91,24 +94,15 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       prefsMountedRef.current = true;
       return;
     }
-    if (activeCollections.length === 0) return;
+    const preferenceSnapshot = draft.preferences;
+    if (!preferenceSnapshot) return;
     if (isGuest) {
-      saveGuestPreferenceDraft({
-        default_collections: activeCollections,
-        default_quota: quota,
-        last_standard_quota: lastStandardQuota,
-        preferred_translation: translation,
-      });
+      saveGuestPreferenceDraft(preferenceSnapshot);
       return;
     }
     if (!token) return;
-    preferenceWriter.save({
-      default_collections: activeCollections,
-      default_quota: quota,
-      last_standard_quota: lastStandardQuota,
-      preferred_translation: translation,
-    });
-  }, [activeCollections, isGuest, lastStandardQuota, preferenceWriter, quota, token, translation]);
+    preferenceWriter.save(preferenceSnapshot);
+  }, [draft.preferences, isGuest, preferenceWriter, token]);
 
   // ── Pending sidebar slot ──────────────────────────────────────────────────
   // Tracks the ID of the current "New Search" placeholder. null = no placeholder
@@ -217,9 +211,15 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   function handleToggleCollection(c: string) {
-    setActiveCollections((prev) =>
-      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
-    );
+    const next = transitionSearchDraft(draft, { type: "collection-toggled", collection: c });
+    if (next === draft) return;
+    trackCollectionToggled({
+      collection: c,
+      enabled: next.collections.includes(c),
+      focusedEligible: next.focusedEligible,
+      focusedSelected: next.quota === 10,
+    });
+    setDraft(next);
   }
 
   function handleToggleVisible(c: string) {
@@ -233,9 +233,23 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   }
 
   function handleQuotaChange(q: number) {
-    trackQuotaChanged({ from: quota, to: q });
-    setQuota(q);
-    if (q === 3 || q === 4 || q === 5) setLastStandardQuota(q);
+    if (q !== 3 && q !== 4 && q !== 5 && q !== 10) return;
+    const next = transitionSearchDraft(draft, { type: "quota-selected", quota: q });
+    if (next === draft) return;
+    trackQuotaChanged({
+      from: quota,
+      to: next.quota,
+      focusedEligible: next.focusedEligible,
+      focusedSelected: next.quota === 10,
+    });
+    setDraft(next);
+  }
+
+  function handleTranslationChange(value: string) {
+    setDraft((current) => transitionSearchDraft(
+      current,
+      { type: "translation-selected", translation: value },
+    ));
   }
 
   function handleSelectQuery(text: string) {
@@ -272,7 +286,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         {searchView.showAnimation && (
           <LoadingAnimation
             key={searchView.animationRunId}
-            collections={searchView.submittedCollections.length > 0 ? [...searchView.submittedCollections] : activeCollections}
+            collections={searchView.submittedCollections.length > 0 ? [...searchView.submittedCollections] : [...activeCollections]}
             quota={searchView.submittedQuota ?? quota}
             isQueryDone={searchView.queryDone}
             retrievalStarted={searchView.retrievalStarted}
@@ -362,7 +376,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         activeCollections={searchView.loading && searchView.submittedCollections.length > 0 ? [...searchView.submittedCollections] : activeCollections}
         onToggleCollection={handleToggleCollection}
         translation={searchView.loading && searchView.submittedTranslation ? searchView.submittedTranslation : translation}
-        onTranslationChange={setTranslation}
+        onTranslationChange={handleTranslationChange}
         quota={searchView.loading && searchView.submittedQuota !== null ? searchView.submittedQuota : quota}
         onQuotaChange={handleQuotaChange}
         searchValue={searchValue}
@@ -374,7 +388,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         visibleCollections={visibleCollections}
         onToggleVisible={handleToggleVisible}
         searchDisabled={false}
-        fixedQuota={isGuest}
       />
       {searchView.rateLimit && (
         <RateLimitModal

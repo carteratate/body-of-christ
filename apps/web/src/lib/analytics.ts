@@ -34,16 +34,36 @@ export function trackBookmarkDeleted(params: { collection: string }) {
   posthog.capture("bookmark_deleted", { collection: params.collection });
 }
 
-export function trackCollectionToggled(params: { collection: string; enabled: boolean }) {
-  posthog.capture("collection_toggled", { collection: params.collection, enabled: params.enabled });
+export function trackCollectionToggled(params: {
+  collection: string;
+  enabled: boolean;
+  focusedEligible: boolean;
+  focusedSelected: boolean;
+}) {
+  posthog.capture("collection_toggled", {
+    collection: params.collection,
+    enabled: params.enabled,
+    focused_eligible: params.focusedEligible,
+    focused_selected: params.focusedSelected,
+  });
 }
 
 export function trackTranslationChanged(params: { from: string; to: string }) {
   posthog.capture("translation_changed", { from: params.from, to: params.to });
 }
 
-export function trackQuotaChanged(params: { from: number; to: number }) {
-  posthog.capture("quota_changed", { from: params.from, to: params.to });
+export function trackQuotaChanged(params: {
+  from: number;
+  to: number;
+  focusedEligible: boolean;
+  focusedSelected: boolean;
+}) {
+  posthog.capture("quota_changed", {
+    from: params.from,
+    to: params.to,
+    focused_eligible: params.focusedEligible,
+    focused_selected: params.focusedSelected,
+  });
 }
 
 export function trackReaderNavigation(params: { documentId: string; collection: string; direction: "next" | "prev" | "jump" }) {

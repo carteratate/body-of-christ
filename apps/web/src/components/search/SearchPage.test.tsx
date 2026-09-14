@@ -11,6 +11,13 @@ const testState = vi.hoisted(() => ({
   token: "token" as string | null,
   userId: "user-a" as string | null,
   searchKey: 0,
+  preferences: {
+    default_collections: ["bible"],
+    preferred_translation: "CPDV",
+    default_quota: 4,
+    last_standard_quota: 4 as 3 | 4 | 5,
+    theme: "dark" as const,
+  },
 }));
 
 const apiMocks = vi.hoisted(() => ({
@@ -21,6 +28,7 @@ const apiMocks = vi.hoisted(() => ({
 }));
 
 const appMocks = vi.hoisted(() => ({
+  setPreferences: vi.fn(),
   setActiveSearchId: vi.fn(),
   setPendingSearch: vi.fn(),
   clearPendingSearch: vi.fn(),
@@ -29,10 +37,23 @@ const appMocks = vi.hoisted(() => ({
 
 const navigationMocks = vi.hoisted(() => ({ replace: vi.fn(), push: vi.fn() }));
 const animationMocks = vi.hoisted(() => ({ onFiltersReady: null as null | (() => void) }));
+const analyticsMocks = vi.hoisted(() => ({
+  collectionToggled: vi.fn(),
+  quotaChanged: vi.fn(),
+}));
 const guestGateMocks = vi.hoisted(() => ({
   searchCount: 0,
   requestSignup: vi.fn(),
   recordCompletedSearch: vi.fn(),
+}));
+const trialMocks = vi.hoisted(() => ({
+  preferenceDraft: {
+    preferred_translation: "CPDV",
+    default_collections: ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"],
+    default_quota: 3,
+    last_standard_quota: 3 as 3 | 4 | 5,
+  },
+  savePreferenceDraft: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -42,13 +63,8 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/lib/trial", () => ({
   getGuestSessionToken: () => "guest-session-token-with-at-least-32-chars",
-  getGuestPreferenceDraft: () => ({
-    preferred_translation: "CPDV",
-    default_collections: ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"],
-    default_quota: 3,
-    last_standard_quota: 3,
-  }),
-  saveGuestPreferenceDraft: vi.fn(),
+  getGuestPreferenceDraft: () => trialMocks.preferenceDraft,
+  saveGuestPreferenceDraft: trialMocks.savePreferenceDraft,
   GUEST_SEARCH_LIMIT: 2,
 }));
 
@@ -56,8 +72,8 @@ vi.mock("@/components/layout/AppShell", () => ({
   useAppContext: () => ({
     token: testState.token,
     userId: testState.userId,
-    preferences: { default_collections: ["bible"], preferred_translation: "CPDV", default_quota: 4, last_standard_quota: 4, theme: "dark" },
-    setPreferences: vi.fn(),
+    preferences: testState.preferences,
+    setPreferences: appMocks.setPreferences,
     searchKey: testState.searchKey,
     searches: [{
       id: "11111111-1111-4111-8111-111111111111",
@@ -77,6 +93,12 @@ vi.mock("@/components/layout/guestGate", () => ({
   useGuestGate: () => guestGateMocks,
 }));
 
+vi.mock("@/lib/analytics", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/lib/analytics")>(),
+  trackCollectionToggled: analyticsMocks.collectionToggled,
+  trackQuotaChanged: analyticsMocks.quotaChanged,
+}));
+
 vi.mock("@/lib/api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/api")>();
   return {
@@ -89,14 +111,16 @@ vi.mock("@/lib/api", async (importOriginal) => {
 });
 
 vi.mock("./BottomBar", () => ({
-  BottomBar: ({ isSearchActive, activeCollections, submittedCollections, searchValue, onSearchChange, onSearch, onToggleCollection, onToggleVisible }: {
+  BottomBar: ({ isSearchActive, activeCollections, submittedCollections, quota, searchValue, onSearchChange, onSearch, onToggleCollection, onQuotaChange, onToggleVisible }: {
     isSearchActive: boolean;
     activeCollections: string[];
     submittedCollections: string[];
+    quota: number;
     searchValue: string;
     onSearchChange: (value: string) => void;
     onSearch: () => void;
     onToggleCollection: (collection: string) => void;
+    onQuotaChange: (quota: number) => void;
     onToggleVisible: (collection: string) => void;
   }) => (
     <div
@@ -104,10 +128,13 @@ vi.mock("./BottomBar", () => ({
       data-active={String(isSearchActive)}
       data-collections={activeCollections.join(",")}
       data-filter-collections={submittedCollections.join(",")}
+      data-quota={String(quota)}
     >
       <input aria-label="Search passages" value={searchValue} onChange={(event) => onSearchChange(event.target.value)} />
       <button onClick={onSearch}>Search</button>
       <button onClick={() => onToggleCollection("catechism")}>Toggle Catechism source</button>
+      <button onClick={() => onQuotaChange(5)}>Select five passages</button>
+      <button onClick={() => onQuotaChange(10)}>Select ten passages</button>
       <button onClick={() => onToggleVisible("bible")}>Toggle Bible visibility</button>
     </div>
   ),
@@ -184,12 +211,96 @@ afterEach(() => {
   testState.token = "token";
   testState.userId = "user-a";
   testState.searchKey = 0;
+  testState.preferences = {
+    default_collections: ["bible"],
+    preferred_translation: "CPDV",
+    default_quota: 4,
+    last_standard_quota: 4,
+    theme: "dark",
+  };
+  trialMocks.preferenceDraft = {
+    preferred_translation: "CPDV",
+    default_collections: ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"],
+    default_quota: 3,
+    last_standard_quota: 3,
+  };
   guestGateMocks.searchCount = 0;
   animationMocks.onFiltersReady = null;
   sessionStorage.clear();
 });
 
 describe("SearchPage restore lifecycle", () => {
+  it("records focused eligibility and selection without query text", () => {
+    testState.params = "";
+    testState.preferences = {
+      default_collections: ["bible"],
+      preferred_translation: "CPDV",
+      default_quota: 5,
+      last_standard_quota: 5,
+      theme: "dark",
+    };
+    render(<SearchPage />);
+
+    fireEvent.click(screen.getByText("Select ten passages"));
+
+    expect(analyticsMocks.quotaChanged).toHaveBeenCalledWith({
+      from: 5,
+      to: 10,
+      focusedEligible: true,
+      focusedSelected: true,
+    });
+    expect(analyticsMocks.quotaChanged.mock.calls[0][0]).not.toHaveProperty("query");
+  });
+
+  it("restores the standard quota when a second collection is selected", () => {
+    testState.params = "";
+    testState.preferences = {
+      default_collections: ["bible"],
+      preferred_translation: "CPDV",
+      default_quota: 10,
+      last_standard_quota: 5,
+      theme: "dark",
+    };
+    render(<SearchPage />);
+
+    fireEvent.click(screen.getByText("Toggle Catechism source"));
+
+    expect(screen.getByTestId("bottom-bar").dataset.quota).toBe("5");
+    expect(analyticsMocks.collectionToggled).toHaveBeenCalledWith({
+      collection: "catechism",
+      enabled: true,
+      focusedEligible: false,
+      focusedSelected: false,
+    });
+  });
+
+  it("restores a valid focused preference into a new authenticated search", () => {
+    testState.params = "";
+    testState.preferences = {
+      default_collections: ["bible"],
+      preferred_translation: "CPDV",
+      default_quota: 10,
+      last_standard_quota: 5,
+      theme: "dark",
+    };
+
+    render(<SearchPage />);
+
+    expect(screen.getByTestId("bottom-bar").dataset.quota).toBe("10");
+  });
+
+  it("lets a guest use the same quota workflow and saves the guest draft", async () => {
+    testState.params = "";
+    render(<SearchPage isGuest />);
+
+    fireEvent.click(screen.getByText("Select five passages"));
+
+    expect(screen.getByTestId("bottom-bar").dataset.quota).toBe("5");
+    await waitFor(() => expect(trialMocks.savePreferenceDraft).toHaveBeenCalledWith(
+      expect.objectContaining({ default_quota: 5, last_standard_quota: 5 }),
+    ));
+  });
+
   it("keeps immediate preference writes active after Strict Mode effect replay", async () => {
     testState.params = "";
     render(<StrictMode><SearchPage /></StrictMode>);
@@ -227,7 +338,9 @@ describe("SearchPage restore lifecycle", () => {
 
     expect(await screen.findByText("What is Christian hope?")).toBeTruthy();
     expect(screen.getByTestId("bottom-bar").dataset.filterCollections).toBe("summa");
+    expect(screen.getByTestId("bottom-bar").dataset.collections).toBe("bible");
     expect(screen.getByTestId("search-results").dataset.visibleCollections).toBe("summa");
+    expect(apiMocks.updatePreferences).not.toHaveBeenCalled();
     expect(screen.getByText(/Hope is a theological virtue/)).toBeTruthy();
   });
 

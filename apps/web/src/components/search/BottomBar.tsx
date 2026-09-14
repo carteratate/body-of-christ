@@ -7,7 +7,7 @@ import { ResultFilterBar } from "./ResultFilterBar";
 
 interface BottomBarProps {
   // Pre-search
-  activeCollections: string[];
+  activeCollections: readonly string[];
   onToggleCollection: (c: string) => void;
   translation: string;
   onTranslationChange: (t: string) => void;
@@ -23,7 +23,6 @@ interface BottomBarProps {
   visibleCollections: string[];
   onToggleVisible: (c: string) => void;
   searchDisabled?: boolean;
-  fixedQuota?: boolean;
 }
 
 export function BottomBar({
@@ -42,7 +41,6 @@ export function BottomBar({
   visibleCollections,
   onToggleVisible,
   searchDisabled = false,
-  fixedQuota = false,
 }: BottomBarProps) {
   if (isSearchActive) {
     return (
@@ -65,11 +63,7 @@ export function BottomBar({
           translation={translation}
           onTranslationChange={onTranslationChange}
         />
-        {fixedQuota ? (
-          <span className="shrink-0 text-sm text-brand-muted">3 passages per source</span>
-        ) : (
-          <QuotaControl value={quota} onChange={onQuotaChange} />
-        )}
+        <QuotaControl value={quota} onChange={onQuotaChange} />
       </div>
       <SearchBar
         value={searchValue}

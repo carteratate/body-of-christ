@@ -49,4 +49,33 @@ describe("guest preference draft", () => {
     clearGuestPreferenceDraft();
     expect(getGuestPreferenceDraft().default_quota).toBe(3);
   });
+
+  it("migrates the brief unversioned draft format without losing a guest choice", () => {
+    window.localStorage.setItem("tc_guest_preferences", JSON.stringify({
+      preferred_translation: "CPDV",
+      default_collections: ["bible"],
+      default_quota: 10,
+      last_standard_quota: 5,
+    }));
+
+    expect(getGuestPreferenceDraft().default_quota).toBe(10);
+    expect(window.localStorage.getItem("tc_guest_preferences:v1")).not.toBeNull();
+    expect(window.localStorage.getItem("tc_guest_preferences")).toBeNull();
+  });
+
+  it("uses a valid legacy draft even when the migration write is blocked", () => {
+    window.localStorage.setItem("tc_guest_preferences", JSON.stringify({
+      preferred_translation: "CPDV",
+      default_collections: ["bible"],
+      default_quota: 10,
+      last_standard_quota: 5,
+    }));
+    window.localStorage.setItem = () => { throw new DOMException("Blocked", "SecurityError"); };
+
+    expect(getGuestPreferenceDraft()).toEqual(expect.objectContaining({
+      default_collections: ["bible"],
+      default_quota: 10,
+      last_standard_quota: 5,
+    }));
+  });
 });
