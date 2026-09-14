@@ -286,7 +286,7 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
 
     const w: Record<string, number[]> = {};
     act.forEach(key => {
-      // One winner per requested passage (quota): 3, 4, or 5 distinct bubbles.
+      // One winner per requested passage (quota), including ten in focused mode.
       w[key] = pickDistinct(quota, N_CHUNKS);
     });
     setWinners(w);
@@ -504,6 +504,8 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
           const flash    = chunkFlash && isWinner;
           return (
             <circle key={`chk-${c.id}`}
+              data-chunk-id={c.id}
+              data-winner={isWinner}
               cx={c.x} cy={c.y} r={CHK_R}
               fill={`rgba(${rgb},${flash ? 0.85 : 0.25})`}
               stroke={pal.hex} strokeWidth={flash ? 2.5 : 1}

@@ -1,0 +1,104 @@
+.viewport {
+  position: relative;
+  width: 148px;
+  height: 32px;
+  flex: none;
+  overflow: visible;
+}
+
+.standardChoices {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  display: flex;
+  width: 111px;
+  height: 32px;
+  transition: inset-inline-end 250ms ease-out;
+}
+
+.standardChoicesShifted {
+  inset-inline-end: 37px;
+}
+
+.standardButton {
+  width: 37px;
+  height: 32px;
+  flex: none;
+}
+
+.tenButton {
+  --focused-quota-color: var(--color-brand-accent);
+
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: -37px;
+  width: 37px;
+  height: 32px;
+  box-sizing: border-box;
+  border-radius: 0 0.375rem 0.375rem 0;
+  border-color: var(--color-brand-accent);
+  background: color-mix(in srgb, var(--focused-quota-color) 40%, var(--color-brand-surface));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    inset-inline-end 250ms ease-out,
+    opacity 120ms ease-out,
+    background-color 140ms ease-out;
+}
+
+.tenButtonVisible {
+  inset-inline-end: 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tenButtonSelected {
+  background: color-mix(in srgb, var(--focused-quota-color) 90%, var(--color-brand-surface));
+}
+
+.papalNumeral {
+  background: color-mix(in srgb, var(--color-brand-contrast-light) 3%, transparent);
+}
+
+.softBloom {
+  position: absolute;
+  inset: -4px;
+  border: 3px solid var(--color-brand-accent);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: focused-quota-soft-bloom 750ms ease-out both;
+}
+
+@keyframes focused-quota-soft-bloom {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+    box-shadow:
+      0 0 4px var(--color-brand-accent),
+      0 0 9px color-mix(in srgb, var(--color-brand-accent) 75%, transparent);
+  }
+  45% {
+    opacity: 0.72;
+    transform: scale(1.18, 1.24);
+    box-shadow:
+      0 0 14px var(--color-brand-accent),
+      0 0 26px color-mix(in srgb, var(--color-brand-accent) 55%, transparent);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35, 1.48);
+    box-shadow: 0 0 30px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .standardButton,
+  .standardChoices,
+  .tenButton {
+    transition-duration: 0.01ms;
+  }
+
+  .softBloom {
+    animation-duration: 0.01ms;
+  }
+}
