@@ -5,7 +5,7 @@ import { COLLECTIONS, hexToRgb } from "@/lib/collections";
 import { TranslationSelector } from "./TranslationSelector";
 
 interface CollectionTogglesProps {
-  activeCollections: string[];
+  activeCollections: readonly string[];
   onToggle: (collection: string) => void;
   translation: string;
   onTranslationChange: (t: string) => void;
