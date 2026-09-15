@@ -13,6 +13,7 @@ interface BottomBarProps {
   onTranslationChange: (t: string) => void;
   quota: number;
   onQuotaChange: (q: number) => void;
+  preferenceSaveStatus?: "pending" | "saving" | "saved" | "failed" | null;
   searchValue: string;
   onSearchChange: (v: string) => void;
   onSearch: () => void;
@@ -32,6 +33,7 @@ export function BottomBar({
   onTranslationChange,
   quota,
   onQuotaChange,
+  preferenceSaveStatus = null,
   searchValue,
   onSearchChange,
   onSearch,
@@ -63,11 +65,18 @@ export function BottomBar({
           translation={translation}
           onTranslationChange={onTranslationChange}
         />
-        <QuotaControl
-          value={quota}
-          onChange={onQuotaChange}
-          focusedCollection={activeCollections.length === 1 ? activeCollections[0] : null}
-        />
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <QuotaControl
+            value={quota}
+            onChange={onQuotaChange}
+            focusedCollection={activeCollections.length === 1 ? activeCollections[0] : null}
+          />
+          <span role="status" aria-live="polite" className="min-h-4 text-[11px] text-brand-muted">
+            {preferenceSaveStatus === "failed" ? "Default not saved"
+              : preferenceSaveStatus === "saved" ? "Default saved"
+              : preferenceSaveStatus === "saving" ? "Saving default…" : ""}
+          </span>
+        </div>
       </div>
       <SearchBar
         value={searchValue}

@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/search/EmptyState";
 import { SearchResults } from "@/components/search/SearchResults";
 import { LoadingAnimation } from "@/components/search/LoadingAnimation";
 import { SearchFailureScreen } from "@/components/search/SearchFailureScreen";
-import { RateLimitModal, Toast, useToast } from "@/components/common";
+import { RateLimitModal } from "@/components/common";
 import { updatePreferences } from "@/lib/api";
 import { createPreferenceWriter } from "@/lib/preference-writer";
 import { getGuestPreferenceDraft, saveGuestPreferenceDraft } from "@/lib/trial";
@@ -16,6 +16,7 @@ import {
   createSearchDraft,
   DEFAULT_GUEST_SEARCH_PREFERENCES,
   transitionSearchDraft,
+  type SearchDraft,
 } from "@/lib/search-draft";
 import { useGuestGate } from "@/components/layout/guestGate";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
@@ -42,7 +43,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   const restoreId = searchParams.get("restore");
   const [restoredGuestSearch] = useState(() => isGuest ? readGuestSearch() : null);
   const [guestPreferences] = useState(() => isGuest ? getGuestPreferenceDraft() : null);
-  const { toast, showToast, dismissToast } = useToast();
+  const [preferenceSaveStatus, setPreferenceSaveStatus] = useState<{
+    phase: "pending" | "saving" | "saved" | "failed" | null;
+    revision: number;
+  }>({ phase: null, revision: 0 });
 
   // ── State ─────────────────────────────────────────────────────────────────
 
@@ -70,13 +74,27 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   // ── Abort in-flight streams on unmount ───────────────────────────────────
 
-  const prefsMountedRef = useRef(false);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const preferenceWriter = useMemo(() => createPreferenceWriter({
     write: () => Promise.reject(new Error("Authentication unavailable")),
-    onSaved: setPreferences,
-    onFailure: () => showToast("Your search defaults could not be saved. Try again.", "error"),
-  }), [setPreferences, showToast]);
+    onSaved: (saved) => {
+      setPreferences(saved);
+      setPreferenceSaveStatus((current) => ({ ...current, phase: "saved" }));
+    },
+    onFailure: () => setPreferenceSaveStatus((current) => ({ ...current, phase: "failed" })),
+  }), [setPreferences]);
+
+  useEffect(() => {
+    if (preferenceSaveStatus.phase !== "pending" && preferenceSaveStatus.phase !== "saved") return;
+    const delay = preferenceSaveStatus.phase === "pending" ? 350 : 1500;
+    const timeout = setTimeout(() => {
+      setPreferenceSaveStatus((current) => ({
+        ...current,
+        phase: current.phase === "pending" ? "saving" : current.phase === "saved" ? null : current.phase,
+      }));
+    }, delay);
+    return () => clearTimeout(timeout);
+  }, [preferenceSaveStatus.phase, preferenceSaveStatus.revision]);
 
   useEffect(() => {
     preferenceWriter.setWrite((value) => token
@@ -85,24 +103,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     preferenceWriter.resume();
     return () => preferenceWriter.dispose();
   }, [preferenceWriter, token]);
-
-  // ── Unified preferences save ──────────────────────────────────────────────
-  // Save complete snapshots so a partial response cannot restore stale UI state.
-  // The writer permits one request at a time and only confirms its newest snapshot.
-  useEffect(() => {
-    if (!prefsMountedRef.current) {
-      prefsMountedRef.current = true;
-      return;
-    }
-    const preferenceSnapshot = draft.preferences;
-    if (!preferenceSnapshot) return;
-    if (isGuest) {
-      saveGuestPreferenceDraft(preferenceSnapshot);
-      return;
-    }
-    if (!token) return;
-    preferenceWriter.save(preferenceSnapshot);
-  }, [draft.preferences, isGuest, preferenceWriter, token]);
 
   // ── Pending sidebar slot ──────────────────────────────────────────────────
   // Tracks the ID of the current "New Search" placeholder. null = no placeholder
@@ -210,6 +210,19 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
+  // Save complete snapshots for deliberate selector changes, never for effect replay.
+  // The writer confirms only its newest queued snapshot.
+  function saveDefault(next: SearchDraft) {
+    if (!next.preferences) return;
+    if (isGuest) {
+      saveGuestPreferenceDraft(next.preferences);
+      return;
+    }
+    if (!token) return;
+    setPreferenceSaveStatus((current) => ({ phase: "pending", revision: current.revision + 1 }));
+    preferenceWriter.save(next.preferences);
+  }
+
   function handleToggleCollection(c: string) {
     const next = transitionSearchDraft(draft, { type: "collection-toggled", collection: c });
     if (next === draft) return;
@@ -219,6 +232,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       focusedEligible: next.focusedEligible,
       focusedSelected: next.quota === 10,
     });
+    saveDefault(next);
     setDraft(next);
   }
 
@@ -242,14 +256,15 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       focusedEligible: next.focusedEligible,
       focusedSelected: next.quota === 10,
     });
+    saveDefault(next);
     setDraft(next);
   }
 
   function handleTranslationChange(value: string) {
-    setDraft((current) => transitionSearchDraft(
-      current,
-      { type: "translation-selected", translation: value },
-    ));
+    const next = transitionSearchDraft(draft, { type: "translation-selected", translation: value });
+    if (next === draft) return;
+    saveDefault(next);
+    setDraft(next);
   }
 
   function handleSelectQuery(text: string) {
@@ -383,6 +398,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
         onTranslationChange={handleTranslationChange}
         quota={searchView.loading && searchView.submittedQuota !== null ? searchView.submittedQuota : quota}
         onQuotaChange={handleQuotaChange}
+        preferenceSaveStatus={isGuest ? null : preferenceSaveStatus.phase}
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         onSearch={() => handleSearch(searchValue)}
@@ -402,7 +418,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
           }}
         />
       )}
-      {toast.visible && <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} />}
     </div>
   );
 }
