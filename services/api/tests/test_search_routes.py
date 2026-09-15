@@ -260,6 +260,44 @@ def test_restore_of_genuine_empty_search_is_complete():
     assert body["expected_result_count"] == 0
 
 
+def test_restore_returns_saved_focused_delivery_reason():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "grace",
+        "filters": {
+            "collections": ["bible"],
+            "translation": "CPDV",
+            "quota": 10,
+            "delivery_outcome": "underfilled",
+        },
+        "result_count": 1,
+    }
+    pool.fetch.return_value = [{
+        "rank": 1,
+        "reranker_score": 0.82,
+        "explanation": None,
+        "chunk_id": "00000000-0000-0000-0000-000000000012",
+        "content": "Grace abounds.",
+        "reference": "Romans 5:20",
+        "position": 1,
+        "anchor": None,
+        "chapter_key": None,
+        "unit_label": None,
+        "collection": "bible",
+        "document_title": "Romans",
+        "author": None,
+        "document_id": "00000000-0000-0000-0000-000000000013",
+    }]
+
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    assert response.json()["delivery_outcome"] == "underfilled"
+    assert response.json()["restore_status"] == "complete"
+
+
 def test_restore_preserves_document_author_on_result_cards():
     pool = AsyncMock()
     pool.fetchrow.return_value = {

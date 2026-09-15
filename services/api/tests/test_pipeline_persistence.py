@@ -74,6 +74,48 @@ async def test_focused_plan_reaches_runner_and_emits_delivery_metadata():
     assert done["delivery_outcome"] == "complete"
 
 
+@pytest.mark.asyncio
+async def test_focused_fallback_reason_is_saved_with_search_for_history():
+    result = MagicMock()
+    result.chunks = [_chunk("00000000-0000-0000-0000-000000000001")]
+    result.outcome = "success"
+    result.collection_outcomes = {"bible": "results"}
+    result.delivery_outcome = "minimum_floor"
+    result.total_cost = 0.1
+    result.context = {}
+
+    conn = MagicMock()
+    conn.execute = AsyncMock()
+    conn.executemany = AsyncMock()
+    conn.transaction.return_value = AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False),
+    )
+    pool = MagicMock()
+    pool.acquire.return_value = AsyncMock(
+        __aenter__=AsyncMock(return_value=conn),
+        __aexit__=AsyncMock(return_value=False),
+    )
+
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)), \
+         patch("app.rag.pipeline.get_pool", return_value=pool), \
+         patch("app.rag.pipeline.stream_explanation", _no_explanation):
+        events = [
+            event async for event in run_search_pipeline(
+                query="grace", collections=["bible"], translation="CPDV",
+                quota=10, user_id="00000000-0000-0000-0000-000000000abc",
+            )
+        ]
+
+    done = next(event for event in events if event["type"] == "done")
+    assert done["persisted"] is True
+    saved_search = next(
+        call for call in conn.execute.await_args_list
+        if "INSERT INTO searches" in call.args[0]
+    )
+    assert saved_search.args[4]["delivery_outcome"] == "minimum_floor"
+    assert saved_search.args[4]["quota"] == 10
+
+
 async def _no_explanation(*args, **kwargs):
     return
     yield  # noqa: make this an async generator that yields nothing

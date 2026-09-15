@@ -11,6 +11,7 @@ export {
   type ChunkSource,
   type CollectionOutcome,
   type ContextPart,
+  type DeliveryOutcome,
   type SearchOutcome,
   type SearchStreamCallbacks,
 } from "./search-stream";
@@ -186,6 +187,7 @@ export interface SearchResultsResponse {
   results: ChunkResult[];
   restore_status: "complete" | "results_unavailable";
   expected_result_count: number;
+  delivery_outcome?: "complete" | "underfilled" | "minimum_floor" | null;
 }
 
 // ── V2 Documents ───────────────────────────────────────────────────────────

@@ -58,6 +58,20 @@ function passage(overrides: Record<string, unknown> = {}): Record<string, unknow
 }
 
 describe("consumeSearchStream", () => {
+  it("delivers the focused fallback reason with completion", async () => {
+    const cb = callbacks();
+    await consumeSearchStream(streamFromText(data({
+      type: "done",
+      search_id: "search-1",
+      result_count: 3,
+      outcome: "success",
+      delivery_outcome: "minimum_floor",
+      requested_quota: 10,
+    })), cb);
+
+    expect(cb.onDone).toHaveBeenCalledWith("search-1", 3, "success", {}, true, "minimum_floor");
+  });
+
   it("normalizes a Passage and legacy completion through the public callbacks", async () => {
     const cb = callbacks();
     const body = streamFromText([
@@ -254,6 +268,7 @@ describe("consumeSearchStream", () => {
     ["invalid explanation", { type: "explanation_delta", chunk_id: "passage-1", delta: 42 }],
     ["invalid results readiness", { type: "results_ready", result_count: -1 }],
     ["invalid completion", { type: "done", search_id: null, result_count: -1 }],
+    ["invalid delivery outcome", { type: "done", search_id: "search-1", result_count: 3, delivery_outcome: "maybe" }],
     ["invalid error", { type: "error", detail: 42 }],
   ])("rejects %s payloads with the dedicated protocol error", async (_name, event) => {
     await expect(consumeSearchStream(streamFromText(data(event)), callbacks()))

@@ -21,6 +21,10 @@ interface SearchResultsProps {
   visibleCollections: string[];
   outcome: SearchOutcome | null;
   collectionOutcomes: Record<string, CollectionOutcome>;
+  submittedQuota?: number | null;
+  deliveryOutcome?: "complete" | "underfilled" | "minimum_floor" | null;
+  reportedResultCount?: number | null;
+  historicalOutcomeUnknown?: boolean;
   isRestoring?: boolean;
   isGuest?: boolean;
   showFirstSearchHint?: boolean;
@@ -66,6 +70,10 @@ export function SearchResults({
   visibleCollections,
   outcome,
   collectionOutcomes,
+  submittedQuota = null,
+  deliveryOutcome = null,
+  reportedResultCount = null,
+  historicalOutcomeUnknown = false,
   isRestoring = false,
   isGuest = false,
   showFirstSearchHint = false,
@@ -102,6 +110,7 @@ export function SearchResults({
   }
 
   const visibleResults = results.filter((r) => visibleCollections.includes(r.source.collection));
+  const deliveredCount = reportedResultCount ?? results.length;
 
   return (
     <div className="space-y-3">
@@ -131,6 +140,24 @@ export function SearchResults({
           outcome={collectionOutcomes[col]}
         />
       ))}
+      {!loading && submittedQuota === 10 && deliveryOutcome === "underfilled"
+        && deliveredCount > 0 && deliveredCount < 10 && (
+          <div role="status" className="rounded-lg border border-brand-surface bg-brand-surface/50 px-4 py-3 text-sm text-brand-muted">
+            Only {deliveredCount} Passages met this search&apos;s relevance and diversity rules. We did not add weaker matches to fill the list.
+          </div>
+        )}
+      {!loading && submittedQuota === 10 && deliveryOutcome === "minimum_floor"
+        && results.length > 0 && (
+          <div role="status" className="rounded-lg border border-brand-accent/50 bg-brand-accent/10 px-4 py-3 text-sm text-brand-primary">
+            No Passages met the usual relevance threshold. These are the closest matches we found, so read them with extra care.
+          </div>
+        )}
+      {!loading && submittedQuota === 10 && deliveryOutcome === null
+        && historicalOutcomeUnknown && deliveredCount > 0 && deliveredCount < 10 && (
+          <div role="status" className="rounded-lg border border-brand-surface bg-brand-surface/50 px-4 py-3 text-sm text-brand-muted">
+            This saved search returned {deliveredCount} of the 10 requested Passages. The search did not record why it stopped there.
+          </div>
+        )}
     </div>
   );
 }
