@@ -141,13 +141,19 @@ vi.mock("./BottomBar", () => ({
 }));
 vi.mock("./EmptyState", () => ({ EmptyState: () => <div>Empty search</div> }));
 vi.mock("./SearchResults", () => ({
-  SearchResults: ({ results, loading, isRestoring, visibleCollections }: {
+  SearchResults: ({ results, loading, isRestoring, visibleCollections, submittedQuota, deliveryOutcome, reportedResultCount, historicalOutcomeUnknown }: {
     results: Array<{ content: string; explanation: string | null; source: { collection: string } }>;
     loading: boolean;
     isRestoring: boolean;
     visibleCollections: string[];
+    submittedQuota: number | null;
+    deliveryOutcome: string | null;
+    reportedResultCount: number | null;
+    historicalOutcomeUnknown: boolean;
   }) => (
-    <div data-testid="search-results" data-visible-collections={visibleCollections.join(",")}>
+    <div data-testid="search-results" data-visible-collections={visibleCollections.join(",")}
+      data-submitted-quota={submittedQuota ?? ""} data-delivery-outcome={deliveryOutcome ?? ""}
+      data-reported-count={reportedResultCount ?? ""} data-historical-outcome-unknown={historicalOutcomeUnknown}>
       {loading && isRestoring ? "Restoring" : "Restored results"}
       {results
         .filter((passage) => visibleCollections.includes(passage.source.collection))
@@ -230,6 +236,40 @@ afterEach(() => {
 });
 
 describe("SearchPage restore lifecycle", () => {
+  it("restores a focused fallback without changing today's search preference", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("Saved focused search"),
+      filters: { collections: ["bible"], translation: "CPDV", quota: 10 },
+      results: [streamedPassage],
+      expected_result_count: 1,
+      delivery_outcome: "minimum_floor",
+    });
+
+    render(<SearchPage />);
+
+    expect(await screen.findByText("Saved focused search")).toBeTruthy();
+    expect(screen.getByTestId("search-results").dataset.submittedQuota).toBe("10");
+    expect(screen.getByTestId("search-results").dataset.deliveryOutcome).toBe("minimum_floor");
+    expect(screen.getByTestId("bottom-bar").dataset.collections).toBe("bible");
+    expect(apiMocks.updatePreferences).not.toHaveBeenCalled();
+  });
+
+  it("marks an older focused search as reason-unknown without changing the current draft", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("Older focused search"),
+      filters: { collections: ["bible"], translation: "CPDV", quota: 10 },
+      results: [streamedPassage],
+      expected_result_count: 1,
+    });
+
+    render(<SearchPage />);
+
+    expect(await screen.findByText("Older focused search")).toBeTruthy();
+    expect(screen.getByTestId("search-results").dataset.historicalOutcomeUnknown).toBe("true");
+    expect(screen.getByTestId("search-results").dataset.reportedCount).toBe("1");
+    expect(apiMocks.updatePreferences).not.toHaveBeenCalled();
+  });
+
   it("records focused eligibility and selection without query text", () => {
     testState.params = "";
     testState.preferences = {

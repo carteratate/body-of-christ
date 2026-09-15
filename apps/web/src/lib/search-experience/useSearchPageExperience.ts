@@ -8,6 +8,7 @@ import {
   streamGuestSearch,
   streamSearch,
   type CollectionOutcome,
+  type DeliveryOutcome,
   type SearchOutcome,
 } from "@/lib/api";
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
@@ -38,6 +39,7 @@ interface GuestContinuityStorage {
   visibleCollections: string[];
   outcome: SearchOutcome | null;
   collectionOutcomes: Record<string, CollectionOutcome>;
+  deliveryOutcome?: DeliveryOutcome | null;
 }
 
 export interface RestoredGuestSearch {
@@ -71,6 +73,11 @@ export function readGuestSearch(): RestoredGuestSearch | null {
         passages: passages as Passage[],
         outcome: snapshot.outcome,
         collectionOutcomes: snapshot.collectionOutcomes,
+        deliveryOutcome: snapshot.deliveryOutcome === "complete"
+          || snapshot.deliveryOutcome === "underfilled"
+          || snapshot.deliveryOutcome === "minimum_floor"
+          ? snapshot.deliveryOutcome
+          : null,
         visibleCollections: snapshot.visibleCollections,
       },
       visibleCollections: snapshot.visibleCollections,
@@ -96,6 +103,7 @@ function saveGuestSearch(continuity: GuestContinuitySnapshot) {
     visibleCollections: [...(continuity.visibleCollections ?? continuity.request.collections)],
     outcome: continuity.outcome,
     collectionOutcomes: { ...continuity.collectionOutcomes },
+    deliveryOutcome: continuity.deliveryOutcome ?? null,
   };
   try { sessionStorage.setItem(GUEST_CONTINUITY_KEY, JSON.stringify(snapshot)); } catch {}
 }
@@ -293,9 +301,17 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
           const translation = typeof data.filters?.translation === "string" && data.filters.translation
             ? data.filters.translation
             : current.translation;
-          const quota = typeof data.filters?.quota === "number" && [3, 4, 5].includes(data.filters.quota)
-            ? data.filters.quota
+          const savedQuota = data.filters?.quota;
+          const quota = typeof savedQuota === "number"
+            && ([3, 4, 5].includes(savedQuota) || (savedQuota === 10 && collections.length === 1))
+            ? savedQuota
             : current.quota;
+          const deliveryOutcome = quota === 10
+            && (data.delivery_outcome === "complete"
+              || data.delivery_outcome === "underfilled"
+              || data.delivery_outcome === "minimum_floor")
+            ? data.delivery_outcome
+            : null;
           return {
             searchId: data.search_id,
             request: {
@@ -308,6 +324,9 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
             warning: data.restore_status === "results_unavailable"
               ? `This saved search originally had ${data.expected_result_count} Passages, but only ${data.results.length} remain available.`
               : null,
+            deliveryOutcome,
+            originalResultCount: data.expected_result_count,
+            historicalOutcomeUnknown: quota === 10 && deliveryOutcome === null,
           };
         },
         classifyFailure: classifySavedSearchFailure,

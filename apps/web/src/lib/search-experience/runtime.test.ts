@@ -73,6 +73,22 @@ function guestFixture(
 }
 
 describe("search-experience runtime", () => {
+  it("keeps the focused fallback reason through result reveal", () => {
+    const { runtime, runs } = authenticatedFixture();
+    runtime.send({ type: "submit", request: { ...REQUEST, collections: ["bible"], quota: 10 } });
+    const runId = runtime.read().runId;
+    runs[0].callbacks.onPassage(passage("p1"));
+    runs[0].callbacks.onDone("search-1", 1, "success", { bible: "results" }, true, "minimum_floor");
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+    runtime.send({ type: "animation", runId, milestone: "fade-complete" });
+
+    expect(searchExperienceView(runtime.read())).toMatchObject({
+      submittedQuota: 10,
+      deliveryOutcome: "minimum_floor",
+      passages: [{ chunk_id: "p1" }],
+    });
+  });
+
   it("publishes immutable snapshots through read and subscribe", () => {
     const { runtime, runs } = authenticatedFixture();
     const listener = vi.fn();
@@ -765,6 +781,25 @@ describe("search-experience runtime", () => {
     runs[0].callbacks.onDone(null, 1, "success", {}, true);
     expect(save).toHaveBeenCalledTimes(3);
     expect(save).toHaveBeenLastCalledWith(expect.objectContaining({ outcome: "success" }));
+  });
+
+  it("keeps a guest focused fallback notice after same-tab restoration", () => {
+    let saved: Parameters<NonNullable<GuestSearchExperiencePorts["guestContinuity"]>["save"]>[0] | null = null;
+    const { runtime, runs } = guestFixture({
+      guestContinuity: { save: (snapshot) => { saved = snapshot; }, clear: vi.fn() },
+    });
+    runtime.send({ type: "submit", request: { ...REQUEST, collections: ["bible"], quota: 10 } });
+    const runId = runtime.read().runId;
+    runs[0].callbacks.onPassage(passage("p1"));
+    runs[0].callbacks.onDone(null, 1, "success", { bible: "results" }, false, "minimum_floor");
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+    expect(saved).toMatchObject({ deliveryOutcome: "minimum_floor" });
+
+    const restored = createSearchExperience({
+      audience: { kind: "guest", async search() {} },
+      guestContinuity: { restore: () => saved, save: vi.fn(), clear: vi.fn() },
+    });
+    expect(searchExperienceView(restored.read()).deliveryOutcome).toBe("minimum_floor");
   });
 
   it("restores guest continuity on creation and clears it on reset", () => {

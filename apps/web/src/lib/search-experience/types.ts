@@ -1,6 +1,7 @@
 import type {
   ChunkResult,
   CollectionOutcome,
+  DeliveryOutcome,
   SearchOutcome,
 } from "@/lib/search-stream";
 
@@ -49,6 +50,7 @@ export type SearchTransportState =
       readonly outcome: SearchOutcome;
       readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
       readonly persisted: boolean;
+      readonly deliveryOutcome: DeliveryOutcome | null;
     };
 
 export type SearchPresentationState =
@@ -97,6 +99,9 @@ export interface RestoredPassagesSnapshot extends SnapshotCapabilities {
   readonly request: SearchRequest;
   readonly passages: readonly Passage[];
   readonly warning: string | null;
+  readonly deliveryOutcome: DeliveryOutcome | null;
+  readonly originalResultCount: number | null;
+  readonly historicalOutcomeUnknown: boolean;
   readonly canRetry: false;
 }
 
@@ -151,6 +156,7 @@ export interface SearchTransportCallbacks {
     outcome: SearchOutcome,
     collectionOutcomes: Record<string, CollectionOutcome>,
     persisted: boolean,
+    deliveryOutcome?: DeliveryOutcome,
   ) => void;
   readonly onError: (
     message: string,
@@ -188,6 +194,9 @@ export interface SavedSearchResult {
   readonly request: SearchRequest;
   readonly passages: readonly Passage[];
   readonly warning: string | null;
+  readonly deliveryOutcome?: DeliveryOutcome | null;
+  readonly originalResultCount?: number | null;
+  readonly historicalOutcomeUnknown?: boolean;
 }
 
 export interface SavedSearchFailure {
@@ -257,6 +266,7 @@ export interface GuestContinuitySnapshot {
   readonly passages: readonly Passage[];
   readonly outcome: SearchOutcome | null;
   readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
+  readonly deliveryOutcome?: DeliveryOutcome | null;
   readonly visibleCollections?: readonly string[];
 }
 

@@ -51,6 +51,8 @@ export interface ChunkResult {
 
 export type SearchOutcome = "success" | "degraded_success" | "no_candidates";
 
+export type DeliveryOutcome = "complete" | "underfilled" | "minimum_floor";
+
 export type CollectionOutcome =
   | "results"
   | "results_degraded"
@@ -69,6 +71,7 @@ export interface SearchStreamCallbacks {
     outcome: SearchOutcome,
     collectionOutcomes: Record<string, CollectionOutcome>,
     persisted: boolean,
+    deliveryOutcome?: DeliveryOutcome,
   ) => void;
   onError: (
     message: string,
@@ -102,6 +105,12 @@ const COLLECTION_OUTCOMES = new Set<CollectionOutcome>([
   "retrieval_failed",
   "corpus_sync_failed",
   "ranking_failed",
+]);
+
+const DELIVERY_OUTCOMES = new Set<DeliveryOutcome>([
+  "complete",
+  "underfilled",
+  "minimum_floor",
 ]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -284,14 +293,18 @@ export async function consumeSearchStream(
         : event.outcome;
       if (!SEARCH_OUTCOMES.has(outcome as SearchOutcome)) invalid();
       if (event.persisted !== undefined && typeof event.persisted !== "boolean") invalid();
+      if (event.delivery_outcome !== undefined
+        && !DELIVERY_OUTCOMES.has(event.delivery_outcome as DeliveryOutcome)) invalid();
       state.terminal = "done";
-      callbacks.onDone(
+      const completion = [
         searchId,
         resultCount,
         outcome as SearchOutcome,
         optionalCollectionOutcomes(event.collection_outcomes) ?? {},
         (event.persisted as boolean | undefined) ?? Boolean(searchId),
-      );
+      ] as const;
+      if (event.delivery_outcome === undefined) callbacks.onDone(...completion);
+      else callbacks.onDone(...completion, event.delivery_outcome as DeliveryOutcome);
       return;
     }
     if (type === "error") {

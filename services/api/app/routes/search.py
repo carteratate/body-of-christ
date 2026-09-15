@@ -389,19 +389,29 @@ async def get_search_results(
             len(results),
         )
 
+    saved_filters = (
+        search_row.get("filters")
+        if isinstance(search_row.get("filters"), dict)
+        else json.loads(search_row.get("filters"))
+        if search_row.get("filters")
+        else None
+    )
+    delivery_outcome = (
+        saved_filters.get("delivery_outcome")
+        if isinstance(saved_filters, dict)
+        and saved_filters.get("quota") == 10
+        and saved_filters.get("delivery_outcome") in {"complete", "underfilled", "minimum_floor"}
+        else None
+    )
+
     return SearchResultsResponse(
         search_id=search_id,
         query=search_row["query"],
-        filters=(
-            search_row.get("filters")
-            if isinstance(search_row.get("filters"), dict)
-            else json.loads(search_row.get("filters"))
-            if search_row.get("filters")
-            else None
-        ),
+        filters=saved_filters,
         results=results,
         restore_status=restore_status,
         expected_result_count=expected_count,
+        delivery_outcome=delivery_outcome,
     )
 
 

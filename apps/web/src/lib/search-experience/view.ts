@@ -1,4 +1,4 @@
-import type { CollectionOutcome, SearchOutcome } from "@/lib/search-stream";
+import type { CollectionOutcome, DeliveryOutcome, SearchOutcome } from "@/lib/search-stream";
 import type {
   ActiveSearchSnapshot,
   FailureSnapshot,
@@ -29,6 +29,9 @@ export interface SearchExperienceView {
   readonly errorCode: string | null;
   readonly errorStage: string | null;
   readonly outcome: SearchOutcome | null;
+  readonly deliveryOutcome: DeliveryOutcome | null;
+  readonly reportedResultCount: number | null;
+  readonly historicalOutcomeUnknown: boolean;
   readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
   readonly saveWarning: string | null;
   readonly phase: SearchPhase | null;
@@ -85,6 +88,11 @@ export function searchExperienceView(snapshot: SearchExperienceSnapshot): Search
         : transport?.status === "ranked-ready" && transport.resultCount === 0
           ? "no_candidates"
           : null,
+    deliveryOutcome: restored?.deliveryOutcome
+      ?? (transport?.status === "complete" ? transport.deliveryOutcome : null),
+    reportedResultCount: restored?.originalResultCount
+      ?? (transport?.status === "complete" ? transport.resultCount : null),
+    historicalOutcomeUnknown: restored?.historicalOutcomeUnknown ?? false,
     collectionOutcomes: failure?.failure.collectionOutcomes
       ?? completionFailure?.collectionOutcomes
       ?? (transport?.status === "complete" ? transport.collectionOutcomes : {}),

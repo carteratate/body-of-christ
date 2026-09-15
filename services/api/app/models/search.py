@@ -97,3 +97,4 @@ class SearchResultsResponse(BaseModel):
     results: list[ChunkResult]
     restore_status: str = "complete"
     expected_result_count: int = 0
+    delivery_outcome: Optional[Literal["complete", "underfilled", "minimum_floor"]] = None

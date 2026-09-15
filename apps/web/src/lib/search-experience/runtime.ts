@@ -145,6 +145,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
               outcome: continuity.outcome,
               collectionOutcomes: freezeOutcomes({ ...continuity.collectionOutcomes }),
               persisted: true,
+              deliveryOutcome: continuity.deliveryOutcome ?? null,
             };
         snapshot = deepFreeze({
           status: "active-search",
@@ -264,6 +265,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         passages: current.passages,
         outcome: complete?.outcome ?? null,
         collectionOutcomes: complete?.collectionOutcomes ?? EMPTY_OUTCOMES,
+        deliveryOutcome: complete?.deliveryOutcome ?? null,
         visibleCollections: guestVisibleCollections,
       });
       return ports.guestContinuity!.save(continuity);
@@ -387,7 +389,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       emit(next);
       saveGuestContinuity(next);
     },
-    onDone(searchId, resultCount, outcome, collectionOutcomes, persisted) {
+    onDone(searchId, resultCount, outcome, collectionOutcomes, persisted, deliveryOutcome) {
       if (!isCurrent(ownedRun.id)) return;
       const current = activeSnapshot(ownedRun.id);
       if (ownedRun.terminal) throw new Error("A search run cannot complete twice.");
@@ -400,6 +402,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         outcome,
         collectionOutcomes: freezeOutcomes(collectionOutcomes),
         persisted,
+        deliveryOutcome: deliveryOutcome ?? null,
       };
       const next: ActiveSearchSnapshot = {
         ...current,
@@ -631,6 +634,9 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         request: freezeRequest(result.request),
         passages: Object.freeze(result.passages.map(freezePassage)),
         warning: result.warning,
+        deliveryOutcome: result.deliveryOutcome ?? null,
+        originalResultCount: result.originalResultCount ?? null,
+        historicalOutcomeUnknown: result.historicalOutcomeUnknown ?? false,
         canRetry: false,
       });
       if (ports.pendingHistory) {

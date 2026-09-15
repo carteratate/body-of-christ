@@ -27,6 +27,22 @@ _PIPELINE_HEARTBEAT_SECONDS = 10.0
 _PERSIST_TIMEOUT_SECONDS = 10.0
 
 
+def _saved_search_filters(
+    collections: list[str],
+    translation: str,
+    quota: int,
+    delivery_outcome: str | None,
+) -> dict:
+    filters = {
+        "collections": collections,
+        "translation": translation,
+        "quota": quota,
+    }
+    if quota == 10 and delivery_outcome in {"complete", "underfilled", "minimum_floor"}:
+        filters["delivery_outcome"] = delivery_outcome
+    return filters
+
+
 async def _persist_empty_search(
     *,
     search_id: str,
@@ -35,6 +51,7 @@ async def _persist_empty_search(
     collections: list[str],
     translation: str,
     quota: int,
+    delivery_outcome: str | None = None,
 ) -> bool:
     if user_id is None:
         return False
@@ -49,11 +66,7 @@ async def _persist_empty_search(
                 uuid.UUID(search_id),
                 uuid.UUID(user_id),
                 query,
-                {
-                    "collections": collections,
-                    "translation": translation,
-                    "quota": quota,
-                },
+                _saved_search_filters(collections, translation, quota, delivery_outcome),
             )
         return True
     except Exception:
@@ -166,6 +179,7 @@ async def run_search_pipeline(
                 collections=collections,
                 translation=translation,
                 quota=quota,
+                delivery_outcome=pipeline_result.delivery_outcome,
             )
             yield {
                 "type": "done",
@@ -241,7 +255,10 @@ async def run_search_pipeline(
                                     uuid.UUID(search_id),
                                     uuid.UUID(user_id),
                                     query,
-                                    {"collections": collections, "translation": translation, "quota": quota},
+                                    _saved_search_filters(
+                                        collections, translation, quota,
+                                        pipeline_result.delivery_outcome,
+                                    ),
                                     len(final_results),
                                 )
                                 if final_results:
