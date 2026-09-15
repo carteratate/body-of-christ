@@ -93,6 +93,45 @@ def test_update_preferences_persists_focused_and_last_standard_quotas():
     assert "pg_advisory_xact_lock" in conn.execute.await_args.args[0]
 
 
+def test_standard_and_focused_defaults_can_be_saved_and_reloaded_through_the_api():
+    saved = _row(default_quota=3, last_standard_quota=3)
+
+    async def fetchrow(query, *args):
+        nonlocal saved
+        if "INSERT INTO user_preferences" in query:
+            saved = {
+                "preferred_translation": args[1],
+                "default_collections": args[2],
+                "default_quota": args[3],
+                "last_standard_quota": args[4],
+                "theme": args[5],
+            }
+        return saved
+
+    conn = AsyncMock()
+    conn.fetchrow.side_effect = fetchrow
+    conn.transaction = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False)))
+    pool = MagicMock()
+    pool.acquire = MagicMock(return_value=AsyncMock(
+        __aenter__=AsyncMock(return_value=conn), __aexit__=AsyncMock(return_value=False)))
+    pool.fetchrow = AsyncMock(side_effect=fetchrow)
+    client = _client()
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        for quota, last_standard in [(3, 3), (4, 4), (5, 5), (10, 5)]:
+            response = client.put("/v1/preferences", json={
+                "default_collections": ["bible"],
+                "default_quota": quota,
+                "last_standard_quota": last_standard,
+            })
+            assert response.status_code == 200
+            restored = client.get("/v1/preferences")
+            assert restored.status_code == 200
+            assert restored.json()["default_quota"] == quota
+            assert restored.json()["last_standard_quota"] == last_standard
+
+
 def test_update_preferences_rejects_focused_quota_with_multiple_collections():
     pool, conn = _transactional_pool(_row(default_quota=5))
 
