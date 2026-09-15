@@ -268,6 +268,7 @@ describe("consumeSearchStream", () => {
     ["invalid explanation", { type: "explanation_delta", chunk_id: "passage-1", delta: 42 }],
     ["invalid results readiness", { type: "results_ready", result_count: -1 }],
     ["invalid completion", { type: "done", search_id: null, result_count: -1 }],
+    ["invalid delivery outcome", { type: "done", search_id: "search-1", result_count: 3, delivery_outcome: "maybe" }],
     ["invalid error", { type: "error", detail: 42 }],
   ])("rejects %s payloads with the dedicated protocol error", async (_name, event) => {
     await expect(consumeSearchStream(streamFromText(data(event)), callbacks()))

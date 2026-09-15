@@ -113,6 +113,10 @@ const DELIVERY_OUTCOMES = new Set<DeliveryOutcome>([
   "minimum_floor",
 ]);
 
+export function isDeliveryOutcome(value: unknown): value is DeliveryOutcome {
+  return DELIVERY_OUTCOMES.has(value as DeliveryOutcome);
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -293,8 +297,7 @@ export async function consumeSearchStream(
         : event.outcome;
       if (!SEARCH_OUTCOMES.has(outcome as SearchOutcome)) invalid();
       if (event.persisted !== undefined && typeof event.persisted !== "boolean") invalid();
-      if (event.delivery_outcome !== undefined
-        && !DELIVERY_OUTCOMES.has(event.delivery_outcome as DeliveryOutcome)) invalid();
+      if (event.delivery_outcome !== undefined && !isDeliveryOutcome(event.delivery_outcome)) invalid();
       state.terminal = "done";
       const completion = [
         searchId,

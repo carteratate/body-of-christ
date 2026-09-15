@@ -13,6 +13,7 @@ import {
 } from "@/lib/api";
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
+import { isDeliveryOutcome } from "@/lib/search-stream";
 import { getGuestSessionToken, GUEST_SEARCH_LIMIT } from "@/lib/trial";
 import { classifySearchErrorCode } from "./failure";
 import { createSearchExperience } from "./runtime";
@@ -73,11 +74,8 @@ export function readGuestSearch(): RestoredGuestSearch | null {
         passages: passages as Passage[],
         outcome: snapshot.outcome,
         collectionOutcomes: snapshot.collectionOutcomes,
-        deliveryOutcome: snapshot.deliveryOutcome === "complete"
-          || snapshot.deliveryOutcome === "underfilled"
-          || snapshot.deliveryOutcome === "minimum_floor"
-          ? snapshot.deliveryOutcome
-          : null,
+        deliveryOutcome: isDeliveryOutcome(snapshot.deliveryOutcome)
+          ? snapshot.deliveryOutcome : null,
         visibleCollections: snapshot.visibleCollections,
       },
       visibleCollections: snapshot.visibleCollections,
@@ -306,12 +304,8 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
             && ([3, 4, 5].includes(savedQuota) || (savedQuota === 10 && collections.length === 1))
             ? savedQuota
             : current.quota;
-          const deliveryOutcome = quota === 10
-            && (data.delivery_outcome === "complete"
-              || data.delivery_outcome === "underfilled"
-              || data.delivery_outcome === "minimum_floor")
-            ? data.delivery_outcome
-            : null;
+          const deliveryOutcome = quota === 10 && isDeliveryOutcome(data.delivery_outcome)
+            ? data.delivery_outcome : null;
           return {
             searchId: data.search_id,
             request: {

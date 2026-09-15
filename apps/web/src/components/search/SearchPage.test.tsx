@@ -1134,4 +1134,29 @@ describe("SearchPage animation-gated stream reveal", () => {
     await waitFor(() => expect(sessionStorage.getItem("theocorpus-guest-current-results")).toBeNull());
     expect(screen.getByText("Empty search")).toBeTruthy();
   });
+
+  it("restores a guest focused fallback reason from browser session storage", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    sessionStorage.setItem("theocorpus-guest-current-results", JSON.stringify({
+      savedAt: Date.now(),
+      query: "guest focused search",
+      results: [streamedPassage],
+      searchId: null,
+      collections: ["bible"],
+      translation: "CPDV",
+      quota: 10,
+      visibleCollections: ["bible"],
+      outcome: "success",
+      collectionOutcomes: { bible: "results" },
+      deliveryOutcome: "minimum_floor",
+    }));
+
+    render(<SearchPage isGuest />);
+
+    expect(screen.getByText("guest focused search")).toBeTruthy();
+    expect(screen.getByTestId("search-results").dataset.submittedQuota).toBe("10");
+    expect(screen.getByTestId("search-results").dataset.deliveryOutcome).toBe("minimum_floor");
+  });
 });
