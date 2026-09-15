@@ -74,7 +74,7 @@ describe("QuotaControl", () => {
     const view = render(<QuotaControl value={10} onChange={vi.fn()} focusedCollection="papal-documents" />);
     const ten = screen.getByRole("button", { name: "10 passages per source" });
 
-    expect(ten.className).toContain("text-brand-contrast-dark");
+    expect(ten.className).toContain("themeSensitiveNumeral");
     expect(ten.querySelector("span")?.className).toContain("papalNumeral");
 
     view.rerender(<QuotaControl value={5} onChange={vi.fn()} focusedCollection="papal-documents" />);
@@ -83,47 +83,63 @@ describe("QuotaControl", () => {
 
   it("keeps the numeral above 4.5:1 in both themes and both fill states", () => {
     const themes = [
-      { surface: rgb("#172232"), primary: rgb("#EAE6DC") },
-      { surface: rgb("#e3dbc8"), primary: rgb("#1a1610") },
+      { label: "dark", surface: rgb("#172232"), primary: rgb("#EAE6DC") },
+      { label: "light", surface: rgb("#e3dbc8"), primary: rgb("#1a1610") },
     ];
 
     for (const collection of COLLECTIONS) {
       for (const theme of themes) {
-        const unselected = mix(rgb(collection.hex), theme.surface, 0.4);
+        const unselected = mix(rgb(collection.hex), theme.surface, 0.3);
         expect(contrast(unselected, theme.primary), `${collection.key} unselected`).toBeGreaterThanOrEqual(4.5);
 
-        let selected = mix(rgb(collection.hex), theme.surface, 0.9);
+        let selected = mix(rgb(collection.hex), theme.surface, 0.85);
         if (collection.key === "papal-documents") selected = mix(rgb("#ffffff"), selected, 0.03);
-        const numeral = collection.key === "apostolic-exhortations" ? rgb("#ffffff") : rgb("#000000");
+        const themeSensitive = collection.key === "canon-law" || collection.key === "papal-documents";
+        const useLightNumeral = collection.key === "apostolic-exhortations"
+          || (themeSensitive && theme.label === "dark");
+        const numeral = useLightNumeral ? rgb("#ffffff") : rgb("#000000");
         expect(contrast(selected, numeral), `${collection.key} selected`).toBeGreaterThanOrEqual(4.5);
       }
     }
   });
 
-  it("plays one soft bloom only when 10 is selected", async () => {
+  it("pulses the ten button without adding a separate outline", async () => {
+    const user = userEvent.setup();
+    render(<QuotaControl value={5} onChange={vi.fn()} focusedCollection="bible" />);
+
+    const ten = screen.getByRole("button", { name: "10 passages per source" });
+    await user.click(ten);
+
+    expect(ten.children).toHaveLength(1);
+    expect(ten.firstElementChild?.textContent).toBe("10");
+  });
+
+  it("plays one attached pulse only when 10 is selected", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     const view = render(<QuotaControl value={5} onChange={onChange} focusedCollection="bible" />);
 
-    await user.click(screen.getByRole("button", { name: "10 passages per source" }));
+    const ten = screen.getByRole("button", { name: "10 passages per source" });
+    await user.click(ten);
     expect(onChange).toHaveBeenCalledWith(10);
-    expect(view.container.querySelectorAll("[data-focused-quota-bloom]")).toHaveLength(1);
+    expect(ten.className).toContain("attachedPulse");
 
     view.rerender(<QuotaControl value={10} onChange={onChange} focusedCollection="bible" />);
     onChange.mockClear();
-    await user.click(screen.getByRole("button", { name: "10 passages per source" }));
+    await user.click(ten);
     expect(onChange).not.toHaveBeenCalled();
-    expect(view.container.querySelectorAll("[data-focused-quota-bloom]")).toHaveLength(1);
+    expect(ten.className).toContain("attachedPulse");
 
     await user.click(screen.getByRole("button", { name: "5 passages per source" }));
-    expect(view.container.querySelector("[data-focused-quota-bloom]")).toBeNull();
+    expect(ten.className).not.toContain("attachedPulse");
 
     view.unmount();
     onChange.mockClear();
-    const standard = render(<QuotaControl value={10} onChange={onChange} focusedCollection="bible" />);
+    render(<QuotaControl value={10} onChange={onChange} focusedCollection="bible" />);
     await user.click(screen.getByRole("button", { name: "5 passages per source" }));
     expect(onChange).toHaveBeenCalledWith(5);
-    expect(standard.container.querySelector("[data-focused-quota-bloom]")).toBeNull();
+    expect(screen.getByRole("button", { name: "10 passages per source" }).className)
+      .not.toContain("attachedPulse");
   });
 
   it("keeps keyboard focus on the selected standard quota when 10 leaves", () => {
@@ -135,7 +151,7 @@ describe("QuotaControl", () => {
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "5 passages per source" }));
   });
 
-  it("does not revive a bloom after focused eligibility leaves and returns", async () => {
+  it("does not revive a pulse after focused eligibility leaves and returns", async () => {
     const user = userEvent.setup();
     const view = render(<QuotaControl value={5} onChange={vi.fn()} focusedCollection="bible" />);
     await user.click(screen.getByRole("button", { name: "10 passages per source" }));
@@ -144,6 +160,7 @@ describe("QuotaControl", () => {
     await act(() => Promise.resolve());
     view.rerender(<QuotaControl value={5} onChange={vi.fn()} focusedCollection="bible" />);
 
-    expect(view.container.querySelector("[data-focused-quota-bloom]")).toBeNull();
+    expect(screen.getByRole("button", { name: "10 passages per source" }).className)
+      .not.toContain("attachedPulse");
   });
 });
