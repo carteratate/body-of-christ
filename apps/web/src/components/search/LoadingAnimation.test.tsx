@@ -40,6 +40,48 @@ describe("LoadingAnimation presentation milestones", () => {
     expect(view.queryByText("TC")).toBeNull();
   });
 
+  it("marks ten distinct winner bubbles in focused mode", () => {
+    const view = render(
+      <LoadingAnimation
+        {...baseProps}
+        quota={10}
+        retrievalStarted={false}
+        isQueryDone={false}
+      />,
+    );
+
+    const winners = [...view.container.querySelectorAll("circle[data-winner='true']")];
+    expect(winners).toHaveLength(10);
+    expect(new Set(winners.map((winner) => winner.getAttribute("data-chunk-id"))).size).toBe(10);
+  });
+
+  it("keeps ten distinct winners through the result-reveal choreography", () => {
+    const view = render(
+      <LoadingAnimation
+        {...baseProps}
+        quota={10}
+        retrievalStarted
+        isQueryDone={false}
+      />,
+    );
+
+    act(() => vi.advanceTimersByTime(30_000));
+    view.rerender(
+      <LoadingAnimation
+        {...baseProps}
+        quota={10}
+        retrievalStarted
+        isQueryDone
+      />,
+    );
+    act(() => vi.advanceTimersByTime(200));
+    expect(baseProps.onReadyToShow).toHaveBeenCalledOnce();
+
+    const winners = [...view.container.querySelectorAll("circle[data-winner='true']")];
+    expect(winners).toHaveLength(10);
+    expect(new Set(winners.map((winner) => winner.getAttribute("data-chunk-id"))).size).toBe(10);
+  });
+
   it("centers the Classical Serif monogram within the center node", () => {
     const view = render(
       <LoadingAnimation

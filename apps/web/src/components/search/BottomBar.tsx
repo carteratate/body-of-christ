@@ -63,7 +63,11 @@ export function BottomBar({
           translation={translation}
           onTranslationChange={onTranslationChange}
         />
-        <QuotaControl value={quota} onChange={onQuotaChange} />
+        <QuotaControl
+          value={quota}
+          onChange={onQuotaChange}
+          focusedCollection={activeCollections.length === 1 ? activeCollections[0] : null}
+        />
       </div>
       <SearchBar
         value={searchValue}
