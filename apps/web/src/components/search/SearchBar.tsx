@@ -39,7 +39,7 @@ export function SearchBar({
   const isDisabled = disabled || loading;
   const placeholder = disabled
     ? "Select at least one source to search."
-    : "Ask a question or explore a theme…";
+    : "A question, a thought, a doubt: what's on your mind?";
 
   return (
     <div className="flex gap-2 items-end">
