@@ -1,4 +1,8 @@
-# CLAUDE.md — Project Rules & Invariants
+# Project Rules & Invariants
+
+> This file is the single source of agent guidance for this repo. `AGENTS.md` is a
+> symlink to it — edit this file, never a copy. (They were separate files until
+> 2026-09-17; the fork drifted 18 migrations out of date and is why they are one file now.)
 
 This repository (body-of-christ) implements a Catholic theology RAG search application.
 The user-facing product name is **TheoCorpus**.
@@ -102,8 +106,16 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - `guest_trials` — guest session quota + continuity + transfer readiness (0023, 0025, 0026, 0027)
 - `reading_progress` — per-document reader position (0027)
 - `product_feedback` — in-app feedback, including anonymous (0028–0030)
+- `user_preferences.last_standard_quota` — remembers the pre-focused quota (0034); see §18
+- `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
+  migration and a `test_study_schema.py` exist on at least one working tree but are
+  committed to no branch, so `git log` will not find them and a fresh clone will not have
+  them. `CONTEXT.md` already carries the vocabulary (Study, Study block, My Passages,
+  Published version). The design point: a Study block is either authored writing or a
+  Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
+  live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations run 0001–0033. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema. Audit the Supabase migration ledger before renaming any of them.
+Migrations run 0001–0035. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -127,7 +139,13 @@ Two layers, and the split is the point:
 - `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
 - `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-Production runs the `hyde_cohere_luna` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → parallel Qdrant vector + Supabase FTS retrieval → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap. Steps live in `rag/steps/`.
+Production runs the `hyde_cohere_luna` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → parallel Qdrant vector + Supabase FTS retrieval → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+
+**`rag/search_plan.py` resolves one validated `SearchPlan` before the pipeline runs.** It
+is the single place that normalizes collections and enforces the focused-search invariant,
+and it hands the runner three derived values: `focused`, `terminal_candidate_budget`, and
+`max_passages_per_document`. `SearchPlanError` carries a stable `code` so routes translate
+failures consistently. See §18.
 
 The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical). Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
 
@@ -202,7 +220,7 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | `/feedback`, `/guest/feedback` | Product feedback form |
 | `/login`, `/signup`, `/update-password`, `/auth/callback` | Auth flows |
 | `/chat` | `redirect` to /search — legacy |
-| `/icon-preview`, `/onboarding-preview` | Design drafts, not product surface |
+| `/icon-preview`, `/onboarding-preview`, `/prototypes/quota-ten-proof` | Design drafts, not product surface |
 | `/v1/[...path]` | The proxy route — see §1 |
 
 ### API (all under `/v1/`)
@@ -210,7 +228,7 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/me` | Current user |
-| POST | `/search` | SSE stream; 5/min, 30/day |
+| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. |
 | POST | `/search/guest` | SSE stream; guest session token, trial-limited |
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
@@ -225,6 +243,7 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | GET/PUT | `/preferences` | User preferences |
 | POST/GET | `/search/compare`, `/search/compare/view`, `/search/compare/stats` | **Retrieval lab.** Mounted in production startup today; treat as a separate concern from product routes. |
 | POST | `/chat`, `/chat/stream` | Legacy — see §3 |
+| GET | `/sessions`, `/sessions/{id}/messages` | Legacy chat history. Mounted in production; no live caller. |
 
 ---
 
@@ -257,7 +276,7 @@ Everything it touches externally is an injected port: `audience` (a discriminate
 
 Rules when working here:
 
-- `SearchPage.tsx` renders snapshots and forwards commands. Keep AbortControllers, run generations, stream buffers, terminal flags, and animation timers out of it. Draft query/collection/translation/quota controls, route translation, result filtering, hints, and DOM measurement stay in the page.
+- `SearchPage.tsx` renders snapshots and forwards commands. Keep AbortControllers, run generations, stream buffers, terminal flags, and animation timers out of it. Draft query/collection/translation/quota controls, route translation, result filtering, hints, and DOM measurement stay in the page — except the draft *transition rules*, which live in `lib/search-draft.ts` (§18).
 - Next routing and React stay outside the runtime.
 - Test through `read`/`subscribe`/`send` with scripted in-memory adapters. Do not assert on private reducer state.
 - `LoadingAnimation` owns visual timing and emits semantic milestones (`filters-ready` at 3.2s, ready-to-reveal, fade-complete). Passages stay buffered until ready-to-reveal. Do not reintroduce a page-side timer.
@@ -282,7 +301,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 - Add a new event field **once**, in `search-stream.ts`.
 - **Backend event types:** `chunk`, `status`, `explanation_delta`, `done`, `error`, and `results_ready` (guest only — ranked passages are ready; guest `done` is a later completion/transfer milestone).
 - **Callbacks:** `onChunk`, `onExplanationDelta`, `onStatus?`, `onResultsReady?`, `onRateLimit(retryAfter, "per_minute" | "daily")`, plus:
-  - `onDone(searchId, resultCount, outcome, collectionOutcomes, persisted)` — `persisted: false` means results are usable but not saved to history.
+  - `onDone(searchId, resultCount, outcome, collectionOutcomes, persisted, deliveryOutcome?)` — `persisted: false` means results are usable but not saved to history. `deliveryOutcome` is focused-search only (§18) and absent otherwise.
   - `onError(message, code?, stage?, collectionOutcomes?)`
 - `outcome` is `success | degraded_success | no_candidates`. **Only an explicit `no_candidates` means an empty corpus result** — an error is not a no-results screen.
 - Cleanup: pass an `AbortController.signal` and abort on unmount.
@@ -323,7 +342,70 @@ V1 chat and V2 search share `user_usage.rate_count` / `quota_count`. V2 enforces
 
 ### 4. Tracked relics
 
-`app/icon-preview/` (~1,177 lines of animation draft, source of the remaining lint warnings), `components/chat/ChatShell.tsx`, `rag/steps/persist.py` (empty), and `rag/steps/dedup.py` (pass-through) are all dead. Architecture item 8.
+`app/icon-preview/` (~1,177 lines of animation draft), `components/chat/ChatShell.tsx`,
+and `rag/steps/persist.py` (a one-line placeholder docstring, imported nowhere) are dead.
+Architecture item 8.
+
+**`rag/steps/dedup.py` is NOT dead — do not delete it.** `pipelines/runner.py` imports it
+in the parenthesized `from app.rag.steps import (...)` block, which is easy to miss with a
+single-line grep. It is the step that carries `per_source_cap` / `per_document_cap`, so
+focused search (§18) depends on it.
+
+Lint warnings are 4 total, 0 errors: 2 in `icon-preview/`, 2 in
+`components/common/ErrorBoundary.tsx`.
+
+---
+
+## 18. Focused search (quota 10)
+
+Quota is one of `3, 4, 5, 10`. **Quota 10 is "focused": it requires exactly one
+collection**, and it changes retrieval shape rather than just raising the result count.
+
+**The invariant is enforced in one place** — `resolve_search_plan()` in
+`rag/search_plan.py`. Do not re-derive "is this focused?" from a raw quota int anywhere
+else; take `SearchPlan.focused`. `SearchPlanError.code` is stable and routes translate it:
+`no_valid_collections` → 400, everything else (`invalid_quota`, `duplicate_collections`,
+`invalid_collections`, `focused_collection_count`) → 422.
+
+What focused changes, all derived from the plan:
+
+| | Standard | Focused |
+|---|---|---|
+| Collections | 1–10 | exactly 1 |
+| `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
+| `max_passages_per_document` | 2 | 4 |
+| Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
+
+`max_passages_per_document` is passed as **both** `per_source_cap` and `per_document_cap`
+to `steps/dedup.py`, and again to `min_floor` — a focused search that falls through to the
+floor must not lose its per-document cap.
+
+### delivery_outcome
+
+Focused searches report how well the quota was filled: `complete` | `underfilled` |
+`minimum_floor` (`_delivery_outcome()` in `pipelines/runner.py`). It reaches the client as
+the optional 6th argument to `onDone` (§14), and it is persisted into the `searches.filters`
+jsonb **only when quota is 10** (`pipeline.py`), so a restored focused search can explain
+its own delivery. Standard searches never set it; treat `undefined` as "not applicable",
+not as a failure.
+
+### Preferences
+
+`user_preferences` carries both `default_quota` and `last_standard_quota` (0034).
+`last_standard_quota` remembers where to return when the person leaves focused mode, so
+toggling 10 → back does not strand them on an arbitrary default. DB constraints mirror the
+API invariant: `default_quota IN (3,4,5,10)`, `last_standard_quota IN (3,4,5)`, and
+`default_quota <> 10 OR exactly one default_collection`. Keep all three in step when
+changing quota rules.
+
+### Frontend
+
+**`lib/search-draft.ts` owns draft quota/collection state and focused eligibility** —
+`SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. This is the one
+exception to §12's "draft controls stay in the page": the page renders it, but the
+transition rules live here and are unit-tested directly. `QuotaControl.tsx` and
+`BottomBar.tsx` render it. `LoadingAnimation` takes `quota` as a prop and scales its
+winner count to it, so ten works without a special case.
 
 ---
 
