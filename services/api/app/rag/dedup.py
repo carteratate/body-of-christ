@@ -45,6 +45,15 @@ _PER_SOURCE_CAP = 2
 # (pipeline.py step 9) plus a DB write, so this is real latency and spend — though
 # chunks stream before explanations, so time-to-first-result is unchanged. quota is
 # bounded 3-5 (models/search.py), capping the worst case at +9 per search.
+#
+# COST (2026-09-18, this change): giving per_document_cap the same grain lets a
+# FOCUSED search over a single-document collection fill its quota instead of stopping
+# at max_passages_per_document. Measured on synthetic pools, a focused Bible or Summa
+# search with more distinct chapters than the cap went from 4 results to quota (10);
+# a standard search from 2 to quota (4). quota_cap still bounds the total per
+# collection, and focused search is single-collection by construction, so the worst
+# case is +6 explanation streams and DB writes on a focused search and +2 on a
+# standard one — not unbounded growth.
 # The Bible joins them for the same structural reason: `datapipeline/ingest/bible.py`
 # builds one Document per book, so the whole Psalter is a single document titled
 # "Psalms". A Bible chapter is a cleaner grain than any of the above — it is a topical
@@ -57,7 +66,7 @@ _CHAPTER_KEYED_COLLECTIONS: frozenset[str] = frozenset({
 
 
 def chapter_grain_collections(
-    chunks: list[RankedChunk], per_source_cap: int = _PER_SOURCE_CAP,
+    chunks: list[RankedChunk], per_source_cap: int | None = None,
 ) -> frozenset[str]:
     """Which collections may use the chapter grain for THIS result set.
 
@@ -90,12 +99,22 @@ def chapter_grain_collections(
     }
     demoted = present & incomplete
     if demoted:
-        logger.info(
-            "dedup: chapter grain unavailable for %s (missing chapter_key on at "
-            "least one candidate); falling back to the per-title grain, which "
-            "caps each of those collections at %d results for this search",
-            sorted(demoted), per_source_cap,
-        )
+        # The consequence is stated only when the caller actually applies a source
+        # cap. min_floor does not — it spreads across works — so naming a number
+        # here would describe a limit that call site never enforces.
+        if per_source_cap is not None:
+            logger.info(
+                "dedup: chapter grain unavailable for %s (missing chapter_key on "
+                "at least one candidate); falling back to the per-title grain, "
+                "which caps each of those collections at %d results for this "
+                "search", sorted(demoted), per_source_cap,
+            )
+        else:
+            logger.info(
+                "dedup: chapter grain unavailable for %s (missing chapter_key on "
+                "at least one candidate); falling back to the per-title grain "
+                "for this search", sorted(demoted),
+            )
     return frozenset(present - incomplete)
 
 

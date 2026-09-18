@@ -23,6 +23,17 @@ composite derived from it are NOT comparable across this boundary. Segment runs 
 date the way `rerank.LLM_RERANK_CONTRACT_VERSION` segments the scoring contract;
 do not pool pre- and post-2026-08-19 suites into one comparison.
 
+METHODOLOGY BREAK (2026-09-18): that floor moved again, and further for focused
+searches. `bible` joined the chapter-keyed collections, so the Psalter — one document
+per book — is now keyed per psalm rather than per book. Separately, `per_document_cap`
+now shares the chapter grain in both `dedup.apply_dedup` and `steps.min_floor`; it
+previously keyed on a bare `document_id`, which capped a FOCUSED search over any
+single-document collection (summa, catechism, canon-law, and now bible) at
+`max_passages_per_document` results in total regardless of how many distinct chapters
+ranked. Focused runs over those collections therefore return more results after this
+date, so `redundancy_rate` and its composites are not comparable across this boundary
+either. Segment as above.
+
 Composites are re-scored from persisted per-dimension scores under the weights
 currently in `judge.WEIGHTS`, so runs judged before and after a re-weighting stay
 directly comparable. A run judged under different weights is flagged, not silently
