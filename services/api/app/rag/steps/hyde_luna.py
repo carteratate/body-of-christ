@@ -1,4 +1,4 @@
-"""OpenAI client for short Luna HyDE passage generation."""
+"""OpenAI client for Luna HyDE passage generation and Bible genre selection."""
 from __future__ import annotations
 
 import asyncio
@@ -9,6 +9,33 @@ from app.config import settings
 
 _client: openai.AsyncOpenAI | None = None
 _semaphore: asyncio.Semaphore | None = None
+
+_BIBLE_GENRE_SCHEMA = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "bible_hyde_genres",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "free", "psalms", "ot-wisdom", "ot-prophets",
+                            "ot-stories", "nt-stories", "nt-epistles", "nt-teachings",
+                        ],
+                    },
+                    "minItems": 4,
+                    "maxItems": 4,
+                },
+            },
+            "required": ["genres"],
+            "additionalProperties": False,
+        },
+    },
+}
 
 
 def init() -> None:
@@ -54,6 +81,34 @@ async def generate(system: str, query: str, max_tokens: int) -> tuple[str, int, 
     usage = response.usage
     return (
         passage,
+        usage.prompt_tokens if usage else 0,
+        usage.completion_tokens if usage else 0,
+    )
+
+
+async def select_bible_genres(system: str, query: str) -> tuple[str, int, int]:
+    """Return a schema-constrained JSON object and billed token counts."""
+    if _client is None:
+        raise RuntimeError("Luna HyDE client not initialized")
+    response = await _client.chat.completions.create(
+        model=settings.hyde_luna_model,
+        reasoning_effort="none",
+        max_completion_tokens=100,
+        response_format=_BIBLE_GENRE_SCHEMA,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": query},
+        ],
+    )
+    choice = response.choices[0]
+    if choice.finish_reason != "stop" or getattr(choice.message, "refusal", None):
+        raise ValueError(f"Luna genre selection incomplete: finish_reason={choice.finish_reason}")
+    content = (choice.message.content or "").strip()
+    if not content:
+        raise ValueError("Luna genre selection returned empty JSON")
+    usage = response.usage
+    return (
+        content,
         usage.prompt_tokens if usage else 0,
         usage.completion_tokens if usage else 0,
     )

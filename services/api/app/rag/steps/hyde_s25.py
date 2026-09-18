@@ -258,7 +258,7 @@ _BIBLE_VALID_GENRES = {
 }
 _BIBLE_DEFAULT_GENRES = ["free", "nt-epistles", "psalms", "nt-teachings"]
 
-_BIBLE_GENRE_SELECT_SYSTEM = (
+_BIBLE_GENRE_SELECT_CONTEXT = (
     "You are choosing four genres to search for a question about the Bible.\n\n"
     "For each genre you choose, another model will write a hypothetical biblical "
     "passage in that style. We will use each passage to search the entire Bible "
@@ -299,8 +299,17 @@ _BIBLE_GENRE_SELECT_SYSTEM = (
     "Choose both nt-stories and nt-teachings only when an event and a teaching "
     "could provide meaningfully different evidence. Apply the same test to "
     "other overlapping genres.\n\n"
-    "Return only a JSON array of exactly four distinct genre keys. No explanation. "
+)
+_BIBLE_GENRE_SELECT_HAIKU_SYSTEM = (
+    _BIBLE_GENRE_SELECT_CONTEXT
+    + "Return only a JSON array of exactly four distinct genre keys. No explanation. "
     "Example: [\"psalms\", \"ot-wisdom\", \"nt-epistles\", \"free\"]"
+)
+_BIBLE_GENRE_SELECT_LUNA_SYSTEM = (
+    _BIBLE_GENRE_SELECT_CONTEXT
+    + "Return a JSON object with a genres array of exactly four distinct genre keys. "
+    "No explanation. Example: "
+    "{\"genres\": [\"psalms\", \"ot-wisdom\", \"nt-epistles\", \"free\"]}"
 )
 
 _COLLECTION_MAX_TOKENS: dict[str, int] = {
@@ -373,6 +382,8 @@ async def _generate_single(
 
 def _parse_bible_genres(raw: str) -> list[str]:
     genres = json.loads(raw.strip())
+    if isinstance(genres, dict):
+        genres = genres.get("genres")
     if not isinstance(genres, list):
         return []
     return list(dict.fromkeys(
@@ -385,28 +396,48 @@ async def choose_bible_hyde_genres(
     query: str,
     client: anthropic.AsyncAnthropic,
     k: int = _BIBLE_SELECTED_GENRE_COUNT,
+    cost_tracker: CostTracker | None = None,
 ) -> list[str]:
     """Pre-select k bible genres before any HyDE generation (S2.5).
 
-    One Haiku call decides which genres to generate, so only k generation
-    calls follow instead of all 8. Falls back to a sensible default on error.
+    One schema-constrained Luna call normally decides which k genre passages
+    to generate. The configured Haiku path remains available for rollback.
     """
     try:
-        response = await client.messages.create(
-            model=settings.hyde_model,
-            max_tokens=50,
-            system=_BIBLE_GENRE_SELECT_SYSTEM,
-            messages=[{"role": "user", "content": query}],
-        )
-        selected = _parse_bible_genres(response.content[0].text)
+        if settings.hyde_genre_provider == "luna":
+            raw, input_tokens, output_tokens = await hyde_luna.select_bible_genres(
+                _BIBLE_GENRE_SELECT_LUNA_SYSTEM, query,
+            )
+            model = settings.hyde_luna_model
+        else:
+            response = await client.messages.create(
+                model=settings.hyde_model,
+                max_tokens=50,
+                system=_BIBLE_GENRE_SELECT_HAIKU_SYSTEM,
+                messages=[{"role": "user", "content": query}],
+            )
+            raw = response.content[0].text
+            input_tokens = response.usage.input_tokens
+            output_tokens = response.usage.output_tokens
+            model = settings.hyde_model
+        if cost_tracker is not None:
+            cost_tracker.record(
+                "hyde_genre_select", model,
+                input_tokens=input_tokens, output_tokens=output_tokens,
+            )
+        selected = _parse_bible_genres(raw)
         if len(selected) == k:
             return selected
-        logger.warning(
-            "choose_bible_hyde_genres: expected %d valid genres, got %d; using defaults",
-            k, len(selected),
+        degradation.record(
+            "hyde_genre_select", "invalid_response", "defaults_used",
+            scope="bible", details={"valid_genre_count": len(selected)},
         )
     except Exception as exc:
         logger.warning("choose_bible_hyde_genres: failed (%s); using defaults", exc)
+        degradation.record(
+            "hyde_genre_select", type(exc).__name__, "defaults_used",
+            scope="bible",
+        )
 
     return _BIBLE_DEFAULT_GENRES[:k]
 
@@ -476,32 +507,9 @@ async def run(
         if col == "bible":
             selected: list[str] | None = None
             if not all_bible_genres:
-                response = await client.messages.create(
-                    model=settings.hyde_model,
-                    max_tokens=50,
-                    system=_BIBLE_GENRE_SELECT_SYSTEM,
-                    messages=[{"role": "user", "content": query}],
+                selected = await choose_bible_hyde_genres(
+                    query, client, cost_tracker=cost_tracker,
                 )
-                cost_tracker.record(
-                    "hyde_genre_select", settings.hyde_model,
-                    input_tokens=response.usage.input_tokens,
-                    output_tokens=response.usage.output_tokens,
-                )
-                try:
-                    selected = _parse_bible_genres(response.content[0].text)
-                    if len(selected) != _BIBLE_SELECTED_GENRE_COUNT:
-                        degradation.record(
-                            "hyde_genre_select", "invalid_response", "defaults_used",
-                            scope="bible",
-                            details={"valid_genre_count": len(selected)},
-                        )
-                        selected = _BIBLE_DEFAULT_GENRES
-                except Exception:
-                    degradation.record(
-                        "hyde_genre_select", "invalid_response", "defaults_used",
-                        scope="bible",
-                    )
-                    selected = _BIBLE_DEFAULT_GENRES
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, selected_genres=selected,
                 cost_tracker=cost_tracker,

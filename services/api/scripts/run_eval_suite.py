@@ -379,7 +379,12 @@ def _artifact_fingerprint(pipelines: list[str], quota: int) -> dict:
                 else settings.hyde_model
             ),
             "hyde_passage_provider": settings.hyde_passage_provider,
-            "hyde_genre_selector": settings.hyde_model,
+            "hyde_genre_selector": (
+                settings.hyde_luna_model
+                if settings.hyde_genre_provider == "luna"
+                else settings.hyde_model
+            ),
+            "hyde_genre_provider": settings.hyde_genre_provider,
             "embedding": "text-embedding-3-large",
         },
         "thresholds": {
@@ -441,7 +446,12 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
                 else settings.hyde_model
             ),
             "hyde_passage_provider": settings.hyde_passage_provider,
-            "hyde_genre_selector": settings.hyde_model,
+            "hyde_genre_selector": (
+                settings.hyde_luna_model
+                if settings.hyde_genre_provider == "luna"
+                else settings.hyde_model
+            ),
+            "hyde_genre_provider": settings.hyde_genre_provider,
             "rerank_luna": settings.rerank_luna_model,
         },
         "pricing": pricing_snapshot(),

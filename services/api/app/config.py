@@ -59,6 +59,9 @@ class Settings(BaseSettings):
     hyde_passage_provider: HyDEProvider = Field(
         default="luna", validation_alias="HYDE_PASSAGE_PROVIDER",
     )
+    hyde_genre_provider: Literal["haiku", "luna"] = Field(
+        default="luna", validation_alias="HYDE_GENRE_PROVIDER",
+    )
     hyde_luna_model: str = Field(default="gpt-5.6-luna", validation_alias="HYDE_LUNA_MODEL")
     hyde_luna_concurrency: int = Field(default=8, ge=1, validation_alias="HYDE_LUNA_CONCURRENCY")
     rerank_model: str = Field(default="claude-haiku-4-5", validation_alias="RERANK_MODEL")
