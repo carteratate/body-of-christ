@@ -7,11 +7,11 @@ Status of each collection's source material and its publication to both stores
 |---|---|---|---|
 | **bible** | local `sources/bible/eng-web-c_usfm/` (+ pericope JSON) | ✅ | WEB-C; passage = pericope clamped to chapter |
 | **catechism** | local `sources/catechism/ccc.json` (nossbigg/catechism-ccc-json) | ✅ | three-tier chunking; TOC fragments dropped |
-| **church-fathers** | local `sources/church-fathers/*.xml` (vendored CCEL ANF/NPNF ThML) | ✅ | one document per (father, work); book-structured works (City of God, etc.) flattened to `Book N · Chapter M` |
+| **church-fathers** | local `sources/church-fathers/*.xml` (vendored CCEL ANF/NPNF ThML) | ✅ | one document per (father, work) (128); book-structured works (City of God, etc.) flattened to `Book N · Chapter M` |
 | **summa** | local `sources/summa/summa.xml` (ThML) | ✅ | one passage per article part; apparatus expanded |
-| **encyclicals** | local `sources/encyclicals/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per encyclical (18); one passage per §; section or §-bucket chapters; footnotes stripped |
-| **apostolic-exhortations** | local `sources/apostolic-exhortations/*.html` (vendored from vatican.va) | ✅ | one document per exhortation; numbered-paragraph passages |
-| **papal-documents** | local `sources/papal-documents/*.html` (vendored from vatican.va) | ✅ | one document per papal text; numbered-paragraph passages |
+| **encyclicals** | local `sources/encyclicals/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per encyclical (131); one passage per §; section or §-bucket chapters; footnotes stripped |
+| **apostolic-exhortations** | local `sources/apostolic-exhortations/*.html` (vendored from vatican.va) | ✅ | one document per exhortation (30); numbered-paragraph passages |
+| **papal-documents** | local `sources/papal-documents/*.html` (vendored from vatican.va) | ✅ | one document per papal text (14); numbered-paragraph passages |
 | **canon-law** | local `sources/canon-law/*.html` (vendored from vatican.va) | ✅ | single doc; one passage per canon (1,747); Book by canon-range; Book/Title/Chapter chapters (233) |
 | **councils** | local `sources/councils/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per council / Vatican II document (36); canon + §-paragraph passages |
 | **medieval** | local `sources/medieval/*.xml` (vendored from ccel.org ThML) | ✅ | one doc per (author, work) (6); reuses the church-fathers ThML builder |
@@ -20,6 +20,21 @@ Status of each collection's source material and its publication to both stores
 (gitignored, with a `manifest.json` recording provenance) via
 `scripts/vendor_sources.py`; adapters read these local files, not the network.
 Re-acquire with `python3 scripts/vendor_sources.py --collection all`.
+
+**Document counts** in the table are what the `publication.py` adapter emits, not the
+number of source files — one file can yield several documents (the medieval
+`proslogium-monologium-and-cur-deus-homo.xml` produces three). Verified 2026-09-17.
+Re-check without touching either store:
+
+```bash
+python3 -c "from publication import SOURCE_ADAPTERS as A; d=A['encyclicals'](); print(len(d))"
+```
+
+**Adapters read `manifest.json`, not the directory**, so a vendored file that no
+manifest entry references is never published. Three such orphans exist today:
+`apostolic-exhortations/amoris-laetitia.html`,
+`apostolic-exhortations/a-new-hope-for-lebanon.html`, and
+`papal-documents/ubicumque-et-semper.html`. Add a manifest entry to publish one.
 
 ## Publishing a collection
 
