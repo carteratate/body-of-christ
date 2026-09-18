@@ -7,11 +7,11 @@ import logging
 
 import anthropic
 
-from app.config import settings
+from app.config import HyDEProvider, settings
 from app.rag.api_keys import get_client, get_key_for, get_semaphore
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.embed import run as embed_run
-from app.rag.steps import degradation
+from app.rag.steps import degradation, hyde_luna
 
 logger = logging.getLogger(__name__)
 
@@ -328,22 +328,34 @@ async def _generate_single(
     cost_tracker: CostTracker | None = None,
     cost_step: str = "hyde",
     scope: str | None = None,
+    passage_provider: HyDEProvider | None = None,
 ) -> str | None:
     """Generate one HyDE passage and optionally record token cost."""
     try:
-        response = await client.messages.create(
-            model=settings.hyde_model,
-            max_tokens=max_tokens,
-            system=system,
-            messages=[{"role": "user", "content": query}],
-        )
+        provider = passage_provider or settings.hyde_passage_provider
+        if provider == "luna":
+            passage, input_tokens, output_tokens = await hyde_luna.generate(
+                system, query, max_tokens,
+            )
+            model = settings.hyde_luna_model
+        else:
+            response = await client.messages.create(
+                model=settings.hyde_model,
+                max_tokens=max_tokens,
+                system=system,
+                messages=[{"role": "user", "content": query}],
+            )
+            passage = response.content[0].text
+            input_tokens = response.usage.input_tokens
+            output_tokens = response.usage.output_tokens
+            model = settings.hyde_model
         if cost_tracker is not None:
             cost_tracker.record(
-                cost_step, settings.hyde_model,
-                input_tokens=response.usage.input_tokens,
-                output_tokens=response.usage.output_tokens,
+                cost_step, model,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
             )
-        return response.content[0].text
+        return passage
     except Exception as exc:
         logger.warning("HyDE passage generation failed: %s", exc)
         degradation.record(
@@ -406,9 +418,24 @@ async def generate_hyde_passages(
     semaphore: asyncio.Semaphore,
     selected_genres: list[str] | None = None,
     cost_tracker: CostTracker | None = None,
+    passage_provider: HyDEProvider | None = None,
 ) -> list[str]:
     """Return hypothetical passages for the given collection, tracking LLM cost."""
     max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
+    provider = passage_provider or settings.hyde_passage_provider
+
+    async def _guarded(system: str) -> str | None:
+        async def _generate() -> str | None:
+            return await _generate_single(
+                client, system, query, max_tokens,
+                cost_tracker=cost_tracker, cost_step="hyde", scope=collection,
+                passage_provider=provider,
+            )
+
+        if provider == "haiku":
+            async with semaphore:
+                return await _generate()
+        return await _generate()
 
     if collection == "bible":
         all_bible_prompts: dict[str, str] = {"free": _HYDE_BIBLE_FREE_PROMPT, **_GENRE_HYDE_PROMPTS}
@@ -418,20 +445,11 @@ async def generate_hyde_passages(
             else all_bible_prompts
         )
 
-        async def _guarded(system: str) -> str | None:
-            async with semaphore:
-                return await _generate_single(client, system, query, max_tokens,
-                                              cost_tracker=cost_tracker, cost_step="hyde",
-                                              scope=collection)
-
         results = await asyncio.gather(*[_guarded(p) for p in prompts.values()])
         return [r for r in results if r is not None]
 
     system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
-    async with semaphore:
-        result = await _generate_single(client, system, query, max_tokens,
-                                        cost_tracker=cost_tracker, cost_step="hyde",
-                                        scope=collection)
+    result = await _guarded(system)
     return [result] if result is not None else []
 
 
@@ -441,6 +459,7 @@ async def run(
     cost_tracker: CostTracker,
     *,
     all_bible_genres: bool = False,
+    passage_provider: HyDEProvider | None = None,
 ) -> dict[str, list[list[float]]]:
     """Generate HyDE passages and embed them per collection.
 
@@ -486,10 +505,12 @@ async def run(
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, selected_genres=selected,
                 cost_tracker=cost_tracker,
+                passage_provider=passage_provider,
             )
         else:
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, cost_tracker=cost_tracker,
+                passage_provider=passage_provider,
             )
 
         if not passages:

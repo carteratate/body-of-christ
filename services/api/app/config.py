@@ -1,5 +1,9 @@
+from typing import Literal
+
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+HyDEProvider = Literal["haiku", "luna"]
 
 
 class Settings(BaseSettings):
@@ -52,6 +56,11 @@ class Settings(BaseSettings):
     embedding_model: str = Field(default="text-embedding-3-large", validation_alias="EMBEDDING_MODEL")
     embedding_dims: int = Field(default=1536, validation_alias="EMBEDDING_DIMS")
     hyde_model: str = Field(default="claude-haiku-4-5", validation_alias="HYDE_MODEL")
+    hyde_passage_provider: HyDEProvider = Field(
+        default="luna", validation_alias="HYDE_PASSAGE_PROVIDER",
+    )
+    hyde_luna_model: str = Field(default="gpt-5.6-luna", validation_alias="HYDE_LUNA_MODEL")
+    hyde_luna_concurrency: int = Field(default=8, ge=1, validation_alias="HYDE_LUNA_CONCURRENCY")
     rerank_model: str = Field(default="claude-haiku-4-5", validation_alias="RERANK_MODEL")
     evaluate_model: str = Field(default="claude-haiku-4-5", validation_alias="EVALUATE_MODEL")
     explain_openai_model: str = Field(default="gpt-5.4-mini", validation_alias="EXPLAIN_OPENAI_MODEL")

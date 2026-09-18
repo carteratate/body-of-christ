@@ -36,7 +36,13 @@ def snapshot(pipeline_names: list[str]) -> dict:
         "models": {
             "embedding": settings.embedding_model,
             "embedding_dimensions": settings.embedding_dims,
-            "hyde": settings.hyde_model,
+            "hyde": (
+                settings.hyde_luna_model
+                if settings.hyde_passage_provider == "luna"
+                else settings.hyde_model
+            ),
+            "hyde_passage_provider": settings.hyde_passage_provider,
+            "hyde_genre_selector": settings.hyde_model,
             "rerank_haiku": settings.rerank_model,
             "rerank_luna": settings.rerank_luna_model,
             "judge": _JUDGE_MODEL,
@@ -59,6 +65,7 @@ def snapshot(pipeline_names: list[str]) -> dict:
             "rrf_k": _RRF_K,
             "pointwise_max_tokens": POINTWISE_MAX_TOKENS,
             "listwise_max_tokens": settings.llm_rerank_max_tokens,
+            "hyde_luna_concurrency": settings.hyde_luna_concurrency,
         },
         "judge_weights": dict(WEIGHTS),
     }

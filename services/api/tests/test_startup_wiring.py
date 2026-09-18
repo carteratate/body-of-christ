@@ -16,7 +16,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from app.rag.steps import rerank
+from app.rag.steps import hyde_luna, rerank
 
 
 @pytest.mark.asyncio
@@ -31,6 +31,7 @@ async def test_every_registered_provider_is_ready_after_lifespan():
         patch("app.main.get_pool", return_value=None),
     ):
         async with lifespan(app):
+            assert hyde_luna.is_ready()
             not_ready = [
                 name for name, provider in rerank.PROVIDERS.items()
                 if not provider.is_ready()
@@ -57,6 +58,7 @@ async def test_providers_are_closed_after_lifespan_exits():
     still_open = [
         name for name, provider in rerank.PROVIDERS.items() if provider.is_ready()
     ]
+    assert not hyde_luna.is_ready()
     assert not still_open, f"provider(s) {still_open} still hold a client after shutdown"
 
 
@@ -75,6 +77,7 @@ def test_search_readiness_covers_every_production_dependency():
         patch.object(main, "get_pool", return_value=object()),
         patch.object(main, "embed_is_ready", return_value=True),
         patch.object(main, "hyde_is_ready", return_value=True),
+        patch.object(main, "hyde_luna_is_ready", return_value=True),
         patch.object(main, "get_qdrant_client", return_value=object()),
         patch.object(main, "cohere_is_ready", return_value=True),
         patch.object(main.luna_provider, "is_ready", return_value=True),
