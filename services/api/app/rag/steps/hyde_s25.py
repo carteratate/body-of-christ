@@ -428,6 +428,10 @@ async def choose_bible_hyde_genres(
         selected = _parse_bible_genres(raw)
         if len(selected) == k:
             return selected
+        logger.warning(
+            "choose_bible_hyde_genres: expected %d valid genres, got %d; using defaults",
+            k, len(selected),
+        )
         degradation.record(
             "hyde_genre_select", "invalid_response", "defaults_used",
             scope="bible", details={"valid_genre_count": len(selected)},

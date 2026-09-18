@@ -303,7 +303,7 @@ async def test_haiku_genre_selector_remains_available_for_rollback():
 
 
 @pytest.mark.asyncio
-async def test_luna_genre_selector_duplicate_genres_use_defaults():
+async def test_luna_genre_selector_duplicate_genres_use_defaults(caplog):
     degradation.begin_degradation_accounting()
     tracker = CostTracker()
     with (
@@ -320,6 +320,7 @@ async def test_luna_genre_selector_duplicate_genres_use_defaults():
         )
 
     assert selected == hyde_s25._BIBLE_DEFAULT_GENRES
+    assert "expected 4 valid genres, got 3; using defaults" in caplog.text
     assert tracker.breakdown()["hyde_genre_select"] > 0
     assert degradation.event_dicts() == [{
         "stage": "hyde_genre_select",

@@ -46,6 +46,8 @@ async def main() -> None:
     from app.rag.pipelines.runner import run as run_pipeline
     from app.rag.qdrant_client import close_qdrant, init_qdrant
     from app.rag.steps.embed import close_embed, init_embed
+    from app.rag.steps.hyde_luna import close as close_hyde_luna
+    from app.rag.steps.hyde_luna import init as init_hyde_luna
     from app.rag.steps.llm_rerank.openai_provider import close as close_luna
     from app.rag.steps.llm_rerank.openai_provider import init as init_luna
     from app.rag.steps.cost_tracker import pricing_snapshot
@@ -54,7 +56,7 @@ async def main() -> None:
 
     # Same startup sequence as app.main.lifespan.
     await init_pool()
-    init_llm(); init_embed(); init_qdrant(); init_api_keys()
+    init_llm(); init_embed(); init_qdrant(); init_api_keys(); init_hyde_luna()
     init_rerank(); init_cohere(); init_luna()
 
     names = args.only or list(PIPELINES)
@@ -127,7 +129,7 @@ async def main() -> None:
                 print(f"  -> FAILED: {type(exc).__name__}: {exc}", flush=True)
             report["runs"].append(run)
     finally:
-        await close_luna(); await close_cohere(); await close_rerank()
+        await close_luna(); await close_hyde_luna(); await close_cohere(); await close_rerank()
         await close_api_keys(); await close_embed(); await close_qdrant()
         await close_pool(); await close_llm()
 

@@ -543,13 +543,15 @@ async def main() -> None:
     from app.rag.pipelines.registry import PIPELINES as REGISTRY
     from app.rag.qdrant_client import close_qdrant, init_qdrant
     from app.rag.steps.embed import close_embed, init_embed
+    from app.rag.steps.hyde_luna import close as close_hyde_luna
+    from app.rag.steps.hyde_luna import init as init_hyde_luna
     from app.rag.steps.llm_rerank.openai_provider import close as close_luna
     from app.rag.steps.llm_rerank.openai_provider import init as init_luna
     from app.rag.steps.rerank_cohere import close_cohere, init_cohere
     from app.rag.steps.rerank_haiku import close_rerank, init_rerank
 
     await init_pool()
-    init_llm(); init_embed(); init_qdrant(); init_api_keys()
+    init_llm(); init_embed(); init_qdrant(); init_api_keys(); init_hyde_luna()
     init_rerank(); init_cohere(); init_luna(); judge.init_judge()
 
     out = Path(args.out)
@@ -768,7 +770,7 @@ async def main() -> None:
                 note_ineligible(qi)
     finally:
         await judge.close_judge()
-        await close_luna(); await close_cohere(); await close_rerank()
+        await close_luna(); await close_hyde_luna(); await close_cohere(); await close_rerank()
         await close_api_keys(); await close_embed(); await close_qdrant()
         await close_pool(); await close_llm()
 

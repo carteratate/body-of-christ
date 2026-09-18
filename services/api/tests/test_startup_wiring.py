@@ -94,6 +94,18 @@ def test_search_readiness_covers_every_production_dependency():
     }
 
 
+def test_search_readiness_requires_luna_for_genre_selection():
+    from app import main
+
+    with (
+        patch.object(main.settings, "hyde_passage_provider", "haiku"),
+        patch.object(main.settings, "hyde_genre_provider", "luna"),
+        patch.object(main, "hyde_is_ready", return_value=True),
+        patch.object(main, "hyde_luna_is_ready", return_value=False),
+    ):
+        assert main._search_readiness()["hyde"] is False
+
+
 @pytest.mark.asyncio
 async def test_live_search_readiness_checks_database_and_qdrant():
     from app import main
