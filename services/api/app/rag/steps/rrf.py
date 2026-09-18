@@ -8,7 +8,17 @@ from app.rag.steps.types import ChunkCandidate, RetrievalPath
 
 logger = logging.getLogger(__name__)
 
-_RRF_K = 60
+# Two families at rank r outrank one family at rank 1 when r < k + 2, so k sets the
+# rank at which agreement stops beating precision. The usual 60 comes from Cormack
+# et al. (2009), tuned on TREC runs 1000 deep; every list here is `budget.retrieval_k`
+# deep — 50 in production — which put that crossover at rank 62, past the end of every
+# list we produce, leaving rank as a tiebreak on a three-way vote (hyde/query/fts,
+# since retrieve_vector collapses all HyDE genres into one `max` vote). 20 puts the
+# crossover at rank 22, roughly the top 40% of a 50-deep list: agreement still wins
+# where both paths ranked a chunk highly, and rank carries real weight below that.
+# It is also what _PER_STRATEGY_TOP_K already implies — force-admitting each path's
+# top 3 asserts that a single path's best hits are trustworthy.
+_RRF_K = 20
 _PER_STRATEGY_TOP_K = 3
 
 
