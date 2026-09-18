@@ -297,7 +297,7 @@ _BIBLE_GENRE_SELECT_SYSTEM = (
     "could provide meaningfully different evidence. Apply the same test to "
     "other overlapping genres.\n\n"
     "Return only a JSON array of exactly four distinct genre keys. No explanation. "
-    "Example: [\"psalms\", \"ot-wisdom\", \"nt-epistles\", \"free\"]."
+    "Example: [\"psalms\", \"ot-wisdom\", \"nt-epistles\", \"free\"]"
 )
 
 _COLLECTION_MAX_TOKENS: dict[str, int] = {
