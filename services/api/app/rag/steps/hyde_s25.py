@@ -327,6 +327,16 @@ async def _generate_single(
 # ---------------------------------------------------------------------------
 
 
+def _parse_bible_genres(raw: str) -> list[str]:
+    genres = json.loads(raw.strip())
+    if not isinstance(genres, list):
+        return []
+    return list(dict.fromkeys(
+        genre for genre in genres
+        if isinstance(genre, str) and genre in _BIBLE_VALID_GENRES
+    ))
+
+
 async def choose_bible_hyde_genres(
     query: str,
     client: anthropic.AsyncAnthropic,
@@ -344,10 +354,7 @@ async def choose_bible_hyde_genres(
             system=_BIBLE_GENRE_SELECT_SYSTEM,
             messages=[{"role": "user", "content": query}],
         )
-        genres = json.loads(response.content[0].text.strip())
-        selected = list(dict.fromkeys(
-            g for g in genres if isinstance(g, str) and g in _BIBLE_VALID_GENRES
-        ))
+        selected = _parse_bible_genres(response.content[0].text)
         if len(selected) == k:
             return selected
         logger.warning(
@@ -430,10 +437,7 @@ async def run(
                     output_tokens=response.usage.output_tokens,
                 )
                 try:
-                    genres = json.loads(response.content[0].text.strip())
-                    selected = list(dict.fromkeys(
-                        g for g in genres if isinstance(g, str) and g in _BIBLE_VALID_GENRES
-                    ))
+                    selected = _parse_bible_genres(response.content[0].text)
                     if len(selected) != _BIBLE_SELECTED_GENRE_COUNT:
                         degradation.record(
                             "hyde_genre_select", "invalid_response", "defaults_used",
