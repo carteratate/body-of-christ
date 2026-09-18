@@ -45,12 +45,20 @@ _PER_SOURCE_CAP = 2
 # (pipeline.py step 9) plus a DB write, so this is real latency and spend — though
 # chunks stream before explanations, so time-to-first-result is unchanged. quota is
 # bounded 3-5 (models/search.py), capping the worst case at +9 per search.
+# The Bible joins them for the same structural reason: `datapipeline/ingest/bible.py`
+# builds one Document per book, so the whole Psalter is a single document titled
+# "Psalms". A Bible chapter is a cleaner grain than any of the above — it is a topical
+# unit (one psalm), not a mechanical bucket like the Catechism's 100-paragraph
+# pagination — and ingest already writes chapter_key=make_anchor(book_slug, chapter)
+# on every verse chunk.
 _CHAPTER_KEYED_COLLECTIONS: frozenset[str] = frozenset({
-    "summa", "catechism", "canon-law",
+    "summa", "catechism", "canon-law", "bible",
 })
 
 
-def chapter_grain_collections(chunks: list[RankedChunk]) -> frozenset[str]:
+def chapter_grain_collections(
+    chunks: list[RankedChunk], per_source_cap: int = _PER_SOURCE_CAP,
+) -> frozenset[str]:
     """Which collections may use the chapter grain for THIS result set.
 
     Only collections actually present in `chunks` are returned, so the result
@@ -86,7 +94,7 @@ def chapter_grain_collections(chunks: list[RankedChunk]) -> frozenset[str]:
             "dedup: chapter grain unavailable for %s (missing chapter_key on at "
             "least one candidate); falling back to the per-title grain, which "
             "caps each of those collections at %d results for this search",
-            sorted(demoted), _PER_SOURCE_CAP,
+            sorted(demoted), per_source_cap,
         )
     return frozenset(present - incomplete)
 
@@ -126,6 +134,28 @@ def source_key(chunk: RankedChunk, chapter_grain: frozenset[str]) -> tuple[str, 
     if chunk.collection in chapter_grain and chunk.chapter_key:
         return ("chapter", chunk.collection, chunk.document_title, chunk.chapter_key)
     return ("title", chunk.collection, chunk.document_title)
+
+
+def document_key(chunk: RankedChunk, chapter_grain: frozenset[str]) -> tuple[str, ...]:
+    """The unit `per_document_cap` counts against — the same grain as `source_key`.
+
+    `per_document_cap` exists to stop one PHYSICAL document dominating, which
+    `source_key` cannot do alone because it keys on document_title so that several
+    translations of one work share an allowance. Keyed on a bare document_id it also
+    silently overrode the chapter grain: every chapter-keyed collection is stored as
+    one document (the Summa, the Catechism and Canon Law each as a single document;
+    the Bible as one per book), so a focused search — which passes
+    max_passages_per_document as BOTH caps — capped the entire Summa, or the entire
+    Psalter, at four results however many distinct articles or psalms were ranked.
+    The chapter grain was computed and then had no effect.
+
+    Sharing the grain keeps the cap's real purpose: two translations of one psalm have
+    different document_ids and so are still capped independently, while distinct
+    psalms inside one book are no longer one bucket.
+    """
+    if chunk.collection in chapter_grain and chunk.chapter_key:
+        return (chunk.document_id, chunk.chapter_key)
+    return (chunk.document_id,)
 
 
 def _cosine_sim(a: list[float], b: list[float]) -> float:
@@ -200,18 +230,19 @@ async def apply_dedup(
     # The grain is resolved against the surviving set, so a chunk that cosine dedup
     # already dropped cannot demote its whole collection to the title grain.
     survivors = [c for c in ranked if c.include and c.chunk_id not in to_drop]
-    chapter_grain = chapter_grain_collections(survivors)
+    chapter_grain = chapter_grain_collections(survivors, per_source_cap)
     source_counts: dict[tuple[str, ...], int] = {}
-    document_counts: dict[str, int] = {}
+    document_counts: dict[tuple[str, ...], int] = {}
     final: list[RankedChunk] = []
     for chunk in survivors:
-        document_count = document_counts.get(chunk.document_id, 0)
+        doc_key = document_key(chunk, chapter_grain)
+        document_count = document_counts.get(doc_key, 0)
         if per_document_cap is not None and document_count >= per_document_cap:
             continue
         key = source_key(chunk, chapter_grain)
         count = source_counts.get(key, 0)
         if count < per_source_cap:
             source_counts[key] = count + 1
-            document_counts[chunk.document_id] = document_count + 1
+            document_counts[doc_key] = document_count + 1
             final.append(chunk)
     return final

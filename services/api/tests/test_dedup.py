@@ -159,11 +159,18 @@ async def test_per_source_cap_drops_third_chunk():
 
 
 @pytest.mark.asyncio
-async def test_focused_per_source_cap_allows_four_but_drops_fifth():
-    chunks = [
+async def test_focused_caps_bind_within_one_chapter_not_across_chapters():
+    """Both focused caps are per chapter for a chapter-keyed collection.
+
+    This previously asserted that the fifth of five DISTINCT articles was dropped,
+    which contradicted test_summa_distinct_articles_are_not_capped_together above:
+    per_document_cap keyed on a bare document_id, and the Summa is one document, so
+    the cap fired on the collection as a whole and the chapter grain had no effect.
+    """
+    distinct_articles = [
         _chunk(
             f"chunk-{index}", "one-document", "Summa Theologiae",
-            1 - index / 10, position=index * 10, collection="summa",
+            1 - index / 10, position=index * 100, collection="summa",
             chapter_key=f"article-{index}",
         )
         for index in range(5)
@@ -171,7 +178,27 @@ async def test_focused_per_source_cap_allows_four_but_drops_fifth():
 
     with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
         result = await apply_dedup(
-            chunks, per_source_cap=4, per_document_cap=4,
+            distinct_articles, per_source_cap=4, per_document_cap=4,
+        )
+
+    assert len(result) == 5, "distinct articles are distinct sources"
+
+
+@pytest.mark.asyncio
+async def test_focused_per_document_cap_still_binds_inside_one_chapter():
+    """The cap's real purpose survives: one article cannot flood the result set."""
+    one_article = [
+        _chunk(
+            f"chunk-{index}", "one-document", "Summa Theologiae",
+            1 - index / 10, position=index * 100, collection="summa",
+            chapter_key="article-0",
+        )
+        for index in range(5)
+    ]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(
+            one_article, per_source_cap=4, per_document_cap=4,
         )
 
     assert [chunk.chunk_id for chunk in result] == [
@@ -489,3 +516,100 @@ async def test_translations_share_a_bucket_under_the_chapter_grain():
         result = await apply_dedup(chunks)
 
     assert len(result) == 2
+
+
+# ---------------------------------------------------------------------------
+# Bible chapter grain (issue #105)
+# ---------------------------------------------------------------------------
+
+def _psalm(index: int, score: float, chapter: int | None = None) -> RankedChunk:
+    """A verse chunk from the Psalter, which ingest stores as ONE document."""
+    psalm = index if chapter is None else chapter
+    return _chunk(
+        f"psalm-chunk-{index}", "bible-psalms-doc", "Psalms", score,
+        position=index * 100, collection="bible",
+        chapter_key=f"psalms/{psalm}",
+    )
+
+
+@pytest.mark.asyncio
+async def test_focused_bible_search_returns_more_than_four_distinct_psalms():
+    """Issue #105: a focused Bible search returned 4 passages against a quota of 10.
+
+    The Psalter is one document (`ingest/bible.py` builds one Document per book), so
+    both focused caps fired on the whole book and no query could return a fifth psalm.
+    """
+    chunks = [_psalm(i, 0.99 - i * 0.01) for i in range(8)]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=4)
+
+    assert len(result) == 8, "each psalm is its own source"
+
+
+@pytest.mark.asyncio
+async def test_standard_bible_search_returns_more_than_two_distinct_psalms():
+    """The same defect at the standard cap of two."""
+    chunks = [_psalm(i, 0.99 - i * 0.01) for i in range(5)]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks)
+
+    assert len(result) == 5
+
+
+@pytest.mark.asyncio
+async def test_one_psalm_cannot_flood_a_focused_bible_search():
+    """Diversity still holds inside a single psalm."""
+    chunks = [_psalm(i, 0.99 - i * 0.01, chapter=23) for i in range(6)]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=4)
+
+    assert len(result) == 4
+
+
+@pytest.mark.asyncio
+async def test_bible_without_chapter_key_falls_back_to_the_book_grain():
+    """If fetch_positions could not backfill chapter_key, the grain is demoted.
+
+    The whole collection falls back to the per-title grain rather than mixing grains,
+    so the degraded path is never looser than the healthy one.
+    """
+    chunks = [
+        _chunk(f"nokey-{i}", "bible-psalms-doc", "Psalms", 0.9 - i * 0.01,
+               position=i * 100, collection="bible", chapter_key=None)
+        for i in range(5)
+    ]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=4)
+
+    assert len(result) == 4
+
+
+@pytest.mark.asyncio
+async def test_two_translations_of_one_psalm_are_capped_independently():
+    """Why per_document_cap still exists after sharing the grain.
+
+    `source_key` keys on document_title so translations share an allowance;
+    `document_key` keys on document_id so each translation is bounded on its own.
+    """
+    chunks = [
+        _chunk(f"web-{i}", "bible-web-doc", "Psalms", 0.99 - i * 0.01,
+               position=i * 100, collection="bible", chapter_key="psalms/23")
+        for i in range(3)
+    ] + [
+        _chunk(f"dr-{i}", "bible-dr-doc", "Psalms", 0.90 - i * 0.01,
+               position=i * 100, collection="bible", chapter_key="psalms/23")
+        for i in range(3)
+    ]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=2)
+
+    # per_document_cap=2 bounds each translation; per_source_cap=4 bounds the shared
+    # title+chapter bucket, so 2 + 2 would be 4 — the source cap is what trims to 4.
+    assert len(result) == 4
+    assert sum(1 for c in result if c.chunk_id.startswith("web-")) == 2
+    assert sum(1 for c in result if c.chunk_id.startswith("dr-")) == 2
