@@ -394,7 +394,7 @@ The codebase is documented in-repo. Start here:
 | `docs/agents/` | Issue tracker, triage labels, and domain-doc conventions for agents |
 | `docs/superpowers/` | Historical plans and specs, one per feature |
 | `docs/eval/` | Retrieval evaluation rounds — datasets, run artifacts, and `report.py`, which scores a run against the judge weights |
-| `docs/research/` | Corpus expansion research (untracked; local working notes) |
+| `docs/research/` | Corpus expansion candidates — ranked gaps, with the rights and licensing constraints on each |
 | `docs/ci-cd-plan.md` | A **draft** CI/CD proposal (2026-09-09), unimplemented and pending decisions — not a description of the current pipeline |
 | `PROGRESS.md` | Historical V2 implementation log. Banner-marked; not current guidance. |
 
