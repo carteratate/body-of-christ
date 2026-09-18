@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     hyde_passage_provider: HyDEProvider = Field(
         default="luna", validation_alias="HYDE_PASSAGE_PROVIDER",
     )
-    hyde_genre_provider: Literal["haiku", "luna"] = Field(
+    hyde_genre_provider: HyDEProvider = Field(
         default="luna", validation_alias="HYDE_GENRE_PROVIDER",
     )
     hyde_luna_model: str = Field(default="gpt-5.6-luna", validation_alias="HYDE_LUNA_MODEL")
