@@ -296,7 +296,8 @@ _BIBLE_GENRE_SELECT_SYSTEM = (
     "Choose both nt-stories and nt-teachings only when an event and a teaching "
     "could provide meaningfully different evidence. Apply the same test to "
     "other overlapping routes.\n\n"
-    "Return only a JSON array of exactly four distinct route keys. No explanation."
+    "Return only a JSON array of exactly four distinct route keys. No explanation. "
+    "Example: [\"psalms\", \"ot-wisdom\", \"nt-epistles\", \"free\"]."
 )
 
 _COLLECTION_MAX_TOKENS: dict[str, int] = {
