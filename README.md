@@ -42,7 +42,8 @@ Key capabilities:
 - **Natural-language search** across 10 theological collections, with per-collection
   filtering and an adjustable per-source result quota (3, 4, 5, or 10).
 - **Focused search** — quota 10 against a single collection, which widens the candidate
-  budget and allows more passages per document instead of just returning more rows.
+  budget and loosens the diversity cap to the chapter rather than the whole work, so a
+  single-document collection can fill the quota instead of just returning more rows.
 - **Progressive, streamed results** — ranked passages appear first, then relevance
   explanations stream in passage-by-passage over SSE.
 - **Document reader** — jump from any result into a chapter view of the full source,

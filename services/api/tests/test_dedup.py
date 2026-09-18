@@ -185,8 +185,13 @@ async def test_focused_caps_bind_within_one_chapter_not_across_chapters():
 
 
 @pytest.mark.asyncio
-async def test_focused_per_document_cap_still_binds_inside_one_chapter():
-    """The cap's real purpose survives: one article cannot flood the result set."""
+async def test_focused_source_cap_still_binds_inside_one_chapter():
+    """One article cannot flood the result set.
+
+    Named for per_source_cap deliberately: per_document_cap cannot bind here, or
+    anywhere, while it equals per_source_cap — see document_key's docstring. This
+    result is identical with per_document_cap set to None.
+    """
     one_article = [
         _chunk(
             f"chunk-{index}", "one-document", "Summa Theologiae",
@@ -590,10 +595,13 @@ async def test_bible_without_chapter_key_falls_back_to_the_book_grain():
 
 @pytest.mark.asyncio
 async def test_two_translations_of_one_psalm_are_capped_independently():
-    """Why per_document_cap still exists after sharing the grain.
+    """The ONLY configuration in which per_document_cap is observable.
 
     `source_key` keys on document_title so translations share an allowance;
     `document_key` keys on document_id so each translation is bounded on its own.
+    This needs per_document_cap < per_source_cap, which no caller passes today —
+    production passes them equal, where the cap is provably inert. Kept to pin the
+    distinction between the two keys, not to describe live behaviour.
     """
     chunks = [
         _chunk(f"web-{i}", "bible-web-doc", "Psalms", 0.99 - i * 0.01,

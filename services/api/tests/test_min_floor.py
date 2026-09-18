@@ -74,8 +74,13 @@ def test_focused_floor_fills_from_distinct_chapters_of_one_document():
     assert len(result) == 5, "five distinct articles, five floor slots"
 
 
-def test_focused_floor_still_caps_within_one_chapter():
-    """The cap keeps its meaning inside a chapter — one article cannot own the floor."""
+def test_focused_floor_takes_one_chunk_per_chapter():
+    """One article cannot own the floor.
+
+    This is `seen_fine` doing the work, not per_document_cap: the floor admits at
+    most one chunk per source_key, so no document_key bucket ever reaches two and
+    the cap cannot bind at any value. Identical with per_document_cap set to None.
+    """
     ranked = [
         _chunk(
             f"chunk-{index}", 1 - index / 10,

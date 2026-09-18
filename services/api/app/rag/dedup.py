@@ -46,14 +46,16 @@ _PER_SOURCE_CAP = 2
 # chunks stream before explanations, so time-to-first-result is unchanged. quota is
 # bounded 3-5 (models/search.py), capping the worst case at +9 per search.
 #
-# COST (2026-09-18, this change): giving per_document_cap the same grain lets a
-# FOCUSED search over a single-document collection fill its quota instead of stopping
-# at max_passages_per_document. Measured on synthetic pools, a focused Bible or Summa
-# search with more distinct chapters than the cap went from 4 results to quota (10);
-# a standard search from 2 to quota (4). quota_cap still bounds the total per
-# collection, and focused search is single-collection by construction, so the worst
-# case is +6 explanation streams and DB writes on a focused search and +2 on a
-# standard one — not unbounded growth.
+# COST (2026-09-18, this change): two separate effects, with different causes.
+# FOCUSED search over a single-document collection now fills its quota instead of
+# stopping at max_passages_per_document — that one comes from giving per_document_cap
+# the chapter grain, and measured on synthetic pools it went 4 -> quota (10), so +6.
+# STANDARD search over the Bible went 2 -> quota — that one comes ENTIRELY from adding
+# "bible" to the set below, because standard search passes per_document_cap=None
+# (runner.py: the bare `dedup.run(ranked)` branch) and so never consults the document
+# key at all. Standard quota is 3-5, so its worst case is +3, not +2.
+# quota_cap still bounds the total per collection and focused search is
+# single-collection by construction, so neither is unbounded growth.
 # The Bible joins them for the same structural reason: `datapipeline/ingest/bible.py`
 # builds one Document per book, so the whole Psalter is a single document titled
 # "Psalms". A Bible chapter is a cleaner grain than any of the above — it is a topical
@@ -158,7 +160,7 @@ def source_key(chunk: RankedChunk, chapter_grain: frozenset[str]) -> tuple[str, 
 def document_key(chunk: RankedChunk, chapter_grain: frozenset[str]) -> tuple[str, ...]:
     """The unit `per_document_cap` counts against — the same grain as `source_key`.
 
-    `per_document_cap` exists to stop one PHYSICAL document dominating, which
+    `per_document_cap` was introduced to stop one PHYSICAL document dominating, which
     `source_key` cannot do alone because it keys on document_title so that several
     translations of one work share an allowance. Keyed on a bare document_id it also
     silently overrode the chapter grain: every chapter-keyed collection is stored as
@@ -168,9 +170,21 @@ def document_key(chunk: RankedChunk, chapter_grain: frozenset[str]) -> tuple[str
     Psalter, at four results however many distinct articles or psalms were ranked.
     The chapter grain was computed and then had no effect.
 
-    Sharing the grain keeps the cap's real purpose: two translations of one psalm have
-    different document_ids and so are still capped independently, while distinct
-    psalms inside one book are no longer one bucket.
+    ⚠️ SHARING THE GRAIN MAKES THIS CAP INERT AT THE VALUES PRODUCTION PASSES.
+    A document_id determines its collection and title, so this key strictly REFINES
+    `source_key` — every document bucket sits inside one source bucket. The document
+    count can therefore never reach a ceiling the source count has not already
+    reached, and `per_document_cap` cannot change the output unless it is strictly
+    SMALLER than `per_source_cap`. `runner.py` passes them equal (both
+    `max_passages_per_document`) on the only path that passes them at all; standard
+    search passes `per_document_cap=None`. Verified by brute force over random pools:
+    zero outputs differ with the cap applied versus removed.
+
+    It is kept as a guard for a future caller that passes a smaller document cap than
+    source cap, and because that is the only configuration in which the distinction
+    between the two keys is observable — two translations of one psalm share a
+    source_key but not a document_key. Do not describe it as a live constraint, and
+    do not add machinery that assumes it fires.
     """
     if chunk.collection in chapter_grain and chunk.chapter_key:
         return (chunk.document_id, chunk.chapter_key)
