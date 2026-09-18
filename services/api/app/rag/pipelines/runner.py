@@ -154,7 +154,9 @@ def _classify_outcomes(
     return outcome, collection_outcomes
 
 
-def _pool_sizes(config: PipelineConfig, quota: int) -> tuple[int | None, int | None]:
+def _pool_sizes(
+    config: PipelineConfig, quota: int, *, hyde_paths: int | None = None,
+) -> tuple[int | None, int | None]:
     """(per-strategy retrieval k, RRF top_n) for this pipeline, or (None, None).
 
     `llm_only` returns (None, None) so retrieval keeps its historical
@@ -171,9 +173,10 @@ def _pool_sizes(config: PipelineConfig, quota: int) -> tuple[int | None, int | N
         # Ablation pipelines pin k so removing a path does not also deepen the
         # remaining ones (see RetrievalConfig.retrieval_k_override).
         return config.retrieval.retrieval_k_override, pool
-    # Bible contributes extra HyDE vectors, but sizing on the common case (one query
-    # vector + one HyDE vector + FTS) is what keeps per-path limits sane.
-    n_paths = 1 + (1 if config.retrieval.hyde else 0) + (1 if config.retrieval.fts else 0)
+    # Preserve common-case sizing unless a focused Bible search supplies its actual
+    # HyDE path count. Eight genres should not turn a 50-per-path search into 500.
+    n_hyde = hyde_paths if hyde_paths is not None else int(config.retrieval.hyde)
+    n_paths = 1 + n_hyde + int(config.retrieval.fts)
     return budget.retrieval_k(pool, n_paths), pool
 
 
@@ -338,10 +341,24 @@ async def run(
         return result
 
     hyde_module = hyde_s25 if config.retrieval.hyde else hyde_none
-    k, top_n = _pool_sizes(config, quota)
+    focused_bible_hyde = bool(
+        search_plan is not None
+        and search_plan.focused
+        and collections == ["bible"]
+        and config.retrieval.hyde
+    )
 
     query_vec = await _timed_async("embed", embed.run(query, tracker))
-    hyde_vecs = await _timed_async("hyde", hyde_module.run(query, collections, tracker))
+    hyde_call = (
+        hyde_s25.run(query, collections, tracker, all_bible_genres=True)
+        if focused_bible_hyde
+        else hyde_module.run(query, collections, tracker)
+    )
+    hyde_vecs = await _timed_async("hyde", hyde_call)
+    k, top_n = _pool_sizes(
+        config, quota,
+        hyde_paths=len(hyde_vecs.get("bible", [])) if focused_bible_hyde else None,
+    )
     vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(query_vec, hyde_vecs, collections, quota, user_id, k=k))
     if config.retrieval.fts:
         fts_raw = await _timed_async("retrieve_fts", retrieve_fts.run(query, collections, quota, user_id, k=k))

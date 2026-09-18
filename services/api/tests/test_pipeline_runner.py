@@ -29,6 +29,12 @@ def test_registry_configs_have_required_fields():
         assert config.rerank.mode in {"llm_only", "cohere_only", "both"}
 
 
+def test_focused_bible_retrieval_budget_counts_all_hyde_paths():
+    assert runner._pool_sizes(PIPELINES["hyde_cohere_luna"], 10) == (50, 100)
+    assert runner._pool_sizes(PIPELINES["hyde_cohere_luna"], 10, hyde_paths=8) == (15, 100)
+    assert runner._pool_sizes(PIPELINES["hyde_cohere_luna"], 10, hyde_paths=7) == (17, 100)
+
+
 def test_production_pipeline_is_registered():
     """pipeline.py's production choice must exist, or every live search 500s."""
     from app.rag.pipeline import _PRODUCTION_PIPELINE
@@ -320,7 +326,7 @@ async def test_runner_drives_a_cohere_pipeline_end_to_end():
     )
     with (
         patch("app.rag.steps.embed.run", new=AsyncMock(return_value=[0.1] * 1536)),
-        patch("app.rag.steps.hyde_s25.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.hyde_s25.run", new=AsyncMock(return_value={})) as hyde_step,
         patch("app.rag.steps.retrieve_vector.run", new=AsyncMock(return_value={})),
         patch("app.rag.steps.retrieve_fts.run", new=AsyncMock(return_value={})),
         patch("app.rag.steps.rrf.run", return_value={"bible": []}),
@@ -334,6 +340,7 @@ async def test_runner_drives_a_cohere_pipeline_end_to_end():
     assert isinstance(result, PipelineResult)
     assert result.pipeline == "hyde_cohere_haiku"
     assert [c.chunk_id for c in result.chunks] == [fake_chunk.chunk_id]
+    assert "all_bible_genres" not in hyde_step.await_args.kwargs
 
 
 @pytest.mark.asyncio
@@ -353,8 +360,8 @@ async def test_focused_plan_controls_runner_budget_cap_and_final_count():
 
     with (
         patch("app.rag.steps.embed.run", new=AsyncMock(return_value=[0.1] * 1536)),
-        patch("app.rag.steps.hyde_s25.run", new=AsyncMock(return_value={})),
-        patch("app.rag.steps.retrieve_vector.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.hyde_s25.run", new=AsyncMock(return_value={"bible": [[0.2]] * 8})) as hyde_step,
+        patch("app.rag.steps.retrieve_vector.run", new=AsyncMock(return_value={})) as vector_step,
         patch("app.rag.steps.retrieve_fts.run", new=AsyncMock(return_value={})),
         patch("app.rag.steps.rrf.run", return_value={"bible": []}),
         patch("app.rag.steps.rerank.run", new=rerank_step),
@@ -367,6 +374,8 @@ async def test_focused_plan_controls_runner_budget_cap_and_final_count():
         )
 
     assert rerank_step.await_args.kwargs["terminal_candidate_budget"] == 25
+    assert hyde_step.await_args.kwargs["all_bible_genres"] is True
+    assert vector_step.await_args.kwargs["k"] == 15
     assert dedup_step.await_args.kwargs["per_source_cap"] == 4
     assert dedup_step.await_args.kwargs["per_document_cap"] == 4
     assert len(result.chunks) == 10
