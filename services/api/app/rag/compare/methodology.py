@@ -36,7 +36,13 @@ def snapshot(pipeline_names: list[str]) -> dict:
         "models": {
             "embedding": settings.embedding_model,
             "embedding_dimensions": settings.embedding_dims,
-            "hyde": settings.hyde_model,
+            "hyde": (
+                settings.hyde_luna_model
+                if settings.hyde_passage_provider == "luna"
+                else settings.hyde_model
+            ),
+            "hyde_passage_provider": settings.hyde_passage_provider,
+            "hyde_genre_selector": settings.hyde_model,
             "rerank_haiku": settings.rerank_model,
             "rerank_luna": settings.rerank_luna_model,
             "judge": _JUDGE_MODEL,

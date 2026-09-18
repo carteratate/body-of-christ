@@ -18,6 +18,8 @@ from app.db import close_pool, get_pool, init_pool
 from app.llm import close_llm, init_llm
 from app.rag.api_keys import close_api_keys, init_api_keys, is_ready as hyde_is_ready
 from app.rag.steps.embed import close_embed, init_embed, is_ready as embed_is_ready
+from app.rag.steps.hyde_luna import close as close_hyde_luna, init as init_hyde_luna
+from app.rag.steps.hyde_luna import is_ready as hyde_luna_is_ready
 from app.rag.steps.rerank_haiku import close_rerank, init_rerank
 from app.rag.steps.rerank_cohere import close_cohere, init_cohere, is_ready as cohere_is_ready
 from app.rag.steps.llm_rerank.openai_provider import close as close_luna, init as init_luna
@@ -55,7 +57,9 @@ def _search_readiness() -> dict[str, bool]:
     return {
         "database": get_pool() is not None,
         "embeddings": embed_is_ready(),
-        "hyde": hyde_is_ready(),
+        "hyde": hyde_is_ready() and (
+            settings.hyde_passage_provider != "luna" or hyde_luna_is_ready()
+        ),
         "qdrant": get_qdrant_client() is not None,
         "cohere": cohere_is_ready(),
         "terminal_reranker": luna_provider.is_ready(),
@@ -121,6 +125,7 @@ async def lifespan(app: FastAPI):
     init_embed()
     init_qdrant()
     init_api_keys()
+    init_hyde_luna()
     init_rerank()
     init_cohere()
     init_luna()
@@ -147,6 +152,7 @@ async def lifespan(app: FastAPI):
     await close_cohere()
     await close_rerank()
     await close_api_keys()
+    await close_hyde_luna()
     await close_embed()
     await close_qdrant()
     await close_explain()

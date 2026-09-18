@@ -354,6 +354,7 @@ def _artifact_fingerprint(pipelines: list[str], quota: int) -> dict:
         root / "app/rag/pipelines/runner.py",
         root / "app/rag/steps/embed.py",
         root / "app/rag/steps/hyde_s25.py",
+        root / "app/rag/steps/hyde_luna.py",
         root / "app/rag/steps/retrieve_fts.py",
         root / "app/rag/steps/retrieve_vector.py",
         root / "app/rag/steps/rrf.py",
@@ -372,7 +373,13 @@ def _artifact_fingerprint(pipelines: list[str], quota: int) -> dict:
             for name in sorted(pipelines)
         },
         "models": {
-            "hyde": settings.hyde_model,
+            "hyde": (
+                settings.hyde_luna_model
+                if settings.hyde_passage_provider == "luna"
+                else settings.hyde_model
+            ),
+            "hyde_passage_provider": settings.hyde_passage_provider,
+            "hyde_genre_selector": settings.hyde_model,
             "embedding": "text-embedding-3-large",
         },
         "thresholds": {
@@ -427,7 +434,13 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
             name: dataclasses.asdict(REGISTRY[name]) for name in sorted(pipelines)
         },
         "models": {
-            "hyde": settings.hyde_model,
+            "hyde": (
+                settings.hyde_luna_model
+                if settings.hyde_passage_provider == "luna"
+                else settings.hyde_model
+            ),
+            "hyde_passage_provider": settings.hyde_passage_provider,
+            "hyde_genre_selector": settings.hyde_model,
             "rerank_luna": settings.rerank_luna_model,
         },
         "pricing": pricing_snapshot(),
