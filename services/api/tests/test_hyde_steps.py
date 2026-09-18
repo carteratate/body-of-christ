@@ -1,3 +1,4 @@
+import asyncio
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -84,7 +85,7 @@ async def test_bible_genre_selector_wrong_cardinality_records_fallback():
 
     assert result == {}
     assert generate.await_args.kwargs["selected_genres"] == [
-        "free", "nt-epistles", "psalms",
+        "free", "nt-epistles", "psalms", "nt-teachings",
     ]
     assert degradation.event_dicts() == [{
         "stage": "hyde_genre_select",
@@ -93,3 +94,90 @@ async def test_bible_genre_selector_wrong_cardinality_records_fallback():
         "scope": "bible",
         "details": {"valid_genre_count": 2},
     }]
+
+
+@pytest.mark.asyncio
+async def test_focused_bible_generates_and_embeds_all_eight_genres_without_selector():
+    client = MagicMock()
+    client.messages.create = AsyncMock()
+    generated_systems: list[str] = []
+
+    async def generate(_client, system, _query, _max_tokens, **_kwargs):
+        generated_systems.append(system)
+        return system
+
+    with (
+        patch("app.rag.steps.hyde_s25.get_key_for", return_value="key"),
+        patch("app.rag.steps.hyde_s25.get_client", return_value=client),
+        patch("app.rag.steps.hyde_s25.get_semaphore", return_value=asyncio.Semaphore(4)),
+        patch("app.rag.steps.hyde_s25._generate_single", new=generate),
+        patch("app.rag.steps.hyde_s25.embed_run", new=AsyncMock(return_value=[0.1])) as embed,
+    ):
+        result = await hyde_s25.run(
+            "grace", ["bible"], CostTracker(), all_bible_genres=True,
+        )
+
+    client.messages.create.assert_not_awaited()
+    assert set(generated_systems) == {
+        hyde_s25._HYDE_BIBLE_FREE_PROMPT,
+        *hyde_s25._GENRE_HYDE_PROMPTS.values(),
+    }
+    assert len(result["bible"]) == 8
+    assert embed.await_count == 8
+
+
+@pytest.mark.asyncio
+async def test_standard_bible_selects_four_genres():
+    client = MagicMock()
+    client.messages.create = AsyncMock(return_value=SimpleNamespace(
+        content=[SimpleNamespace(text='["free", "psalms", "nt-stories", "ot-wisdom"]')],
+        usage=SimpleNamespace(input_tokens=1, output_tokens=1),
+    ))
+    generated_systems: list[str] = []
+
+    async def generate(_client, system, _query, _max_tokens, **_kwargs):
+        generated_systems.append(system)
+        return system
+
+    with (
+        patch("app.rag.steps.hyde_s25.get_key_for", return_value="key"),
+        patch("app.rag.steps.hyde_s25.get_client", return_value=client),
+        patch("app.rag.steps.hyde_s25.get_semaphore", return_value=asyncio.Semaphore(4)),
+        patch("app.rag.steps.hyde_s25._generate_single", new=generate),
+        patch("app.rag.steps.hyde_s25.embed_run", new=AsyncMock(return_value=[0.1])) as embed,
+    ):
+        result = await hyde_s25.run("grace", ["bible"], CostTracker())
+
+    client.messages.create.assert_awaited_once()
+    assert generated_systems == [
+        hyde_s25._HYDE_BIBLE_FREE_PROMPT,
+        hyde_s25._HYDE_PSALMS_PROMPT,
+        hyde_s25._HYDE_NT_STORIES_PROMPT,
+        hyde_s25._HYDE_OT_WISDOM_PROMPT,
+    ]
+    assert len(result["bible"]) == 4
+    assert embed.await_count == 4
+
+
+@pytest.mark.asyncio
+async def test_focused_bible_keeps_successful_genres_when_one_generation_fails():
+    client = MagicMock()
+    client.messages.create = AsyncMock()
+
+    async def generate(_client, system, _query, _max_tokens, **_kwargs):
+        return None if system == hyde_s25._HYDE_PSALMS_PROMPT else system
+
+    with (
+        patch("app.rag.steps.hyde_s25.get_key_for", return_value="key"),
+        patch("app.rag.steps.hyde_s25.get_client", return_value=client),
+        patch("app.rag.steps.hyde_s25.get_semaphore", return_value=asyncio.Semaphore(4)),
+        patch("app.rag.steps.hyde_s25._generate_single", new=generate),
+        patch("app.rag.steps.hyde_s25.embed_run", new=AsyncMock(return_value=[0.1])) as embed,
+    ):
+        result = await hyde_s25.run(
+            "grace", ["bible"], CostTracker(), all_bible_genres=True,
+        )
+
+    client.messages.create.assert_not_awaited()
+    assert len(result["bible"]) == 7
+    assert embed.await_count == 7

@@ -248,9 +248,16 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
     ),
 }
 
+_BIBLE_SELECTED_GENRE_COUNT = 4
+_BIBLE_VALID_GENRES = {
+    "free", "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
+    "nt-stories", "nt-epistles", "nt-teachings",
+}
+_BIBLE_DEFAULT_GENRES = ["free", "nt-epistles", "psalms", "nt-teachings"]
+
 _BIBLE_GENRE_SELECT_SYSTEM = (
     "You are choosing which biblical genres to search for a theological query. "
-    "Given a query, select the 3 genres most likely to contain directly relevant biblical passages.\n\n"
+    "Given a query, select the 4 genres most likely to contain directly relevant biblical passages.\n\n"
     "Available genres:\n"
     "  free        — unconstrained; picks the most fitting part of the Bible for the query\n"
     "  psalms      — Psalms: lament, praise, trust, thanksgiving, worship\n"
@@ -260,7 +267,7 @@ _BIBLE_GENRE_SELECT_SYSTEM = (
     "  nt-stories  — Gospels and Acts: miracles, Passion, Resurrection, early Church events\n"
     "  nt-epistles — Paul and general epistles: theological argument, pastoral instruction\n"
     "  nt-teachings — Jesus's direct teaching: Sermon on the Mount, parables, I am sayings\n\n"
-    "Return ONLY a JSON array of exactly 3 genre keys, e.g. [\"psalms\", \"nt-teachings\", \"free\"]. "
+    "Return ONLY a JSON array of exactly 4 distinct genre keys, e.g. [\"psalms\", \"nt-teachings\", \"free\", \"nt-epistles\"]. "
     "No explanation, no other text."
 )
 
@@ -320,20 +327,26 @@ async def _generate_single(
 # ---------------------------------------------------------------------------
 
 
+def _parse_bible_genres(raw: str) -> list[str]:
+    genres = json.loads(raw.strip())
+    if not isinstance(genres, list):
+        return []
+    return list(dict.fromkeys(
+        genre for genre in genres
+        if isinstance(genre, str) and genre in _BIBLE_VALID_GENRES
+    ))
+
+
 async def choose_bible_hyde_genres(
     query: str,
     client: anthropic.AsyncAnthropic,
-    k: int = 3,
+    k: int = _BIBLE_SELECTED_GENRE_COUNT,
 ) -> list[str]:
     """Pre-select k bible genres before any HyDE generation (S2.5).
 
     One Haiku call decides which genres to generate, so only k generation
     calls follow instead of all 8. Falls back to a sensible default on error.
     """
-    _VALID = {"free", "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
-              "nt-stories", "nt-epistles", "nt-teachings"}
-    _DEFAULT = ["free", "nt-epistles", "psalms"]
-
     try:
         response = await client.messages.create(
             model=settings.hyde_model,
@@ -341,8 +354,7 @@ async def choose_bible_hyde_genres(
             system=_BIBLE_GENRE_SELECT_SYSTEM,
             messages=[{"role": "user", "content": query}],
         )
-        genres = json.loads(response.content[0].text.strip())
-        selected = [g for g in genres if isinstance(g, str) and g in _VALID]
+        selected = _parse_bible_genres(response.content[0].text)
         if len(selected) == k:
             return selected
         logger.warning(
@@ -352,7 +364,7 @@ async def choose_bible_hyde_genres(
     except Exception as exc:
         logger.warning("choose_bible_hyde_genres: failed (%s); using defaults", exc)
 
-    return _DEFAULT[:k]
+    return _BIBLE_DEFAULT_GENRES[:k]
 
 
 async def generate_hyde_passages(
@@ -395,11 +407,14 @@ async def run(
     query: str,
     collections: list[str],
     cost_tracker: CostTracker,
+    *,
+    all_bible_genres: bool = False,
 ) -> dict[str, list[list[float]]]:
     """Generate HyDE passages and embed them per collection.
 
     Returns dict[collection, list[embedding_vectors]].
-    Bible gets 3 vectors (1 selector call + 3 genre generators).
+    Bible normally gets 4 vectors (1 selector call + 4 genre generators).
+    Focused Bible searches can request all 8 without a selector call.
     Each other collection gets 1 vector.
     """
     async def _hyde_and_embed(col: str) -> tuple[str, list[list[float]]]:
@@ -408,35 +423,34 @@ async def run(
         semaphore = get_semaphore(key)
 
         if col == "bible":
-            response = await client.messages.create(
-                model=settings.hyde_model,
-                max_tokens=50,
-                system=_BIBLE_GENRE_SELECT_SYSTEM,
-                messages=[{"role": "user", "content": query}],
-            )
-            cost_tracker.record(
-                "hyde_genre_select", settings.hyde_model,
-                input_tokens=response.usage.input_tokens,
-                output_tokens=response.usage.output_tokens,
-            )
-            try:
-                _VALID = {"free", "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
-                          "nt-stories", "nt-epistles", "nt-teachings"}
-                genres = json.loads(response.content[0].text.strip())
-                selected = [g for g in genres if isinstance(g, str) and g in _VALID]
-                if len(selected) != 3:
+            selected: list[str] | None = None
+            if not all_bible_genres:
+                response = await client.messages.create(
+                    model=settings.hyde_model,
+                    max_tokens=50,
+                    system=_BIBLE_GENRE_SELECT_SYSTEM,
+                    messages=[{"role": "user", "content": query}],
+                )
+                cost_tracker.record(
+                    "hyde_genre_select", settings.hyde_model,
+                    input_tokens=response.usage.input_tokens,
+                    output_tokens=response.usage.output_tokens,
+                )
+                try:
+                    selected = _parse_bible_genres(response.content[0].text)
+                    if len(selected) != _BIBLE_SELECTED_GENRE_COUNT:
+                        degradation.record(
+                            "hyde_genre_select", "invalid_response", "defaults_used",
+                            scope="bible",
+                            details={"valid_genre_count": len(selected)},
+                        )
+                        selected = _BIBLE_DEFAULT_GENRES
+                except Exception:
                     degradation.record(
                         "hyde_genre_select", "invalid_response", "defaults_used",
                         scope="bible",
-                        details={"valid_genre_count": len(selected)},
                     )
-                    selected = ["free", "nt-epistles", "psalms"]
-            except Exception:
-                degradation.record(
-                    "hyde_genre_select", "invalid_response", "defaults_used",
-                    scope="bible",
-                )
-                selected = ["free", "nt-epistles", "psalms"]
+                    selected = _BIBLE_DEFAULT_GENRES
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, selected_genres=selected,
                 cost_tracker=cost_tracker,

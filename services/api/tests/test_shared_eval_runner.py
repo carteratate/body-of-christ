@@ -6,6 +6,7 @@ import pytest
 
 from app.rag.compare import shared_runner
 from app.rag.pipelines.registry import PIPELINES
+from app.rag.steps.types import RetrievalPath
 
 
 def _row(i: int) -> dict:
@@ -36,7 +37,7 @@ async def test_capture_runs_shared_remote_steps_once_and_derives_pipeline_depths
         patch("app.rag.compare.shared_runner.hyde_s25.run",
               new=AsyncMock(return_value={"bible": [[0.2]]})),
         patch("app.rag.compare.shared_runner.retrieve_vector.run",
-              new=AsyncMock(return_value={"bible": [ranked]})) as vector,
+              new=AsyncMock(return_value={"bible": [RetrievalPath("hyde", ranked)]})) as vector,
         patch("app.rag.compare.shared_runner.retrieve_fts.run",
               new=AsyncMock(return_value={"bible": ranked})) as fts,
         patch("app.rag.compare.shared_runner.fetch_positions.run",
