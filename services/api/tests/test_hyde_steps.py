@@ -8,6 +8,11 @@ import pytest
 
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps import degradation, hyde_none, hyde_s25
+from app.rag.constants import VALID_COLLECTIONS
+
+
+def test_every_known_non_bible_collection_has_its_own_hyde_prompt():
+    assert set(hyde_s25._COLLECTION_HYDE_PROMPTS) == VALID_COLLECTIONS - {"bible"}
 
 
 @pytest.mark.asyncio
