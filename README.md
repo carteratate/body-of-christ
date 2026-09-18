@@ -393,7 +393,7 @@ The codebase is documented in-repo. Start here:
 | `docs/architecture/` | The August 2026 production architecture review (items 4–8 open) |
 | `docs/agents/` | Issue tracker, triage labels, and domain-doc conventions for agents |
 | `docs/superpowers/` | Historical plans and specs, one per feature |
-| `docs/eval/` | Retrieval evaluation rounds — datasets, run artifacts, and `report.py`, which scores a run against the judge weights |
+| `docs/eval/` | Retrieval evaluation round 3 — `ROUND3_REPORT.md` and its final run data. `.gitignore:37` excludes `docs/eval/*` with these two as the only exceptions, so the working directory holds far more than the repo does. |
 | `docs/research/` | Corpus expansion candidates — ranked gaps, with the rights and licensing constraints on each |
 | `docs/ci-cd-plan.md` | A **draft** CI/CD proposal (2026-09-09), unimplemented and pending decisions — not a description of the current pipeline |
 | `PROGRESS.md` | Historical V2 implementation log. Banner-marked; not current guidance. |
