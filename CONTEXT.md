@@ -23,3 +23,19 @@ _Avoid_: Vector database, pgvector store
 **Passage**:
 The shared corpus unit whose stable identity joins a reader-store chunk to its search-index point.
 _Avoid_: Chunk, result
+
+**My Passages**:
+A person's private list of source Passages they have saved for later, with optional private notes.
+_Avoid_: Collection
+
+**Study**:
+A person-authored work that places source Passages and original writing in a chosen order.
+_Avoid_: Collection
+
+**Study block**:
+One ordered part of a Study: original writing or an occurrence of a source Passage with its own optional heading and commentary.
+_Avoid_: Bookmark
+
+**Published version**:
+A fixed, publicly readable form of a Study or saved Passage as it appeared when its owner chose to publish it.
+_Avoid_: Live share
