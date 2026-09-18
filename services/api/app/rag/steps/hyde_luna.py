@@ -88,18 +88,19 @@ async def generate(system: str, query: str, max_tokens: int) -> tuple[str, int, 
 
 async def select_bible_genres(system: str, query: str) -> tuple[str, int, int]:
     """Return a schema-constrained JSON object and billed token counts."""
-    if _client is None:
+    if _client is None or _semaphore is None:
         raise RuntimeError("Luna HyDE client not initialized")
-    response = await _client.chat.completions.create(
-        model=settings.hyde_luna_model,
-        reasoning_effort="none",
-        max_completion_tokens=100,
-        response_format=_BIBLE_GENRE_SCHEMA,
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": query},
-        ],
-    )
+    async with _semaphore:
+        response = await _client.chat.completions.create(
+            model=settings.hyde_luna_model,
+            reasoning_effort="none",
+            max_completion_tokens=100,
+            response_format=_BIBLE_GENRE_SCHEMA,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": query},
+            ],
+        )
     choice = response.choices[0]
     if choice.finish_reason != "stop" or getattr(choice.message, "refusal", None):
         raise ValueError(f"Luna genre selection incomplete: finish_reason={choice.finish_reason}")

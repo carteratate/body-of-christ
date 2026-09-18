@@ -197,7 +197,10 @@ async def test_luna_genre_selector_uses_strict_json_schema():
     client = MagicMock()
     client.chat.completions.create = AsyncMock(return_value=response)
 
-    with patch.object(hyde_luna, "_client", client):
+    with (
+        patch.object(hyde_luna, "_client", client),
+        patch.object(hyde_luna, "_semaphore", asyncio.Semaphore(8)),
+    ):
         result = await hyde_luna.select_bible_genres("Choose genres", "What is grace?")
 
     assert result == (content, 500, 25)
@@ -214,6 +217,32 @@ async def test_luna_genre_selector_uses_strict_json_schema():
     assert set(schema["properties"]["genres"]["items"]["enum"]) == (
         hyde_s25._BIBLE_VALID_GENRES
     )
+
+
+@pytest.mark.asyncio
+async def test_luna_genre_selector_shares_openai_limit():
+    content = '{"genres":["free","psalms","nt-epistles","nt-teachings"]}'
+    client = MagicMock()
+    client.chat.completions.create = AsyncMock(return_value=SimpleNamespace(
+        choices=[SimpleNamespace(
+            finish_reason="stop",
+            message=SimpleNamespace(content=content, refusal=None),
+        )],
+        usage=SimpleNamespace(prompt_tokens=1, completion_tokens=1),
+    ))
+    semaphore = asyncio.Semaphore(1)
+    await semaphore.acquire()
+    with (
+        patch.object(hyde_luna, "_client", client),
+        patch.object(hyde_luna, "_semaphore", semaphore),
+    ):
+        task = asyncio.create_task(hyde_luna.select_bible_genres("system", "query"))
+        try:
+            await asyncio.sleep(0.01)
+            client.chat.completions.create.assert_not_awaited()
+        finally:
+            semaphore.release()
+        assert (await task)[0] == content
 
 
 @pytest.mark.asyncio
