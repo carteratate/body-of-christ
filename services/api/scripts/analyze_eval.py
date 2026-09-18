@@ -23,6 +23,18 @@ composite derived from it are NOT comparable across this boundary. Segment runs 
 date the way `rerank.LLM_RERANK_CONTRACT_VERSION` segments the scoring contract;
 do not pool pre- and post-2026-08-19 suites into one comparison.
 
+METHODOLOGY BREAK (2026-09-18): that floor moved again, and further for focused
+searches. `bible` joined the chapter-keyed collections, so the Psalter — one document
+per book — is now keyed per psalm rather than per book. Separately, `per_document_cap`
+now shares the chapter grain in both `dedup.apply_dedup` and `steps.min_floor`.
+
+For THIS script's purposes only the `bible` half matters: the lab reaches the pipeline
+through `runner.run_from_candidates`, which calls `dedup.run(ranked)` and
+`min_floor.run(ranked, quota)` with no caps and no search plan, so it cannot produce a
+focused run at all. The grain change still moves `redundancy_rate` for any suite whose
+queries touch `bible`, because the Psalter is no longer one bucket. Not comparable across
+this boundary; segment as above.
+
 Composites are re-scored from persisted per-dimension scores under the weights
 currently in `judge.WEIGHTS`, so runs judged before and after a re-weighting stay
 directly comparable. A run judged under different weights is flagged, not silently

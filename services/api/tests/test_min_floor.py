@@ -53,7 +53,13 @@ def test_caps_at_floor_limit():
     assert len(result) == min_floor._FLOOR_N
 
 
-def test_focused_floor_honors_four_passage_document_cap():
+def test_focused_floor_fills_from_distinct_chapters_of_one_document():
+    """Pass 2's whole purpose: a single chaptered collection still fills the floor.
+
+    This previously asserted 4, because per_document_cap keyed on a bare
+    document_id and every chapter-keyed collection is stored as one document — so
+    the cap cut pass 2 off one short of the floor's own limit, min(quota, _FLOOR_N).
+    """
     ranked = [
         _chunk(
             f"chunk-{index}", 1 - index / 10,
@@ -65,7 +71,28 @@ def test_focused_floor_honors_four_passage_document_cap():
 
     result = min_floor.run(ranked, quota=10, per_document_cap=4)
 
-    assert len(result) == 4
+    assert len(result) == 5, "five distinct articles, five floor slots"
+
+
+def test_focused_floor_takes_one_chunk_per_chapter():
+    """One article cannot own the floor.
+
+    This is `seen_fine` doing the work, not per_document_cap: the floor admits at
+    most one chunk per source_key, so no document_key bucket ever reaches two and
+    the cap cannot bind at any value. Identical with per_document_cap set to None.
+    """
+    ranked = [
+        _chunk(
+            f"chunk-{index}", 1 - index / 10,
+            title="Summa Theologiae", collection="summa",
+            chapter_key="article-0", document_id="one-document",
+        )
+        for index in range(5)
+    ]
+
+    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+
+    assert len(result) == 1, "pass 1 takes one per work; pass 2 finds no new chapter"
 
 
 def test_respects_quota_when_smaller_than_floor():
@@ -190,3 +217,35 @@ def test_floor_degraded_is_not_more_diverse_than_healthy():
     n_degraded = len({c.collection for c in min_floor.run(degraded, quota=5)})
 
     assert n_degraded <= n_healthy
+
+
+def test_focused_bible_floor_fills_from_distinct_psalms():
+    """Issue #105's defect in the floor path: the Psalter is one document."""
+    ranked = [
+        _chunk(
+            f"psalm-{index}", 1 - index / 10,
+            title="Psalms", collection="bible",
+            chapter_key=f"psalms/{index}", document_id="bible-psalms",
+        )
+        for index in range(6)
+    ]
+
+    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+
+    assert len(result) == 5, "bounded by _FLOOR_N, not by the document cap"
+
+
+def test_floor_degraded_bible_is_not_more_diverse_than_healthy():
+    """Without chapter_key the grain demotes, and the floor must not get looser."""
+    ranked = [
+        _chunk(
+            f"nokey-{index}", 1 - index / 10,
+            title="Psalms", collection="bible",
+            chapter_key=None, document_id="bible-psalms",
+        )
+        for index in range(6)
+    ]
+
+    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+
+    assert len(result) == 1, "one work, no chapter grain — pass 2 finds nothing new"

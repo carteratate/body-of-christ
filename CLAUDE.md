@@ -382,12 +382,27 @@ What focused changes, all derived from the plan:
 |---|---|---|
 | Collections | 1–10 | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
-| `max_passages_per_document` | 2 | 4 |
+| `max_passages_per_document` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
 
 `max_passages_per_document` is passed as **both** `per_source_cap` and `per_document_cap`
-to `steps/dedup.py`, and again to `min_floor` — a focused search that falls through to the
-floor must not lose its per-document cap.
+to `steps/dedup.py`, and again to `min_floor`.
+
+**The name is now wider than what it limits.** For the chapter-keyed collections in
+`rag/dedup.py` (`summa`, `catechism`, `canon-law`, `bible`) both caps key on the reader
+chapter, not the document. Those four are each stored as a single document — the Bible as
+one per book — so keying on the document capped a focused search at 4 results in total
+however many distinct articles or psalms ranked, which made issue #28's "return exactly
+ten" unreachable for exactly the collections focused search is most used on. Issue #105 is
+that defect reported from production.
+
+**`per_document_cap` is inert at the values production passes.** `document_key` strictly
+refines `source_key`, so the document count can never reach a ceiling the source count has
+not already reached; the cap can only bind when it is strictly smaller than
+`per_source_cap`, and `runner.py` passes them equal. Standard search passes
+`per_document_cap=None` and never consults it. Do not write code that assumes it fires.
+`FOCUSED_MAX_PASSAGES_PER_DOCUMENT` / `STANDARD_MAX_PASSAGES_PER_DOCUMENT` in
+`search_plan.py` are misnamed for the same reason.
 
 ### delivery_outcome
 
