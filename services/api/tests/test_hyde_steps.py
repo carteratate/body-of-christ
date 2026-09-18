@@ -79,7 +79,10 @@ async def test_luna_hyde_uses_no_reasoning_and_keeps_prompt_roles():
     client = MagicMock()
     client.chat.completions.create = AsyncMock(return_value=response)
 
-    with patch.object(hyde_luna, "_client", client):
+    with (
+        patch.object(hyde_luna, "_client", client),
+        patch.object(hyde_luna, "_semaphore", asyncio.Semaphore(8)),
+    ):
         passage, input_tokens, output_tokens = await hyde_luna.generate(
             "Write a passage.", "What is grace?", 300,
         )
@@ -102,9 +105,44 @@ async def test_luna_hyde_rejects_truncated_passage():
         )],
     ))
 
-    with patch.object(hyde_luna, "_client", client):
+    with (
+        patch.object(hyde_luna, "_client", client),
+        patch.object(hyde_luna, "_semaphore", asyncio.Semaphore(8)),
+    ):
         with pytest.raises(ValueError, match="finish_reason=length"):
             await hyde_luna.generate("system", "query", 300)
+
+
+@pytest.mark.asyncio
+async def test_luna_hyde_limits_concurrent_openai_calls():
+    active = 0
+    peak = 0
+
+    async def create(**_kwargs):
+        nonlocal active, peak
+        active += 1
+        peak = max(peak, active)
+        await asyncio.sleep(0.01)
+        active -= 1
+        return SimpleNamespace(
+            choices=[SimpleNamespace(
+                finish_reason="stop",
+                message=SimpleNamespace(content="A passage.", refusal=None),
+            )],
+            usage=SimpleNamespace(prompt_tokens=1, completion_tokens=1),
+        )
+
+    client = MagicMock()
+    client.chat.completions.create = AsyncMock(side_effect=create)
+    with (
+        patch.object(hyde_luna, "_client", client),
+        patch.object(hyde_luna, "_semaphore", asyncio.Semaphore(1)),
+    ):
+        await asyncio.gather(*[
+            hyde_luna.generate("system", "query", 100) for _ in range(3)
+        ])
+
+    assert peak == 1
 
 
 @pytest.mark.asyncio
@@ -120,6 +158,30 @@ async def test_luna_hyde_usage_is_recorded_under_luna_model():
 
     assert passage == "A passage."
     assert tracker.breakdown()["hyde"] > 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("collection", ["bible", "catechism"])
+async def test_luna_passages_do_not_wait_for_anthropic_semaphore(collection):
+    semaphore = asyncio.Semaphore(1)
+    await semaphore.acquire()
+    with patch.object(
+        hyde_s25, "_generate_single", new=AsyncMock(return_value="A passage."),
+    ) as generate:
+        try:
+            passages = await asyncio.wait_for(
+                hyde_s25.generate_hyde_passages(
+                    "What is grace?", collection, MagicMock(), semaphore,
+                    selected_genres=["free"] if collection == "bible" else None,
+                    passage_provider="luna",
+                ),
+                timeout=0.1,
+            )
+        finally:
+            semaphore.release()
+
+    assert passages == ["A passage."]
+    assert generate.await_args.kwargs["passage_provider"] == "luna"
 
 
 @pytest.mark.asyncio

@@ -4,11 +4,10 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import Literal
 
 import anthropic
 
-from app.config import settings
+from app.config import HyDEProvider, settings
 from app.rag.api_keys import get_client, get_key_for, get_semaphore
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.embed import run as embed_run
@@ -329,7 +328,7 @@ async def _generate_single(
     cost_tracker: CostTracker | None = None,
     cost_step: str = "hyde",
     scope: str | None = None,
-    passage_provider: Literal["haiku", "luna"] | None = None,
+    passage_provider: HyDEProvider | None = None,
 ) -> str | None:
     """Generate one HyDE passage and optionally record token cost."""
     try:
@@ -419,10 +418,24 @@ async def generate_hyde_passages(
     semaphore: asyncio.Semaphore,
     selected_genres: list[str] | None = None,
     cost_tracker: CostTracker | None = None,
-    passage_provider: Literal["haiku", "luna"] | None = None,
+    passage_provider: HyDEProvider | None = None,
 ) -> list[str]:
     """Return hypothetical passages for the given collection, tracking LLM cost."""
     max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
+    provider = passage_provider or settings.hyde_passage_provider
+
+    async def _guarded(system: str) -> str | None:
+        async def _generate() -> str | None:
+            return await _generate_single(
+                client, system, query, max_tokens,
+                cost_tracker=cost_tracker, cost_step="hyde", scope=collection,
+                passage_provider=provider,
+            )
+
+        if provider == "haiku":
+            async with semaphore:
+                return await _generate()
+        return await _generate()
 
     if collection == "bible":
         all_bible_prompts: dict[str, str] = {"free": _HYDE_BIBLE_FREE_PROMPT, **_GENRE_HYDE_PROMPTS}
@@ -432,22 +445,11 @@ async def generate_hyde_passages(
             else all_bible_prompts
         )
 
-        async def _guarded(system: str) -> str | None:
-            async with semaphore:
-                return await _generate_single(client, system, query, max_tokens,
-                                              cost_tracker=cost_tracker, cost_step="hyde",
-                                              scope=collection,
-                                              passage_provider=passage_provider)
-
         results = await asyncio.gather(*[_guarded(p) for p in prompts.values()])
         return [r for r in results if r is not None]
 
     system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
-    async with semaphore:
-        result = await _generate_single(client, system, query, max_tokens,
-                                        cost_tracker=cost_tracker, cost_step="hyde",
-                                        scope=collection,
-                                        passage_provider=passage_provider)
+    result = await _guarded(system)
     return [result] if result is not None else []
 
 
@@ -457,7 +459,7 @@ async def run(
     cost_tracker: CostTracker,
     *,
     all_bible_genres: bool = False,
-    passage_provider: Literal["haiku", "luna"] | None = None,
+    passage_provider: HyDEProvider | None = None,
 ) -> dict[str, list[list[float]]]:
     """Generate HyDE passages and embed them per collection.
 

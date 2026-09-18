@@ -384,6 +384,7 @@ def _artifact_fingerprint(pipelines: list[str], quota: int) -> dict:
         },
         "thresholds": {
             "candidate_multiplier": settings.candidate_multiplier,
+            "hyde_luna_concurrency": settings.hyde_luna_concurrency,
             "cohere_max_pool": settings.cohere_max_pool,
             "retrieval_k_min": settings.retrieval_k_min,
             "retrieval_k_max": settings.retrieval_k_max,
@@ -446,6 +447,7 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
         "pricing": pricing_snapshot(),
         "thresholds": {
             "cohere_keep_score_floor": settings.cohere_keep_score_floor,
+            "hyde_luna_concurrency": settings.hyde_luna_concurrency,
             "listwise_include_floor": settings.listwise_include_floor,
             "pointwise_score_cutoff": settings.pointwise_score_cutoff,
             "guarantee_min_score": settings.guarantee_min_score,

@@ -65,6 +65,7 @@ def snapshot(pipeline_names: list[str]) -> dict:
             "rrf_k": _RRF_K,
             "pointwise_max_tokens": POINTWISE_MAX_TOKENS,
             "listwise_max_tokens": settings.llm_rerank_max_tokens,
+            "hyde_luna_concurrency": settings.hyde_luna_concurrency,
         },
         "judge_weights": dict(WEIGHTS),
     }
