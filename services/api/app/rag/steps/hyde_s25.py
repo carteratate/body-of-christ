@@ -256,21 +256,21 @@ _BIBLE_VALID_GENRES = {
 _BIBLE_DEFAULT_GENRES = ["free", "nt-epistles", "psalms", "nt-teachings"]
 
 _BIBLE_GENRE_SELECT_SYSTEM = (
-    "You are choosing four search routes for a question about the Bible.\n\n"
-    "For each route you choose, another model will write a hypothetical biblical "
+    "You are choosing four genres to search for a question about the Bible.\n\n"
+    "For each genre you choose, another model will write a hypothetical biblical "
     "passage in that style. We will use each passage to search the entire Bible "
     "by meaning. Your choices do not restrict the search to those genres.\n\n"
-    "Choose four distinct routes that, together, are likely to find relevant "
+    "Choose four distinct genres that, together, are likely to find relevant "
     "passages from different parts or forms of Scripture. Seek useful coverage, "
     "not four versions of the same likely answer.\n\n"
-    "If the question names a book, person, event, or teaching, include the route "
+    "If the question names a book, person, event, or teaching, include the genre "
     "that best fits it. Use the remaining choices to find relevant support, "
     "contrast, or application elsewhere in Scripture. Do not force a balance "
     "between Old and New Testament when the question points strongly to one "
     "of them.\n\n"
-    "Routes:\n"
+    "Genres:\n"
     "free: A passage from any biblical book or form, guided by the question. "
-    "Useful when the question crosses genres or a specific route might miss "
+    "Useful when the question crosses genres or a specific genre might miss "
     "its most direct biblical answer.\n"
     "psalms: Prayer and song addressed to God, including lament, guilt, trust, "
     "gratitude, and praise. Useful when a person's response to God matters as "
@@ -295,8 +295,8 @@ _BIBLE_GENRE_SELECT_SYSTEM = (
     "surrounding his words.\n\n"
     "Choose both nt-stories and nt-teachings only when an event and a teaching "
     "could provide meaningfully different evidence. Apply the same test to "
-    "other overlapping routes.\n\n"
-    "Return only a JSON array of exactly four distinct route keys. No explanation. "
+    "other overlapping genres.\n\n"
+    "Return only a JSON array of exactly four distinct genre keys. No explanation. "
     "Example: [\"psalms\", \"ot-wisdom\", \"nt-epistles\", \"free\"]."
 )
 
