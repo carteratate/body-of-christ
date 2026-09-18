@@ -58,7 +58,10 @@ def _search_readiness() -> dict[str, bool]:
         "database": get_pool() is not None,
         "embeddings": embed_is_ready(),
         "hyde": hyde_is_ready() and (
-            settings.hyde_passage_provider != "luna" or hyde_luna_is_ready()
+            (
+                settings.hyde_passage_provider != "luna"
+                and settings.hyde_genre_provider != "luna"
+            ) or hyde_luna_is_ready()
         ),
         "qdrant": get_qdrant_client() is not None,
         "cohere": cohere_is_ready(),

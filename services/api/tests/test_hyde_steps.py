@@ -185,6 +185,67 @@ async def test_luna_passages_do_not_wait_for_anthropic_semaphore(collection):
 
 
 @pytest.mark.asyncio
+async def test_luna_genre_selector_uses_strict_json_schema():
+    content = '{"genres":["free","psalms","nt-epistles","nt-teachings"]}'
+    response = SimpleNamespace(
+        choices=[SimpleNamespace(
+            finish_reason="stop",
+            message=SimpleNamespace(content=content, refusal=None),
+        )],
+        usage=SimpleNamespace(prompt_tokens=500, completion_tokens=25),
+    )
+    client = MagicMock()
+    client.chat.completions.create = AsyncMock(return_value=response)
+
+    with (
+        patch.object(hyde_luna, "_client", client),
+        patch.object(hyde_luna, "_semaphore", asyncio.Semaphore(8)),
+    ):
+        result = await hyde_luna.select_bible_genres("Choose genres", "What is grace?")
+
+    assert result == (content, 500, 25)
+    kwargs = client.chat.completions.create.await_args.kwargs
+    assert kwargs["reasoning_effort"] == "none"
+    assert kwargs["response_format"]["type"] == "json_schema"
+    schema_config = kwargs["response_format"]["json_schema"]
+    assert schema_config["strict"] is True
+    schema = schema_config["schema"]
+    assert schema["required"] == ["genres"]
+    assert schema["additionalProperties"] is False
+    assert schema["properties"]["genres"]["minItems"] == 4
+    assert schema["properties"]["genres"]["maxItems"] == 4
+    assert set(schema["properties"]["genres"]["items"]["enum"]) == (
+        hyde_s25._BIBLE_VALID_GENRES
+    )
+
+
+@pytest.mark.asyncio
+async def test_luna_genre_selector_shares_openai_limit():
+    content = '{"genres":["free","psalms","nt-epistles","nt-teachings"]}'
+    client = MagicMock()
+    client.chat.completions.create = AsyncMock(return_value=SimpleNamespace(
+        choices=[SimpleNamespace(
+            finish_reason="stop",
+            message=SimpleNamespace(content=content, refusal=None),
+        )],
+        usage=SimpleNamespace(prompt_tokens=1, completion_tokens=1),
+    ))
+    semaphore = asyncio.Semaphore(1)
+    await semaphore.acquire()
+    with (
+        patch.object(hyde_luna, "_client", client),
+        patch.object(hyde_luna, "_semaphore", semaphore),
+    ):
+        task = asyncio.create_task(hyde_luna.select_bible_genres("system", "query"))
+        try:
+            await asyncio.sleep(0.01)
+            client.chat.completions.create.assert_not_awaited()
+        finally:
+            semaphore.release()
+        assert (await task)[0] == content
+
+
+@pytest.mark.asyncio
 async def test_bible_genre_selector_wrong_cardinality_records_fallback():
     tracker = CostTracker()
     response = SimpleNamespace(
@@ -196,6 +257,7 @@ async def test_bible_genre_selector_wrong_cardinality_records_fallback():
     degradation.begin_degradation_accounting()
 
     with (
+        patch.object(hyde_s25.settings, "hyde_genre_provider", "haiku"),
         patch("app.rag.steps.hyde_s25.get_key_for", return_value="key"),
         patch("app.rag.steps.hyde_s25.get_client", return_value=client),
         patch("app.rag.steps.hyde_s25.get_semaphore", return_value=MagicMock()),
@@ -220,6 +282,79 @@ async def test_bible_genre_selector_wrong_cardinality_records_fallback():
 
 
 @pytest.mark.asyncio
+async def test_haiku_genre_selector_remains_available_for_rollback():
+    tracker = CostTracker()
+    client = MagicMock()
+    client.messages.create = AsyncMock(return_value=SimpleNamespace(
+        content=[SimpleNamespace(text='["free","psalms","nt-stories","ot-wisdom"]')],
+        usage=SimpleNamespace(input_tokens=500, output_tokens=25),
+    ))
+
+    with patch.object(hyde_s25.settings, "hyde_genre_provider", "haiku"):
+        selected = await hyde_s25.choose_bible_hyde_genres(
+            "What is grace?", client, cost_tracker=tracker,
+        )
+
+    assert selected == ["free", "psalms", "nt-stories", "ot-wisdom"]
+    assert tracker.breakdown()["hyde_genre_select"] > 0
+    kwargs = client.messages.create.await_args.kwargs
+    assert kwargs["system"] == hyde_s25._BIBLE_GENRE_SELECT_HAIKU_SYSTEM
+    assert "JSON array" in kwargs["system"]
+
+
+@pytest.mark.asyncio
+async def test_luna_genre_selector_duplicate_genres_use_defaults(caplog):
+    degradation.begin_degradation_accounting()
+    tracker = CostTracker()
+    with (
+        patch.object(hyde_s25.settings, "hyde_genre_provider", "luna"),
+        patch.object(hyde_luna, "select_bible_genres", new=AsyncMock(
+            return_value=(
+                '{"genres":["free","free","psalms","nt-epistles"]}',
+                500, 25,
+            ),
+        )),
+    ):
+        selected = await hyde_s25.choose_bible_hyde_genres(
+            "What is grace?", MagicMock(), cost_tracker=tracker,
+        )
+
+    assert selected == hyde_s25._BIBLE_DEFAULT_GENRES
+    assert "expected 4 valid genres, got 3; using defaults" in caplog.text
+    assert tracker.breakdown()["hyde_genre_select"] > 0
+    assert degradation.event_dicts() == [{
+        "stage": "hyde_genre_select",
+        "reason": "invalid_response",
+        "action": "defaults_used",
+        "scope": "bible",
+        "details": {"valid_genre_count": 3},
+    }]
+
+
+@pytest.mark.asyncio
+async def test_luna_genre_selector_failure_uses_defaults():
+    degradation.begin_degradation_accounting()
+    with (
+        patch.object(hyde_s25.settings, "hyde_genre_provider", "luna"),
+        patch.object(hyde_luna, "select_bible_genres", new=AsyncMock(
+            side_effect=RuntimeError("temporary failure"),
+        )),
+    ):
+        selected = await hyde_s25.choose_bible_hyde_genres(
+            "What is grace?", MagicMock(),
+        )
+
+    assert selected == hyde_s25._BIBLE_DEFAULT_GENRES
+    assert degradation.event_dicts() == [{
+        "stage": "hyde_genre_select",
+        "reason": "RuntimeError",
+        "action": "defaults_used",
+        "scope": "bible",
+        "details": None,
+    }]
+
+
+@pytest.mark.asyncio
 async def test_focused_bible_generates_and_embeds_all_eight_genres_without_selector():
     client = MagicMock()
     client.messages.create = AsyncMock()
@@ -234,6 +369,7 @@ async def test_focused_bible_generates_and_embeds_all_eight_genres_without_selec
         patch("app.rag.steps.hyde_s25.get_client", return_value=client),
         patch("app.rag.steps.hyde_s25.get_semaphore", return_value=asyncio.Semaphore(4)),
         patch("app.rag.steps.hyde_s25._generate_single", new=generate),
+        patch.object(hyde_luna, "select_bible_genres", new=AsyncMock()) as select,
         patch("app.rag.steps.hyde_s25.embed_run", new=AsyncMock(return_value=[0.1])) as embed,
     ):
         result = await hyde_s25.run(
@@ -241,6 +377,7 @@ async def test_focused_bible_generates_and_embeds_all_eight_genres_without_selec
         )
 
     client.messages.create.assert_not_awaited()
+    select.assert_not_awaited()
     assert set(generated_systems) == {
         hyde_s25._HYDE_BIBLE_FREE_PROMPT,
         *hyde_s25._GENRE_HYDE_PROMPTS.values(),
@@ -250,12 +387,9 @@ async def test_focused_bible_generates_and_embeds_all_eight_genres_without_selec
 
 
 @pytest.mark.asyncio
-async def test_standard_bible_selects_four_genres():
+async def test_standard_bible_selects_four_genres_with_luna():
     client = MagicMock()
-    client.messages.create = AsyncMock(return_value=SimpleNamespace(
-        content=[SimpleNamespace(text='["free", "psalms", "nt-stories", "ot-wisdom"]')],
-        usage=SimpleNamespace(input_tokens=1, output_tokens=1),
-    ))
+    client.messages.create = AsyncMock()
     generated_systems: list[str] = []
 
     async def generate(_client, system, _query, _max_tokens, **_kwargs):
@@ -263,15 +397,23 @@ async def test_standard_bible_selects_four_genres():
         return system
 
     with (
+        patch.object(hyde_s25.settings, "hyde_genre_provider", "luna"),
         patch("app.rag.steps.hyde_s25.get_key_for", return_value="key"),
         patch("app.rag.steps.hyde_s25.get_client", return_value=client),
         patch("app.rag.steps.hyde_s25.get_semaphore", return_value=asyncio.Semaphore(4)),
+        patch.object(hyde_luna, "select_bible_genres", new=AsyncMock(
+            return_value=(
+                '{"genres":["free","psalms","nt-stories","ot-wisdom"]}',
+                500, 25,
+            ),
+        )) as select,
         patch("app.rag.steps.hyde_s25._generate_single", new=generate),
         patch("app.rag.steps.hyde_s25.embed_run", new=AsyncMock(return_value=[0.1])) as embed,
     ):
         result = await hyde_s25.run("grace", ["bible"], CostTracker())
 
-    client.messages.create.assert_awaited_once()
+    client.messages.create.assert_not_awaited()
+    select.assert_awaited_once()
     assert generated_systems == [
         hyde_s25._HYDE_BIBLE_FREE_PROMPT,
         hyde_s25._HYDE_PSALMS_PROMPT,

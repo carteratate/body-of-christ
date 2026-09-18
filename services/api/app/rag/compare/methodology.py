@@ -42,7 +42,12 @@ def snapshot(pipeline_names: list[str]) -> dict:
                 else settings.hyde_model
             ),
             "hyde_passage_provider": settings.hyde_passage_provider,
-            "hyde_genre_selector": settings.hyde_model,
+            "hyde_genre_selector": (
+                settings.hyde_luna_model
+                if settings.hyde_genre_provider == "luna"
+                else settings.hyde_model
+            ),
+            "hyde_genre_provider": settings.hyde_genre_provider,
             "rerank_haiku": settings.rerank_model,
             "rerank_luna": settings.rerank_luna_model,
             "judge": _JUDGE_MODEL,
