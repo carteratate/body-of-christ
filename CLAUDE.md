@@ -1,8 +1,12 @@
 # Project Rules & Invariants
 
-> This file is the single source of agent guidance for this repo. `AGENTS.md` is a
+> This file is the repo-wide source of agent guidance. The root `AGENTS.md` is a
 > symlink to it — edit this file, never a copy. (They were separate files until
 > 2026-09-17; the fork drifted 18 migrations out of date and is why they are one file now.)
+>
+> One scoped file exists below the root: **`apps/web/AGENTS.md`**, a real file covering
+> frontend-only rules. It points back at the sections here rather than restating them —
+> when a rule in §1, §9, §10–§14 or §18 changes, check whether it needs updating too.
 
 This repository (body-of-christ) implements a Catholic theology RAG search application.
 The user-facing product name is **TheoCorpus**.
@@ -104,6 +108,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - `compare_runs` — retrieval-lab evaluation runs (0018, 0020, 0026)
 - `retrieval_labels` — human relevance labels (0022, 0024)
 - `guest_trials` — guest session quota + continuity + transfer readiness (0023, 0025, 0026, 0027)
+- `guest_trial_retrievals` — guest results, held apart from `retrievals` until
+  `POST /v1/guest/claim` transfers them (0026_guest_onboarding_continuity). Read by
+  `routes/guest_search.py` and the guest reader path in `routes/documents.py`.
 - `reading_progress` — per-document reader position (0027)
 - `product_feedback` — in-app feedback, including anonymous (0028–0030)
 - `user_preferences.last_standard_quota` — remembers the pre-focused quota (0034); see §18
@@ -115,7 +122,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations run 0001–0035. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034 are committed; `0035_studies.sql` is drafted only (see above). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -162,7 +169,9 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
 - Backend: Docker image; same image runs locally and in prod.
 - Frontend: Vercel.
 - Config via environment variables only.
-- Required health endpoints: GET /health, GET /health/db
+- Health endpoints: GET /health, GET /health/db, and GET /health/search, which reports
+  retrieval-provider readiness and returns 503 when a dependency is missing. Model-provider
+  credentials are configuration-checked only — validating them costs a billable request.
 
 ---
 
@@ -329,7 +338,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ### 1. Shared rate-limit counter (V1 chat / V2 search)
 
-V1 chat and V2 search share `user_usage.rate_count` / `quota_count`. V2 enforces 5/min and 30/day; V1 enforces 10/min. This cross-contaminates. `TODO` in `routes/search.py` → `check_search_rate_limit`.
+V1 chat and V2 search share `user_usage.rate_count` / `quota_count`. V2 enforces 5/min and 30/day (`RATE_LIMIT_SEARCH_PER_MINUTE` / `DAILY_SEARCH_QUOTA`); V1 enforces 10/min (`RATE_LIMIT_PER_MINUTE` / `DAILY_MESSAGE_QUOTA`). The two pairs are separate settings over one counter, so they cross-contaminate. `TODO` in `routes/search.py` → `check_search_rate_limit`.
 **Fix:** add `search_rate_count` / `search_quota_count` columns.
 
 ### 2. JWKS refresh still stampedes

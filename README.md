@@ -151,7 +151,8 @@ services/api/        FastAPI backend (Railway, Docker)
   app/auth/          Supabase JWT verification + JWKS cache
   tests/             pytest suite
 
-supabase/migrations/ SQL migrations only (0001–0035). Additive, RLS everywhere.
+supabase/migrations/ SQL migrations only (0001–0034 committed). Additive, RLS
+                     everywhere. 0035 is drafted but uncommitted — see Data model.
 
 datapipeline/        Standalone corpus publication tools (run locally/CI, not deployed)
   ingest/            Per-collection source adapters
@@ -181,7 +182,7 @@ migration extending the DB collection constraint.
 
 | Key | Collection |
 |---|---|
-| `bible` | Bible (WEB-C / Douay-Rheims) |
+| `bible` | Bible (WEB-C) |
 | `catechism` | Catechism of the Catholic Church |
 | `summa` | Summa Theologica |
 | `encyclicals` | Papal Encyclicals |
@@ -193,6 +194,11 @@ migration extending the DB collection constraint.
 | `papal-documents` | Papal Documents |
 
 Source provenance for each collection is documented in `datapipeline/SOURCES.md`.
+
+> ⚠️ The Bible collection is published as **WEB-C only**. `preferred_translation` still
+> accepts `CPDV` and `douay-rheims` (`services/api/app/models/preferences.py`,
+> `apps/web/src/lib/search-draft.ts`), but no published document carries either value.
+> That enum is stale, not a second translation.
 
 ---
 
@@ -225,14 +231,21 @@ npm run dev                     # → http://localhost:3000
 ```
 
 Set the server-side `API_URL` (e.g. `http://localhost:8000`) so the proxy route can
-reach your local backend.
+reach your local backend. If you set `INTERNAL_API_SECRET` on the backend, set the
+identical value here too — the API returns 401 on everything except the three health
+paths when the header does not match (`InternalSecretMiddleware` in `app/main.py`).
 
 ### 3. Health check
 
 ```bash
 curl http://localhost:8000/health
 curl http://localhost:8000/health/db
+curl http://localhost:8000/health/search
 ```
+
+`/health/search` reports retrieval-provider readiness and returns **503** when a
+dependency is missing. Model-provider credentials are configuration-checked only —
+validating them would cost a billable inference request.
 
 ---
 
@@ -258,7 +271,8 @@ authoritative list — names, defaults, and which are required — is
 | `INTERNAL_API_SECRET` | — | Shared secret; blocks direct API access (`openssl rand -hex 32`) |
 | `GUEST_IP_HASH_SECRET` | — | Keyed pseudonymization for guest IP quotas; falls back to `INTERNAL_API_SECRET` |
 | `CORS_ORIGINS` | — | Allowed frontend origins |
-| `RATE_LIMIT_PER_MINUTE` / `DAILY_MESSAGE_QUOTA` | — | Rate limiting |
+| `RATE_LIMIT_SEARCH_PER_MINUTE` / `DAILY_SEARCH_QUOTA` | — | `/v1/search` limits (default 5/min, 30/day) |
+| `RATE_LIMIT_PER_MINUTE` / `DAILY_MESSAGE_QUOTA` | — | Legacy V1 chat limits (default 10/min, 50/day) — **not** the search ones |
 
 **Frontend** (Vercel / `.env.local`):
 
@@ -267,6 +281,8 @@ authoritative list — names, defaults, and which are required — is
 | `API_URL` | **Server-side only** — where the proxy forwards (Railway URL). No `NEXT_PUBLIC_` prefix. |
 | `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Auth client |
 | `NEXT_PUBLIC_API_URL` | Used **only** in `next.config.ts` for CSP `connect-src` — does not route API calls |
+| `INTERNAL_API_SECRET` | **Server-side only** — must match the backend value. The proxy sends it as `x-internal-secret`; leave it unset here and a secured API rejects every request. |
+| `NEXT_PUBLIC_POSTHOG_KEY` / `NEXT_PUBLIC_POSTHOG_HOST` | Analytics (`src/lib/analytics.ts`). Both PostHog hosts are already in the CSP `connect-src`. |
 
 > ⚠️ `const API_URL = ""` in `apps/web/src/lib/api.ts` is intentional — the empty
 > string forces relative `/v1/...` paths through the Vercel proxy. Do not change it.
@@ -323,11 +339,16 @@ The lint baseline is **zero errors**. Leave no new warnings in files you touch.
 ## Deployment
 
 - **Backend** → Docker image on **Railway** (`railway.toml` at the repo root,
-  `services/api/Dockerfile`). The same image runs locally and in production. Required
-  health endpoints: `GET /health`, `GET /health/db`.
+  `services/api/Dockerfile`). The same image runs locally and in production. Health
+  endpoints: `GET /health`, `GET /health/db`, `GET /health/search`.
 - **Frontend** → **Vercel**. The proxy route forwards `/v1/*` to the API host using the
   server-side `API_URL`, injecting `x-internal-secret`.
-- **Database** → Supabase; apply migrations from `supabase/migrations/` in order.
+- **Database** → Supabase; apply migrations from `supabase/migrations/` in filename
+  order. **Two number pairs collide** — `0026_compare_runs_pricing` /
+  `0026_guest_onboarding_continuity`, and `0027_reading_progress` /
+  `0027_guest_transfer_readiness`. All four hold live schema, and the two members of
+  each pair touch disjoint tables, so order within a pair does not matter. Audit the
+  Supabase migration ledger before renaming any of them.
 - All configuration is via environment variables — no config files with secrets.
 
 ---
@@ -341,7 +362,8 @@ Migrations are SQL-only and additive, with RLS on every user-owned table.
 annotations).
 
 **User activity:** `searches`, `retrievals`, `bookmarks`, `user_preferences`,
-`reading_progress`, `product_feedback`, `guest_trials`.
+`reading_progress`, `product_feedback`, `guest_trials`, `guest_trial_retrievals`
+(guest results, held separately until `POST /v1/guest/claim` transfers them).
 
 **Retrieval lab:** `compare_runs`, `retrieval_labels`.
 
@@ -363,13 +385,17 @@ The codebase is documented in-repo. Start here:
 
 | File | What it covers |
 |---|---|
-| `CLAUDE.md` | Authoritative architectural invariants, API routes, data model, and the two-theme design system. **`AGENTS.md` is a symlink to it** — one file, no drift. |
+| `CLAUDE.md` | Authoritative architectural invariants, API routes, data model, and the two-theme design system. **The root `AGENTS.md` is a symlink to it** — one file, no drift. |
+| `apps/web/AGENTS.md` | Frontend-scoped rules: networking, the three modules that own behavior, shells, styling. A real file, not a symlink; it points back at root sections rather than restating them. |
 | `CONTEXT.md` | Domain vocabulary: the terms this project uses deliberately, and what to avoid |
 | `datapipeline/README.md` | Supported collection publication, repair, reset, and wipe commands |
 | `datapipeline/SOURCES.md` | Corpus source provenance and re-ingestion per collection |
 | `docs/architecture/` | The August 2026 production architecture review (items 4–8 open) |
 | `docs/agents/` | Issue tracker, triage labels, and domain-doc conventions for agents |
 | `docs/superpowers/` | Historical plans and specs, one per feature |
+| `docs/eval/` | Retrieval evaluation rounds — datasets, run artifacts, and `report.py`, which scores a run against the judge weights |
+| `docs/research/` | Corpus expansion research (untracked; local working notes) |
+| `docs/ci-cd-plan.md` | A **draft** CI/CD proposal (2026-09-09), unimplemented and pending decisions — not a description of the current pipeline |
 | `PROGRESS.md` | Historical V2 implementation log. Banner-marked; not current guidance. |
 
 Dated files under `docs/` are point-in-time records. Several carry a "superseded"
