@@ -17,7 +17,7 @@ from app.rag.pipelines.runner import _pool_sizes, run_from_candidates
 from app.rag.steps import degradation, embed, fetch_positions, hyde_s25, retrieve_fts
 from app.rag.steps import retrieve_vector, rrf
 from app.rag.steps.cost_tracker import CostTracker
-from app.rag.steps.types import ChunkCandidate, PipelineResult
+from app.rag.steps.types import ChunkCandidate, PipelineResult, RetrievalPath
 
 
 @dataclass
@@ -109,7 +109,7 @@ async def capture(
         shape = (k, top_n, config.retrieval.fts)
         if shape not in pools_by_shape:
             vectors = {
-                collection: [ranked[:k] for ranked in strategies]
+                collection: [RetrievalPath(path.family, path.rows[:k]) for path in strategies]
                 for collection, strategies in vector_raw.items()
             }
             lexical = (

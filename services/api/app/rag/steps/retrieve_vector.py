@@ -7,6 +7,7 @@ import logging
 from app.config import settings
 from app.rag.qdrant_client import QDRANT_COLLECTION, get_qdrant_client
 from app.rag.steps import degradation
+from app.rag.steps.types import RetrievalPath
 
 logger = logging.getLogger(__name__)
 
@@ -74,18 +75,18 @@ async def run(
     quota: int,
     user_id: str | None = None,
     k: int | None = None,
-) -> dict[str, list[list[dict]]]:
+) -> dict[str, list[RetrievalPath]]:
     """Run all Qdrant vector searches per collection.
 
     hyde_vecs may be {} (S4/hyde_none) — falls back to query_vec only.
-    Returns col → list of per-strategy result lists (input to rrf.run).
+    Returns col → ranked paths labeled as HyDE or original query.
     user_id is accepted but unused (retained for caller compatibility).
     """
     # k is supplied by budget.retrieval_k() in dynamic modes; None keeps the
     # historical sizing that llm_only depends on for A/B comparability.
     n = k if k is not None else quota * settings.candidate_multiplier
 
-    async def _search_collection(col: str) -> tuple[str, list[list[dict]]]:
+    async def _search_collection(col: str) -> tuple[str, list[RetrievalPath]]:
         col_vecs = hyde_vecs.get(col, [])
         coros = []
         labels = []
@@ -97,7 +98,7 @@ async def run(
         labels.append("query")
 
         raw = await asyncio.gather(*coros, return_exceptions=True)
-        strategy_lists = []
+        strategy_lists: list[RetrievalPath] = []
         for label, result in zip(labels, raw):
             if isinstance(result, BaseException):
                 logger.warning("retrieve_vector: %s/%s failed: %s", col, label, result)
@@ -106,14 +107,16 @@ async def run(
                     scope=f"{col}/{label}", details={"message": str(result)[:300]},
                 )
             else:
-                strategy_lists.append(result)
+                strategy_lists.append(RetrievalPath(
+                    family="query" if label == "query" else "hyde", rows=result,
+                ))
         return col, strategy_lists
 
     results = await asyncio.gather(
         *[_search_collection(col) for col in collections],
         return_exceptions=True,
     )
-    output: dict[str, list[list[dict]]] = {}
+    output: dict[str, list[RetrievalPath]] = {}
     for item in results:
         if isinstance(item, BaseException):
             logger.warning("retrieve_vector: collection search failed: %s", item)

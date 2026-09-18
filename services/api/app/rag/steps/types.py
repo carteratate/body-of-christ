@@ -8,6 +8,14 @@ DeliveryOutcome = Literal["complete", "underfilled", "minimum_floor"]
 
 
 @dataclass
+class RetrievalPath:
+    """A ranked retrieval path with its scoring family preserved through failures."""
+
+    family: Literal["hyde", "query", "fts"]
+    rows: list[dict]
+
+
+@dataclass
 class ChunkCandidate:
     chunk_id: str
     content: str

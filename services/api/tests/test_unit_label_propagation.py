@@ -240,7 +240,7 @@ def test_retrieve_vector_maps_unit_label_from_the_payload():
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=client):
         out = asyncio.run(retrieve_vector.run([0.1], {}, ["summa"], quota=4))
 
-    assert out["summa"][0][0]["unit_label"] == "Objection 1"
+    assert out["summa"][0].rows[0]["unit_label"] == "Objection 1"
 
 
 # --- final hop: the live SSE stream the user actually sees ---

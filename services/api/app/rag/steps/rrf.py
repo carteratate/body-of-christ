@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 
 from app.config import settings
-from app.rag.steps.types import ChunkCandidate
+from app.rag.steps.types import ChunkCandidate, RetrievalPath
 
 logger = logging.getLogger(__name__)
 
@@ -12,15 +12,19 @@ _RRF_K = 60
 _PER_STRATEGY_TOP_K = 3
 
 
-def _rrf_merge(result_lists: list[list[dict]], top_n: int) -> list[dict]:
-    scores: dict[str, float] = {}
+def _rrf_merge(paths: list[RetrievalPath], top_n: int) -> list[dict]:
+    family_scores: dict[str, dict[str, float]] = {}
     metadata: dict[str, dict] = {}
 
-    for result_list in result_lists:
-        for rank_0, row in enumerate(result_list):
+    for path in paths:
+        for rank_0, row in enumerate(path.rows):
             rank = rank_0 + 1
             chunk_id = str(row["id"])
-            scores[chunk_id] = scores.get(chunk_id, 0.0) + 1.0 / (_RRF_K + rank)
+            scores_for_chunk = family_scores.setdefault(chunk_id, {})
+            contribution = 1.0 / (_RRF_K + rank)
+            scores_for_chunk[path.family] = max(
+                scores_for_chunk.get(path.family, 0.0), contribution,
+            )
             if chunk_id not in metadata:
                 metadata[chunk_id] = {
                     "chunk_id": chunk_id,
@@ -42,10 +46,11 @@ def _rrf_merge(result_lists: list[list[dict]], top_n: int) -> list[dict]:
                     "unit_label": row.get("unit_label"),
                 }
 
+    scores = {chunk_id: sum(by_family.values()) for chunk_id, by_family in family_scores.items()}
     sorted_ids = sorted(scores, key=lambda cid: scores[cid], reverse=True)
     selected: set[str] = set(sorted_ids[:top_n])
-    for result_list in result_lists:
-        for row in result_list[:_PER_STRATEGY_TOP_K]:
+    for path in paths:
+        for row in path.rows[:_PER_STRATEGY_TOP_K]:
             selected.add(str(row["id"]))
 
     final_sorted = sorted(selected, key=lambda cid: scores.get(cid, 0.0), reverse=True)
@@ -53,14 +58,15 @@ def _rrf_merge(result_lists: list[list[dict]], top_n: int) -> list[dict]:
 
 
 def run(
-    vector_results: dict[str, list[list[dict]]],
+    vector_results: dict[str, list[RetrievalPath]],
     fts_results: dict[str, list[dict]],
     quota: int,
     top_n: int | None = None,
 ) -> dict[str, list[ChunkCandidate]]:
-    """Merge per-collection vector strategy lists + fts list using RRF.
+    """Merge per-collection paths using one best vote per family.
 
-    vector_results: col → list of strategy result lists (one per search vector)
+    All HyDE paths share one family; the original query and FTS vote independently.
+    vector_results: col → labeled ranked paths (one per search vector)
     fts_results: col → single ranked list from FTS
     Returns: col → list[ChunkCandidate] sorted by RRF score descending
     """
@@ -68,16 +74,16 @@ def run(
     output: dict[str, list[ChunkCandidate]] = {}
 
     for col in all_collections:
-        all_lists: list[list[dict]] = list(vector_results.get(col, []))
+        paths = list(vector_results.get(col, []))
         if col in fts_results:
-            all_lists.append(fts_results[col])
-        if not all_lists:
+            paths.append(RetrievalPath(family="fts", rows=fts_results[col]))
+        if not paths:
             continue
 
         effective_top_n = (
             top_n if top_n is not None else quota * settings.candidate_multiplier
         )
-        merged = _rrf_merge(all_lists, top_n=effective_top_n)
+        merged = _rrf_merge(paths, top_n=effective_top_n)
         output[col] = [
             ChunkCandidate(
                 chunk_id=e["chunk_id"],

@@ -29,10 +29,8 @@ def test_registry_configs_have_required_fields():
         assert config.rerank.mode in {"llm_only", "cohere_only", "both"}
 
 
-def test_focused_bible_retrieval_budget_counts_all_hyde_paths():
+def test_focused_bible_keeps_standard_per_path_retrieval_depth():
     assert runner._pool_sizes(PIPELINES["hyde_cohere_luna"], 10) == (50, 100)
-    assert runner._pool_sizes(PIPELINES["hyde_cohere_luna"], 10, hyde_paths=8) == (15, 100)
-    assert runner._pool_sizes(PIPELINES["hyde_cohere_luna"], 10, hyde_paths=7) == (17, 100)
 
 
 def test_production_pipeline_is_registered():
@@ -375,7 +373,7 @@ async def test_focused_plan_controls_runner_budget_cap_and_final_count():
 
     assert rerank_step.await_args.kwargs["terminal_candidate_budget"] == 25
     assert hyde_step.await_args.kwargs["all_bible_genres"] is True
-    assert vector_step.await_args.kwargs["k"] == 15
+    assert vector_step.await_args.kwargs["k"] == 50
     assert dedup_step.await_args.kwargs["per_source_cap"] == 4
     assert dedup_step.await_args.kwargs["per_document_cap"] == 4
     assert len(result.chunks) == 10

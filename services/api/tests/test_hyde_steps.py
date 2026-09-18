@@ -85,7 +85,7 @@ async def test_bible_genre_selector_wrong_cardinality_records_fallback():
 
     assert result == {}
     assert generate.await_args.kwargs["selected_genres"] == [
-        "free", "nt-epistles", "psalms",
+        "free", "nt-epistles", "psalms", "nt-teachings",
     ]
     assert degradation.event_dicts() == [{
         "stage": "hyde_genre_select",
@@ -127,10 +127,10 @@ async def test_focused_bible_generates_and_embeds_all_eight_genres_without_selec
 
 
 @pytest.mark.asyncio
-async def test_standard_bible_still_selects_three_genres():
+async def test_standard_bible_selects_four_genres():
     client = MagicMock()
     client.messages.create = AsyncMock(return_value=SimpleNamespace(
-        content=[SimpleNamespace(text='["free", "psalms", "nt-stories"]')],
+        content=[SimpleNamespace(text='["free", "psalms", "nt-stories", "ot-wisdom"]')],
         usage=SimpleNamespace(input_tokens=1, output_tokens=1),
     ))
     generated_systems: list[str] = []
@@ -153,9 +153,10 @@ async def test_standard_bible_still_selects_three_genres():
         hyde_s25._HYDE_BIBLE_FREE_PROMPT,
         hyde_s25._HYDE_PSALMS_PROMPT,
         hyde_s25._HYDE_NT_STORIES_PROMPT,
+        hyde_s25._HYDE_OT_WISDOM_PROMPT,
     ]
-    assert len(result["bible"]) == 3
-    assert embed.await_count == 3
+    assert len(result["bible"]) == 4
+    assert embed.await_count == 4
 
 
 @pytest.mark.asyncio

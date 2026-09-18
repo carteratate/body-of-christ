@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import asyncpg
 import pytest
 
-from app.rag.steps.types import ChunkCandidate
+from app.rag.steps.types import ChunkCandidate, RetrievalPath
 from app.rag.steps.rrf import _rrf_merge, run as rrf_run
 from app.rag.steps.retrieve_vector import _search_vector, run as retrieve_vector
 from app.rag.steps.retrieve_fts import run as retrieve_fts
@@ -53,7 +53,7 @@ def test_rrf_merge_basic():
     """Top chunk from each list should appear in merged results."""
     list_a = [_row("aaa"), _row("bbb")]
     list_b = [_row("bbb"), _row("ccc")]
-    merged = _rrf_merge([list_a, list_b], top_n=3)
+    merged = _rrf_merge([RetrievalPath("query", list_a), RetrievalPath("fts", list_b)], top_n=3)
     ids = [m["chunk_id"] for m in merged]
     assert "bbb" in ids  # ranked in both lists → highest RRF
     assert "aaa" in ids
@@ -63,7 +63,7 @@ def test_rrf_merge_basic():
 def test_rrf_merge_deduplicates():
     """A chunk appearing in multiple lists must only appear once in the output."""
     shared = _row("shared-id")
-    merged = _rrf_merge([[shared], [shared]], top_n=5)
+    merged = _rrf_merge([RetrievalPath("query", [shared]), RetrievalPath("fts", [shared])], top_n=5)
     assert sum(1 for m in merged if m["chunk_id"] == "shared-id") == 1
 
 
@@ -72,7 +72,7 @@ def test_rrf_merge_per_strategy_guarantee():
     # list_a has 'rare' at rank 1 but list_b has many higher-scoring chunks
     list_a = [_row("rare")] + [_row(f"b{i}") for i in range(20)]
     list_b = [_row(f"b{i}") for i in range(20)]
-    merged = _rrf_merge([list_a, list_b], top_n=5)
+    merged = _rrf_merge([RetrievalPath("query", list_a), RetrievalPath("fts", list_b)], top_n=5)
     ids = {m["chunk_id"] for m in merged}
     assert "rare" in ids  # per-strategy guarantee must include rank-1 of list_a
 
@@ -82,19 +82,19 @@ def test_rrf_merge_score_order():
     # 'top' appears first in both lists → highest RRF score
     list_a = [_row("top"), _row("mid"), _row("low")]
     list_b = [_row("top"), _row("other")]
-    merged = _rrf_merge([list_a, list_b], top_n=10)
+    merged = _rrf_merge([RetrievalPath("query", list_a), RetrievalPath("fts", list_b)], top_n=10)
     assert merged[0]["chunk_id"] == "top"
 
 
 def test_rrf_merge_empty_lists():
     """Empty result lists should be handled gracefully."""
-    merged = _rrf_merge([[], [_row("aaa")]], top_n=5)
+    merged = _rrf_merge([RetrievalPath("query", []), RetrievalPath("fts", [_row("aaa")])], top_n=5)
     assert len(merged) == 1
     assert merged[0]["chunk_id"] == "aaa"
 
 
 def test_rrf_merge_all_empty():
-    merged = _rrf_merge([[], []], top_n=5)
+    merged = _rrf_merge([RetrievalPath("query", []), RetrievalPath("fts", [])], top_n=5)
     assert merged == []
 
 
@@ -208,6 +208,24 @@ async def test_retrieve_vector_run_returns_chunk_candidates():
     assert len(results) > 0
     assert all(isinstance(r, ChunkCandidate) for r in results)
     assert results[0].chunk_id == chunk_id
+
+
+@pytest.mark.asyncio
+async def test_retrieve_vector_preserves_query_family_after_hyde_path_failure():
+    async def search(_collection, _vec, _limit, label):
+        if label == "hyde":
+            raise RuntimeError("HyDE path unavailable")
+        return [_row("query-only")]
+
+    with patch("app.rag.steps.retrieve_vector._search_vector", new=search):
+        paths = await retrieve_vector(
+            query_vec=[0.1], hyde_vecs={"bible": [[0.2]]},
+            collections=["bible"], quota=4,
+        )
+
+    assert [(path.family, [row["id"] for row in path.rows]) for path in paths["bible"]] == [
+        ("query", ["query-only"]),
+    ]
 
 
 @pytest.mark.asyncio

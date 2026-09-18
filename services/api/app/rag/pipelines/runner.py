@@ -154,16 +154,15 @@ def _classify_outcomes(
     return outcome, collection_outcomes
 
 
-def _pool_sizes(
-    config: PipelineConfig, quota: int, *, hyde_paths: int | None = None,
-) -> tuple[int | None, int | None]:
+def _pool_sizes(config: PipelineConfig, quota: int) -> tuple[int | None, int | None]:
     """(per-strategy retrieval k, RRF top_n) for this pipeline, or (None, None).
 
     `llm_only` returns (None, None) so retrieval keeps its historical
     `quota * candidate_multiplier`. This preserves candidate sizing, not scoring-
     contract equivalence across the structured-output rollout.
-    Cohere modes size the pool to fill one Cohere search unit and scale the
-    per-strategy limit to the number of active paths.
+    Cohere modes size the pool to fill one Cohere search unit. The per-path
+    retrieval depth stays at the standard 50 even for all eight Bible genres;
+    RRF still limits the pool before Cohere.
     """
     if config.rerank.mode == "llm_only":
         return None, None
@@ -173,10 +172,7 @@ def _pool_sizes(
         # Ablation pipelines pin k so removing a path does not also deepen the
         # remaining ones (see RetrievalConfig.retrieval_k_override).
         return config.retrieval.retrieval_k_override, pool
-    # Preserve common-case sizing unless a focused Bible search supplies its actual
-    # HyDE path count. Eight genres should not turn a 50-per-path search into 500.
-    n_hyde = hyde_paths if hyde_paths is not None else int(config.retrieval.hyde)
-    n_paths = 1 + n_hyde + int(config.retrieval.fts)
+    n_paths = 1 + int(config.retrieval.hyde) + int(config.retrieval.fts)
     return budget.retrieval_k(pool, n_paths), pool
 
 
@@ -355,10 +351,7 @@ async def run(
         else hyde_module.run(query, collections, tracker)
     )
     hyde_vecs = await _timed_async("hyde", hyde_call)
-    k, top_n = _pool_sizes(
-        config, quota,
-        hyde_paths=len(hyde_vecs.get("bible", [])) if focused_bible_hyde else None,
-    )
+    k, top_n = _pool_sizes(config, quota)
     vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(query_vec, hyde_vecs, collections, quota, user_id, k=k))
     if config.retrieval.fts:
         fts_raw = await _timed_async("retrieve_fts", retrieve_fts.run(query, collections, quota, user_id, k=k))
