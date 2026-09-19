@@ -152,6 +152,12 @@ class Settings(BaseSettings):
     retrieval_k_min: int = Field(default=10, validation_alias="RETRIEVAL_K_MIN")
     retrieval_k_max: int = Field(default=60, validation_alias="RETRIEVAL_K_MAX")
 
+    # RRF rank-bias constant: the default every pipeline that does not pin its own
+    # `rrf_k` merges with. See `rag/steps/rrf.py` for what the value trades off and
+    # `RetrievalConfig.rrf_k` for the per-pipeline override that makes it an
+    # ablation axis rather than a global.
+    rrf_k: int = Field(default=20, validation_alias="RRF_K")
+
     # Rate limiting
     rate_limit_per_minute: int = Field(default=10, validation_alias="RATE_LIMIT_PER_MINUTE")
     daily_message_quota: int = Field(default=50, validation_alias="DAILY_MESSAGE_QUOTA")
@@ -185,6 +191,7 @@ class Settings(BaseSettings):
         "llm_rerank_max_tokens",
         "retrieval_k_min",
         "retrieval_k_max",
+        "rrf_k",
         "rate_limit_per_minute",
         "daily_message_quota",
         "rate_limit_search_per_minute",

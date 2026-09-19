@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import dataclasses
+import json
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -149,7 +150,7 @@ _HTML_VIEWER = """<!DOCTYPE html>
 
 <script>
 const COLLECTIONS = ["bible","catechism","summa","encyclicals","councils","church-fathers","medieval","canon-law","apostolic-exhortations","papal-documents"];
-const PIPELINES = ["hyde_haiku","hyde_luna","hyde_cohere","hyde_cohere_haiku","hyde_cohere_luna","nohyde_haiku","nohyde_cohere","nohyde_cohere_haiku","hyde_nolex_cohere_haiku"];
+const PIPELINES = __PIPELINE_NAMES__;
 
 const collDiv = document.getElementById("collectionChecks");
 COLLECTIONS.forEach(c => {
@@ -365,4 +366,10 @@ async def compare_view(request: Request) -> HTMLResponse:
         client_host = request.client.host if request.client else ""
         if client_host not in ("127.0.0.1", "::1", "localhost"):
             raise HTTPException(status_code=403, detail="Localhost only")
-    return HTMLResponse(content=_HTML_VIEWER)
+    # Substituted rather than hardcoded: this list drifted from the registry once
+    # already, which left a new pipeline runnable via the API but untickable in the
+    # only UI for running comparisons. `_HTML_VIEWER` cannot be an f-string — it is
+    # full of JS template literals — so a token replace is the substitution.
+    return HTMLResponse(
+        content=_HTML_VIEWER.replace("__PIPELINE_NAMES__", json.dumps(sorted(PIPELINES))),
+    )

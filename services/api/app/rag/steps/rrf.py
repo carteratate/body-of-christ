@@ -13,16 +13,19 @@ logger = logging.getLogger(__name__)
 # et al. (2009), tuned on TREC runs 1000 deep; every list here is `budget.retrieval_k`
 # deep — 50 in production — which put that crossover at rank 62, past the end of every
 # list we produce, leaving rank as a tiebreak on a three-way vote (hyde/query/fts,
-# since retrieve_vector collapses all HyDE genres into one `max` vote). 20 puts the
-# crossover at rank 22, roughly the top 40% of a 50-deep list: agreement still wins
-# where both paths ranked a chunk highly, and rank carries real weight below that.
+# since retrieve_vector collapses all HyDE genres into one `max` vote). The default 20
+# puts the crossover at rank 22, roughly the top 40% of a 50-deep list: agreement still
+# wins where both paths ranked a chunk highly, and rank carries real weight below that.
 # It is also what _PER_STRATEGY_TOP_K already implies — force-admitting each path's
 # top 3 asserts that a single path's best hits are trustworthy.
-_RRF_K = 20
+#
+# The value lives in `settings.rrf_k` (env `RRF_K`) so it can be measured rather than
+# argued: `RetrievalConfig.rrf_k` pins it per pipeline, which is what lets `compare/`
+# A/B two values by name. That reasoning above is the hypothesis, not the evidence.
 _PER_STRATEGY_TOP_K = 3
 
 
-def _rrf_merge(paths: list[RetrievalPath], top_n: int) -> list[dict]:
+def _rrf_merge(paths: list[RetrievalPath], top_n: int, k: int) -> list[dict]:
     family_scores: dict[str, dict[str, float]] = {}
     metadata: dict[str, dict] = {}
 
@@ -31,7 +34,7 @@ def _rrf_merge(paths: list[RetrievalPath], top_n: int) -> list[dict]:
             rank = rank_0 + 1
             chunk_id = str(row["id"])
             scores_for_chunk = family_scores.setdefault(chunk_id, {})
-            contribution = 1.0 / (_RRF_K + rank)
+            contribution = 1.0 / (k + rank)
             scores_for_chunk[path.family] = max(
                 scores_for_chunk.get(path.family, 0.0), contribution,
             )
@@ -72,14 +75,19 @@ def run(
     fts_results: dict[str, list[dict]],
     quota: int,
     top_n: int | None = None,
+    k: int | None = None,
 ) -> dict[str, list[ChunkCandidate]]:
     """Merge per-collection paths using one best vote per family.
 
     All HyDE paths share one family; the original query and FTS vote independently.
     vector_results: col → labeled ranked paths (one per search vector)
     fts_results: col → single ranked list from FTS
+    k: rank-bias constant; None falls back to `settings.rrf_k`. Resolving the
+       default here rather than at each call site keeps one answer to "what does
+       an unpinned pipeline score with".
     Returns: col → list[ChunkCandidate] sorted by RRF score descending
     """
+    effective_k = settings.rrf_k if k is None else k
     all_collections = set(vector_results) | set(fts_results)
     output: dict[str, list[ChunkCandidate]] = {}
 
@@ -93,7 +101,7 @@ def run(
         effective_top_n = (
             top_n if top_n is not None else quota * settings.candidate_multiplier
         )
-        merged = _rrf_merge(paths, top_n=effective_top_n)
+        merged = _rrf_merge(paths, top_n=effective_top_n, k=effective_k)
         output[col] = [
             ChunkCandidate(
                 chunk_id=e["chunk_id"],

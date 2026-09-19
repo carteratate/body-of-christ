@@ -11,7 +11,6 @@ from app.rag.pipelines.registry import PIPELINES
 from app.rag.steps.rerank import contract_version
 from app.rag.steps.llm_rerank.pointwise import POINTWISE_MAX_TOKENS
 from app.rag.steps.rerank_cohere import COHERE_RERANK_MODEL
-from app.rag.steps.rrf import _RRF_K
 
 
 def snapshot(pipeline_names: list[str]) -> dict:
@@ -66,8 +65,10 @@ def snapshot(pipeline_names: list[str]) -> dict:
                 "retrieval_k_min", "retrieval_k_max", "judge_timeout_s",
             )
         },
+        # `rrf_k` is deliberately absent: it is a per-pipeline axis now, carried
+        # into each entry above by `dataclasses.asdict`. A global entry would
+        # assert one k for a run whose whole point may be to vary it.
         "fixed_parameters": {
-            "rrf_k": _RRF_K,
             "pointwise_max_tokens": POINTWISE_MAX_TOKENS,
             "listwise_max_tokens": settings.llm_rerank_max_tokens,
             "hyde_luna_concurrency": settings.hyde_luna_concurrency,

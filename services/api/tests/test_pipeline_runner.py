@@ -11,7 +11,7 @@ _EXPECTED_PIPELINES = {
     "hyde_haiku", "nohyde_haiku", "hyde_luna",
     "hyde_cohere", "nohyde_cohere",
     "hyde_cohere_haiku", "hyde_cohere_luna", "nohyde_cohere_haiku",
-    "hyde_nolex_cohere_haiku",
+    "hyde_nolex_cohere_haiku", "hyde_luna_rrf60",
 }
 
 
@@ -391,3 +391,28 @@ def test_delivery_outcome_distinguishes_focused_completion(
     delivered: int, quota: int, used_floor: bool, expected: str,
 ):
     assert runner._delivery_outcome(delivered, quota, used_floor) == expected
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("pipeline", "expected_k"), [("hyde_luna", None), ("hyde_luna_rrf60", 60)],
+)
+async def test_runner_passes_the_pipelines_own_rrf_k_to_the_merge(pipeline, expected_k):
+    """The production path has to honour the per-pipeline k, or the axis is inert.
+
+    `None` is passed through deliberately rather than resolved here: `rrf.run`
+    owns the fallback to the configured default, so there is one place that
+    decides what an unpinned pipeline scores with.
+    """
+    config = PIPELINES[pipeline]
+    with (
+        patch("app.rag.steps.embed.run", new=AsyncMock(return_value=[0.1] * 1536)),
+        patch("app.rag.steps.hyde_s25.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.retrieve_vector.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.retrieve_fts.run", new=AsyncMock(return_value={})),
+        patch("app.rag.steps.rrf.run", return_value={"bible": []}) as rrf_step,
+        patch("app.rag.steps.rerank.run", new=AsyncMock(return_value=([], []))),
+    ):
+        await runner.run(config, "test query", ["bible"], quota=4)
+
+    assert rrf_step.call_args.kwargs["k"] == expected_k

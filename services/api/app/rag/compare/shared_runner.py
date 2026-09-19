@@ -101,12 +101,17 @@ async def capture(
     )
     fts_raw = await retrieve_fts.run(query, collections, quota, k=max_k)
 
-    pools_by_shape: dict[tuple[int, int | None, bool], dict[str, list[ChunkCandidate]]] = {}
+    # Keyed by every input that changes the merged pool. `rrf_k` belongs here for
+    # the same reason `fts` does: two arms differing only in it produce differently
+    # ordered merges, and reusing one pool for both would hand replay identical
+    # candidates and silently compare an arm against itself.
+    Shape = tuple[int, int | None, bool, int | None]
+    pools_by_shape: dict[Shape, dict[str, list[ChunkCandidate]]] = {}
     candidate_pools: dict[str, dict[str, list[ChunkCandidate]]] = {}
     for config in configs:
         k = effective_k[config.name]
         _configured_k, top_n = sizes[config.name]
-        shape = (k, top_n, config.retrieval.fts)
+        shape = (k, top_n, config.retrieval.fts, config.retrieval.rrf_k)
         if shape not in pools_by_shape:
             vectors = {
                 collection: [RetrievalPath(path.family, path.rows[:k]) for path in strategies]
@@ -116,7 +121,7 @@ async def capture(
                 {collection: ranked[:k] for collection, ranked in fts_raw.items()}
                 if config.retrieval.fts else {}
             )
-            merged = rrf.run(vectors, lexical, quota, top_n=top_n)
+            merged = rrf.run(vectors, lexical, quota, top_n=top_n, k=config.retrieval.rrf_k)
             pools_by_shape[shape] = await fetch_positions.run(merged)
         candidate_pools[config.name] = copy.deepcopy(pools_by_shape[shape])
 
