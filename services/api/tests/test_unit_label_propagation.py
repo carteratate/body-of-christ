@@ -84,16 +84,20 @@ def test_pointwise_rerank_carries_unit_label():
 
 # --- hop 4: the reranker prompts must explain what the label MEANS ---
 
-def test_both_rerank_prompts_explain_that_an_objection_is_refuted():
-    """The label is inert unless the model knows an objection argues AGAINST."""
+def test_both_rerank_prompts_explain_objection_attribution():
+    """The label is inert unless the model knows an objection is not the conclusion."""
     from app.rag.steps.llm_rerank.listwise import _LISTWISE_SYSTEM
     from app.rag.steps.llm_rerank.pointwise import _RERANK_SYSTEM
 
-    for prompt in (_LISTWISE_SYSTEM, _RERANK_SYSTEM):
-        assert "PASSAGE ROLE" in prompt
-        assert "REFUTE" in prompt
-        assert "'Objection N'" in prompt
-        assert "'I answer that'" in prompt
+    assert "Roles determine attribution" in _LISTWISE_SYSTEM
+    assert '"Objection N"' in _LISTWISE_SYSTEM
+    assert "not the author's conclusion" in _LISTWISE_SYSTEM
+    assert '"I answer that"' in _LISTWISE_SYSTEM
+
+    assert "PASSAGE ROLE" in _RERANK_SYSTEM
+    assert "REFUTE" in _RERANK_SYSTEM
+    assert "'Objection N'" in _RERANK_SYSTEM
+    assert "'I answer that'" in _RERANK_SYSTEM
 
 
 def test_fetch_positions_backfills_unit_label_for_qdrant_candidates():

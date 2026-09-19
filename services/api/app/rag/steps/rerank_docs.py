@@ -36,7 +36,7 @@ def cohere_document(candidate: ChunkCandidate) -> str:
     return f"{head} {candidate.content}"
 
 
-def llm_card(candidate: ChunkCandidate, max_content_chars: int | None = None) -> str:
+def llm_card(candidate: ChunkCandidate) -> str:
     """Compact card for one listwise-rerank candidate.
 
     Includes the annotation (its SUMMARY line and labeled segments) when present.
@@ -44,14 +44,10 @@ def llm_card(candidate: ChunkCandidate, max_content_chars: int | None = None) ->
     requires retrieving through the facets collection, which does not exist yet, so
     all facets arrive together via the annotation's segments.
 
-    Content is truncated because the listwise call carries every candidate in one
-    prompt; the annotation, reference and unit label are never truncated.
+    The listwise reranker receives the complete passage. The terminal pool is bounded
+    separately, so card construction must not discard source text to control prompt size.
     """
     ref = candidate.reference or "no reference"
-    content = candidate.content
-    if max_content_chars is not None and len(content) > max_content_chars:
-        content = content[:max_content_chars].rstrip() + "..."
-
     head = f"[{candidate.chunk_id}] ({candidate.collection}) {ref}"
     role = display_role(candidate.unit_label, ref)
     if role:
@@ -62,5 +58,5 @@ def llm_card(candidate: ChunkCandidate, max_content_chars: int | None = None) ->
     lines = [head]
     if candidate.annotation:
         lines.append(candidate.annotation)
-    lines.append(content)
+    lines.append(candidate.content)
     return "\n".join(lines)

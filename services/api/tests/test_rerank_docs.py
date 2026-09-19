@@ -85,14 +85,13 @@ def test_llm_card_omits_annotation_line_when_unenriched():
     assert card.count("\n") == 1  # header + content only
 
 
-def test_llm_card_truncates_content_but_not_annotation():
+def test_llm_card_includes_complete_content_and_annotation():
     long = _candidate(_ANNOTATION)
     long.content = "x" * 5000
-    card = llm_card(long, max_content_chars=100)
+    card = llm_card(long)
     assert "SUMMARY:" in card
     assert "[typological/doctrinal | inferential]" in card
-    assert "x" * 200 not in card
-    assert card.endswith("...")
+    assert card.endswith("x" * 5000)
 
 
 # ---------------------------------------------------------------------------
@@ -132,14 +131,13 @@ def test_llm_card_puts_unit_label_in_the_header():
     assert llm_card(c).splitlines()[0].endswith("— Reply to Objection 2")
 
 
-def test_llm_card_never_truncates_the_unit_label():
-    """Content is truncated to fit the listwise prompt; the label must not be, or a
-    long objection's card reads as the author's own teaching."""
+def test_llm_card_keeps_the_unit_label_in_the_header_for_long_content():
+    """A long objection must retain its role or it reads as the author's teaching."""
     c = _candidate(unit_label="Objection 1")
     c.content = "x" * 5000
-    card = llm_card(c, max_content_chars=50)
-    assert "Objection 1" in card
-    assert len(card) < 400
+    card = llm_card(c)
+    assert "Objection 1" in card.splitlines()[0]
+    assert card.endswith("x" * 5000)
 
 
 def test_llm_card_omits_a_redundant_role():
