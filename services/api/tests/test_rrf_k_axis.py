@@ -8,6 +8,8 @@ pipeline, and two arms that differ in it are distinguishable downstream.
 """
 from __future__ import annotations
 
+import dataclasses
+
 import pytest
 
 from app.config import Settings, settings
@@ -45,22 +47,40 @@ def test_the_alternate_arm_differs_from_its_control_only_in_k():
     assert control.retrieval.rrf_k is None
 
 
-def test_two_arms_differing_only_in_k_have_different_fingerprints():
-    """Same fingerprint would make the two arms unsegmentable in `compare/`."""
+def test_k_alone_changes_the_methodology_fingerprint(monkeypatch):
+    """Same fingerprint would make two arms unsegmentable in `compare/`.
+
+    Holding the *name* fixed and varying only `rrf_k` is the whole point. An
+    earlier version of this test compared two real registry entries, which
+    proved nothing: their names differ, the name is inside the snapshotted
+    config, so the assertion passed on the name alone and would have survived
+    deleting `rrf_k` outright.
+    """
+    control = PIPELINES["hyde_luna"]
+    variant = dataclasses.replace(
+        control, retrieval=dataclasses.replace(control.retrieval, rrf_k=60),
+    )
+
+    before = methodology.fingerprint(methodology.snapshot(["hyde_luna"]))
+    monkeypatch.setitem(PIPELINES, "hyde_luna", variant)
+    after = methodology.fingerprint(methodology.snapshot(["hyde_luna"]))
+
+    assert before != after
+
+
+def test_the_recorded_difference_between_the_arms_is_k_and_nothing_else():
+    """Names aside, the two shipped arms must differ in exactly one field."""
     both = methodology.snapshot(["hyde_luna", "hyde_luna_rrf60"])
-    # Guard against the trivial pass: an unknown name snapshots as None, which
-    # would differ from anything without exercising the axis at all.
-    assert both["pipelines"]["hyde_luna"]["config"] is not None
-    assert both["pipelines"]["hyde_luna_rrf60"]["config"] is not None
-    assert (
-        both["pipelines"]["hyde_luna"]["config"]
-        != both["pipelines"]["hyde_luna_rrf60"]["config"]
-    )
-    assert methodology.fingerprint(
-        methodology.snapshot(["hyde_luna"])
-    ) != methodology.fingerprint(
-        methodology.snapshot(["hyde_luna_rrf60"])
-    )
+    control = both["pipelines"]["hyde_luna"]["config"]
+    variant = both["pipelines"]["hyde_luna_rrf60"]["config"]
+    assert control is not None and variant is not None
+
+    differing = {
+        key for key in control["retrieval"]
+        if control["retrieval"][key] != variant["retrieval"][key]
+    }
+    assert differing == {"rrf_k"}
+    assert control["rerank"] == variant["rerank"]
 
 
 def test_methodology_records_k_per_pipeline_not_as_a_global_fixed_parameter():
@@ -78,3 +98,19 @@ def test_rrf_k_must_be_positive():
     """k is a rank denominator; 0 or negative makes 1/(k+rank) meaningless."""
     with pytest.raises(ValueError, match="positive"):
         Settings(RRF_K=0)
+
+
+@pytest.mark.parametrize("bad", [0, -1, -60])
+def test_a_pipeline_cannot_pin_a_nonpositive_k(bad):
+    """The registry is the only way a bad k can reach the merge, and it fails quietly.
+
+    `settings.rrf_k` is validated, and no request field reaches `rrf_k` — the
+    compare route accepts registry *names* only. That leaves a hand-edited
+    registry literal as the sole path in, and the failure is silent rather than
+    loud: `_rrf_merge` clamps every negative contribution to 0.0 via the
+    per-family `max`, so a typo yields all-zero scores and arbitrary ordering
+    instead of an error. Someone pinning k for an ablation is exactly the person
+    who would ship that result as a finding.
+    """
+    with pytest.raises(ValueError, match="rrf_k"):
+        RetrievalConfig(rrf_k=bad)

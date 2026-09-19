@@ -42,6 +42,16 @@ class RetrievalConfig:
     # methodology fingerprint automatically and the two arms stay segmentable.
     rrf_k: int | None = None
 
+    def __post_init__(self) -> None:
+        # `settings.rrf_k` is validated by pydantic and no request field reaches
+        # rrf_k, so a hand-edited literal here is the only way a bad value gets in
+        # — and it fails silently: `_rrf_merge` takes a per-family `max` against
+        # 0.0, so a negative k clamps every score to zero and leaves the ordering
+        # arbitrary rather than raising. Guarded because the person pinning k is
+        # running an ablation, and would read that as a result.
+        if self.rrf_k is not None and self.rrf_k <= 0:
+            raise ValueError(f"rrf_k must be positive, got {self.rrf_k}")
+
 
 @dataclass(frozen=True)
 class PipelineConfig:
