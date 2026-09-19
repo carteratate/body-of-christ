@@ -634,6 +634,8 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         request: freezeRequest(result.request),
         passages: Object.freeze(result.passages.map(freezePassage)),
         warning: result.warning,
+        outcome: result.outcome ?? null,
+        collectionOutcomes: freezeOutcomes(result.collectionOutcomes ?? {}),
         deliveryOutcome: result.deliveryOutcome ?? null,
         originalResultCount: result.originalResultCount ?? null,
         historicalOutcomeUnknown: result.historicalOutcomeUnknown ?? false,

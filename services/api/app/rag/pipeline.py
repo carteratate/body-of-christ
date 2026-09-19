@@ -13,6 +13,7 @@ import uuid
 
 from app.db import get_pool
 from app.rag.constants import VALID_COLLECTIONS
+from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.pipelines.runner import PipelineExecutionError, run as run_pipeline
 from app.rag.search_plan import SearchPlan, resolve_search_plan
@@ -32,11 +33,15 @@ def _saved_search_filters(
     translation: str,
     quota: int,
     delivery_outcome: str | None,
+    outcome: PersistedSearchOutcome,
+    collection_outcomes: dict[str, CollectionOutcome],
 ) -> dict:
     filters = {
         "collections": collections,
         "translation": translation,
         "quota": quota,
+        "outcome": outcome,
+        "collection_outcomes": collection_outcomes,
     }
     if quota == 10 and delivery_outcome in {"complete", "underfilled", "minimum_floor"}:
         filters["delivery_outcome"] = delivery_outcome
@@ -51,6 +56,7 @@ async def _persist_empty_search(
     collections: list[str],
     translation: str,
     quota: int,
+    collection_outcomes: dict[str, CollectionOutcome],
     delivery_outcome: str | None = None,
 ) -> bool:
     if user_id is None:
@@ -66,7 +72,14 @@ async def _persist_empty_search(
                 uuid.UUID(search_id),
                 uuid.UUID(user_id),
                 query,
-                _saved_search_filters(collections, translation, quota, delivery_outcome),
+                _saved_search_filters(
+                    collections,
+                    translation,
+                    quota,
+                    delivery_outcome,
+                    PersistedSearchOutcome.NO_CANDIDATES,
+                    collection_outcomes,
+                ),
             )
         return True
     except Exception:
@@ -179,6 +192,10 @@ async def run_search_pipeline(
                 collections=collections,
                 translation=translation,
                 quota=quota,
+                collection_outcomes={
+                    collection: CollectionOutcome(value)
+                    for collection, value in pipeline_result.collection_outcomes.items()
+                },
                 delivery_outcome=pipeline_result.delivery_outcome,
             )
             yield {
@@ -258,6 +275,12 @@ async def run_search_pipeline(
                                     _saved_search_filters(
                                         collections, translation, quota,
                                         pipeline_result.delivery_outcome,
+                                        PersistedSearchOutcome(pipeline_result.outcome),
+                                        {
+                                            collection: CollectionOutcome(value)
+                                            for collection, value
+                                            in pipeline_result.collection_outcomes.items()
+                                        },
                                     ),
                                     len(final_results),
                                 )

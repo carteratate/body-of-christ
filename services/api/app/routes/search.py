@@ -23,6 +23,8 @@ from app.models.search import (
     SearchResultsResponse,
     SearchSummary,
 )
+from app.rag.constants import VALID_COLLECTIONS
+from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipeline import run_search_pipeline
 from app.rag.search_plan import SearchPlan, SearchPlanError, resolve_search_plan
 from app.rag.steps import fetch_context, stitch
@@ -403,6 +405,34 @@ async def get_search_results(
         and saved_filters.get("delivery_outcome") in {"complete", "underfilled", "minimum_floor"}
         else None
     )
+    try:
+        outcome = PersistedSearchOutcome(saved_filters.get("outcome"))
+    except (TypeError, ValueError, AttributeError):
+        outcome = None
+    saved_collections = {
+        collection
+        for collection in (
+            saved_filters.get("collections", [])
+            if isinstance(saved_filters, dict)
+            else []
+        )
+        if isinstance(collection, str) and collection in VALID_COLLECTIONS
+    }
+    raw_collection_outcomes = (
+        saved_filters.get("collection_outcomes")
+        if isinstance(saved_filters, dict)
+        else None
+    )
+    collection_outcomes = None
+    if outcome is not None and isinstance(raw_collection_outcomes, dict):
+        collection_outcomes = {}
+        for collection, value in raw_collection_outcomes.items():
+            if collection not in saved_collections:
+                continue
+            try:
+                collection_outcomes[collection] = CollectionOutcome(value)
+            except (TypeError, ValueError):
+                continue
 
     return SearchResultsResponse(
         search_id=search_id,
@@ -412,6 +442,8 @@ async def get_search_results(
         restore_status=restore_status,
         expected_result_count=expected_count,
         delivery_outcome=delivery_outcome,
+        outcome=outcome,
+        collection_outcomes=collection_outcomes,
     )
 
 

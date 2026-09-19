@@ -82,7 +82,7 @@ export function searchExperienceView(snapshot: SearchExperienceSnapshot): Search
     errorCode: failure?.failure.code ?? null,
     errorStage: failure?.failure.stage ?? null,
     outcome: restored
-      ? restored.passages.length > 0 ? "success" : "no_candidates"
+      ? restored.outcome ?? (restored.passages.length > 0 ? "success" : "no_candidates")
       : transport?.status === "complete"
         ? transport.outcome
         : transport?.status === "ranked-ready" && transport.resultCount === 0
@@ -95,7 +95,9 @@ export function searchExperienceView(snapshot: SearchExperienceSnapshot): Search
     historicalOutcomeUnknown: restored?.historicalOutcomeUnknown ?? false,
     collectionOutcomes: failure?.failure.collectionOutcomes
       ?? completionFailure?.collectionOutcomes
-      ?? (transport?.status === "complete" ? transport.collectionOutcomes : {}),
+      ?? (transport?.status === "complete"
+        ? transport.collectionOutcomes
+        : restored?.collectionOutcomes ?? {}),
     saveWarning: restored?.warning ?? active?.saveWarning ?? null,
     phase: transport?.status === "searching" ? transport.phase : null,
     showAnimation: active !== null && active.presentation.status !== "revealed",
