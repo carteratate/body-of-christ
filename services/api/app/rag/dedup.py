@@ -46,14 +46,14 @@ _PER_SOURCE_CAP = 2
 # chunks stream before explanations, so time-to-first-result is unchanged. quota is
 # bounded 3-5 (models/search.py), capping the worst case at +9 per search.
 #
-# COST (2026-09-18, this change): two separate effects, with different causes.
+# COST (2026-09-18): two separate effects, with different causes. Both come from the
+# per-source cap keying on the reader chapter for these collections, so distinct
+# articles or psalms count as distinct sources.
 # FOCUSED search over a single-document collection now fills its quota instead of
-# stopping at max_passages_per_document — that one comes from giving per_document_cap
-# the chapter grain, and measured on synthetic pools it went 4 -> quota (10), so +6.
+# stopping at four; measured on synthetic pools it went 4 -> quota (10), so +6.
 # STANDARD search over the Bible went 2 -> quota — that one comes ENTIRELY from adding
-# "bible" to the set below, because standard search passes per_document_cap=None
-# (runner.py: the bare `dedup.run(ranked)` branch) and so never consults the document
-# key at all. Standard quota is 3-5, so its worst case is +3, not +2.
+# "bible" to the set below, so the Psalter is keyed per psalm rather than as one book.
+# Standard quota is 3-5, so its worst case is +3, not +2.
 # quota_cap still bounds the total per collection and focused search is
 # single-collection by construction, so neither is unbounded growth.
 # The Bible joins them for the same structural reason: `datapipeline/ingest/bible.py`
@@ -157,40 +157,6 @@ def source_key(chunk: RankedChunk, chapter_grain: frozenset[str]) -> tuple[str, 
     return ("title", chunk.collection, chunk.document_title)
 
 
-def document_key(chunk: RankedChunk, chapter_grain: frozenset[str]) -> tuple[str, ...]:
-    """The unit `per_document_cap` counts against — the same grain as `source_key`.
-
-    `per_document_cap` was introduced to stop one PHYSICAL document dominating, which
-    `source_key` cannot do alone because it keys on document_title so that several
-    translations of one work share an allowance. Keyed on a bare document_id it also
-    silently overrode the chapter grain: every chapter-keyed collection is stored as
-    one document (the Summa, the Catechism and Canon Law each as a single document;
-    the Bible as one per book), so a focused search — which passes
-    max_passages_per_document as BOTH caps — capped the entire Summa, or the entire
-    Psalter, at four results however many distinct articles or psalms were ranked.
-    The chapter grain was computed and then had no effect.
-
-    ⚠️ SHARING THE GRAIN MAKES THIS CAP INERT AT THE VALUES PRODUCTION PASSES.
-    A document_id determines its collection and title, so this key strictly REFINES
-    `source_key` — every document bucket sits inside one source bucket. The document
-    count can therefore never reach a ceiling the source count has not already
-    reached, and `per_document_cap` cannot change the output unless it is strictly
-    SMALLER than `per_source_cap`. `runner.py` passes them equal (both
-    `max_passages_per_document`) on the only path that passes them at all; standard
-    search passes `per_document_cap=None`. Verified by brute force over random pools:
-    zero outputs differ with the cap applied versus removed.
-
-    It is kept as a guard for a future caller that passes a smaller document cap than
-    source cap, and because that is the only configuration in which the distinction
-    between the two keys is observable — two translations of one psalm share a
-    source_key but not a document_key. Do not describe it as a live constraint, and
-    do not add machinery that assumes it fires.
-    """
-    if chunk.collection in chapter_grain and chunk.chapter_key:
-        return (chunk.document_id, chunk.chapter_key)
-    return (chunk.document_id,)
-
-
 def _cosine_sim(a: list[float], b: list[float]) -> float:
     dot = sum(x * y for x, y in zip(a, b))
     mag_a = math.sqrt(sum(x * x for x in a))
@@ -202,7 +168,6 @@ def _cosine_sim(a: list[float], b: list[float]) -> float:
 
 async def apply_dedup(
     ranked: list[RankedChunk], *, per_source_cap: int = _PER_SOURCE_CAP,
-    per_document_cap: int | None = None,
 ) -> list[RankedChunk]:
     """Drop cosine-close adjacent duplicates and apply the requested source cap.
 
@@ -265,17 +230,11 @@ async def apply_dedup(
     survivors = [c for c in ranked if c.include and c.chunk_id not in to_drop]
     chapter_grain = chapter_grain_collections(survivors, per_source_cap)
     source_counts: dict[tuple[str, ...], int] = {}
-    document_counts: dict[tuple[str, ...], int] = {}
     final: list[RankedChunk] = []
     for chunk in survivors:
-        doc_key = document_key(chunk, chapter_grain)
-        document_count = document_counts.get(doc_key, 0)
-        if per_document_cap is not None and document_count >= per_document_cap:
-            continue
         key = source_key(chunk, chapter_grain)
         count = source_counts.get(key, 0)
         if count < per_source_cap:
             source_counts[key] = count + 1
-            document_counts[doc_key] = document_count + 1
             final.append(chunk)
     return final

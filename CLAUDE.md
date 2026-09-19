@@ -151,7 +151,7 @@ Production runs the `hyde_cohere_luna` config (`_PRODUCTION_PIPELINE` in `pipeli
 **`rag/search_plan.py` resolves one validated `SearchPlan` before the pipeline runs.** It
 is the single place that normalizes collections and enforces the focused-search invariant,
 and it hands the runner three derived values: `focused`, `terminal_candidate_budget`, and
-`max_passages_per_document`. `SearchPlanError` carries a stable `code` so routes translate
+`max_passages_per_source`. `SearchPlanError` carries a stable `code` so routes translate
 failures consistently. See §18.
 
 The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical). Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
@@ -363,8 +363,8 @@ Architecture item 8.
 
 **`rag/steps/dedup.py` is NOT dead — do not delete it.** `pipelines/runner.py` imports it
 in the parenthesized `from app.rag.steps import (...)` block, which is easy to miss with a
-single-line grep. It is the step that carries `per_source_cap` / `per_document_cap`, so
-focused search (§18) depends on it.
+single-line grep. It is the step that carries `per_source_cap`, so focused search (§18)
+depends on it.
 
 Lint warnings are 4 total, 0 errors: 2 in `icon-preview/`, 2 in
 `components/common/ErrorBoundary.tsx`.
@@ -388,27 +388,21 @@ What focused changes, all derived from the plan:
 |---|---|---|
 | Collections | 1–10 | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
-| `max_passages_per_document` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
+| `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
 
-`max_passages_per_document` is passed as **both** `per_source_cap` and `per_document_cap`
-to `steps/dedup.py`, and again to `min_floor`.
+`max_passages_per_source` is passed as `per_source_cap` to `steps/dedup.py`, and the same
+value bounds `min_floor`.
 
-**The name is now wider than what it limits.** For the chapter-keyed collections in
-`rag/dedup.py` (`summa`, `catechism`, `canon-law`, `bible`) both caps key on the reader
-chapter, not the document. Those four are each stored as a single document — the Bible as
-one per book — so keying on the document capped a focused search at 4 results in total
+**The cap is per *source*, and a source is the reader chapter for the chapter-keyed
+collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law`, `bible`) — see
+`dedup.source_key`. Those four are each stored as a single document (the Bible as one per
+book), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly
 ten" unreachable for exactly the collections focused search is most used on. Issue #105 is
-that defect reported from production.
-
-**`per_document_cap` is inert at the values production passes.** `document_key` strictly
-refines `source_key`, so the document count can never reach a ceiling the source count has
-not already reached; the cap can only bind when it is strictly smaller than
-`per_source_cap`, and `runner.py` passes them equal. Standard search passes
-`per_document_cap=None` and never consults it. Do not write code that assumes it fires.
-`FOCUSED_MAX_PASSAGES_PER_DOCUMENT` / `STANDARD_MAX_PASSAGES_PER_DOCUMENT` in
-`search_plan.py` are misnamed for the same reason.
+that defect reported from production; keying the cap per chapter fixed it.
+`FOCUSED_MAX_PASSAGES_PER_SOURCE` / `STANDARD_MAX_PASSAGES_PER_SOURCE` in `search_plan.py`
+name what they now limit.
 
 ### delivery_outcome
 

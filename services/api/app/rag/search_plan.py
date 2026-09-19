@@ -10,8 +10,8 @@ from app.rag.constants import VALID_COLLECTIONS
 ALLOWED_QUOTAS: frozenset[int] = frozenset({3, 4, 5, 10})
 FOCUSED_QUOTA = 10
 FOCUSED_TERMINAL_CANDIDATE_BUDGET = 25
-FOCUSED_MAX_PASSAGES_PER_DOCUMENT = 4
-STANDARD_MAX_PASSAGES_PER_DOCUMENT = 2
+FOCUSED_MAX_PASSAGES_PER_SOURCE = 4
+STANDARD_MAX_PASSAGES_PER_SOURCE = 2
 
 
 class SearchPlanError(ValueError):
@@ -62,11 +62,11 @@ class SearchPlan:
         )
 
     @property
-    def max_passages_per_document(self) -> int:
+    def max_passages_per_source(self) -> int:
         return (
-            FOCUSED_MAX_PASSAGES_PER_DOCUMENT
+            FOCUSED_MAX_PASSAGES_PER_SOURCE
             if self.focused
-            else STANDARD_MAX_PASSAGES_PER_DOCUMENT
+            else STANDARD_MAX_PASSAGES_PER_SOURCE
         )
 
 

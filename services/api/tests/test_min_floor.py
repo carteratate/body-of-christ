@@ -56,9 +56,8 @@ def test_caps_at_floor_limit():
 def test_focused_floor_fills_from_distinct_chapters_of_one_document():
     """Pass 2's whole purpose: a single chaptered collection still fills the floor.
 
-    This previously asserted 4, because per_document_cap keyed on a bare
-    document_id and every chapter-keyed collection is stored as one document — so
-    the cap cut pass 2 off one short of the floor's own limit, min(quota, _FLOOR_N).
+    Five distinct articles of the Summa (one document) fill the floor's own limit,
+    min(quota, _FLOOR_N), because pass 2 keys on the chapter grain.
     """
     ranked = [
         _chunk(
@@ -69,7 +68,7 @@ def test_focused_floor_fills_from_distinct_chapters_of_one_document():
         for index in range(5)
     ]
 
-    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+    result = min_floor.run(ranked, quota=10)
 
     assert len(result) == 5, "five distinct articles, five floor slots"
 
@@ -77,9 +76,8 @@ def test_focused_floor_fills_from_distinct_chapters_of_one_document():
 def test_focused_floor_takes_one_chunk_per_chapter():
     """One article cannot own the floor.
 
-    This is `seen_fine` doing the work, not per_document_cap: the floor admits at
-    most one chunk per source_key, so no document_key bucket ever reaches two and
-    the cap cannot bind at any value. Identical with per_document_cap set to None.
+    `seen_fine` does the work: the floor admits at most one chunk per source_key, so
+    a single chapter contributes exactly one result.
     """
     ranked = [
         _chunk(
@@ -90,7 +88,7 @@ def test_focused_floor_takes_one_chunk_per_chapter():
         for index in range(5)
     ]
 
-    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+    result = min_floor.run(ranked, quota=10)
 
     assert len(result) == 1, "pass 1 takes one per work; pass 2 finds no new chapter"
 
@@ -230,9 +228,9 @@ def test_focused_bible_floor_fills_from_distinct_psalms():
         for index in range(6)
     ]
 
-    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+    result = min_floor.run(ranked, quota=10)
 
-    assert len(result) == 5, "bounded by _FLOOR_N, not by the document cap"
+    assert len(result) == 5, "bounded by _FLOOR_N"
 
 
 def test_floor_degraded_bible_is_not_more_diverse_than_healthy():
@@ -246,6 +244,6 @@ def test_floor_degraded_bible_is_not_more_diverse_than_healthy():
         for index in range(6)
     ]
 
-    result = min_floor.run(ranked, quota=10, per_document_cap=4)
+    result = min_floor.run(ranked, quota=10)
 
     assert len(result) == 1, "one work, no chapter grain — pass 2 finds nothing new"

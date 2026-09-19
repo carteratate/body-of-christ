@@ -375,7 +375,6 @@ async def test_focused_plan_controls_runner_budget_cap_and_final_count():
     assert hyde_step.await_args.kwargs["all_bible_genres"] is True
     assert vector_step.await_args.kwargs["k"] == 50
     assert dedup_step.await_args.kwargs["per_source_cap"] == 4
-    assert dedup_step.await_args.kwargs["per_document_cap"] == 4
     assert len(result.chunks) == 10
     assert result.delivery_outcome == "complete"
 
