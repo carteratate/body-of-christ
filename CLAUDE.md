@@ -391,8 +391,8 @@ What focused changes, all derived from the plan:
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
 
-`max_passages_per_source` is passed as `per_source_cap` to `steps/dedup.py`, and the same
-value bounds `min_floor`.
+`max_passages_per_source` is passed as `per_source_cap` to `steps/dedup.py`. `min_floor`
+takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources itself.
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
 collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law`, `bible`) — see
