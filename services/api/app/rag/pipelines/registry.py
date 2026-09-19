@@ -1,8 +1,9 @@
 # services/api/app/rag/pipelines/registry.py
 """Named pipeline configurations.
 
-Naming: `<hyde|nohyde>[_nolex]_<rerank>`. Two axes are configured here — which
-retrieval paths run, and which rerankers — so `compare/` can A/B any two by name.
+Naming: `<hyde|nohyde>[_nolex]_<rerank>[_rrf<k>]`. Three axes are configured here —
+which retrieval paths run, which rerankers, and how the paths are fused — so
+`compare/` can A/B any two by name.
 
 Enrichment is deliberately NOT an axis: whether a candidate has an annotation is a
 property of the data, checked per candidate, so a single query spanning enriched and
@@ -33,6 +34,23 @@ class RetrievalConfig:
     # also search each remaining dense path 20% deeper — changing two variables and
     # measuring neither. Pinning k to the control's value isolates the FTS effect.
     retrieval_k_override: int | None = None
+    # Rank-bias constant for the RRF merge. None uses `settings.rrf_k`. Per-pipeline
+    # so two arms can differ in k alone: k decides the rank at which agreement
+    # between paths stops beating one path's precision, and that trade-off was
+    # picked by reasoning, never measured. Carried on the config (rather than read
+    # from settings inside the step) so `dataclasses.asdict` puts it in the
+    # methodology fingerprint automatically and the two arms stay segmentable.
+    rrf_k: int | None = None
+
+    def __post_init__(self) -> None:
+        # `settings.rrf_k` is validated by pydantic and no request field reaches
+        # rrf_k, so a hand-edited literal here is the only way a bad value gets in
+        # — and it fails silently: `_rrf_merge` takes a per-family `max` against
+        # 0.0, so a negative k clamps every score to zero and leaves the ordering
+        # arbitrary rather than raising. Guarded because the person pinning k is
+        # running an ablation, and would read that as a result.
+        if self.rrf_k is not None and self.rrf_k <= 0:
+            raise ValueError(f"rrf_k must be positive, got {self.rrf_k}")
 
 
 @dataclass(frozen=True)
@@ -44,10 +62,12 @@ class PipelineConfig:
 
 def _p(name: str, *, hyde: bool = True, fts: bool = True,
        cohere: bool = False, llm: str | None = None,
-       k: int | None = None) -> PipelineConfig:
+       k: int | None = None, rrf_k: int | None = None) -> PipelineConfig:
     return PipelineConfig(
         name=name,
-        retrieval=RetrievalConfig(hyde=hyde, fts=fts, retrieval_k_override=k),
+        retrieval=RetrievalConfig(
+            hyde=hyde, fts=fts, retrieval_k_override=k, rrf_k=rrf_k,
+        ),
         rerank=RerankConfig(use_cohere=cohere, llm_provider=llm),
     )
 
@@ -66,6 +86,12 @@ PIPELINES: dict[str, PipelineConfig] = {
     "hyde_cohere_haiku":   _p("hyde_cohere_haiku", cohere=True, llm="haiku"),
     "hyde_cohere_luna":    _p("hyde_cohere_luna", cohere=True, llm="luna"),
     "nohyde_cohere_haiku": _p("nohyde_cohere_haiku", hyde=False, cohere=True, llm="haiku"),
+    # Fusion ablation: `hyde_luna` at the pre-#101 k of 60, to settle 60 -> 20 on
+    # evidence. Paired with `hyde_luna` because `llm_only` is where k bites hardest
+    # — `_pool_sizes` returns (None, None) there, so top_n drops to
+    # `quota * candidate_multiplier` and RRF actually truncates. In the Cohere arms
+    # the reranker rescores every survivor, which washes most of the difference out.
+    "hyde_luna_rrf60":     _p("hyde_luna_rrf60", llm="luna", rrf_k=60),
     # Lexical ablation: dense-only retrieval, to measure what FTS contributes.
     # k pinned to what hyde_cohere_haiku (its control) derives, so the only
     # difference between the two is the presence of the FTS path.

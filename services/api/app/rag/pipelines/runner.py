@@ -358,7 +358,9 @@ async def run(
     else:
         # Lexical ablation — dense only. RRF handles a missing path natively.
         fts_raw = {}
-    merged    = _timed_sync("rrf", lambda: rrf.run(vec_raw, fts_raw, quota, top_n=top_n))
+    merged    = _timed_sync("rrf", lambda: rrf.run(
+        vec_raw, fts_raw, quota, top_n=top_n, k=config.retrieval.rrf_k,
+    ))
     pre_enrichment = {col: list(chunks) for col, chunks in merged.items()}
     merged    = await _timed_async("fetch_positions", fetch_positions.run(merged))
     terminal_budget = (

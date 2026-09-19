@@ -154,7 +154,15 @@ and it hands the runner three derived values: `focused`, `terminal_candidate_bud
 `max_passages_per_source`. `SearchPlanError` carries a stable `code` so routes translate
 failures consistently. See §18.
 
-The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical). Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
+The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, alternate RRF `k`). Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
+
+**RRF `k` is a per-pipeline axis, not a constant.** It defaults to `settings.rrf_k`
+(env `RRF_K`, 20) and is overridden per pipeline by `RetrievalConfig.rrf_k`;
+`hyde_luna_rrf60` pins 60 so `compare/` can settle the 60 → 20 change on evidence.
+Two consequences to respect when touching fusion: `compare/shared_runner.py` caches
+candidate pools by retrieval **shape**, and `rrf_k` is part of that key — omit it and
+two arms differing only in `k` silently share one pool. And `/search/compare/view`
+renders its pipeline list from `PIPELINES`, so a new entry needs no hand-sync.
 
 **The pipeline spans three LLM providers** — do not assume Anthropic-only. Defaults in `config.py`: HyDE `claude-haiku-4-5`, LLM rerank `claude-haiku-4-5` (`hyde_*_haiku`) or `gpt-5.6-luna` (`*_luna`), the Cohere rerank path, embeddings OpenAI `text-embedding-3-large`, explanations OpenAI `gpt-5.4-mini`. Legacy chat uses `claude-sonnet-4-6`. Every one is env-overridable; read `config.py` before naming a model.
 

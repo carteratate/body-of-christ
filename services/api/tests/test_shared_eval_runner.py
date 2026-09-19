@@ -69,3 +69,35 @@ def test_shared_artifact_round_trip_preserves_candidates():
     )
     restored = shared_runner.SharedArtifacts.from_dict(artifact.to_dict())
     assert restored == artifact
+
+
+@pytest.mark.asyncio
+async def test_capture_does_not_share_one_pool_across_differing_rrf_k():
+    """Pools are cached by retrieval shape; `rrf_k` has to be part of that shape.
+
+    Two arms differing only in `k` produce differently ordered merges, so reusing
+    one cached pool for both would hand the replay identical candidates and make
+    the comparison measure nothing. Fails while the cache key omits `rrf_k`:
+    both arms get the byte-identical pool the first one computed.
+    """
+    configs = [PIPELINES["hyde_luna"], PIPELINES["hyde_luna_rrf60"]]
+    # Rank the same chunks differently per path so k actually reorders the merge:
+    # one path's top hit competes with deep agreement from the other two.
+    vector_ranked = [_row(i) for i in range(50)]
+    fts_ranked = [_row(i) for i in reversed(range(50))]
+    with (
+        patch("app.rag.compare.shared_runner.embed.run", new=AsyncMock(return_value=[0.1])),
+        patch("app.rag.compare.shared_runner.hyde_s25.run",
+              new=AsyncMock(return_value={"bible": [[0.2]]})),
+        patch("app.rag.compare.shared_runner.retrieve_vector.run",
+              new=AsyncMock(return_value={"bible": [RetrievalPath("hyde", vector_ranked)]})),
+        patch("app.rag.compare.shared_runner.retrieve_fts.run",
+              new=AsyncMock(return_value={"bible": fts_ranked})),
+        patch("app.rag.compare.shared_runner.fetch_positions.run",
+              new=AsyncMock(side_effect=lambda candidates: candidates)),
+    ):
+        artifacts = await shared_runner.capture("q", ["bible"], 4, configs)
+
+    at_20 = artifacts.candidate_pools["hyde_luna"]["bible"]
+    at_60 = artifacts.candidate_pools["hyde_luna_rrf60"]["bible"]
+    assert [c.rrf_score for c in at_20] != [c.rrf_score for c in at_60]
