@@ -241,11 +241,12 @@ def test_listwise_prompt_pins_its_scoring_contract_too():
     scoring semantics plus the role guidance, so an unversioned edit fails here."""
     from app.rag.steps.llm_rerank.listwise import _LISTWISE_SYSTEM as p
 
-    assert "SCORING — use the FULL 0.0-1.0 range" in p
-    assert "SOURCE DIVERSITY" in p
-    assert "SAME POSITIONAL ORDER" in p
-    assert "PASSAGE ROLE" in p
-    assert "REFUTE" in p
-    assert "locator" in p
-    assert "HOW ROLE AFFECTS SCORE" in p
-    assert abs(len(p) - 3158) < 50, f"prompt length moved to {len(p)}"
+    assert "First assign relevance independently of overlap" in p
+    assert "Scores at least 0.30 require an identifiable contribution" in p
+    assert "reduce a weaker repetition by at most 0.05" in p
+    assert "Never cross the 0.30 eligibility boundary" in p
+    assert "unchanged positional order" in p
+    assert "Roles determine attribution, not fixed scores" in p
+    assert "not the author's conclusion" in p
+    assert "Section, canon, and verse locators" in p
+    assert abs(len(p) - 4379) < 50, f"prompt length moved to {len(p)}"
