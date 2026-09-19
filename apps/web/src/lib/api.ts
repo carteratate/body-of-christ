@@ -1,6 +1,8 @@
 import {
   consumeSearchStream,
   type ChunkResult,
+  type CollectionOutcome,
+  type SearchOutcome,
   type SearchStreamCallbacks,
 } from "./search-stream";
 
@@ -188,6 +190,8 @@ export interface SearchResultsResponse {
   restore_status: "complete" | "results_unavailable";
   expected_result_count: number;
   delivery_outcome?: "complete" | "underfilled" | "minimum_floor" | null;
+  outcome?: SearchOutcome | null;
+  collection_outcomes?: Record<string, CollectionOutcome> | null;
 }
 
 // ── V2 Documents ───────────────────────────────────────────────────────────

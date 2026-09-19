@@ -13,7 +13,11 @@ import {
 } from "@/lib/api";
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
-import { isDeliveryOutcome } from "@/lib/search-stream";
+import {
+  isDeliveryOutcome,
+  isSearchOutcome,
+  parseCollectionOutcomes,
+} from "@/lib/search-stream";
 import { getGuestSessionToken, GUEST_SEARCH_LIMIT } from "@/lib/trial";
 import { classifySearchErrorCode } from "./failure";
 import { createSearchExperience } from "./runtime";
@@ -306,6 +310,14 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
             : current.quota;
           const deliveryOutcome = quota === 10 && isDeliveryOutcome(data.delivery_outcome)
             ? data.delivery_outcome : null;
+          const outcome = isSearchOutcome(data.outcome) ? data.outcome : null;
+          const parsedCollectionOutcomes = parseCollectionOutcomes(data.collection_outcomes);
+          const collectionOutcomes = parsedCollectionOutcomes
+            ? Object.fromEntries(
+                Object.entries(parsedCollectionOutcomes)
+                  .filter(([collection]) => collections.includes(collection)),
+              )
+            : {};
           return {
             searchId: data.search_id,
             request: {
@@ -318,6 +330,8 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
             warning: data.restore_status === "results_unavailable"
               ? `This saved search originally had ${data.expected_result_count} Passages, but only ${data.results.length} remain available.`
               : null,
+            outcome,
+            collectionOutcomes,
             deliveryOutcome,
             originalResultCount: data.expected_result_count,
             historicalOutcomeUnknown: quota === 10 && deliveryOutcome === null,

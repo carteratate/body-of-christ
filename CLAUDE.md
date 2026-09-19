@@ -254,6 +254,12 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | POST | `/chat`, `/chat/stream` | Legacy — see §3 |
 | GET | `/sessions`, `/sessions/{id}/messages` | Legacy chat history. Mounted in production; no live caller. |
 
+Authenticated searches persist `outcome` and `collection_outcomes` in the
+`searches.filters` jsonb alongside the submitted filters. The saved-results endpoint
+returns them as optional fields so restored searches reproduce their original notices.
+Older rows return `null`; the frontend keeps its result-count fallback instead of
+inventing degradation details.
+
 ---
 
 ## 11. Frontend Layout

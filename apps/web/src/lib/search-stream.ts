@@ -97,6 +97,10 @@ const SEARCH_OUTCOMES = new Set<SearchOutcome>([
   "no_candidates",
 ]);
 
+export function isSearchOutcome(value: unknown): value is SearchOutcome {
+  return SEARCH_OUTCOMES.has(value as SearchOutcome);
+}
+
 const COLLECTION_OUTCOMES = new Set<CollectionOutcome>([
   "results",
   "results_degraded",
@@ -106,6 +110,17 @@ const COLLECTION_OUTCOMES = new Set<CollectionOutcome>([
   "corpus_sync_failed",
   "ranking_failed",
 ]);
+
+export function parseCollectionOutcomes(
+  value: unknown,
+): Record<string, CollectionOutcome> | null {
+  if (!isRecord(value)) return null;
+  const entries = Object.entries(value);
+  if (!entries.every(([, outcome]) => COLLECTION_OUTCOMES.has(outcome as CollectionOutcome))) {
+    return null;
+  }
+  return Object.fromEntries(entries) as Record<string, CollectionOutcome>;
+}
 
 const DELIVERY_OUTCOMES = new Set<DeliveryOutcome>([
   "complete",
@@ -161,12 +176,7 @@ function optionalCollectionOutcomes(
   value: unknown,
 ): Record<string, CollectionOutcome> | undefined {
   if (value === undefined) return undefined;
-  if (!isRecord(value)) invalid();
-  const entries = Object.entries(value);
-  if (!entries.every(([, outcome]) => COLLECTION_OUTCOMES.has(outcome as CollectionOutcome))) {
-    invalid();
-  }
-  return Object.fromEntries(entries) as Record<string, CollectionOutcome>;
+  return parseCollectionOutcomes(value) ?? invalid();
 }
 
 function normalizeContext(value: unknown): AttachedContext | null {
@@ -295,7 +305,7 @@ export async function consumeSearchStream(
       const outcome = event.outcome === undefined
         ? (resultCount > 0 ? "success" : "no_candidates")
         : event.outcome;
-      if (!SEARCH_OUTCOMES.has(outcome as SearchOutcome)) invalid();
+      if (!isSearchOutcome(outcome)) invalid();
       if (event.persisted !== undefined && typeof event.persisted !== "boolean") invalid();
       if (event.delivery_outcome !== undefined && !isDeliveryOutcome(event.delivery_outcome)) invalid();
       state.terminal = "done";

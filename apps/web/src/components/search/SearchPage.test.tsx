@@ -141,17 +141,20 @@ vi.mock("./BottomBar", () => ({
 }));
 vi.mock("./EmptyState", () => ({ EmptyState: () => <div>Empty search</div> }));
 vi.mock("./SearchResults", () => ({
-  SearchResults: ({ results, loading, isRestoring, visibleCollections, submittedQuota, deliveryOutcome, reportedResultCount, historicalOutcomeUnknown }: {
+  SearchResults: ({ results, loading, isRestoring, visibleCollections, outcome, collectionOutcomes, submittedQuota, deliveryOutcome, reportedResultCount, historicalOutcomeUnknown }: {
     results: Array<{ content: string; explanation: string | null; source: { collection: string } }>;
     loading: boolean;
     isRestoring: boolean;
     visibleCollections: string[];
+    outcome: string | null;
+    collectionOutcomes: Record<string, string>;
     submittedQuota: number | null;
     deliveryOutcome: string | null;
     reportedResultCount: number | null;
     historicalOutcomeUnknown: boolean;
   }) => (
     <div data-testid="search-results" data-visible-collections={visibleCollections.join(",")}
+      data-outcome={outcome ?? ""} data-collection-outcomes={JSON.stringify(collectionOutcomes)}
       data-submitted-quota={submittedQuota ?? ""} data-delivery-outcome={deliveryOutcome ?? ""}
       data-reported-count={reportedResultCount ?? ""} data-historical-outcome-unknown={historicalOutcomeUnknown}>
       {loading && isRestoring ? "Restoring" : "Restored results"}
@@ -236,6 +239,56 @@ afterEach(() => {
 });
 
 describe("SearchPage restore lifecycle", () => {
+  it("restores degraded search and collection notices from saved metadata", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("Partially degraded search"),
+      filters: { collections: ["bible", "catechism"], translation: "CPDV", quota: 5 },
+      results: [streamedPassage],
+      expected_result_count: 1,
+      outcome: "degraded_success",
+      collection_outcomes: {
+        bible: "results",
+        catechism: "retrieval_failed",
+      },
+    });
+
+    render(<SearchPage />);
+
+    expect(await screen.findByText("Partially degraded search")).toBeTruthy();
+    const results = screen.getByTestId("search-results");
+    expect(results.dataset.outcome).toBe("degraded_success");
+    expect(JSON.parse(results.dataset.collectionOutcomes ?? "{}")).toEqual({
+      bible: "results",
+      catechism: "retrieval_failed",
+    });
+    expect(apiMocks.updatePreferences).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["success", "results", [streamedPassage]],
+    ["no_candidates", "no_candidates", []],
+  ] as const)(
+    "restores a saved %s terminal outcome",
+    async (outcome, collectionOutcome, results) => {
+      apiMocks.getSearchResults.mockResolvedValue({
+        ...restored(`Saved ${outcome} search`),
+        results: [...results],
+        expected_result_count: results.length,
+        outcome,
+        collection_outcomes: { bible: collectionOutcome },
+      });
+
+      render(<SearchPage />);
+
+      expect(await screen.findByText(`Saved ${outcome} search`)).toBeTruthy();
+      const restoredResults = screen.getByTestId("search-results");
+      expect(restoredResults.dataset.outcome).toBe(outcome);
+      expect(JSON.parse(restoredResults.dataset.collectionOutcomes ?? "{}")).toEqual({
+        bible: collectionOutcome,
+      });
+    },
+  );
+
   it("restores a focused fallback without changing today's search preference", async () => {
     apiMocks.getSearchResults.mockResolvedValue({
       ...restored("Saved focused search"),
