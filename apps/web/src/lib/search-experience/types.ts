@@ -99,6 +99,8 @@ export interface RestoredPassagesSnapshot extends SnapshotCapabilities {
   readonly request: SearchRequest;
   readonly passages: readonly Passage[];
   readonly warning: string | null;
+  readonly outcome: SearchOutcome | null;
+  readonly collectionOutcomes: Readonly<Record<string, CollectionOutcome>>;
   readonly deliveryOutcome: DeliveryOutcome | null;
   readonly originalResultCount: number | null;
   readonly historicalOutcomeUnknown: boolean;
@@ -194,6 +196,8 @@ export interface SavedSearchResult {
   readonly request: SearchRequest;
   readonly passages: readonly Passage[];
   readonly warning: string | null;
+  readonly outcome?: SearchOutcome | null;
+  readonly collectionOutcomes?: Record<string, CollectionOutcome>;
   readonly deliveryOutcome?: DeliveryOutcome | null;
   readonly originalResultCount?: number | null;
   readonly historicalOutcomeUnknown?: boolean;

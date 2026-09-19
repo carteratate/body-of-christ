@@ -116,6 +116,54 @@ async def test_focused_fallback_reason_is_saved_with_search_for_history():
     assert saved_search.args[4]["quota"] == 10
 
 
+@pytest.mark.asyncio
+async def test_search_outcomes_are_saved_with_search_for_history():
+    result = MagicMock()
+    result.chunks = [_chunk("00000000-0000-0000-0000-000000000001")]
+    result.outcome = "degraded_success"
+    result.collection_outcomes = {
+        "bible": "results",
+        "catechism": "retrieval_failed",
+    }
+    result.delivery_outcome = "complete"
+    result.total_cost = 0.1
+    result.context = {}
+
+    conn = MagicMock()
+    conn.execute = AsyncMock()
+    conn.executemany = AsyncMock()
+    conn.transaction.return_value = AsyncMock(
+        __aenter__=AsyncMock(), __aexit__=AsyncMock(return_value=False),
+    )
+    pool = MagicMock()
+    pool.acquire.return_value = AsyncMock(
+        __aenter__=AsyncMock(return_value=conn),
+        __aexit__=AsyncMock(return_value=False),
+    )
+
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)), \
+         patch("app.rag.pipeline.get_pool", return_value=pool), \
+         patch("app.rag.pipeline.stream_explanation", _no_explanation):
+        async for _ in run_search_pipeline(
+            query="grace",
+            collections=["bible", "catechism"],
+            translation="CPDV",
+            quota=5,
+            user_id="00000000-0000-0000-0000-000000000abc",
+        ):
+            pass
+
+    saved_search = next(
+        call for call in conn.execute.await_args_list
+        if "INSERT INTO searches" in call.args[0]
+    )
+    assert saved_search.args[4]["outcome"] == "degraded_success"
+    assert saved_search.args[4]["collection_outcomes"] == {
+        "bible": "results",
+        "catechism": "retrieval_failed",
+    }
+
+
 async def _no_explanation(*args, **kwargs):
     return
     yield  # noqa: make this an async generator that yields nothing
@@ -221,6 +269,7 @@ async def test_hung_empty_persistence_is_bounded():
             collections=["bible"],
             translation="CPDV",
             quota=3,
+            collection_outcomes={"bible": "no_candidates"},
         )
 
     assert persisted is False
@@ -254,6 +303,68 @@ async def test_slow_runner_emits_heartbeat_before_results():
     assert heartbeats
     assert events[-1]["type"] == "done"
     assert events[-1]["outcome"] == "no_candidates"
+
+
+@pytest.mark.asyncio
+async def test_empty_search_outcomes_are_saved_for_history():
+    result = MagicMock()
+    result.chunks = []
+    result.outcome = "no_candidates"
+    result.collection_outcomes = {
+        "bible": "no_candidates",
+        "catechism": "below_threshold",
+    }
+    result.delivery_outcome = "complete"
+
+    pool = MagicMock()
+    pool.execute = AsyncMock()
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)), \
+         patch("app.rag.pipeline.get_pool", return_value=pool):
+        events = [
+            event async for event in run_search_pipeline(
+                query="grace",
+                collections=["bible", "catechism"],
+                translation="CPDV",
+                quota=3,
+                user_id="00000000-0000-0000-0000-000000000abc",
+            )
+        ]
+
+    assert events[-1]["outcome"] == "no_candidates"
+    saved_filters = pool.execute.await_args.args[4]
+    assert saved_filters["outcome"] == "no_candidates"
+    assert saved_filters["collection_outcomes"] == {
+        "bible": "no_candidates",
+        "catechism": "below_threshold",
+    }
+
+
+@pytest.mark.asyncio
+async def test_unexpected_empty_outcome_cannot_break_search_completion():
+    result = MagicMock()
+    result.chunks = []
+    result.outcome = "no_candidates"
+    result.collection_outcomes = {"bible": "future_outcome"}
+    result.delivery_outcome = "complete"
+
+    pool = MagicMock()
+    pool.execute = AsyncMock()
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)), \
+         patch("app.rag.pipeline.get_pool", return_value=pool):
+        events = [
+            event async for event in run_search_pipeline(
+                query="grace",
+                collections=["bible"],
+                translation="CPDV",
+                quota=3,
+                user_id="00000000-0000-0000-0000-000000000abc",
+            )
+        ]
+
+    assert events[-1]["type"] == "done"
+    assert events[-1]["outcome"] == "no_candidates"
+    assert events[-1]["persisted"] is False
+    pool.execute.assert_not_awaited()
 
 
 @pytest.mark.asyncio

@@ -298,6 +298,130 @@ def test_restore_returns_saved_focused_delivery_reason():
     assert response.json()["restore_status"] == "complete"
 
 
+def test_restore_returns_saved_search_and_collection_outcomes():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "grace",
+        "filters": {
+            "collections": ["bible", "catechism"],
+            "translation": "CPDV",
+            "quota": 5,
+            "outcome": "degraded_success",
+            "collection_outcomes": {
+                "bible": "results",
+                "catechism": "retrieval_failed",
+            },
+        },
+        "result_count": 0,
+    }
+    pool.fetch.return_value = []
+
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    assert response.json()["outcome"] == "degraded_success"
+    assert response.json()["collection_outcomes"] == {
+        "bible": "results",
+        "catechism": "retrieval_failed",
+    }
+
+
+def test_restore_ignores_outcome_metadata_for_unsaved_collections():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "grace",
+        "filters": {
+            "collections": ["bible"],
+            "translation": "CPDV",
+            "quota": 5,
+            "outcome": "degraded_success",
+            "collection_outcomes": {
+                "bible": "results",
+                "private-collection": "retrieval_failed",
+            },
+        },
+        "result_count": 0,
+    }
+    pool.fetch.return_value = []
+
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    assert response.json()["outcome"] == "degraded_success"
+    assert response.json()["collection_outcomes"] == {"bible": "results"}
+
+
+def test_restore_keeps_historical_rows_without_outcomes_compatible():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "grace",
+        "filters": {"collections": ["bible"], "translation": "CPDV", "quota": 5},
+        "result_count": 0,
+    }
+    pool.fetch.return_value = []
+
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    assert response.json()["outcome"] is None
+    assert response.json()["collection_outcomes"] is None
+
+
+@pytest.mark.parametrize(
+    ("outcome", "collection_outcome", "result_count", "rows"),
+    [
+        ("success", "results", 1, [{
+            "rank": 1,
+            "reranker_score": 0.82,
+            "explanation": None,
+            "chunk_id": "00000000-0000-0000-0000-000000000012",
+            "content": "Grace abounds.",
+            "reference": "Romans 5:20",
+            "position": 1,
+            "anchor": None,
+            "chapter_key": None,
+            "unit_label": None,
+            "collection": "bible",
+            "document_title": "Romans",
+            "author": None,
+            "document_id": "00000000-0000-0000-0000-000000000013",
+        }]),
+        ("no_candidates", "no_candidates", 0, []),
+    ],
+)
+def test_restore_returns_saved_success_and_no_candidate_outcomes(
+    outcome, collection_outcome, result_count, rows,
+):
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID,
+        "query": "grace",
+        "filters": {
+            "collections": ["bible"],
+            "translation": "CPDV",
+            "quota": 5,
+            "outcome": outcome,
+            "collection_outcomes": {"bible": collection_outcome},
+        },
+        "result_count": result_count,
+    }
+    pool.fetch.return_value = rows
+
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    assert response.status_code == 200
+    assert response.json()["outcome"] == outcome
+    assert response.json()["collection_outcomes"] == {"bible": collection_outcome}
+    assert response.json()["restore_status"] == "complete"
+
+
 def test_restore_preserves_document_author_on_result_cards():
     pool = AsyncMock()
     pool.fetchrow.return_value = {

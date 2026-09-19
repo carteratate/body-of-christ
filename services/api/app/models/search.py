@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
+from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
+
 
 SearchQuota = Literal[3, 4, 5, 10]
 
@@ -98,3 +100,5 @@ class SearchResultsResponse(BaseModel):
     restore_status: str = "complete"
     expected_result_count: int = 0
     delivery_outcome: Optional[Literal["complete", "underfilled", "minimum_floor"]] = None
+    outcome: Optional[PersistedSearchOutcome] = None
+    collection_outcomes: Optional[dict[str, CollectionOutcome]] = None

@@ -872,6 +872,35 @@ describe("search-experience runtime", () => {
     });
   });
 
+  it("restores the saved terminal outcome and per-collection outcomes", async () => {
+    const { runtime } = authenticatedFixture({
+      savedSearch: {
+        restore: async () => ({
+          searchId: "saved-search",
+          request: REQUEST,
+          passages: [passage("p1")],
+          warning: null,
+          outcome: "degraded_success",
+          collectionOutcomes: {
+            bible: "results",
+            catechism: "retrieval_failed",
+          },
+        }),
+      },
+    });
+
+    runtime.send({ type: "restore", searchId: "saved-search" });
+    await Promise.resolve();
+
+    expect(searchExperienceView(runtime.read())).toMatchObject({
+      outcome: "degraded_success",
+      collectionOutcomes: {
+        bible: "results",
+        catechism: "retrieval_failed",
+      },
+    });
+  });
+
   it("treats the same saved-search route as one restore until identity changes", async () => {
     const restore = vi.fn(async (_credential: string, searchId: string) => ({
       searchId,
