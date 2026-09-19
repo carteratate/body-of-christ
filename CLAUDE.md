@@ -254,6 +254,12 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | POST | `/chat`, `/chat/stream` | Legacy — see §3 |
 | GET | `/sessions`, `/sessions/{id}/messages` | Legacy chat history. Mounted in production; no live caller. |
 
+Authenticated searches persist `outcome` and `collection_outcomes` in the
+`searches.filters` jsonb alongside the submitted filters. The saved-results endpoint
+returns them as optional fields so restored searches reproduce their original notices.
+Older rows return `null`; the frontend keeps its result-count fallback instead of
+inventing degradation details.
+
 ---
 
 ## 11. Frontend Layout
@@ -313,11 +319,6 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
   - `onDone(searchId, resultCount, outcome, collectionOutcomes, persisted, deliveryOutcome?)` — `persisted: false` means results are usable but not saved to history. `deliveryOutcome` is focused-search only (§18) and absent otherwise.
   - `onError(message, code?, stage?, collectionOutcomes?)`
 - `outcome` is `success | degraded_success | no_candidates`. **Only an explicit `no_candidates` means an empty corpus result** — an error is not a no-results screen.
-- Authenticated searches persist `outcome` and `collection_outcomes` in the
-  `searches.filters` jsonb alongside the submitted filters. The saved-results endpoint
-  returns them as optional fields so restored searches reproduce their original notices.
-  Older rows return `null`; the frontend keeps its result-count fallback instead of
-  inventing degradation details.
 - Cleanup: pass an `AbortController.signal` and abort on unmount.
 
 ---

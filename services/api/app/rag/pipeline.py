@@ -34,7 +34,7 @@ def _saved_search_filters(
     quota: int,
     delivery_outcome: str | None,
     outcome: PersistedSearchOutcome,
-    collection_outcomes: dict[str, CollectionOutcome],
+    collection_outcomes: dict[str, str],
 ) -> dict:
     filters = {
         "collections": collections,
@@ -66,6 +66,10 @@ async def _persist_empty_search(
         logger.warning("empty search not persisted: DB pool unavailable")
         return False
     try:
+        persisted_collection_outcomes = {
+            collection: CollectionOutcome(value)
+            for collection, value in collection_outcomes.items()
+        }
         async with asyncio.timeout(_PERSIST_TIMEOUT_SECONDS):
             await pool.execute(
                 "INSERT INTO searches (id, user_id, query, filters, result_count) VALUES ($1,$2,$3,$4::jsonb,0)",
@@ -78,7 +82,7 @@ async def _persist_empty_search(
                     quota,
                     delivery_outcome,
                     PersistedSearchOutcome.NO_CANDIDATES,
-                    collection_outcomes,
+                    persisted_collection_outcomes,
                 ),
             )
         return True
@@ -192,10 +196,7 @@ async def run_search_pipeline(
                 collections=collections,
                 translation=translation,
                 quota=quota,
-                collection_outcomes={
-                    collection: CollectionOutcome(value)
-                    for collection, value in pipeline_result.collection_outcomes.items()
-                },
+                collection_outcomes=pipeline_result.collection_outcomes,
                 delivery_outcome=pipeline_result.delivery_outcome,
             )
             yield {

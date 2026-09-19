@@ -340,6 +340,34 @@ async def test_empty_search_outcomes_are_saved_for_history():
 
 
 @pytest.mark.asyncio
+async def test_unexpected_empty_outcome_cannot_break_search_completion():
+    result = MagicMock()
+    result.chunks = []
+    result.outcome = "no_candidates"
+    result.collection_outcomes = {"bible": "future_outcome"}
+    result.delivery_outcome = "complete"
+
+    pool = MagicMock()
+    pool.execute = AsyncMock()
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)), \
+         patch("app.rag.pipeline.get_pool", return_value=pool):
+        events = [
+            event async for event in run_search_pipeline(
+                query="grace",
+                collections=["bible"],
+                translation="CPDV",
+                quota=3,
+                user_id="00000000-0000-0000-0000-000000000abc",
+            )
+        ]
+
+    assert events[-1]["type"] == "done"
+    assert events[-1]["outcome"] == "no_candidates"
+    assert events[-1]["persisted"] is False
+    pool.execute.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_empty_degraded_pipeline_emits_error_not_done():
     result = MagicMock()
     result.chunks = []
