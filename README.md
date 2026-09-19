@@ -113,7 +113,8 @@ Production runs the `hyde_cohere_luna` configuration (`_PRODUCTION_PIPELINE` in
 3. **Embed** — concurrently embed the query + HyDE passages via OpenAI
    `text-embedding-3-large`.
 4. **Retrieve** — per collection, run Qdrant cosine vector search and Supabase FTS in
-   parallel, then merge with Reciprocal Rank Fusion (RRF, k=60).
+   parallel, then merge with Reciprocal Rank Fusion (RRF; `k` defaults to 20, set by
+   `RRF_K` and overridable per pipeline).
 5. **Rerank** — Cohere reranks per collection, then **one global listwise LLM call**
    (OpenAI `gpt-5.6-luna`) scores the surviving pool.
 6. **Dedup → collection guarantee → quota cap**, with a last-resort `min_floor` if

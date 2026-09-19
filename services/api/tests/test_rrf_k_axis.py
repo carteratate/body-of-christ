@@ -114,3 +114,27 @@ def test_a_pipeline_cannot_pin_a_nonpositive_k(bad):
     """
     with pytest.raises(ValueError, match="rrf_k"):
         RetrievalConfig(rrf_k=bad)
+
+
+def test_the_configured_default_k_is_recorded_for_unpinned_pipelines(monkeypatch):
+    """Most pipelines pin nothing, so the default is what actually scored them.
+
+    Making k per-pipeline removed the global `fixed_parameters.rrf_k` entry, and
+    for a pinned arm the per-pipeline value replaces it. But an unpinned arm
+    records `rrf_k: None` — the default it resolved to has to appear somewhere,
+    or two deployments running different `RRF_K` values fingerprint identically
+    while merging differently, which is exactly what this module exists to
+    prevent. It belongs in `rerank_settings` because it is a setting; the
+    per-pipeline entry stays the override, not the effective value.
+    """
+    unpinned = "hyde_cohere_luna"
+    assert PIPELINES[unpinned].retrieval.rrf_k is None
+
+    monkeypatch.setattr(settings, "rrf_k", 20)
+    at_20 = methodology.snapshot([unpinned])
+    monkeypatch.setattr(settings, "rrf_k", 60)
+    at_60 = methodology.snapshot([unpinned])
+
+    assert at_20["rerank_settings"]["rrf_k"] == 20
+    assert at_60["rerank_settings"]["rrf_k"] == 60
+    assert methodology.fingerprint(at_20) != methodology.fingerprint(at_60)

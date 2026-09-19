@@ -63,11 +63,15 @@ def snapshot(pipeline_names: list[str]) -> dict:
                 "pointwise_score_cutoff", "llm_fallback_score_base",
                 "guarantee_min_score",
                 "retrieval_k_min", "retrieval_k_max", "judge_timeout_s",
+                "rrf_k",
             )
         },
-        # `rrf_k` is deliberately absent: it is a per-pipeline axis now, carried
-        # into each entry above by `dataclasses.asdict`. A global entry would
-        # assert one k for a run whose whole point may be to vary it.
+        # `rrf_k` is not here: it is a per-pipeline axis, so each entry above
+        # carries its own override via `dataclasses.asdict`, and the default the
+        # unpinned ones resolve to is recorded in `rerank_settings` (it is a
+        # setting). Both halves are needed — an unpinned pipeline records
+        # `rrf_k: None`, so without the setting two deployments on different
+        # `RRF_K` values would fingerprint identically while merging differently.
         "fixed_parameters": {
             "pointwise_max_tokens": POINTWISE_MAX_TOKENS,
             "listwise_max_tokens": settings.llm_rerank_max_tokens,
