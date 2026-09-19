@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 
-from app.rag.dedup import chapter_grain_collections, document_key, source_key
+from app.rag.dedup import chapter_grain_collections, source_key
 from app.rag.steps.types import RankedChunk
 
 logger = logging.getLogger(__name__)
@@ -18,9 +18,7 @@ logger = logging.getLogger(__name__)
 _FLOOR_N = 5
 
 
-def run(
-    ranked: list[RankedChunk], quota: int, *, per_document_cap: int | None = None,
-) -> list[RankedChunk]:
+def run(ranked: list[RankedChunk], quota: int) -> list[RankedChunk]:
     """Return up to min(quota, _FLOOR_N) best-scoring chunks, spread across sources.
 
     `ranked` is the full scored list from the reranker, already sorted descending
@@ -50,36 +48,17 @@ def run(
     floored: list[RankedChunk] = []
     seen_fine: set[tuple[str, ...]] = set()
     seen_works: set[tuple[str, ...]] = set()
-    document_counts: dict[tuple[str, ...], int] = {}
-
-    # Keyed with `document_key`, i.e. the same grain dedup uses. On a bare
-    # document_id this cap defeated pass 2 for exactly the collections pass 2 exists
-    # to serve: a chapter-keyed collection is stored as one document, so five
-    # distinct psalms or articles were cut to per_document_cap however many the floor
-    # was allowed to surface. The floor then returned four where its own limit —
-    # min(quota, _FLOOR_N) — called for five.
-    def document_has_room(chunk: RankedChunk) -> bool:
-        return (
-            per_document_cap is None
-            or document_counts.get(document_key(chunk, chapter_grain), 0)
-            < per_document_cap
-        )
-
-    def append(chunk: RankedChunk) -> None:
-        floored.append(chunk)
-        key = document_key(chunk, chapter_grain)
-        document_counts[key] = document_counts.get(key, 0) + 1
 
     # Pass 1 — one per work (see docstring: works, not collections).
     for chunk in ranked:  # already sorted desc by reranker_score
         if len(floored) >= limit:
             break
         work = source_key(chunk, frozenset())
-        if work in seen_works or not document_has_room(chunk):
+        if work in seen_works:
             continue
         seen_works.add(work)
         seen_fine.add(source_key(chunk, chapter_grain))
-        append(chunk)
+        floored.append(chunk)
 
     # Pass 2 — fill remaining slots from distinct chapters of works already seen.
     if len(floored) < limit:
@@ -89,13 +68,11 @@ def run(
                 break
             if chunk.chunk_id in taken:
                 continue
-            if not document_has_room(chunk):
-                continue
             fine = source_key(chunk, chapter_grain)
             if fine in seen_fine:
                 continue
             seen_fine.add(fine)
-            append(chunk)
+            floored.append(chunk)
         # Pass 2 can add a chunk outscoring a pass-1 pick, and both the SSE stream
         # and persistence assume score-descending order.
         floored.sort(key=lambda chunk: chunk.reranker_score, reverse=True)

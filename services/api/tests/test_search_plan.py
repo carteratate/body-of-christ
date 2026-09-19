@@ -12,7 +12,7 @@ def test_standard_quota_accepts_one_or_many_collections(quota: int):
     assert plan.quota == quota
     assert plan.focused is False
     assert plan.terminal_candidate_budget == settings.llm_pool_global_cap
-    assert plan.max_passages_per_document == 2
+    assert plan.max_passages_per_source == 2
 
 
 def test_focused_quota_normalizes_duplicate_collections():
@@ -22,7 +22,7 @@ def test_focused_quota_normalizes_duplicate_collections():
     assert plan.quota == 10
     assert plan.focused is True
     assert plan.terminal_candidate_budget == 25
-    assert plan.max_passages_per_document == 4
+    assert plan.max_passages_per_source == 4
 
 
 @pytest.mark.parametrize("quota", [0, 1, 2, 6, 7, 8, 9, 11])

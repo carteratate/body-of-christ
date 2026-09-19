@@ -159,13 +159,11 @@ async def test_per_source_cap_drops_third_chunk():
 
 
 @pytest.mark.asyncio
-async def test_focused_caps_bind_within_one_chapter_not_across_chapters():
-    """Both focused caps are per chapter for a chapter-keyed collection.
+async def test_focused_source_cap_does_not_bind_across_chapters():
+    """The focused source cap is per chapter for a chapter-keyed collection.
 
-    This previously asserted that the fifth of five DISTINCT articles was dropped,
-    which contradicted test_summa_distinct_articles_are_not_capped_together above:
-    per_document_cap keyed on a bare document_id, and the Summa is one document, so
-    the cap fired on the collection as a whole and the chapter grain had no effect.
+    Distinct articles of the Summa are distinct sources, so all five survive a
+    focused search even though the Summa is stored as one document.
     """
     distinct_articles = [
         _chunk(
@@ -177,21 +175,14 @@ async def test_focused_caps_bind_within_one_chapter_not_across_chapters():
     ]
 
     with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
-        result = await apply_dedup(
-            distinct_articles, per_source_cap=4, per_document_cap=4,
-        )
+        result = await apply_dedup(distinct_articles, per_source_cap=4)
 
     assert len(result) == 5, "distinct articles are distinct sources"
 
 
 @pytest.mark.asyncio
 async def test_focused_source_cap_still_binds_inside_one_chapter():
-    """One article cannot flood the result set.
-
-    Named for per_source_cap deliberately: per_document_cap cannot bind here, or
-    anywhere, while it equals per_source_cap — see document_key's docstring. This
-    result is identical with per_document_cap set to None.
-    """
+    """One article cannot flood the result set — the source cap binds per chapter."""
     one_article = [
         _chunk(
             f"chunk-{index}", "one-document", "Summa Theologiae",
@@ -202,9 +193,7 @@ async def test_focused_source_cap_still_binds_inside_one_chapter():
     ]
 
     with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
-        result = await apply_dedup(
-            one_article, per_source_cap=4, per_document_cap=4,
-        )
+        result = await apply_dedup(one_article, per_source_cap=4)
 
     assert [chunk.chunk_id for chunk in result] == [
         "chunk-0", "chunk-1", "chunk-2", "chunk-3",
@@ -547,7 +536,7 @@ async def test_focused_bible_search_returns_more_than_four_distinct_psalms():
     chunks = [_psalm(i, 0.99 - i * 0.01) for i in range(8)]
 
     with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
-        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=4)
+        result = await apply_dedup(chunks, per_source_cap=4)
 
     assert len(result) == 8, "each psalm is its own source"
 
@@ -569,7 +558,7 @@ async def test_one_psalm_cannot_flood_a_focused_bible_search():
     chunks = [_psalm(i, 0.99 - i * 0.01, chapter=23) for i in range(6)]
 
     with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
-        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=4)
+        result = await apply_dedup(chunks, per_source_cap=4)
 
     assert len(result) == 4
 
@@ -588,36 +577,6 @@ async def test_bible_without_chapter_key_falls_back_to_the_book_grain():
     ]
 
     with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
-        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=4)
+        result = await apply_dedup(chunks, per_source_cap=4)
 
     assert len(result) == 4
-
-
-@pytest.mark.asyncio
-async def test_two_translations_of_one_psalm_are_capped_independently():
-    """The ONLY configuration in which per_document_cap is observable.
-
-    `source_key` keys on document_title so translations share an allowance;
-    `document_key` keys on document_id so each translation is bounded on its own.
-    This needs per_document_cap < per_source_cap, which no caller passes today —
-    production passes them equal, where the cap is provably inert. Kept to pin the
-    distinction between the two keys, not to describe live behaviour.
-    """
-    chunks = [
-        _chunk(f"web-{i}", "bible-web-doc", "Psalms", 0.99 - i * 0.01,
-               position=i * 100, collection="bible", chapter_key="psalms/23")
-        for i in range(3)
-    ] + [
-        _chunk(f"dr-{i}", "bible-dr-doc", "Psalms", 0.90 - i * 0.01,
-               position=i * 100, collection="bible", chapter_key="psalms/23")
-        for i in range(3)
-    ]
-
-    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
-        result = await apply_dedup(chunks, per_source_cap=4, per_document_cap=2)
-
-    # per_document_cap=2 bounds each translation; per_source_cap=4 bounds the shared
-    # title+chapter bucket, so 2 + 2 would be 4 — the source cap is what trims to 4.
-    assert len(result) == 4
-    assert sum(1 for c in result if c.chunk_id.startswith("web-")) == 2
-    assert sum(1 for c in result if c.chunk_id.startswith("dr-")) == 2

@@ -25,8 +25,7 @@ do not pool pre- and post-2026-08-19 suites into one comparison.
 
 METHODOLOGY BREAK (2026-09-18): that floor moved again, and further for focused
 searches. `bible` joined the chapter-keyed collections, so the Psalter — one document
-per book — is now keyed per psalm rather than per book. Separately, `per_document_cap`
-now shares the chapter grain in both `dedup.apply_dedup` and `steps.min_floor`.
+per book — is now keyed per psalm rather than per book.
 
 For THIS script's purposes only the `bible` half matters: the lab reaches the pipeline
 through `runner.run_from_candidates`, which calls `dedup.run(ranked)` and

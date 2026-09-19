@@ -376,11 +376,7 @@ async def run(
     )
     ranked, all_scored = await _timed_async("rerank", rerank_coro)
     dedup_coro = (
-        dedup.run(
-            ranked,
-            per_source_cap=search_plan.max_passages_per_document,
-            per_document_cap=search_plan.max_passages_per_document,
-        )
+        dedup.run(ranked, per_source_cap=search_plan.max_passages_per_source)
         if search_plan is not None and search_plan.focused
         else dedup.run(ranked)
     )
@@ -392,18 +388,7 @@ async def run(
     # candidates rather than returning a silent "no results" (see min_floor).
     used_minimum_floor = False
     if not final and ranked:
-        final = _timed_sync(
-            "min_floor",
-            lambda: min_floor.run(
-                ranked,
-                quota,
-                per_document_cap=(
-                    search_plan.max_passages_per_document
-                    if search_plan is not None and search_plan.focused
-                    else None
-                ),
-            ),
-        )
+        final = _timed_sync("min_floor", lambda: min_floor.run(ranked, quota))
         used_minimum_floor = bool(final)
 
     # Attach the passage that completes each Summa result. AFTER quota_cap on purpose:
