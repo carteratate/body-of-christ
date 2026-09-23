@@ -110,8 +110,14 @@ class Settings(BaseSettings):
     # multi-pipeline batch run trips a Trial limit almost immediately — and a 429
     # degrades that collection to unreranked RRF order, which silently corrupts any
     # evaluation. Set to 0 to disable throttling entirely.
+    #
+    # The default matches the Production key the deployed API uses. It was 10
+    # (the Trial limit), and because production never set the variable, one
+    # 10-collection search consumed the whole minute for every user. A Trial key
+    # must now set 10 explicitly. The counter is per process, so N replicas
+    # sharing one key need 1000 / N.
     cohere_max_calls_per_minute: int = Field(
-        default=10, validation_alias="COHERE_MAX_CALLS_PER_MINUTE",
+        default=1000, validation_alias="COHERE_MAX_CALLS_PER_MINUTE",
     )
     # Bounded retry on 429 only. Other errors fail fast to the RRF fallback.
     cohere_max_retries_429: int = Field(default=4, validation_alias="COHERE_MAX_RETRIES_429")
