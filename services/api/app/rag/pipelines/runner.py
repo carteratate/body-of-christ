@@ -329,11 +329,14 @@ async def run(
     user_id: str | None = None,
     degradation_policy: degradation.DegradationPolicy = degradation.DegradationPolicy.ALLOW,
     search_plan: SearchPlan | None = None,
+    cost_tracker: CostTracker | None = None,
 ) -> PipelineResult:
+    """`cost_tracker` lets the caller keep what the run spent even if the run is
+    cancelled mid-way (a client leaving during ranking); a fresh one otherwise."""
     if search_plan is not None:
         collections = list(search_plan.collections)
         quota = search_plan.quota
-    tracker = CostTracker()
+    tracker = cost_tracker if cost_tracker is not None else CostTracker()
     # Fresh throttle accounting per run so waits are attributed to this pipeline.
     rerank_cohere.begin_throttle_accounting()
     degradation.begin_degradation_accounting(degradation_policy)

@@ -24,6 +24,14 @@ _COLUMNS = (
 )
 
 
+class _Tx:
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc):
+        return False
+
+
 class _Conn:
     def __init__(self, calls: list, fail: Exception | None = None) -> None:
         self.calls, self.fail = calls, fail
@@ -32,6 +40,12 @@ class _Conn:
         if self.fail:
             raise self.fail
         self.calls.append((sql, args, kwargs))
+
+    async def executemany(self, sql, rows, **kwargs):
+        self.calls.append((sql, rows, kwargs))
+
+    def transaction(self):
+        return _Tx()
 
 
 class _Acquire:
@@ -164,6 +178,8 @@ def test_no_pool_is_a_no_op(monkeypatch):
 
 
 def test_migration_matches_the_insert_and_is_closed_to_the_data_api():
+    import re
+
     sql = _MIGRATION.read_text()
     table = sql.split("CREATE TABLE search_costs")[1].split(");")[0]
     for column in _COLUMNS:
@@ -171,8 +187,12 @@ def test_migration_matches_the_insert_and_is_closed_to_the_data_api():
     assert "user_id" not in table
     assert "ENABLE ROW LEVEL SECURITY" in sql
     assert "REVOKE ALL ON TABLE search_costs FROM PUBLIC, anon, authenticated" in sql
-    insert = pipeline._write_search_cost.__code__.co_consts
-    assert any(isinstance(c, str) and all(col in c for col in _COLUMNS) for c in insert)
+    # The INSERT's column list, in order, is exactly what the argument binding
+    # (checked via _Pool.rows) assumes.
+    insert = next(c for c in pipeline._write_search_cost.__code__.co_consts
+                  if isinstance(c, str) and "INSERT INTO search_costs" in c)
+    listed = re.search(r"search_costs \((.*?)\) VALUES", insert, re.S).group(1)
+    assert tuple(col.strip() for col in listed.split(",")) == _COLUMNS
 
 
 # --- through the SSE generator ------------------------------------------------
@@ -284,3 +304,133 @@ async def test_runner_stage_failure_carries_the_cost_so_far():
 
     assert caught.value.stage == "retrieve_vector"
     assert caught.value.cost_breakdown["hyde"] == pytest.approx(0.20)
+
+
+
+class _SlowRunner:
+    """Bills HyDE to the caller's tracker, then blocks, like a long rerank."""
+
+    def __init__(self) -> None:
+        self.started = asyncio.Event()
+
+    async def __call__(self, *_a, cost_tracker=None, **_kw):
+        cost_tracker.record("hyde", "gpt-5.6-luna", input_tokens=10_000, output_tokens=0)
+        cost_tracker.record_cohere("rerank_cohere", 2)
+        self.started.set()
+        await asyncio.sleep(3600)
+
+
+async def _consume(gen):
+    async for _ in gen:
+        pass
+
+
+@pytest.mark.asyncio
+async def test_client_leaving_during_ranking_records_what_was_spent(monkeypatch):
+    """Production disconnects arrive as CancelledError on the consuming task."""
+    pool = _Pool()
+    monkeypatch.setattr(pipeline, "get_pool", lambda: pool)
+    runner = _SlowRunner()
+    with patch("app.rag.pipeline.run_pipeline", runner):
+        task = asyncio.create_task(_consume(pipeline.run_search_pipeline(
+            query="q", collections=["bible"], translation="CPDV", quota=4, user_id=None,
+        )))
+        await runner.started.wait()
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+    await _drain()
+
+    (row,) = pool.rows()
+    assert row["outcome"] == "abandoned"
+    assert row["completed"] is False
+    assert row["delivered"] == 0
+    assert row["runner_cost"] == pytest.approx(10_000 * 0.20 / 1e6 + 2 * 0.0025)
+
+
+@pytest.mark.asyncio
+async def test_cancelled_mid_explanations_records_partial_explanation_cost(monkeypatch):
+    pool = _Pool()
+    monkeypatch.setattr(pipeline, "get_pool", lambda: pool)
+    first_delta = asyncio.Event()
+
+    async def slow_explanation(*_a, cost_tracker=None, **_kw):
+        cost_tracker.record("explain", "gpt-6-luna", input_tokens=1000, output_tokens=100)
+        yield "because"
+        first_delta.set()
+        await asyncio.sleep(3600)
+        yield "never"
+
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=_result(3))), \
+         patch("app.rag.pipeline.stream_explanation", slow_explanation):
+        task = asyncio.create_task(_consume(pipeline.run_search_pipeline(
+            query="q", collections=["bible"], translation="CPDV", quota=4, user_id=None,
+        )))
+        await first_delta.wait()
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+    await _drain()
+
+    (row,) = pool.rows()
+    assert row["outcome"] == "success"
+    assert row["completed"] is False
+    assert row["explanation_cost"] == pytest.approx((1000 * 0.10 + 100 * 0.50) / 1e6)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("outcome,expected", [
+    ("no_candidates", "no_candidates"),
+    ("ranking_failed", "ranking_failed"),
+])
+async def test_early_exits_record_once(monkeypatch, outcome, expected):
+    pool = _Pool()
+    monkeypatch.setattr(pipeline, "get_pool", lambda: pool)
+    result = _result(0)
+    result.outcome = outcome
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)):
+        events = [e async for e in pipeline.run_search_pipeline(
+            query="q", collections=["bible"], translation="CPDV", quota=4, user_id=None,
+        )]
+    await _drain()
+
+    assert events[-1]["type"] in {"done", "error"}
+    (row,) = pool.rows()
+    assert (row["outcome"], row["completed"], row["delivered"]) == (expected, True, 0)
+    assert row["explanation_cost"] == 0.0
+
+
+@pytest.mark.asyncio
+async def test_authenticated_persisted_search_links_its_search_id(monkeypatch):
+    pool = _Pool()
+    monkeypatch.setattr(pipeline, "get_pool", lambda: pool)
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=_result(2))), \
+         patch("app.rag.pipeline.stream_explanation", _one_delta):
+        events = [e async for e in pipeline.run_search_pipeline(
+            query="q", collections=["bible"], translation="CPDV", quota=4,
+            user_id="00000000-0000-0000-0000-0000000000aa",
+        )]
+    await _drain()
+
+    done = next(e for e in events if e["type"] == "done")
+    assert done["persisted"] is True
+    (row,) = pool.rows()
+    assert row["audience"] == "authenticated"
+    assert row["search_id"] == uuid.UUID(done["search_id"])
+
+
+@pytest.mark.asyncio
+async def test_unhandled_error_after_ranking_is_recorded_as_pipeline_failed(monkeypatch):
+    pool = _Pool()
+    monkeypatch.setattr(pipeline, "get_pool", lambda: pool)
+    result = _result(1)
+    result.context = None  # `.get` on None raises while building chunk events
+    with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)):
+        events = [e async for e in pipeline.run_search_pipeline(
+            query="q", collections=["bible"], translation="CPDV", quota=4, user_id=None,
+        )]
+    await _drain()
+
+    assert events[-1]["code"] == "pipeline_failed"
+    (row,) = pool.rows()
+    assert (row["outcome"], row["completed"]) == ("pipeline_failed", True)

@@ -131,11 +131,15 @@ async def capture(
         )
 
     keys = list(first_config)
-    vector_raw_by_hyde: dict[HydeKey, dict] = dict(
-        zip(keys, await asyncio.gather(*[draw(key) for key in keys]))
-    )
+    # return_exceptions so a failing draw does not leave its siblings running
+    # unobserved (and still spending) after the capture has already raised.
+    draws = await asyncio.gather(*[draw(key) for key in keys], return_exceptions=True)
     for key in keys:
         tracker.merge(draw_trackers[key])
+    for outcome in draws:
+        if isinstance(outcome, BaseException):
+            raise outcome
+    vector_raw_by_hyde: dict[HydeKey, dict] = dict(zip(keys, draws))
     fts_raw = await retrieve_fts.run(query, collections, quota, k=max_k)
 
     # Keyed by every input that changes the merged pool. `rrf_k` belongs here for

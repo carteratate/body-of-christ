@@ -79,12 +79,12 @@ def _record_search_cost(
 
     Best-effort telemetry: never raises, never delays the stream, and a missing
     table (migration 0036 not yet applied) or DB outage only logs a warning.
-    Called once from `run_search_pipeline`'s `finally`, so it covers every exit
-    that spent money: completion, no results, failed ranking, a failed runner
-    stage, and a client that leaves mid-stream (`completed=False`, explanation
-    cost is what was spent before the stream closed). Only a search that fails
-    before the runner starts, or raises something other than a stage failure,
-    goes unrecorded.
+    Called once from `run_search_pipeline`'s `finally`, for every search whose
+    runner started: completion, no results, failed ranking, a failed runner stage,
+    an unhandled error, and a client that leaves mid-stream (`completed=False`;
+    outcome "abandoned" if it left during ranking). Costs are what the trackers
+    saw: a provider call in flight when the run was cancelled is billed but not
+    counted, so an abandoned row is a lower bound.
     """
     try:
         pool = get_pool()
@@ -245,6 +245,11 @@ async def run_search_pipeline(
     config: PipelineConfig | None = None
     pipeline_result: PipelineResult | None = None
     failed_stage: PipelineExecutionError | None = None
+    # Handed to the runner so its spend survives cancellation: a client that leaves
+    # during ranking cancels the run after HyDE, embedding and Cohere have billed.
+    runner_cost = CostTracker()
+    runner_started = False
+    unhandled = False
     explanation_cost: CostTracker | None = None
     cost_search_id: str | None = None
     delivered = 0
@@ -275,8 +280,10 @@ async def run_search_pipeline(
                 quota=quota,
                 user_id=user_id,
                 search_plan=plan,
+                cost_tracker=runner_cost,
             )
         )
+        runner_started = True
         try:
             while not pipeline_task.done():
                 done, _ = await asyncio.wait(
@@ -555,6 +562,7 @@ async def run_search_pipeline(
         yield {"type": "error", "code": code, "stage": stage, "detail": detail}
         completed = True
     except Exception:
+        unhandled = True
         logger.exception("run_search_pipeline unhandled error")
         yield {
             "type": "error",
@@ -562,23 +570,29 @@ async def run_search_pipeline(
             "stage": "retrieval_or_ranking",
             "detail": "The search service could not finish retrieving and ranking passages.",
         }
+        completed = True
     finally:
-        # Synchronous on purpose: this may run while the generator is being closed
-        # (client gone), where awaiting is not allowed. The write itself is a task.
-        if plan is not None and config is not None:
+        # Kept synchronous so the record cannot be lost to a second cancellation
+        # while the generator is being closed; the write itself is a background task.
+        if plan is not None and config is not None and runner_started:
             if pipeline_result is not None:
-                _record_search_cost(
-                    search_id=cost_search_id, user_id=user_id, plan=plan, config=config,
-                    runner_breakdown=pipeline_result.cost_breakdown,
-                    runner_cost_eligible=pipeline_result.cost_eligible,
-                    outcome=pipeline_result.outcome, delivered=delivered,
-                    completed=completed, explanation_cost=explanation_cost,
-                )
+                breakdown = pipeline_result.cost_breakdown
+                eligible = pipeline_result.cost_eligible
             elif failed_stage is not None:
-                _record_search_cost(
-                    search_id=None, user_id=user_id, plan=plan, config=config,
-                    runner_breakdown=failed_stage.cost_breakdown,
-                    runner_cost_eligible=failed_stage.cost_eligible,
-                    outcome=f"stage_failed:{failed_stage.stage}", delivered=0,
-                    completed=completed,
-                )
+                breakdown, eligible = failed_stage.cost_breakdown, failed_stage.cost_eligible
+            else:
+                breakdown, eligible = runner_cost.breakdown(), runner_cost.cost_eligible
+            if unhandled:
+                outcome = "pipeline_failed"
+            elif pipeline_result is not None:
+                outcome = pipeline_result.outcome
+            elif failed_stage is not None:
+                outcome = f"stage_failed:{failed_stage.stage}"
+            else:
+                outcome = "abandoned"  # cancelled before the runner returned
+            _record_search_cost(
+                search_id=cost_search_id, user_id=user_id, plan=plan, config=config,
+                runner_breakdown=breakdown, runner_cost_eligible=eligible,
+                outcome=outcome, delivered=delivered, completed=completed,
+                explanation_cost=explanation_cost,
+            )
