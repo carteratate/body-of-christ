@@ -17,10 +17,12 @@ CREATE TABLE search_costs (
     audience                text             NOT NULL CHECK (audience IN ('authenticated', 'guest')),
     pipeline                text             NOT NULL,
     -- success | degraded_success | no_candidates | the runner's failure outcome |
-    -- stage_failed:<stage> when a runner stage raised
+    -- stage_failed:<stage> (a runner stage raised) | pipeline_failed (unhandled
+    -- error) | abandoned (client left before ranking finished)
     outcome                 text             NOT NULL,
-    -- False when the stream closed early (client left mid-explanations): the
-    -- explanation cost is then only what was spent before it closed.
+    -- False when the stream closed early (client left during ranking or
+    -- explanations): costs are then what was spent before it closed, a lower bound.
+    -- An abandoned row can be $0 if the client left before the runner did anything.
     completed               boolean          NOT NULL,
     collection_count        integer          NOT NULL CHECK (collection_count > 0),
     quota                   integer          NOT NULL,
