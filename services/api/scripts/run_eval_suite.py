@@ -380,7 +380,7 @@ def _artifact_fingerprint(pipelines: list[str], quota: int) -> dict:
             ),
             "hyde_passage_provider": settings.hyde_passage_provider,
             "hyde_genre_selector": (
-                settings.hyde_luna_model
+                settings.hyde_genre_luna_model
                 if settings.hyde_genre_provider == "luna"
                 else settings.hyde_model
             ),
@@ -447,7 +447,7 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
             ),
             "hyde_passage_provider": settings.hyde_passage_provider,
             "hyde_genre_selector": (
-                settings.hyde_luna_model
+                settings.hyde_genre_luna_model
                 if settings.hyde_genre_provider == "luna"
                 else settings.hyde_model
             ),

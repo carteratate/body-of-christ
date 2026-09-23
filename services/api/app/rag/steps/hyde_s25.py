@@ -338,15 +338,19 @@ async def _generate_single(
     cost_step: str = "hyde",
     scope: str | None = None,
     passage_provider: HyDEProvider | None = None,
+    passage_model: str | None = None,
 ) -> str | None:
-    """Generate one HyDE passage and optionally record token cost."""
+    """Generate one HyDE passage and optionally record token cost.
+
+    `passage_model` overrides `settings.hyde_luna_model` on the Luna path only.
+    """
     try:
         provider = passage_provider or settings.hyde_passage_provider
         if provider == "luna":
+            model = passage_model or settings.hyde_luna_model
             passage, input_tokens, output_tokens = await hyde_luna.generate(
-                system, query, max_tokens,
+                system, query, max_tokens, model=model,
             )
-            model = settings.hyde_luna_model
         else:
             response = await client.messages.create(
                 model=settings.hyde_model,
@@ -397,6 +401,7 @@ async def choose_bible_hyde_genres(
     client: anthropic.AsyncAnthropic,
     k: int = _BIBLE_SELECTED_GENRE_COUNT,
     cost_tracker: CostTracker | None = None,
+    genre_model: str | None = None,
 ) -> list[str]:
     """Pre-select k bible genres before any HyDE generation (S2.5).
 
@@ -405,10 +410,10 @@ async def choose_bible_hyde_genres(
     """
     try:
         if settings.hyde_genre_provider == "luna":
+            model = genre_model or settings.hyde_genre_luna_model
             raw, input_tokens, output_tokens = await hyde_luna.select_bible_genres(
-                _BIBLE_GENRE_SELECT_LUNA_SYSTEM, query,
+                _BIBLE_GENRE_SELECT_LUNA_SYSTEM, query, model=model,
             )
-            model = settings.hyde_luna_model
         else:
             response = await client.messages.create(
                 model=settings.hyde_model,
@@ -454,6 +459,7 @@ async def generate_hyde_passages(
     selected_genres: list[str] | None = None,
     cost_tracker: CostTracker | None = None,
     passage_provider: HyDEProvider | None = None,
+    passage_model: str | None = None,
 ) -> list[str]:
     """Return hypothetical passages for the given collection, tracking LLM cost."""
     max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
@@ -464,7 +470,7 @@ async def generate_hyde_passages(
             return await _generate_single(
                 client, system, query, max_tokens,
                 cost_tracker=cost_tracker, cost_step="hyde", scope=collection,
-                passage_provider=provider,
+                passage_provider=provider, passage_model=passage_model,
             )
 
         if provider == "haiku":
@@ -495,6 +501,8 @@ async def run(
     *,
     all_bible_genres: bool = False,
     passage_provider: HyDEProvider | None = None,
+    passage_model: str | None = None,
+    genre_model: str | None = None,
 ) -> dict[str, list[list[float]]]:
     """Generate HyDE passages and embed them per collection.
 
@@ -513,16 +521,19 @@ async def run(
             if not all_bible_genres:
                 selected = await choose_bible_hyde_genres(
                     query, client, cost_tracker=cost_tracker,
+                    genre_model=genre_model,
                 )
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, selected_genres=selected,
                 cost_tracker=cost_tracker,
                 passage_provider=passage_provider,
+                passage_model=passage_model,
             )
         else:
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, cost_tracker=cost_tracker,
                 passage_provider=passage_provider,
+                passage_model=passage_model,
             )
 
         if not passages:

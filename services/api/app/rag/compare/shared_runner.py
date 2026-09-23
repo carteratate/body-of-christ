@@ -6,6 +6,7 @@ from the same ranked retrieval lists, and replays only pipeline-specific reranki
 """
 from __future__ import annotations
 
+import asyncio
 import copy
 import dataclasses
 import time
@@ -13,7 +14,7 @@ from dataclasses import dataclass
 
 from app.config import settings
 from app.rag.pipelines.registry import PipelineConfig
-from app.rag.pipelines.runner import _pool_sizes, run_from_candidates
+from app.rag.pipelines.runner import _pool_sizes, hyde_overrides, run_from_candidates
 from app.rag.steps import degradation, embed, fetch_positions, hyde_s25, retrieve_fts
 from app.rag.steps import retrieve_vector, rrf
 from app.rag.steps.cost_tracker import CostTracker
@@ -31,6 +32,11 @@ class SharedArtifacts:
     duration_s: float
     degradations: list[str]
     degradation_events: list[dict]
+    # Per pipeline, the cost of the HyDE draw its pool was built from. Draws are
+    # shared between arms with the same HyDE config, so these do not sum to
+    # `total_cost`; they exist so a HyDE-model arm's cost can be compared with
+    # production's. Empty for artifacts captured before per-draw accounting.
+    hyde_costs: dict[str, dict[str, float]] = dataclasses.field(default_factory=dict)
 
     @property
     def quality_eligible(self) -> bool:
@@ -53,6 +59,7 @@ class SharedArtifacts:
             "duration_s": self.duration_s,
             "degradations": self.degradations,
             "degradation_events": self.degradation_events,
+            "hyde_costs": self.hyde_costs,
         }
 
     @classmethod
@@ -73,6 +80,7 @@ class SharedArtifacts:
             duration_s=value["duration_s"],
             degradations=value.get("degradations", []),
             degradation_events=value.get("degradation_events", []),
+            hyde_costs=value.get("hyde_costs", {}),
         )
 
 
@@ -95,24 +103,62 @@ async def capture(
     max_k = max(effective_k.values())
 
     query_vec = await embed.run(query, tracker)
-    hyde_vecs = await hyde_s25.run(query, collections, tracker)
-    vector_raw = await retrieve_vector.run(
-        query_vec, hyde_vecs, collections, quota, k=max_k,
-    )
+
+    # One HyDE capture per distinct HyDE configuration, so arms that pin different
+    # HyDE models (or ask for an independent draw via `hyde_sample`) each retrieve
+    # from their own passages, while arms that agree still share one capture and
+    # differ only downstream. With default configs this is a single call, made
+    # exactly as before.
+    HydeKey = tuple[str | None, str | None, int]
+
+    def hyde_key(config: PipelineConfig) -> HydeKey:
+        r = config.retrieval
+        return (r.hyde_luna_model, r.hyde_genre_luna_model, r.hyde_sample)
+
+    first_config: dict[HydeKey, PipelineConfig] = {}
+    for config in configs:
+        first_config.setdefault(hyde_key(config), config)
+    # Each draw bills its own tracker, so the per-arm HyDE cost stays attributable.
+    draw_trackers = {key: CostTracker() for key in first_config}
+
+    async def draw(key: HydeKey) -> dict:
+        hyde_vecs = await hyde_s25.run(
+            query, collections, draw_trackers[key],
+            **hyde_overrides(first_config[key].retrieval),
+        )
+        return await retrieve_vector.run(
+            query_vec, hyde_vecs, collections, quota, k=max_k,
+        )
+
+    keys = list(first_config)
+    # return_exceptions so a failing draw does not leave its siblings running
+    # unobserved (and still spending) after the capture has already raised.
+    draws = await asyncio.gather(*[draw(key) for key in keys], return_exceptions=True)
+    for key in keys:
+        tracker.merge(draw_trackers[key])
+    for outcome in draws:
+        if isinstance(outcome, BaseException):
+            raise outcome
+    vector_raw_by_hyde: dict[HydeKey, dict] = dict(zip(keys, draws))
     fts_raw = await retrieve_fts.run(query, collections, quota, k=max_k)
 
     # Keyed by every input that changes the merged pool. `rrf_k` belongs here for
     # the same reason `fts` does: two arms differing only in it produce differently
     # ordered merges, and reusing one pool for both would hand replay identical
-    # candidates and silently compare an arm against itself.
-    Shape = tuple[int, int | None, bool, int | None]
+    # candidates and silently compare an arm against itself. The HyDE key is here
+    # for the same reason: a pool built from one arm's HyDE vectors must never be
+    # replayed as another arm's.
+    Shape = tuple[int, int | None, bool, int | None, HydeKey]
     pools_by_shape: dict[Shape, dict[str, list[ChunkCandidate]]] = {}
     candidate_pools: dict[str, dict[str, list[ChunkCandidate]]] = {}
     for config in configs:
         k = effective_k[config.name]
         _configured_k, top_n = sizes[config.name]
-        shape = (k, top_n, config.retrieval.fts, config.retrieval.rrf_k)
+        shape = (
+            k, top_n, config.retrieval.fts, config.retrieval.rrf_k, hyde_key(config),
+        )
         if shape not in pools_by_shape:
+            vector_raw = vector_raw_by_hyde[hyde_key(config)]
             vectors = {
                 collection: [RetrievalPath(path.family, path.rows[:k]) for path in strategies]
                 for collection, strategies in vector_raw.items()
@@ -135,6 +181,9 @@ async def capture(
         duration_s=time.perf_counter() - started,
         degradations=degradation.degradations(),
         degradation_events=degradation.event_dicts(),
+        hyde_costs={
+            config.name: draw_trackers[hyde_key(config)].breakdown() for config in configs
+        },
     )
 
 

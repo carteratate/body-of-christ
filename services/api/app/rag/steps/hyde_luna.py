@@ -7,6 +7,10 @@ import openai
 
 from app.config import settings
 
+# Short source-style prose and a four-item enum pick: no reasoning needed, and
+# reasoning tokens would bill as output and eat max_completion_tokens.
+REASONING_EFFORT = "none"
+
 _client: openai.AsyncOpenAI | None = None
 _semaphore: asyncio.Semaphore | None = None
 
@@ -58,14 +62,19 @@ async def close() -> None:
     _semaphore = None
 
 
-async def generate(system: str, query: str, max_tokens: int) -> tuple[str, int, int]:
-    """Return a complete passage and billed input/output token counts."""
+async def generate(
+    system: str, query: str, max_tokens: int, model: str | None = None,
+) -> tuple[str, int, int]:
+    """Return a complete passage and billed input/output token counts.
+
+    `model` defaults to `settings.hyde_luna_model`; a pipeline config may override it.
+    """
     if _client is None or _semaphore is None:
         raise RuntimeError("Luna HyDE client not initialized")
     async with _semaphore:
         response = await _client.chat.completions.create(
-            model=settings.hyde_luna_model,
-            reasoning_effort="none",
+            model=model or settings.hyde_luna_model,
+            reasoning_effort=REASONING_EFFORT,
             max_completion_tokens=max_tokens,
             messages=[
                 {"role": "system", "content": system},
@@ -86,14 +95,20 @@ async def generate(system: str, query: str, max_tokens: int) -> tuple[str, int, 
     )
 
 
-async def select_bible_genres(system: str, query: str) -> tuple[str, int, int]:
-    """Return a schema-constrained JSON object and billed token counts."""
+async def select_bible_genres(
+    system: str, query: str, model: str | None = None,
+) -> tuple[str, int, int]:
+    """Return a schema-constrained JSON object and billed token counts.
+
+    `model` defaults to `settings.hyde_genre_luna_model`, which is deliberately
+    separate from the passage model.
+    """
     if _client is None or _semaphore is None:
         raise RuntimeError("Luna HyDE client not initialized")
     async with _semaphore:
         response = await _client.chat.completions.create(
-            model=settings.hyde_luna_model,
-            reasoning_effort="none",
+            model=model or settings.hyde_genre_luna_model,
+            reasoning_effort=REASONING_EFFORT,
             max_completion_tokens=100,
             response_format=_BIBLE_GENRE_SCHEMA,
             messages=[

@@ -7,7 +7,7 @@ import time
 import copy
 
 from app.config import settings
-from app.rag.pipelines.registry import PipelineConfig
+from app.rag.pipelines.registry import PipelineConfig, RetrievalConfig
 from app.rag.search_plan import SearchPlan
 from app.rag.steps import (
     budget,
@@ -43,9 +43,17 @@ _RANKING_FAILURE_ACTIONS = {"collection_omitted"}
 
 
 class PipelineExecutionError(RuntimeError):
-    def __init__(self, stage: str):
+    def __init__(
+        self, stage: str,
+        cost_breakdown: dict[str, float] | None = None, cost_eligible: bool = True,
+    ):
         super().__init__(f"pipeline stage failed: {stage}")
         self.stage = stage
+        # What the run had already spent when the stage failed (HyDE, embedding,
+        # Cohere are billed whether or not the search finishes), so the SSE layer
+        # can still record the search's cost.
+        self.cost_breakdown = dict(cost_breakdown or {})
+        self.cost_eligible = cost_eligible
 
 
 def _delivery_outcome(
@@ -299,6 +307,20 @@ async def run_from_candidates(
     )
 
 
+
+def hyde_overrides(retrieval: RetrievalConfig) -> dict[str, str]:
+    """HyDE model overrides a pipeline pins, as `hyde_s25.run` keyword arguments.
+
+    Only the ones actually set, so a production-default pipeline calls HyDE exactly
+    as before and the settings stay the single source of its defaults.
+    """
+    pinned = {
+        "passage_model": retrieval.hyde_luna_model,
+        "genre_model": retrieval.hyde_genre_luna_model,
+    }
+    return {key: value for key, value in pinned.items() if value is not None}
+
+
 async def run(
     config: PipelineConfig,
     query: str,
@@ -307,11 +329,14 @@ async def run(
     user_id: str | None = None,
     degradation_policy: degradation.DegradationPolicy = degradation.DegradationPolicy.ALLOW,
     search_plan: SearchPlan | None = None,
+    cost_tracker: CostTracker | None = None,
 ) -> PipelineResult:
+    """`cost_tracker` lets the caller keep what the run spent even if the run is
+    cancelled mid-way (a client leaving during ranking); a fresh one otherwise."""
     if search_plan is not None:
         collections = list(search_plan.collections)
         quota = search_plan.quota
-    tracker = CostTracker()
+    tracker = cost_tracker if cost_tracker is not None else CostTracker()
     # Fresh throttle accounting per run so waits are attributed to this pipeline.
     rerank_cohere.begin_throttle_accounting()
     degradation.begin_degradation_accounting(degradation_policy)
@@ -323,7 +348,9 @@ async def run(
         try:
             result = fn_lambda()
         except Exception as exc:
-            raise PipelineExecutionError(step) from exc
+            raise PipelineExecutionError(
+                step, tracker.breakdown(), tracker.cost_eligible,
+            ) from exc
         timings.append(StepTiming(step=step, duration_s=time.perf_counter() - t0))
         return result
 
@@ -332,7 +359,9 @@ async def run(
         try:
             result = await coro
         except Exception as exc:
-            raise PipelineExecutionError(step) from exc
+            raise PipelineExecutionError(
+                step, tracker.breakdown(), tracker.cost_eligible,
+            ) from exc
         timings.append(StepTiming(step=step, duration_s=time.perf_counter() - t0))
         return result
 
@@ -345,10 +374,11 @@ async def run(
     )
 
     query_vec = await _timed_async("embed", embed.run(query, tracker))
+    overrides = hyde_overrides(config.retrieval) if config.retrieval.hyde else {}
     hyde_call = (
-        hyde_s25.run(query, collections, tracker, all_bible_genres=True)
+        hyde_s25.run(query, collections, tracker, all_bible_genres=True, **overrides)
         if focused_bible_hyde
-        else hyde_module.run(query, collections, tracker)
+        else hyde_module.run(query, collections, tracker, **overrides)
     )
     hyde_vecs = await _timed_async("hyde", hyde_call)
     k, top_n = _pool_sizes(config, quota)

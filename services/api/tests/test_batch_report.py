@@ -89,7 +89,7 @@ def test_render_report_contains_query_text():
 def test_render_report_identifies_pricing_schedule():
     stats, records = _make_stats_and_records()
     result = render_report(stats, records)
-    assert "Pricing effective 2026-07-30 (USD)" in result
+    assert "Pricing effective 2026-09-23 (USD)" in result
 
 
 def test_render_report_flags_historical_pricing():

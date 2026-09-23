@@ -47,4 +47,7 @@ async def test_explanation_stream_records_reported_token_cost():
 
     assert output == []
     assert captured["stream_options"] == {"include_usage": True}
-    assert tracker.breakdown()["explain"] > 0
+    assert captured["model"] == "gpt-6-luna"
+    # Reasoning off: it would bill as output and share the 220-token cap.
+    assert captured["reasoning_effort"] == "none"
+    assert tracker.breakdown()["explain"] == pytest.approx((100 * 0.10 + 20 * 0.50) / 1e6)

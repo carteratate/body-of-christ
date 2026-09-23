@@ -17,11 +17,16 @@ from app.rag.steps.types import PipelineResult
 
 logger = logging.getLogger(__name__)
 
-# Opus 5 as judge: this is the model that decides which retrieval strategy ships,
-# so it gets the strongest available judgment. Note switching the judge model makes
-# scores non-comparable with anything judged by a previous model — the model is
-# recorded on every report and persisted row for exactly that reason.
-_JUDGE_MODEL = "claude-opus-5"
+# Opus 5.5 as judge (from 2026-09-23; round 3 was judged by Opus 5): this is the
+# model that decides which retrieval strategy ships, so it gets the strongest
+# available judgment. Note switching the judge model makes scores non-comparable
+# with anything judged by a previous model — the model is recorded on every report
+# and persisted row for exactly that reason, and it is in the methodology
+# fingerprint, so a batch started under Opus 5 will not resume under 5.5.
+_JUDGE_MODEL = "claude-opus-5-5"
+# Set explicitly: Opus 5.5 defaults to "medium", one level below Opus 5's "high",
+# and thinking cannot be disabled on 5.5 — effort is the only depth control.
+_JUDGE_EFFORT = "high"
 _client: anthropic.AsyncAnthropic | None = None
 
 # Must sum to 1.0 (asserted in tests). Weights are deliberately NOT fitted to
@@ -193,46 +198,60 @@ _JUDGE_SYSTEM = (
     "- Do NOT compute a weighted total. Return only per-dimension scores."
 )
 
-_TOOL = {
-    "name": "score_pipelines",
-    "description": "Return multi-dimensional retrieval quality scores for each pipeline.",
-    "input_schema": {
-        "type": "object",
-        "properties": {
-            "pipeline_scores": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "pipeline":                              {"type": "string"},
-                        "retrieval_relevance_reasoning":         {"type": "string"},
-                        "retrieval_relevance_score":             {"type": "number"},
-                        "best_passage_selection_reasoning":      {"type": "string"},
-                        "best_passage_selection_score":          {"type": "number"},
-                        "multi_angle_coverage_reasoning":        {"type": "string"},
-                        "multi_angle_coverage_score":            {"type": "number"},
-                        "doctrinal_completeness_reasoning":      {"type": "string"},
-                        "doctrinal_completeness_score":          {"type": "number"},
-                        "redundancy_rate_reasoning":             {"type": "string"},
-                        "redundancy_rate_score":                 {"type": "number"},
-                        "summary":                              {"type": "string"},
-                    },
-                    "required": [
-                        "pipeline",
-                        "retrieval_relevance_reasoning", "retrieval_relevance_score",
-                        "best_passage_selection_reasoning", "best_passage_selection_score",
-                        "multi_angle_coverage_reasoning", "multi_angle_coverage_score",
-                        "doctrinal_completeness_reasoning", "doctrinal_completeness_score",
-                        "redundancy_rate_reasoning", "redundancy_rate_score",
-                        "summary",
-                    ],
+# Multi-dimensional retrieval quality scores for each pipeline.
+_SCORES_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "pipeline_scores": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "pipeline":                              {"type": "string"},
+                    "retrieval_relevance_reasoning":         {"type": "string"},
+                    "retrieval_relevance_score":             {"type": "number"},
+                    "best_passage_selection_reasoning":      {"type": "string"},
+                    "best_passage_selection_score":          {"type": "number"},
+                    "multi_angle_coverage_reasoning":        {"type": "string"},
+                    "multi_angle_coverage_score":            {"type": "number"},
+                    "doctrinal_completeness_reasoning":      {"type": "string"},
+                    "doctrinal_completeness_score":          {"type": "number"},
+                    "redundancy_rate_reasoning":             {"type": "string"},
+                    "redundancy_rate_score":                 {"type": "number"},
+                    "summary":                              {"type": "string"},
                 },
+                "required": [
+                    "pipeline",
+                    "retrieval_relevance_reasoning", "retrieval_relevance_score",
+                    "best_passage_selection_reasoning", "best_passage_selection_score",
+                    "multi_angle_coverage_reasoning", "multi_angle_coverage_score",
+                    "doctrinal_completeness_reasoning", "doctrinal_completeness_score",
+                    "redundancy_rate_reasoning", "redundancy_rate_score",
+                    "summary",
+                ],
             },
-            "comparative_analysis": {"type": "string"},
         },
-        "required": ["pipeline_scores", "comparative_analysis"],
+        "comparative_analysis": {"type": "string"},
     },
+    "required": ["pipeline_scores", "comparative_analysis"],
 }
+
+
+def _strict(schema: dict) -> dict:
+    """Structured outputs require every object to close its property set."""
+    closed = dict(schema)
+    if closed.get("type") == "object":
+        closed["additionalProperties"] = False
+        closed["properties"] = {k: _strict(v) for k, v in closed["properties"].items()}
+    elif closed.get("type") == "array":
+        closed["items"] = _strict(closed["items"])
+    return closed
+
+
+# Opus 5.5 rejects forced tool_choice ("tool"/"any" are a 400), so the judge asks
+# for this shape through structured outputs rather than the forced `score_pipelines`
+# tool call it used under Opus 5. Same fields, so the parsed object is unchanged.
+_OUTPUT_SCHEMA = _strict(_SCORES_SCHEMA)
 
 
 def init_judge() -> None:
@@ -337,22 +356,19 @@ async def run(
         )
         async with client.messages.stream(
             model=_JUDGE_MODEL,
-            # Thinking is ON by default on Opus 5 and must stay on: with
-            # `thinking: disabled` the model occasionally emits a tool call as plain
-            # text instead of a tool_use block, which this judge would read as a
-            # missing tool block and silently fall back to all-zero scores. Budget is
-            # raised because thinking bills as output and shares max_tokens with the
-            # tool result.
-            max_tokens=16000,
-            # No `temperature` — Opus 5 removed the parameter and returns
-            # 400 "`temperature` is deprecated for this model" if it is sent.
+            # Thinking cannot be disabled on Opus 5.5 and bills as output, sharing
+            # max_tokens with the JSON; at "high" effort it needs the headroom.
+            max_tokens=32000,
+            # No `temperature` — removed on Opus 5+ and a 400 if sent.
+            output_config={
+                "effort": _JUDGE_EFFORT,
+                "format": {"type": "json_schema", "schema": _OUTPUT_SCHEMA},
+            },
             system=[{
                 "type": "text",
                 "text": _JUDGE_SYSTEM,
                 "cache_control": {"type": "ephemeral"},
             }],
-            tools=[_TOOL],
-            tool_choice={"type": "tool", "name": "score_pipelines"},
             messages=[{"role": "user", "content": prompt}],
         ) as stream:
             response = await stream.get_final_message()
@@ -366,8 +382,10 @@ async def run(
             raise RuntimeError(
                 f"judge output truncated at {response.usage.output_tokens} tokens"
             )
-        tool_block = next(b for b in response.content if b.type == "tool_use")
-        parsed = tool_block.input
+        if response.stop_reason == "refusal":
+            raise RuntimeError("judge declined the request (stop_reason=refusal)")
+        text_block = next(b for b in response.content if b.type == "text")
+        parsed = json.loads(text_block.text)
 
         scores: list[JudgeScore] = []
         for s in parsed.get("pipeline_scores", []):

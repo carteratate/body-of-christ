@@ -35,7 +35,8 @@ def _make_result(pipeline: str) -> PipelineResult:
 
 
 def _make_tool_input(pipelines: list[str]) -> dict:
-    """Build a valid score_pipelines tool input for the given pipeline names."""
+    """Build a valid judge output object (the structured-output JSON) for the given
+    pipeline names."""
     return {
         "pipeline_scores": [
             {
@@ -59,12 +60,19 @@ def _make_tool_input(pipelines: list[str]) -> dict:
 
 
 def _mock_tool_response(tool_input: dict) -> MagicMock:
-    tool_block = MagicMock()
-    tool_block.type = "tool_use"
-    tool_block.input = tool_input
+    """A structured-output response: thinking (always on for Opus 5.5) then the JSON
+    object as a text block."""
+    import json
+
+    thinking_block = MagicMock()
+    thinking_block.type = "thinking"
+    text_block = MagicMock()
+    text_block.type = "text"
+    text_block.text = json.dumps(tool_input)
 
     response = MagicMock()
-    response.content = [tool_block]
+    response.content = [thinking_block, text_block]
+    response.stop_reason = "end_turn"
     response.usage = MagicMock(input_tokens=500, output_tokens=200)
     return response
 
@@ -121,7 +129,7 @@ async def test_judge_returns_multidimensional_report():
 
     assert isinstance(report, JudgeReport)
     assert len(report.scores) == 2
-    assert report.model == "claude-opus-5"
+    assert report.model == "claude-opus-5-5"
     assert report.cost > 0
     assert report.tokens_used == 700
     assert report.comparative_analysis == "Comparing 2 pipeline(s)."
@@ -181,15 +189,15 @@ async def test_judge_falls_back_on_llm_error():
 
 
 @pytest.mark.asyncio
-async def test_judge_falls_back_on_missing_tool_block():
+async def test_judge_falls_back_on_missing_output_block():
     overlap = OverlapReport(shared=[], partial={}, unique={}, rank_divergence={}, score_delta={})
     results = [_make_result("s2_5_haiku")]
 
-    # Response with no tool_use block (e.g., text-only response)
-    text_block = MagicMock()
-    text_block.type = "text"
+    # Response with no text block carrying the JSON (e.g., thinking only)
+    thinking_block = MagicMock()
+    thinking_block.type = "thinking"
     mock_response = MagicMock()
-    mock_response.content = [text_block]
+    mock_response.content = [thinking_block]
     mock_response.usage = MagicMock(input_tokens=100, output_tokens=20)
 
     import app.rag.compare.judge as judge_module
@@ -328,9 +336,8 @@ def test_judge_prompt_does_not_send_temperature():
 
 
 def test_judge_leaves_thinking_enabled():
-    """Thinking is on by default on Opus 5 and must stay on: with thinking disabled
-    the model occasionally emits a tool call as plain text, which this judge would
-    read as a missing tool block and silently fall back to all-zero scores."""
+    """Opus 5.5 rejects `thinking: {type: "disabled"}` with a 400 at every effort
+    level, which would fail every judge call; effort is the only depth control."""
     import inspect
 
     from app.rag.compare import judge
@@ -502,3 +509,42 @@ def test_judge_prompt_omits_a_role_the_reference_already_carries():
     prompt = _build_prompt("what does canon 33 require?", [result], _empty_overlap())
 
     assert "role=" not in prompt
+
+
+@pytest.mark.asyncio
+async def test_judge_requests_structured_output_not_a_forced_tool():
+    """Opus 5.5 returns 400 for forced tool_choice, so the judge must ask for its
+    JSON through output_config.format, with every object closed (strict schema), and
+    set effort explicitly because 5.5 defaults to medium."""
+    import app.rag.compare.judge as judge_module
+
+    captured: list[dict] = []
+    judge_module._client = _stub_streaming_client(
+        _mock_tool_response(_make_tool_input(["a"])), capture=captured)
+    await judge_run("q", [_make_result("a")], OverlapReport(
+        shared=[], partial={}, unique={}, rank_divergence={}, score_delta={}))
+
+    kwargs = captured[0]
+    assert kwargs["model"] == "claude-opus-5-5"
+    assert "tools" not in kwargs and "tool_choice" not in kwargs
+    assert kwargs["output_config"]["effort"] == "high"
+    fmt = kwargs["output_config"]["format"]
+    assert fmt["type"] == "json_schema"
+    schema = fmt["schema"]
+    assert schema["additionalProperties"] is False
+    assert schema["properties"]["pipeline_scores"]["items"]["additionalProperties"] is False
+
+
+@pytest.mark.asyncio
+async def test_judge_treats_refusal_as_a_failed_judgement():
+    import app.rag.compare.judge as judge_module
+
+    resp = _mock_tool_response(_make_tool_input(["a"]))
+    resp.stop_reason = "refusal"
+    judge_module._client = _stub_streaming_client(resp)
+    report = await judge_run("q", [_make_result("a")], OverlapReport(
+        shared=[], partial={}, unique={}, rank_divergence={}, score_delta={}))
+
+    assert report.valid is False
+    assert report.scores[0].weighted_total == 0.0
+    assert "refusal" in report.error

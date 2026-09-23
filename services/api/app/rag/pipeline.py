@@ -7,25 +7,155 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import datetime
 import logging
 import time
 import uuid
 
+from app.config import settings
 from app.db import get_pool
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
-from app.rag.pipelines.registry import PIPELINES
+from app.rag.pipelines.registry import PIPELINES, PipelineConfig
 from app.rag.pipelines.runner import PipelineExecutionError, run as run_pipeline
 from app.rag.search_plan import SearchPlan, resolve_search_plan
 from app.rag.steps import stitch
-from app.rag.steps.cost_tracker import CostTracker
+from app.rag.steps import explain
+from app.rag.steps.cost_tracker import PRICING_EFFECTIVE_DATE, CostTracker
 from app.rag.steps.explain import stream as stream_explanation
+from app.rag.steps.types import PipelineResult
 
 logger = logging.getLogger(__name__)
 
 _PRODUCTION_PIPELINE = "hyde_cohere_luna"
 _PIPELINE_HEARTBEAT_SECONDS = 10.0
 _PERSIST_TIMEOUT_SECONDS = 10.0
+
+
+# Strong references to in-flight cost writes; a bare create_task can be collected
+# before it runs.
+_COST_WRITES: set[asyncio.Task] = set()
+
+
+def _models_used(config: PipelineConfig) -> dict:
+    """Model ids and reasoning efforts behind a search's cost, for `search_costs`."""
+    hyde, rerank = config.retrieval, config.rerank
+    models: dict = {
+        "explain": settings.explain_openai_model,
+        "explain_reasoning_effort": explain.REASONING_EFFORT,
+    }
+    if hyde.hyde:
+        models["hyde_passage"] = (
+            hyde.hyde_luna_model or settings.hyde_luna_model
+            if settings.hyde_passage_provider == "luna" else settings.hyde_model
+        )
+        models["hyde_genre"] = (
+            hyde.hyde_genre_luna_model or settings.hyde_genre_luna_model
+            if settings.hyde_genre_provider == "luna" else settings.hyde_model
+        )
+    if rerank.llm_provider is not None:
+        provider = rerank.provider()
+        models["rerank"] = provider.model_id
+        effort = getattr(provider, "reasoning_effort", None)
+        if effort is not None:
+            models["rerank_reasoning_effort"] = effort
+    return models
+
+
+def _record_search_cost(
+    *,
+    search_id: str | None,
+    user_id: str | None,
+    plan: SearchPlan,
+    config: PipelineConfig,
+    runner_breakdown: dict[str, float],
+    runner_cost_eligible: bool,
+    outcome: str,
+    delivered: int,
+    completed: bool,
+    explanation_cost: CostTracker | None = None,
+) -> None:
+    """Persist one search's provider cost to `search_costs`, in the background.
+
+    Best-effort telemetry: never raises, never delays the stream, and a missing
+    table (migration 0036 not yet applied) or DB outage only logs a warning.
+    Called once from `run_search_pipeline`'s `finally`, for every search whose
+    runner started: completion, no results, failed ranking, a failed runner stage,
+    an unhandled error, and a client that leaves mid-stream (`completed=False`;
+    outcome "abandoned" if it left during ranking). Costs are what the trackers
+    saw: a provider call in flight when the run was cancelled is billed but not
+    counted, so an abandoned row is a lower bound.
+    """
+    try:
+        pool = get_pool()
+        if pool is None:
+            return
+        breakdown = {step: float(cost) for step, cost in runner_breakdown.items()}
+        runner_total = sum(breakdown.values())
+        explain_total = 0.0
+        eligible = bool(runner_cost_eligible)
+        if explanation_cost is not None:
+            explain_total = explanation_cost.total_cost()
+            breakdown.update(explanation_cost.breakdown())
+            eligible = eligible and explanation_cost.cost_eligible
+        models = _models_used(config)
+        write = _write_search_cost(
+            pool, search_id=search_id, user_id=user_id, plan=plan, config=config,
+            outcome=outcome, completed=completed, delivered=delivered,
+            runner_total=runner_total, explain_total=explain_total,
+            breakdown=breakdown, eligible=eligible, models=models,
+        )
+        try:
+            task = asyncio.create_task(write)
+        except BaseException:
+            write.close()  # never scheduled: close it rather than leak an unawaited coroutine
+            raise
+    except Exception as exc:
+        # Runs from a `finally` in the SSE generator: nothing here may escape.
+        logger.warning("search cost record skipped: %s", exc)
+        return
+    _COST_WRITES.add(task)
+    task.add_done_callback(_COST_WRITES.discard)
+
+
+async def _write_search_cost(
+    pool, *, search_id: str | None, user_id: str | None, plan: SearchPlan,
+    config: PipelineConfig, outcome: str, completed: bool, delivered: int,
+    runner_total: float, explain_total: float, breakdown: dict[str, float],
+    eligible: bool, models: dict,
+) -> None:
+    """Insert one `search_costs` row. Logs and swallows any failure."""
+    try:
+        async with pool.acquire(timeout=_PERSIST_TIMEOUT_SECONDS) as conn:
+            await conn.execute(
+                """
+                INSERT INTO search_costs (
+                    search_id, audience, pipeline, outcome, completed,
+                    collection_count, quota, focused, delivered, runner_cost,
+                    explanation_cost, cost_breakdown, cost_eligible,
+                    pricing_effective_date, models
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+                """,
+                uuid.UUID(search_id) if search_id else None,
+                "authenticated" if user_id is not None else "guest",
+                config.name,
+                outcome,
+                completed,
+                len(plan.collections),
+                plan.quota,
+                plan.focused,
+                delivered,
+                runner_total,
+                explain_total,
+                # jsonb params go in as objects: app/db.py's codec encodes them.
+                breakdown,
+                eligible,
+                datetime.date.fromisoformat(PRICING_EFFECTIVE_DATE),
+                models,
+                timeout=_PERSIST_TIMEOUT_SECONDS,
+            )
+    except Exception as exc:
+        logger.warning("search cost persist failed: %s", exc)
 
 
 def _saved_search_filters(
@@ -108,6 +238,22 @@ async def run_search_pipeline(
         yield {"type": "error", "detail": "No valid collections selected."}
         return
 
+    # Cost bookkeeping for the `finally` below, which records the search's cost
+    # exactly once however the generator exits — including a client disconnect,
+    # which closes it at a `yield`.
+    plan: SearchPlan | None = None
+    config: PipelineConfig | None = None
+    pipeline_result: PipelineResult | None = None
+    failed_stage: PipelineExecutionError | None = None
+    # Handed to the runner so its spend survives cancellation: a client that leaves
+    # during ranking cancels the run after HyDE, embedding and Cohere have billed.
+    runner_cost = CostTracker()
+    runner_started = False
+    unhandled = False
+    explanation_cost: CostTracker | None = None
+    cost_search_id: str | None = None
+    delivered = 0
+    completed = False
     try:
         _t0 = time.perf_counter()
 
@@ -134,8 +280,10 @@ async def run_search_pipeline(
                 quota=quota,
                 user_id=user_id,
                 search_plan=plan,
+                cost_tracker=runner_cost,
             )
         )
+        runner_started = True
         try:
             while not pipeline_task.done():
                 done, _ = await asyncio.wait(
@@ -152,6 +300,7 @@ async def run_search_pipeline(
                     await pipeline_task
 
         final_results = pipeline_result.chunks
+        delivered = len(final_results)
 
         _t_pipeline = time.perf_counter()
         logger.info(
@@ -185,6 +334,7 @@ async def run_search_pipeline(
                 }[code],
                 "collection_outcomes": pipeline_result.collection_outcomes,
             }
+            completed = True
             return
 
         if not final_results:
@@ -199,6 +349,7 @@ async def run_search_pipeline(
                 collection_outcomes=pipeline_result.collection_outcomes,
                 delivery_outcome=pipeline_result.delivery_outcome,
             )
+            cost_search_id = empty_search_id if persisted else None
             yield {
                 "type": "done",
                 "search_id": empty_search_id if persisted else None,
@@ -209,6 +360,7 @@ async def run_search_pipeline(
                 "delivery_outcome": pipeline_result.delivery_outcome,
                 "requested_quota": quota,
             }
+            completed = True
             return
 
         # ------------------------------------------------------------------
@@ -304,6 +456,7 @@ async def run_search_pipeline(
                         _t7 - _t_pipeline, _t7 - _t0, len(final_results),
                     )
                     persisted = True
+                    cost_search_id = search_id
                 except Exception:
                     logger.exception("persist failed; returning results without saving search history")
 
@@ -367,6 +520,7 @@ async def run_search_pipeline(
                     except Exception as exc:
                         logger.warning("explanation persist failed for chunk %s: %s", chunk.chunk_id, exc)
 
+        completed = True
         logger.info(
             "search delivery: focused=%s requested=%d delivered=%d delivery_outcome=%s "
             "runner_seconds=%.2f explanation_tail_seconds=%.2f "
@@ -383,6 +537,7 @@ async def run_search_pipeline(
         )
 
     except PipelineExecutionError as exc:
+        failed_stage = exc
         logger.exception("run_search_pipeline stage failed: %s", exc.stage)
         if exc.stage == "embed":
             code, stage, detail = (
@@ -405,7 +560,9 @@ async def run_search_pipeline(
                 "Passages were retrieved, but ranking could not be completed.",
             )
         yield {"type": "error", "code": code, "stage": stage, "detail": detail}
+        completed = True
     except Exception:
+        unhandled = True
         logger.exception("run_search_pipeline unhandled error")
         yield {
             "type": "error",
@@ -413,3 +570,29 @@ async def run_search_pipeline(
             "stage": "retrieval_or_ranking",
             "detail": "The search service could not finish retrieving and ranking passages.",
         }
+        completed = True
+    finally:
+        # Kept synchronous so the record cannot be lost to a second cancellation
+        # while the generator is being closed; the write itself is a background task.
+        if plan is not None and config is not None and runner_started:
+            if pipeline_result is not None:
+                breakdown = pipeline_result.cost_breakdown
+                eligible = pipeline_result.cost_eligible
+            elif failed_stage is not None:
+                breakdown, eligible = failed_stage.cost_breakdown, failed_stage.cost_eligible
+            else:
+                breakdown, eligible = runner_cost.breakdown(), runner_cost.cost_eligible
+            if unhandled:
+                outcome = "pipeline_failed"
+            elif pipeline_result is not None:
+                outcome = pipeline_result.outcome
+            elif failed_stage is not None:
+                outcome = f"stage_failed:{failed_stage.stage}"
+            else:
+                outcome = "abandoned"  # cancelled before the runner returned
+            _record_search_cost(
+                search_id=cost_search_id, user_id=user_id, plan=plan, config=config,
+                runner_breakdown=breakdown, runner_cost_eligible=eligible,
+                outcome=outcome, delivered=delivered, completed=completed,
+                explanation_cost=explanation_cost,
+            )
