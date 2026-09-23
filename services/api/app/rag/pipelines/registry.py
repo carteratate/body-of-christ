@@ -1,9 +1,9 @@
 # services/api/app/rag/pipelines/registry.py
 """Named pipeline configurations.
 
-Naming: `<hyde|nohyde>[_nolex]_<rerank>[_rrf<k>]`. Three axes are configured here —
-which retrieval paths run, which rerankers, and how the paths are fused — so
-`compare/` can A/B any two by name.
+Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>]`. The axes configured here —
+which retrieval paths run, which rerankers (and, for Luna, which model and reasoning
+effort), and how the paths are fused — let `compare/` A/B any two by name.
 
 Enrichment is deliberately NOT an axis: whether a candidate has an annotation is a
 property of the data, checked per candidate, so a single query spanning enriched and
@@ -41,6 +41,16 @@ class RetrievalConfig:
     # from settings inside the step) so `dataclasses.asdict` puts it in the
     # methodology fingerprint automatically and the two arms stay segmentable.
     rrf_k: int | None = None
+    # Evaluation-arm overrides for the Luna HyDE calls. None means the production
+    # default (`settings.hyde_luna_model` / `settings.hyde_genre_luna_model`). They
+    # apply only when the corresponding provider setting is "luna".
+    hyde_luna_model: str | None = None
+    hyde_genre_luna_model: str | None = None
+    # Which independent HyDE draw an arm uses in shared evaluation. HyDE is
+    # sampled, so two arms that differ only here measure HyDE's own run-to-run
+    # noise: the floor a HyDE-model change has to clear. No effect on live search,
+    # where every run samples fresh.
+    hyde_sample: int = 0
 
     def __post_init__(self) -> None:
         # `settings.rrf_k` is validated by pydantic and no request field reaches
@@ -62,13 +72,21 @@ class PipelineConfig:
 
 def _p(name: str, *, hyde: bool = True, fts: bool = True,
        cohere: bool = False, llm: str | None = None,
-       k: int | None = None, rrf_k: int | None = None) -> PipelineConfig:
+       k: int | None = None, rrf_k: int | None = None,
+       hyde_model: str | None = None, genre_model: str | None = None,
+       hyde_sample: int = 0,
+       llm_model: str | None = None, effort: str | None = None) -> PipelineConfig:
     return PipelineConfig(
         name=name,
         retrieval=RetrievalConfig(
             hyde=hyde, fts=fts, retrieval_k_override=k, rrf_k=rrf_k,
+            hyde_luna_model=hyde_model, hyde_genre_luna_model=genre_model,
+            hyde_sample=hyde_sample,
         ),
-        rerank=RerankConfig(use_cohere=cohere, llm_provider=llm),
+        rerank=RerankConfig(
+            use_cohere=cohere, llm_provider=llm,
+            llm_model=llm_model, llm_reasoning_effort=effort,
+        ),
     )
 
 
@@ -97,5 +115,25 @@ PIPELINES: dict[str, PipelineConfig] = {
     # difference between the two is the presence of the FTS path.
     "hyde_nolex_cohere_haiku": _p(
         "hyde_nolex_cohere_haiku", fts=False, cohere=True, llm="haiku", k=50,
+    ),
+    # Luna-model arms, each against `hyde_cohere_luna` (production). Model ids are
+    # pinned here, not read from settings, so an arm means the same thing whatever
+    # the deployment defaults are.
+    # HyDE noise floor: production, but its own HyDE draw.
+    "hyde_cohere_luna_hydesample": _p(
+        "hyde_cohere_luna_hydesample", cohere=True, llm="luna", hyde_sample=1,
+    ),
+    # HyDE passages on 6; genre pick and reranker stay on production defaults.
+    "hyde6_cohere_luna": _p(
+        "hyde6_cohere_luna", cohere=True, llm="luna", hyde_model="gpt-6-luna",
+    ),
+    # Everything on 6: passages, genre pick, and the reranker at medium / at low.
+    "hyde6_cohere_luna6": _p(
+        "hyde6_cohere_luna6", cohere=True, llm="luna", hyde_model="gpt-6-luna",
+        genre_model="gpt-6-luna", llm_model="gpt-6-luna", effort="medium",
+    ),
+    "hyde6_cohere_luna6_low": _p(
+        "hyde6_cohere_luna6_low", cohere=True, llm="luna", hyde_model="gpt-6-luna",
+        genre_model="gpt-6-luna", llm_model="gpt-6-luna", effort="low",
     ),
 }

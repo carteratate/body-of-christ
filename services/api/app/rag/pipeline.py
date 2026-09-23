@@ -7,25 +7,123 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import datetime
 import logging
 import time
 import uuid
 
+from app.config import settings
 from app.db import get_pool
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
-from app.rag.pipelines.registry import PIPELINES
+from app.rag.pipelines.registry import PIPELINES, PipelineConfig
 from app.rag.pipelines.runner import PipelineExecutionError, run as run_pipeline
 from app.rag.search_plan import SearchPlan, resolve_search_plan
 from app.rag.steps import stitch
-from app.rag.steps.cost_tracker import CostTracker
+from app.rag.steps import explain
+from app.rag.steps.cost_tracker import PRICING_EFFECTIVE_DATE, CostTracker
 from app.rag.steps.explain import stream as stream_explanation
+from app.rag.steps.types import PipelineResult
 
 logger = logging.getLogger(__name__)
 
 _PRODUCTION_PIPELINE = "hyde_cohere_luna"
 _PIPELINE_HEARTBEAT_SECONDS = 10.0
 _PERSIST_TIMEOUT_SECONDS = 10.0
+
+
+# Strong references to in-flight cost writes; a bare create_task can be collected
+# before it runs.
+_COST_WRITES: set[asyncio.Task] = set()
+
+
+def _models_used(config: PipelineConfig) -> dict:
+    """Model ids and reasoning efforts behind a search's cost, for `search_costs`."""
+    hyde, rerank = config.retrieval, config.rerank
+    models: dict = {
+        "hyde_passage": (
+            hyde.hyde_luna_model or settings.hyde_luna_model
+            if settings.hyde_passage_provider == "luna" else settings.hyde_model
+        ),
+        "hyde_genre": (
+            hyde.hyde_genre_luna_model or settings.hyde_genre_luna_model
+            if settings.hyde_genre_provider == "luna" else settings.hyde_model
+        ),
+        "explain": settings.explain_openai_model,
+        "explain_reasoning_effort": explain.REASONING_EFFORT,
+    }
+    if rerank.llm_provider is not None:
+        provider = rerank.provider()
+        models["rerank"] = provider.model_id
+        effort = getattr(provider, "reasoning_effort", None)
+        if effort is not None:
+            models["rerank_reasoning_effort"] = effort
+    return models
+
+
+def _record_search_cost(
+    *,
+    search_id: str | None,
+    user_id: str | None,
+    plan: SearchPlan,
+    config: PipelineConfig,
+    pipeline_result: PipelineResult,
+    outcome: str,
+    delivered: int,
+    explanation_cost: CostTracker | None = None,
+) -> None:
+    """Persist one search's provider cost to `search_costs`, in the background.
+
+    Best-effort telemetry: never raises, never delays the stream, and a missing
+    table (migration 0036 not yet applied) or DB outage only logs a warning. Called
+    wherever a search stops spending money, including the no-result and failed-
+    ranking exits, which spend on HyDE, embedding and Cohere all the same.
+    """
+    pool = get_pool()
+    if pool is None:
+        return
+    breakdown = dict(pipeline_result.cost_breakdown)
+    explain_total = 0.0
+    eligible = pipeline_result.cost_eligible
+    if explanation_cost is not None:
+        explain_total = explanation_cost.total_cost()
+        breakdown.update(explanation_cost.breakdown())
+        eligible = eligible and explanation_cost.cost_eligible
+
+    async def write() -> None:
+        try:
+            async with pool.acquire(timeout=_PERSIST_TIMEOUT_SECONDS) as conn:
+                await conn.execute(
+                    """
+                    INSERT INTO search_costs (
+                        search_id, audience, pipeline, outcome, collection_count,
+                        quota, focused, delivered, runner_cost, explanation_cost,
+                        cost_breakdown, cost_eligible, pricing_effective_date, models
+                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                    """,
+                    uuid.UUID(search_id) if search_id else None,
+                    "authenticated" if user_id is not None else "guest",
+                    config.name,
+                    outcome,
+                    len(plan.collections),
+                    plan.quota,
+                    plan.focused,
+                    delivered,
+                    pipeline_result.total_cost,
+                    explain_total,
+                    # jsonb params go in as objects: app/db.py's codec encodes them.
+                    breakdown,
+                    eligible,
+                    datetime.date.fromisoformat(PRICING_EFFECTIVE_DATE),
+                    _models_used(config),
+                    timeout=_PERSIST_TIMEOUT_SECONDS,
+                )
+        except Exception as exc:
+            logger.warning("search cost persist failed: %s", exc)
+
+    task = asyncio.create_task(write())
+    _COST_WRITES.add(task)
+    task.add_done_callback(_COST_WRITES.discard)
 
 
 def _saved_search_filters(
@@ -168,6 +266,11 @@ async def run_search_pipeline(
         )
 
         if not final_results and pipeline_result.outcome != "no_candidates":
+            _record_search_cost(
+                search_id=None, user_id=user_id, plan=plan, config=config,
+                pipeline_result=pipeline_result, outcome=pipeline_result.outcome,
+                delivered=0,
+            )
             code = pipeline_result.outcome
             stage = (
                 "retrieval"
@@ -198,6 +301,11 @@ async def run_search_pipeline(
                 quota=quota,
                 collection_outcomes=pipeline_result.collection_outcomes,
                 delivery_outcome=pipeline_result.delivery_outcome,
+            )
+            _record_search_cost(
+                search_id=empty_search_id if persisted else None, user_id=user_id,
+                plan=plan, config=config, pipeline_result=pipeline_result,
+                outcome="no_candidates", delivered=0,
             )
             yield {
                 "type": "done",
@@ -367,6 +475,12 @@ async def run_search_pipeline(
                     except Exception as exc:
                         logger.warning("explanation persist failed for chunk %s: %s", chunk.chunk_id, exc)
 
+        _record_search_cost(
+            search_id=search_id if persisted else None, user_id=user_id, plan=plan,
+            config=config, pipeline_result=pipeline_result,
+            outcome=pipeline_result.outcome, delivered=len(final_results),
+            explanation_cost=explanation_cost,
+        )
         logger.info(
             "search delivery: focused=%s requested=%d delivered=%d delivery_outcome=%s "
             "runner_seconds=%.2f explanation_tail_seconds=%.2f "

@@ -63,16 +63,56 @@ def test_unknown_model_warns_rather_than_silently_costing_zero(caplog):
     assert "no pricing for model" in caplog.text
 
 
-def test_luna_is_priced():
+def test_luna_6_is_priced():
+    # Explanations and the gpt-6 evaluation arms.
+    t = CostTracker()
+    t.record("rerank", "gpt-6-luna", input_tokens=1_000_000, output_tokens=1_000_000)
+    assert t.breakdown()["rerank"] == pytest.approx(0.10 + 0.50)
+    assert t.cost_eligible is True
+
+
+def test_production_luna_is_priced():
     t = CostTracker()
     t.record("rerank", "gpt-5.6-luna", input_tokens=1_000_000, output_tokens=1_000_000)
     assert t.breakdown()["rerank"] == pytest.approx(0.20 + 1.20)
+    assert t.cost_eligible is True
+
+
+def test_default_luna_models_are_priced():
+    from app.config import settings
+    from app.rag.steps.cost_tracker import _OPENAI_PRICING
+    assert settings.hyde_luna_model in _OPENAI_PRICING
+    assert settings.rerank_luna_model in _OPENAI_PRICING
 
 
 def test_pricing_snapshot_records_effective_luna_rates():
     snapshot = pricing_snapshot()
-    assert snapshot["effective_date"] == "2026-07-30"
-    assert snapshot["token_rates_per_million"]["gpt-5.6-luna"] == {
-        "input": 0.20,
-        "output": 1.20,
+    assert snapshot["effective_date"] == "2026-09-23"
+    assert snapshot["token_rates_per_million"]["gpt-6-luna"] == {
+        "input": 0.10,
+        "output": 0.50,
     }
+
+
+def test_explanation_model_is_priced_at_its_published_rate():
+    # gpt-5.4-mini carried gpt-4o-mini's (0.15, 0.60) until 2026-09-23, which
+    # under-reported every explanation ~5.3x.
+    t = CostTracker()
+    t.record("explain", "gpt-5.4-mini", input_tokens=1_000_000, output_tokens=1_000_000)
+    assert t.breakdown()["explain"] == pytest.approx(0.75 + 4.50)
+
+
+def test_judge_model_is_priced():
+    from app.rag.compare.judge import _JUDGE_MODEL
+    from app.rag.steps.cost_tracker import _ANTHROPIC_PRICING
+    assert _JUDGE_MODEL in _ANTHROPIC_PRICING
+    t = CostTracker()
+    t.record("judge", "claude-opus-5-5", input_tokens=1_000_000, output_tokens=1_000_000)
+    assert t.breakdown()["judge"] == pytest.approx(4.00 + 20.00)
+
+
+def test_default_explanation_model_is_priced():
+    from app.config import settings
+    from app.rag.steps.cost_tracker import _OPENAI_PRICING
+    assert settings.explain_openai_model in _OPENAI_PRICING
+    assert settings.hyde_genre_luna_model in _OPENAI_PRICING

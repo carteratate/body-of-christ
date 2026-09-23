@@ -108,25 +108,26 @@ Production runs the `hyde_cohere_luna` configuration (`_PRODUCTION_PIPELINE` in
 
 1. **Plan** — `rag/search_plan.py` resolves collections + quota into one validated
    `SearchPlan`, enforcing the focused-search invariant once.
-2. **HyDE** — generate hypothetical answer passages (Claude Haiku). For the Bible, a
-   genre-selection call picks which genres to generate.
+2. **HyDE** — generate hypothetical answer passages (OpenAI `gpt-5.6-luna`, reasoning
+   off). For the Bible, a genre-selection call picks which genres to generate.
 3. **Embed** — concurrently embed the query + HyDE passages via OpenAI
    `text-embedding-3-large`.
 4. **Retrieve** — per collection, run Qdrant cosine vector search and Supabase FTS in
    parallel, then merge with Reciprocal Rank Fusion (RRF; `k` defaults to 20, set by
    `RRF_K` and overridable per pipeline).
 5. **Rerank** — Cohere reranks per collection, then **one global listwise LLM call**
-   (OpenAI `gpt-5.6-luna`) scores the surviving pool.
+   (OpenAI `gpt-5.6-luna`, reasoning `medium`) scores the surviving pool.
 6. **Dedup → collection guarantee → quota cap**, with a last-resort `min_floor` if
    scoring excluded everything.
 7. **Stream chunks** — emit ranked passages as `chunk` SSE events immediately.
 8. **Persist** — write the search + retrievals to Postgres.
 9. **Done** — emit a `done` SSE event with the `search_id`.
-10. **Explain** — stream a per-passage relevance explanation (OpenAI `gpt-5.4-mini`)
+10. **Explain** — stream a per-passage relevance explanation (OpenAI `gpt-6-luna`, reasoning off)
     via `explanation_delta` events. These arrive *after* `done`, by design.
+11. **Cost** — record the search's provider cost to `search_costs` (best-effort, background).
 
 The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna,
-no-lexical). Switching production is a one-line change to `_PRODUCTION_PIPELINE`.
+no-lexical, and Luna 6 / reasoning-effort arms). Switching production is a one-line change to `_PRODUCTION_PIPELINE`.
 
 No agent frameworks, no LangGraph. SSE event types: `chunk`, `status`,
 `explanation_delta`, `done`, `error`, and `results_ready` (guest only).

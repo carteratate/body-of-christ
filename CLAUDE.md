@@ -114,6 +114,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - `reading_progress` — per-document reader position (0027)
 - `product_feedback` — in-app feedback, including anonymous (0028–0030)
 - `user_preferences.last_standard_quota` — remembers the pre-focused quota (0034); see §18
+- `search_costs` — per-search provider cost, written best-effort by `_record_search_cost`
+  in `rag/pipeline.py` for authenticated and guest searches (0036). No user_id, no query
+  text; RLS on with no policies. Numbered 0036 to stay clear of the 0035 studies draft.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -122,7 +125,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034 are committed; `0035_studies.sql` is drafted only (see above). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034 and 0036 are committed; `0035_studies.sql` is drafted only (see above). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -164,7 +167,16 @@ candidate pools by retrieval **shape**, and `rrf_k` is part of that key — omit
 two arms differing only in `k` silently share one pool. And `/search/compare/view`
 renders its pipeline list from `PIPELINES`, so a new entry needs no hand-sync.
 
-**The pipeline spans three LLM providers** — do not assume Anthropic-only. Defaults in `config.py`: HyDE `claude-haiku-4-5`, LLM rerank `claude-haiku-4-5` (`hyde_*_haiku`) or `gpt-5.6-luna` (`*_luna`), the Cohere rerank path, embeddings OpenAI `text-embedding-3-large`, explanations OpenAI `gpt-5.4-mini`. Legacy chat uses `claude-sonnet-4-6`. Every one is env-overridable; read `config.py` before naming a model.
+**The pipeline spans three LLM providers** — do not assume Anthropic-only. Defaults in `config.py`: HyDE passages and the Bible genre pick on `gpt-5.6-luna` with reasoning `none` (`HYDE_LUNA_MODEL` and `HYDE_GENRE_LUNA_MODEL` are separate settings; `HYDE_*_PROVIDER=haiku` falls back to `claude-haiku-4-5`), LLM rerank `claude-haiku-4-5` (`hyde_*_haiku`) or `gpt-5.6-luna` at reasoning `medium` (`*_luna`, pinned in `openai_provider.REASONING_EFFORT`), the Cohere rerank path, embeddings OpenAI `text-embedding-3-large`, explanations `gpt-6-luna` with reasoning `none`. The eval judge is `claude-opus-5-5` via structured outputs (forced tool_choice is a 400 on 5.5). Legacy chat uses `claude-sonnet-4-6`. Every one is env-overridable; read `config.py` before naming a model.
+
+**Luna model and reasoning effort are also per-pipeline axes**, for evaluation arms:
+`RetrievalConfig.hyde_luna_model` / `hyde_genre_luna_model` / `hyde_sample` and
+`RerankConfig.llm_model` / `llm_reasoning_effort` (`None` = the production default).
+`compare/shared_runner.py` draws HyDE once per distinct (passage model, genre model,
+`hyde_sample`) and includes that key in its pool shape, so arms with different HyDE never
+share a candidate pool. `hyde_cohere_luna_hydesample` is production with its own HyDE draw
+— the noise floor any HyDE change must clear. Cost is always recorded against the model
+actually called.
 
 Streaming order: `chunk` events fire as soon as ranking completes, then the search and its retrievals persist, then `done`, then explanations stream per chunk via `explanation_delta`. Explanations arriving after `done` is normal and the frontend depends on it.
 

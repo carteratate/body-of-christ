@@ -1,4 +1,4 @@
-"""Relevance explanation streaming via OpenAI — moves stream_explanation() here unchanged."""
+"""Relevance explanation streaming via OpenAI (model: `settings.explain_openai_model`)."""
 import asyncio
 import logging
 from collections.abc import AsyncGenerator
@@ -54,6 +54,11 @@ _EXPLAIN_SYSTEM = (
     "continuous argument."
 )
 
+# Pinned, not inherited: a two-to-three sentence explanation gains nothing from
+# reasoning, and reasoning tokens bill as output and share the 220-token cap with
+# the visible text. Accepted by gpt-6-luna and by gpt-5.4-mini, the rollback model.
+REASONING_EFFORT = "none"
+
 _MAX_RETRIES = 3
 _BASE_DELAY = 1.0  # seconds — cumulative waits: 1+2+4 = 7s
 
@@ -106,6 +111,7 @@ async def stream(
         try:
             stream_resp = await _client.chat.completions.create(
                 model=settings.explain_openai_model,
+                reasoning_effort=REASONING_EFFORT,
                 max_completion_tokens=220,
                 messages=[
                     {"role": "system", "content": _EXPLAIN_SYSTEM},

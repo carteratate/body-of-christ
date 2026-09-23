@@ -11,6 +11,8 @@ from app.rag.pipelines.registry import PIPELINES
 from app.rag.steps.rerank import contract_version
 from app.rag.steps.llm_rerank.pointwise import POINTWISE_MAX_TOKENS
 from app.rag.steps.rerank_cohere import COHERE_RERANK_MODEL
+from app.rag.steps import hyde_luna
+from app.rag.steps.llm_rerank import openai_provider
 
 
 def snapshot(pipeline_names: list[str]) -> dict:
@@ -42,7 +44,7 @@ def snapshot(pipeline_names: list[str]) -> dict:
             ),
             "hyde_passage_provider": settings.hyde_passage_provider,
             "hyde_genre_selector": (
-                settings.hyde_luna_model
+                settings.hyde_genre_luna_model
                 if settings.hyde_genre_provider == "luna"
                 else settings.hyde_model
             ),
@@ -76,6 +78,8 @@ def snapshot(pipeline_names: list[str]) -> dict:
             "pointwise_max_tokens": POINTWISE_MAX_TOKENS,
             "listwise_max_tokens": settings.llm_rerank_max_tokens,
             "hyde_luna_concurrency": settings.hyde_luna_concurrency,
+            "hyde_luna_reasoning_effort": hyde_luna.REASONING_EFFORT,
+            "rerank_luna_reasoning_effort": openai_provider.REASONING_EFFORT,
         },
         "judge_weights": dict(WEIGHTS),
     }

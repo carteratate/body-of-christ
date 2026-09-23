@@ -174,6 +174,8 @@ async def test_luna_sends_system_prompt_as_a_system_message():
     response_format = client.chat.completions.kwargs["response_format"]
     assert response_format["type"] == "json_schema"
     assert response_format["json_schema"]["strict"] is True
+    # Pinned to what 5.6 ran with implicitly; a model swap must not change it.
+    assert client.chat.completions.kwargs["reasoning_effort"] == "medium"
 
 
 @pytest.mark.asyncio

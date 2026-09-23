@@ -63,10 +63,20 @@ class Settings(BaseSettings):
         default="luna", validation_alias="HYDE_GENRE_PROVIDER",
     )
     hyde_luna_model: str = Field(default="gpt-5.6-luna", validation_alias="HYDE_LUNA_MODEL")
+    # Separate from hyde_luna_model so passages and the Bible genre pick can move
+    # independently: the two models pick measurably different genre sets (28/80
+    # identical on the eval queries vs 58/80 for 5.6 against itself), while the
+    # selector costs ~$0.0002 a search either way.
+    hyde_genre_luna_model: str = Field(
+        default="gpt-5.6-luna", validation_alias="HYDE_GENRE_LUNA_MODEL",
+    )
     hyde_luna_concurrency: int = Field(default=8, ge=1, validation_alias="HYDE_LUNA_CONCURRENCY")
     rerank_model: str = Field(default="claude-haiku-4-5", validation_alias="RERANK_MODEL")
     evaluate_model: str = Field(default="claude-haiku-4-5", validation_alias="EVALUATE_MODEL")
-    explain_openai_model: str = Field(default="gpt-5.4-mini", validation_alias="EXPLAIN_OPENAI_MODEL")
+    # gpt-6-luna with reasoning off (explain.REASONING_EFFORT): a 60-passage blind
+    # bake-off scored it 4.67/5 vs 4.19 for gpt-5.4-mini, with 1.7% vs 16.7% of
+    # explanations making an unsupported claim, at ~12% of the cost.
+    explain_openai_model: str = Field(default="gpt-6-luna", validation_alias="EXPLAIN_OPENAI_MODEL")
 
     # RAG pipeline
     default_quota: int = Field(default=4, validation_alias="DEFAULT_QUOTA")

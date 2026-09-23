@@ -7,7 +7,7 @@ import time
 import copy
 
 from app.config import settings
-from app.rag.pipelines.registry import PipelineConfig
+from app.rag.pipelines.registry import PipelineConfig, RetrievalConfig
 from app.rag.search_plan import SearchPlan
 from app.rag.steps import (
     budget,
@@ -299,6 +299,20 @@ async def run_from_candidates(
     )
 
 
+
+def hyde_overrides(retrieval: RetrievalConfig) -> dict[str, str]:
+    """HyDE model overrides a pipeline pins, as `hyde_s25.run` keyword arguments.
+
+    Only the ones actually set, so a production-default pipeline calls HyDE exactly
+    as before and the settings stay the single source of its defaults.
+    """
+    pinned = {
+        "passage_model": retrieval.hyde_luna_model,
+        "genre_model": retrieval.hyde_genre_luna_model,
+    }
+    return {key: value for key, value in pinned.items() if value is not None}
+
+
 async def run(
     config: PipelineConfig,
     query: str,
@@ -345,10 +359,11 @@ async def run(
     )
 
     query_vec = await _timed_async("embed", embed.run(query, tracker))
+    overrides = hyde_overrides(config.retrieval) if config.retrieval.hyde else {}
     hyde_call = (
-        hyde_s25.run(query, collections, tracker, all_bible_genres=True)
+        hyde_s25.run(query, collections, tracker, all_bible_genres=True, **overrides)
         if focused_bible_hyde
-        else hyde_module.run(query, collections, tracker)
+        else hyde_module.run(query, collections, tracker, **overrides)
     )
     hyde_vecs = await _timed_async("hyde", hyde_call)
     k, top_n = _pool_sizes(config, quota)

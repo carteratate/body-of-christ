@@ -93,10 +93,10 @@ async def test_save_compare_runs_inserts_rows():
     assert isinstance(pricing, dict)
     assert isinstance(rows[0][7], list)   # step_timings
     assert isinstance(rows[0][8], dict)   # cost_breakdown
-    assert pricing["effective_date"] == "2026-07-30"
-    assert pricing["token_rates_per_million"]["gpt-5.6-luna"] == {
-        "input": 0.20,
-        "output": 1.20,
+    assert pricing["effective_date"] == "2026-09-23"
+    assert pricing["token_rates_per_million"]["gpt-6-luna"] == {
+        "input": 0.10,
+        "output": 0.50,
     }
 
 

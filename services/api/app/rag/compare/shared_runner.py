@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 from app.config import settings
 from app.rag.pipelines.registry import PipelineConfig
-from app.rag.pipelines.runner import _pool_sizes, run_from_candidates
+from app.rag.pipelines.runner import _pool_sizes, hyde_overrides, run_from_candidates
 from app.rag.steps import degradation, embed, fetch_positions, hyde_s25, retrieve_fts
 from app.rag.steps import retrieve_vector, rrf
 from app.rag.steps.cost_tracker import CostTracker
@@ -95,24 +95,48 @@ async def capture(
     max_k = max(effective_k.values())
 
     query_vec = await embed.run(query, tracker)
-    hyde_vecs = await hyde_s25.run(query, collections, tracker)
-    vector_raw = await retrieve_vector.run(
-        query_vec, hyde_vecs, collections, quota, k=max_k,
-    )
+
+    # One HyDE capture per distinct HyDE configuration, so arms that pin different
+    # HyDE models (or ask for an independent draw via `hyde_sample`) each retrieve
+    # from their own passages, while arms that agree still share one capture and
+    # differ only downstream. With default configs this is a single call, made
+    # exactly as before.
+    HydeKey = tuple[str | None, str | None, int]
+
+    def hyde_key(config: PipelineConfig) -> HydeKey:
+        r = config.retrieval
+        return (r.hyde_luna_model, r.hyde_genre_luna_model, r.hyde_sample)
+
+    vector_raw_by_hyde: dict[HydeKey, dict] = {}
+    for config in configs:
+        key = hyde_key(config)
+        if key in vector_raw_by_hyde:
+            continue
+        hyde_vecs = await hyde_s25.run(
+            query, collections, tracker, **hyde_overrides(config.retrieval),
+        )
+        vector_raw_by_hyde[key] = await retrieve_vector.run(
+            query_vec, hyde_vecs, collections, quota, k=max_k,
+        )
     fts_raw = await retrieve_fts.run(query, collections, quota, k=max_k)
 
     # Keyed by every input that changes the merged pool. `rrf_k` belongs here for
     # the same reason `fts` does: two arms differing only in it produce differently
     # ordered merges, and reusing one pool for both would hand replay identical
-    # candidates and silently compare an arm against itself.
-    Shape = tuple[int, int | None, bool, int | None]
+    # candidates and silently compare an arm against itself. The HyDE key is here
+    # for the same reason: a pool built from one arm's HyDE vectors must never be
+    # replayed as another arm's.
+    Shape = tuple[int, int | None, bool, int | None, HydeKey]
     pools_by_shape: dict[Shape, dict[str, list[ChunkCandidate]]] = {}
     candidate_pools: dict[str, dict[str, list[ChunkCandidate]]] = {}
     for config in configs:
         k = effective_k[config.name]
         _configured_k, top_n = sizes[config.name]
-        shape = (k, top_n, config.retrieval.fts, config.retrieval.rrf_k)
+        shape = (
+            k, top_n, config.retrieval.fts, config.retrieval.rrf_k, hyde_key(config),
+        )
         if shape not in pools_by_shape:
+            vector_raw = vector_raw_by_hyde[hyde_key(config)]
             vectors = {
                 collection: [RetrievalPath(path.family, path.rows[:k]) for path in strategies]
                 for collection, strategies in vector_raw.items()

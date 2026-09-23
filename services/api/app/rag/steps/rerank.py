@@ -27,6 +27,7 @@ from app.rag.steps import budget, degradation, rerank_cohere
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.llm_rerank import listwise, pointwise
 from app.rag.steps.llm_rerank.openai_provider import PROVIDER as LUNA_PROVIDER
+from app.rag.steps.llm_rerank.openai_provider import REASONING_EFFORTS as LUNA_REASONING_EFFORTS
 from app.rag.steps.rerank_haiku import PROVIDER as HAIKU_PROVIDER
 from app.rag.steps.types import ChunkCandidate, RankedChunk
 
@@ -81,6 +82,12 @@ class RerankConfig:
 
     use_cohere: bool
     llm_provider: str | None
+    # Evaluation-arm overrides for the Luna reranker. None means the production
+    # default (`settings.rerank_luna_model`, `openai_provider.REASONING_EFFORT`).
+    # On the config rather than read from settings so `dataclasses.asdict` puts
+    # them in the methodology fingerprint and arms stay segmentable.
+    llm_model: str | None = None
+    llm_reasoning_effort: str | None = None
 
     def __post_init__(self) -> None:
         if not self.use_cohere and self.llm_provider is None:
@@ -93,6 +100,27 @@ class RerankConfig:
                 f"Unknown llm_provider {self.llm_provider!r}. "
                 f"Valid: {sorted(PROVIDERS)}"
             )
+        overridden = self.llm_model is not None or self.llm_reasoning_effort is not None
+        if overridden and self.llm_provider != LUNA_PROVIDER.name:
+            raise ValueError(
+                "llm_model / llm_reasoning_effort overrides are only supported for "
+                f"the {LUNA_PROVIDER.name!r} provider, got {self.llm_provider!r}."
+            )
+        if (
+            self.llm_reasoning_effort is not None
+            and self.llm_reasoning_effort not in LUNA_REASONING_EFFORTS
+        ):
+            raise ValueError(
+                f"Unknown llm_reasoning_effort {self.llm_reasoning_effort!r}. "
+                f"Valid: {sorted(LUNA_REASONING_EFFORTS)}"
+            )
+
+    def provider(self):
+        """The configured LLM provider, with any evaluation-arm overrides applied."""
+        base = PROVIDERS[self.llm_provider]
+        if self.llm_provider == LUNA_PROVIDER.name:
+            return base.with_overrides(self.llm_model, self.llm_reasoning_effort)
+        return base
 
     @property
     def mode(self) -> str:
@@ -179,7 +207,7 @@ async def run(
     mode = config.mode
 
     if mode == "llm_only":
-        provider = PROVIDERS[config.llm_provider]
+        provider = config.provider()
         # Preserve historical candidate sizing for continuity. Scoring/output uses
         # LLM_RERANK_CONTRACT_VERSION and is not methodologically interchangeable
         # with runs from the former free-text UUID contract.
@@ -229,7 +257,7 @@ async def run(
 
     # both
     pool = _llm_pool_from(per_collection, quota, terminal_candidate_budget)
-    provider = PROVIDERS[config.llm_provider]
+    provider = config.provider()
     terminal_started = time.perf_counter()
     cost_before_terminal = cost_tracker.total_cost()
     ranked = await listwise.rerank_pool(

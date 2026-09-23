@@ -52,8 +52,8 @@ def test_none_message_is_survivable():
 
 def test_experiment_fingerprint_records_pricing_schedule():
     pricing = suite._fingerprint(["hyde_cohere_luna"], 4)["pricing"]
-    assert pricing["effective_date"] == "2026-07-30"
-    assert pricing["token_rates_per_million"]["gpt-5.6-luna"] == {
-        "input": 0.20,
-        "output": 1.20,
+    assert pricing["effective_date"] == "2026-09-23"
+    assert pricing["token_rates_per_million"]["gpt-6-luna"] == {
+        "input": 0.10,
+        "output": 0.50,
     }
