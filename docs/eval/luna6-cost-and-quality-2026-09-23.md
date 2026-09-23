@@ -1,8 +1,10 @@
 # GPT-6 Luna: cost, explanation quality, and retrieval pilot (2026-09-23)
 
 Evidence behind the explanation-model switch, the pricing fixes, and the Luna arms in the
-registry. Every number here was measured against live services with the production
-pipeline (`hyde_cohere_luna`); raw per-call token logs were kept out of the repo.
+registry. Every number was measured against live services: cost and retrieval numbers
+through the production pipeline (`hyde_cohere_luna`), the explanation bake-off by calling
+each model directly with the production explanation prompt. Raw per-call token logs were
+kept out of the repo.
 
 ## Prices used (checked on the providers' pages this day)
 
@@ -24,6 +26,7 @@ The logs understated explanations ~5.27x (the gpt-5.4-mini rate). Corrected:
 | Focused (quota 10, 1 collection) | 12 | $0.0103 | $0.0176 | 52% |
 | Guest default (6 collections, quota 3) | 7 | $0.0246 | $0.0384 | 44% |
 | 9–10 collections | 7 | $0.0320 | $0.0526 | 48% |
+| Standard, 1–2 collections | 2 | $0.0092 | $0.0130 | 36% |
 
 With explanations on gpt-6-luna the average falls to about **$0.018** (explanations
 ≈ $0.0017 of it). Cohere (~$0.010) then dominates, and Luna retrieval is ~$0.0057.
@@ -71,7 +74,9 @@ not separable here — which is why the registry now has separate arms.
 | 6 low | 0.774 | −0.017 [−0.047, +0.013] | 15.3 | 0.51 |
 
 No arm is distinguishable from production at n=20. Two identical production runs share
-only 60% of their passages, so differences under ~0.03 in the 80-query eval are noise.
+only 60% of their passages; judging by the n=20 intervals, expect differences of a few
+hundredths in the 80-query eval to be within noise — `hyde_cohere_luna_hydesample`
+measures that floor directly for HyDE.
 The 6 arms consistently return ~2 fewer passages (lower completeness/coverage, less
 redundancy) — the thing to watch in the full eval.
 

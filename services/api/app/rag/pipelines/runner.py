@@ -43,9 +43,17 @@ _RANKING_FAILURE_ACTIONS = {"collection_omitted"}
 
 
 class PipelineExecutionError(RuntimeError):
-    def __init__(self, stage: str):
+    def __init__(
+        self, stage: str,
+        cost_breakdown: dict[str, float] | None = None, cost_eligible: bool = True,
+    ):
         super().__init__(f"pipeline stage failed: {stage}")
         self.stage = stage
+        # What the run had already spent when the stage failed (HyDE, embedding,
+        # Cohere are billed whether or not the search finishes), so the SSE layer
+        # can still record the search's cost.
+        self.cost_breakdown = dict(cost_breakdown or {})
+        self.cost_eligible = cost_eligible
 
 
 def _delivery_outcome(
@@ -337,7 +345,9 @@ async def run(
         try:
             result = fn_lambda()
         except Exception as exc:
-            raise PipelineExecutionError(step) from exc
+            raise PipelineExecutionError(
+                step, tracker.breakdown(), tracker.cost_eligible,
+            ) from exc
         timings.append(StepTiming(step=step, duration_s=time.perf_counter() - t0))
         return result
 
@@ -346,7 +356,9 @@ async def run(
         try:
             result = await coro
         except Exception as exc:
-            raise PipelineExecutionError(step) from exc
+            raise PipelineExecutionError(
+                step, tracker.breakdown(), tracker.cost_eligible,
+            ) from exc
         timings.append(StepTiming(step=step, duration_s=time.perf_counter() - t0))
         return result
 

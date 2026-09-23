@@ -1,7 +1,7 @@
--- Per-search provider cost, recorded by the API after a search finishes
--- (rag/pipeline.py `_record_search_cost`). Until now cost existed only in Railway
--- log lines, which do not outlive a deploy, so "what does a search cost" could not
--- be answered from data.
+-- Per-search provider cost, recorded by the API once per search on every exit that
+-- spent money (rag/pipeline.py `_record_search_cost`). Until now cost existed only
+-- in Railway log lines, which do not outlive a deploy, so "what does a search cost"
+-- could not be answered from data.
 --
 -- Operational telemetry, not user data: no user_id and no query text. search_id
 -- links an authenticated search's row back to `searches` and is NULL for guest
@@ -16,8 +16,12 @@ CREATE TABLE search_costs (
     search_id               uuid             REFERENCES searches(id) ON DELETE SET NULL,
     audience                text             NOT NULL CHECK (audience IN ('authenticated', 'guest')),
     pipeline                text             NOT NULL,
-    -- success | degraded_success | no_candidates | the runner's failure outcome
+    -- success | degraded_success | no_candidates | the runner's failure outcome |
+    -- stage_failed:<stage> when a runner stage raised
     outcome                 text             NOT NULL,
+    -- False when the stream closed early (client left mid-explanations): the
+    -- explanation cost is then only what was spent before it closed.
+    completed               boolean          NOT NULL,
     collection_count        integer          NOT NULL CHECK (collection_count > 0),
     quota                   integer          NOT NULL,
     focused                 boolean          NOT NULL,

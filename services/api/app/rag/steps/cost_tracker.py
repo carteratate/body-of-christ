@@ -88,6 +88,12 @@ class CostTracker:
             self._breakdown.get(step, 0.0) + _COHERE_PER_SEARCH_UNIT * search_units
         )
 
+    def merge(self, other: "CostTracker") -> None:
+        """Add another tracker's spend (and its eligibility) into this one."""
+        for step, cost in other._breakdown.items():
+            self._breakdown[step] = self._breakdown.get(step, 0.0) + cost
+        self._cost_eligible = self._cost_eligible and other._cost_eligible
+
     def total_cost(self) -> float:
         return sum(self._breakdown.values())
 

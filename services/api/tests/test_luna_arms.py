@@ -145,17 +145,21 @@ async def test_genre_override_is_called_and_costed_as_that_model():
 def test_hyde_overrides_only_include_what_a_pipeline_pins():
     assert runner.hyde_overrides(RetrievalConfig()) == {}
     assert runner.hyde_overrides(PIPELINES["hyde6_cohere_luna"].retrieval) == {
-        "passage_model": "gpt-6-luna",
+        "passage_model": "gpt-6-luna", "genre_model": "gpt-5.6-luna",
     }
     assert runner.hyde_overrides(PIPELINES["hyde6_cohere_luna6"].retrieval) == {
         "passage_model": "gpt-6-luna", "genre_model": "gpt-6-luna",
     }
 
 
-def test_hybrid_arm_keeps_the_production_reranker():
+def test_hybrid_arm_pins_todays_production_genre_pick_and_reranker():
     arm = PIPELINES["hyde6_cohere_luna"]
-    assert arm.rerank == PIPELINES["hyde_cohere_luna"].rerank
-    assert arm.retrieval.hyde_genre_luna_model is None
+    production = PIPELINES["hyde_cohere_luna"].rerank.provider()
+    provider = arm.rerank.provider()
+    assert (provider.model_id, provider.reasoning_effort) == (
+        production.model_id, production.reasoning_effort)
+    assert arm.retrieval.hyde_genre_luna_model == settings.hyde_genre_luna_model
+    assert arm.rerank.use_cohere is True
 
 
 # --- shared evaluation capture ----------------------------------------------
@@ -201,7 +205,9 @@ async def test_shared_capture_draws_hyde_once_per_distinct_hyde_config():
 
     assert hyde.await_count == 3
     assert hyde.await_args_list[0].kwargs == {}
-    assert hyde.await_args_list[1].kwargs == {"passage_model": "gpt-6-luna"}
+    assert hyde.await_args_list[1].kwargs == {
+        "passage_model": "gpt-6-luna", "genre_model": "gpt-5.6-luna",
+    }
     assert hyde.await_args_list[2].kwargs == {}
 
     def ids(name: str) -> set[str]:
@@ -211,3 +217,51 @@ async def test_shared_capture_draws_hyde_once_per_distinct_hyde_config():
     assert ids("hyde_cohere_luna").isdisjoint(ids("hyde6_cohere_luna"))
     assert ids("hyde_cohere_luna").isdisjoint(ids("hyde_cohere_luna_hydesample"))
     assert ids("hyde6_cohere_luna").isdisjoint(ids("hyde_cohere_luna_hydesample"))
+
+
+@pytest.mark.asyncio
+async def test_each_arm_reports_the_cost_of_its_own_hyde_draw():
+    configs = [PIPELINES["hyde_cohere_luna"], PIPELINES["hyde6_cohere_luna"]]
+    prices = {None: ("gpt-5.6-luna", 0.20), "gpt-6-luna": ("gpt-6-luna", 0.10)}
+
+    async def hyde(query, collections, tracker, passage_model=None, **_kw):
+        model, _ = prices[passage_model]
+        tracker.record("hyde", model, input_tokens=1_000_000, output_tokens=0)
+        return {}
+
+    with (
+        patch("app.rag.compare.shared_runner.embed.run", new=AsyncMock(return_value=[0.1])),
+        patch("app.rag.compare.shared_runner.hyde_s25.run", new=hyde),
+        patch("app.rag.compare.shared_runner.retrieve_vector.run",
+              new=AsyncMock(return_value={"bible": []})),
+        patch("app.rag.compare.shared_runner.retrieve_fts.run",
+              new=AsyncMock(return_value={"bible": []})),
+        patch("app.rag.compare.shared_runner.fetch_positions.run",
+              new=AsyncMock(side_effect=lambda candidates: candidates)),
+    ):
+        artifacts = await shared_runner.capture("q", ["bible"], 4, configs)
+
+    assert artifacts.hyde_costs["hyde_cohere_luna"]["hyde"] == pytest.approx(0.20)
+    assert artifacts.hyde_costs["hyde6_cohere_luna"]["hyde"] == pytest.approx(0.10)
+    # The shared total still carries every draw.
+    assert artifacts.cost_breakdown["hyde"] == pytest.approx(0.30)
+    restored = shared_runner.SharedArtifacts.from_dict(artifacts.to_dict())
+    assert restored.hyde_costs == artifacts.hyde_costs
+
+
+def test_artifacts_from_before_per_draw_accounting_still_load():
+    legacy = {
+        "query": "q", "collections": ["bible"], "quota": 4, "candidate_pools": {},
+        "cost_breakdown": {}, "total_cost": 0.0, "duration_s": 1.0,
+    }
+    assert shared_runner.SharedArtifacts.from_dict(legacy).hyde_costs == {}
+
+
+def test_cost_tracker_merge_sums_steps_and_eligibility():
+    a, b = CostTracker(), CostTracker()
+    a.record("hyde", "gpt-5.6-luna", input_tokens=1_000_000, output_tokens=0)
+    b.record("hyde", "gpt-6-luna", input_tokens=1_000_000, output_tokens=0)
+    b.record("x", "not-a-model", input_tokens=1, output_tokens=1)
+    a.merge(b)
+    assert a.breakdown()["hyde"] == pytest.approx(0.30)
+    assert a.cost_eligible is False

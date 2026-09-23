@@ -116,16 +116,18 @@ PIPELINES: dict[str, PipelineConfig] = {
     "hyde_nolex_cohere_haiku": _p(
         "hyde_nolex_cohere_haiku", fts=False, cohere=True, llm="haiku", k=50,
     ),
-    # Luna-model arms, each against `hyde_cohere_luna` (production). Model ids are
-    # pinned here, not read from settings, so an arm means the same thing whatever
-    # the deployment defaults are.
+    # Luna-model arms, each against `hyde_cohere_luna`. Production and its HyDE-
+    # sample twin deliberately read the deployment's settings — they ARE production.
+    # Every other arm pins each Luna model and effort it runs, so its meaning does
+    # not move if a deployment default changes.
     # HyDE noise floor: production, but its own HyDE draw.
     "hyde_cohere_luna_hydesample": _p(
         "hyde_cohere_luna_hydesample", cohere=True, llm="luna", hyde_sample=1,
     ),
-    # HyDE passages on 6; genre pick and reranker stay on production defaults.
+    # HyDE passages on 6; genre pick and reranker held at today's production values.
     "hyde6_cohere_luna": _p(
         "hyde6_cohere_luna", cohere=True, llm="luna", hyde_model="gpt-6-luna",
+        genre_model="gpt-5.6-luna", llm_model="gpt-5.6-luna", effort="medium",
     ),
     # Everything on 6: passages, genre pick, and the reranker at medium / at low.
     "hyde6_cohere_luna6": _p(

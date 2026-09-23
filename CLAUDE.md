@@ -114,9 +114,11 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - `reading_progress` — per-document reader position (0027)
 - `product_feedback` — in-app feedback, including anonymous (0028–0030)
 - `user_preferences.last_standard_quota` — remembers the pre-focused quota (0034); see §18
-- `search_costs` — per-search provider cost, written best-effort by `_record_search_cost`
-  in `rag/pipeline.py` for authenticated and guest searches (0036). No user_id, no query
-  text; RLS on with no policies. Numbered 0036 to stay clear of the 0035 studies draft.
+- `search_costs` — per-search provider cost, written best-effort from the SSE generator's
+  `finally` in `rag/pipeline.py`, so it covers every exit including a client leaving
+  mid-explanations (`completed = false`), for authenticated and guest searches (0036).
+  No user_id, no query text; RLS on with no policies. Numbered 0036 to stay clear of the
+  0035 studies draft. The API tolerates the table being absent until it is applied.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -174,7 +176,7 @@ renders its pipeline list from `PIPELINES`, so a new entry needs no hand-sync.
 `RerankConfig.llm_model` / `llm_reasoning_effort` (`None` = the production default).
 `compare/shared_runner.py` draws HyDE once per distinct (passage model, genre model,
 `hyde_sample`) and includes that key in its pool shape, so arms with different HyDE never
-share a candidate pool. `hyde_cohere_luna_hydesample` is production with its own HyDE draw
+share a candidate pool; `SharedArtifacts.hyde_costs` records each arm's own draw cost. `hyde_cohere_luna_hydesample` is production with its own HyDE draw
 — the noise floor any HyDE change must clear. Cost is always recorded against the model
 actually called.
 

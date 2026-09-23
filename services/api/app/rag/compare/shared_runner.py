@@ -6,6 +6,7 @@ from the same ranked retrieval lists, and replays only pipeline-specific reranki
 """
 from __future__ import annotations
 
+import asyncio
 import copy
 import dataclasses
 import time
@@ -31,6 +32,11 @@ class SharedArtifacts:
     duration_s: float
     degradations: list[str]
     degradation_events: list[dict]
+    # Per pipeline, the cost of the HyDE draw its pool was built from. Draws are
+    # shared between arms with the same HyDE config, so these do not sum to
+    # `total_cost`; they exist so a HyDE-model arm's cost can be compared with
+    # production's. Empty for artifacts captured before per-draw accounting.
+    hyde_costs: dict[str, dict[str, float]] = dataclasses.field(default_factory=dict)
 
     @property
     def quality_eligible(self) -> bool:
@@ -53,6 +59,7 @@ class SharedArtifacts:
             "duration_s": self.duration_s,
             "degradations": self.degradations,
             "degradation_events": self.degradation_events,
+            "hyde_costs": self.hyde_costs,
         }
 
     @classmethod
@@ -73,6 +80,7 @@ class SharedArtifacts:
             duration_s=value["duration_s"],
             degradations=value.get("degradations", []),
             degradation_events=value.get("degradation_events", []),
+            hyde_costs=value.get("hyde_costs", {}),
         )
 
 
@@ -107,17 +115,27 @@ async def capture(
         r = config.retrieval
         return (r.hyde_luna_model, r.hyde_genre_luna_model, r.hyde_sample)
 
-    vector_raw_by_hyde: dict[HydeKey, dict] = {}
+    first_config: dict[HydeKey, PipelineConfig] = {}
     for config in configs:
-        key = hyde_key(config)
-        if key in vector_raw_by_hyde:
-            continue
+        first_config.setdefault(hyde_key(config), config)
+    # Each draw bills its own tracker, so the per-arm HyDE cost stays attributable.
+    draw_trackers = {key: CostTracker() for key in first_config}
+
+    async def draw(key: HydeKey) -> dict:
         hyde_vecs = await hyde_s25.run(
-            query, collections, tracker, **hyde_overrides(config.retrieval),
+            query, collections, draw_trackers[key],
+            **hyde_overrides(first_config[key].retrieval),
         )
-        vector_raw_by_hyde[key] = await retrieve_vector.run(
+        return await retrieve_vector.run(
             query_vec, hyde_vecs, collections, quota, k=max_k,
         )
+
+    keys = list(first_config)
+    vector_raw_by_hyde: dict[HydeKey, dict] = dict(
+        zip(keys, await asyncio.gather(*[draw(key) for key in keys]))
+    )
+    for key in keys:
+        tracker.merge(draw_trackers[key])
     fts_raw = await retrieve_fts.run(query, collections, quota, k=max_k)
 
     # Keyed by every input that changes the merged pool. `rrf_k` belongs here for
@@ -159,6 +177,9 @@ async def capture(
         duration_s=time.perf_counter() - started,
         degradations=degradation.degradations(),
         degradation_events=degradation.event_dicts(),
+        hyde_costs={
+            config.name: draw_trackers[hyde_key(config)].breakdown() for config in configs
+        },
     )
 
 
