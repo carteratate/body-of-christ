@@ -5,6 +5,7 @@ applied, first before a document is outlined (the fallback path) and then after
 refresh_document_outline (the outline path), and requires identical responses.
 """
 
+import contextlib
 from unittest.mock import patch
 
 import asyncpg
@@ -38,23 +39,39 @@ SEED = f"""
 CHAPTERS = ["q1", "q2", "q3", "q4"]
 
 
+@contextlib.asynccontextmanager
+async def _routes_on(cluster):
+    """Point the routes' pool at `cluster` for the duration."""
+    db_pool = await asyncpg.create_pool(
+        host=str(cluster.socket), user="postgres", database="postgres",
+        min_size=1, max_size=2, statement_cache_size=0, init=_init_connection,
+    )
+    try:
+        with patch("app.routes.documents.get_pool", return_value=db_pool), \
+             patch("app.routes.sources.get_pool", return_value=db_pool):
+            yield
+    finally:
+        await db_pool.close()
+
+
 @pytest.fixture()
 async def db():
-    """The cluster, with the routes' pool pointed at it."""
+    """A migrated cluster, with the routes' pool pointed at it."""
     with local_cluster("tc-reader-") as cluster:
         cluster.sql(CORPUS_SCHEMA)
         cluster.migrate("0037_document_outline.sql")
         cluster.sql(SEED)
-        db_pool = await asyncpg.create_pool(
-            host=str(cluster.socket), user="postgres", database="postgres",
-            min_size=1, max_size=2, statement_cache_size=0, init=_init_connection,
-        )
-        try:
-            with patch("app.routes.documents.get_pool", return_value=db_pool), \
-                 patch("app.routes.sources.get_pool", return_value=db_pool):
-                yield cluster
-        finally:
-            await db_pool.close()
+        async with _routes_on(cluster):
+            yield cluster
+
+
+EXPECTED_STRUCTURE = {
+    "toc": [("q1", "Question 1"), ("q2", "Question 2"), ("q3", "Question 3"), ("q4", "Question 4")],
+    "first": "q1",
+    "neighbors": {"q1": (None, "q2"), "q2": ("q1", "q3"), "q3": ("q2", "q4"), "q4": ("q3", None)},
+    "by_anchor": ("q3", "q2", "q4"),
+    "source_count": [6],
+}
 
 
 async def _reader_snapshot():
@@ -88,17 +105,10 @@ async def test_outline_and_fallback_serve_identical_reader_responses(db):
 
     assert outlined == fallback
     # And both are right, not merely equal.
-    assert outlined["toc"] == [("q1", "Question 1"), ("q2", "Question 2"),
-                               ("q3", "Question 3"), ("q4", "Question 4")]
-    assert outlined["first"] == "q1"
-    assert outlined["neighbors"] == {
-        "q1": (None, "q2"), "q2": ("q1", "q3"), "q3": ("q2", "q4"), "q4": ("q3", None),
-    }
+    assert {key: outlined[key] for key in EXPECTED_STRUCTURE} == EXPECTED_STRUCTURE
     assert outlined["passages"]["q2"] == ["q2/a1", "q2/a2"]
-    assert outlined["by_anchor"] == ("q3", "q2", "q4")
     assert outlined["document"]["chunk_count"] == 6
     assert outlined["document"]["metadata"] == {"part": "I"}
-    assert outlined["source_count"] == [6]
 
 
 async def test_an_outlined_document_takes_its_structure_from_the_outline(db):
@@ -176,3 +186,16 @@ async def test_not_found_answers_match_on_both_paths(db, outlined):
         404, "Document has no readable passages")
     toc = await get_document_toc(empty_doc, user=USER)
     assert (toc.chapters, toc.document.chunk_count) == ([], 0)
+
+
+async def test_the_routes_serve_a_database_the_migration_has_not_reached():
+    """The API can deploy before 0037 is applied: without the column it derives the
+    structure from chunks, as it did before the outline existed."""
+    with local_cluster("tc-premigration-") as cluster:
+        cluster.sql(CORPUS_SCHEMA)
+        cluster.sql(SEED)
+        async with _routes_on(cluster):
+            snapshot = await _reader_snapshot()
+
+    assert {key: snapshot[key] for key in EXPECTED_STRUCTURE} == EXPECTED_STRUCTURE
+    assert snapshot["document"]["chunk_count"] == 6

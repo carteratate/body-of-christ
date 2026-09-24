@@ -359,3 +359,13 @@ def test_the_lock_timeout_ends_with_the_migration(postgres):
     )
     assert result.returncode == 0, result.stderr
     assert result.stdout.split() == ["0"]
+
+
+def test_truncating_chunks_invalidates_every_outline(postgres):
+    postgres(SEED)
+    _migrate(postgres)
+
+    postgres("TRUNCATE chunks")
+
+    assert _chunk_count(postgres, DOC_A) == "<null>"
+    assert _chunk_count(postgres, DOC_B) == "<null>"

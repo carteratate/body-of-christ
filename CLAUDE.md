@@ -126,9 +126,10 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   derivation. `refresh_document_outline(doc)` builds it; `reader_writer.write_document`
   calls it last in its per-document transaction. Row triggers on `chunks` reset
   `chunk_count` to NULL on any structural change (chunk set, position, chapter key or
-  label; annotations are ignored), so a writer that skips the refresh can only make a
-  document slower, never stale. Anything that rewrites chunks should still call the
-  refresh afterwards.
+  label, or TRUNCATE; annotations are ignored), so a writer that skips the refresh can
+  only make a document slower, never stale, unless it bypasses triggers
+  (`session_replication_role = replica`). Anything that rewrites chunks should still
+  call the refresh afterwards. The API also tolerates a database without 0037.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have

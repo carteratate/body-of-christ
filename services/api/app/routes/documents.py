@@ -21,7 +21,7 @@ _bearer = HTTPBearer(auto_error=False)
 
 # Chapter structure comes from the precomputed outline (migration 0037:
 # documents.chunk_count and document_chapters), maintained when a collection is
-# published. A document whose chunk_count is NULL has not been outlined yet, and its
+# published. A document whose chunk_count is NULL has no current outline, and its
 # structure is derived from chunks as before; `outline_ready` selects the path. The
 # COALESCE evaluates the count subquery only for such a document.
 _DOCUMENT_SQL = """
@@ -29,6 +29,13 @@ _DOCUMENT_SQL = """
            d.chunk_count IS NOT NULL AS outline_ready,
            COALESCE(d.chunk_count,
                     (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)) AS cnt
+    FROM documents d WHERE d.id = $1
+"""
+# The same row on a database without 0037, so the API can deploy before it is applied.
+_PRE_OUTLINE_DOCUMENT_SQL = """
+    SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
+           false AS outline_ready,
+           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
     FROM documents d WHERE d.id = $1
 """
 
@@ -114,7 +121,12 @@ def _require_pool() -> asyncpg.Pool:
 
 
 async def _fetch_document(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> asyncpg.Record:
-    doc_row = await conn.fetchrow(_DOCUMENT_SQL, doc_uuid)
+    try:
+        doc_row = await conn.fetchrow(_DOCUMENT_SQL, doc_uuid)
+    except asyncpg.UndefinedColumnError:
+        # Migration 0037 is not applied: outline_ready is false, so every later query
+        # of the request takes the chunks-derived path too.
+        doc_row = await conn.fetchrow(_PRE_OUTLINE_DOCUMENT_SQL, doc_uuid)
     if doc_row is None:
         raise HTTPException(status_code=404, detail="Document not found")
     return doc_row
@@ -136,9 +148,10 @@ async def _neighbor_keys(
         row = await conn.fetchrow(_OUTLINE_NEIGHBORS_SQL, doc_uuid, chapter_key)
         if row is not None:
             return row["prev_key"], row["next_key"]
-        # The chapter has passages but no outline row, so chunks changed without a
-        # refresh_document_outline call. Answer this request from chunks and say so; the
-        # document's TOC stays stale until it is refreshed.
+        # The chapter has passages but no outline row. The invalidation triggers clear
+        # outline_ready when chunks change, so this is a read racing a publish that
+        # committed between this request's queries (they share no snapshot). Answer
+        # this request from chunks; the next request sees the cleared flag.
         logger.warning(
             "reader outline for document %s lacks chapter %r; deriving neighbors from chunks",
             doc_uuid, chapter_key,

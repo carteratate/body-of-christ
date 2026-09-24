@@ -13,12 +13,18 @@
 --     datapipeline's reader_writer.write_document calls it as the last statement of
 --     the transaction that writes the document's chunks.
 --   * The invalidate_document_outline triggers set the count back to NULL whenever a
---     write changes a document's chunk set, positions or chapter fields, so an
---     outline can never be served stale: a writer that does not refresh (an older
---     datapipeline checkout, a manual fix) only returns that document to the fallback.
+--     write changes a document's chunk set, positions or chapter fields (TRUNCATE
+--     included), so an outline cannot be served stale: a writer that does not refresh
+--     (an older datapipeline checkout, a manual fix) only returns that document to the
+--     fallback. Only a write that bypasses triggers (session_replication_role =
+--     replica, as some restores use) escapes this; refresh afterwards.
 --     Annotation-only updates (datapipeline enrichment) leave it alone.
 --   * Deleting a document removes its outline by cascade.
--- So the API, the datapipeline and 0038's backfill can deploy in any order.
+-- The API also runs unchanged on a database without this migration (it catches the
+-- missing column and derives structure from chunks), so the API, this migration, the
+-- datapipeline and 0038's backfill can land in any order. The datapipeline needs this
+-- migration before it publishes (write_document calls refresh_document_outline).
+-- Apply it while no publish or enrichment run is writing chunks.
 --
 -- Schema only. The backfill is 0038, a separate migration, because a migration runs in
 -- one transaction: here the ADD COLUMN's ACCESS EXCLUSIVE lock on `documents` (which
@@ -30,6 +36,58 @@
 -- behind it. If a long-running statement holds the table, fail after 2 s rather than
 -- stall searches; rerun the migration when it clears. LOCAL ends with this transaction.
 SET LOCAL lock_timeout = '2s';
+
+-- Mark the outline of a document whose chunks change structurally as not current.
+--
+-- Created first: CREATE TRIGGER waits for writers on chunks, and waiting before the
+-- ALTER TABLE below means no reader of documents queues behind that wait. The function
+-- references documents.chunk_count, which PL/pgSQL resolves only when it runs.
+--
+-- Row-level on purpose: write_document issues one statement per passage, and statement
+-- triggers with transition tables cannot reuse plans, which made a Summa republish
+-- (26,750 passages) take 182 s instead of 3 s; as row triggers they add a few hundred
+-- milliseconds to one. The `chunk_count IS NOT NULL` guard makes every row after a
+-- document's first a no-op read, and the UPDATE trigger's WHEN clause skips
+-- non-structural updates without calling the function (enrichment rewrites
+-- annotations on every chunk).
+CREATE FUNCTION public.invalidate_document_outline()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public
+AS $$
+BEGIN
+    IF TG_OP = 'TRUNCATE' THEN
+        -- Row triggers do not fire for TRUNCATE; every document loses its passages.
+        UPDATE documents SET chunk_count = NULL WHERE chunk_count IS NOT NULL;
+        RETURN NULL;
+    END IF;
+    IF TG_OP <> 'DELETE' THEN
+        UPDATE documents SET chunk_count = NULL
+        WHERE id = NEW.document_id AND chunk_count IS NOT NULL;
+    END IF;
+    IF TG_OP = 'DELETE' OR OLD.document_id IS DISTINCT FROM NEW.document_id THEN
+        UPDATE documents SET chunk_count = NULL
+        WHERE id = OLD.document_id AND chunk_count IS NOT NULL;
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER chunks_invalidate_outline_on_write
+    AFTER INSERT OR DELETE ON chunks
+    FOR EACH ROW EXECUTE FUNCTION public.invalidate_document_outline();
+
+CREATE TRIGGER chunks_invalidate_outline_on_restructure
+    AFTER UPDATE OF document_id, position, chapter_key, chapter_label ON chunks
+    FOR EACH ROW
+    WHEN ((OLD.document_id, OLD.position, OLD.chapter_key, OLD.chapter_label)
+          IS DISTINCT FROM (NEW.document_id, NEW.position, NEW.chapter_key, NEW.chapter_label))
+    EXECUTE FUNCTION public.invalidate_document_outline();
+
+CREATE TRIGGER chunks_invalidate_outline_on_truncate
+    AFTER TRUNCATE ON chunks
+    FOR EACH STATEMENT EXECUTE FUNCTION public.invalidate_document_outline();
 
 ALTER TABLE documents
     ADD COLUMN chunk_count integer CHECK (chunk_count >= 0);
@@ -87,43 +145,6 @@ BEGIN
     WHERE id = p_document_id;
 END;
 $$;
-
--- Mark the outline of a document whose chunks change structurally as not current.
--- Row-level on purpose: write_document issues one statement per passage, and statement
--- triggers with transition tables cannot reuse plans, which made a Summa republish
--- (26,750 passages) take 182 s instead of 3 s. As row triggers it costs ~3%. The
--- `chunk_count IS NOT NULL` guard makes every row after a document's first a no-op
--- read, and the UPDATE trigger's WHEN clause skips non-structural updates without
--- calling the function (enrichment rewrites annotations on every chunk).
-CREATE FUNCTION public.invalidate_document_outline()
-RETURNS trigger
-LANGUAGE plpgsql
-SECURITY INVOKER
-SET search_path = public
-AS $$
-BEGIN
-    IF TG_OP <> 'DELETE' THEN
-        UPDATE documents SET chunk_count = NULL
-        WHERE id = NEW.document_id AND chunk_count IS NOT NULL;
-    END IF;
-    IF TG_OP = 'DELETE' OR OLD.document_id IS DISTINCT FROM NEW.document_id THEN
-        UPDATE documents SET chunk_count = NULL
-        WHERE id = OLD.document_id AND chunk_count IS NOT NULL;
-    END IF;
-    RETURN NULL;
-END;
-$$;
-
-CREATE TRIGGER chunks_invalidate_outline_on_write
-    AFTER INSERT OR DELETE ON chunks
-    FOR EACH ROW EXECUTE FUNCTION public.invalidate_document_outline();
-
-CREATE TRIGGER chunks_invalidate_outline_on_restructure
-    AFTER UPDATE OF document_id, position, chapter_key, chapter_label ON chunks
-    FOR EACH ROW
-    WHEN ((OLD.document_id, OLD.position, OLD.chapter_key, OLD.chapter_label)
-          IS DISTINCT FROM (NEW.document_id, NEW.position, NEW.chapter_key, NEW.chapter_label))
-    EXECUTE FUNCTION public.invalidate_document_outline();
 
 -- Read by FastAPI (service role, which bypasses RLS) and written by the datapipeline.
 -- RLS with no policies plus the revokes keeps both out of the Data API.

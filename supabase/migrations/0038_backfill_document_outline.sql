@@ -2,8 +2,8 @@
 --
 -- Separate from 0037 so the backfill does not run under 0037's ACCESS EXCLUSIVE lock on
 -- `documents`, which blocks reads. This file is one transaction and takes only row
--- locks (refresh_document_outline locks each document's row FOR UPDATE), which plain
--- SELECTs never wait on: searches and the reader keep reading throughout, and until
+-- locks (refresh_document_outline locks each document's row FOR NO KEY UPDATE), which
+-- plain SELECTs, and inserts that reference documents, never wait on: searches and the reader keep reading throughout, and until
 -- the transaction commits they see chunk_count NULL and fall back to deriving the
 -- outline from chunks. The row locks are held until commit, so a datapipeline publish
 -- of a document already visited waits for the backfill to finish (a second or two for
