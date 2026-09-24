@@ -6,11 +6,14 @@ import asyncpg
 import pytest
 
 from app.config import settings
+from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS
+from app.rag.steps import degradation
 from app.rag.steps.types import ChunkCandidate, RetrievalPath
 from app.rag.steps.rrf import _rrf_merge, run as rrf_run
 from app.rag.steps.retrieve_vector import _search_vector, run as retrieve_vector
 from app.rag.steps.retrieve_fts import run as retrieve_fts
 from app.rag.steps.fetch_positions import run as fetch_positions
+from tests.fake_pool import FakePool
 
 
 # ---------------------------------------------------------------------------
@@ -246,8 +249,8 @@ async def test_retrieve_fts_run_returns_results_without_vector():
         "annotation": None,
     }
 
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(return_value=[fts_row])
+    mock_pool = FakePool()
+    mock_pool.conn.fetch = AsyncMock(return_value=[fts_row])
 
     with (
         patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
@@ -265,8 +268,8 @@ async def test_retrieve_fts_run_returns_results_without_vector():
 async def test_retrieve_fts_reacquires_after_transient_connection_loss():
     """A stale Supabase-pooler socket is retried once and never recorded degraded."""
     fts_row = _row("dddddddd-0000-0000-0000-000000000002", "catechism")
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(side_effect=[
+    mock_pool = FakePool()
+    mock_pool.conn.fetch = AsyncMock(side_effect=[
         asyncpg.ConnectionDoesNotExistError("connection was closed"),
         [fts_row],
     ])
@@ -280,13 +283,37 @@ async def test_retrieve_fts_reacquires_after_transient_connection_loss():
         rows = await retrieve_fts("test", ["catechism"], 4)
 
     assert rows["catechism"][0]["id"] == fts_row["id"]
-    assert mock_pool.fetch.await_count == 2
+    assert mock_pool.conn.fetch.await_count == 2
+    assert mock_pool.acquire_timeouts == [POOL_ACQUIRE_TIMEOUT_SECONDS] * 2
+    assert mock_pool.released == 2
+
+
+@pytest.mark.asyncio
+async def test_retrieve_fts_drops_a_collection_when_no_connection_frees_up():
+    """An exhausted pool fails the bounded wait once, with no retry, and the
+    collection's lexical path is recorded as omitted."""
+    mock_pool = FakePool(acquire_error=TimeoutError())
+    degradation.begin_degradation_accounting()
+    with (
+        patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_fts.asyncio.sleep", new=AsyncMock()),
+        patch("app.rag.steps.retrieve_fts.settings") as mock_settings,
+    ):
+        mock_settings.candidate_multiplier = 3
+        rows = await retrieve_fts("test", ["catechism"], 4)
+
+    assert rows == {}
+    assert mock_pool.acquire_timeouts == [POOL_ACQUIRE_TIMEOUT_SECONDS]
+    [event] = degradation.events()
+    assert (event.stage, event.reason, event.action, event.scope) == (
+        "retrieve_fts", "TimeoutError", "path_omitted", "catechism",
+    )
 
 
 @pytest.mark.asyncio
 async def test_retrieve_fts_does_not_retry_non_connection_error():
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(side_effect=asyncpg.PostgresSyntaxError("bad SQL"))
+    mock_pool = FakePool()
+    mock_pool.conn.fetch = AsyncMock(side_effect=asyncpg.PostgresSyntaxError("bad SQL"))
 
     with (
         patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
@@ -296,7 +323,7 @@ async def test_retrieve_fts_does_not_retry_non_connection_error():
         rows = await retrieve_fts("test", ["catechism"], 4)
 
     assert rows == {}
-    assert mock_pool.fetch.await_count == 1
+    assert mock_pool.conn.fetch.await_count == 1
 
 
 def test_rrf_run_empty_on_empty_inputs():
@@ -356,8 +383,8 @@ async def test_retrieve_fts_run_propagates_position():
         "annotation": None,
     }
 
-    mock_pool = MagicMock()
-    mock_pool.fetch = AsyncMock(return_value=[fts_row])
+    mock_pool = FakePool()
+    mock_pool.conn.fetch = AsyncMock(return_value=[fts_row])
 
     with (
         patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),

@@ -5,6 +5,13 @@ from app.config import settings
 
 _pool: asyncpg.Pool | None = None
 
+# How long a request waits for a free pool connection. asyncpg waits indefinitely by
+# default, so when the database stalls every request queues silently until its query
+# finally runs into command_timeout. Where it is used, a stall fails fast and shows
+# up in logs: full-text search drops that collection's lexical path, and the reader
+# and /sources return a retryable 503. Other queries still wait without a bound.
+POOL_ACQUIRE_TIMEOUT_SECONDS = 5.0
+
 
 async def _init_connection(conn: asyncpg.Connection) -> None:
     """Register JSON/JSONB codecs so asyncpg returns dicts instead of strings.

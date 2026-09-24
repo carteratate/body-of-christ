@@ -6,17 +6,13 @@ tests hold it to exactly what those queries returned: the TOC's grouped chapter 
 the reader's ordered chapter keys, and the passage count.
 """
 
-import os
-import shutil
 import subprocess
-import tempfile
 import time
-from pathlib import Path
 
 import pytest
 
+from tests.pg_cluster import CORPUS_SCHEMA, MIGRATIONS, local_cluster
 
-MIGRATIONS = Path(__file__).parents[3] / "supabase/migrations"
 SCHEMA_MIGRATION = MIGRATIONS / "0037_document_outline.sql"
 BACKFILL_MIGRATION = MIGRATIONS / "0038_backfill_document_outline.sql"
 
@@ -34,24 +30,6 @@ DOC_B = "00000000-0000-0000-0000-00000000000b"
 DOC_EMPTY = "00000000-0000-0000-0000-0000000000ee"
 DOC_UNCHAPTERED = "00000000-0000-0000-0000-0000000000cc"
 
-# Corpus-shaped stubs: only the columns the migration and the legacy queries touch.
-SCHEMA = """
-    CREATE ROLE anon NOLOGIN;
-    CREATE ROLE authenticated NOLOGIN;
-    CREATE TABLE documents (
-        id uuid PRIMARY KEY,
-        collection text NOT NULL,
-        title text NOT NULL
-    );
-    CREATE TABLE chunks (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        document_id uuid NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
-        position int NOT NULL,
-        chapter_key text,
-        chapter_label text,
-        UNIQUE (document_id, position)
-    );
-"""
 
 # DOC_A: chapter "c2" is split around "c3" (non-contiguous, as 31 production keys are),
 # and one passage has no chapter. DOC_B: a single chapter. DOC_EMPTY: no passages.
@@ -69,46 +47,11 @@ SEED = f"""
 """
 
 
-def _run(args):
-    result = subprocess.run(args, capture_output=True, text=True, timeout=30)
-    assert result.returncode == 0, result.stdout + result.stderr
-
-
 @pytest.fixture()
 def postgres():
-    if os.geteuid() == 0:
-        pytest.skip("initdb cannot run as root")
-    if not all(shutil.which(command) for command in ("initdb", "pg_ctl", "psql")):
-        pytest.skip("local PostgreSQL tools are unavailable")
-
-    # macOS limits Unix socket paths, so pytest's nested temp path is too long.
-    short_tmp = "/private/tmp" if Path("/private/tmp").is_dir() else "/tmp"
-    with tempfile.TemporaryDirectory(prefix="tc-outline-", dir=short_tmp) as directory:
-        root = Path(directory)
-        data = root / "data"
-        socket = root / "socket"
-        socket.mkdir()
-        _run(["initdb", "-D", str(data), "-U", "postgres", "-A", "trust", "--no-instructions"])
-        _run(["pg_ctl", "-D", str(data), "-o",
-              f"-c listen_addresses='' -c unix_socket_directories='{socket}' -c fsync=off",
-              "-l", str(root / "server.log"), "-w", "start"])
-
-        def sql(source: str) -> list[list[str]]:
-            """Run SQL; return the last statement's rows as lists of strings."""
-            result = subprocess.run(
-                ["psql", "-X", "-q", "-A", "-t", "-F", "|", "-v", "ON_ERROR_STOP=1",
-                 "-U", "postgres", "-h", str(socket), "-d", "postgres"],
-                input=source, capture_output=True, text=True, timeout=30,
-            )
-            assert result.returncode == 0, result.stderr
-            return [line.split("|") for line in result.stdout.splitlines() if line]
-
-        sql.socket = socket  # for tests that need a second, concurrent session
-        try:
-            sql(SCHEMA)
-            yield sql
-        finally:
-            _run(["pg_ctl", "-D", str(data), "-m", "immediate", "-w", "stop"])
+    with local_cluster("tc-outline-") as cluster:
+        cluster.sql(CORPUS_SCHEMA)
+        yield cluster
 
 
 def _migrate(sql):
@@ -268,8 +211,7 @@ def test_a_publish_and_the_backfill_do_not_deadlock(postgres):
 
     def session(source):
         process = subprocess.Popen(
-            ["psql", "-X", "-q", "-v", "ON_ERROR_STOP=1", "-U", "postgres",
-             "-h", str(postgres.socket), "-d", "postgres"],
+            postgres.psql_args(),
             stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
         )
         process.stdin.write(source)

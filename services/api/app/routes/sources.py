@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from app.db import get_pool
+from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 
@@ -52,19 +52,20 @@ async def get_sources(user: AuthUser = Depends(get_current_user)) -> SourcesResp
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
     try:
-        # TODO(next-ingest): add chunk_count column to documents table so this
-        # becomes a simple SELECT with no JOIN/GROUP BY. See memory: next-ingest-todo.
-        rows = await pool.fetch(
-            """
-            SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
-                   NULLIF(d.translation, '') AS translation, d.metadata,
-                   COUNT(c.id)::int AS chunk_count
-            FROM documents d
-            LEFT JOIN chunks c ON c.document_id = d.id
-            GROUP BY d.id
-            ORDER BY d.collection, d.year NULLS LAST, d.title
-            """
-        )
+        # chunk_count is precomputed at publication (migration 0037). COALESCE counts
+        # chunks only for a document that has not been outlined yet.
+        async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
+            rows = await conn.fetch(
+                """
+                SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
+                       NULLIF(d.translation, '') AS translation, d.metadata,
+                       COALESCE(d.chunk_count,
+                                (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)
+                       )::int AS chunk_count
+                FROM documents d
+                ORDER BY d.collection, d.year NULLS LAST, d.title
+                """
+            )
     except Exception as exc:
         logger.error("get_sources query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
