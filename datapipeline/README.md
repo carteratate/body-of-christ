@@ -64,6 +64,10 @@ The runner refuses suspicious build collapse and identity churn before writes. A
 routine publication retains stable Passage identities, preserving bookmarks and search
 history for Passages the adapter still emits.
 
+Writing a Document to the reader store also rebuilds its **reader outline** (chapter
+list and passage count, `supabase/migrations/0037_document_outline.sql`) in the same
+transaction, so the target database must have migration 0037 applied before publishing.
+
 ### Reset the search index
 
 Routine search publication is incremental. Use the explicit reset only when replacing
