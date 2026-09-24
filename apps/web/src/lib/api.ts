@@ -389,11 +389,6 @@ export async function claimGuestSession(
   return res.json();
 }
 
-export async function getSearchHistory(token: string): Promise<SearchSummaryV2[]> {
-  const page = await getSearchHistoryPage(token);
-  return page.searches;
-}
-
 export async function getSearchHistoryPage(
   token: string,
   options: { cursor?: string; limit?: number; query?: string } = {},
@@ -600,7 +595,8 @@ const BOOKMARKS_CACHE_TTL_MS = 30_000;
 const BOOKMARK_REQUEST_TIMEOUT_MS = 10_000;
 const bookmarkMutations = new Map<string, Set<Promise<unknown>>>();
 
-function bookmarkScope(token: string): string {
+/** Identifies the signed-in user behind a token, so caches survive token refreshes. */
+export function userScope(token: string): string {
   try {
     const payload = token.split(".")[1];
     if (!payload) return `token:${token}`;
@@ -629,7 +625,7 @@ async function fetchBookmarkEndpoint(url: string, init: RequestInit = {}): Promi
 }
 
 function trackBookmarkMutation<T>(token: string, mutation: Promise<T>): Promise<T> {
-  const scope = bookmarkScope(token);
+  const scope = userScope(token);
   let active = bookmarkMutations.get(scope);
   if (!active) {
     active = new Set();
@@ -646,7 +642,7 @@ function trackBookmarkMutation<T>(token: string, mutation: Promise<T>): Promise<
 }
 
 export async function getBookmarks(token: string, forceRefresh = false): Promise<Bookmark[]> {
-  const scope = bookmarkScope(token);
+  const scope = userScope(token);
   const activeMutations = bookmarkMutations.get(scope);
   if (activeMutations?.size) {
     await Promise.allSettled([...activeMutations]);
@@ -716,7 +712,7 @@ async function fetchBookmarks(token: string): Promise<Bookmark[]> {
 }
 
 export function invalidateBookmarksCache(token?: string): void {
-  if (token && bookmarksCacheScope !== bookmarkScope(token)) return;
+  if (token && bookmarksCacheScope !== userScope(token)) return;
   bookmarksCache = null;
   bookmarksCacheUpdatedAt = 0;
   bookmarksRequest = null;

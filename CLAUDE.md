@@ -342,7 +342,12 @@ Rules when working here:
 
 - Provided by `AppShell`; consumed via `useAppContext()`.
 - **ALL authenticated pages MUST be wrapped in AppShell.** `GuestShell` supplies the guest equivalent.
-- Holds: auth (`token`, `userId`, `ready`), preferences, search history (`searches`, `refreshSearches`, `removeSearch`, `restoreSearch`, `historyRevision`, `invalidateSearchHistory`), the pending-search slot, `activeSearchId`/`searchKey`/`newSearch`, the cached source corpus, `bookmarkIds`, and mobile navigation state.
+- Holds: auth (`token`, `userId`, `ready`), preferences, search history (`searches` with `searchHistoryCursor`/`searchHistoryLoadedAt`, `refreshSearches`, `removeSearch`, `restoreSearch`), the pending-search slot, `activeSearchId`/`searchKey`/`newSearch`, the cached source corpus, `bookmarkIds`, and mobile navigation state.
+
+`searches` is the first page of history, and `searchHistoryLoadedAt` says when it last
+loaded. `HistoryPage` opens on it (with `searchHistoryCursor`) instead of a skeleton, and
+refreshes it in the background unless it is only seconds old — AppShell renders no page
+until its first load finishes, so on a full load of /history that list is already current.
 
 **`clearPendingSearch(expectedId?: string)` is generation-guarded** — it no-ops when `expectedId` does not match the current pending entry, so a stale aborted run cannot clear its replacement's row. Always pass the owning entry id.
 

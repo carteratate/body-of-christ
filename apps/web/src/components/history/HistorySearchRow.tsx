@@ -18,6 +18,9 @@ interface HistorySearchRowProps {
   showDate?: boolean;
   origin?: "sidebar" | "history_page";
   onNavigate?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  /** The pointer rests on, or keyboard focus reaches, the row's link. */
+  onIntent?: () => void;
+  onIntentEnd?: () => void;
   onReveal: () => void;
   onClose: () => void;
   onDelete: () => void;
@@ -32,6 +35,8 @@ export function HistorySearchRow({
   showDate = false,
   origin = "history_page",
   onNavigate,
+  onIntent,
+  onIntentEnd,
   onReveal,
   onClose,
   onDelete,
@@ -150,6 +155,11 @@ export function HistorySearchRow({
         <Link
           href={`/search?restore=${search.id}`}
           onClick={handleLinkClick}
+          onPointerEnter={(event) => { if (event.pointerType === "mouse") onIntent?.(); }}
+          onPointerLeave={onIntentEnd}
+          // Keyboard focus only: moving focus after a delete is not the reader's intent.
+          onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) onIntent?.(); }}
+          onBlur={onIntentEnd}
           aria-label={search.query}
           className={`block min-w-0 flex-1 ${compact ? "px-2 py-1.5" : "px-3 py-3"}`}
           title={search.query}
