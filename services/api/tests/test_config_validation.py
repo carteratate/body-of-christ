@@ -24,3 +24,23 @@ def test_invalid_retrieval_range_fails_at_startup(monkeypatch):
     monkeypatch.setenv("RETRIEVAL_K_MAX", "10")
     with pytest.raises(ValidationError, match="RETRIEVAL_K_MIN"):
         Settings()
+
+
+def test_concurrency_defaults_match_the_production_accounts(monkeypatch):
+    """Defaults are sized for the deployed accounts, so production sets neither.
+
+    HyDE must let every passage call of a full search run at once: 4 Bible genres
+    plus one per other collection. (The Bible genre pick finishes before its 4
+    genre calls start, so it never needs a 14th slot.) Cohere must cover one call
+    per collection.
+    """
+    from app.rag.constants import VALID_COLLECTIONS
+
+    monkeypatch.delenv("HYDE_LUNA_CONCURRENCY", raising=False)
+    monkeypatch.delenv("COHERE_CONCURRENCY", raising=False)
+    settings = Settings(_env_file=None)
+
+    assert settings.hyde_luna_concurrency == 48
+    assert settings.hyde_luna_concurrency >= 4 + (len(VALID_COLLECTIONS) - 1)
+    assert settings.cohere_concurrency == 10
+    assert settings.cohere_concurrency >= len(VALID_COLLECTIONS)

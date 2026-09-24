@@ -70,7 +70,16 @@ class Settings(BaseSettings):
     hyde_genre_luna_model: str = Field(
         default="gpt-5.6-luna", validation_alias="HYDE_GENRE_LUNA_MODEL",
     )
-    hyde_luna_concurrency: int = Field(default=8, ge=1, validation_alias="HYDE_LUNA_CONCURRENCY")
+    # Process-wide cap on in-flight Luna HyDE calls (hyde_luna._semaphore). It is
+    # the only HyDE limit on the Luna path, so it sets search throughput: a full
+    # 10-collection search makes ~14 calls of ~2.5 s, so 8 capped the whole API at
+    # ~13 such searches a minute and ran each one's calls in two rounds. 48 lets
+    # every call of a search start at once and puts the ceiling (~80/min) above
+    # OpenAI Tier 2's gpt-5.6-luna token budget, which HyDE shares with the
+    # listwise rerank (~35-45k tokens a full search together, so ~50/min); the
+    # provider limit binds instead. Lower it for an account below Tier 2. The
+    # semaphore is per process, so N replicas on one OpenAI org allow 48 x N.
+    hyde_luna_concurrency: int = Field(default=48, ge=1, validation_alias="HYDE_LUNA_CONCURRENCY")
     rerank_model: str = Field(default="claude-haiku-4-5", validation_alias="RERANK_MODEL")
     evaluate_model: str = Field(default="claude-haiku-4-5", validation_alias="EVALUATE_MODEL")
     # gpt-6-luna with reasoning off (explain.REASONING_EFFORT): a 60-passage blind
@@ -104,7 +113,10 @@ class Settings(BaseSettings):
     # Cohere to reach the LLM pool in `both` mode (BOOSTED Stage 4).
     cohere_keep_score_floor: float = Field(default=0.30, validation_alias="COHERE_KEEP_SCORE_FLOOR")
     cohere_max_tokens_per_doc: int = Field(default=1500, validation_alias="COHERE_MAX_TOKENS_PER_DOC")
-    cohere_concurrency: int = Field(default=4, validation_alias="COHERE_CONCURRENCY")
+    # Per-search cap on concurrent Cohere calls (one call per collection). 10 is
+    # the collection count, so an all-collections search reranks in one round
+    # instead of three. Account-wide pacing is cohere_max_calls_per_minute.
+    cohere_concurrency: int = Field(default=10, validation_alias="COHERE_CONCURRENCY")
     # Client-side throttle. Cohere Trial keys allow 10 requests/minute; Production
     # keys allow 1000. Per-collection fan-out issues one call per collection, so a
     # multi-pipeline batch run trips a Trial limit almost immediately — and a 429
