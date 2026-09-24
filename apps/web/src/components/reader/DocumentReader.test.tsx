@@ -630,6 +630,35 @@ describe("DocumentReader overview", () => {
     expect(screen.getByRole("button", { name: "Start reading" })).toBeTruthy();
   });
 
+  it("keeps the section search and expanded list through a token refresh", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockResolvedValue({
+      document: { ...documentInfo("doc-a"), collection: "summa", title: "Summa Theologiae" },
+      chapters: Array.from({ length: 61 }, (_, index) => ({
+        chapter_key: `article-${index + 1}`,
+        chapter_label: `Question 1 — Article ${index + 1}`,
+      })),
+    });
+    const view = render(<DocumentReader docId="doc-a" />);
+    await screen.findByRole("heading", { name: "Choose an article" });
+    fireEvent.click(screen.getByRole("button", { name: "Show more articles" }));
+    expect(screen.getByText("Question 1 — Article 45")).toBeTruthy();
+    const progressCalls = api.getReadingProgress.mock.calls.length;
+
+    appContext.token = "refreshed-token";
+    view.rerender(<DocumentReader docId="doc-a" />);
+    await act(async () => { await Promise.resolve(); });
+    expect(screen.getByText("Question 1 — Article 45")).toBeTruthy();
+
+    fireEvent.change(screen.getByRole("searchbox", { name: "Search articles" }), { target: { value: "Article 4" } });
+    appContext.token = "refreshed-again";
+    view.rerender(<DocumentReader docId="doc-a" />);
+    await act(async () => { await Promise.resolve(); });
+
+    expect((screen.getByRole("searchbox", { name: "Search articles" }) as HTMLInputElement).value).toBe("Article 4");
+    expect(api.getReadingProgress).toHaveBeenCalledTimes(progressCalls);
+  });
+
   it("uses source-specific searchable section language and preserves original numbering", async () => {
     navigation.params = new Map([["from", "library"]]);
     api.getToc.mockResolvedValue({
