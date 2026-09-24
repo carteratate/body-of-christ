@@ -158,7 +158,9 @@ describe("ReaderChrome", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Contents didn't load. Retry" }));
+    const retry = screen.getByRole("button", { name: "Contents didn't load. Retry" });
+    expect(retry.closest("p")).toBeNull();
+    fireEvent.click(retry);
     expect(onRetryToc).toHaveBeenCalledOnce();
   });
 

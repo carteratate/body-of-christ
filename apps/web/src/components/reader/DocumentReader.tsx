@@ -225,18 +225,20 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   // contents again, once per open; a stale chapter already on screen stays until
   // the reader moves, and that load then comes from the server.
   useEffect(() => {
-    if (!tocDocument || tocRevalidatedRef.current) return;
+    // In the commit that switches documents, chapters still belong to the old one.
+    if (!tocDocument || tocRevalidatedRef.current || resolvedDocId !== docId) return;
     if (chapters.every((item) => item.document.chunk_count === tocDocument.chunk_count)) return;
     tocRevalidatedRef.current = true;
     invalidateReaderDocument(readerAccess(), docId);
     requestToc(true);
-  }, [chapters, docId, readerAccess, requestToc, tocDocument]);
+  }, [chapters, docId, readerAccess, requestToc, resolvedDocId, tocDocument]);
 
   // Warm the chapter after the last one shown, so Next and scrolling on are
   // served from memory. Moving elsewhere cancels a prefetch still in flight,
   // without affecting a load that has already joined it.
   useEffect(() => {
-    const nextKey = chapters[chapters.length - 1]?.next_chapter_key;
+    // In the commit that switches documents, chapters still belong to the old one.
+    const nextKey = resolvedDocId === docId ? chapters[chapters.length - 1]?.next_chapter_key : null;
     if (!nextKey || chapters.some((item) => item.chapter_key === nextKey)) return;
     const access = readerAccess();
     if (!access.token && !access.guestToken) return;
@@ -247,7 +249,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
       cancel();
       controller.abort();
     };
-  }, [chapters, docId, readerAccess]);
+  }, [chapters, docId, readerAccess, resolvedDocId]);
 
   useEffect(() => {
     progressWriterRef.current = token && !isGuest

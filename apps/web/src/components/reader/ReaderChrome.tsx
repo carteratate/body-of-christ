@@ -82,14 +82,6 @@ export function ReaderChrome({
           ) : currentChapter && (
             <p className="truncate text-[11px] text-brand-muted" aria-busy={tocStatus === "loading"}>
               {currentChapter.chapter_label}
-              {tocStatus === "error" && (
-                <>
-                  {" · "}
-                  <button type="button" onClick={onRetryToc} className="text-brand-accent hover:underline">
-                    Contents didn&apos;t load. Retry
-                  </button>
-                </>
-              )}
             </p>
           )}
         </div>
@@ -155,6 +147,12 @@ export function ReaderChrome({
         <button type="button" disabled={!previousKey} onClick={() => previousKey && onJump(previousKey)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
           <ChevronLeft size={15} /> Previous
         </button>
+        {/* Kept out of the truncated title block so a long chapter label cannot clip it. */}
+        {tocStatus === "error" && (
+          <button type="button" onClick={onRetryToc} className="min-h-9 min-w-0 px-2 text-center text-xs leading-tight text-brand-muted hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+            Contents didn&apos;t load. <span className="font-semibold text-brand-accent">Retry</span>
+          </button>
+        )}
         <button type="button" disabled={!nextKey} onClick={() => nextKey && onJump(nextKey)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
           Next <ChevronRight size={15} />
         </button>

@@ -32,7 +32,13 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => ({ get: (key: string) => navigation.params.get(key) ?? null }),
 }));
 
-const appContext = vi.hoisted(() => ({ token: "token" }));
+const appContext = vi.hoisted(() => ({ token: "token" as string | null }));
+const trial = vi.hoisted(() => ({ guestToken: "" }));
+
+vi.mock("@/lib/trial", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/lib/trial")>(),
+  getGuestSessionToken: () => trial.guestToken,
+}));
 
 vi.mock("@/components/layout/AppShell", () => ({
   useAppContext: () => ({ token: appContext.token, mobileNavigationOpen: false, openMobileNavigation: vi.fn() }),
@@ -95,6 +101,7 @@ function nearBottom(scroller: HTMLDivElement) {
 beforeEach(() => {
   __resetClientCachesForTests();
   appContext.token = "token";
+  trial.guestToken = "";
   navigation.params = new Map([["chapter", "chapter-a"], ["from", "library"]]);
   navigation.push.mockReset();
   navigation.back.mockReset();
@@ -361,8 +368,47 @@ describe("DocumentReader caching", () => {
     await screen.findByText("doc-a chapter-a");
 
     await waitFor(() => expect(api.getToc).toHaveBeenCalledTimes(2));
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(isChapterCached({ token: "token" }, "doc-a", "chapter-a")).toBe(false);
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+    await act(async () => { await Promise.resolve(); });
     expect(api.getToc).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not carry an unresolved mismatch into the next document", async () => {
+    api.getToc.mockImplementation(async (_token: string, docId: string) => ({
+      document: { ...documentInfo(docId), chunk_count: docId === "doc-a" ? 99 : 3 },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "chapter-a" }],
+    }));
+    const view = render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(api.getToc).toHaveBeenCalledTimes(2));
+
+    view.rerender(<DocumentReader docId="doc-b" />);
+    await screen.findByText("doc-b chapter-a");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+
+    expect(api.getToc.mock.calls.filter((call) => call[1] === "doc-b")).toHaveLength(1);
+    expect(isChapterCached({ token: "token" }, "doc-b", "chapter-a")).toBe(true);
+  });
+
+  it("reads as the guest session, and shares the guest overview's contents", async () => {
+    appContext.token = null;
+    trial.guestToken = "guest-1";
+    navigation.params = new Map([["from", "search"]]);
+    const view = render(<DocumentReader docId="doc-a" isGuest />);
+    await screen.findByRole("heading", { name: "Document doc-a" });
+
+    navigation.params = new Map([["from", "search"], ["chapter", "chapter-b"]]);
+    view.rerender(<DocumentReader docId="doc-a" isGuest />);
+    await screen.findByText("doc-a chapter-b");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+
+    expect(api.getToc).toHaveBeenCalledTimes(1);
+    expect(api.getToc).toHaveBeenCalledWith("", "doc-a", expect.any(AbortSignal), "guest-1");
+    expect(chapterCalls("chapter-b")[0].slice(0, 2)).toEqual(["", "doc-a"]);
+    expect(chapterCalls("chapter-b")[0][2].guestToken).toBe("guest-1");
+    expect(isChapterCached({ token: "token" }, "doc-a", "chapter-b")).toBe(false);
+    expect(isChapterCached({ token: null, guestToken: "guest-1" }, "doc-a", "chapter-b")).toBe(true);
   });
 
   it("keeps the reading position through a token refresh", async () => {
@@ -489,14 +535,43 @@ describe("DocumentReader next-chapter prefetch", () => {
   });
 
   it("skips prefetching when the browser asks to save data", async () => {
+    const idle = vi.fn(() => 1);
+    Object.defineProperty(window, "requestIdleCallback", { value: idle, configurable: true });
+    Object.defineProperty(window, "cancelIdleCallback", { value: vi.fn(), configurable: true });
     Object.defineProperty(navigator, "connection", { value: { saveData: true }, configurable: true });
     try {
       render(<DocumentReader docId="doc-a" />);
       await screen.findByText("doc-a chapter-a");
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await act(async () => { await Promise.resolve(); });
+      expect((await api.getReaderChapter.mock.results[0].value as ReaderChapter).next_chapter_key).toBe("chapter-b");
+      expect(idle).not.toHaveBeenCalled();
       expect(chapterCalls("chapter-b")).toHaveLength(0);
     } finally {
       Reflect.deleteProperty(navigator, "connection");
+      Reflect.deleteProperty(window, "requestIdleCallback");
+      Reflect.deleteProperty(window, "cancelIdleCallback");
+    }
+  });
+
+  it("does not prefetch the previous document's next chapter when the document changes", async () => {
+    Object.defineProperty(window, "requestIdleCallback", { value: (callback: () => void) => { callback(); return 1; }, configurable: true });
+    Object.defineProperty(window, "cancelIdleCallback", { value: vi.fn(), configurable: true });
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (docId === "doc-a") return { ...chapter(docId, options.chapter ?? "chapter-a"), next_chapter_key: "only-in-a" };
+      return chapter(docId, options.chapter ?? "chapter-a");
+    });
+    try {
+      const view = render(<DocumentReader docId="doc-a" />);
+      await screen.findByText("doc-a chapter-a");
+      await waitFor(() => expect(api.getReaderChapter).toHaveBeenCalledWith("token", "doc-a", expect.objectContaining({ chapter: "only-in-a" })));
+
+      view.rerender(<DocumentReader docId="doc-b" />);
+      await screen.findByText("doc-b chapter-a");
+
+      expect(api.getReaderChapter).not.toHaveBeenCalledWith("token", "doc-b", expect.objectContaining({ chapter: "only-in-a" }));
+    } finally {
+      Reflect.deleteProperty(window, "requestIdleCallback");
+      Reflect.deleteProperty(window, "cancelIdleCallback");
     }
   });
 });

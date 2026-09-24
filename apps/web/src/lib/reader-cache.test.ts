@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { ReaderChapter, TocResponse } from "@/lib/api";
 import { __resetClientCachesForTests } from "./client-cache";
@@ -40,7 +40,24 @@ beforeEach(() => {
     chapter(options.chapter ?? "entry", options.anchor ?? null));
 });
 
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 describe("reader cache", () => {
+  it("forgets contents and chapters after thirty minutes", async () => {
+    vi.useFakeTimers();
+    await loadToc(signedIn, "doc");
+    await loadChapter(signedIn, "doc", "a");
+
+    vi.advanceTimersByTime(30 * 60 * 1000 - 1);
+    expect(isChapterCached(signedIn, "doc", "a")).toBe(true);
+    vi.advanceTimersByTime(1);
+    expect(isChapterCached(signedIn, "doc", "a")).toBe(false);
+    await loadToc(signedIn, "doc");
+    expect(api.getToc).toHaveBeenCalledTimes(2);
+  });
+
   it("shares a signed-in entry across token refreshes", async () => {
     await loadToc({ token: "token-1" }, "doc");
     await loadToc({ token: "token-2" }, "doc");

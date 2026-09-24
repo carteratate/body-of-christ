@@ -8,7 +8,10 @@
 //
 // A cached entry can outlive a corpus republish. DocumentReader evicts a
 // document when a chapter is not found or when a chapter's chunk_count
-// disagrees with its table of contents; see invalidateReaderDocument.
+// disagrees with its table of contents; see invalidateReaderDocument. A
+// republish that changes neither (corrected text, same keys and count) is
+// caught only by the TTL, which also bounds how long a guest's cached reads
+// outlast the server revoking that guest session.
 
 import { getReaderChapter, getToc, type ReaderChapter, type TocResponse } from "@/lib/api";
 import { createRequestCache } from "@/lib/client-cache";
@@ -17,9 +20,10 @@ import { createRequestCache } from "@/lib/client-cache";
 // objects, so only a few documents are kept.
 const TOC_CACHE_SIZE = 4;
 const CHAPTER_CACHE_SIZE = 30;
+const READER_CACHE_TTL_MS = 30 * 60 * 1000;
 
-const tocCache = createRequestCache<TocResponse>({ maxEntries: TOC_CACHE_SIZE });
-const chapterCache = createRequestCache<ReaderChapter>({ maxEntries: CHAPTER_CACHE_SIZE });
+const tocCache = createRequestCache<TocResponse>({ maxEntries: TOC_CACHE_SIZE, ttlMs: READER_CACHE_TTL_MS });
+const chapterCache = createRequestCache<ReaderChapter>({ maxEntries: CHAPTER_CACHE_SIZE, ttlMs: READER_CACHE_TTL_MS });
 
 export interface ReaderAccess {
   token: string | null;
