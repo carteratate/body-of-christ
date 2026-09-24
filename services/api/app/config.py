@@ -3,6 +3,8 @@ from typing import Literal
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app.logging_setup import LogFormat
+
 HyDEProvider = Literal["haiku", "luna"]
 
 
@@ -10,6 +12,11 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
     app_env: str = "development"
+    # "auto" writes readable text to a terminal and one JSON object per line
+    # everywhere else (Railway, docker logs); see app/logging_setup.py.
+    log_format: LogFormat = Field(
+        default="auto", validation_alias="LOG_FORMAT",
+    )
     cors_origins: list[str] = Field(
         default=["http://localhost:3000"],
         validation_alias="CORS_ORIGINS",

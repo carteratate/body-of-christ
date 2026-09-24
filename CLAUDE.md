@@ -200,6 +200,10 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
 ## 7. Coding Standards
 
 - Backend: FastAPI + Pydantic, structured logging, no secrets logged.
+- API logs go to **stdout** as one JSON object per line (`app/logging_setup.py`), which Railway
+  parses: `level` sets severity, other fields are filterable (`@logger:app.rag.pipeline`). Railway
+  labels anything on stderr an error, so do not add handlers that write there. `LOG_FORMAT`
+  (`auto` | `json` | `text`) defaults to text in a terminal and JSON otherwise.
 - Frontend: TypeScript, HTTP calls centralized in `src/lib/api.ts`, no DB SDK in frontend.
 - Lint baseline is zero errors. Leave no new warnings in files you touch.
 
