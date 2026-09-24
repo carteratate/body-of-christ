@@ -72,14 +72,14 @@ export function loadChapter(
 }
 
 /**
- * Opens a document by anchor, or at its first chapter when no anchor is given.
- * The server picks the chapter, so this always goes to the network; the result
- * is then stored under the chapter key it returned.
+ * Opens a document at a passage anchor. The server picks the chapter, so this
+ * always goes to the network; the result is then stored under the chapter key
+ * it returned.
  */
 export async function loadEntryChapter(
   access: ReaderAccess,
   docId: string,
-  options: { anchor?: string; signal?: AbortSignal },
+  options: { anchor: string; signal?: AbortSignal },
 ): Promise<ReaderChapter> {
   const chapter = await getReaderChapter(access.token ?? "", docId, {
     anchor: options.anchor,

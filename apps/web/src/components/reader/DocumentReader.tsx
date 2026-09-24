@@ -4,7 +4,6 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import {
-  getReadingProgress,
   putReadingProgress,
   type DocumentInfo,
   type ReaderChapter,
@@ -175,26 +174,17 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     requestToc();
     (async () => {
       try {
-        let chapterKey: string | undefined;
-        if (!initialAnchor && initialChapter) {
-          chapterKey = initialChapter;
-        } else if (!initialAnchor && !isGuest) {
-          try {
-            const progress = await getReadingProgress(access.token!, docId, controller.signal);
-            if (progress) chapterKey = progress.chapter_key;
-          } catch {
-            // Progress is optional; the document still opens at its first chapter.
-          }
-        }
+        // ReaderEntry shows the overview unless the URL names an anchor or a
+        // chapter, so one of the two is always present here. Resuming at saved
+        // progress is the overview's "Continue at" action, not this path's.
         let chapter: ReaderChapter;
         try {
-          chapter = chapterKey
-            ? await loadCachedChapter(access, docId, chapterKey, controller.signal)
-            : await loadEntryChapter(access, docId, { anchor: initialAnchor ?? undefined, signal: controller.signal });
+          chapter = initialAnchor
+            ? await loadEntryChapter(access, docId, { anchor: initialAnchor, signal: controller.signal })
+            : await loadCachedChapter(access, docId, initialChapter!, controller.signal);
         } catch (caught) {
           if (isNotFoundError(caught)) invalidateReaderDocument(access, docId);
-          if (!chapterKey || initialChapter) throw new Error("Failed to load requested chapter");
-          chapter = await loadEntryChapter(access, docId, { signal: controller.signal });
+          throw caught;
         }
         if (!alive) return;
         setDoc(chapter.document);

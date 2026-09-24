@@ -66,19 +66,26 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const [retryKey, setRetryKey] = useState(0);
   const [guestToken, setGuestToken] = useState("");
   const requestRef = useRef(0);
-  const requestKey = `${token ?? guestToken ?? "signed-out"}:${docId}:${retryKey}`;
+  // Keyed by who is reading, not by the access token itself: the hourly token
+  // refresh must not reload the overview, which clears the section search and
+  // collapses "Show more". Requests read the current token through a ref.
+  const tokenRef = useRef(token);
+  const signedIn = Boolean(token);
+  const requestKey = `${signedIn ? "signed-in" : guestToken || "signed-out"}:${docId}:${retryKey}`;
 
+  useEffect(() => { tokenRef.current = token; }, [token]);
   useEffect(() => { if (isGuest) queueMicrotask(() => setGuestToken(getGuestSessionToken())); }, [isGuest]);
 
   useEffect(() => {
-    if (!token && !guestToken) return;
+    const requestToken = tokenRef.current;
+    if (!signedIn && !guestToken) return;
     const requestId = ++requestRef.current;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10_000);
     // Shared with DocumentReader, so opening a section after this overview (or
     // returning to it) reuses the contents instead of downloading them again.
-    const tocRequest = loadToc({ token, guestToken: guestToken || undefined }, docId, controller.signal);
-    const progressRequest = isGuest ? Promise.resolve(null) : getReadingProgress(token!, docId, controller.signal);
+    const tocRequest = loadToc({ token: requestToken, guestToken: guestToken || undefined }, docId, controller.signal);
+    const progressRequest = isGuest ? Promise.resolve(null) : getReadingProgress(requestToken!, docId, controller.signal);
 
     void tocRequest.then((toc) => {
       if (requestId !== requestRef.current) return;
@@ -108,7 +115,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       controller.abort();
       requestRef.current += 1;
     };
-  }, [docId, guestToken, isGuest, requestKey, retryKey, token]);
+  }, [docId, guestToken, isGuest, requestKey, retryKey, signedIn]);
 
   const loading = resolvedRequest !== requestKey && failedRequest !== requestKey;
   const error = failedRequest === requestKey;
