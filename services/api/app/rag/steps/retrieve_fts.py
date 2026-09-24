@@ -37,9 +37,10 @@ async def _search_fts(collection: str, query_text: str, limit: int) -> list[dict
     """Search one collection, reacquiring once after a transient pooler failure.
 
     A long judge/reranker call can leave the DB pool idle long enough for Supabase's
-    pooler to retire its socket. asyncpg discards a broken connection when the first
-    fetch fails; the retry therefore acquires a fresh connection. Semantic SQL and
-    programming errors are deliberately not retried.
+    pooler to retire its socket, so the first fetch, or the reconnect asyncpg makes
+    inside acquire, can fail. asyncpg discards a connection that failed mid-query; the
+    retry therefore runs on a different one. Semantic SQL and programming errors are
+    deliberately not retried.
 
     Waiting for a connection is bounded by POOL_ACQUIRE_TIMEOUT_SECONDS. A pool still
     exhausted after that is not retried: a second wait would only double the delay.
@@ -53,7 +54,15 @@ async def _search_fts(collection: str, query_text: str, limit: int) -> list[dict
                 scope=collection,
             )
             return []
-        conn = await pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS)
+        try:
+            conn = await pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS)
+        except TimeoutError:
+            raise
+        except _TRANSIENT_CONNECTION_ERRORS:
+            if attempt:
+                raise
+            await asyncio.sleep(0.15 + random.random() * 0.20)
+            continue
         try:
             rows = await conn.fetch(_SQL, collection, query_text, limit)
         except _TRANSIENT_CONNECTION_ERRORS:

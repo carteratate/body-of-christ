@@ -10,6 +10,8 @@ _pool: asyncpg.Pool | None = None
 # finally runs into command_timeout. Where it is used, a stall fails fast and shows
 # up in logs: full-text search drops that collection's lexical path, and the reader
 # and /sources return a retryable 503. Other queries still wait without a bound.
+# asyncpg also applies the same bound to releasing that connection (its reset query),
+# so a release that stalls past it fails the request the same way.
 POOL_ACQUIRE_TIMEOUT_SECONDS = 5.0
 
 

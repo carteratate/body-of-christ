@@ -259,6 +259,7 @@ async def test_retrieve_fts_run_returns_results_without_vector():
         mock_settings.candidate_multiplier = 3
         fts_raw = await retrieve_fts("test", ["catechism"], 4, "00000000-0000-0000-0000-000000000001")
 
+    assert mock_pool.released == 1
     merged = rrf_run({}, fts_raw, quota=4)
     assert "catechism" in merged
     assert merged["catechism"][0].chunk_id == chunk_id
@@ -324,6 +325,45 @@ async def test_retrieve_fts_does_not_retry_non_connection_error():
 
     assert rows == {}
     assert mock_pool.conn.fetch.await_count == 1
+    assert mock_pool.released == 1
+
+
+@pytest.mark.asyncio
+async def test_retrieve_fts_retries_a_connection_error_raised_while_acquiring():
+    """asyncpg reconnects inside acquire after the pooler retires an idle socket; one
+    failed reconnect gets the same single retry as a failed fetch."""
+    fts_row = _row("dddddddd-0000-0000-0000-000000000003", "catechism")
+    mock_pool = FakePool(acquire_errors=[ConnectionResetError("reset by peer"), None])
+    mock_pool.conn.fetch = AsyncMock(return_value=[fts_row])
+
+    with (
+        patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_fts.asyncio.sleep", new=AsyncMock()),
+        patch("app.rag.steps.retrieve_fts.settings") as mock_settings,
+    ):
+        mock_settings.candidate_multiplier = 3
+        rows = await retrieve_fts("test", ["catechism"], 4)
+
+    assert rows["catechism"][0]["id"] == fts_row["id"]
+    assert len(mock_pool.acquire_timeouts) == 2
+    assert mock_pool.released == 1
+
+
+@pytest.mark.asyncio
+async def test_retrieve_fts_gives_up_after_a_second_failed_acquire():
+    mock_pool = FakePool(acquire_error=ConnectionResetError("reset by peer"))
+
+    with (
+        patch("app.rag.steps.retrieve_fts.get_pool", return_value=mock_pool),
+        patch("app.rag.steps.retrieve_fts.asyncio.sleep", new=AsyncMock()),
+        patch("app.rag.steps.retrieve_fts.settings") as mock_settings,
+    ):
+        mock_settings.candidate_multiplier = 3
+        rows = await retrieve_fts("test", ["catechism"], 4)
+
+    assert rows == {}
+    assert len(mock_pool.acquire_timeouts) == 2
+    assert mock_pool.released == 0
 
 
 def test_rrf_run_empty_on_empty_inputs():

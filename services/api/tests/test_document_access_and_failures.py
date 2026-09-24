@@ -105,6 +105,7 @@ async def test_sources_on_an_exhausted_pool_is_a_retryable_503():
         patch.object(sources, "_sources_cache", None),
     ):
         assert await _status(get_sources(user=USER)) == 503
+    assert pool.acquire_timeouts == [POOL_ACQUIRE_TIMEOUT_SECONDS]
 
 
 @pytest.mark.parametrize("route", sorted(ROUTES))
