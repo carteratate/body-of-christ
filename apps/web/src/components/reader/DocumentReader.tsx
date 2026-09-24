@@ -109,9 +109,14 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     setCurrentKey(null);
     pendingAppendsRef.current.clear();
     setHighlight(initialAnchor);
+    // The chapter does not depend on the table of contents, so request both at once
+    // rather than one after the other. The no-op catch only keeps a TOC failure from
+    // surfacing as an unhandled rejection while the chapter loads; awaiting tocRequest
+    // below still throws it into the catch.
+    const tocRequest = getToc(token ?? "", docId, controller.signal, guestToken || undefined);
+    tocRequest.catch(() => undefined);
     (async () => {
       try {
-        const tocResponse = await getToc(token ?? "", docId, controller.signal, guestToken || undefined);
         const options: { anchor?: string; chapter?: string; signal?: AbortSignal } = { signal: controller.signal };
         if (initialAnchor) {
           options.anchor = initialAnchor;
@@ -132,6 +137,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
           if (!options.chapter || initialChapter) throw new Error("Failed to load requested chapter");
           chapter = await getReaderChapter(token ?? "", docId, { signal: controller.signal, guestToken: guestToken || undefined });
         }
+        const tocResponse = await tocRequest;
         if (!alive) return;
         setDoc(tocResponse.document);
         setToc(tocResponse.chapters);

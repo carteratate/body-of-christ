@@ -2,10 +2,11 @@ import logging
 import time
 from typing import Optional
 
+import asyncpg
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from app.db import get_pool
+from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 
@@ -15,6 +16,25 @@ router = APIRouter()
 _sources_cache: "SourcesResponse | None" = None
 _sources_cache_ts: float = 0.0
 _SOURCES_TTL: float = 3600.0
+
+# chunk_count is precomputed at publication (migration 0037). COALESCE counts chunks
+# only for a document with no current outline.
+_SOURCES_SQL = """
+    SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
+           NULLIF(d.translation, '') AS translation, d.metadata,
+           COALESCE(d.chunk_count,
+                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id))::int AS chunk_count
+    FROM documents d
+    ORDER BY d.collection, d.year NULLS LAST, d.title
+"""
+# The same on a database without 0037, so the API can deploy before it is applied.
+_PRE_OUTLINE_SOURCES_SQL = """
+    SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
+           NULLIF(d.translation, '') AS translation, d.metadata,
+           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)::int AS chunk_count
+    FROM documents d
+    ORDER BY d.collection, d.year NULLS LAST, d.title
+"""
 
 
 class SourceDocument(BaseModel):
@@ -52,19 +72,11 @@ async def get_sources(user: AuthUser = Depends(get_current_user)) -> SourcesResp
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
     try:
-        # TODO(next-ingest): add chunk_count column to documents table so this
-        # becomes a simple SELECT with no JOIN/GROUP BY. See memory: next-ingest-todo.
-        rows = await pool.fetch(
-            """
-            SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
-                   NULLIF(d.translation, '') AS translation, d.metadata,
-                   COUNT(c.id)::int AS chunk_count
-            FROM documents d
-            LEFT JOIN chunks c ON c.document_id = d.id
-            GROUP BY d.id
-            ORDER BY d.collection, d.year NULLS LAST, d.title
-            """
-        )
+        async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
+            try:
+                rows = await conn.fetch(_SOURCES_SQL)
+            except asyncpg.UndefinedColumnError:
+                rows = await conn.fetch(_PRE_OUTLINE_SOURCES_SQL)
     except Exception as exc:
         logger.error("get_sources query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc

@@ -114,6 +114,30 @@ describe("DocumentReader request ordering", () => {
     expect(screen.getByRole("button", { name: "Open app navigation" })).toBeTruthy();
   });
 
+  it("requests the chapter without waiting for the table of contents", async () => {
+    const toc = deferred<{ document: DocumentInfo; chapters: { chapter_key: string; chapter_label: string }[] }>();
+    api.getToc.mockReturnValue(toc.promise);
+
+    render(<DocumentReader docId="doc-a" />);
+
+    await waitFor(() => expect(api.getReaderChapter).toHaveBeenCalledTimes(1));
+    expect(screen.queryByText("doc-a chapter-a")).toBeNull();
+
+    toc.resolve({ document: documentInfo("doc-a"), chapters: [{ chapter_key: "chapter-a", chapter_label: "chapter-a" }] });
+    expect(await screen.findByText("doc-a chapter-a")).toBeTruthy();
+  });
+
+  it("reports a table of contents failure that arrives after the chapter", async () => {
+    const toc = deferred<never>();
+    api.getToc.mockReturnValue(toc.promise);
+
+    render(<DocumentReader docId="doc-a" />);
+    await waitFor(() => expect(api.getReaderChapter).toHaveBeenCalledTimes(1));
+    toc.reject(new Error("offline"));
+
+    expect(await screen.findByText("This document couldn't be loaded.")).toBeTruthy();
+  });
+
   it("ignores an older chapter response that resolves after a newer jump", async () => {
     const requestB = deferred<ReaderChapter>();
     const requestC = deferred<ReaderChapter>();

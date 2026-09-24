@@ -8,7 +8,7 @@ import random
 import asyncpg
 
 from app.config import settings
-from app.db import get_pool
+from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.rag.steps import degradation
 
 logger = logging.getLogger(__name__)
@@ -37,9 +37,14 @@ async def _search_fts(collection: str, query_text: str, limit: int) -> list[dict
     """Search one collection, reacquiring once after a transient pooler failure.
 
     A long judge/reranker call can leave the DB pool idle long enough for Supabase's
-    pooler to retire its socket. asyncpg discards a broken connection when the first
-    fetch fails; the retry therefore acquires a fresh connection. Semantic SQL and
-    programming errors are deliberately not retried.
+    pooler to retire its socket, so the first fetch, or the reconnect asyncpg makes
+    inside acquire, can fail. asyncpg discards a connection that failed mid-query; the
+    retry therefore runs on a different one. Semantic SQL and programming errors are
+    deliberately not retried.
+
+    Waiting for a connection is bounded by POOL_ACQUIRE_TIMEOUT_SECONDS. A pool still
+    exhausted after that is not retried: a second wait would only double the delay.
+    The TimeoutError drops this collection's lexical path (see run()).
     """
     for attempt in range(2):
         pool = get_pool()
@@ -50,16 +55,28 @@ async def _search_fts(collection: str, query_text: str, limit: int) -> list[dict
             )
             return []
         try:
-            rows = await pool.fetch(_SQL, collection, query_text, limit)
-            if attempt:
-                logger.info("retrieve_fts: %s recovered on fresh connection", collection)
-            return [dict(r) for r in rows]
+            conn = await pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS)
+        except TimeoutError:
+            raise
         except _TRANSIENT_CONNECTION_ERRORS:
             if attempt:
                 raise
-            # Small independent jitter prevents every collection from immediately
-            # stampeding the pool for replacement sockets.
             await asyncio.sleep(0.15 + random.random() * 0.20)
+            continue
+        try:
+            rows = await conn.fetch(_SQL, collection, query_text, limit)
+        except _TRANSIENT_CONNECTION_ERRORS:
+            if attempt:
+                raise
+        else:
+            if attempt:
+                logger.info("retrieve_fts: %s recovered on fresh connection", collection)
+            return [dict(r) for r in rows]
+        finally:
+            await pool.release(conn)
+        # Small independent jitter prevents every collection from immediately
+        # stampeding the pool for replacement sockets.
+        await asyncio.sleep(0.15 + random.random() * 0.20)
     raise AssertionError("unreachable")
 
 
