@@ -119,12 +119,16 @@ def test_a_terminal_gets_text_unless_json_is_forced():
 
 @pytest.mark.parametrize("name", ["uvicorn.error", "uvicorn.access"])
 def test_uvicorn_records_reach_the_same_handler(name):
-    # As uvicorn's own dictConfig leaves them: a stderr-style handler, no propagation.
+    # As uvicorn's LOGGING_CONFIG leaves them: "uvicorn" and "uvicorn.access" each get
+    # a stream handler and propagate=False; "uvicorn.error" has none and propagates
+    # to "uvicorn".
     stream = io.StringIO()
     stale = logging.StreamHandler(io.StringIO())
-    logging.getLogger(name).addHandler(stale)
-    logging.getLogger(name).propagate = False
-    logging.getLogger("uvicorn").propagate = False
+    for configured in ("uvicorn", "uvicorn.access"):
+        logging.getLogger(configured).handlers[:] = [stale]
+        logging.getLogger(configured).propagate = False
+    logging.getLogger("uvicorn.error").handlers.clear()
+    logging.getLogger("uvicorn.error").propagate = True
 
     configure_logging("json", stream=stream)
     logging.getLogger(name).info('%s - "%s %s HTTP/%s" %d', "127.0.0.1:1", "GET", "/health", "1.1", 200)
@@ -134,7 +138,8 @@ def test_uvicorn_records_reach_the_same_handler(name):
     entry = json.loads(lines[0])
     assert entry["logger"] == name
     assert entry["message"] == '127.0.0.1:1 - "GET /health HTTP/1.1" 200'
-    assert stale not in logging.getLogger(name).handlers
+    assert stale not in logging.getLogger("uvicorn").handlers
+    assert stale not in logging.getLogger("uvicorn.access").handlers
 
 
 def test_configuring_twice_does_not_duplicate_lines():
@@ -160,3 +165,29 @@ def test_python_warnings_are_logged_instead_of_printed_to_stderr():
     assert entry["level"] == "warn"
     assert entry["logger"] == "py.warnings"
     assert "Failed to obtain server version" in entry["message"]
+
+
+def test_a_logger_uvicorn_silenced_stays_silent():
+    """--no-access-log leaves uvicorn.access with no handler and no propagation."""
+    stream = io.StringIO()
+    access = logging.getLogger("uvicorn.access")
+    access.handlers.clear()
+    access.propagate = False
+
+    configure_logging("json", stream=stream)
+    access.info('%s - "%s %s HTTP/%s" %d', "127.0.0.1:1", "GET", "/health", "1.1", 200)
+
+    assert stream.getvalue() == ""
+
+
+def test_uvicorns_ansi_duplicate_of_the_message_is_dropped():
+    line = JsonFormatter().format(_record(color_message="\x1b[1mhello\x1b[0m"))
+    assert "color_message" not in json.loads(line)
+
+
+def test_an_extra_that_json_cannot_encode_still_logs_one_line():
+    line = JsonFormatter().format(_record(lookup={1: "a", (2, 3): "b"}))
+
+    entry = json.loads(line)
+    assert entry["message"] == "hello world"
+    assert entry["lookup"] == repr({1: "a", (2, 3): "b"})

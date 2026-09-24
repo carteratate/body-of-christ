@@ -21,15 +21,18 @@ from typing import Literal, TextIO
 LogFormat = Literal["auto", "json", "text"]
 
 # Attributes every LogRecord carries. Anything else was passed through `extra=`
-# and is emitted as its own field.
+# and is emitted as its own field. uvicorn's `color_message` duplicates the message
+# with ANSI escapes for its own terminal formatter.
 _RECORD_ATTRS = frozenset(
     vars(logging.LogRecord("", 0, "", 0, "", None, None)).keys()
-) | {"message", "asctime", "taskName"}
+) | {"message", "asctime", "taskName", "color_message"}
 
 TEXT_FORMAT = "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 # uvicorn installs its own handlers (stderr for server messages) before it imports
-# the app. These are re-pointed at the root handler instead.
+# the app. Those it gave a handler are re-pointed at the root handler instead; one it
+# silenced (no handler, no propagation, as --no-access-log leaves uvicorn.access)
+# stays silent.
 _UVICORN_LOGGERS = ("uvicorn", "uvicorn.error", "uvicorn.access")
 
 
@@ -61,10 +64,16 @@ class JsonFormatter(logging.Formatter):
             entry["stack"] = self.formatStack(record.stack_info)
         for key, value in vars(record).items():
             if key not in _RECORD_ATTRS and key not in entry:
-                entry[key] = value
+                entry[str(key)] = value
         # json.dumps escapes newlines, so tracebacks stay on one line. default=str
-        # keeps an unserialisable `extra` value from dropping the whole record.
-        return json.dumps(entry, default=str, ensure_ascii=False)
+        # keeps an unserialisable `extra` value from dropping the whole record; a
+        # value json cannot encode even so (a dict with non-string keys) is repr'd.
+        try:
+            return json.dumps(entry, default=str, ensure_ascii=False)
+        except (TypeError, ValueError):
+            safe = {key: value if isinstance(value, (str, int, float, bool, type(None)))
+                    else repr(value) for key, value in entry.items()}
+            return json.dumps(safe, ensure_ascii=False)
 
 
 def _resolve_format(log_format: LogFormat, stream: TextIO) -> Literal["json", "text"]:
@@ -99,8 +108,9 @@ def configure_logging(
 
     for name in _UVICORN_LOGGERS:
         uvicorn_logger = logging.getLogger(name)
-        uvicorn_logger.handlers.clear()
-        uvicorn_logger.propagate = True
+        if uvicorn_logger.handlers:
+            uvicorn_logger.handlers.clear()
+            uvicorn_logger.propagate = True
 
     # `warnings.warn` (e.g. qdrant-client's compatibility check) otherwise prints
     # straight to stderr; route it through the "py.warnings" logger instead. This

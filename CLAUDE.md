@@ -203,7 +203,10 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
 - API logs go to **stdout** as one JSON object per line (`app/logging_setup.py`), which Railway
   parses: `level` sets severity, other fields are filterable (`@logger:app.rag.pipeline`). Railway
   labels anything on stderr an error, so do not add handlers that write there. `LOG_FORMAT`
-  (`auto` | `json` | `text`) defaults to text in a terminal and JSON otherwise.
+  (`auto` | `json` | `text`) defaults to text in a terminal and JSON otherwise. This covers
+  the process that imports the app, which is the only one in production's single-process
+  `uvicorn` CMD. With `--workers` or `--reload`, uvicorn's supervisor never imports the app
+  and still logs to stderr.
 - Frontend: TypeScript, HTTP calls centralized in `src/lib/api.ts`, no DB SDK in frontend.
 - Lint baseline is zero errors. Leave no new warnings in files you touch.
 
