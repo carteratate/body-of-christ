@@ -8,7 +8,12 @@ import { getSearchHistoryPage, type SearchSummaryV2 } from "@/lib/api";
 import { HistorySearchRow } from "./HistorySearchRow";
 import { groupSearchesByLocalDate } from "./historyGroups";
 import { useSearchDeletion } from "./useSearchDeletion";
+import { useRestorePrefetch } from "./useRestorePrefetch";
 import { HistorySkeleton } from "@/components/common/PageSkeletons";
+
+// AppShell loads the first page before any page renders, so on a full load of
+// /history its list is moments old; refreshing it again would repeat the request.
+const SEED_FRESH_MS = 10_000;
 
 export function HistoryPage() {
   const {
@@ -16,13 +21,19 @@ export function HistoryPage() {
     pendingSearch,
     activeSearchId,
     removeSearch,
-    historyRevision,
+    searches: shellSearches,
+    searchHistoryCursor,
+    searchHistoryLoadedAt,
   } = useAppContext();
-  const [searches, setSearches] = useState<SearchSummaryV2[]>([]);
+  const seeded = searchHistoryLoadedAt !== null;
+  // Arriving from elsewhere in the app, AppShell already holds the first page:
+  // show it at once and refresh it in the background instead of a skeleton.
+  const [searches, setSearches] = useState<SearchSummaryV2[]>(() => (seeded ? shellSearches : []));
   const [query, setQuery] = useState("");
   const [appliedQuery, setAppliedQuery] = useState("");
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [nextCursor, setNextCursor] = useState<string | null>(() => (seeded ? searchHistoryCursor : null));
+  const [loading, setLoading] = useState(!seeded);
+  const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -30,6 +41,19 @@ export function HistoryPage() {
   const { toast, showToast, dismissToast } = useToast();
   const requestGeneration = useRef(0);
   const appliedQueryRef = useRef("");
+  // The query whose results are on screen; null while none are.
+  const shownQueryRef = useRef<string | null>(seeded ? "" : null);
+  const seedLoadedAtRef = useRef(searchHistoryLoadedAt);
+  // Searches deleted here while a refresh was in flight; its response predates
+  // the delete and must not bring them back.
+  const deletedIdsRef = useRef(new Set<string>());
+  // Requests read the token through a ref so a routine token refresh does not
+  // reload the page.
+  const tokenRef = useRef(token);
+  const signedIn = Boolean(token);
+  const prefetch = useRestorePrefetch();
+
+  useEffect(() => { tokenRef.current = token; }, [token]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setAppliedQuery(query.trim()), 250);
@@ -41,26 +65,39 @@ export function HistoryPage() {
   }, [appliedQuery]);
 
   useEffect(() => {
-    if (!token) return;
+    const requestToken = tokenRef.current;
+    if (!signedIn || !requestToken) return;
+    const seedLoadedAt = seedLoadedAtRef.current;
+    seedLoadedAtRef.current = null;
+    if (seedLoadedAt !== null && !appliedQuery && reloadKey === 0 && Date.now() - seedLoadedAt < SEED_FRESH_MS) return;
     const generation = ++requestGeneration.current;
     let alive = true;
-    setLoading(true);
+    // Results already showing for this query stay up while they are refreshed;
+    // a failed refresh keeps them rather than replacing them with an error.
+    const background = shownQueryRef.current === appliedQuery;
+    if (background) setRefreshing(true);
+    else setLoading(true);
     setLoadingMore(false);
     setError(false);
-    getSearchHistoryPage(token, { query: appliedQuery || undefined })
+    getSearchHistoryPage(requestToken, { query: appliedQuery || undefined })
       .then((page) => {
         if (!alive || generation !== requestGeneration.current) return;
-        setSearches(page.searches);
+        setSearches(page.searches.filter((search) => !deletedIdsRef.current.has(search.id)));
         setNextCursor(page.next_cursor);
+        shownQueryRef.current = appliedQuery;
       })
       .catch(() => {
-        if (alive && generation === requestGeneration.current) setError(true);
+        if (!alive || generation !== requestGeneration.current || background) return;
+        shownQueryRef.current = null;
+        setError(true);
       })
       .finally(() => {
-        if (alive && generation === requestGeneration.current) setLoading(false);
+        if (!alive || generation !== requestGeneration.current) return;
+        setLoading(false);
+        setRefreshing(false);
       });
     return () => { alive = false; };
-  }, [token, appliedQuery, reloadKey, historyRevision]);
+  }, [signedIn, appliedQuery, reloadKey]);
 
   useEffect(() => {
     if (!revealedId) return;
@@ -73,11 +110,13 @@ export function HistoryPage() {
   }, [revealedId]);
 
   function removeLocally(id: string) {
+    deletedIdsRef.current.add(id);
     setRevealedId(null);
     setSearches((current) => current.filter((search) => search.id !== id));
   }
 
   function restoreLocally(search: SearchSummaryV2, index: number) {
+    deletedIdsRef.current.delete(search.id);
     const currentQuery = appliedQueryRef.current.toLocaleLowerCase();
     if (currentQuery && !search.query.toLocaleLowerCase().includes(currentQuery)) {
       setReloadKey((key) => key + 1);
@@ -117,7 +156,9 @@ export function HistoryPage() {
   });
 
   async function loadMore() {
-    if (!token || !nextCursor || loadingMore) return;
+    // A refresh in flight would replace the list with its first page; continue
+    // from its cursor once it lands rather than racing it.
+    if (!token || !nextCursor || loadingMore || refreshing) return;
     const generation = requestGeneration.current;
     const queryAtRequest = appliedQueryRef.current;
     setLoadingMore(true);
@@ -196,6 +237,8 @@ export function HistoryPage() {
                   revealed={revealedId === search.id}
                   deleting={deletingId === search.id}
                   showDate={group.showDate}
+                  onIntent={() => prefetch.schedule(search)}
+                  onIntentEnd={prefetch.cancel}
                   onReveal={() => setRevealedId(search.id)}
                   onClose={() => setRevealedId(null)}
                   onDelete={() => void deleteById(search.id)}
@@ -211,7 +254,7 @@ export function HistoryPage() {
             <button
               type="button"
               onClick={() => void loadMore()}
-              disabled={loadingMore}
+              disabled={loadingMore || refreshing}
               className="rounded-md border border-brand-accent px-4 py-2 text-sm text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg disabled:opacity-50"
             >
               {loadingMore ? "Loading…" : "Load older searches"}

@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { claimGuestSession, getBookmarks, getPreferences, getSearchHistory, getSources, GuestClaimHttpError, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
+import { claimGuestSession, getBookmarks, getPreferences, getSearchHistoryPage, getSources, GuestClaimHttpError, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
 import { clearGuestSession, getGuestPreferenceDraft, getGuestSavedChunkIds, peekGuestSessionToken } from "@/lib/trial";
 import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { MobileTopBar } from "./MobileTopBar";
@@ -25,11 +25,14 @@ export interface AppContextValue {
   preferencesError: boolean;
   // Real DB-backed search history
   searches: SearchSummaryV2[];
+  /** Cursor for the page after `searches`, so History can continue from it. */
+  searchHistoryCursor: string | null;
+  /** When `searches` last loaded from the server; null until the first page arrives,
+   *  and 0 while a reload is in flight so readers treat the list as stale. */
+  searchHistoryLoadedAt: number | null;
   refreshSearches: () => void;
   removeSearch: (id: string) => void;
   restoreSearch: (search: SearchSummaryV2, index: number) => void;
-  historyRevision: number;
-  invalidateSearchHistory: () => void;
   // Separate pending slot — never conflicts with the DB list
   pendingSearch: { id: string; query: string } | null;
   setPendingSearch: (id: string, query: string) => void;
@@ -59,11 +62,11 @@ export const AppContext = createContext<AppContextValue>({
   setPreferences: () => {},
   preferencesError: false,
   searches: [],
+  searchHistoryCursor: null,
+  searchHistoryLoadedAt: null,
   refreshSearches: () => {},
   removeSearch: () => {},
   restoreSearch: () => {},
-  historyRevision: 0,
-  invalidateSearchHistory: () => {},
   pendingSearch: null,
   setPendingSearch: () => {},
   clearPendingSearch: () => {},
@@ -111,7 +114,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [preferences, setPreferences] = useState<Preferences | null>(null);
   const [preferencesError, setPreferencesError] = useState(false);
   const [searches, setSearches] = useState<SearchSummaryV2[]>([]);
-  const [historyRevision, setHistoryRevision] = useState(0);
+  const [searchHistoryCursor, setSearchHistoryCursor] = useState<string | null>(null);
+  const [searchHistoryLoadedAt, setSearchHistoryLoadedAt] = useState<number | null>(null);
   const [pendingSearch, setPendingSearchState] = useState<{ id: string; query: string } | null>(null);
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState(0);
@@ -173,9 +177,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const loadSearchHistory = useCallback(async (requestToken: string) => {
     const generation = ++searchHistoryRequestGeneration.current;
+    setSearchHistoryLoadedAt((loadedAt) => (loadedAt === null ? null : 0));
     try {
-      const history = await getSearchHistory(requestToken);
-      if (generation === searchHistoryRequestGeneration.current) setSearches(history);
+      const page = await getSearchHistoryPage(requestToken);
+      if (generation !== searchHistoryRequestGeneration.current) return;
+      setSearches(page.searches);
+      setSearchHistoryCursor(page.next_cursor);
+      setSearchHistoryLoadedAt(Date.now());
     } catch {
       // History is non-critical; retain the last known local state.
     }
@@ -198,10 +206,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       next.splice(Math.min(index, next.length), 0, search);
       return next;
     });
-  }, []);
-
-  const invalidateSearchHistory = useCallback(() => {
-    setHistoryRevision((revision) => revision + 1);
   }, []);
 
   const setPendingSearch = useCallback((id: string, query: string) => {
@@ -454,6 +458,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         setPreferences(null);
         setPreferencesError(false);
         setSearches([]);
+        setSearchHistoryCursor(null);
+        setSearchHistoryLoadedAt(null);
         setPendingSearchState(null);
         setActiveSearchId(null);
         setSources([]);
@@ -505,8 +511,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider value={{
       token, userId, ready, preferences, setPreferences, preferencesError,
-      searches, refreshSearches, removeSearch, restoreSearch,
-      historyRevision, invalidateSearchHistory,
+      searches, searchHistoryCursor, searchHistoryLoadedAt, refreshSearches, removeSearch, restoreSearch,
       pendingSearch, setPendingSearch, clearPendingSearch,
       activeSearchId, setActiveSearchId,
       searchKey, newSearch,

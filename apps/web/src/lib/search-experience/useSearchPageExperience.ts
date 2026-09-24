@@ -3,7 +3,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 
 import {
-  getSearchResults,
   SearchRestoreHttpError,
   streamGuestSearch,
   streamSearch,
@@ -13,6 +12,7 @@ import {
 } from "@/lib/api";
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
+import { loadSavedSearchResults } from "@/lib/saved-search-cache";
 import {
   isDeliveryOutcome,
   isSearchOutcome,
@@ -283,7 +283,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
         async restore(credential, searchId, signal) {
           const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           if (!UUID_RE.test(searchId)) throw new InvalidSavedSearchIdError(searchId);
-          const data = await getSearchResults(credential, searchId, signal);
+          const data = await loadSavedSearchResults(credential, searchId, signal);
           if (data.restore_status === "results_unavailable" && data.results.length === 0) {
             throw new SavedPassagesUnavailableError(
               "None of the Passages linked to this saved search remain available.",

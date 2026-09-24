@@ -282,7 +282,6 @@ describe("Sidebar mobile accessibility", () => {
       removeSearch: vi.fn(),
       restoreSearch: vi.fn(),
       refreshSearches: vi.fn(),
-      invalidateSearchHistory: vi.fn(),
     } as unknown as ReturnType<typeof useAppContext>);
 
     const { rerender } = render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteSearch, type SearchSummaryV2 } from "@/lib/api";
+import { evictSavedSearchResults } from "@/lib/saved-search-cache";
 import { useAppContext } from "@/components/layout/AppShell";
 import { trackSearchDeleted } from "@/lib/analytics";
 
@@ -38,6 +39,7 @@ export function useSearchDeletion({
     if (!removed) return;
 
     setDeletingId(id);
+    evictSavedSearchResults(id);
     removeLocally(id);
     focusAfterRemove?.(index);
     try {

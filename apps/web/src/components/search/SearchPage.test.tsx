@@ -5,6 +5,8 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SearchPage } from "./SearchPage";
 import { SearchRestoreHttpError, type ChunkResult, type SearchStreamCallbacks } from "@/lib/api";
+import { __resetClientCachesForTests } from "@/lib/client-cache";
+import { prefetchSavedSearchResults } from "@/lib/saved-search-cache";
 
 const testState = vi.hoisted(() => ({
   params: "restore=11111111-1111-4111-8111-111111111111",
@@ -210,6 +212,7 @@ const streamedPassage: ChunkResult = {
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  __resetClientCachesForTests();
   apiMocks.getSearchResults.mockReset();
   apiMocks.streamGuestSearch.mockReset();
   apiMocks.streamSearch.mockReset();
@@ -239,6 +242,18 @@ afterEach(() => {
 });
 
 describe("SearchPage restore lifecycle", () => {
+  it("restores from results a History hover already fetched", async () => {
+    apiMocks.getSearchResults.mockResolvedValue(restored("Prefetched search"));
+    prefetchSavedSearchResults("token", "11111111-1111-4111-8111-111111111111", new AbortController().signal);
+    await waitFor(() => expect(apiMocks.getSearchResults).toHaveBeenCalledTimes(1));
+    await act(async () => { await Promise.resolve(); });
+
+    render(<SearchPage />);
+
+    expect(await screen.findByText("Prefetched search")).toBeTruthy();
+    expect(apiMocks.getSearchResults).toHaveBeenCalledTimes(1);
+  });
+
   it("restores degraded search and collection notices from saved metadata", async () => {
     apiMocks.getSearchResults.mockResolvedValue({
       ...restored("Partially degraded search"),
