@@ -76,9 +76,15 @@ class Settings(BaseSettings):
     # ~13 such searches a minute and ran each one's calls in two rounds. 48 lets
     # every call of a search start at once and puts the ceiling (~80/min) above
     # OpenAI Tier 2's gpt-5.6-luna token budget, which HyDE shares with the
-    # listwise rerank (~35-45k tokens a full search together, so ~50/min); the
-    # provider limit binds instead. Lower it for an account below Tier 2. The
-    # semaphore is per process, so N replicas on one OpenAI org allow 48 x N.
+    # listwise rerank (~35-45k tokens reserved a full search together, counting the
+    # max_completion_tokens OpenAI charges against TPM, so ~50/min); the
+    # provider limit binds instead (reaching it takes ~10 users searching at once,
+    # given the 5/min per-user limit). Lower it for an account below Tier 2. The
+    # semaphore is per process, so N replicas on one OpenAI org allow 48 x N, and
+    # evaluation runs (run_eval_suite, the retrieval lab) draw on the same org's
+    # token budget as production: pin a lower value in their environment. It is part
+    # of the eval methodology fingerprint, so pinning 8 locally also keeps runs
+    # started before this default changed resumable.
     hyde_luna_concurrency: int = Field(default=48, ge=1, validation_alias="HYDE_LUNA_CONCURRENCY")
     rerank_model: str = Field(default="claude-haiku-4-5", validation_alias="RERANK_MODEL")
     evaluate_model: str = Field(default="claude-haiku-4-5", validation_alias="EVALUATE_MODEL")
