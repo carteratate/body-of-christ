@@ -2,10 +2,11 @@ import asyncio
 import logging
 from contextlib import asynccontextmanager
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(name)s %(levelname)s %(message)s",
-)
+from app.config import settings
+from app.logging_setup import configure_logging
+
+# Before the remaining app imports, so anything they log while loading is routed too.
+configure_logging(settings.log_format)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +14,6 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from app.config import settings
 from app.db import close_pool, get_pool, init_pool
 from app.llm import close_llm, init_llm
 from app.rag.api_keys import close_api_keys, init_api_keys, is_ready as hyde_is_ready
