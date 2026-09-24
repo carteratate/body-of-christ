@@ -191,3 +191,10 @@ def test_an_extra_that_json_cannot_encode_still_logs_one_line():
     entry = json.loads(line)
     assert entry["message"] == "hello world"
     assert entry["lookup"] == repr({1: "a", (2, 3): "b"})
+
+
+def test_a_message_that_is_not_valid_unicode_still_encodes():
+    line = JsonFormatter().format(_record(msg="caf\u00e9 \udcff", args=()))
+
+    line.encode("utf-8")  # a lone surrogate written raw would raise here
+    assert json.loads(line)["message"] == "caf\u00e9 \udcff"

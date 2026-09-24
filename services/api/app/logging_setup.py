@@ -65,15 +65,16 @@ class JsonFormatter(logging.Formatter):
         for key, value in vars(record).items():
             if key not in _RECORD_ATTRS and key not in entry:
                 entry[str(key)] = value
-        # json.dumps escapes newlines, so tracebacks stay on one line. default=str
+        # json.dumps escapes newlines, so tracebacks stay on one line, and non-ASCII
+        # (a lone surrogate included), so the line is always valid UTF-8. default=str
         # keeps an unserialisable `extra` value from dropping the whole record; a
         # value json cannot encode even so (a dict with non-string keys) is repr'd.
         try:
-            return json.dumps(entry, default=str, ensure_ascii=False)
+            return json.dumps(entry, default=str)
         except (TypeError, ValueError):
             safe = {key: value if isinstance(value, (str, int, float, bool, type(None)))
                     else repr(value) for key, value in entry.items()}
-            return json.dumps(safe, ensure_ascii=False)
+            return json.dumps(safe)
 
 
 def _resolve_format(log_format: LogFormat, stream: TextIO) -> Literal["json", "text"]:
