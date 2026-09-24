@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Flag, Settings2 } from "lucide-react";
-import type { DocumentInfo, TocEntry } from "@/lib/api";
+import type { DocumentInfo, ReaderChapter, TocEntry } from "@/lib/api";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
 
 export type ReaderFontSize = "small" | "medium" | "large";
@@ -10,6 +10,11 @@ export type ReaderSpacing = "compact" | "comfortable" | "relaxed";
 interface Props {
   document: DocumentInfo;
   toc: TocEntry[];
+  /** The reader shows its chapter before the contents arrive; until then the
+   *  chrome works from the current chapter's own neighbours. */
+  tocStatus?: "loading" | "ready" | "error";
+  onRetryToc?: () => void;
+  currentChapter?: Pick<ReaderChapter, "chapter_label" | "prev_chapter_key" | "next_chapter_key"> | null;
   currentChapterKey: string | null;
   backLabel: string;
   onBack: () => void;
@@ -27,6 +32,9 @@ interface Props {
 export function ReaderChrome({
   document,
   toc,
+  tocStatus = "ready",
+  onRetryToc,
+  currentChapter = null,
   currentChapterKey,
   backLabel,
   onBack,
@@ -40,9 +48,16 @@ export function ReaderChrome({
   showBackGuide = false,
   onDismissBackGuide,
 }: Props) {
-  const currentIndex = toc.findIndex((entry) => entry.chapter_key === currentChapterKey);
-  const previous = currentIndex > 0 ? toc[currentIndex - 1] : null;
-  const next = currentIndex >= 0 && currentIndex + 1 < toc.length ? toc[currentIndex + 1] : null;
+  // The contents position the chapter when they include it. A chapter they do not
+  // list (contents older or newer than the chapter) still has its own neighbours.
+  const currentIndex = tocStatus === "ready" ? toc.findIndex((entry) => entry.chapter_key === currentChapterKey) : -1;
+  const positioned = currentIndex >= 0;
+  const previousKey = positioned
+    ? (currentIndex > 0 ? toc[currentIndex - 1].chapter_key : null)
+    : currentChapter?.prev_chapter_key ?? null;
+  const nextKey = positioned
+    ? (currentIndex + 1 < toc.length ? toc[currentIndex + 1].chapter_key : null)
+    : currentChapter?.next_chapter_key ?? null;
   const browseLabel = document.collection === "bible"
     ? "Browse Chapters"
     : document.collection === "catechism"
@@ -60,9 +75,13 @@ export function ReaderChrome({
       <div className="mt-1 flex min-h-10 flex-wrap items-center gap-2 md:mt-0 md:flex-nowrap">
         <div className="min-w-0 basis-full px-1 md:max-w-[18rem] md:basis-auto md:shrink">
           <p className="truncate text-sm font-medium text-brand-accent">{document.title}</p>
-          {currentIndex >= 0 && (
+          {positioned ? (
             <p className="truncate text-[11px] text-brand-muted">
               {toc[currentIndex].chapter_label} · {currentIndex + 1} of {toc.length}
+            </p>
+          ) : currentChapter && (
+            <p className="truncate text-[11px] text-brand-muted" aria-busy={tocStatus === "loading"}>
+              {currentChapter.chapter_label}
             </p>
           )}
         </div>
@@ -125,10 +144,16 @@ export function ReaderChrome({
       </div>
 
       <div className="mt-1 flex items-center justify-between gap-2 border-t border-brand-surface pt-2">
-        <button type="button" disabled={!previous} onClick={() => previous && onJump(previous.chapter_key)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
+        <button type="button" disabled={!previousKey} onClick={() => previousKey && onJump(previousKey)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
           <ChevronLeft size={15} /> Previous
         </button>
-        <button type="button" disabled={!next} onClick={() => next && onJump(next.chapter_key)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
+        {/* Kept out of the truncated title block so a long chapter label cannot clip it. */}
+        {tocStatus === "error" && (
+          <button type="button" onClick={onRetryToc} className="min-h-9 min-w-0 px-2 text-center text-xs leading-tight text-brand-muted hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+            Contents didn&apos;t load. <span className="font-semibold text-brand-accent">Retry</span>
+          </button>
+        )}
+        <button type="button" disabled={!nextKey} onClick={() => nextKey && onJump(nextKey)} className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:invisible">
           Next <ChevronRight size={15} />
         </button>
       </div>

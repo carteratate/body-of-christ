@@ -108,4 +108,85 @@ describe("ReaderChrome", () => {
     expect(settings?.className).toContain("hover:text-brand-bg");
     expect(screen.getByText("CCC §§100–199 · 1 of 1")).toBeTruthy();
   });
+
+  it("navigates by the chapter's own neighbours until the contents arrive", () => {
+    const onJump = vi.fn();
+    render(
+      <ReaderChrome
+        document={{ id: "doc-1", title: "Summa", author: null, collection: "summa", year: null, metadata: {}, chunk_count: 1 }}
+        toc={[]}
+        tocStatus="loading"
+        currentChapter={{ chapter_label: "Question 2 — Article 1", prev_chapter_key: "q1-a3", next_chapter_key: "q2-a2" }}
+        currentChapterKey="q2-a1"
+        backLabel="Back to Library"
+        onBack={vi.fn()}
+        onBrowseSections={vi.fn()}
+        onJump={onJump}
+        fontSize="medium"
+        spacing="comfortable"
+        onFontSizeChange={vi.fn()}
+        onSpacingChange={vi.fn()}
+        onReportContent={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Question 2 — Article 1")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Previous" }));
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(onJump.mock.calls).toEqual([["q1-a3"], ["q2-a2"]]);
+  });
+
+  it("offers a retry when the contents fail to load", () => {
+    const onRetryToc = vi.fn();
+    render(
+      <ReaderChrome
+        document={{ id: "doc-1", title: "Summa", author: null, collection: "summa", year: null, metadata: {}, chunk_count: 1 }}
+        toc={[]}
+        tocStatus="error"
+        onRetryToc={onRetryToc}
+        currentChapter={{ chapter_label: "Question 2 — Article 1", prev_chapter_key: null, next_chapter_key: null }}
+        currentChapterKey="q2-a1"
+        backLabel="Back to Library"
+        onBack={vi.fn()}
+        onBrowseSections={vi.fn()}
+        onJump={vi.fn()}
+        fontSize="medium"
+        spacing="comfortable"
+        onFontSizeChange={vi.fn()}
+        onSpacingChange={vi.fn()}
+        onReportContent={vi.fn()}
+      />,
+    );
+
+    const retry = screen.getByRole("button", { name: "Contents didn't load. Retry" });
+    expect(retry.closest("p")).toBeNull();
+    fireEvent.click(retry);
+    expect(onRetryToc).toHaveBeenCalledOnce();
+  });
+
+  it("falls back to the chapter's neighbours when the contents do not list it", () => {
+    const onJump = vi.fn();
+    render(
+      <ReaderChrome
+        document={{ id: "doc-1", title: "Summa", author: null, collection: "summa", year: null, metadata: {}, chunk_count: 1 }}
+        toc={[{ chapter_key: "renamed", chapter_label: "Renamed" }]}
+        tocStatus="ready"
+        currentChapter={{ chapter_label: "Question 2 — Article 1", prev_chapter_key: null, next_chapter_key: "q2-a2" }}
+        currentChapterKey="q2-a1"
+        backLabel="Back to Library"
+        onBack={vi.fn()}
+        onBrowseSections={vi.fn()}
+        onJump={onJump}
+        fontSize="medium"
+        spacing="comfortable"
+        onFontSizeChange={vi.fn()}
+        onSpacingChange={vi.fn()}
+        onReportContent={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Question 2 — Article 1")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(onJump).toHaveBeenCalledWith("q2-a2");
+  });
 });

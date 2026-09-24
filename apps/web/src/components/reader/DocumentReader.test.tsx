@@ -6,6 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DocumentInfo, ReaderChapter } from "@/lib/api";
 import { DocumentReader } from "./DocumentReader";
 import { createReaderReturnKey } from "@/lib/readerNavigation";
+import { __resetClientCachesForTests } from "@/lib/client-cache";
+import { isChapterCached } from "@/lib/reader-cache";
 
 const api = vi.hoisted(() => ({
   getReadingProgress: vi.fn(),
@@ -30,14 +32,24 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => ({ get: (key: string) => navigation.params.get(key) ?? null }),
 }));
 
+const appContext = vi.hoisted(() => ({ token: "token" as string | null }));
+const trial = vi.hoisted(() => ({ guestToken: "" }));
+
+vi.mock("@/lib/trial", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/lib/trial")>(),
+  getGuestSessionToken: () => trial.guestToken,
+}));
+
 vi.mock("@/components/layout/AppShell", () => ({
-  useAppContext: () => ({ token: "token", mobileNavigationOpen: false, openMobileNavigation: vi.fn() }),
+  useAppContext: () => ({ token: appContext.token, mobileNavigationOpen: false, openMobileNavigation: vi.fn() }),
 }));
 
 vi.mock("./ReaderChrome", () => ({
-  ReaderChrome: ({ currentChapterKey, onJump, onBack, onBrowseSections }: { currentChapterKey: string | null; onJump: (key: string) => void; onBack: () => void; onBrowseSections: () => void }) => (
+  ReaderChrome: ({ currentChapterKey, tocStatus, onRetryToc, onJump, onBack, onBrowseSections }: { currentChapterKey: string | null; tocStatus?: string; onRetryToc?: () => void; onJump: (key: string) => void; onBack: () => void; onBrowseSections: () => void }) => (
     <div>
       <span data-testid="current-key">{currentChapterKey}</span>
+      <span data-testid="toc-status">{tocStatus}</span>
+      <button onClick={onRetryToc}>Retry contents</button>
       <button onClick={onBack}>Reader Back</button>
       <button onClick={() => onJump("chapter-b")}>Jump B</button>
       <button onClick={() => onJump("chapter-c")}>Jump C</button>
@@ -74,7 +86,22 @@ function chapter(docId: string, key: string): ReaderChapter {
   };
 }
 
+function chapterCalls(key: string) {
+  return api.getReaderChapter.mock.calls.filter((call) => call[2]?.chapter === key);
+}
+
+function nearBottom(scroller: HTMLDivElement) {
+  Object.defineProperties(scroller, {
+    scrollHeight: { value: 1000, configurable: true },
+    clientHeight: { value: 500, configurable: true },
+    scrollTop: { value: 450, configurable: true },
+  });
+}
+
 beforeEach(() => {
+  __resetClientCachesForTests();
+  appContext.token = "token";
+  trial.guestToken = "";
   navigation.params = new Map([["chapter", "chapter-a"], ["from", "library"]]);
   navigation.push.mockReset();
   navigation.back.mockReset();
@@ -105,7 +132,7 @@ describe("DocumentReader request ordering", () => {
   });
 
   it("keeps mobile app navigation and branding visible after a load failure", async () => {
-    api.getToc.mockRejectedValue(new Error("offline"));
+    api.getReaderChapter.mockRejectedValue(new Error("offline"));
 
     render(<DocumentReader docId="doc-a" />);
 
@@ -114,28 +141,34 @@ describe("DocumentReader request ordering", () => {
     expect(screen.getByRole("button", { name: "Open app navigation" })).toBeTruthy();
   });
 
-  it("requests the chapter without waiting for the table of contents", async () => {
+  it("shows the chapter before the table of contents arrives", async () => {
     const toc = deferred<{ document: DocumentInfo; chapters: { chapter_key: string; chapter_label: string }[] }>();
     api.getToc.mockReturnValue(toc.promise);
 
     render(<DocumentReader docId="doc-a" />);
 
-    await waitFor(() => expect(api.getReaderChapter).toHaveBeenCalledTimes(1));
-    expect(screen.queryByText("doc-a chapter-a")).toBeNull();
+    expect(await screen.findByText("doc-a chapter-a")).toBeTruthy();
+    expect(screen.getByTestId("toc-status").textContent).toBe("loading");
 
     toc.resolve({ document: documentInfo("doc-a"), chapters: [{ chapter_key: "chapter-a", chapter_label: "chapter-a" }] });
-    expect(await screen.findByText("doc-a chapter-a")).toBeTruthy();
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
   });
 
-  it("reports a table of contents failure that arrives after the chapter", async () => {
+  it("keeps the chapter when the table of contents fails, and retries it", async () => {
     const toc = deferred<never>();
-    api.getToc.mockReturnValue(toc.promise);
+    api.getToc.mockReturnValueOnce(toc.promise);
 
     render(<DocumentReader docId="doc-a" />);
-    await waitFor(() => expect(api.getReaderChapter).toHaveBeenCalledTimes(1));
+    await screen.findByText("doc-a chapter-a");
     toc.reject(new Error("offline"));
 
-    expect(await screen.findByText("This document couldn't be loaded.")).toBeTruthy();
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("error"));
+    expect(screen.getByText("doc-a chapter-a")).toBeTruthy();
+    expect(screen.queryByText("This document couldn't be loaded.")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry contents" }));
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+    expect(api.getToc).toHaveBeenCalledTimes(2);
   });
 
   it("ignores an older chapter response that resolves after a newer jump", async () => {
@@ -234,13 +267,9 @@ describe("DocumentReader request ordering", () => {
     render(<DocumentReader docId="doc-a" />);
     await screen.findByText("doc-a chapter-a");
     const scroller = document.querySelector(".reader-content") as HTMLDivElement;
-    Object.defineProperties(scroller, {
-      scrollHeight: { value: 1000, configurable: true },
-      clientHeight: { value: 500, configurable: true },
-      scrollTop: { value: 450, configurable: true },
-    });
+    nearBottom(scroller);
     fireEvent.scroll(scroller);
-    await waitFor(() => expect(api.getReaderChapter).toHaveBeenCalledWith("token", "doc-a", { chapter: "chapter-b" }));
+    await waitFor(() => expect(chapterCalls("chapter-b").length).toBeGreaterThan(0));
 
     fireEvent.click(screen.getByRole("button", { name: "Jump C" }));
     await screen.findByText("Chapter couldn't be loaded.");
@@ -248,12 +277,302 @@ describe("DocumentReader request ordering", () => {
       appendB.resolve(chapter("doc-a", "chapter-b"));
       await appendB.promise;
     });
+    expect(screen.queryByText("doc-a chapter-b")).toBeNull();
     fireEvent.scroll(scroller);
 
-    await waitFor(() => {
-      const bCalls = api.getReaderChapter.mock.calls.filter((call) => call[2]?.chapter === "chapter-b");
-      expect(bCalls).toHaveLength(2);
+    expect(await screen.findByText("doc-a chapter-b")).toBeTruthy();
+  });
+});
+
+describe("DocumentReader caching", () => {
+  it("reuses the overview's table of contents when a section opens", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    const view = render(<DocumentReader docId="doc-a" />);
+    await screen.findByRole("heading", { name: "Document doc-a" });
+
+    navigation.params = new Map([["from", "library"], ["chapter", "chapter-b"]]);
+    view.rerender(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-b");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+
+    expect(api.getToc).toHaveBeenCalledTimes(1);
+  });
+
+  it("reopens a document from memory", async () => {
+    const first = render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+    first.unmount();
+
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+
+    expect(api.getToc).toHaveBeenCalledTimes(1);
+    expect(chapterCalls("chapter-a")).toHaveLength(1);
+  });
+
+  it("does not remember a failed chapter", async () => {
+    api.getReaderChapter
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => chapter(docId, options.chapter ?? "chapter-a"));
+
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("This document couldn't be loaded.");
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+
+    expect(await screen.findByText("doc-a chapter-a")).toBeTruthy();
+    expect(chapterCalls("chapter-a")).toHaveLength(2);
+  });
+
+  it("refreshes the contents when a chapter from them no longer exists", async () => {
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (options.chapter === "chapter-b") throw new Error("API error 404");
+      return chapter(docId, "chapter-a");
     });
+
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+    fireEvent.click(screen.getByRole("button", { name: "Jump B" }));
+
+    await screen.findByText("Chapter couldn't be loaded.");
+    expect(isChapterCached({ token: "token" }, "doc-a", "chapter-a")).toBe(false);
+    await waitFor(() => expect(api.getToc).toHaveBeenCalledTimes(2));
+    expect(screen.getByTestId("toc-status").textContent).toBe("ready");
+  });
+
+  it("offers a contents retry when a refresh fails before any contents arrived", async () => {
+    const firstToc = deferred<never>();
+    api.getToc.mockReturnValueOnce(firstToc.promise).mockRejectedValueOnce(new Error("offline"));
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (options.chapter === "chapter-b") throw new Error("API error 404");
+      return chapter(docId, "chapter-a");
+    });
+
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    fireEvent.click(screen.getByRole("button", { name: "Jump B" }));
+    await screen.findByText("Chapter couldn't be loaded.");
+
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("error"));
+  });
+
+  it("refetches the contents once when their passage count disagrees with the chapter", async () => {
+    api.getToc.mockImplementation(async (_token: string, docId: string) => ({
+      document: { ...documentInfo(docId), chunk_count: 99 },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "chapter-a" }],
+    }));
+
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+
+    await waitFor(() => expect(api.getToc).toHaveBeenCalledTimes(2));
+    expect(isChapterCached({ token: "token" }, "doc-a", "chapter-a")).toBe(false);
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+    await act(async () => { await Promise.resolve(); });
+    expect(api.getToc).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not carry an unresolved mismatch into the next document", async () => {
+    api.getToc.mockImplementation(async (_token: string, docId: string) => ({
+      document: { ...documentInfo(docId), chunk_count: docId === "doc-a" ? 99 : 3 },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "chapter-a" }],
+    }));
+    const view = render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(api.getToc).toHaveBeenCalledTimes(2));
+
+    view.rerender(<DocumentReader docId="doc-b" />);
+    await screen.findByText("doc-b chapter-a");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+
+    expect(api.getToc.mock.calls.filter((call) => call[1] === "doc-b")).toHaveLength(1);
+    expect(isChapterCached({ token: "token" }, "doc-b", "chapter-a")).toBe(true);
+  });
+
+  it("reads as the guest session, and shares the guest overview's contents", async () => {
+    appContext.token = null;
+    trial.guestToken = "guest-1";
+    navigation.params = new Map([["from", "search"]]);
+    const view = render(<DocumentReader docId="doc-a" isGuest />);
+    await screen.findByRole("heading", { name: "Document doc-a" });
+
+    navigation.params = new Map([["from", "search"], ["chapter", "chapter-b"]]);
+    view.rerender(<DocumentReader docId="doc-a" isGuest />);
+    await screen.findByText("doc-a chapter-b");
+    await waitFor(() => expect(screen.getByTestId("toc-status").textContent).toBe("ready"));
+
+    expect(api.getToc).toHaveBeenCalledTimes(1);
+    expect(api.getToc).toHaveBeenCalledWith("", "doc-a", expect.any(AbortSignal), "guest-1");
+    expect(chapterCalls("chapter-b")[0].slice(0, 2)).toEqual(["", "doc-a"]);
+    expect(chapterCalls("chapter-b")[0][2].guestToken).toBe("guest-1");
+    expect(isChapterCached({ token: "token" }, "doc-a", "chapter-b")).toBe(false);
+    expect(isChapterCached({ token: null, guestToken: "guest-1" }, "doc-a", "chapter-b")).toBe(true);
+  });
+
+  it("keeps the reading position through a token refresh", async () => {
+    const view = render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    fireEvent.click(screen.getByRole("button", { name: "Jump B" }));
+    await screen.findByText("doc-a chapter-b");
+    const tocCalls = api.getToc.mock.calls.length;
+
+    appContext.token = "refreshed-token";
+    view.rerender(<DocumentReader docId="doc-a" />);
+    await Promise.resolve();
+
+    expect(screen.getByText("doc-a chapter-b")).toBeTruthy();
+    expect(screen.getByTestId("current-key").textContent).toBe("chapter-b");
+    expect(api.getToc).toHaveBeenCalledTimes(tocCalls);
+  });
+});
+
+describe("DocumentReader next-chapter prefetch", () => {
+  function linkedChapter(docId: string, key: string): ReaderChapter {
+    const order = ["chapter-a", "chapter-b", "chapter-c"];
+    const index = order.indexOf(key);
+    return { ...chapter(docId, key), prev_chapter_key: order[index - 1] ?? null, next_chapter_key: order[index + 1] ?? null };
+  }
+
+  beforeEach(() => {
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => linkedChapter(docId, options.chapter ?? "chapter-a"));
+  });
+
+  it("warms the next chapter without showing it", async () => {
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+
+    await waitFor(() => expect(chapterCalls("chapter-b")).toHaveLength(1));
+    expect(screen.queryByText("doc-a chapter-b")).toBeNull();
+    expect(screen.queryByLabelText("Loading chapter")).toBeNull();
+    expect(screen.getByTestId("current-key").textContent).toBe("chapter-a");
+  });
+
+  it("serves Next from memory without a loading state", async () => {
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(chapterCalls("chapter-b")).toHaveLength(1));
+    await act(async () => { await Promise.resolve(); });
+
+    fireEvent.click(screen.getByRole("button", { name: "Jump B" }));
+
+    expect(screen.queryByLabelText("Loading chapter")).toBeNull();
+    expect(await screen.findByText("doc-a chapter-b")).toBeTruthy();
+    expect(chapterCalls("chapter-b")).toHaveLength(1);
+  });
+
+  it("appends a prefetched chapter on scroll without another request", async () => {
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(chapterCalls("chapter-b")).toHaveLength(1));
+    const scroller = document.querySelector(".reader-content") as HTMLDivElement;
+    nearBottom(scroller);
+    fireEvent.scroll(scroller);
+
+    expect(await screen.findByText("doc-a chapter-b")).toBeTruthy();
+    expect(screen.getByText("doc-a chapter-a")).toBeTruthy();
+    expect(chapterCalls("chapter-b")).toHaveLength(1);
+  });
+
+  it("never lets a prefetch override a jump in flight", async () => {
+    const prefetchB = deferred<ReaderChapter>();
+    const jumpC = deferred<ReaderChapter>();
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (options.chapter === "chapter-b") return prefetchB.promise;
+      if (options.chapter === "chapter-c") return jumpC.promise;
+      return linkedChapter(docId, "chapter-a");
+    });
+
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(chapterCalls("chapter-b")).toHaveLength(1));
+    fireEvent.click(screen.getByRole("button", { name: "Jump C" }));
+
+    await act(async () => {
+      prefetchB.resolve(linkedChapter("doc-a", "chapter-b"));
+      await prefetchB.promise;
+    });
+    expect(screen.getByTestId("current-key").textContent).toBe("chapter-a");
+    expect(screen.queryByText("doc-a chapter-b")).toBeNull();
+    expect(screen.getByLabelText("Loading chapter")).toBeTruthy();
+
+    jumpC.resolve(linkedChapter("doc-a", "chapter-c"));
+    await waitFor(() => expect(screen.getByTestId("current-key").textContent).toBe("chapter-c"));
+  });
+
+  it("joins a prefetch already in flight instead of requesting again", async () => {
+    const requestB = deferred<ReaderChapter>();
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (options.chapter === "chapter-b") return requestB.promise;
+      return linkedChapter(docId, options.chapter ?? "chapter-a");
+    });
+
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(chapterCalls("chapter-b")).toHaveLength(1));
+    fireEvent.click(screen.getByRole("button", { name: "Jump B" }));
+
+    requestB.resolve(linkedChapter("doc-a", "chapter-b"));
+    expect(await screen.findByText("doc-a chapter-b")).toBeTruthy();
+    expect(chapterCalls("chapter-b")).toHaveLength(1);
+  });
+
+  it("cancels a prefetch still in flight when the reader closes", async () => {
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (options.chapter === "chapter-b") return new Promise(() => {});
+      return linkedChapter(docId, "chapter-a");
+    });
+
+    const view = render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    await waitFor(() => expect(chapterCalls("chapter-b")).toHaveLength(1));
+    const signal = chapterCalls("chapter-b")[0][2].signal as AbortSignal;
+    expect(signal.aborted).toBe(false);
+
+    view.unmount();
+    await waitFor(() => expect(signal.aborted).toBe(true));
+  });
+
+  it("skips prefetching when the browser asks to save data", async () => {
+    const idle = vi.fn(() => 1);
+    Object.defineProperty(window, "requestIdleCallback", { value: idle, configurable: true });
+    Object.defineProperty(window, "cancelIdleCallback", { value: vi.fn(), configurable: true });
+    Object.defineProperty(navigator, "connection", { value: { saveData: true }, configurable: true });
+    try {
+      render(<DocumentReader docId="doc-a" />);
+      await screen.findByText("doc-a chapter-a");
+      await act(async () => { await Promise.resolve(); });
+      expect((await api.getReaderChapter.mock.results[0].value as ReaderChapter).next_chapter_key).toBe("chapter-b");
+      expect(idle).not.toHaveBeenCalled();
+      expect(chapterCalls("chapter-b")).toHaveLength(0);
+    } finally {
+      Reflect.deleteProperty(navigator, "connection");
+      Reflect.deleteProperty(window, "requestIdleCallback");
+      Reflect.deleteProperty(window, "cancelIdleCallback");
+    }
+  });
+
+  it("does not prefetch the previous document's next chapter when the document changes", async () => {
+    Object.defineProperty(window, "requestIdleCallback", { value: (callback: () => void) => { callback(); return 1; }, configurable: true });
+    Object.defineProperty(window, "cancelIdleCallback", { value: vi.fn(), configurable: true });
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (docId === "doc-a") return { ...chapter(docId, options.chapter ?? "chapter-a"), next_chapter_key: "only-in-a" };
+      return chapter(docId, options.chapter ?? "chapter-a");
+    });
+    try {
+      const view = render(<DocumentReader docId="doc-a" />);
+      await screen.findByText("doc-a chapter-a");
+      await waitFor(() => expect(api.getReaderChapter).toHaveBeenCalledWith("token", "doc-a", expect.objectContaining({ chapter: "only-in-a" })));
+
+      view.rerender(<DocumentReader docId="doc-b" />);
+      await screen.findByText("doc-b chapter-a");
+
+      expect(api.getReaderChapter).not.toHaveBeenCalledWith("token", "doc-b", expect.objectContaining({ chapter: "only-in-a" }));
+    } finally {
+      Reflect.deleteProperty(window, "requestIdleCallback");
+      Reflect.deleteProperty(window, "cancelIdleCallback");
+    }
   });
 });
 

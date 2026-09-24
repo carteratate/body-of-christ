@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, BookOpen, Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
-import { getReadingProgress, getToc, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
+import { getReadingProgress, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
+import { loadToc } from "@/lib/reader-cache";
 import { getCollectionMeta } from "@/lib/collections";
 import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 import { getGuestSessionToken } from "@/lib/trial";
@@ -74,7 +75,9 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
     const requestId = ++requestRef.current;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10_000);
-    const tocRequest = getToc(token ?? "", docId, controller.signal, guestToken || undefined);
+    // Shared with DocumentReader, so opening a section after this overview (or
+    // returning to it) reuses the contents instead of downloading them again.
+    const tocRequest = loadToc({ token, guestToken: guestToken || undefined }, docId, controller.signal);
     const progressRequest = isGuest ? Promise.resolve(null) : getReadingProgress(token!, docId, controller.signal);
 
     void tocRequest.then((toc) => {
