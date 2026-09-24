@@ -64,6 +64,18 @@ def test_write_document_frees_old_positions_before_inserting_new_identities():
     assert pruned == 1
 
 
+def test_write_document_rebuilds_the_reader_outline_last():
+    """The outline is refreshed after every chunk write, inside the same transaction."""
+    conn = FakeConn()
+    conn.fetchval_result = 0
+
+    asyncio.run(reader_writer.write_document(conn, _doc("a/1", "a/2")))
+
+    sql, args = conn.calls[-1]
+    assert sql == "SELECT refresh_document_outline($1::uuid)"
+    assert args == ("11111111-1111-1111-1111-111111111111",)
+
+
 # ---------------------------------------------------------------------------
 # Re-ingest must not destroy user data.
 #

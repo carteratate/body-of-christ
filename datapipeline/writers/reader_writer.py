@@ -88,6 +88,10 @@ async def write_document(conn: asyncpg.Connection, doc: Document,
     Existing positions are staged below zero before the upserts. Without that step, a
     newly split chunk can claim a position still occupied by the old identity and trip
     ``UNIQUE(document_id, position)`` before the stale row is pruned.
+
+    The document's reader outline (chapter list and chunk_count, migration 0037) is
+    rebuilt last, in the same transaction, so the API never reads an outline that
+    disagrees with the chunks it describes.
     """
     async with conn.transaction():
         await conn.execute(
@@ -124,4 +128,5 @@ async def write_document(conn: asyncpg.Connection, doc: Document,
                 p.anchor, p.chapter_key, p.chapter_label, p.unit_label,
                 json.dumps(p.metadata) if p.metadata else None,
             )
+        await conn.execute("SELECT refresh_document_outline($1::uuid)", doc.id)
         return pruned
