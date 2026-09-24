@@ -54,9 +54,8 @@ def postgres():
         yield cluster
 
 
-def _migrate(sql):
-    sql(SCHEMA_MIGRATION.read_text())
-    sql(BACKFILL_MIGRATION.read_text())
+def _migrate(cluster):
+    cluster.migrate(SCHEMA_MIGRATION.name, BACKFILL_MIGRATION.name)
 
 
 def _outline(sql, doc):
@@ -93,14 +92,14 @@ def test_backfill_reproduces_the_legacy_toc_and_count(postgres):
 
 def test_the_schema_migration_alone_leaves_every_document_to_the_fallback(postgres):
     postgres(SEED)
-    postgres(SCHEMA_MIGRATION.read_text())
+    postgres.migrate(SCHEMA_MIGRATION.name)
 
     for doc in (DOC_A, DOC_B, DOC_EMPTY):
         assert _chunk_count(postgres, doc) == "<null>"
         assert _outline(postgres, doc) == []
 
-    postgres(BACKFILL_MIGRATION.read_text())
-    postgres(BACKFILL_MIGRATION.read_text())  # idempotent
+    postgres.migrate(BACKFILL_MIGRATION.name)
+    postgres.migrate(BACKFILL_MIGRATION.name)  # idempotent
 
     for doc in (DOC_A, DOC_B, DOC_EMPTY):
         assert _outline(postgres, doc) == _legacy_toc(postgres, doc)
@@ -207,7 +206,7 @@ def test_a_publish_and_the_backfill_do_not_deadlock(postgres):
     first. Refreshing chapters before locking the document row deadlocks the two.
     """
     postgres(SEED)
-    postgres(SCHEMA_MIGRATION.read_text())
+    postgres.migrate(SCHEMA_MIGRATION.name)
 
     def session(source):
         process = subprocess.Popen(
@@ -234,9 +233,129 @@ def test_a_publish_and_the_backfill_do_not_deadlock(postgres):
     """) != [["1"]]:
         assert time.monotonic() < deadline, "publish session never reached its hold"
         time.sleep(0.05)
-    backfill = session(BACKFILL_MIGRATION.read_text())
+    backfill = session(f"BEGIN;\n{BACKFILL_MIGRATION.read_text()}\nCOMMIT;")
 
     for process in (publish, backfill):
         process.wait(timeout=30)
         assert process.returncode == 0, process.stderr.read()
     assert _outline(postgres, DOC_A) == _legacy_toc(postgres, DOC_A)
+
+
+# --- invalidation triggers ------------------------------------------------------
+
+@pytest.mark.parametrize(("change", "invalidates"), [
+    (f"INSERT INTO chunks (document_id, position, chapter_key, chapter_label) "
+     f"VALUES ('{DOC_A}', 9, 'c9', 'Chapter 9')", True),
+    (f"DELETE FROM chunks WHERE document_id = '{DOC_A}' AND position = 5", True),
+    (f"UPDATE chunks SET position = position + 100 WHERE document_id = '{DOC_A}'", True),
+    (f"UPDATE chunks SET chapter_key = 'x' WHERE document_id = '{DOC_A}' AND position = 0", True),
+    (f"UPDATE chunks SET chapter_label = 'x' WHERE document_id = '{DOC_A}' AND position = 0", True),
+    # Enrichment rewrites annotations on every chunk; the outline is unaffected.
+    (f"UPDATE chunks SET annotation = '{{}}' WHERE document_id = '{DOC_A}'", False),
+    (f"UPDATE chunks SET content = 'edited' WHERE document_id = '{DOC_A}'", False),
+    # A no-op structural rewrite (as a republish of identical passages does).
+    (f"UPDATE chunks SET position = position WHERE document_id = '{DOC_A}'", False),
+])
+def test_chunk_changes_invalidate_only_the_outlines_they_affect(postgres, change, invalidates):
+    postgres(SEED)
+    _migrate(postgres)
+
+    postgres(change)
+
+    assert (_chunk_count(postgres, DOC_A) == "<null>") is invalidates
+    assert _chunk_count(postgres, DOC_B) == "1"  # untouched document stays current
+
+
+def test_moving_a_chunk_invalidates_both_documents(postgres):
+    postgres(SEED)
+    _migrate(postgres)
+
+    postgres(f"UPDATE chunks SET document_id = '{DOC_B}', position = 7 "
+             f"WHERE document_id = '{DOC_A}' AND position = 5")
+
+    assert _chunk_count(postgres, DOC_A) == "<null>"
+    assert _chunk_count(postgres, DOC_B) == "<null>"
+
+
+def test_a_refresh_after_the_writes_leaves_the_outline_current(postgres):
+    """What write_document does: chunk writes clear the flag, the refresh restores it."""
+    postgres(SEED)
+    _migrate(postgres)
+
+    postgres(f"""
+        BEGIN;
+        UPDATE chunks SET position = -position - 1 WHERE document_id = '{DOC_A}';
+        UPDATE chunks SET position = -position - 1 WHERE document_id = '{DOC_A}';
+        INSERT INTO chunks (document_id, position, chapter_key, chapter_label)
+            VALUES ('{DOC_A}', 6, 'c4', 'Chapter 4');
+        SELECT refresh_document_outline('{DOC_A}');
+        COMMIT;
+    """)
+
+    assert _chunk_count(postgres, DOC_A) == "7"
+    assert _outline(postgres, DOC_A) == _legacy_toc(postgres, DOC_A)
+
+
+def test_deleting_documents_with_chunks_cascades_cleanly(postgres):
+    postgres(SEED)
+    _migrate(postgres)
+
+    # The cascade's chunk delete fires the trigger for documents being deleted.
+    postgres("DELETE FROM documents")
+
+    assert postgres("SELECT count(*) FROM document_chapters") == [["0"]]
+    assert postgres("SELECT count(*) FROM chunks") == [["0"]]
+
+
+# --- locking --------------------------------------------------------------------
+
+def test_a_held_refresh_does_not_block_reads_or_references_to_the_document(postgres):
+    """The refresh's row lock must not stall readers, or inserts into tables with a
+    foreign key to documents (reading_progress), which take FOR KEY SHARE."""
+    postgres(SEED)
+    _migrate(postgres)
+
+    holder = subprocess.Popen(
+        postgres.psql_args(), stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE, text=True,
+    )
+    holder.stdin.write(f"""
+        BEGIN;
+        SELECT refresh_document_outline('{DOC_A}');
+        SELECT pg_sleep(3);
+        COMMIT;
+    """)
+    holder.stdin.close()
+    deadline = time.monotonic() + 10
+    while postgres("""
+        SELECT count(*) FROM pg_stat_activity
+        WHERE state = 'active' AND query LIKE '%pg_sleep(3)%' AND pid <> pg_backend_pid()
+    """) != [["1"]]:
+        assert time.monotonic() < deadline, "holder never reached its hold"
+        time.sleep(0.05)
+
+    started = time.monotonic()
+    postgres(f"""
+        SET lock_timeout = '1s';
+        SELECT count(*) FROM documents WHERE id = '{DOC_A}';
+        INSERT INTO reading_progress (user_id, document_id, chapter_key)
+            VALUES (gen_random_uuid(), '{DOC_A}', 'c1');
+    """)
+    elapsed = time.monotonic() - started
+
+    holder.wait(timeout=30)
+    assert holder.returncode == 0, holder.stderr.read()
+    assert elapsed < 1.0
+
+
+def test_the_lock_timeout_ends_with_the_migration(postgres):
+    """SET LOCAL: a later migration in the same session keeps the default."""
+    postgres(SEED)
+    result = subprocess.run(
+        postgres.psql_args() + ["-A", "-t"],
+        input=f"BEGIN;\n{SCHEMA_MIGRATION.read_text()}\nCOMMIT;\n"
+              f"BEGIN;\n{BACKFILL_MIGRATION.read_text()}\nCOMMIT;\nSHOW lock_timeout;",
+        capture_output=True, text=True, timeout=30,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.split() == ["0"]

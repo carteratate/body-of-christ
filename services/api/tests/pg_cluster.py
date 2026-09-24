@@ -18,8 +18,9 @@ import pytest
 MIGRATIONS = Path(__file__).parents[3] / "supabase/migrations"
 
 # The corpus tables as production has them, reduced to the columns the reader and the
-# outline migrations touch (0004, 0008, 0013), plus the Supabase roles the migrations
-# revoke from. `content` defaults to '' only so structural fixtures can omit it.
+# outline migrations touch (0004, 0008, 0013), a table that references documents the
+# way reading_progress does (0027), and the Supabase roles the migrations revoke from.
+# `content` defaults to '' only so structural fixtures can omit it.
 CORPUS_SCHEMA = """
     CREATE ROLE anon NOLOGIN;
     CREATE ROLE authenticated NOLOGIN;
@@ -42,7 +43,14 @@ CORPUS_SCHEMA = """
         chapter_key text,
         chapter_label text,
         unit_label text,
+        annotation jsonb,
         UNIQUE (document_id, position)
+    );
+    CREATE TABLE reading_progress (
+        user_id uuid NOT NULL,
+        document_id uuid NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+        chapter_key text NOT NULL,
+        PRIMARY KEY (user_id, document_id)
     );
 """
 
@@ -72,8 +80,14 @@ class Cluster:
     __call__ = sql
 
     def migrate(self, *names: str) -> None:
+        """Apply migration files, each in its own transaction, as Supabase does."""
         for name in names:
-            self.sql((MIGRATIONS / name).read_text())
+            result = subprocess.run(
+                [*self.psql_args(), "--single-transaction"],
+                input=(MIGRATIONS / name).read_text(), capture_output=True, text=True,
+                timeout=30,
+            )
+            assert result.returncode == 0, result.stderr
 
 
 @contextlib.contextmanager

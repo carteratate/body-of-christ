@@ -9,10 +9,15 @@
 -- of a document already visited waits for the backfill to finish (a second or two for
 -- the current 421 documents: the aggregation alone measured 350 ms on production).
 --
+-- Do not run a collection wipe or prune (clear_collection, prune_missing_documents)
+-- while this runs: they lock documents rows in scan order, this in id order, so the two
+-- can deadlock. Postgres would abort one of them; rerun it.
+--
 -- Idempotent: each call replaces that document's outline, so rerunning is harmless.
 
 -- If a publish is holding a document row, fail fast and rerun rather than wait on it.
-SET lock_timeout = '5s';
+-- LOCAL ends with this transaction.
+SET LOCAL lock_timeout = '5s';
 
 DO $$
 DECLARE

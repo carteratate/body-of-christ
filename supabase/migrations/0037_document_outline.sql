@@ -7,13 +7,18 @@
 -- counted passages for every document. The outline only changes when a collection is
 -- published, so it is computed then instead.
 --
--- Maintained by `refresh_document_outline`, which the datapipeline's
--- `reader_writer.write_document` calls inside the transaction that writes a document's
--- chunks. Anything else that changes a document's chunk set, positions or chapter
--- fields must call it too. Deleting a document removes its outline by cascade.
---
--- Additive: until a document has been refreshed its chunk_count is NULL, and the API
--- falls back to deriving the outline from chunks, so deploy order does not matter.
+-- documents.chunk_count doubles as the outline's validity flag. NULL means "no current
+-- outline": the API then derives the structure from chunks exactly as before.
+--   * refresh_document_outline builds a document's outline and sets the count. The
+--     datapipeline's reader_writer.write_document calls it as the last statement of
+--     the transaction that writes the document's chunks.
+--   * The invalidate_document_outline triggers set the count back to NULL whenever a
+--     write changes a document's chunk set, positions or chapter fields, so an
+--     outline can never be served stale: a writer that does not refresh (an older
+--     datapipeline checkout, a manual fix) only returns that document to the fallback.
+--     Annotation-only updates (datapipeline enrichment) leave it alone.
+--   * Deleting a document removes its outline by cascade.
+-- So the API, the datapipeline and 0038's backfill can deploy in any order.
 --
 -- Schema only. The backfill is 0038, a separate migration, because a migration runs in
 -- one transaction: here the ADD COLUMN's ACCESS EXCLUSIVE lock on `documents` (which
@@ -21,9 +26,10 @@
 -- held for the whole 421-document backfill. Split, this transaction commits in
 -- milliseconds and 0038 takes only row locks, which readers do not wait on.
 
--- Fail fast rather than queue every reader behind the ADD COLUMN if a long-running
--- statement already holds a lock on `documents`; rerun the migration when it clears.
-SET lock_timeout = '5s';
+-- While the ADD COLUMN waits for its lock, every new reader of `documents` queues
+-- behind it. If a long-running statement holds the table, fail after 2 s rather than
+-- stall searches; rerun the migration when it clears. LOCAL ends with this transaction.
+SET LOCAL lock_timeout = '2s';
 
 ALTER TABLE documents
     ADD COLUMN chunk_count integer CHECK (chunk_count >= 0);
@@ -59,8 +65,10 @@ BEGIN
     -- in the same order. reader_writer.write_document has already locked it (its
     -- upsert) when it calls this; without this line, a concurrent backfill that locked
     -- the chapter rows first would wait on the document row while write_document waited
-    -- on the chapter rows: a deadlock.
-    PERFORM 1 FROM documents WHERE id = p_document_id FOR UPDATE;
+    -- on the chapter rows: a deadlock. NO KEY UPDATE, not UPDATE, because FOR UPDATE
+    -- also blocks the FOR KEY SHARE locks that inserts into tables referencing
+    -- documents take (reading_progress, product_feedback), stalling them until commit.
+    PERFORM 1 FROM documents WHERE id = p_document_id FOR NO KEY UPDATE;
 
     DELETE FROM document_chapters WHERE document_id = p_document_id;
 
@@ -80,8 +88,46 @@ BEGIN
 END;
 $$;
 
+-- Mark the outline of a document whose chunks change structurally as not current.
+-- Row-level on purpose: write_document issues one statement per passage, and statement
+-- triggers with transition tables cannot reuse plans, which made a Summa republish
+-- (26,750 passages) take 182 s instead of 3 s. As row triggers it costs ~3%. The
+-- `chunk_count IS NOT NULL` guard makes every row after a document's first a no-op
+-- read, and the UPDATE trigger's WHEN clause skips non-structural updates without
+-- calling the function (enrichment rewrites annotations on every chunk).
+CREATE FUNCTION public.invalidate_document_outline()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public
+AS $$
+BEGIN
+    IF TG_OP <> 'DELETE' THEN
+        UPDATE documents SET chunk_count = NULL
+        WHERE id = NEW.document_id AND chunk_count IS NOT NULL;
+    END IF;
+    IF TG_OP = 'DELETE' OR OLD.document_id IS DISTINCT FROM NEW.document_id THEN
+        UPDATE documents SET chunk_count = NULL
+        WHERE id = OLD.document_id AND chunk_count IS NOT NULL;
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER chunks_invalidate_outline_on_write
+    AFTER INSERT OR DELETE ON chunks
+    FOR EACH ROW EXECUTE FUNCTION public.invalidate_document_outline();
+
+CREATE TRIGGER chunks_invalidate_outline_on_restructure
+    AFTER UPDATE OF document_id, position, chapter_key, chapter_label ON chunks
+    FOR EACH ROW
+    WHEN ((OLD.document_id, OLD.position, OLD.chapter_key, OLD.chapter_label)
+          IS DISTINCT FROM (NEW.document_id, NEW.position, NEW.chapter_key, NEW.chapter_label))
+    EXECUTE FUNCTION public.invalidate_document_outline();
+
 -- Read by FastAPI (service role, which bypasses RLS) and written by the datapipeline.
 -- RLS with no policies plus the revokes keeps both out of the Data API.
 ALTER TABLE document_chapters ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON TABLE document_chapters FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.refresh_document_outline(uuid) FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.invalidate_document_outline() FROM PUBLIC, anon, authenticated;

@@ -104,14 +104,16 @@ async def test_outline_and_fallback_serve_identical_reader_responses(db):
 async def test_an_outlined_document_takes_its_structure_from_the_outline(db):
     """Once outlined, chunks are read only for the requested chapter's passages.
 
-    Proven by changing structure in chunks without a refresh, which production never
-    does (reader_writer.write_document refreshes in the same transaction): a route
-    still deriving the TOC or neighbors from chunks would answer differently.
+    Proven by changing structure in chunks with the invalidation triggers disabled, so
+    the outline stays current by its own flag: a route still deriving the TOC or
+    neighbors from chunks would answer differently.
     """
-    db.sql(f"SELECT refresh_document_outline('{DOC}')")
     db.sql(f"""
+        SELECT refresh_document_outline('{DOC}');
+        ALTER TABLE chunks DISABLE TRIGGER USER;
         UPDATE chunks SET chapter_label = 'stale' WHERE document_id = '{DOC}';
         UPDATE chunks SET chapter_key = 'renamed' WHERE document_id = '{DOC}' AND chapter_key = 'q3';
+        ALTER TABLE chunks ENABLE TRIGGER USER;
     """)
 
     toc = await get_document_toc(DOC, user=USER)
@@ -122,12 +124,31 @@ async def test_an_outlined_document_takes_its_structure_from_the_outline(db):
     assert (chapter.prev_chapter_key, chapter.next_chapter_key) == ("q1", "q3")
 
 
-async def test_a_chapter_missing_from_the_outline_falls_back_to_chunks(db):
-    """Chunks changed without a refresh: the reader derives neighbors instead of guessing."""
+async def test_a_writer_that_skips_the_refresh_cannot_leave_a_stale_outline(db):
+    """An older datapipeline or a manual fix changes chunks without refreshing: the
+    triggers clear the outline's flag and the reader serves the new structure."""
     db.sql(f"""
         SELECT refresh_document_outline('{DOC}');
+        UPDATE chunks SET chapter_key = 'renamed', chapter_label = 'Renamed'
+            WHERE document_id = '{DOC}' AND chapter_key = 'q3';
+    """)
+
+    toc = await get_document_toc(DOC, user=USER)
+    chapter = await get_document_reader(DOC, anchor=None, chapter="q2", user=USER)
+
+    assert [c.chapter_key for c in toc.chapters] == ["q1", "q2", "renamed", "q4"]
+    assert (chapter.prev_chapter_key, chapter.next_chapter_key) == ("q1", "renamed")
+
+
+async def test_a_chapter_missing_from_the_outline_falls_back_to_chunks(db):
+    """If the outline is flagged current but lacks a chapter (only possible with the
+    triggers bypassed), the reader derives neighbors instead of guessing."""
+    db.sql(f"""
+        SELECT refresh_document_outline('{DOC}');
+        ALTER TABLE chunks DISABLE TRIGGER USER;
         INSERT INTO chunks (document_id, position, content, anchor, chapter_key, chapter_label)
         VALUES ('{DOC}', 6, 'g', 'q5/a1', 'q5', 'Question 5');
+        ALTER TABLE chunks ENABLE TRIGGER USER;
     """)
 
     chapter = await get_document_reader(DOC, anchor=None, chapter="q5", user=USER)
