@@ -25,6 +25,9 @@ class Settings(BaseSettings):
 
     # Supabase / auth
     supabase_project_url: str = Field(validation_alias="SUPABASE_PROJECT_URL")
+    # Supabase custom domain (e.g. https://auth.theo-corpus.com). Once active, Auth may
+    # issue tokens naming it as iss, so the API accepts it alongside the project URL.
+    supabase_custom_domain_url: str = Field(default="", validation_alias="SUPABASE_CUSTOM_DOMAIN_URL")
     supabase_jwt_audience: str = Field(default="authenticated", validation_alias="SUPABASE_JWT_AUDIENCE")
     supabase_jwks_ttl_seconds: int = Field(default=600, validation_alias="SUPABASE_JWKS_TTL_SECONDS")
 
@@ -207,7 +210,7 @@ class Settings(BaseSettings):
     rate_limit_search_per_minute: int = Field(default=5, validation_alias="RATE_LIMIT_SEARCH_PER_MINUTE")
     daily_search_quota: int = Field(default=30, validation_alias="DAILY_SEARCH_QUOTA")
 
-    @field_validator("supabase_project_url", mode="before")
+    @field_validator("supabase_project_url", "supabase_custom_domain_url", mode="before")
     @classmethod
     def strip_trailing_slash(cls, v: str) -> str:
         return v.rstrip("/")

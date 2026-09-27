@@ -14,8 +14,9 @@ from app.models.auth import AuthUser
 _ALLOWED_ALGORITHMS = ["RS256", "ES256"]
 
 
-def _issuer() -> str:
-    return f"{settings.supabase_project_url}/auth/v1"
+def _issuers() -> set[str]:
+    urls = [settings.supabase_project_url, settings.supabase_custom_domain_url]
+    return {f"{url}/auth/v1" for url in urls if url}
 
 
 def _find_jwk(jwks: dict[str, Any], kid: str) -> dict[str, Any] | None:
@@ -81,16 +82,20 @@ async def verify_supabase_jwt(token: str) -> AuthUser:
             public_key,  # type: ignore[arg-type]
             algorithms=_ALLOWED_ALGORITHMS,
             audience=settings.supabase_jwt_audience,
-            issuer=_issuer(),
+            options={"require": ["iss"]},
         )
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidAudienceError:
         raise HTTPException(status_code=401, detail="Invalid audience")
-    except jwt.InvalidIssuerError:
+    except jwt.MissingRequiredClaimError:
         raise HTTPException(status_code=401, detail="Invalid issuer")
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token verification failed")
+
+    # PyJWT 2.8 compares iss against a single string, so check the allowed set here.
+    if payload.get("iss") not in _issuers():
+        raise HTTPException(status_code=401, detail="Invalid issuer")
 
     user_id: str | None = payload.get("sub")
     if not user_id:
