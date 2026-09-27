@@ -52,7 +52,17 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
         router.replace("/search");
       }
     });
-    return () => subscription.unsubscribe();
+    // Back from Google can restore this page from the back-forward cache with
+    // handleGoogle's loading state still set; unlock the form.
+    function handlePageShow(event: PageTransitionEvent) {
+      if (event.persisted) setLoading(false);
+    }
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener("pageshow", handlePageShow);
+    };
   }, [router, supabase]);
 
   function changeMode(nextMode: AuthMode) {

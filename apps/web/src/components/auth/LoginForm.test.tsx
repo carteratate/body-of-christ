@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LoginForm } from "./LoginForm";
@@ -87,6 +87,32 @@ describe("LoginForm", () => {
     expect(
       (screen.getByRole("button", { name: "Continue with Google" }) as HTMLButtonElement).disabled,
     ).toBe(false);
+  });
+
+  it("recovers when Google sign-in throws", async () => {
+    mocks.signInWithOAuth.mockRejectedValue(new Error("network down"));
+    render(<LoginForm />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Continue with Google" }));
+
+    expect((await screen.findByRole("alert")).textContent).toContain("couldn't reach the authentication service");
+    expect(
+      (screen.getByRole("button", { name: "Continue with Google" }) as HTMLButtonElement).disabled,
+    ).toBe(false);
+  });
+
+  it("unlocks the form when Back restores the page from the back-forward cache", async () => {
+    mocks.signInWithOAuth.mockReturnValue(new Promise(() => {}));
+    render(<LoginForm />);
+    const google = screen.getByRole("button", { name: "Continue with Google" }) as HTMLButtonElement;
+
+    await userEvent.click(google);
+    expect(google.disabled).toBe(true);
+
+    act(() => {
+      window.dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
+    });
+    expect(google.disabled).toBe(false);
   });
 
   it("explains an unfinished Google sign-in without blaming an email link", () => {
