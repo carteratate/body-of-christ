@@ -25,6 +25,10 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
       );
       url.searchParams.delete("error");
       window.history.replaceState(window.history.state, "", url);
+    } else if (url.searchParams.get("error") === "oauth") {
+      setError("Google sign-in didn't finish. Please try again.");
+      url.searchParams.delete("error");
+      window.history.replaceState(window.history.state, "", url);
     } else if (url.searchParams.get("reason") === "session-expired") {
       setMessage(
         "Your session expired. Sign in again to transfer the trial searches and saved passages kept in this browser.",
@@ -58,6 +62,28 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
     setConfirmPassword("");
     setError(null);
     setMessage(null);
+  }
+
+  async function handleGoogle() {
+    setError(null);
+    setMessage(null);
+    setLoading(true);
+    try {
+      // On success the browser leaves for Google, so loading stays set.
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback?next=/search`,
+        },
+      });
+      if (oauthError) {
+        setError("We couldn't start Google sign-in. Please try again.");
+        setLoading(false);
+      }
+    } catch {
+      setError("We couldn't reach the authentication service. Please try again.");
+      setLoading(false);
+    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -125,6 +151,26 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
             ? "Create an account"
             : "Reset your password"}
       </h2>
+
+      {mode !== "forgot-password" && (
+        <>
+          <button
+            type="button"
+            onClick={handleGoogle}
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-md border border-brand-muted/40 bg-brand-bg py-2 text-sm font-semibold text-brand-primary transition-opacity hover:opacity-90 disabled:opacity-50"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element -- static brand mark */}
+            <img src="/google-g.svg" alt="" width={18} height={18} />
+            Continue with Google
+          </button>
+          <div className="flex items-center gap-3 text-xs text-brand-muted">
+            <span className="h-px flex-1 bg-brand-muted/30" />
+            or use email
+            <span className="h-px flex-1 bg-brand-muted/30" />
+          </div>
+        </>
+      )}
 
       <div>
         <label htmlFor="email" className="mb-1 block text-sm text-brand-muted">

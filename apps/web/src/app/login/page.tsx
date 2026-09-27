@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { BrandLogo } from "@/components/common/BrandLogo";
 
@@ -20,6 +21,11 @@ export default function LoginPage() {
         <div className="rounded-xl border border-brand-surface bg-brand-surface p-6">
           <LoginForm />
         </div>
+        <p className="mt-4 text-center text-xs text-brand-muted">
+          <Link href="/privacy" className="hover:text-brand-accent">
+            Privacy Policy
+          </Link>
+        </p>
       </div>
     </div>
   );

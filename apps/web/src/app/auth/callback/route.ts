@@ -32,5 +32,8 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  // A provider that returns an error (e.g. the person cancelled on Google's
+  // consent screen) sends no code; don't blame an expired email link for it.
+  const reason = searchParams.has("error") ? "oauth" : "auth";
+  return NextResponse.redirect(`${origin}/login?error=${reason}`);
 }

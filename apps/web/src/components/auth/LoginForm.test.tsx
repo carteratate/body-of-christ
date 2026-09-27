@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   signInWithPassword: vi.fn(),
   signUp: vi.fn(),
   resetPasswordForEmail: vi.fn(),
+  signInWithOAuth: vi.fn(),
   unsubscribe: vi.fn(),
 }));
 
@@ -26,6 +27,7 @@ vi.mock("@/lib/supabase/client", () => ({
       signInWithPassword: mocks.signInWithPassword,
       signUp: mocks.signUp,
       resetPasswordForEmail: mocks.resetPasswordForEmail,
+      signInWithOAuth: mocks.signInWithOAuth,
     },
   }),
 }));
@@ -48,6 +50,8 @@ beforeEach(() => {
   mocks.signInWithPassword.mockReset();
   mocks.signUp.mockReset();
   mocks.resetPasswordForEmail.mockReset();
+  mocks.signInWithOAuth.mockReset();
+  mocks.signInWithOAuth.mockResolvedValue({ data: {}, error: null });
   mocks.unsubscribe.mockReset();
   mocks.signInWithPassword.mockResolvedValue({ error: null });
   mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
@@ -59,6 +63,40 @@ afterEach(() => {
 });
 
 describe("LoginForm", () => {
+  it("starts Google sign-in through the auth callback", async () => {
+    render(<LoginForm />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Continue with Google" }));
+
+    expect(mocks.signInWithOAuth).toHaveBeenCalledWith({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/search` },
+    });
+    expect(
+      (screen.getByRole("button", { name: "Continue with Google" }) as HTMLButtonElement).disabled,
+    ).toBe(true);
+  });
+
+  it("re-enables the form when Google sign-in cannot start", async () => {
+    mocks.signInWithOAuth.mockResolvedValue({ data: {}, error: new Error("provider disabled") });
+    render(<LoginForm />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Continue with Google" }));
+
+    expect((await screen.findByRole("alert")).textContent).toContain("couldn't start Google sign-in");
+    expect(
+      (screen.getByRole("button", { name: "Continue with Google" }) as HTMLButtonElement).disabled,
+    ).toBe(false);
+  });
+
+  it("explains an unfinished Google sign-in without blaming an email link", () => {
+    window.history.replaceState({}, "", "/login?error=oauth");
+    render(<LoginForm />);
+
+    expect(screen.getByRole("alert").textContent).toContain("Google sign-in didn't finish");
+    expect(window.location.search).toBe("");
+  });
+
   it("blocks signup and explains when the passwords do not match", async () => {
     render(<LoginForm />);
     await openSignUp();
