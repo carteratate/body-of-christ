@@ -23,61 +23,79 @@ export default function PrivacyPage() {
         <h1 className="mb-1 mt-4 text-2xl font-semibold text-brand-primary">Privacy Policy</h1>
         <p className="mb-8 text-sm text-brand-muted">Effective September 27, 2026</p>
 
-        <Section title="What we collect">
+        <div className="mb-10 rounded-xl border border-brand-surface bg-brand-surface p-5">
+          <p className="mb-3 text-sm font-semibold text-brand-primary">The short version</p>
+          <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-brand-primary">
+            <li>We save your searches, saved passages, and notes so they&apos;re there when you come back. Other people using TheoCorpus can&apos;t see them.</li>
+            <li>We don&apos;t sell your data, and there are no ads.</li>
+            <li>Our analytics aren&apos;t tied to your account and never record what you searched.</li>
+            <li>You can delete searches and saved passages yourself. Ask us and we&apos;ll delete your whole account.</li>
+          </ul>
+        </div>
+
+        <Section title="What we save">
           <p>
-            <strong>Account details.</strong> When you create an account we store your email address. If you
-            sign in with Google, Google shares your name, email address, and profile picture with us; we do
-            not receive your Google password or access to any other Google data.
+            When you make an account, we save your email address so you can sign in. If you sign in with Google,
+            Google also gives us your name and profile picture, and we save those too. We never see your Google
+            password.
           </p>
           <p>
-            <strong>What you do in TheoCorpus.</strong> Your searches and their results, saved passages and
-            the notes you attach to them, your reading position in documents, your preferences, and any
-            feedback you send.
+            Once you&apos;re signed in, we save your searches and the passages each one found, the passages you
+            bookmark, any notes you write on them, where you stopped reading, and your settings. That&apos;s how
+            your history and saved passages work. All of it is attached to your account.
           </p>
           <p>
-            <strong>Trial searches.</strong> If you search before creating an account, those searches are
-            stored against a random token kept in your browser, so they can move into your account if you
-            sign up.
+            You can try a few searches before making an account. Those are saved under a random code in your
+            browser, not under a name. If you sign up later, we move them into your account.
           </p>
+          <p>If you send us feedback, we keep what you wrote.</p>
+        </Section>
+
+        <Section title="Analytics">
           <p>
-            <strong>Usage analytics.</strong> We record product events (for example, that a search was run)
-            to understand how TheoCorpus is used. We do not record your screen or sessions.
+            We count things like how many searches run each day. Those counts aren&apos;t tied to your account, and
+            they never include the words you typed. We don&apos;t record your screen.
           </p>
         </Section>
 
-        <Section title="How we use it">
+        <Section title="IP addresses">
           <p>
-            To run the service: answer your searches, keep your history and saved passages, and remember
-            your settings. To improve search quality and fix problems. We do not sell your information and
-            we do not use it for advertising.
+            Every website sees your IP address when you load a page, and so do the companies that host and measure
+            ours. We use it to cap free trial searches and block feedback spam. For that we store a one-way hash of
+            it, which can&apos;t be turned back into the address.
           </p>
         </Section>
 
-        <Section title="Who processes it">
+        <Section title="Cookies and browser storage">
           <p>
-            TheoCorpus relies on service providers that process data on our behalf: Supabase (accounts and
-            database), Vercel and our API host (hosting), Qdrant (search index), PostHog (analytics), and
-            OpenAI, Anthropic, and Cohere, which receive the text of your search to find and explain
-            relevant passages. Each processes data only to provide its service to us.
+            One cookie keeps you signed in and another remembers light or dark mode. Your browser also holds your
+            trial code, passages you saved before signing up, and reader settings like font and line spacing.
+            PostHog, our analytics tool, sets its own cookie so a returning visitor isn&apos;t counted twice. We
+            don&apos;t use ad cookies.
           </p>
         </Section>
 
-        <Section title="Your choices">
+        <Section title="Companies we work with">
           <p>
-            You can delete individual searches from your history and remove saved passages at any time. To
-            delete your account and everything associated with it, or to ask what we hold about you, send a
-            request through the{" "}
+            TheoCorpus runs on Supabase, Vercel, OpenAI, Railway, Qdrant, Anthropic, PostHog, and Cohere. Some of
+            them handle the text of your searches, because that&apos;s how we find matching
+            passages. We send them the search text only, never your name or email address.
+          </p>
+        </Section>
+
+        <Section title="Deleting your data">
+          <p>
+            You can delete any search from your history, and remove any saved passage, whenever you want. To delete
+            your whole account, or to find out what we hold about you, send a note through the{" "}
             <Link href="/guest/feedback" className="text-brand-accent hover:opacity-80">
               feedback form
             </Link>{" "}
-            and include the email address on your account.
+            with your account&apos;s email address and we&apos;ll handle it.
           </p>
         </Section>
 
         <Section title="Changes">
-          <p>
-            If this policy changes, we will update this page and its effective date.
-          </p>
+          <p>If this policy changes, we&apos;ll update this page and the date at the top.</p>
         </Section>
       </div>
     </div>
