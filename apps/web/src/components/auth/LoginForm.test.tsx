@@ -70,7 +70,7 @@ describe("LoginForm", () => {
 
     expect(mocks.signInWithOAuth).toHaveBeenCalledWith({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/search` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/search&flow=google` },
     });
     expect(
       (screen.getByRole("button", { name: "Continue with Google" }) as HTMLButtonElement).disabled,

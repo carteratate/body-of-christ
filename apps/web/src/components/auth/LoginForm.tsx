@@ -73,7 +73,7 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/search`,
+          redirectTo: `${window.location.origin}/auth/callback?next=/search&flow=google`,
         },
       });
       if (oauthError) {

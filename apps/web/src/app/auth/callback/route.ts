@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // A provider that returns an error (e.g. the person cancelled on Google's
-  // consent screen) sends no code; don't blame an expired email link for it.
-  const reason = searchParams.has("error") ? "oauth" : "auth";
+  // Email links land here too, so only a flow LoginForm marked as Google gets
+  // the Google message; an expired confirmation link keeps its own.
+  const reason = searchParams.get("flow") === "google" ? "oauth" : "auth";
   return NextResponse.redirect(`${origin}/login?error=${reason}`);
 }
