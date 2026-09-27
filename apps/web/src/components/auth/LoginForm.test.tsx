@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => ({
   signUp: vi.fn(),
   resetPasswordForEmail: vi.fn(),
   signInWithOAuth: vi.fn(),
+  signInWithIdToken: vi.fn(),
   unsubscribe: vi.fn(),
 }));
 
@@ -28,8 +29,28 @@ vi.mock("@/lib/supabase/client", () => ({
       signUp: mocks.signUp,
       resetPasswordForEmail: mocks.resetPasswordForEmail,
       signInWithOAuth: mocks.signInWithOAuth,
+      signInWithIdToken: mocks.signInWithIdToken,
     },
   }),
+}));
+
+// Renders the redirect fallback (as when no client ID is set) plus a hook that
+// plays the part of Google's button handing back a credential.
+vi.mock("./GoogleSignInButton", () => ({
+  GoogleSignInButton: ({
+    onCredential,
+    fallback,
+  }: {
+    onCredential: (token: string, nonce: string) => void;
+    fallback: React.ReactNode;
+  }) => (
+    <>
+      {fallback}
+      <button type="button" onClick={() => onCredential("id-token", "raw-nonce")}>
+        Simulate Google credential
+      </button>
+    </>
+  ),
 }));
 
 function deferred<T>() {
@@ -52,6 +73,8 @@ beforeEach(() => {
   mocks.resetPasswordForEmail.mockReset();
   mocks.signInWithOAuth.mockReset();
   mocks.signInWithOAuth.mockResolvedValue({ data: {}, error: null });
+  mocks.signInWithIdToken.mockReset();
+  mocks.signInWithIdToken.mockResolvedValue({ data: {}, error: null });
   mocks.unsubscribe.mockReset();
   mocks.signInWithPassword.mockResolvedValue({ error: null });
   mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
@@ -63,6 +86,37 @@ afterEach(() => {
 });
 
 describe("LoginForm", () => {
+  it("signs in with the ID token and raw nonce from Google's button", async () => {
+    render(<LoginForm />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Simulate Google credential" }));
+
+    expect(mocks.signInWithIdToken).toHaveBeenCalledWith({
+      provider: "google",
+      token: "id-token",
+      nonce: "raw-nonce",
+    });
+  });
+
+  it("explains when Supabase rejects the Google ID token", async () => {
+    mocks.signInWithIdToken.mockResolvedValue({ data: {}, error: new Error("nonce mismatch") });
+    render(<LoginForm />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Simulate Google credential" }));
+
+    expect((await screen.findByRole("alert")).textContent).toContain("Google sign-in didn't finish");
+    expect((screen.getByLabelText("Email") as HTMLInputElement).disabled).toBe(false);
+  });
+
+  it("recovers when the ID-token sign-in throws", async () => {
+    mocks.signInWithIdToken.mockRejectedValue(new Error("network down"));
+    render(<LoginForm />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Simulate Google credential" }));
+
+    expect((await screen.findByRole("alert")).textContent).toContain("couldn't reach the authentication service");
+  });
+
   it("starts Google sign-in through the auth callback", async () => {
     render(<LoginForm />);
 
