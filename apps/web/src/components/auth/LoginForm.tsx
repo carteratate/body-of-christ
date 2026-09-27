@@ -188,6 +188,7 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
         <>
           <GoogleSignInButton
             onCredential={handleGoogleCredential}
+            disabled={loading}
             fallback={
               <button
                 type="button"

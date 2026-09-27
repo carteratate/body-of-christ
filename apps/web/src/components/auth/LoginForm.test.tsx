@@ -40,13 +40,15 @@ vi.mock("./GoogleSignInButton", () => ({
   GoogleSignInButton: ({
     onCredential,
     fallback,
+    disabled,
   }: {
     onCredential: (token: string, nonce: string) => void;
     fallback: React.ReactNode;
+    disabled?: boolean;
   }) => (
     <>
       {fallback}
-      <button type="button" onClick={() => onCredential("id-token", "raw-nonce")}>
+      <button type="button" data-disabled={disabled} onClick={() => onCredential("id-token", "raw-nonce")}>
         Simulate Google credential
       </button>
     </>
@@ -96,6 +98,17 @@ describe("LoginForm", () => {
       token: "id-token",
       nonce: "raw-nonce",
     });
+  });
+
+  it("disables Google's button while the ID-token sign-in is in flight", async () => {
+    mocks.signInWithIdToken.mockReturnValue(new Promise(() => {}));
+    render(<LoginForm />);
+    const google = screen.getByRole("button", { name: "Simulate Google credential" });
+    expect(google.getAttribute("data-disabled")).toBe("false");
+
+    await userEvent.click(google);
+
+    expect(google.getAttribute("data-disabled")).toBe("true");
   });
 
   it("explains when Supabase rejects the Google ID token", async () => {

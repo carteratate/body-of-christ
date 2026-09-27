@@ -75,6 +75,34 @@ describe("GoogleSignInButton", () => {
     expect(onCredential).toHaveBeenCalledWith("id-token", "raw-1");
     await waitFor(() => expect(mocks.initialize).toHaveBeenCalledTimes(2));
     expect(mocks.initialize.mock.calls[1][0].nonce).toBe("hashed-2");
+    // Re-arming reuses the button already on the page rather than drawing a second one.
+    expect(mocks.renderButton).toHaveBeenCalledTimes(1);
+  });
+
+  it("blocks clicks on Google's button while the form is busy", async () => {
+    const { container, rerender } = render(
+      <GoogleSignInButton onCredential={vi.fn()} fallback={fallback} disabled />,
+    );
+    await waitFor(() => expect(mocks.renderButton).toHaveBeenCalled());
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.className).toContain("pointer-events-none");
+    expect(wrapper.getAttribute("aria-disabled")).toBe("true");
+
+    rerender(<GoogleSignInButton onCredential={vi.fn()} fallback={fallback} />);
+    expect(wrapper.className).not.toContain("pointer-events-none");
+  });
+
+  it("does nothing if it unmounts before Google's script arrives", async () => {
+    let finishLoading!: (value: unknown) => void;
+    mocks.load.mockReturnValue(new Promise((resolve) => (finishLoading = resolve)));
+    const { unmount } = render(<GoogleSignInButton onCredential={vi.fn()} fallback={fallback} />);
+
+    unmount();
+    finishLoading({ initialize: mocks.initialize, renderButton: mocks.renderButton });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(mocks.initialize).not.toHaveBeenCalled();
+    expect(mocks.renderButton).not.toHaveBeenCalled();
   });
 
   it("falls back to the redirect button when the script fails", async () => {

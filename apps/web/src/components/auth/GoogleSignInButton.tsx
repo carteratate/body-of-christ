@@ -13,9 +13,11 @@ type Status = "loading" | "ready" | "fallback";
 export function GoogleSignInButton({
   onCredential,
   fallback,
+  disabled = false,
 }: {
   onCredential: (token: string, nonce: string) => void;
   fallback: React.ReactNode;
+  disabled?: boolean;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const handler = useRef(onCredential);
@@ -29,8 +31,9 @@ export function GoogleSignInButton({
     if (!GOOGLE_CLIENT_ID) return;
     let cancelled = false;
 
-    // Each sign-in attempt needs its own nonce, so this runs again after a credential arrives.
-    async function setUp() {
+    // Each sign-in attempt needs its own nonce, so a credential re-runs initialize with a
+    // fresh one. Google uses the latest initialize for the button already on the page.
+    async function setUp(render: boolean) {
       try {
         const [google, nonce] = await Promise.all([loadGoogleIdentity(), createNonce()]);
         const parent = container.current;
@@ -44,9 +47,10 @@ export function GoogleSignInButton({
           use_fedcm_for_button: true,
           callback: ({ credential }) => {
             handler.current(credential, nonce.raw);
-            void setUp();
+            void setUp(false);
           },
         });
+        if (!render) return;
         google.renderButton(parent, {
           theme: document.documentElement.dataset.theme === "light" ? "outline" : "filled_black",
           size: "large",
@@ -61,7 +65,7 @@ export function GoogleSignInButton({
       }
     }
 
-    void setUp();
+    void setUp(true);
     return () => {
       cancelled = true;
     };
@@ -70,5 +74,13 @@ export function GoogleSignInButton({
   if (status === "fallback") return <>{fallback}</>;
 
   // Google draws the button inside this div; the fixed height stops the form jumping while it loads.
-  return <div ref={container} className="flex h-10 w-full justify-center" aria-busy={status === "loading"} />;
+  // Google's button can't be disabled itself, so block clicks on its container instead.
+  return (
+    <div
+      ref={container}
+      className={`flex h-10 w-full justify-center ${disabled ? "pointer-events-none opacity-50" : ""}`}
+      aria-busy={status === "loading"}
+      aria-disabled={disabled}
+    />
+  );
 }
