@@ -18,7 +18,7 @@ export interface GoogleButtonOptions {
   shape: "rectangular" | "pill";
   logo_alignment: "left" | "center";
   width: number;
-  locale: string;
+  locale?: string;
 }
 
 export interface GoogleAccountsId {

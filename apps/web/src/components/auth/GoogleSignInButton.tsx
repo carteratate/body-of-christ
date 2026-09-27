@@ -44,6 +44,7 @@ export function GoogleSignInButton({
   useEffect(() => {
     if (!GOOGLE_CLIENT_ID) return;
     let cancelled = false;
+    let settleTimer: number | undefined;
 
     // Each sign-in attempt needs its own nonce, so a credential re-runs initialize with a
     // fresh one. Google uses the latest initialize for the button already on the page.
@@ -80,9 +81,12 @@ export function GoogleSignInButton({
         // behind it until then so the spot never sits empty.
         const frame = parent.querySelector("iframe");
         if (frame) {
-          const settle = () => !cancelled && setStatus("ready");
+          const settle = () => {
+            window.clearTimeout(settleTimer);
+            if (!cancelled) setStatus("ready");
+          };
           frame.addEventListener("load", settle, { once: true });
-          window.setTimeout(settle, 3000); // stop the placeholder pulsing even if load never fires
+          settleTimer = window.setTimeout(settle, 3000); // stop the placeholder pulsing even if load never fires
         } else {
           setStatus("ready");
         }
@@ -94,6 +98,7 @@ export function GoogleSignInButton({
     void setUp(true);
     return () => {
       cancelled = true;
+      window.clearTimeout(settleTimer);
     };
   }, []);
 
@@ -108,7 +113,7 @@ export function GoogleSignInButton({
       aria-disabled={disabled}
     >
       {status === "loading" && (
-        <div aria-hidden="true" className="absolute inset-0 animate-pulse rounded-md bg-brand-bg" />
+        <div aria-hidden="true" className="absolute inset-0 animate-pulse rounded bg-brand-bg" />
       )}
       {/* color-scheme matches Google's light iframe document: with the site's dark scheme the
           browser would paint the iframe white until Google's own styles arrive. */}

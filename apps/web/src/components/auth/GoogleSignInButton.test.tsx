@@ -123,6 +123,32 @@ describe("GoogleSignInButton", () => {
     expect(mocks.renderButton).toHaveBeenCalledTimes(1);
   });
 
+  it("stops the placeholder after 3 s even if Google's frame never loads", async () => {
+    // shouldAdvanceTime keeps waitFor working while the 3 s timer stays under test control.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      mocks.renderButton.mockImplementation((parent: HTMLElement) => {
+        parent.appendChild(document.createElement("iframe"));
+      });
+      const { container } = render(<GoogleSignInButton onCredential={vi.fn()} fallback={fallback} />);
+      await waitFor(() => expect(mocks.renderButton).toHaveBeenCalled());
+      const wrapper = container.firstElementChild as HTMLElement;
+      expect(wrapper.getAttribute("aria-busy")).toBe("true");
+
+      act(() => {
+        vi.advanceTimersByTime(2900);
+      });
+      expect(wrapper.getAttribute("aria-busy")).toBe("true");
+
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(wrapper.getAttribute("aria-busy")).toBe("false");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("blocks clicks on Google's button while the form is busy", async () => {
     const { container, rerender } = render(
       <GoogleSignInButton onCredential={vi.fn()} fallback={fallback} disabled />,
