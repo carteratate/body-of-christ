@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { GoogleSignInButton } from "./GoogleSignInButton";
 
 type AuthMode = "sign-in" | "sign-up" | "forgot-password";
 
@@ -97,27 +96,6 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
     }
   }
 
-  async function handleGoogleCredential(token: string, nonce: string) {
-    setError(null);
-    setMessage(null);
-    setLoading(true);
-    try {
-      // On success onAuthStateChange sends the person to /search, so loading stays set.
-      const { error: idTokenError } = await supabase.auth.signInWithIdToken({
-        provider: "google",
-        token,
-        nonce,
-      });
-      if (idTokenError) {
-        setError("Google sign-in didn't finish. Please try again.");
-        setLoading(false);
-      }
-    } catch {
-      setError("We couldn't reach the authentication service. Please try again.");
-      setLoading(false);
-    }
-  }
-
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
@@ -186,22 +164,16 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
 
       {mode !== "forgot-password" && (
         <>
-          <GoogleSignInButton
-            onCredential={handleGoogleCredential}
+          <button
+            type="button"
+            onClick={handleGoogle}
             disabled={loading}
-            fallback={
-              <button
-                type="button"
-                onClick={handleGoogle}
-                disabled={loading}
-                className="flex w-full items-center justify-center gap-2 rounded-md border border-brand-muted/40 bg-brand-bg py-2 text-sm font-semibold text-brand-primary transition-opacity hover:opacity-90 disabled:opacity-50"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- static brand mark */}
-                <img src="/google-g.svg" alt="" width={18} height={18} />
-                Continue with Google
-              </button>
-            }
-          />
+            className="flex w-full items-center justify-center gap-2 rounded-md border border-brand-muted/40 bg-brand-bg py-2 text-sm font-semibold text-brand-primary transition-opacity hover:opacity-90 disabled:opacity-50"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element -- static brand mark */}
+            <img src="/google-g.svg" alt="" width={18} height={18} />
+            Continue with Google
+          </button>
           <div className="flex items-center gap-3 text-xs text-brand-muted">
             <span className="h-px flex-1 bg-brand-muted/30" />
             or use email

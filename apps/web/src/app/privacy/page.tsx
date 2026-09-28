@@ -70,9 +70,8 @@ export default function PrivacyPage() {
           <p>
             One cookie keeps you signed in and another remembers light or dark mode. Your browser also holds your
             trial code, passages you saved before signing up, and reader settings like font and line spacing.
-            PostHog, our analytics tool, sets its own cookie so a returning visitor isn&apos;t counted twice.
-            On the sign-in page, Google&apos;s button can read Google&apos;s own cookies to show which account
-            you&apos;re signed in to. We don&apos;t use ad cookies.
+            PostHog, our analytics tool, sets its own cookie so a returning visitor isn&apos;t counted twice. We
+            don&apos;t use ad cookies.
           </p>
         </Section>
 
@@ -81,10 +80,6 @@ export default function PrivacyPage() {
             TheoCorpus runs on Supabase, Vercel, OpenAI, Railway, Qdrant, Anthropic, PostHog, and Cohere. Some of
             them handle the text of your searches, because that&apos;s how we find matching
             passages. We send them the search text only, never your name or email address.
-          </p>
-          <p>
-            The sign-in and sign-up pages load Google&apos;s sign-in button. That means Google sees visits to
-            those pages, including their IP address, even if you sign in with email.
           </p>
         </Section>
 

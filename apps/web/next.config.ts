@@ -8,9 +8,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 // proper nonce-based CSP requires per-request middleware and is deferred.
 // The directives below still provide meaningful protection.
 const cspDirectives = [
-  // accounts.google.com/gsi/: Google's sign-in button (lib/google-identity.ts), per Google's CSP guide.
-  `connect-src 'self' https://app.posthog.com https://eu.posthog.com https://accounts.google.com/gsi/${apiUrl ? ` ${apiUrl}` : ""}${supabaseUrl ? ` ${supabaseUrl}` : ""}`,
-  "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style",
+  `connect-src 'self' https://app.posthog.com https://eu.posthog.com${apiUrl ? ` ${apiUrl}` : ""}${supabaseUrl ? ` ${supabaseUrl}` : ""}`,
+  "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
   "frame-ancestors 'none'",
