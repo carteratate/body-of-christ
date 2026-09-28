@@ -4,8 +4,7 @@
 
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
-export const GIS_ORIGIN = "https://accounts.google.com";
-export const GIS_SCRIPT_SRC = `${GIS_ORIGIN}/gsi/client`;
+const GIS_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
 
 export interface GoogleCredentialResponse {
   credential: string;
@@ -18,7 +17,6 @@ export interface GoogleButtonOptions {
   shape: "rectangular" | "pill";
   logo_alignment: "left" | "center";
   width: number;
-  locale?: string;
 }
 
 export interface GoogleAccountsId {
