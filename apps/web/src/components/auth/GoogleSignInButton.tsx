@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createNonce, GOOGLE_CLIENT_ID, loadGoogleIdentity } from "@/lib/google-identity";
+import { preconnect, preload } from "react-dom";
+import {
+  createNonce,
+  GIS_ORIGIN,
+  GIS_SCRIPT_SRC,
+  GOOGLE_CLIENT_ID,
+  loadGoogleIdentity,
+} from "@/lib/google-identity";
 
 type Status = "loading" | "ready" | "fallback";
 
@@ -23,6 +30,13 @@ export function GoogleSignInButton({
   const handler = useRef(onCredential);
   const [status, setStatus] = useState<Status>(GOOGLE_CLIENT_ID ? "loading" : "fallback");
 
+  // React hoists these into the server-rendered <head>, so the browser fetches Google's
+  // script alongside the page's own JavaScript instead of after hydration.
+  if (GOOGLE_CLIENT_ID) {
+    preconnect(GIS_ORIGIN);
+    preload(GIS_SCRIPT_SRC, { as: "script" });
+  }
+
   useEffect(() => {
     handler.current = onCredential;
   }, [onCredential]);
@@ -30,6 +44,7 @@ export function GoogleSignInButton({
   useEffect(() => {
     if (!GOOGLE_CLIENT_ID) return;
     let cancelled = false;
+    let settleTimer: number | undefined;
 
     // Each sign-in attempt needs its own nonce, so a credential re-runs initialize with a
     // fresh one. Google uses the latest initialize for the button already on the page.
@@ -58,8 +73,23 @@ export function GoogleSignInButton({
           shape: "rectangular",
           logo_alignment: "center",
           width: Math.min(400, Math.max(200, parent.offsetWidth)),
+          // Otherwise Google follows the browser or Google account language, so the
+          // button can read "Continuar com o Google" in an English-only interface.
+          locale: "en",
         });
-        setStatus("ready");
+        // Google draws the button in an iframe that loads on its own; the placeholder stays
+        // behind it until then so the spot never sits empty.
+        const frame = parent.querySelector("iframe");
+        if (frame) {
+          const settle = () => {
+            window.clearTimeout(settleTimer);
+            if (!cancelled) setStatus("ready");
+          };
+          frame.addEventListener("load", settle, { once: true });
+          settleTimer = window.setTimeout(settle, 3000); // stop the placeholder pulsing even if load never fires
+        } else {
+          setStatus("ready");
+        }
       } catch {
         if (!cancelled) setStatus("fallback");
       }
@@ -68,19 +98,26 @@ export function GoogleSignInButton({
     void setUp(true);
     return () => {
       cancelled = true;
+      window.clearTimeout(settleTimer);
     };
   }, []);
 
   if (status === "fallback") return <>{fallback}</>;
 
-  // Google draws the button inside this div; the fixed height stops the form jumping while it loads.
-  // Google's button can't be disabled itself, so block clicks on its container instead.
+  // Google draws the button inside `container`; the placeholder holds its size and place until
+  // then. Google's button can't be disabled itself, so the wrapper blocks clicks instead.
   return (
     <div
-      ref={container}
-      className={`flex h-10 w-full justify-center ${disabled ? "pointer-events-none opacity-50" : ""}`}
+      className={`relative h-10 w-full ${disabled ? "pointer-events-none opacity-50" : ""}`}
       aria-busy={status === "loading"}
       aria-disabled={disabled}
-    />
+    >
+      {status === "loading" && (
+        <div aria-hidden="true" className="absolute inset-0 animate-pulse rounded bg-brand-bg" />
+      )}
+      {/* color-scheme matches Google's light iframe document: with the site's dark scheme the
+          browser would paint the iframe white until Google's own styles arrive. */}
+      <div ref={container} className="relative flex h-10 w-full justify-center" style={{ colorScheme: "light" }} />
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { GoogleCredentialResponse } from "@/lib/google-identity";
 
@@ -10,9 +10,19 @@ const mocks = vi.hoisted(() => ({
   initialize: vi.fn(),
   renderButton: vi.fn(),
   nonces: [] as { raw: string; hashed: string }[],
+  preconnect: vi.fn(),
+  preload: vi.fn(),
+}));
+
+vi.mock("react-dom", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("react-dom")>()),
+  preconnect: mocks.preconnect,
+  preload: mocks.preload,
 }));
 
 vi.mock("@/lib/google-identity", () => ({
+  GIS_ORIGIN: "https://accounts.google.com",
+  GIS_SCRIPT_SRC: "https://accounts.google.com/gsi/client",
   get GOOGLE_CLIENT_ID() {
     return mocks.clientId;
   },
@@ -32,6 +42,8 @@ beforeEach(() => {
   mocks.clientId = "client-123";
   mocks.initialize.mockReset();
   mocks.renderButton.mockReset();
+  mocks.preconnect.mockReset();
+  mocks.preload.mockReset();
   mocks.load.mockReset();
   mocks.load.mockResolvedValue({ initialize: mocks.initialize, renderButton: mocks.renderButton });
   mocks.nonces = [
@@ -53,8 +65,40 @@ describe("GoogleSignInButton", () => {
     expect(mocks.initialize).toHaveBeenCalledWith(
       expect.objectContaining({ client_id: "client-123", nonce: "hashed-1", ux_mode: "popup" }),
     );
-    expect(mocks.renderButton.mock.calls[0][1]).toMatchObject({ theme: "filled_black", text: "continue_with" });
+    expect(mocks.renderButton.mock.calls[0][1]).toMatchObject({
+      theme: "filled_black",
+      text: "continue_with",
+      locale: "en",
+    });
     expect(screen.queryByText("Fallback Google")).toBeNull();
+  });
+
+  it("asks the browser to fetch Google's script early", () => {
+    render(<GoogleSignInButton onCredential={vi.fn()} fallback={fallback} />);
+
+    expect(mocks.preconnect).toHaveBeenCalledWith("https://accounts.google.com");
+    expect(mocks.preload).toHaveBeenCalledWith("https://accounts.google.com/gsi/client", { as: "script" });
+  });
+
+  it("keeps the placeholder up until Google's button frame has loaded", async () => {
+    let frame!: HTMLIFrameElement;
+    mocks.renderButton.mockImplementation((parent: HTMLElement) => {
+      frame = document.createElement("iframe");
+      parent.appendChild(frame);
+    });
+    const { container } = render(<GoogleSignInButton onCredential={vi.fn()} fallback={fallback} />);
+    await waitFor(() => expect(mocks.renderButton).toHaveBeenCalled());
+
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.getAttribute("aria-busy")).toBe("true");
+    expect(wrapper.querySelector(".animate-pulse")).not.toBeNull();
+
+    act(() => {
+      frame.dispatchEvent(new Event("load"));
+    });
+
+    expect(wrapper.getAttribute("aria-busy")).toBe("false");
+    expect(wrapper.querySelector(".animate-pulse")).toBeNull();
   });
 
   it("uses the outline style on the light theme", async () => {
@@ -77,6 +121,32 @@ describe("GoogleSignInButton", () => {
     expect(mocks.initialize.mock.calls[1][0].nonce).toBe("hashed-2");
     // Re-arming reuses the button already on the page rather than drawing a second one.
     expect(mocks.renderButton).toHaveBeenCalledTimes(1);
+  });
+
+  it("stops the placeholder after 3 s even if Google's frame never loads", async () => {
+    // shouldAdvanceTime keeps waitFor working while the 3 s timer stays under test control.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      mocks.renderButton.mockImplementation((parent: HTMLElement) => {
+        parent.appendChild(document.createElement("iframe"));
+      });
+      const { container } = render(<GoogleSignInButton onCredential={vi.fn()} fallback={fallback} />);
+      await waitFor(() => expect(mocks.renderButton).toHaveBeenCalled());
+      const wrapper = container.firstElementChild as HTMLElement;
+      expect(wrapper.getAttribute("aria-busy")).toBe("true");
+
+      act(() => {
+        vi.advanceTimersByTime(2900);
+      });
+      expect(wrapper.getAttribute("aria-busy")).toBe("true");
+
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(wrapper.getAttribute("aria-busy")).toBe("false");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("blocks clicks on Google's button while the form is busy", async () => {
@@ -118,5 +188,6 @@ describe("GoogleSignInButton", () => {
 
     expect(screen.getByText("Fallback Google")).toBeTruthy();
     expect(mocks.load).not.toHaveBeenCalled();
+    expect(mocks.preload).not.toHaveBeenCalled();
   });
 });
