@@ -256,7 +256,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 - **Acceptance checks:**
   - Cutover log in the tracking issue records every step's time, counts before and after, the public ledger counts, smoke results and the 4.2 result.
   - Retrieval, bookmark, label and guest-result counts after equal counts before, minus merged rows in the ledger.
-  - Point count in `chunks-republish-2026-10` equals the staged passage count (all passages, searchable or not), and the count with `searchable = false` equals the staged non-searchable count.
+  - Point count in `chunks-republish-2026-10` equals the staged passage count (all passages, searchable or not; this republish stages every collection, so no points are copied, see 2.2w stage step 7), and the count with `searchable = false` equals the staged non-searchable count.
   - Zero documents with `chunk_count IS NULL` after step 7.
   - No error-level API log lines about missing chunks in the hour after cutover (filter `@logger:app.rag` in Railway).
 - **Production safety:** Everything before step 6 is invisible to users (the `staging` schema, and a Qdrant collection not behind the alias). There is no release column and no second copy in `chunks`. Step 6 is one transaction, so users see the old corpus or the new one, never a mix. Step 8 is one alias switch with an inverse. The old Qdrant collection and every retired row stay until step 13, so rollback is always possible inside the window. Deletions happen only after an assertion of zero references, because every chunk foreign key cascades.
