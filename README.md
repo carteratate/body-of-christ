@@ -195,6 +195,7 @@ migration extending the DB collection constraint.
 | `canon-law` | 1983 Code of Canon Law |
 | `apostolic-exhortations` | Apostolic Exhortations |
 | `papal-documents` | Papal Documents |
+| `roman-curia` | Roman Curia (Dicastery for the Doctrine of the Faith); not yet offered in the app |
 
 Source provenance for each collection is documented in `datapipeline/SOURCES.md`.
 

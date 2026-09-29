@@ -224,6 +224,12 @@ COLLECTION_NOTES: dict[str, str] = {
         "evident step from the wording itself; otherwise inferential, regardless of how "
         "historically significant the effect turns out to be."
     ),
+    "roman-curia": (
+        "The judgment or response the document gives, as worded = explicit. Its reasons "
+        "are explicit where the text states them. Applications to cases the document does "
+        "not name are settled only when they follow in one evident step from its wording; "
+        "otherwise inferential, whatever the document's authority."
+    ),
 }
 
 

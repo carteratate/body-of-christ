@@ -138,7 +138,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034 and 0036–0038 are committed; `0035_studies.sql` is drafted only (see above). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034 and 0036–0039 are committed; `0035_studies.sql` is drafted only (see above). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -370,7 +370,8 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 15. Collections — Canonical Source
 
-- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`), 10 collections.
+- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`), 11 collections.
+- **A collection can be accepted but not yet offered.** `roman-curia` is in `VALID_COLLECTIONS` and has a label and color in `collections.ts` (`UNRELEASED_COLLECTIONS`), but it is not in `COLLECTIONS`, so the app offers no toggle for it until its documents are published. Releasing it means moving it into `COLLECTIONS` and adding it to the collection list in the `/evaluate` prompt (`routes/evaluate.py`).
 - **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection).
 - **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 

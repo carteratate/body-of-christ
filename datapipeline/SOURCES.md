@@ -12,6 +12,7 @@ Status of each collection's source material and its publication to both stores
 | **encyclicals** | local `sources/encyclicals/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per encyclical (131); one passage per §; section or §-bucket chapters; footnotes stripped |
 | **apostolic-exhortations** | local `sources/apostolic-exhortations/*.html` (vendored from vatican.va) | ✅ | one document per exhortation (30); numbered-paragraph passages |
 | **papal-documents** | local `sources/papal-documents/*.html` (vendored from vatican.va) | ✅ | one document per papal text (14); numbered-paragraph passages |
+| **roman-curia** | local `sources/roman-curia/*.html` (vendored from vatican.va, Dicastery for the Doctrine of the Faith) | ✅ | one document per doctrinal text (61, 1966-2026); real §-numbered passages where the text numbers its paragraphs, otherwise section-grouped passages; endnotes, title block and signatures dropped |
 | **canon-law** | local `sources/canon-law/*.html` (vendored from vatican.va) | ✅ | single doc; one passage per canon (1,747); Book by canon-range; Book/Title/Chapter chapters (233) |
 | **councils** | local `sources/councils/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per council / Vatican II document (36); canon + §-paragraph passages |
 | **medieval** | local `sources/medieval/*.xml` (vendored from ccel.org ThML) | ✅ | one doc per (author, work) (6); reuses the church-fathers ThML builder |

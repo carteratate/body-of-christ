@@ -4,7 +4,7 @@ from __future__ import annotations
 from model import Document
 from ingest import (church_fathers, summa, bible, catechism, medieval,
                     encyclicals, councils, canon_law,
-                    apostolic_exhortations, papal_documents)
+                    apostolic_exhortations, papal_documents, roman_curia)
 
 BUILDERS = {
     "church-fathers": church_fathers.build_all,
@@ -15,6 +15,7 @@ BUILDERS = {
     "encyclicals": encyclicals.build_documents,
     "apostolic-exhortations": apostolic_exhortations.build_documents,
     "papal-documents": papal_documents.build_documents,
+    "roman-curia": roman_curia.build_documents,
     "councils": councils.build_documents,
     "canon-law": canon_law.build_documents,
 }

@@ -135,6 +135,7 @@ def test_source_adapter_registry_exactly_matches_production_collections():
         "encyclicals",
         "medieval",
         "papal-documents",
+        "roman-curia",
         "summa",
     }
     assert all(callable(adapter) for adapter in SOURCE_ADAPTERS.values())

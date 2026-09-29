@@ -1,6 +1,6 @@
 """Vendor the web-fetched corpus sources to local files for reproducible ingest.
 
-Downloads the church-fathers / medieval / encyclicals / councils / canon-law raw sources into
+Downloads the church-fathers / medieval / encyclicals / councils / canon-law / roman-curia raw sources into
 ``sources/<collection>/`` and writes a ``manifest.json`` per collection capturing
 (title, author, year, url, file) for each document. The dual-pipeline adapters
 then read these local files instead of hitting the network at ingest time
@@ -490,6 +490,106 @@ def vendor_papal_documents(force: bool) -> None:
     _write_manifest(d, manifest)
 
 
+# Doctrinal documents of the Dicastery for the Doctrine of the Faith (the Congregation
+# for the Doctrine of the Faith before 5 June 2022). A curated teaching subset: rulings on
+# individual theologians, judgments on particular alleged apparitions, procedural norms
+# and press material are left out (docs/research/2026-09-28-cdf-ddf-udg-source-memo.md).
+# The issuer is the name printed at publication. Genre is the document's own designation.
+_DDF = "https://www.vatican.va/roman_curia/congregations/cfaith/documents/"
+_SCDF = "Sacred Congregation for the Doctrine of the Faith"
+_CDF = "Congregation for the Doctrine of the Faith"
+_DDFN = "Dicastery for the Doctrine of the Faith"
+
+ROMAN_CURIA = [
+    # (title, issuer, year, genre, url)
+    ("Cum Oecumenicum Concilium", _SCDF, 1966, "Letter", _DDF + "rc_con_cfaith_doc_19660724_epistula_en.html"),
+    ("Mysterium Filii Dei", _SCDF, 1972, "Declaration", _DDF + "rc_con_cfaith_doc_19720221_mysterium-filii-dei_en.html"),
+    ("Mysterium Ecclesiae", _SCDF, 1973, "Declaration", _DDF + "rc_con_cfaith_doc_19730705_mysterium-ecclesiae_en.html"),
+    ("Declaration on Procured Abortion", _SCDF, 1974, "Declaration", _DDF + "rc_con_cfaith_doc_19741118_declaration-abortion_en.html"),
+    ("Christian Faith and Demonology", _SCDF, 1975, "Study", _DDF + "rc_con_cfaith_doc_19750626_fede-cristiana-demonologia_en.html"),
+    ("Persona Humana", _SCDF, 1975, "Declaration", _DDF + "rc_con_cfaith_doc_19751229_persona-humana_en.html"),
+    ("Inter Insigniores", _SCDF, 1976, "Declaration", _DDF + "rc_con_cfaith_doc_19761015_inter-insigniores_en.html"),
+    ("Recentiores Episcoporum Synodi", _SCDF, 1979, "Letter", _DDF + "rc_con_cfaith_doc_19790517_escatologia_en.html"),
+    ("Iura et Bona", _SCDF, 1980, "Declaration", _DDF + "rc_con_cfaith_doc_19800505_eutanasia_en.html"),
+    ("Pastoralis Actio", _SCDF, 1980, "Instruction", _DDF + "rc_con_cfaith_doc_19801020_pastoralis_actio_en.html"),
+    ("Sacerdotium Ministeriale", _SCDF, 1983, "Letter", _DDF + "rc_con_cfaith_doc_19830806_sacerdotium-ministeriale_en.html"),
+    ("Declaration on Masonic Associations", _SCDF, 1983, "Declaration", _DDF + "rc_con_cfaith_doc_19831126_declaration-masonic_en.html"),
+    ("Libertatis Nuntius", _SCDF, 1984, "Instruction", _DDF + "rc_con_cfaith_doc_19840806_theology-liberation_en.html"),
+    ("Libertatis Conscientia", _SCDF, 1986, "Instruction", _DDF + "rc_con_cfaith_doc_19860322_freedom-liberation_en.html"),
+    ("Homosexualitatis Problema", _SCDF, 1986, "Letter", _DDF + "rc_con_cfaith_doc_19861001_homosexual-persons_en.html"),
+    ("Donum Vitae", _SCDF, 1987, "Instruction", _DDF + "rc_con_cfaith_doc_19870222_respect-for-human-life_en.html"),
+    ("Orationis Formas", _CDF, 1989, "Letter", _DDF + "rc_con_cfaith_doc_19891015_meditazione-cristiana_en.html"),
+    ("Donum Veritatis", _CDF, 1990, "Instruction", _DDF + "rc_con_cfaith_doc_19900524_theologian-vocation_en.html"),
+    ("Communionis Notio", _CDF, 1992, "Letter", _DDF + "rc_con_cfaith_doc_28051992_communionis-notio_en.html"),
+    ("Considerations on Legislative Proposals on the Non-Discrimination of Homosexual Persons", _CDF, 1992, "Considerations", _DDF + "rc_con_cfaith_doc_19920724_homosexual-persons_en.html"),
+    ("Responses on Uterine Isolation", _CDF, 1994, "Responses", _DDF + "rc_con_cfaith_doc_31071994_uterine-isolation_en.html"),
+    ("Annus Internationalis Familiae", _CDF, 1994, "Letter", _DDF + "rc_con_cfaith_doc_14091994_rec-holy-comm-by-divorced_en.html"),
+    ("Responsum ad Dubium on Ordinatio Sacerdotalis", _CDF, 1995, "Responsum", _DDF + "rc_con_cfaith_doc_19951028_dubium-ordinatio-sac_en.html"),
+    ("Doctrinal Commentary on the Concluding Formula of the Professio Fidei", _CDF, 1998, "Doctrinal Commentary", _DDF + "rc_con_cfaith_doc_1998_professio-fidei_en.html"),
+    ("The Primacy of the Successor of Peter in the Mystery of the Church", _CDF, 1998, "Considerations", _DDF + "rc_con_cfaith_doc_19981031_primato-successore-pietro_en.html"),
+    ("The Message of Fatima", _CDF, 2000, "Document", _DDF + "rc_con_cfaith_doc_20000626_message-fatima_en.html"),
+    ("Note on the Expression Sister Churches", _CDF, 2000, "Note", _DDF + "rc_con_cfaith_doc_20000630_chiese-sorelle_en.html"),
+    ("Dominus Iesus", _CDF, 2000, "Declaration", _DDF + "rc_con_cfaith_doc_20000806_dominus-iesus_en.html"),
+    ("Response on the Validity of Baptism Conferred by the Church of Jesus Christ of Latter-day Saints", _CDF, 2001, "Response", _DDF + "rc_con_cfaith_doc_20010605_battesimo_mormoni_en.html"),
+    ("Doctrinal Note on the Participation of Catholics in Political Life", _CDF, 2002, "Doctrinal Note", _DDF + "rc_con_cfaith_doc_20021124_politica_en.html"),
+    ("Considerations Regarding Proposals to Give Legal Recognition to Unions Between Homosexual Persons", _CDF, 2003, "Considerations", _DDF + "rc_con_cfaith_doc_20030731_homosexual-unions_en.html"),
+    ("Letter on the Collaboration of Men and Women in the Church and in the World", _CDF, 2004, "Letter", _DDF + "rc_con_cfaith_doc_20040731_collaboration_en.html"),
+    ("Note on the Minister of the Sacrament of the Anointing of the Sick", _CDF, 2005, "Note", _DDF + "rc_con_cfaith_doc_20050211_unzione-infermi_en.html"),
+    ("Responses to Some Questions Regarding Certain Aspects of the Doctrine on the Church", _CDF, 2007, "Responses", _DDF + "rc_con_cfaith_doc_20070629_responsa-quaestiones_en.html"),
+    ("Responses on Artificial Nutrition and Hydration", _CDF, 2007, "Responses", _DDF + "rc_con_cfaith_doc_20070801_risposte-usa_en.html"),
+    ("Doctrinal Note on Some Aspects of Evangelization", _CDF, 2007, "Doctrinal Note", _DDF + "rc_con_cfaith_doc_20071203_nota-evangelizzazione_en.html"),
+    ("Response on the Validity of Baptism", _CDF, 2008, "Response", _DDF + "rc_con_cfaith_doc_20080201_validity-baptism_en.html"),
+    ("Dignitas Personae", _CDF, 2008, "Instruction", _DDF + "rc_con_cfaith_doc_20081208_dignitas-personae_en.html"),
+    ("Clarification on Procured Abortion", _CDF, 2009, "Clarification", _DDF + "rc_con_cfaith_doc_20090711_aborto-procurato_en.html"),
+    ("Iuvenescit Ecclesia", _CDF, 2016, "Letter", _DDF + "rc_con_cfaith_doc_20160516_iuvenescit-ecclesia_en.html"),
+    ("Ad Resurgendum cum Christo", _CDF, 2016, "Instruction", _DDF + "rc_con_cfaith_doc_20160815_ad-resurgendum-cum-christo_en.html"),
+    ("Oeconomicae et Pecuniariae Quaestiones", _CDF, 2018, "Considerations", _DDF + "rc_con_cfaith_doc_20180106_oeconomicae-et-pecuniariae_en.html"),
+    ("Placuit Deo", _CDF, 2018, "Letter", _DDF + "rc_con_cfaith_doc_20180222_placuit-deo_en.html"),
+    ("Letter to the Bishops on the Revision of Catechism 2267 on the Death Penalty", _CDF, 2018, "Letter", _DDF + "rc_con_cfaith_doc_20180801_lettera-vescovi-penadimorte_en.html"),
+    ("Doctrinal Note on the Modification of the Sacramental Formula of Baptism", _CDF, 2020, "Doctrinal Note", _DDF + "rc_cdf_doc_20200624_responsum-nota-battesimo_en.html"),
+    ("Samaritanus Bonus", _CDF, 2020, "Letter", _DDF + "rc_con_cfaith_doc_20200714_samaritanus-bonus_en.html"),
+    ("Note on the Morality of Using Some Anti-Covid-19 Vaccines", _CDF, 2020, "Note", _DDF + "rc_con_cfaith_doc_20201221_nota-vaccini-anticovid_en.html"),
+    ("Responsum to a Dubium Regarding the Blessing of the Unions of Persons of the Same Sex", _CDF, 2021, "Responsum", _DDF + "rc_con_cfaith_doc_20210222_responsum-dubium-unioni_en.html"),
+    ("Responses of the Holy Father to the Dubia of Two Cardinals", _DDFN, 2023, "Responses", "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_risposta-dubia-2023_en.html"),
+    ("Responses to Cardinal Duka on the Eucharist for the Divorced in a New Union", _DDFN, 2023, "Responses", _DDF + "rc_con_cfaith_pro_20230925_risposte-card-duka_en.html"),
+    ("Responses to Bishop Negri on Baptism and Marriage for Transgender and Homosexual Persons", _DDFN, 2023, "Responses", _DDF + "rc_ddf_20231031-documento-mons-negri_en.html"),
+    ("Response to Bishop Cortes on Catholic Membership in Freemasonry", _DDFN, 2023, "Response", _DDF + "rc_ddf_doc_20231113_richiesta-cortes-massoneria_en.html"),
+    ("Response to Cardinal Zuppi on the Preservation of the Ashes of the Deceased", _DDFN, 2023, "Response", _DDF + "rc_ddf_doc_20231209_risposta-card-zuppi-ceneri_en.html"),
+    ("Fiducia Supplicans", _DDFN, 2023, "Declaration", _DDF + "rc_ddf_doc_20231218_fiducia-supplicans_en.html"),
+    ("Gestis Verbisque", _DDFN, 2024, "Note", _DDF + "rc_ddf_doc_20240202_gestis-verbisque_en.html"),
+    ("Dignitas Infinita", _DDFN, 2024, "Declaration", _DDF + "rc_ddf_doc_20240402_dignitas-infinita_en.html"),
+    ("Norms for Proceeding in the Discernment of Alleged Supernatural Phenomena", _DDFN, 2024, "Norms", _DDF + "rc_ddf_doc_20240517_norme-fenomeni-soprannaturali_en.html"),
+    ("Antiqua et Nova", _DDFN, 2025, "Note", _DDF + "rc_ddf_doc_20250128_antiqua-et-nova_en.html"),
+    ("Mater Populi Fidelis", _DDFN, 2025, "Doctrinal Note", _DDF + "rc_ddf_doc_20251104_mater-populi-fidelis_en.html"),
+    ("Una Caro", _DDFN, 2025, "Doctrinal Note", _DDF + "rc_ddf_doc_20251125_una-caro_en.html"),
+    ("A Journey of Hope", _DDFN, 2026, "Doctrinal Note", _DDF + "rc_ddf_doc_20260916_nota-cammino-speranza_en.html"),
+]
+
+
+def vendor_roman_curia(force: bool) -> None:
+    d = os.path.join(_SOURCES, "roman-curia")
+    os.makedirs(d, exist_ok=True)
+    manifest = []
+    seen_slugs: set[str] = set()
+    with _client() as client:
+        for title, issuer, year, genre, url in ROMAN_CURIA:
+            base_slug = _slug(title)
+            slug = base_slug if base_slug not in seen_slugs else f"{base_slug}-{year}"
+            seen_slugs.add(slug)
+            fname = slug + ".html"
+            if not (os.path.exists(os.path.join(d, fname)) and not force):
+                data = _fetch(client, url)
+                if data is None:
+                    continue
+                _save(d, fname, data, force)
+                time.sleep(_DELAY)
+            else:
+                print(f"  skip (exists): {fname}")
+            manifest.append({"title": title, "author": issuer, "year": year, "genre": genre,
+                             "url": url, "slug": slug, "file": fname})
+    _write_manifest(d, manifest)
+
+
 def vendor_councils(force: bool) -> None:
     d = os.path.join(_SOURCES, "councils")
     os.makedirs(d, exist_ok=True)
@@ -632,6 +732,7 @@ VENDORS = {
     "encyclicals": vendor_encyclicals,
     "apostolic-exhortations": vendor_apostolic_exhortations,
     "papal-documents": vendor_papal_documents,
+    "roman-curia": vendor_roman_curia,
     "councils": vendor_councils,
     "canon-law": vendor_canon_law,
 }

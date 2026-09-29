@@ -41,7 +41,7 @@ _ALL_PIPELINES = ["hyde_haiku", "hyde_cohere", "hyde_cohere_haiku", "hyde_cohere
 _ALL_COLLECTIONS = [
     "bible", "catechism", "summa", "encyclicals", "councils",
     "church-fathers", "medieval", "canon-law", "apostolic-exhortations",
-    "papal-documents",
+    "papal-documents", "roman-curia",
 ]
 _COST_PER_QUERY_EST = 0.34  # all 4 pipelines + judge
 

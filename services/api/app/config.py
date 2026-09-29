@@ -129,7 +129,7 @@ class Settings(BaseSettings):
     # Per-search cap on concurrent Cohere calls (one call per collection). 10 is
     # the collection count, so an all-collections search reranks in one round
     # instead of three. Account-wide pacing is cohere_max_calls_per_minute.
-    cohere_concurrency: int = Field(default=10, validation_alias="COHERE_CONCURRENCY")
+    cohere_concurrency: int = Field(default=11, validation_alias="COHERE_CONCURRENCY")
     # Client-side throttle. Cohere Trial keys allow 10 requests/minute; Production
     # keys allow 1000. Per-collection fan-out issues one call per collection, so a
     # multi-pipeline batch run trips a Trial limit almost immediately — and a 429

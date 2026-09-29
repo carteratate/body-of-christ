@@ -4,7 +4,7 @@ from __future__ import annotations
 from enrichment.prompts.base import compose_generation_system
 from enrichment.prompts.generation import (
     bible, catechism, summa, encyclicals, church_fathers, medieval,
-    councils, canon_law, apostolic_exhortations, papal_documents,
+    councils, canon_law, apostolic_exhortations, papal_documents, roman_curia,
 )
 
 _GUIDANCE = {
@@ -18,6 +18,7 @@ _GUIDANCE = {
     "canon-law": canon_law.GUIDANCE,
     "apostolic-exhortations": apostolic_exhortations.GUIDANCE,
     "papal-documents": papal_documents.GUIDANCE,
+    "roman-curia": roman_curia.GUIDANCE,
 }
 
 

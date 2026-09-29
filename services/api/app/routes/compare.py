@@ -149,7 +149,7 @@ _HTML_VIEWER = """<!DOCTYPE html>
 <div id="results"></div>
 
 <script>
-const COLLECTIONS = ["bible","catechism","summa","encyclicals","councils","church-fathers","medieval","canon-law","apostolic-exhortations","papal-documents"];
+const COLLECTIONS = ["bible","catechism","summa","encyclicals","councils","church-fathers","medieval","canon-law","apostolic-exhortations","papal-documents","roman-curia"];
 const PIPELINES = __PIPELINE_NAMES__;
 
 const collDiv = document.getElementById("collectionChecks");

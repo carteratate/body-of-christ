@@ -18,10 +18,18 @@ export const COLLECTIONS: CollectionMeta[] = [
   { key: "papal-documents",        label: "Papal Documents",        color: "var(--color-collection-papal-documents)",        hex: "#b86080" },
 ];
 
+// Collections the API accepts but the app does not offer yet, because their documents
+// are not published. They get a label and color wherever a stored result names them,
+// and move into COLLECTIONS in the change that releases them.
+const UNRELEASED_COLLECTIONS: CollectionMeta[] = [
+  { key: "roman-curia",            label: "Roman Curia",            color: "var(--color-collection-roman-curia)",            hex: "#b0d040" },
+];
+
 export const ALL_COLLECTION_KEYS: string[] = COLLECTIONS.map((c) => c.key);
 
 export function getCollectionMeta(key: string): CollectionMeta | undefined {
-  return COLLECTIONS.find((c) => c.key === key);
+  return COLLECTIONS.find((c) => c.key === key)
+    ?? UNRELEASED_COLLECTIONS.find((c) => c.key === key);
 }
 
 export function hexToRgb(hex: string): string {

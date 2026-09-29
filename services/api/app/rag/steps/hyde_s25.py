@@ -249,6 +249,17 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
         "operative or teaching character. Return only the passage, without a citation label or "
         "signature. An essential title may appear within the prose."
     ),
+    "roman-curia": (
+        "Write one paragraph of about 110-160 words in the manner of a doctrinal document of "
+        "the Dicastery for the Doctrine of the Faith: a declaration, instruction, note, or "
+        "response to a question. State the Church's judgment on the question as that office "
+        "would, and give the reasons it would give, drawing on Scripture, Tradition, and the "
+        "Magisterium only when the subject calls for them. For a moral or bioethical question, "
+        "name the act and whether it is licit. For a broad question, connect its main concepts "
+        "in one coherent paragraph. Keep precise doctrinal and moral terms. Do not invent what a "
+        "named document says or cite a paragraph number. Return only the passage, without a "
+        "citation label, heading, or signature. An essential title may appear within the prose."
+    ),
 }
 
 _BIBLE_SELECTED_GENRE_COUNT = 4
@@ -321,6 +332,7 @@ _COLLECTION_MAX_TOKENS: dict[str, int] = {
     "councils": 450,
     "medieval": 350,
     "canon-law": 350,
+    "roman-curia": 350,
 }
 _DEFAULT_MAX_TOKENS = 300
 

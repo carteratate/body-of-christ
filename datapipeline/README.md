@@ -13,7 +13,7 @@ adapters build domain objects; they do not write to either store directly.
 ## Source data
 
 Source files are required before publication. Provenance and acquisition instructions
-for all ten collections live in [`SOURCES.md`](SOURCES.md). The adapters registered in
+for all eleven collections live in [`SOURCES.md`](SOURCES.md). The adapters registered in
 `publication.py` are:
 
 | Collection | Source adapter |
@@ -27,6 +27,7 @@ for all ten collections live in [`SOURCES.md`](SOURCES.md). The adapters registe
 | `encyclicals` | `ingest/encyclicals.py` |
 | `medieval` | `ingest/medieval.py` |
 | `papal-documents` | `ingest/papal_documents.py` |
+| `roman-curia` | `ingest/roman_curia.py` |
 | `summa` | `ingest/summa.py` |
 
 Vendored adapters read local files under `sources/<collection>/`; they do not fetch

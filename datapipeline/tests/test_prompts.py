@@ -5,7 +5,7 @@ from enrichment.prompts.classification import classification_system, COLLECTION_
 from enrichment.prompts.annotation import ANNOTATION_SYSTEM
 
 ALL = ["bible", "catechism", "summa", "encyclicals", "church-fathers",
-       "medieval", "councils", "canon-law", "apostolic-exhortations", "papal-documents"]
+       "medieval", "councils", "canon-law", "apostolic-exhortations", "papal-documents", "roman-curia"]
 
 
 # --- Pass 1: generation scaffolding ---

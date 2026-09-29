@@ -41,6 +41,7 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
     "encyclicals": lambda: _build_from("encyclicals", "build_documents"),
     "medieval": lambda: _build_from("medieval", "build_documents"),
     "papal-documents": lambda: _build_from("papal_documents", "build_documents"),
+    "roman-curia": lambda: _build_from("roman_curia", "build_documents"),
     "summa": lambda: _build_from("summa", "build_document", single=True),
 }
 

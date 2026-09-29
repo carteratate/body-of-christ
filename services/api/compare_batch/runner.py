@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 ALL_COLLECTIONS = [
     "bible", "catechism", "summa", "encyclicals", "councils",
     "church-fathers", "medieval", "canon-law", "apostolic-exhortations",
-    "papal-documents",
+    "papal-documents", "roman-curia",
 ]
 
 ALL_PIPELINES = ["hyde_haiku", "hyde_cohere", "hyde_cohere_haiku", "hyde_cohere_luna"]

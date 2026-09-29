@@ -31,6 +31,7 @@ const PALETTE: Record<string, { hex: string; label: string; short: string }> = {
   "councils":                 { hex: "#60d4c8", label: "Councils",       short: "CO" },
   "apostolic-exhortations":   { hex: "#4858c8", label: "Apost. Exhort.", short: "AE" },
   "papal-documents":          { hex: "#b86080", label: "Papal Docs",     short: "PD" },
+  "roman-curia":              { hex: "#b0d040", label: "Roman Curia",    short: "RC" },
 };
 
 const ACCENT = "#C4972A";
