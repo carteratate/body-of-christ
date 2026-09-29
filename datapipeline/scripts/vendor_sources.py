@@ -491,10 +491,12 @@ def vendor_papal_documents(force: bool) -> None:
 
 
 # Doctrinal documents of the Dicastery for the Doctrine of the Faith (the Congregation
-# for the Doctrine of the Faith before 5 June 2022). A curated teaching subset: rulings on
-# individual theologians, judgments on particular alleged apparitions, procedural norms
-# and press material are left out (docs/research/2026-09-28-cdf-ddf-udg-source-memo.md).
-# The issuer is the name printed at publication. Genre is the document's own designation.
+# for the Doctrine of the Faith before 5 June 2022). A curated teaching subset. Left out:
+# rulings on individual theologians, judgments on particular alleged apparitions and the
+# Fatima dossier, procedural and penal norms, and press material. The 2024 general norms
+# for discerning alleged supernatural phenomena are kept because they state how the
+# Church judges such claims. The issuer is the name printed at publication; genre is the
+# document's own designation.
 _DDF = "https://www.vatican.va/roman_curia/congregations/cfaith/documents/"
 _SCDF = "Sacred Congregation for the Doctrine of the Faith"
 _CDF = "Congregation for the Doctrine of the Faith"
@@ -527,7 +529,6 @@ ROMAN_CURIA = [
     ("Responsum ad Dubium on Ordinatio Sacerdotalis", _CDF, 1995, "Responsum", _DDF + "rc_con_cfaith_doc_19951028_dubium-ordinatio-sac_en.html"),
     ("Doctrinal Commentary on the Concluding Formula of the Professio Fidei", _CDF, 1998, "Doctrinal Commentary", _DDF + "rc_con_cfaith_doc_1998_professio-fidei_en.html"),
     ("The Primacy of the Successor of Peter in the Mystery of the Church", _CDF, 1998, "Considerations", _DDF + "rc_con_cfaith_doc_19981031_primato-successore-pietro_en.html"),
-    ("The Message of Fatima", _CDF, 2000, "Document", _DDF + "rc_con_cfaith_doc_20000626_message-fatima_en.html"),
     ("Note on the Expression Sister Churches", _CDF, 2000, "Note", _DDF + "rc_con_cfaith_doc_20000630_chiese-sorelle_en.html"),
     ("Dominus Iesus", _CDF, 2000, "Declaration", _DDF + "rc_con_cfaith_doc_20000806_dominus-iesus_en.html"),
     ("Response on the Validity of Baptism Conferred by the Church of Jesus Christ of Latter-day Saints", _CDF, 2001, "Response", _DDF + "rc_con_cfaith_doc_20010605_battesimo_mormoni_en.html"),

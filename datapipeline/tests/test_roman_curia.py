@@ -83,26 +83,94 @@ def test_numbered_section_title_is_a_heading_not_a_paragraph():
     assert [(k, n) for k, n, _ in toks] == [("para", 1), ("section", None), ("para", 2)]
 
 
+def test_bare_numbered_notes_are_cut():
+    body = [f"{n}. {LONG}" for n in range(1, 6)]
+    notes = ["1 Cf. John Paul II, Fides et ratio, 13.", "2 Ibid., 22.", "3 Cf. DS 3074."]
+    assert cut_notes(body + notes) == body
+
+
+def test_question_keeps_its_answer_and_short_reply_joins():
+    toks = _toks(LONG, "FIRST QUESTION", "Did the Council change the doctrine on the Church?",
+                 "RESPONSE", LONG, "Is it licit to perform the procedure?", "R. Negative.")
+    kinds = [(k, t[:10]) for k, _, t in toks]
+    assert ("section", "FIRST QUES") in kinds
+    paras = [t for k, _, t in toks if k == "para"]
+    assert paras[-2].startswith("Response: ")
+    assert paras[-1].endswith("R. Negative.")
+
+
+def test_inline_markers_and_sup_markers_are_removed():
+    html = ("<html><body><p>It was stated by the Council.<sup>3</sup></p>"
+            f"<p>Among the signs of our age (12) the Church notes this. {LONG}</p></body></html>")
+    toks = tokens(BeautifulSoup(html, "lxml"))
+    text = " ".join(t for _, _, t in toks)
+    assert "(12)" not in text and "Council.3" not in text and "Council. 3" not in text
+    # With its marker gone the first line ends a sentence, so it is body text, not title.
+    assert toks[0][0] == "para"
+
+
+def test_latin_paragraph_is_dropped():
+    latin = ("Videtur etiam Ecclesiam catholicam esse solam veram Ecclesiam Christi, "
+             "quae in terris subsistit et non est nisi una")
+    toks = _toks(LONG, latin, LONG)
+    assert all("Videtur" not in t for _, _, t in toks)
+
+
+def test_dateline_and_papal_signature_are_not_headings():
+    toks = _toks(LONG, "Vatican City, 10 July 2023", "Leo PP. XIV", LONG)
+    assert not any(k == "section" for k, _, _ in toks)
+
+
 @pytest.mark.skipif(not _vendored, reason="roman-curia not vendored")
 def test_every_vendored_document_builds_clean_passages():
     docs = build_documents()
-    assert len(docs) == 61
+    assert len(docs) == 60
     for d in docs:
         assert d.collection == "roman-curia"
         assert d.passages, f"{d.title} produced no passages"
         anchors = [p.anchor for p in d.passages]
         assert len(anchors) == len(set(anchors)), f"duplicate anchors in {d.title}"
+        units = [p.unit_label for p in d.passages if p.unit_label and "/p" not in p.anchor]
+        assert len(units) == len(set(units)), f"repeated paragraph labels in {d.title}"
         for p in d.passages:
-            assert not re.search(r"(^|\n)[\[(]\s*\d+\s*[\])]\s", p.content), \
-                f"endnote text in {d.title}: {p.content[:80]}"
+            assert len(p.content) >= 25, f"fragment in {d.title}: {p.content!r}"
             assert "DE - EN" not in p.content
+            assert not re.search(r"[a-z.,;:”\"»]\s?\(\d{1,3}\)", p.content), \
+                f"inline note marker in {d.title}"
+            for para in p.content.split("\n\n"):
+                assert not re.match(r"^(?:[\[(]\s*\d{1,3}\s*[\])]|\d{1,3}\s+(?:Cf\.|Ibid))", para), \
+                    f"endnote text in {d.title}: {para[:80]}"
+
+
+@pytest.mark.skipif(not _vendored, reason="roman-curia not vendored")
+def test_question_and_answer_document_keeps_pairs_together():
+    by_title = {d.title: d for d in build_documents()}
+    doc = by_title["Responses to Some Questions Regarding Certain Aspects of the Doctrine on the Church"]
+    answered = [p for p in doc.passages if "Question" in p.chapter_label]
+    assert len({p.chapter_label for p in answered}) == 5
+    for label in {p.chapter_label for p in answered}:
+        text = "\n".join(p.content for p in answered if p.chapter_label == label)
+        assert "?" in text and "Response:" in text
+    assert not any("Respondetur" in p.content or "Act Syn" in p.content for p in doc.passages)
+
+
+@pytest.mark.skipif(not _vendored, reason="roman-curia not vendored")
+def test_combined_page_keeps_only_the_commentary():
+    by_title = {d.title: d for d in build_documents()}
+    doc = by_title["Doctrinal Commentary on the Concluding Formula of the Professio Fidei"]
+    text = "\n".join(p.content for p in doc.passages)
+    assert doc.passages[0].content.startswith("From her very beginning")
+    assert "We order that everything decreed by us" not in text  # the motu proprio
 
 
 @pytest.mark.skipif(not _vendored, reason="roman-curia not vendored")
 def test_paragraph_numbers_are_real():
-    """A numbered document's §n labels follow its own numbering, in order."""
+    """A numbered document's labels follow its own numbering."""
     by_title = {d.title: d for d in build_documents()}
     nums = [int(p.unit_label[1:]) for p in by_title["Dignitas Infinita"].passages if p.unit_label]
     assert nums == sorted(nums) and nums[0] == 1 and nums[-1] == 66
     # Persona Humana numbers nothing; no passage may claim a paragraph number.
     assert all(p.unit_label is None for p in by_title["Persona Humana"].passages)
+    # Libertatis Nuntius restarts its numbering in each part, so labels carry the part.
+    labels = [p.unit_label for p in by_title["Libertatis Nuntius"].passages if p.unit_label]
+    assert "VIII, 3" in labels and "§3" not in labels

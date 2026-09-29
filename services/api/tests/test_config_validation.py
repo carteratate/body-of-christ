@@ -31,7 +31,7 @@ def test_concurrency_defaults_let_a_full_search_run_in_one_round(monkeypatch):
 
     HyDE must let every passage call of a full search run at once: 4 Bible genres
     plus one per other collection. (The Bible genre pick finishes before its 4
-    genre calls start, so it never needs a 14th slot.) Cohere must cover one call
+    genre calls start, so it never needs a 15th slot.) Cohere must cover one call
     per collection.
     """
     from app.rag.constants import VALID_COLLECTIONS
