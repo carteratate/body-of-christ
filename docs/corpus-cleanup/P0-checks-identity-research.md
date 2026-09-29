@@ -1,11 +1,13 @@
 # P0: checks, provenance, identity, safety, and research
 
+**Before implementing any item in this file, follow `README.md` in this folder. It says to ask Carter the item's open questions first, record the answers, and update other specs only in the ways it allows.**
+
 1. Phase 0 builds the guard rails every later corpus change is measured against. It changes no live data.
 2. First CI and a PR template (0.0), so each later PR shows green source-free tests and a pasted local source-check report.
 3. Then the publish lock (0.4), which must merge before any Phase 1 adapter PR. Today a routine `run_collection.py` run would cascade-delete saved user rows. The lock stays in force after P4: every publish, then and later, needs a reviewed lock-file change that names its collection and release (D2).
 4. Then the source checks, in this order: coverage and sequence tests (0.1a), health rules (0.1b, whose H2 rule uses 0.1a's `known_defects.json`), and the release report with its old-to-new remap (0.1c). 0.1c defines the remap vocabulary (`same`, `moved`, `split`, `merged`, `renumbered`, `removed`, D5) and fails any build where an unchanged anchor's text drifts without a redirect (D1).
 5. Then provenance: a tracked hash lock for every vendored file plus a public-facts rights inventory (0.2).
-6. Then identity: the work registry (2.1). It freezes today's 421 document IDs and today's passage IDs, moves anchors to source structure without re-keying any passage (D1), holds the rule A and attribution fields, and holds the one removal registry that every later removal is recorded in (D4). Its PR is the first real user of the 0.1c remap.
+6. Then identity: the work registry (2.1). It freezes today's 421 document IDs and today's passage IDs, moves anchors to source structure without re-keying any passage (D1), holds the rule A and attribution fields, and holds the one removal registry that every later removal is recorded in (D4). It also defines, in Python, the genre list, the work model and the passage fields `searchable`, `language` and `passage_author`, so Phase 1 adapters can use them before Phase 2 (D11). Its PR is the first real user of the 0.1c remap.
 7. Then the baseline eval (0.3), run with judging against the live corpus before any live change (D7), and the Qdrant limits read (0.5) and storage snapshot (0.6), both read-only ops.
 8. Research items R1 to R6 need no code and can start on day one in parallel. Each entry names the items it blocks. R1 blocks 3.1, 3.2 (the Refutation of All Heresies), 5.6a and 5.6b. R6 blocks 1.2c, 1.2d, 1.8d and every 5.x addition. R2 and R3 are specified only here; the P1a file points to them.
 9. Recommended merge order: 0.0, 0.4, 0.1a, 0.1b, 0.1c, 0.2, 2.1, then the 0.3 run. Ops 0.5 and 0.6 any time before P4. R1 to R6 in parallel.
@@ -17,7 +19,7 @@ Conventions used in this file:
 - Paths are relative to the repo root of `body-of-christ` unless they start with `/`.
 - "Live" means the production Supabase project hvmgffvimqgiejmxwhwq and the production Qdrant cluster.
 - "Master build" means running every adapter in `datapipeline/publication.py` `SOURCE_ADAPTERS` on master against the vendored sources, touching no store.
-- D1 to D10 are the "Cross-cutting design decisions" in `docs/2026-09-28-corpus-cleanup-plan.md`. Where this file and those decisions disagree, the decisions win.
+- D1 to D11 are the "Cross-cutting design decisions" in `docs/2026-09-28-corpus-cleanup-plan.md`. Where this file and those decisions disagree, the decisions win.
 - Every SQL count quoted here came from a read-only SELECT on 29 Sep 2026. Counts that move (retrievals, guest rows) must be re-read when used.
 
 ---
@@ -52,6 +54,8 @@ Conventions used in this file:
     - "Production safety" checklist: no migration, or migration is additive and nullable or defaulted; API tolerates the change being absent; no datapipeline run against live stores; no Qdrant change.
     - "Source checks (run locally)", required whenever the diff touches `datapipeline/`. It holds the output of `python3 scripts/vendor_sources.py --collection all --verify` (from 0.2 on, `python3 scripts/source_lock.py --verify`), the coverage and sequence summary (0.1a), the health summary (0.1b), and the release report summary (0.1c), each pasted in a collapsed `<details>` block. The section states "Not applicable: this PR does not touch datapipeline/" when that is true.
     - "About page" checkbox: "This PR changes an inclusion rule or what a collection holds; the About page item is updated or ticketed" (from the Decision log row "About page").
+    - "Spec changes", required whenever the diff touches `docs/corpus-cleanup/`. One line per edited spec: the file, the item, what changed and why, per `docs/corpus-cleanup/README.md` section 3. It also names the `NEEDS-CARTER.md` entries this PR answered, and states "No spec changes" when that is true.
+    - "Review", quoting the fresh-context reviewer's findings and what was done about each (`README.md` section 4).
   - Update `docs/ci-cd-plan.md` only by adding one line at the top noting that its Phase 1 CI shipped in this PR with the scope above; do not rewrite it.
 - **Acceptance checks:**
   - The workflow runs green on the PR itself, all three jobs.
@@ -82,7 +86,7 @@ Conventions used in this file:
   - Measured risk today: live user tables reference 1,685 distinct passage IDs (retrievals, bookmarks, guest_trial_retrievals, retrieval_labels). A master build emits 54,776 passage IDs; 12 of the 1,685 are not among them (in apostolic-exhortations, catechism, encyclicals, medieval). Publishing those collections from master today would cascade-delete 19 `retrievals` rows and 2 `guest_trial_retrievals` rows, with no refusal, because each collection's churn is under 10%.
   - Other entry points that write live stores:
     - `scripts/backfill_missing_vectors.py`, `scripts/reembed_drifted_vectors.py`, `scripts/reconcile_qdrant_payloads.py`, each gated only by `--apply` (dry run by default).
-    - `pipeline.py` (V5 stage engine), whose `reader`, `embed` and `bm25-index` stages obtain `asyncpg` pools or the Qdrant client at `pipeline.py:156-167`. `stages/embed.py` and `stages/bm25_index.py` contain write calls. Whether `stages/enrich_io.py` writes to Postgres or only reads is **not verified**.
+    - `pipeline.py` (V5 stage engine), whose `reader`, `embed` and `bm25-index` stages obtain `asyncpg` pools or the Qdrant client at `pipeline.py:156-167`. `stages/reader.py` calls `reader_writer.clear_collection`, which deletes a whole collection. `stages/embed.py` upserts and deletes points, and `stages/bm25_index.py` calls `update_vectors` on `QDRANT_COLLECTION`. `stages/enrich_io.py:24-27` writes to Postgres (`UPDATE chunks SET annotation` and `annotation_vector`), verified 29 Sep.
 - **Changes:**
   - Add a tracked file `datapipeline/PUBLISH_LOCK.json`. It ships with an empty list:
     ```json
@@ -92,15 +96,26 @@ Conventions used in this file:
       "approved_applies": []
     }
     ```
-    Each item in `approved_applies` has the form `{"collection": "councils", "release": "2026-11-cleanup", "steps": ["stage", "apply"], "reason": "...", "approved_by": "Carter", "pr": "<PR number>"}`. `collection` is one registered collection name, or `"all"` for a run that touches every collection. `steps` names what the entry allows: `stage` (build into the `staging` schema and a new Qdrant collection, 2.2w), `apply` (the one-transaction apply and the `chunks_live` alias switch), or `repair` (one of the repair scripts). A PR that adds an entry is the review. The PR that follows the run removes the entry again, so the file is empty between publishes.
+    Each item in `approved_applies` has the form `{"collection": "councils", "release": "2026-11-cleanup", "steps": ["stage", "apply", "rollback"], "reason": "...", "approved_by": "Carter", "pr": "<PR number>"}`. This is the only lock format (D11). `collection` is one registered collection name, or `"all"` for a run that touches every collection. `release` is the release name, which is also the publish ID (`corpus_publishes.id`, 2.2a) and names the staging Qdrant collection `chunks-<release>`. `steps` names what the entry allows:
+    - `stage`: build into the `staging` schema and the new Qdrant collection (2.2w).
+    - `apply`: the one-transaction apply, the `chunks_live` alias switch, and dropping the staging tables afterwards.
+    - `rollback`: 2.2w's `rollback` command for this release.
+    - `repair`: a narrow write outside stage then apply, meaning one of the repair scripts or a V5 stage listed below. This step value is the whole repair mechanism; there is no other.
+
+    A PR that adds an entry is the review. An entry that allows `apply` also lists `rollback`, and stays in the file until that release's rollback window closes (4.1b sets the window). A later reviewed PR removes it, so the file is empty between publishes.
   - Add `datapipeline/publish_lock.py` with:
     - `class PublishLocked(ValueError)` (a `ValueError` so `run_collection.main` reports it through `parser.error`, exit code 2, like other refusals).
     - `def load_lock(path: Path = DEFAULT_PATH) -> PublishLock` returning a frozen dataclass holding the entries. A missing or unparsable file, or one without an `approved_applies` list, counts as an empty list (fail closed).
-    - `def assert_live_write_allowed(action: str, collection: str, release: str | None, step: str, lock: PublishLock | None = None) -> None`. It passes only if `release` is a non-empty string and some entry has the same `collection`, the same `release` and `step` in its `steps`. Otherwise it raises `PublishLocked` with the action, the lock reason, and how to get approval (add an entry in a reviewed PR and pass `--collection <name> --release <same value>`).
+    - `def assert_live_write_allowed(action: str, collection: str, release: str | None, step: str, lock: PublishLock | None = None, targets: WriteTargets | None = None) -> None`. `WriteTargets` holds the database URL and the Qdrant URL the command will write to, read from settings when not passed. It passes in two cases only:
+      1. Both URLs name a loopback host (`localhost`, `127.0.0.1` or `::1`). Local rehearsals against a restored `pg_dump` and a local Qdrant (D8) therefore need no lock entry. One loopback URL and one remote URL does not count, and the check fails closed.
+      2. `release` is a non-empty string and some entry has the same `collection`, the same `release` and `step` in its `steps`.
+
+      Otherwise it raises `PublishLocked` with the action, the lock reason, and how to get approval (add an entry in a reviewed PR and pass `--collection <name> --release <same value>`). There is no other bypass: no environment variable, flag or setting skips the check.
   - `publication.py`: add an optional `write_guard: Callable[[PublicationRequest], None] | None` parameter to `CollectionPublicationRunner.__init__`, called at the top of `publish` right after `_validate_request` and before any source adapter runs or store is acquired. `production_runner()` passes a guard that calls `assert_live_write_allowed(f"publish {collection} to {target}", request.collection, request.release, "apply")`. Add `release: str | None = None` to `PublicationRequest`. Test fakes construct the runner without a guard, so existing tests keep their meaning. When 2.2w replaces today's delete-based publish with stage then apply, it calls the same function with step `stage` before writing staging tables and with step `apply` before the transaction and the alias switch. The staging schema lives in the production database, so staging counts as a live write too.
   - `run_collection.py`: add `--release RELEASE_ID` (passed into the request) and `--dry-run`. Dry run builds the documents, runs `_validate_documents` (and from 0.1b the health rules), prints collection, document count, passage count, and never acquires a store. Dry run is allowed while nothing is listed. It is the command 0.1c and every P1 PR use.
   - The three repair scripts: at the start of the `--apply` branch, call `assert_live_write_allowed(f"<script> --apply", args.collection, args.release, "repair")` and add `--collection` and `--release` arguments. A script run over every collection passes `all`. Dry runs stay allowed.
-  - `pipeline.py`: in `_main`, after `resolve_stages`, if any resolved stage is in `{"reader", "embed", "bm25-index"}` and neither `--dry-run` nor `--status` is set, call the guard with step `apply` and new `--collection` and `--release` arguments. Before merging, read `stages/enrich_io.py` and add `"enrich"` to the set if it writes to Postgres or Qdrant.
+  - `pipeline.py`: in `_main`, after `resolve_stages`, if any resolved stage is in `{"reader", "embed", "bm25-index", "enrich"}` and neither `--dry-run` nor `--status` is set, call the guard with step `repair` and new `--collection` and `--release` arguments. `enrich` is in the set because `stages/enrich_io.py` writes to Postgres (verified above).
+  - This PR only guards these entry points. 2.2w later points each one at `QDRANT_WRITE_COLLECTION` or retires it (D11, "Other writers").
   - Update `datapipeline/README.md` (sections "Publish one collection" and "Narrow repair commands") and `datapipeline/SOURCES.md` ("Publishing a collection") with one paragraph each on the lock, the dry run, and how an apply is approved. Update the repo `CLAUDE.md` Quick Commands comment for the datapipeline to show `--dry-run`.
 - **Acceptance checks:**
   - `tests/test_publish_lock.py`:
@@ -113,15 +128,20 @@ Conventions used in this file:
     - `test_listed_entry_refuses_step_it_does_not_name` (an entry with `["stage"]` refuses `apply`)
     - `test_matching_collection_release_and_step_pass`
     - `test_all_entry_is_needed_for_all_collections`
+    - `test_rollback_step_is_its_own_permission` (an entry with `["stage", "apply"]` refuses `rollback`)
+    - `test_loopback_database_and_qdrant_pass_without_entry`
+    - `test_one_remote_target_is_refused` (loopback database with remote Qdrant, and the reverse)
+    - `test_no_environment_bypass` (no environment variable other than the two URLs changes the result)
   - `tests/test_collection_publication.py::test_write_guard_runs_before_adapters_and_store_acquisition`: a guard that raises must leave the fake adapter uncalled and no store acquired.
   - `tests/test_run_collection.py::test_dry_run_acquires_no_store_and_prints_counts` and `::test_live_publish_is_refused_while_locked` (uses the real `production_runner` guard with a temp lock file, and asserts exit code 2 and the word "locked" on stderr without any network call).
-  - One test per repair script, `test_apply_is_refused_while_locked`, and one for `pipeline.py`, `test_reader_stage_is_refused_while_locked`.
+  - One test per repair script, `test_apply_is_refused_while_locked`, and for `pipeline.py`, `test_reader_stage_is_refused_while_locked` and `test_enrich_stage_is_refused_while_locked`.
   - Manual check pasted into the PR: `python3 run_collection.py --collection catechism --target both` exits 2 with the lock message, and `python3 run_collection.py --collection catechism --dry-run` prints about 809 passages.
   - The shipped `PUBLISH_LOCK.json` has an empty `approved_applies` list (asserted by `test_repository_ships_with_no_approved_applies`).
 - **Production safety:** Adds refusals only; removes no capability that Phase 0 to 3 is allowed to use. API and web are untouched. Nothing runs against live stores.
 - **Needs Carter:**
   - Approve the PR.
-  - Agree that every live write, before and after P4, goes through a reviewed PR that adds a lock-file entry naming the collection and release. That covers emergency repairs too. There is no environment-variable bypass by design.
+  - Agree that every live write, before and after P4, goes through a reviewed PR that adds a lock-file entry naming the collection and release. That covers emergency repairs too. The only exemption is a run whose database and Qdrant are both on the local machine (a rehearsal). There is no other bypass.
+  - Agree that an entry stays in the file through its release's rollback window and is removed by a second reviewed PR afterwards.
   - Agree that no entry is added before the P4 apply (D7), except possibly one for retiring On the Incarnation (1.8d), which he decides separately.
 - **Out of scope:** Any change to pruning or churn thresholds (2.2w replaces the delete-based prune). Remap tooling (0.1c, 4.1a). Qdrant alias work (2.2b). Removing the V5 `stages/` engine.
 
@@ -242,7 +262,7 @@ Conventions used in this file:
     - Also write a tracked `datapipeline/releases/snapshots.json` index with date, row counts and sha256s (no content), so a report can name the snapshot it used and a reviewer can confirm Carter's local copy matches.
   - `datapipeline/release/remap.py`:
     - `def remap(old: list[OldPassage], new: list[Document], registry: Registry | None = None) -> RemapResult`.
-    - The outcome vocabulary is defined here and nowhere else (D5). 4.1a's user-data remap and 2.2a's redirect kinds use the same six words:
+    - The outcome vocabulary is defined here and nowhere else (D5). 4.1a's user-data remap uses the same words. Redirect kinds (2.1's `redirects.json`, 2.2a's `corpus_redirects`) are the four middle words only, `moved`, `split`, `merged` and `renumbered`; `same` and `removed` are release-report outcomes and never redirect kinds (D11). The six outcomes:
       1. `same`: the old passage ID is in the build. Once 2.1 lands, IDs come from its frozen passage registry, so a unit keeps its ID even when its anchor string changes (D1). Its text may have been corrected in place, within the stability check below.
       2. `moved`: the old passage ID is gone and its text is in exactly one new passage with a different ID, which holds no other old passage's text. After 2.1 this is rare (for example a unit moved to another document through the registry's `supersedes` mapping), because anchor changes alone keep the ID.
       3. `split`: the old text is spread over 2 or more new passages. The primary successor is the one holding the old passage's first shingle.
@@ -346,6 +366,7 @@ Conventions used in this file:
   3. Rule A fields (communion dates, chronology source, Church acts), which R1 fills and 3.1 enforces.
   4. Attribution and certainty fields (rule H), which 1.8a fills first by copying the authenticity judgments from editorial text before rule G deletes it, and which 3.2 completes.
   5. The removal registry (D4). Every removal in any phase is recorded there by anchor, with its reason and tombstone text, and the D2 writer refuses to retire an ID the registry does not explain.
+  6. The Python side of three shared definitions that Phase 1 adapters need before Phase 2 exists (D11): the genre module, the work model (`Passage.work_key` and the `document_works` registry shape), and the passage fields `searchable`, `language` and `passage_author`. 2.2a adds only their database side.
 - **Current state:**
   - Document IDs derive from label text: `document_id(collection, author, title)` for every ThML work (`ingest/thml_doc.py:89`); `document_id("bible", translation, name)` (`ingest/bible.py:557`); `document_id("councils", council, council)` and `document_id("councils", "Second Vatican Council", title)` (`ingest/councils.py:88,153`); slug-based for encyclicals, exhortations and papal documents (`encyclicals.py:172`, `apostolic_exhortations.py:155`, `papal_documents.py:155`); constants for catechism, canon-law and summa.
   - A master build reproduces all 421 live document IDs exactly (verified 29 Sep by comparing md5 of the sorted lists). So freezing can be done by computing, not by copying from the database.
@@ -396,10 +417,21 @@ Conventions used in this file:
      "anchor": "<current structural anchor>", "live_anchor": "<anchor when frozen>",
      "status": "active", "frozen_on": "2026-.."}
     ```
-    `status` is `active`, `retired` (a removal-registry entry explains it) or `redirected` (a redirect row names its successor). IDs and anchors only, no text, so the files are safe in the public repo. At about 54,800 rows they come to roughly 7 MB, split by collection so each P1 PR's diff stays readable.
+    `status` is `active`, `retired` (a removal-registry entry explains it) or `redirected` (a redirect row names its successor). Rows also carry `work_key` (null unless the passage belongs to a work inside a container document, below) and, where 3.3 or another item sets them, the overrides `searchable`, `language`, `passage_author` and `note`. IDs, anchors and these short fields only, no passage text, so the files are safe in the public repo. At about 54,800 rows they come to roughly 7 MB, split by collection so each P1 PR's diff stays readable.
   - Passage ID resolution: add `resolve_passage_id(document_id, anchor)` to `registry/__init__.py`. It returns the frozen ID when the registry has a row for that document and current anchor, and otherwise `identity.passage_id(document_id, anchor)`, which only genuinely new units reach. `identity.passage_id` itself stays unchanged. Every adapter and the writer take passage IDs from `resolve_passage_id`. A test forbids a new unit's computed ID colliding with any frozen ID.
   - How the freeze pairs units: during this PR each adapter emits both anchors for every passage, the structural anchor as `anchor` and today's label-derived anchor as `metadata["live_anchor"]`. `freeze_registry.py` (below) writes one row per master-build passage with `passage_id = identity.passage_id(document_id, live_anchor)`, which is exactly today's ID. The 163 live passages that a master build no longer emits (0.1c) get rows with `status` left for their `known_defects.json` entry to settle before P4, by a removal entry or a redirect. After the freeze the adapters drop `live_anchor`; the registry keeps it.
   - When a later item changes a unit's anchor string without changing the unit (a label fix, Sacrosanctum Concilium's misprinted "81" becoming 87, a short unit that now splits into `base/p1` and `base/p2`), it edits the registry row's `anchor` and keeps the ID. The first piece of a newly split unit keeps the unit's ID; later pieces are new. No redirect is needed, because the ID does not change.
+  - Genre module (D5, D11). Add `datapipeline/registry/genres.py`, the one definition of the genre vocabulary. It holds `PAPAL_GENRES` (`encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`), `CURIA_GENRES` (`declaration`, `instruction`, `doctrinal-note`, `note`, `response`, `norms`, `considerations`, `commentary`), `CATECHISM_AND_LAW_GENRES` (`catechism`, `compendium`, `code`, `law`), `WRITER_GENRES` (`treatise`, `manual`, `sermon`, `commentary`, `poem`, `rule`), `OTHER = "other"`, and `ALL_GENRES`, the ordered union without duplicates (`commentary` appears once). A test checks every value is lowercase and hyphenated. 1.3b and every later adapter import from here. 2.2a seeds its `corpus_genres` table from this module and tests that the two match. Adding a genre is a PR that changes this module and adds the matching row to `corpus_genres` in a migration.
+  - Work model (D6, D11). Container documents (an ANF volume, "Treatises Attributed to Cyprian", "Dubious or Spurious Writings") hold several works. The model here is what 2.2a's `document_works` table and `chunks.work_key` column store:
+    - `datapipeline/model.py`: `Passage` gains `work_key: str | None = None`, and `Document` gains `works: list[Work] = []`, where `Work` is a frozen dataclass with `work_key, ordinal, title, author, certainty, attribution_note, notes, date_display, year, genre, clavis_ref`. `genre` must be in `ALL_GENRES`.
+    - Registry shape: each `works.json` document entry gains `"works": []`, a list of objects with the same fields as `Work`, sorted by `ordinal`. Which passages belong to which work is recorded per passage, as `work_key` in the passage registry, never as an anchor or position range. A validator checks every passage `work_key` names a work of the same document, and every work has at least one passage.
+    - This PR ships the shape with no works filled in. 1.8b and 1.8c fill the container documents; 2.3 and 3.2 fill the attribution values.
+  - Passage fields adapters set (D11). `Passage` also gains `searchable: bool = True`, `language: str | None = None` (an ISO 639 code, null meaning English) and `passage_author: str | None = None` (a passage-level author, such as a Father quoted in the Catena Aurea). An adapter may set them from its source, as 1.5b does for Latin canons. A value in the passage registry overrides the adapter's value (3.3), and 2.2w applies the override at stage time, so the registry always wins.
+  - Superseded text at passage level (rule F, D11). Where an adapter keeps an older text of a unit as history (CCC 2267, amended canons), it emits the older text as its own passage, never as metadata of the current one:
+    - anchor `<anchor of the current passage>/history-<year>`, where `<year>` is the year the older text took effect (for example `can/295/history-1983`);
+    - `searchable = False`;
+    - `Passage.superseded_by_anchor` (a further new field, `str | None = None`) set to the current passage's anchor in the same document. 2.2w resolves it to the current passage's ID and writes `chunks.superseded_by` (2.2a).
+    A history passage is a new unit with a new ID. It is not a removal, so it has no removal-registry entry. Whole-document history (Universi Dominici Gregis, 5.4) uses `documents.superseded_by` instead.
   - Add the redirect file `datapipeline/registry/redirects.json`, a list sorted by `document_id`, then `old_anchor`. Each row is `{"document_id": "<uuid>", "old_passage_id": "<uuid>", "old_anchor": "...", "new_passage_id": "<uuid>", "new_anchor": "...", "kind": "moved|split|merged|renumbered", "reason": "...", "added_by": "<item id>"}`. The kinds are 0.1c's outcome words (D5). Redirects are only for units whose identity genuinely changes: a unit whose text now lives in other units (piece anchors that disappear when a unit needs fewer pieces), passages regrouped at new chapter boundaries (1.4b Joel and Malachi), councils rebuilt by session (1.2b to 1.2e), and a split recension (1.8c). This PR adds none. The writer loads the file into 2.2a's redirects table.
   - Add the removal registry `datapipeline/registry/removals.json` (D4). It is the one record of everything any phase removes: rule A to C removals, rule G editorial text, endnotes split off, duplicate passages, debris, commentary by other authors, Tanner council texts, and superseded translations. Entries are by anchor, never by position. Format, one object per entry, sorted by `collection`, `document_id`, `anchor`:
     ```json
@@ -423,7 +455,7 @@ Conventions used in this file:
       - `passage`: one live passage is retired; `anchor` is the anchor as the 0.1c snapshot holds it (the passage registry's `live_anchor`) and `passage_id` its frozen ID, and the registry validator checks the two agree.
       - `span`: text cut from inside a passage that survives (commentary lines, an editor's bracket); `anchor` is the build anchor of that passage, and `span` holds `{"sha1": "<of the removed text>", "excerpt": "<first 120 characters, public-domain editorial matter only>"}`. Nothing is retired for a span entry; it is the audit record.
       - `class`: one rule applied across a collection that removes text inside passages in bulk, such as 1.10b's inline `<note>` strip; `span` holds `{"rule": "<the pattern or function name>", "count": <units removed>}`.
-    - `reason` is one of `rule-a`, `rule-b`, `rule-c`, `rule-g-editorial`, `note-split-off`, `duplicate`, `debris`, `other-author`, `superseded-translation`, `translation-in-preparation`, `not-current-law`. New reasons are added here, in this file's validator, not in the item that needs them.
+    - `reason` is one of `rule-a`, `rule-b`, `rule-c`, `rule-g-editorial`, `note-split-off`, `duplicate`, `debris`, `other-author`, `superseded-translation`, `translation-in-preparation`, `not-current-law`. This is the only list of removal reasons (D11); 2.2a's tombstone table and 3.1 use it. One more value, `rolled-back`, is reserved for tombstones that 2.2w's `rollback` writes for rows a rolled-back publish had inserted; it never appears in `removals.json`, and the validator rejects it there. (D11's list names 11 values; `rolled-back` is an addition this spec needs, flagged for Carter in NEEDS-CARTER.md.) New reasons are added here, in this file's validator, not in the item that needs them. The long Ignatian recension is `rule-b`.
     - `tombstone` is required for `document` and `passage` scope and null otherwise. It is one sentence of reason, plus the Church act where one applies, with no text of the removed passage (D3). For `rule-a` and `rule-b` entries `church_act` holds `{"issuer", "date", "act", "citation"}` in the rule A format above.
     - `judgment` holds any authenticity judgment found in the removed text (1.8a), which must also appear in the work's `attribution.editorial_judgments`.
     - `registry/__init__.py` validates the file. Every entry's document ID is in `works.json`. No two entries retire the same anchor. A retired anchor never appears in `redirects.json` as a `new_anchor`. `tombstone` is present where required and under 300 characters. `reason` is in the list. A build that emits an anchor listed here with scope `passage` fails (0.1c), so a retired anchor string is never reused.
@@ -445,6 +477,11 @@ Conventions used in this file:
     - `test_removal_entries_validate` (scope, reason, tombstone rules above)
     - `test_removal_entry_needs_anchor_not_position` (an entry with a `position` field and no anchor fails)
     - `test_no_anchor_is_both_retired_and_a_redirect_target`
+    - `test_rolled_back_reason_is_rejected_in_removals_file`
+    - `test_genre_values_are_lowercase_hyphenated_and_unique`
+    - `test_passage_work_key_names_a_work_of_its_document` and `test_every_work_has_a_passage`
+    - `test_registry_override_wins_over_adapter_fields` (an adapter sets `searchable=True` and the registry row sets `false`; the resolved passage has `false`)
+    - `test_history_passage_shape` (anchor ends `/history-<year>`, `searchable` is false, `superseded_by_anchor` names a passage in the same document)
   - CI tests in `test_thml_doc.py`: `test_anchor_is_div_id` and `test_no_anchor_suffixes` on a synthetic ThML fixture with repeated labels.
   - Locally with sources: a master build with this PR produces the same 421 document IDs (md5 unchanged) and the same set of passage IDs as the pre-PR master build (sorted-ID md5 equal), although most church-fathers, medieval and summa anchors change. `R8_anchor_suffix` from 0.1b reports 0.
   - Every passage live today keeps its ID unless the removal registry or a redirect explains it. The 0.1c report against the current snapshot shows every live passage as `same`, except the known pre-existing drift recorded in `known_defects.json` (the 163 live passages a master build already lacks); `moved`, `split`, `merged` and `renumbered` are 0; no new stability failures; and user impact 0. The PR description pastes both reports' summaries side by side.
@@ -454,6 +491,7 @@ Conventions used in this file:
   - Approve the anchor scheme change and the character mapping for div ids. Passage IDs stay frozen, so the one-time ID churn the Decision log "Document identity" once accepted does not happen.
   - Approve adding the passage registry (about 7 MB of IDs and anchors, no text) to the public repo.
   - Approve the removal registry format. Tombstone sentences and reasons are public in this repo and are what users see on a removed passage.
+  - Approve the reserved reason `rolled-back`, which D11's list does not name.
 - **Out of scope:** Filling `rule_a` (R1). Filling attribution values (1.8a copies editorial judgments; 3.2 sets labels). Adding removal entries beyond this PR's own (each P1 item adds its own; 3.1 adds rules A to C). Label, author or collection changes (P1, P3, P5). Adding registry columns to the database (2.2a). Applying the remap or retiring anything in live data (4.1a, 4.1b).
 
 ---
@@ -540,7 +578,7 @@ Conventions used in this file:
 - **Changes:** No code. Record, in this item or the 4.0 spec:
   - The same size query (`pg_database_size`, `pg_total_relation_size('chunks')`, heap, index, TOAST sizes) and per-table sizes for `documents`, `document_chapters`, `retrievals`, `guest_trial_retrievals`.
   - The plan tier and its database size limit from the Supabase dashboard.
-  - An estimate of the rebuilt corpus from the 0.1c report: build passage and character counts (master build today is 54,776 passages; the Vatican II and council repairs add roughly 0.9 MB of text), and, during cutover, the one staging copy that stage then apply builds in schema `staging` (D2, about 100 MB of live column data plus its indexes), before compaction. Retired rows stay in `chunks` until the rollback window ends (D3), so count them too.
+  - An estimate of the rebuilt corpus from the 0.1c report: build passage and character counts (master build today is 54,776 passages; the Vatican II and council repairs add roughly 0.9 MB of text), and, during cutover, the one staging copy that stage then apply builds in schema `staging` (D2; about 123 MB of live row data plus up to 88 MB of indexes, so about 210 MB, per 4.0's projection), before compaction. Retired rows stay in `chunks` until the rollback window ends (D3), so count them too.
 - **Acceptance checks:** The recorded numbers, the limit, and the estimated peak during cutover, with the gap to the limit stated in MB.
 - **Production safety:** Read-only catalogue queries.
 - **Needs Carter:** Approve running the queries and read the plan limit from the dashboard.

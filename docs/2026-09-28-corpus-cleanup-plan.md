@@ -10,6 +10,8 @@ Related files:
 
 - `docs/research/2026-09-28-scan-only-works-text-sources.md` says where clean typed text exists for works otherwise available only as page scans.
 - `docs/corpus-cleanup/` holds the detailed work specifications, one file per phase. Every item there follows the same template: goal, current state with evidence, changes by file and function, acceptance checks, production safety, what needs Carter, out of scope.
+- `docs/corpus-cleanup/README.md` is the procedure every implementer follows for any item: ask Carter the item's open questions before writing code, record the answers, update other specs only within set limits, and get a fresh-context review before the PR.
+- `docs/corpus-cleanup/NEEDS-CARTER.md` lists everything Carter must approve, decide or supply, by phase.
 
 Nothing here has changed code or live data yet.
 
@@ -18,10 +20,11 @@ Nothing here has changed code or live data yet.
 **The order is fixed: fix and republish the current corpus first, then reorganize and expand.** Do not add collections or sources before Phase 4 is done, except where an item says otherwise.
 
 1. Read this file's Inclusion rules, Decision log, and Cross-cutting design decisions (D1 to D11). They are settled, and the design decisions override any spec that disagrees. Reopen a decision only if Carter does.
-2. Open `docs/corpus-cleanup/P0-checks-identity-research.md` and start with its first item. Phase 0 builds the checks, the publish lock and the frozen ID registry that every later change is measured against. The publish lock (0.4) must merge before any Phase 1 adapter change.
-3. Work through the phases in the order of the "Phase and PR plan" table below. Each item's spec lists what it depends on.
-4. Every PR must leave production working. API and web deploy on merge; the datapipeline does not touch production until it is run. See "Production stays working at every merge" below.
-5. Ask Carter before any change to live data (Supabase project hvmgffvimqgiejmxwhwq, which production runs on; Qdrant), before sending stored user queries to an outside provider, and before pushing, opening issues or PRs on the public repo.
+2. Before starting any item, read `docs/corpus-cleanup/README.md` and follow it. It says to ask Carter the item's open questions from `NEEDS-CARTER.md` before writing code, and sets what an implementer may and may not change in other specs.
+3. Open `docs/corpus-cleanup/P0-checks-identity-research.md` and start with its first item. Phase 0 builds the checks, the publish lock and the frozen ID registry that every later change is measured against. The publish lock (0.4) must merge before any Phase 1 adapter change.
+4. Work through the phases in the order of the "Phase and PR plan" table below. Each item's spec lists what it depends on.
+5. Every PR must leave production working. API and web deploy on merge; the datapipeline does not touch production until it is run. See "Production stays working at every merge" below.
+6. Ask Carter before any change to live data (Supabase project hvmgffvimqgiejmxwhwq, which production runs on; Qdrant), before sending stored user queries to an outside provider, and before pushing, opening issues or PRs on the public repo.
 
 **Current state (29 Sep 2026)**
 
@@ -312,7 +315,7 @@ D1 to D10 settled on 29 Sep 2026 after a cross-check of the work specifications 
 3. Apply is one database transaction: update changed rows in place by ID, insert new IDs, mark removed IDs retired (never delete them while a user row points at them), write tombstones and redirects, refresh the reader outline (`refresh_document_outline`).
 4. Then the Qdrant alias `chunks_live` is switched.
 
-This replaces the "release column" and the two-releases-side-by-side design. No query filters on a release, `chunks` never holds two copies of the corpus, and the "doubles chunks" storage problem shrinks to one staging copy (about 100 MB of live data). It is also the steady-state publish mode after Phase 4, so no later publish can run today's delete-based prune (`writers/reader_writer.py`), which cascades away user rows. The publish lock (0.4) stays locked except for an apply named in a reviewed change to the lock file.
+This replaces the "release column" and the two-releases-side-by-side design. No query filters on a release, `chunks` never holds two copies of the corpus, and the "doubles chunks" storage problem shrinks to one staging copy (about 120 MB of live row data, about 210 MB with its indexes; figures in 4.0). It is also the steady-state publish mode after Phase 4, so no later publish can run today's delete-based prune (`writers/reader_writer.py`), which cascades away user rows. The publish lock (0.4) stays locked except for an apply named in a reviewed change to the lock file.
 
 **D3. Removed text is retired, never deleted, while user data points at it.** Every table that references a passage cascades on delete (retrievals, bookmarks, retrieval_labels, guest_trial_retrievals, and reading_progress for documents). Retired passages leave search and the reader's chapter lists, keep their row, and show a tombstone: one sentence of reason and the Church act, with no text. Retired rows with no user references may be deleted after the rollback window (4.1b).
 
@@ -384,7 +387,7 @@ Republish constraints found on 28 Sep:
 - The republish stages into separate tables and applies in one transaction (D2), so old and new text are never both visible.
 - Build a new Qdrant collection and switch the `chunks_live` alias to it, rather than rebuilding in place.
 - Restart the API after cutover to clear the one-hour `/sources` cache. Remap the gold IDs in `docs/eval/`.
-- Storage measured on 28 Sep: `chunks` is 380 MB, of which about 100 MB is live column data (content 42 MB, search_vector 49 MB, metadata 5 MB); its overflow (TOAST) storage is 203 MB. Qdrant holds one collection, `chunks`, 54,568 points at 1,536 dimensions (about 335 MB of raw vectors), no quantization, no alias.
+- Storage measured on 28 Sep: `chunks` is 380 MB (heap 89 MB, overflow or TOAST storage 203 MB, indexes 88 MB), of which live row data is 123 MB (content 42 MB, search_vector 49 MB and metadata 5 MB are the largest columns). The 4.0 spec holds the storage figures every spec cites. Qdrant holds one collection, `chunks`, 54,568 points at 1,536 dimensions (about 335 MB of raw vectors), no quantization, no alias.
 
 ## Open items
 

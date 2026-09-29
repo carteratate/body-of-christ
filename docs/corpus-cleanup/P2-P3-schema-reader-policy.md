@@ -1,6 +1,8 @@
 # P2 and P3 work specifications for schema, writer, reader and content policy
 
-29 September 2026, revised the same day to follow the plan's "Cross-cutting design decisions" (D1 to D10). Source of truth is `docs/2026-09-28-corpus-cleanup-plan.md`; its inclusion rules, Decision log and D1 to D10 are settled and are not reopened here. Where this file and D1 to D10 disagree, D1 to D10 win. Code references are to `master` at `5475c49` in `/Users/cartertate/repos/body-of-christ`. Live measurements are read-only SELECTs against Supabase project `hvmgffvimqgiejmxwhwq` on 29 Sep 2026.
+**Before implementing any item in this file, follow `README.md` in this folder. It says to ask Carter the item's open questions first, record the answers, and update other specs only in the ways it allows.**
+
+29 September 2026, revised the same day to follow the plan's "Cross-cutting design decisions" (D1 to D11). Source of truth is `docs/2026-09-28-corpus-cleanup-plan.md`; its inclusion rules, Decision log and D1 to D11 are settled and are not reopened here. Where this file and D1 to D11 disagree, D1 to D11 win. Code references are to `master` at `5475c49` in `/Users/cartertate/repos/body-of-christ`. Live measurements are read-only SELECTs against Supabase project `hvmgffvimqgiejmxwhwq` on 29 Sep 2026.
 
 ## Overview and recommended order
 
@@ -8,7 +10,7 @@ Merge order follows the plan's "Phase and PR plan" table.
 
 1. **2.4c** About page factual fix. Independent, ships first because the page is false today.
 2. **2.2a** Migration 0039, additive only. Document facts, the work model (D6), a retired flag on passages and documents, tombstones, redirects, a publish log and a `staging` schema that mirrors the live corpus tables (D2). Nothing reads them yet. No unique key is dropped.
-3. **2.2w** The stage-then-apply writer (D2). A publish builds into `staging` and a new Qdrant collection, produces the release report against live, applies in one transaction (with 4.1a's user-data remap inside it), then switches the `chunks_live` alias. Passage IDs come from the 2.1 registry, so every unit live today keeps its ID (D1). It also provides the rollback apply, a cleanup command that drops the staging tables, vector reuse when the embedding input is unchanged, and a read-only staging override for the pre-cutover eval. It replaces today's delete-based prune for every future publish. Rehearsed locally (D8).
+3. **2.2w** The stage-then-apply writer (D2). A publish builds into `staging` and a new Qdrant collection `chunks-<release>`, produces the release report against live, applies in one transaction (calling the `UserDataRemap` interface that 4.1a implements), then switches the `chunks_live` alias. Passage IDs come from the 2.1 registry, so every unit live today keeps its ID (D1). It also provides `rollback`, the only rollback path (D11), a cleanup command that drops the staging tables, vector reuse when the embedding input is unchanged, and a read-only staging override for the pre-cutover eval. It replaces today's delete-based prune for every future publish. Rehearsed locally (D8).
 4. **2.2b** API reads Qdrant through `QDRANT_READ_COLLECTION`, then the alias `chunks_live`. Search skips passages marked not searchable and passages that are retired.
 5. **2.2c** Decision that `search_vector` needs no DDL rebuild. Close it alongside 2.2a.
 6. **2.3** Document facts in the work registry, written by 2.2w into staging. No live backfill (D7).
@@ -97,8 +99,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 ### 2.2a. Additive migration for document facts, works, retirement, tombstones, redirects and staging
 
 - **Type:** PR
-- **Depends on:** none to merge. 2.1 (work registry and removal registry) defines the values that later fill these columns. Applying to the live database needs Carter.
-- **Goal:** Give the database the places to hold what the cleanup decides, without changing anything a user sees. After this, a document can carry its genre, issuer, display date, certainty label, notes, source credit and supersession link; a passage can be marked not searchable, tagged with its language, its work (D6) and a quoted author; a passage or document can be retired; removed units leave a tombstone; moved units leave a redirect; and a publish can be built in a `staging` schema with the live tables' shape before it is applied (D2).
+- **Depends on:** 2.1, whose genre module seeds `corpus_genres` and whose work model and removal reasons this migration stores (D11). 2.1 also defines the values that later fill these columns. Applying to the live database needs Carter.
+- **Goal:** Give the database the places to hold what the cleanup decides, without changing anything a user sees. After this, a document can carry its genre, issuer (a slug for filters plus a display label), display date, certainty label, notes, source credit and supersession link; a passage can be marked not searchable, tagged with its language, its work (D6) and a quoted author; an older text of a passage can be kept as a non-searchable history passage linked to the current one; a passage or document can be retired; removed units leave a tombstone; moved units leave a redirect; and a publish can be built in a `staging` schema with the live tables' shape before it is applied (D2).
 - **Current state:**
   - `documents` columns live: `id, collection, title, author, year, metadata, created_at, translation (NOT NULL DEFAULT ''), chunk_count`. `chunks` columns live: `id, document_id, content, position, reference, content_embedding, search_vector, annotation, annotation_embedding, created_at, metadata, anchor, chapter_key, chapter_label, unit_label, annotation_vector` (information_schema, 29 Sep).
   - Unique keys on `chunks`: `chunks_document_id_position_key UNIQUE (document_id, position)` and partial `chunks_document_anchor_uniq (document_id, anchor) WHERE anchor IS NOT NULL` (pg_indexes, 29 Sep). Both stay. Under D2 the live tables only ever hold one copy of the corpus, so neither key blocks anything; 2.2w moves retired rows' positions out of the live range so they never collide with new ones.
@@ -116,7 +118,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     SET LOCAL lock_timeout = '2s';
 
     -- Genre vocabulary (D5). A lookup table, so adding a genre later is an INSERT,
-    -- not a constraint change.
+    -- not a constraint change. The rows are exactly registry/genres.py ALL_GENRES (2.1, D11);
+    -- a test fails if the two differ.
     CREATE TABLE corpus_genres (
         key text PRIMARY KEY CHECK (key ~ '^[a-z]+(-[a-z]+)*$')
     );
@@ -138,7 +141,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     ALTER TABLE documents
         ADD COLUMN retired_at       timestamptz,
         ADD COLUMN genre            text,
-        ADD COLUMN issuer           text,   -- 'Pope Leo XIII', 'Second Vatican Council'
+        ADD COLUMN issuer           text,   -- slug for filters: 'pope-leo-xiii', 'ddf', 'holy-see'
+        ADD COLUMN issuer_label     text,   -- display: 'Pope Leo XIII', 'Dicastery for the Doctrine of the Faith'
         ADD COLUMN date_display     text,   -- 'c. 375-380', '1077-78', '1265-1274'
         ADD COLUMN certainty        text,   -- the attribution label
         ADD COLUMN attribution_note text,   -- 'Heimgartner (2001) assigns it to Athenagoras.'
@@ -151,10 +155,13 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         ADD CONSTRAINT documents_genre_fk FOREIGN KEY (genre) REFERENCES corpus_genres(key) NOT VALID,
         ADD CONSTRAINT documents_certainty_check
             CHECK (certainty IN ('genuine', 'disputed', 'pseudonymous', 'anonymous')) NOT VALID,
+        ADD CONSTRAINT documents_issuer_slug_check
+            CHECK (issuer IS NULL OR issuer ~ '^[a-z0-9]+(-[a-z0-9]+)*$') NOT VALID,
         ADD CONSTRAINT documents_superseded_by_fk
             FOREIGN KEY (superseded_by) REFERENCES documents(id) ON DELETE SET NULL NOT VALID;
 
-    -- Works inside one document (D6). ANF volumes hold several works per document
+    -- Works inside one document (D6). The shape is 2.1's Work model (D11); this is its
+    -- database side. ANF volumes hold several works per document
     -- ("Dubious or Spurious Writings." holds the Sectional Confession, the Twelve Topics
     -- and four homilies), and each carries its own attribution.
     CREATE TABLE document_works (
@@ -174,14 +181,17 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         UNIQUE (document_id, ordinal)
     );
 
-    -- Passage fields.
+    -- Passage fields. searchable, language, passage_author and work_key are Passage
+    -- model fields defined in 2.1 (D11); adapters may set them and the registry overrides.
     ALTER TABLE chunks
         ADD COLUMN retired_at     timestamptz,
         ADD COLUMN searchable     boolean NOT NULL DEFAULT true,
         ADD COLUMN language       text,   -- NULL means English
         ADD COLUMN work_key       text,
         ADD COLUMN passage_author text,   -- 'Chrysostom, quoted in Aquinas''s Catena Aurea'
-        ADD COLUMN note           text;
+        ADD COLUMN note           text,
+        ADD COLUMN superseded_by  uuid;   -- a history passage (<anchor>/history-<year>) points at
+                                          -- the current passage it was replaced by (rule F, D11)
     ALTER TABLE chunks
         ADD CONSTRAINT chunks_language_check
             CHECK (language IS NULL OR language ~ '^[a-z]{2,3}$') NOT VALID,
@@ -189,16 +199,25 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         ADD CONSTRAINT chunks_retired_position_range
             CHECK (retired_at IS NULL OR position <= -1000000) NOT VALID,
         ADD CONSTRAINT chunks_work_fk FOREIGN KEY (document_id, work_key)
-            REFERENCES document_works (document_id, work_key) NOT VALID;
+            REFERENCES document_works (document_id, work_key) NOT VALID,
+        ADD CONSTRAINT chunks_superseded_by_fk FOREIGN KEY (superseded_by)
+            REFERENCES chunks (id) ON DELETE SET NULL NOT VALID,
+        -- A history passage is never searchable.
+        ADD CONSTRAINT chunks_history_not_searchable
+            CHECK (superseded_by IS NULL OR NOT searchable) NOT VALID;
 
     ALTER TABLE documents VALIDATE CONSTRAINT documents_genre_fk;
     ALTER TABLE documents VALIDATE CONSTRAINT documents_certainty_check;
     ALTER TABLE documents VALIDATE CONSTRAINT documents_superseded_by_fk;
+    ALTER TABLE documents VALIDATE CONSTRAINT documents_issuer_slug_check;
     ALTER TABLE chunks VALIDATE CONSTRAINT chunks_language_check;
     ALTER TABLE chunks VALIDATE CONSTRAINT chunks_retired_position_range;
     ALTER TABLE chunks VALIDATE CONSTRAINT chunks_work_fk;
+    ALTER TABLE chunks VALIDATE CONSTRAINT chunks_superseded_by_fk;
+    ALTER TABLE chunks VALIDATE CONSTRAINT chunks_history_not_searchable;
 
-    -- One row per publish (D2). Written by 2.2w.
+    -- One row per publish (D2). Written by 2.2w. The id is the release name, the same
+    -- value as the lock entry's "release" and the --release flag (D11).
     CREATE TABLE corpus_publishes (
         id                         text PRIMARY KEY CHECK (id ~ '^[a-z0-9][a-z0-9-]{2,62}$'),
         collections                text[] NOT NULL,
@@ -218,18 +237,23 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         document_id   uuid NOT NULL,
         retired_at    timestamptz NOT NULL,
         publish_id    text NOT NULL REFERENCES corpus_publishes(id),
-        removal_key   text NOT NULL,  -- the D4 removal registry entry that explains it
-        rule          text NOT NULL CHECK (rule IN ('A', 'B', 'C', 'G', 'other')),
-        reason_code   text NOT NULL,  -- vocabulary in 3.1
-        public_reason text NOT NULL,  -- one plain sentence shown to users
+        removal_key   text,           -- the D4 removal-registry entry id; NULL only for rolled-back
+        rule          text NOT NULL CHECK (rule IN ('A', 'B', 'C', 'G', 'other')),  -- derived from reason_code by 2.2w
+        reason_code   text NOT NULL CHECK (reason_code IN (
+                          'rule-a', 'rule-b', 'rule-c', 'rule-g-editorial', 'note-split-off',
+                          'duplicate', 'debris', 'other-author', 'superseded-translation',
+                          'translation-in-preparation', 'not-current-law', 'rolled-back')),
+                                      -- 2.1's reason list (D11), plus 2.1's reserved 'rolled-back'
+        public_reason text NOT NULL,  -- the registry entry's tombstone sentence, shown to users
+        CHECK ((reason_code = 'rolled-back') = (removal_key IS NULL)),
         church_act    text,           -- 'Second Council of Constantinople (553), anathema 11'
         snapshot      jsonb NOT NULL, -- {collection, title, author, reference, chapter_label}
         PRIMARY KEY (entity, id)
     );
     CREATE INDEX corpus_tombstones_document_idx ON corpus_tombstones (document_id);
 
-    -- Redirects from old identities to new ones. The kind column uses the remap
-    -- vocabulary of 0.1c (D5) word for word.
+    -- Redirects from old identities to new ones. Kinds are the four redirect words of
+    -- 0.1c's vocabulary (D5, D11); 'same' and 'removed' are release-report outcomes only.
     CREATE TABLE corpus_redirects (
         id              bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         entity          text NOT NULL CHECK (entity IN ('document', 'passage', 'anchor')),
@@ -240,7 +264,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         new_document_id uuid NOT NULL,
         new_anchor      text,
         kind            text NOT NULL
-            CHECK (kind IN ('same', 'moved', 'split', 'merged', 'renumbered', 'removed')),
+            CHECK (kind IN ('moved', 'split', 'merged', 'renumbered')),
         publish_id      text NOT NULL REFERENCES corpus_publishes(id),
         created_at      timestamptz NOT NULL DEFAULT now(),
         CHECK ((entity = 'anchor') = (old_id IS NULL))
@@ -292,11 +316,15 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Acceptance checks:**
   - New test `services/api/tests/test_corpus_facts_migration.py` using `tests/pg_cluster.py` (as `test_document_outline_migration.py` does). Apply the 0004-era corpus schema, 0037, 0038, then 0039. Assert:
     - `test_existing_rows_are_live_and_searchable`: every seeded chunk has `retired_at IS NULL` and `searchable = true`; every document `retired_at IS NULL`.
-    - `test_genre_accepts_only_the_d5_vocabulary`: all 25 D5 values are present and accepted; `apostolic exhortation` and `essay` are rejected.
+    - `test_genre_accepts_only_the_d5_vocabulary`: every value in 2.1's `registry/genres.py` `ALL_GENRES` is present and accepted; `apostolic exhortation` and `essay` are rejected.
+    - `test_genre_seed_matches_registry_module`: the migration's `INSERT INTO corpus_genres` list equals `ALL_GENRES`, read from the Python module (a plain file read, so the API test suite needs no datapipeline import).
+    - `test_issuer_is_a_slug_and_label_is_free_text`: `pope-leo-xiii` is accepted in `issuer`, `Pope Leo XIII` is rejected there and accepted in `issuer_label`.
+    - `test_history_passage_links_and_is_not_searchable`: a chunk with `superseded_by` set to another chunk's ID and `searchable = true` fails the CHECK; with `searchable = false` it passes.
+    - `test_tombstone_reason_uses_registry_list`: every 2.1 reason and `rolled-back` are accepted; `condemned_by_name` is rejected; `rolled-back` requires a NULL `removal_key` and every other reason requires one.
     - `test_outline_excludes_retired_rows`: a document with 3 chunks, one retired and moved to position -1000000, gives `chunk_count = 2` and no chapter made only of the retired row.
     - `test_retiring_a_row_invalidates_the_outline`: setting `retired_at` sets that document's `chunk_count` to NULL.
     - `test_retired_row_must_leave_the_live_position_range`: setting `retired_at` on a row at position 5 fails the CHECK.
-    - `test_redirect_kind_uses_remap_vocabulary`: `rewritten` is rejected; each of the six D5 words is accepted.
+    - `test_redirect_kind_uses_remap_vocabulary`: `moved`, `split`, `merged` and `renumbered` are accepted; `same`, `removed` and `rewritten` are rejected.
     - `test_redirect_anchor_rows_have_no_old_id`.
     - `test_staging_mirrors_live_tables`: for `documents`, `chunks`, `document_chapters` and `document_works`, the columns, generated expressions, CHECK constraints and indexes in `staging` equal those in `public`, and staging has no foreign keys.
     - `test_staging_can_be_dropped_and_recreated`: `drop_corpus_staging()` then `create_corpus_staging()` leaves the same shape, and neither touches a `public` table.
@@ -325,29 +353,44 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `qdrant_schema.py:12` hard-codes `CHUNKS = "chunks"`, and `recreate_chunks` (`:17-29`) deletes and recreates it, with one keyword payload index on `collection`.
   - Passage IDs are computed from the anchor in three places, `publication.py:128-132`, `reader_writer.py:114` and `search_writer.py:41`, all through `identity.passage_id` (`identity.py:40`). Under D1 they come from 2.1's passage registry instead.
   - `writers/search_writer.py:39-63` (`build_point`) writes the payload `collection, document_id, document_title, author, content, reference, anchor, chapter_label, chapter_key, unit_label`. There is no `genre`, `issuer` or `searchable`. `write_document` (`:83-101`) re-embeds every passage of a document on every run.
-  - `run_collection.py:62-86` calls `production_runner().publish(...)`; 0.4 adds the lock guard, `--cutover` and `--dry-run` in front of it.
+  - `run_collection.py:62-86` calls `production_runner().publish(...)`; 0.4 adds the lock guard, `--release` and `--dry-run` in front of it.
   - Qdrant holds one collection, `chunks`, 54,568 points of 1,536 dimensions, no alias (plan, 28 Sep).
-  - The database is 401 MB against the Free plan's 500 MB read-only trigger, and `chunks` holds about 100 MB of live column data (P4 file, "Facts measured"; plan, 4.0).
+  - The database is 401 MB against the Free plan's 500 MB read-only trigger, and `chunks` holds about 123 MB of live row data (4.0, which is the source for every storage figure in these specs).
+  - Other code that writes to the corpus or Qdrant, verified on master 29 Sep: `stages/reader.py` (calls `clear_collection`), `stages/embed.py` (upserts and deletes points), `stages/bm25_index.py` (`update_vectors` on `QDRANT_COLLECTION`), `stages/enrich_io.py` (`UPDATE chunks SET annotation`), and the three repair scripts `scripts/backfill_missing_vectors.py`, `scripts/reembed_drifted_vectors.py` and `scripts/reconcile_qdrant_payloads.py` (each on `QDRANT_COLLECTION`). The modules `backfill_vectors.py`, `reconcile.py` and `reembed.py` make no store writes themselves; they are libraries those scripts call.
+  - The embedding cache (`cache.py`, table `embeddings`) is keyed on the sha256 of the exact embedding input plus model and dimensions. Only the V5 `stages/embed.py` reads or writes it; today's publish path (`search_writer.write_document`) does not. On Carter's Mac `datapipeline/cache.db` is empty (0 bytes, 29 Sep).
   - `services/api/app/db.py:42-52` creates the API's asyncpg pool with no `search_path` setting. `services/api/scripts/run_eval_suite.py` runs the pipeline in process with no HTTP server, so it persists no searches.
 - **Changes:**
-  - **CLI.** New `datapipeline/publish.py` with subcommands, each taking `--publish-id <id>` (the value `corpus_publishes.id` and the lock file's `cutover_release` share):
+  - **CLI.** New `datapipeline/publish.py` with subcommands, each taking `--release <name>`. The release name is the publish ID: it is `corpus_publishes.id`, the `release` of the lock entry, and the suffix of the staging Qdrant collection `chunks-<release>` (D11):
     - `stage --collection <name>|all`
     - `report`
     - `apply` (switches the alias right after commit unless `--no-switch`)
     - `switch`
-    - `rollback` (the rollback apply, below)
+    - `rollback` (below; the only rollback path, D11)
     - `cleanup` (drops the staging tables once the apply is checked)
     - `discard` (abandons a publish that was never applied, drops the staging tables and records its Qdrant collection for deletion; deleting a Qdrant collection is always a separate ops step)
     - `status`
   - `run_collection.py` keeps only `--dry-run` (0.4). A live invocation exits 2 with a message pointing at `publish.py`. `--wipe-reader`, `--confirm-reader-wipe` and `--reset-search-index` are removed, since each deletes live rows or points.
-  - **Lock gates (0.4).** Every subcommand except `report`, `status` and `stage --dry-run` calls `assert_live_write_allowed(f"publish {subcommand}", publish_id)`, so it runs only when `PUBLISH_LOCK.json` names this publish ID in `cutover_release`, which takes a reviewed PR. This PR adds one rule to `publish_lock.py`. When both `DATABASE_URL` and `QDRANT_URL` resolve to a loopback host (`localhost`, `127.0.0.1`, `::1`), the gate passes without a lock change, so rehearsals against a local restore (D8) and a local Qdrant need no production unlock. Any other host fails closed. After a production apply and its rollback window, a follow-up PR sets `cutover_release` back to `null`.
+  - **Lock gates (0.4).** Every subcommand except `report`, `status` and `stage --dry-run` calls 0.4's `assert_live_write_allowed(f"publish {subcommand}", collection, release, step)`, with step `stage` for `stage` and `discard`, `apply` for `apply`, `switch` and `cleanup`, and `rollback` for `rollback`. It runs only when `PUBLISH_LOCK.json` has an `approved_applies` entry for that collection and release whose `steps` include the step, which takes a reviewed PR. 0.4's loopback exemption covers local rehearsals (D8); this item adds no rule of its own to `publish_lock.py`. The entry stays until the release's rollback window closes, and a follow-up PR removes it.
   - **Stage** (`publication.py`, reworked). `CollectionPublicationRunner.publish` becomes `stage`. It no longer acquires a live reader store or search index.
     1. Refuse if `staging` holds a different publish that is neither cleaned up nor discarded (`corpus_publishes`). Call `create_corpus_staging()` (2.2a) if the staging tables are absent, and refuse if existing ones differ in shape from live.
-    2. Build documents with `SOURCE_ADAPTERS` (`publication.py:32-45`). Adapters take frozen document IDs, anchors, document facts, work keys, `searchable`, `language` and `passage_author` from the 2.1 registry, and skip every unit the removal registry marks removed.
+    2. Build documents with `SOURCE_ADAPTERS` (`publication.py:32-45`). Adapters take frozen document IDs, anchors, document facts and work keys from the 2.1 registry, and skip every unit the removal registry marks removed. `searchable`, `language` and `passage_author` are `Passage` fields (2.1): the stage reads the adapter's value first, then applies the passage registry's override where a row sets one (3.3), so the registry wins (D11). It also resolves each history passage's `superseded_by_anchor` to the current passage's ID for `chunks.superseded_by`, and stops if the anchor is not in the same document.
     3. Take each passage's ID from 2.1's passage registry (D1). `Passage` gains an `id` field, filled by the registry's lookup from `(document_id, structural anchor)`. A unit that exists today gets its current passage ID, whatever its anchor now looks like. Only a unit the registry does not know (a restored verse, recovered prose, a split recension) gets a new ID from `identity.passage_id`, and the stage lists every such new ID. The writers use `Passage.id` and never recompute it, so `publication.py:128-132`, `reader_writer.py:114` and `search_writer.py:41` stop calling `passage_id()`. A passage with no ID stops the stage.
     4. Delete the staged rows of the collections being staged (staging tables only), then insert `staging.documents`, `staging.document_works` and `staging.chunks`. Positions are the build's positions (0 and up). `search_vector` is generated, and the staged GIN index is built, as in live. Call `staging.refresh_document_outline` for every staged document, so `staging.document_chapters` and `chunk_count` exist for the pre-cutover eval.
-    5. Compute retirements and redirects against live. Every live ID in the staged collections that the build does not emit needs either a removal-registry entry (D4), which yields a `staging.corpus_tombstones` row with the tombstone snapshot taken from the live row, or a 0.1c remap outcome of `moved`, `split`, `merged` or `renumbered`, which yields a `staging.corpus_redirects` row. An ID with neither stops the stage and names the ID. Anchor redirects come from 0.1c's `chapter_remap.jsonl`.
-    6. Create a new Qdrant collection `chunks-<publish id>` (overridable with `QDRANT_WRITE_COLLECTION` for local runs) with `qdrant_schema.create_chunks_collection` (below). Write one point for every staged passage, searchable or not (D5). Vectors are reused when the embedding input is unchanged. For each staged passage the writer computes `embed_sha256`, the sha256 of the embedding input text (`search_writer.build_embedding_input`, `:27-36`), the model and the dimensions, and stores it in the payload. When the collection the alias targets holds a point with the same ID and the same `embed_sha256`, the vector is copied from it (`retrieve(..., with_vectors=True)`) and no embedding call is made. Live points lack the field today, and the inputs they were embedded from are not recorded, so the first publish (P4) embeds every passage, about 11 million tokens (4.1b's estimate). Every later publish embeds only passages whose input changed. Collections not being staged are copied point for point, vectors and payloads, from the collection the alias targets, so the new collection is complete on its own.
+    5. Compute retirements and redirects against live. Every live ID in the staged collections that the build does not emit needs either a removal-registry entry (D4), which yields a `staging.corpus_tombstones` row, or a 0.1c remap outcome of `moved`, `split`, `merged` or `renumbered`, which yields a `staging.corpus_redirects` row. An ID with neither stops the stage and names the ID. Anchor redirects come from 0.1c's `chapter_remap.jsonl`. A live passage that the build emits under another document ID (a passage moved between documents, as in 1.8b's split if Carter approves it) is not a retirement: it keeps its ID and moves at the apply (below).
+       Tombstone rows from registry entries (D11). Only `document` and `passage` entries produce a row; `span` and `class` entries are audit records and produce none. For each retired ID:
+       - `removal_key` is the entry's `id`, and `reason_code` is its `reason`, from 2.1's list.
+       - `public_reason` is its `tombstone` sentence, unchanged.
+       - `church_act` is null, or the entry's `church_act` object rendered as "<act>, <issuer>, <date>", for example "Second Council of Constantinople, anathema 11, 553".
+       - `rule` is derived from the reason and never stored in the registry: `rule-a` gives `A`, `rule-b` gives `B`, `rule-c` gives `C`, `rule-g-editorial` and `note-split-off` give `G`, and every other reason gives `other`.
+       - `snapshot` is `{collection, title, author, reference, chapter_label}` taken from the live row.
+       A `document` entry yields one document tombstone plus one passage tombstone per live passage of the document, all with the same reason and sentence.
+    6. Create a new Qdrant collection `chunks-<release>` (D11; `QDRANT_WRITE_COLLECTION` overrides the name for local runs) with `qdrant_schema.create_chunks_collection` (below). Write one point for every staged passage, searchable or not (D5). Each point's vector comes from the first of these that has it (D11):
+       1. The content-addressed embedding cache (`cache.py`, `get_embedding(input_hash, model, dims)`), keyed on the sha256 of the exact embedding input (`search_writer.build_embedding_input`, `:27-36`), the model and the dimensions.
+       2. The collection the alias targets, when it holds a point with the same ID and the same `embed_sha256` payload field (`retrieve(..., with_vectors=True)`). Such a vector is also written to the cache.
+       3. OpenAI, for cache misses only, in batches. Each new vector is written to the cache before the point is upserted, so an interrupted stage never pays twice.
+       The payload stores `embed_sha256` so the next publish can use step 2.
+       Expected hit rate, and both bounds (measured 29 Sep). The cache on Carter's Mac is empty, today's publish path never wrote to it, and live points carry no `embed_sha256`. Live vectors were also built from a different input shape than today's writer produces (a `[chapter_label]` prefix instead of the author and title prefix; `backfill_vectors.py` docstring), so they cannot be matched. The first full stage therefore misses on every passage: about 55,000 passages and about 11 million tokens, about $1.40 at $0.13 per million tokens (price unverified; check before the run). That first full stage is the local rehearsal (4.1a, D8), which runs on the same Mac and fills the cache. The production stage in 4.1b step 1 then misses only on passages whose embedding input changed after the rehearsal build: 0 tokens if the build is unchanged, up to the same 11 million if every input changed. Every later publish embeds only passages whose input changed.
+       Collections not being staged are copied point for point, vectors and payloads, from the collection the alias targets, so the new collection is complete on its own. A collection being renamed by this publish (5.1b.3) counts as staged under its old key too, so its old points are never copied (see 5.1b.3).
     7. Check that the new collection's point count equals the staged passage count, and record `staged_at` and the collection name in `corpus_publishes`.
   - **Report.** `publish.py report` runs 0.1c's report in a staged mode that reads `staging` instead of building. On top of 0.1c's sections it adds these checks:
     - Every retirement is explained by the removal registry or a redirect (D4).
@@ -358,34 +401,48 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - User impact, which lists the user rows that point at retired and redirected IDs.
     - The added storage in `staging` and the projected database size after apply.
     The report's sha256 and a hash of the staged content go into `corpus_publishes.report_sha256`. `apply` refuses when the staged content no longer matches the reported hash.
-  - **Snapshot for rollback.** Right before the apply transaction, `apply` exports the live corpus rows of the staged collections (`documents`, `chunks` without `search_vector`, `document_works`, `document_chapters`) in one read-only transaction to a local, gitignored folder `datapipeline/releases/snapshots/<publish id>-before/`, with a sha256 per file recorded in `corpus_publishes`. The files hold corpus text only, no user data. The apply refuses to start if the export fails. This is the corpus dump that 4.1b's rollback step stages.
+  - **Snapshot for rollback.** Right before the apply transaction, `apply` exports the live corpus rows of the staged collections (`documents`, `chunks` without `search_vector`, `document_works`, `document_chapters`) in one read-only transaction to a local, gitignored folder `datapipeline/releases/snapshots/<release>-before/`, with a sha256 per file recorded in `corpus_publishes`. The files hold corpus text only, no user data. The apply refuses to start if the export fails. `rollback` reads this snapshot itself. The `pg_dump` 4.1b takes before an apply is a last-resort backup, not a rollback path (D11).
   - **Apply** (new `datapipeline/writers/apply.py`). One transaction, with `SET LOCAL lock_timeout = '2s'`, for all staged collections:
     1. Upsert `documents` from `staging.documents` by ID, setting `retired_at = NULL` for any document present in staging. Retire documents of the staged collections that staging lacks, which the stage step has already shown are explained. Upsert `document_works`.
     2. Per document, move live passages to temporary positions (`position = -position - 1`, which stays inside -1 to -999,999), as `reader_writer.py:108-111` does today, but only for rows with `retired_at IS NULL`.
-    3. Upsert `chunks` from `staging.chunks` by ID. Changed text under an unchanged anchor updates in place and keeps its ID (D1). New IDs insert. A staged ID that matches a retired row un-retires it.
+    3. Upsert `chunks` from `staging.chunks` by ID. Changed text under an unchanged anchor updates in place and keeps its ID (D1). New IDs insert. A staged ID that matches a retired row un-retires it. A staged ID that is live under another document moves by updating its `document_id` in place, so it keeps its ID and every user row on it (D11; needed if Carter approves 1.8b's split). Step 2 has already moved the live rows of both documents out of the live position range, so the move cannot collide.
     4. Retire live passages that staging lacks. Set `retired_at = now()` and move each to a position below every existing retired position of its document, starting at -1,000,000, so repeated publishes never collide on `UNIQUE (document_id, position)`. No `DELETE` is issued anywhere.
     5. Insert tombstones and redirects from staging into `corpus_tombstones` and `corpus_redirects`, tagged with the publish ID.
-    6. Call 4.1a's `remap_user_rows(conn, redirects, chapter_remap)` inside the same transaction, after the redirects are written, so bookmarks, history results, labels, guest results, reading positions and feedback move to the new IDs in the same commit. Its `RemapLedger` counts go into the publish log. 2.2w ships the call site behind a small protocol, `UserDataRemap`, and 4.1a supplies the implementation. Until 4.1a merges, `apply` refuses any publish whose redirects are referenced by a user row, naming the tables and counts. A publish with no such redirects, such as the On the Incarnation retirement below, runs without it.
+    6. Call the user-data remap inside the same transaction, after the redirects are written, so bookmarks, history results, labels, guest results, reading positions and feedback move to the new IDs in the same commit. This item defines the interface and calls it; 4.1a implements it (D11). Neither item contains the other's code:
+       ```python
+       class UserDataRemap(Protocol):
+           async def forward(self, conn, release: str, redirects, chapter_remap) -> RemapLedger: ...
+           async def reverse(self, conn, release: str) -> RemapLedger: ...
+       ```
+       `forward` moves user rows along this publish's redirects; `reverse` moves them back and restores rows it merged. The ledger's public counts go into the publish log. Until 4.1a merges, `apply` refuses any publish whose redirects are referenced by a user row, naming the tables and counts. A publish with no such redirects, such as the On the Incarnation retirement below, runs without it.
     7. Call `refresh_document_outline` for every document touched, last, as `reader_writer.py:131` does today.
     8. Record `applied_at`.
   - **Switch.** Right after commit, one `update_collection_aliases` call deletes `chunks_live` from the old collection and creates it on the new one. Qdrant applies the listed alias actions atomically. The old target is stored in `corpus_publishes.previous_qdrant_collection`. Between commit and switch (seconds), a vector hit on a now-retired passage is dropped by 2.2b's Postgres guard, and new passages are found by full-text search only.
-  - **Rollback apply.** `publish.py rollback --publish-id <id>` undoes an applied publish within the rollback window, with the same lock gate. It is an apply in reverse, built from the same code.
+  - **Rollback.** `publish.py rollback --release <name>` undoes an applied publish within the rollback window, under the lock step `rollback`. It is the only rollback path (D11), and the runbook (4.1b step 12) calls this command and nothing else. It is an apply in reverse, built from the same code.
     1. Recreate the staging tables if `cleanup` dropped them, and load the publish's before-snapshot into them. The snapshot's sha256s must match `corpus_publishes`.
     2. In one transaction, run apply steps 1 to 4 with the snapshot as the staged content. This restores the previous text and facts in place by ID and un-retires every row the publish retired.
-    3. In the same transaction, retire every row the publish inserted, with a tombstone whose `reason_code` is `rolled_back`. These rows exist in live and are absent from the snapshot, and that absence is their D4 explanation. None is deleted, since users may have bookmarked them during the window.
-    4. Still in the same transaction, delete this publish's rows from `corpus_redirects` and `corpus_tombstones` (neither table is referenced by user rows), call 4.1a's reverse remap (`--reverse`) for its redirects, and refresh the outline of every touched document.
+    3. In the same transaction, retire every row the publish inserted, with a tombstone whose `reason_code` is `rolled-back` (2.1's reserved reason), rule `other`, no `removal_key`, and the sentence "This passage was added in a corpus update that has been undone." These rows exist in live and are absent from the snapshot, and that absence is their D4 explanation. None is deleted, since users may have bookmarked them during the window.
+    4. Still in the same transaction, delete this publish's rows from `corpus_redirects` and `corpus_tombstones` (neither table is referenced by user rows), call `UserDataRemap.reverse(conn, release)` for its redirects, and refresh the outline of every touched document. There is no separate reverse-remap step to run.
     5. After commit, switch `chunks_live` back to `corpus_publishes.previous_qdrant_collection` and record `rolled_back_at`.
     The previous Qdrant collection and the snapshot are kept until the rollback window closes (4.1b).
-  - **Cleanup.** `publish.py cleanup --publish-id <id>` calls `drop_corpus_staging()` (2.2a), which drops every staging table and returns its space at once (about 210 MB for the full corpus, per 4.0's projection). It runs after the apply and its smoke checks (4.1b step 10) and needs the same lock gate. Rollback stays possible afterwards, because it rebuilds staging from the snapshot. Deleting the previous Qdrant collection and the snapshot, after the window, is a separate ops step.
-  - **Staging read override, for the pre-cutover eval (4.2).** A new API setting `CORPUS_READ_SCHEMA` (`services/api/app/config.py`, default `public`). When it is `staging`, `app/db.py:42-52` creates the pool with `server_settings={"search_path": "staging, public", "default_transaction_read_only": "on"}`. The corpus tables in `staging` have the live names, so every unqualified query reads the staged corpus and every user table still resolves to `public`, and the session cannot write. `corpus_schema` (2.2b) probes columns in `current_schema()`. Paired with `QDRANT_READ_COLLECTION=chunks-<publish id>` (2.2b), the in-process eval harness (`services/api/scripts/run_eval_suite.py`, which persists nothing) searches the staged corpus exactly as production will. The deployed API refuses to start when the setting is anything but `public` (a check in the `app/main.py` lifespan), so production can never read staging.
+  - **Cleanup.** `publish.py cleanup --release <name>` calls `drop_corpus_staging()` (2.2a), which drops every staging table and returns its space at once (about 210 MB for the full corpus, per 4.0's projection). It runs after the apply and its smoke checks (4.1b step 10) and needs the same lock gate. Rollback stays possible afterwards, because it rebuilds staging from the snapshot. Deleting the previous Qdrant collection and the snapshot, after the window, is a separate ops step.
+  - **Staging read override, for the pre-cutover eval (4.2).** A new API setting `CORPUS_READ_SCHEMA` (`services/api/app/config.py`, default `public`). When it is `staging`, `app/db.py:42-52` creates the pool with `server_settings={"search_path": "staging, public", "default_transaction_read_only": "on"}`. The corpus tables in `staging` have the live names, so every unqualified query reads the staged corpus and every user table still resolves to `public`, and the session cannot write. `corpus_schema` (2.2b) probes columns in `current_schema()`. Paired with `QDRANT_READ_COLLECTION=chunks-<release>` (2.2b), the in-process eval harness (`services/api/scripts/run_eval_suite.py`, which persists nothing) searches the staged corpus exactly as production will. The deployed API refuses to start when the setting is anything but `public` (a check in the `app/main.py` lifespan), so production can never read staging.
   - **Writer code.**
     - `writers/reader_writer.py`: delete `clear_collection`, `prune_missing_chunks` and `prune_missing_documents`. `write_document` becomes `write_staged_document(conn, doc)` and writes only into `staging.*`, with the new document facts, works and passage fields.
     - `publication.py`: the `ReaderStore` and `SearchIndex` protocols (`:85-102`) lose `wipe`, `prune_documents`, `reset` and `prune`. `PostgresReaderStore` (`:251-276`) and `QdrantSearchIndex` (`:279-301`) become staging stores. `_validate_build` (`:224-248`) moves into the report as a warning section, since retirements are now explained one by one rather than capped at 10%.
     - `writers/qdrant.py`: remove `QDRANT_COLLECTION` (`:15`); every function takes the collection name. Remove `delete_collection_points` (`:62-67`) and `prune_missing_points` (`:88-108`) from the publish path. Add `alias_target(client, alias)`, `copy_points(client, source, target, ids=None)` (scroll with vectors and payload, then upsert) and `switch_alias(client, alias, new, old)`.
     - `qdrant_schema.py`: replace `CHUNKS` and `recreate_chunks` (`:12`, `:17-29`) with `create_chunks_collection(client, name)`. It refuses with `SystemExit` when `name` already exists or is an alias, creates the collection with today's vector and HNSW settings (`:21-27`), and creates payload indexes `collection`, `genre`, `issuer`, `document_id` (keyword) and `searchable` (boolean, D5). `on_disk` vectors follow 4.0's decision.
     - `writers/search_writer.py:build_point` (`:39-63`): the point ID is `Passage.id`. Add `genre`, `issuer`, `searchable` and `embed_sha256` to the payload. `author` becomes the author shown to users, which is `passage_author` when set, then the work's author, then the document's. `write_document` (`:83-101`) takes the target collection and a vector-reuse lookup.
-    - `datapipeline/model.py`: `Document` gains the 2.2a document facts and `works`; `Passage` gains `id` (from the passage registry), `searchable` (default `True`), `language`, `work_key`, `passage_author`, `note`.
-    - `datapipeline/config.py`: add `QDRANT_WRITE_COLLECTION` (default unset, meaning `chunks-<publish id>`) and `QDRANT_LIVE_ALIAS` (default `chunks_live`).
+    - `datapipeline/model.py`: `Document` gains the 2.2a document facts (`genre`, `issuer`, `issuer_label` and the rest). `works`, `Passage.work_key`, `searchable`, `language`, `passage_author` and `superseded_by_anchor` already exist from 2.1 (D11). `Passage` gains `id` (from the passage registry) and `note`.
+    - `datapipeline/config.py`: add `QDRANT_WRITE_COLLECTION` (default unset, meaning `chunks-<release>`) and `QDRANT_LIVE_ALIAS` (default `chunks_live`).
+  - **Other writers (D11).** Every other script that writes to the corpus or Qdrant (the list verified under Current state) either writes through `QDRANT_WRITE_COLLECTION` and the lock, or is retired:
+    - `stages/reader.py`: retired. It clears and rewrites a live collection, which D2 forbids. `pipeline.py` drops its `reader` stage; a V5 run that needs the reader store runs `publish.py stage` instead.
+    - `stages/embed.py` and `stages/bm25_index.py`: take the target collection from `QDRANT_WRITE_COLLECTION`, which is required for them (no default, so they can never fall back to `chunks` or to the alias), and keep 0.4's `repair` gate. `stages/embed.py` already uses the embedding cache.
+    - `stages/enrich_io.py`: keeps 0.4's `repair` gate. It writes only `annotation` and `annotation_vector`, which no publish writes, so it needs no collection setting.
+    - `scripts/backfill_missing_vectors.py`, `scripts/reembed_drifted_vectors.py` and `scripts/reconcile_qdrant_payloads.py`: replace `QDRANT_COLLECTION` with `QDRANT_WRITE_COLLECTION` (required when `--apply` is set) and keep 0.4's `repair` gate. Their libraries `backfill_vectors.py`, `reconcile.py` and `reembed.py` make no writes and change only the constant they import. These scripts exist because Postgres and Qdrant used to be written by separate runs. After P4 a 2.2w publish writes both from one staging build, so retiring them is a follow-up once one steady-state publish has shipped.
+    - `qdrant_schema.recreate_chunks`: removed (above).
+
+    A test, `test_no_writer_names_the_chunks_collection`, searches the datapipeline source for a hard-coded `"chunks"` Qdrant collection name outside tests and fails on any hit.
   - **Docs.** Rewrite `datapipeline/README.md` ("Publish one collection", "Narrow repair commands") and `datapipeline/SOURCES.md` ("Publishing a collection") around stage, report, apply, switch, rollback and cleanup. Update the datapipeline line in the repo `CLAUDE.md` Quick Commands, which today shows `run_collection.py --target both`.
 - **Acceptance checks:**
   - New `datapipeline/tests/test_stage_apply.py`, run against a throwaway local Postgres with 0037, 0038 and 0039 applied, the way `datapipeline/tests/test_reader_writer_outline.py` starts one, and against an in-memory Qdrant (`AsyncQdrantClient(location=":memory:")`; whether local mode supports aliases is unverified, and a fake alias store is the fallback):
@@ -406,32 +463,42 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `test_unchanged_passage_copies_its_vector`: no embedding call for a passage whose `embed_sha256` matches.
     - `test_apply_calls_user_remap_in_the_transaction`: a fake `UserDataRemap` sees the same connection and transaction, and a failure inside it rolls the whole apply back.
     - `test_apply_refuses_referenced_redirects_without_remap`.
-    - `test_single_collection_publish_copies_other_collections`.
+    - `test_single_collection_publish_copies_other_collections`, and `test_renamed_collection_old_points_are_not_copied`.
+    - `test_embedding_cache_hit_skips_openai` and `test_cache_miss_is_written_to_cache_before_upsert`.
+    - `test_tombstone_row_from_registry_entry`: a `passage` entry yields `reason_code`, `public_reason`, the rendered `church_act` and the derived `rule`; a `span` entry yields no row.
+    - `test_passage_moved_between_documents_keeps_its_id`.
+    - `test_registry_override_beats_adapter_searchable`.
+    - `test_history_passage_gets_superseded_by`.
+    - `test_rollback_calls_reverse_remap_in_the_same_transaction`.
     - `test_alias_switch_is_one_call`.
-    - `test_rollback_apply_restores_rows_alias_and_outline`: after apply, cleanup and rollback, every corpus row equals the before-snapshot except the rows the publish inserted, which are retired with `rolled_back` tombstones; the alias points at the previous collection.
+    - `test_rollback_apply_restores_rows_alias_and_outline`: after apply, cleanup and rollback, every corpus row equals the before-snapshot except the rows the publish inserted, which are retired with `rolled-back` tombstones; the alias points at the previous collection.
     - `test_cleanup_drops_staging_only`: after `cleanup`, the staging tables are gone, every `public` table is unchanged, and the next `stage` recreates them.
     - `services/api/tests/test_staging_read_override.py`: with `CORPUS_READ_SCHEMA=staging` the pool's `search_path` is `staging, public`, a write raises a read-only error, and the app lifespan refuses to start.
-    - `test_apply_refuses_without_lock_match`, `test_loopback_targets_pass_the_lock`, `test_apply_refuses_stale_report`.
+    - `test_apply_refuses_without_lock_match`, `test_each_subcommand_asks_for_its_step` (stage, apply or rollback), `test_apply_refuses_stale_report`. The loopback exemption itself is tested in 0.4.
   - `datapipeline/tests/test_run_collection.py::test_live_publish_points_to_publish_py`, and the removed flags are rejected.
   - Existing tests that exercised `clear_collection`, the prune functions, `--wipe-reader` or `--reset-search-index` are removed or rewritten against staging, and the PR lists each one.
-  - Local rehearsal (D8). On a local Postgres restored from a production `pg_dump` and a local Qdrant seeded by copying the production points read-only, run stage, report, apply, cleanup and rollback for one collection (catechism, about 809 passages), then for all collections. Run the eval harness once against staging through the read override. Record the apply transaction's duration, the peak database size, and the report's count of live IDs kept, retired and redirected. Then stage the same build a second time and confirm it makes no embedding call. The counts of `retrievals`, `bookmarks`, `retrieval_labels`, `guest_trial_retrievals` and `reading_progress` are equal before apply, after apply and after rollback. The dump is deleted afterwards.
+  - Local rehearsal (D8). On a local Postgres restored from a production `pg_dump` and a local Qdrant seeded by copying the production points read-only, run stage, report, apply, cleanup and rollback for one collection (catechism, about 809 passages), then for all collections. Run the eval harness once against staging through the read override. Record the apply transaction's duration, the peak database size, and the report's count of live IDs kept, retired and redirected. The first full stage fills the embedding cache; record the token count. Then stage the same build a second time and confirm it makes no embedding call. The counts of `retrievals`, `bookmarks`, `retrieval_labels`, `guest_trial_retrievals` and `reading_progress` are equal before apply, after apply and after rollback. The dump is deleted afterwards.
   - PR description must include the rehearsal timings and sizes, the apply duration for all collections, the list of removed CLI flags, and the sentence "No code path left in the datapipeline deletes a live chunk or document row."
-- **Production safety:** Merging changes no live data, and the publish lock holds every live path. After this PR no datapipeline path can delete a live chunk or document, so the cascade into user tables cannot fire from a publish. A stage into production writes only the `staging` schema and a Qdrant collection no alias points at, which users never read. But staging carries the live indexes, including the full-text index the eval needs, so it adds about 210 MB (4.0's projection) to a database already at 401 MB of a 500 MB Free plan limit, and 4.0 puts the apply's peak at 490 to 590 MB. So no production stage runs before 4.0's compaction and its Pro decision, and `cleanup` runs as soon as the apply is checked. The read override cannot reach production, because the deployed API refuses to start with it. The apply is one transaction. Readers keep seeing the old rows until commit (MVCC). Moving positions takes row locks that make a concurrent bookmark or retrieval insert on the same passage wait until commit, so the apply runs in 4.1b's quiet window, and its duration from the rehearsal decides whether that is acceptable. The alias switch is atomic, and the rollback apply is one command within the window.
+- **Production safety:** Merging changes no live data, and the publish lock holds every live path. After this PR no datapipeline path can delete a live chunk or document, so the cascade into user tables cannot fire from a publish. A stage into production writes only the `staging` schema and a Qdrant collection no alias points at, which users never read. But staging carries the live indexes, including the full-text index the eval needs, so it adds about 210 MB (4.0's projection) to a database already at 401 MB of a 500 MB Free plan limit, and 4.0 puts the apply's peak at 490 to 590 MB. So no production stage runs before 4.0's compaction and its Pro decision, and `cleanup` runs as soon as the apply is checked. The read override cannot reach production, because the deployed API refuses to start with it. The apply is one transaction. Readers keep seeing the old rows until commit (MVCC). Moving positions takes row locks that make a concurrent bookmark or retrieval insert on the same passage wait until commit, so the apply runs in 4.1b's quiet window, and its duration from the rehearsal decides whether that is acceptable. The alias switch is atomic, and `rollback` is one command within the window.
 - **Needs Carter:**
   - Approval of the `pg_dump` for the local rehearsal (D8).
-  - For each production stage and apply, a reviewed change to `PUBLISH_LOCK.json` naming the publish ID. The first is P4's 4.1b.
-  - The first production stage waits for 4.0 (storage and the Pro decision); approve its embedding cost (about 11 million tokens).
+  - For each production stage and apply, a reviewed change to `PUBLISH_LOCK.json` adding an entry for the collection and release, and a second one removing it after the rollback window. The first is P4's 4.1b.
+  - The first production stage waits for 4.0 (storage and the Pro decision). Approve the embedding spend, about 11 million tokens (about $1.40) at the local rehearsal, which fills the cache, then between 0 and that amount at the production stage, depending on how much changed in between.
   - The rollback window length (4.1b).
   - Whether to do the On the Incarnation early retirement below.
 - **Out of scope:** The user-data remap's rules and merge policy (4.1a supplies the implementation this item calls). The cutover runbook, backups and smoke checks (4.1b). The V5 `stages/` engine, which stays behind the lock (0.4). Hard-deleting retired rows and deleting old Qdrant collections (ops after the rollback window). Genre and issuer filters in the API (5.1a).
 
 #### Optional ops step: early retirement of On the Incarnation (D7 exception, 1.8d)
 
-- **What:** D7 allows one change to live data before Phase 4, if Carter approves it. Lawson's 1944 translation of On the Incarnation is under copyright (1.8d), so its 47 passages and its document (`cf235300-e37d-5a7a-a421-f50efff38355`) may be retired early. They are retired, not deleted (D3). 1.8d's earlier recommendation of a deletion is replaced by this step.
-- **How:** A removal-registry entry for the document and its 47 passage anchors, with `rule = 'other'`, `reason_code = 'translation_in_preparation'` and a public reason such as "This translation is being replaced with a public-domain one; the text returns when it is ready." Then `publish.py apply --retire-only --publish-id incarnation-withdraw`, which stages nothing new. In one transaction it retires the document and its 47 passages, writes their tombstones and refreshes the outline. It then sets `searchable = false` on the 47 points in the collection `chunks_live` targets, so each stays a point (D5), and switches no alias. Restart the API to clear the one-hour `/sources` cache.
-- **Requires:** 0039 applied; 2.2b deployed with the alias in use; 2.4a and 2.4b deployed, so the reader shows the removal page and history shows the tombstone; a reviewed lock-file change naming `incarnation-withdraw`.
+- **What:** D7 allows one change to live data before Phase 4, if Carter approves it. Lawson's 1944 translation of On the Incarnation is under copyright (1.8d), so its 47 passages and its document (`cf235300-e37d-5a7a-a421-f50efff38355`) may be retired early. They are retired, not deleted (D3). This is the one procedure for it (D11); 1.8d points here.
+- **How:**
+  1. A PR adds a `document`-scope removal-registry entry for `cf235300…` with reason `translation-in-preparation` (rule `other`, derived) and the tombstone "This translation is being replaced with a public-domain one; the text returns when it is ready." The same PR adds a lock entry `{"collection": "church-fathers", "release": "incarnation-withdraw", "steps": ["apply", "rollback"], ...}`.
+  2. `publish.py apply --retire-only --collection church-fathers --release incarnation-withdraw`, which stages nothing new. In one transaction it retires the document and its 47 passages, writes their tombstones from the registry entry (as in stage step 5) and refreshes the outline. It then sets `searchable = false` on the 47 points in the collection `chunks_live` targets, so each stays a point (D5), and switches no alias.
+  3. Restart the API to clear the one-hour `/sources` cache.
+  4. After the rollback window, a PR removes the lock entry.
+- **Requires, in this order:** 0.3's baseline run (before any live change, D7); 2.2a's 0039 applied; 2.2b deployed with the alias in use; 2.4a and 2.4b deployed, so the reader shows the removal page and history shows the tombstone. Then the reviewed lock-file change above.
 - **User impact (29 Sep):** 1 retrieval and 0 bookmarks point at the document's passages. The retrieval row is kept and restores as a tombstone.
-- **At Phase 4:** The apply un-retires the document under the same ID with Robertson's text (1.8d), and the old passages get redirects to the new sections by 1.8d's mapping.
+- **At Phase 4:** The P4 build replaces the document-scope entry with Robertson's text (1.8d). The apply un-retires the document under the same ID, and the 47 old passage IDs get redirects to the new sections by 1.8d's mapping. 2.4a checks redirects before tombstones, so old links reach Robertson's text.
 
 ---
 
@@ -541,21 +608,22 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Today's writer upserts `id, collection, title, translation, author, year, metadata` only (`datapipeline/writers/reader_writer.py:99-106`).
   - Anselm's three works all carry `year = 1099`; the plan corrects them to 1076, 1077-78 and 1098 (that fix belongs to 1.9; this item carries the values).
 - **Changes:**
-  - Registry (2.1's tracked file): add per-document fields `genre, issuer, year, date_display, translation, source_credit, certainty, attribution_note, notes, clavis_ref, superseded_by`, and per-work entries `{work_key, ordinal, title, author, certainty, attribution_note, notes, date_display, year, genre, clavis_ref, anchors: [first, last]}`. Work boundaries are anchor ranges, never positions (D4, D6). Validation in the registry loader:
+  - Registry (2.1's tracked file): add per-document fields `genre, issuer, issuer_label, year, date_display, translation, source_credit, certainty, attribution_note, notes, clavis_ref, superseded_by`. Works use the `works` shape 2.1 already defines (D6, D11); this item fills their values. Which passages belong to a work is recorded per passage as `work_key` in 2.1's passage registry, never by anchor or position range. Validation in the registry loader:
     - `certainty` is one of the four values.
-    - `genre` is one of the D5 words seeded in `corpus_genres` (papal, Roman Curia, catechisms and law, writers, and `other`), lowercase and hyphenated, or null where no genre applies.
+    - `genre` is a value of 2.1's genre module (`registry/genres.py`), or null where no genre applies.
+    - `issuer` is a lowercase hyphenated slug and `issuer_label` is present whenever `issuer` is (D11).
     - `source_credit` is present for every document (source from 0.2).
     - `year` is an integer or null.
     - `superseded_by` names a registered document.
   - Value rules:
     - `translation`: the edition or translator shown to users, for example `Ante-Nicene Fathers (1885-1896)`, `Nicene and Post-Nicene Fathers, Series I`, `Vatican English`, `WEB-C` kept for the Bible (the web maps codes to names, `apps/web/src/components/sources/SourcesPage.tsx:12`). The `(collection, title, translation, author)` unique key allows this.
-    - `issuer`: the pope for papal documents (from `metadata.pope`), the council for council documents, `Holy See` for the Catechism and the Code.
+    - `issuer` and `issuer_label` (D11): for papal documents the pope, from `metadata.pope`, as `pope-leo-xiii` and "Pope Leo XIII"; for council documents the council, as `second-vatican-council` and "Second Vatican Council"; for the Catechism and the Code, `holy-see` and "Holy See". Filters use `issuer`; cards and the reader show `issuer_label`.
     - `year` stays the sortable integer; `date_display` carries ranges and "c.".
     - `source_credit`: exactly the wording 0.2's rights inventory records per source. If 0.2 agrees, vatican.va texts get `Text: Libreria Editrice Vaticana` and CCEL ThML texts get `Sourced via CCEL.org`. Never derived from a ThML `<description>`.
   - `datapipeline/model.py` fields and the staging writer are 2.2w's; this item fills them from the registry in each adapter's document construction.
   - Release report (0.1c, staged mode in 2.2w): a "Document facts" section with a per-field, per-collection count of values that differ from live, and the list of documents whose `author` changes. This replaces the backfill script an earlier draft proposed; there is no separate live write (D7).
 - **Acceptance checks:**
-  - Registry validation tests: every document has `source_credit`; every `genre` is a D5 word; every work's anchor range resolves in a build; no `<description>` text appears in any registry field (checked against the extracted blurbs of the vendored ThML files).
+  - Registry validation tests: every document has `source_credit`; every `genre` is in 2.1's genre module; every `issuer` is a slug with an `issuer_label`; every work has at least one passage whose `work_key` names it in a build; no `<description>` text appears in any registry field (checked against the extracted blurbs of the vendored ThML files).
   - `datapipeline/tests/test_stage_apply.py` (2.2w) gains `test_document_facts_reach_staging_and_live_after_apply`.
   - Locally, the staged report against a fresh snapshot shows the facts diff. The PR description pastes the counts per field and per collection.
 - **Production safety:** Nothing reaches live data before the Phase 4 apply. At the apply, the new columns are filled in the same transaction as the text, and the Qdrant payload carries the same author, genre and issuer, so Postgres and Qdrant agree from the first second. If 2.4a is not yet deployed, the new columns are simply unread.
@@ -584,7 +652,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         date_display: Optional[str] = None
         translation: Optional[str] = None
         genre: Optional[str] = None
-        issuer: Optional[str] = None
+        issuer: Optional[str] = None        # slug, for filters
+        issuer_label: Optional[str] = None  # shown to users
         certainty: Optional[Literal["genuine", "disputed", "pseudonymous", "anonymous"]] = None
         attribution_note: Optional[str] = None
         notes: Optional[str] = None
@@ -611,7 +680,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         chunk_id: Optional[str] = None
     ```
 
-    `ChunkSource` and `BookmarkSource` gain `facts: Optional[DocumentFacts]`, `language: Optional[str]`, `passage_note: Optional[str]`, `passage_author: Optional[str]`. `ChunkResult` and `BookmarkResponse` gain `status: Literal["current", "moved", "removed"] = "current"`, `tombstone: Optional[Tombstone]`, `redirect: Optional[Redirect]`. `DocumentResponse` gains `facts`, `works: list[WorkInfo]` and `status`. `ReaderPassage` gains `language`, `note`, `work_key`, `passage_author`.
+    `ChunkSource` and `BookmarkSource` gain `facts: Optional[DocumentFacts]`, `language: Optional[str]`, `passage_note: Optional[str]`, `passage_author: Optional[str]`. `ChunkResult` and `BookmarkResponse` gain `status: Literal["current", "moved", "removed"] = "current"`, `tombstone: Optional[Tombstone]`, `redirect: Optional[Redirect]`. `DocumentResponse` gains `facts`, `works: list[WorkInfo]` and `status`. `ReaderPassage` gains `language`, `note`, `work_key`, `passage_author` and `superseded_by` (the current passage's ID, set only on a history passage).
+  - Superseded text in the reader (rule F, D11). The chapter query returns history passages (`superseded_by IS NOT NULL`) with the chapter, so the reader can show them as "earlier text" beside the current passage. They are never search results, because `searchable` is false. A history passage is not retired; the visibility predicate below does not hide it.
   - Work-level fields override document-level ones in `DocumentFacts` when a passage has a `work_key` (author and certainty for "Dubious or Spurious Writings." come from the work, not the document). A passage's `passage_author` overrides both for the author shown.
   - New step `rag/steps/document_facts.py`, called from `pipeline.py` after ranking and before the chunk events. One query per search: `SELECT ... FROM documents d WHERE d.id = ANY($1)` plus `document_works` for the `(document_id, work_key)` pairs and `chunks.language, note, work_key, passage_author` for the result IDs. The card's author comes from this query, not from the Qdrant payload. Timeout 1 s; on failure it records via `degradation.record_recovery` (as `fetch_context` does) and events go out without `facts`. Guest search uses the same pipeline (`routes/guest_search.py:359`), so guests get the fields too.
   - Chunk event `source` adds `facts`, `language`, `passage_note`, `passage_author`. The event shape change is additive.
@@ -676,6 +746,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `DocumentOverview.tsx`: attribution line becomes `formatAttribution · formatDate · formatTranslation`; show certainty, notes, supersession and the list of works with their own labels when `works` is non-empty; source credit at the bottom of the header section.
     - `ChapterSection.tsx`: source credit once at the end of each loaded chapter section. When a chapter's passages belong to a work whose attribution differs from the document's, show the work's label under the chapter heading.
     - `Passage.tsx`: non-English passages get the language note above the text; `note` renders as a small muted paragraph after the passage; a `passage_author` renders as a small label above the passage.
+    - Earlier text (rule F, D11). A passage with `superseded_by` set is not rendered in the reading flow. It renders as a collapsed "Earlier text (<year>)" control under the current passage it points to; opening it shows the older wording in muted text with the label "No longer in force". The year comes from the history anchor. Test: `ChapterSection.test.tsx::test_history_passage_shows_as_earlier_text_under_current`.
     - `DocumentReader.tsx` and `lib/api.ts` reader fetchers: on 410 with a tombstone, show a removal page (title, author, reason, Church act, back button). On 404 with `redirect`, `router.replace` to the new document and anchor, keeping `from` and `returnKey`. On `redirected_from`, highlight the new anchor.
     - Guest reader shares these components (`isGuest`); no guest fork.
   - `SourcesPage.tsx`: use `formatAttribution` and `formatDate`; show a certainty tag.
@@ -752,16 +823,16 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Today's writer deletes what a build no longer emits, which cascades (`reader_writer.py:36-81`); `clear_collection` deletes a whole collection (`:16-33`). 2.2w removes both.
   - CCEL `<description>` blurbs sit in the ThML header of the vendored files (for example `datapipeline/sources/medieval/consolation-of-philosophy.xml:11`). The adapters iterate `div1` elements in the body (`datapipeline/ingest/church_fathers.py:59`, `ingest/medieval.py:45`), and a live search for the four medieval blurbs' opening sentences found 0 passages. Checked for the 4 medieval files only; the Fathers files were not checked passage by passage.
 - **Changes:**
-  - Removal registry (2.1's file, D4): one entry per target, by document ID and anchor or anchor range, never by position, with `rule`, `reason_code`, `public_reason` and `church_act`. Whole-document targets list the document. `reason_code` vocabulary:
-    - `condemned_by_name` (A, limit 1): Origen (Constantinople II, 553, anathema 11), Novatian (Roman synod under Pope Cornelius, 251, as reported by Eusebius, Church History 6.43).
-    - `outside_communion_or_undated` (A, limit 3): Tertullian's 7 works (Benedict XVI, general audience of 30 May 2007, for the break), Tatian (Irenaeus, Against Heresies 1.28.1; Eusebius, Church History 4.28-29).
-    - `before_baptism` (A): Arnobius (Jerome, Chronicle).
-    - `non_christian_author` (A): Alexander of Lycopolis (van Oort 2012).
-    - `forgery_heterodox` (B): Apostolic Constitutions (Council in Trullo, canon 2, confirmed by Nicaea II, canon 1), six Ignatius letters and the long recension (majority of standard scholarship), Sectional Confession (Caspari 1879, Lietzmann 1904).
-    - `late_fabrication` (C): Pfaff fragments (Harnack 1900), medieval Latin Ignatius letters (CPG 1028).
-    - `editorial` (G).
-    - `translation_in_preparation` and `rolled_back` are used by 2.2w and D9, not by this item.
-  - `public_reason` drafts, one sentence each, for Carter to approve. For Origen, "Removed because the Second Council of Constantinople (553) condemned Origen by name, and TheoCorpus excludes authors the Church has condemned by name." For rule G, "Removed because this text was written by a modern editor, not the author."
+  - Removal registry (2.1's file, D4): entries in 2.1's scopes, never by position and never as an anchor range. A whole-document target is one `document` entry. A partial target (Treatises I and III in `5d75dc92`, Book VIII before its canons, the Sectional Confession, the Pfaff fragments) is one `passage` entry per live anchor. The long recension is 1.8c's `span` entries, which this PR checks rather than adds again. Each entry's fields are 2.1's: `reason`, `detail`, `tombstone` and `church_act`. The reason comes from 2.1's list only (D11); the distinctions an earlier draft coded as separate reasons go in `detail`:
+    - `rule-a`:
+      - Origen (limit 1, condemned by name: Constantinople II, 553, anathema 11) and Novatian (limit 1: Roman synod under Pope Cornelius, 251, as reported by Eusebius, Church History 6.43).
+      - Tertullian's 7 works (limit 3, outside communion or not datable; Benedict XVI, general audience of 30 May 2007, for the break) and Tatian (Irenaeus, Against Heresies 1.28.1; Eusebius, Church History 4.28-29).
+      - Arnobius (written before baptism; Jerome, Chronicle) and Alexander of Lycopolis (not a Christian; van Oort 2012).
+    - `rule-b`: the Apostolic Constitutions (Council in Trullo, canon 2, confirmed by Nicaea II, canon 1), the six forged Ignatius letters and the long Ignatian recension (majority of standard scholarship), and the Sectional Confession (Caspari 1879, Lietzmann 1904).
+    - `rule-c`: the Pfaff fragments (Harnack 1900) and the medieval Latin Ignatius letters (CPG 1028).
+    - `rule-g-editorial`: the rule G list after 1.8a to 1.8c.
+    - The tombstone's rule letter (A, B, C, G) is derived from the reason by 2.2w, not stored here.
+  - Tombstone drafts, one sentence each, for Carter to approve. For Origen, "Removed because the Second Council of Constantinople (553) condemned Origen by name, and TheoCorpus excludes authors the Church has condemned by name." For rule G, "Removed because this text was written by a modern editor, not the author."
   - Adapters (`datapipeline/ingest/church_fathers.py`, `medieval.py`, `thml_doc.py`): skip every unit the removal registry lists. The adapter asks the registry; no author or title string matching in adapter code.
   - No writer change. 2.2w's stage step turns each registry entry into a staged tombstone, with its snapshot (`collection, title, author, reference, chapter_label`) taken from the live row, and its apply retires the rows. An ID that leaves the build with no registry entry and no redirect stops the stage (D4).
   - A regression check keeps ThML `<description>` text out of content. New `datapipeline/tests/test_thml_description_excluded.py` builds each ThML adapter's documents from fixtures containing a `<description>` and asserts no passage contains it. For vendored sources, the 0.1a coverage checks gain a rule that fails when any passage contains 40 or more consecutive characters of a file's `<description>`.
@@ -787,7 +858,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Baseline eval (0.3) targeted questions for each removed author return no passage from them after cutover (4.2).
   - PR description must include the registry diff, the per-target counts, the tombstone wordings, and the R1 outcome for the two Tertullian works.
 - **Production safety:** Merging changes only the registry and adapters; the publish lock (0.4) keeps them away from production until the Phase 4 apply. At the apply, removed rows are retired and stay in the tables, so every user foreign key survives, and 2.4a returns tombstones for them. 2.2w's rollback un-retires them with nothing lost. If this merged before 2.4a and 2.4b were deployed, nothing would happen, because nothing is applied until P4; the 4.1b checklist blocks cutover until both are live.
-- **Needs Carter:** R1's result for To His Wife and On the Apparel of Women. Approval of each `public_reason` sentence. The display policy for removed text (2.4a). The rule G final list after 1.8a to 1.8c.
+- **Needs Carter:** R1's result for To His Wife and On the Apparel of Women. Approval of each tombstone sentence. The display policy for removed text (2.4a). The rule G final list after 1.8a to 1.8c.
 - **Out of scope:** Label changes for works that stay (3.2). The split of the Shorter and Longer documents and the Ignatius greetings (1.8c). Hard-deleting retired rows (post-cutover ops). The About page section on excluded authors (5.7).
 
 ---
@@ -799,7 +870,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Goal:** Doubtful works say so. A user reading the Hortatory Address sees "Pseudo-Justin"; a user reading the Twelve Topics sees it is not Gregory's; a user reading the Didache sees it is anonymous; the Summa Supplement says it was compiled after Aquinas died.
 - **Current state:**
   - Every document has only `author` for attribution; no certainty or note exists anywhere. Authors live: Justin Martyr for the Hortatory Address (`3f1d7ed1`, 41 passages), On the Sole Government of God (`dd54c7cc`, 6), The Discourse to the Greeks (`abd0e330`, 5), On the Resurrection, Fragments (`24b54b57`, 12); "Gregory Thaumaturgus." for Dubious or Spurious Writings (`44fd52c3`, 80); Barnabas (`1d83b302`); Mathetes for Diognetus (`abf69de0`, 13); "Hippolytus." for the Appendix of dubious pieces (`a2b36c64`, 57); Ignatius for The Martyrdom of Ignatius (`841b4e0a`, 8); Victorinus (`e847b8bb`, 39); Methodius for Oration on the Palms and the homily fragments (`5f210d1e`); Pamphilus (Exposition of the Acts, today positions 2 to 5).
-  - In ANF volumes, one document holds several works, and chapter keys repeat across works ("Section I" occurs at positions 0 and 43 of `44fd52c3`). Work boundaries are therefore anchor ranges, which is why 2.2a adds `chunks.work_key` and `document_works` (D6).
+  - In ANF volumes, one document holds several works, and chapter keys repeat across works ("Section I" occurs at positions 0 and 43 of `44fd52c3`). Work membership is therefore recorded per passage as `work_key`, in the work model 2.1 defines and 2.2a stores (`chunks.work_key`, `document_works`; D6, D11).
   - Unverified which document holds the Refutation of All Heresies (CPG 1899), the Muratorian fragment, On the Glory of Martyrdom, Exhortation to Repentance, Canons of Hippolytus, the Acts of Archelaus and the Lactantius Poem on the Passion. 2.1's registry must locate each by CPG number before this PR.
 - **Changes:** Registry values, per the plan's "Labels for works that stay" and D10, using 2.2a's fields. `author` is the rule H credit shown to users; `certainty` is the label; `clavis_ref` the CPG number. Where the table names a work inside a document, the values go on the `document_works` entry.
 
@@ -858,7 +929,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Canon law's Latin (canons 111, 579, 695, 700, and paragraphs of 535 and 868) is handled by 1.5 under the plan's rule 6 and rule E; it uses the same `language` and `searchable` fields when no unofficial English exists.
 - **Changes:**
   - Research step inside this item, before code. For each of the four works, record whether a public-domain or licensed English translation of the missing sections exists (0.2's rights inventory holds the answer). The plan's default when none exists is reader-only; TheoCorpus makes no translations of its own.
-  - Registry: per passage anchor (or anchor range), `language` (`la` or `it`), `searchable: false`, and a passage `note`, for example "Left in Latin by the Ante-Nicene Fathers translators; no public-domain English translation is available." When an English translation is adopted, the adapter substitutes it (a separate adapter change under 1.8a or 1.3a) and the passage stays searchable.
+  - Registry: per passage anchor in 2.1's passage registry, `language` (`la` or `it`), `searchable: false`, and a passage `note`. These override whatever the adapter set on the `Passage` fields (D11), and 2.2w applies the override at stage time. Example note: "Left in Latin by the Ante-Nicene Fathers translators; no public-domain English translation is available." When an English translation is adopted, the adapter substitutes it (a separate adapter change under 1.8a or 1.3a) and the passage stays searchable.
   - No writer change. 2.2w carries `Passage.searchable`, `language` and `note` into `staging.chunks` and writes `searchable = false` into each point's payload; every such passage stays a Qdrant point (D5).
   - No early live apply (D7). The earlier draft's `apply_passage_flags.py` script is dropped.
   - No change to the reader, which already shows every passage of a chapter; 2.4b adds the language note.
