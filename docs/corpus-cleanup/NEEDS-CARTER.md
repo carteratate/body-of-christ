@@ -16,7 +16,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 - **Live data** is the production Supabase database (project hvmgffvimqgiejmxwhwq) and the production Qdrant search index. Users see both.
 - **Qdrant** is the service that stores the numeric "embeddings" behind meaning-based search. An **embedding** is a list of numbers OpenAI computes for a passage, paid per token (a token is about three quarters of a word).
-- **Publish lock** is a file in the repo, `PUBLISH_LOCK.json`, that blocks every write to live data unless a reviewed PR has added an entry naming the collection and the release. A **release** is a named publish, such as `republish-2026-10`.
+- **Publish lock** is a file in the repo, `PUBLISH_LOCK.json`, that blocks every datapipeline command from writing to the live corpus or search index unless a reviewed PR has added an entry naming the collection and the release. Steps done by hand (a migration, creating a Qdrant alias or index, `VACUUM FULL`, deletions after a rollback window) are outside the lock and approved one by one in section A. A **release** is a named publish, such as `republish-2026-10`.
 - **Staging** is a separate copy of the corpus built inside the production database, which users never see, so a new version can be checked before it replaces the old one in one step (the **apply**).
 - **Rollback window** is the period after an apply during which one command can put the old corpus back.
 - **Tombstone** is the short notice a user sees in place of a passage that was removed, giving the reason and the Church act if there is one. Removed passages are hidden, never deleted, so saved searches and bookmarks keep working.
@@ -36,7 +36,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.4** [Phase 0]. Approve the publish-lock PR. It must merge before any Phase 1 PR.
 - **0.1c** [Phase 0]. Run, or approve running, `export_live_snapshot.py`. It reads production without changing anything and copies the corpus text and anonymous counts of saved rows (no user IDs, no query text) to his Mac. It is re-run before Phase 4 and whenever a report needs fresh counts.
 - **0.6** [Phase 0]. Approve read-only size queries against production.
-- **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees and runs before any live change so it records the corpus as it is today. The run changes nothing in the database.
+- **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 0039 migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
 - **R6** [Phase 0, blocks Phase 1 items 1.2c, 1.2d, 1.8d]. Approve each set of source downloads. The request states the file names and sizes each time.
 
 ### Phase 1
@@ -48,7 +48,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **2.2a** [Phase 2]. Approve a pg_dump of production for a local timing rehearsal of the new database structure. Then approve applying migration 0039 to the live database. It adds columns and tables only and changes nothing users see.
 - **2.2b** [Phase 2]. Approve two steps on live systems. The first creates the Qdrant alias `chunks_live` (a second name for today's search index, so later switches take one step) and an index on the new "searchable" field. The second sets one environment variable on Railway and restarts the API.
 - **2.2w and 4.1a** [Phase 2, repeated in Phase 4]. Approve the pg_dump for the full local rehearsal of the new publish process. The 2.2a timing rehearsal can share this dump if the two run close together.
-- **2.2w** [Phase 2 to 4]. Approve the embedding spend for the rehearsal, about 11 million tokens, about $1.40 at today's list price (to be checked before the run). The rehearsal fills a local cache, so the production run later costs between $0 and the same amount, depending on how much the build changed in between.
+- **2.2w** [Phase 2 to 4]. Approve the embedding spend for the first full local rehearsal stage (2.2w's or 4.1a's, whichever runs first), about 11 million tokens, about $1.40 at today's list price (to be checked before the run). It fills a local cache, so later rehearsals and the production run cost between $0 and the same amount, depending on how much the build changed in between.
 - **1.8d and 2.2w, only if B-1.8d below is yes** [Phase 2]. Approve the lock-file PR, the one live step that retires On the Incarnation early, the API restart, and the later PR that removes the lock entry.
 
 ### Phase 4
@@ -60,8 +60,10 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   - the staging build and its embedding spend (step 1);
   - the backups (step 4);
   - the apply (step 6);
+  - a hand-run outline refresh (step 7), only if one is needed;
   - the switch of the search index (step 8);
   - the API restart (step 9);
+  - the smoke checks and dropping the staging tables in production (step 10);
   - the rollback (step 12), only if it is needed;
   - each clean-up step after the rollback window (step 13): deleting hidden passages no user points at, deleting the old Qdrant index (this cannot be undone), deleting the private backups, and the PR that removes the lock entry.
 - **4.2** [Phase 4]. Approve the spend for the before and after search evaluation. The report states the amount.
@@ -79,12 +81,12 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 ### Phase 0
 
-- **0.4** [Phase 0]. Agree to the lock rules. Every write to live data, including emergency repairs, needs a reviewed PR adding a lock entry. The only exception is a rehearsal where the database and Qdrant both run on his own Mac. An entry stays until its rollback window closes. No entry is added before Phase 4 except, if he chooses, the On the Incarnation retirement. Recommended answer is yes.
+- **0.4** [Phase 0]. Agree to the lock rules. Every datapipeline write to the live corpus or search index, including emergency repairs, needs a reviewed PR adding a lock entry. The only exception is a rehearsal where the database and Qdrant both run on his own Mac. Steps done by hand (migrations, alias and index creation, `VACUUM FULL`, post-window deletions) are outside the lock and approved one at a time. An entry stays until its rollback window closes. No entry is added before Phase 4 except, if he chooses, the On the Incarnation retirement. Recommended answer is yes.
 - **2.1** [Phase 0]. Approve four things about the new ID registry.
   - Passages get anchors from the source's own structure (the ID of each section in the source file) instead of from label text. A choice remains on how dots in those IDs are written, kept as dots or turned into dashes. The spec recommends no option; either works.
   - The passage registry, about 7 MB of IDs and anchors and no text, goes into the public repo.
   - The removal-registry format, whose tombstone sentences are public.
-  - One new removal reason, `rolled-back`, used only for passages that an undone publish had added. The plan's decision D11 lists the reasons and does not name this one, so the plan needs a one-line update if he agrees. Recommended answer is yes.
+  - One new removal reason, `rolled-back`, used only for passages that an undone publish had added. The plan's decision D11 lists the reasons and does not name this one, so the plan needs a one-line update if he agrees.
 
   Recommended answer is yes to all four.
 - **0.1a** [Phase 0]. Review the list of known defects that the new tests start out expecting. No decision beyond checking it.

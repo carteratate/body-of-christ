@@ -12,15 +12,15 @@ Where two disagree, the higher one wins. If the higher one looks wrong, ask Cart
 
 ## 1. Before writing code
 
-1. Read the plan's Inclusion rules, Decision log and D1 to D11, the item's spec, and the spec of every item it depends on. Check that each dependency has merged. If one has not, stop and tell Carter.
-2. Open `NEEDS-CARTER.md` and find every entry for the item, in all three sections, that has no "Answered" line.
+1. Read the plan's Inclusion rules, Decision log and D1 to D11, the item's spec, and the spec of every item it depends on. Check that each dependency is done in the way its "Depends on" line says: merged for a PR, closed for a research item, run for an ops step, deployed or applied where the spec says so. If one is not, stop and tell Carter.
+2. Open `NEEDS-CARTER.md` and find every entry for the item in sections B (decisions) and C (things Carter supplies) that has no "Answered" line. Section A approvals are asked later (step 5).
 3. Ask Carter about them in one message, before any code. For each question give:
    - the item ID;
    - one plain sentence he can answer without reading the spec, with any term defined;
    - the recommended answer, if the spec gives one.
 
    Do not ask about anything the plan or the Decision log already settles. If reading the code raises a new question that would change the design, add it to the same message. Questions that change nothing can be settled with the spec's default and mentioned in the PR.
-4. Record every answer in the same change set as the work:
+4. Record every answer in the same change set as the work. For a PR item that is the PR. A research item records them in the PR that adds its findings file (`docs/research/R*.md`). An ops item with no PR (0.5, 0.6, 4.0 and the ops steps of 4.1b) records them in a small docs PR opened right after the step, and in the tracking issue.
    - In `NEEDS-CARTER.md`, add a line under the entry, `Answered <YYYY-MM-DD>: <the answer>`.
    - If the answer settles a design choice, also add a row to the plan's Decision log ("Decided by Carter on <date>"), and edit the item's spec so it states the chosen option instead of the choice.
 5. Approvals in section A are not asked up front. Each live-data step, ops step or push is asked for when it is about to run, and approval of a PR is not approval of its live step (plan, "Start here").
