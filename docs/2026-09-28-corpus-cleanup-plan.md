@@ -104,7 +104,7 @@ All decided by Carter on 28 September 2026.
 | Novatian | Out entirely | Excommunicated by name by Pope Cornelius's Roman synod in 251 (Eusebius, Church History 6.43), so limit 1 of rule A applies even to On the Trinity, written before the schism. |
 | Arnobius | Out | Jerome's Chronicle says he wrote Against the Heathen before baptism, to convince a bishop of his sincerity. |
 | Summa collection | Stays the Summa only. Aquinas's other works go in Theologians and spiritual writers. | Carter's choice. Open: whether the Catena Aurea comes in at all, since it is mostly quotations from the Fathers. |
-| Boethius and Pseudo-Dionysius | Move to Church Fathers | Both predate the 750 line. Boethius's document ID stays frozen; only its collection changes. |
+| Boethius and Pseudo-Dionysius | Boethius moves to Church Fathers; Pseudo-Dionysius is added there (5.6a), since the corpus's two "Dionysius." documents are Dionysius of Alexandria | Both predate the 750 line. Boethius's document ID stays frozen; only its collection changes. |
 | Public domain by non-renewal | Accepted, with a renewal search recorded per work in the rights inventory (PR 0.2) | Opens mid-century translations such as the 1940 Bruce Imitation. |
 | Lay and non-canonized writers | In scope if they pass rules A to H | The rules judge communion and authorship, not canonization. |
 | Pre-conversion works among the candidates | Out: Chesterton's Orthodoxy (1908), Newman's Parochial and Plain Sermons, Edith Stein's pre-1922 works. Newman's Development of Christian Doctrine uses the 1878 edition he revised as a Catholic. | Consequence of the revised rule A. |
@@ -300,20 +300,56 @@ One collection per kind of speaker, with genre as a filter inside it.
 
 Nine collections, down from ten. The merge must update every hard-coded collection key: `user_preferences.default_collections`, `searches.filters`, `guest_trials.filters`, `VALID_COLLECTIONS`, the HyDE prompts and `_COLLECTION_MAX_TOKENS`, `config.overlap_for`, `routes/evaluate.py`, `compare.py`, `apps/web/src/lib/collections.ts`, and the Qdrant payload. Genre and issuer become indexed Qdrant payload fields.
 
+## Cross-cutting design decisions
+
+Settled on 29 Sep 2026 after a cross-check of the work specifications found them assuming different mechanics. Every spec in `docs/corpus-cleanup/` must follow these; where a spec disagrees, this section wins.
+
+**D1. A passage ID names one unit of text for good.** `passage_id = f(document_id, anchor)` does not change. An anchor names the same unit of text in every release, so fixing that unit's text (stripping notes, restoring dropped prose, correcting a label) keeps its ID, and bookmarks and saved results stay valid and gain the corrected text. If a fix changes which text an anchor names (Joel and Malachi renumbering, a council rebuilt by session, a split recension), the fix must give the unit a new anchor, and the old anchor gets a redirect to the new one. The release report (0.1c) fails any build where an unchanged anchor's text similarity falls below the threshold 0.1c sets without a redirect.
+
+**D2. One writer, stage then apply, for the republish and for every publish after it.** A publish never writes straight into the live tables:
+1. It builds the collection into staging tables with the live tables' shape (schema `staging`) and a new Qdrant collection.
+2. The release report is produced from staging against live.
+3. Apply is one database transaction: update changed rows in place by ID, insert new IDs, mark removed IDs retired (never delete them while a user row points at them), write tombstones and redirects, refresh the reader outline (`refresh_document_outline`).
+4. Then the Qdrant alias `chunks_live` is switched.
+
+This replaces the "release column" and the two-releases-side-by-side design. No query filters on a release, `chunks` never holds two copies of the corpus, and the "doubles chunks" storage problem shrinks to one staging copy (about 100 MB of live data). It is also the steady-state publish mode after Phase 4, so no later publish can run today's delete-based prune (`writers/reader_writer.py`), which cascades away user rows. The publish lock (0.4) stays locked except for an apply named in a reviewed change to the lock file.
+
+**D3. Removed text is retired, never deleted, while user data points at it.** Every table that references a passage cascades on delete (retrievals, bookmarks, retrieval_labels, guest_trial_retrievals, and reading_progress for documents). Retired passages leave search and the reader's chapter lists, keep their row, and show a tombstone: one sentence of reason and the Church act, with no text. Retired rows with no user references may be deleted after the rollback window (4.1b).
+
+**D4. Every removal has one registry.** Everything any phase removes (rule A to C removals, rule G editorial text, notes split off, duplicate passages, Tanner council texts) is recorded by anchor, never by position, in one tracked file owned by 2.1, with its reason and tombstone text. The writer refuses to retire an ID the registry does not explain.
+
+**D5. Shared vocabularies are defined once.**
+- Genre, in 2.2a: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`, `other`. Lowercase and hyphenated everywhere.
+- Remap outcomes, in 0.1c: `same`, `moved`, `split`, `merged`, `renumbered`, `removed`. Redirect kinds in 2.2a use the same words.
+- Citation for split pieces, in 1.10c: "(part 2 of 3)". The Catechism and Summa adopt it.
+- The Qdrant alias is `chunks_live`, and the `searchable` payload index is boolean.
+- Every passage, searchable or not, is a Qdrant point; non-searchable ones carry `searchable = false`.
+- Document facts that search filters on (collection, genre, issuer, searchable) are written to the Qdrant payload by the D2 writer.
+
+**D6. Works inside one document are modelled, not split.** Container documents (an ANF volume, "Treatises Attributed to Cyprian") keep their frozen ID and gain a `work_key` per passage and a `document_works` row per work (2.2a). There are no "P3 splits". Splitting the two Augustine treatise volumes into separate documents (1.8b) is the one exception proposed, and it waits for Carter.
+
+**D7. Nothing touches live data before the Phase 4 apply, with one exception Carter may approve.** The early live applies some specs offered (metadata backfill, labels, search flags) are dropped; they ride the Phase 4 apply. The exception is On the Incarnation (1.8d): because Lawson's 1944 translation is copyrighted, its 47 passages may be taken out of search and the reader before Phase 4, by retiring them (D3), if Carter approves. The baseline eval (0.3) runs before any live change.
+
+**D8. Rehearsals run locally.** Supabase branches need the Pro plan and copy schema only, so the Phase 4 rehearsal runs against a local Postgres restored from a `pg_dump` of production. The dump contains user data: it stays on Carter's Mac, is deleted after the rehearsal, and needs his approval. Pro stays a separate decision (4.0).
+
+**D9. OCR tooling comes forward.** The council replacements for councils 8 to 18 (Schroeder, 1937) exist mostly as page scans. The OCR clean-up tool and its quality gate (the method in the Decision log) are built in Phase 1 as item 1.2f, so councils 8 to 18 can be replaced before Phase 4. Where a council's public-domain text is still not ready at Phase 4, its Tanner text is retired and the gap is shown as a tombstone ("translation in preparation"), since TheoCorpus makes no translations of its own.
+
+**D10. Ownership fixes.** Trailing periods on author names are fixed once, in 1.10a (not 1.8c). R2 and R3 are specified in the P0 file; the P1a file refers to them. The Martyrdom of Ignatius keeps its author label and gets the note the plan names. The Apostolic Canons are labelled as received works under rule D ("attributed to the Apostles; compiled about 380"), not "Anonymous". The Refutation of All Heresies waits on R1 (rule A), not only R4.
+
 ## Phase and PR plan
 
 Each parent is a tracking issue; each child is one PR unless marked.
 
-| Parent | Children, in merge order |
+| Parent | Children, in merge order (full specs in `docs/corpus-cleanup/`) |
 |---|---|
-| P0 Checks, provenance, identity and safety | 0.0 GitHub Actions workflow for the tests that need no vendored sources (API tests, datapipeline unit tests, web lint and tests), plus a PR template whose required section holds the locally run source checks; 0.4 publish lock: `run_collection` refuses production writes without an explicit cutover flag (merges before any P1 PR); 0.1a coverage and sequence tests; 0.1b health rules; 0.1c release report with remap-based ID diff; 0.2 source hashes, manifests, rights inventory; 2.1 work registry with frozen IDs, structural anchors, and the rule A fields (communion dates, chronology source, Church acts); 0.3 baseline eval run on the `docs/eval/` gold sets plus targeted questions for the removals and the Vatican II recovery (no stored user queries); 0.5 ops: read the Qdrant plan's memory and disk limits |
-| P0 research (sub-issues, each blocks the PR named) | R1 rule A dating and Church-act check (blocks 3.1); R2 canons 296, 360, 361, 948 against iuscangreg.it (blocks 1.5); R3 Esther claims (blocks 1.4); R4 whether the Refutation's book contents are authorial (blocks 1.8a); R5 trace the On Loving God translator (blocks 1.9); R6 edition and provenance check for each planned source (blocks the matching 5.x additions) |
-| P1 Adapter fixes | 1.10 shared text hygiene first; 1.1 Vatican II; 1.2 other councils; 1.3 papal; 1.4 Bible; 1.5 canon law; 1.6 Catechism; 1.7 Summa; 1.8a ANF editorial strip; 1.8b NPNF Augustine editorial strip; 1.8c Fathers labels, authors, greetings, recension split with the genuine Ignatius letters taken from the separated ANF text (same branch as the P3 splits); 1.9 medieval. Every PR attaches its release report. None publishes, because of the lock. |
-| P2 Schema and reader | 2.2a additive migration from 0039: document fields, attribution, notes, release column, tombstones, redirects, all nullable or defaulted to the current release, and the API tolerates their absence; 2.2b Qdrant alias pointing at today's `chunks` collection with the API reading the alias, the searchable flag (the filter excludes only `searchable = false`, so points without the field stay searchable), full-text search, embedding neighbors, stitch; 2.2c search_vector rebuild; 2.3 metadata backfill; 2.4a API payload, tombstones, redirects; 2.4b web cards and reader; 2.4c About page factual fix (remove the authors who are not in the corpus) |
-| P3 Content policy | 3.1 removals; 3.2 labels; 3.3 non-English |
-| P4 Republish | 4.0 storage (decided): compact `chunks` with `VACUUM FULL` in a quiet window Carter approves, measure, and buy Supabase Pro only if the rehearsal exceeds about 350 MB or the V5 enrichment is scheduled; build the new Qdrant collection with vectors on disk if 0.5 shows memory is tight; 4.1a remap tooling with a merge policy for the unique constraints on bookmarks, guest_trial_retrievals and retrieval_labels, rehearsed on a Supabase branch; 4.1b production cutover runbook (ops) including the alias switch and its rollback; 4.2 comparison against the baseline (ops) |
-| P5 Reorganize and expand | 5.1a genre and issuer filters; 5.1b collection-key migration in four expand-and-contract PRs (API accepts old and new keys and maps old to new; web sends new keys; migration rewrites stored preferences and filters and Qdrant payloads in place with no re-embedding; old keys removed); 5.1c one guaranteed slot per collection, no per-genre guarantee (decided); 5.2 rights inventory completed for every planned source (ops); 5.3 Roman Curia; 5.4 papal and universal law, including A New Hope for Lebanon and Ubicumque et Semper; 5.5 catechisms; 5.6a Fathers additions; 5.6b spiritual writers from CCEL ThML and Gutenberg text; 5.6c scanned works, one PR per work (pending the OCR decision); 5.7 About page rewritten as "What's in TheoCorpus and why"; Eastern code (blocked on license) |
-| Retrieval follow-ups | Separate parent, started after the new baseline |
+| P0 Checks, provenance, identity and safety (`P0-checks-identity-research.md`) | 0.0 CI for source-free tests and a PR template; 0.4 publish lock (merges before any P1 PR); 0.1a coverage and sequence tests; 0.1b health rules; 0.1c release report with remap-based ID diff (defines the remap vocabulary, D5); 0.2 source hashes, manifests, rights inventory; 2.1 work registry: frozen IDs, structural anchors, rule A and attribution fields, the removal registry (D4); 0.3 baseline eval with judging, before any live change (ops); 0.5 Qdrant plan limits (ops); 0.6 storage headroom snapshot (ops) |
+| P0 research (each blocks the item named) | R1 rule A dating and Church-act check (blocks 3.1, 3.2, 5.6a, 5.6b); R2 canons 295, 296, 360, 361, 948 and English sources for the Latin canons (blocks 1.5b); R3 Esther (blocks 1.4a); R4 Refutation book contents (blocks 1.8a); R5 On Loving God translator (blocks 1.9); R6 edition and provenance of each new source (blocks 1.2c, 1.2d, 1.8d and every 5.x addition) |
+| P1 Adapter fixes (`P1a-...md`, `P1b-...md`) | 1.10a shared hygiene and author periods; 1.10b translator notes out of passages; 1.10c split-piece citations; 1.1 Vatican II; 1.3a papal adapters; 1.3b papal genres and labels; 1.5a canon law parsing; 1.5b current canon text (after R2); 1.4a Bible missing verses (after R3); 1.4b Nova Vulgata numbering; 1.4c deuterocanonical pericopes; 1.2a council source research; 1.2b councils parsing; 1.2c Percival for councils 1 to 7; 1.2d Schaff for Vatican I; 1.2f OCR clean-up tool and gate (D9); 1.2e Schroeder for councils 8 to 18; 1.6 Catechism; 1.7 Summa; 1.8a ANF editorial strip; 1.8d On the Incarnation to Robertson; 1.8b NPNF Augustine; 1.8c Fathers labels, greetings, recensions; 1.8e dropped whole works (decision); 1.9 medieval |
+| P2 Schema, writer and reader (`P2-P3-...md`) | 2.4c About page factual fix; 2.2a additive migration: document facts, work model (D6), retired flag, tombstones, redirects, staging schema; 2.2w the stage-then-apply writer (D2); 2.2b Qdrant alias `chunks_live`, searchable flag, payload fields; 2.2c search_vector (decision: it is generated, no rebuild); 2.3 metadata into the registry and staging; 2.4a API: document facts, tombstones, redirects; 2.4b web: labels, source credit on opened passages, tombstones |
+| P3 Content policy | 3.3 non-English out of search; 3.2 labels and notes; 3.1 removals into the removal registry (applied at 4.1b, D2) |
+| P4 Republish (`P4-P5-...md`) | 4.0 storage (VACUUM FULL window, Pro decision); 4.1a user-data remap for redirects, rehearsed locally (D8); 4.2 comparison against the baseline on staging; 4.1b cutover: lock-file change, apply, alias switch, outline refresh, cache restart, rollback window; 4.2 again on production |
+| P5 Reorganize and expand | 5.2 rights inventory for planned sources (can run now); 5.1a genre and issuer filters; 5.1c one guarantee slot per collection; 5.1b.1 to 5.1b.4 collection-key migration, expand and contract; 5.3a Roman Curia (parked branch); 5.4 papal and universal law; 5.5 catechisms; 5.6a Fathers additions; 5.3b further Curia texts; 5.6b spiritual writers from text sources; 5.6c scanned works, one PR each; 5.7 About page rewrite; 5.8 Eastern code (blocked on licence) |
+| Retrieval follow-ups | RF: separate parent, started after the new baseline |
 
 **Production stays working at every merge.** API and web changes deploy on merge; the datapipeline doesn't touch production until P4. The rules that keep that true:
 
@@ -328,8 +364,8 @@ Republish constraints found on 28 Sep:
 
 - New migrations start at 0039. `0035_studies.sql` sits untracked in `supabase/migrations/`.
 - API and web changes deploy on merge, before the republish, so they must work against today's schema and data.
-- During the republish, search and the reader must filter on a release column so old and new rows are never both visible.
-- Build a new Qdrant collection and switch the alias to it, rather than rebuilding in place.
+- The republish stages into separate tables and applies in one transaction (D2), so old and new text are never both visible.
+- Build a new Qdrant collection and switch the `chunks_live` alias to it, rather than rebuilding in place.
 - Restart the API after cutover to clear the one-hour `/sources` cache. Remap the gold IDs in `docs/eval/`.
 - Storage measured on 28 Sep: `chunks` is 380 MB, of which about 100 MB is live column data (content 42 MB, search_vector 49 MB, metadata 5 MB); its overflow (TOAST) storage is 203 MB. Qdrant holds one collection, `chunks`, 54,568 points at 1,536 dimensions (about 335 MB of raw vectors), no quantization, no alias.
 
