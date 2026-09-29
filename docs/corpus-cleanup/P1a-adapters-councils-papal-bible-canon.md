@@ -9,11 +9,12 @@ Written 29 September 2026 against `body-of-christ` master at `5475c49`, the vend
 3. The next worst is text that should not be there. 32,211 translator notes, about 1.97 million characters, sit inline in Fathers and medieval passages. Endnotes are glued to the last paragraph of at least 18 papal documents.
 4. Canon law loses 5 canons, keeps superseded text for 5, and leaks page footers into 11. The live count of 1,747 canons looks plausible but is 5 short of 1,752.
 5. The Bible drops 244 verses in the current build (245 live), including all of Susanna, Bel and the Dragon, and most of the Song of the Three.
-6. The council replacement (Percival, Schroeder, Schaff, Waterworth) is the largest item. Schroeder is mostly scan-only, so councils 8 to 18 depend on the OCR tooling of 5.6c or on a Carter decision about the gap.
-7. ID effects are mostly anchor churn inside frozen documents. Three things need explicit remap rules: the Song of Songs rename, Joel and Malachi renumbering (same anchor, different verse), and council anchors rebuilt by session.
-8. Research items R2 (canons) and R3 (Esther) are specified here and block 1.5b and 1.4a.
-9. Recommended order: 1.10a, 1.10b, 1.10c, 1.1, 1.3a, 1.3b, 1.5a, R2 then 1.5b, R3 then 1.4a, 1.4b, 1.4c, 1.2a, 1.2b, 1.2d, 1.2c, 1.2e.
-10. Start with 1.10 and 1.1: they are small, they touch every collection or the most-cited one, and they unblock the Nostra Aetate 4 fix that motivated this cleanup.
+6. The council replacement (Percival, Schroeder, Schaff, Waterworth) is the largest item. Schroeder is mostly scan-only, so this file now includes the OCR clean-up tool and its quality gate (1.2f, D9), which councils 8 to 18 need. A council whose public-domain text is not ready at P4 has its Tanner text retired with a "translation in preparation" tombstone.
+7. ID effects are mostly anchor churn inside frozen documents. A passage ID names one unit of text for good (D1). Where a fix changes which text an anchor names (Joel and Malachi renumbering, councils rebuilt by session), the unit gets a new anchor and the old anchor a redirect. The Song of Songs rename keeps its anchors.
+8. Everything an item removes is recorded by anchor in the removal registry that 2.1 owns (D4), in the same PR.
+9. Research items R2 (canons) and R3 (Esther) are specified in the P0 file, `P0-checks-identity-research.md`. They block 1.5b and 1.4a. R6 (edition checks) blocks 1.2c and 1.2d.
+10. Recommended order, matching the plan's phase table: 1.10a, 1.10b, 1.10c, 1.1, 1.3a, 1.3b, 1.5a, 1.5b (after R2), 1.4a (after R3), 1.4b, 1.4c, 1.2a, 1.2b, 1.2c and 1.2d (after R6), 1.2f, 1.2e.
+11. Start with 1.10 and 1.1. They are small, they touch every collection or the most-cited one, and they unblock the Nostra Aetate 4 fix that motivated this cleanup.
 
 ## Common ground for every item
 
@@ -22,8 +23,12 @@ These apply to every PR below and are not repeated in each item.
 - Measurement environment: `cd datapipeline` with `DATABASE_URL=x OPENAI_API_KEY=x QDRANT_URL=http://x QDRANT_API_KEY=x` exported, then import the adapter's `build_documents`. The numbers in this file came from that setup on 29 Sep.
 - Tests that need vendored files use the existing pattern `@pytest.mark.skipif(not _vendored, ...)` (see `tests/test_councils.py:12-13`). Synthetic HTML or USFM fixtures cover the same behaviour so GitHub Actions (0.0) runs something for every fix.
 - Every PR description carries the locally run source-check section from the 0.0 template, the 0.1c release report for the touched collections, and the 0.1a coverage numbers before and after.
+- D1 to D10 are the "Cross-cutting design decisions" in the plan. Where this file and those decisions disagree, the decisions win.
 - Anchors: follow the structural anchor rules of 2.1. Where this file proposes an anchor shape, 2.1 wins if they disagree.
-- Split pieces keep today's convention (`base/p1`, `base/p2`) unless 2.1 changes it. Where a fix makes a short unit long enough to split, its old anchor `base` becomes `base/p1`. The remap tool (0.1c, 4.1a) must map `base` to `base/p1`.
+- One anchor, one unit of text (D1). Fixing a unit's text keeps its anchor and ID. If a fix changes which text an anchor names, the unit gets a new anchor, and the PR adds a row to 2.1's `registry/redirects.json` from the old anchor, with a kind from the remap vocabulary (`moved`, `split`, `merged`, `renumbered`). A retired or redirected anchor string is never emitted again. The 0.1c report fails the PR otherwise.
+- Where the same numbered unit gets a new translation or new legal text (a Percival canon replacing a Tanner canon, an amended canon), the anchor stays and the adapter sets passage metadata `text_replaced` with the reason, so 0.1c's stability check lists it instead of failing.
+- Split pieces keep today's convention (`base/p1`, `base/p2`) unless 2.1 changes it. Where a fix makes a short unit long enough to split, its old anchor `base` becomes `base/p1`, and the PR adds a `split` redirect from `base` to `base/p1`.
+- Removals (D4). Every passage an item drops (notes split off, footnote cards, heading debris, duplicates, Tanner text with no successor) gets an entry in 2.1's `registry/removals.json` in the same PR, by live anchor, with reason and tombstone text. The 0.1c report fails on a removal the registry doesn't explain. Nothing is retired in live data until 4.1b (D2, D7).
 - Document IDs come from the frozen registry (2.1). Where a fix would change the computed ID, the registry keeps the old one and this file says so.
 - Every P1 PR depends on 0.4 (publish lock), 0.1a (coverage and sequence tests), 0.1c (release report) and 2.1 (registry). The "Depends on" lines below list only extra dependencies.
 
@@ -38,7 +43,7 @@ These apply to every PR below and are not repeated in each item.
   - The joins are in the source text itself, not in our markup handling. Vita Consecrata on vatican.va has "by a special consecration.The Synod was a tangible sign" in one text node.
   - Live counts of `[a-z][.?!][A-Z][a-z]` per collection: apostolic exhortations 181 joins in 83 passages, encyclicals 11 in 9, medieval 16 in 14, church fathers 12 in 11, canon law 11 in 16 passages (mostly "parentibus.§2" style joins before a section sign), councils 2, summa 1. The current build gives Vita Consecrata 181 joins in 88 passages (the plan's 188 in 86 is the live count).
   - `normalize/text.py:33-38` `clean_text` is the one cleaner every adapter calls, so it is the right place.
-  - Authors: 54 documents, 3,862 passages, have an author ending in a period. The shared cause is `thml_doc.make_doc` (`ingest/thml_doc.py:35-91`), which passes the ThML div title through unchanged. Container names such as "Tertullian: Part Fourth.", "Anatolius and Minor Writers." and "Appendix." are wrong authors, not just bad punctuation. They belong to 1.8c.
+  - Authors: 54 documents, 3,862 passages, have an author ending in a period, and 53 titles end in one. The labels are read from ANF `div1` and `div2` titles (`church_fathers.py:70-74`), and every ThML adapter passes them through `thml_doc.make_doc` (`ingest/thml_doc.py:35-91`) unchanged, so `make_doc` is the one place to fix them. This item owns trailing periods for every collection (D10); 1.8c does not repeat the fix. Container names such as "Tertullian: Part Fourth.", "Anatolius and Minor Writers." and "Appendix." are wrong authors, not just bad punctuation. After this item they read without the period, and 1.8c replaces them.
 - **Changes:**
   - Add `repair_sentence_joins(text)` to `normalize/text.py` and call it first inside `clean_text`. Rule: insert one space in `([a-z][.?!;:][”"’)]?)([A-Z][a-z])` and in `([.;:])(§)`. Skip any whitespace-delimited token containing `://`, `www.` or `@`.
   - Do not touch initials or abbreviations with a capital before the dot ("U.S.", "S.C.P.F."). The rule already requires a lowercase letter before the punctuation.
@@ -48,7 +53,8 @@ These apply to every PR below and are not repeated in each item.
   - `test_repair_sentence_joins_inserts_space`, `test_repair_sentence_joins_ignores_urls_and_initials`, `test_clean_text_only_adds_whitespace`: for every fixture, `re.sub(r"\s", "", out) == re.sub(r"\s", "", inp)`.
   - Vendored check across all ten collections: after the fix, zero matches of the join pattern outside URLs. For every passage, content with whitespace removed is identical before and after. The PR prints the per-collection before and after counts.
   - `test_make_doc_strips_trailing_period_keeps_id`: author "Methodius." yields "Methodius" and the same `document_id` as before.
-- **Production safety:** Content changes in about 150 passages across collections. No anchor or ID changes, because splitting happens on the same text plus a few spaces and the cap is 3,500 characters. The release report must still confirm zero anchor churn.
+  - Vendored check: zero authors and zero titles ending in a period across church fathers and medieval (54 authors and 53 titles before). The frozen registry IDs (2.1) are unchanged.
+- **Production safety:** Content changes in about 150 passages across collections, all `same` in the 0.1c report and far above its stability threshold. No anchor or ID changes, because splitting happens on the same text plus a few spaces and the cap is 3,500 characters. The release report must still confirm zero anchor churn.
 - **Needs Carter:** nothing.
 - **Out of scope:** container authors ("Tertullian: Part Fourth.") and all other Fathers labels, which are 1.8c. Lowercase "the" sentence starts in the Catechism, which is 1.6.
 

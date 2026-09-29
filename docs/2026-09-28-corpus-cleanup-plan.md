@@ -304,7 +304,7 @@ Nine collections, down from ten. The merge must update every hard-coded collecti
 
 Settled on 29 Sep 2026 after a cross-check of the work specifications found them assuming different mechanics. Every spec in `docs/corpus-cleanup/` must follow these; where a spec disagrees, this section wins.
 
-**D1. A passage ID names one unit of text for good.** `passage_id = f(document_id, anchor)` does not change. An anchor names the same unit of text in every release, so fixing that unit's text (stripping notes, restoring dropped prose, correcting a label) keeps its ID, and bookmarks and saved results stay valid and gain the corrected text. If a fix changes which text an anchor names (Joel and Malachi renumbering, a council rebuilt by session, a split recension), the fix must give the unit a new anchor, and the old anchor gets a redirect to the new one. The release report (0.1c) fails any build where an unchanged anchor's text similarity falls below the threshold 0.1c sets without a redirect.
+**D1. A passage ID names one unit of text for good.** `passage_id = f(document_id, anchor)` does not change. An anchor names the same unit of text in every release, so fixing that unit's text (stripping notes, restoring dropped prose, correcting a label) keeps its ID, and bookmarks and saved results stay valid and gain the corrected text. If a fix changes which text an anchor names (Joel and Malachi renumbering, a council rebuilt by session, a split recension), the fix must give the unit a new anchor, and the old anchor gets a redirect to the new one. The release report (0.1c) fails any build where an unchanged anchor's text similarity falls below the threshold 0.1c sets without a redirect. Passage IDs are frozen the same way document IDs are: the 2.1 registry maps each unit that exists today to its current passage ID, and structural anchors decide which unit is which, not what its ID is. Only genuinely new units (restored verses, recovered prose, split recensions) get new IDs. Rebuilding anchors must not re-key the corpus.
 
 **D2. One writer, stage then apply, for the republish and for every publish after it.** A publish never writes straight into the live tables:
 1. It builds the collection into staging tables with the live tables' shape (schema `staging`) and a new Qdrant collection.
@@ -319,12 +319,13 @@ This replaces the "release column" and the two-releases-side-by-side design. No 
 **D4. Every removal has one registry.** Everything any phase removes (rule A to C removals, rule G editorial text, notes split off, duplicate passages, Tanner council texts) is recorded by anchor, never by position, in one tracked file owned by 2.1, with its reason and tombstone text. The writer refuses to retire an ID the registry does not explain.
 
 **D5. Shared vocabularies are defined once.**
-- Genre, in 2.2a: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`, `other`. Lowercase and hyphenated everywhere.
+- Genre, in 2.2a, lowercase and hyphenated everywhere. Papal: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`. Roman Curia: `declaration`, `instruction`, `doctrinal-note`, `note`, `response`, `norms`, `considerations`, `commentary`. Catechisms and law: `catechism`, `compendium`, `code`, `law`. Writers: `treatise`, `manual`, `sermon`, `commentary`, `poem`, `rule`. Anything else: `other`. Adding a value is a normal PR change to 2.2a's list.
 - Remap outcomes, in 0.1c: `same`, `moved`, `split`, `merged`, `renumbered`, `removed`. Redirect kinds in 2.2a use the same words.
 - Citation for split pieces, in 1.10c: "(part 2 of 3)". The Catechism and Summa adopt it.
 - The Qdrant alias is `chunks_live`, and the `searchable` payload index is boolean.
 - Every passage, searchable or not, is a Qdrant point; non-searchable ones carry `searchable = false`.
 - Document facts that search filters on (collection, genre, issuer, searchable) are written to the Qdrant payload by the D2 writer.
+- 2.2a names the two fields later items need: `documents.supersedes` (links a current text to the texts it replaces, for Church law and the Catechism) and `chunks.author` (a passage-level author, for Catena Aurea quotations and combined pages).
 
 **D6. Works inside one document are modelled, not split.** Container documents (an ANF volume, "Treatises Attributed to Cyprian") keep their frozen ID and gain a `work_key` per passage and a `document_works` row per work (2.2a). There are no "P3 splits". Splitting the two Augustine treatise volumes into separate documents (1.8b) is the one exception proposed, and it waits for Carter.
 

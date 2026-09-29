@@ -2,20 +2,22 @@
 
 1. Phase 0 builds the guard rails every later corpus change is measured against. It changes no live data.
 2. First CI and a PR template (0.0), so each later PR shows green source-free tests and a pasted local source-check report.
-3. Then the publish lock (0.4), which must merge before any Phase 1 adapter PR. Today a routine `run_collection.py` run would cascade-delete saved user rows.
-4. Then the source checks: coverage and sequence tests (0.1a), health rules (0.1b), and the release report with its old-to-new remap (0.1c).
+3. Then the publish lock (0.4), which must merge before any Phase 1 adapter PR. Today a routine `run_collection.py` run would cascade-delete saved user rows. The lock stays in force after P4: every publish, then and later, needs a reviewed lock-file change that names its collection and release (D2).
+4. Then the source checks, in this order: coverage and sequence tests (0.1a), health rules (0.1b, whose H2 rule uses 0.1a's `known_defects.json`), and the release report with its old-to-new remap (0.1c). 0.1c defines the remap vocabulary (`same`, `moved`, `split`, `merged`, `renumbered`, `removed`, D5) and fails any build where an unchanged anchor's text drifts without a redirect (D1).
 5. Then provenance: a tracked hash lock for every vendored file plus a public-facts rights inventory (0.2).
-6. Then identity: the work registry that freezes today's 421 document IDs and moves anchors to source structure (2.1). Its PR is the first real user of the 0.1c remap.
-7. Then the baseline eval (0.3), run once against the live corpus before anything is republished, and the Qdrant limits read (0.5) and storage snapshot (0.6), both read-only ops.
-8. Research items R1 to R6 need no code and can start on day one in parallel. Each blocks one later PR, named in its entry.
-9. Recommended merge order: 0.0, 0.4, 0.1b, 0.1a, 0.1c, 0.2, 2.1, 0.3. Ops 0.5 and 0.6 any time before P4. R1 to R6 in parallel.
-10. Evidence below was gathered on 29 Sep 2026 from master at `5475c49`, a fresh clone in a scratch directory, the vendored sources, and read-only SELECTs against Supabase project hvmgffvimqgiejmxwhwq.
+6. Then identity: the work registry (2.1). It freezes today's 421 document IDs, moves anchors to source structure, holds the rule A and attribution fields, and holds the one removal registry that every later removal is recorded in (D4). Its PR is the first real user of the 0.1c remap.
+7. Then the baseline eval (0.3), run with judging against the live corpus before any live change (D7), and the Qdrant limits read (0.5) and storage snapshot (0.6), both read-only ops.
+8. Research items R1 to R6 need no code and can start on day one in parallel. Each entry names the items it blocks. R1 blocks 3.1, 3.2 (the Refutation of All Heresies), 5.6a and 5.6b. R6 blocks 1.2c, 1.2d, 1.8d and every 5.x addition. R2 and R3 are specified only here; the P1a file points to them.
+9. Recommended merge order: 0.0, 0.4, 0.1a, 0.1b, 0.1c, 0.2, 2.1, then the 0.3 run. Ops 0.5 and 0.6 any time before P4. R1 to R6 in parallel.
+10. Nothing in P0 to P3 writes to live data (D7). The one possible exception is retiring On the Incarnation (1.8d) before P4, and only if Carter approves it.
+11. Evidence below was gathered on 29 Sep 2026 from master at `5475c49`, a fresh clone in a scratch directory, the vendored sources, and read-only SELECTs against Supabase project hvmgffvimqgiejmxwhwq.
 
 Conventions used in this file:
 
 - Paths are relative to the repo root of `body-of-christ` unless they start with `/`.
 - "Live" means the production Supabase project hvmgffvimqgiejmxwhwq and the production Qdrant cluster.
 - "Master build" means running every adapter in `datapipeline/publication.py` `SOURCE_ADAPTERS` on master against the vendored sources, touching no store.
+- D1 to D10 are the "Cross-cutting design decisions" in `docs/2026-09-28-corpus-cleanup-plan.md`. Where this file and those decisions disagree, the decisions win.
 - Every SQL count quoted here came from a read-only SELECT on 29 Sep 2026. Counts that move (retrievals, guest rows) must be re-read when used.
 
 ---
@@ -72,7 +74,7 @@ Conventions used in this file:
 
 - **Type:** PR
 - **Depends on:** 0.0 (so the PR runs in CI); must merge before any P1 PR
-- **Goal:** Nobody can write to the live reader store or search index during Phases 0 to 3, by accident or by routine repair. Adapter fixes will change passage IDs, and a piecemeal publish would delete users' saved history rows through foreign-key cascades. After this PR, the only path to a production write is a reviewed code change that names a cutover release, plus a matching CLI flag, which the 4.1b runbook will do.
+- **Goal:** Nobody can write to the live reader store or search index by accident or by routine repair. Adapter fixes will add, retire and redirect passages, and today's publish path prunes by deleting, which removes users' saved history rows through foreign-key cascades. After this PR, the only path to a production write is a reviewed change to the lock file that lists the collection and release to apply, plus matching CLI flags. That rule is permanent. It governs the P4 cutover (4.1b) and every steady-state publish after P4, which also runs stage then apply (D2, 2.2w). Nothing is listed in the lock file before the P4 apply (D7), with one possible exception, retiring On the Incarnation (1.8d), and only if Carter approves it.
 - **Current state:**
   - `datapipeline/run_collection.py:62-86` builds a `PublicationRequest` and calls `production_runner().publish(...)` with no lock. `publication.py:121-187` prunes reader passages (`reader.write(..., prune=True)`), reader documents (`prune_documents`), and Qdrant points (`search.prune`) on every unlimited run.
   - The only safety nets are `_validate_build` (`publication.py:224-248`), which refuses more than 10% shrink or more than 10% identity churn per collection, and the exact-name confirmation for `--wipe-reader` (`publication.py:204-211`). A change that replaces 9% of a collection's IDs passes both.
@@ -82,41 +84,46 @@ Conventions used in this file:
     - `scripts/backfill_missing_vectors.py`, `scripts/reembed_drifted_vectors.py`, `scripts/reconcile_qdrant_payloads.py`, each gated only by `--apply` (dry run by default).
     - `pipeline.py` (V5 stage engine), whose `reader`, `embed` and `bm25-index` stages obtain `asyncpg` pools or the Qdrant client at `pipeline.py:156-167`. `stages/embed.py` and `stages/bm25_index.py` contain write calls. Whether `stages/enrich_io.py` writes to Postgres or only reads is **not verified**.
 - **Changes:**
-  - Add a tracked file `datapipeline/PUBLISH_LOCK.json`:
+  - Add a tracked file `datapipeline/PUBLISH_LOCK.json`. It ships with an empty list:
     ```json
     {
-      "locked": true,
       "since": "2026-09-29",
-      "reason": "Corpus cleanup. No live writes until the P4 cutover. See docs/2026-09-28-corpus-cleanup-plan.md.",
-      "cutover_release": null
+      "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
+      "approved_applies": []
     }
     ```
+    Each item in `approved_applies` has the form `{"collection": "councils", "release": "2026-11-cleanup", "steps": ["stage", "apply"], "reason": "...", "approved_by": "Carter", "pr": "<PR number>"}`. `collection` is one registered collection name, or `"all"` for a run that touches every collection. `steps` names what the entry allows: `stage` (build into the `staging` schema and a new Qdrant collection, 2.2w), `apply` (the one-transaction apply and the `chunks_live` alias switch), or `repair` (one of the repair scripts). A PR that adds an entry is the review. The PR that follows the run removes the entry again, so the file is empty between publishes.
   - Add `datapipeline/publish_lock.py` with:
     - `class PublishLocked(ValueError)` (a `ValueError` so `run_collection.main` reports it through `parser.error`, exit code 2, like other refusals).
-    - `def load_lock(path: Path = DEFAULT_PATH) -> PublishLock` returning a frozen dataclass `(locked: bool, reason: str, cutover_release: str | None)`. A missing or unparsable file counts as locked (fail closed).
-    - `def assert_live_write_allowed(action: str, cutover: str | None, lock: PublishLock | None = None) -> None`. When `lock.locked` is true, it passes only if `cutover` is a non-empty string equal to `lock.cutover_release`. Otherwise it raises `PublishLocked` with the action, the lock reason, and how to unlock (set `cutover_release` in a reviewed PR and pass `--cutover <same value>`).
-  - `publication.py`: add an optional `write_guard: Callable[[PublicationRequest], None] | None` parameter to `CollectionPublicationRunner.__init__`, called at the top of `publish` right after `_validate_request` and before any source adapter runs or store is acquired. `production_runner()` passes a guard that calls `assert_live_write_allowed(f"publish {collection} to {target}", request.cutover)`. Add `cutover: str | None = None` to `PublicationRequest`. Test fakes construct the runner without a guard, so existing tests keep their meaning.
-  - `run_collection.py`: add `--cutover RELEASE_ID` (passed into the request) and `--dry-run`. Dry run builds the documents, runs `_validate_documents` (and from 0.1b the health rules), prints collection, document count, passage count, and never acquires a store. Dry run is allowed while locked. It is the command 0.1c and every P1 PR use.
-  - The three repair scripts: at the start of the `--apply` branch, call `assert_live_write_allowed(f"<script> --apply", args.cutover)` and add a `--cutover` argument. Dry runs stay allowed.
-  - `pipeline.py`: in `_main`, after `resolve_stages`, if any resolved stage is in `{"reader", "embed", "bm25-index"}` and neither `--dry-run` nor `--status` is set, call the guard with a `--cutover` argument. Before merging, read `stages/enrich_io.py` and add `"enrich"` to the set if it writes to Postgres or Qdrant.
-  - Update `datapipeline/README.md` (sections "Publish one collection" and "Narrow repair commands") and `datapipeline/SOURCES.md` ("Publishing a collection") with one paragraph each on the lock, the dry run, and who unlocks it. Update the repo `CLAUDE.md` Quick Commands comment for the datapipeline to show `--dry-run`.
+    - `def load_lock(path: Path = DEFAULT_PATH) -> PublishLock` returning a frozen dataclass holding the entries. A missing or unparsable file, or one without an `approved_applies` list, counts as an empty list (fail closed).
+    - `def assert_live_write_allowed(action: str, collection: str, release: str | None, step: str, lock: PublishLock | None = None) -> None`. It passes only if `release` is a non-empty string and some entry has the same `collection`, the same `release` and `step` in its `steps`. Otherwise it raises `PublishLocked` with the action, the lock reason, and how to get approval (add an entry in a reviewed PR and pass `--collection <name> --release <same value>`).
+  - `publication.py`: add an optional `write_guard: Callable[[PublicationRequest], None] | None` parameter to `CollectionPublicationRunner.__init__`, called at the top of `publish` right after `_validate_request` and before any source adapter runs or store is acquired. `production_runner()` passes a guard that calls `assert_live_write_allowed(f"publish {collection} to {target}", request.collection, request.release, "apply")`. Add `release: str | None = None` to `PublicationRequest`. Test fakes construct the runner without a guard, so existing tests keep their meaning. When 2.2w replaces today's delete-based publish with stage then apply, it calls the same function with step `stage` before writing staging tables and with step `apply` before the transaction and the alias switch. The staging schema lives in the production database, so staging counts as a live write too.
+  - `run_collection.py`: add `--release RELEASE_ID` (passed into the request) and `--dry-run`. Dry run builds the documents, runs `_validate_documents` (and from 0.1b the health rules), prints collection, document count, passage count, and never acquires a store. Dry run is allowed while nothing is listed. It is the command 0.1c and every P1 PR use.
+  - The three repair scripts: at the start of the `--apply` branch, call `assert_live_write_allowed(f"<script> --apply", args.collection, args.release, "repair")` and add `--collection` and `--release` arguments. A script run over every collection passes `all`. Dry runs stay allowed.
+  - `pipeline.py`: in `_main`, after `resolve_stages`, if any resolved stage is in `{"reader", "embed", "bm25-index"}` and neither `--dry-run` nor `--status` is set, call the guard with step `apply` and new `--collection` and `--release` arguments. Before merging, read `stages/enrich_io.py` and add `"enrich"` to the set if it writes to Postgres or Qdrant.
+  - Update `datapipeline/README.md` (sections "Publish one collection" and "Narrow repair commands") and `datapipeline/SOURCES.md` ("Publishing a collection") with one paragraph each on the lock, the dry run, and how an apply is approved. Update the repo `CLAUDE.md` Quick Commands comment for the datapipeline to show `--dry-run`.
 - **Acceptance checks:**
   - `tests/test_publish_lock.py`:
-    - `test_missing_lock_file_counts_as_locked`
-    - `test_unparsable_lock_file_counts_as_locked`
-    - `test_locked_refuses_without_cutover`
-    - `test_locked_refuses_wrong_cutover`
-    - `test_locked_refuses_when_cutover_release_is_null_even_with_flag` (the state this PR ships)
-    - `test_matching_cutover_passes_only_when_file_names_it`
-    - `test_unlocked_file_allows_writes`
+    - `test_missing_lock_file_counts_as_empty`
+    - `test_unparsable_lock_file_counts_as_empty`
+    - `test_empty_list_refuses_every_write_even_with_flags` (the state this PR ships)
+    - `test_refuses_without_release`
+    - `test_refuses_wrong_release`
+    - `test_listed_release_refuses_other_collection`
+    - `test_listed_entry_refuses_step_it_does_not_name` (an entry with `["stage"]` refuses `apply`)
+    - `test_matching_collection_release_and_step_pass`
+    - `test_all_entry_is_needed_for_all_collections`
   - `tests/test_collection_publication.py::test_write_guard_runs_before_adapters_and_store_acquisition`: a guard that raises must leave the fake adapter uncalled and no store acquired.
   - `tests/test_run_collection.py::test_dry_run_acquires_no_store_and_prints_counts` and `::test_live_publish_is_refused_while_locked` (uses the real `production_runner` guard with a temp lock file, and asserts exit code 2 and the word "locked" on stderr without any network call).
   - One test per repair script, `test_apply_is_refused_while_locked`, and one for `pipeline.py`, `test_reader_stage_is_refused_while_locked`.
   - Manual check pasted into the PR: `python3 run_collection.py --collection catechism --target both` exits 2 with the lock message, and `python3 run_collection.py --collection catechism --dry-run` prints about 809 passages.
-  - The shipped `PUBLISH_LOCK.json` has `"locked": true` and `"cutover_release": null` (asserted by `test_repository_ships_locked`).
+  - The shipped `PUBLISH_LOCK.json` has an empty `approved_applies` list (asserted by `test_repository_ships_with_no_approved_applies`).
 - **Production safety:** Adds refusals only; removes no capability that Phase 0 to 3 is allowed to use. API and web are untouched. Nothing runs against live stores.
-- **Needs Carter:** Approve the PR. Agree that from merge until the 4.1b cutover PR, emergency repairs to live data also go through a reviewed PR that sets `cutover_release` (there is no environment-variable bypass by design).
-- **Out of scope:** Any change to pruning or churn thresholds. Remap tooling (0.1c, 4.1a). Qdrant alias work (2.2b). Removing the V5 `stages/` engine.
+- **Needs Carter:**
+  - Approve the PR.
+  - Agree that every live write, before and after P4, goes through a reviewed PR that adds a lock-file entry naming the collection and release. That covers emergency repairs too. There is no environment-variable bypass by design.
+  - Agree that no entry is added before the P4 apply (D7), except possibly one for retiring On the Incarnation (1.8d), which he decides separately.
+- **Out of scope:** Any change to pruning or churn thresholds (2.2w replaces the delete-based prune). Remap tooling (0.1c, 4.1a). Qdrant alias work (2.2b). Removing the V5 `stages/` engine.
 
 ---
 
@@ -175,7 +182,7 @@ Conventions used in this file:
 ### 0.1b. Health rules
 
 - **Type:** PR
-- **Depends on:** 0.4
+- **Depends on:** 0.4, 0.1a (the H2 rule starts as a `known_defects.json` entry, and that file comes from 0.1a)
 - **Goal:** Reject passages that are never useful (blank text, pure page-number or punctuation debris, broken positions) before they can be published, and report the softer problems (footer leakage, note leakage, short fragments, duplicated text, repeated citations) with counts per collection so P1 PRs can show them falling. The live corpus has 21 blank Summa passages with Qdrant points; a rule would have refused them.
 - **Current state:**
   - Live, 29 Sep, per collection: blank passages 21 (all Summa); passages under 20 characters apostolic-exhortations 10, bible 2, councils 1, encyclicals 17, medieval 1, papal-documents 1, summa 24 (21 of them blank).
@@ -218,8 +225,8 @@ Conventions used in this file:
 ### 0.1c. Release report with remap-based ID diff
 
 - **Type:** PR
-- **Depends on:** 0.4, 0.1b (reuses its health output); ideally 0.1a
-- **Goal:** One command that tells a reviewer exactly what a build would change compared with what users see today. It maps every live passage to its successor in the new build (same passage, moved, merged, split, or removed), counts the saved user rows that each outcome affects, and summarizes coverage and health. Every P1 PR attaches this report. The same remap is what 4.1a later uses to move bookmarks and history, so building it now tests it months before cutover.
+- **Depends on:** 0.4, 0.1a, 0.1b (reuses both outputs)
+- **Goal:** One command that tells a reviewer exactly what a build would change compared with what users see today. It maps every live passage to one outcome from a fixed vocabulary, counts the saved user rows that each outcome affects, and summarizes coverage and health. It enforces D1: a build fails when an anchor that survives names noticeably different text and no redirect says so. It produces the chapter remap that 4.1a uses to move `reading_progress` rows and 2.4a uses for `?chapter=` redirects. Every P1 PR attaches this report. The same remap is what 4.1a later uses to move bookmarks and history, and what 2.2w's release report runs on staging against live, so building it now tests it months before cutover.
 - **Current state:**
   - Passage ID is `uuid5(DOCUMENT_NS, f"{document_id}#{anchor}")` (`datapipeline/identity.py:40-43`); document ID is `uuid5` of slugified work-key parts (`identity.py:24-27`), for example `document_id(collection, author, title)` for ThML works (`ingest/thml_doc.py:89`) and `document_id("bible", translation, name)` for Bible books (`ingest/bible.py:557`). Any relabel of author, title, or anchor text changes IDs.
   - No remap exists. `reconcile.py` compares Qdrant payloads with Postgres for existing IDs only.
@@ -235,31 +242,39 @@ Conventions used in this file:
     - Also write a tracked `datapipeline/releases/snapshots.json` index with date, row counts and sha256s (no content), so a report can name the snapshot it used and a reviewer can confirm Carter's local copy matches.
   - `datapipeline/release/remap.py`:
     - `def remap(old: list[OldPassage], new: list[Document], registry: Registry | None = None) -> RemapResult`.
-    - Matching, per document, in this order, each old passage taken at most once as primary:
-      1. `same_id`: identical passage ID.
-      2. `same_text`: identical normalized content hash in the same successor document (anchor changed).
-      3. `contained`: old normalized text is at least 90% contained in one new passage (merge or growth), measured on 8-word shingles.
-      4. `split`: old text is at least 90% covered by the union of 2 or more consecutive new passages; the primary successor is the one holding the old passage's first shingle.
-      5. `similar`: best 8-word-shingle Jaccard of at least 0.5 against one new passage.
-      6. `removed`: none of the above.
+    - The outcome vocabulary is defined here and nowhere else (D5). 4.1a's user-data remap and 2.2a's redirect kinds use the same six words:
+      1. `same`: the old passage ID is in the build. Its text may have been corrected in place (D1), within the anchor-stability check below.
+      2. `moved`: the old passage's text is in exactly one new passage under a different anchor, and that new passage holds no other old passage's text. Covers anchor-scheme changes and moves to another document through the registry's `supersedes` mapping.
+      3. `split`: the old text is spread over 2 or more new passages. The primary successor is the one holding the old passage's first shingle.
+      4. `merged`: the old text is inside one new passage that also holds text from at least one other old passage.
+      5. `renumbered`: the build declares a redirect of kind `renumbered` for the old anchor, because the unit's number changed (Joel and Malachi in 1.4b, Sacrosanctum Concilium "81" to 87 in 1.1). The redirect names the successor.
+      6. `removed`: no successor. Every `removed` passage must be explained by an entry in the removal registry (2.1, D4), or the report fails.
+    - Matching evidence, per document, recorded in a `method` field next to the outcome: `id` (same passage ID), `redirect` (a redirect the build declares, see below), `text_hash` (identical normalized content), `containment` (old text at least 90% contained in one new passage, measured on 8-word shingles), `union` (old text at least 90% covered by 2 or more consecutive new passages), `jaccard` (best 8-word-shingle Jaccard of at least 0.5 against one new passage). Each old passage takes exactly one outcome. Declared redirects win over computed matches.
+    - Anchor-stability check (D1). For every `same` outcome, compare the old text with the new text under the same anchor. Similarity is the larger of two containments, old shingles found in the new text and new shingles found in the old text, so a unit that only gained restored prose or only lost notes scores near 1. Passages under 16 words use a character-level ratio (`difflib.SequenceMatcher`) instead. Piece anchors (`base/pN`) are compared as one unit, by joining all pieces of `base` on each side, because a piece is a display slice of one unit. The threshold is `ANCHOR_STABILITY_THRESHOLD = 0.5`, printed in every report. A `same` passage below it fails the build unless the new passage's metadata declares `text_replaced` (a reason string such as "Percival translation replaces Tanner" or "2023 amendment", set by the adapter for the same numbered unit in a new translation or a new legal text). Every declared replacement is listed in the report so a reviewer sees each one. When the anchor now names a different unit, the declaration is not allowed; the fix needs a new anchor and a redirect from the old one (D1). A retired anchor string emitted again also fails.
+    - Redirects the build declares come from `datapipeline/registry/redirects.json`, and removals from `datapipeline/registry/removals.json`. Both files belong to 2.1; until 2.1 merges, a missing file counts as empty. Each redirect row is `{document_id, old_anchor, new_anchor, kind, reason, added_by}` with `kind` one of `moved`, `split`, `merged`, `renumbered`.
     - Successor document: same document ID; else, once 2.1 lands, the registry's `supersedes` mapping; else none.
-    - `RemapResult` rows: `old_id, outcome, new_ids (primary first), score, old_anchor, new_anchor, old_chapter_key, new_chapter_key`. Serialize as `remap.jsonl` plus `chapter_remap.jsonl` (old to new `chapter_key` per document, by majority of passages).
+    - `RemapResult` rows: `old_id, outcome, method, new_ids (primary first), score, old_anchor, new_anchor, old_chapter_key, new_chapter_key`. Serialize as `remap.jsonl`, plus `chapter_remap.jsonl`, one row per old `(document_id, chapter_key)` with the new `chapter_key` chosen by majority of its passages' primary successors, the share of passages that agree, and the old anchors in that chapter that `reading_progress` rows hold. 4.1a rewrites `reading_progress.chapter_key` and `anchor` from this file and `remap.jsonl`; 2.4a turns it into chapter redirects.
     - Pure functions over in-memory data; no database access.
   - `datapipeline/release/report.py`, CLI: `python3 -m release.report --snapshot releases/snapshots/<date> --collection all|<name> [--out <dir>]`. Builds the collection with `SOURCE_ADAPTERS`, runs remap, 0.1b health and, if present, 0.1a checks, and writes to `<out>` (default `datapipeline/releases/local/report-<collection>-<timestamp>/`, gitignored) the files `remap.jsonl`, `chapter_remap.jsonl`, `report.json`, `report.md`. `report.md` sections:
     - Totals per collection: documents, passages, characters, live against build.
-    - Outcomes per collection: `same_id`, `same_text`, `contained`, `split`, `similar`, `removed`, and `new` (build passages that are no old passage's successor).
+    - Outcomes per collection: `same`, `moved`, `split`, `merged`, `renumbered`, `removed`, and `new` (build passages that are no old passage's successor), with a count per matching method.
+    - Checks that fail the report (non-zero exit): anchor-stability failures, `removed` passages the removal registry does not explain, and emitted anchors that the registry lists as retired. Each is listed with document, anchor and score.
+    - Declared text replacements (`text_replaced`), listed by anchor with their reason.
     - User impact: for `removed` and for every outcome whose primary ID differs from the old ID, the sum of `retrievals`, `bookmarks`, `guest_trial_retrievals`, `retrieval_labels` rows, and the `reading_progress` rows whose anchor or chapter key changes.
     - Up to 30 sample rows per non-trivial outcome (IDs, references, anchors; content excerpts only in the local file, never pasted into a public PR).
     - Health and coverage summaries.
   - `report.md` is written to be pasted as the "release report" block of the PR template with excerpts removed.
 - **Acceptance checks:**
-  - `tests/test_remap.py` in CI with synthetic passages: one test per outcome, `test_each_old_passage_has_exactly_one_outcome`, `test_split_primary_is_first_piece`, `test_new_passages_are_reported`, `test_cross_document_match_is_not_attempted_without_registry`, and `test_remap_is_deterministic` (same input, byte-identical `remap.jsonl`).
+  - `tests/test_remap.py` in CI with synthetic passages: one test per outcome (`same`, `moved`, `split`, `merged`, `renumbered`, `removed`), `test_outcome_vocabulary_is_exactly_six_words`, `test_each_old_passage_has_exactly_one_outcome`, `test_split_primary_is_first_piece`, `test_new_passages_are_reported`, `test_cross_document_match_is_not_attempted_without_registry`, `test_declared_redirect_wins_over_computed_match`, and `test_remap_is_deterministic` (same input, byte-identical `remap.jsonl`).
+  - Anchor-stability tests in the same file: `test_restored_prose_under_same_anchor_passes`, `test_stripped_notes_under_same_anchor_passes`, `test_different_text_under_same_anchor_fails_without_redirect`, `test_declared_text_replacement_passes_and_is_listed`, `test_piece_anchors_compared_as_one_unit`, `test_reused_retired_anchor_fails`, `test_unexplained_removal_fails`.
+  - `test_chapter_remap_majority_and_reading_progress_anchors`: on synthetic data, each old chapter maps to the majority successor chapter, and the file lists the anchors `reading_progress` holds there.
   - `tests/test_release_report.py` in CI: user-impact sums on a synthetic `references.json`; the Markdown contains no passage content when `--public` (default) is set.
-  - Locally, the report for all collections from master against a fresh snapshot reproduces the audit: live 54,568, build 54,776, `same_id` about 54,405 (54,568 minus 163), and user impact for the removed set equal to the 12 passages, 19 `retrievals` rows and 2 `guest_trial_retrievals` rows measured on 29 Sep (re-read at run time). The PR description pastes the public summary.
+  - Locally, the report for all collections from master against a fresh snapshot reproduces the audit: live 54,568, build 54,776, `same` about 54,405 (54,568 minus 163), and user impact for the 163 unmatched passages equal to the 12 referenced passages, 19 `retrievals` rows and 2 `guest_trial_retrievals` rows measured on 29 Sep (re-read at run time). The PR description pastes the public summary.
+  - Master against live will fail the new checks, because the live publication is stale: expect unexplained removals (up to 163) and some anchor-stability failures among the 2,439 content differences under equal IDs. The PR lists them and records each as a `known_defects.json` entry, to be cleared by a redirect or a removal-registry entry before P4. Later PRs fail only on new ones.
   - `export_live_snapshot.py` has a test that the SQL it issues is SELECT only, and that the session is set read only before the first query.
 - **Production safety:** The export is a read-only transaction on live Supabase; everything else is local. Nothing is published (the lock stands). No API or web change.
 - **Needs Carter:** Run, or approve running, `export_live_snapshot.py` against the production database (read only; it copies corpus text and anonymous reference counts to his Mac). The snapshot is refreshed before P4 and whenever a report needs current reference counts.
-- **Out of scope:** Applying the remap to user tables and the merge policy for unique constraints (4.1a). Redirects and tombstones (2.2a, 2.4a). Qdrant.
+- **Out of scope:** Applying the remap to user tables and the merge policy for unique constraints (4.1a). The redirect and tombstone tables and their display (2.2a, 2.4a); this item only reads the redirect and removal files that 2.1 owns. Qdrant.
 
 ---
 
@@ -320,11 +335,16 @@ Conventions used in this file:
 
 ---
 
-### 2.1. Work registry with frozen IDs, structural anchors, and rule A fields
+### 2.1. Work registry: frozen IDs, structural anchors, rule A and attribution fields, removal registry
 
 - **Type:** PR
 - **Depends on:** 0.1c (its release report must show every live passage remapped), 0.2
-- **Goal:** Document IDs stop depending on labels. Today's 421 document IDs are written into a tracked registry and adapters look them up, so fixing an author name, renaming "Song of Solomon", or moving Boethius to the Fathers keeps every reader URL. Anchors are rebuilt from the source's own structure instead of label text, so later label fixes stop changing passage IDs. The registry also holds the rule A fields (communion dates, chronology source, Church acts) that R1 fills and 3.1 enforces.
+- **Goal:** Document IDs stop depending on labels. Today's 421 document IDs are written into a tracked registry and adapters look them up, so fixing an author name, renaming "Song of Solomon", or moving Boethius to the Fathers keeps every reader URL. Anchors are rebuilt from the source's own structure instead of label text, so later label fixes stop changing passage IDs. This item owns five things, all tracked files under `datapipeline/registry/`:
+  1. Frozen document IDs.
+  2. Structural anchors, plus the redirect file that records every anchor change (D1).
+  3. Rule A fields (communion dates, chronology source, Church acts), which R1 fills and 3.1 enforces.
+  4. Attribution and certainty fields (rule H), which 1.8a fills first by copying the authenticity judgments from editorial text before rule G deletes it, and which 3.2 completes.
+  5. The removal registry (D4). Every removal in any phase is recorded there by anchor, with its reason and tombstone text, and the D2 writer refuses to retire an ID the registry does not explain.
 - **Current state:**
   - Document IDs derive from label text: `document_id(collection, author, title)` for every ThML work (`ingest/thml_doc.py:89`); `document_id("bible", translation, name)` (`ingest/bible.py:557`); `document_id("councils", council, council)` and `document_id("councils", "Second Vatican Council", title)` (`ingest/councils.py:88,153`); slug-based for encyclicals, exhortations and papal documents (`encyclicals.py:172`, `apostolic_exhortations.py:155`, `papal_documents.py:155`); constants for catechism, canon-law and summa.
   - A master build reproduces all 421 live document IDs exactly (verified 29 Sep by comparing md5 of the sorted lists). So freezing can be done by computing, not by copying from the database.
@@ -348,9 +368,17 @@ Conventions used in this file:
        "work_date": null, "chronology_source": null,
        "church_acts": [],
        "decision": null, "decision_basis": null
+     },
+     "attribution": {
+       "credited_as": null,
+       "certainty": null,
+       "clavis": null,
+       "basis": null,
+       "editorial_judgments": []
      }}
     ```
     `source_key` is structural: file plus ThML div `id` for ThML works; `bible/<USFM book code>` (for example `bible/DAG`); `<collection>/<manifest slug>` for HTML collections; the collection name for the three single-document collections. `status` is `active`, `removed` (kept for tombstones), or `moved`. `rule_a.church_acts` items are `{"issuer": "...", "date": "YYYY-MM-DD", "act": "...", "effect": "condemn|prohibit|warn|lift", "citation": "<url>"}`. `rule_a.decision` is `include`, `exclude`, or null until R1 fills it.
+    `attribution.credited_as` is the display credit under rule H, for example "Pseudo-Justin". `certainty` is `genuine`, `disputed`, `pseudonymous`, `anonymous`, or null until set. `clavis` is the CPG or CPL number where one exists. `basis` cites the Church text or Clavis entry the credit follows. `editorial_judgments` is where 1.8a copies each authenticity judgment found in editorial text before rule G removes that text, as `{"source_file": "...", "element_id": "...", "quote": "<the judgment, 300 characters at most>", "verdict": "genuine|spurious|dubious|interpolated|attributed", "overridden_by_plan": false}`. A judgment the plan's "Labels for works that stay" overrides is kept with `overridden_by_plan: true`, so the audit trail stays complete. 3.2 sets `credited_as` and `certainty` from these and from the plan.
   - Add `datapipeline/registry/__init__.py` with `load_registry()`, `frozen_document_id(collection, source_key) -> str | None`, and `register_new_work(...)`. Adapters call `resolve_document_id(collection, source_key, fallback_parts)`: the frozen ID if the source key is registered, otherwise `identity.document_id(*fallback_parts)` (new works). A test forbids two source keys resolving to one ID.
   - Add `datapipeline/scripts/freeze_registry.py`, run once in this PR: build every collection on master adapters, pair each document's current ID with its structural source key (adapters expose it through `Document.metadata["source_key"]`, added in this PR), and write `works.json`. It refuses to write unless exactly 421 documents are produced and their sorted-ID md5 equals `851d07063f85e4c612be1b2d44b695fb` (or the hash of a fresh read-only query, if the live set has changed).
   - Change every adapter's `Document(id=...)` to `resolve_document_id(...)`. With the registry frozen, a master build still yields the same 421 IDs.
@@ -361,7 +389,33 @@ Conventions used in this file:
     - Bible, canon law, HTML numbered collections: already structural; unchanged in this PR.
     - Record the anchor scheme version in `Document.metadata["anchor_scheme"] = 2`.
   - Keep `identity.passage_id` unchanged (so IDs remain a pure function of document ID and anchor).
-  - Because this PR changes most church-fathers, medieval and summa passage IDs, the release report (0.1c) is the evidence: the PR attaches it and shows every live passage in those collections with an outcome other than `removed`.
+  - Add the redirect file `datapipeline/registry/redirects.json`, a list sorted by `document_id`, then `old_anchor`. Each row is `{"document_id": "<uuid>", "old_anchor": "...", "new_anchor": "...", "kind": "moved|split|merged|renumbered", "reason": "...", "added_by": "<item id>"}`. The kinds are 0.1c's outcome words (D5). This PR writes one `moved` or `split` row for every live anchor its scheme change replaces, generated from its own 0.1c remap, so every old reader URL and saved row has a successor. Later items add rows for their own anchor changes (1.1 section renumbering, 1.4b Joel and Malachi, council rebuilds in 1.2b to 1.2e). The writer loads the file into 2.2a's redirects table.
+  - Add the removal registry `datapipeline/registry/removals.json` (D4). It is the one record of everything any phase removes: rule A to C removals, rule G editorial text, endnotes split off, duplicate passages, debris, commentary by other authors, Tanner council texts, and superseded translations. Entries are by anchor, never by position. Format, one object per entry, sorted by `collection`, `document_id`, `anchor`:
+    ```json
+    {"id": "rm-0001",
+     "scope": "passage",
+     "collection": "church-fathers",
+     "document_id": "<frozen uuid>",
+     "anchor": "<live anchor>",
+     "reason": "rule-g-editorial",
+     "detail": "Elucidation by the American editor, not the author's text.",
+     "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+     "church_act": null,
+     "span": null,
+     "judgment": null,
+     "added_by": "1.8a",
+     "added_on": "2026-10-.."}
+    ```
+    - `scope` is one of:
+      - `document`: the whole document is retired (rule A works such as Origen's); `anchor` is null.
+      - `passage`: one live passage is retired; `anchor` is the anchor as the 0.1c snapshot holds it, because the IDs retired are live IDs.
+      - `span`: text cut from inside a passage that survives (commentary lines, an editor's bracket); `anchor` is the build anchor of that passage, and `span` holds `{"sha1": "<of the removed text>", "excerpt": "<first 120 characters, public-domain editorial matter only>"}`. Nothing is retired for a span entry; it is the audit record.
+      - `class`: one rule applied across a collection that removes text inside passages in bulk, such as 1.10b's inline `<note>` strip; `span` holds `{"rule": "<the pattern or function name>", "count": <units removed>}`.
+    - `reason` is one of `rule-a`, `rule-b`, `rule-c`, `rule-g-editorial`, `note-split-off`, `duplicate`, `debris`, `other-author`, `superseded-translation`, `translation-in-preparation`, `not-current-law`. New reasons are added here, in this file's validator, not in the item that needs them.
+    - `tombstone` is required for `document` and `passage` scope and null otherwise. It is one sentence of reason, plus the Church act where one applies, with no text of the removed passage (D3). For `rule-a` and `rule-b` entries `church_act` holds `{"issuer", "date", "act", "citation"}` in the rule A format above.
+    - `judgment` holds any authenticity judgment found in the removed text (1.8a), which must also appear in the work's `attribution.editorial_judgments`.
+    - `registry/__init__.py` validates the file. Every entry's document ID is in `works.json`. No two entries retire the same anchor. A retired anchor never appears in `redirects.json` as a `new_anchor`. `tombstone` is present where required and under 300 characters. `reason` is in the list. A build that emits an anchor listed here with scope `passage` fails (0.1c), so a retired anchor string is never reused.
+    - This PR ships the file empty, since an anchor-scheme change removes no text. Each later item adds the entries for what it removes, in the same PR. 3.1 adds the rule A to C entries. Nothing is applied until 4.1b (D2, D7).
 - **Acceptance checks:**
   - CI tests in `datapipeline/tests/test_registry.py`:
     - `test_registry_has_421_entries_and_unique_ids`
@@ -370,20 +424,27 @@ Conventions used in this file:
     - `test_unregistered_work_falls_back_to_identity_document_id`
     - `test_two_source_keys_cannot_share_an_id`
     - `test_rule_a_fields_validate` (dates ISO, `effect` in the allowed set, `citation` present for each act)
+    - `test_attribution_fields_validate` (`certainty` in the allowed set; every `editorial_judgments` item has a source file, element id and verdict)
+    - `test_redirect_kinds_are_remap_words`
+    - `test_removal_entries_validate` (scope, reason, tombstone rules above)
+    - `test_removal_entry_needs_anchor_not_position` (an entry with a `position` field and no anchor fails)
+    - `test_no_anchor_is_both_retired_and_a_redirect_target`
   - CI tests in `test_thml_doc.py`: `test_anchor_is_div_id` and `test_no_anchor_suffixes` on a synthetic ThML fixture with repeated labels.
-  - Locally with sources: a master build with this PR produces the same 421 document IDs (md5 unchanged); `R8_anchor_suffix` from 0.1b reports 0; the 0.1c report against the current snapshot shows, for each collection, `removed` equal to the pre-PR report's `removed` (anchor changes alone must remap as `same_text`, `contained` or `split`), and user impact limited to ID changes with successors. The PR description pastes both reports' summaries side by side.
+  - Locally with sources: a master build with this PR produces the same 421 document IDs (md5 unchanged); `R8_anchor_suffix` from 0.1b reports 0; the 0.1c report against the current snapshot shows, for each collection, `removed` equal to the pre-PR report's `removed` (anchor changes alone must remap as `moved`, `split` or `merged`, each backed by a row in `redirects.json`), no new anchor-stability failures, and user impact limited to ID changes with successors. The PR description pastes both reports' summaries side by side.
   - `checks.report` coverage and sequence numbers unchanged from the pre-PR run.
 - **Production safety:** Nothing is published; the publish lock holds, so the anchor change reaches users only at the P4 cutover, with remap and redirects. No API or web change; `reading_progress` and shared URLs keep working against today's data until then.
-- **Needs Carter:** Approve the anchor scheme change (it is the one-time passage-ID churn the Decision log "Document identity" accepts) and the character mapping for div ids.
-- **Out of scope:** Filling `rule_a` (R1). Label, author or collection changes (P1, P3, P5). Adding registry columns to the database (2.2a). Applying the remap to live data (4.1a).
+- **Needs Carter:**
+  - Approve the anchor scheme change (it is the one-time passage-ID churn the Decision log "Document identity" accepts) and the character mapping for div ids.
+  - Approve the removal registry format. Tombstone sentences and reasons are public in this repo and are what users see on a removed passage.
+- **Out of scope:** Filling `rule_a` (R1). Filling attribution values (1.8a copies editorial judgments; 3.2 sets labels). Adding removal entries beyond this PR's own (each P1 item adds its own; 3.1 adds rules A to C). Label, author or collection changes (P1, P3, P5). Adding registry columns to the database (2.2a). Applying the remap or retiring anything in live data (4.1a, 4.1b).
 
 ---
 
 ### 0.3. Baseline eval run
 
 - **Type:** PR (runner changes and question file), then ops (a Carter-approved run)
-- **Depends on:** 0.0; must run before any republish (P4)
-- **Goal:** A measured "before" picture of search on today's live corpus, so 4.2 can show what the cleanup improved and what it cost users (removed works, changed rankings). It uses the existing 80-question set plus new targeted questions for the Vatican II recovery, the other repairs, and the removals. It never uses stored user queries.
+- **Depends on:** 0.0. The run must happen before any live change (D7), which includes the possible early retire of On the Incarnation (1.8d), not only the P4 apply.
+- **Goal:** A measured "before" picture of search on today's live corpus, so 4.2 can show what the cleanup improved and what it cost users (removed works, changed rankings). 4.2 compares judge scores, so the baseline is judged too. It uses the existing 80-question set plus new targeted questions for the Vatican II recovery, the other repairs, and the removals. It never uses stored user queries.
 - **Current state:**
   - `.gitignore` ignores `docs/eval/*` except `ROUND3_REPORT.md` and `eval80-round3-final.jsonl`; `luna6-cost-and-quality-2026-09-23.md` is also tracked. The per-query artifacts with passage IDs exist only on Carter's Mac.
   - The "gold sets" are question sets with LLM-judge scores, not gold passage IDs. `eval80-round3-final.jsonl` has 80 rows over collections bible, catechism, church-fathers, encyclicals, summa at quota 4; per pipeline it stores `top` as `rank, collection, reference, score` without passage IDs. The 80 questions are `QUERIES` in `services/api/scripts/run_eval_suite.py` (80 entries). Passage IDs appear only in the gitignored artifacts (`shared.candidate_pools[<pipeline>][<collection>][].chunk_id`).
@@ -394,7 +455,8 @@ Conventions used in this file:
   - `run_eval_suite.py`:
     - Add `chunk_id` and `document_id` to each `top` entry (lines 677-680) and raise `top` from 5 to `--top-k` (default 10).
     - Add `--collections` (default the current five) and `--query-file <path>` to load questions from JSONL instead of the in-file list.
-    - Add `--no-judge`, which skips `judge.run` and records retrieval output only (the baseline is a single pipeline; judging happens in 4.2 when there is something to compare).
+    - Make judging work for a single pipeline. Read `judge.run` first. If it scores each result on its own, record those per-result scores as they are. If it only ranks pipelines against each other, add a single-pipeline mode that records a per-result relevance score and a per-question score in the same scale 4.2 will use. Record the judge model and prompt version in the run fingerprint, so 4.2 can refuse to compare against a baseline judged differently.
+    - Add `--no-judge` for local dry runs of the runner only. The baseline run does not use it.
     - Include the live corpus fingerprint in the run fingerprint: passage count and sorted-document-ID md5, read with one SELECT at start.
   - Add `docs/eval/targeted-2026-10.jsonl` (tracked; add a `!docs/eval/targeted-2026-10.jsonl` line to `.gitignore`). About 30 questions, each written fresh in neutral wording (not copied from the `searches` table or from the wording in the gap audit), with `collections`, `quota` (5, or 10 with one collection), and `expect` as structural patterns such as `{"document": "Nostra Aetate", "section": "4"}` or `{"collection": "church-fathers", "author": "Origen"}`. Groups:
     - Vatican II recovery (8): Nostra Aetate 4; Dei Verbum 10 to 12; Unitatis Redintegratio 3 to 4; Lumen Gentium 25; Gaudium et Spes 16; Dignitatis Humanae 2; Ad Gentes 7; Presbyterorum Ordinis 16.
@@ -405,23 +467,24 @@ Conventions used in this file:
     - Papal (2): In Dominico Agro; Quanta Cura.
     - Removals (6), to record what users lose: Origen on the senses of Scripture; Tertullian on baptism or prayer; the Apostolic Constitutions on liturgy; Novatian on the Trinity; the Ignatian letters on the bishop and the Eucharist (genuine and forged letters both present today); Arnobius against the pagans.
     - Non-English (1): a question whose best answer today is one of the Latin Stromata III passages.
-  - Output layout, all local and gitignored except the summaries: `docs/eval/baseline-2026-10/eval80.jsonl`, `targeted.jsonl`, artifacts directories, and a tracked `docs/eval/baseline-2026-10-summary.jsonl` holding per question the ranked `chunk_id`, `document_id`, `collection`, `reference`, and score (no passage text), plus `expect` hit@5 and hit@10 for targeted questions.
-  - Add `services/api/scripts/baseline_summary.py`, which reads the two JSONL outputs and writes the tracked summary and a short `docs/eval/BASELINE-2026-10.md` (hit rates per group, collections covered, degraded-query count, total spend).
+  - Output layout, all local and gitignored except the summaries: `docs/eval/baseline-2026-10/eval80.jsonl`, `targeted.jsonl`, artifacts directories, and a tracked `docs/eval/baseline-2026-10-summary.jsonl` holding per question the ranked `chunk_id`, `document_id`, `collection`, `reference`, retrieval score and judge score (no passage text), plus `expect` hit@5 and hit@10 for targeted questions.
+  - Add `services/api/scripts/baseline_summary.py`, which reads the two JSONL outputs and writes the tracked summary and a short `docs/eval/BASELINE-2026-10.md` (hit rates and mean judge scores per group, collections covered, degraded-query count, total spend split into retrieval and judge).
   - Ops run, on Carter's approval, from `services/api` with its `.env`:
-    - `python scripts/run_eval_suite.py --pipelines hyde_cohere_luna --no-judge --top-k 10 --out ../../docs/eval/baseline-2026-10/eval80.jsonl`
-    - `python scripts/run_eval_suite.py --pipelines hyde_cohere_luna --no-judge --top-k 10 --query-file ../../docs/eval/targeted-2026-10.jsonl --collections all --out ../../docs/eval/baseline-2026-10/targeted.jsonl` (the `--query-file` rows carry their own collections; `--collections all` only widens the default)
+    - `python scripts/run_eval_suite.py --pipelines hyde_cohere_luna --top-k 10 --out ../../docs/eval/baseline-2026-10/eval80.jsonl`
+    - `python scripts/run_eval_suite.py --pipelines hyde_cohere_luna --top-k 10 --query-file ../../docs/eval/targeted-2026-10.jsonl --collections all --out ../../docs/eval/baseline-2026-10/targeted.jsonl` (the `--query-file` rows carry their own collections; `--collections all` only widens the default)
     - `python scripts/baseline_summary.py docs/eval/baseline-2026-10`
 - **Acceptance checks:**
-  - API tests in CI: `tests/test_run_eval_suite_cli.py::test_query_file_rows_validate` (fields, collections valid against `VALID_COLLECTIONS`, quota in 3, 4, 5, 10, focused rows have exactly one collection), `::test_top_entries_carry_chunk_and_document_ids` (with a stubbed `shared_runner`), `::test_no_judge_skips_judge_init_and_calls`, `::test_fingerprint_includes_corpus_fingerprint`.
+  - API tests in CI: `tests/test_run_eval_suite_cli.py::test_query_file_rows_validate` (fields, collections valid against `VALID_COLLECTIONS`, quota in 3, 4, 5, 10, focused rows have exactly one collection), `::test_top_entries_carry_chunk_and_document_ids` (with a stubbed `shared_runner`), `::test_single_pipeline_judging_records_per_result_scores` (with a stubbed judge), `::test_no_judge_skips_judge_init_and_calls`, `::test_fingerprint_includes_corpus_and_judge_fingerprint`.
   - A lint test that no targeted question string appears in a fixture of the `searches` query texts is not possible without exporting user data, so instead the PR description states how the questions were written and Carter reviews them.
-  - After the ops run: 80 eval rows and about 30 targeted rows, all quality-eligible, or the ineligible ones listed; the summary file committed; `BASELINE-2026-10.md` shows, at minimum, that Nostra Aetate 4's continuation text is not retrievable today (expected hit 0) and which removed works appear in the top 10.
+  - After the ops run: 80 eval rows and about 30 targeted rows, all quality-eligible and all judged, or the ineligible ones listed; the summary file committed; `BASELINE-2026-10.md` shows, at minimum, that Nostra Aetate 4's continuation text is not retrievable today (expected hit 0) and which removed works appear in the top 10.
+  - The corpus fingerprint in the run equals the live fingerprint read at the time, showing no live change had happened yet.
   - Total provider spend reported and under the ceiling Carter sets (estimate below).
-- **Production safety:** The runner reads live Postgres and Qdrant and writes nothing to them (verified by grep above). It calls OpenAI, Cohere and, without `--no-judge`, Anthropic with eval questions only, as earlier rounds did. The script changes are in `services/api/scripts/`, which the Docker image does not copy (`COPY app/ app/` only, `services/api/Dockerfile:11`).
+- **Production safety:** The runner reads live Postgres and Qdrant and writes nothing to them (verified by grep above). It calls OpenAI, Cohere and Anthropic (the judge) with eval questions only, as earlier rounds did. The script changes are in `services/api/scripts/`, which the Docker image does not copy (`COPY app/ app/` only, `services/api/Dockerfile:11`).
 - **Needs Carter:**
   - Approve the targeted question list.
-  - Approve the spend. Estimate about $3 for the 80 retrieval-only runs at round-3 rates (less after the Luna price cut) plus about $1.50 for the targeted set; judging is deferred to 4.2.
-  - Confirm the run happens before any P4 activity and while the live corpus is unchanged (the corpus fingerprint records it).
-- **Out of scope:** Judging, pipeline changes, retrieval tuning (a separate parent after the new baseline). Replaying stored user searches. The 4.2 comparison itself.
+  - Approve the spend. Estimate about $3 for the 80 retrieval runs at round-3 rates (less after the Luna price cut) and about $1.50 for the targeted set, plus judging. Round 3 judged 3 pipelines for about $16.34, so one pipeline is about $5.50 for the 80 questions and about $2 for the targeted set. Total about $12.
+  - Confirm the run happens before any live change, including an approved early retire of On the Incarnation (1.8d), while the live corpus is unchanged (the corpus fingerprint records it).
+- **Out of scope:** Pipeline changes, retrieval tuning (a separate parent after the new baseline). Replaying stored user searches. The 4.2 comparison itself.
 
 ---
 
@@ -459,24 +522,25 @@ Conventions used in this file:
 - **Changes:** No code. Record, in this item or the 4.0 spec:
   - The same size query (`pg_database_size`, `pg_total_relation_size('chunks')`, heap, index, TOAST sizes) and per-table sizes for `documents`, `document_chapters`, `retrievals`, `guest_trial_retrievals`.
   - The plan tier and its database size limit from the Supabase dashboard.
-  - An estimate of the rebuilt corpus from the 0.1c report: build passage and character counts (master build today is 54,776 passages; the Vatican II and council repairs add roughly 0.9 MB of text), and, during cutover, old and new rows coexisting per the plan's release column (roughly double the `chunks` live data, about 100 MB more, before compaction).
+  - An estimate of the rebuilt corpus from the 0.1c report: build passage and character counts (master build today is 54,776 passages; the Vatican II and council repairs add roughly 0.9 MB of text), and, during cutover, the one staging copy that stage then apply builds in schema `staging` (D2, about 100 MB of live column data plus its indexes), before compaction. Retired rows stay in `chunks` until the rollback window ends (D3), so count them too.
 - **Acceptance checks:** The recorded numbers, the limit, and the estimated peak during cutover, with the gap to the limit stated in MB.
 - **Production safety:** Read-only catalogue queries.
 - **Needs Carter:** Approve running the queries and read the plan limit from the dashboard.
-- **Out of scope:** `VACUUM FULL`, buying Pro, branch rehearsals (4.0, 4.1a).
+- **Out of scope:** `VACUUM FULL`, buying Pro (4.0). The rehearsal, which runs on a local Postgres restored from a `pg_dump` of production, not a Supabase branch (4.1a, D8).
 
 ---
 
 ### R1. Rule A dating and Church-act check
 
 - **Type:** research
-- **Depends on:** none to start; results land in the 2.1 registry's `rule_a` fields; blocks 3.1
-- **Goal:** For every author in the corpus and the planned candidates, establish the facts rule A needs, each with a citation, so that PR 3.1 removes exactly what the rules remove and nothing else. There are two parts. The Church-act check finds any formal act of the Holy See naming the author or a work (condemnation, prohibition, Index entry, monitum) and any later lifting. The dating part, only for authors whose communion changed while they were writing, places each work before or after baptism or reception, and before or after any break, from one named standard chronology.
+- **Depends on:** none to start; results land in the 2.1 registry's `rule_a` fields. Blocks 3.1 (removals); 3.2 for the Refutation of All Heresies, whose label waits on the Hippolytus dating below and not only on R4 (D10); 5.6a (Fathers additions); 5.6b (spiritual writers, including the Catena Aurea's Pseudo-Chrysostom quotations)
+- **Goal:** For every author in the corpus and the planned candidates, establish the facts rule A needs, each with a citation, so that PR 3.1 removes exactly what the rules remove and nothing else, and 5.6a and 5.6b add only authors who pass. There are two parts. The Church-act check finds any formal act of the Holy See naming the author or a work (condemnation, prohibition, Index entry, monitum) and any later lifting. The dating part, only for authors whose communion changed while they were writing, places each work before or after baptism or reception, and before or after any break, from one named standard chronology.
 - **Current state:**
   - The rules and the Decision log are settled; do not reopen them. Decided outcomes to record, not re-research: Origen, Novatian, Tatian, Arnobius, Alexander of Lycopolis out; Tertullian judged per work, with To His Wife (22 passages) and On the Apparel of Women (28) provisionally in; Loisy, Tyrrell, Teilhard, the Provincial Letters, Maxims of the Saints, Spiritual Guide and Augustinus out; Rosmini and Faustina in; Chesterton's Orthodoxy, Newman's Parochial and Plain Sermons and Edith Stein's pre-1922 works out; Newman's Development in the 1878 edition.
   - Named as unverified in the plan's Open items: Theologia Germanica on the Index; the exact form of Tyrrell's 1907 excommunication; the Pensées' Index status. The candidates memo (`docs/research/2026-09-28-theologians-spiritual-writers-candidates.md`, section 4) also leaves unconfirmed the Provincial Letters decree text, Erasmus's Index entries, and Ockham's reconciliation.
   - Sources already gathered for the patristic persons are in `docs/research/2026-09-28-rule-1-authorship-verification.md` section 7.
-  - One case the plan does not address: Hippolytus led a rival community in Rome, in schism from about 217 to his reconciliation around 235 (rule-1 memo, section 7(f)), and the Refutation of All Heresies (377 live passages) is dated to the 220s by the scholarship that memo cites. Under rule A a work written outside communion goes, and Hippolytus is not a Doctor. R1 must date his works and report the result; the decision is Carter's.
+  - One case the plan does not address: Hippolytus led a rival community in Rome, in schism from about 217 to his reconciliation around 235 (rule-1 memo, section 7(f)), and the Refutation of All Heresies (377 live passages) is dated to the 220s by the scholarship that memo cites. Under rule A a work written outside communion goes, and Hippolytus is not a Doctor. R1 must date his works and report the result; the decision is Carter's. 3.2 cannot label the Refutation until this is settled.
+  - A second case for 5.6b: the Catena Aurea (Decision log "Catena Aurea") quotes many passages as "Chrysostom" that come from the Opus imperfectum in Matthaeum, usually credited today to an anonymous Arian writer ("Pseudo-Chrysostom"). Each quotation is to be attributed to the Father quoted, so R1 must say how rules A and B treat those quotations (keep with a Pseudo-Chrysostom label, or exclude), with the scholarship cited, and list it under "For Carter".
 - **Changes (deliverables):**
   - `docs/research/R1-rule-a-dating.md` (plan repo), with:
     - An author list built from the 2.1 registry plus the candidates memo, each classified as `born-in-communion`, `convert-no-pre-baptism-writing`, `convert-with-possible-pre-baptism-writing`, `later-break`, or `break-and-return`, with one citation per classification. Expect about 20 in the last three classes (Decision log "Rule A dating method"). Patristic converts to check include Justin, Athenagoras, Theophilus, Clement of Alexandria, Minucius Felix, Cyprian, Lactantius, Gregory Thaumaturgus, Commodian, and Augustine (his Cassiciacum works predate baptism; confirm none are in the corpus). Modern ones include Newman, Chesterton, Stein, Knox, Faber, Brownson and Manning if on the candidate list.
@@ -488,51 +552,73 @@ Conventions used in this file:
   - Every corpus and candidate author appears once with a classification and citation.
   - Every `exclude` names the act or the chronology entry that causes it; every Tertullian work has a date range and source.
   - The passage count each decision removes is computed from the registry and a master build and matches, or explains differences from, the plan's "What the rules remove" table (Tertullian 192, and so on).
-  - Findings that would change a Decision log outcome (Hippolytus is the known one) are listed separately under "For Carter", with no change made to the plan.
+  - Findings that would change a Decision log outcome (Hippolytus is the known one) are listed separately under "For Carter", with no change made to the plan. The Pseudo-Chrysostom question is listed there too.
 - **Production safety:** Research only; nothing touches code or data.
 - **Needs Carter:** Decide the Hippolytus question and any other finding listed under "For Carter". Approve the chronology choices where two standards exist.
 - **Out of scope:** Removing anything (3.1). Rules B, C, D labels (3.2). Re-arguing decided authors.
 
 ---
 
-### R2. Canons 296, 360, 361 and 948 against iuscangreg.it
+### R2. Canons 295, 296, 360, 361 and 948 against iuscangreg.it, and English sources for the Latin canons
 
-- **Type:** research
-- **Depends on:** none; blocks 1.5
-- **Goal:** Know, for each of four canons whose current wording is unconfirmed, whether it was amended after the vendored vatican.va text, and if so the current English text and its source, so PR 1.5 loads current law (rule F) instead of guessing.
+- **Type:** research. This entry is the only spec for R2; the P1a file points here.
+- **Depends on:** none; blocks 1.5b
+- **Goal:** Before 1.5b swaps in current text, two questions have cited answers. First, for each of five canons, whether it was amended after the vendored vatican.va text, and if so the current text and the amending act, so 1.5b loads current law (rule F) instead of guessing. Second, for each canon that the English Code prints in Latin, whether an English text published by the Holy See exists, so 1.5b can show it labelled unofficial or apply rule E.
 - **Current state:**
-  - Decision log "Canon law amendments": current text comes from iuscangreg.it (the Gregorian University faculty's amendment register, not a Vatican site), checked against the amending documents on vatican.va, verified per canon.
+  - Decision log "Canon law amendments": current text comes from iuscangreg.it (the Pontifical Gregorian University canon law faculty's amendment register, not a Vatican site), checked against the amending documents on vatican.va, verified per canon.
+  - Canon 295 is pre-2023 in the vendored source itself (plan, "Corrections to the handoff doc", confirmed on 28 Sep), so no parser fix can produce the current text.
   - Live text read on 29 Sep: canon 296 begins "Lay persons can dedicate themselves to the apostolic works of a personal prelature by agreements..."; canon 360 names "the Secretariat of State or the Papal Secretariat, the Council for the Public Affairs of the Church, congregations..."; canon 361 refers to "the Secretariat of State, the Council for the Public Affairs of the Church, and other institutes of the Roman Curia"; canon 948 reads "Separate Masses are to be applied for the intentions of those for whom a single offering, although small, has been given and accepted." None carries the source's "n" amendment marker in live text.
-  - Canon 295 is known to be pre-2023 in the vendored source itself (plan, "Corrections to the handoff doc"); it is in 1.5's scope already, not R2's.
-- **Changes (deliverables):** `docs/research/R2-canons.md` with, per canon:
-  - Whether iuscangreg.it lists an amendment, with the amending act's name, date and vatican.va URL.
-  - The amended Latin text from the act, and the English text if the Holy See published one (official or L'Osservatore Romano), otherwise "no English published".
-  - Whether the vendored `sources/canon-law/` page already has the new text, and which file.
-  - The treatment 1.5 should apply under rules F and E and the handoff rule for unofficial English (canons 111, 112, 535, 868 precedent).
-- **Acceptance checks:** Four entries, each with at least two sources (iuscangreg.it and the vatican.va act) or an explicit "no amendment found in either". Any English text quoted is the Holy See's own, never our translation (Decision log "Rights review": TheoCorpus makes no translations).
+  - Latin in the English Code, live: 111, 579, 695 and 700 in full; 112 in full (glued to 111 today, split out by 1.5a); 535 §2 and 868 §1 2° only. The plan's rule is that 111, 112, 535 and 868 show the L'Osservatore Romano English, labelled unofficial, with the Latin as the official text. For the others, rule E applies if no English exists.
+- **Changes (deliverables):** one file, `docs/research/R2-canons.md`, with two parts.
+  - Part 1, amendments. Per canon 295, 296, 360, 361 and 948:
+    - Whether iuscangreg.it lists an amendment, with the amending act's name, date and vatican.va URL.
+    - The current text per iuscangreg.it and the amended Latin text from the act.
+    - The English text if the Holy See published one (official, or L'Osservatore Romano), otherwise "no English published", and whether only Latin or Italian exists on vatican.va.
+    - Whether the vendored `sources/canon-law/` page already has the new text, which file, and how it differs.
+    - The treatment 1.5b should apply under rules F and E.
+  - Part 2, English for the Latin canons. Per canon 111, 112, 535 (§2), 579, 695, 700 and 868 (§1 2°):
+    - The English source found (L'Osservatore Romano English edition issue and page, a vatican.va English page, or none), with URL or scan reference.
+    - Its status for the reader label: official English, or unofficial English with the Latin official.
+    - Where none exists, "rule E: Latin kept in the reader, out of search".
+- **Acceptance checks:**
+  - Part 1: five entries, each with at least two sources (iuscangreg.it and the vatican.va act) or an explicit "no amendment found in either", and a stated reason when one source is missing.
+  - Part 2: seven entries, each with its source or an explicit "none found" and the places searched.
+  - Any English text quoted is the Holy See's own, never our translation (Decision log "Rights review": TheoCorpus makes no translations).
+  - Carter closes the issue.
 - **Production safety:** Research only.
-- **Needs Carter:** Nothing unless a canon has no English text, which then follows rule E as decided.
-- **Out of scope:** Other canons, the parser fixes, and the Eastern code.
+- **Needs Carter:** Approve the English sources found in part 2, and close the issue. A canon with no English follows rule E as decided.
+- **Out of scope:** Canons outside the two lists, unless the check finds a new amendment; list any such finding for Carter rather than fixing it. The parser fixes (1.5a). The Eastern code.
 
 ---
 
-### R3. Esther claims
+### R3. Esther: what the WEB-C text contains and how it maps to the Nova Vulgata
 
-- **Type:** research
-- **Depends on:** none; blocks 1.4
-- **Goal:** Settle exactly which Esther verses are missing and how the Greek additions should be numbered and labeled in a Catholic reader, so PR 1.4 restores the right text with references that match Church documents.
+- **Type:** research. This entry is the only spec for R3; the P1a file points here.
+- **Depends on:** none; blocks 1.4a
+- **Goal:** Before 1.4a restores the missing Esther verses, settle exactly which text is in the source, where each Greek addition sits, which verses are missing, and how the additions should be numbered and labelled in a Catholic reader, so 1.4a restores the right text with references that match Church documents.
 - **Current state:**
-  - Plan claims Esther 4:18-47 and 10:4-14 are missing, among 245 missing verses.
-  - Verified 29 Sep: the vendored `sources/bible/eng-web-c_usfm/43-ESGeng-web-c.usfm` ("Esther (Greek)") has 10 chapters; chapter 4 has 46 verse markers numbered up to 47, chapter 9 has 30 markers up to 32, chapter 10 has 14. Live Esther (26 passages) has references "Esther 4:1–3", "Esther 4:4–17", "Esther 9:1–10", "Esther 9:11–17", "Esther 9:18–32", "Esther 10:1–3". So 4:18-47 and 10:4-14 are absent from live, as claimed. Chapter 9's gap between 30 markers and the top number 32 (some verses combined or missing in the source) is unexplained.
-  - The additions A to F in other Catholic editions use lettered or chapter 11 to 16 numbering; which scheme the Nova Vulgata and the Church's documents cite is **not verified** here. The Decision log adopts Nova Vulgata numbering for the Bible.
-- **Changes (deliverables):** `docs/research/R3-esther.md` with:
-  - The full verse inventory of `43-ESGeng-web-c.usfm` per chapter, including combined or skipped verse numbers, and a map from WEB-C's inline numbering to the Nova Vulgata numbering, with the Nova Vulgata source cited.
-  - The list of live Esther verses missing (should reproduce 4:18-47 and 10:4-14 or correct them), and whether any Hebrew-Esther-only content is duplicated in the Greek book.
-  - The reference format 1.4 should display for the additions, with an example of a Church document citing Esther additions in that form.
-- **Acceptance checks:** Inventory produced by a script whose output is pasted, not by hand; every claim in the plan's Bible row about Esther either confirmed or corrected with the evidence.
+  - Plan claims Esther 4:18-47 and 10:4-14 are missing, among 245 missing verses (244 in the current build).
+  - Verified 29 Sep: the vendored `sources/bible/eng-web-c_usfm/43-ESGeng-web-c.usfm` ("Esther (Greek)") has 205 verses in 10 chapters, with 22, 23, 15, 46, 14, 14, 10, 17, 30 and 14 verse markers. Chapter 4's 46 markers run up to 47 and chapter 9's 30 markers run up to 32; the chapter 9 gap (some verses combined or missing in the source) is unexplained. Live Esther (26 passages) has references "Esther 4:1–3", "Esther 4:4–17", "Esther 9:1–10", "Esther 9:11–17", "Esther 9:18–32", "Esther 10:1–3". So 4:18-47 and 10:4-14 are absent from live, as claimed. The KJV pericope file skips them, which accounts for 41 of the 244 missing verses.
+  - The file's introduction says the 5 additions are merged "as extensions at the beginning of 1:1 and after 3:13, 4:17, 8:12, and 10:3". The file does not do that for all of them:
+    - Addition A is inside 1:1, in brackets.
+    - Addition B follows 3:13 inside the same verse.
+    - Addition C is numbered as new verses 4:18 to 4:47.
+    - Addition E follows 8:13 per its footnote, not 8:12.
+    - Addition F is numbered 10:4 to 10:14.
+  - The introduction counts 5 additions. The standard count is 6, A to F. Addition D (Esther before the king) is probably the long 5:1. Unverified.
+  - Other Catholic editions number the additions with lettered verses (for example 4:17a to 4:17z) or as chapters 11 to 16. Which scheme the Nova Vulgata and the Church's documents cite is **not verified** here. The Decision log adopts Nova Vulgata numbering for the Bible.
+- **Changes (deliverables):** one file, `docs/research/R3-esther.md`, with:
+  - The full verse inventory of `43-ESGeng-web-c.usfm` per chapter, including combined or skipped verse numbers, produced by a script.
+  - For each addition A to F, its WEB-C verse range and its Nova Vulgata range, with the Nova Vulgata page on vatican.va cited.
+  - Whether any Greek text in WEB-C has no counterpart in the Nova Vulgata, or the reverse, and whether any Hebrew-Esther-only content is duplicated in the Greek book.
+  - The list of live Esther verses missing (should reproduce 4:18-47 and 10:4-14 or correct them).
+  - How the Catechism and the Lectionary cite Esther's additions, with 2 or 3 examples.
+  - A recommendation for 1.4a: keep WEB-C numbers with a Nova Vulgata alias in metadata, or renumber. If renumbering changes which text an existing anchor names, say which anchors need new names and redirects (D1).
+  - Which of the plan's Esther claims (the handoff doc's list) hold.
+- **Acceptance checks:** The inventory is produced by a script whose output is pasted, not by hand. Every claim cites the USFM line or a Nova Vulgata page on vatican.va. Every claim in the plan's Bible row about Esther is either confirmed or corrected with the evidence. Carter closes the issue.
 - **Production safety:** Research only.
-- **Needs Carter:** Nothing, unless no Church source settles the numbering, in which case the choice is his.
-- **Out of scope:** Daniel's additions (same PR 1.4, already verified in the plan), pericope chunking.
+- **Needs Carter:** The numbering recommendation, and the choice itself if no Church source settles it.
+- **Out of scope:** Daniel's additions, which already follow Nova Vulgata-compatible numbering in WEB-C (3:24 to 90, chapters 13 and 14) and are handled in 1.4a. Pericope chunking.
 
 ---
 
@@ -578,7 +664,7 @@ Conventions used in this file:
 ### R6. Edition and provenance check for each planned source
 
 - **Type:** research
-- **Depends on:** 0.2 (the inventory format); each part blocks the PR that ingests the source
+- **Depends on:** 0.2 (the inventory format). Blocks 1.2c (Percival), 1.2d (Schaff), 1.8d (Robertson) and every 5.x addition; each work's part blocks the PR that ingests it. Schroeder's row also supplies the renewal search that 1.2e needs through 0.2.
 - **Goal:** Before any new or replacement source is ingested, confirm that the file we would vendor is the edition the Decision log names, that it is public domain on a recorded basis, and that it is clean text or which OCR route it takes. This keeps a Peers translation or a 1932 Tanquerey from entering by accident.
 - **Current state:**
   - Decision log fixes the editions: David Lewis and pre-1931 Stanbrook for John of the Cross and Teresa (no Peers); Lewis 1864 for the Spiritual Canticle, not CCEL's 1995 modernization; Gutenberg 13871 for Brother Lawrence, not 5657; a 1930 printing of Tanquerey; Robertson's NPNF On the Incarnation (npnf204); Percival for councils 1 to 7, Schroeder 1937 for 8 to 18, Schaff 1877 for Vatican I; Pascal's Pensées in Trotter 1910.
@@ -598,4 +684,4 @@ Conventions used in this file:
   - Approve downloads (each source set, with file names and sizes stated).
   - Run or approve the renewal searches that the private rights memos depend on.
   - Handle any correspondence with rights holders (Decision log "Rights review").
-- **Out of scope:** OCR clean-up (5.6c), adapter code, licensed works (Decision log "Licences": no spending).
+- **Out of scope:** The OCR clean-up tool and gate (1.2f) and its per-work use (1.2e, 5.6c), adapter code, licensed works (Decision log "Licences": no spending).
