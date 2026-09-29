@@ -325,7 +325,7 @@ This replaces the "release column" and the two-releases-side-by-side design. No 
 - The Qdrant alias is `chunks_live`, and the `searchable` payload index is boolean.
 - Every passage, searchable or not, is a Qdrant point; non-searchable ones carry `searchable = false`.
 - Document facts that search filters on (collection, genre, issuer, searchable) are written to the Qdrant payload by the D2 writer.
-- 2.2a names the two fields later items need: `documents.supersedes` (links a current text to the texts it replaces, for Church law and the Catechism) and `chunks.author` (a passage-level author, for Catena Aurea quotations and combined pages).
+- 2.2a names the two fields later items need: `documents.superseded_by` (links an older text to the current one that replaces it, for Church law and the Catechism) and `chunks.passage_author` (a passage-level author, for Catena Aurea quotations and combined pages).
 
 **D6. Works inside one document are modelled, not split.** Container documents (an ANF volume, "Treatises Attributed to Cyprian") keep their frozen ID and gain a `work_key` per passage and a `document_works` row per work (2.2a). There are no "P3 splits". Splitting the two Augustine treatise volumes into separate documents (1.8b) is the one exception proposed, and it waits for Carter.
 

@@ -72,13 +72,15 @@ These apply to every PR below and are not repeated in each item.
 - **Changes:**
   - In `common.py`, add `_p_text_without_notes(p)`. Copy the element, remove every `note` descendant while keeping its `tail` text, then serialize and strip tags. Use it in `_direct_p_text` and `_extract_p_text`. Summa has no `<note>` elements, so `_chunk_summa` output is unchanged. Assert that in a test.
   - Record the removed notes in passage metadata as `editor_note_count` only. The note text is editor material under rule G and should not be stored for display.
+  - Add one `class` entry to 2.1's removal registry: reason `rule-g-editorial`, rule `common._p_text_without_notes`, and the count of `<note>` elements removed. No passage is retired by this item, so no `passage` entries are needed.
+  - Piece anchors that disappear because split points moved (`base/pN` with N above the new piece count) get `merged` redirects to the new piece that holds their first 200 characters.
   - Fixture: `<p>He said<note n="1" place="end">Matt. xxiv. 15.</note> this, and<note n="2">Literally, "to."</note> left.</p>` becomes "He said this, and left."
 - **Acceptance checks:**
   - `test_direct_p_text_drops_notes_keeps_tail` and `test_extract_p_text_drops_notes` on the fixture.
   - Vendored check: zero passages in church fathers and medieval contain the text of any `<note>` whose text is 20 characters or longer. The check builds the note-text set from the sources, so it cannot pass by accident.
   - Coverage: characters kept equals the old build minus note text, within 1%. The PR reports both numbers.
   - The release report lists the anchor churn (expected about 724 removed and 210 added `/pN` anchors). The PR must say that none of the 50 retrievals and 0 bookmarks the plan found at risk sit on a removed anchor, or list the ones that do.
-- **Production safety:** Datapipeline only. Document IDs do not change. Passage IDs change only where a split point moved. The 0.1c remap maps each removed `/pN` passage to the new passage that holds its first 200 characters.
+- **Production safety:** Datapipeline only. Document IDs do not change. Surviving anchors keep their IDs; 0.1c compares all pieces of a unit together, so shorter text under the same anchors passes its stability check. Passage IDs disappear only where a split point moved, and each has a redirect.
 - **Needs Carter:** nothing.
 - **Out of scope:** whole editorial passages (Elucidations, introductions, Shedd's essay) and bracketed editor comments inside the text, which are 1.8a, 1.8b and 1.9. Note markup in papal and council HTML, which 1.1 and 1.3a handle.
 
@@ -93,17 +95,17 @@ These apply to every PR below and are not repeated in each item.
   - The Bible pieces contain `{{v:N}}` verse markers, so their real verse range is recoverable. ANF and NPNF chapters have no printed paragraph numbers.
 - **Changes:**
   - New module `ingest/pieces.py` with `pack_units(units, max_chars)`. A unit is `(label, text)`: a verse, a canon section, a numbered paragraph, or a source `<p>`. It packs whole units into pieces of at most `max_chars`. Only a single unit longer than the cap falls back to `split_display_passage`.
-  - `piece_reference(base, first_label, last_label, part, parts)` returns `"Genesis 1:14 to 1:31"` style ranges when labels exist. It returns `base + " (part 2 of 3)"` when they do not. Use a proper range separator in the real string; this file avoids dashes.
+  - `piece_reference(base, first_label, last_label, part, parts)` returns `"Genesis 1:14 to 1:31"` style ranges when labels exist. It returns `base + " (part 2 of 3)"` when they do not. That form is settled (D5) and is the only piece suffix in the corpus; the Catechism (1.6) and the Summa (1.7) use it too. Use a proper range separator in the real string; this file avoids dashes.
   - Apply it in `thml_doc.make_doc` (Fathers and medieval), the three papal adapters, `councils._Builder.add` and the Bible builder. The Bible gets verse units, so a split never cuts inside a verse and each piece cites its own verses.
   - Keep anchors exactly as today: `base`, or `base/pN` for pieces. Only `reference` changes, plus Bible piece boundaries, which now fall between verses.
   - 1.1 to 1.5 rewrite several of these adapters. They must keep calling `pack_units` and `piece_reference`, not a private copy.
-  - Summa (1.7) and Catechism (1.6) adopt the helper in their own PRs.
+  - Summa (1.7) and Catechism (1.6) adopt the helper in their own PRs and depend on this one.
 - **Acceptance checks:**
-  - `test_pack_units_never_splits_a_unit_under_cap`, `test_pack_units_keeps_every_character`, `test_piece_reference_range_and_part_forms`.
+  - `test_pack_units_never_splits_a_unit_under_cap`, `test_pack_units_keeps_every_character`, `test_piece_reference_range_and_part_forms` (asserts the exact string "(part 2 of 3)").
   - Vendored check: zero duplicate `(document_id, reference)` pairs in Bible, papal, Fathers and medieval. Councils may keep duplicates until 1.1 and 1.2 land. The check prints the count per collection.
   - Bible: every piece's reference range equals the first and last verse numbers found in its text.
-- **Production safety:** References and some Bible split points change. Document IDs do not. Bible piece anchors (`book/ch/v-2`) can move; the remap maps by first verse.
-- **Needs Carter:** choose the citation form for pieces without real units. Recommended: "(part 2 of 3)". The alternative is ThML printed page numbers from `<pb n=...>` ("ANF 1, pp. 45 to 46"), which are real but edition-specific.
+- **Production safety:** References and some Bible split points change. Document IDs do not. Bible piece anchors (`book/ch/v-2`) can move. A piece anchor that no longer exists gets a `merged` or `split` redirect to the piece holding its first verse.
+- **Needs Carter:** nothing. The citation form "(part 2 of 3)" is decided (D5).
 - **Out of scope:** Summa objection and reply citations (1.7). Catechism paragraph labels (1.6).
 
 ---
