@@ -8,7 +8,39 @@ Related files:
 - `docs/research/2026-09-28-corpus-health-and-retrieval-audit.md` and `docs/research/2026-09-28-question-set-corpus-gap-audit.md` are the earlier audits.
 - `docs/research/2026-09-28-theologians-spiritual-writers-candidates.md` lists candidate works for the theologians and spiritual writers collection, sorted by legal availability (27 CCEL ThML works, 58 Gutenberg or Internet Archive works, 37 authors needing payment or permission, 44 flagged items).
 
+- `docs/research/2026-09-28-scan-only-works-text-sources.md` says where clean typed text exists for works otherwise available only as page scans.
+- `docs/corpus-cleanup/` holds the detailed work specifications, one file per phase. Every item there follows the same template: goal, current state with evidence, changes by file and function, acceptance checks, production safety, what needs Carter, out of scope.
+
 Nothing here has changed code or live data yet.
+
+## Start here
+
+**The order is fixed: fix and republish the current corpus first, then reorganize and expand.** Do not add collections or sources before Phase 4 is done, except where an item says otherwise.
+
+1. Read this file's Inclusion rules and Decision log. They are settled. Reopen a decision only if Carter does.
+2. Open `docs/corpus-cleanup/P0-checks-identity-research.md` and start with its first item. Phase 0 builds the checks, the publish lock and the frozen ID registry that every later change is measured against. The publish lock (0.4) must merge before any Phase 1 adapter change.
+3. Work through the phases in the order of the "Phase and PR plan" table below. Each item's spec lists what it depends on.
+4. Every PR must leave production working. API and web deploy on merge; the datapipeline does not touch production until it is run. See "Production stays working at every merge" below.
+5. Ask Carter before any change to live data (Supabase project hvmgffvimqgiejmxwhwq, which production runs on; Qdrant), before sending stored user queries to an outside provider, and before pushing, opening issues or PRs on the public repo.
+
+**Current state (29 Sep 2026)**
+
+| Thing | Where it is |
+|---|---|
+| This plan and its research | Branch `docs/corpus-cleanup-plan` (worktree `/Users/cartertate/repos/boc-corpus-plan` on Carter's Mac). Not yet pushed or merged. |
+| Vendored source files | `datapipeline/sources/` in the main checkout. Gitignored and present only on Carter's Mac; `scripts/vendor_sources.py` re-downloads them, and `--verify` checks their hashes. |
+| An early Roman Curia collection | Local branch `feat/roman-curia-collection` (worktree `/Users/cartertate/repos/boc-roman-curia`), reviewed, parked for PR 5.3. Built ahead of order by mistake; do not merge it before Phase 4. Its migration is numbered 0039 and will need renumbering. |
+| Rights research | Private, outside git, on Carter's Mac. Never commit rights analysis to this public repo. The decisions that follow from it are in the Decision log. |
+| GitHub issues | Not opened. They are to be opened from `docs/corpus-cleanup/`, one parent per phase, after Carter approves. |
+| Live corpus | Unchanged: 54,568 passages, 421 documents, 10 collections. |
+
+**Known environment gaps on master**
+
+- There is no CI. Run tests locally: `python3 -m pytest` in `datapipeline/` and in `services/api/`, `npx vitest run` and `npm run lint` in `apps/web/`.
+- Four datapipeline tests fail on master in full-suite order (`test_enrichment_sample_run` twice, `test_pass1_pilot_diff_report`, `test_pass1_questions_cosine_audit`) because a fresh checkout has no `datapipeline/.env`; they pass alone.
+- `services/api/tests/test_hyde_steps.py` imports `httpx2`, which is not a declared dependency.
+- `npx tsc --noEmit` in `apps/web/` reports one error in `src/lib/preference-writer.test.ts`.
+- The web lint baseline is 0 errors and 4 warnings.
 
 ## Status
 
@@ -18,6 +50,7 @@ Nothing here has changed code or live data yet.
 | Corpus defects | Verified against the live database and the vendored sources on 28 Sep |
 | Collections after cleanup | Decided, except where noted |
 | Theologians and spiritual writers candidates | Research done; four scope questions answered, the rest open (see Open items) |
+| Detailed work specifications | `docs/corpus-cleanup/`, one file per phase |
 | GitHub issues | Not opened yet |
 
 ## Inclusion rules
@@ -215,7 +248,7 @@ Fix under rule E.
 
 ### Product copy
 
-The About page (`apps/web/src/components/about/AboutPage.tsx`) names Origen, John Chrysostom, Bonaventure, Hildegard and Duns Scotus, none of whom are in the corpus. Rewrite it from the actual contents.
+The About page (`apps/web/src/components/about/AboutPage.tsx`) names John Chrysostom, Bonaventure, Hildegard and Duns Scotus, none of whom are in the corpus, and Origen, who is in it today (3 works, 932 passages) but is removed under rule A. Its medieval blurb says 9th to 15th centuries, which leaves out Boethius (524). Rewrite it from the actual contents. Corrected 29 Sep: an earlier version said Origen was not in the corpus.
 
 ## What the rules remove
 
@@ -261,7 +294,7 @@ One collection per kind of speaker, with genre as a filter inside it.
 | Papal documents | Encyclicals, exhortations, apostolic letters, constitutions, bulls, motu proprios; genre filter with one, several or all selectable | Merges three collections |
 | Roman Curia | CDF/DDF documents, Pontifical Biblical Commission, social doctrine Compendium, liturgical norms | New |
 | Church law | 1983 Code, current text, plus universal laws such as Universi Dominici Gregis | Renamed from Canon law |
-| Church Fathers | Current Fathers minus removals, plus Boethius and Pseudo-Dionysius moved from Medieval, plus Basil, Cyril of Jerusalem, Gregory Nazianzen, Gregory the Great, Chrysostom, Ambrose, Leo | Removals, moves and additions |
+| Church Fathers | Current Fathers minus removals, plus Boethius moved from Medieval, Pseudo-Dionysius (an addition: the two "Dionysius." documents in the corpus are Dionysius of Alexandria), plus Basil, Cyril of Jerusalem, Gregory Nazianzen, Gregory the Great, Chrysostom, Ambrose, Leo | Removals, moves and additions |
 | Summa | Aquinas's Summa only | None |
 | Theologians and spiritual writers | Current medieval works plus later writers from the candidates memo (Teresa, John of the Cross in the Lewis translation, Francis de Sales, Catherine, Julian, Thérèse, Ignatius, Alphonsus, Montfort, Newman's Catholic works, more Bernard, Aquinas's works outside the Summa, lay writers such as Chesterton's Catholic works, and others). Boethius moves out to the Fathers. | Renamed from Medieval |
 
