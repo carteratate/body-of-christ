@@ -5,7 +5,7 @@ Work specifications for Phase 4 (republish) and Phase 5 (reorganize and expand) 
 ## Overview and recommended order
 
 1. P4 republishes the cleaned corpus built in P1 to P3 in one apply, through the stage-then-apply writer (2.2w, D2), behind the publish lock (0.4) and the Qdrant alias `chunks_live` (2.2b). There is no release column. The new corpus is built into the `staging` schema and a new Qdrant collection, compared against live in the release report, applied to the live tables in one transaction, and then made visible to vector search by switching `chunks_live`.
-2. Passage ids follow D1. An anchor keeps its id when its text is fixed, so most bookmarks and history rows need no change. Only anchors that now name different text get a new id and a redirect, and only those user rows are remapped (4.1a). Removed passages are retired and show a tombstone (D3); user rows that point at them stay where they are.
+2. Passage ids follow D1. They are frozen in the 2.1 registry, so every unit that exists today keeps today's id, even where 2.1 rebuilds its anchor, and a fixed text is updated in place. Only genuinely new units get new ids. Only the few anchors that now name different text get a redirect, and only user rows on those are remapped (4.1a). Removed passages are retired and show a tombstone (D3); user rows that point at them stay where they are.
 3. Order for P4:
    - 4.0 storage (the `VACUUM FULL` window and the Pro decision).
    - 4.1a user-data remap for redirects, with a local rehearsal of the whole 2.2w flow on a restored `pg_dump` (D8).
@@ -14,7 +14,7 @@ Work specifications for Phase 4 (republish) and Phase 5 (reorganize and expand) 
    - The rest of the 4.1b cutover.
    - 4.2 again on production.
 4. 4.2 compares against a baseline that 0.3 judged. 0.3 must therefore run with judging (the plan's P0 row says so; a `--no-judge` baseline cannot be compared), and it must run before any live change (D7).
-5. Two storage facts need Carter before P4. A `VACUUM FULL` of `chunks` on today's 401 MB database may briefly peak near 600 MB, above the Free plan's 500 MB read-only trigger. The apply itself, with one staging copy loaded and new-anchor rows inserted, is estimated at 550 to 650 MB at its peak (4.0). Both lead to the same choice, run anyway or buy a month of Pro.
+5. Two storage facts need Carter before P4. A `VACUUM FULL` of `chunks` on today's 401 MB database may briefly peak near 600 MB, above the Free plan's 500 MB read-only trigger. The apply itself, with one staging copy loaded, new units inserted and old versions of updated rows not yet vacuumed, is estimated at 490 to 590 MB at its peak (4.0), so it may cross 500 MB briefly. Both lead to the same choice, run anyway or buy a month of Pro, and the local rehearsal measures the real apply peak first.
 6. P5 starts only after the P4 cutover and its rollback window close. Every P5 publish goes through 2.2w, each with its own named apply in a reviewed change to the lock file. No P5 publish uses today's delete-based prune (`writers/reader_writer.py`).
 7. 5.2 (rights inventory) can run in parallel from now, and every addition PR waits for its row.
 8. Order for P5 code is 5.1a genre and issuer filters, then 5.1c, then the four 5.1b PRs in order (5.1b.1 to 5.1b.4).
@@ -55,7 +55,10 @@ Supabase documentation (read 29 Sep) says Free plan projects enter read-only mod
 
 Qdrant figures come from the plan (28 Sep) and were not re-measured. There is one collection, `chunks`, with 54,568 points at 1,536 dimensions, no quantization and no alias, about 335 MB of raw vectors.
 
-Passage counts per collection that bear on the storage projection come from the P1b spec (29 Sep). The Summa has 26,750 live passages, the Fathers 9,783 and medieval 434. 2.1's structural anchors change most passage ids in those three collections.
+Figures that bear on the storage projection and the remap come from the other specs (29 Sep, estimates where marked):
+- Retired rows at P4 are the rule A to G removals (about 2,100 passages) plus the Tanner council units and the 47 On the Incarnation passages that replacement texts supersede. Retired rows already exist in `chunks`, so retiring them adds no space.
+- New units are restored verses, recovered prose (Vatican II continuations, Trent, Vatican I, the Summa's Q71 and Q72), split recensions and the replacement council and Incarnation texts. The master build is 54,776 passages against 54,568 live, and 0.6 puts the Vatican II and council repairs at about 0.9 MB of text. The replacement council texts are not yet built, so their size is unmeasured.
+- Rows the apply updates in place are those whose text, citation or labels change. That is at least the 2,439 content differences under equal ids measured on 29 Sep, plus the split-piece citation fixes of 1.10c (every Summa passage and about 9,000 others), so roughly 35,000 to 40,000 rows (estimate).
 
 ## Prerequisites from earlier phases
 
@@ -70,7 +73,7 @@ P4 and P5 assume these have merged. Each spec below names the ones it needs.
 | 0.5 | Qdrant plan memory and disk limits |
 | 0.6 | Storage headroom snapshot |
 | 1.2f | OCR clean-up tool and quality gate (D9), reused by 5.5 and 5.6c |
-| 2.1 | Work registry with frozen document ids, structural anchors, rule A fields and the removal registry (D4). After 2.1, a document's id no longer depends on its collection key (today every adapter passes the collection string into `document_id()`, for example `datapipeline/ingest/encyclicals.py:172`) |
+| 2.1 | Work registry with frozen document ids and frozen passage ids (each unit that exists today keeps its current id; structural anchors decide which unit is which, not its id), rule A fields and the removal registry (D4). After 2.1, a document's id no longer depends on its collection key (today every adapter passes the collection string into `document_id()`, for example `datapipeline/ingest/encyclicals.py:172`) |
 | 2.2a | Additive migration: document facts (genre in the D5 vocabulary, issuer, attribution, notes, source credit), the work model (`chunks.work_key`, `document_works`, D6), the retired flag, `searchable`, tombstones, redirects, and the `staging` schema. No release column |
 | 2.2w | The stage-then-apply writer (D2). It builds into `staging` and a new Qdrant collection, produces the release report, applies in one transaction (update changed rows in place by id, insert new ids, retire removed ids, write tombstones and redirects, `refresh_document_outline`), then switches `chunks_live`. It writes `collection`, `genre`, `issuer` and `searchable` to the Qdrant payload, and refuses to retire an id the removal registry does not explain |
 | 2.2b | API reads Qdrant through the alias `chunks_live`; boolean `searchable` payload index; filter that excludes only `searchable = false` |
@@ -80,8 +83,8 @@ P4 and P5 assume these have merged. Each spec below names the ones it needs.
 
 How D1 and D2 shape P4, stated once here so the items below can rely on it:
 
-- An unchanged anchor keeps its passage id (`passage_id = f(document_id, anchor)`, `datapipeline/identity.py:40`). If its text changed (notes stripped, prose restored, label fixed), the apply updates the row in place, so bookmarks and history keep pointing at it and gain the corrected text. No remap is needed.
-- An anchor that now names different text (Joel and Malachi renumbering, a council rebuilt by session, a split recension, and 2.1's structural anchors) gets a new anchor and so a new id. The old id is retired and gets a redirect. 4.1a moves user rows along these redirects.
+- Every unit that exists today keeps today's passage id, frozen in the 2.1 registry, even where 2.1 rebuilds its anchor from the source's structure. Rebuilding anchors does not re-key the corpus. If a unit's text changed (notes stripped, prose restored, label or citation fixed), the apply updates the row in place, so bookmarks and history keep pointing at it and gain the corrected text. No remap is needed.
+- Only genuinely new units (restored verses, recovered prose, split recensions, replacement texts) get new ids. Where a fix changes which text an old anchor names (Joel and Malachi renumbering, a council rebuilt by session, a split recension), the old id gets a redirect to the new unit. 4.1a moves user rows along these redirects, which are few.
 - A removed passage is retired with a tombstone. User rows keep pointing at it and show the tombstone. No remap.
 - `chunks` never holds two copies of the corpus and nothing filters on a release. The only extra copy is `staging`, which exists from the build until it is dropped after the apply.
 
@@ -98,13 +101,14 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - Database 401 MB, `chunks` 380 MB, of which live row bytes are 123 MB (measured 29 Sep, table above). Dead tuples are 0, so the roughly 166 MB gap between live rows and heap plus TOAST is free space inside the files. Plain `VACUUM` already made it reusable for new inserts; only `VACUUM FULL` returns it to the database size figure.
   - The Decision log row "Storage (4.0)" says to run `VACUUM FULL` in an approved quiet window, measure, and buy Pro only if a rehearsal exceeds about 350 MB or V5 enrichment is scheduled. If memory is tight, the new Qdrant collection keeps its vectors on disk.
   - **Carter to note (the `VACUUM FULL` peak).** `VACUUM FULL` writes a complete new copy of the table and its indexes before dropping the old one. The new copy is estimated at 123 MB of rows plus 60 to 88 MB of rebuilt indexes, so the database may briefly reach about 590 to 610 MB. Supabase documents that Free projects enter read-only mode above 500 MB. How quickly that is enforced is unverified (the same page says disk metrics update daily). If it triggers, writes fail (searches cannot be saved, bookmarks cannot be added) until usage drops. This is a decision for Carter (step 2).
-  - **Carter to note (projection with one staging copy, estimates).** D2 removes the doubled `chunks` table. What remains is one staging copy plus the rows the apply inserts. At about 3.5 KB of database per passage (123 MB of rows plus about 70 MB of indexes over 54,568 passages):
+  - **Carter to note (projection with one staging copy, estimates).** D2 removes the doubled `chunks` table, and frozen passage ids (D1) mean the corpus is not re-keyed. What remains is one staging copy, the new units the apply inserts, and the old versions of rows it updates in place. At about 3.5 KB of database per passage (123 MB of rows plus about 70 MB of indexes over 54,568 passages):
     - After `VACUUM FULL`, about 230 MB (220 to 260 MB).
     - The staging copy needs today's indexes, including the full-text GIN index, because 4.2 searches it. That is about 123 MB of rows plus up to 88 MB of indexes, so about 210 MB. The peak while staged is about 440 MB.
-    - The apply runs while staging still exists. It inserts a row for every new anchor, and each retired row stays until the rollback window closes (D3). 2.1's structural anchors give new ids to most of the Summa (26,750), Fathers (9,783) and medieval (434) passages, about 37,000 passages or 68% of the corpus. At 3.5 KB each that is about 130 MB. In-place text updates also leave old row versions as dead space until the next vacuum (tens of MB).
-    - The peak during the apply is therefore about 550 to 650 MB, above 500 MB, before any P5 addition.
-    - Dropping the staging tables after the apply returns their space at once (about 210 MB). During the rollback window the database is then about 380 to 420 MB.
-    - The local rehearsal (4.1a) measures the real figures. If fewer ids change than 2.1's spec implies, the peak falls.
+    - The apply runs while staging still exists. Retiring about 2,100 removed passages and the superseded Tanner and Incarnation units adds nothing, since those rows already exist. New units are about 2,000 to 6,000 passages (the repairs' 0.9 MB of text plus the unbuilt replacement council texts), so about 7 to 21 MB.
+    - The larger cost is the in-place updates. Postgres writes a new version of each updated row and keeps the old one as dead space until the next vacuum. With roughly 35,000 to 40,000 rows updated, that is about 40 to 130 MB, depending on how much of each row changes (a citation-only change reuses the stored content).
+    - The peak during the apply is therefore about 490 to 590 MB, near or above 500 MB, before any P5 addition.
+    - Dropping the staging tables after the apply returns their space at once (about 210 MB). During the rollback window the database is then about 280 to 380 MB, and the next vacuum makes the dead space reusable.
+    - The local rehearsal (4.1a) measures the real figures.
 - **Changes:** No code. Runbook, run from Carter's machine with `psql` over a direct (session-mode) connection, not the transaction pooler and not the dashboard SQL editor, which may time out.
   1. Pre-check (read-only). Record in the ops log:
      ```sql
@@ -128,7 +132,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      If the lock is not acquired within 5 s, retry once a minute; do not raise `lock_timeout`.
   4. Measure again with the step 1 queries. Record duration, before and after sizes, and WAL size.
   5. Qdrant. Read 0.5's numbers. From 4.1b step 1 until the old collection is deleted after the rollback window, the cluster holds two full collections (today's `chunks` and the new one, each with every passage). If the plan's memory cannot hold both (about 2 x 335 MB raw plus HNSW), note that 4.1b must create the new collection with `on_disk=True` for vectors (and `HnswConfigDiff(on_disk=True)` if 0.5 shows the graph also does not fit).
-  6. Pro decision for the apply (Carter). After 4.1a's rehearsal reports the peak database size through staging and apply, compare it with the projection above. If the peak exceeds 500 MB, Carter chooses between a month of Pro and a change to the plan that lowers it (for example fewer new anchors in 2.1). The Decision log's 350 MB threshold also still applies to the longer-term Pro decision.
+  6. Pro decision for the apply (Carter). After 4.1a's rehearsal reports the peak database size through staging and apply, compare it with the projection above. If the peak exceeds 500 MB, Carter chooses between a month of Pro and running the apply anyway, accepting a possible brief read-only period. The Decision log's 350 MB threshold also still applies to the longer-term Pro decision.
 - **Acceptance checks:**
   - Ops log (kept in the issue, not in a repo file) has before and after sizes, duration, and WAL size.
   - `pg_database_size` after compaction is recorded; expected 220 to 260 MB (estimate, not measured).
@@ -145,7 +149,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 
 - **Type:** PR
 - **Depends on:** 0.1c, 2.1, 2.2a, 2.2w, 2.4a, P3 (the corpus to publish exists and passes its checks), 4.0 steps 1 to 4.
-- **Goal:** When the apply gives an anchor a new id and writes a redirect (D1), every user row that pointed at the old id moves to the new one: bookmarks, history results, labels, guest results, reading position and feedback. Where a move collides with a unique constraint, rows are merged by a fixed rule and every merged or dropped row is recorded, never removed silently. A local rehearsal of the whole 2.2w flow proves it on a copy of production. Users keep their bookmarks and history across the republish.
+- **Goal:** When the apply writes a redirect from an old id to a new unit (D1), every user row that pointed at the old id moves to the new one: bookmarks, history results, labels, guest results, reading position and feedback. Where a move collides with a unique constraint, rows are merged by a fixed rule and every merged or dropped row is recorded, never removed silently. A local rehearsal of the whole 2.2w flow proves it on a copy of production. Users keep their bookmarks and history across the republish.
 - **Current state:**
   - Tables that reference `chunks(id)` (verified in migrations):
     - `bookmarks` `UNIQUE (user_id, chunk_id)`, `note` up to 3,000 characters, `ON DELETE CASCADE` (`supabase/migrations/0006_v2_bookmarks_feedback_prefs.sql:1-8`, `0016_bookmarks_add_note.sql`).
@@ -154,7 +158,8 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
     - `retrievals` has no unique constraint, `ON DELETE CASCADE` (`0005_v2_searches_retrievals.sql:21-29`).
     - `product_feedback.chunk_id` `ON DELETE SET NULL` (`0028_product_feedback.sql:20`); 0 rows with a chunk today.
   - `reading_progress` has primary key `(user_id, document_id)`, references `documents(id)`, and stores text `chapter_key` (NOT NULL) and `anchor` (`0027_reading_progress.sql:2-9`). Document ids are frozen by 2.1, so a document-level collision cannot happen, but chapter keys and anchors can change.
-  - Under D1 and D2 most user rows need nothing. A passage whose text was fixed keeps its id and row. A removed passage keeps its row, retired, with a tombstone (D3), so user rows stay pointed at it. Only rows on an id with a redirect move.
+  - Under D1 and D2 almost every user row needs nothing. Passage ids are frozen in the 2.1 registry, so every unit that exists today keeps its id even where its anchor is rebuilt, and a passage whose text was fixed keeps its id and row. A removed passage keeps its row, retired, with a tombstone (D3), so user rows stay pointed at it. Only rows on an id with a redirect move.
+  - Expected remap volume (estimate). Redirects come only from fixes that change which text an old anchor names: Joel and Malachi renumbering, councils rebuilt by session, split recensions, and Tanner units where a replacement unit is named as successor. That is at most a few hundred to about 2,000 old ids, most in `councils`. The user rows on them are likely in the tens. For comparison, 0.1c's 29 Sep report found 12 live passages with no successor in the master build, carrying 19 `retrievals` and 2 `guest_trial_retrievals` rows, and the plan counted 50 retrievals and 0 bookmarks on passages the rules remove. The release report's user-impact section gives the exact count before the apply.
   - Every chunk foreign key cascades on delete, which is why 2.2w retires instead of deleting and why this tool never deletes a `chunks` row.
   - Supabase branching needs Pro and copies schema only (docs, 29 Sep), so the rehearsal runs on a local Postgres restored from a `pg_dump` of production (D8).
   - Rows at risk are few (25 bookmarks, 3,029 retrievals, 274 guest results, 3 labels, 25 reading positions), so the rules must be exact rather than fast.
@@ -301,12 +306,15 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - Vector search filters Qdrant on `collection` alone (`services/api/app/rag/steps/retrieve_vector.py:31-35`); full-text search filters on `d.collection = $1` (`services/api/app/rag/steps/retrieve_fts.py:16-26`).
   - Today's Qdrant collection has a keyword index on `collection` only (`datapipeline/qdrant_schema.py:28-29`). After P4, the collection behind `chunks_live` carries `genre` and `issuer` in every point's payload, written by 2.2w (D5), with keyword indexes created at 4.1b step 1. This item needs no payload writer of its own.
   - Genre is currently in `documents.metadata` for 16 documents only (plan, "Corrections"). 2.3 puts real values in the registry and the P4 apply writes them to `documents.genre` and `documents.issuer`.
-  - The genre vocabulary is defined once in 2.2a (D5): `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`, `other`, lowercase and hyphenated everywhere.
-  - **Carter to note (vocabulary gap).** D5's eight values fit papal documents. Roman Curia (5.3), catechisms (5.5) and the theologians (5.6b) need genres D5 does not list, such as `declaration`, `instruction`, `compendium`, `catechism` and `treatise`. Until 2.2a's vocabulary is extended, those documents can only take `other`. Extending it is a 2.2a change for Carter to approve, in the same lowercase hyphenated form, before 5.3a.
+  - The genre vocabulary is defined once in 2.2a (D5), lowercase and hyphenated everywhere, with `other` for anything unlisted. Adding a value is a normal PR change to 2.2a's list.
+    - Papal: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`.
+    - Roman Curia: `declaration`, `instruction`, `doctrinal-note`, `note`, `response`, `norms`, `considerations`, `commentary`.
+    - Catechisms and law: `catechism`, `compendium`, `code`, `law`.
+    - Writers: `treatise`, `manual`, `sermon`, `commentary`, `poem`, `rule`.
 - **Changes:**
   1. `services/api/app/rag/constants.py`. Add `GENRES_BY_COLLECTION: dict[str, frozenset[str]]` and `ISSUERS_BY_COLLECTION`, read from the vocabulary 2.2a defines, never restated by hand.
-     - The papal collections use D5's eight values.
-     - Roman Curia uses the values Carter approves as an extension of 2.2a (proposed `declaration`, `instruction`, `doctrinal-note`, `note`, `responsum`, `notification`, `compendium`, plus D5's `letter` and `other`).
+     - The papal collections use the papal values plus `other`.
+     - Roman Curia uses the Roman Curia values plus `compendium` (the social doctrine Compendium, 5.3b), `letter` and `other`.
      - Issuer for Roman Curia is the institution (`ddf` for both CDF and DDF, per the source memo; the printed name stays on the document), `pbc`, `pcjp`. Issuer for papal documents is the pope.
   2. New module `services/api/app/rag/collection_scope.py` with a frozen `CollectionScope(collection, genres, issuers)`. It has `to_qdrant_filter()` and `to_sql()` so retrieval does not hand-build filters. Semantics, per the plan's rule "filters exclude only explicit values":
      - A selection is stored as the set of values the user turned off.
@@ -333,7 +341,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - A read-only query after the P4 apply shows zero NULL genres in the papal collections, recorded in the PR.
   - PR includes screenshots of the chips in both themes.
 - **Production safety:** The API change is additive and optional. Old web clients send no `scopes` and get today's behavior. The web PR deploys after the API PR, so it never sends a field the API rejects. The Qdrant indexes already exist from P4. Rollback is a revert of either PR.
-- **Needs Carter:** Confirm the display labels for the D5 genre values. Approve the Roman Curia genre extension to 2.2a before 5.3a. Approve a Qdrant index creation only if step 7 finds one missing.
+- **Needs Carter:** Confirm the display labels for the D5 genre values. Approve a Qdrant index creation only if step 7 finds one missing.
 - **Out of scope:** Saving genre selections in `user_preferences` (needs a migration; a follow-up if wanted). Genre-specific HyDE prompts (Retrieval follow-ups). Per-genre result guarantees (5.1c decided against them).
 
 ### 5.1c. One guaranteed slot per collection, no per-genre guarantee
@@ -592,7 +600,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 ### 5.3a. Roman Curia: DDF doctrinal documents (from the parked branch)
 
 - **Type:** PR, then an ops publish
-- **Depends on:** P4, 2.2w, 5.1a (genre and issuer), the Roman Curia genre extension to 2.2a (see 5.1a), 5.1b.4 (so the collection list changes once more, not interleaved), 5.2 rows for the 60 documents.
+- **Depends on:** P4, 2.2w, 5.1a (genre and issuer), 5.1b.4 (so the collection list changes once more, not interleaved), 5.2 rows for the 60 documents.
 - **Goal:** A new Roman Curia collection with the Dicastery for the Doctrine of the Faith's doctrinal documents (1966 to 2026), so questions such as IVF, end-of-life care or human dignity reach the Church's most direct answers. Filterable by genre (declaration, instruction, note and so on) and issuer.
 - **Current state:**
   - Local branch `feat/roman-curia-collection` (worktree `/Users/cartertate/repos/boc-roman-curia`, commits `6645a8b` and `2cba1b1` on master `5475c49`). It adds:
@@ -608,7 +616,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   1. Rebase onto master after 5.1b.4. Resolve against the new `constants.py` shape (`CANONICAL_COLLECTIONS`), `collection_scope.py` and the nine-key web list.
   2. Renumber the migration to the next free number. The plan reserves 0039 for 2.2a. Rebuild it from the constraint as it stands then (new keys plus `roman-curia`), not from the branch's old list.
   3. Emit document fields through 2.2a and 2.3:
-     - `genre` from the page, in the lowercase hyphenated values Carter approves for Roman Curia (proposed `declaration`, `instruction`, `doctrinal-note`, `note`, `letter`, `responsum`; `other` for anything else).
+     - `genre` from the page, in D5's Roman Curia values (`declaration`, `instruction`, `doctrinal-note`, `note`, `response` for a responsum, `norms`, `considerations`, `commentary`), `letter` for letters, and `other` for anything else.
      - `issuer = ddf`, with the name printed at publication in the issuer display field (CDF before 5 June 2022, DDF after; source memo).
      - Date, and papal approval wording where the text has it.
      - AAS citation where the index gives one.
@@ -639,7 +647,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - The International Theological Commission is not named in the plan's Roman Curia row; leave it out unless Carter adds it.
 - **Changes:**
   1. Vendor lists in `scripts/vendor_sources.py` for each family, stored under `datapipeline/sources/roman-curia/`.
-  2. Reuse `ingest/roman_curia.py`'s parser. Add issuer `pbc`, `pcjp` (Pontifical Council for Justice and Peace) or the worship dicastery per document, and genre `compendium` for the social doctrine Compendium (a value to add to 2.2a's vocabulary, see 5.1a). Its numbered paragraphs become anchors.
+  2. Reuse `ingest/roman_curia.py`'s parser. Add issuer `pbc`, `pcjp` (Pontifical Council for Justice and Peace) or the worship dicastery per document, and genre `compendium` for the social doctrine Compendium (D5). Its numbered paragraphs become anchors.
   3. Each liturgical document gets a translation check recorded in 5.2 (Vatican English, or ICEL and therefore dropped).
   4. Each family publishes through 2.2w (stage, release report, one-transaction apply with the outline refresh, `chunks_live` switch) under a named apply in the lock file, never the delete-based prune.
 - **Acceptance checks:** Same as 5.3a, per family. Issuer filter isolates Biblical Commission documents.
@@ -650,20 +658,20 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 ### 5.4. Papal and universal law
 
 - **Type:** PR, then ops publish
-- **Depends on:** 5.1b.4 (keys `papal`, `church-law`), 2.2a (`searchable`, notes, and the supersession link between a current text and its history documents), 2.2w, 5.2 rows.
+- **Depends on:** 5.1b.4 (keys `papal`, `church-law`), 2.2a (`searchable`, notes, `documents.superseded_by`), 2.2w, 5.2 rows.
 - **Goal:** Questions about how a pope is elected or what happens during a vacancy are answered from *Universi Dominici Gregis* as currently in force, with its earlier wording available as labeled history. Two vendored papal documents that never reached the corpus become searchable.
 - **Current state:**
   - `datapipeline/sources/apostolic-exhortations/a-new-hope-for-lebanon.html` and `datapipeline/sources/papal-documents/ubicumque-et-semper.html` are vendored but in neither manifest nor the database (verified locally; plan Decision log).
   - Manifest lists live in `scripts/vendor_sources.py:382` (`APOSTOLIC_EXHORTATIONS`) and `:447` (`PAPAL_DOCUMENTS`).
   - UDG is not vendored. Per the source memo, vatican.va's English page is the consolidated text current from 22 February 2013 and links the 1996 original, *De aliquibus mutationibus* (2007, Latin; replaced number 75) and *Normas nonnullas* (2013; modified numbers 35, 37, 43, 46 §1, 47 to 51 §2, 55 §3, 62, 64, 70 §2, 75, 87). The 30 April 2025 declaration on number 33 is a dispensation, not an amendment.
   - Rule F is current text only in search, superseded versions as labeled linked history.
-  - The supersession link comes from 2.2a. **Name to confirm.** 2.2a's 29 Sep draft has `documents.note` and `searchable` but no field linking a superseded document to the current one; the only existing link is the registry's `supersedes` list (2.1), which records document succession for the remap. This item assumes 2.2a adds a document-level link (for example `superseded_by`) and that 2.4a renders it. If 2.2a's revision does not, the gap belongs in 2.2a, not in this PR.
+  - The supersession link is `documents.superseded_by` (2.2a, D5): each older text points to the current text that replaces it.
 - **Changes:**
   1. `vendor_sources.py`. Add A New Hope for Lebanon (1997, post-synodal apostolic exhortation) to `APOSTOLIC_EXHORTATIONS` and Ubicumque et Semper (2010, motu proprio) to `PAPAL_DOCUMENTS`. Regenerate manifests. Both publish into `papal` with genres `apostolic-exhortation` and `motu-proprio`.
   2. UDG.
      - New adapter `datapipeline/ingest/universal_law.py` emitting collection `church-law`.
      - Document "Universi Dominici Gregis (as amended 2013)" is searchable, with anchors by number and section and author "Pope John Paul II" with the amendment note.
-     - Three history documents (1996 original, 2007 motu proprio, 2013 motu proprio) are stored with `searchable = false`, linked to the current text through 2.2a's supersession link and named in its note, and labeled "superseded text, kept as history". Genre `apostolic-constitution` for the 1996 text and `motu-proprio` for the other two (D5).
+     - Three history documents (1996 original, 2007 motu proprio, 2013 motu proprio) are stored with `searchable = false`, each with `documents.superseded_by` set to the current text, and named in its note, and labeled "superseded text, kept as history". Genre `apostolic-constitution` for the 1996 text and `motu-proprio` for the other two (D5).
      - The 2007 act is Latin only. Per rule E it stays in the reader with a note and out of search, which `searchable = false` already gives.
      - The 2025 declaration is not ingested (application material, not law). Mention it in the document note with its link.
   3. HyDE. Broaden the `church-law` prompt from "a single canon of the 1983 Code" to "a provision of the Church's universal law, such as a canon of the 1983 Code or a numbered norm of an apostolic constitution".
@@ -681,7 +689,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 ### 5.5. Catechisms: Compendium of the CCC, Roman Catechism
 
 - **Type:** PR per work, then ops publish
-- **Depends on:** 2.2w, 5.2 rows, R6, the genre extension to 2.2a (see 5.1a), and 1.2f's OCR tool and gate (D9) for the Roman Catechism if no clean text passes R6.
+- **Depends on:** 2.2w, 5.2 rows, R6, and 1.2f's OCR tool and gate (D9) for the Roman Catechism if no clean text passes R6.
 - **Goal:** Short question-and-answer entries from the Compendium of the Catechism (2005) linked to the full Catechism's paragraphs, and the Roman Catechism of the Council of Trent (McHugh and Callan, 1923) as a historical catechism, both in the Catechism collection.
 - **Current state:**
   - The Catechism collection is one document, `document_id("catechism")` (`datapipeline/ingest/catechism.py:256`).
@@ -693,11 +701,11 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
      - One passage per question with its answer, anchor the question number.
      - Keep the CCC paragraph references as a structured field so the reader can link to them. They are not part of passage text.
      - Credit "Text: Libreria Editrice Vaticana".
-     - Genre `compendium` (a value to add to 2.2a's vocabulary; D5's list has no catechism genres).
+     - Genre `compendium` (D5).
   2. Roman Catechism. R6 first looks for a clean typed 1923 text and confirms the edition against a scan.
      - If one exists, write an adapter over it.
      - If not, run it through 1.2f's OCR tool and gate, as its own PR, as 5.6c does.
-     - Genre `catechism` (also a value to add to 2.2a's vocabulary), year 1566 for the work and 1923 for the translation, note "Catechism of the Council of Trent, a historical catechism; for current teaching see the Catechism of the Catholic Church".
+     - Genre `catechism` (D5), year 1566 for the work and 1923 for the translation, note "Catechism of the Council of Trent, a historical catechism; for current teaching see the Catechism of the Catholic Church".
      - Strip McHugh and Callan's notes and introduction (rule G).
   3. HyDE. Leave the CCC prompt, but add a retrieval follow-up to test whether the Compendium's short Q&A form is found; do not tune here.
   4. Each work publishes `catechism` through 2.2w (stage, release report, one-transaction apply with the outline refresh, `chunks_live` switch) under a named apply in the lock file, never the delete-based prune. The existing CCC document must show every passage as `same` in the release report.
@@ -707,7 +715,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - For the Roman Catechism, the 1.2f gate report if OCR was used.
   - Release report shows zero retirements in the CCC.
 - **Production safety:** Additions to a released collection, visible together in one apply. Rollback within the window is the alias switch back plus 2.2w's rollback apply; later, a 2.2w apply that retires the added documents.
-- **Needs Carter:** Approve the `compendium` and `catechism` genre values in 2.2a. Approve each lock-file PR and each 2.2w apply.
+- **Needs Carter:** Approve each lock-file PR and each 2.2w apply.
 - **Out of scope:** Other catechisms (Baltimore, Pius X).
 
 ### 5.6a. Church Fathers additions and the Pseudo-Dionysius addition
@@ -756,7 +764,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 ### 5.6b. Theologians and spiritual writers from CCEL ThML and Gutenberg text
 
 - **Type:** PR per author or small group, then ops publish
-- **Depends on:** 5.1b.4 (key `theologians`), 2.2a (passage-level author, for the Catena), 2.2w, the genre extension to 2.2a (see 5.1a), 1.9 (the medieval adapter fixes), 5.2 rows, R1 (rule A and Church-act checks, including the Pensées' Index status), R6.
+- **Depends on:** 5.1b.4 (key `theologians`), 2.2a (`chunks.passage_author`, for the Catena), 2.2w, 1.9 (the medieval adapter fixes), 5.2 rows, R1 (rule A and Church-act checks, including the Pensées' Index status), R6.
 - **Goal:** The Theologians and spiritual writers collection gains the classic Catholic spiritual writers and later theologians whose texts are already clean (CCEL ThML or Project Gutenberg): Teresa, Francis de Sales, Catherine, Julian, Thérèse, Ignatius, Alphonsus, Newman's Catholic works, more Bernard, Aquinas outside the Summa, Chesterton's Catholic works and others.
 - **Current state:**
   - Collection has 6 documents today (Anselm 3, Boethius, the Imitation, On Loving God; verified).
@@ -817,13 +825,13 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   3. Adapters.
      - ThML goes through `ingest/thml_doc.py` with collection `theologians`, a per-work strip list (the memo's "Strip" notes, rule G), and CCEL staff descriptions never indexed (Decision log).
      - Gutenberg needs a new `ingest/gutenberg_text.py` that removes the Project Gutenberg header and licence block, splits by the work's own chapter headings (per-work config), and records the ebook number as provenance.
-     - Each document records genre, the translation's year on the card, and the credit line ("Sourced via CCEL.org" where applicable). D5's vocabulary has only `letter` and `other` for these works. The proposed extension, lowercase and hyphenated, is `treatise`, `autobiography`, `sermon`, `commentary`, `apologetics`; until Carter approves it in 2.2a, use `letter` or `other`.
+     - Each document records genre, the translation's year on the card, and the credit line ("Sourced via CCEL.org" where applicable). Genre comes from D5's writer values (`treatise`, `manual`, `sermon`, `commentary`, `poem`, `rule`), `letter` for letter collections, and `other` for autobiographies, apologetics and anything else. Adding a value such as `autobiography` is a normal PR change to 2.2a's list.
   4. Catena Aurea (decided: each quotation attributed to the Father quoted).
      - One passage per quotation, because grouping several quotations would put one Father's words under another's name.
      - Passage-level author is the Father (map CCEL's abbreviations such as "Chrys.", "Aug.", "Greg." to full names with a tested table).
      - Display is "Chrysostom, quoted in Aquinas's Catena Aurea". The document author is "Thomas Aquinas (compiler)".
      - Short quotations fall under `MIN_CHUNK_LENGTH` 50 (`datapipeline/config.py:54`). Exempt Catena passages rather than merge across Fathers, and merge only consecutive quotations from the same Father on the same verse.
-     - The passage-level author comes from 2.2a. **Name to confirm.** 2.2a's 29 Sep draft gives passages `work_key`, with the author on `document_works` (D6). That models works inside a document, not one author per quotation. Modelling each quoted Father as a `document_works` entry would need a work per Father per document and still cannot say which Father each passage quotes unless every passage carries its `work_key`. This item assumes 2.2a's revision adds an explicit passage-level author (or confirms that `work_key` per passage is the intended way). If it does neither, the gap belongs in 2.2a, not in this PR.
+     - The passage-level author is `chunks.passage_author` (2.2a, D5), set to the quoted Father on each Catena passage.
      - **Carter to note (unverified, research before this PR).** The Catena often quotes "Pseudo-Chrysostom", the *Opus imperfectum in Matthaeum*, whose author most scholarship identifies as Arian. R1 should decide under rules A and B whether those quotations stay, labeled "Pseudo-Chrysostom (Opus imperfectum)", or go. The Glossa quotations need an attribution too.
      - Luke and John are only on IA or ecatholic2000, so they go to 5.6c.
   5. Pensées. Carry the "Index status still to be checked (R1)" note; if R1 finds a prohibition, rule A removes it before publish.
@@ -834,7 +842,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Catena. 100% of passages carry a quoted-author label; a unit test covers the abbreviation table; no passage mixes two Fathers.
   - Targeted questions per work (for example "dryness in prayer" returns Teresa or Julian; "the little way" returns Thérèse).
 - **Production safety:** Additions behind the publish lock, each PR's documents visible together in one apply. Rollback within the window is the alias switch back plus 2.2w's rollback apply; later, a 2.2w apply that retires the PR's documents.
-- **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Approve the genre extension. Choose between Rickaby's abridged SCG and the complete English Dominican SCG (5.6c). Decide the Pseudo-Chrysostom question after R1.
+- **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Choose between Rickaby's abridged SCG and the complete English Dominican SCG (5.6c). Decide the Pseudo-Chrysostom question after R1.
 - **Out of scope:** Scanned works (5.6c). Anything in the candidates memo's list B (needs payment). Retrieval tuning for the enlarged collection.
 
 ### 5.6c. Scanned works, one PR per work
@@ -948,7 +956,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - The Canon Law Society of America sells a Latin-English edition updated in 2024.
   - Rule E keeps untranslated text out of search. The Decision log says no licence spending in this cleanup.
 - **Changes:** None until unblocked. When unblocked:
-  - A `church-law` adapter distinguishing Eastern from Latin canons by issuer (for example `cceo`), since D5's genre vocabulary has no value for it.
+  - A `church-law` adapter with genre `code` (D5) that distinguishes Eastern from Latin canons by issuer (for example `cceo`).
   - A publish through 2.2w like every other P5 addition.
   - Current text per rule F.
   - An anchor scheme that cannot collide with the 1983 Code's canon numbers.

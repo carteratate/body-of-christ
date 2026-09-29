@@ -10,7 +10,7 @@ Written 29 September 2026 against `body-of-christ` master at `5475c49`, the vend
 4. Canon law loses 5 canons, keeps superseded text for 5, and leaks page footers into 11. The live count of 1,747 canons looks plausible but is 5 short of 1,752.
 5. The Bible drops 244 verses in the current build (245 live), including all of Susanna, Bel and the Dragon, and most of the Song of the Three.
 6. The council replacement (Percival, Schroeder, Schaff, Waterworth) is the largest item. Schroeder is mostly scan-only, so this file now includes the OCR clean-up tool and its quality gate (1.2f, D9), which councils 8 to 18 need. A council whose public-domain text is not ready at P4 has its Tanner text retired with a "translation in preparation" tombstone.
-7. ID effects are mostly anchor churn inside frozen documents. A passage ID names one unit of text for good (D1). Where a fix changes which text an anchor names (Joel and Malachi renumbering, councils rebuilt by session), the unit gets a new anchor and the old anchor a redirect. The Song of Songs rename keeps its anchors.
+7. ID effects are mostly anchor churn inside frozen documents, and anchor churn alone no longer changes passage IDs, because 2.1 freezes them (D1). Where a fix changes which unit a passage is (Joel and Malachi renumbering, councils rebuilt by session), the new units get new anchors and new IDs and each old ID a redirect. The Song of Songs rename keeps its anchors.
 8. Everything an item removes is recorded by anchor in the removal registry that 2.1 owns (D4), in the same PR.
 9. Research items R2 (canons) and R3 (Esther) are specified in the P0 file, `P0-checks-identity-research.md`. They block 1.5b and 1.4a. R6 (edition checks) blocks 1.2c and 1.2d.
 10. Recommended order, matching the plan's phase table: 1.10a, 1.10b, 1.10c, 1.1, 1.3a, 1.3b, 1.5a, 1.5b (after R2), 1.4a (after R3), 1.4b, 1.4c, 1.2a, 1.2b, 1.2c and 1.2d (after R6), 1.2f, 1.2e.
@@ -25,9 +25,9 @@ These apply to every PR below and are not repeated in each item.
 - Every PR description carries the locally run source-check section from the 0.0 template, the 0.1c release report for the touched collections, and the 0.1a coverage numbers before and after.
 - D1 to D10 are the "Cross-cutting design decisions" in the plan. Where this file and those decisions disagree, the decisions win.
 - Anchors: follow the structural anchor rules of 2.1. Where this file proposes an anchor shape, 2.1 wins if they disagree.
-- One anchor, one unit of text (D1). Fixing a unit's text keeps its anchor and ID. If a fix changes which text an anchor names, the unit gets a new anchor, and the PR adds a row to 2.1's `registry/redirects.json` from the old anchor, with a kind from the remap vocabulary (`moved`, `split`, `merged`, `renumbered`). A retired or redirected anchor string is never emitted again. The 0.1c report fails the PR otherwise.
+- One passage ID, one unit of text (D1). Passage IDs come from 2.1's frozen passage registry through `resolve_passage_id`, not from the anchor. Fixing a unit's text keeps its ID. Changing a unit's anchor string without changing the unit (a relabel, a corrected section number) means editing its registry row's `anchor`; the ID stays and no redirect is needed. Only genuinely new units (restored verses, recovered prose) get new IDs. If a fix changes which unit a passage is (passages regrouped at new chapter boundaries, a council rebuilt by session), the new units get new anchors and new IDs, and the PR adds rows to 2.1's `registry/redirects.json` from each old ID, with a kind from the remap vocabulary (`moved`, `split`, `merged`, `renumbered`). A live anchor string never comes to name a different unit, and a retired one is never emitted again. The 0.1c report fails the PR otherwise.
 - Where the same numbered unit gets a new translation or new legal text (a Percival canon replacing a Tanner canon, an amended canon), the anchor stays and the adapter sets passage metadata `text_replaced` with the reason, so 0.1c's stability check lists it instead of failing.
-- Split pieces keep today's convention (`base/p1`, `base/p2`) unless 2.1 changes it. Where a fix makes a short unit long enough to split, its old anchor `base` becomes `base/p1`, and the PR adds a `split` redirect from `base` to `base/p1`.
+- Split pieces keep today's convention (`base/p1`, `base/p2`) unless 2.1 changes it. Where a fix makes a short unit long enough to split, the registry row for `base` changes its anchor to `base/p1` and keeps the ID; later pieces are new. Where a unit now needs fewer pieces, each piece anchor that disappears gets a `merged` redirect to the piece holding its first 200 characters.
 - Removals (D4). Every passage an item drops (notes split off, footnote cards, heading debris, duplicates, Tanner text with no successor) gets an entry in 2.1's `registry/removals.json` in the same PR, by live anchor, with reason and tombstone text. The 0.1c report fails on a removal the registry doesn't explain. Nothing is retired in live data until 4.1b (D2, D7).
 - Document IDs come from the frozen registry (2.1). Where a fix would change the computed ID, the registry keeps the old one and this file says so.
 - Every P1 PR depends on 0.4 (publish lock), 0.1a (coverage and sequence tests), 0.1c (release report) and 2.1 (registry). The "Depends on" lines below list only extra dependencies.
@@ -147,11 +147,12 @@ These apply to every PR below and are not repeated in each item.
     - Zero passages start with "Cf.", "See " or "Ibid".
     - The Nostra Aetate 4 text contains "what happened in His passion cannot be charged against all the Jews".
   - The prototype run on 29 Sep got 86 sections for Sacrosanctum Concilium before the "81." fix. The test must show 130 after it. Optatam Totius printed 21 in the prototype; confirm the true count of 22 against vatican.va, or correct this expectation in the PR.
-- **Production safety:** Datapipeline only. Document IDs unchanged. Anchors `<doc>/<n>` keep their meaning, so bookmarks on existing sections stay correct and gain text. Churn the remap must handle:
-  - About 76 footnote anchors (`<doc>/<n>-2`, `<doc>/<n>-3`) disappear. They hold note text; map them to nothing and tombstone them.
-  - Sections that now split change from `<doc>/<n>` to `<doc>/<n>/p1`. The remap maps old to `/p1`.
-  - `sacrosanctum-concilium/81-2` maps to `sacrosanctum-concilium/87`.
-  - Gravissimum Educationis bucket chapters (`bucket-0`) become heading chapters. That is a chapter-key change only, and passage IDs stay.
+- **Production safety:** Datapipeline only. Document IDs unchanged. Anchors `<doc>/<n>` keep their meaning and IDs, so bookmarks on existing sections stay correct and gain text. Churn this PR must record:
+  - About 76 footnote anchors (`<doc>/<n>-2`, `<doc>/<n>-3`) disappear. They hold note text. Each gets a removal-registry entry (reason `note-split-off`, tombstone "This card was a footnote to the Council's text, not the text itself").
+  - Sections that now split change anchor from `<doc>/<n>` to `<doc>/<n>/p1`. The registry row keeps the section's ID; the later pieces are new.
+  - `sacrosanctum-concilium/81-2` already holds section 87's text. Its registry row changes anchor to `sacrosanctum-concilium/87` and keeps its ID.
+  - Where today's build emits Nota praevia paragraphs under `lumen-gentium/<n>-2` style anchors, their registry rows move to `lumen-gentium/nota-praevia/<n>` and keep their IDs the same way. Nota paragraphs that were dropped today are new units.
+  - Gravissimum Educationis bucket chapters (`bucket-0`) become heading chapters. That is a chapter-key change only, and passage IDs stay. The 0.1c chapter remap carries it to `reading_progress`.
 - **Needs Carter:** confirm the Nota explicativa praevia stays as part of Lumen Gentium. Recommended: yes, as its own chapter.
 - **Out of scope:** councils 1 to 20 (1.2). Genre and "document type" fields beyond the existing metadata (2.3).
 
@@ -200,7 +201,7 @@ These apply to every PR below and are not repeated in each item.
   - `test_trent_bare_text_between_br_is_kept`, `test_trent_center_headings_become_structure`, `test_trent_canon_anchor_includes_session`, on a synthetic fixture copied from the file's markup shape.
   - Vendored checks: 25 sessions found. Characters kept are at least 97% of the article text minus chrome and minus headings. Session 6 has 16 chapters and 33 canons on justification. Session 7 has 13 canons on the sacraments in general. Session 13 has 8 chapters and 11 canons on the Eucharist.
   - Zero anchors with a `-k` collision suffix.
-- **Production safety:** Datapipeline only. Document ID `e33e591b-...` is unchanged: the title is unchanged, and the registry freezes it anyway. Every passage anchor changes. The remap maps each old passage to the new passage holding its first 200 characters. Old anchors with no match are tombstoned and listed in the release report.
+- **Production safety:** Datapipeline only. Document ID `e33e591b-...` is unchanged, because the title is unchanged and the registry freezes it anyway. This is a council rebuilt by session (D1). The old 188 passages cut the text at arbitrary points under one chapter, so the new session, document and canon units are new units with new IDs, not relabels. The PR commits a redirect row for each old ID to the new passage holding its first 200 characters (`moved`, `split` or `merged`, from the 0.1c evidence). Old passages with no successor get removal-registry entries (for example `rule-g-editorial` for Waterworth's own matter) and are listed in the release report.
 - **Needs Carter:** nothing.
 - **Out of scope:** the Roman Catechism of Trent (5.5).
 
@@ -217,15 +218,16 @@ These apply to every PR below and are not repeated in each item.
   - Vendor `https://ccel.org/ccel/s/schaff/npnf214.xml` through `scripts/vendor_sources.py` into `sources/councils/npnf214.xml`, with URL, SHA-256, retrieval date and "Rights: Public Domain" from the file header recorded in the councils manifest.
   - Write `ingest/councils_percival.py` with a per-council allowlist of ThML div ids taken from the 1.2a inventory, for example Nicaea: Creed, Canons I to XX, Synodal Letter. Allowlist rather than denylist, so an unrecognised Excursus is dropped by default.
   - Within allowed divs, drop child divs or paragraphs titled "Ancient Epitome", "Notes", "Excursus" or anything 1.2a marks as editor material. Strip `<note>` through the 1.10b helper.
-  - Anchors: `council-of-nicaea/canon/5`, `council-of-nicaea/creed`, `council-of-nicaea/synodal-letter`, and `council-of-chalcedon/definition`. Keep `canon/N` wherever the old build had it, so those passages keep their IDs.
+  - Anchors: `council-of-nicaea/canon/5`, `council-of-nicaea/creed`, `council-of-nicaea/synodal-letter`, and `council-of-chalcedon/definition`. Keep `canon/N` wherever the old build had it, so those canons keep their IDs. The canon is the same unit in a new translation, so set passage metadata `text_replaced: "Percival (NPNF2-14) replaces Tanner"` for 0.1c's stability check.
+  - Old Tanner passages that are not the same numbered unit (Tanner's introductions, section cuts such as `council-of-nicaea/sec-1/1`) get a redirect to the Percival passage holding the same text where one exists, or a removal-registry entry with reason `superseded-translation` (or `rule-g-editorial` for Tanner's introductions) and a tombstone naming the replacement edition.
   - `author` is the council's name. Keep the manifest's `year` and `council_number`.
   - Route councils 1 to 7 in `build_documents` to the new builder. The Tanner HTML files stay vendored until 1.2e lands, but no builder reads them.
 - **Acceptance checks:**
   - `test_percival_allowlist_drops_epitome_and_notes`, `test_percival_canon_anchors`, on a synthetic ThML fixture.
   - Vendored checks: Nicaea yields 20 canons plus the Creed and the Synodal Letter. Constantinople I 7 canons (Percival prints 7). Ephesus 8 canons, Cyril's letters and the 12 anathemas. Chalcedon 30 canons and the Definition. Constantinople II the 14 anathemas. Constantinople III the Definition. Nicaea II 22 canons and the Definition. Adjust these counts to what 1.2a finds and say so in the PR.
   - No passage contains "Ancient Epitome", "Excursus" or "Zonaras".
-  - The release report lists every old Tanner anchor and whether it mapped.
-- **Production safety:** Document IDs are unchanged (`document_id("councils", council, council)` and registry-frozen). Passage anchors change except `canon/N`. Tanner text stays live until P4.
+  - The release report lists every old Tanner anchor and its outcome. Every outcome other than `same` has a redirect row or a removal entry.
+- **Production safety:** Document IDs are unchanged (`document_id("councils", council, council)` and registry-frozen). Canon IDs are unchanged; other old passages are redirected or retired as above. Tanner text stays live until the P4 apply.
 - **Needs Carter:** nothing, if 1.2a is approved.
 - **Out of scope:** the Apostolic Canons (Fathers, 1.8c). Local councils printed in NPNF2-14 (Ancyra, Neocaesarea, Gangra, Antioch, Laodicea, Sardica, Carthage and others), which are not ecumenical and are not in the plan.
 
@@ -245,29 +247,57 @@ These apply to every PR below and are not repeated in each item.
 - **Acceptance checks:**
   - `test_schaff_keeps_english_cell_only`, `test_schaff_joins_english_across_page_tables`, on a fixture with 2 tables and a mid-sentence page break.
   - Vendored checks: 4 chapters and 18 canons in Dei Filius, 4 chapters in Pastor Aeternus. Chapter 4 of Pastor Aeternus contains "is possessed of that infallibility". No passage has more than 5% Latin stopwords ("et", "est", "quae", "non").
-- **Production safety:** Document ID unchanged. All 9 current passages change anchor. The remap maps old chapter passages to new ones by chapter title. Sessions 1 and 2 material that has no Schaff equivalent is tombstoned and listed in the gap register.
+- **Production safety:** Document ID unchanged. The 9 current passages are Tanner cuts, not the new chapter and canon units, so the new units get new IDs (D1). Each old ID gets a redirect to the new passage for the same chapter, matched by chapter title. Sessions 1 and 2 material that has no Schaff equivalent gets removal-registry entries (reason `translation-in-preparation`, tombstone "A public-domain English translation of this text is not yet available") and is listed in the gap register.
 - **Needs Carter:** nothing.
 - **Out of scope:** the rest of Schaff vol. 2 (the Creed of Pius IV, Ineffabilis Deus, the Syllabus).
+
+### 1.2f. OCR clean-up tool and quality gate
+
+- **Type:** PR
+- **Depends on:** 1.10a (the shared text cleaner). Nothing else; it is a tool plus its tests.
+- **Goal:** Councils 8 to 18 can be replaced before P4 even though Schroeder's text exists mostly as page scans (D9). This item builds, once, the OCR clean-up method the Decision log "OCR and scanned works" settles, and the gate a work must pass before ingestion. 1.2e uses it per council, and 5.6c later uses it per scanned work. OCR means software reading letters off page photographs; its output mixes in page numbers, running headers, margin notes and misread letters.
+- **Current state:**
+  - No OCR handling exists in `datapipeline/`. Every current source is born-digital HTML, ThML, USFM or JSON.
+  - Schroeder's *Disciplinary Decrees of the General Councils* (1937) is an Internet Archive scan (`DisciplinaryCouncils`); on Wikisource 27 of 677 pages are proofread (`docs/research/2026-09-28-scan-only-works-text-sources.md`). Clean text exists only for Lateran I, II and IV (Fordham).
+  - The Decision log fixes the method and the gate. This item implements them and adds no new rules.
+- **Changes:**
+  - New package `datapipeline/ocr/`:
+    - `ocr/furniture.py`, the script clean-up step. It removes page furniture (running heads, page numbers, printer's signature marks, line-end catchwords) by position and by patterns repeated across pages, and rejoins words hyphenated across line breaks when the joined form is a dictionary word or occurs elsewhere in the work. It keeps paragraph breaks and records each removal in a per-page log.
+    - `ocr/correct.py`, the constrained model correction step. It sends one passage at a time to a language model with instructions to fix character-level OCR errors only. A word-level diff then measures the change. Any edit that changes more than about 2% of the passage's words is rejected and the script-cleaned text is kept. The raw OCR and the script-cleaned text are stored beside the corrected text (`raw_ocr`, `cleaned`, `corrected` per passage in a local, gitignored work directory), so every change can be audited and reverted. Model, prompt version and cost are recorded per run. Model calls need Carter's spend approval like any other provider call.
+    - `ocr/gate.py`, the quality gate a work must pass before its adapter PR can merge:
+      1. The unrecognized-word rate on body text, measured against a fixed English word list plus a per-work list of proper names, is within 1 percentage point of the clean baseline. The baseline is the rate on a comparable clean text of the same period (for councils, the Fordham Lateran text).
+      2. 20 passages chosen at random with a recorded seed are checked by a person against the page images. The gate records, per passage, the page reference and "matches" or the differences found. Any wording change fails the work.
+    - `ocr/report.py` writes a `gate.md` per work with both results, the rejection count from step 2 of the clean-up, and the seed. It is pasted into the adapter PR.
+  - Source label. Every passage built from scanned text carries `metadata["text_source"] = "ocr"` plus the scan identifier, so 2.4b can show a label such as "Text from a scanned edition" when the passage is opened. Passages from clean typed text do not carry it.
+  - Fixtures. `tests/fixtures/ocr/` holds 3 synthetic page texts written for the test (no scan text): a running head, a page number, a hyphenated line end, and 2 character errors.
+- **Acceptance checks:**
+  - `tests/test_ocr.py::test_furniture_removed_keeps_paragraphs`, `::test_hyphen_rejoined_only_for_known_words`, `::test_correction_over_word_limit_is_rejected_and_cleaned_text_kept` (with a stubbed model), `::test_raw_ocr_kept_beside_corrected`, `::test_gate_fails_above_baseline_plus_one_point`, `::test_gate_requires_twenty_checked_passages`, `::test_scanned_passages_carry_source_label`.
+  - A dry run on one Schroeder council (the smallest by page count) produces a `gate.md` with both numbers, pasted into the PR as a demonstration. It does not ingest anything.
+- **Production safety:** Tooling only. Nothing is ingested or published by this item. The model calls send only public-domain scan text to the provider, never user data.
+- **Needs Carter:**
+  - Approve the spend ceiling for model correction per work.
+  - Know that each work's 20-passage check takes about 30 to 60 minutes of a person's time (Decision log).
+- **Out of scope:** Running the tool on any council (1.2e) or scanned work (5.6c). Re-typing or translating any text. Choosing between OCR and a clean copy for a work, which R6 records.
 
 ### 1.2e. Councils 8 to 18 from Schroeder 1937
 
 - **Type:** PR, one per council or per source group
-- **Depends on:** 1.2a, 0.2 (renewal search recorded for Schroeder), 5.6c OCR tooling for the councils without a clean text
-- **Goal:** Constantinople IV through Lateran V come from Schroeder's public-domain translation. Where Schroeder has no text, the gap register says so.
+- **Depends on:** 1.2a, 1.2f (the OCR tool and gate, for every council without a clean text), 0.2 (renewal search recorded for Schroeder, supplied by R6)
+- **Goal:** Constantinople IV through Lateran V come from Schroeder's public-domain translation. Where Schroeder has no text, the gap register says so. Where a council's Schroeder text is not ready at P4, its Tanner text is retired and a "translation in preparation" tombstone shows the gap (D9).
 - **Current state:**
   - Current build (Tanner): Constantinople IV 26 passages, Lateran I 29, Lateran II 33, Lateran III 33, Lateran IV 105, Lyons I 44, Lyons II 44, Vienne 112, Constance 201, Basel-Ferrara-Florence 130, Lateran V 87. The generic builder also loses text inside lists in several of these (Lateran I has 22,306 characters in `<li>`).
   - Clean text exists only for Lateran I, II and IV on Fordham's Internet Medieval Sourcebook. On Wikisource, 27 of 677 pages are proofread. The rest is an Internet Archive scan (`DisciplinaryCouncils`). Source: `docs/research/2026-09-28-scan-only-works-text-sources.md`.
   - Schroeder prints commentary after each canon. That is rule G material.
 - **Changes:**
   - 1.2e-1: Lateran I, II and IV from Fordham. Vendor the three pages with hash and a check of Fordham's terms. Parse canon by canon. Drop Schroeder's commentary, which Fordham reproduces in places. Anchors `first-lateran-council/canon/N`, as today where Tanner had the same number.
-  - 1.2e-2 onward: the other 8 councils through the 5.6c pipeline: OCR, furniture strip, model correction under the 2% word-change limit, gate on the unrecognized-word rate and a 20-passage check against page images. Proofread Wikisource pages replace OCR where they exist.
+  - 1.2e-2 onward: the other 8 councils through the 1.2f tool, which strips furniture, applies model correction under the 2% word-change limit, and gates on the unrecognized-word rate and a 20-passage check against page images. Proofread Wikisource pages replace OCR where they exist. Every passage from OCR text carries the 1.2f source label.
   - Constantinople IV: Schroeder prints its 27 canons. Florence: whatever Schroeder prints; the doctrinal decrees go in the gap register.
-- **Acceptance checks:** per council, the canon count Schroeder prints (from 1.2a), the 5.6c quality gate, and no commentary text. A gap row exists for every Tanner document without a Schroeder equivalent.
-- **Production safety:** Document IDs unchanged. Tanner text stays live until P4.
-- **Needs Carter:**
-  - Decide what P4 publishes for a council whose Schroeder text is not ready. Options: publish the council with only what is ready, publish nothing for it, or hold the councils republish.
-  - Florence would lose Laetentur caeli and the Decree for the Armenians in every option. The plan already accepts recording that gap.
-- **Out of scope:** Trent (1.2b), Vatican I (1.2d), any translation of our own.
+  - Identity. Where the old Tanner anchor names the same canon (`first-lateran-council/canon/N`), the anchor and ID stay and the passage sets `text_replaced`. Councils Tanner cuts by session (Constance, Basel-Ferrara-Florence, Lateran V) are rebuilt by session, so their new units get new anchors and new IDs, and each old ID gets a redirect to the passage holding its text (D1). Tanner text with no successor, including every Tanner document on the gap register, gets a removal-registry entry: reason `superseded-translation` where Schroeder covers it elsewhere, `translation-in-preparation` where no public-domain text exists yet.
+  - Fallback at P4 (D9). If a council has not passed the 1.2f gate when the P4 build is cut, its adapter emits no passages for that council, and the PR that freezes the P4 build adds removal-registry entries of reason `translation-in-preparation` for all of its Tanner passages, with the tombstone "A public-domain English translation of this council is in preparation; TheoCorpus makes no translations of its own." The document ID stays frozen, so the council can be published later by a normal stage-then-apply publish.
+- **Acceptance checks:** per council, the canon count Schroeder prints (from 1.2a), a passing 1.2f `gate.md`, and no commentary text. A gap row exists for every Tanner document without a Schroeder equivalent. Every old Tanner passage has an outcome backed by a redirect or a removal entry.
+- **Production safety:** Document IDs unchanged. Tanner text stays live until the P4 apply, where it is replaced or retired. Nothing is deleted (D3).
+- **Needs Carter:** Florence loses Laetentur caeli and the Decree for the Armenians until a public-domain translation exists. The plan already accepts recording that gap. What P4 publishes for a council that is not ready is now settled by D9 (retire with a tombstone), so no decision is needed there.
+- **Out of scope:** Trent (1.2b), Vatican I (1.2d), any translation of our own. Building the OCR tool (1.2f).
 
 ---
 
@@ -277,7 +307,7 @@ These apply to every PR below and are not repeated in each item.
 - **Depends on:** 1.10c
 - **Goal:** Whole papal documents are readable. In Dominico Agro and Annus Qui Hunc gain their bodies. Endnotes stop appearing as walls of citations. Cards such as "PAUL VI" and "146" disappear. Quanta Cura (1864) cites real paragraphs.
 - **Current state:**
-  - `encyclicals.py`, `apostolic_exhortations.py` and `papal_documents.py` are the same 250-line file with different paths and collection names (verified by `diff`). A fix in one silently misses the other two.
+  - `encyclicals.py` (257 lines), `apostolic_exhortations.py` (231) and `papal_documents.py` (231) are three copies of one parser, not one file. With comments and docstrings removed, they differ only in the source directory and the collection name (verified by `diff` on 29 Sep); `encyclicals.py` carries 26 more lines of comments and docstrings. A fix in one silently misses the other two.
   - List bodies. `_tokens` reads only `<p>` (`encyclicals.py:77`). In Dominico Agro keeps 224 of 10,422 characters; its body is 8 `<li>` items. Annus Qui Hunc keeps 2,277 of 64,743; 62,378 characters sit in 15 `<li>` items. Five more documents lose short lists inside paragraphs: Familiaris Consortio 1,155 characters, Reconciliatio et Paenitentia 1,038, Pascendi 910, Rerum Novarum 609, Immortale Dei 584. The plan described this as Roman-numeral headings. It is `<ol>` list markup.
   - Endnotes. The notes trim at `encyclicals.py:79-83` needs a "NOTES" heading. vatican.va Word exports instead put notes after an `<hr>` as paragraphs starting with `<a name="_ftnN">`. A citation-density check finds at least 82 passages in 18 documents made of notes. Examples: Fratelli Tutti §287 is 9 pieces, 8 of them notes (`fratelli-tutti/287/p2` to `/p9`). Redemptor Hominis notes land under a duplicate §1 anchored `redemptor-hominis/1/p2` to `/p4`, positions 49 to 51. Others: Redemptoris Mater, Redemptoris Missio, Veritatis Splendor, Dominum et Vivificantem, Evangelii Gaudium, Laudato Si, Dilexit Nos, Magnifica Humanitas, Christifideles Laici, Ecclesia in Medio Oriente, Gaudete et Exsultate, Laudate Deum, C'est la confiance, Dilexi te, Dies Domini, Patris Corde.
   - Fratelli Tutti §287 also absorbs the two closing prayers and the dating line.
@@ -309,10 +339,11 @@ These apply to every PR below and are not repeated in each item.
     - Zero passages where citation markers ("AAS", "Ibid.", "op. cit.", "Cf.") occur at 4 or more per 1,000 characters. Report any that remain.
     - Zero passages under 20 characters except logged exceptions.
     - Quanta Cura (1864) has §1 to §12 in order, the Preamble under 250 characters, and no passage containing "Mirari vos" as its whole text.
-- **Production safety:** Document IDs unchanged, because each wrapper keeps its collection in `document_id`. Anchor changes the remap must handle:
-  - Note anchors such as `redemptor-hominis/1/p2` to `/p4` and `fratelli-tutti/287/p2` to `/p9` are tombstoned.
-  - Heading anchors (`ineffabilis-deus/4`, `redemptoris-mater/1-2`) are tombstoned.
-  - `quanta-cura-1864/1` changes meaning, from the endnote to the real first paragraph. The release report must flag it as "same ID, different content". Check it against bookmarks and retrievals before P4.
+- **Production safety:** Document IDs unchanged, because each wrapper keeps its collection in `document_id`. Changes this PR must record:
+  - Note anchors such as `redemptor-hominis/1/p2` to `/p4` and `fratelli-tutti/287/p2` to `/p9` get removal-registry entries (reason `note-split-off`).
+  - Heading anchors (`ineffabilis-deus/4`, `redemptoris-mater/1-2`) and date or signature cards get entries with reason `debris`. Where a heading's words now open the next section, that section keeps its own ID.
+  - `quanta-cura-1864/1` holds the endnote today. Under D1 its ID keeps naming that text, so it is retired (reason `note-split-off`). The real first paragraph is a new unit: it gets a new ID and an anchor that has never been live (`quanta-cura-1864/para-1`), so old `?anchor=quanta-cura-1864/1` links never land on different text. The release report confirms the old ID is `removed` with a registry entry and the new one is `new`.
+  - Paragraphs recovered from `<li>` markup are new text inside existing numbered units; those units keep their IDs and pass 0.1c's stability check because their old text is contained in the new.
 - **Needs Carter:** nothing.
 - **Out of scope:** genre labels (1.3b). Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which no plan item covers yet. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
 
@@ -320,50 +351,27 @@ These apply to every PR below and are not repeated in each item.
 
 - **Type:** PR
 - **Depends on:** 1.3a
-- **Goal:** Each papal document says what it is: encyclical, apostolic exhortation, apostolic letter, apostolic constitution, bull, motu proprio or other. The genre filter (5.1a) then works, and cards stop calling Evangelii Gaudium an encyclical.
+- **Goal:** Each papal document says what it is, using the papal genres from D5: encyclical, apostolic exhortation, apostolic letter, apostolic constitution, motu proprio, bull, letter, or other. The genre filter (5.1a) then works, and cards stop calling Evangelii Gaudium an encyclical.
 - **Current state:**
   - No papal manifest entry has a genre. The collection is the only signal.
   - Misfiled in encyclicals, per the plan: Evangelii Gaudium and Evangelii Nuntiandi (apostolic exhortations), Ineffabilis Deus and Munificentissimus Deus (apostolic constitution or bull), the Syllabus of Errors (an annexed list), and three Jubilee bulls. The plan does not name the three. Candidates from the manifest: Peregrinantes (1749), Salutis Nostrae (1774), Quod Hoc Ineunte (1824). Unverified.
   - Apostolica Constitutio (1749) should also be checked.
   - Papal documents mixes bulls (Unam Sanctam, Exsurge Domine, Sublimis Deus), apostolic letters (Salvifici Doloris, Mulieris Dignitatem, Ordinatio Sacerdotalis, Tertio Millennio Adveniente, Orientale Lumen, Dies Domini, Novo Millennio Ineunte, Rosarium Virginis Mariae, Misericordia et Misera, Patris Corde) and a motu proprio (Porta Fidei).
 - **Changes:**
-  - Add `genre` to every entry of the three manifests, set in `scripts/vendor_sources.py` so a re-vendor keeps it. Values: `encyclical`, `apostolic_exhortation`, `apostolic_letter`, `apostolic_constitution`, `bull`, `motu_proprio`, `list`, `other`.
+  - Add `genre` to every entry of the three manifests, set in `scripts/vendor_sources.py` so a re-vendor keeps it. Values come from D5's papal list, lowercase and hyphenated, exactly as 2.2a defines them: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`, and `other` for anything else. The Syllabus of Errors, an annexed list, is `other`. A value outside D5's list needs a PR to 2.2a's list first; this item adds none.
   - Each value cites the document's own heading on vatican.va, or papalencyclicals.net where vatican.va has no English page. Record the citation in a tracked table `datapipeline/papal_genres.csv` (slug, genre, evidence URL). The manifests are gitignored, so the CSV is what reviewers read.
   - The builders copy `genre` into `Document.metadata["genre"]`.
   - Do not move documents between collections. Their IDs include the collection, and 5.1b merges the collections anyway.
-- **Acceptance checks:** `test_every_papal_manifest_entry_has_genre`, which fails on a missing or unknown value. A vendored check prints a count per genre and per collection. The PR lists each document whose genre disagrees with its current collection.
-- **Production safety:** Metadata only. No ID or anchor change. The API ignores unknown metadata keys.
+- **Acceptance checks:** `test_every_papal_manifest_entry_has_genre`, which fails on a missing value or one outside D5's list (the test imports the list from the same module 2.2a uses, or a copy with a test that the two match). A vendored check prints a count per genre and per collection. The PR lists each document whose genre disagrees with its current collection.
+- **Production safety:** Metadata only. No ID or anchor change. The API ignores unknown metadata keys. The genre reaches live data only through the P4 apply (D7).
 - **Needs Carter:** confirm the three Jubilee bulls and whether Ineffabilis Deus and Munificentissimus Deus are labelled "apostolic constitution" (their own form) or "bull".
 - **Out of scope:** the `genre` column and filter (2.2a, 5.1a). The collection merge (5.1b).
 
 ---
 
-### R3. Esther: what the WEB-C text contains and how it maps to Nova Vulgata
+### R3. Esther (specified in the P0 file)
 
-- **Type:** research
-- **Depends on:** none
-- **Goal:** Before 1.4a restores the missing Esther verses, we know exactly which text is in the source, where each Greek addition sits, and how its verse numbers relate to the Nova Vulgata and to Church citations.
-- **Current state:**
-  - `sources/bible/eng-web-c_usfm/43-ESGeng-web-c.usfm` has 205 verses in 10 chapters: 22, 23, 15, 46, 14, 14, 10, 17, 30, 14.
-  - Its introduction claims the 5 additions are merged "as extensions at the beginning of 1:1 and after 3:13, 4:17, 8:12, and 10:3". The file does not do that for all of them:
-    - Addition A is inside 1:1, in brackets.
-    - Addition B follows 3:13 inside the same verse.
-    - Addition C is numbered as new verses 4:18 to 4:47.
-    - Addition E follows 8:13 per its footnote, not 8:12.
-    - Addition F is numbered 10:4 to 10:14.
-  - The pericope file skips 4:18 to 4:47 and 10:4 to 10:14, which is 41 of the 244 missing verses.
-  - The intro counts 5 additions. The standard count is 6, A to F. Addition D, the Esther-before-the-king scene, is probably the long 5:1. Unverified.
-  - The Nova Vulgata prints the additions with lettered verses, such as 4:17a to 4:17z. Unverified here.
-- **Changes:** Write `docs/research/esther-web-c-vs-nova-vulgata.md` with:
-  - for each addition A to F, its WEB-C verse range and NV range
-  - whether any Greek text in WEB-C has no counterpart in NV, or the reverse
-  - how the Catechism and the Lectionary cite Esther's additions, with 2 or 3 examples
-  - a recommendation for 1.4a: keep WEB-C numbers with an NV alias in metadata, or renumber
-  - which of the plan's Esther claims (the handoff doc's list) hold
-- **Acceptance checks:** every claim cites the USFM line or an NV page on vatican.va. Carter closes it.
-- **Production safety:** No code.
-- **Needs Carter:** the numbering recommendation.
-- **Out of scope:** Daniel's additions, which follow NV-compatible numbering in WEB-C already (3:24 to 90, chapters 13 and 14).
+R3 is specified once, in `P0-checks-identity-research.md` under "R3. Esther: what the WEB-C text contains and how it maps to the Nova Vulgata" (D10). Its deliverable is `docs/research/R3-esther.md`. It blocks 1.4a. The details first gathered here (the additions' positions in the USFM file, the 41 skipped verses, the lettered-verse question) now live in that entry.
 
 ### 1.4a. Bible: publish every verse and rename Song of Songs
 
@@ -399,8 +407,8 @@ These apply to every PR below and are not repeated in each item.
   - `test_extra_pericope_labels_apply`.
   - `test_song_of_songs_title_keeps_frozen_id_and_anchor_slug`.
   - Vendored check: 0 missing verses in 73 books. Daniel has 14 chapters with 21, 49, 97, 37, 31, 28, 28, 27, 27, 21, 45, 13, 64 and 42 verses.
-- **Production safety:** Document IDs unchanged, including Song of Songs through the registry. New passages for the restored verses. Changed passages: Daniel 3 and the pericopes bordering each gap. The remap maps each old Daniel 3 passage to the new passage holding its first verse by WEB-C number.
-- **Needs Carter:** confirm keeping `song-of-solomon` in anchors. The alternative renames anchors and changes 9 passage IDs, which the remap can handle, but gains nothing a user can see.
+- **Production safety:** Document IDs unchanged, including Song of Songs through the registry. The restored verses are new units with new IDs (Susanna, Bel and the Dragon, the Song of the Three, the Esther additions). A Bible anchor `book/ch/firstverse` names the pericope that starts at that verse, so a passage that still starts at the same verse keeps its ID even if its span grows to take in a restored verse. Changed passages are Daniel 3 and the pericopes bordering each gap. An old passage whose first verse no longer starts a passage (Daniel 3's KJV ranges) gets a `merged` or `split` redirect to the passage now holding that verse by WEB-C number.
+- **Needs Carter:** confirm keeping `song-of-solomon` in anchors. With 2.1's frozen passage IDs, renaming the anchors would change no ID, but old links would then depend on `live_anchor` resolution and nothing a user sees would improve. Recommended: keep.
 - **Out of scope:** renumbering (1.4b), deuterocanonical chunking (1.4c).
 
 ### 1.4b. Bible: Nova Vulgata chapter numbering for Joel and Malachi
@@ -414,13 +422,11 @@ These apply to every PR below and are not repeated in each item.
   - Other places where WEB-C and Church documents differ, found while measuring, not verified against the NV text: Daniel 4:1 to 3 (NV 3:98 to 100), 1 Kings 4:21 to 34 (NV 5:1 to 14), Romans 14:24 to 26 (the doxology, NV 16:25 to 27, with no 16:24 in NV), Jonah 1:17 (NV 2:1), Hosea 11 to 14 boundaries, Job 40 to 41. The plan names only Joel and Malachi.
 - **Changes:**
   - Add a tracked versification table `datapipeline/bible_versification.csv` (book, source chapter:verse range, target chapter:verse range, authority) and apply it in `load_usfm_directory` before chunking. Start with Joel and Malachi only.
-  - Passage references, chapter keys and anchors use the target numbers. Metadata keeps `source_ref` in WEB-C numbers.
-  - Emit `renumbered_refs.json` in the release artifacts: old anchor, new anchor, for every moved verse range. The remap consumes it.
-- **Acceptance checks:** `test_versification_moves_joel_2_28_to_3_1`, `test_versification_moves_malachi_4_to_3_19`. Vendored: Joel has 4 chapters (20, 27, 5, 21 verses), Malachi 3 (14, 17, 24).
-- **Production safety:** This is the one place in this file where an anchor survives with a different meaning. `joel/3/1` today is KJV Joel 3:1 (the judgment of the nations); after the change it is the Spirit poured out. Passage IDs are UUIDv5 of document and anchor, so the same ID would silently point at different text. Requirements for 4.1a:
-  - Rewrite bookmarks, retrievals and guest retrievals from old IDs to new IDs using `renumbered_refs.json` before the new rows go live.
-  - Treat a reused ID whose content differs as a move, not an update.
-  - The 0.1c release report must list every "same ID, different content" pair, and the PR states the counts: 3 or so Joel passages and 1 or 2 Malachi passages.
+  - Passage references and chapter keys use the target numbers. Metadata keeps `source_ref` in WEB-C numbers.
+  - New anchors (D1). Renumbering regroups passages at the new chapter boundaries (a pericope never crosses a chapter), so every Joel and Malachi passage becomes a new unit with a new ID. Its anchor carries a versification segment, `joel/nv/3/1` and `malachi/nv/3/19`, so no anchor string live today (`joel/3/1` meant the judgment of the nations) comes to name different text. Apply the segment to every passage of both books, including chapters whose numbers do not change, so each book has one scheme.
+  - Redirects. For every old Joel and Malachi passage, add a row to 2.1's `registry/redirects.json` with kind `renumbered` (or `split` or `merged` where the regrouping split or joined pericopes), pointing to the new passage that holds its first verse under the target numbering. Old `joel/3/1` goes to `joel/nv/4/1`; old `joel/2/28` goes to `joel/nv/3/1`.
+- **Acceptance checks:** `test_versification_moves_joel_2_28_to_3_1`, `test_versification_moves_malachi_4_to_3_19`, `test_renumbered_books_use_nv_anchor_segment`, `test_every_old_joel_and_malachi_passage_has_a_redirect`. Vendored: Joel has 4 chapters (20, 27, 5, 21 verses), Malachi 3 (14, 17, 24). The 0.1c report shows every old Joel and Malachi passage as `renumbered`, `split` or `merged`, none as `same` or `removed`, and no anchor-string reuse.
+- **Production safety:** Without the new anchors, `joel/3/1` would survive with a different meaning and the same passage ID would silently point at different text. With them, old IDs are redirected, never reused. 4.1a moves bookmarks, retrievals and guest retrievals along the redirects before the new rows go live. The PR states how many old passages carry user rows; the renumbered ranges touch about 3 Joel passages and 1 or 2 Malachi passages.
 - **Needs Carter:** decide the versification scope. Options:
   - Joel and Malachi only, as the plan says.
   - All NV chapter divisions that Church documents cite in English, with Hebrew psalm numbering kept, since English Church documents cite "Psalm 51" and not "Psalm 50". Each addition needs its own row and evidence in the table.
@@ -440,30 +446,15 @@ These apply to every PR below and are not repeated in each item.
   - Titles: record them in `bible_extra_pericopes.csv` only where a public-domain source gives them. The Douay-Rheims chapter summaries are a candidate; check with R6. Otherwise the passage has no pericope title and its reference is the verse range.
   - Anchors `book/chapter/firstverse`, like the protocanonical books.
 - **Acceptance checks:** `test_deutero_groups_paragraphs_within_cap`, `test_deutero_never_crosses_chapter`. Vendored: every passage in the 7 books is 300 to 2,200 characters, except where a single paragraph is longer. No verse is lost (1.4a's assertion).
-- **Production safety:** Each chapter's first passage keeps `book/ch/1`. The old `book/ch/1-2` pieces are replaced by new first-verse anchors. The remap maps each old passage to the new passage holding its first verse.
+- **Production safety:** Each chapter's first passage keeps `book/ch/1` and its ID. The old `book/ch/1-2` pieces disappear; each gets a `split` or `merged` redirect to the new passage holding its first verse. The new first-verse passages are new units with new IDs.
 - **Needs Carter:** whether to take pericope titles from Douay-Rheims summaries or ship without titles. Recommended: without, for now.
 - **Out of scope:** Psalms, which already get one passage per psalm.
 
 ---
 
-### R2. Verify canons 296, 360, 361 and 948 against iuscangreg.it
+### R2. Canons (specified in the P0 file)
 
-- **Type:** research
-- **Depends on:** none
-- **Goal:** Before 1.5b swaps in current text, each canon the plan flagged has a verified current wording and a cited amending act.
-- **Current state:**
-  - The vendored vatican.va pages give canon 295 in its pre-2023 form, so the source cannot produce the current text. That was confirmed on 28 Sep.
-  - 296, 360, 361 and 948 are unverified.
-  - The plan names iuscangreg.it (the Pontifical Gregorian University canon law faculty's register) as the source, checked against the amending documents on vatican.va.
-- **Changes:** For each of 295, 296, 360, 361 and 948, record in `docs/research/canon-amendments.md`:
-  - the current text per iuscangreg.it
-  - the amending act, its date and its vatican.va URL
-  - whether an English text of the act exists on vatican.va, or only Latin or Italian
-  - whether the vendored text differs, and how
-- **Acceptance checks:** every row has both sources, or says why one is missing. Carter closes it.
-- **Production safety:** No code.
-- **Needs Carter:** approve extending R2 to find the English source, official or L'Osservatore Romano, for the Latin-only canons 111, 112, 535 §2, 579, 695, 700 and 868 §1 2°. 1.5b needs that answer too.
-- **Out of scope:** canons outside the list unless the check finds a new amendment. List any such finding for Carter rather than fixing it.
+R2 is specified once, in `P0-checks-identity-research.md` under "R2. Canons 295, 296, 360, 361 and 948 against iuscangreg.it, and English sources for the Latin canons" (D10). Its deliverable is `docs/research/R2-canons.md`, in two parts: current text for canons 295, 296, 360, 361 and 948, and English sources for the Latin canons 111, 112, 535, 579, 695, 700 and 868. It blocks 1.5b.
 
 ### 1.5a. Canon law parser: split glued canons, find missing ones, keep new text, drop footers
 
@@ -488,7 +479,7 @@ These apply to every PR below and are not repeated in each item.
   - Book VI: strip a leading U+2014 dash and following space from canon text.
   - Canon 700: drop a leading line that begins "Apostolic Letter issued".
   - Amended flag: `metadata["amended"] = True` and `metadata["amended_by"]`, the linked act's title and URL from the page's "Cf." line, for every canon with the marker.
-  - Keep today's `can/N` anchors and `Can. N` references.
+  - Keep today's `can/N` anchors and `Can. N` references. Canons whose content switches from the superseded version to the current one (265, 686, 694, 1308, 1310) keep their IDs and set `text_replaced: "current text replaces superseded version"`. The five restored canons (112, 238, 266, 689, 1330) are new units with new IDs; the canons they were glued into keep theirs.
 - **Acceptance checks:**
   - Synthetic fixtures in `tests/test_canon_law.py`: `test_canon_glued_after_br_is_split`, `test_marker_before_can_is_recognised`, `test_earlier_version_block_is_not_current`, `test_bold_canon_outside_p_is_found`, `test_footer_legend_is_cut`, `test_book_vi_leading_dash_removed`, `test_amended_flag_set_from_marker`.
   - Vendored checks:
@@ -520,6 +511,7 @@ These apply to every PR below and are not repeated in each item.
   - Add a vendored override file `sources/canon-law/overrides.json`: canon, field (`content` or a paragraph such as "§2"), text, language, status (`official`, `unofficial_english`), source title, source URL, retrieval date, SHA-256 of the fetched page. Vendor it through `vendor_sources.py`, so it stays out of the public repo like the pages. A tracked `datapipeline/canon_overrides_index.csv` lists canon, status and source URL without the text, for review.
   - `build_documents` applies overrides after parsing. For `unofficial_english`, the English goes in `content` and the Latin in `metadata["official_latin"]`, with `metadata["text_status"] = "unofficial_english"`. For canons with no English, keep the Latin in `content` and set `metadata["searchable"] = False` and `metadata["language"] = "la"`. The 2.2b filter excludes only explicit `false`, so it will honour this. Until 2.2b ships nothing reads the flag, and that is fine because nothing publishes before P4.
   - Canon 295, and any of 296, 360, 361 and 948 that R2 finds amended, take the R2 text with `amended_by` set.
+  - Identity. Each override is the same canon in new text, so it keeps its `can/N` anchor and ID, and the passage sets `text_replaced` ("2023 amendment", "unofficial English replaces Latin") for 0.1c's stability check. The superseded text of an amended canon stays in `metadata["superseded_text"]` as labelled history (rule F) and is recorded in the removal registry as a `span` entry with reason `not-current-law`.
 - **Acceptance checks:**
   - `test_override_replaces_content_and_keeps_latin`, `test_latin_without_english_is_not_searchable`, `test_override_file_hash_mismatch_fails`.
   - Vendored: canons 111, 112, 535 and 868 contain no Latin stopword run of 5 or more words. 295 matches R2's text. The PR lists every override with its source.
