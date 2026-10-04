@@ -29,7 +29,7 @@ All web sources were read on 4 October 2026. No production store was queried. Th
   - § 2 renders the Latin "sive ... sive" (both ... and) as "either ... or", which changes the prelate's duty from two obligations to a choice between them.
   - § 1 renders "assimilatur" as "is similar to", and "iuris pontificii" as "of pontifical law".
   The L'Osservatore Romano weekly English edition of 11 August 2023 (reader page https://www.osservatoreromano.va/en/pdfreader.html/ing/2023/08/ING_2023_032_1108.pdf.html) may carry a translation; it is subscriber-only and was not read.
-- **Vendored page:** `cic_lib2-cann208-329_en.html` has the **pre-2023 English** ("The statutes established by the Apostolic See govern a personal prelature, and a prelate presides over it as the proper ordinary; ..."), with no "n" amendment marker. It lacks every element the 2023 text added: the assimilation to public clerical associations, "probatis vel emanatis", and the prelate as Moderator with an Ordinary's faculties (replacing "proper ordinary"). vatican.va's Latin Code page is also pre-2023 for this canon (and reads "ciu ius est" for "cui ius est").
+- **Vendored page:** `cic_lib2-cann208-329_en.html` has the **pre-2023 English** ("The statutes established by the Apostolic See govern a personal prelature, and a prelate presides over it as the proper ordinary; ..."), with no "n" amendment marker (the small "n" vatican.va prints beside a canon whose text has been changed since 1983). It lacks every element the 2023 text added: the assimilation to public clerical associations, "probatis vel emanatis", and the prelate as Moderator with an Ordinary's faculties (replacing "proper ordinary"). vatican.va's Latin Code page is also pre-2023 for this canon (and reads "ciu ius est" for "cui ius est").
 - **Treatment for 1.5b:**
   - Rule F: the 1983 English becomes the history passage `can/295/history-2023`; the current passage takes the 2023 text with `amended_by` = *Le Prelature personali*, 8 Aug 2023.
   - Rule E applies to the current text unless Carter approves the Vatican News English (see "For Carter"). If approved: English in `content` labelled unofficial, the Latin above in `metadata["official_latin"]`. If not: the Latin above in `content`, `language = "la"`, `searchable = False`.
@@ -108,7 +108,7 @@ All four come from one act: Francis, apostolic letter motu proprio *De concordia
 Art. 5 of *De concordia* added a § 3 to canon 868:
 > § 3. Infans christianorum non catholicorum licite baptizatur, si parentes aut unus saltem eorum aut is, qui legitime eorundem locum tenet, id petunt et si eis physice aut moraliter impossibile sit accedere ad ministrum proprium.
 
-The vendored `cic_lib4-cann834-878_en.html` (and vatican.va today) has only §§ 1-2 for canon 868, in neither Latin nor English, although § 1 2° itself says "firma §3". iuscangreg's current text includes § 3. Canon 868 as built therefore lacks a paragraph in force. The same ORE English covers it (art. 5). Adding a paragraph goes beyond what 1.5b's "Changes" list names, so it is listed for Carter rather than written into the spec.
+The vendored `cic_lib4-cann834-878_en.html` (and vatican.va today) has only §§ 1-2 for canon 868, in neither Latin nor English, although § 1 2° itself says "firma §3". iuscangreg's current text includes § 3. Canon 868 as built therefore lacks a paragraph in force. The same L'Osservatore Romano weekly English edition (ORE below) covers it (art. 5). Adding a paragraph goes beyond what 1.5b's "Changes" list names, so it is listed for Carter rather than written into the spec.
 
 ### Canon 579: *Authenticum charismatis*
 
@@ -123,7 +123,7 @@ The vendored `cic_lib4-cann834-878_en.html` (and vatican.va today) has only §§
 - **English source: none found.** vatican.va lists IT and LA only; its `/en/` page is an English title with no body. No Vatican News English article was found. The English renderings in circulation are Catholic News Agency's (e.g. https://www.aciafrica.org/news/5737/pope-francis-updates-canon-law-on-dismissal-from-religious-institutes), not the Holy See's. iuscangreg gives no English citation.
 - Places searched: vatican.va (EN, LA, IT, index), Vatican News, web search for any Holy See English, iuscangreg's act list; ORE weekly English for late April 2022 not read (subscriber-only).
 - **Status:** rule E for § 1.
-- **Spec correction.** Only § 1 is Latin. In the vendored page § 2 is English ("§2. In these cases, after the proofs regarding the facts and imputability have been collected, ..."), because only § 1 was replaced. The R2 spec and 1.5b said "695 ... in full"; both are corrected in this branch. The plan's "Verified corpus problems" table (Canon law) says the same and is left for Carter.
+- **Spec correction.** Only § 1 is Latin. In the vendored page § 2 is English ("§2. In these cases, after the proofs regarding the facts and imputability have been collected, ..."), because only § 1 was replaced. The R2 spec and 1.5b said "695 ... in full"; both are corrected in this branch. The plan's "Verified corpus problems" table (Canon law) said the same; it is corrected to "695 §1" in this branch, as a fact correction.
 
 ### Canon 700: *Expedit ut iura*
 
@@ -152,7 +152,7 @@ The vendored `cic_lib4-cann834-878_en.html` (and vatican.va today) has only §§
 iuscangreg's register has 61 rows. The plan's canon-law section already covers 237, 265, 686 § 1, 688, 694, 1308 and 1310. A spot check of the vendored pages against the register found one more group the plan does not name:
 
 - **De concordia inter Codices arts. 6-11, the marriage canons 1108 § 3 (new), 1109, 1111 § 1, 1112 § 1, 1116 § 3 (new) and 1127 § 1.** The vendored `cic_lib4-cann998-1165_en.html` (= vatican.va today) still has the pre-2016 English for all six, in English and with no amendment marker. For example 1109 still ends "provided that one of them is of the Latin rite", and 1108 and 1116 have no § 3. Under rule F these are superseded texts in search today. The same ORE English (23 Sep 2016, p. 9) covers them.
-- **Canon 699 § 2:** a Leo XIV rescript *ex audientia* of 25 March 2026 (anchor `#Q574`, "Facoltà speciali"). The vendored page already carries it, so this is not a gap; it shows the vendored pages were fetched after May 2026.
+- **Canon 699 § 2:** a Leo XIV rescript *ex audientia* of 25 March 2026 (anchor `#Q574`, "Facoltà speciali"). The vendored page already carries it, so this is not a gap; it shows the vendored pages were fetched after 25 March 2026.
 
 The rest of the register was not checked against the vendored text.
 
@@ -171,10 +171,10 @@ The rest of the register was not checked against the vendored text.
 4. **Canon 868 § 3 is missing from the source** (added in 2016, not on vatican.va's English page). Should 1.5b add it as a new paragraph (Latin official, ORE English unofficial)? That goes beyond 1.5b's current "Changes".
 5. **Canons 360, 361 and 948** keep their text; their rules were changed by other law (*Praedicate evangelium*; *Mos iugiter* and *Secundum probatum*). Should the reader carry a short note pointing to that law, or nothing? Nothing is the default under rule F.
 6. **The marriage canons 1108, 1109, 1111, 1112, 1116 and 1127** carry pre-2016 English in the source, the same problem as 295. They are outside R2's lists, so they need either a new item or an extension of 1.5b.
-7. **The plan's "Verified corpus problems" table** (Canon law row "Latin in the English Code") still says 695 is Latin "in full". Only § 1 is. That table was left untouched.
+7. **The plan's "Verified corpus problems" table** (Canon law row "Latin in the English Code") said 695 is Latin "in full". Only § 1 is. The table is corrected to "695 §1" in this branch.
 
 Uncertain: the content of the ORE English pages (2016, 2020, 2022, 2023), which could not be read without a subscription. The 11 August 2023 issue in particular may carry an ORE English of 295-296.
 
 ## Answered by Carter (4 Oct 2026)
 
-Carter accepted the recommendations: (1) approve the 2016 L'Osservatore Romano English and the label, used only after a check against the printed page, else rule E; (2) rule E for 295 and 296; (3) add 868 §3 in 1.5b; (4) no reader note on 360, 361, 948; (5) extend 1.5b to the six marriage canons. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.5b spec.
+Carter answered as follows: (1) approve the 2016 L'Osservatore Romano English and the label, used only after a check against the printed page, else rule E; (2) rule E for 295 and 296; (3) add 868 §3 in 1.5b; (4) no reader note on 360, 361, 948; (5) extend 1.5b to the six marriage canons. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.5b spec.
