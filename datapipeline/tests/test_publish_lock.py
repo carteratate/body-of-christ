@@ -119,7 +119,14 @@ def test_one_remote_target_is_refused(tmp_path):
     for targets in (WriteTargets(local_db, REMOTE.qdrant_url),
                     WriteTargets(REMOTE.database_url, local_qdrant),
                     WriteTargets("", local_qdrant),
-                    WriteTargets("postgresql:///postgres?host=/tmp", local_qdrant)):
+                    WriteTargets("postgresql:///postgres?host=/tmp", local_qdrant),
+                    WriteTargets("postgresql://u:p@[::1]:5432,db.example.supabase.co:5432/postgres",
+                                 local_qdrant),
+                    WriteTargets("postgresql://u:p@localhost:5432,db.example.com:5432/postgres",
+                                 local_qdrant),
+                    WriteTargets("postgresql://localhost/postgres?host=db.example.com", local_qdrant),
+                    WriteTargets("postgresql://localhost/postgres?hostaddr=10.0.0.5", local_qdrant),
+                    WriteTargets(local_db, "http://localhost:6333,q.example.qdrant.io:6333")):
         with pytest.raises(PublishLocked):
             _check(path, targets=targets)
 

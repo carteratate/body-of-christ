@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlsplit
 
 DEFAULT_PATH = Path(__file__).resolve().parent / "PUBLISH_LOCK.json"
 
@@ -89,9 +89,17 @@ def settings_targets() -> WriteTargets:
 
 
 def _is_loopback(url: str) -> bool:
+    """True only for a URL naming exactly one host, a loopback one. A multi-host
+    PostgreSQL DSN (`localhost,remote`) or a `host`/`hostaddr` query parameter could
+    send the connection elsewhere, so either one fails closed."""
     try:
-        host = urlsplit(url).hostname
+        parts = urlsplit(url)
+        host = parts.hostname
     except ValueError:
+        return False
+    if "," in parts.netloc.rpartition("@")[2]:
+        return False
+    if {key.lower() for key, _ in parse_qsl(parts.query)} & {"host", "hostaddr"}:
         return False
     return host is not None and host.lower() in _LOOPBACK_HOSTS
 
