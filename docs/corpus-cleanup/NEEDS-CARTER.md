@@ -179,6 +179,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 - **1.8a** [Phase 1]. About 30 minutes to mark 196 bracketed passages in the Fathers as "editor" or "translation".
 - **1.5b** [Phase 1]. Someone with access to the printed L'Osservatore Romano weekly English edition of 23 Sep 2016 (p. 9; library copy or subscriber archive) checks the De concordia inter Codices English against it, so 1.5b can use it. Without that check those canons follow rule E (R2).
+  Answered 2026-10-04: The print issue could not be reached, but the Canon Law Society of Great Britain and Ireland's English Code prints the same English word for word for 111, 112, 535 §2, 868 §1 2°, 1108 §3, 1109, 1111 §1, 1112 §1, 1116 §3 and 1127 §1 (R2, "Follow-up"). Carter accepts that agreement in place of the print check for those 10. Still needed: the print check for 868 §3 only, which follows rule E until then.
 - **1.2f, 1.2e and 5.6c** [Phase 1 for councils 8 to 18, Phase 5 for scanned books]. About 30 to 60 minutes of a person's time per scanned work, to check 20 random passages against the page images.
 
 ### Phase 5
