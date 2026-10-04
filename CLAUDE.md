@@ -478,6 +478,14 @@ winner count to it, so ten works without a special case.
 
 ---
 
+## Active work: corpus cleanup
+
+The corpus is being fixed and republished before any collection is added or reorganized.
+Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
+work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.
+
+---
+
 ## Agent skills
 
 ### Issue tracker
