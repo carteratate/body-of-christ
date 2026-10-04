@@ -98,6 +98,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   - Any other finding R1 lists "for Carter".
   - The Pseudo-Chrysostom question, which 5.6b also needs. The Catena Aurea quotes a commentary most scholars now credit to an Arian writer. Keep those quotations labeled "Pseudo-Chrysostom", or leave them out. No recommendation yet.
 - **R2 and 1.5b** [Phase 1]. Approve the English sources found for canons printed in Latin, and the label for unofficial English. Suggested label is "Unofficial English translation (L'Osservatore Romano). The Latin text is official."
+  Answered 2026-10-04: Approved, with the suggested label, for 111, 112, 535 §2 and 868 §1 2° (and 868 §3 and the six marriage canons below), using the L'Osservatore Romano English of 23 Sep 2016, p. 9, but only once its text has been checked against the printed page; the EWTN reprint has typesetting errors and is not used unchecked. Any canon whose print text cannot be checked follows rule E. 295 and 296 follow rule E (current Latin, out of search): the only English, a Vatican News article, mistranslates 295 §2. 579, 695 §1 and 700 follow rule E. Add canon 868 §3 (De concordia art. 5) in 1.5b. No reader note on 360, 361 or 948, whose text is in force. Extend 1.5b to the marriage canons 1108, 1109, 1111, 1112, 1116 and 1127 (De concordia arts. 6-11).
 - **R3** [Phase 1]. Choose how the Greek additions to Esther are numbered, if no Church source settles it. R3 will give a recommendation.
 - **R4** [Phase 1]. Decide whether the "Contents" summaries in the Refutation of All Heresies are the author's own, only if the sources disagree.
 - **R5** [Phase 1]. If the translator of On Loving God cannot be traced, approve the replacement translation R5 proposes.
@@ -173,6 +174,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 1
 
 - **1.8a** [Phase 1]. About 30 minutes to mark 196 bracketed passages in the Fathers as "editor" or "translation".
+- **1.5b** [Phase 1]. Someone with access to the printed L'Osservatore Romano weekly English edition of 23 Sep 2016 (p. 9; library copy or subscriber archive) checks the De concordia inter Codices English against it, so 1.5b can use it. Without that check those canons follow rule E (R2).
 - **1.2f, 1.2e and 5.6c** [Phase 1 for councils 8 to 18, Phase 5 for scanned books]. About 30 to 60 minutes of a person's time per scanned work, to check 20 random passages against the page images.
 
 ### Phase 5

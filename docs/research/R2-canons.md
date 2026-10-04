@@ -174,3 +174,7 @@ The rest of the register was not checked against the vendored text.
 7. **The plan's "Verified corpus problems" table** (Canon law row "Latin in the English Code") still says 695 is Latin "in full". Only § 1 is. That table was left untouched.
 
 Uncertain: the content of the ORE English pages (2016, 2020, 2022, 2023), which could not be read without a subscription. The 11 August 2023 issue in particular may carry an ORE English of 295-296.
+
+## Answered by Carter (4 Oct 2026)
+
+Carter accepted the recommendations: (1) approve the 2016 L'Osservatore Romano English and the label, used only after a check against the printed page, else rule E; (2) rule E for 295 and 296; (3) add 868 §3 in 1.5b; (4) no reader note on 360, 361, 948; (5) extend 1.5b to the six marriage canons. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.5b spec.
