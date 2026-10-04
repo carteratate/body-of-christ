@@ -295,7 +295,7 @@ A note on the task list. The request placed the Anselm, Boethius and Bernard fix
   - Boethius. In `make_doc`, when a chapter element is itself a book with no parent book, label it with the book name alone, "Book I", instead of "Book I · Introduction". Pieces keep 2.1's structural anchors, the book's div id plus `/p<k>`. Skip the editorial `div1`s through `ingest/editorial.py`, adding `a note on the translation`, `editorial note` and `chronological table`. Record Cooper as translator in document metadata. The plan's correction note says the vendored text is Cooper's, not H. R. James's.
   - Labels. In `_chapter_label`, stop cutting at 60 characters. Use the full title when it is at most 140 characters, otherwise cut at the last word boundary before 140. For the Imitation, prefer the full title over "Chapter N" when a title exists, so Book I chapter 1 reads "Imitating Christ and Despising All Vanities on Earth".
   - Imitation. Skip "Foreword" as editorial.
-  - On Loving God. Set translator metadata from R5's result. Until R5 closes, use "translator unknown (via Paul Halsall's Internet Medieval Sourcebook)", per the decision log.
+  - On Loving God. Set the translator to William Harman van Allen (1909), with the credit line "Translated by William Harman van Allen (1909). Sourced via CCEL.org" (R5, Decision log "On Loving God translation"). Restore the 1909 Chapter VIII title, "Of the first degree of love: wherein man loves Self for Self's sake"; the vendored file's "loves God for self's sake" is a transcription error (R5).
 - **Acceptance checks:**
   - `tests/test_medieval.py::test_anselm_years` expects 1076, 1077 and 1098.
   - `test_cur_deus_homo_keys_unique` expects 0 keys containing `--` and labels starting "Book First" and "Book Second".

@@ -909,7 +909,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   | Victorinus, Commentary on the Apocalypse | Victorinus of Pettau | genuine | Two works, the original and "Jerome's recension", labeled separately. | |
   | Apostolic Canons (the canons of Book VIII, a work in `10d8d7c6`) | Attributed to the Apostles | pseudonymous | A received work under rule D (D10). "Attributed to the Apostles; compiled about 380. The Latin West received canons 1 to 50 through Dionysius Exiguus; all 85 were confirmed by the Council in Trullo (canon 2) and Nicaea II (canon 1)." | |
   | Cyprian's two anonymous treatises in `5d75dc92` (Treatises II and IV) | Anonymous | anonymous | | |
-  | On Loving God | Bernard of Clairvaux | genuine | translation: "translator unknown (via Paul Halsall's Internet Medieval Sourcebook)" | |
+  | On Loving God | Bernard of Clairvaux | genuine | translation: "Translated by William Harman van Allen (1909)" (R5) | |
 
   Wording in the notes follows the research memo; Carter approves the final sentences. Works with CPG numbers take them from the research memo's confirmed list only.
   - Authenticity judgments copied from editorial text before rule G deletes it (plan rule G) go into `attribution_note`, except where this plan overrides them.

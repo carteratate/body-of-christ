@@ -119,3 +119,7 @@ These are transcription changes by Halsall or CCEL. None of them makes the text 
 3. **Update the Decision log row** "On Loving God translation" from "translator unknown" to the van Allen credit. The README forbids an implementer from editing it.
 4. **Chapter VIII title.** Decide whether 1.9 should keep the vendored "loves God for self's sake" or use the 1909 print's "loves Self for Self's sake". 1909 is the translator's own printed text and agrees with the chapter's content. Changing it is a label fix only; passage IDs and anchors do not depend on labels after 2.1.
 5. The NEEDS-CARTER entry for R5 (approve a replacement if the trace fails) no longer applies, because the trace succeeded.
+
+## Answered by Carter (4 Oct 2026)
+
+Carter approved all four: the van Allen 1909 identification, the credit line, the Decision log update, and restoring the 1909 Chapter VIII title. Recorded in `NEEDS-CARTER.md`, the plan's Decision log, and the 1.9 and 3.2 specs.
