@@ -165,6 +165,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 0
 
 - **0.0** [Phase 0]. The Node.js major version Vercel builds with, if not 20.
+  Answered 2026-10-04: Node 24.x, read from the Vercel project settings (`nodeVersion`); CI uses 24.
 - **0.2 and R6** [Phase 0, each work before its ingestion PR]. The copyright renewal searches, or approval of them, and the entries in the public rights file that depend on his private rights memos. The Imitation of Christ renewal search is first.
 - **0.5** [Phase 0, needed before Phase 4]. The Qdrant plan's memory, disk and backup settings, read from the Qdrant console he has access to, plus a few read-only requests.
 - **0.6** [Phase 0, needed before Phase 4]. The Supabase plan tier and database size limit, read from the dashboard.
