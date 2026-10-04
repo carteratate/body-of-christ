@@ -1,0 +1,5 @@
+{
+  "since": "2026-09-29",
+  "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
+  "approved_applies": []
+}

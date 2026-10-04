@@ -248,6 +248,8 @@ if __name__ == "__main__":
     ap.add_argument("--apply", action="store_true",
                     help="actually re-embed and overwrite; omit for a dry run")
     ap.add_argument("--batch-size", type=int, default=100)
+    ap.add_argument("--release", metavar="RELEASE_ID",
+                    help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
     from publication import SOURCE_ADAPTERS  # noqa: E402
@@ -261,5 +263,14 @@ if __name__ == "__main__":
         )
     except ArgError as exc:
         ap.error(str(exc))
+
+    if args.apply:
+        from publish_lock import PublishLocked, assert_live_write_allowed  # noqa: E402
+
+        try:
+            assert_live_write_allowed(
+                "reembed_drifted_vectors.py --apply", args.collection, args.release, "repair")
+        except PublishLocked as exc:
+            ap.error(str(exc))
 
     raise SystemExit(asyncio.run(main(names, categories, args.apply, args.batch_size)))

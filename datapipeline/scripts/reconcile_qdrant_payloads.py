@@ -315,6 +315,8 @@ if __name__ == "__main__":
                          "points whose vector was embedded from unrelated text and "
                          "which need a re-embed instead. See the module docstring.")
     ap.add_argument("--batch-size", type=int, default=500)
+    ap.add_argument("--release", metavar="RELEASE_ID",
+                    help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
     # SOURCE_ADAPTERS is the datapipeline's canonical collection registry, mirroring
@@ -329,6 +331,15 @@ if __name__ == "__main__":
         )
     except ArgError as exc:
         ap.error(str(exc))
+
+    if args.apply:
+        from publish_lock import PublishLocked, assert_live_write_allowed  # noqa: E402
+
+        try:
+            assert_live_write_allowed(
+                "reconcile_qdrant_payloads.py --apply", args.collection, args.release, "repair")
+        except PublishLocked as exc:
+            ap.error(str(exc))
 
     if "content" in fields:
         print("⚠️  field set includes `content` — see --help before applying.\n")

@@ -82,6 +82,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 0
 
 - **0.4** [Phase 0]. Agree to the lock rules. Every datapipeline write to the live corpus or search index, including emergency repairs, needs a reviewed PR adding a lock entry. The only exception is a rehearsal where the database and Qdrant both run on his own Mac. Steps done by hand (migrations, alias and index creation, `VACUUM FULL`, post-window deletions) are outside the lock and approved one at a time. An entry stays until its rollback window closes. No entry is added before Phase 4 except, if he chooses, the On the Incarnation retirement. Recommended answer is yes.
+  Answered 2026-10-04: Yes to all three: every live datapipeline write goes through a reviewed lock entry, emergency repairs included, with only local rehearsals exempt and hand-run ops steps approved one at a time; an entry stays until its rollback window closes and a second PR removes it; no entry before the P4 apply, except possibly On the Incarnation, decided separately.
+  Answered 2026-10-04 (after review): allow a lone `pipeline.py --stage enrich --sample N` run without a lock entry; it writes only local files under `samples/`.
 - **2.1** [Phase 0]. Approve four things about the new ID registry.
   - Passages get anchors from the source's own structure (the ID of each section in the source file) instead of from label text. A choice remains on how dots in those IDs are written, kept as dots or turned into dashes. The spec recommends no option; either works.
   - The passage registry, about 7 MB of IDs and anchors and no text, goes into the public repo.
