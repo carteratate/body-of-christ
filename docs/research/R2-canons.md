@@ -175,6 +175,19 @@ The rest of the register was not checked against the vendored text.
 
 Uncertain: the content of the ORE English pages (2016, 2020, 2022, 2023), which could not be read without a subscription. The 11 August 2023 issue in particular may carry an ORE English of 295-296.
 
+## Follow-up: checking the 2016 English without the printed page (4 Oct 2026)
+
+Carter's approval required the L'Osservatore Romano English (ORE) to be checked against the printed page. What was found:
+
+- **The print issue is not freely reachable.** The ORE online reader (osservatoreromano.va, `pdfreader.html/ing/...`) lists only 2025 and 2026 issues and needs a subscriber login; the 23 Sep 2016 issue is not on archive.org. The vatican.va English URL for *De concordia* (`.../en/apost_letters/documents/papa-francesco-lettera-ap_20160531_de-concordia-inter-codices.html`) returns a page with no text, only links to ES, IT and LA.
+- **A second, independent copy of the same English exists.** The Canon Law Society of Great Britain and Ireland's English Code (https://canonlawabstracts.uk/html/code_of_canon_law.pdf, "Incorporates amendments to … De concordia inter Codices, 31 May 2016") prints the 2016 texts with the note "Revised wording according to m.p. De concordia inter Codices". A word-by-word comparison with the EWTN reprint, after normalising British spelling (baptised, favourable), quotation marks around *sui iuris*, and page furniture, found:
+  - **identical** canon text for 10 of the 11: 111, 112, 535 §2, 868 §1 2°, 1108 §3, 1109, 1111 §1, 1112 §1, 1116 §3 and 1127 §1;
+  - **868 §3 different.** The CLSGBI Code uses another translation there ("Infants of non-Catholic Christians … approach their own minister"), the same wording as the Catholic Herald's translation (Bradley and Condon) reprinted by Catholic Culture (https://www.catholicculture.org/culture/library/view.cfm?recnum=11370). So for 868 §3 the EWTN reprint is the only ORE witness, and it reads "for than to obtain access to the actual ministry". "For than" is a typo; "the actual ministry" does not render the Latin *ministrum proprium* ("their own minister"), and whether it is the print's wording or a transcription error cannot be told.
+  - EWTN's known errors ("Can. III", "henccforth", "neccssary", "in its entirely") are all in the article headings or the preamble, not in the canon texts.
+- The CLSGBI text is copyright (The Canon Law Society Trust) and is used here only as a witness, not as a source for 1.5b.
+
+**Carter's decision (4 Oct 2026):** the agreement of two independent copies stands in for the print check for the 10 canons above. 1.5b uses the ORE English from the EWTN reprint for those, with the label already approved. 868 §3 follows rule E (Latin, out of search) until someone sees the printed page.
+
 ## Answered by Carter (4 Oct 2026)
 
 Carter answered as follows: (1) approve the 2016 L'Osservatore Romano English and the label, used only after a check against the printed page, else rule E; (2) rule E for 295 and 296; (3) add 868 §3 in 1.5b; (4) no reader note on 360, 361, 948; (5) extend 1.5b to the six marriage canons. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.5b spec.

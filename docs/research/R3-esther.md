@@ -255,4 +255,13 @@ A related point for later, not part of 1.4a: the English Lectionary's Esther rea
 
 Carter accepted the recommendation (before the review found that the Catechism and the Italian Lectionary share the Septuagint's letters): WEB-C numbers with addition-letter titles, Nova Vulgata and NAB ranges in metadata for whole additions. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.4a spec.
 
-After the review, Carter also approved (4 Oct): record the Septuagint range (`lxx_ref`) alongside the Nova Vulgata and NAB ranges, and correct the Decision log reason to say the Catechism and the Italian Lectionary share the Septuagint's letters. For C, the Septuagint ranges are Mordecai's prayer 4:17a-i and Esther's prayer 4:17k-z, which agree with the Catechism's 4:17b and the Italian Lectionary's 4:17k. Those letters are Rahlfs'; the NETS translation follows the Göttingen edition's C 1-30, the same as WEB-C. F's Septuagint letters were not verified here; 1.4a confirms them from a Rahlfs or Göttingen copy.
+After the review, Carter also approved (4 Oct): record the Septuagint range (`lxx_ref`) alongside the Nova Vulgata and NAB ranges, and correct the Decision log reason to say the Catechism and the Italian Lectionary share the Septuagint's letters. For C, the Septuagint ranges are Mordecai's prayer 4:17a-i and Esther's prayer 4:17k-z, which agree with the Catechism's 4:17b and the Italian Lectionary's 4:17k. Those letters are Rahlfs'; the NETS translation follows the Göttingen edition's C 1-30, the same as WEB-C. F's Septuagint letters were checked afterwards; see the next section.
+
+## Septuagint letters checked (4 Oct 2026)
+
+The labels were read from the CCAT morphologically tagged Rahlfs text (http://ccat.sas.upenn.edu/gopher/text/religion/biblical/lxxmorph/20.Esther.mlxx), which marks each lettered verse (`Esth 4:17a` and so on).
+
+- **C.** Mordecai's prayer is 4:17a-i (9 labels): 17a "and he prayed to the Lord, remembering all the works of the Lord" (WEB-C 4:18), 17i "and all Israel cried out with all their might" (WEB-C 4:28). Esther's prayer is 4:17k-z (15 labels, no j or v): 17k "and Esther the queen fled to the Lord, seized with the agony of death" (WEB-C 4:29), 17z "deliver me from my fear" (WEB-C 4:47). The Rahlfs units do not match WEB-C's verses one for one inside C (9 against 11, 15 against 19); the ranges match as whole prayers.
+- **Catechism 4:17b** is Rahlfs 17b, "Lord, Lord, King who rules over all … there is no one who opposes you", the text the Catechism cites it for.
+- **F** is 10:3a-l (11 labels: a to i, k, l). 10:3a "and Mordecai said, these things are from God" is WEB-C 10:4, and 10:3l, the colophon ("in the fourth year of the reign of Ptolemy and Cleopatra …"), is WEB-C 10:14. Here the labels match WEB-C's eleven verses one for one.
+- For reference, Rahlfs' other ranges: A 1:1a-s, B 3:13a-g, D 5:1a-f and 5:2a-b, E 8:12a-x.
