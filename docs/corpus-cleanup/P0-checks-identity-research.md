@@ -656,15 +656,15 @@ Conventions used in this file:
 - **Goal:** Before 1.4a restores the missing Esther verses, settle exactly which text is in the source, where each Greek addition sits, which verses are missing, and how the additions should be numbered and labelled in a Catholic reader, so 1.4a restores the right text with references that match Church documents.
 - **Current state:**
   - Plan claims Esther 4:18-47 and 10:4-14 are missing, among 245 missing verses (244 in the current build).
-  - Verified 29 Sep: the vendored `sources/bible/eng-web-c_usfm/43-ESGeng-web-c.usfm` ("Esther (Greek)") has 205 verses in 10 chapters, with 22, 23, 15, 46, 14, 14, 10, 17, 30 and 14 verse markers. Chapter 4's 46 markers run up to 47 and chapter 9's 30 markers run up to 32; the chapter 9 gap (some verses combined or missing in the source) is unexplained. Live Esther (26 passages) has references "Esther 4:1–3", "Esther 4:4–17", "Esther 9:1–10", "Esther 9:11–17", "Esther 9:18–32", "Esther 10:1–3". So 4:18-47 and 10:4-14 are absent from live, as claimed. The KJV pericope file skips them, which accounts for 41 of the 244 missing verses.
+  - Verified 29 Sep: the vendored `sources/bible/eng-web-c_usfm/43-ESGeng-web-c.usfm` ("Esther (Greek)") has 205 verses in 10 chapters, with 22, 23, 15, 46, 14, 14, 10, 17, 30 and 14 verse markers. Chapter 4's 46 markers run up to 47 and chapter 9's 30 markers run up to 32. The gaps are 4:6, 9:5 and 9:30, never marked: Hebrew verses the Greek lacks, present in the Nova Vulgata (R3 findings, section 1). No verses are combined. Live Esther (26 passages) has references "Esther 4:1–3", "Esther 4:4–17", "Esther 9:1–10", "Esther 9:11–17", "Esther 9:18–32", "Esther 10:1–3". So 4:18-47 and 10:4-14 are absent from live, as claimed. The KJV pericope file skips them, which accounts for 41 of the 244 missing verses.
   - The file's introduction says the 5 additions are merged "as extensions at the beginning of 1:1 and after 3:13, 4:17, 8:12, and 10:3". The file does not do that for all of them:
     - Addition A is inside 1:1, in brackets.
     - Addition B follows 3:13 inside the same verse.
     - Addition C is numbered as new verses 4:18 to 4:47.
-    - Addition E follows 8:13 per its footnote, not 8:12.
+    - Addition E is inside verse 8:13 (USFM line 226), not after 8:12.
     - Addition F is numbered 10:4 to 10:14.
-  - The introduction counts 5 additions. The standard count is 6, A to F. Addition D (Esther before the king) is probably the long 5:1. Unverified.
-  - Other Catholic editions number the additions with lettered verses (for example 4:17a to 4:17z) or as chapters 11 to 16. Which scheme the Nova Vulgata and the Church's documents cite is **not verified** here. The Decision log adopts Nova Vulgata numbering for the Bible.
+  - The introduction counts 5 additions. The standard count is 6, A to F. Addition D (Esther before the king) is 5:1-2 (USFM lines 145-149), not bracketed; the introduction counts C and D as one (verified by R3).
+  - Other Catholic editions number the additions with lettered verses (for example 4:17a to 4:17z) or as chapters 11 to 16. Verified by R3: the Nova Vulgata uses lettered verses (1:1a-k, 3:13a-h, 4:8a, 4:17a-kk, 5:2a-p, 8:12a-cc, 10:3a-k) over an Old Latin text form; the Catechism cites "Esth 4:17b", the English Lectionary "Esther C:12, 14-16, 23-25" (NAB letter chapters), the Italian Lectionary "Est 4,17k-u". The Decision log adopts Nova Vulgata numbering for the Bible.
 - **Changes (deliverables):** one file, `docs/research/R3-esther.md`, with:
   - The full verse inventory of `43-ESGeng-web-c.usfm` per chapter, including combined or skipped verse numbers, produced by a script.
   - For each addition A to F, its WEB-C verse range and its Nova Vulgata range, with the Nova Vulgata page on vatican.va cited.
