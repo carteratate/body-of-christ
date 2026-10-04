@@ -251,3 +251,7 @@ The handoff doc is not in the repo. Its Esther claims are carried in the plan's 
 3. **Nova Vulgata letters** ("Esther 4:17n-kk"). Matches the Latin standard the Decision log adopted, but only approximately, because the texts differ. It also needs lettered verse support in the adapter.
 
 A related point for later, not part of 1.4a: the English Lectionary's Esther reading follows the Latin text, so a user who searches for the words heard at Mass ("books of my forefathers") will not find them in WEB-C's Esther. Fixing that would mean a different translation, which the plan's "no translations of our own" rule and current sources do not provide.
+
+## Answered by Carter (4 Oct 2026)
+
+Carter accepted the recommendation: WEB-C numbers with addition-letter titles, Nova Vulgata and NAB ranges in metadata for whole additions. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.4a spec.
