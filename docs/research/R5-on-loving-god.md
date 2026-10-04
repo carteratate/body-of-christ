@@ -67,11 +67,11 @@ The dedication's opening sentence ("To the illustrious Lord Haimeric, ... wishet
 These are transcription changes by Halsall or CCEL. None of them makes the text a different translation.
 
 1. **Chapter VIII title.** 1909 reads "wherein Man loves Self for Self's sake", and the vendored file reads "loves God for self's sake". This looks like a transcription error. The chapter's own text, in both versions, supports 1909: "this is carnal love, wherewith man loves himself first and selfishly".
-2. **Chapter II title.** The vendored file prefixes "On loving God." The 1909 head and contents lack it. It is probably the running title picked up by the transcriber.
-3. **Spelling.** 1909 uses British spelling throughout ("Saviour" 4 times, "honour" 8, "favour" 3). The vendored file is partly Americanized ("Savior" 2, "honor" 5 against "honour" 2, "favor" 3). I could not tell whether Halsall typed from a different printing or modernized the spelling himself. I found no other printing in any catalogue.
+2. **Chapter II title.** The vendored file prefixes "On loving God." The 1909 head and contents lack it. It is probably the running title picked up by the transcriber (the 1909 running heads read "Saint Bernard on Loving God"). 1.9 keeps the prefix; no fix is planned.
+3. **Spelling.** 1909 uses British spelling throughout ("Saviour" 4 times, "honour" 8, "favour" 3). The vendored file is partly Americanized ("Savior" 3, one of them lower-case, "honor" 5 against "honour" 2, "favor" 3). I could not tell whether Halsall typed from a different printing or modernized the spelling himself. I found no other printing in any catalogue.
 4. **Apparatus.** 1909 numbers its paragraphs and puts scripture references in the margin. The vendored file drops the numbers and gives references inline, for example "( Luke 7.47 )". The 1909 translator's preface, the Caldey general preface and a Latin memorial dedication are not in the vendored file.
 
-1.9 should keep the vendored wording. The plan's rules have TheoCorpus make no translations of its own, and correcting the chapter VIII title back to the 1909 reading is a question for Carter (see below).
+1.9 keeps the vendored wording, since the plan's rules have TheoCorpus make no translations of its own. The one exception is the chapter VIII title, which Carter decided on 4 Oct to restore to the 1909 reading (see "Answered by Carter" below).
 
 ## Bibliographic record
 
@@ -108,9 +108,10 @@ These are transcription changes by Halsall or CCEL. None of them makes the text 
 
 ## Effect on 1.9
 
-- Set the On Loving God translator metadata to "William Harman van Allen", with edition "Caldey Abbey, Tenby, 1909". The interim "translator unknown (via Paul Halsall's Internet Medieval Sourcebook)" label is no longer needed.
+- Set the On Loving God translator metadata to "William Harman van Allen", with edition "Caldey Abbey, Tenby, 1909". This replaces the interim "translator unknown (via Paul Halsall's Internet Medieval Sourcebook)" label.
 - No replacement translation and no new source file. The vendored file stays.
-- The spec text for R5 and 1.9 needs no factual correction. The Decision log row "On Loving God translation" still reads as the interim position. Updating it is Carter's call, so this commit leaves it alone.
+- Restore the 1909 Chapter VIII title (Carter, 4 Oct; see below).
+- The Decision log row "On Loving God translation" was updated on Carter's answer (see below).
 
 ## For Carter
 
@@ -122,4 +123,4 @@ These are transcription changes by Halsall or CCEL. None of them makes the text 
 
 ## Answered by Carter (4 Oct 2026)
 
-Carter approved all four: the van Allen 1909 identification, the credit line, the Decision log update, and restoring the 1909 Chapter VIII title. Recorded in `NEEDS-CARTER.md`, the plan's Decision log, and the 1.9 and 3.2 specs.
+Carter approved items 1, 3 and 4: the van Allen 1909 identification, the Decision log update, and restoring the 1909 Chapter VIII title with its capitals ("loves Self for Self's sake"). He also approved the credit line from item 2. The rest of item 2, the rights entry itself (`pd-us-pre-1931`, no renewal search), was not separately answered, so `checked_on` stays null and the entry is confirmed when 0.2 copies it in. Item 5 is closed: the trace succeeded, so no replacement is needed. Recorded in `NEEDS-CARTER.md`, the plan's Decision log, and the 1.9 and 3.2 specs.
