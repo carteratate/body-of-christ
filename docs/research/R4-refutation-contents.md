@@ -75,7 +75,7 @@ On the label: Litwa and Legge both call these the book's "tables of contents", s
 
 ## Sources
 
-- M. David Litwa, *Refutation of All Heresies*, Writings from the Greco-Roman World 40 (Atlanta: SBL Press, 2016), introduction pp. xxvii–xxviii (manuscripts, title) and p. xliv ("Organization"). Read through a web copy of the book; page numbers were checked against the printed edition's pagination.
+- M. David Litwa, *Refutation of All Heresies*, Writings from the Greco-Roman World 40 (Atlanta: SBL Press, 2016), introduction pp. xxvii–xxviii (manuscripts, title) and p. xliv ("Organization"). Read through a web copy of the book; page numbers are the printed ones.
 - F. Legge, trans., *Philosophumena; or, The Refutation of All Heresies*, vol. 1 (London: SPCK, 1921), pp. 1, 19–20, 31 n. 2, 66. Public domain: https://archive.org/details/philosophumenaor01hippuoft
 - E. Miller, ed., *Origenis Philosophumena sive Omnium Haeresium Refutatio* (Oxford, 1851), Praefatio pp. v–vi (description of P). https://archive.org/details/origenisphilosop00hipp
 - ANF05 ThML, `third-century-2.xml`: translator's notes and Coxe's Introductory Note, Elucidations and General Note, as cited by id above.
