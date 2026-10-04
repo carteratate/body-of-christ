@@ -101,6 +101,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-04: Approved, with the suggested label, for 111, 112, 535 §2 and 868 §1 2° (and 868 §3 and the six marriage canons below), using the L'Osservatore Romano English of 23 Sep 2016, p. 9, but only once its text has been checked against the printed page; the EWTN reprint has typesetting errors and is not used unchecked. Any canon whose print text cannot be checked follows rule E. 295 and 296 follow rule E (current Latin, out of search): the only English, a Vatican News article, mistranslates 295 §2. 579, 695 §1 and 700 follow rule E. Add canon 868 §3 (De concordia art. 5) in 1.5b. No reader note on 360, 361 or 948, whose text is in force. Extend 1.5b to the marriage canons 1108, 1109, 1111, 1112, 1116 and 1127 (De concordia arts. 6-11).
 - **R3** [Phase 1]. Choose how the Greek additions to Esther are numbered, if no Church source settles it. R3 will give a recommendation.
 - **R4** [Phase 1]. Decide whether the "Contents" summaries in the Refutation of All Heresies are the author's own, only if the sources disagree.
+  Answered 2026-10-04: Not needed. The sources agree that the summaries are the author's own (`docs/research/R4-refutation-contents.md`); 1.8a keeps them and strips only the ANF heading lines.
 - **R5** [Phase 1]. If the translator of On Loving God cannot be traced, approve the replacement translation R5 proposes.
 
 ### Phase 1
