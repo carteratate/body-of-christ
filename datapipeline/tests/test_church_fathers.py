@@ -2,11 +2,18 @@ import os
 import re
 from collections import defaultdict
 
+import pytest
+
 from ingest.common import _display_terminal_char
 from ingest.church_fathers import build_documents, build_all
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                     "sources", "church-fathers")
+pytestmark = [
+    pytest.mark.sources,
+    pytest.mark.skipif(not os.path.isdir(_SRC),
+                       reason="church-fathers sources not vendored; run scripts/vendor_sources.py"),
+]
 
 
 def test_apostolic_fathers_splits_into_per_work_documents():

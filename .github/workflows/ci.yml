@@ -1,0 +1,70 @@
+# Source-free tests on every PR and every push to master (corpus cleanup item 0.0).
+# No job uses secrets. Checks that need the gitignored datapipeline/sources/ run on
+# Carter's Mac, and their output goes in the PR description (see the PR template).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24  # the Vercel project's Node major
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npx vitest run
+
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"  # matches services/api/Dockerfile
+          cache: pip
+          cache-dependency-path: services/api/pyproject.toml
+      - run: pip install -e "services/api[dev]"
+      - run: python -m pytest -q
+        working-directory: services/api
+
+  datapipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # enrichment/validation.py downloads the cl100k_base tokenizer at import.
+      TIKTOKEN_CACHE_DIR: ${{ github.workspace }}/.tiktoken-cache
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: datapipeline/requirements.txt
+      - uses: actions/cache@v6
+        with:
+          path: .tiktoken-cache
+          key: tiktoken-${{ hashFiles('datapipeline/requirements.txt') }}
+      - run: pip install -r datapipeline/requirements.txt
+      - run: python -m pytest -q -m "not smoke"
+        working-directory: datapipeline
