@@ -103,6 +103,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **R4** [Phase 1]. Decide whether the "Contents" summaries in the Refutation of All Heresies are the author's own, only if the sources disagree.
   Answered 2026-10-04: Not needed. The sources agree that the summaries are the author's own (`docs/research/R4-refutation-contents.md`); 1.8a keeps them and strips only the ANF heading lines.
 - **R5** [Phase 1]. If the translator of On Loving God cannot be traced, approve the replacement translation R5 proposes.
+  Answered 2026-10-04: Traced, so no replacement. Approved: the translation is William Harman van Allen's (Caldey Abbey, 1909); credit line "Translated by William Harman van Allen (1909). Sourced via CCEL.org"; the Decision log row is updated; 1.9 restores the 1909 Chapter VIII title ("loves Self for Self's sake").
 
 ### Phase 1
 
