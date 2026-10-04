@@ -9,7 +9,7 @@
 The work survives in two manuscript groups.
 
 - **Book I** circulated on its own as the *Philosophumena*. Legge counts four early copies (Medicean, Turin, Ottobonian, Barberine). Litwa counts five, all ascribing the work to Origen (Litwa xxvii).
-- **Books IV to X** survive in one fourteenth-century manuscript brought from Mount Athos in 1842, Parisinus Supplément grec 464 ("P", Litwa xxviii). Books II and III and the opening of Book IV are lost. Miller's 1851 preface describes the codex: 137 cotton-paper leaves, copied by one Michael.
+- **Books IV to X** survive in one fourteenth-century manuscript found on Mount Athos in 1841 and deposited in Paris in 1842, Parisinus Supplément grec 464 ("P", Litwa xxviii). Books II and III and the opening of Book IV are lost. Miller's 1851 preface describes the codex: 137 cotton-paper leaves, copied by one Michael.
 
 **Both groups carry the table.** Each surviving book opens with the formula τάδε ἔνεστιν ἐν τῇ … τοῦ κατὰ πασῶν αἱρέσεων ἐλέγχου ("these are the contents of the … [book] of the Refutation of all Heresies"), followed by a short list of what the book covers.
 
@@ -18,7 +18,7 @@ The work survives in two manuscript groups.
 - Litwa (2016) uses the tables as the manuscript evidence for the work's title. The manuscripts give no title for the whole treatise, but "the brief tables of contents at the head of each book" consistently call it the Refutation of All Heresies (Litwa xxviii).
 - On authorship, Litwa writes in his "Organization" section: "Apparently, our author himself adds the tables of contents that begin each book" (Litwa xliv).
 
-**Marcovich (PTS 25, 1986) was not reachable.** No preview, library copy or open text could be fetched. Litwa's text and notes are built on Marcovich's apparatus (Poirier 2018; Cosentino 2018), and Legge worked from Cruice's Greek, so the two sources above are the critical-edition tradition at one remove. Nothing found disputes the tables.
+**Marcovich (PTS 25, 1986) was not reachable.** No preview, library copy or open text could be fetched. Litwa's Greek text is a revision of Marcovich's, keeping some of his emendations and discarding others (Litwa's introduction; Poirier 2018; Cosentino 2018), and Legge worked from Cruice's Greek, so the two sources above are the critical-edition tradition at one remove. Nothing found disputes the tables.
 
 **Two things not to confuse with the tables:**
 - The **summary in the body of Book X** (the "Epitome of all Philosophers" and "Epitome of all Heresies", chapters following `iii.iii.viii.i`) is a separate question. Legge notes that some critics gave it to another hand, but concludes it is "by Hippolytus' own hand" (Legge vol. 1, pp. 19–20). It is ordinary chapter text and out of scope here.
@@ -60,7 +60,7 @@ Sources for the "authorial" column: Litwa xxviii and xliv, Legge vol. 1 pp. 31 n
 
 All ids are in `third-century-2.xml`.
 
-1. **Keep these seven divs as passages:** `iii.iii.i.i`, `iii.iii.iii.i`, `iii.iii.iv.i`, `iii.iii.v.i`, `iii.iii.vi.i`, `iii.iii.vii.i`, `iii.iii.viii.i`. Each is a `div4` titled `Contents.`. As specified, `EDITORIAL_DIV_TITLE` strips the trailing period and includes `contents`, so it would skip all seven. 1.8a must exempt them. Two options: exempt these ids, or match `contents` only as the existing exact front-matter title (today's `_SKIP_WORK_TITLES` entry, which already drops the editorial "Contents" divs in `confessions.xml` and `on-the-holy-trinity.xml`). The vendored Fathers sources have no other `Contents.` divs.
+1. **Keep these seven divs as passages:** `iii.iii.i.i`, `iii.iii.iii.i`, `iii.iii.iv.i`, `iii.iii.v.i`, `iii.iii.vi.i`, `iii.iii.vii.i`, `iii.iii.viii.i`. Each is a `div4` titled `Contents.`. As specified, `EDITORIAL_DIV_TITLE` strips the trailing period and includes `contents`, so it would skip all seven. 1.8a must exempt them. Two options: exempt these ids, or match `contents` only as the existing exact front-matter title (today's `_SKIP_TITLES` entry, inherited by `_SKIP_WORK_TITLES`, which already drops the editorial "Contents" divs in `confessions.xml` and `on-the-holy-trinity.xml`). The vendored Fathers sources have no other `Contents.` divs. The same exemption applies to 1.8a's acceptance check "0 passages with a label matching `EDITORIAL_DIV_TITLE`": the seven passages keep their "Book N · Contents" labels until 1.8c relabels them, so the check must skip these ids or match labels exactly.
 2. **Remove these paragraphs as `span` entries** (reason `rule-g-editorial`), because the passages survive:
    - `iii.iii.i.i-p1` to `iii.iii.i.i-p6`
    - `iii.iii.iii.i-p1` to `-p3`, `iii.iii.iv.i-p1` to `-p3`, `iii.iii.v.i-p1` to `-p3`, `iii.iii.vii.i-p1` to `-p3`, `iii.iii.viii.i-p1` to `-p3`
@@ -75,7 +75,7 @@ On the label: Litwa and Legge both call these the book's "tables of contents", s
 
 ## Sources
 
-- M. David Litwa, *Refutation of All Heresies*, Writings from the Greco-Roman World 40 (Atlanta: SBL Press, 2016), introduction pp. xxvii–xxviii (manuscripts, title) and p. xliv ("Organization"). Read through a web copy of the book; page numbers are the printed ones.
+- M. David Litwa, *Refutation of All Heresies*, Writings from the Greco-Roman World 40 (Atlanta: SBL Press, 2016), introduction pp. xxvii–xxviii (manuscripts, title) and p. xliv ("Organization"). Read through a web copy of the book; page numbers were checked against the printed edition's pagination.
 - F. Legge, trans., *Philosophumena; or, The Refutation of All Heresies*, vol. 1 (London: SPCK, 1921), pp. 1, 19–20, 31 n. 2, 66. Public domain: https://archive.org/details/philosophumenaor01hippuoft
 - E. Miller, ed., *Origenis Philosophumena sive Omnium Haeresium Refutatio* (Oxford, 1851), Praefatio pp. v–vi (description of P). https://archive.org/details/origenisphilosop00hipp
 - ANF05 ThML, `third-century-2.xml`: translator's notes and Coxe's Introductory Note, Elucidations and General Note, as cited by id above.
