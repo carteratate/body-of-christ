@@ -1,4 +1,14 @@
+import os
+
+import pytest
+
 from ingest.catechism import build_document, _DEFAULT_SRC
+
+pytestmark = [
+    pytest.mark.sources,
+    pytest.mark.skipif(not os.path.exists(_DEFAULT_SRC),
+                       reason="catechism sources not vendored; run scripts/vendor_sources.py"),
+]
 
 
 def test_no_tiny_toc_fragments():

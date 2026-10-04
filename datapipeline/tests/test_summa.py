@@ -1,12 +1,20 @@
 import os
+
+import pytest
+
 from config import settings
 from ingest.common import DISPLAY_PASSAGE_MAX_OVERSHOOT
 from ingest.summa import build_document
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                     "sources", "summa", "summa.xml")
+_needs_sources = pytest.mark.skipif(
+    not os.path.exists(_SRC),
+    reason="summa sources not vendored; run scripts/vendor_sources.py")
 
 
+@pytest.mark.sources
+@_needs_sources
 def test_summa_builds_one_document_with_clean_refs():
     doc = build_document(_SRC)
     assert doc.collection == "summa"
@@ -19,6 +27,8 @@ def test_summa_builds_one_document_with_clean_refs():
     assert "Q[" not in sample and "A[" not in sample
 
 
+@pytest.mark.sources
+@_needs_sources
 def test_summa_unit_labels_mark_article_parts():
     doc = build_document(_SRC)
     labels = {p.unit_label for p in doc.passages if p.unit_label}

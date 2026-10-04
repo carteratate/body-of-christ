@@ -1,3 +1,5 @@
+> **Status (2026-10-04):** Phase 1 CI shipped as `.github/workflows/ci.yml` in the corpus-cleanup item 0.0 PR, with a narrower scope than below: web lint, typecheck and tests on Node 24; API tests; datapipeline tests without sources; on `master`, not `main`. The rest of this plan is not adopted.
+
 # CI/CD Plan for TheoCorpus
 
 > **Author:** Muse — Meta's AI assistant. Drafted 2026-09-09 at Carter Tate's

@@ -2,9 +2,10 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createPreferenceWriter } from "./preference-writer";
 import type { Preferences } from "./api";
+import type { SearchQuota } from "./search-draft";
 
 
-function preferences(quota: number): Preferences {
+function preferences(quota: SearchQuota): Preferences {
   return {
     preferred_translation: "CPDV",
     default_collections: ["bible"],
