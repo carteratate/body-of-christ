@@ -140,7 +140,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 4
 
 - **4.0** [Phase 4]. If compaction may push the database above 480 MB, choose between running it anyway and accepting a possible short read-only period, and a month of Supabase Pro. After the rehearsal measures the real peak of the apply, make the same choice for the apply. No recommendation; the rehearsal numbers decide.
-- **4.1a** [Phase 4]. Approve the rules for merging duplicates when a moved passage lands where a user already has the same bookmark or result (for bookmarks, keep the earliest and join both notes when they fit).
+- **4.1a** [Phase 4]. Approve the rules for merging duplicates when a moved passage lands where a user already has the same bookmark or result (for bookmarks, keep the earliest and join both notes when they fit), and the rules for undoing them in a rollback: a user's deletions and edits made since the cutover are kept, and a skipped row never blocks the rollback.
 - **4.1b** [Phase 4]. Choose the quiet hour for the cutover, and give go or no-go the day before.
 - **4.2** [Phase 4]. Give go or no-go after the evaluation on the staging copy. Also confirm that 0.3 ran with AI judging, which the comparison needs.
 
