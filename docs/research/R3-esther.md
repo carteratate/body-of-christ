@@ -8,13 +8,13 @@ Done 4 Oct 2026. Research only: no production query was made. The live Esther re
 - The vendored file holds all six Greek additions, A to F. WEB-C's introduction says five because it treats C and D as one. D, which the spec marked unverified, is WEB-C 5:1-2. It has no brackets.
 - Only C (WEB-C 4:18-47) and F (10:4-14) are missing from the live corpus. That is 41 verses, as the plan says. A, B, D and E sit inside verses the KJV pericopes already cover (1:1, 3:13, 5:1-2, 8:13), so they are live today.
 - The chapter 4 and chapter 9 gaps are explained. WEB-C has no 4:6, 9:5 or 9:30. Those are Hebrew-text verses that its Greek source lacks. The Nova Vulgata has all three.
-- The Nova Vulgata keeps the Hebrew chapter and verse numbers and inserts the Greek material as lettered verses after the verse it follows (1:1a-k, 3:13a-h, 4:8a, 4:17a-kk, 5:2a-p, 8:12a-cc, 10:3a-k). Its Praenotanda says so. They also say the Latin of the additions follows the Vetus Latina (the Old Latin version), except the two royal decrees. So the Nova Vulgata's additions are a different text form from the Greek that WEB-C translates. Some WEB-C verses have no Nova Vulgata counterpart, and some Nova Vulgata verses have no WEB-C counterpart.
-- Church documents in English and Italian do not use one scheme. The Catechism cites "Esth 4:17b". The English Lectionary (USCCB and Vatican News) cites "Esther C:12, 14-16, 23-25", which is the NAB's letter chapters. The Italian Lectionary on Vatican News cites "Est 4,17k-u". The three schemes disagree with each other and with the Nova Vulgata's letters.
+- The Nova Vulgata keeps the Hebrew chapter and verse numbers and inserts the Greek material as lettered verses after the verse it follows (1:1a-k, 3:13a-h, 3:15a-i, 4:8a, 4:17a-kk, 5:2a-p, 8:12a-cc, 9:19a, 10:3a-k; 3:15a-i and 9:19a are Old Latin with no Greek counterpart). Its Praenotanda says so. They also say the Latin of the additions follows the Vetus Latina (the Old Latin version), except the two royal decrees. So the Nova Vulgata's additions are a different text form from the Greek that WEB-C translates. Some WEB-C verses have no Nova Vulgata counterpart, and some Nova Vulgata verses have no WEB-C counterpart.
+- Church documents use two schemes, and neither is the Nova Vulgata's. The Catechism ("Esth 4:17b") and the Italian Lectionary ("Est 4,17k-u") fit the Septuagint's lettering of the Greek text (Mordecai's prayer 4:17a-i, Esther's 4:17k-z), which labels the same Greek that WEB-C translates. The English Lectionary (USCCB and Vatican News) cites "Esther C:12, 14-16, 23-25", the NAB's letter chapters. See section 5.
 - **Recommendation:** keep WEB-C chapter and verse numbers in references, anchors and `{{v:N}}` markers. Name each addition by its letter in the pericope title (for example "Addition C: Esther's prayer"). Record the Nova Vulgata range in metadata only at the level of whole additions, where the mapping is exact. Restoring C and F creates new units only, so no existing anchor changes its text and no D1 redirect is needed.
 
 ## 1. Verse inventory of `43-ESGeng-web-c.usfm` (script output)
 
-Source: `datapipeline/sources/bible/eng-web-c_usfm/43-ESGeng-web-c.usfm` in the main checkout, 286 lines, sha256 `4f4e3eb2af162a805419b22c8a9f1239b7a537ed02045142e5c427aff20881fa`. Script: `docs/research/R3_esther_inventory.py`. It is read-only and reads the gitignored files where they are. Command and complete output:
+Source: `datapipeline/sources/bible/eng-web-c_usfm/43-ESGeng-web-c.usfm` in the main checkout, 287 lines (no final newline), sha256 `4f4e3eb2af162a805419b22c8a9f1239b7a537ed02045142e5c427aff20881fa`. Script: `docs/research/R3_esther_inventory.py`. It is read-only and reads the gitignored sources under the checkout's own `datapipeline/sources/`, so run it from a checkout that has them vendored. Command and complete output:
 
 ```
 $ python3 docs/research/R3_esther_inventory.py
@@ -142,7 +142,7 @@ The NAB letter-chapter numbering is included because the English Lectionary uses
 |---|---|---|---|---|---|
 | A | Mordecai's dream; the eunuchs' plot | Inside 1:1, bracketed, lines 13-15. The dream is lines 13-14, the plot line 15. Hebrew 1:1 follows on line 16. | 1:1a-1k = the dream only. **The plot (Greek A 12-17) is not in the Nova Vulgata.** | A 1-17 | Yes, in `esther/1/1` |
 | B | Artaxerxes' first decree | Inside 3:13 after the Hebrew verse, bracketed, lines 86-87 | 3:13a-3:13h (the Praenotanda say 3:13a-g; the page also prints an h) | B 1-7 | Yes, in `esther/3/3-1`/`-2` |
-| (B) | Mordecai's "Remember the days of your humble condition" | End of 4:8, not bracketed, line 98 | 4:8a | Counted as B 8 | Yes, in `esther/4/4` |
+| (B) | Mordecai's "Remember the days of your humble condition" | End of 4:8, not bracketed, line 98 | 4:8a | Counted as B 8-9 | Yes, in `esther/4/4` |
 | C | Prayers of Mordecai and Esther | 4:18-4:47, bracketed, lines 112-142. 4:N = C (N-17), so 4:18 = C 1 and 4:47 = C 30. Mordecai: 4:18-28. Esther: 4:29-47. | 4:17a-4:17kk (34 labels). Mordecai: 17a-17m. Esther: 17n-17kk. Not verse-for-verse; see section 3. | C 1-30 | **No** (30 verses) |
 | D | Esther before the king | 5:1-2, not bracketed, lines 145-149. The footnote at 5:1 says "From the first verse to the third, the Greek widely differs from the Hebrew". The Greek replaces Hebrew 5:1-2. | 5:2a-5:2p, after the Hebrew 5:1-2, which the Nova Vulgata keeps | D 1-16 | Yes, in `esther/5/1` |
 | E | Artaxerxes' second decree | Inside 8:13, bracketed, line 226. It is preceded by a lead-in (line 225) and followed by a repeat of the 8:13 sentence (end of line 226). | 8:12d-8:12cc (E 1-24, 24 labels). 8:12a-c is a Latin lead-in that restates 8:11-12 ("Quomodo praecepit…", "Hoc est exemplar epistulae"). | E 1-24 | Yes, in `esther/8/1-1`/`-2` |
@@ -171,7 +171,7 @@ The Praenotanda of the Nova Vulgata on vatican.va ([nova-vulgata_praenotanda_lt.
   - the 4:17s-aa litany;
   - the "Appare, Domine; manifestare, Domine" refrains at 4:17h and 4:17kk;
   - 9:19a, which echoes the Greek 9:3-4 (WEB-C lines 236-237).
-- 8:12a-c, the Latin lead-in to E.
+- 8:12a-c, the Latin lead-in to E. It restates 8:11-13 and has only loose WEB-C counterparts: 12c "Hoc est exemplar epistulae" matches WEB-C 8:13's "The following is a copy of the letter" (line 225), and 12a-b restate WEB-C 8:11-12.
 
 **Duplication**
 
@@ -188,13 +188,13 @@ The script's last section repeats the inclusive range test of `collect_pericope_
 
 ## 5. How Church documents cite the additions
 
-1. **Catechism 269**, note 107: "Wis 11:21; cf. Esth 4:17b; Prov 21:1; Tob 13:2." It is cited for God's power that none can withstand ([vatican.va, CCC Part One, __P18.HTM](https://www.vatican.va/archive/ENG0015/__P18.HTM); concordance [ENG0015/3/SL.HTM](https://www.vatican.va/archive/ENG0015/3/SL.HTM)). The matching text is Mordecai's "there is no one who can oppose you" (WEB-C 4:19 = C 2). In the Nova Vulgata that is 4:17c ("non est qui possit tuae resistere voluntati"); Nova Vulgata 4:17b is "Deus Abraham … benedictus es". So the Catechism's lettering is a 4:17-plus-letters scheme, but not the Nova Vulgata's. Which edition's scheme it follows is not verified. The CCC cites no other Esther verse (concordance for "esther", [ENG0015/3/JI.HTM](https://www.vatican.va/archive/ENG0015/3/JI.HTM): paragraphs 64, 120 and 489 name the book only).
+1. **Catechism 269**, note 107: "Wis 11:21; cf. Esth 4:17b; Prov 21:1; Tob 13:2." It is cited for God's power that none can withstand ([vatican.va, CCC Part One, __P18.HTM](https://www.vatican.va/archive/ENG0015/__P18.HTM); concordance [ENG0015/3/SL.HTM](https://www.vatican.va/archive/ENG0015/3/SL.HTM)). The matching text is Mordecai's "there is no one who can oppose you" (WEB-C 4:19 = C 2). In the Nova Vulgata that is 4:17c ("non est qui possit tuae resistere voluntati"); Nova Vulgata 4:17b is "Deus Abraham … benedictus es". So the Catechism's lettering is not the Nova Vulgata's. It fits the Septuagint's lettering of the Greek (Rahlfs and Göttingen editions), where Mordecai's prayer is 4:17a-i and 4:17b is "Lord, Lord, King who rules over all … there is no one who can oppose you" (added in review; the Rahlfs page itself was not fetched). The CCC cites no other Esther verse (concordance for "esther", [ENG0015/3/JI.HTM](https://www.vatican.va/archive/ENG0015/3/JI.HTM): paragraphs 64, 120 and 489 name the book only).
 2. **English Lectionary**, Thursday of the First Week of Lent (Lectionary 227): "Esther C:12, 14-16, 23-25". This uses the NAB letter chapters. Sources: [USCCB, 26 Feb 2026](https://bible.usccb.org/bible/readings/022626.cfm), and the Holy See's own [Vatican News English, 26 Feb 2026](https://www.vaticannews.va/en/word-of-the-day/2026/02/26.html). In WEB-C numbers this is 4:29, 4:31-33 and 4:40-42. The Lectionary's English follows the Latin tradition, not the Greek. "She lay prostrate upon the ground, together with her handmaids, from morning until evening" is Nova Vulgata 4:17p. "As a child I used to hear from the books of my forefathers that you, O LORD, always free those who are pleasing to you" is Nova Vulgata 4:17aa. Neither is in WEB-C's Greek (lines 124-128).
-3. **Italian Lectionary**, same day, on [Vatican News Italian, 26 Feb 2026](https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno/2026/02/26.html): "Est 4,17k-u". The reading opens with Esther seeking refuge in the Lord, which is Nova Vulgata 4:17n. So the CEI letters are offset from the Nova Vulgata's by three.
+3. **Italian Lectionary**, same day, on [Vatican News Italian, 26 Feb 2026](https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno/2026/02/26.html): "Est 4,17k-u". The reading opens with Esther seeking refuge in the Lord, which is Nova Vulgata 4:17n and WEB-C 4:29. In the Septuagint's lettering Esther's prayer opens at 4:17k ("And Esther the queen fled to the Lord, seized with the agony of death"; [Mouton 2023, HTS Teologiese Studies](https://scielo.org.za/scielo.php?script=sci_arttext&pid=S0259-94222023000100009)), so the CEI reading uses the Septuagint's letters, as the Catechism does. The CEI 2008 Esther is translated from the Greek. Verse-by-verse alignment of the Septuagint letters with WEB-C's C 1-30 was not checked: WEB-C has 11 verses for Mordecai's prayer against the Septuagint's 9 letters.
 
 Not found: the Latin *Ordo Lectionum Missae* citation for Lectionary 227, which would show whether the typical edition cites Nova Vulgata letters. No vatican.va copy was found.
 
-Conclusion: no Church source settles a single scheme for the additions in English. The Nova Vulgata settles the Latin, but its letters label an Old Latin text that is not WEB-C's.
+Conclusion: no Church source settles a single scheme for the additions in English. The Nova Vulgata settles the Latin, but its letters label an Old Latin text that is not WEB-C's. The Catechism and the Italian Lectionary use the Septuagint's letters, which label the same Greek text WEB-C translates, so they are the closest Church-cited fit for WEB-C, at least at the level of whole prayers.
 
 ## 6. Recommendation for 1.4a
 
@@ -230,7 +230,7 @@ The handoff doc is not in the repo. Its Esther claims are carried in the plan's 
 | Spec: WEB-C intro says additions follow "1:1 … 3:13, 4:17, 8:12, and 10:3" | Partly. A, B, C and F are where the spec says. E is inside 8:13 (line 226), not after 8:12. The intro's "5 additions" counts C and D as one. The 4:17 footnote's "to the end of chapter 5" does not match the brackets, which close at 4:47 (line 142). | Section 1, lines 10, 111, 142, 145, 226 |
 | Spec: D "probably the long 5:1. Unverified" | **Corrected:** D is 5:1-2 (lines 145-149), not bracketed. | Section 2 |
 | Spec: chapter 9 gap "unexplained" | **Explained:** 9:5 and 9:30, and also 4:6, are Hebrew verses absent from the Greek. | Section 1 |
-| Spec: scheme of Nova Vulgata and Church documents "not verified" | **Resolved:** Nova Vulgata uses lettered verses; the Church documents use three other schemes. | Sections 2, 5 |
+| Spec: scheme of Nova Vulgata and Church documents "not verified" | **Resolved:** Nova Vulgata uses lettered verses; the Catechism and the Italian Lectionary use the Septuagint's letters; the English Lectionary uses NAB letter chapters. | Sections 2, 5 |
 
 ## For Carter
 
@@ -239,10 +239,9 @@ The handoff doc is not in the repo. Its Esther claims are carried in the plan's 
 **Why no Church source settles it:**
 
 - The Nova Vulgata numbers the additions as lettered verses (4:17a-kk and so on). Its own preface says the Latin of the additions follows the Old Latin, not the Greek that our WEB-C text translates. Some of our verses have no Nova Vulgata number, and some Nova Vulgata verses have no counterpart in our text.
-- English and Italian Church documents each cite differently:
-  - Catechism: "Esth 4:17b";
-  - English Lectionary: "Esther C:12…";
-  - Italian Lectionary: "Est 4,17k-u".
+- Church documents use two schemes, neither the Nova Vulgata's:
+  - Catechism ("Esth 4:17b") and Italian Lectionary ("Est 4,17k-u"): the Septuagint's letters (found in review, after Carter's answer);
+  - English Lectionary: NAB letter chapters ("Esther C:12…").
 
 **The choice:** which numbering a reader sees on the restored Esther passages. "Numbering" here means the chapter:verse label printed on the passage.
 
@@ -254,4 +253,4 @@ A related point for later, not part of 1.4a: the English Lectionary's Esther rea
 
 ## Answered by Carter (4 Oct 2026)
 
-Carter accepted the recommendation: WEB-C numbers with addition-letter titles, Nova Vulgata and NAB ranges in metadata for whole additions. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.4a spec.
+Carter accepted the recommendation (before the review found that the Catechism and the Italian Lectionary share the Septuagint's letters): WEB-C numbers with addition-letter titles, Nova Vulgata and NAB ranges in metadata for whole additions. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.4a spec.

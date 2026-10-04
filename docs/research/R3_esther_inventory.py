@@ -19,7 +19,9 @@ import re
 import sys
 from collections import OrderedDict
 
-SRC = "/Users/cartertate/repos/body-of-christ/datapipeline/sources/bible/"
+from pathlib import Path
+
+SRC = str(Path(__file__).resolve().parents[2] / "datapipeline" / "sources" / "bible") + "/"
 DEFAULT = SRC + "eng-web-c_usfm/43-ESGeng-web-c.usfm"
 PERICOPES = SRC + "PericopeGroupedKJVVerses.json"
 FOOT = re.compile(r"\\f .*?\\f\*")
@@ -94,7 +96,6 @@ def main(path):
 
     print("\n== Bracketed spans (Greek additions as WEB-C marks them) ==")
     for (o, ol), (c, cl) in brackets:
-        words = 0
         print(f"opens {o[0]}:{o[1]} (line {ol})  closes {c[0]}:{c[1]} (line {cl})")
     if depth:
         print(f"UNBALANCED: depth {depth} at end, last open {open_at}")
@@ -142,7 +143,10 @@ def nv_labels(path):
     raw = open(path, encoding="latin-1").read()
     raw = re.sub(r"<br\s*/?>|</p>", "\n", raw)
     t = htmlmod.unescape(re.sub(r"<[^>]+>", "", raw))
-    t = t[t.find("1 2 3 4 5 6  7 8 9 10") + 21:]
+    start = t.find("1 2 3 4 5 6  7 8 9 10")
+    if start == -1:
+        sys.exit("Nova Vulgata page: chapter index line not found")
+    t = t[start + 21:]
 
     def lkey(letters):
         if not letters:
