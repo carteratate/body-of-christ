@@ -508,7 +508,8 @@ R2 is specified once, in `P0-checks-identity-research.md` under "R2. Canons 295,
     - 111 in full. The new text of the 2016 motu proprio De concordia inter Codices is given only in Latin on the page.
     - 112, which is glued to 111 today, the same.
     - 579 in full, with the citation of Authenticum charismatis (2020) appended.
-    - 695 and 700 in full.
+    - 700 in full.
+    - 695 §1 only; §2 is English in the vendored page (R2).
     - 535 §2 and 868 §1 2° only. Live 868 contains "... parentibus.§2."
   - The plan's rule: canons 111, 112, 535 and 868 show the L'Osservatore Romano English, labelled unofficial, with the Latin as the official text. For the others, rule E applies if no English exists: the reader keeps the Latin with a note, and search excludes it.
 - **Changes:**
