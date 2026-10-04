@@ -27,8 +27,9 @@ npm test               # vitest run
 uvicorn app.main:app --reload   # dev server on :8000
 python3 -m pytest tests/
 
-# Datapipeline (one collection; use --target reader/search for a repair)
-cd datapipeline && python3 run_collection.py --collection bible --target both
+# Datapipeline (one collection). --dry-run builds and checks without writing; a live
+# write needs a PUBLISH_LOCK.json entry and --release (see datapipeline/README.md)
+cd datapipeline && python3 run_collection.py --collection bible --dry-run
 
 # Docker (prod-like)
 docker build -t theocorpus-api services/api

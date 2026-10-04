@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import os
+import sys
 from dataclasses import dataclass
 
 from config import settings
@@ -319,7 +320,27 @@ def _parse_args(argv=None) -> argparse.Namespace:
     ap.add_argument("--sample-random", action="store_true")
     ap.add_argument("--sample-reclassify")
     ap.add_argument("--import-backup")
+    ap.add_argument("--release", help="release named by the PUBLISH_LOCK.json entry that "
+                    "approves a live reader, embed, bm25-index or enrich run")
     return ap.parse_args(argv)
+
+
+# Stages that write to the live reader tables or Qdrant (stages/enrich_io.py writes
+# annotations to Postgres). A --sample enrich writes only under samples/.
+_LIVE_WRITE_STAGES = frozenset({"reader", "embed", "bm25-index", "enrich"})
+
+
+def _guard_live_writes(args: argparse.Namespace, stages: list[str]) -> None:
+    """Refuse a live-writing run unless PUBLISH_LOCK.json approves it (item 0.4)."""
+    live = [s for s in stages if s in _LIVE_WRITE_STAGES]
+    if args.sample is not None and live == ["enrich"]:
+        return
+    if live:
+        from publish_lock import assert_live_write_allowed
+
+        assert_live_write_allowed(
+            f"run pipeline stage(s) {', '.join(live)}",
+            args.collection or "", args.release, "repair")
 
 
 async def _main(args: argparse.Namespace) -> None:
@@ -376,6 +397,8 @@ async def _main(args: argparse.Namespace) -> None:
                 print(f"[dry-run] {s}")
         cache.close()
         return
+
+    _guard_live_writes(args, stages)
 
     from stages.parse import BUILDERS
 
@@ -449,8 +472,14 @@ async def _main(args: argparse.Namespace) -> None:
 
 
 def main(argv=None) -> None:
+    from publish_lock import PublishLocked
+
     args = _parse_args(argv)
-    asyncio.run(_main(args))
+    try:
+        asyncio.run(_main(args))
+    except PublishLocked as exc:
+        print(f"pipeline: {exc}", file=sys.stderr)
+        raise SystemExit(2) from None
 
 
 if __name__ == "__main__":

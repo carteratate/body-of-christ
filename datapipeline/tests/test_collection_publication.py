@@ -405,3 +405,37 @@ def test_built_passage_ids_use_the_shared_identity_contract():
     )
 
     assert search.pruned_keep_ids == {passage_id(document.id, "a/1")}
+
+
+def test_write_guard_runs_before_adapters_and_store_acquisition():
+    events: list[str] = []
+
+    def adapter() -> list[Document]:
+        events.append("adapter")
+        return [_document("a")]
+
+    @asynccontextmanager
+    async def acquire_reader():
+        events.append("reader:acquire")
+        yield FakeReaderStore(events)
+
+    @asynccontextmanager
+    async def acquire_search():
+        events.append("search:acquire")
+        yield FakeSearchIndex(events)
+
+    def guard(request: PublicationRequest) -> None:
+        events.append("guard")
+        raise ValueError("locked: test guard")
+
+    runner = CollectionPublicationRunner(
+        source_adapters={"medieval": adapter},
+        acquire_reader_store=acquire_reader,
+        acquire_search_index=acquire_search,
+        write_guard=guard,
+    )
+
+    with pytest.raises(ValueError, match="locked"):
+        asyncio.run(runner.publish(PublicationRequest(collection="medieval")))
+
+    assert events == ["guard"]

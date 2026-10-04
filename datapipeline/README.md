@@ -46,6 +46,23 @@ cp .env.example .env
 
 ## Publish one collection
 
+**The publish lock.** Every command that writes to the live reader tables or Qdrant
+first checks `PUBLISH_LOCK.json`. It ships with an empty `approved_applies` list, so a
+live publish exits with code 2 and a "locked" message. A write is allowed only when a
+reviewed PR has added an entry naming the collection, the release and the step
+(`stage`, `apply`, `rollback` or `repair`), and the command passes the same
+`--collection` and `--release`. Runs whose database and Qdrant both point at this
+machine (`localhost`, `127.0.0.1` or `::1`) are rehearsals and need no entry. No flag
+or environment variable skips the lock. See item 0.4 in
+`docs/corpus-cleanup/P0-checks-identity-research.md`.
+
+To check a collection without writing anything, use the dry run. It builds the
+Documents, runs the document checks and prints the counts, and needs no lock entry:
+
+```bash
+python run_collection.py --collection catechism --dry-run
+```
+
 Routine publication safely upserts Documents and Passages before pruning stale records
 from each selected store:
 
@@ -101,6 +118,12 @@ python scripts/backfill_missing_vectors.py --collection bible
 python scripts/reembed_drifted_vectors.py --collection bible
 python scripts/reconcile_qdrant_payloads.py --collection bible
 ```
+
+Their `--apply` mode is a live write, so it needs a publish-lock entry with step
+`repair` for the collection (or `all`) and `--release <the entry's release>`. The same
+applies to the V5 `pipeline.py` stages that write live data (`reader`, `embed`,
+`bm25-index`, and `enrich` without `--sample`). Dry runs, `--status` and sample runs
+need no entry.
 
 These repair tools use the same canonical source-adapter registry as collection
 publication. They do not make the retired Postgres `content_embedding` column active;

@@ -54,6 +54,12 @@ destructive Postgres rebuild option and requires
 publication preserves stable Passage IDs, so bookmarks and search history survive when
 the source adapter still emits those Passages.
 
+The publish lock (`PUBLISH_LOCK.json`, item 0.4) refuses every live write unless a
+reviewed PR has listed the collection and release; pass `--release <release>` with
+the run. `--dry-run` builds and checks a collection without writing and needs no
+entry. Local rehearsals, with both the database and Qdrant on this machine, are
+exempt. See README.md, "Publish one collection".
+
 Vendored adapters read the local files under `sources/<collection>/`, not the network.
 Re-acquire the raw sources with
 `python3 scripts/vendor_sources.py --collection all` if they are missing.

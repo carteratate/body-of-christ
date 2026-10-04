@@ -69,3 +69,47 @@ def test_execution_plan_puts_bm25_index_after_the_global_fits():
 def test_all_execution_order_still_matches_the_full_plan():
     cols = ["bible", "summa"]
     assert all_execution_order(cols) == execution_plan(resolve_stages(["all"]), cols)
+
+
+def _lock_remote(monkeypatch):
+    import publish_lock
+
+    monkeypatch.setattr(publish_lock, "settings_targets", lambda: publish_lock.WriteTargets(
+        "postgresql://u:p@db.example.supabase.co/postgres", "https://q.example.qdrant.io"))
+
+
+def _main_exit(argv):
+    from pipeline import main
+
+    with pytest.raises(SystemExit) as raised:
+        main(argv)
+    return raised.value.code
+
+
+def test_reader_stage_is_refused_while_locked(monkeypatch, capsys):
+    _lock_remote(monkeypatch)
+    assert _main_exit(["--stage", "reader", "--collection", "medieval"]) == 2
+    assert "locked" in capsys.readouterr().err
+
+
+def test_enrich_stage_is_refused_while_locked(monkeypatch, capsys):
+    _lock_remote(monkeypatch)
+    assert _main_exit(["--stage", "enrich", "--collection", "medieval", "--yes",
+                       "--release", "2026-11-cleanup"]) == 2
+    assert "locked" in capsys.readouterr().err
+
+
+def test_embed_and_bm25_index_stages_are_refused_while_locked(monkeypatch, capsys):
+    _lock_remote(monkeypatch)
+    for stage in ("embed", "bm25-index"):
+        assert _main_exit(["--stage", stage, "--collection", "medieval"]) == 2
+    assert "locked" in capsys.readouterr().err
+
+
+def test_sample_enrich_writes_only_samples_and_needs_no_entry(monkeypatch):
+    import argparse
+    from pipeline import _guard_live_writes
+
+    _lock_remote(monkeypatch)
+    args = argparse.Namespace(sample=3, collection="medieval", release=None)
+    _guard_live_writes(args, ["enrich"])

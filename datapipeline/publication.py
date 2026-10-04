@@ -11,6 +11,7 @@ from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from dataclasses import dataclass
 from enum import Enum
 from importlib import import_module
+from pathlib import Path
 from typing import Protocol
 
 import asyncpg
@@ -69,6 +70,7 @@ class PublicationRequest:
     reset_search_index: bool = False
     wipe_reader: bool = False
     wipe_reader_confirmation: str | None = None
+    release: str | None = None
 
 
 @dataclass(frozen=True)
@@ -104,6 +106,7 @@ class SearchIndex(Protocol):
 
 ReaderStoreFactory = Callable[[], AbstractAsyncContextManager[ReaderStore]]
 SearchIndexFactory = Callable[[], AbstractAsyncContextManager[SearchIndex]]
+WriteGuard = Callable[[PublicationRequest], None]
 
 
 class CollectionPublicationRunner:
@@ -113,18 +116,28 @@ class CollectionPublicationRunner:
         source_adapters: Mapping[str, SourceAdapter],
         acquire_reader_store: ReaderStoreFactory,
         acquire_search_index: SearchIndexFactory,
+        write_guard: WriteGuard | None = None,
     ) -> None:
         self._source_adapters = source_adapters
         self._acquire_reader_store = acquire_reader_store
         self._acquire_search_index = acquire_search_index
+        self._write_guard = write_guard
 
-    async def publish(self, request: PublicationRequest) -> PublicationResult:
+    def build(self, request: PublicationRequest) -> list[Document]:
+        """Run the source adapter and the document checks. Opens no store, so it is
+        what a dry run uses and needs no publish-lock entry."""
         self._validate_request(request)
         documents = self._source_adapters[request.collection]()
         if request.limit is not None:
             documents = documents[: request.limit]
-
         self._validate_documents(request.collection, documents)
+        return documents
+
+    async def publish(self, request: PublicationRequest) -> PublicationResult:
+        self._validate_request(request)
+        if self._write_guard is not None:
+            self._write_guard(request)
+        documents = self.build(request)
         built_ids = {
             passage_id(document.id, passage.anchor)
             for document in documents
@@ -324,9 +337,26 @@ async def acquire_qdrant_search_index() -> AsyncIterator[SearchIndex]:
         await client.close()
 
 
-def production_runner() -> CollectionPublicationRunner:
+def publish_lock_guard(lock_path: Path | None = None) -> WriteGuard:
+    """Refuse a live publish unless PUBLISH_LOCK.json approves it (item 0.4)."""
+    from publish_lock import DEFAULT_PATH, assert_live_write_allowed, load_lock
+
+    def guard(request: PublicationRequest) -> None:
+        assert_live_write_allowed(
+            f"publish {request.collection} to {request.target.value}",
+            request.collection,
+            request.release,
+            "apply",
+            lock=load_lock(lock_path or DEFAULT_PATH),
+        )
+
+    return guard
+
+
+def production_runner(lock_path: Path | None = None) -> CollectionPublicationRunner:
     return CollectionPublicationRunner(
         source_adapters=SOURCE_ADAPTERS,
         acquire_reader_store=acquire_postgres_reader_store,
         acquire_search_index=acquire_qdrant_search_index,
+        write_guard=publish_lock_guard(lock_path),
     )

@@ -5,6 +5,7 @@ import argparse
 import asyncio
 from collections.abc import Sequence
 
+from identity import passage_id
 from publication import (
     CollectionPublicationRunner,
     PublicationRequest,
@@ -56,6 +57,19 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="COLLECTION",
         help="must exactly match --collection when --wipe-reader is used",
     )
+    parser.add_argument(
+        "--release",
+        metavar="RELEASE_ID",
+        help=(
+            "release this publish belongs to; a live write needs an entry for this "
+            "collection and release in PUBLISH_LOCK.json"
+        ),
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="build and check the collection, print its counts, and write nothing",
+    )
     return parser
 
 
@@ -73,9 +87,27 @@ def main(
         reset_search_index=args.reset_search_index,
         wipe_reader=args.wipe_reader,
         wipe_reader_confirmation=args.confirm_reader_wipe,
+        release=args.release,
     )
+    runner = runner or production_runner()
+    if args.dry_run:
+        try:
+            documents = runner.build(request)
+        except ValueError as error:
+            parser.error(str(error))
+        passages = {
+            passage_id(document.id, passage.anchor)
+            for document in documents
+            for passage in document.passages
+        }
+        print(
+            f"{request.collection}: dry run, {len(documents)} documents, "
+            f"{len(passages)} passages; nothing written"
+        )
+        return 0
+
     try:
-        result = asyncio.run((runner or production_runner()).publish(request))
+        result = asyncio.run(runner.publish(request))
     except ValueError as error:
         parser.error(str(error))
 

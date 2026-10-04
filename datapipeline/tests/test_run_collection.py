@@ -5,7 +5,9 @@ import sys
 
 import pytest
 
-from publication import PublicationResult, PublicationTarget
+from model import Document, Passage
+import publish_lock
+from publication import PublicationResult, PublicationTarget, production_runner
 from run_collection import build_parser, main
 
 
@@ -13,6 +15,23 @@ class RecordingRunner:
     def __init__(self, error: ValueError | None = None):
         self.request = None
         self.error = error
+        self.built = None
+
+    def build(self, request):
+        self.built = request
+        return [
+            Document(
+                id="11111111-1111-1111-1111-111111111111",
+                collection=request.collection,
+                title="On Loving God",
+                author="Bernard of Clairvaux",
+                passages=[
+                    Passage(content=f"Passage {n}", reference=str(n), anchor=str(n),
+                            chapter_key="c1", chapter_label="Chapter 1", position=n)
+                    for n in range(3)
+                ],
+            )
+        ]
 
     async def publish(self, request):
         self.request = request
@@ -109,3 +128,43 @@ def test_runner_refusal_is_reported_as_a_cli_usage_failure(capsys):
     captured = capsys.readouterr()
     assert raised.value.code == 2
     assert "reader-wipe confirmation must exactly match" in captured.err
+
+
+def test_dry_run_acquires_no_store_and_prints_counts(capsys):
+    runner = RecordingRunner()
+
+    exit_code = main(["--collection", "medieval", "--dry-run"], runner=runner)
+
+    assert exit_code == 0
+    assert runner.request is None
+    assert runner.built.collection == "medieval"
+    assert "medieval: dry run, 1 documents, 3 passages; nothing written" in capsys.readouterr().out
+
+
+def test_release_is_passed_into_the_request():
+    runner = RecordingRunner()
+
+    main(["--collection", "medieval", "--release", "2026-11-cleanup"], runner=runner)
+
+    assert runner.request.release == "2026-11-cleanup"
+
+
+def test_live_publish_is_refused_while_locked(tmp_path, monkeypatch, capsys):
+    lock_path = tmp_path / "PUBLISH_LOCK.json"
+    lock_path.write_text('{"since": "2026-10-04", "reason": "test", "approved_applies": []}')
+    monkeypatch.setattr(publish_lock, "settings_targets", lambda: publish_lock.WriteTargets(
+        "postgresql://u:p@db.example.supabase.co/postgres", "https://q.example.qdrant.io"))
+
+    def no_network(*args, **kwargs):
+        raise AssertionError("the lock must refuse before any network call")
+
+    monkeypatch.setattr("asyncpg.connect", no_network)
+    runner = production_runner(lock_path=lock_path)
+    runner._source_adapters = {"catechism": no_network}
+
+    with pytest.raises(SystemExit) as raised:
+        main(["--collection", "catechism", "--target", "both", "--release", "x"],
+             runner=runner)
+
+    assert raised.value.code == 2
+    assert "locked" in capsys.readouterr().err
