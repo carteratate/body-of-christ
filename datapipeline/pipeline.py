@@ -333,7 +333,7 @@ _LIVE_WRITE_STAGES = frozenset({"reader", "embed", "bm25-index", "enrich"})
 def _guard_live_writes(args: argparse.Namespace, stages: list[str]) -> None:
     """Refuse a live-writing run unless PUBLISH_LOCK.json approves it (item 0.4)."""
     live = [s for s in stages if s in _LIVE_WRITE_STAGES]
-    if args.sample is not None and live == ["enrich"]:
+    if args.sample is not None and stages == ["enrich"]:
         return
     if live:
         from publish_lock import assert_live_write_allowed

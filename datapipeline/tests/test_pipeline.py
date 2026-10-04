@@ -72,10 +72,21 @@ def test_all_execution_order_still_matches_the_full_plan():
 
 
 def _lock_remote(monkeypatch):
+    """Remote targets, an empty lock whatever the shipped file holds, and no network."""
+    import asyncpg
     import publish_lock
+    import writers.qdrant
 
     monkeypatch.setattr(publish_lock, "settings_targets", lambda: publish_lock.WriteTargets(
         "postgresql://u:p@db.example.supabase.co/postgres", "https://q.example.qdrant.io"))
+    monkeypatch.setattr(publish_lock, "load_lock",
+                        lambda path=None: publish_lock.PublishLock(reason="test", entries=()))
+
+    def no_network(*args, **kwargs):
+        raise AssertionError("the lock must refuse before any network call")
+
+    monkeypatch.setattr(asyncpg, "create_pool", no_network)
+    monkeypatch.setattr(writers.qdrant, "get_client", no_network)
 
 
 def _main_exit(argv):
@@ -95,7 +106,7 @@ def test_reader_stage_is_refused_while_locked(monkeypatch, capsys):
 def test_enrich_stage_is_refused_while_locked(monkeypatch, capsys):
     _lock_remote(monkeypatch)
     assert _main_exit(["--stage", "enrich", "--collection", "medieval", "--yes",
-                       "--release", "2026-11-cleanup"]) == 2
+                       "--release", "test-release-never-approved"]) == 2
     assert "locked" in capsys.readouterr().err
 
 

@@ -84,7 +84,7 @@ def _refused(script, *extra):
 
 def test_backfill_apply_is_refused_while_locked():
     _refused("backfill_missing_vectors.py")
-    _refused("backfill_missing_vectors.py", "--release", "2026-11-cleanup")
+    _refused("backfill_missing_vectors.py", "--release", "test-release-never-approved")
 
 
 def test_reembed_apply_is_refused_while_locked():

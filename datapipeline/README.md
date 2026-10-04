@@ -63,6 +63,11 @@ Documents, runs the document checks and prints the counts, and needs no lock ent
 python run_collection.py --collection catechism --dry-run
 ```
 
+The dry run still needs the required environment variables set, because the adapters
+import `config`, but any values will do: nothing connects. The loopback exemption
+trusts the hostname, so a `localhost` URL that is an SSH tunnel or port forward to
+Supabase or Qdrant counts as a rehearsal. Don't point a local URL at production.
+
 Routine publication safely upserts Documents and Passages before pruning stale records
 from each selected store:
 
