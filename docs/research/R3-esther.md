@@ -205,7 +205,7 @@ Conclusion: no Church source settles a single scheme for the additions in Englis
   - Esther, 4:18, 4:28, "Addition C: Mordecai's prayer"
   - Esther, 4:29, 4:47, "Addition C: Esther's prayer"
   - Esther, 10:4, 10:14, "Addition F: Mordecai's dream explained"
-- Passage metadata may carry `nv_ref` and `nab_ref` for whole additions, where the mapping is exact. Examples: "Esther 4:17a–kk" and "Esther C:1–30" on the C passages, split as 17a-m / 17n-kk and C 1-11 / C 12-30; "Esther 10:3a–k" and "Esther F:1–11" on F. Do not put Nova Vulgata letters on individual verses. Several WEB-C verses have no Nova Vulgata counterpart, and an alias would claim an equivalence that is not there.
+- Passage metadata may carry `nv_ref` and `nab_ref` for whole additions, where the mapping is exact. (Carter later added `lxx_ref`, the Septuagint range; see "Answered by Carter".) Examples: "Esther 4:17a–kk" and "Esther C:1–30" on the C passages, split as 17a-m / 17n-kk and C 1-11 / C 12-30; "Esther 10:3a–k" and "Esther F:1–11" on F. Do not put Nova Vulgata letters on individual verses. Several WEB-C verses have no Nova Vulgata counterpart, and an alias would claim an equivalence that is not there.
 - The pericopes that already hold A, B, D and E (`esther/1/1`, `esther/3/3-*`, `esther/5/1`, `esther/8/1-*`) are untouched by this item. The same per-addition alias can be added to their metadata if 1.4a wants consistency. It changes no text, so the IDs stay.
 
 **Anchors and D1 redirects.** Under this recommendation no existing anchor names different text. `esther/4/4` keeps 4:4-17, because the restored verses form their own group closed at the next pericope start. `esther/10/1` keeps 10:1-3. The three new anchors are new units. **No redirects are needed.**
@@ -254,3 +254,5 @@ A related point for later, not part of 1.4a: the English Lectionary's Esther rea
 ## Answered by Carter (4 Oct 2026)
 
 Carter accepted the recommendation (before the review found that the Catechism and the Italian Lectionary share the Septuagint's letters): WEB-C numbers with addition-letter titles, Nova Vulgata and NAB ranges in metadata for whole additions. Recorded in `NEEDS-CARTER.md`, the plan's Decision log and the 1.4a spec.
+
+After the review, Carter also approved (4 Oct): record the Septuagint range (`lxx_ref`) alongside the Nova Vulgata and NAB ranges, and correct the Decision log reason to say the Catechism and the Italian Lectionary share the Septuagint's letters. For C, the Septuagint ranges are Mordecai's prayer 4:17a-i and Esther's prayer 4:17k-z, which agree with the Catechism's 4:17b and the Italian Lectionary's 4:17k. Those letters are Rahlfs'; the NETS translation follows the Göttingen edition's C 1-30, the same as WEB-C. F's Septuagint letters were not verified here; 1.4a confirms them from a Rahlfs or Göttingen copy.
