@@ -166,6 +166,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
+  R6 fact for this choice: the Dominican edition's book 4 (1929) has no open scan, so that edition would be incomplete until one is found.
 - **5.6c** [Phase 5]. Spiritual Combat: both editions the memos named (Burns 1846, Rivingtons 1875) were translated for the Church of England. Recommended answer: the Catholic edition, Philadelphia, Dornin, 1817 (R6).
 - **5.6c** [Phase 5]. Tanquerey: the scans read "Second and revised edition" with no year, and catalogues say 1930 or 1932. Check the title-page verso before ingesting; ingest only a 1930 printing (R6).
 - **5.6c** [Phase 5]. Catherine of Genoa: the clean CCEL text is a different translation (New York, 1907) from the 1858 Burns one the memo named. Recommended answer: use CCEL 1907 (R6).

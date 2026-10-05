@@ -730,7 +730,7 @@ Conventions used in this file:
   - `docs/research/2026-09-28-scan-only-works-text-sources.md`: of 48 scan-only works, clean text for 19 (4 flagged), partial for 6, OCR only for 23. ecatholic2000.com claims copyright on its pages (use only to check our OCR or with permission, Decision log "OCR and scanned works").
   - The candidates memo lists 27 CCEL ThML works (A1) and 58 Gutenberg or Internet Archive works (A2).
   - Schroeder 1937 is after 1930, so its public-domain status needs a renewal search under the Decision log's non-renewal rule. R6 ran it on 5 Oct 2026 (NYPL's transcription of the renewal records, complete for 1964 and 1965): no renewal found; recorded in the 11 Schroeder rows for Carter's approval.
-  - Findings: `docs/research/R6-editions.md` (194 planned rows, download list of 174 files). Not yet covered: the Pohle-Preuss and Koch-Preuss volumes, Bellarmine's *Ascent of the Mind*, Marmion's *Christ in His Mysteries*, the remaining Centenary Edition and SCG volumes.
+  - Findings: `docs/research/R6-editions.md` (230 planned rows covering every work in 1.2c, 1.2d, 1.2e, 1.8d and 5.3 to 5.6c; download list of 246 files, 2.01 GB).
 - **Changes (deliverables):** One row per planned work in `datapipeline/rights_inventory.json` (0.2 format, with `planned_for` set to the ingesting item and `source_path` set to where the file will be vendored; Carter's choice, 4 Oct 2026) plus `docs/research/R6-editions.md` with, per work:
   - Title page facts from the actual file or scan: translator, publisher, place, year, printing.
   - Match against the Decision log edition, or the mismatch.
