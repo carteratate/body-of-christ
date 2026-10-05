@@ -269,3 +269,48 @@ def test_file_moved_unchanged_out_of_incoming_keeps_date_and_url(tree):
     assert "_incoming/encyclicals/new.html" not in by_path
     assert source_lock.verify(sources, lock, COLLECTIONS, None) == {
         c: [] for c in ("_incoming", "encyclicals", "summa")}
+
+
+def _stage(sources, lock, rel, text, url, today="2026-10-05"):
+    held = sources / "_incoming" / rel
+    held.parent.mkdir(parents=True, exist_ok=True)
+    held.write_text(text, encoding="utf-8")
+    source_lock.write(sources, lock, COLLECTIONS, None, today, fetched=True)
+    entries = json.loads(lock.read_text())
+    for e in entries:
+        if e["path"] == f"_incoming/{rel}":
+            e["url"] = url
+    lock.write_text(json.dumps(entries), encoding="utf-8")
+    return held
+
+
+def test_file_replacing_a_locked_file_keeps_the_download_date_and_url(tree):
+    # A New Hope for Lebanon: the French page replaces the locked, empty English one.
+    sources, lock = tree
+    source_lock.write(sources, lock, COLLECTIONS, None, "2026-09-29")
+    held = _stage(sources, lock, "encyclicals/stray.html", "<p>replacement</p>",
+                  "https://example.org/fr")
+    held.replace(sources / "encyclicals" / "stray.html")
+    source_lock.write(sources, lock, COLLECTIONS, None, "2026-11-01")
+    entry = {e["path"]: e for e in json.loads(lock.read_text())}["encyclicals/stray.html"]
+    assert (entry["acquired"], entry["url"]) == ("2026-10-05", "https://example.org/fr")
+
+
+def test_file_changed_on_the_move_is_new(tree):
+    sources, lock = tree
+    held = _stage(sources, lock, "encyclicals/new.html", "<p>new</p>", "https://example.org/new")
+    held.unlink()
+    (sources / "encyclicals" / "new.html").write_text("<p>edited</p>", encoding="utf-8")
+    source_lock.write(sources, lock, COLLECTIONS, None, "2026-11-01")
+    entry = {e["path"]: e for e in json.loads(lock.read_text())}["encyclicals/new.html"]
+    assert (entry["acquired"], entry["url"]) == ("unknown-before-2026-11-01", None)
+
+
+def test_scoped_write_after_a_move_drops_the_incoming_entry(tree):
+    sources, lock = tree
+    held = _stage(sources, lock, "encyclicals/new.html", "<p>new</p>", "https://example.org/new")
+    held.rename(sources / "encyclicals" / "new.html")
+    source_lock.write(sources, lock, COLLECTIONS, "encyclicals", "2026-11-01")
+    paths = {e["path"] for e in json.loads(lock.read_text())}
+    assert "encyclicals/new.html" in paths and "_incoming/encyclicals/new.html" not in paths
+    assert not any(source_lock.verify(sources, lock, COLLECTIONS, None).values())

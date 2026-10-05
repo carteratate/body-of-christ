@@ -10,8 +10,10 @@ list.
     python3 scripts/source_lock.py --write --collection encyclicals
 
 Approved downloads not yet ingested wait in `sources/_incoming/<final path>` (R6). The
-ingesting PR moves each file unchanged to `sources/<final path>` and runs `--write`; a
-file whose hash matches its `_incoming/` entry keeps that entry's `acquired` date and URL.
+ingesting PR moves each file unchanged to `sources/<final path>` and runs `--write`
+(scoped or not; `_incoming` is always rewritten with it). A file whose hash matches its
+`_incoming/` entry keeps that entry's `acquired` date and URL, even where it replaces an
+older file at the same path. A file changed on the way is new: unknown date, no URL.
 
 Item 0.2 in docs/corpus-cleanup/P0-checks-identity-research.md.
 """
@@ -79,8 +81,8 @@ _UNREGISTERED_DIR_NOTES = {
     # Approved R6 downloads (docs/research/R6-editions.md, "Download list for Carter"),
     # held where no adapter reads them. The ingesting PR moves each file unchanged to
     # its "Vendored as" path, the path after `_incoming/`, so its hash is the same.
-    INCOMING: "approved R6 download awaiting its ingesting PR; moves unchanged to the "
-                 "path after _incoming/",
+    INCOMING: ("approved R6 download awaiting its ingesting PR; moves unchanged to the "
+               "path after _incoming/"),
 }
 
 ROLES = ("adapter-input", "adapter-auxiliary", "vendored-unregistered")
@@ -173,8 +175,9 @@ def _entry(collection: str, rel: str, path: Path, role: str, url: str | None,
     sha, size = _sha256(path)
     old = previous.get(rel, {})
     staged = previous.get(f"{INCOMING}/{rel}", {})
-    if not old and staged.get("sha256") == sha:
-        # Moved unchanged out of the holding folder: keep its download date and URL.
+    if old.get("sha256") != sha and staged.get("sha256") == sha:
+        # Moved unchanged out of the holding folder, possibly over an older file at the
+        # same path (A New Hope for Lebanon): keep the download's date and URL.
         old = staged
     unchanged = old.get("sha256") == sha
     if unchanged:
@@ -222,6 +225,10 @@ def write(sources: Path, lock_path: Path, registered: list[str], only: str | Non
           today: str, fetched: bool = False) -> list[dict]:
     existing = load_lock(lock_path)
     scope = _scope(sources, registered, existing, only)
+    if any(e["collection"] == INCOMING for e in existing) or (sources / INCOMING).is_dir():
+        # A file moved out of _incoming/ must leave it in the same write, even one scoped
+        # to the file's collection (vendor_sources.py writes one collection at a time).
+        scope.add(INCOMING)
     fresh = build_entries(sources, registered, scope, {e["path"]: e for e in existing},
                           today, fetched)
     kept = [e for e in existing if e["collection"] not in scope]
