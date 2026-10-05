@@ -10,8 +10,8 @@ import re
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 
-from checks.coverage import _PassageText, documents_by_file, match_key, split_sentences
-from checks.coverage import MIN_SENTENCE_CHARS
+from checks.coverage import _PassageText, documents_by_file, match_key, measurable
+from checks.coverage import split_sentences
 from checks.source_text import SourceUnit
 from model import Document
 
@@ -236,7 +236,7 @@ def summa_article_coverage(documents: list[Document], units: list[SourceUnit],
         if u.region != "body" or u.unit_id not in article_ids:
             continue
         for s in split_sentences(u.text):
-            if len(s) < MIN_SENTENCE_CHARS:
+            if not measurable(s):
                 continue
             row = out[u.unit_id]
             row[0] += len(s)
@@ -326,7 +326,7 @@ def _covered_chars(text: _PassageText, texts: list[str]) -> tuple[int, int]:
     measured = covered = 0
     for t in texts:
         for s in split_sentences(t):
-            if len(s) < MIN_SENTENCE_CHARS:
+            if not measurable(s):
                 continue
             measured += len(s)
             if text.find(match_key(s)) is not None:

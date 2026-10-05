@@ -330,11 +330,14 @@ def test_coverage_regression_and_expected_direction_down():
 
 def test_known_defects_file_is_well_formed():
     known = report.load_known()
-    allowed = {"fixed_by", "description", "expected_direction"}
+    allowed = {"fixed_by", "description", "expected_direction", "units"}
     for check_id, entry in known.items():
         assert set(entry) <= allowed and entry["fixed_by"] and entry["description"], check_id
         assert entry.get("expected_direction", "down") == "down", check_id
         assert report.check_scope(check_id) in report.COLLECTIONS, check_id
+        # Grouped check ids list their units, so a new unit is not hidden by the entry.
+        grouped = check_id.startswith(("sequence.bible_verses.", "sequence.numbered_paragraphs."))
+        assert ("units" in entry) == grouped, check_id
 
 
 def test_editorial_div_is_apparatus_and_flagged_if_published(tmp_path, monkeypatch):
@@ -384,3 +387,60 @@ def test_editorial_divs_file_is_well_formed():
     for r in rows:
         assert set(r) == {"collection", "file", "div", "title", "item"}
         assert r["item"] in ("1.8a", "1.8b", "1.9"), r
+
+
+def test_thml_verse_lines_are_body(tmp_path):
+    path = tmp_path / "vol.xml"
+    path.write_text("""<?xml version="1.0"?><ThML><ThML.body><div1 id="i" title="A Work">
+<p>A paragraph before the hymn, long enough to measure.</p>
+<verse><l>To thee a garland I present,</l><l>Woven of words</l></verse>
+</div1></ThML.body></ThML>""", encoding="utf-8")
+    units = S.thml_units(str(path))
+    assert [u.region for u in units] == ["body", "body"]
+    assert " ".join(units[1].text.split()) == "To thee a garland I present, Woven of words"
+
+
+def test_summa_notes_are_notes_and_references_are_spelled_out(tmp_path):
+    path = tmp_path / "summa.xml"
+    path.write_text("""<?xml version="1.0"?><ThML><ThML.body><div1 id="FS" title="Part">
+<div4 id="FS_Q1_A1" title="Article 1"><p>As Augustine says (De Lib. Arb. ii, 19 [*Cf. FP, Q[12]]), it is
+so, as stated above (FS, Q[24], A[3], OBJ[2]; SS, QQ[1]-[4]).</p></div4>
+</div1></ThML.body></ThML>""", encoding="utf-8")
+    units = S.summa_units(str(path))
+    assert [u.region for u in units] == ["note", "body"]
+    assert units[0].text == "[*Cf. FP, Q[12]]"
+    assert " ".join(units[1].text.split()) == (
+        "As Augustine says (De Lib. Arb. ii, 19), it is so, as stated above (First Part of "
+        "the Second Part, Q. 24, A. 3, Objection 2; Second Part of the Second Part, Qq. 1–4).")
+
+
+def test_sentence_without_letters_is_not_measured():
+    units = [S.SourceUnit("ccc.json", "1", "* * * * * * * * * * * * * * * * * *", "body")]
+    f = C.coverage("catechism", [_doc([_passage("Anything at all.")])], units).files["ccc.json"]
+    assert (f.body_chars, f.covered_chars) == (0, 0) and f.short_chars > 0
+
+
+def test_stale_baseline_after_a_fix_or_a_source_change():
+    cov = C.CoverageResult("councils", {
+        "a.html": C.FileCoverage("a.html", [], body_chars=100, covered_chars=90),
+        "b.html": C.FileCoverage("b.html", [], body_chars=100, covered_chars=95),
+        "c.html": C.FileCoverage("c.html", [], body_chars=200, covered_chars=100),
+        "d.html": C.FileCoverage("d.html", [], body_chars=100, covered_chars=100)}, {})
+    run = report.RunResult(["councils"], {"councils": cov})
+    baseline = {"files": {"councils/a.html": {"pct": 90.0, "body_chars": 100},
+                          "councils/b.html": {"pct": 40.0, "body_chars": 100},
+                          "councils/c.html": {"pct": 50.0, "body_chars": 100}}}
+    assert report.stale_baseline(run, baseline) == [
+        "councils/b.html: 95.0 > baseline 40.0",
+        "councils/c.html: body 200 characters, baseline 100",
+        "councils/d.html: not in the baseline"]
+
+
+def test_grown_defect_lists_only_new_units():
+    known = {"sequence.numbered_paragraphs.missing:councils/a.html":
+             {"fixed_by": "1.1", "description": "d", "units": ["3", "4"]},
+             "sequence.canons.missing:266": {"fixed_by": "1.5a", "description": "d"}}
+    failing = {"sequence.numbered_paragraphs.missing:councils/a.html": ["3", "7"],
+               "sequence.canons.missing:266": ["266"]}
+    assert report.grown_defects(failing, known) == {
+        "sequence.numbered_paragraphs.missing:councils/a.html": ["7"]}

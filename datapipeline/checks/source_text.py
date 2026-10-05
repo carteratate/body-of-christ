@@ -76,6 +76,10 @@ def _thml_raw(el, skip_notes: bool) -> str:
             parts.append(SEGMENT_BREAK)
         elif child.tag == "br":
             parts.append(" ")
+        elif child.tag == "l":
+            # A line of verse: lines sit side by side in the source, often without
+            # whitespace between them.
+            parts.append(f" {_thml_raw(child, skip_notes)} ")
         else:
             parts.append(_thml_raw(child, skip_notes))
         parts.append(child.tail or "")
@@ -102,10 +106,10 @@ def editorial_divs(source_file: str, path: str = EDITORIAL_DIVS_PATH) -> set[str
 
 
 def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
-    """ThML (CCEL XML). Body is <p> text inside div1 to div6; <note> is "note";
-    <scripCom> and <pb> carry no text and are ignored. unit_id is the nearest
-    ancestor div's id. Divs listed in editorial_divs.json, and everything inside
-    them, are "apparatus"."""
+    """ThML (CCEL XML). Body is <p> and <verse> text inside div1 to div6 (a <verse>
+    holds a poem or a quoted hymn as <l> lines); <note> is "note"; <scripCom> and <pb>
+    carry no text and are ignored. unit_id is the nearest ancestor div's id. Divs
+    listed in editorial_divs.json, and everything inside them, are "apparatus"."""
     source_file = source_file or os.path.basename(path)
     root = _read_thml(path)
     editorial = editorial_divs(source_file)
@@ -123,7 +127,7 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                 if in_div:
                     units.append(SourceUnit(source_file, div_id,
                                             _thml_text(child, skip_notes=False), "note"))
-            elif tag == "p":
+            elif tag in ("p", "verse"):
                 if in_div:
                     units.append(SourceUnit(source_file, div_id,
                                             _thml_text(child, skip_notes=True), region))
@@ -160,6 +164,49 @@ def thml_divs(path: str) -> list[tuple[str, int, str, str]]:
 
     walk(root, "body")
     return out
+
+
+# --------------------------------------------------------------------------- Summa
+
+# The Summa's text carries the editor's bracketed notes ("[*Or, Fruition]") and a
+# shorthand for references ("FS, Q[24], A[3]"). The corpus drops the notes as editorial
+# text and prints the references in words, so the extractor reads the text the same way:
+# a note is a "note" unit, and a reference is spelled out as a reader sees it. Without
+# this, every sentence holding either one reads as lost (4 points of the Summa's body).
+SUMMA_NOTE = re.compile(r"\s*\[\*(?:[^\[\]]|\[[^\]]*\])*\]")
+_SUMMA_PARTS = {"FP": "First Part", "FS": "First Part of the Second Part",
+                "SS": "Second Part of the Second Part", "SP": "Second Part",
+                "TP": "Third Part", "XP": "Supplement"}
+_SUMMA_SHORTHAND = (
+    (re.compile(r"QQ\[(\d+)\]\s*-\s*\[?(\d+)\]?"), r"Qq. \1–\2"),
+    (re.compile(r"AA\[(\d+)\]\s*,\s*(\d+)"), r"Aa. \1, \2"),
+    (re.compile(r"AA\[(\d+)\]"), r"Aa. \1"),
+    (re.compile(r"\bQ\[(\d+)\]"), r"Q. \1"),
+    (re.compile(r"\bA\[(\d+)\]"), r"A. \1"),
+    (re.compile(r"\bOBJ\[(\d+)\]"), r"Objection \1"),
+)
+_SUMMA_PART = re.compile(r"\b(FP|FS|SS|SP|TP|XP)\b")
+
+
+def summa_reading_text(text: str) -> str:
+    """Summa text as the reader sees it: editor's notes removed, references in words."""
+    text = SUMMA_NOTE.sub("", text)
+    for pattern, replacement in _SUMMA_SHORTHAND:
+        text = pattern.sub(replacement, text)
+    return _SUMMA_PART.sub(lambda m: _SUMMA_PARTS[m.group(1)], text)
+
+
+def summa_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
+    """The Summa's ThML read as thml_units, with each body or heading unit's editor's
+    notes moved into "note" units and its reference shorthand spelled out."""
+    units: list[SourceUnit] = []
+    for u in thml_units(path, source_file):
+        if u.region in ("body", "heading"):
+            for m in SUMMA_NOTE.finditer(u.text):
+                units.append(SourceUnit(u.source_file, u.unit_id, m.group(0).strip(), "note"))
+            u = u._replace(text=summa_reading_text(u.text))
+        units.append(u)
+    return [u for u in units if u.text.strip()]
 
 
 # --------------------------------------------------------------------------- HTML
@@ -505,6 +552,8 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
 
 def file_units(collection: str, source_file: str, sources: str = SOURCES) -> list[SourceUnit]:
     path = os.path.join(sources, collection, source_file)
+    if collection == "summa":
+        return summa_units(path, source_file)
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
     if source_file.endswith(".html"):

@@ -18,6 +18,14 @@ def test_no_unexpected_failures(failing, family):
     assert unexpected == []
 
 
+@pytest.mark.parametrize("family", report.FAMILIES)
+def test_known_defects_do_not_grow(failing, family):
+    # An entry that groups units lists them; a unit outside the list is a new failure.
+    grown = {k: v for k, v in report.grown_defects(failing, KNOWN).items()
+             if k.startswith(f"sequence.{family}.")}
+    assert grown == {}
+
+
 @pytest.mark.parametrize("check_id", [
     pytest.param(k, marks=pytest.mark.xfail(strict=True, reason=f"fixed by {KNOWN[k]['fixed_by']}"))
     for k in KNOWN_SEQUENCE

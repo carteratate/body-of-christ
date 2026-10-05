@@ -1,5 +1,5 @@
 {
- "measured_on": "feat/coverage-checks 166bf01",
+ "measured_on": "feat/coverage-checks c91d76f",
  "files": {
   "apostolic-exhortations/africae-munus.html": {
    "body_chars": 148141,
@@ -737,9 +737,9 @@
    "pct": 98.96
   },
   "church-fathers/apostolic fathers.xml": {
-   "body_chars": 2269929,
+   "body_chars": 2287283,
    "covered_chars": 2259963,
-   "pct": 99.56
+   "pct": 98.81
   },
   "church-fathers/city-of-god.xml": {
    "body_chars": 2801487,
@@ -747,9 +747,9 @@
    "pct": 99.48
   },
   "church-fathers/confessions.xml": {
-   "body_chars": 596594,
+   "body_chars": 597248,
    "covered_chars": 596594,
-   "pct": 100.0
+   "pct": 99.89
   },
   "church-fathers/incarnation.xml": {
    "body_chars": 127340,
@@ -762,9 +762,9 @@
    "pct": 100.0
   },
   "church-fathers/second-century.xml": {
-   "body_chars": 2400584,
-   "covered_chars": 2330342,
-   "pct": 97.07
+   "body_chars": 2476102,
+   "covered_chars": 2330426,
+   "pct": 94.12
   },
   "church-fathers/third-century-2.xml": {
    "body_chars": 2926956,
@@ -782,9 +782,9 @@
    "pct": 95.25
   },
   "church-fathers/third-fourth-century.xml": {
-   "body_chars": 2225334,
+   "body_chars": 2249255,
    "covered_chars": 2059670,
-   "pct": 92.56
+   "pct": 91.57
   },
   "councils/ecum-01-council-of-nicaea.html": {
    "body_chars": 19592,
@@ -1622,9 +1622,9 @@
    "pct": 67.89
   },
   "medieval/consolation-of-philosophy.xml": {
-   "body_chars": 226786,
+   "body_chars": 227170,
    "covered_chars": 226743,
-   "pct": 99.98
+   "pct": 99.81
   },
   "medieval/imitation-of-christ.xml": {
    "body_chars": 298204,
@@ -1712,9 +1712,9 @@
    "pct": 83.82
   },
   "summa/summa.xml": {
-   "body_chars": 14118881,
-   "covered_chars": 13190388,
-   "pct": 93.42
+   "body_chars": 14064656,
+   "covered_chars": 13760907,
+   "pct": 97.84
   }
  },
  "documents": {
@@ -2589,9 +2589,9 @@
   "1d496a39-f816-530f-9fa8-bb26d015ddce": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 100019,
+   "body_chars": 102742,
    "covered_chars": 100019,
-   "pct": 100.0
+   "pct": 97.35
   },
   "1d63d229-1283-53b8-91d1-2d79e06e7628": {
    "collection": "church-fathers",
@@ -2659,16 +2659,16 @@
   "3336c36c-c708-577d-81f9-de5c362c7ce5": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 106802,
+   "body_chars": 107337,
    "covered_chars": 106802,
-   "pct": 100.0
+   "pct": 99.5
   },
   "356b9c9b-236c-5761-8d85-64a441551944": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 77676,
+   "body_chars": 77906,
    "covered_chars": 77676,
-   "pct": 100.0
+   "pct": 99.7
   },
   "3717ce05-ad42-5ec3-b3ce-ff3964908e05": {
    "collection": "church-fathers",
@@ -2687,23 +2687,23 @@
   "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 1259122,
-   "covered_chars": 1193273,
-   "pct": 94.77
+   "body_chars": 1301719,
+   "covered_chars": 1193357,
+   "pct": 91.68
   },
   "3f1d7ed1-b5cd-539a-a446-8d4eab61dbd4": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
-   "body_chars": 75148,
+   "body_chars": 81922,
    "covered_chars": 75148,
-   "pct": 100.0
+   "pct": 91.73
   },
   "419ab97d-8237-5a73-a5cf-9d9ee125a1cc": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 83226,
+   "body_chars": 87559,
    "covered_chars": 83087,
-   "pct": 99.83
+   "pct": 94.89
   },
   "44fd52c3-fdef-518e-a463-a3273f39764c": {
    "collection": "church-fathers",
@@ -2715,9 +2715,9 @@
   "49437294-5526-5a1b-b2df-3022c0c36e56": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 54050,
+   "body_chars": 54653,
    "covered_chars": 54050,
-   "pct": 100.0
+   "pct": 98.9
   },
   "4b66fa28-684a-5e79-8596-6029d5de1a48": {
    "collection": "church-fathers",
@@ -2883,9 +2883,9 @@
   "760c4195-f5be-5141-90fc-8958fccd06ba": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 137267,
+   "body_chars": 147832,
    "covered_chars": 137267,
-   "pct": 100.0
+   "pct": 92.85
   },
   "76b8b853-70d2-5821-8ee5-0149e4f59e03": {
    "collection": "church-fathers",
@@ -2897,9 +2897,9 @@
   "7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
    "collection": "church-fathers",
    "source_file": "confessions.xml",
-   "body_chars": 596594,
+   "body_chars": 597248,
    "covered_chars": 596594,
-   "pct": 100.0
+   "pct": 99.89
   },
   "7f6bc9ae-3566-5deb-8dbe-895238288fda": {
    "collection": "church-fathers",
@@ -2960,9 +2960,9 @@
   "8b42a526-e078-56f4-89ab-4a87b995ef3b": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 16545,
+   "body_chars": 16633,
    "covered_chars": 14197,
-   "pct": 85.81
+   "pct": 85.35
   },
   "8d817baf-5149-5641-91ab-ad994870956a": {
    "collection": "church-fathers",
@@ -2981,9 +2981,9 @@
   "96584290-90c2-50bc-9d3d-c353b8969e1f": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 406156,
+   "body_chars": 414317,
    "covered_chars": 406156,
-   "pct": 100.0
+   "pct": 98.03
   },
   "973645b6-6110-5711-a635-6b84c2632fd8": {
    "collection": "church-fathers",
@@ -3009,9 +3009,9 @@
   "9e03c96d-8295-5e5e-a4d3-3570ddcf0415": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 1159444,
+   "body_chars": 1179244,
    "covered_chars": 1148945,
-   "pct": 99.09
+   "pct": 97.43
   },
   "9e93f3ef-cd33-598f-9aac-f2a5886d3e21": {
    "collection": "church-fathers",
@@ -3030,9 +3030,9 @@
   "a558e370-226c-5ac5-b01b-916adbe6b256": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
-   "body_chars": 263674,
+   "body_chars": 263819,
    "covered_chars": 263674,
-   "pct": 100.0
+   "pct": 99.95
   },
   "a9dfa0cc-a39d-5962-9068-231edc7d02fe": {
    "collection": "church-fathers",
@@ -3128,9 +3128,9 @@
   "c7ef22ce-17e4-5b8a-b915-9470f19eebe4": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
-   "body_chars": 298292,
+   "body_chars": 298380,
    "covered_chars": 298292,
-   "pct": 100.0
+   "pct": 99.97
   },
   "cf235300-e37d-5a7a-a421-f50efff38355": {
    "collection": "church-fathers",
@@ -3184,9 +3184,9 @@
   "dd54c7cc-1a9a-5388-90d3-e8c4b8a95e06": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
-   "body_chars": 5427,
+   "body_chars": 15285,
    "covered_chars": 5427,
-   "pct": 100.0
+   "pct": 35.51
   },
   "debb22d8-702c-5df3-952c-6df5cd720e42": {
    "collection": "church-fathers",
@@ -3247,9 +3247,9 @@
   "ef7c21a8-92fa-51b8-823f-89094bf6f565": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
-   "body_chars": 207303,
+   "body_chars": 207792,
    "covered_chars": 207303,
-   "pct": 100.0
+   "pct": 99.76
   },
   "efc282b4-fe6a-5162-9e1b-8748c686dde1": {
    "collection": "church-fathers",
@@ -3275,9 +3275,9 @@
   "f23f311d-4aa4-5091-bb8a-91b174e8f3a2": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 166424,
+   "body_chars": 176056,
    "covered_chars": 166424,
-   "pct": 100.0
+   "pct": 94.53
   },
   "f39c025e-78a6-5737-a94f-7896c84fc857": {
    "collection": "church-fathers",
@@ -3310,9 +3310,9 @@
   "f913305f-b259-578b-a5ca-532fac927aab": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 95155,
+   "body_chars": 95327,
    "covered_chars": 95155,
-   "pct": 100.0
+   "pct": 99.82
   },
   "f9e64ef8-6874-5784-b75c-ceaf4c081d29": {
    "collection": "church-fathers",
@@ -4542,9 +4542,9 @@
   "9a6599ee-ac40-5017-a2c6-7aad2cf14296": {
    "collection": "medieval",
    "source_file": "consolation-of-philosophy.xml",
-   "body_chars": 226786,
+   "body_chars": 227170,
    "covered_chars": 226743,
-   "pct": 99.98
+   "pct": 99.81
   },
   "c556327d-58ae-5934-ac53-ab8edb93943f": {
    "collection": "medieval",
@@ -4661,9 +4661,9 @@
   "31b2bc0a-0b16-5002-822a-26d3215dd256": {
    "collection": "summa",
    "source_file": "summa.xml",
-   "body_chars": 14118881,
-   "covered_chars": 13190388,
-   "pct": 93.42
+   "body_chars": 14064656,
+   "covered_chars": 13760907,
+   "pct": 97.84
   }
  }
 }

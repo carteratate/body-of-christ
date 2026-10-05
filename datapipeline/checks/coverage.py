@@ -56,6 +56,12 @@ def match_key(normalized: str) -> str:
     return _NON_ALNUM.sub("", normalized)
 
 
+def measurable(sentence: str) -> bool:
+    """A sentence long enough to measure, with letters or digits to compare. A rule of
+    asterisks or dots has an empty match key, which every text would contain."""
+    return len(sentence) >= MIN_SENTENCE_CHARS and bool(match_key(sentence))
+
+
 def split_sentences(text: str) -> list[str]:
     """Sentences of a text: split at SEGMENT_BREAK, blank lines, and [.!?] followed by
     whitespace and an uppercase letter. Returned normalized."""
@@ -131,7 +137,7 @@ class FileCoverage:
     documents: list[str]                 # document IDs built from this file
     body_chars: int = 0                  # characters of measured body sentences
     covered_chars: int = 0
-    short_chars: int = 0                 # body text in sentences under 30 characters
+    short_chars: int = 0                 # body text in sentences too short to measure
     note_chars: int = 0                  # all note text in the source
     note_leakage: int = 0                # note sentences found in passages
     passage_chars: int = 0               # characters of the passages built from it
@@ -308,7 +314,7 @@ def coverage(collection: str, documents: list[Document],
             if u.region == "note":
                 for s in split_sentences(u.text):
                     fc.note_chars += len(s)
-                    if len(s) >= MIN_SENTENCE_CHARS:
+                    if measurable(s):
                         hit = text.find(match_key(s))
                         if hit is not None:
                             fc.note_leakage += 1
@@ -317,7 +323,7 @@ def coverage(collection: str, documents: list[Document],
             if u.region != "body":
                 continue
             for s in split_sentences(u.text):
-                if len(s) < MIN_SENTENCE_CHARS:
+                if not measurable(s):
                     fc.short_chars += len(s)
                     continue
                 hit = text.find(match_key(s))
@@ -369,4 +375,4 @@ def _attribute(fc: FileCoverage, docs: list[Document],
 
 
 __all__ = ["CoverageResult", "DocumentCoverage", "FileCoverage", "coverage",
-           "documents_by_file", "match_key", "normalize", "split_sentences"]
+           "documents_by_file", "match_key", "measurable", "normalize", "split_sentences"]

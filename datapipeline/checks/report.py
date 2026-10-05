@@ -1,10 +1,12 @@
 """Coverage and sequence report (0.1a).
 
     python3 -m checks.report --collection all|<name> [--baseline checks/baselines/<file>]
-                             [--out <dir>] [--write-baseline <file>]
+                             [--out <dir>] [--write-baseline [<file>]]
 
 Builds documents through SOURCE_ADAPTERS, runs coverage, the sequence checks and the
 sentinels, and writes <out>/coverage.json, <out>/sequence.json and <out>/summary.md.
+--write-baseline also writes this run's numbers as the baseline (checks/baselines/
+coverage.json unless a file is given); a PR that changes any file's coverage commits it.
 summary.md holds numbers and IDs only, so it can be pasted into a public PR; the
 uncovered-sentence snippets stay in coverage.json, under the gitignored releases/.
 """
@@ -31,9 +33,13 @@ from model import Document  # noqa: E402
 CHECKS_DIR = os.path.dirname(os.path.abspath(__file__))
 KNOWN_DEFECTS_PATH = os.path.join(CHECKS_DIR, "known_defects.json")
 BASELINE_DIR = os.path.join(CHECKS_DIR, "baselines")
-DEFAULT_BASELINE = os.path.join(BASELINE_DIR, "coverage-master-2026-09.json")
-# A file's coverage may fall this many percentage points below its baseline.
+DEFAULT_BASELINE = os.path.join(BASELINE_DIR, "coverage.json")
+# A file's coverage may fall this many percentage points below its baseline, or rise this
+# many above it before the baseline must be rewritten.
 COVERAGE_TOLERANCE = 0.5
+# A file's measured body may differ this much (a fraction) from its baseline before the
+# baseline must be rewritten: the source or the extractor changed.
+BODY_TOLERANCE = 0.01
 # Files below this coverage have a known_defects.json entry; at or above it the entry is
 # reported "fixed, remove entry".
 COVERAGE_ENTRY_BELOW = 95.0
@@ -120,7 +126,8 @@ class RunResult:
 def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
         sources: str = SOURCES) -> RunResult:
     # config.settings requires store credentials at import. This run reads local files
-    # only and never connects, so placeholders do; real values already set are kept.
+    # only and never connects, so placeholders do. Variables already in the environment
+    # are kept; a placeholder does override a value that is only in datapipeline/.env.
     for name, placeholder in (("DATABASE_URL", "postgresql://checks:checks@localhost/checks"),
                               ("OPENAI_API_KEY", "unused"), ("QDRANT_URL", "http://localhost"),
                               ("QDRANT_API_KEY", "unused"), ("ANTHROPIC_API_KEY", "unused")):
@@ -237,6 +244,42 @@ def coverage_regressions(result: RunResult, baseline: dict,
     return out
 
 
+def stale_baseline(result: RunResult, baseline: dict) -> list[str]:
+    """Files whose baseline no longer describes them: coverage risen more than
+    COVERAGE_TOLERANCE points (a fix landed; the baseline must rise with it, or a later
+    PR could lose the fix again), body characters changed by more than BODY_TOLERANCE
+    (the source or the extractor changed), or a file the baseline does not hold. Each
+    is cleared by rewriting the baseline with --write-baseline."""
+    out = []
+    files = baseline.get("files", {})
+    for collection, cov in result.coverage.items():
+        for name, f in cov.files.items():
+            key = f"{collection}/{name}"
+            base = files.get(key)
+            if base is None:
+                out.append(f"{key}: not in the baseline")
+            elif f.pct > base["pct"] + COVERAGE_TOLERANCE:
+                out.append(f"{key}: {f.pct} > baseline {base['pct']}")
+            elif abs(f.body_chars - base["body_chars"]) > BODY_TOLERANCE * base["body_chars"]:
+                out.append(f"{key}: body {f.body_chars:,} characters, baseline "
+                           f"{base['body_chars']:,}")
+    return out
+
+
+def grown_defects(failing: dict[str, list[str]], known: dict[str, dict]) -> dict[str, list[str]]:
+    """Known defects that fail on more units than their entry lists. A check id that
+    groups units (a source file's § numbers, a Bible chapter's verses) lists them in
+    "units", so a new gap in a file that already has one is not hidden by the entry."""
+    out = {}
+    for check_id, units in failing.items():
+        listed = known.get(check_id, {}).get("units")
+        if listed is not None:
+            new = [u for u in units if u not in set(listed)]
+            if new:
+                out[check_id] = new
+    return out
+
+
 # --------------------------------------------------------------------------- output
 
 def baseline_json(result: RunResult, measured_on: str) -> dict:
@@ -294,6 +337,8 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
             base = base_files.get(key, {}).get("pct")
             if base is not None and f.pct < base - COVERAGE_TOLERANCE:
                 status = f"regression ({status})"
+            elif base is not None and f.pct > base + COVERAGE_TOLERANCE:
+                status = f"improved, rewrite baseline ({status})"
             if f.pct >= 99.5 and status == "pass" and _delta(f.pct, base) in ("0.00", "new"):
                 hidden += 1   # complete and unchanged: counted below, not listed
                 continue
@@ -340,6 +385,8 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
     unexpected = sorted(i for i in failing_ids if i not in known)
     fixed = sorted(k for k in judged if k not in failing_ids)
     regressions = coverage_regressions(result, baseline, known)
+    grown = grown_defects(failing, known)
+    stale = stale_baseline(result, baseline)
     by_owner: dict[str, int] = {}
     for k in judged:
         by_owner[known[k]["fixed_by"]] = by_owner.get(known[k]["fixed_by"], 0) + 1
@@ -347,9 +394,13 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
               f"{len(judged)} entries judged by this run, by item: " +
               ", ".join(f"{o} {n}" for o, n in sorted(by_owner.items())) + ".",
               f"Unexpected failures: {len(unexpected)}. Fixed, remove entry: {len(fixed)}. "
-              f"Coverage regressions: {len(regressions)}.", ""]
+              f"Grown: {len(grown)}. Coverage regressions: {len(regressions)}. "
+              f"Baseline out of date: {len(stale)}.", ""]
+    grown_lines = [f"{k}: {', '.join(v)}" for k, v in sorted(grown.items())]
     for label, ids in (("Unexpected failures", unexpected), ("Fixed, remove entry", fixed),
-                       ("Coverage regressions", regressions)):
+                       ("Grown (new units in a known defect)", grown_lines),
+                       ("Coverage regressions", regressions),
+                       ("Baseline out of date (rerun with --write-baseline)", stale)):
         if ids:
             lines += [f"{label}:", ""] + [f"- `{i}`" for i in ids] + [""]
     return "\n".join(lines).rstrip() + "\n"
@@ -375,8 +426,9 @@ def main(argv: list[str] | None = None) -> int:
                         choices=("all",) + COLLECTIONS)
     parser.add_argument("--baseline", default=DEFAULT_BASELINE)
     parser.add_argument("--out")
-    parser.add_argument("--write-baseline", metavar="FILE",
-                        help="also write this run's numbers as a baseline file")
+    parser.add_argument("--write-baseline", metavar="FILE", nargs="?", const=DEFAULT_BASELINE,
+                        help="also write this run's numbers as a baseline file "
+                             "(default checks/baselines/coverage.json)")
     args = parser.parse_args(argv)
 
     collections = COLLECTIONS if args.collection == "all" else (args.collection,)

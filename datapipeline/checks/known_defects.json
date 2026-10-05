@@ -35,13 +35,17 @@
   "fixed_by": "1.5a",
   "description": "78.64% covered: glued, missing or superseded canons (pages 1671–1691: the 2015 amended text is not the one kept)"
  },
+ "coverage.church-fathers.second-century.xml": {
+  "fixed_by": "1.10b",
+  "description": "94.12% covered: <verse> blocks (quoted poetry and hymns) dropped"
+ },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
   "description": "93.22% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
  },
  "coverage.church-fathers.third-fourth-century.xml": {
   "fixed_by": "1.8e",
-  "description": "92.56% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
+  "description": "91.57% covered: whole works holding their text directly in a div dropped (1.8e), pre-chapter greetings (1.8c), and <verse> blocks (1.10b)"
  },
  "coverage.councils.ecum-01-council-of-nicaea.html": {
   "fixed_by": "1.2c",
@@ -203,10 +207,6 @@
   "fixed_by": "1.3a",
   "description": "83.82% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
  },
- "coverage.summa.summa.xml": {
-  "fixed_by": "1.7",
-  "description": "93.42% covered: q.71, q.72 and every question's introduction (about 298,000 characters in div3s) dropped; apparatus rewriting also lowers the match"
- },
  "sentinel.daniel_13": {
   "fixed_by": "1.4a",
   "description": "Susanna (Daniel 13) is outside every KJV pericope"
@@ -245,87 +245,108 @@
  },
  "sequence.bible_verses.duplicated:NUM/16": {
   "fixed_by": "1.4a",
-  "description": "10 verses (16:28 to 37) in two overlapping KJV pericopes, published twice"
+  "description": "10 verses (16:28 to 37) in two overlapping KJV pericopes, published twice",
+  "units": ["NUM/16/28", "NUM/16/29", "NUM/16/30", "NUM/16/31", "NUM/16/32", "NUM/16/33", "NUM/16/34", "NUM/16/35", "NUM/16/36", "NUM/16/37"]
  },
  "sequence.bible_verses.missing:1KI/8": {
   "fixed_by": "1.4a",
-  "description": "5 verses (8:62 to 66) outside every KJV pericope range"
+  "description": "5 verses (8:62 to 66) outside every KJV pericope range",
+  "units": ["1KI/8/62", "1KI/8/63", "1KI/8/64", "1KI/8/65", "1KI/8/66"]
  },
  "sequence.bible_verses.missing:2CH/35": {
   "fixed_by": "1.4a",
-  "description": "1 verse (35:27) outside every KJV pericope range"
+  "description": "1 verse (35:27) outside every KJV pericope range",
+  "units": ["2CH/35/27"]
  },
  "sequence.bible_verses.missing:2KI/4": {
   "fixed_by": "1.4a",
-  "description": "1 verse (4:18) outside every KJV pericope range"
+  "description": "1 verse (4:18) outside every KJV pericope range",
+  "units": ["2KI/4/18"]
  },
  "sequence.bible_verses.missing:DAG/13": {
   "fixed_by": "1.4a",
-  "description": "64 verses (13:1 to 64) outside every KJV pericope range"
+  "description": "64 verses (13:1 to 64) outside every KJV pericope range",
+  "units": ["DAG/13/1", "DAG/13/2", "DAG/13/3", "DAG/13/4", "DAG/13/5", "DAG/13/6", "DAG/13/7", "DAG/13/8", "DAG/13/9", "DAG/13/10", "DAG/13/11", "DAG/13/12", "DAG/13/13", "DAG/13/14", "DAG/13/15", "DAG/13/16", "DAG/13/17", "DAG/13/18", "DAG/13/19", "DAG/13/20", "DAG/13/21", "DAG/13/22", "DAG/13/23", "DAG/13/24", "DAG/13/25", "DAG/13/26", "DAG/13/27", "DAG/13/28", "DAG/13/29", "DAG/13/30", "DAG/13/31", "DAG/13/32", "DAG/13/33", "DAG/13/34", "DAG/13/35", "DAG/13/36", "DAG/13/37", "DAG/13/38", "DAG/13/39", "DAG/13/40", "DAG/13/41", "DAG/13/42", "DAG/13/43", "DAG/13/44", "DAG/13/45", "DAG/13/46", "DAG/13/47", "DAG/13/48", "DAG/13/49", "DAG/13/50", "DAG/13/51", "DAG/13/52", "DAG/13/53", "DAG/13/54", "DAG/13/55", "DAG/13/56", "DAG/13/57", "DAG/13/58", "DAG/13/59", "DAG/13/60", "DAG/13/61", "DAG/13/62", "DAG/13/63", "DAG/13/64"]
  },
  "sequence.bible_verses.missing:DAG/14": {
   "fixed_by": "1.4a",
-  "description": "42 verses (14:1 to 42) outside every KJV pericope range"
+  "description": "42 verses (14:1 to 42) outside every KJV pericope range",
+  "units": ["DAG/14/1", "DAG/14/2", "DAG/14/3", "DAG/14/4", "DAG/14/5", "DAG/14/6", "DAG/14/7", "DAG/14/8", "DAG/14/9", "DAG/14/10", "DAG/14/11", "DAG/14/12", "DAG/14/13", "DAG/14/14", "DAG/14/15", "DAG/14/16", "DAG/14/17", "DAG/14/18", "DAG/14/19", "DAG/14/20", "DAG/14/21", "DAG/14/22", "DAG/14/23", "DAG/14/24", "DAG/14/25", "DAG/14/26", "DAG/14/27", "DAG/14/28", "DAG/14/29", "DAG/14/30", "DAG/14/31", "DAG/14/32", "DAG/14/33", "DAG/14/34", "DAG/14/35", "DAG/14/36", "DAG/14/37", "DAG/14/38", "DAG/14/39", "DAG/14/40", "DAG/14/41", "DAG/14/42"]
  },
  "sequence.bible_verses.missing:DAG/3": {
   "fixed_by": "1.4a",
-  "description": "67 verses (3:31 to 97) outside every KJV pericope range"
+  "description": "67 verses (3:31 to 97) outside every KJV pericope range",
+  "units": ["DAG/3/31", "DAG/3/32", "DAG/3/33", "DAG/3/34", "DAG/3/35", "DAG/3/36", "DAG/3/37", "DAG/3/38", "DAG/3/39", "DAG/3/40", "DAG/3/41", "DAG/3/42", "DAG/3/43", "DAG/3/44", "DAG/3/45", "DAG/3/46", "DAG/3/47", "DAG/3/48", "DAG/3/49", "DAG/3/50", "DAG/3/51", "DAG/3/52", "DAG/3/53", "DAG/3/54", "DAG/3/55", "DAG/3/56", "DAG/3/57", "DAG/3/58", "DAG/3/59", "DAG/3/60", "DAG/3/61", "DAG/3/62", "DAG/3/63", "DAG/3/64", "DAG/3/65", "DAG/3/66", "DAG/3/67", "DAG/3/68", "DAG/3/69", "DAG/3/70", "DAG/3/71", "DAG/3/72", "DAG/3/73", "DAG/3/74", "DAG/3/75", "DAG/3/76", "DAG/3/77", "DAG/3/78", "DAG/3/79", "DAG/3/80", "DAG/3/81", "DAG/3/82", "DAG/3/83", "DAG/3/84", "DAG/3/85", "DAG/3/86", "DAG/3/87", "DAG/3/88", "DAG/3/89", "DAG/3/90", "DAG/3/91", "DAG/3/92", "DAG/3/93", "DAG/3/94", "DAG/3/95", "DAG/3/96", "DAG/3/97"]
  },
  "sequence.bible_verses.missing:DEU/1": {
   "fixed_by": "1.4a",
-  "description": "4 verses (1:5 to 8) outside every KJV pericope range"
+  "description": "4 verses (1:5 to 8) outside every KJV pericope range",
+  "units": ["DEU/1/5", "DEU/1/6", "DEU/1/7", "DEU/1/8"]
  },
  "sequence.bible_verses.missing:ESG/10": {
   "fixed_by": "1.4a",
-  "description": "11 verses (10:4 to 14) outside every KJV pericope range"
+  "description": "11 verses (10:4 to 14) outside every KJV pericope range",
+  "units": ["ESG/10/4", "ESG/10/5", "ESG/10/6", "ESG/10/7", "ESG/10/8", "ESG/10/9", "ESG/10/10", "ESG/10/11", "ESG/10/12", "ESG/10/13", "ESG/10/14"]
  },
  "sequence.bible_verses.missing:ESG/4": {
   "fixed_by": "1.4a",
-  "description": "30 verses (4:18 to 47) outside every KJV pericope range"
+  "description": "30 verses (4:18 to 47) outside every KJV pericope range",
+  "units": ["ESG/4/18", "ESG/4/19", "ESG/4/20", "ESG/4/21", "ESG/4/22", "ESG/4/23", "ESG/4/24", "ESG/4/25", "ESG/4/26", "ESG/4/27", "ESG/4/28", "ESG/4/29", "ESG/4/30", "ESG/4/31", "ESG/4/32", "ESG/4/33", "ESG/4/34", "ESG/4/35", "ESG/4/36", "ESG/4/37", "ESG/4/38", "ESG/4/39", "ESG/4/40", "ESG/4/41", "ESG/4/42", "ESG/4/43", "ESG/4/44", "ESG/4/45", "ESG/4/46", "ESG/4/47"]
  },
  "sequence.bible_verses.missing:EXO/6": {
   "fixed_by": "1.4a",
-  "description": "3 verses (6:28 to 30) outside every KJV pericope range"
+  "description": "3 verses (6:28 to 30) outside every KJV pericope range",
+  "units": ["EXO/6/28", "EXO/6/29", "EXO/6/30"]
  },
  "sequence.bible_verses.missing:ISA/16": {
   "fixed_by": "1.4a",
-  "description": "1 verse (16:14) outside every KJV pericope range"
+  "description": "1 verse (16:14) outside every KJV pericope range",
+  "units": ["ISA/16/14"]
  },
  "sequence.bible_verses.missing:ISA/55": {
   "fixed_by": "1.4a",
-  "description": "5 verses (55:9 to 13) outside every KJV pericope range"
+  "description": "5 verses (55:9 to 13) outside every KJV pericope range",
+  "units": ["ISA/55/9", "ISA/55/10", "ISA/55/11", "ISA/55/12", "ISA/55/13"]
  },
  "sequence.bible_verses.missing:JDG/19": {
   "fixed_by": "1.4a",
-  "description": "1 verse (19:30) outside every KJV pericope range"
+  "description": "1 verse (19:30) outside every KJV pericope range",
+  "units": ["JDG/19/30"]
  },
  "sequence.bible_verses.missing:JDG/4": {
   "fixed_by": "1.4a",
-  "description": "1 verse (4:24) outside every KJV pericope range"
+  "description": "1 verse (4:24) outside every KJV pericope range",
+  "units": ["JDG/4/24"]
  },
  "sequence.bible_verses.missing:JER/20": {
   "fixed_by": "1.4a",
-  "description": "1 verse (20:18) outside every KJV pericope range"
+  "description": "1 verse (20:18) outside every KJV pericope range",
+  "units": ["JER/20/18"]
  },
  "sequence.bible_verses.missing:JOS/22": {
   "fixed_by": "1.4a",
-  "description": "1 verse (22:34) outside every KJV pericope range"
+  "description": "1 verse (22:34) outside every KJV pericope range",
+  "units": ["JOS/22/34"]
  },
  "sequence.bible_verses.missing:MRK/11": {
   "fixed_by": "1.4a",
-  "description": "1 verse (11:26) outside every KJV pericope range"
+  "description": "1 verse (11:26) outside every KJV pericope range",
+  "units": ["MRK/11/26"]
  },
  "sequence.bible_verses.missing:MRK/2": {
   "fixed_by": "1.4a",
-  "description": "1 verse (2:28) outside every KJV pericope range"
+  "description": "1 verse (2:28) outside every KJV pericope range",
+  "units": ["MRK/2/28"]
  },
  "sequence.bible_verses.missing:ROM/14": {
   "fixed_by": "1.4a",
-  "description": "3 verses (14:24 to 26) outside every KJV pericope range"
+  "description": "3 verses (14:24 to 26) outside every KJV pericope range",
+  "units": ["ROM/14/24", "ROM/14/25", "ROM/14/26"]
  },
  "sequence.bible_verses.missing:ROM/16": {
   "fixed_by": "1.4a",
-  "description": "1 verse (16:24) outside every KJV pericope range"
+  "description": "1 verse (16:24) outside every KJV pericope range",
+  "units": ["ROM/16/24"]
  },
  "sequence.canons.duplicated:112": {
   "fixed_by": "1.5a",
@@ -369,183 +390,228 @@
  },
  "sequence.numbered_paragraphs.duplicated:apostolic-exhortations/africae-munus.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §1, §2"
+  "description": "list items or misnumbered paragraphs give a second passage for §1, §2",
+  "units": ["1", "2"]
  },
  "sequence.numbered_paragraphs.duplicated:apostolic-exhortations/c-est-la-confiance.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3, §4"
+  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3, §4",
+  "units": ["1", "2", "3", "4"]
  },
  "sequence.numbered_paragraphs.duplicated:apostolic-exhortations/familiaris-consortio.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3"
+  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3",
+  "units": ["1", "2", "3"]
  },
  "sequence.numbered_paragraphs.duplicated:apostolic-exhortations/laudate-deum.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3, §4, §5, §6"
+  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3, §4, §5, §6",
+  "units": ["1", "2", "3", "4", "5", "6"]
  },
  "sequence.numbered_paragraphs.duplicated:apostolic-exhortations/menti-nostrae.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §63, §64, §126"
+  "description": "list items or misnumbered paragraphs give a second passage for §63, §64, §126",
+  "units": ["63", "64", "126"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-ad-gentes.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "25", "26"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-apostolicam-actuositatem.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-christus-dominus.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "11", "14", "15", "16", "18", "19", "20", "21"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-dei-verbum.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-dignitatis-humanae.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "14", "15"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-gaudium-et-spes.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "31", "34"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-gravissimum-educationis.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §7, §12"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §7, §12",
+  "units": ["1", "7", "12"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-lumen-gentium.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4",
+  "units": ["1", "2", "3", "4"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-nostra-aetate.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §2, §5"
+  "description": "numbered footnotes read as sections, giving second passages for §2, §5",
+  "units": ["2", "5"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-perfectae-caritatis.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1"
+  "description": "numbered footnotes read as sections, giving second passages for §1",
+  "units": ["1"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-presbyterorum-ordinis.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §4, §5, §6, §7 …"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §4, §5, §6, §7 …",
+  "units": ["1", "2", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "18", "19", "20", "22", "34", "40", "41", "55", "58"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-sacrosanctum-concilium.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §81"
+  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §81",
+  "units": ["1", "2", "3", "4", "81"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-unitatis-redintegratio.html": {
   "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §2, §10, §15, §19, §21, §22 …"
+  "description": "numbered footnotes read as sections, giving second passages for §2, §10, §15, §19, §21, §22 …",
+  "units": ["2", "10", "15", "19", "21", "22", "23"]
  },
  "sequence.numbered_paragraphs.duplicated:encyclicals/dominum-et-vivificantem.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3, §4, §5, §6 …"
+  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3, §4, §5, §6 …",
+  "units": ["1", "2", "3", "4", "5", "6", "7"]
  },
  "sequence.numbered_paragraphs.duplicated:encyclicals/mediator-dei.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §100"
+  "description": "list items or misnumbered paragraphs give a second passage for §100",
+  "units": ["100"]
  },
  "sequence.numbered_paragraphs.duplicated:encyclicals/pacem-in-terris.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §90"
+  "description": "list items or misnumbered paragraphs give a second passage for §90",
+  "units": ["90"]
  },
  "sequence.numbered_paragraphs.duplicated:encyclicals/redemptoris-mater.html": {
   "fixed_by": "1.3a",
-  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3"
+  "description": "list items or misnumbered paragraphs give a second passage for §1, §2, §3",
+  "units": ["1", "2", "3"]
  },
  "sequence.numbered_paragraphs.missing:apostolic-exhortations/verbum-domini.html": {
   "fixed_by": "1.3a",
-  "description": "1 source section with no passage (§1)"
+  "description": "1 source section with no passage (§1)",
+  "units": ["1"]
  },
  "sequence.numbered_paragraphs.missing:encyclicals/inscrutabile.html": {
   "fixed_by": "1.3a",
-  "description": "8 source sections with no passage (§10 to §17), cut by the inline-footnote reset"
+  "description": "8 source sections with no passage (§10 to §17), cut by the inline-footnote reset",
+  "units": ["10", "11", "12", "13", "14", "15", "16", "17"]
  },
  "sequence.numbered_paragraphs.missing:encyclicals/inter-praecipuas.html": {
   "fixed_by": "1.3a",
-  "description": "8 source sections with no passage (§17 to §24), cut by the inline-footnote reset"
+  "description": "8 source sections with no passage (§17 to §24), cut by the inline-footnote reset",
+  "units": ["17", "18", "19", "20", "21", "22", "23", "24"]
  },
  "sequence.numbered_paragraphs.missing:encyclicals/praedecessores-nostros.html": {
   "fixed_by": "1.3a",
-  "description": "2 source sections with no passage (§8 to §9), cut by the inline-footnote reset"
+  "description": "2 source sections with no passage (§8 to §9), cut by the inline-footnote reset",
+  "units": ["8", "9"]
  },
  "sequence.numbered_paragraphs.missing:encyclicals/quanta-cura-1864.html": {
   "fixed_by": "1.3a",
-  "description": "2 source sections with no passage (§13 to §14), cut by the inline-footnote reset"
+  "description": "2 source sections with no passage (§13 to §14), cut by the inline-footnote reset",
+  "units": ["13", "14"]
  },
  "sequence.numbered_paragraphs.missing:encyclicals/quartus-supra.html": {
   "fixed_by": "1.3a",
-  "description": "15 source sections with no passage (§52 to §66), cut by the inline-footnote reset"
+  "description": "15 source sections with no passage (§52 to §66), cut by the inline-footnote reset",
+  "units": ["52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66"]
  },
  "sequence.numbered_paragraphs.missing:encyclicals/traditi-humilitati.html": {
   "fixed_by": "1.3a",
-  "description": "3 source sections with no passage (§14 to §16), cut by the inline-footnote reset"
+  "description": "3 source sections with no passage (§14 to §16), cut by the inline-footnote reset",
+  "units": ["14", "15", "16"]
  },
  "sequence.numbered_paragraphs.missing:encyclicals/ubi-primum-1824.html": {
   "fixed_by": "1.3a",
-  "description": "1 source section with no passage (§26)"
+  "description": "1 source section with no passage (§26)",
+  "units": ["26"]
  },
  "sequence.numbered_paragraphs.out_of_range:apostolic-exhortations/gaudete-in-domino.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 78 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 78 paragraphs itself",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78"]
  },
  "sequence.numbered_paragraphs.out_of_range:apostolic-exhortations/haerent-animo.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 102 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 102 paragraphs itself",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100", "101", "102"]
  },
  "sequence.numbered_paragraphs.out_of_range:councils/vat2-dignitatis-humanae.html": {
   "fixed_by": "1.1",
-  "description": "8 footnote numbers above the last section read as sections"
+  "description": "8 footnote numbers above the last section read as sections",
+  "units": ["23", "31", "32", "33", "34", "35", "37", "38"]
  },
  "sequence.numbered_paragraphs.out_of_range:councils/vat2-gravissimum-educationis.html": {
   "fixed_by": "1.1",
-  "description": "24 footnote numbers above the last section read as sections"
+  "description": "24 footnote numbers above the last section read as sections",
+  "units": ["13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36"]
  },
  "sequence.numbered_paragraphs.out_of_range:councils/vat2-nostra-aetate.html": {
   "fixed_by": "1.1",
-  "description": "2 footnote numbers above the last section read as sections"
+  "description": "2 footnote numbers above the last section read as sections",
+  "units": ["11", "12"]
  },
  "sequence.numbered_paragraphs.out_of_range:councils/vat2-presbyterorum-ordinis.html": {
   "fixed_by": "1.1",
-  "description": "34 footnote numbers above the last section read as sections"
+  "description": "34 footnote numbers above the last section read as sections",
+  "units": ["23", "24", "26", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "51", "52", "55", "56", "57", "58", "59", "60", "64", "65", "66", "67", "68"]
  },
  "sequence.numbered_paragraphs.out_of_range:councils/vat2-unitatis-redintegratio.html": {
   "fixed_by": "1.1",
-  "description": "3 footnote numbers above the last section read as sections"
+  "description": "3 footnote numbers above the last section read as sections",
+  "units": ["27", "36", "38"]
  },
  "sequence.numbered_paragraphs.out_of_range:encyclicals/annus-qui-hunc.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 3 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 3 paragraphs itself",
+  "units": ["1", "2", "3"]
  },
  "sequence.numbered_paragraphs.out_of_range:encyclicals/in-dominico-agro.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 2 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 2 paragraphs itself",
+  "units": ["1", "2"]
  },
  "sequence.numbered_paragraphs.out_of_range:encyclicals/in-supremo-apostolatus.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 6 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 6 paragraphs itself",
+  "units": ["1", "2", "3", "4", "5", "6"]
  },
  "sequence.numbered_paragraphs.out_of_range:encyclicals/ineffabilis-deus.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 58 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 58 paragraphs itself",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58"]
  },
  "sequence.numbered_paragraphs.out_of_range:encyclicals/meridionali-americae.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 4 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 4 paragraphs itself",
+  "units": ["1", "2", "3", "4"]
  },
  "sequence.numbered_paragraphs.out_of_range:encyclicals/mysterium-fidei.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 95 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 95 paragraphs itself",
+  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95"]
  },
  "sequence.numbered_paragraphs.out_of_range:papal-documents/sublimis-deus.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 5 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 5 paragraphs itself",
+  "units": ["1", "2", "3", "4", "5"]
  },
  "sequence.numbered_paragraphs.out_of_range:papal-documents/unam-sanctam.html": {
   "fixed_by": "1.3a",
-  "description": "source has no paragraph numbers; the adapter numbers 3 paragraphs itself"
+  "description": "source has no paragraph numbers; the adapter numbers 3 paragraphs itself",
+  "units": ["1", "2", "3"]
  },
  "sequence.summa_articles.missing:FP_Q71": {
   "fixed_by": "1.7",
@@ -627,6 +693,34 @@
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"Epistle to the Philippians\" sits directly in the work div and is skipped"
  },
+ "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vi.xv": {
+  "fixed_by": "1.10b",
+  "description": "Justin, Hortatory Address ch. XV (Orpheus): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
+ "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vi.xvi": {
+  "fixed_by": "1.10b",
+  "description": "Justin, Hortatory Address ch. XVI (the Sibyl): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
+ "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vi.xviii": {
+  "fixed_by": "1.10b",
+  "description": "Justin, Hortatory Address ch. XVIII (Sophocles): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
+ "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.ii": {
+  "fixed_by": "1.10b",
+  "description": "On the Sole Government of God ch. II: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
+ "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.iii": {
+  "fixed_by": "1.10b",
+  "description": "On the Sole Government of God ch. III: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
+ "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.iv": {
+  "fixed_by": "1.10b",
+  "description": "On the Sole Government of God ch. IV: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
+ "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.v": {
+  "fixed_by": "1.10b",
+  "description": "On the Sole Government of God ch. V: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
  "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.V.i": {
   "fixed_by": "1.8b",
   "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
@@ -647,9 +741,21 @@
   "fixed_by": "1.8e",
   "description": "whole work \"Fragments\" holds its text directly in its div and is dropped"
  },
+ "sequence.thml_chapters.missing:church-fathers/second-century.xml#iv.ii.ii.xxxvi": {
+  "fixed_by": "1.10b",
+  "description": "Theophilus, To Autolycus II.36 (the Sibyl): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
+ "sequence.thml_chapters.missing:church-fathers/second-century.xml#iv.ii.ii.xxxvii": {
+  "fixed_by": "1.10b",
+  "description": "Theophilus, To Autolycus II.37 (the poets): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
+ },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#v.ii": {
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"A Plea for the Christians\" sits directly in the work div and is skipped"
+ },
+ "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.ii.vii": {
+  "fixed_by": "1.10b",
+  "description": "Clement, Exhortation to the Heathen ch. VII (the poets): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.v": {
   "fixed_by": "1.8e",
