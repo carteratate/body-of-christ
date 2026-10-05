@@ -116,6 +116,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **1.1** [Phase 1]. Keep the "Preliminary Note of Explanation" as part of Lumen Gentium. Recommended answer is yes, as its own chapter.
 - **1.2a** [Phase 1]. Approve the register of council texts that have no public-domain English translation. Those texts show a "translation in preparation" notice instead. Chiefly Florence's doctrinal decrees are affected.
 - **1.2e and 5.5** [Phase 1]. Fordham's transcriptions of Schroeder's Lateran I, II and IV and of the 1923 Roman Catechism carry a notice that their electronic form is copyright and not licensed for commercial use. Use them as the text, or only to check our own OCR of the scans. Recommended answer: only to check the OCR, as with ecatholic2000 (R6).
+  Answered 2026-10-05: use Fordham's transcriptions only to check the OCR of the Schroeder and 1923 Catechism scans, as with ecatholic2000.
 - **1.3b** [Phase 1]. Confirm which three documents are the "Jubilee bulls" filed as encyclicals. Also decide whether Ineffabilis Deus and Munificentissimus Deus are labeled "apostolic constitution" or "bull". The spec gives no recommendation.
 - **1.4a** [Phase 1]. Keep `song-of-solomon` inside link addresses while the book's title changes to "Song of Songs". Users never see the address. Recommended answer is keep.
 - **1.4b** [Phase 1]. Renumber only Joel and Malachi to the Church's official Latin Bible numbering, or every place where Church documents cite a different chapter. Recommended answer is Joel and Malachi now, the rest as a later issue.
@@ -163,13 +164,18 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.2, 5.6a** [Phase 5]. Choose between Supabase Pro and reordering the additions once the projected database size passes 450 MB.
 - **5.3b** [Phase 5]. Include the International Theological Commission in the Roman Curia collection, or leave it out. Default is out.
 - **5.4** [Phase 5]. A New Hope for Lebanon has no English on vatican.va, only French and Italian, and the vendored file is an empty English page. Recommended answer: keep the French text in the reader with a note, out of search, under the Decision log row "Non-English with no usable English" (R6).
+  Answered 2026-10-05: recommendation accepted: the French text, in the reader with a note, out of search (Decision log "Non-English with no usable English").
 - **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
+  Answered 2026-10-05: recommendation accepted: vendor the English PDF and extract its text in 5.4.
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
 - **5.6c** [Phase 5]. The English Dominican Summa contra Gentiles has open scans of books 1 to 3 only; book 4 (1929) has none. Choose the edition knowing that gap, or supply a scan of book 4 from a printing of 1930 or earlier. No recommendation (R6).
 - **5.6c** [Phase 5]. Spiritual Combat: both editions the memos named (Burns 1846, Rivingtons 1875) were translated for the Church of England. Recommended answer: the Catholic edition, Philadelphia, Dornin, 1817 (R6).
+  Answered 2026-10-05: recommendation accepted: the Catholic Dornin edition, Philadelphia 1817.
 - **5.6c** [Phase 5]. Tanquerey: the scans read "Second and revised edition" with no year, and catalogues say 1930 or 1932. Check the title-page verso before ingesting; ingest only a 1930 printing (R6).
+  Answered 2026-10-05: recommendation accepted: check the title-page verso before 5.6c starts Tanquerey, and ingest only a 1930 printing.
 - **5.6c** [Phase 5]. Catherine of Genoa: the clean CCEL text is a different translation (New York, 1907) from the 1858 Burns one the memo named. Recommended answer: use CCEL 1907 (R6).
+  Answered 2026-10-05: recommendation accepted: the CCEL 1907 text; the row now uses it.
 - **5.7** [Phase 5]. Approve the final About page wording, especially the list of excluded authors.
 - **5.8** [Phase 5]. Choose when to revisit paid licences (the Decision log says after the free phase ships). This blocks the Eastern Catholic code.
 - **RF** [after Phase 4]. Put the retrieval follow-up issues in priority order.
@@ -186,6 +192,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-04: Claude may run the renewal searches (Stanford Copyright Renewal Database, scanned Catalog of Copyright Entries) and record date, place, query and result for Carter to approve, the Imitation of Christ first. 0.2 fills all 421 inventory rows with the facts the files, manifests and memos establish, `unknown` otherwise, each a draft until Carter approves it.
   Answered 2026-10-04: the Imitation of Christ search against NYPL's transcription of the Catalog of Copyright Entries renewals is accepted without a Stanford search, and the same method serves later searches. The inventory key adds the author to collection, source path and title (two ANF01 works share a title) until 2.1's `work_id` replaces it. The canon-law row's rights holder records only what vatican.va shows. A source URL with no record is filled only when the file at that URL matches the locked hash.
   Answered 2026-10-04: planned works get rows in `rights_inventory.json` now, with a `planned_for` field naming the item that will ingest each one; it is null for built works and the ingesting PR clears it (R6).
+  Answered 2026-10-05: R6's remaining recommendations are accepted (Little Flowers from the 1899 scan, Rolle's CCEL text with a note, the mixed Pohle-Preuss and Koch-Preuss printings, Alphonsus volumes without an open scan left out, Bellarmine's 1616 text without the 1928 introduction, More's Dialogue of Comfort held). The Schroeder 1937 and Creeds 1931 renewal searches and their 12 rows are approved. The other draft rows stay drafts until approved; the Summa contra Gentiles choice stays open.
 - **0.5** [Phase 0, needed before Phase 4]. The Qdrant plan's memory, disk and backup settings, read from the Qdrant console he has access to, plus a few read-only requests.
 - **0.6** [Phase 0, needed before Phase 4]. The Supabase plan tier and database size limit, read from the dashboard.
 
