@@ -607,7 +607,7 @@ def _update_source_lock(collection: str) -> None:
 
     entries = source_lock.write(source_lock.SOURCES, source_lock.LOCK_PATH,
                                 source_lock.registered_collections(), collection,
-                                date.today().isoformat())
+                                date.today().isoformat(), fetched=True)
     locked = sum(1 for e in entries if e["collection"] == collection)
     print(f"  source_lock.json: {locked} entries for {collection}")
 

@@ -105,10 +105,14 @@ def _role_and_url(sources: Path, collection: str, rel: str,
 
 
 def build_entries(sources: Path, registered: list[str], scope: set[str],
-                  previous: dict[str, dict], today: str) -> list[dict]:
+                  previous: dict[str, dict], today: str, fetched: bool = False) -> list[dict]:
     """One entry per file under each directory in `scope`: registered collections are
-    classified by role, unregistered vendored directories recorded as such. `url`,
-    `acquired` and `hashed_on` carry over from the previous lock where present."""
+    classified by role, unregistered vendored directories recorded as such.
+
+    A manifest URL wins over the previous lock's; the previous URL survives only where
+    no manifest names one. `acquired` and `hashed_on` carry over for an unchanged file.
+    A new or changed file was acquired today when `fetched` (vendor_sources just
+    downloaded it), and at an unknown date before today otherwise."""
     entries: list[dict] = []
     for name in sorted(scope):
         directory = sources / name
@@ -120,25 +124,33 @@ def build_entries(sources: Path, registered: list[str], scope: set[str],
             rel = path.relative_to(sources).as_posix()
             if name in registered:
                 role, url = _role_and_url(sources, name, rel, manifest_name, named)
-                entries.append(_entry(name, rel, path, role, url, previous, today))
+                entries.append(_entry(name, rel, path, role, url, previous, today, fetched))
             else:
                 entries.append(_entry(name, rel, path, "vendored-unregistered", None,
-                                      previous, today, note=_UNREGISTERED_DIR_NOTES.get(name)))
+                                      previous, today, fetched,
+                                      note=_UNREGISTERED_DIR_NOTES.get(name,
+                                                                       "directory of no registered collection")))
     return sorted(entries, key=lambda e: (e["collection"], e["path"]))
 
 
 def _entry(collection: str, rel: str, path: Path, role: str, url: str | None,
-           previous: dict[str, dict], today: str, note: str | None = None) -> dict:
+           previous: dict[str, dict], today: str, fetched: bool = False,
+           note: str | None = None) -> dict:
     sha, size = _sha256(path)
     old = previous.get(rel, {})
+    unchanged = old.get("sha256") == sha
+    if unchanged:
+        acquired = old.get("acquired") or UNKNOWN_ACQUIRED
+    else:
+        acquired = today if fetched else f"unknown-before-{today}"
     entry = {
         "collection": collection,
         "path": rel,
         "sha256": sha,
         "bytes": size,
-        "url": old.get("url") or url,
-        "acquired": old.get("acquired") or UNKNOWN_ACQUIRED,
-        "hashed_on": old.get("hashed_on") if old.get("sha256") == sha else today,
+        "url": url or old.get("url"),
+        "acquired": acquired,
+        "hashed_on": old.get("hashed_on") if unchanged else today,
         "role": role,
     }
     note = note or _UNREGISTERED_NOTES.get(rel)
@@ -157,15 +169,23 @@ def write_lock(entries: list[dict], path: Path = LOCK_PATH) -> None:
     path.write_text(json.dumps(entries, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
-def _scope(registered: list[str], only: str | None) -> set[str]:
-    return {only} if only else set(registered) | set(_UNREGISTERED_DIR_NOTES)
+def _scope(sources: Path, registered: list[str], locked: list[dict],
+           only: str | None) -> set[str]:
+    """`only`, or else every directory under `sources/`, every registered collection and
+    every collection the lock names, so neither a new directory nor a vanished one can
+    pass unnoticed."""
+    if only:
+        return {only}
+    on_disk = {p.name for p in sources.iterdir() if p.is_dir()} if sources.is_dir() else set()
+    return on_disk | set(registered) | {e["collection"] for e in locked}
 
 
 def write(sources: Path, lock_path: Path, registered: list[str], only: str | None,
-          today: str) -> list[dict]:
+          today: str, fetched: bool = False) -> list[dict]:
     existing = load_lock(lock_path)
-    scope = _scope(registered, only)
-    fresh = build_entries(sources, registered, scope, {e["path"]: e for e in existing}, today)
+    scope = _scope(sources, registered, existing, only)
+    fresh = build_entries(sources, registered, scope, {e["path"]: e for e in existing},
+                          today, fetched)
     kept = [e for e in existing if e["collection"] not in scope]
     merged = sorted(kept + fresh, key=lambda e: (e["collection"], e["path"]))
     write_lock(merged, lock_path)
@@ -175,10 +195,13 @@ def write(sources: Path, lock_path: Path, registered: list[str], only: str | Non
 def verify(sources: Path, lock_path: Path, registered: list[str],
            only: str | None) -> dict[str, list[str]]:
     """Problems per collection: missing files, changed hashes, unlocked files."""
-    scope = _scope(registered, only)
-    locked = [e for e in load_lock(lock_path) if e["collection"] in scope]
-    scope |= {e["collection"] for e in locked}
+    lock = load_lock(lock_path)
+    scope = _scope(sources, registered, lock, only)
+    locked = [e for e in lock if e["collection"] in scope]
     problems: dict[str, list[str]] = {c: [] for c in sorted(scope)}
+    for collection in sorted(scope):
+        if collection in registered and not (sources / collection).is_dir():
+            problems[collection].append(f"{collection}/: registered collection, no directory")
     by_path = {e["path"]: e for e in locked}
     for entry in locked:
         path = sources / entry["path"]
@@ -206,7 +229,7 @@ def main(argv: list[str] | None = None, *, sources: Path = SOURCES,
     ap.add_argument("--collection", help="limit to one collection directory")
     args = ap.parse_args(argv)
     collections = collections if collections is not None else registered_collections()
-    known = set(collections) | set(_UNREGISTERED_DIR_NOTES)
+    known = _scope(sources, collections, load_lock(lock_path), None)
     if args.collection and args.collection not in known:
         ap.error(f"unknown collection {args.collection!r}; valid: {', '.join(sorted(known))}")
 

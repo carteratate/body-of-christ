@@ -39,6 +39,8 @@ REQUIRED_FIELDS = (
 )
 
 RENEWAL_SEARCH_FIELDS = ("date", "where", "query", "result")
+# Who ran the search, when it was not Carter. Optional.
+RENEWAL_SEARCH_OPTIONAL = ("searched_by",)
 
 # Works built from a whole directory, or from a file the document metadata does not name.
 _COLLECTION_SOURCE = {
