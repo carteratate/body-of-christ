@@ -335,3 +335,52 @@ def test_known_defects_file_is_well_formed():
         assert set(entry) <= allowed and entry["fixed_by"] and entry["description"], check_id
         assert entry.get("expected_direction", "down") == "down", check_id
         assert report.check_scope(check_id) in report.COLLECTIONS, check_id
+
+
+def test_editorial_div_is_apparatus_and_flagged_if_published(tmp_path, monkeypatch):
+    import json
+
+    listing = tmp_path / "editorial_divs.json"
+    listing.write_text(json.dumps([{"collection": "church-fathers", "file": "vol.xml",
+                                    "div": "ii.i", "title": "Chapter I", "item": "1.8a"}]))
+    monkeypatch.setattr(S, "EDITORIAL_DIVS_PATH", str(listing))
+    monkeypatch.setattr(S, "editorial_divs",
+                        lambda f, path=str(listing): {"ii.i"} if f == "vol.xml" else set())
+    path = tmp_path / "vol.xml"
+    path.write_text(THML, encoding="utf-8")
+    units = S.thml_units(str(path))
+    assert [u.region for u in units if u.unit_id == "ii.i"] == ["apparatus", "note"]
+    # An editorial div that reaches a passage is reported; a body div that does not is missing.
+    editorial_text = next(u.text for u in units if u.unit_id == "ii.i" and u.region == "apparatus")
+    doc = _doc([_passage(editorial_text.replace(S.SEGMENT_BREAK, " "))])
+    long_editorial = [S.SourceUnit("vol.xml", "ed", "An editor wrote this long sentence here. " * 4,
+                                   "apparatus")]
+    published = _doc([_passage("An editor wrote this long sentence here. " * 4)])
+    assert Q.thml_chapters([published], long_editorial, {"ed"}).out_of_range == ["ed"]
+    assert Q.thml_chapters([doc], long_editorial, {"ed"}).out_of_range == []
+
+
+def test_coverage_entry_reported_fixed_at_threshold():
+    cov = C.CoverageResult("councils", {
+        "a.html": C.FileCoverage("a.html", [], body_chars=100, covered_chars=96),
+        "b.html": C.FileCoverage("b.html", [], body_chars=100, covered_chars=50)}, {})
+    run = report.RunResult(["councils"], {"councils": cov})
+    failing = report.coverage_failing(run)
+    known = {"coverage.councils.a.html": {"fixed_by": "1.1", "description": "d"},
+             "coverage.councils.b.html": {"fixed_by": "1.1", "description": "d"}}
+    assert report.known_defect_status("coverage.councils.a.html", failing, known) == \
+        "fixed, remove entry"
+    assert report.known_defect_status("coverage.councils.b.html", failing, known) == \
+        "known defect, fixed by 1.1"
+
+
+def test_editorial_divs_file_is_well_formed():
+    import json
+
+    with open(S.EDITORIAL_DIVS_PATH, encoding="utf-8") as f:
+        rows = json.load(f)
+    keys = [(r["collection"], r["file"], r["div"]) for r in rows]
+    assert len(keys) == len(set(keys))
+    for r in rows:
+        assert set(r) == {"collection", "file", "div", "title", "item"}
+        assert r["item"] in ("1.8a", "1.8b", "1.9"), r

@@ -35,21 +35,13 @@
   "fixed_by": "1.5a",
   "description": "78.64% covered: glued, missing or superseded canons (pages 1671–1691: the 2015 amended text is not the one kept)"
  },
- "coverage.church-fathers.second-century.xml": {
-  "fixed_by": "1.8e",
-  "description": "91.41% covered: whole works holding text directly in a div dropped (1.8e), plus editorial notices (1.8a)"
- },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
-  "description": "88.4% covered: whole works holding text directly in a div dropped (1.8e), plus editorial notices (1.8a)"
- },
- "coverage.church-fathers.third-century.xml": {
-  "fixed_by": "1.8e",
-  "description": "92.95% covered: whole works holding text directly in a div dropped (1.8e), plus editorial notices (1.8a)"
+  "description": "93.22% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
  },
  "coverage.church-fathers.third-fourth-century.xml": {
   "fixed_by": "1.8e",
-  "description": "87.45% covered: whole works holding text directly in a div dropped (1.8e), plus editorial notices (1.8a)"
+  "description": "92.56% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
  },
  "coverage.councils.ecum-01-council-of-nicaea.html": {
   "fixed_by": "1.2c",
@@ -197,7 +189,7 @@
  },
  "coverage.medieval.proslogium-monologium-and-cur-deus-homo.xml": {
   "fixed_by": "1.9",
-  "description": "78.61% covered: translator's introduction, editorial prefaces and Gaunilo's reply dropped"
+  "description": "88.36% covered: Anselm's own prefaces and Gaunilo's reply with Anselm's answer dropped"
  },
  "coverage.papal-documents.patris-corde.html": {
   "fixed_by": "1.3a",
@@ -567,41 +559,13 @@
   "fixed_by": "1.7",
   "description": "Prologue of the First Part of the Second Part (no div4) is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#ii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the First Epistle of Clement to the Corinthians\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#iii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Epistle of Mathetes to Diognetus\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#iv.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Epistle of Polycarp to the Philippians\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#iv.ii": {
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"Epistle to the Philippians\" sits directly in the work div and is skipped"
  },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#iv.iii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Martyrdom of Polycarp\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#iv.iv": {
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"The Martyrdom of Polycarp\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#ix.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to Irenæus Against Heresies\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#ix.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidation\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Epistles of Ignatius\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.ii": {
   "fixed_by": "1.8c",
@@ -614,10 +578,6 @@
  "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.iv": {
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"Epistle to the Trallians: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.ix": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Syriac Version of the Ignatian Epistles\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.v": {
   "fixed_by": "1.8c",
@@ -647,10 +607,6 @@
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"Epistle to the Romans: Syriac Version\" sits directly in the work div and is skipped"
  },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xiii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Spurious Epistles of Ignatius\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xiv": {
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"Epistle to the Tarsians\" sits directly in the work div and is skipped"
@@ -671,30 +627,6 @@
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"Epistle to the Philippians\" sits directly in the work div and is skipped"
  },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xxiv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Martyrdom of Ignatius\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#vi.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Epistle of Barnabas\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#vii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Fragments of Papias\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Writings of Justin Martyr\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.x": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note to the Martyrdom of Justin Martyr\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iii": {
-  "fixed_by": "1.8b",
-  "description": "editorial \"Editor’s Preface\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.V.i": {
   "fixed_by": "1.8b",
   "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
@@ -707,177 +639,33 @@
   "fixed_by": "1.8b",
   "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
  },
- "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#v.i": {
-  "fixed_by": "1.8b",
-  "description": "editorial \"Introductory Note by the Editor\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#v.iii": {
   "fixed_by": "1.8b",
   "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
- },
- "sequence.thml_chapters.missing:church-fathers/on-the-holy-trinity.xml#ii": {
-  "fixed_by": "1.8b",
-  "description": "editorial \"Preface\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/on-the-holy-trinity.xml#iv.ii.i": {
-  "fixed_by": "1.8b",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/on-the-holy-trinity.xml#iv.iii.i": {
-  "fixed_by": "1.8b",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/on-the-holy-trinity.xml#iv.iv.i": {
-  "fixed_by": "1.8b",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#ii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#ii.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#iii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#iii.iii": {
   "fixed_by": "1.8e",
   "description": "whole work \"Fragments\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#iv.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#v.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#v.ii": {
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"A Plea for the Christians\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iii.iv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.i.xxx": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.ii.xxiv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.iii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.iv.xxii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.v.xv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.vi.xix": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.vii.xix": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.iv.viii.x": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.v": {
   "fixed_by": "1.8e",
   "description": "whole work \"Who is the Rich Man that shall be saved?\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.v.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Preface\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#iii.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#iv.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice to Cyprian\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#iv.iii": {
   "fixed_by": "1.8e",
   "description": "whole work \"The Life and Passion of Cyprian, Bishop and Martyr. By Pontius the Deacon\" holds its text directly in its div and is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#v.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice to Caius, Presbyter of Rome\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#vi.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice to Novatian, a Roman Presbyter\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#vii.ii": {
   "fixed_by": "1.8e",
   "description": "\"Acts and Records of the Famous Controversy About the Baptism of Heretics\" is dropped; not in 1.8e's census (new, for Carter's 1.8e decision)"
  },
- "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#vii.iii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-2.xml#vii.iv.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#iii.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#iv.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#iv.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Note by the American Editor\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#ix.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#ix.iii": {
   "fixed_by": "1.8e",
   "description": "whole work \"The Genuine Acts of Peter\" holds its text directly in its div and is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#ix.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Note by the American Editor\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#ix.vii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#v.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#v.iv": {
   "fixed_by": "1.8e",
@@ -887,73 +675,13 @@
   "fixed_by": "1.8e",
   "description": "whole work \"The Passion of St. Symphorosa and Her Seven Sons\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#v.vii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#vi.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#vii.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#vii.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#vii.vi": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"General Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#viii.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#viii.iv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidation\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#x.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#x.iv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#xi.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#xi.iv": {
   "fixed_by": "1.8e",
   "description": "whole work \"Concerning Free-Will\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#xi.vii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"General Note\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#xi.viii": {
   "fixed_by": "1.8e",
   "description": "whole work \"Oration Concerning Simeon and Anna On the Day that They Met in the Temple\" holds its text directly in its div and is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#xi.xiii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"General Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century-3.xml#xii.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#iii.ii.vii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/third-century.xml#iii.xi.i": {
   "fixed_by": "1.8e",
@@ -991,62 +719,6 @@
   "fixed_by": "1.8e",
   "description": "\"General Reply to Sundry of Marcion's Heresies\" is dropped; not in 1.8e's census (new, for Carter's 1.8e decision)"
  },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#iii.xi.vi": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#iii.xi.vii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#iv.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#v.ii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Note\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Preface\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Life\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.iii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Exegetical Works\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.iv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Critical Works\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Apologetical Works\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.vi": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Dogmatic Works\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.vii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Practical Works\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.ii.viii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Editions of Origin\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.iii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Prefatory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.iv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Prologue of Rufinus\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.vi": {
   "fixed_by": "1.8e",
   "description": "whole work \"A Letter to Origen from Africanus About the History of Susanna\" holds its text directly in its div and is dropped"
@@ -1054,18 +726,6 @@
  "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.vii": {
   "fixed_by": "1.8e",
   "description": "whole work \"A Letter from Origen to Africanus\" holds its text directly in its div and is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#iii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice to Lactantius\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#iii.ii.viii.lxx": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#iii.vi": {
   "fixed_by": "1.8e",
@@ -1075,18 +735,6 @@
   "fixed_by": "1.8e",
   "description": "whole work \"On Easter\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#ix.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#ix.ix.vii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#v.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#v.ii": {
   "fixed_by": "1.8c",
   "description": "\"The Extant Writings of Asterius Urbanus\": the work's text is not parsed (1.8e item 9)"
@@ -1095,53 +743,9 @@
   "fixed_by": "1.8e",
   "description": "whole work \"On the Creation of the World\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#vii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#vii.ii": {
   "fixed_by": "1.8e",
   "description": "whole work \"Against the Sabellians\" holds its text directly in its div and is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#vii.ii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#viii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#viii.ii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Section 1.—The discovery of the codex, and its contents\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#viii.ii.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Section 2.—Publication of the discovered works: the effect\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#viii.ii.iii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Section 3.—Contents of teaching, and relation to other works\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#viii.ii.iv": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Section 4.—Authenticity\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#viii.ii.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Section 5.—Time and place of composition\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#viii.iii.xvii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#x.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#x.ii": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice by Professor M. B. Riddle, D.D\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#x.iii": {
   "fixed_by": "1.8e",
@@ -1150,10 +754,6 @@
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#xi": {
   "fixed_by": "1.8e",
   "description": "\"The Nicene Creed\" is dropped; not in 1.8e's census (new, for Carter's 1.8e decision)"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#xii.i": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Introductory Notice\" dropped without a rule G record"
  },
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#xii.ii": {
   "fixed_by": "1.8e",
@@ -1167,69 +767,13 @@
   "fixed_by": "1.8e",
   "description": "whole work \"The Liturgy of the Blessed Apostles\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#xii.v": {
-  "fixed_by": "1.8a",
-  "description": "editorial \"Elucidations\" dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/consolation-of-philosophy.xml#viii": {
-  "fixed_by": "1.9",
-  "description": "\"Appendix\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii": {
-  "fixed_by": "1.9",
-  "description": "\"Introduction\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.i": {
-  "fixed_by": "1.9",
-  "description": "\"Anselm's Philosophy (After Weber.)\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.i": {
-  "fixed_by": "1.9",
-  "description": "\"Descartes\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.ii": {
-  "fixed_by": "1.9",
-  "description": "\"Spinoza\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.iii": {
-  "fixed_by": "1.9",
-  "description": "\"Locke\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.iv": {
-  "fixed_by": "1.9",
-  "description": "\"Leibnitz\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.ix": {
-  "fixed_by": "1.9",
-  "description": "\"Flint\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.v": {
-  "fixed_by": "1.9",
-  "description": "\"Kant\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.vi": {
-  "fixed_by": "1.9",
-  "description": "\"Hegel\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.vii": {
-  "fixed_by": "1.9",
-  "description": "\"Dorner\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.ii.viii": {
-  "fixed_by": "1.9",
-  "description": "\"Lotze\": translator's or editor's material, dropped without a rule G record"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#ii.iii": {
-  "fixed_by": "1.9",
-  "description": "\"Bibliography\": translator's or editor's material, dropped without a rule G record"
- },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#iii.i": {
   "fixed_by": "1.9",
-  "description": "\"Preface\": translator's or editor's material, dropped without a rule G record"
+  "description": "Anselm's own preface (div iii.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#iv.i": {
   "fixed_by": "1.9",
-  "description": "\"Preface\": translator's or editor's material, dropped without a rule G record"
+  "description": "Anselm's own preface (div iv.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.i": {
   "fixed_by": "1.9",
@@ -1281,6 +825,6 @@
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#vi.i": {
   "fixed_by": "1.9",
-  "description": "\"Preface\": translator's or editor's material, dropped without a rule G record"
+  "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
  }
 }

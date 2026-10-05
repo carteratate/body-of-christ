@@ -197,9 +197,9 @@ def summa_articles(documents: list[Document], units: list[SourceUnit],
         # its text directly the question's title. Part names are not compared: the
         # adapter rewrites "(XP)" as "Supplement".
         number = re.search(r"(\d+)", question)
-        wanted = [f"question{number[1]}" if number else "",
-                  _title_key(article) if article else _title_key(question.split(" - ", 1)[-1])]
-        if not any(all(w in ref for w in wanted) for ref in references):
+        q = re.compile(rf"question{number[1]}(?!\d)" if number else "")
+        title = _title_key(article) if article else _title_key(question.split(" - ", 1)[-1])
+        if not any(title in ref and q.search(ref) for ref in references):
             result.missing.append(art_id)
     return result
 
@@ -223,8 +223,8 @@ def summa_article_list(path: str) -> list[tuple[str, str, str, str]]:
     return out
 
 
-def summa_article_coverage(documents: list[Document], units: list[SourceUnit]
-                           ) -> dict[str, tuple[int, int]]:
+def summa_article_coverage(documents: list[Document], units: list[SourceUnit],
+                           article_ids: set[str]) -> dict[str, tuple[int, int]]:
     """Body characters and covered characters per article (div4 id, or div3 id for a
     question holding its text directly), so a long article kept only in part is
     visible. Articles differ in length by two orders of magnitude, so presence alone
@@ -232,7 +232,8 @@ def summa_article_coverage(documents: list[Document], units: list[SourceUnit]
     text = _PassageText(documents)
     out: dict[str, list[int]] = defaultdict(lambda: [0, 0])
     for u in units:
-        if u.region != "body" or not u.unit_id:
+        # Only articles: a question's introduction sits under the question's id.
+        if u.region != "body" or u.unit_id not in article_ids:
             continue
         for s in split_sentences(u.text):
             if len(s) < MIN_SENTENCE_CHARS:
@@ -287,33 +288,50 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
 
 # --------------------------------------------------------------------------- ThML
 
-def thml_chapters(documents: list[Document], units: list[SourceUnit]) -> SequenceResult:
+def thml_chapters(documents: list[Document], units: list[SourceUnit],
+                  editorial: set[str] = frozenset()) -> SequenceResult:
     """Every ThML div holding 100 or more characters of body text of its own is
     represented by its passages: at least THML_CHAPTER_MIN_COVERED of its measured
     characters reach one. The test is by characters, not by any one sentence, because
     divs range from a 100-character greeting to a 66,000-character work, and a long
     dropped work can share a quoted verse or two with the passages around it.
-    Divs whose own text is all short sentences cannot be judged and are skipped."""
+    Divs whose own text is all short sentences cannot be judged and are skipped.
+
+    The editorial divs (`editorial`, from editorial_divs.json) are the reverse: one
+    that does reach a passage is reported in `out_of_range`, text that should not be
+    in the corpus under rule G."""
     text = _PassageText(documents)
     own: dict[str, list[str]] = defaultdict(list)
+    edited: dict[str, list[str]] = defaultdict(list)
     for u in units:
         if u.region == "body" and u.unit_id:
             own[u.unit_id].append(u.text)
+        elif u.region == "apparatus" and u.unit_id in editorial:
+            edited[u.unit_id].append(u.text)
     result = SequenceResult()
+    for div_id, texts in edited.items():
+        measured, covered = _covered_chars(text, texts)
+        if measured and covered >= THML_CHAPTER_MIN_COVERED * measured:
+            result.out_of_range.append(div_id)
     for div_id, texts in own.items():
         if sum(len(" ".join(t.split())) for t in texts) < THML_CHAPTER_MIN_CHARS:
             continue
-        measured = covered = 0
-        for t in texts:
-            for s in split_sentences(t):
-                if len(s) < MIN_SENTENCE_CHARS:
-                    continue
-                measured += len(s)
-                if text.find(match_key(s)) is not None:
-                    covered += len(s)
+        measured, covered = _covered_chars(text, texts)
         if measured and covered < THML_CHAPTER_MIN_COVERED * measured:
             result.missing.append(div_id)
     return result
+
+
+def _covered_chars(text: _PassageText, texts: list[str]) -> tuple[int, int]:
+    measured = covered = 0
+    for t in texts:
+        for s in split_sentences(t):
+            if len(s) < MIN_SENTENCE_CHARS:
+                continue
+            measured += len(s)
+            if text.find(match_key(s)) is not None:
+                covered += len(s)
+    return measured, covered
 
 
 # --------------------------------------------------------------------------- check ids

@@ -25,7 +25,7 @@ if DATAPIPELINE not in sys.path:
 
 from checks import sequence as seq  # noqa: E402
 from checks.coverage import CoverageResult, coverage, documents_by_file  # noqa: E402
-from checks.source_text import SOURCES, collection_files, file_units  # noqa: E402
+from checks.source_text import SOURCES, collection_files, editorial_divs, file_units  # noqa: E402
 from model import Document  # noqa: E402
 
 CHECKS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +34,9 @@ BASELINE_DIR = os.path.join(CHECKS_DIR, "baselines")
 DEFAULT_BASELINE = os.path.join(BASELINE_DIR, "coverage-master-2026-09.json")
 # A file's coverage may fall this many percentage points below its baseline.
 COVERAGE_TOLERANCE = 0.5
+# Files below this coverage have a known_defects.json entry; at or above it the entry is
+# reported "fixed, remove entry".
+COVERAGE_ENTRY_BELOW = 95.0
 
 COLLECTIONS = ("apostolic-exhortations", "bible", "canon-law", "catechism",
                "church-fathers", "councils", "encyclicals", "medieval",
@@ -145,13 +148,14 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
             articles = seq.summa_article_list(os.path.join(sources, "summa", "summa.xml"))
             result.sequence.setdefault("summa_articles", {})[collection] = \
                 seq.summa_articles(documents, units, articles)
-            result.summa_articles = seq.summa_article_coverage(documents, units)
+            result.summa_articles = seq.summa_article_coverage(
+                documents, units, {a[0] for a in articles})
         if collection in SECTION_COLLECTIONS or collection in THML_COLLECTIONS:
             placed = documents_by_file(collection, documents, files, sources)
             for f in files:
                 if collection in THML_COLLECTIONS:
                     result.sequence.setdefault("thml_chapters", {})[f"{collection}/{f}"] = \
-                        seq.thml_chapters(placed[f], units_by_file[f])
+                        seq.thml_chapters(placed[f], units_by_file[f], editorial_divs(f))
                 elif collection != "councils" or f.startswith("vat2-"):
                     for doc in placed[f]:
                         result.sequence.setdefault("numbered_paragraphs", {})[
@@ -196,10 +200,15 @@ def check_scope(check_id: str) -> str | None:
             "summa_articles": "summa"}.get(family) or unit.split("/", 1)[0]
 
 
+def coverage_failing(result: RunResult) -> set[str]:
+    """Coverage check ids of files under COVERAGE_ENTRY_BELOW."""
+    return {f"coverage.{c}.{name}" for c, cov in result.coverage.items()
+            for name, f in cov.files.items() if f.pct < COVERAGE_ENTRY_BELOW}
+
+
 def known_defect_status(check_id: str, failing: set[str], known: dict[str, dict]) -> str:
-    """How a check stands against known_defects.json."""
-    if check_id.startswith("coverage."):
-        return f"known defect, fixed by {known[check_id]['fixed_by']}" if check_id in known else "pass"
+    """How a check stands against known_defects.json. `failing` holds the failing
+    sequence and sentinel ids and the coverage ids of files under the threshold."""
     if check_id in failing:
         if check_id in known:
             return f"known defect, fixed by {known[check_id]['fixed_by']}"
@@ -259,7 +268,7 @@ def _delta(pct: float, base: float | None) -> str:
 def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
                baseline_name: str) -> str:
     failing = failing_checks(result)
-    failing_ids = set(failing)
+    failing_ids = set(failing) | coverage_failing(result)
     lines = [f"# Coverage and sequence summary (0.1a)", "",
              f"Collections: {', '.join(result.collections)}. Runtime {result.seconds} s. "
              f"Baseline: `{baseline_name}`.", "",
@@ -329,7 +338,7 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
 
     judged = {k for k in known if check_scope(k) in result.collections}
     unexpected = sorted(i for i in failing_ids if i not in known)
-    fixed = sorted(k for k in judged if not k.startswith("coverage.") and k not in failing_ids)
+    fixed = sorted(k for k in judged if k not in failing_ids)
     regressions = coverage_regressions(result, baseline, known)
     by_owner: dict[str, int] = {}
     for k in judged:
@@ -393,9 +402,10 @@ def _git_head() -> str:
     import subprocess
 
     try:
-        sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=DATAPIPELINE,
-                             capture_output=True, text=True, check=True).stdout.strip()
-        return f"master {sha}"
+        def git(*args: str) -> str:
+            return subprocess.run(["git", *args], cwd=DATAPIPELINE, capture_output=True,
+                                  text=True, check=True).stdout.strip()
+        return f"{git('rev-parse', '--abbrev-ref', 'HEAD')} {git('rev-parse', '--short', 'HEAD')}"
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
 

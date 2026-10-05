@@ -89,20 +89,36 @@ def _read_thml(path: str):
     return ET.fromstring(xml)
 
 
+EDITORIAL_DIVS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "editorial_divs.json")
+
+
+def editorial_divs(source_file: str, path: str = EDITORIAL_DIVS_PATH) -> set[str]:
+    """Div ids of a ThML file that hold an editor's or translator's text (introductory
+    notices, elucidations, editors' prefaces), reviewed by Carter on 5 Oct 2026. Rule G
+    keeps them out of the corpus, so they are "apparatus", not body."""
+    with open(path, encoding="utf-8") as f:
+        return {r["div"] for r in json.load(f) if r["file"] == source_file}
+
+
 def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     """ThML (CCEL XML). Body is <p> text inside div1 to div6; <note> is "note";
     <scripCom> and <pb> carry no text and are ignored. unit_id is the nearest
-    ancestor div's id."""
+    ancestor div's id. Divs listed in editorial_divs.json, and everything inside
+    them, are "apparatus"."""
     source_file = source_file or os.path.basename(path)
     root = _read_thml(path)
+    editorial = editorial_divs(source_file)
     units: list[SourceUnit] = []
 
     def walk(el, div_id: str | None, region: str, in_div: bool) -> None:
         for child in el:
             tag = child.tag if isinstance(child.tag, str) else ""
             if tag in _THML_DIVS:
-                walk(child, child.get("id") or div_id,
-                     _thml_div_region(child.get("title") or "", region), True)
+                child_region = _thml_div_region(child.get("title") or "", region)
+                if child.get("id") in editorial:
+                    child_region = "apparatus"
+                walk(child, child.get("id") or div_id, child_region, True)
             elif tag == "note":
                 if in_div:
                     units.append(SourceUnit(source_file, div_id,
@@ -188,9 +204,9 @@ def _html_main(soup: BeautifulSoup) -> Tag:
             return max(found, key=lambda e: len(e.get_text(" ", strip=True)))
     cells = soup.find_all("td")
     if cells:
-        # The innermost cell holding most of the text: a layout table nests cells.
-        best = max(cells, key=lambda e: len(e.get_text(" ", strip=True)))
-        return best
+        # The cell holding the most text; with nested layout tables that is the outer
+        # cell, which still holds only the document and its language bar.
+        return max(cells, key=lambda e: len(e.get_text(" ", strip=True)))
     return soup.body or soup
 
 
