@@ -31,10 +31,14 @@ python3 -c "from publication import SOURCE_ADAPTERS as A; d=A['encyclicals'](); 
 ```
 
 **Adapters read `manifest.json`, not the directory**, so a vendored file that no
-manifest entry references is never published. Three such orphans exist today:
-`apostolic-exhortations/amoris-laetitia.html`,
-`apostolic-exhortations/a-new-hope-for-lebanon.html`, and
-`papal-documents/ubicumque-et-semper.html`. Add a manifest entry to publish one.
+manifest entry references is never published. Every vendored file, published or not, is
+pinned by hash in the tracked `source_lock.json`; its `role` says which files an adapter
+reads (`adapter-input`, `adapter-auxiliary`) and which are on disk but unpublished
+(`vendored-unregistered`, each with a `note` giving the reason). Check the vendored
+files against it with `python3 scripts/source_lock.py --verify`; after a deliberate
+change, rewrite it with `--write` (`vendor_sources.py` does this itself for the
+collection it vendors). The edition and rights status of each published work are in
+`rights_inventory.json`.
 
 ## Publishing a collection
 
