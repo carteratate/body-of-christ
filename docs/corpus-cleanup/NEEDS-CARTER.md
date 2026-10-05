@@ -166,7 +166,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
-  R6 fact for this choice: the Dominican edition's book 4 (1929) has no open scan, so that edition would be incomplete until one is found.
+- **5.6c** [Phase 5]. The English Dominican Summa contra Gentiles has open scans of books 1 to 3 only; book 4 (1929) has none. Choose the edition knowing that gap, or supply a scan of book 4 from a printing of 1930 or earlier. No recommendation (R6).
 - **5.6c** [Phase 5]. Spiritual Combat: both editions the memos named (Burns 1846, Rivingtons 1875) were translated for the Church of England. Recommended answer: the Catholic edition, Philadelphia, Dornin, 1817 (R6).
 - **5.6c** [Phase 5]. Tanquerey: the scans read "Second and revised edition" with no year, and catalogues say 1930 or 1932. Check the title-page verso before ingesting; ingest only a 1930 printing (R6).
 - **5.6c** [Phase 5]. Catherine of Genoa: the clean CCEL text is a different translation (New York, 1907) from the 1858 Burns one the memo named. Recommended answer: use CCEL 1907 (R6).
@@ -185,6 +185,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.2 and R6** [Phase 0, each work before its ingestion PR]. The copyright renewal searches, or approval of them, and the entries in the public rights file that depend on his private rights memos. The Imitation of Christ renewal search is first.
   Answered 2026-10-04: Claude may run the renewal searches (Stanford Copyright Renewal Database, scanned Catalog of Copyright Entries) and record date, place, query and result for Carter to approve, the Imitation of Christ first. 0.2 fills all 421 inventory rows with the facts the files, manifests and memos establish, `unknown` otherwise, each a draft until Carter approves it.
   Answered 2026-10-04: the Imitation of Christ search against NYPL's transcription of the Catalog of Copyright Entries renewals is accepted without a Stanford search, and the same method serves later searches. The inventory key adds the author to collection, source path and title (two ANF01 works share a title) until 2.1's `work_id` replaces it. The canon-law row's rights holder records only what vatican.va shows. A source URL with no record is filled only when the file at that URL matches the locked hash.
+  Answered 2026-10-04: planned works get rows in `rights_inventory.json` now, with a `planned_for` field naming the item that will ingest each one; it is null for built works and the ingesting PR clears it (R6).
 - **0.5** [Phase 0, needed before Phase 4]. The Qdrant plan's memory, disk and backup settings, read from the Qdrant console he has access to, plus a few read-only requests.
 - **0.6** [Phase 0, needed before Phase 4]. The Supabase plan tier and database size limit, read from the dashboard.
 

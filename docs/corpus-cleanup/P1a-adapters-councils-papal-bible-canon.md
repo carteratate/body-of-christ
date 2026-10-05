@@ -242,6 +242,7 @@ These apply to every PR below and are not repeated in each item.
 - **Goal:** Dei Filius and Pastor Aeternus are searchable in full, chapter and canon, in Manning's public-domain English. Today Vatican I is 9 passages and 6,053 characters.
 - **Current state:**
   - The vendored Tanner page keeps 86,381 characters in `<li>` elements (653 of them), which the adapter ignores.
+  - R6 (5 Oct 2026): CCEL's `creeds2.xml` (4,065,931 bytes) is Schaff's sixth edition (Harper, 1931, revised by David S. Schaff); no renewal was found in the complete 1958 and 1959 renewal records, and its Vatican I text matches the 1877 edition word for word. The rights row is `pd-us-non-renewal`.
   - CCEL `creeds2` section v.ii.i is a two-column table per page: Latin in a `<td>` with `<span lang="LA">`, English in the other `<td>`. Sentences run across tables at page breaks ("...placed over the universal" continues in the next table). Schaff's footnotes are inline notes ("From a Brief of Pius VI..."), which are editor material. Verified on the CCEL HTML page on 29 Sep.
 - **Changes:**
   - Vendor `creeds2.xml` with hash and rights line into `sources/councils/`.
