@@ -15,12 +15,13 @@ Outcomes the plan already decided are recorded here, not re-argued. Anything tha
 
 2.1's `work_id` does not exist yet. On 4 Oct 2026 Carter decided that the file is keyed as follows.
 
-- **Corpus works** by the frozen document ID a master build emits (`document_id`). Container documents whose works get different outcomes also have sub-entries keyed by `document_id` plus the ThML `div_id` of the work (Treatises Attributed to Cyprian, Hippolytus's Extant Works, Gregory Thaumaturgus's Acknowledged Writings, Fragments of Lactantius). Each such entry also gives its passage count.
-- **Planned candidate works** by `{"author", "title"}`.
+- **Corpus works** by the frozen document ID a master build emits (`document_id`). This part is Carter's choice.
+- **Container sub-works (proposed by R1, pending Carter: For Carter item 10).** Container documents whose works get different outcomes also have one sub-entry per ThML work div, keyed by `document_id` plus that `div_id` (Treatises Attributed to Cyprian, Hippolytus's Extant Works, Gregory Thaumaturgus's Acknowledged Writings, Fragments of Lactantius). Every div in those four containers, editorial ones included, has an entry with its passage count; the counts sum to each document's total.
+- **Planned candidate works** by `{"author", "title"}` (Carter's choice).
 
-Each entry holds exactly 2.1's `rule_a` object. 2.1 (or 3.1) maps both kinds of key onto work IDs: document IDs onto `works.json` entries, and `document_id` plus `div_id` onto the `work_key` of a container's works (D6).
+Each entry holds exactly 2.1's `rule_a` object. How the keys are carried into `works.json` is left to the item that merges the file (3.1, or 2.1 if R1 finishes first); this file does not prescribe it.
 
-The file has 189 entries: 135 corpus documents, 13 container sub-works and 41 candidate works. `decision` is `include` for 139, `exclude` for 35 and `null` for 15. Every null is a "For Carter" item. A null `communion_start` on an `applies: false` entry means the author is presumed in communion.
+The file has 216 entries: 135 corpus documents, 39 container sub-works and 42 candidate works. `decision` is `include` for 148, `exclude` for 36 and `null` for 32. A null is one of two things: one of the five container documents, which carry no document-level decision because every work in them has its own sub-entry (Treatises Attributed to Cyprian, Hippolytus's Extant Works, Acknowledged Writings, Fragments of Lactantius, plus the Refutation, a single work held for Carter); or a named "For Carter" item (22 Hippolytus works, the Panegyric, the Phoenix, Theologia Germanica, the Catena's Pseudo-Chrysostom and Theophylact quotations). Editorial divs inside containers (elucidations, a translator's introduction, a general note) are marked `include` for rule A with a basis saying rule G removes them. A null `communion_start` on an `applies: false` entry means the author is presumed in communion.
 
 Two notes on the shape:
 
@@ -92,7 +93,7 @@ The classes are: `born` (born in communion), `presumed` (anonymous, pseudonymous
 | Anselm; Bernard; Thomas à Kempis; Thomas Aquinas | born | Rule A presumption (no conversion; all religious from youth) |
 | Boethius | born | Rule A presumption. Decided: moves to the Fathers |
 
-Corpus totals: 4 converts with possible pre-baptism writing (Augustine, Gregory Thaumaturgus, Arnobius, Lactantius); 8 converts with no pre-baptism work (Justin, Theophilus, Athenagoras, Clement, Cyprian, Minucius, Commodian; Tertullian counted under later-break); 4 later-break (Tatian, Novatian, Tertullian, plus Origen, condemned though never in schism); 1 break-and-return (Hippolytus); 1 non-Christian (Alexander of Lycopolis). The rest are born in communion or presumed.
+Corpus totals: 4 converts with possible pre-baptism writing (Augustine, Gregory Thaumaturgus, Arnobius, Lactantius); 7 converts with no pre-baptism work (Justin, Theophilus, Athenagoras, Clement, Cyprian, Minucius, Commodian; Tertullian, also a convert, is counted under later-break); 3 later-break (Tatian, Novatian, Tertullian); Origen is born in communion and condemned by name; 1 break-and-return (Hippolytus); 1 non-Christian (Alexander of Lycopolis). The rest are born in communion or presumed.
 
 ### 1b. Candidate authors (candidates memo, plan's collection table, Catena Aurea sources)
 
@@ -105,7 +106,7 @@ Corpus totals: 4 converts with possible pre-baptism writing (Augustine, Gregory 
 | Edith Stein | convert-pre | Baptized 1 Jan 1922 ([Vatican biography](https://www.vatican.va/news_services/liturgy/saints/ns_lit_doc_19981011_edith_stein_en.html)). Works before then out (decided) |
 | Jacques Maritain | convert-pre | Baptized 11 June 1906 ([Notre Dame Maritain Center](https://maritain.nd.edu/about/about-jacques-maritain/)). Candidate titles are 1920s, in |
 | Dietrich von Hildebrand | convert-pre | Received Holy Saturday, 11 April 1914 ([Alice von Hildebrand, EWTN](https://www.ewtn.com/catholicism/library/on-the-legacy-of-he-beloved-husband-5539)). Candidates later, in (rights: List B) |
-| Augustine Baker (*Holy Wisdom*, compiled by Serenus Cressy) | convert-no-pre | Received about 1603; treatises written as a Benedictine. **Unverified**: CE article not opened |
+| Augustine Baker (*Holy Wisdom* / *Sancta Sophia*, compiled by Serenus Cressy) | convert-no-pre | Received at Oxford before joining the Benedictines at Padua in 1605; wrote his ascetical treatises at Cambrai from 1624 ([CE, "David Augustine Baker"](https://www.catholic.com/encyclopedia/david-augustine-baker)) |
 | Ambrose, Basil, Gregory Nazianzen, John Chrysostom (5.6a) | convert-no-pre, except that Basil's and Gregory Nazianzen's earliest letters need dating if letters are chosen | Baptized as adults, from Christian families (catechumens until then). **Unverified here**; 5.6a must date any letter collection per work from Quasten vol. III |
 | Cyril of Jerusalem, Leo, Gregory the Great, Bede, Isidore, John Damascene; Pseudo-Dionysius (5.6a) | born / presumed | Rule A presumption |
 | Gregory of Narek | Armenian Church, passes as Doctor (limit 2) | [Apostolic letter, 12 April 2015](https://www.vatican.va/content/francesco/en/apost_letters/documents/papa-francesco_lettera-ap_2015412_gregorius-narecensis-doctor-ecclesiae.html) |
@@ -114,12 +115,16 @@ Corpus totals: 4 converts with possible pre-baptism writing (Augustine, Gregory 
 | Julian of Norwich, Hilton, Rolle, *Cloud* author, Ruusbroec, Tauler, Suso, Mechthild, William of St Thierry, Hugh and Richard of St Victor, Aelred, Peter Lombard, Duns Scotus, Guigo, Gerson, Luis of Granada, Scupoli, Caussade, Brother Lawrence, Lallemant, Alphonsus Rodriguez, Challoner, Marmion, Tanquerey, Scheeben, Nieremberg, Möhler, Pohle, Arthur Preuss, Koch, Karl Adam, Gilson, Sheen, Vonier, Garrigou-Lagrange, Guardini, Escrivá, Ratzinger, Balthasar, de Lubac | presumed | Rule A presumption; no biography checked for conversion. Challoner (a convert as a boy) and Arthur Preuss (son of a convert) are **unverified**; their candidate works are adult works, so no outcome turns on it |
 | *Little Flowers*, *Mirror of Perfection*, *Theologia Germanica*, Pseudo-Bonaventure, Pseudo-Albert (*On Cleaving to God*) | presumed (anonymous); rule B/C labels by 3.2 | Rule A presumption |
 | Pascal | born | Decided: Pensées in, Provincial Letters out (section 3) |
-| Eckhart, Abelard, Fénelon, Guyon, Molinos, Jansen, Quesnel, Lamennais, Loisy, Tyrrell, Teilhard, Rosmini, Erasmus, Ockham, Joachim of Fiore | see section 3 | Church acts |
+| Eckhart, Abelard, Fénelon, Guyon, Molinos, Jansen, Quesnel, Teilhard, Rosmini, Erasmus, Joachim of Fiore | born (outcome set by the Church acts in section 3) | Candidates memo §4 (CE, papal and DDF sources) |
+| Lamennais | later-break (refused reconciliation; buried without rites) | Candidates memo §4 ([1911 Britannica](https://en.wikisource.org/wiki/1911_Encyclop%C3%A6dia_Britannica/Lamennais,_Hugues_F%C3%A9licit%C3%A9_Robert_de)); acts in section 3 |
+| Loisy | later-break (excommunicated 1908) | Section 3; limit 1 excludes every work |
+| Tyrrell | convert (received 1879) and later-break (1907) | Section 3; limit 1 excludes every work |
+| William of Ockham | later-break (excommunicated 1328, no reconciliation documented) | Section 3 |
 | Thomas Merton (convert, baptized 1938), C. S. Lewis, Dante | not candidates | Plan and memo: out of scope or decided out |
 | Henry Edward Manning; Orestes Brownson | not candidates | Manning appears only as author of a preface (rule G removes it); Brownson is not on the list |
 | Catena Aurea sources (5.6b), Matthew and Mark | see "For Carter" | Label counts in section 5 |
 
-The classes the dating method covers (convert-pre, later-break, break-return) hold 21 authors across the corpus and the candidates: Augustine, Gregory Thaumaturgus, Arnobius, Lactantius, Newman, Chesterton, Knox, Faber, Stein, Maritain, von Hildebrand, Tatian, Novatian, Tertullian, Lamennais, Loisy, Tyrrell, Quesnel, Ockham, Hippolytus, plus Basil and Gregory Nazianzen if 5.6a takes their early letters. That matches the Decision log's estimate of about 20.
+The classes the dating method covers (convert-pre, later-break, break-return) hold 19 authors across the corpus and the candidates, 21 if 5.6a takes Basil's and Gregory Nazianzen's early letters: corpus, Augustine, Gregory Thaumaturgus, Arnobius, Lactantius, Tatian, Novatian, Tertullian and Hippolytus (8); candidates, Newman, Chesterton, Knox, Faber, Stein, Maritain, von Hildebrand, Lamennais, Loisy, Tyrrell and Ockham (11). For the last four, Church acts decide the outcome before any dating. That matches the Decision log's estimate of about 20.
 
 ## 2. Dated authors: chronology, communion dates and per-work results
 
@@ -206,7 +211,7 @@ Sources searched for every author are listed under "Method". "None found" means 
 | *Theologia Germanica* | The Latin translation "ex germanico translatus studio Ioannis Theophili" (Sebastian Castellio; Antwerp, Plantin 1558), and the variant "Theologia mystica" by the same translator: decree of 16 March 1621. The 1664 Index also cites an earlier Roman decree, illegible in the OCR. Still in the 1841 and 1877 Indexes; **absent from the Leonine Index of 1900**, whose "Theologey (teutsche) in 100 Capiteln" (decrees of 1612 and 1616) is a different book, Berthold of Chiemsee's *Tewtsche Theologey*. The original German text was never listed by that name | prohibit (one Latin translation) | [1841 Index](https://archive.org/details/bub_gb_7MPk71j1YEIC), s.v. "Theologia germanica"; [1664 Index](https://archive.org/details/index_librorum_prohibitorum_1664-alexandri_vii); [Leonine Index](https://archive.org/details/indexlibrorumpro0000unse) |
 | George Tyrrell | 22 Oct 1907. Bishop Amigo of Southwark wrote that Tyrrell's case had been laid before Pius X, and the answer was privation of the sacraments with the case reserved to the Holy See. Amigo then told the press it was not an excommunication but a prohibition from the sacraments. Tyrrell himself called it an excommunication, universal and not diocesan. The *Concise Oxford Dictionary of World Religions* calls it "minor excommunication". Refused Catholic burial, 1909 | condemn (papal; communicated by the local bishop) | M. D. Petre, *Autobiography and Life of George Tyrrell*, vol. 2 (1912), pp. 341-343, [archive.org](https://archive.org/details/a611438902tyrruoft); NCE via [Encyclopedia.com](https://www.encyclopedia.com/environment/encyclopedias-almanacs-transcripts-and-maps/tyrrell-george) |
 | Alfred Loisy | Holy Office, 7 March 1908, excommunication *vitandus* | condemn | NCE via [Encyclopedia.com](https://www.encyclopedia.com/humanities/encyclopedias-almanacs-transcripts-and-maps/loisy-alfred-1857-1940) |
-| Teilhard de Chardin | Holy Office monitum, 30 June 1962 (AAS 54 [1962] 526); communiqué of July 1981 | warn | [EWTN reprint](https://www.ewtn.com/catholicism/library/monitum-on-the-writings-of-fr-teilhard-de-chardin-sj-2144) |
+| Teilhard de Chardin | Holy Office monitum, 30 June 1962 (AAS 54 [1962] 526); communiqué of July 1981 | warn | EWTN text of the monitum and the 1981 statement, [archived copy](http://web.archive.org/web/20250917144035/https://www.ewtn.com/catholicism/library/monitum-on-the-writings-of-fr-teilhard-de-chardin-sj-2144) (the live page now returns 404); official text in [AAS 54 (1962)](https://www.vatican.va/archive/aas/documents/AAS-54-1962-ocr.pdf), p. 526, not opened |
 | Rosmini | Holy Office, *Post obitum* (14 Dec 1887); CDF note of 1 July 2001 | condemn, then lift | [vatican.va](https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20010701_rosmini_en.html) |
 | Faustina Kowalska | Holy Office notification (1959); S. C. Doctrine of the Faith, 15 April 1978 | prohibit, then lift | [vatican.va](https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19780415_kowalska_en.html) |
 | Fénelon, *Explication des maximes des saints* | Brief of Innocent XII, 12 March 1699 | condemn | Leonine Index, s.v. "Fénélon" |
@@ -215,8 +220,8 @@ Sources searched for every author are listed under "Method". "None found" means 
 | Jansen, *Augustinus* | Holy Office, 1 Aug 1641; bull of Urban VIII, 6 March 1642 (*In eminenti*) | prohibit, condemn | Leonine Index, s.v. "Iansenius, Cornelius" |
 | Quesnel, *Réflexions morales* | Brief of Clement XI, 13 July 1708; bull *Unigenitus*, 8 Sept 1713 | condemn | Leonine Index, s.v. "Quesnel" |
 | Lamennais, *Paroles d'un croyant* | Gregory XVI, *Singulari nos*, 25 June 1834 | condemn | Leonine Index; [text](https://www.papalencyclicals.net/greg16/g16singu.htm) |
-| Erasmus | The Tridentine Index (1564), as carried in the 1877 Index: Colloquia, Moriae encomium (Praise of Folly), Lingua, Christiani matrimonii institutio and De interdicto esu carnium prohibited; the Adagia unless in Manutius's edition; the Italian paraphrase of Matthew; works on religion "donec expurgentur". The 1559 Pauline Index's first-class listing of all his works is reported widely but was not checked. **No Erasmus entry in the Leonine Index** | prohibit | [1877 Index](https://archive.org/details/index-librorum-prohibitorum-catholic), s.v. "Erasmus Desider." |
-| William of Ockham | Excommunicated 6 June 1328 for leaving Avignon without leave (John XXII). **No reconciliation documented.** Wadding read Clement VI's letter *Petitio pro parte tua* (8 June 1349), absolving a "Guilelmus de Anglia", as Ockham's reconciliation. G. Gál showed that it concerns another friar and that Ockham died in April 1347 ("William of Ockham Died 'Impenitent' in April 1347", *Franciscan Studies* 42, 1982, 90-95; record at [PhilPapers](https://philpapers.org/rec/GLWOO), text not opened) | condemn, never lifted | [SEP, "William of Ockham"](https://plato.stanford.edu/entries/ockham/) (rev. 2024) |
+| Erasmus | The Tridentine Index (1564), as carried in the 1877 Index: Colloquia, Moriae encomium (Praise of Folly), Lingua, Christiani matrimonii institutio and De interdicto esu carnium prohibited; the Adagia unless in Manutius's edition; the Italian paraphrase of Matthew; works on religion "donec expurgentur". The 1559 Pauline Index's first-class listing of all his works is reported widely but was not checked. **No Erasmus entry in the Leonine Index.** That omission does not lift the prohibition: Leo XIII's *Officiorum ac munerum* (1897), General Decrees art. 1, printed in the Leonine Index's front matter, keeps every book condemned by popes or ecumenical councils before 1600 condemned even when the new Index does not list it | prohibit | [1877 Index](https://archive.org/details/index-librorum-prohibitorum-catholic), s.v. "Erasmus Desider." |
+| William of Ockham | Excommunicated 6 June 1328 for leaving Avignon without leave (John XXII). **No reconciliation documented.** Wadding read Clement VI's letter *Petitio pro parte tua* (8 June 1349), absolving a "Guilelmus de Anglia", as Ockham's reconciliation. G. Gál's article ("William of Ockham Died 'Impenitent' in April 1347", *Franciscan Studies* 42, 1982, 90-95; record at [PhilPapers](https://philpapers.org/rec/GLWOO)) is reported to show that the letter concerns another friar and that Ockham died in April 1347. This rests on the article's title and on summaries of it; R1 did not read the article | condemn, never lifted | [SEP, "William of Ockham"](https://plato.stanford.edu/entries/ockham/) (rev. 2024) |
 | Meister Eckhart | John XXII, *In agro dominico*, 27 March 1329: 28 articles, the bull naming him | condemn | [CE](https://www.newadvent.org/cathen/05274a.htm); not in the Index lists |
 | Peter Abelard | Innocent II's rescript after Sens (1140 or 1141) imposed silence on him by name | condemn | [CE](https://www.newadvent.org/cathen/01036b.htm) |
 | Joachim of Fiore | Lateran IV (1215), canon 2 | condemn (one treatise) | [CE](https://www.newadvent.org/cathen/08406c.htm) |
@@ -276,25 +281,26 @@ Each item has a recommendation. No change was made to the plan.
    - **Josephus** (1 in Matthew), non-Christian: exclude.
    - **"Euseb."** (4), Eusebius of Caesarea: no act condemning him by name was checked. 5.6b should check Nicaea II's treatment of him before ingesting.
 8. **Theologia Germanica.** Only Castellio's Latin translation was prohibited (1621), and the entry is absent from the 1900 Index. An English translation from the German (for example Winkworth, 1854) is not the prohibited text. **Recommendation:** rule A does not bar it. It stays out today only because nobody has proposed it (memo: "exclude unless researched").
-9. **Authors named in a condemnation of their propositions** (Eckhart, Abelard, Joachim). Limit 1 excludes "every work" when an act condemned the author by name. The bulls name these authors while condemning their articles.
-   - **Recommendation:** read these as condemnations of named authors, which excludes all their works. That matches the memo's recommendations, and none is a live candidate.
+9. **Authors named in a condemnation of their propositions** (Eckhart, Abelard). Limit 1 excludes "every work" when an act condemned the author by name. John XXII's bull names Eckhart while condemning his articles; Innocent II's rescript names Abelard and imposes silence on him.
+   - **Recommendation:** read these as condemnations of named authors, which excludes all their works. That matches the memo's recommendations, and neither is a live candidate.
+   - **Joachim of Fiore is different.** Lateran IV, canon 2, condemned one treatise of his, not the author, and he had submitted all his writings to the Holy See in 1200 ([CE](https://www.newadvent.org/cathen/08406c.htm)). Limit 1 by name is doubtful for him. His exclusion stands on the candidates memo's grounds (no usable English) and on the condemned treatise itself.
    - Fénelon (whose brief condemns one book and who submitted) stays limited to that book, as decided.
-10. **Rule A key format.** The container sub-entries (`document_id` plus `div_id`) go one step beyond Carter's 4 Oct choice, because Novatian's treatises, Hippolytus and the Panegyric sit inside container documents. **Recommendation:** accept them. 2.1 maps them to `work_key`.
+10. **Rule A key format.** The container sub-entries (`document_id` plus `div_id`) go one step beyond Carter's 4 Oct choice, because Novatian's treatises, Hippolytus and the Panegyric sit inside container documents. **Recommendation:** accept them.
 
 ## Could not verify
 
 - **The 1948 Index** (lending-only on archive.org) and **De Bujanda's Index volumes**. Statements on the 1948 Index rest on the Leonine Index (1900).
-- **Barnes, *Tertullian*** (1971/1985), and the ODCC, CPG and Altaner. The Tertullian disagreement is taken from Quasten's own reports.
+- **Barnes, *Tertullian*** (1971/1985), and the ODCC, CPG and Altaner. Barnes is on archive.org (`tertullianhistor0000barn`, `tertullianhistor0000timo`) but lending-only, and its search-inside service returned 403 on 5 Oct 2026. So the exclusions of Exhortation to Chastity and Veiling of Virgins rest on Quasten's own report of a Montanist-leaning period and of other views, not on a second chronology R1 read.
 - **Exact days:**
   - Knox's reception (year only).
   - Abelard's rescript (1140 or 1141).
   - The Kempis-Castellio decree year (OCR).
   - The Faustina 1959 notification (cited from the 1978 document).
 - **Quasten page numbers** are derived from scan leaves (offset 16, checked at three section heads), not from page images.
-- **Conversion facts:** Augustine Baker (the CE page was not opened), Challoner, Arthur Preuss, Dionysius of Alexandria, and the baptism dates of Basil and Gregory Nazianzen. 5.6a must date any early letters.
+- **Conversion facts:** Challoner, Arthur Preuss, Dionysius of Alexandria, and the baptism dates of Basil and Gregory Nazianzen. 5.6a must date any early letters.
 - **Catena counts** are paragraph-label counts in the CCEL ThML files (Matthew and Mark only). Luke and John exist only as scans.
 
 ## Files
 
-- `datapipeline/registry/rule_a_R1.json`: 189 entries, as described above.
+- `datapipeline/registry/rule_a_R1.json`: 216 entries, as described above.
 - Build used: master adapters at `9f3e19e`, vendored sources from the main checkout (not committed).
