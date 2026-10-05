@@ -1,5 +1,6 @@
 """The tracked rights inventory, rights_inventory.json (item 0.2)."""
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -45,6 +46,26 @@ def test_in_copyright_entries_name_the_rights_holder():
             assert entry["rights_holder"], f"{R.key(entry)}: no rights_holder"
 
 
+# A corpus-cleanup item ID such as "1.2c", "5.4" or "5.1b.4".
+PLANNED_FOR_ID = re.compile(r"^\d\.\d+[a-z]?(\.\d+)?$")
+
+
+def test_planned_rows_name_the_ingesting_item():
+    # A planned work (R6) names the corpus-cleanup item that will ingest it; a built
+    # work has null.
+    for entry in ENTRIES:
+        planned = entry["planned_for"]
+        assert planned is None or (
+            isinstance(planned, str) and PLANNED_FOR_ID.match(planned)
+        ), f"{R.key(entry)}: planned_for {planned!r}"
+
+
+@pytest.mark.parametrize("value,ok", [("1.2c", True), ("5.4", True), ("5.1b.4", True),
+                                      ("", False), (" 5.4", False), ("R6", False), ("5.6c-x", False)])
+def test_planned_for_id_pattern(value, ok):
+    assert bool(PLANNED_FOR_ID.match(value)) == ok
+
+
 def test_approval_is_all_or_nothing():
     for entry in ENTRIES:
         assert bool(entry["checked_by"]) == bool(entry["checked_on"]), R.key(entry)
@@ -65,4 +86,8 @@ def test_inventory_matches_the_built_works_exactly():
     assert len(built) == len(set(built)), "two built works share an inventory key"
     listed = {R.key(e) for e in ENTRIES}
     assert sorted(set(built) - listed) == [], "built works with no inventory entry"
-    assert sorted(listed - set(built)) == [], "inventory entries for works no longer built"
+    # Planned rows (R6) describe works not built yet, so only built-work rows can be stale.
+    listed_built = {R.key(e) for e in ENTRIES if e["planned_for"] is None}
+    assert sorted(listed_built - set(built)) == [], "inventory entries for works no longer built"
+    # The PR that builds a planned work clears its planned_for.
+    assert sorted(set(built) - listed_built) == [], "built works whose entry is still planned"

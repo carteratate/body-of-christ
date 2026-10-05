@@ -594,6 +594,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
     - aquinas.cc with no licence statement.
     - Sensus Fidelium not naming its editions.
     - Title-page dates still to confirm: Tanquerey 1930 printing (IA `spirituallife0000atan` and `MN41530ucmf_5`), Marmion *Christ in His Mysteries* (1923 or 1924), William of St Thierry *Golden Epistle* (1930), Bellarmine *Ascent of the Mind* (1928), Teresa's Stanbrook *Letters* volumes (all dated 1930 or earlier?), and every Pohle-Preuss and Koch-Preuss volume (not in the candidate memo; printings run past 1930, unverified).
+    - R6 (5 Oct 2026) settled two: the *Golden Epistle* title page reads Sheed and Ward, London, MCMXXX, translated by Walter Shewring, edited by Justin McCann; the Stanbrook *Letters* are vol. I 1919, II 1921, III 1922, IV 1924. Tanquerey is not settled: both scans read "Second and revised edition" with a May 1930 imprimatur and no year. Marmion's *Christ in His Mysteries* is Sands and Herder, 1924. Bellarmine's *Ascent* is the 1616 "T. B." translation, first published by Burns Oates and Washbourne in 1928 with Brodrick's introduction. Open scans of all 12 Pohle-Preuss and all 5 Koch-Preuss volumes in printings of 1930 or earlier exist (1912 to 1928, some second or third revised editions). R6 added a draft row with `planned_for` for every other work in 5.3 to 5.6c (`docs/research/R6-editions.md`).
   - Every P5 publish goes through 2.2w (D2). Each one briefly holds a staging copy of the collections it publishes and a new Qdrant collection beside the one behind `chunks_live`, so its projection includes that transient peak, not only the lasting growth.
   - **Carter to note (storage).** Compacted, a passage costs roughly 3.5 KB of database (123 MB of rows plus about 70 MB of indexes over 54,568 passages; estimate). An average passage is about 770 characters (42 MB of content over 54,568). So one million words is about 7,700 passages and about 27 MB. The A1 CCEL list alone is about 3 million words (candidates memo sizes), so about 80 MB, before the Fathers volumes and the scans. After compaction (about 230 MB) the planned P5 additions very likely pass 500 MB. Qdrant grows about 6 KB of raw vector per passage.
 - **Changes:**
@@ -679,6 +680,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Current state:**
   - `datapipeline/sources/apostolic-exhortations/a-new-hope-for-lebanon.html` and `datapipeline/sources/papal-documents/ubicumque-et-semper.html` are vendored but in neither manifest nor the database (verified locally; plan Decision log).
   - `datapipeline/sources/apostolic-exhortations/amoris-laetitia.html` is in the same state. Carter scheduled it for this item on 4 Oct 2026 (plan, Decision log "Amoris Laetitia"); the Changes below do not yet name it.
+  - R6 (5 Oct 2026): two of the three vendored files hold no text. `a-new-hope-for-lebanon.html` is vatican.va's English page, which offers the exhortation only in French and Italian; vatican.va publishes no English, and R6's searches found no English text elsewhere. `amoris-laetitia.html` holds only a link to the English PDF (1,330,556 bytes). `ubicumque-et-semper.html` has the full English text.
   - Manifest lists live in `scripts/vendor_sources.py:382` (`APOSTOLIC_EXHORTATIONS`) and `:447` (`PAPAL_DOCUMENTS`).
   - UDG is not vendored. Per the source memo, vatican.va's English page is the consolidated text current from 22 February 2013 and links the 1996 original, *De aliquibus mutationibus* (2007, Latin; replaced number 75) and *Normas nonnullas* (2013; modified numbers 35, 37, 43, 46 §1, 47 to 51 §2, 55 §3, 62, 64, 70 §2, 75, 87). The 30 April 2025 declaration on number 33 is a dispensation, not an amendment.
   - Rule F is current text only in search, superseded versions as labeled linked history.
@@ -700,7 +702,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - The 1996 wording never appears in search results and opens in the reader with the superseded label and a link to the current text.
   - `/sources` lists all four UDG documents with their status.
 - **Production safety:** Additions only. `searchable = false` keeps superseded text out of search through the 2.2b filter. Rollback within the window is 2.2w's `rollback` command, which also points `chunks_live` back; later, a 2.2w apply that retires the documents, with tombstones for anyone who bookmarked them.
-- **Needs Carter:** Approve the lock-file PR and the 2.2w apply. Confirm UDG belongs in Church law rather than Papal documents (the plan's collection table puts it in Church law; this is a confirmation, not a reopening).
+- **Needs Carter:** A New Hope for Lebanon has no English on vatican.va: reader only with a note under the Decision log row "Non-English with no usable English" (R6's recommendation, taking the French text), or leave it out. Amoris Laetitia's English exists only as a PDF: vendor the PDF and extract its text (R6's recommendation). Approve the lock-file PR and the 2.2w apply. Confirm UDG belongs in Church law rather than Papal documents (the plan's collection table puts it in Church law; this is a confirmation, not a reopening). Answered 5 Oct 2026: the French text, in the reader with a note, out of search; the French vatican.va page replaces the empty English one at the same path (R6 download list).
 - **Out of scope:** Other universal laws (for example *Praedicate Evangelium*, *Vos estis lux mundi*). Propose them as a follow-up.
 
 ### 5.5. Catechisms: Compendium of the CCC, Roman Catechism
@@ -712,6 +714,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - The Catechism collection is one document, `document_id("catechism")` (`datapipeline/ingest/catechism.py:256`).
   - The Compendium is on vatican.va (`corpus-expansion-candidates.md`, gap 6), and the rights review covered it (Decision log).
   - McHugh and Callan was published 1923 (US, Wagner), so it is public domain in the US. A clean typed text is unverified; the scan-only memo did not cover it.
+  - R6 (5 Oct 2026): of four open IA scans catalogued 1923, only `catechismofcounc0000jose` is the 1923 printing ("Copyright, 1923"); the others are printings of the 1934 "second revised edition" (no renewal found for it either). Fordham's clean text (`mod/romancat.asp`) is an "Unknown etext" whose printing is not stated, with Halsall's non-commercial notice.
   - The Catechism HyDE prompt is written for the CCC's style (`hyde_s25.py:152-161`).
 - **Changes:**
   1. Compendium. New adapter `ingest/catechism_compendium.py`.
@@ -732,7 +735,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - For the Roman Catechism, the 1.2f gate report if OCR was used.
   - Release report shows zero retirements in the CCC.
 - **Production safety:** Additions to a released collection, visible together in one apply. Rollback within the window is 2.2w's `rollback` command, which also points `chunks_live` back; later, a 2.2w apply that retires the added documents.
-- **Needs Carter:** Approve each lock-file PR and each 2.2w apply.
+- **Needs Carter:** Use Fordham's clean Roman Catechism text directly, or only to check the OCR of the 1923 scan, given its non-commercial notice (R6 recommends checking only). Approve each lock-file PR and each 2.2w apply.
 - **Out of scope:** Other catechisms (Baltimore, Pius X).
 
 ### 5.6a. Church Fathers additions and the Pseudo-Dionysius addition
@@ -744,7 +747,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - None of the seven authors is in the corpus, and neither is Pseudo-Dionysius (verified 29 Sep). Pseudo-Dionysius is therefore an addition here, not a move; the only work that moves collection in P5 is Boethius (5.1b.3).
   - Vendored Fathers sources are 10 ThML files (`datapipeline/sources/church-fathers/`, for example `apostolic fathers.xml`, `third-century.xml`) plus the vendor list at `scripts/vendor_sources.py:62`.
   - ThML parsing is `datapipeline/ingest/thml_doc.py` (document id from collection, author and title at `:89`, replaced by registry lookup after 2.1).
-  - NPNF volume identifiers on CCEL (from memory of CCEL's catalogue; confirm each in R6):
+  - NPNF volume identifiers on CCEL (confirmed by R6 on 5 Oct 2026, with title pages and sizes in `docs/research/R6-editions.md`; npnf213 also holds Ephraim Syrus and Aphrahat, which this item does not take):
     - Basil, npnf208.
     - Cyril of Jerusalem and Gregory Nazianzen, npnf207.
     - Leo the Great and Gregory the Great's *Pastoral Rule* and letters, npnf212.
@@ -799,8 +802,8 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   1. Works in this item (text sources only; scans go to 5.6c). Each is one PR or grouped by author. Each needs its 5.2 row and R6 check.
      - CCEL ThML:
        - Teresa, *Interior Castle* (Stanbrook 1921) and *Life* (Lewis 1904).
-       - Francis de Sales, *Introduction to the Devout Life* (confirm the Rivingtons year) and *Treatise on the Love of God* (Mackey).
-       - Catherine, *Dialogue* (Thorold; confirm whether full 1896 or abridged 1907; if abridged, use the full edition from IA in 5.6c).
+       - Francis de Sales, *Introduction to the Devout Life* (Rivingtons 1876, per R6) and *Treatise on the Love of God* (Mackey).
+       - Catherine, *Dialogue* (Thorold; confirm whether full 1896 or abridged 1907; if abridged, use the full edition from IA in 5.6c). R6: CCEL's file is the 1907 abridgement, so the 1896 edition goes to 5.6c.
        - Julian, *Revelations* (Warrack 1901).
        - Thérèse, *Story of a Soul* (Taylor 1912).
        - Ignatius, *Spiritual Exercises* (Mullan 1914) and *Autobiography* (O'Conor 1900).
@@ -901,10 +904,10 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
        - Tanquerey 1930.
        - Marmion *Christ the Life of the Soul*.
        - Aquinas Rawes sermons (*Lord's Prayer*, *Commandments*).
-       - Scupoli (Rivingtons 1875 clean text is a different edition; compare with Burns 1846).
-       - The Alphonsus Centenary volumes (map volumes to titles first).
+       - Scupoli (Rivingtons 1875 clean text is a different edition; compare with Burns 1846). R6: Burns 1846 is also "for the use of members of the English Church"; a Catholic edition is Philadelphia, Dornin, 1817 (IA `spiritualcombat01scupgoog`).
+       - The Alphonsus Centenary volumes (map volumes to titles first). R6 mapped them from each volume's title page; IA's volume labels differ from the series numbers (`docs/research/R6-editions.md`). Vols. XVI, XVII, XXIII and XXIV have no open scan.
        - Gertrude, Scheeben (credited "after Nieremberg"), Möhler, Knox, Chesterton *The Thing*, Fisher, Faber, Lallemant, William of St Thierry, John of Avila, Elizabeth of the Trinity (her own writings only), Vianney (labeled as recorded sayings).
-       - Complete SCG (English Dominican 1923 to 1929) if Carter chooses it.
+       - Complete SCG (English Dominican 1923 to 1929) if Carter chooses it. R6: books 1 to 3 have open scans; book 4 (1929) has none.
        - Pohle-Preuss and Koch-Preuss per volume once 5.2 confirms pre-1931 printings.
      - Adaptations are credited with the adapter ("Joseph Pohle, adapted by Arthur Preuss").
   5. Excluded by flags. Middle English Birgitta (EETS 1929), unless Carter wants it.
@@ -915,7 +918,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Model cost stated in the PR.
   - The PR template's local source-check section filled in.
 - **Production safety:** Each work is an addition behind the publish lock, visible in one apply. A work that fails the gate is not published. Rollback within the window is 2.2w's `rollback` command, which also points `chunks_live` back; later, a 2.2w apply that retires the work's documents.
-- **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Send requests to ecatholic2000 where its text is used as more than a proofreading aid. Choose the SCG edition. Review time for the 20-passage checks (about 30 to 60 minutes per work, per the Decision log).
+- **Needs Carter:** Which *Spiritual Combat* edition, since both editions the memos named are Anglican (R6 recommends Dornin 1817). Tanquerey's printing date, which R6 could not settle (check the title-page verso before ingesting). Catherine of Genoa: the clean CCEL 1907 *Life and Doctrine* or OCR of the 1858 Burns *Treatise* (R6 recommends CCEL 1907). Approve each lock-file PR and each 2.2w apply. Send requests to ecatholic2000 where its text is used as more than a proofreading aid. Choose the SCG edition. Review time for the 20-passage checks (about 30 to 60 minutes per work, per the Decision log).
 - **Out of scope:** Any TheoCorpus translation. Peers editions. Buying clean texts.
 
 ### 5.7. About page: "What's in TheoCorpus and why"
