@@ -1,4 +1,5 @@
-"""The tracked rights inventory: one entry per published work, in `rights_inventory.json`.
+"""The tracked rights inventory: one entry per published or planned work, in
+`rights_inventory.json`.
 
 Each entry records public facts only: edition, translator, first publication, source
 URL, rights status, renewal search and credit line. Reasoning and correspondence stay
@@ -9,6 +10,10 @@ author): `work` is the built document's title, `source_path` the file it is read
 relative to `sources/` (or the directory, for a work built from many files). The author
 is part of the key because one file can hold two works with the same title: ANF volume 1
 has both Polycarp's and Ignatius's "Epistle to the Philippians".
+
+A planned work, not yet built, has `planned_for` set to the ID of the corpus-cleanup item
+that will ingest it (for example "1.2c" or "5.6b"), and its `source_path` is where the file
+will be vendored. `planned_for` is null for every built work. Planned rows come from R6.
 
 Item 0.2 in docs/corpus-cleanup/P0-checks-identity-research.md.
 """
@@ -35,7 +40,7 @@ STATUSES = (
 REQUIRED_FIELDS = (
     "work", "author", "collection", "source_path", "edition", "translator", "first_published",
     "source_url", "status", "rights_holder", "renewal_search", "credit_line",
-    "checked_by", "checked_on",
+    "checked_by", "checked_on", "planned_for",
 )
 
 RENEWAL_SEARCH_FIELDS = ("date", "where", "query", "result")
