@@ -274,7 +274,8 @@ def grown_defects(failing: dict[str, list[str]], known: dict[str, dict]) -> dict
     for check_id, units in failing.items():
         listed = known.get(check_id, {}).get("units")
         if listed is not None:
-            new = [u for u in units if u not in set(listed)]
+            listed = set(listed)
+            new = [u for u in units if u not in listed]
             if new:
                 out[check_id] = new
     return out
