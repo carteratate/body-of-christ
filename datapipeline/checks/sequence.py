@@ -183,24 +183,47 @@ def _title_key(text: str) -> str:
 
 def summa_articles(documents: list[Document], units: list[SourceUnit],
                    articles: list[tuple[str, str, str, str]]) -> SequenceResult:
-    """Every article in summa.xml present. `articles` is (id, part title, question
-    title, article title) for every div4, and for every question div3 that holds its
-    text directly ("one article" questions such as FP_Q71, and the Prologue of the
-    First Part of the Second Part), whose article title is "". An article is present
-    when some passage's reference names its question number and its article title."""
-    references = [_title_key(ref) for ref in dict.fromkeys(
-        p.reference for d in documents for p in d.passages)]
-    keys: Counter = Counter(a[0] for a in articles)
-    result = SequenceResult(duplicated=[a for a, n in keys.items() if n > 1])
+    """Every article in summa.xml built exactly once, and no built article the source
+    lacks. `articles` is (id, part title, question title, article title) for every div4,
+    and for every question div3 that holds its text directly ("one article" questions
+    such as FP_Q71, and the Prologue of the First Part of the Second Part), whose
+    article title is "".
+
+    A built article is a group of passages sharing a chapter_key: its objections, sed
+    contra, answer, replies and split pieces. Each group is matched, by its reference, to
+    the source article whose question number and title it names (the longest such title,
+    so "Whether God exists" does not also claim "Whether God exists in all things").
+    A source article no group matches is missing, one that two groups match is
+    duplicated, and a group that matches no source article is out of range. Part names
+    are not compared: the adapter rewrites "(XP)" as "Supplement". Repeated text inside
+    one group is 0.1b's duplicate-text rule, not this check."""
+    groups: dict[str, str] = {}
+    for d in documents:
+        for p in d.passages:
+            groups.setdefault(p.chapter_key or p.reference, _title_key(p.reference))
+    ids: Counter = Counter(a[0] for a in articles)
+    result = SequenceResult()
+    matchers = []
     for art_id, _part, question, article in articles:
         # The question's number and the article's own title, or for a question holding
-        # its text directly the question's title. Part names are not compared: the
-        # adapter rewrites "(XP)" as "Supplement".
+        # its text directly the question's title.
         number = re.search(r"(\d+)", question)
         q = re.compile(rf"question{number[1]}(?!\d)" if number else "")
         title = _title_key(article) if article else _title_key(question.split(" - ", 1)[-1])
-        if not any(title in ref and q.search(ref) for ref in references):
+        matchers.append((art_id, q, title))
+    hits: Counter = Counter()
+    for group, ref in groups.items():
+        found = [(len(title), art_id) for art_id, q, title in matchers
+                 if title in ref and q.search(ref)]
+        if found:
+            hits[max(found)[1]] += 1
+        else:
+            result.out_of_range.append(group)
+    for art_id, _q, _title in matchers:
+        if not hits[art_id]:
             result.missing.append(art_id)
+    result.duplicated = [a for a in dict.fromkeys(a for a, _q, _t in matchers)
+                         if hits[a] > 1 or ids[a] > 1]
     return result
 
 

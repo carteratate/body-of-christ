@@ -1,5 +1,16 @@
 {
- "measured_on": "feat/coverage-checks cfee751",
+ "measured_on": {
+  "apostolic-exhortations": "feat/coverage-checks cfee751",
+  "bible": "feat/coverage-checks cfee751",
+  "canon-law": "feat/coverage-checks cfee751",
+  "catechism": "feat/coverage-checks cfee751",
+  "church-fathers": "feat/coverage-checks cfee751",
+  "councils": "feat/coverage-checks cfee751",
+  "encyclicals": "feat/coverage-checks cfee751",
+  "medieval": "feat/coverage-checks cfee751",
+  "papal-documents": "feat/coverage-checks cfee751",
+  "summa": "feat/coverage-checks cfee751"
+ },
  "files": {
   "apostolic-exhortations/africae-munus.html": {
    "body_chars": 148141,

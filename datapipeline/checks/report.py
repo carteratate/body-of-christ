@@ -6,7 +6,8 @@
 Builds documents through SOURCE_ADAPTERS, runs coverage, the sequence checks and the
 sentinels, and writes <out>/coverage.json, <out>/sequence.json and <out>/summary.md.
 --write-baseline also writes this run's numbers as the baseline (checks/baselines/
-coverage.json unless a file is given); a PR that changes any file's coverage commits it.
+coverage.json unless a file is given), replacing only the collections this run measured;
+a PR that changes any file's coverage commits it.
 summary.md holds numbers and IDs only, so it can be pasted into a public PR; the
 uncovered-sentence snippets stay in coverage.json, under the gitignored releases/.
 """
@@ -283,10 +284,23 @@ def grown_defects(failing: dict[str, list[str]], known: dict[str, dict]) -> dict
 
 # --------------------------------------------------------------------------- output
 
-def baseline_json(result: RunResult, measured_on: str) -> dict:
-    """Numbers and IDs only: safe in the public repo."""
-    files, documents = {}, {}
+def baseline_json(result: RunResult, measured_on: str, previous: dict | None = None) -> dict:
+    """Numbers and IDs only: safe in the public repo. The run's collections replace
+    their own rows in `previous` (the baseline being rewritten); every other
+    collection's rows are kept, so `--collection catechism --write-baseline` updates the
+    Catechism without dropping the other nine. `measured_on` is per collection."""
+    previous = previous or {}
+    ran = set(result.coverage)
+    old_measured = previous.get("measured_on") or {}
+    if isinstance(old_measured, str):      # an older baseline: one label for all
+        old_measured = {k.split("/", 1)[0]: old_measured for k in previous.get("files", {})}
+    measured = {c: m for c, m in old_measured.items() if c not in ran}
+    files = {k: v for k, v in previous.get("files", {}).items()
+             if k.split("/", 1)[0] not in ran}
+    documents = {k: v for k, v in previous.get("documents", {}).items()
+                 if v.get("collection") not in ran}
     for collection, cov in sorted(result.coverage.items()):
+        measured[collection] = measured_on
         for name, f in sorted(cov.files.items()):
             files[f"{collection}/{name}"] = {"body_chars": f.body_chars,
                                              "covered_chars": f.covered_chars, "pct": f.pct}
@@ -294,7 +308,8 @@ def baseline_json(result: RunResult, measured_on: str) -> dict:
             documents[doc_id] = {"collection": collection, "source_file": d.source_file,
                                  "body_chars": d.body_chars, "covered_chars": d.covered_chars,
                                  "pct": d.pct}
-    return {"measured_on": measured_on, "files": files, "documents": documents}
+    return {"measured_on": dict(sorted(measured.items())), "files": dict(sorted(files.items())),
+            "documents": dict(sorted(documents.items()))}
 
 
 def sequence_json(result: RunResult) -> dict:
@@ -444,8 +459,12 @@ def main(argv: list[str] | None = None) -> int:
     write_outputs(result, out, baseline, os.path.relpath(args.baseline, DATAPIPELINE)
                   if args.baseline else "none", known)
     if args.write_baseline:
+        previous = {}
+        if os.path.exists(args.write_baseline):
+            with open(args.write_baseline, encoding="utf-8") as f:
+                previous = json.load(f)
         with open(args.write_baseline, "w", encoding="utf-8") as f:
-            json.dump(baseline_json(result, _git_head()), f, indent=1)
+            json.dump(baseline_json(result, _git_head(), previous), f, indent=1)
             f.write("\n")
     print(f"wrote {out}/summary.md ({result.seconds} s)")
     return 0

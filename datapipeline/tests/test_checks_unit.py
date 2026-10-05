@@ -1,5 +1,7 @@
 """Unit tests for the 0.1a source checks (datapipeline/checks/). They run in CI: every
 fixture is written here, and no vendored source is read."""
+import json
+
 import pytest
 
 from checks import coverage as C
@@ -9,8 +11,8 @@ from checks import source_text as S
 from model import Document, Passage
 
 
-def _passage(content, reference="", anchor="a", unit_label=None, position=0):
-    return Passage(content=content, reference=reference, anchor=anchor, chapter_key="c",
+def _passage(content, reference="", anchor="a", unit_label=None, position=0, chapter_key="c"):
+    return Passage(content=content, reference=reference, anchor=anchor, chapter_key=chapter_key,
                    chapter_label="C", position=position, unit_label=unit_label)
 
 
@@ -189,8 +191,6 @@ def test_usfm_units(tmp_path):
 
 
 def test_ccc_units(tmp_path):
-    import json
-
     data = {"page_nodes": {"toc-1": {"paragraphs": [
         {"elements": [{"type": "text", "text": "ARTICLE 1"}]},
         {"elements": [{"type": "ref-ccc", "ref_number": 1},
@@ -273,6 +273,43 @@ def test_summa_articles_match_on_question_number_and_article_title():
     assert Q.summa_articles([doc], [], articles).missing == ["FP_Q71"]
 
 
+SUMMA_ARTICLES = [
+    ("FP_Q2_A3", "FIRST PART", "Question. 2 - THE EXISTENCE OF GOD", "Article. 3 - Whether God exists?"),
+    ("FP_Q8_A1", "FIRST PART", "Question. 8 - THE EXISTENCE OF GOD IN THINGS",
+     "Article. 1 - Whether God exists in all things?"),
+]
+
+
+def _summa_ref(q, article):
+    return f"Summa Theologiae, First Part, Question {q} - Topic, {article}"
+
+
+def test_summa_article_pieces_count_once_and_longest_title_wins():
+    # Objection, answer and a split piece share the article's chapter_key; the Q8 article's
+    # title contains the Q2 title, but the question number keeps them apart.
+    a3, a1 = _summa_ref(2, "Article 3 - Whether God exists?"), \
+        _summa_ref(8, "Article 1 - Whether God exists in all things?")
+    doc = _doc([_passage("x", a3, "q2/a3/0", "Objection 1", chapter_key="q2/a3"),
+                _passage("x", a3, "q2/a3/1", "I answer that", chapter_key="q2/a3"),
+                _passage("x", a3, "q2/a3/2", "I answer that", chapter_key="q2/a3"),
+                _passage("x", a1, "q8/a1/0", "Objection 1", chapter_key="q8/a1")],
+               collection="summa")
+    assert Q.summa_articles([doc], [], SUMMA_ARTICLES).ok
+
+
+def test_summa_article_built_twice_and_invented_article():
+    a3 = _summa_ref(2, "Article 3 - Whether God exists?")
+    doc = _doc([_passage("x", a3, "q2/a3/0", chapter_key="q2/a3"),
+                _passage("x", a3, "q2/a3--2/0", chapter_key="q2/a3--2"),
+                _passage("x", _summa_ref(8, "Article 1 - Whether God exists in all things?"),
+                         "q8/a1/0", chapter_key="q8/a1"),
+                _passage("x", _summa_ref(9999, "Article 1 - Whether this was invented?"),
+                         "q9999/a1/0", chapter_key="q9999/a1")], collection="summa")
+    result = Q.summa_articles([doc], [], SUMMA_ARTICLES)
+    assert (result.missing, result.duplicated, result.out_of_range) == (
+        [], ["FP_Q2_A3"], ["q9999/a1"])
+
+
 def test_thml_chapter_needs_half_its_characters():
     long_text = " ".join(f"Sentence number {i} of a long dropped work." for i in range(20))
     units = [S.SourceUnit("v.xml", "ii.i", long_text, "body"),
@@ -341,8 +378,6 @@ def test_known_defects_file_is_well_formed():
 
 
 def test_editorial_div_is_apparatus_and_flagged_if_published(tmp_path, monkeypatch):
-    import json
-
     listing = tmp_path / "editorial_divs.json"
     listing.write_text(json.dumps([{"collection": "church-fathers", "file": "vol.xml",
                                     "div": "ii.i", "title": "Chapter I", "item": "1.8a"}]))
@@ -378,8 +413,6 @@ def test_coverage_entry_reported_fixed_at_threshold():
 
 
 def test_editorial_divs_file_is_well_formed():
-    import json
-
     with open(S.EDITORIAL_DIVS_PATH, encoding="utf-8") as f:
         rows = json.load(f)
     keys = [(r["collection"], r["file"], r["div"]) for r in rows]
@@ -444,3 +477,33 @@ def test_grown_defect_lists_only_new_units():
                "sequence.canons.missing:266": ["266"]}
     assert report.grown_defects(failing, known) == {
         "sequence.numbered_paragraphs.missing:councils/a.html": ["7"]}
+
+
+def _coverage_run(collection, name, covered, documents=None):
+    cov = C.CoverageResult(collection, {
+        name: C.FileCoverage(name, [], body_chars=100, covered_chars=covered)}, documents or {})
+    return report.RunResult([collection], {collection: cov})
+
+
+def test_write_baseline_for_one_collection_keeps_the_others(tmp_path, monkeypatch):
+    path = tmp_path / "baseline.json"
+    path.write_text(json.dumps({
+        "measured_on": "master abc1234",
+        "files": {"bible/a.usfm": {"body_chars": 100, "covered_chars": 90, "pct": 90.0},
+                  "catechism/ccc.json": {"body_chars": 100, "covered_chars": 50, "pct": 50.0}},
+        "documents": {"d-bible": {"collection": "bible", "source_file": "a.usfm",
+                                  "body_chars": 100, "covered_chars": 90, "pct": 90.0},
+                      "d-ccc": {"collection": "catechism", "source_file": "ccc.json",
+                                "body_chars": 100, "covered_chars": 50, "pct": 50.0}}}))
+    run = _coverage_run("catechism", "ccc.json", 97, {
+        "d-ccc": C.DocumentCoverage("d-ccc", "CCC", "ccc.json", body_chars=100, covered_chars=97)})
+    monkeypatch.setattr(report, "run", lambda collections: run)
+    monkeypatch.setattr(report, "_git_head", lambda: "feat/x def5678")
+    assert report.main(["--collection", "catechism", "--baseline", str(path),
+                        "--write-baseline", str(path), "--out", str(tmp_path / "out")]) == 0
+    written = json.loads(path.read_text())
+    assert written["measured_on"] == {"bible": "master abc1234", "catechism": "feat/x def5678"}
+    assert written["files"]["bible/a.usfm"]["pct"] == 90.0
+    assert written["files"]["catechism/ccc.json"]["pct"] == 97.0
+    assert set(written["documents"]) == {"d-bible", "d-ccc"}
+    assert written["documents"]["d-ccc"]["covered_chars"] == 97
