@@ -678,6 +678,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Goal:** Questions about how a pope is elected or what happens during a vacancy are answered from *Universi Dominici Gregis* as currently in force, with its earlier wording available as labeled history. Two vendored papal documents that never reached the corpus become searchable.
 - **Current state:**
   - `datapipeline/sources/apostolic-exhortations/a-new-hope-for-lebanon.html` and `datapipeline/sources/papal-documents/ubicumque-et-semper.html` are vendored but in neither manifest nor the database (verified locally; plan Decision log).
+  - `datapipeline/sources/apostolic-exhortations/amoris-laetitia.html` is in the same state. Carter scheduled it for this item on 4 Oct 2026 (plan, Decision log "Amoris Laetitia"); the Changes below do not yet name it.
   - Manifest lists live in `scripts/vendor_sources.py:382` (`APOSTOLIC_EXHORTATIONS`) and `:447` (`PAPAL_DOCUMENTS`).
   - UDG is not vendored. Per the source memo, vatican.va's English page is the consolidated text current from 22 February 2013 and links the 1996 original, *De aliquibus mutationibus* (2007, Latin; replaced number 75) and *Normas nonnullas* (2013; modified numbers 35, 37, 43, 46 §1, 47 to 51 §2, 55 §3, 62, 64, 70 §2, 75, 87). The 30 April 2025 declaration on number 33 is a dispensation, not an amendment.
   - Rule F is current text only in search, superseded versions as labeled linked history.

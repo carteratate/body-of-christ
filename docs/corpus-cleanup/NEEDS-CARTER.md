@@ -93,6 +93,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Recommended answer is yes to all four.
 - **0.1a** [Phase 0]. Review the list of known defects that the new tests start out expecting. No decision beyond checking it.
 - **0.2** [Phase 0]. Confirm that the fields of the public rights file (edition, translator, public-domain basis, renewal search, credit line) are safe to publish. Also decide what to do with Amoris Laetitia, which is downloaded but was never published and has no decision on record. The spec gives no recommendation.
+  Answered 2026-10-04: the fields are safe to publish (edition, translator, first published, source URL, status, renewal search, credit line). In-copyright works get a new status, `in-copyright`, with a field naming the rights holder; that covers the papal and Vatican texts, Vatican II, the Catechism and the canon law English. Other texts stay `unknown` unless their file or page establishes a public-domain edition. The WEB-C Bible gets a new status, `pd-dedicated`. Amoris Laetitia is scheduled for 5.4 with the other two unpublished papal files.
 - **0.3** [Phase 0]. Approve the list of about 30 targeted test questions, written fresh rather than taken from users' searches.
 - **R1** [Phase 0 research, answer needed by Phase 3]. Decide these points.
   - Hippolytus led a rival group in Rome, outside communion, from about 217 to about 235. The Refutation of All Heresies (377 passages) is dated to the 220s. Under rule A a work written outside communion is removed, and he is not a Doctor of the Church. The spec gives no recommendation.
@@ -175,6 +176,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.0** [Phase 0]. The Node.js major version Vercel builds with, if not 20.
   Answered 2026-10-04: Node 24.x, read from the Vercel project settings (`nodeVersion`); CI uses 24.
 - **0.2 and R6** [Phase 0, each work before its ingestion PR]. The copyright renewal searches, or approval of them, and the entries in the public rights file that depend on his private rights memos. The Imitation of Christ renewal search is first.
+  Answered 2026-10-04: Claude may run the renewal searches (Stanford Copyright Renewal Database, scanned Catalog of Copyright Entries) and record date, place, query and result for Carter to approve, the Imitation of Christ first. 0.2 fills all 421 inventory rows with the facts the files, manifests and memos establish, `unknown` otherwise, each a draft until Carter approves it.
 - **0.5** [Phase 0, needed before Phase 4]. The Qdrant plan's memory, disk and backup settings, read from the Qdrant console he has access to, plus a few read-only requests.
 - **0.6** [Phase 0, needed before Phase 4]. The Supabase plan tier and database size limit, read from the dashboard.
 
