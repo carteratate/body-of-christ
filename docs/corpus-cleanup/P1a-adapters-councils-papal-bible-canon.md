@@ -213,6 +213,7 @@ These apply to every PR below and are not repeated in each item.
 
 - **Type:** PR
 - **Depends on:** 1.2a, 0.2 (source hash and rights entry for `npnf214`), R6 (edition check for the new source)
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `councils/npnf214.xml`.
 - **Goal:** Nicaea through Nicaea II come from a public-domain translation with clear provenance, and carry the councils' own texts: creeds, definitions, canons, anathemas and synodal letters. Nicaea stops being 4 passages.
 - **Current state:**
   - Current build from papalencyclicals.net (Tanner): Nicaea 4 passages and 5,993 characters. Constantinople I 16 and 22,451. Ephesus 32 and 39,713. Chalcedon 19 and 44,215. Constantinople II 12 and 27,885. Constantinople III 5 and 11,042. Nicaea II 27 and 32,322.
@@ -239,6 +240,7 @@ These apply to every PR below and are not repeated in each item.
 
 - **Type:** PR
 - **Depends on:** 1.2a, 0.2, R6
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `councils/creeds2.xml`.
 - **Goal:** Dei Filius and Pastor Aeternus are searchable in full, chapter and canon, in Manning's public-domain English. Today Vatican I is 9 passages and 6,053 characters.
 - **Current state:**
   - The vendored Tanner page keeps 86,381 characters in `<li>` elements (653 of them), which the adapter ignores.
@@ -288,6 +290,7 @@ These apply to every PR below and are not repeated in each item.
 
 - **Type:** PR, one per council or per source group
 - **Depends on:** 1.2a, 1.2f (the OCR tool and gate, for every council without a clean text), 0.2 (renewal search recorded for Schroeder, supplied by R6)
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `councils/fordham-lateran1.html`, `councils/fordham-lateran2.html`, `councils/fordham-lateran4.html`, `councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.txt`. Its 2 page-image files (PDF or hOCR) are approved per work later and are vendored to `_incoming/` the same way.
 - **Goal:** Constantinople IV through Lateran V come from Schroeder's public-domain translation. Where Schroeder has no text, the gap register says so. Where a council's Schroeder text is not ready at P4, its Tanner text is retired and a "translation in preparation" tombstone shows the gap (D9).
 - **Current state:**
   - Current build (Tanner): Constantinople IV 26 passages, Lateran I 29, Lateran II 33, Lateran III 33, Lateran IV 105, Lyons I 44, Lyons II 44, Vienne 112, Constance 201, Basel-Ferrara-Florence 130, Lateran V 87. The generic builder also loses text inside lists in several of these (Lateran I has 22,306 characters in `<li>`).

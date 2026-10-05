@@ -317,7 +317,7 @@ Each item gives a recommendation. Nothing in the plan was changed. **Carter acce
 
 ## Download list for Carter
 
-Sizes in bytes, from `Content-Length`, CCEL's ETag (which equals our manifest bytes for the files already vendored), or a GET byte count for vatican.va pages that send no length. "Vendored as" is relative to `datapipeline/sources/`.
+Sizes in bytes, from `Content-Length`, CCEL's ETag (which equals our manifest bytes for the files already vendored), or a GET byte count for vatican.va pages that send no length. "Vendored as" is relative to `datapipeline/sources/`. It is the file's final place. Until the PR that ingests it, an approved file sits at `datapipeline/sources/_incoming/<Vendored as>`, where no adapter reads it, and the PR moves it there unchanged (Carter, 5 Oct 2026; the church-fathers adapter would otherwise publish an `.xml` the moment it lands in its folder). The 154 text, XML and HTML files were downloaded on 5 Oct 2026; 152 matched the sizes below; the two archive.org texts `exercisessaintg00gertgoog` and `bwb_W9-CTR-079` (both 5.6c) returned HTTP 500 and are not vendored.
 
 | Item | Work | URL | Vendored as | Bytes |
 |---|---|---|---|---|

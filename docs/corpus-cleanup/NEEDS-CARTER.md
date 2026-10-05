@@ -38,6 +38,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.6** [Phase 0]. Approve read-only size queries against production.
 - **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 0039 migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
 - **R6** [Phase 0, blocks Phase 1 items 1.2c, 1.2d, 1.8d]. Approve each set of source downloads. The request states the file names and sizes each time.
+  Answered 2026-10-05: the 154 text, XML and HTML files of R6's download list (about 153 MB) are approved; the 92 page-image PDFs and the hOCR file are approved per work later. They are vendored to `datapipeline/sources/_incoming/<Vendored as path>` and locked there; each ingesting PR moves its files unchanged (Decision log "Holding folder for approved downloads"). 152 are vendored; 2 archive.org texts for 5.6c returned HTTP 500 on 5 Oct 2026 and are not.
 
 ### Phase 1
 
