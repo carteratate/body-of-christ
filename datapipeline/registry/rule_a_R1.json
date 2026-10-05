@@ -939,8 +939,8 @@
    "work_date": "after 222 (Quasten II pp. 165-169; BMCR 2016.12.05: 220s)",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (R1). Written after 222 (it narrates Callistus's episcopate, 217-222), during the Roman schism (about 217 to about 235). Under rule A as written: exclude. Hippolytus is not a Doctor and no act condemns him."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Written after 222 (it narrates Callistus's episcopate, 217-222), during the Roman schism (about 217 to about 235). Under rule A as written: exclude. Hippolytus is not a Doctor and no act condemns him."
   }
  },
  {
@@ -2309,8 +2309,8 @@
    "work_date": "about 200",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives include: about 200, before the schism (Quasten II p. 170)."
+   "decision": "include",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives include: about 200, before the schism (Quasten II p. 170)."
   }
  },
  {
@@ -2327,8 +2327,8 @@
    "work_date": "about 204",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives include: About 204, before the schism (Quasten II p. 171)."
+   "decision": "include",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives include: About 204, before the schism (Quasten II p. 171)."
   }
  },
  {
@@ -2345,8 +2345,8 @@
    "work_date": "before 225",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: Quasten II p. 196: before 225, which does not place it before the schism (about 217)."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: Quasten II p. 196: before 225, which does not place it before the schism (about 217)."
   }
  },
  {
@@ -2363,8 +2363,8 @@
    "work_date": "disputed",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: Quasten II p. 180 reports the view that it closes the early Syntagma (episcopate of Zephyrinus, 199-217) but calls it 'perhaps'; date and genre disputed, so not shown before the schism."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: Quasten II p. 180 reports the view that it closes the early Syntagma (episcopate of Zephyrinus, 199-217) but calls it 'perhaps'; date and genre disputed, so not shown before the schism."
   }
  },
  {
@@ -2381,8 +2381,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2399,8 +2399,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2417,8 +2417,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2435,8 +2435,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2453,8 +2453,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2471,8 +2471,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2489,8 +2489,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2507,8 +2507,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2525,8 +2525,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2543,8 +2543,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2561,8 +2561,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2579,8 +2579,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2597,8 +2597,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2615,8 +2615,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2633,8 +2633,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2651,8 +2651,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2669,8 +2669,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2687,8 +2687,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (Hippolytus). Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
   }
  },
  {
@@ -2759,8 +2759,8 @@
    "work_date": "238",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 123-124",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (R1). Delivered on leaving Origen's school at Caesarea in 238 (Quasten II p. 124), after Gregory embraced Christianity there (233-238). No source dates his baptism, so the chronology does not show it was written after baptism. Under rule A as written: exclude."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Delivered on leaving Origen's school at Caesarea in 238 (Quasten II p. 124), after Gregory embraced Christianity there (233-238). No source dates his baptism, so the chronology does not show it was written after baptism. Under rule A as written: exclude."
   }
  },
  {
@@ -2885,8 +2885,8 @@
    "work_date": "undated",
    "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 403-404",
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER (R1). Lactantius is a convert; Quasten (pp. 403-404) discusses the poem's Christian symbolism but gives no date relative to his conversion, and its attribution is questioned in the literature he cites. Under rule A as written: exclude (undatable)."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Lactantius is a convert; Quasten (pp. 403-404) discusses the poem's Christian symbolism but gives no date relative to his conversion, and its attribution is questioned in the literature he cites. Under rule A as written: exclude (undatable)."
   }
  },
  {
@@ -3618,8 +3618,8 @@
      "citation": "https://archive.org/details/bub_gb_7MPk71j1YEIC"
     }
    ],
-   "decision": null,
-   "decision_basis": "FOR CARTER: the prohibited item is Castellio's Latin version; the entry is absent from the Leonine Index of 1900."
+   "decision": "include",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. the prohibited item is Castellio's Latin version; the entry is absent from the Leonine Index of 1900."
   }
  },
  {
@@ -3682,8 +3682,8 @@
    "work_date": null,
    "chronology_source": null,
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER: anonymous Arian author, 5th century (van Banning, CCSL 87B, 1988). Matthew 439, Mark 109 by label count."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. anonymous Arian author, 5th century (van Banning, CCSL 87B, 1988). Matthew 439, Mark 109 by label count."
   }
  },
  {
@@ -3696,8 +3696,8 @@
    "work_date": null,
    "chronology_source": null,
    "church_acts": [],
-   "decision": null,
-   "decision_basis": "FOR CARTER: Byzantine archbishop writing after 1054 (Mark 365 by label count)."
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Byzantine archbishop writing after 1054 (Mark 365 by label count)."
   }
  }
 ]

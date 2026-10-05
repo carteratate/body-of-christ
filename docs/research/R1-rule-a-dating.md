@@ -257,7 +257,7 @@ No act or Index entry was found for:
 
 ## 5. For Carter
 
-Each item has a recommendation. No change was made to the plan.
+Each item has a recommendation. **Carter accepted every recommendation on 5 Oct 2026**; `rule_a_R1.json` records the resulting decisions, and the plan's Decision log has the rows.
 
 1. **Hippolytus.** He was in schism from 217 until about 235, is not a Doctor and was never condemned. Rule A as written removes the Refutation (377) and 115 undated passages of "Extant Works", 492 in all, and keeps Christ and Antichrist (26) and On Daniel (29). The Refutation's authorship is also disputed; if it is not his, its author led a Roman schismatic group (Litwa), so the outcome is the same.
    - **Recommendation:** apply the rule as written, which keeps the method's single standard. 3.2 then labels the Refutation only if Carter keeps it.
