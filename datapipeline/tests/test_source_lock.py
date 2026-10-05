@@ -104,18 +104,20 @@ def test_collection_write_keeps_other_collections(tree):
 
 
 def test_url_and_acquired_survive_rewrite(tree):
+    """Where no manifest or known URL names a file, a hand-recorded url survives."""
     sources, lock = tree
+    (sources / "summa" / "notes.xml").write_text("<notes/>", encoding="utf-8")
     run("--write", sources, lock)
     entries = json.loads(lock.read_text())
     for e in entries:
-        if e["path"] == "summa/summa.xml":
-            e["url"] = "https://example.org/summa"
+        if e["path"] == "summa/notes.xml":
+            e["url"] = "https://example.org/notes"
             e["acquired"] = "2026-10-01"
     lock.write_text(json.dumps(entries), encoding="utf-8")
     run("--write", sources, lock)
-    summa = next(e for e in json.loads(lock.read_text()) if e["path"] == "summa/summa.xml")
-    assert summa["url"] == "https://example.org/summa"
-    assert summa["acquired"] == "2026-10-01"
+    notes = next(e for e in json.loads(lock.read_text()) if e["path"] == "summa/notes.xml")
+    assert notes["url"] == "https://example.org/notes"
+    assert notes["acquired"] == "2026-10-01"
 
 
 def test_vendor_manifest_write_updates_the_lock(tree, monkeypatch):

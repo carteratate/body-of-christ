@@ -45,6 +45,11 @@ _MANIFESTS = {
 _UNMANIFESTED_URLS = {
     "bible/eng-web-c_usfm/": "https://ebible.org/Scriptures/eng-web-c_usfm.zip",
     "catechism/ccc.json": "https://github.com/nossbigg/catechism-ccc-json",
+    # Both confirmed on 4 Oct 2026 by downloading the URL and matching the locked sha256.
+    "bible/PericopeGroupedKJVVerses.json":
+        "https://huggingface.co/datasets/JWBickel/KJV_Pericopes/resolve/main/"
+        "PericopeGroupedKJVVerses.json",
+    "summa/summa.xml": "https://ccel.org/ccel/a/aquinas/summa.xml",
 }
 
 # Vendored files no registered adapter publishes, with the reason on record.
@@ -99,7 +104,8 @@ def _role_and_url(sources: Path, collection: str, rel: str,
             return "adapter-input", named[file_in_collection].get("url")
         return "vendored-unregistered", None
     if collection == "bible":
-        url = _UNMANIFESTED_URLS["bible/eng-web-c_usfm/"] if "/eng-web-c_usfm/" in rel else None
+        url = (_UNMANIFESTED_URLS["bible/eng-web-c_usfm/"] if "/eng-web-c_usfm/" in rel
+               else _UNMANIFESTED_URLS.get(rel))
         return ("adapter-input" if rel.endswith(".usfm") else "adapter-auxiliary"), url
     return "adapter-input", _UNMANIFESTED_URLS.get(rel)
 

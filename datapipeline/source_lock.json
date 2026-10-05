@@ -336,7 +336,7 @@
   "path": "bible/PericopeGroupedKJVVerses.json",
   "sha256": "f61a8aca95ed6137d29aba16ddcfc1d0d7481142297e04d1f845c5b548a9cfee",
   "bytes": 7730724,
-  "url": null,
+  "url": "https://huggingface.co/datasets/JWBickel/KJV_Pericopes/resolve/main/PericopeGroupedKJVVerses.json",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-auxiliary"
@@ -4258,7 +4258,7 @@
   "path": "summa/summa.xml",
   "sha256": "550eb0b0758f119dfe50346e43072026e8c3070d806d4942025525fb24fb7f5b",
   "bytes": 18855316,
-  "url": null,
+  "url": "https://ccel.org/ccel/a/aquinas/summa.xml",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
