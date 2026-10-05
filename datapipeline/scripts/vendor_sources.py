@@ -595,6 +595,21 @@ def _write_manifest(coll_dir: str, manifest: list, name: str = "manifest.json") 
         json.dump(stamped, f, ensure_ascii=False, indent=2)
     hashed = sum(1 for e in stamped if "sha256" in e)
     print(f"  manifest: {name} ({len(stamped)} entries, {hashed} hashed)")
+    _update_source_lock(os.path.basename(coll_dir))
+
+
+def _update_source_lock(collection: str) -> None:
+    """Re-hash this collection into the tracked source_lock.json, so a re-vendor and its
+    lock change land in the same step."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import source_lock
+    from datetime import date
+
+    entries = source_lock.write(source_lock.SOURCES, source_lock.LOCK_PATH,
+                                source_lock.registered_collections(), collection,
+                                date.today().isoformat(), fetched=True)
+    locked = sum(1 for e in entries if e["collection"] == collection)
+    print(f"  source_lock.json: {locked} entries for {collection}")
 
 
 def verify_manifest(coll_dir: str, name: str = "manifest.json") -> list[str]:

@@ -349,7 +349,7 @@ These apply to every PR below and are not repeated in each item.
   - `quanta-cura-1864/1` holds the endnote today. Under D1 its ID keeps naming that text, so it is retired (reason `note-split-off`). The real first paragraph is a new unit: it gets a new ID and an anchor that has never been live (`quanta-cura-1864/para-1`), so old `?anchor=quanta-cura-1864/1` links never land on different text. The release report confirms the old ID is `removed` with a registry entry and the new one is `new`.
   - Paragraphs recovered from `<li>` markup are new text inside existing numbered units; those units keep their IDs and pass 0.1c's stability check because their old text is contained in the new.
 - **Needs Carter:** nothing.
-- **Out of scope:** genre labels (1.3b). Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which no plan item covers yet. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
+- **Out of scope:** genre labels (1.3b). Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which Carter scheduled for 5.4 on 4 Oct 2026. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
 
 ### 1.3b. Papal genre metadata
 

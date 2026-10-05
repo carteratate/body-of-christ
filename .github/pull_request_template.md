@@ -18,7 +18,7 @@ collapsed block. Otherwise replace this section's body with:
 "Not applicable: this PR does not touch datapipeline/"
 -->
 
-<details><summary>Source verification: <code>python3 scripts/vendor_sources.py --collection all --verify</code> (from 0.2 on: <code>python3 scripts/source_lock.py --verify</code>)</summary>
+<details><summary>Source verification: <code>python3 scripts/source_lock.py --verify</code></summary>
 
 ```
 ```

@@ -332,26 +332,26 @@ Conventions used in this file:
     - `--verify`: re-hash, exit 1 on any missing file, changed hash, or unlocked file; print `ok` per collection otherwise. This replaces `vendor_sources.py --verify` in the PR template.
     - `--collection <name>` limits either mode.
   - `vendor_sources.py`: after writing a manifest, call the lock writer for that collection so a re-vendor updates the tracked lock in the same step; keep `--verify` working for compatibility.
-  - Add a tracked `datapipeline/rights_inventory.json`, one entry per work (keyed by the 2.1 registry `work_id` once it exists; until then by `collection` plus source path plus title):
+  - Add a tracked `datapipeline/rights_inventory.json`, one entry per work (keyed by the 2.1 registry `work_id` once it exists; until then by `collection` plus source path plus title plus author, since title alone is not unique: ANF volume 1 holds both Polycarp's and Ignatius's "Epistle to the Philippians"). A work built from many files (the Bible books, the Code of Canon Law) takes its directory as source path:
     ```json
-    {"work": "...", "collection": "medieval", "source_path": "medieval/imitation-of-christ.xml",
+    {"work": "...", "author": "...", "collection": "medieval", "source_path": "medieval/imitation-of-christ.xml",
      "edition": "Bruce, Milwaukee, 1940", "translator": "...", "first_published": 1940,
-     "source_url": "https://ccel.org/...", "status": "pd-us-non-renewal",
+     "source_url": "https://ccel.org/...", "status": "pd-us-non-renewal", "rights_holder": null,
      "renewal_search": {"date": "2026-..", "where": "...", "query": "...", "result": "no renewal found"},
      "credit_line": "Sourced via CCEL.org", "checked_by": "Carter", "checked_on": "2026-.."}
     ```
-    `status` is one of `pd-us-pre-1931`, `pd-us-non-renewal`, `pd-us-government`, `permission`, `licence`, `unknown`. Only public facts go in this file; no reasoning, risk assessment, or correspondence (those stay in Carter's private memos, per the Decision log "Rights review"). The Imitation of Christ renewal search from Open items is the first entry to complete.
-  - Record the four unregistered cases as `vendored-unregistered` with a `note` field: the two files scheduled for 5.4, `amoris-laetitia.html` with "not published, no decision", and `roman-curia/` with "parked for 5.3".
+    `status` is one of `pd-us-pre-1931`, `pd-us-non-renewal`, `pd-us-government`, `pd-dedicated` (dedicated to the public domain by its owner, as eBible.org did the WEB-C), `in-copyright`, `permission`, `licence`, `unknown`. An `in-copyright` entry names its `rights_holder` (for example Libreria Editrice Vaticana); this covers the papal and Vatican texts taken from vatican.va, Vatican II, the Catechism and the canon law English (Carter, 4 Oct 2026). Texts whose translation is not established from the file or page itself, including the papalencyclicals.net translations, stay `unknown`. Only public facts go in this file; no reasoning, risk assessment, or correspondence (those stay in Carter's private memos, per the Decision log "Rights review"). The Imitation of Christ renewal search from Open items is the first entry to complete. An entry with `checked_by` null is a draft that Carter has not yet approved.
+  - Record the four unregistered cases as `vendored-unregistered` with a `note` field: the two files scheduled for 5.4, `amoris-laetitia.html`, which Carter scheduled for 5.4 with them on 4 Oct 2026, and `roman-curia/` with "parked for 5.3".
   - Update `datapipeline/SOURCES.md` (replace the "orphans" paragraph with a pointer to `source_lock.json`) and the PR template's source-check instructions.
 - **Acceptance checks:**
   - `tests/test_source_lock.py` in CI with a temp directory: `--write` then `--verify` passes; a changed byte fails; a deleted file fails; an unlocked new file fails; entries are sorted and stable across two writes.
   - `tests/test_rights_inventory.py` in CI: every entry has the required fields and a known `status`; every `pd-us-non-renewal` entry has a complete `renewal_search`; every work emitted by a master build has an inventory entry (this part skips without sources).
   - Locally, `python3 scripts/source_lock.py --verify` exits 0 on Carter's Mac, and the PR description pastes its per-collection summary and the count of entries per `role`.
-  - A check that a master build still reproduces the 421 live document IDs (hash `851d07063f85e4c612be1b2d44b695fb`), proving the hashed files are the ones in use.
+  - A check that a master build still reproduces the 421 live document IDs (hash `851d07063f85e4c612be1b2d44b695fb`: the md5 of the sorted document IDs joined with commas), proving the hashed files are the ones in use.
 - **Production safety:** Adds tracked metadata files and local scripts. No store, API or web change. File hashes and URLs of public sources are safe to publish.
 - **Needs Carter:**
-  - Confirm the field list of `rights_inventory.json` is safe for the public repo, and fill in or approve the renewal-search entries (he holds the private rights memos).
-  - Decide what to do with `amoris-laetitia.html` (vendored, never published, no Decision log row). This spec only records it.
+  - Approve the renewal-search entries and the drafted inventory rows (he holds the private rights memos). Answered 4 Oct 2026: Claude may run the renewal searches and record them for his approval, the Imitation of Christ first.
+  - Answered 4 Oct 2026: the field list of `rights_inventory.json` is safe for the public repo; `amoris-laetitia.html` goes to 5.4 with the other two unpublished papal files.
 - **Out of scope:** Re-downloading any source. Adding the two 5.4 papal files to manifests or the database. Completing the rights inventory for planned sources (5.2 and R6). Storing source files in git.
 
 ---
