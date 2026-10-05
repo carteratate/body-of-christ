@@ -4336,8 +4336,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4359,8 +4359,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4382,8 +4382,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4405,8 +4405,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4428,8 +4428,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4451,8 +4451,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4474,8 +4474,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4497,8 +4497,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4520,8 +4520,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Sourced via CCEL.org",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2d"
  },
  {
@@ -4883,8 +4883,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Sourced via the Internet Medieval Sourcebook, Fordham University",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4906,8 +4906,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Sourced via the Internet Medieval Sourcebook, Fordham University",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -4929,8 +4929,8 @@
    "searched_by": "Claude, for Carter's approval"
   },
   "credit_line": "Translated by H. J. Schroeder (1937). Sourced via the Internet Medieval Sourcebook, Fordham University",
-  "checked_by": null,
-  "checked_on": null,
+  "checked_by": "Carter",
+  "checked_on": "2026-10-05",
   "planned_for": "1.2e"
  },
  {
@@ -9224,23 +9224,6 @@
   "planned_for": "5.6c"
  },
  {
-  "work": "The Treatise on Purgatory",
-  "author": "Catherine of Genoa",
-  "collection": "theologians",
-  "source_path": "theologians/TreatiseOnPurgatory/",
-  "edition": "preface by Cardinal Manning (London: Burns, 1858; IA metadata); Internet Archive scan TreatiseOnPurgatory",
-  "translator": null,
-  "first_published": 1858,
-  "source_url": "https://archive.org/details/TreatiseOnPurgatory",
-  "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Scan: Internet Archive",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": "5.6c"
- },
- {
   "work": "A Treatise on the True Devotion to the Blessed Virgin",
   "author": "Louis de Montfort",
   "collection": "theologians",
@@ -9627,6 +9610,23 @@
   "rights_holder": null,
   "renewal_search": null,
   "credit_line": "Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6c"
+ },
+ {
+  "work": "Life and Doctrine of Saint Catherine of Genoa",
+  "author": "Catherine of Genoa",
+  "collection": "theologians",
+  "source_path": "theologians/catherine_g-life.xml",
+  "edition": "Life and Doctrine of Saint Catherine of Genoa, \"translated from the Italian\" (New York: Christian Press Association Publishing Co., 1907), CCEL ThML text",
+  "translator": null,
+  "first_published": 1907,
+  "source_url": "https://ccel.org/ccel/c/catherine_g/life.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
