@@ -1,0 +1,3703 @@
+[
+ {
+  "document_id": "125d6898-c285-5a8a-b89b-83b88964db1a",
+  "collection": "church-fathers",
+  "title": "First Epistle to the Corinthians",
+  "author": "Clement of Rome",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "abf69de0-a1e2-53ce-8283-541924c6ea32",
+  "collection": "church-fathers",
+  "title": "Epistle to Diognetus",
+  "author": "Mathetes",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "379b7859-4bf9-57f3-9327-7e5d207f7c7f",
+  "collection": "church-fathers",
+  "title": "Epistle to the Philippians",
+  "author": "Polycarp",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "f8faac83-ebf5-5a3c-850e-b9620465bc3d",
+  "collection": "church-fathers",
+  "title": "The Martyrdom of Polycarp",
+  "author": "Polycarp",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "collection": "church-fathers",
+  "title": "Epistle to the Ephesians: Shorter and Longer Versions",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "collection": "church-fathers",
+  "title": "Epistle to the Magnesians: Shorter and Longer Versions",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "collection": "church-fathers",
+  "title": "Epistle to the Trallians: Shorter and Longer Versions",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "collection": "church-fathers",
+  "title": "Epistle to the Romans: Shorter and Longer Versions",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "collection": "church-fathers",
+  "title": "Epistle to the Philadelphians: Shorter and Longer Versions",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "collection": "church-fathers",
+  "title": "Epistle to the Smyrnæans: Shorter and Longer Versions",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "collection": "church-fathers",
+  "title": "Epistle to Polycarp: Shorter and Longer Versions",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "12e7199e-bef2-5a25-a705-e8b6d76f3c08",
+  "collection": "church-fathers",
+  "title": "Epistle to Polycarp: Syriac Version",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "c707c2af-a7fc-5a04-acc0-6f5183c07b1e",
+  "collection": "church-fathers",
+  "title": "Epistle to the Ephesians: Syriac Version",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "6badd405-7b83-55be-a8ee-67df3236ba22",
+  "collection": "church-fathers",
+  "title": "Epistle to the Romans: Syriac Version",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "56add0dd-d428-5843-9a61-23e8c255338f",
+  "collection": "church-fathers",
+  "title": "Epistle to the Tarsians",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "0311d705-6fd6-5801-bb7a-33116ae11e0e",
+  "collection": "church-fathers",
+  "title": "Epistle to the Antiochians",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "5553da19-6597-56e0-ad6e-48113b7d855f",
+  "collection": "church-fathers",
+  "title": "Epistle to Hero, a Deacon of Antioch",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "567be8a5-1eba-5a86-a5ce-688e2e2aab23",
+  "collection": "church-fathers",
+  "title": "Epistle to the Philippians",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "7073bae0-a0fd-5c22-8e36-8cf493f15af2",
+  "collection": "church-fathers",
+  "title": "Epistle from Maria of Cassobelæ",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "4fe41814-a29f-572d-badb-e3f3b2488125",
+  "collection": "church-fathers",
+  "title": "Epistle to Mary at Neapolis",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "830a2c63-f968-5861-9a10-c1ee3c6ee79d",
+  "collection": "church-fathers",
+  "title": "First Epistle to St John",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "1a0a016b-395e-5307-9aea-19a896b87eae",
+  "collection": "church-fathers",
+  "title": "Second Epistle to St John",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "63e7f0b7-2b47-50d4-b7a8-9db26b5dca87",
+  "collection": "church-fathers",
+  "title": "Epistle to Mary the Virgin",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "76b8b853-70d2-5821-8ee5-0149e4f59e03",
+  "collection": "church-fathers",
+  "title": "Epistle from Mary the Virgin",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "841b4e0a-225f-5090-a4c0-36d8bf1a2f63",
+  "collection": "church-fathers",
+  "title": "The Martyrdom of Ignatius",
+  "author": "Ignatius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "1d83b302-69ee-5b50-aca6-fcaed82d54c7",
+  "collection": "church-fathers",
+  "title": "The Epistle of Barnabas",
+  "author": "Barnabas",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "efc282b4-fe6a-5162-9e1b-8748c686dde1",
+  "collection": "church-fathers",
+  "title": "Fragments",
+  "author": "Papias",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "0ef66418-ccf1-5dc5-9aae-f13a7560c1a8",
+  "collection": "church-fathers",
+  "title": "The First Apology",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "1d63d229-1283-53b8-91d1-2d79e06e7628",
+  "collection": "church-fathers",
+  "title": "The Second Apology",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "05ec835e-ea8f-581d-b94d-4b38bb4a8522",
+  "collection": "church-fathers",
+  "title": "Dialogue with Trypho",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "abd0e330-31fe-5de4-bf93-e9b572c179b5",
+  "collection": "church-fathers",
+  "title": "The Discourse to the Greeks",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "3f1d7ed1-b5cd-539a-a446-8d4eab61dbd4",
+  "collection": "church-fathers",
+  "title": "Hortatory Address to the Greeks",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "dd54c7cc-1a9a-5388-90d3-e8c4b8a95e06",
+  "collection": "church-fathers",
+  "title": "On the Sole Government of God",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "24b54b57-da45-534e-834c-686963d5d905",
+  "collection": "church-fathers",
+  "title": "On the Resurrection, Fragments",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "22369abb-5ee4-50d2-85c8-fdf4da8fc2ce",
+  "collection": "church-fathers",
+  "title": "Other Fragments from the Lost Writings of Justin",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "cf8278dd-3523-576c-b85a-1402077bdae3",
+  "collection": "church-fathers",
+  "title": "The Martyrdom of Justin Martyr",
+  "author": "Justin Martyr",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 130 (conversion, Dialogue 2-8; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Justin (converted about 130; earliest extant work, First Apology, about 150-155): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "ef7c21a8-92fa-51b8-823f-89094bf6f565",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book I",
+  "author": "Irenæus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "a558e370-226c-5ac5-b01b-916adbe6b256",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book II",
+  "author": "Irenæus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "a9dfa0cc-a39d-5962-9068-231edc7d02fe",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book III",
+  "author": "Irenæus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "c7ef22ce-17e4-5b8a-b915-9470f19eebe4",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book IV",
+  "author": "Irenæus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book V",
+  "author": "Irenæus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "0066869a-28fb-5274-a847-c4d3e88a948e",
+  "collection": "church-fathers",
+  "title": "Fragments from the Lost Writings of Irenæus",
+  "author": "Irenæus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "dac28881-f92b-5c94-991a-5b244e2d49c3",
+  "collection": "church-fathers",
+  "title": "City of God",
+  "author": "Augustine",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "0387-04-24 (Easter Vigil, 24-25 April 387)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Augustine (baptized 24-25 April 387; the Cassiciacum works of 386 are not in the corpus): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "author": "Augustine",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "0387-04-24 (Easter Vigil, 24-25 April 387)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Augustine (baptized 24-25 April 387; the Cassiciacum works of 386 are not in the corpus): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "7f04ae49-2ffe-5cdf-acd9-2b7e8576b441",
+  "collection": "church-fathers",
+  "title": "The Confessions of Saint Augustine",
+  "author": "Augustine",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "0387-04-24 (Easter Vigil, 24-25 April 387)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Augustine (baptized 24-25 April 387; the Cassiciacum works of 386 are not in the corpus): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "collection": "church-fathers",
+  "title": "On the Incarnation of the Word",
+  "author": "Athanasius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "b270ebca-051e-5094-8370-758ad599d9ca",
+  "collection": "church-fathers",
+  "title": "Doctrinal Treatises of St. Augustin",
+  "author": "Augustine",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "0387-04-24 (Easter Vigil, 24-25 April 387)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Augustine (baptized 24-25 April 387; the Cassiciacum works of 386 are not in the corpus): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "f39c025e-78a6-5737-a94f-7896c84fc857",
+  "collection": "church-fathers",
+  "title": "Moral Treatises of St. Augustin",
+  "author": "Augustine",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "0387-04-24 (Easter Vigil, 24-25 April 387)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Augustine (baptized 24-25 April 387; the Cassiciacum works of 386 are not in the corpus): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "7f6bc9ae-3566-5deb-8dbe-895238288fda",
+  "collection": "church-fathers",
+  "title": "Book First.—Visions",
+  "author": "The Pastor of Hermas",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "f54576c1-723f-53b7-a6d0-f19945eb97c7",
+  "collection": "church-fathers",
+  "title": "Book Second.—Commandments",
+  "author": "The Pastor of Hermas",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "3097a9d7-7e3c-59f5-9bbb-9f5b23a76ae8",
+  "collection": "church-fathers",
+  "title": "Book Third.—Similitudes",
+  "author": "The Pastor of Hermas",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "356b9c9b-236c-5761-8d85-64a441551944",
+  "collection": "church-fathers",
+  "title": "Address to the Greeks",
+  "author": "Tatian",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": "about 172",
+   "work_date": "disputed (about 155-172)",
+   "chronology_source": "Irenaeus, Against Heresies 1.28.1 (https://www.newadvent.org/fathers/0103128.htm); Eusebius, Church History 4.28-29",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break: Tatian left the Church after Justin's death (Irenaeus, Against Heresies 1.28.1); the Address's date relative to the break is disputed. Decided in the plan."
+  }
+ },
+ {
+  "document_id": "760c4195-f5be-5141-90fc-8958fccd06ba",
+  "collection": "church-fathers",
+  "title": "Theophilus to Autolycus",
+  "author": "Theophilus",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "undated (To Autolycus 1.14)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Theophilus (To Autolycus 1.14 describes his conversion): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "419ab97d-8237-5a73-a5cf-9d9ee125a1cc",
+  "collection": "church-fathers",
+  "title": "A Plea for the Christians",
+  "author": "Athenagoras",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 177 (undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Athenagoras (Plea about 177): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "69c74a98-bd14-5b68-9dbe-9758cd8ac257",
+  "collection": "church-fathers",
+  "title": "The Resurrection of the Dead",
+  "author": "Athenagoras",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 177 (undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Athenagoras (Plea about 177): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "f23f311d-4aa4-5091-bb8a-91b174e8f3a2",
+  "collection": "church-fathers",
+  "title": "Exhortation to the Heathen",
+  "author": "Clement of Alexandria",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "undated",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Clement (Quasten II p. 5: pagan-born, all works Christian): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "96584290-90c2-50bc-9d3d-c353b8969e1f",
+  "collection": "church-fathers",
+  "title": "The Instructor",
+  "author": "Clement of Alexandria",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "undated",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Clement (Quasten II p. 5: pagan-born, all works Christian): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
+  "collection": "church-fathers",
+  "title": "The Stromata, or Miscellanies",
+  "author": "Clement of Alexandria",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "undated",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Clement (Quasten II p. 5: pagan-born, all works Christian): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "collection": "church-fathers",
+  "title": "The Refutation of All Heresies.",
+  "author": "Hippolytus.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217 (schism under Callistus); reconciled about 235 (Liberian Catalogue; Damasus)",
+   "work_date": "after 222 (Quasten II pp. 165-169; BMCR 2016.12.05: 220s)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Written after 222 (it narrates Callistus's episcopate, 217-222), during the Roman schism (about 217 to about 235). Under rule A as written: exclude. Hippolytus is not a Doctor and no act condemns him."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "collection": "church-fathers",
+  "title": "The Extant Works and Fragments of Hippolytus.",
+  "author": "Hippolytus.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "mixed, about 200 to about 235",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": "FOR CARTER (R1). Container: no document-level decision; every work has its own sub-work entry. Per work: Christ and Antichrist (about 200, Quasten II p. 170) and On Daniel (about 204, Quasten II p. 171) predate the schism and pass; every other piece is undated by Quasten or straddles 217 (Against Plato 'before 225', p. 196) and fails rule A's dating limit. See the sub-work entries."
+  }
+ },
+ {
+  "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",
+  "collection": "church-fathers",
+  "title": "Appendix to the Works of Hippolytus. Containing Dubious and Spurious Pieces.",
+  "author": "Hippolytus.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Appendix of dubious and spurious pieces: not Hippolytus's work, so his dating does not apply; anonymous or pseudonymous authors are presumed in communion (rule A). Rules B and C (3.2) still apply."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "collection": "church-fathers",
+  "title": "The Epistles of Cyprian.",
+  "author": "Cyprian.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 246",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Cyprian (baptized about 246; Pontius, Life 2-3; all works after): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "collection": "church-fathers",
+  "title": "The Treatises of Cyprian.",
+  "author": "Cyprian.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 246",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Cyprian (baptized about 246; Pontius, Life 2-3; all works after): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "83609fa8-480c-5a66-a09c-f0114c4d3e66",
+  "collection": "church-fathers",
+  "title": "The Seventh Council of Carthage under Cyprian. Concerning the Baptism of Heretics.",
+  "author": "Cyprian.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 246",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Cyprian (baptized about 246; Pontius, Life 2-3; all works after): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "collection": "church-fathers",
+  "title": "Treatises Attributed to Cyprian on Questionable Authority.",
+  "author": "Cyprian.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": null,
+   "decision_basis": "Container: no document-level decision; every work in it has its own sub-work entry and decision. Treatises I and III (Novatian) excluded under limit 1; Treatises II and IV (anonymous) included; editorial divs go under rule G."
+  }
+ },
+ {
+  "document_id": "8e5fb9cb-352a-59c8-8449-07d673b3671c",
+  "collection": "church-fathers",
+  "title": "Fragments of Caius.",
+  "author": "Caius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "collection": "church-fathers",
+  "title": "A Treatise of Novatian Concerning the Trinity.",
+  "author": "Novatian.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": "0251",
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: Novatian excommunicated by name, Roman synod of 251. Decided in the plan."
+  }
+ },
+ {
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "collection": "church-fathers",
+  "title": "On the Jewish Meats.",
+  "author": "Novatian.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": "0251",
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: Novatian excommunicated by name, Roman synod of 251. Decided in the plan."
+  }
+ },
+ {
+  "document_id": "f827d42e-fca5-5277-82be-64cdc1feb467",
+  "collection": "church-fathers",
+  "title": "Anonymous Treatise Against the Heretic Novatian.",
+  "author": "Appendix.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "2ddaa182-a332-559f-8bfb-e72b56a12953",
+  "collection": "church-fathers",
+  "title": "Anonymous Treatise on Re-baptism.",
+  "author": "Appendix.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "collection": "church-fathers",
+  "title": "Acknowledged Writings.",
+  "author": "Gregory Thaumaturgus.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "between 233 and 238 (conversion at Caesarea; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 123-128",
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": "Container: no document-level decision; every work has its own sub-work entry. Convert, baptism undated. The Declaration of Faith, Metaphrase of Ecclesiastes and Canonical Epistle date from his episcopate (after about 240) and pass. The Panegyric to Origen (about 238) is FOR CARTER: see its sub-work entry."
+  }
+ },
+ {
+  "document_id": "44fd52c3-fdef-518e-a463-a3273f39764c",
+  "collection": "church-fathers",
+  "title": "Dubious or Spurious Writings.",
+  "author": "Gregory Thaumaturgus.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
+  "collection": "church-fathers",
+  "title": "Extant Fragments.",
+  "author": "Dionysius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "6e9f0854-4460-5044-b0ed-c13355cd90fe",
+  "collection": "church-fathers",
+  "title": "Exegetical Fragments.",
+  "author": "Dionysius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "f12b1923-3690-5a7a-8da7-46bb7f1e335f",
+  "collection": "church-fathers",
+  "title": "The Epistle to Aristides.",
+  "author": "Julius Africanus.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "6895ce71-2eab-54d6-93a0-516a97625efc",
+  "collection": "church-fathers",
+  "title": "The Extant Fragments of the Five Books of the Chronography of Julius Africanus.",
+  "author": "Julius Africanus.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "8d817baf-5149-5641-91ab-ad994870956a",
+  "collection": "church-fathers",
+  "title": "Anatolius of Alexandria.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "1731004f-ea5b-52a1-b533-56ae9377b7fe",
+  "collection": "church-fathers",
+  "title": "Alexander of Cappadocia.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "c370ad86-3a10-5343-909c-ff4f4e5aecd7",
+  "collection": "church-fathers",
+  "title": "Theognostus of Alexandria.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "bb35c577-ee5b-546e-abb6-41a0764cd6a7",
+  "collection": "church-fathers",
+  "title": "Pierus of Alexandria.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "7f7a66c3-17eb-5724-8091-a1e7a8612229",
+  "collection": "church-fathers",
+  "title": "Theonas of Alexandria.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "5f551a37-baea-599a-8f63-413a06abc5e1",
+  "collection": "church-fathers",
+  "title": "Phileas.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
+  "collection": "church-fathers",
+  "title": "Pamphilus.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "18eaa7ff-402d-56bd-9549-8d12c10d29fc",
+  "collection": "church-fathers",
+  "title": "Malchion.",
+  "author": "Anatolius and Minor Writers.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "0e326c02-a623-538c-898b-56623197c955",
+  "collection": "church-fathers",
+  "title": "The Acts of the Disputation with the Heresiarch Manes.",
+  "author": "Archelaus.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "4b66fa28-684a-5e79-8596-6029d5de1a48",
+  "collection": "church-fathers",
+  "title": "A Fragment of the Same Disputation.",
+  "author": "Archelaus.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "0d274c4c-d2f3-5e33-92b5-c592422a0bff",
+  "collection": "church-fathers",
+  "title": "Of the Manichæans.",
+  "author": "Alexander of Lycopolis.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Non-Christian author (pagan Platonist; van Oort 2012). Decided in the plan."
+  }
+ },
+ {
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "collection": "church-fathers",
+  "title": "The Canonical Epistle, with the Commentaries of Theodore Balsamon and John Zonaras.",
+  "author": "Peter of Alexandria.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "12083c91-ed66-5b5c-ac89-bd4ebbadb439",
+  "collection": "church-fathers",
+  "title": "Fragments from the Writings of Peter.",
+  "author": "Peter of Alexandria.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "02f87865-8421-5189-a3f4-6a1a262fa8d8",
+  "collection": "church-fathers",
+  "title": "Epistles on the Arian Heresy and the Deposition of Arius.",
+  "author": "Alexander of Alexandria.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
+  "collection": "church-fathers",
+  "title": "The Banquet of the Ten Virgins; or Concerning Chastity.",
+  "author": "Methodius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "5b81cdef-4a4f-52de-8b35-8657680f30dc",
+  "collection": "church-fathers",
+  "title": "From the Discourse on the Resurrection.",
+  "author": "Methodius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "525a3cd5-3890-5be3-993f-34f5de18a83b",
+  "collection": "church-fathers",
+  "title": "Fragments.",
+  "author": "Methodius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "2ac6445a-0528-500f-8574-0e62ef1d4b9e",
+  "collection": "church-fathers",
+  "title": "Oration on the Palms.",
+  "author": "Methodius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "5f210d1e-1be7-54fa-a09d-f1dd6f3f315a",
+  "collection": "church-fathers",
+  "title": "Three Fragments from the Homily on the Cross and Passion of Christ.",
+  "author": "Methodius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "ecfd05c0-32a2-5153-9054-d3ab06c56c2c",
+  "collection": "church-fathers",
+  "title": "Some Other Fragments of the Same Methodius.",
+  "author": "Methodius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "973645b6-6110-5711-a635-6b84c2632fd8",
+  "collection": "church-fathers",
+  "title": "Two Fragments, Uncertain.",
+  "author": "Methodius.",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
+  "collection": "church-fathers",
+  "title": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.)",
+  "author": "Arnobius.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": "before 311, before baptism",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 383-384",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Written before baptism, as a pledge to the bishop (Jerome, Chronicle; Quasten II p. 384). Decided in the plan."
+  }
+ },
+ {
+  "document_id": "d7f29587-bcec-5a71-9633-e635fa8989f5",
+  "collection": "church-fathers",
+  "title": "On the Pallium.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "disputed; proposals run from about 193 to after 209",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Date disputed between standard sources (Decision log 'Rule A dating method' names On the Pallium as lost)."
+  }
+ },
+ {
+  "document_id": "e73bb326-8ba6-5334-b79e-3a15c9892581",
+  "collection": "church-fathers",
+  "title": "On the Apparel of Women.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "about 200-206 (after De oratione, about 198-200; Quasten: no Montanist ideas)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten places it in the pre-Montanist (Catholic) period; no standard source found that places it after the break."
+  }
+ },
+ {
+  "document_id": "17b7747f-273b-5841-b415-16dea3192635",
+  "collection": "church-fathers",
+  "title": "On the Veiling of Virgins.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "about 207-212",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten: written before the formal break at Carthage but in the Montanist-leaning period; other standard chronologies class it Montanist. Sources disagree, so excluded."
+  }
+ },
+ {
+  "document_id": "3717ce05-ad42-5ec3-b3ce-ff3964908e05",
+  "collection": "church-fathers",
+  "title": "To His Wife.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "200-206 (Quasten p. 302)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten: written as a Catholic, 200-206."
+  }
+ },
+ {
+  "document_id": "e5d235f3-a5f2-513e-90e7-04eedc71bf33",
+  "collection": "church-fathers",
+  "title": "On Exhortation to Chastity.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "204-212 (Quasten p. 305)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten: no evidence he had yet left the Church, 'semi-Montanistic'; other standard chronologies class it Montanist. Sources disagree, so excluded."
+  }
+ },
+ {
+  "document_id": "01abb5ad-1a95-5435-aa5b-62b04e87e1f2",
+  "collection": "church-fathers",
+  "title": "On Monogamy.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "about 217 (Quasten p. 305)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten: written after he had joined the Montanists."
+  }
+ },
+ {
+  "document_id": "6b70b67f-bfb3-5cda-a2f0-323eff4621bc",
+  "collection": "church-fathers",
+  "title": "On Modesty.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "after 217 (Quasten pp. 312-313)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten: Montanist; attacks the Catholic penitential discipline."
+  }
+ },
+ {
+  "document_id": "89201a06-a747-53a5-8248-43e5a5cb5fae",
+  "collection": "church-fathers",
+  "title": "On Fasting.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "after the break (Quasten p. 312)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten: written by the Montanist Tertullian against the Catholics."
+  }
+ },
+ {
+  "document_id": "d2b71f9f-111c-5f1b-9a43-5a897b13730c",
+  "collection": "church-fathers",
+  "title": "De Fuga in Persecutione.",
+  "author": "Tertullian: Part Fourth.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before about 197 (convert; baptism undated)",
+   "communion_end": "about 207-213 (sources disagree; Quasten puts the definite break before about 213)",
+   "work_date": "212 (Quasten p. 310)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 290-319 (Ad uxorem 200-206, p. 302; De cultu feminarum pre-Montanist, pp. 294-295); compared with T. D. Barnes, Tertullian (Oxford, 1971; 2nd ed. 1985), chronology appendix [not opened, see R1 'Could not verify']",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Later break (Benedict XVI, audience of 30 May 2007). Quasten: Montanist point of view, 212."
+  }
+ },
+ {
+  "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
+  "collection": "church-fathers",
+  "title": "The Octavius of Minucius Felix.",
+  "author": "Minucius Felix.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "undated (Octavius 1)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Minucius Felix (Octavius 1 describes his conversion): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "b9b6fbbb-dec7-5a67-ad45-58965105c081",
+  "collection": "church-fathers",
+  "title": "The Instructions of Commodianus.",
+  "author": "Commodianus.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "undated (Instructions, preface)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Commodian (his Instructions, preface, describes his conversion from paganism): convert with no extant writing before baptism in this document. Rule A passes."
+  }
+ },
+ {
+  "document_id": "4c96eac3-f3f1-549c-84cf-070661393073",
+  "collection": "church-fathers",
+  "title": "Origen De Principiis.",
+  "author": "Origen.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Second Council of Constantinople",
+     "date": "0553-06-02",
+     "act": "Anathema 11, naming Origen",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/3812.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: Origen condemned by name, Constantinople II (553). Decided in the plan."
+  }
+ },
+ {
+  "document_id": "9c052574-ccbc-5aa6-8a1e-b582b7dd73e4",
+  "collection": "church-fathers",
+  "title": "A Letter from Origen to Gregory.",
+  "author": "Origen.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Second Council of Constantinople",
+     "date": "0553-06-02",
+     "act": "Anathema 11, naming Origen",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/3812.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: Origen condemned by name, Constantinople II (553). Decided in the plan."
+  }
+ },
+ {
+  "document_id": "5a05852b-4193-518f-9d01-afd796291979",
+  "collection": "church-fathers",
+  "title": "Origen Against Celsus.",
+  "author": "Origen.",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Second Council of Constantinople",
+     "date": "0553-06-02",
+     "act": "Anathema 11, naming Origen",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/3812.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: Origen condemned by name, Constantinople II (553). Decided in the plan."
+  }
+ },
+ {
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "collection": "church-fathers",
+  "title": "The Divine Institutes",
+  "author": "Lactantius",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 300 (baptism undated)",
+   "communion_end": null,
+   "work_date": "after 303-304 (Quasten II pp. 396-398)",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 392-410",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert. Quasten dates his earliest extant work, On the Workmanship of God, to about 303-304, after his conversion; the other works are later (Anger of God 313-314). Decided in the plan ('Lactantius stays')."
+  }
+ },
+ {
+  "document_id": "1d496a39-f816-530f-9fa8-bb26d015ddce",
+  "collection": "church-fathers",
+  "title": "A Treatise on the Anger of God Addressed to Donatus",
+  "author": "Lactantius",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 300 (baptism undated)",
+   "communion_end": null,
+   "work_date": "313-314",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 392-410",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert. Quasten dates his earliest extant work, On the Workmanship of God, to about 303-304, after his conversion; the other works are later (Anger of God 313-314). Decided in the plan ('Lactantius stays')."
+  }
+ },
+ {
+  "document_id": "f913305f-b259-578b-a5ca-532fac927aab",
+  "collection": "church-fathers",
+  "title": "On the Workmanship of God, or the Formation of Man",
+  "author": "Lactantius",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 300 (baptism undated)",
+   "communion_end": null,
+   "work_date": "303-304",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 392-410",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert. Quasten dates his earliest extant work, On the Workmanship of God, to about 303-304, after his conversion; the other works are later (Anger of God 313-314). Decided in the plan ('Lactantius stays')."
+  }
+ },
+ {
+  "document_id": "3336c36c-c708-577d-81f9-de5c362c7ce5",
+  "collection": "church-fathers",
+  "title": "Of the Manner in Which the Persecutors Died",
+  "author": "Lactantius",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 300 (baptism undated)",
+   "communion_end": null,
+   "work_date": "after 313",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 392-410",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert. Quasten dates his earliest extant work, On the Workmanship of God, to about 303-304, after his conversion; the other works are later (Anger of God 313-314). Decided in the plan ('Lactantius stays')."
+  }
+ },
+ {
+  "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
+  "collection": "church-fathers",
+  "title": "Fragments of Lactantius",
+  "author": "Lactantius",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 300 (conversion at Nicomedia; baptism undated)",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 392-410",
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": "Container: no document-level decision; every work has its own sub-work entry. Convert. The Phoenix is FOR CARTER (no standard chronology dates it relative to his conversion); A Poem on the Passion is a doubtful attribution (plan, labels) and later than the conversion if his. See sub-work entries."
+  }
+ },
+ {
+  "document_id": "6dea18c5-8901-5df5-9dec-b1b662064776",
+  "collection": "church-fathers",
+  "title": "The Extant Writings of Asterius Urbanus",
+  "author": "Asterius Urbanus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "e847b8bb-ce69-528e-9eda-5173a795ec18",
+  "collection": "church-fathers",
+  "title": "Commentary on the Apocalypse of the Blessed John",
+  "author": "Victorinus",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "eb26cfd2-ba51-56b7-b9cd-8b5fe7c8d852",
+  "collection": "church-fathers",
+  "title": "The Teaching of the Twelve Apostles",
+  "author": "The Teaching of the Twelve Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "d72938c6-9f4d-5241-8af8-6feb01ee8dd6",
+  "collection": "church-fathers",
+  "title": "Book I. Concerning the Laity",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "df17e279-df63-5610-95ae-f61e2fe09916",
+  "collection": "church-fathers",
+  "title": "Book II. Of Bishops, Presbyters, and Deacons",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "df6fd2f7-c573-5486-9f76-739ba3aa947d",
+  "collection": "church-fathers",
+  "title": "Book III",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "aab0848e-3b88-5a1c-9dbd-a6897abf4e79",
+  "collection": "church-fathers",
+  "title": "Book IV",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "49437294-5526-5a1b-b2df-3022c0c36e56",
+  "collection": "church-fathers",
+  "title": "Book V",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "f04e045b-64f1-57c1-bb8f-7d308e5d7c26",
+  "collection": "church-fathers",
+  "title": "Book VI",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "fd6550b9-0122-5f2e-86ff-cb992d719a9e",
+  "collection": "church-fathers",
+  "title": "Book VII. Concerning the Christian Life, and the Eucharist, and the Initiation into Christ",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
+  "collection": "church-fathers",
+  "title": "Book VIII. Concerning Gifts, and Ordinations, and the Ecclesiastical Canons",
+  "author": "Constitutions of the Holy Apostles",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "c556327d-58ae-5934-ac53-ab8edb93943f",
+  "collection": "medieval",
+  "title": "Proslogium",
+  "author": "Anselm",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "fa0f4a23-1f41-539e-8203-e69ea44679ae",
+  "collection": "medieval",
+  "title": "Monologium",
+  "author": "Anselm",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "82d38756-6fba-5af7-9905-fd508a620f38",
+  "collection": "medieval",
+  "title": "Anselm's Cur Deus Homo",
+  "author": "Anselm",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "collection": "medieval",
+  "title": "Consolation of Philosophy",
+  "author": "Boethius",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "85bd14cc-fd8a-5e72-a126-fc5b4c3e6ebd",
+  "collection": "medieval",
+  "title": "On Loving God",
+  "author": "Bernard of Clairvaux",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "807935f8-f62c-53b6-baae-0fd9f7a0aa20",
+  "collection": "medieval",
+  "title": "Imitation of Christ",
+  "author": "Thomas à Kempis",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "author": "Thomas Aquinas",
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "div_id": "iv.vii.ii",
+  "collection": "church-fathers",
+  "title": "On the Public Shows (Treatise I; Novatian)",
+  "author": "Cyprian.",
+  "passages": 8,
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: Novatian condemned by name (251). Decided in the plan."
+  }
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "div_id": "iv.vii.iv",
+  "collection": "church-fathers",
+  "title": "Of the Discipline and Advantage of Chastity (Treatise III; Novatian)",
+  "author": "Cyprian.",
+  "passages": 8,
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: Novatian condemned by name (251). Decided in the plan."
+  }
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "div_id": "iv.vii.iii",
+  "collection": "church-fathers",
+  "title": "On the Glory of Martyrdom (Treatise II; anonymous)",
+  "author": "Cyprian.",
+  "passages": 16,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "div_id": "iv.vii.v",
+  "collection": "church-fathers",
+  "title": "Exhortation to Repentance (Treatise IV; anonymous)",
+  "author": "Cyprian.",
+  "passages": 5,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: born in communion or presumed in communion (rule A); no Church act found (R1)."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.i",
+  "collection": "church-fathers",
+  "title": "Treatise on Christ and Antichrist",
+  "author": "Hippolytus.",
+  "passages": 26,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "about 200",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives include: about 200, before the schism (Quasten II p. 170)."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.x",
+  "collection": "church-fathers",
+  "title": "On Daniel (fragments)",
+  "author": "Hippolytus.",
+  "passages": 29,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "about 204",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives include: About 204, before the schism (Quasten II p. 171)."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.iii",
+  "collection": "church-fathers",
+  "title": "Against Plato, on the Cause of the Universe",
+  "author": "Hippolytus.",
+  "passages": 3,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "before 225",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: Quasten II p. 196: before 225, which does not place it before the schism (about 217)."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.iv",
+  "collection": "church-fathers",
+  "title": "Against the Heresy of One Noetus",
+  "author": "Hippolytus.",
+  "passages": 17,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "disputed",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: Quasten II p. 180 reports the view that it closes the early Syntagma (episcopate of Zephyrinus, 199-217) but calls it 'perhaps'; date and genre disputed, so not shown before the schism."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.i",
+  "collection": "church-fathers",
+  "title": "On the Hexaemeron",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.ii",
+  "collection": "church-fathers",
+  "title": "On Genesis",
+  "author": "Hippolytus.",
+  "passages": 12,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.iii",
+  "collection": "church-fathers",
+  "title": "On Numbers",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.iv",
+  "collection": "church-fathers",
+  "title": "On Kings",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.v",
+  "collection": "church-fathers",
+  "title": "On the Psalms (first group)",
+  "author": "Hippolytus.",
+  "passages": 7,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.vi",
+  "collection": "church-fathers",
+  "title": "On Proverbs",
+  "author": "Hippolytus.",
+  "passages": 7,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.vii",
+  "collection": "church-fathers",
+  "title": "On the Song of Songs",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.viii",
+  "collection": "church-fathers",
+  "title": "On Isaiah",
+  "author": "Hippolytus.",
+  "passages": 3,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.ix",
+  "collection": "church-fathers",
+  "title": "On Jeremiah and Ezekiel",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.xi",
+  "collection": "church-fathers",
+  "title": "On Matthew",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.xii",
+  "collection": "church-fathers",
+  "title": "On Luke",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.xiii",
+  "collection": "church-fathers",
+  "title": "Doubtful Fragments on the Pentateuch",
+  "author": "Hippolytus.",
+  "passages": 10,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.i.xiv",
+  "collection": "church-fathers",
+  "title": "On the Psalms (second group)",
+  "author": "Hippolytus.",
+  "passages": 16,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.ii",
+  "collection": "church-fathers",
+  "title": "Expository Treatise Against the Jews",
+  "author": "Hippolytus.",
+  "passages": 3,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.v",
+  "collection": "church-fathers",
+  "title": "Against Beron and Helix",
+  "author": "Hippolytus.",
+  "passages": 9,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.vi",
+  "collection": "church-fathers",
+  "title": "The Discourse on the Holy Theophany",
+  "author": "Hippolytus.",
+  "passages": 5,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.vii",
+  "collection": "church-fathers",
+  "title": "Fragments of Discourses or Homilies",
+  "author": "Hippolytus.",
+  "passages": 11,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.viii",
+  "collection": "church-fathers",
+  "title": "Fragments from Other Writings of Hippolytus",
+  "author": "Hippolytus.",
+  "passages": 5,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "born in communion",
+   "communion_end": "about 217; reconciled about 235",
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 163-207",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Rule A as written gives exclude: No date in the named chronology (or doubtful attribution with no date); rule A's dating limit excludes undatable works."
+  }
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "div_id": "iii.iv.ii.ix",
+  "collection": "church-fathers",
+  "title": "Elucidation (editor)",
+  "author": "Hippolytus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Editorial matter (translator's or American editor's text), not a work by the author; rule A does not apply. Removed under rule G (rule-g-editorial) by 1.8a."
+  }
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "div_id": "iv.vii.i",
+  "collection": "church-fathers",
+  "title": "Translator's Introduction (editor)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Editorial matter (translator's or American editor's text), not a work by the author; rule A does not apply. Removed under rule G (rule-g-editorial) by 1.8a."
+  }
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "div_id": "iv.vii.vi",
+  "collection": "church-fathers",
+  "title": "Elucidations (editor)",
+  "author": "Cyprian.",
+  "passages": 2,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Editorial matter (translator's or American editor's text), not a work by the author; rule A does not apply. Removed under rule G (rule-g-editorial) by 1.8a."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "div_id": "iii.iii.iv",
+  "collection": "church-fathers",
+  "title": "The Oration and Panegyric Addressed to Origen (Argument I-XIX)",
+  "author": "Gregory Thaumaturgus.",
+  "passages": 37,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "between 233 and 238 (baptism undated)",
+   "communion_end": null,
+   "work_date": "238",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 123-124",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Delivered on leaving Origen's school at Caesarea in 238 (Quasten II p. 124), after Gregory embraced Christianity there (233-238). No source dates his baptism, so the chronology does not show it was written after baptism. Under rule A as written: exclude."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "div_id": "iii.iii.i.i",
+  "collection": "church-fathers",
+  "title": "A Declaration of Faith",
+  "author": "Gregory Thaumaturgus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "between 233 and 238",
+   "communion_end": null,
+   "work_date": "after about 240",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 125-127",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Episcopal-period work (after about 240), after his conversion and baptism (Quasten II pp. 125-127)."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "div_id": "iii.iii.ii",
+  "collection": "church-fathers",
+  "title": "A Metaphrase of the Book of Ecclesiastes",
+  "author": "Gregory Thaumaturgus.",
+  "passages": 20,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "between 233 and 238",
+   "communion_end": null,
+   "work_date": "after about 240",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 125-127",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Episcopal-period work (after about 240), after his conversion and baptism (Quasten II pp. 125-127)."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "div_id": "iii.iii.iii",
+  "collection": "church-fathers",
+  "title": "Canonical Epistle (Canons I-XI)",
+  "author": "Gregory Thaumaturgus.",
+  "passages": 11,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "between 233 and 238",
+   "communion_end": null,
+   "work_date": "after about 240",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 125-127",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Episcopal-period work (after about 240), after his conversion and baptism (Quasten II pp. 125-127)."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "div_id": "iii.iii.i.ii",
+  "collection": "church-fathers",
+  "title": "Elucidation (editor)",
+  "author": "Gregory Thaumaturgus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Editorial matter (translator's or American editor's text), not a work by the author; rule A does not apply. Removed under rule G (rule-g-editorial) by 1.8a."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "div_id": "iii.iii.iii.xii",
+  "collection": "church-fathers",
+  "title": "Elucidations (editor)",
+  "author": "Gregory Thaumaturgus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Editorial matter (translator's or American editor's text), not a work by the author; rule A does not apply. Removed under rule G (rule-g-editorial) by 1.8a."
+  }
+ },
+ {
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "div_id": "iii.iii.iv.xx",
+  "collection": "church-fathers",
+  "title": "Elucidations (editor)",
+  "author": "Gregory Thaumaturgus.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Editorial matter (translator's or American editor's text), not a work by the author; rule A does not apply. Removed under rule G (rule-g-editorial) by 1.8a."
+  }
+ },
+ {
+  "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
+  "div_id": "iii.vi.i",
+  "collection": "church-fathers",
+  "title": "The Phoenix",
+  "author": "Lactantius",
+  "passages": 4,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "about 300",
+   "communion_end": null,
+   "work_date": "undated",
+   "chronology_source": "Quasten, Patrology, vol. II (Newman Press, 1953), pp. 403-404",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Lactantius is a convert; Quasten (pp. 403-404) discusses the poem's Christian symbolism but gives no date relative to his conversion, and its attribution is questioned in the literature he cites. Under rule A as written: exclude (undatable)."
+  }
+ },
+ {
+  "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
+  "div_id": "iii.vi.ii",
+  "collection": "church-fathers",
+  "title": "A Poem on the Passion of the Lord",
+  "author": "Lactantius (doubtful)",
+  "passages": 2,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Doubtful attribution (plan, 'Labels for works that stay'); if not his, an anonymous Christian poem presumed in communion; if his, a Christian poem later than his conversion."
+  }
+ },
+ {
+  "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
+  "div_id": "iii.vi.iii",
+  "collection": "church-fathers",
+  "title": "General Note (editor)",
+  "author": "editor",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Editorial matter (translator's or American editor's text), not a work by the author; rule A does not apply. Removed under rule G (rule-g-editorial) by 1.8a."
+  }
+ },
+ {
+  "author": "John Henry Newman",
+  "title": "Apologia pro Vita Sua",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-10-09",
+   "communion_end": null,
+   "work_date": "1864",
+   "chronology_source": "J. H. Newman, Apologia pro Vita Sua (1864), ch. 5 (https://www.gutenberg.org/ebooks/22088); dates of the works from their first editions",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert, Doctor of the Church (2025). Limit 2 would pass him regardless; the Decision log nonetheless excludes the Anglican sermons, which R1 records. Written after his reception."
+  }
+ },
+ {
+  "author": "John Henry Newman",
+  "title": "An Essay in Aid of a Grammar of Assent",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-10-09",
+   "communion_end": null,
+   "work_date": "1870",
+   "chronology_source": "J. H. Newman, Apologia pro Vita Sua (1864), ch. 5 (https://www.gutenberg.org/ebooks/22088); dates of the works from their first editions",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert, Doctor of the Church (2025). Limit 2 would pass him regardless; the Decision log nonetheless excludes the Anglican sermons, which R1 records. Written after his reception."
+  }
+ },
+ {
+  "author": "John Henry Newman",
+  "title": "The Idea of a University",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-10-09",
+   "communion_end": null,
+   "work_date": "1852-1873",
+   "chronology_source": "J. H. Newman, Apologia pro Vita Sua (1864), ch. 5 (https://www.gutenberg.org/ebooks/22088); dates of the works from their first editions",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert, Doctor of the Church (2025). Limit 2 would pass him regardless; the Decision log nonetheless excludes the Anglican sermons, which R1 records. Written after his reception."
+  }
+ },
+ {
+  "author": "John Henry Newman",
+  "title": "The Dream of Gerontius",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-10-09",
+   "communion_end": null,
+   "work_date": "1865",
+   "chronology_source": "J. H. Newman, Apologia pro Vita Sua (1864), ch. 5 (https://www.gutenberg.org/ebooks/22088); dates of the works from their first editions",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert, Doctor of the Church (2025). Limit 2 would pass him regardless; the Decision log nonetheless excludes the Anglican sermons, which R1 records. Written after his reception."
+  }
+ },
+ {
+  "author": "John Henry Newman",
+  "title": "An Essay on the Development of Christian Doctrine (1878 edition)",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-10-09",
+   "communion_end": null,
+   "work_date": "1878 revision of the 1845 text",
+   "chronology_source": "J. H. Newman, Apologia pro Vita Sua (1864), ch. 5 (https://www.gutenberg.org/ebooks/22088); dates of the works from their first editions",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Convert, Doctor of the Church (2025). Limit 2 would pass him regardless; the Decision log nonetheless excludes the Anglican sermons, which R1 records. Decision log: the 1878 edition revised as a Catholic is used."
+  }
+ },
+ {
+  "author": "John Henry Newman",
+  "title": "Parochial and Plain Sermons",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-10-09",
+   "communion_end": null,
+   "work_date": "1834-1843",
+   "chronology_source": "J. H. Newman, Apologia pro Vita Sua (1864), ch. 5 (https://www.gutenberg.org/ebooks/22088); dates of the works from their first editions",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Convert, Doctor of the Church (2025). Limit 2 would pass him regardless; the Decision log nonetheless excludes the Anglican sermons, which R1 records. Anglican-period sermons. Decided in the plan."
+  }
+ },
+ {
+  "author": "G. K. Chesterton",
+  "title": "Orthodoxy",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1922-07-30",
+   "communion_end": null,
+   "work_date": "1908",
+   "chronology_source": "Received 30 July 1922 (Seton Hall Chesterton Institute, https://wsou.shu.edu/chesterton/biographical-note.html; Britannica)",
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Written before his reception. Decided in the plan."
+  }
+ },
+ {
+  "author": "G. K. Chesterton",
+  "title": "The Everlasting Man",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1922-07-30",
+   "communion_end": null,
+   "work_date": "1925",
+   "chronology_source": "Received 30 July 1922 (Seton Hall Chesterton Institute, https://wsou.shu.edu/chesterton/biographical-note.html; Britannica)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Published after his reception."
+  }
+ },
+ {
+  "author": "G. K. Chesterton",
+  "title": "St. Francis of Assisi",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1922-07-30",
+   "communion_end": null,
+   "work_date": "1923",
+   "chronology_source": "Received 30 July 1922 (Seton Hall Chesterton Institute, https://wsou.shu.edu/chesterton/biographical-note.html; Britannica)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Published after his reception."
+  }
+ },
+ {
+  "author": "G. K. Chesterton",
+  "title": "The Catholic Church and Conversion",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1922-07-30",
+   "communion_end": null,
+   "work_date": "1926",
+   "chronology_source": "Received 30 July 1922 (Seton Hall Chesterton Institute, https://wsou.shu.edu/chesterton/biographical-note.html; Britannica)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Published after his reception."
+  }
+ },
+ {
+  "author": "G. K. Chesterton",
+  "title": "The Thing: Why I Am a Catholic",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1922-07-30",
+   "communion_end": null,
+   "work_date": "1929",
+   "chronology_source": "Received 30 July 1922 (Seton Hall Chesterton Institute, https://wsou.shu.edu/chesterton/biographical-note.html; Britannica)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Published after his reception."
+  }
+ },
+ {
+  "author": "Ronald Knox",
+  "title": "The Belief of Catholics",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1917",
+   "communion_end": null,
+   "work_date": "1927",
+   "chronology_source": "https://knoxbible.com/about_ronald_knox.html (year only; day unverified)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Published 1927, after his reception in 1917."
+  }
+ },
+ {
+  "author": "Frederick William Faber",
+  "title": "All for Jesus",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-11",
+   "communion_end": null,
+   "work_date": "1853",
+   "chronology_source": "Catholic Encyclopedia, 'Frederick William Faber' (https://www.newadvent.org/cathen/05740c.htm)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Written after his reception in November 1845."
+  }
+ },
+ {
+  "author": "Frederick William Faber",
+  "title": "Growth in Holiness",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1845-11",
+   "communion_end": null,
+   "work_date": "1854",
+   "chronology_source": "Catholic Encyclopedia, 'Frederick William Faber' (https://www.newadvent.org/cathen/05740c.htm)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Written after his reception in November 1845."
+  }
+ },
+ {
+  "author": "Edith Stein",
+  "title": "Collected Works (post-1922 works only)",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1922-01-01",
+   "communion_end": null,
+   "work_date": "per work",
+   "chronology_source": "Vatican biography (https://www.vatican.va/news_services/liturgy/saints/ns_lit_doc_19981011_edith_stein_en.html)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Baptized 1 January 1922; works written before then excluded (Decision log)."
+  }
+ },
+ {
+  "author": "Jacques Maritain",
+  "title": "1920s English titles",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1906-06-11",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": "University of Notre Dame Maritain Center (https://maritain.nd.edu/about/about-jacques-maritain/)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Baptized 11 June 1906; all candidate works are later."
+  }
+ },
+ {
+  "author": "Dietrich von Hildebrand",
+  "title": "Transformation in Christ and other works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "1914-04-11",
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": "Alice von Hildebrand, EWTN (https://www.ewtn.com/catholicism/library/on-the-legacy-of-he-beloved-husband-5539)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Received 11 April 1914; candidate works are later."
+  }
+ },
+ {
+  "author": "Augustine Baker",
+  "title": "Holy Wisdom (Sancta Sophia, compiled by Serenus Cressy)",
+  "rule_a": {
+   "applies": true,
+   "communion_start": "before 1605",
+   "communion_end": null,
+   "work_date": "from 1624",
+   "chronology_source": "Catholic Encyclopedia, 'David Augustine Baker' (https://www.catholic.com/encyclopedia/david-augustine-baker)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Received into the Church at Oxford before joining the Benedictines at Padua in 1605; wrote his ascetical treatises at Cambrai from 1624. Cressy compiled Sancta Sophia from them."
+  }
+ },
+ {
+  "author": "Blaise Pascal",
+  "title": "Provincial Letters",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1657-09-06",
+     "act": "Decree prohibiting 'Les provinciales' (Louis de Montalte), Leonine Index s.v. Montalte",
+     "effect": "prohibit",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1 (work prohibited). Decided in the plan."
+  }
+ },
+ {
+  "author": "Blaise Pascal",
+  "title": "Pensées (Trotter 1910)",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Only the edition annotated by Voltaire (Geneva 1778) was prohibited (decree 18 Sept 1789, Leonine Index s.v. Pascal); the Pensées themselves were never listed. Decided in the plan."
+  }
+ },
+ {
+  "author": "François Fénelon",
+  "title": "Explication des maximes des saints",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Pope Innocent XII",
+     "date": "1699-03-12",
+     "act": "Brief Cum alias (Leonine Index s.v. Fénélon)",
+     "effect": "condemn",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Work condemned. Decided in the plan."
+  }
+ },
+ {
+  "author": "Miguel de Molinos",
+  "title": "Spiritual Guide (and all works)",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1687-08-28",
+     "act": "Decree prohibiting Molinos's Opera omnia (Leonine Index s.v. Molinos)",
+     "effect": "prohibit",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    },
+    {
+     "issuer": "Pope Innocent XI",
+     "date": "1687-11-20",
+     "act": "Bull Caelestis Pastor condemning 68 propositions",
+     "effect": "condemn",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Every work prohibited by name. Decided in the plan (Spiritual Guide)."
+  }
+ },
+ {
+  "author": "Madame Guyon",
+  "title": "Moyen court and other works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1689-05-03",
+     "act": "Decree prohibiting 'Moyen court et très-facile de faire oraison' (Leonine Index s.v. Moyen court)",
+     "effect": "prohibit",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Work prohibited."
+  }
+ },
+ {
+  "author": "Cornelius Jansen",
+  "title": "Augustinus",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1641-08-01",
+     "act": "Decree prohibiting Augustinus (Leonine Index s.v. Iansenius)",
+     "effect": "prohibit",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    },
+    {
+     "issuer": "Pope Urban VIII",
+     "date": "1642-03-06",
+     "act": "Bull In eminenti",
+     "effect": "condemn",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Decided in the plan."
+  }
+ },
+ {
+  "author": "Pasquier Quesnel",
+  "title": "Réflexions morales",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Pope Clement XI",
+     "date": "1708-07-13",
+     "act": "Brief prohibiting Réflexions morales (Leonine Index s.v. Quesnel)",
+     "effect": "prohibit",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    },
+    {
+     "issuer": "Pope Clement XI",
+     "date": "1713-09-08",
+     "act": "Bull Unigenitus condemning 101 propositions (Leonine Index s.v. Quesnel)",
+     "effect": "condemn",
+     "citation": "https://archive.org/details/indexlibrorumpro0000unse"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Work condemned; he did not submit."
+  }
+ },
+ {
+  "author": "Félicité de Lamennais",
+  "title": "Paroles d'un croyant",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Pope Gregory XVI",
+     "date": "1834-06-25",
+     "act": "Encyclical Singulari nos (Leonine Index s.v. Lamennais)",
+     "effect": "condemn",
+     "citation": "https://www.papalencyclicals.net/greg16/g16singu.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Work condemned; died outside communion."
+  }
+ },
+ {
+  "author": "Alfred Loisy",
+  "title": "all works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1908-03-07",
+     "act": "Decree of major excommunication (vitandus)",
+     "effect": "condemn",
+     "citation": "https://www.encyclopedia.com/humanities/encyclopedias-almanacs-transcripts-and-maps/loisy-alfred-1857-1940"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Limit 1. Decided in the plan."
+  }
+ },
+ {
+  "author": "George Tyrrell",
+  "title": "all works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Pope Pius X (communicated by Bishop Amigo of Southwark)",
+     "date": "1907-10-22",
+     "act": "Privation of the sacraments, case reserved to the Holy See (M. D. Petre, Autobiography and Life of George Tyrrell, vol. 2, 1912, p. 341)",
+     "effect": "condemn",
+     "citation": "https://archive.org/details/a611438902tyrruoft"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Limit 1. Decided in the plan."
+  }
+ },
+ {
+  "author": "Pierre Teilhard de Chardin",
+  "title": "all works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1962-06-30",
+     "act": "Monitum on his writings (AAS 54, 1962, p. 526); reaffirmed by Holy See communiqué, L'Osservatore Romano, 20 July 1981",
+     "effect": "warn",
+     "citation": "http://web.archive.org/web/20250917144035/https://www.ewtn.com/catholicism/library/monitum-on-the-writings-of-fr-teilhard-de-chardin-sj-2144 (archived EWTN text of the monitum and the 1981 statement; official text AAS 54 (1962), https://www.vatican.va/archive/aas/documents/AAS-54-1962-ocr.pdf, p. 526, not opened)"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Limit 1 (formal warning). Decided in the plan."
+  }
+ },
+ {
+  "author": "Antonio Rosmini",
+  "title": "works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1887-12-14",
+     "act": "Decree Post obitum condemning 40 propositions",
+     "effect": "condemn",
+     "citation": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20010701_rosmini_en.html"
+    },
+    {
+     "issuer": "Congregation for the Doctrine of the Faith",
+     "date": "2001-07-01",
+     "act": "Note on the force of the doctrinal decrees",
+     "effect": "lift",
+     "citation": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20010701_rosmini_en.html"
+    }
+   ],
+   "decision": "include",
+   "decision_basis": "Latest act governs. Decided in the plan."
+  }
+ },
+ {
+  "author": "Faustina Kowalska",
+  "title": "Diary",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Holy Office",
+     "date": "1959-03-06",
+     "act": "Notification forbidding the devotion in the forms she proposed",
+     "effect": "prohibit",
+     "citation": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19780415_kowalska_en.html"
+    },
+    {
+     "issuer": "Sacred Congregation for the Doctrine of the Faith",
+     "date": "1978-04-15",
+     "act": "Notification declaring the 1959 prohibition no longer binding",
+     "effect": "lift",
+     "citation": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19780415_kowalska_en.html"
+    }
+   ],
+   "decision": "include",
+   "decision_basis": "Latest act governs. Decided in the plan."
+  }
+ },
+ {
+  "author": "Meister Eckhart",
+  "title": "Sermons",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Pope John XXII",
+     "date": "1329-03-27",
+     "act": "Bull In agro dominico condemning 28 articles, naming Eckhart",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/cathen/05274a.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Candidates memo excluded him. The bull names him; see For Carter on whether it is a condemnation of the author by name."
+  }
+ },
+ {
+  "author": "Peter Abelard",
+  "title": "Historia Calamitatum",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Pope Innocent II",
+     "date": "1140-07-16",
+     "act": "Letter confirming the Council of Sens and imposing perpetual silence on Abelard by name (date per Catholic Encyclopedia; year 1140 or 1141 disputed)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/cathen/01036b.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Candidates memo excluded him; no formal lifting found."
+  }
+ },
+ {
+  "author": "Joachim of Fiore",
+  "title": "works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Fourth Lateran Council",
+     "date": "1215-11-30",
+     "act": "Canon 2 condemning his treatise on the Trinity against Peter Lombard",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/cathen/08406c.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Lateran IV condemned one treatise (now lost), not the author; Joachim had submitted his writings to the Holy See (CE). Limit 1 by name is doubtful for him; excluded on the candidates memo's grounds (no usable English) and the condemned treatise."
+  }
+ },
+ {
+  "author": "William of Ockham",
+  "title": "works",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Pope John XXII",
+     "date": "1328-06-06",
+     "act": "Excommunication for leaving Avignon without permission",
+     "effect": "condemn",
+     "citation": "https://plato.stanford.edu/entries/ockham/"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "No reconciliation documented; the 1349 absolution is reported to concern another friar, per the title and reported conclusion of Gál, Franciscan Studies 42 (1982) 90-95 (article not read)."
+  }
+ },
+ {
+  "author": "Erasmus",
+  "title": "Praise of Folly and others",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Tridentine Index (Pius IV)",
+     "date": "1564-03-24",
+     "act": "Colloquia, Moriae encomium, Lingua, Christiani matrimonii institutio, De interdicto esu carnium prohibited; religious works 'donec expurgentur' (as carried in the 1877 Index s.v. Erasmus)",
+     "effect": "prohibit",
+     "citation": "https://archive.org/details/index-librorum-prohibitorum-catholic"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Praise of Folly prohibited by the Tridentine Index. It is not listed in the Leonine Index of 1900, but Leo XIII's Officiorum ac munerum (1897), General Decrees art. 1 (printed in the Leonine Index front matter), keeps books condemned by popes or ecumenical councils before 1600 condemned even when the new Index omits them."
+  }
+ },
+ {
+  "author": "Anonymous (Theologia Germanica)",
+  "title": "Theologia Germanica",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Congregation of the Index",
+     "date": "1621-03-16",
+     "act": "Decree prohibiting the Latin translation by 'Ioannes Theophilus' (Sebastian Castellio), Antwerp 1558 (1841 Index s.v. Theologia germanica)",
+     "effect": "prohibit",
+     "citation": "https://archive.org/details/bub_gb_7MPk71j1YEIC"
+    }
+   ],
+   "decision": "include",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. the prohibited item is Castellio's Latin version; the entry is absent from the Leonine Index of 1900."
+  }
+ },
+ {
+  "author": "Thomas Aquinas",
+  "title": "Catena Aurea: quotation from Josephus",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Rule A: non-Christian authors are excluded. 1 quotation in Matthew by label count (findings, For Carter item 7, for 5.6b)."
+  }
+ },
+ {
+  "author": "Gregory of Narek",
+  "title": "Book of Lamentations",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Armenian Church, not in communion; passes by rule A limit 2 (Doctor, 2015). Decided in the plan."
+  }
+ },
+ {
+  "author": "Thomas Aquinas",
+  "title": "Catena Aurea: quotations from Origen",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [
+    {
+     "issuer": "Second Council of Constantinople",
+     "date": "0553-06-02",
+     "act": "Anathema 11, naming Origen",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/3812.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "FOR CARTER: rule A limit 1 (Origen condemned by name) applied to quotations attributed to Origen (Matthew 308, Mark 11 by label count)."
+  }
+ },
+ {
+  "author": "Thomas Aquinas",
+  "title": "Catena Aurea: quotations from the Opus imperfectum in Matthaeum ('Pseudo-Chrys.')",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. anonymous Arian author, 5th century (van Banning, CCSL 87B, 1988). Matthew 439, Mark 109 by label count."
+  }
+ },
+ {
+  "author": "Thomas Aquinas",
+  "title": "Catena Aurea: quotations from Theophylact",
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "exclude",
+   "decision_basis": "Decided by Carter on 5 Oct 2026, accepting R1's recommendation. Byzantine archbishop writing after 1054 (Mark 365 by label count)."
+  }
+ }
+]
