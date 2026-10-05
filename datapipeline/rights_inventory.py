@@ -14,6 +14,8 @@ has both Polycarp's and Ignatius's "Epistle to the Philippians".
 A planned work, not yet built, has `planned_for` set to the ID of the corpus-cleanup item
 that will ingest it (for example "1.2c" or "5.6b"), and its `source_path` is where the file
 will be vendored. `planned_for` is null for every built work. Planned rows come from R6.
+Until its ingesting PR, an approved download sits at `sources/_incoming/<source_path>`;
+the PR moves it there unchanged, so the row's `source_path` never changes.
 
 Item 0.2 in docs/corpus-cleanup/P0-checks-identity-research.md.
 """

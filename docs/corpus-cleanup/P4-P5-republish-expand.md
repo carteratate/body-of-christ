@@ -655,6 +655,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** PR per source family, then ops publishes
 - **Depends on:** 5.3a, 5.2 rows, R6.
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `roman-curia/compendium-of-the-social-doctrine-of-the-church.html`, `roman-curia/redemptionis-sacramentum.html`, `roman-curia/directory-on-popular-piety-and-the-liturgy.html`, `roman-curia/the-bible-and-morality.html`, `roman-curia/the-jewish-people-and-their-sacred-scriptures.html`.
 - **Goal:** Complete the Roman Curia collection as the plan defines it. Biblical Commission documents appear under their own issuer, not as DDF teaching, and the Compendium of the Social Doctrine of the Church answers social-teaching questions by numbered paragraph.
 - **Current state:**
   - Not vendored.
@@ -676,6 +677,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** PR, then ops publish
 - **Depends on:** 5.1b.4 (keys `papal`, `church-law`), 2.2a (`searchable`, notes, `documents.superseded_by`), 2.2w, 5.2 rows.
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `apostolic-exhortations/a-new-hope-for-lebanon.html`, `church-law/universi-dominici-gregis.html`, `church-law/de-aliquibus-mutationibus.html`, `church-law/normas-nonnullas.html`. Its 2 page-image files (PDF) are approved per work later and are vendored to `_incoming/` the same way. The French A New Hope for Lebanon page (`_incoming/apostolic-exhortations/a-new-hope-for-lebanon.html`) replaces the empty English page at `apostolic-exhortations/a-new-hope-for-lebanon.html` when it moves; the replaced file's lock entry goes with it.
 - **Goal:** Questions about how a pope is elected or what happens during a vacancy are answered from *Universi Dominici Gregis* as currently in force, with its earlier wording available as labeled history. Two vendored papal documents that never reached the corpus become searchable.
 - **Current state:**
   - `datapipeline/sources/apostolic-exhortations/a-new-hope-for-lebanon.html` and `datapipeline/sources/papal-documents/ubicumque-et-semper.html` are vendored but in neither manifest nor the database (verified locally; plan Decision log).
@@ -709,6 +711,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** PR per work, then ops publish
 - **Depends on:** 2.2w, 5.2 rows, R6, and 1.2f's OCR tool and gate (D9) for the Roman Catechism if no clean text passes R6.
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `catechism/compendium-ccc.html`, `catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt`. Its 1 page-image file (PDF) is approved per work later and is vendored to `_incoming/` the same way.
 - **Goal:** Short question-and-answer entries from the Compendium of the Catechism (2005) linked to the full Catechism's paragraphs, and the Roman Catechism of the Council of Trent (McHugh and Callan, 1923) as a historical catechism, both in the Catechism collection.
 - **Current state:**
   - The Catechism collection is one document, `document_id("catechism")` (`datapipeline/ingest/catechism.py:256`).
@@ -742,6 +745,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** PR per author or volume group, then ops publish
 - **Depends on:** P4, 2.2w, 1.8b (the NPNF editorial strip, reused), 2.1, 5.2 rows, R6, and R1 where a work's authorship is doubtful.
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: the 12 text files R6's download list gives for 5.6a.
 - **Goal:** The Fathers collection gains Basil, Cyril of Jerusalem, Gregory Nazianzen, Gregory the Great, John Chrysostom, Ambrose and Leo the Great, all Doctors of the Church, plus Pseudo-Dionysius, so common questions about the Holy Spirit, baptism, pastoral care and the priesthood reach their classic patristic sources.
 - **Current state:**
   - None of the seven authors is in the corpus, and neither is Pseudo-Dionysius (verified 29 Sep). Pseudo-Dionysius is therefore an addition here, not a move; the only work that moves collection in P5 is Boethius (5.1b.3).
@@ -785,6 +789,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** PR per author or small group, then ops publish
 - **Depends on:** 5.1b.4 (key `theologians`), 2.2a (`chunks.passage_author`, for the Catena), 2.2w, 1.9 (the medieval adapter fixes), 5.2 rows, R1 (rule A and Church-act checks, including the Pensées' Index status), R6.
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: the 36 text files R6's download list gives for 5.6b.
 - **Goal:** The Theologians and spiritual writers collection gains the classic Catholic spiritual writers and later theologians whose texts are already clean (CCEL ThML or Project Gutenberg): Teresa, Francis de Sales, Catherine, Julian, Thérèse, Ignatius, Alphonsus, Newman's Catholic works, more Bernard, Aquinas outside the Summa, Chesterton's Catholic works and others.
 - **Current state:**
   - Collection has 6 documents today (Anselm 3, Boethius, the Imitation, On Loving God; verified).
@@ -869,6 +874,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** PR per work, then ops publish
 - **Depends on:** 1.2f (the OCR clean-up tool and gate, built in Phase 1, D9), 2.2w, 5.6b's Gutenberg adapter pattern, 5.2 rows, R6, and 5.1b.4.
+- **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: 86 of the 88 text files R6's download list gives for 5.6c. Its 87 page-image files (PDF) are approved per work later and are vendored to `_incoming/` the same way. Not yet vendored, because archive.org returned HTTP 500 on 5 Oct 2026: `theologians/exercisessaintg00gertgoog/exercisessaintg00gertgoog_djvu.txt`, `theologians/bwb_W9-CTR-079/bwb_W9-CTR-079_djvu.txt`.
 - **Goal:** Recover important works that exist only as page scans (John of the Cross in Lewis's translation, Teresa's *Foundations*, *Letters* and *Way of Perfection*, Tanquerey, Marmion and others) with text accurate enough to quote, each labeled as scanned.
 - **Current state:**
   - The OCR tool and its quality gate are built and tested in Phase 1 as 1.2f (D9), so councils 8 to 18 (1.2e) can be replaced before Phase 4. This item reuses that tool and adds nothing to it except per-work configuration. The earlier plan had 1.2e depend on tooling built here, which made the two items wait on each other; with 1.2f first, the dependency runs one way only.

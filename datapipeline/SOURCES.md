@@ -31,7 +31,9 @@ python3 -c "from publication import SOURCE_ADAPTERS as A; d=A['encyclicals'](); 
 ```
 
 **Adapters read `manifest.json`, not the directory**, so a vendored file that no
-manifest entry references is never published. Every vendored file, published or not, is
+manifest entry references is never published. The exception is church-fathers:
+`ingest/church_fathers.build_all()` builds every `*.xml` in `sources/church-fathers/`
+except `summa.xml`, whatever its manifest says. Every vendored file, published or not, is
 pinned by hash in the tracked `source_lock.json`; its `role` says which files an adapter
 reads (`adapter-input`, `adapter-auxiliary`) and which are on disk but unpublished
 (`vendored-unregistered`, each with a `note` giving the reason). Check the vendored
@@ -39,6 +41,8 @@ files against it with `python3 scripts/source_lock.py --verify`; after a deliber
 change, rewrite it with `--write` (`vendor_sources.py` does this itself for the
 collection it vendors). The edition and rights status of each published work are in
 `rights_inventory.json`.
+
+Approved downloads that no PR has ingested yet wait in `sources/_incoming/<path>` (locked with role `vendored-unregistered`), where `<path>` is the file's final place under `sources/` (R6's "Vendored as" column). No adapter reads `_incoming/`. The ingesting PR moves the file unchanged to `sources/<path>` and runs `python3 scripts/source_lock.py --write`, which keeps the file's download date and URL because its hash matches the `_incoming/` entry. Carter chose this on 5 Oct 2026 because the church-fathers adapter builds every `*.xml` in its folder, so a file dropped there early would be published ahead of its PR.
 
 ## Publishing a collection
 

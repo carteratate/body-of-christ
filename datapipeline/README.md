@@ -36,6 +36,8 @@ from source websites during publication. Acquire missing vendored sources separa
 python scripts/vendor_sources.py --collection all
 ```
 
+Approved downloads that no PR has ingested yet wait in `sources/_incoming/<path>`, where `<path>` is the file's final place under `sources/` (R6's "Vendored as" column). No adapter reads `_incoming/`. The ingesting PR moves the file unchanged to `sources/<path>` and runs `python3 scripts/source_lock.py --write`, which keeps the file's download date and URL because its hash matches the `_incoming/` entry. Carter chose this on 5 Oct 2026 because the church-fathers adapter builds every `*.xml` in its folder, so a file dropped there early would be published ahead of its PR.
+
 ## Setup
 
 ```bash
