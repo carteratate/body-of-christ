@@ -1,15 +1,15 @@
 # R6. Edition and provenance check for each planned source
 
-Research for corpus-cleanup item R6 (`docs/corpus-cleanup/P0-checks-identity-research.md`, GitHub issue #149), which blocks 1.2c, 1.2d, 1.2e, 1.8d and every 5.x addition. Done 4 and 5 October 2026. No production store was queried and no source file was kept: pages, catalogue records and the opening bytes of each file were read, and sizes come from HTTP headers or the repository's own file listing.
+Research for corpus-cleanup item R6 (`docs/corpus-cleanup/P0-checks-identity-research.md`, GitHub issue #149), which blocks 1.2c, 1.2d, 1.2e, 1.8d and every 5.x addition. Done 4 and 5 October 2026 (second pass, completing 5.6c, on 5 October). No production store was queried and no source file was kept: pages, catalogue records and the opening bytes of each file were read, and sizes come from HTTP headers or the repository's own file listing.
 
 ## Result
 
-- **194 planned works** now have a row in `datapipeline/rights_inventory.json`, each with `planned_for` set to the item that will ingest it: 1.8d 1, 1.2c 7, 1.2d 1, 1.2e 11, 5.3a 60, 5.3b 5, 5.4 7, 5.5 2, 5.6a 14, 5.6b 36, 5.6c 50. Every row is a draft (`checked_by` null) until Carter approves it.
-- **Statuses:** 108 `pd-us-pre-1931`, 73 `in-copyright` (vatican.va texts, rights holder Libreria Editrice Vaticana), 11 `pd-us-non-renewal` (Schroeder 1937, with its renewal search), 2 `unknown` (Tanquerey's printing, the Everyman *Dialogue of Comfort*).
+- **230 planned works** now have a row in `datapipeline/rights_inventory.json`, each with `planned_for` set to the item that will ingest it: 1.8d 1, 1.2c 7, 1.2d 1, 1.2e 11, 5.3a 60, 5.3b 5, 5.4 7, 5.5 2, 5.6a 14, 5.6b 36, 5.6c 86. The second pass (5 Oct 2026) added 36 of the 5.6c rows: Pohle-Preuss 12, Koch-Preuss 5, Bellarmine's *Ascent* 1, Marmion's *Christ in His Mysteries* 1, Centenary Edition 14, Summa contra Gentiles 3. Every row is a draft (`checked_by` null) until Carter approves it.
+- **Statuses:** 144 `pd-us-pre-1931`, 73 `in-copyright` (vatican.va texts, rights holder Libreria Editrice Vaticana), 11 `pd-us-non-renewal` (Schroeder 1937, with its renewal search), 2 `unknown` (Tanquerey's printing, the Everyman *Dialogue of Comfort*).
 - **The P1 replacements all check out.** Robertson's *On the Incarnation* (npnf204), Percival's NPNF2-14 (1900), Schaff's *Creeds* vol. 2 (Vatican I text identical to the 1877/1878 printing) and Schroeder's 1937 *Disciplinary Decrees* (no renewal found) are the editions the Decision log names, and each is public domain on a recorded basis.
-- **Edition verdicts:** 188 match the edition the Decision log, a spec or the memos name (73 of them are vatican.va texts, whose only edition is the vatican.va English). 3 differ from what a memo or spec assumed: the *Way of Perfection* (the memo's Dalton 1852 fails the Decision log's Lewis-or-Stanbrook rule, so the row uses Stanbrook), the *Spiritual Combat* (the memo's "Catholic" Burns 1846 is an Anglican edition) and Catherine's *Dialogue* (CCEL's file is the 1907 abridgement). 1 has no English source at all (A New Hope for Lebanon). 2 are `unknown` (Tanquerey's printing, the Everyman *Dialogue of Comfort*). No planned work turned out to lack a public-domain edition apart from Lebanon, which is an in-copyright Vatican text with no English.
-- **Renewal searches run:** Schroeder 1937 (none found; recorded in the 11 rows) and McHugh and Callan's 1934 revised Roman Catechism (none found; recorded below only, since the row uses the 1923 first edition).
-- **Download list:** 174 files, 1,231,178,439 bytes. 117 text, XML or HTML files are 122,931,643 bytes; the other 57 are page-image PDFs and one hOCR file (1,108,246,796 bytes) needed only for the OCR route and its 20-passage check. sha256 fields are left for after Carter approves the downloads.
+- **Edition verdicts:** 224 match the edition the Decision log, a spec or the memos name (73 of them are vatican.va texts, whose only edition is the vatican.va English). 3 differ from what a memo or spec assumed: the *Way of Perfection* (the memo's Dalton 1852 fails the Decision log's Lewis-or-Stanbrook rule, so the row uses Stanbrook), the *Spiritual Combat* (the memo's "Catholic" Burns 1846 is an Anglican edition) and Catherine's *Dialogue* (CCEL's file is the 1907 abridgement). 1 has no English source at all (A New Hope for Lebanon). 2 are `unknown` (Tanquerey's printing, the Everyman *Dialogue of Comfort*). No planned work turned out to lack a public-domain edition apart from Lebanon, which is an in-copyright Vatican text with no English.
+- **Renewal searches run:** Schroeder 1937 (none found; recorded in the 11 rows) and McHugh and Callan's 1934 revised Roman Catechism (none found; recorded below only, since the row uses the 1923 first edition). The second pass needed none: every edition it found was published in 1930 or earlier, including the US printings of 1928 (Koch-Preuss vol. 2), so all are public domain by term.
+- **Download list:** 246 files, 2,007,271,445 bytes. 153 text, XML or HTML files are 152,177,042 bytes; the other 93 are page-image PDFs and one hOCR file (1,855,094,403 bytes) needed only for the OCR route and its 20-passage check. sha256 fields are left for after Carter approves the downloads.
 
 ## Inventory format change
 
@@ -217,22 +217,83 @@ All scans below are open (not lending-only). Each row lists the OCR text and the
 
 **The rest of the scan-only memo's works** (rows added so every planned work has one): *Visits to the Blessed Sacrament* (`visitstomostholy0000ligu`, Kenedy 1855, IA metadata), Catherine of Genoa's *Treatise on Purgatory* (`TreatiseOnPurgatory`, Burns 1858, IA metadata), *Little Flowers* (`littleflowersofs00unse`, Kegan Paul MDCCCXCIX, "based by permission upon the translation" of an earlier edition), Bridget (`RevelationsOfStBridget`, Sadlier 1862), Anthony of Padua's *Moral Concordances* (`moralconcordance00neal`, Hayes 1867, IA metadata), Thomas More's *Dialogue of Comfort* (`utopiawiththedia00moreuoft`, an Everyman printing that reads "Last reprinted 1946"; `unknown`), and Catherine of Siena's complete *Dialogue* (`seraphicvirginca00cathuoft`, Kegan Paul 1896).
 
+### 5.6c, second pass: the works R6's first pass left out (36)
+
+All are open IA scans, route OCR, `pd-us-pre-1931`. Title-page facts are from the OCR of the opening pages unless marked "IA metadata".
+
+**Pohle-Preuss, *Dogmatic Theology*, 12 vols.** "Authorized English version with some abridgment and numerous additional references by Arthur Preuss", B. Herder, St. Louis (and Freiburg, London). Credit per the Decision log: "Joseph Pohle, adapted by Arthur Preuss".
+
+| Vol. | Scan | Printing read |
+|---|---|---|
+| I God: His Knowability | `V01GodHisKnowability` | IA metadata 1917; title page not legible |
+| II The Divine Trinity | `divinetrinitydog00pohluoft` | 1912, imprimatur 13 Nov 1911 |
+| III God the Author of Nature | `GodTheAuthorOfNature` | IA metadata 1916; title page not legible |
+| IV Christology | `christology00pohluoft` | IA metadata 1913 |
+| V Soteriology | `soteriology00pohluoft` | 1914 |
+| VI Mariology | `mariologydogmati00pohl` | 1914 |
+| VII Grace | `graceactualhabit07pohl` | 1915 |
+| VIII Sacraments 1 | `sacramentsdogmat01pohluoft` | 1915 |
+| IX Sacraments 2, Eucharist | `sacramentsdogmat02pohluoft` | second, revised edition; year not legible (IA 1915-1917) |
+| X Sacraments 3, Penance | `sacramentsdogmat03pohluoft` | second, revised edition, 1918 |
+| XI Sacraments 4 | `sacramentsdogmat04pohluoft` | second, revised edition, 1918 |
+| XII Eschatology | `eschatology00pohluoft` | 1918, copyright 1917 (IA metadata) |
+
+IA also holds printings up to 1929 open and a 1933 printing lending-only; none of the rows uses a printing after 1930.
+
+**Koch-Preuss, *A Handbook of Moral Theology*, 5 vols.** B. Herder Book Co., St. Louis and London. Vol. I's verso: "Copyright, 1918, by Joseph Gummersbach", first edition 1918, second 1919, third 1925. Rows use vol. I 3rd revised ed. 1925 (`moraltheology01kochuoft`), vol. II 3rd revised ed. 1928, printed in U.S.A. (`moraltheology02kochuoft`), vol. III revised ed. 1926 (`moraltheology03kochuoft`), vol. IV 1921 (`handbookofmoralt0004koch`), vol. V 2nd ed. 1924 (`bwb_C0-BOH-771_5`). Vol. V's 1933 printing on IA is lending-only. Credit: "Antony Koch, adapted by Arthur Preuss".
+
+**Bellarmine, *The Ascent of the Mind to God*** (`ascentofmindtogo0000unse`): "In the first English translation, by T. B. Gent. Published at Doway, 1616", introduction by James Brodrick, Burns Oates and Washbourne, London, "First published 1928", imprimatur 19 April 1928. The 5.2 date question is settled. Brodrick's introduction is editorial matter to strip.
+
+**Marmion, *Christ in His Mysteries*** (`christinhismyste0000righ`): translated from the tenth French edition by a nun of Tyburn Convent, Sands, London and Edinburgh, and B. Herder, St. Louis, 1924, made in Belgium, imprimatur Bruges 29 Dec 1923. The 5.2 question (1923 or 1924) is settled: 1924.
+
+**Alphonsus, Centenary Edition** (ed. Grimm, Benziger, New York). IA's volume labels do not match the series numbering (IA's "vol. 1", `thecompleteascet01grimuoft`, is vol. X), so each volume was mapped from its own title page:
+
+| Series vol. | Title | Scan | Year read |
+|---|---|---|---|
+| II | Way of Salvation and of Perfection | `thecompleteascet02liguuoft` | 1887 (first pass) |
+| III | Great Means of Salvation and of Perfection | `bwb_W9-CTR-079` | IA metadata 1886 |
+| IV | Incarnation, Birth and Infancy | `thecompleteascet04liguuoft` | 1887 (first pass) |
+| V | Passion and Death | `PassionDeathOfJesusChristV5` | 1887 (first pass) |
+| VI | Holy Eucharist | `alphonsusworks06alfouoft` | 1887 |
+| IX | Victories of the Martyrs | `victoriesmartyrs09liguuoft` | 1888 |
+| X | True Spouse of Jesus Christ, part 1 | `thecompleteascet01grimuoft` | 1888 |
+| XI | True Spouse, part 2 | `truespouseofjesu1011stal` | a 1929 printing of vols. X and XI |
+| XII | Dignity and Duties of the Priest (Selva) | `alphonsusworks12liguuoft` | 1889 |
+| XIII | The Holy Mass | `alphonsusworks13liguuoft` | 1889 |
+| XIV | The Divine Office | `alphonsusworks14liguuoft` | 1889 |
+| XV | Preaching | `alphonsusworks15liguuoft` | 1890 |
+| XVIII to XXII | Letters, vols. 1 to 5 | `alphonsusworks18liguuoft`, `alphonsusworks19liguuoft`, `thecompleteascet20liguuoft`, `thecompleteascet21liguuoft`, `thecompleteascet22liguuoft` | 1891, 1892, 1894, 1896, 1897 |
+
+Not found open on IA: vol. I (*Preparation for Death*; 5.6c already has the 1854 Boston translation), vols. VII and VIII (*Glories of Mary*; 5.6b already has the 1852 Dunigan translation, Gutenberg 72411), vols. XVI and XVII (`alphonsusworks17liguuoft` returns empty metadata), and vols. XXIII and XXIV.
+
+**Summa contra Gentiles, English Dominican Fathers** (Burns, Oates & Washbourne, London; edition choice still open). Book 1 `summacontragenti01thomuoft` (first pass; imprimatur 13 Nov 1923), Book 2 `summacontragenti02thomuoft` (imprimatur 1923), Book 3 part 1 `summacontragenti0000lond` (imprimatur 10 May 1928; `bwb_P9-EFD-520_3` is another copy), Book 3 part 2 `summacontragenti0000unse_l9e4` (1928, IA metadata). **Book 4 (1929) has no open scan**; the only IA copies found are 1934 printings and lending-only.
+
 ## Scan-only memo flags, resolved
 
 1. **Spiritual Combat.** The memo said the clean Wikisource text is Rivingtons 1875, an Anglican house, and suggested Burns 1846 as the Catholic edition. **Burns 1846 is not a Catholic edition either.** Its title page (IA `TheSpiritualCombat1846`) reads "translated (with the additional chapters) from the Italian, for the use of members of the English Church", London, James Burns. Rivingtons 1875/1876 is a "new translation" in the same Anglican line. A Catholic edition is open on IA: Philadelphia, Bernard Dornin, "at the Catholic Bookstore", 1817, with *The Peace of the Soul* (`spiritualcombat01scupgoog`). The row uses it; see "For Carter".
 2. **Little Flowers.** The clean ecatholic2000 text is the Hudleston revision (Burns Oates 1926), taken from a Heritage Press printing whose Livingston introduction is in copyright, on a site that claims copyright. The row uses the 1899 Kegan Paul scan instead, route OCR.
-3. **Summa contra Gentiles.** aquinas.cc was not re-checked; the memo found no licence statement there. The open route is the English Dominican scans, book 1 `summacontragenti01thomuoft` and book 2 `summacontragenti02thomuoft` (IA also lists 1924 and 1928 volumes not yet matched to books). Rickaby's abridgement stays out unless Carter chooses it.
+3. **Summa contra Gentiles.** aquinas.cc was not re-checked; the memo found no licence statement there. The open route is the English Dominican scans; books 1 to 3 are mapped in the second-pass section above, and book 4 has no open scan. Rickaby's abridgement stays out unless Carter chooses it.
 4. **Catherine of Genoa.** Confirmed: CCEL's clean text (`catherine_g/life.xml`, 482,030 bytes) is *Life and Doctrine of Saint Catherine of Genoa*, "translated from the Italian", New York: Christian Press Association Publishing Co., 1907, a different translation from the 1858 Burns *Treatise on Purgatory* with Manning's preface. Both are pre-1931. The row keeps the memo's 1858 scan; see "For Carter".
 
-## Where this stopped
+## Coverage check
 
-Not researched, and given no row: the Pohle-Preuss and Koch-Preuss volumes (5.6c's last group, "once 5.2 confirms pre-1931 printings"), Bellarmine's *Ascent of the Mind to God* (1928), Marmion's *Christ in His Mysteries*, the remaining Centenary Edition volumes, and the SCG volumes after book 1. The middle-English Birgitta is excluded by 5.6c's spec and has no row. Everything before these in the phase-plan order is covered.
+Checked the candidates memo (lists A1 and A2), the scan-only memo, 5.3 to 5.6c and 1.2c, 1.2d, 1.2e and 1.8d against the rows. Every planned work has a row. Works with no row, each on purpose:
+- Middle English *Revelations of Saint Birgitta* (EETS 1929), excluded by 5.6c's spec.
+- Rickaby's abridged *Of God and His Creatures* on CCEL, excluded by 5.6b's spec unless Carter chooses it.
+- The Centenary volumes of the *Glories of Mary* (VII, VIII) and *Preparation for Death* (I), whose works already have rows in other translations; and vols. XVI, XVII, XXIII, XXIV, which have no open scan.
+- The GIRM (ICEL), dropped by the Decision log; the International Theological Commission, out by 5.3b's default.
+- CCEL's Peers, Stevens, Tobin, Epworth and Heritage files, Dalton's *Way of Perfection* and Gutenberg 5657, superseded by the editions in the rows.
+- The memo's "lower value" CCEL items and "further public domain items", which no spec plans.
+
+## Inventory diff
+
+`git diff` of `rights_inventory.json` against master shows many deleted lines, but the 421 existing rows are unchanged apart from the added `"planned_for": null` and keep their order: removing `planned_for` from the built rows of the new file gives exactly the master file's list. The deletions are diff alignment: inserted rows share lines such as `"checked_on": null` with existing ones.
 
 ## For Carter
 
 Each item gives a recommendation. Nothing in the plan was changed.
 
-1. **Approve the downloads** (table below): 174 files, 1.23 GB in all. If page images are wanted only when a work's OCR PR starts, approve the 117 text, XML and HTML files now (123 MB) and the 57 PDFs per work later. The P1 set alone is 9 files, 113 MB, of which 3 CCEL files (13 MB) unblock 1.2c, 1.2d and 1.8d. sha256 values go into the rows and `source_lock.json` once the files are fetched.
+1. **Approve the downloads** (table below): 246 files, 2.01 GB in all. If page images are wanted only when a work's OCR PR starts, approve the 153 text, XML and HTML files now (152 MB) and the 93 PDFs per work later. The P1 set alone is 9 files, 113 MB, of which 3 CCEL files (13 MB) unblock 1.2c, 1.2d and 1.8d. sha256 values go into the rows and `source_lock.json` once the files are fetched.
 2. **Approve the Schroeder renewal search and its 11 rows** (`pd-us-non-renewal`). Recommendation: approve. No renewal in the complete 1964 and 1965 files, and Fordham's pages record TAN's statement that the copyright was not renewed.
 3. **Fordham's transcriptions** (Lateran I, II, IV for 1.2e, and the Roman Catechism for 5.5) carry Paul Halsall's notice that the "specific electronic form" is copyright and that no permission is granted for commercial use. TheoCorpus is free, but the notice is the same kind of claim as ecatholic2000's. Recommendation: treat Fordham like ecatholic2000 (Decision log "OCR and scanned works"): OCR the Schroeder and 1923 Catechism scans and use Fordham only to check the OCR, unless you choose to ask Fordham.
 4. **Tanquerey's printing is not settled.** Both open scans read "Second and revised edition", with a May 1930 imprimatur and no year on the title page; catalogues disagree between 1930 and 1932, and the book was printed in Belgium. A 1932 Belgian printing may carry restored US copyright (URAA), so the row is `unknown`. Recommendation: look at the title-page verso and colophon in the IA viewer (`spirituallife0000atan`, first ten page images) for a printing date before 5.6c starts Tanquerey; ingest only if it says 1930.
@@ -242,10 +303,14 @@ Each item gives a recommendation. Nothing in the plan was changed.
 8. **Catherine of Genoa.** The clean CCEL text is a different translation (New York, Christian Press Association, 1907) from the 1858 Burns translation the memo named, and it contains the *Life* as well as the *Treatise*. Recommendation: take the CCEL 1907 text, which is clean and pre-1931, and drop the 1858 OCR route. The row stays on 1858 until you decide.
 9. **Little Flowers.** Recommendation: use the 1899 Kegan Paul scan by OCR, as the row does, not the Hudleston text on ecatholic2000 (site claim plus an in-copyright introduction in its print source).
 10. **Rolle on CCEL** says its text "is not identical to the print source": footnote glosses replace some archaic words. Recommendation: accept it with that fact in the document note, since the changes are the editor's own glosses; the alternative is OCR of the 1914 or 1920 Methuen printing.
-11. **Summa contra Gentiles** (open since the candidates memo): still your choice between Rickaby's abridgement on CCEL and the complete English Dominican scans. Only book 1 has a row. If you choose the Dominican edition, the remaining volumes need matching to IA items.
+11. **Summa contra Gentiles** (open since the candidates memo): still your choice between Rickaby's abridgement on CCEL and the complete English Dominican scans. Books 1, 2 and 3 (both parts) have rows; book 4 has no open scan (item 15).
 12. **More's *Dialogue of Comfort*** is `unknown` because the only open Everyman scan is a 1946 reprint. Recommendation: hold it until a scan of a printing from 1930 or earlier is found; low priority.
 13. **Correspondence** (no change, already yours): CCEL's request for permission to republish its editions (the 5.6a and 5.6b ThML files), ecatholic2000, Sensus Fidelium (names no editions), NINS for the Newman Reader, and the Aquinas Institute if aquinas.cc is used.
-14. **Approve the 194 draft rows**, or say which to change. All have `checked_by` null.
+14. **Approve the 230 draft rows**, or say which to change. All have `checked_by` null.
+15. **Summa contra Gentiles book 4 has no open scan** (the 1929 volume). If you choose the Dominican edition, the work is incomplete until a scan of a printing from 1930 or earlier is found [choose with that gap in view; Rickaby covers all four books in abridged form].
+16. **Pohle-Preuss and Koch-Preuss mix printings**: several rows use second or third revised editions (1918 to 1928) because those are the open scans. All are 1930 or earlier [accept; the revised editions are the authors' and Preuss's own revisions].
+17. **Alphonsus Centenary vols. XVI, XVII, XXIII, XXIV** have no open scan [leave them out until one is found; low priority, since they are sermons, miscellany and letters].
+18. **Bellarmine's *Ascent*** is a 1616 translation reissued in 1928 with Brodrick's introduction [ingest the 1616 text, strip the introduction].
 
 ## Download list for Carter
 
@@ -427,3 +492,75 @@ Sizes in bytes, from `Content-Length`, CCEL's ETag (which equals our manifest by
 | 5.6c | Complete Ascetical Works, vol. 5, The Passion and the Death of Jesus Christ | https://archive.org/download/PassionDeathOfJesusChristV5/PassionDeathOfJesusChristV5.pdf | `theologians/PassionDeathOfJesusChristV5/PassionDeathOfJesusChristV5.pdf` | 12,870,442 |
 | 5.6c | Summa contra Gentiles, Book 1 | https://archive.org/download/summacontragenti01thomuoft/summacontragenti01thomuoft_djvu.txt | `theologians/summacontragenti01thomuoft/summacontragenti01thomuoft_djvu.txt` | 511,000 |
 | 5.6c | Summa contra Gentiles, Book 1 | https://archive.org/download/summacontragenti01thomuoft/summacontragenti01thomuoft.pdf | `theologians/summacontragenti01thomuoft/summacontragenti01thomuoft.pdf` | 15,502,796 |
+| 5.6c | Dogmatic Theology I: God: His Knowability, Essence, and Attributes | https://archive.org/download/V01GodHisKnowability/V01GodHisKnowability_djvu.txt | `theologians/V01GodHisKnowability/V01GodHisKnowability_djvu.txt` | 798,177 |
+| 5.6c | Dogmatic Theology I: God: His Knowability, Essence, and Attributes | https://archive.org/download/V01GodHisKnowability/V01GodHisKnowability.pdf | `theologians/V01GodHisKnowability/V01GodHisKnowability.pdf` | 7,777,299 |
+| 5.6c | Dogmatic Theology II: The Divine Trinity | https://archive.org/download/divinetrinitydog00pohluoft/divinetrinitydog00pohluoft_djvu.txt | `theologians/divinetrinitydog00pohluoft/divinetrinitydog00pohluoft_djvu.txt` | 533,230 |
+| 5.6c | Dogmatic Theology II: The Divine Trinity | https://archive.org/download/divinetrinitydog00pohluoft/divinetrinitydog00pohluoft.pdf | `theologians/divinetrinitydog00pohluoft/divinetrinitydog00pohluoft.pdf` | 20,061,016 |
+| 5.6c | Dogmatic Theology III: God the Author of Nature and the Supernatural | https://archive.org/download/GodTheAuthorOfNature/GodTheAuthorOfNature_djvu.txt | `theologians/GodTheAuthorOfNature/GodTheAuthorOfNature_djvu.txt` | 648,547 |
+| 5.6c | Dogmatic Theology III: God the Author of Nature and the Supernatural | https://archive.org/download/GodTheAuthorOfNature/GodTheAuthorOfNature.pdf | `theologians/GodTheAuthorOfNature/GodTheAuthorOfNature.pdf` | 7,027,492 |
+| 5.6c | Dogmatic Theology IV: Christology | https://archive.org/download/christology00pohluoft/christology00pohluoft_djvu.txt | `theologians/christology00pohluoft/christology00pohluoft_djvu.txt` | 662,518 |
+| 5.6c | Dogmatic Theology IV: Christology | https://archive.org/download/christology00pohluoft/christology00pohluoft.pdf | `theologians/christology00pohluoft/christology00pohluoft.pdf` | 19,512,267 |
+| 5.6c | Dogmatic Theology V: Soteriology | https://archive.org/download/soteriology00pohluoft/soteriology00pohluoft_djvu.txt | `theologians/soteriology00pohluoft/soteriology00pohluoft_djvu.txt` | 328,482 |
+| 5.6c | Dogmatic Theology V: Soteriology | https://archive.org/download/soteriology00pohluoft/soteriology00pohluoft.pdf | `theologians/soteriology00pohluoft/soteriology00pohluoft.pdf` | 11,509,825 |
+| 5.6c | Dogmatic Theology VI: Mariology | https://archive.org/download/mariologydogmati00pohl/mariologydogmati00pohl_djvu.txt | `theologians/mariologydogmati00pohl/mariologydogmati00pohl_djvu.txt` | 375,156 |
+| 5.6c | Dogmatic Theology VI: Mariology | https://archive.org/download/mariologydogmati00pohl/mariologydogmati00pohl.pdf | `theologians/mariologydogmati00pohl/mariologydogmati00pohl.pdf` | 10,570,436 |
+| 5.6c | Dogmatic Theology VII: Grace, Actual and Habitual | https://archive.org/download/graceactualhabit07pohl/graceactualhabit07pohl_djvu.txt | `theologians/graceactualhabit07pohl/graceactualhabit07pohl_djvu.txt` | 966,852 |
+| 5.6c | Dogmatic Theology VII: Grace, Actual and Habitual | https://archive.org/download/graceactualhabit07pohl/graceactualhabit07pohl.pdf | `theologians/graceactualhabit07pohl/graceactualhabit07pohl.pdf` | 24,753,750 |
+| 5.6c | Dogmatic Theology VIII: The Sacraments, vol. 1: The Sacraments in General, Baptism, Confirmation | https://archive.org/download/sacramentsdogmat01pohluoft/sacramentsdogmat01pohluoft_djvu.txt | `theologians/sacramentsdogmat01pohluoft/sacramentsdogmat01pohluoft_djvu.txt` | 689,669 |
+| 5.6c | Dogmatic Theology VIII: The Sacraments, vol. 1: The Sacraments in General, Baptism, Confirmation | https://archive.org/download/sacramentsdogmat01pohluoft/sacramentsdogmat01pohluoft.pdf | `theologians/sacramentsdogmat01pohluoft/sacramentsdogmat01pohluoft.pdf` | 17,648,413 |
+| 5.6c | Dogmatic Theology IX: The Sacraments, vol. 2: The Holy Eucharist | https://archive.org/download/sacramentsdogmat02pohluoft/sacramentsdogmat02pohluoft_djvu.txt | `theologians/sacramentsdogmat02pohluoft/sacramentsdogmat02pohluoft_djvu.txt` | 717,328 |
+| 5.6c | Dogmatic Theology IX: The Sacraments, vol. 2: The Holy Eucharist | https://archive.org/download/sacramentsdogmat02pohluoft/sacramentsdogmat02pohluoft.pdf | `theologians/sacramentsdogmat02pohluoft/sacramentsdogmat02pohluoft.pdf` | 17,913,972 |
+| 5.6c | Dogmatic Theology X: The Sacraments, vol. 3: Penance | https://archive.org/download/sacramentsdogmat03pohluoft/sacramentsdogmat03pohluoft_djvu.txt | `theologians/sacramentsdogmat03pohluoft/sacramentsdogmat03pohluoft_djvu.txt` | 537,306 |
+| 5.6c | Dogmatic Theology X: The Sacraments, vol. 3: Penance | https://archive.org/download/sacramentsdogmat03pohluoft/sacramentsdogmat03pohluoft.pdf | `theologians/sacramentsdogmat03pohluoft/sacramentsdogmat03pohluoft.pdf` | 13,773,244 |
+| 5.6c | Dogmatic Theology XI: The Sacraments, vol. 4: Extreme Unction, Holy Orders, Matrimony | https://archive.org/download/sacramentsdogmat04pohluoft/sacramentsdogmat04pohluoft_djvu.txt | `theologians/sacramentsdogmat04pohluoft/sacramentsdogmat04pohluoft_djvu.txt` | 495,619 |
+| 5.6c | Dogmatic Theology XI: The Sacraments, vol. 4: Extreme Unction, Holy Orders, Matrimony | https://archive.org/download/sacramentsdogmat04pohluoft/sacramentsdogmat04pohluoft.pdf | `theologians/sacramentsdogmat04pohluoft/sacramentsdogmat04pohluoft.pdf` | 13,107,231 |
+| 5.6c | Dogmatic Theology XII: Eschatology | https://archive.org/download/eschatology00pohluoft/eschatology00pohluoft_djvu.txt | `theologians/eschatology00pohluoft/eschatology00pohluoft_djvu.txt` | 332,956 |
+| 5.6c | Dogmatic Theology XII: Eschatology | https://archive.org/download/eschatology00pohluoft/eschatology00pohluoft.pdf | `theologians/eschatology00pohluoft/eschatology00pohluoft.pdf` | 11,684,003 |
+| 5.6c | A Handbook of Moral Theology I: Introduction; Morality, Its Subject, Norm, and Object | https://archive.org/download/moraltheology01kochuoft/moraltheology01kochuoft_djvu.txt | `theologians/moraltheology01kochuoft/moraltheology01kochuoft_djvu.txt` | 619,141 |
+| 5.6c | A Handbook of Moral Theology I: Introduction; Morality, Its Subject, Norm, and Object | https://archive.org/download/moraltheology01kochuoft/moraltheology01kochuoft.pdf | `theologians/moraltheology01kochuoft/moraltheology01kochuoft.pdf` | 18,107,218 |
+| 5.6c | A Handbook of Moral Theology II: Sin and the Means of Grace | https://archive.org/download/moraltheology02kochuoft/moraltheology02kochuoft_djvu.txt | `theologians/moraltheology02kochuoft/moraltheology02kochuoft_djvu.txt` | 498,713 |
+| 5.6c | A Handbook of Moral Theology II: Sin and the Means of Grace | https://archive.org/download/moraltheology02kochuoft/moraltheology02kochuoft.pdf | `theologians/moraltheology02kochuoft/moraltheology02kochuoft.pdf` | 16,366,248 |
+| 5.6c | A Handbook of Moral Theology III: Man's Duties to Himself | https://archive.org/download/moraltheology03kochuoft/moraltheology03kochuoft_djvu.txt | `theologians/moraltheology03kochuoft/moraltheology03kochuoft_djvu.txt` | 376,027 |
+| 5.6c | A Handbook of Moral Theology III: Man's Duties to Himself | https://archive.org/download/moraltheology03kochuoft/moraltheology03kochuoft.pdf | `theologians/moraltheology03kochuoft/moraltheology03kochuoft.pdf` | 9,828,173 |
+| 5.6c | A Handbook of Moral Theology IV: Man's Duties to God | https://archive.org/download/handbookofmoralt0004koch/handbookofmoralt0004koch_djvu.txt | `theologians/handbookofmoralt0004koch/handbookofmoralt0004koch_djvu.txt` | 755,711 |
+| 5.6c | A Handbook of Moral Theology IV: Man's Duties to God | https://archive.org/download/handbookofmoralt0004koch/handbookofmoralt0004koch.pdf | `theologians/handbookofmoralt0004koch/handbookofmoralt0004koch.pdf` | 17,044,777 |
+| 5.6c | A Handbook of Moral Theology V: Man's Duties to His Fellowmen | https://archive.org/download/bwb_C0-BOH-771_5/bwb_C0-BOH-771_5_djvu.txt | `theologians/bwb_C0-BOH-771_5/bwb_C0-BOH-771_5_djvu.txt` | 1,170,400 |
+| 5.6c | A Handbook of Moral Theology V: Man's Duties to His Fellowmen | https://archive.org/download/bwb_C0-BOH-771_5/bwb_C0-BOH-771_5.pdf | `theologians/bwb_C0-BOH-771_5/bwb_C0-BOH-771_5.pdf` | 26,966,513 |
+| 5.6c | The Ascent of the Mind to God | https://archive.org/download/ascentofmindtogo0000unse/ascentofmindtogo0000unse_djvu.txt | `theologians/ascentofmindtogo0000unse/ascentofmindtogo0000unse_djvu.txt` | 422,074 |
+| 5.6c | The Ascent of the Mind to God | https://archive.org/download/ascentofmindtogo0000unse/ascentofmindtogo0000unse.pdf | `theologians/ascentofmindtogo0000unse/ascentofmindtogo0000unse.pdf` | 10,999,858 |
+| 5.6c | Christ in His Mysteries | https://archive.org/download/christinhismyste0000righ/christinhismyste0000righ_djvu.txt | `theologians/christinhismyste0000righ/christinhismyste0000righ_djvu.txt` | 985,466 |
+| 5.6c | Christ in His Mysteries | https://archive.org/download/christinhismyste0000righ/christinhismyste0000righ.pdf | `theologians/christinhismyste0000righ/christinhismyste0000righ.pdf` | 22,683,723 |
+| 5.6c | Complete Ascetical Works, vol. 3, The Great Means of Salvation and of Perfection | https://archive.org/download/bwb_W9-CTR-079/bwb_W9-CTR-079_djvu.txt | `theologians/bwb_W9-CTR-079/bwb_W9-CTR-079_djvu.txt` | 980,405 |
+| 5.6c | Complete Ascetical Works, vol. 3, The Great Means of Salvation and of Perfection | https://archive.org/download/bwb_W9-CTR-079/bwb_W9-CTR-079.pdf | `theologians/bwb_W9-CTR-079/bwb_W9-CTR-079.pdf` | 20,196,158 |
+| 5.6c | Complete Ascetical Works, vol. 6, The Holy Eucharist | https://archive.org/download/alphonsusworks06alfouoft/alphonsusworks06alfouoft_djvu.txt | `theologians/alphonsusworks06alfouoft/alphonsusworks06alfouoft_djvu.txt` | 1,079,801 |
+| 5.6c | Complete Ascetical Works, vol. 6, The Holy Eucharist | https://archive.org/download/alphonsusworks06alfouoft/alphonsusworks06alfouoft.pdf | `theologians/alphonsusworks06alfouoft/alphonsusworks06alfouoft.pdf` | 28,080,944 |
+| 5.6c | Complete Ascetical Works, vol. 9, Victories of the Martyrs | https://archive.org/download/victoriesmartyrs09liguuoft/victoriesmartyrs09liguuoft_djvu.txt | `theologians/victoriesmartyrs09liguuoft/victoriesmartyrs09liguuoft_djvu.txt` | 1,011,108 |
+| 5.6c | Complete Ascetical Works, vol. 9, Victories of the Martyrs | https://archive.org/download/victoriesmartyrs09liguuoft/victoriesmartyrs09liguuoft.pdf | `theologians/victoriesmartyrs09liguuoft/victoriesmartyrs09liguuoft.pdf` | 28,088,091 |
+| 5.6c | Complete Ascetical Works, vol. 10, The True Spouse of Jesus Christ, part 1 | https://archive.org/download/thecompleteascet01grimuoft/thecompleteascet01grimuoft_djvu.txt | `theologians/thecompleteascet01grimuoft/thecompleteascet01grimuoft_djvu.txt` | 1,152,181 |
+| 5.6c | Complete Ascetical Works, vol. 10, The True Spouse of Jesus Christ, part 1 | https://archive.org/download/thecompleteascet01grimuoft/thecompleteascet01grimuoft.pdf | `theologians/thecompleteascet01grimuoft/thecompleteascet01grimuoft.pdf` | 33,030,909 |
+| 5.6c | Complete Ascetical Works, vol. 11, The True Spouse of Jesus Christ, part 2 (scan of a 1929 printing of vols. 10-11) | https://archive.org/download/truespouseofjesu1011stal/truespouseofjesu1011stal_djvu.txt | `theologians/truespouseofjesu1011stal/truespouseofjesu1011stal_djvu.txt` | 1,442,223 |
+| 5.6c | Complete Ascetical Works, vol. 11, The True Spouse of Jesus Christ, part 2 (scan of a 1929 printing of vols. 10-11) | https://archive.org/download/truespouseofjesu1011stal/truespouseofjesu1011stal.pdf | `theologians/truespouseofjesu1011stal/truespouseofjesu1011stal.pdf` | 31,389,890 |
+| 5.6c | Complete Ascetical Works, vol. 12, Dignity and Duties of the Priest (Selva) | https://archive.org/download/alphonsusworks12liguuoft/alphonsusworks12liguuoft_djvu.txt | `theologians/alphonsusworks12liguuoft/alphonsusworks12liguuoft_djvu.txt` | 1,056,249 |
+| 5.6c | Complete Ascetical Works, vol. 12, Dignity and Duties of the Priest (Selva) | https://archive.org/download/alphonsusworks12liguuoft/alphonsusworks12liguuoft.pdf | `theologians/alphonsusworks12liguuoft/alphonsusworks12liguuoft.pdf` | 26,527,521 |
+| 5.6c | Complete Ascetical Works, vol. 13, The Holy Mass | https://archive.org/download/alphonsusworks13liguuoft/alphonsusworks13liguuoft_djvu.txt | `theologians/alphonsusworks13liguuoft/alphonsusworks13liguuoft_djvu.txt` | 961,159 |
+| 5.6c | Complete Ascetical Works, vol. 13, The Holy Mass | https://archive.org/download/alphonsusworks13liguuoft/alphonsusworks13liguuoft.pdf | `theologians/alphonsusworks13liguuoft/alphonsusworks13liguuoft.pdf` | 26,172,229 |
+| 5.6c | Complete Ascetical Works, vol. 14, The Divine Office | https://archive.org/download/alphonsusworks14liguuoft/alphonsusworks14liguuoft_djvu.txt | `theologians/alphonsusworks14liguuoft/alphonsusworks14liguuoft_djvu.txt` | 1,394,675 |
+| 5.6c | Complete Ascetical Works, vol. 14, The Divine Office | https://archive.org/download/alphonsusworks14liguuoft/alphonsusworks14liguuoft.pdf | `theologians/alphonsusworks14liguuoft/alphonsusworks14liguuoft.pdf` | 32,019,649 |
+| 5.6c | Complete Ascetical Works, vol. 15, Preaching | https://archive.org/download/alphonsusworks15liguuoft/alphonsusworks15liguuoft_djvu.txt | `theologians/alphonsusworks15liguuoft/alphonsusworks15liguuoft_djvu.txt` | 1,232,083 |
+| 5.6c | Complete Ascetical Works, vol. 15, Preaching | https://archive.org/download/alphonsusworks15liguuoft/alphonsusworks15liguuoft.pdf | `theologians/alphonsusworks15liguuoft/alphonsusworks15liguuoft.pdf` | 30,080,698 |
+| 5.6c | Complete Ascetical Works, vol. 18, Letters, vol. 1 | https://archive.org/download/alphonsusworks18liguuoft/alphonsusworks18liguuoft_djvu.txt | `theologians/alphonsusworks18liguuoft/alphonsusworks18liguuoft_djvu.txt` | 1,271,843 |
+| 5.6c | Complete Ascetical Works, vol. 18, Letters, vol. 1 | https://archive.org/download/alphonsusworks18liguuoft/alphonsusworks18liguuoft.pdf | `theologians/alphonsusworks18liguuoft/alphonsusworks18liguuoft.pdf` | 34,036,273 |
+| 5.6c | Complete Ascetical Works, vol. 19, Letters, vol. 2 | https://archive.org/download/alphonsusworks19liguuoft/alphonsusworks19liguuoft_djvu.txt | `theologians/alphonsusworks19liguuoft/alphonsusworks19liguuoft_djvu.txt` | 1,042,383 |
+| 5.6c | Complete Ascetical Works, vol. 19, Letters, vol. 2 | https://archive.org/download/alphonsusworks19liguuoft/alphonsusworks19liguuoft.pdf | `theologians/alphonsusworks19liguuoft/alphonsusworks19liguuoft.pdf` | 27,297,692 |
+| 5.6c | Complete Ascetical Works, vol. 20, Letters, vol. 3 | https://archive.org/download/thecompleteascet20liguuoft/thecompleteascet20liguuoft_djvu.txt | `theologians/thecompleteascet20liguuoft/thecompleteascet20liguuoft_djvu.txt` | 1,007,756 |
+| 5.6c | Complete Ascetical Works, vol. 20, Letters, vol. 3 | https://archive.org/download/thecompleteascet20liguuoft/thecompleteascet20liguuoft.pdf | `theologians/thecompleteascet20liguuoft/thecompleteascet20liguuoft.pdf` | 31,921,373 |
+| 5.6c | Complete Ascetical Works, vol. 21, Letters, vol. 4 | https://archive.org/download/thecompleteascet21liguuoft/thecompleteascet21liguuoft_djvu.txt | `theologians/thecompleteascet21liguuoft/thecompleteascet21liguuoft_djvu.txt` | 958,854 |
+| 5.6c | Complete Ascetical Works, vol. 21, Letters, vol. 4 | https://archive.org/download/thecompleteascet21liguuoft/thecompleteascet21liguuoft.pdf | `theologians/thecompleteascet21liguuoft/thecompleteascet21liguuoft.pdf` | 29,819,930 |
+| 5.6c | Complete Ascetical Works, vol. 22, Letters, vol. 5 | https://archive.org/download/thecompleteascet22liguuoft/thecompleteascet22liguuoft_djvu.txt | `theologians/thecompleteascet22liguuoft/thecompleteascet22liguuoft_djvu.txt` | 1,005,266 |
+| 5.6c | Complete Ascetical Works, vol. 22, Letters, vol. 5 | https://archive.org/download/thecompleteascet22liguuoft/thecompleteascet22liguuoft.pdf | `theologians/thecompleteascet22liguuoft/thecompleteascet22liguuoft.pdf` | 27,356,871 |
+| 5.6c | Summa contra Gentiles, Book 2 | https://archive.org/download/summacontragenti02thomuoft/summacontragenti02thomuoft_djvu.txt | `theologians/summacontragenti02thomuoft/summacontragenti02thomuoft_djvu.txt` | 746,103 |
+| 5.6c | Summa contra Gentiles, Book 2 | https://archive.org/download/summacontragenti02thomuoft/summacontragenti02thomuoft.pdf | `theologians/summacontragenti02thomuoft/summacontragenti02thomuoft.pdf` | 20,573,709 |
+| 5.6c | Summa contra Gentiles, Book 3, part 1 | https://archive.org/download/summacontragenti0000lond/summacontragenti0000lond_djvu.txt | `theologians/summacontragenti0000lond/summacontragenti0000lond_djvu.txt` | 451,725 |
+| 5.6c | Summa contra Gentiles, Book 3, part 1 | https://archive.org/download/summacontragenti0000lond/summacontragenti0000lond.pdf | `theologians/summacontragenti0000lond/summacontragenti0000lond.pdf` | 11,094,143 |
+| 5.6c | Summa contra Gentiles, Book 3, part 2 | https://archive.org/download/summacontragenti0000unse_l9e4/summacontragenti0000unse_l9e4_djvu.txt | `theologians/summacontragenti0000unse_l9e4/summacontragenti0000unse_l9e4_djvu.txt` | 538,213 |
+| 5.6c | Summa contra Gentiles, Book 3, part 2 | https://archive.org/download/summacontragenti0000unse_l9e4/summacontragenti0000unse_l9e4.pdf | `theologians/summacontragenti0000unse_l9e4/summacontragenti0000unse_l9e4.pdf` | 11,826,069 |
