@@ -105,7 +105,7 @@ def test_unplaceable_document_raises():
 
 # --------------------------------------------------------------------------- extractors
 
-HTML = """<html><body><div class="entry-content">
+HTML = """<html><head><meta charset="utf-8"></head><body><div class="entry-content">
 <p><a href="#">EN</a> - <a href="#">FR</a></p>
 <h2>ENCYCLICAL LETTER</h2>
 <p>1. The first section opens here with enough words to measure.</p>
@@ -125,7 +125,7 @@ def test_html_units_regions_and_numbers(tmp_path):
     regions = [(u.unit_id, u.region) for u in units]
     assert regions == [(None, "toc"), (None, "heading"), ("1", "body"), (None, "body"),
                        (None, "body"), ("2", "body"), (None, "heading"), ("1", "note"),
-                       (None, "note")]
+                       (None, "apparatus")]      # the site footer, even inside the notes
     first = units[2]
     assert first.text.startswith("The first section")    # the number is the id, not text
 
