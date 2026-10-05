@@ -294,10 +294,16 @@ _SECTION_REF = re.compile(r"§(\d+)\s*$")
 
 def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> SequenceResult:
     """The § numbers in a document's passage references match the section numbers in
-    its source body: none missing, none twice, none above the source's last (which
-    catches footnotes read as sections)."""
+    its source body: none missing, none twice, and none the source does not have.
+    A built number is out of range when it is above the source's last section (which
+    catches footnotes read as sections) or appears nowhere in the source body as a
+    leading number (a section the adapter invented inside a gap in the numbering)."""
     source = source_section_numbers(units)
     top = max(source, default=0)
+    # Every leading number in the body, before source_section_numbers sets list items
+    # and restarted note numbers aside: a built number found here is not invented.
+    in_source = {int(u.unit_id) for u in units
+                 if u.region == "body" and u.unit_id and u.unit_id.isdigit()}
     built: dict[int, set[str]] = defaultdict(set)
     for p in document.passages:
         m = _SECTION_REF.search(p.reference)
@@ -306,7 +312,7 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
     return SequenceResult(
         missing=[str(n) for n in source if n not in built],
         duplicated=[str(n) for n in sorted(built) if len(built[n]) > 1],
-        out_of_range=[str(n) for n in sorted(built) if n > top])
+        out_of_range=[str(n) for n in sorted(built) if n > top or n not in in_source])
 
 
 # --------------------------------------------------------------------------- ThML
@@ -320,22 +326,34 @@ def thml_chapters(documents: list[Document], units: list[SourceUnit],
     dropped work can share a quoted verse or two with the passages around it.
     Divs whose own text is all short sentences cannot be judged and are skipped.
 
-    The editorial divs (`editorial`, from editorial_divs.json) are the reverse: one
-    that does reach a passage is reported in `out_of_range`, text that should not be
-    in the corpus under rule G."""
+    The editorial divs (`editorial`, from editorial_divs.json, with the divs inside
+    them) are the reverse, and stricter: one is reported in `out_of_range` when any of
+    its sentences reaches a passage, text that should not be in the corpus under rule
+    G. A sentence the file also holds outside the editorial divs is not evidence: an
+    editor quoting the Creed, or repeating a translator's note that the adapter prints
+    inline (note leakage is measured by coverage, and 1.10b strips it)."""
     text = _PassageText(documents)
     own: dict[str, list[str]] = defaultdict(list)
     edited: dict[str, list[str]] = defaultdict(list)
+    elsewhere: list[str] = []          # the file's text outside the editorial divs
     for u in units:
+        parts = (u.unit_id or "").split(".")     # dotted ids: "viii.i" is inside "viii"
+        owner = next((d for d in (".".join(parts[:n]) for n in range(len(parts), 0, -1))
+                      if d in editorial), None) if u.unit_id else None
+        if owner:
+            edited[owner].append(u.text)
+            continue
+        elsewhere.append(u.text)
         if u.region == "body" and u.unit_id:
             own[u.unit_id].append(u.text)
-        elif u.region == "apparatus" and u.unit_id in editorial:
-            edited[u.unit_id].append(u.text)
     result = SequenceResult()
-    for div_id, texts in edited.items():
-        measured, covered = _covered_chars(text, texts)
-        if measured and covered >= THML_CHAPTER_MIN_COVERED * measured:
-            result.out_of_range.append(div_id)
+    if edited:
+        outside = _PassageText.from_texts(elsewhere)
+        for div_id, texts in edited.items():
+            if any(text.find(k) is not None and outside.find(k) is None
+                   for t in texts for s in split_sentences(t) if measurable(s)
+                   for k in (match_key(s),)):
+                result.out_of_range.append(div_id)
     for div_id, texts in own.items():
         if sum(len(" ".join(t.split())) for t in texts) < THML_CHAPTER_MIN_CHARS:
             continue

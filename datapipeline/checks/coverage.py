@@ -230,14 +230,24 @@ class _PassageText:
     _INDEX_FROM = 1_000_000
 
     def __init__(self, documents: list[Document]):
+        self._build([[f"{p.unit_label}\n\n{p.content}" if p.unit_label else p.content
+                      for p in doc.passages] for doc in documents])
+
+    @classmethod
+    def from_texts(cls, texts: list[str]) -> "_PassageText":
+        """The same index over plain texts (one owner), such as a source's body."""
+        index = cls.__new__(cls)
+        index._build([texts])
+        return index
+
+    def _build(self, owners: list[list[str]]) -> None:
         parts: list[str] = []
-        self.owner: list[tuple[int, int]] = []   # (start offset, document index)
+        self.owner: list[tuple[int, int]] = []   # (start offset, owner index)
         self.sentences: dict[str, int] = {}
         offset = 0
-        for i, doc in enumerate(documents):
+        for i, texts in enumerate(owners):
             self.owner.append((offset, i))
-            for p in doc.passages:
-                text = f"{p.unit_label}\n\n{p.content}" if p.unit_label else p.content
+            for text in texts:
                 for sentence in split_sentences(text):
                     key = match_key(sentence)
                     parts.append(key)

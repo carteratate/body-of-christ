@@ -229,7 +229,8 @@ _SITE_CHROME = re.compile(
     r"^copyright\s*©|^©\s*copyright|automatically notified|more information about this site"
     r"|fan of our facebook|^search tips$|^sitemap$|return to (?:the )?home|^last updated\b",
     re.IGNORECASE)
-_PARA_NUMBER = re.compile(r"^\s*(\d{1,4})\s*\.(?:\s|$)")
+# "12. Text", and "131.Later" where the source left out the space (but not "1.5").
+_PARA_NUMBER = re.compile(r"^\s*(\d{1,4})\s*\.(?=\s|$|[^\d\s])")
 _CANON_NUMBER = re.compile(r"^\W*n?\s*Can\.\s*(\d+)")
 _LEADING_NUMBER = re.compile(r"^\s*(?:\d{1,4}\s*\.|\W*n?\s*Can\.\s*\d+\.?)\s*")
 

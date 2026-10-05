@@ -507,3 +507,46 @@ def test_write_baseline_for_one_collection_keeps_the_others(tmp_path, monkeypatc
     assert written["files"]["catechism/ccc.json"]["pct"] == 97.0
     assert set(written["documents"]) == {"d-bible", "d-ccc"}
     assert written["documents"]["d-ccc"]["covered_chars"] == 97
+
+
+def test_one_editorial_sentence_in_a_passage_is_a_leak():
+    editorial = [S.SourceUnit("v.xml", "ed", "The editor wrote this first long sentence here. "
+                              "The editor added a second long sentence too. "
+                              "The editor closed with a third long sentence.", "apparatus"),
+                 S.SourceUnit("v.xml", "ed.i", "A nested editor's paragraph of decent length.",
+                              "apparatus")]
+    leaked = _doc([_passage("The author's text. The editor added a second long sentence too.")])
+    assert Q.thml_chapters([leaked], editorial, {"ed"}).out_of_range == ["ed"]
+    nested = _doc([_passage("A nested editor's paragraph of decent length.")])
+    assert Q.thml_chapters([nested], editorial, {"ed"}).out_of_range == ["ed"]
+
+
+def test_editorial_sentence_the_file_also_holds_elsewhere_is_not_a_leak():
+    units = [S.SourceUnit("v.xml", "ed", "I believe in God the Father Almighty, maker of all.",
+                          "apparatus"),
+             S.SourceUnit("v.xml", "ii.i", "He taught them to say: I believe in God the Father "
+                          "Almighty, maker of all.", "body"),
+             S.SourceUnit("v.xml", "ed", "Boethius's first wife was Elpis, daughter of Festus.",
+                          "apparatus"),
+             S.SourceUnit("v.xml", "iii", "Boethius's first wife was Elpis, daughter of Festus.",
+                          "note")]
+    doc = _doc([_passage("He taught them to say: I believe in God the Father Almighty, maker of "
+                         "all. Boethius's first wife was Elpis, daughter of Festus.")])
+    assert Q.thml_chapters([doc], units, {"ed"}).out_of_range == []
+
+
+def test_numbered_paragraph_invented_inside_a_source_gap():
+    doc = _doc([_passage("x", f"D, §{n}", f"d/{n}") for n in (1, 2, 3, 4)])
+    result = Q.numbered_paragraphs(doc, _units(1, 2, 4))
+    assert (result.missing, result.duplicated, result.out_of_range) == ([], [], ["3"])
+
+
+def test_paragraph_number_without_a_space_after_it(tmp_path):
+    path = tmp_path / "doc.html"
+    path.write_text('<div class="documento"><p>131.Later, his director helped him further.</p>'
+                    '<p>1.5 metres is not a paragraph number at all here.</p></div>',
+                    encoding="utf-8")
+    units = S.html_units(str(path))
+    assert [(u.unit_id, u.text) for u in units] == [
+        ("131", "Later, his director helped him further."),
+        (None, "1.5 metres is not a paragraph number at all here.")]
