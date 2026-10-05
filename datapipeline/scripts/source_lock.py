@@ -28,9 +28,7 @@ LOCK_PATH = DATAPIPELINE / "source_lock.json"
 # Files vendored before this lock existed carry no fetch date.
 UNKNOWN_ACQUIRED = "unknown-before-2026-09-29"
 
-# Collections whose adapter reads a manifest: files the manifest names are adapter
-# input; the manifest itself is auxiliary; anything else in the directory is
-# vendored but never published.
+# Each collection's manifest, which also supplies URLs.
 _MANIFESTS = {
     "apostolic-exhortations": "manifest.json",
     "canon-law": "pages.json",
@@ -39,6 +37,15 @@ _MANIFESTS = {
     "encyclicals": "manifest.json",
     "medieval": "manifest.json",
     "papal-documents": "manifest.json",
+}
+
+# Collections whose adapter selects files by globbing the directory, not by reading the
+# manifest: `ingest/church_fathers.build_all()` builds every `*.xml` except a file named
+# `summa.xml`. Its manifest is then only a record of URLs, and a file dropped from it is
+# still published. Every other collection in `_MANIFESTS` builds exactly what its
+# manifest names.
+_GLOB_SELECTED = {
+    "church-fathers": lambda name: name.endswith(".xml") and name != "summa.xml",
 }
 
 # Collections without a manifest: the provenance SOURCES.md records in prose.
@@ -97,6 +104,14 @@ def _role_and_url(sources: Path, collection: str, rel: str,
                   manifest_name: str | None, named: dict[str, dict]) -> tuple[str, str | None]:
     """Classify one file of a registered collection."""
     file_in_collection = rel.split("/", 1)[1]
+    selects = _GLOB_SELECTED.get(collection)
+    if selects is not None:
+        url = named.get(file_in_collection, {}).get("url")
+        if file_in_collection == manifest_name:
+            return "adapter-auxiliary", None
+        if "/" not in file_in_collection and selects(file_in_collection):
+            return "adapter-input", url
+        return "vendored-unregistered", url
     if manifest_name is not None:
         if file_in_collection == manifest_name:
             return "adapter-auxiliary", None
@@ -161,7 +176,7 @@ def _entry(collection: str, rel: str, path: Path, role: str, url: str | None,
     }
     note = note or _UNREGISTERED_NOTES.get(rel)
     if role == "vendored-unregistered":
-        entry["note"] = note or "on disk, not named by the collection's manifest"
+        entry["note"] = note or "on disk, not read by the collection's adapter"
     return entry
 
 

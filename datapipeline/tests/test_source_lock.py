@@ -211,3 +211,26 @@ def test_unknown_collection_is_an_error(tree):
     sources, lock = tree
     with pytest.raises(SystemExit):
         run("--verify", sources, lock, "--collection", "nope")
+
+
+def test_church_fathers_classified_by_the_adapters_glob(tmp_path):
+    """church_fathers.build_all() reads every *.xml except summa.xml, whatever the
+    manifest says, so a file dropped from the manifest is still adapter input."""
+    sources = tmp_path / "sources"
+    cf = sources / "church-fathers"
+    cf.mkdir(parents=True)
+    for name in ("anf01.xml", "dropped.xml", "summa.xml", "readme.txt"):
+        (cf / name).write_text(name, encoding="utf-8")
+    (cf / "manifest.json").write_text(json.dumps([
+        {"file": "anf01.xml", "url": "https://example.org/anf01"},
+    ]), encoding="utf-8")
+    lock = tmp_path / "source_lock.json"
+    source_lock.main(["--write"], sources=sources, lock_path=lock,
+                     collections=["church-fathers"])
+    entries = by_path(lock)
+    assert entries["church-fathers/anf01.xml"]["role"] == "adapter-input"
+    assert entries["church-fathers/anf01.xml"]["url"] == "https://example.org/anf01"
+    assert entries["church-fathers/dropped.xml"]["role"] == "adapter-input"
+    assert entries["church-fathers/summa.xml"]["role"] == "vendored-unregistered"
+    assert entries["church-fathers/readme.txt"]["role"] == "vendored-unregistered"
+    assert entries["church-fathers/manifest.json"]["role"] == "adapter-auxiliary"
