@@ -234,3 +234,38 @@ def test_church_fathers_classified_by_the_adapters_glob(tmp_path):
     assert entries["church-fathers/summa.xml"]["role"] == "vendored-unregistered"
     assert entries["church-fathers/readme.txt"]["role"] == "vendored-unregistered"
     assert entries["church-fathers/manifest.json"]["role"] == "adapter-auxiliary"
+
+
+def test_incoming_files_are_locked_with_their_note(tree):
+    sources, lock = tree
+    held = sources / "_incoming" / "encyclicals" / "new.html"
+    held.parent.mkdir(parents=True)
+    held.write_text("<p>new</p>", encoding="utf-8")
+    source_lock.write(sources, lock, COLLECTIONS, None, "2026-10-05", fetched=True)
+    entry = {e["path"]: e for e in json.loads(lock.read_text())}["_incoming/encyclicals/new.html"]
+    assert entry["collection"] == "_incoming" and entry["role"] == "vendored-unregistered"
+    assert entry["acquired"] == "2026-10-05"
+    assert entry["note"] == source_lock._UNREGISTERED_DIR_NOTES["_incoming"]
+
+
+def test_file_moved_unchanged_out_of_incoming_keeps_date_and_url(tree):
+    sources, lock = tree
+    held = sources / "_incoming" / "encyclicals" / "new.html"
+    held.parent.mkdir(parents=True)
+    held.write_text("<p>new</p>", encoding="utf-8")
+    source_lock.write(sources, lock, COLLECTIONS, None, "2026-10-05", fetched=True)
+    entries = json.loads(lock.read_text())
+    for e in entries:
+        if e["path"] == "_incoming/encyclicals/new.html":
+            e["url"] = "https://example.org/new"
+    lock.write_text(json.dumps(entries), encoding="utf-8")
+
+    held.rename(sources / "encyclicals" / "new.html")
+    source_lock.write(sources, lock, COLLECTIONS, None, "2026-11-01")
+    by_path = {e["path"]: e for e in json.loads(lock.read_text())}
+    moved = by_path["encyclicals/new.html"]
+    assert (moved["acquired"], moved["url"], moved["hashed_on"]) == (
+        "2026-10-05", "https://example.org/new", "2026-10-05")
+    assert "_incoming/encyclicals/new.html" not in by_path
+    assert source_lock.verify(sources, lock, COLLECTIONS, None) == {
+        c: [] for c in ("_incoming", "encyclicals", "summa")}

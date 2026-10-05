@@ -9,6 +9,10 @@ list.
     python3 scripts/source_lock.py --verify
     python3 scripts/source_lock.py --write --collection encyclicals
 
+Approved downloads not yet ingested wait in `sources/_incoming/<final path>` (R6). The
+ingesting PR moves each file unchanged to `sources/<final path>` and runs `--write`; a
+file whose hash matches its `_incoming/` entry keeps that entry's `acquired` date and URL.
+
 Item 0.2 in docs/corpus-cleanup/P0-checks-identity-research.md.
 """
 from __future__ import annotations
@@ -24,6 +28,10 @@ from pathlib import Path
 DATAPIPELINE = Path(__file__).resolve().parents[1]
 SOURCES = DATAPIPELINE / "sources"
 LOCK_PATH = DATAPIPELINE / "source_lock.json"
+
+# Approved downloads wait in sources/_incoming/<final path> until the PR that ingests
+# them moves each file, unchanged, to <final path>. No adapter reads _incoming/.
+INCOMING = "_incoming"
 
 # Files vendored before this lock existed carry no fetch date.
 UNKNOWN_ACQUIRED = "unknown-before-2026-09-29"
@@ -68,6 +76,11 @@ _UNREGISTERED_NOTES = {
 }
 _UNREGISTERED_DIR_NOTES = {
     "roman-curia": "parked for 5.3 (branch feat/roman-curia-collection)",
+    # Approved R6 downloads (docs/research/R6-editions.md, "Download list for Carter"),
+    # held where no adapter reads them. The ingesting PR moves each file unchanged to
+    # its "Vendored as" path, the path after `_incoming/`, so its hash is the same.
+    INCOMING: "approved R6 download awaiting its ingesting PR; moves unchanged to the "
+                 "path after _incoming/",
 }
 
 ROLES = ("adapter-input", "adapter-auxiliary", "vendored-unregistered")
@@ -159,6 +172,10 @@ def _entry(collection: str, rel: str, path: Path, role: str, url: str | None,
            note: str | None = None) -> dict:
     sha, size = _sha256(path)
     old = previous.get(rel, {})
+    staged = previous.get(f"{INCOMING}/{rel}", {})
+    if not old and staged.get("sha256") == sha:
+        # Moved unchanged out of the holding folder: keep its download date and URL.
+        old = staged
     unchanged = old.get("sha256") == sha
     if unchanged:
         acquired = old.get("acquired") or UNKNOWN_ACQUIRED
