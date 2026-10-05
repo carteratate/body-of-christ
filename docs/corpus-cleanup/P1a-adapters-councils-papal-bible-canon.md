@@ -389,7 +389,7 @@ R3 is specified once, in `P0-checks-identity-research.md` under "R3. Esther: wha
 - **Depends on:** R3, 1.10c
 - **Goal:** Every verse in the WEB-C source is in some passage. Susanna, Bel and the Dragon, the Song of the Three and the Esther additions become findable. The book is called Song of Songs.
 - **Current state:**
-  - Also found by 0.1a's checks (5 Oct 2026): Numbers 16:28 to 16:37 sit in two KJV pericopes ("Korah, Dathan, and Abiram" ends at 16:37; "The Earth Swallows and Fire Consumes" starts at 16:28), so those 10 verses are published twice. Assigning each verse to the first range that contains it removes the duplicate.
+  - Also found by 0.1a's checks (5 Oct 2026): Numbers 16:28 to 16:37 sit in two KJV pericopes ("Korah, Dathan, and Abiram" ends at 16:37; "The Earth Swallows and Fire Consumes" starts at 16:28), so those 10 verses are published twice.
   - `ingest/bible.py:563-586` builds passages only from the KJV pericope file's ranges. A verse outside every range is dropped. Books with no pericopes use the chapter fallback at `bible.py:589-610`.
   - The current build drops 244 verses:
     - Daniel 173 (3:31 to 3:97, all of 13, all of 14)
@@ -473,7 +473,7 @@ R2 is specified once, in `P0-checks-identity-research.md` under "R2. Canons 295,
 - **Depends on:** 1.10a
 - **Goal:** "Canon 112" finds canon 112. Every canon from 1 to 1752 exists once, with the text the source marks as current. Page footers are gone. Amended canons carry an "amended" flag for the badge.
 - **Current state:**
-  - Also found by 0.1a's checks (5 Oct 2026): on `cic_lib7-cann1671-1716_en.html`, canons 1671 to 1691 carry the 2015 amended text (Mitis Iudex) and the kept text is not that one; the page's body is 78.6% covered. The same keep-the-new-text fix applies.
+  - Also found by 0.1a's checks (5 Oct 2026): on `cic_lib7-cann1671-1716_en.html`, canons 1671 to 1691 carry the 2015 amended text (Mitis Iudex) and the kept text is not that one; the page's body is 78.6% covered.
   - `parse_canon_page` (`ingest/canon_law.py:259-312`) reads `p.get_text(strip=True)` per `<p>` and recognises a canon only at the start of a paragraph (`can_re`, line 271). `build_documents` keeps the first occurrence of each number (`canon_law.py:78-84`).
   - Live has 1,747 canons. Missing: 112, 238, 266, 689 and 1330.
   - Glue: in the source, canon 112 follows canon 111 after `<br><br>` inside the same `<p>`, so it is appended to 111. Same mechanism for 238 in 237, 689 in 688, new 1308 in 1307, new 1310 in 1309.

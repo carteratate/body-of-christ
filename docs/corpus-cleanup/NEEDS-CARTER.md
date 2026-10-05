@@ -93,6 +93,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
   Recommended answer is yes to all four.
 - **0.1a** [Phase 0]. Review the list of known defects that the new tests start out expecting. No decision beyond checking it.
+- **0.1a** [Phase 0]. Should the coverage check stop flagging editor-written ThML sections (introductory notices, elucidations, editors' prefaces) that the corpus correctly leaves out under rule G? Recommended: yes, through a tracked list Carter reviews once.
+  Answered 2026-10-05: yes. The list is `datapipeline/checks/editorial_divs.json`, 112 divs; a listed div that reaches a passage fails the check.
 - **0.2** [Phase 0]. Confirm that the fields of the public rights file (edition, translator, public-domain basis, renewal search, credit line) are safe to publish. Also decide what to do with Amoris Laetitia, which is downloaded but was never published and has no decision on record. The spec gives no recommendation.
   Answered 2026-10-04: the fields are safe to publish (edition, translator, first published, source URL, status, renewal search, credit line). In-copyright works get a new status, `in-copyright`, with a field naming the rights holder; that covers the papal and Vatican texts, Vatican II, the Catechism and the canon law English. Other texts stay `unknown` unless their file or page establishes a public-domain edition. The WEB-C Bible gets a new status, `pd-dedicated`. Amoris Laetitia is scheduled for 5.4 with the other two unpublished papal files.
 - **0.3** [Phase 0]. Approve the list of about 30 targeted test questions, written fresh rather than taken from users' searches.
@@ -127,6 +129,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **1.4c** [Phase 1]. Give the deuterocanonical books' new shorter passages titles from the old Douay-Rheims chapter summaries, or leave them untitled. Recommended answer is untitled for now.
 - **1.6** [Phase 1]. Show Catechism paragraph numbers inside passage text as "§2267". Recommended answer is yes; the work goes ahead with this if there is no answer.
 - **1.7** [Phase 1]. Add Aquinas's own short introductions at the start of 611 questions and 3 treatises (about 297,000 characters), which are missing today. Recommended answer is yes, since they are his own words.
+  Answered 2026-10-05: yes, as passages labeled "Question N, prologue" before Article 1. The Supplement's prologues are its compiler's and follow the Supplement's treatment (3.2).
 - **1.8b** [Phase 1]. Split two Augustine volumes ("Doctrinal Treatises", "Moral Treatises") into their 16 separate works, so On Lying is cited as On Lying. Bookmarks survive either way. Recommended answer is yes.
 - **1.8c** [Phase 1]. Two points.
   - Label the Shepherd of Hermas's author as "Hermas" and its books "The Shepherd: Visions", "Commandments" and "Similitudes".
