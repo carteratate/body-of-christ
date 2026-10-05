@@ -115,6 +115,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 - **1.1** [Phase 1]. Keep the "Preliminary Note of Explanation" as part of Lumen Gentium. Recommended answer is yes, as its own chapter.
 - **1.2a** [Phase 1]. Approve the register of council texts that have no public-domain English translation. Those texts show a "translation in preparation" notice instead. Chiefly Florence's doctrinal decrees are affected.
+- **1.2e and 5.5** [Phase 1]. Fordham's transcriptions of Schroeder's Lateran I, II and IV and of the 1923 Roman Catechism carry a notice that their electronic form is copyright and not licensed for commercial use. Use them as the text, or only to check our own OCR of the scans. Recommended answer: only to check the OCR, as with ecatholic2000 (R6).
 - **1.3b** [Phase 1]. Confirm which three documents are the "Jubilee bulls" filed as encyclicals. Also decide whether Ineffabilis Deus and Munificentissimus Deus are labeled "apostolic constitution" or "bull". The spec gives no recommendation.
 - **1.4a** [Phase 1]. Keep `song-of-solomon` inside link addresses while the book's title changes to "Song of Songs". Users never see the address. Recommended answer is keep.
 - **1.4b** [Phase 1]. Renumber only Joel and Malachi to the Church's official Latin Bible numbering, or every place where Church documents cite a different chapter. Recommended answer is Joel and Malachi now, the rest as a later issue.
@@ -161,8 +162,13 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.1b.4** [Phase 5]. Keep a five-line translation of old collection names in the browser so guests' saved drafts do not reset, or delete it too. The spec keeps it.
 - **5.2, 5.6a** [Phase 5]. Choose between Supabase Pro and reordering the additions once the projected database size passes 450 MB.
 - **5.3b** [Phase 5]. Include the International Theological Commission in the Roman Curia collection, or leave it out. Default is out.
+- **5.4** [Phase 5]. A New Hope for Lebanon has no English on vatican.va, only French and Italian, and the vendored file is an empty English page. Recommended answer: keep the French text in the reader with a note, out of search, under the Decision log row "Non-English with no usable English" (R6).
+- **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
+- **5.6c** [Phase 5]. Spiritual Combat: both editions the memos named (Burns 1846, Rivingtons 1875) were translated for the Church of England. Recommended answer: the Catholic edition, Philadelphia, Dornin, 1817 (R6).
+- **5.6c** [Phase 5]. Tanquerey: the scans read "Second and revised edition" with no year, and catalogues say 1930 or 1932. Check the title-page verso before ingesting; ingest only a 1930 printing (R6).
+- **5.6c** [Phase 5]. Catherine of Genoa: the clean CCEL text is a different translation (New York, 1907) from the 1858 Burns one the memo named. Recommended answer: use CCEL 1907 (R6).
 - **5.7** [Phase 5]. Approve the final About page wording, especially the list of excluded authors.
 - **5.8** [Phase 5]. Choose when to revisit paid licences (the Decision log says after the free phase ships). This blocks the Eastern Catholic code.
 - **RF** [after Phase 4]. Put the retrieval follow-up issues in priority order.
