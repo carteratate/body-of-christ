@@ -423,6 +423,10 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
     for match, passages in computed.values():
         for i in match.targets:            # every piece of a split holds that old text
             holders[passages[i].id] += 1
+    for r in rows.values():                # so does a declared merge or split target
+        if r.method == "redirect" and r.outcome in ("merged", "split"):
+            for i in r.new_ids:
+                holders[i] += 1
     for o in old:
         if o.id not in computed:
             continue
@@ -513,8 +517,11 @@ def _redirect_row(o: OldPassage, declared: list[dict], by_id: dict[str, NewPassa
                   ) -> tuple[RemapRow, Failure | None]:
     kinds = {r.get("kind") for r in declared}
     # Primary first by build position, whatever order the redirect file lists them in.
+    # Targets in the old passage's own document first; positions compare within one.
     ids = tuple(sorted((r["new_passage_id"] for r in declared),
                        key=lambda i: (i not in by_id,
+                                      by_id[i].document_id != o.document_id if i in by_id else True,
+                                      by_id[i].document_id if i in by_id else "",
                                       _order(by_id[i].position) if i in by_id else (True, 0))))
     primary = by_id.get(ids[0])
     problem = None

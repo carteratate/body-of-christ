@@ -456,3 +456,24 @@ def test_split_redirect_primary_is_first_by_build_position():
     result = R.remap([old("o", "x", a, 0)], [doc(new("s/1", a, 0), new("s/2", text("b"), 1))],
                      R.Registry(redirects=rows))
     assert outcome(result, "o").new_ids == (pid("s/1"), pid("s/2"))
+
+
+def test_text_computed_into_a_declared_merge_target_is_merged():
+    a, b = text("a"), text("b")
+    redirect = {"document_id": DOC, "old_passage_id": "old-a", "new_passage_id": pid("s/1"),
+                "kind": "merged"}
+    result = R.remap([old("old-a", "x/1", a, 0), old("old-b", "x/2", b, 1)],
+                     [doc(new("s/1", a + " " + b, 0))], R.Registry(redirects=[redirect]))
+    assert outcome(result, "old-b").outcome == "merged"
+
+
+def test_split_redirect_puts_the_own_document_target_first():
+    a = text("a")
+    rows = [{"document_id": DOC, "old_passage_id": "o", "new_passage_id": pid("t/0", OTHER),
+             "kind": "split"},
+            {"document_id": DOC, "old_passage_id": "o", "new_passage_id": pid("s/5"),
+             "kind": "split"}]
+    build = [doc(new("s/0", text("z"), 0), new("s/5", a, 1)),
+             doc(new("t/0", text("b"), 0), document_id=OTHER)]
+    result = R.remap([old("o", "x", a, 0)], build, R.Registry(redirects=rows))
+    assert outcome(result, "o").new_ids == (pid("s/5"), pid("t/0", OTHER))

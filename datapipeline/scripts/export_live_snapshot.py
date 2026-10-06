@@ -6,7 +6,7 @@
 Opens one connection to DATABASE_URL (the environment, else datapipeline/.env), sets the
 session read only before its first query, and reads everything inside one READ ONLY,
 REPEATABLE READ transaction, so the passages and the reference counts describe one moment.
-It issues SELECTs only. It writes, under releases/snapshots/<date>/ (gitignored: the
+It issues SELECTs only, then resets the session's read-only default before closing. It writes, under releases/snapshots/<date>/ (gitignored: the
 snapshot holds in-copyright text and must never be committed):
 
 - passages.jsonl.gz: one row per chunk, the fields in PASSAGE_FIELDS.
@@ -29,6 +29,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -56,6 +57,10 @@ DOCUMENT_FIELDS = ("id", "collection", "title", "author", "year", "translation",
 REFERENCE_TABLES = ("retrievals", "bookmarks", "guest_trial_retrievals", "retrieval_labels")
 
 READ_ONLY = "SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY"
+# Sent after the read, so a pooler that hands this server connection to its next client
+# without resetting it does not pass the read-only default on.
+RESET_READ_ONLY = "RESET default_transaction_read_only"
+DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 PASSAGES_SQL = """
 SELECT c.id::text AS id, c.document_id::text AS document_id, d.collection, d.title,
@@ -101,8 +106,16 @@ ORDER BY document_id, chapter_key, anchor NULLS FIRST
 
 async def read_live(conn) -> dict:
     """Everything the snapshot holds, read through `conn` (an asyncpg connection or a
-    fake with the same execute / fetch / fetchval / transaction methods)."""
+    fake with the same execute / fetch / fetchval / transaction methods). The session is
+    read only before the first query and reset after the last."""
     await conn.execute(READ_ONLY)
+    try:
+        return await _read(conn)
+    finally:
+        await conn.execute(RESET_READ_ONLY)
+
+
+async def _read(conn) -> dict:
     async with conn.transaction(isolation="repeatable_read", readonly=True):
         if await conn.fetchval(READ_ONLY_CHECK_SQL) != "on":
             raise RuntimeError("REFUSING: the transaction is not read only")
@@ -251,6 +264,9 @@ def main(argv: list[str] | None = None) -> int:
     url = os.environ.get("DATABASE_URL")
     if not url:
         print("DATABASE_URL is not set", file=sys.stderr)
+        return 2
+    if not DATE.match(args.date):
+        print(f"--date must be YYYY-MM-DD, not {args.date!r}", file=sys.stderr)
         return 2
     root = os.path.abspath(args.root)
     if os.path.exists(os.path.join(root, args.date)):

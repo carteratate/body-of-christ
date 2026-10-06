@@ -88,7 +88,8 @@ def test_session_is_read_only_before_the_first_query_and_every_query_is_select()
     assert conn.calls[0] == ("execute", E.READ_ONLY)
     assert conn.calls[1][0] == "transaction"
     assert conn.transactions == [{"isolation": "repeatable_read", "readonly": True}]
-    statements = _statements(conn)[1:]
+    assert conn.calls[-1] == ("execute", E.RESET_READ_ONLY)      # after every query
+    statements = _statements(conn)[1:-1]
     assert statements, "no queries recorded"
     for sql in statements:
         assert sql.upper().startswith("SELECT "), sql
@@ -109,6 +110,21 @@ def test_refuses_when_the_transaction_is_not_read_only():
     with pytest.raises(RuntimeError, match="not read only"):
         asyncio.run(E.read_live(conn))
     assert not [c for c in conn.calls if c[0] == "fetch"]
+    assert conn.calls[-1] == ("execute", E.RESET_READ_ONLY)      # reset on failure too
+
+
+@pytest.mark.parametrize("date", ["../x", "2026-10-6", "today"])
+def test_main_refuses_a_bad_date_before_connecting(monkeypatch, date):
+    monkeypatch.setenv("DATABASE_URL", "postgresql://never:never@localhost/never")
+    monkeypatch.setattr(E, "_export", lambda *a: pytest.fail("connected"))
+    assert E.main(["--date", date]) == 2
+
+
+def test_main_refuses_an_existing_snapshot_before_connecting(monkeypatch, tmp_path):
+    monkeypatch.setenv("DATABASE_URL", "postgresql://never:never@localhost/never")
+    monkeypatch.setattr(E, "_export", lambda *a: pytest.fail("connected"))
+    (tmp_path / "2026-10-05").mkdir()
+    assert E.main(["--date", "2026-10-05", "--root", str(tmp_path)]) == 2
 
 
 def test_snapshot_files_hold_counts_only_and_load_with_the_health_reader(tmp_path):
@@ -220,10 +236,15 @@ def test_export_against_postgres_reads_everything_and_cannot_write(database, tmp
         await setup.close()
         conn = await asyncpg.connect(host=database, user="postgres", database="postgres")
         try:
-            data = await E.read_live(conn)
-            # The session stays read only after the export's transaction ends.
+            # The statement the export starts with makes the session refuse writes...
+            await conn.execute(E.READ_ONLY)
             with pytest.raises(asyncpg.ReadOnlySQLTransactionError):
                 await conn.execute("DELETE FROM chunks")
+            await conn.execute(E.RESET_READ_ONLY)
+            data = await E.read_live(conn)
+            # ...and the export leaves no read-only default behind for a pooler to pass on.
+            assert await conn.fetchval("SHOW default_transaction_read_only") == "off"
+            assert await conn.fetchval("SELECT count(*) FROM chunks") == 1
         finally:
             await conn.close()
         return data
