@@ -133,9 +133,11 @@ def test_r3_note_start():
     for note in ("Cf. Lumen Gentium, 25.", "cf. Pius XII, Mystici Corporis: AAS 35 (1943).",
                  "Ibid., 27; and the rest.", "See the note of Maranus.",
                  "See Cave’s Primitive Christianity, p. 132.", "Eph. 1:10). And so on.",
-                 "Lk 1: 31-37).16 It may be easy"):
+                 "Lk 1: 31-37).16 It may be easy", "John 2:22; 12:16; cf. 14:26.",
+                 "Jn. 1:14. 2. Jn. 3:16. 3. Heb. 1:1-2.", "Nm 11.11,14. 2. Rom 1.12."):
         assert _fires("R3_note_start", _one(note)), note
     for prose in ("See how great a love the Father has given us.", "See Jesus as happy.",
+                  "John 3:16 is the verse most often quoted.",
                   "Seeing this, they wept.", GOOD):
         assert not _fires("R3_note_start", _one(prose)), prose
 
@@ -212,6 +214,12 @@ def test_check_id_names_rule_collection_document_and_anchor():
     gap = health.check_documents("summa", [_doc(_p(position=3), collection="summa")])[0]
     assert gap.check_id == "health.H3_positions:summa/doc-1"
     assert report.check_scope(blank.check_id) == "summa"
+    # An empty or shared anchor adds the position, so each id still names one passage.
+    shared = _doc(_p("", anchor="x", position=0), _p("", anchor="x", position=1),
+                  _p("", anchor="", position=2), collection="summa")
+    ids = [v.check_id for v in health.check_documents("summa", [shared]) if v.rule == "H1_blank"]
+    assert ids == ["health.H1_blank:summa/doc-1#x@0", "health.H1_blank:summa/doc-1#x@1",
+                   "health.H1_blank:summa/doc-1#@2"]
     assert report.check_scope(gap.check_id) == "summa"
 
 
@@ -292,8 +300,17 @@ def test_snapshot_passages_are_read_in_position_order(tmp_path):
     assert list(documents) == ["summa"]
     assert [p.anchor for p in documents["summa"][0].passages] == ["a", "b", "c"]
     assert _rules(documents["summa"][0]) == ["H1_blank"]
-    gap = health_cli.load_snapshot(str(directory / "passages.jsonl.gz"))
-    assert set(gap) == {"bible", "summa"}
+    everything = health_cli.load_snapshot(str(directory / "passages.jsonl.gz"))
+    assert set(everything) == {"bible", "summa"}
+    # A requested collection with no rows gets an empty entry.
+    assert health_cli.load_snapshot(str(directory), ("councils",)) == {"councils": []}
+
+
+def test_snapshot_null_position_fails_h3(tmp_path):
+    rows = [_row("a", 0), _row("b", None, GOOD + " Amen.")]
+    documents = health_cli.load_snapshot(str(_snapshot(tmp_path, rows)))
+    assert [p.anchor for p in documents["summa"][0].passages] == ["a", "b"]
+    assert _rules(documents["summa"][0]) == ["H3_positions"]
 
 
 def test_cli_merges_runs_and_keeps_collections_it_did_not_cover(tmp_path, monkeypatch):

@@ -124,3 +124,30 @@ def test_sample_enrich_writes_only_samples_and_needs_no_entry(monkeypatch):
     _lock_remote(monkeypatch)
     args = argparse.Namespace(sample=3, collection="medieval", release=None)
     _guard_live_writes(args, ["enrich"])
+
+
+def test_reader_and_embed_stages_refuse_health_block_violations(monkeypatch):
+    """The 0.1b block rules run on parsed documents before a reader or embed write."""
+    import asyncio
+    import pipeline
+    import stages.parse
+    from model import Document, Passage
+
+    blank = Document(id="doc-1", collection="medieval", title="T", passages=[
+        Passage(content=" ", reference="r", anchor="a", chapter_key="c",
+                chapter_label="C", position=0)])
+    writes = []
+    monkeypatch.setattr(pipeline, "_guard_live_writes", lambda args, stages: None)
+    monkeypatch.setattr(pipeline, "validate_dependencies", lambda *args, **kwargs: None)
+    monkeypatch.setattr(pipeline._Resources, "cache", lambda self: None)
+    monkeypatch.setattr(stages.parse, "parse", lambda collection: [blank])
+
+    async def record(collection, docs, res):
+        writes.append(collection)
+    monkeypatch.setattr(pipeline, "_run_reader", record)
+    monkeypatch.setattr(pipeline, "_run_embed", record)
+    for stage in ("reader", "embed"):
+        args = pipeline._parse_args(["--stage", stage, "--collection", "medieval"])
+        with pytest.raises(ValueError, match="REFUSING: 1 health block-rule violations"):
+            asyncio.run(pipeline._main(args))
+    assert writes == []

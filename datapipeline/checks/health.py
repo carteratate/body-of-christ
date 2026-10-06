@@ -47,7 +47,9 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
     """The 0.1c snapshot's passages as Documents, per collection. Each row has id,
     document_id, collection, title, author, anchor, chapter_key, chapter_label,
     reference, position and content. Passages are put in position order, so H3 judges
-    whether the positions are 0..n-1, not the export's row order."""
+    whether the positions are 0..n-1, not the export's row order. Every requested
+    collection gets an entry, empty if the snapshot holds none of its rows, so a rerun
+    replaces an earlier result for it."""
     if os.path.isdir(path):
         path = os.path.join(path, SNAPSHOT_FILE)
     documents: dict[str, Document] = {}
@@ -66,10 +68,11 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
             doc.passages.append(Passage(
                 content=row.get("content") or "", reference=row.get("reference") or "",
                 anchor=row.get("anchor") or "", chapter_key=row.get("chapter_key") or "",
-                chapter_label=row.get("chapter_label") or "", position=row["position"]))
-    out: dict[str, list[Document]] = {}
+                chapter_label=row.get("chapter_label") or "", position=row.get("position")))
+    out: dict[str, list[Document]] = {c: [] for c in collections or ()}
     for doc in documents.values():
-        doc.passages.sort(key=lambda p: p.position)
+        # A NULL position sorts last and fails H3.
+        doc.passages.sort(key=lambda p: (p.position is None, p.position or 0))
         out.setdefault(doc.collection, []).append(doc)
     return {c: sorted(docs, key=lambda d: d.id) for c, docs in sorted(out.items())}
 

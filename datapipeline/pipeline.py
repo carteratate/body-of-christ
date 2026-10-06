@@ -344,6 +344,7 @@ def _guard_live_writes(args: argparse.Namespace, stages: list[str]) -> None:
 
 
 async def _main(args: argparse.Namespace) -> None:
+    from health import refuse_block_violations
     from stages.parse import parse
 
     if args.import_backup:
@@ -426,12 +427,18 @@ async def _main(args: argparse.Namespace) -> None:
     res = _Resources()
     docs_by_collection: dict[str, list] = {}
     bm25_models: dict = {}
+    publishes = bool(set(stages) & {"reader", "embed"})
 
     def _docs(collection: str) -> list:
         # parse() re-reads and re-chunks source files, which is the slowest
         # non-network step; several stages in one run need the same result.
         if collection not in docs_by_collection:
-            docs_by_collection[collection] = parse(collection)
+            docs = parse(collection)
+            if publishes:
+                # The health block rules (item 0.1b) that run_collection.py applies,
+                # before this collection's passages reach the reader or Qdrant.
+                refuse_block_violations(collection, docs)
+            docs_by_collection[collection] = docs
         return docs_by_collection[collection]
 
     try:

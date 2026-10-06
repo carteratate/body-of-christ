@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from typing import Literal
 
-from model import Document
+from model import Document, Passage
 
 DATAPIPELINE = os.path.dirname(os.path.abspath(__file__))
 PATTERNS_PATH = os.path.join(DATAPIPELINE, "health_patterns.json")
@@ -59,14 +59,18 @@ class Violation:
     document_id: str
     anchor: str | None
     detail: str
+    # Set only when the anchor is empty or shared, so the check id still names one passage.
+    position: int | None = None
 
     @property
     def check_id(self) -> str:
         """Stable id, one per passage (or per document for H3), the form
-        known_defects.json uses: health.<rule>:<collection>/<document_id>[#<anchor>]."""
+        known_defects.json uses: health.<rule>:<collection>/<document_id>[#<anchor>], with
+        @<position> added when the anchor is empty or shared."""
         where = f"{self.collection}/{self.document_id}"
         anchor = "" if self.anchor is None else f"#{self.anchor}"
-        return f"health.{self.rule}:{where}{anchor}"
+        position = "" if self.position is None else f"@{self.position}"
+        return f"health.{self.rule}:{where}{anchor}{position}"
 
 
 @lru_cache(maxsize=None)
@@ -83,13 +87,24 @@ def _normalize(text: str) -> str:
     return " ".join(unicodedata.normalize("NFKC", text).lower().split())
 
 
+def _violation(rule: str, severity: Severity, collection: str, document: Document,
+               passage: Passage | None, anchors: Counter, detail: str) -> Violation:
+    if passage is None:
+        return Violation(rule, severity, collection, document.id, None, detail)
+    shared = not passage.anchor.strip() or anchors[passage.anchor] > 1
+    return Violation(rule, severity, collection, document.id, passage.anchor, detail,
+                     passage.position if shared else None)
+
+
 # --------------------------------------------------------------------------- block rules
 
 def _block(collection: str, document: Document) -> list[Violation]:
     out: list[Violation] = []
 
-    def add(rule: str, anchor: str | None, detail: str) -> None:
-        out.append(Violation(rule, "block", collection, document.id, anchor, detail))
+    anchors = Counter(p.anchor for p in document.passages)
+
+    def add(rule: str, passage: Passage | None, detail: str) -> None:
+        out.append(_violation(rule, "block", collection, document, passage, anchors, detail))
 
     positions = [p.position for p in document.passages]
     if positions != list(range(len(positions))):
@@ -97,22 +112,21 @@ def _block(collection: str, document: Document) -> list[Violation]:
         add("H3_positions", None,
             f"{len(positions)} passages; index {first} holds position {positions[first]}")
 
-    anchors = Counter(p.anchor for p in document.passages)
     reported: set[str] = set()
     for p in document.passages:
         text = p.content.strip()
         if not text:
-            add("H1_blank", p.anchor, "content is empty after strip()")
+            add("H1_blank", p, "content is empty after strip()")
         elif DEBRIS.match(text):
-            add("H2_debris", p.anchor, f"{len(text)} character{'s' * (len(text) != 1)} of digits, "
+            add("H2_debris", p, f"{len(text)} character{'s' * (len(text) != 1)} of digits, "
                 "numerals or punctuation")
         if anchors[p.anchor] > 1 and p.anchor not in reported:
             reported.add(p.anchor)
-            add("H4_anchor_unique", p.anchor, f"anchor used by {anchors[p.anchor]} passages")
+            add("H4_anchor_unique", p, f"anchor used by {anchors[p.anchor]} passages")
         empty = [name for name in ("anchor", "chapter_key", "chapter_label")
                  if not (getattr(p, name) or "").strip()]
         if empty:
-            add("H5_anchor_nonempty", p.anchor,
+            add("H5_anchor_nonempty", p,
                 f"empty {', '.join(empty)} at position {p.position}")
     return out
 
@@ -122,8 +136,10 @@ def _block(collection: str, document: Document) -> list[Violation]:
 def _report(collection: str, document: Document, patterns: dict) -> list[Violation]:
     out: list[Violation] = []
 
-    def add(rule: str, anchor: str, detail: str) -> None:
-        out.append(Violation(rule, "report", collection, document.id, anchor, detail))
+    anchors = Counter(p.anchor for p in document.passages)
+
+    def add(rule: str, passage: Passage, detail: str) -> None:
+        out.append(_violation(rule, "report", collection, document, passage, anchors, detail))
 
     short = patterns["R1_short"]
     short_allowed = collection in short["allowed_collections"]
@@ -136,34 +152,34 @@ def _report(collection: str, document: Document, patterns: dict) -> list[Violati
     function_words = set(lang["function_words"])
 
     references = Counter(p.reference for p in document.passages)
-    texts: dict[str, list[str]] = defaultdict(list)
+    texts: dict[str, list[Passage]] = defaultdict(list)
 
     for p in document.passages:
         text = p.content.strip()
         if not short_allowed and 0 < len(text) < short["max_chars"] \
                 and re.search(r"[^\W\d_]", text):
-            add("R1_short", p.anchor, f"{len(text)} character{'s' * (len(text) != 1)}")
+            add("R1_short", p, f"{len(text)} character{'s' * (len(text) != 1)}")
 
         markers = [m.pattern for m in footers if m.search(p.content)]
         if markers:
-            add("R2_footer", p.anchor, f"matches {', '.join(markers)}")
+            add("R2_footer", p, f"matches {', '.join(markers)}")
 
         note = next((m.pattern for m in notes if m.match(text)), None)
         if note:
-            add("R3_note_start", p.anchor, f"starts like a note ({note})")
+            add("R3_note_start", p, f"starts like a note ({note})")
 
         normalized = _normalize(text)
         if len(normalized) >= DUP_MIN_CHARS:
-            texts[normalized].append(p.anchor)
+            texts[normalized].append(p)
 
         if references[p.reference] > 1:
-            add("R5_repeated_reference", p.anchor,
+            add("R5_repeated_reference", p,
                 f"reference shared by {references[p.reference]} passages")
 
         joins = [m for m in re.finditer(r"([^\W\d_]*[a-z])[.!?][A-Z]", p.content)
                  if len(m.group(1)) > 1 and m.group(1).lower() not in abbreviations]
         if joins:
-            add("R6_joined_paragraphs", p.anchor,
+            add("R6_joined_paragraphs", p,
                 f"{len(joins)} join{'s' * (len(joins) != 1)}")
 
         # One report per passage: a note is R3's, not a language problem.
@@ -173,14 +189,14 @@ def _report(collection: str, document: Document, patterns: dict) -> list[Violati
             if words and len(numbers) / (len(words) + len(numbers)) < lang["max_digit_share"]:
                 share = sum(w in function_words for w in words) / len(words)
                 if share < lang["max_share"]:
-                    add("R7_non_english", p.anchor, f"function-word share {share:.3f}")
+                    add("R7_non_english", p, f"function-word share {share:.3f}")
 
         if "--" in p.anchor:
-            add("R8_anchor_suffix", p.anchor, "label-derived disambiguation suffix")
+            add("R8_anchor_suffix", p, "label-derived disambiguation suffix")
 
-    for anchors in texts.values():
-        for anchor in anchors[1:]:
-            add("R4_dup_text", anchor, f"same text as {anchors[0]}")
+    for same in texts.values():
+        for p in same[1:]:
+            add("R4_dup_text", p, f"same text as {same[0].anchor}")
     return out
 
 
