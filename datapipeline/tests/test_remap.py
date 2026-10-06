@@ -426,3 +426,33 @@ def test_text_inside_a_split_piece_is_merged_not_moved():
                           new("s/2", " ".join(words[100:]) + " " + b, 1))])
     assert outcome(result, "old-a").outcome == "split"
     assert outcome(result, "old-b").outcome == "merged"
+
+
+def test_text_landing_on_a_drifted_id_is_moved_not_merged():
+    # Live a/1 = X, a/2 = Y; the build drops X, so a/1 now holds Y. a/1 keeps its ID but
+    # none of its text, so a/2's text is the only old text there: moved, not merged.
+    p, x, y = text("p"), text("x"), text("y")
+    result = R.remap([old(pid("a/0"), "a/0", p, 0), old(pid("a/1"), "a/1", x, 1),
+                      old(pid("a/2"), "a/2", y, 2)],
+                     [doc(new("a/0", p, 0), new("a/1", y, 1))])
+    assert outcome(result, pid("a/2")).outcome == "moved"
+    assert [f.check for f in result.failures] == ["stability"]
+
+
+def test_removal_entry_for_a_built_passage_or_document_fails():
+    a = text("a")
+    entries = [{"id": "rm-1", "scope": "passage", "document_id": DOC, "anchor": "z",
+                "passage_id": pid("s/1")},
+               {"id": "rm-2", "scope": "document", "document_id": DOC, "anchor": None}]
+    result = R.remap([old(pid("s/1"), "s/1", a, 0)], [doc(new("s/1", a, 0))],
+                     R.Registry(removals=entries))
+    assert [f.check for f in result.failures] == ["bad_removal", "bad_removal"]
+
+
+def test_split_redirect_primary_is_first_by_build_position():
+    a = text("a")
+    rows = [{"document_id": DOC, "old_passage_id": "o", "new_passage_id": pid(f"s/{i}"),
+             "kind": "split"} for i in (2, 1)]
+    result = R.remap([old("o", "x", a, 0)], [doc(new("s/1", a, 0), new("s/2", text("b"), 1))],
+                     R.Registry(redirects=rows))
+    assert outcome(result, "o").new_ids == (pid("s/1"), pid("s/2"))

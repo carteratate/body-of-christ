@@ -42,7 +42,8 @@ JACCARD_MIN = 0.5
 # The checks that fail a report. Each failure's check id is
 # release.<check>:<collection>/<passage id>, keyed by passage ID because 2.1 keeps IDs
 # when it re-anchors, so a known_defects.json entry survives that change.
-CHECKS = ("stability", "removed", "unbacked", "anchor_reuse", "bad_redirect", "duplicate_id")
+CHECKS = ("stability", "removed", "unbacked", "anchor_reuse", "bad_redirect", "duplicate_id",
+          "bad_removal")
 
 
 # --------------------------------------------------------------------------- data
@@ -410,8 +411,15 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
             else:
                 computed[o.id] = (match, passages)
 
+    # Stability first: a passage that keeps its ID holds its own text there only when it
+    # keeps at least the threshold of it (a shifted Summa part does not).
+    stable, replacements, scores = _stability(
+        old, [rows.get(o.id) or _removed(o, None) for o in old], by_document)
+
     # One target holding text from two or more old passages is a merge; else a move.
-    holders: Counter = Counter(r.new_ids[0] for r in rows.values() if r.outcome == "same")
+    holders: Counter = Counter(
+        r.new_ids[0] for r in rows.values()
+        if r.outcome == "same" and scores.get(r.old_id, 1.0) >= ANCHOR_STABILITY_THRESHOLD)
     for match, passages in computed.values():
         for i in match.targets:            # every piece of a split holds that old text
             holders[passages[i].id] += 1
@@ -430,6 +438,19 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
                               primary.anchor, o.chapter_key, primary.chapter_key, o.collection)
 
     ordered = [rows[o.id] for o in old]
+    # A removal entry for a passage or document the build still emits explains nothing.
+    built_documents = {p.document_id: p for p in built}
+    for e in registry.removals:
+        if e.get("closed_by"):
+            continue
+        target = by_id.get(e.get("passage_id") or "") if e.get("scope") == "passage" \
+            else built_documents.get(e.get("document_id")) if e.get("scope") == "document" \
+            else None
+        if target is not None:
+            failures.append(Failure("bad_removal", target.collection, target.document_id,
+                                    e.get("passage_id") or target.document_id, e.get("anchor"),
+                                    None, f"removal {e.get('id')} names a {e['scope']} the "
+                                    "build still emits"))
     for p in built:
         if ids[p.id] > 1:
             ids[p.id] = 0          # report each duplicated ID once
@@ -447,7 +468,6 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
                                     row.old_anchor, row.score, f"{row.outcome} by "
                                     f"{row.method} with no redirect row"))
 
-    stable, replacements, scores = _stability(old, ordered, by_document)
     ordered = [replace(r, score=scores[r.old_id]) if r.old_id in scores else r
                for r in ordered]
     failures += stable
@@ -492,7 +512,10 @@ def _removed(o: OldPassage, removal: str | None) -> RemapRow:
 def _redirect_row(o: OldPassage, declared: list[dict], by_id: dict[str, NewPassage]
                   ) -> tuple[RemapRow, Failure | None]:
     kinds = {r.get("kind") for r in declared}
-    ids = tuple(r["new_passage_id"] for r in declared)
+    # Primary first by build position, whatever order the redirect file lists them in.
+    ids = tuple(sorted((r["new_passage_id"] for r in declared),
+                       key=lambda i: (i not in by_id,
+                                      _order(by_id[i].position) if i in by_id else (True, 0))))
     primary = by_id.get(ids[0])
     problem = None
     if len(kinds) != 1 or not kinds <= set(REDIRECT_KINDS):

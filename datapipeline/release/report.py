@@ -541,8 +541,9 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
 def _write_jsonl(path: str, rows: list[dict], collections: tuple[str, ...]) -> None:
     """Write `rows`, keeping rows of other collections already in the file."""
     kept = [r for r in read_jsonl(path) if r.get("collection") not in collections]
+    # Stable sort by collection: a merged file equals a fresh --collection all run.
     with open(path, "w", encoding="utf-8") as f:
-        for row in kept + rows:
+        for row in sorted(kept + rows, key=lambda r: r.get("collection") or ""):
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 

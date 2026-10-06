@@ -253,6 +253,10 @@ def main(argv: list[str] | None = None) -> int:
         print("DATABASE_URL is not set", file=sys.stderr)
         return 2
     root = os.path.abspath(args.root)
+    if os.path.exists(os.path.join(root, args.date)):
+        print(f"{os.path.join(root, args.date)} exists; a snapshot is never overwritten",
+              file=sys.stderr)
+        return 2
     out = asyncio.run(_export(url, root, args.date, index_for(root)))
     with open(os.path.join(out, SNAPSHOT_FILE), encoding="utf-8") as f:
         tables = json.load(f)["tables"]
