@@ -59,7 +59,7 @@ Qdrant figures come from the plan (28 Sep) and were not re-measured. There is on
 
 Figures that bear on the storage projection and the remap come from the other specs (29 Sep, estimates where marked):
 - Retired rows at P4 are the rule A to G removals (about 2,100 passages) plus the Tanner council units and the 47 On the Incarnation passages that replacement texts supersede. Retired rows already exist in `chunks`, so retiring them adds no space.
-- New units are restored verses, recovered prose (Vatican II continuations, Trent, Vatican I, the Summa's Q71 and Q72), split recensions and the replacement council and Incarnation texts. The master build is 54,776 passages against 54,568 live, and 0.6 puts the Vatican II and council repairs at about 0.9 MB of text. The replacement council texts are not yet built, so their size is unmeasured.
+- New units are restored verses, recovered prose (Vatican II continuations, Trent, Vatican I, the Summa's Q71 and Q72), split recensions and the replacement council and Incarnation texts. The master build is 54,778 passages against 54,568 live, and 0.6 puts the Vatican II and council repairs at about 0.9 MB of text. The replacement council texts are not yet built, so their size is unmeasured.
 - Rows the apply updates in place are those whose text, citation or labels change. That is at least the 2,439 content differences under equal ids measured on 29 Sep, plus the split-piece citation fixes of 1.10c (every Summa passage and about 9,000 others), so roughly 35,000 to 40,000 rows (estimate).
 
 ## Prerequisites from earlier phases
