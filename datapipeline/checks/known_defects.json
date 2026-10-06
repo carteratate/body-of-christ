@@ -207,6 +207,10 @@
   "fixed_by": "1.3a",
   "description": "83.82% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
  },
+ "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/third-part-third-part-of-the-summa-theologica-qq-1-90/question-16-of-those-things-which-are-applicable-to-christ-in-his-being-and-becoming-twelve-articles/article-3-whether-christ-can-be-called-a-lordly-man/0": {
+  "fixed_by": "1.7",
+  "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
+ },
  "sentinel.daniel_13": {
   "fixed_by": "1.4a",
   "description": "Susanna (Daniel 13) is outside every KJV pericope"

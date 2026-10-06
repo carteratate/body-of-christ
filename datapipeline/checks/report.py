@@ -26,6 +26,7 @@ DATAPIPELINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if DATAPIPELINE not in sys.path:
     sys.path.insert(0, DATAPIPELINE)
 
+import health  # noqa: E402
 from checks import sequence as seq  # noqa: E402
 from checks.coverage import CoverageResult, coverage, documents_by_file  # noqa: E402
 from checks.source_text import SOURCES, collection_files, editorial_divs, file_units  # noqa: E402
@@ -122,20 +123,25 @@ class RunResult:
     sequence: dict[str, dict[str, seq.SequenceResult]] = field(default_factory=dict)
     summa_articles: dict[str, tuple[int, int]] = field(default_factory=dict)
     sentinels: dict[str, int] = field(default_factory=dict)
+    # collection → its 0.1b block-rule violations (the report rules are checks.health's).
+    health: dict[str, list[health.Violation]] = field(default_factory=dict)
     seconds: float = 0.0
 
 
-def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
-        sources: str = SOURCES) -> RunResult:
-    # config.settings requires store credentials at import, which the adapters do on
-    # their first call. This run reads local files
-    # only and never connects, so placeholders do. Variables already in the environment
-    # are kept; a placeholder does override a value that is only in datapipeline/.env.
+def placeholder_credentials() -> None:
+    """config.settings requires store credentials at import, which the adapters do on
+    their first call. The checks read local files only and never connect, so placeholders
+    do. Variables already in the environment are kept; a placeholder does override a
+    value that is only in datapipeline/.env."""
     for name, placeholder in (("DATABASE_URL", "postgresql://checks:checks@localhost/checks"),
                               ("OPENAI_API_KEY", "unused"), ("QDRANT_URL", "http://localhost"),
                               ("QDRANT_API_KEY", "unused"), ("ANTHROPIC_API_KEY", "unused")):
         os.environ.setdefault(name, placeholder)
 
+
+def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
+        sources: str = SOURCES) -> RunResult:
+    placeholder_credentials()
     started = time.monotonic()
     result = RunResult(list(collections))
     for collection in collections:
@@ -172,6 +178,7 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
         for sentinel in SENTINELS:
             if sentinel.collection == collection:
                 result.sentinels[sentinel.name] = sentinel_value(sentinel, documents)
+        result.health[collection] = health.check_documents(collection, documents, report=False)
     result.seconds = round(time.monotonic() - started, 1)
     return result
 
@@ -184,7 +191,8 @@ def load_known(path: str = KNOWN_DEFECTS_PATH) -> dict[str, dict]:
 
 
 def failing_checks(result: RunResult) -> dict[str, list[str]]:
-    """Every failing sequence and sentinel check id → the unit ids behind it."""
+    """Every failing sequence, sentinel and health block-rule check id → the unit ids
+    behind it."""
     out: dict[str, list[str]] = {}
     for family, scopes in result.sequence.items():
         for scope, res in scopes.items():
@@ -193,12 +201,17 @@ def failing_checks(result: RunResult) -> dict[str, list[str]]:
         value = result.sentinels.get(sentinel.name)
         if value is not None and value < sentinel.minimum:
             out[f"sentinel.{sentinel.name}"] = [str(value)]
+    for violations in result.health.values():
+        for v in violations:
+            out[v.check_id] = [v.detail]
     return out
 
 
 def check_scope(check_id: str) -> str | None:
     """The collection a check id belongs to, or None for an id this run cannot judge."""
     kind, _, rest = check_id.partition(".")
+    if kind == "health":       # health.<rule>:<collection>/<document_id>[#<anchor>]
+        return rest.partition(":")[2].split("/", 1)[0] or None
     if kind == "coverage":
         return rest.split(".", 1)[0]
     if kind == "sentinel":

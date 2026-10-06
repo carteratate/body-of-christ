@@ -330,6 +330,13 @@ def _parse_args(argv=None) -> argparse.Namespace:
 _LIVE_WRITE_STAGES = frozenset({"reader", "embed", "bm25-index", "enrich"})
 
 
+def _health_gated(args: argparse.Namespace, stages: list[str]) -> bool:
+    """Whether the run must pass the health block rules (item 0.1b) first: reader and
+    embed publish parsed passages, and a full enrich pays for annotating them.
+    bm25-index reads chunks back from Postgres, not parsed documents."""
+    return bool({"reader", "embed"} & set(stages)) or ("enrich" in stages and args.sample is None)
+
+
 def _guard_live_writes(args: argparse.Namespace, stages: list[str]) -> None:
     """Refuse a live-writing run unless PUBLISH_LOCK.json approves it (item 0.4)."""
     live = [s for s in stages if s in _LIVE_WRITE_STAGES]
@@ -344,6 +351,7 @@ def _guard_live_writes(args: argparse.Namespace, stages: list[str]) -> None:
 
 
 async def _main(args: argparse.Namespace) -> None:
+    from health import refuse_block_violations
     from stages.parse import parse
 
     if args.import_backup:
@@ -386,11 +394,20 @@ async def _main(args: argparse.Namespace) -> None:
     stages = resolve_stages(requested)
 
     if args.dry_run:
+        parsed: dict[str, list] = {}
+        if _health_gated(args, stages) and args.collection:
+            from stages.parse import BUILDERS
+            if args.collection != "all" and args.collection not in BUILDERS:
+                raise PipelineError(
+                    f"unknown collection '{args.collection}'. valid: {sorted(BUILDERS)}")
+            for col in (list(BUILDERS) if args.collection == "all" else [args.collection]):
+                parsed[col] = parse(col)
+                refuse_block_violations(col, parsed[col])
         from cache import Cache
         cache = Cache(CACHE_PATH); cache.init_schema()
         for s in stages:
             if s == "enrich" and args.collection and args.collection != "all":
-                docs = parse(args.collection)
+                docs = parsed.get(args.collection) or parse(args.collection)
                 total = sum(len(d.passages) for d in docs)
                 print(f"[dry-run] enrich {args.collection}: {estimate_enrich_cost(total)}")
             else:
@@ -426,13 +443,24 @@ async def _main(args: argparse.Namespace) -> None:
     res = _Resources()
     docs_by_collection: dict[str, list] = {}
     bm25_models: dict = {}
+    gated = _health_gated(args, stages)
 
     def _docs(collection: str) -> list:
         # parse() re-reads and re-chunks source files, which is the slowest
         # non-network step; several stages in one run need the same result.
         if collection not in docs_by_collection:
-            docs_by_collection[collection] = parse(collection)
+            docs = parse(collection)
+            if gated:
+                # The health block rules (item 0.1b) that run_collection.py applies.
+                refuse_block_violations(collection, docs)
+            docs_by_collection[collection] = docs
         return docs_by_collection[collection]
+
+    if gated:
+        # Every collection passes before any stage writes, so --collection all cannot
+        # publish some collections and then refuse a later one.
+        for collection in collections:
+            _docs(collection)
 
     try:
         for stage, collection in plan:
@@ -478,6 +506,11 @@ def main(argv=None) -> None:
     try:
         asyncio.run(_main(args))
     except PublishLocked as exc:
+        print(f"pipeline: {exc}", file=sys.stderr)
+        raise SystemExit(2) from None
+    except ValueError as exc:
+        if not str(exc).startswith("REFUSING"):
+            raise
         print(f"pipeline: {exc}", file=sys.stderr)
         raise SystemExit(2) from None
 

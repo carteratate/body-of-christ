@@ -16,6 +16,7 @@ from typing import Protocol
 
 import asyncpg
 
+from health import refuse_block_violations
 from identity import passage_id
 from model import Document
 from writers import reader_writer
@@ -233,6 +234,9 @@ class CollectionPublicationRunner:
             raise ValueError(
                 f"source adapter for '{collection}' emitted a '{wrong_collection}' document"
             )
+        # Health block rules (item 0.1b). build() runs this before publish() acquires
+        # any store, and a dry run runs it too.
+        refuse_block_violations(collection, documents)
 
     @staticmethod
     def _validate_build(

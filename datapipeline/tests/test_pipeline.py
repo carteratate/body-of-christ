@@ -124,3 +124,71 @@ def test_sample_enrich_writes_only_samples_and_needs_no_entry(monkeypatch):
     _lock_remote(monkeypatch)
     args = argparse.Namespace(sample=3, collection="medieval", release=None)
     _guard_live_writes(args, ["enrich"])
+
+
+def _health_stubs(monkeypatch, bad: set[str]):
+    """Two collections whose parse output is clean unless named in `bad`, no lock, and
+    stage runners that record what they would write."""
+    import pipeline
+    import stages.parse
+    from model import Document, Passage
+
+    def parse(collection):
+        content = " " if collection in bad else "Clean text of a passage."
+        return [Document(id=f"doc-{collection}", collection=collection, title="T", passages=[
+            Passage(content=content, reference="r", anchor="a", chapter_key="c",
+                    chapter_label="C", position=0)])]
+    writes = []
+
+    async def record(collection, docs, res, **kwargs):
+        writes.append(collection)
+    monkeypatch.setattr(stages.parse, "parse", parse)
+    monkeypatch.setattr(stages.parse, "BUILDERS", {"medieval": None, "summa": None})
+    monkeypatch.setattr(pipeline, "_guard_live_writes", lambda args, stages: None)
+    monkeypatch.setattr(pipeline, "validate_dependencies", lambda *args, **kwargs: None)
+    monkeypatch.setattr(pipeline._Resources, "cache", lambda self: None)
+    for name in ("_run_reader", "_run_embed", "_run_enrich"):
+        monkeypatch.setattr(pipeline, name, record)
+    return writes
+
+
+def _run(argv):
+    import asyncio
+    import pipeline
+    asyncio.run(pipeline._main(pipeline._parse_args(argv)))
+
+
+@pytest.mark.parametrize("stage", ["reader", "embed", "enrich"])
+def test_publishing_stages_refuse_health_block_violations(monkeypatch, stage):
+    """The 0.1b block rules run on parsed documents before a reader, embed or full
+    enrich run touches the stores."""
+    writes = _health_stubs(monkeypatch, bad={"medieval"})
+    argv = ["--stage", stage, "--collection", "medieval"] + (["--yes"] * (stage == "enrich"))
+    with pytest.raises(ValueError, match="REFUSING: 1 health block-rule violations"):
+        _run(argv)
+    assert writes == []
+
+
+def test_collection_all_checks_every_collection_before_any_write(monkeypatch):
+    writes = _health_stubs(monkeypatch, bad={"summa"})
+    with pytest.raises(ValueError, match="REFUSING: .* in 'summa'"):
+        _run(["--stage", "reader", "--collection", "all"])
+    assert writes == []
+    writes = _health_stubs(monkeypatch, bad=set())
+    _run(["--stage", "reader", "--collection", "all"])
+    assert writes == ["medieval", "summa"]
+
+
+def test_dry_run_of_a_publishing_stage_runs_the_health_rules(monkeypatch, tmp_path):
+    import pipeline
+    _health_stubs(monkeypatch, bad={"medieval"})
+    monkeypatch.setattr(pipeline, "CACHE_PATH", str(tmp_path / "cache.db"))
+    with pytest.raises(ValueError, match="REFUSING"):
+        _run(["--stage", "reader", "--collection", "medieval", "--dry-run"])
+    _run(["--stage", "reader", "--collection", "summa", "--dry-run"])
+
+
+def test_health_refusal_exits_2_with_a_message(monkeypatch, capsys):
+    _health_stubs(monkeypatch, bad={"medieval"})
+    assert _main_exit(["--stage", "reader", "--collection", "medieval"]) == 2
+    assert "pipeline: REFUSING: 1 health" in capsys.readouterr().err
