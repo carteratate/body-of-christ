@@ -174,8 +174,9 @@ def test_collection_all_checks_every_collection_before_any_write(monkeypatch):
     with pytest.raises(ValueError, match="REFUSING: .* in 'summa'"):
         _run(["--stage", "reader", "--collection", "all"])
     assert writes == []
-    _health_stubs(monkeypatch, bad=set())
+    writes = _health_stubs(monkeypatch, bad=set())
     _run(["--stage", "reader", "--collection", "all"])
+    assert writes == ["medieval", "summa"]
 
 
 def test_dry_run_of_a_publishing_stage_runs_the_health_rules(monkeypatch, tmp_path):

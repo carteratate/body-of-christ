@@ -394,15 +394,20 @@ async def _main(args: argparse.Namespace) -> None:
     stages = resolve_stages(requested)
 
     if args.dry_run:
+        parsed: dict[str, list] = {}
         if _health_gated(args, stages) and args.collection:
             from stages.parse import BUILDERS
+            if args.collection != "all" and args.collection not in BUILDERS:
+                raise PipelineError(
+                    f"unknown collection '{args.collection}'. valid: {sorted(BUILDERS)}")
             for col in (list(BUILDERS) if args.collection == "all" else [args.collection]):
-                refuse_block_violations(col, parse(col))
+                parsed[col] = parse(col)
+                refuse_block_violations(col, parsed[col])
         from cache import Cache
         cache = Cache(CACHE_PATH); cache.init_schema()
         for s in stages:
             if s == "enrich" and args.collection and args.collection != "all":
-                docs = parse(args.collection)
+                docs = parsed.get(args.collection) or parse(args.collection)
                 total = sum(len(d.passages) for d in docs)
                 print(f"[dry-run] enrich {args.collection}: {estimate_enrich_cost(total)}")
             else:
