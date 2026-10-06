@@ -4,6 +4,7 @@ import json
 
 import pytest
 
+import health
 from checks import coverage as C
 from checks import report
 from checks import sequence as Q
@@ -375,6 +376,11 @@ def test_known_defects_file_is_well_formed():
         # Grouped check ids list their units, so a new unit is not hidden by the entry.
         grouped = check_id.startswith(("sequence.bible_verses.", "sequence.numbered_paragraphs."))
         assert ("units" in entry) == grouped, check_id
+        # Health entries accept one block-rule violation each (0.1b); report rules never
+        # refuse, so they never need an entry.
+        if check_id.startswith("health."):
+            rule = check_id.split(".", 1)[1].split(":", 1)[0]
+            assert rule in health.BLOCK_RULES, check_id
 
 
 def test_editorial_div_is_apparatus_and_flagged_if_published(tmp_path, monkeypatch):

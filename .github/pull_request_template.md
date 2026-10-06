@@ -29,10 +29,9 @@ collapsed block. Otherwise replace this section's body with:
 <!-- Paste summary.md as Markdown, not in a code block, so its tables render. -->
 </details>
 
-<details><summary>Health summary (0.1b)</summary>
+<details><summary>Health summary (0.1b): <code>cd datapipeline && python3 -m checks.health --collection &lt;name&gt;</code></summary>
 
-```
-```
+<!-- Paste health.md's Counts section as Markdown, not in a code block, so its table renders. -->
 </details>
 
 <details><summary>Release report summary (0.1c)</summary>

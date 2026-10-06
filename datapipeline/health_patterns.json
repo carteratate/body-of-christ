@@ -1,0 +1,28 @@
+{
+ "_comment": "Patterns and allowlists for the 0.1b report rules (datapipeline/health.py). Keys under each rule name a collection, or \"all\". A P1 PR that changes what a rule should see edits this file, not the code.",
+ "R1_short": {
+  "max_chars": 20,
+  "allowed_collections": ["bible", "canon-law"]
+ },
+ "R2_footer": {
+  "all": ["\\(n: indicates", "\\[Earlier version\\]", "\\[Original version", "_{5,}"]
+ },
+ "R3_note_start": {
+  "all": [
+   "^[Cc]f\\.",
+   "^Ibid",
+   "^See (?:the note|also\\b|above\\b|below\\b|[A-Z][a-z]+[’']s\\b)",
+   "^(?:[1-4] ?)?[A-Z][a-z]{0,6}\\.? ?\\d+[:,.] ?\\d+[\\d,;:.\\-–— ]*\\)"
+  ],
+  "skip_collections": ["bible"]
+ },
+ "R6_joined_paragraphs": {
+  "abbreviations": ["art", "can", "cap", "ch", "chap", "cit", "cf", "dr", "ed", "eds", "etc", "ibid", "jr", "mr", "mrs", "ms", "no", "nos", "op", "ph", "pp", "sr", "st", "sts", "viz", "vol", "vs"]
+ },
+ "R7_non_english": {
+  "min_chars": 200,
+  "max_share": 0.05,
+  "max_digit_share": 0.15,
+  "function_words": ["the", "of", "and", "to", "that", "is", "was", "he", "for", "it", "with", "as", "his", "on", "be", "at", "by", "this", "had", "not", "are", "but", "from", "or", "have", "an", "they", "which", "one", "you", "were", "her", "all", "she", "there", "would", "their", "we", "him", "been", "has", "when", "who", "will", "if", "what", "them", "my", "its", "our"]
+ }
+}

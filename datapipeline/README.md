@@ -88,6 +88,15 @@ The runner refuses suspicious build collapse and identity churn before writes. A
 routine publication retains stable Passage identities, preserving bookmarks and search
 history for Passages the adapter still emits.
 
+The document checks include the health block rules in `health.py` (item 0.1b): blank
+text, page-number or punctuation debris, positions that are not `0..n-1`, duplicate
+anchors, and an empty anchor, chapter key or chapter label. Any of them refuses the
+build, dry run included, before a store is opened, unless that exact passage is listed
+in `checks/known_defects.json` with the PR that fixes it. `python3 -m checks.health
+--collection <name>` reports the block rules and the softer report rules (short
+fragments, footer and note leakage, duplicated text, joined paragraphs, non-English
+text); their patterns are in `health_patterns.json`.
+
 Writing a Document to the reader store also rebuilds its **reader outline** (chapter
 list and passage count, `supabase/migrations/0037_document_outline.sql`) in the same
 transaction, so the target database must have migration 0037 applied before publishing.
