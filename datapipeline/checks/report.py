@@ -140,12 +140,18 @@ def placeholder_credentials() -> None:
 
 
 def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
-        sources: str = SOURCES) -> RunResult:
+        sources: str = SOURCES,
+        documents_by_collection: dict[str, list[Document]] | None = None) -> RunResult:
+    """Coverage, sequence, sentinels and health block rules for `collections`, building
+    each through SOURCE_ADAPTERS unless `documents_by_collection` already holds it (the
+    release report builds once and passes its build in)."""
     placeholder_credentials()
     started = time.monotonic()
     result = RunResult(list(collections))
     for collection in collections:
-        documents = SOURCE_ADAPTERS[collection]()
+        documents = (documents_by_collection or {}).get(collection)
+        if documents is None:
+            documents = SOURCE_ADAPTERS[collection]()
         files = collection_files(collection, sources)
         units_by_file = {f: file_units(collection, f, sources) for f in files}
         units = [u for f in files for u in units_by_file[f]]
@@ -207,10 +213,16 @@ def failing_checks(result: RunResult) -> dict[str, list[str]]:
     return out
 
 
+# Check-id prefixes this report computes. `release.` ids belong to the release report
+# (0.1c), which judges them against a live snapshot.
+REPORT_PREFIXES = ("coverage.", "sequence.", "sentinel.", "health.")
+
+
 def check_scope(check_id: str) -> str | None:
     """The collection a check id belongs to, or None for an id this run cannot judge."""
     kind, _, rest = check_id.partition(".")
-    if kind == "health":       # health.<rule>:<collection>/<document_id>[#<anchor>]
+    # health.<rule>:<collection>/<document_id>[#<anchor>]; release.<check>:<collection>/<id>
+    if kind in ("health", "release"):
         return rest.partition(":")[2].split("/", 1)[0] or None
     if kind == "coverage":
         return rest.split(".", 1)[0]
@@ -411,7 +423,8 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
                          f"{s.minimum:,} | {status} |")
     lines.append("")
 
-    judged = {k for k in known if check_scope(k) in result.collections}
+    judged = {k for k in known if check_scope(k) in result.collections
+              and k.startswith(REPORT_PREFIXES)}
     unexpected = sorted(i for i in failing_ids if i not in known)
     fixed = sorted(k for k in judged if k not in failing_ids)
     regressions = coverage_regressions(result, baseline, known)

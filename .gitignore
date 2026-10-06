@@ -29,6 +29,9 @@ services/api/.env
 datapipeline/sources/
 # Local check output (0.1a report), which may quote corpus text
 datapipeline/releases/local/
+# Live corpus snapshots (0.1c): in-copyright text, never committed. The index
+# datapipeline/releases/snapshots.json (hashes and counts only) is tracked.
+datapipeline/releases/snapshots/
 .worktrees/
 .claude/*
 !.claude/skills
