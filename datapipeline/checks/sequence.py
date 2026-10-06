@@ -253,19 +253,12 @@ def summa_article_coverage(documents: list[Document], units: list[SourceUnit],
     visible. Articles differ in length by two orders of magnitude, so presence alone
     says little about how much of a long one survives."""
     text = _PassageText(documents)
-    out: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    texts: dict[str, list[str]] = defaultdict(list)
     for u in units:
         # Only articles: a question's introduction sits under the question's id.
-        if u.region != "body" or u.unit_id not in article_ids:
-            continue
-        for s in split_sentences(u.text):
-            if not measurable(s):
-                continue
-            row = out[u.unit_id]
-            row[0] += len(s)
-            if text.find(match_key(s)) is not None:
-                row[1] += len(s)
-    return {k: (v[0], v[1]) for k, v in out.items()}
+        if u.region == "body" and u.unit_id in article_ids:
+            texts[u.unit_id].append(u.text)
+    return {art: _covered_chars(text, t) for art, t in texts.items()}
 
 
 # --------------------------------------------------------------------------- § numbers

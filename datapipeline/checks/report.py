@@ -30,6 +30,7 @@ from checks import sequence as seq  # noqa: E402
 from checks.coverage import CoverageResult, coverage, documents_by_file  # noqa: E402
 from checks.source_text import SOURCES, collection_files, editorial_divs, file_units  # noqa: E402
 from model import Document  # noqa: E402
+from publication import SOURCE_ADAPTERS  # noqa: E402
 
 CHECKS_DIR = os.path.dirname(os.path.abspath(__file__))
 KNOWN_DEFECTS_PATH = os.path.join(CHECKS_DIR, "known_defects.json")
@@ -45,9 +46,9 @@ BODY_TOLERANCE = 0.01
 # reported "fixed, remove entry".
 COVERAGE_ENTRY_BELOW = 95.0
 
-COLLECTIONS = ("apostolic-exhortations", "bible", "canon-law", "catechism",
-               "church-fathers", "councils", "encyclicals", "medieval",
-               "papal-documents", "summa")
+# The collections the datapipeline builds, from its one adapter registry (which a test
+# keeps equal to the API's VALID_COLLECTIONS), so a new collection is checked too.
+COLLECTIONS = tuple(sorted(SOURCE_ADAPTERS))
 SECTION_COLLECTIONS = ("apostolic-exhortations", "councils", "encyclicals", "papal-documents")
 THML_COLLECTIONS = ("church-fathers", "medieval")
 FAMILIES = ("bible_verses", "ccc_paragraphs", "canons", "summa_articles",
@@ -126,14 +127,14 @@ class RunResult:
 
 def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
         sources: str = SOURCES) -> RunResult:
-    # config.settings requires store credentials at import. This run reads local files
+    # config.settings requires store credentials at import, which the adapters do on
+    # their first call. This run reads local files
     # only and never connects, so placeholders do. Variables already in the environment
     # are kept; a placeholder does override a value that is only in datapipeline/.env.
     for name, placeholder in (("DATABASE_URL", "postgresql://checks:checks@localhost/checks"),
                               ("OPENAI_API_KEY", "unused"), ("QDRANT_URL", "http://localhost"),
                               ("QDRANT_API_KEY", "unused"), ("ANTHROPIC_API_KEY", "unused")):
         os.environ.setdefault(name, placeholder)
-    from publication import SOURCE_ADAPTERS
 
     started = time.monotonic()
     result = RunResult(list(collections))

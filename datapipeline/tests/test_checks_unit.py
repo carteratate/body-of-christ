@@ -550,3 +550,10 @@ def test_paragraph_number_without_a_space_after_it(tmp_path):
     assert [(u.unit_id, u.text) for u in units] == [
         ("131", "Later, his director helped him further."),
         (None, "1.5 metres is not a paragraph number at all here.")]
+
+
+def test_report_checks_every_collection_the_pipeline_builds():
+    from publication import SOURCE_ADAPTERS
+
+    assert set(report.COLLECTIONS) == set(SOURCE_ADAPTERS)
+    assert set(report.SECTION_COLLECTIONS) | set(report.THML_COLLECTIONS) <= set(report.COLLECTIONS)
