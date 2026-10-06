@@ -233,8 +233,8 @@ def refuse_block_violations(collection: str, documents: list[Document],
                 if v.check_id not in known]
     if not blocking:
         return
-    listed = "; ".join(f"{v.rule} {v.document_id}#{v.anchor or '-'} ({v.detail})"
-                       for v in blocking[:REFUSAL_LISTED])
+    # The check id is what a known_defects.json entry for the passage would be keyed by.
+    listed = "; ".join(f"{v.check_id} ({v.detail})" for v in blocking[:REFUSAL_LISTED])
     more = len(blocking) - REFUSAL_LISTED
     raise ValueError(
         f"REFUSING: {len(blocking)} health block-rule violations in '{collection}': {listed}"

@@ -134,10 +134,11 @@ def test_r3_note_start():
                  "Ibid., 27; and the rest.", "See the note of Maranus.",
                  "See Cave’s Primitive Christianity, p. 132.", "Eph. 1:10). And so on.",
                  "Lk 1: 31-37).16 It may be easy", "John 2:22; 12:16; cf. 14:26.",
-                 "Jn. 1:14. 2. Jn. 3:16. 3. Heb. 1:1-2.", "Nm 11.11,14. 2. Rom 1.12."):
+                 "Jn. 1:14. 2. Jn. 3:16. 3. Heb. 1:1-2.", "Nm 11.11,14. 2. Rom 1.12.",
+                 "49. Cf. First Vatican Council.", "AAS 58 (1966) 936-938. 82. Jn. 8:32."):
         assert _fires("R3_note_start", _one(note)), note
     for prose in ("See how great a love the Father has given us.", "See Jesus as happy.",
-                  "John 3:16 is the verse most often quoted.",
+                  "John 3:16 is the verse most often quoted.", "49. Charity is patient.",
                   "Seeing this, they wept.", GOOD):
         assert not _fires("R3_note_start", _one(prose)), prose
 
@@ -242,7 +243,7 @@ async def test_block_rule_refuses_before_store_acquisition():
     events: list[str] = []
     runner = _runner(events, [_doc(_p(anchor="a", position=0), _p(".", anchor="b", position=1))])
     with pytest.raises(ValueError, match=r"REFUSING: 1 health block-rule violations in "
-                                         r"'encyclicals': H2_debris doc-1#b"):
+                                         r"'encyclicals': health.H2_debris:encyclicals/doc-1#b "):
         await runner.publish(PublicationRequest(collection="encyclicals"))
     assert events == []
     # A dry run builds through the same checks.
@@ -272,6 +273,7 @@ def test_refusal_lists_the_first_ten():
     message = str(refused.value)
     assert message.startswith("REFUSING: 12 health block-rule violations")
     assert "doc-1#a9 " in message and "doc-1#a10 " not in message
+    assert "health.H1_blank:encyclicals/doc-1#a0 (content is empty" in message
     assert message.endswith("; and 2 more")
 
 
