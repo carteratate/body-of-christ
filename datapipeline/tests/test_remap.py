@@ -381,3 +381,48 @@ def test_unlabelled_paragraphs_sharing_a_reference_are_checked_one_by_one():
                                          ("Same text.", "same  TEXT", 1.0)])
 def test_similarity_edges(a, b, expected):
     assert R.similarity(a, b) == expected
+
+
+# --------------------------------------------------------------------------- review findings
+
+def test_duplicate_build_id_fails():
+    a = text("a")
+    result = R.remap([old(pid("a"), "a", a, 0)], [doc(new("a", a, 0), new("a", text("z"), 1))])
+    assert [f.check_id for f in result.failures] == [f"release.duplicate_id:councils/{pid('a')}"]
+
+
+def test_split_bridges_a_piece_too_short_for_shingles():
+    words = text("a", 60).split()
+    result = R.remap([old("old-a", "x/1", " ".join(words), 0)],
+                     [doc(new("s/1", " ".join(words[:28]), 0), new("s/2", " ".join(words[28:32]), 1),
+                          new("s/3", " ".join(words[32:]), 2))])
+    row = outcome(result, "old-a")
+    assert row.outcome == "split" and set(row.new_ids) == {pid("s/1"), pid("s/2"), pid("s/3")}
+    assert result.failures == []
+
+
+def test_removal_entry_with_an_id_does_not_explain_another_passage_at_its_anchor():
+    entry = {"id": "rm", "scope": "passage", "document_id": DOC, "anchor": "x",
+             "passage_id": "P-retired"}
+    result = R.remap([old("P-other", "x", text("a"), 0)], [doc(new("s/1", text("z"), 0))],
+                     R.Registry(removals=[entry]))
+    assert outcome(result, "P-other").removal is None
+    assert [f.check for f in result.failures] == ["removed"]
+
+
+def test_null_position_sorts_last_without_crashing():
+    a, b = text("a"), text("b")
+    result = R.remap([old(pid("s/1"), "s/1", a, None), old(pid("s/2"), "s/2", b, 0)],
+                     [doc(new("s/1", a, None), new("s/2", b, 0))])
+    assert [r.old_id for r in result.rows] == [pid("s/2"), pid("s/1")]
+
+
+def test_text_inside_a_split_piece_is_merged_not_moved():
+    a, b = text("a", 200), text("b")
+    words = a.split()
+    # A splits into s/1 and s/2; B's text is also inside s/2.
+    result = R.remap([old("old-a", "x/1", a, 0), old("old-b", "x/2", b, 1)],
+                     [doc(new("s/1", " ".join(words[:100]), 0),
+                          new("s/2", " ".join(words[100:]) + " " + b, 1))])
+    assert outcome(result, "old-a").outcome == "split"
+    assert outcome(result, "old-b").outcome == "merged"

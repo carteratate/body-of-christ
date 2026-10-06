@@ -246,6 +246,16 @@ def _n(v) -> str:
     return "–" if v is None else f"{v:,}"
 
 
+def _earlier_runs(data: dict) -> str:
+    """Name collections that an earlier run into the same --out measured differently."""
+    current = (data["snapshot"]["date"], data["build"])
+    other = sorted(c for c, s in data["collections"].items()
+                   if (s.get("measured", {}).get("snapshot"),
+                       s.get("measured", {}).get("build")) != current)
+    return (f"Kept from earlier runs, against another snapshot or build: {', '.join(other)}. "
+            if other else "")
+
+
 def report_md(data: dict, public: bool) -> str:
     collections = sorted(data["collections"])
     snap = data["snapshot"]
@@ -253,7 +263,7 @@ def report_md(data: dict, public: bool) -> str:
              f"Snapshot `{snap['date']}` exported {snap['exported_at']}"
              f"{', in the tracked index' if snap.get('indexed') else ', NOT in the tracked index'}"
              f"; hashes {'verified' if not snap.get('problems') else 'MISMATCH'}.",
-             f"Build: {data['build']}. Anchor stability threshold "
+             f"Build: {data['build']}. " + _earlier_runs(data) + "Anchor stability threshold "
              f"{data['threshold']} (`ANCHOR_STABILITY_THRESHOLD`).",
              f"Redirect rows required for outcomes other than `same`: "
              f"{'yes' if data.get('enforce_redirects') else 'no (2.1 not merged)'}.", ""]
@@ -443,9 +453,12 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
     known = checks_report.load_known()
     old_by_id = {o.id: o for o in old}
     new_by_id = {p.id: p for p in R.new_passages(built)}
+    head = checks_report._git_head()
     sections = {c: collection_section(c, result, live.get(c, []), build[c], old_by_id,
                                       new_by_id, impact, known, not public)
                 for c in collections}
+    for c in collections:      # kept per collection, since a later run may merge others in
+        sections[c]["measured"] = {"snapshot": meta.get("date"), "build": head}
 
     # 0.1b health, build and live, into health.json beside the report.
     previous_health = {}

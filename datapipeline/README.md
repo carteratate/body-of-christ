@@ -108,7 +108,8 @@ releases/snapshots/<date> --collection <name>` then maps every live passage to o
 outcome (`same`, `moved`, `split`, `merged`, `renumbered`, `removed`, defined in
 `release/remap.py`), fails when a passage ID would show different text, and counts the
 saved rows each outcome touches. Its `report.md` holds no passage text unless run with
-`--no-public`.
+`--no-public`. A passage moved to another collection is found only when both collections
+are in the run; `--collection all` covers every move.
 
 Writing a Document to the reader store also rebuilds its **reader outline** (chapter
 list and passage count, `supabase/migrations/0037_document_outline.sql`) in the same

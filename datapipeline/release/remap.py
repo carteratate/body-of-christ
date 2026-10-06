@@ -42,7 +42,7 @@ JACCARD_MIN = 0.5
 # The checks that fail a report. Each failure's check id is
 # release.<check>:<collection>/<passage id>, keyed by passage ID because 2.1 keeps IDs
 # when it re-anchors, so a known_defects.json entry survives that change.
-CHECKS = ("stability", "removed", "unbacked", "anchor_reuse", "bad_redirect")
+CHECKS = ("stability", "removed", "unbacked", "anchor_reuse", "bad_redirect", "duplicate_id")
 
 
 # --------------------------------------------------------------------------- data
@@ -288,8 +288,10 @@ class _DocumentIndex:
         """The best run of 2 or more consecutive passages that together hold the old text."""
         runs: list[list[int]] = []
         for i in candidates:
-            if runs and i == runs[-1][-1] + 1:
-                runs[-1].append(i)
+            # A piece under SHINGLE_WORDS words holds no shingle, so it bridges a gap.
+            gap = range(runs[-1][-1] + 1, i) if runs else range(0)
+            if runs and all(len(self.words[k]) < SHINGLE_WORDS for k in gap):
+                runs[-1] += [*gap, i]
             else:
                 runs.append([i])
         best: tuple[float, list[int]] | None = None
@@ -358,8 +360,9 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
         by_id.setdefault(p.id, p)
         by_document[p.document_id].append(p)
     for passages in by_document.values():
-        passages.sort(key=lambda p: (p.position, p.id))
-    old = sorted(old, key=lambda o: (o.collection, o.document_id, o.position, o.id))
+        passages.sort(key=lambda p: (_order(p.position), p.id))
+    old = sorted(old, key=lambda o: (o.collection, o.document_id, _order(o.position), o.id))
+    ids = Counter(p.id for p in built)
 
     redirects: dict[str, list[dict]] = defaultdict(list)
     for r in registry.redirects:
@@ -410,8 +413,8 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
     # One target holding text from two or more old passages is a merge; else a move.
     holders: Counter = Counter(r.new_ids[0] for r in rows.values() if r.outcome == "same")
     for match, passages in computed.values():
-        if match.method != "union":
-            holders[passages[match.targets[0]].id] += 1
+        for i in match.targets:            # every piece of a split holds that old text
+            holders[passages[i].id] += 1
     for o in old:
         if o.id not in computed:
             continue
@@ -427,6 +430,11 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
                               primary.anchor, o.chapter_key, primary.chapter_key, o.collection)
 
     ordered = [rows[o.id] for o in old]
+    for p in built:
+        if ids[p.id] > 1:
+            ids[p.id] = 0          # report each duplicated ID once
+            failures.append(Failure("duplicate_id", p.collection, p.document_id, p.id,
+                                    p.anchor, None, "two or more build passages share this ID"))
     for row in ordered:
         # A bad redirect is reported as such, not again as a removal.
         if row.outcome == "removed" and row.removal is None and row.method != "redirect":
@@ -452,6 +460,11 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
     return RemapResult(ordered, fresh, failures, replacements)
 
 
+def _order(position: int | None) -> tuple[bool, int]:
+    """Sort key putting a NULL position last (0.1b's H3 reports it)."""
+    return (position is None, position or 0)
+
+
 def _removals(entries: list[dict]) -> tuple[dict, dict, dict]:
     """Open removal entries that retire passages: by passage ID, by (document, anchor),
     and whole documents. Span and class entries retire nothing."""
@@ -460,9 +473,11 @@ def _removals(entries: list[dict]) -> tuple[dict, dict, dict]:
         if e.get("closed_by"):
             continue
         if e.get("scope") == "passage":
+            # By anchor only when the entry names no ID: an entry for one passage must not
+            # explain another that held the same anchor.
             if e.get("passage_id"):
                 by_id[e["passage_id"]] = e
-            if e.get("anchor"):
+            elif e.get("anchor"):
                 by_anchor[(e["document_id"], e["anchor"])] = e
         elif e.get("scope") == "document":
             documents[e["document_id"]] = e
@@ -591,7 +606,7 @@ def chapter_remap(old: list[OldPassage], rows: list[RemapRow],
     chapter redirect. A tie goes to the successor of the earliest passage."""
     outcome = {r.old_id: r for r in rows}
     chapters: dict[tuple[str, str], list[OldPassage]] = {}
-    for o in sorted(old, key=lambda o: (o.document_id, o.position, o.id)):
+    for o in sorted(old, key=lambda o: (o.document_id, _order(o.position), o.id)):
         chapters.setdefault((o.document_id, o.chapter_key), []).append(o)
     positions = (references or {}).get("documents", {})
 

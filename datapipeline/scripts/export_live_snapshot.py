@@ -215,7 +215,15 @@ def record_in_index(meta: dict, index_path: str = INDEX_PATH) -> None:
 
 # --------------------------------------------------------------------------- main
 
-async def _export(url: str, root: str, date: str) -> str:
+def index_for(root: str) -> str:
+    """The tracked index for the default root; any other root keeps its own index inside
+    it, so a scratch export never changes a tracked file."""
+    if os.path.abspath(root) == os.path.abspath(SNAPSHOT_ROOT):
+        return INDEX_PATH
+    return os.path.join(root, "snapshots.json")
+
+
+async def _export(url: str, root: str, date: str, index_path: str) -> str:
     import asyncpg
 
     # statement_cache_size=0: the Supabase pooler does not keep prepared statements.
@@ -225,14 +233,16 @@ async def _export(url: str, root: str, date: str) -> str:
         data = await read_live(conn)
     finally:
         await conn.close()
-    return write_snapshot(data, root, date, exported_at)
+    return write_snapshot(data, root, date, exported_at, index_path)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--date", default=datetime.now(timezone.utc).strftime("%Y-%m-%d"))
     parser.add_argument("--root", default=SNAPSHOT_ROOT,
-                        help="where the <date> directory is made (default releases/snapshots)")
+                        help="where the <date> directory is made (default releases/snapshots); "
+                             "another root keeps its own snapshots.json inside it, so a scratch "
+                             "export never changes the tracked index")
     args = parser.parse_args(argv)
 
     from dotenv import load_dotenv
@@ -242,7 +252,8 @@ def main(argv: list[str] | None = None) -> int:
     if not url:
         print("DATABASE_URL is not set", file=sys.stderr)
         return 2
-    out = asyncio.run(_export(url, args.root, args.date))
+    root = os.path.abspath(args.root)
+    out = asyncio.run(_export(url, root, args.date, index_for(root)))
     with open(os.path.join(out, SNAPSHOT_FILE), encoding="utf-8") as f:
         tables = json.load(f)["tables"]
     print(f"wrote {out}: " + ", ".join(f"{t} {n}" for t, n in tables.items()))

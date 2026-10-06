@@ -161,6 +161,11 @@ def test_snapshot_is_never_overwritten_and_index_keeps_other_dates(tmp_path):
     assert json.load(open(os.path.join(first, E.SNAPSHOT_FILE)))["files"] == second
 
 
+def test_only_the_default_root_writes_the_tracked_index(tmp_path):
+    assert E.index_for(E.SNAPSHOT_ROOT) == E.INDEX_PATH
+    assert E.index_for(str(tmp_path)) == str(tmp_path / "snapshots.json")
+
+
 # --------------------------------------------------------------------------- real database
 
 SCHEMA = f"""
