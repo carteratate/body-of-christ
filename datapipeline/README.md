@@ -99,6 +99,17 @@ the block rules and the softer report rules (short fragments, footer and note le
 duplicated text, joined paragraphs, non-English text); their patterns are in
 `health_patterns.json`.
 
+The release report (item 0.1c) compares a build with what users see today.
+`scripts/export_live_snapshot.py` copies the live corpus and anonymous counts of saved
+user rows to `releases/snapshots/<date>/`, read only and with Carter's approval for each
+run; the snapshot holds in-copyright text, so that directory is gitignored and only the
+hash index `releases/snapshots.json` is tracked. `python3 -m release.report --snapshot
+releases/snapshots/<date> --collection <name>` then maps every live passage to one
+outcome (`same`, `moved`, `split`, `merged`, `renumbered`, `removed`, defined in
+`release/remap.py`), fails when a passage ID would show different text, and counts the
+saved rows each outcome touches. Its `report.md` holds no passage text unless run with
+`--no-public`.
+
 Writing a Document to the reader store also rebuilds its **reader outline** (chapter
 list and passage count, `supabase/migrations/0037_document_outline.sql`) in the same
 transaction, so the target database must have migration 0037 applied before publishing.

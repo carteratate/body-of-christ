@@ -211,6 +211,1638 @@
   "fixed_by": "1.7",
   "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
  },
+ "release.stability:summa/00098605-3a7d-57da-96a7-d65eac6e423c": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.124 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/00834f45-0304-5d8c-bd7c-ae733edb60ec": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.107 a.3, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/009bddf3-2865-55fe-b354-9d67a4e46d1a": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.3 a.2, live part /2, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/00ee6db3-91d2-5037-bb8c-f37ebdc84c19": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.169 a.2, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0117351d-72e3-5c73-b1f3-c70feba8ccf5": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/02be051e-d24f-5b72-8411-29a1f20d2700": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/02d98574-0780-582b-834b-2b2714e5437f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/03b36a10-fe73-515b-9f01-395958acbb80": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.114 a.10, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/03ba2aee-7d23-51c8-8da8-0a73e3679a73": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.11 a.4, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0460dd0e-92f9-5a0b-b8ba-b6aede1342ce": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.70 a.3, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/047b6e32-46a3-50f7-b1e5-c36a212cffe9": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.7, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/04acafdb-4b59-5482-baa4-d6d648f559f2": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/04d24e8b-2335-5461-a6b4-648a1b98553e": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /25, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/05e4705d-90e3-5f4a-b66e-f0aa7d5a8ad2": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/060e035e-ae5b-51b6-beb4-d397a48ca207": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.83 a.14, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/069e421d-78aa-588e-b047-f6f171db8453": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.51 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/06a3aca3-88c9-5919-9e6d-1f0ed6442e90": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/06fd055c-93e4-5e82-9c1e-276aba64d655": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.119 a.1, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0717d420-5e1b-53fc-a0e5-a0b2308e261f": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.154 a.1, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/076db15b-81b5-5f11-ad30-e5b1f014104c": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.13 a.9, live part /5, keeps 0.46 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0770214c-d1b8-58ba-8fca-8acd561fec8e": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /11, keeps 0.06 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/07968c51-6857-5a48-b914-fa455051e69c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/08b31a7d-7828-5f0a-b6a2-b1e3d8714691": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.6, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0918330b-2eb0-51bd-bd64-11b91a147845": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /34, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0936e8ff-344c-5bc9-bee4-ab520e9a406a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.94 a.1, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/095c9bb9-6a3b-5187-921b-392009b14fb4": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.84 a.3, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/09911e15-2f4e-5703-90f7-dda5dd2de43f": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.38 a.1, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0a257c33-b022-568b-9cbb-045330c7276b": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0adacb91-9fc2-5e23-9831-a69141f62725": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.7 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0bde440b-fe69-5e5d-ac50-8350311f29d8": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.44 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0c0772e0-628c-5638-9731-700b85a4fec7": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /21, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0c472a23-8ac8-57eb-83e6-5c85d4635a6a": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /23, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0c6eda69-3288-5c8c-928e-14f576eee8d5": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0cbf3bfe-8294-59c2-9310-ca7333546e68": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.148 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0dff4214-270d-58d7-b38e-0e04e513a65a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.184 a.8, live part /13, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0e918056-a852-5358-bfb1-1598450c7bbf": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.105 a.2, live part /20, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0ea93503-4efc-5541-abdc-9a0af935aaa1": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.37 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/0f95c4f7-9d9f-58e6-8e6e-00ddc72dbef2": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.13 a.9, live part /6, keeps 0.38 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1004eedb-83ce-5ea6-89ba-85832eeebdf0": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.94 a.1, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/106a182b-2d67-5ff3-9c57-775e16cdb5c0": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1136793c-1bfe-5251-af99-fff2d1e5c312": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/114037ad-e245-5995-befb-b5c9a45c0652": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.66 a.8, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/117468de-85e7-50fb-9daf-295b7cc447b7": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/11b70e74-ee6a-51a4-b487-3a28f80cca75": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.4, live part /22, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/11c90432-d852-50e1-a6d4-74b3faec4613": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /24, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/13761ff4-82fb-5e0c-b7ab-bbe37874eb45": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.3, live part /4, keeps 0.33 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/14cad926-d8aa-53e9-b6c1-05738db813c0": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.19 a.5, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/154b5e39-efc5-5e51-9955-e013f5837e19": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.2 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/157f3cbc-88e4-5f77-ae12-b52a4f1a3146": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.41 a.4, live part /5, keeps 0.23 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/160b56a3-ae32-576a-b940-61cbeca268a8": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.2, live part /4, keeps 0.01 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/160bc5d3-a28c-5264-81db-4a4f75de8452": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.11 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/172b133a-e867-5ccc-a36c-65b75429637c": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/17a0f49c-1c07-5359-8b59-7154b530394c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.35 a.1, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1814bf08-4be3-5a98-83d8-fc4cda2ed92b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.173 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1840a1a7-9f11-5fb4-a8bc-c3337bedf305": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.66 a.1, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1a2f1945-0798-52bc-a6a0-f78bd5ee2e35": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1b58016b-1318-53f3-b59d-dca3649f7b54": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.188 a.5, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1be3ef3b-000b-53c2-9770-577553f1d7c2": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1cae2879-3505-5c91-836f-b27d0af34120": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1cfa1a29-8ed8-5841-960b-c0db3e4e00fb": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1d42f4a9-0f18-588c-9df1-9bfd17779ce5": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /29, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1d4653a2-898f-55cf-9898-fc28865df546": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.83 a.2, live part /5, keeps 0.36 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1d5e5428-47e8-529b-b5dc-9a1e6aa8e3d9": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1e53d66b-7b0b-58c3-b508-a379fcd42309": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.6, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1ec6cd6d-8aeb-5b2a-b550-a6f74d5d7c12": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.66 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1f80b08c-8121-5719-b293-73d8aded2599": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.70 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1f8d971d-1936-54b9-a004-51470e33839b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.124 a.4, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1fbb63dc-f439-5e9e-9f65-4eea1f782e4a": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.6, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/1ff9c99e-960c-543c-84a2-349347140998": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.11 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2024545a-a63b-5b43-9634-5024ee64c032": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.108 a.5, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2033aaa5-a776-52ce-a321-d293fb5a7e19": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.105 a.2, live part /27, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/20a586ff-9ae2-5286-a366-d654d50f1b45": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/20be9052-08c1-5459-8c4f-18de0f8954ff": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/20c19143-17fc-581b-9a7e-4f8b3c305b85": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.14 a.1, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/214a29ab-e54b-534c-8e11-e3efb475b2ed": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.83 a.14, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/21ead0e4-6f71-544c-8205-b45a29d69eae": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.3 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/233cfa06-5052-5187-9951-6d50e766bea2": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.4, live part /23, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/235ac4ac-2c0c-5f6f-aed8-052ee5f3f890": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.169 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/235df254-c7bb-5b53-9eda-69ecac32d569": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2433ee09-25a9-5a56-afc0-e11a06f804cb": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.19 a.2, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/24568e48-f558-5820-bb65-9dde11e984fa": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/256c6c27-ea7f-51d5-8f69-700efcac7726": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.1, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/25a6e22a-e8d7-5433-bf52-d08733b2ad3c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.6, live part /2, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2610b073-7c16-5003-b169-476b110d4221": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.7 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/26646386-811f-5493-a558-093e57d29cd9": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/273464e7-53e6-5619-9dde-300f2bd5fe56": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/277f0ed9-1ae0-521b-b40e-73f104bfb89a": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /19, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/28351a3c-0667-5a6f-b688-4458c8b36286": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/28cb056c-1430-5e3b-b233-69f972c56973": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/28cdb915-9b41-5cd8-8611-ff29b1a6937d": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.83 a.2, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/28d0c4c3-8823-51a4-8837-9cb7587f59b0": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.82 a.1, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2a1091f3-e687-5267-ba3f-dde67343321a": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2b9139f3-4467-5746-ad56-8203065e32a1": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /21, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2b9487d5-2bb3-5b91-82af-06d130cb810d": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.6, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2cea7d40-abb8-51f2-a41e-81be10a43226": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.1, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2fc4b2a2-c4db-58eb-ae4f-eb734a2d8c56": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.89 a.1, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/2fc55e86-905b-5ee0-bd13-dc3d13d1c47a": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.2, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/306d1598-ec33-573f-9ec4-17761c7c8ebe": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.3, live part /4, keeps 0.27 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/308c8075-0df1-5160-9742-4a514a399235": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.6, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/318631ce-cfa0-57c8-a3b0-67e57d9453f5": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.41 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/31c18f56-f25a-554a-8d83-723c0dc52164": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.188 a.5, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/31e2af7b-37bc-55d3-9f7c-02cf7470df9e": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /16, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3252fc3b-ae26-5cf9-98a6-b7976c7a26b6": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.173 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/32da5ca5-7644-5424-8d55-1cb59d72cda3": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.48 a.5, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/341f6e24-392e-5552-969c-4feb7fcb2d3d": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.52 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/34d38055-8755-53e2-8651-895e65b62051": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.119 a.1, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/351d45ae-0985-551f-9c55-1bdcad213398": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.66 a.1, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/354ab717-d048-5d35-80e5-c02469c4a9d3": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/35833936-d464-55ca-8cdf-355ebaca4e28": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3601c106-16b7-5fb5-b751-38e4da2945de": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.173 a.3, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/36415494-a2e1-5f74-a3ef-fb2f5f9a3ed2": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/36428b17-9af4-5fab-8d75-63c27285434e": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.11 a.4, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/36d3deb6-2a4e-5741-abcd-9b2a20710094": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/37542594-87c5-5283-9146-a03d8ea81058": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.19 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3801b154-17f1-5ad6-ae5a-2cc7fb5e5e06": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.89 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3843077c-9284-52a8-85f8-feeefae79829": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.83 a.2, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3a22ff9c-873a-5621-92bd-2f70bb8ca1de": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.57 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3ab89440-914c-55f6-83a9-906ec1ce0887": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /17, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3afd389e-2f08-5c23-87c4-af94534123f4": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.37 a.2, live part /3, keeps 0.12 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3bb01d78-a7dc-5630-a914-46fb75c09bd3": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.52 a.1, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3da3a0b2-d8bb-54cf-a13b-76f5a48bb2e8": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.35 a.1, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/3f09add2-8731-50fa-8866-c77c16251366": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.4, live part /21, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4070eea0-c14a-5d50-bd40-d97b5432369b": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/40d2e809-4b84-5c58-919b-ae5c4c59398d": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.7 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/410c9032-4cba-512c-a746-94d36bdad618": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/417d5dc4-f968-5d44-a327-73add0443dea": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/41b14357-e83b-54b2-844d-4455cbc0b80b": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.41 a.4, live part /13, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/420dd625-a2b7-53f4-aeb7-3390a655a780": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.40 a.2, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/43c767d1-1b46-5cfa-94ee-b4094e7653fe": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /35, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/43d86aed-892d-57db-ae38-9a1e5a20ca87": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.82 a.1, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/44e9c5d9-2fe3-50d5-abba-384cd9e9431e": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.119 a.1, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/45b4aac6-908e-5b4e-90a5-04d187579489": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.4, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/468f8124-9b3b-5822-b1e4-881910ddbe44": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.1 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/46e32b74-a192-51ef-948b-0b0fbbd017a4": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.123 a.12, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4708e0f9-c01b-5da4-baee-5dc718834719": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/49d132cd-ca86-5f7e-8844-3765fd5211db": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.4, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/49fd89be-ed61-58f3-b5c6-bfa68f0a4f5e": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.4, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4a06543f-c042-5b9c-b8fb-2a8b696b8a82": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.70 a.3, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4a0e0afe-3dad-5231-8a42-1a16ebde97e9": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.175 a.6, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4cda3b71-8e0a-5d6b-8d58-e955ee2fc29d": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /32, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4d7e0053-ad25-54b3-8bc0-7d78daf79415": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.13 a.9, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4e6c19f3-be04-5809-9d77-9429185f40cd": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.19 a.2, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4f94fde8-fb96-5cf1-9a8b-5ae4ab45fb2e": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.1 a.8, live part /6, keeps 0.36 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/4f9eeca9-23bb-5062-84fd-e98f893f7c0f": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.114 a.10, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/51869ffd-db2a-5304-ad25-2f96655a57c0": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.84 a.3, live part /13, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/51c9c065-33f9-5417-88c5-451ce6946911": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.148 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5282f74d-3652-5770-9d41-9376082e2588": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.123 a.12, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/52c5720b-dfcb-5b20-9c1c-38592eec23dc": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/55077b64-fedb-5580-8fe4-efb783ddd6fb": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.44 a.5, live part /3, keeps 0.40 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/563b288d-6277-5ba7-a9e4-dafdd89c2276": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.129 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/57c9d4e3-36d7-52e0-ac7c-3c638846d7c6": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/57f4e2a7-cb4f-53b9-b725-7eed76fcde0e": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5a8d4937-f901-5c96-a3e7-4256593f7c9e": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.83 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5b66e3dd-68eb-5f1e-b056-a3708ef7dcbe": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /20, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5b9a2e86-8a2a-5dd9-8b2a-9e0ca91f1b55": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.123 a.12, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5bb045f9-466d-53e0-8c4a-2b57285b27eb": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.4, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5cad45c0-7e48-5869-9402-2766a28f7d81": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.40 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5cc82180-6afc-5a57-a011-f1eced6e7da4": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/5d889798-679e-5c9f-a636-d6796a223107": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.57 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6112e58d-983e-58bc-93ee-62678d25f36d": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.36 a.4, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/61e21534-def9-50d0-ba77-d8cbab5cb2ab": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.40 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/625d6b53-e60d-51b6-8ae4-f297bdf99ee2": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.107 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6295026d-5b3e-5d16-b2c0-bcd22ae32f68": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.1 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/632c8502-dd2e-583e-bb3a-fdd8479758cd": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.118 a.2, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6388e340-6ec0-5785-8e41-c04e6914b49b": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.83 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/63d3dc04-134f-5617-8dc0-f4d99373fa74": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.184 a.8, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/63f5ca49-198f-5851-b9d5-57a0758831fb": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/64a03c78-2c10-5bf9-94ca-b58b6d441c3b": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/64c4dca2-48b5-57c0-a94d-823354976d20": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/651ddcd6-3d67-5f5c-9e60-a34609cbfb12": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.19 a.5, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6786b8cb-348b-5c87-b593-c711a6e6e91b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.51 a.4, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/67b39778-0e3a-54cc-bac3-de7fa1da6745": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.66 a.8, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/68119e70-2b62-52db-b72e-7a9252c82e49": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/68682626-af5a-59cd-afcb-73e0f4ba955b": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/694c9ac1-f6e4-564c-8349-7375687f3856": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/695e3b72-354f-53d2-865a-1056a1f819ae": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.108 a.5, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6a8c49a2-310b-5a7b-8e15-2f4091bcfc19": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6a99c95d-f5cb-5396-b46a-31d0be90ae7f": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.119 a.1, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6b14746d-ec91-5498-aeaf-74bee1377d9d": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.123 a.12, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6b432ad0-43e6-5112-9340-1b133b6370b3": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.154 a.1, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6baee67e-ed32-53e1-a3ab-24ee09f0638c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.6, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6de4f311-9b28-5c5a-933b-e3939ebd103d": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.41 a.4, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6ded3ac0-d1be-5b4e-8805-a589d92f6b7f": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.169 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6f828e67-4840-5e3c-ab1e-74bffe935087": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.107 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/6fe5afb3-eedb-5753-9b9f-ce45340524e5": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.37 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/701b4a46-4dd8-508a-ad66-0cbce0486865": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7099dc99-5b72-5551-b6f8-3a312ea979b3": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.114 a.10, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/72122a29-aa60-5627-9b57-7dc9c0c5205d": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.6, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7224f751-e019-5a64-89b7-f422a9dfd37f": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.114 a.10, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/72424ba8-db37-5e13-b429-f3f510537e24": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.83 a.14, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/72939c81-34fd-53ef-a62f-36d1c54c9d88": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.19 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/72a2b28c-f73a-5a71-a39e-e2df4496e01e": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.114 a.10, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7363e4be-abe8-52d9-8f23-1ae1b7abe582": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.1 a.8, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/73d93c75-b6a6-59e4-ac27-abd26c06e21f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /16, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/73e4da28-9a6e-50eb-b2ef-0c722eb7f7e7": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.48 a.5, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/743fc317-987d-595b-a69d-b433d5b3095a": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.46 a.9, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/75355ee7-3052-57c5-8677-ef10c85beb34": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.105 a.2, live part /21, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/761ae93f-4a09-5944-ace2-eb17a42a2692": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.116 a.1, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7640651b-873e-53db-819d-9751701c495f": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.2 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/76432a82-aa41-59bf-89bd-6f5a39baeb8b": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.1, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/76dbb2a4-83cc-575f-b539-86b75ad1900b": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7784f7ef-9ab3-5089-9e0c-95ded93cf379": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.83 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/783d20b6-4a3c-5589-8bc4-5bff53edf30c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /36, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/78bcdeb6-fee8-5d70-8f27-b0904beeb062": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/78ee7ecf-aaf4-5087-90d4-7419a0b0538a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.175 a.6, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/79528230-f6fc-568a-bac5-8736c8495273": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.3 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/79edd10e-ad76-5c27-bb44-d99609426010": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.82 a.1, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7b9a9c3c-e2f2-5b83-8495-854cf602098a": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7c5aea94-eb28-52f0-9785-9f35615a1239": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.19 a.5, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7e3c04a0-48d6-59d3-9322-896aae7da138": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.7, live part /3, keeps 0.22 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7f0b0bf8-9902-5305-9705-bd092c64eece": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7f26b8b1-a6fa-524a-9780-3eee1b8ab753": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.36 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/7f5fd85a-5738-5882-8aed-f20b25875163": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.7, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/80304943-62bf-5de1-9224-7e8b0d439e6c": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.38 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/810250a3-72f4-55fe-b643-7aebe271b3ab": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.105 a.2, live part /19, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/82d0b363-1ba8-525e-96eb-89aec83fce08": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.19 a.2, live part /5, keeps 0.30 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/83c04b84-bc05-5e01-9618-abd5ef897089": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/83c4ffce-45d5-537a-a941-7e2f1fe3621a": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.3 a.2, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/83dd36f4-9b81-5f12-934b-a4aeb36ade16": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.148 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/85ba1a7f-c0b0-57da-87bb-9d44d1cd0e17": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /13, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/85eb5ad4-7631-5e5b-8c2b-e2f1762b10ac": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /24, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/86b525be-bf5d-5e53-aa42-ed094c95cf31": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /33, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/86c5ad17-5d07-51e5-b430-48deed74cfc2": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/89a6db79-5c8f-5f36-bd81-1e8b446e78fd": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.124 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8a3027b0-0d98-5401-8d36-37e4ec4420af": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8a9f8618-1e89-5e5e-bfce-8042c9235f41": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.173 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8bcc54ae-16f1-5e9c-8726-dff9f13b2b9a": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8c15ab79-c597-5676-a2b3-0e43e3d4f33f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8c5ca579-5eec-5d5b-a53d-8a94f35b7e77": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.14 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8d1fb246-3e80-588a-80d4-fb1e54ccae39": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /17, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8d3effe2-5d9d-5e57-920f-14c06aea434f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8d44252c-bcd3-5ee1-8afe-022071fc9209": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /26, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8e39c894-38d6-59af-a203-7d9a0199d285": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8e4638f4-4f30-53db-bd30-1104dd4a3e19": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /23, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8e905074-b2c8-5446-be04-4565f37857bf": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8ea4bb4b-160a-5c5f-b818-81e22ec23156": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/8f097d15-ab76-5ec7-bcdc-bcca4ea01503": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9031d126-8f18-5324-b7af-92c22ba44232": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.41 a.4, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/914f9390-0b40-54ca-9ca2-8b1c3a09c276": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.136 a.5, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/91d6e1bf-88d1-5a11-a617-d8c716552e98": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.48 a.5, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/92d45352-60aa-576c-9351-2f2bac4c9ea5": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/937e5b3d-d7fb-5af8-9b09-3daca169c4c1": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.7 a.3, live part /3, keeps 0.40 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/94d67b8c-396b-5914-a549-26da94df180c": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /7, keeps 0.17 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/94db8bdf-2ac7-516f-8986-b0245faca6ea": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.4, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/95bcb938-f029-528f-92e4-3e070df6d188": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /15, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/96316c5a-c86c-5835-84c0-bd468aaf1c6a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.154 a.1, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/96589070-dd27-5aaf-8d6d-c0e54ae4829f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/96b5003b-0b48-57f4-9178-db260efe6a62": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.48 a.5, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9743a78d-26c3-54a2-8cbc-8bbaf0eb2631": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.108 a.5, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/97763932-0d9a-5f94-ad4a-8c2d8660338e": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.44 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/985031fa-5206-5d40-afa8-d70772dd957b": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /27, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/98711cce-0bb0-5518-99ec-91d21c7cbea6": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /18, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9941bf75-8166-574b-a59e-e7eefc69058b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.184 a.8, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/99ada9f1-f22c-5f2a-8554-23fee8d1a4df": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.89 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9a6075ff-cdff-5600-86ab-e8a861cee761": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.52 a.1, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9a8ecc61-7d19-5fca-a0eb-01f03bb21162": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.2 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9aa4629a-f36b-59e1-8008-7beccaf25b06": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9b60f371-e2e0-5396-81c7-d28801aab28b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.154 a.1, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9b65b064-c58e-57e8-b7ec-16815077fd6c": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.44 a.3, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9c41d642-4425-5b51-b78f-fd2f4e2c14a6": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.84 a.3, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9c84d6da-c250-56a3-8870-1188d152c5da": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9ca5f676-aa08-5905-a915-c5f3a67e00de": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.105 a.2, live part /26, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9cb30c78-a35b-5d0f-801a-6016ee0edc54": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9e874f27-2942-54b3-92fe-a275df32677e": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.7, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9f7668be-1104-57a9-9f24-9221736d1840": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.4, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9fc7607e-dc81-52cb-8ad9-5b4a8f282c48": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/9fed8a00-faf0-5b29-b7fe-519ffb9cb469": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /31, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a0107797-1f32-52c0-b0ec-3d7b748c2b11": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a079a54f-7df0-5969-8859-2e56b29e5b94": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a095f9b9-ebdd-5f82-b86d-3f18071612ae": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.66 a.8, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a1785b53-b8bf-5402-a7df-000db2d44a7a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.1 a.8, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a2ea5c8d-ea32-5f14-8e9b-40e98bd4ec16": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.148 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a36dc11f-ac9e-5e2c-a098-0f9123f933e5": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.51 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a3a80eca-cc54-5710-adcf-6a24905de097": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.118 a.2, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a41bcbd6-d04a-5317-8e5a-ea0150a29590": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.70 a.3, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a462f520-d64c-5d03-83de-aa63320c4686": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.173 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a4c1c4bd-9fc8-5ec3-8ee8-0f984b866232": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a5c89cc6-2b23-51a6-b294-bbf4a74c5b6a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.169 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a683e1b1-87a3-5930-b4d3-304dc9724a82": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.148 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a6b74f92-f80c-56ce-97ce-e027e821bbef": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a6f7a6dd-cd4a-5981-aed2-4b172e1bfb94": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.94 a.1, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/a8718553-7058-5df2-b134-35724982ebe0": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.154 a.1, live part /12, keeps 0.43 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/aab1d58c-ea93-5572-a468-f1c419affd32": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.2, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ab44bedf-c3da-502e-a8cc-f9eb7665e11e": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.119 a.1, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/abe0cb2f-d699-5755-9641-4e98a19fd19d": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.83 a.14, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ac0a428c-f1cf-5030-a980-157a486e5f6c": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.41 a.4, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/acf1fcaf-a1dd-50db-b5ec-9201fd7fdaad": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ad3901c1-975f-5bd0-bb1e-f9d5a6a4725f": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/adaf969c-e614-5883-85f2-2abd1d7834f5": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.89 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ae9a8a2e-5d72-5b07-a600-c2272f9096b6": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /13, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/aef7abdc-db11-5448-b454-e93b13fdb44f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/affa7ed9-e9cd-5208-8dbb-09060ed8a803": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.184 a.8, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b099799b-afc8-511a-b4e9-79eea8d993e4": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.2 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b0c53aaf-04ba-57f4-be24-66205aa6353a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.123 a.12, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b133c003-ad19-5d2f-8f90-2ec46d961daa": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.44 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b1f15410-0e26-5382-9b41-ad2662bc938f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.6, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b5071f78-cfb4-552b-9ccd-7425e1c75a15": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.38 a.2, live part /3, keeps 0.12 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b55a6c8b-c146-51fd-8ed4-b9e6436bafd2": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.41 a.4, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b5a5adbe-1226-5310-a94b-69d330e5c455": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.14 a.1, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b711da40-5341-5822-804f-bf860f46b0a5": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /28, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b88f1938-d6e9-52d3-9875-3a51a62d984a": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.65 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b8a4b662-01fe-5687-b288-b75b71c4a155": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b8a71071-4f04-5f8b-b7d0-7406a913febe": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /18, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b8b8b02c-d0f0-527f-b565-c4a878e5a09e": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/b96c4fcf-17e9-5de6-bc13-fdc8280192de": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.38 a.1, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/bd83fd06-8df7-5f0d-98ea-152b295c43f5": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.136 a.5, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/bd8f742f-18de-5d8f-aab3-191a05bab65f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.98 a.4, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/be244d47-2441-5b25-aba0-8ac000a62ff2": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.148 a.2, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/be77dc18-d8c0-5d61-a3fa-0403cbed6073": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.46 a.9, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/bea83a4d-825d-55f3-9e47-a8c6fefe4983": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.89 a.1, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/beb66b06-60ca-5167-9bca-5def0b674fe9": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.38 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c0f0a6aa-3c1a-5fe0-81b6-9254ee3a1910": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.107 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c1283734-4a2e-5ce5-85f2-3b285c1c878d": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c14ef361-edc7-5470-9a00-4bb7fc8ced90": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.49 a.6, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c23514f8-ad0e-5b49-9c3f-5cbb6b4f3f12": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c269395f-7462-51fc-b4a2-6b159806cd06": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c29f58d2-01f9-5d3b-8093-c17c78cccfba": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /22, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c5bf6218-d4a7-5a5d-bc6b-9eca32359813": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.38 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c994bb45-13fa-5e2a-89ae-9506a225443b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.169 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c9d2629d-3afd-5eef-b4b6-5911b6fcd296": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.65 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/c9d7dd06-d344-54df-9904-131c848eb65e": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cadde292-a414-506a-9623-f82c9807511f": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.46 a.9, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cafa4e1f-1b71-5181-a32d-52c33cfee312": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.1 a.8, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cbf035e7-0668-5a43-afb6-5a962c5dfca9": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.1 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cd09ac96-aa8a-52d1-bd4c-38bf03a85a70": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /14, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ce1333b4-4249-59c4-b736-901e4b3e7145": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.29 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cf4f14a8-386a-539a-8981-141b91a4f18e": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.48 a.5, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cf55b83a-4348-5744-a516-5e90c3295c63": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.1 a.8, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cf584eb4-8f02-5ea6-8367-f9e16cb8366d": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cf615769-2b03-5bbc-9093-35b4e000efe4": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.41 a.4, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/cfd8dbd4-00d4-5465-96d2-b9f2c07cef36": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.1, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d0c41078-b8c0-514c-9c89-fb911ad95f59": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.1 a.8, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d128c25c-9355-53cc-9c7e-d9a40e969344": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.82 a.1, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d1443cc2-9699-5a29-8691-cd2a725a3c3e": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.83 a.14, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d164febe-09fb-5b05-938f-af88235d22ee": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.41 a.4, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d1881848-0e7f-5065-aedf-00264a090cc9": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.105 a.2, live part /22, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d2119a55-30ed-5f80-8c5d-7951dc01375f": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /22, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d267e34b-6e2a-50bc-b669-22cbc051a305": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.114 a.10, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d27e76ce-9032-5893-ac9f-271c538868d2": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d2d078a4-a491-581e-8093-c81a4d323021": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.19 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d3581ae2-bcac-5080-a8d3-66cf7358071b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.123 a.12, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d35d2d86-9e35-5d31-a796-fa36efa8ed91": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.38 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d4488b88-3834-58f0-b3ad-e905db4445b6": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.169 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d4c91c74-7c11-5dec-83c7-8e4821a8c092": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.36 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d5051f47-2722-5fe1-91da-08d93a51575f": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.108 a.5, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d5ada043-f68d-54c4-9e85-184be044837a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.107 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d61377e8-e6f5-5dd5-b6e3-5893935dfdad": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.48 a.5, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d6f40ba5-02e0-58be-bbe6-7dc320c5c364": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.65 a.4, live part /7, keeps 0.27 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d70be79a-6dbc-55c8-ad84-0010e1559025": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /14, keeps 0.01 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d71767ed-c46e-5004-b0bc-ecd63e52e9a9": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d75d8ce6-7565-5ba3-b0c5-a6fd3d5b146e": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.108 a.5, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d78ba280-95af-5c3b-a4a3-acb1019fd1d2": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.4, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d7faf8d3-17c2-5857-b30a-99a27b373e22": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.35 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/d98e10b9-6d9a-558b-be7b-b91839c537bd": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.3, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/daae93c1-751c-55ab-ae78-df7fa9d87dd2": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.4, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/dade8a01-996f-530a-bbb1-b70a46fce57a": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.129 a.2, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/dbe57e77-bbc8-5b07-a325-81df5f3d64b2": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.89 a.1, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/dc34eb4c-7617-5c62-a791-9664fb072595": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.123 a.12, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/dc623621-5f8b-5bb8-9de9-8789a49f43ea": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.4, live part /7, keeps 0.03 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/de28e32d-4810-5196-8e2e-516e0935f651": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.83 a.14, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/deb55b0f-feec-545b-84e9-c7d8895fa286": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.32 a.3, live part /6, keeps 0.33 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/dfcb440c-58cf-519e-a43f-b42da899af9e": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.124 a.4, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e010deb0-2271-5ad4-9794-83418293819f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.92 a.1, live part /30, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e05cf9b3-0c63-5557-8046-23240a345ec6": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.184 a.8, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e1884010-c7a3-509c-801c-e814289fc717": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.38 a.1, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e2a5ca24-5c52-559f-a36b-5d5262e80943": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.96 a.1, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e3c74bb1-2b90-54f8-90f5-cfe4afa2aabd": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.37 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e425f5e1-001a-5a6f-9996-1984aec4a2f1": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.4, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e4826c39-c897-57cc-aaf7-58489dbe9f1c": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.37 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e50c871f-7722-57bc-8553-06dd5c3215a1": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.82 a.1, live part /9, keeps 0.01 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e5569e91-c014-54c4-bafc-0bc2ffd9f8fe": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e682f543-a51b-5500-a6eb-baf0b9dd43a5": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.108 a.5, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e6b2c2cb-c943-580c-b151-40f8a55f105c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.71 a.3, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e7367d12-c5b7-567a-8281-8726c0e46c8c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.98 a.4, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e751bf37-cb49-5072-9ed8-ee789ff10706": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e7a13546-1635-5b56-81d4-b54504305968": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.62 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e7be42dc-f4b8-5268-bc3a-d62f4df46eca": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.129 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/e875d7e6-4da0-5fee-aa83-1e0f90ce35f4": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.67 a.6, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/eae8143c-169d-5c1b-8813-67ea0e52f3ca": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.1 a.8, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/eb7bbe34-75ce-5eda-9ede-977f7ee98555": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.36 a.4, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ec3e1e18-d448-5c80-b573-952e2f4ab33c": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.175 a.6, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ec7cc591-28b1-5cb6-bf66-00ba808da2a4": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.136 a.5, live part /3, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ec93fb19-1764-5c6b-8ee6-3c40cf44ddf5": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ecebd88e-edcf-5c7e-933c-4e9db24ed977": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.89 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ed2661e8-c82f-59e1-9840-43c1e4159926": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.188 a.5, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ee000b2e-973b-5940-abbd-0467ee422284": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.41 a.4, live part /12, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/ef7a7c49-fabc-5554-b5f9-290402a2aca6": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.41 a.4, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f09566c6-3fa0-5daa-b662-ee2202849a94": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.105 a.2, live part /25, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f1bb0fbd-3b1c-5548-983f-9d418d1f5ed0": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.41 a.4, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f33fe750-d619-5f77-8c15-3537886a4e89": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.154 a.1, live part /9, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f5cd0954-5440-5675-9a27-31604265fcbe": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f5f8f6b5-470b-56cf-9c85-2ac55261a00e": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.40 a.2, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f66740d0-ca62-54e5-ba65-bcf436f94e9d": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.45 a.3, live part /7, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f69ad619-24a0-5a8f-bf92-6c77f90d9ca8": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.173 a.3, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f6db54af-9f60-5355-8530-9a11ec4cf07b": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.184 a.8, live part /8, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f73a9d12-41d8-540b-9ba8-cb371562aab8": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.50 a.1, live part /15, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f7869681-8f99-5291-94e5-f5246450c84f": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.57 a.2, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f8588c7a-93a1-57b4-960e-15cf8b6aa691": {
+  "fixed_by": "2.1",
+  "description": "Summa III q.41 a.4, live part /14, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f8627df3-47af-5fd9-8417-7d355d8ba87c": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.55 a.5, live part /10, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f94ead7c-e9db-5908-9feb-70d0344b8a6a": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.108 a.5, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/f9c02ec6-7acf-52fc-9147-d35d4fe8400f": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.65 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/fae3f0dc-9d7f-55bf-8481-126492422741": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.118 a.2, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/fb614962-1f34-519d-9da7-4f81d74e915d": {
+  "fixed_by": "2.1",
+  "description": "Summa I-II q.102 a.6, live part /16, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/fc396fd5-7876-5218-b8b2-f2c7eb561bf4": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.107 a.3, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/fc972421-5e6d-525c-9ee7-1429b50e2bee": {
+  "fixed_by": "2.1",
+  "description": "Summa II-II q.94 a.1, live part /6, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/fd5250c2-194d-571a-a325-699b307f4cb8": {
+  "fixed_by": "2.1",
+  "description": "Summa I q.70 a.3, live part /11, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/fe55a4d5-a834-591b-acad-f406c6df8123": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.39 a.3, live part /4, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
+ "release.stability:summa/fe8d9616-f3c6-518e-8732-d3cf7a2004f5": {
+  "fixed_by": "2.1",
+  "description": "Summa Suppl. q.98 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"
+ },
  "sentinel.daniel_13": {
   "fixed_by": "1.4a",
   "description": "Susanna (Daniel 13) is outside every KJV pericope"
