@@ -213,7 +213,7 @@
  },
  "release.stability:councils/e507d54e-55da-583b-b7b6-c4617f59c9fe": {
   "fixed_by": "2.1",
-  "description": "First Lateran sec-0/1 is the editor's introduction live and canon 1 in the build (0.00 of its text kept): 2.1 gives the ID to the unit it names live, which rule G then removes"
+  "description": "First Lateran sec-0/1 is the editor's introduction live and canon 1 in the build (0.00 of its text kept): 2.1 gives canon 1 the live ID of sec-0/1-2; the introduction's ID then needs a rule-g-editorial removal entry from a council item"
  },
  "release.stability:summa/00098605-3a7d-57da-96a7-d65eac6e423c": {
   "fixed_by": "2.1",
