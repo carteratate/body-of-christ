@@ -13,7 +13,7 @@ TheoCorpus has excellent storage parity but material source-construction defects
 - Twenty-one Summa passages have blank content in Supabase. Their points exist, but they are not healthy or useful retrieval units.
 - The vendored *Nostra Aetate* source is complete. The Vatican II parser drops continuation paragraphs after the first numbered paragraph of a section, then sometimes treats numbered footnotes as sections. This affects all 16 Vatican II documents, not just *Nostra Aetate*.
 - A source-driven audit found 436 of 614 numbered Vatican II sections with at least one dropped continuation paragraph, approximately 542,560 omitted characters, and 76 spurious footnote passages. The character count is a parser-based estimate, not a canonical edition diff.
-- The live corpus was mostly published in June 2026 and does not reflect the last passage-splitting repairs committed on 22 August. Building every collection with today's adapters produces 54,776 passages, 208 more than live, and preserves about 18,747 additional characters. Those later generic fixes still do not repair the Vatican II continuation bug.
+- The live corpus was mostly published in June 2026 and does not reflect the last passage-splitting repairs committed on 22 August. Building every collection with today's adapters produces 54,778 passages, 210 more than live (corrected 5 Oct 2026 by item 0.1c: this line and the table's total row first read 54,776 and 208, but the per-collection rows sum to 54,778), and preserves about 18,747 additional characters. Those later generic fixes still do not repair the Vatican II continuation bug.
 - All 54,568 live passages have empty annotation fields. TheoCorpus is therefore retrieving raw passage text only, despite having an enrichment design capable of facets, generated questions, and annotations.
 - Corpus metadata is too thin for authority-aware or version-aware retrieval. Only the 16 Vatican II documents have a `document_type`. The live metadata has no consistent authority level, issuing body, approval status, effective version, or supersession relationship.
 - Three vendored documents are not in a manifest and therefore cannot be published by the normal collection process: *Amoris Laetitia*, *A New Hope for Lebanon*, and *Ubicumque et Semper*. In addition, the major HTML collections lack recorded source hashes, so their local provenance cannot currently be verified.
@@ -138,7 +138,7 @@ Most live rows were inserted between 22 and 25 June. Current adapters and vendor
 | Medieval | 449 | 434 | 20 | 5 | 212 | 2,132 |
 | Papal documents | 494 | 485 | 14 | 5 | 89 | 754 |
 | Summa | 26,792 | 26,750 | 63 | 21 | 727 | 1,343 |
-| **Total** | **54,776** | **54,568** | **373** | **163** | **2,439** | **18,747** |
+| **Total** | **54,778** | **54,568** | **373** | **163** | **2,439** | **18,747** |
 
 "Missing" and "extra" use deterministic passage IDs, so boundary changes can turn one logical replacement into both a missing and an extra row. This is not a count of wholly absent doctrines. It proves that the live publication does not match current methodology. Republishing needs the existing identity-churn review because saved retrievals and bookmarks can refer to passage IDs.
 
