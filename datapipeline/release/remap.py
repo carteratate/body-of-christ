@@ -245,8 +245,13 @@ class _DocumentIndex:
         self.by_text: dict[str, int] = {}
         for i, text in enumerate(self.joined):
             self.by_text.setdefault(text, i)
-        self.shingles = [shingles(w) & wanted for w in self.words]
-        self.sizes = [max(len(w) - SHINGLE_WORDS + 1, 0) for w in self.words]
+        # Jaccard's denominator needs each passage's distinct shingles, not its word
+        # positions: repeated text would otherwise inflate it.
+        self.shingles, self.sizes = [], []
+        for w in self.words:
+            full = shingles(w)
+            self.sizes.append(len(full))
+            self.shingles.append(full & wanted)
         self.index: dict[tuple[str, ...], list[int]] = defaultdict(list)
         for i, sh in enumerate(self.shingles):
             for s in sh:

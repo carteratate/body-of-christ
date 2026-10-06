@@ -477,3 +477,15 @@ def test_split_redirect_puts_the_own_document_target_first():
              doc(new("t/0", text("b"), 0), document_id=OTHER)]
     result = R.remap([old("o", "x", a, 0)], build, R.Registry(redirects=rows))
     assert outcome(result, "o").new_ids == (pid("s/5"), pid("t/0", OTHER))
+
+
+def test_jaccard_counts_distinct_shingles_of_repeated_text():
+    # From the PR review (6.1 Sol): the new passage holds 30 of the old 40 words, then one
+    # word repeated 100 times. Distinct-shingle Jaccard is 23 / 41 = 0.56, above 0.5.
+    old_text = " ".join(f"a{i}" for i in range(40))
+    new_text = " ".join(f"a{i}" for i in range(30)) + " z" * 100
+    result = R.remap([old("old-a", "x/1", old_text, 0)], [doc(new("s/1", new_text, 0))])
+    row = outcome(result, "old-a")
+    assert (row.outcome, row.method) == ("moved", "jaccard")
+    assert row.score == pytest.approx(23 / 41)
+    assert result.failures == []
