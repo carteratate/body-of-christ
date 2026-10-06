@@ -24,10 +24,9 @@ collapsed block. Otherwise replace this section's body with:
 ```
 </details>
 
-<details><summary>Coverage and sequence summary (0.1a)</summary>
+<details><summary>Coverage and sequence summary (0.1a): <code>cd datapipeline && python3 -m checks.report --collection &lt;name&gt;</code></summary>
 
-```
-```
+<!-- Paste summary.md as Markdown, not in a code block, so its tables render. -->
 </details>
 
 <details><summary>Health summary (0.1b)</summary>

@@ -1,0 +1,786 @@
+[
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "ii.i",
+  "title": "Introductory Note to the First Epistle of Clement to the Corinthians",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "iii.i",
+  "title": "Introductory Note to the Epistle of Mathetes to Diognetus",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "iv.i",
+  "title": "Introductory Note to the Epistle of Polycarp to the Philippians",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "iv.iii",
+  "title": "Introductory Note to the Martyrdom of Polycarp",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "ix.i",
+  "title": "Introductory Note to Irenæus Against Heresies",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "ix.v",
+  "title": "Elucidation",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "v.i",
+  "title": "Introductory Note to the Epistles of Ignatius",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "v.ix",
+  "title": "Introductory Note to the Syriac Version of the Ignatian Epistles",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "v.xiii",
+  "title": "Introductory Note to the Spurious Epistles of Ignatius",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "v.xxiv",
+  "title": "Introductory Note to the Martyrdom of Ignatius",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "vi.i",
+  "title": "Introductory Note to the Epistle of Barnabas",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "vii.i",
+  "title": "Introductory Note to the Fragments of Papias",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "viii.i",
+  "title": "Introductory Note to the Writings of Justin Martyr",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "apostolic fathers.xml",
+  "div": "viii.x",
+  "title": "Introductory Note to the Martyrdom of Justin Martyr",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iii",
+  "title": "Editor’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "v.i",
+  "title": "Introductory Note by the Editor",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "ii",
+  "title": "Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.ii.i",
+  "title": "Introductory Notice",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.iii.i",
+  "title": "Introductory Notice",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.iv.i",
+  "title": "Introductory Notice",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "ii.i",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "ii.v",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "iii.i",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "iv.i",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "v.i",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.i",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iii.iv",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.i.xxx",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.ii.xxiv",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.iii.i",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.iv.xxii",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.v.xv",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.vi.xix",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.vii.xix",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.iv.viii.x",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "second-century.xml",
+  "div": "vi.v.i",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "ii",
+  "title": "Preface",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iii.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iv.ii",
+  "title": "Introductory Notice to Cyprian",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "v.ii",
+  "title": "Introductory Notice to Caius, Presbyter of Rome",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "vi.ii",
+  "title": "Introductory Notice to Novatian, a Roman Presbyter",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "vii.iii.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "vii.iv.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.ii",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iv.ii",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iv.v",
+  "title": "Note by the American Editor",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "ix.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "ix.v",
+  "title": "Note by the American Editor",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "ix.vii",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "v.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "v.vii",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vii.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vii.v",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vii.vi",
+  "title": "General Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "viii.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "viii.iv",
+  "title": "Elucidation",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "x.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "x.iv",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "xi.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "xi.vii",
+  "title": "General Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "xi.xiii",
+  "title": "General Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "xii.ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.ii.vii",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.xi.vi",
+  "title": "Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.xi.vii",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iv.ii",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "v.ii.i",
+  "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.i",
+  "title": "Preface",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.ii",
+  "title": "Life",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.iii",
+  "title": "Exegetical Works",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.iv",
+  "title": "Critical Works",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.v",
+  "title": "Apologetical Works",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.vi",
+  "title": "Dogmatic Works",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.vii",
+  "title": "Practical Works",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ii.viii",
+  "title": "Editions of Origin",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.iii",
+  "title": "Prefatory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.iv",
+  "title": "Prologue of Rufinus",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "ii",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "iii.i",
+  "title": "Introductory Notice to Lactantius",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "iii.ii.viii.lxx",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "ix.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "ix.ix.vii",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "v.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "vii.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "vii.ii.i",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "viii.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "viii.ii.i",
+  "title": "Section 1.—The discovery of the codex, and its contents",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "viii.ii.ii",
+  "title": "Section 2.—Publication of the discovered works: the effect",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "viii.ii.iii",
+  "title": "Section 3.—Contents of teaching, and relation to other works",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "viii.ii.iv",
+  "title": "Section 4.—Authenticity",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "viii.ii.v",
+  "title": "Section 5.—Time and place of composition",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "viii.iii.xvii",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "x.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "x.ii",
+  "title": "Introductory Notice by Professor M. B. Riddle, D.D",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "xii.i",
+  "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "xii.v",
+  "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "medieval",
+  "file": "consolation-of-philosophy.xml",
+  "div": "viii",
+  "title": "Appendix",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii",
+  "title": "Introduction",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.i",
+  "title": "Anselm's Philosophy (After Weber.)",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.i",
+  "title": "Descartes",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.ii",
+  "title": "Spinoza",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.iii",
+  "title": "Locke",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.iv",
+  "title": "Leibnitz",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.ix",
+  "title": "Flint",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.v",
+  "title": "Kant",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.vi",
+  "title": "Hegel",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.vii",
+  "title": "Dorner",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.ii.viii",
+  "title": "Lotze",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "proslogium-monologium-and-cur-deus-homo.xml",
+  "div": "ii.iii",
+  "title": "Bibliography",
+  "item": "1.9"
+ }
+]

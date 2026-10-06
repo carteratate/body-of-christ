@@ -27,6 +27,8 @@ services/api/.env
 
 # Corpus source data (large binary/XML files — load separately)
 datapipeline/sources/
+# Local check output (0.1a report), which may quote corpus text
+datapipeline/releases/local/
 .worktrees/
 .claude/*
 !.claude/skills

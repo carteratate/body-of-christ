@@ -68,6 +68,7 @@ These apply to every PR below and are not repeated in each item.
 - **Depends on:** 1.10a
 - **Goal:** Fathers and medieval passages read as the author wrote them, without ANF and NPNF footnotes such as "Matt. xxiv. 15" or "Literally, 'bidding farewell to'" in the middle of a sentence.
 - **Current state:**
+  - Also found by 0.1a's checks (5 Oct 2026): `_direct_p_text` reads only `<p>`, so `<verse>` blocks (poems and quoted hymns as `<l>` lines) are dropped: 828 blocks, about 135,000 characters, in the Fathers, and about 850 characters in medieval. Examples: the Sibyl's and the poets' testimonies in Justin's Hortatory Address (`apostolic fathers.xml` `viii.vi.xv` to `xviii`) and On the Sole Government of God (`viii.vii.ii` to `v`), Theophilus To Autolycus II.36 and 37, Clement's Exhortation ch. VII, and the hymn closing Clement's Instructor. `second-century.xml` is 94.1% covered. Each is a `known_defects.json` entry with `fixed_by` 1.10b. Carter decided on 5 Oct 2026 that 1.10b reads them (Decision log "Verse blocks in ThML text (1.10b)").
   - `ingest/common.py:37-50` `_direct_p_text` serializes each `<p>` and `_strip_tags` (`common.py:16-23`) removes tags but keeps their text. ThML keeps footnotes as `<note>` elements inside the paragraph, so every note's text lands inline.
   - Measured across the paragraphs the adapters actually read: 32,211 `<note>` elements, about 1,967,600 characters, in 4,986 chapters. By file: ANF01 4,841 notes, ANF02 3,641, ANF04 4,411, ANF05 5,436, ANF06 4,923, the third and fourth century volume 3,967, NPNF1-02 2,009, NPNF1-03 2,770, Incarnation 71, Consolation 75, Imitation 55, Anselm 12. Confessions and On Loving God have none.
   - Live confirms it: 1,838 Fathers passages contain a Roman-numeral scripture note such as "Matt. xxiv. 15.", and 284 contain "Literally, “". The plan's "at least 584" was a lower bound.
@@ -78,11 +79,12 @@ These apply to every PR below and are not repeated in each item.
   - Record the removed notes in passage metadata as `editor_note_count` only. The note text is editor material under rule G and should not be stored for display.
   - Add one `class` entry to 2.1's removal registry: reason `rule-g-editorial`, rule `common._p_text_without_notes`, and the count of `<note>` elements removed. No passage is retired by this item, so no `passage` entries are needed.
   - Piece anchors that disappear because split points moved (`base/pN` with N above the new piece count) get `merged` redirects to the new piece that holds their first 200 characters.
+  - Read `<verse>` blocks too, as Carter decided on 5 Oct 2026. In `_direct_p_text` and `_extract_p_text`, take a chapter's direct `<verse>` children in document order with its `<p>` children, join each block's `<l>` lines with a line break, and strip notes the same way. Fixture: `<verse><l>To Thee a chaplet I present,</l><l>Woven of words</l></verse>` gives "To Thee a chaplet I present,\nWoven of words".
   - Fixture: `<p>He said<note n="1" place="end">Matt. xxiv. 15.</note> this, and<note n="2">Literally, "to."</note> left.</p>` becomes "He said this, and left."
 - **Acceptance checks:**
   - `test_direct_p_text_drops_notes_keeps_tail` and `test_extract_p_text_drops_notes` on the fixture.
   - Vendored check: zero passages in church fathers and medieval contain the text of any `<note>` whose text is 20 characters or longer. The check builds the note-text set from the sources, so it cannot pass by accident.
-  - Coverage: characters kept equals the old build minus note text, within 1%. The PR reports both numbers.
+  - Coverage: characters kept equals the old build minus note text plus verse text, within 1%. The PR reports the numbers. The 11 `known_defects.json` entries with `fixed_by` 1.10b clear, and their entries are deleted.
   - The release report lists the anchor churn (expected about 724 removed and 210 added `/pN` anchors). The PR must say that none of the 50 retrievals and 0 bookmarks the plan found at risk sit on a removed anchor, or list the ones that do.
 - **Production safety:** Datapipeline only. Document IDs do not change. Surviving anchors keep their IDs; 0.1c compares all pieces of a unit together, so shorter text under the same anchors passes its stability check. Passage IDs disappear only where a split point moved, and each has a redirect.
 - **Needs Carter:** nothing.
@@ -316,6 +318,7 @@ These apply to every PR below and are not repeated in each item.
 - **Depends on:** 1.10c
 - **Goal:** Whole papal documents are readable. In Dominico Agro and Annus Qui Hunc gain their bodies. Endnotes stop appearing as walls of citations. Cards such as "PAUL VI" and "146" disappear. Quanta Cura (1864) cites real paragraphs.
 - **Current state:**
+  - Also found by 0.1a's checks (5 Oct 2026): prose after a bold heading is dropped until the next numbered paragraph (Allatae Sunt 86% of body kept, Vix Pervenit 68%); prose before §1 is dropped (Signum Magnum 50%, Patris Corde 86%); the inline-footnote reset at `encyclicals.py:122-131` cuts real paragraphs (Inscrutabile §10 to §17, Inter Praecipuas §17 to §24, Quartus Supra §52 to §66); numbered list items inside a section become second passages for §1 to §7 (Dominum et Vivificantem, Redemptoris Mater, Laudate Deum, C'est la confiance, Familiaris Consortio, Africae Munus); and 10 documents whose source has no paragraph numbers get § numbers the adapter invents (Mysterium Fidei 95, Haerent Animo 102, Ineffabilis Deus 58, Gaudete in Domino 78, among others). Each is a `known_defects.json` entry.
   - `encyclicals.py` (257 lines), `apostolic_exhortations.py` (231) and `papal_documents.py` (231) are three copies of one parser, not one file. With comments and docstrings removed, they differ only in the source directory and the collection name (verified by `diff` on 29 Sep); `encyclicals.py` carries 26 more lines of comments and docstrings. A fix in one silently misses the other two.
   - List bodies. `_tokens` reads only `<p>` (`encyclicals.py:77`). In Dominico Agro keeps 224 of 10,422 characters; its body is 8 `<li>` items. Annus Qui Hunc keeps 2,277 of 64,743; 62,378 characters sit in 15 `<li>` items. Five more documents lose short lists inside paragraphs: Familiaris Consortio 1,155 characters, Reconciliatio et Paenitentia 1,038, Pascendi 910, Rerum Novarum 609, Immortale Dei 584. The plan described this as Roman-numeral headings. It is `<ol>` list markup.
   - Endnotes. The notes trim at `encyclicals.py:79-83` needs a "NOTES" heading. vatican.va Word exports instead put notes after an `<hr>` as paragraphs starting with `<a name="_ftnN">`. A citation-density check finds at least 82 passages in 18 documents made of notes. Examples: Fratelli Tutti §287 is 9 pieces, 8 of them notes (`fratelli-tutti/287/p2` to `/p9`). Redemptor Hominis notes land under a duplicate §1 anchored `redemptor-hominis/1/p2` to `/p4`, positions 49 to 51. Others: Redemptoris Mater, Redemptoris Missio, Veritatis Splendor, Dominum et Vivificantem, Evangelii Gaudium, Laudato Si, Dilexit Nos, Magnifica Humanitas, Christifideles Laici, Ecclesia in Medio Oriente, Gaudete et Exsultate, Laudate Deum, C'est la confiance, Dilexi te, Dies Domini, Patris Corde.
@@ -388,6 +391,7 @@ R3 is specified once, in `P0-checks-identity-research.md` under "R3. Esther: wha
 - **Depends on:** R3, 1.10c
 - **Goal:** Every verse in the WEB-C source is in some passage. Susanna, Bel and the Dragon, the Song of the Three and the Esther additions become findable. The book is called Song of Songs.
 - **Current state:**
+  - Also found by 0.1a's checks (5 Oct 2026): Numbers 16:28 to 16:37 sit in two KJV pericopes ("Korah, Dathan, and Abiram" ends at 16:37; "The Earth Swallows and Fire Consumes" starts at 16:28), so those 10 verses are published twice.
   - `ingest/bible.py:563-586` builds passages only from the KJV pericope file's ranges. A verse outside every range is dropped. Books with no pericopes use the chapter fallback at `bible.py:589-610`.
   - The current build drops 244 verses:
     - Daniel 173 (3:31 to 3:97, all of 13, all of 14)
@@ -471,6 +475,7 @@ R2 is specified once, in `P0-checks-identity-research.md` under "R2. Canons 295,
 - **Depends on:** 1.10a
 - **Goal:** "Canon 112" finds canon 112. Every canon from 1 to 1752 exists once, with the text the source marks as current. Page footers are gone. Amended canons carry an "amended" flag for the badge.
 - **Current state:**
+  - Also found by 0.1a's checks (5 Oct 2026): on `cic_lib7-cann1671-1716_en.html`, canons 1671 to 1691 carry the 2015 amended text (Mitis Iudex) and the kept text is not that one; the page's body is 78.6% covered.
   - `parse_canon_page` (`ingest/canon_law.py:259-312`) reads `p.get_text(strip=True)` per `<p>` and recognises a canon only at the start of a paragraph (`can_re`, line 271). `build_documents` keeps the first occurrence of each number (`canon_law.py:78-84`).
   - Live has 1,747 canons. Missing: 112, 238, 266, 689 and 1330.
   - Glue: in the source, canon 112 follows canon 111 after `<br><br>` inside the same `<p>`, so it is appended to 111. Same mechanism for 238 in 237, 689 in 688, new 1308 in 1307, new 1310 in 1309.
