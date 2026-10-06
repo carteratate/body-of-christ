@@ -358,10 +358,23 @@ def test_chapter_remap_majority_and_reading_progress_anchors():
 
 
 def test_unit_key_strips_piece_numbers_only():
-    p = lambda anchor: old("x", anchor, "", 0)
+    p = lambda anchor, label=None: old("x", anchor, "", 0, reference="R", unit_label=label)
     assert R.unit_key(p("s/1/p2"))[3] == R.unit_key(p("s/1/p1"))[3] == "s/1"
     assert R.unit_key(p("ccc/185-p2"))[3] == "ccc/185"
     assert R.unit_key(p("genesis/1/1-2"))[3] == "genesis/1/1"
+    # The Summa's running number inside one labelled part is a piece number...
+    assert R.unit_key(p("summa/q1/a1/3", "Objection 2")) == R.unit_key(p("summa/q1/a1/4", "Objection 2"))
+    # ...but unlabelled numbered paragraphs sharing a reference are separate units.
+    assert R.unit_key(p("council/sec-4/3")) != R.unit_key(p("council/sec-4/4"))
+
+
+def test_unlabelled_paragraphs_sharing_a_reference_are_checked_one_by_one():
+    a, b, c = text("a"), text("b"), text("c")
+    olds = [old(pid(f"sec-4/{i}"), f"sec-4/{i}", t, i, reference="Letter")
+            for i, t in enumerate((a, b, c))]
+    build = [doc(*(new(f"sec-4/{i}", t, i, reference="Letter")
+                   for i, t in enumerate((a, text("replaced"), c))))]
+    assert [f.passage_id for f in R.remap(olds, build).failures] == [pid("sec-4/1")]
 
 
 @pytest.mark.parametrize("a,b,expected", [("", "", 1.0), ("x", "", 0.0),

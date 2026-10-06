@@ -211,6 +211,10 @@
   "fixed_by": "1.7",
   "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
  },
+ "release.stability:councils/e507d54e-55da-583b-b7b6-c4617f59c9fe": {
+  "fixed_by": "2.1",
+  "description": "First Lateran sec-0/1 is the editor's introduction live and canon 1 in the build (0.00 of its text kept): 2.1 gives the ID to the unit it names live, which rule G then removes"
+ },
  "release.stability:summa/00098605-3a7d-57da-96a7-d65eac6e423c": {
   "fixed_by": "2.1",
   "description": "Summa II-II q.124 a.4, live part /5, keeps 0.00 of its text under this ID in the build: the article's parts are numbered differently live (a blank passage, or two parts printed as one); 2.1 gives the ID to the part it names live"

@@ -193,14 +193,21 @@ def _short_containment(short: list[str], long: list[str]) -> float:
     return best
 
 
-# A display piece's trailing number: /p2, -p2, -2 (Bible), /2 (the Summa's running count).
-_PIECE = re.compile(r"(/p|-p|-|/)\d+$")
+# A display piece's trailing number: /p2, -p2, or the Bible's -2.
+_PIECE = re.compile(r"(/p|-p|-)\d+$")
+# A bare /2 is a piece number only inside a labelled part (the Summa numbers every part of
+# an article in one running sequence); elsewhere it numbers distinct paragraphs, as in a
+# council's synodal letter, which share a reference and have no label.
+_RUNNING = re.compile(r"/\d+$")
 
 
 def unit_key(p: OldPassage | NewPassage) -> tuple:
     """Consecutive passages with equal keys are display pieces of one unit: same chapter,
     citation and unit label, and anchors that differ only in a trailing piece number."""
-    return (p.chapter_key, p.reference, p.unit_label, _PIECE.sub("", p.anchor))
+    base = _PIECE.sub("", p.anchor)
+    if p.unit_label:
+        base = _RUNNING.sub("", base)
+    return (p.chapter_key, p.reference, p.unit_label, base)
 
 
 def units(passages: list) -> list[list]:
