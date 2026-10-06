@@ -1,6 +1,7 @@
 """Unit tests for the 0.1a source checks (datapipeline/checks/). They run in CI: every
 fixture is written here, and no vendored source is read."""
 import json
+import re
 
 import pytest
 
@@ -10,6 +11,7 @@ from checks import report
 from checks import sequence as Q
 from checks import source_text as S
 from model import Document, Passage
+from release import remap
 
 
 def _passage(content, reference="", anchor="a", unit_label=None, position=0, chapter_key="c"):
@@ -381,6 +383,12 @@ def test_known_defects_file_is_well_formed():
         if check_id.startswith("health."):
             rule = check_id.split(".", 1)[1].split(":", 1)[0]
             assert rule in health.BLOCK_RULES, check_id
+        # Release entries (0.1c) name one live passage by ID, which 2.1 keeps when it
+        # re-anchors: release.<check>:<collection>/<passage id>.
+        if check_id.startswith("release."):
+            check, _, where = check_id.split(".", 1)[1].partition(":")
+            assert check in remap.CHECKS, check_id
+            assert re.fullmatch(r"[a-z-]+/[0-9a-f-]{36}", where), check_id
 
 
 def test_editorial_div_is_apparatus_and_flagged_if_published(tmp_path, monkeypatch):

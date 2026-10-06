@@ -1,0 +1,22 @@
+{
+ "snapshots": [
+  {
+   "date": "2026-10-06",
+   "exported_at": "2026-10-06T02:52:14Z",
+   "tables": {
+    "chunks": 54568,
+    "documents": 421,
+    "retrievals": 3491,
+    "bookmarks": 25,
+    "guest_trial_retrievals": 260,
+    "retrieval_labels": 3,
+    "reading_progress": 29
+   },
+   "files": {
+    "passages.jsonl.gz": "1008ce6456dfa18de3f40202d47aa955240689c975667ec5a1b008ac586032db",
+    "documents.jsonl": "600c881e2b97c6aaf1c1a48c70485de7b5f2f616088cfd8bf862cf021da7f63c",
+    "references.json": "c038b3998597aaa2f56304399dbb3417b7d491354f957e81c8d80fe53643e0fe"
+   }
+  }
+ ]
+}
