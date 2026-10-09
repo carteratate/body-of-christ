@@ -34,9 +34,9 @@ These apply to every PR below and are not repeated in each item.
 - Split pieces follow 2.1's rule (C-10, decided by Carter on 9 Oct 2026): the first piece takes the unit's own anchor, and each later piece is named by the first source unit it holds (`base/from-<locator>`), never by its number. A piece keeps its ID while its opening unit still opens a piece. Where a fix moves the cuts so that a live piece's opening unit no longer opens one, the PR adds a `merged` redirect from that piece to the piece that now holds the unit. The release report checks each piece's text on its own (`release.piece_stability`), so text sliding from one piece into the next fails the PR.
 - Removals (D4). Every passage an item drops (notes split off, footnote cards, heading debris, duplicates, Tanner text with no successor) gets an entry in 2.1's `registry/removals.json` in the same PR, by live anchor, with reason and tombstone text. The 0.1c report fails on a removal the registry doesn't explain. Nothing is retired in live data until 4.1b (D2, D7).
 - Document IDs come from the frozen registry (2.1). Where a fix would change the computed ID, the registry keeps the old one and this file says so.
-- Passage fields (D11). `searchable`, `language` and `passage_author` are fields on the `Passage` model, added in 2.1, never keys in `metadata`. An adapter may set them; a value in 2.1's passage registry overrides the adapter's (3.3). Genres come from 2.1's genre module.
+- Passage fields (D11). `searchable`, `language`, `passage_author` and `voice` are fields on the `Passage` model, added in 2.1, never keys in `metadata`. An adapter may set them; a value in 2.1's passage registry overrides the adapter's (3.3). Genres come from 2.1's genre module.
 - Superseded text (rule F, D11). Where an item keeps an older text of a unit as history (an amended canon, CCC 2267), the older text is its own passage, never metadata: anchor `<anchor>/history-<year>`, `searchable = False`, and `superseded_by_anchor` naming the current passage. It is a new unit, not a removal, so it needs no removal-registry entry. The reader shows it as "earlier text" (2.4b).
-- Every P1 PR depends on 0.4 (publish lock), 0.1a (coverage and sequence tests), 0.1c (release report) and 2.1 (registry). The "Depends on" lines below list only extra dependencies.
+- Every P1 PR depends on 0.4 (publish lock), 0.1a (coverage and sequence tests), 0.1c (release report), 2.1 (registry) and 0.1d (the checks for the 6 Oct review findings). The "Depends on" lines below list only extra dependencies.
 
 ---
 
@@ -256,6 +256,7 @@ These apply to every PR below and are not repeated in each item.
   - `test_percival_allowlist_drops_epitome_and_notes`, `test_percival_canon_anchors`, on a synthetic ThML fixture.
   - Vendored checks: Nicaea yields 20 canons plus the Creed and the Synodal Letter. Constantinople I 7 canons (Percival prints 7). Ephesus 8 canons, Cyril's letters and the 12 anathemas. Chalcedon 30 canons and the Definition. Constantinople II the 14 anathemas. Constantinople III the Definition. Nicaea II 22 canons and the Definition. Adjust these counts to what 1.2a finds and say so in the PR.
   - No passage contains "Ancient Epitome", "Excursus" or "Zonaras".
+  - Condemned texts (C-01). Where Percival prints a text the council read and condemned (Nestorius's second letter to Cyril at Ephesus, as 1.2a marks it), the PR lists its anchors for 3.4's rejected-voice ranges. The letter stays in the council's document.
   - The release report lists every old Tanner anchor and its outcome. Every outcome other than `same` has a redirect row or a removal entry.
 - **Production safety:** Document IDs are unchanged (`document_id("councils", council, council)` and registry-frozen). Canon IDs are unchanged; other old passages are redirected or retired as above. Tanner text stays live until the P4 apply.
 - **Needs Carter:** nothing, if 1.2a is approved.
