@@ -4,6 +4,8 @@
 
 Work specifications for Phase 4 (republish) and Phase 5 (reorganize and expand) of `docs/2026-09-28-corpus-cleanup-plan.md`. Written 29 September 2026 and revised the same day to follow the plan's "Cross-cutting design decisions" (D1 to D11), which override anything here that disagrees with them. The plan and its Decision log are the source of truth. Nothing here reopens a decision; where a fact found while writing this bears on a decision, it is marked "Carter to note" and left for Carter.
 
+Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs/research/2026-10-06-corpus-review-synthesis.md`; `REVIEW-GAPS-PLAN.md` in this folder routes each to its item. 4.0, 4.1a, 4.1b, 4.2 and RF were extended for them on 9 Oct 2026, and RF-1 was added.
+
 ## Overview and recommended order
 
 1. P4 republishes the cleaned corpus built in P1 to P3 in one apply, through the stage-then-apply writer (2.2w, D2), behind the publish lock (0.4) and the Qdrant alias `chunks_live` (2.2b). There is no release column. The new corpus is built into the `staging` schema and a new Qdrant collection, compared against live in the release report, applied to the live tables in one transaction, and then made visible to vector search by switching `chunks_live`.
@@ -81,6 +83,9 @@ P4 and P5 assume these have merged. Each spec below names the ones it needs.
 | 2.2b | API reads Qdrant through the alias `chunks_live`; boolean `searchable` payload index; filter that excludes only `searchable = false` |
 | 2.3 | Document metadata, including genre and issuer for every document, in the registry and staging (applied at the P4 apply, not early, D7) |
 | 2.4a, 2.4b | API payloads and web rendering for tombstones and redirects. Both must be live before the P4 apply |
+| 2.4d, 3.4 | The rejected-voice role (C-01): 3.4's ranges in the registry, 2.4d's API and web handling, live before the P4 apply |
+| 2.2c | The `search_vector` migration (C-16), applied in 4.0's window before staging |
+| 0.1d, R7 | The checks for the 6 Oct review findings; the Summa against an independent edition, which 1.7 waits for |
 | R1, R6 | Rule A dating and Church-act checks; edition and provenance per planned source |
 
 How D1 and D2 shape P4, stated once here so the items below can rely on it:
@@ -132,6 +137,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      vacuum (full, verbose, analyze) chunks;
      ```
      If the lock is not acquired within 5 s, retry once a minute; do not raise `lock_timeout`.
+     In the same window, apply 2.2c's migration, which redefines `search_vector` (C-16, decided by Carter on 9 Oct 2026). It rewrites `chunks` and rebuilds its indexes as `VACUUM FULL` does, so run it first, measure, and run `VACUUM FULL` only if the measurement shows space left to reclaim. Never run two rewrites back to back without measuring the size between them; each has the peak described above. The migration must be applied before 4.1b step 1, so staging copies the new definition.
   4. Measure again with the step 1 queries. Record duration, before and after sizes, and WAL size.
   5. Qdrant. Read 0.5's numbers. From 4.1b step 1 until the old collection is deleted after the rollback window, the cluster holds two full collections (today's `chunks` and the new one, each with every passage). If the plan's memory cannot hold both (about 2 x 335 MB raw plus HNSW), note that 4.1b must create the new collection with `on_disk=True` for vectors (and `HnswConfigDiff(on_disk=True)` if 0.5 shows the graph also does not fit).
   6. Pro decision for the apply (Carter). After 4.1a's rehearsal reports the peak database size through staging and apply, compare it with the projection above. If the peak exceeds 500 MB, Carter chooses between a month of Pro and running the apply anyway, accepting a possible brief read-only period. The longer-term Pro decision for P5 is 5.2's 450 MB stop.
@@ -143,7 +149,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 - **Production safety:** `VACUUM FULL` takes an ACCESS EXCLUSIVE lock, so full-text search and the reader fail while it runs (the plan expects under a minute; GIN rebuild time on this compute is unverified). Vector search still reaches Qdrant but fetches from Postgres fail, so searches error rather than return partial results. `lock_timeout` prevents a stuck lock queue. There is no data change and nothing to roll back; if interrupted, Postgres discards the new copy. The only lasting risk is read-only mode from the peak, handled in step 2.
 - **Needs Carter:**
   - Decide step 2 (run `VACUUM FULL` anyway, or a month of Pro) if the peak estimate exceeds 480 MB.
-  - Approve the window and the run.
+  - Approve the window and the run, including 2.2c's migration.
   - Make the step 6 decision for the apply after the rehearsal.
 - **Out of scope:** Dropping `content_embedding` or `annotation_embedding` (CLAUDE.md §4: all-NULL, reclaims nothing). Qdrant quantization. Any change to autovacuum settings.
 
@@ -161,7 +167,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
     - `product_feedback.chunk_id` `ON DELETE SET NULL` (`0028_product_feedback.sql:20`); 0 rows with a chunk today.
   - `reading_progress` has primary key `(user_id, document_id)`, references `documents(id)`, and stores text `chapter_key` (NOT NULL) and `anchor` (`0027_reading_progress.sql:2-9`). Document ids are frozen by 2.1, but chapter keys and anchors can change, and if Carter approves 1.8b's split, chapters of the two Augustine volumes move to other documents, so a progress row can change document and collide with the user's existing row there.
   - Under D1 and D2 almost every user row needs nothing. Passage ids are frozen in the 2.1 registry, so every unit that exists today keeps its id even where its anchor is rebuilt, and a passage whose text was fixed keeps its id and row. A removed passage keeps its row, retired, with a tombstone (D3), so user rows stay pointed at it. Only rows on an id with a redirect move.
-  - Expected remap volume (estimate). Redirects come only from fixes that change which text an old anchor names: Joel and Malachi renumbering, councils rebuilt by session, split recensions, and Tanner units where a replacement unit is named as successor. That is at most a few hundred to about 2,000 old ids, most in `councils`. The user rows on them are likely in the tens. For comparison, 0.1c's 29 Sep report found 12 live passages with no successor in the master build, carrying 19 `retrievals` and 2 `guest_trial_retrievals` rows, and the plan counted 50 retrievals and 0 bookmarks on passages the rules remove. The release report's user-impact section gives the exact count before the apply.
+  - Expected remap volume (estimate). Redirects come only from fixes that change which text an old anchor names: Joel and Malachi renumbering, councils rebuilt by session, split recensions, and Tanner units where a replacement unit is named as successor. That is at most a few hundred to about 2,000 old ids, most in `councils`. The user rows on them are likely in the tens. Split pieces add to this (C-10): under 2.1's rule a live piece whose opening paragraph no longer opens a piece redirects to the piece that now holds it. With numbered pieces, 1.10b alone would have moved 558 Fathers pieces carrying 99 saved rows, and about 700 saved rows sit on pieces in all, so the rows to move may reach the low hundreds. That is still small enough for exact rules. For comparison, 0.1c's 29 Sep report found 12 live passages with no successor in the master build, carrying 19 `retrievals` and 2 `guest_trial_retrievals` rows, and the plan counted 50 retrievals and 0 bookmarks on passages the rules remove. The release report's user-impact section gives the exact count before the apply.
   - Every chunk foreign key cascades on delete, which is why 2.2w retires instead of deleting and why this tool never deletes a `chunks` row.
   - Supabase branching needs Pro and copies schema only (docs, 29 Sep), so the rehearsal runs on a local Postgres restored from a `pg_dump` of production (D8).
   - Rows at risk are few (25 bookmarks, 3,029 retrievals, 274 guest results, 3 labels, 25 reading positions), so the rules must be exact rather than fast.
@@ -216,7 +222,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 ### 4.1b. Production cutover runbook
 
 - **Type:** ops, with one small PR (the lock-file change)
-- **Depends on:** 4.0, 4.1a (rehearsal passed), 4.2 pre-cutover run passed, 2.2w, 2.2b (API reads `chunks_live`), 2.4a and 2.4b live, P1 to P3 merged.
+- **Depends on:** 4.0 (including 2.2c's migration), 4.1a (rehearsal passed), 4.2 pre-cutover run passed, 2.2w, 2.2b (API reads `chunks_live`), 2.4a, 2.4b and 2.4d live, P1 to P3 merged, 3.4 included.
 - **Goal:** Switch production from the old corpus to the cleaned one in minutes, with a tested rollback. Users see the corrected corpus (Vatican II and Trent recovered, removals shown as tombstones, correct labels); bookmarks and history keep working.
 - **Current state:**
   - After 2.2b the API reads Qdrant through the alias `chunks_live`, which points at `chunks` (2.2b ops steps). The datapipeline writer takes a target collection name from 2.2w.
@@ -225,7 +231,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - The apply is 2.2w's single transaction. It updates changed rows in place by id, inserts new ids, retires removed ids, writes tombstones and redirects, runs 4.1a's remap, and refreshes reader outlines.
 - **Changes:** Runbook. Every numbered step that writes to production is a separate Carter approval.
   1. **Staging build, T minus 2 days (no user impact).**
-     - Freeze the build. A reviewed PR names the commit the P4 build is made from. It also applies the 1.2e fallback (D9, D11; this step owns it): for any council that has not passed 1.2f's gate by then, the adapter emits nothing for it, and the PR adds removal-registry entries with reason `translation-in-preparation` for all of that council's Tanner passages, with 1.2e's tombstone. No adapter change merges after this PR until the cutover is done or abandoned.
+     - Freeze the build. A reviewed PR names the commit the P4 build is made from. It also applies the 1.2e fallback (D9, D11; this step owns it): for any council that has not passed 1.2f's gate by then, the adapter emits nothing for it, and the PR adds removal-registry entries with reason `translation-in-preparation` for all of that council's Tanner passages, with 1.2e's tombstone. No adapter change merges after this PR until the cutover is done or abandoned. The same PR applies the rejected-voice fallback: if 2.4d is not deployed, it sets `searchable = false` on every row in 3.4's ranges (Decision log "Rejected voices (C-01)").
      - Lock-file change. A reviewed PR (it may be the same one) adds to `datapipeline/PUBLISH_LOCK.json` the entry `{"collection": "all", "release": "republish-2026-10", "steps": ["stage", "apply", "rollback"], ...}` in 0.4's format. It stays until the rollback window closes (step 13), and no other entry is added in between, so no other publish can run.
      - Run `publish.py stage --collection all --release republish-2026-10`. It writes every collection into the `staging` schema and into the new Qdrant collection `chunks-republish-2026-10` (D11).
      - The new collection uses `VectorParams(size=1536, distance=COSINE, on_disk=<per 4.0 step 5>)` and `HnswConfigDiff(m=16, ef_construct=64)` (as today, `qdrant_schema.py:25`). Payload indexes are keyword on `collection`, `document_id`, `genre` and `issuer`, and boolean on `searchable`. 2.2w writes `collection`, `genre`, `issuer` and `searchable` into every point's payload.
@@ -284,7 +290,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 - **Goal:** Show, before and after cutover, that the cleaned corpus answers the baseline questions at least as well, that removed texts no longer appear, and that recovered texts now do. This is what Carter's go or no-go rests on.
 - **Current state:** 0.3 defines the harness and question sets (the 80-question set plus about 30 targeted questions, no stored user queries). Production pipeline is `hyde_cohere_luna` (CLAUDE.md §5). The noise floor for any retrieval change is the `hyde_cohere_luna_hydesample` arm (CLAUDE.md §5). The eval judge is `claude-opus-5-5`.
 - **Changes:** Runbook plus a report file.
-  1. **Pre-cutover run, on staging.** Run the 0.3 harness, the in-process `services/api/scripts/run_eval_suite.py`, with `CORPUS_READ_SCHEMA=staging` and `QDRANT_READ_COLLECTION` set (2.2w). It runs the pipeline in process, not through an API server, which is why 2.2w lets it use the override while the deployed API refuses to start with it. Its corpus reads go to the `staging` schema and its vector reads go to the new Qdrant collection (`QDRANT_READ_COLLECTION=chunks-<release>`, from 2.2b). It reads production data and writes nothing. Run the same questions with the noise-floor arm, and judge both.
+  1. **Pre-cutover run, on staging.** Run the 0.3 harness, the in-process `services/api/scripts/run_eval_suite.py`, with `CORPUS_READ_SCHEMA=staging` and `QDRANT_READ_COLLECTION` set (2.2w). It runs the pipeline in process, not through an API server, which is why 2.2w lets it use the override while the deployed API refuses to start with it. Its corpus reads go to the `staging` schema and its vector reads go to the new Qdrant collection (`QDRANT_READ_COLLECTION=chunks-<release>`, from 2.2b). It reads production data and writes nothing. Run the same questions with the noise-floor arm and RF-1's dedup arm, and judge all three.
   2. **Targeted checks,** scripted as assertions over the returned passages:
      - Zero passages from Origen, Novatian, Tatian, Arnobius, Alexander of Lycopolis, the Apostolic Constitutions outside Book VIII's 85 canons, the six forged Ignatius letters, or Tertullian's excluded works.
      - Nostra Aetate 4, a Trent decree and the Vatican I constitutions retrievable by a direct question.
@@ -294,6 +300,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      - No result shorter than 20 characters.
      - No Vatican II result starting with "Cf." or "See".
      - No result with `searchable = false`.
+     - Added for the 6 Oct review findings: "What is an indulgence?" returns CCC 1471's definition (C-03); Psalm 51's first passage opens with its title (C-11); keyword search alone returns John 3:16, canon 1055 and CCC 2267 for those citations (C-16, 2.2c); the explanation of a condemned proposition in Exsurge Domine, of a Summa objection and of a passage of Caecilius's speech says the position is rejected (C-01, 2.4d); no Summa result cites an article its text does not belong to (C-07); no card credits Firmilian's letter or Novatian's to Cyprian (C-02); a reference-style question per collection also succeeds through vector retrieval (the synthesis's open item, at no separate cost).
   3. **Post-cutover run.** The same harness against production, after 4.1b step 10.
   4. **Report.** Add `docs/eval/2026-MM-DD-republish-comparison.md`. It gives judge scores per dimension against the judged baseline with the noise floor, the targeted checks, the cost of the run, and the reason for each regression larger than the noise floor (an intended removal explains a lost baseline passage; nothing else does).
 - **Acceptance checks:**
@@ -1003,8 +1010,29 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - The same Father appearing twice, in his own work and in the Catena (Decision log weakness).
   - Authority-aware ranking for Roman Curia documents with papal approval (source memo).
   - The per-chapter cap for new chapter-keyed documents such as UDG (5.4).
+  - RF-1, the dedup threshold for chapter-keyed collections (C-09), specified below; it runs as an arm in 4.2.
+  - Archaic verb forms ("loveth", "saith") that the English text search configuration leaves unstemmed (C-16, Opus A-020).
+  - Stitching that reads 1.7's `reply_targets`, so joint replies and replies to a sed contra attach to their arguments (C-14).
 - **Changes:** Open child issues from the list above, each with an eval plan before code.
 - **Acceptance checks:** Each child shows its effect against the baseline and noise floor.
 - **Production safety:** Each child ships as its own PR under the usual rules.
 - **Needs Carter:** Prioritize the children.
 - **Out of scope:** Anything that changes which texts are in the corpus.
+
+### RF-1. Dedup threshold for chapter-keyed collections
+
+- **Type:** PR (a pipeline setting, default unchanged), then an arm in 4.2, then a decision.
+- **Depends on:** 2.2w (its staged report's `index.dedup_collision_rate`), 4.2's pre-cutover run. The setting must merge before 4.2 runs; it is the one RF child that comes before the new baseline (Decision log "Dedup and the republish's embeddings (C-09, C-21)", decided by Carter on 9 Oct 2026).
+- **Goal:** Know, before and after cutover, whether a higher near-duplicate threshold for chapter-keyed collections returns distinct neighbouring canons and Summa parts without letting true duplicates through, and change it only on that evidence.
+- **Current state:**
+  - `services/api/app/rag/dedup.py` drops the lower-ranked of two passages from the same document within two positions whose vectors have cosine above `_COSINE_THRESHOLD = 0.9`, a module constant.
+  - Each vector is built from the passage plus up to 200 to 300 characters of each neighbour, so a short passage is mostly its neighbours' text. On the live vectors 35.7% of nearby canon-law pairs, 20.5% of Summa pairs (44% of objection pairs) and 8.9% of council pairs exceed 0.9; six pairs of short neighbours have byte-identical embedding inputs and can never both be shown (C-09, Opus A-004, A-019, Sol). Canons 872 to 874 and 892 to 893, for example, cannot appear together for "who may be a sponsor".
+  - The republish keeps today's embedding input apart from 2.2w's neighbour fix, so this needs no second embedding run.
+- **Changes:**
+  - A per-pipeline setting, `RetrievalConfig.dedup_cosine_threshold` with collection overrides, defaulting to today's 0.9 everywhere, read by `dedup.py` in place of the constant, in the same way `rrf_k` is a per-pipeline axis (CLAUDE.md section 5). Production is unchanged.
+  - A registry arm, production plus a threshold of 0.97 for canon law, the Catechism, the Summa and the Bible, which 4.2 runs on staging and on production beside the noise-floor arm.
+  - After 4.2, a one-line change to the production configuration only if the arm's judge scores sit within the noise floor or better and it shows fewer distinct neighbours dropped.
+- **Acceptance checks:** `tests/test_dedup.py` covers the setting and the override; with the default, `apply_dedup` drops exactly what it drops today. 4.2's report shows the arm's scores against production and the noise floor, and how many result pairs each drops.
+- **Production safety:** The setting's default is today's value, so merging changes nothing. A later threshold change is its own reviewed PR.
+- **Needs Carter:** Decide after 4.2 whether to change the threshold (NEEDS-CARTER section B, RF-1).
+- **Out of scope:** Changing the embedding input or the neighbour window. A second, clean-text vector for dedup.
