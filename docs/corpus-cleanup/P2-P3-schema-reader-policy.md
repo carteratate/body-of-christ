@@ -1026,3 +1026,38 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Production safety:** Values only; nothing changes before the Phase 4 apply. At the apply, the 59 passages leave search results and stay in the reader. The one retrieval pointing at one of them still restores, because history restore does not filter on `searchable`. 2.2w's rollback restores the previous flags.
 - **Needs Carter:** Approval of the anchor list and the note wording.
 - **Out of scope:** Canon law Latin (1.5). Writing or commissioning translations. Removing any non-English passage from the reader.
+
+---
+
+### 3.4. Rejected-voice ranges
+
+- **Type:** PR (passage-registry values and their validation). Takes effect at the Phase 4 apply.
+- **Depends on:** 2.1 (the `voice` field and the `voice` and `unit_label` registry overrides), 2.2a, 2.2w, 1.3a (the Syllabus and Exsurge Domine end at their last proposition), 1.8a and 1.8c (the Octavius and the Acts of Archelaus after the editorial strip), 1.2a, 1.2c and 1.2e (which list the anchors of condemned council texts in whatever text the Phase 4 build carries). Visible only with 2.4d.
+- **Goal:** Every passage that states a position its document rejects carries `voice = "rejected"` and a label saying whose position it is and who rejects it, so the rerankers, the explanation model, the card and the reader never present it as the document's teaching, while it stays findable (Decision log "Rejected voices (C-01)", decided by Carter on 9 Oct 2026).
+- **Current state (C-01; Opus A-002, Opus-2 B-007, Sol A-001, A-006, A-011):**
+  - Lists of condemned statements, each passage one bare proposition, condemned once for the whole list:
+    - Exsurge Domine (Leo X, 1520) §1 to §41, Luther's propositions, under "Pope Leo X — Exsurge Domine, §N". 6 saved retrieval rows sit on them.
+    - The Syllabus of Errors (Pius IX, 1864) §1 to §80.
+    - The Council of Constance, about 120 passages in Tanner's text: Wyclif's 45 articles and Hus's 30. 1.2e replaces this text with Schroeder's or retires it at Phase 4 (D9), so the ranges follow whatever the build carries.
+  - An opponent speaking inside a larger work, answered in later passages:
+    - Ephesus: Nestorius's second letter to Cyril, 5 build passages, filed under the council, which read and condemned it. Cyril's letters in the same document are approved texts and are not labelled.
+    - Minucius Felix, the Octavius, chapters V to XIII (11 passages): the pagan Caecilius's case against Christianity, answered from chapter XVI. Today only the editor's "Argument" line names him, and 1.8a removes it.
+    - Hegemonius, the Acts of Archelaus: Mani's speeches in the 5 passages that do not name him (V/p2, XIII/p1 to /p3, XIV/p2) and Turbo's exposition of his teaching (about 10 passages; Opus-2 B-007 places it in chapters 7 to 11 and 13 while Sol A-011 reads chapter XIII as Mani's own speech, so this item fixes the exact anchors from the source). Passages that say "Manes said" mark themselves.
+  - Not labelled, as the reviewers judged them not misleading: dialogues whose speakers the text names (Trypho in Justin, Boso in Cur Deus Homo, Philosophy in Boethius) and authors quoting opponents inside their own argument (Augustine quoting Seneca). Firmilian's letter in Cyprian's Epistles is a credit question, settled by 1.8c, not a rejected voice.
+- **Changes:**
+  - A tracked list, `datapipeline/registry/rejected_voice_ranges.json`: per range, the document, first and last anchor, the label pattern and the basis (the condemning act or the work's own reply), with no passage text.
+  - Passage-registry rows (2.1) for every passage in a range: `voice: "rejected"` and a `unit_label` override, in these forms, worded finally by Carter:
+    - Exsurge Domine: "Condemned proposition N (condemned by Leo X, Exsurge Domine)".
+    - Syllabus: "Condemned proposition N (Syllabus of Errors, Pius IX)".
+    - Constance: "Condemned article N of John Wyclif" or "of Jan Hus" (Council of Constance), on the anchors 1.2e lists; none if the council is retired at Phase 4.
+    - Ephesus: "Letter of Nestorius, condemned by the Council of Ephesus".
+    - Octavius: "Caecilius, pagan objection; answered by Octavius".
+    - Acts of Archelaus: "Mani's teaching, refuted by Archelaus".
+  - Fallback: if 2.4d has not deployed when 4.1b step 1 freezes the Phase 4 build, the freeze PR also sets `searchable = false` on these rows (Decision log).
+- **Acceptance checks:**
+  - Registry test `roles.rejected_voice`: every passage in each listed range carries `voice = "rejected"` and a label matching its pattern, no passage outside the ranges carries the role except Summa objections (set by 1.7), and every range resolves to anchors in the build.
+  - The PR lists each range with its passage count and saved rows.
+  - After the Phase 4 apply (4.2's targeted questions, on staging first): "in every good work the just man sins" returns Exsurge Domine §31 with its label, and the explanation says Leo X condemned it; a question on the Octavius's arguments against providence returns Caecilius's speech labelled as a pagan objection.
+- **Production safety:** Values only; nothing changes before the Phase 4 apply. At the apply, 2.2w writes `voice` and the labels into Postgres and the Qdrant payload together, and 2.4d shows them. Rollback restores the previous labels with everything else.
+- **Needs Carter:** Approve the ranges and each label text (NEEDS-CARTER section B, 3.4).
+- **Out of scope:** Summa objections (1.7 sets them). Removing any of these texts. Speakers the text already names. Firmilian's letter (1.8c).
