@@ -37,6 +37,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.1c** [Phase 0]. Run, or approve running, `export_live_snapshot.py`. It reads production without changing anything and copies the corpus text and anonymous counts of saved rows (no user IDs, no query text) to his Mac. It is re-run before Phase 4 and whenever a report needs fresh counts.
   Answered 2026-10-05: approved for the 0.1c PR's run, which exported once on 6 Oct 2026 (UTC; 5 Oct evening on Carter's Mac) to `datapipeline/releases/snapshots/2026-10-06/`. Each later run is asked for again.
 - **0.6** [Phase 0]. Approve read-only size queries against production.
+- **0.1d** [Phase 0, before P1]. Approve the next run of `export_live_snapshot.py`, which now also copies `document_chapters` (the stored reader outline: each document's chapter list, its order and labels). It reads production without changing anything and copies corpus text and anonymous counts to his Mac, as the 6 Oct export did. The outline comparison then runs offline.
+- **R7** [Phase 0, blocks 1.7]. Approve each set of downloads for the independent Summa comparison: the Leonine Latin pages of the Supplement (the four core parts were fetched by the 6 Oct review), and any English edition or scan that holds a unit the vendored edition omits. The request states file names and sizes.
 - **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 0039 migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
 - **R6** [Phase 0, blocks Phase 1 items 1.2c, 1.2d, 1.8d]. Approve each set of source downloads. The request states the file names and sizes each time.
   Answered 2026-10-05: the 154 text, XML and HTML files of R6's download list (about 153 MB) are approved; the 91 page-image PDFs and the hOCR file are approved per work later. They are vendored to `datapipeline/sources/_incoming/<Vendored as path>` and locked there; each ingesting PR moves its files unchanged (Decision log "Holding folder for approved downloads"). 152 are vendored; 2 archive.org texts for 5.6c returned HTTP 500 on 5 Oct 2026 and are not.
@@ -56,6 +58,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 4
 
 - **4.0** [Phase 4]. Approve the time and the run of `VACUUM FULL`, which compacts the main table. Search and the reader pause for about a minute while it runs.
+- **2.2c and 4.0** [Phase 4]. Approve applying 2.2c's migration in the same window. It changes how the keyword-search column is computed (no verse markers, references added), which rewrites the main table once, like `VACUUM FULL`; the window may then need only one rewrite. Search and the reader pause while it runs.
 - **4.1b** [Phase 4]. Approve, one at a time:
   - the PR that freezes the Phase 4 build, including any council that shows a "translation in preparation" notice because its public-domain text is not ready;
   - the lock-file PR for the republish;
@@ -93,6 +96,15 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   - One new removal reason, `rolled-back`, used only for passages that an undone publish had added. The plan's decision D11 lists the reasons and does not name this one, so the plan needs a one-line update if he agrees.
 
   Recommended answer is yes to all four.
+- **Review gaps (6 Oct 2026 corpus reviews)** [Phase 0, before 2.1]. Six questions and nine defaults from `docs/corpus-cleanup/REVIEW-GAPS-PLAN.md` section 7, each with its recommended answer.
+  - Q1. Should passages that state a position the document rejects (condemned propositions in Exsurge Domine, the Syllabus and Constance; Nestorius's letter at Ephesus; Caecilius in the Octavius; Mani in the Acts of Archelaus, about 270 passages) stay in search with a "rejected voice" label, or move to the reader only? Recommended: label them.
+  - Q2. Should a split piece's ID follow its own opening paragraph when piece boundaries move? Recommended: yes.
+  - Q3. Should 2.1 anchor Summa passages on the source's paragraph IDs instead of the part labels? Recommended: yes.
+  - Q4. Should keyword search drop verse markers and index references, with one table rewrite in 4.0's window? Recommended: yes.
+  - Q5. Should 1.7, and so Phase 4, wait for a full independent Summa comparison (R7), with omitted units restored only from an existing English edition or else flagged by a reader note? Recommended: yes.
+  - Q6. May the four review reports, the synthesis and the two prompt files be committed with the plan? Recommended: yes.
+  - Defaults: Epistle XXX removed under rule A and the other letters credited per sender; Summa citations keep the article's question; Psalm titles and the Sirach prologue restored; the Catechism fix first as 1.6a; reader outlines checked from the next snapshot export; no embedding-input change beyond skipping unsearchable neighbours, with the dedup threshold tested as RF-1; editors' chapter titles moved into labels; real Summa reply targets; a work note for fragment collections.
+  Answered 2026-10-09: yes to all six recommendations and all nine defaults. Recorded as Decision log rows dated 9 Oct 2026; the specs now state the chosen options.
 - **0.1a** [Phase 0]. Review the list of known defects that the new tests start out expecting. No decision beyond checking it.
 - **0.1a** [Phase 0]. Should the coverage check stop flagging editor-written ThML sections (introductory notices, elucidations, editors' prefaces) that the corpus correctly leaves out under rule G? Recommended: yes, through a tracked list Carter reviews once.
   Answered 2026-10-05: yes. The list is `datapipeline/checks/editorial_divs.json`, 112 divs; a listed div that reaches a passage fails the check.
@@ -154,6 +166,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 2
 
 - **2.2c** [Phase 2]. Confirm that the keyword-search index needs no rebuild, because fixed text updates it automatically. Recommended answer is confirm.
+  Answered 2026-10-09: no. The 6 Oct reviews showed verse markers indexed as words and references not indexed (C-16); 2.2c becomes a migration that drops the markers and adds the reference at lower weight, run in 4.0's window (Decision log "Keyword search (2.2c, C-16)").
+- **2.4d** [Phase 2]. Approve how a rejected-voice passage looks on the result card and in the reader (a small label above the text carrying its `unit_label`, such as "Condemned proposition 10"), and the one sentence the rerankers and the explanation model are given about it. The label texts themselves are approved under 3.4.
 - **2.3** [Phase 2]. Set the wording of the source credit line wherever 0.2 has not settled it (for example "Text: Libreria Editrice Vaticana", "Sourced via CCEL.org").
 - **2.4a** [Phase 2]. When a saved search or bookmark points at a removed passage, show no text (title, author, reference and one sentence of reason), or keep showing the text under a "removed" banner. Recommended answer is no text.
 - **2.4b** [Phase 2]. Approve the wording pattern of tombstones.
@@ -165,6 +179,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **3.1** [Phase 3]. Approve each tombstone sentence for the removed authors and works. Also approve the final list of editor-written passages removed under rule G once 1.8a to 1.8c are done. Tertullian's To His Wife and On the Apparel of Women stay or go by R1's dating.
 - **3.2** [Phase 3]. Approve every attribution label and note for works that stay, such as "Pseudo-Justin" and the Apostolic Canons note.
 - **3.3** [Phase 3]. Approve the list of Latin and Italian passages that stay readable but leave search (about 59), and the note shown on them.
+- **3.4** [Phase 3]. Approve the list of rejected-voice ranges (about 270 passages) and each label text, for example "Condemned proposition 10 (condemned by Leo X, Exsurge Domine)" and "Caecilius, pagan objection; answered by Octavius".
+- **3.1** [Phase 3]. Approve the result of the rule A check on Cyprian's correspondents: Epistle XXIX (which some editors give to Novatian) and each other sender of a letter in Cyprian's Epistles (C-02).
 
 ### Phase 4
 
@@ -197,6 +213,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.7** [Phase 5]. Approve the final About page wording, especially the list of excluded authors.
 - **5.8** [Phase 5]. Choose when to revisit paid licences (the Decision log says after the free phase ships). This blocks the Eastern Catholic code.
 - **RF** [after Phase 4]. Put the retrieval follow-up issues in priority order.
+- **RF-1** [Phase 4]. After 4.2's comparison, decide whether to change the dedup threshold for chapter-keyed collections (canon law, the Catechism, the Summa, the Bible) from 0.9 to the tested value. The comparison report gives the effect on judge scores and on how often distinct neighbouring passages are dropped.
 
 ---
 
