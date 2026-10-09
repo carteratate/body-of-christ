@@ -838,6 +838,32 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 
 ---
 
+### 2.4d. Rejected-voice role in the API and web
+
+- **Type:** PR
+- **Depends on:** 2.1 (the `voice` field, D5, D11), 2.2a (`chunks.voice`), 2.2w (writes it to staging and the Qdrant payload), 2.4a (the facts step it extends), 2.4b (the card it extends). Must be deployed before 4.1b (Decision log "Rejected voices (C-01)", decided by Carter on 9 Oct 2026).
+- **Goal:** A passage that states a position its document rejects reaches the rerankers, the explanation model, the result card and the reader with that role, so a condemned proposition or a pagan's argument is never presented as the Church's or a Father's teaching, and the condemnations stay findable.
+- **Current state:**
+  - The models learn a passage's role only from `unit_label`, through `services/api/app/rag/steps/passage_role.py:display_role`, which `rerank_docs` (the Cohere document and the listwise card), `llm_rerank.pointwise` and `steps.explain` all call. `display_role` suppresses a label that the reference already contains. A comment in `rag/steps/rerank.py:39-41` notes that an "Objection N" label marks a position the author states in order to refute it; nothing tells the models this about any other passage.
+  - The card and the reader show no role.
+  - 3.4 records about 270 such passages (C-01): Exsurge Domine §1 to §41, the Syllabus §1 to §80, Constance's condemned articles, Nestorius's letter at Ephesus, Caecilius in the Octavius, and Mani's teaching in the Acts of Archelaus. 1.7 also sets `voice` on every Summa objection (10,527 bold objection markers in the source).
+- **Changes:**
+  - Read `voice` with each result. 2.4a's facts query (`rag/steps/document_facts.py`) adds `chunks.voice` (absent before 0039, so `None`) to the passage fields it reads, and `RankedChunk` carries it. The Qdrant payload copy (2.2w) is the fallback when that query fails.
+  - `passage_role.py` gains `rejected_note(voice, unit_label) -> str | None`. For `voice == "rejected"` it returns one fixed line built from the label, for example "Rejected position (Condemned proposition 10): the document states this in order to reject it." The three call sites add it to that passage's card only. The instruction explaining rejected positions is added to a prompt only when at least one card in the request carries the role. Until the Phase 4 apply gives any passage the field, every prompt stays byte-identical to today's.
+  - Summa objections keep their label and also get the note once 1.7 sets `voice`. Stitching (`fetch_context`) is unchanged.
+  - Web. `apps/web/src/lib/search-stream.ts`, the only SSE decoder, adds `voice?: string | null` to `ChunkSource`. When `voice === "rejected"`, `ChunkCard.tsx` shows the `unit_label` as a small muted label above the text, in the collapsed header and the expanded body; `BookmarkCard.tsx` and the reader's `Passage.tsx` show the same label; the copied citation adds it in brackets. Tokens only, no new colour. Guest pages share the components (`isGuest`).
+- **Acceptance checks:**
+  - `services/api/tests/test_passage_role.py`: `rejected_note` returns the line for a rejected passage and `None` otherwise.
+  - Golden prompt tests for the Cohere document, the listwise card, the pointwise record and the explanation input: a request with no rejected passage produces exactly today's text; a request with one adds the note to that card and the instruction once (`roles.voice_reaches_model_inputs`).
+  - Web: `ChunkCard.test.tsx`, `BookmarkCard.test.tsx` and `Passage.test.tsx` show the label for `voice: "rejected"`, and render exactly as today without it (snapshot).
+  - 4.2's targeted questions check, on staging, the explanation of a condemned proposition, a Summa objection and a passage of Caecilius's speech.
+  - `python3 -m pytest tests/`, `npm run lint` (0 errors, no new warnings in touched files), `npm test`, `npm run build`.
+- **Production safety:** Every new field is optional, and no live passage has `voice` before the Phase 4 apply, so production prompts, cards and the reader stay as they are until then. 4.1b's checklist requires this item deployed before the apply. If it has not deployed when the Phase 4 build is frozen, that freeze PR marks 3.4's ranges `searchable = false` instead (Decision log).
+- **Needs Carter:** Approve the label's look on the card and in the reader, and the sentence given to the models (NEEDS-CARTER section B, 2.4d).
+- **Out of scope:** The ranges themselves (3.4). Stitching by reply targets (a retrieval follow-up). Any ranking change.
+
+---
+
 ### 3.1. Removals under rules A to C and G
 
 - **Type:** PR (removal-registry entries and adapter changes). Applied at the 4.1b cutover through the 2.2w apply.
