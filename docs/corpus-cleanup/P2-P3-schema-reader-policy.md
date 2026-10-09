@@ -576,26 +576,30 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 
 ### 2.2c. search_vector rebuild
 
-- **Type:** decision
-- **Depends on:** 2.2a (for the searchable and retired columns the decision relies on)
-- **Goal:** Decide whether the full-text index needs rebuilding for the cleanup, and record why, so nobody runs a 380 MB table rewrite without cause.
+- **Type:** PR (a migration, written and tested now), then ops: the migration is applied by hand in 4.0's approved window, before 4.1b step 1. It was a decision item until Carter chose the rebuild on 9 Oct 2026 (Decision log "Keyword search (2.2c, C-16)").
+- **Depends on:** 2.2a (the staging schema copies the live column definition), 2.2b (the searchable and retired predicates). Applied after 0.3's baseline and inside 4.0's window.
+- **Goal:** Keyword search stops treating Bible verse markers as words and can find a passage by its citation: "John 3:16" finds John 3:16, "canon 1055" finds canon 1055, "CCC 2267" finds the paragraph.
 - **Current state:**
   - `chunks.search_vector` is `tsvector GENERATED ALWAYS AS (to_tsvector('english', content)) STORED` with a GIN index (`supabase/migrations/0004_v2_documents_chunks.sql:26-27, 40`). Postgres recomputes it on every insert and every update of `content`.
-  - It is the only FTS column the API queries (`retrieve_fts.py:23-24`). `annotation_vector` (0019) is written by enrichment only.
+  - It is the only FTS column the API queries: `retrieve_fts.py` matches `plainto_tsquery('english', <the user's question>)` and orders by `ts_rank`. `annotation_vector` (0019) is written by enrichment only.
   - Storage on 28 Sep: `search_vector` about 49 MB of 380 MB; TOAST 203 MB (plan).
-  - The plan gives no rationale for 2.2c. The likely concerns are listed below with what already handles each.
-- **Changes:** Recommended decision, no DDL:
-  - Text fixes in P1 (joined paragraphs, stripped notes) reach FTS at the 2.2w apply, because the apply updates `content` in place (D1) and the column is generated from it.
-  - Non-English passages leave FTS through the `searchable` predicate (2.2b), not through the tsvector. Making the generated expression depend on `searchable` would need `DROP COLUMN` and `ADD COLUMN`, which rewrites the table under an exclusive lock.
-  - Retired passages leave FTS through the retired predicate (2.2b).
-  - `staging.chunks` is created with the live shape, including the generated `search_vector` and its GIN index (2.2a), because the pre-cutover eval searches staging. `cleanup` (2.2w) drops it after the apply.
-  - Space left by earlier rewrites is reclaimed by 4.0's `VACUUM FULL`, which also rebuilds the GIN index.
-  - A post-cutover check is added to the 4.2 comparison: `SELECT count(*) FROM chunks WHERE search_vector IS DISTINCT FROM to_tsvector('english', content)` must return 0.
-  - If Carter wants title or author weighting in FTS later, that is a retrieval follow-up with its own eval, not part of the cleanup.
-- **Acceptance checks:** The decision is recorded in the plan's Decision log by Carter. The post-cutover query above is added to the 4.2 checklist.
-- **Production safety:** Nothing changes.
-- **Needs Carter:** Confirm the no-DDL decision, or name the missing concern this item was meant to cover.
-- **Out of scope:** Changing the text search configuration, weighting, or `annotation_vector`.
+  - Found by the 6 Oct reviews (C-16, Opus A-007), on a local Postgres loaded from the snapshot with the 0004 column: `{{v:4}}` becomes the tokens `v` and `4`, so a search for "John 3:16" returns 1 and 2 Maccabees passages that contain "John" and the markers 3 and 16; "psalm 23" returns Acts and Judith; "canon 1055" returns nothing. References and titles are in no `search_vector`, and `plainto_tsquery` requires every word of the question, so "CCC 2267" needs a token "ccc" that no content holds.
+  - The other parts of C-16 are owned elsewhere: ligatures and line-end hyphens (1.10a), the 18 canons with corrupted spellings (1.5a), and archaic verb forms such as "loveth", left to a retrieval follow-up.
+  - Changing a generated column's expression rewrites the table under an exclusive lock, as `VACUUM FULL` does. Postgres 17 can do it with `ALTER TABLE … ALTER COLUMN … SET EXPRESSION`; older servers need `DROP COLUMN` and `ADD COLUMN … GENERATED`. The production server version is not verified here; the migration checks it.
+- **Changes:**
+  - A migration, numbered when it merges (2.2a takes 0039), that redefines the column as `setweight(to_tsvector('english', regexp_replace(content, '\{\{v:\d+\}\}', ' ', 'g')), 'A') || setweight(to_tsvector('english', coalesce(reference, '')), 'B')` and recreates its GIN index. Content keeps the higher weight, so a passage matched by its text ranks above one matched only by its citation. Both functions are immutable, as a generated column requires. This is the one migration in the cleanup that is not purely additive; Carter approved it because it changes a derived column only and loses no data.
+  - It does not run on merge. The migration file is applied by hand in 4.0's window, with the `VACUUM FULL`, before 4.1b step 1 builds staging, so `staging.chunks` copies the new definition (2.2a's `create_corpus_staging` mirrors live). Because the rewrite also compacts the table, 4.0 measures whether the window then needs a separate `VACUUM FULL`.
+  - Non-English and retired passages still leave FTS through the `searchable` and retired predicates (2.2b), not through the tsvector.
+  - No API change. `retrieve_fts.py` keeps its query; the weights only change `ts_rank` order.
+  - The post-cutover check in 4.2 becomes: `SELECT count(*) FROM chunks WHERE search_vector IS DISTINCT FROM <the new expression>` returns 0.
+- **Acceptance checks:**
+  - A migration test on `tests/pg_cluster.py`: after the migration, a Bible passage's vector holds no lexeme produced by a `{{v:N}}` marker (`fts.no_marker_tokens`); "john 3:16" returns the John 3 passage first, "canon 1055" returns `can/1055`, "ccc 2267" returns the passage citing CCC 2267, and a content-only match ranks above a reference-only match (`fts.reference_lookup`).
+  - The same test runs the migration on the server versions the repo supports (`SET EXPRESSION` and drop-and-add) or fails clearly.
+  - A local timing of the rewrite on a restore of the snapshot's `chunks` (or the D8 dump), recorded for 4.0's window.
+  - 4.2's comparison covers the ranking change (the RF noise floor applies).
+- **Production safety:** Merging changes nothing. The rewrite runs only in 4.0's window with Carter's approval (NEEDS-CARTER section A); search and the reader pause while it runs, as for `VACUUM FULL`. Rollback is the previous expression applied the same way. The API works with either definition.
+- **Needs Carter:** Answered 9 Oct 2026: rebuild, in 4.0's window (Decision log). The run itself is approved with 4.0's window.
+- **Out of scope:** Changing the text search configuration, synonyms for archaic forms, title or author weighting, and `annotation_vector`.
 
 ---
 
