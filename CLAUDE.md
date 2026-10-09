@@ -484,6 +484,9 @@ winner count to it, so ten works without a special case.
 The corpus is being fixed and republished before any collection is added or reorganized.
 Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
 work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.
+The findings of the 6 Oct 2026 corpus reviews (C-01 to C-30) are routed to their items in
+`docs/corpus-cleanup/REVIEW-GAPS-PLAN.md`; the order after 2.1 is 0.1d (their checks), then Phase 1,
+with 1.7 waiting for research item R7.
 
 ---
 
