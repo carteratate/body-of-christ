@@ -4,6 +4,8 @@
 
 29 September 2026, revised the same day to follow the plan's "Cross-cutting design decisions" (D1 to D11). Source of truth is `docs/2026-09-28-corpus-cleanup-plan.md`; its inclusion rules, Decision log and D1 to D11 are settled and are not reopened here. Where this file and D1 to D11 disagree, D1 to D11 win. Code references are to `master` at `5475c49` in `/Users/cartertate/repos/body-of-christ`. Live measurements are read-only SELECTs against Supabase project `hvmgffvimqgiejmxwhwq` on 29 Sep 2026.
 
+Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs/research/2026-10-06-corpus-review-synthesis.md`; `REVIEW-GAPS-PLAN.md` in this folder routes each to its item. The items below were extended for them on 9 Oct 2026, 2.2c became a migration, and 2.4d and 3.4 were added.
+
 ## Overview and recommended order
 
 Merge order follows the plan's "Phase and PR plan" table.
@@ -12,13 +14,15 @@ Merge order follows the plan's "Phase and PR plan" table.
 2. **2.2a** Migration 0039, additive only. Document facts, the work model (D6), a retired flag on passages and documents, tombstones, redirects, a publish log and a `staging` schema that mirrors the live corpus tables (D2). Nothing reads them yet. No unique key is dropped.
 3. **2.2w** The stage-then-apply writer (D2). A publish builds into `staging` and a new Qdrant collection `chunks-<release>`, produces the release report against live, applies in one transaction (calling the `UserDataRemap` interface that 4.1a implements), then switches the `chunks_live` alias. Passage IDs come from the 2.1 registry, so every unit live today keeps its ID (D1). It also provides `rollback`, the only rollback path (D11), a cleanup command that drops the staging tables, vector reuse when the embedding input is unchanged, and a read-only staging override for the pre-cutover eval. It replaces today's delete-based prune for every future publish. Rehearsed locally (D8).
 4. **2.2b** API reads Qdrant through `QDRANT_READ_COLLECTION`, then the alias `chunks_live`. Search skips passages marked not searchable and passages that are retired.
-5. **2.2c** Decision that `search_vector` needs no DDL rebuild. Close it alongside 2.2a.
+5. **2.2c** Migration that rebuilds `search_vector` without Bible verse markers and with each passage's reference (C-16, decided by Carter on 9 Oct 2026). Merged early; applied by hand in 4.0's window.
 6. **2.3** Document facts in the work registry, written by 2.2w into staging. No live backfill (D7).
 7. **2.4a** API payloads carry document facts, tombstones and redirects; the reader, `/sources`, history and bookmarks hide retired rows or mark them.
 8. **2.4b** Web cards, reader, bookmarks and history render the new fields, the source credit on opened passages, tombstones and redirects. Must be live before any tombstone exists.
-9. **3.3** Non-English passages flagged not searchable in the registry. Takes effect at the Phase 4 apply.
-10. **3.2** Labels, certainty and notes in the registry. Takes effect at the Phase 4 apply.
-11. **3.1** Removals recorded by anchor in the removal registry (D4). Blocked by R1. Applied at 4.1b through 2.2w.
+9. **2.4d** The rejected-voice role (C-01) reaches the rerankers, the explanation model, the card and the reader. Must be live before the Phase 4 apply.
+10. **3.3** Non-English passages flagged not searchable in the registry. Takes effect at the Phase 4 apply.
+11. **3.2** Labels, certainty and notes in the registry. Takes effect at the Phase 4 apply.
+12. **3.1** Removals recorded by anchor in the removal registry (D4). Blocked by R1. Applied at 4.1b through 2.2w.
+13. **3.4** Rejected-voice ranges in the passage registry (C-01). Takes effect at the Phase 4 apply.
 
 Every PR here deploys against today's schema and data. No item deletes a row. User rows that point at removed passages keep working because removed passages are retired, not deleted (D3). Nothing in P2 or P3 changes live corpus data before the Phase 4 apply (D7). The one exception Carter may approve is the early retirement of On the Incarnation's 47 passages (1.8d), specified at the end of 2.2w.
 
@@ -181,7 +185,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         UNIQUE (document_id, ordinal)
     );
 
-    -- Passage fields. searchable, language, passage_author and work_key are Passage
+    -- Passage fields. searchable, language, passage_author, voice and work_key are Passage
     -- model fields defined in 2.1 (D11); adapters may set them and the registry overrides.
     ALTER TABLE chunks
         ADD COLUMN retired_at     timestamptz,
@@ -189,12 +193,15 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         ADD COLUMN language       text,   -- NULL means English
         ADD COLUMN work_key       text,
         ADD COLUMN passage_author text,   -- 'Chrysostom, quoted in Aquinas''s Catena Aurea'
+        ADD COLUMN voice          text,   -- NULL, or 'rejected' (C-01, D5)
         ADD COLUMN note           text,
         ADD COLUMN superseded_by  uuid;   -- a history passage (<anchor>/history-<year>) points at
                                           -- the current passage it was replaced by (rule F, D11)
     ALTER TABLE chunks
         ADD CONSTRAINT chunks_language_check
             CHECK (language IS NULL OR language ~ '^[a-z]{2,3}$') NOT VALID,
+        ADD CONSTRAINT chunks_voice_check
+            CHECK (voice IS NULL OR voice = 'rejected') NOT VALID,
         -- Retired rows sit below every live and temporary position (see 2.2w).
         ADD CONSTRAINT chunks_retired_position_range
             CHECK (retired_at IS NULL OR position <= -1000000) NOT VALID,
@@ -317,6 +324,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Acceptance checks:**
   - New test `services/api/tests/test_corpus_facts_migration.py` using `tests/pg_cluster.py` (as `test_document_outline_migration.py` does). Apply the 0004-era corpus schema, 0037, 0038, then 0039. Assert:
     - `test_existing_rows_are_live_and_searchable`: every seeded chunk has `retired_at IS NULL` and `searchable = true`; every document `retired_at IS NULL`.
+    - `test_voice_accepts_only_rejected`: `voice` is NULL on every seeded chunk, accepts `rejected` and rejects any other value (C-01, D5).
     - `test_genre_accepts_only_the_d5_vocabulary`: every value in 2.1's `registry/genres.py` `ALL_GENRES` is present and accepted; `apostolic exhortation` and `essay` are rejected.
     - `test_genre_seed_matches_registry_module`: the migration's `INSERT INTO corpus_genres` list equals `ALL_GENRES`, read from the Python module (a plain file read, so the API test suite needs no datapipeline import).
     - `test_issuer_is_a_slug_and_label_is_free_text`: `pope-leo-xiii` is accepted in `issuer`, `Pope Leo XIII` is rejected there and accepted in `issuer_label`.
