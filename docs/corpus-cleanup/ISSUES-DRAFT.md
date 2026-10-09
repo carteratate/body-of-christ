@@ -29,7 +29,7 @@ Part of #132
 
 **Goal:** Every defect the 6 Oct corpus reviews found that a check can see is measured before Phase 1 starts: each failing check is a `known_defects.json` entry with `fixed_by` its owning item, run as a strict xfail. The next snapshot export also copies `document_chapters`, so the stored reader outline is compared with the passages for the first time.
 
-Findings: C-03, C-05 to C-08, C-11 to C-13, C-15 to C-17, C-20, C-22, C-26, C-27 (`docs/corpus-cleanup/REVIEW-GAPS-PLAN.md`, section 6).
+Findings: C-02 to C-08, C-11 to C-17, C-20, C-22, C-26, C-27 (`docs/corpus-cleanup/REVIEW-GAPS-PLAN.md`, section 6).
 
 ---
 Plan: [docs/2026-09-28-corpus-cleanup-plan.md](https://github.com/carteratate/body-of-christ/blob/master/docs/2026-09-28-corpus-cleanup-plan.md) (merged in #130). Before starting, follow [`docs/corpus-cleanup/README.md`](https://github.com/carteratate/body-of-christ/blob/master/docs/corpus-cleanup/README.md) and ask Carter this item's open entries in [`NEEDS-CARTER.md`](https://github.com/carteratate/body-of-christ/blob/master/docs/corpus-cleanup/NEEDS-CARTER.md).
@@ -145,6 +145,7 @@ Findings: C-09.
 | #154 | 1.1 | Comment | Scope added: Lumen Gentium chapter VII and Sacrosanctum Concilium chapter VI restored to the reader, Gaudium et Spes's Part II chapters prefixed, chapter labels with titles (C-20); strip the starred "(N*)" callers (C-17). |
 | #162 | 1.2a | Comment | Scope added: mark council texts the council condemned rather than issued (Nestorius's second letter at Ephesus, Wyclif's and Hus's articles at Constance), so 3.4 can label them (C-01). |
 | #163 | 1.2b | Comment | Scope added: `council-of-trent/sec-0/21` is a web-editor advert; drop it with a removal entry (C-05). |
+| #164 | 1.2c | Comment | Scope added: list the anchors of Nestorius's second letter at Ephesus, which the council read and condemned, for 3.4's rejected-voice ranges; the letter stays in the council's document (C-01). |
 | #167 | 1.2e | Comment | Scope added: list the anchors of condemned articles in the text this item builds, for 3.4 (C-01). |
 | #155 | 1.3a | Comment | Scope added: unnumbered headings move to the next section and define chapters, so about 950 passages lose a glued heading and 115 documents lose bucket chapters (C-08, C-26); drop `<sup>` and "[ N ]" callers (C-17); end the Syllabus after §80 (C-06); cut the Cum Sancta Mater and Exsurge Domine site text (C-05); remove editors' matter in Haerent Animo, Menti Nostrae and Africae Munus (C-18); end Exsurge §41 and Syllabus §80 at the proposition (C-01); fix one broken entity (C-30). |
 | #159 | 1.4a | Comment | Scope added: restore the 138 Psalm titles as the unnumbered opening of their psalm's first passage, and the Sirach prologue as `sirach/prologue` (C-11). The web and API strings that name "Song of Solomon" are now 2.4b's and 2.4a's (C-24). |
@@ -157,7 +158,7 @@ Findings: C-09.
 | #175 | 1.9 | Comment | Scope added: the label helpers keep Roman numerals in capitals ("Ii." becomes "II.") (C-22). |
 | #178 | 2.2a | Comment | Scope added: `chunks.voice` (NULL or `rejected`) with its check constraint (C-01). |
 | #179 | 2.2w | Comment | Scope added: the neighbour window skips unsearchable passages (C-21); the embedding prefix uses the resolved display author (C-15); `voice` and `embed_model` in the payload, the model recorded per publish (C-01, C-23); the staged report adds `index.dedup_collision_rate` and `index.embedding_input_hash` (C-09, C-23); CLAUDE.md section 4's Qdrant claim corrected (C-28). |
-| #181 | 2.2c | Body edit and comment | "**Type:** decision" becomes "**Type:** PR (a migration), then ops: applied by hand in 4.0's window". Goal becomes "Keyword search stops treating Bible verse markers as words and can find a passage by its citation ('John 3:16', 'canon 1055', 'CCC 2267')." Comment: Carter chose the rebuild on 9 Oct 2026 (C-16). |
+| #181 | 2.2c | Body edit and comment | "**Type:** decision" becomes "**Type:** PR (a migration), then ops: applied by hand in 4.0's window". Goal becomes "Keyword search stops treating Bible verse markers as words and can find a passage by its citation: 'canon 1055', 'CCC 2267', and a Bible chapter such as 'John 3'." Comment: Carter chose the rebuild on 9 Oct 2026 (C-16). |
 | #182 | 2.3 | Comment | Scope added: Cum Sancta Mater Ecclesia's year is 1859, not 1858; papal years are checked against their dating lines (C-05). |
 | #183 | 2.4a | Comment | Scope added: the evaluate prompt names "Song of Songs (Song of Solomon)" so it reads right before and after the rename (C-24). |
 | #184 | 2.4b | Comment | Scope added: the mobile citation parses both Summa citation forms (1.7 changes the format); no doubled title on Fathers cards; `BOOK_ORDER` ranks both names of the Song of Songs (C-15, C-24). |
@@ -168,9 +169,9 @@ Findings: C-09.
 | #191 | 4.1a | Comment | Scope added: redirects for split pieces under 2.1's rule may raise the rows to move into the low hundreds (C-10). |
 | #192 | 4.1b | Body edit and comment | Depends on gains "2.2c's migration applied in 4.0's window", "2.4d live" and "3.4 included". Comment: the build-freeze PR also applies the rejected-voice fallback (3.4's ranges unsearchable if 2.4d is not deployed) (C-01). |
 | #193 | 4.2 | Comment | Scope added: the RF-1 dedup arm, and targeted checks for CCC 1471, Psalm 51's title, citation lookups by keyword, rejected-voice explanations, Summa article citations, Cyprian's correspondents, and reference-style questions through vector retrieval (C-01 to C-03, C-07, C-09, C-11, C-16). |
-| #131 | RF | Comment | Children added to the candidate list: RF-1 (opened now, because 4.2 runs it as an arm), archaic verb forms in keyword search (Opus A-020), and stitching that reads 1.7's reply targets (C-14). |
+| #131 | RF | Comment | Children added to the candidate list: RF-1 (opened now, because 4.2 runs it as an arm), archaic verb forms in keyword search (Opus A-020), stitching that reads 1.7's reply targets (C-14), and verse-level citation lookup in keyword search (C-16). |
 
-Issues that gain nothing: #140 (0.3), #141 (0.5), #142 (0.6), #156 (1.3b), #158 (1.5b), #160 (1.4b), #161 (1.4c), #164 (1.2c), #165 (1.2d), #166 (1.2f), #171 (1.8d), #174 (1.8e), #180 (2.2b), #186 (3.3) and every P5 issue.
+Issues that gain nothing: #140 (0.3), #141 (0.5), #142 (0.6), #156 (1.3b), #158 (1.5b), #160 (1.4b), #161 (1.4c), #165 (1.2d), #166 (1.2f), #171 (1.8d), #174 (1.8e), #180 (2.2b), #186 (3.3) and every P5 issue.
 
 ## 3. Parent issues
 

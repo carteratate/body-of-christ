@@ -35,7 +35,7 @@ Everything else extends an item that already exists, plus six new items: a check
 
 1. Carter's answers to section 7, recorded in `NEEDS-CARTER.md` and, where they settle a rule, in the plan's Decision log.
 2. The docs PR from this branch, merged. It holds:
-   - the plan's phase table, Decision log rows and the one-line D11 change for `voice` (if Q1 is a);
+   - the plan's phase table, Decision log rows and the one-line D11 change for `voice`;
    - 2.1's spec: paragraph-ID anchors for the Summa (Q3), first-unit anchors for split pieces and the per-piece stability rule (Q2), the `voice` field and its registry override (Q1), and the three 2.1 pairing rules that follow;
    - every other spec extension in section 4, and the new item specs in section 5;
    - the review files, if Carter agrees (Q6).
@@ -59,7 +59,7 @@ Nothing else blocks 2.1. R7 is research and can start the same day as 2.1; it bl
 | C-06 Syllabus §80 swallows other text | crit. | extension | 1.3a: the Syllabus body ends after §80; the appended extracts get removal entries | P1 | `structure.syllabus_body_boundary` (0.1d) | none |
 | C-07 three Summa keys hold two articles | crit. | extension; IDs kept (section 2) | 1.7: the corrections file splits `SS_Q64_A7`, `SS_Q66_A5`, `SS_Q123_A10`; the trailing articles get their own chapter keys and citations | after R7 | `structure.summa.one-disputation-per-article` (0.1d) | Q3 |
 | C-08 papal trailing headings, bucket chapters | high | extension | 1.3a: an unnumbered short line between numbered paragraphs is a heading; it moves to the start of the next section and drives chapters, as 1.1 does | P1 | `health.R9_trailing_heading`, `structure.bucket_chapters_with_headings` (0.1d) | none |
-| C-09 dedup drops distinct neighbours | high | decision now; extensions; RF-1 | Decision: the republish keeps today's embedding input except C-21's fix. 2.2w's staged report computes the collision rate. **RF-1** adds the threshold as a pipeline setting and 4.2 runs it as an arm | the decision before 4.1b; RF-1's arm in 4.2; any change after cutover | `index.dedup_collision_rate` (2.2w report) | default |
+| C-09 dedup drops distinct neighbours | high | decision now; extensions; RF-1 | Decision: the republish keeps today's embedding input except C-21's neighbour fix and C-15's display-author prefix (both 2.2w). 2.2w's staged report computes the collision rate. **RF-1** adds the threshold as a pipeline setting and 4.2 runs it as an arm | the decision before 4.1b; RF-1's arm in 4.2; any change after cutover | `index.dedup_collision_rate` (2.2w report) | default |
 | C-10 a saved piece reopens on other text | high | pre-2.1 spec change | 2.1: a piece's anchor names the first source unit it holds; 0.1c's stability check compares pieces one by one; the freeze pairs drifted pieces by text. 1.10b, 1.10c, 1.1, 1.3a, 1.6, 1.6a: a piece whose opening unit no longer opens a piece gets a redirect. 4.1a moves the user rows | 2.1 | `release.piece_stability` (2.1) | Q2 |
 | C-11 Psalm titles, Sirach prologue | high | extension | 1.4a: each `\d` title becomes the unnumbered opening of its psalm's first passage; the prologue becomes `sirach/prologue`. 0.1d: the coverage extractor counts `\d` as body text | P1 | `coverage.bible.superscriptions`, `sentinel.sirach_prologue` (0.1d) | default |
 | C-12 editors' "Argument" summaries | high | extension | 1.8a: 1.8b's `^Argument[.—]` pattern in ANF volumes; the editor's "Epistle N." number and title lines; 138 summaries in works that stay. The speaker signal they carry is replaced by 3.4 (Octavius) and 1.8c (letter senders) before P4 | P1; 3.4 and 1.8c in the same P4 build | `editorial.argument_lines` (0.1d) | none |
@@ -88,7 +88,7 @@ Unverified items from the synthesis's section 5 go to: the Supplement and the 26
 
 ## 5. New items
 
-Full specs follow in the standard template once Carter answers. Summaries:
+Full specs, in the standard template, are in the phase files: 0.1d and R7 in `P0-checks-identity-research.md`, 1.6a in `P1b-adapters-catechism-summa-fathers.md`, 2.4d and 3.4 in `P2-P3-schema-reader-policy.md`, RF-1 in `P4-P5-republish-expand.md`. Summaries:
 
 - **0.1d. Checks for the 6 October review findings.** PR, P0, after 2.1. Adds every check in section 6 that can run on a build or snapshot, each failing defect listed in `known_defects.json` with `fixed_by` and strict xfail, as 0.1a to 0.1c did. Extends `checks.report.check_scope` to the new namespaces. Adds `document_chapters` to `export_live_snapshot.py` and an outline comparison (Sol's query, run offline). Running the export against production is a separate approval when it runs.
 - **R7. The Summa against an independent edition.** Research, P0, blocks 1.7. Disposition of Sol's 263 core discrepancy candidates; an independent comparison of the Supplement (by a route that is not blocked, such as a scan); for the five units the vendored edition omits (I q.76 a.3 obj. 3, I q.89 a.3 s.c. 2, I-II q.88 a.4, II-II q.182 a.4 and III q.7 a.10 s.c.), an existing public-domain English edition that has them, recorded in the rights inventory, or "none found". Output: `docs/research/R7-summa-structure.md` and the reviewed corrections file 1.7 reads.
@@ -99,7 +99,7 @@ Full specs follow in the standard template once Carter answers. Summaries:
 
 ## 6. Checks and planned `known_defects.json` entries
 
-Not added yet; each owning spec will describe them. "Starts failing" means the check fails on master and enters `known_defects.json` with `fixed_by` the owner.
+Not added yet; each owning spec describes them. "Starts failing" means the check fails on master and enters `known_defects.json` with `fixed_by` the owner.
 
 | Check id | Added by | Starts failing on master? | fixed_by |
 |---|---|---|---|
@@ -135,7 +135,7 @@ Not added yet; each owning spec will describe them. "Starts failing" means the c
 | `registry.unique_title_per_collection` | 0.1d | fails after 1.10a ("Fragments" twice) | 1.10a |
 | `text.canon_law.ligature_corruption` | 0.1d | yes, 18 canons | 1.5a |
 | `text.summa.adjacent-duplicate-parts` | 0.1d | yes, 1 | 1.7 |
-| `release.outline_matches` (stored `document_chapters` against derived) | 0.1d, on the next snapshot | unknown until the export runs | the item that owns any mismatch |
+| `release.outline_matches:<collection>/<document_id>` (stored `document_chapters` against derived) | 0.1d, on the next snapshot | unknown until the export runs | the item that owns any mismatch |
 | `release.piece_stability` | 2.1 | 44 non-Summa pieces between live and master (section 9), paired by text in the freeze | 2.1 |
 | `roles.summa.unbold-paragraph-openings`, `structure.summa.reply-only-articles`, `structure.summa.argument-numbering`, `context.summa.reply-targets`, `labels.summa_reference_has_question`, `attribution.summa.editor-supplied-replies` | 1.7, with fixtures | new behaviour, tested in the PR that builds it | 1.7 |
 | `roles.rejected_voice` | 3.4 | registry test | 3.4 |
@@ -187,5 +187,5 @@ Each was checked because a decision turned on it.
 
 - Summa paragraphs have source IDs: 44,262 of 44,394 `<p>` in `sources/summa/summa.xml`, and II-II q.64 a.8's title is `SS_Q64_A7-p13`, inside a.7's div. (Q3, C-07.)
 - ThML paragraphs mostly have source IDs: all 6,896 in `apostolic fathers.xml`, 5,547 of 5,682 in `city-of-god.xml`, 1,203 of 1,247 in the Imitation. A piece anchor can name its first paragraph by ID, and by its ordinal in the source div where no ID exists. (Q2.)
-- Per-piece drift today: comparing each live non-Summa piece with the master-build passage of the same ID, piece by piece (8-word shingles, the larger of the two containments), 44 of 6,699 fall below 0.5: medieval 37, exhortations 3, encyclicals 3, councils 1. 7 of them hold 17 saved rows. So the per-piece rule adds about 44 pairings to 2.1's freeze, beside the 408 Summa ones. Script in this session's scratchpad, run on `datapipeline/releases/local/review-opus/corpus.pkl`. (Q2.)
+- Per-piece drift today: comparing each live non-Summa piece with the master-build passage of the same ID, piece by piece (8-word shingles, the larger of the two containments), 44 of 6,699 fall below 0.5: medieval 37, exhortations 3, encyclicals 3, councils 1. 7 of them hold 17 saved rows. So the per-piece rule adds about 44 pairings to 2.1's freeze, beside the 408 Summa ones. Method: for each live passage outside the Summa whose anchor ends `/pN` or `-pN`, compare its text with the build passage of the same ID using 8-word shingles and the larger of the two containments; run on `datapipeline/releases/local/review-opus/corpus.pkl` (local, gitignored). 2.1's PR reproduces the count with its own per-piece check. (Q2.)
 - Roles reach the models only through `unit_label`, via `services/api/app/rag/steps/passage_role.py:display_role`, and the dedup threshold is the constant `_COSINE_THRESHOLD = 0.9` in `rag/dedup.py`. (Q1, C-09.)

@@ -188,6 +188,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **4.1a** [Phase 4]. Approve the rules for merging duplicates when a moved passage lands where a user already has the same bookmark or result (for bookmarks, keep the earliest and join both notes when they fit), and the rules for undoing them in a rollback: a user's deletions and edits made since the cutover are kept, and a skipped row never blocks the rollback.
 - **4.1b** [Phase 4]. Choose the quiet hour for the cutover, and give go or no-go the day before.
 - **4.2** [Phase 4]. Give go or no-go after the evaluation on the staging copy. Also confirm that 0.3 ran with AI judging, which the comparison needs.
+- **RF-1** [Phase 4]. After 4.2's comparison, decide whether to change the dedup threshold for chapter-keyed collections (canon law, the Catechism, the Summa, the Bible) from 0.9 to the tested value. The comparison report gives the effect on judge scores and on how often distinct neighbouring passages are dropped.
 
 ### Phase 5
 
@@ -213,7 +214,6 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.7** [Phase 5]. Approve the final About page wording, especially the list of excluded authors.
 - **5.8** [Phase 5]. Choose when to revisit paid licences (the Decision log says after the free phase ships). This blocks the Eastern Catholic code.
 - **RF** [after Phase 4]. Put the retrieval follow-up issues in priority order.
-- **RF-1** [Phase 4]. After 4.2's comparison, decide whether to change the dedup threshold for chapter-keyed collections (canon law, the Catechism, the Summa, the Bible) from 0.9 to the tested value. The comparison report gives the effect on judge scores and on how often distinct neighbouring passages are dropped.
 
 ---
 
