@@ -147,11 +147,15 @@ These apply to every PR below and are not repeated in each item.
   - Orientalium Ecclesiarum and Unitatis Redintegratio end with the promulgation formula ("Each and all these matters... Given in Rome at St. Peter's, November 21, 1964").
   - All 36 council documents have `author = None` (`councils.py:144`, `:212`).
   - Tests encode the bug: `test_vatican2_numbered_paragraphs_under_chapter` never has a continuation paragraph.
+  - Also found by the 6 Oct reviews:
+    - Chapters (C-20, Opus-2 B-009). Lumen Gentium's page prints chapter VII's title with no "CHAPTER VII" line, and Sacrosanctum Concilium prints "VI SACRED MUSIC" without the word "CHAPTER", so `_CHAPTER` misses both: LG §48 to §51 (eschatology, purgatory, 6 saved rows) sit under chapter VI, and SC §112 to §121 under chapter V. Gaudium et Spes labels its Part II chapters "Chapter I" to "Chapter V" again, and every Vatican II chapter label is a bare numeral with no title.
+    - Starred callers (C-17, Opus A-012). Lumen Gentium carries a second series of note callers, "(21*)", 102 of them, whose notes the page does not print. The strip below handles "(9)" and "[9]" only.
 - **Changes:**
   - Rewrite `build_vatican2` as a two-pass walk over `soup.find_all("p")`. Pass 1 finds the cut: the first paragraph matching `^(END|FOOT)?NOTES?$`, case-insensitive. With no such heading, the end of the document. Pass 2 walks paragraphs before the cut.
   - Keep a running section number. A paragraph opens a section only when its number is the expected next one. Any other numbered paragraph is continuation text. This also blocks the LG Nota numbers from resetting the count.
   - Add `_SECTION_NUMBER_FIXES = {("Sacrosanctum Concilium", "81. In order that the divine office"): 87}`, keyed by the paragraph's opening words. Log each applied fix.
   - Unnumbered paragraphs attach to the open section. Paragraphs before section 1, excluding the language bar and the all-caps masthead, become one passage with anchor `<doc>/preface`, labelled "Preface" or "Introduction" to match the source heading.
+  - Chapters (C-20). Besides `_CHAPTER`, recognise "N TITLE" (a Roman numeral and an all-caps title) and a bare all-caps title between runs of sections as a chapter heading. Label chapters with number and title ("Chapter VII: The Eschatological Nature of the Pilgrim Church"), and prefix Gaudium et Spes's chapters with their part ("Part II, Chapter I: …").
   - Headings: keep `_CHAPTER` detection. A short unnumbered paragraph with no final punctuation and mostly capitals ("THE URGENT FOSTERING OF PRIESTLY VOCATIONS") is a subheading. Prepend it as the first line of the next section rather than creating a card. A numbered heading ("12. Coordination to be Fostered...", no final punctuation, under 120 characters) opens section 12 with that text as its first line.
   - Named appendices get their own anchor namespace and chapter:
     - Lumen Gentium: from the paragraph "Preliminary Note of Explanation" to the cut. Anchors `lumen-gentium/nota-praevia/1` to `/4`, chapter "Preliminary Note of Explanation", references "Lumen Gentium, Preliminary Note of Explanation, 1". The Nota is part of the Council's acts, announced by the Secretary General, so rule G does not remove it.
@@ -159,7 +163,7 @@ These apply to every PR below and are not repeated in each item.
     - Promulgation formulas: anchor `<doc>/promulgation`, chapter "Promulgation".
   - Set `author="Second Vatican Council"` on every Vatican II document. The document ID is `document_id("councils", "Second Vatican Council", title)` and does not include author, so it is unchanged.
   - Use `pack_units` with the section's paragraphs as units. 40 sections exceed 3,500 characters, so they split: 12 in Lumen Gentium, 7 in Presbyterorum Ordinis, 6 in Gaudium et Spes, 6 in Ad Gentes, and Nostra Aetate 4 among the rest.
-  - Keep the existing footnote-marker strip. Marker forms in these files are "(9)" and "[9]". Add the parenthesised form only after a word or closing quote, so "(Rom. 12:10)" stays.
+  - Keep the existing footnote-marker strip. Marker forms in these files are "(9)" and "[9]". Add the parenthesised form only after a word or closing quote, so "(Rom. 12:10)" stays. Strip the starred form "(N*)" too (C-17).
 - **Acceptance checks:**
   - Replace the fixture in `test_vatican2_numbered_paragraphs_under_chapter` with one that has a continuation paragraph and a NOTES section. New tests: `test_vatican2_continuations_join_their_section`, `test_vatican2_stops_at_notes_heading`, `test_vatican2_notes_numbering_restart_is_not_a_section`, `test_vatican2_preface_before_section_one`, `test_vatican2_nota_praevia_has_own_anchors`, `test_vatican2_section_number_fix_applied`.
   - Vendored checks:
@@ -167,10 +171,11 @@ These apply to every PR below and are not repeated in each item.
     - Characters kept are at least 99% of the body characters before the cut, 921,233 in total, reported per document.
     - Zero passages start with "Cf.", "See " or "Ibid".
     - The Nostra Aetate 4 text contains "what happened in His passion cannot be charged against all the Jews".
+    - 0.1d's `structure.chapter_sequence` clears: Lumen Gentium has chapters I to VIII, Sacrosanctum Concilium I to VII, and no chapter label repeats in Gaudium et Spes. `health.R12_note_caller` reports no "(N*)" in councils.
   - The prototype run on 29 Sep got 86 sections for Sacrosanctum Concilium before the "81." fix. The test must show 130 after it. Optatam Totius printed 21 in the prototype; confirm the true count of 22 against vatican.va, or correct this expectation in the PR.
 - **Production safety:** Datapipeline only. Document IDs unchanged. Anchors `<doc>/<n>` keep their meaning and IDs, so bookmarks on existing sections stay correct and gain text. Churn this PR must record:
   - About 76 footnote anchors (`<doc>/<n>-2`, `<doc>/<n>-3`) disappear. They hold note text. Each gets a removal-registry entry (reason `note-split-off`, tombstone "This card was a footnote to the Council's text, not the text itself").
-  - Sections that now split change anchor from `<doc>/<n>` to `<doc>/<n>/p1`. The registry row keeps the section's ID; the later pieces are new.
+  - Sections that now split keep `<doc>/<n>` and its ID for their first piece; later pieces are new, named by their first source paragraph (2.1's piece rule, C-10).
   - `sacrosanctum-concilium/81-2` already holds section 87's text. Its registry row changes anchor to `sacrosanctum-concilium/87` and keeps its ID.
   - Where today's build emits Nota praevia paragraphs under `lumen-gentium/<n>-2` style anchors, their registry rows move to `lumen-gentium/nota-praevia/<n>` and keep their IDs the same way. Nota paragraphs that were dropped today are new units.
   - Gravissimum Educationis bucket chapters (`bucket-0`) become heading chapters. That is a chapter-key change only, and passage IDs stay. The 0.1c chapter remap carries it to `reading_progress`.
