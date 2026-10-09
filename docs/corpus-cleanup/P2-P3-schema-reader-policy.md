@@ -764,6 +764,9 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `SourcesPage` shows author, year and translation per document (`SourcesPage.tsx:236-252`).
   - Reader load errors show a generic failure (`DocumentReader.tsx:197`, "Failed to load").
   - Restore status handling lives in `lib/search-experience/useSearchPageExperience.ts`.
+  - Also found by the 6 Oct reviews:
+    - Citations the card parses (Opus-2 B-003, B-011). `ChunkCard.tsx:mobileCitation` takes "Question N … Article N" out of the Summa reference, and strips the author from a citation only when it starts with the payload author. 1.7's new Summa citation ("Summa Theologiae II-II, q. 64, a. 6, co.: Whether …") no longer matches that regex, so mobile would show the raw string. On desktop, `primaryReference` prepends the document title to Fathers references that already hold it ("City of God, Augustine — City of God, Book I · Chapter 1"); after 1.10c drops the author from ThML references (C-15) the title still doubles.
+    - A hard-coded title (C-24, Opus-2 B-015). `SourcesPage.tsx` sorts the Bible by `BOOK_ORDER`, which names "Song of Solomon" and puts unknown titles last; 1.4a's rename reaches users at the Phase 4 apply, after this item deploys.
 - **Changes:**
   - `apps/web/src/lib/search-stream.ts` (the only SSE decoder): add `facts?: DocumentFacts | null`, `language?: string | null`, `passage_note?: string | null`, `passage_author?: string | null` to `ChunkSource`, and `status?`, `tombstone?`, `redirect?` to `ChunkResult`. Remove the unused `metadata` field. Types in `lib/api.ts` for `DocumentInfo`, `ReaderPassage`, `BookmarkChunkInfo`, `Bookmark`, `SearchResultsResponse` gain the same optional fields.
   - New pure module `apps/web/src/lib/attribution.ts` with unit tests:
@@ -779,6 +782,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `status === "removed"`: render a tombstone card with title, author, reference, `public_reason` and `church_act`, no content, no bookmark or feedback buttons, and a "Why was this removed?" link to the About page anchor (5.7 fills it; until then link to `/about`).
     - `status === "moved"`: render normally from the new content, with a muted line "This passage was renumbered in a corpus update."
     - Copy action: citation uses `formatAttribution` so a copied Pseudo-Justin passage is not credited to Justin.
+    - Citations (Opus-2 B-003, B-011). `mobileCitation` parses both Summa forms, today's ("Question 19 … Article 9 - Whether …") and 1.7's ("q. 19, a. 9, ad 1: Whether …"), and never shows a raw string. `primaryReference` does not prepend the title when the reference already starts with it, for any collection.
   - `BookmarkCard.tsx`: same notes, translation and source credit under the text; tombstone and moved states; keep the user's note editable in both.
   - Reader:
     - `DocumentOverview.tsx`: attribution line becomes `formatAttribution · formatDate · formatTranslation`; show certainty, notes, supersession and the list of works with their own labels when `works` is non-empty; source credit at the bottom of the header section.
@@ -787,7 +791,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - Earlier text (rule F, D11). A passage with `superseded_by` set is not rendered in the reading flow. It renders as a collapsed "Earlier text (<year>)" control under the current passage it points to; opening it shows the older wording in muted text with the label "No longer in force". The year comes from the history anchor. Test: `ChapterSection.test.tsx::test_history_passage_shows_as_earlier_text_under_current`.
     - `DocumentReader.tsx` and `lib/api.ts` reader fetchers: on 410 with a tombstone, show a removal page (title, author, reason, Church act, back button). On 404 with `redirect`, `router.replace` to the new document and anchor, keeping `from` and `returnKey`. On `redirected_from`, highlight the new anchor.
     - Guest reader shares these components (`isGuest`); no guest fork.
-  - `SourcesPage.tsx`: use `formatAttribution` and `formatDate`; show a certainty tag.
+  - `SourcesPage.tsx`: use `formatAttribution` and `formatDate`; show a certainty tag. `BOOK_ORDER` lists "Song of Songs" and "Song of Solomon" at the same rank (C-24).
   - History restore: `useSearchPageExperience.ts` treats `removed` and `moved` results as present; no "results unavailable" notice for them.
 - **Acceptance checks:**
   - `ChunkCard.test.tsx`: the collapsed header shows attribution and certainty tag and never the source credit; the expanded body shows translation, notes and credit in that order; the Bible translation badge renders from `facts`; a Catena passage shows its quoted author; removed status renders the tombstone without content and without bookmark buttons; moved status shows the renumbered line; copy text uses the attributed author; a result with no `facts` renders exactly as today (snapshot).
@@ -795,6 +799,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `DocumentReader.test.tsx`: 410 shows the removal page; 404 with redirect replaces the URL; credit appears once per chapter section.
   - `lib/attribution.test.ts` for each formatter.
   - `SearchPage.test.tsx`: a restore with a removed result shows no unavailable notice.
+  - `ChunkCard.test.tsx` also covers both Summa citation forms on mobile, and a Fathers card whose reference starts with its title (no doubled title).
+  - `SourcesPage.test.tsx`: every Bible title `/sources` can return, including both names of the Song of Songs, has a rank in `BOOK_ORDER`.
   - `npm run lint` (0 errors, no new warnings in touched files), `npm test`, `npm run build`.
   - PR description must include screenshots at 375 px and desktop, dark and light themes, of a collapsed card, an expanded card with a credit, a tombstone card, the reader overview with works, and the removal page.
 - **Production safety:** Every new field is optional. Before 2.4a deploys, or before 0039 is applied, all fields are absent and the components render today's output, which the snapshot tests hold. Tombstones and redirects cannot exist until a 2.2w apply (the Phase 4 apply, or the On the Incarnation early retirement if Carter approves it), and this PR must be live before either (4.1b checklist item).
