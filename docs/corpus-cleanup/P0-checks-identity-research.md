@@ -11,8 +11,8 @@ Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs
 5. Then provenance: a tracked hash lock for every vendored file plus a public-facts rights inventory (0.2).
 6. Then identity: the work registry (2.1). It freezes today's 421 document IDs and today's passage IDs, moves anchors to source structure without re-keying any passage (D1), holds the rule A and attribution fields, and holds the one removal registry that every later removal is recorded in (D4). It also defines, in Python, the genre list, the work model and the passage fields `searchable`, `language` and `passage_author`, so Phase 1 adapters can use them before Phase 2 (D11). Its PR is the first real user of the 0.1c remap.
 7. Then the baseline eval (0.3), run with judging against the live corpus before any live change (D7), and the Qdrant limits read (0.5) and storage snapshot (0.6), both read-only ops.
-8. Research items R1 to R6 need no code and can start on day one in parallel. Each entry names the items it blocks. R1 blocks 3.1, 3.2 (the Refutation of All Heresies), 5.6a and 5.6b. R6 blocks 1.2c, 1.2d, 1.8d and every 5.x addition. R2 and R3 are specified only here; the P1a file points to them.
-9. Recommended merge order: 0.0, 0.4, 0.1a, 0.1b, 0.1c, 0.2, 2.1, then the 0.3 run. Ops 0.5 and 0.6 any time before P4. R1 to R6 in parallel.
+8. Research items R1 to R7 need no code and can start on day one in parallel. R7 (added 9 Oct 2026) blocks 1.7. Each entry names the items it blocks. R1 blocks 3.1, 3.2 (the Refutation of All Heresies), 5.6a and 5.6b. R6 blocks 1.2c, 1.2d, 1.8d and every 5.x addition. R2 and R3 are specified only here; the P1a file points to them.
+9. Recommended merge order: 0.0, 0.4, 0.1a, 0.1b, 0.1c, 0.2, 2.1, 0.1d (checks for the 6 Oct review findings, before any Phase 1 PR), then the 0.3 run. Ops 0.5 and 0.6 any time before P4. R1 to R6 in parallel.
 10. Nothing in P0 to P3 writes to live data (D7). The one possible exception is retiring On the Incarnation (1.8d) before P4, and only if Carter approves it.
 11. Evidence below was gathered on 29 Sep 2026 from master at `5475c49`, a fresh clone in a scratch directory, the vendored sources, and read-only SELECTs against Supabase project hvmgffvimqgiejmxwhwq.
 
@@ -547,6 +547,68 @@ Conventions used in this file:
   - Answered 2026-10-09 (review gaps, `REVIEW-GAPS-PLAN.md`): Summa anchors come from source paragraph IDs; split pieces are named by their first source unit and checked one by one; the `voice` field is added. These are written into Changes above. The four approvals and three 0.1c points above stay open for this item's implementer.
 - **Out of scope:** Filling `rule_a` (R1). Filling attribution values (1.8a copies editorial judgments; 3.2 sets labels). Adding removal entries beyond this PR's own (each P1 item adds its own; 3.1 adds rules A to C). Label, author or collection changes (P1, P3, P5). Adding registry columns to the database (2.2a). Applying the remap or retiring anything in live data (4.1a, 4.1b).
 
+### 0.1d. Checks for the 6 Oct 2026 review findings
+
+- **Type:** PR
+- **Depends on:** 2.1 (most check IDs are keyed by anchor, and 2.1 changes anchors; 0.1b "As built", Check ids), 0.1a, 0.1b, 0.1c. Merges before any Phase 1 PR.
+- **Goal:** Every defect the 6 Oct corpus reviews found that a check can see is measured before Phase 1 starts, the way 0.1a to 0.1c seeded theirs: a failing check is a `known_defects.json` entry with `fixed_by` its owning item, run as a strict xfail, so each Phase 1 PR shows its defects clearing and none can return unseen. The stored reader outline is compared with the passages for the first time.
+- **Current state:**
+  - All reports pass on master because their failures are registered, but none of them sees the review findings (`REVIEW-GAPS-PLAN.md` section 6):
+    - Coverage gives `ccc.json` 98.96% while at least 43 Catechism paragraphs lose lines and CCC 1471's definition is in no passage (C-03): sentence matching over the whole file cannot see a loss concentrated in a few paragraphs.
+    - `checks/source_text.py:usfm_units` treats `\d` as a heading, so the 138 Psalm titles are not measured (C-11).
+    - No health rule covers glued trailing headings (C-08), site adverts (C-05), footnote callers (C-17), papal editors' matter (C-18), ligatures and broken hyphens (C-16).
+    - Sequence checks count numbered units but not chapter structure: non-contiguous canon chapter keys and wrong chapter numbers (C-13), gaps in Vatican II chapters (C-20), two articles under one Summa key (C-07).
+    - Nothing checks Summa roles against structure (C-04), editors' "Argument" lines and chapter titles (C-12, Decision log "Editors' chapter titles in passage text"), the sender of a letter (C-02), the author of a martyrdom narrative or a citation's embedded author (C-15).
+  - `checks.report.check_scope` judges only the `coverage.`, `sequence.`, `sentinel.`, `health.` and `release.` namespaces.
+  - `scripts/export_live_snapshot.py` copies no `document_chapters`. Every stored `chunk_count` matched on 6 Oct, but the stored chapter order and labels have never been compared with the passages (synthesis section 5).
+- **Changes:**
+  - Health rules, in `health.py` and `health_patterns.json`, with check ids in 0.1b's form:
+    - `R9_trailing_heading` (report): a passage whose last paragraph is under 90 characters, has no final punctuation, starts with a capital and has a following passage. 1.3a makes it block in the papal collections.
+    - `R10_site_boilerplate` (block): "wysiwyg", "subscribe for a membership", "Webmaster", "promotional messages", "papalencyclicals", "HTML document", "HTML tag", "bulk operations". Its 3 hits on master (`council-of-trent/sec-0/21`, `cum-sancta-mater-ecclesia/4`, `exsurge-domine/41/p3`) are `known_defects.json` entries, `fixed_by` 1.2b and 1.3a.
+    - `R11_papal_editorial` (report): "Holy Father addressed", "Translation by", "translation editing", or a run of "[N-M]" range markers, in a papal passage.
+    - `R12_note_caller` (report): Opus A-012's two patterns, Opus-2 B-005's spaced caller after sentence punctuation (excluding a number followed by a Bible book abbreviation), "[ N ]" and "(N*)", outside the Bible and canon law.
+    - `R13_lower_start` (report): passages starting with a lowercase letter, per collection.
+    - `R14_hyphen_space` (report): a letter, a hyphen, a space and a lowercase letter, with a reviewed allowlist of real compounds.
+    - `no_ligatures` (report): æ, œ, Æ or Œ in content, author or title.
+    - `summa_bracket_numbers` (report): `\[\d+\]` in Summa content.
+  - Coverage and sentinels, in 0.1a's framework:
+    - `coverage.catechism.paragraph_words:<n>`: for every CCC number, the words of its source paragraphs, joined across printed lines, are at least 99% present in the passages that cite it.
+    - `sentinel.ccc_1471_definition`: the sentence that opens "An indulgence is a remission before God" is in a passage, checked by hash and length, with no text in the test.
+    - `coverage.bible.superscriptions`: the extractor counts `\d` as body text, and each title reaches the passage holding its psalm's first verse. One entry, with `units` listing the 117 psalms.
+    - `sentinel.sirach_prologue`: the `\ip` paragraphs after `\is1 The Prologue` in `46-SIReng-web-c.usfm` reach a passage. WEB-C's own `\ip` introductions stay apparatus.
+  - Structure checks, new module `checks/structure.py`, ids `structure.<check>`:
+    - `chapter_contiguous:<collection>`: each chapter key's passages form one run, for canon law, the Catechism, the Summa and the Bible.
+    - `canon_law.chapter_number_agreement`: each canon's chapter number agrees with the source's table of contents, joined to the body headings by link (Sol supplement B-003's method).
+    - `chapter_sequence`: numbered chapter labels within a Vatican II document run without gap or repeat.
+    - `bucket_chapters_with_headings`: a papal document whose source has section headings uses no "Paragraphs N–M" chapter.
+    - `syllabus_body_boundary`: the Syllabus has exactly 80 proposition bodies and no text after §80.
+    - `summa.one-disputation-per-article`: within one chapter key, one run of objections and one determination, allowing the reply-only articles R7 lists.
+    - `embedded_work_labelled`: in a ThML document, a run of chapters with no book prefix after booked chapters carries a `work_key` or a book label (the Epitome inside the Divine Institutes).
+    - `chapter_size` (report): chapters over 50,000 characters.
+  - Role, editorial, attribution and label checks, new module `checks/content.py`:
+    - `roles.summa.objection-after-replies` and `roles.summa.variant-sed-contra-boundaries` (the four "The contrary, however" paragraphs and any others R7 lists).
+    - `editorial.argument_lines`: no paragraph matching `^(Chapter [IVXLC]+\.?\s*[—-]+\s*)?Argument\s*[.:—]`, except R4's Refutation summaries.
+    - `editorial.chapter_title_lines:<work>`: no editors' chapter-title line opens a passage of On the Trinity, On Christian Doctrine, the Banquet, To His Wife or On the Apparel of Women.
+    - `editorial.provenance_lines`: no unbracketed source line ("Mai, Script. vet. collectio nova…") in a fragment collection.
+    - `attribution.letter_sender:<document>`: in a letter collection, the sender a letter's title line or greeting names is the passage's resolved author (work author once 1.8c fills works).
+    - `attribution.narrative_of_author_death`: no work titled "Martyrdom", "Passion" or "Acts of" is credited to its martyr without a note.
+    - `labels.reference_author_consistent`: a passage's `reference` names no author other than its resolved display author.
+    - `labels.roman_case`: no `\b[IVXLC][ivxlc]+\b` in a label.
+    - `registry.unique_title_per_collection`: no two documents in a collection share a title after normalisation.
+    - `text.canon_law.ligature_corruption`: the 18 reviewed canons, and any lowercase word containing an isolated capital V or Y.
+    - `text.summa.adjacent-duplicate-parts`: no two adjacent Summa source paragraphs in one article are identical.
+  - `checks.report.check_scope` and the strict-xfail bookkeeping cover the new namespaces.
+  - Snapshot and outline. `export_live_snapshot.py` also writes `document_chapters.jsonl` (`document_id`, `chapter_key`, `chapter_label`, `ordinal`, and the stored counts), with its sha256 in `snapshot.json`, under the same read-only rules. New check `release.outline_matches:<document_id>`: the stored ordinal and label of each chapter against the order and label its passages give (Sol's query, run offline on the snapshot). A snapshot without the file skips it.
+  - `known_defects.json`: an entry for every new check that fails on master, with `fixed_by` as in `REVIEW-GAPS-PLAN.md` section 6, and `units` for grouped checks.
+- **Acceptance checks:**
+  - CI: one test per rule and check with synthetic fixtures, firing on a crafted bad case and silent on a good one; the exporter test shows SELECT only and the read-only session, with `document_chapters` included.
+  - Locally with sources, the counts reproduce the reviews within 5% or the PR explains the difference: at least 43 Catechism paragraphs and CCC 1471; 138 titles in 117 psalms; about 950 trailing headings; 115 bucket documents; 3 boilerplate passages; 17 non-contiguous canon keys over 209 canons; 100 canons with a wrong chapter number; the LG, SC and GS sequences; 3 double articles; 2 objections after replies; 4 sed contras inside objections; 175 Argument passages (138 in works that stay); 16 letters by other senders; 2 martyrdoms; 56 mis-cased numerals; 18 canons; 1 duplicated sed contra.
+  - `python3 -m pytest tests/source_checks -q` passes with every new entry a strict xfail. The PR lists each entry with its `fixed_by`.
+  - The outline comparison runs on the next approved snapshot; the PR pastes its result, or says the export has not run yet.
+- **Production safety:** Local files only, except the snapshot export, a read-only transaction run only with Carter's approval. Nothing is published, and no API or web code changes.
+- **Needs Carter:** Approve the next snapshot export (NEEDS-CARTER section A). Nothing else.
+- **Out of scope:** Fixing any defect. Checks that need registry content not yet written (`roles.rejected_voice`, 3.4; Summa reply targets, 1.7). Vector and embedding checks (2.2w). Keyword-search checks (2.2c).
+
 ---
 
 ### 0.3. Baseline eval run
@@ -796,3 +858,25 @@ Conventions used in this file:
   - Run or approve the renewal searches that the private rights memos depend on.
   - Handle any correspondence with rights holders (Decision log "Rights review").
 - **Out of scope:** The OCR clean-up tool and gate (1.2f) and its per-work use (1.2e, 5.6c), adapter code, licensed works (Decision log "Licences": no spending).
+
+---
+
+### R7. The Summa against an independent edition
+
+- **Type:** research
+- **Depends on:** none; blocks 1.7 (Decision log "The Summa against an independent edition (R7)", decided by Carter on 9 Oct 2026).
+- **Goal:** Before 1.7 rebuilds the Summa, every place where the vendored English text differs in structure from an independent edition is known and dispositioned, so 1.7 builds from a reviewed corrections file instead of trusting the source's labels, and the units the vendored edition omits are restored from an existing English edition or flagged.
+- **Current state:**
+  - Coverage (0.1a) measures the build against `summa.xml` itself, so text missing from that file is invisible to it (C-14).
+  - The 6 Oct Sol review inventoried the four core parts against the Leonine Latin text published by Corpus Thomisticum (87 pages, 2,663 articles) and found 263 discrepancy candidates. Dispositioned so far: two omitted units (I q.76 a.3 obj. 3; I q.89 a.3 s.c. 2), three omitted sed contras (I-II q.88 a.4, II-II q.182 a.4, III q.7 a.10), 27 pieces with wrong numbers or "Reply OBJ" markers, 14 replies to a sed contra, 39 pieces holding a second reply target, three article divs holding two articles, and one duplicated sed contra. The rest are open. Scripts and inventories are in `datapipeline/releases/local/review-sol/` (`latin-inventory.py`, `latin-triage.py`) and `review-sol-followup/` (gitignored, on Carter's Mac).
+  - The Supplement (446 article containers) has no independent comparison: the Sol supplement's bulk attempt returned HTTP 403 for all 99 requests, which proves nothing.
+  - New Advent shares at least four of the five omissions, so it cannot serve as the second witness for them.
+- **Changes (deliverables):**
+  - `docs/research/R7-summa-structure.md`: a disposition for each of the 263 candidates (legitimate variant, prose or joint reply, source error with its correction, or omission), each citing the source paragraph ID and the Latin unit.
+  - The Supplement compared the same way against an independent text, by a route that is not blocked; downloads approved first.
+  - For each omitted unit, an existing English translation that contains it (edition, page, scan), with its row in 0.2's rights inventory, or "none found" and the places searched. TheoCorpus makes no translation of its own.
+  - `datapipeline/ingest/summa_corrections.json` (tracked; source IDs, numbers and short labels, no passage text): per source paragraph ID, the corrected role and number, its reply targets (one or more objections, or a sed contra), any reassignment to another article (C-07), and editorial or editor-supplied flags (C-04), each citing its Latin unit or source note. 1.7 reads this file. A recovered unit's text goes in a vendored override file, as 1.5b's canon overrides do, never in this file.
+- **Acceptance checks:** Every candidate has a disposition. Every correction cites the Latin unit and the source paragraph. The Supplement inventory is complete, or its gap is stated with the reason. Each omitted unit has an edition or "none found". Carter closes the issue.
+- **Production safety:** Research only; downloads go to local disk after approval.
+- **Needs Carter:** Approve downloads (NEEDS-CARTER section A) and the edition used for each recovered unit.
+- **Out of scope:** The adapter (1.7). Translating anything. Sentence-level collation where the structure agrees.
