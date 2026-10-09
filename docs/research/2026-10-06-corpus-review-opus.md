@@ -74,8 +74,8 @@ Each finding states live and build counts. Commands are in section 5; every scri
   - encyclicals: Syllabus of Errors §1 to §80, 80 passages (live and build).
   - councils: Council of Constance sessions 8 and 15, about 120 passages: Wyclif's 45 articles (`council-of-constance/sec-10/*`) and Hus's 30 (`sec-17/*`). Live and build.
 - **Evidence:**
-  - Exsurge Domine passages carry `unit_label` "§N" and reference "Exsurge Domine, §N", e.g. §31 "In every good work the just man sins." and §10 "Sins are not forgiven to anyone, unless when the priest forgives them he believes they are forgiven…". Saved rows: §7 1, §10 1, §11 4 (live).
-  - Constance `sec-10/3` reads "Christ is not identically and really present in the said sacrament…" under "Council of Constance — SESSION 8"; 2 saved rows in sessions 8 and 15.
+  - Exsurge Domine passages carry `unit_label` "§N" and reference "Exsurge Domine, §N", e.g. §31 "In every good work the just man sins." and §10, on sins not being forgiven unless the penitent believes the priest's absolution. Saved rows: §7 1, §10 1, §11 4 (live).
+  - Constance `sec-10/3` denies Christ's real presence in the sacrament (one of Wyclif's articles) under "Council of Constance — SESSION 8"; 2 saved rows in sessions 8 and 15.
   - Nothing in `unit_label`, the title (except "Syllabus of Errors") or `passage_role.display_role` tells the reranker or the explanation model that the passage is a condemned error.
   - Exsurge's chapter labels are "Paragraphs 1–20" and "Paragraphs 21–40".
 - **What a user sees:** a card "Pope Leo X — Exsurge Domine, §10" stating that absolution depends on the priest's belief, with an explanation that may present it as papal teaching. This is the Summa objection problem in collections with no stitching or role label.
