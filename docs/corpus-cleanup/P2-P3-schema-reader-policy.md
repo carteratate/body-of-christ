@@ -820,14 +820,16 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - The medieval collection holds 6 documents: Boethius, Consolation of Philosophy (524); Anselm, Proslogium, Monologium, Cur Deus Homo; Bernard of Clairvaux, On Loving God (1128); Thomas à Kempis, Imitation of Christ (1441). So "9th through 15th centuries" excludes Boethius.
   - `:42` reads "church counsels" (should be councils).
   - The apostolic exhortations text cites Evangelii Gaudium, which is filed today under encyclicals (plan, 1.3 moves it). The claim about the document is true; leave it.
+  - Also found by the 6 Oct reviews (C-25, Opus A-015), claims this fix left standing: the Fathers text says "roughly the 1st through 8th centuries", though the corpus ends with Augustine and the Apostolic Constitutions (about 430); the medieval text names "canonists", and no canonist is in the corpus; the exhortations text calls them all "post-synodal", though Haerent Animo, Menti Nostrae, Evangelica Testificatio, Gaudete in Domino, Marialis Cultus, Signum Magnum, Redemptionis Donum, Redemptoris Custos, Gaudete et Exsultate, Laudate Deum, C'est la confiance and Dilexi te are not; the papal-documents text cites "defining dogmas (such as the Immaculate Conception)" and "reforming Church structures", but Ineffabilis Deus is filed under encyclicals and nothing in that collection reforms structures.
   - Both `/about` and `/guest/about` render this component (`apps/web/src/app/about/page.tsx`, `app/guest/about/page.tsx`).
 - **Changes:** In `AboutPage.tsx` only:
   - church-fathers: "including Ignatius of Antioch, Justin Martyr, Irenaeus, Athanasius and Augustine."
   - medieval: "Works from Boethius (6th century) through the late Middle Ages, including Anselm of Canterbury, Bernard of Clairvaux and Thomas à Kempis." Adjust the period sentence to match.
   - Fix "counsels" to "councils".
+  - Correct the four claims above (C-25): the Fathers period ends with the 5th century; drop "canonists"; call the exhortations "apostolic exhortations", without "post-synodal"; describe the papal-documents collection by what it holds (bulls, apostolic letters, a motu proprio). Carter approves the wording with the names.
   - Do not add counts; the full rewrite with counts from `/sources` is 5.7.
 - **Acceptance checks:**
-  - New `apps/web/src/components/about/AboutPage.test.tsx`: the rendered text contains none of "Origen", "Chrysostom", "Bonaventure", "Hildegard", "Scotus", "counsels".
+  - New `apps/web/src/components/about/AboutPage.test.tsx`: the rendered text contains none of "Origen", "Chrysostom", "Bonaventure", "Hildegard", "Scotus", "counsels", "8th centuries", "canonists", "post-synodal".
   - `npm run lint`, `npm test`, `npm run build`.
   - PR description must list each removed name with the live query result showing it absent (or, for Origen, scheduled for removal under rule A).
 - **Production safety:** Copy change in one static component. Nothing depends on the text.
