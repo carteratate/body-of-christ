@@ -2,6 +2,8 @@
 
 **Before implementing any item in this file, follow `README.md` in this folder. It says to ask Carter the item's open questions first, record the answers, and update other specs only in the ways it allows.**
 
+Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs/research/2026-10-06-corpus-review-synthesis.md`; `REVIEW-GAPS-PLAN.md` in this folder routes each to its item. The items below were extended for them on 9 Oct 2026, and 1.6a was added.
+
 29 September 2026. Work specifications for plan items 1.6, 1.7, 1.8a, 1.8b, 1.8c, 1.8d, 1.8e and 1.9. The plan is `docs/2026-09-28-corpus-cleanup-plan.md` and its decision log is settled. Nothing here changes a decision.
 
 ## Overview and recommended order
@@ -10,7 +12,7 @@
 2. Every item depends on 0.4 (publish lock), 2.1 (frozen document and passage IDs, structural anchors, removal registry), 0.1a and 0.1c (coverage tests and release report with the remap diff), and 1.10 (shared text hygiene, including note stripping, trailing author periods in 1.10a, and the split-piece citation helper in 1.10c).
 3. Removals. Everything an item here removes (editorial passages, split-off notes, duplicate text, other authors' commentary, a superseded translation) is recorded by anchor in 2.1's removal registry in the same PR, with reason and tombstone text (D4). Nothing is deleted; the P4 apply retires what the registry lists (D2, D3).
 4. Identity. Passage IDs come from 2.1's frozen passage registry, so a relabel or an anchor-string change keeps the ID (D1). Only genuinely new units get new IDs, and a unit whose identity changes (the split Ignatius recensions) gets a new ID plus a redirect from the old one.
-5. Order, matching the plan's phase table: 1.6 Catechism and 1.7 Summa first. Both are self-contained single-document adapters, and both use 1.10c's citation helper.
+5. Order, matching the plan's phase table: 1.6a Catechism dropped lines (added 9 Oct 2026; it needs nothing from 1.10), then 1.6 Catechism and 1.7 Summa. 1.7 also waits for research R7, the Summa against an independent edition. Both are self-contained single-document adapters, and both use 1.10c's citation helper.
 6. Then 1.8a ANF editorial strip, after research R4 closes. It creates the shared `ingest/editorial.py` module that 1.8b, 1.8c and 1.8d reuse.
 7. Then 1.8d On the Incarnation, which depends on 1.8a and on R6's check of the Robertson edition.
 8. Then 1.8b NPNF Augustine strip, which needs one decision from Carter about splitting the two treatise volumes into works.
@@ -23,6 +25,33 @@
 A note on measurement. Master's adapters no longer match what production holds. Catechism builds 809 passages against 800 live, the Summa 26,792 against 26,750, medieval 449 against 434. Fathers match at 9,783. Every release report must diff against live, not against an earlier local build.
 
 A note on the task list. The request placed the Anselm, Boethius and Bernard fixes under 1.8c. I moved them to 1.9, because they live in `ingest/medieval.py` and the medieval manifest. If Carter prefers them in 1.8c, the spec text moves unchanged.
+
+---
+
+### 1.6a. Catechism: restore dropped lines
+
+- **Type:** PR
+- **Depends on:** 0.4, 2.1, 0.1a, 0.1c, 0.1d (its `coverage.catechism.paragraph_words` and `sentinel.ccc_1471_definition` entries). Not on 1.10, so it may be the first Phase 1 PR (Decision log "Catechism dropped lines (1.6a)", decided by Carter on 9 Oct 2026).
+- **Goal:** Every word of every numbered Catechism paragraph reaches a passage. "What is an indulgence?" finds the Catechism's definition in CCC 1471, CCC 2053 no longer stops at "give to the", and the baptismal and ordination prayers the Catechism quotes are in the text.
+- **Current state (C-03, Opus A-001):**
+  - The sentence of CCC 1471 that begins "An indulgence is a remission before God" is in `sources/catechism/ccc.json` (node `toc-172`) and in no live or build passage; `ccc/1478` holds only the later sentence about how an indulgence is obtained.
+  - CCC 2052 to 2074 (node `toc-278`) keep about the first line of each paragraph: 782 of 2,004 source words are absent from the build, and `ccc/2053` is 120 characters. Other nodes losing words: `toc-190` (CCC 1581 to 1589) 203 of 914, `toc-185` (1539 to 1553) 169 of 1,351, `toc-172` (1471 to 1479) 95 of 846, `toc-138` (1217 to 1228) 74 of 852. At least 43 numbered paragraphs lose whole lines, 1,321 words in the build, most of them the liturgical prayers the Catechism quotes.
+  - Cause: `ingest/catechism.py:is_section_header` tests `"indent" in paragraph`, but all 483 indented source paragraphs keep `indent` under `paragraph["attrs"]`, so the test never fires. Any line under 120 characters with no paragraph number is then taken for a header, and header-only sections are dropped. `toc-278` stores each printed line as its own paragraph, so most of its lines become "headers".
+  - Why no check noticed: coverage gives `ccc.json` 98.96% and passes, and each paragraph keeps its first line, so the sequence check passes too. Catechism passages are the most used per passage in the corpus (378 saved retrievals on 800 passages).
+- **Changes:**
+  - `is_section_header` reads `paragraph.get("attrs", {}).get("indent")`, and an indented line is never a header.
+  - Before header detection, join a node's runs of consecutive unnumbered lines that carry no heading markup into the paragraph they continue. A quoted prayer stays as lines of the paragraph that quotes it.
+  - A section with no body text is dropped only when its text is a real heading (all capitals, or a heading in `toc_nodes`); otherwise it is kept and the PR logs it.
+  - Anchors stay `ccc/<first paragraph>` and IDs stay (D1). Split pieces follow 2.1's piece rule: a live piece whose opening paragraph no longer opens a piece gets a `merged` redirect to the piece that now holds it.
+  - Fixture: `tests/fixtures/ccc_min.json` (create it if 1.6 has not) gains an indented line under `attrs`, a node stored line by line, and a quoted prayer.
+- **Acceptance checks:**
+  - `tests/test_catechism.py::test_indent_under_attrs_is_not_a_header`, `test_line_per_paragraph_node_is_joined`, `test_quoted_prayer_is_kept`.
+  - Vendored: 0.1d's `coverage.catechism.paragraph_words` entries and `sentinel.ccc_1471_definition` clear, so every CCC number's source words are at least 99% present in the passages that cite it; `ccc/2053` holds its whole paragraph.
+  - Coverage of `ccc.json` rises, and the PR rewrites the coverage baseline (0.1a "As built").
+  - The release report shows every Catechism passage `same` and passing the per-piece check, or redirected under 2.1's rule; the PR lists saved rows on any redirected piece.
+- **Production safety:** Adapter only, behind 0.4. Document and passage IDs do not change; the restored text replaces the cut text in place at the Phase 4 apply.
+- **Needs Carter:** nothing.
+- **Out of scope:** Everything 1.6 does: CCC 2267, sentence case, chapters, references and paragraph markers.
 
 ---
 
