@@ -110,17 +110,21 @@ These apply to every PR below and are not repeated in each item.
   - Live rows sharing a citation within one document: Bible 495, apostolic exhortations 412, encyclicals 411, papal documents 91, councils 1,282, church fathers 5,941, medieval 240, Catechism 98, and all 26,750 Summa rows.
   - Each adapter copies the same loop: call `split_display_passage` (`common.py:158-202`) and reuse `ref` for every piece. Examples: `bible.py:575-586`, `councils.py:70-81`, `encyclicals.py:185-196`, `thml_doc.py:75-82`.
   - The Bible pieces contain `{{v:N}}` verse markers, so their real verse range is recoverable. ANF and NPNF chapters have no printed paragraph numbers.
+  - Also found by the 6 Oct reviews (C-15, Opus-2 B-003): every Fathers and medieval reference embeds the author, because `thml_doc.make_doc` builds `reference=f"{author} — {title}, {label}"` (`ingest/thml_doc.py:80`), and the embedding prefix in `writers/search_writer.py` repeats it. 3.2's relabels ("Pseudo-Justin"), the per-letter credits in Cyprian's Epistles (C-02, 1.8c) and `passage_author` change `author` but would leave the old name in every citation and vector. The reference is the one provenance field the rerankers, the explanation model and the card read.
 - **Changes:**
   - New module `ingest/pieces.py` with `pack_units(units, max_chars)`. A unit is `(label, text)`: a verse, a canon section, a numbered paragraph, or a source `<p>`. It packs whole units into pieces of at most `max_chars`. Only a single unit longer than the cap falls back to `split_display_passage`.
   - `piece_reference(base, first_label, last_label, part, parts)` returns `"Genesis 1:14 to 1:31"` style ranges when labels exist. It returns `base + " (part 2 of 3)"` when they do not. That form is settled (D5) and is the only piece suffix in the corpus; the Catechism (1.6) and the Summa (1.7) use it too. Use a proper range separator in the real string; this file avoids dashes.
   - Apply it in `thml_doc.make_doc` (Fathers and medieval), the three papal adapters, `councils._Builder.add` and the Bible builder. The Bible gets verse units, so a split never cuts inside a verse and each piece cites its own verses.
-  - Keep anchors exactly as today: `base`, or `base/pN` for pieces. Only `reference` changes, plus Bible piece boundaries, which now fall between verses.
+  - Anchors follow 2.1's piece rule (C-10): the first piece keeps the unit's anchor, and each later piece is named by its first source unit. `pack_units` returns each piece's first unit so the adapter can build the anchor. A live piece whose opening unit no longer opens a piece gets a `merged` redirect. Besides anchors, `reference` changes, and Bible piece boundaries now fall between verses.
+  - ThML references carry no author (C-15): `"{title}, {label}"`, plus the piece suffix. The card, the copied citation and the models get the author from the resolved display author that 2.2w writes (passage author, then work author, then document author), so a relabel changes it everywhere at once.
   - 1.1 to 1.5 rewrite several of these adapters. They must keep calling `pack_units` and `piece_reference`, not a private copy.
   - Summa (1.7) and Catechism (1.6) adopt the helper in their own PRs and depend on this one.
 - **Acceptance checks:**
   - `test_pack_units_never_splits_a_unit_under_cap`, `test_pack_units_keeps_every_character`, `test_piece_reference_range_and_part_forms` (asserts the exact string "(part 2 of 3)").
   - Vendored check: zero duplicate `(document_id, reference)` pairs in Bible, papal, Fathers and medieval. Councils may keep duplicates until 1.1 and 1.2 land. The check prints the count per collection.
   - Bible: every piece's reference range equals the first and last verse numbers found in its text.
+  - 0.1d's `labels.reference_author_consistent` passes for church-fathers and medieval: no ThML reference contains an author name.
+  - The release report passes the per-piece stability check (`release.piece_stability`) for every collection this PR repacks, and lists each redirected piece with its saved rows.
 - **Production safety:** References and some Bible split points change. Document IDs do not. Bible piece anchors (`book/ch/v-2`) can move. A piece anchor that no longer exists gets a `merged` or `split` redirect to the piece holding its first verse.
 - **Needs Carter:** nothing. The citation form "(part 2 of 3)" is decided (D5).
 - **Out of scope:** Summa objection and reply citations (1.7). Catechism paragraph labels (1.6).
