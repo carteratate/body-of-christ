@@ -641,6 +641,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `document_type` exists in `metadata` for 16 documents only. `pope` is in `metadata` for 175.
   - Today's writer upserts `id, collection, title, translation, author, year, metadata` only (`datapipeline/writers/reader_writer.py:99-106`).
   - Anselm's three works all carry `year = 1099`; the plan corrects them to 1076, 1077-78 and 1098 (that fix belongs to 1.9; this item carries the values).
+  - Cum Sancta Mater Ecclesia is stored as 1858, but its dating line reads 27 April 1859, in the thirteenth year of Pius IX (elected June 1846), so the year is 1859 (C-05, Opus-2 B-008). It is the only mismatch among the 164 papal documents with a dating line; Salutis Nostrae's source prints "1744" for 1774, and its metadata already has 1774.
 - **Changes:**
   - Registry (2.1's tracked file): add per-document fields `genre, issuer, issuer_label, year, date_display, translation, source_credit, certainty, attribution_note, notes, clavis_ref, superseded_by`. Works use the `works` shape 2.1 already defines (D6, D11); this item fills their values. Which passages belong to a work is recorded per passage as `work_key` in 2.1's passage registry, never by anchor or position range. Validation in the registry loader:
     - `certainty` is one of the four values.
@@ -652,11 +653,12 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Value rules:
     - `translation`: the edition or translator shown to users, for example `Ante-Nicene Fathers (1885-1896)`, `Nicene and Post-Nicene Fathers, Series I`, `Vatican English`, `WEB-C` kept for the Bible (the web maps codes to names, `apps/web/src/components/sources/SourcesPage.tsx:12`). The `(collection, title, translation, author)` unique key allows this.
     - `issuer` and `issuer_label` (D11): for papal documents the pope, from `metadata.pope`, as `pope-leo-xiii` and "Pope Leo XIII"; for council documents the council, as `second-vatican-council` and "Second Vatican Council"; for the Catechism and the Code, `holy-see` and "Holy See". Filters use `issuer`; cards and the reader show `issuer_label`.
-    - `year` stays the sortable integer; `date_display` carries ranges and "c.".
+    - `year` stays the sortable integer; `date_display` carries ranges and "c.". Cum Sancta Mater Ecclesia's year is 1859 (C-05).
     - `source_credit`: exactly the wording 0.2's rights inventory records per source. If 0.2 agrees, vatican.va texts get `Text: Libreria Editrice Vaticana` and CCEL ThML texts get `Sourced via CCEL.org`. Never derived from a ThML `<description>`.
   - `datapipeline/model.py` fields and the staging writer are 2.2w's; this item fills them from the registry in each adapter's document construction.
   - Release report (0.1c, staged mode in 2.2w): a "Document facts" section with a per-field, per-collection count of values that differ from live, and the list of documents whose `author` changes. This replaces the backfill script an earlier draft proposed; there is no separate live write (D7).
 - **Acceptance checks:**
+  - A vendored check that every papal document's `year` equals the year of its dating line where the source prints one, with a reviewed exception list for source misprints (Salutis Nostrae).
   - Registry validation tests: every document has `source_credit`; every `genre` is in 2.1's genre module; every `issuer` is a slug with an `issuer_label`; every work has at least one passage whose `work_key` names it in a build; no `<description>` text appears in any registry field (checked against the extracted blurbs of the vendored ThML files).
   - `datapipeline/tests/test_stage_apply.py` (2.2w) gains `test_document_facts_reach_staging_and_live_after_apply`.
   - Locally, the staged report against a fresh snapshot shows the facts diff. The PR description pastes the counts per field and per collection.
