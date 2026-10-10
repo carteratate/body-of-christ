@@ -4,6 +4,8 @@
 
 29 September 2026, revised the same day to follow the plan's "Cross-cutting design decisions" (D1 to D11). Source of truth is `docs/2026-09-28-corpus-cleanup-plan.md`; its inclusion rules, Decision log and D1 to D11 are settled and are not reopened here. Where this file and D1 to D11 disagree, D1 to D11 win. Code references are to `master` at `5475c49` in `/Users/cartertate/repos/body-of-christ`. Live measurements are read-only SELECTs against Supabase project `hvmgffvimqgiejmxwhwq` on 29 Sep 2026.
 
+Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs/research/2026-10-06-corpus-review-synthesis.md`; `REVIEW-GAPS-PLAN.md` in this folder routes each to its item. The items below were extended for them on 9 Oct 2026, 2.2c became a migration, and 2.4d and 3.4 were added.
+
 ## Overview and recommended order
 
 Merge order follows the plan's "Phase and PR plan" table.
@@ -12,13 +14,15 @@ Merge order follows the plan's "Phase and PR plan" table.
 2. **2.2a** Migration 0039, additive only. Document facts, the work model (D6), a retired flag on passages and documents, tombstones, redirects, a publish log and a `staging` schema that mirrors the live corpus tables (D2). Nothing reads them yet. No unique key is dropped.
 3. **2.2w** The stage-then-apply writer (D2). A publish builds into `staging` and a new Qdrant collection `chunks-<release>`, produces the release report against live, applies in one transaction (calling the `UserDataRemap` interface that 4.1a implements), then switches the `chunks_live` alias. Passage IDs come from the 2.1 registry, so every unit live today keeps its ID (D1). It also provides `rollback`, the only rollback path (D11), a cleanup command that drops the staging tables, vector reuse when the embedding input is unchanged, and a read-only staging override for the pre-cutover eval. It replaces today's delete-based prune for every future publish. Rehearsed locally (D8).
 4. **2.2b** API reads Qdrant through `QDRANT_READ_COLLECTION`, then the alias `chunks_live`. Search skips passages marked not searchable and passages that are retired.
-5. **2.2c** Decision that `search_vector` needs no DDL rebuild. Close it alongside 2.2a.
+5. **2.2c** Migration that rebuilds `search_vector` without Bible verse markers and with each passage's reference (C-16, decided by Carter on 9 Oct 2026). Merged early; applied by hand in 4.0's window.
 6. **2.3** Document facts in the work registry, written by 2.2w into staging. No live backfill (D7).
 7. **2.4a** API payloads carry document facts, tombstones and redirects; the reader, `/sources`, history and bookmarks hide retired rows or mark them.
 8. **2.4b** Web cards, reader, bookmarks and history render the new fields, the source credit on opened passages, tombstones and redirects. Must be live before any tombstone exists.
-9. **3.3** Non-English passages flagged not searchable in the registry. Takes effect at the Phase 4 apply.
-10. **3.2** Labels, certainty and notes in the registry. Takes effect at the Phase 4 apply.
-11. **3.1** Removals recorded by anchor in the removal registry (D4). Blocked by R1. Applied at 4.1b through 2.2w.
+9. **2.4d** The rejected-voice role (C-01) reaches the rerankers, the explanation model, the card and the reader. Must be live before the Phase 4 apply.
+10. **3.3** Non-English passages flagged not searchable in the registry. Takes effect at the Phase 4 apply.
+11. **3.2** Labels, certainty and notes in the registry. Takes effect at the Phase 4 apply.
+12. **3.1** Removals recorded by anchor in the removal registry (D4). Blocked by R1. Applied at 4.1b through 2.2w.
+13. **3.4** Rejected-voice ranges in the passage registry (C-01). Takes effect at the Phase 4 apply.
 
 Every PR here deploys against today's schema and data. No item deletes a row. User rows that point at removed passages keep working because removed passages are retired, not deleted (D3). Nothing in P2 or P3 changes live corpus data before the Phase 4 apply (D7). The one exception Carter may approve is the early retirement of On the Incarnation's 47 passages (1.8d), specified at the end of 2.2w.
 
@@ -181,7 +185,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         UNIQUE (document_id, ordinal)
     );
 
-    -- Passage fields. searchable, language, passage_author and work_key are Passage
+    -- Passage fields. searchable, language, passage_author, voice and work_key are Passage
     -- model fields defined in 2.1 (D11); adapters may set them and the registry overrides.
     ALTER TABLE chunks
         ADD COLUMN retired_at     timestamptz,
@@ -189,12 +193,15 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         ADD COLUMN language       text,   -- NULL means English
         ADD COLUMN work_key       text,
         ADD COLUMN passage_author text,   -- 'Chrysostom, quoted in Aquinas''s Catena Aurea'
+        ADD COLUMN voice          text,   -- NULL, or 'rejected' (C-01, D5)
         ADD COLUMN note           text,
         ADD COLUMN superseded_by  uuid;   -- a history passage (<anchor>/history-<year>) points at
                                           -- the current passage it was replaced by (rule F, D11)
     ALTER TABLE chunks
         ADD CONSTRAINT chunks_language_check
             CHECK (language IS NULL OR language ~ '^[a-z]{2,3}$') NOT VALID,
+        ADD CONSTRAINT chunks_voice_check
+            CHECK (voice IS NULL OR voice = 'rejected') NOT VALID,
         -- Retired rows sit below every live and temporary position (see 2.2w).
         ADD CONSTRAINT chunks_retired_position_range
             CHECK (retired_at IS NULL OR position <= -1000000) NOT VALID,
@@ -317,6 +324,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Acceptance checks:**
   - New test `services/api/tests/test_corpus_facts_migration.py` using `tests/pg_cluster.py` (as `test_document_outline_migration.py` does). Apply the 0004-era corpus schema, 0037, 0038, then 0039. Assert:
     - `test_existing_rows_are_live_and_searchable`: every seeded chunk has `retired_at IS NULL` and `searchable = true`; every document `retired_at IS NULL`.
+    - `test_voice_accepts_only_rejected`: `voice` is NULL on every seeded chunk, accepts `rejected` and rejects any other value (C-01, D5).
     - `test_genre_accepts_only_the_d5_vocabulary`: every value in 2.1's `registry/genres.py` `ALL_GENRES` is present and accepted; `apostolic exhortation` and `essay` are rejected.
     - `test_genre_seed_matches_registry_module`: the migration's `INSERT INTO corpus_genres` list equals `ALL_GENRES`, read from the Python module (a plain file read, so the API test suite needs no datapipeline import).
     - `test_issuer_is_a_slug_and_label_is_free_text`: `pope-leo-xiii` is accepted in `issuer`, `Pope Leo XIII` is rejected there and accepted in `issuer_label`.
@@ -360,6 +368,12 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Other code that writes to the corpus or Qdrant, verified on master 29 Sep: `stages/reader.py` (calls `clear_collection`), `stages/embed.py` (upserts and deletes points), `stages/bm25_index.py` (`update_vectors` on `QDRANT_COLLECTION`), `stages/enrich_io.py` (`UPDATE chunks SET annotation`), and the three repair scripts `scripts/backfill_missing_vectors.py`, `scripts/reembed_drifted_vectors.py` and `scripts/reconcile_qdrant_payloads.py` (each on `QDRANT_COLLECTION`). The modules `backfill_vectors.py`, `reconcile.py` and `reembed.py` make no store writes themselves; they are libraries those scripts call.
   - The embedding cache (`cache.py`, table `embeddings`) is keyed on the sha256 of the exact embedding input plus model and dimensions. Only the V5 `stages/embed.py` reads or writes it; today's publish path (`search_writer.write_document`) does not. On Carter's Mac `datapipeline/cache.db` is empty (0 bytes, 29 Sep).
   - `services/api/app/db.py:42-52` creates the API's asyncpg pool with no `search_path` setting. `services/api/scripts/run_eval_suite.py` runs the pipeline in process with no HTTP server, so it persists no searches.
+  - Also found by the 6 Oct reviews:
+    - Neighbour text (C-21, Opus-2 B-012). `build_embedding_input` (`writers/search_writer.py:27-36`) adds the end of the previous and the start of the next passage in the same chapter key (canon law 300 characters, Catechism 200, default 200) and ignores `searchable`. Every history passage (CCC 2267's 1997 text, superseded canons), Latin canon and 3.3 passage is a point in the same build list (D5), so its text would be embedded into the current passage beside it.
+    - The embedding prefix (C-15, Opus-2 B-003) is `<doc.author> — <doc.title>, <label>`, so a relabel or a work credit changes the payload `author` but not the vector.
+    - Provenance (C-23). Live points carry no record of the text or model that produced them. The `embed_sha256` this item adds covers the input; the model and dimensions are recorded nowhere.
+    - Dedup collisions (C-09, Opus A-004). The API's dedup (`services/api/app/rag/dedup.py`, `_COSINE_THRESHOLD = 0.9`) drops the lower-ranked of two passages from one document within two positions whose vectors exceed the threshold. A short canon's vector is mostly its neighbours' text (canon law's overlap is 300 characters each side), and the Summa, whose overlap is 0 (`datapipeline/config.py:60`), shares a prefix with the article title across all its parts; so 35.7% of nearby canon pairs, 20.5% of Summa pairs and 8.9% of council pairs collide on the live vectors, and six pairs of short neighbours have byte-identical inputs. 1.7's new labels and citations change the Summa prefix in any case. Carter decided on 9 Oct 2026 to keep today's input except for the neighbour fix and the display-author prefix below, and to test the threshold separately (RF-1), so the republish embeds once.
+    - Docs (C-28, Opus A-023). CLAUDE.md section 4 says Qdrant holds the V5 `facets` and `questions` collections; production holds only `chunks`, and `stages/embed.py` deletes from both on every run.
 - **Changes:**
   - **CLI.** New `datapipeline/publish.py` with subcommands, each taking `--release <name>`. The release name is the publish ID: it is `corpus_publishes.id`, the `release` of the lock entry, and the suffix of the staging Qdrant collection `chunks-<release>` (D11):
     - `stage --collection <name>|all`
@@ -374,7 +388,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - **Lock gates (0.4).** Every subcommand except `report` and `status`, which only read, calls 0.4's `assert_live_write_allowed(f"publish {subcommand}", collection, release, step)`, with step `stage` for `stage` and `discard`, `apply` for `apply`, `switch` and `cleanup`, and `rollback` for `rollback`. It runs only when `PUBLISH_LOCK.json` has an `approved_applies` entry for that collection and release whose `steps` include the step, which takes a reviewed PR. 0.4's loopback exemption covers local rehearsals (D8); this item adds no rule of its own to `publish_lock.py`. The entry stays until the release's rollback window closes, and a follow-up PR removes it.
   - **Stage** (`publication.py`, reworked). `CollectionPublicationRunner.publish` becomes `stage`. It no longer acquires a live reader store or search index.
     1. Refuse if `staging` holds a different publish that is neither cleaned up nor discarded (`corpus_publishes`). Call `create_corpus_staging()` (2.2a) if the staging tables are absent, and refuse if existing ones differ in shape from live.
-    2. Build documents with `SOURCE_ADAPTERS` (`publication.py:32-45`). Adapters take frozen document IDs, anchors, document facts and work keys from the 2.1 registry, and skip every unit the removal registry marks removed. `searchable`, `language` and `passage_author` are `Passage` fields (2.1): the stage reads the adapter's value first, then applies the passage registry's override where a row sets one (3.3), so the registry wins (D11). It also resolves each history passage's `superseded_by_anchor` to the current passage's ID for `chunks.superseded_by`, and stops if the anchor is not in the same document.
+    2. Build documents with `SOURCE_ADAPTERS` (`publication.py:32-45`). Adapters take frozen document IDs, anchors, document facts and work keys from the 2.1 registry, and skip every unit the removal registry marks removed. `searchable`, `language`, `passage_author` and `voice` are `Passage` fields (2.1): the stage reads the adapter's value first, then applies the passage registry's override where a row sets one (3.3, 3.4, which also overrides `unit_label`), so the registry wins (D11). It also resolves each history passage's `superseded_by_anchor` to the current passage's ID for `chunks.superseded_by`, and stops if the anchor is not in the same document.
     3. Take each passage's ID from 2.1's passage registry (D1). `Passage` gains an `id` field, filled by the registry's lookup from `(document_id, structural anchor)`. A unit that exists today gets its current passage ID, whatever its anchor now looks like. Only a unit the registry does not know (a restored verse, recovered prose, a split recension) gets a new ID from `identity.passage_id`, and the stage lists every such new ID. The writers use `Passage.id` and never recompute it, so `publication.py:128-132`, `reader_writer.py:114` and `search_writer.py:41` stop calling `passage_id()`. A passage with no ID stops the stage.
     4. Delete the staged rows of the collections being staged (staging tables only), then insert `staging.documents`, `staging.document_works` and `staging.chunks`. Positions are the build's positions (0 and up). `search_vector` is generated, and the staged GIN index is built, as in live. Call `staging.refresh_document_outline` for every staged document, so `staging.document_chapters` and `chunk_count` exist for the pre-cutover eval.
     5. Compute retirements and redirects against live. Every live ID in the staged collections that the build does not emit needs either a removal-registry entry (D4), which yields a `staging.corpus_tombstones` row, or a 0.1c remap outcome of `moved`, `split`, `merged` or `renumbered`, which yields a `staging.corpus_redirects` row. An ID with neither stops the stage and names the ID. Two more kinds of redirect keep old links working (2.4a resolves them):
@@ -405,12 +419,14 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - The document-facts diff that 2.3 specifies.
     - User impact, which lists the user rows that point at retired and redirected IDs.
     - The added storage in `staging` and the projected database size after apply.
+    - `index.embedding_input_hash`: every point's `embed_sha256` equals the hash of its staged passage's embedding input, and every point names its model (C-23).
+    - `index.dedup_collision_rate:<collection>`: the share of same-document passage pairs within two positions whose new vectors exceed the API's dedup threshold, per collection, with the previous publish's figure beside it; flagged above 5% (C-09). It informs RF-1 and changes nothing by itself.
     The report's sha256 and a hash of the staged content go into `corpus_publishes.report_sha256`. `apply` refuses when the staged content no longer matches the reported hash.
-  - **Snapshot for rollback.** Right before the apply transaction, `apply` exports the live corpus rows of the staged collections (`documents`, `chunks` without `search_vector`, `document_works`, `document_chapters`) in one read-only transaction to a local, gitignored folder `datapipeline/releases/snapshots/<release>-before/`, with a sha256 per file recorded in `corpus_publishes`. The files hold corpus text only, no user data. The apply refuses to start if the export fails. `rollback` reads this snapshot itself. The `pg_dump` 4.1b takes before an apply is a last-resort backup, not a rollback path (D11).
+  - **Snapshot for rollback.** Right before the apply transaction, `apply` exports the live corpus rows of the staged collections (`documents`, `chunks` without `search_vector`, `document_works`, `document_chapters`, and every `corpus_redirects` and `corpus_tombstones` row the apply will delete: an un-retired ID's earlier tombstone, or the redirect of a split piece that reclaims its ID) in one read-only transaction to a local, gitignored folder `datapipeline/releases/snapshots/<release>-before/`, with a sha256 per file recorded in `corpus_publishes`. The files hold corpus text only, no user data. The apply refuses to start if the export fails. `rollback` reads this snapshot itself. The `pg_dump` 4.1b takes before an apply is a last-resort backup, not a rollback path (D11).
   - **Apply** (new `datapipeline/writers/apply.py`). One transaction, with `SET LOCAL lock_timeout = '2s'`, for all staged collections:
     1. Upsert `documents` from `staging.documents` by ID, setting `retired_at = NULL` for any document present in staging. Retire documents of the staged collections that staging lacks, which the stage step has already shown are explained. Upsert `document_works`.
     2. Per document, move live passages to temporary positions (`position = -position - 1`, which stays inside -1 to -999,999), as `reader_writer.py:108-111` does today, but only for rows with `retired_at IS NULL`.
-    3. Upsert `chunks` from `staging.chunks` by ID. Changed text under an unchanged anchor updates in place and keeps its ID (D1). New IDs insert. A staged ID that matches a retired row un-retires it, and its old tombstone row (for example a `rolled-back` one) is deleted in the same transaction, so a live passage never also shows a removal notice. A staged ID that is live under another document moves by updating its `document_id` in place, so it keeps its ID and every user row on it (D11; needed if Carter approves 1.8b's split). Step 2 has already moved the live rows of both documents out of the live position range, so the move cannot collide.
+    3. Upsert `chunks` from `staging.chunks` by ID. Changed text under an unchanged anchor updates in place and keeps its ID (D1). New IDs insert. A staged ID that matches a retired row un-retires it, and its old tombstone row (for example a `rolled-back` one) is deleted in the same transaction, so a live passage never also shows a removal notice. Likewise, when 2.1 has closed a redirect because its unit reappeared (a split piece reclaiming its ID), that ID's `corpus_redirects` row is deleted in the same transaction, so 2.4a resolves the ID as current. A staged ID that is live under another document moves by updating its `document_id` in place, so it keeps its ID and every user row on it (D11; needed if Carter approves 1.8b's split). Step 2 has already moved the live rows of both documents out of the live position range, so the move cannot collide.
     4. Retire live passages that staging lacks. Set `retired_at = now()` and move each to a position below every existing retired position of its document, starting at -1,000,000, so repeated publishes never collide on `UNIQUE (document_id, position)`. No `DELETE` is issued anywhere.
     5. Insert tombstones and redirects from staging into `corpus_tombstones` and `corpus_redirects`, tagged with the publish ID.
     6. Call the user-data remap inside the same transaction, after the redirects are written, so bookmarks, history results, labels, guest results, reading positions and feedback move to the new IDs in the same commit. This item defines the interface and calls it; 4.1a implements it (D11). Neither item contains the other's code:
@@ -426,7 +442,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - **Rollback.** `publish.py rollback --release <name>` undoes an applied publish within the rollback window, under the lock step `rollback`. It is the only rollback path (D11), and the runbook (4.1b step 12) calls this command and nothing else. It is an apply in reverse, built from the same code.
     1. Recreate the staging tables if `cleanup` dropped them, and load the publish's before-snapshot into them. The snapshot's sha256s must match `corpus_publishes`.
     2. In one transaction, run apply steps 1 to 4 with the snapshot as the staged content. This restores the previous text and facts in place by ID and un-retires every row the publish retired.
-    3. In the same transaction, call `UserDataRemap.reverse(conn, release)` while this publish's redirects still exist. Then delete the rows the forward apply wrote to `corpus_redirects` and `corpus_tombstones` (neither table is referenced by user rows). There is no separate reverse-remap step to run.
+    3. In the same transaction, call `UserDataRemap.reverse(conn, release)` while this publish's redirects still exist. Then delete the rows the forward apply wrote to `corpus_redirects` and `corpus_tombstones` (neither table is referenced by user rows), and re-insert from the before-snapshot the rows the forward apply deleted, so a reclaimed piece's earlier redirect and an un-retired ID's earlier tombstone come back with the rows they belong to. There is no separate reverse-remap step to run.
     4. Still in the same transaction, and only after step 3's delete, retire every row the publish inserted, with a new tombstone whose `reason_code` is `rolled-back` (2.1's reserved reason), rule `other`, no `removal_key`, and the sentence "This passage was added in a corpus update that has been undone." These tombstones are written after the delete, so they survive it, and bookmarks made during the window show them. These rows exist in live and are absent from the snapshot, and that absence is their D4 explanation. None is deleted, since users may have bookmarked them during the window. Then refresh the outline of every touched document.
     5. After commit, switch `chunks_live` back to `corpus_publishes.previous_qdrant_collection` and record `rolled_back_at`.
     The previous Qdrant collection and the snapshot are kept until the rollback window closes (4.1b).
@@ -437,8 +453,10 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `publication.py`: the `ReaderStore` and `SearchIndex` protocols (`:85-102`) lose `wipe`, `prune_documents`, `reset` and `prune`. `PostgresReaderStore` (`:251-276`) and `QdrantSearchIndex` (`:279-301`) become staging stores. `_validate_build` (`:224-248`) moves into the report as a warning section, since retirements are now explained one by one rather than capped at 10%.
     - `writers/qdrant.py`: remove `QDRANT_COLLECTION` (`:15`); every function takes the collection name. Remove `delete_collection_points` (`:62-67`) and `prune_missing_points` (`:88-108`) from the publish path. Add `alias_target(client, alias)`, `copy_points(client, source, target, ids=None)` (scroll with vectors and payload, then upsert) and `switch_alias(client, alias, new, old)`.
     - `qdrant_schema.py`: replace `CHUNKS` and `recreate_chunks` (`:12`, `:17-29`) with `create_chunks_collection(client, name)`. It refuses with `SystemExit` when `name` already exists or is an alias, creates the collection with today's vector and HNSW settings (`:21-27`), and creates payload indexes `collection`, `genre`, `issuer`, `document_id` (keyword) and `searchable` (boolean, D5). `on_disk` vectors follow 4.0's decision.
-    - `writers/search_writer.py:build_point` (`:39-63`): the point ID is `Passage.id`. Add `genre`, `issuer`, `searchable` and `embed_sha256` to the payload. `author` becomes the author shown to users, which is `passage_author` when set, then the work's author, then the document's. `write_document` (`:83-101`) takes the target collection and a vector-reuse lookup.
-    - `datapipeline/model.py`: `Document` gains the 2.2a document facts (`genre`, `issuer`, `issuer_label` and the rest). `works`, `Passage.work_key`, `searchable`, `language`, `passage_author` and `superseded_by_anchor` already exist from 2.1 (D11). `Passage` gains `id` (from the passage registry) and `note`.
+    - `writers/search_writer.py:build_point` (`:39-63`): the point ID is `Passage.id`. Add `genre`, `issuer`, `searchable`, `voice` (C-01), `embed_sha256` and `embed_model` to the payload. `author` becomes the author shown to users, which is `passage_author` when set, then the work's author, then the document's. `write_document` (`:83-101`) takes the target collection and a vector-reuse lookup.
+    - `writers/search_writer.py:build_embedding_input`: when it picks the previous and next neighbour, it skips passages with `searchable = false` and takes the nearest searchable passage in the same chapter key instead, or none (C-21). Its prefix uses the same resolved display author as the payload `author`, not `doc.author` (C-15). Nothing else in the input changes (Decision log "Dedup and the republish's embeddings").
+    - Each publish records the embedding model and dimensions in `corpus_publishes` and each point carries `embed_model`, so the text and model behind every vector can be audited (C-23).
+    - `datapipeline/model.py`: `Document` gains the 2.2a document facts (`genre`, `issuer`, `issuer_label` and the rest). `works`, `Passage.work_key`, `searchable`, `language`, `passage_author`, `voice` and `superseded_by_anchor` already exist from 2.1 (D11). `Passage` gains `id` (from the passage registry) and `note`.
     - `datapipeline/config.py`: add `QDRANT_WRITE_COLLECTION` (default unset, meaning `chunks-<release>`) and `QDRANT_LIVE_ALIAS` (default `chunks_live`).
   - **Other writers (D11).** Every other script that writes to the corpus or Qdrant (the list verified under Current state) either writes through `QDRANT_WRITE_COLLECTION` and the lock, or is retired:
     - `stages/reader.py`: retired. It clears and rewrites a live collection, which D2 forbids. `pipeline.py` drops its `reader` stage; a V5 run that needs the reader store runs `publish.py stage` instead.
@@ -448,7 +466,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `qdrant_schema.recreate_chunks`: removed (above).
 
     A test, `test_no_writer_names_the_chunks_collection`, searches the datapipeline source for a hard-coded `"chunks"` Qdrant collection name outside tests and fails on any hit.
-  - **Docs.** Rewrite `datapipeline/README.md` ("Publish one collection", "Narrow repair commands") and `datapipeline/SOURCES.md` ("Publishing a collection") around stage, report, apply, switch, rollback and cleanup. Update the datapipeline line in the repo `CLAUDE.md` Quick Commands, which today shows `run_collection.py --target both`.
+  - **Docs.** Rewrite `datapipeline/README.md` ("Publish one collection", "Narrow repair commands") and `datapipeline/SOURCES.md` ("Publishing a collection") around stage, report, apply, switch, rollback and cleanup. Update the datapipeline line in the repo `CLAUDE.md` Quick Commands, which today shows `run_collection.py --target both`, and correct CLAUDE.md section 4's claim that Qdrant holds `facets` and `questions` collections (C-28).
 - **Acceptance checks:**
   - New `datapipeline/tests/test_stage_apply.py`, run against a throwaway local Postgres with 0037, 0038 and 0039 applied, the way `datapipeline/tests/test_reader_writer_outline.py` starts one, and against an in-memory Qdrant (`AsyncQdrantClient(location=":memory:")`; whether local mode supports aliases is unverified, and a fake alias store is the fallback):
     - `test_stage_writes_only_staging_and_a_new_collection`: a statement log shows no INSERT, UPDATE or DELETE on `public` tables, and the aliased collection is unchanged.
@@ -477,7 +495,12 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `test_registry_override_beats_adapter_searchable`.
     - `test_history_passage_gets_superseded_by`.
     - `test_rollback_calls_reverse_remap_in_the_same_transaction`.
+    - `test_rollback_restores_deleted_redirects_and_tombstones`: publish A redirects a split piece, publish B reclaims it (deleting A's redirect row) and un-retires another ID (deleting its tombstone), then B is rolled back. A's redirect and the tombstone are back, the piece is retired again, its old URL resolves through the redirect to the absorbing piece as after A, and the user-table counts equal those before B.
     - `test_alias_switch_is_one_call`.
+    - `test_neighbour_window_skips_unsearchable` (`index.no_unsearchable_neighbour_text`): a current passage between a history passage and a Latin canon is embedded with neither's text.
+    - `test_embedding_prefix_uses_display_author`: a passage whose work is credited to Firmilian is embedded with "Firmilian", not the document author.
+    - `test_voice_reaches_staging_and_payload` and `test_publish_records_embedding_model`.
+    - `test_report_dedup_collision_rate` on synthetic vectors.
     - `test_rollback_apply_restores_rows_alias_and_outline`: after apply, cleanup and rollback, every corpus row equals the before-snapshot except the rows the publish inserted, which are retired with `rolled-back` tombstones; the alias points at the previous collection.
     - `test_cleanup_drops_staging_only`: after `cleanup`, the staging tables are gone, every `public` table is unchanged, and the next `stage` recreates them.
     - `services/api/tests/test_staging_read_override.py`: with `CORPUS_READ_SCHEMA=staging` the pool's `search_path` is `staging, public`, a write raises a read-only error, and the app lifespan refuses to start.
@@ -568,26 +591,31 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 
 ### 2.2c. search_vector rebuild
 
-- **Type:** decision
-- **Depends on:** 2.2a (for the searchable and retired columns the decision relies on)
-- **Goal:** Decide whether the full-text index needs rebuilding for the cleanup, and record why, so nobody runs a 380 MB table rewrite without cause.
+- **Type:** PR (a migration, written and tested now), then ops: the migration is applied by hand in 4.0's approved window, before 4.1b step 1. It was a decision item until Carter chose the rebuild on 9 Oct 2026 (Decision log "Keyword search (2.2c, C-16)").
+- **Depends on:** 2.2a (the staging schema copies the live column definition), 2.2b (the searchable and retired predicates). Applied after 0.3's baseline and inside 4.0's window.
+- **Goal:** Keyword search stops treating Bible verse markers as words and can find a passage by its citation: "canon 1055" finds canon 1055, "CCC 2267" finds the passage holding that paragraph, and "John 3" or "Psalm 23" finds the chapter's passages. A verse inside a pericope ("John 3:16" in "John 3:1–21") is found by its chapter only; verse-level lookup needs the query parsed as a citation, which is a retrieval follow-up.
 - **Current state:**
   - `chunks.search_vector` is `tsvector GENERATED ALWAYS AS (to_tsvector('english', content)) STORED` with a GIN index (`supabase/migrations/0004_v2_documents_chunks.sql:26-27, 40`). Postgres recomputes it on every insert and every update of `content`.
-  - It is the only FTS column the API queries (`retrieve_fts.py:23-24`). `annotation_vector` (0019) is written by enrichment only.
+  - It is the only FTS column the API queries: `retrieve_fts.py` matches `plainto_tsquery('english', <the user's question>)` and orders by `ts_rank`. `annotation_vector` (0019) is written by enrichment only.
   - Storage on 28 Sep: `search_vector` about 49 MB of 380 MB; TOAST 203 MB (plan).
-  - The plan gives no rationale for 2.2c. The likely concerns are listed below with what already handles each.
-- **Changes:** Recommended decision, no DDL:
-  - Text fixes in P1 (joined paragraphs, stripped notes) reach FTS at the 2.2w apply, because the apply updates `content` in place (D1) and the column is generated from it.
-  - Non-English passages leave FTS through the `searchable` predicate (2.2b), not through the tsvector. Making the generated expression depend on `searchable` would need `DROP COLUMN` and `ADD COLUMN`, which rewrites the table under an exclusive lock.
-  - Retired passages leave FTS through the retired predicate (2.2b).
-  - `staging.chunks` is created with the live shape, including the generated `search_vector` and its GIN index (2.2a), because the pre-cutover eval searches staging. `cleanup` (2.2w) drops it after the apply.
-  - Space left by earlier rewrites is reclaimed by 4.0's `VACUUM FULL`, which also rebuilds the GIN index.
-  - A post-cutover check is added to the 4.2 comparison: `SELECT count(*) FROM chunks WHERE search_vector IS DISTINCT FROM to_tsvector('english', content)` must return 0.
-  - If Carter wants title or author weighting in FTS later, that is a retrieval follow-up with its own eval, not part of the cleanup.
-- **Acceptance checks:** The decision is recorded in the plan's Decision log by Carter. The post-cutover query above is added to the 4.2 checklist.
-- **Production safety:** Nothing changes.
-- **Needs Carter:** Confirm the no-DDL decision, or name the missing concern this item was meant to cover.
-- **Out of scope:** Changing the text search configuration, weighting, or `annotation_vector`.
+  - Found by the 6 Oct reviews (C-16, Opus A-007), on a local Postgres loaded from the snapshot with the 0004 column: `{{v:4}}` becomes the tokens `v` and `4`, so a search for "John 3:16" returns 1 and 2 Maccabees passages that contain "John" and the markers 3 and 16; "psalm 23" returns Acts and Judith; "canon 1055" returns nothing. References and titles are in no `search_vector`, and `plainto_tsquery` requires every word of the question, so "CCC 2267" needs a token "ccc" that no content holds. Postgres's default parser also keeps a reference's punctuated forms whole: `to_tsvector('english', 'John 3:1–21')` holds `'1–21'`, and `'CCC §2267'` holds `'§2267'`, so indexing the reference as it is would match "canon 1055" but not "ccc 2267" (checked on Postgres 14 by the branch review, 9 Oct 2026).
+  - The other parts of C-16 are owned elsewhere: ligatures and line-end hyphens (1.10a), the 18 canons with corrupted spellings (1.5a), and archaic verb forms such as "loveth", left to a retrieval follow-up.
+  - Changing a generated column's expression rewrites the table under an exclusive lock, as `VACUUM FULL` does. Postgres 17 can do it with `ALTER TABLE … ALTER COLUMN … SET EXPRESSION`; older servers need `DROP COLUMN` and `ADD COLUMN … GENERATED`. The production server version is not verified here; the migration checks it.
+- **Changes:**
+  - A migration, numbered when it merges (2.2a takes 0039), that redefines the column as `setweight(to_tsvector('english', regexp_replace(content, '\{\{v:\d+\}\}', ' ', 'g')), 'A') || setweight(to_tsvector('english', regexp_replace(coalesce(reference, ''), '[§:;,.()–—-]', ' ', 'g')), 'B')` and recreates its GIN index. The second `regexp_replace` turns the reference's punctuation into spaces, so "CCC §2266–2267" indexes `ccc`, `2266` and `2267`, and "John 3:1–21" indexes `john`, `3`, `1` and `21`. Content keeps the higher weight, so a passage matched by its text ranks above one matched only by its citation. Both functions are immutable, as a generated column requires. This is the one migration in the cleanup that is not purely additive; Carter approved it because it changes a derived column only and loses no data.
+  - It does not run on merge. The migration file is applied by hand in 4.0's window, with the `VACUUM FULL`, before 4.1b step 1 builds staging. 0039 creates the staging tables at migration time (`create_corpus_staging()`, `CREATE TABLE IF NOT EXISTS`), so they would keep the old expression: the same window runs `drop_corpus_staging(); create_corpus_staging();` right after the rewrite, and 2.2w's shape check compares generation expressions as well as columns. Its Supabase ledger entry is recorded when it is applied, not at merge. Because the rewrite also compacts the table, 4.0 measures whether the window then needs a separate `VACUUM FULL`.
+  - Non-English and retired passages still leave FTS through the `searchable` and retired predicates (2.2b), not through the tsvector.
+  - No API change. `retrieve_fts.py` keeps its query; the weights only change `ts_rank` order.
+  - The post-cutover check in 4.2 becomes: `SELECT count(*) FROM chunks WHERE search_vector IS DISTINCT FROM <the new expression>` returns 0.
+- **Acceptance checks:**
+  - A migration test on `tests/pg_cluster.py`: after the migration, a Bible passage's vector holds no lexeme produced by a `{{v:N}}` marker (`fts.no_marker_tokens`); "canon 1055" returns `can/1055`, "ccc 2267" returns the passage whose reference cites CCC 2267, "john 3" and "psalm 23" return passages of those chapters, and a content-only match ranks above a reference-only match (`fts.reference_lookup`).
+  - After the rewrite, the recreated `staging.chunks.search_vector` has the new generation expression.
+  - The same test runs the migration on the server versions the repo supports (`SET EXPRESSION` and drop-and-add) or fails clearly.
+  - A local timing of the rewrite on a restore of the snapshot's `chunks` (or the D8 dump), recorded for 4.0's window.
+  - 4.2's comparison covers the ranking change (the RF noise floor applies).
+- **Production safety:** Merging changes nothing. The rewrite runs only in 4.0's window with Carter's approval (NEEDS-CARTER section A); search and the reader pause while it runs, as for `VACUUM FULL`. Rollback is the previous expression applied the same way. The API works with either definition. Between 4.0 and the cutover, production keyword search already uses the new definition, before 4.2 has judged it; the change only removes marker tokens and adds reference matches at a lower weight, and the migration test plus a free rerun of the 0.3 targeted questions' keyword step on the restored dump are the check before the window.
+- **Needs Carter:** Answered 9 Oct 2026: rebuild, in 4.0's window (Decision log). The run itself is approved with 4.0's window.
+- **Out of scope:** Changing the text search configuration, synonyms for archaic forms, title or author weighting, and `annotation_vector`.
 
 ---
 
@@ -615,6 +643,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `document_type` exists in `metadata` for 16 documents only. `pope` is in `metadata` for 175.
   - Today's writer upserts `id, collection, title, translation, author, year, metadata` only (`datapipeline/writers/reader_writer.py:99-106`).
   - Anselm's three works all carry `year = 1099`; the plan corrects them to 1076, 1077-78 and 1098 (that fix belongs to 1.9; this item carries the values).
+  - Cum Sancta Mater Ecclesia is stored as 1858, but its dating line reads 27 April 1859, in the thirteenth year of Pius IX (elected June 1846), so the year is 1859 (C-05, Opus-2 B-008). It is the only mismatch among the 164 papal documents with a dating line; Salutis Nostrae's source prints "1744" for 1774, and its metadata already has 1774.
 - **Changes:**
   - Registry (2.1's tracked file): add per-document fields `genre, issuer, issuer_label, year, date_display, translation, source_credit, certainty, attribution_note, notes, clavis_ref, superseded_by`. Works use the `works` shape 2.1 already defines (D6, D11); this item fills their values. Which passages belong to a work is recorded per passage as `work_key` in 2.1's passage registry, never by anchor or position range. Validation in the registry loader:
     - `certainty` is one of the four values.
@@ -626,11 +655,12 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Value rules:
     - `translation`: the edition or translator shown to users, for example `Ante-Nicene Fathers (1885-1896)`, `Nicene and Post-Nicene Fathers, Series I`, `Vatican English`, `WEB-C` kept for the Bible (the web maps codes to names, `apps/web/src/components/sources/SourcesPage.tsx:12`). The `(collection, title, translation, author)` unique key allows this.
     - `issuer` and `issuer_label` (D11): for papal documents the pope, from `metadata.pope`, as `pope-leo-xiii` and "Pope Leo XIII"; for council documents the council, as `second-vatican-council` and "Second Vatican Council"; for the Catechism and the Code, `holy-see` and "Holy See". Filters use `issuer`; cards and the reader show `issuer_label`.
-    - `year` stays the sortable integer; `date_display` carries ranges and "c.".
+    - `year` stays the sortable integer; `date_display` carries ranges and "c.". Cum Sancta Mater Ecclesia's year is 1859 (C-05).
     - `source_credit`: exactly the wording 0.2's rights inventory records per source. If 0.2 agrees, vatican.va texts get `Text: Libreria Editrice Vaticana` and CCEL ThML texts get `Sourced via CCEL.org`. Never derived from a ThML `<description>`.
   - `datapipeline/model.py` fields and the staging writer are 2.2w's; this item fills them from the registry in each adapter's document construction.
   - Release report (0.1c, staged mode in 2.2w): a "Document facts" section with a per-field, per-collection count of values that differ from live, and the list of documents whose `author` changes. This replaces the backfill script an earlier draft proposed; there is no separate live write (D7).
 - **Acceptance checks:**
+  - A vendored check that every papal document's `year` equals the year of its dating line where the source prints one, with a reviewed exception list for source misprints (Salutis Nostrae).
   - Registry validation tests: every document has `source_credit`; every `genre` is in 2.1's genre module; every `issuer` is a slug with an `issuer_label`; every work has at least one passage whose `work_key` names it in a build; no `<description>` text appears in any registry field (checked against the extracted blurbs of the vendored ThML files).
   - `datapipeline/tests/test_stage_apply.py` (2.2w) gains `test_document_facts_reach_staging_and_live_after_apply`.
   - Locally, the staged report against a fresh snapshot shows the facts diff. The PR description pastes the counts per field and per collection.
@@ -706,6 +736,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `routes/documents.py`: for a document that is not visible, `get_document`, `get_document_toc` and `get_document_reader` return HTTP 410 with body `{"detail": "removed", "tombstone": {...}}` when a document tombstone exists, HTTP 404 with body `{"detail": "moved", "redirect": {...}}` when a redirect exists, and today's 404 otherwise. An anchor or chapter key that no longer exists in a visible document returns the chapter from the anchor or chapter redirect, with `highlight_anchor` set to the new anchor, a `redirected_from` field, and the new `document_id` when the redirect points to another document.
   - `require_document_access` for guests: keep the join, but also allow a document reached through a redirect from a passage the guest retrieved.
   - Explanations persisted in `retrievals.explanation` are returned unchanged for moved and removed results; the web decides whether to show them.
+  - Hard-coded Bible title (C-24, Opus-2 B-015). `routes/evaluate.py:44` names "Song of Solomon" in its prompt. 1.4a renames the book "Song of Songs", which reaches users at the Phase 4 apply, after this item deploys. The prompt names the book "Song of Songs (Song of Solomon)", so it reads correctly before and after.
 - **Acceptance checks:**
   - `tests/test_search_routes.py`: `test_restore_marks_removed_passage_with_tombstone_and_no_content`, `test_restore_follows_redirect_to_new_passage`, `test_restore_with_removal_is_complete`, `test_restore_without_0039_is_unchanged` (golden JSON of today's response), `test_restore_shows_corrected_text_for_same_id` (D1).
   - `tests/test_bookmarks.py`: removed and moved bookmarks, note preserved.
@@ -715,6 +746,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `tests/test_pipeline_persistence.py` or a new `test_document_facts.py`: chunk events include `facts` when 0039 exists; the author shown comes from Postgres when the payload disagrees; a failing facts query still yields chunk events without `facts` and records a recovery, not a degradation.
   - `tests/test_document_access_and_failures.py`: guest access through a redirect.
   - `tests/test_contract_models.py`: every new field optional; an event without them validates.
+  - The evaluate prompt test names both "Song of Songs" and "Song of Solomon".
   - PR description must include before-and-after JSON for one search event, one restore and one reader response, and state that every added field is optional.
 - **Production safety:** Before 0039 is applied, `corpus_schema` reports nothing, the facts step is skipped, no predicates are added and no resolution queries run, so every response is today's. After 0039 with nothing retired and no tombstones or redirects, every row is `current`, and the only change is that responses carry the extra optional fields; today's web ignores unknown fields. The 410 and redirect bodies can only occur after a 2.2w apply creates tombstones and redirects, and 2.4b must be live by then. Adding one query per search adds a few milliseconds (unverified; measure p95 before and after on the eval set).
 - **Needs Carter:** Whether a removed passage shows its text anywhere after removal. Recommended is no text, with title, author, reference and one plain sentence of reason, with the Church act where one exists. The alternative keeps showing the text with a "removed from TheoCorpus" banner, which keeps the user's history intact but keeps excluded text on screen.
@@ -734,6 +766,9 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `SourcesPage` shows author, year and translation per document (`SourcesPage.tsx:236-252`).
   - Reader load errors show a generic failure (`DocumentReader.tsx:197`, "Failed to load").
   - Restore status handling lives in `lib/search-experience/useSearchPageExperience.ts`.
+  - Also found by the 6 Oct reviews:
+    - Citations the card parses (Opus-2 B-003, B-011). `ChunkCard.tsx:mobileCitation` takes "Question N … Article N" out of the Summa reference, and strips the author from a citation only when it starts with the payload author. 1.7's new Summa citation ("Summa Theologiae II-II, q. 64, a. 6, co.: Whether …") no longer matches that regex, so mobile would show the raw string. On desktop, `primaryReference` prepends the document title to Fathers references that already hold it ("City of God, Augustine — City of God, Book I · Chapter 1"); after 1.10c drops the author from ThML references (C-15) the title still doubles.
+    - A hard-coded title (C-24, Opus-2 B-015). `SourcesPage.tsx` sorts the Bible by `BOOK_ORDER`, which names "Song of Solomon" and puts unknown titles last; 1.4a's rename reaches users at the Phase 4 apply, after this item deploys.
 - **Changes:**
   - `apps/web/src/lib/search-stream.ts` (the only SSE decoder): add `facts?: DocumentFacts | null`, `language?: string | null`, `passage_note?: string | null`, `passage_author?: string | null` to `ChunkSource`, and `status?`, `tombstone?`, `redirect?` to `ChunkResult`. Remove the unused `metadata` field. Types in `lib/api.ts` for `DocumentInfo`, `ReaderPassage`, `BookmarkChunkInfo`, `Bookmark`, `SearchResultsResponse` gain the same optional fields.
   - New pure module `apps/web/src/lib/attribution.ts` with unit tests:
@@ -749,6 +784,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `status === "removed"`: render a tombstone card with title, author, reference, `public_reason` and `church_act`, no content, no bookmark or feedback buttons, and a "Why was this removed?" link to the About page anchor (5.7 fills it; until then link to `/about`).
     - `status === "moved"`: render normally from the new content, with a muted line "This passage was renumbered in a corpus update."
     - Copy action: citation uses `formatAttribution` so a copied Pseudo-Justin passage is not credited to Justin.
+    - Citations (Opus-2 B-003, B-011). `mobileCitation` parses both Summa forms, today's ("Question 19 … Article 9 - Whether …") and 1.7's ("q. 19, a. 9, ad 1: Whether …"), and never shows a raw string. `primaryReference` does not prepend the title when the reference already starts with it, for any collection.
   - `BookmarkCard.tsx`: same notes, translation and source credit under the text; tombstone and moved states; keep the user's note editable in both.
   - Reader:
     - `DocumentOverview.tsx`: attribution line becomes `formatAttribution · formatDate · formatTranslation`; show certainty, notes, supersession and the list of works with their own labels when `works` is non-empty; source credit at the bottom of the header section.
@@ -757,7 +793,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - Earlier text (rule F, D11). A passage with `superseded_by` set is not rendered in the reading flow. It renders as a collapsed "Earlier text (<year>)" control under the current passage it points to; opening it shows the older wording in muted text with the label "No longer in force". The year comes from the history anchor. Test: `ChapterSection.test.tsx::test_history_passage_shows_as_earlier_text_under_current`.
     - `DocumentReader.tsx` and `lib/api.ts` reader fetchers: on 410 with a tombstone, show a removal page (title, author, reason, Church act, back button). On 404 with `redirect`, `router.replace` to the new document and anchor, keeping `from` and `returnKey`. On `redirected_from`, highlight the new anchor.
     - Guest reader shares these components (`isGuest`); no guest fork.
-  - `SourcesPage.tsx`: use `formatAttribution` and `formatDate`; show a certainty tag.
+  - `SourcesPage.tsx`: use `formatAttribution` and `formatDate`; show a certainty tag. `BOOK_ORDER` lists "Song of Songs" and "Song of Solomon" at the same rank (C-24).
   - History restore: `useSearchPageExperience.ts` treats `removed` and `moved` results as present; no "results unavailable" notice for them.
 - **Acceptance checks:**
   - `ChunkCard.test.tsx`: the collapsed header shows attribution and certainty tag and never the source credit; the expanded body shows translation, notes and credit in that order; the Bible translation badge renders from `facts`; a Catena passage shows its quoted author; removed status renders the tombstone without content and without bookmark buttons; moved status shows the renumbered line; copy text uses the attributed author; a result with no `facts` renders exactly as today (snapshot).
@@ -765,6 +801,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - `DocumentReader.test.tsx`: 410 shows the removal page; 404 with redirect replaces the URL; credit appears once per chapter section.
   - `lib/attribution.test.ts` for each formatter.
   - `SearchPage.test.tsx`: a restore with a removed result shows no unavailable notice.
+  - `ChunkCard.test.tsx` also covers both Summa citation forms on mobile, and a Fathers card whose reference starts with its title (no doubled title).
+  - `SourcesPage.test.tsx`: every Bible title `/sources` can return, including both names of the Song of Songs, has a rank in `BOOK_ORDER`.
   - `npm run lint` (0 errors, no new warnings in touched files), `npm test`, `npm run build`.
   - PR description must include screenshots at 375 px and desktop, dark and light themes, of a collapsed card, an expanded card with a credit, a tombstone card, the reader overview with works, and the removal page.
 - **Production safety:** Every new field is optional. Before 2.4a deploys, or before 0039 is applied, all fields are absent and the components render today's output, which the snapshot tests hold. Tombstones and redirects cannot exist until a 2.2w apply (the Phase 4 apply, or the On the Incarnation early retirement if Carter approves it), and this PR must be live before either (4.1b checklist item).
@@ -784,19 +822,56 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - The medieval collection holds 6 documents: Boethius, Consolation of Philosophy (524); Anselm, Proslogium, Monologium, Cur Deus Homo; Bernard of Clairvaux, On Loving God (1128); Thomas à Kempis, Imitation of Christ (1441). So "9th through 15th centuries" excludes Boethius.
   - `:42` reads "church counsels" (should be councils).
   - The apostolic exhortations text cites Evangelii Gaudium, which is filed today under encyclicals (plan, 1.3 moves it). The claim about the document is true; leave it.
+  - Also found by the 6 Oct reviews (C-25, Opus A-015), claims this fix left standing: the Fathers text says "roughly the 1st through 8th centuries", though the corpus ends with Augustine and the Apostolic Constitutions (about 430); the medieval text names "canonists", and no canonist is in the corpus; the exhortations text calls them all "post-synodal", though Haerent Animo, Menti Nostrae, Evangelica Testificatio, Gaudete in Domino, Marialis Cultus, Signum Magnum, Redemptionis Donum, Redemptoris Custos, Gaudete et Exsultate, Laudate Deum, C'est la confiance and Dilexi te are not; the papal-documents text cites "defining dogmas (such as the Immaculate Conception)" and "reforming Church structures", but Ineffabilis Deus is filed under encyclicals and nothing in that collection reforms structures.
   - Both `/about` and `/guest/about` render this component (`apps/web/src/app/about/page.tsx`, `app/guest/about/page.tsx`).
 - **Changes:** In `AboutPage.tsx` only:
   - church-fathers: "including Ignatius of Antioch, Justin Martyr, Irenaeus, Athanasius and Augustine."
   - medieval: "Works from Boethius (6th century) through the late Middle Ages, including Anselm of Canterbury, Bernard of Clairvaux and Thomas à Kempis." Adjust the period sentence to match.
   - Fix "counsels" to "councils".
+  - Correct the four claims above (C-25): the Fathers period ends with the 5th century; drop "canonists"; call the exhortations "apostolic exhortations", without "post-synodal"; describe the papal-documents collection by what it holds (bulls, apostolic letters, a motu proprio). Carter approves the wording with the names.
   - Do not add counts; the full rewrite with counts from `/sources` is 5.7.
 - **Acceptance checks:**
-  - New `apps/web/src/components/about/AboutPage.test.tsx`: the rendered text contains none of "Origen", "Chrysostom", "Bonaventure", "Hildegard", "Scotus", "counsels".
+  - New `apps/web/src/components/about/AboutPage.test.tsx`: the rendered text contains none of "Origen", "Chrysostom", "Bonaventure", "Hildegard", "Scotus", "counsels", "8th centuries", "canonists", "post-synodal".
   - `npm run lint`, `npm test`, `npm run build`.
   - PR description must list each removed name with the live query result showing it absent (or, for Origen, scheduled for removal under rule A).
 - **Production safety:** Copy change in one static component. Nothing depends on the text.
 - **Needs Carter:** Approve the replacement names. Nothing else.
 - **Out of scope:** The "What's in TheoCorpus and why" rewrite (5.7). Collection renames (5.1b).
+
+---
+
+### 2.4d. Rejected-voice role in the API and web
+
+- **Type:** PR
+- **Depends on:** 2.1 (the `voice` field, D5, D11), 2.2a (`chunks.voice`), 2.2w (writes it to staging and the Qdrant payload), 2.2b (`corpus_schema`, which says whether the column exists), 2.4a (the chunk event it extends), 2.4b (the card it extends). Must be deployed before 4.1b (Decision log "Rejected voices (C-01)", decided by Carter on 9 Oct 2026).
+- **Goal:** A passage that states a position its document rejects reaches the rerankers, the explanation model, the result card and the reader with that role, so a condemned proposition or a pagan's argument is never presented as the Church's or a Father's teaching, and the condemnations stay findable.
+- **Current state:**
+  - The models learn a passage's role only from `unit_label`, through `services/api/app/rag/steps/passage_role.py:display_role`, which `rerank_docs` (the Cohere document and the listwise card), `llm_rerank.pointwise` and `steps.explain` all call. `display_role` suppresses a label that the reference already contains. A comment in `rag/steps/rerank.py:39-41` notes that an "Objection N" label marks a position the author states in order to refute it; nothing tells the models this about any other passage.
+  - The card and the reader show no role.
+  - 3.4 records about 270 such passages (C-01): Exsurge Domine §1 to §41, the Syllabus §1 to §80, Constance's condemned articles, Nestorius's letter at Ephesus, Caecilius in the Octavius, and Mani's teaching in the Acts of Archelaus. 1.7 also sets `voice` on every Summa objection (10,527 bold objection markers in the source).
+- **Changes:**
+  - Carry `voice` from retrieval, the same way `unit_label` travels today, so the rerankers see it. 2.4a's facts query runs after ranking and only for the final results, so it is too late for the rerankers and is not the source. The path, in `pipelines/runner.py` order (`:391-402`):
+    1. `ChunkCandidate` gains `voice: str | None = None` (`rag/steps/types.py`).
+    2. Vector path: `retrieve_vector.py` reads `payload.get("voice")`, which 2.2w writes on every point.
+    3. Keyword path: `retrieve_fts.py` selects `c.voice` when `corpus_schema` reports the column, so candidates found only by keyword search carry it. Without 0039 the SQL stays byte-identical to today's (2.2b's rule).
+    4. `rrf.py` carries `voice` with first-writer-wins, as it does `unit_label` (`:54-59`).
+    5. `fetch_positions.py` selects `voice` with `unit_label` when the column exists, and backfills any candidate whose value is missing, before reranking. On the degraded path, where `fetch_positions` is skipped, the payload value stands.
+    6. `RankedChunk` gains the same field, and every constructor copies it from the candidate: `rerank_cohere.py:180`, `llm_rerank/listwise.py:55`, and `llm_rerank/pointwise.py:_ranked` (`:124`), which builds both the scored results and `fallback_ranked`'s results when the provider is not ready or its call fails (`:175-200`). Stitched parts read it in `fetch_context.py`'s query and constructor (`:49`). `explain`, the chunk event and the judge then read it from `RankedChunk`.
+    7. `compare/shared_runner.py` caches candidate pools, and the cached `ChunkCandidate`s carry `voice` like any other field.
+  - `passage_role.py` gains `rejected_note(voice, unit_label) -> str | None`. For `voice == "rejected"` it returns one fixed line built from the label, for example "Rejected position (Condemned proposition 10): the document states this in order to reject it." Every caller of `display_role` adds it to that passage's card only: `rerank_docs`, `llm_rerank.pointwise`, `steps.explain`, and the eval judge in `rag/compare/judge.py`, so 4.2's judge sees what production's models see. Bump `LLM_RERANK_CONTRACT_VERSION`, as the comment at `rag/steps/rerank.py:35-45` asks whenever the rerank inputs change. The instruction explaining rejected positions is added to a prompt only when at least one card in the request carries the role. Until the Phase 4 apply gives any passage the field, every prompt stays byte-identical to today's.
+  - Summa objections keep their label and also get the note once 1.7 sets `voice`. Stitching (`fetch_context`) is unchanged.
+  - Web. `apps/web/src/lib/search-stream.ts`, the only SSE decoder, adds `voice?: string | null` to `ChunkSource`. When `voice === "rejected"`, `ChunkCard.tsx` shows the `unit_label` as a small muted label above the text, in the collapsed header and the expanded body; `BookmarkCard.tsx` and the reader's `Passage.tsx` show the same label; the copied citation adds it in brackets. Tokens only, no new colour. Guest pages share the components (`isGuest`).
+- **Acceptance checks:**
+  - `services/api/tests/test_passage_role.py`: `rejected_note` returns the line for a rejected passage and `None` otherwise.
+  - Golden prompt tests for the Cohere document, the listwise card, the pointwise record and the explanation input: a request with no rejected passage produces exactly today's text; a request with one adds the note to that card and the instruction once.
+  - A runner-level test (`roles.voice_reaches_model_inputs`) through `pipelines/runner.py` with fake retrievers, rerankers and explainer, not prompt builders fed hand-filled fields. Three rejected candidates go in: one found only by vector search (voice from the payload), one found only by keyword search (voice from the SQL), and one whose payload lacks the field (backfilled by `fetch_positions`). Each reaches the Cohere document, the listwise card, the pointwise record, the explanation input and the chunk event with its note. With the degraded path forced, the payload value still reaches the rerankers. The test runs every rerank mode the registry's pipelines use (Cohere, listwise, pointwise) on its scored path and on its RRF fallback path, and asserts `voice` survives to the explanation input, the chunk event and the judge input in each.
+  - A structural test lists every `RankedChunk(` construction under `app/rag` and fails if one does not pass `voice`, so a new constructor cannot drop it.
+  - Web: `ChunkCard.test.tsx`, `BookmarkCard.test.tsx` and `Passage.test.tsx` show the label for `voice: "rejected"`, and render exactly as today without it (snapshot).
+  - 4.2's targeted questions check, on staging, the explanation of a condemned proposition, a Summa objection and a passage of Caecilius's speech.
+  - `python3 -m pytest tests/`, `npm run lint` (0 errors, no new warnings in touched files), `npm test`, `npm run build`.
+- **Production safety:** Every new field is optional, and no live passage has `voice` before the Phase 4 apply, so production prompts, cards and the reader stay as they are until then. 4.1b's checklist requires this item deployed before the apply. If it has not deployed when the Phase 4 build is frozen, that freeze PR marks 3.4's ranges `searchable = false` instead (Decision log).
+- **Needs Carter:** Approve the label's look on the card and in the reader, and the sentence given to the models (NEEDS-CARTER section B, 2.4d).
+- **Out of scope:** The ranges themselves (3.4). Stitching by reply targets (a retrieval follow-up). Any change to scoring, weights or candidate pools; the note is the only change to what the rerankers read.
 
 ---
 
@@ -826,6 +901,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     | C | Pfaff fragments of Irenaeus XXXVI to XXXIX | `0066869a` | fragments XXXVI to XXXIX (today positions 37 to 40) |
     | C | Four medieval Latin Ignatius letters (CPG 1028) | `76b8b853`, `63e7f0b7`, `830a2c63`, `1a0a016b` | whole |
     | G | Editorial passages (Elucidations, translators' introductions and notices, "Argument" summaries that are editorial) | many | about 120 by the plan; a label heuristic finds 144 (chapter labels matching Elucidation, Translator, Introductory Note or Notice, Biographical, Argument); 1.8a to 1.8c settle the exact list |
+    | A | Novatian's Epistle XXX inside "The Epistles of Cyprian." (C-02, added 9 Oct 2026) | `aaf1a0e4` | the 5 passages `epistle-xxx/p1` to `/p5` today; Epistle XXIX and any other sender only if the research step below excludes them |
 
   - User rows touching each target are in the table in the Cross-cutting design section. In total 54 retrievals, 6 guest rows, 0 bookmarks, 0 labels, 0 reading progress rows and 0 feedback rows for rules A to C; 3 retrievals for the rule G heuristic.
   - Today's writer deletes what a build no longer emits, which cascades (`reader_writer.py:36-81`); `clear_collection` deletes a whole collection (`:16-33`). 2.2w removes both.
@@ -836,16 +912,19 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
       - Origen (limit 1, condemned by name: Constantinople II, 553, anathema 11) and Novatian (limit 1: Roman synod under Pope Cornelius, 251, as reported by Eusebius, Church History 6.43).
       - Tertullian's 7 works (limit 3, outside communion or not datable; Benedict XVI, general audience of 30 May 2007, for the break) and Tatian (Irenaeus, Against Heresies 1.28.1; Eusebius, Church History 4.28-29).
       - Arnobius (written before baptism; Jerome, Chronicle) and Alexander of Lycopolis (not a Christian; van Oort 2012).
+      - Novatian's Epistle XXX in Cyprian's Epistles (C-02; Decision log "Letters in Cyprian's Epistles (C-02)"): limit 1, as for his other works. `detail` cites Cyprian's Epistle LI to Antonianus (Ep. 55 in the Oxford numbering), which says Novatian wrote it, and the Roman synod of 251 for the condemnation.
     - `rule-b`: the Apostolic Constitutions (Council in Trullo, canon 2, confirmed by Nicaea II, canon 1), the six forged Ignatius letters and the long Ignatian recension (majority of standard scholarship), and the Sectional Confession (Caspari 1879, Lietzmann 1904).
     - `rule-c`: the Pfaff fragments (Harnack 1900) and the medieval Latin Ignatius letters (CPG 1028).
     - `rule-g-editorial`: the rule G list after 1.8a to 1.8c.
     - The tombstone's rule letter (A, B, C, G) is derived from the reason by 2.2w, not stored here.
+  - Research step for Cyprian's correspondents (C-02), before code, by R1's method (Quasten's Patrology vol. II and the Church-act search). Settle whether Epistle XXIX (Oxford Ep. xxxvi), which some editors give to Novatian, is his. Check each other sender of a letter in the collection under rule A: Cornelius, the Roman clergy, the confessors (Moyses, Maximus and others), Caldonius, Celerinus, Lucian, Firmilian and the martyrs in the mines. Record each result in the shape of `rule_a_R1.json`. A letter whose sender rule A excludes gets `rule-a` passage entries for its anchors. Carter approves the outcome (NEEDS-CARTER section B, 3.1).
   - Tombstone drafts, one sentence each, for Carter to approve. For Origen, "Removed because the Second Council of Constantinople (553) condemned Origen by name, and TheoCorpus excludes authors the Church has condemned by name." For rule G, "Removed because this text was written by a modern editor, not the author."
   - Adapters (`datapipeline/ingest/church_fathers.py`, `medieval.py`, `thml_doc.py`): skip every unit the removal registry lists. The adapter asks the registry; no author or title string matching in adapter code.
   - No writer change. 2.2w's stage step turns each registry entry into a staged tombstone, with its snapshot (`collection, title, author, reference, chapter_label`) taken from the live row, and its apply retires the rows. An ID that leaves the build with no registry entry and no redirect stops the stage (D4).
   - A regression check keeps ThML `<description>` text out of content. New `datapipeline/tests/test_thml_description_excluded.py` builds each ThML adapter's documents from fixtures containing a `<description>` and asserts no passage contains it. For vendored sources, the 0.1a coverage checks gain a rule that fails when any passage contains 40 or more consecutive characters of a file's `<description>`.
   - The release report (0.1c, staged mode in 2.2w) lists every retired ID with its registry entry and tombstone, and every user row pointing at one.
 - **Acceptance checks:**
+  - `test_no_novatian_passage_stays_active`: no active passage is credited to Novatian or sits in a work by him, Epistle XXX's five passages included; 0.1d's `attribution.letter_sender` entry for Epistle XXX clears.
   - `datapipeline/tests/test_church_fathers.py`: building with the registry emits none of the removed units; Book VIII emits exactly the 9 canon passages; "Treatises Attributed to Cyprian" emits Treatises II and IV only (plus nothing editorial).
   - Registry test: every entry resolves to anchors present in today's snapshot, and none is keyed by position.
   - Local rehearsal (D8, with 2.2w): after stage and apply on a local restore of production, the counts of `retrievals`, `bookmarks`, `retrieval_labels`, `guest_trial_retrievals` and `reading_progress` are unchanged, except merges documented by 4.1a, and the removed IDs return tombstones through `/searches/{id}/results`.
@@ -879,6 +958,10 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Current state:**
   - Every document has only `author` for attribution; no certainty or note exists anywhere. Authors live: Justin Martyr for the Hortatory Address (`3f1d7ed1`, 41 passages), On the Sole Government of God (`dd54c7cc`, 6), The Discourse to the Greeks (`abd0e330`, 5), On the Resurrection, Fragments (`24b54b57`, 12); "Gregory Thaumaturgus." for Dubious or Spurious Writings (`44fd52c3`, 80); Barnabas (`1d83b302`); Mathetes for Diognetus (`abf69de0`, 13); "Hippolytus." for the Appendix of dubious pieces (`a2b36c64`, 57); Ignatius for The Martyrdom of Ignatius (`841b4e0a`, 8); Victorinus (`e847b8bb`, 39); Methodius for Oration on the Palms and the homily fragments (`5f210d1e`); Pamphilus (Exposition of the Acts, today positions 2 to 5).
   - In ANF volumes, one document holds several works, and chapter keys repeat across works ("Section I" occurs at positions 0 and 43 of `44fd52c3`). Work membership is therefore recorded per passage as `work_key`, in the work model 2.1 defines and 2.2a stores (`chunks.work_key`, `document_works`; D6, D11).
+  - Also found by the 6 Oct reviews (C-15, C-02):
+    - Martyrdoms credited to their martyrs (Opus A-008, Sol B-004). The Martyrdom of Polycarp (`f8faac83`, 22 passages) is credited to Polycarp, though it is the Church of Smyrna's letter and names its writer, Evarestus, in chapter XX; the Martyrdom of Justin Martyr (`cf8278dd`, 5 passages) is credited to Justin, though the vendored edition's notice says its author is unknown. D10's Martyrdom of Ignatius exception does not cover them.
+    - Fragments framed by another writer (Opus A-009, Opus-2 B-013). 16 fragment documents (448 passages) put the quoting writer's words under the fragment's author: Papias's open with Eusebius's account, Justin's "Other Fragments" with "The most admirable Justin rightly declared…", Dionysius's "Extant Fragments" with Eusebius's narrative (17 of 79), the Stromata's "Fragments of Clemens" with a later writer's reports.
+    - Letters by others in Cyprian's Epistles. 1.8c credits each to its sender as a work; this item approves the wording.
   - Unverified which document holds the Refutation of All Heresies (CPG 1899), the Muratorian fragment, On the Glory of Martyrdom, Exhortation to Repentance, Canons of Hippolytus, the Acts of Archelaus and the Lactantius Poem on the Passion. 2.1's registry must locate each by CPG number before this PR.
 - **Changes:** Registry values, per the plan's "Labels for works that stay" and D10, using 2.2a's fields. `author` is the rule H credit shown to users; `certainty` is the label; `clavis_ref` the CPG number. Where the table names a work inside a document, the values go on the `document_works` entry.
 
@@ -909,12 +992,17 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   | Victorinus, Commentary on the Apocalypse | Victorinus of Pettau | genuine | Two works, the original and "Jerome's recension", labeled separately. | |
   | Apostolic Canons (the canons of Book VIII, a work in `10d8d7c6`) | Attributed to the Apostles | pseudonymous | A received work under rule D (D10). "Attributed to the Apostles; compiled about 380. The Latin West received canons 1 to 50 through Dionysius Exiguus; all 85 were confirmed by the Council in Trullo (canon 2) and Nicaea II (canon 1)." | |
   | Cyprian's two anonymous treatises in `5d75dc92` (Treatises II and IV) | Anonymous | anonymous | | |
+  | Martyrdom of Polycarp (C-15) | Church of Smyrna | genuine | "A letter of the Church of Smyrna on Polycarp's death; its writer, Evarestus, is named in chapter XX." | |
+  | Martyrdom of Justin (C-15) | Anonymous | anonymous | "An account of the trial and death of Justin and his companions; its author is unknown." | |
+  | Fragment collections framed by a quoting writer (C-15; 16 documents, each named in the PR) | unchanged | unchanged | work note naming where the fragments were preserved, for example "Preserved in Eusebius, Church History" (decided by Carter on 9 Oct 2026; per-span credit for the quoting writer is later) | |
+  | Letters by others in Cyprian's Epistles (C-02; works set by 1.8c) | the sender, for example "Firmilian of Caesarea" | genuine | title naming sender and recipient, for example "Firmilian of Caesarea, to Cyprian" | |
   | On Loving God | Bernard of Clairvaux | genuine | translation: "Translated by William Harman van Allen (1909)" (R5; the full credit line, with "Sourced via CCEL.org", is in the Decision log row "On Loving God translation") | |
 
   Wording in the notes follows the research memo; Carter approves the final sentences. Works with CPG numbers take them from the research memo's confirmed list only.
   - Authenticity judgments copied from editorial text before rule G deletes it (plan rule G) go into `attribution_note`, except where this plan overrides them.
   - No code change beyond registry values and their validation test.
 - **Acceptance checks:**
+  - 0.1d's `attribution.narrative_of_author_death` entries clear: no work titled "Martyrdom", "Passion" or "Acts of" is credited to its martyr without a note, D10's Martyrdom of Ignatius excepted.
   - Registry validation test: every entry in the table exists, has a `certainty` (except the Martyrdom of Ignatius, which keeps its label and sets none), and every `Pseudo-` author has `certainty = pseudonymous`. The Apostolic Canons entry's author is not "Anonymous".
   - The staged release report (2.2w, with 2.3's facts section) shows exactly the listed documents and works changing.
   - After the Phase 4 apply, `GET /v1/documents/3f1d7ed1-...` returns `author: "Pseudo-Justin"` and `facts.certainty: "pseudonymous"`, and a search for "true religion of the Greeks" shows the Pseudo-Justin label on the card (manual check, screenshot in the 4.1b log).
@@ -949,3 +1037,38 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Production safety:** Values only; nothing changes before the Phase 4 apply. At the apply, the 59 passages leave search results and stay in the reader. The one retrieval pointing at one of them still restores, because history restore does not filter on `searchable`. 2.2w's rollback restores the previous flags.
 - **Needs Carter:** Approval of the anchor list and the note wording.
 - **Out of scope:** Canon law Latin (1.5). Writing or commissioning translations. Removing any non-English passage from the reader.
+
+---
+
+### 3.4. Rejected-voice ranges
+
+- **Type:** PR (passage-registry values and their validation). Takes effect at the Phase 4 apply.
+- **Depends on:** 2.1 (the `voice` field and the `voice` and `unit_label` registry overrides), 2.2a, 2.2w, 1.3a (the Syllabus and Exsurge Domine end at their last proposition), 1.8a and 1.8c (the Octavius and the Acts of Archelaus after the editorial strip), 1.2a, 1.2c and 1.2e (which list the anchors of condemned council texts in whatever text the Phase 4 build carries). Visible only with 2.4d.
+- **Goal:** Every passage that states a position its document rejects carries `voice = "rejected"` and a label saying whose position it is and who rejects it, so the rerankers, the explanation model, the card and the reader never present it as the document's teaching, while it stays findable (Decision log "Rejected voices (C-01)", decided by Carter on 9 Oct 2026).
+- **Current state (C-01; Opus A-002, Opus-2 B-007, Sol A-001, A-006, A-011):**
+  - Lists of condemned statements, each passage one bare proposition, condemned once for the whole list:
+    - Exsurge Domine (Leo X, 1520) §1 to §41, Luther's propositions, under "Pope Leo X — Exsurge Domine, §N". 6 saved retrieval rows sit on them.
+    - The Syllabus of Errors (Pius IX, 1864) §1 to §80.
+    - The Council of Constance, about 120 passages in Tanner's text: Wyclif's 45 articles and Hus's 30. 1.2e replaces this text with Schroeder's or retires it at Phase 4 (D9), so the ranges follow whatever the build carries.
+  - An opponent speaking inside a larger work, answered in later passages:
+    - Ephesus: Nestorius's second letter to Cyril, 5 build passages, filed under the council, which read and condemned it. Cyril's letters in the same document are approved texts and are not labelled.
+    - Minucius Felix, the Octavius, chapters V to XIII (11 passages): the pagan Caecilius's case against Christianity, answered from chapter XVI. Today only the editor's "Argument" line names him, and 1.8a removes it.
+    - Hegemonius, the Acts of Archelaus: Mani's speeches in the 5 passages that do not name him (V/p2, XIII/p1 to /p3, XIV/p2) and Turbo's exposition of his teaching (about 10 passages; Opus-2 B-007 places it in chapters 7 to 11 and 13 while Sol A-011 reads chapter XIII as Mani's own speech, so this item fixes the exact anchors from the source). Passages that say "Manes said" mark themselves.
+  - Not labelled, as the reviewers judged them not misleading: dialogues whose speakers the text names (Trypho in Justin, Boso in Cur Deus Homo, Philosophy in Boethius) and authors quoting opponents inside their own argument (Augustine quoting Seneca). Firmilian's letter in Cyprian's Epistles is a credit question, settled by 1.8c, not a rejected voice.
+- **Changes:**
+  - A tracked list, `datapipeline/registry/rejected_voice_ranges.json`: per range, the document, first and last anchor, the label pattern and the basis (the condemning act or the work's own reply), with no passage text.
+  - Passage-registry rows (2.1) for every passage in a range: `voice: "rejected"` and a `unit_label` override, in these forms, worded finally by Carter:
+    - Exsurge Domine: "Condemned proposition N (condemned by Leo X, Exsurge Domine)".
+    - Syllabus: "Condemned proposition N (Syllabus of Errors, Pius IX)".
+    - Constance: "Condemned article N of John Wyclif" or "of Jan Hus" (Council of Constance), on the anchors 1.2e lists; none if the council is retired at Phase 4.
+    - Ephesus: "Letter of Nestorius, condemned by the Council of Ephesus".
+    - Octavius: "Caecilius, pagan objection; answered by Octavius".
+    - Acts of Archelaus: "Mani's teaching, refuted by Archelaus".
+  - Fallback: if 2.4d has not deployed when 4.1b step 1 freezes the Phase 4 build, the freeze PR also sets `searchable = false` on these rows (Decision log).
+- **Acceptance checks:**
+  - Registry test `roles.rejected_voice`: every passage in each listed range carries `voice = "rejected"` and a label matching its pattern, no passage outside the ranges carries the role except Summa objections (set by 1.7), and every range resolves to anchors in the build.
+  - The PR lists each range with its passage count and saved rows.
+  - After the Phase 4 apply (4.2's targeted questions, on staging first): "in every good work the just man sins" returns Exsurge Domine §31 with its label, and the explanation says Leo X condemned it; a question on the Octavius's arguments against providence returns Caecilius's speech labelled as a pagan objection.
+- **Production safety:** Values only; nothing changes before the Phase 4 apply. At the apply, 2.2w writes `voice` and the labels into Postgres and the Qdrant payload together, and 2.4d shows them. Rollback restores the previous labels with everything else.
+- **Needs Carter:** Approve the ranges and each label text (NEEDS-CARTER section B, 3.4).
+- **Out of scope:** Summa objections (1.7 sets them). Removing any of these texts. Speakers the text already names. Firmilian's letter (1.8c).
