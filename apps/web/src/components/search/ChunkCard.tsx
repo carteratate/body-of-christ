@@ -332,7 +332,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Sparkles size={11} style={{ color }} />
                 <span style={{ fontSize: "10px", color, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  Why this is relevant
+                  Why this is relevant (AI generated)
                 </span>
               </div>
               {result.explanation === null ? (
