@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import type { SearchSummaryV2 } from "@/lib/api";
@@ -41,6 +42,12 @@ export function HistorySearchRow({
   onClose,
   onDelete,
 }: HistorySearchRowProps) {
+  const router = useRouter();
+  const href = `/search?restore=${search.id}`;
+  // Rows don't prefetch on sight: a page of history is ~15 distinct URLs, each a
+  // middleware run and a server render. Warm the route on intent instead; Next
+  // dedupes repeat calls while the prefetch is fresh.
+  const prefetchRoute = () => router.prefetch(href);
   const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const revealButtonRef = useRef<HTMLButtonElement>(null);
   const dragStart = useRef<{ x: number; y: number; initialX: number } | null>(null);
@@ -150,12 +157,23 @@ export function HistorySearchRow({
         onPointerCancel={cancelPointerGesture}
       >
         <Link
-          href={`/search?restore=${search.id}`}
+          href={href}
+          prefetch={false}
           onClick={handleLinkClick}
-          onPointerEnter={(event) => { if (event.pointerType === "mouse") onIntent?.(); }}
+          onPointerEnter={(event) => {
+            if (event.pointerType !== "mouse") return;
+            prefetchRoute();
+            onIntent?.();
+          }}
           onPointerLeave={onIntentEnd}
+          // Touch has no hover; pressing still gains the press-to-click gap.
+          onPointerDown={(event) => { if (event.pointerType !== "mouse") prefetchRoute(); }}
           // Keyboard focus only: moving focus after a delete is not the reader's intent.
-          onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) onIntent?.(); }}
+          onFocus={(event) => {
+            if (!event.currentTarget.matches(":focus-visible")) return;
+            prefetchRoute();
+            onIntent?.();
+          }}
           onBlur={onIntentEnd}
           aria-label={search.query}
           aria-current={active ? "true" : undefined}

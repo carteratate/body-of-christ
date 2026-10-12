@@ -8,16 +8,16 @@ import { HistorySearchRow } from "@/components/history";
 import { Sidebar } from "./Sidebar";
 import { useAppContext } from "./AppShell";
 
-const navigationState = vi.hoisted(() => ({ pathname: "/search", params: "", push: vi.fn(), guestGate: null as null | { requestSignup: ReturnType<typeof vi.fn>; searchCount: number } }));
+const navigationState = vi.hoisted(() => ({ pathname: "/search", params: "", push: vi.fn(), prefetch: vi.fn(), guestGate: null as null | { requestSignup: ReturnType<typeof vi.fn>; searchCount: number } }));
 
 vi.mock("next/link", () => ({
-  default: ({ children, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a href={String(href)} {...props}>{children}</a>
+  default: ({ children, href, prefetch, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { prefetch?: boolean | null }) => (
+    <a href={String(href)} data-prefetch={prefetch === undefined ? "default" : String(prefetch)} {...props}>{children}</a>
   ),
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: navigationState.push }),
+  useRouter: () => ({ push: navigationState.push, prefetch: navigationState.prefetch }),
   usePathname: () => navigationState.pathname,
   useSearchParams: () => new URLSearchParams(navigationState.params),
 }));
@@ -64,6 +64,7 @@ afterEach(() => {
   navigationState.pathname = "/search";
   navigationState.params = "";
   navigationState.push.mockReset();
+  navigationState.prefetch.mockReset();
   navigationState.guestGate = null;
 });
 
@@ -76,6 +77,38 @@ function mockMatchMedia(matches: boolean) {
 }
 
 describe("HistorySearchRow", () => {
+  it("prefetches its restore route on intent, not on sight", () => {
+    const onIntent = vi.fn();
+    render(
+      <HistorySearchRow
+        search={{ id: "search-1", query: "What is grace?", filters: null, result_count: 4, created_at: "2026-08-04T12:00:00Z" }}
+        revealed={false}
+        onIntent={onIntent}
+        onReveal={vi.fn()}
+        onClose={vi.fn()}
+        onDelete={vi.fn()}
+      />,
+    );
+    const link = screen.getByRole("link", { name: "What is grace?" });
+    expect(link.getAttribute("href")).toBe("/search?restore=search-1");
+    expect(link.dataset.prefetch).toBe("false");
+    expect(navigationState.prefetch).not.toHaveBeenCalled();
+
+    fireEvent.pointerEnter(link, { pointerType: "mouse" });
+    expect(navigationState.prefetch).toHaveBeenLastCalledWith("/search?restore=search-1");
+    expect(onIntent).toHaveBeenCalledTimes(1);
+
+    navigationState.prefetch.mockClear();
+    fireEvent.pointerDown(link, { pointerType: "touch" });
+    expect(navigationState.prefetch).toHaveBeenLastCalledWith("/search?restore=search-1");
+    // Touch press warms only the route; the results prefetch stays hover/focus-only.
+    expect(onIntent).toHaveBeenCalledTimes(1);
+
+    navigationState.prefetch.mockClear();
+    fireEvent.pointerDown(link, { pointerType: "mouse" });
+    expect(navigationState.prefetch).not.toHaveBeenCalled();
+  });
+
   it("shows the date only when requested", () => {
     vi.spyOn(Date.prototype, "toLocaleDateString").mockReturnValue("Aug 4, 2026");
     vi.spyOn(Date.prototype, "toLocaleTimeString").mockReturnValue("8:00 AM");
@@ -239,12 +272,69 @@ describe("Sidebar mobile accessibility", () => {
     vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: null } as unknown as ReturnType<typeof useAppContext>);
     render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
 
-    await userEvent.click(screen.getByRole("link", { name: "About" }));
-    await userEvent.click(screen.getByRole("link", { name: "Feedback" }));
+    const about = screen.getByRole("link", { name: "About" });
+    const feedback = screen.getByRole("link", { name: "Feedback" });
+    // The hrefs are the guest pages themselves, so the Link prefetches the page
+    // the click opens and navigates without a router.push detour.
+    expect(about.getAttribute("href")).toBe("/guest/about");
+    expect(feedback.getAttribute("href")).toBe("/guest/feedback");
+    expect(about.dataset.prefetch).toBe("default");
+    expect(feedback.dataset.prefetch).toBe("default");
 
-    expect(navigationState.push).toHaveBeenNthCalledWith(1, "/guest/about");
-    expect(navigationState.push).toHaveBeenNthCalledWith(2, "/guest/feedback");
+    const prevented: boolean[] = [];
+    const record = (event: MouseEvent) => prevented.push(event.defaultPrevented);
+    document.addEventListener("click", record);
+    await userEvent.click(about);
+    await userEvent.click(feedback);
+    document.removeEventListener("click", record);
+
+    expect(prevented).toEqual([false, false]);
+    expect(navigationState.push).not.toHaveBeenCalled();
     expect(requestSignup).not.toHaveBeenCalled();
+  });
+
+  it("does not prefetch the links a guest cannot open, and gates them", async () => {
+    mockMatchMedia(false);
+    const requestSignup = vi.fn();
+    navigationState.guestGate = { requestSignup, searchCount: 0 };
+    vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: null } as unknown as ReturnType<typeof useAppContext>);
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    const locked: [string, string][] = [
+      ["Library", "library"],
+      ["Saved Passages", "saved"],
+      ["Search History", "history"],
+      ["Source Guide", "feature"],
+      ["Settings", "feature"],
+    ];
+    for (const [name, reason] of locked) {
+      const link = screen.getByRole("link", { name });
+      expect(link.dataset.prefetch, name).toBe("false");
+      const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+      link.dispatchEvent(event);
+      expect(event.defaultPrevented, name).toBe(true);
+      expect(requestSignup).toHaveBeenLastCalledWith(reason);
+    }
+  });
+
+  it("keeps default prefetch and the signed-in hrefs for signed-in users", async () => {
+    mockMatchMedia(false);
+    vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: "token" } as unknown as ReturnType<typeof useAppContext>);
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    for (const [name, href] of [
+      ["Library", "/sources"],
+      ["Saved Passages", "/bookmarks"],
+      ["Search History", "/history"],
+      ["Source Guide", "/discover"],
+      ["About", "/about"],
+      ["Feedback", "/feedback"],
+      ["Settings", "/settings"],
+    ]) {
+      const link = screen.getByRole("link", { name });
+      expect(link.getAttribute("href"), name).toBe(href);
+      expect(link.dataset.prefetch, name).toBe("default");
+    }
   });
 
   it("uses Search History as the only history surface in the sidebar", async () => {

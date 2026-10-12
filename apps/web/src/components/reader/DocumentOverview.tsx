@@ -133,8 +133,10 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
     if (isGuest && params.get("preview") === "1") next.set("preview", "1");
     if (isGuest && params.get("guideBack") === "1") next.set("guideBack", "1");
     const destination = `${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`;
-    if (isReaderReturnKey(returnKey)) router.replace(destination);
-    else router.push(destination);
+    // Same route, different search params: the History API skips the server
+    // round trip that router.push/replace would make (see DocumentReader).
+    if (isReaderReturnKey(returnKey)) window.history.replaceState(null, "", destination);
+    else window.history.pushState(null, "", destination);
   }
 
   function goBack() {

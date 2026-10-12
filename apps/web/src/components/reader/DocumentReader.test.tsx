@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from "vitest";
 
 import type { DocumentInfo, ReaderChapter } from "@/lib/api";
 import { DocumentReader } from "./DocumentReader";
@@ -98,7 +98,12 @@ function nearBottom(scroller: HTMLDivElement) {
   });
 }
 
+let replaceState: MockInstance<History["replaceState"]>;
+let pushState: MockInstance<History["pushState"]>;
+
 beforeEach(() => {
+  replaceState = vi.spyOn(window.history, "replaceState");
+  pushState = vi.spyOn(window.history, "pushState");
   __resetClientCachesForTests();
   appContext.token = "token";
   trial.guestToken = "";
@@ -119,6 +124,8 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  replaceState.mockRestore();
+  pushState.mockRestore();
 });
 
 describe("DocumentReader request ordering", () => {
@@ -587,7 +594,7 @@ describe("DocumentReader overview", () => {
     expect(api.getReaderChapter).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole("button", { name: "Document doc-a chapter chapter-b" }));
-    expect(navigation.push).toHaveBeenCalledWith("/reader/doc-a?from=library&chapter=chapter-b");
+    expect(pushState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b");
   });
 
   it("lets long Bible books reveal chapters beyond the first batch", async () => {
@@ -617,7 +624,7 @@ describe("DocumentReader overview", () => {
 
     const continueButton = await screen.findByRole("button", { name: "Continue at Chapter B" });
     fireEvent.click(continueButton);
-    expect(navigation.push).toHaveBeenCalledWith("/reader/doc-a?from=library&chapter=chapter-b");
+    expect(pushState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b");
   });
 
   it("does not block the overview while optional progress is still loading", async () => {
@@ -726,8 +733,22 @@ describe("DocumentReader overview", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: "Browse sections" }));
 
-    expect(navigation.replace).toHaveBeenCalledWith("/reader/doc-a?from=history&returnKey=11111111-1111-4111-8111-111111111111");
+    // Same route, new search params: the History API, not a server navigation.
+    expect(replaceState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=history&returnKey=11111111-1111-4111-8111-111111111111");
+    expect(navigation.replace).not.toHaveBeenCalled();
     expect(navigation.push).not.toHaveBeenCalled();
+  });
+
+  it("keeps guest params when returning from reading to the overview", async () => {
+    appContext.token = null;
+    trial.guestToken = "guest-token";
+    navigation.params = new Map([["from", "search"], ["chapter", "chapter-a"], ["preview", "1"], ["guideBack", "1"]]);
+    render(<DocumentReader docId="doc-a" isGuest />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Browse sections" }));
+
+    expect(replaceState).toHaveBeenCalledWith(null, "", "/reader/guest/doc-a?from=search&preview=1&guideBack=1");
+    expect(navigation.replace).not.toHaveBeenCalled();
   });
 
   it("returns through exact same-tab history only when a valid marker exists", async () => {
@@ -753,7 +774,20 @@ describe("DocumentReader overview", () => {
     render(<DocumentReader docId="doc-a" />);
 
     fireEvent.click(await screen.findByRole("button", { name: "Document doc-a chapter chapter-b" }));
-    expect(navigation.replace).toHaveBeenCalledWith(`/reader/doc-a?from=library&chapter=chapter-b&returnKey=${returnKey}`);
+    expect(replaceState).toHaveBeenCalledWith(null, "", `/reader/doc-a?from=library&chapter=chapter-b&returnKey=${returnKey}`);
+    expect(pushState).not.toHaveBeenCalled();
+    expect(navigation.replace).not.toHaveBeenCalled();
+    expect(navigation.push).not.toHaveBeenCalled();
+  });
+
+  it("pushes a history entry when opening a chapter without a return marker", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    render(<DocumentReader docId="doc-a" />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Document doc-a chapter chapter-b" }));
+    // A pushed entry lets browser Back return to the overview.
+    expect(pushState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b");
+    expect(replaceState).not.toHaveBeenCalled();
     expect(navigation.push).not.toHaveBeenCalled();
   });
 });

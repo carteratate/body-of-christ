@@ -21,7 +21,7 @@ vi.mock("@/lib/api", async (importOriginal) => ({
   ...api,
 }));
 vi.mock("@/components/layout/AppShell", () => ({ useAppContext: () => shell.value }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }) }));
 vi.mock("@/lib/analytics", () => ({ trackHistoryRestored: vi.fn(), trackSearchDeleted: vi.fn() }));
 
 function deferred<T>() {
