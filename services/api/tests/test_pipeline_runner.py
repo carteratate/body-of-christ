@@ -14,6 +14,7 @@ _EXPECTED_PIPELINES = {
     "hyde_nolex_cohere_haiku", "hyde_luna_rrf60",
     "hyde_cohere_luna_hydesample", "hyde6_cohere_luna",
     "hyde6_cohere_luna6", "hyde6_cohere_luna6_low",
+    "hyde_cohere_luna_pool60", "hyde_cohere_luna_pool80_keep8",
 }
 
 

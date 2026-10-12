@@ -1,9 +1,10 @@
 # services/api/app/rag/pipelines/registry.py
 """Named pipeline configurations.
 
-Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>]`. The axes configured here —
-which retrieval paths run, which rerankers (and, for Luna, which model and reasoning
-effort), and how the paths are fused — let `compare/` A/B any two by name.
+Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>][_pool<cap>][_keep<extra>]`. The
+axes configured here — which retrieval paths run, which rerankers (and, for Luna, which
+model and reasoning effort), how the paths are fused, and how many candidates reach the
+terminal listwise call — let `compare/` A/B any two by name.
 
 Enrichment is deliberately NOT an axis: whether a candidate has an annotation is a
 property of the data, checked per candidate, so a single query spanning enriched and
@@ -75,7 +76,9 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
        k: int | None = None, rrf_k: int | None = None,
        hyde_model: str | None = None, genre_model: str | None = None,
        hyde_sample: int = 0,
-       llm_model: str | None = None, effort: str | None = None) -> PipelineConfig:
+       llm_model: str | None = None, effort: str | None = None,
+       pool_cap: int | None = None, pool_floor: int | None = None,
+       keep_extra: int | None = None) -> PipelineConfig:
     return PipelineConfig(
         name=name,
         retrieval=RetrievalConfig(
@@ -86,6 +89,8 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
         rerank=RerankConfig(
             use_cohere=cohere, llm_provider=llm,
             llm_model=llm_model, llm_reasoning_effort=effort,
+            llm_pool_cap=pool_cap, llm_pool_floor_per_col=pool_floor,
+            cohere_keep_extra=keep_extra,
         ),
     )
 
@@ -137,5 +142,15 @@ PIPELINES: dict[str, PipelineConfig] = {
     "hyde6_cohere_luna6_low": _p(
         "hyde6_cohere_luna6_low", cohere=True, llm="luna", hyde_model="gpt-6-luna",
         genre_model="gpt-6-luna", llm_model="gpt-6-luna", effort="low",
+    ),
+    # Issue #235: Cohere's per-collection cut and the 40-seat terminal cap can keep a
+    # strong candidate from the listwise ranker. These arms widen the terminal pool;
+    # at quota 5, keep_extra=8 seats up to 13 per collection.
+    "hyde_cohere_luna_pool60": _p(
+        "hyde_cohere_luna_pool60", cohere=True, llm="luna", pool_cap=60,
+    ),
+    "hyde_cohere_luna_pool80_keep8": _p(
+        "hyde_cohere_luna_pool80_keep8", cohere=True, llm="luna",
+        pool_cap=80, keep_extra=8,
     ),
 }

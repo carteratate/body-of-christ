@@ -88,6 +88,14 @@ class RerankConfig:
     # them in the methodology fingerprint and arms stay segmentable.
     llm_model: str | None = None
     llm_reasoning_effort: str | None = None
+    # Evaluation-arm overrides for how many candidates reach the terminal listwise
+    # call in `both` mode (issue #235). None means the production setting
+    # (`llm_pool_global_cap`, `llm_pool_floor_per_col`, `cohere_keep_extra`). A
+    # focused plan's terminal_candidate_budget still takes precedence over the cap
+    # and the keep.
+    llm_pool_cap: int | None = None
+    llm_pool_floor_per_col: int | None = None
+    cohere_keep_extra: int | None = None
 
     def __post_init__(self) -> None:
         if not self.use_cohere and self.llm_provider is None:
@@ -115,6 +123,23 @@ class RerankConfig:
                 f"Valid: {sorted(LUNA_REASONING_EFFORTS)}"
             )
 
+        pool_overrides = {
+            "llm_pool_cap": (self.llm_pool_cap, 1),
+            "llm_pool_floor_per_col": (self.llm_pool_floor_per_col, 1),
+            "cohere_keep_extra": (self.cohere_keep_extra, 0),
+        }
+        for name, (value, minimum) in pool_overrides.items():
+            if value is not None and value < minimum:
+                raise ValueError(f"{name} must be >= {minimum}, got {value}")
+        if (
+            any(value is not None for value, _ in pool_overrides.values())
+            and not (self.use_cohere and self.llm_provider)
+        ):
+            raise ValueError(
+                "llm_pool_cap / llm_pool_floor_per_col / cohere_keep_extra only apply "
+                "when both Cohere and an LLM reranker run."
+            )
+
     def provider(self):
         """The configured LLM provider, with any evaluation-arm overrides applied."""
         base = PROVIDERS[self.llm_provider]
@@ -132,6 +157,7 @@ class RerankConfig:
 def _llm_pool_from(
     per_collection: dict[str, list[RankedChunk]], quota: int,
     terminal_candidate_budget: int | None = None,
+    config: RerankConfig | None = None,
 ) -> list[RankedChunk]:
     """Build the terminal pool above the keep floor, then trim globally.
 
@@ -148,7 +174,10 @@ def _llm_pool_from(
     keep = (
         terminal_candidate_budget
         if terminal_candidate_budget is not None
-        else budget.cohere_keep(quota, with_llm=True)
+        else budget.cohere_keep(
+            quota, with_llm=True,
+            extra=config.cohere_keep_extra if config is not None else None,
+        )
     )
     kept: dict[str, list[RankedChunk]] = {}
     for col, ranked in per_collection.items():
@@ -164,8 +193,12 @@ def _llm_pool_from(
             # score into an LLM-scored global ranking.
             kept[col] = ranked[:1]
 
+    cap = terminal_candidate_budget
+    if cap is None and config is not None:
+        cap = config.llm_pool_cap
     allocation = budget.llm_pool(
-        {c: len(v) for c, v in kept.items()}, cap=terminal_candidate_budget,
+        {c: len(v) for c, v in kept.items()}, cap=cap,
+        floor=config.llm_pool_floor_per_col if config is not None else None,
     )
     pool: list[RankedChunk] = []
     for col, n in allocation.items():
@@ -256,7 +289,7 @@ async def run(
         return all_scored, all_scored
 
     # both
-    pool = _llm_pool_from(per_collection, quota, terminal_candidate_budget)
+    pool = _llm_pool_from(per_collection, quota, terminal_candidate_budget, config)
     provider = config.provider()
     terminal_started = time.perf_counter()
     cost_before_terminal = cost_tracker.total_cost()

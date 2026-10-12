@@ -108,17 +108,21 @@ def retrieval_k(pool_target: int, n_paths: int) -> int:
     return max(settings.retrieval_k_min, min(settings.retrieval_k_max, raw))
 
 
-def cohere_keep(quota: int, *, with_llm: bool) -> int:
+def cohere_keep(quota: int, *, with_llm: bool, extra: int | None = None) -> int:
     """Documents Cohere keeps per collection.
 
     `both` keeps quota+extra so downstream dedup, per-source caps and the collection
     guarantee have slack; `cohere_only` is terminal, so quota is exactly right.
+    `extra` overrides `cohere_keep_extra` for an evaluation arm (`RerankConfig`).
     """
-    return quota + settings.cohere_keep_extra if with_llm else quota
+    if not with_llm:
+        return quota
+    return quota + (settings.cohere_keep_extra if extra is None else extra)
 
 
 def llm_pool(
     per_collection_counts: dict[str, int], *, cap: int | None = None,
+    floor: int | None = None,
 ) -> dict[str, int]:
     """Trim per-collection Cohere keeps to a global listwise budget.
 
@@ -138,7 +142,7 @@ def llm_pool(
     if sum(contributing.values()) <= cap:
         return contributing
 
-    floor = settings.llm_pool_floor_per_col
+    floor = settings.llm_pool_floor_per_col if floor is None else floor
     allocation = {c: min(floor, n) for c, n in contributing.items()}
     floor_total = sum(allocation.values())
 

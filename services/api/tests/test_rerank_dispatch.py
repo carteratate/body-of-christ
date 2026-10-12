@@ -52,6 +52,40 @@ def test_mode_derivation(cohere, llm, expected):
     assert RerankConfig(use_cohere=cohere, llm_provider=llm).mode == expected
 
 
+@pytest.mark.parametrize("override", [
+    {"llm_pool_cap": 0},
+    {"llm_pool_floor_per_col": 0},
+    {"cohere_keep_extra": -1},
+])
+def test_non_positive_pool_overrides_are_rejected(override):
+    with pytest.raises(ValueError, match="must be"):
+        RerankConfig(use_cohere=True, llm_provider="luna", **override)
+
+
+def test_zero_keep_extra_is_allowed():
+    """Keeping exactly quota per collection is a meaningful arm."""
+    assert RerankConfig(use_cohere=True, llm_provider="luna", cohere_keep_extra=0)
+
+
+@pytest.mark.parametrize("cohere,llm", [(True, None), (False, "luna")])
+def test_pool_overrides_are_rejected_without_a_listwise_stage(cohere, llm):
+    """Only `both` mode builds the terminal pool; elsewhere an override would be a
+    no-op that still gave the arm a distinct name and fingerprint."""
+    with pytest.raises(ValueError, match="only apply"):
+        RerankConfig(use_cohere=cohere, llm_provider=llm, llm_pool_cap=60)
+
+
+def test_production_pipeline_pins_no_pool_overrides():
+    """Pool-size arms are for evaluation; production must keep the settings values."""
+    from app.rag.pipeline import _PRODUCTION_PIPELINE
+    from app.rag.pipelines.registry import PIPELINES
+
+    config = PIPELINES[_PRODUCTION_PIPELINE].rerank
+    assert config.llm_pool_cap is None
+    assert config.llm_pool_floor_per_col is None
+    assert config.cohere_keep_extra is None
+
+
 def test_every_registered_provider_constructs():
     for name in rerank.PROVIDERS:
         assert RerankConfig(use_cohere=False, llm_provider=name).mode == "llm_only"
@@ -110,6 +144,67 @@ async def test_both_keeps_quota_plus_extra_then_trims_to_pool_cap():
     # Guarantee candidates stay on the terminal reranker scale; Cohere-only
     # candidates outside the listwise pool are intentionally unavailable.
     assert len(all_scored) == settings.llm_pool_global_cap
+
+
+async def _terminal_pool(config: RerankConfig, per_col: dict, quota: int) -> list:
+    captured = {}
+
+    async def _capture(pool, query, tracker, provider, step="x"):
+        captured["pool"] = pool
+        return pool
+
+    with (
+        patch("app.rag.steps.rerank_cohere.run_per_collection",
+              new=AsyncMock(return_value=per_col)),
+        patch("app.rag.steps.llm_rerank.listwise.rerank_pool", new=_capture),
+    ):
+        await rerank.run(
+            config, {col: [_cand(0, col)] for col in per_col}, "q", quota,
+            CostTracker(),
+        )
+    return captured["pool"]
+
+
+@pytest.mark.asyncio
+async def test_an_arm_pool_cap_replaces_the_global_cap():
+    """An override that is silently ignored would make an evaluation arm run on
+    production's pool size and report no difference."""
+    per_col = {
+        f"col{c}": [_ranked(c * 100 + i, 0.9, f"col{c}") for i in range(20)]
+        for c in range(10)
+    }
+    config = RerankConfig(
+        use_cohere=True, llm_provider="haiku", llm_pool_cap=60, cohere_keep_extra=8,
+    )
+    assert len(await _terminal_pool(config, per_col, quota=4)) == 60
+
+
+@pytest.mark.asyncio
+async def test_an_arm_keep_extra_seats_more_per_collection():
+    # Under the default cap of 40: quota 5 + extra 8 = 13 from each collection.
+    per_col = {
+        col: [_ranked(n * 100 + i, 0.9, col) for i in range(20)]
+        for n, col in enumerate(["summa", "catechism"])
+    }
+    config = RerankConfig(use_cohere=True, llm_provider="haiku", cohere_keep_extra=8)
+    pool = await _terminal_pool(config, per_col, quota=5)
+    assert sum(c.collection == "summa" for c in pool) == 13
+    assert sum(c.collection == "catechism" for c in pool) == 13
+
+
+@pytest.mark.asyncio
+async def test_an_arm_floor_reserves_seats_for_a_weaker_collection():
+    per_col = {
+        "bible": [_ranked(i, 0.9, "bible") for i in range(20)],
+        "canon-law": [_ranked(100 + i, 0.8, "canon-law") for i in range(6)],
+    }
+    config = RerankConfig(
+        use_cohere=True, llm_provider="haiku",
+        llm_pool_cap=10, llm_pool_floor_per_col=5, cohere_keep_extra=15,
+    )
+    pool = await _terminal_pool(config, per_col, quota=5)
+    assert sum(c.collection == "canon-law" for c in pool) == 5
+    assert len(pool) == 10
 
 
 @pytest.mark.asyncio

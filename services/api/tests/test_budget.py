@@ -75,6 +75,11 @@ def test_cohere_keep_adds_slack_only_when_an_llm_follows():
     assert budget.cohere_keep(4, with_llm=True) == 4 + settings.cohere_keep_extra
 
 
+def test_cohere_keep_uses_an_explicit_extra_instead_of_the_setting():
+    assert budget.cohere_keep(5, with_llm=True, extra=8) == 13
+    assert budget.cohere_keep(5, with_llm=False, extra=8) == 5
+
+
 # --- llm_pool ---
 
 def test_llm_pool_passes_through_when_under_cap():
@@ -94,6 +99,13 @@ def test_llm_pool_guarantees_a_floor_per_contributing_collection():
     allocation = budget.llm_pool(counts)
     assert allocation["canon-law"] >= min(settings.llm_pool_floor_per_col, 2)
     assert sum(allocation.values()) <= settings.llm_pool_global_cap
+
+
+def test_llm_pool_uses_an_explicit_floor_instead_of_the_setting():
+    # cap 10, floor 5: the weaker collection keeps all 5 floor seats even though the
+    # largest-first remainder would otherwise favour bible.
+    allocation = budget.llm_pool({"bible": 60, "canon-law": 6}, cap=10, floor=5)
+    assert allocation == {"bible": 5, "canon-law": 5}
 
 
 def test_llm_pool_never_allocates_more_than_a_collection_has():
