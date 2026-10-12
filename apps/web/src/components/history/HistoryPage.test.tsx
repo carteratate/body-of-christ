@@ -201,6 +201,17 @@ describe("HistoryPage loading", () => {
   });
 });
 
+describe("HistoryPage rows", () => {
+  it("labels only the search just run as Current", async () => {
+    shell.value = context({ activeSearchId: "s2" });
+    render(<HistoryPage />);
+
+    await screen.findByRole("link", { name: "query s1" });
+    expect(row("s2").textContent).toContain("Current");
+    expect(row("s1").textContent).not.toContain("Current");
+  });
+});
+
 describe("HistoryPage restore prefetch", () => {
   async function renderSeeded(searches: SearchSummaryV2[], overrides: Record<string, unknown> = {}) {
     api.getSearchHistoryPage.mockResolvedValue({ searches, next_cursor: null });
