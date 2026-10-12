@@ -158,4 +158,10 @@ PIPELINES: dict[str, PipelineConfig] = {
         "hyde_cohere_luna_seats10t80", cohere=True, llm="luna",
         seats=TerminalSeats(minimum=10, total=80, maximum=25),
     ),
+    # Production (seats10t80) with its own HyDE draw: the noise floor any change to
+    # production must clear. hyde_cohere_luna_hydesample is the pre-#235 equivalent.
+    "hyde_cohere_luna_seats10t80_hydesample": _p(
+        "hyde_cohere_luna_seats10t80_hydesample", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10, total=80, maximum=25), hyde_sample=1,
+    ),
 }

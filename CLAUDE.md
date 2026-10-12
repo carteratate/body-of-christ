@@ -163,7 +163,16 @@ Two layers, and the split is the point:
 - `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
 - `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-Production runs the `hyde_cohere_luna` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → parallel Qdrant vector + Supabase FTS retrieval → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+Production runs the `hyde_cohere_luna_seats10t80` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → parallel Qdrant vector + Supabase FTS retrieval → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+
+**How many Cohere candidates reach the listwise call is a per-pipeline seat rule**,
+`RerankConfig.terminal_seats` (`budget.TerminalSeats`, issue #235). Production seats
+`clamp(80 // collections-with-candidates, 10, 25)` per collection with no global trim, so
+a 1–3 collection search sends 25 each and a 10-collection search 10 each (pool ≤ 100).
+`None` keeps the pre-#235 sizing: quota + `COHERE_KEEP_EXTRA` per collection under the
+40-seat `LLM_POOL_GLOBAL_CAP`. A focused plan's `terminal_candidate_budget` (25) still wins.
+Seats add listwise latency roughly linearly (about 0.07–0.1 s per candidate), which the
+`LoadingAnimation` gate-2 wait absorbs only partly.
 
 **`rag/search_plan.py` resolves one validated `SearchPlan` before the pipeline runs.** It
 is the single place that normalizes collections and enforces the focused-search invariant,
@@ -188,7 +197,7 @@ renders its pipeline list from `PIPELINES`, so a new entry needs no hand-sync.
 `RerankConfig.llm_model` / `llm_reasoning_effort` (`None` = the production default).
 `compare/shared_runner.py` draws HyDE once per distinct (passage model, genre model,
 `hyde_sample`) and includes that key in its pool shape, so arms with different HyDE never
-share a candidate pool; `SharedArtifacts.hyde_costs` records each arm's own draw cost. `hyde_cohere_luna_hydesample` is production with its own HyDE draw
+share a candidate pool; `SharedArtifacts.hyde_costs` records each arm's own draw cost. `hyde_cohere_luna_seats10t80_hydesample` is production with its own HyDE draw
 — the noise floor any HyDE change must clear. Cost is always recorded against the model
 actually called.
 

@@ -63,12 +63,13 @@ def test_terminal_seats_are_rejected_without_a_listwise_stage(cohere, llm):
         )
 
 
-def test_production_pipeline_pins_no_terminal_seats():
-    """Seat rules are for evaluation; production keeps quota+extra and the 40 cap."""
+def test_production_seats_ten_to_twenty_five_per_collection_from_eighty():
+    """Issue #235: production replaces quota+3 and the 40 cap with this seat rule."""
     from app.rag.pipeline import _PRODUCTION_PIPELINE
     from app.rag.pipelines.registry import PIPELINES
 
-    assert PIPELINES[_PRODUCTION_PIPELINE].rerank.terminal_seats is None
+    seats = PIPELINES[_PRODUCTION_PIPELINE].rerank.terminal_seats
+    assert seats == budget.TerminalSeats(minimum=10, total=80, maximum=25)
 
 
 def test_every_registered_provider_constructs():
