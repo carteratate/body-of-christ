@@ -51,7 +51,7 @@ describe("BookmarkCard action descriptions", () => {
     );
 
     const expectedDescriptions = new Map([
-      ["Open passage in context", "Open this passage in the context of the full source"],
+      ["Open passage in context", "Open the passage in context to read the surrounding text."],
       ["Remove bookmark", "Remove this passage from Saved Passages."],
       ["Copy passage", "Copy"],
     ]);
@@ -142,6 +142,71 @@ describe("BookmarkCard action descriptions", () => {
     await waitFor(() => expect(mocks.updateBookmarkNote).toHaveBeenCalledWith("token", "bookmark-1", "A useful connection."));
     expect(onNoteUpdated).toHaveBeenCalledWith("bookmark-1", "A useful connection.");
     expect(showToast).toHaveBeenCalledWith("Note saved");
+  });
+
+  it("borders the whole card in the collection color", () => {
+    const { container } = render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-1",
+          chunk_id: "chunk-1",
+          note: null,
+          created_at: "2026-08-08T00:00:00Z",
+          chunk: {
+            content: "A saved passage",
+            source: {
+              collection: "catechism",
+              document_title: "Catechism of the Catholic Church",
+              author: null,
+              reference: "CCC §1000",
+              document_id: "11111111-1111-4111-8111-111111111111",
+              anchor: "ccc-1000",
+              chapter_key: "ccc-1000-1099",
+            },
+          },
+        }}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+
+    const card = container.firstElementChild as HTMLElement;
+    expect(card.className).toContain("border-[3px]");
+    expect(card.className).not.toContain("border-l-4");
+    expect(card.style.borderColor).toBe("var(--color-collection-catechism)");
+  });
+
+  it("falls back to the accent border for an unknown collection", () => {
+    const { container } = render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-1",
+          chunk_id: "chunk-1",
+          note: null,
+          created_at: "2026-08-08T00:00:00Z",
+          chunk: {
+            content: "A saved passage",
+            source: {
+              collection: "not-a-collection",
+              document_title: "Unknown source",
+              author: null,
+              reference: null,
+              document_id: "11111111-1111-4111-8111-111111111111",
+              anchor: null,
+              chapter_key: null,
+            },
+          },
+        }}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+
+    expect((container.firstElementChild as HTMLElement).style.borderColor).toBe("var(--color-brand-accent)");
   });
 
   it("keeps the inline editor actions responsive on narrow screens", async () => {

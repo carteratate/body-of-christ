@@ -367,7 +367,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
                 <ThemedTooltip label="Tell TheoCorpus this result helped answer your question.">
                   <button onClick={() => handleFeedback("up")} aria-label="Mark as relevant" disabled={feedbackPending || feedback === "up"} className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${feedback === "up" ? "text-brand-accent" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"}`}><ThumbsUp size={15} /></button>
                 </ThemedTooltip>
-                <ThemedTooltip label="Tell TheoCorpus this result was not useful; you can share details next.">
+                <ThemedTooltip label="Tell TheoCorpus this result was not useful.">
                   <button onClick={() => handleFeedback("down")} aria-label="Mark as not relevant" disabled={feedbackPending || feedback === "down"} className={`p-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${feedback === "down" ? "text-brand-danger" : "text-brand-muted hover:text-brand-primary disabled:opacity-50"}`}><ThumbsDown size={15} /></button>
                 </ThemedTooltip>
               </>}
@@ -375,12 +375,10 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
                 {showOpenContextHint && (
                   <div role="status" className="absolute bottom-[calc(100%+10px)] right-0 z-20 w-56 rounded-lg border border-brand-accent/40 bg-brand-surface px-3 py-2 text-xs leading-relaxed text-brand-primary shadow-xl after:absolute after:-bottom-1.5 after:right-6 after:h-3 after:w-3 after:rotate-45 after:border-b after:border-r after:border-brand-accent/40 after:bg-brand-surface">
                     <button type="button" onClick={onDismissOpenContextHint} aria-label="Dismiss context guidance" className="absolute right-1.5 top-1 text-brand-muted hover:text-brand-primary">×</button>
-                    <span className="block pr-3">Open the passage in its original source to read what surrounds it.</span>
+                    <span className="block pr-3">Open the passage in context to read the surrounding text.</span>
                   </div>
                 )}
-                <ThemedTooltip label="Open this passage in the context of the full source">
-                  <button onClick={handleReadMore} className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Open in Context</button>
-                </ThemedTooltip>
+                <button onClick={handleReadMore} className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Open in Context</button>
               </div>
             </div>
           </div>

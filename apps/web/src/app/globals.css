@@ -16,6 +16,8 @@
   /* Slate Night — dark mode (default) */
   --color-brand-bg:      #0D1828;
   --color-brand-surface: #172232;
+  /* A raised (hovered or focused) card: darker than the surface, still above the page. */
+  --color-brand-surface-hover: color-mix(in srgb, var(--color-brand-surface), var(--color-brand-contrast-dark) 12%);
   --color-brand-accent:  #C4972A;
   --color-brand-primary: #EAE6DC;
   --color-brand-muted:   #7A8099;
@@ -68,6 +70,7 @@ body {
   [data-theme="light"] {
     --color-brand-bg:      #f0e8d8;
     --color-brand-surface: #e3dbc8;
+    --color-brand-surface-hover: color-mix(in srgb, var(--color-brand-surface), var(--color-brand-primary) 6%);
     --color-brand-accent:  #C4972A;
     --color-brand-primary: #1a1610;
     --color-brand-muted:   #6a6050;
