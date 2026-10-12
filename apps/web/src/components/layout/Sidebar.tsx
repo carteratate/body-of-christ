@@ -21,13 +21,16 @@ interface NavLinkProps {
   icon: React.ReactNode;
   active: boolean;
   onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  /** false for a link that never navigates (a guest-locked feature). */
+  prefetch?: boolean;
 }
 
-function NavLink({ href, label, icon, active, onClick }: NavLinkProps) {
+function NavLink({ href, label, icon, active, onClick, prefetch }: NavLinkProps) {
   return (
     <Link
       href={href}
       onClick={onClick}
+      prefetch={prefetch}
       className={`flex min-h-10 items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
         active
           ? "bg-brand-bg text-brand-accent"
@@ -74,13 +77,14 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
 
   function handleNavClick(event: React.MouseEvent<HTMLAnchorElement>) {
     if (guestGate) {
-      event.preventDefault();
       const destination = new URL(event.currentTarget.href).pathname;
-      if (destination === "/about" || destination === "/feedback") {
-        router.push(`/guest${destination}`);
+      // Guest About and Feedback are real links (their hrefs already point at the
+      // guest pages, so the prefetch matches); every other link is locked.
+      if (destination === "/guest/about" || destination === "/guest/feedback") {
         onCloseMobile();
         return;
       }
+      event.preventDefault();
       guestGate.requestSignup(
         destination === "/sources"
           ? "library"
@@ -149,21 +153,22 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
                   || (item.href === "/history" && isRestoredSearch)
                 }
                 onClick={handleNavClick}
+                prefetch={guestGate ? false : undefined}
               />
             ))}
           </div>
 
           <div className="mt-5 border-t border-brand-bg pt-4">
             <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Tools</p>
-            <NavLink href="/discover" label="Source Guide" icon={<BarChart3 size={17} />} active={pathname === "/discover"} onClick={handleNavClick} />
+            <NavLink href="/discover" label="Source Guide" icon={<BarChart3 size={17} />} active={pathname === "/discover"} onClick={handleNavClick} prefetch={guestGate ? false : undefined} />
           </div>
 
           <div className="mt-5 border-t border-brand-bg pt-4">
             <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-brand-muted">Information</p>
             <div className="space-y-1">
-              <NavLink href="/about" label="About" icon={<Church size={17} />} active={pathname === "/about" || pathname === "/guest/about"} onClick={handleNavClick} />
-              <NavLink href="/feedback" label="Feedback" icon={<MessageSquareText size={17} />} active={pathname === "/feedback" || pathname === "/guest/feedback"} onClick={handleNavClick} />
-              <NavLink href="/settings" label="Settings" icon={<Settings size={17} />} active={pathname === "/settings"} onClick={handleNavClick} />
+              <NavLink href={guestGate ? "/guest/about" : "/about"} label="About" icon={<Church size={17} />} active={pathname === "/about" || pathname === "/guest/about"} onClick={handleNavClick} />
+              <NavLink href={guestGate ? "/guest/feedback" : "/feedback"} label="Feedback" icon={<MessageSquareText size={17} />} active={pathname === "/feedback" || pathname === "/guest/feedback"} onClick={handleNavClick} />
+              <NavLink href="/settings" label="Settings" icon={<Settings size={17} />} active={pathname === "/settings"} onClick={handleNavClick} prefetch={guestGate ? false : undefined} />
             </div>
           </div>
         </nav>

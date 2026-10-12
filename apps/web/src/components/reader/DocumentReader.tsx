@@ -378,7 +378,10 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
     if (isGuest && params.get("preview") === "1") next.set("preview", "1");
     if (isGuest && params.get("guideBack") === "1") next.set("guideBack", "1");
-    router.replace(`${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`);
+    // Overview and chapter are one route that differs only in its search params,
+    // so switch with the History API: Next syncs useSearchParams without a
+    // server round trip, which router.replace would make.
+    window.history.replaceState(null, "", `${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`);
   }
 
   function reportContent() {

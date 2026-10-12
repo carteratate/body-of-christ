@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { LandingPage } from "@/components/landing/LandingPage";
 
 export const metadata = {
@@ -8,14 +6,8 @@ export const metadata = {
     "Explore two thousand years of Catholic wisdom — Scripture, catechisms, encyclicals, the Church Fathers, and more.",
 };
 
-export default async function HomePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Returning users go straight to the app.
-  if (user) redirect("/search");
-
+// Returning users never reach this page: the middleware redirects a signed-in
+// visitor on "/" to /search, carrying any refreshed session cookies.
+export default function HomePage() {
   return <LandingPage />;
 }
