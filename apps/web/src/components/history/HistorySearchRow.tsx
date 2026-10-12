@@ -50,8 +50,6 @@ export function HistorySearchRow({
   const deletePointerArmed = useRef(false);
   const [dragX, setDragX] = useState<number | null>(null);
 
-  const activeClass = "bg-brand-bg text-brand-accent border-l-2 border-brand-accent";
-  const inactiveClass = "bg-brand-surface text-brand-muted hover:bg-brand-bg hover:text-brand-primary";
   const translateX = dragX ?? (revealed ? -DELETE_REVEAL_PX : 0);
   const resultLabel = search.result_count === null
     ? "Results unavailable"
@@ -127,7 +125,8 @@ export function HistorySearchRow({
   return (
     <div
       data-history-row={search.id}
-      className="group relative overflow-hidden rounded-md"
+      // Hover and keyboard focus both raise the card: a darker surface, a hairline edge, a soft shadow.
+      className="group relative overflow-hidden rounded-md transition-shadow duration-200 hover:shadow-[0_10px_24px_-12px_color-mix(in_srgb,var(--color-brand-contrast-dark)_60%,transparent),0_0_0_1px_color-mix(in_srgb,var(--color-brand-primary)_14%,transparent)] has-[a:focus-visible]:shadow-[0_10px_24px_-12px_color-mix(in_srgb,var(--color-brand-contrast-dark)_60%,transparent),0_0_0_1px_color-mix(in_srgb,var(--color-brand-primary)_14%,transparent)]"
       onContextMenu={(event) => {
         event.preventDefault();
         if (!deleting) onReveal();
@@ -140,9 +139,7 @@ export function HistorySearchRow({
       }}
     >
       <div
-        className={`relative z-10 flex min-w-0 items-center rounded-md transition-[transform,background-color,color] duration-200 touch-pan-y ${
-          active ? activeClass : inactiveClass
-        }`}
+        className="relative z-10 flex min-w-0 items-center rounded-md bg-brand-surface text-brand-muted transition-[transform,background-color] duration-200 touch-pan-y group-hover:bg-brand-surface-hover group-has-[a:focus-visible]:bg-brand-surface-hover"
         style={{
           transform: `translateX(${translateX}px)`,
           transitionDuration: dragX === null ? undefined : "0ms",
@@ -161,15 +158,23 @@ export function HistorySearchRow({
           onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) onIntent?.(); }}
           onBlur={onIntentEnd}
           aria-label={search.query}
-          className={`block min-w-0 flex-1 ${compact ? "px-2 py-1.5" : "px-3 py-3"}`}
+          aria-current={active ? "true" : undefined}
+          className={`block min-w-0 flex-1 focus-visible:outline-hidden ${compact ? "px-2 py-1.5" : "px-3 py-3"}`}
           title={search.query}
         >
           <span className={`block truncate ${compact ? "text-xs" : "text-sm text-brand-primary"}`}>
             {search.query}
           </span>
           {!compact && (
-            <span className="mt-1 block text-xs text-brand-muted">
-              {resultLabel} · {showDate ? `${dateLabel} · ` : ""}{timeLabel}
+            <span className="mt-1 flex items-center gap-1.5 text-xs text-brand-muted">
+              {active && (
+                <>
+                  <span className="size-1.5 shrink-0 rounded-full bg-brand-accent" aria-hidden="true" />
+                  <span className="text-brand-primary/80">Current</span>
+                  <span aria-hidden="true">·</span>
+                </>
+              )}
+              <span>{resultLabel} · {showDate ? `${dateLabel} · ` : ""}{timeLabel}</span>
             </span>
           )}
         </Link>
