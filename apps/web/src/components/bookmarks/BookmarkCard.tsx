@@ -136,7 +136,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
-          <ThemedTooltip label="Open this passage in the context of the full source">
+          <ThemedTooltip label="Open the passage in context to read the surrounding text.">
             <button onClick={handleOpenContext} aria-label="Open passage in context" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><BookOpen size={16} /></button>
           </ThemedTooltip>
           <ThemedTooltip label="Remove this passage from Saved Passages.">

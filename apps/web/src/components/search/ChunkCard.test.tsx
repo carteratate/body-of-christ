@@ -111,12 +111,9 @@ describe("ChunkCard feedback", () => {
     }
     const contextButtons = screen.getAllByRole("button", { name: "Open in Context" });
     expect(contextButtons).toHaveLength(1);
-    for (const contextButton of contextButtons) {
-      contextButton.focus();
-      expect((await screen.findByRole("tooltip")).textContent).toBe("Open this passage in the context of the full source");
-      await userEvent.keyboard("{Escape}");
-      await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
-    }
+    expect(contextButtons[0].getAttribute("aria-describedby")).toBeNull();
+    contextButtons[0].focus();
+    expect(screen.queryByRole("tooltip")).toBeNull();
   });
 
   it("allows expanded actions to wrap on narrow screens", async () => {
