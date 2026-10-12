@@ -145,9 +145,11 @@ PIPELINES: dict[str, PipelineConfig] = {
     # Issue #235: production's quota+3 keep and 40-seat cap leave about 4-6 Cohere
     # candidates per collection for the listwise ranker on a 6-10 collection search.
     # seats10t80 is the chosen candidate: 80 seats split across the collections,
-    # 10 to 25 each (1-2 collections: 25, 6: 13, 8-10: 10). seats10 is the fixed
-    # comparison. In the depth study they seated 89% and 87% of the deep run's
-    # final picks, against production's 65%.
+    # 10 to 25 each (1-3 collections: 25, 6: 13, 8-10: 10). seats10 is the fixed
+    # comparison. In the depth study seats10t80 seated 89% of the deep run's final
+    # picks and seats10 87%, against production's 65%. The study seated at most 16
+    # per collection, so the 17-25 seats given to 1-3 collection searches are
+    # unmeasured (and cheap: such pools stayed near 25 under the 0.30 keep floor).
     "hyde_cohere_luna_seats10": _p(
         "hyde_cohere_luna_seats10", cohere=True, llm="luna",
         seats=TerminalSeats(minimum=10),

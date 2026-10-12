@@ -180,6 +180,30 @@ async def test_seat_rule_looks_deeper_when_fewer_collections_are_selected():
 
 
 @pytest.mark.asyncio
+async def test_focused_budget_takes_precedence_over_a_seat_rule():
+    captured = {}
+
+    async def _capture(pool, query, tracker, provider, step="x"):
+        captured["pool"] = pool
+        return pool
+
+    config = RerankConfig(
+        use_cohere=True, llm_provider="haiku",
+        terminal_seats=budget.TerminalSeats(minimum=10),
+    )
+    with (
+        patch("app.rag.steps.rerank_cohere.run_per_collection",
+              new=AsyncMock(return_value=_deep(["bible"]))),
+        patch("app.rag.steps.llm_rerank.listwise.rerank_pool", new=_capture),
+    ):
+        await rerank.run(
+            config, {"bible": [_cand(0)]}, "q", 10, CostTracker(),
+            terminal_candidate_budget=25,
+        )
+    assert len(captured["pool"]) == 25
+
+
+@pytest.mark.asyncio
 async def test_both_focused_mode_sends_twenty_five_terminal_candidates(caplog):
     per_col = {"bible": [_ranked(i, 0.9 - i / 1000) for i in range(30)]}
     captured = {}

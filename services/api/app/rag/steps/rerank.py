@@ -148,7 +148,10 @@ def _llm_pool_from(
 
     Standard searches keep quota plus the configured slack. A focused plan supplies
     its explicit terminal budget, which becomes both the per-collection keep and the
-    global cap. Focused mode has one collection by contract.
+    global cap. Focused mode has one collection by contract. An evaluation arm's
+    `terminal_seats` rule sets the keep from the number of collections with Cohere
+    candidates (below-floor ones included, though they seat only one) and makes the
+    cap seats x those collections, so it never trims.
 
     The returned pool is sorted globally by score. That matters because it is also
     what `listwise.rerank_pool` returns on any failure, and `dedup`, `quota_cap` and
