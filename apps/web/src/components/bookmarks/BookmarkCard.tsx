@@ -30,7 +30,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   // ── Null chunk fallback ───────────────────────────────────────────────────
   if (bookmark.chunk === null) {
     return (
-      <div className="rounded-lg bg-brand-surface border-l-4 border-brand-surface p-4 flex items-center justify-between gap-3">
+      <div className="rounded-lg bg-brand-surface border-[3px] border-brand-surface p-4 flex items-center justify-between gap-3">
         <p className="text-sm text-brand-muted italic">Passage unavailable</p>
         <ThemedTooltip label="Remove this unavailable passage from Saved Passages.">
           <button
@@ -118,8 +118,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
   return (
     <div
-      className="overflow-hidden rounded-lg bg-brand-surface border-l-4 p-4"
-      style={{ borderLeftColor: borderColor }}
+      className="overflow-hidden rounded-lg bg-brand-surface border-[3px] p-4"
+      style={{ borderColor }}
     >
       {/* Top row: badge + reference + action buttons */}
       <div className="flex items-start justify-between gap-3 mb-3">
