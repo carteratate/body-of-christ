@@ -178,6 +178,37 @@ describe("BookmarkCard action descriptions", () => {
     expect(card.style.borderColor).toBe("var(--color-collection-catechism)");
   });
 
+  it("falls back to the accent border for an unknown collection", () => {
+    const { container } = render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-1",
+          chunk_id: "chunk-1",
+          note: null,
+          created_at: "2026-08-08T00:00:00Z",
+          chunk: {
+            content: "A saved passage",
+            source: {
+              collection: "not-a-collection",
+              document_title: "Unknown source",
+              author: null,
+              reference: null,
+              document_id: "11111111-1111-4111-8111-111111111111",
+              anchor: null,
+              chapter_key: null,
+            },
+          },
+        }}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+
+    expect((container.firstElementChild as HTMLElement).style.borderColor).toBe("var(--color-brand-accent)");
+  });
+
   it("keeps the inline editor actions responsive on narrow screens", async () => {
     const { container } = render(
       <BookmarkCard
