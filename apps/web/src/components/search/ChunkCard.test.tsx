@@ -102,6 +102,8 @@ describe("ChunkCard feedback", () => {
     const expectedDescriptions = new Map([
       ["Save passage", "Save Passage"],
       ["Copy passage", "Copy"],
+      ["Mark as relevant", "Tell TheoCorpus this result helped answer your question."],
+      ["Mark as not relevant", "Tell TheoCorpus this result was not useful."],
     ]);
     for (const [name, expected] of expectedDescriptions) {
       screen.getByRole("button", { name }).focus();
@@ -111,12 +113,40 @@ describe("ChunkCard feedback", () => {
     }
     const contextButtons = screen.getAllByRole("button", { name: "Open in Context" });
     expect(contextButtons).toHaveLength(1);
-    for (const contextButton of contextButtons) {
-      contextButton.focus();
-      expect((await screen.findByRole("tooltip")).textContent).toBe("Open this passage in the context of the full source");
-      await userEvent.keyboard("{Escape}");
-      await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
-    }
+    expect(contextButtons[0].getAttribute("aria-describedby")).toBeNull();
+    contextButtons[0].focus();
+    expect(screen.queryByRole("tooltip")).toBeNull();
+  });
+
+  it("shows the guest open-in-context guidance above the Open in Context button", async () => {
+    render(
+      <ChunkCard
+        result={{
+          chunk_id: "00000000-0000-0000-0000-000000000001",
+          content: "A passage",
+          source: {
+            collection: "bible",
+            document_title: "Genesis",
+            author: null,
+            reference: "Genesis 1:1",
+            document_id: "00000000-0000-0000-0000-000000000002",
+            position: 1,
+            anchor: "genesis-1-1",
+          },
+          reranker_score: 0.9,
+          explanation: "Relevant",
+        }}
+        index={0}
+        searchId={null}
+        token=""
+        isGuest
+        showOpenContextHint
+      />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Expand result: Bible, Genesis 1:1, 90% relevance" }));
+    expect(screen.getByRole("status").textContent).toContain("Open the passage in context to read the surrounding text.");
+    expect(screen.getByRole("button", { name: "Open in Context" })).toBeTruthy();
   });
 
   it("allows expanded actions to wrap on narrow screens", async () => {

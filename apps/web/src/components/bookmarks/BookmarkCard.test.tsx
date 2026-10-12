@@ -51,7 +51,7 @@ describe("BookmarkCard action descriptions", () => {
     );
 
     const expectedDescriptions = new Map([
-      ["Open passage in context", "Open this passage in the context of the full source"],
+      ["Open passage in context", "Open the passage in context to read the surrounding text."],
       ["Remove bookmark", "Remove this passage from Saved Passages."],
       ["Copy passage", "Copy"],
     ]);
