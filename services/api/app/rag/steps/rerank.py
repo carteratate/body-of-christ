@@ -88,14 +88,11 @@ class RerankConfig:
     # them in the methodology fingerprint and arms stay segmentable.
     llm_model: str | None = None
     llm_reasoning_effort: str | None = None
-    # Evaluation-arm overrides for how many candidates reach the terminal listwise
-    # call in `both` mode (issue #235). None means the production setting
-    # (`llm_pool_global_cap`, `cohere_keep_extra`). A focused plan's
-    # terminal_candidate_budget still takes precedence over both. There is no floor
-    # override: `budget.llm_pool` hands out the remainder round-robin, so a larger
-    # floor barely changes the allocation and, past cap / collections, shrinks it.
-    llm_pool_cap: int | None = None
-    cohere_keep_extra: int | None = None
+    # Evaluation-arm rule for how many candidates per collection reach the terminal
+    # listwise call in `both` mode (issue #235). None keeps production's quota-based
+    # keep (`cohere_keep_extra`) and fixed global cap (`llm_pool_global_cap`). A
+    # focused plan's terminal_candidate_budget still takes precedence.
+    terminal_seats: budget.TerminalSeats | None = None
 
     def __post_init__(self) -> None:
         if not self.use_cohere and self.llm_provider is None:
@@ -123,20 +120,9 @@ class RerankConfig:
                 f"Valid: {sorted(LUNA_REASONING_EFFORTS)}"
             )
 
-        pool_overrides = {
-            "llm_pool_cap": (self.llm_pool_cap, 1),
-            "cohere_keep_extra": (self.cohere_keep_extra, 0),
-        }
-        for name, (value, minimum) in pool_overrides.items():
-            if value is not None and value < minimum:
-                raise ValueError(f"{name} must be >= {minimum}, got {value}")
-        if (
-            any(value is not None for value, _ in pool_overrides.values())
-            and not (self.use_cohere and self.llm_provider)
-        ):
+        if self.terminal_seats is not None and not (self.use_cohere and self.llm_provider):
             raise ValueError(
-                "llm_pool_cap / cohere_keep_extra only apply "
-                "when both Cohere and an LLM reranker run."
+                "terminal_seats only applies when both Cohere and an LLM reranker run."
             )
 
     def provider(self):
@@ -170,14 +156,14 @@ def _llm_pool_from(
     it collection-by-collection would hand them a list grouped by collection, and
     each would then keep the wrong chunks without any error.
     """
-    keep = (
-        terminal_candidate_budget
-        if terminal_candidate_budget is not None
-        else budget.cohere_keep(
-            quota, with_llm=True,
-            extra=config.cohere_keep_extra if config is not None else None,
-        )
-    )
+    seats = config.terminal_seats if config is not None else None
+    active = sum(1 for ranked in per_collection.values() if ranked)
+    if terminal_candidate_budget is not None:
+        keep = terminal_candidate_budget
+    elif seats is not None:
+        keep = seats.per_collection(active)
+    else:
+        keep = budget.cohere_keep(quota, with_llm=True)
     kept: dict[str, list[RankedChunk]] = {}
     for col, ranked in per_collection.items():
         eligible = [
@@ -193,8 +179,9 @@ def _llm_pool_from(
             kept[col] = ranked[:1]
 
     cap = terminal_candidate_budget
-    if cap is None and config is not None:
-        cap = config.llm_pool_cap
+    if cap is None and seats is not None:
+        # Seats x collections: the rule already bounds the pool, so never trim it.
+        cap = keep * max(active, 1)
     allocation = budget.llm_pool({c: len(v) for c, v in kept.items()}, cap=cap)
     pool: list[RankedChunk] = []
     for col, n in allocation.items():

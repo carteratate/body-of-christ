@@ -1,7 +1,7 @@
 # services/api/app/rag/pipelines/registry.py
 """Named pipeline configurations.
 
-Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>][_pool<cap>][_keep<extra>]`. The
+Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>][_seats<min>[t<total>]]`. The
 axes configured here — which retrieval paths run, which rerankers (and, for Luna, which
 model and reasoning effort), how the paths are fused, and how many candidates reach the
 terminal listwise call — let `compare/` A/B any two by name.
@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.rag.steps.budget import TerminalSeats
 from app.rag.steps.rerank import RerankConfig
 
 
@@ -77,8 +78,7 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
        hyde_model: str | None = None, genre_model: str | None = None,
        hyde_sample: int = 0,
        llm_model: str | None = None, effort: str | None = None,
-       pool_cap: int | None = None,
-       keep_extra: int | None = None) -> PipelineConfig:
+       seats: TerminalSeats | None = None) -> PipelineConfig:
     return PipelineConfig(
         name=name,
         retrieval=RetrievalConfig(
@@ -89,7 +89,7 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
         rerank=RerankConfig(
             use_cohere=cohere, llm_provider=llm,
             llm_model=llm_model, llm_reasoning_effort=effort,
-            llm_pool_cap=pool_cap, cohere_keep_extra=keep_extra,
+            terminal_seats=seats,
         ),
     )
 
@@ -142,24 +142,18 @@ PIPELINES: dict[str, PipelineConfig] = {
         "hyde6_cohere_luna6_low", cohere=True, llm="luna", hyde_model="gpt-6-luna",
         genre_model="gpt-6-luna", llm_model="gpt-6-luna", effort="low",
     ),
-    # Issue #235: Cohere's per-collection keep (quota + 3) and the 40-seat terminal
-    # cap can stop a strong candidate from reaching the listwise ranker. The cap is
-    # shared round-robin, so at 10 collections each gets about cap / 10 seats.
-    # - keep8: deeper per collection (quota + 8), same cap. Binds only on searches
-    #   with few collections (at quota 5, up to 3 collections fit 13 each in 40).
-    # - pool60: wider cap, same keep. Changes nothing at 5 or fewer collections,
-    #   where 8 per collection already fits in 40.
-    # - pool130_keep8: both; seats 13 per collection even at 10 collections. Check
-    #   listwise completion tokens on a dry run first: reasoning over 130 passages
-    #   may approach llm_rerank_max_tokens and fall back to Cohere order.
-    "hyde_cohere_luna_keep8": _p(
-        "hyde_cohere_luna_keep8", cohere=True, llm="luna", keep_extra=8,
+    # Issue #235: production's quota+3 keep and 40-seat cap leave about 4-6 Cohere
+    # candidates per collection for the listwise ranker on a 6-10 collection search.
+    # seats10t80 is the chosen candidate: 80 seats split across the collections,
+    # 10 to 25 each (1-2 collections: 25, 6: 13, 8-10: 10). seats10 is the fixed
+    # comparison. In the depth study they seated 89% and 87% of the deep run's
+    # final picks, against production's 65%.
+    "hyde_cohere_luna_seats10": _p(
+        "hyde_cohere_luna_seats10", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10),
     ),
-    "hyde_cohere_luna_pool60": _p(
-        "hyde_cohere_luna_pool60", cohere=True, llm="luna", pool_cap=60,
-    ),
-    "hyde_cohere_luna_pool130_keep8": _p(
-        "hyde_cohere_luna_pool130_keep8", cohere=True, llm="luna",
-        pool_cap=130, keep_extra=8,
+    "hyde_cohere_luna_seats10t80": _p(
+        "hyde_cohere_luna_seats10t80", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10, total=80, maximum=25),
     ),
 }

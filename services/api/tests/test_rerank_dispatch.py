@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from app.config import settings
-from app.rag.steps import rerank
+from app.rag.steps import budget, rerank
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.rerank import RerankConfig
 from app.rag.steps.types import ChunkCandidate, RankedChunk
@@ -52,36 +52,23 @@ def test_mode_derivation(cohere, llm, expected):
     assert RerankConfig(use_cohere=cohere, llm_provider=llm).mode == expected
 
 
-@pytest.mark.parametrize("override", [
-    {"llm_pool_cap": 0},
-    {"cohere_keep_extra": -1},
-])
-def test_non_positive_pool_overrides_are_rejected(override):
-    with pytest.raises(ValueError, match="must be"):
-        RerankConfig(use_cohere=True, llm_provider="luna", **override)
-
-
-def test_zero_keep_extra_is_allowed():
-    """Keeping exactly quota per collection is a meaningful arm."""
-    assert RerankConfig(use_cohere=True, llm_provider="luna", cohere_keep_extra=0)
-
-
 @pytest.mark.parametrize("cohere,llm", [(True, None), (False, "luna")])
-def test_pool_overrides_are_rejected_without_a_listwise_stage(cohere, llm):
-    """Only `both` mode builds the terminal pool; elsewhere an override would be a
-    no-op that still gave the arm a distinct name and fingerprint."""
-    with pytest.raises(ValueError, match="only apply"):
-        RerankConfig(use_cohere=cohere, llm_provider=llm, llm_pool_cap=60)
+def test_terminal_seats_are_rejected_without_a_listwise_stage(cohere, llm):
+    """Only `both` mode builds the terminal pool; elsewhere the rule would be a no-op
+    that still gave the arm a distinct name and fingerprint."""
+    with pytest.raises(ValueError, match="only applies"):
+        RerankConfig(
+            use_cohere=cohere, llm_provider=llm,
+            terminal_seats=budget.TerminalSeats(minimum=10),
+        )
 
 
-def test_production_pipeline_pins_no_pool_overrides():
-    """Pool-size arms are for evaluation; production must keep the settings values."""
+def test_production_pipeline_pins_no_terminal_seats():
+    """Seat rules are for evaluation; production keeps quota+extra and the 40 cap."""
     from app.rag.pipeline import _PRODUCTION_PIPELINE
     from app.rag.pipelines.registry import PIPELINES
 
-    config = PIPELINES[_PRODUCTION_PIPELINE].rerank
-    assert config.llm_pool_cap is None
-    assert config.cohere_keep_extra is None
+    assert PIPELINES[_PRODUCTION_PIPELINE].rerank.terminal_seats is None
 
 
 def test_every_registered_provider_constructs():
@@ -163,31 +150,33 @@ async def _terminal_pool(config: RerankConfig, per_col: dict, quota: int) -> lis
     return captured["pool"]
 
 
-@pytest.mark.asyncio
-async def test_an_arm_pool_cap_replaces_the_global_cap():
-    """An override that is silently ignored would make an evaluation arm run on
-    production's pool size and report no difference."""
-    per_col = {
-        f"col{c}": [_ranked(c * 100 + i, 0.9, f"col{c}") for i in range(20)]
-        for c in range(10)
+def _deep(cols: list[str], n: int = 30) -> dict:
+    return {
+        col: [_ranked(c * 100 + i, 0.9, col) for i in range(n)]
+        for c, col in enumerate(cols)
     }
-    config = RerankConfig(
-        use_cohere=True, llm_provider="haiku", llm_pool_cap=60, cohere_keep_extra=8,
-    )
-    assert len(await _terminal_pool(config, per_col, quota=4)) == 60
+
+
+_SEATS_T80 = budget.TerminalSeats(minimum=10, total=80, maximum=25)
 
 
 @pytest.mark.asyncio
-async def test_an_arm_keep_extra_seats_more_per_collection():
-    # Under the default cap of 40: quota 5 + extra 8 = 13 from each collection.
-    per_col = {
-        col: [_ranked(n * 100 + i, 0.9, col) for i in range(20)]
-        for n, col in enumerate(["summa", "catechism"])
-    }
-    config = RerankConfig(use_cohere=True, llm_provider="haiku", cohere_keep_extra=8)
-    pool = await _terminal_pool(config, per_col, quota=5)
-    assert sum(c.collection == "summa" for c in pool) == 13
-    assert sum(c.collection == "catechism" for c in pool) == 13
+async def test_seat_rule_seats_its_minimum_per_collection_past_the_global_cap():
+    """Ten collections at 10 seats is a 100-candidate pool: the 40 cap must not trim it.
+    An ignored rule would leave production's 40 here."""
+    config = RerankConfig(use_cohere=True, llm_provider="haiku", terminal_seats=_SEATS_T80)
+    pool = await _terminal_pool(config, _deep([f"col{c}" for c in range(10)]), quota=5)
+    assert len(pool) == 100
+    assert all(sum(c.collection == f"col{n}" for c in pool) == 10 for n in range(10))
+
+
+@pytest.mark.asyncio
+async def test_seat_rule_looks_deeper_when_fewer_collections_are_selected():
+    config = RerankConfig(use_cohere=True, llm_provider="haiku", terminal_seats=_SEATS_T80)
+    two = await _terminal_pool(config, _deep(["summa", "catechism"]), quota=5)
+    six = await _terminal_pool(config, _deep([f"col{c}" for c in range(6)]), quota=3)
+    assert sum(c.collection == "summa" for c in two) == 25
+    assert sum(c.collection == "col0" for c in six) == 13
 
 
 @pytest.mark.asyncio
