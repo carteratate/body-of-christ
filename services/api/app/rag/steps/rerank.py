@@ -88,10 +88,10 @@ class RerankConfig:
     # them in the methodology fingerprint and arms stay segmentable.
     llm_model: str | None = None
     llm_reasoning_effort: str | None = None
-    # Evaluation-arm rule for how many candidates per collection reach the terminal
-    # listwise call in `both` mode (issue #235). None keeps production's quota-based
-    # keep (`cohere_keep_extra`) and fixed global cap (`llm_pool_global_cap`). A
-    # focused plan's terminal_candidate_budget still takes precedence.
+    # How many candidates per collection reach the terminal listwise call in `both`
+    # mode (issue #235; production sets it). None keeps the pre-#235 quota-based keep
+    # (`cohere_keep_extra`) and fixed global cap (`llm_pool_global_cap`). A focused
+    # plan's terminal_candidate_budget still takes precedence.
     terminal_seats: budget.TerminalSeats | None = None
 
     def __post_init__(self) -> None:
@@ -148,8 +148,8 @@ def _llm_pool_from(
 
     Standard searches keep quota plus the configured slack. A focused plan supplies
     its explicit terminal budget, which becomes both the per-collection keep and the
-    global cap. Focused mode has one collection by contract. An evaluation arm's
-    `terminal_seats` rule sets the keep from the number of collections with Cohere
+    global cap. Focused mode has one collection by contract. A pipeline's
+    `terminal_seats` rule (production's, since #235) sets the keep from the number of collections with Cohere
     candidates (below-floor ones included, though they seat only one) and makes the
     cap seats x those collections, so it never trims.
 

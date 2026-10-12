@@ -121,6 +121,7 @@ class Settings(BaseSettings):
     # steps/budget.py keeps the estimated chunk total inside one billing unit.
     cohere_max_pool: int = Field(default=100, validation_alias="COHERE_MAX_POOL")
     cohere_pool_safety: float = Field(default=0.9, validation_alias="COHERE_POOL_SAFETY")
+    # Inert for pipelines with RerankConfig.terminal_seats, production included (#235).
     cohere_keep_extra: int = Field(default=3, validation_alias="COHERE_KEEP_EXTRA")
     # Distinct from cohere_include_floor above: this gates which candidates survive
     # Cohere to reach the LLM pool in `both` mode (BOOSTED Stage 4).
@@ -155,6 +156,8 @@ class Settings(BaseSettings):
     )
 
     # --- LLM rerank ---
+    # These two are inert for pipelines with RerankConfig.terminal_seats, production
+    # included (#235): the seat rule sizes the pool and its cap never trims.
     llm_pool_global_cap: int = Field(default=40, validation_alias="LLM_POOL_GLOBAL_CAP")
     llm_pool_floor_per_col: int = Field(default=2, validation_alias="LLM_POOL_FLOOR_PER_COL")
     llm_rerank_max_tokens: int = Field(default=8192, validation_alias="LLM_RERANK_MAX_TOKENS")
