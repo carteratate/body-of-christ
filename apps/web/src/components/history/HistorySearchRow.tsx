@@ -158,7 +158,8 @@ export function HistorySearchRow({
           onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) onIntent?.(); }}
           onBlur={onIntentEnd}
           aria-label={search.query}
-          className={`block min-w-0 flex-1 focus-visible:outline-none ${compact ? "px-2 py-1.5" : "px-3 py-3"}`}
+          aria-current={active ? "true" : undefined}
+          className={`block min-w-0 flex-1 focus-visible:outline-hidden ${compact ? "px-2 py-1.5" : "px-3 py-3"}`}
           title={search.query}
         >
           <span className={`block truncate ${compact ? "text-xs" : "text-sm text-brand-primary"}`}>

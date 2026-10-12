@@ -209,6 +209,8 @@ describe("HistoryPage rows", () => {
     await screen.findByRole("link", { name: "query s1" });
     expect(row("s2").textContent).toContain("Current");
     expect(row("s1").textContent).not.toContain("Current");
+    expect(row("s2").getAttribute("aria-current")).toBe("true");
+    expect(row("s1").getAttribute("aria-current")).toBeNull();
   });
 });
 
