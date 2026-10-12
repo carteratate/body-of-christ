@@ -122,7 +122,6 @@ def cohere_keep(quota: int, *, with_llm: bool, extra: int | None = None) -> int:
 
 def llm_pool(
     per_collection_counts: dict[str, int], *, cap: int | None = None,
-    floor: int | None = None,
 ) -> dict[str, int]:
     """Trim per-collection Cohere keeps to a global listwise budget.
 
@@ -142,7 +141,7 @@ def llm_pool(
     if sum(contributing.values()) <= cap:
         return contributing
 
-    floor = settings.llm_pool_floor_per_col if floor is None else floor
+    floor = settings.llm_pool_floor_per_col
     allocation = {c: min(floor, n) for c, n in contributing.items()}
     floor_total = sum(allocation.values())
 

@@ -101,13 +101,6 @@ def test_llm_pool_guarantees_a_floor_per_contributing_collection():
     assert sum(allocation.values()) <= settings.llm_pool_global_cap
 
 
-def test_llm_pool_uses_an_explicit_floor_instead_of_the_setting():
-    # cap 10, floor 5: the weaker collection keeps all 5 floor seats even though the
-    # largest-first remainder would otherwise favour bible.
-    allocation = budget.llm_pool({"bible": 60, "canon-law": 6}, cap=10, floor=5)
-    assert allocation == {"bible": 5, "canon-law": 5}
-
-
 def test_llm_pool_never_allocates_more_than_a_collection_has():
     counts = {"bible": 1, "summa": 1}
     assert budget.llm_pool(counts) == {"bible": 1, "summa": 1}

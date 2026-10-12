@@ -77,7 +77,7 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
        hyde_model: str | None = None, genre_model: str | None = None,
        hyde_sample: int = 0,
        llm_model: str | None = None, effort: str | None = None,
-       pool_cap: int | None = None, pool_floor: int | None = None,
+       pool_cap: int | None = None,
        keep_extra: int | None = None) -> PipelineConfig:
     return PipelineConfig(
         name=name,
@@ -89,8 +89,7 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
         rerank=RerankConfig(
             use_cohere=cohere, llm_provider=llm,
             llm_model=llm_model, llm_reasoning_effort=effort,
-            llm_pool_cap=pool_cap, llm_pool_floor_per_col=pool_floor,
-            cohere_keep_extra=keep_extra,
+            llm_pool_cap=pool_cap, cohere_keep_extra=keep_extra,
         ),
     )
 
@@ -143,14 +142,24 @@ PIPELINES: dict[str, PipelineConfig] = {
         "hyde6_cohere_luna6_low", cohere=True, llm="luna", hyde_model="gpt-6-luna",
         genre_model="gpt-6-luna", llm_model="gpt-6-luna", effort="low",
     ),
-    # Issue #235: Cohere's per-collection cut and the 40-seat terminal cap can keep a
-    # strong candidate from the listwise ranker. These arms widen the terminal pool;
-    # at quota 5, keep_extra=8 seats up to 13 per collection.
+    # Issue #235: Cohere's per-collection keep (quota + 3) and the 40-seat terminal
+    # cap can stop a strong candidate from reaching the listwise ranker. The cap is
+    # shared round-robin, so at 10 collections each gets about cap / 10 seats.
+    # - keep8: deeper per collection (quota + 8), same cap. Binds only on searches
+    #   with few collections (at quota 5, up to 3 collections fit 13 each in 40).
+    # - pool60: wider cap, same keep. Changes nothing at 5 or fewer collections,
+    #   where 8 per collection already fits in 40.
+    # - pool130_keep8: both; seats 13 per collection even at 10 collections. Check
+    #   listwise completion tokens on a dry run first: reasoning over 130 passages
+    #   may approach llm_rerank_max_tokens and fall back to Cohere order.
+    "hyde_cohere_luna_keep8": _p(
+        "hyde_cohere_luna_keep8", cohere=True, llm="luna", keep_extra=8,
+    ),
     "hyde_cohere_luna_pool60": _p(
         "hyde_cohere_luna_pool60", cohere=True, llm="luna", pool_cap=60,
     ),
-    "hyde_cohere_luna_pool80_keep8": _p(
-        "hyde_cohere_luna_pool80_keep8", cohere=True, llm="luna",
-        pool_cap=80, keep_extra=8,
+    "hyde_cohere_luna_pool130_keep8": _p(
+        "hyde_cohere_luna_pool130_keep8", cohere=True, llm="luna",
+        pool_cap=130, keep_extra=8,
     ),
 }

@@ -54,7 +54,6 @@ def test_mode_derivation(cohere, llm, expected):
 
 @pytest.mark.parametrize("override", [
     {"llm_pool_cap": 0},
-    {"llm_pool_floor_per_col": 0},
     {"cohere_keep_extra": -1},
 ])
 def test_non_positive_pool_overrides_are_rejected(override):
@@ -82,7 +81,6 @@ def test_production_pipeline_pins_no_pool_overrides():
 
     config = PIPELINES[_PRODUCTION_PIPELINE].rerank
     assert config.llm_pool_cap is None
-    assert config.llm_pool_floor_per_col is None
     assert config.cohere_keep_extra is None
 
 
@@ -190,21 +188,6 @@ async def test_an_arm_keep_extra_seats_more_per_collection():
     pool = await _terminal_pool(config, per_col, quota=5)
     assert sum(c.collection == "summa" for c in pool) == 13
     assert sum(c.collection == "catechism" for c in pool) == 13
-
-
-@pytest.mark.asyncio
-async def test_an_arm_floor_reserves_seats_for_a_weaker_collection():
-    per_col = {
-        "bible": [_ranked(i, 0.9, "bible") for i in range(20)],
-        "canon-law": [_ranked(100 + i, 0.8, "canon-law") for i in range(6)],
-    }
-    config = RerankConfig(
-        use_cohere=True, llm_provider="haiku",
-        llm_pool_cap=10, llm_pool_floor_per_col=5, cohere_keep_extra=15,
-    )
-    pool = await _terminal_pool(config, per_col, quota=5)
-    assert sum(c.collection == "canon-law" for c in pool) == 5
-    assert len(pool) == 10
 
 
 @pytest.mark.asyncio

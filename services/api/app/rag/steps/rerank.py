@@ -90,11 +90,11 @@ class RerankConfig:
     llm_reasoning_effort: str | None = None
     # Evaluation-arm overrides for how many candidates reach the terminal listwise
     # call in `both` mode (issue #235). None means the production setting
-    # (`llm_pool_global_cap`, `llm_pool_floor_per_col`, `cohere_keep_extra`). A
-    # focused plan's terminal_candidate_budget still takes precedence over the cap
-    # and the keep.
+    # (`llm_pool_global_cap`, `cohere_keep_extra`). A focused plan's
+    # terminal_candidate_budget still takes precedence over both. There is no floor
+    # override: `budget.llm_pool` hands out the remainder round-robin, so a larger
+    # floor barely changes the allocation and, past cap / collections, shrinks it.
     llm_pool_cap: int | None = None
-    llm_pool_floor_per_col: int | None = None
     cohere_keep_extra: int | None = None
 
     def __post_init__(self) -> None:
@@ -125,7 +125,6 @@ class RerankConfig:
 
         pool_overrides = {
             "llm_pool_cap": (self.llm_pool_cap, 1),
-            "llm_pool_floor_per_col": (self.llm_pool_floor_per_col, 1),
             "cohere_keep_extra": (self.cohere_keep_extra, 0),
         }
         for name, (value, minimum) in pool_overrides.items():
@@ -136,7 +135,7 @@ class RerankConfig:
             and not (self.use_cohere and self.llm_provider)
         ):
             raise ValueError(
-                "llm_pool_cap / llm_pool_floor_per_col / cohere_keep_extra only apply "
+                "llm_pool_cap / cohere_keep_extra only apply "
                 "when both Cohere and an LLM reranker run."
             )
 
@@ -196,10 +195,7 @@ def _llm_pool_from(
     cap = terminal_candidate_budget
     if cap is None and config is not None:
         cap = config.llm_pool_cap
-    allocation = budget.llm_pool(
-        {c: len(v) for c, v in kept.items()}, cap=cap,
-        floor=config.llm_pool_floor_per_col if config is not None else None,
-    )
+    allocation = budget.llm_pool({c: len(v) for c, v in kept.items()}, cap=cap)
     pool: list[RankedChunk] = []
     for col, n in allocation.items():
         pool.extend(kept[col][:n])
