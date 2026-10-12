@@ -1,4 +1,4 @@
-import { AuthApiError, AuthRetryableFetchError, AuthSessionMissingError, AuthUnknownError } from "@supabase/supabase-js";
+import { AuthApiError, AuthInvalidJwtError, AuthRetryableFetchError, AuthSessionMissingError, AuthUnknownError } from "@supabase/supabase-js";
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -103,6 +103,9 @@ describe("middleware session check", () => {
       new AuthRetryableFetchError("fetch failed", 0),
       new AuthRetryableFetchError("Bad Gateway", 502),
       new AuthUnknownError("Unexpected token <", new SyntaxError("bad json")),
+      // A JWKS or token endpoint failing says nothing about the session.
+      new AuthApiError("Internal Server Error", 500, "unexpected_failure"),
+      new AuthApiError("Too Many Requests", 429, "over_request_rate_limit"),
     ]) {
       supabaseState.getClaims.mockResolvedValue(failed(error));
       expect(location(await run("/search")), error.message).toBeNull();
@@ -119,10 +122,12 @@ describe("middleware session check", () => {
     expect(location(await run("/search"))).toBeNull();
   });
 
-  it("treats a rejected refresh as signed out", async () => {
+  it("treats a rejected session as signed out", async () => {
     for (const error of [
       new AuthApiError("Invalid Refresh Token: Already Used", 400, "refresh_token_already_used"),
       new AuthSessionMissingError(),
+      new AuthApiError("Session not found", 403, "session_not_found"),
+      new AuthInvalidJwtError("Invalid JWT signature"),
     ]) {
       supabaseState.getClaims.mockResolvedValue(failed(error));
       expect(location(await run("/search")), error.message).toBe("/login");

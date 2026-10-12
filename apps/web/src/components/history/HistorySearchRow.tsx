@@ -8,6 +8,8 @@ import type { SearchSummaryV2 } from "@/lib/api";
 import { trackHistoryRestored } from "@/lib/analytics";
 
 const DELETE_REVEAL_PX = 88;
+// Same pause as the results prefetch: sweeping the pointer across rows warms nothing.
+const ROUTE_PREFETCH_DELAY_MS = 150;
 const SWIPE_THRESHOLD_PX = 44;
 
 interface HistorySearchRowProps {
@@ -45,9 +47,27 @@ export function HistorySearchRow({
   const router = useRouter();
   const href = `/search?restore=${search.id}`;
   // Rows don't prefetch on sight: a page of history is ~15 distinct URLs, each a
-  // middleware run and a server render. Warm the route on intent instead; Next
-  // dedupes repeat calls while the prefetch is fresh.
-  const prefetchRoute = () => router.prefetch(href);
+  // middleware run and a server render. Warm the route once the pointer or
+  // keyboard focus rests on the row; Next dedupes repeats while it is fresh.
+  const routePrefetchTimer = useRef<number | null>(null);
+  function cancelRoutePrefetch() {
+    if (routePrefetchTimer.current !== null) window.clearTimeout(routePrefetchTimer.current);
+    routePrefetchTimer.current = null;
+  }
+  function scheduleRoutePrefetch() {
+    cancelRoutePrefetch();
+    if (revealed || deleting) return;
+    routePrefetchTimer.current = window.setTimeout(() => {
+      routePrefetchTimer.current = null;
+      router.prefetch(href);
+    }, ROUTE_PREFETCH_DELAY_MS);
+  }
+  useEffect(() => {
+    const timer = routePrefetchTimer;
+    return () => {
+      if (timer.current !== null) window.clearTimeout(timer.current);
+    };
+  }, []);
   const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const revealButtonRef = useRef<HTMLButtonElement>(null);
   const dragStart = useRef<{ x: number; y: number; initialX: number } | null>(null);
@@ -162,19 +182,23 @@ export function HistorySearchRow({
           onClick={handleLinkClick}
           onPointerEnter={(event) => {
             if (event.pointerType !== "mouse") return;
-            prefetchRoute();
+            scheduleRoutePrefetch();
             onIntent?.();
           }}
-          onPointerLeave={onIntentEnd}
-          // Touch has no hover; pressing still gains the press-to-click gap.
-          onPointerDown={(event) => { if (event.pointerType !== "mouse") prefetchRoute(); }}
+          onPointerLeave={() => {
+            cancelRoutePrefetch();
+            onIntentEnd?.();
+          }}
           // Keyboard focus only: moving focus after a delete is not the reader's intent.
           onFocus={(event) => {
             if (!event.currentTarget.matches(":focus-visible")) return;
-            prefetchRoute();
+            scheduleRoutePrefetch();
             onIntent?.();
           }}
-          onBlur={onIntentEnd}
+          onBlur={() => {
+            cancelRoutePrefetch();
+            onIntentEnd?.();
+          }}
           aria-label={search.query}
           aria-current={active ? "true" : undefined}
           className={`block min-w-0 flex-1 focus-visible:outline-hidden ${compact ? "px-2 py-1.5" : "px-3 py-3"}`}

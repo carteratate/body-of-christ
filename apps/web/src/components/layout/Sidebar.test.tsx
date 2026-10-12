@@ -58,6 +58,7 @@ function RowHarness({
 }
 
 afterEach(() => {
+  vi.useRealTimers();
   cleanup();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -77,35 +78,43 @@ function mockMatchMedia(matches: boolean) {
 }
 
 describe("HistorySearchRow", () => {
-  it("prefetches its restore route on intent, not on sight", () => {
+  it("prefetches its restore route once the pointer rests on it, not on sight", () => {
+    vi.useFakeTimers();
     const onIntent = vi.fn();
-    render(
-      <HistorySearchRow
-        search={{ id: "search-1", query: "What is grace?", filters: null, result_count: 4, created_at: "2026-08-04T12:00:00Z" }}
-        revealed={false}
-        onIntent={onIntent}
-        onReveal={vi.fn()}
-        onClose={vi.fn()}
-        onDelete={vi.fn()}
-      />,
-    );
+    const props = {
+      search: { id: "search-1", query: "What is grace?", filters: null, result_count: 4, created_at: "2026-08-04T12:00:00Z" },
+      onIntent,
+      onReveal: vi.fn(),
+      onClose: vi.fn(),
+      onDelete: vi.fn(),
+    };
+    const { rerender } = render(<HistorySearchRow {...props} revealed={false} />);
     const link = screen.getByRole("link", { name: "What is grace?" });
     expect(link.getAttribute("href")).toBe("/search?restore=search-1");
     expect(link.dataset.prefetch).toBe("false");
+    vi.advanceTimersByTime(1_000);
     expect(navigationState.prefetch).not.toHaveBeenCalled();
 
+    // Sweeping across the row warms nothing.
     fireEvent.pointerEnter(link, { pointerType: "mouse" });
-    expect(navigationState.prefetch).toHaveBeenLastCalledWith("/search?restore=search-1");
-    expect(onIntent).toHaveBeenCalledTimes(1);
+    vi.advanceTimersByTime(100);
+    fireEvent.pointerLeave(link, { pointerType: "mouse" });
+    vi.advanceTimersByTime(1_000);
+    expect(navigationState.prefetch).not.toHaveBeenCalled();
 
+    // Resting on it does.
+    fireEvent.pointerEnter(link, { pointerType: "mouse" });
+    vi.advanceTimersByTime(150);
+    expect(navigationState.prefetch).toHaveBeenCalledExactlyOnceWith("/search?restore=search-1");
+    expect(onIntent).toHaveBeenCalledTimes(2);
+
+    // Touch and a revealed (delete-exposed) row never prefetch.
     navigationState.prefetch.mockClear();
+    fireEvent.pointerEnter(link, { pointerType: "touch" });
     fireEvent.pointerDown(link, { pointerType: "touch" });
-    expect(navigationState.prefetch).toHaveBeenLastCalledWith("/search?restore=search-1");
-    // Touch press warms only the route; the results prefetch stays hover/focus-only.
-    expect(onIntent).toHaveBeenCalledTimes(1);
-
-    navigationState.prefetch.mockClear();
-    fireEvent.pointerDown(link, { pointerType: "mouse" });
+    rerender(<HistorySearchRow {...props} revealed />);
+    fireEvent.pointerEnter(link, { pointerType: "mouse" });
+    vi.advanceTimersByTime(1_000);
     expect(navigationState.prefetch).not.toHaveBeenCalled();
   });
 

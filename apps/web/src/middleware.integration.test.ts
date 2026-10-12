@@ -6,11 +6,15 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 const SUPABASE_URL = "https://test.supabase.co";
 const COOKIE = "sb-test-auth-token";
 const KID = "test-key";
+// auth-js caches the JWKS module-globally, and vi.resetModules does not reload
+// node_modules, so a test that needs a JWKS fetch signs with a kid not yet seen.
+let kid = KID;
 
 let privateKey: CryptoKey;
 let publicJwk: JsonWebKey & { kid: string };
 let calls: string[];
 let refreshResponse: () => Response;
+let jwksResponse: () => Response;
 
 function base64url(input: string | Uint8Array): string {
   const bytes = typeof input === "string" ? new TextEncoder().encode(input) : input;
@@ -18,7 +22,7 @@ function base64url(input: string | Uint8Array): string {
 }
 
 async function signJwt(payload: Record<string, unknown>): Promise<string> {
-  const header = base64url(JSON.stringify({ alg: "ES256", kid: KID, typ: "JWT" }));
+  const header = base64url(JSON.stringify({ alg: "ES256", kid, typ: "JWT" }));
   const body = base64url(JSON.stringify(payload));
   const signature = await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, privateKey, new TextEncoder().encode(`${header}.${body}`));
   return `${header}.${body}.${base64url(new Uint8Array(signature))}`;
@@ -67,11 +71,13 @@ beforeEach(() => {
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", SUPABASE_URL);
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon-key");
   calls = [];
+  kid = KID;
   refreshResponse = () => json({ error: "unexpected refresh" }, 500);
+  jwksResponse = () => json({ keys: [{ ...publicJwk, kid }] });
   vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
     calls.push(url.pathname + url.search);
-    if (url.pathname === "/auth/v1/.well-known/jwks.json") return json({ keys: [publicJwk] });
+    if (url.pathname === "/auth/v1/.well-known/jwks.json") return jwksResponse();
     if (url.pathname === "/auth/v1/token") return refreshResponse();
     return json({ message: "unexpected request" }, 500);
   }));
@@ -86,6 +92,7 @@ afterEach(() => {
 
 describe("middleware with real Supabase clients", () => {
   it("verifies a valid token locally: one JWKS fetch, no Auth user call", async () => {
+    kid = "first-use-key";
     const response = await run("/search", sessionCookie(await session(3600, "refresh-1")));
     expect(location(response)).toBeNull();
     expect(calls).toEqual(["/auth/v1/.well-known/jwks.json"]);
@@ -139,6 +146,18 @@ describe("middleware with real Supabase clients", () => {
     expect(calls.filter((call) => call.startsWith("/auth/v1/token")).length).toBeGreaterThan(1);
     expect(location(response)).toBeNull();
     expect(response.headers.get("set-cookie")).toBeNull();
+  });
+
+  it("lets a valid session through when the JWKS endpoint fails", async () => {
+    for (const status of [500, 429]) {
+      kid = `uncached-key-${status}`;
+      const cookie = sessionCookie(await session(3600, "refresh-1"));
+      jwksResponse = () => json({ code: "unexpected_failure", message: "boom" }, status);
+      const response = await run("/history", cookie);
+      expect(calls, String(status)).toContain("/auth/v1/.well-known/jwks.json");
+      expect(location(response), String(status)).toBeNull();
+      expect(response.headers.get("set-cookie"), String(status)).toBeNull();
+    }
   });
 
   it("treats no cookie as signed out without any network call", async () => {

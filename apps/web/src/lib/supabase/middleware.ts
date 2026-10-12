@@ -1,4 +1,4 @@
-import { isAuthError, isAuthRetryableFetchError } from "@supabase/supabase-js";
+import { isAuthApiError, isAuthError, isAuthSessionMissingError } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 /**
@@ -18,18 +18,22 @@ interface ClaimsResult {
 /**
  * Maps a `getClaims()` result to an auth state.
  *
- * Mirrors auth-js: a failed refresh clears the session unless the error is
- * retryable (network failure, 502–504), so every other auth error really is
- * signed out. AuthUnknownError (an unparseable response, e.g. from the JWKS
- * endpoint) leaves the session in place, so it is unknown too.
+ * Signed out only on a definite answer: no session, a token that fails
+ * verification, or Supabase Auth rejecting the session (a 4xx other than 429,
+ * e.g. a revoked or already-used refresh token). Anything else — a network
+ * failure, a 5xx or 429 from the JWKS or token endpoint, an unparseable
+ * response — says nothing about the session, so it is unknown. When such an
+ * error comes from a refresh, auth-js has already cleared the cookies, so the
+ * next request sees no session and is signed out cleanly.
  */
 export function authStateFromClaims({ data, error }: ClaimsResult): AuthState {
   const sub = data?.claims?.sub;
   if (typeof sub === "string" && sub) return "signed-in";
   if (!error) return "signed-out";
-  if (!isAuthError(error)) return "unknown";
-  if (isAuthRetryableFetchError(error) || error.name === "AuthUnknownError") return "unknown";
-  return "signed-out";
+  if (isAuthSessionMissingError(error)) return "signed-out";
+  if (isAuthError(error) && error.name === "AuthInvalidJwtError") return "signed-out";
+  if (isAuthApiError(error) && error.status >= 400 && error.status < 500 && error.status !== 429) return "signed-out";
+  return "unknown";
 }
 
 /**
