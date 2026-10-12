@@ -144,6 +144,40 @@ describe("BookmarkCard action descriptions", () => {
     expect(showToast).toHaveBeenCalledWith("Note saved");
   });
 
+  it("borders the whole card in the collection color", () => {
+    const { container } = render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-1",
+          chunk_id: "chunk-1",
+          note: null,
+          created_at: "2026-08-08T00:00:00Z",
+          chunk: {
+            content: "A saved passage",
+            source: {
+              collection: "catechism",
+              document_title: "Catechism of the Catholic Church",
+              author: null,
+              reference: "CCC §1000",
+              document_id: "11111111-1111-4111-8111-111111111111",
+              anchor: "ccc-1000",
+              chapter_key: "ccc-1000-1099",
+            },
+          },
+        }}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+
+    const card = container.firstElementChild as HTMLElement;
+    expect(card.className).toContain("border-[3px]");
+    expect(card.className).not.toContain("border-l-4");
+    expect(card.style.borderColor).toBe("var(--color-collection-catechism)");
+  });
+
   it("keeps the inline editor actions responsive on narrow screens", async () => {
     const { container } = render(
       <BookmarkCard
