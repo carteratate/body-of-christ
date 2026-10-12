@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { trackSuggestedQueryClicked } from "@/lib/analytics";
@@ -16,28 +17,53 @@ const TAGLINES = [
 
 const SUGGESTED_QUERIES = [
   "Is it ever right to lie? Does intention matter, or is deception always wrong?",
-  "Why does God allow suffering? What is the Christian answer to evil and pain?",
-  "How do grace and free will coexist? If God knows everything, how can choices be free?",
-  "What is the relationship between faith and reason? Can reason reach God without revelation?",
+  "Why does God allow suffering?",
+  "If God knows everything that will happen, how can our choices be free?",
   "Is it a sin to be wealthy? What is the proper relationship between a Christian and money?",
   "What does the tradition say about spiritual dryness, when God feels absent?",
   "What is the soul, and what happens to it after death?",
-  "How do the intellect and will work together? Why do we choose things we know are bad for us?",
+  "What is the intellect and the will? How are they different, and how do they interact?",
   "Can a person be obligated to disobey a law or authority? When does conscience override obedience?",
   "What is prayer, and how does a person actually learn to pray well?",
-  "Is despair a sin? What does the Church say about a person who has lost all hope?",
+  "Is despair a sin?",
   "What is the purpose of confession? How does absolution actually work?",
   "What does the Church teach about killing in war and in self-defense?",
   "What are the cardinal virtues, and why those four specifically?",
-  "What is the relationship between the body and the soul? Is the body good or a burden?",
-  "What does the Church teach about angels?",
+  "What is the relationship between the body and the soul?",
   "What does it mean that God is love? How is divine love different from human love?",
   "Is anger ever justified? How do we know when it is right to be angry?",
   "What does the Church teach about death and what comes after?",
   "How should a Christian think about fear?",
-  "What is the nature of conscience, and how do we form it well?",
-  "Scripture says God is love and God is truth. In what sense does God not merely have these qualities but is them, and are there other things God simply is?",
+  "Are emotions good, bad, or neither? How should a Christian handle emotions?",
+  "Give me non heretical analogies for the Trinity",
+  "What exactly does it mean to be poor in spirit? What does this tell us about the Beatitudes?",
 ] as const;
+
+const DISPLAYED_QUERY_COUNT = 4;
+
+// Fisher-Yates over a copy, so every query in the pool can be shown.
+function pickRandom<T>(items: readonly T[], count: number): T[] {
+  const pool = [...items];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, count);
+}
+
+// One random pick per page load. The server snapshot is the first four, so the
+// hydrating render matches the server HTML before React swaps in the client pick.
+const SERVER_QUERIES = SUGGESTED_QUERIES.slice(0, DISPLAYED_QUERY_COUNT);
+let clientQueries: readonly string[] | null = null;
+
+function getClientQueries(): readonly string[] {
+  clientQueries ??= pickRandom(SUGGESTED_QUERIES, DISPLAYED_QUERY_COUNT);
+  return clientQueries;
+}
+
+function subscribe(): () => void {
+  return () => {};
+}
 
 interface EmptyStateProps {
   onSelectQuery: (query: string) => void;
@@ -45,7 +71,11 @@ interface EmptyStateProps {
 
 export function EmptyState({ onSelectQuery }: EmptyStateProps) {
   const tagline = TAGLINES[0];
-  const displayedQueries = SUGGESTED_QUERIES.slice(0, 4);
+  const displayedQueries = useSyncExternalStore(
+    subscribe,
+    getClientQueries,
+    () => SERVER_QUERIES,
+  );
 
   function handleChipClick(query: string) {
     trackSuggestedQueryClicked({ queryText: query });
