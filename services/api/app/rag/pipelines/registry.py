@@ -1,9 +1,10 @@
 # services/api/app/rag/pipelines/registry.py
 """Named pipeline configurations.
 
-Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>]`. The axes configured here —
-which retrieval paths run, which rerankers (and, for Luna, which model and reasoning
-effort), and how the paths are fused — let `compare/` A/B any two by name.
+Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>][_seats<min>[t<total>]]`. The
+axes configured here — which retrieval paths run, which rerankers (and, for Luna, which
+model and reasoning effort), how the paths are fused, and how many candidates reach the
+terminal listwise call — let `compare/` A/B any two by name.
 
 Enrichment is deliberately NOT an axis: whether a candidate has an annotation is a
 property of the data, checked per candidate, so a single query spanning enriched and
@@ -13,6 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.rag.steps.budget import TerminalSeats
 from app.rag.steps.rerank import RerankConfig
 
 
@@ -75,7 +77,8 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
        k: int | None = None, rrf_k: int | None = None,
        hyde_model: str | None = None, genre_model: str | None = None,
        hyde_sample: int = 0,
-       llm_model: str | None = None, effort: str | None = None) -> PipelineConfig:
+       llm_model: str | None = None, effort: str | None = None,
+       seats: TerminalSeats | None = None) -> PipelineConfig:
     return PipelineConfig(
         name=name,
         retrieval=RetrievalConfig(
@@ -86,6 +89,7 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
         rerank=RerankConfig(
             use_cohere=cohere, llm_provider=llm,
             llm_model=llm_model, llm_reasoning_effort=effort,
+            terminal_seats=seats,
         ),
     )
 
@@ -137,5 +141,27 @@ PIPELINES: dict[str, PipelineConfig] = {
     "hyde6_cohere_luna6_low": _p(
         "hyde6_cohere_luna6_low", cohere=True, llm="luna", hyde_model="gpt-6-luna",
         genre_model="gpt-6-luna", llm_model="gpt-6-luna", effort="low",
+    ),
+    # Issue #235: production's quota+3 keep and 40-seat cap leave about 4-6 Cohere
+    # candidates per collection for the listwise ranker on a 6-10 collection search.
+    # seats10t80 is the chosen candidate: 80 seats split across the collections,
+    # 10 to 25 each (1-3 collections: 25, 6: 13, 8-10: 10). seats10 is the fixed
+    # comparison. In the depth study seats10t80 seated 89% of the deep run's final
+    # picks and seats10 87%, against production's 65%. The study seated at most 16
+    # per collection, so the 17-25 seats given to 1-3 collection searches are
+    # unmeasured (and cheap: such pools stayed near 25 under the 0.30 keep floor).
+    "hyde_cohere_luna_seats10": _p(
+        "hyde_cohere_luna_seats10", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10),
+    ),
+    "hyde_cohere_luna_seats10t80": _p(
+        "hyde_cohere_luna_seats10t80", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10, total=80, maximum=25),
+    ),
+    # Production (seats10t80) with its own HyDE draw: the noise floor any change to
+    # production must clear. hyde_cohere_luna_hydesample is the pre-#235 equivalent.
+    "hyde_cohere_luna_seats10t80_hydesample": _p(
+        "hyde_cohere_luna_seats10t80_hydesample", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10, total=80, maximum=25), hyde_sample=1,
     ),
 }

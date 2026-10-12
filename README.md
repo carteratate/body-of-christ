@@ -103,7 +103,7 @@ The retrieval pipeline lives in `services/api/app/rag/`, split deliberately in t
 - **`rag/pipelines/runner.py`** owns the compute; **`rag/pipelines/registry.py`** names
   the configurations. Individual steps live in `rag/steps/`.
 
-Production runs the `hyde_cohere_luna` configuration (`_PRODUCTION_PIPELINE` in
+Production runs the `hyde_cohere_luna_seats10t80` configuration (`_PRODUCTION_PIPELINE` in
 `pipeline.py`). For a single query:
 
 1. **Plan** — `rag/search_plan.py` resolves collections + quota into one validated

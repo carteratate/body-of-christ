@@ -14,6 +14,8 @@ _EXPECTED_PIPELINES = {
     "hyde_nolex_cohere_haiku", "hyde_luna_rrf60",
     "hyde_cohere_luna_hydesample", "hyde6_cohere_luna",
     "hyde6_cohere_luna6", "hyde6_cohere_luna6_low",
+    "hyde_cohere_luna_seats10", "hyde_cohere_luna_seats10t80",
+    "hyde_cohere_luna_seats10t80_hydesample",
 }
 
 
@@ -42,10 +44,12 @@ def test_production_pipeline_is_registered():
     assert _PRODUCTION_PIPELINE in PIPELINES
 
 
-def test_production_pipeline_is_round_three_winner():
+def test_production_pipeline_is_the_seat_rule_variant_of_the_round_three_winner():
+    """Round three chose hyde_cohere_luna; issue #235 kept it and changed only how many
+    Cohere candidates per collection reach the listwise call."""
     from app.rag.pipeline import _PRODUCTION_PIPELINE
 
-    assert _PRODUCTION_PIPELINE == "hyde_cohere_luna"
+    assert _PRODUCTION_PIPELINE == "hyde_cohere_luna_seats10t80"
 
 
 def test_empty_healthy_retrieval_is_not_misclassified_as_threshold_filtering():

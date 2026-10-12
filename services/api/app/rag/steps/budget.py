@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import logging
 import math
+from dataclasses import dataclass
 
 from app.config import settings
 
@@ -115,6 +116,40 @@ def cohere_keep(quota: int, *, with_llm: bool) -> int:
     guarantee have slack; `cohere_only` is terminal, so quota is exactly right.
     """
     return quota + settings.cohere_keep_extra if with_llm else quota
+
+
+@dataclass(frozen=True)
+class TerminalSeats:
+    """How many Cohere-ranked candidates per collection reach the listwise call.
+
+    The alternative to production's quota-based keep and fixed global cap (issue
+    #235). Seats per collection are `total // collections`, held between `minimum`
+    and `maximum`, so a search over few collections looks deeper at little cost: the
+    listwise call's latency follows the pool's total size. `total=0` fixes the seats
+    at `minimum`. The global cap becomes seats x collections, so it never trims.
+
+    A 2026-10 depth study (20 eval queries, 16 seats per collection) put 13% of the
+    listwise ranker's final picks below Cohere's 10th place and 5% below its 13th;
+    production's quota+3 keep and 40-seat cap seated 65% of them.
+    """
+
+    minimum: int
+    total: int = 0
+    maximum: int | None = None
+
+    def __post_init__(self) -> None:
+        if self.minimum < 1:
+            raise ValueError(f"minimum must be >= 1, got {self.minimum}")
+        if self.total < 0:
+            raise ValueError(f"total must be >= 0, got {self.total}")
+        if self.maximum is not None and self.maximum < self.minimum:
+            raise ValueError(
+                f"maximum ({self.maximum}) must be >= minimum ({self.minimum})"
+            )
+
+    def per_collection(self, collections: int) -> int:
+        seats = max(self.minimum, self.total // max(collections, 1))
+        return seats if self.maximum is None else min(seats, self.maximum)
 
 
 def llm_pool(

@@ -161,7 +161,7 @@ COLLECTIONS.forEach(c => {
 const pipeDiv = document.getElementById("pipelineChecks");
 PIPELINES.forEach(p => {
   const l = document.createElement("label");
-  l.innerHTML = `<input type="checkbox" value="${p}" ${["hyde_haiku","hyde_cohere_haiku","hyde_cohere_luna"].includes(p) ? "checked" : ""}> ${p}`;
+  l.innerHTML = `<input type="checkbox" value="${p}" ${["hyde_haiku","hyde_cohere_haiku","hyde_cohere_luna","hyde_cohere_luna_seats10t80"].includes(p) ? "checked" : ""}> ${p}`;
   pipeDiv.appendChild(l);
 });
 

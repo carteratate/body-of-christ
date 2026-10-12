@@ -88,6 +88,11 @@ class RerankConfig:
     # them in the methodology fingerprint and arms stay segmentable.
     llm_model: str | None = None
     llm_reasoning_effort: str | None = None
+    # How many candidates per collection reach the terminal listwise call in `both`
+    # mode (issue #235; production sets it). None keeps the pre-#235 quota-based keep
+    # (`cohere_keep_extra`) and fixed global cap (`llm_pool_global_cap`). A focused
+    # plan's terminal_candidate_budget still takes precedence.
+    terminal_seats: budget.TerminalSeats | None = None
 
     def __post_init__(self) -> None:
         if not self.use_cohere and self.llm_provider is None:
@@ -115,6 +120,11 @@ class RerankConfig:
                 f"Valid: {sorted(LUNA_REASONING_EFFORTS)}"
             )
 
+        if self.terminal_seats is not None and not (self.use_cohere and self.llm_provider):
+            raise ValueError(
+                "terminal_seats only applies when both Cohere and an LLM reranker run."
+            )
+
     def provider(self):
         """The configured LLM provider, with any evaluation-arm overrides applied."""
         base = PROVIDERS[self.llm_provider]
@@ -132,12 +142,16 @@ class RerankConfig:
 def _llm_pool_from(
     per_collection: dict[str, list[RankedChunk]], quota: int,
     terminal_candidate_budget: int | None = None,
+    config: RerankConfig | None = None,
 ) -> list[RankedChunk]:
     """Build the terminal pool above the keep floor, then trim globally.
 
     Standard searches keep quota plus the configured slack. A focused plan supplies
     its explicit terminal budget, which becomes both the per-collection keep and the
-    global cap. Focused mode has one collection by contract.
+    global cap. Focused mode has one collection by contract. A pipeline's
+    `terminal_seats` rule (production's, since #235) sets the keep from the number of collections with Cohere
+    candidates (below-floor ones included, though they seat only one) and makes the
+    cap seats x those collections, so it never trims.
 
     The returned pool is sorted globally by score. That matters because it is also
     what `listwise.rerank_pool` returns on any failure, and `dedup`, `quota_cap` and
@@ -145,11 +159,14 @@ def _llm_pool_from(
     it collection-by-collection would hand them a list grouped by collection, and
     each would then keep the wrong chunks without any error.
     """
-    keep = (
-        terminal_candidate_budget
-        if terminal_candidate_budget is not None
-        else budget.cohere_keep(quota, with_llm=True)
-    )
+    seats = config.terminal_seats if config is not None else None
+    active = sum(1 for ranked in per_collection.values() if ranked)
+    if terminal_candidate_budget is not None:
+        keep = terminal_candidate_budget
+    elif seats is not None:
+        keep = seats.per_collection(active)
+    else:
+        keep = budget.cohere_keep(quota, with_llm=True)
     kept: dict[str, list[RankedChunk]] = {}
     for col, ranked in per_collection.items():
         eligible = [
@@ -164,9 +181,11 @@ def _llm_pool_from(
             # score into an LLM-scored global ranking.
             kept[col] = ranked[:1]
 
-    allocation = budget.llm_pool(
-        {c: len(v) for c, v in kept.items()}, cap=terminal_candidate_budget,
-    )
+    cap = terminal_candidate_budget
+    if cap is None and seats is not None:
+        # Seats x collections: the rule already bounds the pool, so never trim it.
+        cap = keep * max(active, 1)
+    allocation = budget.llm_pool({c: len(v) for c, v in kept.items()}, cap=cap)
     pool: list[RankedChunk] = []
     for col, n in allocation.items():
         pool.extend(kept[col][:n])
@@ -256,7 +275,7 @@ async def run(
         return all_scored, all_scored
 
     # both
-    pool = _llm_pool_from(per_collection, quota, terminal_candidate_budget)
+    pool = _llm_pool_from(per_collection, quota, terminal_candidate_budget, config)
     provider = config.provider()
     terminal_started = time.perf_counter()
     cost_before_terminal = cost_tracker.total_cost()

@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from app.config import settings
-from app.rag.steps import rerank
+from app.rag.steps import budget, rerank
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.rerank import RerankConfig
 from app.rag.steps.types import ChunkCandidate, RankedChunk
@@ -50,6 +50,26 @@ def test_unknown_provider_is_rejected():
 ])
 def test_mode_derivation(cohere, llm, expected):
     assert RerankConfig(use_cohere=cohere, llm_provider=llm).mode == expected
+
+
+@pytest.mark.parametrize("cohere,llm", [(True, None), (False, "luna")])
+def test_terminal_seats_are_rejected_without_a_listwise_stage(cohere, llm):
+    """Only `both` mode builds the terminal pool; elsewhere the rule would be a no-op
+    that still gave the arm a distinct name and fingerprint."""
+    with pytest.raises(ValueError, match="only applies"):
+        RerankConfig(
+            use_cohere=cohere, llm_provider=llm,
+            terminal_seats=budget.TerminalSeats(minimum=10),
+        )
+
+
+def test_production_seats_ten_to_twenty_five_per_collection_from_eighty():
+    """Issue #235: production replaces quota+3 and the 40 cap with this seat rule."""
+    from app.rag.pipeline import _PRODUCTION_PIPELINE
+    from app.rag.pipelines.registry import PIPELINES
+
+    seats = PIPELINES[_PRODUCTION_PIPELINE].rerank.terminal_seats
+    assert seats == budget.TerminalSeats(minimum=10, total=80, maximum=25)
 
 
 def test_every_registered_provider_constructs():
@@ -110,6 +130,78 @@ async def test_both_keeps_quota_plus_extra_then_trims_to_pool_cap():
     # Guarantee candidates stay on the terminal reranker scale; Cohere-only
     # candidates outside the listwise pool are intentionally unavailable.
     assert len(all_scored) == settings.llm_pool_global_cap
+
+
+async def _terminal_pool(config: RerankConfig, per_col: dict, quota: int) -> list:
+    captured = {}
+
+    async def _capture(pool, query, tracker, provider, step="x"):
+        captured["pool"] = pool
+        return pool
+
+    with (
+        patch("app.rag.steps.rerank_cohere.run_per_collection",
+              new=AsyncMock(return_value=per_col)),
+        patch("app.rag.steps.llm_rerank.listwise.rerank_pool", new=_capture),
+    ):
+        await rerank.run(
+            config, {col: [_cand(0, col)] for col in per_col}, "q", quota,
+            CostTracker(),
+        )
+    return captured["pool"]
+
+
+def _deep(cols: list[str], n: int = 30) -> dict:
+    return {
+        col: [_ranked(c * 100 + i, 0.9, col) for i in range(n)]
+        for c, col in enumerate(cols)
+    }
+
+
+_SEATS_T80 = budget.TerminalSeats(minimum=10, total=80, maximum=25)
+
+
+@pytest.mark.asyncio
+async def test_seat_rule_seats_its_minimum_per_collection_past_the_global_cap():
+    """Ten collections at 10 seats is a 100-candidate pool: the 40 cap must not trim it.
+    An ignored rule would leave production's 40 here."""
+    config = RerankConfig(use_cohere=True, llm_provider="haiku", terminal_seats=_SEATS_T80)
+    pool = await _terminal_pool(config, _deep([f"col{c}" for c in range(10)]), quota=5)
+    assert len(pool) == 100
+    assert all(sum(c.collection == f"col{n}" for c in pool) == 10 for n in range(10))
+
+
+@pytest.mark.asyncio
+async def test_seat_rule_looks_deeper_when_fewer_collections_are_selected():
+    config = RerankConfig(use_cohere=True, llm_provider="haiku", terminal_seats=_SEATS_T80)
+    two = await _terminal_pool(config, _deep(["summa", "catechism"]), quota=5)
+    six = await _terminal_pool(config, _deep([f"col{c}" for c in range(6)]), quota=3)
+    assert sum(c.collection == "summa" for c in two) == 25
+    assert sum(c.collection == "col0" for c in six) == 13
+
+
+@pytest.mark.asyncio
+async def test_focused_budget_takes_precedence_over_a_seat_rule():
+    captured = {}
+
+    async def _capture(pool, query, tracker, provider, step="x"):
+        captured["pool"] = pool
+        return pool
+
+    config = RerankConfig(
+        use_cohere=True, llm_provider="haiku",
+        terminal_seats=budget.TerminalSeats(minimum=10),
+    )
+    with (
+        patch("app.rag.steps.rerank_cohere.run_per_collection",
+              new=AsyncMock(return_value=_deep(["bible"]))),
+        patch("app.rag.steps.llm_rerank.listwise.rerank_pool", new=_capture),
+    ):
+        await rerank.run(
+            config, {"bible": [_cand(0)]}, "q", 10, CostTracker(),
+            terminal_candidate_budget=25,
+        )
+    assert len(captured["pool"]) == 25
 
 
 @pytest.mark.asyncio

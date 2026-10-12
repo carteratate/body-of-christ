@@ -75,6 +75,35 @@ def test_cohere_keep_adds_slack_only_when_an_llm_follows():
     assert budget.cohere_keep(4, with_llm=True) == 4 + settings.cohere_keep_extra
 
 
+# --- terminal seats (issue #235) ---
+
+@pytest.mark.parametrize("collections,expected", [
+    (1, 25),   # 80 // 1 = 80, held to the maximum
+    (2, 25),   # 40, held to the maximum
+    (6, 13),   # 80 // 6
+    (8, 10),   # 80 // 8
+    (10, 10),  # 8, raised to the minimum
+])
+def test_seats_split_a_total_budget_between_a_minimum_and_maximum(collections, expected):
+    seats = budget.TerminalSeats(minimum=10, total=80, maximum=25)
+    assert seats.per_collection(collections) == expected
+
+
+def test_seats_without_a_total_are_fixed_at_the_minimum():
+    seats = budget.TerminalSeats(minimum=10)
+    assert [seats.per_collection(n) for n in (1, 6, 10)] == [10, 10, 10]
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"minimum": 0},
+    {"minimum": 10, "total": -1},
+    {"minimum": 10, "maximum": 9},
+])
+def test_invalid_seat_rules_are_rejected(kwargs):
+    with pytest.raises(ValueError):
+        budget.TerminalSeats(**kwargs)
+
+
 # --- llm_pool ---
 
 def test_llm_pool_passes_through_when_under_cap():
