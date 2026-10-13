@@ -132,7 +132,7 @@ export function HistorySearchRow({
     <div
       data-history-row={search.id}
       // Hover and keyboard focus both raise the card: a darker surface, a hairline edge, a soft shadow.
-      className="group relative overflow-hidden rounded-md transition-shadow duration-200 hover:shadow-[0_10px_24px_-12px_color-mix(in_srgb,var(--color-brand-contrast-dark)_60%,transparent),0_0_0_1px_color-mix(in_srgb,var(--color-brand-primary)_14%,transparent)] has-[a:focus-visible]:shadow-[0_10px_24px_-12px_color-mix(in_srgb,var(--color-brand-contrast-dark)_60%,transparent),0_0_0_1px_color-mix(in_srgb,var(--color-brand-primary)_14%,transparent)]"
+      className="group relative overflow-hidden rounded-md transition-shadow duration-200 hover:shadow-lift has-[a:focus-visible]:shadow-lift"
       onContextMenu={(event) => {
         event.preventDefault();
         if (!deleting) onReveal();

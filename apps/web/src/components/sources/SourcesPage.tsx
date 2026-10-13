@@ -9,6 +9,7 @@ import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
 import { readerHref } from "@/lib/readerNavigation";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink } from "@/components/common";
+import { LIFT } from "@/lib/lift";
 
 /** How the Library's rows link to the reader: one href per document, one same-tab hook. */
 interface DocOpener {
@@ -60,10 +61,13 @@ function ExpandableGroup({
   opener: DocOpener;
 }) {
   return (
-    <li className="rounded bg-brand-surface overflow-hidden">
+    // The toggle raises exactly as the Library's document rows do. The item does not
+    // clip its children (that would cut off the toggle's shadow), so the toggle and the
+    // open panel round their own corners.
+    <li className="rounded bg-brand-surface">
       <button
         onClick={onToggle}
-        className="w-full flex items-start justify-between gap-4 px-3 py-2 text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        className={`w-full flex items-start justify-between gap-4 px-3 py-2 rounded text-left bg-brand-surface ${LIFT}`}
       >
         <div className="min-w-0">
           <span className="text-brand-primary text-sm">{title}</span>
@@ -74,7 +78,7 @@ function ExpandableGroup({
         </span>
       </button>
       {open && (
-        <div className="flex flex-wrap gap-1.5 px-3 pb-3 pt-1 border-t border-brand-bg/40">
+        <div className="flex flex-wrap gap-1.5 rounded-b px-3 pb-3 pt-1 border-t border-brand-bg/40">
           {items.map((c) => (
             <IntentLink
               key={c.id}
@@ -220,7 +224,7 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
               <IntentLink
                 href={opener.href(d.id)}
                 onNavigate={opener.onNavigate}
-                className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                className={`w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left ${LIFT}`}
               >
                 <div className="min-w-0">
                   <span className="text-brand-primary text-sm">{d.title}</span>
@@ -251,7 +255,7 @@ function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
       <IntentLink
         href={opener.href(doc.id)}
         onNavigate={opener.onNavigate}
-        className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        className={`w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left ${LIFT}`}
       >
         <div className="min-w-0">
           <span className="text-brand-primary text-sm">{doc.title}</span>
@@ -392,7 +396,7 @@ export function SourcesPage() {
             ) : (
               <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                 {visibleProgress.map((item) => (
-                  <IntentLink key={item.document_id} href={libraryHref(item.document_id, item.chapter_key)} onNavigate={markReturn} className="block w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                  <IntentLink key={item.document_id} href={libraryHref(item.document_id, item.chapter_key)} onNavigate={markReturn} className={`block w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left ${LIFT}`}>
                     <span className="block truncate text-sm font-medium text-brand-primary">{item.document_title}</span>
                     <span className="mt-1 block truncate text-xs text-brand-muted">{item.chapter_label}</span>
                   </IntentLink>

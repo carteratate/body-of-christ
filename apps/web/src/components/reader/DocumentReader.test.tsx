@@ -703,6 +703,20 @@ describe("DocumentReader overview", () => {
     expect(screen.getByRole("button", { name: "Start reading" })).toBeTruthy();
   });
 
+  it("offers only Continue when there is saved progress, and Start reading when there is none", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    api.getReadingProgress.mockResolvedValue({
+      document_id: "doc-a", chapter_key: "chapter-b", chapter_label: "Chapter B",
+      anchor: null, updated_at: "2026-08-08T00:00:00Z", collection: "bible",
+      document_title: "Document doc-a", author: null,
+    });
+    render(<DocumentReader docId="doc-a" />);
+
+    expect(await screen.findByRole("button", { name: "Continue at Chapter B" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Start from the beginning" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Start reading" })).toBeNull();
+  });
+
   it("keeps the section search and expanded list through a token refresh", async () => {
     navigation.params = new Map([["from", "library"]]);
     api.getToc.mockResolvedValue({
