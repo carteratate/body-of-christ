@@ -136,7 +136,8 @@ def test_a_stale_stored_tree_is_not_replaced_by_a_derived_one():
 
 
 def test_other_collections_derive_nothing():
-    assert _toc("catechism", []).contents is None
+    # The Catechism has its own stopgap (tests/test_catechism_contents.py).
+    assert _toc("church-fathers", []).contents is None
 
 
 def test_capitals_inside_a_title_are_title_cased_and_numerals_kept():

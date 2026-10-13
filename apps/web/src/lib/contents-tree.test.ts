@@ -108,6 +108,10 @@ describe("contents tree logic", () => {
     expect(opensOwnContent(SUMMA[0].children[0])).toBe(false);
     expect(opensOwnContent(SUMMA[0].children[0].children[0])).toBe(true);
     expect(opensOwnContent(CATECHISM[0].children[0])).toBe(true); // headings point inside it
+    // A heading that opens the very passage its first child opens only groups it.
+    const shared = node("part-1", "c1", [node("section-1", "c1", [], { anchor: "ccc/26" })], { anchor: "ccc/26" });
+    expect(opensOwnContent(shared)).toBe(false);
+    expect(opensOwnContent({ ...shared, anchor: "ccc/25" })).toBe(true);
   });
 
   it("finds the reader's place and counts kinds", () => {
