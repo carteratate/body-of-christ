@@ -84,6 +84,39 @@ async def test_a_heading_whose_passage_moved_chapters_withdraws_the_tree(db):
     assert (await get_document_toc(DOC, user=USER)).contents is None
 
 
+async def test_the_tree_is_served_on_the_chunks_derived_path_too(db):
+    """With the outline invalidated, /toc lists chapters from chunks grouped by key and
+    label. SEED's q2 is split around q3; giving its second half another label lists q2
+    twice, and the tree must still read as in order (q2 sits at its first position)."""
+    db.sql(TREE)
+    db.sql(f"UPDATE chunks SET chapter_label = 'Question 2, continued' "
+           f"WHERE document_id = '{DOC}' AND anchor = 'q2/a2'")
+    assert db.sql(f"SELECT chunk_count IS NULL FROM documents WHERE id = '{DOC}'") == [["t"]]
+
+    toc = await get_document_toc(DOC, user=USER)
+
+    assert [c.chapter_key for c in toc.chapters] == ["q1", "q2", "q3", "q2", "q4"]
+    assert [n.key for n in toc.contents] == ["I", "II"]
+
+
+async def test_a_heading_whose_passage_moved_to_another_chapter_withdraws_the_tree(db):
+    """The anchor still exists, but no longer in the node's chapter."""
+    db.sql(TREE)
+    db.sql(f"UPDATE chunks SET chapter_key = 'q4' WHERE document_id = '{DOC}' AND anchor = 'q1/a2'")
+    assert (await get_document_toc(DOC, user=USER)).contents is None
+
+
+async def test_a_database_without_0040_serves_chapters_only():
+    with local_cluster("tc-no-contents-") as cluster:
+        cluster.sql(CORPUS_SCHEMA)
+        cluster.migrate("0037_document_outline.sql")
+        cluster.sql(SEED)
+        async with _routes_on(cluster):
+            toc = await get_document_toc(DOC, user=USER)
+    assert toc.contents is None
+    assert [c.chapter_key for c in toc.chapters] == ["q1", "q2", "q3", "q4"]
+
+
 def _rejects(db, values: str) -> bool:
     result = subprocess.run(
         [*db.psql_args()], capture_output=True, text=True, timeout=30,

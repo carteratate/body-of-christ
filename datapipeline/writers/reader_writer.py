@@ -136,15 +136,22 @@ async def write_document(conn: asyncpg.Connection, doc: Document,
         return pruned
 
 
+async def contents_table_exists(conn: asyncpg.Connection) -> bool:
+    """Whether the database has migration 0040's document_contents table."""
+    return bool(await conn.fetchval(
+        "SELECT to_regclass('public.document_contents') IS NOT NULL"))
+
+
 async def write_contents(conn: asyncpg.Connection, doc: Document) -> None:
     """Replace the document's contents tree rows (migration 0040) with `doc.contents`.
 
     Always deletes first, so a document whose adapter stops emitting a tree loses the
     old one. On a database without 0040 a document with no tree writes nothing, and one
-    with a tree is refused, so a tree is never silently dropped. Call inside the
+    with a tree is refused, so a tree is never silently dropped (the publication runner
+    checks this before its first write; this is the backstop). Call inside the
     transaction that writes the document's chunks.
     """
-    if not await conn.fetchval("SELECT to_regclass('public.document_contents') IS NOT NULL"):
+    if not await contents_table_exists(conn):
         if doc.contents is not None:
             raise RuntimeError(
                 f"document {doc.id} has a contents tree, but the database has no "

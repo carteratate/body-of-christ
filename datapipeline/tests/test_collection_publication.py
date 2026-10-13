@@ -6,7 +6,7 @@ import sys
 import pytest
 
 from identity import passage_id
-from model import Document, Passage
+from model import ContentsNode, Document, Passage
 from publication import (
     CollectionPublicationRunner,
     PublicationRequest,
@@ -40,9 +40,11 @@ def _document(*anchors: str) -> Document:
 
 
 class FakeReaderStore:
-    def __init__(self, events: list[str], live_ids: set[str] | None = None):
+    def __init__(self, events: list[str], live_ids: set[str] | None = None,
+                 contents_table: bool = True):
         self.events = events
         self.live_ids = live_ids or set()
+        self.contents_table = contents_table
 
     async def passage_ids(self, collection: str) -> set[str]:
         self.events.append("reader:inspect")
@@ -58,6 +60,10 @@ class FakeReaderStore:
     async def prune_documents(self, collection: str, keep_ids: set[str]) -> int:
         self.events.append("reader:prune")
         return 0
+
+    async def has_contents_table(self) -> bool:
+        self.events.append("reader:contents-table")
+        return self.contents_table
 
 
 class FakeSearchIndex:
@@ -439,3 +445,37 @@ def test_write_guard_runs_before_adapters_and_store_acquisition():
         asyncio.run(runner.publish(PublicationRequest(collection="medieval")))
 
     assert events == ["guard"]
+
+
+def _with_tree(document: Document) -> Document:
+    document.contents = [ContentsNode(key="c1", kind="chapter", label="Chapter 1",
+                                      short_label="Chapter 1", chapter_key="chapter-1")]
+    return document
+
+
+def test_a_tree_without_a_contents_table_is_refused_before_the_wipe_or_any_write():
+    """Documents commit one by one, so a later document's tree must not be the first
+    sign that the database lacks migration 0040."""
+    events: list[str] = []
+    second = _with_tree(_document("b/1"))
+    second.id = "22222222-2222-2222-2222-222222222222"
+    runner = _runner(events, [_document("a/1"), second],
+                     reader=FakeReaderStore(events, contents_table=False))
+
+    with pytest.raises(ValueError, match="apply migration 0040"):
+        asyncio.run(runner.publish(PublicationRequest(
+            "medieval", target=PublicationTarget.READER, wipe_reader=True,
+            wipe_reader_confirmation="medieval")))
+
+    assert events == ["reader:acquire", "reader:contents-table", "reader:close"]
+
+
+def test_a_tree_with_a_contents_table_publishes():
+    events: list[str] = []
+    runner = _runner(events, [_with_tree(_document("a/1"))])
+
+    asyncio.run(runner.publish(PublicationRequest("medieval", target=PublicationTarget.READER)))
+
+    assert events[:2] == ["reader:acquire", "reader:contents-table"]
+    assert "reader:write:True" in events
+

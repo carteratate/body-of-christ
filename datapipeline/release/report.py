@@ -424,8 +424,9 @@ def report_md(data: dict, public: bool) -> str:
         lines += ["| Collection | Document | Nodes | Chapters no node opens | Error |",
                   "|---|---|---:|---:|---|"]
         for c, t in trees:
+            error = (t["error"] or "").replace("|", "\\|").replace("\n", " ")
             lines.append(f"| {c} | {t['title']} | {_n(t['nodes'])} | "
-                         f"{_n(len(t['unreached']))} | {t['error'] or ''} |")
+                         f"{_n(len(t['unreached']))} | {error} |")
         for c, t in trees:
             if t["unreached"]:
                 shown = ", ".join(f"`{k}`" for k in t["unreached"][:20])

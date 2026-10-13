@@ -102,3 +102,18 @@ def test_a_tree_pointing_at_a_missing_anchor_is_not_served(caplog):
 def test_a_tree_out_of_reading_order_is_not_served(caplog):
     log = _stale(caplog, [_node(1, None, "b", "john/2"), _node(2, None, "a", "john/1")])
     assert "out of reading order" in log
+
+
+def test_a_chapter_listed_twice_keeps_its_first_place_in_reading_order():
+    """The chunks-derived list groups by (key, label), so a key can appear twice."""
+    pool = FakePool()
+    pool.conn.fetchrow.return_value = _doc_row(False)
+    pool.conn.fetch.side_effect = [
+        [{"chapter_key": "a", "chapter_label": "A"}, {"chapter_key": "b", "chapter_label": "B"},
+         {"chapter_key": "a", "chapter_label": "A, continued"}],
+        [_node(1, None, "a", "a"), _node(2, None, "b", "b")],
+    ]
+    with patch("app.routes.documents.get_pool", return_value=pool):
+        resp = asyncio.run(get_document_toc(_DOC, user=AuthUser(user_id="u", email=None)))
+    assert [n.key for n in resp.contents] == ["a", "b"]
+

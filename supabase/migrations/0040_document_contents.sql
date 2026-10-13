@@ -51,6 +51,11 @@ CREATE TABLE document_contents (
     CHECK ((parent_ordinal IS NULL) = (depth = 0))
 );
 
+-- The parent key's ON DELETE CASCADE looks up children by (document_id, parent_ordinal)
+-- for every deleted row; without this index each lookup scans the document's rows, and
+-- replacing a 3,700-node Summa tree takes 140 ms instead of 10 ms.
+CREATE INDEX document_contents_parent_idx ON document_contents (document_id, parent_ordinal);
+
 -- Read by FastAPI (service role, which bypasses RLS) and written by the datapipeline.
 -- RLS with no policies plus the revoke keeps it out of the Data API, as 0037 does for
 -- document_chapters.

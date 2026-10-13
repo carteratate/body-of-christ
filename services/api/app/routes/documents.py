@@ -218,7 +218,12 @@ def _contents_tree(doc_uuid: uuid.UUID, rows: list, chapter_keys: list[str],
     """
     if not rows:
         return None
-    order = {key: index for index, key in enumerate(chapter_keys)}
+    # First occurrence wins: the chunks-derived list groups by (key, label), so a key
+    # whose passages carry two labels can appear twice, and its place in reading order
+    # is its first position, as in the outline and the datapipeline's check.
+    order: dict[str, int] = {}
+    for index, key in enumerate(chapter_keys):
+        order.setdefault(key, index)
     previous = -1
     problem = None
     for row in rows:
