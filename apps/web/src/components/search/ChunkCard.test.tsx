@@ -547,3 +547,79 @@ describe("ChunkCard Open in Context link", () => {
     expect(mocks.prefetch).toHaveBeenCalledExactlyOnceWith(link.getAttribute("href"));
   });
 });
+
+describe("ChunkCard relevance explanation", () => {
+  const SHOW = "Show why this is relevant (AI generated)";
+  const SHOWN = "Why this is relevant (AI generated)";
+
+  function renderCard(explanation: string | null) {
+    const view = render(<ChunkCard result={{ ...RESULT, explanation }} index={0} searchId={null} token="token" />);
+    return {
+      ...view,
+      rerenderWith: (next: string | null) =>
+        view.rerender(<ChunkCard result={{ ...RESULT, explanation: next }} index={0} searchId={null} token="token" />),
+    };
+  }
+
+  async function expandCard() {
+    await userEvent.click(screen.getByRole("button", { name: /^Expand result/ }));
+  }
+
+  it("starts closed when the card expands: passage and header show, explanation text does not", async () => {
+    renderCard("Because it names the Incarnation");
+    await expandCard();
+
+    expect(screen.getByText("A passage")).toBeTruthy();
+    const header = screen.getByRole("button", { name: SHOW });
+    expect(header.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByText("Because it names the Incarnation")).toBeNull();
+  });
+
+  it("opens and closes from its header, dropping 'Show' while open", async () => {
+    renderCard("Because it names the Incarnation");
+    await expandCard();
+
+    await userEvent.click(screen.getByRole("button", { name: SHOW }));
+    const header = screen.getByRole("button", { name: SHOWN });
+    expect(header.getAttribute("aria-expanded")).toBe("true");
+    const text = screen.getByText("Because it names the Incarnation");
+    expect(header.getAttribute("aria-controls")).toBe(text.parentElement!.id);
+
+    await userEvent.click(header);
+    expect(screen.getByRole("button", { name: SHOW }).getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByText("Because it names the Incarnation")).toBeNull();
+  });
+
+  it("shows the skeleton while streaming, then the text replaces it without another click", async () => {
+    const { rerenderWith } = renderCard(null);
+    await expandCard();
+    await userEvent.click(screen.getByRole("button", { name: SHOW }));
+    expect(screen.getByTestId("explanation-skeleton")).toBeTruthy();
+
+    rerenderWith("Because it names");
+    expect(screen.queryByTestId("explanation-skeleton")).toBeNull();
+    expect(screen.getByText("Because it names")).toBeTruthy();
+
+    rerenderWith("Because it names the Incarnation");
+    expect(screen.getByText("Because it names the Incarnation")).toBeTruthy();
+  });
+
+  it("starts closed again after the card is collapsed and re-expanded", async () => {
+    renderCard("Because it names the Incarnation");
+    await expandCard();
+    await userEvent.click(screen.getByRole("button", { name: SHOW }));
+    await userEvent.click(screen.getByRole("button", { name: /^Collapse result/ }));
+    await expandCard();
+
+    expect(screen.getByRole("button", { name: SHOW })).toBeTruthy();
+    expect(screen.queryByText("Because it names the Incarnation")).toBeNull();
+  });
+
+  it("renders no header when there is no explanation", async () => {
+    renderCard("");
+    await expandCard();
+
+    expect(screen.queryByRole("button", { name: SHOW })).toBeNull();
+    expect(screen.queryByText(/why this is relevant/i)).toBeNull();
+  });
+});
