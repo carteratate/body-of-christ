@@ -11,7 +11,7 @@ import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/l
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
-import { countByKind, nodeForChapter, normalizeForSearch } from "@/lib/contents-tree";
+import { countByKind, normalizeForSearch } from "@/lib/contents-tree";
 import { ContentsTree } from "./ContentsTree";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
@@ -196,7 +196,6 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const collectionMeta = getCollectionMeta(documentInfo.collection);
   const language = sectionLanguage(documentInfo.collection);
   const attribution = [documentInfo.author, documentInfo.year, documentInfo.translation].filter(Boolean).join(" · ");
-  const progressNode = contents && progress ? nodeForChapter(contents, progress.chapter_key) : null;
 
   return (
     <div className="flex h-full min-w-0 flex-col bg-brand-bg">
@@ -248,10 +247,11 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 className="min-w-0 flex-1 bg-transparent py-3 text-brand-primary outline-none placeholder:text-brand-muted"
               />
             </label>
+            {/* Every branch starts closed, so a reader picks a Part first; "Continue at"
+                resumes saved progress. */}
             <ContentsTree
               key={documentInfo.id}
               nodes={contents}
-              currentKey={progressNode?.key ?? null}
               filter={query}
               onOpen={(node) => openChapter(node.chapter_key, node.anchor)}
             />

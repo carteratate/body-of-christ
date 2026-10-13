@@ -680,7 +680,7 @@ describe("DocumentReader overview", () => {
       expect(pushState).toHaveBeenLastCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-a&anchor=a%2F3");
     });
 
-    it("expands saved progress's branch and marks it", async () => {
+    it("opens with every branch closed, even with saved progress", async () => {
       api.getReadingProgress.mockResolvedValue({
         document_id: "doc-a", chapter_key: "chapter-b", chapter_label: "Chapter B",
         anchor: null, updated_at: "2026-08-08T00:00:00Z", collection: "summa",
@@ -688,8 +688,8 @@ describe("DocumentReader overview", () => {
       });
       render(<DocumentReader docId="doc-a" />);
 
-      const current = (await screen.findByText("Art. 2 · Whether again")).closest("[role=treeitem]")!;
-      expect(current.getAttribute("aria-current")).toBe("location");
+      expect(await screen.findByRole("button", { name: "Continue at Chapter B" })).toBeTruthy();
+      expect(screen.getAllByRole("treeitem").map((item) => item.getAttribute("aria-expanded"))).toEqual(["false"]);
     });
   });
 
