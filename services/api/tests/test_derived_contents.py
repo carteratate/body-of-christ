@@ -149,3 +149,13 @@ def test_capitals_inside_a_title_are_title_cased_and_numerals_kept():
     assert [q.short_label for q in part.children] == [
         "Q. 38 · Of the Name of the Holy Ghost — as Gift", "Q. 39 · Of Christ's Grace (II)"]
     assert part.children[1].children[0].short_label == "Art. 1 · Whether I baptize thee?"
+
+
+def test_treatise_headings_in_question_titles_lose_their_range_and_letter():
+    chapters = [(f"{SS}/question-71-evil-habits/article-1-whether",
+                 "Question 71 - EVIL HABITS, i.e. Vices and Sins (Qq. 71–89) — Article 1 - Whether?"),
+                (f"{SS}/question-77-d-by-sins/article-1-whether",
+                 "Question 77 - (D) By Sins Committed in Buying and Selling (Q. 77) — Article 1 - Whether?")]
+    [part] = derive_summa_contents(chapters)
+    assert [q.short_label for q in part.children] == [
+        "Q. 71 · Evil Habits, i.e. Vices and Sins", "Q. 77 · By Sins Committed in Buying and Selling"]

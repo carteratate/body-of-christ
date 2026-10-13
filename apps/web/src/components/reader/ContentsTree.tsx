@@ -8,11 +8,13 @@ import {
   indexContents,
   matchingKeys,
   opensOwnContent,
+  pathKeys,
   visibleRows,
   type VisibleRow,
 } from "@/lib/contents-tree";
 
 const FILTER_LIMIT = 200;
+const NO_KEYS: ReadonlySet<string> = new Set();
 
 function rowElement(tree: HTMLElement | null, key: string): HTMLElement | undefined {
   return [...(tree?.querySelectorAll<HTMLElement>("[data-node-key]") ?? [])]
@@ -38,7 +40,9 @@ interface Props {
  *
  * Choosing a row opens its node, except a node that only groups its children (a Part
  * opens the same place as its first article): choosing that expands or collapses it.
- * The chevron always expands or collapses.
+ * The chevron always expands or collapses. A filter opens the branches leading to its
+ * matches; those can be toggled too, and opening a matching node lists all its children.
+ * Expansion made while filtering is dropped when the filter changes.
  */
 export function ContentsTree({
   nodes,
@@ -75,9 +79,20 @@ export function ContentsTree({
   }
 
   const matches = useMemo(() => (filter.trim() ? matchingKeys(index, filter) : null), [filter, index]);
+  const filterPaths = useMemo(() => (matches ? pathKeys(index, matches) : null), [index, matches]);
+  // Toggles made while filtering, relative to the filter's opened paths.
+  const [filterToggles, setFilterToggles] = useState<{ filter: string; keys: ReadonlySet<string> }>(
+    { filter: "", keys: NO_KEYS });
+  const toggles = filterToggles.filter === filter ? filterToggles.keys : NO_KEYS;
+  const shownExpanded = useMemo(() => {
+    if (!filterPaths) return expanded;
+    const open = new Set(filterPaths);
+    for (const key of toggles) if (!open.delete(key)) open.add(key);
+    return open;
+  }, [expanded, filterPaths, toggles]);
   const { rows, truncated } = useMemo(
-    () => visibleRows(nodes, index, expanded, matches, FILTER_LIMIT),
-    [expanded, index, matches, nodes],
+    () => visibleRows(nodes, index, shownExpanded, matches, FILTER_LIMIT),
+    [index, matches, nodes, shownExpanded],
   );
 
   const activeKey = rows.some((row) => row.node.key === focusKey)
@@ -91,6 +106,13 @@ export function ContentsTree({
   }, [currentKey, scrollCurrentIntoView]);
 
   function toggle(key: string, open?: boolean) {
+    if (matches) {
+      if ((open ?? !shownExpanded.has(key)) === shownExpanded.has(key)) return;
+      const keys = new Set(toggles);
+      if (!keys.delete(key)) keys.add(key);
+      setFilterToggles({ filter, keys });
+      return;
+    }
     setExpanded((previous) => {
       const next = new Set(previous);
       if (open ?? !next.has(key)) next.add(key);
@@ -101,7 +123,7 @@ export function ContentsTree({
 
   function choose(row: VisibleRow) {
     setFocusKey(row.node.key);
-    if (matches || opensOwnContent(row.node)) onOpen(row.node);
+    if (opensOwnContent(row.node)) onOpen(row.node);
     else toggle(row.node.key);
   }
 
@@ -122,11 +144,11 @@ export function ContentsTree({
       case "Home": focusRow(rows[0]?.node.key); break;
       case "End": focusRow(rows[rows.length - 1]?.node.key); break;
       case "ArrowRight":
-        if (hasChildren && !row.expanded && !matches) toggle(row.node.key, true);
+        if (hasChildren && !row.expanded) toggle(row.node.key, true);
         else if (hasChildren && row.expanded) focusRow(rows[position + 1]?.node.key);
         break;
       case "ArrowLeft":
-        if (hasChildren && row.expanded && !matches) toggle(row.node.key, false);
+        if (hasChildren && row.expanded) toggle(row.node.key, false);
         else focusRow(row.parentKey);
         break;
       case "Enter":
@@ -156,7 +178,8 @@ export function ContentsTree({
               aria-posinset={row.posInSet}
               aria-expanded={hasChildren ? row.expanded : undefined}
               aria-current={current ? "location" : undefined}
-              aria-selected={current}
+              // Only the reader's place: on every other row "not selected" is noise.
+              aria-selected={current ? true : undefined}
               tabIndex={node.key === activeKey ? 0 : -1}
               onClick={() => choose(row)}
               onFocus={() => setFocusKey(node.key)}
@@ -166,8 +189,9 @@ export function ContentsTree({
               <span
                 aria-hidden="true"
                 onClick={(event) => {
-                  if (!hasChildren || matches) return;
+                  // The chevron never opens the node, only expands or collapses it.
                   event.stopPropagation();
+                  if (!hasChildren) return;
                   setFocusKey(node.key);
                   toggle(node.key);
                 }}

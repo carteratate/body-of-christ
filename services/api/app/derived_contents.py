@@ -30,6 +30,10 @@ _PARTS: tuple[tuple[str, str, str], ...] = (
 )
 _QUESTION = re.compile(r"^Question (\d+) - (.+?)\s*(?:\(([A-Za-z ]+ ARTICLES?)\))?$", re.I)
 _ARTICLE = re.compile(r"^Article (\d+) - (.+)$")
+# Where the source put a treatise heading in place of a question title: its range
+# ("Evil Habits, i.e. Vices and Sins (Qq. 71–89)") and outline letter ("(D) By Sins...").
+_TREATISE_RANGE = re.compile(r"\s*\(Qq?\.\s*[\d–-]+\)$")
+_OUTLINE_LETTER = re.compile(r"^\([A-Z]\)\s+")
 _SMALL = frozenset({"a", "an", "and", "as", "at", "by", "for", "from", "in", "into", "of",
                     "on", "or", "the", "to", "with"})
 
@@ -100,7 +104,8 @@ def derive_summa_contents(chapters: list[tuple[str, str | None]]) -> list[Conten
             last_question_slug = question_slug
             match = _QUESTION.match(question_text)
             if match:
-                number, title = match.group(1), _uncap(match.group(2))
+                title = _OUTLINE_LETTER.sub("", _TREATISE_RANGE.sub("", match.group(2)))
+                number, title = match.group(1), _uncap(title)
                 short_label = f"Q. {number} · {title}"
                 question_key = f"{numeral}/q{number}"
                 part_questions[numeral].append(int(number))

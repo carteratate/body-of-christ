@@ -135,10 +135,11 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const error = failedRequest === requestKey;
 
   const matchingChapters = useMemo(() => {
+    if (contents) return [];   // the tree does its own filtering
     return chapters
       .map((entry, index) => ({ entry, ordinal: index + 1 }))
       .filter(({ entry }) => matchesSection(entry, query, documentInfo?.collection ?? ""));
-  }, [chapters, documentInfo?.collection, query]);
+  }, [chapters, contents, documentInfo?.collection, query]);
   const visibleChapters = matchingChapters.slice(0, visibleLimit);
 
   function openChapter(chapterKey: string, anchor?: string | null) {

@@ -75,14 +75,47 @@ describe("ContentsTree", () => {
     expect(document.activeElement?.textContent).toContain("Q. 1 · Sacred Doctrine");
     fireEvent.keyDown(tree, { key: "End" });
     expect(document.activeElement?.textContent).toContain("I-II · First Part of the Second Part");
+    fireEvent.keyDown(tree, { key: "Home" });
+    expect(document.activeElement?.textContent).toContain("I · First Part");
   });
 
-  it("filters to matches with their ancestors, and opens a match when chosen", () => {
+  it("filters to matches with their ancestors, and expands a matching group to all its children", () => {
     const onOpen = vi.fn();
     render(<ContentsTree nodes={TREE} filter="last end" onOpen={onOpen} />);
     expect(items()).toEqual(["I-II · First Part of the Second Part", "Q. 1 · Of Man's Last End"]);
     fireEvent.click(screen.getByText("Q. 1 · Of Man's Last End"));
-    expect(onOpen).toHaveBeenCalledWith(TREE[1].children[0]);
+    expect(onOpen).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("Art. 1 · Whether man acts for an end?"));
+    expect(onOpen).toHaveBeenCalledWith(TREE[1].children[0].children[0]);
+  });
+
+  it("never opens a node from its chevron, filtered or not", () => {
+    const onOpen = vi.fn();
+    const { rerender } = render(<ContentsTree nodes={TREE} onOpen={onOpen} />);
+    const chevron = (label: string) => screen.getByText(label).closest("[role=treeitem]")!.querySelector("svg")!.parentElement!;
+    fireEvent.click(chevron("I · First Part"));
+    expect(items()).toContain("Q. 1 · Sacred Doctrine");
+
+    rerender(<ContentsTree nodes={TREE} filter="science" onOpen={onOpen} />);
+    fireEvent.click(chevron("I · First Part"));                 // collapses the filtered path
+    expect(items()).toEqual(["I · First Part"]);
+    expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it("shows the match cap's note", () => {
+    const many = Array.from({ length: 205 }, (_, i) => node(`n${i}`, `Whether ${i}`, `c${i}`));
+    render(<ContentsTree nodes={many} filter="whether" onOpen={vi.fn()} />);
+    expect(screen.getAllByRole("treeitem")).toHaveLength(200);
+    expect(screen.getByText(/Showing the first 200 matches/)).toBeTruthy();
+  });
+
+  it("finds a paragraph number inside a heading's range", () => {
+    const ccc = [node("article-4", "Article 4 · Penance", "ccc/a4", [
+      node("h1", "I. What Is This Sacrament Called?", "ccc/a4", [], { kind: "heading", anchor: "ccc/1423", range_label: "§§1423–1424" }),
+      node("h10", "X. Indulgences", "ccc/a4", [], { kind: "heading", anchor: "ccc/1471", range_label: "§§1471–1479" }),
+    ], { range_label: "§§1422–1498" })];
+    render(<ContentsTree nodes={ccc} filter="1471" onOpen={vi.fn()} />);
+    expect(items()).toEqual(["Article 4 · Penance", "X. Indulgences"]);
   });
 
   it("says when nothing matches", () => {

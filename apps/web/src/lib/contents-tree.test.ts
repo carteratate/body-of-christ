@@ -8,6 +8,7 @@ import {
   matchingKeys,
   nodeForChapter,
   opensOwnContent,
+  pathKeys,
   visibleRows,
 } from "./contents-tree";
 
@@ -55,10 +56,33 @@ describe("contents tree logic", () => {
 
   it("filters to matches and their ancestors, opening the way to them", () => {
     const index = indexContents(SUMMA);
-    const { rows } = visibleRows(SUMMA, index, new Set(), matchingKeys(index, "science"));
+    const matches = matchingKeys(index, "science");
+    const { rows } = visibleRows(SUMMA, index, pathKeys(index, matches), matches);
     expect(rows.map((r) => [r.node.key, r.expanded, r.matched])).toEqual([
       ["I", true, false], ["I/q1", true, false], ["I/q1/a2", false, true],
     ]);
+  });
+
+  it("lists every child of a matching node the reader expands", () => {
+    const index = indexContents(SUMMA);
+    const matches = matchingKeys(index, "1 · sacred");      // the question, not its articles
+    const seeded = pathKeys(index, matches);
+    expect(visibleRows(SUMMA, index, seeded, matches).rows.map((r) => r.node.key)).toEqual(["I", "I/q1"]);
+    const opened = new Set([...seeded, "I/q1"]);
+    expect(visibleRows(SUMMA, index, opened, matches).rows.map((r) => r.node.key))
+      .toEqual(["I", "I/q1", "I/q1/a1", "I/q1/a2"]);
+  });
+
+  it("drops a branch the match cap leaves empty", () => {
+    const tree = [
+      node("A", "a1", [node("A/1", "a1", [], { short_label: "Whether" })], { kind: "part" }),
+      node("B", "b1", [node("B/1", "b1", [], { short_label: "Whether" })], { kind: "part" }),
+    ];
+    const index = indexContents(tree);
+    const matches = matchingKeys(index, "whether");
+    const { rows, truncated } = visibleRows(tree, index, pathKeys(index, matches), matches, 1);
+    expect(rows.map((r) => r.node.key)).toEqual(["A", "A/1"]);
+    expect(truncated).toBe(true);
   });
 
   it("matches without case or accents", () => {

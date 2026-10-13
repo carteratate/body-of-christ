@@ -14,6 +14,7 @@ export interface IndexedNode {
   level: number;      // 1-based, as aria-level
   posInSet: number;   // 1-based among siblings
   setSize: number;
+  searchText: string; // labels and range, normalized once for filtering
 }
 
 export type ContentsIndex = Map<string, IndexedNode>;
@@ -22,7 +23,10 @@ export function indexContents(nodes: ContentsNode[]): ContentsIndex {
   const index: ContentsIndex = new Map();
   const visit = (siblings: ContentsNode[], parentKey: string | null, level: number) => {
     siblings.forEach((node, position) => {
-      index.set(node.key, { node, parentKey, level, posInSet: position + 1, setSize: siblings.length });
+      index.set(node.key, {
+        node, parentKey, level, posInSet: position + 1, setSize: siblings.length,
+        searchText: normalizeForSearch([node.short_label, node.label, node.range_label ?? ""].join("\n")),
+      });
       visit(node.children, node.key, level + 1);
     });
   };
@@ -87,13 +91,17 @@ export function matchingKeys(index: ContentsIndex, rawFilter: string): Set<strin
   const paragraph = /^\d+$/.test(term) ? Number(term) : null;
   const hasRanges = paragraph !== null
     && [...index.values()].some(({ node }) => PARAGRAPH_RANGE.test(node.range_label ?? ""));
-  for (const [key, { node }] of index) {
-    const matched = hasRanges
-      ? inParagraphRange(node.range_label, paragraph!)
-      : [node.short_label, node.label, node.range_label ?? ""]
-          .some((text) => normalizeForSearch(text).includes(term));
+  for (const [key, { node, searchText }] of index) {
+    const matched = hasRanges ? inParagraphRange(node.range_label, paragraph!) : searchText.includes(term);
     if (matched) keys.add(key);
   }
+  return keys;
+}
+
+/** Ancestors of the matches: the branches a filter opens to show them. */
+export function pathKeys(index: ContentsIndex, matches: Set<string>): Set<string> {
+  const keys = new Set<string>();
+  for (const key of matches) for (const ancestor of ancestorKeys(index, key)) keys.add(ancestor);
   return keys;
 }
 
@@ -103,9 +111,14 @@ export interface VisibleRow extends IndexedNode {
 }
 
 /**
- * The rows a tree shows, in pre-order. Without a filter, a node's children show when it
- * is expanded. With one, only matches and their ancestors show, with every ancestor
- * open, and at most `limit` matches (the result says whether more were cut).
+ * The rows a tree shows, in pre-order; a node's children show when it is in `expanded`.
+ *
+ * With a filter, a row shows if it matches, leads to a match, or sits under an expanded
+ * row that matches and leads to no deeper match (opening a matching question lists all
+ * its articles). Callers seed
+ * `expanded` with the matches' ancestors (pathKeys) and may toggle from there. At most
+ * `limit` matches show; `truncated` says more were cut, and a branch the cut left empty
+ * is dropped rather than shown open with nothing under it.
  */
 export function visibleRows(
   nodes: ContentsNode[],
@@ -114,39 +127,32 @@ export function visibleRows(
   matches: Set<string> | null,
   limit = Infinity,
 ): { rows: VisibleRow[]; truncated: boolean } {
-  const rows: VisibleRow[] = [];
   let shownMatches = 0;
   let truncated = false;
+  const onPath = matches ? pathKeys(index, matches) : null;
 
-  let onPath: Set<string> | null = null;
-  if (matches) {
-    onPath = new Set();
-    for (const key of matches) for (const ancestor of ancestorKeys(index, key)) onPath.add(ancestor);
-  }
-
-  const visit = (siblings: ContentsNode[]): boolean => {
+  const visit = (siblings: ContentsNode[], showAll: boolean): VisibleRow[] => {
+    const out: VisibleRow[] = [];
     for (const node of siblings) {
-      const info = index.get(node.key)!;
-      if (onPath) {
-        const matched = matches!.has(node.key);
-        const leadsToMatch = onPath.has(node.key);
-        if (!matched && !leadsToMatch) continue;
-        if (matched) {
-          if (shownMatches >= limit) { truncated = true; return false; }
-          shownMatches += 1;
-        }
-        rows.push({ ...info, expanded: leadsToMatch, matched });
-        if (leadsToMatch && !visit(node.children)) return false;
-      } else {
-        const open = node.children.length > 0 && expanded.has(node.key);
-        rows.push({ ...info, expanded: open, matched: false });
-        if (open) visit(node.children);
+      if (truncated) break;
+      const matched = matches?.has(node.key) ?? false;
+      const leadsToMatch = onPath?.has(node.key) ?? false;
+      if (matches && !showAll && !matched && !leadsToMatch) continue;
+      if (matched) {
+        if (shownMatches >= limit) { truncated = true; break; }
+        shownMatches += 1;
       }
+      const open = node.children.length > 0 && expanded.has(node.key);
+      // Under a match, list every child, unless a deeper match is what this row leads
+      // to ("1471" matches Article 4's range and the heading holding it: show the heading).
+      const children = open ? visit(node.children, !matches || showAll || (matched && !leadsToMatch)) : [];
+      // An open branch shown only as the way to matches, which the cap then cut.
+      if (matches && open && !showAll && !matched && children.length === 0) continue;
+      out.push({ ...index.get(node.key)!, expanded: open, matched }, ...children);
     }
-    return true;
+    return out;
   };
-  visit(nodes);
-  return { rows, truncated };
+  return { rows: visit(nodes, false), truncated };
 }
 
 /** How many articles, sections and so on a tree holds, for a summary line. */
