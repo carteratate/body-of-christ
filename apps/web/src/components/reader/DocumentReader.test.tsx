@@ -784,6 +784,16 @@ describe("DocumentReader overview", () => {
     expect(navigation.push).not.toHaveBeenCalled();
   });
 
+  it("pushes, not replaces, when the URL has a return key but this tab has no marker for it", async () => {
+    // A cmd-click tab or a pasted URL: browser Back must return to the overview.
+    navigation.params = new Map([["from", "library"], ["returnKey", "11111111-1111-4111-8111-111111111111"]]);
+    render(<DocumentReader docId="doc-a" />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Document doc-a chapter chapter-b" }));
+    expect(pushState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b&returnKey=11111111-1111-4111-8111-111111111111");
+    expect(replaceState).not.toHaveBeenCalled();
+  });
+
   it("pushes a history entry when opening a chapter without a return marker", async () => {
     navigation.params = new Map([["from", "library"]]);
     render(<DocumentReader docId="doc-a" />);

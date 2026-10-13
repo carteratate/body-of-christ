@@ -218,11 +218,8 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
     }
   }
 
-  function reportResultProblem(event: React.MouseEvent) {
-    if (!searchId) {
-      event.preventDefault();
-      return;
-    }
+  function reportResultProblem() {
+    if (!searchId) return;
     saveFeedbackContext({
       category: "content",
       origin: "search_result",
@@ -382,7 +379,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
                 </ThemedTooltip>
               </>}
               <div className="relative">
-                {showOpenContextHint && (
+                {showOpenContextHint && canOpenContext && (
                   <div role="status" className="absolute bottom-[calc(100%+10px)] right-0 z-20 w-56 rounded-lg border border-brand-accent/40 bg-brand-surface px-3 py-2 text-xs leading-relaxed text-brand-primary shadow-xl after:absolute after:-bottom-1.5 after:right-6 after:h-3 after:w-3 after:rotate-45 after:border-b after:border-r after:border-brand-accent/40 after:bg-brand-surface">
                     <button type="button" onClick={onDismissOpenContextHint} aria-label="Dismiss context guidance" className="absolute right-1.5 top-1 text-brand-muted hover:text-brand-primary">×</button>
                     <span className="block pr-3">Open the passage in context to read the surrounding text.</span>
@@ -401,7 +398,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
               </div>
             </div>
           </div>
-          {showReportPrompt && (
+          {showReportPrompt && searchId && (
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-brand-muted/25 bg-brand-bg/40 px-3 py-2 text-xs text-brand-muted">
               <span>Thanks. Is there a specific problem with this result?</span>
               <span className="flex gap-3">

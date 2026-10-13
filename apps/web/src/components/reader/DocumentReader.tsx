@@ -376,7 +376,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     // Overview and chapter are one route that differs only in its search params,
     // so switch with the History API: Next syncs useSearchParams without a
     // server round trip, which router.replace would make.
-    window.history.replaceState(null, "", `${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`);
+    window.history.replaceState(null, "", `${isGuest ? "/reader/guest" : "/reader"}/${encodeURIComponent(docId)}?${next.toString()}`);
   }
 
   function reportContent() {

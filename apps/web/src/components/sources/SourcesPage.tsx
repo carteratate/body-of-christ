@@ -220,7 +220,7 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
               <IntentLink
                 href={opener.href(d.id)}
                 onNavigate={opener.onNavigate}
-                  className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
               >
                 <div className="min-w-0">
                   <span className="text-brand-primary text-sm">{d.title}</span>

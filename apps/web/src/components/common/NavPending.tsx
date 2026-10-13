@@ -25,7 +25,8 @@ function LinkPendingBar() {
   return <NavPendingBar pending={pending} />;
 }
 
-type IntentLinkProps = Omit<React.ComponentProps<typeof Link>, "prefetch"> & {
+// The intent handlers own pointer enter/leave and focus/blur; a caller's would be dropped.
+type IntentLinkProps = Omit<React.ComponentProps<typeof Link>, "prefetch" | "onPointerEnter" | "onPointerLeave" | "onFocus" | "onBlur"> & {
   href: string;
 };
 

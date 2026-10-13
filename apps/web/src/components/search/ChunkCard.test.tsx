@@ -484,6 +484,7 @@ describe("ChunkCard Open in Context link", () => {
     await userEvent.click(link);
     expect(hasReaderReturnMarker(first, "search")).toBe(true);
 
+    await waitFor(() => expect(returnKeyOf(screen.getByRole("link", { name: "Open in Context" }) as HTMLAnchorElement)).not.toBe(first));
     const second = returnKeyOf(screen.getByRole("link", { name: "Open in Context" }) as HTMLAnchorElement);
     expect(second).toMatch(/^[0-9a-f-]{36}$/);
     expect(second).not.toBe(first);

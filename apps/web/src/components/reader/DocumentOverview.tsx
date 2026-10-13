@@ -7,7 +7,7 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { getReadingProgress, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
 import { getCollectionMeta } from "@/lib/collections";
-import { isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
@@ -133,10 +133,13 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
     if (isGuest && params.get("preview") === "1") next.set("preview", "1");
     if (isGuest && params.get("guideBack") === "1") next.set("guideBack", "1");
-    const destination = `${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`;
+    const destination = `${isGuest ? "/reader/guest" : "/reader"}/${encodeURIComponent(docId)}?${next.toString()}`;
     // Same route, different search params: the History API skips the server
     // round trip that router.push/replace would make (see DocumentReader).
-    if (isReaderReturnKey(returnKey)) window.history.replaceState(null, "", destination);
+    // Replace only when this tab entered through an in-app link (a live marker),
+    // so Back returns to that page. A key without a marker (a cmd-click tab, a
+    // pasted URL) pushes, so browser Back returns to this overview.
+    if (hasReaderReturnMarker(returnKey, origin)) window.history.replaceState(null, "", destination);
     else window.history.pushState(null, "", destination);
   }
 

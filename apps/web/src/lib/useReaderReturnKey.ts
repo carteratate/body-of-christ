@@ -15,7 +15,10 @@ export function useReaderReturnKey(origin: ReaderOrigin) {
   const [returnKey, setReturnKey] = useState(newReaderReturnKey);
   const markReturn = useCallback(() => {
     markReaderReturn(returnKey, origin);
-    setReturnKey(newReaderReturnKey());
+    // After the click, not during it: a synchronous update would re-render every
+    // Library row ahead of the navigation's own render. Usually the page has
+    // unmounted by then and this is a no-op.
+    window.setTimeout(() => setReturnKey(newReaderReturnKey()), 0);
   }, [origin, returnKey]);
   return { returnKey, markReturn };
 }
