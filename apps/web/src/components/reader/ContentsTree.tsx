@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { ChevronRight } from "lucide-react";
 import type { ContentsNode } from "@/lib/api";
+import { LIFT } from "@/lib/lift";
 import {
   ancestorKeys,
   indexContents,
@@ -183,10 +184,9 @@ export function ContentsTree({
               tabIndex={node.key === activeKey ? 0 : -1}
               onClick={() => choose(row)}
               onFocus={() => setFocusKey(node.key)}
-              // Hover and keyboard focus raise the row as Search History's rows do: a darker
-              // surface and shadow-lift. The indent is a margin so the raised card starts
-              // at the row's own level.
-              className={`group flex min-h-11 min-w-0 cursor-pointer items-start gap-1 rounded-md py-2 pr-2 text-left transition-[background-color,box-shadow] duration-200 hover:bg-brand-surface-hover hover:shadow-lift focus-visible:bg-brand-surface-hover focus-visible:shadow-lift focus-visible:outline-hidden ${current ? "text-brand-accent" : "text-brand-primary"}`}
+              // Hover and keyboard focus raise the row as Search History's rows do (LIFT).
+              // The indent is a margin so the raised card starts at the row's own level.
+              className={`group flex min-h-11 min-w-0 cursor-pointer items-start gap-1 rounded-md py-2 pr-2 text-left ${LIFT} ${current ? "text-brand-accent" : "text-brand-primary"}`}
               style={{ marginLeft: `${(row.level - 1) * 1.25}rem` }}
             >
               <span
