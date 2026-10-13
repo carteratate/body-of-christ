@@ -4,19 +4,30 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, BookOpen, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
-import { getReadingProgress, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
+import { getReadingProgress, type ContentsNode, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
 import { getCollectionMeta } from "@/lib/collections";
 import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
+import { countByKind, normalizeForSearch } from "@/lib/contents-tree";
+import { ContentsTree } from "./ContentsTree";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
 const SECTION_BATCH_SIZE = 30;
 
-function normalize(value: string): string {
-  return value.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase();
+const KIND_PLURALS: Record<string, string> = {
+  part: "parts", treatise: "treatises", section: "sections", chapter: "chapters",
+  question: "questions", article: "articles",
+};
+
+/** "6 parts · 612 questions · 3,120 articles", in the order the kinds first appear. */
+function treeSummary(nodes: ContentsNode[]): string {
+  return [...countByKind(nodes)]
+    .filter(([kind]) => kind in KIND_PLURALS)
+    .map(([kind, count]) => `${count.toLocaleString()} ${count === 1 ? kind : KIND_PLURALS[kind]}`)
+    .join(" · ");
 }
 
 function sectionLanguage(collection: string): { singular: string; plural: string; prompt: string } {
@@ -32,7 +43,7 @@ function bibleChapterLabel(entry: TocEntry): string {
 }
 
 function matchesSection(entry: TocEntry, rawQuery: string, collection: string): boolean {
-  const term = normalize(rawQuery.trim());
+  const term = normalizeForSearch(rawQuery.trim());
   if (!term) return true;
   if (collection === "catechism" && /^\d+$/.test(term)) {
     const paragraph = Number(term);
@@ -42,7 +53,7 @@ function matchesSection(entry: TocEntry, rawQuery: string, collection: string): 
     const end = Number(bounds[2].replaceAll(",", ""));
     return Number.isFinite(start) && Number.isFinite(end) && paragraph >= start && paragraph <= end;
   }
-  return normalize(entry.chapter_label).includes(term);
+  return normalizeForSearch(entry.chapter_label).includes(term);
 }
 
 interface Props {
@@ -59,6 +70,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const returnKey = params.get("returnKey");
   const [documentInfo, setDocumentInfo] = useState<DocumentInfo | null>(null);
   const [chapters, setChapters] = useState<TocEntry[]>([]);
+  const [contents, setContents] = useState<ContentsNode[] | null>(null);
   const [progress, setProgress] = useState<ReadingProgress | null>(null);
   const [query, setQuery] = useState("");
   const [visibleLimit, setVisibleLimit] = useState(SECTION_BATCH_SIZE);
@@ -92,6 +104,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       if (requestId !== requestRef.current) return;
       setDocumentInfo(toc.document);
       setChapters(toc.chapters);
+      setContents(toc.contents?.length ? toc.contents : null);
       setProgress(null);
       setQuery("");
       setVisibleLimit(SECTION_BATCH_SIZE);
@@ -122,14 +135,16 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const error = failedRequest === requestKey;
 
   const matchingChapters = useMemo(() => {
+    if (contents) return [];   // the tree does its own filtering
     return chapters
       .map((entry, index) => ({ entry, ordinal: index + 1 }))
       .filter(({ entry }) => matchesSection(entry, query, documentInfo?.collection ?? ""));
-  }, [chapters, documentInfo?.collection, query]);
+  }, [chapters, contents, documentInfo?.collection, query]);
   const visibleChapters = matchingChapters.slice(0, visibleLimit);
 
-  function openChapter(chapterKey: string) {
+  function openChapter(chapterKey: string, anchor?: string | null) {
     const next = new URLSearchParams({ from: origin, chapter: chapterKey });
+    if (anchor) next.set("anchor", anchor);
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
     if (isGuest && params.get("preview") === "1") next.set("preview", "1");
     if (isGuest && params.get("guideBack") === "1") next.set("guideBack", "1");
@@ -199,7 +214,9 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
             <h1 className="mt-3 font-brand text-2xl font-semibold text-brand-accent sm:text-3xl">{documentInfo.title}</h1>
             {attribution && <p className="mt-1 text-sm text-brand-muted">{attribution}</p>}
             <p className="mt-3 text-sm text-brand-muted">
-              {documentInfo.chunk_count.toLocaleString()} passages · {chapters.length.toLocaleString()} {chapters.length === 1 ? language.singular : language.plural}
+              {documentInfo.chunk_count.toLocaleString()} passages · {contents
+                ? treeSummary(contents)
+                : `${chapters.length.toLocaleString()} ${chapters.length === 1 ? language.singular : language.plural}`}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               {progress && (
@@ -213,6 +230,33 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
             </div>
           </section>
 
+          {contents ? (
+          <section className="mt-7 rounded-lg border border-brand-muted/20 bg-brand-surface p-4 sm:p-6" aria-labelledby="overview-contents-heading">
+            <div className="mb-3">
+              <h2 id="overview-contents-heading" className="text-lg font-semibold text-brand-primary">Contents</h2>
+              <p className="mt-1 text-xs text-brand-muted">Expand a part to find a place, or search the headings.</p>
+            </div>
+            <label className="mb-3 flex min-w-0 items-center gap-2 rounded-md border border-brand-muted/30 bg-brand-surface px-3 focus-within:border-brand-accent">
+              <Search size={17} className="shrink-0 text-brand-muted" aria-hidden="true" />
+              <span className="sr-only">Search contents</span>
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search contents"
+                className="min-w-0 flex-1 bg-transparent py-3 text-brand-primary outline-none placeholder:text-brand-muted"
+              />
+            </label>
+            {/* Every branch starts closed, so a reader picks a Part first; "Continue at"
+                resumes saved progress. */}
+            <ContentsTree
+              key={documentInfo.id}
+              nodes={contents}
+              filter={query}
+              onOpen={(node) => openChapter(node.chapter_key, node.anchor)}
+            />
+          </section>
+          ) : (
           <section className="mt-7 rounded-lg border border-brand-muted/20 bg-brand-surface p-4 sm:p-6" aria-labelledby="overview-contents-heading">
             <div className="mb-3">
               <h2 id="overview-contents-heading" className="text-lg font-semibold text-brand-primary">{language.prompt}</h2>
@@ -272,6 +316,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
               </>
             )}
           </section>
+          )}
         </main>
       </div>
     </div>
