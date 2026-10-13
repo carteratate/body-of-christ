@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, BookOpen, Search } from "lucide-react";
+import { BookOpen, ChevronLeft, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { getReadingProgress, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
@@ -188,8 +188,9 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       {mobileHeader}
       <div className="flex-1 overflow-y-auto">
         <main className="mx-auto w-full min-w-0 max-w-3xl px-4 py-5 sm:px-6 sm:py-7">
-          <button type="button" onClick={goBack} aria-busy={backPending || undefined} className="relative mb-5 inline-flex items-center gap-1 text-sm text-brand-muted hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
-            <ArrowLeft size={16} aria-hidden="true" /> Back to {backLabel}
+          {/* Styled as the reader's own Back and Browse buttons (ReaderChrome). */}
+          <button type="button" onClick={goBack} aria-busy={backPending || undefined} className="relative mb-5 flex min-h-9 w-fit items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+            <ChevronLeft size={16} aria-hidden="true" /> Back to {backLabel}
             <NavPendingBar pending={backPending} />
           </button>
 

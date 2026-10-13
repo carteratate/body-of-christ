@@ -61,12 +61,13 @@ function ExpandableGroup({
   opener: DocOpener;
 }) {
   return (
-    // The shadow sits on the item, which clips its children to the rounded corners;
-    // the toggle carries the darker surface, as HistorySearchRow splits them.
-    <li className="rounded bg-brand-surface overflow-hidden transition-shadow duration-200 has-[>button:hover]:shadow-lift has-[>button:focus-visible]:shadow-lift">
+    // The toggle raises exactly as the Library's document rows do. The item does not
+    // clip its children (that would cut off the toggle's shadow), so the toggle and the
+    // open panel round their own corners.
+    <li className="rounded bg-brand-surface">
       <button
         onClick={onToggle}
-        className="w-full flex items-start justify-between gap-4 px-3 py-2 text-left transition-colors duration-200 hover:bg-brand-surface-hover focus-visible:bg-brand-surface-hover focus-visible:outline-hidden"
+        className={`w-full flex items-start justify-between gap-4 px-3 py-2 rounded text-left bg-brand-surface ${LIFT}`}
       >
         <div className="min-w-0">
           <span className="text-brand-primary text-sm">{title}</span>
@@ -77,7 +78,7 @@ function ExpandableGroup({
         </span>
       </button>
       {open && (
-        <div className="flex flex-wrap gap-1.5 px-3 pb-3 pt-1 border-t border-brand-bg/40">
+        <div className="flex flex-wrap gap-1.5 rounded-b px-3 pb-3 pt-1 border-t border-brand-bg/40">
           {items.map((c) => (
             <IntentLink
               key={c.id}
