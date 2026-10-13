@@ -43,6 +43,18 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under
 `/guest/` or `/search/guest`. They share components via an `isGuest` prop rather than
 forking — update both together. (Root §10, §11, §13)
 
+## Navigation feedback
+
+Every route is dynamic, so a click shows the destination's `loading.tsx` at once only
+if that route was prefetched. For links in lists and cards use `IntentLink`
+(`src/components/common/NavPending.tsx`): it prefetches on hover or keyboard focus,
+never on sight (a viewport prefetch per row is a middleware run and server render each)
+and **never on press** — a prefetch still in flight when the click lands makes that
+navigation slower than none (measured in `src/lib/useIntentPrefetch.ts`). Put
+same-tab-only side effects in `onNavigate`, which a cmd/ctrl-click never calls. A
+navigation that must stay a button uses `usePendingNavigation` and renders
+`NavPendingBar`.
+
 ## Styling
 
 Tokens are defined in `src/app/globals.css` under `@theme`. Use the Tailwind `brand`
