@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Bookmark, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import ReactDOM from "react-dom";
-import { ThemedTooltip, Toast, useToast } from "@/components/common";
-import { useRouter, useSearchParams } from "next/navigation";
+import { IntentLink, ThemedTooltip, Toast, useToast } from "@/components/common";
+import { useSearchParams } from "next/navigation";
 import {
   addBookmark,
   removeBookmark,
@@ -22,7 +22,8 @@ import { displayRole } from "@/lib/passageRole";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
-import { createReaderReturnKey } from "@/lib/readerNavigation";
+import { readerHref } from "@/lib/readerNavigation";
+import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
 
 function hexToRgb(color: string): string {
@@ -91,8 +92,9 @@ interface ChunkCardProps {
   onDismissOpenContextHint?: () => void;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function ChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { chunk_id, content, source } = result;
   // Presentation only. Copying and saving still address the passage the user matched.
@@ -173,20 +175,26 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
       .catch(() => showToast("Copy failed", "error"));
   }
 
-  // ── Read More action ──────────────────────────────────────────────────────
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  function handleReadMore() {
-    if (!UUID_RE.test(document_id)) return;
+  // ── Open in Context ───────────────────────────────────────────────────────
+  // The href is built at render with a return key that holds steady between
+  // navigations, so it is exactly the URL a hover prefetch warmed. The marker is
+  // written only for a same-tab navigation (see useReaderReturnKey); a new tab
+  // takes the reader's deep-link fallback.
+  const { returnKey, markReturn } = useReaderReturnKey("search");
+  const canOpenContext = UUID_RE.test(document_id);
+  const contextHref = readerHref({
+    docId: document_id,
+    origin: "search",
+    returnKey,
+    anchor: source.anchor,
+    chapter: source.chapter_key,
+    guest: isGuest,
+    guideBack: showOpenContextHint,
+    preview: searchParams.get("preview") === "1",
+  });
+  function handleOpenContextClick() {
     onDismissOpenContextHint?.();
     trackDocumentOpened({ documentId: document_id, collection, source: "chunk_card" });
-    const params = new URLSearchParams({ from: "search" });
-    const returnKey = createReaderReturnKey("search");
-    if (returnKey) params.set("returnKey", returnKey);
-    if (source.anchor) params.set("anchor", source.anchor);
-    else if (source.chapter_key) params.set("chapter", source.chapter_key);
-    if (isGuest && showOpenContextHint) params.set("guideBack", "1");
-    if (isGuest && searchParams.get("preview") === "1") params.set("preview", "1");
-    router.push(`${isGuest ? "/reader/guest" : "/reader"}/${document_id}?${params.toString()}`);
   }
 
   // ── Feedback state ────────────────────────────────────────────────────────
@@ -220,7 +228,6 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
       chunk_id,
       document_id,
     });
-    router.push("/feedback");
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
@@ -372,22 +379,31 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
                 </ThemedTooltip>
               </>}
               <div className="relative">
-                {showOpenContextHint && (
+                {showOpenContextHint && canOpenContext && (
                   <div role="status" className="absolute bottom-[calc(100%+10px)] right-0 z-20 w-56 rounded-lg border border-brand-accent/40 bg-brand-surface px-3 py-2 text-xs leading-relaxed text-brand-primary shadow-xl after:absolute after:-bottom-1.5 after:right-6 after:h-3 after:w-3 after:rotate-45 after:border-b after:border-r after:border-brand-accent/40 after:bg-brand-surface">
                     <button type="button" onClick={onDismissOpenContextHint} aria-label="Dismiss context guidance" className="absolute right-1.5 top-1 text-brand-muted hover:text-brand-primary">×</button>
                     <span className="block pr-3">Open the passage in context to read the surrounding text.</span>
                   </div>
                 )}
-                <button onClick={handleReadMore} className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Open in Context</button>
+                {canOpenContext && (
+                  <IntentLink
+                    href={contextHref}
+                    onClick={handleOpenContextClick}
+                    onNavigate={markReturn}
+                    className="inline-block px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                  >
+                    Open in Context
+                  </IntentLink>
+                )}
               </div>
             </div>
           </div>
-          {showReportPrompt && (
+          {showReportPrompt && searchId && (
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-brand-muted/25 bg-brand-bg/40 px-3 py-2 text-xs text-brand-muted">
               <span>Thanks. Is there a specific problem with this result?</span>
               <span className="flex gap-3">
                 <button type="button" onClick={() => setShowReportPrompt(false)} className="hover:text-brand-primary">No, thanks</button>
-                <button type="button" onClick={reportResultProblem} className="font-medium text-brand-accent hover:underline">Report a problem</button>
+                <IntentLink href="/feedback" onClick={reportResultProblem} className="font-medium text-brand-accent hover:underline">Report a problem</IntentLink>
               </span>
             </div>
           )}

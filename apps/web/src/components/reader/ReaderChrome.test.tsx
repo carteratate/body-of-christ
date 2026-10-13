@@ -3,14 +3,21 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ReaderChrome } from "./ReaderChrome";
+import { navigations } from "@/test/next-link-mock";
 
 const openMobileNavigation = vi.hoisted(() => vi.fn());
+
+vi.mock("next/link", () => import("@/test/next-link-mock"));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }) }));
 
 vi.mock("@/components/layout/AppShell", () => ({
   useAppContext: () => ({ mobileNavigationOpen: false, openMobileNavigation }),
 }));
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  navigations.length = 0;
+});
 
 describe("ReaderChrome", () => {
   it("keeps the TheoCorpus brand beside the mobile app-menu trigger", () => {
@@ -28,6 +35,7 @@ describe("ReaderChrome", () => {
         onFontSizeChange={vi.fn()}
         onSpacingChange={vi.fn()}
         onReportContent={vi.fn()}
+        reportHref="/feedback"
       />,
     );
 
@@ -55,6 +63,7 @@ describe("ReaderChrome", () => {
         onFontSizeChange={vi.fn()}
         onSpacingChange={vi.fn()}
         onReportContent={vi.fn()}
+        reportHref="/feedback"
       />,
     );
 
@@ -78,6 +87,7 @@ describe("ReaderChrome", () => {
         onFontSizeChange={vi.fn()}
         onSpacingChange={vi.fn()}
         onReportContent={vi.fn()}
+        reportHref="/feedback"
       />,
     );
 
@@ -127,6 +137,7 @@ describe("ReaderChrome", () => {
         onFontSizeChange={vi.fn()}
         onSpacingChange={vi.fn()}
         onReportContent={vi.fn()}
+        reportHref="/feedback"
       />,
     );
 
@@ -155,6 +166,7 @@ describe("ReaderChrome", () => {
         onFontSizeChange={vi.fn()}
         onSpacingChange={vi.fn()}
         onReportContent={vi.fn()}
+        reportHref="/feedback"
       />,
     );
 
@@ -182,6 +194,7 @@ describe("ReaderChrome", () => {
         onFontSizeChange={vi.fn()}
         onSpacingChange={vi.fn()}
         onReportContent={vi.fn()}
+        reportHref="/feedback"
       />,
     );
 
@@ -189,4 +202,56 @@ describe("ReaderChrome", () => {
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     expect(onJump).toHaveBeenCalledWith("q2-a2");
   });
+
+  it("reports a content issue through a link that saves the report context first", () => {
+    const onReportContent = vi.fn();
+    render(
+      <ReaderChrome
+        document={{ id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
+        toc={[]}
+        currentChapterKey={null}
+        backLabel="Back to Search"
+        onBack={vi.fn()}
+        onBrowseSections={vi.fn()}
+        onJump={vi.fn()}
+        fontSize="medium"
+        spacing="comfortable"
+        onFontSizeChange={vi.fn()}
+        onSpacingChange={vi.fn()}
+        onReportContent={onReportContent}
+        reportHref="/guest/feedback"
+      />,
+    );
+    const report = screen.getByRole("link", { name: "Report a content issue" });
+    expect(report.getAttribute("href")).toBe("/guest/feedback");
+    fireEvent.click(report);
+    expect(onReportContent).toHaveBeenCalledTimes(1);
+    expect(navigations).toEqual(["/guest/feedback"]);
+  });
+
+  it("marks Back busy while its navigation is pending", () => {
+    const props = {
+      document: { id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 },
+      toc: [],
+      currentChapterKey: null,
+      backLabel: "Back to Library",
+      onBack: vi.fn(),
+      onBrowseSections: vi.fn(),
+      onJump: vi.fn(),
+      fontSize: "medium" as const,
+      spacing: "comfortable" as const,
+      onFontSizeChange: vi.fn(),
+      onSpacingChange: vi.fn(),
+      onReportContent: vi.fn(),
+      reportHref: "/feedback",
+    };
+    const { rerender } = render(<ReaderChrome {...props} />);
+    const back = screen.getByRole("button", { name: "Back to Library" });
+    expect(back.getAttribute("aria-busy")).toBeNull();
+    expect(back.querySelector(".nav-pending")?.getAttribute("data-pending")).toBeNull();
+    rerender(<ReaderChrome {...props} backPending />);
+    expect(back.getAttribute("aria-busy")).toBe("true");
+    expect(back.querySelector(".nav-pending")?.getAttribute("data-pending")).toBe("true");
+  });
 });
+

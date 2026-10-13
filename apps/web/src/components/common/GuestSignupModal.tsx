@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useRouter } from "next/navigation";
+import { IntentLink } from "./NavPending";
 
 interface GuestSignupModalProps {
   isOpen: boolean;
@@ -38,6 +40,10 @@ const COPY = {
 
 export function GuestSignupModal({ isOpen, onDismiss, reason = "feature" }: GuestSignupModalProps) {
   const router = useRouter();
+  // An open dialog is intent enough: warm sign-up so the click shows it at once.
+  useEffect(() => {
+    if (isOpen) router.prefetch("/signup");
+  }, [isOpen, router]);
 
   if (!isOpen) return null;
 
@@ -55,12 +61,12 @@ export function GuestSignupModal({ isOpen, onDismiss, reason = "feature" }: Gues
         <p className="text-brand-muted text-sm leading-relaxed mb-6">
           {COPY[reason].body}
         </p>
-        <button
-          onClick={() => router.push("/signup")}
-          className="w-full bg-brand-accent text-brand-bg font-semibold py-2 px-4 rounded hover:opacity-90 transition-opacity mb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        <IntentLink
+          href="/signup"
+          className="block w-full text-center bg-brand-accent text-brand-bg font-semibold py-2 px-4 rounded hover:opacity-90 transition-opacity mb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
         >
           Create free account
-        </button>
+        </IntentLink>
         <button
           onClick={onDismiss}
           className="w-full text-brand-muted text-sm py-2 hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded"

@@ -4,9 +4,13 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BookmarkCard } from "./BookmarkCard";
+import { navigations } from "@/test/next-link-mock";
+import { hasReaderReturnMarker } from "@/lib/readerNavigation";
+import { trackDocumentOpened } from "@/lib/analytics";
 
 const mocks = vi.hoisted(() => ({ updateBookmarkNote: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("next/link", () => import("@/test/next-link-mock"));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), prefetch: vi.fn() }) }));
 vi.mock("@/lib/api", async (importOriginal) => ({
   ...await importOriginal<typeof import("@/lib/api")>(),
   updateBookmarkNote: mocks.updateBookmarkNote,
@@ -19,6 +23,8 @@ vi.mock("@/lib/analytics", () => ({
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  navigations.length = 0;
+  sessionStorage.clear();
 });
 
 describe("BookmarkCard action descriptions", () => {
@@ -56,7 +62,7 @@ describe("BookmarkCard action descriptions", () => {
       ["Copy passage", "Copy"],
     ]);
     for (const [name, expected] of expectedDescriptions) {
-      const action = screen.getByRole("button", { name });
+      const action = screen.getByRole(name === "Open passage in context" ? "link" : "button", { name });
       const descriptionId = action.getAttribute("aria-describedby");
       expect(descriptionId).toBeTruthy();
       expect(action.getAttribute("title")).toBeNull();
@@ -328,3 +334,54 @@ describe("BookmarkCard action descriptions", () => {
     expect(showToast).toHaveBeenCalledWith("Note removed");
   });
 });
+
+describe("BookmarkCard open in context", () => {
+  const bookmark = {
+    id: "bookmark-1",
+    chunk_id: "chunk-1",
+    note: null,
+    created_at: "2026-08-08T00:00:00Z",
+    chunk: {
+      content: "A saved passage",
+      source: {
+        collection: "catechism",
+        document_title: "Catechism of the Catholic Church",
+        author: null,
+        reference: "CCC §1000",
+        document_id: "11111111-1111-4111-8111-111111111111",
+        anchor: "ccc-1000",
+        chapter_key: "ccc-1000-1099",
+      },
+    },
+  };
+  const renderCard = () => render(
+    <BookmarkCard bookmark={bookmark} token="token" onRemove={vi.fn().mockResolvedValue(undefined)} onNoteUpdated={vi.fn()} showToast={vi.fn()} />,
+  );
+
+  it("links to the reader with a stable href and marks a same-tab return", async () => {
+    const { rerender } = renderCard();
+    const link = screen.getByRole("link", { name: "Open passage in context" }) as HTMLAnchorElement;
+    const href = link.getAttribute("href")!;
+    expect(href).toMatch(/^\/reader\/11111111-1111-4111-8111-111111111111\?from=saved&returnKey=[0-9a-f-]{36}&anchor=ccc-1000$/);
+    rerender(<BookmarkCard bookmark={bookmark} token="token" onRemove={vi.fn().mockResolvedValue(undefined)} onNoteUpdated={vi.fn()} showToast={vi.fn()} />);
+    expect(screen.getByRole("link", { name: "Open passage in context" }).getAttribute("href")).toBe(href);
+    expect(link.dataset.prefetch).toBe("false");
+
+    const key = new URL(link.href).searchParams.get("returnKey");
+    await userEvent.click(link);
+    expect(navigations).toEqual([href]);
+    expect(hasReaderReturnMarker(key, "saved")).toBe(true);
+    expect(trackDocumentOpened).toHaveBeenCalledWith({ documentId: bookmark.chunk.source.document_id, collection: "catechism", source: "saved" });
+  });
+
+  it("leaves a cmd-click to the browser without a return marker", () => {
+    renderCard();
+    const link = screen.getByRole("link", { name: "Open passage in context" }) as HTMLAnchorElement;
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true, metaKey: true });
+    link.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(false);
+    expect(navigations).toEqual([]);
+    expect(hasReaderReturnMarker(new URL(link.href).searchParams.get("returnKey"), "saved")).toBe(false);
+  });
+});
+

@@ -2,12 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, BookOpen, Search } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { getReadingProgress, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
 import { getCollectionMeta } from "@/lib/collections";
-import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { NavPendingBar } from "@/components/common/NavPending";
+import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
@@ -51,7 +53,6 @@ interface Props {
 
 export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props) {
   const { token } = useAppContext();
-  const router = useRouter();
   const params = useSearchParams();
   const originParam = params.get("from");
   const origin = (originParam && ORIGINS.has(originParam) ? originParam : "library") as ReaderOrigin;
@@ -132,23 +133,17 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
     if (isReaderReturnKey(returnKey)) next.set("returnKey", returnKey);
     if (isGuest && params.get("preview") === "1") next.set("preview", "1");
     if (isGuest && params.get("guideBack") === "1") next.set("guideBack", "1");
-    const destination = `${isGuest ? "/reader/guest" : "/reader"}/${docId}?${next.toString()}`;
+    const destination = `${isGuest ? "/reader/guest" : "/reader"}/${encodeURIComponent(docId)}?${next.toString()}`;
     // Same route, different search params: the History API skips the server
     // round trip that router.push/replace would make (see DocumentReader).
-    if (isReaderReturnKey(returnKey)) window.history.replaceState(null, "", destination);
+    // Replace only when this tab entered through an in-app link (a live marker),
+    // so Back returns to that page. A key without a marker (a cmd-click tab, a
+    // pasted URL) pushes, so browser Back returns to this overview.
+    if (hasReaderReturnMarker(returnKey, origin)) window.history.replaceState(null, "", destination);
     else window.history.pushState(null, "", destination);
   }
 
-  function goBack() {
-    if (isGuest) {
-      consumeReaderReturnKey(returnKey, origin);
-      router.push(params.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
-      return;
-    }
-    const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
-    if (consumeReaderReturnKey(returnKey, origin)) router.back();
-    else router.push(fallback);
-  }
+  const { goBack, pending: backPending } = useReaderBack({ isGuest, origin, returnKey, preview: params.get("preview") === "1" });
 
   const backLabel = origin === "saved" ? "Saved Passages" : origin === "history" ? "Search History" : origin === "search" ? "Search" : "Library";
 
@@ -175,7 +170,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
           <p className="text-sm text-brand-muted">This document overview couldn&apos;t be loaded.</p>
           <div className="flex gap-4">
-            <button type="button" onClick={goBack} className="text-sm text-brand-muted hover:text-brand-primary">← Back</button>
+            <button type="button" onClick={goBack} aria-busy={backPending || undefined} className="relative text-sm text-brand-muted hover:text-brand-primary">← Back<NavPendingBar pending={backPending} /></button>
             <button type="button" onClick={() => setRetryKey((value) => value + 1)} className="text-sm font-medium text-brand-accent hover:underline">Retry</button>
           </div>
         </div>
@@ -192,8 +187,9 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       {mobileHeader}
       <div className="flex-1 overflow-y-auto">
         <main className="mx-auto w-full min-w-0 max-w-3xl px-4 py-5 sm:px-6 sm:py-7">
-          <button type="button" onClick={goBack} className="mb-5 inline-flex items-center gap-1 text-sm text-brand-muted hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+          <button type="button" onClick={goBack} aria-busy={backPending || undefined} className="relative mb-5 inline-flex items-center gap-1 text-sm text-brand-muted hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
             <ArrowLeft size={16} aria-hidden="true" /> Back to {backLabel}
+            <NavPendingBar pending={backPending} />
           </button>
 
           <section className="rounded-lg border border-brand-muted/20 bg-brand-surface p-5 sm:p-7">

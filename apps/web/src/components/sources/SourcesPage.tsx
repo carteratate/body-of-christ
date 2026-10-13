@@ -1,13 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { LibrarySkeleton } from "@/components/common/PageSkeletons";
 import { listReadingProgress, type ReadingProgress, type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
-import { createReaderReturnKey } from "@/lib/readerNavigation";
+import { readerHref } from "@/lib/readerNavigation";
+import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
+import { IntentLink } from "@/components/common";
+
+/** How the Library's rows link to the reader: one href per document, one same-tab hook. */
+interface DocOpener {
+  href: (docId: string) => string;
+  onNavigate: () => void;
+}
 
 // Full name for Bible translation codes shown in the sources list.
 const TRANSLATION_LABELS: Record<string, string> = {
@@ -42,7 +49,7 @@ function bookRank(title: string): number {
 // clickable child documents. Used for Bible translations → books and for the
 // Second Vatican Council → its documents.
 function ExpandableGroup({
-  open, onToggle, title, subLabel, rightLabel, items, onOpen,
+  open, onToggle, title, subLabel, rightLabel, items, opener,
 }: {
   open: boolean;
   onToggle: () => void;
@@ -50,7 +57,7 @@ function ExpandableGroup({
   subLabel: string;
   rightLabel: string;
   items: { id: string; title: string }[];
-  onOpen: (id: string) => void;
+  opener: DocOpener;
 }) {
   return (
     <li className="rounded bg-brand-surface overflow-hidden">
@@ -69,13 +76,14 @@ function ExpandableGroup({
       {open && (
         <div className="flex flex-wrap gap-1.5 px-3 pb-3 pt-1 border-t border-brand-bg/40">
           {items.map((c) => (
-            <button
+            <IntentLink
               key={c.id}
-              onClick={() => onOpen(c.id)}
+              href={opener.href(c.id)}
+              onNavigate={opener.onNavigate}
               className="text-xs text-brand-primary bg-brand-bg/60 rounded px-2 py-1 hover:text-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             >
               {c.title}
-            </button>
+            </IntentLink>
           ))}
         </div>
       )}
@@ -83,7 +91,7 @@ function ExpandableGroup({
   );
 }
 
-function BibleSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id: string) => void }) {
+function BibleSection({ docs, opener }: { docs: SourceDocument[]; opener: DocOpener }) {
   const meta = getCollectionMeta("bible");
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -126,7 +134,7 @@ function BibleSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id: s
               subLabel={`${books.length} books · ${code}`}
               rightLabel={`${totalPassages.toLocaleString()} passages`}
               items={orderedBooks.map((b) => ({ id: b.id, title: b.title }))}
-              onOpen={onOpen}
+              opener={opener}
             />
           );
         })}
@@ -142,7 +150,7 @@ function vat2Year(d: SourceDocument): number {
   return typeof m === "number" ? m : (d.year ?? 0);
 }
 
-function CouncilsSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id: string) => void }) {
+function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: DocOpener }) {
   const meta = getCollectionMeta("councils");
   const [vat2Open, setVat2Open] = useState(false);
 
@@ -201,7 +209,7 @@ function CouncilsSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id
                 subLabel={`${vat2Range} · ${vaticanIIDocs.length} documents`}
                 rightLabel={`${vat2Passages.toLocaleString()} passages`}
                 items={vat2Sorted.map((d) => ({ id: d.id, title: d.title }))}
-                onOpen={onOpen}
+                opener={opener}
               />
             );
           }
@@ -209,8 +217,9 @@ function CouncilsSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id
           const num = d.metadata?.council_number as number | undefined;
           return (
             <li key={d.id}>
-              <button
-                onClick={() => onOpen(d.id)}
+              <IntentLink
+                href={opener.href(d.id)}
+                onNavigate={opener.onNavigate}
                 className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
               >
                 <div className="min-w-0">
@@ -222,7 +231,7 @@ function CouncilsSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id
                 <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
                   {d.chunk_count.toLocaleString()} passages
                 </span>
-              </button>
+              </IntentLink>
             </li>
           );
         })}
@@ -231,7 +240,7 @@ function CouncilsSection({ docs, onOpen }: { docs: SourceDocument[]; onOpen: (id
   );
 }
 
-function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => void }) {
+function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
   const parts: string[] = [];
   if (doc.author) parts.push(doc.author);
   if (doc.year) parts.push(String(doc.year));
@@ -239,8 +248,9 @@ function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => 
 
   return (
     <li>
-      <button
-        onClick={() => onOpen(doc.id)}
+      <IntentLink
+        href={opener.href(doc.id)}
+        onNavigate={opener.onNavigate}
         className="w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left hover:bg-brand-surface/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
       >
         <div className="min-w-0">
@@ -253,7 +263,7 @@ function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => 
           )}
         </div>
         <span className="shrink-0 text-xs text-brand-accent whitespace-nowrap mt-0.5">›</span>
-      </button>
+      </IntentLink>
     </li>
   );
 }
@@ -261,7 +271,6 @@ function DocRow({ doc, onOpen }: { doc: SourceDocument; onOpen: (id: string) => 
 export function SourcesPage() {
   const { token, sources, sourcesLoading, sourcesReady, sourcesError, reloadSources } = useAppContext();
   const loading = sourcesLoading || !sourcesReady;
-  const router = useRouter();
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");
   const [progress, setProgress] = useState<ReadingProgress[]>([]);
@@ -269,13 +278,15 @@ export function SourcesPage() {
   const [progressError, setProgressError] = useState(false);
   const [progressToken, setProgressToken] = useState<string | null>(null);
   const progressRequestRef = useRef(0);
-  const openDoc = useCallback((id: string, chapter?: string) => {
-    const params = new URLSearchParams({ from: "library" });
-    const returnKey = createReaderReturnKey("library");
-    if (returnKey) params.set("returnKey", returnKey);
-    if (chapter) params.set("chapter", chapter);
-    router.push(`/reader/${id}?${params.toString()}`);
-  }, [router]);
+  // One return key for the page's rows, stable between navigations, so each
+  // href is the URL its prefetch warmed. The marker is written only for a
+  // same-tab navigation; a new tab takes the reader's deep-link fallback.
+  const { returnKey, markReturn } = useReaderReturnKey("library");
+  const libraryHref = useCallback(
+    (docId: string, chapter?: string) => readerHref({ docId, origin: "library", returnKey, chapter }),
+    [returnKey],
+  );
+  const opener = useMemo<DocOpener>(() => ({ href: (docId) => libraryHref(docId), onNavigate: markReturn }), [libraryHref, markReturn]);
 
   const fetchProgress = useCallback((signal?: AbortSignal) => {
     if (!token) return Promise.resolve();
@@ -381,10 +392,10 @@ export function SourcesPage() {
             ) : (
               <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                 {visibleProgress.map((item) => (
-                  <button key={item.document_id} type="button" onClick={() => openDoc(item.document_id, item.chapter_key)} className="w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                  <IntentLink key={item.document_id} href={libraryHref(item.document_id, item.chapter_key)} onNavigate={markReturn} className="block w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
                     <span className="block truncate text-sm font-medium text-brand-primary">{item.document_title}</span>
                     <span className="mt-1 block truncate text-xs text-brand-muted">{item.chapter_label}</span>
-                  </button>
+                  </IntentLink>
                 ))}
               </div>
             )}
@@ -422,7 +433,7 @@ export function SourcesPage() {
           <section>
             <p className="mb-3 text-xs text-brand-muted">{filteredSources.length} {filteredSources.length === 1 ? "document" : "documents"}</p>
             <ul className="space-y-1.5">
-              {filteredSources.map((doc) => <DocRow key={doc.id} doc={doc} onOpen={openDoc} />)}
+              {filteredSources.map((doc) => <DocRow key={doc.id} doc={doc} opener={opener} />)}
             </ul>
           </section>
         )}
@@ -434,11 +445,11 @@ export function SourcesPage() {
               if (docs.length === 0) return null;
 
               if (key === "bible") {
-                return <BibleSection key={key} docs={docs} onOpen={openDoc} />;
+                return <BibleSection key={key} docs={docs} opener={opener} />;
               }
 
               if (key === "councils") {
-                return <CouncilsSection key={key} docs={docs} onOpen={openDoc} />;
+                return <CouncilsSection key={key} docs={docs} opener={opener} />;
               }
 
               const meta = getCollectionMeta(key);
@@ -461,7 +472,7 @@ export function SourcesPage() {
                   </div>
                   <ul className="space-y-1.5">
                     {docs.map((doc) => (
-                      <DocRow key={doc.id} doc={doc} onOpen={openDoc} />
+                      <DocRow key={doc.id} doc={doc} opener={opener} />
                     ))}
                   </ul>
                 </section>

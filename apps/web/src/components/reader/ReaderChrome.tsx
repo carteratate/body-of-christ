@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Flag, Settings2 } from "lucide-react";
 import type { DocumentInfo, ReaderChapter, TocEntry } from "@/lib/api";
+import { IntentLink, NavPendingBar } from "@/components/common/NavPending";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
 
 export type ReaderFontSize = "small" | "medium" | "large";
@@ -18,13 +19,17 @@ interface Props {
   currentChapterKey: string | null;
   backLabel: string;
   onBack: () => void;
+  /** The Back navigation is in flight (it opens a page rather than popping history). */
+  backPending?: boolean;
   onBrowseSections: () => void;
   onJump: (chapterKey: string) => void;
   fontSize: ReaderFontSize;
   spacing: ReaderSpacing;
   onFontSizeChange: (value: ReaderFontSize) => void;
   onSpacingChange: (value: ReaderSpacing) => void;
+  /** Saves the feedback context; the link itself opens reportHref. */
   onReportContent: () => void;
+  reportHref: string;
   showBackGuide?: boolean;
   onDismissBackGuide?: () => void;
 }
@@ -38,6 +43,7 @@ export function ReaderChrome({
   currentChapterKey,
   backLabel,
   onBack,
+  backPending = false,
   onBrowseSections,
   onJump,
   fontSize,
@@ -45,6 +51,7 @@ export function ReaderChrome({
   onFontSizeChange,
   onSpacingChange,
   onReportContent,
+  reportHref,
   showBackGuide = false,
   onDismissBackGuide,
 }: Props) {
@@ -96,11 +103,13 @@ export function ReaderChrome({
           <button
             type="button"
             onClick={onBack}
-            className="flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            aria-busy={backPending || undefined}
+            className="relative flex min-h-9 items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             aria-label={backLabel}
           >
             <ChevronLeft size={16} aria-hidden="true" />
             {backLabel}
+            <NavPendingBar pending={backPending} />
           </button>
         </div>
 
@@ -136,9 +145,9 @@ export function ReaderChrome({
                 ))}
               </div>
             </fieldset>
-            <button type="button" onClick={onReportContent} className="mt-4 flex w-full items-center gap-2 border-t border-brand-muted/20 pt-3 text-left text-xs text-brand-muted hover:text-brand-accent">
+            <IntentLink href={reportHref} onClick={onReportContent} className="mt-4 flex w-full items-center gap-2 border-t border-brand-muted/20 pt-3 text-left text-xs text-brand-muted hover:text-brand-accent">
               <Flag size={14} aria-hidden="true" /> Report a content issue
-            </button>
+            </IntentLink>
           </div>
         </details>
       </div>

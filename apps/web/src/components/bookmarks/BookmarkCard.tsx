@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Bookmark as BookmarkIcon, BookOpen, Copy, Pencil, Plus } from "lucide-react";
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
-import { createReaderReturnKey } from "@/lib/readerNavigation";
-import { ThemedTooltip } from "@/components/common";
+import { readerHref } from "@/lib/readerNavigation";
+import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
+import { IntentLink, ThemedTooltip } from "@/components/common";
 
 const NOTE_MAX = 3000;
 
@@ -21,11 +21,13 @@ interface BookmarkCardProps {
 }
 
 export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToast }: BookmarkCardProps) {
-  const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [draftNote, setDraftNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [removing, setRemoving] = useState(false);
+  // Stable between navigations, so the reader href is the URL its prefetch
+  // warmed; the marker is written only for a same-tab navigation.
+  const { returnKey, markReturn } = useReaderReturnKey("saved");
 
   // ── Null chunk fallback ───────────────────────────────────────────────────
   if (bookmark.chunk === null) {
@@ -72,15 +74,13 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
     }
   }
 
-  function handleOpenContext() {
-    const params = new URLSearchParams({ from: "saved" });
-    const returnKey = createReaderReturnKey("saved");
-    if (returnKey) params.set("returnKey", returnKey);
-    if (source.anchor) params.set("anchor", source.anchor);
-    else if (source.chapter_key) params.set("chapter", source.chapter_key);
-    trackDocumentOpened({ documentId: source.document_id, collection, source: "saved" });
-    router.push(`/reader/${source.document_id}?${params.toString()}`);
-  }
+  const contextHref = readerHref({
+    docId: source.document_id,
+    origin: "saved",
+    returnKey,
+    anchor: source.anchor,
+    chapter: source.chapter_key,
+  });
 
   // ── Note actions ──────────────────────────────────────────────────────────
   function startAddNote() {
@@ -137,7 +137,15 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
         <div className="flex items-center gap-1 shrink-0">
           <ThemedTooltip label="Open the passage in context to read the surrounding text.">
-            <button onClick={handleOpenContext} aria-label="Open passage in context" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><BookOpen size={16} /></button>
+            <IntentLink
+              href={contextHref}
+              onClick={() => trackDocumentOpened({ documentId: source.document_id, collection, source: "saved" })}
+              onNavigate={markReturn}
+              aria-label="Open passage in context"
+              className="inline-flex p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            >
+              <BookOpen size={16} />
+            </IntentLink>
           </ThemedTooltip>
           <ThemedTooltip label="Remove this passage from Saved Passages.">
             <button onClick={handleRemove} disabled={removing} aria-label="Remove bookmark" className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><BookmarkIcon size={16} className="text-brand-accent" /></button>
