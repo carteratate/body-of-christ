@@ -140,7 +140,11 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   returns it as `contents` only when every node's chapter and anchor still exist in
   reading order (`_contents_tree` in `routes/documents.py`), so a writer that rewrites
   chunks without the tree degrades the reader to the flat list. The API tolerates the
-  table being absent.
+  table being absent. **Stopgap:** while the Summa has no stored tree, `/toc` derives
+  Part > Question > Article from its current chapter keys and labels
+  (`app/derived_contents.py`). Delete that module and its call once the Summa is
+  published with its own tree (#254). The overview renders trees with
+  `components/reader/ContentsTree.tsx`; the logic is `lib/contents-tree.ts`.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have

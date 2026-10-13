@@ -629,6 +629,70 @@ describe("DocumentReader overview", () => {
     expect(pushState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b");
   });
 
+  describe("with a contents tree", () => {
+    const tree = [{
+      key: "I", kind: "part", label: "First Part", short_label: "I · First Part", chapter_key: "chapter-a",
+      anchor: null, range_label: "Qq. 1–2", children: [
+        { key: "I/q1", kind: "question", label: "Q1", short_label: "Q. 1 · Sacred Doctrine", chapter_key: "chapter-a", anchor: null, range_label: null, children: [
+          { key: "I/q1/a1", kind: "article", label: "A1", short_label: "Art. 1 · Whether", chapter_key: "chapter-a", anchor: null, range_label: null, children: [
+            { key: "I/q1/a1/h", kind: "heading", label: "I answer that", short_label: "I answer that", chapter_key: "chapter-a", anchor: "a/3", range_label: null, children: [] },
+          ] },
+          { key: "I/q1/a2", kind: "article", label: "A2", short_label: "Art. 2 · Whether again", chapter_key: "chapter-b", anchor: null, range_label: null, children: [] },
+        ] },
+      ],
+    }];
+
+    beforeEach(() => {
+      navigation.params = new Map([["from", "library"]]);
+      api.getToc.mockImplementation(async (_token: string, docId: string) => ({
+        document: { ...documentInfo(docId), collection: "summa", title: "Summa Theologiae" },
+        chapters: ["chapter-a", "chapter-b"].map((key) => ({ chapter_key: key, chapter_label: key })),
+        contents: tree,
+      }));
+    });
+
+    it("shows the tree instead of the flat list, and counts its kinds", async () => {
+      render(<DocumentReader docId="doc-a" />);
+
+      expect(await screen.findByRole("tree", { name: "Contents" })).toBeTruthy();
+      expect(screen.getByRole("heading", { name: "Contents" })).toBeTruthy();
+      expect(screen.getByText(/3 passages · 1 part · 1 question · 2 articles/)).toBeTruthy();
+      expect(screen.queryByText(/Show more/)).toBeNull();
+      expect(screen.getAllByRole("treeitem").map((item) => item.textContent)).toEqual(["I · First PartQq. 1–2"]);
+    });
+
+    it("opens an article, and a heading at its anchor", async () => {
+      render(<DocumentReader docId="doc-a" />);
+      fireEvent.click(await screen.findByText("I · First Part"));
+      fireEvent.click(screen.getByText("Q. 1 · Sacred Doctrine"));
+      fireEvent.click(screen.getByText("Art. 2 · Whether again"));
+      expect(pushState).toHaveBeenLastCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b");
+
+      fireEvent.click(screen.getByText("Art. 1 · Whether"));   // has its own heading: opens
+      expect(pushState).toHaveBeenLastCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-a");
+    });
+
+    it("opens a heading with its anchor", async () => {
+      render(<DocumentReader docId="doc-a" />);
+      const search = await screen.findByPlaceholderText("Search contents");
+      fireEvent.change(search, { target: { value: "answer" } });
+      fireEvent.click(screen.getByText("I answer that"));
+      expect(pushState).toHaveBeenLastCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-a&anchor=a%2F3");
+    });
+
+    it("expands saved progress's branch and marks it", async () => {
+      api.getReadingProgress.mockResolvedValue({
+        document_id: "doc-a", chapter_key: "chapter-b", chapter_label: "Chapter B",
+        anchor: null, updated_at: "2026-08-08T00:00:00Z", collection: "summa",
+        document_title: "Summa Theologiae", author: null,
+      });
+      render(<DocumentReader docId="doc-a" />);
+
+      const current = (await screen.findByText("Art. 2 · Whether again")).closest("[role=treeitem]")!;
+      expect(current.getAttribute("aria-current")).toBe("location");
+    });
+  });
+
   it("does not block the overview while optional progress is still loading", async () => {
     navigation.params = new Map([["from", "library"]]);
     api.getReadingProgress.mockReturnValue(new Promise(() => {}));
