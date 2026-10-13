@@ -39,25 +39,37 @@ def catechism_contents(
     headings: list[dict] | None = None,
 ) -> list[ContentsNode] | None:
     """The tree for (chapter_key, anchor, ccc_paragraphs) passages in reading order."""
-    place: dict[int, tuple[str, str]] = {}
-    for chapter_key, anchor, paragraphs in passages:
-        for number in paragraphs or []:
-            place.setdefault(int(number), (chapter_key, anchor))
-    order: dict[str, int] = {}
-    for index, key in enumerate(chapter_keys):
-        order.setdefault(key, index)
+    try:
+        return _build(passages, chapter_keys, headings if headings is not None else _headings())
+    except (LookupError, TypeError, ValueError) as exc:
+        # A stopgap only ever degrades to the flat list, whatever the passages hold.
+        logger.warning("catechism contents tree not served (%s); serving chapters only", exc)
+        return None
 
-    previous = -1
+
+def _build(passages, chapter_keys, headings) -> list[ContentsNode] | None:
+    place: dict[int, tuple[int, str, str]] = {}
+    for index, (chapter_key, anchor, paragraphs) in enumerate(passages):
+        for number in paragraphs or []:
+            place.setdefault(int(number), (index, chapter_key, anchor))
+    order: dict[str, int] = {}
+    for position, key in enumerate(chapter_keys):
+        order.setdefault(key, position)
+
+    # Headings must meet chapters, and passages within them, in reading order. The
+    # Catechism's chapters are 100-paragraph buckets, so chapter order alone is coarse.
+    previous = (-1, -1)
 
     def build(node: dict) -> ContentsNode:
         nonlocal previous
         target = place.get(node["first"])
-        if target is None or target[0] not in order:
+        if target is None or target[1] not in order:
             raise LookupError(f"no passage holds §{node['first']} ({node['key']})")
-        if order[target[0]] < previous:
+        index, chapter_key, anchor = target
+        here = (order[chapter_key], index)
+        if here < previous:
             raise LookupError(f"{node['key']} is out of reading order")
-        previous = order[target[0]]
-        chapter_key, anchor = target
+        previous = here
         return ContentsNode(
             key=node["key"], kind=node["kind"], label=node["label"],
             short_label=node["short_label"], chapter_key=chapter_key, anchor=anchor,
@@ -65,8 +77,4 @@ def catechism_contents(
             children=[build(child) for child in node["children"]],
         )
 
-    try:
-        return [build(node) for node in (headings if headings is not None else _headings())] or None
-    except LookupError as exc:
-        logger.warning("catechism contents tree not served (%s); serving chapters only", exc)
-        return None
+    return [build(node) for node in headings] or None

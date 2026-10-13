@@ -9,6 +9,9 @@ heading at the passage holding its first paragraph when it serves /toc
 This is a stopgap until the Catechism adapter emits its own tree (#253, after 1.6, #168).
 Delete this script, the JSON and app/catechism_contents.py then.
 
+ccc.json is the vendored source the datapipeline reads (nossbigg/catechism-ccc-json, see
+datapipeline/SOURCES.md). It is gitignored, so regenerating needs a local copy.
+
 Run from services/api:
     python3 scripts/build_catechism_contents.py
 """
@@ -166,8 +169,11 @@ def _check(roots: list[dict]) -> None:
 def main() -> None:
     roots = build(json.loads(SOURCE.read_text()))
     OUTPUT.write_text(json.dumps(roots, ensure_ascii=False, indent=1) + "\n")
-    count = sum(1 for _ in OUTPUT.read_text().split('"key"')) - 1
-    print(f"wrote {count} headings to {OUTPUT.relative_to(ROOT)}")
+
+    def count(nodes: list[dict]) -> int:
+        return sum(1 + count(node["children"]) for node in nodes)
+
+    print(f"wrote {count(roots)} headings to {OUTPUT.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

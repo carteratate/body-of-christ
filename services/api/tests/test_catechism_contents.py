@@ -48,6 +48,18 @@ def test_chapters_out_of_reading_order_withhold_the_tree():
     assert catechism_contents(PASSAGES, ["c2", "c1"], HEADINGS) is None
 
 
+def test_passages_out_of_order_within_a_chapter_withhold_the_tree():
+    # Both sub-headings sit in c1, so only passage order can catch the swap.
+    swapped = [("c1", "ccc/3", [3, 4]), ("c1", "ccc/1", [1, 2]),
+               ("c2", "ccc/5", [5]), ("c2", "ccc/6", [6])]
+    assert catechism_contents(swapped, ["c1", "c2"], HEADINGS) is None
+
+
+@pytest.mark.parametrize("bad", [[None], ["12a"], [[1]]])
+def test_malformed_paragraph_lists_withhold_the_tree_rather_than_fail(bad):
+    assert catechism_contents([("c1", "ccc/1", bad), *PASSAGES], ["c1", "c2"], HEADINGS) is None
+
+
 def test_a_passage_whose_chapter_is_not_listed_withholds_the_tree():
     assert catechism_contents(PASSAGES, ["c1"], HEADINGS) is None
 
