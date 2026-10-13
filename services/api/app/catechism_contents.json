@@ -1,0 +1,4782 @@
+[
+ {
+  "key": "ccc/toc-1",
+  "kind": "prologue",
+  "label": "Prologue",
+  "short_label": "Prologue",
+  "first": 1,
+  "last": 25,
+  "range_label": "§§1–25",
+  "children": [
+   {
+    "key": "ccc/toc-2",
+    "kind": "heading",
+    "label": "I. The life of man - to know and love God",
+    "short_label": "I. The life of man - to know and love God",
+    "first": 1,
+    "last": 3,
+    "range_label": "§§1–3",
+    "children": []
+   },
+   {
+    "key": "ccc/toc-3",
+    "kind": "heading",
+    "label": "II. Handing on the Faith: Catechesis",
+    "short_label": "II. Handing on the Faith: Catechesis",
+    "first": 4,
+    "last": 10,
+    "range_label": "§§4–10",
+    "children": []
+   },
+   {
+    "key": "ccc/toc-4",
+    "kind": "heading",
+    "label": "III. The Aim and Intended Readership of the Catechism",
+    "short_label": "III. The Aim and Intended Readership of the Catechism",
+    "first": 11,
+    "last": 12,
+    "range_label": "§§11–12",
+    "children": []
+   },
+   {
+    "key": "ccc/toc-5",
+    "kind": "heading",
+    "label": "IV. Structure of this Catechism",
+    "short_label": "IV. Structure of this Catechism",
+    "first": 13,
+    "last": 17,
+    "range_label": "§§13–17",
+    "children": []
+   },
+   {
+    "key": "ccc/toc-6",
+    "kind": "heading",
+    "label": "V. Practical Directions for Using this Catechism",
+    "short_label": "V. Practical Directions for Using this Catechism",
+    "first": 18,
+    "last": 22,
+    "range_label": "§§18–22",
+    "children": []
+   },
+   {
+    "key": "ccc/toc-7",
+    "kind": "heading",
+    "label": "VI. Necessary Adaptations",
+    "short_label": "VI. Necessary Adaptations",
+    "first": 23,
+    "last": 25,
+    "range_label": "§§23–25",
+    "children": []
+   }
+  ]
+ },
+ {
+  "key": "ccc/toc-8",
+  "kind": "part",
+  "label": "The Profession of Faith",
+  "short_label": "Part One · The Profession of Faith",
+  "first": 26,
+  "last": 1065,
+  "range_label": "§§26–1065",
+  "children": [
+   {
+    "key": "ccc/toc-9",
+    "kind": "section",
+    "label": "\"I Believe\" - \"We Believe\"",
+    "short_label": "Section One · \"I Believe\" - \"We Believe\"",
+    "first": 26,
+    "last": 184,
+    "range_label": "§§26–184",
+    "children": [
+     {
+      "key": "ccc/toc-9/own",
+      "kind": "heading",
+      "label": "Introduction",
+      "short_label": "Introduction",
+      "first": 26,
+      "last": 26,
+      "range_label": "§26",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-10",
+      "kind": "chapter",
+      "label": "Man's Capacity for God",
+      "short_label": "Chapter One · Man's Capacity for God",
+      "first": 27,
+      "last": 49,
+      "range_label": "§§27–49",
+      "children": [
+       {
+        "key": "ccc/toc-11",
+        "kind": "heading",
+        "label": "I. The Desire for God",
+        "short_label": "I. The Desire for God",
+        "first": 27,
+        "last": 30,
+        "range_label": "§§27–30",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-12",
+        "kind": "heading",
+        "label": "II. Ways of Coming to Know God",
+        "short_label": "II. Ways of Coming to Know God",
+        "first": 31,
+        "last": 35,
+        "range_label": "§§31–35",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-13",
+        "kind": "heading",
+        "label": "III. The Knowledge of God According to the Church",
+        "short_label": "III. The Knowledge of God According to the Church",
+        "first": 36,
+        "last": 38,
+        "range_label": "§§36–38",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-14",
+        "kind": "heading",
+        "label": "IV. How Can We Speak about God?",
+        "short_label": "IV. How Can We Speak about God?",
+        "first": 39,
+        "last": 43,
+        "range_label": "§§39–43",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-15",
+        "kind": "heading",
+        "label": "In Brief",
+        "short_label": "In Brief",
+        "first": 44,
+        "last": 49,
+        "range_label": "§§44–49",
+        "children": []
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-16",
+      "kind": "chapter",
+      "label": "God Comes to Meet Man",
+      "short_label": "Chapter Two · God Comes to Meet Man",
+      "first": 50,
+      "last": 141,
+      "range_label": "§§50–141",
+      "children": [
+       {
+        "key": "ccc/toc-16/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 50,
+        "last": 50,
+        "range_label": "§50",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-17",
+        "kind": "article",
+        "label": "The Revelation of God",
+        "short_label": "Article 1 · The Revelation of God",
+        "first": 51,
+        "last": 73,
+        "range_label": "§§51–73",
+        "children": [
+         {
+          "key": "ccc/toc-18",
+          "kind": "heading",
+          "label": "I. God Reveals His \"Plan of Loving Goodness\"",
+          "short_label": "I. God Reveals His \"Plan of Loving Goodness\"",
+          "first": 51,
+          "last": 53,
+          "range_label": "§§51–53",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-19",
+          "kind": "heading",
+          "label": "II. The Stages of Revelation",
+          "short_label": "II. The Stages of Revelation",
+          "first": 54,
+          "last": 64,
+          "range_label": "§§54–64",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-20",
+          "kind": "heading",
+          "label": "III. Christ Jesus -- \"Mediator and Fullness of All Revelation\"",
+          "short_label": "III. Christ Jesus -- \"Mediator and Fullness of All Revelation\"",
+          "first": 65,
+          "last": 67,
+          "range_label": "§§65–67",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-21",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 68,
+          "last": 73,
+          "range_label": "§§68–73",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-22",
+        "kind": "article",
+        "label": "The Transmission of Divine Revelation",
+        "short_label": "Article 2 · The Transmission of Divine Revelation",
+        "first": 74,
+        "last": 100,
+        "range_label": "§§74–100",
+        "children": [
+         {
+          "key": "ccc/toc-22/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 74,
+          "last": 74,
+          "range_label": "§74",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-23",
+          "kind": "heading",
+          "label": "I. The Apostolic Tradition",
+          "short_label": "I. The Apostolic Tradition",
+          "first": 75,
+          "last": 79,
+          "range_label": "§§75–79",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-24",
+          "kind": "heading",
+          "label": "II. The Relationship Between Tradition and Sacred Scripture",
+          "short_label": "II. The Relationship Between Tradition and Sacred Scripture",
+          "first": 80,
+          "last": 83,
+          "range_label": "§§80–83",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-25",
+          "kind": "heading",
+          "label": "III. The Interpretation of the Heritage of Faith",
+          "short_label": "III. The Interpretation of the Heritage of Faith",
+          "first": 84,
+          "last": 95,
+          "range_label": "§§84–95",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-26",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 96,
+          "last": 100,
+          "range_label": "§§96–100",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-27",
+        "kind": "article",
+        "label": "Sacred Scripture",
+        "short_label": "Article 3 · Sacred Scripture",
+        "first": 101,
+        "last": 141,
+        "range_label": "§§101–141",
+        "children": [
+         {
+          "key": "ccc/toc-28",
+          "kind": "heading",
+          "label": "I. Christ - The Unique Word of Sacred Scripture",
+          "short_label": "I. Christ - The Unique Word of Sacred Scripture",
+          "first": 101,
+          "last": 104,
+          "range_label": "§§101–104",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-29",
+          "kind": "heading",
+          "label": "II. Inspiration and Truth of Sacred Scripture",
+          "short_label": "II. Inspiration and Truth of Sacred Scripture",
+          "first": 105,
+          "last": 108,
+          "range_label": "§§105–108",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-30",
+          "kind": "heading",
+          "label": "III. The Holy Spirit, Interpreter of Scripture",
+          "short_label": "III. The Holy Spirit, Interpreter of Scripture",
+          "first": 109,
+          "last": 119,
+          "range_label": "§§109–119",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-31",
+          "kind": "heading",
+          "label": "IV. The Canon of Scripture",
+          "short_label": "IV. The Canon of Scripture",
+          "first": 120,
+          "last": 130,
+          "range_label": "§§120–130",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-32",
+          "kind": "heading",
+          "label": "V. Sacred Scripture in the Life of the Church",
+          "short_label": "V. Sacred Scripture in the Life of the Church",
+          "first": 131,
+          "last": 133,
+          "range_label": "§§131–133",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-33",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 134,
+          "last": 141,
+          "range_label": "§§134–141",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-34",
+      "kind": "chapter",
+      "label": "Man's Response to God",
+      "short_label": "Chapter Three · Man's Response to God",
+      "first": 142,
+      "last": 184,
+      "range_label": "§§142–184",
+      "children": [
+       {
+        "key": "ccc/toc-34/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 142,
+        "last": 143,
+        "range_label": "§§142–143",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-35",
+        "kind": "article",
+        "label": "I Believe",
+        "short_label": "Article 1 · I Believe",
+        "first": 144,
+        "last": 165,
+        "range_label": "§§144–165",
+        "children": [
+         {
+          "key": "ccc/toc-36",
+          "kind": "heading",
+          "label": "I. The Obedience of Faith",
+          "short_label": "I. The Obedience of Faith",
+          "first": 144,
+          "last": 149,
+          "range_label": "§§144–149",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-37",
+          "kind": "heading",
+          "label": "II. \"I Know Whom I Have Believed\"",
+          "short_label": "II. \"I Know Whom I Have Believed\"",
+          "first": 150,
+          "last": 152,
+          "range_label": "§§150–152",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-38",
+          "kind": "heading",
+          "label": "III. The Characteristics of Faith",
+          "short_label": "III. The Characteristics of Faith",
+          "first": 153,
+          "last": 165,
+          "range_label": "§§153–165",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-39",
+        "kind": "article",
+        "label": "We Believe",
+        "short_label": "Article 2 · We Believe",
+        "first": 166,
+        "last": 184,
+        "range_label": "§§166–184",
+        "children": [
+         {
+          "key": "ccc/toc-39/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 166,
+          "last": 167,
+          "range_label": "§§166–167",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-40",
+          "kind": "heading",
+          "label": "I. \"Lord, Look Upon the Faith of Your Church\"",
+          "short_label": "I. \"Lord, Look Upon the Faith of Your Church\"",
+          "first": 168,
+          "last": 169,
+          "range_label": "§§168–169",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-41",
+          "kind": "heading",
+          "label": "II. The Language of Faith",
+          "short_label": "II. The Language of Faith",
+          "first": 170,
+          "last": 171,
+          "range_label": "§§170–171",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-42",
+          "kind": "heading",
+          "label": "III. Only One Faith",
+          "short_label": "III. Only One Faith",
+          "first": 172,
+          "last": 175,
+          "range_label": "§§172–175",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-43",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 176,
+          "last": 184,
+          "range_label": "§§176–184",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "ccc/toc-45",
+    "kind": "section",
+    "label": "The Profession of the Christian Faith",
+    "short_label": "Section Two · The Profession of the Christian Faith",
+    "first": 185,
+    "last": 1065,
+    "range_label": "§§185–1065",
+    "children": [
+     {
+      "key": "ccc/toc-45/own",
+      "kind": "heading",
+      "label": "I. The Creeds",
+      "short_label": "I. The Creeds",
+      "first": 185,
+      "last": 197,
+      "range_label": "§§185–197",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-46",
+      "kind": "chapter",
+      "label": "I Believe in God the Father",
+      "short_label": "Chapter One · I Believe in God the Father",
+      "first": 198,
+      "last": 421,
+      "range_label": "§§198–421",
+      "children": [
+       {
+        "key": "ccc/toc-46/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 198,
+        "last": 198,
+        "range_label": "§198",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-47",
+        "kind": "article",
+        "label": "\"I Believe in God the Father Almighty, Creator of Heaven and Earth\"",
+        "short_label": "Article 1 · \"I Believe in God the Father Almighty, Creator of Heaven and Earth\"",
+        "first": 199,
+        "last": 421,
+        "range_label": "§§199–421",
+        "children": [
+         {
+          "key": "ccc/toc-48",
+          "kind": "paragraph",
+          "label": "I Believe in God",
+          "short_label": "Paragraph 1 · I Believe in God",
+          "first": 199,
+          "last": 231,
+          "range_label": "§§199–231",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-49",
+          "kind": "paragraph",
+          "label": "The Father",
+          "short_label": "Paragraph 2 · The Father",
+          "first": 232,
+          "last": 267,
+          "range_label": "§§232–267",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-50",
+          "kind": "paragraph",
+          "label": "The Almighty",
+          "short_label": "Paragraph 3 · The Almighty",
+          "first": 268,
+          "last": 278,
+          "range_label": "§§268–278",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-51",
+          "kind": "paragraph",
+          "label": "The Creator",
+          "short_label": "Paragraph 4 · The Creator",
+          "first": 279,
+          "last": 324,
+          "range_label": "§§279–324",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-52",
+          "kind": "paragraph",
+          "label": "Heaven and Earth",
+          "short_label": "Paragraph 5 · Heaven and Earth",
+          "first": 325,
+          "last": 354,
+          "range_label": "§§325–354",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-53",
+          "kind": "paragraph",
+          "label": "Man",
+          "short_label": "Paragraph 6 · Man",
+          "first": 355,
+          "last": 384,
+          "range_label": "§§355–384",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-54",
+          "kind": "paragraph",
+          "label": "The Fall",
+          "short_label": "Paragraph 7 · The Fall",
+          "first": 385,
+          "last": 421,
+          "range_label": "§§385–421",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-55",
+      "kind": "chapter",
+      "label": "I Believe in Jesus Christ, the Only Son of God",
+      "short_label": "Chapter Two · I Believe in Jesus Christ, the Only Son of God",
+      "first": 422,
+      "last": 682,
+      "range_label": "§§422–682",
+      "children": [
+       {
+        "key": "ccc/toc-55/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 422,
+        "last": 429,
+        "range_label": "§§422–429",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-56",
+        "kind": "article",
+        "label": "\"And in Jesus Christ, His Only Son, Our Lord\"",
+        "short_label": "Article 2 · \"And in Jesus Christ, His Only Son, Our Lord\"",
+        "first": 430,
+        "last": 455,
+        "range_label": "§§430–455",
+        "children": [
+         {
+          "key": "ccc/toc-57",
+          "kind": "heading",
+          "label": "I. Jesus",
+          "short_label": "I. Jesus",
+          "first": 430,
+          "last": 435,
+          "range_label": "§§430–435",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-58",
+          "kind": "heading",
+          "label": "II. Christ",
+          "short_label": "II. Christ",
+          "first": 436,
+          "last": 440,
+          "range_label": "§§436–440",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-59",
+          "kind": "heading",
+          "label": "III. The Only Son of God",
+          "short_label": "III. The Only Son of God",
+          "first": 441,
+          "last": 445,
+          "range_label": "§§441–445",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-60",
+          "kind": "heading",
+          "label": "IV. Lord",
+          "short_label": "IV. Lord",
+          "first": 446,
+          "last": 451,
+          "range_label": "§§446–451",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-61",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 452,
+          "last": 455,
+          "range_label": "§§452–455",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-62",
+        "kind": "article",
+        "label": "\"He Was Conceived by the Power of the Holy Spirit, and Was Born of the Virgin Mary\"",
+        "short_label": "Article 3 · \"He Was Conceived by the Power of the Holy Spirit, and Was Born of the Virgin Mary\"",
+        "first": 456,
+        "last": 570,
+        "range_label": "§§456–570",
+        "children": [
+         {
+          "key": "ccc/toc-63",
+          "kind": "paragraph",
+          "label": "The Son of God Became Man",
+          "short_label": "Paragraph 1 · The Son of God Became Man",
+          "first": 456,
+          "last": 483,
+          "range_label": "§§456–483",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-64",
+          "kind": "paragraph",
+          "label": "\"Conceived by the Power of the Holy Spirit and Born of the Virgin Mary\"",
+          "short_label": "Paragraph 2 · \"Conceived by the Power of the Holy Spirit and Born of the Virgin Mary\"",
+          "first": 484,
+          "last": 511,
+          "range_label": "§§484–511",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-65",
+          "kind": "paragraph",
+          "label": "The Mysteries of Christ's Life",
+          "short_label": "Paragraph 3 · The Mysteries of Christ's Life",
+          "first": 512,
+          "last": 570,
+          "range_label": "§§512–570",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-66",
+        "kind": "article",
+        "label": "\"Jesus Christ Suffered Under Pontius Pilate, Was Crucified, Died and Was Buried\"",
+        "short_label": "Article 4 · \"Jesus Christ Suffered Under Pontius Pilate, Was Crucified, Died and Was Buried\"",
+        "first": 571,
+        "last": 630,
+        "range_label": "§§571–630",
+        "children": [
+         {
+          "key": "ccc/toc-66/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 571,
+          "last": 573,
+          "range_label": "§§571–573",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-67",
+          "kind": "paragraph",
+          "label": "Jesus and Israel",
+          "short_label": "Paragraph 1 · Jesus and Israel",
+          "first": 574,
+          "last": 594,
+          "range_label": "§§574–594",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-68",
+          "kind": "paragraph",
+          "label": "Jesus Died Crucified",
+          "short_label": "Paragraph 2 · Jesus Died Crucified",
+          "first": 595,
+          "last": 623,
+          "range_label": "§§595–623",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-69",
+          "kind": "paragraph",
+          "label": "Jesus Christ Was Buried",
+          "short_label": "Paragraph 3 · Jesus Christ Was Buried",
+          "first": 624,
+          "last": 630,
+          "range_label": "§§624–630",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-70",
+        "kind": "article",
+        "label": "\"He Descended into Hell. On the Third Day He Rose Again\"",
+        "short_label": "Article 5 · \"He Descended into Hell. On the Third Day He Rose Again\"",
+        "first": 631,
+        "last": 658,
+        "range_label": "§§631–658",
+        "children": [
+         {
+          "key": "ccc/toc-70/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 631,
+          "last": 631,
+          "range_label": "§631",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-71",
+          "kind": "paragraph",
+          "label": "Christ Descended into Hell",
+          "short_label": "Paragraph 1 · Christ Descended into Hell",
+          "first": 632,
+          "last": 637,
+          "range_label": "§§632–637",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-72",
+          "kind": "paragraph",
+          "label": "On the Third Day He Rose from the Dead",
+          "short_label": "Paragraph 2 · On the Third Day He Rose from the Dead",
+          "first": 638,
+          "last": 658,
+          "range_label": "§§638–658",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-73",
+        "kind": "article",
+        "label": "\"He Ascended into Heaven and Is Seated at the Right Hand of the Father\"",
+        "short_label": "Article 6 · \"He Ascended into Heaven and Is Seated at the Right Hand of the Father\"",
+        "first": 659,
+        "last": 667,
+        "range_label": "§§659–667",
+        "children": [
+         {
+          "key": "ccc/toc-73/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 659,
+          "last": 664,
+          "range_label": "§§659–664",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-74",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 665,
+          "last": 667,
+          "range_label": "§§665–667",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-75",
+        "kind": "article",
+        "label": "\"From Thence He Will Come Again to Judge the Living and the Dead\"",
+        "short_label": "Article 7 · \"From Thence He Will Come Again to Judge the Living and the Dead\"",
+        "first": 668,
+        "last": 682,
+        "range_label": "§§668–682",
+        "children": [
+         {
+          "key": "ccc/toc-76",
+          "kind": "heading",
+          "label": "I. He Will Come Again in Glory",
+          "short_label": "I. He Will Come Again in Glory",
+          "first": 668,
+          "last": 677,
+          "range_label": "§§668–677",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-77",
+          "kind": "heading",
+          "label": "II. To Judge the Living and the Dead",
+          "short_label": "II. To Judge the Living and the Dead",
+          "first": 678,
+          "last": 679,
+          "range_label": "§§678–679",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-78",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 680,
+          "last": 682,
+          "range_label": "§§680–682",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-79",
+      "kind": "chapter",
+      "label": "I Believe in the Holy Spirit",
+      "short_label": "Chapter Three · I Believe in the Holy Spirit",
+      "first": 683,
+      "last": 1065,
+      "range_label": "§§683–1065",
+      "children": [
+       {
+        "key": "ccc/toc-79/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 683,
+        "last": 686,
+        "range_label": "§§683–686",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-80",
+        "kind": "article",
+        "label": "\"I Believe in the Holy Spirit\"",
+        "short_label": "Article 8 · \"I Believe in the Holy Spirit\"",
+        "first": 687,
+        "last": 747,
+        "range_label": "§§687–747",
+        "children": [
+         {
+          "key": "ccc/toc-80/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 687,
+          "last": 688,
+          "range_label": "§§687–688",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-81",
+          "kind": "heading",
+          "label": "I. The Joint Mission of the Son and the Spirit",
+          "short_label": "I. The Joint Mission of the Son and the Spirit",
+          "first": 689,
+          "last": 690,
+          "range_label": "§§689–690",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-82",
+          "kind": "heading",
+          "label": "II. The Name, Titles, and Symbols of the Holy Spirit",
+          "short_label": "II. The Name, Titles, and Symbols of the Holy Spirit",
+          "first": 691,
+          "last": 701,
+          "range_label": "§§691–701",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-83",
+          "kind": "heading",
+          "label": "III. God's Spirit and Word in the Time of the Promises",
+          "short_label": "III. God's Spirit and Word in the Time of the Promises",
+          "first": 702,
+          "last": 716,
+          "range_label": "§§702–716",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-84",
+          "kind": "heading",
+          "label": "IV. The Spirit of Christ in the Fullness of Time",
+          "short_label": "IV. The Spirit of Christ in the Fullness of Time",
+          "first": 717,
+          "last": 730,
+          "range_label": "§§717–730",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-85",
+          "kind": "heading",
+          "label": "V. The Spirit and the Church In the Last Days",
+          "short_label": "V. The Spirit and the Church In the Last Days",
+          "first": 731,
+          "last": 741,
+          "range_label": "§§731–741",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-86",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 742,
+          "last": 747,
+          "range_label": "§§742–747",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-87",
+        "kind": "article",
+        "label": "\"I Believe in the Holy Catholic Church\"",
+        "short_label": "Article 9 · \"I Believe in the Holy Catholic Church\"",
+        "first": 748,
+        "last": 975,
+        "range_label": "§§748–975",
+        "children": [
+         {
+          "key": "ccc/toc-87/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 748,
+          "last": 750,
+          "range_label": "§§748–750",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-88",
+          "kind": "paragraph",
+          "label": "The Church in God's Plan",
+          "short_label": "Paragraph 1 · The Church in God's Plan",
+          "first": 751,
+          "last": 780,
+          "range_label": "§§751–780",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-89",
+          "kind": "paragraph",
+          "label": "The Church - People of God, Body of Christ, Temple of the Holy Spirit",
+          "short_label": "Paragraph 2 · The Church - People of God, Body of Christ, Temple of the Holy Spirit",
+          "first": 781,
+          "last": 810,
+          "range_label": "§§781–810",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-90",
+          "kind": "paragraph",
+          "label": "The Church Is One, Holy, Catholic, and Apostolic",
+          "short_label": "Paragraph 3 · The Church Is One, Holy, Catholic, and Apostolic",
+          "first": 811,
+          "last": 870,
+          "range_label": "§§811–870",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-91",
+          "kind": "paragraph",
+          "label": "Christ's Faithful - Hierarchy, Laity, Consecrated Life",
+          "short_label": "Paragraph 4 · Christ's Faithful - Hierarchy, Laity, Consecrated Life",
+          "first": 871,
+          "last": 945,
+          "range_label": "§§871–945",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-92",
+          "kind": "paragraph",
+          "label": "The Communion of Saints",
+          "short_label": "Paragraph 5 · The Communion of Saints",
+          "first": 946,
+          "last": 962,
+          "range_label": "§§946–962",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-93",
+          "kind": "paragraph",
+          "label": "Mary - Mother of Christ, Mother of the Church",
+          "short_label": "Paragraph 6 · Mary - Mother of Christ, Mother of the Church",
+          "first": 963,
+          "last": 975,
+          "range_label": "§§963–975",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-94",
+        "kind": "article",
+        "label": "\"I Believe in the Forgiveness of Sins\"",
+        "short_label": "Article 10 · \"I Believe in the Forgiveness of Sins\"",
+        "first": 976,
+        "last": 987,
+        "range_label": "§§976–987",
+        "children": [
+         {
+          "key": "ccc/toc-94/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 976,
+          "last": 976,
+          "range_label": "§976",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-95",
+          "kind": "heading",
+          "label": "I. One Baptism for the Forgiveness of Sins",
+          "short_label": "I. One Baptism for the Forgiveness of Sins",
+          "first": 977,
+          "last": 980,
+          "range_label": "§§977–980",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-96",
+          "kind": "heading",
+          "label": "II. The Power of the Keys",
+          "short_label": "II. The Power of the Keys",
+          "first": 981,
+          "last": 987,
+          "range_label": "§§981–987",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-97",
+        "kind": "article",
+        "label": "\"I Believe in the Resurrection of the Body\"",
+        "short_label": "Article 11 · \"I Believe in the Resurrection of the Body\"",
+        "first": 988,
+        "last": 1019,
+        "range_label": "§§988–1019",
+        "children": [
+         {
+          "key": "ccc/toc-97/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 988,
+          "last": 991,
+          "range_label": "§§988–991",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-98",
+          "kind": "heading",
+          "label": "I. Christ's Resurrection and Ours",
+          "short_label": "I. Christ's Resurrection and Ours",
+          "first": 992,
+          "last": 1004,
+          "range_label": "§§992–1004",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-99",
+          "kind": "heading",
+          "label": "II. Dying in Christ Jesus",
+          "short_label": "II. Dying in Christ Jesus",
+          "first": 1005,
+          "last": 1014,
+          "range_label": "§§1005–1014",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-100",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1015,
+          "last": 1019,
+          "range_label": "§§1015–1019",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-101",
+        "kind": "article",
+        "label": "\"I Believe in Life Everlasting\"",
+        "short_label": "Article 12 · \"I Believe in Life Everlasting\"",
+        "first": 1020,
+        "last": 1065,
+        "range_label": "§§1020–1065",
+        "children": [
+         {
+          "key": "ccc/toc-101/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1020,
+          "last": 1020,
+          "range_label": "§1020",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-102",
+          "kind": "heading",
+          "label": "I. The Particular Judgment",
+          "short_label": "I. The Particular Judgment",
+          "first": 1021,
+          "last": 1022,
+          "range_label": "§§1021–1022",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-103",
+          "kind": "heading",
+          "label": "II. Heaven",
+          "short_label": "II. Heaven",
+          "first": 1023,
+          "last": 1029,
+          "range_label": "§§1023–1029",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-104",
+          "kind": "heading",
+          "label": "III. The Final Purification, or Purgatory",
+          "short_label": "III. The Final Purification, or Purgatory",
+          "first": 1030,
+          "last": 1032,
+          "range_label": "§§1030–1032",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-105",
+          "kind": "heading",
+          "label": "IV. Hell",
+          "short_label": "IV. Hell",
+          "first": 1033,
+          "last": 1037,
+          "range_label": "§§1033–1037",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-106",
+          "kind": "heading",
+          "label": "V. The Last Judgment",
+          "short_label": "V. The Last Judgment",
+          "first": 1038,
+          "last": 1041,
+          "range_label": "§§1038–1041",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-107",
+          "kind": "heading",
+          "label": "VI. Hope of the New Heaven and the New Earth",
+          "short_label": "VI. Hope of the New Heaven and the New Earth",
+          "first": 1042,
+          "last": 1050,
+          "range_label": "§§1042–1050",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-108",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1051,
+          "last": 1060,
+          "range_label": "§§1051–1060",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-109",
+          "kind": "heading",
+          "label": "\"Amen\"",
+          "short_label": "\"Amen\"",
+          "first": 1061,
+          "last": 1065,
+          "range_label": "§§1061–1065",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "key": "ccc/toc-110",
+  "kind": "part",
+  "label": "The Celebration of the Christian Mystery",
+  "short_label": "Part Two · The Celebration of the Christian Mystery",
+  "first": 1066,
+  "last": 1690,
+  "range_label": "§§1066–1690",
+  "children": [
+   {
+    "key": "ccc/toc-110/own",
+    "kind": "heading",
+    "label": "Introduction",
+    "short_label": "Introduction",
+    "first": 1066,
+    "last": 1075,
+    "range_label": "§§1066–1075",
+    "children": []
+   },
+   {
+    "key": "ccc/toc-111",
+    "kind": "section",
+    "label": "The Sacramental Economy",
+    "short_label": "Section One · The Sacramental Economy",
+    "first": 1076,
+    "last": 1209,
+    "range_label": "§§1076–1209",
+    "children": [
+     {
+      "key": "ccc/toc-111/own",
+      "kind": "heading",
+      "label": "Introduction",
+      "short_label": "Introduction",
+      "first": 1076,
+      "last": 1076,
+      "range_label": "§1076",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-112",
+      "kind": "chapter",
+      "label": "The Paschal Mystery in the Age of the Church",
+      "short_label": "Chapter One · The Paschal Mystery in the Age of the Church",
+      "first": 1077,
+      "last": 1134,
+      "range_label": "§§1077–1134",
+      "children": [
+       {
+        "key": "ccc/toc-113",
+        "kind": "article",
+        "label": "The Liturgy - Work of the Holy Trinity",
+        "short_label": "Article 1 · The Liturgy - Work of the Holy Trinity",
+        "first": 1077,
+        "last": 1112,
+        "range_label": "§§1077–1112",
+        "children": [
+         {
+          "key": "ccc/toc-114",
+          "kind": "heading",
+          "label": "I. The Father-Source and Goal of the Liturgy",
+          "short_label": "I. The Father-Source and Goal of the Liturgy",
+          "first": 1077,
+          "last": 1083,
+          "range_label": "§§1077–1083",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-115",
+          "kind": "heading",
+          "label": "II. Christ's Work in the Liturgy",
+          "short_label": "II. Christ's Work in the Liturgy",
+          "first": 1084,
+          "last": 1090,
+          "range_label": "§§1084–1090",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-116",
+          "kind": "heading",
+          "label": "III. The Holy Spirit and the Church in the Liturgy",
+          "short_label": "III. The Holy Spirit and the Church in the Liturgy",
+          "first": 1091,
+          "last": 1109,
+          "range_label": "§§1091–1109",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-117",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1110,
+          "last": 1112,
+          "range_label": "§§1110–1112",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-118",
+        "kind": "article",
+        "label": "The Paschal Mystery in the Church's Sacraments",
+        "short_label": "Article 2 · The Paschal Mystery in the Church's Sacraments",
+        "first": 1113,
+        "last": 1134,
+        "range_label": "§§1113–1134",
+        "children": [
+         {
+          "key": "ccc/toc-118/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1113,
+          "last": 1113,
+          "range_label": "§1113",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-119",
+          "kind": "heading",
+          "label": "I. The Sacraments of Christ",
+          "short_label": "I. The Sacraments of Christ",
+          "first": 1114,
+          "last": 1116,
+          "range_label": "§§1114–1116",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-120",
+          "kind": "heading",
+          "label": "II. The Sacraments of the Church",
+          "short_label": "II. The Sacraments of the Church",
+          "first": 1117,
+          "last": 1121,
+          "range_label": "§§1117–1121",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-121",
+          "kind": "heading",
+          "label": "III. The Sacraments of Faith",
+          "short_label": "III. The Sacraments of Faith",
+          "first": 1122,
+          "last": 1126,
+          "range_label": "§§1122–1126",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-122",
+          "kind": "heading",
+          "label": "IV. The Sacraments of Salvation",
+          "short_label": "IV. The Sacraments of Salvation",
+          "first": 1127,
+          "last": 1129,
+          "range_label": "§§1127–1129",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-123",
+          "kind": "heading",
+          "label": "V. The Sacraments of Eternal Life",
+          "short_label": "V. The Sacraments of Eternal Life",
+          "first": 1130,
+          "last": 1130,
+          "range_label": "§1130",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-124",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1131,
+          "last": 1134,
+          "range_label": "§§1131–1134",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-125",
+      "kind": "chapter",
+      "label": "The Sacramental Celebration of the Paschal Mystery",
+      "short_label": "Chapter Two · The Sacramental Celebration of the Paschal Mystery",
+      "first": 1135,
+      "last": 1209,
+      "range_label": "§§1135–1209",
+      "children": [
+       {
+        "key": "ccc/toc-125/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 1135,
+        "last": 1135,
+        "range_label": "§1135",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-126",
+        "kind": "article",
+        "label": "Celebrating the Church's Liturgy",
+        "short_label": "Article 1 · Celebrating the Church's Liturgy",
+        "first": 1136,
+        "last": 1199,
+        "range_label": "§§1136–1199",
+        "children": [
+         {
+          "key": "ccc/toc-127",
+          "kind": "heading",
+          "label": "I. Who Celebrates?",
+          "short_label": "I. Who Celebrates?",
+          "first": 1136,
+          "last": 1144,
+          "range_label": "§§1136–1144",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-128",
+          "kind": "heading",
+          "label": "II. How is the Liturgy Celebrated?",
+          "short_label": "II. How is the Liturgy Celebrated?",
+          "first": 1145,
+          "last": 1162,
+          "range_label": "§§1145–1162",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-129",
+          "kind": "heading",
+          "label": "III. When is the Liturgy Celebrated?",
+          "short_label": "III. When is the Liturgy Celebrated?",
+          "first": 1163,
+          "last": 1178,
+          "range_label": "§§1163–1178",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-130",
+          "kind": "heading",
+          "label": "IV. Where is the Liturgy Celebrated?",
+          "short_label": "IV. Where is the Liturgy Celebrated?",
+          "first": 1179,
+          "last": 1186,
+          "range_label": "§§1179–1186",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-131",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1187,
+          "last": 1199,
+          "range_label": "§§1187–1199",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-132",
+        "kind": "article",
+        "label": "Liturgical Diversity and the Unity of the Mystery",
+        "short_label": "Article 2 · Liturgical Diversity and the Unity of the Mystery",
+        "first": 1200,
+        "last": 1209,
+        "range_label": "§§1200–1209",
+        "children": [
+         {
+          "key": "ccc/toc-132/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1200,
+          "last": 1206,
+          "range_label": "§§1200–1206",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-133",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1207,
+          "last": 1209,
+          "range_label": "§§1207–1209",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "ccc/toc-134",
+    "kind": "section",
+    "label": "The Seven Sacraments of the Church",
+    "short_label": "Section Two · The Seven Sacraments of the Church",
+    "first": 1210,
+    "last": 1690,
+    "range_label": "§§1210–1690",
+    "children": [
+     {
+      "key": "ccc/toc-134/own",
+      "kind": "heading",
+      "label": "Introduction",
+      "short_label": "Introduction",
+      "first": 1210,
+      "last": 1211,
+      "range_label": "§§1210–1211",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-135",
+      "kind": "chapter",
+      "label": "The Sacraments of Christian Initiation",
+      "short_label": "Chapter One · The Sacraments of Christian Initiation",
+      "first": 1212,
+      "last": 1419,
+      "range_label": "§§1212–1419",
+      "children": [
+       {
+        "key": "ccc/toc-135/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 1212,
+        "last": 1212,
+        "range_label": "§1212",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-136",
+        "kind": "article",
+        "label": "The Sacrament of Baptism",
+        "short_label": "Article 1 · The Sacrament of Baptism",
+        "first": 1213,
+        "last": 1284,
+        "range_label": "§§1213–1284",
+        "children": [
+         {
+          "key": "ccc/toc-136/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1213,
+          "last": 1213,
+          "range_label": "§1213",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-137",
+          "kind": "heading",
+          "label": "I. What is This Sacrament Called?",
+          "short_label": "I. What is This Sacrament Called?",
+          "first": 1214,
+          "last": 1216,
+          "range_label": "§§1214–1216",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-138",
+          "kind": "heading",
+          "label": "II. Baptism in the Economy of Salvation",
+          "short_label": "II. Baptism in the Economy of Salvation",
+          "first": 1217,
+          "last": 1228,
+          "range_label": "§§1217–1228",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-139",
+          "kind": "heading",
+          "label": "III. How is the Sacrament of Baptism Celebrated?",
+          "short_label": "III. How is the Sacrament of Baptism Celebrated?",
+          "first": 1229,
+          "last": 1245,
+          "range_label": "§§1229–1245",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-140",
+          "kind": "heading",
+          "label": "IV. Who can Receive Baptism?",
+          "short_label": "IV. Who can Receive Baptism?",
+          "first": 1246,
+          "last": 1255,
+          "range_label": "§§1246–1255",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-141",
+          "kind": "heading",
+          "label": "V. Who can Baptize?",
+          "short_label": "V. Who can Baptize?",
+          "first": 1256,
+          "last": 1256,
+          "range_label": "§1256",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-142",
+          "kind": "heading",
+          "label": "VI. The Necessity of Baptism",
+          "short_label": "VI. The Necessity of Baptism",
+          "first": 1257,
+          "last": 1261,
+          "range_label": "§§1257–1261",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-143",
+          "kind": "heading",
+          "label": "VII. The Grace of Baptism",
+          "short_label": "VII. The Grace of Baptism",
+          "first": 1262,
+          "last": 1274,
+          "range_label": "§§1262–1274",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-144",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1275,
+          "last": 1284,
+          "range_label": "§§1275–1284",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-145",
+        "kind": "article",
+        "label": "The Sacrament of Confirmation",
+        "short_label": "Article 2 · The Sacrament of Confirmation",
+        "first": 1285,
+        "last": 1321,
+        "range_label": "§§1285–1321",
+        "children": [
+         {
+          "key": "ccc/toc-145/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1285,
+          "last": 1285,
+          "range_label": "§1285",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-146",
+          "kind": "heading",
+          "label": "I. Confirmation in the Economy of Salvation",
+          "short_label": "I. Confirmation in the Economy of Salvation",
+          "first": 1286,
+          "last": 1292,
+          "range_label": "§§1286–1292",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-147",
+          "kind": "heading",
+          "label": "II. The Signs and the Rite of Confirmation",
+          "short_label": "II. The Signs and the Rite of Confirmation",
+          "first": 1293,
+          "last": 1301,
+          "range_label": "§§1293–1301",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-148",
+          "kind": "heading",
+          "label": "III. The Effects of Confirmation",
+          "short_label": "III. The Effects of Confirmation",
+          "first": 1302,
+          "last": 1305,
+          "range_label": "§§1302–1305",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-149",
+          "kind": "heading",
+          "label": "IV. Who can Receive This Sacrament?",
+          "short_label": "IV. Who can Receive This Sacrament?",
+          "first": 1306,
+          "last": 1311,
+          "range_label": "§§1306–1311",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-150",
+          "kind": "heading",
+          "label": "V. The Minister of Confirmation",
+          "short_label": "V. The Minister of Confirmation",
+          "first": 1312,
+          "last": 1314,
+          "range_label": "§§1312–1314",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-151",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1315,
+          "last": 1321,
+          "range_label": "§§1315–1321",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-152",
+        "kind": "article",
+        "label": "The Sacrament of the Eucharist",
+        "short_label": "Article 3 · The Sacrament of the Eucharist",
+        "first": 1322,
+        "last": 1419,
+        "range_label": "§§1322–1419",
+        "children": [
+         {
+          "key": "ccc/toc-152/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1322,
+          "last": 1323,
+          "range_label": "§§1322–1323",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-153",
+          "kind": "heading",
+          "label": "I. The Eucharist - Source and Summit of Ecclesial Life",
+          "short_label": "I. The Eucharist - Source and Summit of Ecclesial Life",
+          "first": 1324,
+          "last": 1327,
+          "range_label": "§§1324–1327",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-154",
+          "kind": "heading",
+          "label": "II. What is This Sacrament Called?",
+          "short_label": "II. What is This Sacrament Called?",
+          "first": 1328,
+          "last": 1332,
+          "range_label": "§§1328–1332",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-155",
+          "kind": "heading",
+          "label": "III. The Eucharist in the Economy of Salvation",
+          "short_label": "III. The Eucharist in the Economy of Salvation",
+          "first": 1333,
+          "last": 1344,
+          "range_label": "§§1333–1344",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-156",
+          "kind": "heading",
+          "label": "IV. The Liturgical Celebration of the Eucharist",
+          "short_label": "IV. The Liturgical Celebration of the Eucharist",
+          "first": 1345,
+          "last": 1355,
+          "range_label": "§§1345–1355",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-157",
+          "kind": "heading",
+          "label": "V. The Sacramental Sacrifice Thanksgiving, Memorial, Presence",
+          "short_label": "V. The Sacramental Sacrifice Thanksgiving, Memorial, Presence",
+          "first": 1356,
+          "last": 1381,
+          "range_label": "§§1356–1381",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-158",
+          "kind": "heading",
+          "label": "VI. The Paschal Banquet",
+          "short_label": "VI. The Paschal Banquet",
+          "first": 1382,
+          "last": 1401,
+          "range_label": "§§1382–1401",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-159",
+          "kind": "heading",
+          "label": "VII. The Eucharist - \"Pledge of the Glory To Come\"",
+          "short_label": "VII. The Eucharist - \"Pledge of the Glory To Come\"",
+          "first": 1402,
+          "last": 1405,
+          "range_label": "§§1402–1405",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-160",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1406,
+          "last": 1419,
+          "range_label": "§§1406–1419",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-161",
+      "kind": "chapter",
+      "label": "The Sacraments of Healing",
+      "short_label": "Chapter Two · The Sacraments of Healing",
+      "first": 1420,
+      "last": 1532,
+      "range_label": "§§1420–1532",
+      "children": [
+       {
+        "key": "ccc/toc-161/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 1420,
+        "last": 1421,
+        "range_label": "§§1420–1421",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-162",
+        "kind": "article",
+        "label": "The Sacrament of Penance and Reconciliation",
+        "short_label": "Article 4 · The Sacrament of Penance and Reconciliation",
+        "first": 1422,
+        "last": 1498,
+        "range_label": "§§1422–1498",
+        "children": [
+         {
+          "key": "ccc/toc-162/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1422,
+          "last": 1422,
+          "range_label": "§1422",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-163",
+          "kind": "heading",
+          "label": "I. What is This Sacrament Called?",
+          "short_label": "I. What is This Sacrament Called?",
+          "first": 1423,
+          "last": 1424,
+          "range_label": "§§1423–1424",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-164",
+          "kind": "heading",
+          "label": "II. Why a Sacrament of Reconciliation after Baptism?",
+          "short_label": "II. Why a Sacrament of Reconciliation after Baptism?",
+          "first": 1425,
+          "last": 1426,
+          "range_label": "§§1425–1426",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-165",
+          "kind": "heading",
+          "label": "III. The Conversion of the Baptized",
+          "short_label": "III. The Conversion of the Baptized",
+          "first": 1427,
+          "last": 1429,
+          "range_label": "§§1427–1429",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-166",
+          "kind": "heading",
+          "label": "IV. Interior Penance",
+          "short_label": "IV. Interior Penance",
+          "first": 1430,
+          "last": 1433,
+          "range_label": "§§1430–1433",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-167",
+          "kind": "heading",
+          "label": "V. The Many Forms of Penance in Christian Life",
+          "short_label": "V. The Many Forms of Penance in Christian Life",
+          "first": 1434,
+          "last": 1439,
+          "range_label": "§§1434–1439",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-168",
+          "kind": "heading",
+          "label": "VI. The Sacrament of Penance and Reconciliation",
+          "short_label": "VI. The Sacrament of Penance and Reconciliation",
+          "first": 1440,
+          "last": 1449,
+          "range_label": "§§1440–1449",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-169",
+          "kind": "heading",
+          "label": "VII. The Acts of the Penitent",
+          "short_label": "VII. The Acts of the Penitent",
+          "first": 1450,
+          "last": 1460,
+          "range_label": "§§1450–1460",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-170",
+          "kind": "heading",
+          "label": "VIII. The Minister of This Sacrament",
+          "short_label": "VIII. The Minister of This Sacrament",
+          "first": 1461,
+          "last": 1467,
+          "range_label": "§§1461–1467",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-171",
+          "kind": "heading",
+          "label": "IX. The Effects of This Sacrament",
+          "short_label": "IX. The Effects of This Sacrament",
+          "first": 1468,
+          "last": 1470,
+          "range_label": "§§1468–1470",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-172",
+          "kind": "heading",
+          "label": "X. Indulgences",
+          "short_label": "X. Indulgences",
+          "first": 1471,
+          "last": 1479,
+          "range_label": "§§1471–1479",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-173",
+          "kind": "heading",
+          "label": "XI. The Celebration of the Sacrament of Penance",
+          "short_label": "XI. The Celebration of the Sacrament of Penance",
+          "first": 1480,
+          "last": 1484,
+          "range_label": "§§1480–1484",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-174",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1485,
+          "last": 1498,
+          "range_label": "§§1485–1498",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-175",
+        "kind": "article",
+        "label": "The Anointing of the Sick",
+        "short_label": "Article 5 · The Anointing of the Sick",
+        "first": 1499,
+        "last": 1532,
+        "range_label": "§§1499–1532",
+        "children": [
+         {
+          "key": "ccc/toc-175/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1499,
+          "last": 1499,
+          "range_label": "§1499",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-176",
+          "kind": "heading",
+          "label": "I. Its Foundations in the Economy of Salvation",
+          "short_label": "I. Its Foundations in the Economy of Salvation",
+          "first": 1500,
+          "last": 1513,
+          "range_label": "§§1500–1513",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-177",
+          "kind": "heading",
+          "label": "II. Who Receives and Who Administers This Sacrament?",
+          "short_label": "II. Who Receives and Who Administers This Sacrament?",
+          "first": 1514,
+          "last": 1516,
+          "range_label": "§§1514–1516",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-178",
+          "kind": "heading",
+          "label": "III. How is This Sacrament Celebrated?",
+          "short_label": "III. How is This Sacrament Celebrated?",
+          "first": 1517,
+          "last": 1519,
+          "range_label": "§§1517–1519",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-179",
+          "kind": "heading",
+          "label": "IV. The Effects of the Celebration of This Sacrament",
+          "short_label": "IV. The Effects of the Celebration of This Sacrament",
+          "first": 1520,
+          "last": 1523,
+          "range_label": "§§1520–1523",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-180",
+          "kind": "heading",
+          "label": "V. Viaticum, the Last Sacrament of the Christian",
+          "short_label": "V. Viaticum, the Last Sacrament of the Christian",
+          "first": 1524,
+          "last": 1525,
+          "range_label": "§§1524–1525",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-181",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1526,
+          "last": 1532,
+          "range_label": "§§1526–1532",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-182",
+      "kind": "chapter",
+      "label": "The Sacraments at the Service of Communion",
+      "short_label": "Chapter Three · The Sacraments at the Service of Communion",
+      "first": 1533,
+      "last": 1666,
+      "range_label": "§§1533–1666",
+      "children": [
+       {
+        "key": "ccc/toc-182/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 1533,
+        "last": 1535,
+        "range_label": "§§1533–1535",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-183",
+        "kind": "article",
+        "label": "The Sacrament of Holy Orders",
+        "short_label": "Article 6 · The Sacrament of Holy Orders",
+        "first": 1536,
+        "last": 1600,
+        "range_label": "§§1536–1600",
+        "children": [
+         {
+          "key": "ccc/toc-183/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1536,
+          "last": 1536,
+          "range_label": "§1536",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-184",
+          "kind": "heading",
+          "label": "I. Why Is This Sacrament Called \"Orders\"?",
+          "short_label": "I. Why Is This Sacrament Called \"Orders\"?",
+          "first": 1537,
+          "last": 1538,
+          "range_label": "§§1537–1538",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-185",
+          "kind": "heading",
+          "label": "II. The Sacrament of Holy Orders in the Economy of Salvation",
+          "short_label": "II. The Sacrament of Holy Orders in the Economy of Salvation",
+          "first": 1539,
+          "last": 1553,
+          "range_label": "§§1539–1553",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-186",
+          "kind": "heading",
+          "label": "III. The Three Degrees of the Sacrament of Holy Orders",
+          "short_label": "III. The Three Degrees of the Sacrament of Holy Orders",
+          "first": 1554,
+          "last": 1571,
+          "range_label": "§§1554–1571",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-187",
+          "kind": "heading",
+          "label": "IV. The Celebration of This Sacrament",
+          "short_label": "IV. The Celebration of This Sacrament",
+          "first": 1572,
+          "last": 1574,
+          "range_label": "§§1572–1574",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-188",
+          "kind": "heading",
+          "label": "V. Who Can Confer This Sacrament?",
+          "short_label": "V. Who Can Confer This Sacrament?",
+          "first": 1575,
+          "last": 1576,
+          "range_label": "§§1575–1576",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-189",
+          "kind": "heading",
+          "label": "VI. Who Can Receive This Sacrament?",
+          "short_label": "VI. Who Can Receive This Sacrament?",
+          "first": 1577,
+          "last": 1580,
+          "range_label": "§§1577–1580",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-190",
+          "kind": "heading",
+          "label": "VII. The Effects of the Sacrament of Holy Orders",
+          "short_label": "VII. The Effects of the Sacrament of Holy Orders",
+          "first": 1581,
+          "last": 1589,
+          "range_label": "§§1581–1589",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-191",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1590,
+          "last": 1600,
+          "range_label": "§§1590–1600",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-192",
+        "kind": "article",
+        "label": "The Sacrament of Matrimony",
+        "short_label": "Article 7 · The Sacrament of Matrimony",
+        "first": 1601,
+        "last": 1666,
+        "range_label": "§§1601–1666",
+        "children": [
+         {
+          "key": "ccc/toc-192/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1601,
+          "last": 1601,
+          "range_label": "§1601",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-193",
+          "kind": "heading",
+          "label": "I. Marriage in God's Plan",
+          "short_label": "I. Marriage in God's Plan",
+          "first": 1602,
+          "last": 1620,
+          "range_label": "§§1602–1620",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-194",
+          "kind": "heading",
+          "label": "II. The Celebration of Marriage",
+          "short_label": "II. The Celebration of Marriage",
+          "first": 1621,
+          "last": 1624,
+          "range_label": "§§1621–1624",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-195",
+          "kind": "heading",
+          "label": "III. Matrimonial Consent",
+          "short_label": "III. Matrimonial Consent",
+          "first": 1625,
+          "last": 1637,
+          "range_label": "§§1625–1637",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-196",
+          "kind": "heading",
+          "label": "IV. The Effects of the Sacrament of Matrimony",
+          "short_label": "IV. The Effects of the Sacrament of Matrimony",
+          "first": 1638,
+          "last": 1642,
+          "range_label": "§§1638–1642",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-197",
+          "kind": "heading",
+          "label": "V. The Goods and Requirements of Conjugal Love",
+          "short_label": "V. The Goods and Requirements of Conjugal Love",
+          "first": 1643,
+          "last": 1654,
+          "range_label": "§§1643–1654",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-198",
+          "kind": "heading",
+          "label": "VI. The Domestic Church",
+          "short_label": "VI. The Domestic Church",
+          "first": 1655,
+          "last": 1658,
+          "range_label": "§§1655–1658",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-199",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1659,
+          "last": 1666,
+          "range_label": "§§1659–1666",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-200",
+      "kind": "chapter",
+      "label": "Other Liturgical Celebrations",
+      "short_label": "Chapter Four · Other Liturgical Celebrations",
+      "first": 1667,
+      "last": 1690,
+      "range_label": "§§1667–1690",
+      "children": [
+       {
+        "key": "ccc/toc-201",
+        "kind": "article",
+        "label": "Sacramentals",
+        "short_label": "Article 1 · Sacramentals",
+        "first": 1667,
+        "last": 1679,
+        "range_label": "§§1667–1679",
+        "children": [
+         {
+          "key": "ccc/toc-201/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1667,
+          "last": 1676,
+          "range_label": "§§1667–1676",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-202",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1677,
+          "last": 1679,
+          "range_label": "§§1677–1679",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-203",
+        "kind": "article",
+        "label": "Christian Funerals",
+        "short_label": "Article 2 · Christian Funerals",
+        "first": 1680,
+        "last": 1690,
+        "range_label": "§§1680–1690",
+        "children": [
+         {
+          "key": "ccc/toc-203/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1680,
+          "last": 1680,
+          "range_label": "§1680",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-204",
+          "kind": "heading",
+          "label": "I. The Christian's Last Passover",
+          "short_label": "I. The Christian's Last Passover",
+          "first": 1681,
+          "last": 1683,
+          "range_label": "§§1681–1683",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-205",
+          "kind": "heading",
+          "label": "II. The Celebration of Funerals",
+          "short_label": "II. The Celebration of Funerals",
+          "first": 1684,
+          "last": 1690,
+          "range_label": "§§1684–1690",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "key": "ccc/toc-206",
+  "kind": "part",
+  "label": "Life in Christ",
+  "short_label": "Part Three · Life in Christ",
+  "first": 1691,
+  "last": 2557,
+  "range_label": "§§1691–2557",
+  "children": [
+   {
+    "key": "ccc/toc-206/own",
+    "kind": "heading",
+    "label": "Introduction",
+    "short_label": "Introduction",
+    "first": 1691,
+    "last": 1698,
+    "range_label": "§§1691–1698",
+    "children": []
+   },
+   {
+    "key": "ccc/toc-207",
+    "kind": "section",
+    "label": "Man's Vocation: Life in the Spirit",
+    "short_label": "Section One · Man's Vocation: Life in the Spirit",
+    "first": 1699,
+    "last": 2051,
+    "range_label": "§§1699–2051",
+    "children": [
+     {
+      "key": "ccc/toc-207/own",
+      "kind": "heading",
+      "label": "Introduction",
+      "short_label": "Introduction",
+      "first": 1699,
+      "last": 1699,
+      "range_label": "§1699",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-208",
+      "kind": "chapter",
+      "label": "The Dignity of the Human Person",
+      "short_label": "Chapter One · The Dignity of the Human Person",
+      "first": 1700,
+      "last": 1876,
+      "range_label": "§§1700–1876",
+      "children": [
+       {
+        "key": "ccc/toc-208/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 1700,
+        "last": 1700,
+        "range_label": "§1700",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-209",
+        "kind": "article",
+        "label": "Man: The Image of God",
+        "short_label": "Article 1 · Man: The Image of God",
+        "first": 1701,
+        "last": 1715,
+        "range_label": "§§1701–1715",
+        "children": [
+         {
+          "key": "ccc/toc-209/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1701,
+          "last": 1709,
+          "range_label": "§§1701–1709",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-210",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1710,
+          "last": 1715,
+          "range_label": "§§1710–1715",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-211",
+        "kind": "article",
+        "label": "Our Vocation to Beatitude",
+        "short_label": "Article 2 · Our Vocation to Beatitude",
+        "first": 1716,
+        "last": 1729,
+        "range_label": "§§1716–1729",
+        "children": [
+         {
+          "key": "ccc/toc-212",
+          "kind": "heading",
+          "label": "I. The Beatitudes",
+          "short_label": "I. The Beatitudes",
+          "first": 1716,
+          "last": 1717,
+          "range_label": "§§1716–1717",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-213",
+          "kind": "heading",
+          "label": "II. The Desire for Happiness",
+          "short_label": "II. The Desire for Happiness",
+          "first": 1718,
+          "last": 1719,
+          "range_label": "§§1718–1719",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-214",
+          "kind": "heading",
+          "label": "III. Christian Beatitude",
+          "short_label": "III. Christian Beatitude",
+          "first": 1720,
+          "last": 1724,
+          "range_label": "§§1720–1724",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-215",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1725,
+          "last": 1729,
+          "range_label": "§§1725–1729",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-216",
+        "kind": "article",
+        "label": "Man's Freedom",
+        "short_label": "Article 3 · Man's Freedom",
+        "first": 1730,
+        "last": 1748,
+        "range_label": "§§1730–1748",
+        "children": [
+         {
+          "key": "ccc/toc-216/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1730,
+          "last": 1730,
+          "range_label": "§1730",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-217",
+          "kind": "heading",
+          "label": "I. Freedom and Responsibility",
+          "short_label": "I. Freedom and Responsibility",
+          "first": 1731,
+          "last": 1738,
+          "range_label": "§§1731–1738",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-218",
+          "kind": "heading",
+          "label": "II. Human Freedom in the Economy of Salvation",
+          "short_label": "II. Human Freedom in the Economy of Salvation",
+          "first": 1739,
+          "last": 1742,
+          "range_label": "§§1739–1742",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-219",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1743,
+          "last": 1748,
+          "range_label": "§§1743–1748",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-220",
+        "kind": "article",
+        "label": "The Morality of Human Acts",
+        "short_label": "Article 4 · The Morality of Human Acts",
+        "first": 1749,
+        "last": 1761,
+        "range_label": "§§1749–1761",
+        "children": [
+         {
+          "key": "ccc/toc-220/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1749,
+          "last": 1749,
+          "range_label": "§1749",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-221",
+          "kind": "heading",
+          "label": "I. The Sources of Morality",
+          "short_label": "I. The Sources of Morality",
+          "first": 1750,
+          "last": 1754,
+          "range_label": "§§1750–1754",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-222",
+          "kind": "heading",
+          "label": "II. Good Acts and Evil Acts",
+          "short_label": "II. Good Acts and Evil Acts",
+          "first": 1755,
+          "last": 1756,
+          "range_label": "§§1755–1756",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-223",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1757,
+          "last": 1761,
+          "range_label": "§§1757–1761",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-224",
+        "kind": "article",
+        "label": "The Morality of the Passions",
+        "short_label": "Article 5 · The Morality of the Passions",
+        "first": 1762,
+        "last": 1775,
+        "range_label": "§§1762–1775",
+        "children": [
+         {
+          "key": "ccc/toc-224/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1762,
+          "last": 1762,
+          "range_label": "§1762",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-225",
+          "kind": "heading",
+          "label": "I. Passions",
+          "short_label": "I. Passions",
+          "first": 1763,
+          "last": 1766,
+          "range_label": "§§1763–1766",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-226",
+          "kind": "heading",
+          "label": "II. Passions and Moral Life",
+          "short_label": "II. Passions and Moral Life",
+          "first": 1767,
+          "last": 1770,
+          "range_label": "§§1767–1770",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-227",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1771,
+          "last": 1775,
+          "range_label": "§§1771–1775",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-228",
+        "kind": "article",
+        "label": "Moral Conscience",
+        "short_label": "Article 6 · Moral Conscience",
+        "first": 1776,
+        "last": 1802,
+        "range_label": "§§1776–1802",
+        "children": [
+         {
+          "key": "ccc/toc-228/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1776,
+          "last": 1776,
+          "range_label": "§1776",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-229",
+          "kind": "heading",
+          "label": "I. The Judgment of Conscience",
+          "short_label": "I. The Judgment of Conscience",
+          "first": 1777,
+          "last": 1782,
+          "range_label": "§§1777–1782",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-230",
+          "kind": "heading",
+          "label": "II. The Formation of Conscience",
+          "short_label": "II. The Formation of Conscience",
+          "first": 1783,
+          "last": 1785,
+          "range_label": "§§1783–1785",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-231",
+          "kind": "heading",
+          "label": "III. To Choose in Accord With Conscience",
+          "short_label": "III. To Choose in Accord With Conscience",
+          "first": 1786,
+          "last": 1789,
+          "range_label": "§§1786–1789",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-232",
+          "kind": "heading",
+          "label": "IV. Erroneous Judgment",
+          "short_label": "IV. Erroneous Judgment",
+          "first": 1790,
+          "last": 1794,
+          "range_label": "§§1790–1794",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-233",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1795,
+          "last": 1802,
+          "range_label": "§§1795–1802",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-234",
+        "kind": "article",
+        "label": "The Virtues",
+        "short_label": "Article 7 · The Virtues",
+        "first": 1803,
+        "last": 1845,
+        "range_label": "§§1803–1845",
+        "children": [
+         {
+          "key": "ccc/toc-234/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1803,
+          "last": 1803,
+          "range_label": "§1803",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-235",
+          "kind": "heading",
+          "label": "I. The Human Virtues",
+          "short_label": "I. The Human Virtues",
+          "first": 1804,
+          "last": 1811,
+          "range_label": "§§1804–1811",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-236",
+          "kind": "heading",
+          "label": "II. The Theological Virtues",
+          "short_label": "II. The Theological Virtues",
+          "first": 1812,
+          "last": 1829,
+          "range_label": "§§1812–1829",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-237",
+          "kind": "heading",
+          "label": "III. The Gifts and Fruits of the Holy Spirit",
+          "short_label": "III. The Gifts and Fruits of the Holy Spirit",
+          "first": 1830,
+          "last": 1832,
+          "range_label": "§§1830–1832",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-238",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1833,
+          "last": 1845,
+          "range_label": "§§1833–1845",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-239",
+        "kind": "article",
+        "label": "Sin",
+        "short_label": "Article 8 · Sin",
+        "first": 1846,
+        "last": 1876,
+        "range_label": "§§1846–1876",
+        "children": [
+         {
+          "key": "ccc/toc-240",
+          "kind": "heading",
+          "label": "I. Mercy and Sin",
+          "short_label": "I. Mercy and Sin",
+          "first": 1846,
+          "last": 1848,
+          "range_label": "§§1846–1848",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-241",
+          "kind": "heading",
+          "label": "II. The Definition of Sin",
+          "short_label": "II. The Definition of Sin",
+          "first": 1849,
+          "last": 1851,
+          "range_label": "§§1849–1851",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-242",
+          "kind": "heading",
+          "label": "III. The Different Kinds of Sins",
+          "short_label": "III. The Different Kinds of Sins",
+          "first": 1852,
+          "last": 1853,
+          "range_label": "§§1852–1853",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-243",
+          "kind": "heading",
+          "label": "IV. The Gravity of Sin: Mortal and Venial Sin",
+          "short_label": "IV. The Gravity of Sin: Mortal and Venial Sin",
+          "first": 1854,
+          "last": 1864,
+          "range_label": "§§1854–1864",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-244",
+          "kind": "heading",
+          "label": "V. The Proliferation of Sin",
+          "short_label": "V. The Proliferation of Sin",
+          "first": 1865,
+          "last": 1869,
+          "range_label": "§§1865–1869",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-245",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1870,
+          "last": 1876,
+          "range_label": "§§1870–1876",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-246",
+      "kind": "chapter",
+      "label": "The Human Communion",
+      "short_label": "Chapter Two · The Human Communion",
+      "first": 1877,
+      "last": 1948,
+      "range_label": "§§1877–1948",
+      "children": [
+       {
+        "key": "ccc/toc-246/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 1877,
+        "last": 1877,
+        "range_label": "§1877",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-247",
+        "kind": "article",
+        "label": "The Person and Society",
+        "short_label": "Article 1 · The Person and Society",
+        "first": 1878,
+        "last": 1896,
+        "range_label": "§§1878–1896",
+        "children": [
+         {
+          "key": "ccc/toc-248",
+          "kind": "heading",
+          "label": "I. The Communal Character of the Human Vocation",
+          "short_label": "I. The Communal Character of the Human Vocation",
+          "first": 1878,
+          "last": 1885,
+          "range_label": "§§1878–1885",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-249",
+          "kind": "heading",
+          "label": "II. Conversion and Society",
+          "short_label": "II. Conversion and Society",
+          "first": 1886,
+          "last": 1889,
+          "range_label": "§§1886–1889",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-250",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1890,
+          "last": 1896,
+          "range_label": "§§1890–1896",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-251",
+        "kind": "article",
+        "label": "Participation in Social Life",
+        "short_label": "Article 2 · Participation in Social Life",
+        "first": 1897,
+        "last": 1927,
+        "range_label": "§§1897–1927",
+        "children": [
+         {
+          "key": "ccc/toc-252",
+          "kind": "heading",
+          "label": "I. Authority",
+          "short_label": "I. Authority",
+          "first": 1897,
+          "last": 1904,
+          "range_label": "§§1897–1904",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-253",
+          "kind": "heading",
+          "label": "II. The Common Good",
+          "short_label": "II. The Common Good",
+          "first": 1905,
+          "last": 1912,
+          "range_label": "§§1905–1912",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-254",
+          "kind": "heading",
+          "label": "III. Responsibility and Participation",
+          "short_label": "III. Responsibility and Participation",
+          "first": 1913,
+          "last": 1917,
+          "range_label": "§§1913–1917",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-255",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1918,
+          "last": 1927,
+          "range_label": "§§1918–1927",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-256",
+        "kind": "article",
+        "label": "Social Justice",
+        "short_label": "Article 3 · Social Justice",
+        "first": 1928,
+        "last": 1948,
+        "range_label": "§§1928–1948",
+        "children": [
+         {
+          "key": "ccc/toc-256/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1928,
+          "last": 1928,
+          "range_label": "§1928",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-257",
+          "kind": "heading",
+          "label": "I. Respect For the Human Person",
+          "short_label": "I. Respect For the Human Person",
+          "first": 1929,
+          "last": 1933,
+          "range_label": "§§1929–1933",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-258",
+          "kind": "heading",
+          "label": "II. Equality and Differences Among Men",
+          "short_label": "II. Equality and Differences Among Men",
+          "first": 1934,
+          "last": 1938,
+          "range_label": "§§1934–1938",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-259",
+          "kind": "heading",
+          "label": "III. Human Solidarity",
+          "short_label": "III. Human Solidarity",
+          "first": 1939,
+          "last": 1942,
+          "range_label": "§§1939–1942",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-260",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1943,
+          "last": 1948,
+          "range_label": "§§1943–1948",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-261",
+      "kind": "chapter",
+      "label": "God's Salvation: Law and Grace",
+      "short_label": "Chapter Three · God's Salvation: Law and Grace",
+      "first": 1949,
+      "last": 2051,
+      "range_label": "§§1949–2051",
+      "children": [
+       {
+        "key": "ccc/toc-261/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 1949,
+        "last": 1949,
+        "range_label": "§1949",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-262",
+        "kind": "article",
+        "label": "The Moral Law",
+        "short_label": "Article 1 · The Moral Law",
+        "first": 1950,
+        "last": 1986,
+        "range_label": "§§1950–1986",
+        "children": [
+         {
+          "key": "ccc/toc-262/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 1950,
+          "last": 1953,
+          "range_label": "§§1950–1953",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-263",
+          "kind": "heading",
+          "label": "I. The Natural Moral Law",
+          "short_label": "I. The Natural Moral Law",
+          "first": 1954,
+          "last": 1960,
+          "range_label": "§§1954–1960",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-264",
+          "kind": "heading",
+          "label": "II. The Old Law",
+          "short_label": "II. The Old Law",
+          "first": 1961,
+          "last": 1964,
+          "range_label": "§§1961–1964",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-265",
+          "kind": "heading",
+          "label": "III. The New Law or the Law of the Gospel",
+          "short_label": "III. The New Law or the Law of the Gospel",
+          "first": 1965,
+          "last": 1974,
+          "range_label": "§§1965–1974",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-266",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 1975,
+          "last": 1986,
+          "range_label": "§§1975–1986",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-267",
+        "kind": "article",
+        "label": "Grace and Justification",
+        "short_label": "Article 2 · Grace and Justification",
+        "first": 1987,
+        "last": 2029,
+        "range_label": "§§1987–2029",
+        "children": [
+         {
+          "key": "ccc/toc-268",
+          "kind": "heading",
+          "label": "I. Justification",
+          "short_label": "I. Justification",
+          "first": 1987,
+          "last": 1995,
+          "range_label": "§§1987–1995",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-269",
+          "kind": "heading",
+          "label": "II. Grace",
+          "short_label": "II. Grace",
+          "first": 1996,
+          "last": 2005,
+          "range_label": "§§1996–2005",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-270",
+          "kind": "heading",
+          "label": "III. Merit",
+          "short_label": "III. Merit",
+          "first": 2006,
+          "last": 2011,
+          "range_label": "§§2006–2011",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-271",
+          "kind": "heading",
+          "label": "IV. Christian Holiness",
+          "short_label": "IV. Christian Holiness",
+          "first": 2012,
+          "last": 2016,
+          "range_label": "§§2012–2016",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-272",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2017,
+          "last": 2029,
+          "range_label": "§§2017–2029",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-273",
+        "kind": "article",
+        "label": "The Church, Mother and Teacher",
+        "short_label": "Article 3 · The Church, Mother and Teacher",
+        "first": 2030,
+        "last": 2051,
+        "range_label": "§§2030–2051",
+        "children": [
+         {
+          "key": "ccc/toc-273/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2030,
+          "last": 2031,
+          "range_label": "§§2030–2031",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-274",
+          "kind": "heading",
+          "label": "I. Moral Life and the Magisterium of the Church",
+          "short_label": "I. Moral Life and the Magisterium of the Church",
+          "first": 2032,
+          "last": 2040,
+          "range_label": "§§2032–2040",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-275",
+          "kind": "heading",
+          "label": "II. The Precepts of the Church",
+          "short_label": "II. The Precepts of the Church",
+          "first": 2041,
+          "last": 2043,
+          "range_label": "§§2041–2043",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-276",
+          "kind": "heading",
+          "label": "III. Moral Life and Missionary Witness",
+          "short_label": "III. Moral Life and Missionary Witness",
+          "first": 2044,
+          "last": 2046,
+          "range_label": "§§2044–2046",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-277",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2047,
+          "last": 2051,
+          "range_label": "§§2047–2051",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "ccc/toc-278",
+    "kind": "section",
+    "label": "The Ten Commandments",
+    "short_label": "Section Two · The Ten Commandments",
+    "first": 2052,
+    "last": 2557,
+    "range_label": "§§2052–2557",
+    "children": [
+     {
+      "key": "ccc/toc-278/own",
+      "kind": "heading",
+      "label": "Introduction",
+      "short_label": "Introduction",
+      "first": 2052,
+      "last": 2074,
+      "range_label": "§§2052–2074",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-279",
+      "kind": "heading",
+      "label": "In Brief",
+      "short_label": "In Brief",
+      "first": 2075,
+      "last": 2082,
+      "range_label": "§§2075–2082",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-280",
+      "kind": "chapter",
+      "label": "You Shall Love the Lord Your God with All Your Heart, and with All Your Soul, and with All Your Mind",
+      "short_label": "Chapter One · You Shall Love the Lord Your God with All Your Heart, and with All Your Soul, and with All Your Mind",
+      "first": 2083,
+      "last": 2195,
+      "range_label": "§§2083–2195",
+      "children": [
+       {
+        "key": "ccc/toc-280/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2083,
+        "last": 2083,
+        "range_label": "§2083",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-281",
+        "kind": "article",
+        "label": "The First Commandment",
+        "short_label": "Article 1 · The First Commandment",
+        "first": 2084,
+        "last": 2141,
+        "range_label": "§§2084–2141",
+        "children": [
+         {
+          "key": "ccc/toc-282",
+          "kind": "heading",
+          "label": "I. \"You Shall Worship the Lord Your God and Him Only Shall You Serve\"",
+          "short_label": "I. \"You Shall Worship the Lord Your God and Him Only Shall You Serve\"",
+          "first": 2084,
+          "last": 2094,
+          "range_label": "§§2084–2094",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-283",
+          "kind": "heading",
+          "label": "II. \"Him Only Shall You Serve\"",
+          "short_label": "II. \"Him Only Shall You Serve\"",
+          "first": 2095,
+          "last": 2109,
+          "range_label": "§§2095–2109",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-284",
+          "kind": "heading",
+          "label": "III. \"You Shall Have No Other Gods Before Me\"",
+          "short_label": "III. \"You Shall Have No Other Gods Before Me\"",
+          "first": 2110,
+          "last": 2128,
+          "range_label": "§§2110–2128",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-285",
+          "kind": "heading",
+          "label": "IV. \"You Shall Not Make For Yourself a Graven Image . . .\"",
+          "short_label": "IV. \"You Shall Not Make For Yourself a Graven Image . . .\"",
+          "first": 2129,
+          "last": 2132,
+          "range_label": "§§2129–2132",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-286",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2133,
+          "last": 2141,
+          "range_label": "§§2133–2141",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-287",
+        "kind": "article",
+        "label": "The Second Commandment",
+        "short_label": "Article 2 · The Second Commandment",
+        "first": 2142,
+        "last": 2167,
+        "range_label": "§§2142–2167",
+        "children": [
+         {
+          "key": "ccc/toc-288",
+          "kind": "heading",
+          "label": "I. The Name of the Lord is Holy",
+          "short_label": "I. The Name of the Lord is Holy",
+          "first": 2142,
+          "last": 2149,
+          "range_label": "§§2142–2149",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-289",
+          "kind": "heading",
+          "label": "II. Taking the Name of the Lord in Vain",
+          "short_label": "II. Taking the Name of the Lord in Vain",
+          "first": 2150,
+          "last": 2155,
+          "range_label": "§§2150–2155",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-290",
+          "kind": "heading",
+          "label": "III. The Christian Name",
+          "short_label": "III. The Christian Name",
+          "first": 2156,
+          "last": 2159,
+          "range_label": "§§2156–2159",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-291",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2160,
+          "last": 2167,
+          "range_label": "§§2160–2167",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-292",
+        "kind": "article",
+        "label": "The Third Commandment",
+        "short_label": "Article 3 · The Third Commandment",
+        "first": 2168,
+        "last": 2195,
+        "range_label": "§§2168–2195",
+        "children": [
+         {
+          "key": "ccc/toc-293",
+          "kind": "heading",
+          "label": "I. The Sabbath Day",
+          "short_label": "I. The Sabbath Day",
+          "first": 2168,
+          "last": 2173,
+          "range_label": "§§2168–2173",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-294",
+          "kind": "heading",
+          "label": "II. The Lord's Day",
+          "short_label": "II. The Lord's Day",
+          "first": 2174,
+          "last": 2188,
+          "range_label": "§§2174–2188",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-295",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2189,
+          "last": 2195,
+          "range_label": "§§2189–2195",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-296",
+      "kind": "chapter",
+      "label": "You Shall Love Your Neighbor as Yourself",
+      "short_label": "Chapter Two · You Shall Love Your Neighbor as Yourself",
+      "first": 2196,
+      "last": 2557,
+      "range_label": "§§2196–2557",
+      "children": [
+       {
+        "key": "ccc/toc-296/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2196,
+        "last": 2196,
+        "range_label": "§2196",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-297",
+        "kind": "article",
+        "label": "The Fourth Commandment",
+        "short_label": "Article 4 · The Fourth Commandment",
+        "first": 2197,
+        "last": 2257,
+        "range_label": "§§2197–2257",
+        "children": [
+         {
+          "key": "ccc/toc-297/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2197,
+          "last": 2200,
+          "range_label": "§§2197–2200",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-298",
+          "kind": "heading",
+          "label": "I. The Family in God's Plan",
+          "short_label": "I. The Family in God's Plan",
+          "first": 2201,
+          "last": 2206,
+          "range_label": "§§2201–2206",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-299",
+          "kind": "heading",
+          "label": "II. The Family and Society",
+          "short_label": "II. The Family and Society",
+          "first": 2207,
+          "last": 2213,
+          "range_label": "§§2207–2213",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-300",
+          "kind": "heading",
+          "label": "III. The Duties of Family Members",
+          "short_label": "III. The Duties of Family Members",
+          "first": 2214,
+          "last": 2231,
+          "range_label": "§§2214–2231",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-301",
+          "kind": "heading",
+          "label": "IV. The Family and the Kingdom",
+          "short_label": "IV. The Family and the Kingdom",
+          "first": 2232,
+          "last": 2233,
+          "range_label": "§§2232–2233",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-302",
+          "kind": "heading",
+          "label": "V. The Authorities In Civil Society",
+          "short_label": "V. The Authorities In Civil Society",
+          "first": 2234,
+          "last": 2246,
+          "range_label": "§§2234–2246",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-303",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2247,
+          "last": 2257,
+          "range_label": "§§2247–2257",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-304",
+        "kind": "article",
+        "label": "The Fifth Commandment",
+        "short_label": "Article 5 · The Fifth Commandment",
+        "first": 2258,
+        "last": 2330,
+        "range_label": "§§2258–2330",
+        "children": [
+         {
+          "key": "ccc/toc-304/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2258,
+          "last": 2258,
+          "range_label": "§2258",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-305",
+          "kind": "heading",
+          "label": "I. Respect for Human Life",
+          "short_label": "I. Respect for Human Life",
+          "first": 2259,
+          "last": 2283,
+          "range_label": "§§2259–2283",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-306",
+          "kind": "heading",
+          "label": "II. Respect for the Dignity of Persons",
+          "short_label": "II. Respect for the Dignity of Persons",
+          "first": 2284,
+          "last": 2301,
+          "range_label": "§§2284–2301",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-307",
+          "kind": "heading",
+          "label": "III. Safeguarding Peace",
+          "short_label": "III. Safeguarding Peace",
+          "first": 2302,
+          "last": 2317,
+          "range_label": "§§2302–2317",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-308",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2318,
+          "last": 2330,
+          "range_label": "§§2318–2330",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-309",
+        "kind": "article",
+        "label": "The Sixth Commandment",
+        "short_label": "Article 6 · The Sixth Commandment",
+        "first": 2331,
+        "last": 2400,
+        "range_label": "§§2331–2400",
+        "children": [
+         {
+          "key": "ccc/toc-310",
+          "kind": "heading",
+          "label": "I. \"Male and Female He Created Them . . .\"",
+          "short_label": "I. \"Male and Female He Created Them . . .\"",
+          "first": 2331,
+          "last": 2336,
+          "range_label": "§§2331–2336",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-311",
+          "kind": "heading",
+          "label": "II. The Vocation to Chastity",
+          "short_label": "II. The Vocation to Chastity",
+          "first": 2337,
+          "last": 2359,
+          "range_label": "§§2337–2359",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-312",
+          "kind": "heading",
+          "label": "III. The Love of Husband and Wife",
+          "short_label": "III. The Love of Husband and Wife",
+          "first": 2360,
+          "last": 2379,
+          "range_label": "§§2360–2379",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-313",
+          "kind": "heading",
+          "label": "IV. Offenses Against the Dignity of Marriage",
+          "short_label": "IV. Offenses Against the Dignity of Marriage",
+          "first": 2380,
+          "last": 2391,
+          "range_label": "§§2380–2391",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-314",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2392,
+          "last": 2400,
+          "range_label": "§§2392–2400",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-315",
+        "kind": "article",
+        "label": "The Seventh Commandment",
+        "short_label": "Article 7 · The Seventh Commandment",
+        "first": 2401,
+        "last": 2463,
+        "range_label": "§§2401–2463",
+        "children": [
+         {
+          "key": "ccc/toc-315/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2401,
+          "last": 2401,
+          "range_label": "§2401",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-316",
+          "kind": "heading",
+          "label": "I. The Universal Destination and the Private Ownership of Goods",
+          "short_label": "I. The Universal Destination and the Private Ownership of Goods",
+          "first": 2402,
+          "last": 2406,
+          "range_label": "§§2402–2406",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-317",
+          "kind": "heading",
+          "label": "II. Respect for Persons and Their Goods",
+          "short_label": "II. Respect for Persons and Their Goods",
+          "first": 2407,
+          "last": 2418,
+          "range_label": "§§2407–2418",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-318",
+          "kind": "heading",
+          "label": "III. The Social Doctrine of the Church",
+          "short_label": "III. The Social Doctrine of the Church",
+          "first": 2419,
+          "last": 2425,
+          "range_label": "§§2419–2425",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-319",
+          "kind": "heading",
+          "label": "IV. Economic Activity and Social Justice",
+          "short_label": "IV. Economic Activity and Social Justice",
+          "first": 2426,
+          "last": 2436,
+          "range_label": "§§2426–2436",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-320",
+          "kind": "heading",
+          "label": "V. Justice and Solidarity Among Nations",
+          "short_label": "V. Justice and Solidarity Among Nations",
+          "first": 2437,
+          "last": 2442,
+          "range_label": "§§2437–2442",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-321",
+          "kind": "heading",
+          "label": "VI. Love For the Poor",
+          "short_label": "VI. Love For the Poor",
+          "first": 2443,
+          "last": 2449,
+          "range_label": "§§2443–2449",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-322",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2450,
+          "last": 2463,
+          "range_label": "§§2450–2463",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-323",
+        "kind": "article",
+        "label": "The Eighth Commandment",
+        "short_label": "Article 8 · The Eighth Commandment",
+        "first": 2464,
+        "last": 2513,
+        "range_label": "§§2464–2513",
+        "children": [
+         {
+          "key": "ccc/toc-323/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2464,
+          "last": 2464,
+          "range_label": "§2464",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-324",
+          "kind": "heading",
+          "label": "I. Living in the Truth",
+          "short_label": "I. Living in the Truth",
+          "first": 2465,
+          "last": 2470,
+          "range_label": "§§2465–2470",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-325",
+          "kind": "heading",
+          "label": "II. To Bear Witness to the Truth",
+          "short_label": "II. To Bear Witness to the Truth",
+          "first": 2471,
+          "last": 2474,
+          "range_label": "§§2471–2474",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-326",
+          "kind": "heading",
+          "label": "III. Offenses Against Truth",
+          "short_label": "III. Offenses Against Truth",
+          "first": 2475,
+          "last": 2487,
+          "range_label": "§§2475–2487",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-327",
+          "kind": "heading",
+          "label": "IV. Respect for the Truth",
+          "short_label": "IV. Respect for the Truth",
+          "first": 2488,
+          "last": 2492,
+          "range_label": "§§2488–2492",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-328",
+          "kind": "heading",
+          "label": "V. The Use of the Social Communications Media",
+          "short_label": "V. The Use of the Social Communications Media",
+          "first": 2493,
+          "last": 2499,
+          "range_label": "§§2493–2499",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-329",
+          "kind": "heading",
+          "label": "VI. Truth, Beauty, and Sacred Art",
+          "short_label": "VI. Truth, Beauty, and Sacred Art",
+          "first": 2500,
+          "last": 2503,
+          "range_label": "§§2500–2503",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-330",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2504,
+          "last": 2513,
+          "range_label": "§§2504–2513",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-331",
+        "kind": "article",
+        "label": "The Ninth Commandment",
+        "short_label": "Article 9 · The Ninth Commandment",
+        "first": 2514,
+        "last": 2533,
+        "range_label": "§§2514–2533",
+        "children": [
+         {
+          "key": "ccc/toc-331/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2514,
+          "last": 2516,
+          "range_label": "§§2514–2516",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-332",
+          "kind": "heading",
+          "label": "I. Purification of the Heart",
+          "short_label": "I. Purification of the Heart",
+          "first": 2517,
+          "last": 2519,
+          "range_label": "§§2517–2519",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-333",
+          "kind": "heading",
+          "label": "II. The Battle for Purity",
+          "short_label": "II. The Battle for Purity",
+          "first": 2520,
+          "last": 2527,
+          "range_label": "§§2520–2527",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-334",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2528,
+          "last": 2533,
+          "range_label": "§§2528–2533",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-335",
+        "kind": "article",
+        "label": "The Tenth Commandment",
+        "short_label": "Article 10 · The Tenth Commandment",
+        "first": 2534,
+        "last": 2557,
+        "range_label": "§§2534–2557",
+        "children": [
+         {
+          "key": "ccc/toc-335/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2534,
+          "last": 2534,
+          "range_label": "§2534",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-336",
+          "kind": "heading",
+          "label": "I. The Disorder of Covetous Desires",
+          "short_label": "I. The Disorder of Covetous Desires",
+          "first": 2535,
+          "last": 2540,
+          "range_label": "§§2535–2540",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-337",
+          "kind": "heading",
+          "label": "II. The Desires of the Spirit",
+          "short_label": "II. The Desires of the Spirit",
+          "first": 2541,
+          "last": 2543,
+          "range_label": "§§2541–2543",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-338",
+          "kind": "heading",
+          "label": "III. Poverty of Heart",
+          "short_label": "III. Poverty of Heart",
+          "first": 2544,
+          "last": 2547,
+          "range_label": "§§2544–2547",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-339",
+          "kind": "heading",
+          "label": "IV. \"I Want to See God\"",
+          "short_label": "IV. \"I Want to See God\"",
+          "first": 2548,
+          "last": 2550,
+          "range_label": "§§2548–2550",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-340",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2551,
+          "last": 2557,
+          "range_label": "§§2551–2557",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "key": "ccc/toc-341",
+  "kind": "part",
+  "label": "Christian Prayer",
+  "short_label": "Part Four · Christian Prayer",
+  "first": 2558,
+  "last": 2865,
+  "range_label": "§§2558–2865",
+  "children": [
+   {
+    "key": "ccc/toc-342",
+    "kind": "section",
+    "label": "Prayer in the Christian Life",
+    "short_label": "Section One · Prayer in the Christian Life",
+    "first": 2558,
+    "last": 2758,
+    "range_label": "§§2558–2758",
+    "children": [
+     {
+      "key": "ccc/toc-342/own",
+      "kind": "heading",
+      "label": "Introduction",
+      "short_label": "Introduction",
+      "first": 2558,
+      "last": 2565,
+      "range_label": "§§2558–2565",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-343",
+      "kind": "chapter",
+      "label": "The Revelation of Prayer - The Universal Call to Prayer",
+      "short_label": "Chapter One · The Revelation of Prayer - The Universal Call to Prayer",
+      "first": 2566,
+      "last": 2649,
+      "range_label": "§§2566–2649",
+      "children": [
+       {
+        "key": "ccc/toc-343/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2566,
+        "last": 2567,
+        "range_label": "§§2566–2567",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-344",
+        "kind": "article",
+        "label": "In the Old Testament",
+        "short_label": "Article 1 · In the Old Testament",
+        "first": 2568,
+        "last": 2597,
+        "range_label": "§§2568–2597",
+        "children": [
+         {
+          "key": "ccc/toc-344/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2568,
+          "last": 2589,
+          "range_label": "§§2568–2589",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-345",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2590,
+          "last": 2597,
+          "range_label": "§§2590–2597",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-346",
+        "kind": "article",
+        "label": "In the Fullness of Time",
+        "short_label": "Article 2 · In the Fullness of Time",
+        "first": 2598,
+        "last": 2622,
+        "range_label": "§§2598–2622",
+        "children": [
+         {
+          "key": "ccc/toc-346/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2598,
+          "last": 2619,
+          "range_label": "§§2598–2619",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-347",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2620,
+          "last": 2622,
+          "range_label": "§§2620–2622",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-348",
+        "kind": "article",
+        "label": "In the Age of the Church",
+        "short_label": "Article 3 · In the Age of the Church",
+        "first": 2623,
+        "last": 2649,
+        "range_label": "§§2623–2649",
+        "children": [
+         {
+          "key": "ccc/toc-348/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2623,
+          "last": 2625,
+          "range_label": "§§2623–2625",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-349",
+          "kind": "heading",
+          "label": "I. Blessing and Adoration",
+          "short_label": "I. Blessing and Adoration",
+          "first": 2626,
+          "last": 2628,
+          "range_label": "§§2626–2628",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-350",
+          "kind": "heading",
+          "label": "II. Prayer of Petition",
+          "short_label": "II. Prayer of Petition",
+          "first": 2629,
+          "last": 2633,
+          "range_label": "§§2629–2633",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-351",
+          "kind": "heading",
+          "label": "III. Prayer of Intercession",
+          "short_label": "III. Prayer of Intercession",
+          "first": 2634,
+          "last": 2636,
+          "range_label": "§§2634–2636",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-352",
+          "kind": "heading",
+          "label": "IV. Prayer of Thanksgiving",
+          "short_label": "IV. Prayer of Thanksgiving",
+          "first": 2637,
+          "last": 2638,
+          "range_label": "§§2637–2638",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-353",
+          "kind": "heading",
+          "label": "V. Prayer of Praise",
+          "short_label": "V. Prayer of Praise",
+          "first": 2639,
+          "last": 2643,
+          "range_label": "§§2639–2643",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-354",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2644,
+          "last": 2649,
+          "range_label": "§§2644–2649",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-355",
+      "kind": "chapter",
+      "label": "The Tradition of Prayer",
+      "short_label": "Chapter Two · The Tradition of Prayer",
+      "first": 2650,
+      "last": 2696,
+      "range_label": "§§2650–2696",
+      "children": [
+       {
+        "key": "ccc/toc-355/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2650,
+        "last": 2651,
+        "range_label": "§§2650–2651",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-356",
+        "kind": "article",
+        "label": "At the Wellsprings of Prayer",
+        "short_label": "Article 1 · At the Wellsprings of Prayer",
+        "first": 2652,
+        "last": 2662,
+        "range_label": "§§2652–2662",
+        "children": [
+         {
+          "key": "ccc/toc-356/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2652,
+          "last": 2660,
+          "range_label": "§§2652–2660",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-357",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2661,
+          "last": 2662,
+          "range_label": "§§2661–2662",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-358",
+        "kind": "article",
+        "label": "The Way of Prayer",
+        "short_label": "Article 2 · The Way of Prayer",
+        "first": 2663,
+        "last": 2682,
+        "range_label": "§§2663–2682",
+        "children": [
+         {
+          "key": "ccc/toc-358/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2663,
+          "last": 2679,
+          "range_label": "§§2663–2679",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-359",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2680,
+          "last": 2682,
+          "range_label": "§§2680–2682",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-360",
+        "kind": "article",
+        "label": "Guides for Prayer",
+        "short_label": "Article 3 · Guides for Prayer",
+        "first": 2683,
+        "last": 2696,
+        "range_label": "§§2683–2696",
+        "children": [
+         {
+          "key": "ccc/toc-360/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2683,
+          "last": 2691,
+          "range_label": "§§2683–2691",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-361",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2692,
+          "last": 2696,
+          "range_label": "§§2692–2696",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-362",
+      "kind": "chapter",
+      "label": "The Life of Prayer",
+      "short_label": "Chapter Three · The Life of Prayer",
+      "first": 2697,
+      "last": 2758,
+      "range_label": "§§2697–2758",
+      "children": [
+       {
+        "key": "ccc/toc-362/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2697,
+        "last": 2699,
+        "range_label": "§§2697–2699",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-363",
+        "kind": "article",
+        "label": "Expressions of Prayer",
+        "short_label": "Article 1 · Expressions of Prayer",
+        "first": 2700,
+        "last": 2724,
+        "range_label": "§§2700–2724",
+        "children": [
+         {
+          "key": "ccc/toc-364",
+          "kind": "heading",
+          "label": "I. Vocal prayer",
+          "short_label": "I. Vocal prayer",
+          "first": 2700,
+          "last": 2704,
+          "range_label": "§§2700–2704",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-365",
+          "kind": "heading",
+          "label": "II. Meditation",
+          "short_label": "II. Meditation",
+          "first": 2705,
+          "last": 2708,
+          "range_label": "§§2705–2708",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-366",
+          "kind": "heading",
+          "label": "III. Contemplative Prayer",
+          "short_label": "III. Contemplative Prayer",
+          "first": 2709,
+          "last": 2719,
+          "range_label": "§§2709–2719",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-367",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2720,
+          "last": 2724,
+          "range_label": "§§2720–2724",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-368",
+        "kind": "article",
+        "label": "The Battle of Prayer",
+        "short_label": "Article 2 · The Battle of Prayer",
+        "first": 2725,
+        "last": 2745,
+        "range_label": "§§2725–2745",
+        "children": [
+         {
+          "key": "ccc/toc-368/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2725,
+          "last": 2725,
+          "range_label": "§2725",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-369",
+          "kind": "heading",
+          "label": "I. Objections to Prayer",
+          "short_label": "I. Objections to Prayer",
+          "first": 2726,
+          "last": 2728,
+          "range_label": "§§2726–2728",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-370",
+          "kind": "heading",
+          "label": "II. Humble Vigilance of Heart",
+          "short_label": "II. Humble Vigilance of Heart",
+          "first": 2729,
+          "last": 2733,
+          "range_label": "§§2729–2733",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-371",
+          "kind": "heading",
+          "label": "III. Filial Trust",
+          "short_label": "III. Filial Trust",
+          "first": 2734,
+          "last": 2741,
+          "range_label": "§§2734–2741",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-372",
+          "kind": "heading",
+          "label": "IV. Perservering in Love",
+          "short_label": "IV. Perservering in Love",
+          "first": 2742,
+          "last": 2745,
+          "range_label": "§§2742–2745",
+          "children": []
+         }
+        ]
+       },
+       {
+        "key": "ccc/toc-373",
+        "kind": "article",
+        "label": "The Prayer of the Hour of Jesus",
+        "short_label": "Article 3 · The Prayer of the Hour of Jesus",
+        "first": 2746,
+        "last": 2758,
+        "range_label": "§§2746–2758",
+        "children": [
+         {
+          "key": "ccc/toc-373/own",
+          "kind": "heading",
+          "label": "Introduction",
+          "short_label": "Introduction",
+          "first": 2746,
+          "last": 2751,
+          "range_label": "§§2746–2751",
+          "children": []
+         },
+         {
+          "key": "ccc/toc-374",
+          "kind": "heading",
+          "label": "In Brief",
+          "short_label": "In Brief",
+          "first": 2752,
+          "last": 2758,
+          "range_label": "§§2752–2758",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "ccc/toc-375",
+    "kind": "section",
+    "label": "The Lord's Prayer",
+    "short_label": "Section Two · The Lord's Prayer",
+    "first": 2759,
+    "last": 2865,
+    "range_label": "§§2759–2865",
+    "children": [
+     {
+      "key": "ccc/toc-375/own",
+      "kind": "heading",
+      "label": "Introduction",
+      "short_label": "Introduction",
+      "first": 2759,
+      "last": 2760,
+      "range_label": "§§2759–2760",
+      "children": []
+     },
+     {
+      "key": "ccc/toc-376",
+      "kind": "article",
+      "label": "\"The Summary of the Whole Gospel\"",
+      "short_label": "Article 1 · \"The Summary of the Whole Gospel\"",
+      "first": 2761,
+      "last": 2776,
+      "range_label": "§§2761–2776",
+      "children": [
+       {
+        "key": "ccc/toc-376/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2761,
+        "last": 2761,
+        "range_label": "§2761",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-377",
+        "kind": "heading",
+        "label": "I. At the Center of the Scriptures",
+        "short_label": "I. At the Center of the Scriptures",
+        "first": 2762,
+        "last": 2764,
+        "range_label": "§§2762–2764",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-378",
+        "kind": "heading",
+        "label": "II. The Lord's Prayer",
+        "short_label": "II. The Lord's Prayer",
+        "first": 2765,
+        "last": 2766,
+        "range_label": "§§2765–2766",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-379",
+        "kind": "heading",
+        "label": "III. The Prayer of the Church",
+        "short_label": "III. The Prayer of the Church",
+        "first": 2767,
+        "last": 2772,
+        "range_label": "§§2767–2772",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-380",
+        "kind": "heading",
+        "label": "In Brief",
+        "short_label": "In Brief",
+        "first": 2773,
+        "last": 2776,
+        "range_label": "§§2773–2776",
+        "children": []
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-381",
+      "kind": "article",
+      "label": "\"Our Father who art in Heaven\"",
+      "short_label": "Article 2 · \"Our Father who art in Heaven\"",
+      "first": 2777,
+      "last": 2802,
+      "range_label": "§§2777–2802",
+      "children": [
+       {
+        "key": "ccc/toc-382",
+        "kind": "heading",
+        "label": "I. \"We Dare To Say\"",
+        "short_label": "I. \"We Dare To Say\"",
+        "first": 2777,
+        "last": 2778,
+        "range_label": "§§2777–2778",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-383",
+        "kind": "heading",
+        "label": "II. Abba - \"Father!\"",
+        "short_label": "II. Abba - \"Father!\"",
+        "first": 2779,
+        "last": 2785,
+        "range_label": "§§2779–2785",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-384",
+        "kind": "heading",
+        "label": "III. \"Our\" Father",
+        "short_label": "III. \"Our\" Father",
+        "first": 2786,
+        "last": 2793,
+        "range_label": "§§2786–2793",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-385",
+        "kind": "heading",
+        "label": "IV. \"Who Art in Heaven\"",
+        "short_label": "IV. \"Who Art in Heaven\"",
+        "first": 2794,
+        "last": 2796,
+        "range_label": "§§2794–2796",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-386",
+        "kind": "heading",
+        "label": "In Brief",
+        "short_label": "In Brief",
+        "first": 2797,
+        "last": 2802,
+        "range_label": "§§2797–2802",
+        "children": []
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-387",
+      "kind": "article",
+      "label": "The Seven Petitions",
+      "short_label": "Article 3 · The Seven Petitions",
+      "first": 2803,
+      "last": 2854,
+      "range_label": "§§2803–2854",
+      "children": [
+       {
+        "key": "ccc/toc-387/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2803,
+        "last": 2806,
+        "range_label": "§§2803–2806",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-388",
+        "kind": "heading",
+        "label": "I. \"Hallowed be Thy Name\"",
+        "short_label": "I. \"Hallowed be Thy Name\"",
+        "first": 2807,
+        "last": 2815,
+        "range_label": "§§2807–2815",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-389",
+        "kind": "heading",
+        "label": "II. \"Thy Kingdom Come\"",
+        "short_label": "II. \"Thy Kingdom Come\"",
+        "first": 2816,
+        "last": 2821,
+        "range_label": "§§2816–2821",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-390",
+        "kind": "heading",
+        "label": "III. \"Thy Will Be Done on Earth as It is in Heaven\"",
+        "short_label": "III. \"Thy Will Be Done on Earth as It is in Heaven\"",
+        "first": 2822,
+        "last": 2827,
+        "range_label": "§§2822–2827",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-391",
+        "kind": "heading",
+        "label": "IV. \"Give Us This Day Our Daily Bread\"",
+        "short_label": "IV. \"Give Us This Day Our Daily Bread\"",
+        "first": 2828,
+        "last": 2837,
+        "range_label": "§§2828–2837",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-392",
+        "kind": "heading",
+        "label": "V. \"And Forgive Us Our Trespasses, as We Forgive Those Who Trespass Against Us\"",
+        "short_label": "V. \"And Forgive Us Our Trespasses, as We Forgive Those Who Trespass Against Us\"",
+        "first": 2838,
+        "last": 2845,
+        "range_label": "§§2838–2845",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-393",
+        "kind": "heading",
+        "label": "VI. \"And Lead Us not into Temptation\"",
+        "short_label": "VI. \"And Lead Us not into Temptation\"",
+        "first": 2846,
+        "last": 2854,
+        "range_label": "§§2846–2854",
+        "children": []
+       }
+      ]
+     },
+     {
+      "key": "ccc/toc-394",
+      "kind": "article",
+      "label": "The Final Doxology",
+      "short_label": "Article 4 · The Final Doxology",
+      "first": 2855,
+      "last": 2865,
+      "range_label": "§§2855–2865",
+      "children": [
+       {
+        "key": "ccc/toc-394/own",
+        "kind": "heading",
+        "label": "Introduction",
+        "short_label": "Introduction",
+        "first": 2855,
+        "last": 2856,
+        "range_label": "§§2855–2856",
+        "children": []
+       },
+       {
+        "key": "ccc/toc-395",
+        "kind": "heading",
+        "label": "In Brief",
+        "short_label": "In Brief",
+        "first": 2857,
+        "last": 2865,
+        "range_label": "§§2857–2865",
+        "children": []
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+]

@@ -59,13 +59,14 @@ export function nodeForChapter(nodes: ContentsNode[], chapterKey: string): Conte
 
 /**
  * Whether opening this node shows something its first child does not. A node that only
- * groups its children (a Summa Part opens its first article, exactly as that article's
- * own row does) expands instead of opening when chosen.
+ * groups its children (a Summa Part opens its first article, and the Catechism's Part One
+ * opens §26 as its Section One does, exactly as that child's own row does) expands
+ * instead of opening when chosen.
  */
 export function opensOwnContent(node: ContentsNode): boolean {
   const [first] = node.children;
   if (!first) return true;
-  return first.chapter_key !== node.chapter_key || first.anchor !== null;
+  return first.chapter_key !== node.chapter_key || first.anchor !== node.anchor;
 }
 
 const PARAGRAPH_RANGE = /§§?\s*(\d[\d,]*)(?:\s*[–—-]\s*(\d[\d,]*))?/;
