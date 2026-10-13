@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, BookOpen, Search } from "lucide-react";
+import { BookOpen, ChevronLeft, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { getReadingProgress, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
 import { getCollectionMeta } from "@/lib/collections";
+import { LIFT } from "@/lib/lift";
 import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
@@ -187,8 +188,9 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       {mobileHeader}
       <div className="flex-1 overflow-y-auto">
         <main className="mx-auto w-full min-w-0 max-w-3xl px-4 py-5 sm:px-6 sm:py-7">
-          <button type="button" onClick={goBack} aria-busy={backPending || undefined} className="relative mb-5 inline-flex items-center gap-1 text-sm text-brand-muted hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
-            <ArrowLeft size={16} aria-hidden="true" /> Back to {backLabel}
+          {/* Styled as the reader's own Back and Browse buttons (ReaderChrome). */}
+          <button type="button" onClick={goBack} aria-busy={backPending || undefined} className="relative mb-5 flex min-h-9 w-fit items-center gap-1 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+            <ChevronLeft size={16} aria-hidden="true" /> Back to {backLabel}
             <NavPendingBar pending={backPending} />
           </button>
 
@@ -207,9 +209,13 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                   <BookOpen size={17} aria-hidden="true" /> Continue at {progress.chapter_label}
                 </button>
               )}
-              <button type="button" onClick={() => openChapter(chapters[0].chapter_key)} className={`min-h-11 rounded-md px-4 py-2 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${progress ? "border border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-brand-bg" : "bg-brand-accent text-brand-bg"}`}>
-                {progress ? "Start from the beginning" : "Start reading"}
-              </button>
+              {/* With saved progress, "Continue at" is the only action: the contents below
+                  already lead back to the beginning. */}
+              {!progress && (
+                <button type="button" onClick={() => openChapter(chapters[0].chapter_key)} className="min-h-11 rounded-md bg-brand-accent px-4 py-2 text-sm font-medium text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                  Start reading
+                </button>
+              )}
             </div>
           </section>
 
@@ -246,7 +252,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 {documentInfo.collection === "bible" ? (
                   <div className="grid w-full grid-cols-5 gap-2 sm:grid-cols-8 md:grid-cols-10">
                     {visibleChapters.map(({ entry }) => (
-                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} aria-label={`${documentInfo.title} chapter ${bibleChapterLabel(entry)}`} className="flex aspect-square w-full items-center justify-center rounded-md border border-brand-muted/25 bg-brand-bg text-sm font-medium text-brand-primary transition-colors hover:border-brand-accent hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} aria-label={`${documentInfo.title} chapter ${bibleChapterLabel(entry)}`} className={`flex aspect-square w-full items-center justify-center rounded-md border border-brand-muted/25 bg-brand-bg text-sm font-medium text-brand-primary ${LIFT}`}>
                         {bibleChapterLabel(entry)}
                       </button>
                     ))}
@@ -254,7 +260,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 ) : (
                   <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                     {visibleChapters.map(({ entry, ordinal }) => (
-                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} className="flex min-h-12 min-w-0 items-start gap-3 rounded-md border border-brand-muted/20 bg-brand-surface px-3 py-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} className={`flex min-h-12 min-w-0 items-start gap-3 rounded-md border border-brand-muted/20 bg-brand-surface px-3 py-3 text-left ${LIFT}`}>
                         <span className="shrink-0 text-xs font-medium text-brand-accent">{ordinal}</span>
                         <span className="min-w-0 text-sm leading-snug text-brand-primary">{entry.chapter_label}</span>
                       </button>
