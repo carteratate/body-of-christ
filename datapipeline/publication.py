@@ -16,6 +16,7 @@ from typing import Protocol
 
 import asyncpg
 
+import contents
 from health import refuse_block_violations
 from identity import passage_id
 from model import Document
@@ -237,6 +238,10 @@ class CollectionPublicationRunner:
         # Health block rules (item 0.1b). build() runs this before publish() acquires
         # any store, and a dry run runs it too.
         refuse_block_violations(collection, documents)
+        # Contents trees (#250): a node must open a chapter the document has, in
+        # reading order. Raises contents.ContentsError, a ValueError.
+        for document in documents:
+            contents.check(document)
 
     @staticmethod
     def _validate_build(

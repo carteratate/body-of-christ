@@ -131,6 +131,16 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   only make a document slower, never stale, unless it bypasses triggers
   (`session_replication_role = replica`). Anything that rewrites chunks should still
   call the refresh afterwards. The API also tolerates a database without 0037.
+- `document_contents` — a document's **contents tree** (0040, issue #250): the hierarchy
+  of its headings (Part > Question > Article), one pre-ordered row per node, each opening
+  a chapter (`chapter_key`) and optionally a passage (`anchor`). Distinct from the reader
+  outline above, which stays the flat list of load units. A source adapter emits it as
+  `Document.contents`; `contents.check` refuses a broken tree in the build (dry runs
+  included), and `reader_writer.write_document` replaces it with the chunks. `/toc`
+  returns it as `contents` only when every node's chapter and anchor still exist in
+  reading order (`_contents_tree` in `routes/documents.py`), so a writer that rewrites
+  chunks without the tree degrades the reader to the flat list. The API tolerates the
+  table being absent.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -139,7 +149,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034 and 0036–0038 are committed; `0035_studies.sql` is drafted only (see above). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040 are committed; `0035_studies.sql` is drafted only (see above), and 0039 is reserved for corpus-cleanup item 2.2a (#178). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the

@@ -11,7 +11,7 @@ from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.documents import (
-    DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
+    ContentsNode, DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -68,6 +68,20 @@ _OUTLINE_NEIGHBORS_SQL = """
 _LEGACY_CHAPTER_KEYS_SQL = """
     SELECT chapter_key FROM chunks WHERE document_id = $1 AND chapter_key IS NOT NULL
     GROUP BY chapter_key ORDER BY min(position)
+"""
+
+# The contents tree (migration 0040), with a flag for any node whose anchor no longer
+# names a passage in its chapter. Served only when every node is current; see
+# _contents_tree. The NOT EXISTS uses chunks' unique (document_id, anchor) index.
+_CONTENTS_SQL = """
+    SELECT dc.ordinal, dc.parent_ordinal, dc.node_key, dc.kind, dc.label, dc.short_label,
+           dc.chapter_key, dc.anchor, dc.range_label,
+           dc.anchor IS NOT NULL AND NOT EXISTS (
+               SELECT 1 FROM chunks c
+               WHERE c.document_id = dc.document_id AND c.anchor = dc.anchor
+                 AND c.chapter_key = dc.chapter_key
+           ) AS anchor_missing
+    FROM document_contents dc WHERE dc.document_id = $1 ORDER BY dc.ordinal
 """
 
 
@@ -183,12 +197,65 @@ async def get_document(
     return _document_response(doc_row)
 
 
+async def _fetch_contents_rows(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> list:
+    try:
+        return await conn.fetch(_CONTENTS_SQL, doc_uuid)
+    except asyncpg.UndefinedTableError:
+        # Migration 0040 is not applied: no document has a contents tree yet.
+        return []
+
+
+def _contents_tree(doc_uuid: uuid.UUID, rows: list, chapter_keys: list[str],
+                   ) -> list[ContentsNode] | None:
+    """Assemble the contents tree from its pre-order rows, or None if it is not current.
+
+    The datapipeline writes the tree with the chunks, but nothing ties the two together
+    afterwards (the outline's invalidation triggers cover chapters only). A tree is
+    served only if every node opens a chapter in `chapter_keys`, every anchor is a
+    passage in its node's chapter, and a pre-order walk meets chapters in reading
+    order. Otherwise the reader falls back to the flat chapter list, which is always
+    current, rather than sending readers to dead or misplaced chapters.
+    """
+    if not rows:
+        return None
+    order = {key: index for index, key in enumerate(chapter_keys)}
+    previous = -1
+    problem = None
+    for row in rows:
+        index = order.get(row["chapter_key"])
+        if index is None:
+            problem = f"node {row['node_key']!r} opens missing chapter {row['chapter_key']!r}"
+        elif row["anchor_missing"]:
+            problem = f"node {row['node_key']!r} points at missing anchor {row['anchor']!r}"
+        elif index < previous:
+            problem = f"node {row['node_key']!r} is out of reading order"
+        if problem:
+            logger.warning("contents tree for document %s is stale (%s); serving chapters only",
+                           doc_uuid, problem)
+            return None
+        previous = index
+
+    roots: list[ContentsNode] = []
+    by_ordinal: dict[int, ContentsNode] = {}
+    for row in rows:
+        node = ContentsNode(
+            key=row["node_key"], kind=row["kind"], label=row["label"],
+            short_label=row["short_label"], chapter_key=row["chapter_key"],
+            anchor=row["anchor"], range_label=row["range_label"], children=[],
+        )
+        by_ordinal[row["ordinal"]] = node
+        parent = row["parent_ordinal"]
+        (roots if parent is None else by_ordinal[parent].children).append(node)
+    return roots
+
+
 @router.get("/documents/{doc_id}/toc", response_model=TocResponse)
 async def get_document_toc(
     doc_id: str,
     user: AuthUser | None = Depends(require_document_access),
 ) -> TocResponse:
-    """Ordered chapter list for the reader's pickers + Contents drawer."""
+    """Ordered chapter list for the reader's pickers + Contents drawer, and the
+    document's contents tree when it has a current one."""
     doc_uuid = _parse_doc_id(doc_id)
     pool = _require_pool()
     try:
@@ -196,6 +263,7 @@ async def get_document_toc(
             doc_row = await _fetch_document(conn, doc_uuid)
             toc_sql = _OUTLINE_TOC_SQL if doc_row["outline_ready"] else _LEGACY_TOC_SQL
             chapter_rows = await conn.fetch(toc_sql, doc_uuid)
+            contents_rows = await _fetch_contents_rows(conn, doc_uuid)
     except HTTPException:
         raise
     except Exception as exc:
@@ -204,7 +272,9 @@ async def get_document_toc(
 
     chapters = [TocEntry(chapter_key=r["chapter_key"], chapter_label=r["chapter_label"])
                 for r in chapter_rows]
-    return TocResponse(document=_document_response(doc_row), chapters=chapters)
+    contents = _contents_tree(doc_uuid, contents_rows, [c.chapter_key for c in chapters])
+    return TocResponse(document=_document_response(doc_row), chapters=chapters,
+                       contents=contents)
 
 
 @router.get("/documents/{doc_id}/reader", response_model=ReaderChapter)

@@ -9,6 +9,7 @@ import json
 
 import asyncpg
 
+import contents
 from model import Document
 from identity import passage_id
 
@@ -91,8 +92,10 @@ async def write_document(conn: asyncpg.Connection, doc: Document,
 
     The document's reader outline (chapter list and chunk_count, migration 0037) is
     rebuilt last, in the same transaction, so the API never reads an outline that
-    disagrees with the chunks it describes.
+    disagrees with the chunks it describes. Its contents tree (migration 0040), when
+    it has one, is replaced in the same transaction too.
     """
+    contents.check(doc)  # before the transaction: a broken tree writes nothing
     async with conn.transaction():
         await conn.execute(
             """
@@ -129,4 +132,36 @@ async def write_document(conn: asyncpg.Connection, doc: Document,
                 json.dumps(p.metadata) if p.metadata else None,
             )
         await conn.execute("SELECT refresh_document_outline($1::uuid)", doc.id)
+        await write_contents(conn, doc)
         return pruned
+
+
+async def write_contents(conn: asyncpg.Connection, doc: Document) -> None:
+    """Replace the document's contents tree rows (migration 0040) with `doc.contents`.
+
+    Always deletes first, so a document whose adapter stops emitting a tree loses the
+    old one. On a database without 0040 a document with no tree writes nothing, and one
+    with a tree is refused, so a tree is never silently dropped. Call inside the
+    transaction that writes the document's chunks.
+    """
+    if not await conn.fetchval("SELECT to_regclass('public.document_contents') IS NOT NULL"):
+        if doc.contents is not None:
+            raise RuntimeError(
+                f"document {doc.id} has a contents tree, but the database has no "
+                "document_contents table; apply migration 0040 first")
+        return
+    await conn.execute("DELETE FROM document_contents WHERE document_id = $1::uuid", doc.id)
+    if doc.contents is None:
+        return
+    # Pre-order, so each parent row exists before the rows that reference it.
+    await conn.executemany(
+        """
+        INSERT INTO document_contents
+          (document_id, ordinal, parent_ordinal, depth, node_key, kind, label,
+           short_label, chapter_key, anchor, range_label)
+        VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        """,
+        [(doc.id, r.ordinal, r.parent_ordinal, r.depth, r.node_key, r.kind, r.label,
+          r.short_label, r.chapter_key, r.anchor, r.range_label)
+         for r in contents.flatten(doc.contents)],
+    )

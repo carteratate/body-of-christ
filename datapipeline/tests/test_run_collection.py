@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-from model import Document, Passage
+from model import ContentsNode, Document, Passage
 import publish_lock
 from publication import PublicationResult, PublicationTarget, production_runner
 from run_collection import build_parser, main
@@ -139,6 +139,21 @@ def test_dry_run_acquires_no_store_and_prints_counts(capsys):
     assert runner.request is None
     assert runner.built.collection == "medieval"
     assert "medieval: dry run, 1 documents, 3 passages; nothing written" in capsys.readouterr().out
+
+
+def test_dry_run_reports_a_contents_tree_and_the_chapters_it_misses(capsys):
+    class TreeRunner(RecordingRunner):
+        def build(self, request):
+            [document] = super().build(request)
+            document.passages[2].chapter_key = "c2"
+            document.contents = [ContentsNode(key="book-1", kind="chapter", label="Book 1",
+                                              short_label="Book 1", chapter_key="c1")]
+            return [document]
+
+    assert main(["--collection", "medieval", "--dry-run"], runner=TreeRunner()) == 0
+    out = capsys.readouterr().out
+    assert ("contents tree: On Loving God, 1 nodes; WARNING 1 chapters no node opens, "
+            "first 'c2'") in out
 
 
 def test_release_is_passed_into_the_request():
