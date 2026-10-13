@@ -4,7 +4,19 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+const state = vi.hoisted(() => ({ guestGate: null as null | { requestSignup: ReturnType<typeof vi.fn> } }));
+
 vi.mock("@/lib/analytics", () => ({ trackSuggestedQueryClicked: vi.fn() }));
+
+vi.mock("next/link", () => ({
+  default: ({ children, href, prefetch, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { prefetch?: boolean | null }) => (
+    <a href={String(href)} data-prefetch={prefetch === undefined ? "default" : String(prefetch)} {...props}>{children}</a>
+  ),
+}));
+
+vi.mock("@/components/layout/guestGate", () => ({
+  useGuestGate: () => state.guestGate,
+}));
 
 const FIRST_FOUR = [
   "Is it ever right to lie? Does intention matter, or is deception always wrong?",
@@ -25,6 +37,7 @@ describe("EmptyState", () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    state.guestGate = null;
   });
 
   it("shows four distinct suggestions", async () => {
@@ -49,5 +62,31 @@ describe("EmptyState", () => {
     await userEvent.click(screen.getByRole("button", { name: chips[0] }));
 
     expect(onSelectQuery).toHaveBeenCalledWith(chips[0]);
+  });
+
+  it("asks a guest to sign up instead of opening the Library", async () => {
+    const requestSignup = vi.fn();
+    state.guestGate = { requestSignup };
+    await renderEmptyState();
+
+    const link = screen.getByRole("link", { name: "Browse the Library" });
+    expect(link.dataset.prefetch).toBe("false");
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+    link.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(requestSignup).toHaveBeenCalledWith("library");
+  });
+
+  it("links a signed-in user to the Library", async () => {
+    await renderEmptyState();
+
+    const link = screen.getByRole("link", { name: "Browse the Library" });
+    expect(link.getAttribute("href")).toBe("/sources");
+    expect(link.dataset.prefetch).toBe("default");
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+    link.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(false);
   });
 });
