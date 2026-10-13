@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bookmark, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Bookmark, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp } from "lucide-react";
 import ReactDOM from "react-dom";
 import { IntentLink, ThemedTooltip, Toast, useToast } from "@/components/common";
 import { useSearchParams } from "next/navigation";
@@ -17,6 +17,7 @@ import {
   trackDocumentOpened,
 } from "@/lib/analytics";
 import { AttachedPassage } from "./AttachedPassage";
+import { RelevanceExplanation } from "./RelevanceExplanation";
 import { getCollectionMeta } from "@/lib/collections";
 import { displayRole } from "@/lib/passageRole";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
@@ -325,34 +326,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
 
-          {/* Relevance explanation */}
-          {result.explanation !== "" && (
-            <div
-              style={{
-                marginTop: "12px",
-                borderRadius: "6px",
-                padding: "12px",
-                background: `rgba(${rgb},0.06)`,
-                border: `1px solid rgba(${rgb},0.15)`,
-              }}
-            >
-              <div className="flex items-center gap-1.5 mb-1.5">
-                <Sparkles size={11} style={{ color }} />
-                <span style={{ fontSize: "10px", color, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  Why this is relevant (AI generated)
-                </span>
-              </div>
-              {result.explanation === null ? (
-                <div className="animate-pulse space-y-2">
-                  <div className="h-3 rounded w-full" style={{ background: `rgba(${rgb},0.12)` }} />
-                  <div className="h-3 rounded w-5/6" style={{ background: `rgba(${rgb},0.12)` }} />
-                  <div className="h-3 rounded w-3/4" style={{ background: `rgba(${rgb},0.12)` }} />
-                </div>
-              ) : (
-                <p className="text-sm text-brand-primary leading-relaxed">{result.explanation}</p>
-              )}
-            </div>
-          )}
+          <RelevanceExplanation explanation={result.explanation} chunkId={chunk_id} color={color} rgb={rgb} />
 
           {/* Action row */}
           <div className="flex items-center justify-between mt-3 gap-2 max-md:flex-wrap">
