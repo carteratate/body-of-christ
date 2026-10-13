@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { trackSuggestedQueryClicked } from "@/lib/analytics";
+import { useGuestGate } from "@/components/layout/guestGate";
 
 const TAGLINES = [
   "Query TheoCorpus",
@@ -71,6 +72,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ onSelectQuery }: EmptyStateProps) {
   const tagline = TAGLINES[0];
+  const guestGate = useGuestGate();
   const displayedQueries = useSyncExternalStore(
     subscribe,
     getClientQueries,
@@ -80,6 +82,14 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
   function handleChipClick(query: string) {
     trackSuggestedQueryClicked({ queryText: query });
     onSelectQuery(query);
+  }
+
+  // Guests can't open /sources (AppShell would bounce them to /login), so the
+  // link opens the signup modal for them instead, as the sidebar's Library does.
+  function handleLibraryClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    if (!guestGate) return;
+    event.preventDefault();
+    guestGate.requestSignup("library");
   }
 
   return (
@@ -96,7 +106,7 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
           </button>
         ))}
       </div>
-      <Link href="/sources" className="mt-6 flex min-h-11 items-center gap-2 rounded-md border border-brand-muted/30 px-4 text-sm text-brand-muted transition-colors hover:border-brand-accent hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+      <Link href="/sources" onClick={handleLibraryClick} prefetch={guestGate ? false : undefined} className="mt-6 flex min-h-11 items-center gap-2 rounded-md border border-brand-muted/30 px-4 text-sm text-brand-muted transition-colors hover:border-brand-accent hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
         <BookOpen size={17} /> Browse the Library
       </Link>
     </div>
