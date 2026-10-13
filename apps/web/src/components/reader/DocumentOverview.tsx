@@ -7,6 +7,7 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { getReadingProgress, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
 import { getCollectionMeta } from "@/lib/collections";
+import { LIFT } from "@/lib/lift";
 import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
@@ -250,7 +251,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 {documentInfo.collection === "bible" ? (
                   <div className="grid w-full grid-cols-5 gap-2 sm:grid-cols-8 md:grid-cols-10">
                     {visibleChapters.map(({ entry }) => (
-                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} aria-label={`${documentInfo.title} chapter ${bibleChapterLabel(entry)}`} className="flex aspect-square w-full items-center justify-center rounded-md border border-brand-muted/25 bg-brand-bg text-sm font-medium text-brand-primary transition-colors hover:border-brand-accent hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} aria-label={`${documentInfo.title} chapter ${bibleChapterLabel(entry)}`} className={`flex aspect-square w-full items-center justify-center rounded-md border border-brand-muted/25 bg-brand-bg text-sm font-medium text-brand-primary ${LIFT}`}>
                         {bibleChapterLabel(entry)}
                       </button>
                     ))}
@@ -258,7 +259,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 ) : (
                   <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                     {visibleChapters.map(({ entry, ordinal }) => (
-                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} className="flex min-h-12 min-w-0 items-start gap-3 rounded-md border border-brand-muted/20 bg-brand-surface px-3 py-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} className={`flex min-h-12 min-w-0 items-start gap-3 rounded-md border border-brand-muted/20 bg-brand-surface px-3 py-3 text-left ${LIFT}`}>
                         <span className="shrink-0 text-xs font-medium text-brand-accent">{ordinal}</span>
                         <span className="min-w-0 text-sm leading-snug text-brand-primary">{entry.chapter_label}</span>
                       </button>
