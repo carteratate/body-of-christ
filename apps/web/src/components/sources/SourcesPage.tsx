@@ -392,7 +392,7 @@ export function SourcesPage() {
             ) : (
               <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                 {visibleProgress.map((item) => (
-                  <IntentLink key={item.document_id} href={libraryHref(item.document_id, item.chapter_key)} onNavigate={markReturn} className="block w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-colors hover:border-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                  <IntentLink key={item.document_id} href={libraryHref(item.document_id, item.chapter_key)} onNavigate={markReturn} className="block w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left transition-[background-color,box-shadow] duration-200 hover:bg-brand-surface-hover hover:shadow-lift focus-visible:bg-brand-surface-hover focus-visible:shadow-lift focus-visible:outline-hidden">
                     <span className="block truncate text-sm font-medium text-brand-primary">{item.document_title}</span>
                     <span className="mt-1 block truncate text-xs text-brand-muted">{item.chapter_label}</span>
                   </IntentLink>

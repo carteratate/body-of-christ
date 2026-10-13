@@ -27,6 +27,10 @@
   --color-brand-contrast-light: #ffffff;
   --color-brand-focus:          #ffffff;
 
+  /* A raised card's shadow (shadow-lift): a soft drop plus a hairline edge. It is built
+     from theme colors, so it follows the theme. Pair it with bg-brand-surface-hover. */
+  --shadow-lift: 0 10px 24px -12px color-mix(in srgb, var(--color-brand-contrast-dark) 60%, transparent), 0 0 0 1px color-mix(in srgb, var(--color-brand-primary) 14%, transparent);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-brand: var(--font-cinzel);

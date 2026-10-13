@@ -207,9 +207,13 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                   <BookOpen size={17} aria-hidden="true" /> Continue at {progress.chapter_label}
                 </button>
               )}
-              <button type="button" onClick={() => openChapter(chapters[0].chapter_key)} className={`min-h-11 rounded-md px-4 py-2 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${progress ? "border border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-brand-bg" : "bg-brand-accent text-brand-bg"}`}>
-                {progress ? "Start from the beginning" : "Start reading"}
-              </button>
+              {/* With saved progress, "Continue at" is the only action: the contents below
+                  already lead back to the beginning. */}
+              {!progress && (
+                <button type="button" onClick={() => openChapter(chapters[0].chapter_key)} className="min-h-11 rounded-md bg-brand-accent px-4 py-2 text-sm font-medium text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+                  Start reading
+                </button>
+              )}
             </div>
           </section>
 
