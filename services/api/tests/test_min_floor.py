@@ -247,3 +247,18 @@ def test_floor_degraded_bible_is_not_more_diverse_than_healthy():
     result = min_floor.run(ranked, quota=10)
 
     assert len(result) == 1, "one work, no chapter grain — pass 2 finds nothing new"
+
+
+def test_focused_floor_fills_from_chapters_of_one_fathers_work():
+    """Church Fathers takes the chapter grain in focused search, in the floor too."""
+    ranked = [
+        _chunk(
+            f"chunk-{index}", 1 - index / 10,
+            title="The Confessions of Saint Augustine", collection="church-fathers",
+            chapter_key=f"chapter-{index}", document_id="confessions",
+        )
+        for index in range(5)
+    ]
+
+    assert len(min_floor.run(ranked, quota=10, focused=True)) == 5
+    assert len(min_floor.run(ranked, quota=10)) == 1, "standard keeps one per work"

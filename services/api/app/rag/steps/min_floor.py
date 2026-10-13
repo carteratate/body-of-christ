@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 _FLOOR_N = 5
 
 
-def run(ranked: list[RankedChunk], quota: int) -> list[RankedChunk]:
+def run(
+    ranked: list[RankedChunk], quota: int, *, focused: bool = False,
+) -> list[RankedChunk]:
     """Return up to min(quota, _FLOOR_N) best-scoring chunks, spread across sources.
 
     `ranked` is the full scored list from the reranker, already sorted descending
@@ -41,10 +43,13 @@ def run(ranked: list[RankedChunk], quota: int) -> list[RankedChunk]:
 
     Pass 2 then fills any slots pass 1 could not, using the finer chapter grain, so
     a search over a single chaptered collection still fills the floor from distinct
-    articles instead of returning one lone result.
+    articles instead of returning one lone result. `focused` widens that chapter
+    grain exactly as it does for the per-source cap (see
+    `dedup._FOCUSED_CHAPTER_KEYED_COLLECTIONS`), so a focused Church Fathers floor
+    can fill from distinct chapters of one work too.
     """
     limit = min(quota, _FLOOR_N)
-    chapter_grain = chapter_grain_collections(ranked)
+    chapter_grain = chapter_grain_collections(ranked, focused=focused)
     floored: list[RankedChunk] = []
     seen_fine: set[tuple[str, ...]] = set()
     seen_works: set[tuple[str, ...]] = set()

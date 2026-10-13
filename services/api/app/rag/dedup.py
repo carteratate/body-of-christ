@@ -66,14 +66,37 @@ _CHAPTER_KEYED_COLLECTIONS: frozenset[str] = frozenset({
     "summa", "catechism", "canon-law", "bible",
 })
 
+# Collections that use the chapter grain in FOCUSED search only. Church Fathers holds
+# 128 documents, so in a mixed standard search the per-title cap is what keeps one
+# Father from taking every slot, and it stays. A focused search is single-collection
+# by construction, though, and a question about one work ("Augustine on lust in the
+# Confessions") ranks nearly all its strong candidates inside that one document:
+# keyed per title, focused search stopped at FOCUSED_MAX_PASSAGES_PER_SOURCE (4)
+# however many distinct chapters ranked — the same ceiling as issue #105, reached
+# through a multi-document collection instead of a single-document one. Every
+# church-fathers chunk carries chapter_key (verified 2026-10-13: 9,783 of 9,783; the
+# Confessions has 276 distinct chapters across 329 chunks), and the demotion in
+# `chapter_grain_collections` still applies if a candidate arrives without one.
+# COST: focused quota_cap still bounds the result set at 10, so the worst case is
+# +6 results for a single-work focused search.
+_FOCUSED_CHAPTER_KEYED_COLLECTIONS: frozenset[str] = (
+    _CHAPTER_KEYED_COLLECTIONS | frozenset({"church-fathers"})
+)
+
 
 def chapter_grain_collections(
-    chunks: list[RankedChunk], per_source_cap: int | None = None,
+    chunks: list[RankedChunk],
+    per_source_cap: int | None = None,
+    *,
+    focused: bool = False,
 ) -> frozenset[str]:
     """Which collections may use the chapter grain for THIS result set.
 
     Only collections actually present in `chunks` are returned, so the result
     describes what was decided rather than restating the configured set.
+    `focused` selects `_FOCUSED_CHAPTER_KEYED_COLLECTIONS` instead of
+    `_CHAPTER_KEYED_COLLECTIONS`; take it from `SearchPlan.focused`, never from a
+    raw quota.
 
     The grain is decided per collection, once — never per chunk, because a result set
     can carry chapter_key on some chunks and not others. `retrieve_fts` selects it
@@ -93,7 +116,10 @@ def chapter_grain_collections(
     collection, its candidates carry chapter_key regardless of `fetch_positions`, and
     this demotion stops being reachable for it — which is the point of running it.
     """
-    present = {chunk.collection for chunk in chunks} & _CHAPTER_KEYED_COLLECTIONS
+    configured = (
+        _FOCUSED_CHAPTER_KEYED_COLLECTIONS if focused else _CHAPTER_KEYED_COLLECTIONS
+    )
+    present = {chunk.collection for chunk in chunks} & configured
     incomplete = {
         chunk.collection
         for chunk in chunks
@@ -167,12 +193,17 @@ def _cosine_sim(a: list[float], b: list[float]) -> float:
 
 
 async def apply_dedup(
-    ranked: list[RankedChunk], *, per_source_cap: int = _PER_SOURCE_CAP,
+    ranked: list[RankedChunk],
+    *,
+    per_source_cap: int = _PER_SOURCE_CAP,
+    focused: bool = False,
 ) -> list[RankedChunk]:
     """Drop cosine-close adjacent duplicates and apply the requested source cap.
 
     Assumes `ranked` is already sorted descending by reranker_score.
-    Standard searches use the historical cap of two. Focused search passes four.
+    Standard searches use the historical cap of two. Focused search passes four,
+    and `focused=True`, which widens the chapter grain to
+    `_FOCUSED_CHAPTER_KEYED_COLLECTIONS`.
     """
     # 1. Find pairs within _POSITION_PROXIMITY in the same document
     by_doc: dict[str, list[RankedChunk]] = {}
@@ -228,7 +259,7 @@ async def apply_dedup(
     # The grain is resolved against the surviving set, so a chunk that cosine dedup
     # already dropped cannot demote its whole collection to the title grain.
     survivors = [c for c in ranked if c.include and c.chunk_id not in to_drop]
-    chapter_grain = chapter_grain_collections(survivors, per_source_cap)
+    chapter_grain = chapter_grain_collections(survivors, per_source_cap, focused=focused)
     source_counts: dict[tuple[str, ...], int] = {}
     final: list[RankedChunk] = []
     for chunk in survivors:
