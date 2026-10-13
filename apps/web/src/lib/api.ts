@@ -232,9 +232,24 @@ export interface TocEntry {
   chapter_label: string;
 }
 
+/** One heading of a document's contents tree (issue #250). Opening it loads
+ *  `chapter_key` and, when set, scrolls to the passage `anchor`. */
+export interface ContentsNode {
+  key: string;
+  kind: string;
+  label: string;
+  short_label: string;
+  chapter_key: string;
+  anchor: string | null;
+  range_label: string | null;
+  children: ContentsNode[];
+}
+
 export interface TocResponse {
   document: DocumentInfo;
   chapters: TocEntry[];
+  /** The tree's roots; null or absent when the document has no current tree. */
+  contents?: ContentsNode[] | null;
 }
 
 // ── V2 Bookmarks ───────────────────────────────────────────────────────────

@@ -115,6 +115,14 @@ Writing a Document to the reader store also rebuilds its **reader outline** (cha
 list and passage count, `supabase/migrations/0037_document_outline.sql`) in the same
 transaction, so the target database must have migration 0037 applied before publishing.
 
+A Document can also carry a **contents tree** (`Document.contents`, the hierarchy of its
+headings; `contents.py`, issue #250). The build refuses a tree that opens a chapter the
+document lacks, names an anchor outside its chapter, repeats a key or meets chapters out
+of reading order, and a dry run prints each tree's node count and any chapter no node
+opens. The writer replaces the tree in the same transaction as the chunks. Publishing a
+tree needs migration 0040 (`document_contents`); without it the writer refuses that
+document rather than drop its tree.
+
 ### Reset the search index
 
 Routine search publication is incremental. Use the explicit reset only when replacing

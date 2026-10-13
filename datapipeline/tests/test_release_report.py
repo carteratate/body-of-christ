@@ -5,7 +5,7 @@ import os
 import pytest
 
 from checks import report as checks_report
-from model import Document, Passage
+from model import ContentsNode, Document, Passage
 from release import remap as R
 from release import report as RP
 from scripts import export_live_snapshot as E
@@ -182,3 +182,21 @@ def test_release_check_ids_have_their_own_scope():
     assert checks_report.check_scope("release.removed:canon-law/abc") == "canon-law"
     # 0.1a judges only the prefixes it computes.
     assert not "release.removed:summa/x".startswith(checks_report.REPORT_PREFIXES)
+
+
+def test_report_lists_contents_trees_with_unreached_chapters_and_errors(tmp_path, no_known):
+    snapshot, index, new = scenario(tmp_path)
+    [document] = new["councils"]
+    document.contents = [ContentsNode(key="q1", kind="chapter", label="Q1", short_label="Q1",
+                                      chapter_key="q1")]
+    run(tmp_path, snapshot, index, new)
+    report = (tmp_path / "out" / "report.md").read_text()
+    assert "## Contents trees" in report
+    assert "| councils | T | 1 | 1 |  |" in report
+    assert "not reached: `q2`" in report
+
+    document.contents[0].chapter_key = "missing"
+    run(tmp_path, snapshot, index, new, out="broken")
+    data = json.loads((tmp_path / "broken" / "report.json").read_text())
+    [entry] = data["collections"]["councils"]["contents"]
+    assert "'missing' is not in the document" in entry["error"]

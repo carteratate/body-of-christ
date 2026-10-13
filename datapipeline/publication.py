@@ -16,6 +16,7 @@ from typing import Protocol
 
 import asyncpg
 
+import contents
 from health import refuse_block_violations
 from identity import passage_id
 from model import Document
@@ -94,6 +95,8 @@ class ReaderStore(Protocol):
 
     async def prune_documents(self, collection: str, keep_ids: set[str]) -> int: ...
 
+    async def has_contents_table(self) -> bool: ...
+
 
 class SearchIndex(Protocol):
     async def passage_ids(self, collection: str) -> set[str]: ...
@@ -151,6 +154,17 @@ class CollectionPublicationRunner:
 
         if request.target.includes_reader:
             async with self._acquire_reader_store() as reader:
+                # Each document commits on its own, so a store that cannot hold a
+                # contents tree must refuse before the first write (or the wipe), not
+                # at the first document that has one.
+                if any(d.contents is not None for d in documents) and not (
+                    await reader.has_contents_table()
+                ):
+                    raise ValueError(
+                        f"REFUSING: '{request.collection}' has contents trees but the "
+                        "reader database has no document_contents table; apply "
+                        "migration 0040 first"
+                    )
                 if request.limit is None:
                     live_ids = await reader.passage_ids(request.collection)
                     self._validate_build(
@@ -237,6 +251,10 @@ class CollectionPublicationRunner:
         # Health block rules (item 0.1b). build() runs this before publish() acquires
         # any store, and a dry run runs it too.
         refuse_block_violations(collection, documents)
+        # Contents trees (#250): a node must open a chapter the document has, in
+        # reading order. Raises contents.ContentsError, a ValueError.
+        for document in documents:
+            contents.check(document)
 
     @staticmethod
     def _validate_build(
@@ -291,6 +309,9 @@ class PostgresReaderStore:
         return await reader_writer.prune_missing_documents(
             self._connection, collection, keep_ids
         )
+
+    async def has_contents_table(self) -> bool:
+        return await reader_writer.contents_table_exists(self._connection)
 
 
 class QdrantSearchIndex:

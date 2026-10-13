@@ -5,6 +5,7 @@ import argparse
 import asyncio
 from collections.abc import Sequence
 
+import contents
 from identity import passage_id
 from publication import (
     CollectionPublicationRunner,
@@ -104,6 +105,16 @@ def main(
             f"{request.collection}: dry run, {len(documents)} documents, "
             f"{len(passages)} passages; nothing written"
         )
+        for document in documents:
+            if document.contents is None:
+                continue
+            unreached = contents.check(document)
+            nodes = len(contents.flatten(document.contents))
+            line = f"  contents tree: {document.title}, {nodes} nodes"
+            if unreached:
+                line += (f"; WARNING {len(unreached)} chapters no node opens, "
+                         f"first {unreached[0]!r}")
+            print(line)
         return 0
 
     try:

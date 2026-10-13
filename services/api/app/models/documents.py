@@ -58,6 +58,22 @@ class TocEntry(BaseModel):
     chapter_label: str
 
 
+class ContentsNode(BaseModel):
+    """One heading of a document's contents tree (migration 0040, issue #250). Opening
+    it loads `chapter_key` and, when set, scrolls to the passage `anchor`."""
+    key: str
+    kind: str
+    label: str
+    short_label: str
+    chapter_key: str
+    anchor: Optional[str] = None
+    range_label: Optional[str] = None
+    children: list["ContentsNode"] = []
+
+
 class TocResponse(BaseModel):
     document: DocumentResponse
     chapters: list[TocEntry]
+    # The contents tree's roots, or None when the document has no current tree; the
+    # reader then navigates by `chapters` alone.
+    contents: Optional[list[ContentsNode]] = None

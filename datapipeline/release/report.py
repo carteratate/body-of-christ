@@ -18,6 +18,9 @@ releases/local/report-<collection>-<timestamp>/, gitignored):
   samples, for local reading only.
 - health.json and health.md (checks.health), with a build and a live column.
 
+report.md also lists each build document's contents tree (#250): its node count, the
+chapters no node opens, or the reason the tree breaks the contract.
+
 A run replaces only the rows of the collections it covered in files already in <out>.
 
 Exits 1 when a release check fails that checks/known_defects.json does not list, when a
@@ -39,6 +42,7 @@ DATAPIPELINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if DATAPIPELINE not in sys.path:
     sys.path.insert(0, DATAPIPELINE)
 
+import contents  # noqa: E402
 import health  # noqa: E402
 from checks import health as health_cli  # noqa: E402
 from checks import report as checks_report  # noqa: E402
@@ -215,6 +219,23 @@ def known_release_status(failures: list[R.Failure], collections: list[str],
             "known": len(judged & failing)}
 
 
+def contents_summary(build: list[Document]) -> list[dict]:
+    """One entry per build document that has a contents tree (#250)."""
+    entries = []
+    for document in build:
+        if document.contents is None:
+            continue
+        entry = {"document_id": document.id, "title": document.title,
+                 "nodes": len(contents.flatten(document.contents)),
+                 "unreached": [], "error": None}
+        try:
+            entry["unreached"] = contents.check(document)
+        except contents.ContentsError as error:
+            entry["error"] = str(error)
+        entries.append(entry)
+    return entries
+
+
 def collection_section(collection: str, result: R.RemapResult, live: list[Document],
                        build: list[Document], old: dict[str, R.OldPassage],
                        new: dict[str, R.NewPassage], impact: dict, known: dict[str, dict],
@@ -237,6 +258,7 @@ def collection_section(collection: str, result: R.RemapResult, live: list[Docume
         "replacements": [r for r in result.replacements if r["collection"] == collection],
         "user_impact": impact.get(collection, {}),
         "samples": samples(result, old, new, collection, excerpts),
+        "contents": contents_summary(build),
     }
 
 
@@ -391,6 +413,27 @@ def report_md(data: dict, public: bool) -> str:
                         if row.get(key):
                             lines.append(f"  - {key.split('_')[0]}: {row[key]!r}")
             lines += ["", "</details>", ""]
+
+    lines += ["## Contents trees", "",
+              "Build documents with a contents tree (#250). A chapter no node opens is a "
+              "warning; a broken tree is an error, and the build refuses to publish it.", ""]
+    trees = [(c, t) for c in collections for t in data["collections"][c].get("contents", [])]
+    if not trees:
+        lines.append("None.")
+    else:
+        lines += ["| Collection | Document | Nodes | Chapters no node opens | Error |",
+                  "|---|---|---:|---:|---|"]
+        for c, t in trees:
+            error = (t["error"] or "").replace("|", "\\|").replace("\n", " ")
+            lines.append(f"| {c} | {t['title']} | {_n(t['nodes'])} | "
+                         f"{_n(len(t['unreached']))} | {error} |")
+        for c, t in trees:
+            if t["unreached"]:
+                shown = ", ".join(f"`{k}`" for k in t["unreached"][:20])
+                more = len(t["unreached"]) - 20
+                lines.append(f"\n- {c}, {t['title']}, not reached: {shown}"
+                             + (f" and {more:,} more (report.json)" if more > 0 else ""))
+    lines.append("")
 
     lines += ["## Health (0.1b)", "",
               "Block-rule counts, live against build; the full table, with report rules, is "
