@@ -107,3 +107,49 @@ html[data-theme="light"] .brand-logo-light {
     font-size: 16px !important;
   }
 }
+
+/* NavPendingBar: a thin line along the bottom of a control whose page is
+   still loading. Hidden until a navigation has been pending for 100ms, so one
+   served from a prefetch never flashes it. */
+@keyframes nav-pending-sweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(250%); }
+}
+
+.nav-pending {
+  position: absolute;
+  inset-inline: 0.25rem;
+  bottom: 1px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.nav-pending > span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: inherit;
+  /* The control's own text colour: accent on outline buttons, the page colour
+     on an accent-filled button, so the line shows in both themes and on hover. */
+  background-color: currentColor;
+  animation: nav-pending-sweep 0.9s ease-in-out infinite;
+}
+
+.nav-pending[data-pending="true"] {
+  opacity: 1;
+  transition-delay: 100ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-pending > span {
+    width: 100%;
+    animation: none;
+  }
+  .nav-pending[data-pending="true"] {
+    opacity: 0.7;
+  }
+}

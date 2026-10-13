@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Bookmark, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import ReactDOM from "react-dom";
-import { ThemedTooltip, Toast, useToast } from "@/components/common";
-import { useRouter, useSearchParams } from "next/navigation";
+import { IntentLink, ThemedTooltip, Toast, useToast } from "@/components/common";
+import { useSearchParams } from "next/navigation";
 import {
   addBookmark,
   removeBookmark,
@@ -22,7 +22,7 @@ import { displayRole } from "@/lib/passageRole";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
-import { createReaderReturnKey } from "@/lib/readerNavigation";
+import { markReaderReturn, newReaderReturnKey, readerHref } from "@/lib/readerNavigation";
 import { useGuestGate } from "@/components/layout/guestGate";
 
 function hexToRgb(color: string): string {
@@ -91,8 +91,9 @@ interface ChunkCardProps {
   onDismissOpenContextHint?: () => void;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function ChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { chunk_id, content, source } = result;
   // Presentation only. Copying and saving still address the passage the user matched.
@@ -173,20 +174,26 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
       .catch(() => showToast("Copy failed", "error"));
   }
 
-  // ── Read More action ──────────────────────────────────────────────────────
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  function handleReadMore() {
-    if (!UUID_RE.test(document_id)) return;
+  // ── Open in Context ───────────────────────────────────────────────────────
+  // The href is built at render with a return key made once per card, so it is
+  // stable and is exactly the URL a hover prefetch warmed. The return marker is
+  // written only for a same-tab navigation (onNavigate); a new tab takes the
+  // reader's deep-link fallback.
+  const [returnKey] = useState(newReaderReturnKey);
+  const canOpenContext = UUID_RE.test(document_id);
+  const contextHref = readerHref({
+    docId: document_id,
+    origin: "search",
+    returnKey,
+    anchor: source.anchor,
+    chapter: source.chapter_key,
+    guest: isGuest,
+    guideBack: showOpenContextHint,
+    preview: searchParams.get("preview") === "1",
+  });
+  function handleOpenContextClick() {
     onDismissOpenContextHint?.();
     trackDocumentOpened({ documentId: document_id, collection, source: "chunk_card" });
-    const params = new URLSearchParams({ from: "search" });
-    const returnKey = createReaderReturnKey("search");
-    if (returnKey) params.set("returnKey", returnKey);
-    if (source.anchor) params.set("anchor", source.anchor);
-    else if (source.chapter_key) params.set("chapter", source.chapter_key);
-    if (isGuest && showOpenContextHint) params.set("guideBack", "1");
-    if (isGuest && searchParams.get("preview") === "1") params.set("preview", "1");
-    router.push(`${isGuest ? "/reader/guest" : "/reader"}/${document_id}?${params.toString()}`);
   }
 
   // ── Feedback state ────────────────────────────────────────────────────────
@@ -210,8 +217,11 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
     }
   }
 
-  function reportResultProblem() {
-    if (!searchId) return;
+  function reportResultProblem(event: React.MouseEvent) {
+    if (!searchId) {
+      event.preventDefault();
+      return;
+    }
     saveFeedbackContext({
       category: "content",
       origin: "search_result",
@@ -220,7 +230,6 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
       chunk_id,
       document_id,
     });
-    router.push("/feedback");
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
@@ -378,7 +387,16 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
                     <span className="block pr-3">Open the passage in context to read the surrounding text.</span>
                   </div>
                 )}
-                <button onClick={handleReadMore} className="px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">Open in Context</button>
+                {canOpenContext && (
+                  <IntentLink
+                    href={contextHref}
+                    onClick={handleOpenContextClick}
+                    onNavigate={() => markReaderReturn(returnKey, "search")}
+                    className="inline-block px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                  >
+                    Open in Context
+                  </IntentLink>
+                )}
               </div>
             </div>
           </div>
@@ -387,7 +405,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
               <span>Thanks. Is there a specific problem with this result?</span>
               <span className="flex gap-3">
                 <button type="button" onClick={() => setShowReportPrompt(false)} className="hover:text-brand-primary">No, thanks</button>
-                <button type="button" onClick={reportResultProblem} className="font-medium text-brand-accent hover:underline">Report a problem</button>
+                <IntentLink href="/feedback" onClick={reportResultProblem} className="font-medium text-brand-accent hover:underline">Report a problem</IntentLink>
               </span>
             </div>
           )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
 import { EmptyState } from "@/components/search/EmptyState";
@@ -28,7 +28,6 @@ import {
 } from "@/lib/search-experience/useSearchPageExperience";
 
 function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
-  const router = useRouter();
   const guestGate = useGuestGate();
   const {
     token, userId, preferences, setPreferences,
@@ -384,7 +383,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
               const safeCode = (["auth_error", "invalid_request", "network_error", "rate_limit", "restore_not_found", "restore_unavailable", "server_error", "stream_interrupted"] as const)
                 .find((value) => value === searchView.errorCode) ?? "unknown";
               saveFeedbackContext({ category: "bug", origin: "search_error", route: "/search", search_id: searchView.searchId ?? undefined, error_code: safeCode });
-              router.push("/feedback");
             }}
           />
         )}

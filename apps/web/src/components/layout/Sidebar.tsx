@@ -9,6 +9,8 @@ import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { useAppContext } from "./AppShell";
 import { useGuestGate } from "./guestGate";
 import { GUEST_SEARCH_LIMIT } from "@/lib/trial";
+import { NavPendingBar, usePendingNavigation } from "@/components/common/NavPending";
+import { useIntentPrefetch } from "@/lib/useIntentPrefetch";
 
 interface SidebarProps {
   isMobileOpen: boolean;
@@ -50,6 +52,18 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const { newSearch } = useAppContext();
   const guestGate = useGuestGate();
   const [mobileViewport, setMobileViewport] = useState(false);
+  const newSearchNavigation = usePendingNavigation();
+  const searchHref = guestGate
+    ? searchParams.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest"
+    : "/search";
+  const guestAtLimit = Boolean(guestGate && guestGate.searchCount >= GUEST_SEARCH_LIMIT);
+  // New Search is a button (it runs the guest limit gate and resets search state),
+  // so nothing prefetches /search for it. Warm it once here, since it's one URL
+  // reached from every page, and again on intent once that prefetch has gone stale.
+  const newSearchIntent = useIntentPrefetch(searchHref, { enabled: !guestAtLimit });
+  useEffect(() => {
+    if (!guestAtLimit) router.prefetch(searchHref);
+  }, [guestAtLimit, router, searchHref]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 767px)");
@@ -60,17 +74,11 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   }, []);
 
   function handleNewSearch() {
-    if (guestGate) {
-      if (guestGate.searchCount >= GUEST_SEARCH_LIMIT) {
-        guestGate.requestSignup("limit");
-        return;
-      }
-      router.push(searchParams.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
-      newSearch();
-      onCloseMobile();
+    if (guestGate && guestAtLimit) {
+      guestGate.requestSignup("limit");
       return;
     }
-    router.push("/search");
+    newSearchNavigation.push(searchHref);
     newSearch();
     onCloseMobile();
   }
@@ -133,10 +141,13 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           <button
             type="button"
             onClick={handleNewSearch}
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-brand-accent px-3 py-2 font-brand text-base font-semibold text-brand-bg transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+            {...newSearchIntent}
+            aria-busy={newSearchNavigation.pending || undefined}
+            className="relative flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-brand-accent px-3 py-2 font-brand text-base font-semibold text-brand-bg transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
           >
             <Search size={17} aria-hidden="true" />
             New Search
+            <NavPendingBar pending={newSearchNavigation.pending} />
           </button>
         </div>
 

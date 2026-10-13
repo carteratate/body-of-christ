@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import {
   putReadingProgress,
@@ -24,7 +24,9 @@ import { ReaderChrome, type ReaderFontSize, type ReaderSpacing } from "./ReaderC
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { ReaderChapterSkeleton, ReaderOverviewSkeleton, ReaderPageSkeleton } from "@/components/common/PageSkeletons";
 import { DocumentOverview } from "./DocumentOverview";
-import { consumeReaderReturnKey, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { NavPendingBar } from "@/components/common/NavPending";
+import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
 
@@ -54,7 +56,6 @@ interface ProgressWriter {
 function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean }) {
   const { token } = useAppContext();
   const [guestToken, setGuestToken] = useState("");
-  const router = useRouter();
   const params = useSearchParams();
   const initialAnchor = params.get("anchor");
   const initialChapter = params.get("chapter");
@@ -361,16 +362,10 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     if (visibleKey && visibleKey !== currentKey) setCurrentKey(visibleKey);
   }
 
+  const back = useReaderBack({ isGuest, origin, returnKey, preview: params.get("preview") === "1" });
   function goBack() {
     setShowBackGuide(false);
-    if (isGuest) {
-      consumeReaderReturnKey(returnKey, origin);
-      router.push(params.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest");
-      return;
-    }
-    const fallback = origin === "saved" ? "/bookmarks" : origin === "history" ? "/history" : origin === "search" ? "/search" : "/sources";
-    if (consumeReaderReturnKey(returnKey, origin)) router.back();
-    else router.push(fallback);
+    back.goBack();
   }
 
   function browseSections() {
@@ -385,13 +380,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   }
 
   function reportContent() {
-    if (isGuest) {
-      saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });
-      router.push("/guest/feedback");
-      return;
-    }
     saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });
-    router.push("/feedback");
   }
 
   if (error) {
@@ -402,7 +391,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
           <p className="text-sm text-brand-muted">This document couldn&apos;t be loaded.</p>
           <div className="flex items-center gap-4">
             <button onClick={() => setInitialRetryKey((value) => value + 1)} className="text-sm font-medium text-brand-accent hover:underline">Try again</button>
-            <button onClick={goBack} className="text-sm text-brand-muted hover:text-brand-accent">← Back</button>
+            <button onClick={goBack} aria-busy={back.pending || undefined} className="relative text-sm text-brand-muted hover:text-brand-accent">← Back<NavPendingBar pending={back.pending} /></button>
           </div>
         </div>
       </div>
@@ -428,6 +417,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         currentChapterKey={currentKey}
         backLabel={backLabel}
         onBack={goBack}
+        backPending={back.pending}
         onBrowseSections={browseSections}
         onJump={jump}
         fontSize={fontSize}
@@ -435,6 +425,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         onFontSizeChange={changeFontSize}
         onSpacingChange={changeSpacing}
         onReportContent={reportContent}
+        reportHref={isGuest ? "/guest/feedback" : "/feedback"}
         showBackGuide={showBackGuide}
         onDismissBackGuide={() => setShowBackGuide(false)}
       />

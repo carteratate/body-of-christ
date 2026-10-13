@@ -1,15 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useIntentPrefetch } from "@/lib/useIntentPrefetch";
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import type { SearchSummaryV2 } from "@/lib/api";
 import { trackHistoryRestored } from "@/lib/analytics";
 
 const DELETE_REVEAL_PX = 88;
-// Same pause as the results prefetch: sweeping the pointer across rows warms nothing.
-const ROUTE_PREFETCH_DELAY_MS = 150;
 const SWIPE_THRESHOLD_PX = 44;
 
 interface HistorySearchRowProps {
@@ -44,30 +42,11 @@ export function HistorySearchRow({
   onClose,
   onDelete,
 }: HistorySearchRowProps) {
-  const router = useRouter();
   const href = `/search?restore=${search.id}`;
   // Rows don't prefetch on sight: a page of history is ~15 distinct URLs, each a
-  // middleware run and a server render. Warm the route once the pointer or
-  // keyboard focus rests on the row; Next dedupes repeats while it is fresh.
-  const routePrefetchTimer = useRef<number | null>(null);
-  function cancelRoutePrefetch() {
-    if (routePrefetchTimer.current !== null) window.clearTimeout(routePrefetchTimer.current);
-    routePrefetchTimer.current = null;
-  }
-  function scheduleRoutePrefetch() {
-    cancelRoutePrefetch();
-    if (revealed || deleting) return;
-    routePrefetchTimer.current = window.setTimeout(() => {
-      routePrefetchTimer.current = null;
-      router.prefetch(href);
-    }, ROUTE_PREFETCH_DELAY_MS);
-  }
-  useEffect(() => {
-    const timer = routePrefetchTimer;
-    return () => {
-      if (timer.current !== null) window.clearTimeout(timer.current);
-    };
-  }, []);
+  // middleware run and a server render. Warm the route when the pointer or
+  // keyboard focus rests on the row.
+  const routeIntent = useIntentPrefetch(href, { enabled: !revealed && !deleting });
   const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const revealButtonRef = useRef<HTMLButtonElement>(null);
   const dragStart = useRef<{ x: number; y: number; initialX: number } | null>(null);
@@ -182,21 +161,21 @@ export function HistorySearchRow({
           onClick={handleLinkClick}
           onPointerEnter={(event) => {
             if (event.pointerType !== "mouse") return;
-            scheduleRoutePrefetch();
+            routeIntent.onPointerEnter(event);
             onIntent?.();
           }}
           onPointerLeave={() => {
-            cancelRoutePrefetch();
+            routeIntent.onPointerLeave();
             onIntentEnd?.();
           }}
           // Keyboard focus only: moving focus after a delete is not the reader's intent.
           onFocus={(event) => {
             if (!event.currentTarget.matches(":focus-visible")) return;
-            scheduleRoutePrefetch();
+            routeIntent.onFocus(event);
             onIntent?.();
           }}
           onBlur={() => {
-            cancelRoutePrefetch();
+            routeIntent.onBlur();
             onIntentEnd?.();
           }}
           aria-label={search.query}

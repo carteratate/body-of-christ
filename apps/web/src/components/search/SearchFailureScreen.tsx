@@ -1,11 +1,13 @@
 "use client";
 
 import { AlertTriangle, CloudOff, KeyRound, RotateCcw } from "lucide-react";
+import { IntentLink } from "@/components/common/NavPending";
 
 interface SearchFailureScreenProps {
   code?: string | null;
   stage?: string | null;
   onRetry: () => void;
+  /** Shows a link to /feedback; called (to save the report context) before it opens. */
   onReport?: () => void;
 }
 
@@ -70,9 +72,9 @@ export function SearchFailureScreen({
         </button>
       )}
       {onReport && (
-        <button type="button" onClick={onReport} className="mt-3 text-xs text-brand-muted hover:text-brand-accent hover:underline">
+        <IntentLink href="/feedback" onClick={onReport} className="mt-3 text-xs text-brand-muted hover:text-brand-accent hover:underline">
           Report this problem
-        </button>
+        </IntentLink>
       )}
     </div>
   );

@@ -1,14 +1,18 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ChunkCard } from "./ChunkCard";
+import { navigations } from "@/test/next-link-mock";
+import { hasReaderReturnMarker } from "@/lib/readerNavigation";
+import { trackDocumentOpened } from "@/lib/analytics";
 
-const mocks = vi.hoisted(() => ({ submitLabel: vi.fn() }));
+const mocks = vi.hoisted(() => ({ submitLabel: vi.fn(), prefetch: vi.fn() }));
+vi.mock("next/link", () => import("@/test/next-link-mock"));
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: vi.fn(), prefetch: mocks.prefetch }),
   useSearchParams: () => new URLSearchParams(),
 }));
 vi.mock("@/components/layout/AppShell", () => ({
@@ -24,7 +28,13 @@ vi.mock("@/lib/analytics", () => ({
 }));
 
 beforeEach(() => mocks.submitLabel.mockResolvedValue({ label_id: "label" }));
-afterEach(() => { cleanup(); vi.clearAllMocks(); });
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+  vi.useRealTimers();
+  navigations.length = 0;
+  sessionStorage.clear();
+});
 
 describe("ChunkCard feedback", () => {
   it("removes the report prompt when a down label is changed to up", async () => {
@@ -85,7 +95,7 @@ describe("ChunkCard feedback", () => {
     );
 
     const expand = screen.getByRole("button", { name: "Expand result: Bible, Genesis 1:1, 90% relevance" });
-    expect(screen.queryByRole("button", { name: "Open in Context" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Open in Context" })).toBeNull();
     expect(screen.queryByText("Relevance Score:")).toBeNull();
     expect(screen.getAllByText("90%")).toHaveLength(2);
     expect(expand.getAttribute("aria-describedby")).toBeNull();
@@ -111,10 +121,10 @@ describe("ChunkCard feedback", () => {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
     }
-    const contextButtons = screen.getAllByRole("button", { name: "Open in Context" });
-    expect(contextButtons).toHaveLength(1);
-    expect(contextButtons[0].getAttribute("aria-describedby")).toBeNull();
-    contextButtons[0].focus();
+    const contextLinks = screen.getAllByRole("link", { name: "Open in Context" });
+    expect(contextLinks).toHaveLength(1);
+    expect(contextLinks[0].getAttribute("aria-describedby")).toBeNull();
+    contextLinks[0].focus();
     expect(screen.queryByRole("tooltip")).toBeNull();
   });
 
@@ -146,7 +156,7 @@ describe("ChunkCard feedback", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Expand result: Bible, Genesis 1:1, 90% relevance" }));
     expect(screen.getByRole("status").textContent).toContain("Open the passage in context to read the surrounding text.");
-    expect(screen.getByRole("button", { name: "Open in Context" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Open in Context" })).toBeTruthy();
   });
 
   it("allows expanded actions to wrap on narrow screens", async () => {
@@ -174,7 +184,7 @@ describe("ChunkCard feedback", () => {
     );
 
     await userEvent.click(screen.getByRole("button", { expanded: false }));
-    const openContext = screen.getByRole("button", { name: "Open in Context" });
+    const openContext = screen.getByRole("link", { name: "Open in Context" });
     expect(openContext.parentElement?.parentElement?.parentElement?.className).toContain("flex-wrap");
     expect(screen.queryByRole("button", { name: "Query more like this" })).toBeNull();
     expect(container.firstElementChild?.className).toContain("overflow-hidden");
@@ -438,5 +448,88 @@ describe("ChunkCard keeps the attachment out of every action", () => {
     expect(screen.getAllByText(/Objection 1/).length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { expanded: false }).getAttribute("aria-label"))
       .toContain("Objection 1");
+  });
+});
+
+const RESULT = {
+  chunk_id: "00000000-0000-0000-0000-000000000001",
+  content: "A passage",
+  source: {
+    collection: "bible",
+    document_title: "Genesis",
+    author: null,
+    reference: "Genesis 1:1",
+    document_id: "00000000-0000-0000-0000-000000000002",
+    position: 1,
+    anchor: "genesis-1-1",
+  },
+  reranker_score: 0.9,
+  explanation: "Relevant",
+};
+
+async function openContextLink(props: Partial<React.ComponentProps<typeof ChunkCard>> = {}) {
+  const view = render(<ChunkCard result={RESULT} index={0} searchId="00000000-0000-0000-0000-000000000003" token="token" {...props} />);
+  await userEvent.click(screen.getByRole("button", { expanded: false }));
+  return { ...view, link: screen.getByRole("link", { name: "Open in Context" }) as HTMLAnchorElement };
+}
+
+function returnKeyOf(link: HTMLAnchorElement): string | null {
+  return new URL(link.href).searchParams.get("returnKey");
+}
+
+describe("ChunkCard Open in Context link", () => {
+  it("renders a stable reader href, so the URL a hover warmed is the one opened", async () => {
+    const { link, rerender } = await openContextLink();
+    const href = link.getAttribute("href")!;
+    expect(href).toMatch(/^\/reader\/00000000-0000-0000-0000-000000000002\?from=search&returnKey=[0-9a-f-]{36}&anchor=genesis-1-1$/);
+    rerender(<ChunkCard result={RESULT} index={0} searchId="00000000-0000-0000-0000-000000000003" token="token" />);
+    expect(screen.getByRole("link", { name: "Open in Context" }).getAttribute("href")).toBe(href);
+
+    await userEvent.click(link);
+    expect(navigations).toEqual([href]);
+  });
+
+  it("writes the return marker and tracks the open for a same-tab click", async () => {
+    const { link } = await openContextLink();
+    const key = returnKeyOf(link);
+    expect(hasReaderReturnMarker(key, "search")).toBe(false);
+
+    await userEvent.click(link);
+    expect(hasReaderReturnMarker(key, "search")).toBe(true);
+    expect(trackDocumentOpened).toHaveBeenCalledWith({ documentId: RESULT.source.document_id, collection: "bible", source: "chunk_card" });
+  });
+
+  it("leaves a cmd/ctrl-click to the browser without a return marker", async () => {
+    const { link } = await openContextLink();
+    for (const modifier of [{ metaKey: true }, { ctrlKey: true }, { shiftKey: true }]) {
+      const event = new MouseEvent("click", { bubbles: true, cancelable: true, ...modifier });
+      link.dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(false);
+    }
+    expect(navigations).toEqual([]);
+    expect(hasReaderReturnMarker(returnKeyOf(link), "search")).toBe(false);
+    // The open still counts.
+    expect(trackDocumentOpened).toHaveBeenCalledTimes(3);
+  });
+
+  it("sends a guest to the guest reader with the back guide while the hint shows", async () => {
+    const onDismissOpenContextHint = vi.fn();
+    const { link } = await openContextLink({ isGuest: true, searchId: null, token: "", showOpenContextHint: true, onDismissOpenContextHint });
+    expect(link.getAttribute("href")).toMatch(/^\/reader\/guest\/00000000-0000-0000-0000-000000000002\?from=search&returnKey=[0-9a-f-]{36}&anchor=genesis-1-1&guideBack=1$/);
+    const href = link.getAttribute("href");
+    await userEvent.click(link);
+    expect(onDismissOpenContextHint).toHaveBeenCalledTimes(1);
+    expect(navigations).toEqual([href]);
+  });
+
+  it("does not prefetch on sight, and prefetches its exact href once the pointer rests on it", async () => {
+    const { link } = await openContextLink();
+    expect(link.dataset.prefetch).toBe("false");
+    vi.useFakeTimers();
+    fireEvent.pointerEnter(link, { pointerType: "mouse" });
+    vi.advanceTimersByTime(100);
+    expect(mocks.prefetch).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(50);
+    expect(mocks.prefetch).toHaveBeenCalledExactlyOnceWith(link.getAttribute("href"));
   });
 });

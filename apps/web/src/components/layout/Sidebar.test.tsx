@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { HistorySearchRow } from "@/components/history";
 import { Sidebar } from "./Sidebar";
 import { useAppContext } from "./AppShell";
+import { GUEST_SEARCH_LIMIT } from "@/lib/trial";
 
 const navigationState = vi.hoisted(() => ({ pathname: "/search", params: "", push: vi.fn(), prefetch: vi.fn(), guestGate: null as null | { requestSignup: ReturnType<typeof vi.fn>; searchCount: number } }));
 
@@ -396,3 +397,47 @@ describe("Sidebar mobile accessibility", () => {
     expect(open.getAttribute("aria-hidden")).toBeNull();
   });
 });
+
+describe("Sidebar New Search", () => {
+  it("prefetches /search up front and navigates there, resetting the search", async () => {
+    mockMatchMedia(false);
+    const newSearch = vi.fn();
+    navigationState.pathname = "/sources";
+    vi.mocked(useAppContext).mockReturnValue({ newSearch, token: "token" } as unknown as ReturnType<typeof useAppContext>);
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    expect(navigationState.prefetch).toHaveBeenCalledWith("/search");
+    await userEvent.click(screen.getByRole("button", { name: "New Search" }));
+    expect(navigationState.push).toHaveBeenCalledWith("/search");
+    expect(newSearch).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button", { name: "New Search" }).querySelector(".nav-pending")).toBeTruthy();
+  });
+
+  it("prefetches the guest search page for a guest under the limit, keeping preview", async () => {
+    mockMatchMedia(false);
+    navigationState.params = "preview=1";
+    navigationState.guestGate = { requestSignup: vi.fn(), searchCount: 0 };
+    vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: null } as unknown as ReturnType<typeof useAppContext>);
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    expect(navigationState.prefetch).toHaveBeenCalledWith("/search/guest?preview=1");
+    await userEvent.click(screen.getByRole("button", { name: "New Search" }));
+    expect(navigationState.push).toHaveBeenCalledWith("/search/guest?preview=1");
+  });
+
+  it("gates a guest at the limit without prefetching or navigating", async () => {
+    mockMatchMedia(false);
+    const requestSignup = vi.fn();
+    navigationState.guestGate = { requestSignup, searchCount: GUEST_SEARCH_LIMIT };
+    vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: null } as unknown as ReturnType<typeof useAppContext>);
+    render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
+
+    const button = screen.getByRole("button", { name: "New Search" });
+    fireEvent.pointerDown(button, { pointerType: "mouse" });
+    await userEvent.click(button);
+    expect(requestSignup).toHaveBeenCalledWith("limit");
+    expect(navigationState.prefetch).not.toHaveBeenCalled();
+    expect(navigationState.push).not.toHaveBeenCalled();
+  });
+});
+

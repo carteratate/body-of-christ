@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } fr
 
 import type { DocumentInfo, ReaderChapter } from "@/lib/api";
 import { DocumentReader } from "./DocumentReader";
-import { createReaderReturnKey } from "@/lib/readerNavigation";
+import { markReaderReturn, newReaderReturnKey } from "@/lib/readerNavigation";
 import { __resetClientCachesForTests } from "@/lib/client-cache";
 import { isChapterCached } from "@/lib/reader-cache";
 
@@ -20,6 +20,7 @@ const navigation = vi.hoisted(() => ({
   push: vi.fn(),
   back: vi.fn(),
   replace: vi.fn(),
+  prefetch: vi.fn(),
 }));
 
 vi.mock("@/lib/api", async (importOriginal) => ({
@@ -28,7 +29,7 @@ vi.mock("@/lib/api", async (importOriginal) => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ back: navigation.back, push: navigation.push, replace: navigation.replace }),
+  useRouter: () => ({ back: navigation.back, push: navigation.push, replace: navigation.replace, prefetch: navigation.prefetch }),
   useSearchParams: () => ({ get: (key: string) => navigation.params.get(key) ?? null }),
 }));
 
@@ -111,6 +112,7 @@ beforeEach(() => {
   navigation.push.mockReset();
   navigation.back.mockReset();
   navigation.replace.mockReset();
+  navigation.prefetch.mockReset();
   sessionStorage.clear();
   api.getReadingProgress.mockResolvedValue(null);
   api.getToc.mockImplementation(async (_token: string, docId: string) => ({
@@ -752,7 +754,8 @@ describe("DocumentReader overview", () => {
   });
 
   it("returns through exact same-tab history only when a valid marker exists", async () => {
-    const returnKey = createReaderReturnKey("search");
+    const returnKey = newReaderReturnKey();
+    markReaderReturn(returnKey, "search");
     expect(returnKey).toBeTruthy();
     navigation.params = new Map([
       ["from", "search"],
@@ -768,7 +771,8 @@ describe("DocumentReader overview", () => {
   });
 
   it("replaces the overview entry when opening a chapter with a return marker", async () => {
-    const returnKey = createReaderReturnKey("library");
+    const returnKey = newReaderReturnKey();
+    markReaderReturn(returnKey, "library");
     expect(returnKey).toBeTruthy();
     navigation.params = new Map([["from", "library"], ["returnKey", returnKey!]]);
     render(<DocumentReader docId="doc-a" />);
@@ -789,5 +793,37 @@ describe("DocumentReader overview", () => {
     expect(pushState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b");
     expect(replaceState).not.toHaveBeenCalled();
     expect(navigation.push).not.toHaveBeenCalled();
+  });
+});
+
+describe("DocumentReader back navigation", () => {
+  it("prefetches the fallback page when Back will open it rather than pop history", async () => {
+    navigation.params = new Map([["from", "saved"], ["chapter", "chapter-a"]]);
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    expect(navigation.prefetch).toHaveBeenCalledWith("/bookmarks");
+
+    fireEvent.click(screen.getByRole("button", { name: "Reader Back" }));
+    expect(navigation.push).toHaveBeenCalledWith("/bookmarks");
+  });
+
+  it("does not prefetch when Back will return through same-tab history", async () => {
+    const returnKey = newReaderReturnKey();
+    markReaderReturn(returnKey, "library");
+    navigation.params = new Map([["from", "library"], ["returnKey", returnKey!]]);
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByRole("button", { name: "Document doc-a chapter chapter-b" });
+    expect(navigation.prefetch).not.toHaveBeenCalled();
+  });
+
+  it("prefetches the guest search page for a guest, keeping preview", async () => {
+    appContext.token = null;
+    trial.guestToken = "guest-token";
+    navigation.params = new Map([["from", "search"], ["chapter", "chapter-a"], ["preview", "1"]]);
+    render(<DocumentReader docId="doc-a" isGuest />);
+    await screen.findByText("doc-a chapter-a");
+    expect(navigation.prefetch).toHaveBeenCalledWith("/search/guest?preview=1");
+    fireEvent.click(screen.getByRole("button", { name: "Reader Back" }));
+    expect(navigation.push).toHaveBeenCalledWith("/search/guest?preview=1");
   });
 });
