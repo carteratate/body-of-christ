@@ -6,7 +6,8 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { LibrarySkeleton } from "@/components/common/PageSkeletons";
 import { listReadingProgress, type ReadingProgress, type SourceDocument } from "@/lib/api";
 import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
-import { markReaderReturn, newReaderReturnKey, readerHref } from "@/lib/readerNavigation";
+import { readerHref } from "@/lib/readerNavigation";
+import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink } from "@/components/common";
 
 /** How the Library's rows link to the reader: one href per document, one same-tab hook. */
@@ -277,15 +278,14 @@ export function SourcesPage() {
   const [progressError, setProgressError] = useState(false);
   const [progressToken, setProgressToken] = useState<string | null>(null);
   const progressRequestRef = useRef(0);
-  // One return key for the page, so every row's href is stable and is the URL
-  // its prefetch warmed. The marker is written only for a same-tab navigation;
-  // a new tab takes the reader's deep-link fallback.
-  const [returnKey] = useState(newReaderReturnKey);
+  // One return key for the page's rows, stable between navigations, so each
+  // href is the URL its prefetch warmed. The marker is written only for a
+  // same-tab navigation; a new tab takes the reader's deep-link fallback.
+  const { returnKey, markReturn } = useReaderReturnKey("library");
   const libraryHref = useCallback(
     (docId: string, chapter?: string) => readerHref({ docId, origin: "library", returnKey, chapter }),
     [returnKey],
   );
-  const markReturn = useCallback(() => markReaderReturn(returnKey, "library"), [returnKey]);
   const opener = useMemo<DocOpener>(() => ({ href: (docId) => libraryHref(docId), onNavigate: markReturn }), [libraryHref, markReturn]);
 
   const fetchProgress = useCallback((signal?: AbortSignal) => {

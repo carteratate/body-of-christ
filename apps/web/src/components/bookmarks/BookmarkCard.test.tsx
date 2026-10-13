@@ -367,9 +367,10 @@ describe("BookmarkCard open in context", () => {
     expect(screen.getByRole("link", { name: "Open passage in context" }).getAttribute("href")).toBe(href);
     expect(link.dataset.prefetch).toBe("false");
 
+    const key = new URL(link.href).searchParams.get("returnKey");
     await userEvent.click(link);
     expect(navigations).toEqual([href]);
-    expect(hasReaderReturnMarker(new URL(link.href).searchParams.get("returnKey"), "saved")).toBe(true);
+    expect(hasReaderReturnMarker(key, "saved")).toBe(true);
     expect(trackDocumentOpened).toHaveBeenCalledWith({ documentId: bookmark.chunk.source.document_id, collection: "catechism", source: "saved" });
   });
 

@@ -22,7 +22,8 @@ import { displayRole } from "@/lib/passageRole";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
-import { markReaderReturn, newReaderReturnKey, readerHref } from "@/lib/readerNavigation";
+import { readerHref } from "@/lib/readerNavigation";
+import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
 
 function hexToRgb(color: string): string {
@@ -175,11 +176,11 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
   }
 
   // ── Open in Context ───────────────────────────────────────────────────────
-  // The href is built at render with a return key made once per card, so it is
-  // stable and is exactly the URL a hover prefetch warmed. The return marker is
-  // written only for a same-tab navigation (onNavigate); a new tab takes the
-  // reader's deep-link fallback.
-  const [returnKey] = useState(newReaderReturnKey);
+  // The href is built at render with a return key that holds steady between
+  // navigations, so it is exactly the URL a hover prefetch warmed. The marker is
+  // written only for a same-tab navigation (see useReaderReturnKey); a new tab
+  // takes the reader's deep-link fallback.
+  const { returnKey, markReturn } = useReaderReturnKey("search");
   const canOpenContext = UUID_RE.test(document_id);
   const contextHref = readerHref({
     docId: document_id,
@@ -391,7 +392,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
                   <IntentLink
                     href={contextHref}
                     onClick={handleOpenContextClick}
-                    onNavigate={() => markReaderReturn(returnKey, "search")}
+                    onNavigate={markReturn}
                     className="inline-block px-2 py-1 rounded text-xs text-brand-accent border border-brand-accent hover:bg-brand-accent hover:text-brand-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                   >
                     Open in Context

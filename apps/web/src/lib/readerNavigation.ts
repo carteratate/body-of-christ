@@ -63,7 +63,7 @@ export function readerHref({
   else if (chapter) params.set("chapter", chapter);
   if (guest && guideBack) params.set("guideBack", "1");
   if (guest && preview) params.set("preview", "1");
-  return `${guest ? "/reader/guest" : "/reader"}/${docId}?${params.toString()}`;
+  return `${guest ? "/reader/guest" : "/reader"}/${encodeURIComponent(docId)}?${params.toString()}`;
 }
 
 export function isReaderReturnKey(value: string | null): value is string {

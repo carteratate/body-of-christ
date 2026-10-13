@@ -478,6 +478,19 @@ function returnKeyOf(link: HTMLAnchorElement): string | null {
 }
 
 describe("ChunkCard Open in Context link", () => {
+  it("moves to a fresh key after a same-tab open, so a marked key is never linked again", async () => {
+    const { link } = await openContextLink();
+    const first = returnKeyOf(link);
+    await userEvent.click(link);
+    expect(hasReaderReturnMarker(first, "search")).toBe(true);
+
+    const second = returnKeyOf(screen.getByRole("link", { name: "Open in Context" }) as HTMLAnchorElement);
+    expect(second).toMatch(/^[0-9a-f-]{36}$/);
+    expect(second).not.toBe(first);
+    // A cmd-click now opens a key with no marker, even if the new tab copies this tab's storage.
+    expect(hasReaderReturnMarker(second, "search")).toBe(false);
+  });
+
   it("renders a stable reader href, so the URL a hover warmed is the one opened", async () => {
     const { link, rerender } = await openContextLink();
     const href = link.getAttribute("href")!;

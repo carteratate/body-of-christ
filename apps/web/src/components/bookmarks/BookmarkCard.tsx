@@ -6,7 +6,8 @@ import { updateBookmarkNote, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
-import { markReaderReturn, newReaderReturnKey, readerHref } from "@/lib/readerNavigation";
+import { readerHref } from "@/lib/readerNavigation";
+import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink, ThemedTooltip } from "@/components/common";
 
 const NOTE_MAX = 3000;
@@ -24,9 +25,9 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   const [draftNote, setDraftNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [removing, setRemoving] = useState(false);
-  // Stable per card, so the reader href is the URL its prefetch warmed; the
-  // marker is written only for a same-tab navigation (see ChunkCard).
-  const [returnKey] = useState(newReaderReturnKey);
+  // Stable between navigations, so the reader href is the URL its prefetch
+  // warmed; the marker is written only for a same-tab navigation.
+  const { returnKey, markReturn } = useReaderReturnKey("saved");
 
   // ── Null chunk fallback ───────────────────────────────────────────────────
   if (bookmark.chunk === null) {
@@ -139,7 +140,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
             <IntentLink
               href={contextHref}
               onClick={() => trackDocumentOpened({ documentId: source.document_id, collection, source: "saved" })}
-              onNavigate={() => markReaderReturn(returnKey, "saved")}
+              onNavigate={markReturn}
               aria-label="Open passage in context"
               className="inline-flex p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             >

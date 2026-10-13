@@ -71,6 +71,11 @@ describe("readerHref", () => {
       .toBe("/reader/doc-a?from=saved");
   });
 
+  it("encodes the document id as one path segment", () => {
+    expect(readerHref({ docId: "../../login?next=x#y", origin: "library", returnKey: null }))
+      .toBe("/reader/..%2F..%2Flogin%3Fnext%3Dx%23y?from=library");
+  });
+
   it("adds guest params only for the guest reader", () => {
     expect(readerHref({ docId: "doc-a", origin: "search", returnKey: key, anchor: "p-3", guest: true, guideBack: true, preview: true }))
       .toBe(`/reader/guest/doc-a?from=search&returnKey=${key}&anchor=p-3&guideBack=1&preview=1`);
