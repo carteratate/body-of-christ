@@ -580,3 +580,91 @@ async def test_bible_without_chapter_key_falls_back_to_the_book_grain():
         result = await apply_dedup(chunks, per_source_cap=4)
 
     assert len(result) == 4
+
+
+# ---------------------------------------------------------------------------
+# Church Fathers chapter grain — focused search only
+# ---------------------------------------------------------------------------
+
+def _confessions(index: int, score: float, chapter_key: str | None = "") -> RankedChunk:
+    """A chunk of the Confessions, one document among church-fathers' 128."""
+    key = f"book-8-chapter-{index}" if chapter_key == "" else chapter_key
+    return _chunk(
+        f"confessions-{index}", "confessions-doc", "The Confessions of Saint Augustine",
+        score, position=index * 100, collection="church-fathers", chapter_key=key,
+    )
+
+
+@pytest.mark.asyncio
+async def test_focused_fathers_search_returns_more_than_four_chapters_of_one_work():
+    """A focused search about one work returned 4 against a quota of 10.
+
+    Keyed per title, every Confessions passage shared one bucket, so the focused cap
+    of four ended the list however many distinct chapters ranked.
+    """
+    chunks = [_confessions(i, 0.99 - i * 0.01) for i in range(10)]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, focused=True)
+
+    assert len(result) == 10, "each chapter is its own source in focused search"
+
+
+@pytest.mark.asyncio
+async def test_standard_fathers_search_keeps_the_per_work_cap():
+    """Standard search mixes collections, so one Father must not take every slot."""
+    chunks = [_confessions(i, 0.99 - i * 0.01) for i in range(6)]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks)
+
+    assert len(result) == 2
+
+
+@pytest.mark.asyncio
+async def test_one_fathers_chapter_cannot_flood_a_focused_search():
+    """Diversity still holds inside a single chapter."""
+    chunks = [_confessions(i, 0.99 - i * 0.01, chapter_key="book-8-chapter-12") for i in range(6)]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, focused=True)
+
+    assert len(result) == 4
+
+
+@pytest.mark.asyncio
+async def test_focused_fathers_without_chapter_key_falls_back_to_the_work_grain():
+    """One candidate missing chapter_key demotes the whole collection, as for #105."""
+    chunks = [_confessions(i, 0.99 - i * 0.01) for i in range(9)]
+    chunks.append(_confessions(9, 0.5, chapter_key=None))
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, focused=True)
+
+    assert len(result) == 4
+
+
+@pytest.mark.asyncio
+async def test_focused_flag_does_not_widen_other_title_keyed_collections():
+    """Only the configured focused set changes grain; encyclicals stay per title."""
+    chunks = [
+        _chunk(f"enc-{i}", "enc-doc", "Rerum Novarum", 0.99 - i * 0.01,
+               position=i * 100, collection="encyclicals", chapter_key=f"section-{i}")
+        for i in range(6)
+    ]
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=AsyncMock()):
+        result = await apply_dedup(chunks, per_source_cap=4, focused=True)
+
+    assert len(result) == 4
+
+
+def test_focused_chapter_keyed_collections_are_valid_and_a_superset():
+    from app.rag.constants import VALID_COLLECTIONS
+    from app.rag.dedup import (
+        _CHAPTER_KEYED_COLLECTIONS,
+        _FOCUSED_CHAPTER_KEYED_COLLECTIONS,
+    )
+
+    assert _FOCUSED_CHAPTER_KEYED_COLLECTIONS <= VALID_COLLECTIONS
+    assert _CHAPTER_KEYED_COLLECTIONS < _FOCUSED_CHAPTER_KEYED_COLLECTIONS

@@ -459,6 +459,12 @@ that defect reported from production; keying the cap per chapter fixed it.
 `FOCUSED_MAX_PASSAGES_PER_SOURCE` / `STANDARD_MAX_PASSAGES_PER_SOURCE` in `search_plan.py`
 name what they now limit.
 
+**Focused search also keys `church-fathers` per chapter**
+(`dedup._FOCUSED_CHAPTER_KEYED_COLLECTIONS`, selected by `focused=True` from the runner,
+in both `dedup` and `min_floor`). It holds 128 works, so standard search keeps the
+per-work cap to stop one Father taking a mixed search. A focused search about one
+work, though, otherwise stopped at 4 (Augustine's Confessions, 2026-10-13).
+
 ### delivery_outcome
 
 Focused searches report how well the quota was filled: `complete` | `underfilled` |
