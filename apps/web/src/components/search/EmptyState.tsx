@@ -100,7 +100,8 @@ export function EmptyState({ onSelectQuery }: EmptyStateProps) {
           <button
             key={query}
             onClick={() => handleChipClick(query)}
-            className="rounded-xl border border-brand-surface bg-brand-surface px-4 py-3 text-sm text-brand-muted text-left transition-colors hover:text-brand-primary hover:border-brand-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            // Raised like a search-history row on hover and keyboard focus: darker surface plus shadow-lift.
+            className="rounded-xl bg-brand-surface px-4 py-3 text-sm text-brand-muted text-left transition-[background-color,box-shadow] duration-200 hover:bg-brand-surface-hover hover:shadow-lift focus-visible:outline-hidden focus-visible:bg-brand-surface-hover focus-visible:shadow-lift"
           >
             {query}
           </button>
