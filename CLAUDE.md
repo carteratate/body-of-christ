@@ -271,6 +271,10 @@ Two themes, selected by `data-theme` on `<html>` and persisted in `user_preferen
 
 Any new color must be added to **both** theme blocks.
 
+The brand heading font is `font-brand` (`--font-brand`): **Judson, set in capitals** (rules in
+`globals.css`). Use the `font-brand` class, never an inline `fontFamily`. Cinzel was removed in
+October 2026 and must not come back.
+
 ---
 
 ## 10. Routes
