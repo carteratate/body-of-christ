@@ -133,8 +133,8 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           isMobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full"
         }`}
       >
-        <div className="border-b border-brand-bg px-4 pb-3 pt-4">
-          <span className="whitespace-nowrap font-brand text-2xl font-semibold text-brand-accent">TheoCorpus</span>
+        <div className="flex justify-center border-b border-brand-bg px-4 py-4">
+          <span className="whitespace-nowrap font-brand text-[1.75rem] leading-tight font-semibold text-brand-accent">TheoCorpus</span>
         </div>
 
         <div className="px-3 pt-3">
