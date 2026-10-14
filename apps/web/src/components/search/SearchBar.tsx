@@ -59,15 +59,15 @@ export function SearchBar({
         onClick={() => !isDisabled && onSubmit()}
         disabled={isDisabled}
         title={disabled ? "Select at least one source to search." : undefined}
-        className="flex items-center gap-2 rounded-lg bg-brand-accent px-5 py-2.5 text-base font-semibold text-brand-bg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 shrink-0 whitespace-nowrap font-brand"
+        className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-brand-accent px-5 py-2.5 text-lg font-semibold text-brand-bg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 shrink-0 whitespace-nowrap font-brand"
       >
         {loading ? (
           <>
             <span className="h-3 w-3 animate-spin rounded-full border-2 border-brand-bg border-t-transparent" />
-            Searching…
+            <span className="brand-caps-trim">Searching…</span>
           </>
         ) : (
-          "Search"
+          <span className="brand-caps-trim">Search</span>
         )}
       </button>
     </div>
