@@ -99,6 +99,14 @@ body {
     letter-spacing: 0.04em;
     font-synthesis-weight: none;
   }
+
+  /* Capitals have no descenders, so a normal line box leaves empty space under them
+     and centring puts them slightly low. Trimming the box to the cap height lets a
+     button centre the letters themselves. Put it on the label's own element (a span
+     inside a flex or grid button). Browsers without text-box keep today's layout. */
+  .brand-caps-trim {
+    text-box: trim-both cap alphabetic;
+  }
 }
 
 .brand-logo-light {

@@ -15,8 +15,8 @@ export function LandingPage({ href = "/search/guest" }: { href?: string }) {
           </p>
         </div>
         <div className="flex justify-center">
-          <Link href={href} className="font-brand inline-block bg-brand-accent text-brand-bg rounded-lg px-10 py-3 text-lg font-semibold hover:opacity-90 transition-opacity">
-            Get Started
+          <Link href={href} className="font-brand inline-flex min-h-13 items-center justify-center bg-brand-accent text-brand-bg rounded-lg px-10 text-lg font-semibold hover:opacity-90 transition-opacity">
+            <span className="brand-caps-trim">Get Started</span>
           </Link>
         </div>
       </div>

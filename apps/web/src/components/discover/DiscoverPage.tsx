@@ -136,9 +136,17 @@ export function DiscoverPage() {
           <button
             onClick={handleSubmit}
             disabled={loading || !query.trim()}
-            className="bg-brand-accent text-brand-bg rounded-lg px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-40 font-brand shrink-0"
+            aria-busy={loading || undefined}
+            className="grid min-h-9 place-items-center bg-brand-accent text-brand-bg rounded-lg px-4 text-base font-semibold hover:opacity-90 transition-opacity disabled:opacity-40 font-brand shrink-0"
           >
-            {loading ? "Scoring..." : "Score"}
+            {/* As on the search page: the label holds the width while the spinner shows. */}
+            <span aria-hidden={loading || undefined} className={`brand-caps-trim col-start-1 row-start-1 ${loading ? "invisible" : ""}`}>Score</span>
+            {loading && (
+              <>
+                <span aria-hidden="true" className="col-start-1 row-start-1 h-3.5 w-3.5 animate-spin rounded-full border-2 border-brand-bg border-t-transparent" />
+                <span className="sr-only">Scoring…</span>
+              </>
+            )}
           </button>
         </div>
 

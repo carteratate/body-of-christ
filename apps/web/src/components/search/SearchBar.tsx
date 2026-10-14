@@ -25,7 +25,8 @@ export function SearchBar({
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
+    // scrollHeight leaves out the borders, which a border-box height includes.
+    el.style.height = `${el.scrollHeight + el.offsetHeight - el.clientHeight}px`;
   }, [value]);
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -53,21 +54,23 @@ export function SearchBar({
         disabled={isDisabled}
         maxLength={1000}
         aria-label="Search query"
-        className="flex-1 rounded-lg border border-brand-surface bg-brand-surface px-4 py-2.5 text-sm text-brand-primary placeholder:text-brand-muted outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:border-brand-accent transition-colors disabled:opacity-50 resize-none overflow-hidden leading-normal"
+        className="flex-1 rounded-lg border border-brand-surface bg-brand-surface px-4 py-2.5 text-sm text-brand-primary placeholder:text-brand-muted outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:border-brand-accent transition-colors disabled:opacity-50 resize-none overflow-hidden leading-[22px]"
       />
       <button
         onClick={() => !isDisabled && onSubmit()}
         disabled={isDisabled}
         title={disabled ? "Select at least one source to search." : undefined}
-        className="flex items-center gap-2 rounded-lg bg-brand-accent px-5 py-2.5 text-base font-semibold text-brand-bg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 shrink-0 whitespace-nowrap font-brand"
+        aria-busy={loading || undefined}
+        className="grid min-h-11 place-items-center rounded-lg bg-brand-accent px-5 text-lg font-semibold text-brand-bg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 shrink-0 whitespace-nowrap font-brand"
       >
-        {loading ? (
+        {/* The label keeps its place while loading so the button never changes width;
+            the spinner draws over it in the same grid cell. */}
+        <span aria-hidden={loading || undefined} className={`brand-caps-trim col-start-1 row-start-1 ${loading ? "invisible" : ""}`}>Search</span>
+        {loading && (
           <>
-            <span className="h-3 w-3 animate-spin rounded-full border-2 border-brand-bg border-t-transparent" />
-            Searching…
+            <span aria-hidden="true" className="col-start-1 row-start-1 h-4 w-4 animate-spin rounded-full border-2 border-brand-bg border-t-transparent" />
+            <span className="sr-only">Searching…</span>
           </>
-        ) : (
-          "Search"
         )}
       </button>
     </div>

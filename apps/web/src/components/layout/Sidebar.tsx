@@ -133,8 +133,8 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
           isMobileOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full"
         }`}
       >
-        <div className="border-b border-brand-bg px-4 pb-3 pt-4">
-          <span className="whitespace-nowrap font-brand text-2xl font-semibold text-brand-accent">TheoCorpus</span>
+        <div className="flex justify-center border-b border-brand-bg px-4 py-4">
+          <span className="whitespace-nowrap font-brand text-[1.75rem] leading-tight font-semibold text-brand-accent">TheoCorpus</span>
         </div>
 
         <div className="px-3 pt-3">
@@ -143,10 +143,10 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
             onClick={handleNewSearch}
             {...newSearchIntent}
             aria-busy={newSearchNavigation.pending || undefined}
-            className="relative flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-brand-accent px-3 py-2 font-brand text-base font-semibold text-brand-bg transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+            className="relative flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-brand-accent px-3 py-2 font-brand text-lg font-semibold text-brand-bg transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
           >
-            <Search size={17} aria-hidden="true" />
-            New Search
+            <Search size={18} aria-hidden="true" />
+            <span className="brand-caps-trim">New Search</span>
             <NavPendingBar pending={newSearchNavigation.pending} />
           </button>
         </div>
