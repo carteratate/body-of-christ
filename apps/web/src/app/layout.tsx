@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Cinzel, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Judson } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { PostHogProvider } from "@/components/layout/PostHogProvider";
 import { AuthenticatedRouteShell } from "@/components/layout/AuthenticatedRouteShell";
 
-const cinzel = Cinzel({
-  variable: "--font-cinzel",
+// Brand heading font, set in capitals by .font-brand in globals.css.
+const judson = Judson({
+  variable: "--font-judson",
   subsets: ["latin"],
-  weight: ["600"],
+  weight: ["400"],
 });
 
 const geistSans = Geist({
@@ -40,7 +41,7 @@ export default async function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-theme={theme === "light" ? "light" : undefined}
-      className={`${cinzel.variable} ${geistSans.variable} ${geistMono.variable} h-full`}
+      className={`${judson.variable} ${geistSans.variable} ${geistMono.variable} h-full`}
     >
       <body className="h-full antialiased">
         <PostHogProvider>
