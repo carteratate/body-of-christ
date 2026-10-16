@@ -69,14 +69,38 @@ def test_document_metadata_names_the_access_and_the_source():
 
 def test_without_migration_0041_every_document_reads_as_full():
     pool = FakePool()
-    legacy_row = {k: v for k, v in _doc_row("full").items()}
-    pool.conn.fetchrow.side_effect = [asyncpg.UndefinedColumnError("reader_access"), legacy_row]
+    pool.conn.fetchrow.side_effect = [
+        asyncpg.UndefinedColumnError('column d.reader_access does not exist'), _doc_row("full")]
     with patch("app.routes.documents.get_pool", return_value=pool):
         resp = asyncio.run(get_document(DOC, user=USER))
     assert resp.reader_access == "full"
     first, second = [c.args[0] for c in pool.conn.fetchrow.await_args_list]
     assert "d.reader_access" in first
-    assert "'full' AS reader_access" in second and "chunk_count" in second
+    assert "'full' AS reader_access" in second and "d.chunk_count" in second
+
+
+def test_a_missing_outline_never_switches_off_the_access_check():
+    """Without 0037 the row falls back for the outline only, so an excerpt-only
+    document stays refused."""
+    pool = FakePool()
+    pool.conn.fetchrow.side_effect = [
+        asyncpg.UndefinedColumnError('column d.chunk_count does not exist'), _doc_row("excerpt")]
+    with patch("app.routes.documents.get_pool", return_value=pool):
+        with pytest.raises(HTTPException) as caught:
+            asyncio.run(get_document_toc(DOC, user=USER))
+    assert caught.value.status_code == 403
+    second = pool.conn.fetchrow.await_args_list[1].args[0]
+    assert "d.reader_access" in second and "d.chunk_count" not in second
+
+
+def test_an_unrelated_missing_column_is_not_swallowed():
+    pool = FakePool()
+    pool.conn.fetchrow.side_effect = asyncpg.UndefinedColumnError('column d.metadata does not exist')
+    with patch("app.routes.documents.get_pool", return_value=pool):
+        with pytest.raises(HTTPException) as caught:
+            asyncio.run(get_document(DOC, user=USER))
+    assert caught.value.status_code == 503
+    assert pool.conn.fetchrow.await_count == 1
 
 
 def test_the_catechism_and_canon_law_link_to_the_official_edition():

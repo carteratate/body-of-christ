@@ -26,28 +26,26 @@ _bearer = HTTPBearer(auto_error=False)
 # published. A document whose chunk_count is NULL has no current outline, and its
 # structure is derived from chunks as before; `outline_ready` selects the path. The
 # COALESCE evaluates the count subquery only for such a document.
-_DOCUMENT_SQL_TEMPLATE = """
-    SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
-           {reader_access} AS reader_access,
-           d.chunk_count IS NOT NULL AS outline_ready,
+_OUTLINE_COLUMNS = """d.chunk_count IS NOT NULL AS outline_ready,
            COALESCE(d.chunk_count,
-                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)) AS cnt
-    FROM documents d WHERE d.id = $1
-"""
-_DOCUMENT_SQL = _DOCUMENT_SQL_TEMPLATE.format(reader_access="d.reader_access")
-# The same row on a database without 0041 (reader_access, issue #265): every document
-# reads as full, so the API can deploy before the migration is applied.
-_PRE_ACCESS_DOCUMENT_SQL = _DOCUMENT_SQL_TEMPLATE.format(reader_access="'full'")
-# And on a database without 0037 either.
-_PRE_OUTLINE_DOCUMENT_SQL = """
+                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)) AS cnt"""
+# The same columns on a database without 0037, so the API can deploy before it is applied.
+_PRE_OUTLINE_COLUMNS = """false AS outline_ready,
+           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt"""
+
+
+def _document_sql(*, access: bool, outline: bool) -> str:
+    """The document row. Without 0041 (`access` false) every document reads as full,
+    so the API can deploy before that migration is applied (issue #265)."""
+    return f"""
     SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
-           'full' AS reader_access,
-           false AS outline_ready,
-           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
+           {"d.reader_access" if access else "'full'"} AS reader_access,
+           {_OUTLINE_COLUMNS if outline else _PRE_OUTLINE_COLUMNS}
     FROM documents d WHERE d.id = $1
 """
 
-_DOCUMENT_SQLS = (_DOCUMENT_SQL, _PRE_ACCESS_DOCUMENT_SQL, _PRE_OUTLINE_DOCUMENT_SQL)
+
+_DOCUMENT_SQL = _document_sql(access=True, outline=True)
 
 _OUTLINE_TOC_SQL = """
     SELECT chapter_key, chapter_label FROM document_chapters
@@ -145,16 +143,23 @@ def _require_pool() -> asyncpg.Pool:
 
 
 async def _fetch_document(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> asyncpg.Record:
-    doc_row = None
-    for i, sql in enumerate(_DOCUMENT_SQLS):
+    # Fall back one migration at a time, and only for the column actually missing:
+    # a missing outline must never also switch off the reader_access check.
+    access = outline = True
+    while True:
         try:
-            doc_row = await conn.fetchrow(sql, doc_uuid)
+            doc_row = await conn.fetchrow(_document_sql(access=access, outline=outline), doc_uuid)
             break
-        except asyncpg.UndefinedColumnError:
-            # A migration is not applied (0041, then 0037). Without 0037, outline_ready
-            # is false, so every later query of the request takes the chunks-derived
-            # path too.
-            if i == len(_DOCUMENT_SQLS) - 1:
+        except asyncpg.UndefinedColumnError as exc:
+            if access and "reader_access" in str(exc):
+                # Migration 0041 is not applied: no document is excerpt-only yet.
+                logger.warning("documents.reader_access is missing; reading every document as full")
+                access = False
+            elif outline and "chunk_count" in str(exc):
+                # Migration 0037 is not applied: outline_ready is false, so every later
+                # query of the request takes the chunks-derived path too.
+                outline = False
+            else:
                 raise
     if doc_row is None:
         raise HTTPException(status_code=404, detail="Document not found")
