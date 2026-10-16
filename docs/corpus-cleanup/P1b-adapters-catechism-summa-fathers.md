@@ -20,7 +20,7 @@ Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs
 10. 1.8e is a decision, not a PR. The Fathers adapter silently drops about 30 whole works, and adding them back needs a rule A to H check per work.
 11. 1.9 medieval goes last, after R5 closes. It also owns two shared label helpers in `ingest/thml_doc.py`, so its release report shows about 64 Fathers label changes with no content change.
 12. Measurements come from running each adapter on master (commit 5475c49) against the vendored sources, plus read-only queries on the live database on 29 September 2026.
-13. D1 to D11 are the "Cross-cutting design decisions" in the plan. Where this file and those decisions disagree, the decisions win.
+13. D1 to D12 are the "Cross-cutting design decisions" in the plan. Where this file and those decisions disagree, the decisions win.
 
 A note on measurement. Master's adapters no longer match what production holds. Catechism builds 809 passages against 800 live, the Summa 26,792 against 26,750, medieval 449 against 434. Fathers match at 9,783. Every release report must diff against live, not against an earlier local build.
 
@@ -321,6 +321,7 @@ A note on the task list. The request placed the Anselm, Boethius and Bernard fix
   - Identity (D1). Lawson's 9 chapters and Robertson's 57 sections are different units of a different translation, so the 57 sections are new units with new IDs. Each of the 47 old passage IDs gets a redirect (`split` or `moved`) to the Robertson section whose number equals the first "(N)" marker in the old passage's text. The redirects are the whole explanation for the 47 old IDs, so this item adds no removal-registry entries for them. If the early retire below has happened, this PR closes its document-scope entry (`closed_by: "1.8d"`, 2.1) rather than deleting it. Drop the `_SINGLE_AUTHOR` entry and the `type="chapter"` special case in `_detect_chunk_level` once no file needs it.
   - Leave the rest of the volume unemitted. Against the Heathen and the anti-Arian works are 5.6a additions.
 - **Acceptance checks:**
+  - Reader access (D12): the PR sets the work's `rights_inventory.json` row to its public-domain status (Robertson 1892), and after the apply the document opens in the full reader, not the excerpt-only view.
   - `tests/test_church_fathers.py::test_incarnation_is_robertson` asserts that the document ID equals `cf235300-e37d-5a7a-a421-f50efff38355`, that the first passage contains "Whereas in what precedes we have drawn out", that no passage contains "In our former book", which is Lawson's opening, and that there are 57 distinct chapter keys.
   - `test_incarnation_section_summaries_stripped` asserts that no passage starts with "Introductory".
   - Source check, run locally. The manifest has no `incarnation.xml` row, and a grep of `sources/` for "Penelope" or the old sha256 returns nothing.
