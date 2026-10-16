@@ -21,7 +21,7 @@ Conventions used in this file:
 - Paths are relative to the repo root of `body-of-christ` unless they start with `/`.
 - "Live" means the production Supabase project hvmgffvimqgiejmxwhwq and the production Qdrant cluster.
 - "Master build" means running every adapter in `datapipeline/publication.py` `SOURCE_ADAPTERS` on master against the vendored sources, touching no store.
-- D1 to D11 are the "Cross-cutting design decisions" in `docs/2026-09-28-corpus-cleanup-plan.md`. Where this file and those decisions disagree, the decisions win.
+- D1 to D12 are the "Cross-cutting design decisions" in `docs/2026-09-28-corpus-cleanup-plan.md`. Where this file and those decisions disagree, the decisions win.
 - Every SQL count quoted here came from a read-only SELECT on 29 Sep 2026. Counts that move (retrievals, guest rows) must be re-read when used.
 
 ---
