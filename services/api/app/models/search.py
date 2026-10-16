@@ -32,6 +32,10 @@ class ChunkSource(BaseModel):
     # of the Summa — rather than presenting it as his teaching. Optional: most
     # collections have no such structure, and it is null for every pre-existing row.
     unit_label: Optional[str] = None
+    # "excerpt": the document's rights are not cleared, so clients link to
+    # `source_url` instead of the reader (issue #265).
+    reader_access: Literal["full", "excerpt"] = "full"
+    source_url: Optional[str] = None
 
 
 class ContextPart(BaseModel):

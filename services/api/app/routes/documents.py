@@ -11,6 +11,7 @@ from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.derived_contents import derive_summa_contents
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.reader_access import restricted_error, source_url
 from app.models.documents import (
     ContentsNode, DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
 )
@@ -25,20 +26,28 @@ _bearer = HTTPBearer(auto_error=False)
 # published. A document whose chunk_count is NULL has no current outline, and its
 # structure is derived from chunks as before; `outline_ready` selects the path. The
 # COALESCE evaluates the count subquery only for such a document.
-_DOCUMENT_SQL = """
+_DOCUMENT_SQL_TEMPLATE = """
     SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
+           {reader_access} AS reader_access,
            d.chunk_count IS NOT NULL AS outline_ready,
            COALESCE(d.chunk_count,
                     (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)) AS cnt
     FROM documents d WHERE d.id = $1
 """
-# The same row on a database without 0037, so the API can deploy before it is applied.
+_DOCUMENT_SQL = _DOCUMENT_SQL_TEMPLATE.format(reader_access="d.reader_access")
+# The same row on a database without 0041 (reader_access, issue #265): every document
+# reads as full, so the API can deploy before the migration is applied.
+_PRE_ACCESS_DOCUMENT_SQL = _DOCUMENT_SQL_TEMPLATE.format(reader_access="'full'")
+# And on a database without 0037 either.
 _PRE_OUTLINE_DOCUMENT_SQL = """
     SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
+           'full' AS reader_access,
            false AS outline_ready,
            (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
     FROM documents d WHERE d.id = $1
 """
+
+_DOCUMENT_SQLS = (_DOCUMENT_SQL, _PRE_ACCESS_DOCUMENT_SQL, _PRE_OUTLINE_DOCUMENT_SQL)
 
 _OUTLINE_TOC_SQL = """
     SELECT chapter_key, chapter_label FROM document_chapters
@@ -136,23 +145,38 @@ def _require_pool() -> asyncpg.Pool:
 
 
 async def _fetch_document(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> asyncpg.Record:
-    try:
-        doc_row = await conn.fetchrow(_DOCUMENT_SQL, doc_uuid)
-    except asyncpg.UndefinedColumnError:
-        # Migration 0037 is not applied: outline_ready is false, so every later query
-        # of the request takes the chunks-derived path too.
-        doc_row = await conn.fetchrow(_PRE_OUTLINE_DOCUMENT_SQL, doc_uuid)
+    doc_row = None
+    for i, sql in enumerate(_DOCUMENT_SQLS):
+        try:
+            doc_row = await conn.fetchrow(sql, doc_uuid)
+            break
+        except asyncpg.UndefinedColumnError:
+            # A migration is not applied (0041, then 0037). Without 0037, outline_ready
+            # is false, so every later query of the request takes the chunks-derived
+            # path too.
+            if i == len(_DOCUMENT_SQLS) - 1:
+                raise
     if doc_row is None:
         raise HTTPException(status_code=404, detail="Document not found")
     return doc_row
 
 
 def _document_response(doc_row) -> DocumentResponse:
+    access = doc_row["reader_access"]
     return DocumentResponse(
         id=str(doc_row["id"]), collection=doc_row["collection"], title=doc_row["title"],
         author=doc_row["author"], year=doc_row["year"], translation=doc_row.get("translation"), metadata=doc_row["metadata"],
-        chunk_count=doc_row["cnt"],
+        chunk_count=doc_row["cnt"], reader_access=access,
+        source_url=(source_url(doc_row["collection"], doc_row["metadata"])
+                    if access == "excerpt" else None),
     )
+
+
+def _require_full_reader(doc_row) -> None:
+    """Refuse the full text of an excerpt-only document (issue #265), for guests and
+    signed-in readers alike."""
+    if doc_row["reader_access"] == "excerpt":
+        raise restricted_error(source_url(doc_row["collection"], doc_row["metadata"]))
 
 
 async def _neighbor_keys(
@@ -267,6 +291,7 @@ async def get_document_toc(
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
             doc_row = await _fetch_document(conn, doc_uuid)
+            _require_full_reader(doc_row)
             toc_sql = _OUTLINE_TOC_SQL if doc_row["outline_ready"] else _LEGACY_TOC_SQL
             chapter_rows = await conn.fetch(toc_sql, doc_uuid)
             contents_rows = await _fetch_contents_rows(conn, doc_uuid)
@@ -300,6 +325,7 @@ async def get_document_reader(
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
             doc_row = await _fetch_document(conn, doc_uuid)
+            _require_full_reader(doc_row)
 
             # Resolve target chapter_key (explicit chapter > anchor > first chapter).
             chapter_key = chapter

@@ -100,3 +100,21 @@ describe("SourcesPage reader links", () => {
   });
 });
 
+
+describe("SourcesPage excerpt-only documents (issue #265)", () => {
+  it("lists them, linking to the source instead of the reader", async () => {
+    state.sources = [
+      { id: "doc-1", title: "Libertas", author: "Pope Leo XIII", year: 1888, collection: "encyclicals", translation: null, chunk_count: 40, metadata: {},
+        reader_access: "excerpt", source_url: "https://www.papalencyclicals.net/leo13/l13liber.htm" },
+      { id: "doc-2", title: "Rerum Novarum", author: "Pope Leo XIII", year: 1891, collection: "encyclicals", translation: null, chunk_count: 50, metadata: {},
+        reader_access: "full" },
+    ] as unknown as SourceDocument[];
+    state.listReadingProgress.mockResolvedValue([]);
+    render(<SourcesPage />);
+
+    const blocked = await screen.findByRole("link", { name: /Libertas/ });
+    expect(blocked.getAttribute("href")).toBe("https://www.papalencyclicals.net/leo13/l13liber.htm");
+    expect(blocked.getAttribute("target")).toBe("_blank");
+    expect(screen.getByRole("link", { name: /Rerum Novarum/ }).getAttribute("href")).toMatch(/^\/reader\/doc-2\?/);
+  });
+});

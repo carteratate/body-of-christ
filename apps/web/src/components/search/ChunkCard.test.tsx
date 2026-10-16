@@ -623,3 +623,57 @@ describe("ChunkCard relevance explanation", () => {
     expect(screen.queryByText(/why this is relevant/i)).toBeNull();
   });
 });
+
+describe("ChunkCard excerpt-only documents (issue #265)", () => {
+  function renderCard(extra: Record<string, unknown>) {
+    render(
+      <ChunkCard
+        result={{
+          chunk_id: "00000000-0000-0000-0000-000000000001",
+          content: "Liberty, the highest of natural endowments",
+          source: {
+            collection: "encyclicals",
+            document_title: "Libertas",
+            author: "Pope Leo XIII",
+            reference: "Libertas 1",
+            document_id: "00000000-0000-0000-0000-000000000002",
+            position: 1,
+            anchor: "libertas-1",
+            ...extra,
+          },
+          reranker_score: 0.9,
+          explanation: "Relevant",
+        }}
+        index={0}
+        searchId="00000000-0000-0000-0000-000000000003"
+        token="token"
+      />,
+    );
+  }
+
+  it("shows the passage and swaps Open in Context for the source link", async () => {
+    renderCard({ reader_access: "excerpt", source_url: "https://www.papalencyclicals.net/leo13/l13liber.htm" });
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+
+    expect(screen.getAllByText(/Liberty, the highest of natural endowments/).length).toBeGreaterThan(0);
+    expect(screen.queryByRole("link", { name: "Open in Context" })).toBeNull();
+    const link = screen.getByRole("link", { name: /Read the full text at the source/ });
+    expect(link.getAttribute("href")).toBe("https://www.papalencyclicals.net/leo13/l13liber.htm");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+  });
+
+  it("offers neither link when an excerpt-only document has no known source", async () => {
+    renderCard({ reader_access: "excerpt", source_url: null });
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.queryByRole("link", { name: "Open in Context" })).toBeNull();
+    expect(screen.queryByRole("link", { name: /Read the full text/ })).toBeNull();
+  });
+
+  it("keeps Open in Context for a full document", async () => {
+    renderCard({ reader_access: "full", source_url: null });
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.getByRole("link", { name: "Open in Context" })).toBeTruthy();
+    expect(screen.queryByRole("link", { name: /Read the full text/ })).toBeNull();
+  });
+});

@@ -109,7 +109,7 @@ def _toc(collection, contents_rows):
     pool.conn.fetchrow.return_value = {
         "id": "11111111-1111-1111-1111-111111111111", "collection": collection,
         "title": "Summa Theologiae", "author": None, "year": None, "translation": "",
-        "metadata": None, "cnt": 7, "outline_ready": True}
+        "metadata": None, "cnt": 7, "reader_access": "full", "outline_ready": True}
     pool.conn.fetch.side_effect = [
         [{"chapter_key": k, "chapter_label": label} for k, label in CHAPTERS], contents_rows]
     with patch("app.routes.documents.get_pool", return_value=pool):

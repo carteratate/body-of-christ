@@ -19,7 +19,7 @@ _CHAPTERS = [
 def _doc_row(outline_ready):
     return {"id": _DOC, "collection": "bible", "title": "John", "author": None,
             "year": None, "translation": "WEB-C", "metadata": None, "cnt": 2,
-            "outline_ready": outline_ready}
+            "reader_access": "full", "outline_ready": outline_ready}
 
 
 def _node(ordinal, parent, key, chapter, anchor=None, anchor_missing=False, kind="chapter"):

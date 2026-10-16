@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Optional
+from typing import Literal, Optional
 
 import asyncpg
 from fastapi import APIRouter, Depends, HTTPException
@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.reader_access import source_url
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -37,6 +38,11 @@ _PRE_OUTLINE_SOURCES_SQL = """
 """
 
 
+# Excerpt-only documents (issue #265). Read on every request, not cached with the
+# list, so a reader-access sync shows here at once instead of after the hour's TTL.
+_EXCERPT_SQL = "SELECT id::text AS id FROM documents WHERE reader_access = 'excerpt'"
+
+
 class SourceDocument(BaseModel):
     id: str
     collection: str
@@ -46,6 +52,9 @@ class SourceDocument(BaseModel):
     translation: Optional[str] = None
     metadata: Optional[dict] = None
     chunk_count: int
+    # "excerpt": no reader; the Library links to `source_url` instead.
+    reader_access: Literal["full", "excerpt"] = "full"
+    source_url: Optional[str] = None
 
 
 class SourcesResponse(BaseModel):
@@ -59,28 +68,57 @@ async def get_sources(user: AuthUser = Depends(get_current_user)) -> SourcesResp
     Every row carries a real document_id (the reader opens it directly). Bible is
     returned as book-level documents grouped by translation on the frontend.
 
-    Response is cached in-memory for 1 hour since the corpus changes only at
-    ingestion time.
+    The document list is cached in-memory for 1 hour since the corpus changes only
+    at ingestion time; reader access is read fresh on every request.
     """
-    global _sources_cache, _sources_cache_ts
-
-    now = time.monotonic()
-    if _sources_cache is not None and (now - _sources_cache_ts) < _SOURCES_TTL:
-        return _sources_cache
-
+    corpus = _cached_corpus()
     pool = get_pool()
     if not pool:
+        if corpus is not None:
+            return corpus
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
+            if corpus is None:
+                corpus = await _load_corpus(conn)
             try:
-                rows = await conn.fetch(_SOURCES_SQL)
+                excerpt_ids = {r["id"] for r in await conn.fetch(_EXCERPT_SQL)}
             except asyncpg.UndefinedColumnError:
-                rows = await conn.fetch(_PRE_OUTLINE_SOURCES_SQL)
+                excerpt_ids = set()  # 0041 not applied: every document reads as full
     except Exception as exc:
-        logger.error("get_sources query failed (%s)", exc.__class__.__name__)
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+        if corpus is None:
+            logger.error("get_sources query failed (%s)", exc.__class__.__name__)
+            raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+        # The cached list still serves; the reader route enforces access on its own.
+        logger.warning("reader access read failed (%s); serving the cached Library",
+                       exc.__class__.__name__)
+        excerpt_ids = set()
 
+    if not excerpt_ids:
+        return corpus
+    return SourcesResponse(sources=[
+        s.model_copy(update={
+            "reader_access": "excerpt",
+            "source_url": source_url(s.collection, s.metadata),
+        }) if s.id in excerpt_ids else s
+        for s in corpus.sources
+    ])
+
+
+def _cached_corpus() -> SourcesResponse | None:
+    """Every document, cached for an hour: the list changes only at publication."""
+    if _sources_cache is not None and (time.monotonic() - _sources_cache_ts) < _SOURCES_TTL:
+        return _sources_cache
+    return None
+
+
+async def _load_corpus(conn) -> SourcesResponse:
+    global _sources_cache, _sources_cache_ts
+
+    try:
+        rows = await conn.fetch(_SOURCES_SQL)
+    except asyncpg.UndefinedColumnError:
+        rows = await conn.fetch(_PRE_OUTLINE_SOURCES_SQL)
     sources = [
         SourceDocument(
             id=r["id"], collection=r["collection"], title=r["title"],
@@ -91,5 +129,5 @@ async def get_sources(user: AuthUser = Depends(get_current_user)) -> SourcesResp
     ]
     response = SourcesResponse(sources=sources)
     _sources_cache = response
-    _sources_cache_ts = now
+    _sources_cache_ts = time.monotonic()
     return response

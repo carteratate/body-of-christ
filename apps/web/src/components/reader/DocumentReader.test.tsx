@@ -915,3 +915,30 @@ describe("DocumentReader back navigation", () => {
     expect(navigation.push).toHaveBeenCalledWith("/search/guest?preview=1");
   });
 });
+
+describe("DocumentReader excerpt-only documents (issue #265)", () => {
+  it("shows the notice and the source link instead of the text", async () => {
+    const { ReaderRestrictedError } = await import("@/lib/api");
+    api.getReaderChapter.mockRejectedValue(new ReaderRestrictedError("https://example.org/libertas"));
+    api.getToc.mockRejectedValue(new ReaderRestrictedError("https://example.org/libertas"));
+
+    render(<DocumentReader docId="doc-a" />);
+
+    expect(await screen.findByText("The full text of this document isn't available on TheoCorpus yet.")).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Read the full text at the source/ }).getAttribute("href"))
+      .toBe("https://example.org/libertas");
+    expect(screen.queryByText("This document couldn't be loaded.")).toBeNull();
+    expect(api.putReadingProgress).not.toHaveBeenCalled();
+  });
+
+  it("shows the same notice on the document overview", async () => {
+    const { ReaderRestrictedError } = await import("@/lib/api");
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockRejectedValue(new ReaderRestrictedError(null));
+
+    render(<DocumentReader docId="doc-a" />);
+
+    expect(await screen.findByText("The full text of this document isn't available on TheoCorpus yet.")).toBeTruthy();
+    expect(screen.queryByRole("link", { name: /Read the full text/ })).toBeNull();
+  });
+});

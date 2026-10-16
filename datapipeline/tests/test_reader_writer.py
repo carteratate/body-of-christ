@@ -299,3 +299,28 @@ def test_a_matching_collection_is_accepted():
         async def get_collection(self, name): return LiveCollection()
 
     asyncio.run(qdrant_writer.ensure_collection(FakeClient()))
+
+
+def _document_access(doc):
+    conn = FakeConn()
+    asyncio.run(reader_writer.write_document(conn, doc, prune=False))
+    [args] = [args for sql, args in conn.calls if "INSERT INTO documents" in sql]
+    return args[-1]
+
+
+def test_write_document_sets_reader_access_from_the_rights_inventory():
+    """Issue #265: a publish writes the inventory's verdict, so it cannot reopen a text
+    whose rights are not cleared, and keeps a public-domain one open."""
+    bible = Document(id="11111111-1111-1111-1111-111111111111", collection="bible",
+                     title="John", translation="WEB-C", passages=[])
+    catechism = Document(id="22222222-2222-2222-2222-222222222222", collection="catechism",
+                         title="Catechism of the Catholic Church", author="Catholic Church",
+                         passages=[])
+    assert _document_access(bible) == "full"
+    assert _document_access(catechism) == "excerpt"
+
+
+def test_write_document_fails_closed_for_a_work_missing_from_the_inventory():
+    stray = Document(id="33333333-3333-3333-3333-333333333333", collection="bible",
+                     title="Not A Book", passages=[])
+    assert _document_access(stray) == "excerpt"

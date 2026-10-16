@@ -37,3 +37,35 @@ def _clear_cohere_rate_limiter():
     rerank_cohere._rate_limiter._calls.clear()
     yield
     rerank_cohere._rate_limiter._calls.clear()
+
+
+# Every route that annotates passages with reader access (issue #265) makes one extra
+# query for it. Fakes elsewhere answer every query with the same rows, so the lookup is
+# stubbed to "all full" unless a test opts in with @pytest.mark.real_reader_access.
+_READER_ACCESS_SITES = (
+    "app.routes.bookmarks.document_access",
+    "app.routes.search.document_access",
+    "app.routes.reading_progress.document_access",
+    "app.rag.pipeline.document_access",
+)
+
+
+def pytest_collection_modifyitems(config, items):
+    config.addinivalue_line("markers", "real_reader_access: use the real reader-access lookup")
+
+
+@pytest.fixture(autouse=True)
+def _stub_reader_access(request):
+    if request.node.get_closest_marker("real_reader_access"):
+        yield
+        return
+    from unittest.mock import AsyncMock, patch
+
+    patches = [patch(site, AsyncMock(return_value={})) for site in _READER_ACCESS_SITES]
+    for p in patches:
+        p.start()
+    try:
+        yield
+    finally:
+        for p in patches:
+            p.stop()

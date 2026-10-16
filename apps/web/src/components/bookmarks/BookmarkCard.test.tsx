@@ -385,3 +385,26 @@ describe("BookmarkCard open in context", () => {
   });
 });
 
+
+describe("BookmarkCard excerpt-only documents (issue #265)", () => {
+  it("links to the source instead of the reader", () => {
+    const bookmark = {
+      id: "bookmark-1", chunk_id: "chunk-1", note: null, created_at: "2026-10-16T00:00:00Z",
+      chunk: {
+        content: "A saved passage",
+        source: {
+          collection: "catechism", document_title: "Catechism of the Catholic Church", author: null,
+          reference: "CCC §1000", document_id: "11111111-1111-4111-8111-111111111111",
+          anchor: "ccc-1000", chapter_key: "ccc-1000-1099",
+          reader_access: "excerpt" as const, source_url: "https://www.vatican.va/archive/ENG0015/_INDEX.HTM",
+        },
+      },
+    };
+    render(<BookmarkCard bookmark={bookmark} token="token" onRemove={vi.fn().mockResolvedValue(undefined)} onNoteUpdated={vi.fn()} showToast={vi.fn()} />);
+
+    expect(screen.queryByRole("link", { name: "Open passage in context" })).toBeNull();
+    const link = screen.getByRole("link", { name: /Read the full text at the source/ });
+    expect(link.getAttribute("href")).toBe("https://www.vatican.va/archive/ENG0015/_INDEX.HTM");
+    expect(link.getAttribute("target")).toBe("_blank");
+  });
+});

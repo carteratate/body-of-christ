@@ -145,6 +145,18 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   (`app/derived_contents.py`). Delete that module and its call once the Summa is
   published with its own tree (#254). The overview renders trees with
   `components/reader/ContentsTree.tsx`; the logic is `lib/contents-tree.ts`.
+- `documents.reader_access` — **excerpt-only documents** (0041, issue #265): `full` or
+  `excerpt`, default `full`. An `excerpt` document's rights are not cleared: its passages
+  stay in search, but `/documents/{id}/reader` and `/toc` return **403** with
+  `detail.code = "reader_restricted"` (guests and signed-in alike), and every surface that
+  would open the reader (search cards, bookmarks, history restore, the Library) links to
+  the official source instead. Derived from `datapipeline/rights_inventory.json`, never
+  edited by hand: `reader_writer.write_document` sets it on every publish, and
+  `datapipeline/reader_access.py --apply` re-syncs all live documents after an inventory
+  change (the unblock path). API side is `app/reader_access.py`: passage sources carry
+  `reader_access` and `source_url`, reading progress is neither written nor listed for an
+  excerpt document, and `/sources` reads the column fresh past its 1h cache. The API
+  treats a database without 0041 as all `full`.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -153,7 +165,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040 are committed; `0035_studies.sql` is drafted only (see above), and 0039 is reserved for corpus-cleanup item 2.2a (#178). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038, 0040 and 0041 are committed; `0035_studies.sql` is drafted only (see above), and 0039 is reserved for corpus-cleanup item 2.2a (#178). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -306,9 +318,9 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
 | DELETE | `/searches/{id}` | Retrievals cascade |
-| GET | `/documents/{id}`, `/{id}/toc`, `/{id}/reader` | Reader: metadata, chapter list, one chapter |
+| GET | `/documents/{id}`, `/{id}/toc`, `/{id}/reader` | Reader: metadata, chapter list, one chapter. `/toc` and `/reader` return 403 `reader_restricted` for an excerpt-only document (§4) |
 | GET/PUT | `/reading-progress`, `/reading-progress/{doc_id}` | Reader position |
-| GET | `/sources` | All documents with chunk counts; 1h in-memory cache |
+| GET | `/sources` | All documents with chunk counts and `reader_access`; the list is cached 1h in memory, reader access is read fresh |
 | POST | `/evaluate`, `/evaluate/explain` | Collection scoring; 10/day |
 | POST/GET/PATCH/DELETE | `/bookmarks`, `/bookmarks/{id}` | PATCH body is `{note}` |
 | POST | `/product-feedback` | In-app feedback; allows anonymous |

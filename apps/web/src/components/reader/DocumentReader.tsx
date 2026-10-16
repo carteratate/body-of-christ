@@ -8,6 +8,7 @@ import {
   type DocumentInfo,
   type ReaderChapter,
   type TocEntry,
+  ReaderRestrictedError,
 } from "@/lib/api";
 import {
   invalidateReaderDocument,
@@ -29,6 +30,7 @@ import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
+import { ReaderRestrictedNotice } from "./ReaderRestrictedNotice";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
 
@@ -80,6 +82,8 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   const [highlight, setHighlight] = useState<string | null>(initialAnchor);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Set when the API refuses an excerpt-only document (issue #265).
+  const [restricted, setRestricted] = useState<{ sourceUrl: string | null } | null>(null);
   const [initialRetryKey, setInitialRetryKey] = useState(0);
   const [chapterLoading, setChapterLoading] = useState<string | null>(null);
   const [chapterError, setChapterError] = useState<{ key: string; mode: "append" | "replace" } | null>(null);
@@ -164,6 +168,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     setInitialResolved(false);
     setResolvedDocId(null);
     setError(null);
+    setRestricted(null);
     setLoading(true);
     setDoc(null);
     setToc(null);
@@ -195,7 +200,9 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         setInitialResolved(true);
         setResolvedDocId(docId);
       } catch (caught) {
-        if (alive && (caught as DOMException).name !== "AbortError") setError("Failed to load");
+        if (!alive || (caught as DOMException).name === "AbortError") return;
+        if (caught instanceof ReaderRestrictedError) setRestricted({ sourceUrl: caught.sourceUrl });
+        else setError("Failed to load");
       } finally {
         if (alive) setLoading(false);
       }
@@ -383,6 +390,16 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });
   }
 
+  if (restricted) {
+    return (
+      <ReaderRestrictedNotice
+        sourceUrl={restricted.sourceUrl}
+        header={<ReaderMobileStatusHeader />}
+        onBack={goBack}
+        backPending={back.pending}
+      />
+    );
+  }
   if (error) {
     return (
       <div className="flex h-full flex-col bg-brand-bg">

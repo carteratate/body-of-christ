@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.reader_access import document_access, restricted_error
 from app.models.reading_progress import (
     ReadingProgressItem,
     ReadingProgressListResponse,
@@ -14,6 +15,11 @@ from app.models.reading_progress import (
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+# Excerpt-only documents (issue #265) have no reader, so their progress is neither
+# listed nor written. The list over-fetches by this many rows so hidden ones do not
+# shorten it.
+_RESTRICTED_SLACK = 40
 
 
 def _item(row) -> ReadingProgressItem:
@@ -58,12 +64,19 @@ async def list_reading_progress(
         rows = await pool.fetch(
             _SELECT_BASE + " WHERE rp.user_id = $1 ORDER BY rp.updated_at DESC LIMIT $2",
             user.user_id,
-            limit,
+            limit + _RESTRICTED_SLACK,
         )
+        access = await document_access(pool, [row["document_id"] for row in rows])
     except Exception as exc:
         logger.error("list_reading_progress failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
-    return ReadingProgressListResponse(items=[_item(row) for row in rows])
+    readable = [row for row in rows if not _restricted(access, row["document_id"])]
+    return ReadingProgressListResponse(items=[_item(row) for row in readable[:limit]])
+
+
+def _restricted(access, document_id) -> bool:
+    entry = access.get(str(document_id))
+    return entry is not None and entry.reader_access == "excerpt"
 
 
 @router.get("/reading-progress/{doc_id}", response_model=ReadingProgressItem)
@@ -84,10 +97,11 @@ async def get_reading_progress(
             user.user_id,
             doc_uuid,
         )
+        access = await document_access(pool, [doc_uuid]) if row is not None else {}
     except Exception as exc:
         logger.error("get_reading_progress failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
-    if row is None:
+    if row is None or _restricted(access, doc_uuid):
         raise HTTPException(status_code=404, detail="Reading progress not found")
     return _item(row)
 
@@ -105,6 +119,14 @@ async def put_reading_progress(
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+
+    try:
+        access = (await document_access(pool, [doc_uuid])).get(str(doc_uuid))
+    except Exception as exc:
+        logger.error("put_reading_progress access check failed (%s)", exc.__class__.__name__)
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+    if access is not None and access.reader_access == "excerpt":
+        raise restricted_error(access.source_url)
 
     try:
         location = await pool.fetchrow(

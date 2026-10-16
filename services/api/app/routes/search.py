@@ -13,6 +13,7 @@ from app.config import settings
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.reader_access import access_fields, document_access
 from app.models.search import (
     AttachedContext,
     ChunkResult,
@@ -346,6 +347,7 @@ async def get_search_results(
             # loading indefinitely. Outside it, a stall here would hang the request
             # past the 8s bound with nothing to stop it.
             context = await _restore_context(rows)
+            access = await document_access(pool, [row["document_id"] for row in rows])
     except HTTPException:
         raise
     except TimeoutError as exc:
@@ -369,6 +371,7 @@ async def get_search_results(
                 anchor=row["anchor"],
                 chapter_key=row["chapter_key"],
                 unit_label=row["unit_label"],
+                **access_fields(access, row["document_id"]),
             ),
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],

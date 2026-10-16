@@ -559,3 +559,43 @@ describe("product feedback", () => {
     expect(payload).not.toHaveProperty("content");
   });
 });
+
+describe("reader refusal for excerpt-only documents (issue #265)", () => {
+  it("turns a 403 reader_restricted into a ReaderRestrictedError with the source", async () => {
+    const { getToc, getReaderChapter, ReaderRestrictedError } = await import("./api");
+    const body = { detail: { code: "reader_restricted", message: "x", source_url: "https://example.org/a" } };
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify(body), { status: 403 }));
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      await expect(getToc("t", "doc")).rejects.toBeInstanceOf(ReaderRestrictedError);
+      const caught = await getReaderChapter("t", "doc", {}).catch((e) => e);
+      expect(caught).toBeInstanceOf(ReaderRestrictedError);
+      expect(caught.sourceUrl).toBe("https://example.org/a");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("drops a source link that is not http(s)", async () => {
+    const { getToc } = await import("./api");
+    const body = { detail: { code: "reader_restricted", source_url: "javascript:alert(1)" } };
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify(body), { status: 403 })));
+    try {
+      expect((await getToc("t", "doc").catch((e) => e)).sourceUrl).toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("keeps any other 403 an ordinary API error", async () => {
+    const { getToc, ReaderRestrictedError } = await import("./api");
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ detail: "Document is not part of this guest session" }), { status: 403 })));
+    try {
+      const caught = await getToc("t", "doc").catch((e) => e);
+      expect(caught).not.toBeInstanceOf(ReaderRestrictedError);
+      expect(caught.message).toBe("API error 403");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});

@@ -167,6 +167,28 @@ These repair tools use the same canonical source-adapter registry as collection
 publication. They do not make the retired Postgres `content_embedding` column active;
 all searchable vectors live in Qdrant.
 
+## Reader access (excerpt-only documents)
+
+`documents.reader_access` (migration 0041, issue #265) decides whether a document's full
+text is offered in the reader. It is derived from `rights_inventory.json` and never
+edited by hand: `full` for a `pd-*` status, `permission` or `licence`; `excerpt` for
+`in-copyright` or `unknown`, and for any document with no inventory row. An excerpt-only
+document keeps its passages in search; the API refuses its reader and contents with 403
+`reader_restricted`, and the frontend links to its official source instead.
+
+Every reader publish sets the column (and refuses to run before 0041 is applied). To
+apply an inventory change without republishing, which is how a document is unblocked:
+
+```bash
+python3 reader_access.py           # dry run: lists every document that would change
+python3 reader_access.py --apply   # writes them in one transaction
+```
+
+The sync writes nothing but this one derived column, so unlike the repair tools above
+it needs no publish-lock entry. Its `--apply` is still a live change: run the dry run
+first and get Carter's go-ahead. The API reads the column fresh on every request, so no
+cache needs clearing.
+
 ## Tests
 
 The non-V5 suite is local and uses fakes for store and embedding boundaries:

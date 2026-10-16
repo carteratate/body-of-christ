@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.reader_access import access_fields, document_access
 from app.models.bookmarks import (
     BookmarkChunk,
     BookmarkCreate,
@@ -170,6 +171,7 @@ async def list_bookmarks(
             """,
             user.user_id,
         )
+        access = await document_access(pool, [row["document_id"] for row in rows])
     except Exception as exc:
         logger.error("list_bookmarks query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
@@ -192,6 +194,7 @@ async def list_bookmarks(
                         anchor=row["anchor"],
                         chapter_key=row["chapter_key"],
                         unit_label=row["unit_label"],
+                        **access_fields(access, row["document_id"]),
                     ),
                 ),
             )

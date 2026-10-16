@@ -24,6 +24,8 @@ import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { readerHref } from "@/lib/readerNavigation";
+import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
+import { SourceLink } from "@/components/common/SourceLink";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
 
@@ -182,7 +184,10 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
   // written only for a same-tab navigation (see useReaderReturnKey); a new tab
   // takes the reader's deep-link fallback.
   const { returnKey, markReturn } = useReaderReturnKey("search");
-  const canOpenContext = UUID_RE.test(document_id);
+  // An excerpt-only document has no reader; the card links to its source (#265).
+  const excerptOnly = isExcerptOnly(source);
+  const sourceHref = excerptSourceUrl(source);
+  const canOpenContext = UUID_RE.test(document_id) && !excerptOnly;
   const contextHref = readerHref({
     docId: document_id,
     origin: "search",
@@ -369,6 +374,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
                     Open in Context
                   </IntentLink>
                 )}
+                {sourceHref && <SourceLink href={sourceHref} />}
               </div>
             </div>
           </div>
