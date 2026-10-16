@@ -6,7 +6,6 @@ from fastapi.testclient import TestClient
 
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
-from app.routes import reading_progress
 from app.routes.reading_progress import router
 
 USER_ID = "00000000-0000-0000-0000-000000000001"
@@ -45,8 +44,7 @@ def test_list_progress_is_owned_bounded_and_recent_first():
     assert "rp.user_id = $1" in sql
     assert "ORDER BY rp.updated_at DESC" in sql
     assert user_id == USER_ID
-    # Over-fetches so progress hidden for excerpt-only documents cannot shorten the list.
-    assert limit == 5 + reading_progress._RESTRICTED_SLACK
+    assert limit == 5
 
 
 def test_get_progress_rejects_invalid_document_id_without_db_call():

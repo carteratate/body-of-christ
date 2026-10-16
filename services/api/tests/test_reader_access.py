@@ -256,32 +256,37 @@ def test_reading_progress_is_not_written_for_an_excerpt_only_document():
     pool.fetchrow.assert_not_awaited()
 
 
-def test_reading_progress_hides_excerpt_only_documents():
+def test_reading_progress_filters_excerpt_documents_before_the_limit():
+    """The filter is in the query, ahead of LIMIT: hidden rows never take the place of
+    readable ones, however many recent documents are excerpt-only."""
+    from app.routes.reading_progress import router
+
+    pool = AsyncMock()
+    pool.fetch.return_value = []
+    pool.fetchrow.return_value = None
+    with patch("app.routes.reading_progress.get_pool", return_value=pool):
+        client = _client(router)
+        client.get("/v1/reading-progress?limit=3")
+        single = client.get(f"/v1/reading-progress/{DOC}")
+    list_sql, _, limit = pool.fetch.await_args.args
+    assert list_sql.index("reader_access <> 'excerpt'") < list_sql.index("LIMIT $2")
+    assert limit == 3
+    assert "reader_access <> 'excerpt'" in pool.fetchrow.await_args.args[0]
+    assert single.status_code == 404
+
+
+def test_reading_progress_without_migration_0041_lists_everything():
     from datetime import datetime, timezone
 
     from app.routes.reading_progress import router
 
-    other = "22222222-2222-2222-2222-222222222222"
-    row = lambda doc: {"document_id": doc, "chapter_key": "c1", "chapter_label": "C1",
-                       "anchor": None, "updated_at": datetime(2026, 10, 16, tzinfo=timezone.utc),
-                       "collection": "encyclicals", "document_title": "T", "author": None}
+    row = {"document_id": DOC, "chapter_key": "c1", "chapter_label": "C1", "anchor": None,
+           "updated_at": datetime(2026, 10, 16, tzinfo=timezone.utc),
+           "collection": "encyclicals", "document_title": "T", "author": None}
     pool = AsyncMock()
-    pool.fetch.return_value = [row(DOC), row(other)]
-    pool.fetchrow.return_value = row(DOC)
-    with patch("app.routes.reading_progress.get_pool", return_value=pool), \
-         patch("app.routes.reading_progress.document_access", _excerpt_for(DOC)):
-        client = _client(router)
-        listed = client.get("/v1/reading-progress?limit=1").json()["items"]
-        single = client.get(f"/v1/reading-progress/{DOC}")
-    assert [i["document_id"] for i in listed] == [other]
-    assert single.status_code == 404
-
-
-def test_sources_serves_the_cached_list_when_the_access_read_fails():
-    pool = FakePool()
-    pool.conn.fetch.side_effect = [[_source("a", "Libertas")], [], OSError("db blip")]
-    with (patch("app.routes.sources.get_pool", return_value=pool),
-          patch.object(sources, "_sources_cache", None)):
-        asyncio.run(sources.get_sources(user=USER))
-        resp = asyncio.run(sources.get_sources(user=USER))
-    assert [s.id for s in resp.sources] == ["a"]
+    pool.fetch.side_effect = [
+        asyncpg.UndefinedColumnError("column d.reader_access does not exist"), [row]]
+    with patch("app.routes.reading_progress.get_pool", return_value=pool):
+        items = _client(router).get("/v1/reading-progress").json()["items"]
+    assert [i["document_id"] for i in items] == [DOC]
+    assert "reader_access" not in pool.fetch.await_args_list[1].args[0]

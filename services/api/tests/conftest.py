@@ -45,7 +45,7 @@ def _clear_cohere_rate_limiter():
 _READER_ACCESS_SITES = (
     "app.routes.bookmarks.document_access",
     "app.routes.search.document_access",
-    "app.routes.reading_progress.document_access",
+    "app.routes.reading_progress.document_access",  # the PUT check
     "app.rag.pipeline.document_access",
 )
 
