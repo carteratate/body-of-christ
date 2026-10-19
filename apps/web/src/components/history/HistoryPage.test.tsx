@@ -233,6 +233,32 @@ describe("HistoryPage and searches that finish while it is open", () => {
       .toEqual(["query s0", "query s1", "query s2"]);
   });
 
+  it("keeps a search the shell loaded after this page's own refresh began", async () => {
+    // Seeded data older than SEED_FRESH_MS makes the page refresh in the background.
+    const stale = Date.now() - 60_000;
+    const refresh = deferred<SearchHistoryPage>();
+    api.getSearchHistoryPage.mockReturnValue(refresh.promise);
+    shell.value = context({ searches: page(["s1", "s2"]).searches, searchHistoryLoadedAt: stale });
+    const view = render(<HistoryPage />);
+    await screen.findByRole("link", { name: "query s1" });
+    expect(api.getSearchHistoryPage).toHaveBeenCalledOnce();
+
+    // A search finishes; AppShell reloads its first page and History merges it.
+    shell.value = context({
+      searches: [summary("s0", new Date().toISOString()), ...page(["s1", "s2"]).searches],
+      searchHistoryLoadedAt: Date.now() + 1,
+      activeSearchId: "s0",
+    });
+    view.rerender(<HistoryPage />);
+    expect(row("s0").getAttribute("aria-current")).toBe("true");
+
+    // The page's own request, sent before that search was saved, lands last.
+    await act(async () => { refresh.resolve(page(["s1", "s2"])); });
+    expect(row("s0").getAttribute("aria-current")).toBe("true");
+    expect(screen.getAllByRole("link", { name: /^query s/ }).map((link) => link.getAttribute("aria-label")))
+      .toEqual(["query s0", "query s1", "query s2"]);
+  });
+
   it("leaves a filtered list alone when the shell reloads", async () => {
     api.getSearchHistoryPage.mockResolvedValue(page(["s2"]));
     shell.value = context({ searches: page(["s1", "s2"]).searches, searchHistoryLoadedAt: Date.now() });
