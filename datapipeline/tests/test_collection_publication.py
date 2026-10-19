@@ -41,10 +41,11 @@ def _document(*anchors: str) -> Document:
 
 class FakeReaderStore:
     def __init__(self, events: list[str], live_ids: set[str] | None = None,
-                 contents_table: bool = True):
+                 contents_table: bool = True, reader_access_column: bool = True):
         self.events = events
         self.live_ids = live_ids or set()
         self.contents_table = contents_table
+        self.reader_access_column = reader_access_column
 
     async def passage_ids(self, collection: str) -> set[str]:
         self.events.append("reader:inspect")
@@ -64,6 +65,9 @@ class FakeReaderStore:
     async def has_contents_table(self) -> bool:
         self.events.append("reader:contents-table")
         return self.contents_table
+
+    async def has_reader_access_column(self) -> bool:
+        return self.reader_access_column
 
 
 class FakeSearchIndex:
@@ -468,6 +472,19 @@ def test_a_tree_without_a_contents_table_is_refused_before_the_wipe_or_any_write
             wipe_reader_confirmation="medieval")))
 
     assert events == ["reader:acquire", "reader:contents-table", "reader:close"]
+
+
+def test_reader_publish_refuses_without_the_reader_access_column():
+    events: list[str] = []
+    runner = _runner(events, [_document("a/1")],
+                     reader=FakeReaderStore(events, reader_access_column=False))
+
+    with pytest.raises(ValueError, match="apply migration 0041"):
+        asyncio.run(runner.publish(PublicationRequest(
+            "medieval", target=PublicationTarget.READER, wipe_reader=True,
+            wipe_reader_confirmation="medieval")))
+
+    assert not any(e.startswith(("reader:wipe", "reader:write")) for e in events)
 
 
 def test_a_tree_with_a_contents_table_publishes():

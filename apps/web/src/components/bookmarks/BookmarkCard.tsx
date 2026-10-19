@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Bookmark as BookmarkIcon, BookOpen, Copy, Pencil, Plus } from "lucide-react";
+import { Bookmark as BookmarkIcon, BookOpen, Copy, ExternalLink, Pencil, Plus } from "lucide-react";
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { readerHref } from "@/lib/readerNavigation";
+import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink, ThemedTooltip } from "@/components/common";
 
@@ -74,6 +75,9 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
     }
   }
 
+  // An excerpt-only document has no reader; link to its source instead (#265).
+  const excerptOnly = isExcerptOnly(source);
+  const sourceHref = excerptSourceUrl(source);
   const contextHref = readerHref({
     docId: source.document_id,
     origin: "saved",
@@ -136,17 +140,31 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
-          <ThemedTooltip label="Open the passage in context to read the surrounding text.">
-            <IntentLink
-              href={contextHref}
-              onClick={() => trackDocumentOpened({ documentId: source.document_id, collection, source: "saved" })}
-              onNavigate={markReturn}
-              aria-label="Open passage in context"
-              className="inline-flex p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-            >
-              <BookOpen size={16} />
-            </IntentLink>
-          </ThemedTooltip>
+          {sourceHref ? (
+            <ThemedTooltip label="Read the full text at its source.">
+              <a
+                href={sourceHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Read the full text at the source (opens in a new tab)"
+                className="inline-flex p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              >
+                <ExternalLink size={16} />
+              </a>
+            </ThemedTooltip>
+          ) : !excerptOnly && (
+            <ThemedTooltip label="Open the passage in context to read the surrounding text.">
+              <IntentLink
+                href={contextHref}
+                onClick={() => trackDocumentOpened({ documentId: source.document_id, collection, source: "saved" })}
+                onNavigate={markReturn}
+                aria-label="Open passage in context"
+                className="inline-flex p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              >
+                <BookOpen size={16} />
+              </IntentLink>
+            </ThemedTooltip>
+          )}
           <ThemedTooltip label="Remove this passage from Saved Passages.">
             <button onClick={handleRemove} disabled={removing} aria-label="Remove bookmark" className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><BookmarkIcon size={16} className="text-brand-accent" /></button>
           </ThemedTooltip>

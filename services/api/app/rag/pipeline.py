@@ -14,6 +14,7 @@ import uuid
 
 from app.config import settings
 from app.db import get_pool
+from app.reader_access import access_fields, document_access
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipelines.registry import PIPELINES, PipelineConfig
@@ -178,6 +179,20 @@ def _saved_search_filters(
     if quota == 10 and delivery_outcome in {"complete", "underfilled", "minimum_floor"}:
         filters["delivery_outcome"] = delivery_outcome
     return filters
+
+
+async def _document_access_for(results) -> dict:
+    """Reader access for the documents of the final results (issue #265). Best-effort:
+    on failure every card offers the reader, which the reader route still enforces."""
+    pool = get_pool()
+    if pool is None:
+        return {}
+    try:
+        return await document_access(pool, [r.document_id for r in results])
+    except Exception as exc:
+        logger.warning("reader access lookup failed (%s); cards link to the reader",
+                       exc.__class__.__name__)
+        return {}
 
 
 async def _persist_empty_search(
@@ -368,6 +383,7 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         # Step 6 — Yield chunk events
         # ------------------------------------------------------------------
+        access = await _document_access_for(final_results)
         for chunk in final_results:
             yield {
                 "type": "chunk",
@@ -382,6 +398,9 @@ async def run_search_pipeline(
                     "anchor": chunk.anchor,
                     "chapter_key": chunk.chapter_key,
                     "unit_label": chunk.unit_label,
+                    # Excerpt-only documents (issue #265): the card links to the
+                    # source instead of the reader.
+                    **access_fields(access, chunk.document_id),
                 },
                 "reranker_score": (
                     None if chunk.score_source == "rrf_fallback"

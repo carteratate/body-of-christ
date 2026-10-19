@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Literal, Optional
 
 
 class BookmarkCreate(BaseModel):
@@ -22,6 +22,9 @@ class BookmarkSource(BaseModel):
     # renders as ordinary teaching without it, and a bookmark is the longest-lived
     # surface in the product.
     unit_label: Optional[str] = None
+    # Same as ChunkSource: an excerpt-only document links to its source (issue #265).
+    reader_access: Literal["full", "excerpt"] = "full"
+    source_url: Optional[str] = None
 
 
 class BookmarkChunk(BaseModel):

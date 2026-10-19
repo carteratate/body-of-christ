@@ -1,3 +1,5 @@
+import { readerAccessValue, type ReaderAccess } from "./reader-access";
+
 export interface ChunkSource {
   collection: string;
   document_title: string;
@@ -17,6 +19,10 @@ export interface ChunkSource {
    */
   unit_label?: string | null;
   metadata?: Record<string, unknown> | null;
+  /** "excerpt": the document's rights are not cleared, so the card links to
+   *  `source_url` instead of the reader (issue #265). Absent means full. */
+  reader_access?: ReaderAccess | null;
+  source_url?: string | null;
 }
 
 /** One passage attached to a matched Summa passage to make it intelligible. */
@@ -219,6 +225,8 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
       chapter_key: nullableString(source.chapter_key),
       unit_label: nullableString(source.unit_label),
       metadata: metadata ?? null,
+      reader_access: readerAccessValue(source.reader_access),
+      source_url: nullableString(source.source_url),
     },
     reranker_score: nullableNumber(event.reranker_score),
     explanation: nullableString(event.explanation),

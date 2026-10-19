@@ -13,7 +13,7 @@ def test_reader_returns_chapter_with_neighbors_and_highlight():
     pool.conn.fetchrow.side_effect = [
         # document row, not yet outlined: neighbors are derived from chunks
         {"id": _DOC, "collection": "bible", "title": "John", "author": None,
-         "year": None, "metadata": None, "cnt": 3, "outline_ready": False},
+         "year": None, "metadata": None, "cnt": 3, "reader_access": "full", "outline_ready": False},
         # anchor → chapter_key resolution
         {"chapter_key": "john/3"},
     ]
@@ -38,7 +38,7 @@ def test_reader_takes_neighbors_from_the_outline():
     pool = FakePool()
     pool.conn.fetchrow.side_effect = [
         {"id": _DOC, "collection": "bible", "title": "John", "author": None,
-         "year": None, "metadata": None, "cnt": 3, "outline_ready": True},
+         "year": None, "metadata": None, "cnt": 3, "reader_access": "full", "outline_ready": True},
         # first chapter: ordinal 1
         {"chapter_key": "john/1"},
         # neighbors of john/1

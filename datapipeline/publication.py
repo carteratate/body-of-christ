@@ -97,6 +97,8 @@ class ReaderStore(Protocol):
 
     async def has_contents_table(self) -> bool: ...
 
+    async def has_reader_access_column(self) -> bool: ...
+
 
 class SearchIndex(Protocol):
     async def passage_ids(self, collection: str) -> set[str]: ...
@@ -164,6 +166,13 @@ class CollectionPublicationRunner:
                         f"REFUSING: '{request.collection}' has contents trees but the "
                         "reader database has no document_contents table; apply "
                         "migration 0040 first"
+                    )
+                # Every write sets reader_access (issue #265); without the column the
+                # first write fails mid-collection, so refuse before any.
+                if not await reader.has_reader_access_column():
+                    raise ValueError(
+                        "REFUSING: the reader database has no documents.reader_access "
+                        "column; apply migration 0041 first"
                     )
                 if request.limit is None:
                     live_ids = await reader.passage_ids(request.collection)
@@ -312,6 +321,9 @@ class PostgresReaderStore:
 
     async def has_contents_table(self) -> bool:
         return await reader_writer.contents_table_exists(self._connection)
+
+    async def has_reader_access_column(self) -> bool:
+        return await reader_writer.reader_access_column_exists(self._connection)
 
 
 class QdrantSearchIndex:

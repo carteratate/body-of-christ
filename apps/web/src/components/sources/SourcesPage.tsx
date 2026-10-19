@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ExternalLink, Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { LibrarySkeleton } from "@/components/common/PageSkeletons";
 import { listReadingProgress, type ReadingProgress, type SourceDocument } from "@/lib/api";
@@ -10,11 +10,48 @@ import { readerHref } from "@/lib/readerNavigation";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink } from "@/components/common";
 import { LIFT } from "@/lib/lift";
+import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
 
 /** How the Library's rows link to the reader: one href per document, one same-tab hook. */
 interface DocOpener {
   href: (docId: string) => string;
   onNavigate: () => void;
+}
+
+// Opens a document: in the reader, or, for an excerpt-only document (issue #265), at
+// its official source in a new tab. An excerpt-only document with no known source is
+// listed without a link.
+function DocLink({ doc, opener, className, children }: {
+  doc: SourceDocument;
+  opener: DocOpener;
+  className: string;
+  children: ReactNode;
+}) {
+  if (isExcerptOnly(doc)) {
+    const url = excerptSourceUrl(doc);
+    if (!url) return <div className={className}>{children}</div>;
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer" className={className}
+         title="The full text isn't available on TheoCorpus. Read it at the source.">
+        {children}
+      </a>
+    );
+  }
+  return (
+    <IntentLink href={opener.href(doc.id)} onNavigate={opener.onNavigate} className={className}>
+      {children}
+    </IntentLink>
+  );
+}
+
+function SourceMark({ doc }: { doc: SourceDocument }) {
+  if (!excerptSourceUrl(doc)) return null;
+  return (
+    <>
+      <ExternalLink size={11} aria-hidden="true" className="inline align-baseline ml-1" />
+      <span className="sr-only">(opens the source in a new tab)</span>
+    </>
+  );
 }
 
 // Full name for Bible translation codes shown in the sources list.
@@ -57,7 +94,7 @@ function ExpandableGroup({
   title: string;
   subLabel: string;
   rightLabel: string;
-  items: { id: string; title: string }[];
+  items: SourceDocument[];
   opener: DocOpener;
 }) {
   return (
@@ -80,14 +117,14 @@ function ExpandableGroup({
       {open && (
         <div className="flex flex-wrap gap-1.5 rounded-b px-3 pb-3 pt-1 border-t border-brand-bg/40">
           {items.map((c) => (
-            <IntentLink
+            <DocLink
               key={c.id}
-              href={opener.href(c.id)}
-              onNavigate={opener.onNavigate}
+              doc={c}
+              opener={opener}
               className="text-xs text-brand-primary bg-brand-bg/60 rounded px-2 py-1 hover:text-brand-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             >
-              {c.title}
-            </IntentLink>
+              {c.title}<SourceMark doc={c} />
+            </DocLink>
           ))}
         </div>
       )}
@@ -137,7 +174,7 @@ function BibleSection({ docs, opener }: { docs: SourceDocument[]; opener: DocOpe
               title={label}
               subLabel={`${books.length} books · ${code}`}
               rightLabel={`${totalPassages.toLocaleString()} passages`}
-              items={orderedBooks.map((b) => ({ id: b.id, title: b.title }))}
+              items={orderedBooks}
               opener={opener}
             />
           );
@@ -212,7 +249,7 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
                 title="Second Vatican Council"
                 subLabel={`${vat2Range} · ${vaticanIIDocs.length} documents`}
                 rightLabel={`${vat2Passages.toLocaleString()} passages`}
-                items={vat2Sorted.map((d) => ({ id: d.id, title: d.title }))}
+                items={vat2Sorted}
                 opener={opener}
               />
             );
@@ -221,13 +258,13 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
           const num = d.metadata?.council_number as number | undefined;
           return (
             <li key={d.id}>
-              <IntentLink
-                href={opener.href(d.id)}
-                onNavigate={opener.onNavigate}
+              <DocLink
+                doc={d}
+                opener={opener}
                 className={`w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left ${LIFT}`}
               >
                 <div className="min-w-0">
-                  <span className="text-brand-primary text-sm">{d.title}</span>
+                  <span className="text-brand-primary text-sm">{d.title}<SourceMark doc={d} /></span>
                   <span className="text-brand-muted text-xs ml-2">
                     {num ? `#${num} · ` : ""}{d.year}
                   </span>
@@ -235,7 +272,7 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
                 <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
                   {d.chunk_count.toLocaleString()} passages
                 </span>
-              </IntentLink>
+              </DocLink>
             </li>
           );
         })}
@@ -252,9 +289,9 @@ function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
 
   return (
     <li>
-      <IntentLink
-        href={opener.href(doc.id)}
-        onNavigate={opener.onNavigate}
+      <DocLink
+        doc={doc}
+        opener={opener}
         className={`w-full flex items-start justify-between gap-4 px-3 py-2 rounded bg-brand-surface text-left ${LIFT}`}
       >
         <div className="min-w-0">
@@ -266,8 +303,10 @@ function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
             <span className="text-brand-muted text-xs ml-1">· {doc.translation}</span>
           )}
         </div>
-        <span className="shrink-0 text-xs text-brand-accent whitespace-nowrap mt-0.5">›</span>
-      </IntentLink>
+        <span className="shrink-0 text-xs text-brand-accent whitespace-nowrap mt-0.5">
+          {excerptSourceUrl(doc) ? <ExternalLink size={12} aria-label="Opens the source in a new tab" /> : "›"}
+        </span>
+      </DocLink>
     </li>
   );
 }

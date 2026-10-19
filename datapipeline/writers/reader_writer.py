@@ -10,6 +10,7 @@ import json
 import asyncpg
 
 import contents
+import reader_access
 from model import Document
 from identity import passage_id
 
@@ -94,19 +95,25 @@ async def write_document(conn: asyncpg.Connection, doc: Document,
     rebuilt last, in the same transaction, so the API never reads an outline that
     disagrees with the chunks it describes. Its contents tree (migration 0040), when
     it has one, is replaced in the same transaction too.
+
+    `reader_access` (migration 0041) is set from the rights inventory on every write,
+    so a republish cannot reopen a text whose rights are not cleared (issue #265).
     """
     contents.check(doc)  # before the transaction: a broken tree writes nothing
     async with conn.transaction():
         await conn.execute(
             """
-            INSERT INTO documents (id, collection, title, translation, author, year, metadata)
-            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7::jsonb)
+            INSERT INTO documents
+              (id, collection, title, translation, author, year, metadata, reader_access)
+            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7::jsonb, $8)
             ON CONFLICT (id) DO UPDATE SET
                 title=EXCLUDED.title, translation=EXCLUDED.translation,
-                author=EXCLUDED.author, year=EXCLUDED.year, metadata=EXCLUDED.metadata
+                author=EXCLUDED.author, year=EXCLUDED.year, metadata=EXCLUDED.metadata,
+                reader_access=EXCLUDED.reader_access
             """,
             doc.id, doc.collection, doc.title, doc.translation or "",
             doc.author, doc.year, json.dumps(doc.metadata) if doc.metadata else None,
+            reader_access.access_for_document(doc),
         )
         await conn.execute(
             "UPDATE chunks SET position = -position - 1 WHERE document_id = $1::uuid",
@@ -172,3 +179,12 @@ async def write_contents(conn: asyncpg.Connection, doc: Document) -> None:
           r.short_label, r.chapter_key, r.anchor, r.range_label)
          for r in contents.flatten(doc.contents)],
     )
+
+
+async def reader_access_column_exists(conn: asyncpg.Connection) -> bool:
+    """Whether the database has migration 0041's documents.reader_access column."""
+    return bool(await conn.fetchval(
+        """SELECT EXISTS (SELECT 1 FROM information_schema.columns
+                          WHERE table_schema = 'public' AND table_name = 'documents'
+                            AND column_name = 'reader_access')"""
+    ))

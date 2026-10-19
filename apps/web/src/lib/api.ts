@@ -5,6 +5,7 @@ import {
   type SearchOutcome,
   type SearchStreamCallbacks,
 } from "./search-stream";
+import { excerptSourceUrl, READER_RESTRICTED_CODE, type ReaderAccess } from "./reader-access";
 
 export {
   SearchStreamProtocolError,
@@ -205,6 +206,9 @@ export interface DocumentInfo {
   translation?: string | null;
   metadata: Record<string, unknown> | null;
   chunk_count: number;
+  /** Issue #265: "excerpt" documents have no reader; link to `source_url`. */
+  reader_access?: ReaderAccess;
+  source_url?: string | null;
 }
 
 export interface ReaderPassage {
@@ -268,6 +272,9 @@ export interface BookmarkChunkInfo {
      *  Aquinas states in order to refute, and a bookmark is the longest-lived
      *  surface in the product. */
     unit_label?: string | null;
+    /** See ChunkSource.reader_access (issue #265). */
+    reader_access?: ReaderAccess | null;
+    source_url?: string | null;
   };
 }
 
@@ -493,12 +500,31 @@ function readerHeaders(token: string, guestToken?: string): HeadersInit {
     : { Authorization: `Bearer ${token}` };
 }
 
+/** The API refused an excerpt-only document's full text (issue #265). */
+export class ReaderRestrictedError extends Error {
+  constructor(readonly sourceUrl: string | null) {
+    super("Reader restricted");
+    this.name = "ReaderRestrictedError";
+  }
+}
+
+async function throwReaderFailure(res: Response): Promise<never> {
+  if (res.status === 403) {
+    const body = await res.json().catch(() => null) as { detail?: unknown } | null;
+    const detail = body?.detail as { code?: unknown; source_url?: unknown } | undefined;
+    if (detail && detail.code === READER_RESTRICTED_CODE) {
+      throw new ReaderRestrictedError(excerptSourceUrl({ reader_access: "excerpt", source_url: detail.source_url as string | null }));
+    }
+  }
+  throw new Error(`API error ${res.status}`);
+}
+
 export async function getToc(token: string, docId: string, signal?: AbortSignal, guestToken?: string): Promise<TocResponse> {
   const res = await fetch(`${API_URL}/v1/documents/${docId}/toc`, {
     headers: readerHeaders(token, guestToken),
     signal,
   });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
+  if (!res.ok) await throwReaderFailure(res);
   return res.json() as Promise<TocResponse>;
 }
 
@@ -515,7 +541,7 @@ export async function getReaderChapter(
     headers: readerHeaders(token, opts.guestToken),
     signal: opts.signal,
   });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
+  if (!res.ok) await throwReaderFailure(res);
   return res.json() as Promise<ReaderChapter>;
 }
 
@@ -821,6 +847,9 @@ export interface SourceDocument {
   translation: string | null;
   metadata: Record<string, unknown> | null;
   chunk_count: number;
+  /** Issue #265: an "excerpt" document is listed but links to `source_url`. */
+  reader_access?: ReaderAccess;
+  source_url?: string | null;
 }
 
 export async function getSources(token: string): Promise<SourceDocument[]> {

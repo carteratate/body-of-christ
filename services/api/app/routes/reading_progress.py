@@ -1,11 +1,13 @@
 import logging
 import uuid
 
+import asyncpg
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.reader_access import document_access, restricted_error
 from app.models.reading_progress import (
     ReadingProgressItem,
     ReadingProgressListResponse,
@@ -14,6 +16,11 @@ from app.models.reading_progress import (
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+# Excerpt-only documents (issue #265) have no reader, so their progress is neither
+# listed nor written. The filter is in the query, before LIMIT, so hidden rows never
+# take the place of readable ones.
+_READABLE = " AND d.reader_access <> 'excerpt'"
 
 
 def _item(row) -> ReadingProgressItem:
@@ -46,6 +53,17 @@ _SELECT_BASE = """
 """
 
 
+async def _fetch_readable(fetch, where: str, *args):
+    """Run `_SELECT_BASE + where` with excerpt-only documents filtered out. On a database
+    without 0041 there is nothing to filter, so the query runs without it."""
+    try:
+        return await fetch(_SELECT_BASE + where.replace("{readable}", _READABLE), *args)
+    except asyncpg.UndefinedColumnError as exc:
+        if "reader_access" not in str(exc):
+            raise
+        return await fetch(_SELECT_BASE + where.replace("{readable}", ""), *args)
+
+
 @router.get("/reading-progress", response_model=ReadingProgressListResponse)
 async def list_reading_progress(
     limit: int = Query(default=6, ge=1, le=10),
@@ -55,8 +73,9 @@ async def list_reading_progress(
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
     try:
-        rows = await pool.fetch(
-            _SELECT_BASE + " WHERE rp.user_id = $1 ORDER BY rp.updated_at DESC LIMIT $2",
+        rows = await _fetch_readable(
+            pool.fetch,
+            " WHERE rp.user_id = $1{readable} ORDER BY rp.updated_at DESC LIMIT $2",
             user.user_id,
             limit,
         )
@@ -79,8 +98,9 @@ async def get_reading_progress(
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
     try:
-        row = await pool.fetchrow(
-            _SELECT_BASE + " WHERE rp.user_id = $1 AND rp.document_id = $2",
+        row = await _fetch_readable(
+            pool.fetchrow,
+            " WHERE rp.user_id = $1 AND rp.document_id = $2{readable}",
             user.user_id,
             doc_uuid,
         )
@@ -105,6 +125,14 @@ async def put_reading_progress(
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+
+    try:
+        access = (await document_access(pool, [doc_uuid])).get(str(doc_uuid))
+    except Exception as exc:
+        logger.error("put_reading_progress access check failed (%s)", exc.__class__.__name__)
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+    if access is not None and access.reader_access == "excerpt":
+        raise restricted_error(access.source_url)
 
     try:
         location = await pool.fetchrow(

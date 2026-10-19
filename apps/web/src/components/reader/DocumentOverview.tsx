@@ -4,8 +4,9 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { BookOpen, ChevronLeft, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
-import { getReadingProgress, type ContentsNode, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
+import { getReadingProgress, ReaderRestrictedError, type ContentsNode, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
+import { ReaderRestrictedNotice } from "./ReaderRestrictedNotice";
 import { getCollectionMeta } from "@/lib/collections";
 import { LIFT } from "@/lib/lift";
 import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
@@ -77,6 +78,8 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const [visibleLimit, setVisibleLimit] = useState(SECTION_BATCH_SIZE);
   const [resolvedRequest, setResolvedRequest] = useState<string | null>(null);
   const [failedRequest, setFailedRequest] = useState<string | null>(null);
+  // The request the API refused because the document is excerpt-only (issue #265).
+  const [restricted, setRestricted] = useState<{ request: string; sourceUrl: string | null } | null>(null);
   const [retryKey, setRetryKey] = useState(0);
   const [guestToken, setGuestToken] = useState("");
   const requestRef = useRef(0);
@@ -119,8 +122,10 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
           && toc.chapters.some((entry) => entry.chapter_key === nextProgress.chapter_key)
         ) setProgress(nextProgress);
       }).catch(() => undefined);
-    }).catch(() => {
-      if (requestId === requestRef.current) setFailedRequest(requestKey);
+    }).catch((caught) => {
+      if (requestId !== requestRef.current) return;
+      if (caught instanceof ReaderRestrictedError) setRestricted({ request: requestKey, sourceUrl: caught.sourceUrl });
+      setFailedRequest(requestKey);
     });
 
     void Promise.allSettled([tocRequest, progressRequest]).then(() => clearTimeout(timeout));
@@ -176,6 +181,17 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
           </div>
         </div>
       </div>
+    );
+  }
+
+  if (error && restricted?.request === requestKey) {
+    return (
+      <ReaderRestrictedNotice
+        sourceUrl={restricted.sourceUrl}
+        header={mobileHeader}
+        onBack={goBack}
+        backPending={backPending}
+      />
     );
   }
 

@@ -12,6 +12,7 @@ from app.catechism_contents import catechism_contents
 from app.derived_contents import derive_summa_contents
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.reader_access import restricted_error, source_url
 from app.models.documents import (
     ContentsNode, DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
 )
@@ -26,20 +27,26 @@ _bearer = HTTPBearer(auto_error=False)
 # published. A document whose chunk_count is NULL has no current outline, and its
 # structure is derived from chunks as before; `outline_ready` selects the path. The
 # COALESCE evaluates the count subquery only for such a document.
-_DOCUMENT_SQL = """
-    SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
-           d.chunk_count IS NOT NULL AS outline_ready,
+_OUTLINE_COLUMNS = """d.chunk_count IS NOT NULL AS outline_ready,
            COALESCE(d.chunk_count,
-                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)) AS cnt
-    FROM documents d WHERE d.id = $1
-"""
-# The same row on a database without 0037, so the API can deploy before it is applied.
-_PRE_OUTLINE_DOCUMENT_SQL = """
+                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)) AS cnt"""
+# The same columns on a database without 0037, so the API can deploy before it is applied.
+_PRE_OUTLINE_COLUMNS = """false AS outline_ready,
+           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt"""
+
+
+def _document_sql(*, access: bool, outline: bool) -> str:
+    """The document row. Without 0041 (`access` false) every document reads as full,
+    so the API can deploy before that migration is applied (issue #265)."""
+    return f"""
     SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
-           false AS outline_ready,
-           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt
+           {"d.reader_access" if access else "'full'"} AS reader_access,
+           {_OUTLINE_COLUMNS if outline else _PRE_OUTLINE_COLUMNS}
     FROM documents d WHERE d.id = $1
 """
+
+
+_DOCUMENT_SQL = _document_sql(access=True, outline=True)
 
 _OUTLINE_TOC_SQL = """
     SELECT chapter_key, chapter_label FROM document_chapters
@@ -137,23 +144,45 @@ def _require_pool() -> asyncpg.Pool:
 
 
 async def _fetch_document(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> asyncpg.Record:
-    try:
-        doc_row = await conn.fetchrow(_DOCUMENT_SQL, doc_uuid)
-    except asyncpg.UndefinedColumnError:
-        # Migration 0037 is not applied: outline_ready is false, so every later query
-        # of the request takes the chunks-derived path too.
-        doc_row = await conn.fetchrow(_PRE_OUTLINE_DOCUMENT_SQL, doc_uuid)
+    # Fall back one migration at a time, and only for the column actually missing:
+    # a missing outline must never also switch off the reader_access check.
+    access = outline = True
+    while True:
+        try:
+            doc_row = await conn.fetchrow(_document_sql(access=access, outline=outline), doc_uuid)
+            break
+        except asyncpg.UndefinedColumnError as exc:
+            if access and "reader_access" in str(exc):
+                # Migration 0041 is not applied: no document is excerpt-only yet.
+                logger.warning("documents.reader_access is missing; reading every document as full")
+                access = False
+            elif outline and "chunk_count" in str(exc):
+                # Migration 0037 is not applied: outline_ready is false, so every later
+                # query of the request takes the chunks-derived path too.
+                outline = False
+            else:
+                raise
     if doc_row is None:
         raise HTTPException(status_code=404, detail="Document not found")
     return doc_row
 
 
 def _document_response(doc_row) -> DocumentResponse:
+    access = doc_row["reader_access"]
     return DocumentResponse(
         id=str(doc_row["id"]), collection=doc_row["collection"], title=doc_row["title"],
         author=doc_row["author"], year=doc_row["year"], translation=doc_row.get("translation"), metadata=doc_row["metadata"],
-        chunk_count=doc_row["cnt"],
+        chunk_count=doc_row["cnt"], reader_access=access,
+        source_url=(source_url(doc_row["collection"], doc_row["metadata"])
+                    if access == "excerpt" else None),
     )
+
+
+def _require_full_reader(doc_row) -> None:
+    """Refuse the full text of an excerpt-only document (issue #265), for guests and
+    signed-in readers alike."""
+    if doc_row["reader_access"] == "excerpt":
+        raise restricted_error(source_url(doc_row["collection"], doc_row["metadata"]))
 
 
 async def _neighbor_keys(
@@ -277,6 +306,7 @@ async def get_document_toc(
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
             doc_row = await _fetch_document(conn, doc_uuid)
+            _require_full_reader(doc_row)
             toc_sql = _OUTLINE_TOC_SQL if doc_row["outline_ready"] else _LEGACY_TOC_SQL
             chapter_rows = await conn.fetch(toc_sql, doc_uuid)
             contents_rows = await _fetch_contents_rows(conn, doc_uuid)
@@ -319,6 +349,7 @@ async def get_document_reader(
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
             doc_row = await _fetch_document(conn, doc_uuid)
+            _require_full_reader(doc_row)
 
             # Resolve target chapter_key (explicit chapter > anchor > first chapter).
             chapter_key = chapter

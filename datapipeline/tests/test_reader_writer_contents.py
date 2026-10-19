@@ -52,7 +52,8 @@ def _tree():
 
 async def _connect(socket, migrations=("0037_document_outline.sql",
                                        "0038_backfill_document_outline.sql",
-                                       "0040_document_contents.sql")):
+                                       "0040_document_contents.sql",
+                                       "0041_document_reader_access.sql")):
     conn = await asyncpg.connect(host=str(socket), user="postgres", database="postgres")
     await conn.execute(CORPUS_SCHEMA)
     for name in migrations:
@@ -116,7 +117,8 @@ def test_a_broken_tree_writes_nothing(socket_dir):
 def test_without_migration_0040_a_tree_is_refused_and_no_tree_writes(socket_dir):
     async def scenario():
         conn = await _connect(socket_dir, migrations=("0037_document_outline.sql",
-                                                      "0038_backfill_document_outline.sql"))
+                                                      "0038_backfill_document_outline.sql",
+                                                      "0041_document_reader_access.sql"))
         try:
             await reader_writer.write_document(conn, _doc(None))
             with pytest.raises(RuntimeError, match="apply migration 0040"):

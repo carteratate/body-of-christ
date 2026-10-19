@@ -79,7 +79,8 @@ async def _publish_and_read(socket, *builds):
     conn = await asyncpg.connect(host=str(socket), user="postgres", database="postgres")
     try:
         await conn.execute(CORPUS_SCHEMA)
-        for name in ("0037_document_outline.sql", "0038_backfill_document_outline.sql"):
+        for name in ("0037_document_outline.sql", "0038_backfill_document_outline.sql",
+                     "0041_document_reader_access.sql"):
             await conn.execute((MIGRATIONS / name).read_text())
         outlines = []
         for build in builds:

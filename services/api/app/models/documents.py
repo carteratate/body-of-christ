@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Literal, Optional
 
 
 class DocumentResponse(BaseModel):
@@ -11,6 +11,11 @@ class DocumentResponse(BaseModel):
     translation: Optional[str] = None
     metadata: Optional[dict] = None
     chunk_count: int
+    # "excerpt": the rights are not cleared, so /reader and /toc refuse this document
+    # with 403 reader_restricted and clients link to `source_url` (issue #265).
+    reader_access: Literal["full", "excerpt"] = "full"
+    # The official edition, for an excerpt-only document; None otherwise.
+    source_url: Optional[str] = None
 
 
 class ReaderChunk(BaseModel):

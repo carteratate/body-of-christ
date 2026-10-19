@@ -123,6 +123,8 @@ describe("consumeSearchStream", () => {
         chapter_key: null,
         unit_label: null,
         metadata: null,
+        reader_access: null,
+        source_url: null,
       },
       reranker_score: null,
       explanation: null,
@@ -399,5 +401,31 @@ describe("consumeSearchStream", () => {
     await expect(consumeSearchStream(body, cb)).rejects.toBe(failure);
     const nextReader = body.getReader();
     nextReader.releaseLock();
+  });
+});
+
+describe("excerpt-only sources (issue #265)", () => {
+  const source = {
+    collection: "encyclicals", document_title: "Libertas", author: "Pope Leo XIII",
+    reference: "Libertas 1", document_id: "doc-1", position: 1,
+  };
+  async function parsed(extra: Record<string, unknown>) {
+    const cb = callbacks();
+    await consumeSearchStream(streamFromText(
+      data({ type: "chunk", chunk_id: "c1", content: "x", source: { ...source, ...extra } })
+      + data({ type: "done", search_id: null, result_count: 1, persisted: false }),
+    ), cb);
+    return cb.onChunk.mock.calls[0][0].source;
+  }
+
+  it("carries reader access and the source link", async () => {
+    const result = await parsed({ reader_access: "excerpt", source_url: "https://example.org/libertas" });
+    expect(result.reader_access).toBe("excerpt");
+    expect(result.source_url).toBe("https://example.org/libertas");
+  });
+
+  it("reads an absent or unknown value as no restriction", async () => {
+    expect((await parsed({})).reader_access).toBeNull();
+    expect((await parsed({ reader_access: "partial" })).reader_access).toBeNull();
   });
 });
