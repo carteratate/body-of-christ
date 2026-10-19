@@ -23,6 +23,8 @@ export interface ChunkSource {
    *  `source_url` instead of the reader (issue #265). Absent means full. */
   reader_access?: ReaderAccess | null;
   source_url?: string | null;
+  /** The rights holder's credit line, shown right after an excerpt-only passage. */
+  source_credit?: string | null;
 }
 
 /** One passage attached to a matched Summa passage to make it intelligible. */
@@ -227,6 +229,7 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
       metadata: metadata ?? null,
       reader_access: readerAccessValue(source.reader_access),
       source_url: nullableString(source.source_url),
+      source_credit: nullableString(source.source_credit),
     },
     reranker_score: nullableNumber(event.reranker_score),
     explanation: nullableString(event.explanation),

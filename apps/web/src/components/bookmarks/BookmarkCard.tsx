@@ -7,9 +7,10 @@ import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { readerHref } from "@/lib/readerNavigation";
-import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
+import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink, ThemedTooltip } from "@/components/common";
+import { SourceCredit } from "@/components/common/SourceLink";
 
 const NOTE_MAX = 3000;
 
@@ -67,7 +68,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
-    const text = `${stripVerseMarkers(content)} — ${displayReference} (${collection})`;
+    const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
+    const text = `${stripVerseMarkers(content)} — ${displayReference} (${collection})${credited}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text)
         .then(() => showToast("Copied"))
@@ -78,6 +80,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   // An excerpt-only document has no reader; link to its source instead (#265).
   const excerptOnly = isExcerptOnly(source);
   const sourceHref = excerptSourceUrl(source);
+  const sourceCredit = excerptSourceCredit(source);
   const contextHref = readerHref({
     docId: source.document_id,
     origin: "saved",
@@ -178,6 +181,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
       <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">
         {renderVerseMarkers(content)}
       </p>
+      {sourceCredit && <SourceCredit text={sourceCredit} />}
 
       {/* ── Note section ──────────────────────────────────────────────────── */}
       <div

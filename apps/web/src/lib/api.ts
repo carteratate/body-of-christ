@@ -275,6 +275,7 @@ export interface BookmarkChunkInfo {
     /** See ChunkSource.reader_access (issue #265). */
     reader_access?: ReaderAccess | null;
     source_url?: string | null;
+    source_credit?: string | null;
   };
 }
 

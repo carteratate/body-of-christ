@@ -125,6 +125,7 @@ describe("consumeSearchStream", () => {
         metadata: null,
         reader_access: null,
         source_url: null,
+        source_credit: null,
       },
       reranker_score: null,
       explanation: null,
