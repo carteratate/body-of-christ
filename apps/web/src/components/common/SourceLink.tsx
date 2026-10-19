@@ -1,5 +1,10 @@
 import { ExternalLink } from "lucide-react";
 
+/** The rights holder's credit line, placed right after an excerpt-only passage. */
+export function SourceCredit({ text }: { text: string }) {
+  return <p className="mt-2 text-xs leading-snug text-brand-muted">{text}</p>;
+}
+
 /** Takes the place of "Open in Context" for an excerpt-only document (issue #265):
  *  the passage is shown here, the full text is read at its official source. */
 export function SourceLink({ href, className = "" }: { href: string; className?: string }) {

@@ -397,6 +397,7 @@ describe("BookmarkCard excerpt-only documents (issue #265)", () => {
           reference: "CCC §1000", document_id: "11111111-1111-4111-8111-111111111111",
           anchor: "ccc-1000", chapter_key: "ccc-1000-1099",
           reader_access: "excerpt" as const, source_url: "https://www.vatican.va/archive/ENG0015/_INDEX.HTM",
+          source_credit: "Excerpts from the English translation of the Catechism of the Catholic Church",
         },
       },
     };
@@ -406,5 +407,6 @@ describe("BookmarkCard excerpt-only documents (issue #265)", () => {
     const link = screen.getByRole("link", { name: /Read the full text at the source/ });
     expect(link.getAttribute("href")).toBe("https://www.vatican.va/archive/ENG0015/_INDEX.HTM");
     expect(link.getAttribute("target")).toBe("_blank");
+    expect(screen.getByText(/Excerpts from the English translation of the Catechism/)).toBeTruthy();
   });
 });

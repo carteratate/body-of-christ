@@ -24,8 +24,8 @@ import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { readerHref } from "@/lib/readerNavigation";
-import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
-import { SourceLink } from "@/components/common/SourceLink";
+import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
+import { SourceCredit, SourceLink } from "@/components/common/SourceLink";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
 
@@ -187,6 +187,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
   // An excerpt-only document has no reader; the card links to its source (#265).
   const excerptOnly = isExcerptOnly(source);
   const sourceHref = excerptSourceUrl(source);
+  const sourceCredit = excerptSourceCredit(source);
   const canOpenContext = UUID_RE.test(document_id) && !excerptOnly;
   const contextHref = readerHref({
     docId: document_id,
@@ -330,6 +331,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
           {attached?.relation === "answered_by" && (
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
+          {sourceCredit && <SourceCredit text={sourceCredit} />}
 
           <RelevanceExplanation explanation={result.explanation} chunkId={chunk_id} color={color} rgb={rgb} />
 

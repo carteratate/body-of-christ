@@ -104,10 +104,36 @@ def test_an_unrelated_missing_column_is_not_swallowed():
 
 
 def test_the_catechism_and_canon_law_link_to_the_official_edition():
-    assert reader_access.source_url("catechism", None).startswith("https://www.vatican.va/")
+    assert reader_access.source_url("catechism", None).startswith("https://www.usccb.org/")
     assert reader_access.source_url("canon-law", {}).startswith("https://www.vatican.va/")
     assert reader_access.source_url("church-fathers", {}) is None
     assert reader_access.source_url("encyclicals", {"url": "javascript:alert(1)"}) is None
+
+
+def test_each_rights_holder_gets_its_credit_line():
+    notice = reader_access.source_credit("catechism", None)
+    # The USCCB's required notice, verbatim, for any use of the Catechism.
+    assert notice.startswith("Excerpts from the English translation of the Catechism")
+    assert "Used with Permission." in notice
+    assert reader_access.source_credit("encyclicals", "https://www.vatican.va/x.html") == \
+        reader_access.VATICAN_CREDIT
+    assert reader_access.source_credit("encyclicals", "http://www.vatican.va/x.html") == \
+        reader_access.VATICAN_CREDIT
+    # No credit is invented for sources whose rights holder isn't known.
+    assert reader_access.source_credit("councils", "https://www.papalencyclicals.net/x") is None
+    assert reader_access.source_credit("encyclicals", "https://evil.example/vatican.va") is None
+    assert reader_access.source_credit("church-fathers", None) is None
+
+
+def test_a_full_document_carries_no_credit():
+    pool = AsyncMock()
+    pool.fetch.return_value = [
+        {"id": uuid.UUID(DOC), "collection": "encyclicals", "metadata": {"url": URL},
+         "reader_access": "full"},
+    ]
+    access = asyncio.run(reader_access.document_access(pool, [DOC]))
+    assert reader_access.access_fields(access, DOC) == {
+        "reader_access": "full", "source_url": None, "source_credit": None}
 
 
 def test_document_access_maps_each_id_and_tolerates_a_missing_column():
@@ -118,9 +144,10 @@ def test_document_access_maps_each_id_and_tolerates_a_missing_column():
     ]
     access = asyncio.run(reader_access.document_access(pool, [DOC, None, DOC]))
     assert access[DOC].reader_access == "excerpt"
-    assert access[DOC].source_url.startswith("https://www.vatican.va/")
+    assert access[DOC].source_url.startswith("https://www.usccb.org/")
+    assert access[DOC].source_credit == reader_access.CATECHISM_NOTICE
     assert reader_access.access_fields(access, "unknown-id") == {
-        "reader_access": "full", "source_url": None}
+        "reader_access": "full", "source_url": None, "source_credit": None}
 
     pool.fetch.side_effect = asyncpg.UndefinedColumnError("reader_access")
     assert asyncio.run(reader_access.document_access(pool, [DOC])) == {}
@@ -163,7 +190,7 @@ def test_sources_without_migration_0041_reads_as_full():
 
 def _excerpt_for(doc_id):
     return AsyncMock(return_value={
-        str(doc_id): reader_access.DocumentAccess("excerpt", URL)})
+        str(doc_id): reader_access.DocumentAccess("excerpt", URL, reader_access.VATICAN_CREDIT)})
 
 
 @pytest.mark.asyncio
@@ -195,6 +222,7 @@ async def test_search_chunk_events_carry_reader_access():
     [event] = [e for e in events if e["type"] == "chunk"]
     assert event["source"]["reader_access"] == "excerpt"
     assert event["source"]["source_url"] == URL
+    assert event["source"]["source_credit"] == reader_access.VATICAN_CREDIT
 
 
 @pytest.mark.asyncio
@@ -239,6 +267,7 @@ def test_bookmarks_carry_reader_access():
         body = _client(router).get("/v1/bookmarks").json()
     source = body["bookmarks"][0]["chunk"]["source"]
     assert (source["reader_access"], source["source_url"]) == ("excerpt", URL)
+    assert source["source_credit"] == reader_access.VATICAN_CREDIT
 
 
 # ── Reading progress ─────────────────────────────────────────────────────────

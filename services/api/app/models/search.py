@@ -36,6 +36,8 @@ class ChunkSource(BaseModel):
     # `source_url` instead of the reader (issue #265).
     reader_access: Literal["full", "excerpt"] = "full"
     source_url: Optional[str] = None
+    # The rights holder's credit line, shown right after the passage (excerpt-only).
+    source_credit: Optional[str] = None
 
 
 class ContextPart(BaseModel):

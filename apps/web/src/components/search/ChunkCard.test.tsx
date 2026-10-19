@@ -670,6 +670,22 @@ describe("ChunkCard excerpt-only documents (issue #265)", () => {
     expect(screen.queryByRole("link", { name: /Read the full text/ })).toBeNull();
   });
 
+  it("shows the rights holder's credit right after the passage", async () => {
+    renderCard({
+      reader_access: "excerpt",
+      source_url: "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_20061888_libertas.html",
+      source_credit: "© Dicastery for Communication – Libreria Editrice Vaticana",
+    });
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.getByText("© Dicastery for Communication – Libreria Editrice Vaticana")).toBeTruthy();
+  });
+
+  it("shows no credit for a full document, even if one is sent", async () => {
+    renderCard({ reader_access: "full", source_url: null, source_credit: "should not show" });
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.queryByText("should not show")).toBeNull();
+  });
+
   it("keeps Open in Context for a full document", async () => {
     renderCard({ reader_access: "full", source_url: null });
     await userEvent.click(screen.getByRole("button", { expanded: false }));
