@@ -43,8 +43,11 @@ def source_url(collection: str, metadata: dict | None) -> str | None:
 
 # The rights holders' credit lines, shown right after an excerpt-only passage. The
 # Catechism notice is the exact wording the USCCB requires on any use of its text
-# ("Use of the Catechism of the Catholic Church", usccb.org); the LEV line follows the
-# footer of vatican.va, where the papal and Vatican II texts come from.
+# ("Use of the Catechism of the Catholic Church", usccb.org). It belongs to the
+# Catechism of the Catholic Church only, not to every document in the collection (a
+# Compendium from vatican.va would carry the LEV line). LEV holds the rights to the
+# papal and Vatican II texts taken from vatican.va, whose footer names the Dicastery.
+CATECHISM_TITLE = "Catechism of the Catholic Church"
 CATECHISM_NOTICE = (
     "Excerpts from the English translation of the Catechism of the Catholic Church for "
     "use in the United States of America Copyright \u00a9 1994, United States Catholic "
@@ -56,9 +59,9 @@ CATECHISM_NOTICE = (
 VATICAN_CREDIT = "\u00a9 Dicastery for Communication \u2013 Libreria Editrice Vaticana"
 
 
-def source_credit(collection: str, url: str | None) -> str | None:
+def source_credit(collection: str, url: str | None, title: str | None = None) -> str | None:
     """The credit line owed to a document's rights holder, or None if none is known."""
-    if collection == "catechism":
+    if collection == "catechism" and title == CATECHISM_TITLE:
         return CATECHISM_NOTICE
     host = urlparse(url).hostname if url else None
     if host and (host == "vatican.va" or host.endswith(".vatican.va")):
@@ -76,7 +79,8 @@ class DocumentAccess:
 FULL_ACCESS = DocumentAccess("full", None)
 
 _ACCESS_SQL = """
-    SELECT id, collection, metadata, reader_access FROM documents WHERE id = ANY($1::uuid[])
+    SELECT id, collection, title, metadata, reader_access FROM documents
+    WHERE id = ANY($1::uuid[])
 """
 
 
@@ -97,7 +101,7 @@ async def document_access(conn, document_ids) -> dict[str, DocumentAccess]:
             continue
         url = source_url(r["collection"], r["metadata"])
         access[str(r["id"])] = DocumentAccess(
-            "excerpt", url, source_credit(r["collection"], url))
+            "excerpt", url, source_credit(r["collection"], url, r.get("title")))
     return access
 
 

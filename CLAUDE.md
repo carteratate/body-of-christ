@@ -159,9 +159,14 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   edited by hand: `reader_writer.write_document` sets it on every publish, and
   `datapipeline/reader_access.py --apply` re-syncs all live documents after an inventory
   change (the unblock path). API side is `app/reader_access.py`: passage sources carry
-  `reader_access` and `source_url`, reading progress is neither written nor listed for an
-  excerpt document, and `/sources` reads the column fresh past its 1h cache. The API
-  treats a database without 0041 as all `full`.
+  `reader_access`, `source_url` and `source_credit`, reading progress is neither written
+  nor listed for an excerpt document, and `/sources` reads the column fresh past its 1h
+  cache. The API treats a database without 0041 as all `full`.
+  `source_credit` is the rights holder's line, shown directly after an excerpt passage and
+  included when it is copied: the USCCB's required notice, verbatim, for the Catechism of
+  the Catholic Church (whose `source_url` is the USCCB's online edition), the LEV line for
+  a vatican.va source, and null otherwise. The USCCB requires its notice on any use, so an
+  unblocked Catechism must keep it and show it in the reader.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have

@@ -680,6 +680,21 @@ describe("ChunkCard excerpt-only documents (issue #265)", () => {
     expect(screen.getByText("© Dicastery for Communication – Libreria Editrice Vaticana")).toBeTruthy();
   });
 
+  it("copies the credit with an excerpt passage", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    renderCard({
+      reader_access: "excerpt",
+      source_url: "https://www.vatican.va/x.html",
+      source_credit: "© Dicastery for Communication – Libreria Editrice Vaticana",
+    });
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+    const copied = writeText.mock.calls[0][0] as string;
+    expect(copied).toContain("Liberty, the highest of natural endowments");
+    expect(copied.endsWith("© Dicastery for Communication – Libreria Editrice Vaticana")).toBe(true);
+  });
+
   it("shows no credit for a full document, even if one is sent", async () => {
     renderCard({ reader_access: "full", source_url: null, source_credit: "should not show" });
     await userEvent.click(screen.getByRole("button", { expanded: false }));

@@ -68,7 +68,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
-    const text = `${stripVerseMarkers(content)} — ${displayReference} (${collection})`;
+    const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
+    const text = `${stripVerseMarkers(content)} — ${displayReference} (${collection})${credited}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text)
         .then(() => showToast("Copied"))

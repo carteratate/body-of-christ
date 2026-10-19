@@ -172,7 +172,10 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
     // The role goes in the citation, not the body: the body is the passage as written,
     // and the clipboard is the one place this text leaves the app entirely.
     const cited = role ? `${citation}, ${role}` : citation;
-    const text = `${stripVerseMarkers(content)} — ${cited} (${collection})`;
+    // The rights holder's credit travels with the text (the USCCB requires it after
+    // any Catechism excerpt).
+    const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
+    const text = `${stripVerseMarkers(content)} — ${cited} (${collection})${credited}`;
     navigator.clipboard.writeText(text)
       .then(() => showToast("Copied"))
       .catch(() => showToast("Copy failed", "error"));

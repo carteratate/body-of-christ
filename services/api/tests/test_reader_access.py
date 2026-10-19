@@ -111,10 +111,19 @@ def test_the_catechism_and_canon_law_link_to_the_official_edition():
 
 
 def test_each_rights_holder_gets_its_credit_line():
-    notice = reader_access.source_credit("catechism", None)
+    notice = reader_access.source_credit("catechism", None, "Catechism of the Catholic Church")
     # The USCCB's required notice, verbatim, for any use of the Catechism.
-    assert notice.startswith("Excerpts from the English translation of the Catechism")
-    assert "Used with Permission." in notice
+    assert notice == (
+        "Excerpts from the English translation of the Catechism of the Catholic Church for "
+        "use in the United States of America Copyright © 1994, United States Catholic "
+        "Conference, Inc. -- Libreria Editrice Vaticana. Used with Permission. English "
+        "translation of the Catechism of the Catholic Church: Modifications from the Editio "
+        "Typica copyright © 1997, United States Conference of Catholic Bishops—Libreria "
+        "Editrice Vaticana.")
+    # Another document in the collection does not inherit the USCCB's notice.
+    assert reader_access.source_credit(
+        "catechism", "https://www.vatican.va/x.html", "Compendium of the Catechism") == \
+        reader_access.VATICAN_CREDIT
     assert reader_access.source_credit("encyclicals", "https://www.vatican.va/x.html") == \
         reader_access.VATICAN_CREDIT
     assert reader_access.source_credit("encyclicals", "http://www.vatican.va/x.html") == \
@@ -140,7 +149,8 @@ def test_document_access_maps_each_id_and_tolerates_a_missing_column():
     excerpt = uuid.UUID(DOC)
     pool = AsyncMock()
     pool.fetch.return_value = [
-        {"id": excerpt, "collection": "catechism", "metadata": None, "reader_access": "excerpt"},
+        {"id": excerpt, "collection": "catechism", "title": "Catechism of the Catholic Church",
+         "metadata": None, "reader_access": "excerpt"},
     ]
     access = asyncio.run(reader_access.document_access(pool, [DOC, None, DOC]))
     assert access[DOC].reader_access == "excerpt"
