@@ -361,14 +361,16 @@ describe("Sidebar mobile accessibility", () => {
     expect(document.getElementById("sidebar-recent-searches")).toBeNull();
   });
 
-  it("keeps Search History active while a restored result is shown", async () => {
+  // `?restore=` now names every saved search on /search, live or restored, so it
+  // no longer means "came from History" (#270).
+  it("does not mark Search History active on a search page", async () => {
     mockMatchMedia(false);
     navigationState.params = "restore=11111111-1111-4111-8111-111111111111";
     vi.mocked(useAppContext).mockReturnValue({ newSearch: vi.fn(), token: "token" } as unknown as ReturnType<typeof useAppContext>);
 
     render(<Sidebar isMobileOpen={false} onCloseMobile={vi.fn()} />);
 
-    expect((await screen.findByRole("link", { name: "Search History" })).className).toContain("text-brand-accent");
+    expect((await screen.findByRole("link", { name: "Search History" })).className).not.toContain("text-brand-accent");
   });
 
   it("removes the closed offscreen drawer from keyboard and accessibility navigation", async () => {

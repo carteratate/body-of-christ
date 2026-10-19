@@ -214,6 +214,38 @@ describe("HistoryPage rows", () => {
   });
 });
 
+describe("HistoryPage and searches that finish while it is open", () => {
+  it("adds a search the shell loaded after this page opened, marked Current", async () => {
+    shell.value = context({ searches: page(["s1", "s2"]).searches, searchHistoryLoadedAt: Date.now() });
+    const view = render(<HistoryPage />);
+    await screen.findByRole("link", { name: "query s1" });
+    expect(screen.queryByRole("link", { name: "query s0" })).toBeNull();
+
+    shell.value = context({
+      searches: page(["s0", "s1", "s2"]).searches,
+      searchHistoryLoadedAt: Date.now() + 1,
+      activeSearchId: "s0",
+    });
+    view.rerender(<HistoryPage />);
+
+    expect(row("s0").getAttribute("aria-current")).toBe("true");
+    expect(screen.getAllByRole("link", { name: /^query s/ }).map((link) => link.textContent?.slice(0, 8)))
+      .toEqual(["query s0", "query s1", "query s2"]);
+  });
+
+  it("leaves a filtered list alone when the shell reloads", async () => {
+    api.getSearchHistoryPage.mockResolvedValue(page(["s2"]));
+    shell.value = context({ searches: page(["s1", "s2"]).searches, searchHistoryLoadedAt: Date.now() });
+    const view = render(<HistoryPage />);
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "s2" } });
+    await waitFor(() => expect(screen.queryByRole("link", { name: "query s1" })).toBeNull());
+
+    shell.value = context({ searches: page(["s0", "s1", "s2"]).searches, searchHistoryLoadedAt: Date.now() + 1 });
+    view.rerender(<HistoryPage />);
+    expect(screen.queryByRole("link", { name: "query s0" })).toBeNull();
+  });
+});
+
 describe("HistoryPage restore prefetch", () => {
   async function renderSeeded(searches: SearchSummaryV2[], overrides: Record<string, unknown> = {}) {
     api.getSearchHistoryPage.mockResolvedValue({ searches, next_cursor: null });

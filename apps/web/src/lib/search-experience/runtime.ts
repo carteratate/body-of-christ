@@ -416,7 +416,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       };
       emit(next);
       if (ports.audience.kind === "authenticated" && searchId && ports.pendingHistory) {
-        bestEffort(() => ports.pendingHistory!.activate(searchId));
         bestEffort(() => ports.pendingHistory!.refresh());
       }
       recordGuestCompletion(ownedRun, resultCount);
@@ -474,6 +473,29 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       failSearch(ownedRun, failure);
     },
   });
+
+  /**
+   * Once a completed run's stream has ended, an explanation that never arrived
+   * (the server skipped or failed it, or the connection dropped after done)
+   * never will. Show it as absent: null means "still streaming", and a held
+   * runtime would otherwise keep that skeleton on screen indefinitely.
+   */
+  const settleExplanations = (ownedRun: ActiveRun) => {
+    if (!isCurrent(ownedRun.id) || !ownedRun.terminal) return;
+    for (const passage of ownedRun.bufferedPassages) {
+      ownedRun.bufferedExplanations[passage.chunk_id] ??= "";
+    }
+    if (!ownedRun.revealed || snapshot.status !== "active-search") return;
+    const current = snapshot;
+    if (!current.passages.some((passage) => passage.explanation === null)) return;
+    const next: ActiveSearchSnapshot = {
+      ...current,
+      passages: Object.freeze(current.passages.map((passage) =>
+        passage.explanation === null ? freezePassage({ ...passage, explanation: "" }) : passage)),
+    };
+    emit(next);
+    saveGuestContinuity(next);
+  };
 
   const resetToIdle = () => {
     abortCurrent();
@@ -540,6 +562,7 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     const callbacks = transportCallbacks(ownedRun);
     const audience = ports.audience;
     const rejectSearch = (error: unknown) => {
+      settleExplanations(ownedRun);
       if (!isCurrent(ownedRun.id) || ownedRun.controller.signal.aborted || ownedRun.terminal) return;
       const message = error instanceof Error ? error.message : "Search failed";
       callbacks.onError(message, classifySearchErrorCode(message), "connection");
@@ -555,16 +578,26 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
           return audience.search(credential, request, callbacks, ownedRun.controller.signal);
         })
         : (() => audience.search(request, callbacks, ownedRun.controller.signal));
-      void Promise.resolve(search()).catch(rejectSearch);
+      void Promise.resolve(search()).then(() => settleExplanations(ownedRun), rejectSearch);
     } catch (error: unknown) {
       rejectSearch(error);
     }
   };
 
   const startRestore = (searchIdInput: string, retrying = false) => {
-    const searchId = searchIdInput.trim();
+    // Saved-search ids are UUIDs, which the API returns in lower case; match
+    // that so a hand-typed upper-case id is not restored twice.
+    const searchId = searchIdInput.trim().toLowerCase();
     if (!searchId || ports.audience.kind !== "authenticated" || !ports.savedSearch) return;
-    if (!retrying && run?.restoreId === searchId) return;
+    // A failed restore is not "held": a route asking for that id again (the reader
+    // clicking it in History once more) gets a fresh attempt.
+    if (!retrying && run?.restoreId === searchId && snapshot.status !== "failure") return;
+    // The route names the search this runtime already holds (the page writes
+    // `?restore=` once a live search is saved): adopt it rather than abort the
+    // run, whose explanations may still be streaming.
+    if (!retrying && snapshot.status === "active-search"
+      && snapshot.transport.status === "complete"
+      && snapshot.transport.searchId === searchId) return;
     clearPreparedPending();
     const ownedRun = nextRun(null, searchId, null);
     emit({
@@ -641,9 +674,6 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
         historicalOutcomeUnknown: result.historicalOutcomeUnknown ?? false,
         canRetry: false,
       });
-      if (ports.pendingHistory) {
-        bestEffort(() => ports.pendingHistory!.activate(result.searchId));
-      }
     }).catch((error: unknown) => {
       failRestoration(error);
     });
@@ -688,6 +718,35 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
     emit({ ...current, presentation: { status: "revealed", filtersReady: true } });
   };
 
+  /**
+   * A page rendering this runtime again (it outlives the page, which unmounts on
+   * every trip to the reader) mounts a fresh LoadingAnimation that replays from
+   * its start. Reveal results that are already ready instead of replaying, and
+   * rewind an unfinished animation so its milestones can arrive again.
+   */
+  const resumePresentation = () => {
+    if (snapshot.status !== "active-search" || !run || !isCurrent(snapshot.runId)) return;
+    const current = snapshot;
+    const presentation = current.presentation;
+    if (presentation.status === "revealed") return;
+    if (presentation.status === "fading" || presentation.resultsReady) {
+      run.revealed = true;
+      const next: ActiveSearchSnapshot = {
+        ...current,
+        passages: exposeBufferedPassages(run),
+        presentation: { status: "revealed", filtersReady: true },
+      };
+      emit(next);
+      saveGuestContinuity(next);
+      return;
+    }
+    if (!presentation.filtersReady) return;
+    emit({
+      ...current,
+      presentation: { status: "animating", filtersReady: false, resultsReady: false },
+    });
+  };
+
   const queuedCommands: SearchExperienceCommand[] = [];
   let dispatching = false;
 
@@ -705,6 +764,11 @@ export function createSearchExperience(ports: SearchExperiencePorts): SearchExpe
       case "restore": startRestore(command.searchId); break;
       case "retry": retry(); break;
       case "animation": animation(command); break;
+      case "resume-presentation": resumePresentation(); break;
+      // The page left but the runtime stays (AppShell holds it). An unused "New
+      // Search" placeholder would otherwise sit in History as a fake In progress
+      // row; the page prepares a fresh one when it mounts again.
+      case "detach-page": if (!run) clearPreparedPending(); break;
       case "dismiss-rate-limit": {
         if (snapshot.status === "failure" && snapshot.failure.rateLimit?.open) {
           const rateLimit = Object.freeze({ ...snapshot.failure.rateLimit, open: false });

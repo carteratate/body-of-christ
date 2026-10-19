@@ -112,3 +112,32 @@ export function searchExperienceView(snapshot: SearchExperienceSnapshot): Search
     rateLimit,
   };
 }
+
+/**
+ * The saved search this runtime is showing: a live search that completed and
+ * was saved, or a restored one. Search History marks it "Current". Null while a
+ * search is in flight (History lists it under In progress), restoring, failed,
+ * unsaved, or when the page is empty.
+ */
+export function currentSearchId(snapshot: SearchExperienceSnapshot): string | null {
+  if (snapshot.status === "restored-passages") return snapshot.searchId;
+  if (snapshot.status === "active-search"
+    && snapshot.transport.status === "complete"
+    && snapshot.transport.persisted) {
+    return snapshot.transport.searchId;
+  }
+  return null;
+}
+
+/**
+ * The search `/search?restore=` should name, so Back, reload and History all
+ * return to what the page holds. Unlike `currentSearchId`, a restore that is
+ * loading or failed keeps its id in the URL, so a reload or retry still has it.
+ */
+export function routeSearchId(snapshot: SearchExperienceSnapshot): string | null {
+  if (snapshot.status === "restoring") return snapshot.searchId;
+  if (snapshot.status === "failure") {
+    return snapshot.failure.kind === "restore" ? snapshot.restoreId : null;
+  }
+  return currentSearchId(snapshot);
+}

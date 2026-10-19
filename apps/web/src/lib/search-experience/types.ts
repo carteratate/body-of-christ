@@ -139,6 +139,10 @@ export type SearchExperienceCommand =
   | { readonly type: "restore"; readonly searchId: string }
   | { readonly type: "retry" }
   | { readonly type: "animation"; readonly runId: number; readonly milestone: AnimationMilestone }
+  /** A page is rendering this runtime again after unmounting; see runtime.ts. */
+  | { readonly type: "resume-presentation" }
+  /** The page rendering this held runtime unmounted; see runtime.ts. */
+  | { readonly type: "detach-page" }
   | { readonly type: "dismiss-rate-limit" }
   | { readonly type: "guest-visible-collections-changed"; readonly collections: readonly string[] }
   | { readonly type: "cancel" }
@@ -231,7 +235,6 @@ export interface AuthenticatedSearchExperiencePorts extends SharedSearchExperien
   readonly pendingHistory?: {
     readonly begin: (entryId: string, query: string) => void | Promise<void>;
     readonly clear: (entryId: string) => void | Promise<void>;
-    readonly activate: (searchId: string) => void | Promise<void>;
     readonly refresh: () => void | Promise<void>;
   };
   readonly ids?: { readonly pendingEntry: () => string };

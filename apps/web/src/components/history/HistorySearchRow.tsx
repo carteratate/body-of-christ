@@ -191,7 +191,7 @@ export function HistorySearchRow({
               {active && (
                 <>
                   <span className="size-1.5 shrink-0 rounded-full bg-brand-accent" aria-hidden="true" />
-                  <span className="text-brand-primary/80">Current</span>
+                  <span className="text-brand-primary/80" title="Open on the search page">Current</span>
                   <span aria-hidden="true">·</span>
                 </>
               )}

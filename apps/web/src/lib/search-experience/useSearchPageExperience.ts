@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import {
   SearchRestoreHttpError,
@@ -25,10 +25,11 @@ import type {
   AuthenticatedSearchExperiencePorts,
   GuestContinuitySnapshot,
   Passage,
+  SearchExperience,
   SearchTransportCallbacks,
 } from "./types";
 import { useSearchExperience } from "./useSearchExperience";
-import { searchExperienceView } from "./view";
+import { currentSearchId, searchExperienceView } from "./view";
 
 const GUEST_CONTINUITY_KEY = "theocorpus-guest-current-results";
 const GUEST_CONTINUITY_MAX_AGE_MS = 2 * 60 * 60 * 1000;
@@ -204,14 +205,14 @@ interface GuestGate {
 interface PagePendingHistory {
   readonly showPending: (entryId: string, query: string) => void;
   readonly clearPending: (entryId: string) => void;
-  readonly activate: (searchId: string | null) => void;
+  /** Receives `currentSearchId` (view.ts) whenever it changes. */
+  readonly showCurrent: (searchId: string | null) => void;
   readonly refresh: () => void;
 }
 
 interface SearchPageViewSynchronization {
   readonly setVisibleCollections: (collections: string[]) => void;
   readonly clearDraft: () => void;
-  readonly deactivateHistory: () => void;
 }
 
 interface SearchPageExperienceOptions {
@@ -226,9 +227,44 @@ interface SearchPageExperienceOptions {
   readonly pendingHistory: PagePendingHistory;
   readonly viewSynchronization: SearchPageViewSynchronization;
   readonly onFirstGuestSearchWithPassages: () => void;
+  /**
+   * Where AppShell keeps the authenticated runtime between visits to the search
+   * page. Without one (guests, isolated tests) the runtime lives and dies with
+   * the page.
+   */
+  readonly slot?: SearchExperienceSlot | null;
 }
 
-function createSearchPageExperience(options: SearchPageExperienceOptions) {
+export interface SearchPageExperienceBinding {
+  readonly experience: SearchExperience;
+  readonly read: () => SearchPageExperienceOptions;
+  readonly update: (next: SearchPageExperienceOptions) => void;
+  /** The result filter the reader chose for a run, kept so a page returning to
+   *  that run shows the same filter. */
+  visible: { readonly runId: number; readonly collections: readonly string[] } | null;
+}
+
+/** AppShell's holder for the signed-in search runtime; see `slot` above. */
+export interface SearchExperienceSlot {
+  current: SearchPageExperienceBinding | null;
+  /** AppShell's live token. The runtime outlives the page whose options it
+   *  holds, so it must not read a token captured by that page's last render. */
+  token: string | null;
+}
+
+/** Reset the held runtime for New Search, if a search page has created one. */
+export function resetSearchExperienceSlot(slot: SearchExperienceSlot) {
+  slot.current?.experience.send({ type: "reset" });
+}
+
+/** End the held runtime: on sign-out or when AppShell unmounts. */
+export function disposeSearchExperienceSlot(slot: SearchExperienceSlot) {
+  const binding = slot.current;
+  slot.current = null;
+  binding?.experience.send({ type: "dispose" });
+}
+
+function createSearchPageExperience(options: SearchPageExperienceOptions): SearchPageExperienceBinding {
   let current = options;
   const experience = (() => {
     if (options.isGuest) {
@@ -278,7 +314,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
           signal,
         ),
       },
-      credentials: { current: () => current.token },
+      credentials: { current: () => current.slot?.token ?? current.token },
       savedSearch: {
         async restore(credential, searchId, signal) {
           const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -326,7 +362,11 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
               translation,
               quota,
             },
-            passages: data.results,
+            // A null explanation in a saved search is one the stream never reached
+            // (the page left before it was written). The card reads null as "still
+            // streaming", so hide it instead of showing a skeleton that never fills.
+            passages: data.results.map((passage) =>
+              passage.explanation === null ? { ...passage, explanation: "" } : passage),
             warning: data.restore_status === "results_unavailable"
               ? `This saved search originally had ${data.expected_result_count} Passages, but only ${data.results.length} remain available.`
               : null,
@@ -346,9 +386,6 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
         clear(entryId) {
           current.pendingHistory.clearPending(entryId);
         },
-        activate(searchId) {
-          current.pendingHistory.activate(searchId);
-        },
         refresh: () => current.pendingHistory.refresh(),
       },
       ids: { pendingEntry: () => crypto.randomUUID() },
@@ -356,19 +393,45 @@ function createSearchPageExperience(options: SearchPageExperienceOptions) {
     });
   })();
 
+  if (!options.isGuest) {
+    // History's "Current" marker is derived from the snapshot, never set by hand,
+    // so it always names the search the page would show on return.
+    let shown: string | null = null;
+    experience.subscribe(() => {
+      const next = currentSearchId(experience.read());
+      if (next === shown) return;
+      shown = next;
+      current.pendingHistory.showCurrent(next);
+    });
+  }
+
   return {
     experience,
     read: () => current,
     update(next: SearchPageExperienceOptions) { current = next; },
+    visible: null,
   };
 }
 
 export function useSearchPageExperience(options: SearchPageExperienceOptions) {
-  const [binding] = useState(() => createSearchPageExperience(options));
+  const slot = options.isGuest ? null : options.slot ?? null;
+  const [pageBinding] = useState(() => (slot ? null : createSearchPageExperience(options)));
+  // Read the slot on every render rather than once: if its runtime was disposed
+  // and replaced (AppShell remounting under Fast Refresh), bind to the new one.
+  const binding = pageBinding ?? (slot!.current ??= createSearchPageExperience(options));
   useLayoutEffect(() => { binding.update(options); }, [binding, options]);
 
-  const snapshot = useSearchExperience(binding.experience);
+  const snapshot = useSearchExperience(binding.experience, { disposeOnRelease: !slot });
   const view = searchExperienceView(snapshot);
+  // A held runtime may be mid-animation from an earlier visit; this page's
+  // LoadingAnimation starts over, so let the runtime catch it up first.
+  useLayoutEffect(() => {
+    binding.experience.send({ type: "resume-presentation" });
+  }, [binding]);
+  useEffect(() => {
+    if (!slot) return;
+    return () => binding.experience.send({ type: "detach-page" });
+  }, [binding, slot]);
   useLayoutEffect(() => {
     if (options.isGuest) return;
     binding.experience.send({ type: "identity-changed", userId: options.userId });
@@ -379,23 +442,29 @@ export function useSearchPageExperience(options: SearchPageExperienceOptions) {
   );
   useLayoutEffect(() => {
     const synchronization = binding.read().viewSynchronization;
+    // A run the reader already filtered (before leaving the page) keeps that filter.
+    const visibleFor = (runId: number, collections: readonly string[]) =>
+      [...(binding.visible?.runId === runId ? binding.visible.collections : collections)];
     if (view.active && synchronizedRun.current !== view.active.runId) {
       synchronizedRun.current = view.active.runId;
-      synchronization.setVisibleCollections([...view.active.request.collections]);
+      synchronization.setVisibleCollections(visibleFor(view.active.runId, view.active.request.collections));
       return;
     }
     if (options.isGuest) return;
     if (view.restored && synchronizedRun.current !== view.restored.runId) {
       synchronizedRun.current = view.restored.runId;
-      synchronization.setVisibleCollections([...view.restored.request.collections]);
+      synchronization.setVisibleCollections(visibleFor(view.restored.runId, view.restored.request.collections));
       return;
     }
     if (view.restoring || view.failure?.failure.kind === "restore") {
       synchronization.setVisibleCollections([]);
-      synchronization.deactivateHistory();
       if (view.restoring) synchronization.clearDraft();
     }
   }, [binding, options.isGuest, snapshot.runId, view.active, view.failure?.failure.kind, view.restored, view.restoring]);
 
-  return { experience: binding.experience, snapshot, view };
+  const rememberVisibleCollections = useCallback((collections: readonly string[]) => {
+    binding.visible = { runId: binding.experience.read().runId, collections: [...collections] };
+  }, [binding]);
+
+  return { experience: binding.experience, snapshot, view, rememberVisibleCollections };
 }

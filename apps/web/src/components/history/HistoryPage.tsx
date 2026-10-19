@@ -99,6 +99,23 @@ export function HistoryPage() {
     return () => { alive = false; };
   }, [signedIn, appliedQuery, reloadKey]);
 
+  // A search can now finish while this page is open (it keeps running after the
+  // search page unmounts). AppShell reloads its first page when one does; add
+  // the rows that are new to this list, so the finished search and its Current
+  // marker appear without a revisit. Older pages loaded here are kept.
+  const lastShellLoadRef = useRef(searchHistoryLoadedAt);
+  useEffect(() => {
+    if (!searchHistoryLoadedAt || searchHistoryLoadedAt === lastShellLoadRef.current) return;
+    lastShellLoadRef.current = searchHistoryLoadedAt;
+    if (appliedQueryRef.current || shownQueryRef.current !== "") return;
+    setSearches((current) => {
+      const known = new Set(current.map((search) => search.id));
+      const fresh = shellSearches.filter((search) =>
+        !known.has(search.id) && !deletedIdsRef.current.has(search.id));
+      return fresh.length > 0 ? [...fresh, ...current] : current;
+    });
+  }, [searchHistoryLoadedAt, shellSearches]);
+
   useEffect(() => {
     if (!revealedId) return;
     function closeOutside(event: PointerEvent) {

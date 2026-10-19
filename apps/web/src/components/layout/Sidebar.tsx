@@ -118,7 +118,6 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
     { href: "/bookmarks", label: "Saved Passages", icon: <Bookmark size={17} /> },
     { href: "/history", label: "Search History", icon: <History size={17} /> },
   ];
-  const isRestoredSearch = pathname === "/search" && searchParams.has("restore");
 
   return (
     <>
@@ -161,7 +160,6 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
                 active={
                   pathname === item.href
                   || (item.href === "/sources" && pathname.startsWith("/reader/"))
-                  || (item.href === "/history" && isRestoredSearch)
                 }
                 onClick={handleNavClick}
                 prefetch={guestGate ? false : undefined}
