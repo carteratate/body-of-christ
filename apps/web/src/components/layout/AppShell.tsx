@@ -10,6 +10,11 @@ import { clearFeedbackContext } from "@/lib/feedbackContext";
 import { MobileTopBar } from "./MobileTopBar";
 import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
 import { PageErrorState, PageLoadingState } from "@/components/common/PageStates";
+import {
+  disposeSearchExperienceSlot,
+  resetSearchExperienceSlot,
+  type SearchExperienceSlot,
+} from "@/lib/search-experience/useSearchPageExperience";
 
 const Sidebar = dynamic(
   () => import("./Sidebar").then((m) => ({ default: m.Sidebar })),
@@ -37,8 +42,13 @@ export interface AppContextValue {
   pendingSearch: { id: string; query: string } | null;
   setPendingSearch: (id: string, query: string) => void;
   clearPendingSearch: (expectedId?: string) => void;
+  /** The saved search the search page holds (History's "Current"). Derived from
+   *  the search runtime's snapshot by `currentSearchId`; only that sets it. */
   activeSearchId: string | null;
   setActiveSearchId: (id: string | null) => void;
+  /** Holds the signed-in search runtime so a search outlives trips away from
+   *  /search (the reader, History). Absent outside AppShell. */
+  searchExperienceSlot?: SearchExperienceSlot | null;
   searchKey: number;
   newSearch: () => void;
   // Source corpus — fetched once on login, cached for the session
@@ -119,6 +129,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [pendingSearch, setPendingSearchState] = useState<{ id: string; query: string } | null>(null);
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState(0);
+  const searchExperienceSlot = useRef<SearchExperienceSlot>({ current: null, token: null }).current;
+  useEffect(() => { searchExperienceSlot.token = token; }, [searchExperienceSlot, token]);
+  useEffect(() => () => disposeSearchExperienceSlot(searchExperienceSlot), [searchExperienceSlot]);
   const [ready, setReady] = useState(false);
   const [authResolutionError, setAuthResolutionError] = useState(false);
   const [sources, setSources] = useState<SourceDocument[]>([]);
@@ -145,9 +158,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setMobileNavOpen(true);
   }, []);
 
+
   function newSearch() {
     setSearchKey((k) => k + 1);
-    setActiveSearchId(null);
+    resetSearchExperienceSlot(searchExperienceSlot);
   }
 
   const reloadSources = useCallback((tok?: string) => {
@@ -189,9 +203,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Reads the token at call time: the held search runtime keeps this callback
+  // past the search page's unmount and calls it when a search finishes, possibly
+  // after Supabase has rotated the token.
   const refreshSearches = useCallback(() => {
-    if (token) void loadSearchHistory(token);
-  }, [loadSearchHistory, token]);
+    // The slot's token is set in an effect, so fall back to this render's on the
+    // commit that first provides one.
+    const current = searchExperienceSlot.token ?? token;
+    if (current) void loadSearchHistory(current);
+  }, [loadSearchHistory, searchExperienceSlot, token]);
 
   const removeSearch = useCallback((id: string) => {
     searchHistoryRequestGeneration.current += 1;
@@ -461,6 +481,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         setSearchHistoryCursor(null);
         setSearchHistoryLoadedAt(null);
         setPendingSearchState(null);
+        disposeSearchExperienceSlot(searchExperienceSlot);
         setActiveSearchId(null);
         setSources([]);
         setSourcesLoading(false);
@@ -490,7 +511,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       guestTransferPromiseRef.current = null;
       subscription.unsubscribe();
     };
-  }, [loadSearchHistory, transferGuestActivity]);
+  }, [loadSearchHistory, searchExperienceSlot, transferGuestActivity]);
 
   useEffect(() => {
     const theme = preferences?.theme;
@@ -513,7 +534,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       token, userId, ready, preferences, setPreferences, preferencesError,
       searches, searchHistoryCursor, searchHistoryLoadedAt, refreshSearches, removeSearch, restoreSearch,
       pendingSearch, setPendingSearch, clearPendingSearch,
-      activeSearchId, setActiveSearchId,
+      activeSearchId, setActiveSearchId, searchExperienceSlot,
       searchKey, newSearch,
       sources, sourcesLoading, sourcesReady, sourcesError, reloadSources,
       corpusPassages: sources.length > 0 ? sources.reduce((sum, s) => sum + s.chunk_count, 0) : null,

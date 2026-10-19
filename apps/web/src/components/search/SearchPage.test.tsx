@@ -7,12 +7,18 @@ import { SearchPage } from "./SearchPage";
 import { SearchRestoreHttpError, type ChunkResult, type SearchStreamCallbacks } from "@/lib/api";
 import { __resetClientCachesForTests } from "@/lib/client-cache";
 import { prefetchSavedSearchResults } from "@/lib/saved-search-cache";
+import {
+  disposeSearchExperienceSlot,
+  resetSearchExperienceSlot,
+  type SearchExperienceSlot,
+} from "@/lib/search-experience/useSearchPageExperience";
 
 const testState = vi.hoisted(() => ({
   params: "restore=11111111-1111-4111-8111-111111111111",
   token: "token" as string | null,
   userId: "user-a" as string | null,
   searchKey: 0,
+  slot: null as SearchExperienceSlot | null,
   preferences: {
     default_collections: ["bible"],
     preferred_translation: "CPDV",
@@ -88,6 +94,7 @@ vi.mock("@/components/layout/AppShell", () => ({
     setPendingSearch: appMocks.setPendingSearch,
     clearPendingSearch: appMocks.clearPendingSearch,
     refreshSearches: appMocks.refreshSearches,
+    searchExperienceSlot: testState.slot,
   }),
 }));
 
@@ -162,7 +169,11 @@ vi.mock("./SearchResults", () => ({
       {loading && isRestoring ? "Restoring" : "Restored results"}
       {results
         .filter((passage) => visibleCollections.includes(passage.source.collection))
-        .map((passage) => <div key={passage.content}>{passage.content} — {passage.explanation}</div>)}
+        .map((passage) => (
+          <div key={passage.content} data-explanation={passage.explanation ?? "streaming"}>
+            {passage.content} — {passage.explanation}
+          </div>
+        ))}
     </div>
   ),
 }));
@@ -211,6 +222,10 @@ const streamedPassage: ChunkResult = {
 
 afterEach(() => {
   cleanup();
+  if (testState.slot) disposeSearchExperienceSlot(testState.slot);
+  testState.slot = null;
+  vi.restoreAllMocks();
+  window.history.replaceState(null, "", "/");
   vi.clearAllMocks();
   __resetClientCachesForTests();
   apiMocks.getSearchResults.mockReset();
@@ -819,6 +834,159 @@ describe("SearchPage animation-gated stream reveal", () => {
     expect(appMocks.clearPendingSearch.mock.invocationCallOrder[0])
       .toBeLessThan(appMocks.refreshSearches.mock.invocationCallOrder[0]);
     await waitFor(() => expect(appMocks.setActiveSearchId).toHaveBeenCalledWith("persisted-search"));
+  });
+
+  it("names the saved live search in the URL without a router sync", async () => {
+    // Next marks its own entries with __NA; a write that keeps it is one Next's
+    // patched replaceState passes through without dispatching a router restore.
+    window.history.replaceState({ __NA: true, tree: "search-tree" }, "", "/search?restore=11111111-1111-4111-8111-111111111111");
+    apiMocks.getSearchResults.mockResolvedValue(restored("Older search"));
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+    });
+    render(<SearchPage />);
+    await screen.findByText("Older search");
+    expect(window.location.search).toBe("?restore=11111111-1111-4111-8111-111111111111");
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    expect(window.location.search).toBe("");
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+
+    act(() => streamCallbacks.onDone("persisted-search", 0, "no_candidates", {}, true));
+    expect(window.location.pathname + window.location.search).toBe("/search?restore=persisted-search");
+    expect(window.history.state).toEqual({ __NA: true, tree: "search-tree" });
+  });
+
+  it("leaves the previous entry's search in its URL when New Search resets", async () => {
+    testState.params = "";
+    testState.slot = { current: null, token: null };
+    window.history.replaceState(null, "", "/search");
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      callbacks.onDone("persisted-search", 0, "no_candidates", {}, true);
+    });
+    const view = render(<SearchPage />);
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(window.location.search).toBe("?restore=persisted-search"));
+
+    // AppShell.newSearch resets the runtime before the sidebar's push to bare
+    // /search lands; that push makes the new entry, so this one must keep its id.
+    act(() => resetSearchExperienceSlot(testState.slot!));
+    testState.searchKey += 1;
+    view.rerender(<SearchPage />);
+    expect(window.location.search).toBe("?restore=persisted-search");
+    expect(screen.getByText("Empty search")).toBeTruthy();
+  });
+
+  it("keeps a held restored search when the page is reached at bare /search", async () => {
+    testState.slot = { current: null, token: null };
+    window.history.replaceState(null, "", "/search?restore=11111111-1111-4111-8111-111111111111");
+    apiMocks.getSearchResults.mockResolvedValue(restored("Restored query"));
+    const first = render(<SearchPage />);
+    await screen.findByText("Restored query");
+    first.unmount();
+
+    // The reader's fallback, a Bookmarks link and the not-found page all push bare /search.
+    testState.params = "";
+    window.history.replaceState(null, "", "/search");
+    render(<SearchPage />);
+    expect(await screen.findByText("Restored query")).toBeTruthy();
+    expect(window.location.search).toBe("?restore=11111111-1111-4111-8111-111111111111");
+    expect(apiMocks.getSearchResults).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the reader's result filter when returning to a held search", async () => {
+    testState.slot = { current: null, token: null };
+    window.history.replaceState(null, "", "/search?restore=11111111-1111-4111-8111-111111111111");
+    apiMocks.getSearchResults.mockResolvedValue(restored("Restored query"));
+    const first = render(<SearchPage />);
+    await screen.findByText("Restored query");
+    expect(screen.getByTestId("search-results").getAttribute("data-visible-collections")).toBe("bible");
+    fireEvent.click(screen.getByRole("button", { name: "Toggle Bible visibility" }));
+    expect(screen.getByTestId("search-results").getAttribute("data-visible-collections")).toBe("");
+    first.unmount();
+
+    render(<SearchPage />);
+    await screen.findByText("Restored query");
+    expect(screen.getByTestId("search-results").getAttribute("data-visible-collections")).toBe("");
+  });
+
+  it("removes its unused New Search placeholder when the page is left idle", async () => {
+    testState.params = "";
+    testState.slot = { current: null, token: null };
+    window.history.replaceState(null, "", "/search");
+    const view = render(<SearchPage />);
+    await waitFor(() => expect(appMocks.setPendingSearch).toHaveBeenCalledWith(expect.any(String), "New Search"));
+    const placeholder = appMocks.setPendingSearch.mock.calls[0][0];
+
+    view.unmount();
+    expect(appMocks.clearPendingSearch).toHaveBeenCalledWith(placeholder);
+  });
+
+  it("leaves the URL bare for a search that was not saved", async () => {
+    testState.params = "";
+    window.history.replaceState(null, "", "/search");
+    const replaceState = vi.spyOn(window.history, "replaceState");
+    let streamCallbacks!: SearchStreamCallbacks;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks) => {
+      streamCallbacks = callbacks;
+    });
+    render(<SearchPage />);
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    act(() => streamCallbacks.onDone(null, 0, "no_candidates", {}, false));
+    expect(replaceState).not.toHaveBeenCalled();
+  });
+
+  it("keeps a search, and its streaming explanations, across a trip to the reader", async () => {
+    testState.params = "";
+    testState.slot = { current: null, token: null };
+    window.history.replaceState(null, "", "/search");
+    let streamCallbacks!: SearchStreamCallbacks;
+    let streamSignal!: AbortSignal;
+    apiMocks.streamSearch.mockImplementation(async (_token, _query, _filters, _quota, callbacks, signal) => {
+      streamCallbacks = callbacks;
+      streamSignal = signal!;
+    });
+    const first = render(<SearchPage />);
+    fireEvent.change(screen.getByRole("textbox", { name: "Search passages" }), { target: { value: "grace" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(apiMocks.streamSearch).toHaveBeenCalledOnce());
+    act(() => {
+      streamCallbacks.onChunk(streamedPassage);
+      streamCallbacks.onDone("persisted-search", 1, "success", { bible: "results" }, true);
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Animation ready" }));
+    fireEvent.click(screen.getByRole("button", { name: "Animation faded" }));
+    expect(window.location.search).toBe("?restore=persisted-search");
+
+    // Opening the reader unmounts the page; the stream keeps going.
+    first.unmount();
+    await act(async () => { await Promise.resolve(); });
+    expect(streamSignal.aborted).toBe(false);
+    act(() => streamCallbacks.onExplanationDelta("passage-1", "Because grace heals."));
+
+    // Back to Search: the URL names the search, and the held runtime shows it.
+    testState.params = "restore=persisted-search";
+    render(<SearchPage />);
+    expect(await screen.findByText("Grace perfects nature. — Because grace heals.")).toBeTruthy();
+    expect(screen.queryByTestId("loading-animation")).toBeNull();
+    expect(apiMocks.getSearchResults).not.toHaveBeenCalled();
+    expect(appMocks.setActiveSearchId).toHaveBeenLastCalledWith("persisted-search");
+  });
+
+  it("hides explanations a saved search never received instead of showing them as streaming", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("Restored query"),
+      results: [streamedPassage],
+      expected_result_count: 1,
+    });
+    render(<SearchPage />);
+    const card = await screen.findByText(/Grace perfects nature/);
+    expect(card.getAttribute("data-explanation")).toBe("");
   });
 
   it("cancels the owning run and creates a fresh placeholder on New Search", async () => {

@@ -2,7 +2,7 @@ import { describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import type { ChunkResult } from "@/lib/search-stream";
 import { createSearchExperience } from "./runtime";
-import { searchExperienceView } from "./view";
+import { currentSearchId, routeSearchId, searchExperienceView } from "./view";
 import type {
   AuthenticatedSearchExperiencePorts,
   AudienceAdapter,
@@ -506,7 +506,7 @@ describe("search-experience runtime", () => {
   it("isolates ID and clock port failures from the lifecycle", () => {
     const begin = vi.fn();
     const { runtime: authenticated, runs } = authenticatedFixture({
-      pendingHistory: { begin, clear: vi.fn(), activate: vi.fn(), refresh: vi.fn() },
+      pendingHistory: { begin, clear: vi.fn(), refresh: vi.fn() },
       ids: { pendingEntry: () => { throw new Error("id exploded"); } },
     });
     authenticated.send({ type: "submit", request: REQUEST });
@@ -650,7 +650,7 @@ describe("search-experience runtime", () => {
     const refresh = vi.fn();
     let id = 0;
     const { runtime, runs } = authenticatedFixture({
-      pendingHistory: { begin, clear, activate: vi.fn(), refresh },
+      pendingHistory: { begin, clear, refresh },
       ids: { pendingEntry: () => `pending-${++id}` },
     });
 
@@ -669,11 +669,10 @@ describe("search-experience runtime", () => {
   it("owns the pending History placeholder through submit, completion, and reset", () => {
     const begin = vi.fn();
     const clear = vi.fn();
-    const activate = vi.fn();
     const refresh = vi.fn();
     let id = 0;
     const { runtime, runs } = authenticatedFixture({
-      pendingHistory: { begin, clear, activate, refresh },
+      pendingHistory: { begin, clear, refresh },
       ids: { pendingEntry: () => `pending-${++id}` },
     });
 
@@ -684,7 +683,7 @@ describe("search-experience runtime", () => {
     expect(begin).toHaveBeenLastCalledWith("pending-1", REQUEST.query);
     runs[0].callbacks.onDone("search-1", 1, "success", {}, true);
     expect(clear).toHaveBeenCalledWith("pending-1");
-    expect(activate).toHaveBeenCalledWith("search-1");
+    expect(currentSearchId(runtime.read())).toBe("search-1");
     expect(refresh).toHaveBeenCalledOnce();
 
     runtime.send({ type: "reset" });
@@ -703,7 +702,7 @@ describe("search-experience runtime", () => {
     const clear = vi.fn();
     let id = 0;
     const { runtime, runs } = authenticatedFixture({
-      pendingHistory: { begin: vi.fn(), clear, activate: vi.fn(), refresh: vi.fn() },
+      pendingHistory: { begin: vi.fn(), clear, refresh: vi.fn() },
       ids: { pendingEntry: () => `pending-${++id}` },
     });
 
@@ -721,7 +720,7 @@ describe("search-experience runtime", () => {
     const clear = vi.fn();
     let id = 0;
     const { runtime } = authenticatedFixture({
-      pendingHistory: { begin: vi.fn(), clear, activate: vi.fn(), refresh: vi.fn() },
+      pendingHistory: { begin: vi.fn(), clear, refresh: vi.fn() },
       ids: { pendingEntry: () => `pending-${++id}` },
     });
 
@@ -745,7 +744,7 @@ describe("search-experience runtime", () => {
   it("does not let secondary adapter failures discard available Passages", async () => {
     const rejects = () => Promise.reject(new Error("secondary failed"));
     const { runtime, runs } = authenticatedFixture({
-      pendingHistory: { begin: rejects, clear: rejects, activate: rejects, refresh: rejects },
+      pendingHistory: { begin: rejects, clear: rejects, refresh: rejects },
       analytics: { searchCompleted: rejects, searchFailed: rejects },
       ids: { pendingEntry: () => "pending" },
     });
@@ -966,5 +965,194 @@ describe("search-experience runtime", () => {
     runtime.send({ type: "submit", request: REQUEST });
     expect(runtime.read()).toBe(disposedSnapshot);
     expect(runs).toHaveLength(2);
+  });
+  it("adopts a restore of the search it already holds without aborting its explanations", () => {
+    const restore = vi.fn();
+    const { runtime, runs } = authenticatedFixture({ savedSearch: { restore } });
+    runtime.send({ type: "submit", request: REQUEST });
+    const runId = runtime.read().runId;
+    runs[0].callbacks.onPassage(passage("p1"));
+    runs[0].callbacks.onDone("search-1", 1, "success", {}, true);
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+
+    runtime.send({ type: "restore", searchId: "search-1" });
+
+    expect(restore).not.toHaveBeenCalled();
+    expect(runs[0].signal.aborted).toBe(false);
+    runs[0].callbacks.onExplanationDelta("p1", "Because ");
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      runId,
+      passages: [{ chunk_id: "p1", explanation: "Because " }],
+    });
+
+    runtime.send({ type: "restore", searchId: "other-search" });
+    expect(restore).toHaveBeenCalledOnce();
+    expect(runs[0].signal.aborted).toBe(true);
+  });
+
+  it("reveals ready results when a page resumes a run left mid-animation", () => {
+    const { runtime, runs } = authenticatedFixture();
+    runtime.send({ type: "submit", request: REQUEST });
+    const runId = runtime.read().runId;
+    runtime.send({ type: "animation", runId, milestone: "filters-ready" });
+    runs[0].callbacks.onPassage(passage("p1"));
+    runs[0].callbacks.onExplanationDelta("p1", "Grace ");
+    runs[0].callbacks.onDone("search-1", 1, "success", {}, true);
+
+    runtime.send({ type: "resume-presentation" });
+    expect(runtime.read()).toMatchObject({
+      status: "active-search",
+      presentation: { status: "revealed" },
+      passages: [{ chunk_id: "p1", explanation: "Grace " }],
+    });
+    runs[0].callbacks.onExplanationDelta("p1", "abounds");
+    expect(runtime.read()).toMatchObject({ passages: [{ explanation: "Grace abounds" }] });
+  });
+
+  it("rewinds an unfinished animation so a resumed page can replay its milestones", () => {
+    const { runtime, runs } = authenticatedFixture();
+    runtime.send({ type: "submit", request: REQUEST });
+    const runId = runtime.read().runId;
+    runtime.send({ type: "animation", runId, milestone: "filters-ready" });
+
+    runtime.send({ type: "resume-presentation" });
+    expect(runtime.read()).toMatchObject({
+      presentation: { status: "animating", filtersReady: false, resultsReady: false },
+    });
+    runtime.send({ type: "animation", runId, milestone: "filters-ready" });
+    runs[0].callbacks.onPassage(passage("p1"));
+    runs[0].callbacks.onDone("search-1", 1, "success", {}, true);
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+    runtime.send({ type: "animation", runId, milestone: "fade-complete" });
+    expect(runtime.read()).toMatchObject({ presentation: { status: "revealed" } });
+
+    runtime.send({ type: "resume-presentation" });
+    expect(runtime.read()).toMatchObject({ presentation: { status: "revealed" } });
+  });
+
+  it("derives the current and routed search from each snapshot status", async () => {
+    let failRestore = false;
+    const restore = vi.fn(async (_credential: string, searchId: string) => {
+      if (failRestore) throw new Error("Restore failed");
+      return { searchId, request: REQUEST, passages: [passage("p1")], warning: null };
+    });
+    const { runtime, runs } = authenticatedFixture({ savedSearch: { restore } });
+    const ids = () => [currentSearchId(runtime.read()), routeSearchId(runtime.read())];
+
+    expect(ids()).toEqual([null, null]);
+    runtime.send({ type: "submit", request: REQUEST });
+    expect(ids()).toEqual([null, null]);
+    runs[0].callbacks.onDone("search-1", 0, "no_candidates", {}, true);
+    expect(ids()).toEqual(["search-1", "search-1"]);
+
+    runtime.send({ type: "submit", request: REQUEST });
+    runs[1].callbacks.onDone(null, 0, "no_candidates", {}, false);
+    expect(ids()).toEqual([null, null]);
+
+    runtime.send({ type: "submit", request: REQUEST });
+    runs[2].callbacks.onError("Search failed");
+    expect(ids()).toEqual([null, null]);
+
+    runtime.send({ type: "restore", searchId: "saved" });
+    expect(ids()).toEqual([null, "saved"]);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(ids()).toEqual(["saved", "saved"]);
+
+    failRestore = true;
+    runtime.send({ type: "restore", searchId: "broken" });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(runtime.read()).toMatchObject({ status: "failure" });
+    expect(ids()).toEqual([null, "broken"]);
+
+    runtime.send({ type: "reset" });
+    expect(ids()).toEqual([null, null]);
+  });
+  it("shows explanations a finished stream never sent as absent, not streaming", async () => {
+    let finish!: () => void;
+    const runs: SearchTransportCallbacks[] = [];
+    const runtime = createSearchExperience({
+      audience: {
+        kind: "authenticated",
+        search: (_credential, _request, callbacks) => {
+          runs.push(callbacks);
+          return new Promise<void>((resolve) => { finish = resolve; });
+        },
+      },
+      credentials: { current: () => "token" },
+    });
+    runtime.send({ type: "submit", request: REQUEST });
+    const runId = runtime.read().runId;
+    runs[0].onPassage(passage("p1"));
+    runs[0].onPassage(passage("p2"));
+    runs[0].onDone("search-1", 2, "success", {}, true);
+    runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
+    runs[0].onExplanationDelta("p1", "Because.");
+    expect(runtime.read()).toMatchObject({
+      passages: [{ explanation: "Because." }, { explanation: null }],
+    });
+
+    finish();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(runtime.read()).toMatchObject({
+      passages: [{ explanation: "Because." }, { explanation: "" }],
+    });
+  });
+
+  it("treats a restore id in another case as the search it already holds", async () => {
+    const restore = vi.fn(async (_credential: string, searchId: string) => ({
+      searchId,
+      request: REQUEST,
+      passages: [passage("p1")],
+      warning: null,
+    }));
+    const { runtime } = authenticatedFixture({ savedSearch: { restore } });
+    runtime.send({ type: "restore", searchId: "ABCDEF00-0000-4000-8000-000000000000" });
+    await Promise.resolve();
+    await Promise.resolve();
+    runtime.send({ type: "restore", searchId: "abcdef00-0000-4000-8000-000000000000" });
+    expect(restore).toHaveBeenCalledOnce();
+    expect(restore.mock.calls[0][1]).toBe("abcdef00-0000-4000-8000-000000000000");
+  });
+  it("clears an unused New Search placeholder when the page detaches, and only then", () => {
+    const begin = vi.fn();
+    const clear = vi.fn();
+    const { runtime, runs } = authenticatedFixture({
+      pendingHistory: { begin, clear, refresh: vi.fn() },
+      ids: { pendingEntry: () => "pending-1" },
+    });
+    runtime.send({ type: "prepare-pending-history" });
+    runtime.send({ type: "detach-page" });
+    expect(clear).toHaveBeenCalledExactlyOnceWith("pending-1");
+
+    runtime.send({ type: "prepare-pending-history" });
+    runtime.send({ type: "submit", request: REQUEST });
+    clear.mockClear();
+    runtime.send({ type: "detach-page" });
+    expect(clear).not.toHaveBeenCalled();
+    expect(runs[0].signal.aborted).toBe(false);
+  });
+
+  it("restores the same id again after that restore failed", async () => {
+    let attempts = 0;
+    const restore = vi.fn(async (_credential: string, searchId: string) => {
+      attempts += 1;
+      if (attempts === 1) throw new Error("Network down");
+      return { searchId, request: REQUEST, passages: [passage("p1")], warning: null };
+    });
+    const { runtime } = authenticatedFixture({ savedSearch: { restore } });
+    runtime.send({ type: "restore", searchId: "saved" });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(runtime.read()).toMatchObject({ status: "failure" });
+
+    runtime.send({ type: "restore", searchId: "saved" });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(restore).toHaveBeenCalledTimes(2);
+    expect(runtime.read()).toMatchObject({ status: "restored-passages", searchId: "saved" });
   });
 });

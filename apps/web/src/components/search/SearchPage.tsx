@@ -36,6 +36,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     setActiveSearchId,
     setPendingSearch, clearPendingSearch,
     refreshSearches,
+    searchExperienceSlot,
   } = useAppContext();
 
   const searchParams = useSearchParams();
@@ -107,7 +108,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   // Tracks the ID of the current "New Search" placeholder. null = no placeholder
   // (either a real search was submitted and completed, or we're in a restored view).
 
-  const { experience, snapshot, view: searchView } = useSearchPageExperience({
+  const {
+    experience,
+    snapshot,
+    view: searchView,
+    rememberVisibleCollections,
+  } = useSearchPageExperience({
     isGuest,
     token,
     userId,
@@ -117,20 +123,17 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     restoredGuestSearch,
     guestGate,
     pendingHistory: {
-      showPending(entryId, query) {
-        setPendingSearch(entryId, query);
-        setActiveSearchId(entryId);
-      },
+      showPending: setPendingSearch,
       clearPending: (entryId) => clearPendingSearch(entryId),
-      activate: setActiveSearchId,
+      showCurrent: setActiveSearchId,
       refresh: refreshSearches,
     },
     viewSynchronization: {
       setVisibleCollections,
       clearDraft: () => setSearchValue(""),
-      deactivateHistory: () => setActiveSearchId(null),
     },
     onFirstGuestSearchWithPassages: () => setShowFirstSearchHint(true),
+    slot: searchExperienceSlot,
   });
   useAuthenticatedSearchRoute({
     experience,
@@ -154,11 +157,12 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   useEffect(() => {
     if (prevSearchKey.current === searchKey) return;
     prevSearchKey.current = searchKey;
-    experience.send({ type: "reset" });
+    // A runtime held by AppShell was already reset by its newSearch().
+    if (!searchExperienceSlot) experience.send({ type: "reset" });
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchValue("");
     setVisibleCollections([]);
-  }, [experience, searchKey]);
+  }, [experience, searchExperienceSlot, searchKey]);
 
   // ── Search ────────────────────────────────────────────────────────────────
 
@@ -240,6 +244,7 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
       ? visibleCollections.filter((value) => value !== c)
       : [...visibleCollections, c];
     setVisibleCollections(next);
+    rememberVisibleCollections(next);
     if (isGuest) {
       experience.send({ type: "guest-visible-collections-changed", collections: next });
     }

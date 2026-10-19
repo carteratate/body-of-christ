@@ -44,6 +44,9 @@ export function HistoryPage() {
   // The query whose results are on screen; null while none are.
   const shownQueryRef = useRef<string | null>(seeded ? "" : null);
   const seedLoadedAtRef = useRef(searchHistoryLoadedAt);
+  // When AppShell's list last loaded, and that list; see the merge effect below.
+  const lastShellLoadRef = useRef(searchHistoryLoadedAt);
+  const shellSearchesRef = useRef(shellSearches);
   // Searches deleted here while a refresh was in flight; its response predates
   // the delete and must not bring them back.
   const deletedIdsRef = useRef(new Set<string>());
@@ -71,6 +74,7 @@ export function HistoryPage() {
     seedLoadedAtRef.current = null;
     if (seedLoadedAt !== null && !appliedQuery && reloadKey === 0 && Date.now() - seedLoadedAt < SEED_FRESH_MS) return;
     const generation = ++requestGeneration.current;
+    const requestedAt = Date.now();
     let alive = true;
     // Results already showing for this query stay up while they are refreshed;
     // a failed refresh keeps them rather than replacing them with an error.
@@ -82,7 +86,19 @@ export function HistoryPage() {
     getSearchHistoryPage(requestToken, { query: appliedQuery || undefined })
       .then((page) => {
         if (!alive || generation !== requestGeneration.current) return;
-        setSearches(page.searches.filter((search) => !deletedIdsRef.current.has(search.id)));
+        let next = page.searches.filter((search) => !deletedIdsRef.current.has(search.id));
+        // AppShell may have reloaded after this request went out (a search
+        // finished meanwhile). Its newer rows outrank this older response.
+        if (!appliedQuery && (lastShellLoadRef.current ?? 0) > requestedAt) {
+          const known = new Set(next.map((search) => search.id));
+          const newest = next.length > 0 ? Date.parse(next[0].created_at) : -Infinity;
+          const newer = shellSearchesRef.current.filter((search) =>
+            !known.has(search.id)
+            && !deletedIdsRef.current.has(search.id)
+            && Date.parse(search.created_at) > newest);
+          next = [...newer, ...next];
+        }
+        setSearches(next);
         setNextCursor(page.next_cursor);
         shownQueryRef.current = appliedQuery;
       })
@@ -98,6 +114,27 @@ export function HistoryPage() {
       });
     return () => { alive = false; };
   }, [signedIn, appliedQuery, reloadKey]);
+
+  // A search can now finish while this page is open (it keeps running after the
+  // search page unmounts). AppShell reloads its first page when one does; add
+  // the rows that are new to this list, so the finished search and its Current
+  // marker appear without a revisit. Older pages loaded here are kept. The
+  // refresh above reads these refs, so a response it sent before that reload
+  // cannot drop the new rows again.
+  useEffect(() => {
+    shellSearchesRef.current = shellSearches;
+  }, [shellSearches]);
+  useEffect(() => {
+    if (!searchHistoryLoadedAt || searchHistoryLoadedAt === lastShellLoadRef.current) return;
+    lastShellLoadRef.current = searchHistoryLoadedAt;
+    if (appliedQueryRef.current || shownQueryRef.current !== "") return;
+    setSearches((current) => {
+      const known = new Set(current.map((search) => search.id));
+      const fresh = shellSearches.filter((search) =>
+        !known.has(search.id) && !deletedIdsRef.current.has(search.id));
+      return fresh.length > 0 ? [...fresh, ...current] : current;
+    });
+  }, [searchHistoryLoadedAt, shellSearches]);
 
   useEffect(() => {
     if (!revealedId) return;

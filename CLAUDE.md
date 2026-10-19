@@ -385,6 +385,8 @@ Rules when working here:
 - Next routing and React stay outside the runtime.
 - Test through `read`/`subscribe`/`send` with scripted in-memory adapters. Do not assert on private reducer state.
 - `LoadingAnimation` owns visual timing and emits semantic milestones (`filters-ready` at 3.2s, ready-to-reveal, fade-complete). Passages stay buffered until ready-to-reveal. Do not reintroduce a page-side timer.
+- **The signed-in runtime outlives the page.** `AppShell` holds it in `searchExperienceSlot`, so leaving `/search` (opening the reader, History) does not abort a search or its explanation stream. `SearchPage` reattaches on mount and sends `resume-presentation`, which reveals ready results instead of replaying the animation. New Search resets it through `AppShell.newSearch`; sign-out and `AppShell` unmount dispose it. The guest runtime still lives and dies with the page; guest continuity is sessionStorage.
+- **`/search?restore=<id>` names what the page holds** (`routeSearchId` in `view.ts`): `useAuthenticatedSearchRoute` rewrites it once a live search is saved, and drops it while a new one runs, so Back and reload return to the right search. The write keeps Next's history state (`__NA`), so Next does not sync it: a synced write dispatches a router restore that cancels any navigation in flight. `useSearchParams` therefore misses these writes; compare against `location`, and don't read `?restore=` as "came from History". A `restore` of the search the runtime already holds is a no-op, so Back to that URL never aborts the run.
 
 ---
 
@@ -392,7 +394,12 @@ Rules when working here:
 
 - Provided by `AppShell`; consumed via `useAppContext()`.
 - **ALL authenticated pages MUST be wrapped in AppShell.** `GuestShell` supplies the guest equivalent.
-- Holds: auth (`token`, `userId`, `ready`), preferences, search history (`searches` with `searchHistoryCursor`/`searchHistoryLoadedAt`, `refreshSearches`, `removeSearch`, `restoreSearch`), the pending-search slot, `activeSearchId`/`searchKey`/`newSearch`, the cached source corpus, `bookmarkIds`, and mobile navigation state.
+- Holds: auth (`token`, `userId`, `ready`), preferences, search history (`searches` with `searchHistoryCursor`/`searchHistoryLoadedAt`, `refreshSearches`, `removeSearch`, `restoreSearch`), the pending-search slot, `activeSearchId`/`searchKey`/`newSearch`, `searchExperienceSlot` (§12), the cached source corpus, `bookmarkIds`, and mobile navigation state.
+
+`activeSearchId` is History's "Current" marker: the saved search the search page holds,
+the one you get back on returning to Search. It is derived (`currentSearchId` in
+`lib/search-experience/view.ts`, pushed by the page's subscription), never set by hand;
+it is null while a search is in flight, restoring, failed, unsaved, or after New Search.
 
 `searches` is the first page of history, and `searchHistoryLoadedAt` says when it last
 loaded. `HistoryPage` opens on it (with `searchHistoryCursor`) instead of a skeleton, and
