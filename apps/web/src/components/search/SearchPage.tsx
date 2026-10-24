@@ -159,7 +159,6 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
     prevSearchKey.current = searchKey;
     // A runtime held by AppShell was already reset by its newSearch().
     if (!searchExperienceSlot) experience.send({ type: "reset" });
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchValue("");
     setVisibleCollections([]);
   }, [experience, searchExperienceSlot, searchKey]);

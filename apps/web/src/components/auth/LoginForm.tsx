@@ -20,6 +20,7 @@ export function LoginForm({ initialMode = "sign-in" }: { initialMode?: "sign-in"
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get("error") === "auth") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- the URL can only be read after hydration
       setError(
         "This confirmation link is invalid or has expired. Please sign up again or request a new link.",
       );

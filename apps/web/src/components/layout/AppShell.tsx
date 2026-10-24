@@ -11,7 +11,9 @@ import { MobileTopBar } from "./MobileTopBar";
 import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
 import { PageErrorState, PageLoadingState } from "@/components/common/PageStates";
 import {
+  createSearchExperienceSlot,
   disposeSearchExperienceSlot,
+  setSearchExperienceSlotToken,
   resetSearchExperienceSlot,
   type SearchExperienceSlot,
 } from "@/lib/search-experience/useSearchPageExperience";
@@ -129,8 +131,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [pendingSearch, setPendingSearchState] = useState<{ id: string; query: string } | null>(null);
   const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState(0);
-  const searchExperienceSlot = useRef<SearchExperienceSlot>({ current: null, token: null }).current;
-  useEffect(() => { searchExperienceSlot.token = token; }, [searchExperienceSlot, token]);
+  const [searchExperienceSlot] = useState(createSearchExperienceSlot);
+  useEffect(() => { setSearchExperienceSlotToken(searchExperienceSlot, token); }, [searchExperienceSlot, token]);
   useEffect(() => () => disposeSearchExperienceSlot(searchExperienceSlot), [searchExperienceSlot]);
   const [ready, setReady] = useState(false);
   const [authResolutionError, setAuthResolutionError] = useState(false);

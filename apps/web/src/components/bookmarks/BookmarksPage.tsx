@@ -52,6 +52,7 @@ export function BookmarksPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- a new account starts with a fresh list and filter
     setQuery("");
     if (!token) {
       setBookmarks([]);

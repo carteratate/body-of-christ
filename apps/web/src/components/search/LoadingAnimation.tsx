@@ -43,6 +43,10 @@ function readTheme(): Theme {
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
+function activeOrDefault(active: string[]): string[] {
+  return active.length > 0 ? active : Object.keys(PALETTE).slice(0, 4);
+}
+
 // Pick `count` distinct indices from [0, max) uniformly (partial Fisher–Yates).
 // Returned sorted for stable rendering. `count` is clamped to [1, max].
 function pickDistinct(count: number, max: number): number[] {
@@ -171,7 +175,12 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
   // ── Animation state ─────────────────────────────────────────────────────
 
   const [phase, setPhase]     = useState(0);
-  const [winners, setWinners] = useState<Record<string, number[]>>({});
+  // One winner per requested passage (quota), including ten in focused mode.
+  const [winners] = useState(() => {
+    const w: Record<string, number[]> = {};
+    for (const key of activeOrDefault(active)) w[key] = pickDistinct(quota, N_CHUNKS);
+    return w;
+  });
 
   const [searchLineDone, setSearchLineDone] = useState(false);
   const [searchGone, setSearchGone]         = useState(false);
@@ -282,15 +291,6 @@ export function LoadingAnimation({ collections, quota, isQueryDone, retrievalSta
   // ── Effect 1: Sequence 1 (pre-gate, runs on mount) ────────────────────────
 
   useEffect(() => {
-    const act = active.length > 0 ? active : Object.keys(PALETTE).slice(0, 4);
-
-    const w: Record<string, number[]> = {};
-    act.forEach(key => {
-      // One winner per requested passage (quota), including ten in focused mode.
-      w[key] = pickDistinct(quota, N_CHUNKS);
-    });
-    setWinners(w);
-
     // Sequence 1: gold line → BoC → sources (GATE 1 STRETCH on sources) → chunks → winners → sources
     // Major lines travel at 1.25s. BoC gold pulse: 0.75s fade-in + 1s hold. Source glow: 1000ms.
     at(() => { setPhase(1); setSearchLineDone(true); }, 100);       // gold line starts (1.25s CSS), arrives t=1350
