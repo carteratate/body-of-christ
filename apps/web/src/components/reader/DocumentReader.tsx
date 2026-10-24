@@ -141,6 +141,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     try {
       const storedFont = localStorage.getItem("theocorpus-reader-font");
       const storedSpacing = localStorage.getItem("theocorpus-reader-spacing");
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage can only be read after hydration
       if (storedFont === "small" || storedFont === "medium" || storedFont === "large") setFontSize(storedFont);
       if (storedSpacing === "compact" || storedSpacing === "comfortable" || storedSpacing === "relaxed") setSpacing(storedSpacing);
     } catch {}
@@ -165,6 +166,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     replacePendingRef.current = false;
     tocRevalidatedRef.current = false;
     tocShownRef.current = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- opening another document clears the last one before it loads
     setInitialResolved(false);
     setResolvedDocId(null);
     setError(null);
@@ -253,6 +255,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     progressWriterRef.current = token && !isGuest
       ? { token, docId, inFlight: false, queued: null, failed: null }
       : null;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- a new writer starts without the last one's failure
     setProgressError(false);
   }, [docId, isGuest, token]);
 

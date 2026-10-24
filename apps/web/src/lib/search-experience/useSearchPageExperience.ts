@@ -241,7 +241,8 @@ export interface SearchPageExperienceBinding {
   readonly update: (next: SearchPageExperienceOptions) => void;
   /** The result filter the reader chose for a run, kept so a page returning to
    *  that run shows the same filter. */
-  visible: { readonly runId: number; readonly collections: readonly string[] } | null;
+  readonly visibleFor: (runId: number) => readonly string[] | null;
+  readonly rememberVisible: (runId: number, collections: readonly string[]) => void;
 }
 
 /** AppShell's holder for the signed-in search runtime; see `slot` above. */
@@ -250,6 +251,14 @@ export interface SearchExperienceSlot {
   /** AppShell's live token. The runtime outlives the page whose options it
    *  holds, so it must not read a token captured by that page's last render. */
   token: string | null;
+}
+
+export function createSearchExperienceSlot(): SearchExperienceSlot {
+  return { current: null, token: null };
+}
+
+export function setSearchExperienceSlotToken(slot: SearchExperienceSlot, token: string | null) {
+  slot.token = token;
 }
 
 /** Reset the held runtime for New Search, if a search page has created one. */
@@ -266,6 +275,7 @@ export function disposeSearchExperienceSlot(slot: SearchExperienceSlot) {
 
 function createSearchPageExperience(options: SearchPageExperienceOptions): SearchPageExperienceBinding {
   let current = options;
+  let visible: { readonly runId: number; readonly collections: readonly string[] } | null = null;
   const experience = (() => {
     if (options.isGuest) {
       return createSearchExperience({
@@ -409,7 +419,8 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
     experience,
     read: () => current,
     update(next: SearchPageExperienceOptions) { current = next; },
-    visible: null,
+    visibleFor: (runId) => (visible?.runId === runId ? visible.collections : null),
+    rememberVisible(runId, collections) { visible = { runId, collections: [...collections] }; },
   };
 }
 
@@ -444,7 +455,7 @@ export function useSearchPageExperience(options: SearchPageExperienceOptions) {
     const synchronization = binding.read().viewSynchronization;
     // A run the reader already filtered (before leaving the page) keeps that filter.
     const visibleFor = (runId: number, collections: readonly string[]) =>
-      [...(binding.visible?.runId === runId ? binding.visible.collections : collections)];
+      [...(binding.visibleFor(runId) ?? collections)];
     if (view.active && synchronizedRun.current !== view.active.runId) {
       synchronizedRun.current = view.active.runId;
       synchronization.setVisibleCollections(visibleFor(view.active.runId, view.active.request.collections));
@@ -463,7 +474,7 @@ export function useSearchPageExperience(options: SearchPageExperienceOptions) {
   }, [binding, options.isGuest, snapshot.runId, view.active, view.failure?.failure.kind, view.restored, view.restoring]);
 
   const rememberVisibleCollections = useCallback((collections: readonly string[]) => {
-    binding.visible = { runId: binding.experience.read().runId, collections: [...collections] };
+    binding.rememberVisible(binding.experience.read().runId, collections);
   }, [binding]);
 
   return { experience: binding.experience, snapshot, view, rememberVisibleCollections };
