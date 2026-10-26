@@ -1,0 +1,3 @@
+interface:
+  display_name: "Sol Loop"
+  short_description: "Review a change with Sol in a loop until it would merge"
