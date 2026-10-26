@@ -15,6 +15,19 @@ user reviews once, at the end, from your report.
 Make the most minimal possible changes to appease Sol. Be careful of scope
 creep and don't be scared to push back.
 
+## Environment
+
+This skill runs on two machines. Run `uname -s` once, before round 1, and use
+that machine's column everywhere this skill says "see Environment". Every
+step not listed here is the same on both.
+
+| | macOS (`Darwin`) | Windows WSL (`Linux`, and `/proc/version` contains `microsoft`) |
+|---|---|---|
+| Codex check before round 1 | The `model` in `~/.codex/config.toml` must appear in `codex debug models`. If it is missing, the CLI is stale: run `npm i -g @openai/codex@latest` and check again. (0.154.0 did not list `gpt-6.1-sol`, so the loop silently picked `gpt-5.6-sol`.) | none |
+| Effort field in the session log's `turn_context` | `effort` | `model_reasoning_effort` |
+
+If `uname -s` gives anything else, report the machine and stop before round 1.
+
 ## Budget
 
 - Default: 3 rounds total. Round 1 is full. Later rounds check only
@@ -83,7 +96,7 @@ From `rN.jsonl`: `thread_id` is in the `thread.started` line (round 1; save
 it), and token usage is in the `turn.completed` line (copy it to the ledger).
 Verify each round actually ran as asked: the session log
 (`grep -rl <thread_id> ~/.codex/sessions`) has `turn_context` lines carrying
-`model`, `reasoning_effort` and `sandbox_policy`. Read-only and high are what
+`model`, the effort field (see Environment) and `sandbox_policy`. Read-only and high are what
 you expect; anything else, stop and report.
 
 After each round, `git status --short` must match what it was before Sol ran.
