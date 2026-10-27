@@ -8,11 +8,14 @@ No agent here; these are yours. About 10 minutes.
 2. **Claude app.** Sign into account A and account B (you already switch between them).
    Under Code, each account lists the Lenovo once its Remote Control service is up.
    Start a session there and it works in its own worktree on the Lenovo.
-3. **ChatGPT app.** Open Codex → Remote and pair with the code from
-   `codex remote-control pair` on the Lenovo (its runbook walks you through it).
-4. **Termius** (or Blink) for when something is stuck. Add a host: address `lenovo`,
-   user = your Linux user name, no password or key. Tailscale SSH handles sign-in, and
-   may show a link to approve now and then. The commands you need:
+3. **ChatGPT app.** In Codex's machine list, add → "Pair manually" and enter the code
+   from `codex remote-control pair` on the Lenovo (its runbook, step 8, walks you
+   through it). The Lenovo is listed as `LAPTOP-EBQLQ579`.
+4. **Termius** (or Blink) for when something is stuck. Skip the Termius account it asks
+   for: that only syncs hosts between devices and has nothing to do with Tailscale. Add a
+   host: address `lenovo` (or its Tailscale IP), port 22, user `carter`, no password or
+   key. Tailscale SSH handles sign-in, and may show a link to approve now and then. The
+   commands you need:
    - `home-agents status`: are the three services running?
    - `home-agents restart`: restart them.
    - `tmux -L claude-a attach`: see one service's output (`Ctrl-b d` to leave).

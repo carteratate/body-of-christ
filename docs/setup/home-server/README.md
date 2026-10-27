@@ -136,11 +136,15 @@ administrator** → Yes), replacing `Ubuntu` with the name `echo` printed if it 
 powershell -ExecutionPolicy Bypass -File $env:USERPROFILE\windows-setup.ps1 -Distro Ubuntu
 ```
 
-It should print three lines: the power settings, the task registered, and the task
-started.
+It should print four lines: the power settings, the `.wslconfig` change, the task
+registered, and the task started.
 
-It stops sleep and hibernation on AC power, makes closing the lid do nothing, and adds a
-sign-in task that starts WSL and keeps it running. Then, in Settings:
+It stops sleep and hibernation on AC power, makes closing the lid do nothing, turns off
+WSLg in `.wslconfig` (`guiApplications=false`), and adds a sign-in task that starts WSL
+and keeps it running. WSLg is the GUI layer, which a headless server doesn't need, and at
+boot it mounts over `/run/user/<uid>` and hides the systemd user bus, so `home-agents
+status` fails with "Failed to connect to bus" while the services keep running. The
+setting takes effect after `wsl --shutdown` or a restart. Then, in Settings:
 
 - **Windows Update → Advanced options → Active hours:** cover the hours you use agents,
   or pause updates a few weeks at a time.

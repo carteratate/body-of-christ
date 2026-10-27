@@ -14,6 +14,23 @@ Invoke-Powercfg '/setacvalueindex', 'SCHEME_CURRENT', 'SUB_BUTTONS', 'LIDACTION'
 Invoke-Powercfg '/setactive', 'SCHEME_CURRENT'
 Write-Host "Power: no sleep or hibernate on AC; lid close does nothing (on AC)."
 
+# No WSLg: this machine is headless, and WSLg mounts over /run/user/<uid>, hiding the
+# systemd user bus that `systemctl --user` (and `home-agents status`) talk to.
+$wslconfig = Join-Path $env:USERPROFILE '.wslconfig'
+$lines = if (Test-Path $wslconfig) { @(Get-Content $wslconfig) } else { @() }
+if ($lines -match '^\s*guiApplications\s*=') {
+  Write-Host ".wslconfig already sets guiApplications; left as is."
+} else {
+  $out = @(); $added = $false
+  foreach ($line in $lines) {
+    $out += $line
+    if (-not $added -and $line -match '^\s*\[wsl2\]\s*$') { $out += 'guiApplications=false'; $added = $true }
+  }
+  if (-not $added) { $out += '[wsl2]', 'guiApplications=false' }
+  Set-Content -Path $wslconfig -Value $out
+  Write-Host ".wslconfig: guiApplications=false (takes effect after wsl --shutdown or a restart)."
+}
+
 # At sign-in, start WSL and hold it open so systemd and the agent services keep running.
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' `
   -Argument "-WindowStyle Hidden -NoProfile -Command wsl.exe -d '$Distro' --exec sleep infinity"

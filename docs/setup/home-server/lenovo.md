@@ -137,9 +137,14 @@ Check the exact commands before enabling anything:
 cd ~/repos/body-of-christ
 claude-a remote-control --spawn worktree    # answer prompts, confirm it shows in the Claude app, Ctrl-C
 claude-b remote-control --spawn worktree    # same, with the app switched to account B
-codex remote-control --no-daemon            # leave running; in another terminal: codex remote-control pair,
-                                            # enter the code in the ChatGPT app, then Ctrl-C here
+codex remote-control start                  # pairing needs the daemon: `pair` talks to its control
+codex remote-control pair                   # socket, which --no-daemon doesn't create. In the ChatGPT
+                                            # app's Codex machine list: add → "Pair manually", enter the code
+codex remote-control stop                   # the service runs its own --no-daemon copy
 ```
+
+The Lenovo shows in the ChatGPT app under its Windows name (`LAPTOP-EBQLQ579`), not
+`lenovo`.
 
 Then enable the services: `home-agents enable`.
 
@@ -157,7 +162,9 @@ two minutes without opening Ubuntu.
 **Done when:** from his phone or the Mac, the Claude app shows the Lenovo for both
 accounts again and `ssh lenovo '~/.local/bin/home-agents status'` shows all three active. If they did
 not come back, check the Windows task first (`Get-ScheduledTask -TaskName 'Keep WSL
-running'` in PowerShell), then `journalctl --user -u 'home-agent@*'`.
+running'` in PowerShell), then `journalctl --user -u 'home-agent@*'`. If `home-agents
+status` says there is no systemd user bus, WSLg is still on: check `.wslconfig` (README,
+step f), and for now `sudo umount /run/user/$(id -u)`.
 
 ## 10. Report
 

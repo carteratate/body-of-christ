@@ -2,6 +2,9 @@
 # Runs one remote-control server and restarts it whenever it exits.
 # Started inside its own tmux server by home-agent@<name>.service.
 set -u
+# systemd's user manager starts services with umask 0002 here, and Codex refuses a
+# group-writable socket directory.
+umask 022
 name=${1:?usage: agent-service.sh claude-a|claude-b|codex}
 
 export NVM_DIR="$HOME/.nvm"

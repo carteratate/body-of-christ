@@ -2,6 +2,12 @@
 # Manage the three remote-control services: status | enable | restart | stop | logs
 set -eu
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+if [ ! -S "$XDG_RUNTIME_DIR/bus" ]; then
+  echo "No systemd user bus at $XDG_RUNTIME_DIR/bus. If WSLg has mounted over it, run" >&2
+  echo "'sudo umount $XDG_RUNTIME_DIR' and set guiApplications=false in .wslconfig" >&2
+  echo "(docs/setup/home-server/README.md, step f)." >&2
+  exit 1
+fi
 units=(home-agent@claude-a home-agent@claude-b home-agent@codex)
 case "${1:-status}" in
   status)  systemctl --user --no-pager status "${units[@]}" | grep -E '^[●○×]|Active:' ;;
