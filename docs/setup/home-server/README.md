@@ -118,18 +118,26 @@ gh repo clone carteratate/body-of-christ ~/repos/body-of-christ
 If this guide isn't merged to master yet, switch to the branch it's on:
 `git -C ~/repos/body-of-christ checkout docs/home-server-setup`.
 
-**f. Windows settings.** Copy the setup script to Windows, then run it from PowerShell
-**as administrator** (an elevated shell can't always read WSL paths). In Ubuntu:
+**f. Windows settings.** Two parts: copy the script to your Windows home folder from
+Ubuntu, then run it from an administrator PowerShell (which can't always read WSL
+paths directly).
+
+*In Ubuntu*, copy the script and print your distro's name:
 
 ```bash
 cd /mnt/c && cp ~/repos/body-of-christ/scripts/home-server/windows-setup.ps1 "$(wslpath "$(cmd.exe /c 'echo %USERPROFILE%' | tr -d '\r')")/"
+echo "$WSL_DISTRO_NAME"
 ```
 
-Then, in the administrator PowerShell, where `<distro>` is the name `wsl -l -v` showed:
+*In PowerShell as administrator* (Start → type `PowerShell` → right-click → **Run as
+administrator** → Yes), replacing `Ubuntu` with the name `echo` printed if it differs:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File $env:USERPROFILE\windows-setup.ps1 -Distro <distro>
+powershell -ExecutionPolicy Bypass -File $env:USERPROFILE\windows-setup.ps1 -Distro Ubuntu
 ```
+
+It should print three lines: the power settings, the task registered, and the task
+started.
 
 It stops sleep and hibernation on AC power, makes closing the lid do nothing, and adds a
 sign-in task that starts WSL and keeps it running. Then, in Settings:
