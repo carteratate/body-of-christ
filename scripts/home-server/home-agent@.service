@@ -1,0 +1,13 @@
+[Unit]
+Description=Home agent %i (remote control)
+
+[Service]
+# Each service gets its own tmux server (-L %i), so `tmux -L %i attach` shows its output.
+Type=forking
+ExecStart=/usr/bin/tmux -L %i new-session -d -s %i %h/.local/share/home-server/agent-service.sh %i
+ExecStop=/usr/bin/tmux -L %i kill-server
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Manage the three remote-control services: status | enable | restart | stop | logs
+set -eu
+export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+units=(home-agent@claude-a home-agent@claude-b home-agent@codex)
+case "${1:-status}" in
+  status)  systemctl --user --no-pager status "${units[@]}" | grep -E '^[●○×]|Active:' ;;
+  enable)  systemctl --user daemon-reload; systemctl --user enable --now "${units[@]}" ;;
+  restart) systemctl --user restart "${units[@]}" ;;
+  stop)    systemctl --user stop "${units[@]}" ;;
+  logs)    journalctl --user --no-pager -n 50 -u 'home-agent@*' ;;
+  *) echo "usage: home-agents status|enable|restart|stop|logs" >&2; exit 2 ;;
+esac
