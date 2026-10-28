@@ -11,6 +11,7 @@ from fastapi.responses import StreamingResponse
 
 from app.config import settings
 from app.db import get_pool
+from app.footnotes import fetch_footnotes, has_footnotes
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.reader_access import access_fields, document_access
@@ -357,6 +358,13 @@ async def get_search_results(
         logger.error("get_search_results query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
+    # Outside the restore deadline: optional notes must never turn a restore into a
+    # 504. `fetch_footnotes` bounds itself and falls back to none.
+    notes = await fetch_footnotes(pool, [
+        (str(row["chunk_id"]), row["content"]) for row in rows
+        if has_footnotes(row["collection"], row["document_title"])
+    ])
+
     results = [
         ChunkResult(
             chunk_id=str(row["chunk_id"]),
@@ -376,6 +384,7 @@ async def get_search_results(
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],
             context=context.get(str(row["chunk_id"])),
+            footnotes=notes.get(str(row["chunk_id"]), []),
         )
         for row in rows
     ]

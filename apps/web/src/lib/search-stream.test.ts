@@ -129,6 +129,7 @@ describe("consumeSearchStream", () => {
       },
       reranker_score: null,
       explanation: null,
+      footnotes: [],
       context: {
         relation: "answers",
         parts: [{
@@ -428,5 +429,34 @@ describe("excerpt-only sources (issue #265)", () => {
   it("reads an absent or unknown value as no restriction", async () => {
     expect((await parsed({})).reader_access).toBeNull();
     expect((await parsed({ reader_access: "partial" })).reader_access).toBeNull();
+  });
+});
+
+describe("passage footnotes (issue #279)", () => {
+  it("decodes footnotes once and drops entries outside the content", async () => {
+    const cb = callbacks();
+    await consumeSearchStream(streamFromText([
+      data(passage({
+        footnotes: [
+          { n: 68, text: "Francis, Address.", at: "Grace perfects nature.".length },
+          { n: 69, text: "Out of range", at: 999 },
+        ],
+      })),
+      data({ type: "done", search_id: null, result_count: 1, outcome: "success" }),
+    ].join("")), cb);
+
+    expect(cb.onChunk.mock.calls[0][0].footnotes).toEqual([
+      { n: 68, text: "Francis, Address.", at: 22 },
+    ]);
+  });
+
+  it("gives a passage without footnotes an empty list", async () => {
+    const cb = callbacks();
+    await consumeSearchStream(streamFromText([
+      data(passage()),
+      data({ type: "done", search_id: null, result_count: 1, outcome: "success" }),
+    ].join("")), cb);
+
+    expect(cb.onChunk.mock.calls[0][0].footnotes).toEqual([]);
   });
 });

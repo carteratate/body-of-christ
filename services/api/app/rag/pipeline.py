@@ -14,6 +14,7 @@ import uuid
 
 from app.config import settings
 from app.db import get_pool
+from app.footnotes import fetch_footnotes, has_footnotes
 from app.reader_access import access_fields, document_access
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
@@ -193,6 +194,15 @@ async def _document_access_for(results) -> dict:
         logger.warning("reader access lookup failed (%s); cards link to the reader",
                        exc.__class__.__name__)
         return {}
+
+
+async def _footnotes_for(results) -> dict[str, list[dict]]:
+    """The footnotes of the final Catechism results (issue #279). Best-effort:
+    `fetch_footnotes` gives a passage no notes rather than fail the search."""
+    return await fetch_footnotes(get_pool(), [
+        (r.chunk_id, r.content) for r in results
+        if has_footnotes(r.collection, r.document_title)
+    ])
 
 
 async def _persist_empty_search(
@@ -384,6 +394,7 @@ async def run_search_pipeline(
         # Step 6 — Yield chunk events
         # ------------------------------------------------------------------
         access = await _document_access_for(final_results)
+        notes = await _footnotes_for(final_results)
         for chunk in final_results:
             yield {
                 "type": "chunk",
@@ -423,6 +434,8 @@ async def run_search_pipeline(
                     if (attached := pipeline_result.context.get(chunk.chunk_id))
                     else None
                 ),
+                # Shown with the passage, never part of `content` (issue #279).
+                "footnotes": notes.get(chunk.chunk_id, []),
             }
 
         # ------------------------------------------------------------------
