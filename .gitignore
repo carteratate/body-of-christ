@@ -26,12 +26,12 @@ services/api/.env
 *.Zone.Identifier
 
 # Corpus source data (large binary/XML files — load separately)
-datapipeline/sources/
+datapipeline/sources
 # Local check output (0.1a report), which may quote corpus text
 datapipeline/releases/local/
 # Live corpus snapshots (0.1c): in-copyright text, never committed. The index
 # datapipeline/releases/snapshots.json (hashes and counts only) is tracked.
-datapipeline/releases/snapshots/
+datapipeline/releases/snapshots
 .worktrees/
 .claude/*
 !.claude/skills
