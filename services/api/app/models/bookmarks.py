@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
+from app.models.search import Footnote
+
 
 class BookmarkCreate(BaseModel):
     chunk_id: str
@@ -32,6 +34,8 @@ class BookmarkSource(BaseModel):
 class BookmarkChunk(BaseModel):
     content: str
     source: BookmarkSource
+    # Same as ChunkResult.footnotes (issue #279).
+    footnotes: list[Footnote] = Field(default_factory=list)
 
 
 class BookmarkResponse(BaseModel):

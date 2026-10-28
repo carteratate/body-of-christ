@@ -11,6 +11,7 @@ from fastapi.responses import StreamingResponse
 
 from app.config import settings
 from app.db import get_pool
+from app.footnotes import fetch_footnotes, has_footnotes
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.reader_access import access_fields, document_access
@@ -348,6 +349,10 @@ async def get_search_results(
             # past the 8s bound with nothing to stop it.
             context = await _restore_context(rows)
             access = await document_access(pool, [row["document_id"] for row in rows])
+            notes = await fetch_footnotes(pool, [
+                (str(row["chunk_id"]), row["content"]) for row in rows
+                if has_footnotes(row["collection"], row["document_title"])
+            ])
     except HTTPException:
         raise
     except TimeoutError as exc:
@@ -376,6 +381,7 @@ async def get_search_results(
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],
             context=context.get(str(row["chunk_id"])),
+            footnotes=notes.get(str(row["chunk_id"]), []),
         )
         for row in rows
     ]

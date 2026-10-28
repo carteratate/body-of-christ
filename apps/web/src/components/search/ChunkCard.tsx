@@ -20,7 +20,9 @@ import { AttachedPassage } from "./AttachedPassage";
 import { RelevanceExplanation } from "./RelevanceExplanation";
 import { getCollectionMeta } from "@/lib/collections";
 import { displayRole } from "@/lib/passageRole";
-import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
+import { stripVerseMarkers } from "@/lib/verse-markers";
+import { contentWithMarkers, footnotesCopyText, parseFootnotes } from "@/lib/footnotes";
+import { PassageNotes, PassageText } from "@/components/common/PassageText";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { readerHref } from "@/lib/readerNavigation";
@@ -102,6 +104,8 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
   const { chunk_id, content, source } = result;
   // Presentation only. Copying and saving still address the passage the user matched.
   const attached = result.context ?? null;
+  // Restored searches skip the stream decoder, so the notes are checked here too.
+  const footnotes = parseFootnotes(result.footnotes, content);
   const { collection, document_title, author, reference, document_id } = source;
   // The passage's own role. Ingest moved "Objection N" out of `content`, so without this
   // an objection reads as a flat assertion wherever it travels without its attachment —
@@ -175,7 +179,10 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
     // The rights holder's credit travels with the text (the USCCB requires it after
     // any Catechism excerpt).
     const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
-    const text = `${stripVerseMarkers(content)} — ${cited} (${collection})${credited}`;
+    // Text, then its notes, then the credit, which stays last.
+    const notes = footnotes.length ? `\n\n${footnotesCopyText(footnotes)}` : "";
+    const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
+    const text = `${body} — ${cited} (${collection})${notes}${credited}`;
     navigator.clipboard.writeText(text)
       .then(() => showToast("Copied"))
       .catch(() => showToast("Copy failed", "error"));
@@ -330,7 +337,8 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
           {attached?.relation === "answers" && (
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
-          <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">{renderVerseMarkers(content)}</p>
+          <PassageText content={content} footnotes={footnotes} />
+          <PassageNotes footnotes={footnotes} />
           {attached?.relation === "answered_by" && (
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}

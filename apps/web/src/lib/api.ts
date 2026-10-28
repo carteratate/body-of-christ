@@ -6,6 +6,7 @@ import {
   type SearchStreamCallbacks,
 } from "./search-stream";
 import { excerptSourceUrl, READER_RESTRICTED_CODE, type ReaderAccess } from "./reader-access";
+import type { Footnote } from "./footnotes";
 
 export {
   SearchStreamProtocolError,
@@ -277,6 +278,8 @@ export interface BookmarkChunkInfo {
     source_url?: string | null;
     source_credit?: string | null;
   };
+  /** See ChunkResult.footnotes (issue #279). */
+  footnotes?: Footnote[];
 }
 
 export interface Bookmark {

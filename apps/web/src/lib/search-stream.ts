@@ -1,3 +1,4 @@
+import { parseFootnotes, type Footnote } from "./footnotes";
 import { readerAccessValue, type ReaderAccess } from "./reader-access";
 
 export interface ChunkSource {
@@ -55,6 +56,8 @@ export interface ChunkResult {
   explanation: string | null;
   /** The passage completing this result, or null. See AttachedContext. */
   context?: AttachedContext | null;
+  /** The passage's footnotes, shown with it (issue #279). Absent means none. */
+  footnotes?: Footnote[];
 }
 
 export type SearchOutcome = "success" | "degraded_success" | "no_candidates";
@@ -212,10 +215,11 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
   const source = event.source;
   const metadata = source.metadata;
   if (metadata !== undefined && metadata !== null && !isRecord(metadata)) invalid();
+  const content = requiredString(event.content);
 
   return {
     chunk_id: requiredString(event.chunk_id),
-    content: requiredString(event.content),
+    content,
     source: {
       collection: requiredString(source.collection),
       document_title: requiredString(source.document_title),
@@ -234,6 +238,8 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
     reranker_score: nullableNumber(event.reranker_score),
     explanation: nullableString(event.explanation),
     context: normalizeContext(event.context),
+    // Never fail a passage over its notes: a bad entry is dropped, not the passage.
+    footnotes: parseFootnotes(event.footnotes, content),
   };
 }
 

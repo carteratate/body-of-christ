@@ -7,6 +7,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Response
 
 from app.db import get_pool
+from app.footnotes import fetch_footnotes, has_footnotes
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.reader_access import access_fields, document_access
@@ -176,6 +177,11 @@ async def list_bookmarks(
         logger.error("list_bookmarks query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
+    notes = await fetch_footnotes(pool, [
+        (str(row["chunk_id"]), row["content"]) for row in rows
+        if has_footnotes(row["collection"], row["document_title"])
+    ])
+
     return BookmarkListResponse(
         bookmarks=[
             BookmarkResponse(
@@ -185,6 +191,7 @@ async def list_bookmarks(
                 note=row["note"],
                 chunk=BookmarkChunk(
                     content=row["content"],
+                    footnotes=notes.get(str(row["chunk_id"]), []),
                     source=BookmarkSource(
                         collection=row["collection"],
                         document_title=row["document_title"],

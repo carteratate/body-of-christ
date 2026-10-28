@@ -410,3 +410,55 @@ describe("BookmarkCard excerpt-only documents (issue #265)", () => {
     expect(screen.getByText(/Excerpts from the English translation of the Catechism/)).toBeTruthy();
   });
 });
+
+describe("BookmarkCard footnotes (issue #279)", () => {
+  const CONTENT = "The death penalty is inadmissible.";
+  const CREDIT = "Excerpts from the English translation of the Catechism of the Catholic Church";
+
+  function renderCatechism(footnotes: unknown) {
+    const bookmark = {
+      id: "bookmark-1", chunk_id: "chunk-1", note: null, created_at: "2026-10-28T00:00:00Z",
+      chunk: {
+        content: CONTENT,
+        footnotes: footnotes as never,
+        source: {
+          collection: "catechism", document_title: "Catechism of the Catholic Church", author: null,
+          reference: "CCC 2267", document_id: "11111111-1111-4111-8111-111111111111",
+          anchor: "ccc/2267", chapter_key: null,
+          reader_access: "excerpt" as const,
+          source_url: "https://www.usccb.org/sites/default/files/flipbooks/catechism/index.html",
+          source_credit: CREDIT,
+        },
+      },
+    };
+    render(<BookmarkCard bookmark={bookmark} token="token" onRemove={vi.fn().mockResolvedValue(undefined)} onNoteUpdated={vi.fn()} showToast={vi.fn()} />);
+  }
+
+  it("puts each marker at its offset and lists the notes", () => {
+    renderCatechism([{ n: 68, text: "Francis, Address.", at: CONTENT.length }]);
+
+    const passage = screen.getByText(/death penalty/).closest("p")!;
+    expect(passage.querySelector("sup")?.textContent).toBe("68");
+    expect(screen.getByText("68. Francis, Address.")).toBeTruthy();
+  });
+
+  it("ignores a note whose offset is outside the passage", () => {
+    renderCatechism([{ n: 70, text: "Nowhere.", at: -2 }]);
+
+    expect(screen.getByText(CONTENT).querySelector("sup")).toBeNull();
+    expect(screen.queryByText("70. Nowhere.")).toBeNull();
+  });
+
+  it("copies the text, then its notes, then the credit", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    renderCatechism([{ n: 68, text: "Francis, Address.", at: CONTENT.length }]);
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+
+    const copied = writeText.mock.calls[0][0] as string;
+    expect(copied.startsWith(`${CONTENT}⁶⁸ — CCC 2267`)).toBe(true);
+    const notes = copied.indexOf("Notes:\n68. Francis, Address.");
+    expect(notes).toBeGreaterThan(0);
+    expect(copied.endsWith(CREDIT)).toBe(true);
+  });
+});

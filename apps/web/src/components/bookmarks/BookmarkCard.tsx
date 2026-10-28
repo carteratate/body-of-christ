@@ -5,12 +5,14 @@ import { Bookmark as BookmarkIcon, BookOpen, Copy, ExternalLink, Pencil, Plus } 
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
 import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
-import { renderVerseMarkers, stripVerseMarkers } from "@/lib/verse-markers";
+import { stripVerseMarkers } from "@/lib/verse-markers";
+import { contentWithMarkers, footnotesCopyText, parseFootnotes } from "@/lib/footnotes";
 import { readerHref } from "@/lib/readerNavigation";
 import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink, ThemedTooltip } from "@/components/common";
 import { SourceCredit } from "@/components/common/SourceLink";
+import { PassageNotes, PassageText } from "@/components/common/PassageText";
 
 const NOTE_MAX = 3000;
 
@@ -52,6 +54,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   }
 
   const { content, source } = bookmark.chunk;
+  const footnotes = parseFootnotes(bookmark.chunk.footnotes, content);
   const { collection, document_title, reference } = source;
   const collectionMeta = getCollectionMeta(collection);
   const borderColor = collectionMeta?.color ?? "var(--color-brand-accent)";
@@ -69,7 +72,10 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
     const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
-    const text = `${stripVerseMarkers(content)} — ${displayReference} (${collection})${credited}`;
+    // Text, then its notes, then the credit, which stays last.
+    const notes = footnotes.length ? `\n\n${footnotesCopyText(footnotes)}` : "";
+    const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
+    const text = `${body} — ${displayReference} (${collection})${notes}${credited}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text)
         .then(() => showToast("Copied"))
@@ -178,9 +184,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
       </div>
 
       {/* Passage content */}
-      <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">
-        {renderVerseMarkers(content)}
-      </p>
+      <PassageText content={content} footnotes={footnotes} />
+      <PassageNotes footnotes={footnotes} />
       {sourceCredit && <SourceCredit text={sourceCredit} />}
 
       {/* ── Note section ──────────────────────────────────────────────────── */}

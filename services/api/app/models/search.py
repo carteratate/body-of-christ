@@ -70,6 +70,15 @@ class AttachedContext(BaseModel):
     parts: list[ContextPart]
 
 
+class Footnote(BaseModel):
+    """One of a passage's footnotes (issue #279): its own number, its text, and the
+    character offset in the passage's `content` where its marker sits."""
+
+    n: int
+    text: str
+    at: int
+
+
 class ChunkResult(BaseModel):
     chunk_id: str
     content: str
@@ -78,6 +87,8 @@ class ChunkResult(BaseModel):
     explanation: Optional[str] = None
     # The passage completing this result, or None. See AttachedContext.
     context: Optional[AttachedContext] = None
+    # The passage's footnotes (issue #279); [] for every passage without them.
+    footnotes: list[Footnote] = Field(default_factory=list)
 
 
 class SearchDoneResponse(BaseModel):

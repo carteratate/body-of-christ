@@ -708,3 +708,72 @@ describe("ChunkCard excerpt-only documents (issue #265)", () => {
     expect(screen.queryByRole("link", { name: /Read the full text/ })).toBeNull();
   });
 });
+
+describe("ChunkCard footnotes (issue #279)", () => {
+  const CONTENT = "The death penalty is inadmissible.";
+  const CREDIT = "Excerpts from the English translation of the Catechism of the Catholic Church";
+
+  async function renderCatechism(footnotes: unknown) {
+    render(
+      <ChunkCard
+        result={{
+          chunk_id: "00000000-0000-0000-0000-000000000001",
+          content: CONTENT,
+          source: {
+            collection: "catechism",
+            document_title: "Catechism of the Catholic Church",
+            author: "Catholic Church",
+            reference: "CCC 2267",
+            document_id: "00000000-0000-0000-0000-000000000002",
+            position: 1,
+            reader_access: "excerpt",
+            source_url: "https://www.usccb.org/sites/default/files/flipbooks/catechism/index.html",
+            source_credit: CREDIT,
+          },
+          reranker_score: 0.9,
+          explanation: null,
+          footnotes: footnotes as never,
+        }}
+        index={0}
+        searchId={null}
+        token="token"
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+  }
+
+  it("puts each marker at its offset and lists the notes under the passage", async () => {
+    await renderCatechism([
+      { n: 67, text: "First note.", at: 3 },
+      { n: 68, text: "Francis, Address.", at: CONTENT.length },
+    ]);
+
+    const passage = screen.getByText(/death penalty/).closest("p")!;
+    const markers = [...passage.querySelectorAll("sup")].map((sup) => sup.textContent);
+    expect(markers).toEqual(["67", "68"]);
+    expect(passage.textContent).toBe(`The67${CONTENT.slice(3)}68`);
+    expect(screen.getByText("68. Francis, Address.")).toBeTruthy();
+  });
+
+  it("ignores a note whose offset is outside the passage", async () => {
+    await renderCatechism([{ n: 70, text: "Nowhere.", at: CONTENT.length + 5 }]);
+
+    expect(screen.getByText(CONTENT).querySelector("sup")).toBeNull();
+    expect(screen.queryByText("70. Nowhere.")).toBeNull();
+    expect(screen.queryByText("Notes")).toBeNull();
+  });
+
+  it("copies the text, then its notes, then the credit", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    await renderCatechism([{ n: 68, text: "Francis, Address.", at: CONTENT.length }]);
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+
+    const copied = writeText.mock.calls[0][0] as string;
+    expect(copied.startsWith(`${CONTENT}⁶⁸ — `)).toBe(true);
+    const notes = copied.indexOf("Notes:\n68. Francis, Address.");
+    expect(notes).toBeGreaterThan(0);
+    expect(copied.indexOf(CREDIT)).toBeGreaterThan(notes);
+    expect(copied.endsWith(CREDIT)).toBe(true);
+  });
+});
