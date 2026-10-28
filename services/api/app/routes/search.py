@@ -349,10 +349,6 @@ async def get_search_results(
             # past the 8s bound with nothing to stop it.
             context = await _restore_context(rows)
             access = await document_access(pool, [row["document_id"] for row in rows])
-            notes = await fetch_footnotes(pool, [
-                (str(row["chunk_id"]), row["content"]) for row in rows
-                if has_footnotes(row["collection"], row["document_title"])
-            ])
     except HTTPException:
         raise
     except TimeoutError as exc:
@@ -361,6 +357,13 @@ async def get_search_results(
     except Exception as exc:
         logger.error("get_search_results query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
+
+    # Outside the restore deadline: optional notes must never turn a restore into a
+    # 504. `fetch_footnotes` bounds itself and falls back to none.
+    notes = await fetch_footnotes(pool, [
+        (str(row["chunk_id"]), row["content"]) for row in rows
+        if has_footnotes(row["collection"], row["document_title"])
+    ])
 
     results = [
         ChunkResult(

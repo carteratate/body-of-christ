@@ -250,3 +250,28 @@ def test_saved_passages_carry_their_footnotes(load):
 def test_a_malformed_footnotes_value_does_not_fail_the_response(load):
     results = load([_row(1), _row(2)], {_id(1): {"bad": "shape"}})
     assert [r["footnotes"] for r in results] == [[], []]
+
+
+@pytest.mark.parametrize("load", [_restore, _bookmarks], ids=["history", "bookmarks"])
+def test_a_stalled_footnote_query_does_not_fail_the_response(load):
+    import asyncio
+
+    async def stall(sql, *args):
+        if "metadata->'footnotes'" in sql:
+            await asyncio.sleep(60)
+        return content_rows if ("FROM retrievals r" in sql or "FROM bookmarks b" in sql) else []
+
+    content_rows = []
+
+    def stalled_pool(rows, stored, *, fetchrow=None):
+        content_rows.extend(rows)
+        pool = MagicMock()
+        pool.fetch = AsyncMock(side_effect=stall)
+        pool.fetchrow = AsyncMock(return_value=fetchrow)
+        return pool
+
+    with patch(f"{__name__}._route_pool", stalled_pool), \
+            patch("app.footnotes._TIMEOUT_SECONDS", 0.05):
+        results = load([_row(1)], {})
+    assert results[0]["footnotes"] == []
+    assert results[0]["content"] == CONTENT

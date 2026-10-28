@@ -11,6 +11,7 @@ malformed value, or a failed query, gives a passage no notes.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from app.reader_access import CATECHISM_TITLE
@@ -21,6 +22,9 @@ _FOOTNOTES_SQL = """
     SELECT id::text AS id, metadata->'footnotes' AS footnotes
     FROM chunks WHERE id = ANY($1::uuid[])
 """
+
+# Notes are optional, so a slow lookup must not hold up the response it decorates.
+_TIMEOUT_SECONDS = 2.0
 
 
 def has_footnotes(collection: str | None, document_title: str | None) -> bool:
@@ -64,7 +68,10 @@ async def fetch_footnotes(pool, items: list[tuple[str, str]]) -> dict[str, list[
         logger.warning("footnotes: no database pool; passages shown without notes")
         return {chunk_id: [] for chunk_id, _ in items}
     try:
-        rows = await pool.fetch(_FOOTNOTES_SQL, sorted({chunk_id for chunk_id, _ in items}))
+        async with asyncio.timeout(_TIMEOUT_SECONDS):
+            rows = await pool.fetch(
+                _FOOTNOTES_SQL, sorted({chunk_id for chunk_id, _ in items}),
+            )
     except Exception as exc:
         logger.warning(
             "footnotes: query failed (%s); passages shown without notes",
