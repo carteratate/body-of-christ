@@ -7,7 +7,10 @@ No agent here; these are yours. About 10 minutes.
    little battery.
 2. **Claude app.** Sign into account A and account B (you already switch between them).
    Under Code, each account lists the Lenovo once its Remote Control service is up.
-   Start a session there and it works in its own worktree on the Lenovo.
+   Start a session there and it works in its own worktree on the Lenovo. The exception
+   is the one session each server opens when it starts: it sits in the main checkout,
+   shared by both accounts. Use it for machine chores, and start a new session for code
+   changes.
 3. **ChatGPT app.** In Codex's machine list, add → "Pair manually" and enter the code
    from `codex remote-control pair` on the Lenovo (its runbook, step 8, walks you
    through it). The Lenovo is listed as `LAPTOP-EBQLQ579`.
