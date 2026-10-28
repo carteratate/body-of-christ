@@ -45,6 +45,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 ### Phase 1
 
+- **#279** [Phase 1]. Fetch the US edition's text once from Catholic Cross Reference's Catechism search (about 116 requests). Recommended: yes, spaced further apart than its robots.txt asks, at night, with a plain User-Agent and no retries.
+  Answered 2026-10-28: yes, 30 seconds apart, run at night US time, stopping at the first error.
 - **1.2f** [Phase 1]. Approve a spend ceiling per work for the AI step that corrects scanning errors in scanned books (first used on councils 8 to 18). No spec proposes a figure.
 
 ### Phase 2
@@ -150,6 +152,11 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **1.4c** [Phase 1]. Give the deuterocanonical books' new shorter passages titles from the old Douay-Rheims chapter summaries, or leave them untitled. Recommended answer is untitled for now.
 - **1.10b** [Phase 1]. Should 1.10b, which already rewrites how Fathers and medieval paragraphs are read, also read `<verse>` blocks? Today the adapter reads only `<p>`, so about 135,000 characters of poems and quoted verse are missing, such as the pagan poets and the Sibyl that Justin, Theophilus and Clement quote as testimony, and Clement's hymn to Christ. Recommended: yes, as part of the work's own text (rule G keeps an author's quotations). If no, the 11 `known_defects.json` entries move to another item.
   Answered 2026-10-05: yes. 1.10b's Changes and Acceptance checks now include `<verse>` blocks.
+- **#279** [Phase 1]. Two points.
+  - Mark the parts of 1.6a and 1.6 that the US-edition text delivers as covered by #279. Recommended answer is yes.
+    Answered 2026-10-28: yes, for the parts the US text actually changes, and update every overlapping issue and spec.
+  - CCC 2267: (a) publish waits until 1.6 can ship the 1997 text as its history passage, or (b) publish the 2018 text first, the 1997 text staying in the vendored `ccc.json` and in #279's report, and 1.6 adds the history passage later. Recommended answer is (b).
+    Answered 2026-10-28: (b).
 - **1.6** [Phase 1]. Show Catechism paragraph numbers inside passage text as "§2267". Recommended answer is yes; the work goes ahead with this if there is no answer.
 - **1.7** [Phase 1]. Add Aquinas's own short introductions at the start of 611 questions and 3 treatises (about 297,000 characters), which are missing today. Recommended answer is yes, since they are his own words.
   Answered 2026-10-05: yes, as passages labeled "Question N, prologue" before Article 1. The Supplement's prologues are its compiler's and follow the Supplement's treatment (3.2).
