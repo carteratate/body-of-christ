@@ -69,7 +69,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="build and check the collection, print its counts, and write nothing",
+        help=("build and check the collection, print its counts, and write nothing to "
+              "live stores (the catechism also writes its local alignment report)"),
     )
     return parser
 
@@ -115,6 +116,8 @@ def main(
                 line += (f"; WARNING {len(unreached)} chapters no node opens, "
                          f"first {unreached[0]!r}")
             print(line)
+        if request.collection == "catechism":
+            return _catechism_report()
         return 0
 
     try:
@@ -127,6 +130,18 @@ def main(
         f"{result.passage_count} passages to {result.target.value}"
     )
     return 0
+
+
+def _catechism_report() -> int:
+    """The US-edition alignment and live identity report (#279, B4). Exit 1 when it
+    finds something Carter must decide before a publish."""
+    from checks import catechism_us
+
+    out, result = catechism_us.write()
+    stops = catechism_us.stops(result)
+    print(f"  US-edition report: {out}")
+    print(f"  stops for Carter: {', '.join(stops) if stops else 'none'}")
+    return 1 if stops else 0
 
 
 if __name__ == "__main__":

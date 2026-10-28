@@ -1,6 +1,9 @@
 """Catechism of the Catholic Church ingestion — three-tier page_node chunking.
 
-Source: nossbigg/catechism-ccc-json (v0.0.2)
+Sources: structure from nossbigg/catechism-ccc-json (v0.0.2, vatican.va's English), words
+and footnotes from the US edition (`us-edition/ccc-us.json`, issue #279). Before any
+chunking, `ingest/catechism_us.align` puts the US text of every numbered paragraph and
+heading into ccc.json's nodes; footnotes go to `metadata.footnotes`, never into content.
 
 Three-tier strategy
 -------------------
@@ -20,7 +23,9 @@ or whose raw_text begins with "IN BRIEF", is flagged is_in_brief=True.
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -29,6 +34,7 @@ from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
 from config import settings  # noqa: E402
 from ingest.common import split_display_passage  # noqa: E402
+from ingest import catechism_us  # noqa: E402
 
 _DEFAULT_SRC = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "sources", "catechism", "ccc.json"
@@ -236,50 +242,169 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
 _MIN_CONTENT = 30
 
 
-def build_document(source_path: str | None = None) -> Document:
+def _units(page_nodes: dict) -> list[tuple[str | None, str]]:
+    """Every text the chunker can place, in reading order: (item key or None for a
+    source line kept as printed, the text the chunker reads)."""
+    out = []
+    for node_id in catechism_us.ordered_node_ids(page_nodes):
+        for paragraph in page_nodes[node_id].get("paragraphs", []):
+            text = _para_text(paragraph)
+            if text:
+                out.append((paragraph.get("_item"), text))
+    return out
+
+
+class _Placement:
+    """Where each item's text lands in the chunks, found moving forward only."""
+
+    def __init__(self, units: list[tuple[str | None, str]]):
+        self.units = units
+        self.next = 0
+        self.placed: list[tuple[str | None, int]] = []   # (key, unit index) per chunk
+        self.dropped: list[tuple[str | None, str]] = []
+
+    def place(self, clean: str) -> list[tuple[str | None, str, int]]:
+        """(key, unit text, start in `clean`) for each unit `clean` holds, in order."""
+        found = []
+        cursor = 0
+        while self.next < len(self.units):
+            key, text = self.units[self.next]
+            unit = clean_text(text)
+            rest = clean[cursor:]
+            lead = len(rest) - len(rest.lstrip())
+            if unit and rest[lead:].startswith(unit):
+                found.append((key, text, cursor + lead))
+                cursor += lead + len(unit)
+                self.next += 1
+                continue
+            if cursor == 0 and not found:
+                # The chunker dropped this unit (a heading-only section): skip it.
+                self.dropped.append((key, text))
+                self.next += 1
+                continue
+            break
+        if clean[cursor:].strip():
+            raise ValueError(f"catechism: passage text not accounted for: {clean[cursor:cursor + 80]!r}")
+        return found
+
+
+def _last_word(text: str) -> str | None:
+    found = re.findall(r"[^\W_]+", text)
+    return found[-1] if found else None
+
+
+def _footnotes_for(items: dict, held: list[tuple[str | None, str, int]], clean: str) -> list[dict]:
+    """Each footnote of the items a chunk holds, at its offset in the chunk's text."""
+    notes = []
+    for key, text, start in held:
+        if key is None or key not in items:      # a source line kept as printed
+            continue
+        for note in items[key]["footnotes"]:
+            x = start + len(clean_text(text[:note["at"]]))
+            want = _last_word(text[:note["at"]])
+            if want is not None and _last_word(clean[:x]) != want:
+                raise ValueError(f"catechism: footnote {note['n']} of {key} lands after "
+                                 f"{_last_word(clean[:x])!r}, not {want!r}")
+            notes.append({"n": note["n"], "text": note["text"], "x": x})
+    return notes
+
+
+def _piece_spans(clean: str, pieces: list[str]) -> list[tuple[int, int]]:
+    """Each piece's span in its passage text, found moving forward
+    (`split_display_passage` keeps every word once, in order)."""
+    spans, cursor = [], 0
+    for piece in pieces:
+        start = clean.find(piece, cursor)
+        if start < 0:
+            raise ValueError("catechism: a display piece is not in its passage text")
+        spans.append((start, start + len(piece)))
+        cursor = start + len(piece)
+    return spans
+
+
+def _split_notes(spans: list[tuple[int, int]], notes: list[dict]) -> list[list[dict]]:
+    """Give each footnote to the piece holding its offset: start <= x <= end, and a
+    marker exactly at a piece's end belongs to that piece, not the next."""
+    out: list[list[dict]] = [[] for _ in spans]
+    for note in notes:
+        for k, (start, end) in enumerate(spans):
+            if start <= note["x"] <= end:
+                out[k].append({"n": note["n"], "text": note["text"], "at": note["x"] - start})
+                break
+        else:
+            raise ValueError(f"catechism: footnote {note['n']} falls between pieces")
+    return out
+
+
+@dataclass
+class Build:
+    document: Document
+    alignment: "catechism_us.Alignment"
+    dropped: list[tuple[str | None, str]]   # units the chunker left out, for the report
+    held: dict[str, list[str | None]]        # anchor -> item keys its text holds, in order
+
+
+def build_document(source_path: str | None = None, us_path: str | None = None) -> Document:
     """Build the CCC as one Document of clean numbered passages (reuses the
-    three-tier chunker, drops tiny TOC-only fragments, normalizes ellipses)."""
+    three-tier chunker, drops tiny TOC-only fragments, normalizes ellipses), with the
+    US edition's words and footnotes."""
+    return build(source_path, us_path).document
+
+
+def build(source_path: str | None = None, us_path: str | None = None) -> Build:
     src = source_path or _DEFAULT_SRC
     with open(src, encoding="utf-8") as f:
         data = json.load(f)
-    page_nodes = data.get("page_nodes", {})
+    alignment = catechism_us.align(data, catechism_us.load_us(us_path or catechism_us.US_SOURCE))
+    page_nodes = alignment.page_nodes
 
-    def _key(k: str) -> int:
-        try:
-            return int(k.split("-", 1)[1])
-        except (IndexError, ValueError):
-            return 0
-
-    ids = sorted(page_nodes.keys(), key=_key)
+    ids = catechism_us.ordered_node_ids(page_nodes)
     raw_chunks = chunk_nodes([page_nodes[k] for k in ids], ids)  # (content, ref, meta, pos)
+    placement = _Placement(_units(page_nodes))
 
     did = document_id("catechism")
     passages: list[Passage] = []
     pos = 0
     seen: set[str] = set()
+    held_by: dict[str, list[str | None]] = {}
     for content, reference, meta, _ in raw_chunks:
         clean = clean_text(content)
+        held = placement.place(clean)
         if len(clean) < _MIN_CONTENT:
+            placement.dropped.extend((key, text) for key, text, _ in held)
             continue                      # drop TOC-only fragments ("Article 2")
+        notes = _footnotes_for(alignment.items, held, clean)
         paras = meta.get("ccc_paragraphs") or []
         first = paras[0] if paras else None
         chapter_no = (first // 100) if first else 0
         base = make_anchor("ccc", first) if first else make_anchor("ccc", meta.get("path", str(pos)))
         pieces = split_display_passage(clean, settings.MAX_PASSAGE_CHARS)
-        for j, piece in enumerate(pieces):
+        spans = _piece_spans(clean, pieces)
+        for j, (piece, (lo, hi), piece_notes) in enumerate(
+                zip(pieces, spans, _split_notes(spans, notes))):
             anchor = base + (f"-p{j + 1}" if len(pieces) > 1 else "")
             k = 1
             while anchor in seen:
                 k += 1
                 anchor = f"{base}-p{j + 1}-{k}" if len(pieces) > 1 else f"{base}-{k}"
             seen.add(anchor)
+            piece_meta = {**meta, "footnotes": piece_notes}
+            held_by[anchor] = [key for key, text, start in held
+                               if start < hi and start + len(clean_text(text)) > lo]
             passages.append(Passage(
                 content=piece, reference=reference, anchor=anchor,
                 chapter_key=make_anchor("ccc", "part", str(chapter_no)),
                 chapter_label=(f"CCC §§{chapter_no * 100}–{chapter_no * 100 + 99}" if first else "CCC"),
-                position=pos, unit_label=(f"§{first}" if first else None), metadata=meta))
+                position=pos, unit_label=(f"§{first}" if first else None), metadata=piece_meta))
             pos += 1
-    return Document(id=did, collection="catechism",
-                    title="Catechism of the Catholic Church", author="Catholic Church",
-                    year=1992, metadata={"source": "nossbigg/catechism-ccc-json"},
-                    passages=passages)
+    if placement.next != len(placement.units):
+        raise ValueError("catechism: text after the last passage was not placed")
+    document = Document(id=did, collection="catechism",
+                        title="Catechism of the Catholic Church", author="Catholic Church",
+                        year=1992,
+                        metadata={"source": "nossbigg/catechism-ccc-json (structure); "
+                                            "US edition via catholiccrossreference.online "
+                                            "(text and footnotes, us-edition/ccc-us.json)"},
+                        passages=passages)
+    return Build(document, alignment, placement.dropped, held_by)
+

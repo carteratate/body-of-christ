@@ -1789,7 +1789,7 @@
   "author": "Catholic Church",
   "collection": "catechism",
   "source_path": "catechism/ccc.json",
-  "edition": "Catechism of the Catholic Church, 2nd edition, English translation for the United States",
+  "edition": "Catechism of the Catholic Church, 2nd edition, English translation for the United States. Since #279 the words and footnotes are the US edition, read from catechism/us-edition/ccc-us.json (Catholic Cross Reference's Catechism search, https://www.catholiccrossreference.online/catechism/); ccc.json (vatican.va's English) supplies only the structure",
   "translator": null,
   "first_published": 1997,
   "source_url": "https://github.com/nossbigg/catechism-ccc-json",

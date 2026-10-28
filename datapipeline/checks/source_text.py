@@ -524,6 +524,25 @@ def ccc_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     return units
 
 
+def ccc_us_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
+    """us-edition/ccc-us.json (the Catechism's words since #279). One "body" unit per
+    numbered paragraph, unit_id the CCC number; headings and Part, Section, Chapter and
+    Article titles are "heading"; each footnote is a "note" unit, which passages hold in
+    metadata rather than in their text."""
+    source_file = source_file or os.path.relpath(path, os.path.join(SOURCES, "catechism"))
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    units: list[SourceUnit] = []
+    for item in data["items"]:
+        if item["kind"] == "paragraph":
+            units.append(SourceUnit(source_file, str(item["n"]), item["text"], "body"))
+        else:
+            units.append(SourceUnit(source_file, None, item["text"], "heading"))
+        for note in item.get("footnotes", []):
+            units.append(SourceUnit(source_file, f"n{note['n']}", note["text"], "note"))
+    return units
+
+
 # --------------------------------------------------------------------------- files
 
 # Collections whose files are listed in sources/<collection>/manifest.json, by format.
@@ -545,7 +564,8 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
         return sorted(os.path.relpath(p, base)
                       for p in glob(os.path.join(base, "eng-web-c_usfm", "*.usfm")))
     if collection == "catechism":
-        return ["ccc.json"]
+        # The words come from the US edition (#279); ccc.json supplies only structure.
+        return ["us-edition/ccc-us.json"]
     if collection == "summa":
         return ["summa.xml"]
     raise ValueError(f"unknown collection {collection!r}")
@@ -561,6 +581,8 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return html_units(path, source_file)
     if source_file.endswith(".usfm"):
         return usfm_units(path, source_file)
+    if source_file.endswith("ccc-us.json"):
+        return ccc_us_units(path, source_file)
     if source_file.endswith(".json"):
         return ccc_units(path, source_file)
     raise ValueError(f"no extractor for {source_file}")

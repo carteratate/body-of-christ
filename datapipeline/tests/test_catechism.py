@@ -485,3 +485,214 @@ def test_make_ref_two_consecutive():
 
 def test_make_ref_two_non_consecutive():
     assert make_reference([10, 12], "x") == "CCC §10, §12"
+
+
+# ---------------------------------------------------------------------------
+# US edition (issue #279): fixtures tests/fixtures/ccc_min.json + ccc_us_min.json
+# ---------------------------------------------------------------------------
+
+import copy  # noqa: E402
+import json  # noqa: E402
+
+import pytest  # noqa: E402
+
+from ingest import catechism as _catechism, catechism_us as _cu  # noqa: E402
+from ingest.ccc_us import drop_repeated_structure, parse_page, resolve  # noqa: E402
+
+_FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
+_SRC = os.path.join(_FIXTURES, "ccc_min.json")
+_US = os.path.join(_FIXTURES, "ccc_us_min.json")
+
+
+@pytest.fixture(scope="module")
+def us_build():
+    return _catechism.build(_SRC, _US)
+
+
+def _passage_with(build, n):
+    return next(p for p in build.document.passages if n in p.metadata["ccc_paragraphs"])
+
+
+def test_numbered_paragraph_uses_us_text(us_build):
+    content = _passage_with(us_build, 1).content
+    assert "Redeemer and Savior." in content
+    assert "Saviour" not in content
+    assert "Legitimate defense" in _passage_with(us_build, 7).content
+
+
+def test_ccc_2267_2018_text(us_build):
+    content = _passage_with(us_build, 2267).content
+    assert "inadmissible" in content
+    assert "practically non-existent" not in content
+
+
+def test_short_continuation_lines_kept_once(us_build):
+    content = _passage_with(us_build, 2).content
+    us_text = ("So that this call should resound, Christ sent forth the apostles he had chosen, "
+               "and they went forth and preached everywhere.")
+    assert content.count(us_text) == 1
+    assert content.count("preached everywhere") == 1
+    # The heading glued onto the last line is still its own heading, after the paragraph.
+    assert f"{us_text}\n\nII. HANDING ON THE FAITH\n\nThose who welcomed" in content
+
+
+def test_headings_use_us_text(us_build):
+    first = _passage_with(us_build, 1).content
+    assert first.startswith('PROLOGUE\n\n"God our Savior desires all men to be saved."')
+    assert "I. THE LIFE OF MAN — TO KNOW AND LOVE GOD" in first
+    assert "The life of man - to know" not in first
+    # A misprinted source heading takes the US words; a structural title keeps its form.
+    second = _passage_with(us_build, 4).content
+    assert "The Decalogue and the natural law" in _passage_with(us_build, 3).content
+    assert "SECTION TWO\n\nTHE TEN COMMANDMENTS" in second
+    # A heading the source lacks is inserted where it belongs.
+    assert 'THE TEN COMMANDMENTS\n\n"Teacher, what must I do …?"\n\nTeacher, what good' in second
+    assert _passage_with(us_build, 7).content.startswith("ARTICLE 5 THE FIFTH COMMANDMENT\n\n")
+
+
+def test_unmatched_source_lines_are_kept_as_printed(us_build):
+    content = _passage_with(us_build, 4).content
+    assert "natural law.\n\nExodus 20 2-17\n\nI am the LORD your God.\n\nSECTION TWO" in content
+
+
+def test_footnotes_in_metadata_not_content(us_build):
+    passage = _passage_with(us_build, 2267)
+    notes = passage.metadata["footnotes"]
+    assert [n["n"] for n in notes] == [68]
+    assert notes[0]["text"].startswith("Francis, Address")
+    assert "Francis, Address" not in passage.content
+    # The marker sits right after "inadmissible."
+    assert passage.content[:notes[0]["at"]].endswith("inadmissible.")
+    # A heading's footnote goes to the passage showing the heading.
+    first = _passage_with(us_build, 1)
+    epigraph = next(n for n in first.metadata["footnotes"] if n["n"] == 1)
+    assert first.content[:epigraph["at"]].endswith('be saved."')
+
+
+def test_footnotes_do_not_change_content(tmp_path, us_build):
+    bare = json.load(open(_US, encoding="utf-8"))
+    for item in bare["items"]:
+        item["footnotes"] = []
+    path = tmp_path / "us_no_notes.json"
+    path.write_text(json.dumps(bare), encoding="utf-8")
+    without = _catechism.build(_SRC, str(path)).document.passages
+    with_notes = us_build.document.passages
+    assert [(p.anchor, p.content) for p in without] == [(p.anchor, p.content) for p in with_notes]
+    assert all(p.metadata["footnotes"] == [] for p in without)
+
+
+def test_footnote_offsets_survive_split(us_build):
+    pieces = [p for p in us_build.document.passages if p.metadata["ccc_paragraphs"] == [2269]]
+    assert [p.anchor for p in pieces] == ["ccc/2269-p1", "ccc/2269-p2"]
+    first, second = pieces
+    assert [n["n"] for n in first.metadata["footnotes"]] == [70, 71]
+    assert [n["n"] for n in second.metadata["footnotes"]] == [72]
+    at_split = next(n for n in first.metadata["footnotes"] if n["n"] == 71)
+    assert at_split["at"] == len(first.content)       # the marker at the cut stays behind
+    for piece in pieces:
+        for note in piece.metadata["footnotes"]:
+            assert piece.content[:note["at"]].rstrip().endswith(".")
+
+
+def test_every_paragraph_keeps_its_ccc_paragraphs(us_build):
+    numbers = sorted(n for p in us_build.document.passages for n in p.metadata["ccc_paragraphs"])
+    assert sorted(set(numbers)) == [1, 2, 3, 4, 5, 6, 7, 2267, 2268, 2269]
+
+
+def test_report_reconstructs_and_classifies(us_build):
+    from checks import catechism_us as report
+
+    source = json.load(open(_SRC, encoding="utf-8"))
+    result = report.report(us_build, source, None)
+    assert result["reconstruction"]["in_order"]
+    assert result["reconstruction"]["missing_us_items"] == []
+    assert result["reconstruction"]["repeated"] == []
+    assert result["footnotes"]["mismatched_numbers"] == []
+    assert result["substantive"] == [2267]
+    assert result["spelling_pairs"] == {"saviour -> savior": 1, "defence -> defense": 1}
+    assert [x["new"] for x in result["headings"]["fuzzy"]] == ["The Decalogue and the natural law"]
+    assert len(result["headings"]["unmatched_lines"]) == 2
+    assert report.stops(result) == []
+
+
+def _in_brief_fixture(tmp_path):
+    def P(*els):
+        return {"attrs": {}, "elements": list(els)}
+    src = {"page_nodes": {
+        "toc-1": {"paragraphs": [P({"type": "ref-ccc", "ref_number": 1}, {"type": "text", "text": "First teaching."})]},
+        "toc-2": {"paragraphs": [P({"type": "text", "text": "IN BRIEF"}),
+                                 P({"type": "ref-ccc", "ref_number": 2}, {"type": "text", "text": "A first summary."})]},
+        "toc-3": {"paragraphs": [P({"type": "ref-ccc", "ref_number": 3}, {"type": "text", "text": "Second teaching."})]},
+        "toc-4": {"paragraphs": [P({"type": "text", "text": "IN BRIEF"}),
+                                 P({"type": "ref-ccc", "ref_number": 4}, {"type": "text", "text": "A second summary."})]},
+    }}
+    us = {"items": [
+        {"kind": "paragraph", "n": 1, "text": "First teaching.", "footnotes": []},
+        {"kind": "heading", "text": "IN BRIEF", "footnotes": []},
+        {"kind": "paragraph", "n": 2, "text": "A first summary.", "footnotes": []},
+        {"kind": "paragraph", "n": 3, "text": "Second teaching.", "footnotes": []},
+        {"kind": "heading", "text": "IN BRIEF", "footnotes": []},
+        {"kind": "paragraph", "n": 4, "text": "A second summary.", "footnotes": []},
+    ]}
+    (tmp_path / "src.json").write_text(json.dumps(src))
+    (tmp_path / "us.json").write_text(json.dumps(us))
+    return str(tmp_path / "src.json"), str(tmp_path / "us.json"), src
+
+
+def test_live_openings_walk_forward_past_a_repeated_heading(tmp_path, monkeypatch):
+    from checks import catechism_us as report
+
+    monkeypatch.setattr(_catechism, "_MIN_CONTENT", 1)
+    src_path, us_path, source = _in_brief_fixture(tmp_path)
+    build = _catechism.build(src_path, us_path)
+    contents = [p.content for p in build.document.passages]
+    assert contents[1].startswith("IN BRIEF") and contents[3].startswith("IN BRIEF")
+    live = [{"anchor": p.anchor, "position": p.position, "content": p.content}
+            for p in build.document.passages]
+    identity = report.openings(build, source, live)
+    assert identity["opens_differently"] == [] and identity["removed"] == []
+    # Moving the second summary under the first heading must be caught, which a
+    # first-match lookup of "IN BRIEF" would not do.
+    moved = copy.deepcopy(live)
+    moved[3]["anchor"], moved[1]["anchor"] = moved[1]["anchor"], moved[3]["anchor"]
+    assert report.openings(build, source, moved)["opens_differently"]
+
+
+_PAGE = """
+<div class="section"><div class="navigation"> <a href="#">Part 3: Life in Christ</a> (1691 - 2557)</div>
+<div class="navigation"> Section 2: The Ten Commandments (2052 - 2557)</div>
+<div class="heading pre">"Teacher," he said.<a href="#" id="fnref:h753:1"><SUP>1</SUP></a> Then more. <a href="#!/search/2052">&#x21E1;</a></div>
+<div class="paragraph " id="para-2052"><div class="para"><div class="number"><a>2052</a></div>
+<div class="text">To the young man <EM>who</EM> asked,<a href="#" id="fnref:2052:2"><SUP>2</SUP></a> Jesus answers.<P>A second part.</P></div>
+<div class="footnotes"><div class="note" id="fn:2052:2"><div class="num">2.</div><div class="text"><a><I>Mt</I> 19:16</a>.</div></div>
+<div class="note" id="fn:h14:1"><div class="num">1.</div><div class="text">Jn 17:3.</div></div></div></div></div>
+</div>"""
+
+
+def test_parse_page_reads_text_markers_and_structure():
+    items, notes = parse_page(_PAGE)
+    kinds = [i["kind"] for i in items]
+    assert kinds == ["structure", "structure", "heading", "paragraph"]
+    kept = drop_repeated_structure(items)
+    # Part 3 opens at 1691, not here: a breadcrumb repeated at a page top.
+    assert [i["text"] for i in kept if i["kind"] == "structure"] == ["Section 2: The Ten Commandments"]
+    paragraph = items[3]
+    assert paragraph["text"] == "To the young man who asked, Jesus answers.\n\nA second part."
+    assert paragraph["text"][:paragraph["footnotes"][0]["at"]].endswith("asked,")
+    assert items[2]["text"] == '"Teacher," he said. Then more.'
+    resolved = resolve(kept, notes)
+    assert resolved[1]["footnotes"] == [{"n": 1, "text": "Jn 17:3.", "at": 19}]   # via the alias
+    assert resolved[2]["footnotes"][0]["text"] == "Mt 19:16."
+
+
+def test_resolve_refuses_a_marker_without_a_note():
+    items, notes = parse_page(_PAGE)
+    del notes["h14:1"]
+    with pytest.raises(ValueError, match="markers without notes"):
+        resolve(drop_repeated_structure(items), notes)
+
+
+def test_parse_page_refuses_unknown_markup():
+    with pytest.raises(ValueError, match="unexpected <table>"):
+        parse_page('<div class="paragraph " id="para-1"><div class="number">1</div>'
+                   '<div class="text">x<table></table></div></div>')
