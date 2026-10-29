@@ -608,10 +608,14 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
      - Credit line text ("Sourced via CCEL.org", "Text: Libreria Editrice Vaticana").
      - Estimated words, passages and MB.
      - R6 status and rule A to H notes.
-     - Status: cleared, blocked or excluded.
-  2. A running storage total at the top. When the projected database size passes 450 MB, stop and ask Carter (Pro, or reorder the additions).
-  3. Public facts only. Correspondence, and anything Carter has not sent, stays in the private memos.
-- **Acceptance checks:** Every work named in 5.3 to 5.6c has a row with status cleared before its PR merges. Each addition PR links its rows. The storage total is updated in each addition PR.
+     - Status: cleared (full reader), excerpt-only, blocked or excluded.
+     - For excerpt-only, an `excerpt_basis`: a published statement by the rights holder or the Holy See that allows the use without permission (URL, the wording, the date read) and every condition or limit it sets, such as a word limit per excerpt, a required notice, or no profit. Risk reduction is not a basis: a copyrighted work with no such statement is blocked until permission is granted (Decision log "Excerpt-only needs an allowed-use basis", 29 Oct 2026). The Catechism's basis is the USCCB notice (excerpts up to 5,000 words, with its notice shown). The LEV texts taken from vatican.va cite the 2011 *L'Osservatore Romano* article and its three conditions (Decision log "LEV texts from vatican.va"); the Pontifical Biblical Commission and the social-doctrine Compendium rows stay blocked until the LEV confirms them.
+  2. A build check that every passage of an excerpt-only document stays within its basis's limits (for a word limit, the longest passage's word count), run in the release report.
+  3. The same determination for live documents that are `in-copyright` or `unknown`: each gets an `excerpt_basis` or is listed for Carter. None is retired without his decision.
+  4. The full-reader step for LEV texts: a vatican.va document whose cleanup fix has passed the coverage checks moves to `permission`, with the article cited as the grant and the conditions as its scope. The PR that makes the move names the fix and attaches its coverage result.
+  5. A running storage total at the top. When the projected database size passes 450 MB, stop and ask Carter (Pro, or reorder the additions).
+  6. Public facts only. Correspondence, and anything Carter has not sent, stays in the private memos.
+- **Acceptance checks:** Every work named in 5.3 to 5.6c has a row with status cleared, or excerpt-only with an `excerpt_basis` its passages pass, before its PR merges. A blocked row blocks its PR. Each addition PR links its rows. The storage total is updated in each addition PR.
 - **Production safety:** Documentation only.
 - **Needs Carter:** All correspondence with rights holders (CCEL, ecatholic2000, NINS for the Newman Reader, the Aquinas Institute if SCG is taken from aquinas.cc). The Pro decision when the storage total passes 450 MB.
 - **Out of scope:** Paid licences (Decision log, "Licences": no spending in this cleanup). Any TheoCorpus translation (Decision log, "Rights review").
