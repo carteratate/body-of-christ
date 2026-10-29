@@ -58,14 +58,11 @@ async def check_search_rate_limit(
     user: AuthUser = Depends(get_current_user),
     _plan: SearchPlan = Depends(_resolve_search_plan),
 ) -> None:
-    """Rate limit for V2 search endpoints (stricter than V1 chat).
+    """Rate limit for the search endpoints, on the user_usage counters.
 
     Depends on _resolve_search_plan so invalid requests are rejected with 422
-    before the counter is incremented.
-
-    TODO: Currently shares the same user_usage counters (rate_count / quota_count)
-    as V1 chat. Add search_rate_count / search_quota_count columns in a future
-    migration so that chat and search quotas are tracked independently.
+    before the counter is incremented. Search is the counters' only user since the
+    legacy V1 chat API was removed.
     """
     pool = get_pool()
     if not pool:

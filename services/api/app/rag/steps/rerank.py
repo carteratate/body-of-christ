@@ -1,12 +1,8 @@
 """Rerank dispatcher: composes Cohere and/or an LLM reranker per pipeline config.
 
-Three modes, selected by which rerankers a pipeline enables:
+Two modes, selected by whether a pipeline adds an LLM after Cohere:
 
 - `cohere_only`  — Cohere per collection, keep top `quota`. Terminal.
-- `llm_only`     — structured pointwise LLM, one call per collection. Candidate
-                   sizing is historical, but the output contract is versioned and
-                   must not be compared across the structured-output rollout as if
-                   it were an unchanged experimental baseline.
 - `both`         — Cohere per collection keeping `quota + extra`, merged and trimmed
                    to a global cap, then ONE listwise LLM call over the whole pool.
 
@@ -23,9 +19,9 @@ import time
 from dataclasses import dataclass
 
 from app.config import settings
-from app.rag.steps import budget, degradation, rerank_cohere
+from app.rag.steps import budget, rerank_cohere
 from app.rag.steps.cost_tracker import CostTracker
-from app.rag.steps.llm_rerank import listwise, pointwise
+from app.rag.steps.llm_rerank import listwise
 from app.rag.steps.llm_rerank.openai_provider import PROVIDER as LUNA_PROVIDER
 from app.rag.steps.llm_rerank.openai_provider import REASONING_EFFORTS as LUNA_REASONING_EFFORTS
 from app.rag.steps.rerank_haiku import PROVIDER as HAIKU_PROVIDER
@@ -37,9 +33,10 @@ logger = logging.getLogger(__name__)
 # must be segmented in evaluation/reporting.
 #   v1 -> v2 (2026-08-20): PASSAGE ROLE. Both LLM rerank prompts now tell the model
 #   that an 'Objection N' unit label marks a position the author states in order to
-#   REFUTE, and both LLM inputs now carry that label (`llm_card` for listwise,
-#   `_format_passages` for pointwise). Objections are 39.3% of the Summa, so this
-#   deliberately changes their scoring and v1/v2 quality numbers are NOT comparable.
+#   REFUTE, and both LLM inputs now carry that label (`llm_card` for listwise, and
+#   the since-removed pointwise reranker's passage record). Objections are 39.3% of
+#   the Summa, so this deliberately changes their scoring and v1/v2 quality numbers
+#   are NOT comparable.
 LLM_RERANK_CONTRACT_VERSION = "structured-positional-v2-passage-role"
 
 # Cohere has no prompt, but `rerank_docs.cohere_document` now injects the unit label
@@ -75,9 +72,9 @@ PROVIDERS = {
 class RerankConfig:
     """Which rerankers a pipeline runs.
 
-    `use_cohere=False, llm_provider=None` would mean no reranking at all, which
-    would return raw RRF order as if it had been scored — rejected at construction
-    rather than silently degrading.
+    Cohere always runs. An LLM alone (the pointwise `llm_only` mode) was removed in
+    October 2026; `use_cohere=False` is rejected at construction rather than
+    silently returning raw RRF order as if it had been scored.
     """
 
     use_cohere: bool
@@ -95,10 +92,10 @@ class RerankConfig:
     terminal_seats: budget.TerminalSeats | None = None
 
     def __post_init__(self) -> None:
-        if not self.use_cohere and self.llm_provider is None:
+        if not self.use_cohere:
             raise ValueError(
-                "RerankConfig must enable Cohere, an LLM provider, or both — "
-                "no-reranker configurations are not valid."
+                "RerankConfig must enable Cohere: pipelines run Cohere alone or "
+                "Cohere followed by one listwise LLM call."
             )
         if self.llm_provider is not None and self.llm_provider not in PROVIDERS:
             raise ValueError(
@@ -120,7 +117,7 @@ class RerankConfig:
                 f"Valid: {sorted(LUNA_REASONING_EFFORTS)}"
             )
 
-        if self.terminal_seats is not None and not (self.use_cohere and self.llm_provider):
+        if self.terminal_seats is not None and not self.llm_provider:
             raise ValueError(
                 "terminal_seats only applies when both Cohere and an LLM reranker run."
             )
@@ -134,9 +131,7 @@ class RerankConfig:
 
     @property
     def mode(self) -> str:
-        if self.use_cohere and self.llm_provider:
-            return "both"
-        return "cohere_only" if self.use_cohere else "llm_only"
+        return "both" if self.llm_provider else "cohere_only"
 
 
 def _llm_pool_from(
@@ -224,40 +219,6 @@ async def run(
     list except in `both` mode.
     """
     mode = config.mode
-
-    if mode == "llm_only":
-        provider = config.provider()
-        # Preserve historical candidate sizing for continuity. Scoring/output uses
-        # LLM_RERANK_CONTRACT_VERSION and is not methodologically interchangeable
-        # with runs from the former free-text UUID contract.
-        max_per_col = quota * settings.candidate_multiplier
-        import asyncio
-
-        results = await asyncio.gather(
-            *[
-                pointwise.rerank_collection(
-                    col_cands[:max_per_col], query, quota, cost_tracker, provider,
-                    step=f"rerank_{provider.name}",
-                )
-                for col_cands in candidates.values()
-            ],
-            return_exceptions=True,
-        )
-        ranked: list[RankedChunk] = []
-        for collection, result in zip(candidates, results):
-            if isinstance(result, BaseException):
-                logger.warning("rerank: collection failed: %s", result)
-                degradation.record(
-                    f"rerank_{provider.name}",
-                    type(result).__name__,
-                    "collection_omitted",
-                    scope=collection,
-                    details={"message": str(result)[:300]},
-                )
-            else:
-                ranked.extend(result)
-        ranked.sort(key=lambda r: r.reranker_score, reverse=True)
-        return ranked, ranked
 
     per_collection = await rerank_cohere.run_per_collection(
         candidates, query, quota, cost_tracker,

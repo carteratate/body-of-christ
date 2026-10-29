@@ -30,13 +30,12 @@ for _n in ("app.rag.steps.rerank_cohere", "app.rag.steps.rerank",
            "app.rag.steps.llm_rerank.listwise", "app.rag.compare.judge"):
     logging.getLogger(_n).setLevel(logging.INFO)
 
-# Round 3 shipping comparison: production plus the two credible lower-cost
-# Cohere→listwise challengers. Retired round-2 variants remain available through
-# ``--pipelines`` for targeted follow-up work.
+# Production and its noise floor (the same pipeline with its own HyDE draw). A
+# challenger has to beat production by more than the gap between these two. Any
+# other registry pipeline can be added with ``--pipelines``.
 PIPELINES = [
-    "hyde_haiku",               # production baseline (pointwise Haiku)
-    "hyde_cohere_haiku",        # two-stage, listwise Haiku
-    "hyde_cohere_luna",         # two-stage, listwise Luna
+    "hyde_cohere_luna_seats10t80",              # production (_PRODUCTION_PIPELINE)
+    "hyde_cohere_luna_seats10t80_hydesample",   # noise floor
 ]
 
 COLLECTIONS = ["bible", "catechism", "summa", "encyclicals", "church-fathers"]
@@ -393,6 +392,8 @@ def _artifact_fingerprint(pipelines: list[str], quota: int) -> dict:
             "cohere_max_pool": settings.cohere_max_pool,
             "retrieval_k_min": settings.retrieval_k_min,
             "retrieval_k_max": settings.retrieval_k_max,
+            # The default every pipeline that does not pin `rrf_k` merges with.
+            "rrf_k": settings.rrf_k,
         },
     }
 
@@ -418,7 +419,6 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
         Path(__file__).parents[1] / "app/rag/steps/retrieve_fts.py",
         Path(__file__).parents[1] / "app/rag/steps/retrieve_vector.py",
         Path(__file__).parents[1] / "app/rag/steps/llm_rerank/listwise.py",
-        Path(__file__).parents[1] / "app/rag/steps/llm_rerank/pointwise.py",
         Path(__file__).parents[1] / "app/rag/compare/judge.py",
         Path(__file__).parents[1] / "app/rag/steps/cost_tracker.py",
     ]
@@ -459,7 +459,6 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
             "cohere_keep_score_floor": settings.cohere_keep_score_floor,
             "hyde_luna_concurrency": settings.hyde_luna_concurrency,
             "listwise_include_floor": settings.listwise_include_floor,
-            "pointwise_score_cutoff": settings.pointwise_score_cutoff,
             "guarantee_min_score": settings.guarantee_min_score,
             "llm_pool_global_cap": settings.llm_pool_global_cap,
             "cohere_pool_safety": settings.cohere_pool_safety,
@@ -468,6 +467,7 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
             "retrieval_k_min": settings.retrieval_k_min,
             "retrieval_k_max": settings.retrieval_k_max,
             "llm_rerank_max_tokens": settings.llm_rerank_max_tokens,
+            "rrf_k": settings.rrf_k,
         },
     }
 
@@ -536,7 +536,6 @@ async def main() -> None:
     args = ap.parse_args()
 
     from app.db import close_pool, init_pool
-    from app.llm import close_llm, init_llm
     from app.rag.api_keys import close_api_keys, init_api_keys
     from app.rag.compare import judge, overlap
     from app.rag.compare import shared_runner
@@ -551,7 +550,7 @@ async def main() -> None:
     from app.rag.steps.rerank_haiku import close_rerank, init_rerank
 
     await init_pool()
-    init_llm(); init_embed(); init_qdrant(); init_api_keys(); init_hyde_luna()
+    init_embed(); init_qdrant(); init_api_keys(); init_hyde_luna()
     init_rerank(); init_cohere(); init_luna(); judge.init_judge()
 
     out = Path(args.out)
@@ -772,7 +771,7 @@ async def main() -> None:
         await judge.close_judge()
         await close_luna(); await close_hyde_luna(); await close_cohere(); await close_rerank()
         await close_api_keys(); await close_embed(); await close_qdrant()
-        await close_pool(); await close_llm()
+        await close_pool()
 
     print(f"\nsuite done in {time.perf_counter() - t_suite:.0f}s -> {out}")
 

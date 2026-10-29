@@ -40,7 +40,7 @@ A defect matters if it breaks any of these. Read the code each one names before 
 9. **The reader.** `/reader/<docId>` shows a document's chapter list from the precomputed outline (`documents.chunk_count`, `document_chapters`, migrations 0037 and 0038) and one chapter at a time (`services/api/app/routes/documents.py`). Reading position is saved per document as `chapter_key` and `anchor` (`reading_progress`).
 10. **The sources page.** `/sources` lists every document with title, author, year, translation and passage count (`routes/sources.py`).
 11. **Saved user data.** Search history (`searches`, `retrievals`), bookmarks ("My Passages"), guest results and relevance labels all store passage IDs, and cascade on delete. Restoring a past search re-reads those passages. The planned Studies feature will store snapshots of passages.
-12. **Discover and the retrieval lab.** `/v1/evaluate` scores collections for a question. `/search/compare` and the gold sets in `docs/eval/` reference passage IDs to measure retrieval quality.
+12. **Discover and the retrieval lab.** `/v1/evaluate` scores collections for a question. The eval harness (`services/api/scripts/run_eval_suite.py`) and the gold sets in `docs/eval/` reference passage IDs to measure retrieval quality.
 13. **Trust and credit.** Attribution (author, certainty labels), the planned source credit line on opened passages, and the About page's description of each collection.
 
 ## 3. What is already known: do not report these as new
@@ -76,9 +76,9 @@ Earlier findings live in:
 - `docs/research/2026-09-28-rule-1-authorship-verification.md`
 - `docs/research/2026-10-04-*.md`
 - `docs/research/R1` to `R6`
-- `docs/2026-06-10-codebase-issue-inventory.md`
-- `docs/2026-08-20-retrieval-integrity-work.md`
-- `docs/2026-08-22-summa-reingest-scope.md`
+- `docs/archive/2026-06-10-codebase-issue-inventory.md`
+- `docs/archive/2026-08-20-retrieval-integrity-work.md`
+- `docs/archive/2026-08-22-summa-reingest-scope.md`
 - the long docstring of `datapipeline/scripts/reconcile_qdrant_payloads.py`, which records 86 Qdrant points embedded from text unrelated to their Postgres row, and a stale Summa `"Objection 1"` prefix still in Qdrant payloads.
 
 What the existing checks cannot see is your main hunting ground:

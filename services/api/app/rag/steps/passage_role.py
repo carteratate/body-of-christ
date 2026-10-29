@@ -5,9 +5,9 @@ INVERT the passage's meaning — 10,517 chunks (39.3% of the collection) are obj
 Aquinas states in order to REFUTE — so every model that reads a passage needs it: both
 rerankers, and the explanation model that writes the prose a user actually reads.
 
-Three call sites need the same decision, which is why it lives here rather than being
-re-implemented in each: `rerank_docs` (Cohere document + listwise card),
-`llm_rerank.pointwise` (the per-collection passage record), and `steps.explain`.
+Two call sites need the same decision, which is why it lives here rather than being
+re-implemented in each: `rerank_docs` (Cohere document + listwise card) and
+`steps.explain`.
 """
 from __future__ import annotations
 

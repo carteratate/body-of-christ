@@ -113,7 +113,7 @@ async def rerank_pool(
             _LISTWISE_SYSTEM,
             user_message,
             settings.llm_rerank_max_tokens,
-            score_schema(len(shuffled), pointwise=False),
+            score_schema(len(shuffled)),
         )
     except Exception as exc:
         logger.warning(

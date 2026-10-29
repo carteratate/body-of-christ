@@ -1,7 +1,7 @@
 # Codebase Issue Inventory
 
 > **Superseded inventory.** Paths and operational conclusions below describe the
-> repository on 2026-06-10. Use [`datapipeline/README.md`](../datapipeline/README.md)
+> repository on 2026-06-10. Use [`datapipeline/README.md`](../../datapipeline/README.md)
 > for current collection publication and repair guidance.
 
 Date: 2026-06-10

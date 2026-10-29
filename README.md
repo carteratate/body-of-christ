@@ -126,8 +126,13 @@ Production runs the `hyde_cohere_luna_seats10t80` configuration (`_PRODUCTION_PI
     via `explanation_delta` events. These arrive *after* `done`, by design.
 11. **Cost** — record the search's provider cost to `search_costs` (best-effort, background).
 
-The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna,
-no-lexical, and Luna 6 / reasoning-effort arms). Switching production is a one-line change to `_PRODUCTION_PIPELINE`.
+The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of Luna,
+no-lexical, and Luna 6 / reasoning-effort arms). Every pipeline runs Cohere, alone or
+followed by one listwise LLM call. Switching production is a one-line change to
+`_PRODUCTION_PIPELINE`. To compare pipelines, run
+`services/api/scripts/run_eval_suite.py --pipelines <names>`: it retrieves once, replays
+each pipeline over the same candidates, and has an LLM judge score the results. Its
+default arms are production and production with its own HyDE draw (the noise floor).
 
 No agent frameworks, no LangGraph. SSE event types: `chunk`, `status`,
 `explanation_delta`, `done`, `error`, and `results_ready` (guest only).
@@ -168,7 +173,6 @@ docs/                Design notes, specs, and the architecture review
 CLAUDE.md            Architectural invariants and project rules (authoritative).
                      AGENTS.md is a symlink to it.
 CONTEXT.md           Domain vocabulary — the words this project uses on purpose
-PROGRESS.md          Historical V2 implementation log
 ```
 
 ---
@@ -267,7 +271,7 @@ authoritative list — names, defaults, and which are required — is
 | `SUPABASE_PROJECT_URL` | ✅ | Supabase project URL (JWT issuer / JWKS) |
 | `QDRANT_URL` / `QDRANT_API_KEY` | ✅ | Vector store |
 | `OPENAI_API_KEY` | ✅ | Embeddings, listwise rerank, explanations |
-| `ANTHROPIC_API_KEY` | ✅ | HyDE, Haiku rerank path, collection scoring, legacy chat |
+| `ANTHROPIC_API_KEY` | ✅ | HyDE, Haiku rerank path, collection scoring |
 | `COHERE_API_KEY` | — | First-stage rerank. Needed for the production pipeline config. |
 | `ANTHROPIC_API_KEY_B/C/D` | — | Extra keys for per-key HyDE semaphoring; fall back to `ANTHROPIC_API_KEY` |
 | `SUPABASE_JWT_AUDIENCE` | — | JWT audience (default `authenticated`) |
@@ -275,7 +279,6 @@ authoritative list — names, defaults, and which are required — is
 | `GUEST_IP_HASH_SECRET` | — | Keyed pseudonymization for guest IP quotas; falls back to `INTERNAL_API_SECRET` |
 | `CORS_ORIGINS` | — | Allowed frontend origins |
 | `RATE_LIMIT_SEARCH_PER_MINUTE` / `DAILY_SEARCH_QUOTA` | — | `/v1/search` limits (default 5/min, 30/day) |
-| `RATE_LIMIT_PER_MINUTE` / `DAILY_MESSAGE_QUOTA` | — | Legacy V1 chat limits (default 10/min, 50/day) — **not** the search ones |
 
 **Frontend** (Vercel / `.env.local`):
 
@@ -368,9 +371,13 @@ annotations).
 `reading_progress`, `product_feedback`, `guest_trials`, `guest_trial_retrievals`
 (guest results, held separately until `POST /v1/guest/claim` transfers them).
 
-**Retrieval lab:** `compare_runs`, `retrieval_labels`.
+**Search rate limits:** `user_usage`.
 
-**Legacy V1 chat:** `chat_sessions`, `chat_messages`, `user_usage` — still in place.
+**Retrieval evaluation:** `retrieval_labels` (relevance labels from search cards).
+
+**No longer written:** `compare_runs` (the removed HTTP retrieval lab) and
+`chat_sessions` / `chat_messages` (the removed V1 chat API). The tables and their rows
+stay; dropping them would be a separate migration.
 
 **Drafted but not yet committed:** `studies`, `study_blocks` — see `CLAUDE.md` §4.
 
@@ -393,13 +400,12 @@ The codebase is documented in-repo. Start here:
 | `CONTEXT.md` | Domain vocabulary: the terms this project uses deliberately, and what to avoid |
 | `datapipeline/README.md` | Supported collection publication, repair, reset, and wipe commands |
 | `datapipeline/SOURCES.md` | Corpus source provenance and re-ingestion per collection |
-| `docs/architecture/` | The August 2026 production architecture review (items 4–8 open) |
+| `docs/architecture/` | The August 2026 production architecture review (items 4–6 open) |
 | `docs/agents/` | Issue tracker, triage labels, and domain-doc conventions for agents |
-| `docs/superpowers/` | Historical plans and specs, one per feature |
+| `docs/archive/` | Finished or superseded plans, specs and notes, including the old `docs/superpowers/` and `PROGRESS.md` |
 | `docs/eval/` | Retrieval evaluation round 3 — `ROUND3_REPORT.md` and its final run data. `.gitignore:37` excludes `docs/eval/*` with these two as the only exceptions, so the working directory holds far more than the repo does. |
 | `docs/research/` | Corpus expansion candidates — ranked gaps, with the rights and licensing constraints on each |
 | `docs/ci-cd-plan.md` | A **draft** CI/CD proposal (2026-09-09), unimplemented and pending decisions — not a description of the current pipeline |
-| `PROGRESS.md` | Historical V2 implementation log. Banner-marked; not current guidance. |
 
 Dated files under `docs/` are point-in-time records. Several carry a "superseded"
 banner pointing at the doc that replaced them — trust the banner.

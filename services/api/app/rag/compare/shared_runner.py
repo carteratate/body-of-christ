@@ -12,7 +12,6 @@ import dataclasses
 import time
 from dataclasses import dataclass
 
-from app.config import settings
 from app.rag.pipelines.registry import PipelineConfig
 from app.rag.pipelines.runner import _pool_sizes, hyde_overrides, run_from_candidates
 from app.rag.steps import degradation, embed, fetch_positions, hyde_s25, retrieve_fts
@@ -96,10 +95,7 @@ async def capture(
     started = time.perf_counter()
 
     sizes = {config.name: _pool_sizes(config, quota) for config in configs}
-    effective_k = {
-        name: k if k is not None else quota * settings.candidate_multiplier
-        for name, (k, _top_n) in sizes.items()
-    }
+    effective_k = {name: k for name, (k, _top_n) in sizes.items()}
     max_k = max(effective_k.values())
 
     query_vec = await embed.run(query, tracker)

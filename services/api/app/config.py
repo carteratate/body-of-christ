@@ -9,7 +9,9 @@ HyDEProvider = Literal["haiku", "luna"]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    # A key that a removed setting leaves behind in someone's .env must not stop the
+    # API from starting, so unknown keys are ignored rather than rejected.
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     app_env: str = "development"
     # "auto" writes readable text to a terminal and one JSON object per line
@@ -37,10 +39,6 @@ class Settings(BaseSettings):
     anthropic_api_key_b: str | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY_B")
     anthropic_api_key_c: str | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY_C")
     anthropic_api_key_d: str | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY_D")
-    anthropic_model: str = Field(default="claude-sonnet-4-6", validation_alias="ANTHROPIC_MODEL")
-    anthropic_title_model: str = Field(default="claude-haiku-4-5", validation_alias="ANTHROPIC_TITLE_MODEL")
-    llm_max_tokens: int = Field(default=1024, validation_alias="LLM_MAX_TOKENS")
-    chat_history_window: int = Field(default=20, validation_alias="CHAT_HISTORY_WINDOW")
 
     # Internal secret — shared with Vercel proxy to reject unauthorized requests
     internal_api_secret: str | None = Field(default=None, validation_alias="INTERNAL_API_SECRET")
@@ -112,7 +110,6 @@ class Settings(BaseSettings):
     # more or fewer passages than intended).
     guarantee_min_score: float = Field(default=0.25, validation_alias="GUARANTEE_MIN_SCORE")
     cohere_include_floor: float = Field(default=0.25, validation_alias="COHERE_INCLUDE_FLOOR")
-    pointwise_score_cutoff: float = Field(default=0.25, validation_alias="POINTWISE_SCORE_CUTOFF")
 
     # --- Cohere rerank (new code paths only) ---
     # Cohere bills 1 search unit per query + 100 documents, splitting any document
@@ -192,7 +189,7 @@ class Settings(BaseSettings):
         default=None, validation_alias="EVALUATION_CORPUS_ID",
     )
 
-    # --- Dynamic retrieval sizing (cohere_only / both; llm_only keeps quota x multiplier) ---
+    # --- Dynamic retrieval sizing ---
     retrieval_k_min: int = Field(default=10, validation_alias="RETRIEVAL_K_MIN")
     retrieval_k_max: int = Field(default=60, validation_alias="RETRIEVAL_K_MAX")
 
@@ -202,11 +199,7 @@ class Settings(BaseSettings):
     # ablation axis rather than a global.
     rrf_k: int = Field(default=20, validation_alias="RRF_K")
 
-    # Rate limiting
-    rate_limit_per_minute: int = Field(default=10, validation_alias="RATE_LIMIT_PER_MINUTE")
-    daily_message_quota: int = Field(default=50, validation_alias="DAILY_MESSAGE_QUOTA")
-
-    # Rate limiting (V2 — tighter than V1 due to ~7 LLM calls per search)
+    # Rate limiting (~7 LLM calls per search)
     rate_limit_search_per_minute: int = Field(default=5, validation_alias="RATE_LIMIT_SEARCH_PER_MINUTE")
     daily_search_quota: int = Field(default=30, validation_alias="DAILY_SEARCH_QUOTA")
 
@@ -236,8 +229,6 @@ class Settings(BaseSettings):
         "retrieval_k_min",
         "retrieval_k_max",
         "rrf_k",
-        "rate_limit_per_minute",
-        "daily_message_quota",
         "rate_limit_search_per_minute",
         "daily_search_quota",
     )
@@ -261,7 +252,6 @@ class Settings(BaseSettings):
     @field_validator(
         "guarantee_min_score",
         "cohere_include_floor",
-        "pointwise_score_cutoff",
         "cohere_keep_score_floor",
         "listwise_include_floor",
         "listwise_min_coverage",

@@ -1,10 +1,8 @@
-"""Per-collection pointwise re-ranking using Claude Haiku (parallel across collections).
+"""The Claude Haiku client and the Haiku reranker provider.
 
-The prompt and parsing now live in `llm_rerank/pointwise.py` so Haiku and Luna can
-share them. This module stays as the Haiku-bound entry point: it owns the `_client`
-global and keeps `run` / `_rerank_single_collection` / `init_rerank` / `close_rerank`
-at their historical import paths, which `app/main.py` and `tests/test_rerank.py`
-depend on.
+This module owns the one Anthropic client that Haiku calls share: the listwise
+reranker reaches it through `PROVIDER`, and `routes/evaluate.py` (Discover) reads
+`_client` directly. `init_rerank` / `close_rerank` are wired into `main.py`.
 
 `_HaikuClientProvider.score` reads the module-level `_client` at call time (rather
 than capturing it), so patching `rerank_haiku._client` still intercepts the model
@@ -12,49 +10,17 @@ call — that is what the existing tests do.
 """
 from __future__ import annotations
 
-import asyncio
-import json
 import logging
-import uuid as _uuid_mod
 from typing import Any
 
 import anthropic
 
 from app.config import settings
-from app.rag.steps import degradation
-from app.rag.steps.cost_tracker import CostTracker
-from app.rag.steps.llm_rerank import pointwise
 from app.rag.steps.llm_rerank.base import ScoreResult
-from app.rag.steps.types import ChunkCandidate, RankedChunk
 
 logger = logging.getLogger(__name__)
 
 _client: anthropic.AsyncAnthropic | None = None
-
-# Re-exported for tests and callers that reference them at this path.
-_RERANK_SYSTEM = pointwise._RERANK_SYSTEM
-_format_passages = pointwise._format_passages
-_fallback_ranked = pointwise.fallback_ranked
-
-
-# Compatibility shims for external evaluation harnesses that imported the former
-# private helpers. Production parsing uses llm_rerank.structured instead.
-def _is_valid_uuid(value: str) -> bool:
-    try:
-        _uuid_mod.UUID(value)
-        return True
-    except (ValueError, AttributeError):
-        return False
-
-
-def _extract_json_array(text: str) -> list[dict]:
-    start = text.find("[")
-    if start < 0:
-        raise ValueError("No JSON array found in response")
-    value, end = json.JSONDecoder().raw_decode(text, start)
-    if not isinstance(value, list) or text[end:].strip() not in ("", "```"):
-        raise ValueError("Invalid legacy JSON array response")
-    return value
 
 
 def init_rerank() -> None:
@@ -145,42 +111,3 @@ class _HaikuClientProvider:
 
 # The single Haiku rerank provider instance, consumed by steps/rerank.py.
 PROVIDER = _HaikuClientProvider()
-
-
-async def _rerank_single_collection(
-    candidates: list[ChunkCandidate],
-    query: str,
-    quota: int,
-    cost_tracker: CostTracker,
-) -> list[RankedChunk]:
-    """Score and filter one collection's candidates using Claude Haiku."""
-    return await pointwise.rerank_collection(
-        candidates, query, quota, cost_tracker, PROVIDER, step="rerank_haiku",
-    )
-
-
-async def run(
-    candidates: dict[str, list[ChunkCandidate]],
-    query: str,
-    quota: int,
-    cost_tracker: CostTracker,
-) -> list[RankedChunk]:
-    """Rerank all collections in parallel, return globally sorted list."""
-    max_per_col = quota * settings.candidate_multiplier
-    results = await asyncio.gather(
-        *[_rerank_single_collection(col_cands[:max_per_col], query, quota, cost_tracker)
-          for col_cands in candidates.values()],
-        return_exceptions=True,
-    )
-    all_ranked: list[RankedChunk] = []
-    for collection, result in zip(candidates, results):
-        if isinstance(result, BaseException):
-            logger.warning("rerank_haiku: collection failed: %s", result)
-            degradation.record(
-                "rerank_haiku", type(result).__name__, "collection_omitted",
-                scope=collection, details={"message": str(result)[:300]},
-            )
-        else:
-            all_ranked.extend(result)
-    all_ranked.sort(key=lambda r: r.reranker_score, reverse=True)
-    return all_ranked

@@ -2,7 +2,7 @@
 
 > **Historical implementation log.** File names and operational commands below record
 > the repository at the time of each entry. Use
-> [`datapipeline/README.md`](datapipeline/README.md) for the current collection
+> [`datapipeline/README.md`](../../datapipeline/README.md) for the current collection
 > publication and repair interface.
 
 > **Purpose:** Preserve the V2 implementation sequence and decisions as a historical

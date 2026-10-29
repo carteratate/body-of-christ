@@ -337,7 +337,7 @@ One collection per kind of speaker, with genre as a filter inside it.
 | Summa | Aquinas's Summa only | None |
 | Theologians and spiritual writers | Current medieval works plus later writers from the candidates memo (Teresa, John of the Cross in the Lewis translation, Francis de Sales, Catherine, Julian, Thérèse, Ignatius, Alphonsus, Montfort, Newman's Catholic works, more Bernard, Aquinas's works outside the Summa, lay writers such as Chesterton's Catholic works, and others). Boethius moves out to the Fathers. | Renamed from Medieval |
 
-Nine collections, down from ten. The merge must update every hard-coded collection key: `user_preferences.default_collections`, `searches.filters`, `guest_trials.filters`, `VALID_COLLECTIONS`, the HyDE prompts and `_COLLECTION_MAX_TOKENS`, `config.overlap_for`, `routes/evaluate.py`, `compare.py`, `apps/web/src/lib/collections.ts`, and the Qdrant payload. Genre and issuer become indexed Qdrant payload fields.
+Nine collections, down from ten. The merge must update every hard-coded collection key: `user_preferences.default_collections`, `searches.filters`, `guest_trials.filters`, `VALID_COLLECTIONS`, the HyDE prompts and `_COLLECTION_MAX_TOKENS`, `config.overlap_for`, `routes/evaluate.py`, `apps/web/src/lib/collections.ts`, and the Qdrant payload. Genre and issuer become indexed Qdrant payload fields.
 
 ## Cross-cutting design decisions
 

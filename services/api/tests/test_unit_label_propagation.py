@@ -71,33 +71,16 @@ def test_listwise_rerank_carries_unit_label():
     assert listwise_as_ranked(ranked, 0.9, "luna").unit_label == "Objection 1"
 
 
-def test_pointwise_rerank_carries_unit_label():
-    from app.rag.steps.llm_rerank.pointwise import _ranked
-
-    candidate = ChunkCandidate(
-        chunk_id="c1", content="It would seem that...", reference="ST I q1 a1",
-        collection="summa", document_id="d1", document_title="Summa Theologiae",
-        author=None, rrf_score=0.9, unit_label="Objection 1",
-    )
-    assert _ranked(candidate, 0.8, True, "haiku").unit_label == "Objection 1"
-
-
 # --- hop 4: the reranker prompts must explain what the label MEANS ---
 
-def test_both_rerank_prompts_explain_objection_attribution():
+def test_the_rerank_prompt_explains_objection_attribution():
     """The label is inert unless the model knows an objection is not the conclusion."""
     from app.rag.steps.llm_rerank.listwise import _LISTWISE_SYSTEM
-    from app.rag.steps.llm_rerank.pointwise import _RERANK_SYSTEM
 
     assert "Roles determine attribution" in _LISTWISE_SYSTEM
     assert '"Objection N"' in _LISTWISE_SYSTEM
     assert "not the author's conclusion" in _LISTWISE_SYSTEM
     assert '"I answer that"' in _LISTWISE_SYSTEM
-
-    assert "PASSAGE ROLE" in _RERANK_SYSTEM
-    assert "REFUTE" in _RERANK_SYSTEM
-    assert "'Objection N'" in _RERANK_SYSTEM
-    assert "'I answer that'" in _RERANK_SYSTEM
 
 
 def test_fetch_positions_backfills_unit_label_for_qdrant_candidates():
@@ -343,35 +326,6 @@ def test_explain_omits_a_label_the_reference_already_contains():
     asyncio.run(_drain())
     user = captured["messages"][1]["content"]
     assert "Passage (Code of Canon Law, Can. 33):" in user
-
-
-# --- pointwise: the prompt was dead instruction without this ---
-
-def test_pointwise_passage_record_carries_the_role():
-    from app.rag.steps.llm_rerank import pointwise
-    import json as _json
-
-    candidate = ChunkCandidate(
-        chunk_id="c1", content="It would seem that...", reference="ST I q1 a1",
-        collection="summa", document_id="d1", document_title="Summa Theologiae",
-        author=None, rrf_score=0.9, unit_label="Objection 1",
-    )
-    record = _json.loads(pointwise._format_passages([candidate]))
-    assert record["role"] == "Objection 1"
-
-
-def test_pointwise_passage_record_omits_a_redundant_role():
-    from app.rag.steps.llm_rerank import pointwise
-    import json as _json
-
-    candidate = ChunkCandidate(
-        chunk_id="c1", content="The Christian faithful...",
-        reference="Code of Canon Law, Can. 33", collection="canon-law",
-        document_id="d1", document_title="Code of Canon Law",
-        author=None, rrf_score=0.9, unit_label="Can. 33",
-    )
-    record = _json.loads(pointwise._format_passages([candidate]))
-    assert "role" not in record
 
 
 def test_cohere_document_omits_a_redundant_role():

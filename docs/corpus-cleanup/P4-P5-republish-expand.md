@@ -288,7 +288,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 - **Type:** ops
 - **Depends on:** 0.3, run with judging before any live change (this item compares judge scores, so a baseline run with `--no-judge` cannot serve), 4.1a, and the staging build from 4.1b step 1.
 - **Goal:** Show, before and after cutover, that the cleaned corpus answers the baseline questions at least as well, that removed texts no longer appear, and that recovered texts now do. This is what Carter's go or no-go rests on.
-- **Current state:** 0.3 defines the harness and question sets (the 80-question set plus about 30 targeted questions, no stored user queries). Production pipeline is `hyde_cohere_luna` (CLAUDE.md §5). The noise floor for any retrieval change is the `hyde_cohere_luna_hydesample` arm (CLAUDE.md §5). The eval judge is `claude-opus-5-5`.
+- **Current state:** 0.3 defines the harness and question sets (the 80-question set plus about 30 targeted questions, no stored user queries). Production pipeline is `hyde_cohere_luna_seats10t80` (CLAUDE.md §5). The noise floor for any retrieval change is the `hyde_cohere_luna_seats10t80_hydesample` arm (CLAUDE.md §5). The eval judge is `claude-opus-5-5`.
 - **Changes:** Runbook plus a report file.
   1. **Pre-cutover run, on staging.** Run the 0.3 harness, the in-process `services/api/scripts/run_eval_suite.py`, with `CORPUS_READ_SCHEMA=staging` and `QDRANT_READ_COLLECTION` set (2.2w). It runs the pipeline in process, not through an API server, which is why 2.2w lets it use the override while the deployed API refuses to start with it. Its corpus reads go to the `staging` schema and its vector reads go to the new Qdrant collection (`QDRANT_READ_COLLECTION=chunks-<release>`, from 2.2b). It reads production data and writes nothing. Run the same questions with the noise-floor arm, and judge both. RF-1's dedup arm is computed from the production arm's own ranked candidates with its threshold applied, so it adds no rerank calls and differs from production only in dedup; judge the results it changes.
   2. **Targeted checks,** scripted as assertions over the returned passages:
@@ -342,7 +342,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      - SQL gets `(d.genre IS NULL OR d.genre <> ALL($excluded))`. The explicit NULL branch is required, because `NOT (NULL = ANY(...))` is NULL and would silently drop documents without a genre.
      - "All" means no clause.
   3. `search_plan.py`. `SearchPlan` gains `scopes: tuple[CollectionScope, ...]`. `resolve_search_plan(collections, quota, scope_filters=None)` validates genres and issuers against the constants and raises `SearchPlanError("invalid_genre" | "invalid_issuer")`, which routes translate to 422 like the other codes (CLAUDE.md §18). Focused search still requires exactly one collection; a genre subset does not count as a collection.
-  4. Request models in `routes/search.py` and `routes/guest_search.py`. Add optional `filters.scopes: {[collection]: {genres?: string[], issuers?: string[]}}`; absent means all. Additive to `/v1/search` and `/v1/search/guest`; the `/v1/chat` contract (CLAUDE.md §3) is untouched.
+  4. Request models in `routes/search.py` and `routes/guest_search.py`. Add optional `filters.scopes: {[collection]: {genres?: string[], issuers?: string[]}}`; absent means all. Additive to `/v1/search` and `/v1/search/guest`.
   5. `retrieve_vector.py` and `retrieve_fts.py`. Take a `CollectionScope` instead of a bare collection string and use its filters.
   6. `pipeline.py`. Persist the scope selection into `searches.filters` next to `collections` (`_saved_search_filters`, `services/api/app/rag/pipeline.py:161-178`), and into `guest_trials.filters`. Remember CLAUDE.md §4 (no `json.dumps` on jsonb from the API). `routes/search.py` returns it on restore.
   7. Qdrant check (read-only). Confirm that the collection behind `chunks_live` has keyword indexes on `genre` and `issuer` (created at 4.1b step 1) and that every papal point carries `genre`. If an index is missing, creating it is a live step for Carter to approve; it does not change points.
@@ -417,10 +417,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 | `services/api/app/rag/steps/hyde_s25.py:315-325` | `_COLLECTION_MAX_TOKENS` (`encyclicals` 400, `medieval` 350, `canon-law` 350; unknown keys fall back to 300 at line 465) | .1, .4 |
 | `services/api/app/rag/dedup.py:65-67` | `_CHAPTER_KEYED_COLLECTIONS` includes `canon-law` | .1 adds `church-law`, .4 removes |
 | `services/api/app/routes/evaluate.py:51-174` | numbered collection descriptions with hard-coded counts ("131 papal encyclicals", "30 post-synodal", "14 historical") and weighting hints naming old keys | .2 (switch prompt to new keys once web shows new keys), counts updated in every addition PR |
-| `services/api/app/routes/compare.py:152` | retrieval-lab viewer `COLLECTIONS` list | .1 add, .4 remove |
-| `services/api/compare_batch/runner.py:19-21`, `services/api/run_compare_batch.py:42-44` | batch defaults | .4 |
-| `services/api/compare_batch/queries.py` (31 references) | lab query set collections | .4 (lab data, not product) |
-| `services/api/scripts/run_eval_suite.py:42`, `scripts/run_all_pipelines.py:30` | eval defaults include `encyclicals` | .4; also re-point 0.3's harness |
+| `services/api/scripts/run_eval_suite.py` (`COLLECTIONS`) | eval defaults include `encyclicals` | .4; also re-point 0.3's harness |
 | `services/api/app/config.py:132` and `tests/test_config_validation.py:29-45` | `cohere_concurrency` 10 and a test that it covers `len(VALID_COLLECTIONS)` | .1 changes the test to count scopes per search (see 5.1b.1) |
 | `datapipeline/config.py:58-67` | `PER_COLLECTION_OVERLAP` (`medieval` 200, `encyclicals` 250, `canon-law` 300); `overlap_for` at `:137` | .3 |
 | `datapipeline/publication.py:33-43` | `SOURCE_ADAPTERS` keyed by collection | .3 |
@@ -439,7 +436,6 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 | `apps/web/src/components/about/AboutPage.tsx:3-24` | descriptions keyed by collection | .2 (new keys, interim text), full rewrite in 5.7 |
 | `apps/web/src/components/landing/LandingPage.tsx:14` | copy naming "encyclicals, and papal documents" | .2 |
 | `apps/web/src/components/sources/SourcesPage.tsx:361, 432-444` | groups and filters by `COLLECTIONS` keys | .2 (group by translated key) |
-| `apps/web/src/app/icon-preview/*` | dead design draft (CLAUDE.md §17) | leave |
 | `user_preferences.default_collections` rows and column default (live default verified above; set by `supabase/migrations/0010_chunks_metadata.sql:23`) | stored keys | .3 |
 | `searches.filters` (`collections` array and `collection_outcomes` object keys) | stored keys | .3 |
 | `guest_trials.filters` | stored keys | .3 |
@@ -471,7 +467,6 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   6. `dedup.py:65-67`. Add `church-law` next to `canon-law`.
   7. Preferences. Make `PreferencesResponse` on GET tolerant: drop unknown stored keys and fall back to defaults if none remain, instead of raising. PUT validation stays strict.
   8. Concurrency test (`tests/test_config_validation.py:29-45`). Count the most scopes one search can have, which is `max(len(CANONICAL), len(legacy-era set))` after the both-keys dedup in step 4, rather than `len(VALID_COLLECTIONS)`. The current defaults (Cohere 10, HyDE 48) still cover it.
-  9. `compare.py:152`. Add the new keys.
 - **Acceptance checks:**
   - Tests, before the data rewrite (fixtures with old stored values), prove each of these:
     - `papal` returns rows from all three old values.
@@ -572,13 +567,13 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Current state:** After 5.1b.3 no stored value uses an old key. The code still carries the legacy branches.
 - **Changes:**
   1. `constants.py`. Remove `LEGACY_COLLECTIONS` and the old keys from `VALID_COLLECTIONS`. `scope_for` loses the legacy union branch.
-  2. `hyde_s25.py`, `dedup.py`, `compare.py`, `compare_batch/*`, `run_compare_batch.py`, `scripts/run_eval_suite.py`, `scripts/run_all_pipelines.py`. Remove the old keys.
+  2. `hyde_s25.py`, `dedup.py`, `scripts/run_eval_suite.py`. Remove the old keys.
   3. Migration `00NN_drop_legacy_collection_keys.sql`. Narrow `documents_collection_check` to the new keys. `ADD CONSTRAINT` validates existing rows and fails the whole migration if any old value remains, which is the intended guard.
   4. `globals.css`. Remove old color tokens.
   5. Web keeps `LEGACY_COLLECTION_KEYS` and `canonicalCollectionKey` for reading browser `localStorage` and old links only. Carter to note: the plan says "old keys removed". This PR removes them from the API, the database and every product surface, and keeps a five-line read-side translation in the browser so guests' saved drafts do not reset. Delete it too if Carter prefers.
   6. CLAUDE.md §15 ("9 collections"), §18, `apps/web/AGENTS.md`.
 - **Acceptance checks:**
-  - `git grep -nE '"(encyclicals|apostolic-exhortations|papal-documents|canon-law|medieval)"' -- services apps/web/src datapipeline` returns only the web legacy map, migrations, source-directory names and dead `icon-preview` code.
+  - `git grep -nE '"(encyclicals|apostolic-exhortations|papal-documents|canon-law|medieval)"' -- services apps/web/src datapipeline` returns only the web legacy map, migrations and source-directory names.
   - Tests green.
   - Migration applied on a local database first.
 - **Production safety:** Stored data no longer has old keys (5.1b.3 check). An old tab still open would send an old key, which `resolve_search_plan` drops, returning 400 only if nothing valid remains. The log check shows this traffic is gone. Rollback is a revert plus re-widening the constraint (additive).
@@ -1002,7 +997,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** decision (tracking parent)
 - **Depends on:** 4.2's post-cutover baseline, and the P5 additions whose effects it measures.
-- **Goal:** One place to collect retrieval changes that the cleanup made visible but deliberately did not make, so each is judged against the new baseline and the `hyde_cohere_luna_hydesample` noise floor.
+- **Goal:** One place to collect retrieval changes that the cleanup made visible but deliberately did not make, so each is judged against the new baseline and the `hyde_cohere_luna_seats10t80_hydesample` noise floor.
 - **Current state:** Nothing opened. Candidates gathered while writing these specs:
   - Genre-aware HyDE for Papal documents and Roman Curia (5.1a leaves one prompt per collection).
   - Whether the Compendium's Q&A form is found by the CCC-style prompt (5.5).

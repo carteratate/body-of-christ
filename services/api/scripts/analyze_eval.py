@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 """Analyse a run_eval_suite.py JSONL.
 
-Deliberately NOT compare_batch/aggregate.py: that reads `pipeline_results` (a list)
-while this harness writes `pipelines` (a dict) with different field names, so
-pointing it here silently reports $0.00 cost and 0.0s latency for every pipeline
-while the quality numbers look perfectly correct.
-
 Reports per-dimension spread and per-query rankings alongside the composite, because
 the composite alone is not trustworthy on this rubric: `multi_angle_coverage`
 measured 0.916-0.971 across all six pipelines in round 1, `doctrinal_completeness`

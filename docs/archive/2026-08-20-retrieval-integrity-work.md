@@ -2,7 +2,7 @@
 
 > **Superseded operational guidance.** This report preserves historical production
 > findings and commands from 2026-08-20. Use
-> [`datapipeline/README.md`](../datapipeline/README.md) for the supported collection
+> [`datapipeline/README.md`](../../datapipeline/README.md) for the supported collection
 > publication interface, repair targets, reset behavior, and reader-wipe safeguards.
 
 Working notes for the Summa-objection / store-divergence work. Written to survive a
