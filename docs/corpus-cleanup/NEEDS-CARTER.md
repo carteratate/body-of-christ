@@ -46,6 +46,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 1
 
 - **1.2f** [Phase 1]. Approve a spend ceiling per work for the AI step that corrects scanning errors in scanned books (first used on councils 8 to 18). No spec proposes a figure.
+- **1.3c** [Phase 1]. Approve vendoring the vatican.va English pages of the 25 modern papal documents, and review the PR's paragraph-alignment mismatch list.
 
 ### Phase 2
 

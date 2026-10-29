@@ -404,6 +404,32 @@ These apply to every PR below and are not repeated in each item.
 - **Needs Carter:** nothing.
 - **Out of scope:** genre labels (1.3b). Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which Carter scheduled for 5.4 on 4 Oct 2026. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
 
+### 1.3c. Modern papal documents from vatican.va
+
+- **Type:** PR
+- **Depends on:** 1.3a (the shared papal parser), 2.1 (frozen IDs and the removal registry), 0.2 (source hashes and rights rows). Carter approves the 25 downloads before they are vendored (holding folder, Decision log "Holding folder for approved downloads").
+- **Goal:** The 25 papal documents from 1878 onward that are now taken from papalencyclicals.net come from vatican.va's English instead: the Holy See's own translation, which the Church's documents cite, under the LEV basis (Decision log "LEV texts from vatican.va"), with passage links (2.4e) and a path to the full reader. Decided by Carter on 29 Oct 2026.
+- **Current state (29 Oct 2026):**
+  - 131 live documents give a papalencyclicals.net URL, and their translations are unattributed (`rights_inventory.json` status `unknown`, Trent apart). The councils among them are replaced by 1.2c to 1.2e. This item takes the 25 papal documents that vatican.va publishes in English: the encyclicals Rerum Novarum, Immortale Dei, Libertas, Divinum Illud Munus, Providentissimus Deus, Mirae Caritatis, Pascendi Dominici Gregis, Spiritus Paraclitus, Quas Primas, Casti Connubii, Quadragesimo Anno, Mit Brennender Sorge, Divini Redemptoris, Mystici Corporis Christi, Divino Afflante Spiritu, Mediator Dei, Humani Generis, Mater et Magistra, Pacem in Terris, Ecclesiam Suam, Mysterium Fidei and Humanae Vitae; Munificentissimus Deus (an apostolic constitution, filed today under encyclicals); and the exhortations Haerent Animo and Menti Nostrae. Each has an English page in vatican.va's indexes.
+  - Together they hold 2,199 live passages, with 120 saved retrievals, no bookmarks and 1 reading position.
+  - The texts differ: papalencyclicals.net's Humanae Vitae §1 opens "The most serious duty of transmitting human life", vatican.va's "The transmission of human life is a most serious role".
+  - The 86 older papal documents (Benedict XIV to Pius IX, Unam Sanctam, Exsurge Domine, Sublimis Deus) have no English on vatican.va and are not in this item.
+- **Changes:**
+  1. Vendor each vatican.va English page through `scripts/vendor_sources.py` into `sources/<collection>/`, with URL, SHA-256 and retrieval date in the manifest, and point the 25 manifest entries at them. The papalencyclicals.net files stay vendored but unread.
+  2. Build them with 1.3a's parser (vatican.va's `div.documento` and old-layout extractors, endnotes after the `<hr>`).
+  3. Identity (D1). Document IDs stay as they are (registry-frozen). A numbered paragraph is the same unit in a new translation when both editions number the document the same way: it keeps its anchor and ID, with passage metadata `text_replaced: "vatican.va replaces papalencyclicals.net"` for 0.1c's stability check, as 1.2c does for council canons. Where the numbering differs, the PR aligns the two editions by paragraph (quotations, citations, length) and lists every mismatch. Old anchors with no counterpart get a redirect to the passage that holds the same text, or a removal entry with reason `superseded-translation`, with a tombstone naming vatican.va.
+  4. Rights rows: each of the 25 rows moves from `unknown` to `in-copyright`, with `rights_holder` "Libreria Editrice Vaticana", the vatican.va `source_url`, the LEV credit line, and the `excerpt_basis` of the Decision log row "LEV texts from vatican.va". They stay excerpt-only until 5.2's full-reader step.
+  5. `metadata.url` becomes the vatican.va page, so the source link and the 2.4e passage links point there.
+- **Acceptance checks:**
+  - Coverage (0.1a) passes for all 25 against the vendored vatican.va pages, with no notes in passages.
+  - The release report lists every old anchor of the 25 and its outcome; every outcome other than `same` has a redirect row or a removal entry. The 120 saved retrievals resolve (4.1a's remap).
+  - No passage of the 25 contains "papalencyclicals".
+  - 1.3b's genre table cites vatican.va's heading for each of the 25.
+  - After the apply, each of the 25 shows the LEV credit and links to its vatican.va page.
+- **Production safety:** Nothing changes live before the Phase 4 apply (D7). Document IDs are unchanged; passage IDs follow D1 as above.
+- **Needs Carter:** Approve the 25 downloads. Review the alignment mismatch list.
+- **Out of scope:** The 86 older papal documents. The full reader for these 25 (5.2's step, after their fixes pass the coverage checks).
+
 ### 1.3b. Papal genre metadata
 
 - **Type:** PR
