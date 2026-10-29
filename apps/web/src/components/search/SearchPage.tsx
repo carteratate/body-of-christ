@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import { BottomBar } from "@/components/search/BottomBar";
@@ -27,7 +27,13 @@ import {
   useSearchPageExperience,
 } from "@/lib/search-experience/useSearchPageExperience";
 
-function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
+function SearchPageInner({
+  isGuest = false,
+  readGuestStorage = true,
+}: {
+  isGuest?: boolean;
+  readGuestStorage?: boolean;
+}) {
   const guestGate = useGuestGate();
   const {
     token, userId, preferences, setPreferences,
@@ -41,8 +47,10 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
 
   const searchParams = useSearchParams();
   const restoreId = searchParams.get("restore");
-  const [restoredGuestSearch] = useState(() => isGuest ? readGuestSearch() : null);
-  const [guestPreferences] = useState(() => isGuest ? getGuestPreferenceDraft() : null);
+  const [restoredGuestSearch] = useState(() => isGuest && readGuestStorage ? readGuestSearch() : null);
+  const [guestPreferences] = useState(() => !isGuest
+    ? null
+    : readGuestStorage ? getGuestPreferenceDraft() : DEFAULT_GUEST_SEARCH_PREFERENCES);
   const [preferenceSaveStatus, setPreferenceSaveStatus] = useState<{
     phase: "pending" | "saving" | "saved" | "failed" | null;
     revision: number;
@@ -424,10 +432,23 @@ function SearchPageInner({ isGuest = false }: { isGuest?: boolean }) {
   );
 }
 
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
 export function SearchPage({ isGuest = false }: { isGuest?: boolean }) {
+  // A guest's draft and last search live in browser storage, which the server
+  // cannot read. Until hydration the guest page renders the defaults, as the
+  // server did, then remounts on the saved state, so the two never disagree (#287).
+  const hydrated = useSyncExternalStore(subscribeToNothing, () => true, () => false);
+  const readGuestStorage = !isGuest || hydrated;
   return (
     <Suspense>
-      <SearchPageInner isGuest={isGuest} />
+      <SearchPageInner
+        key={readGuestStorage ? "client" : "server"}
+        isGuest={isGuest}
+        readGuestStorage={readGuestStorage}
+      />
     </Suspense>
   );
 }
