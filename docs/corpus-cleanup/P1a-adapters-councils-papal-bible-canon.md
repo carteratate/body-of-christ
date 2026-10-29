@@ -402,7 +402,7 @@ These apply to every PR below and are not repeated in each item.
   - Paragraphs recovered from `<li>` markup are new text inside existing numbered units; those units keep their IDs and pass 0.1c's stability check because their old text is contained in the new.
   - Headings moved to the next section change text under existing IDs and pass the per-piece check; chapter keys change for most of the 115 bucket documents, which 0.1c's chapter remap carries to `reading_progress` and old `?chapter=` links (C-08).
 - **Needs Carter:** nothing.
-- **Out of scope:** genre labels (1.3b). Replacing the text of the older papal documents (R8, 1.3d): where R8 marks a document for replacement before this PR's checks are set, its document-specific checks are not tuned to the site's text. Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which Carter scheduled for 5.4 on 4 Oct 2026. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
+- **Out of scope:** genre labels (1.3b). Replacing the text of the older papal documents (R8, 1.3d), which comes later and rebuilds those documents with this PR's parser. Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which Carter scheduled for 5.4 on 4 Oct 2026. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
 
 ### 1.3c. Modern papal documents from vatican.va
 
