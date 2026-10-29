@@ -684,7 +684,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Type:** PR, then ops publish
 - **Depends on:** 5.1b.4 (keys `papal`, `church-law`), 2.2a (`searchable`, notes, `documents.superseded_by`), 2.2w, 5.2 rows.
 - **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `apostolic-exhortations/a-new-hope-for-lebanon.html`, `church-law/universi-dominici-gregis.html`, `church-law/de-aliquibus-mutationibus.html`, `church-law/normas-nonnullas.html`. Its 2 page-image files (PDF) are approved per work later and are vendored to `_incoming/` the same way. The French A New Hope for Lebanon page (`_incoming/apostolic-exhortations/a-new-hope-for-lebanon.html`) replaces the empty English page at `apostolic-exhortations/a-new-hope-for-lebanon.html` when it moves; the replaced file's lock entry goes with it.
-- **Goal:** Questions about how a pope is elected or what happens during a vacancy are answered from *Universi Dominici Gregis* as currently in force, with its earlier wording available as labeled history. A vendored papal document that never reached the corpus (Ubicumque et Semper) becomes searchable.
+- **Goal:** Questions about how a pope is elected or what happens during a vacancy are answered from *Universi Dominici Gregis* as currently in force, with its earlier wording available as labeled history. Two vendored papal documents that never reached the corpus (Ubicumque et Semper, Amoris Laetitia) become searchable.
 - **Current state:**
   - `datapipeline/sources/apostolic-exhortations/a-new-hope-for-lebanon.html` and `datapipeline/sources/papal-documents/ubicumque-et-semper.html` are vendored but in neither manifest nor the database (verified locally; plan Decision log).
   - `datapipeline/sources/apostolic-exhortations/amoris-laetitia.html` is in the same state. Carter scheduled it for this item on 4 Oct 2026 (plan, Decision log "Amoris Laetitia"); the Changes below do not yet name it.
@@ -694,7 +694,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Rule F is current text only in search, superseded versions as labeled linked history.
   - The supersession link is `documents.superseded_by` (2.2a, D5): each older text points to the current text that replaces it.
 - **Changes:**
-  1. `vendor_sources.py`. Add Ubicumque et Semper (2010, motu proprio) to `PAPAL_DOCUMENTS` and regenerate manifests; it publishes into `papal` with genre `motu-proprio`. A New Hope for Lebanon is not added (rule E, revised 29 Oct 2026).
+  1. `vendor_sources.py`. Add Ubicumque et Semper (2010, motu proprio) to `PAPAL_DOCUMENTS`, and Amoris Laetitia (2016) to `APOSTOLIC_EXHORTATIONS` from its vatican.va English PDF with the text extracted (Decision log "Amoris Laetitia"), and regenerate manifests. They publish into `papal` with genres `motu-proprio` and `apostolic-exhortation`. A New Hope for Lebanon is not added (rule E, revised 29 Oct 2026).
   2. UDG.
      - New adapter `datapipeline/ingest/universal_law.py` emitting collection `church-law`.
      - Document "Universi Dominici Gregis (as amended 2013)" is searchable, with anchors by number and section and author "Pope John Paul II" with the amendment note.
@@ -705,7 +705,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   4. `dedup.py` chapter-keyed list already includes `church-law` (5.1b.1); confirm UDG passages carry `chapter_key` by chapter so the per-source cap works per chapter.
   5. Publish `papal` and `church-law` through 2.2w (stage, release report, one-transaction apply with the outline refresh, `chunks_live` switch) under a named apply in the lock file, never the delete-based prune. The history documents are Qdrant points with `searchable = false` (D5).
 - **Acceptance checks:**
-  - Release report shows 1 new papal document and 3 UDG documents, of which 1 is searchable, and zero retirements.
+  - Release report shows 2 new papal documents (Ubicumque et Semper, Amoris Laetitia) and 3 UDG documents, of which 1 is searchable, and zero retirements.
   - A search for "how many votes are needed to elect a pope" returns UDG number 75 in its 2013 wording.
   - The 1996 wording never appears in search results and opens in the reader with the superseded label and a link to the current text.
   - `/sources` lists all three UDG documents with their status.
