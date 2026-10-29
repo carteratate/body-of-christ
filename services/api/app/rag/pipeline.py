@@ -411,7 +411,7 @@ async def run_search_pipeline(
                     "unit_label": chunk.unit_label,
                     # Excerpt-only documents (issue #265): the card links to the
                     # source instead of the reader.
-                    **access_fields(access, chunk.document_id),
+                    **access_fields(access, chunk.document_id, chunk.unit_label),
                 },
                 "reranker_score": (
                     None if chunk.score_source == "rrf_fallback"

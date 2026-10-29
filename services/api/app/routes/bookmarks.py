@@ -201,7 +201,7 @@ async def list_bookmarks(
                         anchor=row["anchor"],
                         chapter_key=row["chapter_key"],
                         unit_label=row["unit_label"],
-                        **access_fields(access, row["document_id"]),
+                        **access_fields(access, row["document_id"], row["unit_label"]),
                     ),
                 ),
             )

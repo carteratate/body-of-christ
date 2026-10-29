@@ -69,3 +69,18 @@ def _stub_reader_access(request):
     finally:
         for p in patches:
             p.stop()
+
+
+@pytest.fixture(autouse=True)
+def _no_flipbook_check():
+    """Catechism page links check the live flipbook's GUID in the background once a day
+    (app/catechism_pages.py). Tests start each run as freshly checked and unchanged, so
+    none reaches usccb.org; tests of the check itself call it directly."""
+    import time
+
+    from app.catechism_pages import _publication
+
+    _publication.republished, _publication.task = False, None
+    _publication.checked_at = time.monotonic()
+    yield
+    _publication.republished, _publication.task = False, None
