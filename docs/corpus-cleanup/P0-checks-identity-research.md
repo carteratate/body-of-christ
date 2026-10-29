@@ -887,3 +887,24 @@ Conventions used in this file:
 - **Production safety:** Research only; downloads go to local disk after approval.
 - **Needs Carter:** Approve downloads (NEEDS-CARTER section A) and the edition used for each recovered unit.
 - **Out of scope:** The adapter (1.7). Translating anything. Sentence-level collation where the structure agrees.
+
+### R8. Where the older papal translations come from
+
+- **Type:** research, in two stages: a pilot, then (if Carter approves) the rest.
+- **Depends on:** none; blocks 1.3d, and should finish before 1.3a's acceptance checks are tuned to the documents it marks for replacement (Decision log "Older papal translations: trace first", 29 Oct 2026).
+- **Goal:** For each of the 85 older papal documents taken from papalencyclicals.net, know which English translation the site prints and whether a public-domain English printing exists, so each one is either moved to a cleared edition (1.3d) or retired. The pilot first measures how often a printing can be found and what a search costs, before any work is planned for all 85.
+- **Current state (29 Oct 2026):**
+  - 86 documents: the encyclicals of Benedict XIV to Pius IX, and the bulls Unam Sanctam, Exsurge Domine and Sublimis Deus. Ubi Lutetiam is Italian and leaves under rule E (3.3), which leaves 85. Live: 1,403 passages, about 262,000 words. Rights rows `unknown`; excerpt-only.
+  - The site names no translator or source on the pages checked. vatican.va has no English for any pope before Leo XIII (its `/en/` address for Mirari Vos serves the Latin).
+  - The site's texts are of two kinds. Quanta Cura (1864) is the English of an 1864 printing with some sentences reworded (Internet Archive `cihm_48367`). Mirari Vos is a different, modern translation; the 1833 English (*Catholic Magazine and Review*, vol. 3) is on Wikisource, transcribed from the scans and marked public domain.
+  - Claudia Carlen's *The Papal Encyclicals 1740–1981* (1981) begins in the same year as the site's list, and its publisher describes it as drawing on various sources, with 110 encyclicals newly translated for it. The site's modern-sounding texts may be those; unconfirmed.
+  - Wikisource has transcriptions for only 2 of the 86 (Mirari Vos, Quanta Cura).
+- **Changes (deliverables):**
+  1. Pilot, about 10 documents: 5 of the 19th century (Pius IX, Gregory XVI), 3 of the 18th (Benedict XIV, Clement XIII), and Unam Sanctam and Sublimis Deus. For each, the candidate pre-1931 English printings (title, publisher, year, scan URL), searched in the Internet Archive, HathiTrust, Google Books and Wikisource, and the candidates Carlen's notes name where her volume can be read; how closely the site's text matches each (same, lightly edited, different); the verdict (public-domain printing found, none found); and the time each search took.
+  2. A pilot report to Carter with the hit rate per group and the projected cost of the rest. He chooses: trace all 85, trace by group (for example, stop searching a group the pilot found empty), or retire the rest.
+  3. The full trace, in the scope Carter chooses, with the same record per document.
+  4. Results in `docs/research/R8-papal-translations.md`, and each document's edition in its `rights_inventory.json` row (status, edition, scan URL, credit line), or "none found" with the places searched.
+- **Acceptance checks:** Every document in the approved scope has a verdict citing a scan or the places searched. Every "found" cites a printing dated before 1931 by its title page. Carter closes the issue.
+- **Production safety:** Research only. Downloads go to local disk after approval.
+- **Needs Carter:** The scope decision after the pilot. Approval of downloads.
+- **Out of scope:** Asking papalencyclicals.net or Carlen's publisher for permission (Carter, after everything works). Making translations. The 25 modern documents (1.3c).

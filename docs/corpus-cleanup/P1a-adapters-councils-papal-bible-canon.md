@@ -402,7 +402,7 @@ These apply to every PR below and are not repeated in each item.
   - Paragraphs recovered from `<li>` markup are new text inside existing numbered units; those units keep their IDs and pass 0.1c's stability check because their old text is contained in the new.
   - Headings moved to the next section change text under existing IDs and pass the per-piece check; chapter keys change for most of the 115 bucket documents, which 0.1c's chapter remap carries to `reading_progress` and old `?chapter=` links (C-08).
 - **Needs Carter:** nothing.
-- **Out of scope:** genre labels (1.3b). Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which Carter scheduled for 5.4 on 4 Oct 2026. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
+- **Out of scope:** genre labels (1.3b). Replacing the text of the older papal documents (R8, 1.3d): where R8 marks a document for replacement before this PR's checks are set, its document-specific checks are not tuned to the site's text. Merging the three collections (5.1b). Adding A New Hope for Lebanon and Ubicumque et Semper (5.4). Amoris Laetitia, the third unmanifested file, which Carter scheduled for 5.4 on 4 Oct 2026. OCR-style typos in the Annus Qui Hunc source ("Wehave", "inor- der").
 
 ### 1.3c. Modern papal documents from vatican.va
 
@@ -428,7 +428,28 @@ These apply to every PR below and are not repeated in each item.
   - After the apply, each of the 25 shows the LEV credit and links to its vatican.va page.
 - **Production safety:** Nothing changes live before the Phase 4 apply (D7). Document IDs are unchanged; passage IDs follow D1 as above.
 - **Needs Carter:** Approve the 25 downloads. Review the alignment mismatch list.
-- **Out of scope:** The 86 older papal documents. The full reader for these 25 (5.2's step, after their fixes pass the coverage checks).
+- **Out of scope:** The 86 older papal documents (R8, 1.3d). The full reader for these 25 (5.2's step, after their fixes pass the coverage checks).
+
+### 1.3d. Older papal documents from public-domain printings
+
+- **Type:** PR, possibly one per group of documents
+- **Depends on:** R8 (its verdicts, in the scope Carter approves), 1.3a (the shared papal parser), 1.2f (the scanned-text cleanup tool and gate, for printings with no clean transcription), 2.1, 0.2.
+- **Goal:** Each older papal document R8 traces to a public-domain English printing takes its text from that printing, cleared for the full reader with an honest credit ("Translation from *The Catholic Magazine and Review*, 1833"). Each document R8 finds no printing for is retired, so that no papal text with unknown rights stays in the corpus.
+- **Current state:** see R8. 1.3a parses the site's text of these documents; this item replaces it where R8 finds a printing.
+- **Changes:**
+  1. For each "found" document: vendor the printing through the holding folder (a Wikisource transcription with its scan, or the scan's text through 1.2f's cleanup and gate), and build it with 1.3a's parser rules plus an extractor for the printing's layout.
+  2. Numbering. Older printings often number paragraphs differently or not at all. The PR aligns each printing with the site's numbering by content (quotations, citations, length) and lists every mismatch; passages keep the site's paragraph numbers where the unit matches.
+  3. Identity (D1), as in 1.3c: a matching paragraph keeps its anchor and ID with `text_replaced` set; an old anchor with no counterpart gets a redirect or a removal entry with reason `superseded-translation`.
+  4. Rights rows move to `pd-us-pre-1931` with the printing's edition, scan URL and credit line; the sync opens each document in the full reader after the apply (D12).
+  5. For each "none found" document, in the scope Carter approves: a `document`-scope removal entry with reason `translation-in-preparation` and the tombstone "No public-domain English translation is available." It returns if a cleared translation is found or permission is granted.
+- **Acceptance checks:**
+  - Coverage (0.1a) passes for each rebuilt document against its vendored printing; scanned printings pass 1.2f's gate.
+  - The release report lists every old anchor of these documents and its outcome; every outcome other than `same` has a redirect or a removal entry.
+  - No passage of these documents contains "papalencyclicals". At the end, no live document gives a papalencyclicals.net URL.
+  - 3.4's rejected-voice ranges (Exsurge Domine §1–41, the Syllabus §1–80) are re-checked against the new text.
+- **Production safety:** Nothing changes live before the Phase 4 apply (D7). Document IDs are unchanged; passage IDs follow D1.
+- **Needs Carter:** Approve the downloads and the list of documents to retire. Review the numbering mismatch list.
+- **Out of scope:** The 25 modern documents (1.3c). Translating anything.
 
 ### 1.3b. Papal genre metadata
 
