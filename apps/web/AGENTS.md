@@ -75,8 +75,7 @@ npm run build
 Test the search runtime through its `read`/`subscribe`/`send` interface with scripted
 in-memory adapters. Do not assert on private reducer state.
 
-## Known dead code
+## Not product surface
 
-`src/components/chat/ChatShell.tsx` and `streamMessage` in `api.ts` are unreachable —
-`/chat` redirects to `/search`. `src/app/icon-preview/`, `src/app/onboarding-preview/`,
-and `src/app/prototypes/` are design drafts, not product surface. (Root §3, §17)
+`src/app/chat/` only redirects old links to `/search`, and `src/app/onboarding-preview/`
+is a development-only preview that 404s in production. (Root §10)

@@ -14,22 +14,21 @@ from app.config import settings
 from app.rag.steps import rerank
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps import rerank_haiku
-from app.rag.steps.llm_rerank import openai_provider, pointwise
+from app.rag.steps.llm_rerank import listwise, openai_provider
 from app.rag.steps.llm_rerank.base import ScoreResult
-from app.rag.steps.types import ChunkCandidate
+from app.rag.steps.types import RankedChunk
 
 _ID = "00000000-0000-0000-0000-00000000000a"
-_PAYLOAD = json.dumps({"results": [{
-    "position": 0, "score": 0.82, "include": True, "overlap_verdict": None,
-}]})
+_PAYLOAD = json.dumps({"results": [{"position": 0, "score": 0.82}]})
 _SCHEMA = {"type": "object", "properties": {}, "additionalProperties": False}
 
 
-def _cand() -> ChunkCandidate:
-    return ChunkCandidate(
+def _pool() -> list[RankedChunk]:
+    return [RankedChunk(
         chunk_id=_ID, content="passage", reference="Ref 1:1", collection="bible",
-        document_id="d1", document_title="T", author=None, rrf_score=0.5,
-    )
+        document_id="d1", document_title="T", author=None, reranker_score=0.5,
+        score_source="cohere",
+    )]
 
 
 # --- registry ---
@@ -142,7 +141,7 @@ async def test_both_providers_return_identical_score_results():
 
 
 @pytest.mark.asyncio
-async def test_pointwise_parses_identically_across_providers():
+async def test_listwise_parses_identically_across_providers():
     """The load-bearing parity check: same payload, same RankedChunk output."""
     results = []
     for module, client in (
@@ -151,8 +150,8 @@ async def test_pointwise_parses_identically_across_providers():
     ):
         with patch.object(module, "_client", client):
             results.append(
-                await pointwise.rerank_collection(
-                    [_cand()], "q", 4, CostTracker(), module.PROVIDER,
+                await listwise.rerank_pool(
+                    _pool(), "q", CostTracker(), module.PROVIDER,
                 )
             )
     a, o = results
@@ -219,8 +218,8 @@ async def test_each_provider_records_cost_under_its_own_model_id():
     ):
         tracker = CostTracker()
         with patch.object(module, "_client", client):
-            await pointwise.rerank_collection(
-                [_cand()], "q", 4, tracker, module.PROVIDER, step="rerank_test",
+            await listwise.rerank_pool(
+                _pool(), "q", tracker, module.PROVIDER, step="rerank_test",
             )
         assert module.PROVIDER.model_id == expected
         assert tracker.breakdown()["rerank_test"] > 0
@@ -235,11 +234,12 @@ async def test_incomplete_openai_response_preserves_billed_usage():
     try:
         tracker = CostTracker()
         with patch.object(openai_provider, "_client", client):
-            result = await pointwise.rerank_collection(
-                [_cand()], "q", 4, tracker, openai_provider.PROVIDER,
+            result = await listwise.rerank_pool(
+                _pool(), "q", tracker, openai_provider.PROVIDER,
                 step="rerank_incomplete",
             )
-        assert result[0].score_source == "rrf_fallback"
+        # An incomplete response keeps the upstream (Cohere) order and scores.
+        assert result[0].score_source == "cohere"
         assert tracker.breakdown()["rerank_incomplete"] > 0
     finally:
         _FakeOpenAIChoice.finish_reason = original
@@ -257,8 +257,8 @@ async def test_legacy_three_argument_provider_is_supported():
         async def score(self, system, user, max_tokens):
             return ScoreResult(_PAYLOAD, 10, 5)
 
-    result = await pointwise.rerank_collection(
-        [_cand()], "q", 4, CostTracker(), LegacyProvider(),
+    result = await listwise.rerank_pool(
+        _pool(), "q", CostTracker(), LegacyProvider(),
     )
     assert result[0].score_source == "legacy"
     assert result[0].reranker_score == 0.82

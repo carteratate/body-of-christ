@@ -15,7 +15,6 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from app.db import close_pool, get_pool, init_pool
-from app.llm import close_llm, init_llm
 from app.rag.api_keys import close_api_keys, init_api_keys, is_ready as hyde_is_ready
 from app.rag.steps.embed import close_embed, init_embed, is_ready as embed_is_ready
 from app.rag.steps.hyde_luna import close as close_hyde_luna, init as init_hyde_luna
@@ -31,19 +30,14 @@ from app.rag.qdrant_client import (
     get_qdrant_client,
     init_qdrant,
 )
-from app.rag.compare.judge import close_judge, init_judge
 from app.routes.bookmarks import router as bookmarks_router
-from app.routes.chat import router as chat_router
 from app.routes.documents import router as documents_router
 from app.routes.labels import router as labels_router
 from app.routes.me import router as me_router
 from app.routes.preferences import router as preferences_router
 from app.routes.search import router as search_router
-from app.routes.sessions import router as sessions_router
 from app.routes.sources import router as sources_router
 from app.routes.evaluate import router as evaluate_router
-from app.routes.compare import router as compare_router
-from app.routes.compare_stats import router as compare_stats_router
 from app.routes.guest_search import router as guest_search_router
 from app.routes.guest_search import cleanup_expired_guest_trials, drain_guest_search_tasks
 from app.routes.reading_progress import router as reading_progress_router
@@ -124,7 +118,6 @@ async def lifespan(app: FastAPI):
         logger.warning("DB pool init failed (%s); starting without DB", exc.__class__.__name__)
     if not settings.internal_api_secret:
         logger.warning("INTERNAL_API_SECRET is not set — all requests will bypass the secret check")
-    init_llm()
     init_embed()
     init_qdrant()
     init_api_keys()
@@ -133,7 +126,6 @@ async def lifespan(app: FastAPI):
     init_cohere()
     init_luna()
     init_explain()
-    init_judge()
     readiness = _search_readiness()
     missing = [name for name, ready in readiness.items() if not ready]
     if missing:
@@ -150,7 +142,6 @@ async def lifespan(app: FastAPI):
     # transfer persistence continues. Drain those producers before closing the
     # model and database clients they own.
     await drain_guest_search_tasks()
-    await close_judge()
     await close_luna()
     await close_cohere()
     await close_rerank()
@@ -160,7 +151,6 @@ async def lifespan(app: FastAPI):
     await close_qdrant()
     await close_explain()
     await close_pool()
-    await close_llm()
 
 
 app = FastAPI(title="theocorpus-api", lifespan=lifespan)
@@ -187,8 +177,6 @@ app.add_middleware(
 )
 
 app.include_router(me_router, prefix="/v1")
-app.include_router(chat_router, prefix="/v1")
-app.include_router(sessions_router, prefix="/v1")
 app.include_router(search_router, prefix="/v1")
 app.include_router(documents_router, prefix="/v1")
 app.include_router(bookmarks_router, prefix="/v1")
@@ -196,8 +184,6 @@ app.include_router(labels_router, prefix="/v1")
 app.include_router(preferences_router, prefix="/v1")
 app.include_router(sources_router, prefix="/v1")
 app.include_router(evaluate_router, prefix="/v1")
-app.include_router(compare_router, prefix="/v1")
-app.include_router(compare_stats_router, prefix="/v1")
 app.include_router(guest_search_router, prefix="/v1")
 app.include_router(reading_progress_router, prefix="/v1")
 app.include_router(product_feedback_router, prefix="/v1")

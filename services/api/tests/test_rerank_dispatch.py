@@ -31,10 +31,12 @@ def _ranked(i: int, score: float, collection: str = "bible") -> RankedChunk:
 
 # --- config validation ---
 
-def test_no_reranker_is_rejected():
-    """Would return raw RRF order as if scored — refuse rather than degrade silently."""
+@pytest.mark.parametrize("llm", [None, "haiku"])
+def test_a_config_without_cohere_is_rejected(llm):
+    """No reranker would return raw RRF order as if scored, and the LLM-only
+    (pointwise) mode was removed — refuse both rather than degrade silently."""
     with pytest.raises(ValueError, match="must enable Cohere"):
-        RerankConfig(use_cohere=False, llm_provider=None)
+        RerankConfig(use_cohere=False, llm_provider=llm)
 
 
 def test_unknown_provider_is_rejected():
@@ -44,7 +46,6 @@ def test_unknown_provider_is_rejected():
 
 @pytest.mark.parametrize("cohere,llm,expected", [
     (True, None, "cohere_only"),
-    (False, "haiku", "llm_only"),
     (True, "haiku", "both"),
     (True, "luna", "both"),
 ])
@@ -52,13 +53,12 @@ def test_mode_derivation(cohere, llm, expected):
     assert RerankConfig(use_cohere=cohere, llm_provider=llm).mode == expected
 
 
-@pytest.mark.parametrize("cohere,llm", [(True, None), (False, "luna")])
-def test_terminal_seats_are_rejected_without_a_listwise_stage(cohere, llm):
+def test_terminal_seats_are_rejected_without_a_listwise_stage():
     """Only `both` mode builds the terminal pool; elsewhere the rule would be a no-op
     that still gave the arm a distinct name and fingerprint."""
     with pytest.raises(ValueError, match="only applies"):
         RerankConfig(
-            use_cohere=cohere, llm_provider=llm,
+            use_cohere=True, llm_provider=None,
             terminal_seats=budget.TerminalSeats(minimum=10),
         )
 
@@ -74,7 +74,7 @@ def test_production_seats_ten_to_twenty_five_per_collection_from_eighty():
 
 def test_every_registered_provider_constructs():
     for name in rerank.PROVIDERS:
-        assert RerankConfig(use_cohere=False, llm_provider=name).mode == "llm_only"
+        assert RerankConfig(use_cohere=True, llm_provider=name).mode == "both"
 
 
 # --- cohere_only ---
@@ -279,47 +279,6 @@ async def test_collection_below_keep_floor_gets_terminal_reranker_seat():
 
     assert "canon-law" in {c.collection for c in captured["pool"]}
     assert "canon-law" in {c.collection for c in all_scored}
-
-
-# --- llm_only ---
-
-@pytest.mark.asyncio
-async def test_llm_only_slices_to_historical_candidate_multiplier():
-    """Keep historical candidate sizing for continuity, not cross-version equivalence."""
-    quota = 4
-    expected = quota * settings.candidate_multiplier
-    captured = {}
-
-    async def _capture(cands, query, q, tracker, provider, step="x"):
-        captured["n"] = len(cands)
-        return [_ranked(0, 0.9)]
-
-    with patch("app.rag.steps.llm_rerank.pointwise.rerank_collection", new=_capture):
-        ranked, all_scored = await rerank.run(
-            RerankConfig(use_cohere=False, llm_provider="haiku"),
-            {"bible": [_cand(i) for i in range(50)]}, "q", quota, CostTracker(),
-        )
-    assert captured["n"] == expected
-    # llm_only has no second stage, so both returned lists are the same set.
-    assert ranked == all_scored
-
-
-@pytest.mark.asyncio
-async def test_llm_only_one_failing_collection_does_not_lose_the_others():
-    call_count = {"n": 0}
-
-    async def _flaky(cands, query, q, tracker, provider, step="x"):
-        call_count["n"] += 1
-        if call_count["n"] == 1:
-            raise RuntimeError("collection exploded")
-        return [_ranked(1, 0.7, "summa")]
-
-    with patch("app.rag.steps.llm_rerank.pointwise.rerank_collection", new=_flaky):
-        ranked, _ = await rerank.run(
-            RerankConfig(use_cohere=False, llm_provider="haiku"),
-            {"bible": [_cand(0)], "summa": [_cand(1, "summa")]}, "q", 4, CostTracker(),
-        )
-    assert [r.collection for r in ranked] == ["summa"]
 
 
 # --- regression: silent-failure audit findings ---

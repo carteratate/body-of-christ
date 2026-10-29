@@ -162,19 +162,13 @@ def _classify_outcomes(
     return outcome, collection_outcomes
 
 
-def _pool_sizes(config: PipelineConfig, quota: int) -> tuple[int | None, int | None]:
-    """(per-strategy retrieval k, RRF top_n) for this pipeline, or (None, None).
+def _pool_sizes(config: PipelineConfig, quota: int) -> tuple[int, int]:
+    """(per-strategy retrieval k, RRF top_n) for this pipeline.
 
-    `llm_only` returns (None, None) so retrieval keeps its historical
-    `quota * candidate_multiplier`. This preserves candidate sizing, not scoring-
-    contract equivalence across the structured-output rollout.
-    Cohere modes size the pool to fill one Cohere search unit. The per-path
-    retrieval depth stays at the standard 50 even for all eight Bible genres;
-    RRF still limits the pool before Cohere.
+    The pool is sized to fill one Cohere search unit. The per-path retrieval depth
+    stays at the standard 50 even for all eight Bible genres; RRF still limits the
+    pool before Cohere.
     """
-    if config.rerank.mode == "llm_only":
-        return None, None
-
     pool = settings.cohere_max_pool
     if config.retrieval.retrieval_k_override is not None:
         # Ablation pipelines pin k so removing a path does not also deepen the

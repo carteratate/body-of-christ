@@ -111,16 +111,16 @@ def test_rrf_k_is_tuned_to_our_list_depth_not_the_conventional_default():
 
     60 traces to Cormack et al. (2009) on TREC runs 1000 deep and is what
     Elasticsearch, Weaviate, Vespa and LangChain all ship. Our lists are
-    `budget.retrieval_k` deep — 50 in production, `quota * candidate_multiplier`
-    in the `llm_only` ablations — so 60 put the agreement/rank crossover at rank
-    62, past the end of every list, and rank never influenced the merge.
+    `budget.retrieval_k` deep — 50 in production — so 60 put the agreement/rank
+    crossover at rank 62, past the end of every list, and rank never influenced
+    the merge.
 
     Pinned against the field default rather than `settings.rrf_k` so a local
     `RRF_K` override does not read as a regression: this guards the value we
     ship, not the value this machine happens to run.
 
-    If you are changing this, that is fine, but change it on evidence —
-    `hyde_luna_rrf60` exists so `compare/` can measure the alternative.
+    If you are changing this, that is fine, but change it on evidence: pin
+    `rrf_k` on an eval arm and measure it with `scripts/run_eval_suite.py`.
     """
     assert Settings.model_fields["rrf_k"].default == 20
 

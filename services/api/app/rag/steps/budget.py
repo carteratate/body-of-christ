@@ -14,11 +14,6 @@ while annotation+content packs ~50. Rather than pick one conservative constant a
 overpay for unenriched collections, `cohere_pool` packs greedily up to the unit
 boundary — cost per collection stays pinned at one search unit and the document
 count floats to fill it.
-
-`llm_only` mode is deliberately NOT sized here: it keeps the historical
-`quota * candidate_multiplier` for candidate-set continuity. Its structured output
-contract is a versioned methodology discontinuity, not an unchanged A/B baseline. See
-`retrieval_k`/`rrf_top_n` callers in pipelines/runner.py.
 """
 from __future__ import annotations
 
@@ -96,7 +91,7 @@ def cohere_pool(doc_token_sizes: list[int], query_tokens: int) -> int:
 
 
 def retrieval_k(pool_target: int, n_paths: int) -> int:
-    """Per-strategy retrieval limit for dynamic (non-`llm_only`) modes.
+    """Per-strategy retrieval limit.
 
     Each active retrieval path returns its own ranked list and RRF dedupes across
     them, so the per-path limit shrinks as paths are added: asking 5 paths for 50

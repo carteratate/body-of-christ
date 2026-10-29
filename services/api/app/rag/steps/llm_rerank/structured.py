@@ -10,7 +10,7 @@ class RerankContractError(ValueError):
     """Valid JSON that violates the reranker application contract."""
 
 
-def score_schema(expected_count: int, *, pointwise: bool) -> dict[str, Any]:
+def score_schema(expected_count: int) -> dict[str, Any]:
     """Return the provider-neutral JSON Schema for one positional result per input.
 
     Candidate IDs deliberately stay out of model output.  Position is a cheaper and
@@ -28,17 +28,6 @@ def score_schema(expected_count: int, *, pointwise: bool) -> dict[str, Any]:
         },
     }
     required = ["position", "score"]
-    if pointwise:
-        properties.update({
-            "include": {"type": "boolean"},
-            "overlap_verdict": {
-                "anyOf": [
-                    {"type": "string", "enum": ["redundant", "complementary"]},
-                    {"type": "null"},
-                ],
-            },
-        })
-        required.extend(["include", "overlap_verdict"])
 
     return {
         "type": "object",

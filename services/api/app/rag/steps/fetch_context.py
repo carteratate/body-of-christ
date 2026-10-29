@@ -69,7 +69,7 @@ async def articles(chapter_keys: set[str]) -> dict[tuple[str, str], list[RankedC
 
     Best-effort by design, and recorded via `record_recovery`, NOT `record`. A
     degradation would mark the run quality- and latency-ineligible and get the whole
-    eval row discarded (`compare/persist.py`), and under `DegradationPolicy.RAISE` the
+    eval row discarded (`scripts/run_eval_suite.py`), and under `DegradationPolicy.RAISE` the
     record call itself raises — turning a missing presentation flourish into a failed
     search, which is exactly what "best-effort" is supposed to preclude. Nothing about
     retrieval or ranking changed here, so the result stays comparable.

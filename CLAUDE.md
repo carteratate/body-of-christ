@@ -71,24 +71,11 @@ For collection publication, store repair, search-index reset, or reader wipe, re
 
 ## 3. API Design (STABILITY REQUIRED)
 
-All endpoints under `/v1/...`.
+All endpoints under `/v1/...`. The routes are listed in §10.
 
-### POST /v1/chat (NON-NEGOTIABLE CONTRACT)
-
-Request:
-- session_id: string | null
-- message: string
-- filters: { collections: string[] }
-- top_k?: number
-- min_score?: number
-
-Response:
-- session_id: string
-- message_id: string
-- answer: string
-- sources: []   // empty in V1, populated in V2+
-
-This contract MUST NOT change across versions. Note it is a **compatibility endpoint with no live caller** — `/chat` redirects to `/search`, and the browser client (`components/chat/ChatShell.tsx`, `streamMessage` in `api.ts`) is unreachable. Keep the endpoint; treat the frontend half as a deletion candidate.
+The V1 chat API (`POST /v1/chat`, `/chat/stream`, `/sessions`) had no live caller and was
+removed in October 2026, with its browser client. The `/chat` page still redirects old
+links to `/search`.
 
 ---
 
@@ -97,7 +84,9 @@ This contract MUST NOT change across versions. Note it is a **compatibility endp
 SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tables.
 
 ### Core (V1)
-- `chat_sessions`, `chat_messages`, `user_usage`
+- `user_usage` — the search rate-limit counters
+- `chat_sessions`, `chat_messages` — no longer written since the V1 chat API was removed;
+  the tables and rows stay until a migration drops them
 
 ### Search corpus & activity (V2)
 - `documents` (id, collection, title, author, year, translation, metadata jsonb)
@@ -106,7 +95,8 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   (`chunk_feedback` was dropped and replaced by `retrieval_labels` in 0022)
 
 ### Later additions
-- `compare_runs` — retrieval-lab evaluation runs (0018, 0020, 0026)
+- `compare_runs` — runs of the removed HTTP retrieval lab (0018, 0020, 0026); no longer
+  written. `scripts/run_eval_suite.py` writes its results to JSONL files instead
 - `retrieval_labels` — human relevance labels (0022, 0024)
 - `guest_trials` — guest session quota + continuity + transfer readiness (0023, 0025, 0026, 0027)
 - `guest_trial_retrievals` — guest results, held apart from `retrievals` until
@@ -216,17 +206,24 @@ and it hands the runner three derived values: `focused`, `terminal_candidate_bud
 `max_passages_per_source`. `SearchPlanError` carries a stable `code` so routes translate
 failures consistently. See §18.
 
-The registry also holds ablation configs (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, alternate RRF `k`). Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
+The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, Luna 6 and reasoning effort, seat rules). **Every pipeline runs Cohere**, alone or followed by one listwise LLM call; the single-stage pointwise LLM reranker (`llm_only`) was removed in October 2026. Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
+
+**Comparing pipelines is `services/api/scripts/run_eval_suite.py`** (in-process, writes
+nothing to the database). It retrieves once per query, replays each named pipeline over
+the same candidates (`rag/compare/shared_runner.py`), and has the judge
+(`rag/compare/judge.py`) score them. Its default arms are production and
+`hyde_cohere_luna_seats10t80_hydesample`; add any registry name with `--pipelines`. A new
+model or setting to test is one new registry entry pinning it. The HTTP lab
+(`/search/compare`) and `compare_batch/` were removed in October 2026.
 
 **RRF `k` is a per-pipeline axis, not a constant.** It defaults to `settings.rrf_k`
-(env `RRF_K`, 20) and is overridden per pipeline by `RetrievalConfig.rrf_k`;
-`hyde_luna_rrf60` pins 60 so `compare/` can settle the 60 → 20 change on evidence.
-Two consequences to respect when touching fusion: `compare/shared_runner.py` caches
-candidate pools by retrieval **shape**, and `rrf_k` is part of that key — omit it and
-two arms differing only in `k` silently share one pool. And `/search/compare/view`
-renders its pipeline list from `PIPELINES`, so a new entry needs no hand-sync.
+(env `RRF_K`, 20) and is overridden per pipeline by `RetrievalConfig.rrf_k`, so an eval
+arm can pin another `k` to test it. One consequence to respect when touching fusion:
+`compare/shared_runner.py` caches candidate pools by retrieval **shape**, and `rrf_k` is
+part of that key — omit it and two arms differing only in `k` silently share one pool.
+The harness records the default `k` in its fingerprint for unpinned arms.
 
-**The pipeline spans three LLM providers** — do not assume Anthropic-only. Defaults in `config.py`: HyDE passages and the Bible genre pick on `gpt-5.6-luna` with reasoning `none` (`HYDE_LUNA_MODEL` and `HYDE_GENRE_LUNA_MODEL` are separate settings; `HYDE_*_PROVIDER=haiku` falls back to `claude-haiku-4-5`), LLM rerank `claude-haiku-4-5` (`hyde_*_haiku`) or `gpt-5.6-luna` at reasoning `medium` (`*_luna`, pinned in `openai_provider.REASONING_EFFORT`), the Cohere rerank path, embeddings OpenAI `text-embedding-3-large`, explanations `gpt-6-luna` with reasoning `none`. The eval judge is `claude-opus-5-5` via structured outputs (forced tool_choice is a 400 on 5.5). Legacy chat uses `claude-sonnet-4-6`. Every one is env-overridable; read `config.py` before naming a model.
+**The pipeline spans three LLM providers** — do not assume Anthropic-only. Defaults in `config.py`: HyDE passages and the Bible genre pick on `gpt-5.6-luna` with reasoning `none` (`HYDE_LUNA_MODEL` and `HYDE_GENRE_LUNA_MODEL` are separate settings; `HYDE_*_PROVIDER=haiku` falls back to `claude-haiku-4-5`), LLM rerank `claude-haiku-4-5` (`hyde_*_haiku`) or `gpt-5.6-luna` at reasoning `medium` (`*_luna`, pinned in `openai_provider.REASONING_EFFORT`), the Cohere rerank path, embeddings OpenAI `text-embedding-3-large`, explanations `gpt-6-luna` with reasoning `none`. The eval judge is `claude-opus-5-5` via structured outputs (forced tool_choice is a 400 on 5.5). Every one is env-overridable; read `config.py` before naming a model.
 
 **Luna model and reasoning effort are also per-pipeline axes**, for evaluation arms:
 `RetrievalConfig.hyde_luna_model` / `hyde_genre_luna_model` / `hyde_sample` and
@@ -318,8 +315,8 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | `/about`, `/guest/about` | Product info |
 | `/feedback`, `/guest/feedback` | Product feedback form |
 | `/login`, `/signup`, `/update-password`, `/auth/callback` | Auth flows |
-| `/chat` | `redirect` to /search — legacy |
-| `/icon-preview`, `/onboarding-preview`, `/prototypes/quota-ten-proof` | Design drafts, not product surface |
+| `/chat` | `redirect` to /search — keeps old links working |
+| `/onboarding-preview` | Development-only landing-page preview (404 in production) |
 | `/v1/[...path]` | The proxy route — see §1 |
 
 ### API (all under `/v1/`)
@@ -340,9 +337,6 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | POST | `/product-feedback` | In-app feedback; allows anonymous |
 | POST | `/labels` | Human relevance labels (retrieval lab) |
 | GET/PUT | `/preferences` | User preferences |
-| POST/GET | `/search/compare`, `/search/compare/view`, `/search/compare/stats` | **Retrieval lab.** Mounted in production startup today; treat as a separate concern from product routes. |
-| POST | `/chat`, `/chat/stream` | Legacy — see §3 |
-| GET | `/sessions`, `/sessions/{id}/messages` | Legacy chat history. Mounted in production; no live caller. |
 
 Authenticated searches persist `outcome` and `collection_outcomes` in the
 `searches.filters` jsonb alongside the submitted filters. The saved-results endpoint
@@ -354,14 +348,13 @@ inventing degradation details.
 
 ## 11. Frontend Layout
 
-Components are grouped by feature under `apps/web/src/components/<feature>/` (search, reader, history, bookmarks, sources, discover, settings, feedback, landing, auth, chat, common, layout). Read the directory rather than a list here.
+Components are grouped by feature under `apps/web/src/components/<feature>/` (search, reader, history, bookmarks, sources, discover, settings, feedback, landing, auth, common, layout). Read the directory rather than a list here.
 
 What is **not** discoverable by looking:
 
 - **Search lifecycle does not live in `components/search/`.** It lives in `apps/web/src/lib/search-experience/` — see §12.
 - **`lib/search-stream.ts` is the sole SSE protocol module** — see §14.
 - `components/layout/` holds three shells: `AppShell` (authenticated), `GuestShell` (guest), and `AuthenticatedRouteShell`, which picks between them by pathname against its own `AUTHENTICATED_ROUTES` list — **add new authenticated routes there or they render in the guest shell.** Guest and authenticated pages share components by receiving an `isGuest` prop, not by forking.
-- `components/chat/ChatShell.tsx` is unreachable — see §3.
 
 ---
 
@@ -444,32 +437,18 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 17. Known Issues & Deferred Work
 
-### 1. Shared rate-limit counter (V1 chat / V2 search)
-
-V1 chat and V2 search share `user_usage.rate_count` / `quota_count`. V2 enforces 5/min and 30/day (`RATE_LIMIT_SEARCH_PER_MINUTE` / `DAILY_SEARCH_QUOTA`); V1 enforces 10/min (`RATE_LIMIT_PER_MINUTE` / `DAILY_MESSAGE_QUOTA`). The two pairs are separate settings over one counter, so they cross-contaminate. `TODO` in `routes/search.py` → `check_search_rate_limit`.
-**Fix:** add `search_rate_count` / `search_quota_count` columns.
-
-### 2. JWKS refresh still stampedes
+### 1. JWKS refresh still stampedes
 
 `app/auth/jwks.py` has an `asyncio.Lock`, but it guards only the **cache write** — `_fetch_from_remote()` runs outside it. Concurrent coroutines that all see a stale cache still all issue HTTP requests to Supabase. Low priority; the fix is to hold the lock across the fetch with a double-check on entry.
 
-### 3. Retrieval lab is mounted in production startup
-
-`compare`, `compare_stats`, and the judge client initialize with the product API. Separating them into an adapter or explicit deployment mode is tracked as architecture item 7.
-
-### 4. Tracked relics
-
-`app/icon-preview/` (~1,177 lines of animation draft), `components/chat/ChatShell.tsx`,
-and `rag/steps/persist.py` (a one-line placeholder docstring, imported nowhere) are dead.
-Architecture item 8.
+### 2. Do not delete `rag/steps/dedup.py`
 
 **`rag/steps/dedup.py` is NOT dead — do not delete it.** `pipelines/runner.py` imports it
 in the parenthesized `from app.rag.steps import (...)` block, which is easy to miss with a
 single-line grep. It is the step that carries `per_source_cap`, so focused search (§18)
 depends on it.
 
-Lint warnings are 4 total, 0 errors: 2 in `icon-preview/`, 2 in
-`components/common/ErrorBoundary.tsx`.
+Lint warnings are 2 total, 0 errors, both in `components/common/ErrorBoundary.tsx`.
 
 ---
 
@@ -568,4 +547,4 @@ Use the single-context documentation layout. See `docs/agents/domain.md`.
 
 ### Architecture review
 
-The August 2026 production architecture review is `docs/architecture/architecture-review-2026-08-23.html`. Items 1–3 are implemented; items 4–8 are open and are referenced by number above.
+The August 2026 production architecture review is `docs/architecture/architecture-review-2026-08-23.html`. Items 1–3, 7 (the retrieval lab, removed rather than separated) and 8 (relics) are implemented; items 4–6 are open.

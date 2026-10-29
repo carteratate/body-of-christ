@@ -4,7 +4,8 @@
 Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>][_seats<min>[t<total>]]`. The
 axes configured here — which retrieval paths run, which rerankers (and, for Luna, which
 model and reasoning effort), how the paths are fused, and how many candidates reach the
-terminal listwise call — let `compare/` A/B any two by name.
+terminal listwise call — let the eval harness (`scripts/run_eval_suite.py`) A/B
+any two by name.
 
 Enrichment is deliberately NOT an axis: whether a candidate has an annotation is a
 property of the data, checked per candidate, so a single query spanning enriched and
@@ -94,13 +95,11 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
     )
 
 
+# Every pipeline runs Cohere, alone or followed by one listwise LLM call. The
+# single-stage LLM arms (`hyde_haiku`, `nohyde_haiku`, `hyde_luna`, and the RRF-k
+# ablation `hyde_luna_rrf60` built on them) were removed in October 2026 with the
+# pointwise reranker; `rrf_k` stays an axis any Cohere arm can pin.
 PIPELINES: dict[str, PipelineConfig] = {
-    # Structured pointwise control. Name retained for API compatibility; comparisons
-    # must segment across the structured-output contract rollout.
-    "hyde_haiku":          _p("hyde_haiku", llm="haiku"),
-    "nohyde_haiku":        _p("nohyde_haiku", hyde=False, llm="haiku"),
-    # Same shape, Luna instead of Haiku.
-    "hyde_luna":           _p("hyde_luna", llm="luna"),
     # Cohere alone, terminal.
     "hyde_cohere":         _p("hyde_cohere", cohere=True),
     "nohyde_cohere":       _p("nohyde_cohere", hyde=False, cohere=True),
@@ -108,12 +107,6 @@ PIPELINES: dict[str, PipelineConfig] = {
     "hyde_cohere_haiku":   _p("hyde_cohere_haiku", cohere=True, llm="haiku"),
     "hyde_cohere_luna":    _p("hyde_cohere_luna", cohere=True, llm="luna"),
     "nohyde_cohere_haiku": _p("nohyde_cohere_haiku", hyde=False, cohere=True, llm="haiku"),
-    # Fusion ablation: `hyde_luna` at the pre-#101 k of 60, to settle 60 -> 20 on
-    # evidence. Paired with `hyde_luna` because `llm_only` is where k bites hardest
-    # — `_pool_sizes` returns (None, None) there, so top_n drops to
-    # `quota * candidate_multiplier` and RRF actually truncates. In the Cohere arms
-    # the reranker rescores every survivor, which washes most of the difference out.
-    "hyde_luna_rrf60":     _p("hyde_luna_rrf60", llm="luna", rrf_k=60),
     # Lexical ablation: dense-only retrieval, to measure what FTS contributes.
     # k pinned to what hyde_cohere_haiku (its control) derives, so the only
     # difference between the two is the presence of the FTS path.

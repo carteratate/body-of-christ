@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -7,6 +8,15 @@ import pytest
 from app.rag.compare import shared_runner
 from app.rag.pipelines.registry import PIPELINES
 from app.rag.steps.types import RetrievalPath
+
+
+def _variant(base: str, name: str, **retrieval) -> object:
+    """A registry pipeline with some retrieval fields changed, under its own name."""
+    config = PIPELINES[base]
+    return dataclasses.replace(
+        config, name=name,
+        retrieval=dataclasses.replace(config.retrieval, **retrieval),
+    )
 
 
 def _row(i: int) -> dict:
@@ -27,7 +37,7 @@ def _row(i: int) -> dict:
 @pytest.mark.asyncio
 async def test_capture_runs_shared_remote_steps_once_and_derives_pipeline_depths():
     configs = [
-        PIPELINES["hyde_haiku"],
+        _variant("hyde_cohere_haiku", "shallow", retrieval_k_override=12),
         PIPELINES["hyde_cohere_haiku"],
         PIPELINES["hyde_cohere_luna"],
     ]
@@ -47,7 +57,7 @@ async def test_capture_runs_shared_remote_steps_once_and_derives_pipeline_depths
 
     assert vector.await_count == 1
     assert fts.await_count == 1
-    assert len(artifacts.candidate_pools["hyde_haiku"]["bible"]) == 12
+    assert len(artifacts.candidate_pools["shallow"]["bible"]) == 12
     assert len(artifacts.candidate_pools["hyde_cohere_haiku"]["bible"]) == 50
     assert (
         [c.chunk_id for c in artifacts.candidate_pools["hyde_cohere_haiku"]["bible"]]
@@ -80,7 +90,10 @@ async def test_capture_does_not_share_one_pool_across_differing_rrf_k():
     the comparison measure nothing. Fails while the cache key omits `rrf_k`:
     both arms get the byte-identical pool the first one computed.
     """
-    configs = [PIPELINES["hyde_luna"], PIPELINES["hyde_luna_rrf60"]]
+    configs = [
+        PIPELINES["hyde_cohere_luna"],
+        _variant("hyde_cohere_luna", "hyde_cohere_luna_rrf60", rrf_k=60),
+    ]
     # Rank the same chunks differently per path so k actually reorders the merge:
     # one path's top hit competes with deep agreement from the other two.
     vector_ranked = [_row(i) for i in range(50)]
@@ -98,6 +111,6 @@ async def test_capture_does_not_share_one_pool_across_differing_rrf_k():
     ):
         artifacts = await shared_runner.capture("q", ["bible"], 4, configs)
 
-    at_20 = artifacts.candidate_pools["hyde_luna"]["bible"]
-    at_60 = artifacts.candidate_pools["hyde_luna_rrf60"]["bible"]
+    at_20 = artifacts.candidate_pools["hyde_cohere_luna"]["bible"]
+    at_60 = artifacts.candidate_pools["hyde_cohere_luna_rrf60"]["bible"]
     assert [c.rrf_score for c in at_20] != [c.rrf_score for c in at_60]

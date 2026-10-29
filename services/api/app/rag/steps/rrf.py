@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 # top 3 asserts that a single path's best hits are trustworthy.
 #
 # The value lives in `settings.rrf_k` (env `RRF_K`) so it can be measured rather than
-# argued: `RetrievalConfig.rrf_k` pins it per pipeline, which is what lets `compare/`
-# A/B two values by name. That reasoning above is the hypothesis, not the evidence.
+# argued: `RetrievalConfig.rrf_k` pins it per pipeline, which is what lets the eval
+# harness (`scripts/run_eval_suite.py`) A/B two values by name. That reasoning above is the hypothesis, not the evidence.
 _PER_STRATEGY_TOP_K = 3
 
 

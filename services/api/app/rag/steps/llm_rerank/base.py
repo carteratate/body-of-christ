@@ -1,12 +1,12 @@
 """Provider interface for LLM-based reranking.
 
-Both rerank shapes (pointwise per-collection, listwise global) go through this one
-call, so adding a provider means implementing `score()` and registering it — no
-change to prompt construction, parsing, or orchestration.
+The listwise reranker goes through this one call, so adding a provider means
+implementing `score()` and registering it — no change to prompt construction,
+parsing, or orchestration.
 
-Providers return raw text rather than parsed output deliberately: the two shapes
-parse differently, and keeping parsing out of the provider means a provider swap
-cannot change how a response is interpreted.
+Providers return raw text rather than parsed output deliberately: keeping parsing
+out of the provider means a provider swap cannot change how a response is
+interpreted.
 """
 from __future__ import annotations
 

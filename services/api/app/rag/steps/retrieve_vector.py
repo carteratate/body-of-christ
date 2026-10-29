@@ -82,8 +82,8 @@ async def run(
     Returns col → ranked paths labeled as HyDE or original query.
     user_id is accepted but unused (retained for caller compatibility).
     """
-    # k is supplied by budget.retrieval_k() in dynamic modes; None keeps the
-    # historical sizing that llm_only depends on for A/B comparability.
+    # Pipelines supply k from budget.retrieval_k(); None, for direct callers, falls
+    # back to quota * candidate_multiplier.
     n = k if k is not None else quota * settings.candidate_multiplier
 
     async def _search_collection(col: str) -> tuple[str, list[RetrievalPath]]:

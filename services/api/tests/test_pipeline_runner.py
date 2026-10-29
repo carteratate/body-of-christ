@@ -1,3 +1,5 @@
+import dataclasses
+
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from app.rag.pipelines.registry import PIPELINES
@@ -8,10 +10,9 @@ from app.rag.steps.types import RankedChunk, PipelineResult
 
 
 _EXPECTED_PIPELINES = {
-    "hyde_haiku", "nohyde_haiku", "hyde_luna",
     "hyde_cohere", "nohyde_cohere",
     "hyde_cohere_haiku", "hyde_cohere_luna", "nohyde_cohere_haiku",
-    "hyde_nolex_cohere_haiku", "hyde_luna_rrf60",
+    "hyde_nolex_cohere_haiku",
     "hyde_cohere_luna_hydesample", "hyde6_cohere_luna",
     "hyde6_cohere_luna6", "hyde6_cohere_luna6_low",
     "hyde_cohere_luna_seats10", "hyde_cohere_luna_seats10t80",
@@ -28,9 +29,9 @@ def test_registry_configs_have_required_fields():
         assert config.name == name
         assert isinstance(config.retrieval.hyde, bool)
         assert isinstance(config.retrieval.fts, bool)
-        # Every pipeline must rerank somehow; RerankConfig rejects neither-enabled.
-        assert config.rerank.use_cohere or config.rerank.llm_provider
-        assert config.rerank.mode in {"llm_only", "cohere_only", "both"}
+        # Every pipeline runs Cohere; RerankConfig rejects one that does not.
+        assert config.rerank.use_cohere
+        assert config.rerank.mode in {"cohere_only", "both"}
 
 
 def test_focused_bible_keeps_standard_per_path_retrieval_depth():
@@ -286,7 +287,7 @@ def test_global_hyde_failure_marks_all_results_degraded_for_legacy_events():
 
 @pytest.mark.asyncio
 async def test_runner_returns_pipeline_result():
-    config = PIPELINES["nohyde_haiku"]
+    config = PIPELINES["nohyde_cohere_haiku"]
     fake_chunk = RankedChunk(
         chunk_id="00000000-0000-0000-0000-000000000001",
         content="test", reference=None, collection="bible",
@@ -306,7 +307,7 @@ async def test_runner_returns_pipeline_result():
         result = await runner.run(config, "test query", ["bible"], quota=4)
 
     assert isinstance(result, PipelineResult)
-    assert result.pipeline == "nohyde_haiku"
+    assert result.pipeline == "nohyde_cohere_haiku"
     # Against the constant, not a literal: this asserts the runner PROPAGATES the
     # version, which is what would silently break. Pinning the value here instead
     # would make every deliberate methodology bump look like a regression, while
@@ -401,17 +402,18 @@ def test_delivery_outcome_distinguishes_focused_completion(
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    ("pipeline", "expected_k"), [("hyde_luna", None), ("hyde_luna_rrf60", 60)],
-)
-async def test_runner_passes_the_pipelines_own_rrf_k_to_the_merge(pipeline, expected_k):
+@pytest.mark.parametrize("expected_k", [None, 60])
+async def test_runner_passes_the_pipelines_own_rrf_k_to_the_merge(expected_k):
     """The production path has to honour the per-pipeline k, or the axis is inert.
 
     `None` is passed through deliberately rather than resolved here: `rrf.run`
     owns the fallback to the configured default, so there is one place that
     decides what an unpinned pipeline scores with.
     """
-    config = PIPELINES[pipeline]
+    control = PIPELINES["hyde_cohere_luna"]
+    config = dataclasses.replace(
+        control, retrieval=dataclasses.replace(control.retrieval, rrf_k=expected_k),
+    )
     with (
         patch("app.rag.steps.embed.run", new=AsyncMock(return_value=[0.1] * 1536)),
         patch("app.rag.steps.hyde_s25.run", new=AsyncMock(return_value={})),
