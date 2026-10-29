@@ -815,3 +815,20 @@ def test_a_note_printed_twice_is_allowed_only_word_for_word():
     notes["2053:2"]["text"] = "Something else."
     with pytest.raises(ValueError, match="notes without markers"):
         resolve(drop_repeated_structure(items), notes)
+
+
+def test_section_two_of_part_one_is_printed_once(tmp_path):
+    # toc-45 prints "SECTION TWO" with no title, then "I. THE CREEDS"; the US site has
+    # the title as a breadcrumb and the heading as "THE CREEDS".
+    build = _mini(tmp_path,
+                  [(184, "Faith ends here."), "The Credo", "SECTION TWO", "I. THE CREEDS",
+                   (185, "Whoever says I believe.")],
+                  [_para(184, "Faith ends here."),
+                   _head("Section 2: The Profession of the Christian Faith", "structure"),
+                   _head("THE CREEDS"), _para(185, "Whoever says I believe.")])
+    text = "\n\n".join(p.content for p in build.document.passages)
+    assert text.count("SECTION TWO") == 1 and text.count("THE CREEDS") == 1
+    assert "The Credo\n\nSECTION TWO\n\nTHE PROFESSION OF THE CHRISTIAN FAITH\n\nI. THE CREEDS\n\nWhoever" in text
+    match = next(m for m in build.alignment.matches if m.after == 184)
+    assert not match.inserted
+    assert [match.lines[i].text for i in match.unmatched] == ["The Credo"]

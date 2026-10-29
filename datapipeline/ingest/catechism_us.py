@@ -211,6 +211,8 @@ class HeadingMatch:
     start: int              # token range in the gap's stream
     end: int
     fuzzy: bool = False     # one misprinted word, or a heading the source cut short
+    numbering: str = ""     # the source's "I." before a heading the US prints without it
+    title_missing: bool = False   # the source prints only "SECTION TWO" (toc-45)
 
 
 @dataclass
@@ -373,6 +375,35 @@ def match_gap(gap: Gap, paragraph_words: list[str] | None) -> GapMatch:
                 inserted = [(o + 1 if o > order else o, it) for o, it in inserted]
                 break
 
+    # A structural title the source prints without its title, "SECTION TWO" alone
+    # (Part One's Section Two, toc-45 in catechism_headings.TITLE_FIXES): a whole
+    # unmatched line holding just its level and number.
+    for order, item in list(inserted):
+        if item["kind"] != "structure":
+            continue
+        target = structure_words(item["text"])[:2]
+        for li in range(len(gap.source)):
+            span = [k for k, t in enumerate(toks) if t.line == li]
+            if span and not any(k in taken for k in span) and \
+                    [level_stream[k] for k in span] == target:
+                headings.insert(order, HeadingMatch(item, span[0], span[-1] + 1, True, title_missing=True))
+                inserted.remove((order, item))
+                taken.update(span)
+                inserted = [(o + 1 if o > order else o, it) for o, it in inserted]
+                break
+
+    # The source's numbering before a heading the US site prints bare ("I. THE
+    # CREEDS" against "THE CREEDS"): the numeral joins the heading.
+    for h in headings:
+        k = h.start - 1
+        if k >= 0 and toks[k].line == toks[h.start].line and k not in taken and \
+                re.fullmatch(r"[ivxl]+|\d+", toks[k].word) and \
+                (k == 0 or toks[k - 1].line != toks[k].line):
+            line = gap.source[toks[k].line].text
+            h.numbering = line[toks[k].start:toks[h.start].start].strip()
+            h.start = k
+            taken.add(k)
+
     # Each token is in a heading, or else free; free tokens are grouped by line.
     in_heading = [False] * len(toks)
     for h in headings:
@@ -496,7 +527,12 @@ def align(source: dict, us: dict) -> Alignment:
         for h in match.headings:
             key = f"g{after}.{gap.us.index(h.item)}"
             structural = h.item["kind"] == "structure"
-            text = _source_form(match, h) if structural else h.item["text"]
+            if structural and h.title_missing:
+                text = _structural_caps(h.item["text"])
+            elif structural:
+                text = _source_form(match, h)
+            else:
+                text = f"{h.numbering} {h.item['text']}" if h.numbering else h.item["text"]
             first_line = match.toks[h.start].line
             items[key] = {"kind": h.item["kind"], "text": text,
                           "footnotes": [] if structural else h.item["footnotes"],

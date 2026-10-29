@@ -247,7 +247,8 @@ def report(build: "catechism.Build", source: dict, live: list[dict] | None) -> d
         paragraphs[kind].append(n)
         pairs.update(f"{a} -> {b}" for a, b in seen)
 
-    headings = {"matched": 0, "changed": [], "fuzzy": [], "inserted": [], "unmatched_lines": [], "moved": []}
+    headings = {"matched": 0, "changed": [], "fuzzy": [], "inserted": [], "unmatched_lines": [], "moved": [],
+                "repeats": []}
     for match in alignment.matches:
         for h in match.headings:
             headings["matched"] += 1
@@ -260,8 +261,19 @@ def report(build: "catechism.Build", source: dict, live: list[dict] | None) -> d
         for _, item in match.inserted:
             headings["inserted"].append({"after": match.after, "kind": item["kind"], "text": item["text"],
                                          "glued": bool(item.get("_glued"))})
+        heading_lines = {match.toks[k].line for h in match.headings for k in range(h.start, h.end)}
+        emitted = [cu.words(h.item["text"]) for h in match.headings] + \
+                  [cu.words(item["text"]) for _, item in match.inserted]
         for li in match.unmatched:
             headings["unmatched_lines"].append({"after": match.after, "text": match.lines[li].text})
+            kept = cu.words(match.lines[li].text)
+            # A kept line beside a heading line, whose words are all in a heading the
+            # gap also prints, is a repeat. (Lines inside a kept block, such as the
+            # Decalogue table's own title, are not beside a heading.)
+            beside = {li - 1, li + 1} & heading_lines
+            if li in heading_lines or (kept and beside and any(
+                    len(kept) <= len(e) and all(w in e for w in kept) for e in emitted)):
+                headings["repeats"].append({"after": match.after, "text": match.lines[li].text})
         for li, other in match.moved:
             headings["moved"].append({"source_after": match.after, "us_after": other,
                                       "text": match.lines[li].text})
@@ -330,6 +342,8 @@ def stops(result: dict) -> list[str]:
         out.append("reconstruction failed")
     if result["footnotes"]["mismatched_numbers"]:
         out.append("footnotes not all placed once")
+    if result["headings"]["repeats"]:
+        out.append("source lines kept that repeat a heading")
     identity = result.get("identity")
     if identity and (identity["removed"] or identity["opens_differently"] or identity["live_unresolved"]):
         out.append("live anchors removed or opening differently")
@@ -365,6 +379,9 @@ def markdown(result: dict) -> str:
         lines += [f"- after CCC {x['after']} ({x['kind']}): {x['text']!r}"
                   + (" (the source glues it to the end of the paragraph's line)" if x["glued"] else "")
                   for x in h["inserted"]] + [""]
+    if h["repeats"]:
+        lines += ["Kept source lines that repeat a heading the gap prints (a stop):", ""]
+        lines += [f"- after CCC {x['after']}: {x['text']!r}" for x in h["repeats"]] + [""]
     if h["moved"]:
         lines += ["Printed one gap away from the source (the US placement is kept):", ""]
         lines += [f"- {x['text']!r}: source after CCC {x['source_after']}, US after CCC {x['us_after']}"
