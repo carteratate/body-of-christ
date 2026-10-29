@@ -19,6 +19,8 @@ from urllib.parse import urlparse
 import asyncpg
 from fastapi import HTTPException
 
+from app import catechism_pages
+
 logger = logging.getLogger(__name__)
 
 ReaderAccess = Literal["full", "excerpt"]
@@ -28,7 +30,7 @@ RESTRICTED_CODE = "reader_restricted"
 # The official edition for documents whose metadata carries no source URL. The
 # Catechism's is the USCCB's own online edition: the USCCB holds the US English text.
 _COLLECTION_SOURCE_URLS = {
-    "catechism": "https://www.usccb.org/sites/default/files/flipbooks/catechism/index.html",
+    "catechism": catechism_pages.COVER_URL,
     "canon-law": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html",
 }
 
@@ -105,10 +107,17 @@ async def document_access(conn, document_ids) -> dict[str, DocumentAccess]:
     return access
 
 
-def access_fields(access: dict[str, DocumentAccess], document_id) -> dict:
-    """The `reader_access`, `source_url` and `source_credit` fields of a passage's source."""
+def access_fields(access: dict[str, DocumentAccess], document_id,
+                  unit_label: str | None = None) -> dict:
+    """The `reader_access`, `source_url` and `source_credit` fields of a passage's source.
+
+    A passage of a document that links to the USCCB's Catechism flipbook links to the
+    page where its first paragraph (`unit_label`, "§1127") starts, not the cover."""
     a = access.get(str(document_id), FULL_ACCESS)
-    return {"reader_access": a.reader_access, "source_url": a.source_url,
+    url = a.source_url
+    if url == catechism_pages.COVER_URL:
+        url = catechism_pages.page_url(unit_label) or url
+    return {"reader_access": a.reader_access, "source_url": url,
             "source_credit": a.source_credit}
 
 

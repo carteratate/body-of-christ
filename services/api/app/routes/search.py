@@ -376,7 +376,7 @@ async def get_search_results(
                 anchor=row["anchor"],
                 chapter_key=row["chapter_key"],
                 unit_label=row["unit_label"],
-                **access_fields(access, row["document_id"]),
+                **access_fields(access, row["document_id"], row["unit_label"]),
             ),
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],
