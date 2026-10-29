@@ -1049,7 +1049,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Changes:**
   - Research step inside this item, before code. For each of the four works, record whether a cleared English translation of the missing sections exists (0.2's rights inventory holds the answer). TheoCorpus makes no translations of its own.
   - Where one exists, the adapter substitutes it (a separate adapter change under 1.8a or 1.3a) and the passage keeps its ID with `text_replaced` set.
-  - Otherwise, a removal-registry entry per anchor, reason `translation-in-preparation`, with the tombstone "No public-domain English translation is available." Ubi Lutetiam is wholly Italian, so it is a `document`-scope entry. Where a retired passage sits inside a chapter (the Stromata, the Divine Institutes), the reader shows the one-line tombstone in its place, so the chapter does not silently skip text.
+  - Otherwise, a removal-registry entry per anchor, reason `translation-in-preparation`, with the tombstone "No public-domain English translation is available." Ubi Lutetiam is wholly Italian, so it is a `document`-scope entry.
   - No early live apply (D7).
 - **Acceptance checks:**
   - Registry test: exactly the approved anchors carry removal entries with this reason and tombstone.
