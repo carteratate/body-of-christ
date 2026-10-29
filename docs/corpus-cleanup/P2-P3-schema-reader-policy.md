@@ -1049,10 +1049,10 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Changes:**
   - Research step inside this item, before code. For each of the four works, record whether a cleared English translation of the missing sections exists (0.2's rights inventory holds the answer). TheoCorpus makes no translations of its own.
   - Where one exists, the adapter substitutes it (a separate adapter change under 1.8a or 1.3a) and the passage keeps its ID with `text_replaced` set.
-  - Otherwise, a removal-registry entry per anchor, reason `translation-in-preparation`, with the tombstone "No public-domain English translation is available." Ubi Lutetiam is wholly Italian, so it is a `document`-scope entry.
+  - Otherwise, a removal-registry entry per anchor, reason `translation-in-preparation`, with the tombstone "No public-domain English translation is available." Ubi Lutetiam is wholly Italian, so it is a `document`-scope entry. Each work that loses passages but stays gets a note in its `notes` (the document's, or the `document_works` row's for a work inside a container; 2.2a, shown in the reader's document overview, 2.4b): "Some passages are omitted: the translators left them in Latin and no public-domain English translation exists."
   - No early live apply (D7).
 - **Acceptance checks:**
-  - Registry test: exactly the approved anchors carry removal entries with this reason and tombstone.
+  - Registry test: exactly the approved anchors carry removal entries with this reason and tombstone, and each work that keeps passages carries the omission note.
   - A build check, `language.english_only`, run in the release report: no staged passage has a non-English `language`, and the Latin-stopword heuristic finds no run of 5 or more words in any staged passage outside a list of approved short quotations (a Latin phrase inside English prose).
   - After the Phase 4 apply: each retired ID returns its tombstone from `/v1/documents/.../reader`, and the one saved retrieval restores as a tombstone.
   - PR description must include the final anchor list per work with the first 80 characters of each passage, and the translation research result.
