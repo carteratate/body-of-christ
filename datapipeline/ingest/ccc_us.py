@@ -9,15 +9,19 @@ A heading's markers are `fnref:h<X>:<k>`; the site prints those notes among the
 footnotes of a later paragraph, as `fn:h<Y>:<k>`.
 
 Part, Section, Chapter and Article titles are not `div.heading`s: the site prints them
-only as `div.navigation` breadcrumbs, "Section 2: The Ten Commandments (2052 - 2557)",
-and repeats the current ones at the top of every page. They are read as `structure`
-items carrying their range; `drop_repeated_structure` keeps only those that open their
-range, which a repeat at a page top does not.
+only as `div.navigation` breadcrumbs, "Section 2: The Ten Commandments (2052 - 2557)".
+It reprints every open breadcrumb and heading at the top of each page, and some
+epigraphs again where a new article starts, so every structure item and heading carries
+the range it heads (a heading's from its "⇡" link), and `drop_repeated_structure` keeps
+only those whose range opens at the next paragraph. That also drops the one heading the
+site prints twice in a row ("Prayer to Jesus" before CCC 2665 and again before 2666).
 
-The site files a few heading notes under a different id from their markers (the
-Prologue's epigraph has markers `h753` and notes `h14`). `HEADING_NOTE_ALIASES` names
-each such case, reviewed by hand; `resolve` fails on any marker without a note and any
-note without a marker, so a new case cannot slip through.
+The site files most heading notes under a different id from their markers: the
+Prologue's epigraph has markers `h753:1-3` and notes `h14:1-3`, the First Commandment's
+`h559:3-4` and `h2112:3-4`. The note numbers always agree and the notes always print
+later. `resolve` gives each heading's markers the nearest later unused note group with
+exactly the same numbers; a group left over must repeat a used one word for word (the
+site prints a few twice). Anything else fails, so a new case cannot slip through.
 
 Parsing is strict: a tag it does not know raises, so a page that differs from the
 reviewed ones stops the build instead of losing text.
@@ -28,14 +32,9 @@ import re
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-# Heading markers whose notes the site files under another heading id. Checked against
-# the printed Catechism: the Prologue epigraph's notes 1 to 3 are Jn 17:3, 1 Tim 2:3-4
-# and Acts 4:12, which the site attaches to the heading before CCC 14.
-HEADING_NOTE_ALIASES: dict[str, str] = {
-    "h753": "h14",
-}
-
 _INLINE = {"em", "i", "b", "strong", "span", "u", "small"}
+# Lists print one item per line: "- " for a bullet, "1. " for a numbered item, as the
+# printed Catechism does (ccc.json writes the bullets inline, "- orally ...").
 _MARKER_ID = re.compile(r"^fnref:((?:h)?\d+):(\d+)$")
 _NOTE_ID = re.compile(r"^fn:((?:h)?\d+):(\d+)$")
 _RANGE = re.compile(r"^(?P<title>.*?)\s*\((?P<first>\d+)\s*-\s*(?P<last>\d+)\)$", re.S)
@@ -60,6 +59,11 @@ class _Text:
         self.text = self.text.rstrip(" ")
         if self.text and not self.text.endswith("\n\n"):
             self.text += "\n\n"
+
+    def line_break(self) -> None:
+        self.text = self.text.rstrip(" ")
+        if self.text and not self.text.endswith("\n"):
+            self.text += "\n"
 
     def offset(self) -> int:
         # A marker sits after the word it follows, never after a trailing space.
@@ -86,7 +90,7 @@ def _walk(node: Tag, out: _Text, markers: list[dict]) -> None:
                 markers.append({"n": int(marker.group(2)), "id": f"{marker.group(1)}:{marker.group(2)}",
                                 "at": out.offset()})
             elif child.get_text(strip=True) == _UP_ARROW:
-                continue  # the site's "go to this range" link
+                continue  # the site's "go to this range" link (read by parse_page)
             else:
                 _walk(child, out, markers)  # a scripture or paragraph link: keep its text
         elif name in _INLINE:
@@ -96,9 +100,19 @@ def _walk(node: Tag, out: _Text, markers: list[dict]) -> None:
             _walk(child, out, markers)
             out.paragraph_break()
         elif name == "br":
-            out.add(" ")
+            out.line_break()                 # a line of verse or of a prayer
+        elif name in ("ul", "ol"):
+            number = int(child.get("start", 1))
+            for li in child.find_all("li", recursive=False):
+                out.line_break()
+                out.add("- " if name == "ul" else f"{number}. ")
+                number += 1
+                _walk(li, out, markers)
+            out.line_break()
         elif name == "sup":
-            raise ValueError(f"<SUP> outside a footnote link: {child}")
+            if child.get_text(strip=True).isdigit():
+                raise ValueError(f"numbered <SUP> outside a footnote link: {child}")
+            _walk(child, out, markers)       # a typographic superscript ("nº")
         else:
             raise ValueError(f"unexpected <{name}> in text: {str(child)[:200]}")
 
@@ -142,7 +156,12 @@ def parse_page(html: str) -> tuple[list[dict], dict[str, str]]:
         if "heading" in classes:
             text, markers = _plain(block)
             style = next((c for c in classes if c != "heading"), None)
-            items.append({"kind": "heading", "style": style, "text": text, "footnotes": markers})
+            link = next((a for a in block.find_all("a") if a.get_text(strip=True) == _UP_ARROW), None)
+            span = re.search(r"#!/search/(\d+)(?:-(\d+))?", link.get("href", "")) if link else None
+            if span is None:
+                raise ValueError(f"heading without its range link: {text[:80]!r}")
+            items.append({"kind": "heading", "style": style, "text": text, "footnotes": markers,
+                          "first": int(span.group(1)), "last": int(span.group(2) or span.group(1))})
             continue
         number = block.find("div", class_="number")
         body = block.find("div", class_="text")
@@ -154,22 +173,23 @@ def parse_page(html: str) -> tuple[list[dict], dict[str, str]]:
         text, markers = _plain(body)
         items.append({"kind": "paragraph", "n": n, "text": text, "footnotes": markers})
         for note in block.select("div.footnotes > div.note"):
+            printed_with = n
             note_id = _NOTE_ID.match(note.get("id", ""))
             if not note_id:
                 raise ValueError(f"note with unexpected id {note.get('id')!r}")
             key = f"{note_id.group(1)}:{note_id.group(2)}"
             if key in notes:
                 raise ValueError(f"note {key} printed twice")
-            notes[key] = _note_text(note.find("div", class_="text"))
+            notes[key] = {"text": _note_text(note.find("div", class_="text")), "printed_with": printed_with}
     return items, notes
 
 
 def drop_repeated_structure(items: list[dict]) -> list[dict]:
-    """Keep a `structure` item only where its range opens: the next paragraph is its
-    first number. The breadcrumbs repeated at the top of each page fail that test."""
+    """Keep a structure item or heading only where its range opens: the next paragraph
+    is its first number. What the site reprints (page tops, article starts) fails it."""
     kept = []
     for i, item in enumerate(items):
-        if item["kind"] == "structure":
+        if item["kind"] in ("structure", "heading"):
             following = next((x["n"] for x in items[i + 1:] if x["kind"] == "paragraph"), None)
             if following != item["first"]:
                 continue
@@ -177,26 +197,63 @@ def drop_repeated_structure(items: list[dict]) -> list[dict]:
     return kept
 
 
-def resolve(items: list[dict], notes: dict[str, str],
-            aliases: dict[str, str] = HEADING_NOTE_ALIASES) -> list[dict]:
-    """Give every marker its note text. Fails on a marker with no note, or a note no
-    marker uses, naming them."""
+def resolve(items: list[dict], notes: dict[str, dict]) -> list[dict]:
+    """Give every marker its note text, returning the items.
+
+    A paragraph's markers `N:k` take note `N:k`. A heading's markers take, as a group,
+    the nearest unused heading-note group printed at or after the paragraph the heading
+    opens whose note numbers are exactly the markers'. Fails on a marker left without a
+    note, or a note group left over that does not repeat a used group word for word.
+    """
+    groups: dict[str, dict[int, dict]] = {}
+    for key, note in notes.items():
+        owner, k = key.split(":")
+        groups.setdefault(owner, {})[int(k)] = note
     used: set[str] = set()
     missing: list[str] = []
     out: list[dict] = []
     for item in items:
+        markers = item["footnotes"]
+        chosen: dict[str, dict] = {}
+        if item["kind"] == "heading" and markers:
+            numbers = {m["n"] for m in markers}
+            owner = markers[0]["id"].split(":")[0]
+            if owner in groups and set(groups[owner]) == numbers and owner not in used:
+                pick = owner
+            else:
+                candidates = sorted(
+                    (min(note["printed_with"] for note in g.values()), name)
+                    for name, g in groups.items()
+                    if name.startswith("h") and name not in used and set(g) == numbers
+                    and min(note["printed_with"] for note in g.values()) >= item["first"])
+                pick = candidates[0][1] if candidates else None
+            if pick is not None:
+                used.add(pick)
+                chosen = {m["id"]: groups[pick][m["n"]] for m in markers}
+        else:
+            for m in markers:
+                if m["id"] in notes:
+                    used.add(m["id"].split(":")[0] if m["id"].startswith("h") else m["id"])
+                    chosen[m["id"]] = notes[m["id"]]
         footnotes = []
-        for marker in item["footnotes"]:
-            owner, k = marker["id"].split(":")
-            key = marker["id"] if marker["id"] in notes else f"{aliases.get(owner, owner)}:{k}"
-            if key not in notes:
-                missing.append(marker["id"])
+        for m in markers:
+            if m["id"] not in chosen:
+                missing.append(m["id"])
                 continue
-            used.add(key)
-            footnotes.append({"n": marker["n"], "text": notes[key], "at": marker["at"]})
+            footnotes.append({"n": m["n"], "text": chosen[m["id"]]["text"], "at": m["at"]})
         out.append({**item, "footnotes": footnotes})
-    unused = sorted(set(notes) - used)
-    if missing or unused:
+
+    # A note no marker used must repeat a placed note word for word: the site prints a
+    # few twice (heading-note groups, and CCC 1675's note 181 again under 1676).
+    placed = {(f["n"], f["text"]) for item in out for f in item["footnotes"]}
+    leftover = []
+    for key, note in notes.items():
+        owner = key.split(":")[0]
+        if (owner if owner.startswith("h") else key) in used:
+            continue
+        if (int(key.split(":")[1]), note["text"]) not in placed:
+            leftover.append(key)
+    if missing or leftover:
         raise ValueError(f"footnotes unresolved: markers without notes {missing[:20]}, "
-                         f"notes without markers {unused[:20]}")
+                         f"notes without markers {leftover[:20]}")
     return out

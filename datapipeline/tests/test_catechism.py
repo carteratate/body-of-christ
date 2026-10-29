@@ -547,7 +547,7 @@ def test_headings_use_us_text(us_build):
     assert "SECTION TWO\n\nTHE TEN COMMANDMENTS" in second
     # A heading the source lacks is inserted where it belongs.
     assert 'THE TEN COMMANDMENTS\n\n"Teacher, what must I do …?"\n\nTeacher, what good' in second
-    assert _passage_with(us_build, 7).content.startswith("ARTICLE 5 THE FIFTH COMMANDMENT\n\n")
+    assert _passage_with(us_build, 7).content.startswith("ARTICLE 5\n\nTHE FIFTH COMMANDMENT\n\n")
 
 
 def test_unmatched_source_lines_are_kept_as_printed(us_build):
@@ -681,7 +681,8 @@ def test_parse_page_reads_text_markers_and_structure():
     assert paragraph["text"][:paragraph["footnotes"][0]["at"]].endswith("asked,")
     assert items[2]["text"] == '"Teacher," he said. Then more.'
     resolved = resolve(kept, notes)
-    assert resolved[1]["footnotes"] == [{"n": 1, "text": "Jn 17:3.", "at": 19}]   # via the alias
+    # The heading's markers (h753) find their notes filed under another id (h14).
+    assert resolved[1]["footnotes"] == [{"n": 1, "text": "Jn 17:3.", "at": 19}]
     assert resolved[2]["footnotes"][0]["text"] == "Mt 19:16."
 
 
@@ -696,3 +697,121 @@ def test_parse_page_refuses_unknown_markup():
     with pytest.raises(ValueError, match="unexpected <table>"):
         parse_page('<div class="paragraph " id="para-1"><div class="number">1</div>'
                    '<div class="text">x<table></table></div></div>')
+
+
+def _mini(tmp_path, source_paragraphs, us_items, name="mini"):
+    """Build a one-node source and its US items, numbered paragraphs given as ints."""
+    def P(x):
+        if isinstance(x, tuple):
+            n, text = x
+            return {"attrs": {}, "elements": [{"type": "ref-ccc", "ref_number": n}, {"type": "text", "text": text}]}
+        return {"attrs": {}, "elements": [{"type": "text", "text": x}]}
+    src = {"page_nodes": {"toc-1": {"paragraphs": [P(x) for x in source_paragraphs]}}}
+    us = {"items": us_items}
+    (tmp_path / f"{name}_src.json").write_text(json.dumps(src))
+    (tmp_path / f"{name}_us.json").write_text(json.dumps(us))
+    return _catechism.build(str(tmp_path / f"{name}_src.json"), str(tmp_path / f"{name}_us.json"))
+
+
+def _para(n, text, notes=()):
+    return {"kind": "paragraph", "n": n, "text": text, "footnotes": list(notes)}
+
+
+def _head(text, kind="heading"):
+    return {"kind": kind, "text": text, "footnotes": []}
+
+
+def test_two_headings_on_one_source_line_split_at_the_dash(tmp_path):
+    build = _mini(tmp_path,
+                  [(1, "First teaching here."), "CHAPTER ONE",
+                   "THE REVELATION OF PRAYER - THE UNIVERSAL CALL TO PRAYER", (2, "Second teaching here.")],
+                  [_para(1, "First teaching here."), _head("Chapter 1: The Revelation of Prayer", "structure"),
+                   _head("THE UNIVERSAL CALL TO PRAYER"), _para(2, "Second teaching here.")])
+    match = next(m for m in build.alignment.matches if m.after == 1)
+    assert [h.item["text"] for h in match.headings] == [
+        "Chapter 1: The Revelation of Prayer", "THE UNIVERSAL CALL TO PRAYER"]
+    assert not match.inserted and not match.unmatched
+
+
+def test_structural_titles_match_across_level_words(tmp_path):
+    # The site calls Part Four's Articles "Chapter"; the source's "Article 2" is kept.
+    build = _mini(tmp_path,
+                  [(1, "First teaching here."), "Article 2", '"OUR FATHER WHO ART IN HEAVEN"', (2, "Second.")],
+                  [_para(1, "First teaching here."), _head('Chapter 2: "Our Father Who art in Heaven"', "structure"),
+                   _para(2, "Second.")])
+    assert 'First teaching here.\n\nArticle 2\n\n"OUR FATHER WHO ART IN HEAVEN"\n\nSecond.' \
+        in build.document.passages[0].content
+    match = next(m for m in build.alignment.matches if m.after == 1)
+    assert len(match.headings) == 1 and not match.inserted
+
+
+def test_a_badly_misprinted_heading_line_is_matched_by_similarity(tmp_path):
+    build = _mini(tmp_path,
+                  [(1, "First teaching here."), "Characteristics of the People of Got", (2, "Second.")],
+                  [_para(1, "First teaching here."), _head("Characteristics of the People of God"), _para(2, "Second.")])
+    match = next(m for m in build.alignment.matches if m.after == 1)
+    assert [(h.item["text"], h.fuzzy) for h in match.headings] == [("Characteristics of the People of God", True)]
+    text = " ".join(p.content for p in build.document.passages)
+    assert "People of God" in text and "People of Got" not in text
+
+
+def test_a_heading_in_mid_sentence_is_not_matched(tmp_path):
+    # "the Old Testament" inside the paragraph's own sentence is not the heading.
+    build = _mini(tmp_path,
+                  [(1, "It includes 46 books."), "It includes 46 books for the Old Testament and 27 for the New.",
+                   "The Old Testament", (2, "Second.")],
+                  [_para(1, "It includes 46 books. It includes 46 books for the Old Testament and 27 for the New."),
+                   _head("The Old Testament"), _para(2, "Second.")])
+    match = next(m for m in build.alignment.matches if m.after == 1)
+    assert match.continuation == [0] and match.unmatched == []
+    assert match.toks[match.headings[0].start].line == 1
+
+
+def test_a_heading_one_gap_away_is_moved_not_duplicated(tmp_path):
+    build = _mini(tmp_path,
+                  [(1, "First."), (2, "The doctrine of indulgences."), "What is an indulgence?",
+                   '"An indulgence is a remission."', (3, "Third.")],
+                  [_para(1, "First."), _head("What is an indulgence?"),
+                   _para(2, 'The doctrine of indulgences. "An indulgence is a remission."'), _para(3, "Third.")])
+    text = "\n\n".join(p.content for p in build.document.passages)
+    assert text.count("What is an indulgence?") == 1
+    assert text.index("What is an indulgence?") < text.index("The doctrine of indulgences")
+    match = next(m for m in build.alignment.matches if m.after == 2)
+    assert match.moved and not match.unmatched
+
+
+def test_a_heading_glued_to_its_paragraph_line_is_left_out_of_the_old_text(tmp_path):
+    build = _mini(tmp_path,
+                  [(1, 'He made all things.  God creates "out of nothing"'), (2, "Second.")],
+                  [_para(1, "He made all things."), _head('God creates "out of nothing"'), _para(2, "Second.")])
+    assert build.alignment.old_paragraphs[1] == "He made all things."
+    assert 'He made all things.\n\nGod creates "out of nothing"\n\nSecond.' in build.document.passages[0].content
+
+
+def test_ccc_2267_declares_its_replaced_text(us_build):
+    assert _passage_with(us_build, 2267).metadata["text_replaced"] == "2018 revision of CCC 2267"
+    assert all("text_replaced" not in p.metadata for p in us_build.document.passages
+               if 2267 not in p.metadata["ccc_paragraphs"])
+
+
+def test_a_heading_only_section_carries_into_the_next_passage():
+    # A large node whose last section is a bare heading: it heads the next node.
+    long_text = "word " * 900
+    nodes = [
+        {"paragraphs": [_make_para(long_text, ref_ccc=1), _make_para("II. THE NEXT PART")]},
+        {"paragraphs": [_make_para("Second teaching.", ref_ccc=2)]},
+    ]
+    chunks = chunk_nodes(nodes, ["toc-1", "toc-2"])
+    assert chunks[-1][0].startswith("II. THE NEXT PART\n\nSecond teaching.")
+
+
+def test_a_note_printed_twice_is_allowed_only_word_for_word():
+    page = _PAGE.replace(
+        '<div class="note" id="fn:h14:1">',
+        '<div class="note" id="fn:2053:2"><div class="num">2.</div><div class="text"><a><I>Mt</I> 19:16</a>.</div></div>'
+        '<div class="note" id="fn:h14:1">')
+    items, notes = parse_page(page)
+    resolve(drop_repeated_structure(items), notes)          # the same note again: fine
+    notes["2053:2"]["text"] = "Something else."
+    with pytest.raises(ValueError, match="notes without markers"):
+        resolve(drop_repeated_structure(items), notes)

@@ -17,6 +17,6 @@ TITLE_FIXES = {
 }
 OWN_HEADING = {"toc-45": "I. The Creeds"}
 # Misprints inside heading text, wherever it appears (toc nodes and page lines).
-TEXT_FIXES = (("AGAlN", "AGAIN"),)
+TEXT_FIXES = (("AGAlN", "AGAIN"), ("THE HUMAN COMMUNION", "THE HUMAN COMMUNITY"))
 # Pages holding no numbered paragraph ("The Credo"), so no passage holds them.
 UNNUMBERED = {"toc-44"}

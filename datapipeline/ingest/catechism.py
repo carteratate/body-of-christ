@@ -190,18 +190,20 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
         if len(raw_text) > _LARGE_THRESHOLD and len(ccc_paragraphs) > 0:
             sections = split_large_node(node)
             n_sections = len(sections)
+            carry = prefix
 
             for i, (sec_text, sec_paras, is_brief) in enumerate(sections):
-                # Unnumbered fragments are normally structural spillover rather than
-                # standalone Catechism passages. "IN BRIEF" is the exception: its summary
-                # body is intentionally unnumbered and must remain visible and flagged.
+                # Unnumbered fragments are headings with nothing under them in this
+                # node ("IN BRIEF" is the exception: its summary body is unnumbered and
+                # stays its own flagged section). They head what follows, so they carry
+                # forward rather than being dropped (#279: every heading's words reach
+                # a passage).
                 if not sec_paras and not is_brief:
+                    carry = (carry + "\n\n" + sec_text).strip() if carry else sec_text
                     continue
 
-                if i == 0 and prefix:
-                    sec_content = (prefix + "\n\n" + sec_text).strip()
-                else:
-                    sec_content = sec_text
+                sec_content = (carry + "\n\n" + sec_text).strip() if carry else sec_text
+                carry = ""
 
                 is_partial = n_sections > 1
                 ref = make_reference(sec_paras, node_id, is_partial=is_partial)
@@ -212,6 +214,8 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
                 }
                 chunks.append((sec_content, ref, meta, position))
                 position += 1
+            if carry:
+                pending_prefix = carry           # the node ended on a heading
             continue
 
         # Tier 2 (Normal): one chunk per node
@@ -240,6 +244,10 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
 
 
 _MIN_CONTENT = 30
+
+# Paragraphs whose current text replaces, on purpose, the one users saw before, so the
+# release report's stability check (0.1c) expects the change (1.6's identity rule).
+TEXT_REPLACED = {2267: "2018 revision of CCC 2267"}
 
 
 def _units(page_nodes: dict) -> list[tuple[str | None, str]]:
@@ -284,7 +292,16 @@ class _Placement:
                 continue
             break
         if clean[cursor:].strip():
-            raise ValueError(f"catechism: passage text not accounted for: {clean[cursor:cursor + 80]!r}")
+            detail = ""
+            if self.next < len(self.units):
+                key, text = self.units[self.next]
+                unit, rest = clean_text(text), clean[cursor:].lstrip()
+                d = next((i for i in range(min(len(unit), len(rest))) if unit[i] != rest[i]),
+                         min(len(unit), len(rest)))
+                detail = (f"; next unit {key!r} differs at {d}: "
+                          f"{unit[max(0, d - 50):d + 30]!r} vs {rest[max(0, d - 50):d + 30]!r}")
+            raise ValueError(f"catechism: passage text not accounted for: "
+                             f"{clean[cursor:cursor + 80]!r}{detail}")
         return found
 
 
@@ -299,9 +316,10 @@ def _footnotes_for(items: dict, held: list[tuple[str | None, str, int]], clean: 
     for key, text, start in held:
         if key is None or key not in items:      # a source line kept as printed
             continue
+        raw = items[key]["text"]         # the offsets are into the US text as fetched
         for note in items[key]["footnotes"]:
-            x = start + len(clean_text(text[:note["at"]]))
-            want = _last_word(text[:note["at"]])
+            x = start + len(clean_text(raw[:note["at"]]))
+            want = _last_word(raw[:note["at"]])
             if want is not None and _last_word(clean[:x]) != want:
                 raise ValueError(f"catechism: footnote {note['n']} of {key} lands after "
                                  f"{_last_word(clean[:x])!r}, not {want!r}")
@@ -391,6 +409,9 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
             piece_meta = {**meta, "footnotes": piece_notes}
             held_by[anchor] = [key for key, text, start in held
                                if start < hi and start + len(clean_text(text)) > lo]
+            replaced = [TEXT_REPLACED[n] for n in TEXT_REPLACED if f"p{n}" in held_by[anchor]]
+            if replaced:
+                piece_meta["text_replaced"] = "; ".join(replaced)
             passages.append(Passage(
                 content=piece, reference=reference, anchor=anchor,
                 chapter_key=make_anchor("ccc", "part", str(chapter_no)),

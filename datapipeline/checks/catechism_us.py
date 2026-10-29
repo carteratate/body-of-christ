@@ -66,10 +66,50 @@ def classify(old: str, new: str) -> tuple[str, list[tuple[str, str]]]:
             pairs.extend(zip(old_raw[i1:i2], new_raw[j1:j2]))
     if old_w == new_w:
         return "spelling", pairs
-    blocks = SequenceMatcher(None, old_w, new_w, autojunk=False).get_matching_blocks()
-    if sum(b.size for b in blocks) == len(old_w):
+    ops = [op for op in SequenceMatcher(None, old_w, new_w, autojunk=False).get_opcodes()
+           if op[0] != "equal"]
+    if all(op[0] == "insert" for op in ops):
         return "restored", pairs
+    if all(_misprint(op, old_w, new_w) for op in ops):
+        return "misprint", pairs
     return "substantive", pairs
+
+
+def _misprint(op, old_w: list[str], new_w: list[str]) -> bool:
+    """A difference that is the old source's typing, not the text: a misspelt word
+    ("bums" for "burns"), words split or joined ("oldtestament"), a roman numeral
+    misread ("vl", "i" for "1"), or a stray footnote number, or words the old source
+    dropped (an insertion)."""
+    tag, i1, i2, j1, j2 = op
+    old, new = old_w[i1:i2], new_w[j1:j2]
+    if tag == "insert":
+        return True
+    if tag == "delete":
+        return all(w.isdigit() for w in old)
+    if "".join(old) == "".join(new):
+        return True
+    if len(old) == len(new):
+        return all(SequenceMatcher(None, a, b).ratio() >= 0.6 or (a, b) in _NUMERALS
+                   for a, b in zip(old, new))
+    return False
+
+
+_NUMERALS = {("i", "1"), ("l", "1"), ("vl", "vi"), ("il", "ii"), ("jn", "in"), ("in", "jn")}
+
+
+def diff_words(old: str, new: str, limit: int = 4) -> list[str]:
+    """The word-level differences, "old -> new", for the report."""
+    old_w, new_w = cu.words(old), cu.words(new)
+    old_r, new_r = cu.raw_words(old), cu.raw_words(new)     # the same tokens, unfolded
+
+    def shown(ws: list[str]) -> str:
+        return (" ".join(ws[:12]) + (" …" if len(ws) > 12 else "")) or "∅"
+
+    out = []
+    for tag, i1, i2, j1, j2 in SequenceMatcher(None, old_w, new_w, autojunk=False).get_opcodes():
+        if tag != "equal" and not _misprint((tag, i1, i2, j1, j2), old_w, new_w):
+            out.append(f"{shown(old_r[i1:i2])} -> {shown(new_r[j1:j2])}")
+    return out[:limit]
 
 
 def _source_refs(source: dict) -> Counter:
@@ -127,10 +167,17 @@ def _walk(passages: list[tuple[str, str]], units: list[tuple[object, str]]) -> d
                 found = (u, ident, False)
                 break
         if found is None:
-            out[anchor] = (None, None)
+            out[anchor] = (None, None, None)
             continue
         u, ident, at_start = found
-        out[anchor] = (ident, tuple(cu.words(content)[:_OPENING_WORDS]) if not at_start else ())
+        # The paragraph it opens with: headings above it do not change what a saved
+        # anchor shows (restored headings now open some passages).
+        para = ident
+        if at_start and ident[0] != "p":
+            nxt = next((cleaned[k][0] for k in range(u, len(cleaned)) if cleaned[k][0][0] == "p"
+                        and cleaned[k][1] and cleaned[k][1][:40] in content), None)
+            para = nxt or ident
+        out[anchor] = (para, tuple(cu.words(content)[:_OPENING_WORDS]) if not at_start else (), ident)
         p = u
     return out
 
@@ -159,20 +206,24 @@ def openings(build: "catechism.Build", source: dict, live: list[dict]) -> dict:
         new_units.append((ident, text))
     build_open = _walk([(p.anchor, p.content) for p in build.document.passages], new_units)
 
-    removed, changed, unresolved = [], [], []
-    for anchor, (ident, words) in live_open.items():
+    removed, changed, unresolved, headed = [], [], [], []
+    for anchor, (ident, words, first) in live_open.items():
         if ident is None:
             unresolved.append(anchor)
             continue
         if anchor not in build_open:
             removed.append(anchor)
             continue
-        if build_open[anchor] != (ident, words):
+        b_ident, b_words, b_first = build_open[anchor]
+        if (b_ident, b_words) != (ident, words):
             changed.append({"anchor": anchor, "live": _show(ident, words),
-                            "build": _show(*build_open[anchor])})
+                            "build": _show(b_ident, b_words)})
+        elif b_first != first:
+            headed.append(anchor)       # same paragraph, now under a restored heading
     added = sorted(set(build_open) - set(live_open))
     return {"live": len(live_open), "build": len(build_open), "added": added,
             "removed": sorted(removed), "opens_differently": changed,
+            "same_paragraph_new_heading": sorted(headed),
             "live_unresolved": sorted(unresolved)}
 
 
@@ -188,14 +239,15 @@ def _show(ident, words) -> str:
 
 def report(build: "catechism.Build", source: dict, live: list[dict] | None) -> dict:
     alignment = build.alignment
-    paragraphs: dict[str, list] = {"identical": [], "spelling": [], "restored": [], "substantive": []}
+    paragraphs: dict[str, list] = {"identical": [], "spelling": [], "restored": [], "misprint": [],
+                                   "substantive": []}
     pairs: Counter = Counter()
     for n in sorted(alignment.old_paragraphs):
         kind, seen = classify(alignment.old_paragraphs[n], alignment.items[f"p{n}"]["text"])
         paragraphs[kind].append(n)
         pairs.update(f"{a} -> {b}" for a, b in seen)
 
-    headings = {"matched": 0, "changed": [], "fuzzy": [], "inserted": [], "unmatched_lines": []}
+    headings = {"matched": 0, "changed": [], "fuzzy": [], "inserted": [], "unmatched_lines": [], "moved": []}
     for match in alignment.matches:
         for h in match.headings:
             headings["matched"] += 1
@@ -206,9 +258,13 @@ def report(build: "catechism.Build", source: dict, live: list[dict] | None) -> d
             if h.fuzzy:
                 headings["fuzzy"].append({"after": match.after, "old": old, "new": h.item["text"]})
         for _, item in match.inserted:
-            headings["inserted"].append({"after": match.after, "kind": item["kind"], "text": item["text"]})
+            headings["inserted"].append({"after": match.after, "kind": item["kind"], "text": item["text"],
+                                         "glued": bool(item.get("_glued"))})
         for li in match.unmatched:
             headings["unmatched_lines"].append({"after": match.after, "text": match.lines[li].text})
+        for li, other in match.moved:
+            headings["moved"].append({"source_after": match.after, "us_after": other,
+                                      "text": match.lines[li].text})
 
     refs = _source_refs(source)
     footnote_diffs = [
@@ -252,6 +308,8 @@ def report(build: "catechism.Build", source: dict, live: list[dict] | None) -> d
         "passages": len(build.document.passages),
         "paragraphs": {k: len(v) for k, v in paragraphs.items()},
         "substantive": paragraphs["substantive"],
+        "substantive_diffs": {n: diff_words(alignment.old_paragraphs[n], alignment.items[f"p{n}"]["text"])
+                              for n in paragraphs["substantive"]},
         "spelling_pairs": dict(pairs.most_common()),
         "headings": headings,
         "footnote_count_diffs": footnote_diffs,
@@ -288,7 +346,11 @@ def markdown(result: dict) -> str:
         "## Paragraphs (old `ccc.json` against the US edition)", "",
         "| Class | Count |", "|---|---|",
         *(f"| {k} | {v} |" for k, v in p.items()), "",
-        f"Substantive: {', '.join(f'CCC {n}' for n in result['substantive']) or 'none'}.", "",
+        "Classes: identical words; spelling or hyphenation only; words restored (the old "
+        "source dropped them); the old source's misprints corrected; substantive (the "
+        "wording differs, listed below with each word change).", "",
+        "Substantive:", "",
+        *(f"- CCC {n}: {'; '.join(d)}" for n, d in result["substantive_diffs"].items()), "",
         "Spelling pairs (UK -> US), most common first: "
         + (", ".join(f"{k} ({v})" for k, v in list(result["spelling_pairs"].items())[:40]) or "none") + ".", "",
         "## Headings", "",
@@ -300,7 +362,13 @@ def markdown(result: dict) -> str:
         lines += [f"- after CCC {x['after']}: {x['old']!r} -> {x['new']!r}" for x in h["fuzzy"]] + [""]
     if h["inserted"]:
         lines += ["Inserted (no source line):", ""]
-        lines += [f"- after CCC {x['after']} ({x['kind']}): {x['text']!r}" for x in h["inserted"]] + [""]
+        lines += [f"- after CCC {x['after']} ({x['kind']}): {x['text']!r}"
+                  + (" (the source glues it to the end of the paragraph's line)" if x["glued"] else "")
+                  for x in h["inserted"]] + [""]
+    if h["moved"]:
+        lines += ["Printed one gap away from the source (the US placement is kept):", ""]
+        lines += [f"- {x['text']!r}: source after CCC {x['source_after']}, US after CCC {x['us_after']}"
+                  for x in h["moved"]] + [""]
     if h["unmatched_lines"]:
         lines += ["Source lines kept as printed (no US text matched):", ""]
         by_gap: dict[int, list[str]] = {}
@@ -328,7 +396,9 @@ def markdown(result: dict) -> str:
             "## Live identity", "",
             f"Live {identity['live']} anchors, build {identity['build']}. Added {len(identity['added'])}, "
             f"removed {len(identity['removed'])}, opening differently {len(identity['opens_differently'])}, "
-            f"live passages whose opening could not be found {len(identity['live_unresolved'])}.", "",
+            f"live passages whose opening could not be found {len(identity['live_unresolved'])}. "
+            f"Same opening paragraph under a restored heading (not a stop): "
+            f"{len(identity['same_paragraph_new_heading'])}.", "",
         ]
         for label in ("added", "removed", "live_unresolved"):
             if identity[label]:

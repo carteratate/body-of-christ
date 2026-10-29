@@ -3244,6 +3244,16 @@
   "role": "adapter-input"
  },
  {
+  "collection": "catechism",
+  "path": "catechism/us-edition/ccc-us.json",
+  "sha256": "bd09b46aa36d6dc6ba05e1360827a7e064f4fb0d92714d55e0111fe66bc50b98",
+  "bytes": 1927222,
+  "url": "https://www.catholiccrossreference.online/catechism/",
+  "acquired": "2026-10-28",
+  "hashed_on": "2026-10-28",
+  "role": "adapter-input"
+ },
+ {
   "collection": "church-fathers",
   "path": "church-fathers/apostolic fathers.xml",
   "sha256": "8012ea0e35b497d2fbd783f9d4fd7b3a27d98c6dc66fd427b50d7312e6dd45af",

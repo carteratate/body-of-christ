@@ -28,8 +28,10 @@ import os
 import re
 import unicodedata
 from dataclasses import dataclass, field
+from difflib import SequenceMatcher
 
 from ingest.catechism_headings import TEXT_FIXES
+from normalize.text import clean_text
 
 US_SOURCE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -46,14 +48,13 @@ _ORDINAL_WORDS = {"first": "1", "second": "2", "third": "3", "fourth": "4", "fif
 # UK and US spellings meet in one form. Applied to both sides, so an over-eager rule can
 # only make two different words equal, never make equal words differ.
 _SPELLING = (
-    (re.compile(r"our(?=s?$|ed$|ing$|able$|ite$)"), "or"),   # saviour, honour, favourite
+    (re.compile(r"(?<=[a-z]{2})our(?=s?$|ed$|ing$|able$|ite$)"), "or"),  # saviour, honour; not "your"
     (re.compile(r"is(?=e[sd]?$|ing$|ation)"), "iz"),         # baptise, organisation
     (re.compile(r"ys(?=e[sd]?$|ing$)"), "yz"),               # analyse
     (re.compile(r"tre(?=s?$)"), "ter"),                      # centre
     (re.compile(r"ogue(?=s?$)"), "og"),                      # catalogue
-    (re.compile(r"ll(?=ed$|ing$|er$|ors?$)"), "l"),          # travelled, counsellor
+    (re.compile(r"ll"), "l"),                                # travelled; fulfils/fulfills
     (re.compile(r"ae"), "e"),                                # mediaeval
-    (re.compile(r"(?<=[a-z])oe(?=[a-z])"), "e"),             # foetus
     (re.compile(r"ement$"), "ment"),                         # judgement
 )
 
@@ -69,7 +70,8 @@ def _fold(text: str) -> str:
 _SPELLING_WORDS = {"defence": "defense", "offence": "offense", "offences": "offenses",
                    "licence": "license", "pretence": "pretense", "practise": "practice",
                    "practised": "practiced", "practising": "practicing", "grey": "gray",
-                   "programme": "program", "cheque": "check", "towards": "toward"}
+                   "programme": "program", "cheque": "check", "towards": "toward",
+                   "formulae": "formulas", "foetus": "fetus", "manoeuvre": "maneuver"}
 
 
 def spelling_form(word: str) -> str:
@@ -88,6 +90,15 @@ def words(text: str) -> list[str]:
         token = _NUMBER_WORDS.get(token, _ORDINAL_WORDS.get(token, token))
         out.append(spelling_form(token))
     return out
+
+
+_LEVELS = {"part", "section", "chapter", "article"}
+
+
+def structure_words(text: str) -> list[str]:
+    """`words`, with the level word folded: the site's breadcrumbs call Part Four's
+    Articles "Chapter", and the source's printed titles keep "Article"."""
+    return ["level" if w in _LEVELS else w for w in words(text)]
 
 
 def raw_words(text: str) -> list[str]:
@@ -199,7 +210,7 @@ class HeadingMatch:
     item: dict              # the US heading
     start: int              # token range in the gap's stream
     end: int
-    fuzzy: bool = False
+    fuzzy: bool = False     # one misprinted word, or a heading the source cut short
 
 
 @dataclass
@@ -212,21 +223,80 @@ class GapMatch:
     continuation: list[int]                     # line indexes consumed as continuation
     unmatched: list[int]                        # line indexes kept as source text
     free_text: dict[int, str] = field(default_factory=dict)   # line -> its words outside headings
+    moved: list[tuple[int, int]] = field(default_factory=list)  # (line, gap the US puts it in)
 
 
-def _find(stream: list[str], target: list[str], start: int) -> tuple[int, bool] | None:
+def _boundaries(toks: list[Token], lines: list[SourceLine]) -> tuple[list[bool], list[bool]]:
+    """Where a heading may start and end. It ends at the end of a source line, and
+    starts at the start of one or right after sentence punctuation: the source glues a
+    few headings onto the line before ("... moral conscience. the obligation"), never
+    into the middle of a sentence ("46 books for the Old Testament (45 if ...")."""
+    starts, ends = [], []
+    for k, t in enumerate(toks):
+        line = lines[t.line].text
+        first_on_line = k == 0 or toks[k - 1].line != t.line
+        before = line[:t.start].rstrip()
+        after = line[t.end:]
+        starts.append(first_on_line or before.endswith((".", "!", "?", ":", ";", '"', "\u201d"))
+                      or line[:t.start].endswith((" - ", " \u2014 ")))
+        ends.append(k == len(toks) - 1 or toks[k + 1].line != t.line
+                    or after.startswith((" - ", " \u2014 ")))   # two headings on one line
+    return starts, ends
+
+
+_SIMILAR = 0.85   # letters-only similarity for a badly misprinted whole-line heading
+
+
+def _letters(ws: list[str]) -> str:
+    return "".join(ws)
+
+
+def _find(stream: list[str], target: list[str], taken: set[int],
+          starts: list[bool], ends: list[bool]) -> tuple[int, int, bool] | None:
+    """(start, end, fuzzy) of the source run that is `target`, or None. Tried in turn:
+    the exact words; one misprinted word; for runs of whole lines, letters at least
+    85% alike ("Characteristics of the People of Got", "T he Eucharist"). Whole lines
+    are preferred to a heading glued after a sentence, then the earliest place."""
     n = len(target)
     if not n:
         return None
-    for i in range(start, len(stream) - n + 1):
+    free = lambda i, j: not any(k in taken for k in range(i, j))  # noqa: E731
+    candidates = [i for i in range(len(stream) - n + 1)
+                  if starts[i] and ends[i + n - 1] and free(i, i + n)]
+    candidates.sort(key=lambda i: (not _line_start(i, starts, ends), i))
+    for i in candidates:
         if stream[i:i + n] == target:
-            return i, False
-    if n >= 4:   # one misprinted word ("The Decalogue ant the natural law")
-        for i in range(start, len(stream) - n + 1):
+            return i, i + n, False
+    if n >= 4:
+        for i in candidates:
             if sum(a != b for a, b in zip(stream[i:i + n], target)) == 1 \
                     and stream[i] == target[0] and stream[i + n - 1] == target[-1]:
-                return i, True
+                return i, i + n, True
+    want = _letters(target)
+    best = None
+    for i in range(len(stream)):
+        if not _line_start(i, starts, ends) or i in taken:
+            continue
+        for j in range(i + 1, min(len(stream), i + 3 * n) + 1):
+            if not free(i, j):
+                break
+            if not ends[j - 1]:
+                continue
+            got = _letters(stream[i:j])
+            if len(got) > 1.25 * len(want):
+                break
+            if len(got) < 0.75 * len(want):
+                continue
+            ratio = SequenceMatcher(None, got, want, autojunk=False).ratio()
+            if ratio >= _SIMILAR and (best is None or ratio > best[0]):
+                best = (ratio, i, j)
+    if best:
+        return best[1], best[2], True
     return None
+
+
+def _line_start(i: int, starts: list[bool], ends: list[bool]) -> bool:
+    return i == 0 or ends[i - 1]
 
 
 def _in_order_share(part: list[str], paragraph: list[str]) -> float:
@@ -240,18 +310,68 @@ def _in_order_share(part: list[str], paragraph: list[str]) -> float:
 def match_gap(gap: Gap, paragraph_words: list[str] | None) -> GapMatch:
     toks = tokens(gap.source)
     stream = [t.word for t in toks]
-    headings: list[HeadingMatch] = []
+    level_stream = ["level" if w in _LEVELS else w for w in stream]
+    starts, ends = _boundaries(toks, gap.source)
+    found: dict[int, HeadingMatch] = {}
+    taken: set[int] = set()
+    # Exact matches first, over the whole gap, so a misprint elsewhere cannot take a
+    # line that another heading matches exactly; then the rest.
+    for exact_pass in (True, False):
+        for k, item in enumerate(gap.us):
+            if k in found:
+                continue
+            if item["kind"] == "structure":
+                hit = _find(level_stream, structure_words(item["text"]), taken, starts, ends)
+            else:
+                hit = _find(stream, words(item["text"]), taken, starts, ends)
+            if hit is None or (exact_pass and hit[2]):
+                continue
+            i, j, fuzzy = hit
+            found[k] = HeadingMatch(item, i, j, fuzzy)
+            taken.update(range(i, j))
+    headings = sorted(found.values(), key=lambda h: h.start)
     inserted: list[tuple[int, dict]] = []
-    cursor = 0
-    for item in gap.us:
-        found = _find(stream, words(item["text"]), cursor)
-        if found is None:
-            inserted.append((len(headings), item))
+    for k, item in enumerate(gap.us):
+        if k not in found:
+            # Goes before the first matched heading that follows it in the US order.
+            later = [found[x].start for x in found if x > k]
+            inserted.append((sum(h.start < min(later) for h in headings) if later else len(headings), item))
+
+    # A heading the source prints cut short ("Consecrated virgins" for the US
+    # "Consecrated virgins and widows"): a whole unmatched line that begins the heading
+    # and holds at least half its words is that heading.
+    taken = {k for h in headings for k in range(h.start, h.end)}
+    for order, item in list(inserted):
+        target = words(item["text"])
+        for li in range(len(gap.source)):
+            span = [k for k, t in enumerate(toks) if t.line == li]
+            if not span or any(k in taken for k in span):
+                continue
+            run = [stream[k] for k in span]
+            if 2 <= len(run) < len(target) and target[:len(run)] == run and 2 * len(run) >= len(target):
+                before = [h for h in headings if h.start < span[0]]
+                if len(before) != order:
+                    continue            # out of order with the matched headings
+                headings.insert(order, HeadingMatch(item, span[0], span[-1] + 1, True))
+                inserted.remove((order, item))
+                taken.update(span)
+                inserted = [(o + 1 if o > order else o, it) for o, it in inserted]
+                break
+
+    # A heading the source glues onto the end of a line in mid-sentence: an inserted
+    # heading whose exact words end a line among the words no heading took.
+    for order, item in list(inserted):
+        target = words(item["text"])
+        if len(target) < 3:
             continue
-        i, fuzzy = found
-        n = len(words(item["text"]))
-        headings.append(HeadingMatch(item, i, i + n, fuzzy))
-        cursor = i + n
+        for i in range(len(stream) - len(target) + 1):
+            j = i + len(target)
+            if ends[j - 1] and stream[i:j] == target and not any(k in taken for k in range(i, j)):
+                headings.insert(order, HeadingMatch(item, i, j, True))
+                inserted.remove((order, item))
+                taken.update(range(i, j))
+                inserted = [(o + 1 if o > order else o, it) for o, it in inserted]
+                break
 
     # Each token is in a heading, or else free; free tokens are grouped by line.
     in_heading = [False] * len(toks)
@@ -281,19 +401,32 @@ def match_gap(gap: Gap, paragraph_words: list[str] | None) -> GapMatch:
 # Applying the US text to the source's nodes
 # ---------------------------------------------------------------------------
 
+_NUMBER_NAMES = {str(n): w.upper() for w, n in _NUMBER_WORDS.items()}
+
+
 def _structural_caps(title: str) -> str:
-    """An inserted structural title in the source's style: "SECTION TWO THE ..."."""
-    return title.replace(":", "").upper()
+    """An inserted structural title printed as the source prints its own: "SECTION TWO"
+    then the title on its own line, in capitals ("Article 3" keeps its digit, as there)."""
+    m = re.match(r"^(Part|Section|Chapter|Article)\s+(\d+):\s*(.*)$", title, re.S)
+    if not m:
+        return title.upper()
+    level, number, rest = m.groups()
+    number = number if level == "Article" else _NUMBER_NAMES.get(number, number)
+    return f"{level.upper()} {number}\n\n{rest.upper()}"
 
 
 def _source_form(match: GapMatch, h: HeadingMatch) -> str:
     """The source's printed text for a matched structural title, lines kept apart."""
     first, last = match.toks[h.start], match.toks[h.end - 1]
+    # A run that starts or ends its line takes the line's edge, so the quotation marks
+    # and punctuation around the words stay ('"OUR FATHER WHO ART IN HEAVEN"').
+    opens_line = h.start == 0 or match.toks[h.start - 1].line != first.line
+    closes_line = h.end == len(match.toks) or match.toks[h.end].line != last.line
     parts = []
     for li in range(first.line, last.line + 1):
         text = match.lines[li].text
-        lo = first.start if li == first.line else 0
-        hi = last.end if li == last.line else len(text)
+        lo = first.start if li == first.line and not opens_line else 0
+        hi = last.end if li == last.line and not closes_line else len(text)
         parts.append(_fix(text[lo:hi]).strip())
     return "\n\n".join(p for p in parts if p)
 
@@ -308,6 +441,10 @@ class Alignment:
 
 
 def _paragraph(text: str, number: int | None, key: str, heading: bool) -> dict:
+    # Cleaned on its own, before the chunker joins it to its neighbours: cleaning the
+    # joined text lets the ellipsis rule reach across a paragraph break and eat the
+    # full stop before it (CCC 76's 'writing".' followed by "... continued").
+    text = clean_text(text)
     elements = []
     if number is not None:
         elements.append({"type": "ref-ccc", "ref_number": number})
@@ -340,13 +477,20 @@ def align(source: dict, us: dict) -> Alignment:
         out[(line.node_id, line.index)] = [_paragraph(item["text"], n, key, False)]
         old[n] = [line.text]
 
+    by_gap = {}
+    for after in sorted(all_gaps):
+        paragraph_words = words(us_paragraphs[after]["text"]) if after else None
+        by_gap[after] = match_gap(all_gaps[after], paragraph_words)
+    _moves(by_gap)
+
     for after in sorted(all_gaps):
         gap = all_gaps[after]
-        paragraph_words = words(us_paragraphs[after]["text"]) if after else None
-        match = match_gap(gap, paragraph_words)
+        match = by_gap[after]
         matches.append(match)
         slot = {li: [] for li in range(len(gap.source))}
         consumed = set(match.continuation)
+        if after:
+            _trim_glued(old, after, numbered[after], match)
         for li in match.continuation:
             old[after].append(match.free_text[li])
         for h in match.headings:
@@ -361,6 +505,8 @@ def align(source: dict, us: dict) -> Alignment:
             slot[first_line].append(_paragraph(text, None, key, True))
             for li in range(first_line, match.toks[h.end - 1].line + 1):
                 consumed.add(li)
+        for li, _ in match.moved:
+            consumed.add(li)          # the US heading is printed in the neighbouring gap
         for li in match.unmatched:
             # Kept as the source prints it, after anything that starts on the line.
             consumed.discard(li)
@@ -404,6 +550,42 @@ def align(source: dict, us: dict) -> Alignment:
         nodes[node_id] = {**node, "paragraphs": paragraphs}
     return Alignment(nodes, items, order, matches,
                      {n: "\n".join(parts) for n, parts in old.items()})
+
+
+def _trim_glued(old: dict[int, list[str]], after: int, line: SourceLine, match: GapMatch) -> None:
+    """Some headings sit glued to the end of the numbered paragraph's own line ("... over
+    all that he has made.  God creates "out of nothing""). The US text replaces that line
+    and the heading is inserted after it, so the output is right; only the report's old
+    text must leave the heading's words out."""
+    toks = tokens([line])
+    stream = [t.word for t in toks]
+    for _, item in match.inserted:
+        target = words(item["text"])
+        if target and len(stream) > len(target) and stream[-len(target):] == target:
+            old[after][0] = line.text[:toks[-len(target)].start].rstrip()
+            item["_glued"] = True
+            break
+
+
+def _moves(by_gap: dict[int, GapMatch]) -> None:
+    """A heading the US site prints one gap away from the source ("What is an
+    indulgence?": the site before CCC 1471, the source inside it) is the same heading:
+    the source line is consumed and the US placement kept."""
+    order = sorted(by_gap)
+    for pos, after in enumerate(order):
+        match = by_gap[after]
+        for other in (order[pos - 1] if pos else None, order[pos + 1] if pos + 1 < len(order) else None):
+            if other is None:
+                continue
+            for _, item in by_gap[other].inserted:
+                target = words(item["text"])
+                for li in list(match.unmatched):
+                    got = words(match.lines[li].text)
+                    if got == target or (len(target) >= 2 and SequenceMatcher(
+                            None, _letters(got), _letters(target), autojunk=False).ratio() >= _SIMILAR):
+                        match.unmatched.remove(li)
+                        match.moved.append((li, other))
+                        break
 
 
 def _fix(text: str) -> str:
