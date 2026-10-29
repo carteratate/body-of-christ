@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
 import { StrictMode } from "react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SearchPage } from "./SearchPage";
@@ -1394,5 +1396,54 @@ describe("SearchPage animation-gated stream reveal", () => {
     expect(screen.getByText("guest focused search")).toBeTruthy();
     expect(screen.getByTestId("search-results").dataset.submittedQuota).toBe("10");
     expect(screen.getByTestId("search-results").dataset.deliveryOutcome).toBe("minimum_floor");
+  });
+
+  it("hydrates the guest page on the server's defaults, then shows the saved choice and search (#287)", async () => {
+    testState.params = "";
+    testState.token = null;
+    testState.userId = null;
+    // The server cannot see browser storage: it renders the defaults and no search.
+    const serverHtml = renderToString(<SearchPage isGuest />);
+    expect(serverHtml).toContain("Empty search");
+
+    trialMocks.preferenceDraft = {
+      preferred_translation: "CPDV",
+      default_collections: ["catechism"],
+      default_quota: 3,
+      last_standard_quota: 3,
+    };
+    sessionStorage.setItem("theocorpus-guest-current-results", JSON.stringify({
+      savedAt: Date.now(),
+      query: "restored guest query",
+      results: [streamedPassage],
+      searchId: "guest-search",
+      collections: ["bible"],
+      translation: "CPDV",
+      quota: 3,
+      visibleCollections: ["bible"],
+      outcome: "success",
+      collectionOutcomes: { bible: "results" },
+    }));
+    const container = document.createElement("div");
+    container.innerHTML = serverHtml;
+    document.body.appendChild(container);
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const recoverableErrors: unknown[] = [];
+
+    const root = await act(async () => hydrateRoot(container, <SearchPage isGuest />, {
+      onRecoverableError: (error) => { recoverableErrors.push(error); },
+    }));
+
+    try {
+      expect(recoverableErrors).toEqual([]);
+      expect(consoleError).not.toHaveBeenCalled();
+      expect(screen.getByTestId("bottom-bar").dataset.collections).toBe("catechism");
+      expect(screen.getByText("restored guest query")).toBeTruthy();
+      expect(screen.getByText(/Grace perfects nature/)).toBeTruthy();
+    } finally {
+      consoleError.mockRestore();
+      act(() => root.unmount());
+      container.remove();
+    }
   });
 });
