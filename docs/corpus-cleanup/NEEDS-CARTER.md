@@ -46,6 +46,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 1
 
 - **1.2f** [Phase 1]. Approve a spend ceiling per work for the AI step that corrects scanning errors in scanned books (first used on councils 8 to 18). No spec proposes a figure.
+- **R8, 1.3d** [Phase 1, just before 1.3d]. After R8's pilot, choose its scope: search for other public-domain translations of all the Carlen-only older papal documents, search by group, or retire the rest. Then approve 1.3d's downloads and its list of documents to retire.
+- **1.3c** [Phase 1]. Approve vendoring the vatican.va English pages of the 25 modern papal documents, and review the PR's paragraph-alignment mismatch list.
 
 ### Phase 2
 
@@ -130,6 +132,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **R2 and 1.5b** [Phase 1]. Approve the English sources found for canons printed in Latin, and the label for unofficial English. Suggested label is "Unofficial English translation (L'Osservatore Romano). The Latin text is official."
   Answered 2026-10-04: Approved, with the suggested label, for 111, 112, 535 §2 and 868 §1 2° (and 868 §3 and the six marriage canons below), using the L'Osservatore Romano English of 23 Sep 2016, p. 9, but only once its text has been checked against the printed page; the EWTN reprint has typesetting errors and is not used unchecked. Any canon whose print text cannot be checked follows rule E. 295 and 296 follow rule E (current Latin, out of search): the only English, a Vatican News article, mistranslates 295 §2. 579, 695 §1 and 700 follow rule E. Add canon 868 §3 (De concordia art. 5) in 1.5b. No reader note on 360, 361 or 948, whose text is in force. Extend 1.5b to the marriage canons 1108, 1109, 1111, 1112, 1116 and 1127 (De concordia arts. 6-11).
   Answered 2026-10-04 (later): the print check is replaced by two-copy agreement; canon 868 stays wholly under rule E until 868 §3 is checked; see the 1.5b entry in section C.
+  Revised 2026-10-29: under rule E as revised, a canon with no English is retired with an English tombstone linking to the Latin, not shown in Latin.
 - **R3** [Phase 1]. Choose how the Greek additions to Esther are numbered, if no Church source settles it. R3 will give a recommendation.
   Answered 2026-10-04: No Church source settles it (R3). Keep WEB-C chapter and verse numbers and title the restored passages by addition letter; record the Nova Vulgata and NAB ranges in metadata for whole additions only.
   Answered 2026-10-04 (after review): also record the Septuagint range, and correct the Decision log reason: the Catechism and the Italian Lectionary share the Septuagint's letters.
@@ -197,9 +200,12 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.1b.2** [Phase 5]. Approve the new collection colors and the interim About and Discover wording.
 - **5.1b.4** [Phase 5]. Keep a five-line translation of old collection names in the browser so guests' saved drafts do not reset, or delete it too. The spec keeps it.
 - **5.2, 5.6a** [Phase 5]. Choose between Supabase Pro and reordering the additions once the projected database size passes 450 MB.
+- **5.2** [Phase 5]. LEV texts from vatican.va have a basis (Decision log "LEV texts from vatican.va", 29 Oct 2026). Still open: whether to ask the LEV rights office (diritti.lev@spc.va) to confirm the use before any LEV document opens in the full reader; and the Pontifical Biblical Commission and social-doctrine Compendium rows, blocked until confirmed. The papalencyclicals.net translations have no basis and are listed for a decision.
+  Answered 2026-10-29 (in part): no permission request has been sent. Carter will ask once everything is working, so nothing yet constrains the full-reader step.
 - **5.3b** [Phase 5]. Include the International Theological Commission in the Roman Curia collection, or leave it out. Default is out.
 - **5.4** [Phase 5]. A New Hope for Lebanon has no English on vatican.va, only French and Italian, and the vendored file is an empty English page. Recommended answer: keep the French text in the reader with a note, out of search, under the Decision log row "Non-English with no usable English" (R6).
   Answered 2026-10-05: recommendation accepted: the French text, in the reader with a note, out of search (Decision log "Non-English with no usable English").
+  Revised 2026-10-29: rule E now keeps all non-English text out of the corpus, so A New Hope for Lebanon is not added.
 - **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
   Answered 2026-10-05: recommendation accepted: vendor the English PDF and extract its text in 5.4.
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.

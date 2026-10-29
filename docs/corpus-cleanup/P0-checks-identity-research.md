@@ -757,7 +757,7 @@ Conventions used in this file:
   - Part 2, English for the Latin canons. Per canon 111, 112, 535 (§2), 579, 695, 700 and 868 (§1 2°):
     - The English source found (L'Osservatore Romano English edition issue and page, a vatican.va English page, or none), with URL or scan reference.
     - Its status for the reader label: official English, or unofficial English with the Latin official.
-    - Where none exists, "rule E: Latin kept in the reader, out of search".
+    - Where none exists, "rule E: no current-text passage; an English tombstone links to the Latin" (rule E as revised 29 Oct 2026).
 - **Acceptance checks:**
   - Part 1: five entries, each with at least two sources (iuscangreg.it and the vatican.va act) or an explicit "no amendment found in either", and a stated reason when one source is missing.
   - Part 2: seven entries, each with its source or an explicit "none found" and the places searched.
@@ -887,3 +887,24 @@ Conventions used in this file:
 - **Production safety:** Research only; downloads go to local disk after approval.
 - **Needs Carter:** Approve downloads (NEEDS-CARTER section A) and the edition used for each recovered unit.
 - **Out of scope:** The adapter (1.7). Translating anything. Sentence-level collation where the structure agrees.
+
+### R8. Older papal translations: confirm, renew, and look for alternatives (tracked in #266)
+
+- **Type:** research, run just before 1.3d (Decision log "Research timing"), in two stages: confirmation plus a pilot, then (if Carter approves) the rest.
+- **Depends on:** none; blocks 1.3d (Decision log "Older papal translations: trace first", 29 Oct 2026).
+- **Goal:** For each of the 85 older papal documents taken from papalencyclicals.net, know whether a public-domain English printing exists, so each one is either moved to a cleared edition (1.3d) or retired.
+- **Current state (29 Oct 2026):**
+  - 86 documents: the encyclicals of Benedict XIV to Pius IX, and the bulls Unam Sanctam, Exsurge Domine and Sublimis Deus. Ubi Lutetiam is Italian and leaves under rule E (3.3), which leaves 85. Live: 1,403 passages, about 262,000 words. Rights rows `unknown`; excerpt-only.
+  - The site's About page says most of its encyclicals were "scanned ... from *The Papal Encyclicals 1740-1981*" (Carlen, 1981), and that it cannot grant permissions.
+  - The provenance check of 16 Oct 2026 (comment on #265; exact-phrase searches of the Internet Archive's full text, all 111 papal documents) found, among these 86: a credible pre-1931 printing of the site's text for Ineffabilis Deus, Sublimis Deus and Unam Sanctam, and an 1864 match for Quanta Cura and the Syllabus whose printing needs confirming; a 1931–1963 printing for In Supremo Apostolatus (1935) and Ubi Primum 1849 (1954), which need renewal searches; and nothing earlier than Carlen for about 79.
+  - The site's text not being older does not mean no older translation exists: Mirari Vos on the site is a modern translation, but its 1833 English (*Catholic Magazine and Review*, vol. 3) is on Wikisource, transcribed from the scans. Quanta Cura's 1864 printing is the Internet Archive's `cihm_48367`. vatican.va has no English for any pope before Leo XIII.
+- **Changes (deliverables):**
+  1. Confirm the five pre-1931 candidates by comparing the whole text with the printing (and confirm Quanta Cura's and the Syllabus's printing date from its title page).
+  2. Renewal searches for In Supremo Apostolatus and Ubi Primum 1849, as R6 did for Schroeder.
+  3. Pilot, about 10 of the Carlen-only documents: 5 of the 19th century (Pius IX, Gregory XVI), 3 of the 18th (Benedict XIV, Clement XIII) and 2 others. For each, search for any other pre-1931 English translation (Internet Archive, HathiTrust, Google Books, Wikisource, the periodicals #266 names), and record the printing found or the places searched, and the time taken.
+  4. A pilot report to Carter with the hit rate per group and the projected cost of the rest. He chooses: search all the Carlen-only documents, search by group, or retire the rest.
+  5. Results in `docs/research/R8-papal-translations.md`, and each document's edition in its `rights_inventory.json` row (status, edition, scan URL, credit line), or "none found" with the places searched.
+- **Acceptance checks:** Every document in the approved scope has a verdict citing a scan or the places searched. Every "found" cites a printing dated before 1931 by its title page, or a renewal search. Carter closes the issue.
+- **Production safety:** Research only. Downloads go to local disk after approval.
+- **Needs Carter:** The scope decision after the pilot. Approval of downloads.
+- **Out of scope:** Asking papalencyclicals.net or Carlen's publisher for permission (Carter, after everything works). Making translations. The 25 modern documents (1.3c), which #266 also lists.
