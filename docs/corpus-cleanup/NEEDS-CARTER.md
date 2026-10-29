@@ -46,7 +46,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 1
 
 - **1.2f** [Phase 1]. Approve a spend ceiling per work for the AI step that corrects scanning errors in scanned books (first used on councils 8 to 18). No spec proposes a figure.
-- **R8, 1.3d** [Phase 1]. After R8's pilot, choose its scope: trace all 85 older papal documents, trace by group, or retire the rest. Then approve 1.3d's downloads and its list of documents to retire.
+- **R8, 1.3d** [Phase 1, just before 1.3d]. After R8's pilot, choose its scope: search for other public-domain translations of all the Carlen-only older papal documents, search by group, or retire the rest. Then approve 1.3d's downloads and its list of documents to retire.
 - **1.3c** [Phase 1]. Approve vendoring the vatican.va English pages of the 25 modern papal documents, and review the PR's paragraph-alignment mismatch list.
 
 ### Phase 2
