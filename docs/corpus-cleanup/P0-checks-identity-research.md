@@ -757,7 +757,7 @@ Conventions used in this file:
   - Part 2, English for the Latin canons. Per canon 111, 112, 535 (§2), 579, 695, 700 and 868 (§1 2°):
     - The English source found (L'Osservatore Romano English edition issue and page, a vatican.va English page, or none), with URL or scan reference.
     - Its status for the reader label: official English, or unofficial English with the Latin official.
-    - Where none exists, "rule E: Latin kept in the reader, out of search".
+    - Where none exists, "rule E: no current-text passage; an English tombstone links to the Latin" (rule E as revised 29 Oct 2026).
 - **Acceptance checks:**
   - Part 1: five entries, each with at least two sources (iuscangreg.it and the vatican.va act) or an explicit "no amendment found in either", and a stated reason when one source is missing.
   - Part 2: seven entries, each with its source or an explicit "none found" and the places searched.

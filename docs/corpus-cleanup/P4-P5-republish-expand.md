@@ -699,7 +699,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
      - New adapter `datapipeline/ingest/universal_law.py` emitting collection `church-law`.
      - Document "Universi Dominici Gregis (as amended 2013)" is searchable, with anchors by number and section and author "Pope John Paul II" with the amendment note.
      - Three history documents (1996 original, 2007 motu proprio, 2013 motu proprio) are stored with `searchable = false` on every one of their passages (`searchable` is a passage field), each with `documents.superseded_by` set to the current text, and named in its note, and labeled "superseded text, kept as history". Genre `apostolic-constitution` for the 1996 text and `motu-proprio` for the other two (D5).
-     - The 2007 act is Latin only. Per rule E it stays in the reader with a note and out of search, which `searchable = false` already gives.
+     - The 2007 act is Latin only, so under rule E (revised 29 Oct 2026) it is not added. The 2013 act's page notes that it amends the 2007 one, in English, with a link to the Latin on vatican.va.
      - The 2025 declaration is not ingested (application material, not law). Mention it in the document note with its link.
   3. HyDE. Broaden the `church-law` prompt from "a single canon of the 1983 Code" to "a provision of the Church's universal law, such as a canon of the 1983 Code or a numbered norm of an apostolic constitution".
   4. `dedup.py` chapter-keyed list already includes `church-law` (5.1b.1); confirm UDG passages carry `chapter_key` by chapter so the per-source cap works per chapter.
@@ -710,7 +710,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - The 1996 wording never appears in search results and opens in the reader with the superseded label and a link to the current text.
   - `/sources` lists all four UDG documents with their status.
 - **Production safety:** Additions only. `searchable = false` keeps superseded text out of search through the 2.2b filter. Rollback within the window is 2.2w's `rollback` command, which also points `chunks_live` back; later, a 2.2w apply that retires the documents, with tombstones for anyone who bookmarked them.
-- **Needs Carter:** A New Hope for Lebanon has no English on vatican.va: reader only with a note under the Decision log row "Non-English with no usable English" (R6's recommendation, taking the French text), or leave it out. Amoris Laetitia's English exists only as a PDF: vendor the PDF and extract its text (R6's recommendation). Approve the lock-file PR and the 2.2w apply. Confirm UDG belongs in Church law rather than Papal documents (the plan's collection table puts it in Church law; this is a confirmation, not a reopening). Answered 5 Oct 2026: the French text, in the reader with a note, out of search; the French vatican.va page replaces the empty English one at the same path (R6 download list).
+- **Needs Carter:** A New Hope for Lebanon has no English on vatican.va: reader only with a note under the Decision log row "Non-English with no usable English" (R6's recommendation, taking the French text), or leave it out. Amoris Laetitia's English exists only as a PDF: vendor the PDF and extract its text (R6's recommendation). Approve the lock-file PR and the 2.2w apply. Confirm UDG belongs in Church law rather than Papal documents (the plan's collection table puts it in Church law; this is a confirmation, not a reopening). Answered 5 Oct 2026: the French text, in the reader with a note, out of search. Revised 29 Oct 2026 (rule E): A New Hope for Lebanon is not added; the French download is not ingested.
 - **Out of scope:** Other universal laws (for example *Praedicate Evangelium*, *Vos estis lux mundi*). Propose them as a follow-up.
 
 ### 5.5. Catechisms: Compendium of the CCC, Roman Catechism
@@ -986,7 +986,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Current state:**
   - The Holy See publishes it in Latin (`corpus-expansion-candidates.md`, gap 5).
   - The Canon Law Society of America sells a Latin-English edition updated in 2024.
-  - Rule E keeps untranslated text out of search. The Decision log says no licence spending in this cleanup.
+  - Rule E keeps untranslated text out of the corpus. The Decision log says no licence spending in this cleanup.
 - **Changes:** None until unblocked. When unblocked:
   - A `church-law` adapter with genre `code` (D5) that distinguishes Eastern from Latin canons by issuer (for example `cceo`).
   - A publish through 2.2w like every other P5 addition.

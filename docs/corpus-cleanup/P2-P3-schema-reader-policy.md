@@ -789,7 +789,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Reader:
     - `DocumentOverview.tsx`: attribution line becomes `formatAttribution · formatDate · formatTranslation`; show certainty, notes, supersession and the list of works with their own labels when `works` is non-empty; source credit at the bottom of the header section.
     - `ChapterSection.tsx`: source credit once at the end of each loaded chapter section. When a chapter's passages belong to a work whose attribution differs from the document's, show the work's label under the chapter heading.
-    - `Passage.tsx`: non-English passages get the language note above the text; `note` renders as a small muted paragraph after the passage; a `passage_author` renders as a small label above the passage.
+    - `Passage.tsx`: no language note (rule E, revised 29 Oct 2026, leaves no non-English passage); `note` renders as a small muted paragraph after the passage; a `passage_author` renders as a small label above the passage.
     - Earlier text (rule F, D11). A passage with `superseded_by` set is not rendered in the reading flow. It renders as a collapsed "Earlier text (<year>)" control under the current passage it points to; opening it shows the older wording in muted text with the label "No longer in force". The year comes from the history anchor. Test: `ChapterSection.test.tsx::test_history_passage_shows_as_earlier_text_under_current`.
     - `DocumentReader.tsx` and `lib/api.ts` reader fetchers: on 410 with a tombstone, show a removal page (title, author, reason, Church act, back button). On 404 with `redirect`, `router.replace` to the new document and anchor, keeping `from` and `returnKey`. On `redirected_from`, highlight the new anchor.
     - Guest reader shares these components (`isGuest`); no guest fork.
@@ -1036,30 +1036,29 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 
 ---
 
-### 3.3. Non-English passages: keep in the reader, remove from search
+### 3.3. Non-English passages: replace with English or retire
 
-- **Type:** PR (registry values). Takes effect at the Phase 4 apply.
-- **Depends on:** 2.1, 2.2a, 2.2w (writes `searchable`, `language` and `note` to staging and the Qdrant payload), 2.2b (its FTS and Qdrant filters), 2.4b (the language note).
-- **Goal:** Latin and Italian passages stop appearing in search results. They stay readable in the reader with a note saying they are not in English and not searched. Where a public-domain or licensed English translation exists, it replaces them instead.
+- **Type:** PR (registry entries). Takes effect at the Phase 4 apply.
+- **Depends on:** 2.1 (the removal registry), 2.2a, 2.2w (retirement and tombstones).
+- **Goal:** No passage in search or the reader is in a language other than English (rule E as revised by Carter on 29 Oct 2026). Where a cleared English translation exists, it replaces the passage; otherwise the passage is retired with a tombstone and comes back when one is found.
 - **Current state:**
   - Plan counts: Clement, Stromata III, Latin, 33; Clement, The Instructor II.10, Latin, 4; Lactantius, Divine Institutes VI and On the Workmanship of God, Latin, 5; Ubi Lutetiam (Pius VI), Italian, 17. Total 59.
   - A Latin-stopword heuristic on 29 Sep found 33 in the Stromata (`3a68ef3f`), 5 in The Instructor (`96584290`), 3 in the Divine Institutes (`9e03c96d`), 1 in On the Workmanship of God (`f913305f`), and all 17 of Ubi Lutetiam (`ba74d920`). The small differences from the plan mean the final list must be fixed by anchor in the registry, checked by eye.
   - User rows: 1 retrieval points at one of these passages (Divine Institutes); 0 bookmarks, labels or guest rows.
-  - Canon law's Latin (canons 111, 579, 695, 700, and paragraphs of 535 and 868) is handled by 1.5 under the plan's rule 6 and rule E; it uses the same `language` and `searchable` fields when no unofficial English exists.
+  - Canon law's non-English canons are handled by 1.5b under the same rule.
 - **Changes:**
-  - Research step inside this item, before code. For each of the four works, record whether a public-domain or licensed English translation of the missing sections exists (0.2's rights inventory holds the answer). The plan's default when none exists is reader-only; TheoCorpus makes no translations of its own.
-  - Registry: per passage anchor in 2.1's passage registry, `language` (`la` or `it`), `searchable: false`, and a passage `note`. These override whatever the adapter set on the `Passage` fields (D11), and 2.2w applies the override at stage time. Example note: "Left in Latin by the Ante-Nicene Fathers translators; no public-domain English translation is available." When an English translation is adopted, the adapter substitutes it (a separate adapter change under 1.8a or 1.3a) and the passage stays searchable.
-  - No writer change. 2.2w carries `Passage.searchable`, `language` and `note` into `staging.chunks` and writes `searchable = false` into each point's payload; every such passage stays a Qdrant point (D5).
-  - No early live apply (D7). The earlier draft's `apply_passage_flags.py` script is dropped.
-  - No change to the reader, which already shows every passage of a chapter; 2.4b adds the language note.
+  - Research step inside this item, before code. For each of the four works, record whether a cleared English translation of the missing sections exists (0.2's rights inventory holds the answer). TheoCorpus makes no translations of its own.
+  - Where one exists, the adapter substitutes it (a separate adapter change under 1.8a or 1.3a) and the passage keeps its ID with `text_replaced` set.
+  - Otherwise, a removal-registry entry per anchor, reason `translation-in-preparation`, with the tombstone "No public-domain English translation is available." Ubi Lutetiam is wholly Italian, so it is a `document`-scope entry. Where a retired passage sits inside a chapter (the Stromata, the Divine Institutes), the reader shows the one-line tombstone in its place, so the chapter does not silently skip text.
+  - No early live apply (D7).
 - **Acceptance checks:**
-  - Registry test: exactly the approved anchors carry `searchable: false`, each with `language` and `note`.
-  - `datapipeline/tests/test_stage_apply.py` (2.2w) covers a `searchable = false` passage reaching staging, live and the Qdrant payload.
-  - After the Phase 4 apply: each ID is absent from an FTS query on a distinctive Latin word and from a vector query using the passage's own vector, and `/v1/documents/9e03c96d-.../reader` for the affected chapter still returns those passages with `language: "la"`.
+  - Registry test: exactly the approved anchors carry removal entries with this reason and tombstone.
+  - A build check, `language.english_only`, run in the release report: no staged passage has a non-English `language`, and the Latin-stopword heuristic finds no run of 5 or more words in any staged passage outside a list of approved short quotations (a Latin phrase inside English prose).
+  - After the Phase 4 apply: each retired ID returns its tombstone from `/v1/documents/.../reader`, and the one saved retrieval restores as a tombstone.
   - PR description must include the final anchor list per work with the first 80 characters of each passage, and the translation research result.
-- **Production safety:** Values only; nothing changes before the Phase 4 apply. At the apply, the 59 passages leave search results and stay in the reader. The one retrieval pointing at one of them still restores, because history restore does not filter on `searchable`. 2.2w's rollback restores the previous flags.
-- **Needs Carter:** Approval of the anchor list and the note wording.
-- **Out of scope:** Canon law Latin (1.5). Writing or commissioning translations. Removing any non-English passage from the reader.
+- **Production safety:** Values only; nothing changes before the Phase 4 apply. At the apply, the 59 passages leave search and the reader. 2.2w's rollback restores them.
+- **Needs Carter:** Approval of the anchor list and the tombstone wording.
+- **Out of scope:** Writing or commissioning translations. Short Latin phrases inside English prose (a quoted "Credo", a legal term), which are English text.
 
 ---
 
