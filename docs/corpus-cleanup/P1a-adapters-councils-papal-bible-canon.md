@@ -440,10 +440,11 @@ These apply to every PR below and are not repeated in each item.
   1. For each "found" document: vendor the printing through the holding folder (a Wikisource transcription with its scan, or the scan's text through 1.2f's cleanup and gate), and build it with 1.3a's parser rules plus an extractor for the printing's layout.
   2. Numbering. Older printings often number paragraphs differently or not at all. The PR aligns each printing with the site's numbering by content (quotations, citations, length) and lists every mismatch; passages keep the site's paragraph numbers where the unit matches.
   3. Identity (D1), as in 1.3c: a matching paragraph keeps its anchor and ID with `text_replaced` set; an old anchor with no counterpart gets a redirect or a removal entry with reason `superseded-translation`.
-  4. Rights rows move to `pd-us-pre-1931` with the printing's edition, scan URL and credit line; the sync opens each document in the full reader after the apply (D12).
+  4. Rights rows take the status of R8's verdict, with the printing's edition, scan URL and credit line: `pd-us-pre-1931` for a printing dated before 1931 by its title page, or `pd-us-non-renewal` for a later printing whose renewal search found no renewal (In Supremo Apostolatus, 1935; Ubi Primum 1849, 1954), keeping R8's complete `renewal_search` record (`tests/test_rights_inventory.py` requires it). The sync opens each document in the full reader after the apply (D12).
   5. For each "none found" document, in the scope Carter approves: a `document`-scope removal entry with reason `translation-in-preparation` and the tombstone "No public-domain English translation is available." It returns if a cleared translation is found or permission is granted.
 - **Acceptance checks:**
   - Coverage (0.1a) passes for each rebuilt document against its vendored printing; scanned printings pass 1.2f's gate.
+  - Each rebuilt document's rights row matches R8's verdict; every `pd-us-non-renewal` row carries R8's renewal search.
   - The release report lists every old anchor of these documents and its outcome; every outcome other than `same` has a redirect or a removal entry.
   - No passage of these documents contains "papalencyclicals", and none of the documents in the approved scope still gives a papalencyclicals.net URL.
   - 3.4's rejected-voice ranges (Exsurge Domine §1–41, the Syllabus §1–80) are re-checked against the new text.
