@@ -1,0 +1,5147 @@
+{
+ "about": "Structural corrections to the vendored Summa (sources/summa/summa.xml, CCEL) from R7, read by 1.7. Keys are the source's own paragraph ids (2.1's Summa anchors are the article div id plus this id's suffix, e.g. FP_Q76_A3-p4 is summa/FP_Q76_A3/p4). Each entry gives the Leonine role and number of the paragraph's unit, its reply targets ('obj N', 'sc N'), any move to another article, and flags. 'targets' is set on a paragraph that is a reply; 'also_answers' on a paragraph of another part that also carries a reply sentence; 'holds' on a paragraph that carries further Latin units of its part (a second sed contra). 'class' is R7's verdict: prose-reply, joint-reply, variant, source-error or omission; 'defect' says whose it is, 'ccel' when the printed edition is right and the CCEL text is wrong, 'translators' when the print has it too. 'latin' cites the Leonine unit by its Corpus Thomisticum unit number; 'printed' cites the printed English edition (keys in 'print'). IDs, numbers and short labels only: no passage text. Recovered text goes in a separate vendored override file, never here. See docs/research/R7-summa-structure.md.",
+ "latin_source": "Leonine edition (Rome, from 1888) as published by Corpus Thomisticum (https://www.corpusthomisticum.org/iopera.html), 87 pages, fetched 30 Oct 2026; unit numbers are Corpus Thomisticum's",
+ "roles": [
+  "objection",
+  "sed-contra",
+  "determination",
+  "reply",
+  "article-title",
+  "editorial",
+  "duplicate"
+ ],
+ "classes": [
+  "prose-reply",
+  "joint-reply",
+  "variant",
+  "source-error",
+  "omission"
+ ],
+ "flags": [
+  "editorial",
+  "editor-supplied",
+  "not-in-leonine"
+ ],
+ "print": {
+  "dom2-v4": {
+   "archive": "summatheologicao0004thom",
+   "contents": "Part I, QQ. 75-102",
+   "edition": "English Dominican translation, second and revised edition, Burns Oates & Washbourne, London; imprimatur 1922"
+  },
+  "dom2-v5": {
+   "archive": "summatheologicao0005thom",
+   "contents": "Part I, QQ. 103-119",
+   "edition": "second edition series, Burns Oates & Washbourne, London, 1922"
+  },
+  "dom2-v6": {
+   "archive": "summatheologicao0006thom",
+   "contents": "I-II, QQ. 1-48",
+   "edition": "first published 1914, second edition 1927, Burns Oates & Washbourne, London"
+  },
+  "dom2-v7": {
+   "archive": "summatheologicao0007thom",
+   "contents": "I-II, QQ. 49-89",
+   "edition": "second edition, imprimatur 3 February 1927, Burns Oates & Washbourne, London"
+  },
+  "dom2-v8": {
+   "archive": "summatheologicao0008fath",
+   "contents": "I-II, QQ. 90-114",
+   "edition": "first printed 1915, second edition 1927, Burns Oates & Washbourne, London"
+  },
+  "dom2-v9": {
+   "archive": "summatheologicao0009thom",
+   "contents": "II-II, QQ. 1-46",
+   "edition": "Burns Oates & Washbourne, London (printing date not shown in the scan's text)"
+  },
+  "dom2-v10": {
+   "archive": "summatheologicao0010thom",
+   "contents": "II-II, QQ. 47-79",
+   "edition": "Burns Oates & Washbourne, London, 1929"
+  },
+  "dom2-v11": {
+   "archive": "summatheologicao0011thom",
+   "contents": "II-II, QQ. 80-100",
+   "edition": "Burns Oates & Washbourne, London (printing date not shown in the scan's text)"
+  },
+  "dom2-v12": {
+   "archive": "summatheologicao0012thom",
+   "contents": "II-II, QQ. 101-140",
+   "edition": "Burns Oates & Washbourne, London, 1922"
+  },
+  "dom2-v14": {
+   "archive": "sumatheologicaof0014unse",
+   "contents": "II-II, QQ. 171-189",
+   "edition": "Benziger Brothers, New York, 1922 (also checked: summatheologicao0000thom_v3w8, Burns Oates & Washbourne, London, 1922)"
+  },
+  "dom2-v15": {
+   "archive": "thesummatheologi15aquiuoft",
+   "contents": "III, QQ. 1-26",
+   "edition": "second and revised edition, Burns Oates & Washbourne, London (printing date not shown; first edition imprimatur 1913)"
+  },
+  "dom1-v15": {
+   "archive": "summatheologi15thom",
+   "contents": "III, QQ. 1-26",
+   "edition": "first edition, R. & T. Washbourne, London, 1913"
+  },
+  "dom2-v16": {
+   "archive": "in.ernet.dli.2015.188677",
+   "contents": "III, QQ. 27-59",
+   "edition": "second and revised edition, Burns Oates & Washbourne, London, 1926 (Digital Library of India copy)"
+  },
+  "dom2-v17": {
+   "archive": "summatheologicao0017thom",
+   "contents": "III, QQ. 60-83",
+   "edition": "Burns Oates & Washbourne, London, 1923"
+  },
+  "dom-v18": {
+   "archive": "summatheologi18thom",
+   "contents": "III, QQ. 84-90 and Supplement QQ. 1-33",
+   "edition": "R. & T. Washbourne, London, 1917"
+  },
+  "dom-v19": {
+   "archive": "summatheologicao0019thom",
+   "contents": "Supplement QQ. 34-68",
+   "edition": "Burns Oates & Washbourne, London (1930 in the scan's text)"
+  },
+  "dom-v20": {
+   "archive": "summatheologicao0020thom",
+   "contents": "Supplement QQ. 69-86",
+   "edition": "Burns Oates & Washbourne, London, 1921"
+  },
+  "dom-v21": {
+   "archive": "summatheologicao0021thom",
+   "contents": "Supplement QQ. 87-99 and appendices",
+   "edition": "Burns Oates & Washbourne, London, 1922"
+  },
+  "pope1914": {
+   "archive": "onprayercontempl00thomuoft",
+   "contents": "II-II, QQ. 179-182 (and the treatise on prayer)",
+   "edition": "Hugh Pope, O.P., On Prayer and the Contemplative Life by S. Thomas Aquinas, R. & T. Washbourne, London, 1914"
+  }
+ },
+ "paragraphs": {
+  "FP_Q100_A1-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 100 a. 1 ad 3 [CT 32629]"
+   ]
+  },
+  "FP_Q102_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 102 a. 3 ad arg. [CT 32683]"
+   ]
+  },
+  "FP_Q102_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 102 a. 4 ad 2 [CT 32690]"
+   ]
+  },
+  "FP_Q103_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 103 a. 4 ad 2 [CT 32723]"
+   ]
+  },
+  "FP_Q103_A8-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Reply OBJ 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 103 a. 8 ad 2 [CT 32754]"
+   ],
+   "printed": {
+    "source": "dom2-v5"
+   }
+  },
+  "FP_Q105_A8-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 105 a. 8 ad arg. [CT 32852]"
+   ]
+  },
+  "FP_Q107_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 107 a. 2 ad 1 [CT 32900]"
+   ]
+  },
+  "FP_Q107_A5-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 107 a. 5 ad 1 [CT 32919]"
+   ]
+  },
+  "FP_Q108_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 108 a. 4 ad arg. [CT 32951]"
+   ]
+  },
+  "FP_Q108_A5-p8": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 108 a. 5 s. c. [CT 32958]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "FP_Q108_A8-p5": {
+   "role": "sed-contra",
+   "parts": [
+    {
+     "opens_with": "On the contrary,",
+     "role": "sed-contra"
+    },
+    {
+     "opens_with": "I answer that,",
+     "role": "determination",
+     "anchor_suffix": "-2"
+    }
+   ],
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 108 a. 8 s. c. [CT 32987]",
+    "I q. 108 a. 8 co. [CT 32988]"
+   ],
+   "note": "the determination opens inside the sed contra's paragraph"
+  },
+  "FP_Q112_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "omission",
+   "defect": "ccel",
+   "latin": [
+    "I q. 112 a. 2 ad 1 [CT 33110]"
+   ],
+   "note": "second half of reply 1 (its first half and label are missing)"
+  },
+  "FP_Q112_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 112 a. 3 ad 1 [CT 33120]"
+   ]
+  },
+  "FP_Q113_A6-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 113 a. 6 ad 1 [CT 33175]"
+   ]
+  },
+  "FP_Q113_A7-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 113 a. 7 ad 2 [CT 33184]"
+   ]
+  },
+  "FP_Q113_A8-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 113 a. 8 ad arg. [CT 33192]"
+   ]
+  },
+  "FP_Q114_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 114 a. 2 ad 1 [CT 33207]"
+   ]
+  },
+  "FP_Q114_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 114 a. 3 ad 1 [CT 33215]"
+   ]
+  },
+  "FP_Q114_A5-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 114 a. 5 ad arg. [CT 33230]"
+   ]
+  },
+  "FP_Q115_A1-p14": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 115 a. 1 ad 2 [CT 33240]"
+   ]
+  },
+  "FP_Q116_A1-p9": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 116 a. 1 ad 1 [CT 33293]"
+   ]
+  },
+  "FP_Q116_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 116 a. 3 ad arg. [CT 33308]"
+   ]
+  },
+  "FP_Q117_A2-p5": {
+   "role": "sed-contra",
+   "holds": [
+    "sc 1",
+    "co"
+   ],
+   "class": "omission",
+   "defect": "ccel",
+   "latin": [
+    "I q. 117 a. 2 s. c. [CT 33331]",
+    "I q. 117 a. 2 co. [CT 33332]"
+   ],
+   "printed": {
+    "source": "dom2-v5",
+    "page": "180"
+   },
+   "note": "text lost from inside the sed contra to inside the determination; the paragraph's tail is the determination's end"
+  },
+  "FP_Q119_A2-p11": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 119 a. 2 ad 3 [CT 33402]"
+   ]
+  },
+  "FP_Q12_A6-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 12 a. 6 ad 2 [CT 28730]"
+   ]
+  },
+  "FP_Q13_A10-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I q. 13 a. 10 s. c. 2 [CT 28871]"
+   ]
+  },
+  "FP_Q13_A10-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 13 a. 10 ad 2 [CT 28874]"
+   ]
+  },
+  "FP_Q13_A10-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 13 a. 10 ad 4 [CT 28875]"
+   ]
+  },
+  "FP_Q13_A10-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 13 a. 10 ad 5 [CT 28876]"
+   ]
+  },
+  "FP_Q13_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 13 a. 4 ad 1 [CT 28818]"
+   ]
+  },
+  "FP_Q13_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I q. 13 a. 5 s. c. 2 [CT 28825]"
+   ]
+  },
+  "FP_Q13_A5-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 13 a. 5 ad 4 [CT 28830]"
+   ]
+  },
+  "FP_Q14_A16-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 14 a. 16 ad 3 [CT 29018]"
+   ]
+  },
+  "FP_Q14_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 14 a. 4 ad 3 [CT 28923]"
+   ]
+  },
+  "FP_Q16_A2-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 16 a. 2 ad arg. [CT 29061]"
+   ]
+  },
+  "FP_Q17_A1-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 17 a. 1 ad 4 [CT 29121]"
+   ]
+  },
+  "FP_Q18_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 18 a. 2 ad 3 [CT 29160]"
+   ]
+  },
+  "FP_Q1_A4-p5": {
+   "also_answers": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 1 a. 4 ad arg. [CT 28255]"
+   ]
+  },
+  "FP_Q24_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 24 a. 1 ad 2 [CT 29470]"
+   ]
+  },
+  "FP_Q24_A1-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 24 a. 1 ad 4 [CT 29472]"
+   ]
+  },
+  "FP_Q24_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 24 a. 2 ad 2 [CT 29479]"
+   ]
+  },
+  "FP_Q28_A4-p6": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "I q. 28 a. 4 s. c. [CT 29641]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q28_A4-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 28 a. 4 ad 5 [CT 29647]"
+   ]
+  },
+  "FP_Q29_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "I q. 29 a. 2 s. c. 1 [CT 29663]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q29_A2-p6": {
+   "role": "sed-contra",
+   "number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "I q. 29 a. 2 s. c. 2 [CT 29664]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q29_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 29 a. 2 ad 4 [CT 29669]"
+   ]
+  },
+  "FP_Q29_A2-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 29 a. 2 ad 5 [CT 29670]"
+   ]
+  },
+  "FP_Q31_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 31 a. 4 ad 2 [CT 29768]"
+   ]
+  },
+  "FP_Q32_A3-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "I q. 32 a. 3 s. c. 1 [CT 29791]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q32_A3-p6": {
+   "role": "sed-contra",
+   "number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "I q. 32 a. 3 s. c. 2 [CT 29792]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q32_A3-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 32 a. 3 ad 4 [CT 29797]"
+   ]
+  },
+  "FP_Q32_A3-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 32 a. 3 ad 5 [CT 29798]"
+   ]
+  },
+  "FP_Q32_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 32 a. 4 ad arg. [CT 29803]"
+   ]
+  },
+  "FP_Q33_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 33 a. 3 ad 3 [CT 29830]"
+   ]
+  },
+  "FP_Q39_A8-p16": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 39 a. 8 ad 1 [CT 30063]"
+   ]
+  },
+  "FP_Q3_A8-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I q. 3 a. 8 s. c. 2 [CT 28376]"
+   ]
+  },
+  "FP_Q43_A8-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 43 a. 8 ad arg. [CT 30281]"
+   ]
+  },
+  "FP_Q48_A5-p6": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "I q. 48 a. 5 s. c. [CT 30504]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q48_A5-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 48 a. 5 ad 4 [CT 30509]"
+   ]
+  },
+  "FP_Q4_A2-p7": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 4 a. 2 ad 2 [CT 28396]"
+   ]
+  },
+  "FP_Q52_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 52 a. 1 ad arg. [CT 30635]"
+   ]
+  },
+  "FP_Q52_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 52 a. 2 ad 1 [CT 30641]"
+   ]
+  },
+  "FP_Q53_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 53 a. 2 ad 3 [CT 30665]"
+   ]
+  },
+  "FP_Q54_A5-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 54 a. 5 ad 1 [CT 30708]"
+   ]
+  },
+  "FP_Q58_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 58 a. 2 ad 3 [CT 30820]"
+   ]
+  },
+  "FP_Q58_A5-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 58 a. 5 ad 1 [CT 30842]"
+   ]
+  },
+  "FP_Q60_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 60 a. 2 ad 2 [CT 30906]"
+   ]
+  },
+  "FP_Q61_A1-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 61 a. 1 ad 3 [CT 30943]"
+   ]
+  },
+  "FP_Q62_A4-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 62 a. 4 ad 3 [CT 31000]"
+   ]
+  },
+  "FP_Q63_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 63 a. 3 ad arg. [CT 31065]"
+   ]
+  },
+  "FP_Q63_A9-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 63 a. 9 ad 2 [CT 31116]"
+   ]
+  },
+  "FP_Q66_A1-p5": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I q. 66 a. 1 s. c. 1 [CT 31196]",
+    "I q. 66 a. 1 s. c. 2 [CT 31197]"
+   ]
+  },
+  "FP_Q66_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 66 a. 1 ad 4 [CT 31202]",
+    "I q. 66 a. 1 ad 5 [CT 31203]"
+   ]
+  },
+  "FP_Q67_A1-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 67 a. 1 ad arg. [CT 31242]"
+   ]
+  },
+  "FP_Q68_A1-p16": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 68 a. 1 ad 2 [CT 31276]"
+   ]
+  },
+  "FP_Q68_A2-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 68 a. 2 co. [CT 31281]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "FP_Q6_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 6 a. 4 ad arg. [CT 28492]"
+   ]
+  },
+  "FP_Q74_A1-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "I q. 74 a. 1 s. c. 1 [CT 31414]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q74_A1-p6": {
+   "role": "sed-contra",
+   "number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "I q. 74 a. 1 s. c. 2 [CT 31415]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FP_Q74_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 74 a. 1 ad 4 [CT 31420]"
+   ]
+  },
+  "FP_Q74_A1-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 74 a. 1 ad 5 [CT 31421]"
+   ]
+  },
+  "FP_Q74_A2-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 74 a. 2 ad 5 [CT 31432]"
+   ]
+  },
+  "FP_Q76_A1-p18": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 76 a. 1 ad 2 [CT 31514]"
+   ]
+  },
+  "FP_Q76_A3-p4": {
+   "role": "objection",
+   "number": 4,
+   "source_label": "Objection 3",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 76 a. 3 arg. 4 [CT 31535]"
+   ],
+   "printed": {
+    "source": "dom2-v4",
+    "page": "35"
+   }
+  },
+  "FP_Q78_A1-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 78 a. 1 ad 1 [CT 31678]"
+   ]
+  },
+  "FP_Q7_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 7 a. 1 ad 1 [CT 28499]"
+   ]
+  },
+  "FP_Q82_A5-p9": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 82 a. 5 ad 3 [CT 31910]"
+   ]
+  },
+  "FP_Q84_A5-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 84 a. 5 ad arg. [CT 31986]"
+   ]
+  },
+  "FP_Q85_A6-p8": {
+   "also_answers": [
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 85 a. 6 ad 2 [CT 32064]",
+    "I q. 85 a. 6 ad 3 [CT 32065]"
+   ]
+  },
+  "FP_Q85_A7-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 85 a. 7 ad 1 [CT 32071]",
+    "I q. 85 a. 7 ad 2 [CT 32072]"
+   ]
+  },
+  "FP_Q86_A1-p7": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 86 a. 1 ad 1 [CT 32089]"
+   ]
+  },
+  "FP_Q86_A3-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 86 a. 3 ad arg. [CT 32107]"
+   ]
+  },
+  "FP_Q89_A1-p10": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I q. 89 a. 1 ad 2 [CT 32187]"
+   ]
+  },
+  "FP_Q89_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 89 a. 3 ad 3 [CT 32204]"
+   ]
+  },
+  "FP_Q89_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 89 a. 3 ad 4 [CT 32205]"
+   ]
+  },
+  "FP_Q90_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 90 a. 3 ad 1 [CT 32270]"
+   ]
+  },
+  "FP_Q92_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "source_label": "Reply OBJ 1",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 92 a. 2 ad 1 [CT 32333]"
+   ],
+   "printed": {
+    "source": "dom2-v4"
+   }
+  },
+  "FP_Q92_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 92 a. 3 ad 3 [CT 32343]"
+   ]
+  },
+  "FP_Q93_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Reply OBJ 2 and 3",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 93 a. 4 ad 2 [CT 32385]"
+   ],
+   "printed": {
+    "source": "dom2-v4"
+   }
+  },
+  "FP_Q93_A5-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 93 a. 5 ad 1 [CT 32392]"
+   ]
+  },
+  "FP_Q94_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 94 a. 2 ad 1 [CT 32449]"
+   ]
+  },
+  "FP_Q96_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 96 a. 2 ad arg. [CT 32531]"
+   ]
+  },
+  "FP_Q96_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 96 a. 4 ad arg. [CT 32545]"
+   ]
+  },
+  "FP_Q97_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "source_label": "Reply OBJ 1 and 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 97 a. 1 ad 1 [CT 32553]"
+   ],
+   "printed": {
+    "source": "dom2-v4"
+   }
+  },
+  "FP_Q97_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 97 a. 2 ad 1 [CT 32562]"
+   ]
+  },
+  "FP_Q97_A4-p5": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I q. 97 a. 4 s. c. 1 [CT 32578]",
+    "I q. 97 a. 4 s. c. 2 [CT 32579]"
+   ]
+  },
+  "FP_Q97_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 97 a. 4 ad 1 [CT 32581]"
+   ]
+  },
+  "FP_Q98_A2-p6": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I q. 98 a. 2 s. c. 1 [CT 32595]",
+    "I q. 98 a. 2 s. c. 2 [CT 32596]"
+   ]
+  },
+  "FP_Q99_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "source_label": "Reply OBJ 3",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I q. 99 a. 1 ad 3 [CT 32611]"
+   ],
+   "printed": {
+    "source": "dom2-v4"
+   }
+  },
+  "FS_Q100_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 100 a. 1 ad arg. [CT 37850]"
+   ]
+  },
+  "FS_Q100_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 100 a. 2 ad 3 [CT 37858]"
+   ]
+  },
+  "FS_Q101_A2-p13": {
+   "role": "reply",
+   "targets": [
+    "obj 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 101 a. 2 ad 4 [CT 37971]"
+   ]
+  },
+  "FS_Q102_A5-p39": {
+   "role": "reply",
+   "targets": [
+    "obj 8"
+   ],
+   "source_label": "Reply OBJ 8 and 9",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 102 a. 5 ad 8 [CT 38080]"
+   ],
+   "printed": {
+    "source": "dom2-v8"
+   }
+  },
+  "FS_Q102_A6-p20": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 102 a. 6 ad 3 [CT 38097]"
+   ]
+  },
+  "FS_Q102_A6-p33": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "reply 10 'supplied by Nicolai'; not in the codices; the Leonine has no ad 10"
+  },
+  "FS_Q109_A10-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 109 a. 10 ad 2 [CT 38442]"
+   ]
+  },
+  "FS_Q110_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 110 a. 4 ad 2 [CT 38476]"
+   ]
+  },
+  "FS_Q113_A9-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 113 a. 9 ad 1 [CT 38643]"
+   ]
+  },
+  "FS_Q114_A10-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "I-II q. 114 a. 10 s. c. [CT 38730]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FS_Q114_A10-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 114 a. 10 ad 4 [CT 38735]"
+   ]
+  },
+  "FS_Q114_A9-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 114 a. 9 ad 3 [CT 38726]"
+   ]
+  },
+  "FS_Q11_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 11 a. 2 ad 4 [CT 33962]"
+   ]
+  },
+  "FS_Q17_A6-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 17 a. 6 ad 3 [CT 34230]"
+   ]
+  },
+  "FS_Q19_A10-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I-II q. 19 a. 10 s. c. 2 [CT 34422]"
+   ]
+  },
+  "FS_Q19_A10-p7": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "I-II q. 19 a. 10 s. c. 3 [CT 34423]"
+   ]
+  },
+  "FS_Q19_A10-p16": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 19 a. 10 ad 3 [CT 34427]"
+   ]
+  },
+  "FS_Q19_A10-p17": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2",
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 19 a. 10 ad 4 [CT 34428]",
+    "I-II q. 19 a. 10 ad 5 [CT 34429]",
+    "I-II q. 19 a. 10 ad 6 [CT 34430]"
+   ]
+  },
+  "FS_Q19_A9-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 19 a. 9 ad 2 [CT 34417]"
+   ]
+  },
+  "FS_Q1_A3-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 1 a. 3 co. [CT 33426]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "FS_Q1_A8-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 1 a. 8 ad arg. [CT 33467]"
+   ]
+  },
+  "FS_Q20_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 20 a. 4 ad 3 [CT 34463]"
+   ]
+  },
+  "FS_Q20_A6-p6": {
+   "role": "duplicate",
+   "duplicate_of": "FS_Q20_A6-p5",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 20 a. 6 s. c. [CT 34477]"
+   ],
+   "printed": {
+    "source": "dom2-v6"
+   }
+  },
+  "FS_Q23_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 23 a. 2 ad arg. [CT 34554]"
+   ]
+  },
+  "FS_Q23_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 23 a. 3 ad arg. [CT 34560]"
+   ]
+  },
+  "FS_Q23_A4-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 23 a. 4 ad arg. [CT 34566]"
+   ]
+  },
+  "FS_Q24_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 24 a. 2 ad 1 [CT 34581]"
+   ]
+  },
+  "FS_Q25_A1-p11": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I-II q. 25 a. 1 ad 3 [CT 34608]"
+   ]
+  },
+  "FS_Q26_A3-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 26 a. 3 ad 4 [CT 34658]"
+   ]
+  },
+  "FS_Q26_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 26 a. 4 ad 2 [CT 34665]"
+   ]
+  },
+  "FS_Q27_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 27 a. 3 ad 1 [CT 34690]"
+   ]
+  },
+  "FS_Q28_A5-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 28 a. 5 ad 1 [CT 34740]"
+   ]
+  },
+  "FS_Q29_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 29 a. 3 ad 1 [CT 34771]"
+   ]
+  },
+  "FS_Q29_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 29 a. 4 ad 1 [CT 34779]"
+   ]
+  },
+  "FS_Q29_A5-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 29 a. 5 ad 1 [CT 34787]"
+   ]
+  },
+  "FS_Q31_A7-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 31 a. 7 ad arg. [CT 34885]"
+   ]
+  },
+  "FS_Q33_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 33 a. 4 ad 3 [CT 34991]"
+   ]
+  },
+  "FS_Q35_A4-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 35 a. 4 ad 3 [CT 35057]"
+   ]
+  },
+  "FS_Q37_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 37 a. 3 ad arg. [CT 35149]"
+   ]
+  },
+  "FS_Q38_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 38 a. 3 ad 3 [CT 35182]"
+   ]
+  },
+  "FS_Q39_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 39 a. 1 ad 2 [CT 35206]"
+   ]
+  },
+  "FS_Q3_A2-p14": {
+   "role": "reply",
+   "targets": [
+    "obj 5",
+    "obj 6"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 3 a. 2 ad 5 [CT 33554]"
+   ]
+  },
+  "FS_Q40_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Reply to Objection 1",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 40 a. 1 ad 2 [CT 35238]"
+   ],
+   "printed": {
+    "source": "dom2-v6"
+   }
+  },
+  "FS_Q40_A6-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 40 a. 6 ad 2 [CT 35278]"
+   ]
+  },
+  "FS_Q40_A7-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 40 a. 7 ad arg. [CT 35285]"
+   ]
+  },
+  "FS_Q41_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 41 a. 3 ad arg. [CT 35316]"
+   ]
+  },
+  "FS_Q41_A4-p7": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 41 a. 4 s. c. [CT 35322]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "FS_Q42_A1-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 42 a. 1 ad arg. [CT 35335]"
+   ]
+  },
+  "FS_Q44_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 44 a. 2 ad 1 [CT 35409]"
+   ]
+  },
+  "FS_Q44_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 44 a. 3 ad 2 [CT 35418]"
+   ]
+  },
+  "FS_Q44_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 44 a. 4 ad 1 [CT 35425]"
+   ]
+  },
+  "FS_Q46_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I-II q. 46 a. 2 s. c. 2 [CT 35474]"
+   ]
+  },
+  "FS_Q46_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 46 a. 2 ad arg. [CT 35476]"
+   ]
+  },
+  "FS_Q46_A7-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 46 a. 7 s. c. [CT 35512]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "FS_Q47_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 47 a. 3 ad 1 [CT 35549]"
+   ]
+  },
+  "FS_Q47_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 47 a. 4 ad 1 [CT 35557]"
+   ]
+  },
+  "FS_Q48_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 48 a. 4 ad 2 [CT 35591]"
+   ]
+  },
+  "FS_Q49_A2-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 49 a. 2 ad 2 [CT 35608]"
+   ]
+  },
+  "FS_Q51_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 51 a. 3 ad arg. [CT 35697]"
+   ]
+  },
+  "FS_Q52_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 52 a. 3 ad arg. [CT 35728]"
+   ]
+  },
+  "FS_Q56_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 56 a. 5 ad 2 [CT 35871]"
+   ]
+  },
+  "FS_Q58_A2-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 58 a. 2 ad 3 [CT 35949]"
+   ]
+  },
+  "FS_Q5_A8-p6": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I-II q. 5 a. 8 ad 1 [CT 33738]"
+   ]
+  },
+  "FS_Q60_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 60 a. 2 ad 1 [CT 36030]"
+   ]
+  },
+  "FS_Q61_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 61 a. 3 ad 1 [CT 36079]"
+   ]
+  },
+  "FS_Q61_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 61 a. 4 ad 2 [CT 36086]"
+   ]
+  },
+  "FS_Q62_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 62 a. 4 ad 1 [CT 36128]"
+   ]
+  },
+  "FS_Q63_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 63 a. 1 ad 1 [CT 36137]"
+   ]
+  },
+  "FS_Q63_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 63 a. 2 ad 1 [CT 36143]"
+   ]
+  },
+  "FS_Q64_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 64 a. 2 ad 1 [CT 36176]"
+   ]
+  },
+  "FS_Q65_A1-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 65 a. 1 ad 2 [CT 36201]"
+   ]
+  },
+  "FS_Q66_A2-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 66 a. 2 ad 3 [CT 36252]"
+   ]
+  },
+  "FS_Q67_A1-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 67 a. 1 ad 2 [CT 36294]"
+   ]
+  },
+  "FS_Q67_A3-p13": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 67 a. 3 ad 3 [CT 36311]"
+   ]
+  },
+  "FS_Q69_A3-p6": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "I-II q. 69 a. 3 s. c. 1 [CT 36430]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FS_Q69_A3-p7": {
+   "role": "sed-contra",
+   "number": 2,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "I-II q. 69 a. 3 s. c. 2 [CT 36431]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FS_Q69_A3-p17": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 69 a. 3 ad 5 [CT 36437]"
+   ]
+  },
+  "FS_Q69_A3-p18": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 69 a. 3 ad 6 [CT 36438]"
+   ]
+  },
+  "FS_Q6_A8-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 6 a. 8 ad 1 [CT 33803]"
+   ]
+  },
+  "FS_Q70_A3-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "I-II q. 70 a. 3 s. c. [CT 36467]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FS_Q70_A3-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 70 a. 3 ad 4 [CT 36472]"
+   ]
+  },
+  "FS_Q70_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 70 a. 4 ad 3 [CT 36480]"
+   ]
+  },
+  "FS_Q72_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 72 a. 2 ad 2 [CT 36552]"
+   ]
+  },
+  "FS_Q74_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 74 a. 5 ad 3 [CT 36732]"
+   ]
+  },
+  "FS_Q74_A9-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 74 a. 9 ad 1 [CT 36770]"
+   ]
+  },
+  "FS_Q77_A1-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 77 a. 1 ad 3 [CT 36861]"
+   ]
+  },
+  "FS_Q78_A3-p10": {
+   "also_answers": [
+    "sc 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I-II q. 78 a. 3 ad 4 [CT 36951]"
+   ]
+  },
+  "FS_Q79_A4-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "I-II q. 79 a. 4 s. c. [CT 36990]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "FS_Q79_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 79 a. 4 ad 4 [CT 36995]"
+   ]
+  },
+  "FS_Q7_A3-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 7 a. 3 s. c. [CT 33824]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "FS_Q80_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 80 a. 2 ad 3 [CT 37012]"
+   ]
+  },
+  "FS_Q81_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Reply to Objection 1",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 81 a. 3 ad 2 [CT 37056]"
+   ],
+   "printed": {
+    "source": "dom2-v7"
+   }
+  },
+  "FS_Q84_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 84 a. 2 ad 1 [CT 37160]"
+   ]
+  },
+  "FS_Q85_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 85 a. 4 ad 1 [CT 37219]"
+   ]
+  },
+  "FS_Q85_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "I-II q. 85 a. 6 s. c. 2 [CT 37233]"
+   ]
+  },
+  "FS_Q85_A6-p7": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "I-II q. 85 a. 6 s. c. 3 [CT 37234]"
+   ]
+  },
+  "FS_Q85_A6-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 85 a. 6 ad arg. [CT 37236]"
+   ]
+  },
+  "FS_Q87_A2-p9": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I-II q. 87 a. 2 ad 3 [CT 37270]"
+   ]
+  },
+  "FS_Q87_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 87 a. 5 ad 3 [CT 37296]"
+   ]
+  },
+  "FS_Q89_A1-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "I-II q. 89 a. 1 co. [CT 37379]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "FS_Q89_A5-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 89 a. 5 ad 2 [CT 37415]"
+   ]
+  },
+  "FS_Q8_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 8 a. 3 ad 4 [CT 33862]"
+   ]
+  },
+  "FS_Q93_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 93 a. 4 ad 3 [CT 37560]"
+   ]
+  },
+  "FS_Q93_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 93 a. 4 ad 4 [CT 37561]"
+   ]
+  },
+  "FS_Q94_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 94 a. 1 ad 4 [CT 37587]"
+   ]
+  },
+  "FS_Q95_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "obj 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 95 a. 3 ad arg. [CT 37653]"
+   ]
+  },
+  "FS_Q95_A4-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3",
+    "obj 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 95 a. 4 ad 2 [CT 37661]"
+   ]
+  },
+  "FS_Q97_A2-p8": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "I-II q. 97 a. 2 ad 3 [CT 37727]"
+   ]
+  },
+  "FS_Q99_A5-p13": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3",
+    "obj 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 99 a. 5 ad 2 [CT 37835]"
+   ]
+  },
+  "SS_Q106_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 106 a. 2 ad arg. [CT 43495]"
+   ]
+  },
+  "SS_Q107_A3-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 107 a. 3 s. c. [CT 43554]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q107_A3-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 107 a. 3 ad 4 [CT 43559]"
+   ]
+  },
+  "SS_Q109_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 109 a. 4 ad arg. [CT 43641]"
+   ]
+  },
+  "SS_Q10_A10-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 10 a. 10 ad 1 [CT 39254]"
+   ]
+  },
+  "SS_Q10_A11-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 10 a. 11 ad arg. [CT 39262]"
+   ]
+  },
+  "SS_Q10_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 10 a. 2 ad 1 [CT 39190]"
+   ]
+  },
+  "SS_Q10_A6-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 10 a. 6 ad arg. [CT 39222]"
+   ]
+  },
+  "SS_Q10_A9-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 10 a. 9 ad 1 [CT 39246]"
+   ]
+  },
+  "SS_Q110_A2-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 110 a. 2 ad arg. [CT 43656]"
+   ]
+  },
+  "SS_Q111_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 111 a. 4 s. c. 2 [CT 43714]"
+   ]
+  },
+  "SS_Q111_A4-p7": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 111 a. 4 s. c. 3 [CT 43715]"
+   ]
+  },
+  "SS_Q111_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 111 a. 4 ad arg. [CT 43717]"
+   ]
+  },
+  "SS_Q118_A2-p7": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 118 a. 2 ad 1 [CT 43868]"
+   ]
+  },
+  "SS_Q121_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 121 a. 2 ad 1 [CT 43981]"
+   ]
+  },
+  "SS_Q123_A10-p11": {
+   "role": "article-title",
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p12": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p13": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p14": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p15": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p16": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p17": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p18": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A10-p19": {
+   "move_to": "SS_Q123_A11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 123 a. 11"
+   ]
+  },
+  "SS_Q123_A12-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 123 a. 12 s. c. 1 [CT 44134]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q123_A12-p6": {
+   "role": "sed-contra",
+   "number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "II-II q. 123 a. 12 s. c. 2 [CT 44135]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q123_A12-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 123 a. 12 ad 4 [CT 44140]"
+   ]
+  },
+  "SS_Q123_A12-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 123 a. 12 ad 5 [CT 44141]"
+   ]
+  },
+  "SS_Q123_A7-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 123 a. 7 ad 1 [CT 44099]",
+    "II-II q. 123 a. 7 ad 2 [CT 44100]"
+   ]
+  },
+  "SS_Q123_A9-p7": {
+   "also_answers": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 123 a. 9 ad arg. [CT 44114]"
+   ]
+  },
+  "SS_Q124_A4-p7": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 124 a. 4 co. [CT 44172]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q129_A2-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 129 a. 2 co. [CT 44281]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q136_A5-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 136 a. 5 s. c. [CT 44523]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q136_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 136 a. 5 ad 1 [CT 44525]"
+   ]
+  },
+  "SS_Q136_A5-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 136 a. 5 ad 4 [CT 44527]"
+   ]
+  },
+  "SS_Q140_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 140 a. 2 s. c. [CT 44607]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q147_A4-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 147 a. 4 ad 5 [CT 44856]"
+   ]
+  },
+  "SS_Q148_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 148 a. 2 s. c. [CT 44901]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q148_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 148 a. 2 ad 4 [CT 44906]"
+   ]
+  },
+  "SS_Q149_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 149 a. 4 ad arg. [CT 44969]"
+   ]
+  },
+  "SS_Q153_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 153 a. 3 s. c. 2 [CT 45108]"
+   ]
+  },
+  "SS_Q154_A1-p9": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 154 a. 1 co. [CT 45139]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q154_A2-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 154 a. 2 s. c. 2 [CT 45153]"
+   ]
+  },
+  "SS_Q154_A2-p10": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 154 a. 2 s. c. 3 [CT 45154]"
+   ]
+  },
+  "SS_Q154_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 154 a. 4 s. c. 2 [CT 45174]"
+   ]
+  },
+  "SS_Q15_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 15 a. 2 ad arg. [CT 39407]"
+   ]
+  },
+  "SS_Q160_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 160 a. 2 ad 3 [CT 45452]"
+   ]
+  },
+  "SS_Q162_A8-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 162 a. 8 ad 1 [CT 45585]"
+   ]
+  },
+  "SS_Q169_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 169 a. 2 s. c. [CT 45762]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q169_A2-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 169 a. 2 ad 4 [CT 45767]"
+   ]
+  },
+  "SS_Q171_A5-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 171 a. 5 ad arg. [CT 45825]"
+   ]
+  },
+  "SS_Q172_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Objection 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 172 a. 1 ad 2 [CT 45842]"
+   ],
+   "printed": {
+    "source": "dom2-v14"
+   }
+  },
+  "SS_Q173_A3-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 173 a. 3 s. c. [CT 45907]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q173_A3-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 173 a. 3 ad 4 [CT 45912]"
+   ]
+  },
+  "SS_Q173_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 173 a. 4 ad arg. [CT 45918]"
+   ]
+  },
+  "SS_Q17_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 17 a. 3 ad arg. [CT 39461]"
+   ]
+  },
+  "SS_Q17_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 17 a. 4 ad arg. [CT 39467]"
+   ]
+  },
+  "SS_Q17_A8-p8": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 17 a. 8 ad 1 [CT 39499]"
+   ]
+  },
+  "SS_Q182_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 182 a. 3 ad arg. [CT 46227]"
+   ]
+  },
+  "SS_Q185_A7-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 185 a. 7 ad 4 [CT 46399]"
+   ]
+  },
+  "SS_Q188_A5-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 188 a. 5 co. [CT 46609]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q18_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 18 a. 4 ad 1 [CT 39534]"
+   ]
+  },
+  "SS_Q19_A2-p7": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 19 a. 2 s. c. [CT 39551]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q19_A6-p9": {
+   "also_answers": [
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 19 a. 6 ad 2 [CT 39588]"
+   ]
+  },
+  "SS_Q19_A9-p15": {
+   "role": "reply",
+   "targets": [
+    "obj 5"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 19 a. 9 ad 5 [CT 39616]"
+   ]
+  },
+  "SS_Q1_A1-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 1 a. 1 ad 2 [CT 38744]"
+   ]
+  },
+  "SS_Q1_A8-p8": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 1 a. 8 s. c. [CT 38808]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q20_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 20 a. 2 ad 3 [CT 39659]"
+   ]
+  },
+  "SS_Q20_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 20 a. 4 ad 1 [CT 39671]"
+   ]
+  },
+  "SS_Q21_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 21 a. 4 ad arg. [CT 39704]"
+   ]
+  },
+  "SS_Q23_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 23 a. 2 s. c. [CT 39734]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q25_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 25 a. 3 ad 1 [CT 39911]"
+   ]
+  },
+  "SS_Q25_A4-p8": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 25 a. 4 ad 2 [CT 39920]"
+   ]
+  },
+  "SS_Q25_A8-p8": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 25 a. 8 ad 1 [CT 39955]"
+   ]
+  },
+  "SS_Q25_A9-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 25 a. 9 ad arg. [CT 39963]"
+   ]
+  },
+  "SS_Q26_A11-p4": {
+   "role": "objection",
+   "number": 3,
+   "source_label": "Objection 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 26 a. 11 arg. 3 [CT 40070]"
+   ],
+   "printed": {
+    "source": "dom2-v9"
+   }
+  },
+  "SS_Q26_A11-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 26 a. 11 ad 4 [CT 40076]"
+   ]
+  },
+  "SS_Q27_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 27 a. 5 ad 1 [CT 40131]"
+   ]
+  },
+  "SS_Q27_A7-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 27 a. 7 ad 2 [CT 40146]"
+   ]
+  },
+  "SS_Q29_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 29 a. 4 ad 2 [CT 40221]"
+   ]
+  },
+  "SS_Q2_A2-p6": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 2 a. 2 s. c. [CT 38851]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q2_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 2 a. 2 ad 2 [CT 38854]"
+   ]
+  },
+  "SS_Q31_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 31 a. 4 ad 3 [CT 40292]"
+   ]
+  },
+  "SS_Q32_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 32 a. 1 ad 3 [CT 40302]"
+   ]
+  },
+  "SS_Q32_A6-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 32 a. 6 ad arg. [CT 40345]"
+   ]
+  },
+  "SS_Q32_A8-p11": {
+   "also_answers": [
+    "obj 4"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 32 a. 8 ad 4 [CT 40363]"
+   ]
+  },
+  "SS_Q33_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 33 a. 5 ad arg. [CT 40420]"
+   ]
+  },
+  "SS_Q34_A4-p5": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 34 a. 4 s. c. 2 [CT 40479]"
+   ]
+  },
+  "SS_Q34_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 34 a. 4 ad arg. [CT 40481]"
+   ]
+  },
+  "SS_Q35_A2-p7": {
+   "also_answers": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 35 a. 2 ad arg. [CT 40514]"
+   ]
+  },
+  "SS_Q36_A2-p3": {
+   "role": "objection",
+   "number": 2,
+   "source_label": "Objection 1",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 36 a. 2 arg. 2 [CT 40543]"
+   ],
+   "printed": {
+    "source": "dom2-v9"
+   }
+  },
+  "SS_Q36_A3-p8": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 36 a. 3 ad 2 [CT 40558]"
+   ]
+  },
+  "SS_Q36_A4-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 36 a. 4 s. c. [CT 40563]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q37_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 37 a. 2 s. c. [CT 40580]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q38_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 38 a. 2 s. c. [CT 40599]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q39_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 39 a. 3 ad arg. [CT 40626]"
+   ]
+  },
+  "SS_Q40_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 40 a. 3 ad arg. [CT 40661]"
+   ]
+  },
+  "SS_Q40_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 40 a. 4 ad arg. [CT 40667]"
+   ]
+  },
+  "SS_Q41_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Reply to Objection 1",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 41 a. 1 ad 2 [CT 40675]"
+   ],
+   "printed": {
+    "source": "dom2-v9"
+   }
+  },
+  "SS_Q43_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 43 a. 4 ad arg. [CT 40740]"
+   ]
+  },
+  "SS_Q43_A8-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 43 a. 8 ad 1 [CT 40776]"
+   ]
+  },
+  "SS_Q44_A5-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 44 a. 5 s. c. [CT 40819]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q44_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 44 a. 5 ad arg. [CT 40821]"
+   ]
+  },
+  "SS_Q44_A7-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 44 a. 7 ad arg. [CT 40835]"
+   ]
+  },
+  "SS_Q45_A2-p9": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 45 a. 2 ad 2 [CT 40859]"
+   ]
+  },
+  "SS_Q46_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 46 a. 2 ad 1 [CT 40909]"
+   ]
+  },
+  "SS_Q47_A6-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 47 a. 6 ad 2 [CT 40967]"
+   ]
+  },
+  "SS_Q47_A7-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 47 a. 7 ad 1 [CT 40974]"
+   ]
+  },
+  "SS_Q49_A6-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 49 a. 6 s. c. [CT 41105]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q49_A7-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 49 a. 7 s. c. [CT 41113]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q4_A7-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 4 a. 7 ad 1 [CT 39002]"
+   ]
+  },
+  "SS_Q4_A8-p4": {
+   "role": "objection",
+   "number": 3,
+   "source_label": "Further,",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 4 a. 8 arg. 3 [CT 39009]"
+   ],
+   "printed": {
+    "source": "dom2-v9"
+   }
+  },
+  "SS_Q51_A4-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 51 a. 4 co. [CT 41188]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q56_A1-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 56 a. 1 s. c. [CT 41370]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q56_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 56 a. 2 s. c. [CT 41378]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "SS_Q57_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 57 a. 3 ad 1 [CT 41405]"
+   ]
+  },
+  "SS_Q58_A11-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 58 a. 11 ad 2 [CT 41511]"
+   ]
+  },
+  "SS_Q58_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 58 a. 2 ad 2 [CT 41437]"
+   ]
+  },
+  "SS_Q58_A6-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 58 a. 6 ad 1 [CT 41470]"
+   ]
+  },
+  "SS_Q60_A5-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 60 a. 5 ad 3 [CT 41596]"
+   ]
+  },
+  "SS_Q61_A3-p7": {
+   "also_answers": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 61 a. 3 ad arg. [CT 41633]"
+   ]
+  },
+  "SS_Q62_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 62 a. 3 ad 1 [CT 41666]"
+   ]
+  },
+  "SS_Q62_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 62 a. 4 ad 1 [CT 41674]"
+   ]
+  },
+  "SS_Q63_A3-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 63 a. 3 ad arg. [CT 41736]"
+   ]
+  },
+  "SS_Q64_A7-p13": {
+   "role": "article-title",
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p14": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p15": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p16": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p17": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p18": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p19": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p20": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p21": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q64_A7-p22": {
+   "move_to": "SS_Q64_A8",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 64 a. 8"
+   ]
+  },
+  "SS_Q66_A5-p10": {
+   "role": "article-title",
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p11": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p12": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p13": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p14": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p15": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p16": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p17": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A5-p18": {
+   "move_to": "SS_Q66_A6",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 66 a. 6"
+   ]
+  },
+  "SS_Q66_A9-p6": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 66 a. 9 ad 1 [CT 41921]"
+   ]
+  },
+  "SS_Q76_A1-p11": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "II-II q. 76 a. 1 ad 2 [CT 42202]"
+   ]
+  },
+  "SS_Q76_A2-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 76 a. 2 ad arg. [CT 42211]"
+   ]
+  },
+  "SS_Q76_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 76 a. 3 ad arg. [CT 42217]"
+   ]
+  },
+  "SS_Q79_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "source_label": "Reply to Objection 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 79 a. 3 ad 1 [CT 42333]"
+   ],
+   "printed": {
+    "source": "dom2-v10"
+   }
+  },
+  "SS_Q83_A14-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 83 a. 14 s. c. [CT 42579]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q83_A14-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 83 a. 14 ad 4 [CT 42584]"
+   ]
+  },
+  "SS_Q87_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 87 a. 1 ad 1 [CT 42708]"
+   ]
+  },
+  "SS_Q87_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 87 a. 4 ad 1 [CT 42737]"
+   ]
+  },
+  "SS_Q88_A11-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "II-II q. 88 a. 11 s. c. 2 [CT 42829]"
+   ]
+  },
+  "SS_Q88_A11-p16": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 88 a. 11 ad 5 [CT 42835]"
+   ]
+  },
+  "SS_Q89_A6-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 89 a. 6 ad 2 [CT 42891]"
+   ]
+  },
+  "SS_Q8_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 8 a. 2 ad 1 [CT 39096]"
+   ]
+  },
+  "SS_Q8_A7-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 8 a. 7 ad 1 [CT 39134]"
+   ]
+  },
+  "SS_Q90_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 90 a. 3 ad arg. [CT 42951]"
+   ]
+  },
+  "SS_Q94_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 94 a. 2 ad 2 [CT 43024]"
+   ]
+  },
+  "SS_Q95_A5-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 95 a. 5 ad 1 [CT 43083]"
+   ]
+  },
+  "SS_Q95_A5-p14": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 95 a. 5 ad 3 [CT 43085]"
+   ]
+  },
+  "SS_Q95_A6-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 95 a. 6 ad arg. [CT 43091]"
+   ]
+  },
+  "SS_Q95_A8-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 95 a. 8 ad 1 [CT 43105]"
+   ]
+  },
+  "SS_Q96_A4-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 96 a. 4 s. c. [CT 43135]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q96_A4-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 96 a. 4 ad 4 [CT 43140]"
+   ]
+  },
+  "SS_Q98_A3-p3": {
+   "role": "objection",
+   "number": 2,
+   "source_label": "OBJ 2.",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "II-II q. 98 a. 3 arg. 2 [CT 43194]"
+   ],
+   "printed": {
+    "source": "dom2-v11"
+   }
+  },
+  "SS_Q98_A4-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "II-II q. 98 a. 4 s. c. [CT 43204]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "SS_Q98_A4-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 98 a. 4 ad 4 [CT 43209]"
+   ]
+  },
+  "SS_Q9_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "II-II q. 9 a. 3 ad 2 [CT 39166]"
+   ]
+  },
+  "TP_Q10_A2-p2": {
+   "role": "objection",
+   "number": 1,
+   "source_label": "Objection 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 10 a. 2 arg. 1 [CT 47296]"
+   ],
+   "printed": {
+    "source": "dom2-v15"
+   }
+  },
+  "TP_Q11_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 11 a. 4 ad arg. [CT 47350]"
+   ]
+  },
+  "TP_Q16_A7-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 16 a. 7 ad 3 [CT 47614]"
+   ]
+  },
+  "TP_Q20_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "III q. 20 a. 2 s. c. 2 [CT 47785]"
+   ]
+  },
+  "TP_Q20_A2-p7": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "III q. 20 a. 2 s. c. 3 [CT 47786]"
+   ]
+  },
+  "TP_Q20_A2-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2",
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 20 a. 2 ad 4 [CT 47791]"
+   ]
+  },
+  "TP_Q21_A4-p15": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 21 a. 4 ad 3 [CT 47825]"
+   ]
+  },
+  "TP_Q22_A2-p11": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "editor's note: the reply to objection 3 is wanting in the manuscripts"
+  },
+  "TP_Q22_A2-p12": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "'Some editions give the following reply'"
+  },
+  "TP_Q22_A2-p13": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "reply 3 from 'some editions'; the Leonine has no ad 3"
+  },
+  "TP_Q22_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 22 a. 5 ad 3 [CT 47866]"
+   ]
+  },
+  "TP_Q24_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 24 a. 3 ad 2 [CT 47931]"
+   ]
+  },
+  "TP_Q24_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "source_label": "Replies OBJ 1 and 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 24 a. 4 ad 1 [CT 47938]"
+   ],
+   "printed": {
+    "source": "dom2-v15"
+   }
+  },
+  "TP_Q25_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 25 a. 2 ad 2 [CT 47955]"
+   ]
+  },
+  "TP_Q2_A10-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 2 a. 10 ad 3 [CT 46870]"
+   ]
+  },
+  "TP_Q2_A11-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 2 a. 11 ad 1 [CT 46876]"
+   ]
+  },
+  "TP_Q2_A4-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 2 a. 4 ad 1 [CT 46817]"
+   ]
+  },
+  "TP_Q2_A9-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 2 a. 9 ad 4 [CT 46862]"
+   ]
+  },
+  "TP_Q31_A8-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 31 a. 8 ad 1 [CT 48224]"
+   ]
+  },
+  "TP_Q32_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 32 a. 3 ad 3 [CT 48252]"
+   ]
+  },
+  "TP_Q33_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 33 a. 3 ad 2 [CT 48286]"
+   ]
+  },
+  "TP_Q34_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 34 a. 4 ad 2 [CT 48327]"
+   ]
+  },
+  "TP_Q37_A2-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 37 a. 2 s. c. [CT 48481]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q37_A3-p6": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 37 a. 3 s. c. [CT 48490]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q37_A4-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 37 a. 4 s. c. [CT 48499]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q38_A1-p5": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 38 a. 1 s. c. [CT 48508]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q41_A4-p9": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 41 a. 4 s. c. [CT 48691]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q44_A1-p7": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 44 a. 1 co. [CT 48772]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q45_A3-p6": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 45 a. 3 s. c. [CT 48826]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q45_A4-p6": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 45 a. 4 s. c. [CT 48836]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q50_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "source_label": "Reply to Objection 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 50 a. 3 ad 3 [CT 49131]"
+   ],
+   "printed": {
+    "source": "dom2-v16"
+   }
+  },
+  "TP_Q52_A1-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 52 a. 1 co. [CT 49197]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q53_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 53 a. 3 ad 1 [CT 49283]"
+   ]
+  },
+  "TP_Q55_A6-p6": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "objection 5, 'wanting in the older codices and in the text of the Leonine edition'"
+  },
+  "TP_Q55_A6-p7": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "continuation of the supplied objection 5"
+  },
+  "TP_Q57_A4-p3": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "objection 2, 'omitted in the Leonine edition as not being in the original manuscript'; absent from the second edition"
+  },
+  "TP_Q57_A4-p4": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "continuation of the supplied objection 2"
+  },
+  "TP_Q57_A4-p5": {
+   "role": "objection",
+   "number": 2,
+   "source_label": "Objection 3",
+   "class": "variant",
+   "latin": [
+    "III q. 57 a. 4 arg. 2 [CT 49430]"
+   ],
+   "note": "Leonine numbering, without the supplied objection 2"
+  },
+  "TP_Q57_A4-p6": {
+   "role": "objection",
+   "number": 3,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "III q. 57 a. 4 arg. 3 [CT 49431]"
+   ],
+   "note": "Leonine numbering, without the supplied objection 2"
+  },
+  "TP_Q57_A4-p7": {
+   "role": "objection",
+   "number": 4,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "III q. 57 a. 4 arg. 4 [CT 49432]"
+   ],
+   "note": "Leonine numbering, without the supplied objection 2"
+  },
+  "TP_Q57_A4-p11": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "reply 2 to the supplied objection"
+  },
+  "TP_Q57_A4-p12": {
+   "flag": "editor-supplied",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "continuation of the supplied reply 2"
+  },
+  "TP_Q57_A4-p13": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Reply to Objection 3",
+   "class": "variant",
+   "latin": [
+    "III q. 57 a. 4 ad 2 [CT 49436]"
+   ]
+  },
+  "TP_Q57_A4-p14": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "source_label": "Reply to Objection 4",
+   "class": "variant",
+   "latin": [
+    "III q. 57 a. 4 ad 3 [CT 49437]"
+   ]
+  },
+  "TP_Q57_A4-p15": {
+   "role": "reply",
+   "targets": [
+    "obj 4"
+   ],
+   "source_label": "Reply to Objection 5",
+   "class": "variant",
+   "latin": [
+    "III q. 57 a. 4 ad 4 [CT 49438]"
+   ]
+  },
+  "TP_Q64_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "obj 4",
+    "obj 5",
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 64 a. 3 ad 1 [CT 49763]"
+   ]
+  },
+  "TP_Q65_A1-p7": {
+   "role": "sed-contra",
+   "number": 1,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "III q. 65 a. 1 s. c. 1 [CT 49826]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "TP_Q65_A1-p8": {
+   "role": "sed-contra",
+   "number": 2,
+   "source_label": "Objection 7",
+   "class": "variant",
+   "latin": [
+    "III q. 65 a. 1 s. c. 2 [CT 49827]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "TP_Q65_A1-p9": {
+   "role": "sed-contra",
+   "number": 3,
+   "source_label": "Objection 8",
+   "class": "variant",
+   "latin": [
+    "III q. 65 a. 1 s. c. 3 [CT 49828]"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+  },
+  "TP_Q65_A1-p21": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 65 a. 1 ad 6 [CT 49835]"
+   ]
+  },
+  "TP_Q65_A1-p22": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 65 a. 1 ad 7 [CT 49836]"
+   ]
+  },
+  "TP_Q65_A1-p23": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 65 a. 1 ad 8 [CT 49837]"
+   ]
+  },
+  "TP_Q66_A8-p6": {
+   "role": "determination",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 66 a. 8 co. [CT 49945]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q72_A3-p6": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "III q. 72 a. 3 ad 1 [CT 50338]"
+   ]
+  },
+  "TP_Q73_A6-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 73 a. 6 ad arg. [CT 50463]"
+   ]
+  },
+  "TP_Q75_A5-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 75 a. 5 ad 3 [CT 50576]"
+   ]
+  },
+  "TP_Q79_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "source_label": "Reply to Objection 1",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 79 a. 4 ad 2 [CT 50838]"
+   ],
+   "printed": {
+    "source": "dom2-v17"
+   }
+  },
+  "TP_Q7_A9-p10": {
+   "flag": "not-in-leonine",
+   "class": "variant",
+   "defect": "translators",
+   "source_note": "reply 3 is in the print but not in the Leonine text (the translators' base text has it)"
+  },
+  "TP_Q83_A2-p7": {
+   "role": "sed-contra",
+   "number": 1,
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 83 a. 2 s. c. [CT 51117]"
+   ],
+   "note": "opening not marked as a part"
+  },
+  "TP_Q86_A6-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 86 a. 6 ad 4 [CT 51403]"
+   ]
+  },
+  "TP_Q88_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "III q. 88 a. 1 s. c. 2 [CT 51443]"
+   ]
+  },
+  "TP_Q88_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 88 a. 4 ad 1 [CT 51470]"
+   ]
+  },
+  "TP_Q89_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 89 a. 2 ad 4 [CT 51488]"
+   ]
+  },
+  "TP_Q90_A2-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "III q. 90 a. 2 ad 5 [CT 51540]"
+   ]
+  },
+  "XP_Q14_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3"
+   ],
+   "source_label": "Reply OBJ 2 and 3",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 14 a. 4 ad 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 490)"
+   ],
+   "printed": {
+    "source": "dom-v18"
+   }
+  },
+  "XP_Q16_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2"
+   ],
+   "source_label": "Reply OBJ 4",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 16 a. 2 ad 4, 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image about 493)"
+   ],
+   "printed": {
+    "source": "dom-v18"
+   }
+  },
+  "XP_Q40_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "source_label": "Reply to Objection 11",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 40 a. 3 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 535)"
+   ],
+   "printed": {
+    "source": "dom-v19"
+   }
+  },
+  "XP_Q41_A1-p3": {
+   "role": "objection",
+   "number": 2,
+   "source_label": "Objection 1",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 41 a. 1 arg. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 538)"
+   ],
+   "printed": {
+    "source": "dom-v19"
+   }
+  },
+  "XP_Q52_A1-p7": {
+   "role": "objection",
+   "number": 6,
+   "source_label": "Objection 7",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 52 a. 1 arg. 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 559)"
+   ],
+   "printed": {
+    "source": "dom-v19"
+   }
+  },
+  "XP_Q62_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3"
+   ],
+   "source_label": "Reply OBJ 2 and 3",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 62 a. 4 ad 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 587)"
+   ],
+   "printed": {
+    "source": "dom-v19"
+   }
+  },
+  "XP_Q71_A14-p3": {
+   "role": "objection",
+   "number": 2,
+   "source_label": "Objection 3",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 71 a. 14 arg. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 619)"
+   ],
+   "printed": {
+    "source": "dom-v20"
+   }
+  },
+  "XP_Q77_A4-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "source_label": "Objection 3",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 77 a. 4 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 635)"
+   ],
+   "printed": {
+    "source": "dom-v20"
+   }
+  },
+  "XP_Q95_A5-p15": {
+   "role": "reply",
+   "targets": [
+    "obj 4"
+   ],
+   "source_label": "Reply OBJ 4",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 95 a. 5 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 690)"
+   ],
+   "printed": {
+    "source": "dom-v21"
+   }
+  },
+  "XP_Q97_A1-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "source_label": "Reply to Objection 2",
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "Suppl. q. 97 a. 1 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image about 707)"
+   ],
+   "printed": {
+    "source": "dom-v21"
+   }
+  }
+ },
+ "articles": {
+  "FP_Q112_A2": {
+   "missing": [
+    {
+     "unit": "ad 1",
+     "missing": true,
+     "after": "FP_Q112_A2-p7",
+     "latin": "I q. 112 a. 2 ad 1 [CT 33110]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v5",
+      "page": "119",
+      "leaf": 131
+     }
+    }
+   ]
+  },
+  "FP_Q117_A2": {
+   "missing": [
+    {
+     "unit": "co (opening) and sc (end)",
+     "missing": true,
+     "after": "FP_Q117_A2-p5",
+     "latin": [
+      "I q. 117 a. 2 s. c. [CT 33331]",
+      "I q. 117 a. 2 co. [CT 33332]"
+     ],
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v5",
+      "page": "180",
+      "leaf": 192
+     }
+    }
+   ],
+   "not_reply_only": "A-014 read this article as reply-only; the Latin and the print have a determination"
+  },
+  "FP_Q68_A2": {
+   "unmarked_determination": "FP_Q68_A2-p6"
+  },
+  "FP_Q74_A3": {
+   "reply_only": true,
+   "latin": "I q. 74 a. 3: no co. unit"
+  },
+  "FP_Q76_A3": {
+   "missing": [
+    {
+     "unit": "obj 3",
+     "missing": true,
+     "after": "FP_Q76_A3-p3",
+     "latin": "I q. 76 a. 3 arg. 3 [CT 31534]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v4",
+      "page": "35",
+      "leaf": 47
+     }
+    }
+   ]
+  },
+  "FP_Q80_A2": {
+   "missing": [
+    {
+     "unit": "ad 3",
+     "missing": true,
+     "after": "FP_Q80_A2-p8",
+     "latin": "I q. 80 a. 2 ad 3 [CT 31844]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v4",
+      "page": "126",
+      "leaf": 138
+     }
+    }
+   ]
+  },
+  "FP_Q89_A3": {
+   "missing": [
+    {
+     "unit": "sc 2",
+     "missing": true,
+     "after": "FP_Q89_A3-p4",
+     "latin": "I q. 89 a. 3 s. c. 2 [CT 32200]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v4",
+      "page": "243",
+      "leaf": 255
+     }
+    }
+   ]
+  },
+  "FP_Q91_A4": {
+   "reply_only": true,
+   "latin": "I q. 91 a. 4: no co. unit"
+  },
+  "FS_Q29_A3": {
+   "missing": [
+    {
+     "unit": "ad 2",
+     "missing": true,
+     "after": "FS_Q29_A3-p9",
+     "latin": "I-II q. 29 a. 3 ad 2 [CT 34772]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v6",
+      "page": "343",
+      "leaf": 355
+     }
+    },
+    {
+     "unit": "ad 3",
+     "missing": true,
+     "after": "FS_Q29_A3-p9",
+     "latin": "I-II q. 29 a. 3 ad 3 [CT 34773]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v6",
+      "page": "343",
+      "leaf": 355
+     }
+    }
+   ]
+  },
+  "FS_Q4_A4": {
+   "missing": [
+    {
+     "unit": "ad 1",
+     "missing": true,
+     "after": "FS_Q4_A4-p6",
+     "latin": "I-II q. 4 a. 4 ad 1 [CT 33635]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v6",
+      "page": "58",
+      "leaf": 70
+     }
+    }
+   ]
+  },
+  "FS_Q88_A4": {
+   "missing": [
+    {
+     "unit": "sc 1",
+     "missing": true,
+     "after": "FS_Q88_A4-p5",
+     "latin": "I-II q. 88 a. 4 s. c. [CT 37352]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v7",
+      "page": "485",
+      "leaf": 497
+     }
+    }
+   ]
+  },
+  "SS_Q123_A11": {
+   "from_div": "SS_Q123_A10",
+   "first_paragraph": "SS_Q123_A10-p11",
+   "latin": "II-II q. 123 a. 11"
+  },
+  "SS_Q182_A4": {
+   "missing": [
+    {
+     "unit": "sc 1",
+     "missing": true,
+     "after": "SS_Q182_A4-p4",
+     "latin": "II-II q. 182 a. 4 s. c. [CT 46231]",
+     "defect": "translators",
+     "other_edition": {
+      "source": "pope1914",
+      "page": "249",
+      "leaf": 273
+     }
+    }
+   ]
+  },
+  "SS_Q20_A3": {
+   "missing": [
+    {
+     "unit": "ad (general)",
+     "missing": true,
+     "after": "SS_Q20_A3-p8",
+     "latin": "II-II q. 20 a. 3 ad arg. [CT 39665]",
+     "defect": "translators",
+     "printed": null
+    }
+   ]
+  },
+  "SS_Q64_A8": {
+   "from_div": "SS_Q64_A7",
+   "first_paragraph": "SS_Q64_A7-p13",
+   "latin": "II-II q. 64 a. 8"
+  },
+  "SS_Q66_A6": {
+   "from_div": "SS_Q66_A5",
+   "first_paragraph": "SS_Q66_A5-p10",
+   "latin": "II-II q. 66 a. 6"
+  },
+  "TP_Q7_A10": {
+   "missing": [
+    {
+     "unit": "sc 1",
+     "missing": true,
+     "after": "TP_Q7_A10-p4",
+     "latin": "III q. 7 a. 10 s. c. [CT 47160]",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom2-v15",
+      "page": "127",
+      "leaf": 139
+     },
+     "printed_also": {
+      "source": "dom1-v15",
+      "page": "120",
+      "leaf": 134
+     }
+    }
+   ]
+  }
+ }
+}
