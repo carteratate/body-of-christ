@@ -39,6 +39,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.6** [Phase 0]. Approve read-only size queries against production.
 - **0.1d** [Phase 0, before P1]. Approve the next run of `export_live_snapshot.py`, which now also copies `document_chapters` (the stored reader outline: each document's chapter list, its order and labels). It reads production without changing anything and copies corpus text and anonymous counts to his Mac, as the 6 Oct export did. The outline comparison then runs offline.
 - **R7** [Phase 0, blocks 1.7]. Approve each set of downloads for the independent Summa comparison: the Leonine Latin pages of the Supplement (the four core parts were fetched by the 6 Oct review), and any English edition or scan that holds a unit the vendored edition omits. The request states file names and sizes.
+  Answered 2026-10-30: all R7 downloads approved.
 - **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 0039 migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
   Answered 2026-10-30: 0.3 is dropped; no baseline is run (Decision log "Baseline eval (0.3)").
 - **R6** [Phase 0, blocks Phase 1 items 1.2c, 1.2d, 1.8d]. Approve each set of source downloads. The request states the file names and sizes each time.
