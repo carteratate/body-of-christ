@@ -1,5 +1,5 @@
 {
- "about": "Corrections to the US-edition text (us-edition/ccc-us.json) so it matches the USCCB's current online edition (https://www.usccb.org/sites/default/files/flipbooks/catechism/), each decided by reading the page image (issue #279). `find` must occur exactly once in the paragraph; `page` is the flipbook page index where the paragraph starts. `footnotes` gives a note's corrected text (paragraph `n` or the heading whose fetched text is `heading`, and its number `note`); `footnote_lists` replaces a paragraph's notes where the site numbers or places them wrongly, each note after its `after` words. `why` is `spacing` where only the spacing after commas and colons changes, as the book prints it. `book_misprints_not_copied` lists paragraphs where the book is wrong and our text stays; `footnote_misprints_not_copied` the same for notes.",
+ "about": "Corrections to the US-edition text (us-edition/ccc-us.json) so it matches the USCCB's current online edition (https://www.usccb.org/sites/default/files/flipbooks/catechism/), each decided by reading the page image (issue #279). `find` must occur exactly once in the paragraph; `page` is the flipbook page index where the paragraph starts. `footnotes` gives a note's corrected text (paragraph `n` or the heading whose fetched text is `heading`, and its number `note`); `footnote_lists` replaces a paragraph's notes where the site numbers or places them wrongly, each note after its `after` words. `why` is `spacing` where only the spacing after commas and colons changes, as the book prints it. `why` is `line break` where a new line or inner paragraph (`\\n`, `\\n\\n`) is added or removed as the book breaks it: a block quotation set off from the sentence, a new paragraph, a line of verse. `book_misprints_not_copied` lists paragraphs where the book is wrong and our text stays; `footnote_misprints_not_copied` the same for notes.",
  "corrections": [
   {
    "n": 5,
@@ -79,6 +79,20 @@
    "why": "punctuation"
   },
   {
+   "n": 24,
+   "find": "instruct the faithful: Whoever teaches",
+   "replace": "instruct the faithful:\n\nWhoever teaches",
+   "page": 31,
+   "why": "line break"
+  },
+  {
+   "n": 25,
+   "find": "the Roman Catechism: The whole",
+   "replace": "the Roman Catechism:\n\nThe whole",
+   "page": 32,
+   "why": "line break"
+  },
+  {
    "n": 26,
    "find": "liturgy and",
    "replace": "liturgy, and",
@@ -98,6 +112,20 @@
    "replace": "exists, it",
    "page": 33,
    "why": "punctuation"
+  },
+  {
+   "n": 27,
+   "find": "stops searching for: The dignity",
+   "replace": "stops searching for:\n\nThe dignity",
+   "page": 33,
+   "why": "line break"
+  },
+  {
+   "n": 28,
+   "find": "a religious being: From one",
+   "replace": "a religious being:\n\nFrom one",
+   "page": 34,
+   "why": "line break"
   },
   {
    "n": 29,
@@ -121,6 +149,13 @@
    "why": "punctuation"
   },
   {
+   "n": 30,
+   "find": "to seek God. You are",
+   "replace": "to seek God.\n\nYou are",
+   "page": 34,
+   "why": "line break"
+  },
+  {
    "n": 31,
    "find": "world, and",
    "replace": "world and",
@@ -133,6 +168,20 @@
    "replace": "arguments,\"",
    "page": 34,
    "why": "punctuation"
+  },
+  {
+   "n": 31,
+   "find": "about the truth. These \"ways\"",
+   "replace": "about the truth.\n\nThese \"ways\"",
+   "page": 34,
+   "why": "line break"
+  },
+  {
+   "n": 32,
+   "find": "of the universe. As St.",
+   "replace": "of the universe.\n\nAs St.",
+   "page": 35,
+   "why": "line break"
   },
   {
    "n": 33,
@@ -154,6 +203,13 @@
    "replace": "God.\"",
    "page": 36,
    "why": "punctuation"
+  },
+  {
+   "n": 37,
+   "find": "of reason alone: Though human",
+   "replace": "of reason alone:\n\nThough human",
+   "page": 36,
+   "why": "line break"
   },
   {
    "n": 38,
@@ -226,6 +282,13 @@
    "why": "word"
   },
   {
+   "n": 53,
+   "find": "Word, Jesus Christ. St. Irenaeus",
+   "replace": "Word, Jesus Christ.\n\nSt. Irenaeus",
+   "page": 39,
+   "why": "line break"
+  },
+  {
    "n": 54,
    "find": "salvation — he",
    "replace": "salvation, he",
@@ -238,6 +301,13 @@
    "replace": "And when through disobedience he had lost your friendship, you did not abandon him to the domain of death. . . . Time and again you offered them covenants.",
    "page": 40,
    "why": "liturgical text (current Roman Missal)"
+  },
+  {
+   "n": 55,
+   "find": "patience in well-doing.\" And when",
+   "replace": "patience in well-doing.\"\n\nAnd when",
+   "page": 40,
+   "why": "line break"
   },
   {
    "n": 56,
@@ -345,6 +415,13 @@
    "why": "punctuation"
   },
   {
+   "n": 65,
+   "find": "Hebrews 1:1-2: In giving",
+   "replace": "Hebrews 1:1-2:\n\nIn giving",
+   "page": 42,
+   "why": "line break"
+  },
+  {
    "n": 67,
    "find": "Guided by the Magisterium of the Church",
    "replace": "Guided by the magisterium of the Church",
@@ -357,6 +434,13 @@
    "replace": "\"revelations.\"",
    "page": 43,
    "why": "punctuation"
+  },
+  {
+   "n": 74,
+   "find": "of the earth: God graciously",
+   "replace": "of the earth:\n\nGod graciously",
+   "page": 44,
+   "why": "line break"
   },
   {
    "n": 76,
@@ -520,6 +604,13 @@
    "why": "punctuation"
   },
   {
+   "n": 102,
+   "find": "expresses himself completely: You recall",
+   "replace": "expresses himself completely:\n\nYou recall",
+   "page": 50,
+   "why": "line break"
+  },
+  {
    "n": 104,
    "find": "God\".",
    "replace": "God.\"",
@@ -567,6 +658,13 @@
    "replace": "Scripture.\"",
    "page": 52,
    "why": "punctuation"
+  },
+  {
+   "n": 112,
+   "find": "since his Passover. The phrase",
+   "replace": "since his Passover.\n\nThe phrase",
+   "page": 52,
+   "why": "line break"
   },
   {
    "n": 113,
@@ -632,6 +730,13 @@
    "why": "punctuation"
   },
   {
+   "n": 120,
+   "find": "for the New. The Old",
+   "replace": "for the New.\n\nThe Old",
+   "page": 54,
+   "why": "line break"
+  },
+  {
    "n": 125,
    "find": "Savior\".",
    "replace": "Savior.\"",
@@ -651,6 +756,13 @@
    "replace": "there, hidden",
    "page": 56,
    "why": "punctuation"
+  },
+  {
+   "n": 127,
+   "find": "at all times: There is",
+   "replace": "at all times:\n\nThere is",
+   "page": 56,
+   "why": "line break"
   },
   {
    "n": 131,
@@ -779,6 +891,13 @@
    "why": "punctuation"
   },
   {
+   "n": 152,
+   "find": "he is God. The Church",
+   "replace": "he is God.\n\nThe Church",
+   "page": 61,
+   "why": "line break"
+  },
+  {
    "n": 153,
    "find": "blood\",",
    "replace": "blood,\"",
@@ -868,6 +987,13 @@
    "replace": "is.\"",
    "page": 65,
    "why": "punctuation"
+  },
+  {
+   "n": 163,
+   "find": "of eternal life: When we",
+   "replace": "of eternal life:\n\nWhen we",
+   "page": 65,
+   "why": "line break"
   },
   {
    "n": 164,
@@ -1115,6 +1241,13 @@
    "why": "punctuation"
   },
   {
+   "n": 197,
+   "find": "midst we believe:This Creed",
+   "replace": "midst we believe:\n\nThis Creed",
+   "page": 73,
+   "why": "line break"
+  },
+  {
    "n": 200,
    "find": "substance and",
    "replace": "substance, and",
@@ -1148,6 +1281,13 @@
    "replace": "Lord.\"",
    "page": 75,
    "why": "punctuation"
+  },
+  {
+   "n": 202,
+   "find": "the One God: We firmly",
+   "replace": "the One God:\n\nWe firmly",
+   "page": 75,
+   "why": "line break"
   },
   {
    "n": 206,
@@ -1295,6 +1435,20 @@
    "replace": "of all men: Everyone is made",
    "page": 80,
    "why": "capital"
+  },
+  {
+   "n": 226,
+   "find": "away from him: My Lord",
+   "replace": "away from him:\n\nMy Lord",
+   "page": 80,
+   "why": "line break"
+  },
+  {
+   "n": 227,
+   "find": "expresses this trust: Let nothing",
+   "replace": "expresses this trust:\n\nLet nothing",
+   "page": 81,
+   "why": "line break"
   },
   {
    "n": 228,
@@ -1563,6 +1717,13 @@
    "why": "punctuation"
   },
   {
+   "n": 256,
+   "find": "catechumens of Constantinople: Above all",
+   "replace": "catechumens of Constantinople:\n\nAbove all",
+   "page": 87,
+   "why": "line break"
+  },
+  {
    "n": 257,
    "find": "Father, Son and",
    "replace": "Father, Son, and",
@@ -1638,6 +1799,13 @@
    "replace": "me,\"",
    "page": 89,
    "why": "punctuation"
+  },
+  {
+   "n": 260,
+   "find": "home with him\": O my",
+   "replace": "home with him\":\n\nO my",
+   "page": 89,
+   "why": "line break"
   },
   {
    "n": 261,
@@ -1864,6 +2032,13 @@
    "why": "punctuation"
   },
   {
+   "n": 293,
+   "find": "Vatican Council explains: This one,",
+   "replace": "Vatican Council explains:\n\nThis one,",
+   "page": 96,
+   "why": "line break"
+  },
+  {
    "n": 294,
    "find": "become \"all in all\", thus",
    "replace": "become 'all in all,' thus",
@@ -1883,6 +2058,20 @@
    "replace": "wisdom, and",
    "page": 97,
    "why": "punctuation"
+  },
+  {
+   "n": 296,
+   "find": "\"out of nothing\": If God",
+   "replace": "\"out of nothing\":\n\nIf God",
+   "page": 98,
+   "why": "line break"
+  },
+  {
+   "n": 297,
+   "find": "them for martyrdom: I do",
+   "replace": "them for martyrdom:\n\nI do",
+   "page": 98,
+   "why": "line break"
   },
   {
    "n": 299,
@@ -1906,6 +2095,13 @@
    "why": "punctuation"
   },
   {
+   "n": 301,
+   "find": "joy and confidence: For you",
+   "replace": "joy and confidence:\n\nFor you",
+   "page": 99,
+   "why": "line break"
+  },
+  {
    "n": 302,
    "find": "well\".",
    "replace": "well.\"",
@@ -1918,6 +2114,13 @@
    "replace": "eyes,\"",
    "page": 100,
    "why": "punctuation"
+  },
+  {
+   "n": 302,
+   "find": "toward this perfection: By his",
+   "replace": "toward this perfection:\n\nBy his",
+   "page": 100,
+   "why": "line break"
   },
   {
    "n": 303,
@@ -1976,6 +2179,13 @@
    "why": "word"
   },
   {
+   "n": 311,
+   "find": "good from it: For almighty",
+   "replace": "good from it:\n\nFor almighty",
+   "page": 102,
+   "why": "line break"
+  },
+  {
    "n": 312,
    "find": "you\",",
    "replace": "you,\"",
@@ -1988,6 +2198,13 @@
    "replace": "more,\"",
    "page": 102,
    "why": "punctuation"
+  },
+  {
+   "n": 313,
+   "find": "confirms this truth: St. Catherine",
+   "replace": "confirms this truth:\n\nSt. Catherine",
+   "page": 103,
+   "why": "line break"
   },
   {
    "n": 314,
@@ -2109,6 +2326,20 @@
    "why": "punctuation"
   },
   {
+   "n": 344,
+   "find": "to his glory: May you",
+   "replace": "to his glory:\n\nMay you",
+   "page": 109,
+   "why": "line break"
+  },
+  {
+   "n": 344,
+   "find": "the Most High... May you",
+   "replace": "the Most High...\nMay you",
+   "page": 109,
+   "why": "line break"
+  },
+  {
    "n": 345,
    "find": "done\",",
    "replace": "done,\"",
@@ -2158,6 +2389,20 @@
    "why": "punctuation"
   },
   {
+   "n": 356,
+   "find": "for his dignity: What made",
+   "replace": "for his dignity:\n\nWhat made",
+   "page": 111,
+   "why": "line break"
+  },
+  {
+   "n": 359,
+   "find": "truly becomes clear.\" St. Paul",
+   "replace": "truly becomes clear.\"\n\nSt. Paul",
+   "page": 112,
+   "why": "line break"
+  },
+  {
    "n": 361,
    "find": "cultures and",
    "replace": "cultures, and",
@@ -2170,6 +2415,13 @@
    "replace": "charity,\"",
    "page": 112,
    "why": "punctuation"
+  },
+  {
+   "n": 364,
+   "find": "of the Spirit: Man, though",
+   "replace": "of the Spirit:\n\nMan, though",
+   "page": 113,
+   "why": "line break"
   },
   {
    "n": 367,
@@ -2361,6 +2613,13 @@
    "why": "punctuation"
   },
   {
+   "n": 401,
+   "find": "in man's history: What Revelation",
+   "replace": "in man's history:\n\nWhat Revelation",
+   "page": 121,
+   "why": "line break"
+  },
+  {
    "n": 402,
    "find": "many (that is, all men) were",
    "replace": "many [that is, all men] were",
@@ -2436,6 +2695,13 @@
    "replace": "world.\"",
    "page": 123,
    "why": "punctuation"
+  },
+  {
+   "n": 409,
+   "find": "life a battle: The whole",
+   "replace": "life a battle:\n\nThe whole",
+   "page": 123,
+   "why": "line break"
   },
   {
    "n": 411,
@@ -2963,6 +3229,13 @@
    "why": "punctuation"
   },
   {
+   "n": 457,
+   "find": "take away sins\": Sick, our",
+   "replace": "take away sins\":\n\nSick, our",
+   "page": 135,
+   "why": "line break"
+  },
+  {
    "n": 461,
    "find": "flesh\",",
    "replace": "flesh,\"",
@@ -2970,11 +3243,32 @@
    "why": "punctuation"
   },
   {
+   "n": 461,
+   "find": "of the Incarnation: Have this",
+   "replace": "of the Incarnation:\n\nHave this",
+   "page": 136,
+   "why": "line break"
+  },
+  {
    "n": 462,
    "find": "Then I said, Lo, I have come to do your will, O God.\"",
    "replace": "Then I said, 'Lo, I have come to do your will, O God.'\"",
    "page": 136,
    "why": "punctuation"
+  },
+  {
+   "n": 462,
+   "find": "the same mystery: Consequently, when",
+   "replace": "the same mystery:\n\nConsequently, when",
+   "page": 136,
+   "why": "line break"
+  },
+  {
+   "n": 464,
+   "find": "and true man.\n\nDuring the",
+   "replace": "and true man. During the",
+   "page": 137,
+   "why": "line break"
   },
   {
    "n": 465,
@@ -3019,6 +3313,13 @@
    "why": "punctuation"
   },
   {
+   "n": 467,
+   "find": "in 451, confessed: Following the",
+   "replace": "in 451, confessed:\n\nFollowing the",
+   "page": 137,
+   "why": "line break"
+  },
+  {
    "n": 468,
    "find": "council, at",
    "replace": "council at",
@@ -3040,6 +3341,13 @@
    "why": "punctuation"
   },
   {
+   "n": 469,
+   "find": "and our brother: \"What he",
+   "replace": "and our brother:\n\n\"What he",
+   "page": 138,
+   "why": "line break"
+  },
+  {
    "n": 470,
    "find": "absorbed\",",
    "replace": "absorbed,\"",
@@ -3052,6 +3360,13 @@
    "replace": "Trinity.\"",
    "page": 139,
    "why": "punctuation"
+  },
+  {
+   "n": 470,
+   "find": "of the Trinity: The Son",
+   "replace": "of the Trinity:\n\nThe Son",
+   "page": 139,
+   "why": "line break"
   },
   {
    "n": 472,
@@ -3145,11 +3460,25 @@
    "why": "punctuation"
   },
   {
+   "n": 488,
+   "find": "name was Mary\": The Father",
+   "replace": "name was Mary\":\n\nThe Father",
+   "page": 142,
+   "why": "line break"
+  },
+  {
    "n": 490,
    "find": "grace\".",
    "replace": "grace.\"",
    "page": 143,
    "why": "punctuation"
+  },
+  {
+   "n": 491,
+   "find": "proclaimed in 1854: The most",
+   "replace": "proclaimed in 1854:\n\nThe most",
+   "page": 143,
+   "why": "line break"
   },
   {
    "n": 492,
@@ -3199,6 +3528,13 @@
    "replace": "seed.\"",
    "page": 145,
    "why": "punctuation"
+  },
+  {
+   "n": 496,
+   "find": "second century says: You are",
+   "replace": "second century says:\n\nYou are",
+   "page": 145,
+   "why": "line break"
   },
   {
    "n": 497,
@@ -3341,6 +3677,13 @@
    "why": "punctuation"
   },
   {
+   "n": 518,
+   "find": "his original vocation: When Christ",
+   "replace": "his original vocation:\n\nWhen Christ",
+   "page": 150,
+   "why": "line break"
+  },
+  {
    "n": 519,
    "find": "justification\".",
    "replace": "justification.\"",
@@ -3360,6 +3703,13 @@
    "replace": "man,\"",
    "page": 151,
    "why": "punctuation"
+  },
+  {
+   "n": 521,
+   "find": "as our model: We must",
+   "replace": "as our model:\n\nWe must",
+   "page": 151,
+   "why": "line break"
   },
   {
    "n": 522,
@@ -3397,11 +3747,25 @@
    "why": "punctuation"
   },
   {
+   "n": 525,
+   "find": "of this night: The Virgin",
+   "replace": "of this night:\n\nThe Virgin",
+   "page": 152,
+   "why": "line break"
+  },
+  {
    "n": 526,
    "find": "God\".",
    "replace": "God.\"",
    "page": 153,
    "why": "punctuation"
+  },
+  {
+   "n": 526,
+   "find": "this \"marvelous exchange\": O marvelous",
+   "replace": "this \"marvelous exchange\":\n\nO marvelous",
+   "page": 153,
+   "why": "line break"
   },
   {
    "n": 528,
@@ -3460,6 +3824,13 @@
    "why": "punctuation"
   },
   {
+   "n": 533,
+   "find": "of daily life: The home",
+   "replace": "of daily life:\n\nThe home",
+   "page": 155,
+   "why": "line break"
+  },
+  {
    "n": 535,
    "find": "sins\".",
    "replace": "sins.\"",
@@ -3514,6 +3885,13 @@
    "replace": "God.\"",
    "page": 158,
    "why": "punctuation"
+  },
+  {
+   "n": 543,
+   "find": "accept Jesus' word: The word",
+   "replace": "accept Jesus' word:\n\nThe word",
+   "page": 159,
+   "why": "line break"
   },
   {
    "n": 544,
@@ -3600,6 +3978,13 @@
    "why": "punctuation"
   },
   {
+   "n": 551,
+   "find": "directs the Church: As my",
+   "replace": "directs the Church:\n\nAs my",
+   "page": 161,
+   "why": "line break"
+  },
+  {
    "n": 552,
    "find": "the \"living Stone\"",
    "replace": "the \"living stone\"",
@@ -3647,6 +4032,13 @@
    "replace": "glory.\"",
    "page": 162,
    "why": "punctuation"
+  },
+  {
+   "n": 555,
+   "find": "the shining cloud.\" You were",
+   "replace": "the shining cloud.\"\n\nYou were",
+   "page": 162,
+   "why": "line break"
   },
   {
    "n": 556,
@@ -3759,6 +4151,13 @@
    "replace": "Jews,\"",
    "page": 167,
    "why": "punctuation"
+  },
+  {
+   "n": 577,
+   "find": "the New Covenant: Do not",
+   "replace": "the New Covenant:\n\nDo not",
+   "page": 168,
+   "why": "line break"
   },
   {
    "n": 578,
@@ -3936,6 +4335,20 @@
    "why": "punctuation"
   },
   {
+   "n": 597,
+   "find": "Second Vatican Council: ... [N]either",
+   "replace": "Second Vatican Council:\n\n… [N]either",
+   "page": 173,
+   "why": "line break"
+  },
+  {
+   "n": 598,
+   "find": "the Jews alone: We must",
+   "replace": "the Jews alone:\n\nWe must",
+   "page": 174,
+   "why": "line break"
+  },
+  {
    "n": 600,
    "find": "\"predestination\",",
    "replace": "\"predestination,\"",
@@ -4104,6 +4517,13 @@
    "why": "punctuation"
   },
   {
+   "n": 618,
+   "find": "his redemptive suffering. Apart from",
+   "replace": "his redemptive suffering.\n\nApart from",
+   "page": 180,
+   "why": "line break"
+  },
+  {
    "n": 623,
    "find": "cf. Is 53:10",
    "replace": "cf. Isa 53:10",
@@ -4132,11 +4552,25 @@
    "why": "punctuation"
   },
   {
+   "n": 625,
+   "find": "alive for evermore\": God [the",
+   "replace": "alive for evermore\":\n\nGod [the",
+   "page": 182,
+   "why": "line break"
+  },
+  {
    "n": 626,
    "find": "risen\",",
    "replace": "risen,\"",
    "page": 182,
    "why": "punctuation"
+  },
+  {
+   "n": 626,
+   "find": "other by death: By the",
+   "replace": "other by death:\n\nBy the",
+   "page": 182,
+   "why": "line break"
   },
   {
    "n": 627,
@@ -4200,6 +4634,13 @@
    "replace": "hell,\"",
    "page": 185,
    "why": "punctuation"
+  },
+  {
+   "n": 638,
+   "find": "with the cross: Christ is",
+   "replace": "with the cross:\n\nChrist is",
+   "page": 186,
+   "why": "line break"
   },
   {
    "n": 639,
@@ -4447,11 +4888,46 @@
    "why": "punctuation"
   },
   {
+   "n": 683,
+   "find": "in the Son. Baptism gives",
+   "replace": "in the Son.\n\nBaptism gives",
+   "page": 199,
+   "why": "line break"
+  },
+  {
+   "n": 684,
+   "find": "of divine \"condescension\": The Old",
+   "replace": "of divine \"condescension\":\n\nThe Old",
+   "page": 199,
+   "why": "line break"
+  },
+  {
    "n": 685,
    "find": "he is worshipped and glorified",
    "replace": "he is adored and glorified",
    "page": 200,
    "why": "Creed (current translation)"
+  },
+  {
+   "n": 690,
+   "find": "live in him: The notion",
+   "replace": "live in him:\n\nThe notion",
+   "page": 201,
+   "why": "line break"
+  },
+  {
+   "n": 691,
+   "find": "her new children. The term",
+   "replace": "her new children.\n\nThe term",
+   "page": 202,
+   "why": "line break"
+  },
+  {
+   "n": 696,
+   "find": "with himself The",
+   "replace": "with himself. The",
+   "page": 204,
+   "why": "punctuation"
   },
   {
    "n": 702,
@@ -4466,6 +4942,48 @@
    "replace": "living proclamation and in the composition",
    "page": 206,
    "why": "word"
+  },
+  {
+   "n": 703,
+   "find": "of every creature: It belongs",
+   "replace": "of every creature:\n\nIt belongs",
+   "page": 206,
+   "why": "line break"
+  },
+  {
+   "n": 711,
+   "find": "redemption of Jerusalem.\" We have",
+   "replace": "redemption of Jerusalem.\"\n\nWe have",
+   "page": 208,
+   "why": "line break"
+  },
+  {
+   "n": 712,
+   "find": "of Isaiah 11: There shall",
+   "replace": "of Isaiah 11:\n\nThere shall",
+   "page": 208,
+   "why": "line break"
+  },
+  {
+   "n": 714,
+   "find": "passage from Isaiah: The Spirit",
+   "replace": "passage from Isaiah:\n\nThe Spirit",
+   "page": 209,
+   "why": "line break"
+  },
+  {
+   "n": 732,
+   "find": "not yet consummated. We have",
+   "replace": "not yet consummated.\n\nWe have",
+   "page": 213,
+   "why": "line break"
+  },
+  {
+   "n": 738,
+   "find": "the next article): All of",
+   "replace": "the next article):\n\nAll of",
+   "page": 215,
+   "why": "line break"
   },
   {
    "n": 744,
@@ -4489,11 +5007,39 @@
    "why": "spelling (as printed in the quotation)"
   },
   {
+   "n": 760,
+   "find": "give the world: Just as",
+   "replace": "give the world:\n\nJust as",
+   "page": 220,
+   "why": "line break"
+  },
+  {
    "n": 762,
    "find": "the future gathering of All nations",
    "replace": "the future gathering of all nations",
    "page": 220,
    "why": "capital"
+  },
+  {
+   "n": 771,
+   "find": "a divine element\": The Church",
+   "replace": "a divine element\":\n\nThe Church",
+   "page": 223,
+   "why": "line break"
+  },
+  {
+   "n": 786,
+   "find": "serve with Christ. The sign",
+   "replace": "serve with Christ.\n\nThe sign",
+   "page": 227,
+   "why": "line break"
+  },
+  {
+   "n": 795,
+   "find": "of this unity: Let us",
+   "replace": "of this unity:\n\nLet us",
+   "page": 230,
+   "why": "line break"
   },
   {
    "n": 797,
@@ -4524,6 +5070,34 @@
    "why": "spelling (as printed in the quotation)"
   },
   {
+   "n": 813,
+   "find": "of the Church: What an",
+   "replace": "of the Church:\n\nWhat an",
+   "page": 234,
+   "why": "line break"
+  },
+  {
+   "n": 817,
+   "find": "without human sin: Where there",
+   "replace": "without human sin:\n\nWhere there",
+   "page": 236,
+   "why": "line break"
+  },
+  {
+   "n": 826,
+   "find": "means of sanctification.\" If the",
+   "replace": "means of sanctification.\"\n\nIf the",
+   "page": 238,
+   "why": "line break"
+  },
+  {
+   "n": 827,
+   "find": "way to holiness: The Church",
+   "replace": "way to holiness:\n\nThe Church",
+   "page": 239,
+   "why": "line break"
+  },
+  {
    "n": 833,
    "find": "The phrase \"particular Church,\" which",
    "replace": "The phrase \"particular church,\" which",
@@ -4550,6 +5124,34 @@
    "replace": "is the Christ\"; \"for the gifts",
    "page": 242,
    "why": "punctuation"
+  },
+  {
+   "n": 842,
+   "find": "the human race: All nations",
+   "replace": "the human race:\n\nAll nations",
+   "page": 243,
+   "why": "line break"
+  },
+  {
+   "n": 844,
+   "find": "God in them: Very often,",
+   "replace": "God in them:\n\nVery often,",
+   "page": 243,
+   "why": "line break"
+  },
+  {
+   "n": 846,
+   "find": "is his Body: Basing itself",
+   "replace": "is his Body:\n\nBasing itself",
+   "page": 244,
+   "why": "line break"
+  },
+  {
+   "n": 847,
+   "find": "and his Church: Those who,",
+   "replace": "and his Church:\n\nThose who,",
+   "page": 244,
+   "why": "line break"
   },
   {
    "n": 854,
@@ -4580,6 +5182,13 @@
    "why": "punctuation"
   },
   {
+   "n": 874,
+   "find": "orientation and goal: In order",
+   "replace": "orientation and goal:\n\nIn order",
+   "page": 251,
+   "why": "line break"
+  },
+  {
    "n": 875,
    "find": "word and",
    "replace": "word, and",
@@ -4594,11 +5203,25 @@
    "why": "punctuation"
   },
   {
+   "n": 896,
+   "find": "to the Father\": Let all",
+   "replace": "to the Father\":\n\nLet all",
+   "page": 257,
+   "why": "line break"
+  },
+  {
    "n": 897,
    "find": "in the Church and in the World.\"",
    "replace": "in the Church and in the world.\"",
    "page": 257,
    "why": "capital"
+  },
+  {
+   "n": 899,
+   "find": "of the Church: Lay believers",
+   "replace": "of the Church:\n\nLay believers",
+   "page": 258,
+   "why": "line break"
   },
   {
    "n": 901,
@@ -4613,6 +5236,27 @@
    "replace": "and acolyte. \"When the necessity",
    "page": 259,
    "why": "punctuation"
+  },
+  {
+   "n": 904,
+   "find": "of the word\" To teach",
+   "replace": "of the word\"\n\nTo teach",
+   "page": 259,
+   "why": "line break"
+  },
+  {
+   "n": 905,
+   "find": "of the world.\" This witness",
+   "replace": "of the world.\"\n\nThis witness",
+   "page": 259,
+   "why": "line break"
+  },
+  {
+   "n": 908,
+   "find": "sin in themselves\": That man",
+   "replace": "sin in themselves\":\n\nThat man",
+   "page": 260,
+   "why": "line break"
   },
   {
    "n": 913,
@@ -4643,6 +5287,13 @@
    "why": "capital"
   },
   {
+   "n": 933,
+   "find": "of their life: For the",
+   "replace": "of their life:\n\nFor the",
+   "page": 265,
+   "why": "line break"
+  },
+  {
    "n": 941,
    "find": "personal family,",
    "replace": "personal, family,",
@@ -4655,6 +5306,13 @@
    "replace": "social, and",
    "page": 266,
    "why": "punctuation"
+  },
+  {
+   "n": 948,
+   "find": "holy persons (sancti).\" Sancta sanctis!",
+   "replace": "holy persons (sancti).\"\n\nSancta sanctis!",
+   "page": 267,
+   "why": "line break"
   },
   {
    "n": 954,
@@ -4678,6 +5336,34 @@
    "why": "punctuation"
   },
   {
+   "n": 956,
+   "find": "weakness greatly helped.\" Do not",
+   "replace": "weakness greatly helped.\"\n\nDo not",
+   "page": 269,
+   "why": "line break"
+  },
+  {
+   "n": 957,
+   "find": "of God itself\": We worship",
+   "replace": "of God itself\":\n\nWe worship",
+   "page": 269,
+   "why": "line break"
+  },
+  {
+   "n": 964,
+   "find": "of his Passion: Thus the",
+   "replace": "of his Passion:\n\nThus the",
+   "page": 271,
+   "why": "line break"
+  },
+  {
+   "n": 966,
+   "find": "of other Christians: In giving",
+   "replace": "of other Christians:\n\nIn giving",
+   "page": 272,
+   "why": "line break"
+  },
+  {
    "n": 969,
    "find": "the eternal fulfillment of all the elect",
    "replace": "the eternal fulfilment of all the elect",
@@ -4692,10 +5378,38 @@
    "why": "punctuation"
   },
   {
+   "n": 972,
+   "find": "her own mother. In the",
+   "replace": "her own mother.\n\nIn the",
+   "page": 273,
+   "why": "line break"
+  },
+  {
+   "n": 976,
+   "find": "they are retained.\" (Part Two",
+   "replace": "they are retained.\"\n\n(Part Two",
+   "page": 274,
+   "why": "line break"
+  },
+  {
    "n": 978,
    "find": "leading us into evil \"",
    "replace": "leading us into evil.\"",
    "page": 275,
+   "why": "punctuation"
+  },
+  {
+   "n": 980,
+   "find": "with the Church: Penance has",
+   "replace": "with the Church:\n\nPenance has",
+   "page": 275,
+   "why": "line break"
+  },
+  {
+   "n": 982,
+   "find": "repentance is honest.",
+   "replace": "repentance is honest.\"",
+   "page": 276,
    "why": "punctuation"
   },
   {
@@ -4706,11 +5420,88 @@
    "why": "paragraph break"
   },
   {
+   "n": 989,
+   "find": "Most Holy Trinity: If the",
+   "replace": "Most Holy Trinity:\n\nIf the",
+   "page": 278,
+   "why": "line break"
+  },
+  {
+   "n": 992,
+   "find": "Maccabean martyrs confessed: The King",
+   "replace": "Maccabean martyrs confessed:\n\nThe King",
+   "page": 279,
+   "why": "line break"
+  },
+  {
+   "n": 999,
+   "find": "a \"spiritual body\": But someone",
+   "replace": "a \"spiritual body\":\n\nBut someone",
+   "page": 280,
+   "why": "line break"
+  },
+  {
+   "n": 1000,
+   "find": "of our bodies: Just as",
+   "replace": "of our bodies:\n\nJust as",
+   "page": 281,
+   "why": "line break"
+  },
+  {
+   "n": 1001,
+   "find": "with Christ's Parousia: For the",
+   "replace": "with Christ's Parousia:\n\nFor the",
+   "page": 281,
+   "why": "line break"
+  },
+  {
+   "n": 1002,
+   "find": "Resurrection of Christ: And you",
+   "replace": "Resurrection of Christ:\n\nAnd you",
+   "page": 281,
+   "why": "line break"
+  },
+  {
+   "n": 1004,
+   "find": "especially the suffering: The body",
+   "replace": "especially the suffering:\n\nThe body",
+   "page": 282,
+   "why": "line break"
+  },
+  {
+   "n": 1007,
+   "find": "lives to fulfillment: Remember also",
+   "replace": "lives to fulfillment:\n\nRemember also",
+   "page": 282,
+   "why": "line break"
+  },
+  {
    "n": 1008,
    "find": "mortal God",
    "replace": "mortal, God",
    "page": 283,
    "why": "punctuation"
+  },
+  {
+   "n": 1010,
+   "find": "his redeeming act: It is",
+   "replace": "his redeeming act:\n\nIt is",
+   "page": 283,
+   "why": "line break"
+  },
+  {
+   "n": 1010,
+   "find": "also live with him.",
+   "replace": "also live with him.\"",
+   "page": 283,
+   "why": "punctuation"
+  },
+  {
+   "n": 1011,
+   "find": "example of Christ: My earthly",
+   "replace": "example of Christ:\n\nMy earthly",
+   "page": 283,
+   "why": "line break"
   },
   {
    "n": 1012,
@@ -4734,6 +5525,55 @@
    "why": "paragraph break"
   },
   {
+   "n": 1020,
+   "find": "with gentle assurance: Go forth,",
+   "replace": "with gentle assurance:\n\nGo forth,",
+   "page": 286,
+   "why": "line break"
+  },
+  {
+   "n": 1022,
+   "find": "and everlasting damnation. At the",
+   "replace": "and everlasting damnation.\n\nAt the",
+   "page": 286,
+   "why": "line break"
+  },
+  {
+   "n": 1023,
+   "find": "face to face: By virtue",
+   "replace": "face to face:\n\nBy virtue",
+   "page": 287,
+   "why": "line break"
+  },
+  {
+   "n": 1025,
+   "find": "their own name. For life",
+   "replace": "their own name.\n\nFor life",
+   "page": 287,
+   "why": "line break"
+  },
+  {
+   "n": 1028,
+   "find": "\"the beatific vision\": How great",
+   "replace": "\"the beatific vision\":\n\nHow great",
+   "page": 288,
+   "why": "line break"
+  },
+  {
+   "n": 1031,
+   "find": "a cleansing fire: As for",
+   "replace": "a cleansing fire:\n\nAs for",
+   "page": 288,
+   "why": "line break"
+  },
+  {
+   "n": 1032,
+   "find": "of the dead: Let us",
+   "replace": "of the dead:\n\nLet us",
+   "page": 289,
+   "why": "line break"
+  },
+  {
    "n": 1034,
    "find": "of \"Gehenna\" of",
    "replace": "of \"Gehenna,\" of",
@@ -4741,11 +5581,25 @@
    "why": "punctuation"
   },
   {
+   "n": 1036,
+   "find": "it are few.\" Since we",
+   "replace": "it are few.\"\n\nSince we",
+   "page": 290,
+   "why": "line break"
+  },
+  {
    "n": 1037,
    "find": "repentance\": Father, accept this offering\nfrom your whole family.\nGrant us your peace in this life,\nsave us from final damnation,\nand count us among those you have chosen.",
    "replace": "repentance\":\n\nTherefore, Lord, we pray:\ngraciously accept this oblation of our service,\nthat of your whole family, . . .\norder our days in your peace,\nand command that we be delivered from eternal damnation\nand counted among the flock of those you have chosen.",
    "page": 290,
    "why": "Roman Canon (current translation)"
+  },
+  {
+   "n": 1039,
+   "find": "his earthly life: All that",
+   "replace": "his earthly life:\n\nAll that",
+   "page": 291,
+   "why": "line break"
   },
   {
    "n": 1040,
@@ -4762,11 +5616,60 @@
    "why": "spelling"
   },
   {
+   "n": 1042,
+   "find": "will be renewed: The Church",
+   "replace": "will be renewed:\n\nThe Church",
+   "page": 292,
+   "why": "line break"
+  },
+  {
+   "n": 1046,
+   "find": "world and man: For the",
+   "replace": "world and man:\n\nFor the",
+   "page": 293,
+   "why": "line break"
+  },
+  {
+   "n": 1050,
+   "find": "in eternal life: True and",
+   "replace": "in eternal life:\n\nTrue and",
+   "page": 294,
+   "why": "line break"
+  },
+  {
+   "n": 1064,
+   "find": "profession of faith: May your",
+   "replace": "profession of faith:\n\nMay your",
+   "page": 296,
+   "why": "line break"
+  },
+  {
    "n": 1065,
    "find": "to the glory of God\": Through him, with him, in him,\nin the unity of the Holy Spirit,\nall glory and honor is yours,\nalmighty Father,\nGod, for ever and ever.\nAMEN.",
    "replace": "to the glory of God\":\n\nThrough him, and with him, and in him,\nO God, almighty Father,\nin the unity of the Holy Spirit,\nall glory and honor is yours,\nfor ever and ever.\nAMEN.",
    "page": 296,
    "why": "doxology (current translation)"
+  },
+  {
+   "n": 1066,
+   "find": "of his name.\n\nSuch is",
+   "replace": "of his name. Such is",
+   "page": 297,
+   "why": "line break"
+  },
+  {
+   "n": 1068,
+   "find": "in the world: For it",
+   "replace": "in the world:\n\nFor it",
+   "page": 297,
+   "why": "line break"
+  },
+  {
+   "n": 1070,
+   "find": "(service of charity): The liturgy",
+   "replace": "(service of charity):\n\nThe liturgy",
+   "page": 298,
+   "why": "line break"
   },
   {
    "n": 1075,
@@ -4776,11 +5679,25 @@
    "why": "punctuation"
   },
   {
+   "n": 1083,
+   "find": "inexpressible gift in",
+   "replace": "inexpressible gift\" in",
+   "page": 301,
+   "why": "punctuation"
+  },
+  {
    "n": 1093,
    "find": "\"prepared in marvelous fashion",
    "replace": "\"prepared in marvellous fashion",
    "page": 304,
    "why": "spelling (as printed in the quotation)"
+  },
+  {
+   "n": 1100,
+   "find": "received and lived: In the",
+   "replace": "received and lived:\n\nIn the",
+   "page": 306,
+   "why": "line break"
   },
   {
    "n": 1105,
@@ -4797,6 +5714,13 @@
    "why": "punctuation"
   },
   {
+   "n": 1106,
+   "find": "of the Eucharist: You ask",
+   "replace": "of the Eucharist:\n\nYou ask",
+   "page": 307,
+   "why": "line break"
+  },
+  {
    "n": 1108,
    "find": "Spirit who",
    "replace": "Spirit, who",
@@ -4811,11 +5735,32 @@
    "why": "word"
   },
   {
+   "n": 1122,
+   "find": "to this word: The People",
+   "replace": "to this word:\n\nThe People",
+   "page": 311,
+   "why": "line break"
+  },
+  {
+   "n": 1130,
+   "find": "Come, Lord Jesus!'\" St. Thomas",
+   "replace": "Come, Lord Jesus!'\"\n\nSt. Thomas",
+   "page": 312,
+   "why": "line break"
+  },
+  {
    "n": 1136,
    "find": "wholly communion and feast",
    "replace": "wholly communion and feast.",
    "page": 314,
    "why": "punctuation"
+  },
+  {
+   "n": 1141,
+   "find": "his members participate: Mother Church",
+   "replace": "his members participate:\n\nMother Church",
+   "page": 315,
+   "why": "line break"
   },
   {
    "n": 1157,
@@ -4825,11 +5770,67 @@
    "why": "punctuation"
   },
   {
+   "n": 1157,
+   "find": "of the faithful: How I",
+   "replace": "of the faithful:\n\nHow I",
+   "page": 319,
+   "why": "line break"
+  },
+  {
+   "n": 1159,
+   "find": "\"economy\" of images: Previously God,",
+   "replace": "\"economy\" of images:\n\nPreviously God,",
+   "page": 319,
+   "why": "line break"
+  },
+  {
+   "n": 1160,
+   "find": "illuminate each other: We declare",
+   "replace": "illuminate each other:\n\nWe declare",
+   "page": 320,
+   "why": "line break"
+  },
+  {
+   "n": 1161,
+   "find": "recapitulated in Christ: Following the",
+   "replace": "recapitulated in Christ:\n\nFollowing the",
+   "page": 320,
+   "why": "line break"
+  },
+  {
+   "n": 1165,
+   "find": "underlies all history: Life extends",
+   "replace": "underlies all history:\n\nLife extends",
+   "page": 321,
+   "why": "line break"
+  },
+  {
+   "n": 1166,
+   "find": "to his banquet: The Lord's",
+   "replace": "to his banquet:\n\nThe Lord's",
+   "page": 322,
+   "why": "line break"
+  },
+  {
+   "n": 1167,
+   "find": "a living hope\": When we",
+   "replace": "a living hope\":\n\nWhen we",
+   "page": 322,
+   "why": "line break"
+  },
+  {
    "n": 1170,
    "find": "Because of the different methods",
    "replace": "Because of different methods",
    "page": 323,
    "why": "word"
+  },
+  {
+   "n": 1174,
+   "find": "addresses to the Father.",
+   "replace": "addresses to the Father.\"",
+   "page": 324,
+   "why": "punctuation"
   },
   {
    "n": 1189,
@@ -4867,6 +5868,13 @@
    "why": "word"
   },
   {
+   "n": 1216,
+   "find": "becomes \"light\" himself: Baptism is",
+   "replace": "becomes \"light\" himself:\n\nBaptism is",
+   "page": 332,
+   "why": "line break"
+  },
+  {
    "n": 1217,
    "find": "the mystery of Baptism: Father, you give us grace through sacramental signs,\nwhich tell us of the wonders of your unseen power.\n\nIn Baptism we use your gift of water,\nwhich you have made a rich symbol\nof the grace you give us in this sacrament.",
    "replace": "the mystery of Baptism:\n\nO God, who by invisible power\naccomplish a wondrous effect\nthrough sacramental signs\nand who in many ways have prepared water, your creation,\nto show forth the grace of Baptism;",
@@ -4895,6 +5903,27 @@
    "why": "blessing of water (current translation)"
   },
   {
+   "n": 1225,
+   "find": "Kingdom of God. See where",
+   "replace": "Kingdom of God.\n\nSee where",
+   "page": 334,
+   "why": "line break"
+  },
+  {
+   "n": 1227,
+   "find": "rises with him: Do you",
+   "replace": "rises with him:\n\nDo you",
+   "page": 335,
+   "why": "line break"
+  },
+  {
+   "n": 1227,
+   "find": "newness of life. The baptized",
+   "replace": "newness of life.\n\nThe baptized",
+   "page": 335,
+   "why": "line break"
+  },
+  {
    "n": 1256,
    "find": "baptize , by",
    "replace": "baptize, , by",
@@ -4916,6 +5945,20 @@
    "why": "word"
   },
   {
+   "n": 1297,
+   "find": "to the patriarch: The liturgy",
+   "replace": "to the patriarch:\n\nThe liturgy",
+   "page": 348,
+   "why": "line break"
+  },
+  {
+   "n": 1299,
+   "find": "in these words: All-powerful God,",
+   "replace": "in these words:\n\nAll-powerful God,",
+   "page": 349,
+   "why": "line break"
+  },
+  {
    "n": 1300,
    "find": "Σφραγις δωρεας Πνευματος ‘Αγιου",
    "replace": "Σφραγὶς δωρεᾶς Πνεύματος Ἁγίου",
@@ -4928,6 +5971,13 @@
    "replace": "of the Holy Spirit.].\"",
    "page": 349,
    "why": "punctuation"
+  },
+  {
+   "n": 1303,
+   "find": "of the Cross: Recall then",
+   "replace": "of the Cross:\n\nRecall then",
+   "page": 350,
+   "why": "line break"
   },
   {
    "n": 1305,
@@ -4944,6 +5994,13 @@
    "why": "punctuation"
   },
   {
+   "n": 1308,
+   "find": "us of this: Age of",
+   "replace": "us of this:\n\nAge of",
+   "page": 351,
+   "why": "line break"
+  },
+  {
    "n": 1320,
    "find": "Sancti [the seal of the gift of the Holy Spirit] in",
    "replace": "Sancti (the seal of the gift of the Holy Spirit) in",
@@ -4956,6 +6013,27 @@
    "replace": "\"[T]aking the chalice filled with the fruit of the vine. . . .\"",
    "page": 356,
    "why": "Missal text (current translation)"
+  },
+  {
+   "n": 1339,
+   "find": "and his Blood: Then came",
+   "replace": "and his Blood:\n\nThen came",
+   "page": 358,
+   "why": "line break"
+  },
+  {
+   "n": 1342,
+   "find": "it is written: They devoted",
+   "replace": "it is written:\n\nThey devoted",
+   "page": 358,
+   "why": "line break"
+  },
+  {
+   "n": 1345,
+   "find": "what Christians did: On the",
+   "replace": "what Christians did:\n\nOn the",
+   "page": 359,
+   "why": "line break"
   },
   {
    "n": 1346,
@@ -4972,11 +6050,32 @@
    "why": "paragraph break"
   },
   {
+   "n": 1352,
+   "find": "of the celebration: In the",
+   "replace": "of the celebration:\n\nIn the",
+   "page": 361,
+   "why": "line break"
+  },
+  {
+   "n": 1355,
+   "find": "of the world\": Because this",
+   "replace": "of the world\":\n\nBecause this",
+   "page": 362,
+   "why": "line break"
+  },
+  {
    "n": 1364,
    "find": "it is made present the sacrifice",
    "replace": "it is made present: the sacrifice",
    "page": 363,
    "why": "punctuation"
+  },
+  {
+   "n": 1366,
+   "find": "applies its fruit: [Christ], our",
+   "replace": "applies its fruit:\n\n[Christ], our",
+   "page": 364,
+   "why": "line break"
   },
   {
    "n": 1367,
@@ -4986,6 +6085,27 @@
    "why": "word"
   },
   {
+   "n": 1368,
+   "find": "with his offering. In the",
+   "replace": "with his offering.\n\nIn the",
+   "page": 364,
+   "why": "line break"
+  },
+  {
+   "n": 1369,
+   "find": "the Eucharistic sacrifice: Let only",
+   "replace": "the Eucharistic sacrifice:\n\nLet only",
+   "page": 365,
+   "why": "line break"
+  },
+  {
+   "n": 1371,
+   "find": "peace of Christ: Put this",
+   "replace": "peace of Christ:\n\nPut this",
+   "page": 365,
+   "why": "line break"
+  },
+  {
    "n": 1372,
    "find": "one Body in Christ\" The Church",
    "replace": "one Body in Christ.\" The Church",
@@ -4993,11 +6113,53 @@
    "why": "punctuation"
   },
   {
+   "n": 1372,
+   "find": "in the Eucharist: This wholly",
+   "replace": "in the Eucharist:\n\nThis wholly",
+   "page": 366,
+   "why": "line break"
+  },
+  {
+   "n": 1375,
+   "find": "John Chrysostom declares: It is",
+   "replace": "John Chrysostom declares:\n\nIt is",
+   "page": 366,
+   "why": "line break"
+  },
+  {
+   "n": 1375,
+   "find": "the things offered. And St.",
+   "replace": "the things offered.\n\nAnd St.",
+   "page": 366,
+   "why": "line break"
+  },
+  {
+   "n": 1375,
+   "find": "about this conversion: Be convinced",
+   "replace": "about this conversion:\n\nBe convinced",
+   "page": 366,
+   "why": "line break"
+  },
+  {
    "n": 1379,
    "find": "absent outside",
    "replace": "absent, outside",
    "page": 368,
    "why": "punctuation"
+  },
+  {
+   "n": 1380,
+   "find": "communicate this love: The Church",
+   "replace": "communicate this love:\n\nThe Church",
+   "page": 368,
+   "why": "line break"
+  },
+  {
+   "n": 1381,
+   "find": "he cannot lie.'\" Godhead here",
+   "replace": "he cannot lie.'\"\n\nGodhead here",
+   "page": 368,
+   "why": "line break"
   },
   {
    "n": 1383,
@@ -5021,11 +6183,39 @@
    "why": "paragraph break"
   },
   {
+   "n": 1391,
+   "find": "because of me.\" On the",
+   "replace": "because of me.\"\n\nOn the",
+   "page": 371,
+   "why": "line break"
+  },
+  {
+   "n": 1393,
+   "find": "from future sins: For as",
+   "replace": "from future sins:\n\nFor as",
+   "page": 371,
+   "why": "line break"
+  },
+  {
+   "n": 1394,
+   "find": "ourselves in him: Since Christ",
+   "replace": "ourselves in him:\n\nSince Christ",
+   "page": 372,
+   "why": "line break"
+  },
+  {
    "n": 1397,
    "find": "your brother,. ... You",
    "replace": "your brother, ... You",
    "page": 373,
    "why": "punctuation"
+  },
+  {
+   "n": 1397,
+   "find": "poorest, his brethren: You have",
+   "replace": "poorest, his brethren:\n\nYou have",
+   "page": 373,
+   "why": "line break"
   },
   {
    "n": 1402,
@@ -5049,11 +6239,25 @@
    "why": "word"
   },
   {
+   "n": 1429,
+   "find": "whole Church: \"Repent!\" St. Ambrose",
+   "replace": "whole Church: \"Repent!\"\n\nSt. Ambrose",
+   "page": 379,
+   "why": "line break"
+  },
+  {
    "n": 1432,
    "find": "salvation it",
    "replace": "salvation, it",
    "page": 380,
    "why": "punctuation"
+  },
+  {
+   "n": 1432,
+   "find": "sins have pierced: Let us",
+   "replace": "sins have pierced:\n\nLet us",
+   "page": 380,
+   "why": "line break"
   },
   {
    "n": 1434,
@@ -5068,6 +6272,48 @@
    "replace": "the Son, and",
    "page": 384,
    "why": "punctuation"
+  },
+  {
+   "n": 1449,
+   "find": "of the Church: God, the",
+   "replace": "of the Church:\n\nGod, the",
+   "page": 384,
+   "why": "line break"
+  },
+  {
+   "n": 1449,
+   "find": "from your sins in the",
+   "replace": "from your sins\nin the",
+   "page": 384,
+   "why": "line break"
+  },
+  {
+   "n": 1456,
+   "find": "are committed openly.\" When Christ's",
+   "replace": "are committed openly.\"\n\nWhen Christ's",
+   "page": 385,
+   "why": "line break"
+  },
+  {
+   "n": 1458,
+   "find": "he is merciful: Whoever confesses",
+   "replace": "he is merciful:\n\nWhoever confesses",
+   "page": 386,
+   "why": "line break"
+  },
+  {
+   "n": 1460,
+   "find": "suffer with him.\" The satisfaction",
+   "replace": "suffer with him.\"\n\nThe satisfaction",
+   "page": 387,
+   "why": "line break"
+  },
+  {
+   "n": 1469,
+   "find": "the heavenly homeland: It must",
+   "replace": "the heavenly homeland:\n\nIt must",
+   "page": 389,
+   "why": "line break"
   },
   {
    "n": 1471,
@@ -5091,11 +6337,32 @@
    "why": "words dropped by the US site"
   },
   {
+   "n": 1511,
+   "find": "of the Sick: This sacred",
+   "replace": "of the Sick:\n\nThis sacred",
+   "page": 398,
+   "why": "line break"
+  },
+  {
+   "n": 1513,
+   "find": "following be observed: The sacrament",
+   "replace": "following be observed:\n\nThe sacrament",
+   "page": 398,
+   "why": "line break"
+  },
+  {
    "n": 1532,
    "find": "has as its effects\n- the uniting",
    "replace": "has as its effects:\n- the uniting",
    "page": 402,
    "why": "punctuation"
+  },
+  {
+   "n": 1536,
+   "find": "presbyterate, and diaconate. (On the",
+   "replace": "presbyterate, and diaconate.\n\n(On the",
+   "page": 403,
+   "why": "line break"
   },
   {
    "n": 1537,
@@ -5112,11 +6379,46 @@
    "why": "punctuation"
   },
   {
+   "n": 1541,
+   "find": "ordination of bishops: God the",
+   "replace": "ordination of bishops:\n\nGod the",
+   "page": 405,
+   "why": "line break"
+  },
+  {
+   "n": 1542,
+   "find": "the Church prays: Lord, holy",
+   "replace": "the Church prays:\n\nLord, holy",
+   "page": 405,
+   "why": "line break"
+  },
+  {
+   "n": 1543,
+   "find": "the Church confesses: Almighty God",
+   "replace": "the Church confesses:\n\nAlmighty God",
+   "page": 405,
+   "why": "line break"
+  },
+  {
+   "n": 1548,
+   "find": "persona Christi Capitis: It is",
+   "replace": "persona Christi Capitis:\n\nIt is",
+   "page": 407,
+   "why": "line break"
+  },
+  {
    "n": 1554,
    "find": "the presbyterate . The diaconate",
    "replace": "the presbyterate. The diaconate",
    "page": 408,
    "why": "punctuation"
+  },
+  {
+   "n": 1554,
+   "find": "of Holy Orders: Let everyone",
+   "replace": "of Holy Orders:\n\nLet everyone",
+   "page": 408,
+   "why": "line break"
   },
   {
    "n": 1556,
@@ -5175,11 +6477,32 @@
    "why": "punctuation"
   },
   {
+   "n": 1586,
+   "find": "for his sheep: Father, you",
+   "replace": "for his sheep:\n\nFather, you",
+   "page": 416,
+   "why": "line break"
+  },
+  {
+   "n": 1586,
+   "find": "to your apostles. May he",
+   "replace": "to your apostles.\nMay he",
+   "page": 416,
+   "why": "line break"
+  },
+  {
    "n": 1587,
    "find": "altar\nto",
    "replace": "altar,\nto",
    "page": 417,
    "why": "punctuation"
+  },
+  {
+   "n": 1587,
+   "find": "among other things: Lord, fill",
+   "replace": "among other things:\n\nLord, fill",
+   "page": 417,
+   "why": "line break"
   },
   {
    "n": 1589,
@@ -5224,6 +6547,20 @@
    "why": "punctuation"
   },
   {
+   "n": 1618,
+   "find": "remains the model: \"For there",
+   "replace": "remains the model:\n\n\"For there",
+   "page": 424,
+   "why": "line break"
+  },
+  {
+   "n": 1620,
+   "find": "reinforce each other: Whoever denigrates",
+   "replace": "reinforce each other:\n\nWhoever denigrates",
+   "page": 424,
+   "why": "line break"
+  },
+  {
    "n": 1623,
    "find": "According to Latin tradition,",
    "replace": "According to the Latin tradition,",
@@ -5236,6 +6573,20 @@
    "replace": "In the traditions of the Eastern Churches",
    "page": 425,
    "why": "word"
+  },
+  {
+   "n": 1632,
+   "find": "of prime importance. The example",
+   "replace": "of prime importance.\n\nThe example",
+   "page": 427,
+   "why": "line break"
+  },
+  {
+   "n": 1642,
+   "find": "of the Lamb: How can",
+   "replace": "of the Lamb:\n\nHow can",
+   "page": 429,
+   "why": "line break"
   },
   {
    "n": 1658,
@@ -5259,11 +6610,74 @@
    "why": "punctuation"
   },
   {
+   "n": 1707,
+   "find": "subject to error: Man is",
+   "replace": "subject to error:\n\nMan is",
+   "page": 445,
+   "why": "line break"
+  },
+  {
+   "n": 1716,
+   "find": "Kingdom of heaven: Blessed are",
+   "replace": "Kingdom of heaven:\n\nBlessed are",
+   "page": 446,
+   "why": "line break"
+  },
+  {
+   "n": 1718,
+   "find": "can fulfill it: We all",
+   "replace": "can fulfill it:\n\nWe all",
+   "page": 447,
+   "why": "line break"
+  },
+  {
+   "n": 1720,
+   "find": "Kingdom of God; — the",
+   "replace": "Kingdom of God;\n- the",
+   "page": 448,
+   "why": "line break"
+  },
+  {
+   "n": 1720,
+   "find": "into God's rest: There we",
+   "replace": "into God's rest:\n\nThere we",
+   "page": 448,
+   "why": "line break"
+  },
+  {
+   "n": 1722,
+   "find": "the divine joy. \"Blessed are",
+   "replace": "the divine joy.\n\n\"Blessed are",
+   "page": 448,
+   "why": "line break"
+  },
+  {
+   "n": 1723,
+   "find": "of all love: All bow",
+   "replace": "of all love:\n\nAll bow",
+   "page": 449,
+   "why": "line break"
+  },
+  {
    "n": 1725,
    "find": "promises from Abraham on by ordering",
    "replace": "promises from Abraham by ordering",
    "page": 449,
    "why": "word"
+  },
+  {
+   "n": 1730,
+   "find": "cleaving to him.\" Man is",
+   "replace": "cleaving to him.\"\n\nMan is",
+   "page": 450,
+   "why": "line break"
+  },
+  {
+   "n": 1736,
+   "find": "to its author: Thus the",
+   "replace": "to its author:\n\nThus the",
+   "page": 451,
+   "why": "line break"
   },
   {
    "n": 1742,
@@ -5273,11 +6687,123 @@
    "why": "Collect (current translation)"
   },
   {
+   "n": 1778,
+   "find": "the divine law: Conscience is",
+   "replace": "the divine law:\n\nConscience is",
+   "page": 458,
+   "why": "line break"
+  },
+  {
+   "n": 1779,
+   "find": "self-examination or introspection: Return to",
+   "replace": "self-examination or introspection:\n\nReturn to",
+   "page": 459,
+   "why": "line break"
+  },
+  {
+   "n": 1781,
+   "find": "grace of God: We shall",
+   "replace": "grace of God:\n\nWe shall",
+   "page": 459,
+   "why": "line break"
+  },
+  {
    "n": 1785,
    "find": "path, we",
    "replace": "path; we",
    "page": 460,
    "why": "punctuation"
+  },
+  {
+   "n": 1794,
+   "find": "and sincere faith.\" The more",
+   "replace": "and sincere faith.\"\n\nThe more",
+   "page": 461,
+   "why": "line break"
+  },
+  {
+   "n": 1809,
+   "find": "in this world.\" To live",
+   "replace": "in this world.\"\n\nTo live",
+   "page": 465,
+   "why": "line break"
+  },
+  {
+   "n": 1821,
+   "find": "glory of heaven: Hope, O",
+   "replace": "glory of heaven:\n\nHope, O",
+   "page": 468,
+   "why": "line break"
+  },
+  {
+   "n": 1825,
+   "find": "as Christ himself. The Apostle",
+   "replace": "as Christ himself.\n\nThe Apostle",
+   "page": 469,
+   "why": "line break"
+  },
+  {
+   "n": 1828,
+   "find": "\"first loved us\": If we",
+   "replace": "\"first loved us\":\n\nIf we",
+   "page": 470,
+   "why": "line break"
+  },
+  {
+   "n": 1829,
+   "find": "friendship and communion: Love is",
+   "replace": "friendship and communion:\n\nLove is",
+   "page": 470,
+   "why": "line break"
+  },
+  {
+   "n": 1831,
+   "find": "obeying divine inspirations. Let your",
+   "replace": "obeying divine inspirations.\n\nLet your",
+   "page": 470,
+   "why": "line break"
+  },
+  {
+   "n": 1848,
+   "find": "light on sin: Conversion requires",
+   "replace": "light on sin:\n\nConversion requires",
+   "page": 472,
+   "why": "line break"
+  },
+  {
+   "n": 1856,
+   "find": "sacrament of reconciliation: When the",
+   "replace": "sacrament of reconciliation:\n\nWhen the",
+   "page": 474,
+   "why": "line break"
+  },
+  {
+   "n": 1886,
+   "find": "and spiritual ones:\" Human society",
+   "replace": "and spiritual ones:\"\n\nHuman society",
+   "page": 481,
+   "why": "line break"
+  },
+  {
+   "n": 1900,
+   "find": "gratitude and good-will. Pope St.",
+   "replace": "gratitude and good-will.\n\nPope St.",
+   "page": 483,
+   "why": "line break"
+  },
+  {
+   "n": 1902,
+   "find": "sense of responsibility\": A human",
+   "replace": "sense of responsibility\":\n\nA human",
+   "page": 484,
+   "why": "line break"
+  },
+  {
+   "n": 1905,
+   "find": "the human person: Do not",
+   "replace": "the human person:\n\nDo not",
+   "page": 484,
+   "why": "line break"
   },
   {
    "n": 1909,
@@ -5287,11 +6813,109 @@
    "why": "spelling (as printed)"
   },
   {
+   "n": 1929,
+   "find": "ordered to him: What is",
+   "replace": "ordered to him:\n\nWhat is",
+   "page": 488,
+   "why": "line break"
+  },
+  {
+   "n": 1935,
+   "find": "flow from it: Every form",
+   "replace": "flow from it:\n\nEvery form",
+   "page": 490,
+   "why": "line break"
+  },
+  {
+   "n": 1938,
+   "find": "of the Gospel: Their equal",
+   "replace": "of the Gospel:\n\nTheir equal",
+   "page": 490,
+   "why": "line break"
+  },
+  {
+   "n": 1939,
+   "find": "and Christian brotherhood. An error,",
+   "replace": "and Christian brotherhood.\n\nAn error,",
+   "page": 491,
+   "why": "line break"
+  },
+  {
+   "n": 1942,
+   "find": "yours as well\": For two",
+   "replace": "yours as well\":\n\nFor two",
+   "page": 491,
+   "why": "line break"
+  },
+  {
+   "n": 1949,
+   "find": "that sustains him: Work out",
+   "replace": "that sustains him:\n\nWork out",
+   "page": 493,
+   "why": "line break"
+  },
+  {
+   "n": 1951,
+   "find": "one calls law.\" Alone among",
+   "replace": "one calls law.\"\n\nAlone among",
+   "page": 493,
+   "why": "line break"
+  },
+  {
+   "n": 1954,
+   "find": "and the lie: The natural",
+   "replace": "and the lie:\n\nThe natural",
+   "page": 494,
+   "why": "line break"
+  },
+  {
+   "n": 1955,
+   "find": "to human nature: Where then",
+   "replace": "to human nature:\n\nWhere then",
+   "page": 494,
+   "why": "line break"
+  },
+  {
+   "n": 1955,
+   "find": "leaving the ring. The natural",
+   "replace": "leaving the ring.\n\nThe natural",
+   "page": 494,
+   "why": "line break"
+  },
+  {
+   "n": 1956,
+   "find": "rights and duties: For there",
+   "replace": "rights and duties:\n\nFor there",
+   "page": 495,
+   "why": "line break"
+  },
+  {
+   "n": 1958,
+   "find": "individuals and societies: Theft is",
+   "replace": "individuals and societies:\n\nTheft is",
+   "page": 495,
+   "why": "line break"
+  },
+  {
+   "n": 1962,
+   "find": "him against evil: God wrote",
+   "replace": "him against evil:\n\nGod wrote",
+   "page": 496,
+   "why": "line break"
+  },
+  {
    "n": 1964,
    "find": "Covenant still",
    "replace": "Covenant, still",
    "page": 497,
    "why": "punctuation"
+  },
+  {
+   "n": 1964,
+   "find": "Kingdom of heaven. There were",
+   "replace": "Kingdom of heaven.\n\nThere were",
+   "page": 497,
+   "why": "line break"
   },
   {
    "n": 1965,
@@ -5301,11 +6925,116 @@
    "why": "word"
   },
   {
+   "n": 1966,
+   "find": "to do it: If anyone",
+   "replace": "to do it:\n\nIf anyone",
+   "page": 497,
+   "why": "line break"
+  },
+  {
    "n": 1974,
    "find": "actions that",
    "replace": "actions, that",
    "page": 499,
    "why": "punctuation"
+  },
+  {
+   "n": 1974,
+   "find": "vocation of each: [God] does",
+   "replace": "vocation of each:\n\n[God] does",
+   "page": 499,
+   "why": "line break"
+  },
+  {
+   "n": 1987,
+   "find": "and through Baptism: But if",
+   "replace": "and through Baptism:\n\nBut if",
+   "page": 501,
+   "why": "line break"
+  },
+  {
+   "n": 1989,
+   "find": "of the interior man.",
+   "replace": "of the interior man.\"",
+   "page": 502,
+   "why": "punctuation"
+  },
+  {
+   "n": 1992,
+   "find": "of eternal life: But now",
+   "replace": "of eternal life:\n\nBut now",
+   "page": 502,
+   "why": "line break"
+  },
+  {
+   "n": 1993,
+   "find": "preserves his assent: When God",
+   "replace": "preserves his assent:\n\nWhen God",
+   "page": 503,
+   "why": "line break"
+  },
+  {
+   "n": 1995,
+   "find": "his whole being: Just as",
+   "replace": "his whole being:\n\nJust as",
+   "page": 503,
+   "why": "line break"
+  },
+  {
+   "n": 1999,
+   "find": "work of sanctification: Therefore if",
+   "replace": "work of sanctification:\n\nTherefore if",
+   "page": 504,
+   "why": "line break"
+  },
+  {
+   "n": 2001,
+   "find": "might will it:\" Indeed we",
+   "replace": "might will it:\"\n\nIndeed we",
+   "page": 504,
+   "why": "line break"
+  },
+  {
+   "n": 2002,
+   "find": "to this desire: If at",
+   "replace": "to this desire:\n\nIf at",
+   "page": 505,
+   "why": "line break"
+  },
+  {
+   "n": 2004,
+   "find": "within the Church: Having gifts",
+   "replace": "within the Church:\n\nHaving gifts",
+   "page": 505,
+   "why": "line break"
+  },
+  {
+   "n": 2005,
+   "find": "of trustful poverty. A pleasing",
+   "replace": "of trustful poverty.\n\nA pleasing",
+   "page": 506,
+   "why": "line break"
+  },
+  {
+   "n": 2011,
+   "find": "were pure grace. After earth's",
+   "replace": "were pure grace.\n\nAfter earth's",
+   "page": 507,
+   "why": "line break"
+  },
+  {
+   "n": 2013,
+   "find": "Father is perfect.\" In order",
+   "replace": "Father is perfect.\"\n\nIn order",
+   "page": 508,
+   "why": "line break"
+  },
+  {
+   "n": 2015,
+   "find": "of the Beatitudes: He who",
+   "replace": "of the Beatitudes:\n\nHe who",
+   "page": 508,
+   "why": "line break"
   },
   {
    "n": 2042,
@@ -5336,6 +7065,34 @@
    "why": "punctuation"
   },
   {
+   "n": 2055,
+   "find": "of the Law: The commandments:",
+   "replace": "of the Law:\n\nThe commandments:",
+   "page": 519,
+   "why": "line break"
+  },
+  {
+   "n": 2057,
+   "find": "path of life: If you",
+   "replace": "path of life:\n\nIf you",
+   "page": 519,
+   "why": "line break"
+  },
+  {
+   "n": 2057,
+   "find": "live and multiply. This liberating",
+   "replace": "live and multiply.\n\nThis liberating",
+   "page": 519,
+   "why": "line break"
+  },
+  {
+   "n": 2057,
+   "find": "foreigners and slaves: You shall",
+   "replace": "foreigners and slaves:\n\nYou shall",
+   "page": 519,
+   "why": "line break"
+  },
+  {
    "n": 2058,
    "find": "upon two tables of stone",
    "replace": "upon two tablets of stone",
@@ -5364,6 +7121,27 @@
    "why": "punctuation"
   },
   {
+   "n": 2061,
+   "find": "his people first: Since there",
+   "replace": "his people first:\n\nSince there",
+   "page": 520,
+   "why": "line break"
+  },
+  {
+   "n": 2063,
+   "find": "the whole people: The Lord",
+   "replace": "the whole people:\n\nThe Lord",
+   "page": 521,
+   "why": "line break"
+  },
+  {
+   "n": 2067,
+   "find": "love of neighbor. As charity",
+   "replace": "love of neighbor.\n\nAs charity",
+   "page": 522,
+   "why": "line break"
+  },
+  {
    "n": 2069,
    "find": "The two tables shed light",
    "replace": "The two tablets shed light",
@@ -5371,11 +7149,39 @@
    "why": "word"
   },
   {
+   "n": 2070,
+   "find": "the natural law: From the",
+   "replace": "the natural law:\n\nFrom the",
+   "page": 522,
+   "why": "line break"
+  },
+  {
+   "n": 2071,
+   "find": "needed this revelation: A full",
+   "replace": "needed this revelation:\n\nA full",
+   "page": 523,
+   "why": "line break"
+  },
+  {
+   "n": 2071,
+   "find": "had gone astray. We know",
+   "replace": "had gone astray.\n\nWe know",
+   "page": 523,
+   "why": "line break"
+  },
+  {
    "n": 2084,
    "find": "his all-powerful loving, and",
    "replace": "his all-powerful, loving, and",
    "page": 525,
    "why": "punctuation"
+  },
+  {
+   "n": 2085,
+   "find": "likeness of God\": There will",
+   "replace": "likeness of God\":\n\nThere will",
+   "page": 526,
+   "why": "line break"
   },
   {
    "n": 2094,
@@ -5406,11 +7212,144 @@
    "why": "punctuation"
   },
   {
+   "n": 2103,
+   "find": "the evangelical counsels: Mother Church",
+   "replace": "the evangelical counsels:\n\nMother Church",
+   "page": 530,
+   "why": "line break"
+  },
+  {
+   "n": 2103,
+   "find": "from vows and promises",
+   "replace": "from vows and promises.",
+   "page": 530,
+   "why": "punctuation"
+  },
+  {
+   "n": 2132,
+   "find": "to God alone: Religious worship",
+   "replace": "to God alone:\n\nReligious worship",
+   "page": 537,
+   "why": "line break"
+  },
+  {
+   "n": 2144,
+   "find": "virtue of religion: Are these",
+   "replace": "virtue of religion:\n\nAre these",
+   "page": 538,
+   "why": "line break"
+  },
+  {
+   "n": 2149,
+   "find": "the divine name. [God's] name",
+   "replace": "the divine name.\n\n[God's] name",
+   "page": 539,
+   "why": "line break"
+  },
+  {
+   "n": 2174,
+   "find": "dies dominica) Sunday: We all",
+   "replace": "dies dominica) Sunday:\n\nWe all",
+   "page": 544,
+   "why": "line break"
+  },
+  {
+   "n": 2175,
+   "find": "aspects of Christ: Those who",
+   "replace": "aspects of Christ:\n\nThose who",
+   "page": 544,
+   "why": "line break"
+  },
+  {
+   "n": 2177,
+   "find": "the universal Church.\" \"Also to",
+   "replace": "the universal Church.\"\n\n\"Also to",
+   "page": 545,
+   "why": "line break"
+  },
+  {
+   "n": 2179,
+   "find": "and brotherly love: You cannot",
+   "replace": "and brotherly love:\n\nYou cannot",
+   "page": 546,
+   "why": "line break"
+  },
+  {
    "n": 2185,
    "find": "seeks holy leisure — the necessity",
    "replace": "seeks holy leisure; the necessity",
    "page": 547,
    "why": "punctuation"
+  },
+  {
+   "n": 2185,
+   "find": "life, and health. The charity",
+   "replace": "life, and health.\n\nThe charity",
+   "page": 547,
+   "why": "line break"
+  },
+  {
+   "n": 2218,
+   "find": "duty of gratitude. For the",
+   "replace": "duty of gratitude.\n\nFor the",
+   "page": 555,
+   "why": "line break"
+  },
+  {
+   "n": 2223,
+   "find": "and correct them: He who",
+   "replace": "and correct them:\n\nHe who",
+   "page": 557,
+   "why": "line break"
+  },
+  {
+   "n": 2240,
+   "find": "defend one's country: Pay to",
+   "replace": "defend one's country:\n\nPay to",
+   "page": 560,
+   "why": "line break"
+  },
+  {
+   "n": 2241,
+   "find": "who receive him. Political authorities,",
+   "replace": "who receive him.\n\nPolitical authorities,",
+   "page": 561,
+   "why": "line break"
+  },
+  {
+   "n": 2242,
+   "find": "rather than men\": When citizens",
+   "replace": "rather than men\":\n\nWhen citizens",
+   "page": 561,
+   "why": "line break"
+  },
+  {
+   "n": 2244,
+   "find": "God and man: Societies not",
+   "replace": "God and man:\n\nSocieties not",
+   "page": 562,
+   "why": "line break"
+  },
+  {
+   "n": 2260,
+   "find": "man's murderous violence: For your",
+   "replace": "man's murderous violence:\n\nFor your",
+   "page": 564,
+   "why": "line break"
+  },
+  {
+   "n": 2260,
+   "find": "his own image. The Old",
+   "replace": "his own image.\n\nThe Old",
+   "page": 564,
+   "why": "line break"
+  },
+  {
+   "n": 2264,
+   "find": "a lethal blow: If a",
+   "replace": "a lethal blow:\n\nIf a",
+   "page": 565,
+   "why": "line break"
   },
   {
    "n": 2266,
@@ -5420,11 +7359,74 @@
    "why": "word"
   },
   {
+   "n": 2268,
+   "find": "heaven for vengeance. Infanticide, fratricide,",
+   "replace": "heaven for vengeance.\n\nInfanticide, fratricide,",
+   "page": 567,
+   "why": "line break"
+  },
+  {
+   "n": 2269,
+   "find": "person in danger. The acceptance",
+   "replace": "person in danger.\n\nThe acceptance",
+   "page": 567,
+   "why": "line break"
+  },
+  {
+   "n": 2269,
+   "find": "imputable to them. Unintentional killing",
+   "replace": "imputable to them.\n\nUnintentional killing",
+   "page": 567,
+   "why": "line break"
+  },
+  {
+   "n": 2270,
+   "find": "being to life. Before I",
+   "replace": "being to life.\n\nBefore I",
+   "page": 567,
+   "why": "line break"
+  },
+  {
+   "n": 2271,
+   "find": "the moral law: You shall",
+   "replace": "the moral law:\n\nYou shall",
+   "page": 568,
+   "why": "line break"
+  },
+  {
+   "n": 2273,
+   "find": "and its legislation: \"The inalienable",
+   "replace": "and its legislation:\n\n\"The inalienable",
+   "page": 568,
+   "why": "line break"
+  },
+  {
+   "n": 2274,
+   "find": "other human being. Prenatal diagnosis",
+   "replace": "other human being.\n\nPrenatal diagnosis",
+   "page": 569,
+   "why": "line break"
+  },
+  {
    "n": 2275,
    "find": "healing the",
    "replace": "healing, the",
    "page": 569,
    "why": "punctuation"
+  },
+  {
+   "n": 2277,
+   "find": "is morally unacceptable. Thus an",
+   "replace": "is morally unacceptable.\n\nThus an",
+   "page": 569,
+   "why": "line break"
+  },
+  {
+   "n": 2286,
+   "find": "fashion or opinion. Therefore, they",
+   "replace": "fashion or opinion.\n\nTherefore, they",
+   "page": 571,
+   "why": "line break"
   },
   {
    "n": 2289,
@@ -5462,6 +7464,20 @@
    "why": "word, paragraph breaks"
   },
   {
+   "n": 2317,
+   "find": "and avoiding war: Insofar as",
+   "replace": "and avoiding war:\n\nInsofar as",
+   "page": 577,
+   "why": "line break"
+  },
+  {
+   "n": 2349,
+   "find": "chastity in continence: There are",
+   "replace": "chastity in continence:\n\nThere are",
+   "page": 584,
+   "why": "line break"
+  },
+  {
    "n": 2352,
    "find": "conditions of anxiety or other psychological or social factors that lessen,",
    "replace": "conditions of anxiety, or other psychological or social factors that can lessen,",
@@ -5476,11 +7492,53 @@
    "why": "punctuation"
   },
   {
+   "n": 2361,
+   "find": "another until death.\" Tobias got",
+   "replace": "another until death.\"\n\nTobias got",
+   "page": 587,
+   "why": "line break"
+  },
+  {
+   "n": 2362,
+   "find": "joy and pleasure: The Creator",
+   "replace": "joy and pleasure:\n\nThe Creator",
+   "page": 587,
+   "why": "line break"
+  },
+  {
+   "n": 2365,
+   "find": "before the world. St. John",
+   "replace": "before the world.\n\nSt. John",
+   "page": 588,
+   "why": "line break"
+  },
+  {
    "n": 2368,
    "find": "acts criteria",
    "replace": "acts, criteria",
    "page": 589,
    "why": "punctuation"
+  },
+  {
+   "n": 2368,
+   "find": "criteria of morality: When it",
+   "replace": "criteria of morality:\n\nWhen it",
+   "page": 589,
+   "why": "line break"
+  },
+  {
+   "n": 2370,
+   "find": "is intrinsically evil: Thus the",
+   "replace": "is intrinsically evil:\n\nThus the",
+   "page": 590,
+   "why": "line break"
+  },
+  {
+   "n": 2383,
+   "find": "by canon law. If civil",
+   "replace": "by canon law.\n\nIf civil",
+   "page": 593,
+   "why": "line break"
   },
   {
    "n": 2384,
@@ -5490,11 +7548,60 @@
    "why": "punctuation"
   },
   {
+   "n": 2384,
+   "find": "and permanent adultery: If a",
+   "replace": "and permanent adultery:\n\nIf a",
+   "page": 593,
+   "why": "line break"
+  },
+  {
    "n": 2387,
    "find": "the moral law.\" [Conjugal]",
    "replace": "the moral law. \"[Conjugal]",
    "page": 594,
    "why": "punctuation"
+  },
+  {
+   "n": 2390,
+   "find": "involving sexual intimacy. The expression",
+   "replace": "involving sexual intimacy.\n\nThe expression",
+   "page": 595,
+   "why": "line break"
+  },
+  {
+   "n": 2390,
+   "find": "in the future? The expression",
+   "replace": "in the future?\n\nThe expression",
+   "page": 595,
+   "why": "line break"
+  },
+  {
+   "n": 2409,
+   "find": "hardship of another. The following",
+   "replace": "hardship of another.\n\nThe following",
+   "page": 599,
+   "why": "line break"
+  },
+  {
+   "n": 2411,
+   "find": "justice is possible. One distinguishes",
+   "replace": "justice is possible.\n\nOne distinguishes",
+   "page": 599,
+   "why": "line break"
+  },
+  {
+   "n": 2412,
+   "find": "to their owner: Jesus blesses",
+   "replace": "to their owner:\n\nJesus blesses",
+   "page": 599,
+   "why": "line break"
+  },
+  {
+   "n": 2423,
+   "find": "guidelines for action: Any system",
+   "replace": "guidelines for action:\n\nAny system",
+   "page": 602,
+   "why": "line break"
   },
   {
    "n": 2425,
@@ -5511,11 +7618,144 @@
    "why": "punctuation"
   },
   {
+   "n": 2445,
+   "find": "their selfish use: Come now,",
+   "replace": "their selfish use:\n\nCome now,",
+   "page": 607,
+   "why": "line break"
+  },
+  {
+   "n": 2446,
+   "find": "gift of charity\": When we",
+   "replace": "gift of charity\":\n\nWhen we",
+   "page": 607,
+   "why": "line break"
+  },
+  {
    "n": 2447,
    "find": "who has none and he who",
    "replace": "who has none; and he who",
    "page": 608,
    "why": "punctuation"
+  },
+  {
+   "n": 2447,
+   "find": "pleasing to God: He who",
+   "replace": "pleasing to God:\n\nHe who",
+   "page": 608,
+   "why": "line break"
+  },
+  {
+   "n": 2449,
+   "find": "are his brethren: When her",
+   "replace": "are his brethren:\n\nWhen her",
+   "page": 609,
+   "why": "line break"
+  },
+  {
+   "n": 2472,
+   "find": "makes it known. All Christians",
+   "replace": "makes it known.\n\nAll Christians",
+   "page": 613,
+   "why": "line break"
+  },
+  {
+   "n": 2474,
+   "find": "letters of blood: Neither the",
+   "replace": "letters of blood:\n\nNeither the",
+   "page": 613,
+   "why": "line break"
+  },
+  {
+   "n": 2478,
+   "find": "a favorable way: Every good",
+   "replace": "a favorable way:\n\nEvery good",
+   "page": 614,
+   "why": "line break"
+  },
+  {
+   "n": 2494,
+   "find": "justice, and solidarity: The proper",
+   "replace": "justice, and solidarity:\n\nThe proper",
+   "page": 617,
+   "why": "line break"
+  },
+  {
+   "n": 2500,
+   "find": "beauty created them.\" [Wisdom] is",
+   "replace": "beauty created them.\"\n\n[Wisdom] is",
+   "page": 619,
+   "why": "line break"
+  },
+  {
+   "n": 2516,
+   "find": "the spiritual battle: For the",
+   "replace": "the spiritual battle:\n\nFor the",
+   "page": 622,
+   "why": "line break"
+  },
+  {
+   "n": 2517,
+   "find": "and practicing temperance: Remain simple",
+   "replace": "and practicing temperance:\n\nRemain simple",
+   "page": 622,
+   "why": "line break"
+  },
+  {
+   "n": 2518,
+   "find": "and of faith: The faithful",
+   "replace": "and of faith:\n\nThe faithful",
+   "page": 623,
+   "why": "line break"
+  },
+  {
+   "n": 2520,
+   "find": "- by prayer: I thought",
+   "replace": "- by prayer:\n\nI thought",
+   "page": 623,
+   "why": "line break"
+  },
+  {
+   "n": 2536,
+   "find": "his temporal goods: When the",
+   "replace": "his temporal goods:\n\nWhen the",
+   "page": 626,
+   "why": "line break"
+  },
+  {
+   "n": 2537,
+   "find": "keep this commandment\": ... merchants who",
+   "replace": "keep this commandment\":\n\n… merchants who",
+   "page": 627,
+   "why": "line break"
+  },
+  {
+   "n": 2538,
+   "find": "entered the world\": We fight",
+   "replace": "entered the world\":\n\nWe fight",
+   "page": 627,
+   "why": "line break"
+  },
+  {
+   "n": 2539,
+   "find": "a mortal sin: St. Augustine",
+   "replace": "a mortal sin:\n\nSt. Augustine",
+   "page": 627,
+   "why": "line break"
+  },
+  {
+   "n": 2540,
+   "find": "live in humility: Would you",
+   "replace": "live in humility:\n\nWould you",
+   "page": 628,
+   "why": "line break"
+  },
+  {
+   "n": 2546,
+   "find": "Kingdom already belongs: The Word",
+   "replace": "Kingdom already belongs:\n\nThe Word",
+   "page": 629,
+   "why": "line break"
   },
   {
    "n": 2550,
@@ -5525,10 +7765,24 @@
    "why": "punctuation"
   },
   {
+   "n": 2550,
+   "find": "communion with God: There will",
+   "replace": "communion with God:\n\nThere will",
+   "page": 630,
+   "why": "line break"
+  },
+  {
    "n": 2559,
    "find": "prayer, Only",
    "replace": "prayer. Only",
    "page": 633,
+   "why": "punctuation"
+  },
+  {
+   "n": 2569,
+   "find": "\"walking with God. Noah",
+   "replace": "\"walking with God.\" Noah",
+   "page": 637,
    "why": "punctuation"
   },
   {
@@ -5546,6 +7800,20 @@
    "why": "spelling (as printed)"
   },
   {
+   "n": 2589,
+   "find": "\"Praise the Lord!\" What is",
+   "replace": "\"Praise the Lord!\"\n\nWhat is",
+   "page": 642,
+   "why": "line break"
+  },
+  {
+   "n": 2604,
+   "find": "given \"as well.\" The priestly",
+   "replace": "given \"as well.\"\n\nThe priestly",
+   "page": 645,
+   "why": "line break"
+  },
+  {
    "n": 2605,
    "find": "in Paradise\", \"Woman",
    "replace": "in Paradise\"; \"Woman",
@@ -5560,11 +7828,25 @@
    "why": "punctuation"
   },
   {
+   "n": 2606,
+   "find": "earth your possession.\" The Letter",
+   "replace": "earth your possession.\"\n\nThe Letter",
+   "page": 646,
+   "why": "line break"
+  },
+  {
    "n": 2607,
    "find": "the theological path",
    "replace": "the theologal path",
    "page": 647,
    "why": "word"
+  },
+  {
+   "n": 2616,
+   "find": "go in peace.\" St. Augustine",
+   "replace": "go in peace.\"\n\nSt. Augustine",
+   "page": 649,
+   "why": "line break"
   },
   {
    "n": 2648,
@@ -5586,6 +7868,13 @@
    "replace": "the Curé of Ars",
    "page": 658,
    "why": "spelling"
+  },
+  {
+   "n": 2670,
+   "find": "every important action. If the",
+   "replace": "every important action.\n\nIf the",
+   "page": 661,
+   "why": "line break"
   },
   {
    "n": 2671,
@@ -5623,11 +7912,25 @@
    "why": "punctuation"
   },
   {
+   "n": 2684,
+   "find": "the Holy Spirit. The Spirit",
+   "replace": "the Holy Spirit.\n\nThe Spirit",
+   "page": 665,
+   "why": "line break"
+  },
+  {
    "n": 2686,
    "find": "the theological life",
    "replace": "the theologal life",
    "page": 666,
    "why": "word"
+  },
+  {
+   "n": 2690,
+   "find": "tradition of prayer. According to",
+   "replace": "tradition of prayer.\n\nAccording to",
+   "page": 666,
+   "why": "line break"
   },
   {
    "n": 2697,
@@ -5700,6 +8003,27 @@
    "why": "word"
   },
   {
+   "n": 2737,
+   "find": "shall be heard. Do not",
+   "replace": "shall be heard.\n\nDo not",
+   "page": 676,
+   "why": "line break"
+  },
+  {
+   "n": 2743,
+   "find": "hands of God: It is",
+   "replace": "hands of God:\n\nIt is",
+   "page": 678,
+   "why": "line break"
+  },
+  {
+   "n": 2744,
+   "find": "far from him? Nothing is",
+   "replace": "far from him?\n\nNothing is",
+   "page": 678,
+   "why": "line break"
+  },
+  {
    "n": 2757,
    "find": "(1 Thes 5:17)",
    "replace": "(1 Thess 5:17)",
@@ -5714,11 +8038,39 @@
    "why": "words (current translation)"
   },
   {
+   "n": 2762,
+   "find": "St. Augustine concludes: Run through",
+   "replace": "St. Augustine concludes:\n\nRun through",
+   "page": 682,
+   "why": "line break"
+  },
+  {
+   "n": 2763,
+   "find": "Lord is illuminated: The Lord's",
+   "replace": "Lord is illuminated:\n\nThe Lord's",
+   "page": 682,
+   "why": "line break"
+  },
+  {
    "n": 2768,
    "find": "for the common body.",
    "replace": "for the common Body.",
    "page": 683,
    "why": "capital"
+  },
+  {
+   "n": 2768,
+   "find": "in liturgical prayer: [The Lord]",
+   "replace": "in liturgical prayer:\n\n[The Lord]",
+   "page": 683,
+   "why": "line break"
+  },
+  {
+   "n": 2768,
+   "find": "the common Body. In all",
+   "replace": "the common Body.\n\nIn all",
+   "page": 683,
+   "why": "line break"
   },
   {
    "n": 2769,
@@ -5735,11 +8087,60 @@
    "why": "punctuation"
   },
   {
+   "n": 2777,
+   "find": "has given me.\" Our awareness",
+   "replace": "has given me.\"\n\nOur awareness",
+   "page": 685,
+   "why": "line break"
+  },
+  {
+   "n": 2779,
+   "find": "him to us. The expression",
+   "replace": "him to us.\n\nThe expression",
+   "page": 686,
+   "why": "line break"
+  },
+  {
+   "n": 2782,
+   "find": "us other \"Christs.\" God, indeed,",
+   "replace": "us other \"Christs.\"\n\nGod, indeed,",
+   "page": 687,
+   "why": "line break"
+  },
+  {
    "n": 2783,
    "find": "the grace of Christ all your sins",
    "replace": "the grace of Christ: all your sins",
    "page": 687,
    "why": "punctuation"
+  },
+  {
+   "n": 2783,
+   "find": "Father to us. O man,",
+   "replace": "Father to us.\n\nO man,",
+   "page": 687,
+   "why": "line break"
+  },
+  {
+   "n": 2785,
+   "find": "Father is revealed. [The prayer",
+   "replace": "Father is revealed.\n\n[The prayer",
+   "page": 688,
+   "why": "line break"
+  },
+  {
+   "n": 2794,
+   "find": "and contrite heart. \"Our Father",
+   "replace": "and contrite heart.\n\n\"Our Father",
+   "page": 690,
+   "why": "line break"
+  },
+  {
+   "n": 2796,
+   "find": "our heavenly dwelling.\" [Christians] are",
+   "replace": "our heavenly dwelling.\"\n\n[Christians] are",
+   "page": 691,
+   "why": "line break"
   },
   {
    "n": 2803,
@@ -5749,11 +8150,39 @@
    "why": "word"
   },
   {
+   "n": 2813,
+   "find": "our first petition. By whom",
+   "replace": "our first petition.\n\nBy whom",
+   "page": 694,
+   "why": "line break"
+  },
+  {
+   "n": 2814,
+   "find": "and our prayer: We ask",
+   "replace": "and our prayer:\n\nWe ask",
+   "page": 694,
+   "why": "line break"
+  },
+  {
+   "n": 2816,
+   "find": "to his Father: It may",
+   "replace": "to his Father:\n\nIt may",
+   "page": 695,
+   "why": "line break"
+  },
+  {
    "n": 2817,
    "find": "Indeed as",
    "replace": "Indeed, as",
    "page": 695,
    "why": "punctuation"
+  },
+  {
+   "n": 2817,
+   "find": "\"Come, Lord Jesus.\" Even if",
+   "replace": "\"Come, Lord Jesus.\"\n\nEven if",
+   "page": 695,
+   "why": "line break"
   },
   {
    "n": 2818,
@@ -5770,11 +8199,32 @@
    "why": "punctuation"
   },
   {
+   "n": 2819,
+   "find": "and the Spirit. Only a",
+   "replace": "and the Spirit.\n\nOnly a",
+   "page": 696,
+   "why": "line break"
+  },
+  {
    "n": 2825,
    "find": "Consider how Jesus Christ] teaches",
    "replace": "Consider how [Jesus Christ] teaches",
    "page": 697,
    "why": "punctuation"
+  },
+  {
+   "n": 2825,
+   "find": "to the Father. In committing",
+   "replace": "to the Father.\n\nIn committing",
+   "page": 697,
+   "why": "line break"
+  },
+  {
+   "n": 2827,
+   "find": "his will alone: It would",
+   "replace": "his will alone:\n\nIt would",
+   "page": 698,
+   "why": "line break"
   },
   {
    "n": 2830,
@@ -5789,6 +8239,20 @@
    "replace": "children of God:\n\nTo those who seek",
    "page": 699,
    "why": "paragraph break"
+  },
+  {
+   "n": 2836,
+   "find": "\"today\" of God. If you",
+   "replace": "\"today\" of God.\n\nIf you",
+   "page": 700,
+   "why": "line break"
+  },
+  {
+   "n": 2837,
+   "find": "celebrated each day. The Eucharist",
+   "replace": "celebrated each day.\n\nThe Eucharist",
+   "page": 701,
+   "why": "line break"
   },
   {
    "n": 2845,
@@ -5810,6 +8274,20 @@
    "replace": "above all in the Eucharist.\n\nGod does not accept",
    "page": 703,
    "why": "paragraph break"
+  },
+  {
+   "n": 2847,
+   "find": "fruit is death. God does",
+   "replace": "fruit is death.\n\nGod does",
+   "page": 704,
+   "why": "line break"
+  },
+  {
+   "n": 2852,
+   "find": "the evil one.\" The Lord",
+   "replace": "the evil one.\"\n\nThe Lord",
+   "page": 705,
+   "why": "line break"
   },
   {
    "n": 2854,
