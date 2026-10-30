@@ -34,9 +34,11 @@ def _read_root(path: str):
         return ET.fromstring(_strip_doctype(f.read()))
 
 
-def _make_doc(filename, author, title, chapters):
-    return make_doc(collection="church-fathers", filename=filename,
-                    author=author, title=title, chapters=chapters)
+def _make_doc(filename, author, title, chapters, work=None):
+    """`work` is the div holding the work when the file holds several."""
+    key = f"church-fathers/{filename}" + (f"#{work.get('id')}" if work is not None else "")
+    return make_doc(collection="church-fathers", filename=filename, author=author,
+                    title=title, chapters=chapters, source_key=key)
 
 
 def build_documents(path: str) -> list[Document]:
@@ -61,7 +63,8 @@ def build_documents(path: str) -> list[Document]:
         # div1 = work; author is always Augustine.
         for d1 in div1s:
             title = smart_title_case((d1.get("title") or "").strip())
-            d = _make_doc(filename, "Augustine", title, list(iter_chapters(d1, parent_map)))
+            d = _make_doc(filename, "Augustine", title, list(iter_chapters(d1, parent_map)),
+                          work=d1)
             if d:
                 docs.append(d)
     else:
@@ -72,11 +75,13 @@ def build_documents(path: str) -> list[Document]:
             if works:
                 for w in works:
                     title = smart_title_case((w.get("title") or "").strip()) or father
-                    d = _make_doc(filename, father, title, list(iter_chapters(w, parent_map)))
+                    d = _make_doc(filename, father, title, list(iter_chapters(w, parent_map)),
+                                  work=w)
                     if d:
                         docs.append(d)
             else:
-                d = _make_doc(filename, father, father, list(iter_chapters(d1, parent_map)))
+                d = _make_doc(filename, father, father, list(iter_chapters(d1, parent_map)),
+                              work=d1)
                 if d:
                     docs.append(d)
     return docs

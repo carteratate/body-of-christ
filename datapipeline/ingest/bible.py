@@ -29,10 +29,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import settings  # noqa: E402
 from itertools import groupby  # noqa: E402
-from identity import document_id, anchor as make_anchor, slugify  # noqa: E402
+from identity import anchor as make_anchor, slugify  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
 from ingest.common import split_display_passage  # noqa: E402
+from ingest.pieces import Segment, name_pieces  # noqa: E402
+from registry import ANCHOR_SCHEME, resolve_document_id  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Canonical book name → testament
@@ -545,6 +547,12 @@ def slugify_book(name: str) -> str:
     return slugify(name)
 
 
+def _verse_segments(verse_tuples: list[tuple[int, int, str]]) -> list[Segment]:
+    """Each verse as `_join_with_verse_markers` writes it, named `<chapter>-<verse>`."""
+    return [Segment(f"{ch}-{v}", text if i == 0 else "{{v:%d}} %s" % (v, text))
+            for i, (ch, v, text) in enumerate(verse_tuples)]
+
+
 def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> list[Document]:
     """Build one Document per book; passages = pericope sections clamped to chapters."""
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -554,7 +562,8 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
 
     docs: list[Document] = []
     for name, book in sorted(books.items()):
-        did = document_id("bible", translation, name)
+        did = resolve_document_id("bible", f"bible/{book.book_code}",
+                                  ("bible", translation, name))
         book_slug = slugify_book(name)
         verse_map = {(v.chapter, v.verse): v.text for v in book.verses}
         passages: list[Passage] = []
@@ -573,15 +582,16 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
                 ref = _format_reference(name, chapter, first_v, chapter, chap_verses[-1][1])
                 base_anchor = make_anchor(book_slug, chapter, first_v)
                 pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
-                for j, piece in enumerate(pieces):
-                    sfx = f"-{j + 1}" if len(pieces) > 1 else ""
+                named = name_pieces(base_anchor, content, pieces, _verse_segments(chap_verses))
+                for piece, (anchor, units) in zip(pieces, named):
                     passages.append(Passage(
-                        content=piece, reference=ref, anchor=base_anchor + sfx,
+                        content=piece, reference=ref, anchor=anchor,
                         chapter_key=make_anchor(book_slug, chapter),
                         chapter_label=f"{name} {chapter}", position=pos,
                         unit_label=str(first_v),
                         metadata={"pericope": p.title, "testament": book.testament,
                                   "translation": translation},
+                        source_units=units,
                     ))
                     pos += 1
 
@@ -597,18 +607,22 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
                 first_v = cv[0][0][1]
                 base_anchor = make_anchor(book_slug, chapter, first_v)
                 pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
-                for j, piece in enumerate(pieces):
-                    sfx = f"-{j + 1}" if len(pieces) > 1 else ""
+                named = name_pieces(base_anchor, content, pieces, _verse_segments(cv_as_triples))
+                for piece, (anchor, units) in zip(pieces, named):
                     passages.append(Passage(
                         content=piece, reference=f"{name} {chapter}",
-                        anchor=base_anchor + sfx,
+                        anchor=anchor,
                         chapter_key=make_anchor(book_slug, chapter),
                         chapter_label=f"{name} {chapter}", position=pos,
                         unit_label=str(first_v),
                         metadata={"testament": book.testament, "translation": translation},
+                        source_units=units,
                     ))
                     pos += 1
 
         docs.append(Document(id=did, collection="bible", title=name, translation=translation,
-                             metadata={"testament": book.testament}, passages=passages))
+                             metadata={"testament": book.testament,
+                                       "source_key": f"bible/{book.book_code}",
+                                       "anchor_scheme": ANCHOR_SCHEME},
+                             passages=passages))
     return docs
