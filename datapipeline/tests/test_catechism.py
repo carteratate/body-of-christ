@@ -882,3 +882,13 @@ def test_the_vendored_corrections_all_apply():
     for item in paragraphs.values():
         for note in item["footnotes"]:
             assert 0 < note["at"] <= len(item["text"])
+
+
+@pytest.mark.parametrize("find,replace,at,want", [
+    ("'came from God', 'descended", "\"came from God,\" \"descended", 16, 16),   # after ,"
+    ("Holy Spirit\" Before", "Holy Spirit.\" Before", 12, 13),                   # after ."
+    ("social action and", "social action, and", 13, 14),                         # after the new comma
+    ("then \"I AM\".", "then 'I Am.'\"", 4, 4),                                   # before the words: unmoved
+])
+def test_a_marker_inside_corrected_words_keeps_its_place(find, replace, at, want):
+    assert _cu._move_offset(at, 0, find, replace) == want
