@@ -1,16 +1,5 @@
 {
   "since": "2026-09-29",
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
-  "approved_applies": [
-    {
-      "collection": "catechism",
-      "release": "catechism-us-2026-10-30",
-      "steps": [
-        "apply"
-      ],
-      "reason": "Publish the Catechism's US-edition text (#279, #285, #294) ahead of the Phase 4 republish, with today's writer. Carter accepted the identity churn on 30 Oct 2026: 53 live passage ids removed (22 search-history rows in 17 searches, no bookmarks or reading positions) and 41 opening differently.",
-      "approved_by": "Carter",
-      "pr": 295
-    }
-  ]
+  "approved_applies": []
 }
