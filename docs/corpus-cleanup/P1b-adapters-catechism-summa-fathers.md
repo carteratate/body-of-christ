@@ -30,6 +30,8 @@ A note on the task list. The request placed the Anselm, Boethius and Bernard fix
 
 ### 1.6a. Catechism: restore dropped lines
 
+> **Covered by #279** (Decision log "Catechism US edition (#279)", 28 Oct 2026). #279 replaces every numbered paragraph's whole text with the US edition, aligned to `ccc.json` by paragraph number rather than by `is_section_header`, so every word reaches a passage. The method below is superseded. 0.1d's two checks for this item are routed to #279.
+
 - **Type:** PR
 - **Depends on:** 0.4, 2.1, 0.1a, 0.1c, 0.1d (its `coverage.catechism.paragraph_words` and `sentinel.ccc_1471_definition` entries). Not on 1.10, so it may be the first Phase 1 PR (Decision log "Catechism dropped lines (1.6a)", decided by Carter on 9 Oct 2026).
 - **Goal:** Every word of every numbered Catechism paragraph reaches a passage. "What is an indulgence?" finds the Catechism's definition in CCC 1471, CCC 2053 no longer stops at "give to the", and the baptismal and ordination prayers the Catechism quotes are in the text.
@@ -56,6 +58,8 @@ A note on the task list. The request placed the Anselm, Boethius and Bernard fix
 ---
 
 ### 1.6. Catechism adapter fixes
+
+> **Partly covered by #279** (Decision log "Catechism US edition (#279)" and "CCC 2267 ahead of its history passage (#279)", 28 Oct 2026). Done by #279: the 2018 text of CCC 2267 (the press.vatican.va override file below is not needed), sentence case (`fix_sentence_case` is not needed; #279's report counts what remains), and heading text inside passages (the corrections table is now `datapipeline/ingest/catechism_headings.py`). Still this item: chapters and their labels, the `§N` markers, references and "(part)", and the 1997 text as its `/history-1997` passage, taken from the vendored `ccc.json`. "1.6a" in Depends on now means #279. New constraint: passages carry `metadata.footnotes[].at`, offsets into `content`, so the `§N` markers and any 1.10 change must rebuild them from the final content (`ingest/catechism.py`, `_footnotes_for` and `_split_notes`) and test that each marker still follows the same word. The 30-sentence vatican.va check is replaced by #279's 30-paragraph check against the USCCB's edition.
 
 - **Type:** PR
 - **Depends on:** 0.4, 2.1, 0.1a, 0.1c, 1.6a (complete paragraph text, C-03), 1.10 (1.10c's `piece_reference` in particular)

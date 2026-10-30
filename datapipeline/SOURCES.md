@@ -6,7 +6,7 @@ Status of each collection's source material and its publication to both stores
 | Collection | Source | Re-published (both stores) | Notes |
 |---|---|---|---|
 | **bible** | local `sources/bible/eng-web-c_usfm/` (+ pericope JSON) | ✅ | WEB-C; passage = pericope clamped to chapter |
-| **catechism** | local `sources/catechism/ccc.json` (nossbigg/catechism-ccc-json) | ✅ | three-tier chunking; TOC fragments dropped |
+| **catechism** | structure: local `sources/catechism/ccc.json` (nossbigg/catechism-ccc-json, vatican.va's English); words and footnotes: local `sources/catechism/us-edition/ccc-us.json`, the US edition from Catholic Cross Reference's Catechism search, built once by `scripts/fetch_us_catechism.py` (#279), then corrected to the USCCB's current online book by the reviewed table `ingest/catechism_corrections.json` (each entry checked against the page image) | ✅ | three-tier chunking; TOC fragments dropped; US text aligned by paragraph number (`ingest/catechism_us.py`); footnotes in `metadata.footnotes` |
 | **church-fathers** | local `sources/church-fathers/*.xml` (vendored CCEL ANF/NPNF ThML) | ✅ | one document per (father, work) (128); book-structured works (City of God, etc.) flattened to `Book N · Chapter M` |
 | **summa** | local `sources/summa/summa.xml` (ThML) | ✅ | one passage per article part; apparatus expanded |
 | **encyclicals** | local `sources/encyclicals/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per encyclical (131); one passage per §; section or §-bucket chapters; footnotes stripped |

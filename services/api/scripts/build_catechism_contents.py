@@ -19,22 +19,22 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 SOURCE = ROOT / "datapipeline" / "sources" / "catechism" / "ccc.json"
 OUTPUT = Path(__file__).resolve().parents[1] / "app" / "catechism_contents.json"
 
-# Where the source's heading text is wrong. Section Two of Part One prints only its first
-# sub-heading ("I. The Creeds"), which heads the section's own paragraphs (§§185–197); the
-# section's title is restored and the sub-heading becomes a child node.
-_TITLE_FIXES = {
-    "toc-45": "SECTION TWO THE PROFESSION OF THE CHRISTIAN FAITH",
-    "toc-207": "SECTION ONE MAN'S VOCATION: LIFE IN THE SPIRIT",
-}
-_OWN_HEADING = {"toc-45": "I. The Creeds"}
-_TEXT_FIXES = (("AGAlN", "AGAIN"),)
-_UNNUMBERED = {"toc-44"}
+# The source's heading-text corrections live in the datapipeline, shared with the
+# Catechism adapter (#279): datapipeline/ingest/catechism_headings.py.
+sys.path.insert(0, str(ROOT / "datapipeline" / "ingest"))
+from catechism_headings import (  # noqa: E402
+    OWN_HEADING as _OWN_HEADING,
+    TEXT_FIXES as _TEXT_FIXES,
+    TITLE_FIXES as _TITLE_FIXES,
+    UNNUMBERED as _UNNUMBERED,
+)
 
 _NUMBER_WORDS = r"ONE|TWO|THREE|FOUR"
 _STRUCTURE = (

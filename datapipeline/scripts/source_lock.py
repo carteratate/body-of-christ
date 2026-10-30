@@ -62,6 +62,9 @@ _GLOB_SELECTED = {
 _UNMANIFESTED_URLS = {
     "bible/eng-web-c_usfm/": "https://ebible.org/Scriptures/eng-web-c_usfm.zip",
     "catechism/ccc.json": "https://github.com/nossbigg/catechism-ccc-json",
+    # The US edition's words and footnotes (#279), built by scripts/fetch_us_catechism.py
+    # from the site's Catechism search.
+    "catechism/us-edition/ccc-us.json": "https://www.catholiccrossreference.online/catechism/",
     # Both confirmed on 4 Oct 2026 by downloading the URL and matching the locked sha256.
     "bible/PericopeGroupedKJVVerses.json":
         "https://huggingface.co/datasets/JWBickel/KJV_Pericopes/resolve/main/"

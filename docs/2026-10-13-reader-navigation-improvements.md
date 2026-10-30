@@ -177,6 +177,11 @@ link paragraphs to each other. Both are much of the reason people read it online
 what `sources/catechism/ccc.json` carries before scoping this. If it lacks them, this
 needs a source decision and belongs in the corpus plan.
 
+Update 28 Oct 2026: the footnotes are settled by #279. Each passage carries the US
+edition's notes in `metadata.footnotes`, and search and bookmark cards show them. Showing
+them in the reader waits on the reader (the Catechism is excerpt-only, #265).
+Cross-references are still open: the US source shows them, but #279 does not keep them.
+
 ## Other collections that should get a tree
 
 The contents-tree contract is generic (any depth, any node kind), so other collections can

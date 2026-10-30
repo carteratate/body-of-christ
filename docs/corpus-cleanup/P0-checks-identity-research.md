@@ -579,7 +579,7 @@ Conventions used in this file:
     - `no_ligatures` (report): æ, œ, Æ or Œ in content, author or title.
     - `summa_bracket_numbers` (report): `\[\d+\]` in Summa content.
   - Coverage and sentinels, in 0.1a's framework:
-    - `coverage.catechism.paragraph_words:<n>`: for every CCC number, the words of its source paragraphs, joined across printed lines, are at least 99% present in the passages that cite it.
+    - `coverage.catechism.paragraph_words:<n>`: for every CCC number, the words of its source paragraphs, joined across printed lines, are at least 99% present in the passages that cite it. Since #279 the source words are the US edition's (`us-edition/ccc-us.json`), and #279 fixes what this check finds; if #279 merges first, add it passing, not as a strict xfail.
     - `sentinel.ccc_1471_definition`: the sentence that opens "An indulgence is a remission before God" is in a passage, checked by hash and length, with no text in the test.
     - `coverage.bible.superscriptions`: the extractor counts `\d` as body text, and each title reaches the passage holding its psalm's first verse. One entry, with `units` listing the 117 psalms.
     - `sentinel.sirach_prologue`: the `\ip` paragraphs after `\is1 The Prologue` in `46-SIReng-web-c.usfm` reach a passage. WEB-C's own `\ip` introductions stay apparatus.

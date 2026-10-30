@@ -3,7 +3,7 @@
   "apostolic-exhortations": "feat/coverage-checks cfee751",
   "bible": "feat/coverage-checks cfee751",
   "canon-law": "feat/coverage-checks cfee751",
-  "catechism": "feat/coverage-checks cfee751",
+  "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/coverage-checks cfee751",
   "councils": "feat/coverage-checks cfee751",
   "encyclicals": "feat/coverage-checks cfee751",
@@ -742,10 +742,10 @@
    "covered_chars": 9580,
    "pct": 100.0
   },
-  "catechism/ccc.json": {
-   "body_chars": 1217289,
-   "covered_chars": 1204648,
-   "pct": 98.96
+  "catechism/us-edition/ccc-us.json": {
+   "body_chars": 1220548,
+   "covered_chars": 1220548,
+   "pct": 100.0
   },
   "church-fathers/apostolic fathers.xml": {
    "body_chars": 2287283,
@@ -2459,10 +2459,10 @@
   },
   "9679c400-d314-5394-b916-f6fc27b50104": {
    "collection": "catechism",
-   "source_file": "ccc.json",
-   "body_chars": 1217289,
-   "covered_chars": 1204648,
-   "pct": 98.96
+   "source_file": "us-edition/ccc-us.json",
+   "body_chars": 1220548,
+   "covered_chars": 1220548,
+   "pct": 100.0
   },
   "0066869a-28fb-5274-a847-c4d3e88a948e": {
    "collection": "church-fathers",

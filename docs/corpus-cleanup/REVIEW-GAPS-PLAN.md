@@ -53,7 +53,7 @@ Nothing else blocks 2.1. R7 is research and can start the same day as 2.1; it bl
 |---|---|---|---|---|---|---|
 | C-01 rejected voices without a role | crit. | pre-2.1 spec change, plus two new items | 2.1 defines `Passage.voice`; 2.2a adds `chunks.voice`; 2.2w stages it and writes it to the payload; **3.4** records the ranges; **2.4d** carries it to rerankers, explanation and card. 1.3a (Syllabus and Exsurge boundaries), 1.2a (list the Nestorius letter as "condemned text read at the council"), 1.2e (Constance in Schroeder), 1.7 (sets `voice` on objections), 1.8a and 1.8c (Octavius, Acts of Archelaus) consult it | 2.1 before P1. 3.4 after 2.1; its Constance ranges after 1.2e. 2.4d deployed before 4.1b | `roles.rejected_voice` (3.4), `roles.voice_reaches_model_inputs` (2.4d) | Q1 |
 | C-02 letters to Cyprian, one by Novatian | crit. | extension | 1.8c: one work per letter, credited to its sender ("Firmilian of Caesarea, to Cyprian"). 3.1: `rule-a` passage entries for Epistle XXX's 5 anchors, plus a research step (R1's method) on XXIX and on each sender. 3.2: credit wording | 1.8c in P1; 3.1 in P3 | `attribution.letter_sender` (0.1d, fixed_by 1.8c); 3.1 registry test that no Novatian passage stays active | default |
-| C-03 Catechism drops text, incl. CCC 1471 | crit. | new item | **1.6a**; 1.6 then works on complete text | first P1b PR; after 2.1 and 0.1d; before 1.6 | `coverage.catechism.paragraph_words:<n>`, `sentinel.ccc_1471_definition` (0.1d) | default |
+| C-03 Catechism drops text, incl. CCC 1471 | crit. | new item | **1.6a**, now covered by #279 (28 Oct 2026); 1.6 then works on complete text | first P1b PR; after 2.1 and 0.1d; before 1.6 | `coverage.catechism.paragraph_words:<n>`, `sentinel.ccc_1471_definition` (0.1d) | default |
 | C-04 Aquinas's answer mislabelled or mixed with an editor's | crit. | extension | 1.7: a reviewed corrections file for roles; editorial scope excluded before roles are assigned; III q.26 a.2's editorial section and I-II q.102 a.6 ad 10 (Nicolai's reconstruction) removed under rule G, their judgments copied first; the four "The contrary, however" sed contras separated | after R7 | `roles.summa.objection-after-replies`, `roles.summa.variant-sed-contra-boundaries`, `attribution.summa.editor-supplied-replies` | Q3, Q5 |
 | C-05 site adverts and secondary-source text | crit. | extension | 1.2b (Trent `sec-0/21`), 1.3a (Cum Sancta Mater `/4` tail; Exsurge `41/p3` braces and webmaster note as `rule-g-editorial` spans), 2.3 (Cum Sancta Mater year 1859) | P1, P2 | `health.R10_site_boilerplate`, block (0.1d) | none |
 | C-06 Syllabus §80 swallows other text | crit. | extension | 1.3a: the Syllabus body ends after §80; the appended extracts get removal entries | P1 | `structure.syllabus_body_boundary` (0.1d) | none |
@@ -103,8 +103,8 @@ Not added yet; each owning spec describes them. "Starts failing" means the check
 
 | Check id | Added by | Starts failing on master? | fixed_by |
 |---|---|---|---|
-| `coverage.catechism.paragraph_words:<n>` | 0.1d | yes, at least 43 paragraphs | 1.6a |
-| `sentinel.ccc_1471_definition` | 0.1d | yes | 1.6a |
+| `coverage.catechism.paragraph_words:<n>` | 0.1d | yes, at least 43 paragraphs; no once #279 merges | #279 (was 1.6a) |
+| `sentinel.ccc_1471_definition` | 0.1d | yes; no once #279 merges | #279 (was 1.6a) |
 | `coverage.bible.superscriptions` | 0.1d | yes, 138 titles in 117 psalms (one entry, `units` listed) | 1.4a |
 | `sentinel.sirach_prologue` | 0.1d | yes | 1.4a |
 | `health.R9_trailing_heading` | 0.1d | yes, about 950 passages; report-only until 1.3a, then block in papal collections | 1.3a |
