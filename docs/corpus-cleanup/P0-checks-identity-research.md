@@ -10,9 +10,9 @@ Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs
 4. Then the source checks, in this order: coverage and sequence tests (0.1a), health rules (0.1b, whose H2 rule uses 0.1a's `known_defects.json`), and the release report with its old-to-new remap (0.1c). 0.1c defines the remap vocabulary (`same`, `moved`, `split`, `merged`, `renumbered`, `removed`, D5) and fails any build where an unchanged anchor's text drifts without a redirect (D1).
 5. Then provenance: a tracked hash lock for every vendored file plus a public-facts rights inventory (0.2).
 6. Then identity: the work registry (2.1). It freezes today's 421 document IDs and today's passage IDs, moves anchors to source structure without re-keying any passage (D1), holds the rule A and attribution fields, and holds the one removal registry that every later removal is recorded in (D4). It also defines, in Python, the genre list, the work model and the passage fields `searchable`, `language`, `passage_author` and `voice`, so Phase 1 adapters can use them before Phase 2 (D11). Its PR is the first real user of the 0.1c remap.
-7. Then the baseline eval (0.3), run with judging against the live corpus before any live change (D7), and the Qdrant limits read (0.5) and storage snapshot (0.6), both read-only ops.
+7. Then the Qdrant limits read (0.5) and storage snapshot (0.6), both read-only ops. The baseline eval (0.3) was dropped by Carter on 30 Oct 2026; its section says why.
 8. Research items R1 to R7 need no code and can start on day one in parallel. R7 (added 9 Oct 2026) blocks 1.7. Each entry names the items it blocks. R1 blocks 3.1, 3.2 (the Refutation of All Heresies), 5.6a and 5.6b. R6 blocks 1.2c, 1.2d, 1.8d and every 5.x addition. R2 and R3 are specified only here; the P1a file points to them.
-9. Recommended merge order: 0.0, 0.4, 0.1a, 0.1b, 0.1c, 0.2, 2.1, 0.1d (checks for the 6 Oct review findings, before any Phase 1 PR), then the 0.3 run. Ops 0.5 and 0.6 any time before P4. R1 to R6 in parallel.
+9. Recommended merge order: 0.0, 0.4, 0.1a, 0.1b, 0.1c, 0.2, 2.1, 0.1d (checks for the 6 Oct review findings, before any Phase 1 PR). Ops 0.5 and 0.6 any time before P4. R1 to R6 in parallel.
 10. Nothing in P0 to P3 writes to live data (D7). The one possible exception is retiring On the Incarnation (1.8d) before P4, and only if Carter approves it.
 11. Evidence below was gathered on 29 Sep 2026 from master at `5475c49`, a fresh clone in a scratch directory, the vendored sources, and read-only SELECTs against Supabase project hvmgffvimqgiejmxwhwq.
 
@@ -618,51 +618,16 @@ Conventions used in this file:
 
 ---
 
-### 0.3. Baseline eval run
+### 0.3. Baseline eval run (dropped)
 
-- **Type:** PR (runner changes and question file), then ops (a Carter-approved run)
-- **Depends on:** 0.0. The run must happen before any live change (D7), which includes the possible early retire of On the Incarnation (1.8d), not only the P4 apply.
-- **Goal:** A measured "before" picture of search on today's live corpus, so 4.2 can show what the cleanup improved and what it cost users (removed works, changed rankings). 4.2 compares judge scores, so the baseline is judged too. It uses the existing 80-question set plus new targeted questions for the Vatican II recovery, the other repairs, and the removals. It never uses stored user queries.
-- **Current state:**
-  - `.gitignore` ignores `docs/eval/*` except `ROUND3_REPORT.md` and `eval80-round3-final.jsonl`; `luna6-cost-and-quality-2026-09-23.md` is also tracked. The per-query artifacts with passage IDs exist only on Carter's Mac.
-  - The "gold sets" are question sets with LLM-judge scores, not gold passage IDs. `eval80-round3-final.jsonl` has 80 rows over collections bible, catechism, church-fathers, encyclicals, summa at quota 4; per pipeline it stores `top` as `rank, collection, reference, score` without passage IDs. The 80 questions are `QUERIES` in `services/api/scripts/run_eval_suite.py` (80 entries). Passage IDs appear only in the gitignored artifacts (`shared.candidate_pools[<pipeline>][<collection>][].chunk_id`).
-  - The runner (`run_eval_suite.py`) uses `shared_runner.capture` and `replay` and the judge, and writes nothing to the database (no INSERT in `app/rag/compare/`, `app/rag/pipelines/` or `app/rag/steps/`; the HTTP lab's `compare/persist.py`, the only writer, was removed in October 2026). It fixes `COLLECTIONS` to the five above, so councils, canon-law, papal, apostolic-exhortations and medieval are never evaluated.
-  - Production pipeline is `hyde_cohere_luna_seats10t80` (`_PRODUCTION_PIPELINE` in `services/api/app/rag/pipeline.py`; it was `hyde_cohere_luna` until 12 Oct 2026, #235). The suite's default arms are production and its noise floor, `hyde_cohere_luna_seats10t80_hydesample`.
-  - Round 3 cost for `hyde_cohere_luna` over 80 queries was about $2.92 of retrieval spend at launch Luna prices, and the judge about $16.34 across three pipelines (computed from `eval80-round3-final.jsonl`). `ROUND3_REPORT.md` notes Luna's later price cut.
-- **Changes:**
-  - `run_eval_suite.py`:
-    - Add `chunk_id` and `document_id` to each `top` entry (lines 677-680) and raise `top` from 5 to `--top-k` (default 10).
-    - Add `--collections` (default the current five) and `--query-file <path>` to load questions from JSONL instead of the in-file list.
-    - Make judging work for a single pipeline. Read `judge.run` first. If it scores each result on its own, record those per-result scores as they are. If it only ranks pipelines against each other, add a single-pipeline mode that records a per-result relevance score and a per-question score in the same scale 4.2 will use. Record the judge model and prompt version in the run fingerprint, so 4.2 can refuse to compare against a baseline judged differently.
-    - Add `--no-judge` for local dry runs of the runner only. The baseline run does not use it.
-    - Include the live corpus fingerprint in the run fingerprint: passage count and sorted-document-ID md5, read with one SELECT at start.
-  - Add `docs/eval/targeted-2026-10.jsonl` (tracked; add a `!docs/eval/targeted-2026-10.jsonl` line to `.gitignore`). About 30 questions, each written fresh in neutral wording (not copied from the `searches` table or from the wording in the gap audit), with `collections`, `quota` (5, or 10 with one collection), and `expect` as structural patterns such as `{"document": "Nostra Aetate", "section": "4"}` or `{"collection": "church-fathers", "author": "Origen"}`. Groups:
-    - Vatican II recovery (8): Nostra Aetate 4; Dei Verbum 10 to 12; Unitatis Redintegratio 3 to 4; Lumen Gentium 25; Gaudium et Spes 16; Dignitatis Humanae 2; Ad Gentes 7; Presbyterorum Ordinis 16.
-    - Other councils (4): Trent session VI on justification; Trent session XIII on the Eucharist; Vatican I Pastor Aeternus chapter 4; Nicaea canons.
-    - Bible (3): Susanna (Daniel 13); Bel and the Dragon (Daniel 14); the Greek additions of Esther.
-    - Canon law (3): canon 112; canon 266; canon 1330.
-    - Catechism and Summa (3): CCC 2267; Summa I q.71 and q.72; one exact-paragraph question on a Catechism section known to sit inside a larger passage.
-    - Papal (2): In Dominico Agro; Quanta Cura.
-    - Removals (6), to record what users lose: Origen on the senses of Scripture; Tertullian on baptism or prayer; the Apostolic Constitutions on liturgy; Novatian on the Trinity; the Ignatian letters on the bishop and the Eucharist (genuine and forged letters both present today); Arnobius against the pagans.
-    - Non-English (1): a question whose best answer today is one of the Latin Stromata III passages.
-  - Output layout, all local and gitignored except the summaries: `docs/eval/baseline-2026-10/eval80.jsonl`, `targeted.jsonl`, artifacts directories, and a tracked `docs/eval/baseline-2026-10-summary.jsonl` holding per question the ranked `chunk_id`, `document_id`, `collection`, `reference`, retrieval score and judge score (no passage text), plus `expect` hit@5 and hit@10 for targeted questions.
-  - Add `services/api/scripts/baseline_summary.py`, which reads the two JSONL outputs and writes the tracked summary and a short `docs/eval/BASELINE-2026-10.md` (hit rates and mean judge scores per group, collections covered, degraded-query count, total spend split into retrieval and judge).
-  - Ops run, on Carter's approval, from `services/api` with its `.env`:
-    - `python scripts/run_eval_suite.py --pipelines hyde_cohere_luna_seats10t80 --top-k 10 --out ../../docs/eval/baseline-2026-10/eval80.jsonl`
-    - `python scripts/run_eval_suite.py --pipelines hyde_cohere_luna_seats10t80 --top-k 10 --query-file ../../docs/eval/targeted-2026-10.jsonl --collections all --out ../../docs/eval/baseline-2026-10/targeted.jsonl` (the `--query-file` rows carry their own collections; `--collections all` only widens the default)
-    - `python scripts/baseline_summary.py docs/eval/baseline-2026-10`
-- **Acceptance checks:**
-  - API tests in CI: `tests/test_run_eval_suite_cli.py::test_query_file_rows_validate` (fields, collections valid against `VALID_COLLECTIONS`, quota in 3, 4, 5, 10, focused rows have exactly one collection), `::test_top_entries_carry_chunk_and_document_ids` (with a stubbed `shared_runner`), `::test_single_pipeline_judging_records_per_result_scores` (with a stubbed judge), `::test_no_judge_skips_judge_init_and_calls`, `::test_fingerprint_includes_corpus_and_judge_fingerprint`.
-  - A lint test that no targeted question string appears in a fixture of the `searches` query texts is not possible without exporting user data, so instead the PR description states how the questions were written and Carter reviews them.
-  - After the ops run: 80 eval rows and about 30 targeted rows, all quality-eligible and all judged, or the ineligible ones listed; the summary file committed; `BASELINE-2026-10.md` shows, at minimum, that Nostra Aetate 4's continuation text is not retrievable today (expected hit 0) and which removed works appear in the top 10.
-  - The corpus fingerprint in the run equals the live fingerprint read at the time, showing no live change had happened yet.
-  - Total provider spend reported and under the ceiling Carter sets (estimate below).
-- **Production safety:** The runner reads live Postgres and Qdrant and writes nothing to them (verified by grep above). It calls OpenAI, Cohere and Anthropic (the judge) with eval questions only, as earlier rounds did. The script changes are in `services/api/scripts/`, which the Docker image does not copy (`COPY app/ app/` only, `services/api/Dockerfile:11`).
-- **Needs Carter:**
-  - Approve the targeted question list.
-  - Approve the spend. Estimate about $3 for the 80 retrieval runs at round-3 rates (less after the Luna price cut) and about $1.50 for the targeted set, plus judging. Round 3 judged 3 pipelines for about $16.34, so one pipeline is about $5.50 for the 80 questions and about $2 for the targeted set. Total about $12.
-  - Confirm the run happens before any live change, including an approved early retire of On the Incarnation (1.8d), while the live corpus is unchanged (the corpus fingerprint records it).
-- **Out of scope:** Pipeline changes, retrieval tuning (a separate parent after the new baseline). Replaying stored user searches. The 4.2 comparison itself.
+- **Status:** Dropped by Carter on 30 Oct 2026 (Decision log "Baseline eval (0.3)"). Nothing in this item is built or run, and no other item depends on it.
+- **What it was:** a judged run of the production pipeline over the 80-question round 3 set and about 30 new targeted questions, against the live corpus before any live change, so that 4.2 could compare judge scores before and after the republish. Estimated at about $12 in provider fees.
+- **Why it was dropped:**
+  - The republish is done for accuracy, not to improve search. Carter is committed to it, so a judged comparison could not change the go or no-go; it would only report how rankings moved.
+  - Accuracy is already measured without it: the coverage, health and review-finding checks (0.1a, 0.1b, 0.1d), the release report (0.1c), which lists every passage that changes, appears or goes, and 4.2's targeted assertions on staging and on production (removed works absent, recovered texts found, every collection answering).
+  - The Catechism's US-edition publish (#279, 30 Oct 2026) had already changed live data, so a run now would not have been a clean "before" in any case.
+- **What changed elsewhere:** 4.2 checks accuracy only and compares no judge scores. RF-1, the dedup threshold test that ran as an arm in 4.2, moves after the republish with the other retrieval follow-ups. D7 and the items that waited on "0.3's baseline run" (2.2b's ops steps, 2.2c, the early retirement of On the Incarnation in 1.8d and 2.2w) no longer wait on it.
+- **Accepted weakness:** a ranking regression that the targeted assertions do not cover goes unmeasured. If one is suspected after the republish, a judged comparison can still be run then, as a retrieval follow-up.
 
 ---
 

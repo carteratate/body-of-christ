@@ -527,7 +527,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   3. Restart the API to clear the one-hour `/sources` cache.
   4. If it must be undone within the window, `publish.py rollback --release incarnation-withdraw` restores the rows from the before-snapshot, deletes this release's tombstones, sets `searchable = true` again on the points listed in `flipped_points.json`, and switches no alias, because none was switched. The removal-registry entry is then closed (`closed_by`, 2.1) in a PR.
   5. After the rollback window, a PR removes the lock entry.
-- **Requires, in this order:** 0.3's baseline run (before any live change, D7); 2.2a's 0039 applied; 2.2b deployed with the alias in use; 2.4a and 2.4b deployed, so the reader shows the removal page and history shows the tombstone. Then the reviewed lock-file change above.
+- **Requires, in this order:** 2.2a's 0039 applied; 2.2b deployed with the alias in use; 2.4a and 2.4b deployed, so the reader shows the removal page and history shows the tombstone. Then the reviewed lock-file change above.
 - **User impact (29 Sep):** 1 retrieval and 0 bookmarks point at the document's passages. The retrieval row is kept and restores as a tombstone.
 - **At Phase 4:** 1.8d's PR closes the document-scope entry (`closed_by: "1.8d"`, 2.1; entries are never deleted), and the P4 build carries Robertson's text. The apply un-retires the document under the same ID, and the 47 old passage IDs get redirects to the new sections by 1.8d's mapping. 2.4a checks redirects before tombstones, so old links reach Robertson's text.
 
@@ -592,7 +592,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 ### 2.2c. search_vector rebuild
 
 - **Type:** PR (a migration, written and tested now), then ops: the migration is applied by hand in 4.0's approved window, before 4.1b step 1. It was a decision item until Carter chose the rebuild on 9 Oct 2026 (Decision log "Keyword search (2.2c, C-16)").
-- **Depends on:** 2.2a (the staging schema copies the live column definition), 2.2b (the searchable and retired predicates). Applied after 0.3's baseline and inside 4.0's window.
+- **Depends on:** 2.2a (the staging schema copies the live column definition), 2.2b (the searchable and retired predicates). Applied inside 4.0's window.
 - **Goal:** Keyword search stops treating Bible verse markers as words and can find a passage by its citation: "canon 1055" finds canon 1055, "CCC 2267" finds the passage holding that paragraph, and "John 3" or "Psalm 23" finds the chapter's passages. A verse inside a pericope ("John 3:16" in "John 3:1–21") is found by its chapter only; verse-level lookup needs the query parsed as a citation, which is a retrieval follow-up.
 - **Current state:**
   - `chunks.search_vector` is `tsvector GENERATED ALWAYS AS (to_tsvector('english', content)) STORED` with a GIN index (`supabase/migrations/0004_v2_documents_chunks.sql:26-27, 40`). Postgres recomputes it on every insert and every update of `content`.
@@ -612,8 +612,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - After the rewrite, the recreated `staging.chunks.search_vector` has the new generation expression.
   - The same test runs the migration on the server versions the repo supports (`SET EXPRESSION` and drop-and-add) or fails clearly.
   - A local timing of the rewrite on a restore of the snapshot's `chunks` (or the D8 dump), recorded for 4.0's window.
-  - 4.2's comparison covers the ranking change (the RF noise floor applies).
-- **Production safety:** Merging changes nothing. The rewrite runs only in 4.0's window with Carter's approval (NEEDS-CARTER section A); search and the reader pause while it runs, as for `VACUUM FULL`. Rollback is the previous expression applied the same way. The API works with either definition. Between 4.0 and the cutover, production keyword search already uses the new definition, before 4.2 has judged it; the change only removes marker tokens and adds reference matches at a lower weight, and the migration test plus a free rerun of the 0.3 targeted questions' keyword step on the restored dump are the check before the window.
+  - 4.2's keyword-search checks (canon 1055, CCC 2267, John 3) pass on staging and on production. 4.2 compares no rankings since 0.3 was dropped (30 Oct 2026).
+- **Production safety:** Merging changes nothing. The rewrite runs only in 4.0's window with Carter's approval (NEEDS-CARTER section A); search and the reader pause while it runs, as for `VACUUM FULL`. Rollback is the previous expression applied the same way. The API works with either definition. Between 4.0 and the cutover, production keyword search already uses the new definition, before 4.2 has checked it; the change only removes marker tokens and adds reference matches at a lower weight, and the migration test plus a free rerun of 4.2's keyword-search checks on the restored dump are the check before the window.
 - **Needs Carter:** Answered 9 Oct 2026: rebuild, in 4.0's window (Decision log). The run itself is approved with 4.0's window.
 - **Out of scope:** Changing the text search configuration, synonyms for archaic forms, title or author weighting, and `annotation_vector`.
 
@@ -965,7 +965,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     FROM rm GROUP BY grp ORDER BY grp;
     ```
 
-  - Baseline eval (0.3) targeted questions for each removed author return no passage from them after cutover (4.2).
+  - 4.2's targeted checks for each removed author return no passage from them after cutover.
   - PR description must include the registry diff, the per-target counts, the tombstone wordings, and the R1 outcome for the two Tertullian works.
 - **Production safety:** Merging changes only the registry and adapters; the publish lock (0.4) keeps them away from production until the Phase 4 apply. At the apply, removed rows are retired and stay in the tables, so every user foreign key survives, and 2.4a returns tombstones for them. 2.2w's rollback un-retires them with nothing lost. If this merged before 2.4a and 2.4b were deployed, nothing would happen, because nothing is applied until P4; the 4.1b checklist blocks cutover until both are live.
 - **Needs Carter:** R1's result for To His Wife and On the Apparel of Women. Approval of each tombstone sentence. The display policy for removed text (2.4a). The rule G final list after 1.8a to 1.8c.
