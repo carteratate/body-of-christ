@@ -18,7 +18,7 @@ import asyncpg
 
 import contents
 from health import refuse_block_violations
-from identity import passage_id
+from registry import resolve_passage_id
 from model import Document
 from writers import reader_writer
 
@@ -145,7 +145,7 @@ class CollectionPublicationRunner:
             self._write_guard(request)
         documents = self.build(request)
         built_ids = {
-            passage_id(document.id, passage.anchor)
+            resolve_passage_id(document.id, passage.anchor)
             for document in documents
             for passage in document.passages
         }

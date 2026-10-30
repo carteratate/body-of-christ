@@ -36,7 +36,7 @@ from typing import Any
 
 from cache import Cache, ENRICHMENT_SCHEMA_VERSION
 from config import settings
-from identity import passage_id
+from registry import resolve_passage_id
 from model import Document, Passage
 from enrichment.backup import Backup
 from enrichment.client import SchemaValidationError, Usage
@@ -198,7 +198,7 @@ async def enrich_one(doc: Document, passage: Passage, deps: EnrichDeps,
                      *, sample: bool,
                      telemetry: EnrichmentTelemetry | None = None,
                      ) -> tuple[MergedEnrichment, Usage]:
-    cid = passage_id(doc.id, passage.anchor)
+    cid = resolve_passage_id(doc.id, passage.anchor)
     ch = Cache.content_hash(passage.content)
     gen_system = generation_system(doc.collection)
     gen_prompt_hash = Cache.prompt_hash(gen_system)
@@ -389,7 +389,7 @@ async def enrich_collection(docs: list[Document], collection: str, deps: EnrichD
             try:
                 _, usage = await enrich_one(d, p, deps, sample=sample, telemetry=telemetry)
             except Exception as exc:
-                cid = passage_id(d.id, p.anchor)
+                cid = resolve_passage_id(d.id, p.anchor)
                 logger.warning(
                     "enrich: chunk %s (%s) failed and was skipped: %s",
                     cid, p.reference, exc)

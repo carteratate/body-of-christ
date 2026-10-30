@@ -12,7 +12,7 @@ import asyncpg
 import contents
 import reader_access
 from model import Document
-from identity import passage_id
+from registry import resolve_passage_id
 
 
 async def clear_collection(conn: asyncpg.Connection, collection: str) -> None:
@@ -46,7 +46,7 @@ async def prune_missing_chunks(conn: asyncpg.Connection, doc: Document) -> int:
     Returns the number of rows deleted, so a caller can refuse to proceed when a build
     unexpectedly drops a large share of a document.
     """
-    keep = [passage_id(doc.id, p.anchor) for p in doc.passages]
+    keep = [resolve_passage_id(doc.id, p.anchor) for p in doc.passages]
     deleted = await conn.fetchval(
         """
         WITH deleted AS (
@@ -121,7 +121,7 @@ async def write_document(conn: asyncpg.Connection, doc: Document,
         )
         pruned = await prune_missing_chunks(conn, doc) if prune else 0
         for p in doc.passages:
-            pid = passage_id(doc.id, p.anchor)
+            pid = resolve_passage_id(doc.id, p.anchor)
             await conn.execute(
                 """
                 INSERT INTO chunks

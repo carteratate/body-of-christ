@@ -6,7 +6,7 @@ import asyncio
 from collections.abc import Sequence
 
 import contents
-from identity import passage_id
+from registry import resolve_passage_id
 from publication import (
     CollectionPublicationRunner,
     PublicationRequest,
@@ -98,7 +98,7 @@ def main(
         except ValueError as error:
             parser.error(str(error))
         passages = {
-            passage_id(document.id, passage.anchor)
+            resolve_passage_id(document.id, passage.anchor)
             for document in documents
             for passage in document.passages
         }

@@ -105,7 +105,8 @@ def old_passages(snapshot: dict[str, list[Document]]) -> list[R.OldPassage]:
 def load_registry(directory: str = REGISTRY_DIR) -> R.Registry:
     """2.1's redirects.json, removals.json and works.json. A missing file counts as empty;
     once redirects.json exists (2.1 has landed), outcomes other than `same` must be
-    declared."""
+    declared, and once passages/ exists stability is checked piece by piece. Closed
+    redirects are kept in the file as the record but never applied."""
     def read(name: str, default):
         path = os.path.join(directory, name)
         if not os.path.exists(path):
@@ -117,9 +118,11 @@ def load_registry(directory: str = REGISTRY_DIR) -> R.Registry:
     for work in read("works.json", []):
         for old in work.get("supersedes") or []:
             supersedes[old] = work["document_id"]
-    return R.Registry(redirects=read("redirects.json", []), removals=read("removals.json", []),
+    return R.Registry(redirects=[r for r in read("redirects.json", []) if not r.get("closed_by")],
+                      removals=read("removals.json", []),
                       supersedes=supersedes,
-                      enforce_redirects=os.path.exists(os.path.join(directory, "redirects.json")))
+                      enforce_redirects=os.path.exists(os.path.join(directory, "redirects.json")),
+                      per_piece=os.path.isdir(os.path.join(directory, "passages")))
 
 
 def read_jsonl(path: str) -> list[dict]:

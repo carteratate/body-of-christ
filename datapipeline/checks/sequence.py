@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from checks.coverage import _PassageText, documents_by_file, match_key, measurable
 from checks.coverage import split_sentences
 from checks.source_text import SourceUnit
+from identity import unit_anchor
 from model import Document
 
 CCC_LAST = 2865
@@ -40,9 +41,10 @@ class SequenceResult:
 
 
 def _anchor_base(anchor: str) -> str:
-    """The unit an anchor names, without the split-piece suffix ("/p2", "-p2", "-2" on a
-    Bible piece)."""
-    return re.sub(r"(?:/p\d+|-p\d+)(?:-\d+)?$", "", anchor)
+    """The unit an anchor names, without its piece segment (`identity.PIECE_MARK`, 2.1)
+    or a pre-2.1 split-piece suffix ("/p2", "-p2"; the Bible's "-2" is stripped by its
+    caller)."""
+    return re.sub(r"(?:/p\d+|-p\d+)(?:-\d+)?$", "", unit_anchor(anchor))
 
 
 def _numeric_sort(ids):
