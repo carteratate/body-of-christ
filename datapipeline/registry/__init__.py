@@ -205,7 +205,7 @@ def validate(registry: WorkRegistry) -> list[str]:
     problems += _validate_works(registry.works)
     documents = {w["document_id"]: w for w in registry.works}
     problems += _validate_passages(registry, documents)
-    problems += _validate_redirects(registry.redirects, documents)
+    problems += _validate_redirects(registry, documents)
     problems += _validate_removals(registry, documents)
     return problems
 
@@ -335,9 +335,23 @@ def _validate_passages(registry: WorkRegistry, documents: dict) -> list[str]:
     return out
 
 
-def _validate_redirects(redirects: list[dict], documents: dict) -> list[str]:
+def _validate_redirects(registry: WorkRegistry, documents: dict) -> list[str]:
+    redirects = registry.redirects
     out = _sorted(redirects, lambda r: (r["document_id"], r["old_anchor"]), REDIRECTS_FILE)
+    rows = {r["passage_id"]: r for r in registry.passages}
+    open_from: set[str] = set()
     for r in redirects:
+        old, new = rows.get(r.get("old_passage_id")), rows.get(r.get("new_passage_id"))
+        if not r.get("closed_by"):
+            if r.get("old_passage_id") in open_from:
+                out.append(f"redirect {r.get('old_passage_id')}: two open redirects")
+            open_from.add(r.get("old_passage_id"))
+            if old is None or old["status"] != "redirected":
+                out.append(f"redirect {r.get('old_passage_id')}: its row is not redirected")
+            if new is None or new["status"] != "active" or new["anchor"] != r.get("new_anchor") \
+                    or new["document_id"] != r.get("document_id"):
+                out.append(f"redirect {r.get('old_passage_id')}: its target is not an active "
+                           "row of the same document under new_anchor")
         if r.get("kind") not in REDIRECT_KINDS:
             out.append(f"redirect {r.get('old_passage_id')}: kind {r.get('kind')!r}")
         if r.get("document_id") not in documents:
@@ -358,8 +372,8 @@ def _validate_removals(registry: WorkRegistry, documents: dict) -> list[str]:
                   REMOVALS_FILE)
     ids, retired = set(), set()
     rows = {r["passage_id"]: r for r in registry.passages}
-    targets = {(r["document_id"], r["new_anchor"]) for r in registry.redirects
-               if not r.get("closed_by")}
+    # By ID: a removal names the live anchor, a redirect the current one.
+    targets = {r["new_passage_id"] for r in registry.redirects if not r.get("closed_by")}
     for e in entries:
         name = e.get("id")
         if name in ids:
@@ -402,7 +416,7 @@ def _validate_removals(registry: WorkRegistry, documents: dict) -> list[str]:
                 if key in retired:
                     out.append(f"removal {name}: anchor {key[1]} is retired twice")
                 retired.add(key)
-                if key in targets:
+                if e.get("passage_id") in targets:
                     out.append(f"removal {name}: anchor {key[1]} is also a redirect target")
         if reason in ("rule-a", "rule-b"):
             act = e.get("church_act")
@@ -525,13 +539,15 @@ def _holder(anchor: str, document: Document):
     if PIECE_MARK not in anchor:
         return None
     unit, locator = unit_anchor(anchor), anchor.split(PIECE_MARK, 1)[1]
-    wanted = {locator, _CUT.sub("", locator)}
     members = [p for p in document.passages if unit_anchor(p.anchor) == unit]
     if len(members) == 1:
         return members[0]              # the unit is whole again: it holds every unit
-    for p in members:
-        if any(loc in wanted for loc, _ in p.source_units):
-            return p
+    # The locator itself first; then without a trailing cut (`p5-2` opened inside `p5`).
+    # A Bible locator (`3-16`) is chapter and verse, so it is only matched whole first.
+    for wanted in (locator, _CUT.sub("", locator)):
+        for p in members:
+            if any(loc == wanted for loc, _ in p.source_units):
+                return p
     return None
 
 

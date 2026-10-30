@@ -128,14 +128,19 @@ def test_passage_registry_is_sorted_and_stable(shipped, tmp_path):
 
 
 def test_new_unit_gets_computed_id_that_collides_with_no_frozen_id(shipped):
-    # A unit live never had takes its ID from its structural anchor, and that ID is no
-    # other row's: a new unit never takes a live passage's ID.
+    # The ID any row's anchor would compute belongs to no other row, so a new unit can
+    # never take a frozen passage's ID. First Lateran's two swapped anchors are the one
+    # known exception (release.anchor_reuse in known_defects.json, fixed by 1.2e).
+    with open(os.path.join(os.path.dirname(registry.REGISTRY_DIR), "checks",
+                           "known_defects.json"), encoding="utf-8") as f:
+        swapped = {k.rsplit("/", 1)[1] for k in json.load(f)
+                   if k.startswith("release.anchor_reuse:")}
     owner = {r["passage_id"]: (r["document_id"], r["anchor"]) for r in shipped.passages}
-    new = [r for r in shipped.passages if r["live_anchor"] is None]
-    assert new
-    for r in new:
-        assert r["passage_id"] == identity.passage_id(r["document_id"], r["anchor"])
-        assert owner[r["passage_id"]] == (r["document_id"], r["anchor"])
+    for r in shipped.passages:
+        computed = identity.passage_id(r["document_id"], r["anchor"])
+        if computed in owner and owner[computed] != (r["document_id"], r["anchor"]):
+            assert computed in swapped and r["passage_id"] in swapped
+    assert all(r["live_anchor"] for r in shipped.passages)
     reg = valid_registry()
     rec = registry.reconcile(reg, [document([passage("ii.i"), passage("ii.ix", position=1)])],
                              item="test", today=TODAY)
@@ -303,11 +308,11 @@ def test_every_work_has_a_passage():
 def test_redirect_kinds_are_remap_words():
     assert registry.REDIRECT_KINDS == R.REDIRECT_KINDS
     w = work()
-    redirect = {"document_id": w["document_id"], "old_passage_id": "a", "old_anchor": "ii.x",
-                "new_passage_id": "b", "new_anchor": "ii.i", "kind": "merged",
-                "reason": "test", "added_by": "test"}
     rows = [row(w["document_id"], "ii.i"),
             row(w["document_id"], "ii.x", passage_id="a", status="redirected")]
+    redirect = {"document_id": w["document_id"], "old_passage_id": "a", "old_anchor": "ii.x",
+                "new_passage_id": rows[0]["passage_id"], "new_anchor": "ii.i", "kind": "merged",
+                "reason": "test", "added_by": "test"}
     assert registry.validate(valid_registry(passages=rows, redirects=[redirect])) == []
     assert registry.validate(valid_registry(passages=rows,
                                             redirects=[{**redirect, "kind": "same"}]))
@@ -505,8 +510,39 @@ def test_shipped_registry_counts_every_snapshot_document(shipped):
                                         "snapshots.json"), encoding="utf-8"))
     latest = max(index["snapshots"], key=lambda s: s["date"])
     assert latest["tables"]["documents"] == len(shipped.works)
-    live = [r for r in shipped.passages if r["live_anchor"] is not None]
-    assert len(live) == latest["tables"]["chunks"]
+    redirected = [r for r in shipped.passages if r["status"] == "redirected"]
+    assert len(redirected) == len(registry.open_redirects(shipped))
+    assert len(shipped.passages) >= latest["tables"]["chunks"]
+
+
+def test_redirect_rows_must_agree_with_the_passage_registry():
+    w = work()
+    target = row(w["document_id"], "ii.i")
+    old = row(w["document_id"], "ii.x", passage_id="a", status="redirected")
+    redirect = {"document_id": w["document_id"], "old_passage_id": "a", "old_anchor": "ii.x",
+                "new_passage_id": target["passage_id"], "new_anchor": "ii.i", "kind": "merged",
+                "reason": "test", "added_by": "test"}
+    assert registry.validate(valid_registry(passages=[target, old], redirects=[redirect])) == []
+    for rows, redirects in (
+            ([target, {**old, "status": "active"}], [redirect]),             # row not redirected
+            ([target, old], [{**redirect, "new_anchor": "ii.ix"}]),          # wrong target anchor
+            ([{**target, "status": "retired"}, old], [redirect]),            # target not active
+            ([target, old], [redirect, {**redirect, "old_anchor": "ii.y"}])):  # two open
+        assert registry.validate(valid_registry(passages=rows, redirects=redirects))
+
+
+def test_retired_passage_is_matched_to_redirect_targets_by_id():
+    # A removal names the live anchor, a redirect the current one; they can differ.
+    w = work()
+    retired = row(w["document_id"], "ii.i", status="retired", live_anchor="old/chapter-1")
+    old = row(w["document_id"], "ii.x", passage_id="a", status="redirected")
+    redirect = {"document_id": w["document_id"], "old_passage_id": "a", "old_anchor": "ii.x",
+                "new_passage_id": retired["passage_id"], "new_anchor": "ii.i",
+                "kind": "merged", "reason": "test", "added_by": "test"}
+    entry = removal(anchor="old/chapter-1", passage_id=retired["passage_id"])
+    problems = registry.validate(valid_registry(passages=[retired, old], redirects=[redirect],
+                                                removals=[entry]))
+    assert any("also a redirect target" in p for p in problems)
 
 
 def test_work_registry_is_independent_copy():

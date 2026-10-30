@@ -16,9 +16,11 @@ keeps its ID (D1) however its anchor changed:
    live printed together with the next one), the one with the most text in common.
 
 A live passage still unpaired gets a `merged` redirect to the built passage holding its
-text; one with no text at all (an empty part live printed) to the passage paired with
-the live passage after it. A built passage live never had is a new unit and takes its ID
-from its structural anchor. Anything else stops the freeze.
+text; one with no text at all to the passage paired with its neighbour: the piece before
+it in the same live unit (a stray quote mark), otherwise the passage after it (an empty
+Summa part, whose paragraph opens the next part).
+A built passage live never had is a new unit: it takes its ID from its structural anchor,
+and its `live_anchor` is that anchor. Anything else stops the freeze.
 
 Refuses to write unless the build yields exactly the snapshot's documents (421; the md5
 of their sorted IDs joined by commas is printed). Writes works.json, passages/*.jsonl,
@@ -48,6 +50,8 @@ from release import remap as R  # noqa: E402
 from release import report as release_report  # noqa: E402
 
 ITEM = "2.1"
+# md5 of today's 421 document IDs, sorted and joined by commas (2.1 spec).
+EXPECTED_DOCUMENTS = "851d07063f85e4c612be1b2d44b695fb"
 OPENING_WORDS = 8
 
 
@@ -148,7 +152,12 @@ def pair_document(live: list, built: list) -> tuple[dict, list[dict], list[str]]
             after = next((paired_index[x.id] for x in live[k + 1:] if x.id in paired_index), None)
             before = next((paired_index[x.id] for x in reversed(live[:k])
                            if x.id in paired_index), None)
-            target = after if after is not None else before
+            # A stray piece of a unit (a lone quote mark) belongs to the piece before it;
+            # an empty part (a Summa "Objection N:" printed before "On the contrary") to
+            # the part after it, which holds its source paragraph.
+            same_unit = k > 0 and R.unit_key(live[k - 1]) == R.unit_key(o)
+            target = before if same_unit and before is not None else \
+                (after if after is not None else before)
             method, score = "empty", None
         else:
             if shingles is None:
@@ -189,6 +198,9 @@ def freeze(snapshot: str, frozen_on: str) -> tuple[registry.WorkRegistry, dict, 
     built_ids = {d.id for d in documents}
     live_ids = {d.id for c in collections for d in live_documents.get(c, [])}
     problems: list[str] = []
+    if document_hash(built_ids) != EXPECTED_DOCUMENTS:
+        problems.append(f"the built documents hash to {document_hash(built_ids)}, not the "
+                        f"frozen set {EXPECTED_DOCUMENTS}")
     if len(documents) != len(built_ids) or built_ids != live_ids:
         problems.append(f"the build has {len(built_ids)} documents, the snapshot "
                         f"{len(live_ids)}; {len(built_ids ^ live_ids)} differ")
@@ -223,7 +235,7 @@ def freeze(snapshot: str, frozen_on: str) -> tuple[registry.WorkRegistry, dict, 
                     pairings.append(_pairing(d, o, p, method, score))
             else:
                 ids[i] = identity.passage_id(d.id, p.anchor)
-                rows.append(_row(ids[i], d.id, p.anchor, None, "active", frozen_on))
+                rows.append(_row(ids[i], d.id, p.anchor, p.anchor, "active", frozen_on))
                 methods[(d.collection, "new")] += 1
         for r in leftovers:
             o, p = r["live"], d.passages[r["target"]]
@@ -231,8 +243,8 @@ def freeze(snapshot: str, frozen_on: str) -> tuple[registry.WorkRegistry, dict, 
             redirects.append({
                 "document_id": d.id, "old_passage_id": o.id, "old_anchor": o.anchor,
                 "new_passage_id": ids[r["target"]], "new_anchor": p.anchor, "kind": "merged",
-                "reason": ("an empty passage the live publication printed; its source "
-                           "paragraph opens this passage") if r["method"] == "empty" else
+                "reason": ("an empty passage the live publication printed; this passage "
+                           "holds its place in the source") if r["method"] == "empty" else
                           "its text now lies inside this passage",
                 "added_by": ITEM})
             methods[(d.collection, f"redirect:{r['method']}")] += 1
