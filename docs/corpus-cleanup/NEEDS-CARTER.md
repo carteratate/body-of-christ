@@ -40,6 +40,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.1d** [Phase 0, before P1]. Approve the next run of `export_live_snapshot.py`, which now also copies `document_chapters` (the stored reader outline: each document's chapter list, its order and labels). It reads production without changing anything and copies corpus text and anonymous counts to his Mac, as the 6 Oct export did. The outline comparison then runs offline.
 - **R7** [Phase 0, blocks 1.7]. Approve each set of downloads for the independent Summa comparison: the Leonine Latin pages of the Supplement (the four core parts were fetched by the 6 Oct review), and any English edition or scan that holds a unit the vendored edition omits. The request states file names and sizes.
 - **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 0039 migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
+  Answered 2026-10-30: 0.3 is dropped; no baseline is run (Decision log "Baseline eval (0.3)").
 - **R6** [Phase 0, blocks Phase 1 items 1.2c, 1.2d, 1.8d]. Approve each set of source downloads. The request states the file names and sizes each time.
   Answered 2026-10-05: the 154 text, XML and HTML files of R6's download list (about 153 MB) are approved; the 91 page-image PDFs and the hOCR file are approved per work later. They are vendored to `datapipeline/sources/_incoming/<Vendored as path>` and locked there; each ingesting PR moves its files unchanged (Decision log "Holding folder for approved downloads"). 152 are vendored; 2 archive.org texts for 5.6c returned HTTP 500 on 5 Oct 2026 and are not.
 
@@ -75,7 +76,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   - the smoke checks and dropping the staging tables in production (step 10);
   - the rollback (step 12), only if it is needed;
   - each clean-up step after the rollback window (step 13): deleting hidden passages no user points at, deleting the old Qdrant index (this cannot be undone), deleting the private backups, and the PR that removes the lock entry.
-- **4.2** [Phase 4]. Approve the spend for the before and after search evaluation. The report states the amount.
+- **4.2** [Phase 4]. Approve the spend for the accuracy checks on staging and on production (pipeline calls only, no judge). The report states the amount.
 
 ### Phase 5
 
@@ -123,6 +124,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.2** [Phase 0]. Confirm that the fields of the public rights file (edition, translator, public-domain basis, renewal search, credit line) are safe to publish. Also decide what to do with Amoris Laetitia, which is downloaded but was never published and has no decision on record. The spec gives no recommendation.
   Answered 2026-10-04: the fields are safe to publish (edition, translator, first published, source URL, status, renewal search, credit line). In-copyright works get a new status, `in-copyright`, with a field naming the rights holder; that covers the papal and Vatican texts, Vatican II, the Catechism and the canon law English. Other texts stay `unknown` unless their file or page establishes a public-domain edition. The WEB-C Bible gets a new status, `pd-dedicated`. Amoris Laetitia is scheduled for 5.4 with the other two unpublished papal files.
 - **0.3** [Phase 0]. Approve the list of about 30 targeted test questions, written fresh rather than taken from users' searches.
+  Answered 2026-10-30: 0.3 is dropped, so there is no list to approve. 4.2 writes its own check questions.
 - **R1** [Phase 0 research, answer needed by Phase 3]. Decide these points.
   - Hippolytus led a rival group in Rome, outside communion, from about 217 to about 235. The Refutation of All Heresies (377 passages) is dated to the 220s. Under rule A a work written outside communion is removed, and he is not a Doctor of the Church. The spec gives no recommendation.
   - Where standard chronologies disagree on a date, which one to use.
@@ -169,7 +171,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   - Remove the Balsamon and Zonaras commentary printed inside Peter of Alexandria's canons, rather than keep it under their own names.
 
   The spec proposes yes to both.
-- **1.8d** [Phase 1, acted on in Phase 2]. The current translation of Athanasius's On the Incarnation (Lawson, 1944) is still under copyright. Hide it before Phase 4 (early retirement), or leave it visible until Phase 4 replaces it with Robertson's public-domain translation. Hiding it waits for 0.3, 2.2a, 2.2b, 2.4a and 2.4b to ship. Deleting it is not an option, because that would erase a user's saved search. The spec gives no recommendation.
+- **1.8d** [Phase 1, acted on in Phase 2]. The current translation of Athanasius's On the Incarnation (Lawson, 1944) is still under copyright. Hide it before Phase 4 (early retirement), or leave it visible until Phase 4 replaces it with Robertson's public-domain translation. Hiding it waits for 2.2a, 2.2b, 2.4a and 2.4b to ship. Deleting it is not an option, because that would erase a user's saved search. The spec gives no recommendation.
 - **1.8e** [Phase 1]. About 30 whole works in the downloaded Fathers volumes never reach the corpus. Choose which to add. Recommended answer is none before Phase 4 except Asterius Urbanus, and the rest later with normal rule checks.
 - **1.9** [Phase 1]. Add Anselm's reply to Gaunilo ("Anselm's Apologetic"). Default is no. Gaunilo's own piece would need its own rule check.
 
@@ -197,8 +199,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **4.0** [Phase 4]. If compaction may push the database above 480 MB, choose between running it anyway and accepting a possible short read-only period, and a month of Supabase Pro. After the rehearsal measures the real peak of the apply, make the same choice for the apply. No recommendation; the rehearsal numbers decide.
 - **4.1a** [Phase 4]. Approve the rules for merging duplicates when a moved passage lands where a user already has the same bookmark or result (for bookmarks, keep the earliest and join both notes when they fit), and the rules for undoing them in a rollback: a user's deletions and edits made since the cutover are kept, and a skipped row never blocks the rollback.
 - **4.1b** [Phase 4]. Choose the quiet hour for the cutover, and give go or no-go the day before.
-- **4.2** [Phase 4]. Give go or no-go after the evaluation on the staging copy. Also confirm that 0.3 ran with AI judging, which the comparison needs.
-- **RF-1** [Phase 4]. After 4.2's comparison, decide whether to change the dedup threshold for chapter-keyed collections (canon law, the Catechism, the Summa, the Bible) from 0.9 to the tested value. The comparison report gives the effect on judge scores and on how often distinct neighbouring passages are dropped.
+- **4.2** [Phase 4]. Give go or no-go after the accuracy checks on the staging copy. Review the check questions in 4.2's PR.
+- **RF-1** [after the republish; it was Phase 4 until 0.3 was dropped on 30 Oct 2026]. Approve the spend for a judged comparison on the republished corpus, then decide whether to change the dedup threshold for chapter-keyed collections (canon law, the Catechism, the Summa, the Bible) from 0.9 to the tested value. The comparison report gives the effect on judge scores and on how often distinct neighbouring passages are dropped.
 
 ### Phase 5
 
