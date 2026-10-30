@@ -879,9 +879,19 @@ def test_the_vendored_corrections_all_apply():
     assert "formulation she cooperates" in paragraphs[501]["text"]
     assert [(f["n"], f["text"]) for f in paragraphs[1065]["footnotes"]] == [
         (650, "Rev 3:14."), (651, "2 Cor 1:20."), (652, "Roman Missal, EP I, 98.")]
+    misplaced = []
     for item in paragraphs.values():
+        text = item["text"]
         for note in item["footnotes"]:
-            assert 0 < note["at"] <= len(item["text"])
+            at = note["at"]
+            assert 0 < at <= len(text)
+            inside_word = at < len(text) and text[at - 1].isalnum() and text[at].isalnum()
+            before_closing = at < len(text) and text[at] in "\"',.;:" and (at + 1 == len(text) or not text[at + 1].isalnum())
+            if inside_word or before_closing:
+                misplaced.append((item["n"], note["n"]))
+    assert misplaced == [(957, 498)]     # 'itself"498:' is how the book prints it
+    assert paragraphs[186]["text"][paragraphs[186]["footnotes"][0]["at"] - 4:][:4] == "all."
+    assert paragraphs[1404]["text"][paragraphs[1404]["footnotes"][0]["at"] - 8:][:8] == "Christ,\""
 
 
 @pytest.mark.parametrize("find,replace,at,want", [

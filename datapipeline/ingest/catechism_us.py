@@ -685,21 +685,27 @@ def _move_offset(at: int, start: int, find: str, replace: str) -> int:
         return at
     if at >= end:
         return at + len(replace) - len(find)
-    # Inside the corrected words: keep the marker after as many letters and digits, and
-    # then as many punctuation marks, as it followed before; a marker that ended a run of
-    # punctuation still ends it. A correction that moves a comma inside a closing quote
-    # ('God",' -> 'God,"') or adds a full stop ('Spirit"' -> 'Spirit."') so leaves it
-    # after both.
+    # Inside the corrected words: the last letter or digit before the marker is placed by
+    # the character alignment of old and new, then the marker keeps as many punctuation
+    # marks after it as before, and one that ended a run of punctuation still ends it. A
+    # correction that moves a comma inside a closing quote ('God",' -> 'God,"') or adds a
+    # full stop ('Spirit"' -> 'Spirit."') so leaves the marker after both.
     before = find[:at - start]
-    punct_run_end = find[at - start:at - start + 1] in ("", " ", "\n")
     word = re.search(r"\w(?=\W*$)", before)
-    alnum = len(re.findall(r"\w", before))
+    pos = 0
+    if word:
+        k = word.start()
+        for tag, i1, i2, j1, j2 in SequenceMatcher(None, find, replace, autojunk=False).get_opcodes():
+            if i1 <= k < i2:
+                if tag == "equal":
+                    pos = j1 + (k - i1) + 1
+                else:
+                    last = re.search(r"\w(?=\W*$)", replace[j1:j2])
+                    pos = j1 + last.start() + 1 if last else j1
+                break
     punct = len(before) - word.end() if word else len(before)
-    seen, pos = 0, 0
-    while pos < len(replace) and seen < alnum:
-        seen += bool(re.match(r"\w", replace[pos]))
-        pos += 1
-    while (punct or punct_run_end) and pos < len(replace) and not re.match(r"[\w\s]", replace[pos]):
+    punct_run_end = find[at - start:at - start + 1] in ("", " ", "\n")
+    while (punct > 0 or punct_run_end) and pos < len(replace) and not re.match(r"[\w\s]", replace[pos]):
         punct -= 1
         pos += 1
     return start + pos
