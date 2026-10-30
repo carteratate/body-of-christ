@@ -4337,7 +4337,7 @@
   {
    "n": 597,
    "find": "Second Vatican Council: ... [N]either",
-   "replace": "Second Vatican Council:\n\n... [N]either",
+   "replace": "Second Vatican Council:\n\n… [N]either",
    "page": 173,
    "why": "line break"
   },
@@ -7725,7 +7725,7 @@
   {
    "n": 2537,
    "find": "keep this commandment\": ... merchants who",
-   "replace": "keep this commandment\":\n\n... merchants who",
+   "replace": "keep this commandment\":\n\n… merchants who",
    "page": 627,
    "why": "line break"
   },
