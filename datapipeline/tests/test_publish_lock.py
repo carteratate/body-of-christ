@@ -145,7 +145,11 @@ def test_unknown_step_is_rejected(tmp_path):
         _check(_lock_file(tmp_path, [_entry()]), step="publish")
 
 
-def test_repository_ships_with_no_approved_applies():
+def test_repository_entries_name_their_approval():
+    """An entry ships only from a reviewed PR, which it names with its approver and
+    reason, and a later PR removes it (corpus-cleanup plan, publish lock)."""
     data = json.loads(DEFAULT_PATH.read_text())
-    assert data["approved_applies"] == []
-    assert load_lock().entries == ()
+    for item in data["approved_applies"]:
+        assert set(item) == {"collection", "release", "steps", "reason", "approved_by", "pr"}
+        assert item["reason"] and item["approved_by"] and isinstance(item["pr"], int)
+    assert len(load_lock().entries) == len(data["approved_applies"])
