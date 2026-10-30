@@ -528,10 +528,12 @@ def ccc_us_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     """us-edition/ccc-us.json (the Catechism's words since #279). One "body" unit per
     numbered paragraph, unit_id the CCC number; headings and Part, Section, Chapter and
     Article titles are "heading"; each footnote is a "note" unit, which passages hold in
-    metadata rather than in their text."""
+    metadata rather than in their text. The vendored file is read with its reviewed
+    corrections (ingest/catechism_corrections.json) applied, as the build reads it."""
+    from ingest import catechism_us
+
     source_file = source_file or os.path.relpath(path, os.path.join(SOURCES, "catechism"))
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
+    data = catechism_us.load_us(path)
     units: list[SourceUnit] = []
     for item in data["items"]:
         if item["kind"] == "paragraph":

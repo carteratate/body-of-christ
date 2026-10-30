@@ -832,3 +832,53 @@ def test_section_two_of_part_one_is_printed_once(tmp_path):
     match = next(m for m in build.alignment.matches if m.after == 184)
     assert not match.inserted
     assert [match.lines[i].text for i in match.unmatched] == ["The Credo"]
+
+
+def _us_doc():
+    return {"items": [
+        {"kind": "paragraph", "n": 1, "text": "He said \"come\", and went.", "footnotes": [{"n": 5, "text": "Mt 1:1.", "at": 15}]},
+        {"kind": "heading", "text": "A Heading", "footnotes": [{"n": 6, "text": "Old note.", "at": 9}]},
+        {"kind": "paragraph", "n": 2, "text": "First words, then more words.", "footnotes": [
+            {"n": 7, "text": "Wrong.", "at": 12}, {"n": 8, "text": "Wronger.", "at": 29}]},
+    ]}
+
+
+def test_a_correction_moves_the_footnotes_after_it():
+    us = _cu.apply_corrections(_us_doc(), [{"n": 1, "find": "\"come\",", "replace": "\"come,\""}])
+    item = us["items"][0]
+    assert item["text"] == "He said \"come,\" and went."
+    assert item["footnotes"][0]["at"] == 15 and item["_fetched_text"].startswith("He said \"come\",")
+
+
+def test_a_correction_that_does_not_occur_once_fails():
+    with pytest.raises(ValueError, match="occurs 0 times"):
+        _cu.apply_corrections(_us_doc(), [{"n": 1, "find": "absent", "replace": "x"}])
+
+
+def test_footnote_corrections_replace_a_note_and_a_paragraphs_notes():
+    us = _cu.apply_footnote_corrections(
+        _us_doc(),
+        [{"n": 1, "note": 5, "text": "Mt 1:2."}, {"heading": "A Heading", "note": 6, "text": "New note."}],
+        [{"n": 2, "notes": [{"n": 10, "after": "more words.", "text": "B."}, {"n": 9, "after": "First words,", "text": "A."}]}])
+    assert us["items"][0]["footnotes"][0]["text"] == "Mt 1:2."
+    assert us["items"][1]["footnotes"][0]["text"] == "New note."
+    assert us["items"][2]["footnotes"] == [{"n": 9, "text": "A.", "at": 12}, {"n": 10, "text": "B.", "at": 29}]
+
+
+def test_footnote_corrections_that_do_not_apply_fail():
+    with pytest.raises(ValueError, match="note 99: found 0"):
+        _cu.apply_footnote_corrections(_us_doc(), [{"n": 1, "note": 99, "text": "x"}], [])
+    with pytest.raises(ValueError, match="occurs 0 times"):
+        _cu.apply_footnote_corrections(_us_doc(), [], [{"n": 2, "notes": [{"n": 9, "after": "nowhere", "text": "x"}]}])
+
+
+@pytest.mark.skipif(not os.path.exists(_cu.US_SOURCE), reason="vendored US edition not present")
+def test_the_vendored_corrections_all_apply():
+    us = _cu.load_us()           # raises if any text or footnote correction does not apply
+    paragraphs = {i["n"]: i for i in us["items"] if i["kind"] == "paragraph"}
+    assert "formulation she cooperates" in paragraphs[501]["text"]
+    assert [(f["n"], f["text"]) for f in paragraphs[1065]["footnotes"]] == [
+        (650, "Rev 3:14."), (651, "2 Cor 1:20."), (652, "Roman Missal, EP I, 98.")]
+    for item in paragraphs.values():
+        for note in item["footnotes"]:
+            assert 0 < note["at"] <= len(item["text"])

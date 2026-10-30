@@ -483,8 +483,30 @@ def _paragraph(text: str, number: int | None, key: str, heading: bool) -> dict:
     return {"attrs": {}, "elements": elements, "_item": key, "_heading": heading}
 
 
+def _heading_fixes(us: dict) -> tuple[dict, dict]:
+    """(after -> [(find, replace)], after -> {texts to drop}) from the US file's corrections."""
+    fixes, drops = {}, {}
+    for h in us.get("_heading_corrections", []):
+        if "replace_line" in h:
+            fixes.setdefault(("line", h["after"]), []).append((h["replace_line"], h["with"]))
+        elif "drop" in h:
+            drops.setdefault(h["after"], set()).add(h["drop"])
+        else:
+            fixes.setdefault(h["after"], []).append((h["find"], h["replace"]))
+    return fixes, drops
+
+
 def align(source: dict, us: dict) -> Alignment:
     page_nodes = source["page_nodes"]
+    fixes, drops = _heading_fixes(us)
+    used_fixes: set = set()
+
+    def fix(after: int, text: str) -> str:
+        for find, replace in fixes.get(after, []):
+            if text.count(find) == 1:
+                used_fixes.add((after, find))
+                text = text.replace(find, replace)
+        return text
     us_items = us["items"]
     lines = source_lines(page_nodes)
     all_gaps = gaps(lines, us_items)
@@ -510,7 +532,10 @@ def align(source: dict, us: dict) -> Alignment:
 
     by_gap = {}
     for after in sorted(all_gaps):
-        paragraph_words = words(us_paragraphs[after]["text"]) if after else None
+        # Matched against the text as fetched: the source's lines were written from it,
+        # not from the corrections applied to it afterwards.
+        fetched = us_paragraphs[after].get("_fetched_text", us_paragraphs[after]["text"]) if after else None
+        paragraph_words = words(fetched) if after else None
         by_gap[after] = match_gap(all_gaps[after], paragraph_words)
     _moves(by_gap)
 
@@ -533,6 +558,7 @@ def align(source: dict, us: dict) -> Alignment:
                 text = _source_form(match, h)
             else:
                 text = f"{h.numbering} {h.item['text']}" if h.numbering else h.item["text"]
+            text = fix(after, text)
             first_line = match.toks[h.start].line
             items[key] = {"kind": h.item["kind"], "text": text,
                           "footnotes": [] if structural else h.item["footnotes"],
@@ -543,14 +569,29 @@ def align(source: dict, us: dict) -> Alignment:
                 consumed.add(li)
         for li, _ in match.moved:
             consumed.add(li)          # the US heading is printed in the neighbouring gap
-        for li in match.unmatched:
-            # Kept as the source prints it, after anything that starts on the line.
+        for li in list(match.unmatched):
+            if gap.source[li].text in drops.get(after, ()):
+                used_fixes.add((after, gap.source[li].text))
+                match.unmatched.remove(li)
+                consumed.add(li)              # not in the book (corrections)
+                continue
+            # Kept as the source prints it, after anything that starts on the line,
+            # unless the corrections give the book's text for the whole line.
             consumed.discard(li)
-            slot[li].append(None)
+            line_fix = next((w for f, w in fixes.get(("line", after), []) if f == gap.source[li].text), None)
+            if line_fix is not None:
+                used_fixes.add((("line", after), gap.source[li].text))
+                slot[li].append(_paragraph(line_fix, None, f"src:{gap.source[li].node_id}:{gap.source[li].index}", False))
+            else:
+                slot[li].append(None)
         for order, heading in match.inserted:
             key = f"g{after}.{gap.us.index(heading)}"
             structural = heading["kind"] == "structure"
             text = _structural_caps(heading["text"]) if structural else heading["text"]
+            if text in drops.get(after, ()):
+                used_fixes.add((after, text))
+                continue                      # the book prints it elsewhere (corrections)
+            text = fix(after, text)
             items[key] = {"kind": heading["kind"], "text": text,
                           "footnotes": heading["footnotes"], "inserted": True}
             para = _paragraph(text, None, key, True)
@@ -565,6 +606,10 @@ def align(source: dict, us: dict) -> Alignment:
         for li, line in enumerate(gap.source):
             if li in consumed or slot[li]:
                 out[(line.node_id, line.index)] = slot[li]
+
+    wanted = {(a, f) for a, fs in fixes.items() for f, _ in fs} | {(a, t) for a, ts in drops.items() for t in ts}
+    if wanted - used_fixes:
+        raise ValueError(f"catechism heading corrections do not apply: {sorted(wanted - used_fixes)[:10]}")
 
     nodes = {}
     order: list[str] = []
@@ -630,6 +675,104 @@ def _fix(text: str) -> str:
     return text
 
 
-def load_us(path: str = US_SOURCE) -> dict:
+CORRECTIONS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "catechism_corrections.json")
+
+
+def _move_offset(at: int, start: int, find: str, replace: str) -> int:
+    """Where a footnote offset lands after `find` at `start` becomes `replace`."""
+    end = start + len(find)
+    if at <= start:
+        return at
+    if at >= end:
+        return at + len(replace) - len(find)
+    # Inside the corrected words: follow the character alignment of old and new.
+    inside = at - start
+    for tag, i1, i2, j1, j2 in SequenceMatcher(None, find, replace, autojunk=False).get_opcodes():
+        if i1 <= inside <= i2:
+            return start + (j1 + min(inside - i1, j2 - j1) if tag == "equal" else j2)
+    return start + len(replace)
+
+
+def apply_corrections(us: dict, corrections: list[dict]) -> dict:
+    """The US items with the reviewed corrections applied (paragraphs, in order).
+    Each `find` must occur exactly once in its paragraph; footnote offsets move with
+    the text. Raises on any entry that does not apply."""
+    paragraphs = {item["n"]: item for item in us["items"] if item.get("kind") == "paragraph"}
+    problems = []
+    for c in corrections:
+        item = paragraphs.get(c["n"])
+        if item is None or item["text"].count(c["find"]) != 1:
+            problems.append(f"CCC {c['n']}: {c['find'][:60]!r} "
+                            f"occurs {0 if item is None else item['text'].count(c['find'])} times")
+            continue
+        start = item["text"].index(c["find"])
+        item.setdefault("_fetched_text", item["text"])     # what alignment matches against
+        item["text"] = item["text"][:start] + c["replace"] + item["text"][start + len(c["find"]):]
+        for note in item["footnotes"]:
+            note["at"] = _move_offset(note["at"], start, c["find"], c["replace"])
+    if problems:
+        raise ValueError("catechism corrections do not apply: " + "; ".join(problems[:10]))
+    return us
+
+
+def apply_footnote_corrections(us: dict, footnotes: list[dict], lists: list[dict]) -> dict:
+    """The US items with the reviewed footnote corrections applied, after the text ones.
+
+    A `footnotes` entry gives one note's corrected text: the note numbered `note` on
+    paragraph `n`, or on the heading whose fetched text is `heading`. A `lists` entry
+    replaces paragraph `n`'s notes outright (where the site numbers or places them
+    wrongly): each note sits after its `after` words, which must occur exactly once in
+    the corrected paragraph. Raises on any entry that does not apply."""
+    paragraphs = {item["n"]: item for item in us["items"] if item.get("kind") == "paragraph"}
+    headings: dict[str, list[dict]] = {}
+    for item in us["items"]:
+        if item.get("kind") == "heading":
+            headings.setdefault(item["text"], []).append(item)
+    problems = []
+    for c in footnotes:
+        where = f"CCC {c['n']}" if "n" in c else f"heading {c['heading'][:40]!r}"
+        owners = [paragraphs[c["n"]]] if c.get("n") in paragraphs else headings.get(c.get("heading"), [])
+        notes = [note for owner in owners for note in owner["footnotes"] if note["n"] == c["note"]]
+        if len(owners) != 1 or len(notes) != 1:
+            problems.append(f"{where} note {c['note']}: found {len(notes)}")
+            continue
+        notes[0]["text"] = c["text"]
+    for c in lists:
+        item = paragraphs.get(c["n"])
+        if item is None:
+            problems.append(f"CCC {c['n']}: no such paragraph")
+            continue
+        replaced = []
+        for note in c["notes"]:
+            if item["text"].count(note["after"]) != 1:
+                problems.append(f"CCC {c['n']} note {note['n']}: {note['after']!r} "
+                                f"occurs {item['text'].count(note['after'])} times")
+                continue
+            at = item["text"].index(note["after"]) + len(note["after"])
+            replaced.append({"n": note["n"], "text": note["text"], "at": at})
+        item["footnotes"] = sorted(replaced, key=lambda note: note["at"])
+    if problems:
+        raise ValueError("catechism footnote corrections do not apply: " + "; ".join(problems[:10]))
+    return us
+
+
+def load_corrections(path: str = CORRECTIONS) -> list[dict]:
     with open(path, encoding="utf-8") as f:
-        return json.load(f)
+        return json.load(f)["corrections"]
+
+
+def load_us(path: str = US_SOURCE, corrections: list[dict] | None = None) -> dict:
+    """The US edition, with the reviewed corrections applied. They belong to the vendored
+    file, so another file (a test fixture) gets none unless they are passed."""
+    with open(path, encoding="utf-8") as f:
+        us = json.load(f)
+    vendored = os.path.abspath(path) == os.path.abspath(US_SOURCE)
+    if corrections is None:
+        corrections = load_corrections() if vendored else []
+    us = apply_corrections(us, corrections)
+    if vendored:
+        with open(CORRECTIONS, encoding="utf-8") as f:
+            table = json.load(f)
+        us["_heading_corrections"] = table.get("headings", [])
+        us = apply_footnote_corrections(us, table.get("footnotes", []), table.get("footnote_lists", []))
+    return us
