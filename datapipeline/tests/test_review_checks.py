@@ -88,6 +88,8 @@ def test_r12_note_caller(text):
     "as it is written in Rom. i. 17 But what follows",    # a Scripture citation
     "the people of God. 1 Peter speaks of this",           # a number before a book
     "as John 3:16. 2 And then",                             # chapter and verse
+    "she sinneth not.” Ver. 28 Hence it is",                 # a verse in the same chapter
+    "the depths tremble. 4 Esdr. iii. 8. Thou art",          # a number before a book
 ])
 def test_r12_skips_citations(text):
     assert "R12_note_caller" not in _rules(_doc(_p(text)))
@@ -453,13 +455,14 @@ USFM = (r"\id PSA" "\n" r"\c 3" "\n" r"\d A Psalm by David, when he fled from hi
         r"\v 2 Many are those who rise up against me." "\n")
 
 
-def test_usfm_psalm_title_is_body_and_not_a_verse(tmp_path):
+def test_usfm_psalm_title_is_body_and_not_a_verse(tmp_path, monkeypatch):
     path = tmp_path / "20-PSA.usfm"
     path.write_text(USFM)
     units = usfm_units(str(path))
     assert ("PSA/3/d", "body") in [(u.unit_id, u.region) for u in units]
     # The verse check reads only numbered units: the title neither raises nor is "missing"
     # (no documents are placed here, so both verses are).
+    monkeypatch.setattr(seq, "documents_by_file", lambda c, docs, files, *a: {f: [] for f in files})
     result = seq.bible_verses([], units)
     assert result.missing == ["PSA/3/1", "PSA/3/2"] and not result.out_of_range
 

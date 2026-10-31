@@ -445,30 +445,15 @@
   "description": "C'est la confiance: 1 passages hold footnote callers (C-17)",
   "units": ["c-est-la-confiance/53"]
  },
- "health.R12_note_caller:church-fathers/3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
-  "fixed_by": "1.10b",
-  "description": "The Stromata, or Miscellanies: 2 passages hold footnote callers (C-17)",
-  "units": ["vi.iv.iii/from-p225", "vi.iv.ix/from-p77"]
- },
  "health.R12_note_caller:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
   "fixed_by": "1.10b",
   "description": "The Confessions of Saint Augustine: 1 passages hold footnote callers (C-17)",
   "units": ["viii.xi"]
  },
- "health.R12_note_caller:church-fathers/a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc": {
-  "fixed_by": "1.10b",
-  "description": "Appendix to the Works of Hippolytus. Containing Dubious and Spurious Pieces.: 1 passages hold footnote callers (C-17)",
-  "units": ["iii.v.i.xliii"]
- },
  "health.R12_note_caller:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
   "fixed_by": "1.10b",
   "description": "The Epistles of Cyprian.: 1 passages hold footnote callers (C-17)",
   "units": ["iv.iv.liv/from-p88"]
- },
- "health.R12_note_caller:church-fathers/f39c025e-78a6-5737-a94f-7896c84fc857": {
-  "fixed_by": "1.10b",
-  "description": "Moral Treatises of St. Augustin: 2 passages hold footnote callers (C-17)",
-  "units": ["v.ii.xii", "v.iv.viii"]
  },
  "health.R12_note_caller:councils/137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
   "fixed_by": "1.1",

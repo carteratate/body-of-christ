@@ -216,8 +216,8 @@ SCHEMA = f"""
     CREATE TABLE reading_progress (user_id uuid, document_id uuid, chapter_key text, anchor text);
     CREATE TABLE document_chapters (document_id uuid REFERENCES documents(id), ordinal int,
         chapter_key text, chapter_label text, PRIMARY KEY (document_id, ordinal));
-    INSERT INTO document_chapters VALUES ('{DOC}', 1, 'q1', 'Q 1');
     INSERT INTO documents VALUES ('{DOC}', 'summa', 'T', 'A', NULL, '', '{{"k": 1}}', 1);
+    INSERT INTO document_chapters VALUES ('{DOC}', 1, 'q1', 'Q 1');
     INSERT INTO chunks VALUES ('{P1}', '{DOC}', 'Text one.', 0, 'R', 'q1/0', 'q1', 'Q 1', NULL);
     INSERT INTO retrievals (chunk_id, user_id) VALUES ('{P1}', gen_random_uuid()),
                                                       ('{P1}', gen_random_uuid());
