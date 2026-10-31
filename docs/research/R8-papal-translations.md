@@ -111,7 +111,7 @@ Under B, the whole 1740–1799 group (26 documents, about 105,000 words) and Exs
 
 ## Decisions (Carter, 31 Oct 2026)
 
-- **Scope B**: search the 38 remaining Pius IX and Gregory XVI documents (and Singulari Nos once more); the 1740–1799 group and Exsurge Domine retire.
+- **Scope: everything.** First set to scope B (search the Pius IX and Gregory XVI documents; retire the 1740–1799 group and Exsurge Domine). Revised the same day: a ten-minute probe of ECCO found two of the 18th-century documents the pilot had written off (Cum Summi and Salutis Nostrae, in *Interesting Letters of the Late Pope Clement XIV*, 1777), so every document without a printing is searched in full before any is retired.
 - **Retire with a link.** A document with no public-domain printing is retired, and its removal page links to it at papalencyclicals.net. Recorded, with the full list and how to reverse it, in `docs/adr/0001-retire-papal-documents-without-public-domain-english.md`, which 1.3d keeps current.
 - **Etsi Multa** uses its undated Philadelphia printing: the catalogue dates it 1874, and the "Rt. Rev. Bishop of Philadelphia" who approved it held that title only until February 1875.
 - **Nostis et Nobiscum**: the scope search looks for a complete printing. If none is found, *The Rambler*'s abridgement (February 1850) is published with the gaps marked: it omits paragraphs 21–24 (marked "* * *") and 31–33 (unmarked), about 1,120 of 5,570 words, and those passages are retired.
@@ -126,7 +126,7 @@ Under B, the whole 1740–1799 group (26 documents, about 105,000 words) and Exs
 
 ## Needs Carter
 
-1. **Approve the 15 draft rows** (`checked_by` null): the 12 of section 3 and the three 1800–1830 finds above. Four print the site's own translation (Quanta Cura, the Syllabus, Sublimis Deus, Unam Sanctam); eleven are different, older translations.
+1. **Approve the 17 draft rows** (`checked_by` null): the 12 of section 3, the three 1800–1830 finds above, and Cum Summi and Salutis Nostrae (*Interesting Letters of the Late Pope Clement XIV*, Newcastle, 1777, translated from the French edition). Four print the site's own translation (Quanta Cura, the Syllabus, Sublimis Deus, Unam Sanctam); eleven are different, older translations.
 
 ## Side findings
 
