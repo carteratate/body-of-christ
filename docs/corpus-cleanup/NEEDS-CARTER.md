@@ -53,6 +53,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-28: yes, 30 seconds apart, run at night US time, stopping at the first error.
 - **1.2f** [Phase 1]. Approve a spend ceiling per work for the AI step that corrects scanning errors in scanned books (first used on councils 8 to 18). No spec proposes a figure.
 - **R8, 1.3d** [Phase 1, just before 1.3d]. After R8's pilot, choose its scope: search for other public-domain translations of all the Carlen-only older papal documents, search by group, or retire the rest. Then approve 1.3d's downloads and its list of documents to retire.
+  Answered 2026-10-31: scope B of `docs/research/R8-papal-translations.md`: search the 38 remaining Pius IX and Gregory XVI documents; the 1740–1799 group and Exsurge Domine retire. Reading public sources (OCR text, catalogue records) into a scratch folder for comparison no longer needs approval; vendoring into the repo still does.
 - **1.3c** [Phase 1]. Approve vendoring the vatican.va English pages of the 25 modern papal documents, and review the PR's paragraph-alignment mismatch list.
 
 ### Phase 2
