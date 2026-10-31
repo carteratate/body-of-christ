@@ -128,7 +128,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      select pg_size_pretty(sum(size)) from pg_ls_waldir();
      ```
      Check the dashboard for disk use (36% on 30 Oct 2026).
-  2. Disk check. If disk use plus the peak estimate would pass 80% of the provisioned disk, stop and ask Carter. It is not expected to trigger: 0.6 measured 36% on 30 Oct 2026, and the peak adds about 250 MiB. Do not work around it by dropping indexes, which would break full-text search during the window.
+  2. Disk check. If disk use plus the peak estimate would pass 85% of the provisioned disk, stop and ask Carter. It is not expected to trigger: 0.6 measured 36% on 30 Oct 2026, and the peak adds about 250 MiB. Do not work around it by dropping indexes, which would break full-text search during the window.
   3. Quiet window (Carter approves the time). In one `psql` session:
      ```sql
      set lock_timeout = '5s';        -- fail fast instead of queueing every search behind the lock
@@ -611,7 +611,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   2. A build check that every passage of an excerpt-only document stays within its basis's limits (for a word limit, the longest passage's word count), run in the release report. The `excerpt_basis` field and this check are code; the first PR that records a basis (1.3c) adds both.
   3. The same determination for live documents that are `in-copyright` or `unknown`: each gets an `excerpt_basis` or is listed for Carter. None is retired without his decision.
   4. The full-reader step for LEV texts: a vatican.va document whose cleanup fix has passed the coverage checks moves to `permission`, with the article cited as the grant and the conditions as its scope. The PR that makes the move names the fix and attaches its coverage result.
-  5. A running storage total at the top, for Supabase and Qdrant. Stop and ask Carter (a paid Qdrant tier, or reorder the additions) when a publish's Qdrant peak, the live collection plus the new one it builds, would pass 3 GB of the Free cluster's 4 GiB disk, or when Supabase disk use would pass 80%.
+  5. A running storage total at the top, for Supabase and Qdrant. Stop and ask Carter (a paid Qdrant tier, or reorder the additions) when a publish's Qdrant peak, the live collection plus the new one it builds, would pass 3.4 GB of the Free cluster's 4 GiB disk, or when Supabase disk use would pass 85%.
   6. Public facts only. Correspondence, and anything Carter has not sent, stays in the private memos.
 - **Acceptance checks:** Every work named in 5.3 to 5.6c has a row with status cleared, or excerpt-only with an `excerpt_basis` its passages pass, before its PR merges. A blocked row blocks its PR. Each addition PR links its rows. The storage total is updated in each addition PR.
 - **Production safety:** Documentation only.
