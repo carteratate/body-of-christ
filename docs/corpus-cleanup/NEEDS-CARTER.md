@@ -185,6 +185,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **1.6** [Phase 1]. Show Catechism paragraph numbers inside passage text as "§2267". Recommended answer is yes; the work goes ahead with this if there is no answer.
 - **1.7** [Phase 1]. Add Aquinas's own short introductions at the start of 611 questions and 3 treatises (about 297,000 characters), which are missing today. Recommended answer is yes, since they are his own words.
   Answered 2026-10-05: yes, as passages labeled "Question N, prologue" before Article 1. The Supplement's prologues are its compiler's and follow the Supplement's treatment (3.2).
+- **1.7 (R7 question 2)** [Phase 1]. In I q.117 a.2 and I q.112 a.2 the text CCEL lost begins or ends inside a paragraph it kept, so it cannot be added as a separate passage without putting the article out of order. Restore the printed words in place, inside the existing passage, and split I q.117 a.2's determination off as its own "I answer that" part (`p5-2`)? Or add the recovered words as a new passage (`recovered-<n>`)? Recommended answer: in place. Whole missing units stay new `recovered-<n>` passages.
+  Answered 2026-10-31: in place (asked during 0.1d). R7's questions 1, 3 and 4 stay open for 1.7.
 - **1.8b** [Phase 1]. Split two Augustine volumes ("Doctrinal Treatises", "Moral Treatises") into their 16 separate works, so On Lying is cited as On Lying. Bookmarks survive either way. Recommended answer is yes.
 - **1.8c** [Phase 1]. Two points.
   - Label the Shepherd of Hermas's author as "Hermas" and its books "The Shepherd: Visions", "Commandments" and "Similitudes".
