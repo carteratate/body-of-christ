@@ -57,7 +57,7 @@ Conventions used in this file:
     - "Source checks (run locally)", required whenever the diff touches `datapipeline/`. It holds the output of `python3 scripts/vendor_sources.py --collection all --verify` (from 0.2 on, `python3 scripts/source_lock.py --verify`), the coverage and sequence summary (0.1a), the health summary (0.1b), and the release report summary (0.1c), each pasted in a collapsed `<details>` block. The section states "Not applicable: this PR does not touch datapipeline/" when that is true.
     - "About page" checkbox: "This PR changes an inclusion rule or what a collection holds; the About page item is updated or ticketed" (from the Decision log row "About page").
     - "Spec changes", required whenever the diff touches `docs/corpus-cleanup/`. One line per edited spec: the file, the item, what changed and why, per `docs/corpus-cleanup/README.md` section 3. It also names the `NEEDS-CARTER.md` entries this PR answered, and states "No spec changes" when that is true.
-    - "Review", quoting the fresh-context reviewer's findings and what was done about each (`README.md` section 4).
+    - "Review", giving the Sol loop's findings and what was done about each (`README.md` section 4).
   - Update `docs/ci-cd-plan.md` only by adding one line at the top noting that its Phase 1 CI shipped in this PR with the scope above; do not rewrite it.
 - **Acceptance checks:**
   - The workflow runs green on the PR itself, all three jobs.

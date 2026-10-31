@@ -55,6 +55,6 @@ Name the NEEDS-CARTER.md entries this PR answered. Otherwise write "No spec chan
 ## Review
 
 <!--
-Quote the fresh-context reviewer's findings and what was done about each
-(docs/corpus-cleanup/README.md section 4).
+Give the Sol loop's ledger: each finding, its severity, and whether it was
+fixed, disputed or declined (docs/corpus-cleanup/README.md section 4).
 -->

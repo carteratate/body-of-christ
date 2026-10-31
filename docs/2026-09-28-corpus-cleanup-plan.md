@@ -10,7 +10,7 @@ Related files:
 
 - `docs/research/2026-09-28-scan-only-works-text-sources.md` says where clean typed text exists for works otherwise available only as page scans.
 - `docs/corpus-cleanup/` holds the detailed work specifications, one file per phase. Every item there follows the same template: goal, current state with evidence, changes by file and function, acceptance checks, production safety, what needs Carter, out of scope.
-- `docs/corpus-cleanup/README.md` is the procedure every implementer follows for any item: ask Carter the item's open questions before writing code, record the answers, update other specs only within set limits, and get a fresh-context review before the PR.
+- `docs/corpus-cleanup/README.md` is the procedure every implementer follows for any item: ask Carter the item's open questions before writing code, record the answers, update other specs only within set limits, and run a Sol loop review before the PR.
 - `docs/corpus-cleanup/NEEDS-CARTER.md` lists everything Carter must approve, decide or supply, by phase.
 
 Nothing here has changed code or live data yet.
