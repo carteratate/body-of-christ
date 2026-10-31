@@ -529,6 +529,16 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
             elif row["passage_id"] not in explained:
                 problems.append(f"{row['anchor']} ({row['passage_id']}) is not built and "
                                 "no removal entry or redirect explains it")
+    # A redirect whose target was itself redirected follows it to the final holder, so
+    # p4 -> p3 becomes p4 -> p2 when p3 later merges into p2.
+    onward = {r["old_passage_id"]: r for r in redirects if not r.get("closed_by")}
+    for r in redirects:
+        seen = {r["old_passage_id"]}
+        while not r.get("closed_by") and r["new_passage_id"] in onward \
+                and r["new_passage_id"] not in seen:
+            seen.add(r["new_passage_id"])
+            nxt = onward[r["new_passage_id"]]
+            r["new_passage_id"], r["new_anchor"] = nxt["new_passage_id"], nxt["new_anchor"]
     rows.sort(key=lambda r: (r["document_id"], r["anchor"]))
     redirects.sort(key=lambda r: (r["document_id"], r["old_anchor"]))
     return Reconciled(rows, redirects, problems)

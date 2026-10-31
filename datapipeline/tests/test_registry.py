@@ -450,6 +450,23 @@ def test_vanished_cut_in_a_paragraph_two_pieces_hold_is_left_to_a_person():
     assert any("ii/from-p1-3" in p for p in rec.problems)
 
 
+def test_redirect_follows_its_target_through_a_later_merge():
+    # p5's piece merges into p3's, then p3's into the first piece: the first redirect
+    # must end at the active holder, not at the now-redirected p3 piece.
+    w = work()
+    start = valid_registry(passages=[row(w["document_id"], p.anchor)
+                                     for p in cut("ii.i", PARAGRAPHS, [2, 4])])
+    first = registry.reconcile(start, [document(cut("ii.i", PARAGRAPHS, [2]))],
+                               item="a", today=TODAY)
+    reg = registry.WorkRegistry(start.works, first.rows, first.redirects, [])
+    assert registry.validate(reg) == []
+    second = registry.reconcile(reg, [document(cut("ii.i", PARAGRAPHS, []))],
+                                item="b", today=TODAY)
+    reg = registry.WorkRegistry(start.works, second.rows, second.redirects, [])
+    assert second.problems == [] and registry.validate(reg) == []
+    assert {r["new_anchor"] for r in second.redirects} == {"ii.i"}
+
+
 def test_piece_created_redirected_and_reappearing_reclaims_its_id():
     w = work()
     start = valid_registry(passages=[row(w["document_id"], "ii.i")])
