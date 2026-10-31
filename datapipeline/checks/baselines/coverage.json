@@ -1,7 +1,7 @@
 {
  "measured_on": {
   "apostolic-exhortations": "feat/coverage-checks cfee751",
-  "bible": "feat/coverage-checks cfee751",
+  "bible": "feat/0.1d-review-checks 65fc9df",
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/coverage-checks cfee751",
@@ -248,9 +248,9 @@
    "pct": 99.96
   },
   "bible/eng-web-c_usfm/20-PSAeng-web-c.usfm": {
-   "body_chars": 194041,
+   "body_chars": 196485,
    "covered_chars": 193957,
-   "pct": 99.96
+   "pct": 98.71
   },
   "bible/eng-web-c_usfm/21-PROeng-web-c.usfm": {
    "body_chars": 73638,
@@ -1998,9 +1998,9 @@
   "12ffdbe3-6498-55b7-bef6-afbf368461ea": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/20-PSAeng-web-c.usfm",
-   "body_chars": 194041,
+   "body_chars": 196485,
    "covered_chars": 193957,
-   "pct": 99.96
+   "pct": 98.71
   },
   "15d70563-048b-555d-8fee-529aa3f4f892": {
    "collection": "bible",

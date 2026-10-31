@@ -4,7 +4,9 @@
                              [--out <dir>] [--write-baseline [<file>]]
 
 Builds documents through SOURCE_ADAPTERS, runs coverage, the sequence checks and the
-sentinels, and writes <out>/coverage.json, <out>/sequence.json and <out>/summary.md.
+sentinels, 0.1d's checks for the 6 Oct 2026 corpus reviews (checks/structure.py,
+checks/content.py, checks/unit_coverage.py and the tracked health report rules), and
+writes <out>/coverage.json, <out>/sequence.json and <out>/summary.md.
 --write-baseline also writes this run's numbers as the baseline (checks/baselines/
 coverage.json unless a file is given), replacing only the collections this run measured;
 a PR that changes any file's coverage commits it.
@@ -27,6 +29,7 @@ if DATAPIPELINE not in sys.path:
     sys.path.insert(0, DATAPIPELINE)
 
 import health  # noqa: E402
+from checks import content, structure, unit_coverage  # noqa: E402
 from checks import sequence as seq  # noqa: E402
 from checks.coverage import CoverageResult, coverage, documents_by_file  # noqa: E402
 from checks.source_text import SOURCES, collection_files, editorial_divs, file_units  # noqa: E402
@@ -77,6 +80,10 @@ SENTINELS = (
     Sentinel("daniel_14", "bible", 1, "Daniel 14, passages"),
     Sentinel("summa_i_q71", "summa", 1, "Summa I q.71, passages"),
     Sentinel("summa_i_q72", "summa", 1, "Summa I q.72, passages"),
+    # 0.1d. CCC 1471's defining sentence present (1) or not (0); the share of the Sirach
+    # prologue's sentences in a passage, in percent.
+    Sentinel("ccc_1471_definition", "catechism", 1, "CCC 1471 definition of an indulgence, present"),
+    Sentinel("sirach_prologue", "bible", 99, "Sirach prologue, percent of its sentences"),
 )
 
 
@@ -89,8 +96,14 @@ def _chars(documents: list[Document], section: str | None = None) -> int:
                if section is None or re.search(rf"§{section}\s*$", p.reference))
 
 
-def sentinel_value(sentinel: Sentinel, documents: list[Document]) -> int:
+def sentinel_value(sentinel: Sentinel, documents: list[Document],
+                   units: list | None = None, sources: str = SOURCES) -> int:
+    """`units` are the collection's source units, which the 0.1d sentinels read."""
     name = sentinel.name
+    if name == "ccc_1471_definition":
+        return unit_coverage.ccc_1471_definition(documents, units or [])
+    if name == "sirach_prologue":
+        return unit_coverage.sirach_prologue(documents, sources)
     if name == "nostra_aetate_4":
         return _chars(_by_title(documents, "Nostra Aetate"), "4")
     if name == "dei_verbum_12":
@@ -125,6 +138,12 @@ class RunResult:
     sentinels: dict[str, int] = field(default_factory=dict)
     # collection → its 0.1b block-rule violations (the report rules are checks.health's).
     health: dict[str, list[health.Violation]] = field(default_factory=dict)
+    # 0.1d: failing review checks (structure., roles., editorial., attribution., labels.,
+    # registry., text., the unit coverage checks and the tracked health report rules),
+    # check id → units; and per collection the report-only counts.
+    review: dict[str, list[str]] = field(default_factory=dict)
+    report_only: dict[str, dict[str, int]] = field(default_factory=dict)
+    large_chapters: list[dict] = field(default_factory=list)
     seconds: float = 0.0
 
 
@@ -183,10 +202,38 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
                             f"{collection}/{f}"] = seq.numbered_paragraphs(doc, units_by_file[f])
         for sentinel in SENTINELS:
             if sentinel.collection == collection:
-                result.sentinels[sentinel.name] = sentinel_value(sentinel, documents)
-        result.health[collection] = health.check_documents(collection, documents, report=False)
+                result.sentinels[sentinel.name] = sentinel_value(sentinel, documents, units,
+                                                                 sources)
+        violations = health.check_documents(collection, documents)
+        result.health[collection] = [v for v in violations if v.severity == "block"]
+        run_review(result, collection, documents, files, units_by_file, violations, sources)
     result.seconds = round(time.monotonic() - started, 1)
     return result
+
+
+# Report rules counted for the summary but never failing (0.1d).
+REPORT_ONLY_RULES = ("R13_lower_start", "R14_hyphen_space")
+
+
+def run_review(result: RunResult, collection: str, documents: list[Document],
+               files: list[str], units_by_file: dict[str, list], violations: list,
+               sources: str = SOURCES) -> None:
+    """0.1d's checks for the 6 Oct 2026 corpus reviews, into `result.review`."""
+    placed = (documents_by_file(collection, documents, files, sources)
+              if collection in structure.PAPAL_COLLECTIONS else None)
+    review = structure.run(collection, documents, documents_by_file=placed,
+                           units_by_file=units_by_file, sources=sources)
+    review.update(content.run(collection, documents))
+    units = [u for f in files for u in units_by_file[f]]
+    if collection == "catechism":
+        review.update(unit_coverage.catechism_paragraph_words(documents, units))
+    if collection == "bible":
+        review.update(unit_coverage.bible_superscriptions(documents, units))
+    review.update(health.tracked_check_ids(violations))
+    result.review.update(review)
+    counts = {rule: sum(1 for v in violations if v.rule == rule) for rule in REPORT_ONLY_RULES}
+    result.report_only[collection] = counts
+    result.large_chapters += structure.large_chapters(collection, documents)
 
 
 # --------------------------------------------------------------------------- defects
@@ -210,19 +257,24 @@ def failing_checks(result: RunResult) -> dict[str, list[str]]:
     for violations in result.health.values():
         for v in violations:
             out[v.check_id] = [v.detail]
+    out.update(result.review)
     return out
 
 
 # Check-id prefixes this report computes. `release.` ids belong to the release report
 # (0.1c), which judges them against a live snapshot.
-REPORT_PREFIXES = ("coverage.", "sequence.", "sentinel.", "health.")
+# 0.1d's namespaces; every id in them is "<namespace>.<check>:<collection>[/<scope>]".
+REVIEW_NAMESPACES = ("structure", "roles", "editorial", "attribution", "labels", "registry",
+                     "text")
+REPORT_PREFIXES = ("coverage.", "sequence.", "sentinel.", "health.") + tuple(
+    f"{n}." for n in REVIEW_NAMESPACES)
 
 
 def check_scope(check_id: str) -> str | None:
     """The collection a check id belongs to, or None for an id this run cannot judge."""
     kind, _, rest = check_id.partition(".")
     # health.<rule>:<collection>/<document_id>[#<anchor>]; release.<check>:<collection>/<id>
-    if kind in ("health", "release"):
+    if kind in ("health", "release") or kind in REVIEW_NAMESPACES:
         return rest.partition(":")[2].split("/", 1)[0] or None
     if kind == "coverage":
         return rest.split(".", 1)[0]
@@ -232,6 +284,16 @@ def check_scope(check_id: str) -> str | None:
     family = family.split(".")[0]
     return {"bible_verses": "bible", "ccc_paragraphs": "catechism", "canons": "canon-law",
             "summa_articles": "summa"}.get(family) or unit.split("/", 1)[0]
+
+
+# Coverage checks of units rather than files (0.1d): failing_checks reports them, like
+# the sequence checks, and coverage_failing does not.
+UNIT_COVERAGE_IDS = ("coverage.bible.superscriptions", "coverage.catechism.paragraph_words:")
+
+
+def is_file_coverage(check_id: str) -> bool:
+    """A 0.1a file coverage id ("coverage.<collection>.<file>"), not a unit check."""
+    return check_id.startswith("coverage.") and not check_id.startswith(UNIT_COVERAGE_IDS)
 
 
 def coverage_failing(result: RunResult) -> set[str]:
@@ -423,6 +485,8 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
                          f"{s.minimum:,} | {status} |")
     lines.append("")
 
+    lines += review_md(result, known)
+
     judged = {k for k in known if check_scope(k) in result.collections
               and k.startswith(REPORT_PREFIXES)}
     unexpected = sorted(i for i in failing_ids if i not in known)
@@ -447,6 +511,40 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
         if ids:
             lines += [f"{label}:", ""] + [f"- `{i}`" for i in ids] + [""]
     return "\n".join(lines).rstrip() + "\n"
+
+
+def review_md(result: RunResult, known: dict[str, dict]) -> list[str]:
+    """0.1d's section: each failing review check by name and collection, with how many
+    ids and units fail and how many are known defects; then the report-only counts."""
+    rows: dict[tuple[str, str], list[int]] = {}
+    for check_id, units in result.review.items():
+        name = check_id.partition(":")[0]
+        row = rows.setdefault((name, check_scope(check_id) or ""), [0, 0, 0])
+        row[0] += 1
+        row[1] += len(units)
+        row[2] += check_id in known
+    lines = ["## Checks for the 6 Oct 2026 reviews (0.1d)", "",
+             "Failing checks by name and collection. An id is one check (a document, an "
+             "article list, a CCC number); units are what it lists (anchors, keys, numbers).",
+             "", "| Check | Collection | Failing ids | Units | Known defects |",
+             "|---|---|---:|---:|---:|"]
+    for (name, collection), (ids, units, listed) in sorted(rows.items()):
+        lines.append(f"| `{name}` | {collection} | {ids:,} | {units:,} | {listed:,} |")
+    if not rows:
+        lines.append("| none | | | | |")
+    lines += ["", "Report only (never failing): " + "; ".join(
+        f"{c} " + ", ".join(f"{r} {n:,}" for r, n in counts.items() if n)
+        for c, counts in sorted(result.report_only.items()) if any(counts.values())) + ".",
+        "", f"Chapters over {structure.CHAPTER_SIZE_LIMIT:,} characters "
+            f"(`structure.chapter_size`, report only): {len(result.large_chapters)}.", ""]
+    if result.large_chapters:
+        lines += ["| Collection | Document | Chapter key | Characters | Passages |",
+                  "|---|---|---|---:|---:|"]
+        for r in sorted(result.large_chapters, key=lambda r: -r["characters"])[:15]:
+            lines.append(f"| {r['collection']} | {r['document_id']} | {r['chapter_key']} | "
+                         f"{r['characters']:,} | {r['passages']} |")
+        lines.append("")
+    return lines
 
 
 def write_outputs(result: RunResult, out_dir: str, baseline: dict, baseline_name: str,

@@ -24,7 +24,8 @@ P2 = "33333333-3333-3333-3333-333333333333"
 class FakeConnection:
     """Records every statement; answers the exporter's queries with tiny rows."""
 
-    def __init__(self):
+    def __init__(self, absent=("public.retrieval_labels",)):
+        self.absent = absent
         self.calls: list[tuple[str, str]] = []
         self.transactions: list[dict] = []
         self.in_transaction = False
@@ -47,7 +48,7 @@ class FakeConnection:
         if sql == E.READ_ONLY_CHECK_SQL:
             return "on" if self.in_transaction else "off"
         if sql == E.TABLE_EXISTS_SQL:
-            return args[0] != "public.retrieval_labels"     # one table absent
+            return args[0] not in self.absent     # one table absent
         return 7
 
     async def fetch(self, sql, *args):
@@ -72,6 +73,9 @@ class FakeConnection:
             return [{"chunk_id": P2, "n": 1}]
         if "FROM public.guest_trial_retrievals" in sql:
             return [{"chunk_id": P1, "n": 2}]
+        if sql == E.CHAPTERS_SQL:
+            return [dict(document_id=DOC, ordinal=1, chapter_key="q1", chapter_label="Q 1",
+                         chunk_count=2)]
         if sql == E.READING_PROGRESS_SQL:
             return [{"document_id": DOC, "chapter_key": "q1", "anchor": None, "n": 1},
                     {"document_id": DOC, "chapter_key": "q1", "anchor": "q1/1", "n": 2}]
@@ -99,6 +103,8 @@ def test_session_is_read_only_before_the_first_query_and_every_query_is_select()
             assert word not in sql.upper(), sql
     # The read-only check is the first statement inside the transaction.
     assert statements[0] == E.READ_ONLY_CHECK_SQL
+    # The stored reader outline (0.1d) is read inside the same read-only transaction.
+    assert " ".join(E.CHAPTERS_SQL.split()) in statements
 
 
 def test_refuses_when_the_transaction_is_not_read_only():
@@ -149,8 +155,13 @@ def test_snapshot_files_hold_counts_only_and_load_with_the_health_reader(tmp_pat
     text = json.dumps(refs)
     assert "user_id" not in text and "query" not in text
 
+    chapters = [json.loads(line) for line in open(os.path.join(out, E.CHAPTERS_FILE))]
+    assert chapters == [{"document_id": DOC, "ordinal": 1, "chapter_key": "q1",
+                         "chapter_label": "Q 1", "chunk_count": 2}]
+
     meta = json.load(open(os.path.join(out, E.SNAPSHOT_FILE)))
     assert meta["tables"]["retrieval_labels"] is None      # absent table
+    assert meta["tables"]["document_chapters"] == 7 and E.CHAPTERS_FILE in meta["files"]
     for name, digest in meta["files"].items():
         assert E._sha256(os.path.join(out, name)) == digest
     entry = json.load(open(index))["snapshots"][0]
@@ -160,6 +171,16 @@ def test_snapshot_files_hold_counts_only_and_load_with_the_health_reader(tmp_pat
     [doc] = docs_by_collection["summa"]
     assert [p.metadata["passage_id"] for p in doc.passages] == [P1, P2]
     assert doc.passages[0].unit_label == "Objection 1"
+
+
+def test_a_database_without_the_outline_table_exports_no_chapters_file(tmp_path):
+    conn = FakeConnection(absent=("public.retrieval_labels", "public.document_chapters"))
+    data = asyncio.run(E.read_live(conn))
+    assert data["chapters"] is None and data["tables"]["document_chapters"] is None
+    assert " ".join(E.CHAPTERS_SQL.split()) not in _statements(conn)
+    out = E.write_snapshot(data, str(tmp_path / "s"), "2026-10-05", "t", str(tmp_path / "i.json"))
+    assert not os.path.exists(os.path.join(out, E.CHAPTERS_FILE))
+    assert E.CHAPTERS_FILE not in json.load(open(os.path.join(out, E.SNAPSHOT_FILE)))["files"]
 
 
 def test_snapshot_is_never_overwritten_and_index_keeps_other_dates(tmp_path):
@@ -193,7 +214,10 @@ SCHEMA = f"""
     CREATE TABLE retrievals (id serial, chunk_id uuid REFERENCES chunks(id), user_id uuid);
     CREATE TABLE bookmarks (id serial, chunk_id uuid REFERENCES chunks(id), user_id uuid);
     CREATE TABLE reading_progress (user_id uuid, document_id uuid, chapter_key text, anchor text);
+    CREATE TABLE document_chapters (document_id uuid REFERENCES documents(id), ordinal int,
+        chapter_key text, chapter_label text, PRIMARY KEY (document_id, ordinal));
     INSERT INTO documents VALUES ('{DOC}', 'summa', 'T', 'A', NULL, '', '{{"k": 1}}', 1);
+    INSERT INTO document_chapters VALUES ('{DOC}', 1, 'q1', 'Q 1');
     INSERT INTO chunks VALUES ('{P1}', '{DOC}', 'Text one.', 0, 'R', 'q1/0', 'q1', 'Q 1', NULL);
     INSERT INTO retrievals (chunk_id, user_id) VALUES ('{P1}', gen_random_uuid()),
                                                       ('{P1}', gen_random_uuid());
@@ -251,9 +275,12 @@ def test_export_against_postgres_reads_everything_and_cannot_write(database, tmp
 
     data = asyncio.run(scenario())
     assert [p["id"] for p in data["passages"]] == [P1]
-    assert data["tables"] == {"chunks": 1, "documents": 1, "retrievals": 2, "bookmarks": 0,
+    assert data["tables"] == {"chunks": 1, "documents": 1, "document_chapters": 1,
+                              "retrievals": 2, "bookmarks": 0,
                               "guest_trial_retrievals": None, "retrieval_labels": None,
                               "reading_progress": 1}
+    assert data["chapters"] == [{"document_id": DOC, "ordinal": 1, "chapter_key": "q1",
+                                 "chapter_label": "Q 1", "chunk_count": 1}]
     assert data["references"]["passages"][P1]["retrievals"] == 2
     assert data["documents"][0]["metadata"] == {"k": 1}
     out = E.write_snapshot(data, str(tmp_path / "s"), "2026-10-05", "t", str(tmp_path / "i.json"))

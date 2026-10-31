@@ -35,6 +35,26 @@
     "documents.jsonl": "523d2d58a3ec2a670a84bd7054ca5d262513e7728492272f67f74df0c4cd9974",
     "references.json": "109d8cd83b11306623a3513c522ed4d98756e2fda7dacbe2192a3de6f8e8647c"
    }
+  },
+  {
+   "date": "2026-10-31",
+   "exported_at": "2026-10-31T11:51:30Z",
+   "tables": {
+    "chunks": 54555,
+    "documents": 421,
+    "document_chapters": 13255,
+    "retrievals": 4242,
+    "bookmarks": 25,
+    "guest_trial_retrievals": 88,
+    "retrieval_labels": 3,
+    "reading_progress": 35
+   },
+   "files": {
+    "passages.jsonl.gz": "8ad92ee4a6dfc41c55df37ced7e8ce8967a4e3231fdf6c68bf83f32c6ce660c1",
+    "documents.jsonl": "523d2d58a3ec2a670a84bd7054ca5d262513e7728492272f67f74df0c4cd9974",
+    "references.json": "7d46885bcf951f952dfb0ac0341c7faddb92bb7242a9725832e959339b3d2c0c",
+    "document_chapters.jsonl": "ecfe424997706c5dbe31d36d0a31a55ce1ba3c1144cbf0ac9ff02fe3514f9c33"
+   }
   }
  ]
 }
