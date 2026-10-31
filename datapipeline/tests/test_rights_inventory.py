@@ -66,6 +66,20 @@ def test_planned_for_id_pattern(value, ok):
     assert bool(PLANNED_FOR_ID.match(value)) == ok
 
 
+UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+
+
+def test_built_rows_have_a_unique_document_id_and_planned_rows_none():
+    # Rows are matched to documents by ID (reader_access), never by their labels.
+    for entry in ENTRIES:
+        if entry["planned_for"] is None:
+            assert UUID.match(entry["document_id"] or ""), R.key(entry)
+        else:
+            assert entry["document_id"] is None, R.key(entry)
+    ids = [e["document_id"] for e in ENTRIES if e["document_id"]]
+    assert len(ids) == len(set(ids))
+
+
 def test_approval_is_all_or_nothing():
     for entry in ENTRIES:
         assert bool(entry["checked_by"]) == bool(entry["checked_on"]), R.key(entry)
@@ -82,12 +96,14 @@ def test_inventory_matches_the_built_works_exactly():
     # The 421 live document IDs (0.2 acceptance): the built inputs are the ones in use.
     ids = sorted(d.id for docs in documents.values() for d in docs)
     assert hashlib.md5(",".join(ids).encode()).hexdigest() == LIVE_DOCUMENT_IDS_MD5
-    built = R.work_keys(documents)
-    assert len(built) == len(set(built)), "two built works share an inventory key"
-    listed = {R.key(e) for e in ENTRIES}
-    assert sorted(set(built) - listed) == [], "built works with no inventory entry"
-    # Planned rows (R6) describe works not built yet, so only built-work rows can be stale.
-    listed_built = {R.key(e) for e in ENTRIES if e["planned_for"] is None}
-    assert sorted(listed_built - set(built)) == [], "inventory entries for works no longer built"
-    # The PR that builds a planned work clears its planned_for.
-    assert sorted(set(built) - listed_built) == [], "built works whose entry is still planned"
+    rows = R.by_document_id(ENTRIES)
+    # Planned rows (R6) describe works not built yet and have no ID; the PR that builds
+    # one clears its planned_for and fills in its document_id.
+    assert sorted(set(ids) - set(rows)) == [], "built works with no inventory entry"
+    assert sorted(set(rows) - set(ids)) == [], "inventory entries for works no longer built"
+    # The readable fields follow the build, so a relabel updates its row in the same PR.
+    built = {d.id: k for c, docs in documents.items()
+             for d, k in zip(docs, R.work_keys({c: docs}))}
+    stale = sorted((R.key(rows[i]), k) for i, k in built.items() if R.key(rows[i]) != k)
+    assert stale == [], "inventory labels that differ from the build"
+    assert len(set(built.values())) == len(built), "two built works share an inventory key"

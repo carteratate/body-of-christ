@@ -20,36 +20,34 @@ def test_an_unknown_status_is_refused():
 
 
 def test_the_real_inventory_classifies_without_error():
-    assert RA.access_by_key(R.load())
+    assert RA.access_by_id(R.load())
 
 
-def _entry(work, status, collection="encyclicals", source_path=None):
-    return {"collection": collection, "work": work, "author": "Pope Leo XIII",
-            "source_path": source_path or f"{collection}/{work.lower()}.html",
-            "status": status}
+def _entry(id, work, status, planned_for=None):
+    return {"document_id": id, "collection": "encyclicals", "work": work,
+            "author": "Pope Leo XIII", "source_path": f"encyclicals/{work.lower()}.html",
+            "status": status, "planned_for": planned_for}
 
 
 def _table(*entries):
-    return RA.access_by_key(list(entries))
+    return RA.access_by_id(list(entries))
 
 
-def test_access_matches_on_identity_not_title():
-    # Two works share a title; the source file tells them apart.
-    table = _table(_entry("Ubi Primum", "unknown", source_path="encyclicals/a.html"),
-                   _entry("Ubi Primum", "pd-us-pre-1931", source_path="encyclicals/b.html"))
-    get = lambda f: RA.access_for("encyclicals", "Ubi Primum", "Pope Leo XIII",
-                                  {"source_file": f}, table)
-    assert get("a.html") == RA.EXCERPT
-    assert get("b.html") == RA.FULL
+def test_access_matches_on_document_id_not_labels():
+    # Two works share a title; their IDs tell them apart, and a relabel changes nothing.
+    table = _table(_entry("a", "Ubi Primum", "unknown"),
+                   _entry("b", "Ubi Primum", "pd-us-pre-1931"))
+    assert RA.access_for("a", table) == RA.EXCERPT
+    assert RA.access_for("b", table) == RA.FULL
 
 
 def test_a_document_with_no_inventory_row_is_excerpt_only():
-    assert RA.access_for("encyclicals", "Nowhere", "Pope Leo XIII",
-                         {"source_file": "nowhere.html"}, _table()) == RA.EXCERPT
+    assert RA.resolve("nowhere", _table()) == (RA.EXCERPT, RA.NO_ROW)
 
 
-def test_an_unresolvable_source_is_excerpt_only():
-    assert RA.resolve("encyclicals", "X", None, {}, _table()) == (RA.EXCERPT, RA.UNRESOLVED)
+def test_a_planned_row_matches_no_document():
+    table = _table(_entry(None, "Not Yet Built", "pd-us-pre-1931", planned_for="1.2c"))
+    assert table == {}
 
 
 class FakeConn:
@@ -75,13 +73,12 @@ class FakeConn:
 
 
 def _row(id, work, access):
-    return {"id": id, "collection": "encyclicals", "title": work, "author": "Pope Leo XIII",
-            "metadata": f'{{"source_file": "{work.lower()}.html"}}', "reader_access": access}
+    return {"id": id, "collection": "encyclicals", "title": work, "reader_access": access}
 
 
 def test_sync_dry_run_reports_without_writing():
     conn = FakeConn([_row("1", "Libertas", "full")])
-    table = _table(_entry("Libertas", "in-copyright"))
+    table = _table(_entry("1", "Libertas", "in-copyright"))
     result = asyncio.run(RA.sync(conn, table, apply=False))
     assert [(c.before, c.after, c.reason) for c in result.changes] == [("full", "excerpt", "inventory")]
     assert result.totals == {"full": 0, "excerpt": 1}
@@ -90,23 +87,32 @@ def test_sync_dry_run_reports_without_writing():
 
 def test_a_status_change_flips_reader_access_on_the_next_sync():
     conn = FakeConn([_row("1", "Libertas", "full"), _row("2", "Rerum Novarum", "full")])
-    blocked = _table(_entry("Libertas", "unknown"), _entry("Rerum Novarum", "pd-us-pre-1931"))
+    blocked = _table(_entry("1", "Libertas", "unknown"),
+                     _entry("2", "Rerum Novarum", "pd-us-pre-1931"))
     asyncio.run(RA.sync(conn, blocked, apply=True))
     assert [r["reader_access"] for r in conn.rows] == ["excerpt", "full"]
 
     # Permission granted and recorded: the next sync reopens it, nothing else moves.
-    granted = _table(_entry("Libertas", "permission"), _entry("Rerum Novarum", "pd-us-pre-1931"))
+    granted = _table(_entry("1", "Libertas", "permission"),
+                     _entry("2", "Rerum Novarum", "pd-us-pre-1931"))
     result = asyncio.run(RA.sync(conn, granted, apply=True))
     assert [(c.title, c.after) for c in result.changes] == [("Libertas", "full")]
     assert [r["reader_access"] for r in conn.rows] == ["full", "full"]
     assert asyncio.run(RA.sync(conn, granted, apply=True)).changes == []
 
 
+def test_sync_keeps_a_relabelled_live_document_matched():
+    # Live keeps a document's old label until the next publish; its row has the new one.
+    conn = FakeConn([_row("1", "Fragments.", "full")])
+    table = _table(_entry("1", "Fragments of Methodius", "pd-us-pre-1931"))
+    result = asyncio.run(RA.sync(conn, table, apply=True))
+    assert (result.changes, result.unmatched) == ([], [])
+
+
 def test_apply_refuses_while_a_document_is_unmatched():
-    # Without datapipeline/sources/, a document resolved through a manifest cannot be
-    # matched; blocking it silently would close a public-domain text.
+    # A live document with no row would be blocked silently, closing a public-domain text.
     conn = FakeConn([_row("1", "Libertas", "full"), _row("2", "Stray", "full")])
-    table = _table(_entry("Libertas", "pd-us-pre-1931"))
+    table = _table(_entry("1", "Libertas", "pd-us-pre-1931"))
 
     dry = asyncio.run(RA.sync(conn, table, apply=False))
     assert [(c.title, c.reason) for c in dry.unmatched] == [("Stray", "no-row")]
