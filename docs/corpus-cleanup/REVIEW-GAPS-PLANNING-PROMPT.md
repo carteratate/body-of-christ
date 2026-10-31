@@ -106,7 +106,7 @@ Use the owners the synthesis suggests unless the specs show a better one.
    - new child issues for the new items, each under its phase parent;
    - comment or body updates for existing item issues that gain scope from a C-finding.
    Do not create or edit issues. Carter approves every issue, push and PR.
-5. **Before proposing a PR, run a fresh-context review** with a subagent on model `opus` that has a shell. Address its findings in the PR description.
+5. **Before proposing a PR, run a Sol loop** (the `sol-loop` skill). Address its findings in the PR description.
 
 ## Rules
 

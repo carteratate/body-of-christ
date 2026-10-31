@@ -54,11 +54,11 @@ How:
 
 ## 4. Review before the PR
 
-Before opening the PR, a fresh-context reviewer (one that has not seen the work) checks two things:
+Before opening the PR, run a Sol loop on the change (the `sol-loop` skill, `.agents/skills/sol-loop/SKILL.md`). Sol reviews through the Codex CLI, the implementer fixes what holds up, and the loop repeats until Sol would merge the change or the skill's round budget ends. The intent given to Sol names the item and asks it to check two things:
 - the code against the item's spec and acceptance checks;
 - the spec commit against D1 to D12 and the rules in section 3.
 
-The PR description quotes the reviewer's findings and what was done about each.
+The PR description's "Review" section gives the loop's ledger: each finding, its severity, and whether it was fixed, disputed with evidence, or declined. Anything still disputed when the loop stops is listed with both sides for Carter to decide.
 
 ## 5. One at a time for shared items
 
