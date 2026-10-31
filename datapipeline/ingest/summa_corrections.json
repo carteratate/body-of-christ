@@ -192,7 +192,8 @@
   "FP_Q107_A2-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -202,7 +203,8 @@
   "FP_Q107_A5-p7": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -267,7 +269,8 @@
   "FP_Q112_A3-p9": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -277,7 +280,8 @@
   "FP_Q113_A6-p7": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -417,7 +421,8 @@
   "FP_Q13_A10-p10": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -474,11 +479,10 @@
    ]
   },
   "FP_Q14_A16-p10": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "sc 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I q. 14 a. 16 ad 3 [CT 29018]"
    ]
@@ -565,14 +569,14 @@
    ]
   },
   "FP_Q28_A4-p6": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 5",
    "class": "variant",
    "latin": [
     "I q. 28 a. 4 s. c. [CT 29641]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q28_A4-p12": {
    "role": "reply",
@@ -585,24 +589,24 @@
    ]
   },
   "FP_Q29_A2-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "I q. 29 a. 2 s. c. 1 [CT 29663]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q29_A2-p6": {
-   "role": "sed-contra",
-   "number": 2,
+   "latin_role": "sed-contra",
+   "latin_number": 2,
    "source_label": "Objection 5",
    "class": "variant",
    "latin": [
     "I q. 29 a. 2 s. c. 2 [CT 29664]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q29_A2-p11": {
    "role": "reply",
@@ -635,24 +639,24 @@
    ]
   },
   "FP_Q32_A3-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "I q. 32 a. 3 s. c. 1 [CT 29791]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q32_A3-p6": {
-   "role": "sed-contra",
-   "number": 2,
+   "latin_role": "sed-contra",
+   "latin_number": 2,
    "source_label": "Objection 5",
    "class": "variant",
    "latin": [
     "I q. 32 a. 3 s. c. 2 [CT 29792]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q32_A3-p12": {
    "role": "reply",
@@ -696,11 +700,10 @@
    ]
   },
   "FP_Q39_A8-p16": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I q. 39 a. 8 ad 1 [CT 30063]"
    ]
@@ -727,14 +730,14 @@
    ]
   },
   "FP_Q48_A5-p6": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "I q. 48 a. 5 s. c. [CT 30504]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q48_A5-p11": {
    "role": "reply",
@@ -804,7 +807,8 @@
   "FP_Q58_A2-p10": {
    "role": "reply",
    "targets": [
-    "obj 3"
+    "obj 3",
+    "obj 1"
    ],
    "class": "prose-reply",
    "latin": [
@@ -835,11 +839,10 @@
    ]
   },
   "FP_Q61_A1-p9": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 3"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I q. 61 a. 1 ad 3 [CT 30943]"
    ]
@@ -867,11 +870,10 @@
    ]
   },
   "FP_Q63_A9-p8": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 2"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I q. 63 a. 9 ad 2 [CT 31116]"
    ]
@@ -890,12 +892,20 @@
   "FP_Q66_A1-p11": {
    "role": "reply",
    "targets": [
-    "sc 1",
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I q. 66 a. 1 ad 4 [CT 31202]"
+   ]
+  },
+  "FP_Q66_A1-p12": {
+   "role": "reply",
+   "targets": [
     "sc 2"
    ],
    "class": "prose-reply",
    "latin": [
-    "I q. 66 a. 1 ad 4 [CT 31202]",
     "I q. 66 a. 1 ad 5 [CT 31203]"
    ]
   },
@@ -914,7 +924,8 @@
   "FP_Q68_A1-p16": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -942,24 +953,24 @@
    ]
   },
   "FP_Q74_A1-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "I q. 74 a. 1 s. c. 1 [CT 31414]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q74_A1-p6": {
-   "role": "sed-contra",
-   "number": 2,
+   "latin_role": "sed-contra",
+   "latin_number": 2,
    "source_label": "Objection 5",
    "class": "variant",
    "latin": [
     "I q. 74 a. 1 s. c. 2 [CT 31415]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FP_Q74_A1-p11": {
    "role": "reply",
@@ -994,7 +1005,8 @@
   "FP_Q76_A1-p18": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -1016,12 +1028,11 @@
    }
   },
   "FP_Q78_A1-p10": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1",
     "obj 2"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I q. 78 a. 1 ad 1 [CT 31678]"
    ]
@@ -1169,7 +1180,8 @@
   "FP_Q93_A4-p8": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "source_label": "Reply OBJ 2 and 3",
    "class": "source-error",
@@ -1228,7 +1240,8 @@
   "FP_Q97_A1-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "source_label": "Reply OBJ 1 and 2",
    "class": "source-error",
@@ -1334,7 +1347,8 @@
   "FS_Q102_A5-p39": {
    "role": "reply",
    "targets": [
-    "obj 8"
+    "obj 8",
+    "obj 9"
    ],
    "source_label": "Reply OBJ 8 and 9",
    "class": "source-error",
@@ -1383,24 +1397,23 @@
    ]
   },
   "FS_Q113_A9-p8": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I-II q. 113 a. 9 ad 1 [CT 38643]"
    ]
   },
   "FS_Q114_A10-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "I-II q. 114 a. 10 s. c. [CT 38730]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FS_Q114_A10-p12": {
    "role": "reply",
@@ -1433,11 +1446,10 @@
    ]
   },
   "FS_Q17_A6-p10": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 3"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I-II q. 17 a. 6 ad 3 [CT 34230]"
    ]
@@ -1473,21 +1485,38 @@
   "FS_Q19_A10-p17": {
    "role": "reply",
    "targets": [
-    "sc 1",
-    "sc 2",
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 19 a. 10 ad 4 [CT 34428]"
+   ]
+  },
+  "FS_Q19_A10-p18": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "I-II q. 19 a. 10 ad 5 [CT 34429]"
+   ]
+  },
+  "FS_Q19_A10-p19": {
+   "role": "reply",
+   "targets": [
     "sc 3"
    ],
    "class": "prose-reply",
    "latin": [
-    "I-II q. 19 a. 10 ad 4 [CT 34428]",
-    "I-II q. 19 a. 10 ad 5 [CT 34429]",
     "I-II q. 19 a. 10 ad 6 [CT 34430]"
    ]
   },
   "FS_Q19_A9-p9": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -1655,11 +1684,10 @@
    ]
   },
   "FS_Q29_A5-p7": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I-II q. 29 a. 5 ad 1 [CT 34787]"
    ]
@@ -1721,7 +1749,8 @@
   "FS_Q39_A1-p8": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -1729,12 +1758,11 @@
    ]
   },
   "FS_Q3_A2-p14": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 5",
     "obj 6"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I-II q. 3 a. 2 ad 5 [CT 33554]"
    ]
@@ -1976,14 +2004,13 @@
     "I-II q. 60 a. 2 ad 1 [CT 36030]"
    ]
   },
-  "FS_Q61_A3-p7": {
-   "role": "reply",
-   "targets": [
+  "FS_Q61_A3-p8": {
+   "also_answers": [
     "obj 1",
     "obj 2",
     "obj 3"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I-II q. 61 a. 3 ad 1 [CT 36079]"
    ]
@@ -2021,11 +2048,10 @@
    ]
   },
   "FS_Q63_A2-p7": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "I-II q. 63 a. 2 ad 1 [CT 36143]"
    ]
@@ -2081,24 +2107,24 @@
    ]
   },
   "FS_Q69_A3-p6": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 5",
    "class": "variant",
    "latin": [
     "I-II q. 69 a. 3 s. c. 1 [CT 36430]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FS_Q69_A3-p7": {
-   "role": "sed-contra",
-   "number": 2,
+   "latin_role": "sed-contra",
+   "latin_number": 2,
    "source_label": "Objection 6",
    "class": "variant",
    "latin": [
     "I-II q. 69 a. 3 s. c. 2 [CT 36431]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FS_Q69_A3-p17": {
    "role": "reply",
@@ -2133,14 +2159,14 @@
    ]
   },
   "FS_Q70_A3-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "I-II q. 70 a. 3 s. c. [CT 36467]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FS_Q70_A3-p13": {
    "role": "reply",
@@ -2212,14 +2238,14 @@
    ]
   },
   "FS_Q79_A4-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "I-II q. 79 a. 4 s. c. [CT 36990]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "FS_Q79_A4-p10": {
    "role": "reply",
@@ -2453,14 +2479,14 @@
    ]
   },
   "SS_Q107_A3-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 107 a. 3 s. c. [CT 43554]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q107_A3-p12": {
    "role": "reply",
@@ -2673,24 +2699,24 @@
    ]
   },
   "SS_Q123_A12-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 123 a. 12 s. c. 1 [CT 44134]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q123_A12-p6": {
-   "role": "sed-contra",
-   "number": 2,
+   "latin_role": "sed-contra",
+   "latin_number": 2,
    "source_label": "Objection 5",
    "class": "variant",
    "latin": [
     "II-II q. 123 a. 12 s. c. 2 [CT 44135]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q123_A12-p11": {
    "role": "reply",
@@ -2755,14 +2781,14 @@
    "note": "opening not marked as a part"
   },
   "SS_Q136_A5-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 136 a. 5 s. c. [CT 44523]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q136_A5-p9": {
    "role": "reply",
@@ -2806,14 +2832,14 @@
    ]
   },
   "SS_Q148_A2-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 148 a. 2 s. c. [CT 44901]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q148_A2-p10": {
    "role": "reply",
@@ -2915,14 +2941,14 @@
    ]
   },
   "SS_Q169_A2-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 169 a. 2 s. c. [CT 45762]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q169_A2-p13": {
    "role": "reply",
@@ -2962,14 +2988,14 @@
    }
   },
   "SS_Q173_A3-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 173 a. 3 s. c. [CT 45907]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q173_A3-p13": {
    "role": "reply",
@@ -3225,7 +3251,9 @@
   "SS_Q27_A5-p9": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -3336,12 +3364,11 @@
    ]
   },
   "SS_Q34_A4-p7": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1",
     "obj 2"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "II-II q. 34 a. 4 ad arg. [CT 40481]"
    ]
@@ -3434,13 +3461,12 @@
    ]
   },
   "SS_Q40_A4-p7": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1",
     "obj 2",
     "obj 3"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "II-II q. 40 a. 4 ad arg. [CT 40667]"
    ]
@@ -3628,11 +3654,10 @@
    "note": "opening not marked as a part"
   },
   "SS_Q57_A3-p7": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "II-II q. 57 a. 3 ad 1 [CT 41405]"
    ]
@@ -3660,7 +3685,8 @@
   "SS_Q58_A6-p9": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -3701,7 +3727,8 @@
   "SS_Q62_A4-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -3932,14 +3959,14 @@
    }
   },
   "SS_Q83_A14-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 83 a. 14 s. c. [CT 42579]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q83_A14-p10": {
    "role": "reply",
@@ -3981,11 +4008,10 @@
    ]
   },
   "SS_Q88_A11-p16": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "sc 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "II-II q. 88 a. 11 ad 5 [CT 42835]"
    ]
@@ -4037,7 +4063,8 @@
   "SS_Q94_A2-p11": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -4079,7 +4106,8 @@
   "SS_Q95_A8-p12": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -4087,14 +4115,14 @@
    ]
   },
   "SS_Q96_A4-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 96 a. 4 s. c. [CT 43135]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q96_A4-p11": {
    "role": "reply",
@@ -4120,14 +4148,14 @@
    }
   },
   "SS_Q98_A4-p5": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 4",
    "class": "variant",
    "latin": [
     "II-II q. 98 a. 4 s. c. [CT 43204]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "SS_Q98_A4-p11": {
    "role": "reply",
@@ -4175,11 +4203,10 @@
    ]
   },
   "TP_Q16_A7-p11": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 3"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "III q. 16 a. 7 ad 3 [CT 47614]"
    ]
@@ -4232,15 +4259,13 @@
    "source_note": "editor's note: the reply to objection 3 is wanting in the manuscripts"
   },
   "TP_Q22_A2-p12": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
+   "flag": "not-in-leonine",
+   "class": "variant",
    "source_note": "'Some editions give the following reply'"
   },
   "TP_Q22_A2-p13": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
+   "flag": "not-in-leonine",
+   "class": "variant",
    "source_note": "reply 3 from 'some editions'; the Leonine has no ad 3"
   },
   "TP_Q22_A5-p9": {
@@ -4266,7 +4291,8 @@
   "TP_Q24_A4-p7": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "source_label": "Replies OBJ 1 and 2",
    "class": "source-error",
@@ -4281,19 +4307,68 @@
   "TP_Q25_A2-p9": {
    "role": "reply",
    "targets": [
-    "obj 2"
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
     "III q. 25 a. 2 ad 2 [CT 47955]"
    ]
   },
+  "TP_Q26_A2-p10": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
+  },
+  "TP_Q26_A2-p11": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
+  },
+  "TP_Q26_A2-p12": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
+  },
+  "TP_Q26_A2-p13": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
+  },
+  "TP_Q26_A2-p14": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
+  },
+  "TP_Q26_A2-p15": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
+  },
+  "TP_Q26_A2-p16": {
+   "role": "editorial",
+   "flag": "editorial",
+   "class": "source-error",
+   "defect": "translators",
+   "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
+  },
   "TP_Q2_A10-p10": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 3"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "III q. 2 a. 10 ad 3 [CT 46870]"
    ]
@@ -4309,11 +4384,10 @@
    ]
   },
   "TP_Q2_A4-p7": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "III q. 2 a. 4 ad 1 [CT 46817]"
    ]
@@ -4482,28 +4556,24 @@
    ]
   },
   "TP_Q55_A6-p6": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
-   "source_note": "objection 5, 'wanting in the older codices and in the text of the Leonine edition'"
+   "flag": "not-in-leonine",
+   "class": "variant",
+   "source_note": "objection 5, 'wanting in the older codices, and in the text of the Leonine edition', which gives it in a note from a later codex; the Leonine prints ad 5 (CT 49380)"
   },
   "TP_Q55_A6-p7": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
-   "source_note": "continuation of the supplied objection 5"
+   "flag": "not-in-leonine",
+   "class": "variant",
+   "source_note": "continuation of objection 5 (a manuscript variant the Leonine gives in a note)"
   },
   "TP_Q57_A4-p3": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
-   "source_note": "objection 2, 'omitted in the Leonine edition as not being in the original manuscript'; absent from the second edition"
+   "flag": "not-in-leonine",
+   "class": "variant",
+   "source_note": "objection 2, 'omitted in the Leonine edition as not being in the original manuscript'; absent from the 1926 printing"
   },
   "TP_Q57_A4-p4": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
-   "source_note": "continuation of the supplied objection 2"
+   "flag": "not-in-leonine",
+   "class": "variant",
+   "source_note": "continuation of objection 2"
   },
   "TP_Q57_A4-p5": {
    "role": "objection",
@@ -4536,16 +4606,14 @@
    "note": "Leonine numbering, without the supplied objection 2"
   },
   "TP_Q57_A4-p11": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
-   "source_note": "reply 2 to the supplied objection"
+   "flag": "not-in-leonine",
+   "class": "variant",
+   "source_note": "reply 2 to that objection"
   },
   "TP_Q57_A4-p12": {
-   "flag": "editor-supplied",
-   "class": "source-error",
-   "defect": "translators",
-   "source_note": "continuation of the supplied reply 2"
+   "flag": "not-in-leonine",
+   "class": "variant",
+   "source_note": "continuation of reply 2"
   },
   "TP_Q57_A4-p13": {
    "role": "reply",
@@ -4581,8 +4649,7 @@
    ]
   },
   "TP_Q64_A3-p9": {
-   "role": "reply",
-   "targets": [
+   "also_answers": [
     "obj 1",
     "obj 2",
     "obj 3",
@@ -4590,40 +4657,40 @@
     "obj 5",
     "sc 1"
    ],
-   "class": "prose-reply",
+   "class": "joint-reply",
    "latin": [
     "III q. 64 a. 3 ad 1 [CT 49763]"
    ]
   },
   "TP_Q65_A1-p7": {
-   "role": "sed-contra",
-   "number": 1,
+   "latin_role": "sed-contra",
+   "latin_number": 1,
    "source_label": "Objection 6",
    "class": "variant",
    "latin": [
     "III q. 65 a. 1 s. c. 1 [CT 49826]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "TP_Q65_A1-p8": {
-   "role": "sed-contra",
-   "number": 2,
+   "latin_role": "sed-contra",
+   "latin_number": 2,
    "source_label": "Objection 7",
    "class": "variant",
    "latin": [
     "III q. 65 a. 1 s. c. 2 [CT 49827]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "TP_Q65_A1-p9": {
-   "role": "sed-contra",
-   "number": 3,
+   "latin_role": "sed-contra",
+   "latin_number": 3,
    "source_label": "Objection 8",
    "class": "variant",
    "latin": [
     "III q. 65 a. 1 s. c. 3 [CT 49828]"
    ],
-   "note": "the translators number the sed contra as an objection because Aquinas replies to it"
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; 1.7 keeps the printed label until Carter decides (R7 question 1)"
   },
   "TP_Q65_A1-p21": {
    "role": "reply",

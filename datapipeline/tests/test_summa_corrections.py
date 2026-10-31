@@ -18,7 +18,7 @@ PARA_ID = re.compile(r"^(FP|FS|SS|TP|XP)_Q\d+(_A\d+)?-p\d+$")
 ARTICLE_ID = re.compile(r"^(FP|FS|SS|TP|XP)_Q\d+(_A\d+)?$")
 TARGET = re.compile(r"^(obj|sc) \d+$")
 LATIN = re.compile(r"(\[CT \d+\]|Leonine vol\. 12|^(I|I-II|II-II|III) q\. \d+( a\. \d+)?$)")
-FIELDS = {"role", "number", "targets", "also_answers", "holds", "parts", "move_to", "duplicate_of",
+FIELDS = {"role", "number", "latin_role", "latin_number", "targets", "also_answers", "holds", "parts", "move_to", "duplicate_of",
           "flag", "source_label", "class", "defect", "latin", "source_note", "printed", "note"}
 
 
