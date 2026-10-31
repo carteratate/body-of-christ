@@ -152,6 +152,10 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `reader_access`, `source_url` and `source_credit`, reading progress is neither written
   nor listed for an excerpt document, and `/sources` reads the column fresh past its 1h
   cache. The API treats a database without 0041 as all `full`.
+  **Retired for rights, not for content:** older papal documents whose only English is
+  papalencyclicals.net's modern (Carlen, 1981) translation are retired by 1.3d, with a link to
+  the site, rather than shown. The list, the reasons and how to bring any of them back are in
+  `docs/adr/0001-retire-papal-documents-without-public-domain-english.md` (Carter, 31 Oct 2026).
   `source_credit` is the rights holder's line, shown directly after an excerpt passage and
   included when it is copied: the USCCB's required notice, verbatim, for the Catechism of
   the Catholic Church (whose `source_url` is the USCCB's online edition), the LEV line for

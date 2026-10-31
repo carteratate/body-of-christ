@@ -5325,6 +5325,23 @@
   "planned_for": null
  },
  {
+  "work": "Ubi Primum (1824)",
+  "author": "Pope Leo XII",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/TheEncyclicalLetterOfPopeLeoTheXI/",
+  "edition": "The Encyclical Letter of Pope Leo the XII. to His Venerable Brethren ... with an English Translation of the Same; to which are annexed Pastoral Instructions by the R.C. Archbishops and Bishops ... throughout Ireland (Dublin: Richard Coyne, publisher to the Roman Catholic Bishops of Ireland, 1824). A different translation from papalencyclicals.net's. Internet Archive scan TheEncyclicalLetterOfPopeLeoTheXI",
+  "translator": null,
+  "first_published": 1824,
+  "source_url": "https://archive.org/details/TheEncyclicalLetterOfPopeLeoTheXI",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translation published by the Catholic bishops of Ireland (Dublin, 1824). Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "1.3d"
+ },
+ {
   "work": "Syllabus of Errors",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
@@ -5544,6 +5561,23 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "Diu Satis",
+  "author": "Pope Pius VII",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/",
+  "edition": "An Encyclical Letter of Our Most Holy Father Pope Pius VII. to All the Catholic Bishops. Translated from the Latin original, by the Rev. Benedict Rayment (London: Keating, Brown and Keating, MDCCC), ending 'Given at Venice ... the 15th day of May, in the year of the Lord 1800'. A different translation from papalencyclicals.net's. Internet Archive scan (ECCO) bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
+  "translator": "Benedict Rayment",
+  "first_published": 1800,
+  "source_url": "https://archive.org/details/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translated by Benedict Rayment (1800). Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "1.3d"
  },
  {
   "work": "Caritas in Veritate",
@@ -7343,6 +7377,23 @@
   "rights_holder": null,
   "renewal_search": null,
   "credit_line": "Translation from The Dublin Review (1865). Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "1.3d"
+ },
+ {
+  "work": "Traditi Humilitati",
+  "author": "Pope Pius VIII",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11/",
+  "edition": "The Jesuit, or Catholic Sentinel (Boston), vol. 1, no. 11, 14 November 1829, 'The Pope's Encyclical Letter': 'a Translation of the Encyclical, or Grand Circular Letter of His Holiness Pope Pius VIII'. Reads as complete; the scan's last lines are garbled, so 1.3d confirms the ending. A different translation from papalencyclicals.net's. Internet Archive scan sim_jesuit-or-catholic-sentinel_1829-11-14_1_11",
+  "translator": null,
+  "first_published": 1829,
+  "source_url": "https://archive.org/details/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translation from The Jesuit, or Catholic Sentinel (Boston, 1829). Scan: Internet Archive",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "1.3d"
