@@ -5,15 +5,22 @@ Each entry records public facts only: edition, translator, first publication, so
 URL, rights status, renewal search and credit line. Reasoning and correspondence stay
 in Carter's private memos (plan, Decision log "Rights review").
 
-Until the 2.1 work registry exists, a work is keyed by (collection, source_path, work,
-author): `work` is the built document's title, `source_path` the file it is read from,
-relative to `sources/` (or the directory, for a work built from many files). The author
-is part of the key because one file can hold two works with the same title: ANF volume 1
-has both Polycarp's and Ignatius's "Epistle to the Philippians".
+A built work is found by `document_id`, its frozen document ID from the 2.1 registry,
+which is the same in the live corpus and in every build. Labels change between releases
+(1.10a trims "Methodius." to "Methodius"; 1.8c renames container authors), and the live
+rows keep the old ones until the next publish, so matching on them would lose a work on
+one side or the other (decided by Carter on 31 Oct 2026). `work` (the built document's
+title), `author` and `source_path` (the file it is read from, relative to `sources/`, or
+the directory for a work built from many files) stay for people to read, and a test
+keeps them equal to the build. (collection, source_path, work, author) is still each
+row's unique, sorted key: the author is part of it because one file can hold two works
+with the same title (ANF volume 1 has Polycarp's and Ignatius's "Epistle to the
+Philippians").
 
 A planned work, not yet built, has `planned_for` set to the ID of the corpus-cleanup item
-that will ingest it (for example "1.2c" or "5.6b"), and its `source_path` is where the file
-will be vendored. `planned_for` is null for every built work. Planned rows come from R6.
+that will ingest it (for example "1.2c" or "5.6b"), its `source_path` is where the file
+will be vendored, and its `document_id` is null until that PR builds it and fills it in.
+`planned_for` is null for every built work. Planned rows come from R6.
 Until its ingesting PR, an approved download sits at `sources/_incoming/<source_path>`;
 the PR moves it there unchanged, so the row's `source_path` never changes.
 
@@ -40,7 +47,7 @@ STATUSES = (
 )
 
 REQUIRED_FIELDS = (
-    "work", "author", "collection", "source_path", "edition", "translator", "first_published",
+    "work", "author", "collection", "source_path", "document_id", "edition", "translator", "first_published",
     "source_url", "status", "rights_holder", "renewal_search", "credit_line",
     "checked_by", "checked_on", "planned_for",
 )
@@ -65,6 +72,11 @@ def key(entry: dict) -> tuple[str, str, str, str | None]:
     return entry["collection"], entry["source_path"], entry["work"], entry["author"]
 
 
+def by_document_id(entries: list[dict]) -> dict[str, dict]:
+    """The built works' rows by document ID. Planned rows have none."""
+    return {e["document_id"]: e for e in entries if e["document_id"]}
+
+
 def _manifest_files_by_url(sources: Path, collection: str) -> dict[str, str]:
     path = sources / collection / "manifest.json"
     if not path.exists():
@@ -75,8 +87,9 @@ def _manifest_files_by_url(sources: Path, collection: str) -> dict[str, str]:
 
 def work_keys(documents_by_collection: dict[str, list],
               sources: Path = SOURCES) -> list[tuple[str, str, str, str | None]]:
-    """The inventory key of every built document. Raises when a document's source
-    cannot be resolved, so a new adapter cannot silently escape the inventory."""
+    """The inventory key of every built document, which its row's labels must equal.
+    Raises when a document's source cannot be resolved, so a new adapter cannot
+    silently escape the inventory."""
     keys = []
     for collection, documents in sorted(documents_by_collection.items()):
         by_url = _manifest_files_by_url(sources, collection)

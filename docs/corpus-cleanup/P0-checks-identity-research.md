@@ -363,7 +363,7 @@ Conventions used in this file:
     - `--verify`: re-hash, exit 1 on any missing file, changed hash, or unlocked file; print `ok` per collection otherwise. This replaces `vendor_sources.py --verify` in the PR template.
     - `--collection <name>` limits either mode.
   - `vendor_sources.py`: after writing a manifest, call the lock writer for that collection so a re-vendor updates the tracked lock in the same step; keep `--verify` working for compatibility.
-  - Add a tracked `datapipeline/rights_inventory.json`, one entry per work (keyed by the 2.1 registry `work_id` once it exists; until then by `collection` plus source path plus title plus author, since title alone is not unique: ANF volume 1 holds both Polycarp's and Ignatius's "Epistle to the Philippians"). A work built from many files (the Bible books, the Code of Canon Law) takes its directory as source path:
+  - Add a tracked `datapipeline/rights_inventory.json`, one entry per work. A built work's entry is found by `document_id`, its frozen document ID from the 2.1 registry (Decision log "Rights inventory matched by document ID", 31 Oct 2026). Until then it was found by `collection` plus source path plus title plus author, which stays the entries' unique sort key, since title alone is not unique: ANF volume 1 holds both Polycarp's and Ignatius's "Epistle to the Philippians". A work built from many files (the Bible books, the Code of Canon Law) takes its directory as source path:
     ```json
     {"work": "...", "author": "...", "collection": "medieval", "source_path": "medieval/imitation-of-christ.xml",
      "edition": "Bruce, Milwaukee, 1940", "translator": "...", "first_published": 1940,

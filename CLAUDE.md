@@ -145,8 +145,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   stay in search, but `/documents/{id}/reader` and `/toc` return **403** with
   `detail.code = "reader_restricted"` (guests and signed-in alike), and every surface that
   would open the reader (search cards, bookmarks, history restore, the Library) links to
-  the official source instead. Derived from `datapipeline/rights_inventory.json`, never
-  edited by hand: `reader_writer.write_document` sets it on every publish, and
+  the official source instead. Derived from `datapipeline/rights_inventory.json` (rows
+  found by document ID, not by title), never edited by hand:
+  `reader_writer.write_document` sets it on every publish, and
   `datapipeline/reader_access.py --apply` re-syncs all live documents after an inventory
   change (the unblock path). API side is `app/reader_access.py`: passage sources carry
   `reader_access`, `source_url` and `source_credit`, reading progress is neither written

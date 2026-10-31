@@ -18,9 +18,10 @@ scope) in `rights_inventory.json`, then run
     python3 reader_access.py            # dry run: lists what would change, and totals
     python3 reader_access.py --apply    # writes the changes (live data)
 
-`--apply` refuses while any live document is unmatched (no inventory row, or a source
-that cannot be resolved because `datapipeline/sources/` is absent): falling closed is
-right for a publish, but here it would silently block a public-domain text.
+Documents are matched to inventory rows by document ID, never by title or author, so a
+relabel waiting for the next publish cannot unmatch a live document. `--apply` refuses
+while any live document has no row: falling closed is right for a publish, but here it
+would silently block a public-domain text.
 
 Plan decision D12 in docs/2026-09-28-corpus-cleanup-plan.md.
 """
@@ -28,10 +29,8 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import json
 from dataclasses import dataclass
 from functools import lru_cache
-from types import SimpleNamespace
 
 import rights_inventory
 
@@ -54,44 +53,38 @@ def access_for_status(status: str) -> str:
     raise ValueError(f"unclassified rights status {status!r}")
 
 
-def access_by_key(inventory: list[dict]) -> dict[tuple, str]:
-    return {rights_inventory.key(e): access_for_status(e["status"]) for e in inventory}
+def access_by_id(inventory: list[dict]) -> dict[str, str]:
+    """Reader access by document ID, for every built work's row."""
+    return {document_id: access_for_status(e["status"])
+            for document_id, e in rights_inventory.by_document_id(inventory).items()}
 
 
 @lru_cache(maxsize=1)
-def _default_access_by_key() -> dict[tuple, str]:
-    return access_by_key(rights_inventory.load())
+def _default_access_by_id() -> dict[str, str]:
+    return access_by_id(rights_inventory.load())
 
 
 # Why a document got its access: its inventory row decided, or it fell to excerpt
-# because it has no row or its source could not be resolved.
+# because it has no row.
 INVENTORY = "inventory"
 NO_ROW = "no-row"
-UNRESOLVED = "unresolved"
 
 
-def resolve(collection: str, title: str, author: str | None, metadata: dict | None,
-            table: dict[tuple, str] | None = None) -> tuple[str, str]:
-    """The reader access of one document and why. Fails closed: a document whose
-    source cannot be resolved, or that has no inventory row, is excerpt-only."""
-    table = _default_access_by_key() if table is None else table
-    doc = SimpleNamespace(title=title, author=author, metadata=metadata or {})
-    try:
-        [key] = rights_inventory.work_keys({collection: [doc]})
-    except ValueError:
-        return EXCERPT, UNRESOLVED
-    if key not in table:
+def resolve(document_id: str, table: dict[str, str] | None = None) -> tuple[str, str]:
+    """The reader access of one document and why. Fails closed: a document with no
+    inventory row is excerpt-only."""
+    table = _default_access_by_id() if table is None else table
+    if document_id not in table:
         return EXCERPT, NO_ROW
-    return table[key], INVENTORY
+    return table[document_id], INVENTORY
 
 
-def access_for(collection: str, title: str, author: str | None, metadata: dict | None,
-               table: dict[tuple, str] | None = None) -> str:
-    return resolve(collection, title, author, metadata, table)[0]
+def access_for(document_id: str, table: dict[str, str] | None = None) -> str:
+    return resolve(document_id, table)[0]
 
 
 def access_for_document(doc) -> str:
-    return access_for(doc.collection, doc.title, doc.author, doc.metadata)
+    return access_for(doc.id)
 
 
 @dataclass(frozen=True)
@@ -118,19 +111,16 @@ class UnmatchedDocuments(RuntimeError):
     pass
 
 
-_DOCUMENTS_SQL = "SELECT id, collection, title, author, metadata, reader_access FROM documents"
+_DOCUMENTS_SQL = "SELECT id, collection, title, reader_access FROM documents"
 
 
-async def plan(conn, table: dict[tuple, str] | None = None) -> Plan:
+async def plan(conn, table: dict[str, str] | None = None) -> Plan:
     """What a sync would do: every live document whose reader_access disagrees with the
     inventory, every document the inventory did not decide, and the resulting totals."""
     changes, unmatched = [], []
     totals = {FULL: 0, EXCERPT: 0}
     for row in await conn.fetch(_DOCUMENTS_SQL):
-        metadata = row["metadata"]
-        if isinstance(metadata, str):  # the datapipeline registers no jsonb codec
-            metadata = json.loads(metadata)
-        after, reason = resolve(row["collection"], row["title"], row["author"], metadata, table)
+        after, reason = resolve(str(row["id"]), table)
         totals[after] += 1
         entry = Change(str(row["id"]), row["collection"], row["title"],
                        row["reader_access"], after, reason)
@@ -142,7 +132,7 @@ async def plan(conn, table: dict[tuple, str] | None = None) -> Plan:
     return Plan(sorted(changes, key=order), sorted(unmatched, key=order), totals)
 
 
-async def sync(conn, table: dict[tuple, str] | None = None, *, apply: bool,
+async def sync(conn, table: dict[str, str] | None = None, *, apply: bool,
                allow_unmatched: bool = False) -> Plan:
     """Bring every document's reader_access in line with the inventory. With
     apply=False this only reports; with apply=True it writes in one transaction, and
@@ -150,9 +140,9 @@ async def sync(conn, table: dict[tuple, str] | None = None, *, apply: bool,
     result = await plan(conn, table)
     if apply and result.unmatched and not allow_unmatched:
         raise UnmatchedDocuments(
-            f"REFUSING: {len(result.unmatched)} live document(s) are not matched to the "
-            "rights inventory (is datapipeline/sources/ present?). Fix the inventory, or "
-            "pass --allow-unmatched to block them deliberately."
+            f"REFUSING: {len(result.unmatched)} live document(s) have no row in the "
+            "rights inventory. Fix the inventory, or pass --allow-unmatched to block "
+            "them deliberately."
         )
     if apply and result.changes:
         async with conn.transaction():
