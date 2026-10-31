@@ -144,7 +144,7 @@ Extracts only (not enough for the reader): Qui Nuper (*Dublin Review* and *Rambl
 
 Lessons for anyone continuing: *Appletons'* volumes are misdated in the Internet Archive's catalogue (the 1874 volume is filed as 1861), so match them by title page; a high score can come from an allocution of the same weeks, so read the opening and closing; short documents score high by chance against large volumes.
 
-After this search: **26 documents have a printing, 3 have extracts only, Nostis et Nobiscum has an abridgement, and 55 have no printing found so far** (the 26 of 1740–1799, Exsurge Domine, the four Leo XII documents of 1824–26 still open, five of Gregory XVI, and 19 of Pius IX). The remaining search options are HathiTrust from a browser (blocked here) and *The Tablet*'s own archive.
+After this search: **26 documents have a printing, 3 have extracts only, Nostis et Nobiscum has an abridgement, and 55 have no printing found so far** (24 of the 26 of 1740–1799, Exsurge Domine, three Leo XII documents of 1824–26, seven of Gregory XVI, and 20 of Pius IX). The remaining search options are HathiTrust from a browser (blocked here) and *The Tablet*'s own archive.
 
 ## Needs Carter
 
