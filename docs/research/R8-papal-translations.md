@@ -146,6 +146,17 @@ Lessons for anyone continuing: *Appletons'* volumes are misdated in the Internet
 
 After this search: **26 documents have a printing, 3 have extracts only, Nostis et Nobiscum has an abridgement, and 55 have no printing found so far** (24 of the 26 of 1740–1799, Exsurge Domine, three Leo XII documents of 1824–26, seven of Gregory XVI, and 20 of Pius IX). The remaining search options are HathiTrust from a browser (blocked here) and *The Tablet*'s own archive.
 
+## 6. Carlen's own translations: can they be cleared?
+
+Checked 1 Nov 2026, at Carter's request, whether the site's text of the 59 documents without a public-domain printing could be cleared by tracing Carlen's edition.
+
+- **They are Carlen's own translations, not reprints.** Pierian Press, which publishes the set today, says: "One hundred and ten encyclicals, containing 275,000 words, were translated into English especially for this edition" (pierianpress.com, *The Papal Encyclicals, 1740–1981*). That matches the trace of section 1: for these documents the site's wording appears in nothing printed before 1981. So there is no earlier printing whose rights could be traced.
+- **They are registered.** US Copyright Office public catalogue: *One hundred ten papal encyclicals*, registration **TXu000087711**, registered 21 December 1981, claimant **McGrath Publishing Company** (the 1981 publisher, Wilmington, N.C.). No notice or renewal question arises: a 1981 work registered in 1981 is in copyright until at least 2076 (95 years if made for hire), and no recorded transfer was found.
+- **The current publisher is Pierian Press** (Ann Arbor), which reissued the set in 1990 and still sells it (ISBN 0-87650-259-1); Faithlife licenses an electronic edition (Logos and Verbum, "Publisher: Pierian Press, 1990"). No transfer from McGrath to Pierian is recorded in the online catalogue, though transfers need not be recorded.
+- **No published allowed-use statement** was found on Pierian's or Faithlife's pages, so under the Decision log ("Excerpt-only needs an allowed-use basis") these texts have no basis today.
+
+**Conclusion.** Tracing Carlen gives no public-domain basis. The one route that keeps these 59 documents, and could also let the 26 found ones keep their modern wording, is **permission from Pierian Press** (and McGrath's successor, if the rights did not pass). The request should name the 110 translations (or the 85 documents), the use (non-profit, search and reader, with credit), and ask whether a recorded transfer from McGrath exists.
+
 ## Needs Carter
 
 1. **Approve the 26 draft rows** (`checked_by` null): the 12 of section 3, the three 1800–1830 finds, Cum Summi and Salutis Nostrae (*Interesting Letters of the Late Pope Clement XIV*, Newcastle, 1777, translated from the French edition), and the nine of section 5.
