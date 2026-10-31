@@ -1,4 +1,21 @@
 {
+ "attribution.letter_sender:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
+  "fixed_by": "1.8c",
+  "description": "The Epistles of Cyprian.: 16 letters written by others are credited to the collection's author; Epistle XXX (Novatian) is removed by 3.1 (C-02)",
+  "units": ["iv.iv.ii", "iv.iv.lxxiv", "iv.iv.lxxix", "iv.iv.lxxvii", "iv.iv.lxxviii", "iv.iv.xlix", "iv.iv.xlv", "iv.iv.xlvii", "iv.iv.xvi", "iv.iv.xviii", "iv.iv.xx", "iv.iv.xxi", "iv.iv.xxix", "iv.iv.xxv", "iv.iv.xxx", "iv.iv.xxxviii"]
+ },
+ "attribution.narrative_of_author_death:church-fathers/841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {
+  "fixed_by": "3.2",
+  "description": "The Martyrdom of Ignatius is credited to its martyr with no note (C-15)"
+ },
+ "attribution.narrative_of_author_death:church-fathers/cf8278dd-3523-576c-b85a-1402077bdae3": {
+  "fixed_by": "3.2",
+  "description": "The Martyrdom of Justin Martyr is credited to its martyr with no note (C-15)"
+ },
+ "attribution.narrative_of_author_death:church-fathers/f8faac83-ebf5-5a3c-850e-b9620465bc3d": {
+  "fixed_by": "3.2",
+  "description": "The Martyrdom of Polycarp is credited to its martyr with no note (C-15)"
+ },
  "coverage.apostolic-exhortations.marialis-cultus.html": {
   "fixed_by": "1.3a",
   "description": "92.62% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
@@ -18,6 +35,11 @@
  "coverage.bible.eng-web-c_usfm/66-DAGeng-web-c.usfm": {
   "fixed_by": "1.4a",
   "description": "74.53% covered: verses outside every KJV pericope range"
+ },
+ "coverage.bible.superscriptions": {
+  "fixed_by": "1.4a",
+  "description": "117 psalms lack their title (\\d) in the passage of their first verse (C-11)",
+  "units": ["PSA/100", "PSA/101", "PSA/102", "PSA/103", "PSA/108", "PSA/109", "PSA/11", "PSA/110", "PSA/119", "PSA/12", "PSA/120", "PSA/121", "PSA/122", "PSA/123", "PSA/124", "PSA/125", "PSA/126", "PSA/127", "PSA/128", "PSA/129", "PSA/13", "PSA/130", "PSA/131", "PSA/132", "PSA/133", "PSA/134", "PSA/138", "PSA/139", "PSA/14", "PSA/140", "PSA/141", "PSA/142", "PSA/143", "PSA/144", "PSA/145", "PSA/15", "PSA/16", "PSA/17", "PSA/18", "PSA/19", "PSA/20", "PSA/21", "PSA/22", "PSA/23", "PSA/24", "PSA/25", "PSA/26", "PSA/27", "PSA/28", "PSA/29", "PSA/3", "PSA/30", "PSA/31", "PSA/32", "PSA/34", "PSA/35", "PSA/36", "PSA/37", "PSA/38", "PSA/39", "PSA/4", "PSA/40", "PSA/41", "PSA/42", "PSA/44", "PSA/45", "PSA/46", "PSA/47", "PSA/48", "PSA/49", "PSA/5", "PSA/50", "PSA/51", "PSA/52", "PSA/53", "PSA/54", "PSA/55", "PSA/56", "PSA/57", "PSA/58", "PSA/59", "PSA/6", "PSA/60", "PSA/61", "PSA/62", "PSA/63", "PSA/64", "PSA/65", "PSA/66", "PSA/67", "PSA/68", "PSA/69", "PSA/7", "PSA/70", "PSA/72", "PSA/73", "PSA/74", "PSA/75", "PSA/76", "PSA/77", "PSA/78", "PSA/79", "PSA/8", "PSA/80", "PSA/81", "PSA/82", "PSA/83", "PSA/84", "PSA/85", "PSA/86", "PSA/87", "PSA/88", "PSA/89", "PSA/9", "PSA/90", "PSA/92", "PSA/98"]
  },
  "coverage.canon-law.cic_lib1-cann96-123_en.html": {
   "fixed_by": "1.5a",
@@ -207,9 +229,1341 @@
   "fixed_by": "1.3a",
   "description": "83.82% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
  },
+ "editorial.argument_lines:church-fathers/198c81e9-e119-5153-b4b2-a436574d067a": {
+  "fixed_by": "1.8a",
+  "description": "The Treatises of Cyprian.: 10 passages open with an editor's Argument summary (C-12)",
+  "units": ["iv.v.i", "iv.v.ii", "iv.v.iii", "iv.v.iv", "iv.v.ix", "iv.v.v", "iv.v.vi", "iv.v.vii", "iv.v.viii", "iv.v.x"]
+ },
+ "editorial.argument_lines:church-fathers/2ddaa182-a332-559f-8bfb-e72b56a12953": {
+  "fixed_by": "1.8a",
+  "description": "Anonymous Treatise on Re-baptism.: 1 passages open with an editor's Argument summary (C-12)",
+  "units": ["vii.iv.ii"]
+ },
+ "editorial.argument_lines:church-fathers/5d75dc92-df2c-5421-904f-4249590ff48a": {
+  "fixed_by": "1.8a",
+  "description": "Treatises Attributed to Cyprian on Questionable Authority.: 2 passages open with an editor's Argument summary (C-12)",
+  "units": ["iv.vii.ii", "iv.vii.iii"]
+ },
+ "editorial.argument_lines:church-fathers/5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
+  "fixed_by": "1.8b",
+  "description": "On Christian Doctrine: 4 passages open with an editor's Argument summary (C-12)",
+  "units": ["IV_1", "v.iv", "v.v", "v.vi"]
+ },
+ "editorial.argument_lines:church-fathers/9e93f3ef-cd33-598f-9aac-f2a5886d3e21": {
+  "fixed_by": "1.8a",
+  "description": "The Octavius of Minucius Felix.: 41 passages open with an editor's Argument summary (C-12)",
+  "units": ["iv.iii.i", "iv.iii.ii", "iv.iii.iii", "iv.iii.iv", "iv.iii.ix", "iv.iii.v", "iv.iii.vi", "iv.iii.vii", "iv.iii.viii", "iv.iii.x", "iv.iii.xi", "iv.iii.xii", "iv.iii.xiii", "iv.iii.xiv", "iv.iii.xix", "iv.iii.xl", "iv.iii.xli", "iv.iii.xv", "iv.iii.xvi", "iv.iii.xvii", "iv.iii.xviii", "iv.iii.xx", "iv.iii.xxi", "iv.iii.xxii", "iv.iii.xxiii", "iv.iii.xxiv", "iv.iii.xxix", "iv.iii.xxv", "iv.iii.xxvi", "iv.iii.xxvii", "iv.iii.xxviii", "iv.iii.xxx", "iv.iii.xxxi", "iv.iii.xxxii", "iv.iii.xxxiii", "iv.iii.xxxiv", "iv.iii.xxxix", "iv.iii.xxxv", "iv.iii.xxxvi", "iv.iii.xxxvii", "iv.iii.xxxviii"]
+ },
+ "editorial.argument_lines:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
+  "fixed_by": "1.8a",
+  "description": "The Epistles of Cyprian.: 82 passages open with an editor's Argument summary (C-12)",
+  "units": ["iv.iv.i", "iv.iv.ii", "iv.iv.iii", "iv.iv.iv", "iv.iv.ix", "iv.iv.l", "iv.iv.li", "iv.iv.lii", "iv.iv.liii", "iv.iv.liv", "iv.iv.lix", "iv.iv.lv", "iv.iv.lvi", "iv.iv.lvii", "iv.iv.lviii", "iv.iv.lx", "iv.iv.lxi", "iv.iv.lxii", "iv.iv.lxiii", "iv.iv.lxiv", "iv.iv.lxix", "iv.iv.lxv", "iv.iv.lxvi", "iv.iv.lxvii", "iv.iv.lxviii", "iv.iv.lxx", "iv.iv.lxxi", "iv.iv.lxxii", "iv.iv.lxxiii", "iv.iv.lxxiv", "iv.iv.lxxix", "iv.iv.lxxv", "iv.iv.lxxvi", "iv.iv.lxxvii", "iv.iv.lxxviii", "iv.iv.lxxx", "iv.iv.lxxxi", "iv.iv.lxxxii", "iv.iv.v", "iv.iv.vi", "iv.iv.vii", "iv.iv.viii", "iv.iv.x", "iv.iv.xi", "iv.iv.xii", "iv.iv.xiii", "iv.iv.xiv", "iv.iv.xix", "iv.iv.xl", "iv.iv.xli", "iv.iv.xlii", "iv.iv.xliii", "iv.iv.xliv", "iv.iv.xlix", "iv.iv.xlv", "iv.iv.xlvi", "iv.iv.xlvii", "iv.iv.xlviii", "iv.iv.xv", "iv.iv.xvi", "iv.iv.xvii", "iv.iv.xviii", "iv.iv.xx", "iv.iv.xxi", "iv.iv.xxii", "iv.iv.xxiii", "iv.iv.xxiv", "iv.iv.xxix", "iv.iv.xxv", "iv.iv.xxvi", "iv.iv.xxvii", "iv.iv.xxviii", "iv.iv.xxx", "iv.iv.xxxi", "iv.iv.xxxii", "iv.iv.xxxiii", "iv.iv.xxxiv", "iv.iv.xxxix", "iv.iv.xxxv", "iv.iv.xxxvi", "iv.iv.xxxvii", "iv.iv.xxxviii"]
+ },
+ "editorial.argument_lines:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
+  "fixed_by": "1.8b",
+  "description": "Doctrinal Treatises of St. Augustin: 1 passages open with an editor's Argument summary (C-12)",
+  "units": ["iv.ii.ii"]
+ },
+ "editorial.argument_lines:church-fathers/dac28881-f92b-5c94-991a-5b244e2d49c3": {
+  "fixed_by": "1.8b",
+  "description": "City of God: 22 passages open with an editor's Argument summary (C-12)",
+  "units": ["II_1", "iv.III", "iv.IV", "iv.IX", "iv.V", "iv.VI", "iv.VII", "iv.VIII", "iv.X", "iv.XI", "iv.XII", "iv.XIII", "iv.XIV", "iv.XIX", "iv.XV", "iv.XVI", "iv.XVII", "iv.XVIII", "iv.XX", "iv.XXI", "iv.XXII", "iv.ii"]
+ },
+ "editorial.chapter_title_lines:church-fathers/3717ce05-ad42-5ec3-b3ce-ff3964908e05": {
+  "fixed_by": "1.8a",
+  "description": "To His Wife.: 14 passages open with a later editor's chapter title (G-1)",
+  "units": ["iii.v.i.ii", "iii.v.i.iii", "iii.v.i.iv", "iii.v.i.v", "iii.v.i.vi", "iii.v.i.vii", "iii.v.i.viii", "iii.v.ii.ii", "iii.v.ii.iii", "iii.v.ii.iv", "iii.v.ii.v", "iii.v.ii.vi", "iii.v.ii.vii", "iii.v.ii.viii"]
+ },
+ "editorial.chapter_title_lines:church-fathers/5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
+  "fixed_by": "1.8b",
+  "description": "On Christian Doctrine: 150 passages open with a later editor's chapter title (G-1)",
+  "units": ["v.IV_1.1", "v.IV_1.10", "v.IV_1.11", "v.IV_1.12", "v.IV_1.13", "v.IV_1.14", "v.IV_1.15", "v.IV_1.16", "v.IV_1.17", "v.IV_1.18", "v.IV_1.19", "v.IV_1.2", "v.IV_1.20", "v.IV_1.21", "v.IV_1.22", "v.IV_1.23", "v.IV_1.24", "v.IV_1.25", "v.IV_1.26", "v.IV_1.27", "v.IV_1.28", "v.IV_1.29", "v.IV_1.3", "v.IV_1.30", "v.IV_1.31", "v.IV_1.4", "v.IV_1.5", "v.IV_1.6", "v.IV_1.7", "v.IV_1.8", "v.IV_1.9", "v.iv.i", "v.iv.ii", "v.iv.iii", "v.iv.iv", "v.iv.ix", "v.iv.v", "v.iv.vi", "v.iv.vii", "v.iv.viii", "v.iv.x", "v.iv.xi", "v.iv.xii", "v.iv.xiii", "v.iv.xiv", "v.iv.xix", "v.iv.xl", "v.iv.xv", "v.iv.xvi", "v.iv.xvii", "v.iv.xviii", "v.iv.xx", "v.iv.xxi", "v.iv.xxii", "v.iv.xxiii", "v.iv.xxiv", "v.iv.xxix", "v.iv.xxv", "v.iv.xxvi", "v.iv.xxvii", "v.iv.xxviii", "v.iv.xxx", "v.iv.xxxi", "v.iv.xxxii", "v.iv.xxxiii", "v.iv.xxxiv", "v.iv.xxxix", "v.iv.xxxv", "v.iv.xxxvi", "v.iv.xxxvii", "v.iv.xxxviii", "v.v.i", "v.v.ii", "v.v.iii", "v.v.iv", "v.v.ix", "v.v.v", "v.v.vi", "v.v.vii", "v.v.viii", "v.v.x", "v.v.xi", "v.v.xii", "v.v.xiii", "v.v.xiv", "v.v.xix", "v.v.xl", "v.v.xli", "v.v.xlii", "v.v.xv", "v.v.xvi", "v.v.xvii", "v.v.xviii", "v.v.xx", "v.v.xxi", "v.v.xxii", "v.v.xxiii", "v.v.xxiv", "v.v.xxix", "v.v.xxv", "v.v.xxvi", "v.v.xxvii", "v.v.xxviii", "v.v.xxx", "v.v.xxxi", "v.v.xxxii", "v.v.xxxiii", "v.v.xxxiv", "v.v.xxxix", "v.v.xxxv", "v.v.xxxvi", "v.v.xxxvii", "v.v.xxxviii", "v.vi.i", "v.vi.ii", "v.vi.iii", "v.vi.iv", "v.vi.ix", "v.vi.v", "v.vi.vi", "v.vi.vii", "v.vi.viii", "v.vi.x", "v.vi.xi", "v.vi.xii", "v.vi.xiii", "v.vi.xiv", "v.vi.xix", "v.vi.xv", "v.vi.xvi", "v.vi.xvii", "v.vi.xviii", "v.vi.xx", "v.vi.xxi", "v.vi.xxii", "v.vi.xxiii", "v.vi.xxiv", "v.vi.xxix", "v.vi.xxv", "v.vi.xxvi", "v.vi.xxvii", "v.vi.xxviii", "v.vi.xxx", "v.vi.xxxi", "v.vi.xxxii", "v.vi.xxxiii", "v.vi.xxxiv", "v.vi.xxxv", "v.vi.xxxvi", "v.vi.xxxvii"]
+ },
+ "editorial.chapter_title_lines:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
+  "fixed_by": "1.8b",
+  "description": "Doctrinal Treatises of St. Augustin: 380 passages open with a later editor's chapter title (G-1)",
+  "units": ["iv.i.iii.i", "iv.i.iii.ii", "iv.i.iii.iii", "iv.i.iii.iv", "iv.i.iii.ix", "iv.i.iii.v", "iv.i.iii.vi", "iv.i.iii.vii", "iv.i.iii.viii", "iv.i.iii.x", "iv.i.iii.xi", "iv.i.iii.xii", "iv.i.iii.xiii", "iv.i.iv.ii", "iv.i.iv.iii", "iv.i.iv.iv", "iv.i.iv.ix", "iv.i.iv.v", "iv.i.iv.vi", "iv.i.iv.vii", "iv.i.iv.viii", "iv.i.iv.x", "iv.i.iv.xi", "iv.i.iv.xii", "iv.i.iv.xiii", "iv.i.iv.xiv", "iv.i.iv.xix", "iv.i.iv.xv", "iv.i.iv.xvi", "iv.i.iv.xvii", "iv.i.iv.xviii", "iv.i.ix.i", "iv.i.ix.ii", "iv.i.ix.iii", "iv.i.ix.iv", "iv.i.ix.v", "iv.i.ix.vi", "iv.i.v.ii", "iv.i.v.iii", "iv.i.v.iv", "iv.i.v.ix", "iv.i.v.v", "iv.i.v.vi", "iv.i.v.vii", "iv.i.v.viii", "iv.i.v.x", "iv.i.v.xi", "iv.i.v.xii", "iv.i.vi.ii", "iv.i.vi.iii", "iv.i.vi.iv", "iv.i.vi.ix", "iv.i.vi.v", "iv.i.vi.vi", "iv.i.vi.vii", "iv.i.vi.viii", "iv.i.vi.x", "iv.i.vi.xi", "iv.i.vi.xii", "iv.i.vi.xiii", "iv.i.vi.xiv", "iv.i.vi.xix", "iv.i.vi.xv", "iv.i.vi.xvi", "iv.i.vi.xvii", "iv.i.vi.xviii", "iv.i.vi.xx", "iv.i.vi.xxi", "iv.i.vi.xxii", "iv.i.vii.i", "iv.i.vii.ii", "iv.i.vii.iii", "iv.i.vii.iv", "iv.i.vii.ix", "iv.i.vii.v", "iv.i.vii.vi", "iv.i.vii.vii", "iv.i.vii.viii", "iv.i.vii.x", "iv.i.vii.xi", "iv.i.vii.xii", "iv.i.vii.xiii", "iv.i.vii.xiv", "iv.i.vii.xv", "iv.i.vii.xvi", "iv.i.viii.i", "iv.i.viii.ii", "iv.i.viii.iii", "iv.i.viii.iv", "iv.i.viii.ix", "iv.i.viii.v", "iv.i.viii.vi", "iv.i.viii.vii", "iv.i.viii.viii", "iv.i.viii.x", "iv.i.x.ii", "iv.i.x.iii", "iv.i.x.iv", "iv.i.x.ix", "iv.i.x.v", "iv.i.x.vi", "iv.i.x.vii", "iv.i.x.viii", "iv.i.x.x", "iv.i.x.xi", "iv.i.xi.i", "iv.i.xi.ii", "iv.i.xi.iii", "iv.i.xi.iv", "iv.i.xi.ix", "iv.i.xi.v", "iv.i.xi.vi", "iv.i.xi.vii", "iv.i.xi.viii", "iv.i.xi.x", "iv.i.xi.xi", "iv.i.xi.xii", "iv.i.xii.i", "iv.i.xii.ii", "iv.i.xii.iii", "iv.i.xii.iv", "iv.i.xii.ix", "iv.i.xii.v", "iv.i.xii.vi", "iv.i.xii.vii", "iv.i.xii.viii", "iv.i.xii.x", "iv.i.xii.xi", "iv.i.xii.xii", "iv.i.xiii.i", "iv.i.xiii.ii", "iv.i.xiii.iii", "iv.i.xiii.iv", "iv.i.xiii.ix", "iv.i.xiii.v", "iv.i.xiii.vi", "iv.i.xiii.vii", "iv.i.xiii.viii", "iv.i.xiii.x", "iv.i.xiii.xi", "iv.i.xiv.i", "iv.i.xiv.ii", "iv.i.xiv.iii", "iv.i.xiv.iv", "iv.i.xiv.ix", "iv.i.xiv.v", "iv.i.xiv.vi", "iv.i.xiv.vii", "iv.i.xiv.viii", "iv.i.xiv.x", "iv.i.xiv.xi", "iv.i.xiv.xii", "iv.i.xiv.xiii", "iv.i.xiv.xiv", "iv.i.xiv.xv", "iv.i.xv.i", "iv.i.xv.ii", "iv.i.xv.iii", "iv.i.xv.iv", "iv.i.xv.ix", "iv.i.xv.v", "iv.i.xv.vi", "iv.i.xv.vii", "iv.i.xv.viii", "iv.i.xv.x", "iv.i.xv.xi", "iv.i.xv.xii", "iv.i.xv.xiii", "iv.i.xv.xiv", "iv.i.xv.xix", "iv.i.xv.xv", "iv.i.xv.xvi", "iv.i.xv.xvii", "iv.i.xv.xviii", "iv.i.xv.xx", "iv.i.xvi.i", "iv.i.xvi.ii", "iv.i.xvi.iii", "iv.i.xvi.iv", "iv.i.xvi.ix", "iv.i.xvi.v", "iv.i.xvi.vi", "iv.i.xvi.vii", "iv.i.xvi.viii", "iv.i.xvi.x", "iv.i.xvi.xi", "iv.i.xvi.xii", "iv.i.xvi.xiii", "iv.i.xvi.xiv", "iv.i.xvi.xix", "iv.i.xvi.xv", "iv.i.xvi.xvi", "iv.i.xvi.xvii", "iv.i.xvi.xviii", "iv.i.xvii.i", "iv.i.xvii.ii", "iv.i.xvii.iii", "iv.i.xvii.iv", "iv.i.xvii.ix", "iv.i.xvii.v", "iv.i.xvii.vi", "iv.i.xvii.vii", "iv.i.xvii.viii", "iv.i.xvii.x", "iv.i.xvii.xi", "iv.i.xvii.xii", "iv.i.xvii.xiii", "iv.i.xvii.xiv", "iv.i.xvii.xix", "iv.i.xvii.xv", "iv.i.xvii.xvi", "iv.i.xvii.xvii", "iv.i.xvii.xviii", "iv.i.xvii.xx", "iv.i.xvii.xxi", "iv.i.xvii.xxii", "iv.i.xvii.xxiii", "iv.i.xvii.xxiv", "iv.i.xvii.xxv", "iv.i.xvii.xxvi", "iv.i.xvii.xxvii", "iv.i.xvii.xxviii", "iv.ii.c", "iv.ii.ci", "iv.ii.cii", "iv.ii.ciii", "iv.ii.civ", "iv.ii.cix", "iv.ii.cv", "iv.ii.cvi", "iv.ii.cvii", "iv.ii.cviii", "iv.ii.cx", "iv.ii.cxi", "iv.ii.cxii", "iv.ii.cxiii", "iv.ii.cxiv", "iv.ii.cxix", "iv.ii.cxv", "iv.ii.cxvi", "iv.ii.cxvii", "iv.ii.cxviii", "iv.ii.cxx", "iv.ii.cxxi", "iv.ii.cxxii", "iv.ii.cxxiii", "iv.ii.cxxiv", "iv.ii.iii", "iv.ii.iv", "iv.ii.ix", "iv.ii.l", "iv.ii.li", "iv.ii.lii", "iv.ii.liii", "iv.ii.liv", "iv.ii.lix", "iv.ii.lv", "iv.ii.lvi", "iv.ii.lvii", "iv.ii.lviii", "iv.ii.lx", "iv.ii.lxi", "iv.ii.lxii", "iv.ii.lxiii", "iv.ii.lxiv", "iv.ii.lxix", "iv.ii.lxv", "iv.ii.lxvi", "iv.ii.lxvii", "iv.ii.lxviii", "iv.ii.lxx", "iv.ii.lxxi", "iv.ii.lxxii", "iv.ii.lxxiii", "iv.ii.lxxiv", "iv.ii.lxxix", "iv.ii.lxxv", "iv.ii.lxxvi", "iv.ii.lxxvii", "iv.ii.lxxviii", "iv.ii.lxxx", "iv.ii.lxxxi", "iv.ii.lxxxii", "iv.ii.lxxxiii", "iv.ii.lxxxiv", "iv.ii.lxxxix", "iv.ii.lxxxv", "iv.ii.lxxxvi", "iv.ii.lxxxvii", "iv.ii.lxxxviii", "iv.ii.v", "iv.ii.vi", "iv.ii.vii", "iv.ii.viii", "iv.ii.x", "iv.ii.xc", "iv.ii.xci", "iv.ii.xcii", "iv.ii.xciii", "iv.ii.xciv", "iv.ii.xcix", "iv.ii.xcv", "iv.ii.xcvi", "iv.ii.xcvii", "iv.ii.xcviii", "iv.ii.xi", "iv.ii.xii", "iv.ii.xiii", "iv.ii.xiv", "iv.ii.xix", "iv.ii.xl", "iv.ii.xli", "iv.ii.xlii", "iv.ii.xliii", "iv.ii.xliv", "iv.ii.xlix", "iv.ii.xlv", "iv.ii.xlvi", "iv.ii.xlvii", "iv.ii.xlviii", "iv.ii.xv", "iv.ii.xvi", "iv.ii.xvii", "iv.ii.xviii", "iv.ii.xx", "iv.ii.xxi", "iv.ii.xxii", "iv.ii.xxiii", "iv.ii.xxiv", "iv.ii.xxix", "iv.ii.xxv", "iv.ii.xxvi", "iv.ii.xxvii", "iv.ii.xxviii", "iv.ii.xxx", "iv.ii.xxxi", "iv.ii.xxxii", "iv.ii.xxxiii", "iv.ii.xxxiv", "iv.ii.xxxix", "iv.ii.xxxv", "iv.ii.xxxvi", "iv.ii.xxxvii", "iv.ii.xxxviii", "iv.iii.ii", "iv.iii.iii", "iv.iii.iv", "iv.iii.ix", "iv.iii.v", "iv.iii.vi", "iv.iii.vii", "iv.iii.viii", "iv.iii.x", "iv.iii.xi", "iv.iii.xii", "iv.iii.xiii", "iv.iii.xiv", "iv.iii.xix", "iv.iii.xv", "iv.iii.xvi", "iv.iii.xvii", "iv.iii.xviii", "iv.iii.xx", "iv.iii.xxi", "iv.iii.xxii", "iv.iii.xxiii", "iv.iii.xxiv", "iv.iii.xxv", "iv.iii.xxvi", "iv.iii.xxvii", "iv.iii.xxviii", "iv.iv.iii", "iv.iv.iv", "iv.iv.ix", "iv.iv.v", "iv.iv.vi", "iv.iv.vii", "iv.iv.viii", "iv.iv.x", "iv.iv.xi"]
+ },
+ "editorial.chapter_title_lines:church-fathers/debb22d8-702c-5df3-952c-6df5cd720e42": {
+  "fixed_by": "1.8a",
+  "description": "The Banquet of the Ten Virgins; or Concerning Chastity.: 74 passages open with a later editor's chapter title (G-1)",
+  "units": ["xi.iii.ii.ii", "xi.iii.ii.iii", "xi.iii.ii.iv", "xi.iii.ii.v", "xi.iii.iii.ii", "xi.iii.iii.iii", "xi.iii.iii.iv", "xi.iii.iii.v", "xi.iii.iii.vi", "xi.iii.iii.vii", "xi.iii.iv.ii", "xi.iii.iv.iii", "xi.iii.iv.iv", "xi.iii.iv.ix", "xi.iii.iv.v", "xi.iii.iv.vi", "xi.iii.iv.vii", "xi.iii.iv.viii", "xi.iii.iv.x", "xi.iii.iv.xi", "xi.iii.iv.xii", "xi.iii.iv.xiii", "xi.iii.iv.xiv", "xi.iii.ix.ii", "xi.iii.ix.iii", "xi.iii.ix.iv", "xi.iii.ix.ix", "xi.iii.ix.v", "xi.iii.ix.vi", "xi.iii.ix.vii", "xi.iii.ix.viii", "xi.iii.ix.x", "xi.iii.ix.xi", "xi.iii.ix.xii", "xi.iii.ix.xiii", "xi.iii.ix.xiv", "xi.iii.ix.xv", "xi.iii.ix.xvi", "xi.iii.ix.xvii", "xi.iii.v.ii", "xi.iii.v.iii", "xi.iii.v.iv", "xi.iii.v.v", "xi.iii.v.vi", "xi.iii.vi.ii", "xi.iii.vi.iii", "xi.iii.vi.iv", "xi.iii.vi.v", "xi.iii.vi.vi", "xi.iii.vi.vii", "xi.iii.vi.viii", "xi.iii.vii.ii", "xi.iii.vii.iii", "xi.iii.vii.iv", "xi.iii.vii.v", "xi.iii.viii.ii", "xi.iii.viii.iii", "xi.iii.viii.iv", "xi.iii.viii.ix", "xi.iii.viii.v", "xi.iii.viii.vi", "xi.iii.viii.vii", "xi.iii.viii.viii", "xi.iii.x.ii", "xi.iii.x.iii", "xi.iii.x.iv", "xi.iii.x.v", "xi.iii.xi.ii", "xi.iii.xi.iii", "xi.iii.xi.iv", "xi.iii.xi.v", "xi.iii.xi.vi", "xi.iii.xii.ii", "xi.iii.xii.iii"]
+ },
+ "editorial.chapter_title_lines:church-fathers/e73bb326-8ba6-5334-b79e-3a15c9892581": {
+  "fixed_by": "1.8a",
+  "description": "On the Apparel of Women.: 20 passages open with a later editor's chapter title (G-1)",
+  "units": ["iii.iii.i.ii", "iii.iii.i.iii", "iii.iii.i.iv", "iii.iii.i.ix", "iii.iii.i.v", "iii.iii.i.vi", "iii.iii.i.vii", "iii.iii.i.viii", "iii.iii.ii.ii", "iii.iii.ii.iii", "iii.iii.ii.iv", "iii.iii.ii.ix", "iii.iii.ii.v", "iii.iii.ii.vi", "iii.iii.ii.vii", "iii.iii.ii.viii", "iii.iii.ii.x", "iii.iii.ii.xi", "iii.iii.ii.xii", "iii.iii.ii.xiii"]
+ },
+ "editorial.provenance_lines:church-fathers/12083c91-ed66-5b5c-ac89-bd4ebbadb439": {
+  "fixed_by": "1.8a",
+  "description": "Fragments from the Writings of Peter.: 6 passages hold an editor's source line (C-22)",
+  "units": ["ix.vi.iii", "ix.vi.iv", "ix.vi.v", "ix.vi.v/from-p20", "ix.vi.vi", "ix.vi.vii"]
+ },
+ "editorial.provenance_lines:church-fathers/44fd52c3-fdef-518e-a463-a3273f39764c": {
+  "fixed_by": "1.8a",
+  "description": "Dubious or Spurious Writings.: 2 passages hold an editor's source line (C-22)",
+  "units": ["iii.iv.ii.i", "iii.iv.vii"]
+ },
+ "editorial.provenance_lines:church-fathers/506ebe31-239c-509c-ba5e-b6c822d002df": {
+  "fixed_by": "1.8a",
+  "description": "The Extant Works and Fragments of Hippolytus.: 6 passages hold an editor's source line (C-22)",
+  "units": ["iii.iv.i.ii.ii", "iii.iv.i.v.vi", "iii.iv.i.x.iii", "iii.iv.i.xii", "iii.iv.ii.i", "iii.iv.ii.iv"]
+ },
+ "editorial.provenance_lines:church-fathers/5f210d1e-1be7-54fa-a09d-f1dd6f3f315a": {
+  "fixed_by": "1.8a",
+  "description": "Three Fragments from the Homily on the Cross and Passion of Christ.: 2 passages hold an editor's source line (C-22)",
+  "units": ["xi.x.ii", "xi.x.iii"]
+ },
+ "editorial.provenance_lines:church-fathers/6e9f0854-4460-5044-b0ed-c13355cd90fe": {
+  "fixed_by": "1.8a",
+  "description": "Exegetical Fragments.: 1 passages hold an editor's source line (C-22)",
+  "units": ["iv.iv.i.i"]
+ },
+ "editorial.provenance_lines:church-fathers/8d817baf-5149-5641-91ab-ad994870956a": {
+  "fixed_by": "1.8a",
+  "description": "Anatolius of Alexandria.: 1 passages hold an editor's source line (C-22)",
+  "units": ["vi.iii.iii"]
+ },
  "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/TP_Q16_A3/p3": {
   "fixed_by": "1.7",
   "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
+ },
+ "health.R10_site_boilerplate:councils/e33e591b-9e2e-5059-974f-28c8e4ab6aae#council-of-trent/sec-0/21": {
+  "fixed_by": "1.2b",
+  "description": "Council of Trent: website text in the passage (C-05)"
+ },
+ "health.R10_site_boilerplate:encyclicals/49227f30-0b32-544c-adda-9180a888fc2b#cum-sancta-mater-ecclesia/4": {
+  "fixed_by": "1.3a",
+  "description": "Cum Sancta Mater Ecclesia: website text in the passage (C-05)"
+ },
+ "health.R10_site_boilerplate:papal-documents/616dfaea-6099-593e-951f-2b017a7ec938#exsurge-domine/41/from-e62": {
+  "fixed_by": "1.3a",
+  "description": "Exsurge Domine: website text in the passage (C-05)"
+ },
+ "health.R11_papal_editorial:apostolic-exhortations/1302988d-7dbc-5bc0-9005-838053111c45": {
+  "fixed_by": "1.3a",
+  "description": "Africae Munus: 3 passages hold an editor's or translator's words or a table of contents (C-18)",
+  "units": ["africae-munus/1", "africae-munus/1-3", "africae-munus/2"]
+ },
+ "health.R11_papal_editorial:apostolic-exhortations/83ef10a9-f7a6-594c-b29d-bf96bf9dccbd": {
+  "fixed_by": "1.3a",
+  "description": "Menti Nostrae: 1 passages hold an editor's or translator's words or a table of contents (C-18)",
+  "units": ["menti-nostrae/preamble"]
+ },
+ "health.R11_papal_editorial:apostolic-exhortations/f3196ac1-ae24-5da2-831b-207a9cd40b75": {
+  "fixed_by": "1.3a",
+  "description": "Haerent Animo: 1 passages hold an editor's or translator's words or a table of contents (C-18)",
+  "units": ["haerent-animo/1"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/0dd14bd0-52d9-5e90-80ce-6d891ef6b943": {
+  "fixed_by": "1.3a",
+  "description": "Evangelica Testificatio: 41 passages hold footnote callers (C-17)",
+  "units": ["evangelica-testificatio/1", "evangelica-testificatio/10", "evangelica-testificatio/11", "evangelica-testificatio/12", "evangelica-testificatio/13", "evangelica-testificatio/14", "evangelica-testificatio/15", "evangelica-testificatio/17", "evangelica-testificatio/19", "evangelica-testificatio/2", "evangelica-testificatio/20", "evangelica-testificatio/21", "evangelica-testificatio/22", "evangelica-testificatio/23", "evangelica-testificatio/24", "evangelica-testificatio/25", "evangelica-testificatio/27", "evangelica-testificatio/28", "evangelica-testificatio/29", "evangelica-testificatio/3", "evangelica-testificatio/30", "evangelica-testificatio/34", "evangelica-testificatio/37", "evangelica-testificatio/38", "evangelica-testificatio/39", "evangelica-testificatio/4", "evangelica-testificatio/45", "evangelica-testificatio/46", "evangelica-testificatio/47", "evangelica-testificatio/48", "evangelica-testificatio/49", "evangelica-testificatio/5", "evangelica-testificatio/50", "evangelica-testificatio/51", "evangelica-testificatio/54", "evangelica-testificatio/55", "evangelica-testificatio/56", "evangelica-testificatio/6", "evangelica-testificatio/7", "evangelica-testificatio/8", "evangelica-testificatio/9"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/26061458-4ab7-54ae-822c-2fcb9e434591": {
+  "fixed_by": "1.3a",
+  "description": "Sacramentum Caritatis: 18 passages hold footnote callers (C-17)",
+  "units": ["sacramentum-caritatis/15", "sacramentum-caritatis/17", "sacramentum-caritatis/2", "sacramentum-caritatis/20", "sacramentum-caritatis/22", "sacramentum-caritatis/23", "sacramentum-caritatis/29", "sacramentum-caritatis/3", "sacramentum-caritatis/4", "sacramentum-caritatis/45", "sacramentum-caritatis/5", "sacramentum-caritatis/53", "sacramentum-caritatis/57", "sacramentum-caritatis/70", "sacramentum-caritatis/72", "sacramentum-caritatis/76", "sacramentum-caritatis/89", "sacramentum-caritatis/92"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/412959d1-a9fd-592a-ab1a-74aefe8e2b34": {
+  "fixed_by": "1.3a",
+  "description": "Marialis Cultus: 40 passages hold footnote callers (C-17)",
+  "units": ["marialis-cultus/1", "marialis-cultus/10", "marialis-cultus/11", "marialis-cultus/12", "marialis-cultus/13", "marialis-cultus/14", "marialis-cultus/16", "marialis-cultus/17", "marialis-cultus/18", "marialis-cultus/19", "marialis-cultus/2", "marialis-cultus/20", "marialis-cultus/21", "marialis-cultus/22", "marialis-cultus/23", "marialis-cultus/24", "marialis-cultus/25", "marialis-cultus/26", "marialis-cultus/28", "marialis-cultus/29", "marialis-cultus/3", "marialis-cultus/30", "marialis-cultus/31", "marialis-cultus/32", "marialis-cultus/33", "marialis-cultus/37", "marialis-cultus/38", "marialis-cultus/39", "marialis-cultus/4", "marialis-cultus/41", "marialis-cultus/42", "marialis-cultus/48", "marialis-cultus/5", "marialis-cultus/52", "marialis-cultus/53", "marialis-cultus/56", "marialis-cultus/57", "marialis-cultus/57/from-e128", "marialis-cultus/6", "marialis-cultus/7"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/433cf2af-194e-549f-b45d-85562d5b8b19": {
+  "fixed_by": "1.3a",
+  "description": "Pastores Gregis: 95 passages hold footnote callers (C-17)",
+  "units": ["pastores-gregis/1", "pastores-gregis/10", "pastores-gregis/10/from-e60", "pastores-gregis/11", "pastores-gregis/12/from-e75", "pastores-gregis/13", "pastores-gregis/13/from-e82", "pastores-gregis/13/from-e84", "pastores-gregis/14", "pastores-gregis/15", "pastores-gregis/16", "pastores-gregis/17", "pastores-gregis/17/from-e104", "pastores-gregis/18", "pastores-gregis/19", "pastores-gregis/2", "pastores-gregis/20", "pastores-gregis/22", "pastores-gregis/23", "pastores-gregis/24", "pastores-gregis/24/from-e139", "pastores-gregis/25", "pastores-gregis/26", "pastores-gregis/27", "pastores-gregis/28", "pastores-gregis/29", "pastores-gregis/29/from-e175", "pastores-gregis/3", "pastores-gregis/30", "pastores-gregis/31", "pastores-gregis/32", "pastores-gregis/34", "pastores-gregis/35", "pastores-gregis/35/from-e209", "pastores-gregis/36", "pastores-gregis/37", "pastores-gregis/38", "pastores-gregis/39/from-e236", "pastores-gregis/4", "pastores-gregis/40", "pastores-gregis/41", "pastores-gregis/42", "pastores-gregis/43", "pastores-gregis/43/from-e262", "pastores-gregis/43/from-e266", "pastores-gregis/44", "pastores-gregis/44/from-e274", "pastores-gregis/45", "pastores-gregis/46", "pastores-gregis/47", "pastores-gregis/47/from-e287", "pastores-gregis/48", "pastores-gregis/49", "pastores-gregis/5", "pastores-gregis/5/from-e25", "pastores-gregis/50", "pastores-gregis/51", "pastores-gregis/52", "pastores-gregis/53", "pastores-gregis/54", "pastores-gregis/55", "pastores-gregis/55/from-e327-2", "pastores-gregis/56", "pastores-gregis/56/from-e333", "pastores-gregis/56/from-e337-2", "pastores-gregis/57", "pastores-gregis/58", "pastores-gregis/58/from-e351", "pastores-gregis/59", "pastores-gregis/59/from-e357", "pastores-gregis/6", "pastores-gregis/60", "pastores-gregis/61", "pastores-gregis/61/from-e367", "pastores-gregis/62", "pastores-gregis/63", "pastores-gregis/63/from-e376", "pastores-gregis/64", "pastores-gregis/65", "pastores-gregis/66", "pastores-gregis/67", "pastores-gregis/67/from-e401", "pastores-gregis/68", "pastores-gregis/69", "pastores-gregis/7", "pastores-gregis/70", "pastores-gregis/71", "pastores-gregis/72", "pastores-gregis/73", "pastores-gregis/73/from-e435", "pastores-gregis/74", "pastores-gregis/8", "pastores-gregis/8/from-e43", "pastores-gregis/8/from-e48-2", "pastores-gregis/9"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/4dbf7902-d2a2-5bc6-81f8-09b7e0fba119": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in Asia: 66 passages hold footnote callers (C-17)",
+  "units": ["ecclesia-in-asia/1", "ecclesia-in-asia/10", "ecclesia-in-asia/11/from-e70", "ecclesia-in-asia/13", "ecclesia-in-asia/13/from-e78", "ecclesia-in-asia/14", "ecclesia-in-asia/15", "ecclesia-in-asia/15/from-e91", "ecclesia-in-asia/16", "ecclesia-in-asia/16/from-e96", "ecclesia-in-asia/17", "ecclesia-in-asia/19", "ecclesia-in-asia/2", "ecclesia-in-asia/20", "ecclesia-in-asia/20/from-e117", "ecclesia-in-asia/20/from-e119", "ecclesia-in-asia/21", "ecclesia-in-asia/21/from-e125", "ecclesia-in-asia/22", "ecclesia-in-asia/22/from-e131", "ecclesia-in-asia/22/from-e132-2", "ecclesia-in-asia/23", "ecclesia-in-asia/23/from-e136", "ecclesia-in-asia/24", "ecclesia-in-asia/24/from-e143", "ecclesia-in-asia/24/from-e145-2", "ecclesia-in-asia/25", "ecclesia-in-asia/25/from-e150", "ecclesia-in-asia/26", "ecclesia-in-asia/27", "ecclesia-in-asia/28", "ecclesia-in-asia/28/from-e161", "ecclesia-in-asia/29", "ecclesia-in-asia/3", "ecclesia-in-asia/30", "ecclesia-in-asia/31", "ecclesia-in-asia/31/from-e175", "ecclesia-in-asia/32", "ecclesia-in-asia/33", "ecclesia-in-asia/34", "ecclesia-in-asia/34/from-e194", "ecclesia-in-asia/35", "ecclesia-in-asia/36", "ecclesia-in-asia/37", "ecclesia-in-asia/38", "ecclesia-in-asia/39", "ecclesia-in-asia/4", "ecclesia-in-asia/40", "ecclesia-in-asia/41", "ecclesia-in-asia/42", "ecclesia-in-asia/43", "ecclesia-in-asia/44", "ecclesia-in-asia/44/from-e231-2", "ecclesia-in-asia/45", "ecclesia-in-asia/46", "ecclesia-in-asia/47", "ecclesia-in-asia/48", "ecclesia-in-asia/49", "ecclesia-in-asia/5", "ecclesia-in-asia/51", "ecclesia-in-asia/6", "ecclesia-in-asia/7", "ecclesia-in-asia/7/from-e40", "ecclesia-in-asia/8", "ecclesia-in-asia/9/from-e52", "ecclesia-in-asia/9/from-e56"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/5017df8e-c59c-5945-a5ec-c5a0b4ad1378": {
+  "fixed_by": "1.3a",
+  "description": "Christifideles Laici: 1 passages hold footnote callers (C-17)",
+  "units": ["christifideles-laici/64/from-e636"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/5fd6eb63-c7e8-5103-9ec3-21bede3c100d": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in Africa: 120 passages hold footnote callers (C-17)",
+  "units": ["ecclesia-in-africa/1", "ecclesia-in-africa/10", "ecclesia-in-africa/102", "ecclesia-in-africa/103", "ecclesia-in-africa/104", "ecclesia-in-africa/106", "ecclesia-in-africa/107", "ecclesia-in-africa/108", "ecclesia-in-africa/109", "ecclesia-in-africa/11", "ecclesia-in-africa/111", "ecclesia-in-africa/112", "ecclesia-in-africa/113", "ecclesia-in-africa/114", "ecclesia-in-africa/115", "ecclesia-in-africa/116", "ecclesia-in-africa/117", "ecclesia-in-africa/118", "ecclesia-in-africa/119", "ecclesia-in-africa/120", "ecclesia-in-africa/121", "ecclesia-in-africa/122", "ecclesia-in-africa/123", "ecclesia-in-africa/124", "ecclesia-in-africa/125", "ecclesia-in-africa/126", "ecclesia-in-africa/127", "ecclesia-in-africa/128", "ecclesia-in-africa/129", "ecclesia-in-africa/130", "ecclesia-in-africa/131", "ecclesia-in-africa/132", "ecclesia-in-africa/133", "ecclesia-in-africa/134", "ecclesia-in-africa/135", "ecclesia-in-africa/136", "ecclesia-in-africa/137", "ecclesia-in-africa/138", "ecclesia-in-africa/139", "ecclesia-in-africa/142", "ecclesia-in-africa/143", "ecclesia-in-africa/15", "ecclesia-in-africa/16", "ecclesia-in-africa/17", "ecclesia-in-africa/18", "ecclesia-in-africa/20", "ecclesia-in-africa/21", "ecclesia-in-africa/22", "ecclesia-in-africa/23", "ecclesia-in-africa/24", "ecclesia-in-africa/26", "ecclesia-in-africa/27", "ecclesia-in-africa/29", "ecclesia-in-africa/31", "ecclesia-in-africa/32", "ecclesia-in-africa/33", "ecclesia-in-africa/34", "ecclesia-in-africa/35", "ecclesia-in-africa/36", "ecclesia-in-africa/38", "ecclesia-in-africa/39", "ecclesia-in-africa/4", "ecclesia-in-africa/40", "ecclesia-in-africa/43", "ecclesia-in-africa/44", "ecclesia-in-africa/45", "ecclesia-in-africa/47", "ecclesia-in-africa/48", "ecclesia-in-africa/49", "ecclesia-in-africa/5", "ecclesia-in-africa/50", "ecclesia-in-africa/51", "ecclesia-in-africa/52", "ecclesia-in-africa/53", "ecclesia-in-africa/54", "ecclesia-in-africa/55", "ecclesia-in-africa/56", "ecclesia-in-africa/57", "ecclesia-in-africa/58", "ecclesia-in-africa/59", "ecclesia-in-africa/6", "ecclesia-in-africa/60", "ecclesia-in-africa/61", "ecclesia-in-africa/62", "ecclesia-in-africa/63", "ecclesia-in-africa/64", "ecclesia-in-africa/65", "ecclesia-in-africa/66", "ecclesia-in-africa/67", "ecclesia-in-africa/68", "ecclesia-in-africa/69", "ecclesia-in-africa/70", "ecclesia-in-africa/71", "ecclesia-in-africa/72", "ecclesia-in-africa/73", "ecclesia-in-africa/74", "ecclesia-in-africa/75", "ecclesia-in-africa/76", "ecclesia-in-africa/77", "ecclesia-in-africa/78", "ecclesia-in-africa/79", "ecclesia-in-africa/80", "ecclesia-in-africa/81", "ecclesia-in-africa/82", "ecclesia-in-africa/83", "ecclesia-in-africa/84", "ecclesia-in-africa/85", "ecclesia-in-africa/87", "ecclesia-in-africa/89", "ecclesia-in-africa/9", "ecclesia-in-africa/90", "ecclesia-in-africa/91", "ecclesia-in-africa/92", "ecclesia-in-africa/93", "ecclesia-in-africa/94", "ecclesia-in-africa/95", "ecclesia-in-africa/96", "ecclesia-in-africa/97", "ecclesia-in-africa/98", "ecclesia-in-africa/99"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/5fe12ac6-2bf8-5a26-914c-d318da1f1718": {
+  "fixed_by": "1.3a",
+  "description": "Signum Magnum: 8 passages hold footnote callers (C-17)",
+  "units": ["signum-magnum/1", "signum-magnum/2", "signum-magnum/3", "signum-magnum/4", "signum-magnum/5", "signum-magnum/6", "signum-magnum/7", "signum-magnum/8"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/61fbb9cb-7924-588f-82b1-f789439a2603": {
+  "fixed_by": "1.3a",
+  "description": "Verbum Domini: 2 passages hold footnote callers (C-17)",
+  "units": ["verbum-domini/14", "verbum-domini/29"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/6462809c-3a8d-5580-b9a1-a773154a7ab1": {
+  "fixed_by": "1.3a",
+  "description": "Redemptionis Donum: 23 passages hold footnote callers (C-17)",
+  "units": ["redemptionis-donum/1", "redemptionis-donum/10", "redemptionis-donum/11", "redemptionis-donum/12", "redemptionis-donum/13", "redemptionis-donum/13/from-e83", "redemptionis-donum/14", "redemptionis-donum/14/from-e91", "redemptionis-donum/15", "redemptionis-donum/15/from-e99", "redemptionis-donum/16", "redemptionis-donum/17", "redemptionis-donum/2", "redemptionis-donum/3", "redemptionis-donum/4", "redemptionis-donum/5", "redemptionis-donum/6", "redemptionis-donum/7", "redemptionis-donum/7/from-e38", "redemptionis-donum/8", "redemptionis-donum/8/from-e48", "redemptionis-donum/9", "redemptionis-donum/9/from-e59"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/791898f1-f8b2-536c-9cf0-ec5821931bfc": {
+  "fixed_by": "1.3a",
+  "description": "Redemptoris Custos: 19 passages hold footnote callers (C-17)",
+  "units": ["redemptoris-custos/1", "redemptoris-custos/16", "redemptoris-custos/20", "redemptoris-custos/23", "redemptoris-custos/24", "redemptoris-custos/26", "redemptoris-custos/27", "redemptoris-custos/28", "redemptoris-custos/29", "redemptoris-custos/30", "redemptoris-custos/31", "redemptoris-custos/32", "redemptoris-custos/4", "redemptoris-custos/5", "redemptoris-custos/6", "redemptoris-custos/7", "redemptoris-custos/7/from-e38", "redemptoris-custos/8", "redemptoris-custos/9"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/c62b660d-5518-5b2e-b85d-808f2099bd5f": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in Medio Oriente: 1 passages hold footnote callers (C-17)",
+  "units": ["ecclesia-in-medio-oriente/87"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/c98dc3ec-4bb3-5e76-ab31-01177ddebf44": {
+  "fixed_by": "1.3a",
+  "description": "Catechesi Tradendae: 45 passages hold footnote callers (C-17)",
+  "units": ["catechesi-tradendae/1", "catechesi-tradendae/10", "catechesi-tradendae/11", "catechesi-tradendae/12", "catechesi-tradendae/14", "catechesi-tradendae/17", "catechesi-tradendae/18", "catechesi-tradendae/19", "catechesi-tradendae/2", "catechesi-tradendae/21", "catechesi-tradendae/22", "catechesi-tradendae/23", "catechesi-tradendae/25", "catechesi-tradendae/27", "catechesi-tradendae/28", "catechesi-tradendae/29", "catechesi-tradendae/29/from-e114", "catechesi-tradendae/3", "catechesi-tradendae/30", "catechesi-tradendae/31", "catechesi-tradendae/32", "catechesi-tradendae/33", "catechesi-tradendae/35", "catechesi-tradendae/39", "catechesi-tradendae/4", "catechesi-tradendae/43", "catechesi-tradendae/47", "catechesi-tradendae/5", "catechesi-tradendae/50", "catechesi-tradendae/53", "catechesi-tradendae/56", "catechesi-tradendae/57", "catechesi-tradendae/6", "catechesi-tradendae/60", "catechesi-tradendae/61", "catechesi-tradendae/62", "catechesi-tradendae/63", "catechesi-tradendae/64", "catechesi-tradendae/67", "catechesi-tradendae/68", "catechesi-tradendae/7", "catechesi-tradendae/71", "catechesi-tradendae/72", "catechesi-tradendae/73", "catechesi-tradendae/8"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/cade81ec-981e-5891-979d-f74af2d5e048": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in America: 30 passages hold footnote callers (C-17)",
+  "units": ["ecclesia-in-america/1", "ecclesia-in-america/10", "ecclesia-in-america/11", "ecclesia-in-america/12", "ecclesia-in-america/13", "ecclesia-in-america/14", "ecclesia-in-america/15", "ecclesia-in-america/16", "ecclesia-in-america/17", "ecclesia-in-america/18", "ecclesia-in-america/19", "ecclesia-in-america/2", "ecclesia-in-america/20", "ecclesia-in-america/21", "ecclesia-in-america/22", "ecclesia-in-america/23", "ecclesia-in-america/24", "ecclesia-in-america/25", "ecclesia-in-america/26", "ecclesia-in-america/27", "ecclesia-in-america/28", "ecclesia-in-america/29", "ecclesia-in-america/29/from-e109", "ecclesia-in-america/30", "ecclesia-in-america/31", "ecclesia-in-america/32", "ecclesia-in-america/33", "ecclesia-in-america/5", "ecclesia-in-america/6", "ecclesia-in-america/8"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/ceaf39ca-5c62-5860-8db3-a5d91ea0cdec": {
+  "fixed_by": "1.3a",
+  "description": "Pastores Dabo Vobis: 102 passages hold footnote callers (C-17)",
+  "units": ["pastores-dabo-vobis/1", "pastores-dabo-vobis/10", "pastores-dabo-vobis/10/from-e74", "pastores-dabo-vobis/11", "pastores-dabo-vobis/12", "pastores-dabo-vobis/13", "pastores-dabo-vobis/15", "pastores-dabo-vobis/16", "pastores-dabo-vobis/16/from-e109", "pastores-dabo-vobis/17", "pastores-dabo-vobis/18", "pastores-dabo-vobis/18/from-e118", "pastores-dabo-vobis/19", "pastores-dabo-vobis/2", "pastores-dabo-vobis/20", "pastores-dabo-vobis/20/from-e129", "pastores-dabo-vobis/21", "pastores-dabo-vobis/22", "pastores-dabo-vobis/22/from-e140", "pastores-dabo-vobis/23", "pastores-dabo-vobis/23/from-e145", "pastores-dabo-vobis/24", "pastores-dabo-vobis/25", "pastores-dabo-vobis/25/from-e158", "pastores-dabo-vobis/26", "pastores-dabo-vobis/26/from-e163", "pastores-dabo-vobis/27", "pastores-dabo-vobis/28", "pastores-dabo-vobis/29", "pastores-dabo-vobis/29/from-e178", "pastores-dabo-vobis/3", "pastores-dabo-vobis/3/from-e24", "pastores-dabo-vobis/30", "pastores-dabo-vobis/30/from-e184", "pastores-dabo-vobis/31", "pastores-dabo-vobis/31/from-e191", "pastores-dabo-vobis/32", "pastores-dabo-vobis/33", "pastores-dabo-vobis/34/from-e209", "pastores-dabo-vobis/35", "pastores-dabo-vobis/35/from-e218", "pastores-dabo-vobis/36", "pastores-dabo-vobis/36/from-e227", "pastores-dabo-vobis/37", "pastores-dabo-vobis/37/from-e233", "pastores-dabo-vobis/38", "pastores-dabo-vobis/38/from-e240", "pastores-dabo-vobis/39", "pastores-dabo-vobis/4", "pastores-dabo-vobis/40", "pastores-dabo-vobis/41", "pastores-dabo-vobis/41/from-e254", "pastores-dabo-vobis/41/from-e257", "pastores-dabo-vobis/42", "pastores-dabo-vobis/43", "pastores-dabo-vobis/43/from-e271", "pastores-dabo-vobis/44", "pastores-dabo-vobis/44/from-e278", "pastores-dabo-vobis/45", "pastores-dabo-vobis/47", "pastores-dabo-vobis/47/from-e294", "pastores-dabo-vobis/48", "pastores-dabo-vobis/48/from-e299", "pastores-dabo-vobis/49", "pastores-dabo-vobis/5", "pastores-dabo-vobis/50", "pastores-dabo-vobis/50/from-e308", "pastores-dabo-vobis/51", "pastores-dabo-vobis/52", "pastores-dabo-vobis/53", "pastores-dabo-vobis/53/from-e319", "pastores-dabo-vobis/54", "pastores-dabo-vobis/55", "pastores-dabo-vobis/55/from-e326", "pastores-dabo-vobis/56", "pastores-dabo-vobis/57", "pastores-dabo-vobis/58", "pastores-dabo-vobis/59", "pastores-dabo-vobis/6", "pastores-dabo-vobis/60", "pastores-dabo-vobis/60/from-e349", "pastores-dabo-vobis/61", "pastores-dabo-vobis/61/from-e355", "pastores-dabo-vobis/62", "pastores-dabo-vobis/63", "pastores-dabo-vobis/64", "pastores-dabo-vobis/65/from-e373", "pastores-dabo-vobis/66", "pastores-dabo-vobis/66/from-e380", "pastores-dabo-vobis/67", "pastores-dabo-vobis/68", "pastores-dabo-vobis/68/from-e392", "pastores-dabo-vobis/7", "pastores-dabo-vobis/70/from-e407", "pastores-dabo-vobis/70/from-e409", "pastores-dabo-vobis/72/from-e419", "pastores-dabo-vobis/72/from-e422", "pastores-dabo-vobis/74", "pastores-dabo-vobis/74/from-e435", "pastores-dabo-vobis/74/from-e438", "pastores-dabo-vobis/81", "pastores-dabo-vobis/82/from-e481"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/d51e49eb-59c5-5f5a-980b-47f57f7fb407": {
+  "fixed_by": "1.3a",
+  "description": "Gaudete in Domino: 43 passages hold footnote callers (C-17)",
+  "units": ["gaudete-in-domino/12", "gaudete-in-domino/14", "gaudete-in-domino/15", "gaudete-in-domino/16", "gaudete-in-domino/19", "gaudete-in-domino/20", "gaudete-in-domino/21", "gaudete-in-domino/22", "gaudete-in-domino/23", "gaudete-in-domino/24", "gaudete-in-domino/26", "gaudete-in-domino/27", "gaudete-in-domino/28", "gaudete-in-domino/30", "gaudete-in-domino/31", "gaudete-in-domino/32", "gaudete-in-domino/34", "gaudete-in-domino/35", "gaudete-in-domino/36", "gaudete-in-domino/38", "gaudete-in-domino/40", "gaudete-in-domino/43", "gaudete-in-domino/45", "gaudete-in-domino/46", "gaudete-in-domino/47", "gaudete-in-domino/5", "gaudete-in-domino/52", "gaudete-in-domino/53", "gaudete-in-domino/56", "gaudete-in-domino/59", "gaudete-in-domino/6", "gaudete-in-domino/61", "gaudete-in-domino/62", "gaudete-in-domino/63", "gaudete-in-domino/64", "gaudete-in-domino/65", "gaudete-in-domino/66", "gaudete-in-domino/67", "gaudete-in-domino/68", "gaudete-in-domino/7", "gaudete-in-domino/72", "gaudete-in-domino/73", "gaudete-in-domino/8"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/ef57a4a0-0811-5189-a42b-cf488f19592b": {
+  "fixed_by": "1.3a",
+  "description": "Reconciliatio et Paenitentia: 42 passages hold footnote callers (C-17)",
+  "units": ["reconciliatio-et-paenitentia/1", "reconciliatio-et-paenitentia/10", "reconciliatio-et-paenitentia/11", "reconciliatio-et-paenitentia/13", "reconciliatio-et-paenitentia/13/from-e100", "reconciliatio-et-paenitentia/15", "reconciliatio-et-paenitentia/16/from-e122", "reconciliatio-et-paenitentia/16/from-e124", "reconciliatio-et-paenitentia/17", "reconciliatio-et-paenitentia/17/from-e135", "reconciliatio-et-paenitentia/18", "reconciliatio-et-paenitentia/18/from-e153", "reconciliatio-et-paenitentia/19", "reconciliatio-et-paenitentia/2", "reconciliatio-et-paenitentia/20", "reconciliatio-et-paenitentia/21", "reconciliatio-et-paenitentia/22", "reconciliatio-et-paenitentia/23", "reconciliatio-et-paenitentia/25", "reconciliatio-et-paenitentia/25/from-e203", "reconciliatio-et-paenitentia/25/from-e206", "reconciliatio-et-paenitentia/26", "reconciliatio-et-paenitentia/26/from-e215", "reconciliatio-et-paenitentia/26/from-e220", "reconciliatio-et-paenitentia/27", "reconciliatio-et-paenitentia/29", "reconciliatio-et-paenitentia/30", "reconciliatio-et-paenitentia/32/from-e288", "reconciliatio-et-paenitentia/33", "reconciliatio-et-paenitentia/34", "reconciliatio-et-paenitentia/35", "reconciliatio-et-paenitentia/35/from-e308", "reconciliatio-et-paenitentia/4", "reconciliatio-et-paenitentia/4/from-e26", "reconciliatio-et-paenitentia/4/from-e31", "reconciliatio-et-paenitentia/4/from-e33", "reconciliatio-et-paenitentia/5", "reconciliatio-et-paenitentia/6", "reconciliatio-et-paenitentia/7", "reconciliatio-et-paenitentia/7/from-e57", "reconciliatio-et-paenitentia/8", "reconciliatio-et-paenitentia/9"]
+ },
+ "health.R12_note_caller:apostolic-exhortations/f6de8a59-c641-53fa-9eb9-c8c151619125": {
+  "fixed_by": "1.3a",
+  "description": "C'est la confiance: 1 passages hold footnote callers (C-17)",
+  "units": ["c-est-la-confiance/53"]
+ },
+ "health.R12_note_caller:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
+  "fixed_by": "1.10b",
+  "description": "The Confessions of Saint Augustine: 1 passages hold footnote callers (C-17)",
+  "units": ["viii.xi"]
+ },
+ "health.R12_note_caller:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
+  "fixed_by": "1.10b",
+  "description": "The Epistles of Cyprian.: 1 passages hold footnote callers (C-17)",
+  "units": ["iv.iv.liv/from-p88"]
+ },
+ "health.R12_note_caller:councils/137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
+  "fixed_by": "1.1",
+  "description": "Nostra Aetate: 2 passages hold footnote callers (C-17)",
+  "units": ["nostra-aetate/11", "nostra-aetate/3"]
+ },
+ "health.R12_note_caller:councils/13b94869-cf9c-590d-9573-66f1bd6ea457": {
+  "fixed_by": "1.1",
+  "description": "Unitatis Redintegratio: 10 passages hold footnote callers (C-17)",
+  "units": ["unitatis-redintegratio/1", "unitatis-redintegratio/15", "unitatis-redintegratio/15-2", "unitatis-redintegratio/18", "unitatis-redintegratio/2", "unitatis-redintegratio/21", "unitatis-redintegratio/22", "unitatis-redintegratio/3", "unitatis-redintegratio/6", "unitatis-redintegratio/7"]
+ },
+ "health.R12_note_caller:councils/1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
+  "fixed_by": "1.1",
+  "description": "Apostolicam Actuositatem: 14 passages hold footnote callers (C-17)",
+  "units": ["apostolicam-actuositatem/1", "apostolicam-actuositatem/12", "apostolicam-actuositatem/13", "apostolicam-actuositatem/17", "apostolicam-actuositatem/19", "apostolicam-actuositatem/2", "apostolicam-actuositatem/20", "apostolicam-actuositatem/25", "apostolicam-actuositatem/26", "apostolicam-actuositatem/27", "apostolicam-actuositatem/28", "apostolicam-actuositatem/3", "apostolicam-actuositatem/32", "apostolicam-actuositatem/4"]
+ },
+ "health.R12_note_caller:councils/1d8e4438-b930-5fa4-93cb-b393786064fa": {
+  "fixed_by": "1.1",
+  "description": "Orientalium Ecclesiarum: 23 passages hold footnote callers (C-17)",
+  "units": ["orientalium-ecclesiarum/10", "orientalium-ecclesiarum/11", "orientalium-ecclesiarum/13", "orientalium-ecclesiarum/14", "orientalium-ecclesiarum/15", "orientalium-ecclesiarum/16", "orientalium-ecclesiarum/17", "orientalium-ecclesiarum/18", "orientalium-ecclesiarum/19", "orientalium-ecclesiarum/2", "orientalium-ecclesiarum/20", "orientalium-ecclesiarum/21", "orientalium-ecclesiarum/22", "orientalium-ecclesiarum/23", "orientalium-ecclesiarum/24", "orientalium-ecclesiarum/25", "orientalium-ecclesiarum/26", "orientalium-ecclesiarum/27", "orientalium-ecclesiarum/28", "orientalium-ecclesiarum/4", "orientalium-ecclesiarum/5", "orientalium-ecclesiarum/7", "orientalium-ecclesiarum/8"]
+ },
+ "health.R12_note_caller:councils/237081c4-64d8-52d2-a19e-66d6e5f01f1f": {
+  "fixed_by": "1.2b",
+  "description": "Second Council of Lyons: 1 passages hold footnote callers (C-17)",
+  "units": ["second-council-of-lyons/sec-4/21"]
+ },
+ "health.R12_note_caller:councils/28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
+  "fixed_by": "1.1",
+  "description": "Presbyterorum Ordinis: 21 passages hold footnote callers (C-17)",
+  "units": ["presbyterorum-ordinis/1", "presbyterorum-ordinis/10", "presbyterorum-ordinis/11", "presbyterorum-ordinis/12", "presbyterorum-ordinis/14", "presbyterorum-ordinis/15", "presbyterorum-ordinis/15-2", "presbyterorum-ordinis/16", "presbyterorum-ordinis/17", "presbyterorum-ordinis/18", "presbyterorum-ordinis/19", "presbyterorum-ordinis/2", "presbyterorum-ordinis/20", "presbyterorum-ordinis/21", "presbyterorum-ordinis/3", "presbyterorum-ordinis/4", "presbyterorum-ordinis/5", "presbyterorum-ordinis/6", "presbyterorum-ordinis/7", "presbyterorum-ordinis/8", "presbyterorum-ordinis/9"]
+ },
+ "health.R12_note_caller:councils/4451c2f8-e836-58ab-a2eb-495a9cacef89": {
+  "fixed_by": "1.1",
+  "description": "Dei Verbum: 6 passages hold footnote callers (C-17)",
+  "units": ["dei-verbum/1-4", "dei-verbum/11", "dei-verbum/19", "dei-verbum/25", "dei-verbum/8-2", "dei-verbum/9"]
+ },
+ "health.R12_note_caller:councils/5f0ff7e9-3b76-5c1f-949f-4980a943244b": {
+  "fixed_by": "1.1",
+  "description": "Dignitatis Humanae: 7 passages hold footnote callers (C-17)",
+  "units": ["dignitatis-humanae/1", "dignitatis-humanae/10", "dignitatis-humanae/11", "dignitatis-humanae/13", "dignitatis-humanae/14", "dignitatis-humanae/15", "dignitatis-humanae/6"]
+ },
+ "health.R12_note_caller:councils/62f7a128-a847-588b-84f0-51d33294b236": {
+  "fixed_by": "1.1",
+  "description": "Gaudium et Spes: 30 passages hold footnote callers (C-17)",
+  "units": ["gaudium-et-spes/10", "gaudium-et-spes/13", "gaudium-et-spes/14", "gaudium-et-spes/16", "gaudium-et-spes/17", "gaudium-et-spes/21", "gaudium-et-spes/22", "gaudium-et-spes/25", "gaudium-et-spes/26", "gaudium-et-spes/27", "gaudium-et-spes/32", "gaudium-et-spes/34", "gaudium-et-spes/35", "gaudium-et-spes/38", "gaudium-et-spes/39", "gaudium-et-spes/40", "gaudium-et-spes/42", "gaudium-et-spes/43", "gaudium-et-spes/45", "gaudium-et-spes/48", "gaudium-et-spes/49", "gaudium-et-spes/54", "gaudium-et-spes/57", "gaudium-et-spes/62", "gaudium-et-spes/64", "gaudium-et-spes/66", "gaudium-et-spes/68", "gaudium-et-spes/69", "gaudium-et-spes/74", "gaudium-et-spes/75"]
+ },
+ "health.R12_note_caller:councils/706adce0-8af2-5a30-877b-82e701601a53": {
+  "fixed_by": "1.2b",
+  "description": "Council of Basel-Ferrara-Florence: 5 passages hold footnote callers (C-17)",
+  "units": ["council-of-basel-ferrara-florence/sec-0/14", "council-of-basel-ferrara-florence/sec-0/2", "council-of-basel-ferrara-florence/sec-0/25/from-e103-2", "council-of-basel-ferrara-florence/sec-0/3", "council-of-basel-ferrara-florence/sec-0/97"]
+ },
+ "health.R12_note_caller:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
+  "fixed_by": "1.1",
+  "description": "Perfectae Caritatis: 1 passages hold footnote callers (C-17)",
+  "units": ["perfectae-caritatis/25"]
+ },
+ "health.R12_note_caller:councils/b4285357-dc78-5c8b-98f1-b50fdf6c83e1": {
+  "fixed_by": "1.1",
+  "description": "Inter Mirifica: 1 passages hold footnote callers (C-17)",
+  "units": ["inter-mirifica/24"]
+ },
+ "health.R12_note_caller:councils/bd4adb5d-500e-5995-ab95-3f61fdc92067": {
+  "fixed_by": "1.1",
+  "description": "Christus Dominus: 10 passages hold footnote callers (C-17)",
+  "units": ["christus-dominus/1", "christus-dominus/12", "christus-dominus/15", "christus-dominus/16", "christus-dominus/3", "christus-dominus/3-2", "christus-dominus/4", "christus-dominus/43", "christus-dominus/5", "christus-dominus/6"]
+ },
+ "health.R12_note_caller:councils/bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
+  "fixed_by": "1.2b",
+  "description": "Council of Constance: 4 passages hold footnote callers (C-17)",
+  "units": ["council-of-constance/sec-50/50", "council-of-constance/sec-50/51", "council-of-constance/sec-50/52", "council-of-constance/sec-50/53"]
+ },
+ "health.R12_note_caller:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
+  "fixed_by": "1.1",
+  "description": "Lumen Gentium: 60 passages hold footnote callers (C-17)",
+  "units": ["lumen-gentium/1", "lumen-gentium/10", "lumen-gentium/11", "lumen-gentium/12", "lumen-gentium/13", "lumen-gentium/14", "lumen-gentium/15", "lumen-gentium/16", "lumen-gentium/17", "lumen-gentium/19", "lumen-gentium/2", "lumen-gentium/20", "lumen-gentium/21", "lumen-gentium/22", "lumen-gentium/23", "lumen-gentium/24", "lumen-gentium/25", "lumen-gentium/26", "lumen-gentium/27", "lumen-gentium/28", "lumen-gentium/29", "lumen-gentium/3", "lumen-gentium/30", "lumen-gentium/32", "lumen-gentium/35", "lumen-gentium/36", "lumen-gentium/38", "lumen-gentium/39", "lumen-gentium/4", "lumen-gentium/40", "lumen-gentium/42", "lumen-gentium/43", "lumen-gentium/44", "lumen-gentium/45", "lumen-gentium/46", "lumen-gentium/48", "lumen-gentium/49", "lumen-gentium/5", "lumen-gentium/50", "lumen-gentium/51", "lumen-gentium/52", "lumen-gentium/53", "lumen-gentium/54", "lumen-gentium/55", "lumen-gentium/56", "lumen-gentium/57", "lumen-gentium/58", "lumen-gentium/59", "lumen-gentium/60", "lumen-gentium/62", "lumen-gentium/63", "lumen-gentium/64", "lumen-gentium/65", "lumen-gentium/66", "lumen-gentium/67", "lumen-gentium/68", "lumen-gentium/69", "lumen-gentium/7", "lumen-gentium/8", "lumen-gentium/9"]
+ },
+ "health.R12_note_caller:councils/c1d5382f-c7c7-564d-989a-89775b36fd58": {
+  "fixed_by": "1.1",
+  "description": "Ad Gentes: 22 passages hold footnote callers (C-17)",
+  "units": ["ad-gentes/1", "ad-gentes/14", "ad-gentes/14-2", "ad-gentes/15", "ad-gentes/18", "ad-gentes/2", "ad-gentes/22", "ad-gentes/23", "ad-gentes/25", "ad-gentes/28", "ad-gentes/29", "ad-gentes/3", "ad-gentes/31", "ad-gentes/38", "ad-gentes/39", "ad-gentes/4", "ad-gentes/40", "ad-gentes/41", "ad-gentes/42", "ad-gentes/7", "ad-gentes/8", "ad-gentes/9"]
+ },
+ "health.R12_note_caller:councils/d9189059-da4c-5528-aea5-3ec35864c077": {
+  "fixed_by": "1.2b",
+  "description": "Fifth Lateran Council: 1 passages hold footnote callers (C-17)",
+  "units": ["fifth-lateran-council/sec-0/33"]
+ },
+ "health.R12_note_caller:encyclicals/120d3461-2992-5915-8832-01664a043717": {
+  "fixed_by": "1.3a",
+  "description": "Redemptoris Missio: 63 passages hold footnote callers (C-17)",
+  "units": ["redemptoris-missio/10", "redemptoris-missio/11", "redemptoris-missio/12", "redemptoris-missio/18", "redemptoris-missio/19", "redemptoris-missio/2", "redemptoris-missio/2/from-e15", "redemptoris-missio/20", "redemptoris-missio/21", "redemptoris-missio/24", "redemptoris-missio/26", "redemptoris-missio/28", "redemptoris-missio/29", "redemptoris-missio/31", "redemptoris-missio/33", "redemptoris-missio/34", "redemptoris-missio/36", "redemptoris-missio/37", "redemptoris-missio/39", "redemptoris-missio/4", "redemptoris-missio/41", "redemptoris-missio/42", "redemptoris-missio/44", "redemptoris-missio/45", "redemptoris-missio/47/from-e208", "redemptoris-missio/48", "redemptoris-missio/50", "redemptoris-missio/51", "redemptoris-missio/52", "redemptoris-missio/53", "redemptoris-missio/54", "redemptoris-missio/55", "redemptoris-missio/56", "redemptoris-missio/57", "redemptoris-missio/58", "redemptoris-missio/59", "redemptoris-missio/6", "redemptoris-missio/60", "redemptoris-missio/62", "redemptoris-missio/63", "redemptoris-missio/64", "redemptoris-missio/65", "redemptoris-missio/66", "redemptoris-missio/67", "redemptoris-missio/68", "redemptoris-missio/69", "redemptoris-missio/7", "redemptoris-missio/70", "redemptoris-missio/71", "redemptoris-missio/72", "redemptoris-missio/73", "redemptoris-missio/75", "redemptoris-missio/76", "redemptoris-missio/77", "redemptoris-missio/8", "redemptoris-missio/80", "redemptoris-missio/84", "redemptoris-missio/85", "redemptoris-missio/88", "redemptoris-missio/89", "redemptoris-missio/9", "redemptoris-missio/90", "redemptoris-missio/92"]
+ },
+ "health.R12_note_caller:encyclicals/17157215-3ef5-5b22-860a-f34895fc3c03": {
+  "fixed_by": "1.3a",
+  "description": "Pascendi Dominici Gregis: 21 passages hold footnote callers (C-17)",
+  "units": ["pascendi-dominici-gregis/1", "pascendi-dominici-gregis/10", "pascendi-dominici-gregis/13", "pascendi-dominici-gregis/17", "pascendi-dominici-gregis/21", "pascendi-dominici-gregis/24", "pascendi-dominici-gregis/28", "pascendi-dominici-gregis/33", "pascendi-dominici-gregis/36/from-e54", "pascendi-dominici-gregis/40", "pascendi-dominici-gregis/42", "pascendi-dominici-gregis/42/from-e63", "pascendi-dominici-gregis/45", "pascendi-dominici-gregis/46", "pascendi-dominici-gregis/47", "pascendi-dominici-gregis/49", "pascendi-dominici-gregis/51", "pascendi-dominici-gregis/54", "pascendi-dominici-gregis/55", "pascendi-dominici-gregis/55/from-e76-2", "pascendi-dominici-gregis/6"]
+ },
+ "health.R12_note_caller:encyclicals/1d826226-c98a-5fd0-8aff-14da0ab48f75": {
+  "fixed_by": "1.3a",
+  "description": "Spe Salvi: 26 passages hold footnote callers (C-17)",
+  "units": ["spe-salvi/10", "spe-salvi/11", "spe-salvi/12", "spe-salvi/13", "spe-salvi/14", "spe-salvi/15", "spe-salvi/16", "spe-salvi/17", "spe-salvi/19", "spe-salvi/2", "spe-salvi/28", "spe-salvi/29", "spe-salvi/32", "spe-salvi/33", "spe-salvi/34", "spe-salvi/37", "spe-salvi/39", "spe-salvi/42", "spe-salvi/43", "spe-salvi/44", "spe-salvi/45", "spe-salvi/47", "spe-salvi/48", "spe-salvi/5", "spe-salvi/7", "spe-salvi/7/from-e14-2"]
+ },
+ "health.R12_note_caller:encyclicals/2ba4a890-2d51-5a84-b6ab-4923a0487ea2": {
+  "fixed_by": "1.3a",
+  "description": "Providentissimus Deus: 17 passages hold footnote callers (C-17)",
+  "units": ["providentissimus-deus/14", "providentissimus-deus/14/from-e21-2", "providentissimus-deus/16", "providentissimus-deus/17", "providentissimus-deus/18", "providentissimus-deus/19", "providentissimus-deus/20/from-e27-2", "providentissimus-deus/21", "providentissimus-deus/23", "providentissimus-deus/25", "providentissimus-deus/3", "providentissimus-deus/3/from-e10-2", "providentissimus-deus/4", "providentissimus-deus/5", "providentissimus-deus/6", "providentissimus-deus/7", "providentissimus-deus/preamble"]
+ },
+ "health.R12_note_caller:encyclicals/30556229-eadf-5d12-8fad-50c69642d2b8": {
+  "fixed_by": "1.3a",
+  "description": "Decet Quam Maxime: 1 passages hold footnote callers (C-17)",
+  "units": ["decet-quam-maxime/22"]
+ },
+ "health.R12_note_caller:encyclicals/3f6118ed-3afa-56f0-9980-31f50a996520": {
+  "fixed_by": "1.3a",
+  "description": "Redemptoris Mater: 48 passages hold footnote callers (C-17)",
+  "units": ["redemptoris-mater/1", "redemptoris-mater/10", "redemptoris-mater/12", "redemptoris-mater/13", "redemptoris-mater/17", "redemptoris-mater/17/from-e56", "redemptoris-mater/18", "redemptoris-mater/19", "redemptoris-mater/2", "redemptoris-mater/20", "redemptoris-mater/22", "redemptoris-mater/23", "redemptoris-mater/24", "redemptoris-mater/25", "redemptoris-mater/26", "redemptoris-mater/27", "redemptoris-mater/28", "redemptoris-mater/28/from-e99", "redemptoris-mater/29", "redemptoris-mater/3", "redemptoris-mater/30", "redemptoris-mater/31", "redemptoris-mater/33", "redemptoris-mater/34", "redemptoris-mater/35", "redemptoris-mater/36/from-e121", "redemptoris-mater/36/from-e122", "redemptoris-mater/38", "redemptoris-mater/39/from-e133", "redemptoris-mater/4", "redemptoris-mater/40", "redemptoris-mater/41", "redemptoris-mater/41/from-e140", "redemptoris-mater/42", "redemptoris-mater/43", "redemptoris-mater/44", "redemptoris-mater/45", "redemptoris-mater/46", "redemptoris-mater/47", "redemptoris-mater/48", "redemptoris-mater/5", "redemptoris-mater/50", "redemptoris-mater/51", "redemptoris-mater/6", "redemptoris-mater/7", "redemptoris-mater/8", "redemptoris-mater/8/from-e32", "redemptoris-mater/9"]
+ },
+ "health.R12_note_caller:encyclicals/453ec4c8-6094-519d-8a06-2b2041f19d72": {
+  "fixed_by": "1.3a",
+  "description": "Dives in Misericordia: 29 passages hold footnote callers (C-17)",
+  "units": ["dives-in-misericordia/1", "dives-in-misericordia/10/from-e89", "dives-in-misericordia/12", "dives-in-misericordia/13", "dives-in-misericordia/13/from-e110", "dives-in-misericordia/14", "dives-in-misericordia/14/from-e120", "dives-in-misericordia/14/from-e124", "dives-in-misericordia/14/from-e128", "dives-in-misericordia/15", "dives-in-misericordia/15/from-e135", "dives-in-misericordia/15/from-e137", "dives-in-misericordia/2", "dives-in-misericordia/2/from-e17", "dives-in-misericordia/3", "dives-in-misericordia/3/from-e29", "dives-in-misericordia/4", "dives-in-misericordia/4/from-e40", "dives-in-misericordia/4/from-e44", "dives-in-misericordia/5", "dives-in-misericordia/5/from-e53", "dives-in-misericordia/6", "dives-in-misericordia/6/from-e59", "dives-in-misericordia/7", "dives-in-misericordia/7/from-e69", "dives-in-misericordia/8", "dives-in-misericordia/8/from-e74", "dives-in-misericordia/9", "dives-in-misericordia/9/from-e81"]
+ },
+ "health.R12_note_caller:encyclicals/4a88d63a-84b9-58e0-8196-4a0998a6311a": {
+  "fixed_by": "1.3a",
+  "description": "Centesimus Annus: 49 passages hold footnote callers (C-17)",
+  "units": ["centesimus-annus/1", "centesimus-annus/10", "centesimus-annus/11", "centesimus-annus/12", "centesimus-annus/13", "centesimus-annus/14", "centesimus-annus/15", "centesimus-annus/17", "centesimus-annus/18", "centesimus-annus/2", "centesimus-annus/21", "centesimus-annus/23", "centesimus-annus/25/from-e91", "centesimus-annus/26", "centesimus-annus/28", "centesimus-annus/29", "centesimus-annus/30", "centesimus-annus/32", "centesimus-annus/33", "centesimus-annus/33/from-e122", "centesimus-annus/35", "centesimus-annus/35/from-e129", "centesimus-annus/36/from-e134", "centesimus-annus/37", "centesimus-annus/38", "centesimus-annus/39", "centesimus-annus/4", "centesimus-annus/4/from-e21", "centesimus-annus/41", "centesimus-annus/41/from-e149", "centesimus-annus/43", "centesimus-annus/43/from-e155", "centesimus-annus/44", "centesimus-annus/45", "centesimus-annus/46", "centesimus-annus/47", "centesimus-annus/48/from-e172", "centesimus-annus/49", "centesimus-annus/5", "centesimus-annus/50", "centesimus-annus/52", "centesimus-annus/53", "centesimus-annus/55", "centesimus-annus/56", "centesimus-annus/6", "centesimus-annus/60", "centesimus-annus/7", "centesimus-annus/8", "centesimus-annus/9"]
+ },
+ "health.R12_note_caller:encyclicals/4d9fa1b9-bed6-5917-b397-987d21bff46f": {
+  "fixed_by": "1.3a",
+  "description": "Sollicitudo Rei Socialis: 32 passages hold footnote callers (C-17)",
+  "units": ["sollicitudo-rei-socialis/1", "sollicitudo-rei-socialis/10", "sollicitudo-rei-socialis/12", "sollicitudo-rei-socialis/14", "sollicitudo-rei-socialis/16", "sollicitudo-rei-socialis/17", "sollicitudo-rei-socialis/18", "sollicitudo-rei-socialis/19", "sollicitudo-rei-socialis/2", "sollicitudo-rei-socialis/24", "sollicitudo-rei-socialis/25", "sollicitudo-rei-socialis/26", "sollicitudo-rei-socialis/27", "sollicitudo-rei-socialis/28", "sollicitudo-rei-socialis/28/from-e133", "sollicitudo-rei-socialis/30/from-e145", "sollicitudo-rei-socialis/31/from-e152", "sollicitudo-rei-socialis/34", "sollicitudo-rei-socialis/36", "sollicitudo-rei-socialis/38", "sollicitudo-rei-socialis/39/from-e198", "sollicitudo-rei-socialis/41", "sollicitudo-rei-socialis/42", "sollicitudo-rei-socialis/44", "sollicitudo-rei-socialis/46", "sollicitudo-rei-socialis/48", "sollicitudo-rei-socialis/49", "sollicitudo-rei-socialis/6", "sollicitudo-rei-socialis/7", "sollicitudo-rei-socialis/8", "sollicitudo-rei-socialis/9", "sollicitudo-rei-socialis/9/from-e38"]
+ },
+ "health.R12_note_caller:encyclicals/5286cbe3-2d3b-57e0-bdff-f349086d1e04": {
+  "fixed_by": "1.3a",
+  "description": "Evangelium Vitae: 65 passages hold footnote callers (C-17)",
+  "units": ["evangelium-vitae/101", "evangelium-vitae/102", "evangelium-vitae/103", "evangelium-vitae/104", "evangelium-vitae/105", "evangelium-vitae/17", "evangelium-vitae/2", "evangelium-vitae/20", "evangelium-vitae/22", "evangelium-vitae/24", "evangelium-vitae/25/from-e106", "evangelium-vitae/26", "evangelium-vitae/29", "evangelium-vitae/3", "evangelium-vitae/34", "evangelium-vitae/35", "evangelium-vitae/38", "evangelium-vitae/42", "evangelium-vitae/43", "evangelium-vitae/43/from-e183-2", "evangelium-vitae/44", "evangelium-vitae/45", "evangelium-vitae/5", "evangelium-vitae/52", "evangelium-vitae/53", "evangelium-vitae/54", "evangelium-vitae/55", "evangelium-vitae/56", "evangelium-vitae/57", "evangelium-vitae/57/from-e251-2", "evangelium-vitae/58", "evangelium-vitae/59", "evangelium-vitae/6", "evangelium-vitae/60", "evangelium-vitae/61", "evangelium-vitae/62", "evangelium-vitae/63", "evangelium-vitae/65", "evangelium-vitae/65/from-e280-2", "evangelium-vitae/66", "evangelium-vitae/67", "evangelium-vitae/70", "evangelium-vitae/70/from-e300", "evangelium-vitae/71", "evangelium-vitae/72", "evangelium-vitae/73", "evangelium-vitae/75", "evangelium-vitae/78", "evangelium-vitae/79", "evangelium-vitae/8", "evangelium-vitae/80", "evangelium-vitae/82", "evangelium-vitae/83", "evangelium-vitae/84", "evangelium-vitae/86", "evangelium-vitae/87", "evangelium-vitae/9", "evangelium-vitae/91", "evangelium-vitae/92", "evangelium-vitae/95", "evangelium-vitae/96", "evangelium-vitae/97", "evangelium-vitae/97/from-e396", "evangelium-vitae/98", "evangelium-vitae/99"]
+ },
+ "health.R12_note_caller:encyclicals/7855cbe8-58e5-544b-a6f9-628cc22ba212": {
+  "fixed_by": "1.3a",
+  "description": "Lumen Fidei: 1 passages hold footnote callers (C-17)",
+  "units": ["lumen-fidei/57"]
+ },
+ "health.R12_note_caller:encyclicals/7b14f9f4-f2e0-5295-b5ad-1923a625a1b2": {
+  "fixed_by": "1.3a",
+  "description": "Veritatis Splendor: 84 passages hold footnote callers (C-17)",
+  "units": ["veritatis-splendor/1-2", "veritatis-splendor/10", "veritatis-splendor/100", "veritatis-splendor/101", "veritatis-splendor/102", "veritatis-splendor/103", "veritatis-splendor/105", "veritatis-splendor/106", "veritatis-splendor/108", "veritatis-splendor/109", "veritatis-splendor/110", "veritatis-splendor/111", "veritatis-splendor/113", "veritatis-splendor/114", "veritatis-splendor/119", "veritatis-splendor/12", "veritatis-splendor/120", "veritatis-splendor/13", "veritatis-splendor/15", "veritatis-splendor/16", "veritatis-splendor/17", "veritatis-splendor/2", "veritatis-splendor/21", "veritatis-splendor/22", "veritatis-splendor/23", "veritatis-splendor/24", "veritatis-splendor/26", "veritatis-splendor/27", "veritatis-splendor/28", "veritatis-splendor/29", "veritatis-splendor/3", "veritatis-splendor/30", "veritatis-splendor/31", "veritatis-splendor/34", "veritatis-splendor/36", "veritatis-splendor/38", "veritatis-splendor/39", "veritatis-splendor/4", "veritatis-splendor/40", "veritatis-splendor/41", "veritatis-splendor/42", "veritatis-splendor/43", "veritatis-splendor/44", "veritatis-splendor/45", "veritatis-splendor/46", "veritatis-splendor/48", "veritatis-splendor/5", "veritatis-splendor/50", "veritatis-splendor/51", "veritatis-splendor/52", "veritatis-splendor/53", "veritatis-splendor/54", "veritatis-splendor/55", "veritatis-splendor/58", "veritatis-splendor/59", "veritatis-splendor/6", "veritatis-splendor/60", "veritatis-splendor/62", "veritatis-splendor/63", "veritatis-splendor/64", "veritatis-splendor/66", "veritatis-splendor/68", "veritatis-splendor/7", "veritatis-splendor/70", "veritatis-splendor/71", "veritatis-splendor/72", "veritatis-splendor/73", "veritatis-splendor/76", "veritatis-splendor/78", "veritatis-splendor/79", "veritatis-splendor/8", "veritatis-splendor/80", "veritatis-splendor/81", "veritatis-splendor/84", "veritatis-splendor/86", "veritatis-splendor/87", "veritatis-splendor/88", "veritatis-splendor/91", "veritatis-splendor/92", "veritatis-splendor/93", "veritatis-splendor/94", "veritatis-splendor/95", "veritatis-splendor/98", "veritatis-splendor/99"]
+ },
+ "health.R12_note_caller:encyclicals/86c14cf0-1aa6-50c1-a49e-c1a2061df4e3": {
+  "fixed_by": "1.3a",
+  "description": "Dominum et Vivificantem: 74 passages hold footnote callers (C-17)",
+  "units": ["dominum-et-vivificantem/1", "dominum-et-vivificantem/10", "dominum-et-vivificantem/11", "dominum-et-vivificantem/12", "dominum-et-vivificantem/13", "dominum-et-vivificantem/14", "dominum-et-vivificantem/15", "dominum-et-vivificantem/16", "dominum-et-vivificantem/18", "dominum-et-vivificantem/19", "dominum-et-vivificantem/2-4", "dominum-et-vivificantem/2-4/from-e17", "dominum-et-vivificantem/20", "dominum-et-vivificantem/22", "dominum-et-vivificantem/23", "dominum-et-vivificantem/24", "dominum-et-vivificantem/24/from-e81", "dominum-et-vivificantem/25", "dominum-et-vivificantem/25/from-e87-2", "dominum-et-vivificantem/26", "dominum-et-vivificantem/27", "dominum-et-vivificantem/28", "dominum-et-vivificantem/29", "dominum-et-vivificantem/3", "dominum-et-vivificantem/30", "dominum-et-vivificantem/31", "dominum-et-vivificantem/32", "dominum-et-vivificantem/33", "dominum-et-vivificantem/34", "dominum-et-vivificantem/35", "dominum-et-vivificantem/36", "dominum-et-vivificantem/37", "dominum-et-vivificantem/38", "dominum-et-vivificantem/39", "dominum-et-vivificantem/39/from-e135", "dominum-et-vivificantem/4", "dominum-et-vivificantem/40", "dominum-et-vivificantem/41", "dominum-et-vivificantem/42", "dominum-et-vivificantem/43", "dominum-et-vivificantem/43/from-e149", "dominum-et-vivificantem/44", "dominum-et-vivificantem/45", "dominum-et-vivificantem/46", "dominum-et-vivificantem/47", "dominum-et-vivificantem/48", "dominum-et-vivificantem/49", "dominum-et-vivificantem/5", "dominum-et-vivificantem/50", "dominum-et-vivificantem/51", "dominum-et-vivificantem/52", "dominum-et-vivificantem/52/from-e187", "dominum-et-vivificantem/53", "dominum-et-vivificantem/54", "dominum-et-vivificantem/55", "dominum-et-vivificantem/55/from-e198", "dominum-et-vivificantem/56", "dominum-et-vivificantem/56/from-e203", "dominum-et-vivificantem/57", "dominum-et-vivificantem/58", "dominum-et-vivificantem/59", "dominum-et-vivificantem/59/from-e214", "dominum-et-vivificantem/6", "dominum-et-vivificantem/60", "dominum-et-vivificantem/61", "dominum-et-vivificantem/62", "dominum-et-vivificantem/63", "dominum-et-vivificantem/65", "dominum-et-vivificantem/66", "dominum-et-vivificantem/67", "dominum-et-vivificantem/67/from-e246", "dominum-et-vivificantem/7", "dominum-et-vivificantem/8", "dominum-et-vivificantem/9"]
+ },
+ "health.R12_note_caller:encyclicals/889699a4-4e87-59e9-aa73-7fa036b82a7f": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia de Eucharistia: 39 passages hold footnote callers (C-17)",
+  "units": ["ecclesia-de-eucharistia/1", "ecclesia-de-eucharistia/11", "ecclesia-de-eucharistia/12", "ecclesia-de-eucharistia/13", "ecclesia-de-eucharistia/14", "ecclesia-de-eucharistia/15", "ecclesia-de-eucharistia/17", "ecclesia-de-eucharistia/18", "ecclesia-de-eucharistia/20", "ecclesia-de-eucharistia/21", "ecclesia-de-eucharistia/22", "ecclesia-de-eucharistia/23", "ecclesia-de-eucharistia/24", "ecclesia-de-eucharistia/25", "ecclesia-de-eucharistia/27", "ecclesia-de-eucharistia/28", "ecclesia-de-eucharistia/29", "ecclesia-de-eucharistia/30", "ecclesia-de-eucharistia/31", "ecclesia-de-eucharistia/33", "ecclesia-de-eucharistia/34", "ecclesia-de-eucharistia/35", "ecclesia-de-eucharistia/36", "ecclesia-de-eucharistia/37", "ecclesia-de-eucharistia/38", "ecclesia-de-eucharistia/39", "ecclesia-de-eucharistia/40", "ecclesia-de-eucharistia/41", "ecclesia-de-eucharistia/43", "ecclesia-de-eucharistia/44", "ecclesia-de-eucharistia/45", "ecclesia-de-eucharistia/46", "ecclesia-de-eucharistia/51", "ecclesia-de-eucharistia/53", "ecclesia-de-eucharistia/6", "ecclesia-de-eucharistia/60", "ecclesia-de-eucharistia/61", "ecclesia-de-eucharistia/7", "ecclesia-de-eucharistia/9"]
+ },
+ "health.R12_note_caller:encyclicals/92c7ab9f-fe71-5247-8669-44fbc67085a4": {
+  "fixed_by": "1.3a",
+  "description": "Fides et Ratio: 55 passages hold footnote callers (C-17)",
+  "units": ["fides-et-ratio/10", "fides-et-ratio/103", "fides-et-ratio/104", "fides-et-ratio/105", "fides-et-ratio/106", "fides-et-ratio/108", "fides-et-ratio/11", "fides-et-ratio/12", "fides-et-ratio/13", "fides-et-ratio/13/from-e39", "fides-et-ratio/14", "fides-et-ratio/15", "fides-et-ratio/2", "fides-et-ratio/24", "fides-et-ratio/25", "fides-et-ratio/26", "fides-et-ratio/30", "fides-et-ratio/33", "fides-et-ratio/38", "fides-et-ratio/40", "fides-et-ratio/41", "fides-et-ratio/42", "fides-et-ratio/43", "fides-et-ratio/44", "fides-et-ratio/47", "fides-et-ratio/49", "fides-et-ratio/50", "fides-et-ratio/52", "fides-et-ratio/53", "fides-et-ratio/54", "fides-et-ratio/55", "fides-et-ratio/57", "fides-et-ratio/6", "fides-et-ratio/60", "fides-et-ratio/61", "fides-et-ratio/65", "fides-et-ratio/67", "fides-et-ratio/69", "fides-et-ratio/7", "fides-et-ratio/70", "fides-et-ratio/79", "fides-et-ratio/8", "fides-et-ratio/80", "fides-et-ratio/81", "fides-et-ratio/82", "fides-et-ratio/84", "fides-et-ratio/89", "fides-et-ratio/9", "fides-et-ratio/90", "fides-et-ratio/92", "fides-et-ratio/94", "fides-et-ratio/96", "fides-et-ratio/97", "fides-et-ratio/98", "fides-et-ratio/99"]
+ },
+ "health.R12_note_caller:encyclicals/9b41d623-88c4-5e59-9984-a7134ba900a9": {
+  "fixed_by": "1.3a",
+  "description": "Quanta Cura (1864): 4 passages hold footnote callers (C-17)",
+  "units": ["quanta-cura-1864/1", "quanta-cura-1864/3", "quanta-cura-1864/5", "quanta-cura-1864/8"]
+ },
+ "health.R12_note_caller:encyclicals/aacef990-f446-553b-a8ad-ed7ee186e163": {
+  "fixed_by": "1.3a",
+  "description": "Ex Quo: 2 passages hold footnote callers (C-17)",
+  "units": ["ex-quo/45", "ex-quo/64"]
+ },
+ "health.R12_note_caller:encyclicals/b3a4c81b-e403-5ed2-9b9d-3e0102d7f848": {
+  "fixed_by": "1.3a",
+  "description": "Aeterni Patris: 16 passages hold footnote callers (C-17)",
+  "units": ["aeterni-patris/10", "aeterni-patris/12", "aeterni-patris/16", "aeterni-patris/17", "aeterni-patris/2", "aeterni-patris/20", "aeterni-patris/23", "aeterni-patris/24", "aeterni-patris/27", "aeterni-patris/3", "aeterni-patris/32", "aeterni-patris/4", "aeterni-patris/5", "aeterni-patris/6", "aeterni-patris/7", "aeterni-patris/9"]
+ },
+ "health.R12_note_caller:encyclicals/cc81769d-2c6a-5735-9562-a4cb600edb41": {
+  "fixed_by": "1.3a",
+  "description": "Respicientes: 4 passages hold footnote callers (C-17)",
+  "units": ["respicientes/12", "respicientes/15", "respicientes/8", "respicientes/preamble"]
+ },
+ "health.R12_note_caller:encyclicals/ceb6f6b0-f8bc-5a11-95c5-ac52f6bfce3f": {
+  "fixed_by": "1.3a",
+  "description": "Dilexit Nos: 2 passages hold footnote callers (C-17)",
+  "units": ["dilexit-nos/220/from-e523", "dilexit-nos/220/from-e671"]
+ },
+ "health.R12_note_caller:encyclicals/d008b160-5c71-5092-b5e8-641bbf4ef282": {
+  "fixed_by": "1.3a",
+  "description": "Redemptor Hominis: 1 passages hold footnote callers (C-17)",
+  "units": ["redemptor-hominis/1"]
+ },
+ "health.R12_note_caller:encyclicals/d3874717-e4d2-5c05-a056-38e883b82551": {
+  "fixed_by": "1.3a",
+  "description": "Populorum Progressio: 2 passages hold footnote callers (C-17)",
+  "units": ["populorum-progressio/22", "populorum-progressio/26"]
+ },
+ "health.R12_note_caller:encyclicals/eb423a0c-1058-5124-ac7e-c5ab377b9ed4": {
+  "fixed_by": "1.3a",
+  "description": "Ut Unum Sint: 70 passages hold footnote callers (C-17)",
+  "units": ["ut-unum-sint/1", "ut-unum-sint/10", "ut-unum-sint/100", "ut-unum-sint/101", "ut-unum-sint/102", "ut-unum-sint/12", "ut-unum-sint/13", "ut-unum-sint/14", "ut-unum-sint/15", "ut-unum-sint/16", "ut-unum-sint/17", "ut-unum-sint/18", "ut-unum-sint/19", "ut-unum-sint/20", "ut-unum-sint/21", "ut-unum-sint/23", "ut-unum-sint/24", "ut-unum-sint/26", "ut-unum-sint/28", "ut-unum-sint/29", "ut-unum-sint/3", "ut-unum-sint/31", "ut-unum-sint/32", "ut-unum-sint/35", "ut-unum-sint/36", "ut-unum-sint/37", "ut-unum-sint/38", "ut-unum-sint/40", "ut-unum-sint/42", "ut-unum-sint/43", "ut-unum-sint/44", "ut-unum-sint/46", "ut-unum-sint/47", "ut-unum-sint/48", "ut-unum-sint/49", "ut-unum-sint/5", "ut-unum-sint/50", "ut-unum-sint/55", "ut-unum-sint/57", "ut-unum-sint/58", "ut-unum-sint/59", "ut-unum-sint/6", "ut-unum-sint/60", "ut-unum-sint/61", "ut-unum-sint/62", "ut-unum-sint/64", "ut-unum-sint/66", "ut-unum-sint/67", "ut-unum-sint/68", "ut-unum-sint/7", "ut-unum-sint/71", "ut-unum-sint/74", "ut-unum-sint/75", "ut-unum-sint/78", "ut-unum-sint/79", "ut-unum-sint/8", "ut-unum-sint/80", "ut-unum-sint/81", "ut-unum-sint/83", "ut-unum-sint/84", "ut-unum-sint/86", "ut-unum-sint/87", "ut-unum-sint/88", "ut-unum-sint/89", "ut-unum-sint/9", "ut-unum-sint/90", "ut-unum-sint/94", "ut-unum-sint/95", "ut-unum-sint/98", "ut-unum-sint/99"]
+ },
+ "health.R12_note_caller:encyclicals/eeb0178b-9ee0-5713-8a67-279a06e66589": {
+  "fixed_by": "1.3a",
+  "description": "Mystici Corporis Christi: 63 passages hold footnote callers (C-17)",
+  "units": ["mystici-corporis-christi/10", "mystici-corporis-christi/100", "mystici-corporis-christi/101", "mystici-corporis-christi/102", "mystici-corporis-christi/103", "mystici-corporis-christi/104", "mystici-corporis-christi/105", "mystici-corporis-christi/106", "mystici-corporis-christi/108", "mystici-corporis-christi/109", "mystici-corporis-christi/110", "mystici-corporis-christi/12", "mystici-corporis-christi/14", "mystici-corporis-christi/16", "mystici-corporis-christi/2", "mystici-corporis-christi/22", "mystici-corporis-christi/23", "mystici-corporis-christi/24", "mystici-corporis-christi/26", "mystici-corporis-christi/28", "mystici-corporis-christi/29", "mystici-corporis-christi/32", "mystici-corporis-christi/33", "mystici-corporis-christi/34", "mystici-corporis-christi/36", "mystici-corporis-christi/39", "mystici-corporis-christi/40", "mystici-corporis-christi/42", "mystici-corporis-christi/43", "mystici-corporis-christi/44", "mystici-corporis-christi/46", "mystici-corporis-christi/48", "mystici-corporis-christi/50", "mystici-corporis-christi/51", "mystici-corporis-christi/53", "mystici-corporis-christi/55", "mystici-corporis-christi/56", "mystici-corporis-christi/57", "mystici-corporis-christi/58", "mystici-corporis-christi/59", "mystici-corporis-christi/61", "mystici-corporis-christi/62", "mystici-corporis-christi/63", "mystici-corporis-christi/64", "mystici-corporis-christi/65", "mystici-corporis-christi/66", "mystici-corporis-christi/67", "mystici-corporis-christi/68", "mystici-corporis-christi/7", "mystici-corporis-christi/71", "mystici-corporis-christi/72", "mystici-corporis-christi/73", "mystici-corporis-christi/74", "mystici-corporis-christi/76", "mystici-corporis-christi/77", "mystici-corporis-christi/80", "mystici-corporis-christi/82", "mystici-corporis-christi/86", "mystici-corporis-christi/87", "mystici-corporis-christi/90", "mystici-corporis-christi/91", "mystici-corporis-christi/92", "mystici-corporis-christi/94"]
+ },
+ "health.R12_note_caller:encyclicals/f97326ef-e316-5a1b-98b9-b04b716fade3": {
+  "fixed_by": "1.3a",
+  "description": "Humanae Vitae: 18 passages hold footnote callers (C-17)",
+  "units": ["humanae-vitae/10", "humanae-vitae/11", "humanae-vitae/13", "humanae-vitae/14", "humanae-vitae/15", "humanae-vitae/16", "humanae-vitae/17", "humanae-vitae/18", "humanae-vitae/19", "humanae-vitae/23", "humanae-vitae/24", "humanae-vitae/25", "humanae-vitae/26", "humanae-vitae/28", "humanae-vitae/4", "humanae-vitae/5", "humanae-vitae/8", "humanae-vitae/9"]
+ },
+ "health.R12_note_caller:papal-documents/03a95a7c-b492-587f-9a69-ebfa7f6da510": {
+  "fixed_by": "1.3a",
+  "description": "Dies Domini: 39 passages hold footnote callers (C-17)",
+  "units": ["dies-domini/1", "dies-domini/10", "dies-domini/12", "dies-domini/15", "dies-domini/18", "dies-domini/19", "dies-domini/2", "dies-domini/21", "dies-domini/22", "dies-domini/23", "dies-domini/25", "dies-domini/26", "dies-domini/27", "dies-domini/28", "dies-domini/3", "dies-domini/30", "dies-domini/31", "dies-domini/32", "dies-domini/34", "dies-domini/35", "dies-domini/36", "dies-domini/37", "dies-domini/38", "dies-domini/39", "dies-domini/4", "dies-domini/40", "dies-domini/41", "dies-domini/43", "dies-domini/44", "dies-domini/46", "dies-domini/47", "dies-domini/48", "dies-domini/49", "dies-domini/51", "dies-domini/53", "dies-domini/54", "dies-domini/55", "dies-domini/6", "dies-domini/7"]
+ },
+ "health.R12_note_caller:papal-documents/083ada7e-352a-50c3-925f-6c51b2258230": {
+  "fixed_by": "1.3a",
+  "description": "Tertio Millennio Adveniente: 24 passages hold footnote callers (C-17)",
+  "units": ["tertio-millennio-adveniente/2", "tertio-millennio-adveniente/23", "tertio-millennio-adveniente/27", "tertio-millennio-adveniente/28", "tertio-millennio-adveniente/32", "tertio-millennio-adveniente/33", "tertio-millennio-adveniente/34", "tertio-millennio-adveniente/35", "tertio-millennio-adveniente/37", "tertio-millennio-adveniente/38", "tertio-millennio-adveniente/4", "tertio-millennio-adveniente/40", "tertio-millennio-adveniente/41", "tertio-millennio-adveniente/42", "tertio-millennio-adveniente/43", "tertio-millennio-adveniente/44", "tertio-millennio-adveniente/45", "tertio-millennio-adveniente/47", "tertio-millennio-adveniente/5", "tertio-millennio-adveniente/52", "tertio-millennio-adveniente/56", "tertio-millennio-adveniente/57", "tertio-millennio-adveniente/59", "tertio-millennio-adveniente/6"]
+ },
+ "health.R12_note_caller:papal-documents/3071fe45-c09f-522d-a0b5-88bbc00acdcf": {
+  "fixed_by": "1.3a",
+  "description": "Salvifici Doloris: 29 passages hold footnote callers (C-17)",
+  "units": ["salvifici-doloris/1", "salvifici-doloris/10", "salvifici-doloris/11", "salvifici-doloris/12", "salvifici-doloris/14", "salvifici-doloris/15", "salvifici-doloris/15/from-e54", "salvifici-doloris/16", "salvifici-doloris/17/from-e61", "salvifici-doloris/18", "salvifici-doloris/18/from-e69", "salvifici-doloris/19", "salvifici-doloris/2", "salvifici-doloris/20", "salvifici-doloris/21", "salvifici-doloris/22", "salvifici-doloris/23", "salvifici-doloris/24", "salvifici-doloris/25", "salvifici-doloris/25/from-e104", "salvifici-doloris/25/from-e107", "salvifici-doloris/27", "salvifici-doloris/28", "salvifici-doloris/3", "salvifici-doloris/30", "salvifici-doloris/30/from-e129", "salvifici-doloris/31", "salvifici-doloris/6", "salvifici-doloris/7"]
+ },
+ "health.R12_note_caller:papal-documents/404f3fab-39e8-5520-b027-9b821b6384e4": {
+  "fixed_by": "1.3a",
+  "description": "Mulieris Dignitatem: 18 passages hold footnote callers (C-17)",
+  "units": ["mulieris-dignitatem/1", "mulieris-dignitatem/10/from-e70", "mulieris-dignitatem/11", "mulieris-dignitatem/11/from-e78", "mulieris-dignitatem/11/from-e80", "mulieris-dignitatem/2", "mulieris-dignitatem/20/from-e137", "mulieris-dignitatem/23", "mulieris-dignitatem/24/from-e161", "mulieris-dignitatem/27/from-e176", "mulieris-dignitatem/29", "mulieris-dignitatem/3/from-e23-2", "mulieris-dignitatem/5", "mulieris-dignitatem/6", "mulieris-dignitatem/6/from-e41", "mulieris-dignitatem/7", "mulieris-dignitatem/9", "mulieris-dignitatem/9/from-e64"]
+ },
+ "health.R12_note_caller:papal-documents/5650f85c-a460-5633-b728-521ac9f66b5f": {
+  "fixed_by": "1.3a",
+  "description": "Orientale Lumen: 25 passages hold footnote callers (C-17)",
+  "units": ["orientale-lumen/1", "orientale-lumen/10", "orientale-lumen/11", "orientale-lumen/13", "orientale-lumen/15", "orientale-lumen/16", "orientale-lumen/17", "orientale-lumen/18", "orientale-lumen/19", "orientale-lumen/2", "orientale-lumen/20", "orientale-lumen/21", "orientale-lumen/23", "orientale-lumen/24", "orientale-lumen/26", "orientale-lumen/27", "orientale-lumen/28", "orientale-lumen/3", "orientale-lumen/4", "orientale-lumen/5", "orientale-lumen/6", "orientale-lumen/6/from-e28", "orientale-lumen/7", "orientale-lumen/8", "orientale-lumen/9"]
+ },
+ "health.R12_note_caller:papal-documents/638693a3-342c-5614-9c9a-dd6817faf862": {
+  "fixed_by": "1.3a",
+  "description": "Ordinatio Sacerdotalis: 3 passages hold footnote callers (C-17)",
+  "units": ["ordinatio-sacerdotalis/1", "ordinatio-sacerdotalis/2", "ordinatio-sacerdotalis/3"]
+ },
+ "health.R12_note_caller:papal-documents/d18ff09b-ac71-5a21-8e24-2dcdf1faa4ce": {
+  "fixed_by": "1.3a",
+  "description": "Novo Millennio Ineunte: 23 passages hold footnote callers (C-17)",
+  "units": ["novo-millennio-ineunte/12", "novo-millennio-ineunte/17", "novo-millennio-ineunte/21", "novo-millennio-ineunte/23", "novo-millennio-ineunte/27", "novo-millennio-ineunte/3", "novo-millennio-ineunte/30", "novo-millennio-ineunte/33", "novo-millennio-ineunte/35", "novo-millennio-ineunte/37", "novo-millennio-ineunte/4", "novo-millennio-ineunte/42", "novo-millennio-ineunte/45", "novo-millennio-ineunte/46", "novo-millennio-ineunte/48", "novo-millennio-ineunte/49", "novo-millennio-ineunte/52", "novo-millennio-ineunte/54", "novo-millennio-ineunte/55", "novo-millennio-ineunte/56", "novo-millennio-ineunte/57", "novo-millennio-ineunte/6", "novo-millennio-ineunte/8"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/0dd14bd0-52d9-5e90-80ce-6d891ef6b943": {
+  "fixed_by": "1.3a",
+  "description": "Evangelica Testificatio: 50 passages end with the next section's heading (C-08)",
+  "units": ["evangelica-testificatio/1", "evangelica-testificatio/10", "evangelica-testificatio/11", "evangelica-testificatio/13", "evangelica-testificatio/14", "evangelica-testificatio/15", "evangelica-testificatio/16", "evangelica-testificatio/17", "evangelica-testificatio/18", "evangelica-testificatio/19", "evangelica-testificatio/2", "evangelica-testificatio/20", "evangelica-testificatio/21", "evangelica-testificatio/22", "evangelica-testificatio/23", "evangelica-testificatio/24", "evangelica-testificatio/25", "evangelica-testificatio/26", "evangelica-testificatio/27", "evangelica-testificatio/28", "evangelica-testificatio/3", "evangelica-testificatio/30", "evangelica-testificatio/31", "evangelica-testificatio/32", "evangelica-testificatio/33", "evangelica-testificatio/34", "evangelica-testificatio/35", "evangelica-testificatio/36", "evangelica-testificatio/37", "evangelica-testificatio/38", "evangelica-testificatio/39", "evangelica-testificatio/4", "evangelica-testificatio/40", "evangelica-testificatio/42", "evangelica-testificatio/43", "evangelica-testificatio/44", "evangelica-testificatio/45", "evangelica-testificatio/46", "evangelica-testificatio/47", "evangelica-testificatio/48", "evangelica-testificatio/49", "evangelica-testificatio/5", "evangelica-testificatio/51", "evangelica-testificatio/52", "evangelica-testificatio/53", "evangelica-testificatio/54", "evangelica-testificatio/55", "evangelica-testificatio/6", "evangelica-testificatio/8", "evangelica-testificatio/9"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/1302988d-7dbc-5bc0-9005-838053111c45": {
+  "fixed_by": "1.3a",
+  "description": "Africae Munus: 2 passages end with the next section's heading (C-08)",
+  "units": ["africae-munus/1", "africae-munus/50"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/26061458-4ab7-54ae-822c-2fcb9e434591": {
+  "fixed_by": "1.3a",
+  "description": "Sacramentum Caritatis: 3 passages end with the next section's heading (C-08)",
+  "units": ["sacramentum-caritatis/33", "sacramentum-caritatis/5", "sacramentum-caritatis/69"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/335e3467-a3fa-598d-892d-a75664ee4e77": {
+  "fixed_by": "1.3a",
+  "description": "Familiaris Consortio: 2 passages end with the next section's heading (C-08)",
+  "units": ["familiaris-consortio/1-2", "familiaris-consortio/2-3"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/412959d1-a9fd-592a-ab1a-74aefe8e2b34": {
+  "fixed_by": "1.3a",
+  "description": "Marialis Cultus: 3 passages end with the next section's heading (C-08)",
+  "units": ["marialis-cultus/40", "marialis-cultus/41", "marialis-cultus/57/from-e128"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/4dbf7902-d2a2-5bc6-81f8-09b7e0fba119": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in Asia: 10 passages end with the next section's heading (C-08)",
+  "units": ["ecclesia-in-asia/13/from-e78", "ecclesia-in-asia/15/from-e91", "ecclesia-in-asia/17", "ecclesia-in-asia/20/from-e119", "ecclesia-in-asia/26", "ecclesia-in-asia/32", "ecclesia-in-asia/39", "ecclesia-in-asia/42", "ecclesia-in-asia/45", "ecclesia-in-asia/49"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/5017df8e-c59c-5945-a5ec-c5a0b4ad1378": {
+  "fixed_by": "1.3a",
+  "description": "Christifideles Laici: 2 passages end with the next section's heading (C-08)",
+  "units": ["christifideles-laici/1", "christifideles-laici/28"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/5fd6eb63-c7e8-5103-9ec3-21bede3c100d": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in Africa: 47 passages end with the next section's heading (C-08)",
+  "units": ["ecclesia-in-africa/101", "ecclesia-in-africa/103", "ecclesia-in-africa/105", "ecclesia-in-africa/11", "ecclesia-in-africa/110", "ecclesia-in-africa/111", "ecclesia-in-africa/112", "ecclesia-in-africa/113", "ecclesia-in-africa/118", "ecclesia-in-africa/120", "ecclesia-in-africa/122", "ecclesia-in-africa/123", "ecclesia-in-africa/125", "ecclesia-in-africa/127", "ecclesia-in-africa/130", "ecclesia-in-africa/135", "ecclesia-in-africa/18", "ecclesia-in-africa/22", "ecclesia-in-africa/3", "ecclesia-in-africa/31", "ecclesia-in-africa/37", "ecclesia-in-africa/41", "ecclesia-in-africa/43", "ecclesia-in-africa/46", "ecclesia-in-africa/48", "ecclesia-in-africa/49", "ecclesia-in-africa/5", "ecclesia-in-africa/50", "ecclesia-in-africa/56", "ecclesia-in-africa/58", "ecclesia-in-africa/59", "ecclesia-in-africa/6", "ecclesia-in-africa/63", "ecclesia-in-africa/67", "ecclesia-in-africa/70", "ecclesia-in-africa/73", "ecclesia-in-africa/74", "ecclesia-in-africa/76", "ecclesia-in-africa/77", "ecclesia-in-africa/80", "ecclesia-in-africa/88", "ecclesia-in-africa/89", "ecclesia-in-africa/93", "ecclesia-in-africa/94", "ecclesia-in-africa/95", "ecclesia-in-africa/96", "ecclesia-in-africa/97"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/61fbb9cb-7924-588f-82b1-f789439a2603": {
+  "fixed_by": "1.3a",
+  "description": "Verbum Domini: 6 passages end with the next section's heading (C-08)",
+  "units": ["verbum-domini/13", "verbum-domini/14", "verbum-domini/16", "verbum-domini/18", "verbum-domini/45", "verbum-domini/55"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/6462809c-3a8d-5580-b9a1-a773154a7ab1": {
+  "fixed_by": "1.3a",
+  "description": "Redemptionis Donum: 8 passages end with the next section's heading (C-08)",
+  "units": ["redemptionis-donum/10", "redemptionis-donum/11", "redemptionis-donum/12", "redemptionis-donum/13/from-e83", "redemptionis-donum/15/from-e99", "redemptionis-donum/2", "redemptionis-donum/6", "redemptionis-donum/8/from-e48"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/6f2c7319-5974-57db-9317-ad5ad2020d15": {
+  "fixed_by": "1.3a",
+  "description": "Querida Amazonia: 31 passages end with the next section's heading (C-08)",
+  "units": ["querida-amazonia/1", "querida-amazonia/103", "querida-amazonia/105", "querida-amazonia/110", "querida-amazonia/14", "querida-amazonia/19", "querida-amazonia/22", "querida-amazonia/25", "querida-amazonia/27", "querida-amazonia/28", "querida-amazonia/32", "querida-amazonia/35", "querida-amazonia/38", "querida-amazonia/4", "querida-amazonia/40", "querida-amazonia/42", "querida-amazonia/46", "querida-amazonia/52", "querida-amazonia/57", "querida-amazonia/60", "querida-amazonia/61", "querida-amazonia/65", "querida-amazonia/69", "querida-amazonia/7", "querida-amazonia/74", "querida-amazonia/76", "querida-amazonia/8", "querida-amazonia/80", "querida-amazonia/84", "querida-amazonia/90", "querida-amazonia/98"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/791898f1-f8b2-536c-9cf0-ec5821931bfc": {
+  "fixed_by": "1.3a",
+  "description": "Redemptoris Custos: 6 passages end with the next section's heading (C-08)",
+  "units": ["redemptoris-custos/1", "redemptoris-custos/16", "redemptoris-custos/21", "redemptoris-custos/24", "redemptoris-custos/27", "redemptoris-custos/3"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/81b3ea0f-3fed-57c7-9326-ac488bb240b6": {
+  "fixed_by": "1.3a",
+  "description": "Laudate Deum: 8 passages end with the next section's heading (C-08)",
+  "units": ["laudate-deum/10", "laudate-deum/14", "laudate-deum/23", "laudate-deum/28", "laudate-deum/36", "laudate-deum/5", "laudate-deum/61", "laudate-deum/65"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/83ef10a9-f7a6-594c-b29d-bf96bf9dccbd": {
+  "fixed_by": "1.3a",
+  "description": "Menti Nostrae: 101 passages end with the next section's heading (C-08)",
+  "units": ["menti-nostrae/1", "menti-nostrae/10", "menti-nostrae/100", "menti-nostrae/108", "menti-nostrae/11", "menti-nostrae/110", "menti-nostrae/111", "menti-nostrae/114", "menti-nostrae/115", "menti-nostrae/118", "menti-nostrae/12", "menti-nostrae/120", "menti-nostrae/121", "menti-nostrae/122", "menti-nostrae/123", "menti-nostrae/124", "menti-nostrae/126", "menti-nostrae/128", "menti-nostrae/129", "menti-nostrae/131", "menti-nostrae/132", "menti-nostrae/133", "menti-nostrae/134", "menti-nostrae/135", "menti-nostrae/137", "menti-nostrae/138", "menti-nostrae/139", "menti-nostrae/140", "menti-nostrae/142", "menti-nostrae/143", "menti-nostrae/144", "menti-nostrae/15", "menti-nostrae/16", "menti-nostrae/17", "menti-nostrae/18", "menti-nostrae/19", "menti-nostrae/2", "menti-nostrae/22", "menti-nostrae/23", "menti-nostrae/24", "menti-nostrae/25", "menti-nostrae/26", "menti-nostrae/27", "menti-nostrae/28", "menti-nostrae/30", "menti-nostrae/31", "menti-nostrae/32", "menti-nostrae/33", "menti-nostrae/34", "menti-nostrae/35", "menti-nostrae/36", "menti-nostrae/38", "menti-nostrae/39", "menti-nostrae/4", "menti-nostrae/40", "menti-nostrae/42", "menti-nostrae/43", "menti-nostrae/44", "menti-nostrae/46", "menti-nostrae/47", "menti-nostrae/48", "menti-nostrae/49", "menti-nostrae/50", "menti-nostrae/52", "menti-nostrae/55", "menti-nostrae/57", "menti-nostrae/59", "menti-nostrae/6", "menti-nostrae/60", "menti-nostrae/61", "menti-nostrae/62", "menti-nostrae/63", "menti-nostrae/63-2", "menti-nostrae/64", "menti-nostrae/65", "menti-nostrae/67", "menti-nostrae/68", "menti-nostrae/69", "menti-nostrae/70", "menti-nostrae/71", "menti-nostrae/72", "menti-nostrae/73", "menti-nostrae/74", "menti-nostrae/76", "menti-nostrae/77", "menti-nostrae/78", "menti-nostrae/8", "menti-nostrae/80", "menti-nostrae/82", "menti-nostrae/83", "menti-nostrae/85", "menti-nostrae/86", "menti-nostrae/87", "menti-nostrae/88", "menti-nostrae/89", "menti-nostrae/91", "menti-nostrae/92", "menti-nostrae/94", "menti-nostrae/95", "menti-nostrae/98", "menti-nostrae/99"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/aec23e47-0dba-555c-9cdc-b9984668f8ea": {
+  "fixed_by": "1.3a",
+  "description": "Gaudete et Exsultate: 18 passages end with the next section's heading (C-08)",
+  "units": ["gaudete-et-exsultate/103", "gaudete-et-exsultate/159", "gaudete-et-exsultate/161", "gaudete-et-exsultate/163", "gaudete-et-exsultate/166", "gaudete-et-exsultate/168", "gaudete-et-exsultate/169", "gaudete-et-exsultate/171", "gaudete-et-exsultate/173", "gaudete-et-exsultate/36", "gaudete-et-exsultate/39", "gaudete-et-exsultate/42", "gaudete-et-exsultate/48", "gaudete-et-exsultate/51", "gaudete-et-exsultate/56", "gaudete-et-exsultate/59", "gaudete-et-exsultate/95", "gaudete-et-exsultate/99"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/bfc53bdf-1b01-5c74-9f43-f2e564f52ef9": {
+  "fixed_by": "1.3a",
+  "description": "Christus Vivit: 49 passages end with the next section's heading (C-08)",
+  "units": ["christus-vivit/102", "christus-vivit/11", "christus-vivit/111", "christus-vivit/117", "christus-vivit/129", "christus-vivit/135", "christus-vivit/143", "christus-vivit/149", "christus-vivit/157", "christus-vivit/162", "christus-vivit/167", "christus-vivit/174", "christus-vivit/179", "christus-vivit/186", "christus-vivit/191", "christus-vivit/197", "christus-vivit/202", "christus-vivit/208", "christus-vivit/215", "christus-vivit/22", "christus-vivit/220", "christus-vivit/223", "christus-vivit/229", "christus-vivit/238", "christus-vivit/241", "christus-vivit/249", "christus-vivit/252", "christus-vivit/258", "christus-vivit/267", "christus-vivit/273", "christus-vivit/282", "christus-vivit/286", "christus-vivit/29", "christus-vivit/290", "christus-vivit/298", "christus-vivit/33", "christus-vivit/34", "christus-vivit/38", "christus-vivit/42", "christus-vivit/48", "christus-vivit/5", "christus-vivit/64", "christus-vivit/67", "christus-vivit/70", "christus-vivit/71", "christus-vivit/80", "christus-vivit/85", "christus-vivit/90", "christus-vivit/94"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/c62b660d-5518-5b2e-b85d-808f2099bd5f": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in Medio Oriente: 17 passages end with the next section's heading (C-08)",
+  "units": ["ecclesia-in-medio-oriente/10", "ecclesia-in-medio-oriente/18", "ecclesia-in-medio-oriente/28", "ecclesia-in-medio-oriente/30", "ecclesia-in-medio-oriente/38", "ecclesia-in-medio-oriente/40", "ecclesia-in-medio-oriente/44", "ecclesia-in-medio-oriente/50", "ecclesia-in-medio-oriente/54", "ecclesia-in-medio-oriente/57", "ecclesia-in-medio-oriente/61", "ecclesia-in-medio-oriente/67", "ecclesia-in-medio-oriente/7", "ecclesia-in-medio-oriente/74", "ecclesia-in-medio-oriente/81", "ecclesia-in-medio-oriente/84", "ecclesia-in-medio-oriente/91"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/c98dc3ec-4bb3-5e76-ab31-01177ddebf44": {
+  "fixed_by": "1.3a",
+  "description": "Catechesi Tradendae: 8 passages end with the next section's heading (C-08)",
+  "units": ["catechesi-tradendae/10", "catechesi-tradendae/35", "catechesi-tradendae/36", "catechesi-tradendae/42", "catechesi-tradendae/48", "catechesi-tradendae/62", "catechesi-tradendae/63", "catechesi-tradendae/8"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/cade81ec-981e-5891-979d-f74af2d5e048": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in America: 2 passages end with the next section's heading (C-08)",
+  "units": ["ecclesia-in-america/13", "ecclesia-in-america/63/from-e235"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/e628dac2-d1fe-536e-b463-f10e3865b819": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia in Oceania: 44 passages end with the next section's heading (C-08)",
+  "units": ["ecclesia-in-oceania/10", "ecclesia-in-oceania/11", "ecclesia-in-oceania/13", "ecclesia-in-oceania/14", "ecclesia-in-oceania/15/from-e86", "ecclesia-in-oceania/16/from-e93", "ecclesia-in-oceania/17", "ecclesia-in-oceania/18/from-e112", "ecclesia-in-oceania/19/from-e117", "ecclesia-in-oceania/2", "ecclesia-in-oceania/20", "ecclesia-in-oceania/21", "ecclesia-in-oceania/22", "ecclesia-in-oceania/23", "ecclesia-in-oceania/24", "ecclesia-in-oceania/25", "ecclesia-in-oceania/26", "ecclesia-in-oceania/27", "ecclesia-in-oceania/28", "ecclesia-in-oceania/29", "ecclesia-in-oceania/3", "ecclesia-in-oceania/30", "ecclesia-in-oceania/31", "ecclesia-in-oceania/32", "ecclesia-in-oceania/33/from-e174", "ecclesia-in-oceania/34/from-e181", "ecclesia-in-oceania/35", "ecclesia-in-oceania/36", "ecclesia-in-oceania/38", "ecclesia-in-oceania/39", "ecclesia-in-oceania/4", "ecclesia-in-oceania/40", "ecclesia-in-oceania/41", "ecclesia-in-oceania/43", "ecclesia-in-oceania/44/from-e218", "ecclesia-in-oceania/45/from-e223", "ecclesia-in-oceania/46", "ecclesia-in-oceania/48/from-e234", "ecclesia-in-oceania/49/from-e241-2", "ecclesia-in-oceania/5/from-e28", "ecclesia-in-oceania/50", "ecclesia-in-oceania/6/from-e35", "ecclesia-in-oceania/8", "ecclesia-in-oceania/9/from-e54"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/ea854784-24b5-594c-968f-c1a878cf569c": {
+  "fixed_by": "1.3a",
+  "description": "Dilexi te: 22 passages end with the next section's heading (C-08)",
+  "units": ["dilexi-te/104", "dilexi-te/107", "dilexi-te/114", "dilexi-te/12", "dilexi-te/17", "dilexi-te/23", "dilexi-te/36", "dilexi-te/38", "dilexi-te/40", "dilexi-te/42", "dilexi-te/48", "dilexi-te/5", "dilexi-te/52", "dilexi-te/58", "dilexi-te/62", "dilexi-te/67", "dilexi-te/7", "dilexi-te/72", "dilexi-te/75", "dilexi-te/79", "dilexi-te/89", "dilexi-te/98"]
+ },
+ "health.R9_trailing_heading:apostolic-exhortations/f6de8a59-c641-53fa-9eb9-c8c151619125": {
+  "fixed_by": "1.3a",
+  "description": "C'est la confiance: 11 passages end with the next section's heading (C-08)",
+  "units": ["c-est-la-confiance/11", "c-est-la-confiance/17", "c-est-la-confiance/22", "c-est-la-confiance/24", "c-est-la-confiance/27", "c-est-la-confiance/30", "c-est-la-confiance/34", "c-est-la-confiance/37", "c-est-la-confiance/41", "c-est-la-confiance/46", "c-est-la-confiance/8"]
+ },
+ "health.R9_trailing_heading:encyclicals/003835b1-4a8b-54d1-bf6b-95845fb53ab9": {
+  "fixed_by": "1.3a",
+  "description": "Laudato Si: 14 passages end with the next section's heading (C-08)",
+  "units": ["laudato-si/100", "laudato-si/12", "laudato-si/121", "laudato-si/123", "laudato-si/129", "laudato-si/136", "laudato-si/16", "laudato-si/162", "laudato-si/2", "laudato-si/201", "laudato-si/22", "laudato-si/6", "laudato-si/61", "laudato-si/9"]
+ },
+ "health.R9_trailing_heading:encyclicals/04842f96-a08b-56f3-94cf-43bfab1381d6": {
+  "fixed_by": "1.3a",
+  "description": "Ex Omnibus: 3 passages end with the next section's heading (C-08)",
+  "units": ["ex-omnibus/2", "ex-omnibus/4", "ex-omnibus/7"]
+ },
+ "health.R9_trailing_heading:encyclicals/0cbc72e5-d613-59f1-adff-52d60a84ad88": {
+  "fixed_by": "1.3a",
+  "description": "Ubi Primum: 4 passages end with the next section's heading (C-08)",
+  "units": ["ubi-primum/2", "ubi-primum/3", "ubi-primum/4", "ubi-primum/5"]
+ },
+ "health.R9_trailing_heading:encyclicals/120d3461-2992-5915-8832-01664a043717": {
+  "fixed_by": "1.3a",
+  "description": "Redemptoris Missio: 1 passages end with the next section's heading (C-08)",
+  "units": ["redemptoris-missio/3"]
+ },
+ "health.R9_trailing_heading:encyclicals/13215d9a-cc71-5ef0-a2c0-cd6da3319691": {
+  "fixed_by": "1.3a",
+  "description": "Levate: 5 passages end with the next section's heading (C-08)",
+  "units": ["levate/2", "levate/3", "levate/4", "levate/5", "levate/8"]
+ },
+ "health.R9_trailing_heading:encyclicals/1916beac-f8f6-59fa-bfeb-0facfbb6052b": {
+  "fixed_by": "1.3a",
+  "description": "Graves Ac Diuturnae: 4 passages end with the next section's heading (C-08)",
+  "units": ["graves-ac-diuturnae/2", "graves-ac-diuturnae/4", "graves-ac-diuturnae/6", "graves-ac-diuturnae/7"]
+ },
+ "health.R9_trailing_heading:encyclicals/1a8feac1-5e6d-5b75-ad23-2631628af482": {
+  "fixed_by": "1.3a",
+  "description": "Cum Religiosi: 2 passages end with the next section's heading (C-08)",
+  "units": ["cum-religiosi/2", "cum-religiosi/3"]
+ },
+ "health.R9_trailing_heading:encyclicals/1d826226-c98a-5fd0-8aff-14da0ab48f75": {
+  "fixed_by": "1.3a",
+  "description": "Spe Salvi: 3 passages end with the next section's heading (C-08)",
+  "units": ["spe-salvi/23", "spe-salvi/3/from-e9-2", "spe-salvi/48"]
+ },
+ "health.R9_trailing_heading:encyclicals/1d878f81-b9d9-52ff-87c1-92a4960a5ea5": {
+  "fixed_by": "1.3a",
+  "description": "Peregrinantes: 6 passages end with the next section's heading (C-08)",
+  "units": ["peregrinantes/10", "peregrinantes/13", "peregrinantes/5", "peregrinantes/6", "peregrinantes/8", "peregrinantes/9"]
+ },
+ "health.R9_trailing_heading:encyclicals/22c3c60c-4e04-5960-99af-5f8025184f52": {
+  "fixed_by": "1.3a",
+  "description": "Summo Iugiter Studio: 6 passages end with the next section's heading (C-08)",
+  "units": ["summo-iugiter-studio/2", "summo-iugiter-studio/3", "summo-iugiter-studio/4", "summo-iugiter-studio/5", "summo-iugiter-studio/6", "summo-iugiter-studio/7"]
+ },
+ "health.R9_trailing_heading:encyclicals/29897c86-0820-5f41-a3f6-951743a69566": {
+  "fixed_by": "1.3a",
+  "description": "Vix Dum A Nobis: 3 passages end with the next section's heading (C-08)",
+  "units": ["vix-dum-a-nobis/12", "vix-dum-a-nobis/2", "vix-dum-a-nobis/5"]
+ },
+ "health.R9_trailing_heading:encyclicals/3bcae73a-4e86-5cfb-9bf7-efc71fd6969d": {
+  "fixed_by": "1.3a",
+  "description": "Gravibus Ecclesiae: 10 passages end with the next section's heading (C-08)",
+  "units": ["gravibus-ecclesiae/10", "gravibus-ecclesiae/12", "gravibus-ecclesiae/13", "gravibus-ecclesiae/14", "gravibus-ecclesiae/2", "gravibus-ecclesiae/3", "gravibus-ecclesiae/4", "gravibus-ecclesiae/5", "gravibus-ecclesiae/6", "gravibus-ecclesiae/8"]
+ },
+ "health.R9_trailing_heading:encyclicals/3f6118ed-3afa-56f0-9980-31f50a996520": {
+  "fixed_by": "1.3a",
+  "description": "Redemptoris Mater: 2 passages end with the next section's heading (C-08)",
+  "units": ["redemptoris-mater/36/from-e122", "redemptoris-mater/52/from-e183"]
+ },
+ "health.R9_trailing_heading:encyclicals/47a453c1-7456-572e-9049-22b4d6fa6006": {
+  "fixed_by": "1.3a",
+  "description": "Fratelli Tutti: 86 passages end with the next section's heading (C-08)",
+  "units": ["fratelli-tutti/102", "fratelli-tutti/105", "fratelli-tutti/111", "fratelli-tutti/113", "fratelli-tutti/117", "fratelli-tutti/12", "fratelli-tutti/120", "fratelli-tutti/123", "fratelli-tutti/127", "fratelli-tutti/128", "fratelli-tutti/132", "fratelli-tutti/136", "fratelli-tutti/138", "fratelli-tutti/14", "fratelli-tutti/141", "fratelli-tutti/142", "fratelli-tutti/145", "fratelli-tutti/150", "fratelli-tutti/153", "fratelli-tutti/154", "fratelli-tutti/155", "fratelli-tutti/162", "fratelli-tutti/169", "fratelli-tutti/17", "fratelli-tutti/175", "fratelli-tutti/176", "fratelli-tutti/179", "fratelli-tutti/182", "fratelli-tutti/185", "fratelli-tutti/186", "fratelli-tutti/189", "fratelli-tutti/192", "fratelli-tutti/197", "fratelli-tutti/198", "fratelli-tutti/2", "fratelli-tutti/202", "fratelli-tutti/205", "fratelli-tutti/21", "fratelli-tutti/210", "fratelli-tutti/214", "fratelli-tutti/215", "fratelli-tutti/217", "fratelli-tutti/221", "fratelli-tutti/224", "fratelli-tutti/225", "fratelli-tutti/227", "fratelli-tutti/232", "fratelli-tutti/235", "fratelli-tutti/236", "fratelli-tutti/24", "fratelli-tutti/240", "fratelli-tutti/243", "fratelli-tutti/245", "fratelli-tutti/249", "fratelli-tutti/254", "fratelli-tutti/255", "fratelli-tutti/262", "fratelli-tutti/270", "fratelli-tutti/271", "fratelli-tutti/276", "fratelli-tutti/28", "fratelli-tutti/280", "fratelli-tutti/284", "fratelli-tutti/31", "fratelli-tutti/36", "fratelli-tutti/41", "fratelli-tutti/43", "fratelli-tutti/46", "fratelli-tutti/50", "fratelli-tutti/53", "fratelli-tutti/55", "fratelli-tutti/56", "fratelli-tutti/62", "fratelli-tutti/68", "fratelli-tutti/71", "fratelli-tutti/76", "fratelli-tutti/79", "fratelli-tutti/8", "fratelli-tutti/83", "fratelli-tutti/86", "fratelli-tutti/87", "fratelli-tutti/9", "fratelli-tutti/90", "fratelli-tutti/94", "fratelli-tutti/96", "fratelli-tutti/98"]
+ },
+ "health.R9_trailing_heading:encyclicals/756cdf3e-f9fa-594d-9f86-0b776413abf4": {
+  "fixed_by": "1.3a",
+  "description": "Evangelii Gaudium: 58 passages end with the next section's heading (C-08)",
+  "units": ["evangelii-gaudium/10", "evangelii-gaudium/101", "evangelii-gaudium/111", "evangelii-gaudium/114", "evangelii-gaudium/118", "evangelii-gaudium/121", "evangelii-gaudium/126", "evangelii-gaudium/129", "evangelii-gaudium/131", "evangelii-gaudium/136", "evangelii-gaudium/138", "evangelii-gaudium/141", "evangelii-gaudium/145", "evangelii-gaudium/148", "evangelii-gaudium/15", "evangelii-gaudium/151", "evangelii-gaudium/153", "evangelii-gaudium/155", "evangelii-gaudium/168", "evangelii-gaudium/173", "evangelii-gaudium/177", "evangelii-gaudium/179", "evangelii-gaudium/181", "evangelii-gaudium/186", "evangelii-gaudium/192", "evangelii-gaudium/196", "evangelii-gaudium/201", "evangelii-gaudium/208", "evangelii-gaudium/221", "evangelii-gaudium/225", "evangelii-gaudium/23", "evangelii-gaudium/230", "evangelii-gaudium/233", "evangelii-gaudium/241", "evangelii-gaudium/243", "evangelii-gaudium/246", "evangelii-gaudium/249", "evangelii-gaudium/254", "evangelii-gaudium/26", "evangelii-gaudium/263", "evangelii-gaudium/267", "evangelii-gaudium/274", "evangelii-gaudium/280", "evangelii-gaudium/284", "evangelii-gaudium/286", "evangelii-gaudium/52", "evangelii-gaudium/54", "evangelii-gaudium/56", "evangelii-gaudium/58", "evangelii-gaudium/60", "evangelii-gaudium/67", "evangelii-gaudium/70", "evangelii-gaudium/77", "evangelii-gaudium/80", "evangelii-gaudium/83", "evangelii-gaudium/86", "evangelii-gaudium/92", "evangelii-gaudium/97"]
+ },
+ "health.R9_trailing_heading:encyclicals/7dcaaf94-4605-52e9-9b96-80347d38cbdd": {
+  "fixed_by": "1.3a",
+  "description": "Quartus Supra: 14 passages end with the next section's heading (C-08)",
+  "units": ["quartus-supra/11", "quartus-supra/12", "quartus-supra/15", "quartus-supra/17", "quartus-supra/18", "quartus-supra/19", "quartus-supra/23", "quartus-supra/3", "quartus-supra/35", "quartus-supra/36", "quartus-supra/37", "quartus-supra/4", "quartus-supra/40", "quartus-supra/8"]
+ },
+ "health.R9_trailing_heading:encyclicals/889699a4-4e87-59e9-aa73-7fa036b82a7f": {
+  "fixed_by": "1.3a",
+  "description": "Ecclesia de Eucharistia: 6 passages end with the next section's heading (C-08)",
+  "units": ["ecclesia-de-eucharistia/10", "ecclesia-de-eucharistia/20", "ecclesia-de-eucharistia/25", "ecclesia-de-eucharistia/33", "ecclesia-de-eucharistia/46", "ecclesia-de-eucharistia/52"]
+ },
+ "health.R9_trailing_heading:encyclicals/927d6248-3117-5b1c-bb92-feec32f70c55": {
+  "fixed_by": "1.3a",
+  "description": "Magnifica Humanitas: 2 passages end with the next section's heading (C-08)",
+  "units": ["magnifica-humanitas/27", "magnifica-humanitas/32"]
+ },
+ "health.R9_trailing_heading:encyclicals/958891d4-b30c-5449-bcac-1f129b573c25": {
+  "fixed_by": "1.3a",
+  "description": "Incredibili: 4 passages end with the next section's heading (C-08)",
+  "units": ["incredibili/2", "incredibili/3", "incredibili/4", "incredibili/7"]
+ },
+ "health.R9_trailing_heading:encyclicals/a910a090-80c3-5c39-80d8-9c6d39f2999b": {
+  "fixed_by": "1.3a",
+  "description": "Nimiam Licentiam: 9 passages end with the next section's heading (C-08)",
+  "units": ["nimiam-licentiam/11", "nimiam-licentiam/12", "nimiam-licentiam/16", "nimiam-licentiam/2", "nimiam-licentiam/3", "nimiam-licentiam/4", "nimiam-licentiam/6", "nimiam-licentiam/7", "nimiam-licentiam/9"]
+ },
+ "health.R9_trailing_heading:encyclicals/aacef990-f446-553b-a8ad-ed7ee186e163": {
+  "fixed_by": "1.3a",
+  "description": "Ex Quo: 13 passages end with the next section's heading (C-08)",
+  "units": ["ex-quo/17", "ex-quo/28", "ex-quo/29", "ex-quo/3", "ex-quo/31", "ex-quo/36", "ex-quo/4", "ex-quo/43", "ex-quo/5", "ex-quo/58", "ex-quo/7", "ex-quo/8", "ex-quo/9"]
+ },
+ "health.R9_trailing_heading:encyclicals/ab202557-5c48-51de-8f53-85ad313de769": {
+  "fixed_by": "1.3a",
+  "description": "Maximae Quidem: 2 passages end with the next section's heading (C-08)",
+  "units": ["maximae-quidem/2", "maximae-quidem/3"]
+ },
+ "health.R9_trailing_heading:encyclicals/b0a9dbe0-37a1-569b-b9d7-34d145c70396": {
+  "fixed_by": "1.3a",
+  "description": "Quae In Patriarchatu: 3 passages end with the next section's heading (C-08)",
+  "units": ["quae-in-patriarchatu/3", "quae-in-patriarchatu/6", "quae-in-patriarchatu/8"]
+ },
+ "health.R9_trailing_heading:encyclicals/bd1921b3-b61f-56cd-924f-9cd995cd04e6": {
+  "fixed_by": "1.3a",
+  "description": "Beneficia Dei: 3 passages end with the next section's heading (C-08)",
+  "units": ["beneficia-dei/2", "beneficia-dei/3", "beneficia-dei/4"]
+ },
+ "health.R9_trailing_heading:encyclicals/c254a3b6-c2cd-5425-8205-a447b91c0bdb": {
+  "fixed_by": "1.3a",
+  "description": "Deus Caritas Est: 10 passages end with the next section's heading (C-08)",
+  "units": ["deus-caritas-est/1", "deus-caritas-est/11", "deus-caritas-est/15", "deus-caritas-est/18", "deus-caritas-est/19", "deus-caritas-est/25", "deus-caritas-est/29", "deus-caritas-est/30/from-e77", "deus-caritas-est/31/from-e81-2", "deus-caritas-est/8"]
+ },
+ "health.R9_trailing_heading:encyclicals/cc81769d-2c6a-5735-9562-a4cb600edb41": {
+  "fixed_by": "1.3a",
+  "description": "Respicientes: 9 passages end with the next section's heading (C-08)",
+  "units": ["respicientes/11", "respicientes/12", "respicientes/13", "respicientes/4", "respicientes/5", "respicientes/6", "respicientes/7", "respicientes/8", "respicientes/9"]
+ },
+ "health.R9_trailing_heading:encyclicals/cda355ec-b4fa-5ef0-9f41-d4139376763d": {
+  "fixed_by": "1.3a",
+  "description": "Saepe Venerabiles Fratres: 2 passages end with the next section's heading (C-08)",
+  "units": ["saepe-venerabiles-fratres/2", "saepe-venerabiles-fratres/3"]
+ },
+ "health.R9_trailing_heading:encyclicals/ceb6f6b0-f8bc-5a11-95c5-ac52f6bfce3f": {
+  "fixed_by": "1.3a",
+  "description": "Dilexit Nos: 50 passages end with the next section's heading (C-08)",
+  "units": ["dilexit-nos/1", "dilexit-nos/101", "dilexit-nos/108", "dilexit-nos/113", "dilexit-nos/118", "dilexit-nos/124", "dilexit-nos/128", "dilexit-nos/129", "dilexit-nos/132", "dilexit-nos/142", "dilexit-nos/147", "dilexit-nos/150", "dilexit-nos/151", "dilexit-nos/153", "dilexit-nos/157", "dilexit-nos/16", "dilexit-nos/160", "dilexit-nos/163", "dilexit-nos/164", "dilexit-nos/166", "dilexit-nos/171", "dilexit-nos/172", "dilexit-nos/176", "dilexit-nos/180", "dilexit-nos/181", "dilexit-nos/184", "dilexit-nos/186", "dilexit-nos/190", "dilexit-nos/194", "dilexit-nos/199", "dilexit-nos/204", "dilexit-nos/211", "dilexit-nos/216", "dilexit-nos/23", "dilexit-nos/27", "dilexit-nos/31", "dilexit-nos/32", "dilexit-nos/38", "dilexit-nos/42", "dilexit-nos/47", "dilexit-nos/48", "dilexit-nos/51", "dilexit-nos/58", "dilexit-nos/63", "dilexit-nos/69", "dilexit-nos/77", "dilexit-nos/8", "dilexit-nos/81", "dilexit-nos/91", "dilexit-nos/92"]
+ },
+ "health.R9_trailing_heading:encyclicals/d3874717-e4d2-5c05-a056-38e883b82551": {
+  "fixed_by": "1.3a",
+  "description": "Populorum Progressio: 71 passages end with the next section's heading (C-08)",
+  "units": ["populorum-progressio/10", "populorum-progressio/11", "populorum-progressio/12", "populorum-progressio/13", "populorum-progressio/14", "populorum-progressio/15", "populorum-progressio/16", "populorum-progressio/17", "populorum-progressio/18", "populorum-progressio/19", "populorum-progressio/2", "populorum-progressio/20", "populorum-progressio/21", "populorum-progressio/22", "populorum-progressio/23", "populorum-progressio/24", "populorum-progressio/25", "populorum-progressio/26", "populorum-progressio/27", "populorum-progressio/28", "populorum-progressio/29", "populorum-progressio/3", "populorum-progressio/31", "populorum-progressio/32", "populorum-progressio/33", "populorum-progressio/34", "populorum-progressio/35", "populorum-progressio/36", "populorum-progressio/37", "populorum-progressio/39", "populorum-progressio/4", "populorum-progressio/40", "populorum-progressio/41", "populorum-progressio/43", "populorum-progressio/44", "populorum-progressio/46", "populorum-progressio/47", "populorum-progressio/48", "populorum-progressio/49", "populorum-progressio/50", "populorum-progressio/53", "populorum-progressio/54", "populorum-progressio/55", "populorum-progressio/56", "populorum-progressio/57", "populorum-progressio/58", "populorum-progressio/6", "populorum-progressio/60", "populorum-progressio/61", "populorum-progressio/63", "populorum-progressio/64", "populorum-progressio/65", "populorum-progressio/66", "populorum-progressio/69", "populorum-progressio/7", "populorum-progressio/70", "populorum-progressio/71", "populorum-progressio/72", "populorum-progressio/73", "populorum-progressio/74", "populorum-progressio/75", "populorum-progressio/77", "populorum-progressio/78", "populorum-progressio/79", "populorum-progressio/8", "populorum-progressio/80", "populorum-progressio/81", "populorum-progressio/82", "populorum-progressio/83", "populorum-progressio/84", "populorum-progressio/85"]
+ },
+ "health.R9_trailing_heading:encyclicals/d4d4806e-61e2-513b-9985-b178e7b7639b": {
+  "fixed_by": "1.3a",
+  "description": "Ubi Nos: 8 passages end with the next section's heading (C-08)",
+  "units": ["ubi-nos/10", "ubi-nos/11", "ubi-nos/12", "ubi-nos/3", "ubi-nos/5", "ubi-nos/6", "ubi-nos/7", "ubi-nos/8"]
+ },
+ "health.R9_trailing_heading:encyclicals/dd91b8f7-101c-5ef9-a9f7-502e2310a932": {
+  "fixed_by": "1.3a",
+  "description": "Apostolica Constitutio: 11 passages end with the next section's heading (C-08)",
+  "units": ["apostolica-constitutio/10", "apostolica-constitutio/11", "apostolica-constitutio/13", "apostolica-constitutio/14", "apostolica-constitutio/15", "apostolica-constitutio/17", "apostolica-constitutio/4", "apostolica-constitutio/6", "apostolica-constitutio/7/from-e19", "apostolica-constitutio/8", "apostolica-constitutio/9"]
+ },
+ "health.R9_trailing_heading:encyclicals/eb423a0c-1058-5124-ac7e-c5ab377b9ed4": {
+  "fixed_by": "1.3a",
+  "description": "Ut Unum Sint: 1 passages end with the next section's heading (C-08)",
+  "units": ["ut-unum-sint/4"]
+ },
+ "health.R9_trailing_heading:encyclicals/fd3c4120-5f9a-590e-a1de-792de0414fb3": {
+  "fixed_by": "1.3a",
+  "description": "Magnae Nobis: 4 passages end with the next section's heading (C-08)",
+  "units": ["magnae-nobis/3", "magnae-nobis/5", "magnae-nobis/6", "magnae-nobis/8"]
+ },
+ "health.R9_trailing_heading:papal-documents/03a95a7c-b492-587f-9a69-ebfa7f6da510": {
+  "fixed_by": "1.3a",
+  "description": "Dies Domini: 5 passages end with the next section's heading (C-08)",
+  "units": ["dies-domini/18", "dies-domini/30", "dies-domini/54", "dies-domini/7", "dies-domini/73"]
+ },
+ "health.R9_trailing_heading:papal-documents/083ada7e-352a-50c3-925f-6c51b2258230": {
+  "fixed_by": "1.3a",
+  "description": "Tertio Millennio Adveniente: 8 passages end with the next section's heading (C-08)",
+  "units": ["tertio-millennio-adveniente/1", "tertio-millennio-adveniente/16", "tertio-millennio-adveniente/28", "tertio-millennio-adveniente/39", "tertio-millennio-adveniente/43", "tertio-millennio-adveniente/48", "tertio-millennio-adveniente/55", "tertio-millennio-adveniente/8"]
+ },
+ "health.R9_trailing_heading:papal-documents/3071fe45-c09f-522d-a0b5-88bbc00acdcf": {
+  "fixed_by": "1.3a",
+  "description": "Salvifici Doloris: 7 passages end with the next section's heading (C-08)",
+  "units": ["salvifici-doloris/13", "salvifici-doloris/18/from-e69", "salvifici-doloris/24/from-e95", "salvifici-doloris/27", "salvifici-doloris/30/from-e129", "salvifici-doloris/4", "salvifici-doloris/8"]
+ },
+ "health.R9_trailing_heading:papal-documents/404f3fab-39e8-5520-b027-9b821b6384e4": {
+  "fixed_by": "1.3a",
+  "description": "Mulieris Dignitatem: 8 passages end with the next section's heading (C-08)",
+  "units": ["mulieris-dignitatem/11/from-e80", "mulieris-dignitatem/16/from-e113", "mulieris-dignitatem/2", "mulieris-dignitatem/22", "mulieris-dignitatem/27/from-e179", "mulieris-dignitatem/30/from-e201", "mulieris-dignitatem/5", "mulieris-dignitatem/8/from-e55"]
+ },
+ "health.R9_trailing_heading:papal-documents/5650f85c-a460-5633-b728-521ac9f66b5f": {
+  "fixed_by": "1.3a",
+  "description": "Orientale Lumen: 2 passages end with the next section's heading (C-08)",
+  "units": ["orientale-lumen/16", "orientale-lumen/4"]
+ },
+ "health.R9_trailing_heading:papal-documents/d18ff09b-ac71-5a21-8e24-2dcdf1faa4ce": {
+  "fixed_by": "1.3a",
+  "description": "Novo Millennio Ineunte: 37 passages end with the next section's heading (C-08)",
+  "units": ["novo-millennio-ineunte/10", "novo-millennio-ineunte/11", "novo-millennio-ineunte/12", "novo-millennio-ineunte/13", "novo-millennio-ineunte/14", "novo-millennio-ineunte/15", "novo-millennio-ineunte/16", "novo-millennio-ineunte/18", "novo-millennio-ineunte/20", "novo-millennio-ineunte/23", "novo-millennio-ineunte/24", "novo-millennio-ineunte/27", "novo-millennio-ineunte/28", "novo-millennio-ineunte/29/from-e95", "novo-millennio-ineunte/3", "novo-millennio-ineunte/31", "novo-millennio-ineunte/34", "novo-millennio-ineunte/36", "novo-millennio-ineunte/37", "novo-millennio-ineunte/38", "novo-millennio-ineunte/39", "novo-millennio-ineunte/4", "novo-millennio-ineunte/41", "novo-millennio-ineunte/42", "novo-millennio-ineunte/45", "novo-millennio-ineunte/47", "novo-millennio-ineunte/48", "novo-millennio-ineunte/5", "novo-millennio-ineunte/50", "novo-millennio-ineunte/52", "novo-millennio-ineunte/53", "novo-millennio-ineunte/56", "novo-millennio-ineunte/57", "novo-millennio-ineunte/6", "novo-millennio-ineunte/7", "novo-millennio-ineunte/8", "novo-millennio-ineunte/9"]
+ },
+ "health.R9_trailing_heading:papal-documents/d6cc48e2-30e8-5c73-aba2-9890c339531f": {
+  "fixed_by": "1.3a",
+  "description": "Rosarium Virginis Mariae: 30 passages end with the next section's heading (C-08)",
+  "units": ["rosarium-virginis-mariae/1", "rosarium-virginis-mariae/10", "rosarium-virginis-mariae/11", "rosarium-virginis-mariae/12", "rosarium-virginis-mariae/13", "rosarium-virginis-mariae/14", "rosarium-virginis-mariae/15/from-e53", "rosarium-virginis-mariae/16", "rosarium-virginis-mariae/18", "rosarium-virginis-mariae/19", "rosarium-virginis-mariae/2", "rosarium-virginis-mariae/20", "rosarium-virginis-mariae/21/from-e78", "rosarium-virginis-mariae/22", "rosarium-virginis-mariae/23", "rosarium-virginis-mariae/24", "rosarium-virginis-mariae/28", "rosarium-virginis-mariae/29", "rosarium-virginis-mariae/3", "rosarium-virginis-mariae/30", "rosarium-virginis-mariae/34", "rosarium-virginis-mariae/35", "rosarium-virginis-mariae/36", "rosarium-virginis-mariae/37", "rosarium-virginis-mariae/39", "rosarium-virginis-mariae/4", "rosarium-virginis-mariae/42", "rosarium-virginis-mariae/5", "rosarium-virginis-mariae/7", "rosarium-virginis-mariae/9"]
+ },
+ "health.no_ligatures:church-fathers/0066869a-28fb-5274-a847-c4d3e88a948e": {
+  "fixed_by": "1.10a",
+  "description": "Fragments from the Lost Writings of Irenæus: 22 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "ix.viii.i", "ix.viii.ii", "ix.viii.iii", "ix.viii.ix", "ix.viii.l", "ix.viii.li", "ix.viii.liv", "ix.viii.lv", "ix.viii.v", "ix.viii.vi", "ix.viii.vii", "ix.viii.viii", "ix.viii.xiii", "ix.viii.xiv", "ix.viii.xlix", "ix.viii.xviii", "ix.viii.xx", "ix.viii.xxvi", "ix.viii.xxxiii", "ix.viii.xxxvi", "ix.viii.xxxvii"]
+ },
+ "health.no_ligatures:church-fathers/01abb5ad-1a95-5435-aa5b-62b04e87e1f2": {
+  "fixed_by": "1.10a",
+  "description": "On Monogamy.: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.vii.i", "iii.vii.xvi", "iii.vii.xviii"]
+ },
+ "health.no_ligatures:church-fathers/02f87865-8421-5189-a3f4-6a1a262fa8d8": {
+  "fixed_by": "1.10a",
+  "description": "Epistles on the Arian Heresy and the Deposition of Arius.: 5 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["x.iii.ii/from-p25", "x.iii.ii/from-p80", "x.iii.iii", "x.iii.iv", "x.iii.v"]
+ },
+ "health.no_ligatures:church-fathers/0311d705-6fd6-5801-bb7a-33116ae11e0e": {
+  "fixed_by": "1.10a",
+  "description": "Epistle to the Antiochians: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.xv.xi", "v.xv.xiii"]
+ },
+ "health.no_ligatures:church-fathers/05ec835e-ea8f-581d-b94d-4b38bb4a8522": {
+  "fixed_by": "1.10a",
+  "description": "Dialogue with Trypho: 14 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.iv.cviii", "viii.iv.cxix", "viii.iv.cxx/from-p1-2", "viii.iv.ix", "viii.iv.lxix", "viii.iv.lxxviii", "viii.iv.lxxviii/from-p1-2", "viii.iv.lxxx", "viii.iv.lxxx/from-p2-2", "viii.iv.lxxxviii", "viii.iv.v", "viii.iv.xxviii", "viii.iv.xxx", "viii.iv.xxxiv/from-p1-2"]
+ },
+ "health.no_ligatures:church-fathers/0d274c4c-d2f3-5e33-92b5-c592422a0bff": {
+  "fixed_by": "1.10a",
+  "description": "Of the Manichæans.: 22 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "viii.iii.i", "viii.iii.ii", "viii.iii.iii", "viii.iii.iv", "viii.iii.ix", "viii.iii.v", "viii.iii.vi", "viii.iii.vii", "viii.iii.x", "viii.iii.xi", "viii.iii.xii", "viii.iii.xiii", "viii.iii.xiv", "viii.iii.xix", "viii.iii.xvi", "viii.iii.xvii", "viii.iii.xviii", "viii.iii.xx", "viii.iii.xxiv", "viii.iii.xxv", "viii.iii.xxvi"]
+ },
+ "health.no_ligatures:church-fathers/0e326c02-a623-538c-898b-56623197c955": {
+  "fixed_by": "1.10a",
+  "description": "The Acts of the Disputation with the Heresiarch Manes.: 68 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vii.iii.i", "vii.iii.iv", "vii.iii.ix", "vii.iii.l", "vii.iii.li", "vii.iii.lii", "vii.iii.liv/from-p1-2", "vii.iii.liv/from-p1-3", "vii.iii.v", "vii.iii.vi", "vii.iii.vi/from-p5", "vii.iii.vi/from-p9-2", "vii.iii.vii", "vii.iii.viii", "vii.iii.x", "vii.iii.xi", "vii.iii.xii", "vii.iii.xii/from-p1-3", "vii.iii.xiii", "vii.iii.xiv", "vii.iii.xl", "vii.iii.xl/from-p4-2", "vii.iii.xl/from-p4-3", "vii.iii.xli", "vii.iii.xli/from-p1-2", "vii.iii.xlii", "vii.iii.xlii/from-p1-2", "vii.iii.xliv", "vii.iii.xlix", "vii.iii.xlix/from-p1-2", "vii.iii.xlix/from-p1-3", "vii.iii.xlv", "vii.iii.xlviii", "vii.iii.xlviii/from-p1-2", "vii.iii.xv", "vii.iii.xv/from-p1-2", "vii.iii.xvii", "vii.iii.xvii/from-p1-2", "vii.iii.xviii", "vii.iii.xx", "vii.iii.xx/from-p1-2", "vii.iii.xxi", "vii.iii.xxi/from-p1-2", "vii.iii.xxii", "vii.iii.xxiii", "vii.iii.xxiii/from-p1-2", "vii.iii.xxix", "vii.iii.xxv", "vii.iii.xxv/from-p1-2", "vii.iii.xxvi", "vii.iii.xxvi/from-p1-2", "vii.iii.xxvii", "vii.iii.xxviii", "vii.iii.xxx/from-p1-3", "vii.iii.xxxi", "vii.iii.xxxi/from-p1-3", "vii.iii.xxxii", "vii.iii.xxxii/from-p1-3", "vii.iii.xxxiii", "vii.iii.xxxiii/from-p1-2", "vii.iii.xxxix/from-p1-3", "vii.iii.xxxv", "vii.iii.xxxv/from-p1-2", "vii.iii.xxxv/from-p1-3", "vii.iii.xxxvi", "vii.iii.xxxvii", "vii.iii.xxxvii/from-p1-2", "vii.iii.xxxviii"]
+ },
+ "health.no_ligatures:church-fathers/0ef66418-ccf1-5dc5-9aae-f13a7560c1a8": {
+  "fixed_by": "1.10a",
+  "description": "The First Apology: 18 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.ii.i", "viii.ii.liii", "viii.ii.liv", "viii.ii.lvi", "viii.ii.lx", "viii.ii.lxvi", "viii.ii.lxx", "viii.ii.lxxi", "viii.ii.xiii", "viii.ii.xliv", "viii.ii.xvii", "viii.ii.xviii", "viii.ii.xxi", "viii.ii.xxii", "viii.ii.xxv", "viii.ii.xxvi", "viii.ii.xxxii", "viii.ii.xxxiv"]
+ },
+ "health.no_ligatures:church-fathers/0f23bbcf-1d0a-5bf3-849e-05e52a693da8": {
+  "fixed_by": "1.10a",
+  "description": "A Treatise of Novatian Concerning the Trinity.: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.iii.xxii", "vi.iii.xxiv", "vi.iii.xxxiii"]
+ },
+ "health.no_ligatures:church-fathers/10d8d7c6-680c-5739-bc98-6ce557371f25": {
+  "fixed_by": "1.10a",
+  "description": "Book VIII. Concerning Gifts, and Ordinations, and the Ecclesiastical Canons: 7 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ix.ix.i/from-p1-3", "ix.ix.ii/from-p56", "ix.ix.iii/from-p25", "ix.ix.iii/from-p9", "ix.ix.vi/from-p110", "ix.ix.vi/from-p128", "ix.ix.vi/from-p47"]
+ },
+ "health.no_ligatures:church-fathers/125d6898-c285-5a8a-b89b-83b88964db1a": {
+  "fixed_by": "1.10a",
+  "description": "First Epistle to the Corinthians: 10 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ii.ii.ii", "ii.ii.iv", "ii.ii.lix", "ii.ii.v", "ii.ii.vi", "ii.ii.viii", "ii.ii.xi", "ii.ii.xii", "ii.ii.xlix", "ii.ii.xxv"]
+ },
+ "health.no_ligatures:church-fathers/150366ad-2c5f-52a4-80ee-2c1a3a3bf55a": {
+  "fixed_by": "1.10a",
+  "description": "The Canonical Epistle, with the Commentaries of Theodore Balsamon and John Zonaras.: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ix.iv.x/from-p9"]
+ },
+ "health.no_ligatures:church-fathers/1731004f-ea5b-52a1-b533-56ae9377b7fe": {
+  "fixed_by": "1.10a",
+  "description": "Alexander of Cappadocia.: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.iv.i", "vi.iv.ii.iii"]
+ },
+ "health.no_ligatures:church-fathers/17b7747f-273b-5841-b415-16dea3192635": {
+  "fixed_by": "1.10a",
+  "description": "On the Veiling of Virgins.: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iv.ii", "iii.iv.x", "iii.iv.xiv"]
+ },
+ "health.no_ligatures:church-fathers/18eaa7ff-402d-56bd-9549-8d12c10d29fc": {
+  "fixed_by": "1.10a",
+  "description": "Malchion.: 4 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.x.ii", "vi.x.ii/from-p15", "vi.x.ii/from-p22", "vi.x.vi"]
+ },
+ "health.no_ligatures:church-fathers/198c81e9-e119-5153-b4b2-a436574d067a": {
+  "fixed_by": "1.10a",
+  "description": "The Treatises of Cyprian.: 23 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.v.iii/from-p22", "iv.v.iii/from-p45", "iv.v.iii/from-p59", "iv.v.ix/from-p13", "iv.v.ix/from-p42", "iv.v.v/from-p23", "iv.v.vi", "iv.v.vi/from-p12", "iv.v.vi/from-p16", "iv.v.vi/from-p19", "iv.v.vii/from-p60", "iv.v.viii/from-p37", "iv.v.viii/from-p75", "iv.v.x/from-p21", "iv.v.xi.xiii/from-p2-2", "iv.v.xii.ii.xvii", "iv.v.xii.ii.xxii", "iv.v.xii.iii.ii", "iv.v.xii.iii.v", "iv.v.xii.iii.xxxi", "iv.v.xiii", "iv.v.xiii/from-p14", "iv.v.xiii/from-p54"]
+ },
+ "health.no_ligatures:church-fathers/1d496a39-f816-530f-9fa8-bb26d015ddce": {
+  "fixed_by": "1.10a",
+  "description": "A Treatise on the Anger of God Addressed to Donatus: 12 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iii.iv", "iii.iii.x", "iii.iii.xi", "iii.iii.xii", "iii.iii.xiii", "iii.iii.xiv", "iii.iii.xvi", "iii.iii.xvii/from-p13", "iii.iii.xxi", "iii.iii.xxii", "iii.iii.xxiii", "iii.iii.xxiii/from-p13-2"]
+ },
+ "health.no_ligatures:church-fathers/1d63d229-1283-53b8-91d1-2d79e06e7628": {
+  "fixed_by": "1.10a",
+  "description": "The Second Apology: 4 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.iii.ii", "viii.iii.ii/from-p1-2", "viii.iii.x", "viii.iii.xv"]
+ },
+ "health.no_ligatures:church-fathers/1d83b302-69ee-5b50-aca6-fcaed82d54c7": {
+  "fixed_by": "1.10a",
+  "description": "The Epistle of Barnabas: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.ii.x"]
+ },
+ "health.no_ligatures:church-fathers/22369abb-5ee4-50d2-85c8-fdf4da8fc2ce": {
+  "fixed_by": "1.10a",
+  "description": "Other Fragments from the Lost Writings of Justin: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.ix.ii", "viii.ix.iii", "viii.ix.xv"]
+ },
+ "health.no_ligatures:church-fathers/2444aae2-01c7-5f06-be45-a14be10fddfc": {
+  "fixed_by": "1.10a",
+  "description": "Extant Fragments.: 22 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.iii.i.i", "iv.iii.i.i/from-p15", "iv.iii.i.ii.i", "iv.iii.i.ii.iii", "iv.iii.i.ii.iv/from-p7", "iv.iii.i.iii", "iv.iii.i.v.i", "iv.iii.ii.i", "iv.iii.ii.i/from-p12", "iv.iii.ii.iii", "iv.iii.ii.iii/from-p17", "iv.iii.ii.iii/from-p33", "iv.iii.ii.iii/from-p37", "iv.iii.ii.v", "iv.iii.ii.v/from-p11", "iv.iii.ii.x", "iv.iii.ii.x/from-p15", "iv.iii.ii.x/from-p19", "iv.iii.ii.x/from-p23", "iv.iii.ii.x/from-p31", "iv.iii.ii.xi/from-p14", "iv.iii.ii.xiii"]
+ },
+ "health.no_ligatures:church-fathers/2ac6445a-0528-500f-8574-0e62ef1d4b9e": {
+  "fixed_by": "1.10a",
+  "description": "Oration on the Palms.: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["xi.ix.i"]
+ },
+ "health.no_ligatures:church-fathers/3097a9d7-7e3c-59f5-9bbb-9f5b23a76ae8": {
+  "fixed_by": "1.10a",
+  "description": "Book Third.—Similitudes: 12 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ii.iv.ii", "ii.iv.ix/from-p15", "ii.iv.ix/from-p31", "ii.iv.ix/from-p49", "ii.iv.ix/from-p76", "ii.iv.ix/from-p89", "ii.iv.v/from-p13", "ii.iv.v/from-p20", "ii.iv.v/from-p20-2", "ii.iv.vi/from-p10", "ii.iv.vi/from-p4", "ii.iv.x/from-p8"]
+ },
+ "health.no_ligatures:church-fathers/3336c36c-c708-577d-81f9-de5c362c7ce5": {
+  "fixed_by": "1.10a",
+  "description": "Of the Manner in Which the Persecutors Died: 15 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.v.ix", "iii.v.liii", "iii.v.vi", "iii.v.x", "iii.v.xi", "iii.v.xix", "iii.v.xl", "iii.v.xlvi", "iii.v.xvii", "iii.v.xviii", "iii.v.xx", "iii.v.xxv", "iii.v.xxvi", "iii.v.xxxii", "iii.v.xxxiii"]
+ },
+ "health.no_ligatures:church-fathers/356b9c9b-236c-5761-8d85-64a441551944": {
+  "fixed_by": "1.10a",
+  "description": "Address to the Greeks: 17 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.ii.i", "iii.ii.iv", "iii.ii.viii", "iii.ii.xli", "iii.ii.xvii", "iii.ii.xxi", "iii.ii.xxii", "iii.ii.xxiv", "iii.ii.xxviii", "iii.ii.xxxi", "iii.ii.xxxiii/from-p1-2", "iii.ii.xxxiv", "iii.ii.xxxix", "iii.ii.xxxv", "iii.ii.xxxvi", "iii.ii.xxxvii", "iii.ii.xxxviii"]
+ },
+ "health.no_ligatures:church-fathers/3717ce05-ad42-5ec3-b3ce-ff3964908e05": {
+  "fixed_by": "1.10a",
+  "description": "To His Wife.: 12 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.v.i.i", "iii.v.i.ii", "iii.v.i.iv", "iii.v.i.iv/from-p13", "iii.v.i.v", "iii.v.i.vi", "iii.v.i.vii", "iii.v.i.viii", "iii.v.ii.ii", "iii.v.ii.iii", "iii.v.ii.vi", "iii.v.ii.viii/from-p5"]
+ },
+ "health.no_ligatures:church-fathers/3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
+  "fixed_by": "1.10a",
+  "description": "The Stromata, or Miscellanies: 143 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.iv.i.i", "vi.iv.i.i/from-p26", "vi.iv.i.i/from-p46", "vi.iv.i.v/from-p10", "vi.iv.i.vii/from-p4", "vi.iv.i.viii", "vi.iv.i.x/from-p11", "vi.iv.i.xiv", "vi.iv.i.xiv/from-p11-2", "vi.iv.i.xiv/from-p5", "vi.iv.i.xix", "vi.iv.i.xix/from-p13", "vi.iv.i.xv", "vi.iv.i.xv/from-p12", "vi.iv.i.xv/from-p24", "vi.iv.i.xv/from-p7", "vi.iv.i.xvi", "vi.iv.i.xvi/from-p10", "vi.iv.i.xxi", "vi.iv.i.xxi/from-p104", "vi.iv.i.xxi/from-p111", "vi.iv.i.xxi/from-p13", "vi.iv.i.xxi/from-p24", "vi.iv.i.xxi/from-p32", "vi.iv.i.xxi/from-p44", "vi.iv.i.xxi/from-p6-2", "vi.iv.i.xxi/from-p69", "vi.iv.i.xxi/from-p73", "vi.iv.i.xxi/from-p75-2", "vi.iv.i.xxi/from-p86", "vi.iv.i.xxi/from-p9", "vi.iv.i.xxi/from-p92", "vi.iv.i.xxi/from-p96", "vi.iv.i.xxiii", "vi.iv.i.xxiii/from-p1-2", "vi.iv.i.xxix", "vi.iv.i.xxv", "vi.iv.i.xxvi/from-p8", "vi.iv.ii.iv/from-p10-2", "vi.iv.ii.ix/from-p16", "vi.iv.ii.v/from-p6", "vi.iv.ii.vi/from-p9", "vi.iv.ii.vii/from-p8", "vi.iv.ii.xiv", "vi.iv.ii.xv", "vi.iv.ii.xviii/from-p3-2", "vi.iv.ii.xviii/from-p34-2", "vi.iv.ii.xx/from-p37", "vi.iv.ii.xxi", "vi.iv.ii.xxi/from-p4", "vi.iv.ii.xxii", "vi.iv.iii", "vi.iv.iii/from-p102", "vi.iv.iii/from-p117", "vi.iv.iii/from-p124", "vi.iv.iii/from-p131", "vi.iv.iii/from-p131-2", "vi.iv.iii/from-p143", "vi.iv.iii/from-p143-2", "vi.iv.iii/from-p162", "vi.iv.iii/from-p162-2", "vi.iv.iii/from-p162-3", "vi.iv.iii/from-p162-4", "vi.iv.iii/from-p17", "vi.iv.iii/from-p199", "vi.iv.iii/from-p202", "vi.iv.iii/from-p209", "vi.iv.iii/from-p225", "vi.iv.iii/from-p236", "vi.iv.iii/from-p246", "vi.iv.iii/from-p246-2", "vi.iv.iii/from-p27", "vi.iv.iii/from-p27-2", "vi.iv.iii/from-p36", "vi.iv.iii/from-p36-2", "vi.iv.iii/from-p36-3", "vi.iv.iii/from-p36-4", "vi.iv.iii/from-p63", "vi.iv.iii/from-p67-2", "vi.iv.iii/from-p72", "vi.iv.iii/from-p81", "vi.iv.iii/from-p81-2", "vi.iv.iii/from-p9", "vi.iv.iii/from-p9-2", "vi.iv.iv.vi/from-p10", "vi.iv.iv.vi/from-p15", "vi.iv.iv.vii", "vi.iv.iv.vii/from-p10-2", "vi.iv.iv.vii/from-p2-2", "vi.iv.iv.xii", "vi.iv.iv.xii/from-p4", "vi.iv.iv.xviii", "vi.iv.iv.xviii/from-p11", "vi.iv.iv.xx/from-p30", "vi.iv.iv.xxi/from-p13", "vi.iv.iv.xxi/from-p34", "vi.iv.ix", "vi.iv.ix/from-p119", "vi.iv.ix/from-p211", "vi.iv.ix/from-p248", "vi.iv.ix/from-p56", "vi.iv.ix/from-p77", "vi.iv.v.i/from-p16-2", "vi.iv.v.i/from-p5-2", "vi.iv.v.ii", "vi.iv.v.iii", "vi.iv.v.iv/from-p5", "vi.iv.v.ix/from-p6", "vi.iv.v.v", "vi.iv.v.v/from-p12", "vi.iv.v.v/from-p20", "vi.iv.v.vi/from-p10", "vi.iv.v.vii", "vi.iv.v.xi", "vi.iv.v.xii", "vi.iv.v.xiii", "vi.iv.v.xiv", "vi.iv.v.xiv/from-p12", "vi.iv.v.xiv/from-p135", "vi.iv.v.xiv/from-p18", "vi.iv.v.xiv/from-p22", "vi.iv.v.xiv/from-p29", "vi.iv.v.xiv/from-p56", "vi.iv.v.xiv/from-p95", "vi.iv.vi.ii", "vi.iv.vi.ii/from-p114", "vi.iv.vi.ii/from-p124", "vi.iv.vi.ii/from-p139", "vi.iv.vi.ii/from-p160", "vi.iv.vi.ii/from-p55", "vi.iv.vi.iii", "vi.iv.vi.iii/from-p20", "vi.iv.vi.iii/from-p9", "vi.iv.vi.iv", "vi.iv.vi.iv/from-p5", "vi.iv.vi.vi/from-p37", "vi.iv.vi.viii/from-p22", "vi.iv.vii.iv", "vi.iv.vii.vi/from-p20", "vi.iv.vii.vii/from-p44", "vi.iv.vii.xvii/from-p13", "vi.iv.viii.iv", "vi.iv.viii.iv/from-p7"]
+ },
+ "health.no_ligatures:church-fathers/3f1d7ed1-b5cd-539a-a446-8d4eab61dbd4": {
+  "fixed_by": "1.10a",
+  "description": "Hortatory Address to the Greeks: 15 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.vi.iii", "viii.vi.ix", "viii.vi.v", "viii.vi.x", "viii.vi.xi", "viii.vi.xii", "viii.vi.xv", "viii.vi.xvii", "viii.vi.xxii", "viii.vi.xxiii", "viii.vi.xxiv", "viii.vi.xxvi", "viii.vi.xxvii", "viii.vi.xxxvii", "viii.vi.xxxviii"]
+ },
+ "health.no_ligatures:church-fathers/419ab97d-8237-5a73-a5cf-9d9ee125a1cc": {
+  "fixed_by": "1.10a",
+  "description": "A Plea for the Christians: 11 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.ii.i", "v.ii.iii", "v.ii.vi", "v.ii.xiv", "v.ii.xvii", "v.ii.xviii", "v.ii.xxi", "v.ii.xxiii/from-p1-2", "v.ii.xxxii", "v.ii.xxxiv", "v.ii.xxxv"]
+ },
+ "health.no_ligatures:church-fathers/44fd52c3-fdef-518e-a463-a3273f39764c": {
+  "fixed_by": "1.10a",
+  "description": "Dubious or Spurious Writings.: 14 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iv.i.i", "iii.iv.ii.i", "iii.iv.ii.i/from-p7-2", "iii.iv.ii.ii", "iii.iv.iii.xiii", "iii.iv.iv.i", "iii.iv.v.i", "iii.iv.v.i/from-p7-3", "iii.iv.v.ii", "iii.iv.v.ii/from-p32-2", "iii.iv.v.iii", "iii.iv.v.iv", "iii.iv.v.v", "iii.iv.vi.i"]
+ },
+ "health.no_ligatures:church-fathers/49437294-5526-5a1b-b2df-3022c0c36e56": {
+  "fixed_by": "1.10a",
+  "description": "Book V: 4 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ix.vi.i/from-p26-2", "ix.vi.iii/from-p2-2", "ix.vi.iii/from-p69", "ix.vi.iii/from-p81"]
+ },
+ "health.no_ligatures:church-fathers/4c96eac3-f3f1-549c-84cf-070661393073": {
+  "fixed_by": "1.10a",
+  "description": "Origen De Principiis.: 65 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.v.i/from-p28", "vi.v.ii.i/from-p18", "vi.v.ii.i/from-p23", "vi.v.ii.ii/from-p31", "vi.v.ii.ii/from-p33", "vi.v.ii.ii/from-p6", "vi.v.ii.iii/from-p11", "vi.v.ii.v/from-p14-2", "vi.v.ii.v/from-p9", "vi.v.ii.vi/from-p13", "vi.v.ii.viii", "vi.v.iii.i", "vi.v.iii.i/from-p15-2", "vi.v.iii.i/from-p8", "vi.v.iii.iii/from-p11", "vi.v.iii.iii/from-p26-2", "vi.v.iii.ix/from-p17", "vi.v.iii.v/from-p3", "vi.v.iii.vii", "vi.v.iii.vii/from-p5", "vi.v.iii.viii", "vi.v.iii.xi/from-p24", "vi.v.iv.i", "vi.v.iv.i/from-p3-2", "vi.v.iv.ii", "vi.v.iv.ii/from-p108", "vi.v.iv.ii/from-p121-2", "vi.v.iv.ii/from-p15", "vi.v.iv.ii/from-p22", "vi.v.iv.ii/from-p54", "vi.v.iv.ii/from-p60", "vi.v.iv.ii/from-p67", "vi.v.iv.ii/from-p85", "vi.v.iv.ii/from-p97-2", "vi.v.iv.iv", "vi.v.iv.iv/from-p24", "vi.v.iv.iv/from-p24-2", "vi.v.iv.iv/from-p57-2", "vi.v.iv.v/from-p15", "vi.v.iv.v/from-p24", "vi.v.iv.v/from-p6", "vi.v.iv.vi/from-p16", "vi.v.iv.vi/from-p3", "vi.v.iv.vi/from-p3-2", "vi.v.iv.vii", "vi.v.iv.vii/from-p12", "vi.v.iv.vii/from-p19", "vi.v.iv.vii/from-p30", "vi.v.iv.viii/from-p14-2", "vi.v.iv.viii/from-p2-2", "vi.v.iv.viii/from-p36", "vi.v.v.i/from-p110", "vi.v.v.i/from-p15", "vi.v.v.i/from-p35", "vi.v.v.i/from-p58", "vi.v.v.i/from-p65", "vi.v.v.i/from-p7", "vi.v.v.i/from-p76", "vi.v.v.i/from-p91", "vi.v.v.i/from-p91-2", "vi.v.v.iii/from-p14", "vi.v.v.iii/from-p25", "vi.v.v.iii/from-p73", "vi.v.vi/from-p22", "vi.v.vi/from-p46"]
+ },
+ "health.no_ligatures:church-fathers/506ebe31-239c-509c-ba5e-b6c822d002df": {
+  "fixed_by": "1.10a",
+  "description": "The Extant Works and Fragments of Hippolytus.: 28 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iv.i.ii.ii", "iii.iv.i.v.vi", "iii.iv.i.vi.ii", "iii.iv.i.vii", "iii.iv.i.x.ii/from-p21", "iii.iv.i.x.ii/from-p59", "iii.iv.i.x.ii/from-p68", "iii.iv.i.x.ii/from-p7", "iii.iv.i.x.iii/from-p18", "iii.iv.i.x.iv", "iii.iv.i.x.v", "iii.iv.i.x.vi", "iii.iv.i.x.vi/from-p31", "iii.iv.i.xiii.i", "iii.iv.i.xiii.i/from-p34", "iii.iv.i.xiii.vi", "iii.iv.ii.i/from-p147", "iii.iv.ii.i/from-p163", "iii.iv.ii.i/from-p53", "iii.iv.ii.iii/from-p3-2", "iii.iv.ii.iv", "iii.iv.ii.iv/from-p117", "iii.iv.ii.iv/from-p19-2", "iii.iv.ii.iv/from-p60", "iii.iv.ii.iv/from-p69", "iii.iv.ii.iv/from-p84", "iii.iv.ii.v.i", "iii.iv.ii.v.iii"]
+ },
+ "health.no_ligatures:church-fathers/5a05852b-4193-518f-9d01-afd796291979": {
+  "fixed_by": "1.10a",
+  "description": "Origen Against Celsus.: 97 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.ix.i.i/from-p19", "vi.ix.i.iv", "vi.ix.i.lx", "vi.ix.i.lxv", "vi.ix.i.lxviii", "vi.ix.i.viii", "vi.ix.i.x", "vi.ix.i.xiii", "vi.ix.i.xix", "vi.ix.i.xliii", "vi.ix.i.xvi", "vi.ix.i.xvii", "vi.ix.i.xx", "vi.ix.i.xxv", "vi.ix.ii.ix", "vi.ix.ii.liv", "vi.ix.ii.lv", "vi.ix.ii.xiii", "vi.ix.ii.xvii", "vi.ix.ii.xx/from-p5", "vi.ix.ii.xxxiii", "vi.ix.ii.xxxiv", "vi.ix.iii.iii", "vi.ix.iii.lxvi", "vi.ix.iii.lxvii", "vi.ix.iii.lxviii", "vi.ix.iii.lxxiv", "vi.ix.iii.lxxv/from-p2-2", "vi.ix.iii.vi", "vi.ix.iii.xlii", "vi.ix.iii.xxii", "vi.ix.iii.xxiii", "vi.ix.iii.xxiv", "vi.ix.iii.xxv", "vi.ix.iii.xxxiii", "vi.ix.iii.xxxiv", "vi.ix.iv.liv", "vi.ix.iv.lvi", "vi.ix.iv.lvii", "vi.ix.iv.lxii", "vi.ix.iv.lxvii", "vi.ix.iv.lxxvii", "vi.ix.iv.lxxxi", "vi.ix.iv.lxxxiii", "vi.ix.iv.xci", "vi.ix.iv.xcviii", "vi.ix.iv.xi", "vi.ix.iv.xx", "vi.ix.iv.xxi", "vi.ix.iv.xxix", "vi.ix.iv.xxv", "vi.ix.iv.xxx", "vi.ix.iv.xxxiv", "vi.ix.iv.xxxix/from-p2-2", "vi.ix.v.ii", "vi.ix.v.ix", "vi.ix.v.l", "vi.ix.v.lvii", "vi.ix.v.lxv", "vi.ix.v.xli", "vi.ix.v.xlv", "vi.ix.v.xlvi", "vi.ix.v.xx", "vi.ix.vi.iv", "vi.ix.vi.liii", "vi.ix.vi.lviii", "vi.ix.vi.lxv", "vi.ix.vi.lxxviii", "vi.ix.vi.x", "vi.ix.vi.xi", "vi.ix.vi.xix", "vi.ix.vi.xlii", "vi.ix.vi.xlii/from-p17", "vi.ix.vi.xlix", "vi.ix.vi.xvii", "vi.ix.vi.xxi", "vi.ix.vi.xxii/from-p2-2", "vi.ix.vi.xxiv", "vi.ix.vi.xxviii", "vi.ix.vi.xxx", "vi.ix.vi.xxxi", "vi.ix.vi.xxxi/from-p2-2", "vi.ix.vi.xxxii", "vi.ix.vi.xxxix", "vi.ix.vii.iii", "vi.ix.vii.ix", "vi.ix.vii.liii", "vi.ix.vii.liv", "vi.ix.vii.vi", "vi.ix.vii.vii", "vi.ix.vii.viii", "vi.ix.vii.xlii", "vi.ix.vii.xxviii", "vi.ix.vii.xxxi", "vi.ix.viii.iv", "vi.ix.viii.vi", "vi.ix.viii.xxxv"]
+ },
+ "health.no_ligatures:church-fathers/5b81cdef-4a4f-52de-8b35-8657680f30dc": {
+  "fixed_by": "1.10a",
+  "description": "From the Discourse on the Resurrection.: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["xi.v.i", "xi.v.iii.i", "xi.v.iii.ii/from-p71"]
+ },
+ "health.no_ligatures:church-fathers/5d75dc92-df2c-5421-904f-4249590ff48a": {
+  "fixed_by": "1.10a",
+  "description": "Treatises Attributed to Cyprian on Questionable Authority.: 7 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.vii.ii/from-p11", "iv.vii.ii/from-p23", "iv.vii.ii/from-p28", "iv.vii.ii/from-p31", "iv.vii.v/from-p101", "iv.vii.v/from-p32", "iv.vii.vi/from-p16"]
+ },
+ "health.no_ligatures:church-fathers/5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
+  "fixed_by": "1.10a",
+  "description": "On Christian Doctrine: 15 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.IV_1.10", "v.IV_1.12", "v.IV_1.20/from-p15", "v.IV_1.21", "v.IV_1.24", "v.IV_1.6", "v.IV_1.7", "v.IV_1.7/from-p8", "v.v.vii/from-p7", "v.v.xii/from-p11", "v.v.xiii/from-p3", "v.v.xv", "v.v.xxi", "v.v.xxvi", "v.vi.iii/from-p9"]
+ },
+ "health.no_ligatures:church-fathers/5f551a37-baea-599a-8f63-413a06abc5e1": {
+  "fixed_by": "1.10a",
+  "description": "Phileas.: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.viii.ii.ii"]
+ },
+ "health.no_ligatures:church-fathers/685b8763-d3f3-5bb7-bf9f-c34efedaadf5": {
+  "fixed_by": "1.10a",
+  "description": "Acknowledged Writings.: 13 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iii.ii.xii", "iii.iii.iii.i", "iii.iii.iv.i", "iii.iii.iv.i/from-p5-2", "iii.iii.iv.ii", "iii.iii.iv.iii", "iii.iii.iv.ix", "iii.iii.iv.v/from-p2-2", "iii.iii.iv.vii", "iii.iii.iv.vii/from-p2-2", "iii.iii.iv.xiv", "iii.iii.iv.xix", "iii.iii.iv.xvi"]
+ },
+ "health.no_ligatures:church-fathers/6895ce71-2eab-54d6-93a0-516a97625efc": {
+  "fixed_by": "1.10a",
+  "description": "The Extant Fragments of the Five Books of the Chronography of Julius Africanus.: 16 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.v.i", "v.v.iv", "v.v.ix", "v.v.x", "v.v.xii", "v.v.xiii", "v.v.xiii/from-p14", "v.v.xiii/from-p9", "v.v.xiv", "v.v.xv", "v.v.xvi", "v.v.xvi/from-p7", "v.v.xvii", "v.v.xvii/from-p7-2", "v.v.xviii", "v.v.xviii/from-p9"]
+ },
+ "health.no_ligatures:church-fathers/69c74a98-bd14-5b68-9dbe-9758cd8ac257": {
+  "fixed_by": "1.10a",
+  "description": "The Resurrection of the Dead: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.iii.xiii", "v.iii.xvi"]
+ },
+ "health.no_ligatures:church-fathers/6b70b67f-bfb3-5cda-a2f0-323eff4621bc": {
+  "fixed_by": "1.10a",
+  "description": "On Modesty.: 9 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.viii.i", "iii.viii.ix/from-p7", "iii.viii.viii", "iii.viii.xii/from-p2-2", "iii.viii.xiii/from-p2-2", "iii.viii.xviii", "iii.viii.xx/from-p6", "iii.viii.xxii", "iii.viii.xxiii"]
+ },
+ "health.no_ligatures:church-fathers/6dea18c5-8901-5df5-9dec-b1b662064776": {
+  "fixed_by": "1.10a",
+  "description": "The Extant Writings of Asterius Urbanus: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.ii.i"]
+ },
+ "health.no_ligatures:church-fathers/6e9f0854-4460-5044-b0ed-c13355cd90fe": {
+  "fixed_by": "1.10a",
+  "description": "Exegetical Fragments.: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.iv.vi"]
+ },
+ "health.no_ligatures:church-fathers/7073bae0-a0fd-5c22-8e36-8cf493f15af2": {
+  "fixed_by": "1.10a",
+  "description": "Epistle from Maria of Cassobelæ: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)"]
+ },
+ "health.no_ligatures:church-fathers/760c4195-f5be-5141-90fc-8958fccd06ba": {
+  "fixed_by": "1.10a",
+  "description": "Theophilus to Autolycus: 23 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.ii.i.ix", "iv.ii.i.xiii", "iv.ii.ii.vii", "iv.ii.ii.viii", "iv.ii.ii.x", "iv.ii.ii.xxix", "iv.ii.ii.xxxi", "iv.ii.ii.xxxii", "iv.ii.ii.xxxiii", "iv.ii.ii.xxxvii", "iv.ii.iii.ii", "iv.ii.iii.ix", "iv.ii.iii.x", "iv.ii.iii.xvi", "iv.ii.iii.xxi", "iv.ii.iii.xxii", "iv.ii.iii.xxiii", "iv.ii.iii.xxiv", "iv.ii.iii.xxix", "iv.ii.iii.xxv", "iv.ii.iii.xxvi", "iv.ii.iii.xxvii", "iv.ii.iii.xxx"]
+ },
+ "health.no_ligatures:church-fathers/7f6bc9ae-3566-5deb-8dbe-895238288fda": {
+  "fixed_by": "1.10a",
+  "description": "Book First.—Visions: 6 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ii.ii.i", "ii.ii.i/from-p1-2", "ii.ii.ii", "ii.ii.ii/from-p25", "ii.ii.iii/from-p33", "ii.ii.iii/from-p44"]
+ },
+ "health.no_ligatures:church-fathers/7f7a66c3-17eb-5724-8091-a1e7a8612229": {
+  "fixed_by": "1.10a",
+  "description": "Theonas of Alexandria.: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.vii.i", "vi.vii.ii.i", "vi.vii.ii.vii"]
+ },
+ "health.no_ligatures:church-fathers/83609fa8-480c-5a66-a09c-f0114c4d3e66": {
+  "fixed_by": "1.10a",
+  "description": "The Seventh Council of Carthage under Cyprian. Concerning the Baptism of Heretics.: 10 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.vi.i", "iv.vi.i/from-p10", "iv.vi.i/from-p118", "iv.vi.i/from-p146", "iv.vi.i/from-p181", "iv.vi.i/from-p22", "iv.vi.i/from-p34", "iv.vi.i/from-p55", "iv.vi.i/from-p76", "iv.vi.i/from-p97"]
+ },
+ "health.no_ligatures:church-fathers/841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {
+  "fixed_by": "1.10a",
+  "description": "The Martyrdom of Ignatius: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.xxv.ii", "v.xxv.vi"]
+ },
+ "health.no_ligatures:church-fathers/85e7153f-b45d-5eb6-9f5b-e87967da6f29": {
+  "fixed_by": "1.10a",
+  "description": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.): 158 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["xii.iii.i.i", "xii.iii.i.iv", "xii.iii.i.li", "xii.iii.i.lii", "xii.iii.i.lix", "xii.iii.i.lix/from-p1-2", "xii.iii.i.lxiii", "xii.iii.i.lxv", "xii.iii.i.v", "xii.iii.i.xl", "xii.iii.i.xli", "xii.iii.i.xlix", "xii.iii.i.xlvi", "xii.iii.i.xlvii", "xii.iii.i.xvi", "xii.iii.i.xxiii", "xii.iii.i.xxvi", "xii.iii.i.xxviii", "xii.iii.i.xxx", "xii.iii.i.xxxix", "xii.iii.i.xxxvi", "xii.iii.i.xxxviii", "xii.iii.ii.i", "xii.iii.ii.ii", "xii.iii.ii.ix", "xii.iii.ii.lii", "xii.iii.ii.lii/from-p1-2", "xii.iii.ii.lvi", "xii.iii.ii.lxii", "xii.iii.ii.lxiv", "xii.iii.ii.lxix", "xii.iii.ii.lxv", "xii.iii.ii.lxv/from-p1-2", "xii.iii.ii.lxvii", "xii.iii.ii.lxxi", "xii.iii.ii.lxxiii", "xii.iii.ii.lxxiv", "xii.iii.ii.vi", "xii.iii.ii.vi/from-p1-2", "xii.iii.ii.vii", "xii.iii.ii.viii", "xii.iii.ii.x", "xii.iii.ii.xii", "xii.iii.ii.xiii", "xii.iii.ii.xiv", "xii.iii.ii.xli", "xii.iii.ii.xlii", "xii.iii.ii.xliii", "xii.iii.ii.xlv", "xii.iii.ii.xlviii", "xii.iii.ii.xvi/from-p1-2", "xii.iii.ii.xviii", "xii.iii.ii.xxii", "xii.iii.ii.xxiii", "xii.iii.ii.xxiv", "xii.iii.ii.xxix", "xii.iii.ii.xxv", "xii.iii.ii.xxviii", "xii.iii.ii.xxx", "xii.iii.ii.xxx/from-p9", "xii.iii.ii.xxxi", "xii.iii.ii.xxxii", "xii.iii.ii.xxxiii", "xii.iii.ii.xxxiv", "xii.iii.ii.xxxix", "xii.iii.ii.xxxv", "xii.iii.ii.xxxvi", "xii.iii.ii.xxxvi/from-p1-2", "xii.iii.iii.vi", "xii.iii.iii.x", "xii.iii.iii.xiii", "xii.iii.iii.xl", "xii.iii.iii.xli", "xii.iii.iii.xxi", "xii.iii.iii.xxii", "xii.iii.iii.xxiii", "xii.iii.iii.xxix", "xii.iii.iii.xxvi", "xii.iii.iii.xxx", "xii.iii.iii.xxxiv", "xii.iii.iii.xxxix", "xii.iii.iii.xxxv", "xii.iii.iii.xxxvii", "xii.iii.iii.xxxviii", "xii.iii.iv.ii", "xii.iii.iv.iii", "xii.iii.iv.iv", "xii.iii.iv.vii", "xii.iii.iv.xi", "xii.iii.iv.xiv", "xii.iii.iv.xix", "xii.iii.iv.xv", "xii.iii.iv.xvi", "xii.iii.iv.xx", "xii.iii.iv.xxiv", "xii.iii.iv.xxix", "xii.iii.iv.xxv", "xii.iii.iv.xxvi", "xii.iii.iv.xxvii", "xii.iii.iv.xxxiv", "xii.iii.iv.xxxv", "xii.iii.ix/from-p47", "xii.iii.ix/from-p54", "xii.iii.v.i", "xii.iii.v.i/from-p5-2", "xii.iii.v.iii", "xii.iii.v.iv", "xii.iii.v.vii", "xii.iii.v.viii", "xii.iii.v.x", "xii.iii.v.xii", "xii.iii.v.xvi", "xii.iii.v.xxi", "xii.iii.v.xxiii", "xii.iii.v.xxiv", "xii.iii.v.xxiv/from-p1-2", "xii.iii.v.xxix", "xii.iii.v.xxv", "xii.iii.v.xxvi", "xii.iii.v.xxvii", "xii.iii.v.xxviii", "xii.iii.v.xxxix", "xii.iii.v.xxxv", "xii.iii.v.xxxviii", "xii.iii.vi.iii", "xii.iii.vi.iv", "xii.iii.vi.v", "xii.iii.vi.vi", "xii.iii.vi.vi/from-p1-2", "xii.iii.vi.vii", "xii.iii.vi.x", "xii.iii.vi.xi", "xii.iii.vi.xii", "xii.iii.vi.xiii", "xii.iii.vi.xvi", "xii.iii.vi.xxi", "xii.iii.vi.xxiii", "xii.iii.vi.xxv", "xii.iii.vii.iii", "xii.iii.vii.li", "xii.iii.vii.xliv", "xii.iii.vii.xlv", "xii.iii.vii.xlvii", "xii.iii.vii.xv", "xii.iii.vii.xvi", "xii.iii.vii.xvii", "xii.iii.vii.xxii", "xii.iii.vii.xxiii", "xii.iii.vii.xxiv", "xii.iii.vii.xxiv/from-p1-2", "xii.iii.vii.xxix", "xii.iii.vii.xxv", "xii.iii.vii.xxvii", "xii.iii.vii.xxxii", "xii.iii.vii.xxxiii", "xii.iii.vii.xxxiv", "xii.iii.vii.xxxvi", "xii.iii.vii.xxxvii"]
+ },
+ "health.no_ligatures:church-fathers/89201a06-a747-53a5-8248-43e5a5cb5fae": {
+  "fixed_by": "1.10a",
+  "description": "On Fasting.: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.ix.xiii", "iii.ix.xviii"]
+ },
+ "health.no_ligatures:church-fathers/8b42a526-e078-56f4-89ab-4a87b995ef3b": {
+  "fixed_by": "1.10a",
+  "description": "Fragments of Lactantius: 5 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.vi.i", "iii.vi.i/from-p3-2", "iii.vi.i/from-p3-3", "iii.vi.ii", "iii.vi.ii/from-p1-2"]
+ },
+ "health.no_ligatures:church-fathers/8d817baf-5149-5641-91ab-ad994870956a": {
+  "fixed_by": "1.10a",
+  "description": "Anatolius of Alexandria.: 8 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.iii.i", "vi.iii.ii.i", "vi.iii.ii.i/from-p5-2", "vi.iii.ii.iii", "vi.iii.ii.x", "vi.iii.ii.xv", "vi.iii.iii", "vi.iii.iii/from-p46"]
+ },
+ "health.no_ligatures:church-fathers/8e5fb9cb-352a-59c8-8449-07d673b3671c": {
+  "fixed_by": "1.10a",
+  "description": "Fragments of Caius.: 6 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.iii.ii", "v.iii.ii/from-p10", "v.iii.ii/from-p15", "v.iii.iii", "v.iii.iii/from-p17", "v.iii.iv"]
+ },
+ "health.no_ligatures:church-fathers/96584290-90c2-50bc-9d3d-c353b8969e1f": {
+  "fixed_by": "1.10a",
+  "description": "The Instructor: 45 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.iii.i.i", "vi.iii.i.i/from-p8", "vi.iii.i.ii/from-p6", "vi.iii.i.v", "vi.iii.i.vi", "vi.iii.i.vi/from-p10", "vi.iii.i.vi/from-p42", "vi.iii.i.vii", "vi.iii.ii.i/from-p32-2", "vi.iii.ii.i/from-p4", "vi.iii.ii.i/from-p44", "vi.iii.ii.i/from-p44-2", "vi.iii.ii.ii/from-p21", "vi.iii.ii.ii/from-p52", "vi.iii.ii.iii", "vi.iii.ii.iv/from-p17", "vi.iii.ii.iv/from-p7", "vi.iii.ii.vi/from-p15", "vi.iii.ii.viii/from-p21", "vi.iii.ii.viii/from-p25", "vi.iii.ii.viii/from-p32-2", "vi.iii.ii.x", "vi.iii.ii.x/from-p17", "vi.iii.ii.x/from-p17-2", "vi.iii.ii.x/from-p23-2", "vi.iii.ii.x/from-p8", "vi.iii.ii.x/from-p8-2", "vi.iii.ii.x/from-p8-3", "vi.iii.ii.xi/from-p11", "vi.iii.ii.xi/from-p37", "vi.iii.ii.xi/from-p42", "vi.iii.ii.xiii/from-p9", "vi.iii.iii.i/from-p12", "vi.iii.iii.ii", "vi.iii.iii.ii/from-p23", "vi.iii.iii.iv/from-p11", "vi.iii.iii.viii", "vi.iii.iii.xi/from-p106", "vi.iii.iii.xi/from-p47", "vi.iii.iii.xi/from-p72", "vi.iii.iii.xi/from-p82", "vi.iii.iii.xii", "vi.iii.iii.xii/from-p13", "vi.iii.iii.xii/from-p25", "vi.iii.iii.xii/from-p81"]
+ },
+ "health.no_ligatures:church-fathers/9c052574-ccbc-5aa6-8a1e-b582b7dd73e4": {
+  "fixed_by": "1.10a",
+  "description": "A Letter from Origen to Gregory.: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.viii.i", "vi.viii.i/from-p5"]
+ },
+ "health.no_ligatures:church-fathers/9e03c96d-8295-5e5e-a4d3-3570ddcf0415": {
+  "fixed_by": "1.10a",
+  "description": "The Divine Institutes: 160 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.ii.i.iv", "iii.ii.i.ix", "iii.ii.i.vi", "iii.ii.i.vi/from-p15", "iii.ii.i.vi/from-p9", "iii.ii.i.vii", "iii.ii.i.vii/from-p3", "iii.ii.i.vii/from-p6", "iii.ii.i.x/from-p6", "iii.ii.i.xi", "iii.ii.i.xii/from-p10", "iii.ii.i.xii/from-p15", "iii.ii.i.xii/from-p15-2", "iii.ii.i.xii/from-p3", "iii.ii.i.xiii", "iii.ii.i.xiv", "iii.ii.i.xiv/from-p8-2", "iii.ii.i.xix", "iii.ii.i.xix/from-p1-2", "iii.ii.i.xv", "iii.ii.i.xvi", "iii.ii.i.xvi/from-p10-2", "iii.ii.i.xvi/from-p10-3", "iii.ii.i.xvi/from-p4", "iii.ii.i.xviii/from-p3", "iii.ii.i.xviii/from-p3-2", "iii.ii.i.xxi", "iii.ii.i.xxi/from-p7", "iii.ii.i.xxii/from-p14", "iii.ii.i.xxii/from-p20-2", "iii.ii.i.xxii/from-p8", "iii.ii.i.xxiii", "iii.ii.i.xxiii/from-p3", "iii.ii.i.xxiii/from-p7", "iii.ii.ii.i/from-p6", "iii.ii.ii.ii", "iii.ii.ii.iii/from-p11", "iii.ii.ii.iv/from-p16", "iii.ii.ii.iv/from-p8", "iii.ii.ii.ix/from-p33", "iii.ii.ii.ix/from-p33-2", "iii.ii.ii.viii/from-p18", "iii.ii.ii.viii/from-p8", "iii.ii.ii.xi/from-p18", "iii.ii.ii.xiii/from-p15", "iii.ii.ii.xv", "iii.ii.ii.xvii", "iii.ii.ii.xvii/from-p11", "iii.ii.ii.xvii/from-p5", "iii.ii.ii.xviii/from-p5", "iii.ii.iii.xii/from-p5", "iii.ii.iii.xiv/from-p8", "iii.ii.iii.xvii/from-p17", "iii.ii.iii.xviii", "iii.ii.iii.xviii/from-p9", "iii.ii.iii.xx/from-p5", "iii.ii.iii.xxix", "iii.ii.iii.xxv/from-p6", "iii.ii.iii.xxviii", "iii.ii.iv.iii", "iii.ii.iv.iii/from-p5", "iii.ii.iv.iv/from-p3", "iii.ii.iv.vi", "iii.ii.iv.vii", "iii.ii.iv.viii", "iii.ii.iv.x/from-p19", "iii.ii.iv.x/from-p7", "iii.ii.iv.xi/from-p9", "iii.ii.iv.xii", "iii.ii.iv.xiii", "iii.ii.iv.xiii/from-p8", "iii.ii.iv.xiv/from-p12", "iii.ii.iv.xv", "iii.ii.iv.xv/from-p15", "iii.ii.iv.xv/from-p30", "iii.ii.iv.xvi/from-p14", "iii.ii.iv.xvi/from-p4", "iii.ii.iv.xvii", "iii.ii.iv.xvii/from-p25", "iii.ii.iv.xviii", "iii.ii.iv.xviii/from-p15", "iii.ii.iv.xviii/from-p5", "iii.ii.iv.xx/from-p4", "iii.ii.iv.xxii", "iii.ii.iv.xxiii", "iii.ii.iv.xxiii/from-p3", "iii.ii.iv.xxiv", "iii.ii.iv.xxiv/from-p1-3", "iii.ii.iv.xxvi/from-p18", "iii.ii.iv.xxvii/from-p8", "iii.ii.iv.xxviii", "iii.ii.iv.xxviii/from-p1-2", "iii.ii.v.i/from-p8", "iii.ii.v.ix/from-p14", "iii.ii.v.v", "iii.ii.v.vi", "iii.ii.v.x", "iii.ii.v.xi/from-p5", "iii.ii.v.xiv", "iii.ii.v.xix", "iii.ii.v.xvii/from-p1-2", "iii.ii.v.xviii", "iii.ii.v.xx", "iii.ii.v.xxiii", "iii.ii.v.xxiii/from-p5", "iii.ii.v.xxiv", "iii.ii.vi.iii", "iii.ii.vi.iii/from-p3", "iii.ii.vi.v", "iii.ii.vi.vi", "iii.ii.vi.vi/from-p15", "iii.ii.vi.vi/from-p7", "iii.ii.vi.vii", "iii.ii.vi.x", "iii.ii.vi.xii", "iii.ii.vi.xii/from-p4", "iii.ii.vi.xiii", "iii.ii.vi.xiv", "iii.ii.vi.xix", "iii.ii.vi.xvii/from-p3", "iii.ii.vi.xviii/from-p13", "iii.ii.vi.xx/from-p17", "iii.ii.vi.xx/from-p3", "iii.ii.vi.xx/from-p3-2", "iii.ii.vi.xxiii", "iii.ii.vi.xxiii/from-p4", "iii.ii.vi.xxiii/from-p7", "iii.ii.vi.xxiv/from-p24", "iii.ii.vii.i", "iii.ii.vii.ii", "iii.ii.vii.iii", "iii.ii.vii.iii/from-p17", "iii.ii.vii.iii/from-p5", "iii.ii.vii.ix", "iii.ii.vii.v", "iii.ii.vii.v/from-p6", "iii.ii.vii.vii/from-p5", "iii.ii.vii.viii", "iii.ii.vii.xiii", "iii.ii.vii.xix", "iii.ii.vii.xx", "iii.ii.vii.xxii", "iii.ii.vii.xxii/from-p6", "iii.ii.vii.xxiv/from-p5-2", "iii.ii.vii.xxvii/from-p7", "iii.ii.viii.iii", "iii.ii.viii.ix", "iii.ii.viii.lv", "iii.ii.viii.lviii", "iii.ii.viii.lxvi/from-p4", "iii.ii.viii.vi", "iii.ii.viii.viii", "iii.ii.viii.xiii", "iii.ii.viii.xix", "iii.ii.viii.xliii", "iii.ii.viii.xlvi", "iii.ii.viii.xv", "iii.ii.viii.xxxiii", "iii.ii.viii.xxxix", "iii.ii.viii.xxxviii"]
+ },
+ "health.no_ligatures:church-fathers/9e93f3ef-cd33-598f-9aac-f2a5886d3e21": {
+  "fixed_by": "1.10a",
+  "description": "The Octavius of Minucius Felix.: 28 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.iii.i", "iv.iii.ii", "iv.iii.iii", "iv.iii.iv", "iv.iii.v", "iv.iii.vi", "iv.iii.vii", "iv.iii.xiii", "iv.iii.xiv", "iv.iii.xix", "iv.iii.xix/from-p2-2", "iv.iii.xl", "iv.iii.xli", "iv.iii.xv", "iv.iii.xvi", "iv.iii.xvii", "iv.iii.xviii", "iv.iii.xx", "iv.iii.xxi", "iv.iii.xxi/from-p2-2", "iv.iii.xxii", "iv.iii.xxv", "iv.iii.xxv/from-p2-2", "iv.iii.xxvi", "iv.iii.xxviii/from-p2-2", "iv.iii.xxxix", "iv.iii.xxxv", "iv.iii.xxxvii"]
+ },
+ "health.no_ligatures:church-fathers/a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc": {
+  "fixed_by": "1.10a",
+  "description": "Appendix to the Works of Hippolytus. Containing Dubious and Spurious Pieces.: 7 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.v.i.xix", "iii.v.i.xxxiv", "iii.v.ii", "iii.v.iii", "iii.v.iii/from-p55", "iii.v.iv", "iii.v.v"]
+ },
+ "health.no_ligatures:church-fathers/a558e370-226c-5ac5-b01b-916adbe6b256": {
+  "fixed_by": "1.10a",
+  "description": "Against Heresies: Book II: 69 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "ix.iii.iv", "ix.iii.ix/from-p3", "ix.iii.v", "ix.iii.vi", "ix.iii.vii/from-p5", "ix.iii.viii/from-p10", "ix.iii.viii/from-p15", "ix.iii.viii/from-p4", "ix.iii.viii/from-p8", "ix.iii.xi/from-p4", "ix.iii.xii", "ix.iii.xiii", "ix.iii.xiii/from-p11", "ix.iii.xiii/from-p5", "ix.iii.xiv", "ix.iii.xiv/from-p11", "ix.iii.xiv/from-p13", "ix.iii.xiv/from-p16", "ix.iii.xiv/from-p5", "ix.iii.xix", "ix.iii.xix/from-p11", "ix.iii.xix/from-p7", "ix.iii.xv", "ix.iii.xv/from-p16", "ix.iii.xv/from-p22", "ix.iii.xv/from-p24", "ix.iii.xv/from-p4", "ix.iii.xv/from-p9", "ix.iii.xvi", "ix.iii.xvii/from-p4", "ix.iii.xviii", "ix.iii.xviii/from-p10", "ix.iii.xviii/from-p14", "ix.iii.xviii/from-p18", "ix.iii.xviii/from-p20", "ix.iii.xviii/from-p6", "ix.iii.xx/from-p10", "ix.iii.xx/from-p19", "ix.iii.xxi", "ix.iii.xxi/from-p12", "ix.iii.xxi/from-p5", "ix.iii.xxii", "ix.iii.xxii/from-p5", "ix.iii.xxiii", "ix.iii.xxiii/from-p14", "ix.iii.xxiii/from-p23", "ix.iii.xxiii/from-p28", "ix.iii.xxiii/from-p8", "ix.iii.xxiv", "ix.iii.xxix/from-p11", "ix.iii.xxix/from-p28", "ix.iii.xxix/from-p5", "ix.iii.xxv/from-p12", "ix.iii.xxv/from-p25-2", "ix.iii.xxv/from-p5", "ix.iii.xxvi/from-p8", "ix.iii.xxx", "ix.iii.xxxi", "ix.iii.xxxi/from-p13", "ix.iii.xxxi/from-p19", "ix.iii.xxxi/from-p21", "ix.iii.xxxii", "ix.iii.xxxiii/from-p12", "ix.iii.xxxiv", "ix.iii.xxxv", "ix.iii.xxxv/from-p7", "ix.iii.xxxvi/from-p13", "ix.iii.xxxvi/from-p4"]
+ },
+ "health.no_ligatures:church-fathers/a9dfa0cc-a39d-5962-9068-231edc7d02fe": {
+  "fixed_by": "1.10a",
+  "description": "Against Heresies: Book III: 34 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "ix.iv.ix", "ix.iv.v", "ix.iv.v/from-p7", "ix.iv.xi/from-p24", "ix.iv.xi/from-p30", "ix.iv.xi/from-p8-2", "ix.iv.xii", "ix.iv.xii/from-p26", "ix.iv.xii/from-p41", "ix.iv.xii/from-p8", "ix.iv.xiii/from-p12", "ix.iv.xiii/from-p37", "ix.iv.xiii/from-p46", "ix.iv.xiii/from-p6", "ix.iv.xiii/from-p60", "ix.iv.xiii/from-p66", "ix.iv.xiv/from-p13", "ix.iv.xv/from-p10", "ix.iv.xv/from-p14", "ix.iv.xvi/from-p4", "ix.iv.xvii/from-p43", "ix.iv.xvii/from-p47", "ix.iv.xvii/from-p5", "ix.iv.xviii", "ix.iv.xviii/from-p20", "ix.iv.xx", "ix.iv.xxi/from-p20", "ix.iv.xxi/from-p7", "ix.iv.xxii", "ix.iv.xxiii/from-p12", "ix.iv.xxiv/from-p25", "ix.iv.xxiv/from-p7", "ix.iv.xxvi/from-p8"]
+ },
+ "health.no_ligatures:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
+  "fixed_by": "1.10a",
+  "description": "The Epistles of Cyprian.: 40 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.iv.i", "iv.iv.i/from-p34", "iv.iv.liii", "iv.iv.liv", "iv.iv.liv/from-p58", "iv.iv.lxi", "iv.iv.lxii", "iv.iv.lxii/from-p12", "iv.iv.lxiii", "iv.iv.lxix", "iv.iv.lxv/from-p8", "iv.iv.lxvi/from-p6", "iv.iv.lxvii", "iv.iv.lxvii/from-p32", "iv.iv.lxviii", "iv.iv.lxviii/from-p10", "iv.iv.lxviii/from-p19", "iv.iv.lxxii/from-p65", "iv.iv.lxxiii", "iv.iv.lxxiv", "iv.iv.lxxiv/from-p68", "iv.iv.lxxv/from-p54", "iv.iv.lxxxi", "iv.iv.lxxxiii", "iv.iv.lxxxiii/from-p115", "iv.iv.lxxxiii/from-p143", "iv.iv.lxxxiii/from-p18", "iv.iv.lxxxiii/from-p31", "iv.iv.lxxxiii/from-p46", "iv.iv.lxxxiii/from-p78", "iv.iv.lxxxiii/from-p86", "iv.iv.lxxxiii/from-p94", "iv.iv.xl", "iv.iv.xli/from-p13", "iv.iv.xlvii", "iv.iv.xvi", "iv.iv.xxiv/from-p6", "iv.iv.xxv", "iv.iv.xxv/from-p8", "iv.iv.xxxix/from-p8"]
+ },
+ "health.no_ligatures:church-fathers/abd0e330-31fe-5de4-bf93-e9b572c179b5": {
+  "fixed_by": "1.10a",
+  "description": "The Discourse to the Greeks: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.v.ii", "viii.v.iii"]
+ },
+ "health.no_ligatures:church-fathers/abf69de0-a1e2-53ce-8283-541924c6ea32": {
+  "fixed_by": "1.10a",
+  "description": "Epistle to Diognetus: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.ii.v"]
+ },
+ "health.no_ligatures:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
+  "fixed_by": "1.10a",
+  "description": "Doctrinal Treatises of St. Augustin: 52 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.i.i/from-p11", "iv.i.i/from-p18", "iv.i.i/from-p7", "iv.i.iv.ix", "iv.i.iv.xii", "iv.i.ix.iv/from-p7", "iv.i.vii.viii/from-p11", "iv.i.vii.xvi", "iv.i.xi.ii", "iv.i.xi.iv", "iv.i.xi.xii/from-p3-2", "iv.i.xv.xiii", "iv.i.xv.xv", "iv.i.xvi.xi", "iv.i.xvii.xvi", "iv.ii.x", "iv.ii.xlvi", "iv.ii.xxii", "iv.iii.iii/from-p2-2", "iv.iii.iv", "iv.iii.v/from-p2-2", "iv.iii.vi", "iv.iii.vii", "iv.iii.xi/from-p5-2", "iv.iii.xiv", "iv.iii.xv/from-p4-2", "iv.iii.xvi/from-p2-2", "iv.iii.xvii/from-p5", "iv.iii.xxiii/from-p10", "iv.iii.xxvi", "iv.iii.xxvi/from-p11", "iv.iii.xxvi/from-p11-2", "iv.iv.v/from-p9", "iv.iv.x/from-p11-2", "iv.iv.x/from-p27-2", "iv.iv.x/from-p48", "iv.iv.x/from-p8-2", "iv.iv.xi/from-p17-2", "iv.iv.xi/from-p5", "iv.iv.xi/from-p5-2", "iv.v", "iv.v.vii", "iv.vi.ix", "iv.vi.v", "iv.vi.vi", "iv.vi.vii", "iv.vi.viii", "iv.vi.xi", "iv.vi.xvii", "iv.vi.xxxii/from-p1-2", "iv.vi.xxxvii/from-p1-2", "iv.vii.xv"]
+ },
+ "health.no_ligatures:church-fathers/b9b6fbbb-dec7-5a67-ad45-58965105c081": {
+  "fixed_by": "1.10a",
+  "description": "The Instructions of Commodianus.: 4 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.ii.liii", "v.ii.lxxx", "v.ii.xix", "v.ii.xxiii"]
+ },
+ "health.no_ligatures:church-fathers/bb35c577-ee5b-546e-abb6-41a0764cd6a7": {
+  "fixed_by": "1.10a",
+  "description": "Pierus of Alexandria.: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.vi.ii"]
+ },
+ "health.no_ligatures:church-fathers/bb72e2f6-128d-585b-b601-8081e68f7de9": {
+  "fixed_by": "1.10a",
+  "description": "Epistle to the Magnesians: Shorter and Longer Versions: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.iii.xv"]
+ },
+ "health.no_ligatures:church-fathers/c7a1cced-c7f1-57aa-b0ea-da3a99edcc33": {
+  "fixed_by": "1.10a",
+  "description": "The Refutation of All Heresies.: 154 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iii.i.ii", "iii.iii.i.ii/from-p18", "iii.iii.i.iii", "iii.iii.i.iv/from-p14", "iii.iii.i.iv/from-p14-2", "iii.iii.i.ix", "iii.iii.i.vi", "iii.iii.i.xix", "iii.iii.i.xviii", "iii.iii.i.xviii/from-p12", "iii.iii.i.xxiii", "iii.iii.i.xxv", "iii.iii.ii.ii", "iii.iii.ii.iv", "iii.iii.ii.li", "iii.iii.ii.v/from-p9", "iii.iii.ii.vi", "iii.iii.ii.viii", "iii.iii.ii.xiv", "iii.iii.ii.xiv/from-p11", "iii.iii.ii.xlix", "iii.iii.ii.xlvi", "iii.iii.ii.xlvii", "iii.iii.ii.xlviii", "iii.iii.ii.xlviii/from-p9", "iii.iii.ii.xlviii/from-p9-2", "iii.iii.ii.xxxi", "iii.iii.ii.xxxii", "iii.iii.ii.xxxiii", "iii.iii.iii.i", "iii.iii.iii.ii", "iii.iii.iii.ii/from-p8", "iii.iii.iii.iii/from-p25", "iii.iii.iii.iii/from-p35", "iii.iii.iii.iii/from-p6", "iii.iii.iii.iii/from-p81", "iii.iii.iii.iv", "iii.iii.iii.iv/from-p21", "iii.iii.iii.iv/from-p52", "iii.iii.iii.iv/from-p8", "iii.iii.iii.ix", "iii.iii.iii.ix/from-p13", "iii.iii.iii.ix/from-p7", "iii.iii.iii.v", "iii.iii.iii.v/from-p8", "iii.iii.iii.viii", "iii.iii.iii.x", "iii.iii.iii.x/from-p2-2", "iii.iii.iii.xi", "iii.iii.iii.xii", "iii.iii.iii.xii/from-p18", "iii.iii.iii.xiii", "iii.iii.iii.xix", "iii.iii.iii.xv", "iii.iii.iii.xvi/from-p9", "iii.iii.iii.xxii", "iii.iii.iv.i", "iii.iii.iv.iii", "iii.iii.iv.iv", "iii.iii.iv.li", "iii.iii.iv.v/from-p6", "iii.iii.iv.x/from-p8", "iii.iii.iv.xiii", "iii.iii.iv.xiii/from-p5", "iii.iii.iv.xiv", "iii.iii.iv.xl", "iii.iii.iv.xli", "iii.iii.iv.xlii", "iii.iii.iv.xliv", "iii.iii.iv.xlix", "iii.iii.iv.xlv", "iii.iii.iv.xlvi", "iii.iii.iv.xlvii", "iii.iii.iv.xlviii/from-p4", "iii.iii.iv.xv", "iii.iii.iv.xv/from-p6", "iii.iii.iv.xvi/from-p2-2", "iii.iii.iv.xvii", "iii.iii.iv.xviii", "iii.iii.iv.xxi", "iii.iii.iv.xxii", "iii.iii.iv.xxix", "iii.iii.iv.xxv", "iii.iii.iv.xxv/from-p2-2", "iii.iii.iv.xxvi", "iii.iii.iv.xxvi/from-p2-2", "iii.iii.iv.xxvii", "iii.iii.iv.xxviii", "iii.iii.iv.xxviii/from-p4", "iii.iii.iv.xxx", "iii.iii.iv.xxx/from-p5", "iii.iii.iv.xxxi", "iii.iii.iv.xxxii", "iii.iii.iv.xxxiii/from-p7", "iii.iii.iv.xxxiv", "iii.iii.iv.xxxix", "iii.iii.iv.xxxv", "iii.iii.iv.xxxviii", "iii.iii.iv.xxxviii/from-p4", "iii.iii.iv.xxxviii/from-p4-2", "iii.iii.ix", "iii.iii.ix/from-p13", "iii.iii.ix/from-p20", "iii.iii.ix/from-p28", "iii.iii.ix/from-p72", "iii.iii.v.i", "iii.iii.v.iii", "iii.iii.v.viii/from-p6", "iii.iii.v.xi/from-p7", "iii.iii.v.xii", "iii.iii.v.xiii", "iii.iii.v.xvii", "iii.iii.v.xviii", "iii.iii.v.xviii/from-p24", "iii.iii.v.xx", "iii.iii.v.xx/from-p9", "iii.iii.v.xxi", "iii.iii.v.xxii", "iii.iii.v.xxiii", "iii.iii.v.xxiv", "iii.iii.v.xxv", "iii.iii.v.xxvi", "iii.iii.v.xxvii", "iii.iii.vi.i", "iii.iii.vi.ii", "iii.iii.vi.ii/from-p5-2", "iii.iii.vi.iii", "iii.iii.vi.iii/from-p5", "iii.iii.vi.iv", "iii.iii.vi.iv/from-p7", "iii.iii.vi.v", "iii.iii.vi.vi", "iii.iii.vi.viii", "iii.iii.vi.x", "iii.iii.vi.xi", "iii.iii.vi.xii", "iii.iii.vi.xiii", "iii.iii.vii.iii", "iii.iii.vii.ix", "iii.iii.vii.v", "iii.iii.vii.vi/from-p11", "iii.iii.vii.viii", "iii.iii.vii.viii/from-p20", "iii.iii.vii.xxii", "iii.iii.viii.iv", "iii.iii.viii.vii", "iii.iii.viii.x", "iii.iii.viii.xi/from-p3", "iii.iii.viii.xiii", "iii.iii.viii.xix", "iii.iii.viii.xv", "iii.iii.viii.xxv", "iii.iii.viii.xxx/from-p10", "iii.iii.viii.xxx/from-p22"]
+ },
+ "health.no_ligatures:church-fathers/c7ef22ce-17e4-5b8a-b915-9470f19eebe4": {
+  "fixed_by": "1.10a",
+  "description": "Against Heresies: Book IV: 40 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "ix.vi.i", "ix.vi.ii", "ix.vi.iii", "ix.vi.ix/from-p9", "ix.vi.vii", "ix.vi.vii/from-p6", "ix.vi.x/from-p15", "ix.vi.xi", "ix.vi.xi/from-p9", "ix.vi.xii/from-p6", "ix.vi.xiii/from-p14", "ix.vi.xix/from-p17", "ix.vi.xix/from-p22", "ix.vi.xix/from-p7", "ix.vi.xli/from-p9", "ix.vi.xvi", "ix.vi.xvii", "ix.vi.xviii/from-p10", "ix.vi.xviii/from-p24", "ix.vi.xx/from-p6", "ix.vi.xxi/from-p39", "ix.vi.xxi/from-p44", "ix.vi.xxi/from-p55-2", "ix.vi.xxii/from-p7", "ix.vi.xxiii", "ix.vi.xxvi", "ix.vi.xxviii", "ix.vi.xxviii/from-p10", "ix.vi.xxviii/from-p15", "ix.vi.xxxi", "ix.vi.xxxi/from-p3", "ix.vi.xxxii", "ix.vi.xxxii/from-p12", "ix.vi.xxxiii", "ix.vi.xxxiv/from-p19", "ix.vi.xxxv/from-p9-2", "ix.vi.xxxvi/from-p5", "ix.vi.xxxvii/from-p10", "ix.vi.xxxvii/from-p17"]
+ },
+ "health.no_ligatures:church-fathers/cf8278dd-3523-576c-b85a-1402077bdae3": {
+  "fixed_by": "1.10a",
+  "description": "The Martyrdom of Justin Martyr: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.xi.iii"]
+ },
+ "health.no_ligatures:church-fathers/d2b71f9f-111c-5f1b-9a43-5a897b13730c": {
+  "fixed_by": "1.10a",
+  "description": "De Fuga in Persecutione.: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.x.i/from-p56", "iii.x.i/from-p63-2", "iii.x.i/from-p63-3"]
+ },
+ "health.no_ligatures:church-fathers/d318fc4d-d118-50ff-ac03-f90e4d149c01": {
+  "fixed_by": "1.10a",
+  "description": "Against Heresies: Book V: 11 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "ix.vii.ii", "ix.vii.xiv", "ix.vii.xix/from-p3", "ix.vii.xx", "ix.vii.xxi", "ix.vii.xxii", "ix.vii.xxii/from-p6", "ix.vii.xxv/from-p11", "ix.vii.xxvi/from-p8", "ix.vii.xxxvi/from-p8"]
+ },
+ "health.no_ligatures:church-fathers/d72938c6-9f4d-5241-8af8-6feb01ee8dd6": {
+  "fixed_by": "1.10a",
+  "description": "Book I. Concerning the Laity: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ix.ii.iii"]
+ },
+ "health.no_ligatures:church-fathers/d7f29587-bcec-5a71-9633-e635fa8989f5": {
+  "fixed_by": "1.10a",
+  "description": "On the Pallium.: 12 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.ii.i", "iii.ii.i/from-p7-2", "iii.ii.ii", "iii.ii.ii/from-p2-2", "iii.ii.ii/from-p2-3", "iii.ii.iii/from-p10", "iii.ii.iv", "iii.ii.iv/from-p13", "iii.ii.iv/from-p22", "iii.ii.iv/from-p22-2", "iii.ii.v/from-p2-2", "iii.ii.v/from-p2-3"]
+ },
+ "health.no_ligatures:church-fathers/dac28881-f92b-5c94-991a-5b244e2d49c3": {
+  "fixed_by": "1.10a",
+  "description": "City of God: 194 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.III.1", "iv.III.10", "iv.III.11", "iv.III.12", "iv.III.13", "iv.III.13/from-p7", "iv.III.14", "iv.III.14/from-p12", "iv.III.15/from-p5-2", "iv.III.16", "iv.III.17/from-p4", "iv.III.17/from-p4-2", "iv.III.17/from-p6-2", "iv.III.19", "iv.III.2", "iv.III.21/from-p2-2", "iv.III.25", "iv.III.26", "iv.III.27", "iv.III.28", "iv.III.3", "iv.III.30", "iv.III.31", "iv.III.5", "iv.II_1.12", "iv.II_1.14/from-p4", "iv.II_1.14/from-p4-2", "iv.II_1.17", "iv.II_1.21", "iv.II_1.22", "iv.II_1.23/from-p3", "iv.II_1.26/from-p4", "iv.II_1.29", "iv.II_1.4", "iv.II_1.9", "iv.IV.10", "iv.IV.10/from-p8-2", "iv.IV.2", "iv.IV.21/from-p2-2", "iv.IV.22", "iv.IV.24", "iv.IV.26", "iv.IV.27", "iv.IX.11", "iv.IX.23", "iv.IX.4", "iv.IX.4/from-p2-2", "iv.IX.4/from-p2-3", "iv.IX.5", "iv.V.12", "iv.V.12/from-p10", "iv.V.13", "iv.V.14/from-p2-2", "iv.V.18", "iv.V.19", "iv.V.2", "iv.V.21", "iv.V.22", "iv.V.26", "iv.V.26/from-p2-3", "iv.V.8", "iv.VI.1/from-p4", "iv.VI.10", "iv.VI.11", "iv.VI.2", "iv.VI.2/from-p5", "iv.VI.9/from-p11", "iv.VI.9/from-p7", "iv.VII.19/from-p3", "iv.VII.2", "iv.VII.27", "iv.VII.28", "iv.VII.3", "iv.VII.34", "iv.VII.35", "iv.VII.4", "iv.VII.5", "iv.VII.9/from-p8", "iv.VIII.11", "iv.VIII.18", "iv.VIII.19", "iv.VIII.2", "iv.VIII.23", "iv.VIII.26", "iv.VIII.26/from-p2-2", "iv.VIII.5", "iv.X.1/from-p4", "iv.X.10", "iv.X.11/from-p3", "iv.X.13", "iv.X.16/from-p5", "iv.X.21", "iv.X.27", "iv.X.30", "iv.X.32", "iv.X.32/from-p2-2", "iv.X.9/from-p4", "iv.XI.10/from-p3", "iv.XI.15", "iv.XI.21", "iv.XI.21/from-p2-2", "iv.XI.22", "iv.XI.22/from-p2-2", "iv.XI.3", "iv.XI.34", "iv.XI.4/from-p6", "iv.XII.10", "iv.XII.12", "iv.XII.18", "iv.XII.19", "iv.XII.22", "iv.XII.25", "iv.XII.26", "iv.XIII.10", "iv.XIII.16", "iv.XIII.16/from-p5", "iv.XIII.19", "iv.XIII.21", "iv.XIII.3", "iv.XIV.15/from-p4", "iv.XIV.26", "iv.XIV.3/from-p6", "iv.XIV.5", "iv.XIV.7/from-p9", "iv.XIV.8", "iv.XIV.8/from-p12", "iv.XIV.8/from-p5", "iv.XIV.9/from-p31", "iv.XIX.1/from-p4", "iv.XIX.12/from-p3", "iv.XIX.4/from-p10", "iv.XIX.4/from-p7", "iv.XV.11", "iv.XV.19", "iv.XV.7/from-p6-2", "iv.XV.8/from-p3", "iv.XV.9", "iv.XVI.19", "iv.XVI.26", "iv.XVI.41", "iv.XVI.6", "iv.XVII.6/from-p3", "iv.XVIII.12", "iv.XVIII.13", "iv.XVIII.13/from-p2-2", "iv.XVIII.14", "iv.XVIII.15", "iv.XVIII.16", "iv.XVIII.17", "iv.XVIII.18/from-p4", "iv.XVIII.19", "iv.XVIII.2/from-p5", "iv.XVIII.20", "iv.XVIII.21", "iv.XVIII.23", "iv.XVIII.23/from-p35", "iv.XVIII.24", "iv.XVIII.25", "iv.XVIII.3", "iv.XVIII.37", "iv.XVIII.4", "iv.XVIII.45", "iv.XVIII.46", "iv.XVIII.6", "iv.XVIII.7", "iv.XX.11", "iv.XX.24/from-p2-2", "iv.XXI.13", "iv.XXI.17", "iv.XXI.27/from-p24", "iv.XXI.3/from-p3", "iv.XXI.5", "iv.XXI.6/from-p3", "iv.XXI.8/from-p8", "iv.XXII.19/from-p4", "iv.XXII.20", "iv.XXII.26", "iv.XXII.8/from-p30", "iv.XXII.8/from-p35", "iv.XXII.8/from-p6", "iv.i/from-p14", "iv.i/from-p14-2", "iv.i/from-p36", "iv.ii.i", "iv.ii.iii", "iv.ii.iv", "iv.ii.ix/from-p5", "iv.ii.v", "iv.ii.vi", "iv.ii.xiii/from-p8", "iv.ii.xx", "iv.ii.xxi", "iv.ii.xxiv", "iv.ii.xxv"]
+ },
+ "health.no_ligatures:church-fathers/dd54c7cc-1a9a-5388-90d3-e8c4b8a95e06": {
+  "fixed_by": "1.10a",
+  "description": "On the Sole Government of God: 4 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.vii.ii", "viii.vii.iv", "viii.vii.v", "viii.vii.vi"]
+ },
+ "health.no_ligatures:church-fathers/debb22d8-702c-5df3-952c-6df5cd720e42": {
+  "fixed_by": "1.10a",
+  "description": "The Banquet of the Ten Virgins; or Concerning Chastity.: 6 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["xi.iii.iii.vi", "xi.iii.iv.iv", "xi.iii.iv.x", "xi.iii.ix.x", "xi.iii.vi.vi", "xi.iii.viii.vi"]
+ },
+ "health.no_ligatures:church-fathers/df17e279-df63-5610-95ae-f61e2fe09916": {
+  "fixed_by": "1.10a",
+  "description": "Book II. Of Bishops, Presbyters, and Deacons: 5 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ix.iii.iv/from-p58", "ix.iii.ix", "ix.iii.v/from-p11", "ix.iii.vi/from-p33", "ix.iii.vi/from-p9"]
+ },
+ "health.no_ligatures:church-fathers/e5d235f3-a5f2-513e-90e7-04eedc71bf33": {
+  "fixed_by": "1.10a",
+  "description": "On Exhortation to Chastity.: 4 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.vi.ii", "iii.vi.ix", "iii.vi.xii", "iii.vi.xiii"]
+ },
+ "health.no_ligatures:church-fathers/e73bb326-8ba6-5334-b79e-3a15c9892581": {
+  "fixed_by": "1.10a",
+  "description": "On the Apparel of Women.: 16 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iii.i.i", "iii.iii.i.ii", "iii.iii.i.iii", "iii.iii.i.ix", "iii.iii.i.v", "iii.iii.i.viii", "iii.iii.ii.i", "iii.iii.ii.ii", "iii.iii.ii.ix/from-p2-2", "iii.iii.ii.v", "iii.iii.ii.vi", "iii.iii.ii.vii", "iii.iii.ii.viii", "iii.iii.ii.x/from-p7", "iii.iii.ii.xii", "iii.iii.iii"]
+ },
+ "health.no_ligatures:church-fathers/e847b8bb-ce69-528e-9eda-5173a795ec18": {
+  "fixed_by": "1.10a",
+  "description": "Commentary on the Apocalypse of the Blessed John: 6 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.ii.x/from-p15", "vi.ii.xi/from-p9", "vi.ii.xiii", "vi.ii.xvi", "vi.ii.xvii", "vi.ii.xx/from-p19"]
+ },
+ "health.no_ligatures:church-fathers/eb26cfd2-ba51-56b7-b9cd-8b5fe7c8d852": {
+  "fixed_by": "1.10a",
+  "description": "The Teaching of the Twelve Apostles: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["viii.iii.i", "viii.iii.ii", "viii.iii.xiv"]
+ },
+ "health.no_ligatures:church-fathers/ecfd05c0-32a2-5153-9054-d3ab06c56c2c": {
+  "fixed_by": "1.10a",
+  "description": "Some Other Fragments of the Same Methodius.: 5 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["xi.xi.i", "xi.xi.ii", "xi.xi.iii", "xi.xi.iv", "xi.xi.v"]
+ },
+ "health.no_ligatures:church-fathers/ef7c21a8-92fa-51b8-823f-89094bf6f565": {
+  "fixed_by": "1.10a",
+  "description": "Against Heresies: Book I: 53 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "ix.ii.i", "ix.ii.i/from-p10", "ix.ii.i/from-p5", "ix.ii.ii", "ix.ii.ii/from-p4", "ix.ii.iii", "ix.ii.iii/from-p13", "ix.ii.iii/from-p3", "ix.ii.iv", "ix.ii.iv/from-p14", "ix.ii.iv/from-p26", "ix.ii.ix/from-p11", "ix.ii.ix/from-p27", "ix.ii.ix/from-p27-2", "ix.ii.ix/from-p3", "ix.ii.v", "ix.ii.v/from-p14", "ix.ii.v/from-p9", "ix.ii.vi", "ix.ii.viii", "ix.ii.x", "ix.ii.x/from-p3", "ix.ii.xi/from-p8", "ix.ii.xi/from-p8-2", "ix.ii.xii", "ix.ii.xii/from-p6", "ix.ii.xiii", "ix.ii.xiii/from-p11", "ix.ii.xiv", "ix.ii.xix", "ix.ii.xv", "ix.ii.xv/from-p12", "ix.ii.xv/from-p8", "ix.ii.xvi/from-p13", "ix.ii.xvi/from-p8", "ix.ii.xvii", "ix.ii.xvii/from-p7", "ix.ii.xviii", "ix.ii.xxi", "ix.ii.xxii/from-p7", "ix.ii.xxiii", "ix.ii.xxiv", "ix.ii.xxiv/from-p5", "ix.ii.xxiv/from-p9", "ix.ii.xxix", "ix.ii.xxviii", "ix.ii.xxx", "ix.ii.xxxi", "ix.ii.xxxi/from-p19", "ix.ii.xxxi/from-p24", "ix.ii.xxxi/from-p5", "ix.ii.xxxii/from-p6"]
+ },
+ "health.no_ligatures:church-fathers/efc282b4-fe6a-5162-9e1b-8748c686dde1": {
+  "fixed_by": "1.10a",
+  "description": "Fragments: 6 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vii.ii.i", "vii.ii.ii", "vii.ii.ix", "vii.ii.vi", "vii.ii.viii", "vii.ii.x"]
+ },
+ "health.no_ligatures:church-fathers/f04e045b-64f1-57c1-bb8f-7d308e5d7c26": {
+  "fixed_by": "1.10a",
+  "description": "Book VI: 6 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ix.vii.ii/from-p21", "ix.vii.ii/from-p30", "ix.vii.ii/from-p33", "ix.vii.iii/from-p23", "ix.vii.iii/from-p6-2", "ix.vii.iv/from-p60"]
+ },
+ "health.no_ligatures:church-fathers/f12b1923-3690-5a7a-8da7-46bb7f1e335f": {
+  "fixed_by": "1.10a",
+  "description": "The Epistle to Aristides.: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.iii.v"]
+ },
+ "health.no_ligatures:church-fathers/f23f311d-4aa4-5091-bb8a-91b174e8f3a2": {
+  "fixed_by": "1.10a",
+  "description": "Exhortation to the Heathen: 24 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.ii.i", "vi.ii.i/from-p10", "vi.ii.ii", "vi.ii.ii/from-p16", "vi.ii.ii/from-p22", "vi.ii.ii/from-p38", "vi.ii.ii/from-p43", "vi.ii.ii/from-p61", "vi.ii.ii/from-p69", "vi.ii.ii/from-p81", "vi.ii.ii/from-p86", "vi.ii.iii", "vi.ii.iii/from-p11", "vi.ii.iii/from-p9", "vi.ii.iv", "vi.ii.iv/from-p18", "vi.ii.iv/from-p28", "vi.ii.iv/from-p29", "vi.ii.iv/from-p31", "vi.ii.v", "vi.ii.v/from-p5", "vi.ii.vi", "vi.ii.vii", "vi.ii.xii"]
+ },
+ "health.no_ligatures:church-fathers/f39c025e-78a6-5737-a94f-7896c84fc857": {
+  "fixed_by": "1.10a",
+  "description": "Moral Treatises of St. Augustin: 27 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.i", "v.i.xiv", "v.i.xx", "v.i.xxiv", "v.ii.i", "v.ii.vi", "v.ii.vii", "v.ii.xxii", "v.ii.xxx", "v.iii.xxx", "v.ix.i", "v.ix.iv", "v.ix.xiii", "v.ix.xix", "v.v.i", "v.v.xli", "v.v.xxxvi", "v.vi.xxii", "v.vi.xxix", "v.vi.xxv", "v.vii.i", "v.vii.ix", "v.vii.xl", "v.vii.xli", "v.vii.xvii", "v.vii.xxviii", "v.viii.xv"]
+ },
+ "health.no_ligatures:church-fathers/f54576c1-723f-53b7-a6d0-f19945eb97c7": {
+  "fixed_by": "1.10a",
+  "description": "Book Second.—Commandments: 6 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ii.iii.i", "ii.iii.vi/from-p2", "ii.iii.viii/from-p5", "ii.iii.x", "ii.iii.x/from-p4", "ii.iii.xi/from-p1-2"]
+ },
+ "health.no_ligatures:church-fathers/f8faac83-ebf5-5a3c-850e-b9620465bc3d": {
+  "fixed_by": "1.10a",
+  "description": "The Martyrdom of Polycarp: 5 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iv.iv.ix", "iv.iv.viii", "iv.iv.x", "iv.iv.xxi", "iv.iv.xxii"]
+ },
+ "health.no_ligatures:church-fathers/f913305f-b259-578b-a5ca-532fac927aab": {
+  "fixed_by": "1.10a",
+  "description": "On the Workmanship of God, or the Formation of Man: 13 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["iii.iv.i", "iii.iv.i/from-p8", "iii.iv.vi/from-p10", "iii.iv.viii", "iii.iv.viii/from-p12", "iii.iv.x", "iii.iv.x/from-p11", "iii.iv.xi", "iii.iv.xii", "iii.iv.xii/from-p6", "iii.iv.xiii", "iii.iv.xviii/from-p10", "iii.iv.xxi"]
+ },
+ "health.no_ligatures:church-fathers/f9e64ef8-6874-5784-b75c-ceaf4c081d29": {
+  "fixed_by": "1.10a",
+  "description": "Epistle to the Smyrnæans: Shorter and Longer Versions: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["(document)", "v.vii.vii"]
+ },
+ "health.no_ligatures:church-fathers/fa2cd483-2f8e-54fe-9a65-06cea946280f": {
+  "fixed_by": "1.10a",
+  "description": "Epistle to the Philadelphians: Shorter and Longer Versions: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.vi.iv/from-p3-2", "v.vi.xi"]
+ },
+ "health.no_ligatures:church-fathers/faf07b54-7968-53f3-891e-d8683f9c271d": {
+  "fixed_by": "1.10a",
+  "description": "Pamphilus.: 4 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["vi.ix.i", "vi.ix.i/from-p4-2", "vi.ix.ii/from-p26", "vi.ix.ii/from-p51"]
+ },
+ "health.no_ligatures:church-fathers/fc317c73-9b67-5801-b894-22420c91168a": {
+  "fixed_by": "1.10a",
+  "description": "Epistle to the Trallians: Shorter and Longer Versions: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["v.iv.ix", "v.iv.v", "v.iv.xiii"]
+ },
+ "health.no_ligatures:church-fathers/fd6550b9-0122-5f2e-86ff-cb992d719a9e": {
+  "fixed_by": "1.10a",
+  "description": "Book VII. Concerning the Christian Life, and the Eucharist, and the Initiation into Christ: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ix.viii.iv"]
+ },
+ "health.no_ligatures:councils/28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
+  "fixed_by": "1.10a",
+  "description": "Presbyterorum Ordinis: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["presbyterorum-ordinis/11"]
+ },
+ "health.no_ligatures:councils/b58729e8-fa6e-5b91-9d66-b0734050a471": {
+  "fixed_by": "1.10a",
+  "description": "Optatam Totius: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["optatam-totius/4"]
+ },
+ "health.no_ligatures:encyclicals/927d6248-3117-5b1c-bb92-feec32f70c55": {
+  "fixed_by": "1.10a",
+  "description": "Magnifica Humanitas: 1 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["magnifica-humanitas/245/from-e555"]
+ },
+ "health.no_ligatures:encyclicals/92c7ab9f-fe71-5247-8669-44fbc67085a4": {
+  "fixed_by": "1.10a",
+  "description": "Fides et Ratio: 2 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["fides-et-ratio/100", "fides-et-ratio/57"]
+ },
+ "health.no_ligatures:encyclicals/ceb6f6b0-f8bc-5a11-95c5-ac52f6bfce3f": {
+  "fixed_by": "1.10a",
+  "description": "Dilexit Nos: 3 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["dilexit-nos/220", "dilexit-nos/220/from-e523", "dilexit-nos/220/from-e671"]
+ },
+ "health.no_ligatures:medieval/9a6599ee-ac40-5017-a2c6-7aad2cf14296": {
+  "fixed_by": "1.10a",
+  "description": "Consolation of Philosophy: 13 ligature hits (æ, œ) in passages or the title or author (C-16)",
+  "units": ["ii/from-p14-2", "iii/from-p25", "iii/from-p29", "iii/from-p34", "iii/from-p38", "iii/from-p4", "iv/from-p162", "iv/from-p42", "iv/from-p82", "v/from-p121", "v/from-p96", "vi/from-p10", "vi/from-p26"]
+ },
+ "health.summa_bracket_numbers:summa/31b2bc0a-0b16-5002-822a-26d3215dd256": {
+  "fixed_by": "1.7",
+  "description": "39 Summa passages hold a bracketed cross-reference number (C-22)",
+  "units": ["summa/FP_Q111_A3/p6", "summa/FP_Q17_A3/p4", "summa/FS_Q100_A9/p6", "summa/FS_Q1_A6/p3", "summa/FS_Q25_A4/p2", "summa/FS_Q27_A2/p2", "summa/FS_Q34_A1/p6", "summa/FS_Q35_A1/p6", "summa/FS_Q4_A3/p3", "summa/FS_Q84_A4/p8", "summa/SS_Q114_A1/p7", "summa/SS_Q117_A5/p4", "summa/SS_Q118_A5/p3", "summa/SS_Q122_A5/p2", "summa/SS_Q122_A6/p3", "summa/SS_Q123_A10/p16", "summa/SS_Q124_A3/p6", "summa/SS_Q141_A1/p4", "summa/SS_Q141_A3/p3", "summa/SS_Q143_A1/p6", "summa/SS_Q145_A2/p6", "summa/SS_Q147_A2/p4", "summa/SS_Q14_A1/p6/from-p8", "summa/SS_Q24_A11/p7", "summa/SS_Q28_A4/p5", "summa/SS_Q53_A2/p4", "summa/SS_Q72_A1/p8", "summa/SS_Q81_A5/p4", "summa/SS_Q82_A1/p4", "summa/SS_Q89_A1/p4", "summa/SS_Q95_A2/p6", "summa/TP_Q18_A1/p11", "summa/TP_Q18_A1/p7", "summa/TP_Q37_A4/p2", "summa/TP_Q7_A5/p6", "summa/TP_Q80_A1/p6", "summa/TP_Q86_A4/p4", "summa/XP_Q47_A1/p6", "summa/XP_Q98_A2/p12"]
+ },
+ "labels.roman_case:church-fathers/0066869a-28fb-5274-a847-c4d3e88a948e": {
+  "fixed_by": "1.9",
+  "description": "Fragments from the Lost Writings of Irenæus: 54 labels title-case a Roman numeral (C-22)",
+  "units": ["ix.viii.ii", "ix.viii.iii", "ix.viii.iii/from-p1-2", "ix.viii.iv", "ix.viii.ix", "ix.viii.li", "ix.viii.lii", "ix.viii.liii", "ix.viii.liv", "ix.viii.lv", "ix.viii.lv/from-p10", "ix.viii.vi", "ix.viii.vii", "ix.viii.viii", "ix.viii.xi", "ix.viii.xii", "ix.viii.xiii", "ix.viii.xiv", "ix.viii.xiv/from-p1-2", "ix.viii.xix", "ix.viii.xl", "ix.viii.xli", "ix.viii.xlii", "ix.viii.xliii", "ix.viii.xliv", "ix.viii.xlix", "ix.viii.xlv", "ix.viii.xlvi", "ix.viii.xlvii", "ix.viii.xlviii", "ix.viii.xv", "ix.viii.xvi", "ix.viii.xvii", "ix.viii.xviii", "ix.viii.xx", "ix.viii.xxi", "ix.viii.xxii", "ix.viii.xxiii", "ix.viii.xxiv", "ix.viii.xxix", "ix.viii.xxv", "ix.viii.xxvi", "ix.viii.xxvii", "ix.viii.xxviii", "ix.viii.xxx", "ix.viii.xxxi", "ix.viii.xxxii", "ix.viii.xxxiii", "ix.viii.xxxiv", "ix.viii.xxxix", "ix.viii.xxxv", "ix.viii.xxxvi", "ix.viii.xxxvii", "ix.viii.xxxviii"]
+ },
+ "labels.roman_case:church-fathers/22369abb-5ee4-50d2-85c8-fdf4da8fc2ce": {
+  "fixed_by": "1.9",
+  "description": "Other Fragments from the Lost Writings of Justin: 16 labels title-case a Roman numeral (C-22)",
+  "units": ["viii.ix.ii", "viii.ix.iii", "viii.ix.iv", "viii.ix.ix", "viii.ix.vi", "viii.ix.vii", "viii.ix.viii", "viii.ix.xi", "viii.ix.xii", "viii.ix.xiii", "viii.ix.xiv", "viii.ix.xix", "viii.ix.xv", "viii.ix.xvi", "viii.ix.xvii", "viii.ix.xviii"]
+ },
+ "labels.roman_case:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
+  "fixed_by": "1.9",
+  "description": "The Confessions of Saint Augustine: 2 labels title-case a Roman numeral (C-22)",
+  "units": ["xiii.xi", "xiii.xi/from-p3"]
+ },
+ "labels.roman_case:church-fathers/efc282b4-fe6a-5162-9e1b-8748c686dde1": {
+  "fixed_by": "1.9",
+  "description": "Fragments: 8 labels title-case a Roman numeral (C-22)",
+  "units": ["vii.ii.ii", "vii.ii.iii", "vii.ii.iv", "vii.ii.ix", "vii.ii.vi", "vii.ii.vi/from-p2-2", "vii.ii.vii", "vii.ii.viii"]
+ },
+ "registry.unique_title_per_collection:church-fathers": {
+  "fixed_by": "1.10a",
+  "description": "2 titles are shared by two documents (C-15)",
+  "units": ["epistle to the philippians", "fragments"]
  },
  "release.anchor_reuse:councils/ddfa6898-270f-5fc6-914d-08a3b98c99a5": {
   "fixed_by": "1.2e",
@@ -218,6 +1572,16 @@
  "release.anchor_reuse:councils/e507d54e-55da-583b-b7b6-c4617f59c9fe": {
   "fixed_by": "1.2e",
   "description": "First Lateran: live printed the editor's introduction unsplit as sec-0/1 and canon 1 as sec-0/1-2; the build splits the introduction, so the unchanged unit-naming rule gives canon 1 sec-0/1 and the introduction sec-0/1-2. 2.1's registry keeps each ID on its own text (canon 1 ddfa6898, the introduction e507d54e); only the two anchor strings are swapped. The council item that rebuilds First Lateran removes the introduction (rule-g-editorial), which frees both"
+ },
+ "roles.summa.objection-after-replies:summa": {
+  "fixed_by": "1.7",
+  "description": "2 replies labelled as objections after the determination (C-04)",
+  "units": ["summa/SS_Q172_A1/p11", "summa/XP_Q77_A4/p11"]
+ },
+ "roles.summa.variant-sed-contra-boundaries:summa": {
+  "fixed_by": "1.7",
+  "description": "4 sed contras R7 attests are folded into an objection (C-04)",
+  "units": ["FS_Q46_A7-p5", "SS_Q140_A2-p5", "SS_Q56_A1-p5", "SS_Q56_A2-p5"]
  },
  "sentinel.daniel_13": {
   "fixed_by": "1.4a",
@@ -238,6 +1602,10 @@
  "sentinel.nostra_aetate_4": {
   "fixed_by": "1.1",
   "description": "Nostra Aetate §4 keeps only its first paragraph (155 characters)"
+ },
+ "sentinel.sirach_prologue": {
+  "fixed_by": "1.4a",
+  "description": "the Prologue of Sirach reaches no passage (C-11)"
  },
  "sentinel.summa_i_q71": {
   "fixed_by": "1.7",
@@ -959,5 +2327,95 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#vi.i": {
   "fixed_by": "1.9",
   "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
+ },
+ "structure.bucket_chapters_with_headings:apostolic-exhortations": {
+  "fixed_by": "1.3a",
+  "description": "4 documents whose source has section headings use \"Paragraphs N–M\" chapters (C-08)",
+  "units": ["6f2c7319-5974-57db-9317-ad5ad2020d15", "81b3ea0f-3fed-57c7-9326-ac488bb240b6", "83ef10a9-f7a6-594c-b29d-bf96bf9dccbd", "f6de8a59-c641-53fa-9eb9-c8c151619125"]
+ },
+ "structure.bucket_chapters_with_headings:encyclicals": {
+  "fixed_by": "1.3a",
+  "description": "23 documents whose source has section headings use \"Paragraphs N–M\" chapters (C-08)",
+  "units": ["04842f96-a08b-56f3-94cf-43bfab1381d6", "0cbc72e5-d613-59f1-adff-52d60a84ad88", "13215d9a-cc71-5ef0-a2c0-cd6da3319691", "1916beac-f8f6-59fa-bfeb-0facfbb6052b", "1a8feac1-5e6d-5b75-ad23-2631628af482", "1d878f81-b9d9-52ff-87c1-92a4960a5ea5", "22c3c60c-4e04-5960-99af-5f8025184f52", "29897c86-0820-5f41-a3f6-951743a69566", "3bcae73a-4e86-5cfb-9bf7-efc71fd6969d", "47a453c1-7456-572e-9049-22b4d6fa6006", "7dcaaf94-4605-52e9-9b96-80347d38cbdd", "958891d4-b30c-5449-bcac-1f129b573c25", "a910a090-80c3-5c39-80d8-9c6d39f2999b", "aacef990-f446-553b-a8ad-ed7ee186e163", "ab202557-5c48-51de-8f53-85ad313de769", "b0a9dbe0-37a1-569b-b9d7-34d145c70396", "bd1921b3-b61f-56cd-924f-9cd995cd04e6", "cc81769d-2c6a-5735-9562-a4cb600edb41", "cda355ec-b4fa-5ef0-9f41-d4139376763d", "ceb6f6b0-f8bc-5a11-95c5-ac52f6bfce3f", "d4d4806e-61e2-513b-9985-b178e7b7639b", "dd91b8f7-101c-5ef9-a9f7-502e2310a932", "fd3c4120-5f9a-590e-a1de-792de0414fb3"]
+ },
+ "structure.canon_law.chapter_number_agreement:canon-law": {
+  "fixed_by": "1.5a",
+  "description": "100 canons carry a chapter number other than the source's (C-13)",
+  "units": ["1481", "1482", "1483", "1484", "1485", "1486", "1487", "1488", "1489", "1490", "1496", "1497", "1498", "1499", "1500", "1507", "1508", "1509", "1510", "1511", "1512", "1539", "1540", "1541", "1542", "1543", "1544", "1545", "1546", "1547", "1548", "1549", "1550", "1551", "1552", "1553", "1554", "1555", "1556", "1557", "1558", "1559", "1560", "1561", "1562", "1563", "1564", "1565", "1566", "1567", "1568", "1569", "1570", "1571", "1572", "1573", "1574", "1575", "1576", "1577", "1578", "1579", "1580", "1581", "1582", "1583", "1584", "1585", "1586", "1596", "1597", "1628", "1629", "1630", "1631", "1632", "1633", "1634", "1635", "1636", "1637", "1638", "1639", "1640", "1645", "1646", "1647", "1648", "1720", "1721", "1722", "1723", "1724", "1725", "1726", "1727", "1728", "1729", "1730", "1731"]
+ },
+ "structure.chapter_contiguous:canon-law": {
+  "fixed_by": "1.5a",
+  "description": "17 canon-law chapter keys hold passages that are not one run (C-13)",
+  "units": ["canon-law/book-ii/conferences-of-major-superiors/c", "canon-law/book-ii/special-norms-for-associations-of-the-laity/c", "canon-law/book-ii/title-i/c", "canon-law/book-ii/title-ii/c", "canon-law/book-iv/sponsors/c", "canon-law/book-iv/the-celebration-of-the-sacrament/c", "canon-law/book-iv/title-i/c", "canon-law/book-iv/title-ii/c", "canon-law/book-iv/title-iii/c", "canon-law/book-iv/title-iv/c", "canon-law/book-vi/title-i/c", "canon-law/book-vi/title-ii/c", "canon-law/book-vi/title-iii/c", "canon-law/book-vi/title-v/c", "canon-law/book-vi/title-vi/c", "canon-law/book-vii/title-iii/chapter-i", "canon-law/book-vii/title-iv/chapter-i"]
+ },
+ "structure.chapter_sequence:councils/1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
+  "fixed_by": "1.1",
+  "description": "Apostolicam Actuositatem: numbered chapter labels skip or repeat (C-20)",
+  "units": ["repeat:III", "repeat:IV", "repeat:V", "repeat:VI"]
+ },
+ "structure.chapter_sequence:councils/29bf3975-5f39-5550-a949-6767cb666695": {
+  "fixed_by": "1.1",
+  "description": "Sacrosanctum Concilium: numbered chapter labels skip or repeat (C-20)",
+  "units": ["gap:V-VII"]
+ },
+ "structure.chapter_sequence:councils/4451c2f8-e836-58ab-a2eb-495a9cacef89": {
+  "fixed_by": "1.1",
+  "description": "Dei Verbum: numbered chapter labels skip or repeat (C-20)",
+  "units": ["repeat:I", "repeat:II", "repeat:III", "repeat:IV", "repeat:V", "repeat:VI"]
+ },
+ "structure.chapter_sequence:councils/62f7a128-a847-588b-84f0-51d33294b236": {
+  "fixed_by": "1.1",
+  "description": "Gaudium et Spes: numbered chapter labels skip or repeat (C-20)",
+  "units": ["repeat:I", "repeat:I", "repeat:II", "repeat:III", "repeat:IV"]
+ },
+ "structure.chapter_sequence:councils/bd4adb5d-500e-5995-ab95-3f61fdc92067": {
+  "fixed_by": "1.1",
+  "description": "Christus Dominus: numbered chapter labels skip or repeat (C-20)",
+  "units": ["repeat:I", "repeat:II", "repeat:III"]
+ },
+ "structure.chapter_sequence:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
+  "fixed_by": "1.1",
+  "description": "Lumen Gentium: numbered chapter labels skip or repeat (C-20)",
+  "units": ["gap:VI-VIII"]
+ },
+ "structure.chapter_sequence:councils/c1d5382f-c7c7-564d-989a-89775b36fd58": {
+  "fixed_by": "1.1",
+  "description": "Ad Gentes: numbered chapter labels skip or repeat (C-20)",
+  "units": ["repeat:II", "repeat:III", "repeat:IV", "repeat:V", "repeat:VI"]
+ },
+ "structure.embedded_work_labelled:church-fathers/9e03c96d-8295-5e5e-a4d3-3570ddcf0415": {
+  "fixed_by": "1.8c",
+  "description": "The Divine Institutes: a run of chapters without a book or work label after booked chapters (C-15)",
+  "units": ["iii.ii.viii.ii"]
+ },
+ "structure.embedded_work_labelled:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
+  "fixed_by": "1.8b",
+  "description": "Doctrinal Treatises of St. Augustin: a run of chapters without a book or work label after booked chapters (C-15)",
+  "units": ["iv.ii.iii", "iv.iii.ii", "iv.iv.ii"]
+ },
+ "structure.embedded_work_labelled:church-fathers/e73bb326-8ba6-5334-b79e-3a15c9892581": {
+  "fixed_by": "1.8c",
+  "description": "On the Apparel of Women.: a run of chapters without a book or work label after booked chapters (C-15)",
+  "units": ["iii.iii.ii.i"]
+ },
+ "structure.summa.one-disputation-per-article:summa": {
+  "fixed_by": "1.7",
+  "description": "5 article keys hold two disputations or no determination (C-07; R7: I q.117 a.2 is not reply-only)",
+  "units": ["FP_Q117_A2", "FP_Q68_A2", "SS_Q123_A10", "SS_Q64_A7", "SS_Q66_A5"]
+ },
+ "structure.syllabus_body_boundary:encyclicals": {
+  "fixed_by": "1.3a",
+  "description": "the Syllabus's proposition 80 holds the source's text after it (C-06)",
+  "units": ["after-80"]
+ },
+ "text.canon_law.ligature_corruption:canon-law": {
+  "fixed_by": "1.5a",
+  "description": "18 canons hold V or Y for a lost ff or ffi ligature (C-16)",
+  "units": ["1040", "1044", "1068", "1095", "1127", "1143", "1144", "1146", "1200", "1222", "1287", "1290", "253", "761", "768", "771", "820", "998"]
+ },
+ "text.summa.adjacent-duplicate-parts:summa": {
+  "fixed_by": "1.7",
+  "description": "a sed contra printed twice (C-14)",
+  "units": ["summa/FS_Q20_A6/p6"]
  }
 }

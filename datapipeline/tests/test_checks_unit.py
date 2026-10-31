@@ -375,14 +375,22 @@ def test_known_defects_file_is_well_formed():
         assert set(entry) <= allowed and entry["fixed_by"] and entry["description"], check_id
         assert entry.get("expected_direction", "down") == "down", check_id
         assert report.check_scope(check_id) in report.COLLECTIONS, check_id
-        # Grouped check ids list their units, so a new unit is not hidden by the entry.
-        grouped = check_id.startswith(("sequence.bible_verses.", "sequence.numbered_paragraphs."))
+        # Grouped check ids list their units, so a new unit is not hidden by the entry:
+        # 0.1a's Bible chapters and § numbers, and every 0.1d id except the one-unit ones
+        # (a block-rule passage, a sentinel, a registry row).
+        rule = check_id.split(".", 1)[1].split(":", 1)[0]
+        grouped = (check_id.startswith(("sequence.bible_verses.", "sequence.numbered_paragraphs."))
+                   or check_id.startswith(tuple(f"{n}." for n in report.REVIEW_NAMESPACES)
+                                          + report.UNIT_COVERAGE_IDS)
+                   or (check_id.startswith("health.") and rule in health.TRACKED_REPORT_RULES))
+        if check_id.startswith("attribution.narrative_of_author_death:"):
+            grouped = False
         assert ("units" in entry) == grouped, check_id
-        # Health entries accept one block-rule violation each (0.1b); report rules never
-        # refuse, so they never need an entry.
+        # Health entries accept one block-rule violation each (0.1b), or track one report
+        # rule an item will clear, per document (0.1d); other report rules never refuse
+        # and are only counted.
         if check_id.startswith("health."):
-            rule = check_id.split(".", 1)[1].split(":", 1)[0]
-            assert rule in health.BLOCK_RULES, check_id
+            assert rule in health.BLOCK_RULES + health.TRACKED_REPORT_RULES, check_id
         # Release entries (0.1c) name one live passage by ID, which 2.1 keeps when it
         # re-anchors: release.<check>:<collection>/<passage id>.
         if check_id.startswith("release."):

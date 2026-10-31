@@ -42,9 +42,10 @@ JACCARD_MIN = 0.5
 
 # The checks that fail a report. Each failure's check id is
 # release.<check>:<collection>/<passage id>, keyed by passage ID because 2.1 keeps IDs
-# when it re-anchors, so a known_defects.json entry survives that change.
+# when it re-anchors, so a known_defects.json entry survives that change. outline_matches
+# (0.1d, release/outline.py) is keyed by document ID in the same place.
 CHECKS = ("stability", "piece_stability", "removed", "unbacked", "anchor_reuse", "bad_redirect",
-          "duplicate_id", "bad_removal")
+          "duplicate_id", "bad_removal", "outline_matches")
 
 
 # --------------------------------------------------------------------------- data

@@ -40,6 +40,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.6** [Phase 0]. Approve read-only size queries against production.
   Answered 2026-10-30: approved; run from the home server the same day (results in 0.6's section of the P0 spec).
 - **0.1d** [Phase 0, before P1]. Approve the next run of `export_live_snapshot.py`, which now also copies `document_chapters` (the stored reader outline: each document's chapter list, its order and labels). It reads production without changing anything and copies corpus text and anonymous counts to his Mac, as the 6 Oct export did. The outline comparison then runs offline.
+  Answered 2026-10-31: approved for 0.1d's run, exported as `datapipeline/releases/snapshots/2026-10-31/`. Each later run is asked for again.
 - **R7** [Phase 0, blocks 1.7]. Approve each set of downloads for the independent Summa comparison: the Leonine Latin pages of the Supplement (the four core parts were fetched by the 6 Oct review), and any English edition or scan that holds a unit the vendored edition omits. The request states file names and sizes.
   Answered 2026-10-30: all R7 downloads approved.
 - **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 0039 migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
@@ -184,6 +185,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **1.6** [Phase 1]. Show Catechism paragraph numbers inside passage text as "§2267". Recommended answer is yes; the work goes ahead with this if there is no answer.
 - **1.7** [Phase 1]. Add Aquinas's own short introductions at the start of 611 questions and 3 treatises (about 297,000 characters), which are missing today. Recommended answer is yes, since they are his own words.
   Answered 2026-10-05: yes, as passages labeled "Question N, prologue" before Article 1. The Supplement's prologues are its compiler's and follow the Supplement's treatment (3.2).
+- **1.7 (R7 question 2)** [Phase 1]. In I q.117 a.2 and I q.112 a.2 the text CCEL lost begins or ends inside a paragraph it kept, so it cannot be added as a separate passage without putting the article out of order. Restore the printed words in place, inside the existing passage, and split I q.117 a.2's determination off as its own "I answer that" part (`p5-2`)? Or add the recovered words as a new passage (`recovered-<n>`)? Recommended answer: in place. Whole missing units stay new `recovered-<n>` passages.
+  Answered 2026-10-31: in place (asked during 0.1d). R7's questions 1, 3 and 4 stay open for 1.7.
 - **1.8b** [Phase 1]. Split two Augustine volumes ("Doctrinal Treatises", "Moral Treatises") into their 16 separate works, so On Lying is cited as On Lying. Bookmarks survive either way. Recommended answer is yes.
 - **1.8c** [Phase 1]. Two points.
   - Label the Shepherd of Hermas's author as "Hermas" and its books "The Shepherd: Visions", "Commandments" and "Similitudes".

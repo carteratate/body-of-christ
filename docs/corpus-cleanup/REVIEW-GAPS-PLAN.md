@@ -99,7 +99,7 @@ Full specs, in the standard template, are in the phase files: 0.1d and R7 in `P0
 
 ## 6. Checks and planned `known_defects.json` entries
 
-Not added yet; each owning spec describes them. "Starts failing" means the check fails on master and enters `known_defects.json` with `fixed_by` the owner.
+The 0.1d rows were added on 31 Oct 2026; the counts measured then are in 0.1d's "As built" (`P0-checks-identity-research.md`). The other rows are not added yet; each owning spec describes them. "Starts failing" means the check fails on master and enters `known_defects.json` with `fixed_by` the owner.
 
 | Check id | Added by | Starts failing on master? | fixed_by |
 |---|---|---|---|

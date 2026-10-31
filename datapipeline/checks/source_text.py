@@ -379,15 +379,19 @@ _USFM_WORD = re.compile(r"\\\+?w\s+([^|\\]*?)\s*(?:\|[^\\]*)?\\\+?w\*")
 _USFM_MARKER = re.compile(r"\\\+?[a-zA-Z0-9]+\*?")
 # Paragraph markers whose text is a heading or the editor's introduction, not verses.
 _USFM_HEADINGS = frozenset({"h", "mt", "mt1", "mt2", "mt3", "ms", "ms1", "ms2", "mr", "s",
-                            "s1", "s2", "s3", "sr", "r", "d", "sp", "is", "is1", "is2",
+                            "s1", "s2", "s3", "sr", "r", "sp", "is", "is1", "is2",
                             "cl", "cd"})
+# A Psalm title (superscription): Scripture, unnumbered in WEB-C, so body text with the
+# unit id "<BOOK>/<chapter>/d" (0.1d; C-11).
+_USFM_TITLES = frozenset({"d"})
 _USFM_APPARATUS = frozenset({"id", "ide", "toc1", "toc2", "toc3", "ip", "ipr", "im", "imt",
                              "imt1", "imt2", "io1", "io2", "iot", "rem", "sts"})
 _USFM_BREAKS = frozenset({"p", "m", "mi", "nb", "pc", "pi", "pi1", "pi2", "q", "q1", "q2",
                           "q3", "qr", "qc", "b", "li", "li1", "li2"})
 _USFM_TOKEN = re.compile(
     r"(?m)\\(c|v)\s+(\d+)[a-z]?\s?|^\\("
-    + "|".join(sorted(_USFM_HEADINGS | _USFM_APPARATUS | _USFM_BREAKS, key=len, reverse=True))
+    + "|".join(sorted(_USFM_HEADINGS | _USFM_TITLES | _USFM_APPARATUS | _USFM_BREAKS,
+                      key=len, reverse=True))
     + r")(?![a-z0-9])")
 
 
@@ -407,9 +411,10 @@ def usfm_book_code(path: str) -> str:
 
 
 def usfm_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
-    """USFM (Bible). One unit per \\v, unit_id "<BOOK>/<chapter>/<verse>". Footnotes and
-    cross-references (\\f, \\fe, \\x) are "note"; section headings and Psalm titles
-    (\\s, \\d, …) are "heading"; the book's identification lines and introduction are
+    """USFM (Bible). One unit per \\v, unit_id "<BOOK>/<chapter>/<verse>". A Psalm title
+    (\\d) is body text with unit_id "<BOOK>/<chapter>/d". Footnotes and
+    cross-references (\\f, \\fe, \\x) are "note"; section headings
+    (\\s, \\ms, …) are "heading"; the book's identification lines and introduction are
     "apparatus". A verse continues across paragraph and poetry markers until the next
     verse, chapter or heading."""
     source_file = source_file or os.path.basename(path)
@@ -444,6 +449,9 @@ def usfm_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
         elif kind == "v":
             flush()
             current = (f"{code}/{chapter}/{int(number)}", "body")
+        elif para in _USFM_TITLES:
+            flush()
+            current = (f"{code}/{chapter}/d", "body")
         elif para in _USFM_HEADINGS:
             flush()
             current = (None, "heading")

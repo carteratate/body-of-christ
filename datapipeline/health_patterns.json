@@ -1,11 +1,19 @@
 {
- "_comment": "Patterns and allowlists for the 0.1b report rules (datapipeline/health.py). Keys under each rule name a collection, or \"all\". A P1 PR that changes what a rule should see edits this file, not the code.",
+ "_comment": "Patterns and allowlists for the health rules (datapipeline/health.py): 0.1b's R1 to R8, and 0.1d's R9 to R14 for the 6 Oct 2026 corpus reviews. Keys under each rule name a collection, or \"all\". A P1 PR that changes what a rule should see edits this file, not the code.",
  "R1_short": {
   "max_chars": 20,
-  "allowed_collections": ["bible", "canon-law"]
+  "allowed_collections": [
+   "bible",
+   "canon-law"
+  ]
  },
  "R2_footer": {
-  "all": ["\\(n: indicates", "\\[Earlier version\\]", "\\[Original version", "_{5,}"]
+  "all": [
+   "\\(n: indicates",
+   "\\[Earlier version\\]",
+   "\\[Original version",
+   "_{5,}"
+  ]
  },
  "R3_note_start": {
   "all": [
@@ -17,15 +25,160 @@
    "^(?:[1-4] ?)?[A-Z][a-z]{0,6}\\.? ?\\d+[:,.] ?\\d+[\\d,;:.\\-–— ]*\\)",
    "^(?:[1-4] ?)?[A-Z][a-z]{0,6}\\.? ?\\d+[:,.] ?\\d+[a-z\\d,\\-–]*(?:;|\\. \\d+\\. )"
   ],
-  "skip_collections": ["bible"]
+  "skip_collections": [
+   "bible"
+  ]
  },
  "R6_joined_paragraphs": {
-  "abbreviations": ["art", "can", "cap", "ch", "chap", "cit", "cf", "dr", "ed", "eds", "etc", "ibid", "jr", "mr", "mrs", "ms", "no", "nos", "op", "ph", "pp", "sr", "st", "sts", "viz", "vol", "vs"]
+  "abbreviations": [
+   "art",
+   "can",
+   "cap",
+   "ch",
+   "chap",
+   "cit",
+   "cf",
+   "dr",
+   "ed",
+   "eds",
+   "etc",
+   "ibid",
+   "jr",
+   "mr",
+   "mrs",
+   "ms",
+   "no",
+   "nos",
+   "op",
+   "ph",
+   "pp",
+   "sr",
+   "st",
+   "sts",
+   "viz",
+   "vol",
+   "vs"
+  ]
  },
  "R7_non_english": {
   "min_chars": 200,
   "max_share": 0.05,
   "max_digit_share": 0.15,
-  "function_words": ["the", "of", "and", "to", "that", "is", "was", "he", "for", "it", "with", "as", "his", "on", "be", "at", "by", "this", "had", "not", "are", "but", "from", "or", "have", "an", "they", "which", "one", "you", "were", "her", "all", "she", "there", "would", "their", "we", "him", "been", "has", "when", "who", "will", "if", "what", "them", "my", "its", "our"]
+  "function_words": [
+   "the",
+   "of",
+   "and",
+   "to",
+   "that",
+   "is",
+   "was",
+   "he",
+   "for",
+   "it",
+   "with",
+   "as",
+   "his",
+   "on",
+   "be",
+   "at",
+   "by",
+   "this",
+   "had",
+   "not",
+   "are",
+   "but",
+   "from",
+   "or",
+   "have",
+   "an",
+   "they",
+   "which",
+   "one",
+   "you",
+   "were",
+   "her",
+   "all",
+   "she",
+   "there",
+   "would",
+   "their",
+   "we",
+   "him",
+   "been",
+   "has",
+   "when",
+   "who",
+   "will",
+   "if",
+   "what",
+   "them",
+   "my",
+   "its",
+   "our"
+  ]
+ },
+ "R9_trailing_heading": {
+  "_comment": "A passage, followed by another, whose last of two or more lines is under max_chars, starts with a capital and has no final punctuation: the next section's heading glued on (C-08, Opus A-003). 1.3a makes it block in these collections.",
+  "collections": [
+   "apostolic-exhortations",
+   "encyclicals",
+   "papal-documents"
+  ],
+  "max_chars": 90,
+  "final_punctuation": "[.!?:;,\"”’)\\]…]$"
+ },
+ "R10_site_boilerplate": {
+  "_comment": "Block rule. A website's own text inside a passage (C-05, Opus A-005, Opus-2 B-008), matched case-insensitively.",
+  "all": [
+   "wysiwyg",
+   "subscribe for a membership",
+   "Webmaster",
+   "promotional messages",
+   "papalencyclicals",
+   "HTML document",
+   "HTML tag",
+   "bulk operations"
+  ]
+ },
+ "R11_papal_editorial": {
+  "_comment": "An editor's or translator's words in a papal passage (C-18, Opus A-010); the last pattern is an \"[N-M]\" paragraph-range marker, which only a table of contents prints.",
+  "collections": [
+   "apostolic-exhortations",
+   "encyclicals",
+   "papal-documents"
+  ],
+  "patterns": [
+   "Holy Father addressed",
+   "Translation by",
+   "translation editing",
+   "\\[\\d+\\s*[-–]\\s*\\d+\\](?=\\s|$)"
+  ]
+ },
+ "R12_note_caller": {
+  "_comment": "A footnote caller left in the text (C-17): Opus A-012's \"(N)\"/\"(N*)\" after a word and a digit glued after punctuation, Opus-2 B-005's number after sentence punctuation and a space (not before a Bible book), and \"[ N ]\". not_after skips a match whose preceding 16 characters end like a Scripture citation (\"Rom. i.\", \"3:16.\"). Summa brackets are summa_bracket_numbers'.",
+  "skip_collections": [
+   "bible",
+   "canon-law",
+   "summa"
+  ],
+  "patterns": [
+   "[A-Za-z.,;\"”’)]\\(\\d{1,3}\\*?\\)",
+   "[a-z][.,;]\\d{1,3}\\s",
+   "[.!?\"”’)…]\\s\\d{1,3}(?=\\s+[A-Z“\"‘]|$)(?!\\s+(?:[1-4]\\s?)?(?:Gen|Kings|Kgs|Kg|Kgdms|Sam|Sm|Chron|Chr|Esd|Esdr|Esdras|Peter|Pt|Pet|Thes|Tm|Jo|Ex|Exod|Lev|Num|Deut|Dt|Jos|Josh|Jg|Judg|Ru|Ruth|Sam|Kgs|Chr|Ezr|Neh|Tob|Jdt|Est|Mac|Macc|Job|Ps|Prov|Pr|Eccl|Qo|Song|Wis|Sir|Is|Isa|Jer|Lam|Bar|Ezek|Ez|Dan|Dn|Hos|Joel|Am|Ob|Jon|Mic|Nah|Hab|Zeph|Hag|Zech|Mal|Mt|Matt|Mk|Mark|Lk|Luke|Jn|John|Acts|Rom|Cor|Gal|Eph|Phil|Col|Thess|Tim|Tit|Philem|Phm|Heb|Jas|Pet|Jude|Rev|Apoc)\\b)",
+   "\\[\\s?\\d{1,3}\\s?\\]"
+  ],
+  "not_after": [
+   "\\b[ivxlc]+[.,;]?[\"”’)]?$",
+   "\\d[.:][\"”’)]?$",
+   "\\b(?:[Vv]er|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm)\\.[\"”’)]?$"
+  ]
+ },
+ "R13_lower_start": {
+  "_comment": "Report only: a passage that starts with a lowercase letter (C-27, Opus A-018). No settings."
+ },
+ "R14_hyphen_space": {
+  "_comment": "Report only: a letter, a hyphen, a space and a lowercase letter, a word broken at a line end (C-16, Opus A-021, Sol A-010). allowed lists reviewed real compounds and suspended hyphens (\"pre- and post-\"), lowercased as matched.",
+  "pattern": "[A-Za-z]+- [a-z]+",
+  "allowed": []
  }
 }
