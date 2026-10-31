@@ -16,13 +16,17 @@ from dataclasses import dataclass, field
 
 from checks.source_text import SEGMENT_BREAK, SOURCES, SourceUnit
 from model import Document
+from normalize.text import repair_sentence_joins
 
 MIN_SENTENCE_CHARS = 30
 MAX_UNCOVERED_LOCATIONS = 20
 
 _QUOTES = str.maketrans({"\u2018": "'", "\u2019": "'", "\u201a": "'", "\u201b": "'",
                          "\u201c": '"', "\u201d": '"', "\u201e": '"', "\u201f": '"',
-                         "\u00ab": '"', "\u00bb": '"'})
+                         "\u00ab": '"', "\u00bb": '"',
+                         # Adapters spell ligatures out (1.10a, `normalize.text.fold_ligatures`);
+                         # the text is lowercased first.
+                         "æ": "ae", "œ": "oe"})
 # Footnote markers ("[12]", "[12a]"), page markers ("[Page 45]") and the Bible's verse
 # markers ("{{v:12}}"). A bracketed number after the Summa's reference tokens is part of
 # the reference, not a marker: "Q[1], A[2]", "AA[3]", "QQ[1]-114", "OBJ[2]".
@@ -42,7 +46,8 @@ _SENTENCE_END = re.compile(r"(?<=[.!?])\s+(?=[A-Z])")
 
 
 def normalize(text: str) -> str:
-    """NFKC, lowercase, curly quotes to straight, markers removed, whitespace collapsed."""
+    """NFKC, lowercase, curly quotes to straight, ligatures spelled out, markers removed,
+    whitespace collapsed."""
     text = _MARKERS.sub(_drop_marker, unicodedata.normalize("NFKC", text))
     return _WS.sub(" ", text.lower().translate(_QUOTES)).strip()
 
@@ -64,9 +69,11 @@ def measurable(sentence: str) -> bool:
 
 def split_sentences(text: str) -> list[str]:
     """Sentences of a text: split at SEGMENT_BREAK, blank lines, and [.!?] followed by
-    whitespace and an uppercase letter. Returned normalized."""
+    whitespace and an uppercase letter, after the spacing adapters give sentences the
+    source ran together ("consecration.The Synod", 1.10a), since a passage may now end
+    between them. Returned normalized."""
     out: list[str] = []
-    text = unicodedata.normalize("NFKC", text)
+    text = repair_sentence_joins(unicodedata.normalize("NFKC", text))
     for segment in re.split(rf"{SEGMENT_BREAK}|\n\s*\n", text):
         for sentence in _SENTENCE_END.split(segment):
             s = normalize(sentence)

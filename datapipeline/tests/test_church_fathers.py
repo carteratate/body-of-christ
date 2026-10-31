@@ -71,13 +71,22 @@ def test_historical_filenames_resolve_to_the_original_ccel_volumes():
         assert f"<bookID>{book_id}</bookID>" in head
 
 
+def _cut_length(content: str) -> int:
+    """A piece's length as the source spells it. Pieces are cut from the source text, and
+    cleaning then spells each ligature out ("æ" to "ae", 1.10a); cutting the folded text
+    instead would move piece anchors. Every "ae" and "oe" counts as one letter, so words
+    such as "does" make the bound slightly lenient, never stricter."""
+    return len(content) - len(re.findall(r"[AaOo]e", content))
+
+
+
 def test_split_passages_have_complete_reader_boundaries():
     docs = build_all()
     assert len(docs) == 128
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
-            assert len(passage.content) <= 4_000
+            assert _cut_length(passage.content) <= 4_000
             match = re.match(r"^(.*)/p(\d+)$", passage.anchor)
             if match:
                 groups[match.group(1)].append((int(match.group(2)), passage))
