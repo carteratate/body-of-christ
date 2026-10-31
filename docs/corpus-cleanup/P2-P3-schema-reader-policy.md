@@ -249,7 +249,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         reason_code   text NOT NULL CHECK (reason_code IN (
                           'rule-a', 'rule-b', 'rule-c', 'rule-g-editorial', 'note-split-off',
                           'duplicate', 'debris', 'other-author', 'superseded-translation',
-                          'translation-in-preparation', 'not-current-law', 'rolled-back')),
+                          'translation-in-preparation', 'not-current-law', 'awaiting-permission',
+                          'rolled-back')),
                                       -- 2.1's reason list (D11), plus 2.1's reserved 'rolled-back'
         public_reason text NOT NULL,  -- the registry entry's tombstone sentence, shown to users
         CHECK ((reason_code = 'rolled-back') = (removal_key IS NULL)),
@@ -719,7 +720,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         chunk_id: Optional[str] = None
     ```
 
-    `Tombstone.read_elsewhere_url` is set only for a retired document (or a passage of one) whose removal entry is `document`-scope with reason `translation-in-preparation`: it is the document's `metadata.url`, so the removal page can say where the text can still be read (1.3d; Carter, 31 Oct 2026; ADR 0001). It is null otherwise.
+    `Tombstone.read_elsewhere_url` is set only for a retired document (or a passage of one) whose removal entry is `document`-scope with reason `translation-in-preparation` or `awaiting-permission`, or for a passage whose `passage`-scope entry has reason `awaiting-permission`: it is the document's `metadata.url`, so the removal page can say where the text can still be read (1.3d; Carter, 31 Oct and 1 Nov 2026; ADR 0001). It is null otherwise.
 
     `ChunkSource` and `BookmarkSource` gain `facts: Optional[DocumentFacts]`, `language: Optional[str]`, `passage_note: Optional[str]`, `passage_author: Optional[str]`. `ChunkResult` and `BookmarkResponse` gain `status: Literal["current", "moved", "removed"] = "current"`, `tombstone: Optional[Tombstone]`, `redirect: Optional[Redirect]`. `DocumentResponse` gains `facts`, `works: list[WorkInfo]` and `status`. `ReaderPassage` gains `language`, `note`, `work_key`, `passage_author` and `superseded_by` (the current passage's ID, set only on a history passage).
   - Superseded text in the reader (rule F, D11). The chapter query returns history passages (`superseded_by IS NOT NULL`) with the chapter, so the reader can show them as "earlier text" beside the current passage. They are never search results, because `searchable` is false. A history passage is not retired; the visibility predicate below does not hide it.

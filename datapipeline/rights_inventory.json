@@ -1927,7 +1927,7 @@
  },
  {
   "work": "Against Heresies: Book I",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "ef7c21a8-92fa-51b8-823f-89094bf6f565",
@@ -1945,7 +1945,7 @@
  },
  {
   "work": "Against Heresies: Book II",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "a558e370-226c-5ac5-b01b-916adbe6b256",
@@ -1963,7 +1963,7 @@
  },
  {
   "work": "Against Heresies: Book III",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "a9dfa0cc-a39d-5962-9068-231edc7d02fe",
@@ -1981,7 +1981,7 @@
  },
  {
   "work": "Against Heresies: Book IV",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "c7ef22ce-17e4-5b8a-b915-9470f19eebe4",
@@ -1999,7 +1999,7 @@
  },
  {
   "work": "Against Heresies: Book V",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
@@ -2034,7 +2034,7 @@
   "planned_for": null
  },
  {
-  "work": "Epistle from Maria of Cassobelæ",
+  "work": "Epistle from Maria of Cassobelae",
   "author": "Ignatius",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
@@ -2057,6 +2057,42 @@
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "76b8b853-70d2-5821-8ee5-0149e4f59e03",
+  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": null
+ },
+ {
+  "work": "Epistle of Ignatius to the Philippians",
+  "author": "Ignatius",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/apostolic fathers.xml",
+  "document_id": "567be8a5-1eba-5a86-a5ce-688e2e2aab23",
+  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": null
+ },
+ {
+  "work": "Epistle of Polycarp to the Philippians",
+  "author": "Polycarp",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/apostolic fathers.xml",
+  "document_id": "379b7859-4bf9-57f3-9327-7e5d207f7c7f",
   "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
   "translator": null,
   "first_published": null,
@@ -2268,42 +2304,6 @@
   "planned_for": null
  },
  {
-  "work": "Epistle to the Philippians",
-  "author": "Ignatius",
-  "collection": "church-fathers",
-  "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "567be8a5-1eba-5a86-a5ce-688e2e2aab23",
-  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
-  "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Sourced via CCEL.org",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Epistle to the Philippians",
-  "author": "Polycarp",
-  "collection": "church-fathers",
-  "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "379b7859-4bf9-57f3-9327-7e5d207f7c7f",
-  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
-  "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Sourced via CCEL.org",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Epistle to the Romans: Shorter and Longer Versions",
   "author": "Ignatius",
   "collection": "church-fathers",
@@ -2340,7 +2340,7 @@
   "planned_for": null
  },
  {
-  "work": "Epistle to the Smyrnæans: Shorter and Longer Versions",
+  "work": "Epistle to the Smyrnaeans: Shorter and Longer Versions",
   "author": "Ignatius",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
@@ -2430,11 +2430,11 @@
   "planned_for": null
  },
  {
-  "work": "Fragments",
-  "author": "Papias",
+  "work": "Fragments from the Lost Writings of Irenaeus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "efc282b4-fe6a-5162-9e1b-8748c686dde1",
+  "document_id": "0066869a-28fb-5274-a847-c4d3e88a948e",
   "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
   "translator": null,
   "first_published": null,
@@ -2448,11 +2448,11 @@
   "planned_for": null
  },
  {
-  "work": "Fragments from the Lost Writings of Irenæus",
-  "author": "Irenæus",
+  "work": "Fragments of Papias",
+  "author": "Papias",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "0066869a-28fb-5274-a847-c4d3e88a948e",
+  "document_id": "efc282b4-fe6a-5162-9e1b-8748c686dde1",
   "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
   "translator": null,
   "first_published": null,
@@ -3240,8 +3240,8 @@
   "planned_for": null
  },
  {
-  "work": "A Treatise of Novatian Concerning the Trinity.",
-  "author": "Novatian.",
+  "work": "A Treatise of Novatian Concerning the Trinity",
+  "author": "Novatian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
@@ -3258,8 +3258,8 @@
   "planned_for": null
  },
  {
-  "work": "Anonymous Treatise Against the Heretic Novatian.",
-  "author": "Appendix.",
+  "work": "Anonymous Treatise Against the Heretic Novatian",
+  "author": "Appendix",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "f827d42e-fca5-5277-82be-64cdc1feb467",
@@ -3276,8 +3276,8 @@
   "planned_for": null
  },
  {
-  "work": "Anonymous Treatise on Re-baptism.",
-  "author": "Appendix.",
+  "work": "Anonymous Treatise on Re-baptism",
+  "author": "Appendix",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "2ddaa182-a332-559f-8bfb-e72b56a12953",
@@ -3294,8 +3294,8 @@
   "planned_for": null
  },
  {
-  "work": "Appendix to the Works of Hippolytus. Containing Dubious and Spurious Pieces.",
-  "author": "Hippolytus.",
+  "work": "Appendix to the Works of Hippolytus. Containing Dubious and Spurious Pieces",
+  "author": "Hippolytus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",
@@ -3312,8 +3312,8 @@
   "planned_for": null
  },
  {
-  "work": "Fragments of Caius.",
-  "author": "Caius.",
+  "work": "Fragments of Caius",
+  "author": "Caius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "8e5fb9cb-352a-59c8-8449-07d673b3671c",
@@ -3330,8 +3330,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Jewish Meats.",
-  "author": "Novatian.",
+  "work": "On the Jewish Meats",
+  "author": "Novatian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
@@ -3348,8 +3348,8 @@
   "planned_for": null
  },
  {
-  "work": "The Epistles of Cyprian.",
-  "author": "Cyprian.",
+  "work": "The Epistles of Cyprian",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -3366,8 +3366,8 @@
   "planned_for": null
  },
  {
-  "work": "The Extant Works and Fragments of Hippolytus.",
-  "author": "Hippolytus.",
+  "work": "The Extant Works and Fragments of Hippolytus",
+  "author": "Hippolytus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -3384,8 +3384,8 @@
   "planned_for": null
  },
  {
-  "work": "The Refutation of All Heresies.",
-  "author": "Hippolytus.",
+  "work": "The Refutation of All Heresies",
+  "author": "Hippolytus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -3402,8 +3402,8 @@
   "planned_for": null
  },
  {
-  "work": "The Seventh Council of Carthage under Cyprian. Concerning the Baptism of Heretics.",
-  "author": "Cyprian.",
+  "work": "The Seventh Council of Carthage under Cyprian. Concerning the Baptism of Heretics",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "83609fa8-480c-5a66-a09c-f0114c4d3e66",
@@ -3420,8 +3420,8 @@
   "planned_for": null
  },
  {
-  "work": "The Treatises of Cyprian.",
-  "author": "Cyprian.",
+  "work": "The Treatises of Cyprian",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -3438,8 +3438,8 @@
   "planned_for": null
  },
  {
-  "work": "Treatises Attributed to Cyprian on Questionable Authority.",
-  "author": "Cyprian.",
+  "work": "Treatises Attributed to Cyprian on Questionable Authority",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -3456,8 +3456,8 @@
   "planned_for": null
  },
  {
-  "work": "A Fragment of the Same Disputation.",
-  "author": "Archelaus.",
+  "work": "A Fragment of the Same Disputation",
+  "author": "Archelaus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "4b66fa28-684a-5e79-8596-6029d5de1a48",
@@ -3474,8 +3474,8 @@
   "planned_for": null
  },
  {
-  "work": "Acknowledged Writings.",
-  "author": "Gregory Thaumaturgus.",
+  "work": "Acknowledged Writings",
+  "author": "Gregory Thaumaturgus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
@@ -3492,8 +3492,8 @@
   "planned_for": null
  },
  {
-  "work": "Alexander of Cappadocia.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Alexander of Cappadocia",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "1731004f-ea5b-52a1-b533-56ae9377b7fe",
@@ -3510,8 +3510,8 @@
   "planned_for": null
  },
  {
-  "work": "Anatolius of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Anatolius of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "8d817baf-5149-5641-91ab-ad994870956a",
@@ -3528,8 +3528,8 @@
   "planned_for": null
  },
  {
-  "work": "Dubious or Spurious Writings.",
-  "author": "Gregory Thaumaturgus.",
+  "work": "Dubious or Spurious Writings",
+  "author": "Gregory Thaumaturgus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "44fd52c3-fdef-518e-a463-a3273f39764c",
@@ -3546,8 +3546,8 @@
   "planned_for": null
  },
  {
-  "work": "Epistles on the Arian Heresy and the Deposition of Arius.",
-  "author": "Alexander of Alexandria.",
+  "work": "Epistles on the Arian Heresy and the Deposition of Arius",
+  "author": "Alexander of Alexandria",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "02f87865-8421-5189-a3f4-6a1a262fa8d8",
@@ -3564,8 +3564,8 @@
   "planned_for": null
  },
  {
-  "work": "Exegetical Fragments.",
-  "author": "Dionysius.",
+  "work": "Exegetical Fragments",
+  "author": "Dionysius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "6e9f0854-4460-5044-b0ed-c13355cd90fe",
@@ -3582,8 +3582,8 @@
   "planned_for": null
  },
  {
-  "work": "Extant Fragments.",
-  "author": "Dionysius.",
+  "work": "Extant Fragments",
+  "author": "Dionysius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
@@ -3600,8 +3600,8 @@
   "planned_for": null
  },
  {
-  "work": "Fragments from the Writings of Peter.",
-  "author": "Peter of Alexandria.",
+  "work": "Fragments from the Writings of Peter",
+  "author": "Peter of Alexandria",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "12083c91-ed66-5b5c-ac89-bd4ebbadb439",
@@ -3618,8 +3618,8 @@
   "planned_for": null
  },
  {
-  "work": "Fragments.",
-  "author": "Methodius.",
+  "work": "Fragments of Methodius",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "525a3cd5-3890-5be3-993f-34f5de18a83b",
@@ -3636,8 +3636,8 @@
   "planned_for": null
  },
  {
-  "work": "From the Discourse on the Resurrection.",
-  "author": "Methodius.",
+  "work": "From the Discourse on the Resurrection",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "5b81cdef-4a4f-52de-8b35-8657680f30dc",
@@ -3654,8 +3654,8 @@
   "planned_for": null
  },
  {
-  "work": "Malchion.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Malchion",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "18eaa7ff-402d-56bd-9549-8d12c10d29fc",
@@ -3672,8 +3672,8 @@
   "planned_for": null
  },
  {
-  "work": "Of the Manichæans.",
-  "author": "Alexander of Lycopolis.",
+  "work": "Of the Manichaeans",
+  "author": "Alexander of Lycopolis",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "0d274c4c-d2f3-5e33-92b5-c592422a0bff",
@@ -3690,8 +3690,8 @@
   "planned_for": null
  },
  {
-  "work": "Oration on the Palms.",
-  "author": "Methodius.",
+  "work": "Oration on the Palms",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "2ac6445a-0528-500f-8574-0e62ef1d4b9e",
@@ -3708,8 +3708,8 @@
   "planned_for": null
  },
  {
-  "work": "Pamphilus.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Pamphilus",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
@@ -3726,8 +3726,8 @@
   "planned_for": null
  },
  {
-  "work": "Phileas.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Phileas",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "5f551a37-baea-599a-8f63-413a06abc5e1",
@@ -3744,8 +3744,8 @@
   "planned_for": null
  },
  {
-  "work": "Pierus of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Pierus of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "bb35c577-ee5b-546e-abb6-41a0764cd6a7",
@@ -3762,8 +3762,8 @@
   "planned_for": null
  },
  {
-  "work": "Some Other Fragments of the Same Methodius.",
-  "author": "Methodius.",
+  "work": "Some Other Fragments of the Same Methodius",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "ecfd05c0-32a2-5153-9054-d3ab06c56c2c",
@@ -3780,8 +3780,8 @@
   "planned_for": null
  },
  {
-  "work": "The Acts of the Disputation with the Heresiarch Manes.",
-  "author": "Archelaus.",
+  "work": "The Acts of the Disputation with the Heresiarch Manes",
+  "author": "Archelaus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "0e326c02-a623-538c-898b-56623197c955",
@@ -3798,8 +3798,8 @@
   "planned_for": null
  },
  {
-  "work": "The Banquet of the Ten Virgins; or Concerning Chastity.",
-  "author": "Methodius.",
+  "work": "The Banquet of the Ten Virgins; or Concerning Chastity",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
@@ -3816,8 +3816,8 @@
   "planned_for": null
  },
  {
-  "work": "The Canonical Epistle, with the Commentaries of Theodore Balsamon and John Zonaras.",
-  "author": "Peter of Alexandria.",
+  "work": "The Canonical Epistle, with the Commentaries of Theodore Balsamon and John Zonaras",
+  "author": "Peter of Alexandria",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
@@ -3834,8 +3834,8 @@
   "planned_for": null
  },
  {
-  "work": "The Epistle to Aristides.",
-  "author": "Julius Africanus.",
+  "work": "The Epistle to Aristides",
+  "author": "Julius Africanus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "f12b1923-3690-5a7a-8da7-46bb7f1e335f",
@@ -3852,8 +3852,8 @@
   "planned_for": null
  },
  {
-  "work": "The Extant Fragments of the Five Books of the Chronography of Julius Africanus.",
-  "author": "Julius Africanus.",
+  "work": "The Extant Fragments of the Five Books of the Chronography of Julius Africanus",
+  "author": "Julius Africanus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "6895ce71-2eab-54d6-93a0-516a97625efc",
@@ -3871,7 +3871,7 @@
  },
  {
   "work": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.)",
-  "author": "Arnobius.",
+  "author": "Arnobius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
@@ -3888,8 +3888,8 @@
   "planned_for": null
  },
  {
-  "work": "Theognostus of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Theognostus of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "c370ad86-3a10-5343-909c-ff4f4e5aecd7",
@@ -3906,8 +3906,8 @@
   "planned_for": null
  },
  {
-  "work": "Theonas of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Theonas of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "7f7a66c3-17eb-5724-8091-a1e7a8612229",
@@ -3924,8 +3924,8 @@
   "planned_for": null
  },
  {
-  "work": "Three Fragments from the Homily on the Cross and Passion of Christ.",
-  "author": "Methodius.",
+  "work": "Three Fragments from the Homily on the Cross and Passion of Christ",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "5f210d1e-1be7-54fa-a09d-f1dd6f3f315a",
@@ -3942,8 +3942,8 @@
   "planned_for": null
  },
  {
-  "work": "Two Fragments, Uncertain.",
-  "author": "Methodius.",
+  "work": "Two Fragments, Uncertain",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "973645b6-6110-5711-a635-6b84c2632fd8",
@@ -3960,8 +3960,8 @@
   "planned_for": null
  },
  {
-  "work": "A Letter from Origen to Gregory.",
-  "author": "Origen.",
+  "work": "A Letter from Origen to Gregory",
+  "author": "Origen",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "9c052574-ccbc-5aa6-8a1e-b582b7dd73e4",
@@ -3978,8 +3978,8 @@
   "planned_for": null
  },
  {
-  "work": "De Fuga in Persecutione.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "De Fuga in Persecutione",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "d2b71f9f-111c-5f1b-9a43-5a897b13730c",
@@ -3996,8 +3996,8 @@
   "planned_for": null
  },
  {
-  "work": "On Exhortation to Chastity.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Exhortation to Chastity",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "e5d235f3-a5f2-513e-90e7-04eedc71bf33",
@@ -4014,8 +4014,8 @@
   "planned_for": null
  },
  {
-  "work": "On Fasting.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Fasting",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "89201a06-a747-53a5-8248-43e5a5cb5fae",
@@ -4032,8 +4032,8 @@
   "planned_for": null
  },
  {
-  "work": "On Modesty.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Modesty",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "6b70b67f-bfb3-5cda-a2f0-323eff4621bc",
@@ -4050,8 +4050,8 @@
   "planned_for": null
  },
  {
-  "work": "On Monogamy.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Monogamy",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "01abb5ad-1a95-5435-aa5b-62b04e87e1f2",
@@ -4068,8 +4068,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Apparel of Women.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On the Apparel of Women",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "e73bb326-8ba6-5334-b79e-3a15c9892581",
@@ -4086,8 +4086,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Pallium.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On the Pallium",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "d7f29587-bcec-5a71-9633-e635fa8989f5",
@@ -4104,8 +4104,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Veiling of Virgins.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On the Veiling of Virgins",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "17b7747f-273b-5841-b415-16dea3192635",
@@ -4122,8 +4122,8 @@
   "planned_for": null
  },
  {
-  "work": "Origen Against Celsus.",
-  "author": "Origen.",
+  "work": "Origen Against Celsus",
+  "author": "Origen",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "5a05852b-4193-518f-9d01-afd796291979",
@@ -4140,8 +4140,8 @@
   "planned_for": null
  },
  {
-  "work": "Origen De Principiis.",
-  "author": "Origen.",
+  "work": "Origen De Principiis",
+  "author": "Origen",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "4c96eac3-f3f1-549c-84cf-070661393073",
@@ -4158,8 +4158,8 @@
   "planned_for": null
  },
  {
-  "work": "The Instructions of Commodianus.",
-  "author": "Commodianus.",
+  "work": "The Instructions of Commodianus",
+  "author": "Commodianus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "b9b6fbbb-dec7-5a67-ad45-58965105c081",
@@ -4176,8 +4176,8 @@
   "planned_for": null
  },
  {
-  "work": "The Octavius of Minucius Felix.",
-  "author": "Minucius Felix.",
+  "work": "The Octavius of Minucius Felix",
+  "author": "Minucius Felix",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
@@ -4194,8 +4194,8 @@
   "planned_for": null
  },
  {
-  "work": "To His Wife.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "To His Wife",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "3717ce05-ad42-5ec3-b3ce-ff3964908e05",
@@ -5638,6 +5638,7 @@
   "author": "Pope Leo XII",
   "collection": "encyclicals",
   "source_path": "encyclicals/TheEncyclicalLetterOfPopeLeoTheXI/",
+  "document_id": null,
   "edition": "The Encyclical Letter of Pope Leo the XII. to His Venerable Brethren ... with an English Translation of the Same; to which are annexed Pastoral Instructions by the R.C. Archbishops and Bishops ... throughout Ireland (Dublin: Richard Coyne, publisher to the Roman Catholic Bishops of Ireland, 1824). A different translation from papalencyclicals.net's. Internet Archive scan TheEncyclicalLetterOfPopeLeoTheXI",
   "translator": null,
   "first_published": 1824,
@@ -5655,6 +5656,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/TheTrueAndFalse/",
+  "document_id": null,
   "edition": "Joseph Fessler, The True and False Infallibility of the Popes, tr. Ambrose St. John (New York: Catholic Publication Society, 1875), which prints the Syllabus in the English papalencyclicals.net reproduces (87% of its word 4-grams; Marshall's 1928 printing 93%). Internet Archive scan TheTrueAndFalse",
   "translator": null,
   "first_published": 1875,
@@ -5672,6 +5674,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/USCatholicMagazineMonthlyReviewV6/",
+  "document_id": null,
   "edition": "The United States Catholic Magazine and Monthly Review, vol. 6 (Baltimore: John Murphy, 1847), 'Encyclical letter of Pope Pius IX, to the Catholic hierarchy throughout the world', about pp. 150-160. A different translation from papalencyclicals.net's. Internet Archive scan USCatholicMagazineMonthlyReviewV6",
   "translator": null,
   "first_published": 1847,
@@ -5793,6 +5796,24 @@
   "planned_for": null
  },
  {
+  "work": "Levate",
+  "author": "Pope Pius IX",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/americanannualcyv7dapp/",
+  "document_id": null,
+  "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1867 (New York: D. Appleton, 1868), Roman Catholic Church, about pp. 680-681: the encyclical from its opening through the decrees against the Church in Poland (the site's preamble to paragraph 7), printed as the Pope's words of October 1867; it lacks paragraphs 8-10 (the triduum and the closing). Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan americanannualcyv7dapp",
+  "translator": null,
+  "first_published": 1868,
+  "source_url": "https://archive.org/details/americanannualcyv7dapp",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translation from Appletons' Annual Cyclopaedia (1868), extract. Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "1.3d"
+ },
+ {
   "work": "Annus Qui Hunc",
   "author": "Pope Benedict XIV",
   "collection": "encyclicals",
@@ -5869,6 +5890,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/appletonsannualc14newyuoft/",
+  "document_id": null,
   "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1874, new series vol. 14 (New York: D. Appleton, 1875), Roman Catholic Church: the encyclical to the Austrian bishops in full, from 'Dear sons and venerable brethren' to 'Given at Rome, near St. Peter's, March [7] ... in the twenty-eighth year'. A different translation from papalencyclicals.net's. Internet Archive scan appletonsannualc14newyuoft",
   "translator": null,
   "first_published": 1875,
@@ -5886,6 +5908,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/appletonsannualc15newyuoft/",
+  "document_id": null,
   "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1875 (New York: D. Appleton, 1876), Roman Catholic Church: the encyclical to the Swiss in full, ending 'given at Rome the 23d day of March in the twenty-ninth year of our pontificate. Pius IX, Pope'. A different translation from papalencyclicals.net's. Internet Archive scan appletonsannualc15newyuoft",
   "translator": null,
   "first_published": 1876,
@@ -5903,6 +5926,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/appletonsannualc15newyuoft/",
+  "document_id": null,
   "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1875 (New York: D. Appleton, 1876), Roman Catholic Church: 'the following encyclical ... addressed to the archbishops and bishops of Prussia', about 1,590 words, ending 'given at Rome the [5th] February ... in the twenty-ninth of our pontificate'. A different translation from papalencyclicals.net's. Internet Archive scan appletonsannualc15newyuoft",
   "translator": null,
   "first_published": 1876,
@@ -5938,6 +5962,7 @@
   "author": "Pope Pius VII",
   "collection": "encyclicals",
   "source_path": "encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/",
+  "document_id": null,
   "edition": "An Encyclical Letter of Our Most Holy Father Pope Pius VII. to All the Catholic Bishops. Translated from the Latin original, by the Rev. Benedict Rayment (London: Keating, Brown and Keating, MDCCC), ending 'Given at Venice ... the 15th day of May, in the year of the Lord 1800'. A different translation from papalencyclicals.net's. Internet Archive scan (ECCO) bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
   "translator": "Benedict Rayment",
   "first_published": 1800,
@@ -5955,6 +5980,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/bwb_P9-CSD-414/",
+  "document_id": null,
   "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1870, vol. 10 (New York: D. Appleton, 1871), 'Roman Catholic Church' article: the encyclical of 1 November 1870 in full, ending 'Given at Rome, at St. Peter's, the 1st day of November ... of our Pontificate'. A different translation from papalencyclicals.net's. Internet Archive scan bwb_P9-CSD-414",
   "translator": null,
   "first_published": 1871,
@@ -6008,6 +6034,7 @@
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
   "source_path": "encyclicals/catholiccabinet01unkngoog/",
+  "document_id": null,
   "edition": "The Catholic Cabinet, and Chronicle of Religious Intelligence (St. Louis, 1845; published with the approbation of Bishop Peter Richard Kenrick), 'Circular letter of Pope Gregory XVI', pp. 230 ff. A different translation from papalencyclicals.net's. Internet Archive scan catholiccabinet01unkngoog",
   "translator": null,
   "first_published": 1845,
@@ -6097,6 +6124,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/cihm_43402/",
+  "document_id": null,
   "edition": "Encyclical Letter of Our Holy Father Pope Pius IX, Ordering Prayers and Announcing a New Jubilee, to all the Patriarchs, Primates, Archbishops, and Bishops of the Catholic World ([Canada, 1851]; caption title; with the Latin and an extract of Bishop Power of Toronto pastoral of 1844 on the Propagation of the Faith). CIHM microfiche of the copy in the Library of the Public Archives of Canada. A different translation from papalencyclicals.net's. Internet Archive scan cihm_43402",
   "translator": null,
   "first_published": 1851,
@@ -6114,6 +6142,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/cihm_51176/",
+  "document_id": null,
   "edition": "Edward John [Horan], by the Grace of God and the Favor of the Apostolic See, Bishop of Kingston: to the Clergy and Laity of our Diocess ([Kingston, 1859]), pastoral letter printing the Encyclical Letter of His Holiness Pope Pius IX in full, ending Given at Rome, at St. Peters, this 27th day of April. CIHM microfiche. A different translation from papalencyclicals.net's. Internet Archive scan cihm_51176",
   "translator": null,
   "first_published": 1859,
@@ -6455,6 +6484,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/encyclicalletter00cath_6/",
+  "document_id": null,
   "edition": "Encyclical Letter of Our Most Holy Lord Pius IX ... examined by the Rt. Rev. Bishop of Philadelphia, and published with his approbation (Philadelphia: McLaughlin Brothers, printers, [1874]). The title page carries no year: the catalogue dates it 1874, and the approbation of Bishop James F. Wood (d. 1883) places it before 1884. A different translation from papalencyclicals.net's. Internet Archive scan encyclicalletter00cath_6",
   "translator": null,
   "first_published": 1874,
@@ -6868,6 +6898,7 @@
   "author": "Pope Clement XIV",
   "collection": "encyclicals",
   "source_path": "encyclicals/interestinglett00xivgoog/",
+  "document_id": null,
   "edition": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.) Translated from the French edition published at Paris (Newcastle: printed by T. Saint, for W. Charnley, 1777), Appendix: 'An Encyclical, or Circular Letter, addressed to all the Patriarchs, Primates, Archbishops, and Bishops, on his Exaltation to the Pontificate' (12 December 1769). Translated from the French, not directly from the Latin. A different translation from papalencyclicals.net's. Internet Archive scan interestinglett00xivgoog (also ECCO bim_eighteenth-century_interesting-letters-of-p_clement-xiv-pope_1777_2_0)",
   "translator": null,
   "first_published": 1777,
@@ -6885,6 +6916,7 @@
   "author": "Pope Clement XIV",
   "collection": "encyclicals",
   "source_path": "encyclicals/interestinglett00xivgoog/",
+  "document_id": null,
   "edition": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.) Translated from the French edition published at Paris (Newcastle: printed by T. Saint, for W. Charnley, 1777), Appendix: 'The Bull for the Universal Jubilee of the Year 1775' (30 April 1774). Translated from the French, not directly from the Latin. A different translation from papalencyclicals.net's. Internet Archive scan interestinglett00xivgoog (also ECCO bim_eighteenth-century_interesting-letters-of-p_clement-xiv-pope_1777_2_0)",
   "translator": null,
   "first_published": 1777,
@@ -6938,6 +6970,7 @@
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
   "source_path": "encyclicals/lettersoflatebis00engl_0/",
+  "document_id": null,
   "edition": "Letters of the Late Bishop England to the Hon. John Forsyth, on the Subject of Domestic Slavery: to which are prefixed copies, in Latin and English, of the Pope's apostolic letter (Baltimore: John Murphy, 1844), English section 'The same in English'. A different, deliberately literal translation from papalencyclicals.net's. Internet Archive scan lettersoflatebis00engl_0",
   "translator": null,
   "first_published": 1844,
@@ -7117,6 +7150,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/metropolitanmont01balt/",
+  "document_id": null,
   "edition": "The Metropolitan, a Monthly Magazine Devoted to Religion, Education, Literature and General Information (Baltimore: John Murphy), vol. 1 no. 5, June 1853 (single-issue scan sim_metropolitan-a-monthly-magazine-devoted-to-religion_1853-06_1_5): the encyclical to the French bishops in full, ending Given at Rome the 21st of March ... of our Pontificate the seventh. Pius PP. IX. A different translation from papalencyclicals.net's. Internet Archive scan metropolitanmont01balt",
   "translator": null,
   "first_published": 1853,
@@ -7332,6 +7366,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/officialdocumen00ixgoog/",
+  "document_id": null,
   "edition": "Official Documents Connected with the Definition of the Dogma of the Immaculate Conception, in Latin and English (Baltimore: John Murphy; London: Charles Dolman, 1855), pp. 59-98. A different translation from papalencyclicals.net's, which is modern. Internet Archive scan officialdocumen00ixgoog",
   "translator": null,
   "first_published": 1855,
@@ -7939,10 +7974,29 @@
   "planned_for": null
  },
  {
+  "work": "Qui Nuper",
+  "author": "Pope Pius IX",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/sim_dublin-review_1859-09_47/",
+  "document_id": null,
+  "edition": "The Dublin Review, new series vol. 47 (London, September 1859), 'The Massacre of Perugia', pp. 198-199: the opening paragraph and most of paragraph 3 quoted; paragraph 2 summarised only. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan sim_dublin-review_1859-09_47 (also in The Rambler, September 1859)",
+  "translator": null,
+  "first_published": 1859,
+  "source_url": "https://archive.org/details/sim_dublin-review_1859-09_47",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translation from The Dublin Review (1859), extract. Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "1.3d"
+ },
+ {
   "work": "Quanta Cura (1864)",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_dublin-review_1865-04_4/",
+  "document_id": null,
   "edition": "The Dublin Review, new series, vol. 4 (London, April 1865), English translation of the encyclical of 8 December 1864: the translation papalencyclicals.net reproduces (95% of its word 4-grams). Also printed in The Catholic Historical Review, new series, vol. 7, no. 2 (July 1927). Internet Archive scan sim_dublin-review_1865-04_4",
   "translator": null,
   "first_published": 1865,
@@ -7960,6 +8014,7 @@
   "author": "Pope Pius VIII",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11/",
+  "document_id": null,
   "edition": "The Jesuit, or Catholic Sentinel (Boston), vol. 1, no. 11, 14 November 1829, 'The Pope's Encyclical Letter': 'a Translation of the Encyclical, or Grand Circular Letter of His Holiness Pope Pius VIII'. Reads as complete; the scan's last lines are garbled, so 1.3d confirms the ending. A different translation from papalencyclicals.net's. Internet Archive scan sim_jesuit-or-catholic-sentinel_1829-11-14_1_11",
   "translator": null,
   "first_published": 1829,
@@ -7977,6 +8032,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9/",
+  "document_id": null,
   "edition": "The Metropolitan (Baltimore: John Murphy), vol. 2 no. 9, October 1854: the encyclical in full, ending Given at St. Peters at Rome, August [1] ... the ninth year of our Pontificate. Pius IX, Pope, followed by Archbishop Francis Patrick Kenrick pastoral publishing it. A different translation from papalencyclicals.net's. Internet Archive scan sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9",
   "translator": null,
   "first_published": 1854,
@@ -7994,6 +8050,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7/",
+  "document_id": null,
   "edition": "The Metropolitan, a Monthly Magazine Devoted to Religion, Education, Literature and General Information (Baltimore: John Murphy), new series vol. 1 no. 7, August 1858, Record of Events: Encyclical Letter of Pope Pius the Ninth to all the Patriarchs, Primates, Archbishops, Bishops and other Ordinaries, in full. A different translation from papalencyclicals.net's. Internet Archive scan sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7",
   "translator": null,
   "first_published": 1858,
@@ -8007,10 +8064,47 @@
   "planned_for": "1.3d"
  },
  {
+  "work": "Nostis Et Nobiscum",
+  "author": "Pope Pius IX",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/sim_rambler-a-catholic-journal-and-review_1850-02_5_part-xxvi/",
+  "document_id": null,
+  "edition": "The Rambler, vol. 5 (London, February 1850), 'Encyclic of Pius IX to the Archbishops and Bishops of Italy': an abridgement ('a few paragraphs only of minor importance are omitted'), lacking the site's paragraphs 21-24 (marked * * *) and 31-33. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan sim_rambler-a-catholic-journal-and-review_1850-02_5_part-xxvi",
+  "translator": null,
+  "first_published": 1850,
+  "source_url": "https://archive.org/details/sim_rambler-a-catholic-journal-and-review_1850-02_5_part-xxvi",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translation from The Rambler (1850), abridged. Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "1.3d"
+ },
+ {
+  "work": "Nullis Certe Verbis",
+  "author": "Pope Pius IX",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/sim_rambler-a-catholic-journal-and-review_1860-03_2_6/",
+  "document_id": null,
+  "edition": "The Rambler, new series vol. 2 (London, March 1860), Contemporary Events: an extract; by R8's estimate it holds paragraphs 3 and 6-8 and lacks at least 9 and 11-13, which 1.3d's alignment settles. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
+  "translator": null,
+  "first_published": 1860,
+  "source_url": "https://archive.org/details/sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translation from The Rambler (1860), extract. Scan: Internet Archive",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "1.3d"
+ },
+ {
   "work": "Ubi Primum (1849)",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/",
+  "document_id": null,
   "edition": "The United States Catholic Magazine (Baltimore), vol. 8, no. 13, 31 March 1849, 'Encyclical letter of Our Holy Father Pope Pius IX, in Latin, with a translation for this magazine', ending 'Given at Gaeta, February 2, 1849'. A different translation from papalencyclicals.net's (from Papal Documents on Mary, 1954). Internet Archive scan sim_united-states-catholic-magazine_1849-03-31_8_13",
   "translator": null,
   "first_published": 1849,
@@ -8370,6 +8464,7 @@
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
   "source_path": "encyclicals/wikisource-catholic-magazine-and-review-v3/",
+  "document_id": null,
   "edition": "The Catholic Magazine and Review, vol. 3 (Birmingham, 1833), 'Gregory XVI's Encyclical Letter', transcribed on Wikisource from the scan 'Catholic Magazine And Review, Volume 3 and Volume 4, 1833.djvu' (pages 69-80). A different translation from papalencyclicals.net's, which is modern",
   "translator": null,
   "first_published": 1833,
@@ -8387,6 +8482,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/wikisource-encyclical-announcing-a-jubilee-1874/",
+  "document_id": null,
   "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1874, vol. 14 (New York: D. Appleton, 1875), pp. 753-756, transcribed on Wikisource as 'Encyclical Letter by Pope Pius IX Announcing a Jubilee' (Internet Archive scan americanannualc10unkngoog). A different translation from papalencyclicals.net's",
   "translator": null,
   "first_published": 1875,
@@ -8572,6 +8668,7 @@
   "author": "Pope Paul III",
   "collection": "papal-documents",
   "source_path": "papal-documents/bartholomewdelas00macnuoft/",
+  "document_id": null,
   "edition": "Francis Augustus MacNutt, Bartholomew de Las Casas: His Life, His Apostolate, and His Writings (New York and London: G. P. Putnam's Sons; Cleveland: A. H. Clark, 1909): the translation papalencyclicals.net reproduces (99% of its word 4-grams). Internet Archive scan bartholomewdelas00macnuoft",
   "translator": "Francis Augustus MacNutt",
   "first_published": 1909,
@@ -8787,6 +8884,7 @@
   "author": "Pope Boniface VIII",
   "collection": "papal-documents",
   "source_path": "papal-documents/sim_catholic-historical-review_1927-07_7_2/",
+  "document_id": null,
   "edition": "Sister M. Mildred Curley, 'An Episode in the Conflict between Boniface VIII and Philip the Fair', The Catholic Historical Review, new series, vol. 7, no. 2 (Washington: Catholic University of America, July 1927), Latin and English in parallel columns: the translation papalencyclicals.net reproduces. Internet Archive scan sim_catholic-historical-review_1927-07_7_2",
   "translator": "Sister M. Mildred Curley",
   "first_published": 1927,

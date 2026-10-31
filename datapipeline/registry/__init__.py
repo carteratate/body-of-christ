@@ -45,7 +45,7 @@ VOICES = ("rejected",)
 # 2.2w's rollback writes; it never appears in removals.json.
 REMOVAL_REASONS = ("rule-a", "rule-b", "rule-c", "rule-g-editorial", "note-split-off",
                    "duplicate", "debris", "other-author", "superseded-translation",
-                   "translation-in-preparation", "not-current-law")
+                   "translation-in-preparation", "not-current-law", "awaiting-permission")
 ROLLED_BACK = "rolled-back"
 REMOVAL_SCOPES = ("document", "passage", "span", "class")
 # 0.1c's outcome words (D5, D11); `same` and `removed` are report outcomes only.
