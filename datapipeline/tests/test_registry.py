@@ -467,6 +467,23 @@ def test_redirect_follows_its_target_through_a_later_merge():
     assert {r["new_anchor"] for r in second.redirects} == {"ii.i"}
 
 
+def test_redirect_is_recomputed_when_a_piece_reappears():
+    # p5's piece merges into p3's, both merge into the whole unit, then p3's piece
+    # reappears holding p3 to p6: p5's redirect must follow it there.
+    w = work()
+    start = valid_registry(passages=[row(w["document_id"], p.anchor)
+                                     for p in cut("ii.i", PARAGRAPHS, [2, 4])])
+    reg = start
+    for item, bounds in (("a", [2]), ("b", []), ("c", [2])):
+        rec = registry.reconcile(reg, [document(cut("ii.i", PARAGRAPHS, bounds))],
+                                 item=item, today=TODAY)
+        reg = registry.WorkRegistry(start.works, rec.rows, rec.redirects, [])
+        assert rec.problems == [] and registry.validate(reg) == [], item
+    [p5] = [r for r in reg.redirects if r["old_anchor"] == "ii.i/from-p5"
+            and not r.get("closed_by")]
+    assert p5["new_anchor"] == "ii.i/from-p3"
+
+
 def test_piece_created_redirected_and_reappearing_reclaims_its_id():
     w = work()
     start = valid_registry(passages=[row(w["document_id"], "ii.i")])

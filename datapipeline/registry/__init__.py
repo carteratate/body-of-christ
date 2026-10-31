@@ -529,8 +529,23 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
             elif row["passage_id"] not in explained:
                 problems.append(f"{row['anchor']} ({row['passage_id']}) is not built and "
                                 "no removal entry or redirect explains it")
-    # A redirect whose target was itself redirected follows it to the final holder, so
-    # p4 -> p3 becomes p4 -> p2 when p3 later merges into p2.
+    # Every open redirect into a rebuilt document is recomputed from this build, so it
+    # names whichever piece now holds its opening unit (after recuts and reclaims too).
+    built = {d.id: d for d in documents}
+    for r in redirects:
+        d = built.get(r["document_id"])
+        if r.get("closed_by") or d is None or PIECE_MARK not in r["old_anchor"]:
+            continue
+        holder = _holder(r["old_anchor"], d)
+        if holder is None:
+            problems.append(f"{r['old_anchor']} ({r['old_passage_id']}): no single piece "
+                            "now holds its opening unit")
+            continue
+        r["new_passage_id"] = by_anchor[(d.id, holder.anchor)]["passage_id"]
+        r["new_anchor"] = holder.anchor
+    # A redirect the freeze wrote under a pre-2.1 piece name has no unit to look up; one
+    # whose target was itself redirected follows it to the final holder (p4 -> p3 becomes
+    # p4 -> p2 when p3 later merges into p2).
     onward = {r["old_passage_id"]: r for r in redirects if not r.get("closed_by")}
     for r in redirects:
         seen = {r["old_passage_id"]}
