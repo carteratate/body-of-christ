@@ -18,6 +18,10 @@ releases/local/report-<collection>-<timestamp>/, gitignored):
   samples, for local reading only.
 - health.json and health.md (checks.health), with a build and a live column.
 
+When the snapshot has document_chapters.jsonl (0.1d), the stored reader outline is
+compared with the outline the live passages give (release/outline.py), as
+release.outline_matches checks; report.md says when the snapshot has no such file.
+
 report.md also lists each build document's contents tree (#250): its node count, the
 chapters no node opens, or the reason the tree breaks the contract.
 
@@ -47,6 +51,7 @@ import health  # noqa: E402
 from checks import health as health_cli  # noqa: E402
 from checks import report as checks_report  # noqa: E402
 from model import Document  # noqa: E402
+from release import outline  # noqa: E402
 from release import remap as R  # noqa: E402
 
 REGISTRY_DIR = os.path.join(DATAPIPELINE, "registry")
@@ -344,6 +349,12 @@ def report_md(data: dict, public: bool) -> str:
               f"Unexpected: {len(status['unexpected']):,}. "
               f"Known defects that now pass (remove the entry): "
               f"{len(status['fixed_remove_entry']):,}.", ""]
+    outlined = [c for c in collections if data["collections"][c].get("outline_checked")]
+    lines += ["Stored reader outline (`release.outline_matches`, 0.1d): " +
+              (f"compared for {', '.join(outlined)}; "
+               f"{by_check.get('outline_matches', 0):,} documents differ."
+               if outlined else "not compared, because the snapshot has no "
+               "`document_chapters.jsonl`."), ""]
     for label, ids in (("Unexpected", status["unexpected"]),
                        ("Fixed, remove entry", status["fixed_remove_entry"])):
         if ids:
@@ -488,6 +499,10 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
     registry = registry if registry is not None else load_registry()
     built = [d for c in collections for d in build[c]]
     result = R.remap(old, built, registry)
+    # 0.1d: the stored reader outline against the live passages, when exported.
+    outline_checks = outline.outline_failures(snapshot_dir, live)
+    if outline_checks:
+        result.failures.extend(outline_checks)
     references = {}
     references_path = os.path.join(snapshot_dir, "references.json")
     if os.path.exists(references_path):
@@ -505,6 +520,7 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
                 for c in collections}
     for c in collections:      # kept per collection, since a later run may merge others in
         sections[c]["measured"] = {"snapshot": meta.get("date"), "build": head}
+        sections[c]["outline_checked"] = outline_checks is not None
 
     # 0.1b health, build and live, into health.json beside the report.
     previous_health = {}

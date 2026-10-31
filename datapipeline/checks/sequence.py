@@ -65,8 +65,10 @@ def bible_verses(documents: list[Document], units: list[SourceUnit]) -> Sequence
     placed = documents_by_file("bible", documents, files)
     result = SequenceResult()
     for name in files:
+        # A Psalm title's unit id ends in "/d": unnumbered, so not a verse.
         verses = [u.unit_id for u in units
-                  if u.source_file == name and u.region == "body" and u.unit_id]
+                  if u.source_file == name and u.region == "body" and u.unit_id
+                  and u.unit_id.rsplit("/", 1)[-1].isdigit()]
         code = verses[0].split("/")[0] if verses else ""
         order = {v: i for i, v in enumerate(verses)}
         by_chapter: dict[int, list[int]] = defaultdict(list)

@@ -11,6 +11,11 @@ snapshot holds in-copyright text and must never be committed):
 
 - passages.jsonl.gz: one row per chunk, the fields in PASSAGE_FIELDS.
 - documents.jsonl: one row per document, the fields in DOCUMENT_FIELDS.
+- document_chapters.jsonl: the stored reader outline (0037), one row per chapter, the
+  fields in CHAPTER_FIELDS; `chunk_count` is the document's stored count, which says
+  whether the outline is current (NULL: it is not, and the API derives it). Absent from
+  a database without 0037. Added by 0.1d, so release.report can compare the outline with
+  the passages offline.
 - references.json: per passage ID, how many rows of each user table in REFERENCE_TABLES
   point at it; per document ID, the reading_progress row count and its rows grouped by
   (chapter_key, anchor). Counts only: no user_id, no query text, no timestamps.
@@ -43,8 +48,10 @@ INDEX_PATH = os.path.join(RELEASES, "snapshots.json")
 PASSAGES_FILE = "passages.jsonl.gz"
 DOCUMENTS_FILE = "documents.jsonl"
 REFERENCES_FILE = "references.json"
+CHAPTERS_FILE = "document_chapters.jsonl"
 SNAPSHOT_FILE = "snapshot.json"
-FORMAT = 1
+# 2: adds document_chapters.jsonl (0.1d).
+FORMAT = 2
 
 # checks.health.load_snapshot reads these; unit_label lets the release report treat the
 # display pieces of one Summa objection or reply as one unit.
@@ -53,6 +60,7 @@ PASSAGE_FIELDS = ("id", "document_id", "collection", "title", "author", "anchor"
                   "content")
 DOCUMENT_FIELDS = ("id", "collection", "title", "author", "year", "translation",
                    "chunk_count", "metadata")
+CHAPTER_FIELDS = ("document_id", "ordinal", "chapter_key", "chapter_label", "chunk_count")
 # User tables that reference a passage by chunk_id. Every one cascades on delete (D3).
 REFERENCE_TABLES = ("retrievals", "bookmarks", "guest_trial_retrievals", "retrieval_labels")
 
@@ -75,6 +83,12 @@ SELECT column_name FROM information_schema.columns
 WHERE table_schema = 'public' AND table_name = 'documents'
 """
 TABLE_EXISTS_SQL = "SELECT to_regclass($1) IS NOT NULL"
+CHAPTERS_SQL = """
+SELECT dc.document_id::text AS document_id, dc.ordinal, dc.chapter_key, dc.chapter_label,
+       d.chunk_count
+FROM public.document_chapters dc JOIN public.documents d ON d.id = dc.document_id
+ORDER BY dc.document_id, dc.ordinal
+"""
 READ_ONLY_CHECK_SQL = "SELECT current_setting('transaction_read_only')"
 
 
@@ -129,6 +143,13 @@ async def _read(conn) -> dict:
         tables = {"chunks": await conn.fetchval(count_sql("chunks")),
                   "documents": await conn.fetchval(count_sql("documents"))}
 
+        chapters = None
+        if await exists("document_chapters"):
+            tables["document_chapters"] = await conn.fetchval(count_sql("document_chapters"))
+            chapters = [dict(r) for r in await conn.fetch(CHAPTERS_SQL)]
+        else:
+            tables["document_chapters"] = None
+
         by_passage: dict[str, dict[str, int]] = {}
         for table in REFERENCE_TABLES:
             if not await exists(table):
@@ -159,7 +180,7 @@ async def _read(conn) -> dict:
         "documents": dict(sorted(by_document.items())),
     }
     return {"passages": passages, "documents": documents, "references": references,
-            "tables": tables}
+            "tables": tables, "chapters": chapters}
 
 
 # --------------------------------------------------------------------------- write
@@ -197,8 +218,12 @@ def write_snapshot(data: dict, root: str, date: str, exported_at: str,
         with open(os.path.join(work, REFERENCES_FILE), "w", encoding="utf-8") as f:
             json.dump(data["references"], f, indent=1, sort_keys=True)
             f.write("\n")
-        files = {name: _sha256(os.path.join(work, name))
-                 for name in (PASSAGES_FILE, DOCUMENTS_FILE, REFERENCES_FILE)}
+        names = [PASSAGES_FILE, DOCUMENTS_FILE, REFERENCES_FILE]
+        if data.get("chapters") is not None:
+            with open(os.path.join(work, CHAPTERS_FILE), "wb") as f:
+                f.write(_jsonl(data["chapters"], CHAPTER_FIELDS))
+            names.append(CHAPTERS_FILE)
+        files = {name: _sha256(os.path.join(work, name)) for name in names}
         meta = {"format": FORMAT, "date": date, "exported_at": exported_at,
                 "tables": data["tables"], "files": files}
         with open(os.path.join(work, SNAPSHOT_FILE), "w", encoding="utf-8") as f:

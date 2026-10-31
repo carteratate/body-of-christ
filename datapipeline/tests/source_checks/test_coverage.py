@@ -12,7 +12,7 @@ pytestmark = [pytest.mark.sources, needs_sources]
 with open(report.DEFAULT_BASELINE, encoding="utf-8") as f:
     BASELINE = json.load(f)
 KNOWN = report.load_known()
-KNOWN_COVERAGE = sorted(k for k in KNOWN if k.startswith("coverage."))
+KNOWN_COVERAGE = sorted(k for k in KNOWN if report.is_file_coverage(k))
 
 
 def _only(checks_run, collection) -> report.RunResult:

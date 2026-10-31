@@ -1,16 +1,23 @@
 """Passage health rules (corpus-cleanup item 0.1b).
 
-Block rules (H1 to H5) describe passages that are never useful: blank text, page-number or
-punctuation debris, broken positions and anchors. `refuse_block_violations` runs them in
+Block rules (H1 to H5, and R10) describe passages that are never useful: blank text,
+page-number or punctuation debris, broken positions and anchors, a website's own text. `refuse_block_violations` runs them in
 `CollectionPublicationRunner._validate_documents`, before any store is acquired, and
-refuses the publication. Report rules (R1 to R8) count softer problems per collection, so
-P1 PRs can show them falling; they never block.
+refuses the publication. Report rules (R1 to R9, R11 to R14 and the named rules after them)
+count softer problems per collection, so P1 PRs can show them falling; they never block.
+0.1d added R9 to R14, `no_ligatures` and `summa_bracket_numbers` for the 6 Oct 2026 corpus
+reviews.
 
 A block violation whose check id is in `checks/known_defects.json` does not refuse: it is
 an accepted defect with a named fixing PR, and the strict xfail in
 `tests/source_checks/test_health_sources.py` forces that PR to delete the entry, after
 which the rule blocks it like any other. Only the listed passage is accepted, so a new one
 of the same kind blocks at once.
+
+The report rules in TRACKED_REPORT_RULES have an owning item too. Each is tracked as one
+known defect per document (`health.<rule>:<collection>/<document_id>`, see
+`tracked_check_ids`) that lists the anchors it fires on, so the fixing PR sees it clear and
+a new passage shows as growth; it never blocks.
 
 The patterns and allowlists the report rules use are data, in `health_patterns.json`.
 Nothing here reads `ingest/`: the rules see only the built Documents.
@@ -33,16 +40,27 @@ PATTERNS_PATH = os.path.join(DATAPIPELINE, "health_patterns.json")
 KNOWN_DEFECTS_PATH = os.path.join(DATAPIPELINE, "checks", "known_defects.json")
 
 BLOCK_RULES = ("H1_blank", "H2_debris", "H3_positions", "H4_anchor_unique",
-               "H5_anchor_nonempty")
+               "H5_anchor_nonempty", "R10_site_boilerplate")
 REPORT_RULES = ("R1_short", "R2_footer", "R3_note_start", "R4_dup_text",
                 "R5_repeated_reference", "R6_joined_paragraphs", "R7_non_english",
-                "R8_anchor_suffix")
+                "R8_anchor_suffix", "R9_trailing_heading", "R11_papal_editorial",
+                "R12_note_caller", "R13_lower_start", "R14_hyphen_space", "no_ligatures",
+                "summa_bracket_numbers")
+# Report rules whose hits an item has promised to clear (REVIEW-GAPS-PLAN section 6). Each
+# is one known defect per collection that lists its passages; the other report rules are
+# counted only.
+TRACKED_REPORT_RULES = ("R9_trailing_heading", "R11_papal_editorial", "R12_note_caller",
+                        "no_ligatures", "summa_bracket_numbers")
 RULES = BLOCK_RULES + REPORT_RULES
 
 # Stripped content made only of digits, Roman-numeral letters, spaces and punctuation: a
 # page number, a section numeral or a stray mark. Blank content is H1's, not this rule's.
 # A block rule, so it stays in code rather than in the patterns file.
 DEBRIS = re.compile(r'^[0-9IVXLCivxlc .,;:()\[\]"“”\'’-]*$')
+# no_ligatures: the letters æ, œ, Æ and Œ, which keyword search cannot match to "ae", "oe".
+LIGATURES = re.compile("[æœÆŒ]")
+# summa_bracket_numbers: a bracketed number left by the source's cross-reference links.
+SUMMA_BRACKET = re.compile(r"\[\d+\]")
 # R4 compares texts of at least this many characters, after normalization.
 DUP_MIN_CHARS = 100
 # How many violations a refusal lists.
@@ -100,6 +118,7 @@ def _violation(rule: str, severity: Severity, collection: str, document: Documen
 
 def _block(collection: str, document: Document) -> list[Violation]:
     out: list[Violation] = []
+    boilerplate = load_patterns()["R10_site_boilerplate"]["all"]
 
     anchors = Counter(p.anchor for p in document.passages)
 
@@ -128,6 +147,10 @@ def _block(collection: str, document: Document) -> list[Violation]:
         if empty:
             add("H5_anchor_nonempty", p,
                 f"empty {', '.join(empty)} at position {p.position}")
+        lowered = p.content.lower()
+        found = [s for s in boilerplate if s.lower() in lowered]
+        if found:
+            add("R10_site_boilerplate", p, f"contains {', '.join(found)}")
     return out
 
 
@@ -151,10 +174,23 @@ def _report(collection: str, document: Document, patterns: dict) -> list[Violati
     lang = patterns["R7_non_english"]
     function_words = set(lang["function_words"])
 
+    heading = patterns["R9_trailing_heading"]
+    trailing_heading = collection in heading["collections"]
+    heading_end = re.compile(heading["final_punctuation"])
+    editorial = ([re.compile(x) for x in patterns["R11_papal_editorial"]["patterns"]]
+                 if collection in patterns["R11_papal_editorial"]["collections"] else [])
+    callers_rule = patterns["R12_note_caller"]
+    caller_patterns = ([] if collection in callers_rule["skip_collections"]
+                       else [re.compile(x) for x in callers_rule["patterns"]])
+    caller_skip = [re.compile(x) for x in callers_rule["not_after"]]
+    hyphen_rule = patterns["R14_hyphen_space"]
+    hyphen = re.compile(hyphen_rule["pattern"])
+    hyphen_allowed = set(hyphen_rule["allowed"])
+
     references = Counter(p.reference for p in document.passages)
     texts: dict[str, list[Passage]] = defaultdict(list)
 
-    for p in document.passages:
+    for i, p in enumerate(document.passages):
         text = p.content.strip()
         if not short_allowed and 0 < len(text) < short["max_chars"] \
                 and re.search(r"[^\W\d_]", text):
@@ -194,10 +230,62 @@ def _report(collection: str, document: Document, patterns: dict) -> list[Violati
         if "--" in p.anchor:
             add("R8_anchor_suffix", p, "label-derived disambiguation suffix")
 
+        if trailing_heading and i + 1 < len(document.passages):
+            paragraphs = [line.strip() for line in p.content.split("\n") if line.strip()]
+            last = paragraphs[-1] if paragraphs else ""
+            if len(paragraphs) > 1 and len(last) < heading["max_chars"] \
+                    and last[:1].isupper() and not heading_end.search(last):
+                add("R9_trailing_heading", p, f"ends with a {len(last)}-character line")
+
+        found = [m.pattern for m in editorial if m.search(p.content)]
+        if found:
+            add("R11_papal_editorial", p, f"matches {', '.join(found)}")
+
+        callers = _note_callers(p.content, caller_patterns, caller_skip)
+        if callers:
+            add("R12_note_caller", p, f"{callers} caller{'s' * (callers != 1)}")
+
+        if text[:1].islower():
+            add("R13_lower_start", p, "starts with a lowercase letter")
+
+        broken = [m.group(0) for m in hyphen.finditer(p.content)
+                  if m.group(0).lower() not in hyphen_allowed]
+        if broken:
+            add("R14_hyphen_space", p, f"{len(broken)} hyphen-space join"
+                f"{'s' * (len(broken) != 1)}")
+
+        ligatures = LIGATURES.findall(p.content)
+        if ligatures:
+            add("no_ligatures", p, f"{len(ligatures)} ligature{'s' * (len(ligatures) != 1)}")
+
+        if collection == "summa":
+            brackets = SUMMA_BRACKET.findall(p.content)
+            if brackets:
+                add("summa_bracket_numbers", p, f"{len(brackets)} bracketed number"
+                    f"{'s' * (len(brackets) != 1)}")
+
     for same in texts.values():
         for p in same[1:]:
             add("R4_dup_text", p, f"same text as {same[0].anchor}")
+
+    labels = [name for name in ("title", "author") if LIGATURES.search(getattr(document, name) or "")]
+    if labels:
+        out.append(Violation("no_ligatures", "report", collection, document.id, None,
+                             f"ligature in the document {' and '.join(labels)}"))
     return out
+
+
+def _note_callers(text: str, patterns: list[re.Pattern], skip: list[re.Pattern]) -> int:
+    """How many footnote callers `text` holds: matches of `patterns` whose preceding text
+    does not end like a citation (`skip`, matched against the 16 characters before the
+    caller's punctuation, as "Rom. i." before " 17")."""
+    n = 0
+    for pattern in patterns:
+        for m in pattern.finditer(text):
+            before = text[max(0, m.start() - 16):m.start() + 1]
+            if not any(s.search(before) for s in skip):
+                n += 1
+    return n
 
 
 # --------------------------------------------------------------------------- entry points
@@ -214,6 +302,21 @@ def check_documents(collection: str, documents: list[Document], *,
             out += _report(collection, document, patterns)
     order = {rule: i for i, rule in enumerate(RULES)}
     return sorted(out, key=lambda v: order[v.rule]) if report else out
+
+
+def tracked_check_ids(violations: list[Violation]) -> dict[str, list[str]]:
+    """The TRACKED_REPORT_RULES violations grouped into check ids, one per rule and
+    document, `health.<rule>:<collection>/<document_id>` → the anchors it fires on (with
+    @<position> where the anchor is empty or shared, and "(document)" for a document-level
+    hit)."""
+    out: dict[str, list[str]] = defaultdict(list)
+    for v in violations:
+        if v.rule in TRACKED_REPORT_RULES:
+            unit = "(document)" if v.anchor is None else v.anchor
+            if v.position is not None:
+                unit += f"@{v.position}"
+            out[f"health.{v.rule}:{v.collection}/{v.document_id}"].append(unit)
+    return dict(out)
 
 
 def known_block_defects(path: str = KNOWN_DEFECTS_PATH) -> set[str]:
