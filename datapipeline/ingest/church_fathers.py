@@ -18,7 +18,7 @@ import defusedxml.ElementTree as ET
 from model import Document
 from normalize.caps import smart_title_case
 from ingest.common import iter_chapters, _build_parent_map, _cf_skippable
-from ingest.thml_doc import make_doc
+from ingest.thml_doc import distinct_titles, make_doc
 
 _SRC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "church-fathers")
 _SINGLE_AUTHOR = {"confessions.xml": "Augustine", "incarnation.xml": "Athanasius"}
@@ -93,4 +93,4 @@ def build_all() -> list[Document]:
         if path.endswith(".Zone.Identifier"):
             continue
         docs.extend(build_documents(path))
-    return docs
+    return distinct_titles(docs)

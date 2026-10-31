@@ -39,6 +39,11 @@ def test_normalize_applies_nfkc():
     assert C.normalize("ﬁnal …") == "final ..."
 
 
+def test_normalize_spells_out_ligatures():
+    # The adapters fold æ and œ (1.10a), so a source "Irenæus" must match a built "Irenaeus".
+    assert C.normalize("Irenæus on the Æons, Œcumenius") == "irenaeus on the aeons, oecumenius"
+
+
 def test_match_key_ignores_spacing_and_punctuation():
     assert C.match_key(C.normalize("Lumen Gentium , which. . .")) == \
         C.match_key(C.normalize("Lumen Gentium, which …"))
@@ -50,6 +55,13 @@ def test_split_sentences_at_terminal_punctuation_before_a_capital():
     text = "The first sentence ends here. The second one? Yes! but not here."
     assert C.split_sentences(text) == ["the first sentence ends here.", "the second one?",
                                        "yes! but not here."]
+
+
+def test_split_sentences_where_the_source_ran_two_together():
+    # The adapters space these (1.10a), so a passage may end between the two sentences.
+    text = "Lived by a special consecration.The Synod was a sign of it."
+    assert C.split_sentences(text) == ["lived by a special consecration.",
+                                       "the synod was a sign of it."]
 
 
 def test_split_sentences_at_segment_breaks_and_blank_lines():

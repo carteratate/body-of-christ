@@ -15,7 +15,7 @@ import defusedxml.ElementTree as ET
 from model import Document
 from normalize.caps import smart_title_case
 from ingest.common import iter_chapters, _build_parent_map, _cf_skippable
-from ingest.thml_doc import make_doc
+from ingest.thml_doc import distinct_titles, make_doc
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "medieval")
 
@@ -61,4 +61,4 @@ def build_documents() -> list[Document]:
                          source_key=f"medieval/{entry['file']}", year=year, extra_meta=extra)
             if d:
                 docs.append(d)
-    return docs
+    return distinct_titles(docs)

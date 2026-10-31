@@ -1,6 +1,6 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "feat/coverage-checks cfee751",
+  "apostolic-exhortations": "feat/1.10a-text-hygiene 65de5f5",
   "bible": "feat/0.1d-review-checks 65fc9df",
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
@@ -53,8 +53,8 @@
    "pct": 97.45
   },
   "apostolic-exhortations/ecclesia-in-asia.html": {
-   "body_chars": 174144,
-   "covered_chars": 171370,
+   "body_chars": 174145,
+   "covered_chars": 171371,
    "pct": 98.41
   },
   "apostolic-exhortations/ecclesia-in-europa.html": {
@@ -158,9 +158,9 @@
    "pct": 95.72
   },
   "apostolic-exhortations/vita-consecrata.html": {
-   "body_chars": 248227,
-   "covered_chars": 243213,
-   "pct": 97.98
+   "body_chars": 248206,
+   "covered_chars": 244852,
+   "pct": 98.65
   },
   "bible/eng-web-c_usfm/02-GENeng-web-c.usfm": {
    "body_chars": 180996,
@@ -1774,8 +1774,8 @@
   "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119": {
    "collection": "apostolic-exhortations",
    "source_file": "ecclesia-in-asia.html",
-   "body_chars": 174144,
-   "covered_chars": 171370,
+   "body_chars": 174145,
+   "covered_chars": 171371,
    "pct": 98.41
   },
   "5017df8e-c59c-5945-a5ec-c5a0b4ad1378": {
@@ -1851,9 +1851,9 @@
   "aff19604-39c5-5a31-abfa-05b01e21495c": {
    "collection": "apostolic-exhortations",
    "source_file": "vita-consecrata.html",
-   "body_chars": 248227,
-   "covered_chars": 243213,
-   "pct": 97.98
+   "body_chars": 248206,
+   "covered_chars": 244852,
+   "pct": 98.65
   },
   "b8babc97-15ff-5c15-8e25-bba0eca51786": {
    "collection": "apostolic-exhortations",

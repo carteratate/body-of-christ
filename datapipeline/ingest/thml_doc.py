@@ -16,7 +16,7 @@ from xml.etree.ElementTree import tostring as et_tostring  # serialization only
 
 from config import settings
 from model import Document, Passage
-from normalize.text import clean_text
+from normalize.text import clean_text, fold_ligatures
 from normalize.caps import smart_title_case
 from ingest.common import _book_label, _direct_p_text, _strip_tags, split_display_passage
 from ingest.pieces import Segment, name_pieces
@@ -61,6 +61,14 @@ def paragraph_segments(elem) -> list[Segment]:
     return out
 
 
+def _label(text: str) -> str:
+    return fold_ligatures(text.strip().rstrip(" ."))
+
+
+def _reference(author: str, title: str, label: str) -> str:
+    return f"{author} — {title}, {label}"
+
+
 def make_doc(*, collection: str, filename: str, author: str, title: str,
              chapters: list, source_key: str, year: int | None = None,
              extra_meta: dict | None = None) -> Document | None:
@@ -69,6 +77,10 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
     file holds several works); the registry freezes the document ID under it."""
     if not chapters:
         return None
+    # ANF and NPNF headings end in a period ("Methodius.", "Fragments."), and some spell
+    # ligatures ("Irenæus"). Neither belongs in a label. The registry keeps the document
+    # ID, and `identity.slugify` drops the punctuation anyway (1.10a).
+    author, title = _label(author), _label(title)
     maxc = settings.MAX_PASSAGE_CHARS
     passages: list[Passage] = []
     pos = 0
@@ -82,8 +94,9 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             core = "Introduction"
         else:
             core = _chapter_label(elem)
+        core = fold_ligatures(core)
         if book:
-            book_clean = smart_title_case(book)
+            book_clean = fold_ligatures(smart_title_case(book))
             label = f"{book_clean} · {core}"
         else:
             book_clean = None
@@ -101,7 +114,7 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
         for part, (anchor, units) in zip(parts, named):
             passages.append(Passage(
                 content=clean_text(part),
-                reference=f"{author} — {title}, {label}",
+                reference=_reference(author, title, label),
                 anchor=anchor, chapter_key=ch_key, chapter_label=label,
                 position=pos, unit_label=None, metadata=meta, source_units=units))
             pos += 1
@@ -115,3 +128,28 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
     return Document(id=did, collection=collection,
                     title=title, author=author, year=year, metadata=doc_meta,
                     passages=passages)
+
+
+def distinct_titles(documents: list[Document]) -> list[Document]:
+    """No two documents of a collection share a title (C-15): where they do once their
+    trailing periods are gone (Papias's "Fragments" and Methodius's "Fragments."), each
+    takes its author: "Fragments of Papias", "Epistle of Polycarp to the Philippians".
+    Their passages' references follow. Document IDs come from the registry and stay."""
+    by_title: dict[str, list[Document]] = {}
+    for d in documents:
+        by_title.setdefault(d.title.casefold(), []).append(d)
+    for shared in by_title.values():
+        if len(shared) < 2:
+            continue
+        for d in shared:
+            d.title = _with_author(d.title, d.author)
+            for p in d.passages:
+                p.reference = _reference(d.author, d.title, p.chapter_label)
+    return documents
+
+
+def _with_author(title: str, author: str) -> str:
+    head, sep, rest = title.partition(" ")
+    if head in ("Epistle", "Letter") and rest.startswith("to "):
+        return f"{head} of {author} {rest}"
+    return f"{title} of {author}"
