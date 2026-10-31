@@ -429,6 +429,27 @@ def test_piece_cut_inside_a_long_paragraph_adds_k():
     assert named[1][1][0] == ("p2", 0)
 
 
+def test_vanished_cut_in_a_paragraph_two_pieces_hold_is_left_to_a_person():
+    # One long paragraph cut in three, then in two: `/from-p1-3` vanished, and both
+    # remaining pieces hold p1, so no redirect target is guessed.
+    w = work()
+    long = " ".join(f"Sentence {k} of a long paragraph." for k in range(90))
+    text = long
+
+    def cuts(n):
+        bounds = [text.index(". ", len(text) * k // n) + 2 for k in range(1, n)]
+        pieces = [text[a:b].strip() for a, b in zip([0] + bounds, bounds + [len(text)])]
+        named = name_pieces("ii", text, pieces, [Segment("p1", long)])
+        return [passage(a, c, k, source_units=u) for k, (c, (a, u)) in enumerate(zip(pieces, named))]
+
+    three = cuts(3)
+    assert [p.anchor for p in three] == ["ii", "ii/from-p1-2", "ii/from-p1-3"]
+    reg = valid_registry(passages=[row(w["document_id"], p.anchor) for p in three])
+    rec = registry.reconcile(reg, [document(cuts(2))], item="test", today=TODAY)
+    assert rec.redirects == []
+    assert any("ii/from-p1-3" in p for p in rec.problems)
+
+
 def test_piece_created_redirected_and_reappearing_reclaims_its_id():
     w = work()
     start = valid_registry(passages=[row(w["document_id"], "ii.i")])

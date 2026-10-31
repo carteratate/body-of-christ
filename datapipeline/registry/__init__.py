@@ -544,10 +544,12 @@ def _holder(anchor: str, document: Document):
         return members[0]              # the unit is whole again: it holds every unit
     # The locator itself first; then without a trailing cut (`p5-2` opened inside `p5`).
     # A Bible locator (`3-16`) is chapter and verse, so it is only matched whole first.
+    # Several pieces holding that unit cannot say which holds the vanished cut, so a
+    # person settles it.
     for wanted in (locator, _CUT.sub("", locator)):
-        for p in members:
-            if any(loc == wanted for loc, _ in p.source_units):
-                return p
+        holders = [p for p in members if any(loc == wanted for loc, _ in p.source_units)]
+        if holders:
+            return holders[0] if len(holders) == 1 else None
     return None
 
 
