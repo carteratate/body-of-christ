@@ -51,13 +51,14 @@ def build_documents() -> list[Document]:
                 work = smart_title_case((d1.get("title") or "").strip()) or entry["title"]
                 d = make_doc(collection="medieval", filename=entry["file"], author=author,
                              title=work, chapters=list(iter_chapters(d1, parent_map)),
+                             source_key=f"medieval/{entry['file']}#{d1.get('id')}",
                              year=year, extra_meta=extra)
                 if d:
                     docs.append(d)
         else:
             d = make_doc(collection="medieval", filename=entry["file"], author=author,
                          title=entry["title"], chapters=list(iter_chapters(root, parent_map)),
-                         year=year, extra_meta=extra)
+                         source_key=f"medieval/{entry['file']}", year=year, extra_meta=extra)
             if d:
                 docs.append(d)
     return docs

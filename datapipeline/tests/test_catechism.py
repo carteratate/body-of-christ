@@ -583,7 +583,8 @@ def test_footnotes_do_not_change_content(tmp_path, us_build):
 
 def test_footnote_offsets_survive_split(us_build):
     pieces = [p for p in us_build.document.passages if p.metadata["ccc_paragraphs"] == [2269]]
-    assert [p.anchor for p in pieces] == ["ccc/2269-p1", "ccc/2269-p2"]
+    # The first piece takes the unit's anchor; the second opens inside CCC 2269 (2.1).
+    assert [p.anchor for p in pieces] == ["ccc/2269", "ccc/2269/from-2269-2"]
     first, second = pieces
     assert [n["n"] for n in first.metadata["footnotes"]] == [70, 71]
     assert [n["n"] for n in second.metadata["footnotes"]] == [72]

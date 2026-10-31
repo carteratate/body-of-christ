@@ -14,13 +14,16 @@ import re
 from bs4 import BeautifulSoup
 
 from config import settings
-from identity import document_id, anchor as make_anchor, slugify
+from identity import anchor as make_anchor, slugify
 from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
 from ingest.common import split_display_passage
+from ingest.pieces import (Segment, element_locator, name_pieces, number_elements,
+                           unique_unit_anchors)
+from registry import ANCHOR_SCHEME, resolve_document_id
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "councils")
 _CANON = re.compile(r"^(?:Canon|Can\.?)\s+(\d+|[IVXLCDM]+)[\.\:]?\s*(.*)", re.IGNORECASE | re.DOTALL)
@@ -55,41 +58,50 @@ def _strip_chrome(soup) -> None:
 
 
 class _Builder:
-    """Accumulates passages with unique anchors for one council document."""
+    """Accumulates the units of one council document, then names them: each unit's
+    anchor is unique (`ingest.pieces.unique_unit_anchors`) and its pieces are named by
+    the source element they open with."""
 
     def __init__(self):
-        self.passages: list[Passage] = []
-        self.pos = 0
-        self.seen: set[str] = set()
+        self.units: list[tuple] = []
 
     def add(self, *, body: str, ref: str, base_anchor: str, ckey: str,
-            clabel: str, unit: str | None, meta: dict) -> None:
+            clabel: str, unit: str | None, meta: dict, segments: list[Segment]) -> None:
         body = clean_text(strip_footnote_markers(strip_boilerplate(_declutter(body))))
         if len(body) < 1:
             return
         pieces = split_display_passage(body, settings.MAX_PASSAGE_CHARS)
-        for j, piece in enumerate(pieces):
-            anc = base_anchor + (f"/p{j + 1}" if len(pieces) > 1 else "")
-            k = 1
-            while anc in self.seen:
-                k += 1
-                anc = f"{base_anchor}-{k}"
-            self.seen.add(anc)
-            self.passages.append(Passage(content=piece, reference=ref, anchor=anc,
-                                         chapter_key=ckey, chapter_label=clabel,
-                                         position=self.pos, unit_label=unit, metadata=meta))
-            self.pos += 1
+        self.units.append((body, pieces, ref, base_anchor, ckey, clabel, unit, meta, segments))
+
+    @property
+    def passages(self) -> list[Passage]:
+        out: list[Passage] = []
+        anchors = unique_unit_anchors([u[3] for u in self.units],
+                                      [len(u[1]) > 1 for u in self.units])
+        for (body, pieces, ref, _, ckey, clabel, unit, meta, segments), anc in zip(
+                self.units, anchors):
+            for piece, (anchor, held) in zip(pieces, name_pieces(anc, body, pieces, segments)):
+                out.append(Passage(content=piece, reference=ref, anchor=anchor,
+                                   chapter_key=ckey, chapter_label=clabel, position=len(out),
+                                   unit_label=unit, metadata=meta, source_units=held))
+        return out
+
+
+def _source_key(entry: dict) -> str:
+    """The council manifest has no slug; its file name, without extension, serves."""
+    return "councils/" + os.path.splitext(entry["file"])[0]
 
 
 def build_ecumenical(entry: dict, soup: BeautifulSoup) -> Document:
+    number_elements(soup)
     _strip_chrome(soup)
     council = entry["council"]
     cslug = slugify(council)
-    did = document_id("councils", council, council)
+    did = resolve_document_id("councils", _source_key(entry), ("councils", council, council))
     b = _Builder()
     meta = {"council": council, "year": entry["year"], "url": entry["url"]}
     sec_ord, sec_key, sec_label = 0, make_anchor(cslug, "sec-0"), "Text"
-    prose: list[str] = []
+    prose: list[Segment] = []
     seq = 0
 
     def flush_prose() -> None:
@@ -97,9 +109,9 @@ def build_ecumenical(entry: dict, soup: BeautifulSoup) -> Document:
         if not prose:
             return
         seq += 1
-        b.add(body="\n\n".join(prose), ref=f"{council} — {sec_label}",
+        b.add(body="\n\n".join(seg.text for seg in prose), ref=f"{council} — {sec_label}",
               base_anchor=make_anchor(cslug, f"sec-{sec_ord}", seq),
-              ckey=sec_key, clabel=sec_label, unit=None, meta=meta)
+              ckey=sec_key, clabel=sec_label, unit=None, meta=meta, segments=prose)
         prose = []
 
     for el in soup.find_all(["h1", "h2", "h3", "h4", "p"]):
@@ -121,36 +133,43 @@ def build_ecumenical(entry: dict, soup: BeautifulSoup) -> Document:
             num = mc.group(1)
             b.add(body=_declutter(t), ref=f"{council}, Canon {num}",
                   base_anchor=make_anchor(cslug, "canon", num),
-                  ckey=sec_key, clabel=sec_label, unit=f"Canon {num}", meta=meta)
+                  ckey=sec_key, clabel=sec_label, unit=f"Canon {num}", meta=meta,
+                  segments=[Segment(element_locator(el), t)])
         elif ml:
             flush_prose()
             num = ml.group(1)
             b.add(body=_declutter(ml.group(2).strip()), ref=f"{council}, Canon {num}",
                   base_anchor=make_anchor(cslug, "canon", num),
-                  ckey=sec_key, clabel=sec_label, unit=f"Canon {num}", meta=meta)
+                  ckey=sec_key, clabel=sec_label, unit=f"Canon {num}", meta=meta,
+                  segments=[Segment(element_locator(el), t)])
         elif mn:
             flush_prose()
             num = mn.group(1)
             b.add(body=_declutter(mn.group(2).strip()), ref=f"{council} — {sec_label}, §{num}",
                   base_anchor=make_anchor(cslug, f"sec-{sec_ord}", num),
-                  ckey=sec_key, clabel=sec_label, unit=f"§{num}", meta=meta)
+                  ckey=sec_key, clabel=sec_label, unit=f"§{num}", meta=meta,
+                  segments=[Segment(element_locator(el), t)])
         else:
             decl = _declutter(t)
             if len(decl) >= _MIN:
-                prose.append(decl)
-                if sum(len(x) for x in prose) >= _TARGET:
+                prose.append(Segment(element_locator(el), decl))
+                if sum(len(x.text) for x in prose) >= _TARGET:
                     flush_prose()
     flush_prose()
     return Document(id=did, collection="councils", title=council, author=None,
                     year=entry["year"], metadata={"url": entry["url"],
-                    "council_number": entry.get("council_number")}, passages=b.passages)
+                    "council_number": entry.get("council_number"),
+                    "source_key": _source_key(entry), "anchor_scheme": ANCHOR_SCHEME},
+                    passages=b.passages)
 
 
 def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
+    number_elements(soup)
     _strip_chrome(soup)
     title = entry["document"]
     dslug = slugify(title)
-    did = document_id("councils", "Second Vatican Council", title)
+    did = resolve_document_id("councils", _source_key(entry),
+                              ("councils", "Second Vatican Council", title))
     b = _Builder()
     meta = {"council": "Second Vatican Council",
             "document_type": entry.get("document_type"), "year": entry["year"],
@@ -208,9 +227,12 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
         # Anchor is the stable structural key (the paragraph number), independent
         # of chapter grouping, so deep links survive a re-chaptering.
         b.add(body=body, ref=f"{title}, §{num}", base_anchor=make_anchor(dslug, num),
-              ckey=ckey, clabel=clabel, unit=f"§{num}", meta=meta)
+              ckey=ckey, clabel=clabel, unit=f"§{num}", meta=meta,
+              segments=[Segment(element_locator(el), body)])
     return Document(id=did, collection="councils", title=title, author=None,
-                    year=entry["year"], metadata=meta, passages=b.passages)
+                    year=entry["year"], metadata={**meta, "source_key": _source_key(entry),
+                                                  "anchor_scheme": ANCHOR_SCHEME},
+                    passages=b.passages)
 
 
 def build_documents() -> list[Document]:

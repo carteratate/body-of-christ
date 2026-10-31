@@ -1,0 +1,872 @@
+[
+ {
+  "document_id": "036371e3-0a24-58f2-a588-7c3be70dc924",
+  "old_passage_id": "ac0e29a3-b818-500f-b505-cccdd13c8163",
+  "old_anchor": "1-maccabees/10/1-3",
+  "new_passage_id": "be17dfe1-9131-5e08-b340-ff5001dde435",
+  "new_anchor": "1-maccabees/10/1/from-10-60-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "036371e3-0a24-58f2-a588-7c3be70dc924",
+  "old_passage_id": "97681ace-de06-5c99-a8e3-d3bc82a25fdd",
+  "old_anchor": "1-maccabees/10/1-4",
+  "new_passage_id": "ff950253-bf9c-50aa-828d-a37fa9811dac",
+  "new_anchor": "1-maccabees/10/1/from-10-80-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "036371e3-0a24-58f2-a588-7c3be70dc924",
+  "old_passage_id": "d437cca7-2917-5fbd-9eab-28bd7cdcf7e1",
+  "old_anchor": "1-maccabees/13/1-3",
+  "new_passage_id": "5cc182fe-5da1-540b-9e7f-1d724f9b09dd",
+  "new_anchor": "1-maccabees/13/1/from-13-32-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "0d56e1f8-53ee-55b4-9ac1-9996d018fc1a",
+  "old_passage_id": "072f7eeb-37f0-5ec9-ba36-763ba92458bf",
+  "old_anchor": "2-maccabees/6/1-2",
+  "new_passage_id": "3214b532-8b50-5a73-8083-2bd04a978b5f",
+  "new_anchor": "2-maccabees/6/1/from-6-25",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "0d56e1f8-53ee-55b4-9ac1-9996d018fc1a",
+  "old_passage_id": "71510143-f120-5b37-9df9-ce3e0460b65f",
+  "old_anchor": "2-maccabees/8/1-2",
+  "new_passage_id": "11c957f6-8520-5384-bb8d-77ea4e6ae38b",
+  "new_anchor": "2-maccabees/8/1/from-8-25-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "12ffdbe3-6498-55b7-bef6-afbf368461ea",
+  "old_passage_id": "990f3a8a-99c7-5b32-9b65-4e1b7d386c4c",
+  "old_anchor": "psalms/119/1-5",
+  "new_passage_id": "dbf8b66c-4e8a-5bd2-b48d-b323450d08d6",
+  "new_anchor": "psalms/119/1/from-119-145-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "ae3150ed-058f-509f-8225-af30de2f7eb8",
+  "old_anchor": "summa/first-part-of-the-second-part-first-part-of-the-second-part-qq-1-114/question-102-of-the-causes-of-the-ceremonial-precepts-six-articles/article-4-whether-sufficient-reason-can-be-assigned-for-the-ceremonies-pertaining-to-holy-things/20",
+  "new_passage_id": "70967a2d-8f58-5f64-a01e-ecb8fa207c2f",
+  "new_anchor": "summa/FS_Q102_A4/p25/from-p29",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "03b36a10-fe73-515b-9f01-395958acbb80",
+  "old_anchor": "summa/first-part-of-the-second-part-first-part-of-the-second-part-qq-1-114/question-114-of-merit-ten-articles/article-10-whether-temporal-goods-fall-under-merit/3",
+  "new_passage_id": "d267e34b-6e2a-50bc-b669-22cbc051a305",
+  "new_anchor": "summa/FS_Q114_A10/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "a718dde5-63dc-5798-8e28-59ed6c1caa16",
+  "old_anchor": "summa/first-part-of-the-second-part-first-part-of-the-second-part-qq-1-114/question-19-of-the-goodness-and-malice-of-the-interior-act-of-the-will-ten-articles/article-10-whether-it-is-necessary-for-the-human-will-in-order-to-be-good-to-be-conformed-to-the-divine-will-as-regards-the-thing-willed/5",
+  "new_passage_id": "d5957f3a-b347-5151-b002-151451df1350",
+  "new_anchor": "summa/FS_Q19_A10/p8/from-p11",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "e4250af1-09ac-54d7-a84f-b81267ea980b",
+  "old_anchor": "summa/first-part-of-the-second-part-first-part-of-the-second-part-qq-1-114/question-94-of-the-natural-law-six-articles/article-2-whether-the-natural-law-contains-several-precepts-or-only-one/5",
+  "new_passage_id": "1973bec3-21f5-5d27-be43-809f061bdda0",
+  "new_anchor": "summa/FS_Q94_A2/p6/from-p8",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "b576dfaa-2bfd-58bc-925b-50e70b183797",
+  "old_anchor": "summa/first-part/question-119-of-the-propagation-of-man-as-to-the-body-two-articles/article-1-whether-some-part-of-the-food-is-changed-into-true-human-nature/7",
+  "new_passage_id": "94082230-9899-5bc9-a7cd-06903a6247fa",
+  "new_anchor": "summa/FP_Q119_A1/p8/from-p12",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "410c9032-4cba-512c-a746-94d36bdad618",
+  "old_anchor": "summa/first-part/question-29-the-divine-persons-four-articles/article-2-whether-person-is-the-same-as-hypostasis-subsistence-and-essence/3",
+  "new_passage_id": "ad3901c1-975f-5bd0-bb1e-f9d5a6a4725f",
+  "new_anchor": "summa/FP_Q29_A2/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "9aa4629a-f36b-59e1-8008-7beccaf25b06",
+  "old_anchor": "summa/first-part/question-32-the-knowledge-of-the-divine-persons-four-articles/article-3-whether-there-are-five-notions/3",
+  "new_passage_id": "172b133a-e867-5ccc-a36c-65b75429637c",
+  "new_anchor": "summa/FP_Q32_A3/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "96b5003b-0b48-57f4-9178-db260efe6a62",
+  "old_anchor": "summa/first-part/question-48-the-distinction-of-things-in-particular-six-articles/article-5-whether-evil-is-adequately-divided-into-pain-and-fault/3",
+  "new_passage_id": "91d6e1bf-88d1-5a11-a617-d8c716552e98",
+  "new_anchor": "summa/FP_Q48_A5/p6",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "4c8d72ed-554e-5963-88a6-563771adb53f",
+  "old_anchor": "summa/first-part/question-70-of-the-work-of-adornment-as-regards-the-fourth-day-three-articles/article-3-whether-the-lights-of-heaven-are-living-beings/7",
+  "new_passage_id": "4f5fe4af-6fd0-52e5-aa20-38af7a9836fc",
+  "new_anchor": "summa/FP_Q70_A3/p8/from-p9-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "00834f45-0304-5d8c-bd7c-ae733edb60ec",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-107-of-ingratitude-four-articles/article-3-whether-ingratitude-is-always-a-mortal-sin/3",
+  "new_passage_id": "c0f0a6aa-3c1a-5fe0-81b6-9254ee3a1910",
+  "new_anchor": "summa/SS_Q107_A3/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "d3581ae2-bcac-5080-a8d3-66cf7358071b",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-123-of-fortitude-twelve-articles/article-12-whether-fortitude-excels-among-all-other-virtues/3",
+  "new_passage_id": "b0c53aaf-04ba-57f4-be24-66205aa6353a",
+  "new_anchor": "summa/SS_Q123_A12/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "ec7cc591-28b1-5cb6-bf66-00ba808da2a4",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-136-of-patience-five-articles/article-5-whether-patience-is-the-same-as-longanimity/3",
+  "new_passage_id": "bd83fd06-8df7-5f0d-98ea-152b295c43f5",
+  "new_anchor": "summa/SS_Q136_A5/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "be244d47-2441-5b25-aba0-8ac000a62ff2",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-148-of-gluttony-six-articles/article-2-whether-gluttony-is-a-mortal-sin/3",
+  "new_passage_id": "0cbf3bfe-8294-59c2-9310-ca7333546e68",
+  "new_anchor": "summa/SS_Q148_A2/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "00ee6db3-91d2-5037-bb8c-f37ebdc84c19",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-169-of-modesty-in-the-outward-apparel-two-articles/article-2-whether-the-adornment-of-women-is-devoid-of-mortal-sin/3",
+  "new_passage_id": "c994bb45-13fa-5e2a-89ae-9506a225443b",
+  "new_anchor": "summa/SS_Q169_A2/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "3601c106-16b7-5fb5-b751-38e4da2945de",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-173-of-the-manner-in-which-prophetic-knowledge-is-conveyed-four-articles/article-3-whether-the-prophetic-vision-is-always-accompanied-by-abstraction-from-the-senses/3",
+  "new_passage_id": "a462f520-d64c-5d03-83de-aa63320c4686",
+  "new_anchor": "summa/SS_Q173_A3/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "4c69664b-fb2c-5538-9b8e-7ee823a687fd",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-188-of-the-different-kinds-of-religious-life-eight-articles/article-7-whether-religious-perfection-is-diminished-by-possessing-something-in-common/7",
+  "new_passage_id": "9a48313a-5850-5399-b16b-c22d65276049",
+  "new_anchor": "summa/SS_Q188_A7/p8/from-p13",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "45c0b7b2-df27-5d54-8d42-d2b68dea446e",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-188-of-the-different-kinds-of-religious-life-eight-articles/article-7-whether-religious-perfection-is-diminished-by-possessing-something-in-common/8",
+  "new_passage_id": "9a48313a-5850-5399-b16b-c22d65276049",
+  "new_anchor": "summa/SS_Q188_A7/p8/from-p13",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "72424ba8-db37-5e13-b429-f3f510537e24",
+  "old_anchor": "summa/second-part-of-the-second-part-second-part-of-the-second-part-qq-1-189/question-83-of-prayer-seventeen-articles/article-14-whether-prayer-should-last-a-long-time/3",
+  "new_passage_id": "214a29ab-e54b-534c-8e11-e3efb475b2ed",
+  "new_anchor": "summa/SS_Q83_A14/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "009bddf3-2865-55fe-b354-9d67a4e46d1a",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-3-of-the-degree-of-contrition-three-articles/article-2-whether-the-sorrow-of-contrition-can-be-too-great/2",
+  "new_passage_id": "83c4ffce-45d5-537a-a941-7e2f1fe3621a",
+  "new_anchor": "summa/XP_Q3_A2/p4",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "c23514f8-ad0e-5b49-9c3f-5cbb6b4f3f12",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-39-of-the-impediments-to-this-sacrament-six-articles/article-3-whether-the-state-of-slavery-is-an-impediment-to-receiving-orders/3",
+  "new_passage_id": "fe55a4d5-a834-591b-acad-f406c6df8123",
+  "new_anchor": "summa/XP_Q39_A3/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "417d5dc4-f968-5d44-a327-73add0443dea",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-55-of-the-impediment-of-affinity-eleven-articles/article-5-whether-affinity-is-a-cause-of-affinity/3",
+  "new_passage_id": "7b9a9c3c-e2f2-5b83-8495-854cf602098a",
+  "new_anchor": "summa/XP_Q55_A5/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "8c15ab79-c597-5676-a2b3-0e43e3d4f33f",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-62-of-the-impediment-that-supervenes-to-marriage-after-its-consummation-namely-fornication-six-articles/article-2-whether-the-husband-is-bound-by-precept-to-put-away-his-wife-when-she-is-guilty-of-fornication/4",
+  "new_passage_id": "e751bf37-cb49-5072-9ed8-ee789ff10706",
+  "new_anchor": "summa/XP_Q62_A2/p6",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "5bb045f9-466d-53e0-8c4a-2b57285b27eb",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-62-of-the-impediment-that-supervenes-to-marriage-after-its-consummation-namely-fornication-six-articles/article-4-whether-in-a-case-of-divorce-husband-and-wife-should-be-judged-on-a-par-with-each-other/4",
+  "new_passage_id": "02d98574-0780-582b-834b-2b2714e5437f",
+  "new_anchor": "summa/XP_Q62_A4/p6",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "4070eea0-c14a-5d50-bd40-d97b5432369b",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-65-of-plurality-of-wives-five-articles/article-1-whether-it-is-against-the-natural-law-to-have-several-wives/5",
+  "new_passage_id": "f9c02ec6-7acf-52fc-9147-d35d4fe8400f",
+  "new_anchor": "summa/XP_Q65_A1/p7",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "694c9ac1-f6e4-564c-8349-7375687f3856",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-67-of-the-bill-of-divorce-seven-articles/article-3-whether-it-was-lawful-to-divorce-a-wife-under-the-mosaic-law/3",
+  "new_passage_id": "92d45352-60aa-576c-9351-2f2bac4c9ea5",
+  "new_anchor": "summa/XP_Q67_A3/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "d78ba280-95af-5c3b-a4a3-acb1019fd1d2",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-67-of-the-bill-of-divorce-seven-articles/article-4-whether-it-was-lawful-for-a-divorced-wife-to-have-another-husband/3",
+  "new_passage_id": "20be9052-08c1-5459-8c4f-18de0f8954ff",
+  "new_anchor": "summa/XP_Q67_A4/p5",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "25a6e22a-e8d7-5433-bf52-d08733b2ad3c",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-67-of-the-bill-of-divorce-seven-articles/article-6-whether-the-reason-for-divorce-was-hatred-for-the-wife/2",
+  "new_passage_id": "1e53d66b-7b0b-58c3-b508-a379fcd42309",
+  "new_anchor": "summa/XP_Q67_A6/p4",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "e194c097-78db-5454-bc99-d2bfa9f56237",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-70-of-the-quality-of-the-soul-after-leaving-the-body-and-of-the-punishment-inflicted-on-it-by-material-fire-three-articles/article-1-whether-the-sensitive-powers-remain-in-the-separated-soul/9",
+  "new_passage_id": "08370ce1-e11f-5e0a-84a7-c247f801e3fb",
+  "new_anchor": "summa/XP_Q70_A1/p12/from-p12-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "96589070-dd27-5aaf-8d6d-c0e54ae4829f",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-71-of-the-suffrages-for-the-dead-fourteen-articles/article-3-whether-suffrages-performed-by-sinners-profit-the-dead/4",
+  "new_passage_id": "d71767ed-c46e-5004-b0bc-ecd63e52e9a9",
+  "new_anchor": "summa/XP_Q71_A3/p6",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "d7f57a6e-bd35-5eb9-82d1-3cfb2d1a76a9",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-82-of-the-impassibility-of-the-bodies-of-the-blessed-after-their-resurrection-four-articles/article-1-whether-the-bodies-of-the-saints-will-be-impassible-after-the-resurrection/7",
+  "new_passage_id": "fd4fa68e-4fc7-5971-8dbc-f121712cbab4",
+  "new_anchor": "summa/XP_Q82_A1/p9/from-p10-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "a87a5060-c3ee-58a7-b7e7-bde639d7b0a2",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-84-of-the-agility-of-the-bodies-of-the-blessed-three-articles/article-3-whether-the-movement-of-the-saints-will-be-instantaneous/10",
+  "new_passage_id": "502eca47-00b8-5baa-9f25-f1495ee56413",
+  "new_anchor": "summa/XP_Q84_A3/p15/from-p18",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "2eb7d86b-acc0-5853-b8cd-99067ffb20e9",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-92-of-the-vision-of-the-divine-essence-in-reference-to-the-blessed-three-articles/article-1-whether-the-human-intellect-can-attain-to-the-vision-of-god-in-his-essence/18",
+  "new_passage_id": "9051be1b-0331-5191-8c0b-73d9272ccb7f",
+  "new_anchor": "summa/XP_Q92_A1/p24/from-p26",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "21f2442f-09ba-5b16-9065-ff520f42a108",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-92-of-the-vision-of-the-divine-essence-in-reference-to-the-blessed-three-articles/article-1-whether-the-human-intellect-can-attain-to-the-vision-of-god-in-his-essence/19",
+  "new_passage_id": "a238f3bc-fd3d-5932-9a70-cd3da5857a1a",
+  "new_anchor": "summa/XP_Q92_A1/p24/from-p26-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "e38904a7-4313-50da-9446-cd32342c4c89",
+  "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-92-of-the-vision-of-the-divine-essence-in-reference-to-the-blessed-three-articles/article-1-whether-the-human-intellect-can-attain-to-the-vision-of-god-in-his-essence/20",
+  "new_passage_id": "a97fbfe0-f9cd-50e9-9820-b89f73e656fb",
+  "new_anchor": "summa/XP_Q92_A1/p24/from-p28",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "3f6118ed-3afa-56f0-9980-31f50a996520",
+  "old_passage_id": "cf422a24-9fd5-50c0-992d-1ffcf4f6c878",
+  "old_anchor": "redemptoris-mater/36/p2",
+  "new_passage_id": "3deb57a2-6ba9-5764-a336-feca003cc48c",
+  "new_anchor": "redemptoris-mater/36/from-e122",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "e6dff0b1-c5c1-5acf-876c-7fed8831ed34",
+  "old_anchor": "ecclesia-in-asia/24/p2",
+  "new_passage_id": "631550ed-372b-55fe-9db8-82d5b7b62b7e",
+  "new_anchor": "ecclesia-in-asia/24/from-e145-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "534d8fb1-683c-5968-a13f-9f0ec60a8db7",
+  "old_passage_id": "4ef20984-6836-59a0-af1a-2f8c6dfa55af",
+  "old_anchor": "nehemiah/7/1-2",
+  "new_passage_id": "c9819143-45d6-5283-a5dc-9ca889eb4584",
+  "new_anchor": "nehemiah/7/1/from-7-57-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "534d8fb1-683c-5968-a13f-9f0ec60a8db7",
+  "old_passage_id": "dc3b7d95-251a-58fa-8dc9-b32584ccc7ef",
+  "old_anchor": "nehemiah/9/1-3",
+  "new_passage_id": "8a7b2920-7a68-5011-8e09-d2789cf58aa2",
+  "new_anchor": "nehemiah/9/1/from-9-22-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "55827d20-2765-5a63-9e62-d57b58d493b9",
+  "old_passage_id": "1e66d225-90a4-553b-9773-ef5dcdfd2ef4",
+  "old_anchor": "quo-graviora/4/p3",
+  "new_passage_id": "6992cb67-0f04-5356-8d6f-6841b39e0308",
+  "new_anchor": "quo-graviora/4/from-e28",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "86c14cf0-1aa6-50c1-a49e-c1a2061df4e3",
+  "old_passage_id": "24d3a051-abfe-5aeb-b76d-edbfcf2e5b43",
+  "old_anchor": "dominum-et-vivificantem/24/p2",
+  "new_passage_id": "484ebe05-a480-5117-86b4-251d07e45643",
+  "new_anchor": "dominum-et-vivificantem/24",
+  "kind": "merged",
+  "reason": "an empty passage the live publication printed; this passage holds its place in the source",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "927d6248-3117-5b1c-bb92-feec32f70c55",
+  "old_passage_id": "8622a477-18b9-5c01-81d2-c67fa496b1ce",
+  "old_anchor": "magnifica-humanitas/245/p6",
+  "new_passage_id": "aa6ab16f-f19b-5972-833c-c0bcb87fa0c0",
+  "new_anchor": "magnifica-humanitas/245/from-e493",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "927d6248-3117-5b1c-bb92-feec32f70c55",
+  "old_passage_id": "527c313a-748c-5346-9e57-784bb5b760db",
+  "old_anchor": "magnifica-humanitas/245/p8",
+  "new_passage_id": "81b98bce-142b-588a-bdd1-5ba142309f2e",
+  "new_anchor": "magnifica-humanitas/245/from-e555",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "8bc4b9b4-43b5-5b7b-9017-ef14d0b5ab33",
+  "old_anchor": "consolation-of-philosophy/book-i/introduction/p10",
+  "new_passage_id": "5b803ba0-380f-596c-8d2b-a8cc0120dc2f",
+  "new_anchor": "ii/from-p41",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "c0136c97-7859-56ba-a491-15fa2cb9eebc",
+  "old_anchor": "consolation-of-philosophy/book-i/introduction/p4",
+  "new_passage_id": "4e04c26f-d46e-5c81-a198-af012ca16d4d",
+  "new_anchor": "ii/from-p14",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "2fd9c2a1-2d18-5c25-a179-0e0a250a38a0",
+  "old_anchor": "consolation-of-philosophy/book-i/introduction/p5",
+  "new_passage_id": "2a0b2d74-c7dc-5e50-8882-de263f5ccec8",
+  "new_anchor": "ii/from-p14-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "822b1ad7-5faa-5ff5-9554-79550412bdf1",
+  "old_anchor": "consolation-of-philosophy/book-i/introduction/p6",
+  "new_passage_id": "b0bd2134-4e8b-5d0b-bda7-f211b19d822d",
+  "new_anchor": "ii/from-p20",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "25a3ecd8-85fe-565c-a838-f4f6e2791ca8",
+  "old_anchor": "consolation-of-philosophy/book-i/introduction/p7",
+  "new_passage_id": "3b33fa97-e8ce-50d5-a7a0-5624db5ca923",
+  "new_anchor": "ii/from-p20-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "cfa994ce-dc8c-5a50-a806-c97dcb34d861",
+  "old_anchor": "consolation-of-philosophy/book-i/introduction/p8",
+  "new_passage_id": "0e4421f1-2f88-5259-9daf-5d73241445b9",
+  "new_anchor": "ii/from-p22",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "d0331bb0-a569-564e-8f87-3dfdad5bdd95",
+  "old_anchor": "consolation-of-philosophy/book-i/introduction/p9",
+  "new_passage_id": "030737d8-83d0-5213-9981-afee3cfc56d0",
+  "new_anchor": "ii/from-p27",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "8d9c0863-1bbf-51e5-8f0f-81dc74bcad7e",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p10",
+  "new_passage_id": "947fe8f6-eafe-5c4f-bd9b-b249df8a234a",
+  "new_anchor": "iii/from-p34",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "f40aa84b-f3f3-573b-bf80-bd49550582ff",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p11",
+  "new_passage_id": "a43442eb-a711-5d63-8e79-bf65b60bd03b",
+  "new_anchor": "iii/from-p35",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "2fd372f0-4c96-5302-a2d0-c23e2eb0199a",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p12",
+  "new_passage_id": "228a1a87-57c0-5f5f-8025-bd2e6257349e",
+  "new_anchor": "iii/from-p38",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "61af2101-c3a9-59c3-8215-dd2032bc15fd",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p13",
+  "new_passage_id": "4001ae71-28cb-5d39-807e-4ef011519eee",
+  "new_anchor": "iii/from-p41",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "ee7de37f-7187-53df-b9b4-13cda375476b",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p2",
+  "new_passage_id": "3462f9ed-34bc-549f-8e8c-4097f2c41fe7",
+  "new_anchor": "iii/from-p4",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "7f58fd31-2fd1-5a9b-b264-8984ce2b5212",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p3",
+  "new_passage_id": "7b6997c7-5294-53b0-818b-66168f360387",
+  "new_anchor": "iii/from-p5",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "bef2417e-f8ee-5156-8dd8-ee23779a6737",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p4",
+  "new_passage_id": "5ff1f0f6-d77f-53a4-a97d-2ecc302f300a",
+  "new_anchor": "iii/from-p9",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "e8ece418-28ab-5786-8774-f0a5cdddfa8f",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p5",
+  "new_passage_id": "370d1c7f-28f8-5b95-b667-8eadc94a662c",
+  "new_anchor": "iii/from-p12",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "6d6b0b5e-6303-5c83-9851-9e1784236ad9",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p6",
+  "new_passage_id": "fa2fac7a-2bb5-5b40-b6cf-595a87549fd9",
+  "new_anchor": "iii/from-p15",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "761239f9-868e-5075-a7d4-0719deb04de5",
+  "old_anchor": "consolation-of-philosophy/book-ii/introduction/p7",
+  "new_passage_id": "bf2211bb-b6db-59a1-b77b-1bfd152800b4",
+  "new_anchor": "iii/from-p18",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "1eb435f6-7cd5-563c-8974-76625e81366e",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p10",
+  "new_passage_id": "c7e3da13-fd37-5aec-962c-750535c06c6d",
+  "new_anchor": "v/from-p95",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "236e3000-5808-5c2f-baf2-ddeeb474263d",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p11",
+  "new_passage_id": "1111d7f1-1d5d-551b-9539-7d09e1436f03",
+  "new_anchor": "v/from-p95-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "609c864b-d432-5cdf-a4e0-50c5294274e6",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p12",
+  "new_passage_id": "63038d9b-9eef-5b59-ba49-6fdc7b8204a6",
+  "new_anchor": "v/from-p96",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "a4ec24c3-a71e-5150-af63-90d16c178c6c",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p13",
+  "new_passage_id": "b6e7125d-47e3-5f67-b58c-e6d455b9a5ea",
+  "new_anchor": "v/from-p96-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "2918c648-158a-58fc-a15f-4394bc5176b1",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p14",
+  "new_passage_id": "6a86b05a-0432-547b-9a8a-461991f2f39b",
+  "new_anchor": "v/from-p98",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "ac51549f-c5bb-55ec-a5d9-2a961edf0d42",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p15",
+  "new_passage_id": "09c33e92-ba58-5784-978b-48f99171ecd9",
+  "new_anchor": "v/from-p121",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "97d1a980-9fba-5657-98ec-426a5063ecef",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p5",
+  "new_passage_id": "8436ff86-9b2e-500b-81d2-86e036049846",
+  "new_anchor": "v/from-p49",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "7d26e4c2-28a0-57b6-af75-4bdafb05891b",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p6",
+  "new_passage_id": "76ba6062-68c4-5631-8116-41740c6f39f3",
+  "new_anchor": "v/from-p53",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "dc3be984-bf0b-5221-a19a-ed5564f2341d",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p7",
+  "new_passage_id": "93028071-6391-5441-ad6b-5eb2d9357ef4",
+  "new_anchor": "v/from-p69",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "fb43fac9-7b15-5079-b54e-03286fab94e0",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p8",
+  "new_passage_id": "36882765-6fc8-5f61-8d53-606a25c976b8",
+  "new_anchor": "v/from-p84",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "5aabc796-d577-5f89-84c3-de1b2500737b",
+  "old_anchor": "consolation-of-philosophy/book-iv/introduction/p9",
+  "new_passage_id": "21db6158-b170-55fb-8ef6-3ccd765aa862",
+  "new_anchor": "v/from-p90",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "27f2be63-3ff5-5da9-9e2c-d7b17383c8ff",
+  "old_anchor": "consolation-of-philosophy/book-v/introduction/p10",
+  "new_passage_id": "3e906ccd-de78-54aa-87d1-6452031daae9",
+  "new_anchor": "vi/from-p29",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "a53374aa-6e75-50b3-b25f-6ef340854ef4",
+  "old_anchor": "consolation-of-philosophy/book-v/introduction/p11",
+  "new_passage_id": "8fa71ca2-a320-5c58-9940-c3006c5c7f0b",
+  "new_anchor": "vi/from-p31",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "0e946317-707b-520a-b326-826923f355a7",
+  "old_anchor": "consolation-of-philosophy/book-v/introduction/p12",
+  "new_passage_id": "8fa71ca2-a320-5c58-9940-c3006c5c7f0b",
+  "new_anchor": "vi/from-p31",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "5e0500b1-065c-52b2-a8c5-d32039fcf880",
+  "old_anchor": "consolation-of-philosophy/book-v/introduction/p6",
+  "new_passage_id": "11bee4cd-7e5d-598d-acd1-1820bf9ce546",
+  "new_anchor": "vi/from-p22",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "8444cdd9-93a6-5727-bdf2-e70ad5495dea",
+  "old_anchor": "consolation-of-philosophy/book-v/introduction/p7",
+  "new_passage_id": "b743a76e-e0e7-587c-9ec7-89545586d955",
+  "new_anchor": "vi/from-p23",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "8de301f0-9bf6-50e4-abc9-096be5490a19",
+  "old_anchor": "consolation-of-philosophy/book-v/introduction/p8",
+  "new_passage_id": "61ea319d-65db-5e4c-8438-d4c6f07d3271",
+  "new_anchor": "vi/from-p24",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "old_passage_id": "4672de71-5270-57a6-b053-1b253de0ab92",
+  "old_anchor": "consolation-of-philosophy/book-v/introduction/p9",
+  "new_passage_id": "72d3de44-cbe1-5c70-a7d9-535f8a4fa27e",
+  "new_anchor": "vi/from-p26",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "a68727db-80e3-589e-bbb7-8a8cfd7dec88",
+  "old_passage_id": "56cc2b38-58d5-5091-a085-b3c20ca2dd26",
+  "old_anchor": "leviticus/13/1-3",
+  "new_passage_id": "3e302971-7ec0-52a0-8461-d8e5de056cdc",
+  "new_anchor": "leviticus/13/1/from-13-25-2",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec",
+  "old_passage_id": "67955ceb-eb4b-5e7c-9ca3-503c97090b15",
+  "old_anchor": "pastores-dabo-vobis/72/p2",
+  "new_passage_id": "85e0157d-7671-53bc-82b7-db444d17589d",
+  "new_anchor": "pastores-dabo-vobis/72/from-e422",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec",
+  "old_passage_id": "367e57ff-3a1c-505e-9895-d8347779eaac",
+  "old_anchor": "pastores-dabo-vobis/72/p3",
+  "new_passage_id": "9da3eb80-5556-5cff-868e-5f48b77c0fac",
+  "new_anchor": "pastores-dabo-vobis/72/from-e424",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "287e2bfc-3682-5eab-a60f-ae0f1235058b",
+  "old_anchor": "council-of-trent/sec-0/1/p6",
+  "new_passage_id": "eb48cb40-831c-5e9c-a59a-44a4ba3a04f6",
+  "new_anchor": "council-of-trent/sec-0/1-2/from-e8-7",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "2.1"
+ }
+]

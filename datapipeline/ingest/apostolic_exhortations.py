@@ -13,13 +13,16 @@ import re
 from bs4 import BeautifulSoup
 
 from config import settings
-from identity import document_id, anchor as make_anchor
+from identity import anchor as make_anchor
 from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
 from ingest.common import split_display_passage
+from ingest.pieces import (Segment, element_locator, name_pieces, number_elements,
+                           unique_unit_anchors)
+from registry import ANCHOR_SCHEME, resolve_document_id
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "apostolic-exhortations")
 _NUM = re.compile(r"^(\d+)\s*\.\s*(.*)", re.DOTALL)
@@ -60,7 +63,10 @@ def _is_bold_only(p) -> bool:
 _NOTES_HEADING = re.compile(r"^(?:END)?NOTES?$|^FOOTNOTES?$", re.IGNORECASE)
 
 
-def _tokens(soup) -> list[tuple[str, int | None, str]]:
+def _tokens(soup) -> list[tuple[str, int | None, str, list[Segment]]]:
+    """Return an ordered list of ('preamble'|'section'|'para', num|None, text,
+    source segments), each segment one `<p>` named by its ordinal in the file."""
+    number_elements(soup)
     for tag in soup.find_all(["script", "style", "nav", "header", "footer", "form"]):
         tag.decompose()
     items = [(p, p.get_text(" ", strip=True)) for p in soup.find_all("p")]
@@ -69,14 +75,15 @@ def _tokens(soup) -> list[tuple[str, int | None, str]]:
         if _NOTES_HEADING.match(t.strip()):
             items = items[:i]
             break
-    toks: list[tuple[str, int | None, str]] = []
+    toks: list[tuple[str, int | None, str, list[Segment]]] = []
     seen = False
     cur: list | None = None
 
     def flush() -> None:
         nonlocal cur
         if cur is not None:
-            toks.append(("para", cur[0], "\n\n".join(x for x in cur[1] if x)))
+            toks.append(("para", cur[0], "\n\n".join(x for x in cur[1] if x),
+                         [seg for seg in cur[2] if seg.text]))
             cur = None
 
     for p, t in items:
@@ -87,49 +94,51 @@ def _tokens(soup) -> list[tuple[str, int | None, str]]:
             if m:
                 seen = True
                 body = m.group(2).strip()
-                cur = [int(m.group(1)), [body] if body else []]
+                cur = [int(m.group(1)), [body] if body else [],
+                       [Segment(element_locator(p), body)]]
             elif is_roman:
-                toks.append(("section", None, t))
+                toks.append(("section", None, t, [Segment(element_locator(p), t)]))
             else:
-                toks.append(("preamble", None, t))
+                toks.append(("preamble", None, t, [Segment(element_locator(p), t)]))
             continue
         if m:
             flush()
             body = m.group(2).strip()
-            cur = [int(m.group(1)), [body] if body else []]
+            cur = [int(m.group(1)), [body] if body else [], [Segment(element_locator(p), body)]]
             continue
         if is_roman or is_bold:
             flush()
-            toks.append(("section", None, t))
+            toks.append(("section", None, t, [Segment(element_locator(p), t)]))
             continue
         if cur is not None:
             cur[1].append(t)
+            cur[2].append(Segment(element_locator(p), t))
     flush()
     last_para_num = 0
-    for i, (k, n, t) in enumerate(toks):
+    for i, (k, n, t, _) in enumerate(toks):
         if k == "para" and n is not None:
             if n < last_para_num and n <= 3:
-                remaining = [tt for kk, _, tt in toks[i:] if kk == "para"]
+                remaining = [tt for kk, _, tt, _ in toks[i:] if kk == "para"]
                 if remaining and sum(len(tt) for tt in remaining) / len(remaining) < 150:
                     toks = toks[:i]
                     break
             last_para_num = n
     # Unnumbered fallback: if no numbered paragraphs were found, re-classify
     # preamble tokens so the body text isn't silently dropped.
-    if not any(k == "para" for k, _, _ in toks):
-        retyped: list[tuple[str, int | None, str]] = []
+    if not any(k == "para" for k, _, _, _ in toks):
+        retyped: list[tuple[str, int | None, str, list[Segment]]] = []
         n = 1
-        for k, _, t in toks:
+        for k, _, t, segs in toks:
             if k != "preamble":
-                retyped.append((k, None, t))
+                retyped.append((k, None, t, segs))
                 continue
             if _is_shouting(t):
-                retyped.append(("section", None, t))
+                retyped.append(("section", None, t, segs))
             else:
-                retyped.append(("para", n, t))
+                retyped.append(("para", n, t, segs))
                 n += 1
         toks = retyped
-    cleaned: list[tuple[str, int | None, str]] = []
+    cleaned: list[tuple[str, int | None, str, list[Segment]]] = []
     for i, tok in enumerate(toks):
         if tok[0] == "section":
             following = toks[i + 1:]
@@ -152,47 +161,38 @@ def build_document(entry: dict) -> Document:
     toks = _tokens(soup)
     slug, author = entry["slug"], entry["author"]
     title = _disambiguate_title(entry["title"], slug, entry["year"])
-    did = document_id("apostolic-exhortations", slug)
-    has_sec = any(k == "section" for k, _, _ in toks)
+    source_key = f"apostolic-exhortations/{slug}"
+    did = resolve_document_id("apostolic-exhortations", source_key,
+                              ("apostolic-exhortations", slug))
+    has_sec = any(k == "section" for k, _, _, _ in toks)
     meta = {"pope": author, "url": entry["url"]}
-    passages: list[Passage] = []
-    pos = 0
-    seen_anchors: set[str] = set()
+    units: list[tuple] = []
 
     def emit(content: str, ref: str, base_anchor: str, ckey: str, clabel: str,
-             unit: str | None) -> None:
-        nonlocal pos
+             unit: str | None, segments: list[Segment]) -> None:
         content = clean_text(strip_footnote_markers(strip_boilerplate(content)))
         if not content:
             return
         pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
-        for j, piece in enumerate(pieces):
-            anc = base_anchor + (f"/p{j + 1}" if len(pieces) > 1 else "")
-            k = 1
-            while anc in seen_anchors:
-                k += 1
-                anc = f"{base_anchor}-{k}" if len(pieces) == 1 else f"{base_anchor}/p{j + 1}-{k}"
-            seen_anchors.add(anc)
-            passages.append(Passage(content=piece, reference=ref, anchor=anc,
-                                    chapter_key=ckey, chapter_label=clabel,
-                                    position=pos, unit_label=unit, metadata=meta))
-            pos += 1
+        units.append((content, pieces, ref, base_anchor, ckey, clabel, unit, segments))
 
     pre_parts: list[str] = []
-    for k, _, t in toks:
+    pre_segments: list[Segment] = []
+    for k, _, t, segs in toks:
         if k != "preamble":
             continue
         if _is_shouting(t):
             break
         pre_parts.append(t)
+        pre_segments += segs
     pre = _strip_leading_caps("\n\n".join(pre_parts).strip()).strip()
     if pre:
         emit(pre, f"{title} — Preamble", make_anchor(slug, "preamble"),
-             make_anchor(slug, "preamble"), "Preamble", None)
+             make_anchor(slug, "preamble"), "Preamble", None, pre_segments)
 
     bucket_range: dict[int, tuple[int, int]] = {}
     if not has_sec:
-        for k, n, _ in toks:
+        for k, n, _, _ in toks:
             if k != "para":
                 continue
             b = (n - 1) // _BUCKET
@@ -201,7 +201,7 @@ def build_document(entry: dict) -> Document:
 
     sec_ord = 0
     cur_key = cur_label = None
-    for k, n, t in toks:
+    for k, n, t, segs in toks:
         if k == "preamble":
             continue
         if k == "section":
@@ -218,10 +218,19 @@ def build_document(entry: dict) -> Document:
             lo, hi = bucket_range[b]
             clabel = f"Paragraphs {lo}–{hi}" if lo != hi else f"Paragraph {lo}"
             ckey = make_anchor(slug, f"bucket-{b}")
-        emit(t, f"{title}, §{n}", make_anchor(slug, n), ckey, clabel, f"§{n}")
+        emit(t, f"{title}, §{n}", make_anchor(slug, n), ckey, clabel, f"§{n}", segs)
 
+    passages: list[Passage] = []
+    anchors = unique_unit_anchors([u[3] for u in units], [len(u[1]) > 1 for u in units])
+    for (content, pieces, ref, _, ckey, clabel, label, segments), anc in zip(units, anchors):
+        for piece, (anchor, held) in zip(pieces, name_pieces(anc, content, pieces, segments)):
+            passages.append(Passage(content=piece, reference=ref, anchor=anchor,
+                                    chapter_key=ckey, chapter_label=clabel,
+                                    position=len(passages), unit_label=label, metadata=meta,
+                                    source_units=held))
     return Document(id=did, collection="apostolic-exhortations", title=title, author=author,
-                    year=entry["year"], metadata={"url": entry["url"], "pope": author},
+                    year=entry["year"], metadata={"url": entry["url"], "pope": author,
+                              "source_key": source_key, "anchor_scheme": ANCHOR_SCHEME},
                     passages=passages)
 
 

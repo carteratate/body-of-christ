@@ -14,10 +14,11 @@ import re
 
 from bs4 import BeautifulSoup
 
-from identity import document_id, anchor as make_anchor
+from identity import anchor as make_anchor
 from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import smart_title_case
+from registry import ANCHOR_SCHEME, resolve_document_id
 
 _BASE = "http://www.vatican.va"
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "canon-law")
@@ -83,7 +84,7 @@ def build_documents() -> list[Document]:
             seen.add(num)
             uniq.append((num, text, ctx))
 
-    did = document_id("canon-law")
+    did = resolve_document_id("canon-law", "canon-law", ("canon-law",))
     passages: list[Passage] = []
     fill = {"title": "", "chapter": ""}
     prev_book: str | None = None
@@ -115,7 +116,9 @@ def build_documents() -> list[Document]:
                       "canon": num}))
         pos += 1
     return [Document(id=did, collection="canon-law", title="Code of Canon Law (1983)",
-                     author="Catholic Church", year=1983, metadata={"source": "vatican.va"},
+                     author="Catholic Church", year=1983,
+                     metadata={"source": "vatican.va", "source_key": "canon-law",
+                               "anchor_scheme": ANCHOR_SCHEME},
                      passages=passages)]
 
 

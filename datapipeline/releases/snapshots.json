@@ -17,6 +17,24 @@
     "documents.jsonl": "600c881e2b97c6aaf1c1a48c70485de7b5f2f616088cfd8bf862cf021da7f63c",
     "references.json": "c038b3998597aaa2f56304399dbb3417b7d491354f957e81c8d80fe53643e0fe"
    }
+  },
+  {
+   "date": "2026-10-30",
+   "exported_at": "2026-10-30T13:32:06Z",
+   "tables": {
+    "chunks": 54555,
+    "documents": 421,
+    "retrievals": 4218,
+    "bookmarks": 25,
+    "guest_trial_retrievals": 88,
+    "retrieval_labels": 3,
+    "reading_progress": 34
+   },
+   "files": {
+    "passages.jsonl.gz": "8ad92ee4a6dfc41c55df37ced7e8ce8967a4e3231fdf6c68bf83f32c6ce660c1",
+    "documents.jsonl": "523d2d58a3ec2a670a84bd7054ca5d262513e7728492272f67f74df0c4cd9974",
+    "references.json": "109d8cd83b11306623a3513c522ed4d98756e2fda7dacbe2192a3de6f8e8647c"
+   }
   }
  ]
 }

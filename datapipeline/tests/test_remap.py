@@ -292,6 +292,38 @@ def test_pieces_compared_as_one_unit():
     assert {r.outcome for r in result.rows} == {"same"}
 
 
+def test_per_piece_stability_with_registry():
+    # Text slides from /p2 to /p3 under unchanged IDs. Joined (no registry) the unit is
+    # the same text; once 2.1's registry exists each piece is compared on its own (C-10).
+    words = text("a", 120).split()
+    cut = lambda i, j: " ".join(words[i:j])
+    olds = [old(pid(f"s/1/p{k + 1}"), f"s/1/p{k + 1}", cut(i, j), k, reference="§1")
+            for k, (i, j) in enumerate(((0, 40), (40, 80), (80, 120)))]
+    build = [doc(*(new(f"s/1/p{k + 1}", cut(i, j), k, reference="§1")
+                   for k, (i, j) in enumerate(((0, 70), (70, 110), (110, 120)))))]
+    assert R.remap(olds, build).failures == []
+    result = R.remap(olds, build, R.Registry(per_piece=True))
+    assert [(f.check, f.passage_id) for f in result.failures] == \
+        [("piece_stability", pid("s/1/p2"))]
+    assert result.failures[0].check_id == f"release.piece_stability:councils/{pid('s/1/p2')}"
+    # A whole unit that loses its text is still `stability`, not a piece failure.
+    whole = R.remap([old(pid("s/2"), "s/2", text("a"), 0)], [doc(new("s/2", text("b"), 0))],
+                    R.Registry(per_piece=True))
+    assert [f.check for f in whole.failures] == ["stability"]
+
+
+def test_report_reads_per_piece_mode_from_the_registry(tmp_path):
+    assert RP.load_registry(str(tmp_path)).per_piece is False
+    (tmp_path / "passages").mkdir()
+    (tmp_path / "redirects.json").write_text(json.dumps([
+        {"document_id": DOC, "old_passage_id": "x", "old_anchor": "s/9", "new_passage_id": "y",
+         "new_anchor": "s/1", "kind": "merged", "reason": "r", "added_by": "t",
+         "closed_by": "1.10c", "closed_on": "2026-10-30"}]), encoding="utf-8")
+    registry = RP.load_registry(str(tmp_path))
+    assert registry.per_piece and registry.enforce_redirects
+    assert registry.redirects == []            # a closed redirect is never applied
+
+
 def test_summa_parts_are_not_joined_into_one_unit():
     # Objection 1's second piece takes the running number Objection 2 had; a unit label
     # keeps the two objections apart, so the shift is caught.

@@ -29,12 +29,13 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from identity import document_id, anchor as make_anchor  # noqa: E402
+from identity import PIECE_MARK, anchor as make_anchor  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
 from config import settings  # noqa: E402
 from ingest.common import split_display_passage  # noqa: E402
 from ingest import catechism_us  # noqa: E402
+from registry import ANCHOR_SCHEME, resolve_document_id  # noqa: E402
 
 _DEFAULT_SRC = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "sources", "catechism", "ccc.json"
@@ -354,6 +355,51 @@ def _split_notes(spans: list[tuple[int, int]], notes: list[dict]) -> list[list[d
     return out
 
 
+_PARAGRAPH_KEY = re.compile(r"^p(\d+)$")
+
+
+def _paragraph_starts(held: list[tuple[str | None, str, int]]) -> list[tuple[int, str]]:
+    """(offset, CCC number) where each numbered paragraph a chunk holds starts in its
+    text. A heading or a kept source line belongs to the paragraph after it (to the one
+    before it at the end of a chunk), so a piece opening at a heading is named by the
+    paragraph the heading introduces."""
+    starts: list[tuple[int, str]] = []
+    pending = None
+    for key, _, start in held:
+        m = _PARAGRAPH_KEY.match(key or "")
+        if m:
+            starts.append((start if pending is None else pending, m[1]))
+            pending = None
+        elif pending is None:
+            pending = start
+    return starts
+
+
+def _piece_names(unit: str, spans: list[tuple[int, int]],
+                 held: list[tuple[str | None, str, int]]
+                 ) -> list[tuple[str, tuple[tuple[str, int], ...]]]:
+    """(anchor, source_units) for each piece of a chunk (2.1, C-10): the first piece takes
+    the unit's anchor, a later one `<unit>/from-<CCC number it opens with>`, plus `-<k>`
+    when it opens inside that paragraph (the paragraph's start counts as 1)."""
+    starts = _paragraph_starts(held)
+    out, cuts = [], {}
+    for j, (lo, hi) in enumerate(spans):
+        opening = [x for x in starts if x[0] <= lo]
+        at, number = opening[-1] if opening else (starts[0] if starts else (0, unit))
+        units = [(n, x - lo) for x, n in starts if lo <= x < hi]
+        if at != lo:
+            units.insert(0, (number, 0))
+        if j == 0:
+            anchor = unit
+        elif at == lo:
+            anchor = f"{unit}{PIECE_MARK}{number}"
+        else:
+            cuts[number] = cuts.get(number, 1) + 1
+            anchor = f"{unit}{PIECE_MARK}{number}-{cuts[number]}"
+        out.append((anchor, tuple(units)))
+    return out
+
+
 @dataclass
 class Build:
     document: Document
@@ -380,7 +426,7 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
     raw_chunks = chunk_nodes([page_nodes[k] for k in ids], ids)  # (content, ref, meta, pos)
     placement = _Placement(_units(page_nodes))
 
-    did = document_id("catechism")
+    did = resolve_document_id("catechism", "catechism", ("catechism",))
     passages: list[Passage] = []
     pos = 0
     seen: set[str] = set()
@@ -395,16 +441,16 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
         paras = meta.get("ccc_paragraphs") or []
         first = paras[0] if paras else None
         chapter_no = (first // 100) if first else 0
-        base = make_anchor("ccc", first) if first else make_anchor("ccc", meta.get("path", str(pos)))
+        # A chunk with no numbered paragraph is anchored on its node's path in the source.
+        base = make_anchor("ccc", first) if first else make_anchor("ccc", meta["path"])
+        unit, k = base, 1
+        while unit in seen:
+            k += 1
+            unit = f"{base}-{k}"
         pieces = split_display_passage(clean, settings.MAX_PASSAGE_CHARS)
         spans = _piece_spans(clean, pieces)
-        for j, (piece, (lo, hi), piece_notes) in enumerate(
-                zip(pieces, spans, _split_notes(spans, notes))):
-            anchor = base + (f"-p{j + 1}" if len(pieces) > 1 else "")
-            k = 1
-            while anchor in seen:
-                k += 1
-                anchor = f"{base}-p{j + 1}-{k}" if len(pieces) > 1 else f"{base}-{k}"
+        for (piece, (lo, hi), piece_notes, (anchor, units)) in zip(
+                pieces, spans, _split_notes(spans, notes), _piece_names(unit, spans, held)):
             seen.add(anchor)
             piece_meta = {**meta, "footnotes": piece_notes}
             held_by[anchor] = [key for key, text, start in held
@@ -416,7 +462,8 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
                 content=piece, reference=reference, anchor=anchor,
                 chapter_key=make_anchor("ccc", "part", str(chapter_no)),
                 chapter_label=(f"CCC §§{chapter_no * 100}–{chapter_no * 100 + 99}" if first else "CCC"),
-                position=pos, unit_label=(f"§{first}" if first else None), metadata=piece_meta))
+                position=pos, unit_label=(f"§{first}" if first else None), metadata=piece_meta,
+                source_units=units))
             pos += 1
     if placement.next != len(placement.units):
         raise ValueError("catechism: text after the last passage was not placed")
@@ -425,7 +472,8 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
                         year=1992,
                         metadata={"source": "nossbigg/catechism-ccc-json (structure); "
                                             "US edition via catholiccrossreference.online "
-                                            "(text and footnotes, us-edition/ccc-us.json)"},
+                                            "(text and footnotes, us-edition/ccc-us.json)",
+                                  "source_key": "catechism", "anchor_scheme": ANCHOR_SCHEME},
                         passages=passages)
     return Build(document, alignment, placement.dropped, held_by)
 

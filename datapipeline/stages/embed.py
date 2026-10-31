@@ -26,6 +26,7 @@ from qdrant_client.models import PointStruct
 from cache import Cache
 from config import settings
 from identity import passage_id
+from registry import resolve_passage_id
 from model import Document, Passage
 from qdrant_schema import FACETS, QUESTIONS
 from writers.search_writer import build_embedding_input, build_point
@@ -69,7 +70,7 @@ async def _cached_embed(deps: EmbedDeps, text: str) -> list[float]:
 async def embed_chunk(doc: Document, passages: list[Passage], idx: int,
                       merged_facets: list[dict], deps: EmbedDeps) -> None:
     p = passages[idx]
-    cid = passage_id(doc.id, p.anchor)
+    cid = resolve_passage_id(doc.id, p.anchor)
 
     # content -> chunks.dense
     content_vec = await _cached_embed(deps, content_embedding_input(passages, idx, doc))
@@ -146,7 +147,7 @@ async def embed_collection(docs: list[Document], cache: Cache, embed_client, qdr
 
     for doc in docs:
         for idx, p in enumerate(doc.passages):
-            cid = passage_id(doc.id, p.anchor)
+            cid = resolve_passage_id(doc.id, p.anchor)
             ch = Cache.content_hash(p.content)
             enr = cache.get_enrichment(cid, ch)
             if enr is None:

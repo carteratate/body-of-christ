@@ -17,7 +17,8 @@ from dataclasses import dataclass, field, replace
 from difflib import SequenceMatcher
 from typing import Callable
 
-import identity
+import registry
+from identity import unit_anchor
 from model import Document, Passage
 
 # The six outcomes (D5). Each old passage takes exactly one.
@@ -42,8 +43,8 @@ JACCARD_MIN = 0.5
 # The checks that fail a report. Each failure's check id is
 # release.<check>:<collection>/<passage id>, keyed by passage ID because 2.1 keeps IDs
 # when it re-anchors, so a known_defects.json entry survives that change.
-CHECKS = ("stability", "removed", "unbacked", "anchor_reuse", "bad_redirect", "duplicate_id",
-          "bad_removal")
+CHECKS = ("stability", "piece_stability", "removed", "unbacked", "anchor_reuse", "bad_redirect",
+          "duplicate_id", "bad_removal")
 
 
 # --------------------------------------------------------------------------- data
@@ -88,6 +89,9 @@ class Registry:
     # Once 2.1 lands, every outcome other than `same` must be a declared redirect or a
     # removal entry; computed matches are then only the evidence a reviewer checks.
     enforce_redirects: bool = False
+    # Once 2.1's passage registry exists, stability compares each passage ID's text on
+    # its own (C-10), instead of joining a unit's display pieces.
+    per_piece: bool = False
 
 
 @dataclass(frozen=True)
@@ -204,8 +208,9 @@ _RUNNING = re.compile(r"/\d+$")
 
 def unit_key(p: OldPassage | NewPassage) -> tuple:
     """Consecutive passages with equal keys are display pieces of one unit: same chapter,
-    citation and unit label, and anchors that differ only in a trailing piece number."""
-    base = _PIECE.sub("", p.anchor)
+    citation and unit label, and anchors that differ only in a trailing piece number
+    (before 2.1) or a piece segment (`identity.PIECE_MARK`, since)."""
+    base = _PIECE.sub("", unit_anchor(p.anchor))
     if p.unit_label:
         base = _RUNNING.sub("", base)
     return (p.chapter_key, p.reference, p.unit_label, base)
@@ -332,10 +337,10 @@ def _union_of(index: _DocumentIndex, run: list[int]) -> set:
 # --------------------------------------------------------------------------- remap
 
 def default_passage_id(document: Document, passage: Passage) -> str:
-    """The ID the writer gives a build passage. A frozen ID set in metadata (2.1's
-    registry, or a test) wins; otherwise identity.passage_id, as the writer computes it."""
+    """The ID the writer gives a build passage: an ID set in metadata (a test) wins;
+    otherwise 2.1's registry resolves it, as the writer does."""
     frozen = (passage.metadata or {}).get("passage_id")
-    return frozen or identity.passage_id(document.id, passage.anchor)
+    return frozen or registry.resolve_passage_id(document.id, passage.anchor)
 
 
 def new_passages(documents: list[Document],
@@ -418,7 +423,8 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
 
     # Stability first: a passage that keeps its ID holds its own text there only when it
     # keeps at least the threshold of it (a shifted Summa part does not).
-    stable, replacements, scores = _stability(
+    check = _piece_stability if registry.per_piece else _stability
+    stable, replacements, scores = check(
         old, [rows.get(o.id) or _removed(o, None) for o in old], by_document)
 
     # One target holding text from two or more old passages is a merge; else a move.
@@ -606,6 +612,42 @@ def _stability(old: list[OldPassage], rows: list[RemapRow],
                         "score": None if (document_id, k) not in scores
                         else round(scores[(document_id, k)], 4)})
     return failures, replacements, passage_scores
+
+
+def _piece_stability(old: list[OldPassage], rows: list[RemapRow],
+                     by_document: dict[str, list[NewPassage]]
+                     ) -> tuple[list[Failure], list[dict], dict[str, float]]:
+    """2.1's per-piece mode (C-10): every passage that keeps its ID must keep at least
+    ANCHOR_STABILITY_THRESHOLD of its own text, compared on its own, so text sliding
+    from one piece to the next is seen. A failing display piece (a live unit of two or
+    more passages) is `piece_stability`; a failing whole unit stays `stability`."""
+    outcome = {r.old_id: r for r in rows}
+    new_by_id = {p.id: p for passages in by_document.values() for p in passages}
+    old_by_document: dict[str, list[OldPassage]] = defaultdict(list)
+    for o in old:
+        old_by_document[o.document_id].append(o)
+    failures: list[Failure] = []
+    scores: dict[str, float] = {}
+    for document_id, olds in old_by_document.items():
+        for unit in units(olds):
+            for o in unit:
+                if outcome[o.id].outcome != "same":
+                    continue
+                n = new_by_id[o.id]
+                score = scores[o.id] = similarity(o.content, n.content)
+                if score >= ANCHOR_STABILITY_THRESHOLD or n.text_replaced:
+                    continue
+                failures.append(Failure(
+                    "piece_stability" if len(unit) > 1 else "stability", o.collection,
+                    document_id, o.id, o.anchor, score,
+                    f"keeps {score:.2f} of its text in build passage {n.anchor}"))
+    replacements = [
+        {"collection": p.collection, "document_id": p.document_id, "passage_id": p.id,
+         "anchor": p.anchor, "reason": p.text_replaced,
+         "score": None if p.id not in scores else round(scores[p.id], 4)}
+        for document_id, passages in sorted(by_document.items()) for p in passages
+        if p.text_replaced]
+    return failures, replacements, scores
 
 
 def _anchor_reuse(old: list[OldPassage], built: list[NewPassage],

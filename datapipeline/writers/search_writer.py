@@ -13,7 +13,7 @@ import openai
 from qdrant_client.models import PointStruct
 
 from config import settings
-from identity import passage_id
+from registry import resolve_passage_id
 from model import Document, Passage
 from writers.qdrant import upsert_points
 
@@ -38,7 +38,7 @@ def build_embedding_input(passages: list[Passage], idx: int,
 
 def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
     return PointStruct(
-        id=passage_id(doc.id, p.anchor),
+        id=resolve_passage_id(doc.id, p.anchor),
         vector=vector,
         payload={
             "collection": doc.collection,

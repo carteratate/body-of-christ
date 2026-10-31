@@ -11,21 +11,32 @@ Structure: Part (div1) → Treatise (div2) → Question (div3) → Article (div4
 Each article splits into its dialectical parts (Objection N / On the contrary /
 I answer that / Reply to Objection N), each a clean sub-passage of the article's
 reader chapter; oversized parts are further split at sentence boundaries.
+
+Anchors come from the source's own ids, never from a part label or an article title
+(2.1, Decision log "Summa anchors (2.1)"): a part is `summa/<article div id>/<paragraph>`,
+named by the source paragraph it opens in (`FP_Q29_A2-p5` in `FP_Q29_A2` is `p5`), with
+`-2` when a second part opens in the same paragraph. Its later pieces follow
+`ingest.pieces`. The labels are wrong in dozens of places (C-04, C-14); 1.7 corrects
+them without touching an anchor.
 """
 from __future__ import annotations
 
 import os
 import re
 
+from xml.etree.ElementTree import tostring as et_tostring  # serialization only
+
 import defusedxml.ElementTree as ET
 
 from config import settings
-from identity import document_id, anchor as make_anchor
+from identity import anchor as make_anchor
 from model import Document, Passage
 from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.summa import expand_apparatus
-from ingest.common import _extract_p_text, split_display_passage
+from ingest.common import _extract_p_text, _strip_tags, split_display_passage
+from ingest.pieces import Segment, SourceMap, name_pieces
+from registry import ANCHOR_SCHEME, resolve_document_id
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                     "sources", "summa", "summa.xml")
@@ -73,17 +84,41 @@ def _read_root(path: str):
 
 def _split_article(text: str) -> list[tuple[str | None, str]]:
     """Return [(part_label, part_text)] split on the dialectical markers."""
-    pieces = _PART_RE.split(text)
-    if len(pieces) == 1:
-        return [(None, text.strip())]
-    out: list[tuple[str | None, str]] = []
-    if pieces[0].strip():
-        out.append((None, pieces[0].strip()))
-    # pieces alternate: [pre, marker, body, marker, body, ...]
-    for i in range(1, len(pieces), 2):
-        marker = pieces[i].strip().rstrip(":,")
-        body = pieces[i + 1].strip() if i + 1 < len(pieces) else ""
-        out.append((marker, body))
+    return [(label, body) for label, body, _, _ in _article_parts(text)]
+
+
+def _article_parts(text: str) -> list[tuple[str | None, str, int, int]]:
+    """[(part_label, part_text, where the part opens, where its text starts)]: a part
+    opens at its marker, or at its text when it has none."""
+    marks = list(_PART_RE.finditer(text))
+    if not marks:
+        return [(None, text.strip(), 0, text.find(text.strip()))]
+    out: list[tuple[str | None, str, int, int]] = []
+    pre = text[:marks[0].start()].strip()
+    if pre:
+        start = text.find(pre)
+        out.append((None, pre, start, start))
+    for i, m in enumerate(marks):
+        end = marks[i + 1].start() if i + 1 < len(marks) else len(text)
+        body = text[m.end():end].strip()
+        start = text.find(body, m.end()) if body else m.end()
+        out.append((m.group(0).strip().rstrip(":,"), body, m.start(), start))
+    return out
+
+
+def paragraph_segments(div) -> list[Segment]:
+    """The article's paragraphs, as `_extract_p_text` reads them, each named by its source
+    id without the article's id in front (`FP_Q29_A2-p5` in `FP_Q29_A2` is `p5`)."""
+    article = div.get("id") or ""
+    out = []
+    for k, p in enumerate(div.iter("p"), 1):
+        text = _strip_tags(et_tostring(p, encoding="unicode", method="xml"))
+        if not text:
+            continue
+        pid = p.get("id") or f"n{k}"
+        if article and pid.startswith(article + "-"):
+            pid = pid[len(article) + 1:]
+        out.append(Segment(pid, text))
     return out
 
 
@@ -104,16 +139,30 @@ def build_document(path: str | None = None) -> Document:
                 ch_key = make_anchor("summa", part, q, a_title)
                 ch_label = f"{q} — {a_title}".strip(" —")
                 ref = f"Summa Theologiae, {part}, {q}, {a_title}"
-                sub = 0
-                for label, ptext in _split_article(body):
-                    for piece in split_display_passage(ptext, maxc):
+                article = div4.get("id")
+                if not article:
+                    raise ValueError(f"summa: article {a_title!r} has no div id to anchor on")
+                segments = paragraph_segments(div4)
+                source = SourceMap(body, segments)
+                opened: dict[int, int] = {}      # paragraph -> parts anchored in it
+                for label, ptext, opens_at, text_at in _article_parts(body):
+                    pieces = split_display_passage(ptext, maxc)
+                    if not pieces:
+                        continue
+                    s, _ = source.segment_at(opens_at)
+                    opened[s] = opened.get(s, 0) + 1
+                    unit = f"summa/{article}/{segments[s].locator}" + \
+                        (f"-{opened[s]}" if opened[s] > 1 else "")
+                    for piece, (anchor, units) in zip(pieces, name_pieces(
+                            unit, ptext, pieces, segments, source, offset=text_at)):
                         passages.append(Passage(
-                            content=piece, reference=ref,
-                            anchor=f"{ch_key}/{sub}", chapter_key=ch_key,
-                            chapter_label=ch_label, position=pos,
-                            unit_label=label, metadata={"part": part}))
+                            content=piece, reference=ref, anchor=anchor,
+                            chapter_key=ch_key, chapter_label=ch_label, position=pos,
+                            unit_label=label, metadata={"part": part},
+                            source_units=units))
                         pos += 1
-                        sub += 1
-    return Document(id=document_id("summa"), collection="summa",
+    return Document(id=resolve_document_id("summa", "summa", ("summa",)), collection="summa",
                     title="Summa Theologiae", author="Thomas Aquinas",
-                    metadata={"source_file": "summa.xml"}, passages=passages)
+                    metadata={"source_file": "summa.xml", "source_key": "summa",
+                              "anchor_scheme": ANCHOR_SCHEME},
+                    passages=passages)

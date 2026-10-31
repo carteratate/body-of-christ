@@ -41,3 +41,13 @@ def passage_id(document_id_str: str, anchor_str: str) -> str:
     """Deterministic passage UUID. Used as BOTH chunks.id and the Qdrant point
     id so the reader and search pipelines produce identical ids (contract §4)."""
     return str(uuid.uuid5(DOCUMENT_NS, f"{document_id_str}#{anchor_str}"))
+
+
+# A later split piece's anchor is its unit's anchor plus PIECE_MARK and the locator of the
+# first source unit it holds (2.1, C-10); the first piece takes the unit's anchor.
+PIECE_MARK = "/from-"
+
+
+def unit_anchor(anchor_str: str) -> str:
+    """The anchor of the unit a piece belongs to: the anchor itself for a first piece."""
+    return anchor_str.split(PIECE_MARK, 1)[0]
