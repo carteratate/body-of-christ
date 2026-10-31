@@ -310,10 +310,11 @@ def _document_access(doc):
 
 def test_write_document_sets_reader_access_from_the_rights_inventory():
     """Issue #265: a publish writes the inventory's verdict, so it cannot reopen a text
-    whose rights are not cleared, and keeps a public-domain one open."""
-    bible = Document(id="11111111-1111-1111-1111-111111111111", collection="bible",
-                     title="John", translation="WEB-C", passages=[])
-    catechism = Document(id="22222222-2222-2222-2222-222222222222", collection="catechism",
+    whose rights are not cleared, and keeps a public-domain one open. Rows are found by
+    document ID, so a relabelled document keeps its row."""
+    bible = Document(id="69468535-a61e-50c7-a341-e18b1dc1d1c6", collection="bible",
+                     title="John (relabelled)", translation="WEB-C", passages=[])
+    catechism = Document(id="9679c400-d314-5394-b916-f6fc27b50104", collection="catechism",
                          title="Catechism of the Catholic Church", author="Catholic Church",
                          passages=[])
     assert _document_access(bible) == "full"
@@ -321,6 +322,7 @@ def test_write_document_sets_reader_access_from_the_rights_inventory():
 
 
 def test_write_document_fails_closed_for_a_work_missing_from_the_inventory():
+    # A known title under an ID the inventory does not list.
     stray = Document(id="33333333-3333-3333-3333-333333333333", collection="bible",
-                     title="Not A Book", passages=[])
+                     title="John", translation="WEB-C", passages=[])
     assert _document_access(stray) == "excerpt"
