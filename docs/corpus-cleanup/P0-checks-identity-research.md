@@ -665,6 +665,14 @@ Conventions used in this file:
 - **Production safety:** Read-only console views and GET requests. Nothing is created, changed or deleted.
 - **Needs Carter:** Run it (he holds the Qdrant credentials and console access).
 - **Out of scope:** Creating the alias or new collection (2.2b, 4.0, 4.1b). Changing the plan tier.
+- **Recorded (30 Oct 2026).** Read-only GETs from the home server with the API's `QDRANT_URL` and key (`/collections`, `/collections/chunks`, `/aliases`, `/telemetry`, `/metrics`, `/snapshots`). Nothing was created, changed or deleted.
+  - Cluster `body-of-christ`: Qdrant Cloud **Free tier, 1 GiB RAM, 4 GiB disk, 0.5 vCPU**, one node, AWS us-east-2, Qdrant 1.18.2, healthy (console, read by Carter on 30 Oct 2026). Telemetry reports the node's host (2 cores, about 16 GB RAM), not this allowance. **No backups: the console's Backups page shows no schedules and no backups, and says no cluster is eligible** (Free clusters cannot be backed up).
+  - Collections: only `chunks`. No aliases. `facets` and `questions` do not exist in production.
+  - `chunks`: status green, optimizer ok, 54,555 points (the live passage count), 55,063 stored vectors in 3 segments (508 deleted vectors not yet vacuumed; the 0.2 deleted threshold is not reached). Vectors 1,536-d cosine, in memory (`on_disk` unset); HNSW `m=16`, `ef_construct=64`, graph in memory; `on_disk_payload: true`; no quantization; strict mode on; one payload index, `collection` (keyword).
+  - Sizes: vectors 335 MB (335,185,920 bytes), payloads 68 MB, on disk. The process heap is 52 MB resident; vectors are memory-mapped, so heap figures do not show them.
+  - Snapshots: none, for the collection or the whole cluster. Any backup is the console's cluster backup, if enabled.
+  - Decision rule: a second in-memory collection needs about 400 MB (vectors, graph, overhead), so free RAM must be about 480 MB. With today's collection taking about 400 MB of the 1 GiB, about 600 MB is free: the rule says in memory, by about 120 MB. **Outcome: build the new collection with `on_disk: true` vectors anyway.** The margin is too thin to absorb indexing on 0.5 vCPU, process overhead and the growth from the republish, and running out of memory would take down search for every user mid-cutover. A one-month paid tier for the cutover is the alternative if on-disk latency proves too slow in 4.2. Disk is not a constraint: two collections need about 1 GB of the 4 GiB.
+  - Rollback: with no snapshots and no backups, the old `chunks` collection, kept until the rollback window ends (4.1b), is the only way back. It must not be deleted early. If the cluster itself were lost, the vectors would be rebuilt by re-embedding every passage from Supabase, which holds the text and is backed up daily. 4.1b should decide whether to take a collection snapshot (`POST /collections/chunks/snapshots`, about 0.4 GB of the 4 GiB disk, downloaded off the cluster) before the alias switch.
 
 ---
 
@@ -685,6 +693,12 @@ Conventions used in this file:
 - **Production safety:** Read-only catalogue queries.
 - **Needs Carter:** Approve running the queries and read the plan limit from the dashboard.
 - **Out of scope:** `VACUUM FULL`, buying Pro (4.0). The rehearsal, which runs on a local Postgres restored from a `pg_dump` of production, not a Supabase branch (4.1a, D8).
+- **Recorded (30 Oct 2026).** Catalogue queries in a read-only transaction from the home server, and the Supabase connector's project and organization reads. Sizes in MiB, as `pg_size_pretty` prints them (the unit of the 29 Sep figures).
+  - **Plan: the organization is on Supabase Pro** (`tier_pro`), project `hvmgffvimqgiejmxwhwq`, Postgres 17.6, us-east-1. The Free plan's 500 MB read-only trigger, which 4.0, 5.2 and the Decision log row "Storage (4.0)" are built around, does not apply. Pro includes 8 GB of disk per project and grows it automatically (Supabase pricing). Dashboard, read by Carter on 30 Oct 2026: compute **Micro** (1 GB RAM), disk 36% used, RAM 46%, CPU 2%, 9 of 60 connections, last daily backup 18 hours earlier. Disk use is far above the database size because it also holds WAL and system files.
+  - Database 402 MiB (421,776,531 bytes); the `public` schema is 390 MiB of it.
+  - `chunks`: 54,555 rows, total 380 MiB = heap 89 MiB + TOAST 203 MiB + indexes 88 MiB; 1,600 dead tuples. Live row data 123 MiB (content 42, `search_vector` 49, metadata 5; annotation columns empty). Indexes: `chunks_document_chapter_pos_idx` 27 MiB, `chunks_search_vector_idx` 26 MiB, `chunks_document_anchor_uniq` 26 MiB, `chunks_document_id_position_key` 5.3 MiB, `chunks_pkey` 2.2 MiB, others under 1 MiB. Unchanged from 29 Sep despite the Catechism republish.
+  - Other tables: `document_chapters` 5.0 MiB (13,255 rows), `retrievals` 2.5 MiB, `documents` 0.4 MiB (421 rows), `guest_trial_retrievals` 0.3 MiB, `document_contents` empty.
+  - Estimated peak during cutover: today's 402 MiB, plus one staging copy of about 210 MiB (4.0), plus the master build's extra passages and retired rows kept through the rollback window (tens of MiB), so about 650 MiB. A `VACUUM FULL` alone peaks near 600 MiB. **Gap: the disk is about 64% free (about 5 GB if 8 GB is provisioned), and the peak adds about 250 MiB.** Storage is no longer a constraint on P4. 4.0 and 5.2 were restated on 30 Oct 2026: the Pro decision is gone, and 5.2's stop now watches the Qdrant cluster and Supabase disk use. Micro's 1 GB RAM is the tighter resource: a `VACUUM FULL` or index rebuild on `chunks` may be slow, and 4.1a's rehearsal should time it.
 
 ---
 

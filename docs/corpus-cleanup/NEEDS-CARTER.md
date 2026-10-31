@@ -23,7 +23,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **pg_dump** is a full copy of the production database, made so a rehearsal can run on Carter's Mac. It contains user data, stays on his Mac, and is deleted afterwards.
 - **Migration** is a change to the database's structure (new columns or tables). These specs only add things; none removes data.
 - **Registry** is a tracked file in the repo that freezes each document's and passage's ID, so links and bookmarks survive fixes.
-- **Supabase Pro** is the paid plan. The free plan turns the database read-only above 500 MB, and the cleanup may briefly pass that.
+- **Supabase Pro** is the paid plan. The organization is on it (checked 30 Oct 2026, 0.6), so the Free plan's 500 MB read-only limit, which these specs once planned around, does not apply.
+- **Qdrant Free** is the vector database's free plan, which the production cluster runs on: 1 GiB of RAM, 4 GiB of disk, and no backups.
 
 ---
 
@@ -37,6 +38,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **0.1c** [Phase 0]. Run, or approve running, `export_live_snapshot.py`. It reads production without changing anything and copies the corpus text and anonymous counts of saved rows (no user IDs, no query text) to his Mac. It is re-run before Phase 4 and whenever a report needs fresh counts.
   Answered 2026-10-05: approved for the 0.1c PR's run, which exported once on 6 Oct 2026 (UTC; 5 Oct evening on Carter's Mac) to `datapipeline/releases/snapshots/2026-10-06/`. Each later run is asked for again.
 - **0.6** [Phase 0]. Approve read-only size queries against production.
+  Answered 2026-10-30: approved; run from the home server the same day (results in 0.6's section of the P0 spec).
 - **0.1d** [Phase 0, before P1]. Approve the next run of `export_live_snapshot.py`, which now also copies `document_chapters` (the stored reader outline: each document's chapter list, its order and labels). It reads production without changing anything and copies corpus text and anonymous counts to his Mac, as the 6 Oct export did. The outline comparison then runs offline.
 - **R7** [Phase 0, blocks 1.7]. Approve each set of downloads for the independent Summa comparison: the Leonine Latin pages of the Supplement (the four core parts were fetched by the 6 Oct review), and any English edition or scan that holds a unit the vendored edition omits. The request states file names and sizes.
   Answered 2026-10-30: all R7 downloads approved.
@@ -213,7 +215,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 ### Phase 4
 
-- **4.0** [Phase 4]. If compaction may push the database above 480 MB, choose between running it anyway and accepting a possible short read-only period, and a month of Supabase Pro. After the rehearsal measures the real peak of the apply, make the same choice for the apply. No recommendation; the rehearsal numbers decide.
+- **4.0** [Phase 4]. If on-disk vectors in the new Qdrant collection make search too slow in 4.2's pre-cutover run, choose between a paid Qdrant tier for the cutover month and the slower search. The Supabase Pro choice this entry used to hold is settled: the organization is already on Pro (0.6, 30 Oct 2026).
 - **4.1a** [Phase 4]. Approve the rules for merging duplicates when a moved passage lands where a user already has the same bookmark or result (for bookmarks, keep the earliest and join both notes when they fit), and the rules for undoing them in a rollback: a user's deletions and edits made since the cutover are kept, and a skipped row never blocks the rollback.
 - **4.1b** [Phase 4]. Choose the quiet hour for the cutover, and give go or no-go the day before.
 - **4.2** [Phase 4]. Give go or no-go after the accuracy checks on the staging copy. Review the check questions in 4.2's PR.
@@ -225,7 +227,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.1b.1** [Phase 5]. Confirm the three new collection keys and labels: `papal` for "Papal documents", `church-law` for "Church law" and `theologians` for "Theologians and spiritual writers". Approve the merged search prompt for papal documents.
 - **5.1b.2** [Phase 5]. Approve the new collection colors and the interim About and Discover wording.
 - **5.1b.4** [Phase 5]. Keep a five-line translation of old collection names in the browser so guests' saved drafts do not reset, or delete it too. The spec keeps it.
-- **5.2, 5.6a** [Phase 5]. Choose between Supabase Pro and reordering the additions once the projected database size passes 450 MB.
+- **5.2, 5.6a** [Phase 5]. Choose between a paid Qdrant tier and reordering the additions once a publish's projected Qdrant peak passes 3 GB of the Free cluster's 4 GiB disk (5.2 step 5). Supabase Pro already covers the database.
 - **5.2** [Phase 5]. LEV texts from vatican.va have a basis (Decision log "LEV texts from vatican.va", 29 Oct 2026). Still open: whether to ask the LEV rights office (diritti.lev@spc.va) to confirm the use before any LEV document opens in the full reader; and the Pontifical Biblical Commission and social-doctrine Compendium rows, blocked until confirmed. The papalencyclicals.net translations have no basis and are listed for a decision.
   Answered 2026-10-29 (in part): no permission request has been sent. Carter will ask once everything is working, so nothing yet constrains the full-reader step.
 - **5.3b** [Phase 5]. Include the International Theological Commission in the Roman Curia collection, or leave it out. Default is out.
@@ -261,7 +263,9 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-04: planned works get rows in `rights_inventory.json` now, with a `planned_for` field naming the item that will ingest each one; it is null for built works and the ingesting PR clears it (R6).
   Answered 2026-10-05: R6's remaining recommendations are accepted (Little Flowers from the 1899 scan, Rolle's CCEL text with a note, the mixed Pohle-Preuss and Koch-Preuss printings, Alphonsus volumes without an open scan left out, Bellarmine's 1616 text without the 1928 introduction, More's Dialogue of Comfort held). The Schroeder 1937 and Creeds 1931 renewal searches and their 12 rows are approved. The other draft rows stay drafts until approved; the Summa contra Gentiles choice stays open.
 - **0.5** [Phase 0, needed before Phase 4]. The Qdrant plan's memory, disk and backup settings, read from the Qdrant console he has access to, plus a few read-only requests.
+  Answered 2026-10-30: Free cluster, 1 GiB RAM, 4 GiB disk, 0.5 vCPU, no backups (console screenshots); the read-only requests ran from the home server. The new collection keeps its vectors on disk (4.0 step 5).
 - **0.6** [Phase 0, needed before Phase 4]. The Supabase plan tier and database size limit, read from the dashboard.
+  Answered 2026-10-30: Pro, Micro compute, disk 36% used, daily backups (dashboard screenshot and the Supabase connector).
 
 ### Phase 1
 

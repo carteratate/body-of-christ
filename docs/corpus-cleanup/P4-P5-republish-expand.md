@@ -11,21 +11,21 @@ Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs
 1. P4 republishes the cleaned corpus built in P1 to P3 in one apply, through the stage-then-apply writer (2.2w, D2), behind the publish lock (0.4) and the Qdrant alias `chunks_live` (2.2b). There is no release column. The new corpus is built into the `staging` schema and a new Qdrant collection, compared against live in the release report, applied to the live tables in one transaction, and then made visible to vector search by switching `chunks_live`.
 2. Passage ids follow D1. They are frozen in the 2.1 registry, so every unit that exists today keeps today's id, even where 2.1 rebuilds its anchor, and a fixed text is updated in place. Only genuinely new units get new ids. Only the few anchors that now name different text get a redirect, and only user rows on those are remapped (4.1a). Removed passages are retired and show a tombstone (D3); user rows that point at them stay where they are.
 3. Order for P4:
-   - 4.0 storage (the `VACUUM FULL` window and the Pro decision).
+   - 4.0 storage (the `VACUUM FULL` window, 2.2c's rewrite, and the Qdrant settings for the new collection).
    - 4.1a user-data remap for redirects, with a local rehearsal of the whole 2.2w flow on a restored `pg_dump` (D8).
    - 4.1b step 1, staging build and new Qdrant collection.
    - 4.2 on staging.
    - The rest of the 4.1b cutover.
    - 4.2 again on production.
 4. 4.2 checks accuracy only: targeted assertions on staging and on production. There is no baseline to compare against, because Carter dropped 0.3 on 30 Oct 2026 (Decision log "Baseline eval (0.3)").
-5. Two storage facts need Carter before P4. A `VACUUM FULL` of `chunks` on today's 401 MB database may briefly peak near 600 MB, above the Free plan's 500 MB read-only trigger. The apply itself, with one staging copy loaded, new units inserted and old versions of updated rows not yet vacuumed, is estimated at 490 to 590 MB at its peak (4.0), so it may cross 500 MB briefly. Both lead to the same choice, run anyway or buy a month of Pro, and the local rehearsal measures the real apply peak first.
+5. Storage facts for P4 (0.5 and 0.6, 30 Oct 2026). Supabase is on Pro, so neither the `VACUUM FULL` peak (near 600 MB) nor the apply's (490 to 590 MB, 4.0) meets a read-only limit; its disk was 36% used. Qdrant is a Free cluster with 1 GiB of RAM and no backups, so the new collection keeps its vectors on disk and the old collection is the rollback path.
 6. P5 starts only after the P4 cutover and its rollback window close. Every P5 publish goes through 2.2w, each with its own named apply in a reviewed change to the lock file. No P5 publish uses today's delete-based prune (`writers/reader_writer.py`).
 7. 5.2 (rights inventory) can run in parallel from now, and every addition PR waits for its row.
 8. Order for P5 code is 5.1a genre and issuer filters, then 5.1c, then the four 5.1b PRs in order (5.1b.1 to 5.1b.4).
 9. 5.1b depends on 5.1a because the old key `encyclicals` becomes "papal documents of genre `encyclical`" after the merge.
 10. Then 5.3a (Roman Curia, from the parked branch), 5.4, 5.5, 5.6a, 5.3b, 5.6b, and 5.6c one work at a time. 5.6c and the Roman Catechism in 5.5 reuse the OCR tool and gate built in Phase 1 as 1.2f (D9).
 11. 5.7 (About page) goes last, once the content it describes exists. The Eastern code stays blocked. Retrieval follow-ups open after the republish.
-12. Storage is the binding constraint for P5. The planned additions are likely to push the database past 500 MB, so every addition PR carries a storage projection (see 5.2).
+12. Qdrant is the binding constraint for P5. Its Free cluster has 1 GiB of RAM and 4 GiB of disk, and each publish briefly holds two collections; Supabase Pro has room for every planned addition. Every addition PR carries a projection of both (see 5.2).
 
 Every live-data step below (anything that writes to production Supabase or Qdrant, restarts the API, or deletes anything) needs Carter's explicit approval for that step, given in chat or on the PR, at the time it runs. Approval of a PR is not approval of its live-data step.
 
@@ -55,9 +55,9 @@ Queries were read-only against the production Supabase project (`body-of-christ-
 | Supabase migration ledger | records only 30 of the repo's migrations (0015, 0016, 0019, 0026, 0031 to 0033 and others were applied outside the ledger). Inspect live schema, not the ledger, before any migration |
 | Tracked `docs/eval/` gold data | `eval80-round3-final.jsonl` holds 0 chunk UUIDs (results carry collection and reference only). The 9,492 distinct chunk ids live in untracked local folders such as `docs/eval/eval80-round3-final-artifacts/` |
 
-Supabase documentation (read 29 Sep) says Free plan projects enter read-only mode when database size exceeds 500 MB, and that branching (preview branches) requires the Pro plan and copies schema without production data ([database size](https://supabase.com/docs/guides/platform/database-size), [deployment and branching](https://supabase.com/docs/guides/deployment)). That is why rehearsals run locally (D8).
+Supabase documentation (read 29 Sep) says Free plan projects enter read-only mode when database size exceeds 500 MB, and that branching (preview branches) requires the Pro plan and copies schema without production data ([database size](https://supabase.com/docs/guides/platform/database-size), [deployment and branching](https://supabase.com/docs/guides/deployment)). That is why rehearsals run locally (D8). The organization is on Pro (0.6, 30 Oct 2026), so the 500 MB limit does not apply to production; rehearsals stay local because branches copy no data.
 
-Qdrant figures come from the plan (28 Sep) and were not re-measured. There is one collection, `chunks`, with 54,568 points at 1,536 dimensions, no quantization and no alias, about 335 MB of raw vectors.
+Qdrant figures were re-read on 30 Oct 2026 (0.5). There is one collection, `chunks`, with 54,555 points at 1,536 dimensions, vectors in memory (335 MB) and payloads on disk (68 MB), no quantization, no alias and no snapshots, on a Free cluster with 1 GiB of RAM, 4 GiB of disk, 0.5 vCPU and no backups.
 
 Figures that bear on the storage projection and the remap come from the other specs (29 Sep, estimates where marked):
 - Retired rows at P4 are the rule A to G removals (about 2,100 passages) plus the Tanner council units and the 47 On the Incarnation passages that replacement texts supersede. Retired rows already exist in `chunks`, so retiring them adds no space.
@@ -98,21 +98,22 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 
 ## Phase 4. Republish
 
-### 4.0. Storage: compact `chunks`, project the apply, decide on Pro
+### 4.0. Storage: compact `chunks`, project the apply, size the new Qdrant collection
 
 - **Type:** ops
 - **Depends on:** 0.5 (Qdrant limits), 0.6 (headroom snapshot). Runs before 4.1a's rehearsal measurement is final.
-- **Goal:** Get back the space earlier rewrites left inside `chunks`, project the database size through the staging build and the apply, and decide from those numbers and the rehearsal whether Supabase Pro is needed for the republish. Users see nothing, apart from search and the reader pausing during the `VACUUM FULL` lock.
+- **Goal:** Get back the space earlier rewrites left inside `chunks`, project the database size through the staging build and the apply, and confirm from those numbers and the rehearsal that the apply fits. Users see nothing, apart from search and the reader pausing during the `VACUUM FULL` lock.
 - **Current state:**
+  - **Plans (0.5 and 0.6, 30 Oct 2026).** Supabase: Pro, Micro compute (1 GB RAM), disk 36% used, daily backups; database 402 MiB and `chunks` 380 MiB, unchanged since 29 Sep. Pro has no read-only trigger at these sizes, so the peaks below are recorded, not decided on. Qdrant: Free cluster, 1 GiB RAM, 4 GiB disk, 0.5 vCPU, no backups and no snapshots.
   - Database 401 MB, `chunks` 380 MB, of which live row bytes are 123 MB (measured 29 Sep, table above). Dead tuples are 0, so the roughly 166 MB gap between live rows and heap plus TOAST is free space inside the files. Plain `VACUUM` already made it reusable for new inserts; only `VACUUM FULL` returns it to the database size figure.
-  - The Decision log row "Storage (4.0)" says to compact `chunks` with `VACUUM FULL` in an approved quiet window, measure, and rehearse locally (D8). Because compaction and the Phase 4 apply may each briefly pass the 500 MB Free-plan limit, Carter chooses between running anyway and a month of Supabase Pro after the rehearsal measures the real peak. If Qdrant memory is tight, the new collection keeps its vectors on disk.
-  - **Carter to note (the `VACUUM FULL` peak).** `VACUUM FULL` writes a complete new copy of the table and its indexes before dropping the old one. The new copy is estimated at 123 MB of rows plus 60 to 88 MB of rebuilt indexes, so the database may briefly reach about 590 to 610 MB. Supabase documents that Free projects enter read-only mode above 500 MB. How quickly that is enforced is unverified (the same page says disk metrics update daily). If it triggers, writes fail (searches cannot be saved, bookmarks cannot be added) until usage drops. This is a decision for Carter (step 2).
+  - The Decision log row "Storage (4.0)" says to compact `chunks` with `VACUUM FULL` in an approved quiet window, measure, and rehearse locally (D8). Supabase is on Pro, so there is no read-only limit to plan around. Qdrant is a Free cluster, so the new collection keeps its vectors on disk (step 5).
+  - **Carter to note (the `VACUUM FULL` peak).** `VACUUM FULL` writes a complete new copy of the table and its indexes before dropping the old one. The new copy is estimated at 123 MB of rows plus 60 to 88 MB of rebuilt indexes, so the database may briefly reach about 590 to 610 MB. On Pro that is well inside the disk (8 GB included, 36% used on 30 Oct 2026). What matters is time: the rewrite runs on Micro compute, and search is down while it holds the lock (Production safety).
   - **Carter to note (projection with one staging copy, estimates).** D2 removes the doubled `chunks` table, and frozen passage ids (D1) mean the corpus is not re-keyed. What remains is one staging copy, the new units the apply inserts, and the old versions of rows it updates in place. At about 3.5 KB of database per passage (123 MB of rows plus about 70 MB of indexes over 54,568 passages):
     - After `VACUUM FULL`, about 230 MB (220 to 260 MB).
     - The staging copy needs today's indexes, including the full-text GIN index, because 4.2 searches it. That is about 123 MB of rows plus up to 88 MB of indexes, so about 210 MB. The peak while staged is about 440 MB.
     - The apply runs while staging still exists. Retiring about 2,100 removed passages and the superseded Tanner and Incarnation units adds nothing, since those rows already exist. New units are about 2,000 to 6,000 passages (the repairs' 0.9 MB of text plus the unbuilt replacement council texts), so about 7 to 21 MB.
     - The larger cost is the in-place updates. Postgres writes a new version of each updated row and keeps the old one as dead space until the next vacuum. With roughly 35,000 to 40,000 rows updated, that is about 40 to 130 MB, depending on how much of each row changes (a citation-only change reuses the stored content).
-    - The peak during the apply is therefore about 490 to 590 MB, near or above 500 MB, before any P5 addition.
+    - The peak during the apply is therefore about 490 to 590 MB before any P5 addition, well inside Pro's disk.
     - Dropping the staging tables after the apply returns their space at once (about 210 MB). During the rollback window the database is then about 280 to 380 MB, and the next vacuum makes the dead space reusable.
     - The local rehearsal (4.1a) measures the real figures.
 - **Changes:** No code. Runbook, run from Carter's machine with `psql` over a direct (session-mode) connection, not the transaction pooler and not the dashboard SQL editor, which may time out.
@@ -126,8 +127,8 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      select pg_size_pretty(sum(pg_column_size(c.*))::bigint) from chunks c;
      select pg_size_pretty(sum(size)) from pg_ls_waldir();
      ```
-     Check the dashboard's Database Settings page for disk size and whether the project is already near read-only.
-  2. Peak decision (Carter). If `pg_database_size + live rows + index size` exceeds 480 MB, stop. Carter chooses between (a) running anyway and accepting a possible read-only period, or (b) a month of Pro covering both the `VACUUM FULL` and the P4 apply. Do not work around it by dropping indexes, which would break full-text search during the window.
+     Check the dashboard for disk use (36% on 30 Oct 2026).
+  2. Disk check. If disk use plus the peak estimate would pass 80% of the provisioned disk, stop and ask Carter. It is not expected to trigger: 0.6 measured 36% on 30 Oct 2026, and the peak adds about 250 MiB. Do not work around it by dropping indexes, which would break full-text search during the window.
   3. Quiet window (Carter approves the time). In one `psql` session:
      ```sql
      set lock_timeout = '5s';        -- fail fast instead of queueing every search behind the lock
@@ -138,18 +139,17 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      If the lock is not acquired within 5 s, retry once a minute; do not raise `lock_timeout`.
      In the same window, apply 2.2c's migration, which redefines `search_vector` (C-16, decided by Carter on 9 Oct 2026). It rewrites `chunks` and rebuilds its indexes as `VACUUM FULL` does, so run it first, measure, and run `VACUUM FULL` only if the measurement shows space left to reclaim. Never run two rewrites back to back without measuring the size between them; each has the peak described above. The migration must be applied before 4.1b step 1. Right after it, run `drop_corpus_staging(); create_corpus_staging();`, because 0039 created the staging tables with the old expression and `CREATE TABLE IF NOT EXISTS` would keep them.
   4. Measure again with the step 1 queries. Record duration, before and after sizes, and WAL size.
-  5. Qdrant. Read 0.5's numbers. From 4.1b step 1 until the old collection is deleted after the rollback window, the cluster holds two full collections (today's `chunks` and the new one, each with every passage). If the plan's memory cannot hold both (about 2 x 335 MB raw plus HNSW), note that 4.1b must create the new collection with `on_disk=True` for vectors (and `HnswConfigDiff(on_disk=True)` if 0.5 shows the graph also does not fit).
-  6. Pro decision for the apply (Carter). After 4.1a's rehearsal reports the peak database size through staging and apply, compare it with the projection above. If the peak exceeds 500 MB, Carter chooses between a month of Pro and running the apply anyway, accepting a possible brief read-only period. The longer-term Pro decision for P5 is 5.2's 450 MB stop.
+  5. Qdrant (settled from 0.5, 30 Oct 2026). From 4.1b step 1 until the old collection is deleted after the rollback window, the cluster holds two full collections (today's `chunks` and the new one, each with every passage). The Free cluster has 1 GiB of RAM and today's collection takes about 400 MB of it, which leaves about 120 MB of margin for a second in-memory collection, too little to absorb indexing on 0.5 vCPU. So 4.1b creates the new collection with `on_disk=True` for vectors; the HNSW graph, a few tens of MB, stays in memory. 4.2's pre-cutover run times searches on it. If they are too slow, Carter chooses between a paid Qdrant tier for the cutover month and the slower search.
+  6. Apply peak. After 4.1a's rehearsal reports the peak database size through staging and apply, record it next to the projection above. Nothing is decided unless it would fail step 2's disk check. P5's limits are 5.2's stop.
 - **Acceptance checks:**
   - Ops log (kept in the issue, not in a repo file) has before and after sizes, duration, and WAL size.
   - `pg_database_size` after compaction is recorded; expected 220 to 260 MB (estimate, not measured).
   - The ops log states the projected peaks (staged and at apply) next to the rehearsal's measured peaks.
   - `/health/db` and `/health/search` return 200 after the window; one search per collection returns results.
-- **Production safety:** `VACUUM FULL` takes an ACCESS EXCLUSIVE lock, so full-text search and the reader fail while it runs (the plan expects under a minute; GIN rebuild time on this compute is unverified). Vector search still reaches Qdrant but fetches from Postgres fail, so searches error rather than return partial results. `lock_timeout` prevents a stuck lock queue. There is no data change and nothing to roll back; if interrupted, Postgres discards the new copy. The only lasting risk is read-only mode from the peak, handled in step 2.
+- **Production safety:** `VACUUM FULL` takes an ACCESS EXCLUSIVE lock, so full-text search and the reader fail while it runs (the plan expects under a minute; GIN rebuild time on this compute is unverified). Vector search still reaches Qdrant but fetches from Postgres fail, so searches error rather than return partial results. `lock_timeout` prevents a stuck lock queue. There is no data change and nothing to roll back; if interrupted, Postgres discards the new copy. Supabase Pro has no read-only trigger at these sizes, so nothing lasts beyond the lock.
 - **Needs Carter:**
-  - Decide step 2 (run `VACUUM FULL` anyway, or a month of Pro) if the peak estimate exceeds 480 MB.
   - Approve the window and the run, including 2.2c's migration.
-  - Make the step 6 decision for the apply after the rehearsal.
+  - Choose a paid Qdrant tier for the cutover month if on-disk vectors make search too slow in 4.2 (step 5).
 - **Out of scope:** Dropping `content_embedding` or `annotation_embedding` (CLAUDE.md §4: all-NULL, reclaims nothing). Qdrant quantization. Any change to autovacuum settings.
 
 ### 4.1a. User-data remap for redirects, rehearsed locally
@@ -212,7 +212,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - The rehearsal report in the PR (counts only) shows zero user rows pointing at an id that has a redirect. Bookmark count before equals count after plus merged rows, and every merged or dropped row is in the ledger.
   - After 2.2w's `rollback` with no user activity in between, the rehearsal's user tables match the dump row for row (checksums per table).
   - After the second cycle, with user activity in between, the rollback committed, and the PR lists each scripted action with the row's end state and the skip counts.
-  - The PR description states the three measured database sizes, whether the apply peak is above 500 MB, and the apply's duration.
+  - The PR description states the three measured database sizes, the apply peak next to 4.0's projection, and the apply's duration.
   - The PR description confirms the dump and the local database were deleted.
 - **Production safety:** The PR adds the implementation 2.2w calls, a read-only CLI and tests; nothing runs against production on merge, and the lock still refuses every live apply. The tool never deletes a `chunks` row. Rollback of the merge is a revert.
 - **Needs Carter:** Approve taking the production `pg_dump` for the local rehearsal (it holds user data; it stays on his Mac and is deleted afterwards). Approve the collision rules above and the reverse rules in step 4.
@@ -233,7 +233,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      - Freeze the build. A reviewed PR names the commit the P4 build is made from. It also applies the 1.2e fallback (D9, D11; this step owns it): for any council that has not passed 1.2f's gate by then, the adapter emits nothing for it, and the PR adds removal-registry entries with reason `translation-in-preparation` for all of that council's Tanner passages, with 1.2e's tombstone. No adapter change merges after this PR until the cutover is done or abandoned. The same PR applies the rejected-voice fallback: if 2.4d is not deployed, it sets `searchable = false` on every row in 3.4's ranges (Decision log "Rejected voices (C-01)").
      - Lock-file change. A reviewed PR (it may be the same one) adds to `datapipeline/PUBLISH_LOCK.json` the entry `{"collection": "all", "release": "republish-2026-10", "steps": ["stage", "apply", "rollback"], ...}` in 0.4's format. It stays until the rollback window closes (step 13), and no other entry is added in between, so no other publish can run.
      - Run `publish.py stage --collection all --release republish-2026-10`. It writes every collection into the `staging` schema and into the new Qdrant collection `chunks-republish-2026-10` (D11).
-     - The new collection uses `VectorParams(size=1536, distance=COSINE, on_disk=<per 4.0 step 5>)` and `HnswConfigDiff(m=16, ef_construct=64)` (as today, `qdrant_schema.py:25`). Payload indexes are keyword on `collection`, `document_id`, `genre` and `issuer`, and boolean on `searchable`. 2.2w writes `collection`, `genre`, `issuer` and `searchable` into every point's payload.
+     - The new collection uses `VectorParams(size=1536, distance=COSINE, on_disk=True)` (4.0 step 5) and `HnswConfigDiff(m=16, ef_construct=64)` (as today, `qdrant_schema.py:25`). Payload indexes are keyword on `collection`, `document_id`, `genre` and `issuer`, and boolean on `searchable`. 2.2w writes `collection`, `genre`, `issuer` and `searchable` into every point's payload.
      - Every staged passage is a point, searchable or not; non-searchable ones carry `searchable = false`. The point count equals the staged passage count. Retired passages have no point.
      - Record the embedding cost. 2.2w looks each vector up in the datapipeline's content-addressed cache first and sends only misses to OpenAI (D11). The cache was empty on 29 Sep, and the first full rehearsal stage on Carter's Mac fills it (about 11 million tokens, about $1.40 at $0.13 per million; check the current price). So this stage embeds only passages whose embedding input changed after the last rehearsal build: 0 tokens if the frozen build equals the rehearsed one, and at most the same 11 million if everything changed. The count is known before any call, from the cache misses, and is recorded.
      - The release report (0.1c, produced by 2.2w from staging against live) is attached to the tracking issue. It must pass D1's similarity check and D4's removal-registry check.
@@ -242,7 +242,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   4. **Backups.**
      - `pg_dump` of the user-owned tables (`bookmarks`, `retrievals`, `retrieval_labels`, `searches`, `guest_trials`, `guest_trial_retrievals`, `reading_progress`, `product_feedback`, `user_preferences`) to Carter's Mac, kept private.
      - `pg_dump` of the corpus tables (`documents`, `chunks`, `document_chapters`, `document_works`, the tombstone and redirect tables) as they stand before the apply. This is a last-resort backup only, not a rollback path (D11). Step 12's rollback uses the before-snapshot that 2.2w's `apply` exports itself.
-     - A Qdrant snapshot of `chunks` if 0.5 shows the plan allows it (the old collection is not modified anyway).
+     - A Qdrant snapshot of `chunks` (`POST /collections/chunks/snapshots`, about 0.4 GB of the cluster's 4 GiB disk), downloaded to Carter's Mac and then deleted from the cluster. The cluster has no backups (0.5). The old collection is not modified, so this guards only against losing the cluster; without it, recovery is re-embedding every passage from Supabase (about $1.40).
   5. **Counts.** Read and record counts of each user table above (the plan requires counts at cutover, not the 28 Sep ones).
   6. **Apply.** Run `publish.py apply --collection all --release republish-2026-10 --no-switch` under the lock entry. One transaction does the in-place updates, inserts, retirements, tombstones, redirects, 4.1a's remap and the outline refresh. Record the public ledger counts.
   7. **Reader outline check.** Confirm `refresh_document_outline` ran for every document the apply touched. Zero documents have `chunk_count IS NULL`, and `/v1/documents/{id}/toc` for one document per collection returns the new chapter list. If any document is NULL, run the refresh for it (the reader falls back to the slower derivation until then, so this is not urgent).
@@ -596,7 +596,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
     - Title-page dates still to confirm: Tanquerey 1930 printing (IA `spirituallife0000atan` and `MN41530ucmf_5`), Marmion *Christ in His Mysteries* (1923 or 1924), William of St Thierry *Golden Epistle* (1930), Bellarmine *Ascent of the Mind* (1928), Teresa's Stanbrook *Letters* volumes (all dated 1930 or earlier?), and every Pohle-Preuss and Koch-Preuss volume (not in the candidate memo; printings run past 1930, unverified).
     - R6 (5 Oct 2026) settled two: the *Golden Epistle* title page reads Sheed and Ward, London, MCMXXX, translated by Walter Shewring, edited by Justin McCann; the Stanbrook *Letters* are vol. I 1919, II 1921, III 1922, IV 1924. Tanquerey is not settled: both scans read "Second and revised edition" with a May 1930 imprimatur and no year. Marmion's *Christ in His Mysteries* is Sands and Herder, 1924. Bellarmine's *Ascent* is the 1616 "T. B." translation, first published by Burns Oates and Washbourne in 1928 with Brodrick's introduction. Open scans of all 12 Pohle-Preuss and all 5 Koch-Preuss volumes in printings of 1930 or earlier exist (1912 to 1928, some second or third revised editions). R6 added a draft row with `planned_for` for every other work in 5.3 to 5.6c (`docs/research/R6-editions.md`).
   - Every P5 publish goes through 2.2w (D2). Each one briefly holds a staging copy of the collections it publishes and a new Qdrant collection beside the one behind `chunks_live`, so its projection includes that transient peak, not only the lasting growth.
-  - **Carter to note (storage).** Compacted, a passage costs roughly 3.5 KB of database (123 MB of rows plus about 70 MB of indexes over 54,568 passages; estimate). An average passage is about 770 characters (42 MB of content over 54,568). So one million words is about 7,700 passages and about 27 MB. The A1 CCEL list alone is about 3 million words (candidates memo sizes), so about 80 MB, before the Fathers volumes and the scans. After compaction (about 230 MB) the planned P5 additions very likely pass 500 MB. Qdrant grows about 6 KB of raw vector per passage.
+  - **Carter to note (storage).** Compacted, a passage costs roughly 3.5 KB of database (123 MB of rows plus about 70 MB of indexes over 54,568 passages; estimate). An average passage is about 770 characters (42 MB of content over 54,568). So one million words is about 7,700 passages and about 27 MB. The A1 CCEL list alone is about 3 million words (candidates memo sizes), so about 80 MB, before the Fathers volumes and the scans. After compaction (about 230 MB) the planned P5 additions very likely pass 500 MB, which Supabase Pro absorbs (8 GB of disk included). Qdrant grows about 6 KB of raw vector and about 1.3 KB of payload per passage, and its Free cluster (1 GiB RAM, 4 GiB disk, 0.5) is the tighter limit.
 - **Changes:**
   1. One row per planned work in 5.3 to 5.6c. Columns:
      - Work, author, edition (translator, publisher, year, printing).
@@ -611,11 +611,11 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   2. A build check that every passage of an excerpt-only document stays within its basis's limits (for a word limit, the longest passage's word count), run in the release report. The `excerpt_basis` field and this check are code; the first PR that records a basis (1.3c) adds both.
   3. The same determination for live documents that are `in-copyright` or `unknown`: each gets an `excerpt_basis` or is listed for Carter. None is retired without his decision.
   4. The full-reader step for LEV texts: a vatican.va document whose cleanup fix has passed the coverage checks moves to `permission`, with the article cited as the grant and the conditions as its scope. The PR that makes the move names the fix and attaches its coverage result.
-  5. A running storage total at the top. When the projected database size passes 450 MB, stop and ask Carter (Pro, or reorder the additions).
+  5. A running storage total at the top, for Supabase and Qdrant. Stop and ask Carter (a paid Qdrant tier, or reorder the additions) when a publish's Qdrant peak, the live collection plus the new one it builds, would pass 3 GB of the Free cluster's 4 GiB disk, or when Supabase disk use would pass 80%.
   6. Public facts only. Correspondence, and anything Carter has not sent, stays in the private memos.
 - **Acceptance checks:** Every work named in 5.3 to 5.6c has a row with status cleared, or excerpt-only with an `excerpt_basis` its passages pass, before its PR merges. A blocked row blocks its PR. Each addition PR links its rows. The storage total is updated in each addition PR.
 - **Production safety:** Documentation only.
-- **Needs Carter:** All correspondence with rights holders (CCEL, ecatholic2000, NINS for the Newman Reader, the Aquinas Institute if SCG is taken from aquinas.cc). The Pro decision when the storage total passes 450 MB.
+- **Needs Carter:** All correspondence with rights holders (CCEL, ecatholic2000, NINS for the Newman Reader, the Aquinas Institute if SCG is taken from aquinas.cc). The Qdrant tier decision when the storage total reaches step 5's stop.
 - **Out of scope:** Paid licences (Decision log, "Licences": no spending in this cleanup). Any TheoCorpus translation (Decision log, "Rights review").
 
 ### 5.3a. Roman Curia: DDF doctrinal documents (from the parked branch)
@@ -786,7 +786,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Storage projection (including the transient staging copy) and actual growth recorded against 5.2's total.
   - Targeted questions answered from the new sources (Basil *On the Holy Spirit*, Cyril's *Catechetical Lectures* on baptism, Gregory's *Pastoral Rule*, Chrysostom *On the Priesthood*).
 - **Production safety:** Additions behind the publish lock, each PR's documents visible together in one apply. Rollback within the window is 2.2w's `rollback` command, which also points `chunks_live` back; later, a 2.2w apply that retires the PR's documents.
-- **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Decide the Pro upgrade when the storage total passes 450 MB (5.2).
+- **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Decide the Qdrant tier when the storage total reaches 5.2's stop.
 - **Out of scope:** Replacing translations already in the corpus (P1.2 handles council sources; On the Incarnation moved in P1). Other Fathers not named in the plan (for example Bede and John Damascene, both before 750). Propose them later.
 
 ### 5.6b. Theologians and spiritual writers from CCEL ThML and Gutenberg text
