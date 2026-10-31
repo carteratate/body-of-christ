@@ -36,7 +36,7 @@ Related decisions recorded with this one:
 Any retired document can come back without losing its links or bookmarks:
 
 1. **If a public-domain printing is found** (HathiTrust and *The Tablet* were not searchable from the server in 2026; Quod Hoc Ineunte's 1824 London translation is known from reviews but was not located): add its row to `datapipeline/rights_inventory.json`, vendor it, rebuild the document as 1.3d does, and close its removal entry.
-2. **If Carlen's publisher grants permission** (Pierian Press, Ann Arbor; the 1981 claimant was McGrath Publishing Company), or a published allowed-use statement turns up): record it as the rows' `permission` status (or an excerpt basis), with the grant's scope and date; every document still carrying the papalencyclicals.net text can then return in full (or excerpt-only) at once.
+2. **If Carlen's publisher grants permission** (Pierian Press, Ann Arbor; the 1981 claimant was McGrath Publishing Company), or a published allowed-use statement turns up: record it as the rows' `permission` status (or an excerpt basis), with the grant's scope and date; every document still carrying the papalencyclicals.net text can then return in full (or excerpt-only) at once.
 3. **If Carter decides to accept the risk instead**: revise the Decision log row "Excerpt-only needs an allowed-use basis" for these documents.
 
 In every case the document keeps its ID, its removal entry in `datapipeline/registry/removals.json` gains `closed_by` and `closed_on` (entries are never deleted), and the next publish un-retires it.
