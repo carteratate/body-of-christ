@@ -12,8 +12,16 @@ needs_sources = pytest.mark.skipif(not HAVE_SOURCES,
 
 
 @pytest.fixture(scope="session")
-def checks_run() -> report.RunResult:
-    return report.run()
+def built() -> dict:
+    """Every collection built once through SOURCE_ADAPTERS, shared by the checks run and
+    the tests that read passages directly."""
+    report.placeholder_credentials()
+    return {c: report.SOURCE_ADAPTERS[c]() for c in report.COLLECTIONS}
+
+
+@pytest.fixture(scope="session")
+def checks_run(built) -> report.RunResult:
+    return report.run(documents_by_collection=built)
 
 
 @pytest.fixture(scope="session")
