@@ -479,10 +479,11 @@
    ]
   },
   "FP_Q14_A16-p10": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "sc 1"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "I q. 14 a. 16 ad 3 [CT 29018]"
    ]
@@ -700,10 +701,11 @@
    ]
   },
   "FP_Q39_A8-p16": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 1"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "I q. 39 a. 8 ad 1 [CT 30063]"
    ]
@@ -807,8 +809,7 @@
   "FP_Q58_A2-p10": {
    "role": "reply",
    "targets": [
-    "obj 3",
-    "obj 1"
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -839,10 +840,11 @@
    ]
   },
   "FP_Q61_A1-p9": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 3"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "I q. 61 a. 1 ad 3 [CT 30943]"
    ]
@@ -870,10 +872,11 @@
    ]
   },
   "FP_Q63_A9-p8": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 2"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "I q. 63 a. 9 ad 2 [CT 31116]"
    ]
@@ -1028,11 +1031,12 @@
    }
   },
   "FP_Q78_A1-p10": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 1",
     "obj 2"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "I q. 78 a. 1 ad 1 [CT 31678]"
    ]
@@ -1196,7 +1200,8 @@
   "FP_Q93_A5-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -1256,7 +1261,8 @@
   "FP_Q97_A2-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -1397,10 +1403,11 @@
    ]
   },
   "FS_Q113_A9-p8": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 1"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "I-II q. 113 a. 9 ad 1 [CT 38643]"
    ]
@@ -1446,10 +1453,11 @@
    ]
   },
   "FS_Q17_A6-p10": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 3"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "I-II q. 17 a. 6 ad 3 [CT 34230]"
    ]
@@ -2059,7 +2067,9 @@
   "FS_Q64_A2-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -2305,7 +2315,8 @@
   "FS_Q85_A4-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2"
    ],
    "class": "prose-reply",
    "latin": [
@@ -4008,10 +4019,11 @@
    ]
   },
   "SS_Q88_A11-p16": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "sc 1"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "II-II q. 88 a. 11 ad 5 [CT 42835]"
    ]
@@ -4041,7 +4053,9 @@
   "SS_Q8_A7-p9": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [
@@ -4203,10 +4217,11 @@
    ]
   },
   "TP_Q16_A7-p11": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 3"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "III q. 16 a. 7 ad 3 [CT 47614]"
    ]
@@ -4365,10 +4380,11 @@
    "source_note": "the edition's section 'St. Thomas and the Immaculate Conception (editorial note)', appended to reply 3; the 1926 printing sets it as front matter of III QQ. 27-59"
   },
   "TP_Q2_A10-p10": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 3"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "III q. 2 a. 10 ad 3 [CT 46870]"
    ]
@@ -4384,10 +4400,11 @@
    ]
   },
   "TP_Q2_A4-p7": {
-   "also_answers": [
+   "role": "reply",
+   "targets": [
     "obj 1"
    ],
-   "class": "joint-reply",
+   "class": "prose-reply",
    "latin": [
     "III q. 2 a. 4 ad 1 [CT 46817]"
    ]
@@ -4576,34 +4593,28 @@
    "source_note": "continuation of objection 2"
   },
   "TP_Q57_A4-p5": {
-   "role": "objection",
-   "number": 2,
-   "source_label": "Objection 3",
+   "latin_number": 2,
    "class": "variant",
    "latin": [
     "III q. 57 a. 4 arg. 2 [CT 49430]"
    ],
-   "note": "Leonine numbering, without the supplied objection 2"
+   "note": "Leonine number; the printed number stands until the not-in-leonine objection 2 is decided (R7 question 3)"
   },
   "TP_Q57_A4-p6": {
-   "role": "objection",
-   "number": 3,
-   "source_label": "Objection 4",
+   "latin_number": 3,
    "class": "variant",
    "latin": [
     "III q. 57 a. 4 arg. 3 [CT 49431]"
    ],
-   "note": "Leonine numbering, without the supplied objection 2"
+   "note": "Leonine number; the printed number stands until the not-in-leonine objection 2 is decided (R7 question 3)"
   },
   "TP_Q57_A4-p7": {
-   "role": "objection",
-   "number": 4,
-   "source_label": "Objection 5",
+   "latin_number": 4,
    "class": "variant",
    "latin": [
     "III q. 57 a. 4 arg. 4 [CT 49432]"
    ],
-   "note": "Leonine numbering, without the supplied objection 2"
+   "note": "Leonine number; the printed number stands until the not-in-leonine objection 2 is decided (R7 question 3)"
   },
   "TP_Q57_A4-p11": {
    "flag": "not-in-leonine",
@@ -4616,37 +4627,28 @@
    "source_note": "continuation of reply 2"
   },
   "TP_Q57_A4-p13": {
-   "role": "reply",
-   "targets": [
-    "obj 2"
-   ],
-   "source_label": "Reply to Objection 3",
+   "latin_number": 2,
    "class": "variant",
    "latin": [
     "III q. 57 a. 4 ad 2 [CT 49436]"
-   ]
+   ],
+   "note": "Leonine number; the printed number stands until the not-in-leonine objection 2 is decided (R7 question 3)"
   },
   "TP_Q57_A4-p14": {
-   "role": "reply",
-   "targets": [
-    "obj 3"
-   ],
-   "source_label": "Reply to Objection 4",
+   "latin_number": 3,
    "class": "variant",
    "latin": [
     "III q. 57 a. 4 ad 3 [CT 49437]"
-   ]
+   ],
+   "note": "Leonine number; the printed number stands until the not-in-leonine objection 2 is decided (R7 question 3)"
   },
   "TP_Q57_A4-p15": {
-   "role": "reply",
-   "targets": [
-    "obj 4"
-   ],
-   "source_label": "Reply to Objection 5",
+   "latin_number": 4,
    "class": "variant",
    "latin": [
     "III q. 57 a. 4 ad 4 [CT 49438]"
-   ]
+   ],
+   "note": "Leonine number; the printed number stands until the not-in-leonine objection 2 is decided (R7 question 3)"
   },
   "TP_Q64_A3-p9": {
    "also_answers": [
@@ -4815,7 +4817,9 @@
   "TP_Q88_A4-p8": {
    "role": "reply",
    "targets": [
-    "obj 1"
+    "obj 1",
+    "obj 2",
+    "obj 3"
    ],
    "class": "prose-reply",
    "latin": [

@@ -183,7 +183,7 @@ Proposed rows for `datapipeline/rights_inventory.json`, in its existing format, 
 
 1. **"Objection 4: On the contrary".** 26 paragraphs are sed contras in the Latin that the translators print and number as objections because Aquinas answers them. 1.7 now keeps the printed label and sets `voice = "rejected"`. In two (II-II q.123 a.12, q.136 a.5) Aquinas grants the argument ("Quartum concedimus"), so it is not a view he rejects. The file records the Latin role as `latin_role` and leaves `role` alone, so 1.7's current design stands until Carter decides. Recommended: keep the printed label and number; set `voice = "rejected"` except for those two; use the Latin role for citations ("sed contra" vs "obj. 4").
 2. **Text lost from inside a paragraph.** In I q.117 a.2 and I q.112 a.2 the lost text is not a whole unit: it begins or ends inside a paragraph CCEL kept. 1.7 now plans recovered units as new passages (`recovered-<n>`). Recommended: restore the printed text in place inside the existing passage (D1: fixing a unit's text keeps its ID), and split I q.117 a.2's determination off as its own part (`p5-2`). Whole missing units (I q.76 a.3 obj. 3 and the rest) stay as new `recovered-<n>` passages.
-3. **Units the Leonine lacks.** III q.57 a.4 objection 2 and reply 2 are in CCEL but in neither the Leonine nor the 1926 printing. III q.55 a.6 objection 5 and III q.22 a.2 reply 3 are in the print with the translators' notes saying the Leonine lacks them or gives them only in its apparatus. They are manuscript or edition variants, not editors' writing, so the file flags them `not-in-leonine`, not `editor-supplied`, and 1.7 does not exclude them automatically. Recommended: keep III q.55 a.6 objection 5 (the Leonine prints its reply, ad 5); remove III q.57 a.4's objection 2 and reply 2 and III q.22 a.2's reply 3 as text outside the Leonine, by removal entries, and number III q.57 a.4 by the Leonine as the file gives.
+3. **Units the Leonine lacks.** III q.57 a.4 objection 2 and reply 2 are in CCEL but in neither the Leonine nor the 1926 printing. III q.55 a.6 objection 5 and III q.22 a.2 reply 3 are in the print with the translators' notes saying the Leonine lacks them or gives them only in its apparatus. They are manuscript or edition variants, not editors' writing, so the file flags them `not-in-leonine`, not `editor-supplied`, and 1.7 does not exclude them automatically. Recommended: keep III q.55 a.6 objection 5 (the Leonine prints its reply, ad 5); remove III q.57 a.4's objection 2 and reply 2 and III q.22 a.2's reply 3 as text outside the Leonine, by removal entries, and then number III q.57 a.4 by the Leonine (the file records those numbers as `latin_number` and leaves the printed numbers in force until this is decided).
 4. **The Supplement.** Finish reading the remaining Supplement articles against the Leonine page images, or accept the partial comparison until 3.2 decides how the Supplement is presented? Recommended: wait for 3.2.
 
 ## 9. Every candidate and its verdict
@@ -206,7 +206,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FP_Q13_A10 | FP_Q13_A10-p12 | I q. 13 a. 10 ad 5 [CT 28876] | prose-reply |  | reply numbered 5 answers the sed contra (the Leonine numbers it ad 5) |  | A-017 |
 | FP_Q13_A10 | FP_Q13_A10-p5 | I q. 13 a. 10 s. c. 1 [CT 28870]; I q. 13 a. 10 s. c. 2 [CT 28871] | variant |  | 2 sed contra arguments, each its own paragraph after the first |  |  |
 | FP_Q14_A4 | FP_Q14_A4-p10 | I q. 14 a. 4 ad 3 [CT 28923] | prose-reply |  | reply given as an unmarked paragraph |  |  |
-| FP_Q14_A16 | FP_Q14_A16-p10 | I q. 14 a. 16 ad 3 [CT 29018] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| FP_Q14_A16 | FP_Q14_A16-p10 | I q. 14 a. 16 ad 3 [CT 29018] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q16_A2 | FP_Q16_A2-p6 | I q. 16 a. 2 ad arg. [CT 29061] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q17_A1 | FP_Q17_A1-p12 | I q. 17 a. 1 ad 4 [CT 29121] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q18_A2 | FP_Q18_A2-p10 | I q. 18 a. 2 ad 3 [CT 29160] | prose-reply |  | reply given as an unmarked paragraph |  |  |
@@ -226,7 +226,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FP_Q32_A3 | FP_Q32_A3-p6 | I q. 32 a. 3 s. c. 2 [CT 29792] | variant |  | sed contra printed as 'Objection 5' (the translators number an answered sed contra as an objection) |  |  |
 | FP_Q32_A4 | FP_Q32_A4-p7 | I q. 32 a. 4 ad arg. [CT 29803] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q33_A3 | FP_Q33_A3-p10 | I q. 33 a. 3 ad 3 [CT 29830] | prose-reply |  | reply given as an unmarked paragraph |  |  |
-| FP_Q39_A8 | FP_Q39_A8-p16 | I q. 39 a. 8 ad 1 [CT 30063] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| FP_Q39_A8 | FP_Q39_A8-p16 | I q. 39 a. 8 ad 1 [CT 30063] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q43_A8 | FP_Q43_A8-p9 | I q. 43 a. 8 ad arg. [CT 30281] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q48_A5 | FP_Q48_A5-p11 | I q. 48 a. 5 ad 4 [CT 30509] | prose-reply |  | reply numbered 4 answers the sed contra (the Leonine numbers it ad 4) |  | A-017 |
 | FP_Q48_A5 | FP_Q48_A5-p6 | I q. 48 a. 5 s. c. [CT 30504] | variant |  | sed contra printed as 'Objection 4' (the translators number an answered sed contra as an objection) |  |  |
@@ -234,13 +234,13 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FP_Q52_A2 | FP_Q52_A2-p10 | I q. 52 a. 2 ad 1 [CT 30641] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q53_A2 (not a candidate) | FP_Q53_A2-p11 | I q. 53 a. 2 ad 3 [CT 30665] | prose-reply |  | reply numbered 3 answers the sed contra (the Leonine numbers it ad 3) |  | A-017 |
 | FP_Q54_A5 | FP_Q54_A5-p8 | I q. 54 a. 5 ad 1 [CT 30708] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
-| FP_Q58_A2 | FP_Q58_A2-p10 | I q. 58 a. 2 ad 3 [CT 30820] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
+| FP_Q58_A2 | FP_Q58_A2-p10 | I q. 58 a. 2 ad 3 [CT 30820] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q58_A5 | FP_Q58_A5-p8 | I q. 58 a. 5 ad 1 [CT 30842] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q60_A2 | FP_Q60_A2-p10 | I q. 60 a. 2 ad 2 [CT 30906] | prose-reply |  | reply given as an unmarked paragraph |  |  |
-| FP_Q61_A1 | FP_Q61_A1-p9 | I q. 61 a. 1 ad 3 [CT 30943] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| FP_Q61_A1 | FP_Q61_A1-p9 | I q. 61 a. 1 ad 3 [CT 30943] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q62_A4 | FP_Q62_A4-p12 | I q. 62 a. 4 ad 3 [CT 31000] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q63_A3 | FP_Q63_A3-p9 | I q. 63 a. 3 ad arg. [CT 31065] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
-| FP_Q63_A9 | FP_Q63_A9-p8 | I q. 63 a. 9 ad 2 [CT 31116] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| FP_Q63_A9 | FP_Q63_A9-p8 | I q. 63 a. 9 ad 2 [CT 31116] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q66_A1 | FP_Q66_A1-p11 | I q. 66 a. 1 ad 4 [CT 31202] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q66_A1 | FP_Q66_A1-p12 | I q. 66 a. 1 ad 5 [CT 31203] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q66_A1 | FP_Q66_A1-p5 | I q. 66 a. 1 s. c. 1 [CT 31196]; I q. 66 a. 1 s. c. 2 [CT 31197] | variant |  | 2 sed contra arguments in one paragraph |  |  |
@@ -255,7 +255,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FP_Q76_A1 | FP_Q76_A1-p18 | I q. 76 a. 1 ad 2 [CT 31514] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q76_A3 | FP_Q76_A3-p3 | I q. 76 a. 3 arg. 3 [CT 31534] | omission | ccel | obj 3 absent from the source (the print has it) | dom2-v4 p. 35 | A-018 |
 | FP_Q76_A3 | FP_Q76_A3-p4 | I q. 76 a. 3 arg. 4 [CT 31535] | source-error | ccel | the argument the source numbers 3 is objection 4: objection 3 is missing | dom2-v4 | A-018 |
-| FP_Q78_A1 | FP_Q78_A1-p10 | I q. 78 a. 1 ad 1 [CT 31678] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| FP_Q78_A1 | FP_Q78_A1-p10 | I q. 78 a. 1 ad 1 [CT 31678] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q80_A2 | FP_Q80_A2-p8 | I q. 80 a. 2 ad 3 [CT 31844] | omission | ccel | reply 3 absent | dom2-v4 p. 126 |  |
 | FP_Q82_A5 | FP_Q82_A5-p9 | I q. 82 a. 5 ad 3 [CT 31910] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
 | FP_Q84_A5 | FP_Q84_A5-p10 | I q. 84 a. 5 ad arg. [CT 31986] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
@@ -273,12 +273,12 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FP_Q92_A2 | FP_Q92_A2-p7 | I q. 92 a. 2 ad 1 [CT 32333] | source-error | ccel | reply opens 'Reply OBJ' (the print's 'Reply Obj. N' without a period); not recognised as a reply | dom2-v4 | A-015 |
 | FP_Q92_A3 | FP_Q92_A3-p10 | I q. 92 a. 3 ad 3 [CT 32343] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q93_A4 | FP_Q93_A4-p8 | I q. 93 a. 4 ad 2 [CT 32385] | source-error | ccel | reply opens 'Reply OBJ' (the print's 'Reply Obj. N' without a period); not recognised as a reply | dom2-v4 | A-015 |
-| FP_Q93_A5 | FP_Q93_A5-p8 | I q. 93 a. 5 ad 1 [CT 32392] | prose-reply |  | reply given as an unmarked paragraph |  |  |
+| FP_Q93_A5 | FP_Q93_A5-p8 | I q. 93 a. 5 ad 1 [CT 32392] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q94_A2 | FP_Q94_A2-p9 | I q. 94 a. 2 ad 1 [CT 32449] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FP_Q96_A2 | FP_Q96_A2-p7 | I q. 96 a. 2 ad arg. [CT 32531] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q96_A4 | FP_Q96_A4-p8 | I q. 96 a. 4 ad arg. [CT 32545] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q97_A1 | FP_Q97_A1-p8 | I q. 97 a. 1 ad 1 [CT 32553] | source-error | ccel | reply opens 'Reply OBJ' (the print's 'Reply Obj. N' without a period); not recognised as a reply | dom2-v4 | A-015 |
-| FP_Q97_A2 | FP_Q97_A2-p8 | I q. 97 a. 2 ad 1 [CT 32562] | prose-reply |  | reply given as an unmarked paragraph |  |  |
+| FP_Q97_A2 | FP_Q97_A2-p8 | I q. 97 a. 2 ad 1 [CT 32562] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q97_A4 | FP_Q97_A4-p5 | I q. 97 a. 4 s. c. 1 [CT 32578]; I q. 97 a. 4 s. c. 2 [CT 32579] | variant |  | 2 sed contra arguments in one paragraph |  |  |
 | FP_Q97_A4 | FP_Q97_A4-p8 | I q. 97 a. 4 ad 1 [CT 32581] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FP_Q98_A2 | FP_Q98_A2-p6 | I q. 98 a. 2 s. c. 1 [CT 32595]; I q. 98 a. 2 s. c. 2 [CT 32596] | variant |  | 2 sed contra arguments in one paragraph |  |  |
@@ -316,7 +316,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FS_Q7_A3 | FS_Q7_A3-p5 | I-II q. 7 a. 3 s. c. [CT 33824] | source-error | ccel | sed contra opens 'On the contrary' with no bold marker | dom2-v6 |  |
 | FS_Q8_A3 | FS_Q8_A3-p10 | I-II q. 8 a. 3 ad 4 [CT 33862] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q11_A2 (not a candidate) | FS_Q11_A2-p11 | I-II q. 11 a. 2 ad 4 [CT 33962] | prose-reply |  | reply numbered 4 answers the sed contra (the Leonine numbers it ad 4) |  | A-017 |
-| FS_Q17_A6 | FS_Q17_A6-p10 | I-II q. 17 a. 6 ad 3 [CT 34230] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| FS_Q17_A6 | FS_Q17_A6-p10 | I-II q. 17 a. 6 ad 3 [CT 34230] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q19_A9 | FS_Q19_A9-p9 | I-II q. 19 a. 9 ad 2 [CT 34417] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FS_Q19_A10 | FS_Q19_A10-p16 | I-II q. 19 a. 10 ad 3 [CT 34427] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q19_A10 | FS_Q19_A10-p17 | I-II q. 19 a. 10 ad 4 [CT 34428] | prose-reply |  | reply given as an unmarked paragraph |  |  |
@@ -371,7 +371,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FS_Q62_A4 | FS_Q62_A4-p8 | I-II q. 62 a. 4 ad 1 [CT 36128] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q63_A1 | FS_Q63_A1-p11 | I-II q. 63 a. 1 ad 1 [CT 36137] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FS_Q63_A2 | FS_Q63_A2-p7 | I-II q. 63 a. 2 ad 1 [CT 36143] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
-| FS_Q64_A2 | FS_Q64_A2-p8 | I-II q. 64 a. 2 ad 1 [CT 36176] | prose-reply |  | reply given as an unmarked paragraph |  |  |
+| FS_Q64_A2 | FS_Q64_A2-p8 | I-II q. 64 a. 2 ad 1 [CT 36176] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FS_Q65_A1 | FS_Q65_A1-p12 | I-II q. 65 a. 1 ad 2 [CT 36201] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q66_A2 | FS_Q66_A2-p12 | I-II q. 66 a. 2 ad 3 [CT 36252] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q67_A1 | FS_Q67_A1-p10 | I-II q. 67 a. 1 ad 2 [CT 36294] | prose-reply |  | reply given as an unmarked paragraph |  |  |
@@ -393,7 +393,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FS_Q80_A2 | FS_Q80_A2-p11 | I-II q. 80 a. 2 ad 3 [CT 37012] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q81_A3 | FS_Q81_A3-p8 | I-II q. 81 a. 3 ad 2 [CT 37056] | source-error | ccel | reply numbered 1; the Latin and the print number it 2 | dom2-v7 | A-015 |
 | FS_Q84_A2 | FS_Q84_A2-p8 | I-II q. 84 a. 2 ad 1 [CT 37160] | prose-reply |  | reply given as an unmarked paragraph |  |  |
-| FS_Q85_A4 | FS_Q85_A4-p8 | I-II q. 85 a. 4 ad 1 [CT 37219] | prose-reply |  | reply given as an unmarked paragraph |  |  |
+| FS_Q85_A4 | FS_Q85_A4-p8 | I-II q. 85 a. 4 ad 1 [CT 37219] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FS_Q85_A6 | FS_Q85_A6-p11 | I-II q. 85 a. 6 ad arg. [CT 37236] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | FS_Q85_A6 | FS_Q85_A6-p5 | I-II q. 85 a. 6 s. c. 1 [CT 37232]; I-II q. 85 a. 6 s. c. 2 [CT 37233]; I-II q. 85 a. 6 s. c. 3 [CT 37234] | variant |  | 3 sed contra arguments, each its own paragraph after the first |  |  |
 | FS_Q87_A2 | FS_Q87_A2-p9 | I-II q. 87 a. 2 ad 3 [CT 37270] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
@@ -416,7 +416,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | FS_Q102_A6 | FS_Q102_A6-p33 | no Leonine unit | source-error | translators | editor-supplied: reply 10 'supplied by Nicolai'; not in the codices; the Leonine has no ad 10 | dom2-v8 | A-019 |
 | FS_Q109_A10 | FS_Q109_A10-p8 | I-II q. 109 a. 10 ad 2 [CT 38442] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q110_A4 | FS_Q110_A4-p9 | I-II q. 110 a. 4 ad 2 [CT 38476] | prose-reply |  | reply given as an unmarked paragraph |  |  |
-| FS_Q113_A9 | FS_Q113_A9-p8 | I-II q. 113 a. 9 ad 1 [CT 38643] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| FS_Q113_A9 | FS_Q113_A9-p8 | I-II q. 113 a. 9 ad 1 [CT 38643] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q114_A9 | FS_Q114_A9-p9 | I-II q. 114 a. 9 ad 3 [CT 38726] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | FS_Q114_A10 | FS_Q114_A10-p12 | I-II q. 114 a. 10 ad 4 [CT 38735] | prose-reply |  | reply numbered 4 answers the sed contra (the Leonine numbers it ad 4) |  | A-017 |
 | FS_Q114_A10 | FS_Q114_A10-p5 | I-II q. 114 a. 10 s. c. [CT 38730] | variant |  | sed contra printed as 'Objection 4' (the translators number an answered sed contra as an objection) |  |  |
@@ -427,7 +427,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | SS_Q4_A7 | SS_Q4_A7-p10 | II-II q. 4 a. 7 ad 1 [CT 39002] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | SS_Q4_A8 | SS_Q4_A8-p4 | II-II q. 4 a. 8 arg. 3 [CT 39009] | source-error | ccel | third objection has no label (a bare 'Further,'); the print labels it 'Obj. 3.' | dom2-v9 | A-015 |
 | SS_Q8_A2 | SS_Q8_A2-p10 | II-II q. 8 a. 2 ad 1 [CT 39096] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
-| SS_Q8_A7 | SS_Q8_A7-p9 | II-II q. 8 a. 7 ad 1 [CT 39134] | prose-reply |  | reply given as an unmarked paragraph |  |  |
+| SS_Q8_A7 | SS_Q8_A7-p9 | II-II q. 8 a. 7 ad 1 [CT 39134] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | SS_Q9_A3 | SS_Q9_A3-p9 | II-II q. 9 a. 3 ad 2 [CT 39166] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | SS_Q10_A2 | SS_Q10_A2-p8 | II-II q. 10 a. 2 ad 1 [CT 39190] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | SS_Q10_A6 | SS_Q10_A6-p9 | II-II q. 10 a. 6 ad arg. [CT 39222] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
@@ -507,7 +507,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | SS_Q83_A14 | SS_Q83_A14-p5 | II-II q. 83 a. 14 s. c. [CT 42579] | variant |  | sed contra printed as 'Objection 4' (the translators number an answered sed contra as an objection) |  |  |
 | SS_Q87_A1 | SS_Q87_A1-p11 | II-II q. 87 a. 1 ad 1 [CT 42708] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | SS_Q87_A4 | SS_Q87_A4-p8 | II-II q. 87 a. 4 ad 1 [CT 42737] | prose-reply |  | reply given as an unmarked paragraph |  |  |
-| SS_Q88_A11 | SS_Q88_A11-p16 | II-II q. 88 a. 11 ad 5 [CT 42835] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| SS_Q88_A11 | SS_Q88_A11-p16 | II-II q. 88 a. 11 ad 5 [CT 42835] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | SS_Q88_A11 | SS_Q88_A11-p6 | II-II q. 88 a. 11 s. c. 1 [CT 42828]; II-II q. 88 a. 11 s. c. 2 [CT 42829] | variant |  | 2 sed contra arguments, each its own paragraph after the first |  |  |
 | SS_Q89_A6 | SS_Q89_A6-p11 | II-II q. 89 a. 6 ad 2 [CT 42891] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | SS_Q90_A3 | SS_Q90_A3-p8 | II-II q. 90 a. 3 ad arg. [CT 42951] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
@@ -565,15 +565,15 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | SS_Q182_A4 | SS_Q182_A4-p4 | II-II q. 182 a. 4 s. c. [CT 46231] | omission | translators | sc 1 absent from the source and from the print; found in Hugh Pope's 1914 translation | pope1914 p. 249 | B-002 |
 | SS_Q185_A7 (not a candidate) | SS_Q185_A7-p13 | II-II q. 185 a. 7 ad 4 [CT 46399] | prose-reply |  | reply numbered 4 answers the sed contra (the Leonine numbers it ad 4) |  | A-017 |
 | SS_Q188_A5 | SS_Q188_A5-p6 | II-II q. 188 a. 5 co. [CT 46609] | source-error | ccel | determination opens 'I answer that' or 'I answer with' with no bold marker | dom2-v14 |  |
-| TP_Q2_A4 | TP_Q2_A4-p7 | III q. 2 a. 4 ad 1 [CT 46817] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| TP_Q2_A4 | TP_Q2_A4-p7 | III q. 2 a. 4 ad 1 [CT 46817] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | TP_Q2_A9 | TP_Q2_A9-p10 | III q. 2 a. 9 ad 4 [CT 46862] | prose-reply |  | reply given as an unmarked paragraph |  |  |
-| TP_Q2_A10 | TP_Q2_A10-p10 | III q. 2 a. 10 ad 3 [CT 46870] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| TP_Q2_A10 | TP_Q2_A10-p10 | III q. 2 a. 10 ad 3 [CT 46870] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | TP_Q2_A11 | TP_Q2_A11-p8 | III q. 2 a. 11 ad 1 [CT 46876] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | TP_Q7_A9 | TP_Q7_A9-p10 | III q. 7 a. 9 (no ad 3) | variant |  | reply 3 is in the print and not in the Leonine text (no translators' note) | dom2-v15 |  |
 | TP_Q7_A10 | TP_Q7_A10-p4 | III q. 7 a. 10 s. c. [CT 47160] | omission | ccel | sc 1 absent from the source (the print has it) | dom2-v15 p. 127 | B-002 |
 | TP_Q10_A2 | TP_Q10_A2-p2 | III q. 10 a. 2 arg. 1 [CT 47296] | source-error | ccel | first objection numbered 2 | dom2-v15 | A-015 |
 | TP_Q11_A4 | TP_Q11_A4-p7 | III q. 11 a. 4 ad arg. [CT 47350] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
-| TP_Q16_A7 | TP_Q16_A7-p11 | III q. 16 a. 7 ad 3 [CT 47614] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
+| TP_Q16_A7 | TP_Q16_A7-p11 | III q. 16 a. 7 ad 3 [CT 47614] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | TP_Q20_A2 | TP_Q20_A2-p13 | III q. 20 a. 2 ad 4 [CT 47791] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | TP_Q20_A2 | TP_Q20_A2-p5 | III q. 20 a. 2 s. c. 1 [CT 47784]; III q. 20 a. 2 s. c. 2 [CT 47785]; III q. 20 a. 2 s. c. 3 [CT 47786] | variant |  | 3 sed contra arguments, each its own paragraph after the first |  |  |
 | TP_Q21_A4 | TP_Q21_A4-p15 | III q. 21 a. 4 ad 3 [CT 47825] | prose-reply |  | reply given as an unmarked paragraph |  |  |
@@ -612,7 +612,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | TP_Q57_A4 | TP_Q57_A4-p12 | no Leonine unit | variant |  | not-in-leonine: continuation of reply 2 | dom2-v16 | C-04 |
 | TP_Q57_A4 | TP_Q57_A4-p3 | no Leonine unit | variant |  | not-in-leonine: objection 2, 'omitted in the Leonine edition as not being in the original manuscript'; absent from the 1926 printing | dom2-v16 | C-04 |
 | TP_Q57_A4 | TP_Q57_A4-p4 | no Leonine unit | variant |  | not-in-leonine: continuation of objection 2 | dom2-v16 | C-04 |
-| TP_Q57_A4 | TP_Q57_A4-p5 | III q. 57 a. 4 arg. 2-4, ad 2-4 | variant |  | objections and replies 3-5 are the Leonine's 2-4 once the supplied objection 2 is set aside |  |  |
+| TP_Q57_A4 | TP_Q57_A4-p5 | III q. 57 a. 4 arg. 2-4, ad 2-4 | variant |  | objections and replies 3-5 are the Leonine's 2-4 (recorded as latin_number; the printed numbers stand) |  |  |
 | TP_Q64_A3 | TP_Q64_A3-p9 | III q. 64 a. 3 ad 1 [CT 49763] | prose-reply |  | reply given as a sentence inside the preceding part's paragraph |  |  |
 | TP_Q65_A1 | TP_Q65_A1-p21 | III q. 65 a. 1 ad 6 [CT 49835] | prose-reply |  | reply numbered 6 answers the sed contra (the Leonine numbers it ad 6) |  | A-017 |
 | TP_Q65_A1 | TP_Q65_A1-p22 | III q. 65 a. 1 ad 7 [CT 49836] | prose-reply |  | reply numbered 7 answers the sed contra (the Leonine numbers it ad 7) |  | A-017 |
@@ -628,7 +628,7 @@ One row per finding. Class: prose-reply, variant, source-error, omission. Whose:
 | TP_Q83_A2 | TP_Q83_A2-p7 | III q. 83 a. 2 s. c. [CT 51117] | source-error | ccel | sed contra opens 'On the contrary' with no bold marker | dom2-v17 |  |
 | TP_Q86_A6 | TP_Q86_A6-p10 | III q. 86 a. 6 ad 4 [CT 51403] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | TP_Q88_A1 | TP_Q88_A1-p6 | III q. 88 a. 1 s. c. 1 [CT 51442]; III q. 88 a. 1 s. c. 2 [CT 51443] | variant |  | 2 sed contra arguments, each its own paragraph after the first |  |  |
-| TP_Q88_A4 | TP_Q88_A4-p8 | III q. 88 a. 4 ad 1 [CT 51470] | prose-reply |  | reply given as an unmarked paragraph |  |  |
+| TP_Q88_A4 | TP_Q88_A4-p8 | III q. 88 a. 4 ad 1 [CT 51470] | prose-reply |  | reply given as an unmarked paragraph (joint) |  |  |
 | TP_Q89_A2 | TP_Q89_A2-p10 | III q. 89 a. 2 ad 4 [CT 51488] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | TP_Q90_A2 | TP_Q90_A2-p13 | III q. 90 a. 2 ad 5 [CT 51540] | prose-reply |  | reply given as an unmarked paragraph |  |  |
 | XP_Q14_A4 | XP_Q14_A4-p9 | Suppl. q. 14 a. 4 ad 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 490) | source-error | ccel | joint reply opens 'Reply OBJ 2 and 3' | dom-v18 | A-015 |
