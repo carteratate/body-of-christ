@@ -1927,7 +1927,7 @@
  },
  {
   "work": "Against Heresies: Book I",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "ef7c21a8-92fa-51b8-823f-89094bf6f565",
@@ -1945,7 +1945,7 @@
  },
  {
   "work": "Against Heresies: Book II",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "a558e370-226c-5ac5-b01b-916adbe6b256",
@@ -1963,7 +1963,7 @@
  },
  {
   "work": "Against Heresies: Book III",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "a9dfa0cc-a39d-5962-9068-231edc7d02fe",
@@ -1981,7 +1981,7 @@
  },
  {
   "work": "Against Heresies: Book IV",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "c7ef22ce-17e4-5b8a-b915-9470f19eebe4",
@@ -1999,7 +1999,7 @@
  },
  {
   "work": "Against Heresies: Book V",
-  "author": "Irenæus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
@@ -2034,7 +2034,7 @@
   "planned_for": null
  },
  {
-  "work": "Epistle from Maria of Cassobelæ",
+  "work": "Epistle from Maria of Cassobelae",
   "author": "Ignatius",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
@@ -2057,6 +2057,42 @@
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
   "document_id": "76b8b853-70d2-5821-8ee5-0149e4f59e03",
+  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": null
+ },
+ {
+  "work": "Epistle of Ignatius to the Philippians",
+  "author": "Ignatius",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/apostolic fathers.xml",
+  "document_id": "567be8a5-1eba-5a86-a5ce-688e2e2aab23",
+  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": null
+ },
+ {
+  "work": "Epistle of Polycarp to the Philippians",
+  "author": "Polycarp",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/apostolic fathers.xml",
+  "document_id": "379b7859-4bf9-57f3-9327-7e5d207f7c7f",
   "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
   "translator": null,
   "first_published": null,
@@ -2268,42 +2304,6 @@
   "planned_for": null
  },
  {
-  "work": "Epistle to the Philippians",
-  "author": "Ignatius",
-  "collection": "church-fathers",
-  "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "567be8a5-1eba-5a86-a5ce-688e2e2aab23",
-  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
-  "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Sourced via CCEL.org",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Epistle to the Philippians",
-  "author": "Polycarp",
-  "collection": "church-fathers",
-  "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "379b7859-4bf9-57f3-9327-7e5d207f7c7f",
-  "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://ccel.org/ccel/s/schaff/anf01.xml",
-  "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Sourced via CCEL.org",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Epistle to the Romans: Shorter and Longer Versions",
   "author": "Ignatius",
   "collection": "church-fathers",
@@ -2340,7 +2340,7 @@
   "planned_for": null
  },
  {
-  "work": "Epistle to the Smyrnæans: Shorter and Longer Versions",
+  "work": "Epistle to the Smyrnaeans: Shorter and Longer Versions",
   "author": "Ignatius",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
@@ -2430,11 +2430,11 @@
   "planned_for": null
  },
  {
-  "work": "Fragments",
-  "author": "Papias",
+  "work": "Fragments from the Lost Writings of Irenaeus",
+  "author": "Irenaeus",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "efc282b4-fe6a-5162-9e1b-8748c686dde1",
+  "document_id": "0066869a-28fb-5274-a847-c4d3e88a948e",
   "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
   "translator": null,
   "first_published": null,
@@ -2448,11 +2448,11 @@
   "planned_for": null
  },
  {
-  "work": "Fragments from the Lost Writings of Irenæus",
-  "author": "Irenæus",
+  "work": "Fragments of Papias",
+  "author": "Papias",
   "collection": "church-fathers",
   "source_path": "church-fathers/apostolic fathers.xml",
-  "document_id": "0066869a-28fb-5274-a847-c4d3e88a948e",
+  "document_id": "efc282b4-fe6a-5162-9e1b-8748c686dde1",
   "edition": "Ante-Nicene Fathers, vol. 1, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
   "translator": null,
   "first_published": null,
@@ -3240,8 +3240,8 @@
   "planned_for": null
  },
  {
-  "work": "A Treatise of Novatian Concerning the Trinity.",
-  "author": "Novatian.",
+  "work": "A Treatise of Novatian Concerning the Trinity",
+  "author": "Novatian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
@@ -3258,8 +3258,8 @@
   "planned_for": null
  },
  {
-  "work": "Anonymous Treatise Against the Heretic Novatian.",
-  "author": "Appendix.",
+  "work": "Anonymous Treatise Against the Heretic Novatian",
+  "author": "Appendix",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "f827d42e-fca5-5277-82be-64cdc1feb467",
@@ -3276,8 +3276,8 @@
   "planned_for": null
  },
  {
-  "work": "Anonymous Treatise on Re-baptism.",
-  "author": "Appendix.",
+  "work": "Anonymous Treatise on Re-baptism",
+  "author": "Appendix",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "2ddaa182-a332-559f-8bfb-e72b56a12953",
@@ -3294,8 +3294,8 @@
   "planned_for": null
  },
  {
-  "work": "Appendix to the Works of Hippolytus. Containing Dubious and Spurious Pieces.",
-  "author": "Hippolytus.",
+  "work": "Appendix to the Works of Hippolytus. Containing Dubious and Spurious Pieces",
+  "author": "Hippolytus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",
@@ -3312,8 +3312,8 @@
   "planned_for": null
  },
  {
-  "work": "Fragments of Caius.",
-  "author": "Caius.",
+  "work": "Fragments of Caius",
+  "author": "Caius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "8e5fb9cb-352a-59c8-8449-07d673b3671c",
@@ -3330,8 +3330,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Jewish Meats.",
-  "author": "Novatian.",
+  "work": "On the Jewish Meats",
+  "author": "Novatian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
@@ -3348,8 +3348,8 @@
   "planned_for": null
  },
  {
-  "work": "The Epistles of Cyprian.",
-  "author": "Cyprian.",
+  "work": "The Epistles of Cyprian",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -3366,8 +3366,8 @@
   "planned_for": null
  },
  {
-  "work": "The Extant Works and Fragments of Hippolytus.",
-  "author": "Hippolytus.",
+  "work": "The Extant Works and Fragments of Hippolytus",
+  "author": "Hippolytus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -3384,8 +3384,8 @@
   "planned_for": null
  },
  {
-  "work": "The Refutation of All Heresies.",
-  "author": "Hippolytus.",
+  "work": "The Refutation of All Heresies",
+  "author": "Hippolytus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -3402,8 +3402,8 @@
   "planned_for": null
  },
  {
-  "work": "The Seventh Council of Carthage under Cyprian. Concerning the Baptism of Heretics.",
-  "author": "Cyprian.",
+  "work": "The Seventh Council of Carthage under Cyprian. Concerning the Baptism of Heretics",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "83609fa8-480c-5a66-a09c-f0114c4d3e66",
@@ -3420,8 +3420,8 @@
   "planned_for": null
  },
  {
-  "work": "The Treatises of Cyprian.",
-  "author": "Cyprian.",
+  "work": "The Treatises of Cyprian",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -3438,8 +3438,8 @@
   "planned_for": null
  },
  {
-  "work": "Treatises Attributed to Cyprian on Questionable Authority.",
-  "author": "Cyprian.",
+  "work": "Treatises Attributed to Cyprian on Questionable Authority",
+  "author": "Cyprian",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-2.xml",
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -3456,8 +3456,8 @@
   "planned_for": null
  },
  {
-  "work": "A Fragment of the Same Disputation.",
-  "author": "Archelaus.",
+  "work": "A Fragment of the Same Disputation",
+  "author": "Archelaus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "4b66fa28-684a-5e79-8596-6029d5de1a48",
@@ -3474,8 +3474,8 @@
   "planned_for": null
  },
  {
-  "work": "Acknowledged Writings.",
-  "author": "Gregory Thaumaturgus.",
+  "work": "Acknowledged Writings",
+  "author": "Gregory Thaumaturgus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
@@ -3492,8 +3492,8 @@
   "planned_for": null
  },
  {
-  "work": "Alexander of Cappadocia.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Alexander of Cappadocia",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "1731004f-ea5b-52a1-b533-56ae9377b7fe",
@@ -3510,8 +3510,8 @@
   "planned_for": null
  },
  {
-  "work": "Anatolius of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Anatolius of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "8d817baf-5149-5641-91ab-ad994870956a",
@@ -3528,8 +3528,8 @@
   "planned_for": null
  },
  {
-  "work": "Dubious or Spurious Writings.",
-  "author": "Gregory Thaumaturgus.",
+  "work": "Dubious or Spurious Writings",
+  "author": "Gregory Thaumaturgus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "44fd52c3-fdef-518e-a463-a3273f39764c",
@@ -3546,8 +3546,8 @@
   "planned_for": null
  },
  {
-  "work": "Epistles on the Arian Heresy and the Deposition of Arius.",
-  "author": "Alexander of Alexandria.",
+  "work": "Epistles on the Arian Heresy and the Deposition of Arius",
+  "author": "Alexander of Alexandria",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "02f87865-8421-5189-a3f4-6a1a262fa8d8",
@@ -3564,8 +3564,8 @@
   "planned_for": null
  },
  {
-  "work": "Exegetical Fragments.",
-  "author": "Dionysius.",
+  "work": "Exegetical Fragments",
+  "author": "Dionysius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "6e9f0854-4460-5044-b0ed-c13355cd90fe",
@@ -3582,8 +3582,8 @@
   "planned_for": null
  },
  {
-  "work": "Extant Fragments.",
-  "author": "Dionysius.",
+  "work": "Extant Fragments",
+  "author": "Dionysius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
@@ -3600,8 +3600,8 @@
   "planned_for": null
  },
  {
-  "work": "Fragments from the Writings of Peter.",
-  "author": "Peter of Alexandria.",
+  "work": "Fragments from the Writings of Peter",
+  "author": "Peter of Alexandria",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "12083c91-ed66-5b5c-ac89-bd4ebbadb439",
@@ -3618,8 +3618,8 @@
   "planned_for": null
  },
  {
-  "work": "Fragments.",
-  "author": "Methodius.",
+  "work": "Fragments of Methodius",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "525a3cd5-3890-5be3-993f-34f5de18a83b",
@@ -3636,8 +3636,8 @@
   "planned_for": null
  },
  {
-  "work": "From the Discourse on the Resurrection.",
-  "author": "Methodius.",
+  "work": "From the Discourse on the Resurrection",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "5b81cdef-4a4f-52de-8b35-8657680f30dc",
@@ -3654,8 +3654,8 @@
   "planned_for": null
  },
  {
-  "work": "Malchion.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Malchion",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "18eaa7ff-402d-56bd-9549-8d12c10d29fc",
@@ -3672,8 +3672,8 @@
   "planned_for": null
  },
  {
-  "work": "Of the Manichæans.",
-  "author": "Alexander of Lycopolis.",
+  "work": "Of the Manichaeans",
+  "author": "Alexander of Lycopolis",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "0d274c4c-d2f3-5e33-92b5-c592422a0bff",
@@ -3690,8 +3690,8 @@
   "planned_for": null
  },
  {
-  "work": "Oration on the Palms.",
-  "author": "Methodius.",
+  "work": "Oration on the Palms",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "2ac6445a-0528-500f-8574-0e62ef1d4b9e",
@@ -3708,8 +3708,8 @@
   "planned_for": null
  },
  {
-  "work": "Pamphilus.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Pamphilus",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
@@ -3726,8 +3726,8 @@
   "planned_for": null
  },
  {
-  "work": "Phileas.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Phileas",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "5f551a37-baea-599a-8f63-413a06abc5e1",
@@ -3744,8 +3744,8 @@
   "planned_for": null
  },
  {
-  "work": "Pierus of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Pierus of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "bb35c577-ee5b-546e-abb6-41a0764cd6a7",
@@ -3762,8 +3762,8 @@
   "planned_for": null
  },
  {
-  "work": "Some Other Fragments of the Same Methodius.",
-  "author": "Methodius.",
+  "work": "Some Other Fragments of the Same Methodius",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "ecfd05c0-32a2-5153-9054-d3ab06c56c2c",
@@ -3780,8 +3780,8 @@
   "planned_for": null
  },
  {
-  "work": "The Acts of the Disputation with the Heresiarch Manes.",
-  "author": "Archelaus.",
+  "work": "The Acts of the Disputation with the Heresiarch Manes",
+  "author": "Archelaus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "0e326c02-a623-538c-898b-56623197c955",
@@ -3798,8 +3798,8 @@
   "planned_for": null
  },
  {
-  "work": "The Banquet of the Ten Virgins; or Concerning Chastity.",
-  "author": "Methodius.",
+  "work": "The Banquet of the Ten Virgins; or Concerning Chastity",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
@@ -3816,8 +3816,8 @@
   "planned_for": null
  },
  {
-  "work": "The Canonical Epistle, with the Commentaries of Theodore Balsamon and John Zonaras.",
-  "author": "Peter of Alexandria.",
+  "work": "The Canonical Epistle, with the Commentaries of Theodore Balsamon and John Zonaras",
+  "author": "Peter of Alexandria",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
@@ -3834,8 +3834,8 @@
   "planned_for": null
  },
  {
-  "work": "The Epistle to Aristides.",
-  "author": "Julius Africanus.",
+  "work": "The Epistle to Aristides",
+  "author": "Julius Africanus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "f12b1923-3690-5a7a-8da7-46bb7f1e335f",
@@ -3852,8 +3852,8 @@
   "planned_for": null
  },
  {
-  "work": "The Extant Fragments of the Five Books of the Chronography of Julius Africanus.",
-  "author": "Julius Africanus.",
+  "work": "The Extant Fragments of the Five Books of the Chronography of Julius Africanus",
+  "author": "Julius Africanus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "6895ce71-2eab-54d6-93a0-516a97625efc",
@@ -3871,7 +3871,7 @@
  },
  {
   "work": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.)",
-  "author": "Arnobius.",
+  "author": "Arnobius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
@@ -3888,8 +3888,8 @@
   "planned_for": null
  },
  {
-  "work": "Theognostus of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Theognostus of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "c370ad86-3a10-5343-909c-ff4f4e5aecd7",
@@ -3906,8 +3906,8 @@
   "planned_for": null
  },
  {
-  "work": "Theonas of Alexandria.",
-  "author": "Anatolius and Minor Writers.",
+  "work": "Theonas of Alexandria",
+  "author": "Anatolius and Minor Writers",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "7f7a66c3-17eb-5724-8091-a1e7a8612229",
@@ -3924,8 +3924,8 @@
   "planned_for": null
  },
  {
-  "work": "Three Fragments from the Homily on the Cross and Passion of Christ.",
-  "author": "Methodius.",
+  "work": "Three Fragments from the Homily on the Cross and Passion of Christ",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "5f210d1e-1be7-54fa-a09d-f1dd6f3f315a",
@@ -3942,8 +3942,8 @@
   "planned_for": null
  },
  {
-  "work": "Two Fragments, Uncertain.",
-  "author": "Methodius.",
+  "work": "Two Fragments, Uncertain",
+  "author": "Methodius",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century-3.xml",
   "document_id": "973645b6-6110-5711-a635-6b84c2632fd8",
@@ -3960,8 +3960,8 @@
   "planned_for": null
  },
  {
-  "work": "A Letter from Origen to Gregory.",
-  "author": "Origen.",
+  "work": "A Letter from Origen to Gregory",
+  "author": "Origen",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "9c052574-ccbc-5aa6-8a1e-b582b7dd73e4",
@@ -3978,8 +3978,8 @@
   "planned_for": null
  },
  {
-  "work": "De Fuga in Persecutione.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "De Fuga in Persecutione",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "d2b71f9f-111c-5f1b-9a43-5a897b13730c",
@@ -3996,8 +3996,8 @@
   "planned_for": null
  },
  {
-  "work": "On Exhortation to Chastity.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Exhortation to Chastity",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "e5d235f3-a5f2-513e-90e7-04eedc71bf33",
@@ -4014,8 +4014,8 @@
   "planned_for": null
  },
  {
-  "work": "On Fasting.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Fasting",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "89201a06-a747-53a5-8248-43e5a5cb5fae",
@@ -4032,8 +4032,8 @@
   "planned_for": null
  },
  {
-  "work": "On Modesty.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Modesty",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "6b70b67f-bfb3-5cda-a2f0-323eff4621bc",
@@ -4050,8 +4050,8 @@
   "planned_for": null
  },
  {
-  "work": "On Monogamy.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On Monogamy",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "01abb5ad-1a95-5435-aa5b-62b04e87e1f2",
@@ -4068,8 +4068,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Apparel of Women.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On the Apparel of Women",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "e73bb326-8ba6-5334-b79e-3a15c9892581",
@@ -4086,8 +4086,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Pallium.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On the Pallium",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "d7f29587-bcec-5a71-9633-e635fa8989f5",
@@ -4104,8 +4104,8 @@
   "planned_for": null
  },
  {
-  "work": "On the Veiling of Virgins.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "On the Veiling of Virgins",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "17b7747f-273b-5841-b415-16dea3192635",
@@ -4122,8 +4122,8 @@
   "planned_for": null
  },
  {
-  "work": "Origen Against Celsus.",
-  "author": "Origen.",
+  "work": "Origen Against Celsus",
+  "author": "Origen",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "5a05852b-4193-518f-9d01-afd796291979",
@@ -4140,8 +4140,8 @@
   "planned_for": null
  },
  {
-  "work": "Origen De Principiis.",
-  "author": "Origen.",
+  "work": "Origen De Principiis",
+  "author": "Origen",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "4c96eac3-f3f1-549c-84cf-070661393073",
@@ -4158,8 +4158,8 @@
   "planned_for": null
  },
  {
-  "work": "The Instructions of Commodianus.",
-  "author": "Commodianus.",
+  "work": "The Instructions of Commodianus",
+  "author": "Commodianus",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "b9b6fbbb-dec7-5a67-ad45-58965105c081",
@@ -4176,8 +4176,8 @@
   "planned_for": null
  },
  {
-  "work": "The Octavius of Minucius Felix.",
-  "author": "Minucius Felix.",
+  "work": "The Octavius of Minucius Felix",
+  "author": "Minucius Felix",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
@@ -4194,8 +4194,8 @@
   "planned_for": null
  },
  {
-  "work": "To His Wife.",
-  "author": "Tertullian: Part Fourth.",
+  "work": "To His Wife",
+  "author": "Tertullian: Part Fourth",
   "collection": "church-fathers",
   "source_path": "church-fathers/third-century.xml",
   "document_id": "3717ce05-ad42-5ec3-b3ce-ff3964908e05",

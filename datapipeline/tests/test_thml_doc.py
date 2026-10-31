@@ -65,3 +65,50 @@ def test_no_anchor_suffixes():
     pieces = [p.anchor for p in doc.passages if p.chapter_key == "ii.i"]
     assert pieces[0] == "ii.i" and len(pieces) > 1
     assert all(a.startswith("ii.i/from-p1-") for a in pieces[1:])
+
+
+_ONE = "<div1 id='ii'><div2 id='ii.i' title='Chapter 1'><p id='ii.i-p1'>{a}</p></div2></div1>"
+
+
+def test_make_doc_strips_trailing_period_keeps_id():
+    from identity import document_id
+    doc = make_doc(collection="church-fathers", filename="f.xml", author="Methodius.",
+                   title="Fragments.", chapters=_chapters(_ONE.format(a="word " * 40)),
+                   source_key="church-fathers/unregistered.xml#ii")
+    assert (doc.author, doc.title) == ("Methodius", "Fragments")
+    assert doc.passages[0].reference == "Methodius — Fragments, Chapter 1"
+    # identity.slugify drops punctuation, so the computed ID is the one the period gave.
+    assert doc.id == document_id("church-fathers", "Methodius.", "Fragments.")
+
+
+def test_make_doc_folds_ligatures_in_labels():
+    xml = "<div1 id='ii'><div2 id='ii.i' title='The Phœnix'><p>{a}</p></div2></div1>"
+    doc = make_doc(collection="church-fathers", filename="f.xml", author="Irenæus",
+                   title="Of the Manichæans.", chapters=_chapters(xml.format(a="æons " * 40)),
+                   source_key="church-fathers/unregistered.xml#ii")
+    p = doc.passages[0]
+    assert (doc.author, doc.title, p.chapter_label) == \
+        ("Irenaeus", "Of the Manichaeans", "The Phoenix")
+    assert p.reference == "Irenaeus — Of the Manichaeans, The Phoenix"
+    assert "æ" not in p.content
+
+
+def test_distinct_titles_gives_shared_titles_their_author():
+    from ingest.thml_doc import distinct_titles
+
+    def doc(author, title, key):
+        return make_doc(collection="church-fathers", filename="f.xml", author=author,
+                        title=title, chapters=_chapters(_ONE.format(a="word " * 40)),
+                        source_key=f"church-fathers/f.xml#{key}")
+    docs = [doc("Papias", "Fragments", "a"), doc("Methodius.", "Fragments.", "b"),
+            doc("Polycarp", "Epistle to the Philippians", "c"),
+            doc("Ignatius", "Epistle to the Philippians", "d"),
+            doc("Ignatius", "Epistle to the Romans", "e")]
+    ids = [d.id for d in docs]
+    docs = distinct_titles(docs)
+    assert [d.title for d in docs] == [
+        "Fragments of Papias", "Fragments of Methodius",
+        "Epistle of Polycarp to the Philippians", "Epistle of Ignatius to the Philippians",
+        "Epistle to the Romans"]
+    assert docs[1].passages[0].reference == "Methodius — Fragments of Methodius, Chapter 1"
+    assert [d.id for d in docs] == ids
