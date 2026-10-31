@@ -215,7 +215,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 ### Phase 4
 
-- **4.0** [Phase 4]. If on-disk vectors in the new Qdrant collection make search too slow in 4.2's pre-cutover run, choose between a paid Qdrant tier for the cutover month and the slower search. The Supabase Pro choice this entry used to hold is settled: the organization is already on Pro (0.6, 30 Oct 2026).
+- **4.0** [Phase 4]. If search on the new Qdrant collection is too slow in 4.2's pre-cutover run, choose between a paid Qdrant tier for the cutover month and the slower search. The Supabase Pro choice this entry used to hold is settled: the organization is already on Pro (0.6, 30 Oct 2026).
 - **4.1a** [Phase 4]. Approve the rules for merging duplicates when a moved passage lands where a user already has the same bookmark or result (for bookmarks, keep the earliest and join both notes when they fit), and the rules for undoing them in a rollback: a user's deletions and edits made since the cutover are kept, and a skipped row never blocks the rollback.
 - **4.1b** [Phase 4]. Choose the quiet hour for the cutover, and give go or no-go the day before.
 - **4.2** [Phase 4]. Give go or no-go after the accuracy checks on the staging copy. Review the check questions in 4.2's PR.
@@ -263,7 +263,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-04: planned works get rows in `rights_inventory.json` now, with a `planned_for` field naming the item that will ingest each one; it is null for built works and the ingesting PR clears it (R6).
   Answered 2026-10-05: R6's remaining recommendations are accepted (Little Flowers from the 1899 scan, Rolle's CCEL text with a note, the mixed Pohle-Preuss and Koch-Preuss printings, Alphonsus volumes without an open scan left out, Bellarmine's 1616 text without the 1928 introduction, More's Dialogue of Comfort held). The Schroeder 1937 and Creeds 1931 renewal searches and their 12 rows are approved. The other draft rows stay drafts until approved; the Summa contra Gentiles choice stays open.
 - **0.5** [Phase 0, needed before Phase 4]. The Qdrant plan's memory, disk and backup settings, read from the Qdrant console he has access to, plus a few read-only requests.
-  Answered 2026-10-30: Free cluster, 1 GiB RAM, 4 GiB disk, 0.5 vCPU, no backups (console screenshots); the read-only requests ran from the home server. The new collection keeps its vectors on disk (4.0 step 5).
+  Answered 2026-10-30: Free cluster, 1 GiB RAM, 4 GiB disk, 0.5 vCPU, no backups (console screenshots); the read-only requests ran from the home server. The new collection keeps today's in-memory vectors (4.0 step 5, decided by Carter on 30 Oct 2026).
 - **0.6** [Phase 0, needed before Phase 4]. The Supabase plan tier and database size limit, read from the dashboard.
   Answered 2026-10-30: Pro, Micro compute, disk 36% used, daily backups (dashboard screenshot and the Supabase connector).
 
