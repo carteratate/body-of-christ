@@ -124,9 +124,32 @@ Under B, the whole 1740–1799 group (26 documents, about 105,000 words) and Exs
   - **Quo Graviora (1826): none found** in the 1826–30 press; later books cite and summarise it only.
 - Reads of public sources for comparison no longer need approval; vendoring still does.
 
+## 5. Full search (31 Oct – 1 Nov 2026)
+
+Every document without a printing was searched in the places ADR 0001 lists ("Where the full search looked"). Nine more were found, each read to its closing date line and checked third by third (`endcheck.py`), since the detector also fires on extracts and on related allocutions:
+
+| Document | Printing |
+|---|---|
+| Inter Multiplices (1853) | *The Metropolitan* (Baltimore), vol. 1 no. 5, June 1853 |
+| Apostolicae Nostrae Caritatis (1854) | *The Metropolitan*, vol. 2 no. 9, October 1854, with Archbishop Kenrick's pastoral |
+| Amantissimi Redemptoris (1858) | *The Metropolitan*, new series vol. 1 no. 7, August 1858 |
+| Cum Sancta Mater Ecclesia (1859) | Pastoral of Edward John Horan, Bishop of Kingston, 1859 (Canadiana microfiche `cihm_51176`) |
+| Exultavit Cor Nostrum (1851) | *Encyclical Letter ... Ordering Prayers and Announcing a New Jubilee*, Canada, 1851 (`cihm_43402`); also the Archbishop of Quebec's pastoral of 1852 |
+| Respicientes (1870) | *Appletons' Annual Cyclopaedia* for 1870 (1871) |
+| Vix Dum a Nobis (1874) | *Appletons' Annual Cyclopaedia* for 1874 (1875) |
+| Graves ac Diuturnae (1875) | *Appletons' Annual Cyclopaedia* for 1875 (1876) |
+| Quod Nunquam (1875) | *Appletons' Annual Cyclopaedia* for 1875 (1876) |
+
+Extracts only (not enough for the reader): Qui Nuper (*Dublin Review* and *Rambler*, September 1859, paragraph 2 summarised), Nullis Certe Verbis (*Rambler*, March 1860, last third missing), Levate (*Appletons'* for 1867, the opening 400 words, called an allocution).
+
+Lessons for anyone continuing: *Appletons'* volumes are misdated in the Internet Archive's catalogue (the 1874 volume is filed as 1861), so match them by title page; a high score can come from an allocution of the same weeks, so read the opening and closing; short documents score high by chance against large volumes.
+
+After this search: **26 documents have a printing, 3 have extracts only, Nostis et Nobiscum has an abridgement, and 55 have no printing found so far** (the 26 of 1740–1799, Exsurge Domine, the four Leo XII documents of 1824–26 still open, five of Gregory XVI, and 19 of Pius IX). The remaining search options are HathiTrust from a browser (blocked here) and *The Tablet*'s own archive.
+
 ## Needs Carter
 
-1. **Approve the 17 draft rows** (`checked_by` null): the 12 of section 3, the three 1800–1830 finds above, and Cum Summi and Salutis Nostrae (*Interesting Letters of the Late Pope Clement XIV*, Newcastle, 1777, translated from the French edition). Four print the site's own translation (Quanta Cura, the Syllabus, Sublimis Deus, Unam Sanctam); eleven are different, older translations.
+1. **Approve the 26 draft rows** (`checked_by` null): the 12 of section 3, the three 1800–1830 finds, Cum Summi and Salutis Nostrae (*Interesting Letters of the Late Pope Clement XIV*, Newcastle, 1777, translated from the French edition), and the nine of section 5.
+2. **When to stop searching.** The 55 documents without a printing can be retired with a link now, or after HathiTrust (from Carter's browser) and *The Tablet*'s archive are tried. Four print the site's own translation (Quanta Cura, the Syllabus, Sublimis Deus, Unam Sanctam); eleven are different, older translations.
 
 ## Side findings
 
