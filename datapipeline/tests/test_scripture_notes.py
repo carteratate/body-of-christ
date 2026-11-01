@@ -20,6 +20,11 @@ from ingest.scripture_notes import scripture_reference  # noqa: E402
     ("Ps. xxxiv. 8, where Clem. has read Χριστός for χρηστός.", "Ps. xxxiv. 8."),
     ("Matt. xviii. 7. [See R.V.]", "Matt. xviii. 7."),
     ("Heb. x. 25. Barnabas (cap. iv.) reproves the same fault.", "Heb. x. 25."),
+    # Sol review, 1.10b: Arabic chapter and verse; a numbered book after a verse list;
+    # a colon opening the remark.
+    ("Luke 17:21.", "Luke 17:21."),
+    ("Comp. 1 Cor. iii. 16, 1 Cor. vi. 19.", "Comp. 1 Cor. iii. 16, 1 Cor. vi. 19."),
+    ("Gen. xxxii. 28: Israel = a prince of God.", "Gen. xxxii. 28."),
 ])
 def test_scripture_references_are_kept(note, ref):
     assert scripture_reference(note) == ref

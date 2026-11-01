@@ -106,12 +106,12 @@ def test_note_class_entries_match_the_build(built):
 
 
 def test_footnotes_are_scripture_references_after_a_word(built):
-    bad, total = [], 0
+    bad, total = [], {c: 0 for c in THML}
     for c in THML:
         for d in built[c]:
             for p in d.passages:
                 notes = (p.metadata or {}).get("footnotes", [])
-                total += len(notes)
+                total[c] += len(notes)
                 if [n["n"] for n in notes] != list(range(1, len(notes) + 1)):
                     bad.append((p.anchor, "numbering"))
                 for n in notes:
@@ -119,4 +119,5 @@ def test_footnotes_are_scripture_references_after_a_word(built):
                             or not 0 < n["at"] <= len(p.content) \
                             or p.content[n["at"] - 1].isspace():
                         bad.append((p.anchor, n))
-    assert bad == [] and total > 14000
+    # The Imitation prints its references in Arabic numerals ("Luke 17:21.").
+    assert bad == [] and total["church-fathers"] > 14000 and total["medieval"] >= 50

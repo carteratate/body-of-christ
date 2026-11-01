@@ -28,8 +28,12 @@ _BOOKS = (
 _BOOK = rf"(?:(?:[1-4]|I{{1,3}})\s?)?(?:St\.\s)?(?:{_BOOKS})\.?"
 _ROMAN = r"[ivxlc]+"
 _VERSES = r"\d+(?:\s?[-–]\s?\d+)?(?:\s?f{1,2}\.?)?"
-# "xxiv. 15", "xxiv. 15–17", "xxiv. 15, 17", "cxxxvii." (a whole chapter)
-_CHAPTER_VERSES = rf"{_ROMAN}\.(?:\s?{_VERSES}(?:\s?,\s?{_VERSES})*)?"
+# A further verse, never the number of a book that follows ("16, 1 Cor. vi. 19").
+_MORE_VERSES = rf"(?:\s?,\s?(?!(?:[1-4])\s?(?:{_BOOKS})\b){_VERSES})*"
+# "xxiv. 15", "xxiv. 15–17", "xxiv. 15, 17", "cxxxvii." (a whole chapter), and the
+# Arabic form some volumes use ("17:21", "17:21-23").
+_CHAPTER_VERSES = (rf"(?:{_ROMAN}\.(?:\s?{_VERSES}{_MORE_VERSES})?"
+                   rf"|\d+:{_VERSES}{_MORE_VERSES})")
 _TAG = r"(?:\s?\((?:LXX|Sept|Vulg)\.?\)|,\s?(?:LXX|Sept|Vulg)\.?)?"
 _ONE = rf"(?:{_BOOK}\s{_CHAPTER_VERSES}|{_CHAPTER_VERSES}|ver\.\s{_VERSES}){_TAG}"
 _LEAD = r"(?:(?:Cf|Comp|Compare|See|Vid)\.?\s)?"
@@ -47,6 +51,6 @@ def scripture_reference(note: str) -> str | None:
     ref = m.group(0).rstrip(" ,;").lstrip("[")
     rest = text[m.end():]
     # "Ps. xliii. 20 (LXX.)." keeps its tag; anything after the reference is a remark.
-    if rest[:1] not in ("", ".", " ", ",", ";", "]", ")"):
+    if rest[:1] not in ("", ".", " ", ",", ";", ":", "]", ")"):
         return None
     return ref if ref.endswith(".") else ref + "."
