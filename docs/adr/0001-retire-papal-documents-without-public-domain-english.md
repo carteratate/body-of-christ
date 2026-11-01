@@ -18,7 +18,7 @@ R8 searched for older printings (any English translation dated before 1931, or a
 
 A document for which R8 found no public-domain English printing is **held for permission** (Carter, 1 Nov 2026). 1.3d gives it a `document`-scope removal entry with reason `awaiting-permission`. Its rows stay in the database, retired, never deleted (D3); it is out of search, the reader, AI explanations, `/sources` and the search index (the publish builds a new Qdrant collection without it). A reader who reaches it by an old link or bookmark sees the removal page: "This translation is not available on TheoCorpus at present.", with a link to the document at papalencyclicals.net (its `metadata.url`). Its rights row stays `unknown`, with its papalencyclicals.net source, so the text can return unchanged.
 
-A document for which R8 found **only an extract or an abridgement** in a public-domain printing is built from that printing; only the paragraphs the printing lacks are held, each with a `passage`-scope `awaiting-permission` entry, and the reader's overview says which are missing (Carter, 1 Nov 2026). This applies to Nostis et Nobiscum, Qui Nuper, Nullis Certe Verbis and Levate.
+A document for which R8 found **only an extract or an abridgement** in a public-domain printing is built from that printing; only the paragraphs the printing lacks are held, each with a `passage`-scope `awaiting-permission` entry, and the reader's overview says which are missing (Carter, 1 Nov 2026). This applies to Nostis et Nobiscum, Qui Nuper, Nullis Certe Verbis, Levate, Cum Summi, Salutis Nostrae and Traditi Humilitati.
 
 Why "held" rather than "retired": the only English for these documents is Carlen's (1981), registered and in copyright, so permission from its publisher is the one route back, and Carter means to ask once the site is complete. A distinct reason makes the whole set one query, and one change, when the answer comes.
 
@@ -91,10 +91,10 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1761 | In Dominico Agro | Clement XIII | `in-dominico-agro` | **Held for permission** |
 | 1766 | Christianae Reipublicae | Clement XIII | `christianae-reipublicae` | **Held for permission** |
 | 1768 | Summa Quae | Clement XIII | `summa-quae` | **Held for permission** |
-| 1769 | Cum Summi | Clement XIV | `cum-summi` | Public-domain printing: Interesting Letters of Pope Clement XIV, 1777 |
+| 1769 | Cum Summi | Clement XIV | `cum-summi` | Abridged only (Interesting Letters of Pope Clement XIV, 1777, from the French): published; paragraph 9 held for permission |
 | 1769 | Decet Quam Maxime | Clement XIV | `decet-quam-maxime` | **Held for permission** |
 | 1769 | Inscrutabili Divinae Sapientiae | Clement XIV | `inscrutabili-divinae-sapientiae` | **Held for permission** |
-| 1774 | Salutis Nostrae | Clement XIV | `salutis-nostrae` | Public-domain printing: Interesting Letters of Pope Clement XIV, 1777 |
+| 1774 | Salutis Nostrae | Clement XIV | `salutis-nostrae` | Abridged only (Interesting Letters of Pope Clement XIV, 1777, from the French): published; the proclamation of paragraph 2 and paragraphs 3–4 and 8–9 held for permission |
 | 1775 | Inscrutabile | Pius VI | `inscrutabile` | **Held for permission** |
 | 1791 | Charitas | Pius VI | `charitas` | **Held for permission** |
 | 1800 | Diu Satis | Pius VII | `diu-satis` | Public-domain printing: London: Keating, Brown and Keating, 1800 |
@@ -102,7 +102,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1824 | Ubi Primum (1824) | Leo XII | `ubi-primum-1824` | Public-domain printing: Dublin: Coyne, 1824 |
 | 1825 | Charitate Christi | Leo XII | `charitate-christi` | **Held for permission** |
 | 1826 | Quo Graviora | Leo XII | `quo-graviora` | **Held for permission** |
-| 1829 | Traditi Humilitati | Pius VIII | `traditi-humilitati` | Public-domain printing: The Jesuit, or Catholic Sentinel, 1829 |
+| 1829 | Traditi Humilitati | Pius VIII | `traditi-humilitati` | Abridged only (The Jesuit, Boston, 1829): published; the paragraphs it lacks (at least 8–9, settled by 1.3d) held for permission |
 | 1832 | Cum Primum (1832) | Gregory XVI | `cum-primum-1832` | **Held for permission** |
 | 1832 | Mirari Vos | Gregory XVI | `mirari-vos` | Public-domain printing: Catholic Magazine and Review, 1833 (Wikisource) |
 | 1832 | Summo Iugiter Studio | Gregory XVI | `summo-iugiter-studio` | **Held for permission** |
@@ -118,7 +118,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1847 | Ubi Primum (1847) | Pius IX | `ubi-primum-1847` | **Held for permission** |
 | 1849 | Nostis Et Nobiscum | Pius IX | `nostis-et-nobiscum` | Abridged only (The Rambler, February 1850): published; paragraphs 21–24 and 31–33 held for permission |
 | 1849 | Ubi Primum (1849) | Pius IX | `ubi-primum-1849` | Public-domain printing: United States Catholic Magazine, 1849 |
-| 1851 | Exultavit Cor Nostrum | Pius IX | `exultavit-cor-nostrum` | Public-domain printing: Canadian printing, 1851 (Canadiana microfiche) |
+| 1851 | Exultavit Cor Nostrum | Pius IX | `exultavit-cor-nostrum` | Public-domain printing: Archbishop of Quebec's pastoral, 1852 (Canadiana microfiche) |
 | 1852 | Nemo Certe Ignorat | Pius IX | `nemo-certe-ignorat` | **Held for permission** |
 | 1852 | Probe Noscitis Venerabiles | Pius IX | `probe-noscitis-venerabiles` | **Held for permission** |
 | 1853 | Inter Multiplices | Pius IX | `inter-multiplices` | Public-domain printing: The Metropolitan (Baltimore), June 1853 |
@@ -140,7 +140,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1864 | Quanta Cura (1864) | Pius IX | `quanta-cura-1864` | Public-domain printing: Dublin Review, 1865 |
 | 1864 | Syllabus of Errors | Pius IX | `syllabus-of-errors` | Public-domain printing: Fessler, True and False Infallibility, 1875 |
 | 1865 | Meridionali Americae | Pius IX | `meridionali-americae` | **Held for permission** |
-| 1867 | Levate | Pius IX | `levate` | Partial only (Appletons' Annual Cyclopaedia for 1867): published through paragraph 7; paragraphs 8–10 held for permission |
+| 1867 | Levate | Pius IX | `levate` | Partial only (Appletons' Annual Cyclopaedia for 1867): published, about 400 words (the preamble and the start of paragraph 2); the rest held for permission |
 | 1870 | Respicientes | Pius IX | `respicientes` | Public-domain printing: Appletons' Annual Cyclopaedia for 1870, 1871 |
 | 1871 | Beneficia Dei | Pius IX | `beneficia-dei` | **Held for permission** |
 | 1871 | Saepe Venerabiles Fratres | Pius IX | `saepe-venerabiles-fratres` | **Held for permission** |

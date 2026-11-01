@@ -144,7 +144,7 @@ Extracts only (not enough for the reader): Qui Nuper (*Dublin Review* and *Rambl
 
 Lessons for anyone continuing: *Appletons'* volumes are misdated in the Internet Archive's catalogue (the 1874 volume is filed as 1861), so match them by title page; a high score can come from an allocution of the same weeks, so read the opening and closing; short documents score high by chance against large volumes.
 
-After this search: **26 documents have a printing, 3 have extracts only, Nostis et Nobiscum has an abridgement, and 55 have no printing found so far** (24 of the 26 of 1740–1799, Exsurge Domine, three Leo XII documents of 1824–26, seven of Gregory XVI, and 20 of Pius IX). The remaining search options are HathiTrust from a browser (blocked here) and *The Tablet*'s own archive.
+After this search: **23 documents have a complete printing, 7 have an extract or abridgement only, and 55 have no printing found so far** (corrected after Sol's review: the 1777 Clement XIV printing abridges Cum Summi and Salutis Nostrae, and *The Jesuit* abridges Traditi Humilitati; Exultavit Cor Nostrum moved to the complete Quebec printing of 1852) (24 of the 26 of 1740–1799, Exsurge Domine, three Leo XII documents of 1824–26, seven of Gregory XVI, and 20 of Pius IX). The remaining search options are HathiTrust from a browser (blocked here) and *The Tablet*'s own archive.
 
 ## 6. Carlen's own translations: can they be cleared?
 
@@ -159,11 +159,11 @@ Checked 1 Nov 2026, at Carter's request, whether the site's text of the 59 docum
 
 ## 7. Decision: held for permission (Carter, 1 Nov 2026)
 
-The 55 documents with no public-domain printing are **held for permission**, not deleted and not shown: 1.3d retires them with a new removal reason, `awaiting-permission` (added to the registry's reason list, `registry/__init__.py`, and to 2.2a's tombstone table), so they are kept in the database, out of search, the reader, explanations and the search index, and a reader who reaches one by an old link sees "This translation is not available on TheoCorpus at present." with a link to papalencyclicals.net. The four extract printings are published and only their missing paragraphs held. Carter will ask Pierian Press for permission once the site is complete; the whole set then returns in one publish. Recorded in the Decision log ("Older papal translations: held for permission"), 1.3d, 2.4a and ADR 0001.
+The 55 documents with no public-domain printing are **held for permission**, not deleted and not shown: 1.3d retires them with a new removal reason, `awaiting-permission` (added to the registry's reason list, `registry/__init__.py`, and to 2.2a's tombstone table), so they are kept in the database, out of search, the reader, explanations and the search index, and a reader who reaches one by an old link sees "This translation is not available on TheoCorpus at present." with a link to papalencyclicals.net. The seven extract or abridged printings are published and only their missing paragraphs held. Carter will ask Pierian Press for permission once the site is complete; the whole set then returns in one publish. Recorded in the Decision log ("Older papal translations: held for permission"), 1.3d, 2.4a and ADR 0001.
 
 ## Needs Carter
 
-1. **Approve the 30 draft rows** (`checked_by` null): the 26 printings (sections 3 and 5, the three 1800–1830 finds, Cum Summi and Salutis Nostrae) and the four extract printings (Nostis et Nobiscum, Qui Nuper, Nullis Certe Verbis, Levate).
+1. **Approve the 30 draft rows** (`checked_by` null): 23 complete printings and 7 extract or abridged printings (Nostis et Nobiscum, Qui Nuper, Nullis Certe Verbis, Levate, Cum Summi, Salutis Nostrae, Traditi Humilitati), whose missing paragraphs are held for permission.
 2. **Later: the permission request** to Pierian Press, when the site is ready (section 6 says what to ask).
 
 ## Side findings
