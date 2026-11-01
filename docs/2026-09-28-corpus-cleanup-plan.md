@@ -220,7 +220,7 @@ Counts were measured on 28 Sep 2026 against the live database (54,568 passages, 
 |---|---|---|
 | Split passages repeat their parent's citation. Rows sharing a citation: Bible 495, apostolic exhortations 412, encyclicals 411, medieval 240, Catechism 98, papal documents 91, councils 1,282, Fathers 5,941, and every Summa passage. | Give each passage its own range. | A citation points at exactly the text shown. |
 | Paragraphs joined with no space. Vita Consecrata has 188 joins in 86 passages. | Insert the space during normalization. | Keyword search finds both words. |
-| Translator footnotes inline in at least 584 Fathers and medieval passages. | Strip note markup at ingestion. | Passages read as the author wrote them. |
+| Translator footnotes inline in at least 584 Fathers and medieval passages. | Strip note markup at ingestion; keep each note's scripture reference as a footnote outside the text (Carter, 1 Nov 2026). | Passages read as the author wrote them, with the verses they quote cited under the card. |
 | Genre, issuer and translation are missing for most documents. | Add real fields and backfill them. | Cards show translation and date. Genre and issuer filters work. |
 
 ### Councils
