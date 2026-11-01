@@ -18,8 +18,10 @@ from config import settings
 from model import Document, Passage
 from normalize.text import clean_text, fold_ligatures
 from normalize.caps import smart_title_case
-from ingest.common import _book_label, _direct_p_text, _strip_tags, split_display_passage
-from ingest.pieces import Segment, name_pieces
+from ingest.common import (_block_text, _book_label, direct_blocks_text, direct_text_with_notes,
+                           split_display_passage)
+from ingest.pieces import Segment, name_pieces, piece_spans
+from ingest.scripture_notes import scripture_reference
 from registry import ANCHOR_SCHEME, resolve_document_id
 
 
@@ -40,24 +42,51 @@ def _chapter_label(elem) -> str:
 
 
 def paragraph_segments(elem) -> list[Segment]:
-    """The div's direct paragraphs, as `_direct_p_text` reads them, each named by its
-    `id` without the div's own id in front (`ii.iii-p5` in div `ii.iii` is `p5`), or,
-    with no id, `n<k>`: its ordinal among the div's `<p>` and `<verse>` children."""
+    """The div's direct paragraphs and verse blocks, as `_direct_p_text` reads them, each
+    named by its `id` without the div's own id in front (`ii.iii-p5` in div `ii.iii` is
+    `p5`, a verse block `ii.iii-p5.1` is `p5.1`), or, with no id, `n<k>`: its ordinal
+    among the div's `<p>` and `<verse>` children."""
     div = elem.get("id") or ""
     out, k = [], 0
     for child in elem:
         if child.tag not in ("p", "verse"):
             continue
         k += 1
-        if child.tag != "p":
-            continue
-        text = _strip_tags(et_tostring(child, encoding="unicode", method="xml"))
+        text = _block_text(child)
         if not text:
             continue
         pid = child.get("id")
         if pid and div and pid.startswith(div + "-"):
             pid = pid[len(div) + 1:]
         out.append(Segment(pid or f"n{k}", text))
+    return out
+
+
+def notes_per_piece(raw: str, parts: list[str], notes: list[tuple[int, str]]
+                    ) -> list[list[tuple[int, str]]]:
+    """The removed notes that stood in each piece cut from `raw`, as (offset in the
+    piece, note text) (1.10b)."""
+    starts = piece_spans(raw, parts)
+    out: list[list[tuple[int, str]]] = [[] for _ in parts]
+    k = 0
+    for at, text in sorted(notes, key=lambda n: n[0]):
+        while k + 1 < len(starts) and at >= starts[k + 1]:
+            k += 1
+        out[k].append((at - starts[k], text))
+    return out
+
+
+def footnotes(part: str, content: str, notes: list[tuple[int, str]]) -> list[dict]:
+    """The scripture references among a piece's removed notes, as the Catechism stores
+    its footnotes (#279): `{n, text, at}`, numbered from 1 in the piece, `at` the
+    offset in the cleaned `content` just after the word the note followed."""
+    out = []
+    for at, text in notes:
+        ref = scripture_reference(text)
+        if ref is None:
+            continue
+        x = min(len(clean_text(part[:at]).rstrip()), len(content))
+        out.append({"n": len(out) + 1, "text": ref, "at": x})
     return out
 
 
@@ -85,8 +114,8 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
     passages: list[Passage] = []
     pos = 0
     for book, elem in chapters:
-        raw = _direct_p_text(elem)
-        if len(raw) < 100:
+        raw, removed = direct_blocks_text(elem)
+        if not raw or len(direct_text_with_notes(elem)) < 100:
             continue
         self_book = _book_label(elem)
         if book is None and self_book:
@@ -111,12 +140,22 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             meta.update(extra_meta)
         parts = split_display_passage(raw, maxc)
         named = name_pieces(ch_key, raw, parts, paragraph_segments(elem))
-        for part, (anchor, units) in zip(parts, named):
+        for part, (anchor, units), notes in zip(parts, named,
+                                                notes_per_piece(raw, parts, removed)):
+            # Notes are editor material (rule G): their count is kept, and the scripture
+            # references among them become the passage's footnotes.
+            content = clean_text(part)
+            piece_meta = meta
+            if notes:
+                piece_meta = {**meta, "editor_note_count": len(notes)}
+                refs = footnotes(part, content, notes)
+                if refs:
+                    piece_meta["footnotes"] = refs
             passages.append(Passage(
-                content=clean_text(part),
+                content=content,
                 reference=_reference(author, title, label),
                 anchor=anchor, chapter_key=ch_key, chapter_label=label,
-                position=pos, unit_label=None, metadata=meta, source_units=units))
+                position=pos, unit_label=None, metadata=piece_meta, source_units=units))
             pos += 1
     if not passages:
         return None

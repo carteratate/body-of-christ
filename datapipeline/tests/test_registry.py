@@ -449,6 +449,102 @@ def test_vanished_cut_in_a_paragraph_two_pieces_hold_is_left_to_a_person():
     assert rec.redirects == []
     assert any("ii/from-p1-3" in p for p in rec.problems)
 
+    # A settle names the holder (here, by the vanished piece's last words); a later run
+    # without one keeps that redirect while its target still holds p1.
+    tail = three[2].content[-40:]
+    settled = registry.reconcile(
+        reg, [document(cuts(2))], item="test", today=TODAY,
+        settle=lambda pid, candidates: next(c for c in candidates if tail in c.content))
+    assert settled.problems == []
+    [redirect] = settled.redirects
+    assert (redirect["old_anchor"], redirect["new_anchor"]) == ("ii/from-p1-3", "ii/from-p1-2")
+    after = registry.WorkRegistry(reg.works, settled.rows, settled.redirects, [])
+    assert registry.validate(after) == []
+    again = registry.reconcile(after, [document(cuts(2))], item="later", today=TODAY)
+    assert again.problems == [] and again.redirects == settled.redirects
+    # A settle that names no candidate settles nothing.
+    unsettled = registry.reconcile(reg, [document(cuts(2))], item="test", today=TODAY,
+                                   settle=lambda pid, candidates: None)
+    assert any("ii/from-p1-3" in p for p in unsettled.problems)
+
+
+def test_piece_whose_text_moved_takes_a_new_id_and_redirects_its_old_one():
+    # A cut counted inside one long paragraph keeps its anchor while its text moves:
+    # `moved` names the piece that now holds the old text; the old ID follows it.
+    w = work()
+    long = " ".join(f"Sentence {k} of a long paragraph." for k in range(90))
+
+    def cuts(fractions):
+        bounds = [long.index(". ", int(len(long) * f)) + 2 for f in fractions]
+        pieces = [long[a:b].strip() for a, b in zip([0] + bounds, bounds + [len(long)])]
+        named = name_pieces("ii", long, pieces, [Segment("p1", long)])
+        return [passage(a, c, k, source_units=u)
+                for k, (c, (a, u)) in enumerate(zip(pieces, named))]
+
+    before = cuts([0.5, 0.75])
+    reg = valid_registry(passages=[row(w["document_id"], p.anchor) for p in before])
+    old = {p.anchor: registry.resolve_passage_id(w["document_id"], p.anchor, reg)
+           for p in before}
+    old_text = {old[p.anchor]: p.content for p in before}
+    after = cuts([0.2, 0.4])
+    assert [p.anchor for p in after] == [p.anchor for p in before]
+
+    def moved(pid, p, d):
+        opening = old_text[pid][:30]
+        if opening in p.content:
+            return None
+        return next(q for q in d.passages if opening in q.content)
+
+    rec = registry.reconcile(reg, [document(after)], item="1.10b", today=TODAY, moved=moved)
+    assert rec.problems == []
+    rows = {r["passage_id"]: r for r in rec.rows}
+    moved_rows = [r for r in rec.rows if registry.MOVED_MARK in r["anchor"]]
+    # p1-2's opening now lies in p1-3; p1-3's opening is still its own.
+    assert [r["passage_id"] for r in moved_rows] == [old["ii/from-p1-2"]]
+    assert all(r["status"] == "redirected" for r in moved_rows)
+    for r in rec.redirects:
+        assert r["kind"] == "moved" and old_text[r["old_passage_id"]][:30] in \
+            next(p.content for p in after if p.anchor == r["new_anchor"])
+    reg2 = registry.WorkRegistry(reg.works, rec.rows, rec.redirects, [])
+    assert registry.validate(reg2) == []
+    assert registry.resolve_passage_id(w["document_id"], "ii/from-p1-3", reg2) == \
+        old["ii/from-p1-3"]
+    new_id = registry.resolve_passage_id(w["document_id"], "ii/from-p1-2", reg2)
+    assert new_id not in old.values() and rows[new_id]["status"] == "active"
+    [redirect] = rec.redirects
+    assert (redirect["old_anchor"], redirect["new_passage_id"]) == \
+        ("ii/from-p1-2", old["ii/from-p1-3"])
+    # A later run without `moved` keeps every redirect where it was.
+    again = registry.reconcile(reg2, [document(after)], item="later", today=TODAY)
+    assert again.problems == [] and again.redirects == rec.redirects
+
+
+def test_kept_text_entries_validate():
+    w = work()
+    entry = {"passage_id": identity.passage_id(w["document_id"], "ii.i"),
+             "document_id": w["document_id"], "anchor": "ii.i", "reason": "reviewed",
+             "added_by": "1.10b"}
+    ok = registry.WorkRegistry([w], [row(w["document_id"], "ii.i")], [], [], [entry])
+    assert registry.validate(ok) == []
+    for bad in ({"reason": ""}, {"anchor": "ii.ix"}, {"passage_id": "nope"}):
+        reg = registry.WorkRegistry([w], [row(w["document_id"], "ii.i")], [], [],
+                                    [{**entry, **bad}])
+        assert registry.validate(reg), bad
+
+
+def test_kept_text_declares_a_low_score_in_the_release_report():
+    w = work()
+    pid = identity.passage_id(w["document_id"], "ii.i")
+    old = [R.OldPassage(pid, w["document_id"], COLLECTION, "ii.i", "ii", "ref", 0,
+                        " ".join(PARAGRAPHS))]
+    new = [document([passage("ii.i", "Something else entirely, said at some length here "
+                                     "so that nothing of the old text is left in it.")])]
+    plain = R.remap(old, new, R.Registry(per_piece=True))
+    assert [f.check for f in plain.failures] == ["stability"]
+    kept = R.remap(old, new, R.Registry(per_piece=True, kept_text={pid: "reviewed"}))
+    assert kept.failures == []
+    assert [r["reason"] for r in kept.replacements] == ["reviewed"]
+
 
 def test_redirect_follows_its_target_through_a_later_merge():
     # p5's piece merges into p3's, then p3's into the first piece: the first redirect

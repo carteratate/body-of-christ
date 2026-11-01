@@ -112,3 +112,61 @@ def test_distinct_titles_gives_shared_titles_their_author():
         "Epistle to the Romans"]
     assert docs[1].passages[0].reference == "Methodius — Fragments of Methodius, Chapter 1"
     assert [d.id for d in docs] == ids
+
+
+def test_make_doc_strips_notes_and_counts_them_per_piece():
+    import defusedxml.ElementTree as ET
+    body = " ".join(f"Sentence {k} of a chapter long enough to split." for k in range(150))
+    note = '<note n="1" place="foot"><p>Matt. xxiv. 15.</p></note>'
+    xml = (f"<div2 id='ii.i' title='Chapter 1'><p id='ii.i-p1'>Start{note} {body}</p>"
+           f"<p id='ii.i-p2'>{body}{note} end{note}.</p></div2>")
+    doc = make_doc(collection="church-fathers", filename="f.xml", author="A", title="T",
+                   chapters=[(None, ET.fromstring(xml))], source_key="church-fathers/f.xml")
+    assert len(doc.passages) >= 2
+    assert not any("xxiv" in p.content for p in doc.passages)
+    counts = [p.metadata.get("editor_note_count", 0) for p in doc.passages]
+    assert sum(counts) == 3 and counts[0] == 1 and counts[-1] == 2
+    first, last = doc.passages[0], doc.passages[-1]
+    assert first.metadata["footnotes"] == [{"n": 1, "text": "Matt. xxiv. 15.", "at": 5}]
+    assert first.content[:5] == "Start"
+    assert [(f["n"], f["text"]) for f in last.metadata["footnotes"]] == \
+        [(1, "Matt. xxiv. 15."), (2, "Matt. xxiv. 15.")]
+    assert last.content[:last.metadata["footnotes"][1]["at"]].endswith(" end")
+
+
+def test_only_scripture_notes_become_footnotes():
+    import defusedxml.ElementTree as ET
+    body = "word " * 30
+    xml = (f"<div2 id='ii.i'><p id='ii.i-p1'>He said<note n='4'>Ps. xxxiv. 8, where Clem. has "
+           f"read otherwise.</note> this<note n='5'>Literally, 'that.'</note>, and"
+           f"<note n='6'>[A noble utterance.]</note> {body}</p></div2>")
+    doc = make_doc(collection="church-fathers", filename="f.xml", author="A", title="T",
+                   chapters=[(None, ET.fromstring(xml))], source_key="church-fathers/f.xml")
+    [p] = doc.passages
+    assert p.metadata["editor_note_count"] == 3
+    assert p.metadata["footnotes"] == [{"n": 1, "text": "Ps. xxxiv. 8.", "at": 7}]
+    assert "noble" not in p.content and "Literally" not in p.content
+
+
+def test_short_chapter_stays_when_its_notes_go():
+    # The minimum chapter length is measured with the notes, as before 1.10b, so a short
+    # chapter of the author's text is not dropped because its footnote is.
+    import defusedxml.ElementTree as ET
+    xml = ("<div3 id='v.x.vii'><p id='v.x.vii-p1'>The Christian has not power over himself, "
+           "but is ready to be subject to God.<note n='9'>These are the only parts of chaps. "
+           "vii. and viii. in the Greek.</note></p></div3>")
+    doc = make_doc(collection="church-fathers", filename="f.xml", author="A", title="T",
+                   chapters=[(None, ET.fromstring(xml))], source_key="church-fathers/f.xml")
+    assert [p.content for p in doc.passages] == \
+        ["The Christian has not power over himself, but is ready to be subject to God."]
+    assert doc.passages[0].metadata["editor_note_count"] == 1
+    assert "footnotes" not in doc.passages[0].metadata
+
+
+def test_verse_block_is_a_named_paragraph():
+    from ingest.thml_doc import paragraph_segments
+    import defusedxml.ElementTree as ET
+    xml = ("<div3 id='iii.ii'><p id='iii.ii-p1'>Homer says:</p>"
+           "<verse id='iii.ii-p1.2'><l>Among the gods</l><l>Rose laughter.</l></verse></div3>")
+    assert [(s.locator, s.text) for s in paragraph_segments(ET.fromstring(xml))] == \
+        [("p1", "Homer says:"), ("p1.2", "Among the gods\nRose laughter.")]

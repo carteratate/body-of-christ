@@ -51,10 +51,14 @@ def _notes_pool(stored: dict[str, object] | None = None, error: Exception | None
 
 # ── The reader ───────────────────────────────────────────────────────────────
 
-def test_only_the_catechism_document_has_footnotes_looked_up():
+def test_footnotes_are_looked_up_for_the_catechism_and_the_thml_collections():
     assert has_footnotes("catechism", CATECHISM_TITLE)
     assert not has_footnotes("catechism", "Compendium of the Catechism")
     assert not has_footnotes("summa", CATECHISM_TITLE)
+    # The Fathers' and medieval translators' scripture references (1.10b).
+    assert has_footnotes("church-fathers", "Against Heresies")
+    assert has_footnotes("medieval", "The Imitation of Christ")
+    assert not has_footnotes("encyclicals", "Rerum Novarum")
 
 
 @pytest.mark.asyncio

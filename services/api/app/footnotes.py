@@ -1,4 +1,6 @@
-"""A Catechism passage's footnotes, shown with it (issue #279).
+"""A passage's footnotes, shown with it: the Catechism's own notes (issue #279), and the
+scripture references the Fathers' and medieval translators gave in their notes
+(corpus-cleanup 1.10b).
 
 The USCCB's rules for its English Catechism require footnoted material to be
 identified. The datapipeline writes each passage's notes to `chunks.metadata.footnotes`
@@ -27,9 +29,17 @@ _FOOTNOTES_SQL = """
 _TIMEOUT_SECONDS = 2.0
 
 
+# Collections whose translators' notes give scripture references (1.10b).
+_SCRIPTURE_NOTE_COLLECTIONS = frozenset({"church-fathers", "medieval"})
+
+
 def has_footnotes(collection: str | None, document_title: str | None) -> bool:
-    """Whether a passage's notes are looked up. Keyed on the document, like
-    `reader_access.source_credit`: the Catechism, not every catechism-collection text."""
+    """Whether a passage's notes are looked up. In the catechism collection it is keyed
+    on the document, like `reader_access.source_credit`: the Catechism, not every
+    catechism-collection text. A Fathers or medieval passage may carry scripture
+    references; one without them simply has none."""
+    if collection in _SCRIPTURE_NOTE_COLLECTIONS:
+        return True
     return collection == "catechism" and document_title == CATECHISM_TITLE
 
 

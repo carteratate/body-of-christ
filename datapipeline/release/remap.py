@@ -93,6 +93,10 @@ class Registry:
     # Once 2.1's passage registry exists, stability compares each passage ID's text on
     # its own (C-10), instead of joining a unit's display pieces.
     per_piece: bool = False
+    # Passage ID → reason, from registry/kept_text.json: passages a review found still
+    # hold their live text though they score under the threshold (live text that was
+    # mostly the notes 1.10b removed). Declared like a text replacement, and listed.
+    kept_text: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -365,7 +369,9 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
     Computed matches are looked for only in the old passage's own document, or the one
     the registry says supersedes it, never across documents otherwise."""
     registry = registry or Registry()
-    built = new_passages(new, passage_id)
+    built = [replace(p, text_replaced=registry.kept_text[p.id])
+             if p.id in registry.kept_text and not p.text_replaced else p
+             for p in new_passages(new, passage_id)]
     by_id: dict[str, NewPassage] = {}
     by_document: dict[str, list[NewPassage]] = defaultdict(list)
     for p in built:
