@@ -197,8 +197,9 @@ async def _document_access_for(results) -> dict:
 
 
 async def _footnotes_for(results) -> dict[str, list[dict]]:
-    """The footnotes of the final Catechism results (issue #279). Best-effort:
-    `fetch_footnotes` gives a passage no notes rather than fail the search."""
+    """The footnotes of the final results: the Catechism's (issue #279) and the Fathers'
+    and medieval scripture references (1.10b). Best-effort: `fetch_footnotes` gives a
+    passage no notes rather than fail the search."""
     return await fetch_footnotes(get_pool(), [
         (r.chunk_id, r.content) for r in results
         if has_footnotes(r.collection, r.document_title)

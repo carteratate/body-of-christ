@@ -3,6 +3,8 @@
  * Catechism excerpt to be identified, so a passage carries its notes beside its text:
  * `n` is the Catechism's own note number (never renumbered), `at` the character
  * offset in `content` where its marker sits. Notes are never part of `content`.
+ * Fathers and medieval passages carry their translators' scripture references the
+ * same way (corpus-cleanup 1.10b), numbered from 1 in each passage.
  */
 export interface Footnote {
   n: number;
