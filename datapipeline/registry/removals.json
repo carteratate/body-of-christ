@@ -1,1 +1,2453 @@
-[]
+[
+ {
+  "id": "rm-0001",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "0066869a-28fb-5274-a847-c4d3e88a948e",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 120
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0002",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "01abb5ad-1a95-5435-aa5b-62b04e87e1f2",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 124
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0003",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "02f87865-8421-5189-a3f4-6a1a262fa8d8",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 77
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0004",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "0311d705-6fd6-5801-bb7a-33116ae11e0e",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 49
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0005",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "05ec835e-ea8f-581d-b94d-4b38bb4a8522",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 545
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0006",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "0d274c4c-d2f3-5e33-92b5-c592422a0bff",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 13
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0007",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "0e326c02-a623-538c-898b-56623197c955",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 702
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0008",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "0ef66418-ccf1-5dc5-9aae-f13a7560c1a8",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 151
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0009",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 287
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0010",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 268
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0011",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "12083c91-ed66-5b5c-ac89-bd4ebbadb439",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 40
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0012",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "125d6898-c285-5a8a-b89b-83b88964db1a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 260
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0013",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "12e7199e-bef2-5a25-a705-e8b6d76f3c08",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 14
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0014",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 64
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0015",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "1731004f-ea5b-52a1-b533-56ae9377b7fe",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 15
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0016",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "17b7747f-273b-5841-b415-16dea3192635",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 63
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0017",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "18eaa7ff-402d-56bd-9549-8d12c10d29fc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 42
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0018",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1575
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0019",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "1a0a016b-395e-5307-9aea-19a896b87eae",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 4
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0020",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "1d496a39-f816-530f-9fa8-bb26d015ddce",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 171
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0021",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "1d63d229-1283-53b8-91d1-2d79e06e7628",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 26
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0022",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "1d83b302-69ee-5b50-aca6-fcaed82d54c7",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 284
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0023",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "22369abb-5ee4-50d2-85c8-fdf4da8fc2ce",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 6
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0024",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 317
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0025",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "24b54b57-da45-534e-834c-686963d5d905",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 22
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0026",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "2ac6445a-0528-500f-8574-0e62ef1d4b9e",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 63
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0027",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "2ddaa182-a332-559f-8bfb-e72b56a12953",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 64
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0028",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 38
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0029",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "3097a9d7-7e3c-59f5-9bbb-9f5b23a76ae8",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 164
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0030",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "3336c36c-c708-577d-81f9-de5c362c7ce5",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 45
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0031",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "356b9c9b-236c-5761-8d85-64a441551944",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 97
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0032",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "3717ce05-ad42-5ec3-b3ce-ff3964908e05",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 169
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0033",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "379b7859-4bf9-57f3-9327-7e5d207f7c7f",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 79
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0034",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1992
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0035",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "3f1d7ed1-b5cd-539a-a446-8d4eab61dbd4",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 85
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0036",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "419ab97d-8237-5a73-a5cf-9d9ee125a1cc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 135
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0037",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "44fd52c3-fdef-518e-a463-a3273f39764c",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 336
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0038",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "49437294-5526-5a1b-b2df-3022c0c36e56",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 185
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0039",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "4b66fa28-684a-5e79-8596-6029d5de1a48",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 22
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0040",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "4c96eac3-f3f1-549c-84cf-070661393073",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1111
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0041",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "4fe41814-a29f-572d-badb-e3f3b2488125",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 9
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0042",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 740
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0043",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "525a3cd5-3890-5be3-993f-34f5de18a83b",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 18
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0044",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "5553da19-6597-56e0-ad6e-48113b7d855f",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 30
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0045",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "567be8a5-1eba-5a86-a5ce-688e2e2aab23",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 57
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0046",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "56add0dd-d428-5843-9a61-23e8c255338f",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 38
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0047",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "5a05852b-4193-518f-9d01-afd796291979",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1911
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0048",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "5b81cdef-4a4f-52de-8b35-8657680f30dc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 119
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0049",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 135
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0050",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 308
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0051",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "5f210d1e-1be7-54fa-a09d-f1dd6f3f315a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 3
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0052",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "5f551a37-baea-599a-8f63-413a06abc5e1",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 34
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0053",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 253
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0054",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "6895ce71-2eab-54d6-93a0-516a97625efc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 59
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0055",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "69c74a98-bd14-5b68-9dbe-9758cd8ac257",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 11
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0056",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "6b70b67f-bfb3-5cda-a2f0-323eff4621bc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 300
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0057",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "6badd405-7b83-55be-a8ee-67df3236ba22",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 14
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0058",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "6dea18c5-8901-5df5-9dec-b1b662064776",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 4
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0059",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "6e9f0854-4460-5044-b0ed-c13355cd90fe",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 98
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0060",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "7073bae0-a0fd-5c22-8e36-8cf493f15af2",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 20
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0061",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "760c4195-f5be-5141-90fc-8958fccd06ba",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 169
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0062",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "76b8b853-70d2-5821-8ee5-0149e4f59e03",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 2
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0063",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "7f6bc9ae-3566-5deb-8dbe-895238288fda",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 130
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0064",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "7f7a66c3-17eb-5724-8091-a1e7a8612229",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 27
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0065",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "830a2c63-f968-5861-9a10-c1ee3c6ee79d",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 3
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0066",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "83609fa8-480c-5a66-a09c-f0114c4d3e66",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 142
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0067",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "841b4e0a-225f-5090-a4c0-36d8bf1a2f63",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 39
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0068",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1823
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0069",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "89201a06-a747-53a5-8248-43e5a5cb5fae",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 132
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0070",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 67
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0071",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 92
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0072",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "8d817baf-5149-5641-91ab-ad994870956a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 76
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0073",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "8e5fb9cb-352a-59c8-8449-07d673b3671c",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 44
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0074",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "96584290-90c2-50bc-9d3d-c353b8969e1f",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 760
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0075",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "973645b6-6110-5711-a635-6b84c2632fd8",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 4
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0076",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 58
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0077",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "9c052574-ccbc-5aa6-8a1e-b582b7dd73e4",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 7
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0078",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1580
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0079",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 125
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0080",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 209
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0081",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "a558e370-226c-5ac5-b01b-916adbe6b256",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 321
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0082",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "a9dfa0cc-a39d-5962-9068-231edc7d02fe",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 486
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0083",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "aab0848e-3b88-5a1c-9dbd-a6897abf4e79",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 39
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0084",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 985
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0085",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "abd0e330-31fe-5de4-bf93-e9b572c179b5",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 14
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0086",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "abf69de0-a1e2-53ce-8283-541924c6ea32",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 73
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0087",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "b270ebca-051e-5094-8370-758ad599d9ca",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1798
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0088",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "b9b6fbbb-dec7-5a67-ad45-58965105c081",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 23
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0089",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "bb35c577-ee5b-546e-abb6-41a0764cd6a7",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 18
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0090",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 96
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0091",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 142
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0092",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "c370ad86-3a10-5343-909c-ff4f4e5aecd7",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 23
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0093",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "c707c2af-a7fc-5a04-acc0-6f5183c07b1e",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 8
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0094",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1118
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0095",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "c7ef22ce-17e4-5b8a-b915-9470f19eebe4",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 651
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0096",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 71
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0097",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "cf8278dd-3523-576c-b85a-1402077bdae3",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 6
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0098",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "d2b71f9f-111c-5f1b-9a43-5a897b13730c",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 65
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0099",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 348
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0100",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "d72938c6-9f4d-5241-8af8-6feb01ee8dd6",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 44
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0101",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "d7f29587-bcec-5a71-9633-e635fa8989f5",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 73
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0102",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "dac28881-f92b-5c94-991a-5b244e2d49c3",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1698
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0103",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "dd54c7cc-1a9a-5388-90d3-e8c4b8a95e06",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 19
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0104",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 334
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0105",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "df17e279-df63-5610-95ae-f61e2fe09916",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 287
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0106",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "df6fd2f7-c573-5486-9f76-739ba3aa947d",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 64
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0107",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "e5d235f3-a5f2-513e-90e7-04eedc71bf33",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 71
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0108",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "e73bb326-8ba6-5334-b79e-3a15c9892581",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 195
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0109",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "e847b8bb-ce69-528e-9eda-5173a795ec18",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 90
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0110",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "eb26cfd2-ba51-56b7-b9cd-8b5fe7c8d852",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 137
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0111",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "ecfd05c0-32a2-5153-9054-d3ab06c56c2c",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 11
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0112",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "ef7c21a8-92fa-51b8-823f-89094bf6f565",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 331
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0113",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "efc282b4-fe6a-5162-9e1b-8748c686dde1",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 21
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0114",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f04e045b-64f1-57c1-bb8f-7d308e5d7c26",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 186
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0115",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f12b1923-3690-5a7a-8da7-46bb7f1e335f",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 24
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0116",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f23f311d-4aa4-5091-bb8a-91b174e8f3a2",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 177
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0117",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f39c025e-78a6-5737-a94f-7896c84fc857",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 971
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0118",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f54576c1-723f-53b7-a6d0-f19945eb97c7",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 92
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0119",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f827d42e-fca5-5277-82be-64cdc1feb467",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 77
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0120",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f8faac83-ebf5-5a3c-850e-b9620465bc3d",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 59
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0121",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f913305f-b259-578b-a5ca-532fac927aab",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 151
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0122",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 88
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0123",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 89
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0124",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 44
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0125",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 86
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0126",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "fd6550b9-0122-5f2e-86ff-cb992d719a9e",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 207
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0127",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "807935f8-f62c-53b6-baae-0fd9f7a0aa20",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 55
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0128",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 75
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-0129",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "fa0f4a23-1f41-539e-8203-e69ea44679ae",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 2
+  },
+  "judgment": null,
+  "added_by": "1.10b",
+  "added_on": "2026-11-01"
+ }
+]

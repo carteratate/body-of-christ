@@ -111,6 +111,14 @@ saved rows each outcome touches. Its `report.md` holds no passage text unless ru
 `--no-public`. A passage moved to another collection is found only when both collections
 are in the run; `--collection all` covers every move.
 
+An adapter change that moves passage boundaries updates the passage registry (2.1) in the
+same PR: `python3 scripts/reconcile_registry.py --item <id> --collection <name>
+--snapshot releases/snapshots/<date>` adds a row for each new piece, redirects each live
+piece whose opening paragraph no longer opens one, and gives a piece whose text moved
+elsewhere a new ID with a redirect. A piece that keeps its opening words but scores under
+the stability threshold is listed as a problem until a person checks it and reruns with
+`--kept-reason`, which records it in `registry/kept_text.json`.
+
 Writing a Document to the reader store also rebuilds its **reader outline** (chapter
 list and passage count, `supabase/migrations/0037_document_outline.sql`) in the same
 transaction, so the target database must have migration 0037 applied before publishing.

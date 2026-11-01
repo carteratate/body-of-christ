@@ -538,3 +538,70 @@ def test_a_non_positive_target_terminates():
     caused the truncation."""
     assert _within(2, _split_at_whitespace, "word " * 100, 0, 0)
     assert _within(2, _split_at_whitespace, "word " * 100, -5, 0)
+
+
+# --- 1.10b: translator notes and verse blocks ---------------------------------------
+
+_NOTE_P = ('<p>He said<note n="1" place="end">Matt. xxiv. 15.</note> this, and'
+           '<note n="2">Literally, "to."</note> left.</p>')
+
+
+def test_direct_p_text_drops_notes_keeps_tail():
+    import defusedxml.ElementTree as ET
+    from ingest.common import _direct_p_text
+    div = ET.fromstring(f"<div2>{_NOTE_P}</div2>")
+    assert _direct_p_text(div) == "He said this, and left."
+
+
+def test_extract_p_text_drops_notes():
+    import defusedxml.ElementTree as ET
+    from ingest.common import _extract_p_text
+    # A note holds its own <p>s; they are not read as paragraphs of the chapter.
+    div = ET.fromstring('<div2><div3><p>One<note n="1"><p>Cf. Ps. i.</p></note> two.</p>'
+                        '</div3><p>Three.</p></div2>')
+    assert _extract_p_text(div) == "One two.\n\nThree."
+
+
+def test_p_text_without_notes_leaves_the_source_element_alone():
+    import defusedxml.ElementTree as ET
+    from ingest.common import _p_text_without_notes
+    p = ET.fromstring(_NOTE_P)
+    assert _p_text_without_notes(p) == "He said this, and left."
+    assert len(p.findall("note")) == 2
+
+
+def test_note_between_spaces_closes_up():
+    import defusedxml.ElementTree as ET
+    from ingest.common import _p_text_without_notes
+    p = ET.fromstring('<p>the <note n="3">Gr. <i>logos</i>.</note> Word, <i>he</i>'
+                      '<note n="4">Or, "it."</note> says</p>')
+    assert _p_text_without_notes(p) == "the Word, he says"
+
+
+def test_verse_lines_join_with_a_line_break():
+    import defusedxml.ElementTree as ET
+    from ingest.common import _direct_p_text
+    div = ET.fromstring("<div2><p>He sang:</p><verse><l>To Thee a chaplet I present,</l>"
+                        "<l>Woven of words</l></verse></div2>")
+    assert _direct_p_text(div) == "He sang:\n\nTo Thee a chaplet I present,\nWoven of words"
+
+
+def test_notes_in_verse_lines_are_dropped_and_verse_in_a_note_is_not_read():
+    import defusedxml.ElementTree as ET
+    from ingest.common import _direct_p_text
+    div = ET.fromstring('<div2><p>Homer<note n="1"><verse><l>a line the editor quotes</l>'
+                        '</verse></note> says:</p><verse><l>Among the gods</l>'
+                        '<l>Rose laughter.<note n="2"><p>Il., i. 599.</p></note></l></verse>'
+                        '</div2>')
+    assert _direct_p_text(div) == "Homer says:\n\nAmong the gods\nRose laughter."
+
+
+def test_direct_blocks_text_places_each_removed_note():
+    import defusedxml.ElementTree as ET
+    from ingest.common import _direct_p_text, direct_blocks_text
+    div = ET.fromstring(f"<div2><p>First.<note>n</note></p>{_NOTE_P}</div2>")
+    text, notes = direct_blocks_text(div)
+    assert text == _direct_p_text(div) == "First.\n\nHe said this, and left."
+    assert [(text[:at], note) for at, note in notes] == [
+        ("First.", "n"), ("First.\n\nHe said", "Matt. xxiv. 15."),
+        ("First.\n\nHe said this, and", 'Literally, "to."')]

@@ -57,10 +57,6 @@
   "fixed_by": "1.5a",
   "description": "78.64% covered: glued, missing or superseded canons (pages 1671–1691: the 2015 amended text is not the one kept)"
  },
- "coverage.church-fathers.second-century.xml": {
-  "fixed_by": "1.10b",
-  "description": "94.12% covered: <verse> blocks (quoted poetry and hymns) dropped"
- },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
   "description": "93.22% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
@@ -294,36 +290,6 @@
   "description": "On the Apparel of Women.: 20 passages open with a later editor's chapter title (G-1)",
   "units": ["iii.iii.i.ii", "iii.iii.i.iii", "iii.iii.i.iv", "iii.iii.i.ix", "iii.iii.i.v", "iii.iii.i.vi", "iii.iii.i.vii", "iii.iii.i.viii", "iii.iii.ii.ii", "iii.iii.ii.iii", "iii.iii.ii.iv", "iii.iii.ii.ix", "iii.iii.ii.v", "iii.iii.ii.vi", "iii.iii.ii.vii", "iii.iii.ii.viii", "iii.iii.ii.x", "iii.iii.ii.xi", "iii.iii.ii.xii", "iii.iii.ii.xiii"]
  },
- "editorial.provenance_lines:church-fathers/12083c91-ed66-5b5c-ac89-bd4ebbadb439": {
-  "fixed_by": "1.8a",
-  "description": "Fragments from the Writings of Peter.: 6 passages hold an editor's source line (C-22)",
-  "units": ["ix.vi.iii", "ix.vi.iv", "ix.vi.v", "ix.vi.v/from-p20", "ix.vi.vi", "ix.vi.vii"]
- },
- "editorial.provenance_lines:church-fathers/44fd52c3-fdef-518e-a463-a3273f39764c": {
-  "fixed_by": "1.8a",
-  "description": "Dubious or Spurious Writings.: 2 passages hold an editor's source line (C-22)",
-  "units": ["iii.iv.ii.i", "iii.iv.vii"]
- },
- "editorial.provenance_lines:church-fathers/506ebe31-239c-509c-ba5e-b6c822d002df": {
-  "fixed_by": "1.8a",
-  "description": "The Extant Works and Fragments of Hippolytus.: 6 passages hold an editor's source line (C-22)",
-  "units": ["iii.iv.i.ii.ii", "iii.iv.i.v.vi", "iii.iv.i.x.iii", "iii.iv.i.xii", "iii.iv.ii.i", "iii.iv.ii.iv"]
- },
- "editorial.provenance_lines:church-fathers/5f210d1e-1be7-54fa-a09d-f1dd6f3f315a": {
-  "fixed_by": "1.8a",
-  "description": "Three Fragments from the Homily on the Cross and Passion of Christ.: 2 passages hold an editor's source line (C-22)",
-  "units": ["xi.x.ii", "xi.x.iii"]
- },
- "editorial.provenance_lines:church-fathers/6e9f0854-4460-5044-b0ed-c13355cd90fe": {
-  "fixed_by": "1.8a",
-  "description": "Exegetical Fragments.: 1 passages hold an editor's source line (C-22)",
-  "units": ["iv.iv.i.i"]
- },
- "editorial.provenance_lines:church-fathers/8d817baf-5149-5641-91ab-ad994870956a": {
-  "fixed_by": "1.8a",
-  "description": "Anatolius of Alexandria.: 1 passages hold an editor's source line (C-22)",
-  "units": ["vi.iii.iii"]
- },
  "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/TP_Q16_A3/p3": {
   "fixed_by": "1.7",
   "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
@@ -446,14 +412,9 @@
   "units": ["c-est-la-confiance/53"]
  },
  "health.R12_note_caller:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
-  "fixed_by": "1.10b",
-  "description": "The Confessions of Saint Augustine: 1 passages hold footnote callers (C-17)",
+  "fixed_by": "1.8b",
+  "description": "The Confessions of Saint Augustine: 1 passages hold footnote callers (C-17). The source prints them as plain digits after the sentence (\"remains immutably.2 It is good\") and has no <note> for them, so 1.10b's note strip cannot remove them",
   "units": ["viii.xi"]
- },
- "health.R12_note_caller:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
-  "fixed_by": "1.10b",
-  "description": "The Epistles of Cyprian.: 1 passages hold footnote callers (C-17)",
-  "units": ["iv.iv.liv/from-p88"]
  },
  "health.R12_note_caller:councils/137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
   "fixed_by": "1.1",
@@ -1558,34 +1519,6 @@
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"Epistle to the Philippians\" sits directly in the work div and is skipped"
  },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vi.xv": {
-  "fixed_by": "1.10b",
-  "description": "Justin, Hortatory Address ch. XV (Orpheus): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vi.xvi": {
-  "fixed_by": "1.10b",
-  "description": "Justin, Hortatory Address ch. XVI (the Sibyl): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vi.xviii": {
-  "fixed_by": "1.10b",
-  "description": "Justin, Hortatory Address ch. XVIII (Sophocles): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.ii": {
-  "fixed_by": "1.10b",
-  "description": "On the Sole Government of God ch. II: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.iii": {
-  "fixed_by": "1.10b",
-  "description": "On the Sole Government of God ch. III: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.iv": {
-  "fixed_by": "1.10b",
-  "description": "On the Sole Government of God ch. IV: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#viii.vii.v": {
-  "fixed_by": "1.10b",
-  "description": "On the Sole Government of God ch. V: most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
  "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.V.i": {
   "fixed_by": "1.8b",
   "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
@@ -1606,21 +1539,9 @@
   "fixed_by": "1.8e",
   "description": "whole work \"Fragments\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#iv.ii.ii.xxxvi": {
-  "fixed_by": "1.10b",
-  "description": "Theophilus, To Autolycus II.36 (the Sibyl): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#iv.ii.ii.xxxvii": {
-  "fixed_by": "1.10b",
-  "description": "Theophilus, To Autolycus II.37 (the poets): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
- },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#v.ii": {
   "fixed_by": "1.8c",
   "description": "pre-chapter greeting of \"A Plea for the Christians\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.ii.vii": {
-  "fixed_by": "1.10b",
-  "description": "Clement, Exhortation to the Heathen ch. VII (the poets): most of the chapter is quoted verse in <verse> blocks, which the adapter does not read"
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.v": {
   "fixed_by": "1.8e",
