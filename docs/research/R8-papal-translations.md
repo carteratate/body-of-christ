@@ -144,7 +144,7 @@ Extracts only (not enough for the reader): Qui Nuper (*Dublin Review* and *Rambl
 
 Lessons for anyone continuing: *Appletons'* volumes are misdated in the Internet Archive's catalogue (the 1874 volume is filed as 1861), so match them by title page; a high score can come from an allocution of the same weeks, so read the opening and closing; short documents score high by chance against large volumes.
 
-After this search: **23 documents have a complete printing, 7 have an extract or abridgement only, and 55 have no printing found so far** (corrected after Sol's review: the 1777 Clement XIV printing abridges Cum Summi and Salutis Nostrae, and *The Jesuit* abridges Traditi Humilitati; Exultavit Cor Nostrum moved to the complete Quebec printing of 1852) (24 of the 26 of 1740–1799, Exsurge Domine, three Leo XII documents of 1824–26, seven of Gregory XVI, and 20 of Pius IX). The remaining search options are HathiTrust from a browser (blocked here) and *The Tablet*'s own archive.
+After this search: **23 documents have a complete printing, 7 have an extract or abridgement only, and 55 have no printing found so far** (corrected after Sol's review: the 1777 Clement XIV printing abridges Cum Summi and Salutis Nostrae, and *The Jesuit* abridges Traditi Humilitati; Exultavit Cor Nostrum moved to the complete Quebec printing of 1852) (24 of the 26 of 1740–1799, Exsurge Domine, three Leo XII documents of 1824–26, seven of Gregory XVI, and 20 of Pius IX). The remaining search options are HathiTrust from a browser and *The Tablet*'s own archive: both were tried again on 1 Nov 2026 and still refuse this server (HathiTrust full-text search 403; thetablet.co.uk 403, its archive address unreachable).
 
 ## 6. Carlen's own translations: can they be cleared?
 
@@ -163,7 +163,7 @@ The 55 documents with no public-domain printing are **held for permission**, not
 
 ## Needs Carter
 
-1. **Approve the 30 draft rows** (`checked_by` null): 23 complete printings and 7 extract or abridged printings (Nostis et Nobiscum, Qui Nuper, Nullis Certe Verbis, Levate, Cum Summi, Salutis Nostrae, Traditi Humilitati), whose missing paragraphs are held for permission.
+1. ~~Approve the 30 draft rows~~ Approved by Carter, 1 Nov 2026, all 30 (`checked_by: Carter`): 23 complete printings and 7 extract or abridged printings (Nostis et Nobiscum, Qui Nuper, Nullis Certe Verbis, Levate, Cum Summi, Salutis Nostrae, Traditi Humilitati), whose missing paragraphs are held for permission.
 2. **Later: the permission request** to Pierian Press, when the site is ready (section 6 says what to ask).
 
 ## Side findings
