@@ -262,12 +262,13 @@ These apply to every PR below and are not repeated in each item.
 - **Changes:**
   - Vendor `https://ccel.org/ccel/s/schaff/npnf214.xml` through `scripts/vendor_sources.py` into `sources/councils/npnf214.xml`, with URL, SHA-256, retrieval date and "Rights: Public Domain" from the file header recorded in the councils manifest.
   - Write `ingest/councils_percival.py` with a per-council allowlist of ThML div ids taken from the 1.2a inventory, for example Nicaea: Creed, Canons I to XX, Synodal Letter. Allowlist rather than denylist, so an unrecognised Excursus is dropped by default.
-  - Within allowed divs, drop child divs or paragraphs titled "Ancient Epitome", "Notes", "Excursus" or anything 1.2a marks as editor material. Strip `<note>` through the 1.10b helper.
+  - Within allowed divs, drop child divs or paragraphs titled "Ancient Epitome", "Notes", "Excursus" or anything 1.2a marks as editor material. Strip `<note>` through the 1.10b helper, keeping each note's scripture reference as a footnote (`metadata.footnotes`, as `thml_doc.footnotes` builds them from `common.direct_blocks_text` and `ingest/scripture_notes.py`; Carter, 1 Nov 2026).
   - Anchors: `council-of-nicaea/canon/5`, `council-of-nicaea/creed`, `council-of-nicaea/synodal-letter`, and `council-of-chalcedon/definition`. Keep `canon/N` wherever the old build had it, so those canons keep their IDs. The canon is the same unit in a new translation, so set passage metadata `text_replaced: "Percival (NPNF2-14) replaces Tanner"` for 0.1c's stability check.
   - Old Tanner passages that are not the same numbered unit (Tanner's introductions, section cuts such as `council-of-nicaea/sec-1/1`) get a redirect to the Percival passage holding the same text where one exists, or a removal-registry entry with reason `superseded-translation` (or `rule-g-editorial` for Tanner's introductions) and a tombstone naming the replacement edition.
   - `author` is the council's name. Keep the manifest's `year` and `council_number`.
   - Route councils 1 to 7 in `build_documents` to the new builder. The Tanner HTML files stay vendored until 1.2e lands, but no builder reads them.
 - **Acceptance checks:**
+  - Every footnote is a scripture reference (`scripture_notes.scripture_reference` returns it unchanged) and sits after a word; no other note's text is in a passage.
   - Reader access (D12): the PR sets the replaced works' `rights_inventory.json` rows to their public-domain status, and after the apply each document opens in the full reader, not the excerpt-only view.
   - `test_percival_allowlist_drops_epitome_and_notes`, `test_percival_canon_anchors`, on a synthetic ThML fixture.
   - Vendored checks: Nicaea yields 20 canons plus the Creed and the Synodal Letter. Constantinople I 7 canons (Percival prints 7). Ephesus 8 canons, Cyril's letters and the 12 anathemas. Chalcedon 30 canons and the Definition. Constantinople II the 14 anathemas. Constantinople III the Definition. Nicaea II 22 canons and the Definition. Adjust these counts to what 1.2a finds and say so in the PR.
@@ -290,10 +291,11 @@ These apply to every PR below and are not repeated in each item.
   - CCEL `creeds2` section v.ii.i is a two-column table per page: Latin in a `<td>` with `<span lang="LA">`, English in the other `<td>`. Sentences run across tables at page breaks ("...placed over the universal" continues in the next table). Schaff's footnotes are inline notes ("From a Brief of Pius VI..."), which are editor material. Verified on the CCEL HTML page on 29 Sep.
 - **Changes:**
   - Vendor `creeds2.xml` with hash and rights line into `sources/councils/`.
-  - `ingest/councils_schaff.py`: take only the Vatican Council section. From each two-cell row keep the cell without `lang="LA"`. Concatenate English cells across page tables before splitting paragraphs. Strip notes (1.10b helper) and page-break spans.
+  - `ingest/councils_schaff.py`: take only the Vatican Council section. From each two-cell row keep the cell without `lang="LA"`. Concatenate English cells across page tables before splitting paragraphs. Strip notes (1.10b helper) and page-break spans, keeping each note's scripture reference as a footnote (`metadata.footnotes`, through `ingest/scripture_notes.py`, `at` after the word the note followed; Carter, 1 Nov 2026).
   - Structure: Dei Filius prologue, chapters 1 to 4, canons grouped by chapter. Pastor Aeternus prologue, chapters 1 to 4. Anchors: `first-vatican-council/dei-filius/chapter-3`, `first-vatican-council/dei-filius/canons-3/canon-2`, `first-vatican-council/pastor-aeternus/chapter-4`.
   - The Latin cells are not stored. Rule E keeps only English in the corpus, and the official Latin is available elsewhere.
 - **Acceptance checks:**
+  - Every footnote is a scripture reference (`scripture_notes.scripture_reference` returns it unchanged) and sits after a word; no other note's text is in a passage.
   - Reader access (D12): the PR sets the replaced works' `rights_inventory.json` rows to their public-domain status, and after the apply each document opens in the full reader, not the excerpt-only view.
   - `test_schaff_keeps_english_cell_only`, `test_schaff_joins_english_across_page_tables`, on a fixture with 2 tables and a mid-sentence page break.
   - Vendored checks: 4 chapters and 18 canons in Dei Filius, 4 chapters in Pastor Aeternus. Chapter 4 of Pastor Aeternus contains "is possessed of that infallibility". No passage has more than 5% Latin stopwords ("et", "est", "quae", "non").
