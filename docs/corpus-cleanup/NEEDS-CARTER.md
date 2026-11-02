@@ -43,7 +43,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-31: approved for 0.1d's run, exported as `datapipeline/releases/snapshots/2026-10-31/`. Each later run is asked for again.
 - **R7** [Phase 0, blocks 1.7]. Approve each set of downloads for the independent Summa comparison: the Leonine Latin pages of the Supplement (the four core parts were fetched by the 6 Oct review), and any English edition or scan that holds a unit the vendored edition omits. The request states file names and sizes.
   Answered 2026-10-30: all R7 downloads approved.
-- **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 0039 migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
+- **0.3** [Phase 0]. Approve the baseline search evaluation, which costs about $12 in AI provider fees. Confirm it runs before any live change (the 2.2a migration, the alias step or an early retirement), so it records the corpus as it is today. The run changes nothing in the database.
   Answered 2026-10-30: 0.3 is dropped; no baseline is run (Decision log "Baseline eval (0.3)").
 - **R6** [Phase 0, blocks Phase 1 items 1.2c, 1.2d, 1.8d]. Approve each set of source downloads. The request states the file names and sizes each time.
   Answered 2026-10-05: the 154 text, XML and HTML files of R6's download list (about 153 MB) are approved; the 91 page-image PDFs and the hOCR file are approved per work later. They are vendored to `datapipeline/sources/_incoming/<Vendored as path>` and locked there; each ingesting PR moves its files unchanged (Decision log "Holding folder for approved downloads"). 152 are vendored; 2 archive.org texts for 5.6c returned HTTP 500 on 5 Oct 2026 and are not.
@@ -63,7 +63,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 ### Phase 2
 
-- **2.2a** [Phase 2]. Approve a pg_dump of production for a local timing rehearsal of the new database structure. Then approve applying migration 0039 to the live database. It adds columns and tables only and changes nothing users see.
+- **2.2a** [Phase 2]. Approve a pg_dump of production for a local timing rehearsal of the new database structure. Then approve applying migrations 0042 and 0043 to the live database, 0043 right after 0042. They add columns and tables only and change nothing users see.
+  Answered 2026-11-02 (2.2a's questions, asked before the code): the migration is renumbered 0042 (schema, catalog changes only) plus 0043 (validation and the staging tables, including `document_contents`), and 0039 stays unused; `corpus_publishes` gains `embed_model`, `embed_dimensions`, `snapshot_sha256`, `cleaned_up_at` and `discarded_at` now; read-only catalogue checks of production are approved; running a local Postgres from downloaded binaries on the Lenovo, for the tests, is approved. The pg_dump and the apply are still to be asked.
 - **2.2b** [Phase 2]. Approve two steps on live systems. The first creates the Qdrant alias `chunks_live` (a second name for today's search index, so later switches take one step) and an index on the new "searchable" field. The second sets one environment variable on Railway and restarts the API.
 - **2.2w and 4.1a** [Phase 2, repeated in Phase 4]. Approve the pg_dump for the full local rehearsal of the new publish process. The 2.2a timing rehearsal can share this dump if the two run close together.
 - **2.2w** [Phase 2 to 4]. Approve the embedding spend for the first full local rehearsal stage (2.2w's or 4.1a's, whichever runs first), about 11 million tokens, about $1.40 at today's list price (to be checked before the run). It fills a local cache, so later rehearsals and the production run cost between $0 and the same amount, depending on how much the build changed in between.
@@ -220,6 +221,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **2.4a** [Phase 2]. When a saved search or bookmark points at a removed passage, show no text (title, author, reference and one sentence of reason), or keep showing the text under a "removed" banner. Recommended answer is no text.
 - **2.4b** [Phase 2]. Approve the wording pattern of tombstones.
 - **2.4c** [Phase 2]. Approve the corrected names on the About page. Origen, Chrysostom, Bonaventure, Hildegard and Duns Scotus come out; Irenaeus, Bernard of Clairvaux and Thomas à Kempis go in.
+- **2.2w** [Phase 2]. Found by 2.2a (2 Nov 2026). Staging now holds `staging.document_contents` (0040's contents tree), but 2.2w's stage step 4, apply, before-snapshot and rollback list `documents`, `chunks`, `document_works` and `document_chapters` only. Should the writer stage, snapshot, apply and roll back the contents tree with the chunks, as `reader_writer.write_document` does today? Recommended answer is yes; otherwise an apply would leave each document's tree pointing at the old chapters, and `/toc` would fall back to the flat list.
 - **2.2w and 4.1b** [Phase 2, needed by Phase 4]. Set the rollback window length. Recommended answer is 14 days.
 
 ### Phase 3
