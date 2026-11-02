@@ -80,6 +80,7 @@ def start_check(workdir: WorkDir, seed: int | None = None, redraw: bool = False)
         "seed": seed,
         "rule": asdict(rule),
         "passages_in_unit": len(passages),
+        "population": sorted(passages),
         "drawn_on": date.today().isoformat(),
         "sample": [{
             "id": pid,
@@ -142,8 +143,9 @@ def evaluate(workdir: WorkDir, baseline: list[str] | None = None) -> GateResult:
     current = {p.id: text_hash(p.text) for p in passages}
 
     pending, stale, wording, checked = [], [], [], 0
+    redraw = bool(check["sample"]) and check.get("population") != sorted(current)
     for e in check["sample"]:
-        if e["id"] not in current:
+        if redraw or e["id"] not in current:
             stale.append(e["id"])
         elif e["result"] == "pending":
             pending.append(e["id"])
@@ -162,6 +164,9 @@ def evaluate(workdir: WorkDir, baseline: list[str] | None = None) -> GateResult:
         reasons.append("wording changed in " + ", ".join(wording))
     if reasons:
         status = "fail"
+    elif redraw:
+        status = "pending"
+        reasons.append("the passages changed since the sample was drawn: draw it again")
     elif checked < required or pending or stale:
         status = "pending"
         reasons.append(f"{checked} of {required} sampled passages checked"

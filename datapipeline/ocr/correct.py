@@ -131,7 +131,8 @@ class AnthropicCorrector:
         import anthropic
 
         self.model = model
-        self.client = anthropic.Anthropic(api_key=api_key or _api_key())
+        # No automatic retries: a retried call can bill twice outside the ceiling check.
+        self.client = anthropic.Anthropic(api_key=api_key or _api_key(), max_retries=0)
 
     def worst_case_usd(self, text: str) -> float:
         # The exact input, counted by the API (free), plus every output token allowed.
@@ -265,7 +266,10 @@ def run_correction(workdir: WorkDir, corrector: Corrector, ceiling_usd: float,
         try:
             reply = corrector.correct(passage.cleaned)
         except Exception as exc:  # recorded, then the run stops
-            run["stopped"] = f"error on passage {passage.id}: {type(exc).__name__}: {exc}"
+            # The call may have been billed without usage coming back: count its worst case.
+            run["cost_usd"] = round(run["cost_usd"] + worst, 6)
+            run["stopped"] = (f"error on passage {passage.id}: {type(exc).__name__}: {exc}; "
+                              f"its worst case, ${worst:.4f}, is counted as spent")
             break
         run["calls"] += 1
         run["input_tokens"] += reply.input_tokens

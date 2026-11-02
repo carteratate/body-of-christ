@@ -48,6 +48,8 @@ PARAGRAPH_GAP = 0.6
 NOTE_GAP = 0.35
 # Note lines sit closer together than body lines.
 NOTE_PITCH = 0.92
+# Notes start below this fraction of the span from the page's first line to its last.
+NOTE_REGION = 0.4
 # A note carried over from the previous page starts in this bottom fraction of the page.
 CARRIED_NOTE_BAND = 0.25
 
@@ -171,9 +173,12 @@ def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[
     if len(lines) < 2:
         return lines, []
     height = _body_height(lines, page.width)
+    # Notes sit in the lower part of the printed text, which on a short last page can be
+    # well above the middle of the image.
+    floor = lines[0].top + NOTE_REGION * (lines[-1].bottom - lines[0].top)
     for i in range(1, len(lines)):
         line, prev = lines[i], lines[i - 1]
-        if line.top < page.height * 0.4:
+        if line.top < floor:
             continue
         gap = line.top - prev.bottom
         block, body = lines[i:], lines[:i]

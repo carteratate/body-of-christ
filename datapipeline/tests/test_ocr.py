@@ -130,6 +130,17 @@ def test_specks_signatures_and_catchwords_removed():
         (0, "catchword", "next"), (0, "speck", "|"), (1, "signature", "B2")]
 
 
+def test_note_found_on_a_short_last_page():
+    # The text ends a third of the way down the image, its note just below.
+    body = [Line(f"Body words on line {k} of the last page of the work", 150, 300 + 75 * k, 1850, 360 + 75 * k)
+            for k in range(8)]
+    note = [Line("20 These were the successors of the antipope in that see,", 150, 980, 1850, 1025),
+            Line("and one of them was intruded into the see of Rome.", 150, 1035, 1500, 1080)]
+    result = clean_pages([Page(0, 2000, 3000, body + note)])
+    assert [n.text.split("\n")[0] for n in result.notes] == [note[0].text]
+    assert "antipope" not in " ".join(p.text for p in result.paragraphs)
+
+
 def test_hyphen_rejoined_only_for_known_words():
     result = clean_pages(load_pages(XML, NUMBERS))
     log = {h.broken: (h.result, h.reason) for h in result.hyphens}
@@ -224,6 +235,17 @@ def test_spend_ceiling_stops_before_it_is_exceeded(tmp_path):
     assert stub.calls == 3 and again.stopped_at_ceiling
 
 
+def test_failed_call_counts_its_worst_case(tmp_path):
+    w = WorkDir(make_config(), root=tmp_path)
+    w.save_passages(_passages(["x y", "x y"]))
+
+    class Failing(StubCorrector):
+        def correct(self, text):
+            raise ConnectionError("lost")
+    res = run_correction(w, Failing(worst=0.40), ceiling_usd=1.00)
+    assert "lost" in res.run["stopped"] and w.spent_usd() == pytest.approx(0.40)
+
+
 def test_anthropic_request_is_thinking_off_json_and_priced(monkeypatch):
     sent = {}
 
@@ -314,6 +336,11 @@ def test_gate_requires_every_sampled_passage_checked(tmp_path):
 
     with pytest.raises(ValueError):
         record(w, "9999", "matches", by="Carter")
+
+    # A passage added after the draw invalidates the sample.
+    w.save_passages(w.passages() + [OcrPassage("0100", [100], ["100"], "the bishop", "the bishop")])
+    result = evaluate(w, baseline)
+    assert result.status == "pending" and "draw it again" in result.reasons[0]
 
 
 def test_small_work_samples_at_least_five(tmp_path):
