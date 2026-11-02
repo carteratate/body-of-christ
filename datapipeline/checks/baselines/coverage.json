@@ -1,14 +1,14 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "feat/1.10a-text-hygiene 65de5f5",
-  "bible": "feat/0.1d-review-checks 65fc9df",
+  "apostolic-exhortations": "feat/1.10c-piece-citations 269d968",
+  "bible": "feat/1.10c-piece-citations 269d968",
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
-  "church-fathers": "feat/1.10b-thml-notes 926e47a",
-  "councils": "feat/coverage-checks cfee751",
-  "encyclicals": "feat/coverage-checks cfee751",
-  "medieval": "feat/coverage-checks cfee751",
-  "papal-documents": "feat/coverage-checks cfee751",
+  "church-fathers": "feat/1.10c-piece-citations 269d968",
+  "councils": "feat/1.10c-piece-citations 269d968",
+  "encyclicals": "feat/1.10c-piece-citations 269d968",
+  "medieval": "feat/1.10c-piece-citations 269d968",
+  "papal-documents": "feat/1.10c-piece-citations 269d968",
   "summa": "feat/coverage-checks cfee751"
  },
  "files": {
@@ -54,8 +54,8 @@
   },
   "apostolic-exhortations/ecclesia-in-asia.html": {
    "body_chars": 174145,
-   "covered_chars": 171371,
-   "pct": 98.41
+   "covered_chars": 172595,
+   "pct": 99.11
   },
   "apostolic-exhortations/ecclesia-in-europa.html": {
    "body_chars": 155643,
@@ -69,8 +69,8 @@
   },
   "apostolic-exhortations/ecclesia-in-oceania.html": {
    "body_chars": 146185,
-   "covered_chars": 144128,
-   "pct": 98.59
+   "covered_chars": 144742,
+   "pct": 99.01
   },
   "apostolic-exhortations/evangelica-testificatio.html": {
    "body_chars": 50988,
@@ -119,8 +119,8 @@
   },
   "apostolic-exhortations/pastores-gregis.html": {
    "body_chars": 238833,
-   "covered_chars": 235536,
-   "pct": 98.62
+   "covered_chars": 236106,
+   "pct": 98.86
   },
   "apostolic-exhortations/querida-amazonia.html": {
    "body_chars": 81444,
@@ -164,13 +164,13 @@
   },
   "bible/eng-web-c_usfm/02-GENeng-web-c.usfm": {
    "body_chars": 180996,
-   "covered_chars": 180642,
-   "pct": 99.8
+   "covered_chars": 180996,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/03-EXOeng-web-c.usfm": {
    "body_chars": 157153,
-   "covered_chars": 156591,
-   "pct": 99.64
+   "covered_chars": 156904,
+   "pct": 99.84
   },
   "bible/eng-web-c_usfm/04-LEVeng-web-c.usfm": {
    "body_chars": 117492,
@@ -179,8 +179,8 @@
   },
   "bible/eng-web-c_usfm/05-NUMeng-web-c.usfm": {
    "body_chars": 163347,
-   "covered_chars": 162973,
-   "pct": 99.77
+   "covered_chars": 163347,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/06-DEUeng-web-c.usfm": {
    "body_chars": 137116,
@@ -189,8 +189,8 @@
   },
   "bible/eng-web-c_usfm/07-JOSeng-web-c.usfm": {
    "body_chars": 92892,
-   "covered_chars": 92295,
-   "pct": 99.36
+   "covered_chars": 92785,
+   "pct": 99.88
   },
   "bible/eng-web-c_usfm/08-JDGeng-web-c.usfm": {
    "body_chars": 91952,
@@ -204,23 +204,23 @@
   },
   "bible/eng-web-c_usfm/10-1SAeng-web-c.usfm": {
    "body_chars": 120164,
-   "covered_chars": 119946,
-   "pct": 99.82
+   "covered_chars": 120050,
+   "pct": 99.91
   },
   "bible/eng-web-c_usfm/11-2SAeng-web-c.usfm": {
    "body_chars": 98790,
-   "covered_chars": 98591,
-   "pct": 99.8
+   "covered_chars": 98790,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/12-1KIeng-web-c.usfm": {
    "body_chars": 118603,
-   "covered_chars": 117314,
-   "pct": 98.91
+   "covered_chars": 117543,
+   "pct": 99.11
   },
   "bible/eng-web-c_usfm/13-2KIeng-web-c.usfm": {
    "body_chars": 113810,
-   "covered_chars": 112949,
-   "pct": 99.24
+   "covered_chars": 113735,
+   "pct": 99.93
   },
   "bible/eng-web-c_usfm/14-1CHeng-web-c.usfm": {
    "body_chars": 103624,
@@ -229,18 +229,18 @@
   },
   "bible/eng-web-c_usfm/15-2CHeng-web-c.usfm": {
    "body_chars": 131883,
-   "covered_chars": 131662,
-   "pct": 99.83
+   "covered_chars": 131783,
+   "pct": 99.92
   },
   "bible/eng-web-c_usfm/16-EZReng-web-c.usfm": {
    "body_chars": 38209,
-   "covered_chars": 38018,
-   "pct": 99.5
+   "covered_chars": 38111,
+   "pct": 99.74
   },
   "bible/eng-web-c_usfm/17-NEHeng-web-c.usfm": {
    "body_chars": 53343,
-   "covered_chars": 53234,
-   "pct": 99.8
+   "covered_chars": 53343,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/19-JOBeng-web-c.usfm": {
    "body_chars": 84703,
@@ -274,8 +274,8 @@
   },
   "bible/eng-web-c_usfm/25-JEReng-web-c.usfm": {
    "body_chars": 209291,
-   "covered_chars": 208771,
-   "pct": 99.75
+   "covered_chars": 209104,
+   "pct": 99.91
   },
   "bible/eng-web-c_usfm/26-LAMeng-web-c.usfm": {
    "body_chars": 15941,
@@ -379,13 +379,13 @@
   },
   "bible/eng-web-c_usfm/52-1MAeng-web-c.usfm": {
    "body_chars": 118055,
-   "covered_chars": 117856,
-   "pct": 99.83
+   "covered_chars": 118055,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/53-2MAeng-web-c.usfm": {
    "body_chars": 91127,
-   "covered_chars": 90636,
-   "pct": 99.46
+   "covered_chars": 91127,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/66-DAGeng-web-c.usfm": {
    "body_chars": 78310,
@@ -808,9 +808,9 @@
    "pct": 99.28
   },
   "councils/ecum-03-council-of-ephesus.html": {
-   "body_chars": 57206,
+   "body_chars": 57186,
    "covered_chars": 38391,
-   "pct": 67.11
+   "pct": 67.13
   },
   "councils/ecum-04-council-of-chalcedon.html": {
    "body_chars": 48136,
@@ -908,9 +908,9 @@
    "pct": 28.1
   },
   "councils/vat2-christus-dominus.html": {
-   "body_chars": 54364,
+   "body_chars": 54336,
    "covered_chars": 20630,
-   "pct": 37.95
+   "pct": 37.97
   },
   "councils/vat2-dei-verbum.html": {
    "body_chars": 28331,
@@ -948,8 +948,8 @@
    "pct": 21.22
   },
   "councils/vat2-optatam-totius.html": {
-   "body_chars": 28978,
-   "covered_chars": 14988,
+   "body_chars": 28979,
+   "covered_chars": 14989,
    "pct": 51.72
   },
   "councils/vat2-orientalium-ecclesiarum.html": {
@@ -963,8 +963,8 @@
    "pct": 44.02
   },
   "councils/vat2-presbyterorum-ordinis.html": {
-   "body_chars": 66964,
-   "covered_chars": 24528,
+   "body_chars": 66965,
+   "covered_chars": 24529,
    "pct": 36.63
   },
   "councils/vat2-sacrosanctum-concilium.html": {
@@ -1038,8 +1038,8 @@
    "pct": 99.87
   },
   "encyclicals/casti-connubii.html": {
-   "body_chars": 105048,
-   "covered_chars": 105048,
+   "body_chars": 105049,
+   "covered_chars": 105049,
    "pct": 100.0
   },
   "encyclicals/centesimus-annus.html": {
@@ -1108,8 +1108,8 @@
    "pct": 99.92
   },
   "encyclicals/dilexit-nos.html": {
-   "body_chars": 152131,
-   "covered_chars": 152131,
+   "body_chars": 152123,
+   "covered_chars": 152123,
    "pct": 100.0
   },
   "encyclicals/diu-satis.html": {
@@ -1188,8 +1188,8 @@
    "pct": 100.0
   },
   "encyclicals/fides-et-ratio.html": {
-   "body_chars": 191887,
-   "covered_chars": 191027,
+   "body_chars": 191889,
+   "covered_chars": 191029,
    "pct": 99.55
   },
   "encyclicals/fratelli-tutti.html": {
@@ -1439,8 +1439,8 @@
   },
   "encyclicals/quanta-cura-1864.html": {
    "body_chars": 21861,
-   "covered_chars": 20754,
-   "pct": 94.94
+   "covered_chars": 21453,
+   "pct": 98.13
   },
   "encyclicals/quanta-cura.html": {
    "body_chars": 5452,
@@ -1618,8 +1618,8 @@
    "pct": 99.46
   },
   "encyclicals/veritatis-splendor.html": {
-   "body_chars": 240204,
-   "covered_chars": 238705,
+   "body_chars": 240169,
+   "covered_chars": 238670,
    "pct": 99.38
   },
   "encyclicals/vix-dum-a-nobis.html": {
@@ -1633,8 +1633,8 @@
    "pct": 67.89
   },
   "medieval/consolation-of-philosophy.xml": {
-   "body_chars": 227170,
-   "covered_chars": 226743,
+   "body_chars": 227177,
+   "covered_chars": 226750,
    "pct": 99.81
   },
   "medieval/imitation-of-christ.xml": {
@@ -1698,8 +1698,8 @@
    "pct": 100.0
   },
   "papal-documents/rosarium-virginis-mariae.html": {
-   "body_chars": 72869,
-   "covered_chars": 72696,
+   "body_chars": 72866,
+   "covered_chars": 72693,
    "pct": 99.76
   },
   "papal-documents/salvifici-doloris.html": {
@@ -1789,8 +1789,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/52-1MAeng-web-c.usfm",
    "body_chars": 118055,
-   "covered_chars": 117856,
-   "pct": 99.83
+   "covered_chars": 118055,
+   "pct": 100.0
   },
   "03a95a7c-b492-587f-9a69-ebfa7f6da510": {
    "collection": "papal-documents",
@@ -1831,8 +1831,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/02-GENeng-web-c.usfm",
    "body_chars": 180996,
-   "covered_chars": 180642,
-   "pct": 99.8
+   "covered_chars": 180996,
+   "pct": 100.0
   },
   "0be86177-6098-597e-aa56-88eae937fba8": {
    "collection": "encyclicals",
@@ -1866,8 +1866,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/53-2MAeng-web-c.usfm",
    "body_chars": 91127,
-   "covered_chars": 90636,
-   "pct": 99.46
+   "covered_chars": 91127,
+   "pct": 100.0
   },
   "0dd14bd0-52d9-5e90-80ce-6d891ef6b943": {
    "collection": "apostolic-exhortations",
@@ -2054,8 +2054,8 @@
   "198c81e9-e119-5153-b4b2-a436574d067a": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
-   "body_chars": 664088,
-   "covered_chars": 664044,
+   "body_chars": 663996,
+   "covered_chars": 663952,
    "pct": 99.99
   },
   "1a0a016b-395e-5307-9aea-19a896b87eae": {
@@ -2222,8 +2222,8 @@
   "28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
    "collection": "councils",
    "source_file": "vat2-presbyterorum-ordinis.html",
-   "body_chars": 66964,
-   "covered_chars": 24528,
+   "body_chars": 66965,
+   "covered_chars": 24529,
    "pct": 36.63
   },
   "29897c86-0820-5f41-a3f6-951743a69566": {
@@ -2510,8 +2510,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/11-2SAeng-web-c.usfm",
    "body_chars": 98790,
-   "covered_chars": 98591,
-   "pct": 99.8
+   "covered_chars": 98790,
+   "pct": 100.0
   },
   "412959d1-a9fd-592a-ab1a-74aefe8e2b34": {
    "collection": "apostolic-exhortations",
@@ -2538,8 +2538,8 @@
    "collection": "apostolic-exhortations",
    "source_file": "pastores-gregis.html",
    "body_chars": 238833,
-   "covered_chars": 235536,
-   "pct": 98.62
+   "covered_chars": 236106,
+   "pct": 98.86
   },
   "4451c2f8-e836-58ab-a2eb-495a9cacef89": {
    "collection": "councils",
@@ -2580,8 +2580,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/15-2CHeng-web-c.usfm",
    "body_chars": 131883,
-   "covered_chars": 131662,
-   "pct": 99.83
+   "covered_chars": 131783,
+   "pct": 99.92
   },
   "46864455-e2e3-5d9f-b84d-c4c14d7bb2ac": {
    "collection": "encyclicals",
@@ -2685,8 +2685,8 @@
    "collection": "apostolic-exhortations",
    "source_file": "ecclesia-in-asia.html",
    "body_chars": 174145,
-   "covered_chars": 171371,
-   "pct": 98.41
+   "covered_chars": 172595,
+   "pct": 99.11
   },
   "4fe41814-a29f-572d-badb-e3f3b2488125": {
    "collection": "church-fathers",
@@ -2748,8 +2748,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/17-NEHeng-web-c.usfm",
    "body_chars": 53343,
-   "covered_chars": 53234,
-   "pct": 99.8
+   "covered_chars": 53343,
+   "pct": 100.0
   },
   "5553da19-6597-56e0-ad6e-48113b7d855f": {
    "collection": "church-fathers",
@@ -2796,9 +2796,9 @@
   "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f": {
    "collection": "councils",
    "source_file": "ecum-03-council-of-ephesus.html",
-   "body_chars": 57206,
+   "body_chars": 57186,
    "covered_chars": 38391,
-   "pct": 67.11
+   "pct": 67.13
   },
   "5a05852b-4193-518f-9d01-afd796291979": {
    "collection": "church-fathers",
@@ -3160,8 +3160,8 @@
   "7b14f9f4-f2e0-5295-b5ad-1923a625a1b2": {
    "collection": "encyclicals",
    "source_file": "veritatis-splendor.html",
-   "body_chars": 240204,
-   "covered_chars": 238705,
+   "body_chars": 240169,
+   "covered_chars": 238670,
    "pct": 99.38
   },
   "7d1b2dd5-88c0-50f9-ad3b-d4d65999a6b7": {
@@ -3391,16 +3391,16 @@
   "92c7ab9f-fe71-5247-8669-44fbc67085a4": {
    "collection": "encyclicals",
    "source_file": "fides-et-ratio.html",
-   "body_chars": 191887,
-   "covered_chars": 191027,
+   "body_chars": 191889,
+   "covered_chars": 191029,
    "pct": 99.55
   },
   "9551480f-ab8c-5ab5-b46c-72b07cec3755": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/10-1SAeng-web-c.usfm",
    "body_chars": 120164,
-   "covered_chars": 119946,
-   "pct": 99.82
+   "covered_chars": 120050,
+   "pct": 99.91
   },
   "958891d4-b30c-5449-bcac-1f129b573c25": {
    "collection": "encyclicals",
@@ -3475,8 +3475,8 @@
   "9a6599ee-ac40-5017-a2c6-7aad2cf14296": {
    "collection": "medieval",
    "source_file": "consolation-of-philosophy.xml",
-   "body_chars": 227170,
-   "covered_chars": 226743,
+   "body_chars": 227177,
+   "covered_chars": 226750,
    "pct": 99.81
   },
   "9ab89df1-f20a-55c8-ac34-b0fa53f39c40": {
@@ -3490,8 +3490,8 @@
    "collection": "encyclicals",
    "source_file": "quanta-cura-1864.html",
    "body_chars": 21861,
-   "covered_chars": 20754,
-   "pct": 94.94
+   "covered_chars": 21453,
+   "pct": 98.13
   },
   "9c052574-ccbc-5aa6-8a1e-b582b7dd73e4": {
    "collection": "church-fathers",
@@ -3532,8 +3532,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/05-NUMeng-web-c.usfm",
    "body_chars": 163347,
-   "covered_chars": 162973,
-   "pct": 99.77
+   "covered_chars": 163347,
+   "pct": 100.0
   },
   "9e93f3ef-cd33-598f-9aac-f2a5886d3e21": {
    "collection": "church-fathers",
@@ -3581,8 +3581,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/07-JOSeng-web-c.usfm",
    "body_chars": 92892,
-   "covered_chars": 92295,
-   "pct": 99.36
+   "covered_chars": 92785,
+   "pct": 99.88
   },
   "a558e370-226c-5ac5-b01b-916adbe6b256": {
    "collection": "church-fathers",
@@ -3685,8 +3685,8 @@
   "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
-   "body_chars": 694420,
-   "covered_chars": 694420,
+   "body_chars": 694512,
+   "covered_chars": 694512,
    "pct": 100.0
   },
   "aaf92092-6fe2-5381-b027-640ee8ad8420": {
@@ -3777,8 +3777,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/16-EZReng-web-c.usfm",
    "body_chars": 38209,
-   "covered_chars": 38018,
-   "pct": 99.5
+   "covered_chars": 38111,
+   "pct": 99.74
   },
   "b3a4c81b-e403-5ed2-9b9d-3e0102d7f848": {
    "collection": "encyclicals",
@@ -3805,14 +3805,14 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/25-JEReng-web-c.usfm",
    "body_chars": 209291,
-   "covered_chars": 208771,
-   "pct": 99.75
+   "covered_chars": 209104,
+   "pct": 99.91
   },
   "b58729e8-fa6e-5b91-9d66-b0734050a471": {
    "collection": "councils",
    "source_file": "vat2-optatam-totius.html",
-   "body_chars": 28978,
-   "covered_chars": 14988,
+   "body_chars": 28979,
+   "covered_chars": 14989,
    "pct": 51.72
   },
   "b8babc97-15ff-5c15-8e25-bba0eca51786": {
@@ -3895,9 +3895,9 @@
   "bd4adb5d-500e-5995-ab95-3f61fdc92067": {
    "collection": "councils",
    "source_file": "vat2-christus-dominus.html",
-   "body_chars": 54364,
+   "body_chars": 54336,
    "covered_chars": 20630,
-   "pct": 37.95
+   "pct": 37.97
   },
   "bdb26799-46d1-56d9-ab96-44dfc8bb0e6c": {
    "collection": "bible",
@@ -3979,8 +3979,8 @@
   "c3bfda64-97c2-56d3-8091-eb24c93e7931": {
    "collection": "encyclicals",
    "source_file": "casti-connubii.html",
-   "body_chars": 105048,
-   "covered_chars": 105048,
+   "body_chars": 105049,
+   "covered_chars": 105049,
    "pct": 100.0
   },
   "c3c6834c-efcf-518a-b90b-25eacd6a6091": {
@@ -4106,8 +4106,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/13-2KIeng-web-c.usfm",
    "body_chars": 113810,
-   "covered_chars": 112949,
-   "pct": 99.24
+   "covered_chars": 113735,
+   "pct": 99.93
   },
   "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec": {
    "collection": "apostolic-exhortations",
@@ -4119,8 +4119,8 @@
   "ceb6f6b0-f8bc-5a11-95c5-ac52f6bfce3f": {
    "collection": "encyclicals",
    "source_file": "dilexit-nos.html",
-   "body_chars": 152131,
-   "covered_chars": 152131,
+   "body_chars": 152123,
+   "covered_chars": 152123,
    "pct": 100.0
   },
   "cf235300-e37d-5a7a-a421-f50efff38355": {
@@ -4203,8 +4203,8 @@
   "d6cc48e2-30e8-5c73-aba2-9890c339531f": {
    "collection": "papal-documents",
    "source_file": "rosarium-virginis-mariae.html",
-   "body_chars": 72869,
-   "covered_chars": 72696,
+   "body_chars": 72866,
+   "covered_chars": 72693,
    "pct": 99.76
   },
   "d6ecb3a9-6a32-568a-817d-53b1390a55f7": {
@@ -4337,8 +4337,8 @@
    "collection": "apostolic-exhortations",
    "source_file": "ecclesia-in-oceania.html",
    "body_chars": 146185,
-   "covered_chars": 144128,
-   "pct": 98.59
+   "covered_chars": 144742,
+   "pct": 99.01
   },
   "e6cdb4bb-5cdb-5506-82a0-4a9eaedaed7c": {
    "collection": "encyclicals",
@@ -4379,8 +4379,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/03-EXOeng-web-c.usfm",
    "body_chars": 157153,
-   "covered_chars": 156591,
-   "pct": 99.64
+   "covered_chars": 156904,
+   "pct": 99.84
   },
   "ea58df56-89c8-581e-ae09-9d16af8c37b8": {
    "collection": "bible",
@@ -4421,8 +4421,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/12-1KIeng-web-c.usfm",
    "body_chars": 118603,
-   "covered_chars": 117314,
-   "pct": 98.91
+   "covered_chars": 117543,
+   "pct": 99.11
   },
   "ecfd05c0-32a2-5153-9054-d3ab06c56c2c": {
    "collection": "church-fathers",
