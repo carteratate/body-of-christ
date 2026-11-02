@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE DjVuXML>
+<!-- Synthetic pages written for tests/test_ocr.py (item 1.2f); no scan text. -->
+<DjVuXML>
+ <BODY>
+  <OBJECT data="file://localhost/synthetic.djvu" type="image/x.djvu" usemap="synthetic_0000.djvu" width="2000" height="3000">
+   <HIDDENTEXT>
+    <PAGECOLUMN>
+     <REGION>
+      <PARAGRAPH>
+       <LINE>
+        <WORD coords="150,160,240,100">10</WORD>
+        <WORD coords="285,160,421,100">THE</WORD>
+        <WORD coords="466,160,873,100">SYNTHETIC</WORD>
+        <WORD coords="918,160,1099,100">BOOK</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="200,310,312,250">The</WORD>
+        <WORD coords="350,310,612,250">council</WORD>
+        <WORD coords="650,310,762,250">met</WORD>
+        <WORD coords="800,310,875,250">in</WORD>
+        <WORD coords="913,310,1025,250">tbe</WORD>
+        <WORD coords="1063,310,1288,250">spring</WORD>
+        <WORD coords="1326,310,1438,250">and</WORD>
+        <WORD coords="1476,310,1588,250">its</WORD>
+        <WORD coords="1626,310,1850,250">corre-</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,385,456,325">spondence</WORD>
+        <WORD coords="490,385,626,325">with</WORD>
+        <WORD coords="660,385,762,325">the</WORD>
+        <WORD coords="796,385,1034,325">bishops</WORD>
+        <WORD coords="1068,385,1238,325">shows</WORD>
+        <WORD coords="1272,385,1408,325">that</WORD>
+        <WORD coords="1442,385,1578,325">each</WORD>
+        <WORD coords="1612,385,1680,325">of</WORD>
+        <WORD coords="1714,385,1850,325">them</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,460,254,400">was</WORD>
+        <WORD coords="289,460,567,400">summoned</WORD>
+        <WORD coords="602,460,671,400">in</WORD>
+        <WORD coords="706,460,845,400">good</WORD>
+        <WORD coords="880,460,1019,400">time</WORD>
+        <WORD coords="1054,460,1123,400">to</WORD>
+        <WORD coords="1158,460,1262,400">the</WORD>
+        <WORD coords="1297,460,1470,400">city.</WORD>
+        <WORD coords="1505,460,1609,400">The</WORD>
+        <WORD coords="1644,460,1850,400">blorf-</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,535,288,475">zingle</WORD>
+        <WORD coords="311,535,357,475">of</WORD>
+        <WORD coords="380,535,449,475">the</WORD>
+        <WORD coords="472,535,610,475">clerks</WORD>
+        <WORD coords="633,535,679,475">is</WORD>
+        <WORD coords="702,535,771,475">not</WORD>
+        <WORD coords="794,535,1000,475">recorded.</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="200,610,261,550">No</WORD>
+        <WORD coords="292,610,475,550">bishop</WORD>
+        <WORD coords="506,610,659,550">shail</WORD>
+        <WORD coords="690,610,751,550">be</WORD>
+        <WORD coords="782,610,965,550">absent</WORD>
+        <WORD coords="996,610,1210,550">without</WORD>
+        <WORD coords="1241,610,1272,550">a</WORD>
+        <WORD coords="1303,610,1486,550">lawful</WORD>
+        <WORD coords="1517,610,1731,550">excuse,</WORD>
+        <WORD coords="1762,610,1850,550">and</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,685,383,625">whoever</WORD>
+        <WORD coords="416,685,583,625">stays</WORD>
+        <WORD coords="616,685,749,625">away</WORD>
+        <WORD coords="782,685,1015,625">without</WORD>
+        <WORD coords="1048,685,1148,625">one</WORD>
+        <WORD coords="1181,685,1248,625">is</WORD>
+        <WORD coords="1281,685,1348,625">to</WORD>
+        <WORD coords="1381,685,1448,625">be</WORD>
+        <WORD coords="1481,685,1748,625">reproved</WORD>
+        <WORD coords="1781,685,1848,625">by</WORD>
+       </LINE>
+      </PARAGRAPH>
+     </REGION>
+    </PAGECOLUMN>
+   </HIDDENTEXT>
+  </OBJECT>
+  <OBJECT data="file://localhost/synthetic.djvu" type="image/x.djvu" usemap="synthetic_0001.djvu" width="2000" height="3000">
+   <HIDDENTEXT>
+    <PAGECOLUMN>
+     <REGION>
+      <PARAGRAPH>
+       <LINE>
+        <WORD coords="900,160,1036,100">THE</WORD>
+        <WORD coords="1081,160,1488,100">SYNTHETIC</WORD>
+        <WORD coords="1533,160,1714,100">BOOK</WORD>
+        <WORD coords="1759,160,1849,100">11</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,310,215,250">the</WORD>
+        <WORD coords="237,310,497,250">metropolitan</WORD>
+        <WORD coords="519,310,562,250">at</WORD>
+        <WORD coords="584,310,649,250">the</WORD>
+        <WORD coords="671,310,758,250">next</WORD>
+        <WORD coords="780,310,932,250">meeting</WORD>
+        <WORD coords="954,310,997,250">of</WORD>
+        <WORD coords="1019,310,1084,250">the</WORD>
+        <WORD coords="1106,310,1300,250">province.</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="200,385,362,325">Text.</WORD>
+        <WORD coords="394,385,491,325">The</WORD>
+        <WORD coords="523,385,652,325">same</WORD>
+        <WORD coords="684,385,813,325">rule</WORD>
+        <WORD coords="845,385,1007,325">binds</WORD>
+        <WORD coords="1039,385,1265,325">abbots,</WORD>
+        <WORD coords="1297,385,1394,325">who</WORD>
+        <WORD coords="1426,385,1620,325">answer</WORD>
+        <WORD coords="1652,385,1717,325">to</WORD>
+        <WORD coords="1749,385,1846,325">the</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,460,343,400">bishop</WORD>
+        <WORD coords="375,460,439,400">of</WORD>
+        <WORD coords="471,460,568,400">the</WORD>
+        <WORD coords="600,460,761,400">place</WORD>
+        <WORD coords="793,460,954,400">where</WORD>
+        <WORD coords="986,460,1147,400">their</WORD>
+        <WORD coords="1179,460,1340,400">house</WORD>
+        <WORD coords="1372,460,1598,400">stands.</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,2745,181,2700">1</WORD>
+        <WORD coords="212,2745,243,2700">A</WORD>
+        <WORD coords="274,2745,400,2700">note</WORD>
+        <WORD coords="431,2745,525,2700">set</WORD>
+        <WORD coords="556,2745,619,2700">in</WORD>
+        <WORD coords="650,2745,870,2700">smaller</WORD>
+        <WORD coords="901,2745,1058,2700">type,</WORD>
+        <WORD coords="1089,2745,1246,2700">which</WORD>
+        <WORD coords="1277,2745,1340,2700">is</WORD>
+        <WORD coords="1371,2745,1497,2700">kept</WORD>
+        <WORD coords="1528,2745,1685,2700">apart</WORD>
+        <WORD coords="1716,2745,1842,2700">from</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,2800,271,2755">the</WORD>
+        <WORD coords="311,2800,473,2755">body</WORD>
+        <WORD coords="513,2800,675,2755">text</WORD>
+        <WORD coords="715,2800,796,2755">of</WORD>
+        <WORD coords="836,2800,957,2755">the</WORD>
+        <WORD coords="997,2800,1199,2755">page.</WORD>
+       </LINE>
+      </PARAGRAPH>
+     </REGION>
+    </PAGECOLUMN>
+   </HIDDENTEXT>
+  </OBJECT>
+  <OBJECT data="file://localhost/synthetic.djvu" type="image/x.djvu" usemap="synthetic_0002.djvu" width="2000" height="3000">
+   <HIDDENTEXT>
+    <PAGECOLUMN>
+     <REGION>
+      <PARAGRAPH>
+       <LINE>
+        <WORD coords="800,310,1086,250">CANON</WORD>
+        <WORD coords="1143,310,1200,250">2</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="200,440,454,380">Summary.</WORD>
+        <WORD coords="486,440,708,380">Clerics</WORD>
+        <WORD coords="740,440,835,380">may</WORD>
+        <WORD coords="867,440,962,380">not</WORD>
+        <WORD coords="994,440,1121,380">hold</WORD>
+        <WORD coords="1153,440,1248,380">two</WORD>
+        <WORD coords="1280,440,1566,380">benefices</WORD>
+        <WORD coords="1598,440,1661,380">at</WORD>
+        <WORD coords="1693,440,1850,380">once,</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="150,515,244,455">nor</WORD>
+        <WORD coords="275,515,400,455">sell</WORD>
+        <WORD coords="431,515,619,455">either</WORD>
+        <WORD coords="650,515,712,455">of</WORD>
+        <WORD coords="743,515,899,455">them.</WORD>
+       </LINE>
+       <LINE>
+        <WORD coords="980,2890,1020,2850">12</WORD>
+       </LINE>
+      </PARAGRAPH>
+     </REGION>
+    </PAGECOLUMN>
+   </HIDDENTEXT>
+  </OBJECT>
+ </BODY>
+</DjVuXML>

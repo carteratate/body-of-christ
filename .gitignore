@@ -29,6 +29,8 @@ services/api/.env
 datapipeline/sources
 # Local check output (0.1a report), which may quote corpus text
 datapipeline/releases/local/
+# OCR work directories (1.2f): raw, cleaned and corrected scan text, runs, checks.
+datapipeline/ocr_work/
 # Live corpus snapshots (0.1c): in-copyright text, never committed. The index
 # datapipeline/releases/snapshots.json (hashes and counts only) is tracked.
 datapipeline/releases/snapshots

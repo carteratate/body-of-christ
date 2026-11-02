@@ -1,0 +1,21 @@
+{
+ "identifier": "synthetic",
+ "confidence": 100,
+ "pages": [
+  {
+   "leafNum": 0,
+   "pageNumber": "10",
+   "confidence": 100
+  },
+  {
+   "leafNum": 1,
+   "pageNumber": "11",
+   "confidence": 100
+  },
+  {
+   "leafNum": 2,
+   "pageNumber": "12",
+   "confidence": 100
+  }
+ ]
+}

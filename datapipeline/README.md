@@ -197,6 +197,26 @@ it needs no publish-lock entry. Its `--apply` is still a live change: run the dr
 first and get Carter's go-ahead. The API reads the column fresh on every request, so no
 cache needs clearing.
 
+## Scanned works (OCR clean-up and gate)
+
+`ocr/` turns a scanned book's OCR into usable text and gates it (item 1.2f). A work is a
+config in `ocr/works/<work>.json`; everything derived from the scan goes to the
+gitignored `ocr_work/<work>/`. It reads the scan's `_djvu.xml` and `_page_numbers.json`,
+vendored through `sources/_incoming/` like any approved download.
+
+```bash
+python3 -m ocr clean   <work>      # remove page furniture, mend broken words, write passages
+python3 -m ocr correct <work>      # model correction: calls the provider and spends money
+python3 -m ocr sample  <work>      # draw the person's check, once, with a recorded seed
+python3 -m ocr check   <work> <passage> matches --by NAME
+python3 -m ocr gate    <work>      # writes ocr_work/<work>/gate.md and check.md
+```
+
+`correct` stops before any call that could take the work past its config's
+`ceiling_usd`, counting earlier runs. Only public-domain scan text goes to the provider.
+The OCR writes nothing to the live stores; the work's adapter PR uses its text, labels
+each passage with `ocr.label.label_passage`, and pastes `gate.md`.
+
 ## Tests
 
 The non-V5 suite is local and uses fakes for store and embedding boundaries:

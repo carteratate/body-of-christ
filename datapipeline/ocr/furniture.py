@@ -1,0 +1,366 @@
+"""The script clean-up step: page furniture out, broken words mended, paragraphs kept.
+
+Removed, by position and by patterns repeated across pages, and logged per page:
+- running heads: the top line of a page when it carries the page's number, or when its
+  letters recur as the top line of other pages;
+- page numbers: a top or bottom line that is only a number;
+- signature marks: a short letter-and-number mark on the bottom line ("B2", "12*");
+- catchwords: a single word alone at the bottom right that repeats the next page's first
+  word;
+- specks: a "line" with no letter or digit (a scan edge or a smudge read as "|").
+
+Notes at the foot of a page (a block that opens with a note marker after a gap, set
+tighter than the body) are not deleted: they go to their own stream, so a sentence that
+runs across a page break is not split by them, and the body text the gate measures does
+not include them.
+
+A word broken across a line end ("ec-" / "clesiastical") is joined when the joined form
+is in the word list or occurs unbroken elsewhere in the work; otherwise it keeps its
+hyphen ("Anglo-Saxon"). Paragraph breaks come from indentation, a short line before a
+capital, or extra space between lines. Each paragraph then goes through the shared
+cleaner, `normalize.text.clean_text`.
+"""
+from __future__ import annotations
+
+import re
+import statistics
+from collections import Counter
+from dataclasses import dataclass, field
+from difflib import SequenceMatcher
+
+from normalize.text import clean_text
+from ocr.layout import Layout, SingleColumn
+from ocr.pages import Line, Page
+from ocr.words import fold, is_known, words
+
+# Fractions of the page height that count as its top and bottom margins.
+TOP_BAND = 0.07
+BOTTOM_BAND = 0.80
+# A running head recurs as the top line of at least this many pages.
+REPEATED_HEAD_PAGES = 3
+HEAD_SIMILARITY = 0.85
+# Fractions of the page width: a first line indented this much opens a paragraph; a line
+# ending this short of the right margin closes one.
+INDENT = 0.018
+SHORT_LINE = 0.12
+# Fractions of the body line height.
+PARAGRAPH_GAP = 0.6
+NOTE_GAP = 0.35
+# Note lines sit closer together than body lines.
+NOTE_PITCH = 0.92
+# A note carried over from the previous page starts in this bottom fraction of the page.
+CARRIED_NOTE_BAND = 0.25
+
+_PAGE_NUMBER = re.compile(r"^\W*(?:\d{1,4}|[ivxlcdm]{1,8})\W*$", re.IGNORECASE)
+_SIGNATURE = re.compile(r"^(?=.*\w)[A-Z]{0,3}\s?\d{0,3}\s?\*?$")
+# A note opens with its number or symbol ("1 Mansi", "4Mention", "* See"); OCR often
+# reads the superscript as a stray mark ("$For", "® Zorell"). Opening quotes and
+# brackets are left out: body lines start with them.
+_NOTE_START = re.compile(r"^(?:\d{1,2}|[^\w\s(\[“\"])\s?\S")
+_HEAD_NUMBER = re.compile(r"^\d{1,4}\s+\D|\D\s+\d{1,4}$")
+_LINE_END_BREAK = re.compile(r"([^\W\d_]+)[-¬]$")
+_LINE_START_WORD = re.compile(r"^([^\W\d_]+)")
+_HAS_ALNUM = re.compile(r"[^\W_]")
+
+
+@dataclass
+class Removal:
+    leaf: int
+    page: str | None
+    kind: str        # running_head | page_number | signature | catchword | speck
+    text: str
+
+
+@dataclass
+class HyphenBreak:
+    leaf: int
+    broken: str      # "ec-|clesiastical"
+    result: str
+    joined: bool
+    reason: str      # word list | elsewhere in the work | kept: unknown | kept: capital
+
+
+@dataclass
+class Note:
+    leaf: int
+    page: str | None
+    text: str
+
+
+@dataclass
+class Paragraph:
+    text: str                 # script-cleaned
+    raw: str                  # the OCR lines as read, one per line
+    leaves: list[int]
+
+
+@dataclass
+class CleanResult:
+    paragraphs: list[Paragraph] = field(default_factory=list)
+    notes: list[Note] = field(default_factory=list)
+    removals: list[Removal] = field(default_factory=list)
+    hyphens: list[HyphenBreak] = field(default_factory=list)
+
+
+def _letters_key(text: str) -> str:
+    return re.sub(r"[^A-Z]", "", text.upper())
+
+
+def _first_word(text: str) -> str:
+    m = _LINE_START_WORD.match(text.strip(" ‘’'\"“”"))
+    return fold(m.group(1)) if m else ""
+
+
+def _body_height(lines: list[Line], width: int) -> float:
+    full = [ln.height for ln in lines if ln.x1 - ln.x0 > 0.6 * width] or [ln.height for ln in lines]
+    return statistics.median(full) if full else 1.0
+
+
+def _pitch(lines: list[Line]) -> float | None:
+    steps = [b.top - a.top for a, b in zip(lines, lines[1:]) if b.top > a.top]
+    return statistics.median(steps) if steps else None
+
+
+class _Head:
+    """Top-of-page lines recurring across the work: running heads."""
+
+    def __init__(self, tops: list[str]):
+        keys = [k for k in (_letters_key(t) for t in tops) if len(k) >= 4]
+        # A key counts every top line close to it, so OCR variants add up.
+        self.keys = [k for k in set(keys)
+                     if sum(_similar(k, other) for other in keys) >= REPEATED_HEAD_PAGES]
+
+    def repeated(self, text: str) -> bool:
+        key = _letters_key(text)
+        return len(key) >= 4 and any(_similar(key, k) for k in self.keys)
+
+
+def _similar(a: str, b: str) -> bool:
+    return a == b or SequenceMatcher(None, a, b).ratio() >= HEAD_SIMILARITY
+
+
+def _top_kind(line: Line, page: Page, heads: _Head) -> str | None:
+    if _PAGE_NUMBER.match(line.text):
+        return "page_number"
+    tokens = line.text.split()
+    if page.number and page.number in (tokens[0], tokens[-1]) and len(tokens) > 1:
+        return "running_head"
+    if heads.repeated(line.text):
+        return "running_head"
+    if _HEAD_NUMBER.search(line.text) and line.text == line.text.upper():
+        return "running_head"
+    return None
+
+
+def _bottom_kind(line: Line, page: Page, next_first: str) -> str | None:
+    text = line.text.strip()
+    if _PAGE_NUMBER.match(text):
+        return "page_number"
+    if (len(text.split()) == 1 and line.x0 > page.width / 2 and next_first
+            and _first_word(text) == next_first):
+        return "catchword"
+    if len(text) <= 8 and _SIGNATURE.match(text):
+        return "signature"
+    return None
+
+
+def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[Line], list[Line]]:
+    """(body, notes): the block at the foot of the page that opens with a note marker
+    after a gap and is set tighter than the body, or that continues a note from the
+    previous page."""
+    if len(lines) < 2:
+        return lines, []
+    height = _body_height(lines, page.width)
+    for i in range(1, len(lines)):
+        line, prev = lines[i], lines[i - 1]
+        if line.top < page.height * 0.4:
+            continue
+        gap = line.top - prev.bottom
+        block, body = lines[i:], lines[:i]
+        block_pitch, body_pitch = _pitch(block), _pitch(body)
+        tighter = (block_pitch is not None and body_pitch is not None
+                   and block_pitch < NOTE_PITCH * body_pitch)
+        if len(block) == 1:
+            tighter = gap > NOTE_GAP * height
+        # A note carried over from the previous page has no marker; it must then be the
+        # foot of the page and start at the left margin, not a centred heading.
+        carried = (after_note and line.top > page.height * (1 - CARRIED_NOTE_BAND)
+                   and line.x0 - min(ln.x0 for ln in body[-3:]) < INDENT * page.width)
+        opens = bool(_NOTE_START.match(line.text)) or carried
+        if opens and gap > NOTE_GAP * height and tighter:
+            return body, block
+    return lines, []
+
+
+def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool]) -> list[bool]:
+    """For each line, whether it opens a paragraph. `page_start[i]` marks a line that is
+    the first body line of its page."""
+    starts = []
+    height = statistics.median([ln.height for ln in lines]) if lines else 1
+    for i, line in enumerate(lines):
+        if i == 0:
+            starts.append(True)
+            continue
+        prev = lines[i - 1]
+        near = lines[max(0, i - 3):i] + lines[i + 1:i + 4]
+        left = statistics.median([ln.x0 for ln in near]) if near else line.x0
+        right = statistics.median([ln.x1 for ln in near]) if near else prev.x1
+        indented = line.x0 - left > INDENT * width
+        prev_short = prev.x1 < right - SHORT_LINE * width
+        capital = line.text[:1].isupper() or line.text[:1].isdigit()
+        gap = (not page_start[i]) and line.top - prev.bottom > PARAGRAPH_GAP * height
+        starts.append(indented or gap or (prev_short and capital))
+    return starts
+
+
+def clean_pages(pages: list[Page], layout: Layout | None = None) -> CleanResult:
+    layout = layout or SingleColumn()
+    result = CleanResult()
+    ordered = [layout.reading_order(p) for p in pages]
+
+    tops = [lines[0].text for p, lines in zip(pages, ordered)
+            if lines and lines[0].top < TOP_BAND * p.height]
+    heads = _Head(tops)
+
+    # Top furniture first, so each page's first body word is known for catchwords.
+    kept: list[list[Line]] = []
+    for page, lines in zip(pages, ordered):
+        lines = list(lines)
+        for line in [ln for ln in lines if not _HAS_ALNUM.search(ln.text)]:
+            result.removals.append(Removal(page.leaf, page.number, "speck", line.text))
+            lines.remove(line)
+        if lines and lines[0].top < TOP_BAND * page.height:
+            kind = _top_kind(lines[0], page, heads)
+            if kind:
+                result.removals.append(Removal(page.leaf, page.number, kind, lines.pop(0).text))
+        kept.append(lines)
+
+    bodies: list[list[Line]] = []
+    after_note = False
+    for i, (page, lines) in enumerate(zip(pages, kept)):
+        next_first = _first_word(kept[i + 1][0].text) if i + 1 < len(kept) and kept[i + 1] else ""
+        while lines and lines[-1].bottom > BOTTOM_BAND * page.height:
+            kind = _bottom_kind(lines[-1], page, next_first)
+            if not kind:
+                break
+            result.removals.append(Removal(page.leaf, page.number, kind, lines.pop().text))
+        body, notes = _split_notes(lines, page, after_note)
+        if notes:
+            result.notes.append(Note(page.leaf, page.number, "\n".join(ln.text for ln in notes)))
+        after_note = bool(notes)
+        bodies.append(body)
+
+    # Words that occur unbroken anywhere in the body: evidence for joining a break.
+    seen = Counter(fold(w) for body in bodies for ln in body for w in words(ln.text))
+
+    flat: list[tuple[Page, Line]] = []
+    starts: list[bool] = []
+    for page, body in zip(pages, bodies):
+        if not body:
+            continue
+        page_starts = _paragraph_starts(body, page.width, [j == 0 for j in range(len(body))])
+        if flat:
+            # A page's first line continues the previous page's paragraph unless indented.
+            near = body[1:4]
+            left = statistics.median([ln.x0 for ln in near]) if near else body[0].x0
+            page_starts[0] = body[0].x0 - left > INDENT * page.width
+        flat.extend((page, ln) for ln in body)
+        starts.extend(page_starts)
+
+    current: list[tuple[Page, Line]] = []
+    for k, (page, line) in enumerate(flat):
+        if starts[k] and current:
+            result.paragraphs.append(_paragraph(current, seen, result.hyphens))
+            current = []
+        current.append((page, line))
+    if current:
+        result.paragraphs.append(_paragraph(current, seen, result.hyphens))
+    return result
+
+
+def _paragraph(lines: list[tuple[Page, Line]], seen: Counter, log: list[HyphenBreak]) -> Paragraph:
+    text = ""
+    for k, (page, line) in enumerate(lines):
+        piece = line.text.strip()
+        if not text:
+            text = piece
+            continue
+        broken = _LINE_END_BREAK.search(text)
+        start = _LINE_START_WORD.match(piece)
+        if broken and start:
+            head, tail = broken.group(1), start.group(1)
+            joined = head + tail
+            if tail[0].isupper():
+                ok, reason = False, "kept: capital"
+            elif is_known(joined):
+                ok, reason = True, "word list"
+            elif seen.get(fold(joined)):
+                ok, reason = True, "elsewhere in the work"
+            else:
+                ok, reason = False, "kept: unknown"
+            stem = text[:broken.start(1)]
+            result = (joined if ok else f"{head}-{tail}")
+            log.append(HyphenBreak(page.leaf, f"{head}-|{tail}", result, ok, reason))
+            text = stem + result + piece[start.end(1):]
+        else:
+            text = f"{text} {piece}"
+    leaves = sorted({page.leaf for page, _ in lines})
+    raw = "\n".join(line.text for _, line in lines)
+    return Paragraph(clean_text(text), raw, leaves)
+
+
+def page_map_agreement(removals: list[Removal]) -> tuple[int, int]:
+    """(agree, read): of the running heads and page numbers removed that hold a number,
+    how many hold the number the page map gives their page. The page map is keyed by
+    leaf, so a scan whose djvu pages and leaves are out of step shows up here."""
+    agree = read = 0
+    for r in removals:
+        nums = re.findall(r"\b\d{1,4}\b", r.text) if r.kind in ("running_head", "page_number") else []
+        if nums:
+            read += 1
+            agree += r.page in nums
+    return agree, read
+
+
+def clean_work(workdir, sources=None, force: bool = False,
+               passage_words: int | None = None) -> CleanResult:
+    """Read the work's pages, clean them, and write its passages and clean-up log.
+    Cleaning again replaces the passages, so it refuses once any has been corrected,
+    unless `force`."""
+    from dataclasses import asdict
+
+    from ocr.layout import get_layout
+    from ocr.pages import leaves_for_pages, load_pages, read_page_numbers
+    from ocr.work import PASSAGE_WORDS, SOURCES, OcrPassage, group_passages
+
+    config = workdir.config
+    sources = sources or SOURCES
+    if not force and any(p.correction.status != "pending" for p in workdir.passages()):
+        raise RuntimeError(f"{config.work}: passages already corrected; clean again with force")
+    numbers_path = sources / config.page_numbers
+    leaves = leaves_for_pages(read_page_numbers(numbers_path), *config.pages)
+    pages = load_pages(sources / config.djvu_xml, numbers_path, leaves)
+    result = clean_pages(pages, get_layout(config.layout))
+    agree, read = page_map_agreement(result.removals)
+    if read and agree * 2 < read:
+        raise RuntimeError(
+            f"{config.work}: the page numbers printed on the pages agree with "
+            f"{config.page_numbers} on only {agree} of {read} pages; the scan's images and "
+            "its page map are out of step")
+    number = {p.leaf: p.number for p in pages}
+    passages = []
+    for i, group in enumerate(group_passages(result.paragraphs, passage_words or PASSAGE_WORDS), 1):
+        leaves_ = sorted({leaf for para in group for leaf in para.leaves})
+        passages.append(OcrPassage(
+            id=f"{i:04d}", leaves=leaves_, pages=[number[x] for x in leaves_],
+            raw_ocr="\n\n".join(para.raw for para in group),
+            cleaned="\n\n".join(para.text for para in group)))
+    workdir.save_passages(passages)
+    workdir.save_cleanup({
+        "pages": [{"leaf": p.leaf, "page": p.number} for p in pages],
+        "page_map": {"agree": agree, "read": read},
+        "removals": [asdict(r) for r in result.removals],
+        "hyphens": [asdict(h) for h in result.hyphens],
+        "notes": [asdict(n) for n in result.notes],
+    })
+    return result

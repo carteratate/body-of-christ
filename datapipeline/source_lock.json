@@ -221,6 +221,28 @@
  },
  {
   "collection": "_incoming",
+  "path": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+  "sha256": "a7ea0993231b0d003a2819775c57a72af21b85f40c27ec116078d8a18300c72f",
+  "bytes": 25115096,
+  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+  "acquired": "2026-11-02",
+  "hashed_on": "2026-11-02",
+  "role": "vendored-unregistered",
+  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
+ },
+ {
+  "collection": "_incoming",
+  "path": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+  "sha256": "a6e905368f94648a8a4c63897623d4245366f153ac4946f42e41588da5e4f34c",
+  "bytes": 134743,
+  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+  "acquired": "2026-11-02",
+  "hashed_on": "2026-11-02",
+  "role": "vendored-unregistered",
+  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
+ },
+ {
+  "collection": "_incoming",
   "path": "_incoming/councils/creeds2.xml",
   "sha256": "412c952ff096d7e09a1f2d9e838e9652f0fedcbf7e8d6f3999c27e69ab69091e",
   "bytes": 4065931,

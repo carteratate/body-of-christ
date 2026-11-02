@@ -1,0 +1,20 @@
+{
+ "work": "schroeder-lateran-1",
+ "title": "First Lateran Council, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 177–194",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": ["177", "194"],
+ "layout": "single-column",
+ "baseline": {
+  "path": "_incoming/councils/fordham-lateran1.html",
+  "start": "^\\[Schroeder Introduction\\]",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {"fraction": 0.25, "minimum": 5, "maximum": 20, "unit": "work"}
+}
