@@ -397,6 +397,19 @@ def test_narrative_of_author_death():
     assert content.narrative_of_author_death([nested])
 
 
+def test_unique_reference():
+    twice = _doc(_p(anchor="a", reference="T, Chapter I"), _p(anchor="b", reference="T, Chapter I"),
+                 _p(anchor="c", reference="T, Chapter II"))
+    assert content.unique_references("medieval", [twice]) == {
+        "labels.unique_reference:medieval/doc-1": ["T, Chapter I"]}
+    pieces = _doc(_p(anchor="a", reference="T, Chapter I (part 1 of 2)"),
+                  _p(anchor="a/from-p3", reference="T, Chapter I (part 2 of 2)"))
+    assert content.unique_references("medieval", [pieces]) == {}
+    # The Summa and the Catechism join once 1.7 and 1.6 cite their pieces.
+    assert not any(k.startswith("labels.unique_reference")
+                   for k in content.run("catechism", [twice], works=[]))
+
+
 def test_reference_author_consistent():
     bad = _doc(_p(reference="Justin Martyr — Hortatory Address, Chapter I", passage_author="Pseudo-Justin"),
                collection="church-fathers", author="Justin Martyr")

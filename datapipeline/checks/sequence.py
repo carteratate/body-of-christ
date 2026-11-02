@@ -14,6 +14,7 @@ from checks.coverage import _PassageText, documents_by_file, match_key, measurab
 from checks.coverage import split_sentences
 from checks.source_text import SourceUnit
 from identity import unit_anchor
+from ingest.pieces import unit_reference
 from model import Document
 
 CCC_LAST = 2865
@@ -83,7 +84,7 @@ def bible_verses(documents: list[Document], units: list[SourceUnit]) -> Sequence
                 if (base, p.reference) in seen:
                     continue
                 seen.add((base, p.reference))
-                m = _BIBLE_REF.match(p.reference)
+                m = _BIBLE_REF.match(unit_reference(p.reference))
                 if not m:
                     result.out_of_range.append(f"{code}:{p.reference}")
                     continue
@@ -303,7 +304,7 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
                  if u.region == "body" and u.unit_id and u.unit_id.isdigit()}
     built: dict[int, set[str]] = defaultdict(set)
     for p in document.passages:
-        m = _SECTION_REF.search(p.reference)
+        m = _SECTION_REF.search(unit_reference(p.reference))
         if m:
             built[int(m[1])].add(_anchor_base(p.anchor))
     return SequenceResult(

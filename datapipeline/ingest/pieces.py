@@ -9,6 +9,12 @@ its name while its opening unit still opens a piece, however the cuts around it 
 
 Adapters clean a unit's text after reading it (footnote markers, apparatus, whitespace),
 so offsets in the cleaned text are mapped back to the source units by aligning words.
+
+Where the cuts fall is `pack_units`'s job (1.10c): a split unit is packed from whole source
+units (verses, paragraphs), and only a source unit longer than a card is cut inside. Each
+piece then cites its own text (`piece_reference`): the range of the labelled units it
+holds ("Genesis 1:14–31"), or, where the units carry no label, its place among the
+unit's pieces ("(part 2 of 3)", D5).
 """
 from __future__ import annotations
 
@@ -19,6 +25,7 @@ from dataclasses import dataclass
 from difflib import SequenceMatcher
 
 from identity import PIECE_MARK
+from ingest.common import split_display_passage
 
 _WORD = re.compile(r"[^\W_]+")
 
@@ -134,6 +141,116 @@ def name_pieces(unit: str, text: str, pieces: list[str], segments: list[Segment]
             anchor = f"{unit}{PIECE_MARK}{segments[s].locator}-{cuts[s]}"
         out.append((anchor, tuple(units)))
     return out
+
+
+@dataclass(frozen=True)
+class Packed:
+    """One piece from `pack_units`: its text, the index of the unit it opens with and of
+    the last unit whose text it holds, and whether it opens at that first unit's start (a
+    later fragment of a unit longer than the cap opens inside it)."""
+    text: str
+    first: int
+    last: int
+    opens: bool = True
+
+
+def pack_units(units: list[tuple[str | None, str]], max_chars: int,
+               sep: str = "\n\n") -> list[Packed]:
+    """Cut a unit read as `units`, `(label, text)` in reading order, into pieces that
+    hold whole units (1.10c). A unit is a verse, a numbered paragraph, a source `<p>`.
+
+    The cuts are `split_display_passage`'s over the joined text, so a piece is at most
+    `max_chars`, or up to `DISPLAY_PASSAGE_MAX_OVERSHOOT` more where it ends with a unit,
+    except that no cut falls inside a unit no longer than the cap: one chosen there moves
+    to that unit's start (or its end, where the piece opens with it). Only a unit longer
+    than the cap is cut inside, and the units around it may share its first and last
+    pieces. Where no cut moves, the pieces are those `split_display_passage` gives.
+
+    The joined text is the units' texts joined with `sep`, stripped. With `sep=""` the
+    units are consecutive slices of one text, each keeping the whitespace that follows it
+    (`cut_at_units`), so every piece is a slice of that text."""
+    texts = [text for _, text in units]
+    joined = sep.join(texts)
+    lead = len(joined) - len(joined.lstrip())
+    spans: list[tuple[int, int]] = []        # each unit's stripped text in `joined`
+    at = 0
+    for k, text in enumerate(texts):
+        if k:
+            at += len(sep)
+        body = text.strip()
+        begin = at + (len(text) - len(text.lstrip()))
+        spans.append((begin - lead, begin - lead + len(body)))
+        at += len(text)
+    text = joined.strip()
+    keep = [span for span, unit in zip(spans, texts)
+            if unit.strip() and span[1] - span[0] <= max_chars]
+    pieces = split_display_passage(text, max_chars, keep)
+    out: list[Packed] = []
+    for piece, begin in zip(pieces, piece_spans(text, pieces)):
+        finish = begin + len(piece)
+        held = [k for k, (a, b) in enumerate(spans) if a < finish and b > begin and b > a]
+        out.append(Packed(piece, held[0], held[-1], spans[held[0]][0] >= begin))
+    return out
+
+
+def cut_at_units(text: str, segments: list[Segment],
+                 source: SourceMap | None = None) -> list[tuple[int, str]]:
+    """`text`, a cleaned unit text read from `segments`, cut where each segment's text
+    starts: (segment index, slice), each slice keeping the whitespace after it so the
+    slices join back to `text`. A cut falls before the whole token holding the segment's
+    first word (an opening quote stays with its paragraph). A segment with no word in
+    `text` adds nothing; its text, if any, is in the slice before it."""
+    source = source or SourceMap(text, segments)
+    cuts: list[tuple[int, int]] = []
+    for s, at in source.openings():
+        while at > 0 and not text[at - 1].isspace():
+            at -= 1
+        if cuts and at <= cuts[-1][1]:
+            continue
+        cuts.append((s, 0 if not cuts else at))
+    if not cuts:
+        return [(0, text)] if text else []
+    ends = [at for _, at in cuts[1:]] + [len(text)]
+    return [(s, text[at:end]) for (s, at), end in zip(cuts, ends)]
+
+
+def pack_text(text: str, segments: list[Segment], max_chars: int) -> list[str]:
+    """The pieces of a cleaned unit text, packed from the source units it was read from
+    (`cut_at_units`), for adapters whose units carry no label of their own."""
+    units = [(None, t) for _, t in cut_at_units(text, segments)]
+    return [p.text for p in pack_units(units, max_chars, sep="")]
+
+
+RANGE = "\u2013"   # EN DASH, as Bible references write ranges ("Matthew 5:1–4")
+# The suffix `piece_reference` adds to a piece of a unit with no labels.
+PART_SUFFIX = re.compile(r" \(part (\d+) of (\d+)\)$")
+
+
+def unit_reference(reference: str) -> str:
+    """A piece's reference without its "(part 2 of 3)": the citation of its whole unit,
+    which checks read numbers from ("Lumen Gentium, §8")."""
+    return PART_SUFFIX.sub("", reference)
+
+
+def piece_reference(base: str, first_label: str | None, last_label: str | None,
+                    part: int, parts: int) -> str:
+    """The citation of one piece of a unit cited as `base` (1.10c, D5).
+
+    With labels, the range the piece holds: `base first–last`, the last label shortened
+    where it repeats the first's chapter ("Genesis 1:14–31", "Genesis 1:31–2:3"), or
+    `base first` for one label. Without labels, `base` alone for a unit in one piece,
+    otherwise `base (part 2 of 3)`: the only piece suffix in the corpus."""
+    if first_label is not None:
+        last = last_label if last_label is not None else first_label
+        if last == first_label:
+            return f"{base} {first_label}"
+        head, colon, _ = first_label.rpartition(":")
+        if colon and last.startswith(head + colon):
+            last = last[len(head) + 1:]
+        return f"{base} {first_label}{RANGE}{last}"
+    if parts <= 1:
+        return base
+    return f"{base} (part {part} of {parts})"
 
 
 ORDINAL_ATTR = "data-source-ordinal"

@@ -18,9 +18,8 @@ from config import settings
 from model import Document, Passage
 from normalize.text import clean_text, fold_ligatures
 from normalize.caps import smart_title_case
-from ingest.common import (_block_text, _book_label, direct_blocks_text, direct_text_with_notes,
-                           split_display_passage)
-from ingest.pieces import Segment, name_pieces, piece_spans
+from ingest.common import _block_text, _book_label, direct_blocks_text, direct_text_with_notes
+from ingest.pieces import Segment, name_pieces, pack_units, piece_reference, piece_spans
 from ingest.scripture_notes import scripture_reference
 from registry import ANCHOR_SCHEME, resolve_document_id
 
@@ -94,8 +93,10 @@ def _label(text: str) -> str:
     return fold_ligatures(text.strip().rstrip(" ."))
 
 
-def _reference(author: str, title: str, label: str) -> str:
-    return f"{author} — {title}, {label}"
+def _reference(title: str, label: str) -> str:
+    """A chapter's citation: no author (C-15). The card, the copied citation and the
+    models take the author from the resolved display author, so a relabel reaches them."""
+    return f"{title}, {label}"
 
 
 def make_doc(*, collection: str, filename: str, author: str, title: str,
@@ -138,10 +139,11 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             meta["book"] = book_clean
         if extra_meta:
             meta.update(extra_meta)
-        parts = split_display_passage(raw, maxc)
+        # Pieces hold whole paragraphs and verse blocks (1.10c); `raw` joins them so.
+        parts = [p.text for p in pack_units([(None, b) for b in raw.split("\n\n")], maxc)]
         named = name_pieces(ch_key, raw, parts, paragraph_segments(elem))
-        for part, (anchor, units), notes in zip(parts, named,
-                                                notes_per_piece(raw, parts, removed)):
+        for k, (part, (anchor, units), notes) in enumerate(zip(
+                parts, named, notes_per_piece(raw, parts, removed)), 1):
             # Notes are editor material (rule G): their count is kept, and the scripture
             # references among them become the passage's footnotes.
             content = clean_text(part)
@@ -153,7 +155,8 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
                     piece_meta["footnotes"] = refs
             passages.append(Passage(
                 content=content,
-                reference=_reference(author, title, label),
+                reference=piece_reference(_reference(title, label), None, None,
+                                          k, len(parts)),
                 anchor=anchor, chapter_key=ch_key, chapter_label=label,
                 position=pos, unit_label=None, metadata=piece_meta, source_units=units))
             pos += 1
@@ -173,7 +176,8 @@ def distinct_titles(documents: list[Document]) -> list[Document]:
     """No two documents of a collection share a title (C-15): where they do once their
     trailing periods are gone (Papias's "Fragments" and Methodius's "Fragments."), each
     takes its author: "Fragments of Papias", "Epistle of Polycarp to the Philippians".
-    Their passages' references follow. Document IDs come from the registry and stay."""
+    Their passages' references follow, piece suffixes kept. Document IDs come from the
+    registry and stay."""
     by_title: dict[str, list[Document]] = {}
     for d in documents:
         by_title.setdefault(d.title.casefold(), []).append(d)
@@ -181,9 +185,13 @@ def distinct_titles(documents: list[Document]) -> list[Document]:
         if len(shared) < 2:
             continue
         for d in shared:
+            old = d.title
             d.title = _with_author(d.title, d.author)
             for p in d.passages:
-                p.reference = _reference(d.author, d.title, p.chapter_label)
+                if not p.reference.startswith(old):
+                    raise ValueError(f"{d.id}: reference {p.reference!r} does not open "
+                                     f"with its title")
+                p.reference = d.title + p.reference[len(old):]
     return documents
 
 

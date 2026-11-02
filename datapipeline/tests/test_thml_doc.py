@@ -76,7 +76,7 @@ def test_make_doc_strips_trailing_period_keeps_id():
                    title="Fragments.", chapters=_chapters(_ONE.format(a="word " * 40)),
                    source_key="church-fathers/unregistered.xml#ii")
     assert (doc.author, doc.title) == ("Methodius", "Fragments")
-    assert doc.passages[0].reference == "Methodius — Fragments, Chapter 1"
+    assert doc.passages[0].reference == "Fragments, Chapter 1"
     # identity.slugify drops punctuation, so the computed ID is the one the period gave.
     assert doc.id == document_id("church-fathers", "Methodius.", "Fragments.")
 
@@ -89,7 +89,7 @@ def test_make_doc_folds_ligatures_in_labels():
     p = doc.passages[0]
     assert (doc.author, doc.title, p.chapter_label) == \
         ("Irenaeus", "Of the Manichaeans", "The Phoenix")
-    assert p.reference == "Irenaeus — Of the Manichaeans, The Phoenix"
+    assert p.reference == "Of the Manichaeans, The Phoenix"
     assert "æ" not in p.content
 
 
@@ -110,7 +110,7 @@ def test_distinct_titles_gives_shared_titles_their_author():
         "Fragments of Papias", "Fragments of Methodius",
         "Epistle of Polycarp to the Philippians", "Epistle of Ignatius to the Philippians",
         "Epistle to the Romans"]
-    assert docs[1].passages[0].reference == "Methodius — Fragments of Methodius, Chapter 1"
+    assert docs[1].passages[0].reference == "Fragments of Methodius, Chapter 1"
     assert [d.id for d in docs] == ids
 
 

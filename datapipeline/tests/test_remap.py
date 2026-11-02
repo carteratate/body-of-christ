@@ -400,6 +400,15 @@ def test_unit_key_strips_piece_numbers_only():
     assert R.unit_key(p("council/sec-4/3")) != R.unit_key(p("council/sec-4/4"))
 
 
+def test_pieces_citing_their_own_text_stay_one_unit():
+    # Since 1.10c each piece has its own reference and, in the Bible, its own first verse.
+    first = old("x", "genesis/1/1", "", 0, reference="Genesis 1:1–13", unit_label="1")
+    later = old("x", "genesis/1/1/from-1-14", "", 1, reference="Genesis 1:14–31",
+                unit_label="14")
+    nxt = old("x", "genesis/2/1", "", 2, reference="Genesis 2:1–3", unit_label="1")
+    assert R.units([first, later, nxt]) == [[first, later], [nxt]]
+
+
 def test_unlabelled_paragraphs_sharing_a_reference_are_checked_one_by_one():
     a, b, c = text("a"), text("b"), text("c")
     olds = [old(pid(f"sec-4/{i}"), f"sec-4/{i}", t, i, reference="Letter")
