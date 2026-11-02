@@ -172,6 +172,30 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   for one flipbook publication (its GUID): the API checks the live GUID once a day in the
   background and links to the cover on a mismatch until the table is rebuilt. Document
   metadata, `/sources` and the 403 keep the cover URL.
+- **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
+  **applied to production 2 Nov 2026**).
+  Places for what the cleanup decides; **nothing reads or writes them yet**, and every
+  existing row is live and searchable. Document facts on `documents` (`genre` → the
+  `corpus_genres` lookup, seeded from `datapipeline/registry/genres.py`; `issuer` slug and
+  `issuer_label`; `date_display`, `certainty`, `attribution_note`, `notes`,
+  `source_credit`, `clavis_ref`, `superseded_by`/`superseded_note`). Works inside one
+  document (D6): `document_works`, and `chunks.work_key`. Passage fields on `chunks`:
+  `searchable` (default true), `language` (NULL = English), `passage_author`, `voice`
+  (NULL or `rejected`), `note`, and `superseded_by` for a history passage, which is never
+  searchable. **Retirement** (D3): `retired_at` on both tables; a retired passage must sit
+  at position ≤ −1,000,000, and `refresh_document_outline` and the outline trigger now
+  ignore and react to retired rows. `corpus_tombstones` (reason CHECK = registry
+  `REMOVAL_REASONS` + `rolled-back`; tests read the Python list), `corpus_redirects`
+  (`moved`/`split`/`merged`/`renumbered`) and `corpus_publishes` (one row per 2.2w
+  publish). The **`staging` schema** mirrors `documents`, `chunks`, `document_chapters`,
+  `document_contents`, `document_works`, `corpus_tombstones` and `corpus_redirects`
+  (`LIKE … INCLUDING ALL`, no foreign keys), made by `create_corpus_staging()` and removed
+  by `drop_corpus_staging()`; `staging.refresh_document_outline` builds staged outlines.
+  The stage-then-apply writer (2.2w) is what fills it. All new objects: RLS on, no
+  policies, revoked from `anon`/`authenticated`. A `documents.source_credit` column now
+  exists beside the API's derived `source_credit` (`app/reader_access.py`); which wins is
+  2.4a's decision. Apply 0043 right after 0042: 0042 is catalog-only (milliseconds under
+  ACCESS EXCLUSIVE), 0043 validates under locks that do not block reads.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -180,7 +204,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038, 0040 and 0041 are committed; `0035_studies.sql` is drafted only (see above), and 0039 is reserved for corpus-cleanup item 2.2a (#178). **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0043 are committed; `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
