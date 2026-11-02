@@ -172,7 +172,8 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   for one flipbook publication (its GUID): the API checks the live GUID once a day in the
   background and links to the cover on a mismatch until the table is rebuilt. Document
   metadata, `/sources` and the 403 keep the cover URL.
-- **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178).
+- **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
+  **applied to production 2 Nov 2026**).
   Places for what the cleanup decides; **nothing reads or writes them yet**, and every
   existing row is live and searchable. Document facts on `documents` (`genre` → the
   `corpus_genres` lookup, seeded from `datapipeline/registry/genres.py`; `issuer` slug and
