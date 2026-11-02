@@ -18,7 +18,7 @@ from difflib import SequenceMatcher
 from typing import Callable
 
 import registry
-from identity import unit_anchor
+from identity import PIECE_MARK, unit_anchor
 from model import Document, Passage
 
 # The six outcomes (D5). Each old passage takes exactly one.
@@ -222,12 +222,15 @@ def unit_key(p: OldPassage | NewPassage) -> tuple:
 
 
 def units(passages: list) -> list[list]:
-    """`passages` (one document, in position order) grouped into units."""
+    """`passages` (one document, in position order) grouped into units. A later piece
+    named after its first source unit (`identity.PIECE_MARK`, 2.1) joins the unit its
+    anchor names, whatever its own reference: since 1.10c each piece cites its own text."""
     out: list[list] = []
     previous = None
     for p in passages:
         key = unit_key(p)
-        if out and key == previous:
+        if out and (key == previous or (PIECE_MARK in p.anchor and
+                                        unit_anchor(p.anchor) == out[-1][0].anchor)):
             out[-1].append(p)
         else:
             out.append([p])

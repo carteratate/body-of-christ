@@ -20,8 +20,8 @@ from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
-from ingest.common import split_display_passage
 from ingest.pieces import (Segment, element_locator, name_pieces, number_elements,
+                           pack_text, piece_reference,
                            unique_unit_anchors)
 from registry import ANCHOR_SCHEME, resolve_document_id
 
@@ -70,7 +70,7 @@ class _Builder:
         body = clean_text(strip_footnote_markers(strip_boilerplate(_declutter(body))))
         if len(body) < 1:
             return
-        pieces = split_display_passage(body, settings.MAX_PASSAGE_CHARS)
+        pieces = pack_text(body, segments, settings.MAX_PASSAGE_CHARS)
         self.units.append((body, pieces, ref, base_anchor, ckey, clabel, unit, meta, segments))
 
     @property
@@ -80,8 +80,11 @@ class _Builder:
                                       [len(u[1]) > 1 for u in self.units])
         for (body, pieces, ref, _, ckey, clabel, unit, meta, segments), anc in zip(
                 self.units, anchors):
-            for piece, (anchor, held) in zip(pieces, name_pieces(anc, body, pieces, segments)):
-                out.append(Passage(content=piece, reference=ref, anchor=anchor,
+            for k, (piece, (anchor, held)) in enumerate(
+                    zip(pieces, name_pieces(anc, body, pieces, segments)), 1):
+                out.append(Passage(content=piece,
+                                   reference=piece_reference(ref, None, None, k, len(pieces)),
+                                   anchor=anchor,
                                    chapter_key=ckey, chapter_label=clabel, position=len(out),
                                    unit_label=unit, metadata=meta, source_units=held))
         return out

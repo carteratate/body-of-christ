@@ -33,6 +33,7 @@ from checks import content, structure, unit_coverage  # noqa: E402
 from checks import sequence as seq  # noqa: E402
 from checks.coverage import CoverageResult, coverage, documents_by_file  # noqa: E402
 from checks.source_text import SOURCES, collection_files, editorial_divs, file_units  # noqa: E402
+from ingest.pieces import unit_reference  # noqa: E402
 from model import Document  # noqa: E402
 from publication import SOURCE_ADAPTERS  # noqa: E402
 
@@ -93,7 +94,8 @@ def _by_title(documents: list[Document], title: str) -> list[Document]:
 
 def _chars(documents: list[Document], section: str | None = None) -> int:
     return sum(len(p.content) for d in documents for p in d.passages
-               if section is None or re.search(rf"§{section}\s*$", p.reference))
+               if section is None
+               or re.search(rf"§{section}\s*$", unit_reference(p.reference)))
 
 
 def sentinel_value(sentinel: Sentinel, documents: list[Document],

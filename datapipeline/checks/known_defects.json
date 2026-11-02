@@ -197,10 +197,6 @@
   "fixed_by": "1.3a",
   "description": "90.12% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
  },
- "coverage.encyclicals.quanta-cura-1864.html": {
-  "fixed_by": "1.3a",
-  "description": "94.94% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
- },
  "coverage.encyclicals.traditi-humilitati.html": {
   "fixed_by": "1.3a",
   "description": "94.96% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
@@ -339,12 +335,12 @@
  "health.R12_note_caller:apostolic-exhortations/433cf2af-194e-549f-b45d-85562d5b8b19": {
   "fixed_by": "1.3a",
   "description": "Pastores Gregis: 95 passages hold footnote callers (C-17)",
-  "units": ["pastores-gregis/1", "pastores-gregis/10", "pastores-gregis/10/from-e60", "pastores-gregis/11", "pastores-gregis/12/from-e75", "pastores-gregis/13", "pastores-gregis/13/from-e82", "pastores-gregis/13/from-e84", "pastores-gregis/14", "pastores-gregis/15", "pastores-gregis/16", "pastores-gregis/17", "pastores-gregis/17/from-e104", "pastores-gregis/18", "pastores-gregis/19", "pastores-gregis/2", "pastores-gregis/20", "pastores-gregis/22", "pastores-gregis/23", "pastores-gregis/24", "pastores-gregis/24/from-e139", "pastores-gregis/25", "pastores-gregis/26", "pastores-gregis/27", "pastores-gregis/28", "pastores-gregis/29", "pastores-gregis/29/from-e175", "pastores-gregis/3", "pastores-gregis/30", "pastores-gregis/31", "pastores-gregis/32", "pastores-gregis/34", "pastores-gregis/35", "pastores-gregis/35/from-e209", "pastores-gregis/36", "pastores-gregis/37", "pastores-gregis/38", "pastores-gregis/39/from-e236", "pastores-gregis/4", "pastores-gregis/40", "pastores-gregis/41", "pastores-gregis/42", "pastores-gregis/43", "pastores-gregis/43/from-e262", "pastores-gregis/43/from-e266", "pastores-gregis/44", "pastores-gregis/44/from-e274", "pastores-gregis/45", "pastores-gregis/46", "pastores-gregis/47", "pastores-gregis/47/from-e287", "pastores-gregis/48", "pastores-gregis/49", "pastores-gregis/5", "pastores-gregis/5/from-e25", "pastores-gregis/50", "pastores-gregis/51", "pastores-gregis/52", "pastores-gregis/53", "pastores-gregis/54", "pastores-gregis/55", "pastores-gregis/55/from-e327-2", "pastores-gregis/56", "pastores-gregis/56/from-e333", "pastores-gregis/56/from-e337-2", "pastores-gregis/57", "pastores-gregis/58", "pastores-gregis/58/from-e351", "pastores-gregis/59", "pastores-gregis/59/from-e357", "pastores-gregis/6", "pastores-gregis/60", "pastores-gregis/61", "pastores-gregis/61/from-e367", "pastores-gregis/62", "pastores-gregis/63", "pastores-gregis/63/from-e376", "pastores-gregis/64", "pastores-gregis/65", "pastores-gregis/66", "pastores-gregis/67", "pastores-gregis/67/from-e401", "pastores-gregis/68", "pastores-gregis/69", "pastores-gregis/7", "pastores-gregis/70", "pastores-gregis/71", "pastores-gregis/72", "pastores-gregis/73", "pastores-gregis/73/from-e435", "pastores-gregis/74", "pastores-gregis/8", "pastores-gregis/8/from-e43", "pastores-gregis/8/from-e48-2", "pastores-gregis/9"]
+  "units": ["pastores-gregis/1", "pastores-gregis/10", "pastores-gregis/10/from-e60", "pastores-gregis/11", "pastores-gregis/12/from-e75", "pastores-gregis/13", "pastores-gregis/13/from-e82", "pastores-gregis/13/from-e84", "pastores-gregis/14", "pastores-gregis/15", "pastores-gregis/16", "pastores-gregis/17", "pastores-gregis/17/from-e104", "pastores-gregis/18", "pastores-gregis/19", "pastores-gregis/2", "pastores-gregis/20", "pastores-gregis/22", "pastores-gregis/23", "pastores-gregis/24", "pastores-gregis/24/from-e139", "pastores-gregis/25", "pastores-gregis/26", "pastores-gregis/27", "pastores-gregis/28", "pastores-gregis/29", "pastores-gregis/29/from-e175", "pastores-gregis/3", "pastores-gregis/30", "pastores-gregis/31", "pastores-gregis/32", "pastores-gregis/34", "pastores-gregis/35", "pastores-gregis/35/from-e209", "pastores-gregis/36", "pastores-gregis/37", "pastores-gregis/38", "pastores-gregis/39/from-e236", "pastores-gregis/4", "pastores-gregis/40", "pastores-gregis/41", "pastores-gregis/42", "pastores-gregis/43", "pastores-gregis/43/from-e262", "pastores-gregis/43/from-e266", "pastores-gregis/44", "pastores-gregis/44/from-e274", "pastores-gregis/45", "pastores-gregis/46", "pastores-gregis/47", "pastores-gregis/47/from-e287", "pastores-gregis/48", "pastores-gregis/49", "pastores-gregis/5", "pastores-gregis/5/from-e25", "pastores-gregis/50", "pastores-gregis/51", "pastores-gregis/52", "pastores-gregis/53", "pastores-gregis/54", "pastores-gregis/55", "pastores-gregis/55/from-e327", "pastores-gregis/56", "pastores-gregis/56/from-e333", "pastores-gregis/56/from-e337", "pastores-gregis/57", "pastores-gregis/58", "pastores-gregis/58/from-e351", "pastores-gregis/59", "pastores-gregis/59/from-e357", "pastores-gregis/6", "pastores-gregis/60", "pastores-gregis/61", "pastores-gregis/61/from-e367", "pastores-gregis/62", "pastores-gregis/63", "pastores-gregis/63/from-e376", "pastores-gregis/64", "pastores-gregis/65", "pastores-gregis/66", "pastores-gregis/67", "pastores-gregis/67/from-e401", "pastores-gregis/68", "pastores-gregis/69", "pastores-gregis/7", "pastores-gregis/70", "pastores-gregis/71", "pastores-gregis/72", "pastores-gregis/73", "pastores-gregis/73/from-e435", "pastores-gregis/74", "pastores-gregis/8", "pastores-gregis/8/from-e43", "pastores-gregis/8/from-e48", "pastores-gregis/9"]
  },
  "health.R12_note_caller:apostolic-exhortations/4dbf7902-d2a2-5bc6-81f8-09b7e0fba119": {
   "fixed_by": "1.3a",
   "description": "Ecclesia in Asia: 66 passages hold footnote callers (C-17)",
-  "units": ["ecclesia-in-asia/1", "ecclesia-in-asia/10", "ecclesia-in-asia/11/from-e70", "ecclesia-in-asia/13", "ecclesia-in-asia/13/from-e78", "ecclesia-in-asia/14", "ecclesia-in-asia/15", "ecclesia-in-asia/15/from-e91", "ecclesia-in-asia/16", "ecclesia-in-asia/16/from-e96", "ecclesia-in-asia/17", "ecclesia-in-asia/19", "ecclesia-in-asia/2", "ecclesia-in-asia/20", "ecclesia-in-asia/20/from-e117", "ecclesia-in-asia/20/from-e119", "ecclesia-in-asia/21", "ecclesia-in-asia/21/from-e125", "ecclesia-in-asia/22", "ecclesia-in-asia/22/from-e131", "ecclesia-in-asia/22/from-e132-2", "ecclesia-in-asia/23", "ecclesia-in-asia/23/from-e136", "ecclesia-in-asia/24", "ecclesia-in-asia/24/from-e143", "ecclesia-in-asia/24/from-e145-2", "ecclesia-in-asia/25", "ecclesia-in-asia/25/from-e150", "ecclesia-in-asia/26", "ecclesia-in-asia/27", "ecclesia-in-asia/28", "ecclesia-in-asia/28/from-e161", "ecclesia-in-asia/29", "ecclesia-in-asia/3", "ecclesia-in-asia/30", "ecclesia-in-asia/31", "ecclesia-in-asia/31/from-e175", "ecclesia-in-asia/32", "ecclesia-in-asia/33", "ecclesia-in-asia/34", "ecclesia-in-asia/34/from-e194", "ecclesia-in-asia/35", "ecclesia-in-asia/36", "ecclesia-in-asia/37", "ecclesia-in-asia/38", "ecclesia-in-asia/39", "ecclesia-in-asia/4", "ecclesia-in-asia/40", "ecclesia-in-asia/41", "ecclesia-in-asia/42", "ecclesia-in-asia/43", "ecclesia-in-asia/44", "ecclesia-in-asia/44/from-e231-2", "ecclesia-in-asia/45", "ecclesia-in-asia/46", "ecclesia-in-asia/47", "ecclesia-in-asia/48", "ecclesia-in-asia/49", "ecclesia-in-asia/5", "ecclesia-in-asia/51", "ecclesia-in-asia/6", "ecclesia-in-asia/7", "ecclesia-in-asia/7/from-e40", "ecclesia-in-asia/8", "ecclesia-in-asia/9/from-e52", "ecclesia-in-asia/9/from-e56"]
+  "units": ["ecclesia-in-asia/1", "ecclesia-in-asia/10", "ecclesia-in-asia/11/from-e70", "ecclesia-in-asia/13", "ecclesia-in-asia/13/from-e78", "ecclesia-in-asia/14", "ecclesia-in-asia/15", "ecclesia-in-asia/15/from-e91", "ecclesia-in-asia/16", "ecclesia-in-asia/16/from-e96", "ecclesia-in-asia/17", "ecclesia-in-asia/19", "ecclesia-in-asia/2", "ecclesia-in-asia/20", "ecclesia-in-asia/20/from-e117", "ecclesia-in-asia/20/from-e119", "ecclesia-in-asia/21", "ecclesia-in-asia/21/from-e125", "ecclesia-in-asia/22", "ecclesia-in-asia/22/from-e131", "ecclesia-in-asia/22/from-e132", "ecclesia-in-asia/23", "ecclesia-in-asia/23/from-e136", "ecclesia-in-asia/24", "ecclesia-in-asia/24/from-e143", "ecclesia-in-asia/24/from-e145", "ecclesia-in-asia/25", "ecclesia-in-asia/25/from-e150", "ecclesia-in-asia/26", "ecclesia-in-asia/27", "ecclesia-in-asia/28", "ecclesia-in-asia/28/from-e161", "ecclesia-in-asia/29", "ecclesia-in-asia/3", "ecclesia-in-asia/30", "ecclesia-in-asia/31", "ecclesia-in-asia/31/from-e175", "ecclesia-in-asia/32", "ecclesia-in-asia/33", "ecclesia-in-asia/34", "ecclesia-in-asia/34/from-e194", "ecclesia-in-asia/35", "ecclesia-in-asia/36", "ecclesia-in-asia/37", "ecclesia-in-asia/38", "ecclesia-in-asia/39", "ecclesia-in-asia/4", "ecclesia-in-asia/40", "ecclesia-in-asia/41", "ecclesia-in-asia/42", "ecclesia-in-asia/43", "ecclesia-in-asia/44", "ecclesia-in-asia/44/from-e231", "ecclesia-in-asia/45", "ecclesia-in-asia/46", "ecclesia-in-asia/47", "ecclesia-in-asia/48", "ecclesia-in-asia/49", "ecclesia-in-asia/5", "ecclesia-in-asia/51", "ecclesia-in-asia/6", "ecclesia-in-asia/7", "ecclesia-in-asia/7/from-e40", "ecclesia-in-asia/8", "ecclesia-in-asia/9/from-e52", "ecclesia-in-asia/9/from-e56"]
  },
  "health.R12_note_caller:apostolic-exhortations/5017df8e-c59c-5945-a5ec-c5a0b4ad1378": {
   "fixed_by": "1.3a",
@@ -464,7 +460,7 @@
  "health.R12_note_caller:councils/706adce0-8af2-5a30-877b-82e701601a53": {
   "fixed_by": "1.2b",
   "description": "Council of Basel-Ferrara-Florence: 5 passages hold footnote callers (C-17)",
-  "units": ["council-of-basel-ferrara-florence/sec-0/14", "council-of-basel-ferrara-florence/sec-0/2", "council-of-basel-ferrara-florence/sec-0/25/from-e103-2", "council-of-basel-ferrara-florence/sec-0/3", "council-of-basel-ferrara-florence/sec-0/97"]
+  "units": ["council-of-basel-ferrara-florence/sec-0/14", "council-of-basel-ferrara-florence/sec-0/2", "council-of-basel-ferrara-florence/sec-0/25/from-e103", "council-of-basel-ferrara-florence/sec-0/3", "council-of-basel-ferrara-florence/sec-0/97"]
  },
  "health.R12_note_caller:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
   "fixed_by": "1.1",
@@ -549,7 +545,7 @@
  "health.R12_note_caller:encyclicals/5286cbe3-2d3b-57e0-bdff-f349086d1e04": {
   "fixed_by": "1.3a",
   "description": "Evangelium Vitae: 65 passages hold footnote callers (C-17)",
-  "units": ["evangelium-vitae/101", "evangelium-vitae/102", "evangelium-vitae/103", "evangelium-vitae/104", "evangelium-vitae/105", "evangelium-vitae/17", "evangelium-vitae/2", "evangelium-vitae/20", "evangelium-vitae/22", "evangelium-vitae/24", "evangelium-vitae/25/from-e106", "evangelium-vitae/26", "evangelium-vitae/29", "evangelium-vitae/3", "evangelium-vitae/34", "evangelium-vitae/35", "evangelium-vitae/38", "evangelium-vitae/42", "evangelium-vitae/43", "evangelium-vitae/43/from-e183-2", "evangelium-vitae/44", "evangelium-vitae/45", "evangelium-vitae/5", "evangelium-vitae/52", "evangelium-vitae/53", "evangelium-vitae/54", "evangelium-vitae/55", "evangelium-vitae/56", "evangelium-vitae/57", "evangelium-vitae/57/from-e251-2", "evangelium-vitae/58", "evangelium-vitae/59", "evangelium-vitae/6", "evangelium-vitae/60", "evangelium-vitae/61", "evangelium-vitae/62", "evangelium-vitae/63", "evangelium-vitae/65", "evangelium-vitae/65/from-e280-2", "evangelium-vitae/66", "evangelium-vitae/67", "evangelium-vitae/70", "evangelium-vitae/70/from-e300", "evangelium-vitae/71", "evangelium-vitae/72", "evangelium-vitae/73", "evangelium-vitae/75", "evangelium-vitae/78", "evangelium-vitae/79", "evangelium-vitae/8", "evangelium-vitae/80", "evangelium-vitae/82", "evangelium-vitae/83", "evangelium-vitae/84", "evangelium-vitae/86", "evangelium-vitae/87", "evangelium-vitae/9", "evangelium-vitae/91", "evangelium-vitae/92", "evangelium-vitae/95", "evangelium-vitae/96", "evangelium-vitae/97", "evangelium-vitae/97/from-e396", "evangelium-vitae/98", "evangelium-vitae/99"]
+  "units": ["evangelium-vitae/101", "evangelium-vitae/102", "evangelium-vitae/103", "evangelium-vitae/104", "evangelium-vitae/105", "evangelium-vitae/17", "evangelium-vitae/2", "evangelium-vitae/20", "evangelium-vitae/22", "evangelium-vitae/24", "evangelium-vitae/25/from-e106", "evangelium-vitae/26", "evangelium-vitae/29", "evangelium-vitae/3", "evangelium-vitae/34", "evangelium-vitae/35", "evangelium-vitae/38", "evangelium-vitae/42", "evangelium-vitae/43", "evangelium-vitae/43/from-e183", "evangelium-vitae/44", "evangelium-vitae/45", "evangelium-vitae/5", "evangelium-vitae/52", "evangelium-vitae/53", "evangelium-vitae/54", "evangelium-vitae/55", "evangelium-vitae/56", "evangelium-vitae/57", "evangelium-vitae/57/from-e251", "evangelium-vitae/58", "evangelium-vitae/59", "evangelium-vitae/6", "evangelium-vitae/60", "evangelium-vitae/61", "evangelium-vitae/62", "evangelium-vitae/63", "evangelium-vitae/65", "evangelium-vitae/65/from-e280", "evangelium-vitae/66", "evangelium-vitae/67", "evangelium-vitae/70", "evangelium-vitae/70/from-e300", "evangelium-vitae/71", "evangelium-vitae/72", "evangelium-vitae/73", "evangelium-vitae/75", "evangelium-vitae/78", "evangelium-vitae/79", "evangelium-vitae/8", "evangelium-vitae/80", "evangelium-vitae/82", "evangelium-vitae/83", "evangelium-vitae/84", "evangelium-vitae/86", "evangelium-vitae/87", "evangelium-vitae/9", "evangelium-vitae/91", "evangelium-vitae/92", "evangelium-vitae/95", "evangelium-vitae/96", "evangelium-vitae/97", "evangelium-vitae/97/from-e396", "evangelium-vitae/98", "evangelium-vitae/99"]
  },
  "health.R12_note_caller:encyclicals/7855cbe8-58e5-544b-a6f9-628cc22ba212": {
   "fixed_by": "1.3a",
@@ -564,7 +560,7 @@
  "health.R12_note_caller:encyclicals/86c14cf0-1aa6-50c1-a49e-c1a2061df4e3": {
   "fixed_by": "1.3a",
   "description": "Dominum et Vivificantem: 74 passages hold footnote callers (C-17)",
-  "units": ["dominum-et-vivificantem/1", "dominum-et-vivificantem/10", "dominum-et-vivificantem/11", "dominum-et-vivificantem/12", "dominum-et-vivificantem/13", "dominum-et-vivificantem/14", "dominum-et-vivificantem/15", "dominum-et-vivificantem/16", "dominum-et-vivificantem/18", "dominum-et-vivificantem/19", "dominum-et-vivificantem/2-4", "dominum-et-vivificantem/2-4/from-e17", "dominum-et-vivificantem/20", "dominum-et-vivificantem/22", "dominum-et-vivificantem/23", "dominum-et-vivificantem/24", "dominum-et-vivificantem/24/from-e81", "dominum-et-vivificantem/25", "dominum-et-vivificantem/25/from-e87-2", "dominum-et-vivificantem/26", "dominum-et-vivificantem/27", "dominum-et-vivificantem/28", "dominum-et-vivificantem/29", "dominum-et-vivificantem/3", "dominum-et-vivificantem/30", "dominum-et-vivificantem/31", "dominum-et-vivificantem/32", "dominum-et-vivificantem/33", "dominum-et-vivificantem/34", "dominum-et-vivificantem/35", "dominum-et-vivificantem/36", "dominum-et-vivificantem/37", "dominum-et-vivificantem/38", "dominum-et-vivificantem/39", "dominum-et-vivificantem/39/from-e135", "dominum-et-vivificantem/4", "dominum-et-vivificantem/40", "dominum-et-vivificantem/41", "dominum-et-vivificantem/42", "dominum-et-vivificantem/43", "dominum-et-vivificantem/43/from-e149", "dominum-et-vivificantem/44", "dominum-et-vivificantem/45", "dominum-et-vivificantem/46", "dominum-et-vivificantem/47", "dominum-et-vivificantem/48", "dominum-et-vivificantem/49", "dominum-et-vivificantem/5", "dominum-et-vivificantem/50", "dominum-et-vivificantem/51", "dominum-et-vivificantem/52", "dominum-et-vivificantem/52/from-e187", "dominum-et-vivificantem/53", "dominum-et-vivificantem/54", "dominum-et-vivificantem/55", "dominum-et-vivificantem/55/from-e198", "dominum-et-vivificantem/56", "dominum-et-vivificantem/56/from-e203", "dominum-et-vivificantem/57", "dominum-et-vivificantem/58", "dominum-et-vivificantem/59", "dominum-et-vivificantem/59/from-e214", "dominum-et-vivificantem/6", "dominum-et-vivificantem/60", "dominum-et-vivificantem/61", "dominum-et-vivificantem/62", "dominum-et-vivificantem/63", "dominum-et-vivificantem/65", "dominum-et-vivificantem/66", "dominum-et-vivificantem/67", "dominum-et-vivificantem/67/from-e246", "dominum-et-vivificantem/7", "dominum-et-vivificantem/8", "dominum-et-vivificantem/9"]
+  "units": ["dominum-et-vivificantem/1", "dominum-et-vivificantem/10", "dominum-et-vivificantem/11", "dominum-et-vivificantem/12", "dominum-et-vivificantem/13", "dominum-et-vivificantem/14", "dominum-et-vivificantem/15", "dominum-et-vivificantem/16", "dominum-et-vivificantem/18", "dominum-et-vivificantem/19", "dominum-et-vivificantem/2-4", "dominum-et-vivificantem/2-4/from-e17", "dominum-et-vivificantem/20", "dominum-et-vivificantem/22", "dominum-et-vivificantem/23", "dominum-et-vivificantem/24", "dominum-et-vivificantem/24/from-e81", "dominum-et-vivificantem/25", "dominum-et-vivificantem/25/from-e87", "dominum-et-vivificantem/26", "dominum-et-vivificantem/27", "dominum-et-vivificantem/28", "dominum-et-vivificantem/29", "dominum-et-vivificantem/3", "dominum-et-vivificantem/30", "dominum-et-vivificantem/31", "dominum-et-vivificantem/32", "dominum-et-vivificantem/33", "dominum-et-vivificantem/34", "dominum-et-vivificantem/35", "dominum-et-vivificantem/36", "dominum-et-vivificantem/37", "dominum-et-vivificantem/38", "dominum-et-vivificantem/39", "dominum-et-vivificantem/39/from-e135", "dominum-et-vivificantem/4", "dominum-et-vivificantem/40", "dominum-et-vivificantem/40/from-e138", "dominum-et-vivificantem/41", "dominum-et-vivificantem/42", "dominum-et-vivificantem/43", "dominum-et-vivificantem/43/from-e149", "dominum-et-vivificantem/44", "dominum-et-vivificantem/45", "dominum-et-vivificantem/46", "dominum-et-vivificantem/47", "dominum-et-vivificantem/48", "dominum-et-vivificantem/49", "dominum-et-vivificantem/5", "dominum-et-vivificantem/50", "dominum-et-vivificantem/51", "dominum-et-vivificantem/52", "dominum-et-vivificantem/52/from-e187", "dominum-et-vivificantem/53", "dominum-et-vivificantem/54", "dominum-et-vivificantem/55", "dominum-et-vivificantem/55/from-e198", "dominum-et-vivificantem/56", "dominum-et-vivificantem/56/from-e203", "dominum-et-vivificantem/57", "dominum-et-vivificantem/58", "dominum-et-vivificantem/59", "dominum-et-vivificantem/59/from-e214", "dominum-et-vivificantem/6", "dominum-et-vivificantem/60", "dominum-et-vivificantem/61", "dominum-et-vivificantem/62", "dominum-et-vivificantem/63", "dominum-et-vivificantem/65", "dominum-et-vivificantem/66", "dominum-et-vivificantem/67", "dominum-et-vivificantem/67/from-e246", "dominum-et-vivificantem/7", "dominum-et-vivificantem/8", "dominum-et-vivificantem/9"]
  },
  "health.R12_note_caller:encyclicals/889699a4-4e87-59e9-aa73-7fa036b82a7f": {
   "fixed_by": "1.3a",
@@ -644,7 +640,7 @@
  "health.R12_note_caller:papal-documents/404f3fab-39e8-5520-b027-9b821b6384e4": {
   "fixed_by": "1.3a",
   "description": "Mulieris Dignitatem: 18 passages hold footnote callers (C-17)",
-  "units": ["mulieris-dignitatem/1", "mulieris-dignitatem/10/from-e70", "mulieris-dignitatem/11", "mulieris-dignitatem/11/from-e78", "mulieris-dignitatem/11/from-e80", "mulieris-dignitatem/2", "mulieris-dignitatem/20/from-e137", "mulieris-dignitatem/23", "mulieris-dignitatem/24/from-e161", "mulieris-dignitatem/27/from-e176", "mulieris-dignitatem/29", "mulieris-dignitatem/3/from-e23-2", "mulieris-dignitatem/5", "mulieris-dignitatem/6", "mulieris-dignitatem/6/from-e41", "mulieris-dignitatem/7", "mulieris-dignitatem/9", "mulieris-dignitatem/9/from-e64"]
+  "units": ["mulieris-dignitatem/1", "mulieris-dignitatem/10/from-e70", "mulieris-dignitatem/11", "mulieris-dignitatem/11/from-e78", "mulieris-dignitatem/11/from-e80", "mulieris-dignitatem/2", "mulieris-dignitatem/20/from-e137", "mulieris-dignitatem/23", "mulieris-dignitatem/24/from-e161", "mulieris-dignitatem/27/from-e176", "mulieris-dignitatem/29", "mulieris-dignitatem/3/from-e23", "mulieris-dignitatem/5", "mulieris-dignitatem/6", "mulieris-dignitatem/6/from-e41", "mulieris-dignitatem/7", "mulieris-dignitatem/9", "mulieris-dignitatem/9/from-e64"]
  },
  "health.R12_note_caller:papal-documents/5650f85c-a460-5633-b728-521ac9f66b5f": {
   "fixed_by": "1.3a",
@@ -759,7 +755,7 @@
  "health.R9_trailing_heading:apostolic-exhortations/e628dac2-d1fe-536e-b463-f10e3865b819": {
   "fixed_by": "1.3a",
   "description": "Ecclesia in Oceania: 44 passages end with the next section's heading (C-08)",
-  "units": ["ecclesia-in-oceania/10", "ecclesia-in-oceania/11", "ecclesia-in-oceania/13", "ecclesia-in-oceania/14", "ecclesia-in-oceania/15/from-e86", "ecclesia-in-oceania/16/from-e93", "ecclesia-in-oceania/17", "ecclesia-in-oceania/18/from-e112", "ecclesia-in-oceania/19/from-e117", "ecclesia-in-oceania/2", "ecclesia-in-oceania/20", "ecclesia-in-oceania/21", "ecclesia-in-oceania/22", "ecclesia-in-oceania/23", "ecclesia-in-oceania/24", "ecclesia-in-oceania/25", "ecclesia-in-oceania/26", "ecclesia-in-oceania/27", "ecclesia-in-oceania/28", "ecclesia-in-oceania/29", "ecclesia-in-oceania/3", "ecclesia-in-oceania/30", "ecclesia-in-oceania/31", "ecclesia-in-oceania/32", "ecclesia-in-oceania/33/from-e174", "ecclesia-in-oceania/34/from-e181", "ecclesia-in-oceania/35", "ecclesia-in-oceania/36", "ecclesia-in-oceania/38", "ecclesia-in-oceania/39", "ecclesia-in-oceania/4", "ecclesia-in-oceania/40", "ecclesia-in-oceania/41", "ecclesia-in-oceania/43", "ecclesia-in-oceania/44/from-e218", "ecclesia-in-oceania/45/from-e223", "ecclesia-in-oceania/46", "ecclesia-in-oceania/48/from-e234", "ecclesia-in-oceania/49/from-e241-2", "ecclesia-in-oceania/5/from-e28", "ecclesia-in-oceania/50", "ecclesia-in-oceania/6/from-e35", "ecclesia-in-oceania/8", "ecclesia-in-oceania/9/from-e54"]
+  "units": ["ecclesia-in-oceania/10", "ecclesia-in-oceania/11", "ecclesia-in-oceania/13", "ecclesia-in-oceania/14", "ecclesia-in-oceania/15/from-e86", "ecclesia-in-oceania/16/from-e93", "ecclesia-in-oceania/17", "ecclesia-in-oceania/18/from-e112", "ecclesia-in-oceania/19/from-e117", "ecclesia-in-oceania/2", "ecclesia-in-oceania/20", "ecclesia-in-oceania/21", "ecclesia-in-oceania/22", "ecclesia-in-oceania/23", "ecclesia-in-oceania/24", "ecclesia-in-oceania/25", "ecclesia-in-oceania/26", "ecclesia-in-oceania/27", "ecclesia-in-oceania/28", "ecclesia-in-oceania/29", "ecclesia-in-oceania/3", "ecclesia-in-oceania/30", "ecclesia-in-oceania/31", "ecclesia-in-oceania/32", "ecclesia-in-oceania/33/from-e174", "ecclesia-in-oceania/34/from-e181", "ecclesia-in-oceania/35", "ecclesia-in-oceania/36", "ecclesia-in-oceania/38", "ecclesia-in-oceania/39", "ecclesia-in-oceania/4", "ecclesia-in-oceania/40", "ecclesia-in-oceania/41", "ecclesia-in-oceania/43", "ecclesia-in-oceania/44/from-e218", "ecclesia-in-oceania/45/from-e223", "ecclesia-in-oceania/46", "ecclesia-in-oceania/48/from-e234", "ecclesia-in-oceania/49/from-e241", "ecclesia-in-oceania/5/from-e28", "ecclesia-in-oceania/50", "ecclesia-in-oceania/6/from-e35", "ecclesia-in-oceania/8", "ecclesia-in-oceania/9/from-e54"]
  },
  "health.R9_trailing_heading:apostolic-exhortations/ea854784-24b5-594c-968f-c1a878cf569c": {
   "fixed_by": "1.3a",
@@ -894,7 +890,7 @@
  "health.R9_trailing_heading:encyclicals/c254a3b6-c2cd-5425-8205-a447b91c0bdb": {
   "fixed_by": "1.3a",
   "description": "Deus Caritas Est: 10 passages end with the next section's heading (C-08)",
-  "units": ["deus-caritas-est/1", "deus-caritas-est/11", "deus-caritas-est/15", "deus-caritas-est/18", "deus-caritas-est/19", "deus-caritas-est/25", "deus-caritas-est/29", "deus-caritas-est/30/from-e77", "deus-caritas-est/31/from-e81-2", "deus-caritas-est/8"]
+  "units": ["deus-caritas-est/1", "deus-caritas-est/11", "deus-caritas-est/15", "deus-caritas-est/18", "deus-caritas-est/19", "deus-caritas-est/25", "deus-caritas-est/29", "deus-caritas-est/30/from-e77", "deus-caritas-est/31/from-e81", "deus-caritas-est/8"]
  },
  "health.R9_trailing_heading:encyclicals/cc81769d-2c6a-5735-9562-a4cb600edb41": {
   "fixed_by": "1.3a",
@@ -996,6 +992,251 @@
   "description": "Fragments: 8 labels title-case a Roman numeral (C-22)",
   "units": ["vii.ii.ii", "vii.ii.iii", "vii.ii.iv", "vii.ii.ix", "vii.ii.vi", "vii.ii.vi/from-p2-2", "vii.ii.vii", "vii.ii.viii"]
  },
+ "labels.unique_reference:apostolic-exhortations/1302988d-7dbc-5bc0-9005-838053111c45": {
+  "fixed_by": "1.3a",
+  "description": "Africae Munus: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Africae Munus, §1", "Africae Munus, §2"]
+ },
+ "labels.unique_reference:apostolic-exhortations/335e3467-a3fa-598d-892d-a75664ee4e77": {
+  "fixed_by": "1.3a",
+  "description": "Familiaris Consortio: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Familiaris Consortio, §1", "Familiaris Consortio, §2", "Familiaris Consortio, §3"]
+ },
+ "labels.unique_reference:apostolic-exhortations/81b3ea0f-3fed-57c7-9326-ac488bb240b6": {
+  "fixed_by": "1.3a",
+  "description": "Laudate Deum: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Laudate Deum, §1", "Laudate Deum, §2", "Laudate Deum, §3", "Laudate Deum, §4", "Laudate Deum, §5", "Laudate Deum, §6"]
+ },
+ "labels.unique_reference:apostolic-exhortations/83ef10a9-f7a6-594c-b29d-bf96bf9dccbd": {
+  "fixed_by": "1.3a",
+  "description": "Menti Nostrae: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Menti Nostrae, §126", "Menti Nostrae, §63", "Menti Nostrae, §64"]
+ },
+ "labels.unique_reference:apostolic-exhortations/f6de8a59-c641-53fa-9eb9-c8c151619125": {
+  "fixed_by": "1.3a",
+  "description": "C'est la confiance: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["C'est la confiance, §1", "C'est la confiance, §2", "C'est la confiance, §3", "C'est la confiance, §4"]
+ },
+ "labels.unique_reference:church-fathers/44fd52c3-fdef-518e-a463-a3273f39764c": {
+  "fixed_by": "1.8c",
+  "description": "Dubious or Spurious Writings: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
+  "units": ["Dubious or Spurious Writings, Elucidations", "Dubious or Spurious Writings, Section I", "Dubious or Spurious Writings, Section II", "Dubious or Spurious Writings, Section III", "Dubious or Spurious Writings, Section IV", "Dubious or Spurious Writings, Section V", "Dubious or Spurious Writings, Section VI", "Dubious or Spurious Writings, Section VII"]
+ },
+ "labels.unique_reference:church-fathers/506ebe31-239c-509c-ba5e-b6c822d002df": {
+  "fixed_by": "1.8c",
+  "description": "The Extant Works and Fragments of Hippolytus: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
+  "units": ["The Extant Works and Fragments of Hippolytus, Section I", "The Extant Works and Fragments of Hippolytus, Section I (part 1 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 2 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 3 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 4 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 5 of 5)", "The Extant Works and Fragments of Hippolytus, Section II", "The Extant Works and Fragments of Hippolytus, Section III", "The Extant Works and Fragments of Hippolytus, Section IV", "The Extant Works and Fragments of Hippolytus, Section IX", "The Extant Works and Fragments of Hippolytus, Section V", "The Extant Works and Fragments of Hippolytus, Section VI", "The Extant Works and Fragments of Hippolytus, Section VII", "The Extant Works and Fragments of Hippolytus, Section VIII", "The Extant Works and Fragments of Hippolytus, Section X", "The Extant Works and Fragments of Hippolytus, Section XI"]
+ },
+ "labels.unique_reference:church-fathers/685b8763-d3f3-5bb7-bf9f-c34efedaadf5": {
+  "fixed_by": "1.8c",
+  "description": "Acknowledged Writings: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
+  "units": ["Acknowledged Writings, Elucidations"]
+ },
+ "labels.unique_reference:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
+  "fixed_by": "1.8b",
+  "description": "Doctrinal Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
+  "units": ["Doctrinal Treatises of St. Augustin, Chapter 1", "Doctrinal Treatises of St. Augustin, Chapter 12", "Doctrinal Treatises of St. Augustin, Chapter 24", "Doctrinal Treatises of St. Augustin, Chapter 3", "Doctrinal Treatises of St. Augustin, Chapter 5", "Doctrinal Treatises of St. Augustin, Chapter 6", "Doctrinal Treatises of St. Augustin, Chapter 7", "Doctrinal Treatises of St. Augustin, Chapter 8 (part 1 of 2)", "Doctrinal Treatises of St. Augustin, Chapter 8 (part 2 of 2)", "Doctrinal Treatises of St. Augustin, Section 1", "Doctrinal Treatises of St. Augustin, Section 10 (part 1 of 2)", "Doctrinal Treatises of St. Augustin, Section 10 (part 2 of 2)", "Doctrinal Treatises of St. Augustin, Section 11", "Doctrinal Treatises of St. Augustin, Section 12", "Doctrinal Treatises of St. Augustin, Section 14", "Doctrinal Treatises of St. Augustin, Section 15", "Doctrinal Treatises of St. Augustin, Section 16", "Doctrinal Treatises of St. Augustin, Section 17", "Doctrinal Treatises of St. Augustin, Section 2", "Doctrinal Treatises of St. Augustin, Section 3", "Doctrinal Treatises of St. Augustin, Section 4", "Doctrinal Treatises of St. Augustin, Section 5", "Doctrinal Treatises of St. Augustin, Section 6", "Doctrinal Treatises of St. Augustin, Section 7", "Doctrinal Treatises of St. Augustin, Section 8", "Doctrinal Treatises of St. Augustin, Section 9"]
+ },
+ "labels.unique_reference:church-fathers/c1bcdc39-8e8a-5806-9dcc-2fc05482baad": {
+  "fixed_by": "1.8c",
+  "description": "Epistle to the Ephesians: Shorter and Longer Versions: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
+  "units": ["Epistle to the Ephesians: Shorter and Longer Versions, Chapter XX"]
+ },
+ "labels.unique_reference:church-fathers/debb22d8-702c-5df3-952c-6df5cd720e42": {
+  "fixed_by": "1.8c",
+  "description": "The Banquet of the Ten Virgins; or Concerning Chastity: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
+  "units": ["The Banquet of the Ten Virgins; or Concerning Chastity, Chapter I", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter I (part 1 of 2)", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter I (part 2 of 2)", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter II", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter III", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter IV", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter IX", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter V", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter VI", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter VII", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter VIII", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter X", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter XII", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter XIII"]
+ },
+ "labels.unique_reference:church-fathers/f39c025e-78a6-5737-a94f-7896c84fc857": {
+  "fixed_by": "1.8b",
+  "description": "Moral Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
+  "units": ["Moral Treatises of St. Augustin, Section 1", "Moral Treatises of St. Augustin, Section 10", "Moral Treatises of St. Augustin, Section 11", "Moral Treatises of St. Augustin, Section 11 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 11 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 12", "Moral Treatises of St. Augustin, Section 13", "Moral Treatises of St. Augustin, Section 14", "Moral Treatises of St. Augustin, Section 15", "Moral Treatises of St. Augustin, Section 16", "Moral Treatises of St. Augustin, Section 17", "Moral Treatises of St. Augustin, Section 18", "Moral Treatises of St. Augustin, Section 19", "Moral Treatises of St. Augustin, Section 2", "Moral Treatises of St. Augustin, Section 20", "Moral Treatises of St. Augustin, Section 21", "Moral Treatises of St. Augustin, Section 21 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 21 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 22", "Moral Treatises of St. Augustin, Section 23", "Moral Treatises of St. Augustin, Section 24", "Moral Treatises of St. Augustin, Section 25", "Moral Treatises of St. Augustin, Section 26", "Moral Treatises of St. Augustin, Section 27", "Moral Treatises of St. Augustin, Section 28", "Moral Treatises of St. Augustin, Section 29", "Moral Treatises of St. Augustin, Section 3", "Moral Treatises of St. Augustin, Section 30", "Moral Treatises of St. Augustin, Section 31", "Moral Treatises of St. Augustin, Section 32", "Moral Treatises of St. Augustin, Section 33", "Moral Treatises of St. Augustin, Section 34", "Moral Treatises of St. Augustin, Section 34 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 34 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 35", "Moral Treatises of St. Augustin, Section 36", "Moral Treatises of St. Augustin, Section 37", "Moral Treatises of St. Augustin, Section 38", "Moral Treatises of St. Augustin, Section 39", "Moral Treatises of St. Augustin, Section 4", "Moral Treatises of St. Augustin, Section 4 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 4 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 40", "Moral Treatises of St. Augustin, Section 40 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 40 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 41", "Moral Treatises of St. Augustin, Section 42", "Moral Treatises of St. Augustin, Section 43", "Moral Treatises of St. Augustin, Section 5", "Moral Treatises of St. Augustin, Section 6", "Moral Treatises of St. Augustin, Section 7", "Moral Treatises of St. Augustin, Section 8", "Moral Treatises of St. Augustin, Section 8 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 8 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 9", "Moral Treatises of St. Augustin, Section 9 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 9 (part 2 of 2)", "Moral Treatises of St. Augustin, Translator’s Preface"]
+ },
+ "labels.unique_reference:councils/137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
+  "fixed_by": "1.1",
+  "description": "Nostra Aetate: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Nostra Aetate, §2", "Nostra Aetate, §5"]
+ },
+ "labels.unique_reference:councils/13b94869-cf9c-590d-9573-66f1bd6ea457": {
+  "fixed_by": "1.1",
+  "description": "Unitatis Redintegratio: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Unitatis Redintegratio, §10", "Unitatis Redintegratio, §15", "Unitatis Redintegratio, §19", "Unitatis Redintegratio, §2", "Unitatis Redintegratio, §21", "Unitatis Redintegratio, §22", "Unitatis Redintegratio, §23"]
+ },
+ "labels.unique_reference:councils/1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
+  "fixed_by": "1.1",
+  "description": "Apostolicam Actuositatem: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Apostolicam Actuositatem, §1", "Apostolicam Actuositatem, §10", "Apostolicam Actuositatem, §2", "Apostolicam Actuositatem, §3", "Apostolicam Actuositatem, §4", "Apostolicam Actuositatem, §5", "Apostolicam Actuositatem, §6", "Apostolicam Actuositatem, §7", "Apostolicam Actuositatem, §8", "Apostolicam Actuositatem, §9"]
+ },
+ "labels.unique_reference:councils/237081c4-64d8-52d2-a19e-66d6e5f01f1f": {
+  "fixed_by": "1.2e",
+  "description": "Second Council of Lyons: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Second Council of Lyons — I (part 1 of 2)", "Second Council of Lyons — I (part 2 of 2)", "Second Council of Lyons — II", "Second Council of Lyons — II, §20", "Second Council of Lyons — Introduction"]
+ },
+ "labels.unique_reference:councils/28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
+  "fixed_by": "1.1",
+  "description": "Presbyterorum Ordinis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Presbyterorum Ordinis, §1", "Presbyterorum Ordinis, §10", "Presbyterorum Ordinis, §11", "Presbyterorum Ordinis, §12", "Presbyterorum Ordinis, §13", "Presbyterorum Ordinis, §14", "Presbyterorum Ordinis, §15", "Presbyterorum Ordinis, §16", "Presbyterorum Ordinis, §18", "Presbyterorum Ordinis, §19", "Presbyterorum Ordinis, §2", "Presbyterorum Ordinis, §20", "Presbyterorum Ordinis, §22", "Presbyterorum Ordinis, §34", "Presbyterorum Ordinis, §4", "Presbyterorum Ordinis, §40", "Presbyterorum Ordinis, §41", "Presbyterorum Ordinis, §5", "Presbyterorum Ordinis, §55", "Presbyterorum Ordinis, §58", "Presbyterorum Ordinis, §6", "Presbyterorum Ordinis, §7", "Presbyterorum Ordinis, §8", "Presbyterorum Ordinis, §9"]
+ },
+ "labels.unique_reference:councils/29bf3975-5f39-5550-a949-6767cb666695": {
+  "fixed_by": "1.1",
+  "description": "Sacrosanctum Concilium: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Sacrosanctum Concilium, §1", "Sacrosanctum Concilium, §2", "Sacrosanctum Concilium, §3", "Sacrosanctum Concilium, §4", "Sacrosanctum Concilium, §81"]
+ },
+ "labels.unique_reference:councils/2f25da58-028b-5944-ba0c-fcb5aa76c709": {
+  "fixed_by": "1.2c",
+  "description": "Council of Nicaea: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Council of Nicaea — The Letter of the Synod in Nicaea to the Egyptians"]
+ },
+ "labels.unique_reference:councils/37829660-f962-5b93-b9a7-c79b5d03f170": {
+  "fixed_by": "1.2e",
+  "description": "First Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["First Lateran Council — Text"]
+ },
+ "labels.unique_reference:councils/4451c2f8-e836-58ab-a2eb-495a9cacef89": {
+  "fixed_by": "1.1",
+  "description": "Dei Verbum: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Dei Verbum, §1", "Dei Verbum, §10", "Dei Verbum, §11", "Dei Verbum, §2", "Dei Verbum, §3", "Dei Verbum, §4", "Dei Verbum, §5", "Dei Verbum, §6", "Dei Verbum, §7", "Dei Verbum, §8", "Dei Verbum, §9"]
+ },
+ "labels.unique_reference:councils/49b534a0-0692-5f8c-8ab7-9da0288e4de1": {
+  "fixed_by": "1.2e",
+  "description": "Fourth Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Fourth Lateran Council — C O N S T I T U T I O N S", "Fourth Lateran Council — C O N S T I T U T I O N S (part 1 of 2)", "Fourth Lateran Council — C O N S T I T U T I O N S (part 2 of 2)", "Fourth Lateran Council — Introduction"]
+ },
+ "labels.unique_reference:councils/51599a74-556f-577c-9828-88b5472baf2f": {
+  "fixed_by": "1.2e",
+  "description": "Third Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Third Lateran Council — Introduction"]
+ },
+ "labels.unique_reference:councils/5972a5c6-4f04-5ef0-901d-d9a4a189fc0f": {
+  "fixed_by": "1.2c",
+  "description": "Council of Ephesus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Council of Ephesus — Letter of Cyril to John of Antioch about peace", "Council of Ephesus — Second letter of Nestorius to Cyril", "Council of Ephesus — Synodical letter about the expulsion of the eastern bishops (et al.)", "Council of Ephesus — Third letter of Cyril to Nestorius"]
+ },
+ "labels.unique_reference:councils/5f0ff7e9-3b76-5c1f-949f-4980a943244b": {
+  "fixed_by": "1.1",
+  "description": "Dignitatis Humanae: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Dignitatis Humanae, §1", "Dignitatis Humanae, §14", "Dignitatis Humanae, §15", "Dignitatis Humanae, §2", "Dignitatis Humanae, §3", "Dignitatis Humanae, §4", "Dignitatis Humanae, §5", "Dignitatis Humanae, §6", "Dignitatis Humanae, §7", "Dignitatis Humanae, §8"]
+ },
+ "labels.unique_reference:councils/62f7a128-a847-588b-84f0-51d33294b236": {
+  "fixed_by": "1.1",
+  "description": "Gaudium et Spes: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Gaudium et Spes, §1", "Gaudium et Spes, §10", "Gaudium et Spes, §11", "Gaudium et Spes, §12", "Gaudium et Spes, §13", "Gaudium et Spes, §14", "Gaudium et Spes, §15", "Gaudium et Spes, §16", "Gaudium et Spes, §17", "Gaudium et Spes, §18", "Gaudium et Spes, §19", "Gaudium et Spes, §2", "Gaudium et Spes, §20", "Gaudium et Spes, §21", "Gaudium et Spes, §22", "Gaudium et Spes, §23", "Gaudium et Spes, §24", "Gaudium et Spes, §25", "Gaudium et Spes, §26", "Gaudium et Spes, §3", "Gaudium et Spes, §31", "Gaudium et Spes, §34", "Gaudium et Spes, §4", "Gaudium et Spes, §5", "Gaudium et Spes, §6", "Gaudium et Spes, §7", "Gaudium et Spes, §8", "Gaudium et Spes, §9"]
+ },
+ "labels.unique_reference:councils/6410138e-f599-5155-a615-fc79250cf608": {
+  "fixed_by": "1.2e",
+  "description": "Second Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Second Lateran Council — CANONS"]
+ },
+ "labels.unique_reference:councils/6eb88704-07df-52f6-b8bf-64f2e026c23a": {
+  "fixed_by": "1.2e",
+  "description": "First Council of Lyons: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["First Council of Lyons — Bull Deposing The Emperor Frederick II", "First Council of Lyons — CONSTITUTIONS", "First Council of Lyons — CONSTITUTIONS (part 1 of 2)", "First Council of Lyons — CONSTITUTIONS (part 2 of 2)", "First Council of Lyons — CONSTITUTIONS, §2", "First Council of Lyons — INTRODUCTION"]
+ },
+ "labels.unique_reference:councils/6f6474ba-c632-5bdb-a550-b8d5c61797a9": {
+  "fixed_by": "1.1",
+  "description": "Gravissimum Educationis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Gravissimum Educationis, §1", "Gravissimum Educationis, §12", "Gravissimum Educationis, §7"]
+ },
+ "labels.unique_reference:councils/706adce0-8af2-5a30-877b-82e701601a53": {
+  "fixed_by": "1.2e",
+  "description": "Council of Basel-Ferrara-Florence: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Council of Basel-Ferrara-Florence — Text", "Council of Basel-Ferrara-Florence — Text (part 1 of 2)", "Council of Basel-Ferrara-Florence — Text (part 2 of 2)"]
+ },
+ "labels.unique_reference:councils/70d99be3-5a1c-5435-9507-f45e457c1376": {
+  "fixed_by": "1.2c",
+  "description": "First Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["First Council of Constantinople — 6", "First Council of Constantinople — A letter of the bishops gathered in Constantinople", "First Council of Constantinople — INTRODUCTION"]
+ },
+ "labels.unique_reference:councils/758019ee-d1fe-59c6-97cd-3b9ab03ae8a9": {
+  "fixed_by": "1.2c",
+  "description": "Council of Chalcedon: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Council of Chalcedon — Definition of the faith", "Council of Chalcedon — Introduction", "Council of Chalcedon — The letter of Pope Leo to Flavian, bishop of Constantinople, about Eutyches"]
+ },
+ "labels.unique_reference:councils/8548da71-b46a-5411-ac69-204ccf7322e0": {
+  "fixed_by": "1.2e",
+  "description": "Council of Vienne: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Council of Vienne — Text", "Council of Vienne — Text (part 1 of 2)", "Council of Vienne — Text (part 2 of 2)", "Council of Vienne, Canon 1", "Council of Vienne, Canon 2", "Council of Vienne, Canon 3", "Council of Vienne, Canon 4", "Council of Vienne, Canon 5", "Council of Vienne, Canon 6", "Council of Vienne, Canon 7", "Council of Vienne, Canon 8"]
+ },
+ "labels.unique_reference:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
+  "fixed_by": "1.1",
+  "description": "Perfectae Caritatis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Perfectae Caritatis, §1"]
+ },
+ "labels.unique_reference:councils/998f9723-f905-5de8-8838-2ff4596e9651": {
+  "fixed_by": "1.2c",
+  "description": "Second Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Second Council of Constantinople — Introduction", "Second Council of Constantinople — Sentence against the “Three Chapters”", "Second Council of Constantinople — Sentence against the “Three Chapters” (part 1 of 2)", "Second Council of Constantinople — Sentence against the “Three Chapters” (part 2 of 2)"]
+ },
+ "labels.unique_reference:councils/a1f27f39-1821-5eb8-b17f-fc9bd994c776": {
+  "fixed_by": "1.2c",
+  "description": "Second Council of Nicaea: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Second Council of Nicaea — 22", "Second Council of Nicaea — Definition", "Second Council of Nicaea — INTRODUCTION"]
+ },
+ "labels.unique_reference:councils/bd4adb5d-500e-5995-ab95-3f61fdc92067": {
+  "fixed_by": "1.1",
+  "description": "Christus Dominus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Christus Dominus, §1", "Christus Dominus, §11", "Christus Dominus, §14", "Christus Dominus, §15", "Christus Dominus, §16", "Christus Dominus, §18", "Christus Dominus, §19", "Christus Dominus, §2", "Christus Dominus, §20", "Christus Dominus, §21", "Christus Dominus, §3", "Christus Dominus, §4", "Christus Dominus, §5", "Christus Dominus, §6", "Christus Dominus, §7", "Christus Dominus, §8"]
+ },
+ "labels.unique_reference:councils/bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
+  "fixed_by": "1.2e",
+  "description": "Council of Constance: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Council of Constance — FOOTNOTES", "Council of Constance — INTRODUCTION 1", "Council of Constance — SESSION 1 – 16 November 1414", "Council of Constance — SESSION 13 – 15 June 1415", "Council of Constance — SESSION 14 – 4 July 1415", "Council of Constance — SESSION 15 – 6 July 1415", "Council of Constance — SESSION 15 – 6 July 1415, §1", "Council of Constance — SESSION 15 – 6 July 1415, §10", "Council of Constance — SESSION 15 – 6 July 1415, §11", "Council of Constance — SESSION 15 – 6 July 1415, §12", "Council of Constance — SESSION 15 – 6 July 1415, §13", "Council of Constance — SESSION 15 – 6 July 1415, §14", "Council of Constance — SESSION 15 – 6 July 1415, §15", "Council of Constance — SESSION 15 – 6 July 1415, §16", "Council of Constance — SESSION 15 – 6 July 1415, §17", "Council of Constance — SESSION 15 – 6 July 1415, §18", "Council of Constance — SESSION 15 – 6 July 1415, §19", "Council of Constance — SESSION 15 – 6 July 1415, §2", "Council of Constance — SESSION 15 – 6 July 1415, §20", "Council of Constance — SESSION 15 – 6 July 1415, §21", "Council of Constance — SESSION 15 – 6 July 1415, §22", "Council of Constance — SESSION 15 – 6 July 1415, §23", "Council of Constance — SESSION 15 – 6 July 1415, §24", "Council of Constance — SESSION 15 – 6 July 1415, §25", "Council of Constance — SESSION 15 – 6 July 1415, §26", "Council of Constance — SESSION 15 – 6 July 1415, §27", "Council of Constance — SESSION 15 – 6 July 1415, §28", "Council of Constance — SESSION 15 – 6 July 1415, §29", "Council of Constance — SESSION 15 – 6 July 1415, §3", "Council of Constance — SESSION 15 – 6 July 1415, §30", "Council of Constance — SESSION 15 – 6 July 1415, §4", "Council of Constance — SESSION 15 – 6 July 1415, §5", "Council of Constance — SESSION 15 – 6 July 1415, §6", "Council of Constance — SESSION 15 – 6 July 1415, §7", "Council of Constance — SESSION 15 – 6 July 1415, §8", "Council of Constance — SESSION 15 – 6 July 1415, §9", "Council of Constance — SESSION 39 – 9 October 1417", "Council of Constance — SESSION 4 – 30 March 1415", "Council of Constance — SESSION 5 – 6 April 1415", "Council of Constance — SESSION 8 – 4 May 1415", "Council of Constance — Second Introduction", "Council of Constance — – 23 MARCH 1418"]
+ },
+ "labels.unique_reference:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
+  "fixed_by": "1.1",
+  "description": "Lumen Gentium: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Lumen Gentium, §1", "Lumen Gentium, §2", "Lumen Gentium, §3", "Lumen Gentium, §4"]
+ },
+ "labels.unique_reference:councils/c1d5382f-c7c7-564d-989a-89775b36fd58": {
+  "fixed_by": "1.1",
+  "description": "Ad Gentes: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Ad Gentes, §1", "Ad Gentes, §10", "Ad Gentes, §11", "Ad Gentes, §12", "Ad Gentes, §13", "Ad Gentes, §14", "Ad Gentes, §15", "Ad Gentes, §16", "Ad Gentes, §17", "Ad Gentes, §18", "Ad Gentes, §19", "Ad Gentes, §2", "Ad Gentes, §20", "Ad Gentes, §21", "Ad Gentes, §23", "Ad Gentes, §24", "Ad Gentes, §25", "Ad Gentes, §26", "Ad Gentes, §3", "Ad Gentes, §4", "Ad Gentes, §5", "Ad Gentes, §6", "Ad Gentes, §7", "Ad Gentes, §8", "Ad Gentes, §9"]
+ },
+ "labels.unique_reference:councils/d9189059-da4c-5528-aea5-3ec35864c077": {
+  "fixed_by": "1.2e",
+  "description": "Fifth Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Fifth Lateran Council — Text", "Fifth Lateran Council — Text (part 1 of 2)", "Fifth Lateran Council — Text (part 2 of 2)"]
+ },
+ "labels.unique_reference:councils/e33e591b-9e2e-5059-974f-28c8e4ab6aae": {
+  "fixed_by": "1.2b",
+  "description": "Council of Trent: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Council of Trent — Text", "Council of Trent — Text (part 1 of 2)", "Council of Trent — Text (part 2 of 2)", "Council of Trent, Canon II", "Council of Trent, Canon III", "Council of Trent, Canon IV", "Council of Trent, Canon IX", "Council of Trent, Canon V", "Council of Trent, Canon VI", "Council of Trent, Canon VII", "Council of Trent, Canon VIII", "Council of Trent, Canon X", "Council of Trent, Canon XI", "Council of Trent, Canon XII", "Council of Trent, Canon XIII", "Council of Trent, Canon XIV", "Council of Trent, Canon XV"]
+ },
+ "labels.unique_reference:councils/ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61": {
+  "fixed_by": "1.2e",
+  "description": "Fourth Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Fourth Council of Constantinople — INTRODUCTION"]
+ },
+ "labels.unique_reference:councils/f9ca2dc5-6b49-534d-8d15-0a34c1dbc215": {
+  "fixed_by": "1.2c",
+  "description": "Third Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
+  "units": ["Third Council of Constantinople — Exposition of faith"]
+ },
+ "labels.unique_reference:encyclicals/3f6118ed-3afa-56f0-9980-31f50a996520": {
+  "fixed_by": "1.3a",
+  "description": "Redemptoris Mater: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Redemptoris Mater, §1", "Redemptoris Mater, §2", "Redemptoris Mater, §3"]
+ },
+ "labels.unique_reference:encyclicals/82653425-7c72-5856-970e-57172da435fa": {
+  "fixed_by": "1.3a",
+  "description": "Pacem in Terris: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Pacem in Terris, §90"]
+ },
+ "labels.unique_reference:encyclicals/86c14cf0-1aa6-50c1-a49e-c1a2061df4e3": {
+  "fixed_by": "1.3a",
+  "description": "Dominum et Vivificantem: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Dominum et Vivificantem, §1", "Dominum et Vivificantem, §2", "Dominum et Vivificantem, §3", "Dominum et Vivificantem, §4", "Dominum et Vivificantem, §5", "Dominum et Vivificantem, §6", "Dominum et Vivificantem, §7"]
+ },
+ "labels.unique_reference:encyclicals/a2c444e7-7708-5fc7-9dd0-ab4bd21e11f0": {
+  "fixed_by": "1.3a",
+  "description": "Mediator Dei: a paragraph number read twice (sequence.numbered_paragraphs.duplicated), so two units cite the same §",
+  "units": ["Mediator Dei, §100"]
+ },
+ "labels.unique_reference:medieval/82d38756-6fba-5af7-9905-fd508a620f38": {
+  "fixed_by": "1.9",
+  "description": "Anselm's Cur Deus Homo: chapter labels lack their book (\"Chapter I\" in each book); 1.9 labels them \"Book First · Chapter I\" (Carter, 2 Nov 2026)",
+  "units": ["Anselm's Cur Deus Homo, Chapter I", "Anselm's Cur Deus Homo, Chapter III", "Anselm's Cur Deus Homo, Chapter IV", "Anselm's Cur Deus Homo, Chapter V", "Anselm's Cur Deus Homo, Chapter VI", "Anselm's Cur Deus Homo, Chapter VIII (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter VIII (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XIII", "Anselm's Cur Deus Homo, Chapter XIV", "Anselm's Cur Deus Homo, Chapter XIX (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter XIX (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XV", "Anselm's Cur Deus Homo, Chapter XXI", "Anselm's Cur Deus Homo, Chapter XXII"]
+ },
  "release.anchor_reuse:councils/ddfa6898-270f-5fc6-914d-08a3b98c99a5": {
   "fixed_by": "1.2e",
   "description": "First Lateran: live printed the editor's introduction unsplit as sec-0/1 and canon 1 as sec-0/1-2; the build splits the introduction, so the unchanged unit-naming rule gives canon 1 sec-0/1 and the introduction sec-0/1-2. 2.1's registry keeps each ID on its own text (canon 1 ddfa6898, the introduction e507d54e); only the two anchor strings are swapped. The council item that rebuilds First Lateran removes the introduction (rule-g-editorial), which frees both"
@@ -1053,6 +1294,11 @@
  "sentinel.vatican_i_total": {
   "fixed_by": "1.2d",
   "description": "Vatican I keeps a fraction of the text"
+ },
+ "sequence.bible_verses.duplicated:ESG/8": {
+  "fixed_by": "1.4a",
+  "description": "Esther 8:13 holds Greek addition E (4,183 characters, R3), longer than one card, so it is cut across two pieces (\"Esther 8:12–13\", \"Esther 8:13\"). Lettered verses for the additions (R3, 1.4a) shorten it.",
+  "units": ["ESG/8/13"]
  },
  "sequence.bible_verses.duplicated:NUM/16": {
   "fixed_by": "1.4a",

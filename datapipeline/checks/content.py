@@ -29,6 +29,11 @@ Church Fathers and medieval (`:<collection>/<document_id>`, units are anchors):
   letters' chapter keys.
 - `labels.reference_author_consistent`: a passage's reference names no author but its
   resolved display author (C-15, Opus-2 B-003).
+- `labels.unique_reference`: no two passages of a document share a reference (1.10c).
+  Split pieces cite their own text, so a shared reference is two units cited alike: two
+  chapters with one label, or a paragraph number the adapter reads twice. Not run on the
+  Summa and the Catechism until 1.7 and 1.6 adopt the piece citations. Units: the shared
+  references.
 - `labels.roman_case`: no Roman numeral title-cased ("Ii", "Vi") in a chapter or unit label
   (C-22, Opus A-022). Run on every collection.
 
@@ -324,6 +329,19 @@ def roman_case(collection: str, documents: list[Document]) -> Failures:
     return out
 
 
+# Collections whose adapters do not yet cite each piece on its own (1.7, 1.6).
+UNIQUE_REFERENCE_PENDING = ("summa", "catechism")
+
+
+def unique_references(collection: str, documents: list[Document]) -> Failures:
+    out: Failures = {}
+    for d in documents:
+        shared = sorted(r for r, n in Counter(p.reference for p in d.passages).items() if n > 1)
+        if shared:
+            out[f"labels.unique_reference:{collection}/{d.id}"] = shared
+    return out
+
+
 def unique_titles(collection: str, documents: list[Document]) -> Failures:
     titles = Counter(_fold(d.title) for d in documents)
     shared = sorted(t for t, n in titles.items() if n > 1)
@@ -366,6 +384,8 @@ def run(collection: str, documents: list[Document], *, corrections: dict | None 
     if collection == "canon-law":
         out.update(canon_ligature_corruption(documents))
     out.update(roman_case(collection, documents))
+    if collection not in UNIQUE_REFERENCE_PENDING:
+        out.update(unique_references(collection, documents))
     out.update(unique_titles(collection, documents))
     works = load_works() if works is None else works
     out.update(narrative_of_author_death([w for w in works if w.get("collection") == collection]))

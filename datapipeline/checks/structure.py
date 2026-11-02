@@ -42,6 +42,7 @@ from bs4 import BeautifulSoup
 
 from checks.coverage import match_key, measurable, normalize, split_sentences
 from checks.source_text import SOURCES, SourceUnit
+from ingest.pieces import unit_reference
 from model import Document
 
 CHECKS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -241,7 +242,7 @@ def syllabus_body_boundary(documents: list[Document], units: list[SourceUnit]) -
     if not docs or not units:
         return {}
     numbers = {int(m.group(1)) for d in docs for p in d.passages
-               if (m := _SECTION.search(p.reference))}
+               if (m := _SECTION.search(unit_reference(p.reference)))}
     failing = []
     if numbers != set(range(1, SYLLABUS_PROPOSITIONS + 1)):
         failing.append(f"propositions:{len(numbers)}")

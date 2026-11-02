@@ -20,8 +20,8 @@ from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
-from ingest.common import split_display_passage
 from ingest.pieces import (Segment, element_locator, name_pieces, number_elements,
+                           pack_text, piece_reference,
                            unique_unit_anchors)
 from registry import ANCHOR_SCHEME, resolve_document_id
 
@@ -188,7 +188,7 @@ def build_document(entry: dict) -> Document:
         content = clean_text(strip_footnote_markers(strip_boilerplate(content)))
         if not content:
             return
-        pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
+        pieces = pack_text(content, segments, settings.MAX_PASSAGE_CHARS)
         units.append((content, pieces, ref, base_anchor, ckey, clabel, unit, segments))
 
     # The preamble is the greeting/salutation before §1. Take preamble tokens only
@@ -247,8 +247,11 @@ def build_document(entry: dict) -> Document:
     passages: list[Passage] = []
     anchors = unique_unit_anchors([u[3] for u in units], [len(u[1]) > 1 for u in units])
     for (content, pieces, ref, _, ckey, clabel, label, segments), anc in zip(units, anchors):
-        for piece, (anchor, held) in zip(pieces, name_pieces(anc, content, pieces, segments)):
-            passages.append(Passage(content=piece, reference=ref, anchor=anchor,
+        for k, (piece, (anchor, held)) in enumerate(
+                zip(pieces, name_pieces(anc, content, pieces, segments)), 1):
+            passages.append(Passage(content=piece,
+                                    reference=piece_reference(ref, None, None, k, len(pieces)),
+                                    anchor=anchor,
                                     chapter_key=ckey, chapter_label=clabel,
                                     position=len(passages), unit_label=label, metadata=meta,
                                     source_units=held))

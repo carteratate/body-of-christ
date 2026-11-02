@@ -1,4 +1,5 @@
 from __future__ import annotations
+import bisect
 import re
 from copy import deepcopy
 from dataclasses import dataclass, field
@@ -272,7 +273,8 @@ def _choose_display_break(text: str, start: int, lower: int,
     return hard_upper
 
 
-def split_display_passage(text: str, max_chars: int) -> list[str]:
+def split_display_passage(text: str, max_chars: int,
+                          keep: list[tuple[int, int]] | None = None) -> list[str]:
     """Split one meaningful source passage into complete, readable display pieces.
 
     The caller supplies a passage chosen from source structure, such as a canon,
@@ -283,12 +285,18 @@ def split_display_passage(text: str, max_chars: int) -> list[str]:
 
     A structural boundary may exceed ``max_chars`` by at most 500 characters. A single
     token longer than ``max_chars`` is the sole case where a word can be cut.
+
+    ``keep`` lists ``(start, end)`` spans of the stripped text that no cut may fall
+    inside, in order and none longer than ``max_chars`` (the whole verses or paragraphs
+    of ``ingest.pieces.pack_units``, 1.10c). A cut chosen inside one moves to the
+    span's start, or, where the piece opens with the span, to its end.
     """
     if max_chars <= 0:
         raise ValueError("max_chars must be positive")
     text = text.strip()
     if not text or len(text) <= max_chars:
         return [text] if text else []
+    kept = sorted(keep or [])
 
     pieces: list[str] = []
     start = 0
@@ -306,6 +314,9 @@ def split_display_passage(text: str, max_chars: int) -> list[str]:
         end = _choose_display_break(
             text, start, lower, hard_upper, soft_upper, max_chars
         )
+        k = bisect.bisect_right(kept, (end, len(text))) - 1
+        if k >= 0 and kept[k][0] < end < kept[k][1]:
+            end = kept[k][0] if kept[k][0] > start else kept[k][1]
         piece = text[start:end].strip()
         if piece:
             pieces.append(piece)

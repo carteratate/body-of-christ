@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Iterator
 
@@ -32,8 +33,7 @@ from itertools import groupby  # noqa: E402
 from identity import anchor as make_anchor, slugify  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
-from ingest.common import split_display_passage  # noqa: E402
-from ingest.pieces import Segment, name_pieces  # noqa: E402
+from ingest.pieces import Segment, name_pieces, pack_units, piece_reference  # noqa: E402
 from registry import ANCHOR_SCHEME, resolve_document_id  # noqa: E402
 
 # ---------------------------------------------------------------------------
@@ -553,6 +553,62 @@ def _verse_segments(verse_tuples: list[tuple[int, int, str]]) -> list[Segment]:
             for i, (ch, v, text) in enumerate(verse_tuples)]
 
 
+_MARKER = re.compile(r"\{\{v:(\d+)\}\}")
+_LEADING_MARKER = re.compile(r"^\{\{v:\d+\}\}\s*")
+
+
+def _verse_units(content: str, chapter: int, first_v: int) -> list[tuple[str, str]]:
+    """`content` cut before each verse marker: (`chapter:verse`, slice), each slice keeping
+    the space after it, so the slices join back to `content`."""
+    cuts = [(first_v, 0)] + [(int(m.group(1)), m.start()) for m in _MARKER.finditer(content)]
+    ends = [at for _, at in cuts[1:]] + [len(content)]
+    return [(f"{chapter}:{v}", content[at:end]) for (v, at), end in zip(cuts, ends)]
+
+
+def _last_with_text(units: list[tuple[str, str]], piece) -> int:
+    """The last verse of `piece` with text: the source has empty verses (Sirach 23:28 is a
+    bare marker), which a reference does not cite."""
+    k = piece.last
+    while k > piece.first and not _LEADING_MARKER.sub("", units[k][1]).strip():
+        k -= 1
+    return k
+
+
+def _pieces(book: str, chapter: int, verses: list[tuple[int, int, str]], content: str,
+            base_anchor: str, whole_reference: str | None = None
+            ) -> list[tuple[str, str, str, str, tuple]]:
+    """(content, reference, unit_label, anchor, source_units) for each piece of one
+    pericope part or chapter (1.10c). Pieces hold whole verses and cite the verses whose
+    text they hold; a later piece opens on its first verse, which its `unit_label`
+    carries in place of a marker. Only a verse longer than one card is cut (Esther 8:13,
+    Greek addition E, 1.4a); pieces that would then cite the same verses add "(part j of
+    m)" among themselves. `whole_reference` cites a unit that is not split (a chapter
+    cited as "Tobit 3")."""
+    units = _verse_units(content, chapter, verses[0][1])
+    packed = pack_units(units, settings.MAX_PASSAGE_CHARS, sep="")
+    texts = [p.text for p in packed]
+    named = name_pieces(base_anchor, content, texts, _verse_segments(verses))
+    if len(packed) == 1 and whole_reference:
+        refs = [whole_reference]
+    else:
+        refs = [piece_reference(book, units[p.first][0], units[_last_with_text(units, p)][0],
+                                1, 1) for p in packed]
+    shared = Counter(refs)
+    seen: Counter = Counter()
+    out = []
+    for p, ref, (anchor, held) in zip(packed, refs, named):
+        if shared[ref] > 1:
+            seen[ref] += 1
+            ref = piece_reference(ref, None, None, seen[ref], shared[ref])
+        text = p.text
+        lead = _LEADING_MARKER.match(text)
+        if p is not packed[0] and lead:
+            text = text[lead.end():]
+            held = tuple((loc, max(0, at - lead.end())) for loc, at in held)
+        out.append((text, ref, units[p.first][0].split(":")[1], anchor, held))
+    return out
+
+
 def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> list[Document]:
     """Build one Document per book; passages = pericope sections clamped to chapters."""
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -579,16 +635,14 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
                 if not content:
                     continue
                 first_v = chap_verses[0][1]
-                ref = _format_reference(name, chapter, first_v, chapter, chap_verses[-1][1])
                 base_anchor = make_anchor(book_slug, chapter, first_v)
-                pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
-                named = name_pieces(base_anchor, content, pieces, _verse_segments(chap_verses))
-                for piece, (anchor, units) in zip(pieces, named):
+                for piece, ref, label, anchor, units in _pieces(
+                        name, chapter, chap_verses, content, base_anchor):
                     passages.append(Passage(
                         content=piece, reference=ref, anchor=anchor,
                         chapter_key=make_anchor(book_slug, chapter),
                         chapter_label=f"{name} {chapter}", position=pos,
-                        unit_label=str(first_v),
+                        unit_label=label,
                         metadata={"pericope": p.title, "testament": book.testament,
                                   "translation": translation},
                         source_units=units,
@@ -606,15 +660,14 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> 
                     continue
                 first_v = cv[0][0][1]
                 base_anchor = make_anchor(book_slug, chapter, first_v)
-                pieces = split_display_passage(content, settings.MAX_PASSAGE_CHARS)
-                named = name_pieces(base_anchor, content, pieces, _verse_segments(cv_as_triples))
-                for piece, (anchor, units) in zip(pieces, named):
+                for piece, ref, label, anchor, units in _pieces(
+                        name, chapter, cv_as_triples, content, base_anchor,
+                        whole_reference=f"{name} {chapter}"):
                     passages.append(Passage(
-                        content=piece, reference=f"{name} {chapter}",
-                        anchor=anchor,
+                        content=piece, reference=ref, anchor=anchor,
                         chapter_key=make_anchor(book_slug, chapter),
                         chapter_label=f"{name} {chapter}", position=pos,
-                        unit_label=str(first_v),
+                        unit_label=label,
                         metadata={"testament": book.testament, "translation": translation},
                         source_units=units,
                     ))

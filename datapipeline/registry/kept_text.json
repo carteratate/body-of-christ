@@ -98,6 +98,20 @@
   "added_by": "1.10b"
  },
  {
+  "passage_id": "9c4f966d-dd04-5fa8-96d2-446bb8f3f4db",
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "anchor": "pastores-gregis/56/from-e333",
+  "reason": "Reviewed for 1.10c: drifted before 2.1. The live piece (/p2) opened at paragraph e335 (\"The Church of Christ, in her mark of catholicity\", after the stray note number 217), and 2.1 paired it with this piece by text. Its opening words are still here, and e333 still opens this piece; the piece now ends with e336, so the live text from e337 (\"In accordance with the teaching of the Second Vatican Council\") opens /from-e337.",
+  "added_by": "1.10c"
+ },
+ {
+  "passage_id": "4430e97b-be19-51fb-92e2-43ef94b34ce6",
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "anchor": "pastores-gregis/8/from-e43",
+  "reason": "Reviewed for 1.10c: drifted before 2.1. The live piece (/p2) opened inside paragraph e45 (\"For this reason, the unity of the episcopate\"), and 2.1 paired it with this piece by text. Its opening words are still here, and e43 still opens this piece; the piece now ends with e47, so the live text from e48 (\"It is thus that the power of the College of Bishops\") opens /from-e48.",
+  "added_by": "1.10c"
+ },
+ {
   "passage_id": "7daceb07-5273-5038-a161-108db845115a",
   "document_id": "44fd52c3-fdef-518e-a463-a3273f39764c",
   "anchor": "iii.iv.v.i",
@@ -117,6 +131,13 @@
   "anchor": "vi.v.iv.vii/from-p19",
   "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
   "added_by": "1.10b"
+ },
+ {
+  "passage_id": "a395d7ce-7d65-501c-bae6-b491ccdf34d2",
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "anchor": "ecclesia-in-asia/22/from-e131",
+  "reason": "Reviewed for 1.10c: drifted before 2.1. The live piece (/p2) opened inside paragraph e131 (\"Pastorally oriented courses on the Bible\"), and 2.1 paired it with this piece by text. Its opening words are still here, and e131 still opens this piece; the piece now ends with e131, so the live text's later paragraphs (e132 on, \"Another key aspect of inculturation\") open /from-e132.",
+  "added_by": "1.10c"
  },
  {
   "passage_id": "a7df7930-0b57-5a31-974c-c47c282d10ad",

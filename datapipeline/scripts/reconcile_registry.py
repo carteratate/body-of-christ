@@ -3,7 +3,7 @@
     cd datapipeline
     python3 scripts/reconcile_registry.py --item <item id> --collection <name> [...]
                                           [--snapshot releases/snapshots/<date>
-                                           [--kept-reason TEXT]]
+                                           [--kept-reason TEXT | --kept-reasons FILE]]
                                           [--today YYYY-MM-DD] [--dry-run]
 
 Builds each named collection through SOURCE_ADAPTERS and runs `registry.reconcile` on it:
@@ -22,7 +22,10 @@ its unit now holds its live opening words, the ID redirects there and the piece 
 new ID (a cut counted inside a long paragraph, `/from-p26-3`, that moved). When it still
 holds its own opening words, the low score has another cause (live text that was mostly
 removed notes), which a person states with --kept-reason; the passage is then recorded in
-kept_text.json. Without --kept-reason such passages are problems.
+kept_text.json. Without --kept-reason such passages are problems. --kept-reasons names a
+JSON file of `{passage_id: reason}` instead, one reviewed reason per passage; a `null`
+reason keeps that passage's existing kept_text.json entry as it stands (its text has not
+changed since that review), and a passage the file does not name is a problem.
 
 Writes the registry files only when nothing is left unexplained and the result
 validates; otherwise prints the problems and exits 1. A Phase 1 item runs it once its
@@ -31,6 +34,7 @@ adapter change is done, and commits the registry with that change.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from collections import Counter
@@ -99,14 +103,44 @@ def low_scores(rows: list[dict], documents: list, live: dict[str, str]) -> list[
     return out
 
 
+def kept_entries(low: list[dict], existing: list[dict], item: str,
+                 reason: str | None = None, reasons: dict[str, str | None] | None = None
+                 ) -> tuple[list[dict], list[str]]:
+    """kept_text.json entries for the low-scoring passages `low`, and the problems left:
+    `reason` for every one, or `reasons[passage_id]` for each, where None keeps its
+    `existing` entry."""
+    prior = {e["passage_id"]: e for e in existing}
+    kept, problems = [], []
+    for e in low:
+        if reasons is not None and e["passage_id"] in reasons:
+            why = reasons[e["passage_id"]]
+            if why is None and e["passage_id"] in prior:
+                kept.append(prior[e["passage_id"]])
+            elif why is None:
+                problems.append(f"{e['anchor']} ({e['passage_id']}) has no kept_text entry "
+                                "to keep; give it a reason")
+            else:
+                kept.append({**e, "reason": why, "added_by": item})
+        elif reason:
+            kept.append({**e, "reason": reason, "added_by": item})
+        else:
+            problems.append(f"{e['anchor']} ({e['passage_id']}) keeps its ID under the "
+                            "stability threshold and still holds its opening words; "
+                            "give --kept-reason once a person has checked why")
+    return kept, problems
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--item", required=True, help="the item making the change, e.g. 1.10b")
     parser.add_argument("--collection", required=True, action="append",
                         choices=sorted(SOURCE_ADAPTERS))
     parser.add_argument("--snapshot", help="settle ambiguous pieces by their live text")
-    parser.add_argument("--kept-reason",
+    reason = parser.add_mutually_exclusive_group()
+    reason.add_argument("--kept-reason",
                         help="why passages that still hold their live text score low")
+    reason.add_argument("--kept-reasons", metavar="FILE",
+                        help="a JSON file of {passage_id: reason}, reviewed one by one")
     parser.add_argument("--today", default=date.today().isoformat())
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
@@ -127,13 +161,14 @@ def main(argv: list[str] | None = None) -> int:
     # stand as recorded.
     rebuilt = {d.id for d in documents} if live else set()
     kept = [e for e in reg.kept_text if e["document_id"] not in rebuilt]
-    for e in low_scores(rec.rows, documents, live):
-        if args.kept_reason:
-            kept.append({**e, "reason": args.kept_reason, "added_by": args.item})
-        else:
-            problems.append(f"{e['anchor']} ({e['passage_id']}) keeps its ID under the "
-                            "stability threshold and still holds its opening words; "
-                            "give --kept-reason once a person has checked why")
+    reasons = None
+    if args.kept_reasons:
+        with open(args.kept_reasons, encoding="utf-8") as f:
+            reasons = json.load(f)
+    found, unexplained = kept_entries(low_scores(rec.rows, documents, live), reg.kept_text,
+                                      args.item, args.kept_reason, reasons)
+    kept += found
+    problems += unexplained
     kept.sort(key=lambda e: (e["document_id"], e["anchor"]))
     updated = registry.WorkRegistry(reg.works, rec.rows, rec.redirects, reg.removals, kept)
     problems += registry.validate(updated)
