@@ -249,7 +249,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         reason_code   text NOT NULL CHECK (reason_code IN (
                           'rule-a', 'rule-b', 'rule-c', 'rule-g-editorial', 'note-split-off',
                           'duplicate', 'debris', 'other-author', 'superseded-translation',
-                          'translation-in-preparation', 'not-current-law', 'rolled-back')),
+                          'translation-in-preparation', 'not-current-law', 'awaiting-permission',
+                          'rolled-back')),
                                       -- 2.1's reason list (D11), plus 2.1's reserved 'rolled-back'
         public_reason text NOT NULL,  -- the registry entry's tombstone sentence, shown to users
         CHECK ((reason_code = 'rolled-back') = (removal_key IS NULL)),
@@ -706,6 +707,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         reason_code: str
         public_reason: str
         church_act: Optional[str] = None
+        read_elsewhere_url: Optional[str] = None
         retired_at: datetime
         title: Optional[str] = None
         author: Optional[str] = None
@@ -717,6 +719,8 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         anchor: Optional[str] = None
         chunk_id: Optional[str] = None
     ```
+
+    `Tombstone.read_elsewhere_url` is set only for a retired document (or a passage of one) whose removal entry is `document`-scope with reason `translation-in-preparation` or `awaiting-permission`, or for a passage whose `passage`-scope entry has reason `awaiting-permission`: it is the document's `metadata.held_text_url` when set (a partly rebuilt document, 1.3d step 6), otherwise its `metadata.url`, so the removal page can say where the text can still be read (1.3d; Carter, 31 Oct and 1 Nov 2026; ADR 0001). It is null otherwise.
 
     `ChunkSource` and `BookmarkSource` gain `facts: Optional[DocumentFacts]`, `language: Optional[str]`, `passage_note: Optional[str]`, `passage_author: Optional[str]`. `ChunkResult` and `BookmarkResponse` gain `status: Literal["current", "moved", "removed"] = "current"`, `tombstone: Optional[Tombstone]`, `redirect: Optional[Redirect]`. `DocumentResponse` gains `facts`, `works: list[WorkInfo]` and `status`. `ReaderPassage` gains `language`, `note`, `work_key`, `passage_author` and `superseded_by` (the current passage's ID, set only on a history passage).
   - Superseded text in the reader (rule F, D11). The chapter query returns history passages (`superseded_by IS NOT NULL`) with the chapter, so the reader can show them as "earlier text" beside the current passage. They are never search results, because `searchable` is false. A history passage is not retired; the visibility predicate below does not hide it.
@@ -791,7 +795,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `ChapterSection.tsx`: source credit once at the end of each loaded chapter section. When a chapter's passages belong to a work whose attribution differs from the document's, show the work's label under the chapter heading.
     - `Passage.tsx`: no language note (rule E, revised 29 Oct 2026, leaves no non-English passage); `note` renders as a small muted paragraph after the passage; a `passage_author` renders as a small label above the passage.
     - Earlier text (rule F, D11). A passage with `superseded_by` set is not rendered in the reading flow. It renders as a collapsed "Earlier text (<year>)" control under the current passage it points to; opening it shows the older wording in muted text with the label "No longer in force". The year comes from the history anchor. Test: `ChapterSection.test.tsx::test_history_passage_shows_as_earlier_text_under_current`.
-    - `DocumentReader.tsx` and `lib/api.ts` reader fetchers: on 410 with a tombstone, show a removal page (title, author, reason, Church act, back button). On 404 with `redirect`, `router.replace` to the new document and anchor, keeping `from` and `returnKey`. On `redirected_from`, highlight the new anchor.
+    - `DocumentReader.tsx` and `lib/api.ts` reader fetchers: on 410 with a tombstone, show a removal page (title, author, reason, Church act, back button, and "Read it at <site>" linking to `read_elsewhere_url` when set; the tombstone card shows the same link). On 404 with `redirect`, `router.replace` to the new document and anchor, keeping `from` and `returnKey`. On `redirected_from`, highlight the new anchor.
     - Guest reader shares these components (`isGuest`); no guest fork.
   - `SourcesPage.tsx`: use `formatAttribution` and `formatDate`; show a certainty tag. `BOOK_ORDER` lists "Song of Songs" and "Song of Solomon" at the same rank (C-24).
   - History restore: `useSearchPageExperience.ts` treats `removed` and `moved` results as present; no "results unavailable" notice for them.
