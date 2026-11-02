@@ -184,6 +184,11 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-31: match by document ID, in its own PR before 1.10a (Decision log "Rights inventory matched by document ID").
 - **1.10b** [Phase 1]. Should 1.10b, which already rewrites how Fathers and medieval paragraphs are read, also read `<verse>` blocks? Today the adapter reads only `<p>`, so about 135,000 characters of poems and quoted verse are missing, such as the pagan poets and the Sibyl that Justin, Theophilus and Clement quote as testimony, and Clement's hymn to Christ. Recommended: yes, as part of the work's own text (rule G keeps an author's quotations). If no, the 11 `known_defects.json` entries move to another item.
   Answered 2026-10-05: yes. 1.10b's Changes and Acceptance checks now include `<verse>` blocks.
+- **1.10c** [Phase 1]. Two points, raised while building it.
+  - Two chapters of one Fathers or medieval document often share a label (Augustine's treatise volumes, Hippolytus, Gregory's two volumes, the Banquet, Cur Deus Homo), so 406 Fathers and 16 medieval citations are still shared after every split piece cites its own text. Fix them in 1.10c, or leave them to the items that relabel those documents? Recommended: leave them, tracked by a new check.
+    Answered 2026-11-02: leave them to 1.8b, 1.8c and 1.9, as known defects of `labels.unique_reference`.
+  - Keep the splitter's 500-character allowance where a piece ends on a whole verse or paragraph, or cap pieces strictly at 3,500? Recommended: keep it (467 redirects against 1,429, and no 176-character cards).
+    Answered 2026-11-02: keep it.
 - **1.8b** [Phase 1]. 1.10b found that the Confessions' footnote callers in `viii.xi` ("remains immutably.2 It is good") are plain digits in the source, with no `<note>`, so its note strip cannot remove them. The `known_defects.json` entry now names 1.8b, the NPNF Augustine clean-up. Is 1.8b the right owner? Recommended: yes, as four digits in one paragraph of an NPNF Augustine volume.
   Answered 2026-11-01: yes. 1.8b removes them.
 - **#279** [Phase 1]. Two points.
