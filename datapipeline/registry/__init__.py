@@ -10,6 +10,8 @@ removals, as tracked files under `datapipeline/registry/`.
   (D1). `live_anchor` is the anchor the unit had when it was frozen.
 - `redirects.json`: units whose identity genuinely changed, by old passage ID (D1).
 - `removals.json`: everything any phase removes, by anchor (D4).
+- `kept_text.json`: passages a review found still hold their live text though the
+  release report's stability score says otherwise, each with its reason (1.10b).
 
 IDs, anchors and short fields only, never passage text. Adapters call
 `resolve_document_id`; writers and reports call `resolve_passage_id`. A unit the registry
@@ -32,6 +34,10 @@ WORKS_FILE = "works.json"
 PASSAGES_DIR = "passages"
 REDIRECTS_FILE = "redirects.json"
 REMOVALS_FILE = "removals.json"
+KEPT_TEXT_FILE = "kept_text.json"
+# A row whose anchor's text moved to another piece is renamed `<anchor>#moved-<item>`, a
+# name no build emits, and the anchor takes a new ID (Carter, 31 Oct 2026; 1.10b).
+MOVED_MARK = "#moved-"
 
 # Recorded in every built document's metadata, so a reader of the store can tell which
 # anchors it holds.
@@ -69,6 +75,7 @@ class WorkRegistry:
     passages: list[dict] = field(default_factory=list)
     redirects: list[dict] = field(default_factory=list)
     removals: list[dict] = field(default_factory=list)
+    kept_text: list[dict] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         self.document_by_key = {(w["collection"], w["source_key"]): w["document_id"]
@@ -93,7 +100,8 @@ def load_registry(directory: str = REGISTRY_DIR) -> WorkRegistry:
             if name.endswith(".jsonl"):
                 with open(os.path.join(folder, name), encoding="utf-8") as f:
                     passages += [json.loads(line) for line in f if line.strip()]
-    return WorkRegistry(read(WORKS_FILE), passages, read(REDIRECTS_FILE), read(REMOVALS_FILE))
+    return WorkRegistry(read(WORKS_FILE), passages, read(REDIRECTS_FILE), read(REMOVALS_FILE),
+                        read(KEPT_TEXT_FILE))
 
 
 _current: WorkRegistry | None = None
@@ -207,7 +215,28 @@ def validate(registry: WorkRegistry) -> list[str]:
     problems += _validate_passages(registry, documents)
     problems += _validate_redirects(registry, documents)
     problems += _validate_removals(registry, documents)
+    problems += _validate_kept_text(registry)
     return problems
+
+
+def _validate_kept_text(registry: WorkRegistry) -> list[str]:
+    entries = registry.kept_text
+    out = _sorted(entries, lambda e: (e["document_id"], e["anchor"]), KEPT_TEXT_FILE)
+    rows = {r["passage_id"]: r for r in registry.passages}
+    seen: set[str] = set()
+    for e in entries:
+        pid = e.get("passage_id")
+        if pid in seen:
+            out.append(f"kept text {pid} appears twice")
+        seen.add(pid)
+        row = rows.get(pid)
+        if row is None or row["status"] != "active" or row["anchor"] != e.get("anchor") \
+                or row["document_id"] != e.get("document_id"):
+            out.append(f"kept text {pid}: not an active row under its anchor")
+        for k in ("reason", "added_by"):
+            if not e.get(k):
+                out.append(f"kept text {pid}: no {k}")
+    return out
 
 
 def _sorted(items: list, key, what: str) -> list[str]:
@@ -478,7 +507,7 @@ _CUT = re.compile(r"-\d+$")
 
 
 def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
-              today: str) -> Reconciled:
+              today: str, settle=None, moved=None) -> Reconciled:
     """Bring the passage rows of `documents` in line with a new build, by the split-piece
     rule (D1, C-10):
 
@@ -489,12 +518,26 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
       passage of the same unit now holds, becomes `redirected` with a `merged` redirect
       to that passage;
     - any other active row that is not built is a problem, until a removal entry or a
-      redirect explains it."""
+      redirect explains it.
+
+    A vanished piece whose opening unit several pieces hold (the unit now spans them) is
+    one a person settles. `settle(passage_id, candidates)`, when given, returns the one
+    of `candidates` that holds it (by the vanished piece's text), or None. A redirect
+    settled so stays put on a later run while its target still holds that unit.
+
+    A piece whose anchor is still built can still have lost its text: a cut counted
+    inside a long paragraph (`/from-p26-3`) lands elsewhere when the paragraph's length
+    changes. `moved(passage_id, passage, document)`, when given, returns the passage of
+    `document` that now holds that ID's text, or None when `passage` still does. The
+    moved row is renamed `<anchor>#moved-<item>` and redirected (`moved`) to the holder,
+    and the anchor takes a new ID, so a saved row follows its text (Carter, 31 Oct
+    2026)."""
     rows = [dict(r) for r in registry.passages]
     redirects = [dict(r) for r in registry.redirects]
     problems: list[str] = []
     by_anchor = {(r["document_id"], r["anchor"]): r for r in rows}
     explained = {e.get("passage_id") for e in open_removals(registry)}
+    fresh: set[str] = set()
     for d in documents:
         built = {p.anchor: p for p in d.passages}
         for p in d.passages:
@@ -507,16 +550,22 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
                     problems.append(f"new unit {p.anchor} computes a frozen ID")
                 rows.append(row)
                 by_anchor[(d.id, p.anchor)] = row
+                fresh.add(row["passage_id"])
             elif row["status"] == "redirected":
                 row["status"] = "active"
                 for r in redirects:
                     if r["old_passage_id"] == row["passage_id"] and not r.get("closed_by"):
                         r["closed_by"], r["closed_on"] = item, today
+        if moved is not None:
+            problems += _move_lost_text(d, moved, rows, redirects, by_anchor, fresh,
+                                        registry.frozen_ids, item, today)
         for row in rows:
             if row["document_id"] != d.id or row["status"] != "active" \
                     or row["anchor"] in built:
                 continue
             successor = _holder(row["anchor"], d)
+            if successor is None and settle is not None:
+                successor = _settled(settle, row["passage_id"], row["anchor"], d)
             if successor is not None:
                 row["status"] = "redirected"
                 redirects.append({
@@ -532,11 +581,19 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
     # Every open redirect into a rebuilt document is recomputed from this build, so it
     # names whichever piece now holds its opening unit (after recuts and reclaims too).
     built = {d.id: d for d in documents}
+    row_of = {r["passage_id"]: r for r in rows}
     for r in redirects:
         d = built.get(r["document_id"])
         if r.get("closed_by") or d is None or PIECE_MARK not in r["old_anchor"]:
             continue
+        if MOVED_MARK in row_of[r["old_passage_id"]]["anchor"]:
+            continue                   # its anchor is built; it names a new ID now
         holder = _holder(r["old_anchor"], d)
+        if holder is None:
+            held = [p for p in piece_holders(r["old_anchor"], d) if p.anchor == r["new_anchor"]]
+            holder = held[0] if held else None
+        if holder is None and settle is not None:
+            holder = _settled(settle, r["old_passage_id"], r["old_anchor"], d)
         if holder is None:
             problems.append(f"{r['old_anchor']} ({r['old_passage_id']}): no single piece "
                             "now holds its opening unit")
@@ -559,23 +616,75 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
     return Reconciled(rows, redirects, problems)
 
 
+def _move_lost_text(d: Document, moved, rows: list[dict], redirects: list[dict],
+                    by_anchor: dict, fresh: set[str], frozen: set[str], item: str,
+                    today: str) -> list[str]:
+    """Re-ID each built piece of `d` whose row's text now lies in another piece."""
+    problems = []
+    moves = []
+    for p in d.passages:
+        row = by_anchor[(d.id, p.anchor)]
+        if row["passage_id"] in fresh or row["status"] != "active":
+            continue
+        holder = moved(row["passage_id"], p, d)
+        if holder is not None and holder is not p:
+            moves.append((p, row, holder))
+    for p, row, _ in moves:
+        new_id = identity.passage_id(d.id, f"{p.anchor}#{item}")
+        if new_id in frozen:
+            problems.append(f"{p.anchor}: its new ID {new_id} is already frozen")
+            continue
+        row["anchor"] = f"{p.anchor}{MOVED_MARK}{item}"
+        row["status"] = "redirected"
+        new_row = {"passage_id": new_id, "document_id": d.id, "anchor": p.anchor,
+                   "live_anchor": p.anchor, "status": "active", "frozen_on": today,
+                   "work_key": row.get("work_key")}
+        rows.append(new_row)
+        by_anchor[(d.id, p.anchor)] = new_row
+        by_anchor[(d.id, row["anchor"])] = row
+        fresh.add(new_id)
+    for p, row, holder in moves:
+        if row["status"] != "redirected":
+            continue
+        target = by_anchor[(d.id, holder.anchor)]
+        redirects.append({
+            "document_id": d.id, "old_passage_id": row["passage_id"], "old_anchor": p.anchor,
+            "new_passage_id": target["passage_id"], "new_anchor": holder.anchor,
+            "kind": "moved", "reason": "its text now lies in another piece of the unit",
+            "added_by": item})
+    return problems
+
+
 def _holder(anchor: str, document: Document):
     """The passage of the same unit that holds a vanished piece's opening unit."""
+    holders = piece_holders(anchor, document)
+    return holders[0] if len(holders) == 1 else None
+
+
+def piece_holders(anchor: str, document: Document) -> list:
+    """The passages of the same unit that hold a vanished piece's opening unit: one, or
+    several when that unit now spans them (a person, or `settle`, picks the one)."""
     if PIECE_MARK not in anchor:
-        return None
+        return []
     unit, locator = unit_anchor(anchor), anchor.split(PIECE_MARK, 1)[1]
     members = [p for p in document.passages if unit_anchor(p.anchor) == unit]
     if len(members) == 1:
-        return members[0]              # the unit is whole again: it holds every unit
+        return members                 # the unit is whole again: it holds every unit
     # The locator itself first; then without a trailing cut (`p5-2` opened inside `p5`).
     # A Bible locator (`3-16`) is chapter and verse, so it is only matched whole first.
-    # Several pieces holding that unit cannot say which holds the vanished cut, so a
-    # person settles it.
     for wanted in (locator, _CUT.sub("", locator)):
         holders = [p for p in members if any(loc == wanted for loc, _ in p.source_units)]
         if holders:
-            return holders[0] if len(holders) == 1 else None
-    return None
+            return holders
+    return []
+
+
+def _settled(settle, passage_id: str, anchor: str, document: Document):
+    candidates = piece_holders(anchor, document)
+    if len(candidates) < 2:
+        return None
+    chosen = settle(passage_id, candidates)
+    return chosen if chosen in candidates else None
 
 
 # --------------------------------------------------------------------------- writing
@@ -596,6 +705,8 @@ def write_registry(registry: WorkRegistry, directory: str = REGISTRY_DIR) -> Non
     dump(WORKS_FILE, sorted(registry.works, key=lambda w: (w["collection"], w["work_id"])))
     dump(REDIRECTS_FILE, sorted(registry.redirects,
                                 key=lambda r: (r["document_id"], r["old_anchor"])))
+    dump(KEPT_TEXT_FILE, sorted(registry.kept_text,
+                                key=lambda e: (e["document_id"], e["anchor"])))
     dump(REMOVALS_FILE, sorted(registry.removals,
                                key=lambda e: (e["collection"], e["document_id"],
                                               e.get("anchor") or "")))

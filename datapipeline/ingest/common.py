@@ -1,5 +1,6 @@
 from __future__ import annotations
 import re
+from copy import deepcopy
 from dataclasses import dataclass, field
 from xml.etree.ElementTree import tostring as et_tostring  # serialization only — no parsing
 import defusedxml.ElementTree as ET  # safe parsing: blocks XXE and billion-laughs attacks
@@ -23,30 +24,146 @@ def _strip_tags(text: str) -> str:
     return " ".join(text.split())
 
 
+_NOTE_MARK = "\u2063"   # INVISIBLE SEPARATOR: where a removed note stood, while counting
+
+
+def _drop_notes(elem, mark: str, texts: list[str] | None = None) -> int:
+    """Remove elem's <note> descendants in place, keeping each one's tail and leaving
+    `mark` where it stood. Returns how many were removed (a note's own notes are not
+    counted again); `texts`, when given, gets each removed note's text in order."""
+    removed = 0
+    for child in list(elem):
+        if child.tag != "note":
+            removed += _drop_notes(child, mark, texts)
+            continue
+        kept = mark + (child.tail or "")
+        if texts is not None:
+            child.tail = None
+            texts.append(_strip_tags(et_tostring(child, encoding="unicode", method="xml")))
+        k = list(elem).index(child)
+        if k == 0:
+            elem.text = (elem.text or "") + kept
+        else:
+            prev = elem[k - 1]
+            prev.tail = (prev.tail or "") + kept
+        elem.remove(child)
+        removed += 1
+    return removed
+
+
+def _without_notes(elem, mark: str = "", texts: list[str] | None = None):
+    """A copy of elem with every <note> removed and its tail kept, so the text around a
+    translator's footnote closes up. ThML prints ANF and NPNF footnotes as <note>
+    elements inside the paragraph; they are editor material under rule G (1.10b),
+    except the scripture references kept as footnotes (`ingest.scripture_notes`)."""
+    copy = deepcopy(elem)
+    _drop_notes(copy, mark, texts)
+    return copy
+
+
+def _block_text(elem, mark: str = "", texts: list[str] | None = None) -> str:
+    """One <p> or <verse> block as read for a passage, without notes. A verse block's
+    <l> lines are joined with a line break; anything else is one run of text."""
+    elem = _without_notes(elem, mark, texts)
+    if elem.tag != "verse":
+        return _strip_tags(et_tostring(elem, encoding="unicode", method="xml"))
+    lines = [_strip_tags(et_tostring(line, encoding="unicode", method="xml"))
+             for line in elem.iter("l")]
+    return "\n".join(line for line in lines if line)
+
+
+def _unmark(text: str) -> tuple[str, list[int]]:
+    """Text read with `_NOTE_MARK`s, without them, and the offset of each. A mark between
+    two spaces takes one with it, so the result is the text read with no mark."""
+    out: list[str] = []
+    offsets: list[int] = []
+    skip_space = False
+    for k, c in enumerate(text):
+        if c == _NOTE_MARK:
+            offsets.append(len(out))
+            nxt = text[k + 1] if k + 1 < len(text) else ""
+            skip_space = (not out or out[-1] in " \n") and nxt == " "
+            continue
+        if skip_space:
+            skip_space = False
+            if c == " ":
+                continue
+        out.append(c)
+    joined = "".join(out)
+    lead = len(joined) - len(joined.lstrip())
+    stripped = joined.strip()
+    return stripped, [min(max(0, at - lead), len(stripped)) for at in offsets]
+
+
+def _p_text_without_notes(p) -> str:
+    """A <p>'s text with its <note> elements removed (1.10b)."""
+    return _block_text(p)
+
+
+BLOCK_TAGS = ("p", "verse")
+
+
+def _blocks(elem):
+    """elem's <p> and <verse> blocks at any depth, in document order, never inside a
+    note (a note holds its own <p>s) and never a block inside another block."""
+    for child in elem:
+        if child.tag in BLOCK_TAGS:
+            yield child
+        elif child.tag != "note":
+            yield from _blocks(child)
+
+
 def _extract_p_text(elem) -> str:
-    """Concatenate text from all <p> descendants of elem (recursive)."""
-    parts = []
-    for p in elem.iter("p"):
-        raw = et_tostring(p, encoding="unicode", method="xml")
-        t = _strip_tags(raw)
-        if t:
-            parts.append(t)
+    """Concatenate text from all <p> and <verse> blocks of elem (recursive), without
+    notes."""
+    parts = [t for t in (_block_text(b) for b in _blocks(elem)) if t]
     return "\n\n".join(parts)
 
 
+def direct_blocks(elem) -> list:
+    """elem's DIRECT <p> and <verse> children, in document order."""
+    return [child for child in elem if child.tag in BLOCK_TAGS]
+
+
+def direct_blocks_text(elem) -> tuple[str, list[tuple[int, str]]]:
+    """`_direct_p_text`, and each removed note as (the offset in that text where it
+    stood, its text), so a passage cut from it can count the notes it lost
+    (`editor_note_count`) and keep the scripture references as footnotes."""
+    parts: list[str] = []
+    notes: list[tuple[int, str]] = []
+    at = 0
+    for block in direct_blocks(elem):
+        texts: list[str] = []
+        text, marks = _unmark(_block_text(block, _NOTE_MARK, texts))
+        if len(marks) != len(texts):
+            raise ValueError(f"{block.get('id')}: a note outside the block's text lines")
+        if not text:
+            continue
+        if parts:
+            at += 2
+        notes += [(at + m, t) for m, t in zip(marks, texts)]
+        parts.append(text)
+        at += len(text)
+    return "\n\n".join(parts), notes
+
+
+def direct_text_with_notes(elem) -> str:
+    """The DIRECT <p> children's text with their notes left in: what the adapters read
+    before 1.10b. Only the minimum chapter length is measured on it, so the same divs
+    are chapters as before, and stripping notes never drops a short chapter."""
+    parts = [_strip_tags(et_tostring(c, encoding="unicode", method="xml"))
+             for c in elem if c.tag == "p"]
+    return "\n\n".join(t for t in parts if t)
+
+
 def _direct_p_text(elem) -> str:
-    """Concatenate text from only the DIRECT <p> children of elem.
+    """Concatenate text from only the DIRECT <p> and <verse> children of elem, without
+    notes.
 
     Used for chapter content so a book-level div that has both intro paragraphs
     and chapter sub-divs does not duplicate its chapters' text.
     """
-    parts = []
-    for child in elem:
-        if child.tag == "p":
-            raw = et_tostring(child, encoding="unicode", method="xml")
-            t = _strip_tags(raw)
-            if t:
-                parts.append(t)
+    parts = [t for t in (_block_text(b) for b in direct_blocks(elem)) if t]
     return "\n\n".join(parts)
 
 
