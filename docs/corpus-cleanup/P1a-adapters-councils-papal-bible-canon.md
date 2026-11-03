@@ -310,7 +310,7 @@ These apply to every PR below and are not repeated in each item.
   - `test_schaff_keeps_english_cell_only`, `test_schaff_joins_english_across_page_tables`, on a fixture with 2 tables and a mid-sentence page break.
   - Vendored checks: 4 chapters and 18 canons in Dei Filius, 4 chapters in Pastor Aeternus. Chapter 4 of Pastor Aeternus contains "is possessed of that infallibility". No passage has more than 5% Latin stopwords ("et", "est", "quae", "non").
 - **Production safety:** Document ID unchanged. The 9 current passages are Tanner cuts, not the new chapter and canon units, so the new units get new IDs (D1). Each old ID gets a redirect to the new passage for the same chapter, matched by chapter title. Sessions 1 and 2 material that has no Schaff equivalent gets removal-registry entries (reason `translation-in-preparation`, tombstone "A public-domain English translation of this text is not yet available") and is listed in the gap register.
-- **Needs Carter:** nothing.
+- **Needs Carter:** nothing. Found by 1.2a: whether Schaff's 1564 Tridentine profession may stand, labelled, for session 2's profession of faith (see NEEDS-CARTER).
 - **Out of scope:** the rest of Schaff vol. 2 (the Creed of Pius IV, Ineffabilis Deus, the Syllabus).
 
 ### 1.2f. OCR clean-up tool and quality gate
