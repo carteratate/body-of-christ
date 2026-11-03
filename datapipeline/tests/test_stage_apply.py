@@ -414,6 +414,33 @@ async def test_stage_refuses_while_staging_holds_another_publish(world):
                                                 collections=("medieval",)))
 
 
+async def test_a_refused_stage_leaves_no_ownership_for_a_retry(world):
+    """A Qdrant collection of the publish's name that no earlier stage made is refused,
+    and the refusal writes no publish row, so a retry is refused too and the
+    collection's points are untouched."""
+    from qdrant_client.models import Distance, PointStruct, VectorParams
+
+    await world.qdrant.create_collection("chunks-test-release", vectors_config=VectorParams(
+        size=1536, distance=Distance.COSINE))
+    await world.qdrant.upsert("chunks-test-release", points=[PointStruct(
+        id=pid(DOC_A, "a/1"), vector=[0.5] * 1536, payload={"collection": "medieval"})])
+    for _ in range(2):
+        with pytest.raises(StageRefused, match="belongs to no earlier stage"):
+            await world.runner().stage(STAGE)
+    assert not await world.fetch("SELECT 1 FROM corpus_publishes")
+    assert (await world.qdrant.count("chunks-test-release")).count == 1
+
+
+async def test_restaging_recopies_untouched_collections(world):
+    """A live change that keeps the point count still reaches the publish's copy."""
+    await world.runner().stage(STAGE)
+    await world.qdrant.set_payload("chunks", payload={"content": "Changed in live."},
+                                   points=[pid(DOC_S, "s/1")])
+    await world.runner().stage(STAGE)
+    [point] = await world.qdrant.retrieve("chunks-test-release", ids=[pid(DOC_S, "s/1")])
+    assert point.payload["content"] == "Changed in live."
+
+
 async def test_restaging_replaces_the_collection_rows(world):
     await world.runner().stage(STAGE)
     _doc(world, DOC_A).passages[0].content = "Grace perfects nature, revised."

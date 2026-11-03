@@ -264,9 +264,20 @@ class StageRunner:
             if name in (live, alias, qd.QDRANT_COLLECTION):
                 raise StageRefused(f"REFUSING: '{name}' is what users search")
 
+            # Decide whether the Qdrant collection is ours before anything is written: a
+            # refused stage must leave no publish row that a retry would read as proof.
+            exists = await client.collection_exists(name)
+            if exists:
+                owner = await conn.fetchval(
+                    "SELECT qdrant_collection FROM corpus_publishes WHERE id = $1",
+                    request.release)
+                if owner != name:
+                    raise StageRefused(f"REFUSING: Qdrant collection '{name}' exists and "
+                                       f"belongs to no earlier stage of '{request.release}'")
+
             at = datetime.now(timezone.utc)
             async with conn.transaction():
-                before = await begin_publish(conn, request.release, collections, name)
+                await begin_publish(conn, request.release, collections, name)
                 await reader_writer.ensure_staging(conn)
                 await reader_writer.clear_staged_collections(conn, collections)
                 for d in documents:
@@ -286,10 +297,7 @@ class StageRunner:
                     request.release))
 
             # Qdrant: the publish's own collection, never one users search.
-            if await client.collection_exists(name):
-                if before is None:
-                    raise StageRefused(f"REFUSING: Qdrant collection '{name}' exists and "
-                                       f"belongs to no earlier stage of '{request.release}'")
+            if exists:
                 await qd.check_vectors(client, name)
             else:
                 await create_chunks_collection(client, name)
@@ -302,11 +310,10 @@ class StageRunner:
             staged_keys = set(publish_collections) | set(request.renames.values())
             copied = {}
             for c in sorted(set(self._source_adapters) - staged_keys):
-                expected = await qd.count_points(client, live, c)
-                if await qd.count_points(client, name, c) != expected:
-                    await qd.clear_staged_points(client, name, c, alias=alias)
-                    await qd.copy_points(client, live, name, c)
-                copied[c] = expected
+                # Always copied afresh: a count alone cannot show that live changed.
+                copied[c] = await qd.count_points(client, live, c)
+                await qd.clear_staged_points(client, name, c, alias=alias)
+                await qd.copy_points(client, live, name, c)
 
             await check_point_counts(conn, client, name, publish_collections, copied)
             await conn.execute(
