@@ -359,15 +359,17 @@ Pastor Aeternus only (7,286 words), in Manning's translation (*Petri Privilegium
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Session 1: decree of opening the council | "Decree of opening of the council" | — | **gap** |
-| Session 2: profession of faith | "Profession of faith" | `creeds2` `v.i.ii`, Schaff's "Profession of the Tridentine Faith, A.D. 1564" (see below) | **partial**: same formula, article by article, but printed as Pius IV's 1564 act, not the council's, and different in three places (below). Whether it may stand for session 2 is Carter's decision |
+| Session 2: profession of faith | "Profession of faith" | `creeds2` `v.i.ii`, Schaff's "Profession of the Tridentine Faith, A.D. 1564" (see below) | **partial**: same formula, article by article, but printed as Pius IV's 1564 act, not the council's, and different in four places (below). Whether it may stand for session 2 is Carter's decision |
 | Session 3: Dei Filius, prologue, chapters 1–4, canons | "Dogmatic constitution on the catholic faith" | `v.ii.i`, English cells | covered |
 | Session 4: Pastor Aeternus, prologue, chapters 1–4 | "Session 4" | `v.ii.i`, English cells | covered |
 
 The session 2 profession is the formula of the 1564 Profession of the Tridentine Faith,
 which Pius IX recited. Schaff prints that 1564 profession in English as its own document
 (`creeds2` `v.i.ii`, 662 words), not as an act of the Vatican Council. Against Tanner's
-session 2 text it differs in three places: the creed is abbreviated to its first words
-and "etc." with a page reference; the speaker is a blank ("I, ——") where Tanner has
+session 2 text it differs in four places: the creed is abbreviated to its first words
+and "etc." with a page reference; article X adds an oath of true obedience to the
+Roman pontiff, which Tanner leaves out of Pius IX's profession and gives in his footnote 1
+as what the other fathers' profession added; the speaker is a blank ("I, ——") where Tanner has
 "I, Pius, bishop of the catholic church"; and the close is the 1564 one, which binds
 "my subjects" and ends "This I promise, vow, and swear", where Pius IX's reads "that
 all others do the same. This is what I, the same Pius, promise, vow and swear".
