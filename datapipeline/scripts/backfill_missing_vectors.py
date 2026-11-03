@@ -173,7 +173,7 @@ async def backfill_collection(client, conn, collection: str, apply: bool,
     """Returns (missing_count, written_count)."""
     from qdrant_client.models import PointStruct
 
-    from writers.qdrant import upsert_points
+    from writers.qdrant import QDRANT_COLLECTION, upsert_points
 
     rows = [PassageRow(**dict(r)) for r in await conn.fetch(_SQL, collection)]
     pg_ids = {row.chunk_id for row in rows}
@@ -213,7 +213,7 @@ async def backfill_collection(client, conn, collection: str, apply: bool,
         # Via writers.qdrant.upsert_points, not client.upsert directly: that helper
         # retries transient failures 4x with backoff, and it is the same one the writer
         # being replayed here uses. Bypassing it would be a gratuitous regression.
-        await upsert_points(client, [
+        await upsert_points(client, QDRANT_COLLECTION, [
             # Unnamed vector and the deterministic passage id already in `chunks`
             # (verified equal to passage_id(document_id, anchor) for all 54,027 rows),
             # so a re-run overwrites rather than duplicating.

@@ -9,8 +9,9 @@ never edited by hand:
 An excerpt-only document keeps its passages in search; the API refuses its reader and
 contents, and the frontend links to the official source instead.
 
-Two writers keep the column current. `reader_writer.write_document` sets it on every
-publish, so a republish cannot reopen an uncleared text. `sync` resets every live
+Two writers keep the column current. A publish's stage sets it from the inventory in
+`staging.documents` (`reader_writer.write_staged_document`), so a republish cannot
+reopen an uncleared text. `sync` resets every live
 document from the inventory, which is how a document is unblocked without a republish:
 record the new status (a public-domain source, or `permission` with grantor, date and
 scope) in `rights_inventory.json`, then run

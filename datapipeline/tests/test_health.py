@@ -2,7 +2,6 @@
 is read."""
 import gzip
 import json
-from contextlib import asynccontextmanager
 
 import pytest
 
@@ -10,7 +9,7 @@ import health
 from checks import health as health_cli
 from checks import report
 from model import Document, Passage
-from publication import CollectionPublicationRunner, PublicationRequest
+from publication import StageRequest, StageRunner, build
 
 GOOD = ("The Word was made flesh and dwelt among us, and we saw his glory, the glory as of "
         "the only begotten of the Father, full of grace and truth.")
@@ -231,34 +230,32 @@ def test_check_id_names_rule_collection_document_and_anchor():
 # --------------------------------------------------------------------------- publish gate
 
 def _runner(events, documents):
-    @asynccontextmanager
-    async def acquire(name):
-        events.append(f"{name}:acquire")
-        yield None
+    async def connect():
+        events.append("db:connect")
 
-    return CollectionPublicationRunner(
-        source_adapters={"encyclicals": lambda: documents},
-        acquire_reader_store=lambda: acquire("reader"),
-        acquire_search_index=lambda: acquire("search"),
-    )
+    def qdrant():
+        events.append("qdrant:client")
+
+    return StageRunner(connect=connect, qdrant=qdrant, cache=lambda: None,
+                       source_adapters={"encyclicals": lambda: documents})
 
 
 async def test_block_rule_refuses_before_store_acquisition():
     events: list[str] = []
-    runner = _runner(events, [_doc(_p(anchor="a", position=0), _p(".", anchor="b", position=1))])
+    documents = [_doc(_p(anchor="a", position=0), _p(".", anchor="b", position=1))]
+    runner = _runner(events, documents)
     with pytest.raises(ValueError, match=r"REFUSING: 1 health block-rule violations in "
                                          r"'encyclicals': health.H2_debris:encyclicals/doc-1#b "):
-        await runner.publish(PublicationRequest(collection="encyclicals"))
+        await runner.stage(StageRequest(release="test-release", collections=("encyclicals",)))
     assert events == []
     # A dry run builds through the same checks.
     with pytest.raises(ValueError, match="REFUSING"):
-        runner.build(PublicationRequest(collection="encyclicals"))
+        build("encyclicals", source_adapters={"encyclicals": lambda: documents})
 
 
 def test_report_rules_never_refuse():
-    events: list[str] = []
-    runner = _runner(events, [_doc(_p("PAUL VI", anchor="a--2"))])
-    assert len(runner.build(PublicationRequest(collection="encyclicals"))) == 1
+    documents = [_doc(_p("PAUL VI", anchor="a--2"))]
+    assert len(build("encyclicals", source_adapters={"encyclicals": lambda: documents})) == 1
 
 
 def test_known_block_defect_is_accepted_and_a_new_one_is_not():

@@ -7,10 +7,17 @@ from pipeline import (
 
 def test_resolve_all_is_dependency_ordered():
     order = resolve_stages(["all"])
-    assert order.index("parse") < order.index("reader") < order.index("enrich") < order.index("embed")
+    assert order.index("parse") < order.index("enrich") < order.index("embed")
+    assert "reader" not in order
     assert order.index("enrich") < order.index("bm25-annotation-fit")
     assert order.index("bm25-content-fit") < order.index("bm25-index")
     assert order.index("bm25-annotation-fit") < order.index("bm25-index")
+
+
+def test_reader_stage_is_retired_and_points_at_publish_py():
+    """It cleared and rewrote a live collection (2.2w, D2)."""
+    with pytest.raises(PipelineError, match="publish.py stage"):
+        resolve_stages(["reader"])
 
 
 def test_resolve_unknown_stage_raises():
@@ -97,12 +104,6 @@ def _main_exit(argv):
     return raised.value.code
 
 
-def test_reader_stage_is_refused_while_locked(monkeypatch, capsys):
-    _lock_remote(monkeypatch)
-    assert _main_exit(["--stage", "reader", "--collection", "medieval"]) == 2
-    assert "locked" in capsys.readouterr().err
-
-
 def test_enrich_stage_is_refused_while_locked(monkeypatch, capsys):
     _lock_remote(monkeypatch)
     assert _main_exit(["--stage", "enrich", "--collection", "medieval", "--yes",
@@ -147,7 +148,7 @@ def _health_stubs(monkeypatch, bad: set[str]):
     monkeypatch.setattr(pipeline, "_guard_live_writes", lambda args, stages: None)
     monkeypatch.setattr(pipeline, "validate_dependencies", lambda *args, **kwargs: None)
     monkeypatch.setattr(pipeline._Resources, "cache", lambda self: None)
-    for name in ("_run_reader", "_run_embed", "_run_enrich"):
+    for name in ("_run_embed", "_run_enrich"):
         monkeypatch.setattr(pipeline, name, record)
     return writes
 
@@ -158,9 +159,9 @@ def _run(argv):
     asyncio.run(pipeline._main(pipeline._parse_args(argv)))
 
 
-@pytest.mark.parametrize("stage", ["reader", "embed", "enrich"])
+@pytest.mark.parametrize("stage", ["embed", "enrich"])
 def test_publishing_stages_refuse_health_block_violations(monkeypatch, stage):
-    """The 0.1b block rules run on parsed documents before a reader, embed or full
+    """The 0.1b block rules run on parsed documents before an embed or full
     enrich run touches the stores."""
     writes = _health_stubs(monkeypatch, bad={"medieval"})
     argv = ["--stage", stage, "--collection", "medieval"] + (["--yes"] * (stage == "enrich"))
@@ -172,10 +173,10 @@ def test_publishing_stages_refuse_health_block_violations(monkeypatch, stage):
 def test_collection_all_checks_every_collection_before_any_write(monkeypatch):
     writes = _health_stubs(monkeypatch, bad={"summa"})
     with pytest.raises(ValueError, match="REFUSING: .* in 'summa'"):
-        _run(["--stage", "reader", "--collection", "all"])
+        _run(["--stage", "embed", "--collection", "all"])
     assert writes == []
     writes = _health_stubs(monkeypatch, bad=set())
-    _run(["--stage", "reader", "--collection", "all"])
+    _run(["--stage", "embed", "--collection", "all"])
     assert writes == ["medieval", "summa"]
 
 
@@ -184,11 +185,11 @@ def test_dry_run_of_a_publishing_stage_runs_the_health_rules(monkeypatch, tmp_pa
     _health_stubs(monkeypatch, bad={"medieval"})
     monkeypatch.setattr(pipeline, "CACHE_PATH", str(tmp_path / "cache.db"))
     with pytest.raises(ValueError, match="REFUSING"):
-        _run(["--stage", "reader", "--collection", "medieval", "--dry-run"])
-    _run(["--stage", "reader", "--collection", "summa", "--dry-run"])
+        _run(["--stage", "embed", "--collection", "medieval", "--dry-run"])
+    _run(["--stage", "embed", "--collection", "summa", "--dry-run"])
 
 
 def test_health_refusal_exits_2_with_a_message(monkeypatch, capsys):
     _health_stubs(monkeypatch, bad={"medieval"})
-    assert _main_exit(["--stage", "reader", "--collection", "medieval"]) == 2
+    assert _main_exit(["--stage", "embed", "--collection", "medieval"]) == 2
     assert "pipeline: REFUSING: 1 health" in capsys.readouterr().err

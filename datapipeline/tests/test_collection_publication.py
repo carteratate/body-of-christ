@@ -1,27 +1,28 @@
-import asyncio
-from contextlib import asynccontextmanager
+"""The build and preparation steps a stage runs before it opens any store (2.2w).
+
+The stage itself runs against a local PostgreSQL and an in-memory Qdrant in
+test_stage_apply.py.
+"""
 from pathlib import Path
 import sys
 
 import pytest
 
+import registry
 from identity import passage_id
-from model import ContentsNode, Document, Passage
-from publication import (
-    CollectionPublicationRunner,
-    PublicationRequest,
-    PublicationTarget,
-    SOURCE_ADAPTERS,
-)
+from model import Document, Passage
+from publication import SOURCE_ADAPTERS, StageRequest, StageRunner, build, prepare
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT))
 from services.api.app.rag.constants import VALID_COLLECTIONS
 
+DOC = "11111111-1111-1111-1111-111111111111"
+
 
 def _document(*anchors: str) -> Document:
     return Document(
-        id="11111111-1111-1111-1111-111111111111",
+        id=DOC,
         collection="medieval",
         title="On Loving God",
         author="Bernard of Clairvaux",
@@ -39,99 +40,16 @@ def _document(*anchors: str) -> Document:
     )
 
 
-class FakeReaderStore:
-    def __init__(self, events: list[str], live_ids: set[str] | None = None,
-                 contents_table: bool = True, reader_access_column: bool = True):
-        self.events = events
-        self.live_ids = live_ids or set()
-        self.contents_table = contents_table
-        self.reader_access_column = reader_access_column
-
-    async def passage_ids(self, collection: str) -> set[str]:
-        self.events.append("reader:inspect")
-        return self.live_ids
-
-    async def wipe(self, collection: str) -> None:
-        self.events.append("reader:wipe")
-
-    async def write(self, document: Document, *, prune: bool) -> int:
-        self.events.append(f"reader:write:{prune}")
-        return 0
-
-    async def prune_documents(self, collection: str, keep_ids: set[str]) -> int:
-        self.events.append("reader:prune")
-        return 0
-
-    async def has_contents_table(self) -> bool:
-        self.events.append("reader:contents-table")
-        return self.contents_table
-
-    async def has_reader_access_column(self) -> bool:
-        return self.reader_access_column
+def _registry(passages=(), removals=()) -> registry.WorkRegistry:
+    work = registry.work_entry(collection="medieval", source_key="medieval/x", document_id=DOC,
+                               title="On Loving God", author=None, frozen_on="2026-10-30")
+    return registry.WorkRegistry(works=[work], passages=list(passages),
+                                 removals=list(removals))
 
 
-class FakeSearchIndex:
-    def __init__(
-        self,
-        events: list[str],
-        live_ids: set[str] | None = None,
-        fail_writes: int = 0,
-    ):
-        self.events = events
-        self.live_ids = live_ids or set()
-        self.pruned_keep_ids: set[str] | None = None
-        self.fail_writes = fail_writes
-
-    async def passage_ids(self, collection: str) -> set[str]:
-        self.events.append("search:inspect")
-        return self.live_ids
-
-    async def reset(self, collection: str) -> None:
-        self.events.append("search:reset")
-
-    async def write(self, document: Document) -> None:
-        self.events.append("search:write")
-        if self.fail_writes:
-            self.fail_writes -= 1
-            raise RuntimeError("interrupted search write")
-
-    async def prune(self, collection: str, keep_ids: set[str]) -> int:
-        self.events.append("search:prune")
-        self.pruned_keep_ids = keep_ids
-        return 0
-
-
-def _runner(
-    events: list[str],
-    documents: list[Document],
-    *,
-    reader: FakeReaderStore | None = None,
-    search: FakeSearchIndex | None = None,
-) -> CollectionPublicationRunner:
-    reader = reader or FakeReaderStore(events)
-    search = search or FakeSearchIndex(events)
-
-    @asynccontextmanager
-    async def acquire_reader():
-        events.append("reader:acquire")
-        try:
-            yield reader
-        finally:
-            events.append("reader:close")
-
-    @asynccontextmanager
-    async def acquire_search():
-        events.append("search:acquire")
-        try:
-            yield search
-        finally:
-            events.append("search:close")
-
-    return CollectionPublicationRunner(
-        source_adapters={"medieval": lambda: documents},
-        acquire_reader_store=acquire_reader,
-        acquire_search_index=acquire_search,
-    )
+def _row(anchor, pid, **extra):
+    return {"passage_id": pid, "document_id": DOC, "anchor": anchor, "live_anchor": anchor,
+            "status": "active", "frozen_on": "2026-10-30", "work_key": None, **extra}
 
 
 def test_source_adapter_registry_exactly_matches_production_collections():
@@ -150,349 +68,64 @@ def test_source_adapter_registry_exactly_matches_production_collections():
     assert all(callable(adapter) for adapter in SOURCE_ADAPTERS.values())
 
 
-@pytest.mark.parametrize(
-    ("target", "expected_events"),
-    [
-        (
-            PublicationTarget.READER,
-            [
-                "reader:acquire",
-                "reader:inspect",
-                "reader:write:True",
-                "reader:prune",
-                "reader:close",
-            ],
-        ),
-        (
-            PublicationTarget.SEARCH,
-            [
-                "search:acquire",
-                "search:inspect",
-                "search:write",
-                "search:prune",
-                "search:close",
-            ],
-        ),
-        (
-            PublicationTarget.BOTH,
-            [
-                "reader:acquire",
-                "reader:inspect",
-                "reader:write:True",
-                "reader:prune",
-                "reader:close",
-                "search:acquire",
-                "search:inspect",
-                "search:write",
-                "search:prune",
-                "search:close",
-            ],
-        ),
-    ],
-)
-def test_publication_acquires_only_selected_targets_and_writes_before_pruning(
-    target: PublicationTarget, expected_events: list[str]
-):
-    events: list[str] = []
-    runner = _runner(events, [_document("a/1")])
-
-    result = asyncio.run(runner.publish(PublicationRequest("medieval", target=target)))
-
-    assert events == expected_events
-    assert result.document_count == 1
-    assert result.passage_count == 1
+def test_prepared_ids_come_from_the_registry_and_new_units_from_identity():
+    """D1: a unit the registry holds keeps its frozen ID whatever its anchor computes
+    to; only a unit the registry does not know gets `identity.passage_id`."""
+    frozen = "22222222-2222-2222-2222-222222222222"
+    reg = _registry(passages=[_row("a/1", frozen)])
+    [document], new = prepare([_document("a/1", "a/2")], reg)
+    assert [p.id for p in document.passages] == [frozen, passage_id(DOC, "a/2")]
+    assert new == [passage_id(DOC, "a/2")]
 
 
-def test_limited_publication_writes_without_collection_wide_pruning():
-    events: list[str] = []
-    runner = _runner(events, [_document("a/1"), _document("b/1")])
-
-    asyncio.run(
-        runner.publish(
-            PublicationRequest("medieval", target=PublicationTarget.BOTH, limit=1)
-        )
-    )
-
-    assert "reader:prune" not in events
-    assert "search:prune" not in events
-    assert events.count("reader:write:False") == 1
-    assert events.count("search:write") == 1
+def test_registry_override_beats_adapter_searchable():
+    reg = _registry(passages=[_row("a/1", passage_id(DOC, "a/1"), searchable=False,
+                                   note="Earlier text.")])
+    [document], _ = prepare([_document("a/1")], reg)
+    assert document.passages[0].searchable is False
+    assert document.passages[0].note == "Earlier text."
 
 
-def test_both_store_publication_is_safe_to_rerun_after_search_interruption():
-    events: list[str] = []
-    search = FakeSearchIndex(events, fail_writes=1)
-    runner = _runner(events, [_document("a/1")], search=search)
-    request = PublicationRequest("medieval", target=PublicationTarget.BOTH)
-
-    with pytest.raises(RuntimeError, match="interrupted search write"):
-        asyncio.run(runner.publish(request))
-
-    assert events[-1] == "search:close"
-
-    result = asyncio.run(runner.publish(request))
-
-    assert result.passage_count == 1
-    assert events.count("reader:write:True") == 2
-    assert events.count("search:write") == 2
-    assert events[-1] == "search:close"
+def test_history_passage_must_name_a_passage_of_its_document():
+    document = _document("c/1", "c/1/history-1983")
+    document.passages[1].superseded_by_anchor = "c/9"
+    with pytest.raises(ValueError, match="not a passage of the same document"):
+        prepare([document], _registry())
 
 
-def test_explicit_search_reset_happens_before_search_writes():
-    events: list[str] = []
-    runner = _runner(events, [_document("a/1")])
-
-    asyncio.run(
-        runner.publish(
-            PublicationRequest(
-                "medieval",
-                target=PublicationTarget.SEARCH,
-                reset_search_index=True,
-            )
-        )
-    )
-
-    assert events == [
-        "search:acquire",
-        "search:inspect",
-        "search:reset",
-        "search:write",
-        "search:close",
-    ]
+def test_the_build_drops_what_the_removal_registry_retires():
+    removal = {"id": "rm-9", "scope": "passage", "collection": "medieval", "document_id": DOC,
+               "anchor": "a/2", "passage_id": passage_id(DOC, "a/2"), "reason": "debris",
+               "tombstone": "Removed.", "church_act": None}
+    reg = _registry(passages=[_row("a/2", passage_id(DOC, "a/2"))], removals=[removal])
+    [document] = build("medieval",
+                       source_adapters={"medieval": lambda: [_document("a/1", "a/2", "a/3")]},
+                       registry=reg)
+    # An interior removal: the kept passages are renumbered, so the build's position
+    # check (health H3) passes.
+    assert [(p.anchor, p.position) for p in document.passages] == [("a/1", 0), ("a/3", 1)]
+    whole = {**removal, "id": "rm-10", "scope": "document", "anchor": None, "passage_id": None}
+    assert build("medieval", source_adapters={"medieval": lambda: [_document("a/1")]},
+                 registry=_registry(removals=[whole])) == []
 
 
-def test_reader_wipe_requires_an_exact_collection_confirmation():
-    events: list[str] = []
-    runner = _runner(events, [_document("a/1")])
+async def test_write_guard_runs_before_adapters_and_store_acquisition():
+    events = []
 
-    with pytest.raises(ValueError, match="confirmation must exactly match 'medieval'"):
-        asyncio.run(
-            runner.publish(
-                PublicationRequest(
-                    "medieval",
-                    target=PublicationTarget.READER,
-                    wipe_reader=True,
-                    wipe_reader_confirmation="Medieval",
-                )
-            )
-        )
+    def guard(collection, release):
+        events.append(("guard", collection, release))
+        raise ValueError("locked")
 
-    assert events == []
-
-
-@pytest.mark.parametrize(
-    "publication_request",
-    [
-        PublicationRequest(
-            "medieval", target=PublicationTarget.READER, reset_search_index=True
-        ),
-        PublicationRequest(
-            "medieval",
-            target=PublicationTarget.SEARCH,
-            wipe_reader=True,
-            wipe_reader_confirmation="medieval",
-        ),
-        PublicationRequest(
-            "medieval", limit=1, reset_search_index=True
-        ),
-        PublicationRequest(
-            "medieval",
-            limit=1,
-            wipe_reader=True,
-            wipe_reader_confirmation="medieval",
-        ),
-    ],
-)
-def test_invalid_destructive_combinations_are_refused_before_store_acquisition(
-    publication_request: PublicationRequest,
-):
-    events: list[str] = []
-    runner = _runner(events, [_document("a/1")])
-
-    with pytest.raises(ValueError):
-        asyncio.run(runner.publish(publication_request))
-
-    assert events == []
-
-
-def test_confirmed_reader_wipe_rebuilds_without_incremental_pruning():
-    events: list[str] = []
-    runner = _runner(events, [_document("a/1")])
-
-    asyncio.run(
-        runner.publish(
-            PublicationRequest(
-                "medieval",
-                target=PublicationTarget.READER,
-                wipe_reader=True,
-                wipe_reader_confirmation="medieval",
-            )
-        )
-    )
-
-    assert events == [
-        "reader:acquire",
-        "reader:inspect",
-        "reader:wipe",
-        "reader:write:False",
-        "reader:close",
-    ]
-
-
-def test_collapsed_build_is_refused_before_writes():
-    events: list[str] = []
-    live_ids = {f"live-{position}" for position in range(20)}
-    runner = _runner(
-        events,
-        [_document("a/1")],
-        reader=FakeReaderStore(events, live_ids),
-    )
-
-    with pytest.raises(ValueError, match="build produced 1 passages against 20"):
-        asyncio.run(
-            runner.publish(
-                PublicationRequest("medieval", target=PublicationTarget.READER)
-            )
-        )
-
-    assert events == ["reader:acquire", "reader:inspect", "reader:close"]
-
-
-def test_identity_churn_is_refused_when_counts_match():
-    events: list[str] = []
-    document = _document(*[f"new/{position}" for position in range(20)])
-    live_ids = {f"old-{position}" for position in range(20)}
-    runner = _runner(
-        events,
-        [document],
-        search=FakeSearchIndex(events, live_ids),
-    )
-
-    with pytest.raises(ValueError, match="live passage ids"):
-        asyncio.run(
-            runner.publish(
-                PublicationRequest("medieval", target=PublicationTarget.SEARCH)
-            )
-        )
-
-    assert events == ["search:acquire", "search:inspect", "search:close"]
-
-
-def test_reset_authorizes_search_identity_replacement():
-    events: list[str] = []
-    document = _document(*[f"new/{position}" for position in range(20)])
-    live_ids = {f"old-{position}" for position in range(20)}
-    runner = _runner(
-        events,
-        [document],
-        search=FakeSearchIndex(events, live_ids),
-    )
-
-    asyncio.run(
-        runner.publish(
-            PublicationRequest(
-                "medieval",
-                target=PublicationTarget.SEARCH,
-                reset_search_index=True,
-            )
-        )
-    )
-
-    assert "search:reset" in events
-    assert "search:write" in events
-
-
-def test_built_passage_ids_use_the_shared_identity_contract():
-    events: list[str] = []
-    document = _document("a/1")
-    search = FakeSearchIndex(events)
-    runner = _runner(events, [document], search=search)
-
-    asyncio.run(
-        runner.publish(
-            PublicationRequest("medieval", target=PublicationTarget.SEARCH)
-        )
-    )
-
-    assert search.pruned_keep_ids == {passage_id(document.id, "a/1")}
-
-
-def test_write_guard_runs_before_adapters_and_store_acquisition():
-    events: list[str] = []
-
-    def adapter() -> list[Document]:
+    def adapter():
         events.append("adapter")
-        return [_document("a")]
+        return []
 
-    @asynccontextmanager
-    async def acquire_reader():
-        events.append("reader:acquire")
-        yield FakeReaderStore(events)
+    async def connect():
+        events.append("connect")
 
-    @asynccontextmanager
-    async def acquire_search():
-        events.append("search:acquire")
-        yield FakeSearchIndex(events)
-
-    def guard(request: PublicationRequest) -> None:
-        events.append("guard")
-        raise ValueError("locked: test guard")
-
-    runner = CollectionPublicationRunner(
-        source_adapters={"medieval": adapter},
-        acquire_reader_store=acquire_reader,
-        acquire_search_index=acquire_search,
-        write_guard=guard,
-    )
-
+    runner = StageRunner(connect=connect, qdrant=lambda: events.append("qdrant"),
+                         cache=lambda: None, write_guard=guard,
+                         source_adapters={"medieval": adapter})
     with pytest.raises(ValueError, match="locked"):
-        asyncio.run(runner.publish(PublicationRequest(collection="medieval")))
-
-    assert events == ["guard"]
-
-
-def _with_tree(document: Document) -> Document:
-    document.contents = [ContentsNode(key="c1", kind="chapter", label="Chapter 1",
-                                      short_label="Chapter 1", chapter_key="chapter-1")]
-    return document
-
-
-def test_a_tree_without_a_contents_table_is_refused_before_the_wipe_or_any_write():
-    """Documents commit one by one, so a later document's tree must not be the first
-    sign that the database lacks migration 0040."""
-    events: list[str] = []
-    second = _with_tree(_document("b/1"))
-    second.id = "22222222-2222-2222-2222-222222222222"
-    runner = _runner(events, [_document("a/1"), second],
-                     reader=FakeReaderStore(events, contents_table=False))
-
-    with pytest.raises(ValueError, match="apply migration 0040"):
-        asyncio.run(runner.publish(PublicationRequest(
-            "medieval", target=PublicationTarget.READER, wipe_reader=True,
-            wipe_reader_confirmation="medieval")))
-
-    assert events == ["reader:acquire", "reader:contents-table", "reader:close"]
-
-
-def test_reader_publish_refuses_without_the_reader_access_column():
-    events: list[str] = []
-    runner = _runner(events, [_document("a/1")],
-                     reader=FakeReaderStore(events, reader_access_column=False))
-
-    with pytest.raises(ValueError, match="apply migration 0041"):
-        asyncio.run(runner.publish(PublicationRequest(
-            "medieval", target=PublicationTarget.READER, wipe_reader=True,
-            wipe_reader_confirmation="medieval")))
-
-    assert not any(e.startswith(("reader:wipe", "reader:write")) for e in events)
-
-
-def test_a_tree_with_a_contents_table_publishes():
-    events: list[str] = []
-    runner = _runner(events, [_with_tree(_document("a/1"))])
-
-    asyncio.run(runner.publish(PublicationRequest("medieval", target=PublicationTarget.READER)))
-
-    assert events[:2] == ["reader:acquire", "reader:contents-table"]
-    assert "reader:write:True" in events
-
+        await runner.stage(StageRequest(release="r-1", collections=("medieval",)))
+    assert events == [("guard", "medieval", "r-1")]

@@ -2,7 +2,7 @@
 
 Usage examples:
     python pipeline.py --collection church-fathers --stage enrich
-    python pipeline.py --collection summa --stages parse,reader,enrich,embed
+    python pipeline.py --collection summa --stages parse,enrich,embed
     python pipeline.py --stages bm25-content-fit
     python pipeline.py --collection all --stages all --yes
     python pipeline.py --collection church-fathers --stage enrich --sample 10
@@ -43,22 +43,29 @@ class StageSpec:
 
 STAGES: dict[str, StageSpec] = {
     "parse": StageSpec("collection", ()),
-    "reader": StageSpec("collection", ("parse",)),
     "enrich": StageSpec("collection", ("parse",)),
     "embed": StageSpec("collection", ("parse", "enrich")),
-    "bm25-content-fit": StageSpec("global", ("reader",)),
+    # Reads the published corpus out of Postgres; `publish.py` publishes it (2.2w).
+    "bm25-content-fit": StageSpec("global", ()),
     "bm25-annotation-fit": StageSpec("global", ("enrich",)),
     "bm25-index": StageSpec("collection", ("bm25-content-fit", "bm25-annotation-fit")),
 }
 
-_ALL_ORDER = ["parse", "reader", "enrich", "embed",
+_ALL_ORDER = ["parse", "enrich", "embed",
               "bm25-content-fit", "bm25-annotation-fit", "bm25-index"]
+
+
+# Retired by 2.2w: it cleared and rewrote a live collection, which D2 forbids.
+_RETIRED_STAGES = {"reader": "the reader stage is retired; publish with "
+                             "`publish.py stage` (2.2w), which writes only staging"}
 
 
 def resolve_stages(requested: list[str]) -> list[str]:
     if requested == ["all"]:
         return list(_ALL_ORDER)
     for s in requested:
+        if s in _RETIRED_STAGES:
+            raise PipelineError(_RETIRED_STAGES[s])
         if s not in STAGES:
             raise PipelineError(f"unknown stage '{s}'. valid: {sorted(STAGES)}")
     return sorted(requested, key=_ALL_ORDER.index)
@@ -67,8 +74,8 @@ def resolve_stages(requested: list[str]) -> list[str]:
 # Collection-scoped stages that run BEFORE the global BM25 fits, the global
 # fits themselves, and the collection-scoped stages that run AFTER them. The
 # split exists because a global fit reads the whole corpus out of Postgres, so
-# every collection must have finished reader/enrich before either fit runs.
-_PRE_GLOBAL = ("parse", "reader", "enrich", "embed")
+# every collection must have finished enrich (and been published) before either fit runs.
+_PRE_GLOBAL = ("parse", "enrich", "embed")
 _GLOBAL = ("bm25-content-fit", "bm25-annotation-fit")
 _POST_GLOBAL = ("bm25-index",)
 
@@ -200,24 +207,14 @@ def load_bm25_model(path: str):
         **{k: v for k, v in config.items() if k != "model_name"})
 
 
-async def _run_reader(collection: str, docs, res: _Resources) -> None:
-    from stages import reader
-
-    pool = await res.pool()
-    async with pool.acquire() as conn:
-        await reader.write(conn, collection, docs)
-    print(f"reader {collection}: wrote {len(docs)} document(s), "
-          f"{sum(len(d.passages) for d in docs)} passage(s)")
-
-
 async def _run_embed(collection: str, docs, res: _Resources) -> None:
     from qdrant_schema import ensure_facets, ensure_questions
     from stages.embed import embed_collection
-    from writers.qdrant import ensure_collection
+    from writers.qdrant import QDRANT_COLLECTION, check_vectors
 
     qdrant = res.qdrant()
+    await check_vectors(qdrant, QDRANT_COLLECTION)
     # Idempotent: each only creates the Qdrant collection if it is missing.
-    await ensure_collection(qdrant)
     await ensure_facets(qdrant)
     await ensure_questions(qdrant)
 
@@ -321,20 +318,20 @@ def _parse_args(argv=None) -> argparse.Namespace:
     ap.add_argument("--sample-reclassify")
     ap.add_argument("--import-backup")
     ap.add_argument("--release", help="release named by the PUBLISH_LOCK.json entry that "
-                    "approves a live reader, embed, bm25-index or enrich run")
+                    "approves a live embed, bm25-index or enrich run")
     return ap.parse_args(argv)
 
 
-# Stages that write to the live reader tables or Qdrant (stages/enrich_io.py writes
-# annotations to Postgres). A --sample enrich writes only under samples/.
-_LIVE_WRITE_STAGES = frozenset({"reader", "embed", "bm25-index", "enrich"})
+# Stages that write to Qdrant or Postgres (stages/enrich_io.py writes annotations to
+# Postgres). A --sample enrich writes only under samples/.
+_LIVE_WRITE_STAGES = frozenset({"embed", "bm25-index", "enrich"})
 
 
 def _health_gated(args: argparse.Namespace, stages: list[str]) -> bool:
-    """Whether the run must pass the health block rules (item 0.1b) first: reader and
-    embed publish parsed passages, and a full enrich pays for annotating them.
-    bm25-index reads chunks back from Postgres, not parsed documents."""
-    return bool({"reader", "embed"} & set(stages)) or ("enrich" in stages and args.sample is None)
+    """Whether the run must pass the health block rules (item 0.1b) first: embed
+    writes parsed passages, and a full enrich pays for annotating them. bm25-index
+    reads chunks back from Postgres, not parsed documents."""
+    return "embed" in stages or ("enrich" in stages and args.sample is None)
 
 
 def _guard_live_writes(args: argparse.Namespace, stages: list[str]) -> None:
@@ -475,8 +472,6 @@ async def _main(args: argparse.Namespace) -> None:
                 docs = _docs(collection)
                 print(f"parse {collection}: {len(docs)} document(s), "
                       f"{sum(len(d.passages) for d in docs)} passage(s)")
-            elif stage == "reader":
-                await _run_reader(collection, _docs(collection), res)
             elif stage == "enrich":
                 await _run_enrich(collection, _docs(collection), res,
                                   sample=args.sample, yes=args.yes)

@@ -1,198 +1,11 @@
+"""The staging writer's rows and the search writer's vector shape (2.2w).
+
+The staging writer itself runs against a local PostgreSQL in test_stage_apply.py.
+"""
 import asyncio
-from model import Passage, Document
+
+from model import Document
 from writers import reader_writer
-
-
-class FakeConn:
-    def __init__(self):
-        self.calls = []
-        self.fetchval_result = None
-    async def execute(self, sql, *args):
-        self.calls.append((sql, args))
-    async def fetchval(self, sql, *args):
-        self.calls.append((sql, args))
-        return self.fetchval_result
-    def transaction(self):
-        class _Transaction:
-            async def __aenter__(self): return None
-            async def __aexit__(self, *args): return False
-        return _Transaction()
-
-
-class FakePool:
-    def __init__(self, conn): self._c = conn
-    def acquire(self):
-        pool = self
-        class _Ctx:
-            async def __aenter__(self): return pool._c
-            async def __aexit__(self, *a): return False
-        return _Ctx()
-
-
-def test_write_document_inserts_doc_and_passages():
-    conn = FakeConn()
-    doc = Document(
-        id="11111111-1111-1111-1111-111111111111", collection="bible",
-        title="John", translation="WEB-C",
-        passages=[Passage(content="x", reference="John 3:16", anchor="john/3/16",
-                          chapter_key="john/3", chapter_label="John 3", position=0,
-                          unit_label="16")],
-    )
-    asyncio.run(reader_writer.write_document(conn, doc))
-    joined = " ".join(sql for sql, _ in conn.calls)
-    assert "INSERT INTO documents" in joined
-    assert "UPDATE chunks SET position = -position - 1" in joined
-    assert "DELETE FROM chunks" in joined
-    assert "INSERT INTO chunks" in joined
-    chunk_args = [args for sql, args in conn.calls if "INSERT INTO chunks" in sql][0]
-    assert "john/3/16" in chunk_args
-    assert "john/3" in chunk_args
-
-
-def test_write_document_frees_old_positions_before_inserting_new_identities():
-    conn = FakeConn()
-    conn.fetchval_result = 1
-
-    pruned = asyncio.run(reader_writer.write_document(conn, _doc("new/p1", "new/p2")))
-
-    statements = [sql for sql, _ in conn.calls]
-    staged = next(i for i, sql in enumerate(statements)
-                  if "UPDATE chunks SET position = -position - 1" in sql)
-    deleted = next(i for i, sql in enumerate(statements) if "DELETE FROM chunks" in sql)
-    inserted = next(i for i, sql in enumerate(statements) if "INSERT INTO chunks" in sql)
-    assert staged < deleted < inserted
-    assert pruned == 1
-
-
-def test_write_document_rebuilds_the_reader_outline_after_every_chunk_write():
-    """The outline is refreshed after the chunks, inside the same transaction; only the
-    contents tree (written from the document, not from chunks) follows it."""
-    conn = FakeConn()
-    conn.fetchval_result = 0
-
-    asyncio.run(reader_writer.write_document(conn, _doc("a/1", "a/2")))
-
-    statements = [sql for sql, _ in conn.calls]
-    refresh = statements.index("SELECT refresh_document_outline($1::uuid)")
-    assert conn.calls[refresh][1] == ("11111111-1111-1111-1111-111111111111",)
-    assert all("chunks" not in sql for sql in statements[refresh + 1:])
-    assert "document_contents" in statements[-1]
-
-
-# ---------------------------------------------------------------------------
-# Re-ingest must not destroy user data.
-#
-# `retrievals`, `bookmarks`, `reading_progress`, `retrieval_labels` and
-# `guest_trial_retrievals` all reference `chunks.id` ON DELETE CASCADE. A rebuild
-# produces byte-identical ids for anything it still emits, so deleting first throws
-# away user data the re-insert cannot restore.
-# ---------------------------------------------------------------------------
-
-def _doc(*anchors):
-    return Document(
-        id="11111111-1111-1111-1111-111111111111", collection="medieval",
-        title="On Loving God", translation="",
-        passages=[Passage(content="x", reference="r", anchor=a, chapter_key="k",
-                          chapter_label="l", position=i, unit_label=None)
-                  for i, a in enumerate(anchors)],
-    )
-
-
-def test_prune_keeps_every_chunk_the_build_still_produces():
-    """Only genuinely orphaned rows may be deleted — everything else keeps its id, and
-    with it its bookmarks and search history."""
-    from identity import passage_id
-
-    conn = FakeConn()
-    conn.fetchval_result = 0
-    doc = _doc("a/1", "a/2")
-
-    asyncio.run(reader_writer.prune_missing_chunks(conn, doc))
-
-    sql, args = conn.calls[-1]
-    assert "DELETE FROM chunks" in sql
-    assert "NOT (id = ANY" in sql
-    assert set(args[1]) == {passage_id(doc.id, "a/1"), passage_id(doc.id, "a/2")}
-
-
-def test_prune_is_scoped_to_one_document():
-    """A collection-wide delete would take other documents' chunks with it."""
-    conn = FakeConn()
-    conn.fetchval_result = 0
-    asyncio.run(reader_writer.prune_missing_chunks(conn, _doc("a/1")))
-
-    sql, args = conn.calls[-1]
-    assert "document_id = $1" in sql
-    assert args[0] == "11111111-1111-1111-1111-111111111111"
-
-
-def test_prune_missing_documents_keeps_every_document_in_the_build():
-    conn = FakeConn()
-    conn.fetchval_result = 2
-
-    removed = asyncio.run(reader_writer.prune_missing_documents(
-        conn,
-        "medieval",
-        {"11111111-1111-1111-1111-111111111111",
-         "22222222-2222-2222-2222-222222222222"},
-    ))
-
-    sql, args = conn.calls[-1]
-    assert removed == 2
-    assert "DELETE FROM documents" in sql
-    assert "collection = $1" in sql
-    assert "NOT (id = ANY" in sql
-    assert args[0] == "medieval"
-    assert set(args[1]) == {
-        "11111111-1111-1111-1111-111111111111",
-        "22222222-2222-2222-2222-222222222222",
-    }
-
-
-# ---------------------------------------------------------------------------
-# Qdrant orphans.
-# ---------------------------------------------------------------------------
-
-def test_qdrant_prune_deletes_only_points_the_build_no_longer_makes():
-    """`search_writer.write_document` only upserts, so a renumbered or dropped passage
-    leaves its point behind — still searchable, while the pipeline's Postgres lookup for
-    that id returns nothing."""
-    from writers import qdrant as qdrant_writer
-
-    class FakePoint:
-        def __init__(self, pid): self.id = pid
-
-    class FakeQdrant:
-        def __init__(self): self.deleted = None
-        async def scroll(self, **kw):
-            return [FakePoint("keep-1"), FakePoint("stale-1"), FakePoint("keep-2")], None
-        async def delete(self, collection_name, points_selector, wait):
-            self.deleted = points_selector
-
-    client = FakeQdrant()
-    removed = asyncio.run(
-        qdrant_writer.prune_missing_points(client, "medieval", {"keep-1", "keep-2"}))
-
-    assert removed == 1
-    assert client.deleted == ["stale-1"]
-
-
-def test_qdrant_prune_deletes_nothing_when_the_build_is_complete():
-    from writers import qdrant as qdrant_writer
-
-    class FakePoint:
-        def __init__(self, pid): self.id = pid
-
-    class FakeQdrant:
-        def __init__(self): self.delete_called = False
-        async def scroll(self, **kw):
-            return [FakePoint("a"), FakePoint("b")], None
-        async def delete(self, **kw):
-            self.delete_called = True
-
-    client = FakeQdrant()
-    assert asyncio.run(qdrant_writer.prune_missing_points(client, "medieval", {"a", "b"})) == 0
-    assert client.delete_called is False
 
 
 # ---------------------------------------------------------------------------
@@ -255,7 +68,7 @@ def test_a_collection_the_writer_cannot_fill_is_refused():
         async def get_collection(self, name): return V5Collection()
 
     with pytest.raises(SystemExit) as raised:
-        asyncio.run(qdrant_writer.ensure_collection(FakeClient()))
+        asyncio.run(qdrant_writer.check_vectors(FakeClient(), "chunks-r1"))
 
     assert "REFUSING" in str(raised.value)
 
@@ -279,7 +92,7 @@ def test_a_dimension_mismatch_alone_is_refused():
         async def get_collection(self, name): return WrongWidth()
 
     with pytest.raises(SystemExit) as raised:
-        asyncio.run(qdrant_writer.ensure_collection(FakeClient()))
+        asyncio.run(qdrant_writer.check_vectors(FakeClient(), "chunks-r1"))
 
     assert "3072" in str(raised.value)
 
@@ -298,17 +111,15 @@ def test_a_matching_collection_is_accepted():
         async def collection_exists(self, name): return True
         async def get_collection(self, name): return LiveCollection()
 
-    asyncio.run(qdrant_writer.ensure_collection(FakeClient()))
+    asyncio.run(qdrant_writer.check_vectors(FakeClient(), "chunks-r1"))
 
 
 def _document_access(doc):
-    conn = FakeConn()
-    asyncio.run(reader_writer.write_document(conn, doc, prune=False))
-    [args] = [args for sql, args in conn.calls if "INSERT INTO documents" in sql]
-    return args[-1]
+    """The reader_access the staging writer writes for `doc` (D12)."""
+    return reader_writer.document_row(doc)[reader_writer.DOCUMENT_COLUMNS.index("reader_access")]
 
 
-def test_write_document_sets_reader_access_from_the_rights_inventory():
+def test_the_staged_row_sets_reader_access_from_the_rights_inventory():
     """Issue #265: a publish writes the inventory's verdict, so it cannot reopen a text
     whose rights are not cleared, and keeps a public-domain one open. Rows are found by
     document ID, so a relabelled document keeps its row."""
@@ -321,7 +132,7 @@ def test_write_document_sets_reader_access_from_the_rights_inventory():
     assert _document_access(catechism) == "excerpt"
 
 
-def test_write_document_fails_closed_for_a_work_missing_from_the_inventory():
+def test_the_staged_row_fails_closed_for_a_work_missing_from_the_inventory():
     # A known title under an ID the inventory does not list.
     stray = Document(id="33333333-3333-3333-3333-333333333333", collection="bible",
                      title="John", translation="WEB-C", passages=[])

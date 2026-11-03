@@ -4,7 +4,7 @@ import pytest
 
 import contents
 from model import ContentsNode, Document, Passage
-from publication import CollectionPublicationRunner, PublicationRequest, PublicationTarget
+from publication import build
 
 
 def _doc(*passages, tree=None):
@@ -122,10 +122,5 @@ def test_a_chapter_split_around_another_orders_by_its_first_passage():
 def test_the_build_refuses_a_broken_tree_before_opening_any_store():
     tree = _tree()
     tree[0].chapter_key = "missing"
-    runner = CollectionPublicationRunner(
-        source_adapters={"summa": lambda: [_doc(*PASSAGES, tree=tree)]},
-        acquire_reader_store=None, acquire_search_index=None,
-    )
-    request = PublicationRequest(collection="summa", target=PublicationTarget("reader"))
     with pytest.raises(ValueError, match="contents tree"):
-        runner.build(request)
+        build("summa", source_adapters={"summa": lambda: [_doc(*PASSAGES, tree=tree)]})

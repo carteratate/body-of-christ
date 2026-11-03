@@ -20,21 +20,38 @@ class _FakeClient:
         self.indexes.append((collection_name, field_name))
 
 
-@pytest.mark.asyncio
-async def test_recreate_chunks_makes_a_collection_the_writer_can_fill():
+async def test_create_chunks_collection_makes_a_collection_the_writer_can_fill():
     """The schema and `search_writer.build_point` must agree: a collection created here
     that the writer cannot write to is unusable, which is the state the pipeline was in
     while it emitted V5 against a live collection."""
     from config import settings
+    from qdrant_client import AsyncQdrantClient
 
-    c = _FakeClient(); c._exists.add("chunks")
-    await qdrant_schema.recreate_chunks(c)
+    c = AsyncQdrantClient(location=":memory:")
+    indexes = {}
 
-    assert "chunks" in c.deleted
-    cfg = c.created["chunks"]
-    assert cfg["vectors_config"].size == settings.EMBEDDING_DIMS == 1536
-    assert "sparse_vectors_config" not in cfg      # live has no sparse vectors
-    assert ("chunks", "collection") in c.indexes
+    async def create_payload_index(collection_name, field_name, field_schema):
+        indexes[field_name] = field_schema.value     # local mode ignores payload indexes
+    c.create_payload_index = create_payload_index
+    await qdrant_schema.create_chunks_collection(c, "chunks-r1")
+    info = await c.get_collection("chunks-r1")
+    assert info.config.params.vectors.size == settings.EMBEDDING_DIMS == 1536
+    assert not info.config.params.sparse_vectors      # live has no sparse vectors
+    assert indexes == {"collection": "keyword", "genre": "keyword", "issuer": "keyword",
+                       "document_id": "keyword", "searchable": "bool"}
+
+
+async def test_create_collection_refuses_existing_name_and_alias():
+    from qdrant_client import AsyncQdrantClient, models
+
+    c = AsyncQdrantClient(location=":memory:")
+    await qdrant_schema.create_chunks_collection(c, "chunks")
+    with pytest.raises(SystemExit, match="REFUSING"):
+        await qdrant_schema.create_chunks_collection(c, "chunks")
+    await c.update_collection_aliases(change_aliases_operations=[models.CreateAliasOperation(
+        create_alias=models.CreateAlias(collection_name="chunks", alias_name="chunks_live"))])
+    with pytest.raises(SystemExit, match="REFUSING"):
+        await qdrant_schema.create_chunks_collection(c, "chunks_live")
 
 
 @pytest.mark.asyncio

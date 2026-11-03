@@ -1,29 +1,37 @@
-"""Reconcile one canonical collection into its selected publication targets.
+"""Build collections and stage them for a publish (2.2w, D2).
 
-The runner is the collection-publication boundary. Source adapters stay concerned with
-building canonical Documents and Passages; the concrete store adapters translate the
-runner's small interface to Supabase/Postgres and Qdrant operations.
+A publish never writes straight into live tables. `StageRunner.stage` builds the
+selected collections, writes them into the `staging` schema and a new Qdrant collection
+`chunks-<release>`, and records the publish in `corpus_publishes`. `publish.py report`
+then compares staging with live, and `publish.py apply` (2.2w's second part) moves it
+into live in one transaction. Nothing here writes a `public` table other than
+`corpus_publishes`, or a Qdrant collection an alias points at.
+
+Source adapters stay concerned with building canonical Documents and Passages; `build`
+runs one and the document checks, and opens no store, so a dry run uses it.
 """
 from __future__ import annotations
 
-from collections.abc import AsyncIterator, Callable, Mapping
-from contextlib import AbstractAsyncContextManager, asynccontextmanager
-from dataclasses import dataclass
-from enum import Enum
+import os
+from collections.abc import Callable, Mapping
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from importlib import import_module
-from pathlib import Path
-from typing import Protocol
 
 import asyncpg
 
 import contents
+import registry as reg
+import retirements
 from health import refuse_block_violations
-from registry import resolve_passage_id
 from model import Document
 from writers import reader_writer
 
-
 SourceAdapter = Callable[[], list[Document]]
+
+DATAPIPELINE = os.path.dirname(os.path.abspath(__file__))
+CACHE_PATH = os.path.join(DATAPIPELINE, "cache.db")
+
 
 def _build_from(module_name: str, builder_name: str, single: bool = False) -> list[Document]:
     """Load only the selected source adapter and normalize its builder return shape."""
@@ -47,353 +55,334 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
     "summa": lambda: _build_from("summa", "build_document", single=True),
 }
 
-_MAX_SHRINK = 0.10
+
+# --------------------------------------------------------------------------- build
+
+def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOURCE_ADAPTERS,
+          limit: int | None = None, registry: reg.WorkRegistry | None = None
+          ) -> list[Document]:
+    """Run the collection's source adapter, drop what the removal registry retires (D4),
+    and run the document checks. Opens no store."""
+    if collection not in source_adapters:
+        raise ValueError(f"unknown collection: {collection}")
+    if limit is not None and limit <= 0:
+        raise ValueError("limit must be greater than zero")
+    documents = source_adapters[collection]()
+    if limit is not None:
+        documents = documents[:limit]
+    removed = reg.removed_document_ids(registry)
+    documents = [reg.drop_removed(d, registry) for d in documents if d.id not in removed]
+    validate_documents(collection, documents)
+    return documents
 
 
-class PublicationTarget(str, Enum):
-    READER = "reader"
-    SEARCH = "search"
-    BOTH = "both"
+def validate_documents(collection: str, documents: list[Document]) -> None:
+    wrong_collection = next(
+        (document.collection for document in documents if document.collection != collection),
+        None,
+    )
+    if wrong_collection is not None:
+        raise ValueError(
+            f"source adapter for '{collection}' emitted a '{wrong_collection}' document"
+        )
+    # Health block rules (item 0.1b). build() runs this before a stage opens any store,
+    # and a dry run runs it too.
+    refuse_block_violations(collection, documents)
+    # Contents trees (#250): a node must open a chapter the document has, in reading
+    # order. Raises contents.ContentsError, a ValueError.
+    for document in documents:
+        contents.check(document)
 
-    @property
-    def includes_reader(self) -> bool:
-        return self in (PublicationTarget.READER, PublicationTarget.BOTH)
 
-    @property
-    def includes_search(self) -> bool:
-        return self in (PublicationTarget.SEARCH, PublicationTarget.BOTH)
+def prepare(documents: list[Document], registry: reg.WorkRegistry | None = None
+            ) -> tuple[list[Document], list[str]]:
+    """Each document with its passage-registry overrides applied (the registry wins over
+    the adapter, D11) and every `Passage.id` assigned (D1), and the genuinely new IDs."""
+    out, new = [], []
+    for d in documents:
+        d, fresh = reg.assign_ids(reg.apply_overrides(d, registry), registry)
+        out.append(d)
+        new += fresh
+    return out, new
 
+
+# --------------------------------------------------------------------------- stage
 
 @dataclass(frozen=True)
-class PublicationRequest:
-    collection: str
-    target: PublicationTarget = PublicationTarget.BOTH
-    limit: int | None = None
-    reset_search_index: bool = False
-    wipe_reader: bool = False
-    wipe_reader_confirmation: str | None = None
-    release: str | None = None
+class StageRequest:
+    release: str
+    collections: tuple[str, ...]
+    # A collection renamed by this publish (5.1b.3), new key → old key. The old key
+    # counts as staged, so its points are never copied into the new collection.
+    renames: Mapping[str, str] = field(default_factory=dict)
 
 
-@dataclass(frozen=True)
-class PublicationResult:
-    collection: str
-    target: PublicationTarget
-    document_count: int
-    passage_count: int
-    reader_passages_pruned: int = 0
-    reader_documents_pruned: int = 0
-    search_passages_pruned: int = 0
+@dataclass
+class StageResult:
+    release: str
+    qdrant_collection: str
+    documents: int
+    passages: int
+    new_ids: list[str]
+    tombstones: int
+    redirects: dict[str, int]
+    moved: int
+    copied: dict[str, int]
+    vectors: dict[str, int]
 
 
-class ReaderStore(Protocol):
-    async def passage_ids(self, collection: str) -> set[str]: ...
-
-    async def wipe(self, collection: str) -> None: ...
-
-    async def write(self, document: Document, *, prune: bool) -> int: ...
-
-    async def prune_documents(self, collection: str, keep_ids: set[str]) -> int: ...
-
-    async def has_contents_table(self) -> bool: ...
-
-    async def has_reader_access_column(self) -> bool: ...
+class StageRefused(ValueError):
+    """A stage that must not run. A ValueError, so the CLI reports it as a refusal."""
 
 
-class SearchIndex(Protocol):
-    async def passage_ids(self, collection: str) -> set[str]: ...
+def staging_collection_name(release: str) -> str:
+    from config import settings
 
-    async def reset(self, collection: str) -> None: ...
-
-    async def write(self, document: Document) -> None: ...
-
-    async def prune(self, collection: str, keep_ids: set[str]) -> int: ...
+    return settings.QDRANT_WRITE_COLLECTION or f"chunks-{release}"
 
 
-ReaderStoreFactory = Callable[[], AbstractAsyncContextManager[ReaderStore]]
-SearchIndexFactory = Callable[[], AbstractAsyncContextManager[SearchIndex]]
-WriteGuard = Callable[[PublicationRequest], None]
+LIVE_PASSAGES_SQL = """
+SELECT c.id::text AS id, c.document_id::text AS document_id, d.collection, c.anchor,
+       c.chapter_key, c.chapter_label, c.reference, c.position, d.title, d.author
+FROM public.chunks c JOIN public.documents d ON d.id = c.document_id
+WHERE d.collection = ANY($1::text[]) AND c.retired_at IS NULL
+ORDER BY d.collection, c.document_id, c.position
+"""
+LIVE_DOCUMENTS_SQL = """
+SELECT id::text AS id, collection, title, author FROM public.documents
+WHERE collection = ANY($1::text[]) AND retired_at IS NULL
+ORDER BY id
+"""
 
 
-class CollectionPublicationRunner:
+async def live_rows(conn: asyncpg.Connection, collections: list[str]
+                    ) -> tuple[list[retirements.LivePassage], list[retirements.LiveDocument]]:
+    passages = [retirements.LivePassage(**dict(r))
+                for r in await conn.fetch(LIVE_PASSAGES_SQL, collections)]
+    documents = [retirements.LiveDocument(**dict(r))
+                 for r in await conn.fetch(LIVE_DOCUMENTS_SQL, collections)]
+    return passages, documents
+
+
+async def begin_publish(conn: asyncpg.Connection, release: str, collections: list[str],
+                        qdrant_collection: str) -> dict | None:
+    """Record (or extend) the publish row, refusing when staging holds a different
+    publish that is neither cleaned up nor discarded, or when `release` names a publish
+    that was applied, cleaned up or discarded. Returns the row as it was before, or None
+    for a new publish."""
+    holder = await conn.fetchval(
+        """SELECT id FROM corpus_publishes
+           WHERE id <> $1 AND cleaned_up_at IS NULL AND discarded_at IS NULL
+           ORDER BY id LIMIT 1""", release)
+    if holder is not None:
+        raise StageRefused(f"REFUSING: staging holds publish '{holder}', which is neither "
+                           "cleaned up nor discarded; run `publish.py cleanup` or `discard` "
+                           "for it first")
+    row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
+    if row is None:
+        await conn.execute(
+            """INSERT INTO corpus_publishes (id, collections, qdrant_collection)
+               VALUES ($1, $2::text[], $3)""", release, sorted(collections), qdrant_collection)
+        return None
+    for column in ("applied_at", "cleaned_up_at", "discarded_at"):
+        if row[column] is not None:
+            raise StageRefused(f"REFUSING: publish '{release}' was {column.removesuffix('_at')}"
+                               "; name a new release")
+    if row["qdrant_collection"] != qdrant_collection:
+        raise StageRefused(f"REFUSING: publish '{release}' writes Qdrant collection "
+                           f"'{row['qdrant_collection']}', not '{qdrant_collection}'")
+    merged = sorted(set(row["collections"]) | set(collections))
+    await conn.execute(
+        """UPDATE corpus_publishes SET collections = $2::text[], staged_at = NULL,
+           report_sha256 = NULL WHERE id = $1""", release, merged)
+    return dict(row)
+
+
+class StageRunner:
+    """Stages collections for one release. Every dependency is injected, so tests run it
+    against a local PostgreSQL and an in-memory Qdrant."""
+
     def __init__(
         self,
         *,
-        source_adapters: Mapping[str, SourceAdapter],
-        acquire_reader_store: ReaderStoreFactory,
-        acquire_search_index: SearchIndexFactory,
-        write_guard: WriteGuard | None = None,
+        connect: Callable,                 # async () -> asyncpg.Connection
+        qdrant: Callable,                  # () -> AsyncQdrantClient
+        cache: Callable,                   # () -> cache.Cache-like
+        write_guard: Callable[[str, str], None] | None = None,   # (collection, release)
+        source_adapters: Mapping[str, SourceAdapter] = SOURCE_ADAPTERS,
+        embed: Callable | None = None,     # async (texts) -> vectors; OpenAI when None
+        registry: reg.WorkRegistry | None = None,
+        live_alias: str | None = None,
+        qdrant_collection: str | None = None,
     ) -> None:
-        self._source_adapters = source_adapters
-        self._acquire_reader_store = acquire_reader_store
-        self._acquire_search_index = acquire_search_index
+        self._connect = connect
+        self._qdrant = qdrant
+        self._cache = cache
         self._write_guard = write_guard
+        self._source_adapters = source_adapters
+        self._embed = embed
+        self._registry = registry
+        self._live_alias = live_alias
+        self._qdrant_collection = qdrant_collection
 
-    def build(self, request: PublicationRequest) -> list[Document]:
-        """Run the source adapter and the document checks. Opens no store, so it is
-        what a dry run uses and needs no publish-lock entry."""
-        self._validate_request(request)
-        documents = self._source_adapters[request.collection]()
-        if request.limit is not None:
-            documents = documents[: request.limit]
-        self._validate_documents(request.collection, documents)
-        return documents
+    async def stage(self, request: StageRequest) -> StageResult:
+        from config import settings
+        from qdrant_schema import create_chunks_collection
+        from writers import qdrant as qd
+        from writers.search_writer import VectorSource, write_document
 
-    async def publish(self, request: PublicationRequest) -> PublicationResult:
-        self._validate_request(request)
+        collections = list(request.collections)
+        for c in collections:
+            if c not in self._source_adapters:
+                raise ValueError(f"unknown collection: {c}")
         if self._write_guard is not None:
-            self._write_guard(request)
-        documents = self.build(request)
-        built_ids = {
-            resolve_passage_id(document.id, passage.anchor)
-            for document in documents
-            for passage in document.passages
-        }
+            label = "all" if set(collections) == set(SOURCE_ADAPTERS) else None
+            for c in [label] if label else collections:
+                self._write_guard(c, request.release)
 
-        reader_passages_pruned = 0
-        reader_documents_pruned = 0
-        search_passages_pruned = 0
+        # Build and check everything before any store is opened: a refusal writes nothing.
+        documents: list[Document] = []
+        new_ids: list[str] = []
+        for c in collections:
+            built, fresh = prepare(build(c, source_adapters=self._source_adapters,
+                                         registry=self._registry), self._registry)
+            documents += built
+            new_ids += fresh
+        registry = self._registry or reg.current()
 
-        if request.target.includes_reader:
-            async with self._acquire_reader_store() as reader:
-                # Each document commits on its own, so a store that cannot hold a
-                # contents tree must refuse before the first write (or the wipe), not
-                # at the first document that has one.
-                if any(d.contents is not None for d in documents) and not (
-                    await reader.has_contents_table()
-                ):
-                    raise ValueError(
-                        f"REFUSING: '{request.collection}' has contents trees but the "
-                        "reader database has no document_contents table; apply "
-                        "migration 0040 first"
-                    )
-                # Every write sets reader_access (issue #265); without the column the
-                # first write fails mid-collection, so refuse before any.
-                if not await reader.has_reader_access_column():
-                    raise ValueError(
-                        "REFUSING: the reader database has no documents.reader_access "
-                        "column; apply migration 0041 first"
-                    )
-                if request.limit is None:
-                    live_ids = await reader.passage_ids(request.collection)
-                    self._validate_build(
-                        request.collection,
-                        live_ids,
-                        built_ids,
-                        allow_identity_churn=request.wipe_reader,
-                    )
-                if request.wipe_reader:
-                    await reader.wipe(request.collection)
-                for document in documents:
-                    reader_passages_pruned += await reader.write(
-                        document,
-                        prune=request.limit is None and not request.wipe_reader,
-                    )
-                if request.limit is None and not request.wipe_reader:
-                    reader_documents_pruned = await reader.prune_documents(
-                        request.collection, {document.id for document in documents}
-                    )
+        alias = self._live_alias or settings.QDRANT_LIVE_ALIAS
+        name = self._qdrant_collection or staging_collection_name(request.release)
+        client = self._qdrant()
+        conn = await self._connect()
+        try:
+            live = await qd.alias_target(client, alias)
+            if live is None:
+                raise StageRefused(
+                    f"REFUSING: there is no Qdrant alias '{alias}'. Create it on the "
+                    "collection users search (2.2b's ops step) before staging; a stage "
+                    "copies vectors and untouched collections from its target")
+            if name in (live, alias, qd.QDRANT_COLLECTION):
+                raise StageRefused(f"REFUSING: '{name}' is what users search")
 
-        if request.target.includes_search:
-            async with self._acquire_search_index() as search:
-                if request.limit is None:
-                    live_ids = await search.passage_ids(request.collection)
-                    self._validate_build(
-                        request.collection,
-                        live_ids,
-                        built_ids,
-                        allow_identity_churn=request.reset_search_index,
-                    )
-                if request.reset_search_index:
-                    await search.reset(request.collection)
-                for document in documents:
-                    await search.write(document)
-                if request.limit is None and not request.reset_search_index:
-                    search_passages_pruned = await search.prune(
-                        request.collection, built_ids
-                    )
+            at = datetime.now(timezone.utc)
+            async with conn.transaction():
+                before = await begin_publish(conn, request.release, collections, name)
+                await reader_writer.ensure_staging(conn)
+                await reader_writer.clear_staged_collections(conn, collections)
+                for d in documents:
+                    await reader_writer.write_staged_document(conn, d)
+                await reader_writer.copy_live_annotations(conn, collections)
+                live_passages, live_documents = await live_rows(conn, collections)
+                found = retirements.compute(live_passages, live_documents, documents,
+                                            registry, release=request.release, at=at)
+                if found.problems:
+                    raise StageRefused(
+                        f"REFUSING: {len(found.problems)} live IDs the build drops are "
+                        "unexplained (D4): " + "; ".join(found.problems[:10]))
+                await reader_writer.write_staged_retirements(conn, found.tombstones,
+                                                             found.redirects)
+                publish_collections = (await conn.fetchval(
+                    "SELECT collections FROM corpus_publishes WHERE id = $1",
+                    request.release))
 
-        return PublicationResult(
-            collection=request.collection,
-            target=request.target,
-            document_count=len(documents),
-            passage_count=len(built_ids),
-            reader_passages_pruned=reader_passages_pruned,
-            reader_documents_pruned=reader_documents_pruned,
-            search_passages_pruned=search_passages_pruned,
-        )
+            # Qdrant: the publish's own collection, never one users search.
+            if await client.collection_exists(name):
+                if before is None:
+                    raise StageRefused(f"REFUSING: Qdrant collection '{name}' exists and "
+                                       f"belongs to no earlier stage of '{request.release}'")
+                await qd.check_vectors(client, name)
+            else:
+                await create_chunks_collection(client, name)
+            for c in collections:
+                await qd.clear_staged_points(client, name, c, alias=alias)
+            vectors = VectorSource(client, self._cache(), reuse_from=live, embed=self._embed)
+            for d in documents:
+                await write_document(client, d, collection_name=name, vectors=vectors)
 
-    def _validate_request(self, request: PublicationRequest) -> None:
-        if request.collection not in self._source_adapters:
-            raise ValueError(f"unknown collection: {request.collection}")
-        if request.limit is not None and request.limit <= 0:
-            raise ValueError("limit must be greater than zero")
-        if request.reset_search_index and not request.target.includes_search:
-            raise ValueError("search-index reset requires a search target")
-        if request.wipe_reader and not request.target.includes_reader:
-            raise ValueError("reader wipe requires a reader target")
-        if request.limit is not None and (
-            request.reset_search_index or request.wipe_reader
-        ):
-            raise ValueError(
-                "limited publication cannot reset the search index or wipe the reader store"
-            )
-        if request.wipe_reader:
-            if request.wipe_reader_confirmation != request.collection:
-                raise ValueError(
-                    "reader-wipe confirmation must exactly match "
-                    f"'{request.collection}'"
-                )
-        elif request.wipe_reader_confirmation is not None:
-            raise ValueError("reader-wipe confirmation requires --wipe-reader")
+            staged_keys = set(publish_collections) | set(request.renames.values())
+            copied = {}
+            for c in sorted(set(self._source_adapters) - staged_keys):
+                expected = await qd.count_points(client, live, c)
+                if await qd.count_points(client, name, c) != expected:
+                    await qd.clear_staged_points(client, name, c, alias=alias)
+                    await qd.copy_points(client, live, name, c)
+                copied[c] = expected
 
-    @staticmethod
-    def _validate_documents(collection: str, documents: list[Document]) -> None:
-        wrong_collection = next(
-            (document.collection for document in documents if document.collection != collection),
-            None,
-        )
-        if wrong_collection is not None:
-            raise ValueError(
-                f"source adapter for '{collection}' emitted a '{wrong_collection}' document"
-            )
-        # Health block rules (item 0.1b). build() runs this before publish() acquires
-        # any store, and a dry run runs it too.
-        refuse_block_violations(collection, documents)
-        # Contents trees (#250): a node must open a chapter the document has, in
-        # reading order. Raises contents.ContentsError, a ValueError.
-        for document in documents:
-            contents.check(document)
+            await check_point_counts(conn, client, name, publish_collections, copied)
+            await conn.execute(
+                """UPDATE corpus_publishes SET staged_at = now(), embed_model = $2,
+                   embed_dimensions = $3 WHERE id = $1""",
+                request.release, vectors.model, vectors.dimensions)
+        finally:
+            await conn.close()
+            await client.close()
 
-    @staticmethod
-    def _validate_build(
-        collection: str,
-        live_ids: set[str],
-        built_ids: set[str],
-        *,
-        allow_identity_churn: bool,
-    ) -> None:
-        if live_ids and len(built_ids) < len(live_ids) * (1 - _MAX_SHRINK):
-            raise ValueError(
-                f"REFUSING: the build produced {len(built_ids)} passages against "
-                f"{len(live_ids)} live passages for '{collection}' "
-                f"({(1 - len(built_ids) / len(live_ids)):.0%} fewer)."
-            )
-        removed = live_ids - built_ids
-        if (
-            live_ids
-            and not allow_identity_churn
-            and len(removed) > len(live_ids) * _MAX_SHRINK
-        ):
-            raise ValueError(
-                f"REFUSING: the build replaces {len(removed)} of {len(live_ids)} "
-                f"live passage ids for '{collection}' "
-                f"({len(removed) / len(live_ids):.0%})."
-            )
+        kinds: dict[str, int] = {}
+        for r in found.redirects:
+            kinds[r["entity"]] = kinds.get(r["entity"], 0) + 1
+        return StageResult(
+            release=request.release, qdrant_collection=name, documents=len(documents),
+            passages=sum(len(d.passages) for d in documents), new_ids=new_ids,
+            tombstones=len(found.tombstones), redirects=kinds, moved=len(found.moved),
+            copied=copied, vectors=dict(vectors.counts))
 
 
-class PostgresReaderStore:
-    def __init__(self, connection: asyncpg.Connection) -> None:
-        self._connection = connection
+async def check_point_counts(conn: asyncpg.Connection, client, name: str,
+                             staged: list[str], copied: dict[str, int]) -> None:
+    """Stage step 7: each staged collection's points equal its staged passages, each
+    copied collection's equal its source count, and the total is their sum."""
+    from writers.qdrant import count_points
 
-    async def passage_ids(self, collection: str) -> set[str]:
-        rows = await self._connection.fetch(
-            """
-            SELECT c.id FROM chunks c JOIN documents d ON d.id = c.document_id
-            WHERE d.collection = $1
-            """,
-            collection,
-        )
-        return {str(row["id"]) for row in rows}
-
-    async def wipe(self, collection: str) -> None:
-        await reader_writer.clear_collection(self._connection, collection)
-
-    async def write(self, document: Document, *, prune: bool) -> int:
-        return await reader_writer.write_document(
-            self._connection, document, prune=prune
-        )
-
-    async def prune_documents(self, collection: str, keep_ids: set[str]) -> int:
-        return await reader_writer.prune_missing_documents(
-            self._connection, collection, keep_ids
-        )
-
-    async def has_contents_table(self) -> bool:
-        return await reader_writer.contents_table_exists(self._connection)
-
-    async def has_reader_access_column(self) -> bool:
-        return await reader_writer.reader_access_column_exists(self._connection)
+    problems = []
+    total = 0
+    for c in staged:
+        want = await conn.fetchval(
+            """SELECT count(*) FROM staging.chunks s JOIN staging.documents d
+               ON d.id = s.document_id WHERE d.collection = $1""", c)
+        got = await count_points(client, name, c)
+        total += want
+        if got != want:
+            problems.append(f"{c}: {got} points, {want} staged passages")
+    for c, want in copied.items():
+        got = await count_points(client, name, c)
+        total += want
+        if got != want:
+            problems.append(f"{c}: {got} points, {want} in the collection users search")
+    got = await count_points(client, name)
+    if got != total:
+        problems.append(f"total: {got} points, expected {total}")
+    if problems:
+        raise StageRefused("REFUSING: point counts do not match: " + "; ".join(problems))
 
 
-class QdrantSearchIndex:
-    def __init__(self, client) -> None:
-        self._client = client
+# --------------------------------------------------------------------------- production
 
-    async def passage_ids(self, collection: str) -> set[str]:
-        from writers.qdrant import collection_point_ids
-
-        return await collection_point_ids(self._client, collection)
-
-    async def reset(self, collection: str) -> None:
-        from writers.qdrant import delete_collection_points
-
-        await delete_collection_points(self._client, collection)
-
-    async def write(self, document: Document) -> None:
-        from writers import search_writer
-
-        await search_writer.write_document(self._client, document)
-
-    async def prune(self, collection: str, keep_ids: set[str]) -> int:
-        from writers.qdrant import prune_missing_points
-
-        return await prune_missing_points(self._client, collection, keep_ids)
-
-
-@asynccontextmanager
-async def acquire_postgres_reader_store() -> AsyncIterator[ReaderStore]:
-    from config import settings
-
-    connection = await asyncpg.connect(settings.DATABASE_URL)
-    try:
-        yield PostgresReaderStore(connection)
-    finally:
-        await connection.close()
-
-
-@asynccontextmanager
-async def acquire_qdrant_search_index() -> AsyncIterator[SearchIndex]:
-    from writers.qdrant import ensure_collection, get_client
-
-    client = get_client()
-    try:
-        await ensure_collection(client)
-        yield QdrantSearchIndex(client)
-    finally:
-        await client.close()
-
-
-def publish_lock_guard(lock_path: Path | None = None) -> WriteGuard:
-    """Refuse a live publish unless PUBLISH_LOCK.json approves it (item 0.4)."""
+def publish_lock_guard(step: str, lock_path=None) -> Callable[[str, str], None]:
+    """Refuse unless PUBLISH_LOCK.json approves `step` for the collection and release
+    (item 0.4); local rehearsals pass by the lock's loopback rule."""
     from publish_lock import DEFAULT_PATH, assert_live_write_allowed, load_lock
 
-    def guard(request: PublicationRequest) -> None:
-        assert_live_write_allowed(
-            f"publish {request.collection} to {request.target.value}",
-            request.collection,
-            request.release,
-            "apply",
-            lock=load_lock(lock_path or DEFAULT_PATH),
-        )
+    def guard(collection: str, release: str) -> None:
+        assert_live_write_allowed(f"publish {step} {collection}", collection, release, step,
+                                  lock=load_lock(lock_path or DEFAULT_PATH))
 
     return guard
 
 
-def production_runner(lock_path: Path | None = None) -> CollectionPublicationRunner:
-    return CollectionPublicationRunner(
-        source_adapters=SOURCE_ADAPTERS,
-        acquire_reader_store=acquire_postgres_reader_store,
-        acquire_search_index=acquire_qdrant_search_index,
-        write_guard=publish_lock_guard(lock_path),
-    )
+def production_stage_runner(lock_path=None) -> StageRunner:
+    from cache import Cache
+    from config import settings
+    from writers.qdrant import get_client
+
+    async def connect():
+        # statement_cache_size=0: the Supabase pooler does not keep prepared statements.
+        return await asyncpg.connect(settings.DATABASE_URL, statement_cache_size=0)
+
+    def cache():
+        c = Cache(CACHE_PATH)
+        c.init_schema()
+        return c
+
+    return StageRunner(connect=connect, qdrant=get_client, cache=cache,
+                       write_guard=publish_lock_guard("stage", lock_path))
+
