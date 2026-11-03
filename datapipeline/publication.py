@@ -164,12 +164,24 @@ async def live_rows(conn: asyncpg.Connection, collections: list[str]
     return passages, documents
 
 
+# One advisory lock for every change to who holds the shared staging tables.
+PUBLISH_LOCK_KEY = "theocorpus.corpus_publishes"
+
+
+async def lock_publishes(conn: asyncpg.Connection) -> None:
+    """Wait for, then hold until commit, the lock that serializes claiming and releasing
+    staging, so two releases cannot both see it free. Call inside a transaction."""
+    await conn.execute("SELECT pg_advisory_xact_lock(hashtext($1))", PUBLISH_LOCK_KEY)
+
+
 async def begin_publish(conn: asyncpg.Connection, release: str, collections: list[str],
                         qdrant_collection: str) -> dict | None:
     """Record (or extend) the publish row, refusing when staging holds a different
     publish that is neither cleaned up nor discarded, or when `release` names a publish
     that was applied, cleaned up or discarded. Returns the row as it was before, or None
-    for a new publish."""
+    for a new publish. Call inside the stage's transaction: the check and the claim hold
+    `lock_publishes` until it commits."""
+    await lock_publishes(conn)
     holder = await conn.fetchval(
         """SELECT id FROM corpus_publishes
            WHERE id <> $1 AND cleaned_up_at IS NULL AND discarded_at IS NULL

@@ -167,16 +167,22 @@ async def status(args) -> int:
 
 
 async def discard(args, lock_path=None) -> int:
+    from publication import lock_publishes
+
     conn = await _connect()
     try:
         row = await _publish_row(conn, args.release)
         guard_publish("stage", row["collections"], args.release, lock_path)
-        for column in ("applied_at", "discarded_at", "cleaned_up_at"):
-            if row[column] is not None:
-                raise ValueError(f"REFUSING: publish '{args.release}' was "
-                                 f"{column.removesuffix('_at')}; only an unapplied publish "
-                                 "is discarded")
         async with conn.transaction():
+            # Validate under the lock: another discard or stage may have run since the
+            # read above, and staging may now hold a different release.
+            await lock_publishes(conn)
+            row = await _publish_row(conn, args.release)
+            for column in ("applied_at", "discarded_at", "cleaned_up_at"):
+                if row[column] is not None:
+                    raise ValueError(f"REFUSING: publish '{args.release}' was "
+                                     f"{column.removesuffix('_at')}; only an unapplied "
+                                     "publish is discarded")
             await conn.execute("SELECT public.drop_corpus_staging()")
             await conn.execute("UPDATE corpus_publishes SET discarded_at = now() WHERE id = $1",
                                args.release)

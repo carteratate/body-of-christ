@@ -441,6 +441,35 @@ async def test_restaging_recopies_untouched_collections(world):
     assert point.payload["content"] == "Changed in live."
 
 
+async def test_concurrent_releases_cannot_both_claim_staging(world):
+    """The ownership check and the claim are serialized: a second release waits for
+    the first's transaction, then sees it holds staging and refuses."""
+    import asyncio
+
+    from publication import begin_publish
+
+    first, second = await world.connect(), await world.connect()
+    try:
+        tx = first.transaction()
+        await tx.start()
+        await begin_publish(first, "release-one", ["medieval"], "chunks-release-one")
+
+        async def claim():
+            async with second.transaction():
+                await begin_publish(second, "release-two", ["summa"], "chunks-release-two")
+        waiting = asyncio.ensure_future(claim())
+        await asyncio.sleep(0.3)
+        assert not waiting.done()          # blocked on the lock, not past the check
+        await tx.commit()
+        with pytest.raises(StageRefused, match="staging holds publish 'release-one'"):
+            await waiting
+    finally:
+        await first.close()
+        await second.close()
+    assert [r["id"] for r in await world.fetch("SELECT id FROM corpus_publishes")] == \
+        ["release-one"]
+
+
 async def test_restaging_replaces_the_collection_rows(world):
     await world.runner().stage(STAGE)
     _doc(world, DOC_A).passages[0].content = "Grace perfects nature, revised."
@@ -598,6 +627,43 @@ async def test_discard_asks_for_stage_and_drops_staging(world, monkeypatch, caps
     assert "chunks-test-release" in capsys.readouterr().out
     # A discarded publish no longer holds staging: the next stage recreates it.
     await world.runner().stage(StageRequest(release="next-release", collections=("medieval",)))
+    assert await world.fetch("SELECT 1 FROM staging.chunks LIMIT 1")
+
+
+async def test_a_delayed_discard_never_drops_another_release(world, monkeypatch):
+    """Discard validates its release under the lock. Here, between its first read and
+    its transaction, the release is discarded and another one stages; the delayed
+    discard refuses, and the other release's staging survives."""
+    import publish
+    import publish_lock
+
+    await world.runner().stage(STAGE)
+
+    async def connect():
+        return await world.connect()
+    monkeypatch.setattr(publish, "_connect", connect)
+    monkeypatch.setattr(publish_lock, "assert_live_write_allowed", lambda *a, **k: None)
+    read = publish._publish_row
+    calls = []
+
+    async def read_then_interleave(conn, release):
+        row = await read(conn, release)
+        calls.append(release)
+        if len(calls) == 1:            # the stale, unlocked read
+            other = await world.connect()
+            try:
+                await other.execute("SELECT public.drop_corpus_staging()")
+                await other.execute("UPDATE corpus_publishes SET discarded_at = now() "
+                                    "WHERE id = 'test-release'")
+            finally:
+                await other.close()
+            await world.runner().stage(StageRequest(release="next-release",
+                                                    collections=("medieval",)))
+        return row
+    monkeypatch.setattr(publish, "_publish_row", read_then_interleave)
+    args = publish.build_parser().parse_args(["discard", "--release", "test-release"])
+    with pytest.raises(ValueError, match="was discarded"):
+        await publish.discard(args)
     assert await world.fetch("SELECT 1 FROM staging.chunks LIMIT 1")
 
 
