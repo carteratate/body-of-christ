@@ -175,7 +175,7 @@ decides whether its allowlist takes them (see "Percival's units").
 | Document | Tanner section | Replacement and location | Status |
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
-| Canons 1–22 | "Canons" | pp. 178–194, canons 1–22 | covered. The two numberings differ after canon 1 (Tanner follows a different manuscript order, and prints variant texts that are his apparatus) |
+| Canons 1–22 | "Canons" | pp. 178–194, canons 1–22 | covered except Tanner's canons 15 and 16. The numberings differ after canon 1. For those two, Schroeder's canons 13 (truce of God) and 17 (monks) translate the other recension, the text Tanner prints only as a variant; Tanner's main texts (15: confirmation of the popes' decrees on the peace and truce of God, arson and highways; 16: monks' subjection to their bishops) have no Schroeder equivalent: **partial** for 15 and 16 |
 
 ### 10. Lateran II (1139) — Schroeder
 
@@ -212,7 +212,7 @@ decides whether its allowlist takes them (see "Percival's units").
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Constitutions II 1–31 (1 On the supreme Trinity, 2 the conclave, …) | "Constitutions", II | pp. 330–360, canons 1–31 | covered (canon by canon) |
-| Constitution I, Zelus fidei (the crusade) | "Constitutions", I | pp. 360–364, canon 32 | covered; Schroeder's text measures about two-thirds of Tanner's, so 1.2e checks it for omissions |
+| Constitution I, Zelus fidei (the crusade) | "Constitutions", I | pp. 360–364, canon 32 | **partial**: Tanner's part [Id] (586 words: the dismissal of those attending, with the provisions that follow) is not printed |
 
 ### 15. Vienne (1311–1312) — Schroeder
 
@@ -408,6 +408,8 @@ own notes. Three exceptions:
   after anathema XI; anathemas XII–XIV follow under their own headings. Resume at the next
   roman numeral.
 
+**In every other allowlisted div**, stop at a "Note." or "Notes." paragraph: what follows is editor material (for example `x.xvi.xvii-p5` onward, `xi.xv-p5` onward, `xi.xiii-p14` onward).
+
 **Everywhere**, Percival's source lines in parentheses ("(Found in …)", "(Labbe and
 Cossart …)", "(From the Acts …)") and his bracketed connecting notes ("[Next was read …]")
 are editor material.
@@ -440,14 +442,14 @@ Each div, by council. "Allowlist" is the recommendation for 1.2c's per-council l
 | Ephesus | `x.xiii` | Letter of Pope Celestine to the synod | other author | no |
 | Ephesus | `x.xvi.i` | Titled "Introduction" but `-p4`, `-p5` are the council's synodical letter | council | yes |
 | Ephesus | `x.xvi.*` canon divs | Canons I–VIII | council | yes |
-| Ephesus | `x.xvi.xiii`, `.xiv`, `.xv`, `.xvii` | Letter to the synod in Pamphylia; letter to Pope Celestine; definition against the Messalians; decree on Euprepius and Cyril | council | yes (only the Messalians definition is in Tanner) |
+| Ephesus | `x.xvi.xiii`, `.xiv`, `.xv`, `.xvii` | Letter to the synod in Pamphylia; letter to Pope Celestine; definition against the Messalians; decree on Euprepius and Cyril (`-p3`; from `-p5` "Note." on, editor) | council | yes (only the Messalians definition is in Tanner) |
 | Chalcedon | `xi.i`, `xi.ii`, `xi.xviii.xxix`, `xi.xix` notes | Title page, introduction, excursus | editor | no |
 | Chalcedon | `xi.iii`, `.iv`, `.vi`, `.viii`, `.ix`, `.xi`, `.xii`, `.xiv`, `.xix` | Extracts from the acts | acts, mixed | no |
 | Chalcedon | `xi.v` | Cyril's letter to John of Antioch (with the formula of union) | other author (approved) | yes (Tanner prints it with Ephesus) |
 | Chalcedon | `xi.vii` | The Tome of Leo (`-p4` to `-p8`) | other author (approved) | yes |
 | Chalcedon | `xi.x` | Condemnation sent to Dioscorus | council | yes (not in Tanner) |
 | Chalcedon | `xi.xiii` | The Definition (`-p3` to `-p13`) | council | yes |
-| Chalcedon | `xi.xv`, `.xvi`, `.xvii` | Decrees on Jerusalem and Antioch, Ephesus, Nicomedia | council | yes (not in Tanner) |
+| Chalcedon | `xi.xv`, `.xvi`, `.xvii` | Decrees on Jerusalem and Antioch (`-p4`; from `-p5` "Note." on, editor), Ephesus, Nicomedia (`-p10` is Percival's bracketed note) | council | yes (not in Tanner) |
 | Chalcedon | `xi.xviii.i`–`.xxviii` | Canons I–XXVIII | council | yes |
 | Chalcedon | `xi.xviii.xxx`, `.xxxi` | Canons XXIX and XXX (extracts of the acts) | acts | Carter's choice; not Tanner documents |
 | Constantinople II | `xii.i`–`.iii`, `.viii`, `.xi`, `.xiii` | Title page, introduction, excursus, historical notes | editor | no |
@@ -462,7 +464,8 @@ Each div, by council. "Allowlist" is the recommendation for 1.2c's per-council l
 | Constantinople III | `xiii.v`, `.vi` | Letters of Pope Agatho | other author | no |
 | Constantinople III | `xiii.viii` | Sentence against the Monothelites | council | yes (not in Tanner) |
 | Constantinople III | `xiii.x` | The Definition of Faith | council | yes |
-| Constantinople III | `xiii.xi`, `.xii` | Address to the emperor; letter to Agatho | council | yes (not in Tanner) |
+| Constantinople III | `xiii.xi` | Address to the emperor, abridged by Percival (bracketed summaries `-p3`, `-p5`, `-p13` and elisions) | council, abridged | no |
+| Constantinople III | `xiii.xii` | Letter to Agatho | council | yes (not in Tanner) |
 | Constantinople III | `xiii.xiv` | Imperial edict | other author | no |
 | Nicaea II | `xvi.i`, `.ii`, `.xi`, `.xiii`, `.xvi`–`.xxi` | Title page, introduction, excursus, the Caroline Books, notes on later councils | editor | no |
 | Nicaea II | `xvi.iii`, `.iv` | Imperial letters (sacra) | other author | no |
@@ -512,7 +515,7 @@ ourselves with giving a summary of them", p. 143).
 | Vatican I's opening decree and the profession of faith of sessions 1 and 2 | Confirmed gaps: Schaff's English column holds Dei Filius and Pastor Aeternus only |
 
 Found while settling them, and not in the spec: Constantinople IV's canons in Schroeder
-are condensed throughout, and Constance's session 43, Vienne's Exivi de paradiso and
+are condensed throughout, and Lateran I's canons 15 and 16, Lyons II's constitution I, Constance's session 43, Vienne's Exivi de paradiso and
 Lateran V's seven bulls are partial. Whether condensed or excerpted text should stand in
 for a council's text is a new NEEDS-CARTER question (1.2e).
 
@@ -612,7 +615,8 @@ own summaries and introductions are not gaps: they retire as `rule-g-editorial`.
 | G9 | Lateran V | Sessions 2–6; session 8's bulls on peace and the Bohemians and on reform; session 9's exhortation to peace; session 10's decree on the Pragmatic Sanction; session 11's French agreements and Pastor aeternus gregem; session 12's two constitutions | — |
 | G10 | Vatican I | Session 1, decree of opening; session 2, profession of faith | — |
 
-Partial texts (Constantinople IV's canons, Constance's session 43, Vienne's Exivi de
-paradiso, Lateran V's seven bulls) are not on the register. What is published for them
+Partial texts (Constantinople IV's canons, Lateran I's canons 15 and 16, Lyons II's
+constitution I, Constance's session 43, Vienne's Exivi de paradiso, Lateran V's seven
+bulls) are not on the register. What is published for them
 depends on Carter's answer to the new question in NEEDS-CARTER (1.2e); if the answer is
 "whole texts only", they join it.
