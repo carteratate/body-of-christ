@@ -124,7 +124,7 @@ async def reembed_collection(client, conn, collection: str, categories: frozense
     """Returns (selected_count, written_count)."""
     from qdrant_client.models import PointStruct
 
-    from writers.qdrant import upsert_points
+    from writers.qdrant import QDRANT_COLLECTION, upsert_points
 
     rows = [PassageRow(**dict(r)) for r in await conn.fetch(_SQL, collection)]
     payloads = await _qdrant_payloads(client, collection)
@@ -177,7 +177,7 @@ async def reembed_collection(client, conn, collection: str, categories: frozense
                 f"got {len(vectors)} vectors for {len(window)} passages; refusing to "
                 f"write positionally mismatched points"
             )
-        await upsert_points(client, [
+        await upsert_points(client, QDRANT_COLLECTION, [
             PointStruct(id=row.chunk_id, vector=vector, payload=build_payload(row))
             for (row, _), vector in zip(window, vectors)
         ])

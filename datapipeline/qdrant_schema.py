@@ -1,7 +1,8 @@
 """Create the Qdrant collections used by the data pipeline.
 
-recreate_chunks() is a BREAKING change: it deletes and recreates `chunks` because
-named sparse vectors cannot be added to an existing collection. All chunks are re-ingested.
+`create_chunks_collection` makes a new passage collection for a publish (2.2w): a stage
+writes `chunks-<release>`, and the `chunks_live` alias is switched to it at the apply.
+It never deletes or reshapes a collection, so no publish can empty the live one.
 """
 from __future__ import annotations
 
@@ -9,24 +10,46 @@ from qdrant_client.models import Distance, HnswConfigDiff, PayloadSchemaType, Ve
 
 from config import settings
 
-CHUNKS = "chunks"
 FACETS = "facets"
 QUESTIONS = "questions"
 
+# Payload fields search filters on (D5), each with its index type.
+CHUNK_PAYLOAD_INDEXES = (
+    ("collection", PayloadSchemaType.KEYWORD),
+    ("genre", PayloadSchemaType.KEYWORD),
+    ("issuer", PayloadSchemaType.KEYWORD),
+    ("document_id", PayloadSchemaType.KEYWORD),
+    ("searchable", PayloadSchemaType.BOOL),
+)
 
-async def recreate_chunks(client) -> None:
-    """Create the unnamed 1536-dim `chunks` collection the application queries."""
-    if await client.collection_exists(CHUNKS):
-        await client.delete_collection(CHUNKS)
+
+async def name_in_use(client, name: str) -> bool:
+    """Whether `name` is a collection or an alias."""
+    if await client.collection_exists(name):
+        return True
+    aliases = (await client.get_aliases()).aliases
+    return any(a.alias_name == name for a in aliases)
+
+
+async def create_chunks_collection(client, name: str) -> None:
+    """Create the unnamed 1536-dim passage collection the application queries, with
+    today's HNSW settings and the D5 payload indexes. Vectors stay in memory (4.0).
+
+    Refuses with SystemExit when `name` is already a collection or an alias: a publish
+    always writes a collection nobody reads yet."""
+    if await name_in_use(client, name):
+        raise SystemExit(f"REFUSING to create '{name}': a collection or alias of that "
+                         "name exists")
     await client.create_collection(
-        collection_name=CHUNKS,
+        collection_name=name,
         vectors_config=VectorParams(
-            size=settings.EMBEDDING_DIMS, distance=Distance.COSINE,
+            size=settings.EMBEDDING_DIMS, distance=Distance.COSINE, on_disk=False,
         ),
         hnsw_config=HnswConfigDiff(m=16, ef_construct=64),
     )
-    await client.create_payload_index(
-        collection_name=CHUNKS, field_name="collection", field_schema=PayloadSchemaType.KEYWORD)
+    for field, schema in CHUNK_PAYLOAD_INDEXES:
+        await client.create_payload_index(
+            collection_name=name, field_name=field, field_schema=schema)
 
 
 async def ensure_facets(client) -> None:

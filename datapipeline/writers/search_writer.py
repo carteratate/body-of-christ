@@ -1,21 +1,31 @@
-"""Embed neighbor-augmented passages and upsert them to Qdrant.
+"""Embed neighbor-augmented passages and write them as Qdrant points.
 
 Stored payload content stays clean; overlap exists only in the embedded text.
-point.id == chunks.id (deterministic passage id), so RRF dedup across the
+point.id == chunks.id (the passage ID, `Passage.id`), so RRF dedup across the
 vector + FTS paths is correct.
+
+A publish (2.2w) writes every staged passage, searchable or not, into the publish's own
+collection (D5). Each vector comes from the first source that has it (D11): the
+content-addressed embedding cache, then the point with the same ID and `embed_sha256`
+in the collection users search today, then OpenAI for the rest. A vector from OpenAI is
+written to the cache before its point is upserted, so an interrupted stage never pays
+twice.
 """
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import re
+from collections.abc import Callable
+from dataclasses import dataclass, field
 
 import openai
 from qdrant_client.models import PointStruct
 
 from config import settings
-from registry import resolve_passage_id
 from model import Document, Passage
-from writers.qdrant import upsert_points
+from registry import resolve_passage_id
+from writers.qdrant import retrieve, upsert_points
 
 _VERSE_MARKER_RE = re.compile(r"\{\{v:\d+\}\}\s*")
 
@@ -24,27 +34,74 @@ def _strip_verse_markers(text: str) -> str:
     return _VERSE_MARKER_RE.sub("", text)
 
 
+def _neighbour(passages: list[Passage], idx: int, step: int) -> Passage | None:
+    """The nearest searchable passage before (step -1) or after (step 1) `idx` in the
+    same chapter key, or None. A history passage, a Latin canon or any other passage
+    with searchable = false is skipped, so its text never enters a current passage's
+    vector (C-21)."""
+    key = passages[idx].chapter_key
+    i = idx + step
+    while 0 <= i < len(passages) and passages[i].chapter_key == key:
+        if passages[i].searchable:
+            return passages[i]
+        i += step
+    return None
+
+
 def build_embedding_input(passages: list[Passage], idx: int,
                           k_prev: int, k_next: int, prefix: str) -> str:
     p = passages[idx]
     parts = [prefix] if prefix else []
-    if k_prev and idx > 0 and passages[idx - 1].chapter_key == p.chapter_key:
-        parts.append(passages[idx - 1].content[-k_prev:])
+    prev = _neighbour(passages, idx, -1) if k_prev else None
+    if prev is not None:
+        parts.append(prev.content[-k_prev:])
     parts.append(p.content)
-    if k_next and idx + 1 < len(passages) and passages[idx + 1].chapter_key == p.chapter_key:
-        parts.append(passages[idx + 1].content[:k_next])
+    nxt = _neighbour(passages, idx, 1) if k_next else None
+    if nxt is not None:
+        parts.append(nxt.content[:k_next])
     return _strip_verse_markers(" ".join(parts).strip())
 
 
-def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
+def display_author(doc: Document, p: Passage) -> str | None:
+    """The author shown to users: the passage's own, then its work's, then the
+    document's (C-15)."""
+    if p.passage_author:
+        return p.passage_author
+    if p.work_key:
+        work = next((w for w in doc.works if w.work_key == p.work_key), None)
+        if work is not None and work.author:
+            return work.author
+    return doc.author
+
+
+def embedding_prefix(doc: Document, p: Passage) -> str:
+    author = display_author(doc, p)
+    return f"{author + ' — ' if author else ''}{doc.title}, {p.chapter_label}"
+
+
+def embedding_inputs(doc: Document) -> list[str]:
+    """The exact text embedded for each passage of `doc`, in order."""
+    k_prev, k_next = settings.overlap_for(doc.collection)
+    return [build_embedding_input(doc.passages, i, k_prev, k_next, embedding_prefix(doc, p))
+            for i, p in enumerate(doc.passages)]
+
+
+def input_sha256(text: str) -> str:
+    """The embedding cache key (cache.Cache.embedding_input_hash) and `embed_sha256`."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def build_point(doc: Document, p: Passage, vector: list[float], *,
+                embed_sha256: str | None = None, embed_model: str | None = None
+                ) -> PointStruct:
     return PointStruct(
-        id=resolve_passage_id(doc.id, p.anchor),
+        id=p.id or resolve_passage_id(doc.id, p.anchor),
         vector=vector,
         payload={
             "collection": doc.collection,
             "document_id": doc.id,
             "document_title": doc.title,
-            "author": doc.author,
+            "author": display_author(doc, p),
             "content": p.content,          # CLEAN, never the augmented text
             "reference": p.reference,
             "anchor": p.anchor,
@@ -59,6 +116,14 @@ def build_point(doc: Document, p: Passage, vector: list[float]) -> PointStruct:
             # objection Aquinas refutes rather than his teaching.
             "chapter_key": p.chapter_key,
             "unit_label": p.unit_label,
+            # Facts search filters on (D5), and the role (C-01).
+            "genre": doc.genre,
+            "issuer": doc.issuer,
+            "searchable": p.searchable,
+            "voice": p.voice,
+            # What produced the vector (C-23): the hash of the exact input and the model.
+            "embed_sha256": embed_sha256,
+            "embed_model": embed_model,
         },
     )
 
@@ -80,22 +145,78 @@ async def _embed(client: openai.AsyncOpenAI, texts: list[str]) -> list[list[floa
     raise RuntimeError("unreachable")
 
 
-async def write_document(client_qdrant, doc: Document) -> None:
-    """Embed all passages (augmented) and upsert points for one document."""
-    oa = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-    k_prev, k_next = settings.overlap_for(doc.collection)
-    try:
-        batch = settings.EMBEDDING_BATCH_SIZE
-        for start in range(0, len(doc.passages), batch):
-            window = doc.passages[start:start + batch]
-            author_part = f"{doc.author} — " if doc.author else ""
-            inputs = [
-                build_embedding_input(doc.passages, start + i, k_prev, k_next,
-                                      f"{author_part}{doc.title}, {p.chapter_label}")
-                for i, p in enumerate(window)
-            ]
-            vectors = await _embed(oa, inputs)
-            points = [build_point(doc, p, v) for p, v in zip(window, vectors)]
-            await upsert_points(client_qdrant, points)
-    finally:
-        await oa.close()
+@dataclass
+class VectorSource:
+    """Where a stage gets each vector from, in order (D11): `cache` (an object with
+    cache.Cache's get_embedding / put_embedding), then the points of `reuse_from` (the
+    collection the live alias targets) whose `embed_sha256` and `embed_model` match, then
+    `embed` (OpenAI by default). Counts each source, so the stage can report them."""
+    qdrant: object
+    cache: object
+    reuse_from: str | None
+    embed: Callable | None = None
+    model: str = field(default_factory=lambda: settings.EMBEDDING_MODEL)
+    dimensions: int = field(default_factory=lambda: settings.EMBEDDING_DIMS)
+    counts: dict = field(default_factory=lambda: {"cache": 0, "reused": 0, "embedded": 0,
+                                                   "embedded_chars": 0})
+
+    async def vectors(self, ids: list[str], inputs: list[str]) -> list[list[float]]:
+        hashes = [input_sha256(t) for t in inputs]
+        out: list[list[float] | None] = [
+            self.cache.get_embedding(h, self.model, self.dimensions) for h in hashes]
+        self.counts["cache"] += sum(v is not None for v in out)
+
+        missing = [i for i, v in enumerate(out) if v is None]
+        if missing and self.reuse_from:
+            found = await retrieve(self.qdrant, self.reuse_from, [ids[i] for i in missing])
+            for i in missing:
+                point = found.get(ids[i])
+                payload = (point.payload or {}) if point is not None else {}
+                if payload.get("embed_sha256") == hashes[i] \
+                        and payload.get("embed_model") == self.model:
+                    out[i] = list(point.vector)
+                    self.cache.put_embedding(hashes[i], self.model, self.dimensions, out[i])
+                    self.counts["reused"] += 1
+
+        missing = [i for i, v in enumerate(out) if v is None]
+        if missing:
+            vectors = await self._embed([inputs[i] for i in missing])
+            if len(vectors) != len(missing):
+                raise RuntimeError(f"got {len(vectors)} vectors for {len(missing)} inputs")
+            for i, v in zip(missing, vectors):
+                # Into the cache first: an interrupted stage never pays for it again.
+                self.cache.put_embedding(hashes[i], self.model, self.dimensions, v)
+                out[i] = v
+            self.counts["embedded"] += len(missing)
+            self.counts["embedded_chars"] += sum(len(inputs[i]) for i in missing)
+        return out  # type: ignore[return-value]
+
+    async def _embed(self, texts: list[str]) -> list[list[float]]:
+        if self.embed is not None:
+            return await self.embed(texts)
+        oa = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        try:
+            return await _embed(oa, texts)
+        finally:
+            await oa.close()
+
+
+async def write_document(client_qdrant, doc: Document, *, collection_name: str,
+                         vectors: VectorSource) -> int:
+    """Write one point per passage of `doc` into `collection_name`; return how many.
+    Every passage must already carry its `Passage.id` (the stage assigns them)."""
+    inputs = embedding_inputs(doc)
+    batch = settings.EMBEDDING_BATCH_SIZE
+    written = 0
+    for start in range(0, len(doc.passages), batch):
+        window = doc.passages[start:start + batch]
+        texts = inputs[start:start + batch]
+        if any(p.id is None for p in window):
+            raise ValueError(f"{doc.title}: a passage has no ID; the stage assigns them")
+        got = await vectors.vectors([p.id for p in window], texts)
+        points = [build_point(doc, p, v, embed_sha256=input_sha256(t),
+                              embed_model=vectors.model)
+                  for p, v, t in zip(window, got, texts)]
+        await upsert_points(client_qdrant, collection_name, points)
+        written += len(points)
+    return written

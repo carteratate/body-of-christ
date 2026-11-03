@@ -227,6 +227,13 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **2.4b** [Phase 2]. Approve the wording pattern of tombstones.
 - **2.4c** [Phase 2]. Approve the corrected names on the About page. Origen, Chrysostom, Bonaventure, Hildegard and Duns Scotus come out; Irenaeus, Bernard of Clairvaux and Thomas à Kempis go in.
 - **2.2w** [Phase 2]. Found by 2.2a (2 Nov 2026). Staging now holds `staging.document_contents` (0040's contents tree), but 2.2w's stage step 4, apply, before-snapshot and rollback list `documents`, `chunks`, `document_works` and `document_chapters` only. Should the writer stage, snapshot, apply and roll back the contents tree with the chunks, as `reader_writer.write_document` does today? Recommended answer is yes; otherwise an apply would leave each document's tree pointing at the old chapters, and `/toc` would fall back to the flat list.
+  Answered 2026-11-02: yes. The tree is staged, snapshotted, applied and rolled back with the chunks.
+- **2.2w** [Phase 2]. Found by 2.2w (2 Nov 2026). Should the apply and the rollback derive each touched document's `reader_access` again from the rights inventory, so neither can reopen a text whose rights are not cleared? Recommended answer is yes, with the apply refusing when the value differs from the staged one.
+  Answered 2026-11-02: yes to all three: stage writes it, apply re-derives it and refuses on a difference, rollback re-derives it rather than restoring the snapshot's value.
+- **2.2w** [Phase 2]. Found by 2.2w (2 Nov 2026). Ship 2.2w as one PR, or split it? Recommended answer is three PRs: (a) CLI, lock gates, stage and report; (b) snapshot, apply, switch, rollback and cleanup; (c) the read override, the other writers and the docs.
+  Answered 2026-11-02: three PRs as recommended, each merged before the next is based on master.
+- **2.2w** [Phase 2]. Found by 2.2w (2 Nov 2026). 2.2b is not merged, so the alias `chunks_live` does not exist yet. Should a stage refuse until it exists, or create it? Recommended answer is refuse, pointing at 2.2b's ops step.
+  Answered 2026-11-02: refuse.
 - **2.2w and 4.1b** [Phase 2, needed by Phase 4]. Set the rollback window length. Recommended answer is 14 days.
 
 ### Phase 3

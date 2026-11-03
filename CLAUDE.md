@@ -27,9 +27,11 @@ npm test               # vitest run
 uvicorn app.main:app --reload   # dev server on :8000
 python3 -m pytest tests/
 
-# Datapipeline (one collection). --dry-run builds and checks without writing; a live
-# write needs a PUBLISH_LOCK.json entry and --release (see datapipeline/README.md)
+# Datapipeline. run_collection.py only dry-runs (builds and checks, writes nothing).
+# Publishing is publish.py stage -> report -> apply (2.2w); every live step needs a
+# PUBLISH_LOCK.json entry and --release (see datapipeline/README.md)
 cd datapipeline && python3 run_collection.py --collection bible --dry-run
+cd datapipeline && python3 publish.py stage --collection bible --release <name>
 
 # Docker (prod-like)
 docker build -t theocorpus-api services/api
@@ -114,8 +116,10 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   (0037 schema, 0038 backfill). `/toc`, `/reader`, `/documents/{id}` and `/sources` read
   it instead of deriving chapter lists and counts from `chunks` per request.
   `chunk_count IS NULL` means "no current outline" and the routes fall back to the old
-  derivation. `refresh_document_outline(doc)` builds it; `reader_writer.write_document`
-  calls it last in its per-document transaction. Row triggers on `chunks` reset
+  derivation. `refresh_document_outline(doc)` builds it; 2.2w's apply (its second part,
+  not yet merged) is to call it last for every document it touches, and a stage builds
+  staged outlines with `staging.refresh_document_outline`
+  (`reader_writer.write_staged_document`). Row triggers on `chunks` reset
   `chunk_count` to NULL on any structural change (chunk set, position, chapter key or
   label, or TRUNCATE; annotations are ignored), so a writer that skips the refresh can
   only make a document slower, never stale, unless it bypasses triggers
@@ -126,7 +130,8 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   a chapter (`chapter_key`) and optionally a passage (`anchor`). Distinct from the reader
   outline above, which stays the flat list of load units. A source adapter emits it as
   `Document.contents`; `contents.check` refuses a broken tree in the build (dry runs
-  included), and `reader_writer.write_document` replaces it with the chunks. `/toc`
+  included), and a stage writes it into `staging.document_contents` with the chunks
+  (`reader_writer.write_staged_document`), for the apply to carry into live. `/toc`
   returns it as `contents` only when every node's chapter and anchor still exist in
   reading order (`_contents_tree` in `routes/documents.py`), so a writer that rewrites
   chunks without the tree degrades the reader to the flat list. The API tolerates the
@@ -146,8 +151,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `detail.code = "reader_restricted"` (guests and signed-in alike), and every surface that
   would open the reader (search cards, bookmarks, history restore, the Library) links to
   the official source instead. Derived from `datapipeline/rights_inventory.json` (rows
-  found by document ID, not by title), never edited by hand:
-  `reader_writer.write_document` sets it on every publish, and
+  found by document ID, not by title), never edited by hand: every stage sets it in
+  `staging.documents`, 2.2w's apply (not yet merged) re-derives it for each document it
+  touches (Carter, 2 Nov 2026), and
   `datapipeline/reader_access.py --apply` re-syncs all live documents after an inventory
   change (the unblock path). API side is `app/reader_access.py`: passage sources carry
   `reader_access`, `source_url` and `source_credit`, reading progress is neither written

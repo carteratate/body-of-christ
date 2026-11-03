@@ -196,13 +196,62 @@ def apply_overrides(document: Document, registry: WorkRegistry | None = None) ->
     passages = []
     for p in document.passages:
         row = rows.get((document.id, p.anchor)) or {}
-        changes = {k: row[k] for k in OVERRIDES if k in row and k != "note"}
+        changes = {k: row[k] for k in OVERRIDES if k in row}
         if "work_key" in row and row["work_key"] is not None:
             changes["work_key"] = row["work_key"]
-        if "note" in row:
-            changes["metadata"] = {**(p.metadata or {}), "note": row["note"]}
         passages.append(replace(p, **changes) if changes else p)
     return replace(document, passages=passages)
+
+
+def removed_document_ids(registry: WorkRegistry | None = None) -> set[str]:
+    """Documents an open `document` removal entry retires (D4)."""
+    return {e["document_id"] for e in open_removals(registry or current())
+            if e.get("scope") == "document"}
+
+
+def drop_removed(document: Document, registry: WorkRegistry | None = None) -> Document:
+    """The document without the passages an open `passage` removal entry retires, matched
+    by frozen passage ID or, for an entry naming none, by anchor. An adapter that already
+    skips them is unchanged. Whole removed documents are dropped by the caller
+    (`removed_document_ids`). Span and class entries remove text inside passages, which
+    the adapter does; they drop nothing here. The passages kept are renumbered 0..n-1."""
+    reg = registry or current()
+    by_id, by_anchor = set(), set()
+    for e in open_removals(reg):
+        if e.get("scope") != "passage" or e.get("document_id") != document.id:
+            continue
+        if e.get("passage_id"):
+            by_id.add(e["passage_id"])
+        elif e.get("anchor"):
+            by_anchor.add(e["anchor"])
+    if not by_id and not by_anchor:
+        return document
+    kept = [p for p in document.passages
+            if p.anchor not in by_anchor
+            and resolve_passage_id(document.id, p.anchor, reg) not in by_id]
+    if len(kept) == len(document.passages):
+        return document
+    # Positions stay 0..n-1 in reading order (health rule H3).
+    return replace(document, passages=[replace(p, position=i) for i, p in enumerate(kept)])
+
+
+def assign_ids(document: Document, registry: WorkRegistry | None = None
+               ) -> tuple[Document, list[str]]:
+    """The document with every `Passage.id` set from the passage registry (D1), and the
+    IDs the registry does not hold: genuinely new units, which `identity.passage_id`
+    names. Each history passage's `superseded_by_anchor` must name a passage of the same
+    document; a ValueError says which does not."""
+    reg = registry or current()
+    passages = [replace(p, id=resolve_passage_id(document.id, p.anchor, reg))
+                for p in document.passages]
+    by_anchor = {p.anchor: p.id for p in passages}
+    for p in passages:
+        if p.superseded_by_anchor and p.superseded_by_anchor not in by_anchor:
+            raise ValueError(
+                f"{document.title}: history passage {p.anchor} names "
+                f"{p.superseded_by_anchor}, which is not a passage of the same document")
+    new = [p.id for p in passages if p.id not in reg.frozen_ids]
+    return replace(document, passages=passages), new
 
 
 # --------------------------------------------------------------------------- validation

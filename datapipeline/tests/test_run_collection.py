@@ -6,23 +6,22 @@ import sys
 import pytest
 
 from model import ContentsNode, Document, Passage
-import publish_lock
-from publication import PublicationResult, PublicationTarget, production_runner
 from run_collection import build_parser, main
 
 
-class RecordingRunner:
+class RecordingBuilder:
     def __init__(self, error: ValueError | None = None):
-        self.request = None
+        self.calls = []
         self.error = error
-        self.built = None
 
-    def build(self, request):
-        self.built = request
+    def __call__(self, collection, *, limit=None):
+        self.calls.append((collection, limit))
+        if self.error is not None:
+            raise self.error
         return [
             Document(
                 id="11111111-1111-1111-1111-111111111111",
-                collection=request.collection,
+                collection=collection,
                 title="On Loving God",
                 author="Bernard of Clairvaux",
                 passages=[
@@ -33,27 +32,14 @@ class RecordingRunner:
             )
         ]
 
-    async def publish(self, request):
-        self.request = request
-        if self.error is not None:
-            raise self.error
-        return PublicationResult(
-            collection=request.collection,
-            target=request.target,
-            document_count=2,
-            passage_count=12,
-        )
 
-
-def test_help_describes_normal_and_destructive_publication_options():
+def test_help_offers_only_the_dry_run():
     help_text = build_parser().format_help()
 
-    assert "reconcile one collection" in help_text
-    assert "--target {reader,search,both}" in help_text
-    assert "--reset-search-index" in help_text
-    assert "--wipe-reader" in help_text
-    assert "--confirm-reader-wipe COLLECTION" in help_text
-    assert "--clean" not in help_text
+    assert "--dry-run" in help_text
+    for removed in ("--target", "--reset-search-index", "--wipe-reader",
+                    "--confirm-reader-wipe", "--release", "--clean"):
+        assert removed not in help_text
 
 
 def test_help_does_not_require_store_or_embedding_credentials(tmp_path):
@@ -75,111 +61,68 @@ def test_help_does_not_require_store_or_embedding_credentials(tmp_path):
     )
 
     assert completed.returncode == 0
-    assert "--reset-search-index" in completed.stdout
+    assert "--dry-run" in completed.stdout
     assert completed.stderr == ""
 
 
-def test_cli_builds_a_complete_publication_request(capsys):
-    runner = RecordingRunner()
-
-    exit_code = main(
-        [
-            "--collection",
-            "medieval",
-            "--target",
-            "both",
-            "--reset-search-index",
-            "--wipe-reader",
-            "--confirm-reader-wipe",
-            "medieval",
-        ],
-        runner=runner,
-    )
-
-    assert exit_code == 0
-    assert runner.request.collection == "medieval"
-    assert runner.request.target is PublicationTarget.BOTH
-    assert runner.request.reset_search_index is True
-    assert runner.request.wipe_reader is True
-    assert runner.request.wipe_reader_confirmation == "medieval"
-    assert "2 documents, 12 passages" in capsys.readouterr().out
-
-
-def test_retired_clean_spelling_is_rejected_before_runner_acquisition(capsys):
-    runner = RecordingRunner()
+def test_live_publish_points_to_publish_py(capsys):
+    """2.2w: a live invocation exits 2 and names publish.py; nothing is built."""
+    builder = RecordingBuilder()
 
     with pytest.raises(SystemExit) as raised:
-        main(
-            ["--collection", "medieval", "--target", "search", "--clean"],
-            runner=runner,
-        )
+        main(["--collection", "medieval"], builder=builder)
 
     assert raised.value.code == 2
-    assert runner.request is None
-    assert "unrecognized arguments: --clean" in capsys.readouterr().err
+    assert builder.calls == []
+    assert "publish.py stage" in capsys.readouterr().err
 
 
-def test_runner_refusal_is_reported_as_a_cli_usage_failure(capsys):
-    runner = RecordingRunner(ValueError("reader-wipe confirmation must exactly match"))
+@pytest.mark.parametrize("flag", [
+    ["--target", "both"], ["--reset-search-index"], ["--wipe-reader"],
+    ["--confirm-reader-wipe", "medieval"], ["--release", "x"], ["--clean"],
+])
+def test_removed_flags_are_rejected(capsys, flag):
+    builder = RecordingBuilder()
 
     with pytest.raises(SystemExit) as raised:
-        main(["--collection", "medieval", "--wipe-reader"], runner=runner)
+        main(["--collection", "medieval", "--dry-run", *flag], builder=builder)
 
-    captured = capsys.readouterr()
     assert raised.value.code == 2
-    assert "reader-wipe confirmation must exactly match" in captured.err
+    assert builder.calls == []
+    assert "unrecognized arguments" in capsys.readouterr().err
 
 
-def test_dry_run_acquires_no_store_and_prints_counts(capsys):
-    runner = RecordingRunner()
+def test_build_refusal_is_reported_as_a_cli_usage_failure(capsys):
+    builder = RecordingBuilder(ValueError("REFUSING: 1 health block-rule violations"))
 
-    exit_code = main(["--collection", "medieval", "--dry-run"], runner=runner)
+    with pytest.raises(SystemExit) as raised:
+        main(["--collection", "medieval", "--dry-run"], builder=builder)
+
+    assert raised.value.code == 2
+    assert "REFUSING: 1 health" in capsys.readouterr().err
+
+
+def test_dry_run_prints_counts(capsys):
+    builder = RecordingBuilder()
+
+    exit_code = main(["--collection", "medieval", "--dry-run", "--limit", "5"],
+                     builder=builder)
 
     assert exit_code == 0
-    assert runner.request is None
-    assert runner.built.collection == "medieval"
+    assert builder.calls == [("medieval", 5)]
     assert "medieval: dry run, 1 documents, 3 passages; nothing written" in capsys.readouterr().out
 
 
 def test_dry_run_reports_a_contents_tree_and_the_chapters_it_misses(capsys):
-    class TreeRunner(RecordingRunner):
-        def build(self, request):
-            [document] = super().build(request)
+    class TreeBuilder(RecordingBuilder):
+        def __call__(self, collection, *, limit=None):
+            [document] = super().__call__(collection, limit=limit)
             document.passages[2].chapter_key = "c2"
             document.contents = [ContentsNode(key="book-1", kind="chapter", label="Book 1",
                                               short_label="Book 1", chapter_key="c1")]
             return [document]
 
-    assert main(["--collection", "medieval", "--dry-run"], runner=TreeRunner()) == 0
+    assert main(["--collection", "medieval", "--dry-run"], builder=TreeBuilder()) == 0
     out = capsys.readouterr().out
     assert ("contents tree: On Loving God, 1 nodes; WARNING 1 chapters no node opens, "
             "first 'c2'") in out
-
-
-def test_release_is_passed_into_the_request():
-    runner = RecordingRunner()
-
-    main(["--collection", "medieval", "--release", "2026-11-cleanup"], runner=runner)
-
-    assert runner.request.release == "2026-11-cleanup"
-
-
-def test_live_publish_is_refused_while_locked(tmp_path, monkeypatch, capsys):
-    lock_path = tmp_path / "PUBLISH_LOCK.json"
-    lock_path.write_text('{"since": "2026-10-04", "reason": "test", "approved_applies": []}')
-    monkeypatch.setattr(publish_lock, "settings_targets", lambda: publish_lock.WriteTargets(
-        "postgresql://u:p@db.example.supabase.co/postgres", "https://q.example.qdrant.io"))
-
-    def no_network(*args, **kwargs):
-        raise AssertionError("the lock must refuse before any network call")
-
-    monkeypatch.setattr("asyncpg.connect", no_network)
-    runner = production_runner(lock_path=lock_path)
-    runner._source_adapters = {"catechism": no_network}
-
-    with pytest.raises(SystemExit) as raised:
-        main(["--collection", "catechism", "--target", "both", "--release", "x"],
-             runner=runner)
-
-    assert raised.value.code == 2
-    assert "locked" in capsys.readouterr().err

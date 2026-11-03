@@ -47,6 +47,11 @@ class Settings:
     # the writer and reader can both complete it.
     EMBEDDING_DIMS: int = 1536
     EMBEDDING_BATCH_SIZE: int = 100
+    # --- Publishing (2.2w) ---
+    # The Qdrant collection a stage writes into. Unset means `chunks-<release>` (D11);
+    # set it only for a local run. The API reads through the alias, never the collection.
+    QDRANT_WRITE_COLLECTION: str | None = None
+    QDRANT_LIVE_ALIAS: str = "chunks_live"
     EMBED_CONCURRENCY: int = 4
 
     # --- Chunking / cleaning ---
@@ -153,4 +158,6 @@ settings = Settings(
     QDRANT_API_KEY=_require_env("QDRANT_API_KEY"),
     ANTHROPIC_API_KEY=os.getenv("ANTHROPIC_API_KEY"),
     PILOT_MODE=_env_bool("PILOT_MODE", False),
+    QDRANT_WRITE_COLLECTION=os.getenv("QDRANT_WRITE_COLLECTION") or None,
+    QDRANT_LIVE_ALIAS=os.getenv("QDRANT_LIVE_ALIAS") or "chunks_live",
 )

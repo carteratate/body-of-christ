@@ -1,7 +1,14 @@
-"""Write clean documents + passages to Supabase (the reader + FTS store).
+"""Write staged documents and passages into the `staging` schema (2.2w, D2).
 
-Does NOT populate content_embedding (retired — vectors live only in Qdrant).
-chunks.id is the deterministic passage id so it matches the Qdrant point id.
+A publish never writes the live corpus tables here. A stage builds each collection into
+`staging.*` (made by 2.2a's `create_corpus_staging()`, the live tables' shape with no
+foreign keys), and `publish.py apply` later moves it into live in one transaction.
+Nothing in this module issues a statement against a `public` table except SELECTs, and
+nothing anywhere in the datapipeline deletes a live chunk or document row (D3).
+
+Does NOT populate content_embedding (retired: vectors live only in Qdrant).
+chunks.id is the passage ID (`Passage.id`, from 2.1's registry), so it matches the
+Qdrant point ID.
 """
 from __future__ import annotations
 
@@ -12,179 +19,196 @@ import asyncpg
 import contents
 import reader_access
 from model import Document
-from registry import resolve_passage_id
+
+# The tables 2.2a's staging schema mirrors, in the order a stage clears them.
+STAGED_TABLES = ("corpus_redirects", "corpus_tombstones", "document_contents",
+                 "document_works", "document_chapters", "chunks", "documents")
+
+DOCUMENT_COLUMNS = (
+    "id", "collection", "title", "translation", "author", "year", "metadata",
+    "reader_access", "genre", "issuer", "issuer_label", "date_display", "certainty",
+    "attribution_note", "notes", "source_credit", "clavis_ref", "superseded_by",
+    "superseded_note",
+)
+CHUNK_COLUMNS = (
+    "id", "document_id", "content", "position", "reference", "anchor", "chapter_key",
+    "chapter_label", "unit_label", "metadata", "searchable", "language", "work_key",
+    "passage_author", "voice", "note", "superseded_by",
+)
+WORK_COLUMNS = ("document_id", "work_key", "ordinal", "title", "author", "certainty",
+                "attribution_note", "notes", "date_display", "year", "genre", "clavis_ref")
+CONTENTS_COLUMNS = ("document_id", "ordinal", "parent_ordinal", "depth", "node_key", "kind",
+                    "label", "short_label", "chapter_key", "anchor", "range_label")
+TOMBSTONE_COLUMNS = ("entity", "id", "document_id", "retired_at", "publish_id",
+                     "removal_key", "rule", "reason_code", "public_reason", "church_act",
+                     "snapshot")
+REDIRECT_COLUMNS = ("entity", "old_id", "old_document_id", "old_anchor", "new_id",
+                    "new_document_id", "new_anchor", "kind", "publish_id")
+
+# Columns compared between staging and live. Defaults are left out: `LIKE` copies an
+# identity column's sequence under another name.
+_SHAPE_SQL = """
+SELECT table_name, column_name, data_type, is_nullable, is_generated, ordinal_position
+FROM information_schema.columns
+WHERE table_schema = $1 AND table_name = ANY($2::text[])
+ORDER BY table_name, ordinal_position
+"""
 
 
-async def clear_collection(conn: asyncpg.Connection, collection: str) -> None:
-    """Delete a collection's chunks + documents before a clean re-ingest.
+def _json(value) -> str | None:
+    # The datapipeline's connections register no jsonb codec, so jsonb goes as text.
+    return json.dumps(value) if value is not None else None
 
-    DESTRUCTIVE BEYOND THIS COLLECTION. `retrievals`, `bookmarks`, `reading_progress`,
-    `retrieval_labels` and `guest_trial_retrievals` all reference `chunks.id` with ON
-    DELETE CASCADE, so this removes user data that the re-insert never restores — even
-    when the rebuild produces byte-identical chunk ids, which for a deterministic
-    re-ingest it usually does.
 
-    Prefer `prune_missing_chunks` after `write_document`: the upsert path keeps ids
-    stable and touches only rows the new build no longer produces.
-    """
+async def staging_exists(conn: asyncpg.Connection) -> bool:
+    for t in STAGED_TABLES:
+        if not await conn.fetchval("SELECT to_regclass($1) IS NOT NULL", f"staging.{t}"):
+            return False
+    return True
+
+
+async def staging_shape_problems(conn: asyncpg.Connection) -> list[str]:
+    """How the staging tables differ in columns from the live ones; empty when equal."""
+    def shape(rows):
+        return {(r["table_name"], r["column_name"]):
+                (r["data_type"], r["is_nullable"], r["is_generated"], r["ordinal_position"])
+                for r in rows}
+    live = shape(await conn.fetch(_SHAPE_SQL, "public", list(STAGED_TABLES)))
+    staged = shape(await conn.fetch(_SHAPE_SQL, "staging", list(STAGED_TABLES)))
+    problems = [f"staging.{t}.{c} is missing" for (t, c) in sorted(live.keys() - staged.keys())]
+    problems += [f"staging.{t}.{c} is not in live" for (t, c) in sorted(staged.keys() - live.keys())]
+    problems += [f"staging.{t}.{c} is {staged[(t, c)]}, live is {live[(t, c)]}"
+                 for (t, c) in sorted(live.keys() & staged.keys())
+                 if live[(t, c)] != staged[(t, c)]]
+    return problems
+
+
+async def ensure_staging(conn: asyncpg.Connection) -> None:
+    """Create the staging tables if absent (2.2a's function), and refuse when existing
+    ones differ in shape from live."""
+    if not await staging_exists(conn):
+        await conn.execute("SELECT public.create_corpus_staging()")
+    problems = await staging_shape_problems(conn)
+    if problems:
+        raise ValueError("REFUSING: the staging tables differ from live: "
+                         + "; ".join(problems[:10]))
+
+
+async def clear_staged_collections(conn: asyncpg.Connection, collections: list[str]) -> None:
+    """Remove the staged rows of `collections` (staging tables only) before they are
+    staged again. Tombstones are found by the collection in their snapshot, redirects by
+    the live or staged document they leave or reach."""
+    documents = "SELECT id FROM staging.documents WHERE collection = ANY($1::text[])"
+    live_documents = "SELECT id FROM public.documents WHERE collection = ANY($1::text[])"
     await conn.execute(
-        "DELETE FROM chunks WHERE document_id IN "
-        "(SELECT id FROM documents WHERE collection = $1)",
-        collection,
-    )
-    await conn.execute("DELETE FROM documents WHERE collection = $1", collection)
-
-
-async def prune_missing_chunks(conn: asyncpg.Connection, doc: Document) -> int:
-    """Delete only this document's chunks that the current build no longer produces.
-
-    The non-destructive counterpart to `clear_collection`. Everything the rebuild still
-    emits keeps its id — and therefore its bookmarks, retrievals and reading progress —
-    because `write_document` upserts on `chunks.id`. Only genuinely orphaned rows are
-    removed, and those cascade because the passage they point at no longer exists.
-
-    Returns the number of rows deleted, so a caller can refuse to proceed when a build
-    unexpectedly drops a large share of a document.
-    """
-    keep = [resolve_passage_id(doc.id, p.anchor) for p in doc.passages]
-    deleted = await conn.fetchval(
-        """
-        WITH deleted AS (
-            DELETE FROM chunks
-            WHERE document_id = $1::uuid AND NOT (id = ANY($2::uuid[]))
-            RETURNING 1
-        )
-        SELECT count(*) FROM deleted
-        """,
-        doc.id, keep,
-    )
-    return int(deleted or 0)
-
-
-async def prune_missing_documents(conn: asyncpg.Connection, collection: str,
-                                  keep_ids: set[str]) -> int:
-    """Delete documents absent from a complete collection build.
-
-    Per-document chunk pruning cannot see a document the builder stopped returning.
-    Leaving it behind makes Postgres disagree with both the build and the collection-wide
-    Qdrant prune. The caller must use this only after a complete, non-limited build.
-    """
-    deleted = await conn.fetchval(
-        """
-        WITH deleted AS (
-            DELETE FROM documents
-            WHERE collection = $1 AND NOT (id = ANY($2::uuid[]))
-            RETURNING 1
-        )
-        SELECT count(*) FROM deleted
-        """,
-        collection, list(keep_ids),
-    )
-    return int(deleted or 0)
-
-
-async def write_document(conn: asyncpg.Connection, doc: Document,
-                         prune: bool = True) -> int:
-    """Atomically reconcile one document and return the stale chunk count.
-
-    Existing positions are staged below zero before the upserts. Without that step, a
-    newly split chunk can claim a position still occupied by the old identity and trip
-    ``UNIQUE(document_id, position)`` before the stale row is pruned.
-
-    The document's reader outline (chapter list and chunk_count, migration 0037) is
-    rebuilt last, in the same transaction, so the API never reads an outline that
-    disagrees with the chunks it describes. Its contents tree (migration 0040), when
-    it has one, is replaced in the same transaction too.
-
-    `reader_access` (migration 0041) is set from the rights inventory on every write,
-    so a republish cannot reopen a text whose rights are not cleared (issue #265).
-    """
-    contents.check(doc)  # before the transaction: a broken tree writes nothing
-    async with conn.transaction():
+        f"""DELETE FROM staging.corpus_redirects
+            WHERE old_document_id IN ({live_documents}) OR old_document_id IN ({documents})
+               OR new_document_id IN ({documents})""", collections)
+    await conn.execute(
+        "DELETE FROM staging.corpus_tombstones WHERE snapshot->>'collection' = ANY($1::text[])",
+        collections)
+    for table in ("document_contents", "document_works", "document_chapters", "chunks"):
         await conn.execute(
-            """
-            INSERT INTO documents
-              (id, collection, title, translation, author, year, metadata, reader_access)
-            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7::jsonb, $8)
-            ON CONFLICT (id) DO UPDATE SET
-                title=EXCLUDED.title, translation=EXCLUDED.translation,
-                author=EXCLUDED.author, year=EXCLUDED.year, metadata=EXCLUDED.metadata,
-                reader_access=EXCLUDED.reader_access
-            """,
-            doc.id, doc.collection, doc.title, doc.translation or "",
-            doc.author, doc.year, json.dumps(doc.metadata) if doc.metadata else None,
-            reader_access.access_for_document(doc),
-        )
-        await conn.execute(
-            "UPDATE chunks SET position = -position - 1 WHERE document_id = $1::uuid",
-            doc.id,
-        )
-        pruned = await prune_missing_chunks(conn, doc) if prune else 0
-        for p in doc.passages:
-            pid = resolve_passage_id(doc.id, p.anchor)
-            await conn.execute(
-                """
-                INSERT INTO chunks
-                  (id, document_id, content, position, reference,
-                   anchor, chapter_key, chapter_label, unit_label, metadata)
-                VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7,$8,$9,$10::jsonb)
-                ON CONFLICT (id) DO UPDATE SET
-                   content=EXCLUDED.content, position=EXCLUDED.position,
-                   reference=EXCLUDED.reference, anchor=EXCLUDED.anchor,
-                   chapter_key=EXCLUDED.chapter_key, chapter_label=EXCLUDED.chapter_label,
-                   unit_label=EXCLUDED.unit_label, metadata=EXCLUDED.metadata
-                """,
-                pid, doc.id, p.content, p.position, p.reference,
-                p.anchor, p.chapter_key, p.chapter_label, p.unit_label,
-                json.dumps(p.metadata) if p.metadata else None,
-            )
-        await conn.execute("SELECT refresh_document_outline($1::uuid)", doc.id)
-        await write_contents(conn, doc)
-        return pruned
+            f"DELETE FROM staging.{table} WHERE document_id IN ({documents})", collections)
+    await conn.execute("DELETE FROM staging.documents WHERE collection = ANY($1::text[])",
+                       collections)
 
 
-async def contents_table_exists(conn: asyncpg.Connection) -> bool:
-    """Whether the database has migration 0040's document_contents table."""
-    return bool(await conn.fetchval(
-        "SELECT to_regclass('public.document_contents') IS NOT NULL"))
+def document_row(doc: Document) -> tuple:
+    return (doc.id, doc.collection, doc.title, doc.translation or "", doc.author, doc.year,
+            _json(doc.metadata or None), reader_access.access_for_document(doc), doc.genre,
+            doc.issuer, doc.issuer_label, doc.date_display, doc.certainty,
+            doc.attribution_note, doc.notes, doc.source_credit, doc.clavis_ref,
+            doc.superseded_by, doc.superseded_note)
 
 
-async def write_contents(conn: asyncpg.Connection, doc: Document) -> None:
-    """Replace the document's contents tree rows (migration 0040) with `doc.contents`.
+def chunk_rows(doc: Document) -> list[tuple]:
+    by_anchor = {p.anchor: p.id for p in doc.passages}
+    rows = []
+    for p in doc.passages:
+        if p.id is None:
+            raise ValueError(f"{doc.title}: passage {p.anchor} has no ID; the stage assigns them")
+        rows.append((p.id, doc.id, p.content, p.position, p.reference, p.anchor,
+                     p.chapter_key, p.chapter_label, p.unit_label, _json(p.metadata or None),
+                     p.searchable, p.language, p.work_key, p.passage_author, p.voice, p.note,
+                     by_anchor.get(p.superseded_by_anchor) if p.superseded_by_anchor else None))
+    return rows
 
-    Always deletes first, so a document whose adapter stops emitting a tree loses the
-    old one. On a database without 0040 a document with no tree writes nothing, and one
-    with a tree is refused, so a tree is never silently dropped (the publication runner
-    checks this before its first write; this is the backstop). Call inside the
-    transaction that writes the document's chunks.
-    """
-    if not await contents_table_exists(conn):
-        if doc.contents is not None:
-            raise RuntimeError(
-                f"document {doc.id} has a contents tree, but the database has no "
-                "document_contents table; apply migration 0040 first")
-        return
-    await conn.execute("DELETE FROM document_contents WHERE document_id = $1::uuid", doc.id)
+
+def work_rows(doc: Document) -> list[tuple]:
+    return [(doc.id, w.work_key, w.ordinal, w.title, w.author, w.certainty,
+             w.attribution_note, w.notes, w.date_display, w.year, w.genre, w.clavis_ref)
+            for w in doc.works]
+
+
+def contents_rows(doc: Document) -> list[tuple]:
     if doc.contents is None:
-        return
-    # Pre-order, so each parent row exists before the rows that reference it.
-    await conn.executemany(
+        return []
+    return [(doc.id, r.ordinal, r.parent_ordinal, r.depth, r.node_key, r.kind, r.label,
+             r.short_label, r.chapter_key, r.anchor, r.range_label)
+            for r in contents.flatten(doc.contents)]
+
+
+def _insert_sql(table: str, columns: tuple[str, ...], casts: dict[str, str]) -> str:
+    values = ", ".join(f"${i}{casts.get(c, '')}" for i, c in enumerate(columns, 1))
+    return f"INSERT INTO staging.{table} ({', '.join(columns)}) VALUES ({values})"
+
+
+_UUID = "::uuid"
+_JSONB = "::jsonb"
+_DOCUMENT_SQL = _insert_sql("documents", DOCUMENT_COLUMNS,
+                            {"id": _UUID, "metadata": _JSONB, "superseded_by": _UUID})
+_CHUNK_SQL = _insert_sql("chunks", CHUNK_COLUMNS, {"id": _UUID, "document_id": _UUID,
+                                                   "metadata": _JSONB, "superseded_by": _UUID})
+_WORK_SQL = _insert_sql("document_works", WORK_COLUMNS, {"document_id": _UUID})
+_CONTENTS_SQL = _insert_sql("document_contents", CONTENTS_COLUMNS, {"document_id": _UUID})
+_TOMBSTONE_SQL = _insert_sql("corpus_tombstones", TOMBSTONE_COLUMNS,
+                             {"id": _UUID, "document_id": _UUID, "snapshot": _JSONB})
+_REDIRECT_SQL = _insert_sql("corpus_redirects", REDIRECT_COLUMNS,
+                            {"old_id": _UUID, "old_document_id": _UUID, "new_id": _UUID,
+                             "new_document_id": _UUID})
+
+
+async def write_staged_document(conn: asyncpg.Connection, doc: Document) -> None:
+    """Insert one built document into staging: its row (with `reader_access` from the
+    rights inventory, D12), works, passages and contents tree, then its staged reader
+    outline. Call inside the stage's transaction, after `clear_staged_collections`.
+    Every passage must carry its `Passage.id`."""
+    contents.check(doc)  # a broken tree writes nothing
+    await conn.execute(_DOCUMENT_SQL, *document_row(doc))
+    if doc.works:
+        await conn.executemany(_WORK_SQL, work_rows(doc))
+    rows = chunk_rows(doc)
+    if rows:
+        await conn.executemany(_CHUNK_SQL, rows)
+    tree = contents_rows(doc)
+    if tree:
+        # Pre-order, so each parent row exists before the rows that reference it.
+        await conn.executemany(_CONTENTS_SQL, tree)
+    await conn.execute("SELECT staging.refresh_document_outline($1::uuid)", doc.id)
+
+
+async def copy_live_annotations(conn: asyncpg.Connection, collections: list[str]) -> None:
+    """Give each staged passage the live row's annotation, by ID. No publish writes
+    annotations (stages/enrich_io.py does) and the apply leaves them as they are, so
+    this makes staging read the way live will after the apply, for the eval (4.2)."""
+    await conn.execute(
         """
-        INSERT INTO document_contents
-          (document_id, ordinal, parent_ordinal, depth, node_key, kind, label,
-           short_label, chapter_key, anchor, range_label)
-        VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-        """,
-        [(doc.id, r.ordinal, r.parent_ordinal, r.depth, r.node_key, r.kind, r.label,
-          r.short_label, r.chapter_key, r.anchor, r.range_label)
-         for r in contents.flatten(doc.contents)],
-    )
+        UPDATE staging.chunks s
+        SET annotation = c.annotation, annotation_vector = c.annotation_vector
+        FROM public.chunks c, staging.documents d
+        WHERE c.id = s.id AND d.id = s.document_id AND d.collection = ANY($1::text[])
+          AND (c.annotation IS NOT NULL OR c.annotation_vector IS NOT NULL)
+        """, collections)
 
 
-async def reader_access_column_exists(conn: asyncpg.Connection) -> bool:
-    """Whether the database has migration 0041's documents.reader_access column."""
-    return bool(await conn.fetchval(
-        """SELECT EXISTS (SELECT 1 FROM information_schema.columns
-                          WHERE table_schema = 'public' AND table_name = 'documents'
-                            AND column_name = 'reader_access')"""
-    ))
+async def write_staged_retirements(conn: asyncpg.Connection, tombstones: list[dict],
+                                   redirects: list[dict]) -> None:
+    """Insert the stage's tombstone and redirect rows into staging."""
+    if tombstones:
+        await conn.executemany(_TOMBSTONE_SQL, [
+            tuple(_json(t[c]) if c == "snapshot" else t[c] for c in TOMBSTONE_COLUMNS)
+            for t in tombstones])
+    if redirects:
+        await conn.executemany(_REDIRECT_SQL, [
+            tuple(r[c] for c in REDIRECT_COLUMNS) for r in redirects])

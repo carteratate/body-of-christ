@@ -29,16 +29,15 @@ from identity import passage_id
 from registry import resolve_passage_id
 from model import Document, Passage
 from qdrant_schema import FACETS, QUESTIONS
-from writers.search_writer import build_embedding_input, build_point
+from writers.search_writer import build_embedding_input, build_point, embedding_prefix
 
 logger = logging.getLogger(__name__)
 
 
 def content_embedding_input(passages: list[Passage], idx: int, doc: Document) -> str:
     k_prev, k_next = settings.overlap_for(doc.collection)
-    author_part = f"{doc.author} — " if doc.author else ""
-    prefix = f"{author_part}{doc.title}, {passages[idx].chapter_label}"
-    return build_embedding_input(passages, idx, k_prev, k_next, prefix)
+    return build_embedding_input(passages, idx, k_prev, k_next,
+                                 embedding_prefix(doc, passages[idx]))
 
 
 @dataclass
@@ -120,14 +119,14 @@ async def embed_collection(docs: list[Document], cache: Cache, embed_client, qdr
     """
     from qdrant_client.models import FieldCondition, Filter, MatchValue
 
-    from writers.qdrant import upsert_points
+    from writers.qdrant import QDRANT_COLLECTION, upsert_points
 
     chunk_batch: list[PointStruct] = []
 
     async def _stash_chunk(pt: PointStruct) -> None:
         chunk_batch.append(pt)
         if len(chunk_batch) >= settings.EMBEDDING_BATCH_SIZE:
-            await upsert_points(qdrant, chunk_batch)
+            await upsert_points(qdrant, QDRANT_COLLECTION, chunk_batch)
             chunk_batch.clear()
 
     async def _upsert_named(collection: str, points: list[PointStruct]) -> None:
@@ -156,4 +155,4 @@ async def embed_collection(docs: list[Document], cache: Cache, embed_client, qdr
             await embed_chunk(doc, doc.passages, idx, enr["facets"], deps)
 
     if chunk_batch:
-        await upsert_points(qdrant, chunk_batch)
+        await upsert_points(qdrant, QDRANT_COLLECTION, chunk_batch)

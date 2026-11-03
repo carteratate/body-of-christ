@@ -47,26 +47,23 @@ Approved downloads that no PR has ingested yet wait in `sources/_incoming/<path>
 ## Publishing a collection
 
 Each entry in `publication.py`'s `SOURCE_ADAPTERS` registry returns a `list[Document]`
-of clean `Passage`s with anchors, chapter keys, and source-specific cleaning. To
-publish one:
+of clean `Passage`s with anchors, chapter keys, and source-specific cleaning. To check
+one without writing anything:
 
 ```bash
-python3 run_collection.py --collection <name> --target both
+python3 run_collection.py --collection <name> --dry-run
 ```
 
-The normal command upserts before pruning in both stores. It does not empty either
-store first. `--reset-search-index` explicitly deletes the collection's old Qdrant
-points before writing rebuilt Passages to the search index. `--wipe-reader` is the
-destructive Postgres rebuild option and requires
-`--confirm-reader-wipe <collection>` with an exact collection-name match. Routine
-publication preserves stable Passage IDs, so bookmarks and search history survive when
-the source adapter still emits those Passages.
+To publish, use `publish.py` (item 2.2w): `stage` builds the collection into the
+`staging` schema and a new Qdrant collection, `report` compares it with live, and the
+apply moves it into live in one transaction that never deletes a row. Passage IDs come
+from the passage registry, so bookmarks and search history keep their passages; a
+removed passage is retired with a tombstone, never deleted. See README.md, "Publish one
+collection".
 
-The publish lock (`PUBLISH_LOCK.json`, item 0.4) refuses every live write unless a
-reviewed PR has listed the collection and release; pass `--release <release>` with
-the run. `--dry-run` builds and checks a collection without writing and needs no
-entry. Local rehearsals, with both the database and Qdrant on this machine, are
-exempt. See README.md, "Publish one collection".
+The publish lock (`PUBLISH_LOCK.json`, item 0.4) refuses every live step unless a
+reviewed PR has listed the collection, release and step; pass `--release <release>`.
+Local rehearsals, with both the database and Qdrant on this machine, are exempt.
 
 Vendored adapters read the local files under `sources/<collection>/`, not the network.
 Re-acquire the raw sources with

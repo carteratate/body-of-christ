@@ -25,6 +25,10 @@ class Passage:
     passage_author: str | None = None
     voice: str | None = None        # None, or "rejected": a position the document rejects
     superseded_by_anchor: str | None = None   # a history passage names its current one
+    note: str | None = None         # a reader note; a passage-registry row may set it
+    # The passage ID (D1). Filled at stage time from 2.1's passage registry
+    # (registry.assign_ids); the writers use it and never recompute it.
+    id: str | None = None
     # Build-time only, never written: for a split piece, the source units whose text starts
     # in it, in order, each as (locator, offset in content); one opening inside a unit
     # lists that unit first at offset 0. Empty for a whole unit, which holds them all.
@@ -78,3 +82,16 @@ class Document:
     passages: list[Passage] = field(default_factory=list)
     contents: list[ContentsNode] | None = None   # tree roots; None = no contents tree
     works: list[Work] = field(default_factory=list)
+    # Document facts (2.2a's documents columns). 2.3 fills them from the registry; the
+    # stage writes whatever is set. superseded_by is the current document's ID (D11).
+    genre: str | None = None         # one of registry.genres.ALL_GENRES
+    issuer: str | None = None        # slug for filters, e.g. "pope-leo-xiii"
+    issuer_label: str | None = None  # display, e.g. "Pope Leo XIII"
+    date_display: str | None = None
+    certainty: str | None = None
+    attribution_note: str | None = None
+    notes: str | None = None
+    source_credit: str | None = None
+    clavis_ref: str | None = None
+    superseded_by: str | None = None
+    superseded_note: str | None = None

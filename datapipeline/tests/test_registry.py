@@ -236,7 +236,7 @@ def test_registry_override_wins_over_adapter_fields():
     p = got.passages[0]
     assert (p.searchable, p.language, p.passage_author, p.unit_label) == \
         (False, "la", "Chrysostom", "Condemned proposition 10")
-    assert p.metadata["note"] == "A reader note."
+    assert p.note == "A reader note."
 
 
 def test_voice_values_validate():

@@ -70,31 +70,50 @@ import `config`, but any values will do: nothing connects. The loopback exemptio
 trusts the hostname, so a `localhost` URL that is an SSH tunnel or port forward to
 Supabase or Qdrant counts as a rehearsal. Don't point a local URL at production.
 
-Routine publication safely upserts Documents and Passages before pruning stale records
-from each selected store:
+**Publishing goes through `publish.py`** (item 2.2w, plan D2). A publish never writes
+straight into the live tables:
 
 ```bash
-python run_collection.py --collection bible --target both
+python3 publish.py stage   --collection bible --release 2026-12-bible   # or --collection all
+python3 publish.py report  --release 2026-12-bible
+python3 publish.py status  [--release 2026-12-bible]
+python3 publish.py discard --release 2026-12-bible     # abandon a publish never applied
 ```
 
-Use `--target reader` or `--target search` when repairing only one store. A limited
-publication is useful for local validation and disables collection-wide pruning:
+- `stage` builds the collections and writes them into the `staging` schema (migrations
+  0042 and 0043; the live tables' shape, no foreign keys) and a new Qdrant collection
+  `chunks-<release>` that no alias points at. Users read neither. It needs a lock entry
+  with step `stage`, and the Qdrant alias `chunks_live` must exist: the stage copies the
+  collections it does not build, and unchanged vectors, from the alias's target. Passage
+  IDs come from the passage registry (D1); a stage stops on any live ID it drops that no
+  open removal entry or redirect in `registry/` explains (D4), and turns each explained one
+  into a staged tombstone or redirect. Vectors come from the embedding cache
+  (`cache.db`), then from the live point with the same `embed_sha256`, then OpenAI, and a
+  new vector goes into the cache before its point is written, so restaging an unchanged
+  build costs nothing.
+- `report` runs the release report (below) on the staged corpus against a fresh
+  read-only export of live, adds the publish checks (every live ID kept or explained,
+  points and payload facts equal to staging, embedding input hashes, dedup collision
+  rates, the document-facts diff, user impact, staging size), and records its hash for
+  the apply. It writes to `releases/local/publish-<release>-<time>/`.
+- `discard` drops the staging tables of a publish that was never applied. Deleting its
+  Qdrant collection is a separate ops step.
 
-```bash
-python run_collection.py --collection catechism --target reader --limit 1
-```
+`apply` (one transaction that updates, inserts and retires, never deletes), `switch`
+(the alias), `rollback` and `cleanup` arrive with 2.2w's second part. Until then nothing
+in the datapipeline writes the live corpus: `run_collection.py` only dry-runs, and no
+code path left in the datapipeline deletes a live chunk or document row.
 
-The runner refuses suspicious build collapse and identity churn before writes. A
-routine publication retains stable Passage identities, preserving bookmarks and search
-history for Passages the adapter still emits.
+The release name is the publish ID: `corpus_publishes.id`, the lock entry's `release`,
+and the suffix of `chunks-<release>`. Use 3 to 63 lowercase letters, digits and hyphens.
 
 The document checks include the health block rules in `health.py` (item 0.1b): blank
 text, page-number or punctuation debris, positions that are not `0..n-1`, duplicate
 anchors, and an empty anchor, chapter key or chapter label. Any of them refuses the
 build, dry run included, before a store is opened, unless that exact passage is listed
 in `checks/known_defects.json` with the PR that fixes it. `pipeline.py` applies the
-same rules to every collection it parses before a `reader`, `embed` or full `enrich`
-stage runs, dry run included. `python3 -m checks.health --collection <name>` reports
+same rules to every collection it parses before an `embed` or full `enrich` stage
+runs, dry run included. `python3 -m checks.health --collection <name>` reports
 the block rules and the softer report rules (short fragments, footer and note leakage,
 duplicated text, joined paragraphs, non-English text); their patterns are in
 `health_patterns.json`.
@@ -119,39 +138,17 @@ elsewhere a new ID with a redirect. A piece that keeps its opening words but sco
 the stability threshold is listed as a problem until a person checks it and reruns with
 `--kept-reason`, which records it in `registry/kept_text.json`.
 
-Writing a Document to the reader store also rebuilds its **reader outline** (chapter
-list and passage count, `supabase/migrations/0037_document_outline.sql`) in the same
-transaction, so the target database must have migration 0037 applied before publishing.
+A stage also builds each staged document's **reader outline** (chapter list and passage
+count, `supabase/migrations/0037_document_outline.sql`) in staging with
+`staging.refresh_document_outline`, so the pre-cutover eval reads staging as it will read
+live.
 
 A Document can also carry a **contents tree** (`Document.contents`, the hierarchy of its
 headings; `contents.py`, issue #250). The build refuses a tree that opens a chapter the
 document lacks, names an anchor outside its chapter, repeats a key or meets chapters out
 of reading order, and a dry run prints each tree's node count and any chapter no node
-opens. The writer replaces the tree in the same transaction as the chunks. Publishing a
-tree needs migration 0040 (`document_contents`); without it the writer refuses that
-document rather than drop its tree.
-
-### Reset the search index
-
-Routine search publication is incremental. Use the explicit reset only when replacing
-the selected collection's Qdrant points is intentional:
-
-```bash
-python run_collection.py --collection bible --target search --reset-search-index
-```
-
-### Wipe the reader store
-
-A reader wipe deletes the collection's reader-store records and can cascade into
-user-owned data. It requires the collection name twice, with an exact match:
-
-```bash
-python run_collection.py \
-  --collection bible \
-  --target reader \
-  --wipe-reader \
-  --confirm-reader-wipe bible
-```
+opens. The stage writes the tree into `staging.document_contents` with the passages, and
+a document whose adapter stops emitting a tree loses its staged rows.
 
 ## Narrow repair commands
 
@@ -167,9 +164,9 @@ python scripts/reconcile_qdrant_payloads.py --collection bible
 
 Their `--apply` mode is a live write, so it needs a publish-lock entry with step
 `repair` for the collection (or `all`) and `--release <the entry's release>`. The same
-applies to the V5 `pipeline.py` stages that write live data (`reader`, `embed`,
-`bm25-index`, and `enrich` without `--sample`). Dry runs, `--status` and sample runs
-need no entry.
+applies to the V5 `pipeline.py` stages that write live data (`embed`, `bm25-index`, and
+`enrich` without `--sample`). Dry runs, `--status` and sample runs need no entry. The V5
+`reader` stage is retired: it cleared and rewrote a live collection, which D2 forbids.
 
 These repair tools use the same canonical source-adapter registry as collection
 publication. They do not make the retired Postgres `content_embedding` column active;
@@ -184,8 +181,9 @@ edited by hand: `full` for a `pd-*` status, `permission` or `licence`; `excerpt`
 document keeps its passages in search; the API refuses its reader and contents with 403
 `reader_restricted`, and the frontend links to its official source instead.
 
-Every reader publish sets the column (and refuses to run before 0041 is applied). To
-apply an inventory change without republishing, which is how a document is unblocked:
+Every stage sets the column from the inventory in `staging.documents`, so a republish can
+never reopen an uncleared text (D12). To apply an inventory change without republishing,
+which is how a document is unblocked:
 
 ```bash
 python3 reader_access.py           # dry run: lists every document that would change
