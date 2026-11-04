@@ -593,6 +593,32 @@ async def test_rollback_retry_refuses_after_a_later_rollback(world):
     assert alias.collection_name == "chunks"
 
 
+async def test_rollback_retry_after_a_failed_restore_under_an_older_rollback(world, monkeypatch):
+    """Apply A, apply B, roll back B, then roll back A with a failing alias restore: B was
+    undone before A's rollback, so retrying A finishes the alias."""
+    await _stage(world)
+    await _apply(world)
+    await _switch(world)
+    await _cleanup(world)
+    later = StageRequest(release="test-later", collections=("medieval",))
+    await _stage(world, later)
+    await _apply(world, "test-later")
+    await _switch(world, "test-later")
+    await _rollback(world, "test-later")
+    await _cleanup(world, "test-later")
+    real = A.point_alias
+
+    async def broken(*args):
+        raise RuntimeError("Qdrant unavailable")
+    monkeypatch.setattr(A, "point_alias", broken)
+    with pytest.raises(RuntimeError, match="Qdrant unavailable"):
+        await _rollback(world)
+    monkeypatch.setattr(A, "point_alias", real)
+    assert (await _rollback(world)).alias == "chunks"
+    [alias] = (await world.qdrant.get_aliases()).aliases
+    assert alias.collection_name == "chunks"
+
+
 async def test_rollback_keeps_its_rolled_back_tombstones(world):
     _retire_a4(world)
     _renumber_a2(world)

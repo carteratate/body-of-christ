@@ -575,7 +575,18 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
                    remap: UserDataRemap | None = None,
                    root: str = SNAPSHOT_ROOT) -> RollbackResult:
     """Undo an applied publish from its before-snapshot (D11): one transaction, then the
-    alias back (or, for a retire-only publish, the flipped points searchable again)."""
+    alias back (or, for a retire-only publish, the flipped points searchable again). The
+    publish lock is held from the first read to the alias restore, so no cleanup or other
+    rollback can run between the commit and the alias."""
+    await conn.execute("SELECT pg_advisory_lock(hashtext($1))", PUBLISH_LOCK_KEY)
+    try:
+        return await _rollback(conn, qdrant, release, alias=alias, remap=remap, root=root)
+    finally:
+        await conn.execute("SELECT pg_advisory_unlock(hashtext($1))", PUBLISH_LOCK_KEY)
+
+
+async def _rollback(conn, qdrant, release: str, *, alias: str,
+                    remap: UserDataRemap | None, root: str) -> RollbackResult:
     row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
     if row is None or row["applied_at"] is None:
         raise ApplyRefused(f"REFUSING: publish '{release}' is not applied")
@@ -590,8 +601,8 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
             # cannot overwrite a newer state; inside the lock, so none can start meanwhile.
             moved_on = await conn.fetchval(
                 """SELECT id FROM corpus_publishes WHERE id <> $1
-                   AND (applied_at > $2 OR rolled_back_at > $3) LIMIT 1""",
-                release, row["applied_at"], row["rolled_back_at"])
+                   AND (applied_at > $2 OR rolled_back_at > $2) LIMIT 1""",
+                release, row["rolled_back_at"])
             if moved_on is not None:
                 raise ApplyRefused(f"REFUSING: publish '{moved_on}' changed live after "
                                    f"'{release}' was rolled back; nothing to finish")
