@@ -24,7 +24,7 @@ Merge order follows the plan's "Phase and PR plan" table.
 12. **3.1** Removals recorded by anchor in the removal registry (D4). Blocked by R1. Applied at 4.1b through 2.2w.
 13. **3.4** Rejected-voice ranges in the passage registry (C-01). Takes effect at the Phase 4 apply.
 
-Every PR here deploys against today's schema and data. No item deletes a row. User rows that point at removed passages keep working because removed passages are retired, not deleted (D3). Nothing in P2 or P3 changes live corpus data before the Phase 4 apply (D7). The one exception Carter may approve is the early retirement of On the Incarnation's 47 passages (1.8d), specified at the end of 2.2w.
+Every PR here deploys against today's schema and data. No item deletes a row. User rows that point at removed passages keep working because removed passages are retired, not deleted (D3). Nothing in P2 or P3 changes live corpus data before the Phase 4 apply (D7). The one exception D7 allows, the early retirement of On the Incarnation's 47 passages (1.8d, specified at the end of 2.2w), was not taken up (Carter, 4 Nov 2026).
 
 ---
 
@@ -415,7 +415,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
        - Anchor redirects (`entity = 'anchor'`, kind `moved` unless a passage redirect says otherwise): one for every passage-registry row in the staged collections whose current `anchor`, or document, differs from its `live_anchor` and live document. A row whose status is `redirected` points its anchor redirect at its open passage redirect's `new_anchor`, never at its own `anchor`: that is a piece name the build no longer emits, or, for a piece whose text moved (Decision log "A piece whose text moved keeps no ID", 1.10b), `<anchor>#moved-<item>`, which no passage carries. That is about 37,000 rows at P4, because 2.1 rebuilt ThML and Summa anchors, and a few MB of table.
        - Chapter redirects (`entity = 'chapter'`, kind `moved`): one for every row of 0.1c's `chapter_remap.jsonl` whose `document_id` or `chapter_key` changed.
 
-       A live passage that the build emits under another document ID (a passage moved between documents, as in 1.8b's split if Carter approves it) is not a retirement: it keeps its ID and moves at the apply (below).
+       A live passage that the build emits under another document ID (a passage moved between documents, as in 1.8b's split) is not a retirement: it keeps its ID and moves at the apply (below).
        Tombstone rows from registry entries (D11). Only `document` and `passage` entries produce a row; `span` and `class` entries are audit records and produce none. For each retired ID:
        - `removal_key` is the entry's `id`, and `reason_code` is its `reason`, from 2.1's list.
        - `public_reason` is its `tombstone` sentence, unchanged.
@@ -535,7 +535,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - For each production stage and apply, a reviewed change to `PUBLISH_LOCK.json` adding an entry for the collection and release, and a second one removing it after the rollback window. The first is P4's 4.1b.
   - The first production stage waits for 4.0 (storage and the `VACUUM FULL` window). Approve the embedding spend, about 11 million tokens (about $1.40) at the first full local rehearsal stage, which fills the cache, then between 0 and that amount at the production stage, depending on how much changed in between.
   - The rollback window length (4.1b).
-  - Whether to do the On the Incarnation early retirement below.
+  - Answered 4 Nov 2026: the On the Incarnation early retirement below is not taken up (1.8d).
   - Found by 2.2a (2 Nov 2026): whether the writer stages, snapshots, applies and rolls back the contents tree (`staging.document_contents`) with the chunks. Decided by Carter on 2 Nov 2026: yes (stage step 4, the snapshot, apply step 1 and rollback step 2 above).
   - Found by 2.2w (2 Nov 2026): whether the apply and rollback derive `reader_access` again for every document they touch. Decided by Carter on 2 Nov 2026: yes, and the apply refuses on a difference from the staged value (stage step 4, apply step 1, rollback step 2 above).
   - Found by 2.2w (2 Nov 2026): what the stage does while 2.2b has not yet created the alias. Decided by Carter on 2 Nov 2026: it refuses (stage step 6).
@@ -554,7 +554,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 
 #### Optional ops step: early retirement of On the Incarnation (D7 exception, 1.8d)
 
-- **What:** D7 allows one change to live data before Phase 4, if Carter approves it. Lawson's 1944 translation of On the Incarnation is under copyright (1.8d), so its 47 passages and its document (`cf235300-e37d-5a7a-a421-f50efff38355`) may be retired early. They are retired, not deleted (D3). This is the one procedure for it (D11); 1.8d points here.
+- **What:** D7 allows one change to live data before Phase 4, if Carter approves it. He decided on 4 Nov 2026 not to take it up, so this procedure stays only in case he reopens it. Lawson's 1944 translation of On the Incarnation is under copyright (1.8d), so its 47 passages and its document (`cf235300-e37d-5a7a-a421-f50efff38355`) may be retired early. They are retired, not deleted (D3). This is the one procedure for it (D11); 1.8d points here.
 - **How:**
   1. A PR adds a `document`-scope removal-registry entry for `cf235300…` with reason `translation-in-preparation` (rule `other`, derived) and the tombstone "This translation is being replaced with a public-domain one; the text returns when it is ready." The same PR adds a lock entry `{"collection": "church-fathers", "release": "incarnation-withdraw", "steps": ["apply", "rollback"], ...}`.
   2. `publish.py apply --retire-only --collection church-fathers --release incarnation-withdraw`, which stages nothing new and creates no Qdrant collection. Its `corpus_publishes` row sets both `qdrant_collection` and `previous_qdrant_collection` to the collection `chunks_live` targets. It takes the before-snapshot as any apply does. In one transaction it retires the document and its 47 passages, writes their tombstones from the registry entry (as in stage step 5) and refreshes the outline. It then sets `searchable = false` on the 47 points in that collection, so each stays a point (D5), records their point IDs in the before-snapshot folder (`flipped_points.json`), and switches no alias.

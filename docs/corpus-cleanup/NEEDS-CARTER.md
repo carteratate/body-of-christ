@@ -74,6 +74,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **2.2w and 4.1a** [Phase 2, repeated in Phase 4]. Approve the pg_dump for the full local rehearsal of the new publish process. The 2.2a timing rehearsal can share this dump if the two run close together.
 - **2.2w** [Phase 2 to 4]. Approve the embedding spend for the first full local rehearsal stage (2.2w's or 4.1a's, whichever runs first), about 11 million tokens, about $1.40 at today's list price (to be checked before the run). It fills a local cache, so later rehearsals and the production run cost between $0 and the same amount, depending on how much the build changed in between.
 - **1.8d and 2.2w, only if B-1.8d below is yes** [Phase 2]. Approve the lock-file PR, the one live step that retires On the Incarnation early, the API restart, and the later PR that removes the lock entry.
+  Answered 2026-11-04: not needed: Carter left On the Incarnation until the Phase 4 apply (1.8d).
 
 ### Phase 4
 
@@ -179,6 +180,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 1
 
 - **1.1** [Phase 1]. Keep the "Preliminary Note of Explanation" as part of Lumen Gentium. Recommended answer is yes, as its own chapter.
+  Answered 2026-11-04: yes, as its own chapter.
 - **1.2a** [Phase 1]. Approve the register of council texts that have no public-domain English translation. Those texts show a "translation in preparation" notice instead. Chiefly Florence's doctrinal decrees are affected. The register is the last section of `docs/research/council-translation-inventory.md` (G1 to G10): besides Florence, most of Constance and Lateran V, Constantinople IV's Definition, Lyons I's deposition bull, Vienne's Templar bulls, Vatican I's session 1 (session 2's profession is partial and has its own 1.2d entry), Nestorius's second letter at Ephesus and Nicaea II's four anathemas.
   Answered 2026-11-04: approved, with Vatican I's session 2 added as G11. The text stays available to us but is not retrievable: retired rows are never hard-deleted and the vendored Tanner files stay for good.
   Answered 2026-11-04: gap notices say "This text is not available on TheoCorpus at present.", not "translation in preparation", and link to the council's page at papalencyclicals.net, as ADR 0001 does for papal documents.
@@ -193,9 +195,13 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **1.2e and 5.5** [Phase 1]. Fordham's transcriptions of Schroeder's Lateran I, II and IV and of the 1923 Roman Catechism carry a notice that their electronic form is copyright and not licensed for commercial use. Use them as the text, or only to check our own OCR of the scans. Recommended answer: only to check the OCR, as with ecatholic2000 (R6).
   Answered 2026-10-05: use Fordham's transcriptions only to check the OCR of the Schroeder and 1923 Catechism scans, as with ecatholic2000.
 - **1.3b** [Phase 1]. Confirm which three documents are the "Jubilee bulls" filed as encyclicals. Also decide whether Ineffabilis Deus and Munificentissimus Deus are labeled "apostolic constitution" or "bull". The spec gives no recommendation.
+  Answered 2026-11-04: the three are Peregrinantes (1749), Salutis Nostrae (1774) and Quod Hoc Ineunte (1824), all `bull`. Ineffabilis Deus is `bull`, Munificentissimus Deus is `apostolic-constitution`, and Apostolica Constitutio stays `encyclical`.
 - **1.4a** [Phase 1]. Keep `song-of-solomon` inside link addresses while the book's title changes to "Song of Songs". Users never see the address. Recommended answer is keep.
+  Answered 2026-11-04: keep. The address can appear in a reader link's URL, which does no harm.
 - **1.4b** [Phase 1]. Renumber only Joel and Malachi to the Church's official Latin Bible numbering, or every place where Church documents cite a different chapter. Recommended answer is Joel and Malachi now, the rest as a later issue.
+  Answered 2026-11-04: Joel and Malachi now, the rest as a later issue.
 - **1.4c** [Phase 1]. Give the deuterocanonical books' new shorter passages titles from the old Douay-Rheims chapter summaries, or leave them untitled. Recommended answer is untitled for now.
+  Answered 2026-11-04: no titles. A passage is labelled by its verse range, in the form "Sirach 3:1–16".
 - **1.10a** [Phase 1]. 1.10a changes the title or author of 65 Church Fathers documents ("Methodius." to "Methodius", "Irenæus" to "Irenaeus", "Fragments." to "Fragments of Methodius"). The rights inventory found documents by their title and author, so it could match either the live documents (old labels until Phase 4) or the new build, not both: the live reader-access sync would refuse to run, or the publish would make those works excerpt-only. Match by the frozen document ID instead, accept both labels until Phase 4, or skip the renames? Recommended: match by document ID, in its own PR before 1.10a.
   Answered 2026-10-31: match by document ID, in its own PR before 1.10a (Decision log "Rights inventory matched by document ID").
 - **1.10b** [Phase 1]. Should 1.10b, which already rewrites how Fathers and medieval paragraphs are read, also read `<verse>` blocks? Today the adapter reads only `<p>`, so about 135,000 characters of poems and quoted verse are missing, such as the pagan poets and the Sibyl that Justin, Theophilus and Clement quote as testimony, and Clement's hymn to Christ. Recommended: yes, as part of the work's own text (rule G keeps an author's quotations). If no, the 11 `known_defects.json` entries move to another item.
@@ -213,19 +219,25 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   - CCC 2267: (a) publish waits until 1.6 can ship the 1997 text as its history passage, or (b) publish the 2018 text first, the 1997 text staying in the vendored `ccc.json` and in #279's report, and 1.6 adds the history passage later. Recommended answer is (b).
     Answered 2026-10-28: (b).
 - **1.6** [Phase 1]. Show Catechism paragraph numbers inside passage text as "§2267". Recommended answer is yes; the work goes ahead with this if there is no answer.
+  Answered 2026-11-04: yes.
 - **1.7** [Phase 1]. Add Aquinas's own short introductions at the start of 611 questions and 3 treatises (about 297,000 characters), which are missing today. Recommended answer is yes, since they are his own words.
   Answered 2026-10-05: yes, as passages labeled "Question N, prologue" before Article 1. The Supplement's prologues are its compiler's and follow the Supplement's treatment (3.2).
 - **1.7 (R7 question 2)** [Phase 1]. In I q.117 a.2 and I q.112 a.2 the text CCEL lost begins or ends inside a paragraph it kept, so it cannot be added as a separate passage without putting the article out of order. Restore the printed words in place, inside the existing passage, and split I q.117 a.2's determination off as its own "I answer that" part (`p5-2`)? Or add the recovered words as a new passage (`recovered-<n>`)? Recommended answer: in place. Whole missing units stay new `recovered-<n>` passages.
   Answered 2026-10-31: in place (asked during 0.1d). R7's questions 1, 3 and 4 stay open for 1.7.
 - **1.8b** [Phase 1]. Split two Augustine volumes ("Doctrinal Treatises", "Moral Treatises") into their 16 separate works, so On Lying is cited as On Lying. Bookmarks survive either way. Recommended answer is yes.
+  Answered 2026-11-04: yes.
 - **1.8c** [Phase 1]. Two points.
   - Label the Shepherd of Hermas's author as "Hermas" and its books "The Shepherd: Visions", "Commandments" and "Similitudes".
   - Remove the Balsamon and Zonaras commentary printed inside Peter of Alexandria's canons, rather than keep it under their own names.
 
   The spec proposes yes to both.
+  Answered 2026-11-04: yes to both.
 - **1.8d** [Phase 1, acted on in Phase 2]. The current translation of Athanasius's On the Incarnation (Lawson, 1944) is still under copyright. Hide it before Phase 4 (early retirement), or leave it visible until Phase 4 replaces it with Robertson's public-domain translation. Hiding it waits for 2.2a, 2.2b, 2.4a and 2.4b to ship. Deleting it is not an option, because that would erase a user's saved search. The spec gives no recommendation.
+  Answered 2026-11-04: leave it visible until Phase 4 replaces it. The work is already excerpt-only.
 - **1.8e** [Phase 1]. About 30 whole works in the downloaded Fathers volumes never reach the corpus. Choose which to add. Recommended answer is none before Phase 4 except Asterius Urbanus, and the rest later with normal rule checks.
+  Answered 2026-11-04: as recommended: none before Phase 4 except Asterius Urbanus; the rest through 5.6a with normal rule checks.
 - **1.9** [Phase 1]. Add Anselm's reply to Gaunilo ("Anselm's Apologetic"). Default is no. Gaunilo's own piece would need its own rule check.
+  Answered 2026-11-04: add both Anselm's reply and Gaunilo's piece after Phase 4, with 5.6b, once Gaunilo has his rule check.
 
 ### Phase 2
 
