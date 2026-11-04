@@ -502,6 +502,40 @@ async def test_rollback_retry_finishes_a_failed_alias_switch(world, monkeypatch)
     assert alias.collection_name == "chunks"
 
 
+async def test_rollback_refuses_under_a_later_publish(world):
+    """After rollback A, cleanup A and apply B, rolling A back again must not touch the
+    alias B switched (nor any row): B is in place, so A refuses."""
+    _doc(world, DOC_A).passages.append(passage("a/5", "c2", "A restored line.", 4))
+    await _stage(world)
+    await _apply(world)
+    await _switch(world)
+    await _rollback(world)
+    await _cleanup(world)
+    later = StageRequest(release="test-later", collections=("medieval",))
+    await _stage(world, later)
+    await _apply(world, "test-later")
+    await _switch(world, "test-later")
+    [before] = (await world.qdrant.get_aliases()).aliases
+    with pytest.raises(A.ApplyRefused, match="'test-later' was applied after"):
+        await _rollback(world)
+    [after] = (await world.qdrant.get_aliases()).aliases
+    assert after.collection_name == before.collection_name != "chunks"
+
+
+async def test_overlapping_rollbacks_keep_the_rolled_back_tombstones(world):
+    """Two rollbacks at once: the second re-reads the publish under the lock, so it never
+    deletes the first one's rolled-back tombstones."""
+    _doc(world, DOC_A).passages.append(passage("a/5", "c2", "A restored line.", 4))
+    await _stage(world)
+    await _apply(world)
+    await _switch(world)
+    await asyncio.gather(_rollback(world), _rollback(world), return_exceptions=True)
+    rows = await world.fetch("SELECT id::text, reason_code FROM corpus_tombstones")
+    assert rows == [{"id": pid(DOC_A, "a/5"), "reason_code": "rolled-back"}]
+    [alias] = (await world.qdrant.get_aliases()).aliases
+    assert alias.collection_name == "chunks"
+
+
 async def test_rollback_keeps_its_rolled_back_tombstones(world):
     _retire_a4(world)
     _renumber_a2(world)

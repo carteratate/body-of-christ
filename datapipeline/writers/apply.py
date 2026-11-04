@@ -574,7 +574,10 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
     retire_only = row["staged_at"] is None
     if row["rolled_back_at"] is not None:
         # The database reversal committed; finish the Qdrant step, which a retry repeats
-        # safely (it may have failed the first time).
+        # safely (it may have failed the first time), unless a later publish now owns it.
+        async with conn.transaction():
+            await lock_publishes(conn)
+            await _refuse_if_superseded(conn, row)
         target = await _restore_qdrant(qdrant, row, directory, alias, retire_only)
         return RollbackResult(release=release, restored_passages=0, retired_passages=0,
                               retired_documents=0, remap={}, alias=target)
@@ -585,6 +588,11 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
     async with conn.transaction():
         await conn.execute("SET LOCAL lock_timeout = '2s'")
         await lock_publishes(conn)
+        # Re-read under the lock: an overlapping rollback may have finished meanwhile.
+        row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
+        if row["rolled_back_at"] is not None:
+            raise ApplyRefused(f"REFUSING: publish '{release}' was rolled back meanwhile")
+        await _refuse_if_superseded(conn, row)
         holder = await conn.fetchval(
             """SELECT id FROM corpus_publishes WHERE id <> $1 AND cleaned_up_at IS NULL
                AND discarded_at IS NULL LIMIT 1""", release)
@@ -620,6 +628,18 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
                           retired_passages=len(core.retired_passages),
                           retired_documents=len(core.retired_documents),
                           remap=ledger.counts, alias=target)
+
+
+async def _refuse_if_superseded(conn, row) -> None:
+    """Refuse while a publish applied after this one is still in place: undoing this one
+    would put live, and the alias, back under it."""
+    newer = await conn.fetchval(
+        """SELECT id FROM corpus_publishes WHERE id <> $1 AND applied_at > $2
+           AND rolled_back_at IS NULL ORDER BY applied_at DESC LIMIT 1""",
+        row["id"], row["applied_at"])
+    if newer is not None:
+        raise ApplyRefused(f"REFUSING: publish '{newer}' was applied after "
+                           f"'{row['id']}'; roll it back first")
 
 
 async def _restore_qdrant(qdrant, row, directory: str, alias: str, retire_only: bool) -> str | None:
