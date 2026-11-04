@@ -206,8 +206,8 @@
   "description": "67.89% covered: list items, prose before §1 or after bold headings, or truncated paragraphs dropped"
  },
  "coverage.medieval.proslogium-monologium-and-cur-deus-homo.xml": {
-  "fixed_by": "1.9",
-  "description": "88.36% covered: Anselm's own prefaces and Gaunilo's reply with Anselm's answer dropped"
+  "fixed_by": "5.6b",
+  "description": "88.36% covered: Anselm's own prefaces (1.9) and Gaunilo's reply with Anselm's answer (5.6b) dropped"
  },
  "coverage.papal-documents.patris-corde.html": {
   "fixed_by": "1.3a",
@@ -1914,52 +1914,52 @@
   "description": "Anselm's own preface (div iv.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.i": {
-  "fixed_by": "1.9",
-  "description": "\"In Behalf of the Fool\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"In Behalf of the Fool\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii": {
-  "fixed_by": "1.9",
-  "description": "\"Anselm's Apologetic\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Anselm's Apologetic\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.i": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter I\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter I\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.ii": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter II\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter II\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.iii": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter III\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter III\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.iv": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter IV\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter IV\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.ix": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter IX\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter IX\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.v": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter V\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter V\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.vi": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter VI\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter VI\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.vii": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter VII\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter VII\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.viii": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter VIII\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter VIII\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.x": {
-  "fixed_by": "1.9",
-  "description": "\"Chapter X\" (Gaunilo's reply or Anselm's answer) is excluded; 1.9 asks Carter whether it comes in"
+  "fixed_by": "5.6b",
+  "description": "\"Chapter X\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
  },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#vi.i": {
   "fixed_by": "1.9",
