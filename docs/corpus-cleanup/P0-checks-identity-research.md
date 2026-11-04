@@ -915,17 +915,21 @@ Conventions used in this file:
 
 ---
 
-### R9. Leads for the council gaps
+### R9. Leads for the council gaps (tracked in #316)
 
-- **Type:** research. No GitHub issue yet.
-- **Depends on:** 1.2a. Blocks nothing: a text that clears leaves the gap register and returns by a normal publish.
+- **Type:** research.
+- **Depends on:** 1.2a. Not a blocker for the Phase 4 apply: a text that clears later leaves the gap register and returns by a normal publish. Step 1's verdict comes before 1.2e's last four councils (Decision log "Council gap leads (R9)"), and step 3's before 1.2c reaches Nicaea II if it can.
 - **Goal:** Know whether any gap in 1.2a's register can come back in a cleared English translation (Decision log "Council gap leads (R9)", Carter, 4 Nov 2026).
-- **Current state:** 1.2a searched books dated to 1930, and did not search HathiTrust, Google Books or later unrenewed books. No lead has a `rights_inventory.json` row or a source lock entry.
+- **Current state:**
+  - 1.2a searched books dated to 1930, and did not search HathiTrust, Google Books or later unrenewed books. No lead has a `rights_inventory.json` row or a source lock entry.
+  - Deferrari's *The Sources of Catholic Dogma* (B. Herder, 1957), translated from Denzinger's thirtieth edition. Its contents list prints Florence's Decree for the Greeks (from Laetentur), Decree for the Armenians and Decree for the Jacobites (from Cantate Domino); Constance's errors of Wyclif and Hus and its definition on communion under one species; Lateran V on the pope and councils; and Constantinople IV's canons. It lists neither Haec sancta nor Frequens, nor Constantinople IV's Definition. Read from a reprint's contents pages, not checked text by text.
+  - A first search of the NYPL renewal data for 1982 to 1987, by title, Denzinger, Deferrari, Rahner and Herder, found no renewal (4 Nov 2026). The title page is not yet checked. The Internet Archive's two copies are access-restricted.
 - **Changes:** In this order, using R6's edition check and R8's method:
-  1. Nicaea II's four anathemas (G2): Hefele, English vol. 5 (1896), p. 376; if he does not print them whole, Mendham (1850), pp. 442–443.
-  2. Books after 1930 whose copyright was not renewed, for Florence, Constance and Lateran V (G6, G8, G9), starting with Deferrari's English Denzinger, *The Sources of Catholic Dogma*. A book of selections clears only the passages it prints.
-  3. Nestorius's second letter (G1): Chrystal (1895), pp. 155–161, at low priority. It would carry `voice = "rejected"` (3.4).
+  1. Deferrari's Denzinger. Find a clean scan, read its title and copyright pages, and record the renewal search in a rights row.
+  2. If it clears, map its contents against the gap register, text by text, and against Schroeder's condensed texts (Constantinople IV's canons look fuller). The book prints extracts ("From the Bull..."), which follow Carter's rule for condensed texts: a note on each passage.
+  3. Nicaea II's four anathemas (G2): Hefele, English vol. 5 (1896), p. 376; if he does not print them whole, Mendham (1850), pp. 442–443.
+  4. Nestorius's second letter (G1): Chrystal (1895), pp. 155–161, at low priority. It would carry `voice = "rejected"` (3.4).
 - **Acceptance checks:** Each lead has a verdict citing the scan or the places searched. Results go in `docs/research/R9-council-gap-leads.md`.
 - **Production safety:** Research only. Downloads go to local disk after approval.
-- **Needs Carter:** Approval of downloads.
+- **Needs Carter:** Approval of downloads. If Deferrari clears: which of its texts come in, and how that changes 1.2e's last four councils.
 - **Out of scope:** Foxe (not pursued). Making translations.

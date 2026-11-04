@@ -200,6 +200,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-04: keep. The address can appear in a reader link's URL, which does no harm.
 - **1.4b** [Phase 1]. Renumber only Joel and Malachi to the Church's official Latin Bible numbering, or every place where Church documents cite a different chapter. Recommended answer is Joel and Malachi now, the rest as a later issue.
   Answered 2026-11-04: Joel and Malachi now, the rest as a later issue.
+  Answered 2026-11-04 (later the same day): add Jonah and Romans's doxology to 1.4b, after citation counts showed Church documents cite them. The rest is #317.
 - **1.4c** [Phase 1]. Give the deuterocanonical books' new shorter passages titles from the old Douay-Rheims chapter summaries, or leave them untitled. Recommended answer is untitled for now.
   Answered 2026-11-04: no titles. A passage is labelled by its verse range, in the form "Sirach 3:1–16".
 - **1.10a** [Phase 1]. 1.10a changes the title or author of 65 Church Fathers documents ("Methodius." to "Methodius", "Irenæus" to "Irenaeus", "Fragments." to "Fragments of Methodius"). The rights inventory found documents by their title and author, so it could match either the live documents (old labels until Phase 4) or the new build, not both: the live reader-access sync would refuse to run, or the publish would make those works excerpt-only. Match by the frozen document ID instead, accept both labels until Phase 4, or skip the renames? Recommended: match by document ID, in its own PR before 1.10a.
