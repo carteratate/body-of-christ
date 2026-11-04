@@ -35,7 +35,7 @@ from typing import Protocol
 import reader_access
 import registry as reg
 import retirements
-from publication import lock_publishes
+from publication import PUBLISH_LOCK_KEY, lock_publishes
 from writers import reader_writer as rw
 
 DATAPIPELINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -453,27 +453,36 @@ def _check_applicable(row, release: str) -> None:
 # --------------------------------------------------------------------------- switch
 
 async def switch(conn, qdrant, release: str, alias: str) -> tuple[str | None, str]:
-    """Point `alias` at the publish's collection in one alias call; record the old one."""
+    """Point `alias` at the publish's collection in one alias call; record the old one.
+    Holds the publish lock throughout, and records the old target before the alias moves,
+    so a retry after a lost response keeps it."""
     from qdrant_client.models import (CreateAlias, CreateAliasOperation, DeleteAlias,
                                       DeleteAliasOperation)
 
     from writers.qdrant import alias_target
 
-    row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
-    if row is None or row["applied_at"] is None or row["rolled_back_at"] is not None:
-        raise ApplyRefused(f"REFUSING: publish '{release}' is not applied")
-    new = row["qdrant_collection"]
-    old = await alias_target(qdrant, alias)
-    if old != new:
-        operations = ([DeleteAliasOperation(delete_alias=DeleteAlias(alias_name=alias))]
-                      if old is not None else [])
-        operations.append(CreateAliasOperation(create_alias=CreateAlias(
-            collection_name=new, alias_name=alias)))
-        await qdrant.update_collection_aliases(change_aliases_operations=operations)
-    await conn.execute(
-        """UPDATE corpus_publishes SET alias_switched_at = now(),
-           previous_qdrant_collection = coalesce(previous_qdrant_collection, $2)
-           WHERE id = $1""", release, old)
+    await conn.execute("SELECT pg_advisory_lock(hashtext($1))", PUBLISH_LOCK_KEY)
+    try:
+        row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
+        if row is None or row["applied_at"] is None or row["rolled_back_at"] is not None:
+            raise ApplyRefused(f"REFUSING: publish '{release}' is not applied")
+        await _refuse_if_superseded(conn, row)
+        new = row["qdrant_collection"]
+        old = await alias_target(qdrant, alias)
+        if old != new:
+            await conn.execute(
+                """UPDATE corpus_publishes
+                   SET previous_qdrant_collection = coalesce(previous_qdrant_collection, $2)
+                   WHERE id = $1""", release, old)
+            operations = ([DeleteAliasOperation(delete_alias=DeleteAlias(alias_name=alias))]
+                          if old is not None else [])
+            operations.append(CreateAliasOperation(create_alias=CreateAlias(
+                collection_name=new, alias_name=alias)))
+            await qdrant.update_collection_aliases(change_aliases_operations=operations)
+        await conn.execute("UPDATE corpus_publishes SET alias_switched_at = now() WHERE id = $1",
+                           release)
+    finally:
+        await conn.execute("SELECT pg_advisory_unlock(hashtext($1))", PUBLISH_LOCK_KEY)
     return old, new
 
 
@@ -577,8 +586,16 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
         # safely (it may have failed the first time), unless a later publish now owns it.
         async with conn.transaction():
             await lock_publishes(conn)
-            await _refuse_if_superseded(conn, row)
-        target = await _restore_qdrant(qdrant, row, directory, alias, retire_only)
+            # Only while nothing has been applied or rolled back since, so the restore
+            # cannot overwrite a newer state; inside the lock, so none can start meanwhile.
+            moved_on = await conn.fetchval(
+                """SELECT id FROM corpus_publishes WHERE id <> $1
+                   AND (applied_at > $2 OR rolled_back_at > $3) LIMIT 1""",
+                release, row["applied_at"], row["rolled_back_at"])
+            if moved_on is not None:
+                raise ApplyRefused(f"REFUSING: publish '{moved_on}' changed live after "
+                                   f"'{release}' was rolled back; nothing to finish")
+            target = await _restore_qdrant(qdrant, row, directory, alias, retire_only)
         return RollbackResult(release=release, restored_passages=0, retired_passages=0,
                               retired_documents=0, remap={}, alias=target)
     expected = row["snapshot_sha256"]

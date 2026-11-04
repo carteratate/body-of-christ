@@ -516,7 +516,7 @@ async def test_rollback_refuses_under_a_later_publish(world):
     await _apply(world, "test-later")
     await _switch(world, "test-later")
     [before] = (await world.qdrant.get_aliases()).aliases
-    with pytest.raises(A.ApplyRefused, match="'test-later' was applied after"):
+    with pytest.raises(A.ApplyRefused, match="'test-later' changed live after"):
         await _rollback(world)
     [after] = (await world.qdrant.get_aliases()).aliases
     assert after.collection_name == before.collection_name != "chunks"
@@ -532,6 +532,63 @@ async def test_overlapping_rollbacks_keep_the_rolled_back_tombstones(world):
     await asyncio.gather(_rollback(world), _rollback(world), return_exceptions=True)
     rows = await world.fetch("SELECT id::text, reason_code FROM corpus_tombstones")
     assert rows == [{"id": pid(DOC_A, "a/5"), "reason_code": "rolled-back"}]
+    [alias] = (await world.qdrant.get_aliases()).aliases
+    assert alias.collection_name == "chunks"
+
+
+async def test_switch_retry_after_a_lost_response_keeps_the_previous_target(world):
+    """The alias moves, then the reply is lost: a retried switch still records the
+    collection the alias pointed at before, so rollback goes back to it."""
+    await _stage(world)
+    await _apply(world)
+    real = world.qdrant.update_collection_aliases
+
+    async def lost(**kwargs):
+        await real(**kwargs)
+        raise RuntimeError("connection reset")
+    world.qdrant.update_collection_aliases = lost
+    with pytest.raises(RuntimeError, match="connection reset"):
+        await _switch(world)
+    world.qdrant.update_collection_aliases = real
+    await _switch(world)
+    [row] = await world.fetch("SELECT previous_qdrant_collection AS p FROM corpus_publishes "
+                              "WHERE id = $1", RELEASE)
+    assert row["p"] == "chunks"
+
+
+async def test_switch_refuses_a_superseded_release(world):
+    """After A is applied and cleaned up and B applied and switched, switching A again
+    would put B's database under A's index: it refuses."""
+    await _stage(world)
+    await _apply(world)
+    await _switch(world)
+    await _cleanup(world)
+    await _stage(world, StageRequest(release="test-later", collections=("medieval",)))
+    await _apply(world, "test-later")
+    await _switch(world, "test-later")
+    with pytest.raises(A.ApplyRefused, match="'test-later' was applied after"):
+        await _switch(world)
+    [alias] = (await world.qdrant.get_aliases()).aliases
+    assert alias.collection_name == "chunks-test-later"
+
+
+async def test_rollback_retry_refuses_after_a_later_rollback(world):
+    """Apply A, apply B, roll back B, roll back A: retrying B's rollback would point the
+    alias at A's undone collection, so it refuses."""
+    await _stage(world)
+    await _apply(world)
+    await _switch(world)
+    await _cleanup(world)
+    later = StageRequest(release="test-later", collections=("medieval",))
+    await _stage(world, later)
+    await _apply(world, "test-later")
+    await _switch(world, "test-later")
+    await _rollback(world, "test-later")
+    await _cleanup(world, "test-later")
+    await _rollback(world)
+    await _cleanup(world)
+    with pytest.raises(A.ApplyRefused, match="changed live after 'test-later'"):
+        await _rollback(world, "test-later")
     [alias] = (await world.qdrant.get_aliases()).aliases
     assert alias.collection_name == "chunks"
 
