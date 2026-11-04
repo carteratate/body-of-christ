@@ -787,7 +787,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Targeted questions answered from the new sources (Basil *On the Holy Spirit*, Cyril's *Catechetical Lectures* on baptism, Gregory's *Pastoral Rule*, Chrysostom *On the Priesthood*).
 - **Production safety:** Additions behind the publish lock, each PR's documents visible together in one apply. Rollback within the window is 2.2w's `rollback` command, which also points `chunks_live` back; later, a 2.2w apply that retires the PR's documents.
 - **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Decide the Qdrant tier when the storage total reaches 5.2's stop.
-- **Out of scope:** Replacing translations already in the corpus (P1.2 handles council sources; On the Incarnation moved in P1). Other Fathers not named in the plan (for example Bede and John Damascene, both before 750). Propose them later.
+- **Out of scope:** Replacing translations already in the corpus (P1.2 handles council sources; On the Incarnation moved in P1). Other Fathers not named in the plan (for example Bede and John Damascene, both before 750). Propose them later. The exception is the whole works 1.8e left for this item (Carter, 4 Nov 2026): each is added through `_WHOLE_WORK_DIVS` after its rule A to H check, or ruled out.
 
 ### 5.6b. Theologians and spiritual writers from CCEL ThML and Gutenberg text
 
@@ -825,6 +825,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
        - Suso, *Little Book of Eternal Wisdom* (1910) and *Life* (Knox 1865).
        - Bernard, *Letters* (Eales 1904).
        - Anselm, *Devotions* (Webb 1903).
+       - Gaunilo, "In Behalf of the Fool", and Anselm, "Anselm's Apologetic", together, from the Appendix of the vendored `proslogium-monologium-and-cur-deus-homo.xml`, once Gaunilo has his rule check (1.9; Carter, 4 Nov 2026). This PR clears their `known_defects.json` entries.
        - Chesterton, *The Everlasting Man* (1925).
        - Newman, *Dream of Gerontius* (1865).
        - Pascal, *Pensées* (Trotter 1910).

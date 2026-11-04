@@ -206,7 +206,7 @@ These apply to every PR below and are not repeated in each item.
   - `sacrosanctum-concilium/81-2` already holds section 87's text. Its registry row changes anchor to `sacrosanctum-concilium/87` and keeps its ID.
   - Where today's build emits Nota praevia paragraphs under `lumen-gentium/<n>-2` style anchors, their registry rows move to `lumen-gentium/nota-praevia/<n>` and keep their IDs the same way. Nota paragraphs that were dropped today are new units.
   - Gravissimum Educationis bucket chapters (`bucket-0`) become heading chapters. That is a chapter-key change only, and passage IDs stay. The 0.1c chapter remap carries it to `reading_progress`.
-- **Needs Carter:** confirm the Nota explicativa praevia stays as part of Lumen Gentium. Recommended: yes, as its own chapter.
+- **Needs Carter:** nothing. Answered 4 Nov 2026: the Nota explicativa praevia stays as part of Lumen Gentium, as its own chapter.
 - **Out of scope:** councils 1 to 20 (1.2). Genre and "document type" fields beyond the existing metadata (2.3).
 
 ---
@@ -504,17 +504,18 @@ These apply to every PR below and are not repeated in each item.
 - **Goal:** Each papal document says what it is, using the papal genres from D5: encyclical, apostolic exhortation, apostolic letter, apostolic constitution, motu proprio, bull, letter, or other. The genre filter (5.1a) then works, and cards stop calling Evangelii Gaudium an encyclical.
 - **Current state:**
   - No papal manifest entry has a genre. The collection is the only signal.
-  - Misfiled in encyclicals, per the plan: Evangelii Gaudium and Evangelii Nuntiandi (apostolic exhortations), Ineffabilis Deus and Munificentissimus Deus (apostolic constitution or bull), the Syllabus of Errors (an annexed list), and three Jubilee bulls. The plan does not name the three. Candidates from the manifest: Peregrinantes (1749), Salutis Nostrae (1774), Quod Hoc Ineunte (1824). Unverified.
-  - Apostolica Constitutio (1749) should also be checked.
+  - Misfiled in encyclicals, per the plan: Evangelii Gaudium and Evangelii Nuntiandi (apostolic exhortations), Ineffabilis Deus and Munificentissimus Deus (apostolic constitution or bull), the Syllabus of Errors (an annexed list), and three Jubilee bulls: Peregrinantes (1749), Salutis Nostrae (1774) and Quod Hoc Ineunte (1824), confirmed from their vendored headings on 4 Nov 2026.
+  - Apostolica Constitutio (1749) is a letter to the bishops on preparing for the Holy Year, so it stays an encyclical despite its name.
   - Papal documents mixes bulls (Unam Sanctam, Exsurge Domine, Sublimis Deus), apostolic letters (Salvifici Doloris, Mulieris Dignitatem, Ordinatio Sacerdotalis, Tertio Millennio Adveniente, Orientale Lumen, Dies Domini, Novo Millennio Ineunte, Rosarium Virginis Mariae, Misericordia et Misera, Patris Corde) and a motu proprio (Porta Fidei).
 - **Changes:**
   - Add `genre` to every entry of the three manifests, set in `scripts/vendor_sources.py` so a re-vendor keeps it. Values come from `PAPAL_GENRES` in 2.1's genre module (`datapipeline/registry/genres.py`, D11), imported, never retyped: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`, and `other` for anything else. The Syllabus of Errors, an annexed list, is `other`. A value outside that list needs a PR to 2.1's module first; this item adds none.
-  - Each value cites the document's own heading on vatican.va, or papalencyclicals.net where vatican.va has no English page. Record the citation in a tracked table `datapipeline/papal_genres.csv` (slug, genre, evidence URL). The manifests are gitignored, so the CSV is what reviewers read.
+  - Settled values (Carter, 4 Nov 2026): Peregrinantes, Salutis Nostrae, Quod Hoc Ineunte and Ineffabilis Deus are `bull`; Munificentissimus Deus is `apostolic-constitution`; Apostolica Constitutio is `encyclical`. Check the other Jubilee documents, such as Charitate Christi, the same way.
+  - Each value cites the document's own heading on vatican.va, or papalencyclicals.net where vatican.va has no English page. Where the heading names no genre, cite other evidence: for Ineffabilis Deus, Munificentissimus Deus's footnote 5, "The Bull Ineffabilis Deus". Record the citation in a tracked table `datapipeline/papal_genres.csv` (slug, genre, evidence URL). The manifests are gitignored, so the CSV is what reviewers read.
   - The builders copy `genre` into `Document.metadata["genre"]` so the release report can show it. 2.3 then copies these values into the 2.1 registry, and the registry value is the one 2.2w writes to `documents.genre`; after 2.3 nothing reads the metadata key.
   - Do not move documents between collections. Their IDs include the collection, and 5.1b merges the collections anyway.
 - **Acceptance checks:** `test_every_papal_manifest_entry_has_genre`, which fails on a missing value or one outside `PAPAL_GENRES` plus `other` (imported from 2.1's module, the same one 2.2a seeds `corpus_genres` from). A vendored check prints a count per genre and per collection. The PR lists each document whose genre disagrees with its current collection.
 - **Production safety:** Metadata only. No ID or anchor change. The API ignores unknown metadata keys. The genre reaches live data only through the P4 apply (D7).
-- **Needs Carter:** confirm the three Jubilee bulls and whether Ineffabilis Deus and Munificentissimus Deus are labelled "apostolic constitution" (their own form) or "bull".
+- **Needs Carter:** nothing. Answered 4 Nov 2026 (Changes, above).
 - **Out of scope:** the `genre` column and filter (2.2a, 5.1a). The collection merge (5.1b).
 
 ---
@@ -564,7 +565,7 @@ R3 is specified once, in `P0-checks-identity-research.md` under "R3. Esther: wha
   - Vendored check: 0 missing verses in 73 books. Daniel has 14 chapters with 21, 49, 97, 37, 31, 28, 28, 27, 27, 21, 45, 13, 64 and 42 verses.
   - `test_psalm_title_opens_first_passage` and `test_sirach_prologue_is_its_own_passage` on synthetic USFM. Vendored: 0.1d's `coverage.bible.superscriptions` and `sentinel.sirach_prologue` entries clear; `psalms/51/1` opens with its title.
 - **Production safety:** Document IDs unchanged, including Song of Songs through the registry. The restored verses are new units with new IDs (Susanna, Bel and the Dragon, the Song of the Three, the Esther additions). A Bible anchor `book/ch/firstverse` names the pericope that starts at that verse, so a passage that still starts at the same verse keeps its ID even if its span grows to take in a restored verse. Changed passages are Daniel 3 and the pericopes bordering each gap. An old passage whose first verse no longer starts a passage (Daniel 3's KJV ranges) gets a `merged` or `split` redirect to the passage now holding that verse by WEB-C number.
-- **Needs Carter:** confirm keeping `song-of-solomon` in anchors. With 2.1's frozen passage IDs, renaming the anchors would change no ID, but old links would then depend on `live_anchor` resolution and nothing a user sees would improve. Recommended: keep.
+- **Needs Carter:** nothing. Answered 4 Nov 2026: anchors keep `song-of-solomon`. With 2.1's frozen passage IDs, renaming them would change no ID, but old links would then depend on `live_anchor` resolution and nothing a user sees would improve.
 - **Out of scope:** renumbering (1.4b), deuterocanonical chunking (1.4c).
 
 ### 1.4b. Bible: Nova Vulgata chapter numbering for Joel and Malachi
@@ -582,12 +583,9 @@ R3 is specified once, in `P0-checks-identity-research.md` under "R3. Esther: wha
   - New anchors (D1). Renumbering regroups passages at the new chapter boundaries (a pericope never crosses a chapter), so every Joel and Malachi passage becomes a new unit with a new ID. Its anchor carries a versification segment, `joel/nv/3/1` and `malachi/nv/3/19`, so no anchor string live today (`joel/3/1` meant the judgment of the nations) comes to name different text. Apply the segment to every passage of both books, including chapters whose numbers do not change, so each book has one scheme.
   - Redirects. For every old Joel and Malachi passage, add a row to 2.1's `registry/redirects.json` with kind `renumbered` (or `split` or `merged` where the regrouping split or joined pericopes), pointing to the new passage that holds its first verse under the target numbering. Old `joel/3/1` goes to `joel/nv/4/1`; old `joel/2/28` goes to `joel/nv/3/1`.
 - **Acceptance checks:** `test_versification_moves_joel_2_28_to_3_1`, `test_versification_moves_malachi_4_to_3_19`, `test_renumbered_books_use_nv_anchor_segment`, `test_every_old_joel_and_malachi_passage_has_a_redirect`. Vendored: Joel has 4 chapters (20, 27, 5, 21 verses), Malachi 3 (14, 17, 24). The 0.1c report shows every old Joel and Malachi passage as `renumbered`, `split` or `merged`, none as `same` or `removed`, and no anchor-string reuse.
-- **Production safety:** Without the new anchors, `joel/3/1` would survive with a different meaning and the same passage ID would silently point at different text. With them, old IDs are redirected, never reused. 4.1a moves bookmarks, retrievals and guest retrievals along the redirects before the new rows go live. The PR states how many old passages carry user rows; the renumbered ranges touch about 3 Joel passages and 1 or 2 Malachi passages.
-- **Needs Carter:** decide the versification scope. Options:
-  - Joel and Malachi only, as the plan says.
-  - All NV chapter divisions that Church documents cite in English, with Hebrew psalm numbering kept, since English Church documents cite "Psalm 51" and not "Psalm 50". Each addition needs its own row and evidence in the table.
-  - Recommended: the first now, with the audit list above as a follow-up issue.
-- **Out of scope:** psalm numbering. Verse-level differences inside chapters.
+- **Production safety:** Without the new anchors, `joel/3/1` would survive with a different meaning and the same passage ID would silently point at different text. With them, old IDs are redirected, never reused. 4.1a moves bookmarks, retrievals and guest retrievals along the redirects before the new rows go live. The PR states how many old passages carry user rows; the renumbered ranges touch about 3 Joel passages and 1 or 2 Malachi passages. On 4 Nov 2026 neither book had a saved result or bookmark.
+- **Needs Carter:** nothing. Answered 4 Nov 2026: Joel and Malachi only. The audit list above goes to a follow-up issue, not yet opened, where each addition needs its own row and evidence in the table.
+- **Out of scope:** the audit list above. Psalm numbering: English Church documents cite "Psalm 51" and not "Psalm 50". Verse-level differences inside chapters.
 
 ### 1.4c. Bible: pericope passages for the deuterocanonical books
 
@@ -599,11 +597,11 @@ R3 is specified once, in `P0-checks-identity-research.md` under "R3. Esther: wha
   - The USFM has no section headings (`\s`) in these books. It has paragraph and stanza markers: Tobit 82 `\p`, Judith 84, 1 Maccabees 185, 2 Maccabees 125, Baruch 24, Wisdom 50 `\b`, Sirach 245 `\b`.
 - **Changes:**
   - Boundaries come from the USFM. Group consecutive `\p` paragraphs, or `\b` stanzas for Wisdom and Sirach, into passages of 600 to 1,800 characters. Never cross a chapter. Never split a verse.
-  - Titles: record them in `bible_extra_pericopes.csv` only where a public-domain source gives them. The Douay-Rheims chapter summaries are a candidate; check with R6. Otherwise the passage has no pericope title and its reference is the verse range.
+  - Titles: none (Carter, 4 Nov 2026). The passage has no pericope title and is labelled by its verse range, in the form "Sirach 3:1–16". The Douay-Rheims chapter summaries are not used: they describe whole chapters and are editor-written (rule G).
   - Anchors `book/chapter/firstverse`, like the protocanonical books.
 - **Acceptance checks:** `test_deutero_groups_paragraphs_within_cap`, `test_deutero_never_crosses_chapter`. Vendored: every passage in the 7 books is 300 to 2,200 characters, except where a single paragraph is longer. No verse is lost (1.4a's assertion).
 - **Production safety:** Each chapter's first passage keeps `book/ch/1` and its ID. The old `book/ch/1-2` pieces disappear; each gets a `split` or `merged` redirect to the new passage holding its first verse. The new first-verse passages are new units with new IDs.
-- **Needs Carter:** whether to take pericope titles from Douay-Rheims summaries or ship without titles. Recommended: without, for now.
+- **Needs Carter:** nothing. Answered 4 Nov 2026: no titles.
 - **Out of scope:** Psalms, which already get one passage per psalm.
 
 ---
