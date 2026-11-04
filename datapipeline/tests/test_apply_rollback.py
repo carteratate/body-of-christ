@@ -226,6 +226,11 @@ async def test_redirects_are_written_and_referenced_ones_refused_without_remap(w
     # With no user row on it, the same publish applies and writes its redirects.
     await _sql(world, "DELETE FROM bookmarks")
     await _sql(world, "DELETE FROM retrievals")
+    # Feedback on the passage holds the apply too.
+    await _sql(world, "INSERT INTO product_feedback (chunk_id) VALUES ($1)", uuid.UUID(old))
+    with pytest.raises(A.ApplyRefused, match="product_feedback 1"):
+        await _apply(world)
+    await _sql(world, "DELETE FROM product_feedback")
     await _apply(world)
     rows = await world.fetch("SELECT entity, old_id::text, new_anchor FROM corpus_redirects "
                              "ORDER BY entity")

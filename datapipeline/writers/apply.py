@@ -71,8 +71,13 @@ class UserDataRemap(Protocol):
 async def referenced_redirects(conn) -> dict[str, int]:
     """User rows pointing at an ID or position the staged redirects move."""
     sql = "SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'"
+    tables = USER_TABLES
+    # Feedback on a passage moves with the remap too (apply step 6); absent from schemas
+    # without 0028, such as a rehearsal copy.
+    if await conn.fetchval("SELECT to_regclass('public.product_feedback')") is not None:
+        tables += ("product_feedback",)
     out = {t: await conn.fetchval(f"SELECT count(*) FROM public.{t} WHERE chunk_id IN ({sql})")
-           for t in USER_TABLES}
+           for t in tables}
     out["reading_progress"] = await conn.fetchval(
         """SELECT count(*) FROM public.reading_progress r WHERE EXISTS (
              SELECT 1 FROM staging.corpus_redirects x WHERE x.old_document_id = r.document_id

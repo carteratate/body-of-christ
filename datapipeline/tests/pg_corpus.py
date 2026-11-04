@@ -65,7 +65,8 @@ PRODUCTION_SCHEMA = """
         WHERE anchor IS NOT NULL;
 
     -- The user tables that point at the corpus, reduced to their keys (D3 table in
-    -- docs/corpus-cleanup/P2-P3-schema-reader-policy.md). Every one cascades.
+    -- docs/corpus-cleanup/P2-P3-schema-reader-policy.md). Every one cascades except
+    -- product_feedback, which sets NULL.
     CREATE TABLE retrievals (
         id bigserial PRIMARY KEY, search_id uuid NOT NULL,
         chunk_id uuid NOT NULL REFERENCES chunks(id) ON DELETE CASCADE);
@@ -84,6 +85,10 @@ PRODUCTION_SCHEMA = """
         document_id uuid NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
         chapter_key text NOT NULL, anchor text,
         PRIMARY KEY (user_id, document_id));
+    CREATE TABLE product_feedback (
+        id bigserial PRIMARY KEY,
+        chunk_id uuid REFERENCES chunks(id) ON DELETE SET NULL,
+        document_id uuid REFERENCES documents(id) ON DELETE SET NULL);
 """
 USER_TABLES = ("retrievals", "bookmarks", "retrieval_labels", "guest_trial_retrievals",
                "reading_progress")
