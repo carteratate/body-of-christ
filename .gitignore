@@ -34,6 +34,8 @@ datapipeline/ocr_work/
 # Live corpus snapshots (0.1c): in-copyright text, never committed. The index
 # datapipeline/releases/snapshots.json (hashes and counts only) is tracked.
 datapipeline/releases/snapshots
+# Embedding cache (cache.py): hundreds of MB of vectors, rebuilt by paying for them again.
+datapipeline/cache.db
 .worktrees/
 .claude/*
 !.claude/skills

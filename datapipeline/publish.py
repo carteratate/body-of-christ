@@ -5,6 +5,11 @@
     python3 publish.py report  --release <name> [--out <dir>] [--no-public]
     python3 publish.py status  [--release <name>]
     python3 publish.py discard --release <name>
+    python3 publish.py apply   --release <name> [--no-switch]
+    python3 publish.py apply   --retire-only --collection <name> --release <name>
+    python3 publish.py switch  --release <name>
+    python3 publish.py rollback --release <name>
+    python3 publish.py cleanup --release <name>
 
 The release name is the publish ID: `corpus_publishes.id`, the `release` of the
 PUBLISH_LOCK.json entry, and the suffix of the staging Qdrant collection
@@ -19,12 +24,22 @@ PUBLISH_LOCK.json entry, and the suffix of the staging Qdrant collection
   records the publish as discarded. Its Qdrant collection is left for a separate ops
   step to delete.
 
-`apply`, `switch`, `rollback` and `cleanup` arrive with 2.2w's second part. Until then no
-command in the datapipeline writes the live corpus at all.
+- `apply` writes the before-snapshot to `releases/snapshots/<release>-before/`, then in
+  one transaction updates, inserts and retires (never deletes), writes tombstones and
+  redirects, and refreshes outlines; then it switches the alias `chunks_live` to the
+  publish's collection, unless `--no-switch`. It refuses a publish whose redirects a user
+  row points at until 4.1a's remap exists. `--retire-only` retires the documents an open
+  `document` removal entry names in one collection, with nothing staged (D7's On the
+  Incarnation exception).
+- `switch` points the alias at the publish's collection (after `apply --no-switch`).
+- `rollback` undoes an applied publish from its before-snapshot, in one transaction, then
+  points the alias back. It is the only rollback path (D11).
+- `cleanup` drops the staging tables once the apply is checked; rollback still works.
 
 Every subcommand except `report` and `status` asks the publish lock (0.4) for its step:
-`stage` for stage and discard. A run whose database and Qdrant are both on this machine
-(a local rehearsal, D8) passes without an entry.
+`stage` for stage and discard, `apply` for apply, switch and cleanup, `rollback` for
+rollback. A run whose database and Qdrant are both on this machine (a local rehearsal,
+D8) passes without an entry.
 """
 from __future__ import annotations
 
@@ -68,6 +83,17 @@ def build_parser() -> argparse.ArgumentParser:
     status.add_argument("--release", type=_release)
     discard = sub.add_parser("discard", help="abandon a publish that was never applied")
     discard.add_argument("--release", required=True, type=_release)
+    apply = sub.add_parser("apply", help="move a reported publish into live, then switch")
+    apply.add_argument("--release", required=True, type=_release)
+    apply.add_argument("--no-switch", action="store_true", help="leave the alias as it is")
+    apply.add_argument("--retire-only", action="store_true",
+                       help="retire one collection's removed documents; stage nothing")
+    apply.add_argument("--collection", choices=sorted(SOURCE_ADAPTERS),
+                       help="with --retire-only: the collection")
+    for name, text in (("switch", "point the live alias at an applied publish"),
+                       ("rollback", "undo an applied publish from its before-snapshot"),
+                       ("cleanup", "drop the staging tables of an applied publish")):
+        sub.add_parser(name, help=text).add_argument("--release", required=True, type=_release)
     return parser
 
 
@@ -194,17 +220,106 @@ async def discard(args, lock_path=None) -> int:
     return 0
 
 
+async def apply(args, lock_path=None) -> int:
+    from config import settings
+    from writers import apply as A
+    from writers.qdrant import get_client
+
+    if args.retire_only:
+        if not args.collection:
+            raise ValueError("--retire-only needs --collection")
+        guard_publish("apply", [args.collection], args.release, lock_path)
+    elif args.collection:
+        raise ValueError("--collection goes with --retire-only only")
+    conn = await _connect()
+    client = get_client()
+    try:
+        if args.retire_only:
+            done = await A.retire_only(conn, client, args.release, args.collection,
+                                       alias=settings.QDRANT_LIVE_ALIAS)
+            print(f"retired {done['documents']} documents and {done['passages']} passages "
+                  f"of {args.collection}; their points in {done['collection']} are marked "
+                  "not searchable. Restart the API to clear the /sources cache.")
+            return 0
+        row = await _publish_row(conn, args.release)
+        guard_publish("apply", row["collections"], args.release, lock_path)
+        result = await A.apply(conn, args.release)
+        print(f"applied {result.release}: {result.touched} documents touched, "
+              f"{result.inserted} passages inserted, {result.retired_passages} passages and "
+              f"{result.retired_documents} documents retired, {result.tombstones} tombstones, "
+              f"{result.redirects} redirects")
+        if not args.no_switch:
+            old, new = await A.switch(conn, client, args.release, settings.QDRANT_LIVE_ALIAS)
+            print(f"switched {settings.QDRANT_LIVE_ALIAS}: {old} -> {new}")
+    finally:
+        await conn.close()
+        await client.close()
+    return 0
+
+
+async def switch(args, lock_path=None) -> int:
+    from config import settings
+    from writers import apply as A
+    from writers.qdrant import get_client
+
+    conn = await _connect()
+    client = get_client()
+    try:
+        row = await _publish_row(conn, args.release)
+        guard_publish("apply", row["collections"], args.release, lock_path)
+        old, new = await A.switch(conn, client, args.release, settings.QDRANT_LIVE_ALIAS)
+    finally:
+        await conn.close()
+        await client.close()
+    print(f"switched {settings.QDRANT_LIVE_ALIAS}: {old} -> {new}")
+    return 0
+
+
+async def rollback(args, lock_path=None) -> int:
+    from config import settings
+    from writers import apply as A
+    from writers.qdrant import get_client
+
+    conn = await _connect()
+    client = get_client()
+    try:
+        row = await _publish_row(conn, args.release)
+        guard_publish("rollback", row["collections"], args.release, lock_path)
+        result = await A.rollback(conn, client, args.release, alias=settings.QDRANT_LIVE_ALIAS)
+    finally:
+        await conn.close()
+        await client.close()
+    print(f"rolled back {result.release}: {result.restored_passages} passages restored, "
+          f"{result.retired_passages} passages the publish added retired as rolled back; "
+          f"alias -> {result.alias or 'unchanged'}. Run cleanup, then restart the API.")
+    return 0
+
+
+async def cleanup(args, lock_path=None) -> int:
+    from writers import apply as A
+
+    conn = await _connect()
+    try:
+        row = await _publish_row(conn, args.release)
+        guard_publish("apply", row["collections"], args.release, lock_path)
+        await A.cleanup(conn, args.release)
+    finally:
+        await conn.close()
+    print(f"cleaned up {args.release}: staging tables dropped")
+    return 0
+
+
+COMMANDS = {"stage": stage, "report": report, "discard": discard, "apply": apply,
+            "switch": switch, "rollback": rollback, "cleanup": cleanup}
+
+
 def main(argv: Sequence[str] | None = None, *, lock_path=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
-        if args.command == "stage":
-            return asyncio.run(stage(args, lock_path))
-        if args.command == "report":
-            return asyncio.run(report(args, lock_path))
         if args.command == "status":
             return asyncio.run(status(args))
-        return asyncio.run(discard(args, lock_path))
+        return asyncio.run(COMMANDS[args.command](args, lock_path))
     except ValueError as error:      # refusals, the lock (PublishLocked) included
         parser.error(str(error))
     return 2
