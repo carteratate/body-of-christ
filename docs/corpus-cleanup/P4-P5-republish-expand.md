@@ -275,7 +275,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - No error-level API log lines about missing chunks in the hour after cutover (filter `@logger:app.rag` in Railway).
 - **Production safety:** Everything before step 6 is invisible to users (the `staging` schema, and a Qdrant collection not behind the alias). There is no release column and no second copy in `chunks`. Step 6 is one transaction, so users see the old corpus or the new one, never a mix. Step 8 is one alias switch with an inverse. The old Qdrant collection and every retired row stay until step 13, so rollback is always possible inside the window. Deletions happen only after an assertion of zero references, because every chunk foreign key cascades.
 - **Needs Carter:**
-  - Approve the build-freeze PR (step 1), including any council that falls back to a "translation in preparation" tombstone.
+  - Approve the build-freeze PR (step 1), including any council that falls back to a gap tombstone.
   - Approve the lock-file PR (step 1) and the one that removes the entry (step 13).
   - Approve steps 1 (staging build and embedding spend), 4, 6, 7 (only if an outline refresh has to be run by hand), 8, 9, 10 (the smoke checks and the `cleanup` that drops the staging tables in production), 12 (if used) and each part of 13.
   - Set the rollback window (14 days recommended).

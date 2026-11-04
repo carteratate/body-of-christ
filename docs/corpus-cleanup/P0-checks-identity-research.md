@@ -912,3 +912,20 @@ Conventions used in this file:
 - **Production safety:** Research only. Downloads go to local disk after approval.
 - **Needs Carter:** The scope decision after the pilot. Approval of downloads.
 - **Out of scope:** Asking papalencyclicals.net or Carlen's publisher for permission (Carter, after everything works). Making translations. The 25 modern documents (1.3c), which #266 also lists.
+
+---
+
+### R9. Leads for the council gaps
+
+- **Type:** research. No GitHub issue yet.
+- **Depends on:** 1.2a. Blocks nothing: a text that clears leaves the gap register and returns by a normal publish.
+- **Goal:** Know whether any gap in 1.2a's register can come back in a cleared English translation (Decision log "Council gap leads (R9)", Carter, 4 Nov 2026).
+- **Current state:** 1.2a searched books dated to 1930, and did not search HathiTrust, Google Books or later unrenewed books. No lead has a `rights_inventory.json` row or a source lock entry.
+- **Changes:** In this order, using R6's edition check and R8's method:
+  1. Nicaea II's four anathemas (G2): Hefele, English vol. 5 (1896), p. 376; if he does not print them whole, Mendham (1850), pp. 442–443.
+  2. Books after 1930 whose copyright was not renewed, for Florence, Constance and Lateran V (G6, G8, G9), starting with Deferrari's English Denzinger, *The Sources of Catholic Dogma*. A book of selections clears only the passages it prints.
+  3. Nestorius's second letter (G1): Chrystal (1895), pp. 155–161, at low priority. It would carry `voice = "rejected"` (3.4).
+- **Acceptance checks:** Each lead has a verdict citing the scan or the places searched. Results go in `docs/research/R9-council-gap-leads.md`.
+- **Production safety:** Research only. Downloads go to local disk after approval.
+- **Needs Carter:** Approval of downloads.
+- **Out of scope:** Foxe (not pursued). Making translations.
