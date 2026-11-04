@@ -16,8 +16,9 @@ which planned public-domain English translation covers it:
 - council 19, Trent: Waterworth (1848), the file already vendored (1.2b);
 - council 20, Vatican I: Schaff, *Creeds of Christendom* vol. 2, CCEL `creeds2` (1.2d).
 
-It ends with the gap register Carter approves (NEEDS-CARTER, 1.2a). Texts on it show
-"translation in preparation" (D9) once their Tanner text is retired.
+It ends with the gap register, which Carter approved on 4 Nov 2026 with G11 added. Texts on
+it show "This text is not available on TheoCorpus at present." (D9), with a link to the council's page, once their
+Tanner text is retired.
 
 ## Summary
 
@@ -36,8 +37,8 @@ It ends with the gap register Carter approves (NEEDS-CARTER, 1.2a). Texts on it 
   document outside sessions 20 and 21; Constance outside session 43, including Haec
   sancta, Frequens and the condemnations of Wyclif and Hus; Lateran V outside its seven
   excerpted bulls; Constantinople IV's Definition; Lyons I's bull deposing Frederick II;
-  Vienne's eight Templar and Holy Land bulls; Vatican I's session 1 (session 2's profession has a partial source in Schaff's 1564
-  Tridentine profession).
+  Vienne's eight Templar and Holy Land bulls; Vatican I's sessions 1 and 2 (Schaff's 1564
+  Tridentine profession does not stand in for session 2; Carter, 4 Nov 2026).
 - **Leads found for three gaps**, not yet checked as editions: Chrystal (1895) prints
   Nestorius's letter in full; Mendham (1850) and the English Hefele, vol. 5 (1896), print
   the Nicaea II anathemas; Foxe's *Acts and Monuments* (Cattley's edition) prints
@@ -359,7 +360,7 @@ Pastor Aeternus only (7,286 words), in Manning's translation (*Petri Privilegium
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Session 1: decree of opening the council | "Decree of opening of the council" | — | **gap** |
-| Session 2: profession of faith | "Profession of faith" | `creeds2` `v.i.ii`, Schaff's "Profession of the Tridentine Faith, A.D. 1564" (see below) | **partial**: same formula, article by article, but printed as Pius IV's 1564 act, not the council's, and different in four places (below). Whether it may stand for session 2 is Carter's decision |
+| Session 2: profession of faith | "Profession of faith" | `creeds2` `v.i.ii`, Schaff's "Profession of the Tridentine Faith, A.D. 1564" (see below) | **gap** (G11): same formula, article by article, but printed as Pius IV's 1564 act, not the council's, and different in four places (below), so it does not stand in (Carter, 4 Nov 2026) |
 | Session 3: Dei Filius, prologue, chapters 1–4, canons | "Dogmatic constitution on the catholic faith" | `v.ii.i`, English cells | covered |
 | Session 4: Pastor Aeternus, prologue, chapters 1–4 | "Session 4" | `v.ii.i`, English cells | covered |
 
@@ -520,12 +521,12 @@ ourselves with giving a summary of them", p. 143).
 | Vienne's doctrinal constitution? | Yes: Fidei catholicae is first-series canon 1, p. 372 |
 | Lateran V's doctrinal bulls? | Apostolici regiminis, yes, without its introduction (pp. 487–488). The other doctrinal or quasi-doctrinal acts (the condemnations of Pisa, Pastor aeternus gregem) are not printed |
 | Florence's doctrinal decrees | Confirmed gaps: Laetentur caeli and the bulls of union with the Armenians, Copts, Syrians, Chaldeans and Maronites |
-| Vatican I's opening decree and the profession of faith of sessions 1 and 2 | Schaff's Vatican section holds Dei Filius and Pastor Aeternus only. The opening decree is a gap; the profession is partial, through Schaff's separate 1564 Tridentine profession (see Vatican I) |
+| Vatican I's opening decree and the profession of faith of sessions 1 and 2 | Schaff's Vatican section holds Dei Filius and Pastor Aeternus only. The opening decree and the profession are gaps (see Vatican I) |
 
 Found while settling them, and not in the spec: Constantinople IV's canons in Schroeder
 are condensed throughout, and Lateran I's canons 15 and 16, Lyons II's constitution I, Constance's session 43, Vienne's Exivi de paradiso and
-Lateran V's seven bulls are partial. Whether condensed or excerpted text should stand in
-for a council's text is a new NEEDS-CARTER question (1.2e).
+Lateran V's seven bulls are partial. Carter decided on 4 Nov 2026 that these are published, with a note
+on each passage (1.2e).
 
 ## Where the gaps were searched
 
@@ -601,14 +602,17 @@ All on 2 Nov 2026, from this server. The method is R8's (`docs/research/R8-papal
 - **CCEL**: Schaff, *History of the Christian Church*, vols. 5 and 6 (`hcc5`, `hcc6`).
   Haec sancta and Frequens are paraphrased with the Latin in a note; Laetentur caeli is
   named. No translations.
-- **Not searched**: HathiTrust full text (refuses this server, as in R8); Google Books.
+- **Not searched**: HathiTrust full text (refuses this server, as in R8); Google Books; books
+  after 1930 whose copyright was not renewed (R9).
 
 ## Gap register
 
-The texts below have no public-domain English translation in the planned sources. Once
-Carter approves this list, each Tanner passage holding one of them is retired at P4 with
+The texts below have no public-domain English translation in the planned sources. Carter
+approved this list on 4 Nov 2026, so each Tanner passage holding one of them is retired at P4 with
 reason `translation-in-preparation` (D9, D11), and its document notes the gap. Tanner's
-own summaries and introductions are not gaps: they retire as `rule-g-editorial`.
+own summaries and introductions are not gaps: they retire as `rule-g-editorial`. A retired
+gap text stays available to us, out of search: its rows are never hard-deleted and the
+vendored Tanner files stay. R9 checks the leads below and later books.
 
 | # | Council | Text | Lead found |
 |---|---|---|---|
@@ -621,10 +625,9 @@ own summaries and introductions are not gaps: they retire as `rule-g-editorial`.
 | G7 | Constance | Session 43's closing declaration | — |
 | G8 | Basel–Ferrara–Florence | Basel sessions 1–4, 7, 8, 11, 12, 15, 17–19, 22–25; Ferrara sessions 1–5; Florence sessions 6–14, including Laetentur caeli and the bulls of union with the Armenians, Copts, Syrians, Chaldeans and Maronites | — |
 | G9 | Lateran V | Sessions 2–6; session 8's bulls on peace and the Bohemians and on reform; session 9's exhortation to peace; session 10's decree on the Pragmatic Sanction; session 11's French agreements and Pastor aeternus gregem; session 12's two constitutions | — |
-| G10 | Vatican I | Session 1, decree of opening (session 2's profession is partial, not on the register; see Vatican I) | — |
+| G10 | Vatican I | Session 1, decree of opening | — |
+| G11 | Vatican I | Session 2, profession of faith (Schaff's 1564 profession does not stand in; see Vatican I) | — |
 
 Partial texts (Constantinople IV's canons, Lateran I's canons 15 and 16, Lyons II's
 constitution I, Constance's session 43, Vienne's Exivi de paradiso, Lateran V's seven
-bulls, Vatican I's session 2 profession) are not on the register. What is published for them
-depends on Carter's answer to the new question in NEEDS-CARTER (1.2e); if the answer is
-"whole texts only", they join it.
+bulls) are not on the register: they are published with a note on each passage (1.2e).

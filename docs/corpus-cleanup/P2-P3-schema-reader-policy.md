@@ -67,7 +67,7 @@ How each user surface behaves after the Phase 4 apply:
 
 A passage whose text was corrected under an unchanged anchor needs none of this. It keeps its ID and every user row sees the new text.
 
-Retired rows cost storage. After the rollback window that Carter sets in 4.1b, retired passages that no user row references can be hard-deleted in an ops step, because deleting them cascades nothing. Tombstones are kept.
+Retired rows cost storage. After the rollback window that Carter sets in 4.1b, retired passages that no user row references can be hard-deleted in an ops step, because deleting them cascades nothing. Tombstones are kept. The exception is a `councils` passage retired with reason `translation-in-preparation`: it is never hard-deleted, because 1.2a's gap texts stay available to us while out of search (Carter, 4 Nov 2026).
 
 ### How many user rows the removals touch (measured 29 Sep 2026)
 
@@ -753,7 +753,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
         chunk_id: Optional[str] = None
     ```
 
-    `Tombstone.read_elsewhere_url` is set only for a retired document (or a passage of one) whose removal entry is `document`-scope with reason `translation-in-preparation` or `awaiting-permission`, or for a passage whose `passage`-scope entry has reason `awaiting-permission`: it is the document's `metadata.held_text_url` when set (a partly rebuilt document, 1.3d step 6), otherwise its `metadata.url`, so the removal page can say where the text can still be read (1.3d; Carter, 31 Oct and 1 Nov 2026; ADR 0001). It is null otherwise.
+    `Tombstone.read_elsewhere_url` is set only for a retired document (or a passage of one) whose removal entry is `document`-scope with reason `translation-in-preparation` or `awaiting-permission`, or for a passage whose `passage`-scope entry has reason `awaiting-permission` or, in the `councils` collection, `translation-in-preparation` (1.2a's gap register and 1.2e's fallback; Carter, 4 Nov 2026): it is the document's `metadata.held_text_url` when set (a partly rebuilt document, 1.3d step 6, or a rebuilt council with gaps, 1.2c to 1.2e), otherwise its `metadata.url`, so the removal page can say where the text can still be read (1.3d; Carter, 31 Oct and 1 Nov 2026; ADR 0001). It is null otherwise.
 
     `ChunkSource` and `BookmarkSource` gain `facts: Optional[DocumentFacts]`, `language: Optional[str]`, `passage_note: Optional[str]`, `passage_author: Optional[str]`. `ChunkResult` and `BookmarkResponse` gain `status: Literal["current", "moved", "removed"] = "current"`, `tombstone: Optional[Tombstone]`, `redirect: Optional[Redirect]`. `DocumentResponse` gains `facts`, `works: list[WorkInfo]` and `status`. `ReaderPassage` gains `language`, `note`, `work_key`, `passage_author` and `superseded_by` (the current passage's ID, set only on a history passage).
   - Superseded text in the reader (rule F, D11). The chapter query returns history passages (`superseded_by IS NOT NULL`) with the chapter, so the reader can show them as "earlier text" beside the current passage. They are never search results, because `searchable` is false. A history passage is not retired; the visibility predicate below does not hide it.
