@@ -72,7 +72,9 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-02 (apply): approved and done. 0042 applied 20:30:47 UTC (1.2 s), 0043 at 20:31:12 UTC (1.1 s), both by `psql --single-transaction` and recorded in `supabase_migrations.schema_migrations`. Checked afterwards: 54,555 passages and 421 documents all live and searchable, outline and user-row counts unchanged, all ten constraints validated, staging identical to live, client roles shut out. Each statement cost a ~40 ms round trip, so 0042 held its read-blocking locks about 0.55 s, not the rehearsed 30 ms; the API logged no requests in that window.
 - **2.2b** [Phase 2]. Approve two steps on live systems. The first creates the Qdrant alias `chunks_live` (a second name for today's search index, so later switches take one step) and an index on the new "searchable" field. The second sets one environment variable on Railway and restarts the API.
 - **2.2w and 4.1a** [Phase 2, repeated in Phase 4]. Approve the pg_dump for the full local rehearsal of the new publish process. The 2.2a timing rehearsal can share this dump if the two run close together.
+  Answered 2026-11-04 (2.2w): instead of a full pg_dump, which this machine cannot restore, a read-only export of production restored into a local Postgres 17 on the Lenovo: the corpus tables (`documents`, `chunks` without the two unused pgvector columns, `document_chapters`, `document_contents` and the 2.2a tables) and the user tables cut to keys only (which passage or document each row points at), with user, search and guest IDs replaced by placeholders and no query text, notes, emails or other user content. It stays on the Lenovo, not Carter's Mac as D8 says, and is deleted after the rehearsal. Also a read-only copy of production's Qdrant points (about 55,000) into a local file-based Qdrant, copied in small batches at a quiet time because production is a small Free cluster, and deleted afterwards. 4.1a's rehearsal asks again.
 - **2.2w** [Phase 2 to 4]. Approve the embedding spend for the first full local rehearsal stage (2.2w's or 4.1a's, whichever runs first), about 11 million tokens, about $1.40 at today's list price (to be checked before the run). It fills a local cache, so later rehearsals and the production run cost between $0 and the same amount, depending on how much the build changed in between.
+  Answered 2026-11-04: approved, with real embeddings to fill the cache, provided the price checked before the run is not materially higher (checked 4 Nov 2026: $0.13 per million tokens, unchanged).
 - **1.8d and 2.2w, only if B-1.8d below is yes** [Phase 2]. Approve the lock-file PR, the one live step that retires On the Incarnation early, the API restart, and the later PR that removes the lock entry.
   Answered 2026-11-04: not needed: Carter left On the Incarnation until the Phase 4 apply (1.8d).
 
@@ -258,6 +260,10 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **2.2w** [Phase 2]. Found by 2.2w (2 Nov 2026). 2.2b is not merged, so the alias `chunks_live` does not exist yet. Should a stage refuse until it exists, or create it? Recommended answer is refuse, pointing at 2.2b's ops step.
   Answered 2026-11-02: refuse.
 - **2.2w and 4.1b** [Phase 2, needed by Phase 4]. Set the rollback window length. Recommended answer is 14 days.
+- **2.2w** [Phase 2]. Found by 2.2w part (b) (4 Nov 2026). The rehearsal's "run the eval harness once against staging" needs the `CORPUS_READ_SCHEMA` override, which part (c) adds. Move that step to part (c)?
+  Answered 2026-11-04: yes; part (c) runs it.
+- **2.2w** [Phase 2]. Found by 2.2w part (b) (4 Nov 2026). `chunks` has a unique key on `(document_id, anchor)` that covers retired rows, so when a retired passage's anchor is taken by a current one (a returning text, or a piece whose text moved), the retired row's anchor gains the suffix `#retired-<release>`. Accept the suffix?
+  Answered 2026-11-04: accepted. 2.4a gains a check that a suffixed link opens the tombstone notice cleanly, including the `#` through `readerHref` and the reader's anchor lookup.
 
 ### Phase 3
 
