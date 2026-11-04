@@ -3,6 +3,7 @@ real PostgreSQL and an in-memory Qdrant (docs/corpus-cleanup/P2-P3-schema-reader
 item 2.2w, acceptance checks)."""
 from __future__ import annotations
 
+import asyncio
 import json
 import uuid
 from dataclasses import replace
@@ -461,6 +462,46 @@ async def test_rollback_apply_restores_rows_alias_and_outline(world):
     assert p == {"r": True, "cleaned_up_at": None}
 
 
+async def test_concurrent_applies_keep_the_before_snapshot(world):
+    """Two applies of one release at once: the publish lock lets one apply and the other
+    refuse before it writes anything, so the before-snapshot still holds the rows as they
+    were and rollback restores them."""
+    _retire_a4(world)
+    _doc(world, DOC_A).passages[0].content = "Grace perfects nature, corrected."
+    await _stage(world)
+    results = await asyncio.gather(_apply(world), _apply(world), return_exceptions=True)
+    assert sorted(type(r).__name__ for r in results) == ["ApplyRefused", "ApplyResult"]
+    await _rollback(world)
+    rows = {r["id"]: r for r in await world.fetch(
+        "SELECT id::text, content, retired_at IS NOT NULL AS retired FROM chunks "
+        "WHERE document_id = $1::uuid", DOC_A)}
+    assert rows[pid(DOC_A, "a/1")]["content"] == LIVE[0][3]
+    assert rows[pid(DOC_A, "a/4")]["retired"] is False
+
+
+async def test_rollback_retry_finishes_a_failed_alias_switch(world, monkeypatch):
+    """The database reversal commits before the alias moves back. When moving it fails,
+    a second rollback finishes the alias instead of refusing."""
+    _doc(world, DOC_A).passages.append(passage("a/5", "c2", "A restored line.", 4))
+    await _stage(world)
+    await _apply(world)
+    await _switch(world)
+    real = A.point_alias
+
+    async def broken(*args):
+        raise RuntimeError("Qdrant unavailable")
+    monkeypatch.setattr(A, "point_alias", broken)
+    with pytest.raises(RuntimeError, match="Qdrant unavailable"):
+        await _rollback(world)
+    [alias] = (await world.qdrant.get_aliases()).aliases
+    assert alias.collection_name != "chunks"
+    monkeypatch.setattr(A, "point_alias", real)
+    result = await _rollback(world)
+    assert result.alias == "chunks"
+    [alias] = (await world.qdrant.get_aliases()).aliases
+    assert alias.collection_name == "chunks"
+
+
 async def test_rollback_keeps_its_rolled_back_tombstones(world):
     _retire_a4(world)
     _renumber_a2(world)
@@ -592,6 +633,27 @@ async def test_retire_only_and_its_rollback(world):
     [a_] = await world.fetch("SELECT count(*) AS n FROM chunks WHERE document_id = $1::uuid "
                              "AND retired_at IS NULL", DOC_A)
     assert a_["n"] == 4
+
+
+async def test_retire_only_leaves_an_unsearchable_point_unsearchable(world):
+    """A point already marked not searchable is neither flipped nor recorded, so the
+    rollback does not make it searchable."""
+    world.registry.removals.append(_removal(
+        id="rm-0921", scope="document", document_id=DOC_B,
+        reason="translation-in-preparation", tombstone="Being replaced."))
+    await world.qdrant.set_payload("chunks", payload={"searchable": False},
+                                   points=[pid(DOC_B, "b/1")], wait=True)
+    conn = await world.connect()
+    try:
+        await A.retire_only(conn, world.qdrant, "incarnation-withdraw", "medieval",
+                            alias="chunks_live", registry=world.registry, root=world.snapshots)
+    finally:
+        await conn.close()
+    with open(f"{A.snapshot_dir('incarnation-withdraw', world.snapshots)}/{A.FLIPPED_POINTS}") as f:
+        assert json.load(f) == []
+    await _rollback(world, "incarnation-withdraw")
+    [point] = await world.qdrant.retrieve("chunks", ids=[pid(DOC_B, "b/1")])
+    assert point.payload["searchable"] is False
 
 
 # --------------------------------------------------------------------------- CLI

@@ -17,8 +17,9 @@
   7. replace the touched documents' contents trees and refresh their reader outlines.
 No DELETE is issued on `chunks` or `documents` anywhere in this module.
 
-Before the transaction, `export_snapshot` writes the live rows the apply replaces to
-`releases/snapshots/<release>-before/`, which `rollback` reads. `rollback` runs the same
+Inside the transaction, under the publish lock and before any write, the apply writes
+the live rows it replaces to `releases/snapshots/<release>-before/`, which `rollback`
+reads. `rollback` runs the same
 core with the snapshot as the staged content, in one transaction, with the reverse remap,
 then points the alias back.
 """
@@ -195,15 +196,6 @@ def read_snapshot(directory: str, expected: dict[str, str]) -> dict[str, list[di
     return out
 
 
-async def export_snapshot(conn, release: str, collections: list[str] | None = None,
-                          document_ids: list[str] | None = None, *, staged: bool = True,
-                          root: str = SNAPSHOT_ROOT, replace: bool = False) -> dict[str, str]:
-    """Read the before-snapshot in one read-only transaction and write it."""
-    async with conn.transaction(isolation="repeatable_read", readonly=True):
-        rows = await read_snapshot_rows(conn, collections, document_ids, staged=staged)
-    return write_snapshot(rows, snapshot_dir(release, root), replace=replace)
-
-
 # --------------------------------------------------------------------------- core
 
 @dataclass
@@ -373,20 +365,19 @@ async def apply(conn, release: str, *, remap: UserDataRemap | None = None,
     """Snapshot, then the apply transaction. `fail_after_retire` is a test hook."""
     from release.staged import staged_content_sha256
 
-    row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
-    _check_applicable(row, release)
-    collections = list(row["collections"])
-    # _check_applicable has shown the publish is unapplied, so an earlier refused attempt's
-    # snapshot is safe to replace.
-    hashes = await export_snapshot(conn, release, collections, root=root, replace=True)
-    await conn.execute("UPDATE corpus_publishes SET snapshot_sha256 = $2::jsonb WHERE id = $1",
-                       release, json.dumps(hashes))
-
     async with conn.transaction():
         await conn.execute("SET LOCAL lock_timeout = '2s'")
         await lock_publishes(conn)
         row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
         _check_applicable(row, release)
+        collections = list(row["collections"])
+        # The before-snapshot is read here, under the publish lock and before any write, so
+        # a concurrent apply of the same release cannot overwrite it with applied rows. The
+        # publish is unapplied, so an earlier refused attempt's snapshot is safe to replace.
+        hashes = write_snapshot(await read_snapshot_rows(conn, collections),
+                                snapshot_dir(release, root), replace=True)
+        await conn.execute("UPDATE corpus_publishes SET snapshot_sha256 = $2::jsonb WHERE id = $1",
+                           release, json.dumps(hashes))
         if row["report_sha256"].split(":")[-1] != await staged_content_sha256(conn):
             raise ApplyRefused("REFUSING: staging changed since the report; run "
                                "`publish.py report` again")
@@ -579,13 +570,17 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
     row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
     if row is None or row["applied_at"] is None:
         raise ApplyRefused(f"REFUSING: publish '{release}' is not applied")
+    directory = snapshot_dir(release, root)
+    retire_only = row["staged_at"] is None
     if row["rolled_back_at"] is not None:
-        raise ApplyRefused(f"REFUSING: publish '{release}' was already rolled back")
+        # The database reversal committed; finish the Qdrant step, which a retry repeats
+        # safely (it may have failed the first time).
+        target = await _restore_qdrant(qdrant, row, directory, alias, retire_only)
+        return RollbackResult(release=release, restored_passages=0, retired_passages=0,
+                              retired_documents=0, remap={}, alias=target)
     expected = row["snapshot_sha256"]
     expected = json.loads(expected) if isinstance(expected, str) else expected
-    directory = snapshot_dir(release, root)
     rows = read_snapshot(directory, expected)
-    retire_only = row["staged_at"] is None
 
     async with conn.transaction():
         await conn.execute("SET LOCAL lock_timeout = '2s'")
@@ -620,16 +615,23 @@ async def rollback(conn, qdrant, release: str, *, alias: str,
             """UPDATE corpus_publishes SET rolled_back_at = now(), cleaned_up_at = NULL
                WHERE id = $1""", release)
 
-    target = None
-    if retire_only:
-        await set_searchable(qdrant, row["qdrant_collection"], _flipped(directory), True)
-    elif row["previous_qdrant_collection"]:
-        target = row["previous_qdrant_collection"]
-        await point_alias(qdrant, alias, target)
+    target = await _restore_qdrant(qdrant, row, directory, alias, retire_only)
     return RollbackResult(release=release, restored_passages=len(rows["chunks"]),
                           retired_passages=len(core.retired_passages),
                           retired_documents=len(core.retired_documents),
                           remap=ledger.counts, alias=target)
+
+
+async def _restore_qdrant(qdrant, row, directory: str, alias: str, retire_only: bool) -> str | None:
+    """Undo the publish in Qdrant: the flipped points searchable again for a retire-only
+    publish, else the alias back on the previous collection. Repeatable."""
+    if retire_only:
+        await set_searchable(qdrant, row["qdrant_collection"], _flipped(directory), True)
+        return None
+    if row["previous_qdrant_collection"]:
+        await point_alias(qdrant, alias, row["previous_qdrant_collection"])
+        return row["previous_qdrant_collection"]
+    return None
 
 
 # --------------------------------------------------------------------------- cleanup
@@ -691,18 +693,17 @@ async def retire_only(conn, qdrant, release: str, collection: str, *, alias: str
         raise ApplyRefused(f"REFUSING: there is no Qdrant alias '{alias}'")
     documents = [r["id"] for r in live]
 
-    if await conn.fetchval("SELECT 1 FROM corpus_publishes WHERE id = $1", release):
-        raise ApplyRefused(f"REFUSING: publish '{release}' exists; name a new release")
-    # No publish row exists yet, so nothing can roll back to an earlier attempt's snapshot.
-    hashes = await export_snapshot(conn, release, document_ids=documents, staged=False,
-                                   root=root, replace=True)
-
     at = datetime.now(timezone.utc)
     async with conn.transaction():
         await conn.execute("SET LOCAL lock_timeout = '2s'")
         await lock_publishes(conn)
         if await conn.fetchval("SELECT 1 FROM corpus_publishes WHERE id = $1", release):
             raise ApplyRefused(f"REFUSING: publish '{release}' exists; name a new release")
+        # Under the lock and before any write, as in `apply`. No publish row exists yet, so
+        # nothing can roll back to an earlier attempt's snapshot.
+        hashes = write_snapshot(await read_snapshot_rows(conn, document_ids=documents,
+                                                         staged=False),
+                                snapshot_dir(release, root), replace=True)
         # No staging is used, so the publish is cleaned up from the start.
         await conn.execute(
             """INSERT INTO corpus_publishes (id, collections, qdrant_collection,
@@ -750,9 +751,15 @@ async def retire_only(conn, qdrant, release: str, collection: str, *, alias: str
         await _refresh(conn, documents)
         await conn.execute("UPDATE corpus_publishes SET applied_at = now() WHERE id = $1", release)
 
-    ids = [p["id"] for p in passages]
+    # Only points that were searchable are flipped and recorded, so rollback never makes
+    # a point searchable that was not before.
+    ids = []
+    for start in range(0, len(passages), 256):
+        points = await qdrant.retrieve(target, ids=[p["id"] for p in passages[start:start + 256]],
+                                       with_payload=["searchable"])
+        ids += [str(p.id) for p in points if (p.payload or {}).get("searchable") is not False]
     directory = snapshot_dir(release, root)
     with open(os.path.join(directory, FLIPPED_POINTS), "w", encoding="utf-8") as f:
         json.dump(ids, f)
     await set_searchable(qdrant, target, ids, False)
-    return {"documents": len(documents), "passages": len(ids), "collection": target}
+    return {"documents": len(documents), "passages": len(passages), "collection": target}
