@@ -14,7 +14,7 @@ _pool: asyncpg.Pool | None = None
 # so a release that stalls past it fails the request the same way.
 POOL_ACQUIRE_TIMEOUT_SECONDS = 5.0
 
-# Connection settings for each CORPUS_READ_SCHEMA other than `public`. The tables in
+# Session settings for each CORPUS_READ_SCHEMA other than `public`. The tables in
 # `staging` have the live names, so unqualified queries read the staged corpus, user
 # tables still resolve to `public`, and the session cannot write anything.
 _READ_OVERRIDE = {
@@ -31,16 +31,21 @@ def _read_override() -> dict[str, str] | None:
     return _READ_OVERRIDE[schema]
 
 
-async def _check_read_override(conn: asyncpg.Connection, override: dict[str, str]) -> None:
-    """Refuse a connection that would read live while looking like a staging run.
+async def _hold_read_override(conn: asyncpg.Connection) -> None:
+    """Set the override on a session, and refuse one that would read live.
 
-    A pooler can drop startup settings without saying so, and with no staged tables
-    `search_path` falls through to `public`. Either way every query would still succeed.
+    Runs on every acquire: Supabase's pooler drops `default_transaction_read_only` as a
+    startup setting, and asyncpg's `RESET ALL` clears a `SET` on release. With no staged
+    tables `search_path` falls through to `public`, and every query would still succeed.
     """
+    override = _read_override()
+    if override is None:
+        return
     for name, expected in override.items():
+        await conn.fetchval("SELECT set_config($1, $2, false)", name, expected)
         actual = await conn.fetchval("SELECT current_setting($1)", name)
         if actual != expected:
-            raise RuntimeError(f"CORPUS_READ_SCHEMA did not reach the connection: "
+            raise RuntimeError(f"CORPUS_READ_SCHEMA did not hold on the connection: "
                                f"{name} is {actual!r}, expected {expected!r}")
     if await conn.fetchval("SELECT to_regclass('staging.chunks')") is None:
         raise RuntimeError("CORPUS_READ_SCHEMA is staging but there is no staged corpus")
@@ -66,14 +71,11 @@ async def _init_connection(conn: asyncpg.Connection) -> None:
         schema="pg_catalog",
         format="text",
     )
-    override = _read_override()
-    if override is not None:
-        await _check_read_override(conn, override)
+    await _hold_read_override(conn)
 
 
 async def init_pool() -> None:
     global _pool
-    override = _read_override()
     _pool = await asyncpg.create_pool(
         settings.database_url,
         min_size=2,
@@ -85,7 +87,7 @@ async def init_pool() -> None:
         max_inactive_connection_lifetime=60.0,
         command_timeout=30.0,
         init=_init_connection,
-        **({"server_settings": override} if override is not None else {}),
+        setup=None if _read_override() is None else _hold_read_override,
     )
 
 

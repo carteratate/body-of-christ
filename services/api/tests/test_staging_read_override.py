@@ -5,7 +5,7 @@ The pre-cutover checks (4.2) run the search pipeline in process with
 unqualified query reads the staged corpus and every user table still resolves to
 `public`. A run that quietly read `public` would pass those checks against the wrong
 corpus, so these tests run on a real server, and the pool refuses a connection the
-override did not reach.
+override does not hold on.
 """
 import pytest
 from unittest.mock import AsyncMock, patch
@@ -76,18 +76,25 @@ async def test_a_database_with_no_staged_corpus_refuses(cluster, monkeypatch):
     assert db.get_pool() is None
 
 
-async def test_a_connection_the_override_did_not_reach_refuses(cluster, monkeypatch):
-    """A pooler may drop startup settings without saying so."""
+async def test_a_setting_that_does_not_hold_refuses(cluster, monkeypatch):
+    """A transaction-mode pooler would lose a `SET`. Postgres reports `on` here, so the
+    read-back cannot match, which is how such a connection would look."""
     monkeypatch.setattr(settings, "corpus_read_schema", "staging")
-    real_create_pool = asyncpg.create_pool
-
-    def pool_without_startup_settings(*args, server_settings, **kwargs):
-        return real_create_pool(*args, **kwargs)
-
-    monkeypatch.setattr(db.asyncpg, "create_pool", pool_without_startup_settings)
-    with pytest.raises(RuntimeError, match="did not reach the connection"):
+    monkeypatch.setitem(db._READ_OVERRIDE["staging"], "default_transaction_read_only", "yes")
+    with pytest.raises(RuntimeError, match="did not hold"):
         await db.init_pool()
     assert db.get_pool() is None
+
+
+async def test_read_only_survives_the_reset_on_release(staged_pool):
+    """asyncpg runs `RESET ALL` when a connection returns to the pool, which clears a
+    `SET`. Supabase's pooler drops startup settings, so `SET` is the only way in."""
+    for _ in range(4):
+        async with staged_pool.acquire() as conn:
+            assert await conn.fetchval("SHOW default_transaction_read_only") == "on"
+            assert await conn.fetchval("SHOW search_path") == "staging, public"
+            with pytest.raises(asyncpg.ReadOnlySQLTransactionError):
+                await conn.execute("CREATE TEMP TABLE scratch (id int)")
 
 
 async def test_an_unknown_schema_refuses(cluster, monkeypatch):
