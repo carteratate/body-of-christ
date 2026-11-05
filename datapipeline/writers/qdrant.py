@@ -16,11 +16,28 @@ from qdrant_client.models import (
 
 from config import settings
 
-# The collection the V5 stages and the repair scripts still name. 2.2w's part (c) moves
-# them to QDRANT_WRITE_COLLECTION; no publish path uses it.
-QDRANT_COLLECTION = "chunks"
+# The collection users searched before the alias existed. Only the refusals name it:
+# nothing writes here by default, and no other module may name it
+# (test_no_writer_names_the_chunks_collection).
+PRE_ALIAS_COLLECTION = "chunks"
 
 _SCROLL = 256
+
+
+def write_collection() -> str:
+    """The collection a V5 stage or a repair script writes. It must be named, so none of
+    them can fall back to the collection users search."""
+    name = settings.QDRANT_WRITE_COLLECTION
+    if not name:
+        raise SystemExit("REFUSING: set QDRANT_WRITE_COLLECTION to the Qdrant collection "
+                         "to write. It has no default")
+    return name
+
+
+def scan_collection() -> str:
+    """The collection a dry-running repair script reads: the one it would write when
+    that is named, otherwise the one users search."""
+    return settings.QDRANT_WRITE_COLLECTION or settings.QDRANT_LIVE_ALIAS
 
 
 def get_client() -> AsyncQdrantClient:
@@ -132,10 +149,10 @@ async def copy_points(client: AsyncQdrantClient, source: str, target: str,
 async def clear_staged_points(client: AsyncQdrantClient, name: str, collection: str,
                               *, alias: str) -> None:
     """Remove one payload collection's points from a publish's own collection before it
-    is staged again. Refuses when `name` is what `alias` targets, or is the legacy
+    is staged again. Refuses when `name` is what `alias` targets, or is the pre-alias
     `chunks` collection the API read before the alias, so it can only ever touch a
     collection users do not search."""
-    if name == QDRANT_COLLECTION or name == await alias_target(client, alias):
+    if name == PRE_ALIAS_COLLECTION or name == await alias_target(client, alias):
         raise SystemExit(f"REFUSING to remove points from '{name}': users search it")
     await client.delete(collection_name=name, points_selector=collection_filter(collection),
                         wait=True)

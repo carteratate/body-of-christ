@@ -210,10 +210,10 @@ def load_bm25_model(path: str):
 async def _run_embed(collection: str, docs, res: _Resources) -> None:
     from qdrant_schema import ensure_facets, ensure_questions
     from stages.embed import embed_collection
-    from writers.qdrant import QDRANT_COLLECTION, check_vectors
+    from writers.qdrant import check_vectors, write_collection
 
     qdrant = res.qdrant()
-    await check_vectors(qdrant, QDRANT_COLLECTION)
+    await check_vectors(qdrant, write_collection())
     # Idempotent: each only creates the Qdrant collection if it is missing.
     await ensure_facets(qdrant)
     await ensure_questions(qdrant)
@@ -345,6 +345,10 @@ def _guard_live_writes(args: argparse.Namespace, stages: list[str]) -> None:
         assert_live_write_allowed(
             f"run pipeline stage(s) {', '.join(live)}",
             args.collection or "", args.release, "repair")
+    if {"embed", "bm25-index"} & set(stages):
+        from writers.qdrant import write_collection
+
+        write_collection()
 
 
 async def _main(args: argparse.Namespace) -> None:

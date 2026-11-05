@@ -256,3 +256,13 @@ async def test_reenrichment_deletes_existing_points_before_upserting_fresh_set(t
     collections_deleted = {c for c, _cid in deleted_calls}
     assert collections_deleted == {"facets", "questions"}
     assert len(facet_points) == 1
+
+
+def test_embed_collection_refuses_with_no_collection_named(monkeypatch):
+    import asyncio
+    import writers.qdrant as qd
+
+    monkeypatch.setattr(qd, "settings",
+                        dataclasses.replace(qd.settings, QDRANT_WRITE_COLLECTION=None))
+    with pytest.raises(SystemExit, match="QDRANT_WRITE_COLLECTION"):
+        asyncio.run(embed_mod.embed_collection([_doc()], None, None, None))

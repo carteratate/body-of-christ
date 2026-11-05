@@ -1,7 +1,7 @@
 # Corpus Sources & Provenance
 
 Status of each collection's source material and its publication to both stores
-(`run_collection.py --collection <name> --target both`).
+(`publish.py`; see "Publishing a collection" below).
 
 | Collection | Source | Re-published (both stores) | Notes |
 |---|---|---|---|
@@ -54,12 +54,18 @@ one without writing anything:
 python3 run_collection.py --collection <name> --dry-run
 ```
 
-To publish, use `publish.py` (item 2.2w): `stage` builds the collection into the
-`staging` schema and a new Qdrant collection, `report` compares it with live, and the
-apply moves it into live in one transaction that never deletes a row. Passage IDs come
-from the passage registry, so bookmarks and search history keep their passages; a
-removed passage is retired with a tombstone, never deleted. See README.md, "Publish one
-collection".
+To publish, use `publish.py` (item 2.2w):
+
+1. `stage` builds the collection into the `staging` schema and a new Qdrant collection.
+2. `report` compares it with live.
+3. `apply` moves it into live in one transaction that never deletes a row, then switches
+   the alias `chunks_live`.
+4. `cleanup` drops the staging tables once the apply is checked.
+
+`rollback` undoes an applied publish within its window, and is the only rollback path.
+Passage IDs come from the passage registry, so a passage keeps its ID when its text is
+fixed and its anchor rebuilt, and a removed passage is retired with a tombstone, never
+deleted. See README.md, "Publish one collection".
 
 The publish lock (`PUBLISH_LOCK.json`, item 0.4) refuses every live step unless a
 reviewed PR has listed the collection, release and step; pass `--release <release>`.

@@ -3,16 +3,16 @@
     cd datapipeline
     python3 scripts/reconcile_qdrant_payloads.py --collection summa           # dry run
     python3 scripts/reconcile_qdrant_payloads.py --collection all             # dry run, every collection
-    python3 scripts/reconcile_qdrant_payloads.py --collection summa --apply   # write
+    QDRANT_WRITE_COLLECTION=<collection> python3 scripts/reconcile_qdrant_payloads.py \\
+        --collection summa --apply --release <name>                           # write
 
 Uses `set_payload`, which rewrites payload only — vectors, point ids and the
 collection schema are untouched, so nothing is re-embedded and no chunk id changes.
-That is the whole reason this narrow repair exists instead of full collection
-publication, which would rebuild and reconcile every Passage in the selected target.
-Routine collection publication upserts before pruning and does not wipe the reader
-store unless the operator explicitly requests and confirms `--wipe-reader`.
+That is the whole reason this narrow repair exists instead of a publish, which stages
+every Passage of a collection into a new Qdrant collection.
 
-DRY RUN IS THE DEFAULT. `--apply` is required to write.
+DRY RUN IS THE DEFAULT. `--apply` is required to write, and it requires
+QDRANT_WRITE_COLLECTION. A dry run reads that collection if set, otherwise the live alias.
 
 ⚠️  `--fields content` IS NOT A SAFE PAYLOAD SYNC — two separate hazards
 1. summa (~26,599 points). Syncing content REMOVES the inline "Objection 1 " prefix
@@ -94,13 +94,13 @@ _SQL = f"""
 
 async def _fetch_payloads(client, collection: str) -> dict[str, dict]:
     """Every Qdrant payload for one collection, keyed by point id."""
-    from writers.qdrant import QDRANT_COLLECTION, collection_filter
+    from writers.qdrant import collection_filter, scan_collection
 
     payloads: dict[str, dict] = {}
     offset = None
     while True:
         points, offset = await client.scroll(
-            collection_name=QDRANT_COLLECTION,
+            collection_name=scan_collection(),
             scroll_filter=collection_filter(collection),
             limit=1000,
             offset=offset,
@@ -127,7 +127,7 @@ async def _apply(client, report: ReconcileReport, batch_size: int) -> int:
     """
     from qdrant_client.models import SetPayload, SetPayloadOperation
 
-    from writers.qdrant import QDRANT_COLLECTION
+    from writers.qdrant import write_collection
 
     written = 0
     for start in range(0, len(report.diffs), batch_size):
@@ -146,7 +146,7 @@ async def _apply(client, report: ReconcileReport, batch_size: int) -> int:
         for attempt in range(4):
             try:
                 await client.batch_update_points(
-                    collection_name=QDRANT_COLLECTION,
+                    collection_name=write_collection(),
                     update_operations=operations,
                     wait=True,
                 )
@@ -334,12 +334,14 @@ if __name__ == "__main__":
 
     if args.apply:
         from publish_lock import PublishLocked, assert_live_write_allowed  # noqa: E402
+        from writers.qdrant import write_collection  # noqa: E402
 
         try:
             assert_live_write_allowed(
                 "reconcile_qdrant_payloads.py --apply", args.collection, args.release, "repair")
         except PublishLocked as exc:
             ap.error(str(exc))
+        write_collection()
 
     if "content" in fields:
         print("⚠️  field set includes `content` — see --help before applying.\n")

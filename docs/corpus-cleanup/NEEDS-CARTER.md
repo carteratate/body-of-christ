@@ -260,10 +260,14 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **2.2w** [Phase 2]. Found by 2.2w (2 Nov 2026). 2.2b is not merged, so the alias `chunks_live` does not exist yet. Should a stage refuse until it exists, or create it? Recommended answer is refuse, pointing at 2.2b's ops step.
   Answered 2026-11-02: refuse.
 - **2.2w and 4.1b** [Phase 2, needed by Phase 4]. Set the rollback window length. Recommended answer is 14 days.
+  Answered 2026-11-04: 14 days.
 - **2.2w** [Phase 2]. Found by 2.2w part (b) (4 Nov 2026). The rehearsal's "run the eval harness once against staging" needs the `CORPUS_READ_SCHEMA` override, which part (c) adds. Move that step to part (c)?
   Answered 2026-11-04: yes; part (c) runs it.
+  Answered 2026-11-04 (later the same day, on starting part (c)): no eval in part (c). Carter cares about the corpus being correct, which the release report and 4.2's targeted checks decide, and 2.2b, which the eval's vector reads need, is not merged. So part (c) makes no production export, Qdrant copy or provider spend.
 - **2.2w** [Phase 2]. Found by 2.2w part (b) (4 Nov 2026). `chunks` has a unique key on `(document_id, anchor)` that covers retired rows, so when a retired passage's anchor is taken by a current one (a returning text, or a piece whose text moved), the retired row's anchor gains the suffix `#retired-<release>`. Accept the suffix?
   Answered 2026-11-04: accepted. 2.4a gains a check that a suffixed link opens the tombstone notice cleanly, including the `#` through `readerHref` and the reader's anchor lookup.
+- **2.2w and 4.2** [Phase 2, needed by Phase 4]. Found by 2.2w part (c) (4 Nov 2026). `CORPUS_READ_SCHEMA` sets `search_path` through connection startup settings, and nothing has yet confirmed that Supabase's pooler on port 5432 passes them on. The pool now refuses to start if it does not, so 4.2 could not silently read live, but it could fail on its first run. Approve one production connection that only runs `SHOW search_path`, reading no tables? Recommended answer is yes, before 4.2.
+  Answered 2026-11-04: yes. The pooler passed `search_path` but dropped `default_transaction_read_only`, so the session could have written. Carter chose to set both inside the session on every acquire, and approved a second connection to prove it: through the pooler, read-only held across a reuse of the connection and `CREATE TEMP TABLE` was refused. Neither connection read a table.
 
 ### Phase 3
 

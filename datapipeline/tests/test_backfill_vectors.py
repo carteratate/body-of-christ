@@ -1,6 +1,8 @@
 """Tests for the missing-vector backfill decision logic (pure, no live stores)."""
 from __future__ import annotations
 
+import pytest
+
 from backfill_vectors import (
     LIVE_EMBEDDING_DIMS, PAYLOAD_FIELDS, PassageRow, build_payload,
     legacy_prefix, missing_chunk_ids, to_passages,
@@ -188,6 +190,8 @@ def test_non_positive_batch_size_is_refused():
 import asyncio  # noqa: E402
 
 import backfill_missing_vectors as bf  # noqa: E402
+
+pytestmark = pytest.mark.usefixtures("write_collection")
 
 
 class _FakeConn:

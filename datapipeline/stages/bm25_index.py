@@ -6,7 +6,7 @@ import logging
 
 from qdrant_client.models import PointVectors, SparseVector
 
-from writers.qdrant import QDRANT_COLLECTION
+from writers.qdrant import write_collection
 from stages.enrich_io import annotation_prose
 
 
@@ -46,5 +46,5 @@ async def index_collection(collection, conn, qdrant, content_model, annotation_m
         # updates only the named sparse vectors on each existing point; the point's
         # dense vector and payload are untouched (Qdrant's update_vectors endpoint
         # merges into existing named vectors rather than replacing the whole point).
-        await qdrant.update_vectors(collection_name=QDRANT_COLLECTION, points=updates, wait=True)
+        await qdrant.update_vectors(collection_name=write_collection(), points=updates, wait=True)
     return len(updates)

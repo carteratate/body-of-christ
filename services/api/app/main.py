@@ -112,6 +112,13 @@ async def _guest_retention_cleanup() -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # The override is for in-process runs, which never reach this lifespan. Outside the
+    # try below: a server must not come up reading a staged corpus, or read-only.
+    if settings.corpus_read_schema != "public":
+        raise RuntimeError(
+            f"CORPUS_READ_SCHEMA is {settings.corpus_read_schema!r}: the API serves only "
+            "the public schema"
+        )
     try:
         await init_pool()
     except Exception as exc:

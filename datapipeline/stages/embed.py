@@ -119,14 +119,15 @@ async def embed_collection(docs: list[Document], cache: Cache, embed_client, qdr
     """
     from qdrant_client.models import FieldCondition, Filter, MatchValue
 
-    from writers.qdrant import QDRANT_COLLECTION, upsert_points
+    from writers.qdrant import upsert_points, write_collection
 
+    target = write_collection()
     chunk_batch: list[PointStruct] = []
 
     async def _stash_chunk(pt: PointStruct) -> None:
         chunk_batch.append(pt)
         if len(chunk_batch) >= settings.EMBEDDING_BATCH_SIZE:
-            await upsert_points(qdrant, QDRANT_COLLECTION, chunk_batch)
+            await upsert_points(qdrant, target, chunk_batch)
             chunk_batch.clear()
 
     async def _upsert_named(collection: str, points: list[PointStruct]) -> None:
@@ -155,4 +156,4 @@ async def embed_collection(docs: list[Document], cache: Cache, embed_client, qdr
             await embed_chunk(doc, doc.passages, idx, enr["facets"], deps)
 
     if chunk_batch:
-        await upsert_points(qdrant, QDRANT_COLLECTION, chunk_batch)
+        await upsert_points(qdrant, target, chunk_batch)

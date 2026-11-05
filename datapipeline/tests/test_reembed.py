@@ -13,6 +13,8 @@ consuming them. The wiring section at the bottom exists for that reason.
 """
 from __future__ import annotations
 
+import pytest
+
 import asyncio
 import os
 import sys
@@ -26,6 +28,8 @@ from reembed import (  # noqa: E402
     MARKER_PREFIX, MINOR_TEXT, classify, needs_reembed,
 )
 import reembed_drifted_vectors as rd  # noqa: E402
+
+pytestmark = pytest.mark.usefixtures("write_collection")
 
 
 # ---------------------------------------------------------------------------
