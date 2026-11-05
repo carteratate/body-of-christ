@@ -142,6 +142,17 @@ def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
     assert all(len(p.content) <= 4000 for p in doc.passages)
 
 
+@pytest.mark.parametrize("council", CANON_COUNTS)
+def test_every_word_of_the_frozen_text_reaches_a_passage(council):
+    # The coverage check for these councils: the Tanner page is no longer their source.
+    def words(text):
+        return re.findall(r"\w+", text)
+    doc = _schroeder({**SCHROEDER_ENTRY, "council": council})
+    frozen = read_text(schroeder.WORKS[council])["passages"]
+    assert words(" ".join(p.content for p in doc.passages)) == \
+        words(" ".join(u["text"] for u in frozen))
+
+
 def test_frozen_texts_passed_the_gate():
     for council, work in schroeder.WORKS.items():
         assert read_text(work)["gate"] == "pass", council

@@ -5246,17 +5246,17 @@
   "new_passage_id": "ee8c156c-64d4-5358-a5f9-6a48704a38e6",
   "new_anchor": "fourth-lateran-council/canon/7",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "c10b4c77-bba4-503d-a2a3-378dad9be4e1",
   "old_anchor": "fourth-lateran-council/sec-2/12",
-  "new_passage_id": "6bc0579d-72d2-554a-a732-c91843a963de",
-  "new_anchor": "fourth-lateran-council/canon/8",
-  "kind": "merged",
-  "reason": "it held part of this canon",
+  "new_passage_id": "385b4a1d-91c6-566c-9b6b-95e5e39589d2",
+  "new_anchor": "fourth-lateran-council/canon/8/from-p1-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5266,7 +5266,7 @@
   "new_passage_id": "6d8d90dd-b705-5cb5-97a9-a0f4c5b32d64",
   "new_anchor": "fourth-lateran-council/canon/10",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5283,10 +5283,20 @@
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "ba231820-45df-5d37-a1d1-cf4a8cb4b27d",
   "old_anchor": "fourth-lateran-council/sec-2/14",
-  "new_passage_id": "ab0de5a3-cf04-5666-bb04-ead9c22d5de0",
+  "new_passage_id": "f418cfa8-ce2f-5f2b-a0b6-ea3847e86dc7",
   "new_anchor": "fourth-lateran-council/canon/12",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ab0de5a3-cf04-5666-bb04-ead9c22d5de0",
+  "old_anchor": "fourth-lateran-council/sec-2/15",
+  "new_passage_id": "f418cfa8-ce2f-5f2b-a0b6-ea3847e86dc7",
+  "new_anchor": "fourth-lateran-council/canon/12",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5296,7 +5306,7 @@
   "new_passage_id": "c696a550-9f24-5b6a-8c82-43358916b212",
   "new_anchor": "fourth-lateran-council/canon/14",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5316,7 +5326,7 @@
   "new_passage_id": "b0af7140-0377-5459-9905-9a20d7b42241",
   "new_anchor": "fourth-lateran-council/canon/16",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5356,7 +5366,7 @@
   "new_passage_id": "a683c96b-6fb8-5b78-9149-c19c1ff419fb",
   "new_anchor": "fourth-lateran-council/canon/20",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5396,7 +5406,7 @@
   "new_passage_id": "fbdcfeb3-3285-5c62-9c4c-414996c35f70",
   "new_anchor": "fourth-lateran-council/canon/24",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5416,7 +5426,7 @@
   "new_passage_id": "f8e7629e-ff70-56ba-aaf5-ef0110769f64",
   "new_anchor": "fourth-lateran-council/canon/27",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5431,9 +5441,19 @@
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "39b6ad14-41e9-5ee4-bac3-b2e97ec092df",
+  "old_anchor": "fourth-lateran-council/sec-2/27-2",
+  "new_passage_id": "60df0001-62cd-5143-92f9-a75daece1120",
+  "new_anchor": "fourth-lateran-council/canon/29",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "565a377c-f894-5c49-a61f-6551f765710a",
   "old_anchor": "fourth-lateran-council/sec-2/29",
-  "new_passage_id": "39b6ad14-41e9-5ee4-bac3-b2e97ec092df",
+  "new_passage_id": "60df0001-62cd-5143-92f9-a75daece1120",
   "new_anchor": "fourth-lateran-council/canon/29",
   "kind": "merged",
   "reason": "Tanner's heading of this canon",
@@ -5476,7 +5496,7 @@
   "new_passage_id": "58668e39-5d0d-5e4e-b1dd-3fab32bc0659",
   "new_anchor": "fourth-lateran-council/canon/35",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5506,7 +5526,7 @@
   "new_passage_id": "1ab58d4b-9b20-52bc-a0de-9ac7b586ae78",
   "new_anchor": "fourth-lateran-council/canon/38",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5523,10 +5543,10 @@
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "a4646a40-b0ee-5474-aed1-024f41a7e2ab",
   "old_anchor": "fourth-lateran-council/sec-2/4",
-  "new_passage_id": "4ffd5dbd-5c14-55f0-a511-a484107bf4d9",
+  "new_passage_id": "7bda89c2-d714-51e3-8229-b8a74f0d55f2",
   "new_anchor": "fourth-lateran-council/canon/2",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5566,7 +5586,7 @@
   "new_passage_id": "9b8f10da-8947-525a-9849-e88fc99fc253",
   "new_anchor": "fourth-lateran-council/canon/47",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5618,7 +5638,7 @@
   "new_passage_id": "263b4e41-4d96-5555-a04d-61a9dd0d64e4",
   "new_anchor": "fourth-lateran-council/canon/49",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5638,7 +5658,7 @@
   "new_passage_id": "bc8a6837-2910-5d8d-9f93-5487d2e7150e",
   "new_anchor": "fourth-lateran-council/canon/50",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5690,7 +5710,7 @@
   "new_passage_id": "97cb65fc-94c8-526d-b994-19049fff9d1e",
   "new_anchor": "fourth-lateran-council/canon/54",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5701,6 +5721,16 @@
   "new_anchor": "fourth-lateran-council/canon/49",
   "kind": "merged",
   "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "4ffd5dbd-5c14-55f0-a511-a484107bf4d9",
+  "old_anchor": "fourth-lateran-council/sec-2/5",
+  "new_passage_id": "3041140e-3fa5-5db6-af19-483983d4d79f",
+  "new_anchor": "fourth-lateran-council/canon/2/from-p2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5720,7 +5750,7 @@
   "new_passage_id": "e5bf5b23-fbea-5943-8700-16f55296f333",
   "new_anchor": "fourth-lateran-council/canon/58",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5750,7 +5780,7 @@
   "new_passage_id": "d1ee5115-8e2c-58f0-bb9d-ce8af52eabdd",
   "new_anchor": "fourth-lateran-council/canon/62",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5760,7 +5790,7 @@
   "new_passage_id": "d1ee5115-8e2c-58f0-bb9d-ce8af52eabdd",
   "new_anchor": "fourth-lateran-council/canon/62",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5780,7 +5810,7 @@
   "new_passage_id": "42ef56d9-2bfc-5d50-825e-2f2e21715528",
   "new_anchor": "fourth-lateran-council/canon/64",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5800,7 +5830,7 @@
   "new_passage_id": "ea4ea509-b83c-5cb0-85bf-def889373f8b",
   "new_anchor": "fourth-lateran-council/canon/68",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5817,10 +5847,10 @@
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "69cce62f-a6be-5902-b6fe-8be5391dc005",
   "old_anchor": "fourth-lateran-council/sec-2/58",
-  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
+  "new_passage_id": "5d138f8a-4437-5731-89f5-dfc5576b434c",
   "new_anchor": "fourth-lateran-council/canon/71",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5835,42 +5865,12 @@
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
-  "old_passage_id": "5d138f8a-4437-5731-89f5-dfc5576b434c",
-  "old_anchor": "fourth-lateran-council/sec-2/59-2",
-  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
-  "new_anchor": "fourth-lateran-council/canon/71",
-  "kind": "merged",
-  "reason": "it held part of this canon",
-  "added_by": "1.2e-1"
- },
- {
-  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
-  "old_passage_id": "16396b9c-2619-5bc0-9f15-092f39868a0d",
-  "old_anchor": "fourth-lateran-council/sec-2/6",
-  "new_passage_id": "753f6b33-355c-5f00-8e48-f3dbef56a139",
-  "new_anchor": "fourth-lateran-council/canon/3",
-  "kind": "merged",
-  "reason": "it held part of this canon",
-  "added_by": "1.2e-1"
- },
- {
-  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "ac62acf4-e754-57b9-8098-bff0d5cfb031",
   "old_anchor": "fourth-lateran-council/sec-2/60",
   "new_passage_id": "e2cf5012-1247-56d4-9504-088b2b23061b",
   "new_anchor": "fourth-lateran-council/canon/60",
   "kind": "merged",
   "reason": "Tanner's heading of this canon",
-  "added_by": "1.2e-1"
- },
- {
-  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
-  "old_passage_id": "7cdee061-a00b-558f-8d8d-b3930f7c5895",
-  "old_anchor": "fourth-lateran-council/sec-2/60-2",
-  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
-  "new_anchor": "fourth-lateran-council/canon/71",
-  "kind": "merged",
-  "reason": "it held part of this canon",
   "added_by": "1.2e-1"
  },
  {
@@ -5885,12 +5885,22 @@
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
+  "old_anchor": "fourth-lateran-council/sec-2/61-2",
+  "new_passage_id": "369aa81c-3814-5378-a51d-11d9bc087094",
+  "new_anchor": "fourth-lateran-council/canon/71/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "1750e351-76f8-50f9-ae0f-24b60523d9ae",
   "old_anchor": "fourth-lateran-council/sec-2/62",
-  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
-  "new_anchor": "fourth-lateran-council/canon/71",
-  "kind": "merged",
-  "reason": "it held part of this canon",
+  "new_passage_id": "369aa81c-3814-5378-a51d-11d9bc087094",
+  "new_anchor": "fourth-lateran-council/canon/71/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
@@ -5915,9 +5925,19 @@
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "753f6b33-355c-5f00-8e48-f3dbef56a139",
+  "old_anchor": "fourth-lateran-council/sec-2/7-2",
+  "new_passage_id": "ba18507d-efe0-589c-a9cb-87f16efa27c7",
+  "new_anchor": "fourth-lateran-council/canon/3/from-p3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "868654a9-d1a0-59ca-8643-33caacafe225",
   "old_anchor": "fourth-lateran-council/sec-2/7-2/from-e32",
-  "new_passage_id": "753f6b33-355c-5f00-8e48-f3dbef56a139",
+  "new_passage_id": "16396b9c-2619-5bc0-9f15-092f39868a0d",
   "new_anchor": "fourth-lateran-council/canon/3",
   "kind": "merged",
   "reason": "a piece the 1.10c build cut and no publish carried",
@@ -5937,16 +5957,6 @@
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
-  "old_passage_id": "ba18507d-efe0-589c-a9cb-87f16efa27c7",
-  "old_anchor": "fourth-lateran-council/sec-2/7-2/from-e32-2",
-  "new_passage_id": "753f6b33-355c-5f00-8e48-f3dbef56a139",
-  "new_anchor": "fourth-lateran-council/canon/3",
-  "kind": "merged",
-  "reason": "it held part of this canon",
-  "added_by": "1.2e-1"
- },
- {
-  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "378dea17-9036-54a7-9f12-b12f89da9b7c",
   "old_anchor": "fourth-lateran-council/sec-2/70",
   "new_passage_id": "94f5cb80-99ef-5285-aea6-c1f5d7a24e2f",
@@ -5962,7 +5972,7 @@
   "new_passage_id": "783793e1-290c-5f98-8b47-e7cb25021f60",
   "new_anchor": "fourth-lateran-council/canon/4",
   "kind": "split",
-  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-1"
  },
  {
