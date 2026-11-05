@@ -18,7 +18,7 @@ link() {  # link <path relative to the repo root>
   fi
 }
 for f in apps/web/.env.local services/api/.env datapipeline/.env \
-         datapipeline/sources datapipeline/releases/snapshots; do
+         datapipeline/sources datapipeline/releases/snapshots datapipeline/cache.db; do
   link "$f"
 done
 
