@@ -180,9 +180,15 @@
   "why": "A stop read as a comma; p. 288 prints a stop."
  },
  {
-  "passage": "canon-62",
-  "find": "\n\nForma litterarum praedicatorum\n\nQuoniam, ut ait Apostolus, omnes stabimus ante tribunal Christi, recepturi prout in corpore gessimus, sive bonum sive malum fuerit, oportet nos diem messionis extremae misericordiae operibus praevenire, ac aeternorum intuitu seminare in terris quod reddente Domino cum multiplicato fructu colligere debeamus in caelis; firmam spem, fiduciamque tenentes, quoniam “qui parce seminat, parce et metet, et qui seminat in benedictionibus, de benedictionibus et metet in vitam aeternam.” Cum igitur ad sustentationem fratrum et egenorum ad tale confluentium hospitale propriae non suppetant facultates, universitatem vestram monemus et exhortamur in Domino atque in remissionem vobis injungimus peccatorum, quatenus de bonis a Deo vobis collatis pias eleemosynas et grata eis caritatis subsidia erogatis, ut per subventionem vestram ipsorum inopiae consulatur, et vos per haec et per alia bona, quae Domino inspirante feceritis, ad aeterna possitis gaudia pervenire.",
-  "replace": "",
-  "why": "Rule E: Schroeder prints this form of letter in Latin (p. 287), and the Latin is never stored or shown."
+  "passage": "canon-37",
+  "find": "before a Judge",
+  "replace": "before a judge",
+  "why": "Misread capital; p. 272 prints \"a judge\"."
+ },
+ {
+  "passage": "canon-51",
+  "find": "a suitable, and fixed",
+  "replace": "a suitable and fixed",
+  "why": "A speck in the margin read as a comma; p. 280 prints none."
  }
 ]
