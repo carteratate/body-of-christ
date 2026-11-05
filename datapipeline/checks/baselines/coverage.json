@@ -5,7 +5,7 @@
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
-  "councils": "feat/1.10c-piece-citations 269d968",
+  "councils": "worktree-bridge-cse_01MzvQVi341eAJiRVV4Rhnyg 317d388",
   "encyclicals": "feat/1.10c-piece-citations 269d968",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.10c-piece-citations 269d968",
@@ -837,25 +837,10 @@
    "covered_chars": 63429,
    "pct": 92.86
   },
-  "councils/ecum-09-first-lateran-council.html": {
-   "body_chars": 18141,
-   "covered_chars": 15907,
-   "pct": 87.69
-  },
-  "councils/ecum-10-second-lateran-council.html": {
-   "body_chars": 18409,
-   "covered_chars": 18315,
-   "pct": 99.49
-  },
   "councils/ecum-11-third-lateran-council.html": {
    "body_chars": 45750,
    "covered_chars": 45750,
    "pct": 100.0
-  },
-  "councils/ecum-12-fourth-lateran-council.html": {
-   "body_chars": 123675,
-   "covered_chars": 122897,
-   "pct": 99.37
   },
   "councils/ecum-13-first-council-of-lyons.html": {
    "body_chars": 76499,
@@ -2436,13 +2421,6 @@
    "covered_chars": 5675,
    "pct": 100.0
   },
-  "37829660-f962-5b93-b9a7-c79b5d03f170": {
-   "collection": "councils",
-   "source_file": "ecum-09-first-lateran-council.html",
-   "body_chars": 18141,
-   "covered_chars": 15907,
-   "pct": 87.69
-  },
   "379b7859-4bf9-57f3-9327-7e5d207f7c7f": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
@@ -2631,13 +2609,6 @@
    "body_chars": 54660,
    "covered_chars": 54660,
    "pct": 100.0
-  },
-  "49b534a0-0692-5f8c-8ab7-9da0288e4de1": {
-   "collection": "councils",
-   "source_file": "ecum-12-fourth-lateran-council.html",
-   "body_chars": 123675,
-   "covered_chars": 122897,
-   "pct": 99.37
   },
   "4a88d63a-84b9-58e0-8196-4a0998a6311a": {
    "collection": "encyclicals",
@@ -2932,13 +2903,6 @@
    "body_chars": 604,
    "covered_chars": 604,
    "pct": 100.0
-  },
-  "6410138e-f599-5155-a615-fc79250cf608": {
-   "collection": "councils",
-   "source_file": "ecum-10-second-lateran-council.html",
-   "body_chars": 18409,
-   "covered_chars": 18315,
-   "pct": 99.49
   },
   "6462809c-3a8d-5580-b9a1-a773154a7ab1": {
    "collection": "apostolic-exhortations",

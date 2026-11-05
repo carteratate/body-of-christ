@@ -566,7 +566,13 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
     base = os.path.join(sources, collection)
     if collection in _MANIFEST_HTML or collection in ("medieval", "church-fathers"):
         with open(os.path.join(base, "manifest.json"), encoding="utf-8") as f:
-            return [e["file"] for e in json.load(f)]
+            entries = json.load(f)
+        if collection == "councils":
+            # A council rebuilt from a scan is not built from its Tanner page, which stays
+            # vendored; its canon count is its check (1.2e).
+            from ingest.councils_schroeder import WORKS
+            entries = [e for e in entries if e["council"] not in WORKS]
+        return [e["file"] for e in entries]
     if collection == "canon-law":
         with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:
             return [p["file"] for p in json.load(f) if p.get("parsed", True)]

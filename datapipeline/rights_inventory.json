@@ -4696,7 +4696,7 @@
   "author": null,
   "collection": "councils",
   "source_path": "councils/DisciplinaryCouncils/",
-  "document_id": null,
+  "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
   "edition": "H. J. Schroeder, Disciplinary Decrees of the General Councils: Text, Translation, and Commentary (St. Louis and London: B. Herder Book Co., 1937; copyright 1937 B. Herder Book Co., printed in U.S.A.); Internet Archive scan DisciplinaryCouncils",
   "translator": "H. J. Schroeder",
   "first_published": 1937,
@@ -4713,7 +4713,7 @@
   "credit_line": "Translated by H. J. Schroeder (1937)",
   "checked_by": "Carter",
   "checked_on": "2026-10-05",
-  "planned_for": "1.2e"
+  "planned_for": null
  },
  {
   "work": "Fourth Council of Constantinople",
@@ -4744,7 +4744,7 @@
   "author": null,
   "collection": "councils",
   "source_path": "councils/DisciplinaryCouncils/",
-  "document_id": null,
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "edition": "H. J. Schroeder, Disciplinary Decrees of the General Councils: Text, Translation, and Commentary (St. Louis and London: B. Herder Book Co., 1937; copyright 1937 B. Herder Book Co., printed in U.S.A.); Internet Archive scan DisciplinaryCouncils",
   "translator": "H. J. Schroeder",
   "first_published": 1937,
@@ -4761,7 +4761,7 @@
   "credit_line": "Translated by H. J. Schroeder (1937)",
   "checked_by": "Carter",
   "checked_on": "2026-10-05",
-  "planned_for": "1.2e"
+  "planned_for": null
  },
  {
   "work": "Second Council of Lyons",
@@ -4792,7 +4792,7 @@
   "author": null,
   "collection": "councils",
   "source_path": "councils/DisciplinaryCouncils/",
-  "document_id": null,
+  "document_id": "6410138e-f599-5155-a615-fc79250cf608",
   "edition": "H. J. Schroeder, Disciplinary Decrees of the General Councils: Text, Translation, and Commentary (St. Louis and London: B. Herder Book Co., 1937; copyright 1937 B. Herder Book Co., printed in U.S.A.); Internet Archive scan DisciplinaryCouncils",
   "translator": "H. J. Schroeder",
   "first_published": 1937,
@@ -4809,7 +4809,7 @@
   "credit_line": "Translated by H. J. Schroeder (1937)",
   "checked_by": "Carter",
   "checked_on": "2026-10-05",
-  "planned_for": "1.2e"
+  "planned_for": null
  },
  {
   "work": "Third Lateran Council",
@@ -5040,42 +5040,6 @@
   "planned_for": null
  },
  {
-  "work": "First Lateran Council",
-  "author": null,
-  "collection": "councils",
-  "source_path": "councils/ecum-09-first-lateran-council.html",
-  "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/councils/ecum09.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Second Lateran Council",
-  "author": null,
-  "collection": "councils",
-  "source_path": "councils/ecum-10-second-lateran-council.html",
-  "document_id": "6410138e-f599-5155-a615-fc79250cf608",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/councils/ecum10.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Third Lateran Council",
   "author": null,
   "collection": "councils",
@@ -5085,24 +5049,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/councils/ecum11.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Fourth Lateran Council",
-  "author": null,
-  "collection": "councils",
-  "source_path": "councils/ecum-12-fourth-lateran-council.html",
-  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/councils/ecum12-2.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,

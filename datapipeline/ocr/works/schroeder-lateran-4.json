@@ -1,0 +1,22 @@
+{
+ "work": "schroeder-lateran-4",
+ "title": "Fourth Lateran Council, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 236–296",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": ["236", "296"],
+ "layout": "single-column",
+ "units": "schroeder-canons",
+ "unit_count": 71,
+ "baseline": {
+  "path": "_incoming/councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {"fraction": 0.25, "minimum": 5, "maximum": 20, "unit": "work"}
+}

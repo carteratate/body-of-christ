@@ -6,6 +6,8 @@
  "page_numbers": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
  "pages": ["177", "194"],
  "layout": "single-column",
+ "units": "schroeder-canons",
+ "unit_count": 22,
  "baseline": {
   "path": "_incoming/councils/fordham-lateran1.html",
   "start": "^\\[Schroeder Introduction\\]",

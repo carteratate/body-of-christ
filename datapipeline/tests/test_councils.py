@@ -111,3 +111,93 @@ def test_all_documents_build_and_are_clean():
 def test_document_ids_unique():
     ids = [d.id for d in build_documents()]
     assert len(ids) == len(set(ids))
+
+
+# --- Councils from Schroeder (1.2e) ---------------------------------------------------
+
+from ingest import councils_schroeder as schroeder  # noqa: E402
+from ocr.fixes import read_text  # noqa: E402
+from ocr.work import WorkConfig  # noqa: E402
+import registry as work_registry  # noqa: E402
+import rights_inventory  # noqa: E402
+
+SCHROEDER_ENTRY = {"council": "First Lateran Council", "year": 1123, "council_number": 9,
+                   "url": "https://www.papalencyclicals.net/councils/ecum09.htm"}
+CANON_COUNTS = {"First Lateran Council": 22, "Second Lateran Council": 30,
+                "Fourth Lateran Council": 71}
+EDITOR_WORDS = re.compile(r"\b(?:Comment|Summary)\.|Hefele|Mansi|Denzinger|DECREES OF THE COUNCILS")
+
+
+def _schroeder(entry=SCHROEDER_ENTRY, **kw):
+    return schroeder.build_schroeder(entry, "doc-id", "councils/ecum-09", **kw)
+
+
+@pytest.mark.parametrize("council,count", CANON_COUNTS.items())
+def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
+    entry = {**SCHROEDER_ENTRY, "council": council}
+    doc = _schroeder(entry)
+    assert sorted({p.unit_label for p in doc.passages}, key=lambda u: int(u.split()[1])) == \
+        [f"Canon {n}" for n in range(1, count + 1)]
+    assert not [p.anchor for p in doc.passages if EDITOR_WORDS.search(p.content)]
+    assert all(len(p.content) <= 4000 for p in doc.passages)
+
+
+def test_frozen_texts_passed_the_gate():
+    for council, work in schroeder.WORKS.items():
+        assert read_text(work)["gate"] == "pass", council
+
+
+def test_schroeder_document_keeps_the_gap_link_and_points_at_the_scan():
+    doc = _schroeder()
+    assert doc.metadata["held_text_url"] == SCHROEDER_ENTRY["url"]
+    assert doc.metadata["url"] == schroeder.SCAN_URL
+    assert doc.translation == schroeder.TRANSLATION
+
+
+def test_schroeder_passages_carry_the_source_label_and_declare_the_new_text():
+    for p in _schroeder().passages:
+        assert p.metadata["text_source"] == "ocr"
+        assert p.metadata["scan_id"] == "DisciplinaryCouncils"
+        assert p.metadata["text_replaced"] == schroeder.TEXT_REPLACED
+        assert p.metadata["pages"]
+
+
+def test_schroeder_anchors_are_canon_numbers_in_his_order():
+    doc = _schroeder()
+    assert [p.anchor for p in doc.passages] == \
+        [f"first-lateran-council/canon/{n}" for n in range(1, 23)]
+    assert [p.position for p in doc.passages] == list(range(22))
+
+
+def test_a_held_council_emits_no_passages_and_keeps_its_document():
+    doc = _schroeder(held=frozenset({"First Lateran Council"}))
+    assert doc.id == "doc-id" and doc.passages == []
+
+
+def _built(council):
+    doc = next(d for d in build_documents() if d.title == council)
+    return work_registry.apply_overrides(doc)
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored manifest")
+def test_other_recension_note_sits_on_schroeders_13_and_17():
+    # Tanner's canons 15 and 16 are Schroeder's 13 and 17 (inventory, Lateran I).
+    noted = {p.anchor: p.note for p in _built("First Lateran Council").passages if p.note}
+    assert noted == {
+        "first-lateran-council/canon/13": "Translated from another recension of this canon.",
+        "first-lateran-council/canon/17": "Translated from another recension of this canon."}
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored manifest")
+def test_schroeder_councils_route_through_their_frozen_document_ids():
+    docs = {d.title: d for d in build_documents()}
+    rows = rights_inventory.by_document_id(rights_inventory.load())
+    for council in schroeder.WORKS:
+        row = rows[docs[council].id]
+        assert row["status"] == "pd-us-non-renewal" and row["planned_for"] is None
+        assert row["source_path"] == "councils/DisciplinaryCouncils/"
+
+
+def test_every_work_config_matches_its_canon_count():
+    for council, work in schroeder.WORKS.items():
+        assert WorkConfig.load(work).unit_count == CANON_COUNTS[council]

@@ -3491,7 +3491,9 @@
   "new_anchor": "first-lateran-council/sec-0/1-2/from-e8",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-1",
+  "closed_on": "2026-11-04"
  },
  {
   "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
@@ -5239,13 +5241,415 @@
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "74474004-3e1a-59e5-b7ea-26f9ea3e901d",
+  "old_anchor": "fourth-lateran-council/sec-2/10",
+  "new_passage_id": "ee8c156c-64d4-5358-a5f9-6a48704a38e6",
+  "new_anchor": "fourth-lateran-council/canon/7",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "c10b4c77-bba4-503d-a2a3-378dad9be4e1",
+  "old_anchor": "fourth-lateran-council/sec-2/12",
+  "new_passage_id": "6bc0579d-72d2-554a-a732-c91843a963de",
+  "new_anchor": "fourth-lateran-council/canon/8",
+  "kind": "merged",
+  "reason": "it held part of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "bef43916-99f0-5cb8-9dc3-e39b366cfb77",
+  "old_anchor": "fourth-lateran-council/sec-2/13",
+  "new_passage_id": "6d8d90dd-b705-5cb5-97a9-a0f4c5b32d64",
+  "new_anchor": "fourth-lateran-council/canon/10",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "87f0a03c-6bb6-54f8-9197-11275061f83e",
+  "old_anchor": "fourth-lateran-council/sec-2/13-2",
+  "new_passage_id": "b9f12c66-f088-53b8-bdcc-fff0070933ab",
+  "new_anchor": "fourth-lateran-council/canon/13",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ba231820-45df-5d37-a1d1-cf4a8cb4b27d",
+  "old_anchor": "fourth-lateran-council/sec-2/14",
+  "new_passage_id": "ab0de5a3-cf04-5666-bb04-ead9c22d5de0",
+  "new_anchor": "fourth-lateran-council/canon/12",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "c6dbe484-7b7d-5fac-8792-bd843eb76dae",
+  "old_anchor": "fourth-lateran-council/sec-2/16",
+  "new_passage_id": "c696a550-9f24-5b6a-8c82-43358916b212",
+  "new_anchor": "fourth-lateran-council/canon/14",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "0261509a-a270-5e2d-8ffe-ea95c685bb42",
+  "old_anchor": "fourth-lateran-council/sec-2/16-2",
+  "new_passage_id": "b0af7140-0377-5459-9905-9a20d7b42241",
+  "new_anchor": "fourth-lateran-council/canon/16",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "e72bdf97-0414-5ad9-85f5-dd8801271550",
+  "old_anchor": "fourth-lateran-council/sec-2/17",
+  "new_passage_id": "b0af7140-0377-5459-9905-9a20d7b42241",
+  "new_anchor": "fourth-lateran-council/canon/16",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "e1ea4da7-5e8c-5dbd-a3ad-578590dd86fe",
+  "old_anchor": "fourth-lateran-council/sec-2/18",
+  "new_passage_id": "f892aeb3-3139-51dc-9aff-a844269b58bc",
+  "new_anchor": "fourth-lateran-council/canon/18",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "e9661774-5c09-58c6-a058-0bba60b43883",
+  "old_anchor": "fourth-lateran-council/sec-2/19",
+  "new_passage_id": "13fedb56-c5b2-54b1-92f7-99d40ece8b0f",
+  "new_anchor": "fourth-lateran-council/canon/19",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "4d26c2ba-21dc-5f62-bb7f-2d53c720a917",
+  "old_anchor": "fourth-lateran-council/sec-2/20",
+  "new_passage_id": "a683c96b-6fb8-5b78-9149-c19c1ff419fb",
+  "new_anchor": "fourth-lateran-council/canon/20",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "f259d1eb-fba0-5f8b-b765-4265183d0059",
+  "old_anchor": "fourth-lateran-council/sec-2/20-2",
+  "new_passage_id": "a683c96b-6fb8-5b78-9149-c19c1ff419fb",
+  "new_anchor": "fourth-lateran-council/canon/20",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "602a2b61-7374-596c-b9f8-656fcc0c1dfd",
+  "old_anchor": "fourth-lateran-council/sec-2/21",
+  "new_passage_id": "33a43a02-84a0-5c55-bdf5-6a4fb4f23911",
+  "new_anchor": "fourth-lateran-council/canon/21",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "e17f9507-d215-5438-a2c8-e3ae2fed01f0",
+  "old_anchor": "fourth-lateran-council/sec-2/22",
+  "new_passage_id": "3c1313b4-ba20-5d34-8688-92b4a183e984",
+  "new_anchor": "fourth-lateran-council/canon/22",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "f786443c-32de-56de-9d8e-7f821c727bf8",
+  "old_anchor": "fourth-lateran-council/sec-2/23",
+  "new_passage_id": "263b12b5-e859-5489-887b-8c6f3e9b8abf",
+  "new_anchor": "fourth-lateran-council/canon/23",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "f98c4170-d569-5dcb-b5e5-8f49679fc56e",
+  "old_anchor": "fourth-lateran-council/sec-2/23-2",
+  "new_passage_id": "fbdcfeb3-3285-5c62-9c4c-414996c35f70",
+  "new_anchor": "fourth-lateran-council/canon/24",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "fb16757a-6c57-5717-8306-e5d42c457c09",
+  "old_anchor": "fourth-lateran-council/sec-2/26",
+  "new_passage_id": "0f964a10-213d-567c-927a-982dccd7fb11",
+  "new_anchor": "fourth-lateran-council/canon/26",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "6eaaa36e-ec4c-5c1e-9d28-298018d45252",
+  "old_anchor": "fourth-lateran-council/sec-2/26-2",
+  "new_passage_id": "f8e7629e-ff70-56ba-aaf5-ef0110769f64",
+  "new_anchor": "fourth-lateran-council/canon/27",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "b4a4b20f-4646-5e55-bbaf-8ba2041a611b",
+  "old_anchor": "fourth-lateran-council/sec-2/27",
+  "new_passage_id": "f8e7629e-ff70-56ba-aaf5-ef0110769f64",
+  "new_anchor": "fourth-lateran-council/canon/27",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "565a377c-f894-5c49-a61f-6551f765710a",
+  "old_anchor": "fourth-lateran-council/sec-2/29",
+  "new_passage_id": "39b6ad14-41e9-5ee4-bac3-b2e97ec092df",
+  "new_anchor": "fourth-lateran-council/canon/29",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "9e29281e-c8d5-5b6a-a653-e0626f053bed",
+  "old_anchor": "fourth-lateran-council/sec-2/30",
+  "new_passage_id": "fd1d840d-96f7-5bbe-ad13-bd3aa5c33d80",
+  "new_anchor": "fourth-lateran-council/canon/30",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "64969d44-e720-525c-b0ff-b7f02bbc56a3",
+  "old_anchor": "fourth-lateran-council/sec-2/31",
+  "new_passage_id": "22c75a2b-2673-561b-8b48-83cdbd7c76b2",
+  "new_anchor": "fourth-lateran-council/canon/31",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "74fa0023-2044-54dc-a67b-7600897631e4",
+  "old_anchor": "fourth-lateran-council/sec-2/32",
+  "new_passage_id": "1e5bb347-f7fa-5cf4-98e7-982fa5b088ea",
+  "new_anchor": "fourth-lateran-council/canon/32",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "850efe38-c7e1-562f-82e8-32a037ba553a",
+  "old_anchor": "fourth-lateran-council/sec-2/32-2",
+  "new_passage_id": "58668e39-5d0d-5e4e-b1dd-3fab32bc0659",
+  "new_anchor": "fourth-lateran-council/canon/35",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "2eaa29b0-a488-59f4-8187-6179baedfaf6",
+  "old_anchor": "fourth-lateran-council/sec-2/33",
+  "new_passage_id": "f130d213-0105-55a8-84e4-55e6cd30ed8b",
+  "new_anchor": "fourth-lateran-council/canon/33",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "e6d22327-eb8c-5937-9ec9-9022372dc362",
+  "old_anchor": "fourth-lateran-council/sec-2/34",
+  "new_passage_id": "2a4d57a7-cd88-55fb-9d53-2de799a3c4f1",
+  "new_anchor": "fourth-lateran-council/canon/34",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "9ae0fc53-85a3-531f-b0fd-f0456f316aae",
+  "old_anchor": "fourth-lateran-council/sec-2/34-2",
+  "new_passage_id": "1ab58d4b-9b20-52bc-a0de-9ac7b586ae78",
+  "new_anchor": "fourth-lateran-council/canon/38",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "5e32a3bb-3184-576e-a73e-3534c0b719b6",
+  "old_anchor": "fourth-lateran-council/sec-2/38",
+  "new_passage_id": "1ab58d4b-9b20-52bc-a0de-9ac7b586ae78",
+  "new_anchor": "fourth-lateran-council/canon/38",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "a4646a40-b0ee-5474-aed1-024f41a7e2ab",
+  "old_anchor": "fourth-lateran-council/sec-2/4",
+  "new_passage_id": "4ffd5dbd-5c14-55f0-a511-a484107bf4d9",
+  "new_anchor": "fourth-lateran-council/canon/2",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "8b4fff50-05d2-55f9-8750-5e688af4edd5",
+  "old_anchor": "fourth-lateran-council/sec-2/4-2",
+  "new_passage_id": "783793e1-290c-5f98-8b47-e7cb25021f60",
+  "new_anchor": "fourth-lateran-council/canon/4",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "1e19dd73-8540-5691-896f-d7fbcd14d16e",
+  "old_anchor": "fourth-lateran-council/sec-2/40",
+  "new_passage_id": "1f11d595-cc6b-52f3-b8bf-06108d8abf8a",
+  "new_anchor": "fourth-lateran-council/canon/40",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "a5e489c2-946f-5e85-8f67-848aece89d03",
+  "old_anchor": "fourth-lateran-council/sec-2/41",
+  "new_passage_id": "fbad572c-576c-5814-a90d-51c4c69d60a1",
+  "new_anchor": "fourth-lateran-council/canon/41",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "0df43cb0-94e7-5c13-8187-c70dbbe76233",
+  "old_anchor": "fourth-lateran-council/sec-2/41-2",
+  "new_passage_id": "9b8f10da-8947-525a-9849-e88fc99fc253",
+  "new_anchor": "fourth-lateran-council/canon/47",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "0de1be9a-29c2-57ae-a7d1-bcca1638bf15",
+  "old_anchor": "fourth-lateran-council/sec-2/41-2/from-e166",
+  "new_passage_id": "9b8f10da-8947-525a-9849-e88fc99fc253",
+  "new_anchor": "fourth-lateran-council/canon/47",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
   "old_passage_id": "9b8f10da-8947-525a-9849-e88fc99fc253",
   "old_anchor": "fourth-lateran-council/sec-2/41-2/from-e166-2",
   "new_passage_id": "0de1be9a-29c2-57ae-a7d1-bcca1638bf15",
   "new_anchor": "fourth-lateran-council/sec-2/41-2/from-e166",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-1",
+  "closed_on": "2026-11-04"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "85fc52e5-d926-591b-8199-1950fc6b5a66",
+  "old_anchor": "fourth-lateran-council/sec-2/42",
+  "new_passage_id": "a49fcd37-f042-5431-8b85-a47f7fcf466b",
+  "new_anchor": "fourth-lateran-council/canon/42",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "429acea1-4152-5363-b7ab-ff07f9c84d7d",
+  "old_anchor": "fourth-lateran-council/sec-2/43",
+  "new_passage_id": "007c6566-9b9a-5827-a66a-b7675aca2ca2",
+  "new_anchor": "fourth-lateran-council/canon/43",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "48b1a1ff-67ac-5adb-b959-ad6c03ba35a2",
+  "old_anchor": "fourth-lateran-council/sec-2/43-2",
+  "new_passage_id": "263b4e41-4d96-5555-a04d-61a9dd0d64e4",
+  "new_anchor": "fourth-lateran-council/canon/49",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "288eca8f-9bde-5fa4-b10e-5b1896022d72",
+  "old_anchor": "fourth-lateran-council/sec-2/44",
+  "new_passage_id": "e194063f-17f4-57b5-bcd9-8800b216e47a",
+  "new_anchor": "fourth-lateran-council/canon/44",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "133dc149-1837-540f-9f6d-8697f83016db",
+  "old_anchor": "fourth-lateran-council/sec-2/44-2",
+  "new_passage_id": "bc8a6837-2910-5d8d-9f93-5487d2e7150e",
+  "new_anchor": "fourth-lateran-council/canon/50",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ade3c65b-f7f7-5be5-9385-9cefa1b243bc",
+  "old_anchor": "fourth-lateran-council/sec-2/44-2/from-e178",
+  "new_passage_id": "d12931d7-4e24-53fc-a776-b182fc1cca65",
+  "new_anchor": "fourth-lateran-council/canon/51",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2e-1"
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
@@ -5255,7 +5659,269 @@
   "new_anchor": "fourth-lateran-council/sec-2/44-2/from-e178",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-1",
+  "closed_on": "2026-11-04"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "85d9c676-538d-51fa-8711-314e571875fe",
+  "old_anchor": "fourth-lateran-council/sec-2/45",
+  "new_passage_id": "910a00d4-20c7-52d5-ae34-e07c4d9b39c4",
+  "new_anchor": "fourth-lateran-council/canon/45",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ba0bc16f-9e85-522a-b476-aa698bf6a49e",
+  "old_anchor": "fourth-lateran-council/sec-2/46",
+  "new_passage_id": "8a5330a7-0aa1-5598-a85d-b0914d721c6a",
+  "new_anchor": "fourth-lateran-council/canon/46",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ca5a755b-5a10-5353-8de4-220a5a83d397",
+  "old_anchor": "fourth-lateran-council/sec-2/46-2",
+  "new_passage_id": "97cb65fc-94c8-526d-b994-19049fff9d1e",
+  "new_anchor": "fourth-lateran-council/canon/54",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "dfa1082e-e6d3-5e13-95b4-b01546e3e1bc",
+  "old_anchor": "fourth-lateran-council/sec-2/49",
+  "new_passage_id": "263b4e41-4d96-5555-a04d-61a9dd0d64e4",
+  "new_anchor": "fourth-lateran-council/canon/49",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "26ccd942-c301-5280-9fc2-83f03b9fe93f",
+  "old_anchor": "fourth-lateran-council/sec-2/50",
+  "new_passage_id": "bc8a6837-2910-5d8d-9f93-5487d2e7150e",
+  "new_anchor": "fourth-lateran-council/canon/50",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "512078e9-5533-570f-bbe2-4e1ef83a11e6",
+  "old_anchor": "fourth-lateran-council/sec-2/50-2",
+  "new_passage_id": "e5bf5b23-fbea-5943-8700-16f55296f333",
+  "new_anchor": "fourth-lateran-council/canon/58",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "39c73812-7807-5bdf-9dcd-80dbf0d4a2eb",
+  "old_anchor": "fourth-lateran-council/sec-2/52",
+  "new_passage_id": "0475d6d1-a5e7-5078-ad6f-0abed743b16d",
+  "new_anchor": "fourth-lateran-council/canon/52",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "fd34e989-c6eb-5155-8d7b-f74016728033",
+  "old_anchor": "fourth-lateran-council/sec-2/53",
+  "new_passage_id": "f0eedf1b-ad72-53e0-a4e8-e4d35ca2ae30",
+  "new_anchor": "fourth-lateran-council/canon/53",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "1c8bdaf5-656d-56a8-9601-bd51b82eedab",
+  "old_anchor": "fourth-lateran-council/sec-2/53-2",
+  "new_passage_id": "d1ee5115-8e2c-58f0-bb9d-ce8af52eabdd",
+  "new_anchor": "fourth-lateran-council/canon/62",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "66ca0418-7762-518c-bfdc-30c9f35ecc10",
+  "old_anchor": "fourth-lateran-council/sec-2/54",
+  "new_passage_id": "d1ee5115-8e2c-58f0-bb9d-ce8af52eabdd",
+  "new_anchor": "fourth-lateran-council/canon/62",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "33d4dc36-8e5a-5396-9c3e-6d82fc8a442e",
+  "old_anchor": "fourth-lateran-council/sec-2/55",
+  "new_passage_id": "539d4e7d-a36a-5711-81b1-d8aa1e707c69",
+  "new_anchor": "fourth-lateran-council/canon/55",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "02ea4f7c-9427-5cbc-8173-38d4c74ce75d",
+  "old_anchor": "fourth-lateran-council/sec-2/55-2",
+  "new_passage_id": "42ef56d9-2bfc-5d50-825e-2f2e21715528",
+  "new_anchor": "fourth-lateran-council/canon/64",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ab4b1f3f-56e8-5cef-b2d1-ba02a8032331",
+  "old_anchor": "fourth-lateran-council/sec-2/56",
+  "new_passage_id": "0fd79a26-8681-5595-8d4e-0b6a3718006a",
+  "new_anchor": "fourth-lateran-council/canon/56",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "a9d1cf94-9034-5447-a4a6-174ab6c2e465",
+  "old_anchor": "fourth-lateran-council/sec-2/56-2",
+  "new_passage_id": "ea4ea509-b83c-5cb0-85bf-def889373f8b",
+  "new_anchor": "fourth-lateran-council/canon/68",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "b6791503-9322-56cb-b310-1641f99cd6cb",
+  "old_anchor": "fourth-lateran-council/sec-2/57",
+  "new_passage_id": "688c1de6-59ba-5784-bab3-7634ac3d73b8",
+  "new_anchor": "fourth-lateran-council/canon/57",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "69cce62f-a6be-5902-b6fe-8be5391dc005",
+  "old_anchor": "fourth-lateran-council/sec-2/58",
+  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
+  "new_anchor": "fourth-lateran-council/canon/71",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "67ea12f5-23a1-549e-81b6-1e637c356e6d",
+  "old_anchor": "fourth-lateran-council/sec-2/59",
+  "new_passage_id": "615fec9b-d9b6-5309-b281-5a688884bc54",
+  "new_anchor": "fourth-lateran-council/canon/59",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "5d138f8a-4437-5731-89f5-dfc5576b434c",
+  "old_anchor": "fourth-lateran-council/sec-2/59-2",
+  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
+  "new_anchor": "fourth-lateran-council/canon/71",
+  "kind": "merged",
+  "reason": "it held part of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "16396b9c-2619-5bc0-9f15-092f39868a0d",
+  "old_anchor": "fourth-lateran-council/sec-2/6",
+  "new_passage_id": "753f6b33-355c-5f00-8e48-f3dbef56a139",
+  "new_anchor": "fourth-lateran-council/canon/3",
+  "kind": "merged",
+  "reason": "it held part of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ac62acf4-e754-57b9-8098-bff0d5cfb031",
+  "old_anchor": "fourth-lateran-council/sec-2/60",
+  "new_passage_id": "e2cf5012-1247-56d4-9504-088b2b23061b",
+  "new_anchor": "fourth-lateran-council/canon/60",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "7cdee061-a00b-558f-8d8d-b3930f7c5895",
+  "old_anchor": "fourth-lateran-council/sec-2/60-2",
+  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
+  "new_anchor": "fourth-lateran-council/canon/71",
+  "kind": "merged",
+  "reason": "it held part of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "744f5c45-ace4-5129-9000-229a7ebc0a63",
+  "old_anchor": "fourth-lateran-council/sec-2/61",
+  "new_passage_id": "623572f5-9184-50b8-bac5-29be510a03c8",
+  "new_anchor": "fourth-lateran-council/canon/61",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "1750e351-76f8-50f9-ae0f-24b60523d9ae",
+  "old_anchor": "fourth-lateran-council/sec-2/62",
+  "new_passage_id": "7d6ebee4-5146-5d18-9aff-6d2f36b91b72",
+  "new_anchor": "fourth-lateran-council/canon/71",
+  "kind": "merged",
+  "reason": "it held part of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "68cf4392-5ef8-5030-9cb3-65865693a16c",
+  "old_anchor": "fourth-lateran-council/sec-2/64",
+  "new_passage_id": "42ef56d9-2bfc-5d50-825e-2f2e21715528",
+  "new_anchor": "fourth-lateran-council/canon/64",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "db93152a-d56b-5788-a361-37b1958b1894",
+  "old_anchor": "fourth-lateran-council/sec-2/7",
+  "new_passage_id": "ee8c156c-64d4-5358-a5f9-6a48704a38e6",
+  "new_anchor": "fourth-lateran-council/canon/7",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "868654a9-d1a0-59ca-8643-33caacafe225",
+  "old_anchor": "fourth-lateran-council/sec-2/7-2/from-e32",
+  "new_passage_id": "753f6b33-355c-5f00-8e48-f3dbef56a139",
+  "new_anchor": "fourth-lateran-council/canon/3",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2e-1"
  },
  {
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
@@ -5265,7 +5931,49 @@
   "new_anchor": "fourth-lateran-council/sec-2/7-2/from-e32",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-1",
+  "closed_on": "2026-11-04"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ba18507d-efe0-589c-a9cb-87f16efa27c7",
+  "old_anchor": "fourth-lateran-council/sec-2/7-2/from-e32-2",
+  "new_passage_id": "753f6b33-355c-5f00-8e48-f3dbef56a139",
+  "new_anchor": "fourth-lateran-council/canon/3",
+  "kind": "merged",
+  "reason": "it held part of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "378dea17-9036-54a7-9f12-b12f89da9b7c",
+  "old_anchor": "fourth-lateran-council/sec-2/70",
+  "new_passage_id": "94f5cb80-99ef-5285-aea6-c1f5d7a24e2f",
+  "new_anchor": "fourth-lateran-council/canon/70",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "e7bc47bc-88dc-5b2a-8bf4-8de6ad572faf",
+  "old_anchor": "fourth-lateran-council/sec-2/8",
+  "new_passage_id": "783793e1-290c-5f98-8b47-e7cb25021f60",
+  "new_anchor": "fourth-lateran-council/canon/4",
+  "kind": "split",
+  "reason": "it held several of Schroeder's canons; this one holds most of its text",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "old_passage_id": "ecefb061-1824-5130-be9d-ef81abb33f00",
+  "old_anchor": "fourth-lateran-council/sec-2/9-2",
+  "new_passage_id": "9c765a7c-4338-5eeb-8f7f-b5d7f5b04cea",
+  "new_anchor": "fourth-lateran-council/canon/9",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-1"
  },
  {
   "document_id": "4c96eac3-f3f1-549c-84cf-070661393073",
@@ -6756,6 +7464,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "6410138e-f599-5155-a615-fc79250cf608",
+  "old_passage_id": "6fba076b-5643-5b66-84ac-ae1bea665f03",
+  "old_anchor": "second-lateran-council/sec-2/2-2",
+  "new_passage_id": "f4db82f3-00b2-51d0-8547-b2b5436647dc",
+  "new_anchor": "second-lateran-council/canon/23",
+  "kind": "merged",
+  "reason": "the end of Tanner's canon 23, cut off by the old parser",
+  "added_by": "1.2e-1"
  },
  {
   "document_id": "658d9cfa-0ef5-5890-ad20-2c260a80d6e3",

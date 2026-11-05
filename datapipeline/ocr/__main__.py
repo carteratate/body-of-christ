@@ -2,10 +2,13 @@
 
     python3 -m ocr clean   <work>             # furniture out, passages written
     python3 -m ocr correct <work>             # model correction, within the work's ceiling
+    python3 -m ocr fix     <work>             # apply ocr/works/<work>.fixes.json
     python3 -m ocr sample  <work>             # draw the person's sample (once)
     python3 -m ocr check   <work> <passage> matches --by NAME
     python3 -m ocr check   <work> <passage> differences --by NAME --what "..." [--wording]
+    python3 -m ocr serve   <work> [...] --by NAME --port N   # the check as a web page
     python3 -m ocr gate    <work>             # evaluate and write ocr_work/<work>/gate.md
+    python3 -m ocr freeze  <work>             # write the final text to ocr/texts/<work>.json
 
 <work> names `ocr/works/<work>.json`. `correct` calls the provider and spends money.
 """
@@ -21,7 +24,7 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="python3 -m ocr", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="command", required=True)
-    for name in ("clean", "correct", "sample", "check", "gate"):
+    for name in ("clean", "correct", "fix", "sample", "check", "gate", "freeze"):
         p = sub.add_parser(name)
         p.add_argument("work")
         if name == "clean":
@@ -37,7 +40,15 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--by", required=True)
             p.add_argument("--what", help="the differences found")
             p.add_argument("--wording", action="store_true", help="the differences change wording")
+    serve = sub.add_parser("serve")
+    serve.add_argument("works", nargs="+")
+    serve.add_argument("--by", required=True)
+    serve.add_argument("--port", type=int, default=8090)
     args = ap.parse_args(argv)
+    if args.command == "serve":
+        from ocr.serve import serve as run_server
+        run_server([WorkDir(WorkConfig.load(w)) for w in args.works], args.by, args.port)
+        return 0
     workdir = WorkDir(WorkConfig.load(args.work))
 
     if args.command == "clean":
@@ -54,6 +65,12 @@ def main(argv: list[str] | None = None) -> int:
               f"work total ${workdir.spent_usd():.4f} of ${workdir.config.ceiling_usd:.2f}"
               + (f"; stopped: {r['stopped']}" if r["stopped"] else ""))
         return 1 if r["stopped"] else 0
+    elif args.command == "fix":
+        from ocr.fixes import apply_fixes
+        print(f"{apply_fixes(workdir)} fixes applied")
+    elif args.command == "freeze":
+        from ocr.fixes import freeze
+        print(freeze(workdir))
     elif args.command == "sample":
         from ocr.gate import start_check
         c = start_check(workdir, seed=args.seed, redraw=args.redraw)

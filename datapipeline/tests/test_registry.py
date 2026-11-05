@@ -129,17 +129,11 @@ def test_passage_registry_is_sorted_and_stable(shipped, tmp_path):
 
 def test_new_unit_gets_computed_id_that_collides_with_no_frozen_id(shipped):
     # The ID any row's anchor would compute belongs to no other row, so a new unit can
-    # never take a frozen passage's ID. First Lateran's two swapped anchors are the one
-    # known exception (release.anchor_reuse in known_defects.json, fixed by 1.2e).
-    with open(os.path.join(os.path.dirname(registry.REGISTRY_DIR), "checks",
-                           "known_defects.json"), encoding="utf-8") as f:
-        swapped = {k.rsplit("/", 1)[1] for k in json.load(f)
-                   if k.startswith("release.anchor_reuse:")}
+    # never take a frozen passage's ID.
     owner = {r["passage_id"]: (r["document_id"], r["anchor"]) for r in shipped.passages}
     for r in shipped.passages:
         computed = identity.passage_id(r["document_id"], r["anchor"])
-        if computed in owner and owner[computed] != (r["document_id"], r["anchor"]):
-            assert computed in swapped and r["passage_id"] in swapped
+        assert computed not in owner or owner[computed] == (r["document_id"], r["anchor"])
     assert all(r["live_anchor"] for r in shipped.passages)
     reg = valid_registry()
     rec = registry.reconcile(reg, [document([passage("ii.i"), passage("ii.ix", position=1)])],
@@ -147,6 +141,19 @@ def test_new_unit_gets_computed_id_that_collides_with_no_frozen_id(shipped):
     new = next(r for r in rec.rows if r["anchor"] == "ii.ix")
     assert new["passage_id"] == identity.passage_id(work()["document_id"], "ii.ix")
     assert new["passage_id"] not in reg.frozen_ids and rec.problems == []
+
+
+def test_a_redirect_into_another_unit_is_left_alone():
+    # A rebuilt source names a piece's new home by hand (1.2e); the piece rule cannot.
+    w = work()
+    old = row(w["document_id"], "ii.i/from-p3", status="redirected")
+    new = row(w["document_id"], "canon/7")
+    redirect = {"document_id": w["document_id"], "old_passage_id": old["passage_id"],
+                "old_anchor": old["anchor"], "new_passage_id": new["passage_id"],
+                "new_anchor": new["anchor"], "kind": "merged", "reason": "r", "added_by": "x"}
+    reg = valid_registry(passages=[old, new], redirects=[redirect])
+    rec = registry.reconcile(reg, [document([passage("canon/7")])], item="test", today=TODAY)
+    assert rec.problems == [] and rec.redirects == [redirect]
 
 
 # --------------------------------------------------------------------------- document IDs
