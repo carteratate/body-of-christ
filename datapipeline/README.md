@@ -1,14 +1,14 @@
 # TheoCorpus collection publication
 
 The non-V5 data pipeline turns source material into canonical `Document` and
-`Passage` objects, then reconciles one collection into two stores:
+`Passage` objects, then publishes them into two stores:
 
 - The **reader store** is Supabase/Postgres. It holds Documents and Passages for
   reading, full-text retrieval, bookmarks, and search history.
 - The **search index** is Qdrant. It holds Passage vectors and search payloads.
 
-`run_collection.py` is the sole supported non-V5 publication interface. Source
-adapters build domain objects; they do not write to either store directly.
+`publish.py` is the one publish path (plan D2); `run_collection.py` only dry-runs.
+Source adapters build domain objects; they do not write to either store directly.
 
 ## Source data
 
@@ -71,41 +71,79 @@ trusts the hostname, so a `localhost` URL that is an SSH tunnel or port forward 
 Supabase or Qdrant counts as a rehearsal. Don't point a local URL at production.
 
 **Publishing goes through `publish.py`** (item 2.2w, plan D2). A publish never writes
-straight into the live tables:
+straight into the live tables. It builds into staging, compares that with live, then
+moves it into live in one transaction:
 
 ```bash
-python3 publish.py stage   --collection bible --release 2026-12-bible   # or --collection all
-python3 publish.py report  --release 2026-12-bible
-python3 publish.py status  [--release 2026-12-bible]
-python3 publish.py discard --release 2026-12-bible     # abandon a publish never applied
+python3 publish.py stage    --collection bible --release 2026-12-bible   # or --collection all
+python3 publish.py report   --release 2026-12-bible
+python3 publish.py apply    --release 2026-12-bible    # also switches the alias
+python3 publish.py cleanup  --release 2026-12-bible    # once the apply is checked
+
+python3 publish.py status   [--release 2026-12-bible]
+python3 publish.py switch   --release 2026-12-bible    # after apply --no-switch
+python3 publish.py rollback --release 2026-12-bible    # undo an applied publish
+python3 publish.py discard  --release 2026-12-bible    # abandon a publish never applied
 ```
+
+The release name is the publish ID: `corpus_publishes.id`, the lock entry's `release`,
+and the suffix of `chunks-<release>`. Use 3 to 63 lowercase letters, digits and hyphens.
+The lock entry's steps are `stage` for `stage` and `discard`, `apply` for `apply`,
+`switch` and `cleanup`, and `rollback` for `rollback`. `report` and `status` only read
+and need no entry.
+
+Keep `DATABASE_URL` on a direct or session-mode connection (Supabase's pooler on port
+5432). `switch` and `rollback` hold a session-level advisory lock across statements,
+which transaction mode (port 6543) could leave held on a pooled connection.
 
 - `stage` builds the collections and writes them into the `staging` schema (migrations
   0042 and 0043; the live tables' shape, no foreign keys) and a new Qdrant collection
-  `chunks-<release>` that no alias points at. Users read neither. It needs a lock entry
-  with step `stage`, and the Qdrant alias `chunks_live` must exist: the stage copies the
-  collections it does not build, and unchanged vectors, from the alias's target. Passage
-  IDs come from the passage registry (D1); a stage stops on any live ID it drops that no
-  open removal entry or redirect in `registry/` explains (D4), and turns each explained one
-  into a staged tombstone or redirect. Vectors come from the embedding cache
-  (`cache.db`), then from the live point with the same `embed_sha256`, then OpenAI, and a
-  new vector goes into the cache before its point is written, so restaging an unchanged
-  build costs nothing.
+  `chunks-<release>` that no alias points at. Users read neither. The Qdrant alias
+  `chunks_live` must exist: the stage copies the collections it does not build, and
+  unchanged vectors, from the alias's target. Passage IDs come from the passage registry
+  (D1); a stage stops on any live ID it drops that no open removal entry or redirect in
+  `registry/` explains (D4), and turns each explained one into a staged tombstone or
+  redirect. Vectors come from the embedding cache (`cache.db`), then from the live point
+  with the same `embed_sha256`, then OpenAI, and a new vector goes into the cache before
+  its point is written, so restaging an unchanged build costs nothing.
+  `QDRANT_WRITE_COLLECTION` overrides the collection name for a local run.
 - `report` runs the release report (below) on the staged corpus against a fresh
   read-only export of live, adds the publish checks (every live ID kept or explained,
   points and payload facts equal to staging, embedding input hashes, dedup collision
   rates, the document-facts diff, user impact, staging size), and records its hash for
   the apply. It writes to `releases/local/publish-<release>-<time>/`.
-- `discard` drops the staging tables of a publish that was never applied. Deleting its
-  Qdrant collection is a separate ops step.
+- `apply` writes the before-snapshot to `releases/snapshots/<release>-before/` (corpus
+  text only, gitignored), then in one transaction updates, inserts and retires (it never
+  deletes), writes tombstones and redirects, and refreshes outlines. It then switches
+  `chunks_live` to the publish's collection, unless `--no-switch`. It refuses a staged
+  corpus that no longer matches the report's hash, and a publish with a redirect that a
+  user row points at, until 4.1a's remap exists. A redirect is only a record for now:
+  the API reads `corpus_redirects` from 2.4a on, and saved rows move with 4.1a.
+  `--retire-only --collection <name>` retires the documents an open `document` removal
+  entry names, with nothing staged.
+- `switch` moves the alias after `apply --no-switch`. Qdrant applies the move atomically.
+- `rollback` is the only rollback path (D11). Within the rollback window (4.1b) it undoes
+  an applied publish from its before-snapshot in one transaction, retires every row the
+  publish inserted under a `rolled-back` tombstone, then points the alias back. Roll back
+  the latest publish first. It works after `cleanup`, and leaves staging loaded, so run
+  `cleanup` again afterwards.
+- `cleanup` drops the staging tables and returns their space. Run it once the apply is
+  checked.
+- `discard` drops the staging tables of a publish that was never applied.
 
-`apply` (one transaction that updates, inserts and retires, never deletes), `switch`
-(the alias), `rollback` and `cleanup` arrive with 2.2w's second part. Until then nothing
-in the datapipeline writes the live corpus: `run_collection.py` only dry-runs, and no
-code path left in the datapipeline deletes a live chunk or document row.
+Deleting a Qdrant collection or a before-snapshot is a separate ops step, after the
+rollback window for a publish that was applied. A lock entry stays until that window
+closes, and a follow-up PR removes it.
 
-The release name is the publish ID: `corpus_publishes.id`, the lock entry's `release`,
-and the suffix of `chunks-<release>`. Use 3 to 63 lowercase letters, digits and hyphens.
+No code path left in the datapipeline deletes a live chunk or document row.
+
+**Reading a staged corpus.** With `CORPUS_READ_SCHEMA=staging`, a process that imports
+the API reads the staged corpus with no write access: its pool sets `search_path` to
+`staging, public` and `default_transaction_read_only` on, and refuses a connection those
+settings did not reach, or a database with no staged corpus. The API server itself
+refuses to start with anything but `public`, so this is for in-process runs such as the
+pre-cutover checks (item 4.2). It covers Postgres only: vector search needs
+`QDRANT_READ_COLLECTION`, which arrives with item 2.2b.
 
 The document checks include the health block rules in `health.py` (item 0.1b): blank
 text, page-number or punctuation debris, positions that are not `0..n-1`, duplicate
@@ -140,8 +178,8 @@ the stability threshold is listed as a problem until a person checks it and reru
 
 A stage also builds each staged document's **reader outline** (chapter list and passage
 count, `supabase/migrations/0037_document_outline.sql`) in staging with
-`staging.refresh_document_outline`, so the pre-cutover eval reads staging as it will read
-live.
+`staging.refresh_document_outline`, so the pre-cutover checks read staging as they will
+read live.
 
 A Document can also carry a **contents tree** (`Document.contents`, the hierarchy of its
 headings; `contents.py`, issue #250). The build refuses a tree that opens a chapter the
@@ -152,9 +190,10 @@ a document whose adapter stops emitting a tree loses its staged rows.
 
 ## Narrow repair commands
 
-Prefer the target-specific repair tools when a full collection publication would do
-unnecessary work. They dry-run by default; inspect each command's `--help` before
-authorizing writes.
+Prefer a publish for a change to a collection's text or structure: it writes Postgres
+and Qdrant from one staging build. These tools fix one store's drift in place. They
+dry-run by default, and a dry run reads `QDRANT_WRITE_COLLECTION` if it is set, otherwise
+the alias `chunks_live`. Inspect each command's `--help` before authorizing writes.
 
 ```bash
 python scripts/backfill_missing_vectors.py --collection bible
@@ -162,14 +201,15 @@ python scripts/reembed_drifted_vectors.py --collection bible
 python scripts/reconcile_qdrant_payloads.py --collection bible
 ```
 
-Their `--apply` mode is a live write, so it needs a publish-lock entry with step
-`repair` for the collection (or `all`) and `--release <the entry's release>`. The same
-applies to the V5 `pipeline.py` stages that write live data (`embed`, `bm25-index`, and
-`enrich` without `--sample`). Dry runs, `--status` and sample runs need no entry. The V5
-`reader` stage is retired: it cleared and rewrote a live collection, which D2 forbids.
+Their `--apply` mode is a live write. It needs a publish-lock entry with step `repair`
+for the collection (or `all`), `--release <the entry's release>`, and
+`QDRANT_WRITE_COLLECTION` naming the Qdrant collection to write, which has no default.
+The V5 `pipeline.py` stages `embed` and `bm25-index` need the same entry and setting;
+`enrich` without `--sample` needs the entry, and writes only annotations. Dry runs,
+`--status` and sample runs need no entry. The V5 `reader` stage is retired: it cleared
+and rewrote a live collection, which D2 forbids.
 
-These repair tools use the same canonical source-adapter registry as collection
-publication. They do not make the retired Postgres `content_embedding` column active;
+These repair tools use the same canonical source-adapter registry as a publish. They do not make the retired Postgres `content_embedding` column active;
 all searchable vectors live in Qdrant.
 
 ## Reader access (excerpt-only documents)

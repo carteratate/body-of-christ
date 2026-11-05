@@ -28,8 +28,8 @@ uvicorn app.main:app --reload   # dev server on :8000
 python3 -m pytest tests/
 
 # Datapipeline. run_collection.py only dry-runs (builds and checks, writes nothing).
-# Publishing is publish.py stage -> report -> apply (2.2w); every live step needs a
-# PUBLISH_LOCK.json entry and --release (see datapipeline/README.md)
+# Publishing is publish.py stage -> report -> apply -> cleanup, with rollback the only
+# undo (2.2w); every live step needs a PUBLISH_LOCK.json entry and --release
 cd datapipeline && python3 run_collection.py --collection bible --dry-run
 cd datapipeline && python3 publish.py stage --collection bible --release <name>
 
@@ -38,8 +38,8 @@ docker build -t theocorpus-api services/api
 docker run --env-file services/api/.env -p 8000:8000 theocorpus-api
 ```
 
-For collection publication, store repair, search-index reset, or reader wipe, read
-`datapipeline/README.md` before running commands.
+For a publish, a rollback or a store repair, read `datapipeline/README.md` before running
+commands.
 
 ---
 
@@ -116,8 +116,8 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   (0037 schema, 0038 backfill). `/toc`, `/reader`, `/documents/{id}` and `/sources` read
   it instead of deriving chapter lists and counts from `chunks` per request.
   `chunk_count IS NULL` means "no current outline" and the routes fall back to the old
-  derivation. `refresh_document_outline(doc)` builds it; 2.2w's apply (its second part,
-  not yet merged) is to call it last for every document it touches, and a stage builds
+  derivation. `refresh_document_outline(doc)` builds it; 2.2w's apply calls it last for every
+  document it touches, and a stage builds
   staged outlines with `staging.refresh_document_outline`
   (`reader_writer.write_staged_document`). Row triggers on `chunks` reset
   `chunk_count` to NULL on any structural change (chunk set, position, chapter key or
@@ -152,7 +152,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   would open the reader (search cards, bookmarks, history restore, the Library) links to
   the official source instead. Derived from `datapipeline/rights_inventory.json` (rows
   found by document ID, not by title), never edited by hand: every stage sets it in
-  `staging.documents`, 2.2w's apply (not yet merged) re-derives it for each document it
+  `staging.documents`, 2.2w's apply re-derives it for each document it
   touches (Carter, 2 Nov 2026), and
   `datapipeline/reader_access.py --apply` re-syncs all live documents after an inventory
   change (the unblock path). API side is `app/reader_access.py`: passage sources carry
@@ -180,8 +180,8 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   metadata, `/sources` and the 403 keep the cover URL.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
-  Places for what the cleanup decides; **nothing reads or writes them yet**, and every
-  existing row is live and searchable. Document facts on `documents` (`genre` → the
+  Places for what the cleanup decides. 2.2w's writer fills them, the search path does not
+  read them yet, and every existing row is live and searchable. Document facts on `documents` (`genre` → the
   `corpus_genres` lookup, seeded from `datapipeline/registry/genres.py`; `issuer` slug and
   `issuer_label`; `date_display`, `certainty`, `attribution_note`, `notes`,
   `source_credit`, `clavis_ref`, `superseded_by`/`superseded_note`). Works inside one
@@ -197,7 +197,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `document_contents`, `document_works`, `corpus_tombstones` and `corpus_redirects`
   (`LIKE … INCLUDING ALL`, no foreign keys), made by `create_corpus_staging()` and removed
   by `drop_corpus_staging()`; `staging.refresh_document_outline` builds staged outlines.
-  The stage-then-apply writer (2.2w) is what fills it. All new objects: RLS on, no
+  The stage-then-apply writer (2.2w) is what fills it. `CORPUS_READ_SCHEMA=staging` makes an
+  in-process run read it, read-only (`app/db.py`); the API server refuses to start with
+  anything but `public`. All new objects: RLS on, no
   policies, revoked from `anon`/`authenticated`. A `documents.source_credit` column now
   exists beside the API's derived `source_credit` (`app/reader_access.py`); which wins is
   2.4a's decision. Apply 0043 right after 0042: 0042 is catalog-only (milliseconds under
@@ -214,7 +216,8 @@ Migrations 0001–0034, 0036–0038 and 0040–0043 are committed; `0035_studies
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
-repo. Qdrant owns all vector search, including the V5 `facets` and `questions` collections.
+repo. Qdrant owns all vector search. Production holds one Qdrant collection, `chunks`; the
+V5 `facets` and `questions` collections exist only if a V5 `embed` run creates them.
 The 237 MB HNSW index over `content_embedding` was dropped in 0033's sibling, 0032. Leave
 the columns themselves alone: all-NULL columns cost zero bytes, and `DROP COLUMN` does not
 rewrite the table, so removing them would reclaim nothing.

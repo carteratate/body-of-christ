@@ -3,8 +3,8 @@
 A publish never writes straight into live tables. `StageRunner.stage` builds the
 selected collections, writes them into the `staging` schema and a new Qdrant collection
 `chunks-<release>`, and records the publish in `corpus_publishes`. `publish.py report`
-then compares staging with live, and `publish.py apply` (2.2w's second part) moves it
-into live in one transaction. Nothing here writes a `public` table other than
+then compares staging with live, and `publish.py apply` moves it into live in one
+transaction. Nothing here writes a `public` table other than
 `corpus_publishes`, or a Qdrant collection an alias points at.
 
 Source adapters stay concerned with building canonical Documents and Passages; `build`
