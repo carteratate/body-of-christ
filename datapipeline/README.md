@@ -89,8 +89,8 @@ python3 publish.py discard  --release 2026-12-bible    # abandon a publish never
 The release name is the publish ID: `corpus_publishes.id`, the lock entry's `release`,
 and the suffix of `chunks-<release>`. Use 3 to 63 lowercase letters, digits and hyphens.
 The lock entry's steps are `stage` for `stage` and `discard`, `apply` for `apply`,
-`switch` and `cleanup`, and `rollback` for `rollback`. `report` and `status` only read
-and need no entry.
+`switch` and `cleanup`, and `rollback` for `rollback`. `status` only reads. `report` reads
+too, but recording a passing report's hash needs the release's `stage` approval.
 
 Keep `DATABASE_URL` on a direct or session-mode connection (Supabase's pooler on port
 5432). `switch` and `rollback` hold a session-level advisory lock across statements,
