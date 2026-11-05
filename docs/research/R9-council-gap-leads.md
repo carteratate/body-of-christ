@@ -2,7 +2,7 @@
 
 Research for corpus-cleanup item R9 (`docs/corpus-cleanup/P0-checks-identity-research.md`, GitHub issue #316). Done 4 November 2026. It checks the leads for the gap register in `docs/research/council-translation-inventory.md` (1.2a).
 
-No production store was queried and nothing was vendored. To compare texts, these were read into a scratch folder on the home server and deleted with it: the OCR text of three open Internet Archive items (Hefele vol. 5, Mendham, Chrystal vol. 1) and a third-party PDF of a reprint of Deferrari's book, described under "Scans". Pages of the two restricted Internet Archive copies were read only through the Archive's public preview and search-inside.
+No production store was queried. One file was saved at Carter's request: the reprint PDF, in `sources/_incoming/councils/sources-of-catholic-dogma/` and in `source_lock.json`. To compare texts, these were read into a scratch folder on the home server and deleted with it: the OCR text of three open Internet Archive items (Hefele vol. 5, Mendham, Chrystal vol. 1) and a third-party PDF of a reprint of Deferrari's book, described under "Scans". Pages of the two restricted Internet Archive copies were read only through the Archive's public preview and search-inside.
 
 ## Result
 
@@ -68,7 +68,7 @@ Recorded in the row. NYPL's renewals transcription (`cce-renewals`, `data/` at c
 
 **There is no clean, openly available scan of the 1957 printing.** Enough of it can be read to check it, but not to build from.
 
-**Source for 1.2e: the reprint PDF (Carter, 4 Nov 2026).** 1.2e saves a copy, hashes it and records where it came from, then builds from its text layer through a small adapter into the 1.2f cleanup and gate. Buying a 1957 printing was considered: it gives a cleaner record of origin but no better text, and a home scan would need an OCR engine as well as the adapter. Every passage is read against the page image and checked against the 1957 scan through search-inside. If the PDF has gone or its pages prove too poor, buying a copy remains the fallback.
+**Source for 1.2e: the reprint PDF (Carter, 4 Nov 2026).** A copy is saved and hashed (`_incoming/councils/sources-of-catholic-dogma/`, sha256 `70a580f6…`, 51,355,347 bytes, 4 Nov 2026). 1.2e builds from its text layer through a small adapter into the 1.2f cleanup and gate. Buying a 1957 printing was considered: it gives a cleaner record of origin but no better text, and a home scan would need an OCR engine as well as the adapter. Every passage is read against the page image and checked against the 1957 scan through search-inside. If the PDF has gone or its pages prove too poor, buying a copy remains the fallback.
 
 ## 2. Deferrari against the gap register
 
