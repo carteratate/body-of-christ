@@ -139,8 +139,9 @@ No code path left in the datapipeline deletes a live chunk or document row.
 
 **Reading a staged corpus.** With `CORPUS_READ_SCHEMA=staging`, a process that imports
 the API reads the staged corpus with no write access: its pool sets `search_path` to
-`staging, public` and `default_transaction_read_only` on, and refuses a connection those
-settings did not reach, or a database with no staged corpus. The API server itself
+`staging, public` and `default_transaction_read_only` on each time it hands out a
+connection, and refuses a connection those settings do not hold on, or a database with no
+staged corpus. The API server itself
 refuses to start with anything but `public`, so this is for in-process runs such as the
 pre-cutover checks (item 4.2). It covers Postgres only: vector search needs
 `QDRANT_READ_COLLECTION`, which arrives with item 2.2b.
