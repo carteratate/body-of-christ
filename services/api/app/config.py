@@ -24,6 +24,9 @@ class Settings(BaseSettings):
         validation_alias="CORS_ORIGINS",
     )
     database_url: str = Field(validation_alias="DATABASE_URL")
+    # `staging` points an in-process run at a staged corpus, read-only (see app/db.py).
+    # The deployed app refuses to start with anything but `public` (app/main.py).
+    corpus_read_schema: str = Field(default="public", validation_alias="CORPUS_READ_SCHEMA")
 
     # Supabase / auth
     supabase_project_url: str = Field(validation_alias="SUPABASE_PROJECT_URL")
