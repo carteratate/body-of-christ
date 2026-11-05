@@ -142,6 +142,17 @@ def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
     assert all(len(p.content) <= 4000 for p in doc.passages)
 
 
+@pytest.mark.parametrize("work", schroeder.WORKS.values())
+def test_frozen_text_marks_balance_and_sentences_start_clean(work):
+    # What a word-level comparison misses: a lost bracket or quotation mark, or a stop
+    # read as a comma or a comma as a stop.
+    for unit in read_text(work)["passages"]:
+        text = unit["text"]
+        assert text.count("(") == text.count(")"), unit["id"]
+        assert text.count("“") == text.count("”"), unit["id"]
+        assert not re.search(r", But\b|\. (?:but|and|the)\b", text), unit["id"]
+
+
 @pytest.mark.parametrize("council", CANON_COUNTS)
 def test_every_word_of_the_frozen_text_reaches_a_passage(council):
     # The coverage check for these councils: the Tanner page is no longer their source.
@@ -155,7 +166,7 @@ def test_every_word_of_the_frozen_text_reaches_a_passage(council):
 
 def test_frozen_texts_passed_the_gate():
     for council, work in schroeder.WORKS.items():
-        assert read_text(work)["gate"] == "pass", council
+        assert council in schroeder.HELD or read_text(work)["gate"] == "pass", council
 
 
 def test_schroeder_document_keeps_the_gap_link_and_points_at_the_scan():

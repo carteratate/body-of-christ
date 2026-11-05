@@ -3496,6 +3496,26 @@
   "closed_on": "2026-11-04"
  },
  {
+  "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
+  "old_passage_id": "9d656db0-7bdf-5ac3-a521-a1bb6df62a38",
+  "old_anchor": "first-lateran-council/sec-0/4",
+  "new_passage_id": "ab9697d2-b2c0-5bb8-a698-621c6878bc12",
+  "new_anchor": "first-lateran-council/canon/13",
+  "kind": "merged",
+  "reason": "Tanner's note quoting the recension this canon translates",
+  "added_by": "1.2e-1"
+ },
+ {
+  "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
+  "old_passage_id": "d5121435-48c7-50a7-8d04-096d539f4385",
+  "old_anchor": "first-lateran-council/sec-0/5-2",
+  "new_passage_id": "c3bf35ba-d8ee-5d1d-904a-c4319cce1553",
+  "new_anchor": "first-lateran-council/canon/17",
+  "kind": "merged",
+  "reason": "Tanner's note quoting the recension this canon translates",
+  "added_by": "1.2e-1"
+ },
+ {
   "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
   "old_passage_id": "768d4e75-ba7c-5c82-8a18-d1fccc950427",
   "old_anchor": "vi.iv.i.i/from-p17",

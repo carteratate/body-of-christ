@@ -142,5 +142,47 @@
   "find": "élections",
   "replace": "elections",
   "why": "Pen marks on the scan garbled this; p. 265 prints \"elections\"."
+ },
+ {
+  "passage": "canon-3",
+  "find": "under the appearance",
+  "replace": "under “the appearance",
+  "why": "The model removed a printed quotation mark; p. 244 prints it."
+ },
+ {
+  "passage": "canon-3",
+  "find": "ecclesiastical Censure",
+  "replace": "ecclesiastical censure",
+  "why": "A pen mark read as a capital; p. 242 prints \"censure\"."
+ },
+ {
+  "passage": "canon-8",
+  "find": "subjects that is, of Clerics)",
+  "replace": "subjects (that is, of clerics)",
+  "why": "A pen mark over the words; p. 248 prints \"(that is, of clerics)\"."
+ },
+ {
+  "passage": "canon-8",
+  "find": "lower rank). but",
+  "replace": "lower rank) but",
+  "why": "A pen mark read as a stop; p. 249 prints no stop."
+ },
+ {
+  "passage": "canon-46",
+  "find": "common needs, But",
+  "replace": "common needs. But",
+  "why": "A stop read as a comma; p. 276 prints a stop."
+ },
+ {
+  "passage": "canon-64",
+  "find": "same order, But",
+  "replace": "same order. But",
+  "why": "A stop read as a comma; p. 288 prints a stop."
+ },
+ {
+  "passage": "canon-62",
+  "find": "\n\nForma litterarum praedicatorum\n\nQuoniam, ut ait Apostolus, omnes stabimus ante tribunal Christi, recepturi prout in corpore gessimus, sive bonum sive malum fuerit, oportet nos diem messionis extremae misericordiae operibus praevenire, ac aeternorum intuitu seminare in terris quod reddente Domino cum multiplicato fructu colligere debeamus in caelis; firmam spem, fiduciamque tenentes, quoniam “qui parce seminat, parce et metet, et qui seminat in benedictionibus, de benedictionibus et metet in vitam aeternam.” Cum igitur ad sustentationem fratrum et egenorum ad tale confluentium hospitale propriae non suppetant facultates, universitatem vestram monemus et exhortamur in Domino atque in remissionem vobis injungimus peccatorum, quatenus de bonis a Deo vobis collatis pias eleemosynas et grata eis caritatis subsidia erogatis, ut per subventionem vestram ipsorum inopiae consulatur, et vos per haec et per alia bona, quae Domino inspirante feceritis, ad aeterna possitis gaudia pervenire.",
+  "replace": "",
+  "why": "Rule E: Schroeder prints this form of letter in Latin (p. 287), and the Latin is never stored or shown."
  }
 ]

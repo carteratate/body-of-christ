@@ -94,8 +94,7 @@ def strip_note_calls(text: str) -> str:
             opened += 1
         elif mark == "”" and opened:
             opened -= 1
-        elif _QUOTE_CALL.fullmatch(text, m.start(), m.end()) or \
-                _QUOTE_CALL.match(text, m.start()):
+        elif not opened and _QUOTE_CALL.match(text, m.start()):
             out.append(text[last:m.start()])
             last = m.end()
     out.append(text[last:])

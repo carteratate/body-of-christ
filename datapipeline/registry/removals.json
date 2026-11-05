@@ -2410,7 +2410,7 @@
   "added_on": "2026-11-04"
  },
  {
-  "id": "rm-0141",
+  "id": "rm-0139",
   "scope": "passage",
   "collection": "councils",
   "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
@@ -2426,7 +2426,7 @@
   "added_on": "2026-11-04"
  },
  {
-  "id": "rm-0142",
+  "id": "rm-0140",
   "scope": "passage",
   "collection": "councils",
   "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
@@ -2462,38 +2462,6 @@
   "scope": "passage",
   "collection": "councils",
   "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
-  "anchor": "first-lateran-council/sec-0/4",
-  "passage_id": "9d656db0-7bdf-5ac3-a521-a1bb6df62a38",
-  "reason": "rule-g-editorial",
-  "detail": "Tanner's note on the other recension of canon 15",
-  "tombstone": "This was an editor's introduction or note in the earlier translation, not the council's own text.",
-  "church_act": null,
-  "span": null,
-  "judgment": null,
-  "added_by": "1.2e-1",
-  "added_on": "2026-11-04"
- },
- {
-  "id": "rm-0136",
-  "scope": "passage",
-  "collection": "councils",
-  "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
-  "anchor": "first-lateran-council/sec-0/5-2",
-  "passage_id": "d5121435-48c7-50a7-8d04-096d539f4385",
-  "reason": "rule-g-editorial",
-  "detail": "Tanner's note on the other recension of canon 16",
-  "tombstone": "This was an editor's introduction or note in the earlier translation, not the council's own text.",
-  "church_act": null,
-  "span": null,
-  "judgment": null,
-  "added_by": "1.2e-1",
-  "added_on": "2026-11-04"
- },
- {
-  "id": "rm-0137",
-  "scope": "passage",
-  "collection": "councils",
-  "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
   "anchor": "first-lateran-council/sec-0/6-2",
   "passage_id": "3c30425d-e0fe-51d0-ad90-bbab288eaaa4",
   "reason": "rule-g-editorial",
@@ -2506,7 +2474,7 @@
   "added_on": "2026-11-04"
  },
  {
-  "id": "rm-0138",
+  "id": "rm-0136",
   "scope": "passage",
   "collection": "councils",
   "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
@@ -2554,7 +2522,7 @@
   "added_on": "2026-11-04"
  },
  {
-  "id": "rm-0140",
+  "id": "rm-0138",
   "scope": "passage",
   "collection": "councils",
   "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
@@ -2586,7 +2554,7 @@
   "added_on": "2026-11-04"
  },
  {
-  "id": "rm-0139",
+  "id": "rm-0137",
   "scope": "passage",
   "collection": "councils",
   "document_id": "6410138e-f599-5155-a615-fc79250cf608",
