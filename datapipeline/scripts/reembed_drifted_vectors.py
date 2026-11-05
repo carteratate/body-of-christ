@@ -2,9 +2,11 @@
 
     cd datapipeline
     python3 scripts/reembed_drifted_vectors.py --collection all              # dry run
-    python3 scripts/reembed_drifted_vectors.py --collection all --apply      # write
+    QDRANT_WRITE_COLLECTION=<collection> python3 scripts/reembed_drifted_vectors.py \\
+        --collection all --apply --release <name>                            # write
 
-DRY RUN IS THE DEFAULT. `--apply` is required to write.
+DRY RUN IS THE DEFAULT. `--apply` is required to write, and it requires
+QDRANT_WRITE_COLLECTION. A dry run reads that collection if set, otherwise the live alias.
 
 ⚠️  RUN THIS BEFORE `reconcile_qdrant_payloads.py --fields content`. That sync
 overwrites Qdrant `content` with the signal this tool classifies on. Simulated live:
@@ -83,13 +85,13 @@ _SQL = """
 
 
 async def _qdrant_payloads(client, collection: str) -> dict[str, dict]:
-    from writers.qdrant import QDRANT_COLLECTION, collection_filter
+    from writers.qdrant import collection_filter, scan_collection
 
     payloads: dict[str, dict] = {}
     offset = None
     while True:
         points, offset = await client.scroll(
-            collection_name=QDRANT_COLLECTION,
+            collection_name=scan_collection(),
             scroll_filter=collection_filter(collection),
             limit=1000, offset=offset,
             with_payload=["content", "chapter_label"], with_vectors=False,
@@ -124,7 +126,7 @@ async def reembed_collection(client, conn, collection: str, categories: frozense
     """Returns (selected_count, written_count)."""
     from qdrant_client.models import PointStruct
 
-    from writers.qdrant import QDRANT_COLLECTION, upsert_points
+    from writers.qdrant import upsert_points, write_collection
 
     rows = [PassageRow(**dict(r)) for r in await conn.fetch(_SQL, collection)]
     payloads = await _qdrant_payloads(client, collection)
@@ -177,7 +179,7 @@ async def reembed_collection(client, conn, collection: str, categories: frozense
                 f"got {len(vectors)} vectors for {len(window)} passages; refusing to "
                 f"write positionally mismatched points"
             )
-        await upsert_points(client, QDRANT_COLLECTION, [
+        await upsert_points(client, write_collection(), [
             PointStruct(id=row.chunk_id, vector=vector, payload=build_payload(row))
             for (row, _), vector in zip(window, vectors)
         ])
@@ -266,11 +268,13 @@ if __name__ == "__main__":
 
     if args.apply:
         from publish_lock import PublishLocked, assert_live_write_allowed  # noqa: E402
+        from writers.qdrant import write_collection  # noqa: E402
 
         try:
             assert_live_write_allowed(
                 "reembed_drifted_vectors.py --apply", args.collection, args.release, "repair")
         except PublishLocked as exc:
             ap.error(str(exc))
+        write_collection()
 
     raise SystemExit(asyncio.run(main(names, categories, args.apply, args.batch_size)))

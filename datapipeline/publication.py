@@ -273,7 +273,7 @@ class StageRunner:
                     f"REFUSING: there is no Qdrant alias '{alias}'. Create it on the "
                     "collection users search (2.2b's ops step) before staging; a stage "
                     "copies vectors and untouched collections from its target")
-            if name in (live, alias, qd.QDRANT_COLLECTION):
+            if name in (live, alias, qd.PRE_ALIAS_COLLECTION):
                 raise StageRefused(f"REFUSING: '{name}' is what users search")
 
             # Decide whether the Qdrant collection is ours before anything is written: a

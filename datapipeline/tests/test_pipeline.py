@@ -118,6 +118,23 @@ def test_embed_and_bm25_index_stages_are_refused_while_locked(monkeypatch, capsy
     assert "locked" in capsys.readouterr().err
 
 
+def test_embed_and_bm25_index_stages_need_the_write_collection(monkeypatch):
+    import argparse
+    from dataclasses import replace
+    import publish_lock
+    import writers.qdrant as qd
+    from pipeline import _guard_live_writes
+
+    monkeypatch.setattr(publish_lock, "settings_targets", lambda: publish_lock.WriteTargets(
+        "postgresql://u@127.0.0.1/postgres", "http://127.0.0.1:1"))
+    monkeypatch.setattr(qd, "settings", replace(qd.settings, QDRANT_WRITE_COLLECTION=None))
+    args = argparse.Namespace(sample=None, collection="medieval", release=None)
+    for stage in ("embed", "bm25-index"):
+        with pytest.raises(SystemExit, match="QDRANT_WRITE_COLLECTION"):
+            _guard_live_writes(args, [stage])
+    _guard_live_writes(args, ["enrich"])
+
+
 def test_sample_enrich_writes_only_samples_and_needs_no_entry(monkeypatch):
     import argparse
     from pipeline import _guard_live_writes

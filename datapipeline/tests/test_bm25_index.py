@@ -1,4 +1,5 @@
 import asyncio
+from dataclasses import replace
 import json
 
 import pytest
@@ -54,7 +55,7 @@ def test_build_sparse_update_names_both_vectors():
     assert upd["vector"]["sparse_annotation"].values == [0.3, 0.4]
 
 
-def test_index_collection_decodes_jsonb_annotation_before_encoding():
+def test_index_collection_decodes_jsonb_annotation_before_encoding(write_collection):
     # r["annotation"] as returned by asyncpg for a jsonb column is the raw JSON-encoded
     # text (quotes + literal \n escapes), since no set_type_codec is registered in this
     # codebase. index_collection must json.loads() it before annotation_prose() strips
@@ -82,5 +83,17 @@ def test_index_collection_decodes_jsonb_annotation_before_encoding():
     assert "[DOCTRINAL | explicit]:" not in annotation_model.calls[0]
     assert len(qdrant.calls) == 1
     collection_name, points = qdrant.calls[0]
-    assert collection_name == "chunks"
+    assert collection_name == write_collection
     assert points[0].id == "cid1"
+
+
+def test_index_collection_refuses_with_no_collection_named(monkeypatch):
+    import writers.qdrant as qd
+
+    monkeypatch.setattr(qd, "settings", replace(qd.settings, QDRANT_WRITE_COLLECTION=None))
+    rows = [{"id": "cid1", "content": "text", "annotation": json.dumps("SUMMARY: test")}]
+    qdrant = _FakeQdrant()
+    with pytest.raises(SystemExit, match="QDRANT_WRITE_COLLECTION"):
+        asyncio.run(index_collection("bible", _FakeConn(rows), qdrant,
+                                     _RecordingModel(), _RecordingModel()))
+    assert qdrant.calls == []

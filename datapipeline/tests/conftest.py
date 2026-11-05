@@ -1,5 +1,9 @@
 import sys
 import os
+from dataclasses import replace
+
+import pytest
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -17,3 +21,12 @@ def pytest_configure(config):
     os.environ.setdefault("QDRANT_URL", "http://localhost")
     os.environ.setdefault("QDRANT_API_KEY", "x")
     os.environ.setdefault("ANTHROPIC_API_KEY", "sk-ant-test")
+
+
+@pytest.fixture()
+def write_collection(monkeypatch):
+    """Name QDRANT_WRITE_COLLECTION for a test; returns the name."""
+    import writers.qdrant as qd
+
+    monkeypatch.setattr(qd, "settings", replace(qd.settings, QDRANT_WRITE_COLLECTION="chunks-test"))
+    return "chunks-test"
