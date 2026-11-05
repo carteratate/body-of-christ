@@ -260,6 +260,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **2.2w** [Phase 2]. Found by 2.2w (2 Nov 2026). 2.2b is not merged, so the alias `chunks_live` does not exist yet. Should a stage refuse until it exists, or create it? Recommended answer is refuse, pointing at 2.2b's ops step.
   Answered 2026-11-02: refuse.
 - **2.2w and 4.1b** [Phase 2, needed by Phase 4]. Set the rollback window length. Recommended answer is 14 days.
+  Answered 2026-11-04: 14 days.
 - **2.2w** [Phase 2]. Found by 2.2w part (b) (4 Nov 2026). The rehearsal's "run the eval harness once against staging" needs the `CORPUS_READ_SCHEMA` override, which part (c) adds. Move that step to part (c)?
   Answered 2026-11-04: yes; part (c) runs it.
   Answered 2026-11-04 (later the same day, on starting part (c)): no eval in part (c). Carter cares about the corpus being correct, which the release report and 4.2's targeted checks decide, and 2.2b, which the eval's vector reads need, is not merged. So part (c) makes no production export, Qdrant copy or provider spend.

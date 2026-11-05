@@ -534,7 +534,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Approval of the `pg_dump` for the local rehearsal (D8).
   - For each production stage and apply, a reviewed change to `PUBLISH_LOCK.json` adding an entry for the collection and release, and a second one removing it after the rollback window. The first is P4's 4.1b.
   - The first production stage waits for 4.0 (storage and the `VACUUM FULL` window). Approve the embedding spend, about 11 million tokens (about $1.40) at the first full local rehearsal stage, which fills the cache, then between 0 and that amount at the production stage, depending on how much changed in between.
-  - The rollback window length (4.1b).
+  - Answered 4 Nov 2026: the rollback window is 14 days (4.1b).
   - Answered 4 Nov 2026: the On the Incarnation early retirement below is not taken up (1.8d).
   - Found by 2.2a (2 Nov 2026): whether the writer stages, snapshots, applies and rolls back the contents tree (`staging.document_contents`) with the chunks. Decided by Carter on 2 Nov 2026: yes (stage step 4, the snapshot, apply step 1 and rollback step 2 above).
   - Found by 2.2w (2 Nov 2026): whether the apply and rollback derive `reader_access` again for every document they touch. Decided by Carter on 2 Nov 2026: yes, and the apply refuses on a difference from the staged value (stage step 4, apply step 1, rollback step 2 above).

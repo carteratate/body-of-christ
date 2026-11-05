@@ -122,7 +122,7 @@ which transaction mode (port 6543) could leave held on a pooled connection.
   `--retire-only --collection <name>` retires the documents an open `document` removal
   entry names, with nothing staged.
 - `switch` moves the alias after `apply --no-switch`. Qdrant applies the move atomically.
-- `rollback` is the only rollback path (D11). Within the rollback window (4.1b) it undoes
+- `rollback` is the only rollback path (D11). Within the 14-day rollback window it undoes
   an applied publish from its before-snapshot in one transaction, retires every row the
   publish inserted under a `rolled-back` tombstone, then points the alias back. Roll back
   the latest publish first. It works after `cleanup`, and leaves staging loaded, so run
