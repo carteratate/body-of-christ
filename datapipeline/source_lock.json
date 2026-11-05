@@ -298,6 +298,17 @@
  },
  {
   "collection": "_incoming",
+  "path": "_incoming/councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf",
+  "sha256": "70a580f6f6fb760aabcc6de8f8aaf4679e47bb6455dc6f29be797c48dce229ab",
+  "bytes": 51355347,
+  "url": "https://isidore.co/calibre/legacy/get/PDF/6229/CalibreLibrary/The%20Sources%20of%20Catholic%20Dogma%20%20-%20Denzinger%2C%20Heinrich%20%26%20DeFerrar_6229.pdf",
+  "acquired": "2026-11-04",
+  "hashed_on": "2026-11-04",
+  "role": "vendored-unregistered",
+  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
+ },
+ {
+  "collection": "_incoming",
   "path": "_incoming/roman-curia/compendium-of-the-social-doctrine-of-the-church.html",
   "sha256": "85e585bed01b303e67ddbef64f1be03b0e9b4c638151df3ea1d4a6f5e361f525",
   "bytes": 1160524,

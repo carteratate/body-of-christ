@@ -114,7 +114,7 @@ pages. Tanner sections are Tanner's headings as the vendored page prints them.
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Second letter of Cyril to Nestorius | "Second letter of Cyril to Nestorius" | `x.v` | covered |
-| Second letter of Nestorius to Cyril (**condemned text read at the council**) | "Second letter of Nestorius to Cyril" | Not printed: `x.vi` records the reading and elides the letter ("…") | **gap** — lead: Chrystal 1895, pp. 155–161 |
+| Second letter of Nestorius to Cyril (**condemned text read at the council**) | "Second letter of Nestorius to Cyril" | Not printed: `x.vi` records the reading and elides the letter ("…") | **R9:** Chrystal 1895, pp. 155–166 (1.2c) |
 | Third letter of Cyril to Nestorius | "Third letter of Cyril to Nestorius" | `x.viii` | covered |
 | Twelve anathemas of Cyril | "Twelve Anathemas Proposed by Cyril…" | `x.ix.i`, `.iii`–`.x`, `.xii`–`.xiv` (the anathema paragraph in each, before "Notes.") | covered |
 | Judgment against Nestorius | "The judgment against Nestorius" | `x.xi` ("Decree of the Council Against Nestorius"), `-p3` | covered |
@@ -161,7 +161,7 @@ decides whether its allowlist takes them (see "Percival's units").
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Definition | "Definition" | `xvi.xii` ("The Decree of the Holy, Great, Ecumenical Synod…") | covered |
-| Anathemas concerning holy images (four) | "Anathemas concerning holy images" | Not printed. `xvi.xii-p14` has the session's acclamations ("Anathema to those who…"), not the four anathemas | **gap** — leads: Mendham 1850, pp. 442–443; Hefele, English vol. 5 (1896), p. 376 |
+| Anathemas concerning holy images (four) | "Anathemas concerning holy images" | Not printed. `xvi.xii-p14` has the session's acclamations ("Anathema to those who…"), not the four anathemas | **R9:** Hefele, English vol. 5 (1896), p. 376 (1.2c) |
 | Canons 1–22 | "Canons" | `xvi.xiv.i` to `.xxii` | covered |
 
 ### 8. Constantinople IV (869–870) — Schroeder
@@ -170,7 +170,7 @@ decides whether its allowlist takes them (see "Percival's units").
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Definition of the holy and universal eighth synod | "[Definition of the holy and universal eighth synod]" | Not in Schroeder (his history, pp. 157–159, describes the sessions) | **gap** |
-| Canons 1–27 | "Canons" 1–27 | pp. 159–176 | **partial**: every canon condensed. Schroeder: "Since some of the canons of this council are noted for their verboseness, a summary of them will suffice" (p. 159). His "Text." sections total about 2,900 words against Tanner's 7,300; canon 1 is 29 words against 324 |
+| Canons 1–27 | "Canons" 1–27 | pp. 159–176 | **partial**: every canon condensed (R9: canons 1, 3, 11, 12, 21 and part of 17 come from Deferrari instead). Schroeder: "Since some of the canons of this council are noted for their verboseness, a summary of them will suffice" (p. 159). His "Text." sections total about 2,900 words against Tanner's 7,300; canon 1 is 29 words against 324 |
 
 ### 9. Lateran I (1123) — Schroeder
 
@@ -245,12 +245,12 @@ footnote 1 "not from Tanner").
 | 4 | Decrees on its authority and integrity, as abbreviated by Zabarella | — | **gap** |
 | 5 | Decrees on its authority and integrity (Haec sancta) | Paraphrase only, p. 444 | **gap** |
 | 6, 7 | Summaries only | — | Tanner summary |
-| 8 | Opening decree; Sentence condemning Wyclif's 45 articles (**condemned text**); Condemnation of Wyclif's books; Condemnation of 260 other articles; Wyclif declared a heretic | — | **gap** — lead: Foxe, *Acts and Monuments*, Cattley ed., vol. 3 (the sentence and the 45 articles) |
+| 8 | Opening decree; Sentence condemning Wyclif's 45 articles (**condemned text**); Condemnation of Wyclif's books; Condemnation of 260 other articles; Wyclif declared a heretic | — | **R9:** the 45 articles from Deferrari; the rest **gap** |
 | 9–11 | Summaries only | — | Tanner summary |
 | 12 | Decree on the process for a papal election; Sentence deposing John XXIII; Decree that none of the three contenders may be re-elected | — | **gap** |
-| 13 | Condemnation of communion under both kinds; Decree that no priest may give communion under both kinds | — | **gap** |
+| 13 | Condemnation of communion under both kinds; Decree that no priest may give communion under both kinds | R9: Deferrari n. 626 | **partial** (extract); the decree on priests **gap** |
 | 14 | Uniting of the obediences; Decree on the manner of electing the pope; Approval of Gregory XII's resignation | — | **gap** |
-| 15 | Sentence condemning 260 articles of Wyclif; 58 articles of Wyclif (**condemned text**); Sentence against Hus; Sentence of degradation; Sentence to the stake; 30 articles of Hus (**condemned text**); Sentence on Jean Petit's proposition (**condemned text**) | — | **gap** — lead: Foxe, Cattley ed., vol. 3 (the sentence against Hus) |
+| 15 | Sentence condemning 260 articles of Wyclif; 58 articles of Wyclif (**condemned text**); Sentence against Hus; Sentence of degradation; Sentence to the stake; 30 articles of Hus (**condemned text**); Sentence on Jean Petit's proposition (**condemned text**) | — | **R9:** the 30 articles of Hus and an extract of the sentence on Petit from Deferrari; the rest **gap** |
 | 16–20 | Summaries only (session 19's names Jerome of Prague's abjuration and an ordinance on the Franciscans, not printed) | — | Tanner summary |
 | 21 | Sentence condemning Jerome of Prague | — | **gap** |
 | 22–36 | Summaries only | — | Tanner summary |
@@ -301,12 +301,12 @@ footnote digits ("Session 31", "42", "5′"); they are sessions 3, 4 and 5.
 | Ferrara 3 | Penalties against members of the Basel synod | — | **gap** |
 | Ferrara 4 | Ferrara declared legitimate and ecumenical | — | **gap** |
 | Ferrara 5 | Decree moving the council to Florence | — | **gap** |
-| Florence 6 | Definition of the union with the Greeks (Laetentur caeli) | — | **gap** |
+| Florence 6 | Definition of the union with the Greeks (Laetentur caeli) | R9: Deferrari n. 691–694 | **partial** (extract); the rest **gap** |
 | Florence 7 | Decree against the synod at Basel | — | **gap** |
-| Florence 8 | Bull of union with the Armenians | — | **gap** |
+| Florence 8 | Bull of union with the Armenians | R9: Deferrari n. 695–702 | **partial** (extract); the rest **gap** |
 | Florence 9 | Monition against the antipope Felix V | — | **gap** |
 | Florence 10 | Eugenius IV's exhortation to the Basel synod | — | **gap** |
-| Florence 11 | Bull of union with the Copts (Cantate Domino) | — | **gap** |
+| Florence 11 | Bull of union with the Copts (Cantate Domino) | R9: Deferrari n. 703–715 | **partial** (extract); the rest **gap** |
 | Florence 12 | Convocation of the Lateran continuation | — | **gap** |
 | Florence 13 | Bull of union with the Syrians | — | **gap** |
 | Florence 14 | Bull of union with the Chaldeans and the Maronites of Cyprus | — | **gap** |
@@ -338,7 +338,7 @@ headed "From the bull …". Word counts are Schroeder's against Tanner's.
 | 10 | On a date for those acknowledging the Pragmatic Sanction | — | **gap** |
 | 11 | On how to preach (Supernae majestatis praesidio) | pp. 505–506 | **partial**: about 690 against 2,260 |
 | 11 | Bull on the agreements with the king of France | — | **gap** |
-| 11 | Abrogation of the Pragmatic Sanction (Pastor aeternus gregem) | — | **gap** |
+| 11 | Abrogation of the Pragmatic Sanction (Pastor aeternus gregem) | R9: Deferrari n. 740 | **partial** (136-word extract); the rest **gap** |
 | 11 | On religious and their privileges (Dum intra mentis arcana) | pp. 506–512 | **partial**: about 1,090 against 2,400 |
 | 12 | Against those attacking the houses of cardinals | — | **gap** |
 | 12 | Constitution imposing taxes and closing the council | — | **gap** |
@@ -383,11 +383,11 @@ text is a gap, nothing is listed until a replacement exists.
 
 | Council | Text | In which source | Note |
 |---|---|---|---|
-| Ephesus | Nestorius's second letter to Cyril | Tanner only (live `council-of-ephesus/sec-3/3/p1` to `sec-3/6`); not in Percival | Gap |
+| Ephesus | Nestorius's second letter to Cyril | Tanner (live `council-of-ephesus/sec-3/3/p1` to `sec-3/6`); not in Percival; Chrystal (R9) | Listed from 1.2c |
 | Nicaea II | Definition of the iconoclast synod of Hieria (754), read and refuted at session 6 | Not in Tanner; Percival `xvi.x` prints an "Epitome" of it with his bracketed summaries | Only if 1.2c's allowlist takes it (recommended: no) |
 | Vienne | Eight errors of the Beghards and Beguines in Ad nostrum | Tanner [28]; Schroeder pp. 389–390 | The listed errors are the rejected voice; the decree around them is the council's |
-| Constance | Wyclif's 45 articles (session 8) | Tanner only | Gap |
-| Constance | 58 articles of Wyclif selected from the 260; 30 articles of Hus; Jean Petit's proposition (all session 15) | Tanner only | Gap |
+| Constance | Wyclif's 45 articles (session 8) | Tanner; Deferrari (R9) | Listed from 1.2e |
+| Constance | 58 articles of Wyclif selected from the 260; 30 articles of Hus; Jean Petit's proposition (all session 15) | Tanner; Deferrari has the 30 of Hus and Petit's proposition (R9) | Those listed from 1.2e; the 58 stay a gap |
 | Basel | Propositions of Augustine of Rome quoted in the session 22 condemnation | Tanner only | Gap |
 
 Looked at and not marked, because the council states the error in its own words rather
@@ -539,7 +539,7 @@ All on 2 Nov 2026, from this server. The method is R8's (`docs/research/R8-papal
     "fellow-minister" letter`; `"your astonishing letter"`; `"the insults" Nestorius
     Cyril letter`. Found: Chrystal, *Authoritative Christianity: The Third World Council*,
     vol. 1 (Jersey City, 1895; IA `authoritative01chry`), which translates the acts of
-    Ephesus; the letter is at pp. 155–161, read in Act I, divided by Chrystal's bracketed
+    Ephesus; the letter is at pp. 155–166, read in Act I, divided by Chrystal's bracketed
     section summaries and footnotes (editor material). Also *On Faith and the Creed* (1886)
     for Cyril's letters only.
   - Nicaea II anathemas: `"circumscribed" anathema "images" Nicaea "unwritten"`;
@@ -612,11 +612,11 @@ approved this list on 4 Nov 2026, so each Tanner passage holding one of them is 
 reason `translation-in-preparation` (D9, D11), and its document notes the gap. Tanner's
 own summaries and introductions are not gaps: they retire as `rule-g-editorial`. A retired
 gap text stays available to us, out of search: its rows are never hard-deleted and the
-vendored Tanner files stay. R9 checks the leads below and later books.
+vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sources of Catholic Dogma* (1957); its verdicts are in `docs/research/R9-council-gap-leads.md`, and Carter approved its use on 4 Nov 2026: G1 and G2 return through 1.2c, and parts of G6, G8 and G9 through 1.2e. What R9 does not cover stays on this register.
 
 | # | Council | Text | Lead found |
 |---|---|---|---|
-| G1 | Ephesus | Nestorius's second letter to Cyril (condemned text) | Chrystal 1895, pp. 155–161 |
+| G1 | Ephesus | Nestorius's second letter to Cyril (condemned text) | Chrystal 1895, pp. 155–166 |
 | G2 | Nicaea II | The four anathemas concerning holy images | Mendham 1850, pp. 442–443; Hefele vol. 5 (1896), p. 376 |
 | G3 | Constantinople IV | Definition of the eighth synod | — |
 | G4 | Lyons I | Bull deposing the emperor Frederick II | — |

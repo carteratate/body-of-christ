@@ -178,6 +178,14 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-04: Not needed. The sources agree that the summaries are the author's own (`docs/research/R4-refutation-contents.md`); 1.8a keeps them and strips only the ANF heading lines.
 - **R5** [Phase 1]. If the translator of On Loving God cannot be traced, approve the replacement translation R5 proposes.
   Answered 2026-10-04: Traced, so no replacement. Approved: the translation is William Harman van Allen's (Caldey Abbey, 1909); credit line "Translated by William Harman van Allen (1909). Sourced via CCEL.org"; the Decision log row is updated; 1.9 restores the 1909 Chapter VIII title ("loves Self for Self's sake").
+- **R9 and 1.2e** [Phase 1, before 1.2e's last four councils]. Deferrari's book is a translation of a German-published compilation. Take only the translated decree text, or also Denzinger's headings, notes and numbers. Recommended answer: decree text only, with a note on each passage that it is an extract.
+  Answered 2026-11-04: decree text only, as recommended.
+- **R9 and 1.2e** [Phase 1, before 1.2e's last four councils]. Approve the draft row for Deferrari's *The Sources of Catholic Dogma* (`pd-us-non-renewal`). Choose which of its texts come in, and how 1.2e gets its pages, since no clean scan is openly available. Recommended answer: approve; take its Constance and Florence texts and Constantinople IV's six canons, keep Schroeder for Lateran V's shared bulls; buy a 1957 printing and scan the pages (about 30). Details are in `docs/research/R9-council-gap-leads.md`.
+  Answered 2026-11-04: approved: with no evidence of a renewal, use it, as extracts placed in their own documents for now. All its council extracts come in with a note, and Wyclif's and Hus's lists with the rejected label and a note. 1.2e gets the pages from the free PDF of the reprint, saved and hashed on 4 Nov 2026, with every passage checked against the page image and the 1957 scan; buying a 1957 copy is the fallback.
+- **R9 and 1.3d** [Phase 1, before 1.3d]. R9 found four papal documents held for permission in Deferrari's book. Exsurge Domine's 41 condemned propositions on the site are his translation; Vix Pervenit, Singulari Nos and Quanto Conficiamur Moerore have shorter extracts in a different translation. Keep or publish these, with the rest of each still held. Recommended answer: yes (`docs/research/R9-council-gap-leads.md`, section 5).
+  Answered 2026-11-04: yes. Exsurge Domine's propositions carry the rejected label and a note.
+- **R9 and 1.2c** [Phase 1, before 1.2c reaches Nicaea II]. Approve the draft rows for Hefele vol. 5 (Nicaea II's four anathemas) and Chrystal vol. 1 (Nestorius's letter), both `pd-us-pre-1931`, and choose whether 1.2c uses them. Recommended answer: use Hefele, with a note that the anathemas come from his narrative of the session; use Chrystal at low priority, without his summaries or notes.
+  Answered 2026-11-04: use both, as recommended; rows approved, and 1.2c may vendor the two scans.
 
 ### Phase 1
 
@@ -287,6 +295,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
 ### Phase 5
 
+- **5.0** [Phase 5, before any addition starts]. Decide how Denzinger is handled for good: its own collection, all its parts placed where they belong, or both. The research listed in 5.0 comes first.
 - **5.1a** [Phase 5]. Approve how genre names appear on screen (for example "Apostolic exhortation" for `apostolic-exhortation`).
 - **5.1b.1** [Phase 5]. Confirm the three new collection keys and labels: `papal` for "Papal documents", `church-law` for "Church law" and `theologians` for "Theologians and spiritual writers". Approve the merged search prompt for papal documents.
 - **5.1b.2** [Phase 5]. Approve the new collection colors and the interim About and Discover wording.

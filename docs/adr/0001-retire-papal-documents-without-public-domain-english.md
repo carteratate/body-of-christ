@@ -31,7 +31,7 @@ Related decisions recorded with this one:
 
 ## Consequences
 
-- The held documents disappear from search. A user who searches for, say, Benedict XIV on usury (Vix Pervenit) or Leo XII on secret societies (Quo Graviora) finds nothing from TheoCorpus and must follow the link. Bookmarks keep working and open the removal page. If permission is granted, the set returns in one publish, under the same document and passage IDs.
+- The held documents disappear from search. A user who searches for, say, Leo XII on secret societies (Quo Graviora) finds nothing from TheoCorpus and must follow the link. Bookmarks keep working and open the removal page. If permission is granted, the set returns in one publish, under the same document and passage IDs.
 - Where a public-domain printing exists, the document opens in the full reader in that translation, credited to the printing; for most, the wording differs from today's.
 - Item 2.4a's `Tombstone` carries `read_elsewhere_url`, and 2.4b's removal page and tombstone card show it.
 
@@ -69,12 +69,12 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | Year | Document | Pope | Slug | Outcome |
 |---|---|---|---|---|
 | 1302 | Unam Sanctam | Boniface VIII | `unam-sanctam` | Public-domain printing: Catholic Historical Review, 1927 |
-| 1520 | Exsurge Domine | Leo X | `exsurge-domine` | **Held for permission** |
+| 1520 | Exsurge Domine | Leo X | `exsurge-domine` | Partial only (Deferrari's *The Sources of Catholic Dogma*, 1957; R9): the 41 condemned propositions published, the rest held for permission |
 | 1537 | Sublimis Deus | Paul III | `sublimis-deus` | Public-domain printing: MacNutt, 1909 |
 | 1740 | Ubi Primum | Benedict XIV | `ubi-primum` | **Held for permission** |
 | 1741 | Quanta Cura | Benedict XIV | `quanta-cura` | **Held for permission** |
 | 1743 | Nimiam Licentiam | Benedict XIV | `nimiam-licentiam` | **Held for permission** |
-| 1745 | Vix Pervenit | Benedict XIV | `vix-pervenit` | **Held for permission** |
+| 1745 | Vix Pervenit | Benedict XIV | `vix-pervenit` | Partial only (Deferrari, 1957; R9): sections on usury published, the rest held for permission |
 | 1748 | Magnae Nobis | Benedict XIV | `magnae-nobis` | **Held for permission** |
 | 1749 | Annus Qui Hunc | Benedict XIV | `annus-qui-hunc` | **Held for permission** |
 | 1749 | Apostolica Constitutio | Benedict XIV | `apostolica-constitutio` | **Held for permission** |
@@ -107,7 +107,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1832 | Mirari Vos | Gregory XVI | `mirari-vos` | Public-domain printing: Catholic Magazine and Review, 1833 (Wikisource) |
 | 1832 | Summo Iugiter Studio | Gregory XVI | `summo-iugiter-studio` | **Held for permission** |
 | 1833 | Quo Graviora (1833) | Gregory XVI | `quo-graviora-1833` | **Held for permission** |
-| 1834 | Singulari Nos | Gregory XVI | `singulari-nos` | **Held for permission** |
+| 1834 | Singulari Nos | Gregory XVI | `singulari-nos` | Partial only (Deferrari, 1957; R9): one passage published, the rest held for permission |
 | 1835 | Commissum Divinitus | Gregory XVI | `commissum-divinitus` | **Held for permission** |
 | 1839 | In Supremo Apostolatus | Gregory XVI | `in-supremo-apostolatus` | Public-domain printing: Bishop England's Letters to Forsyth, 1844 |
 | 1840 | Probe Nostis | Gregory XVI | `probe-nostis` | **Held for permission** |
@@ -135,7 +135,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1860 | Nullis Certe Verbis | Pius IX | `nullis-certe-verbis` | Partial only (The Rambler, March 1860): published; the paragraphs it lacks (at least 9 and 11–13, settled by 1.3d) held for permission |
 | 1862 | Amantissimus | Pius IX | `amantissimus` | **Held for permission** |
 | 1863 | Incredibili | Pius IX | `incredibili` | **Held for permission** |
-| 1863 | Quanto Conficiamur Moerore | Pius IX | `quanto-conficiamur-moerore` | **Held for permission** |
+| 1863 | Quanto Conficiamur Moerore | Pius IX | `quanto-conficiamur-moerore` | Partial only (Deferrari, 1957; R9): one passage published, the rest held for permission |
 | 1864 | Maximae Quidem | Pius IX | `maximae-quidem` | **Held for permission** |
 | 1864 | Quanta Cura (1864) | Pius IX | `quanta-cura-1864` | Public-domain printing: Dublin Review, 1865 |
 | 1864 | Syllabus of Errors | Pius IX | `syllabus-of-errors` | Public-domain printing: Fessler, True and False Infallibility, 1875 |

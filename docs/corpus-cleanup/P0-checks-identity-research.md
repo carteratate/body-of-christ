@@ -923,13 +923,14 @@ Conventions used in this file:
 - **Current state:**
   - 1.2a searched books dated to 1930, and did not search HathiTrust, Google Books or later unrenewed books. No lead has a `rights_inventory.json` row or a source lock entry.
   - Deferrari's *The Sources of Catholic Dogma* (B. Herder, 1957), translated from Denzinger's thirtieth edition. Its contents list prints Florence's Decree for the Greeks (from Laetentur), Decree for the Armenians and Decree for the Jacobites (from Cantate Domino); Constance's errors of Wyclif and Hus and its definition on communion under one species; Lateran V on the pope and councils; and Constantinople IV's canons. It lists neither Haec sancta nor Frequens, nor Constantinople IV's Definition. Read from a reprint's contents pages, not checked text by text.
-  - A first search of the NYPL renewal data for 1982 to 1987, by title, Denzinger, Deferrari, Rahner and Herder, found no renewal (4 Nov 2026). The title page is not yet checked. The Internet Archive's two copies are access-restricted.
+  - A first search of the NYPL renewal data for 1982 to 1987, by title, Denzinger, Deferrari, Rahner and Herder, found no renewal (4 Nov 2026). The Internet Archive's two copies are access-restricted.
+  - Done 4 Nov 2026 (`docs/research/R9-council-gap-leads.md`): title and copyright pages read in the Archive's public preview ("Copyright 1957 by B. Herder Book Co."; registered 8 Jan 1957, A265753), no renewal found, three rights rows, approved by Carter. Hefele prints all four of Nicaea II's anathemas, and Chrystal prints Nestorius's letter whole.
 - **Changes:** In this order, using R6's edition check and R8's method:
   1. Deferrari's Denzinger. Find a clean scan, read its title and copyright pages, and record the renewal search in a rights row.
   2. If it clears, map its contents against the gap register, text by text, and against Schroeder's condensed texts (Constantinople IV's canons look fuller). The book prints extracts ("From the Bull..."), which follow Carter's rule for condensed texts: a note on each passage.
   3. Nicaea II's four anathemas (G2): Hefele, English vol. 5 (1896), p. 376; if he does not print them whole, Mendham (1850), pp. 442–443.
-  4. Nestorius's second letter (G1): Chrystal (1895), pp. 155–161, at low priority. It would carry `voice = "rejected"` (3.4).
+  4. Nestorius's second letter (G1): Chrystal (1895), pp. 155–166, at low priority. It would carry `voice = "rejected"` (3.4).
 - **Acceptance checks:** Each lead has a verdict citing the scan or the places searched. Results go in `docs/research/R9-council-gap-leads.md`.
 - **Production safety:** Research only. Downloads go to local disk after approval.
-- **Needs Carter:** Approval of downloads. If Deferrari clears: which of its texts come in, and how that changes 1.2e's last four councils.
+- **Needs Carter:** Approval of downloads. If Deferrari clears: which of its texts come in, and how that changes 1.2e's last four councils. Answered 4 Nov 2026: all settled (`docs/research/R9-council-gap-leads.md`, "Decision" and "Scans").
 - **Out of scope:** Foxe (not pursued). Making translations.

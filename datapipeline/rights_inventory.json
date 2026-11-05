@@ -4836,6 +4836,42 @@
   "planned_for": "1.2e"
  },
  {
+  "work": "Second Council of Nicaea",
+  "author": null,
+  "collection": "councils",
+  "source_path": "councils/ahistoryofthecou05hefeuoft/",
+  "document_id": null,
+  "edition": "Karl Joseph von Hefele, A History of the Councils of the Church, vol. 5, translated from the German with the author's approbation and edited by William R. Clark (Edinburgh: T. & T. Clark, 1896), p. 376, the four anathemas concerning holy images; Internet Archive scan ahistoryofthecou05hefeuoft",
+  "translator": "William R. Clark",
+  "first_published": 1896,
+  "source_url": "https://archive.org/details/ahistoryofthecou05hefeuoft",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "From Hefele, A History of the Councils of the Church, translated by William R. Clark (1896)",
+  "checked_by": "Carter",
+  "checked_on": "2026-11-04",
+  "planned_for": "1.2c"
+ },
+ {
+  "work": "Council of Ephesus",
+  "author": null,
+  "collection": "councils",
+  "source_path": "councils/authoritative01chry/",
+  "document_id": null,
+  "edition": "James Chrystal, Authoritative Christianity: The Third World Council, vol. 1 (Jersey City, N.J.: James Chrystal, 1895; entered 1894), pp. 155-166, Nestorius's second letter to Cyril; Internet Archive scan authoritative01chry",
+  "translator": "James Chrystal",
+  "first_published": 1895,
+  "source_url": "https://archive.org/details/authoritative01chry",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translated by James Chrystal (1895)",
+  "checked_by": "Carter",
+  "checked_on": "2026-11-04",
+  "planned_for": "1.2c"
+ },
+ {
   "work": "First Vatican Council",
   "author": null,
   "collection": "councils",
@@ -5344,6 +5380,29 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": "1.2c"
+ },
+ {
+  "work": "The Sources of Catholic Dogma",
+  "author": "Henry Denzinger",
+  "collection": "councils",
+  "source_path": "councils/sources-of-catholic-dogma/",
+  "document_id": null,
+  "edition": "The Sources of Catholic Dogma, translated by Roy J. Deferrari from the thirtieth edition of Henry Denzinger's Enchiridion Symbolorum, revised by Karl Rahner, S.J. (St. Louis and London: B. Herder Book Co., 1957; copyright 1957 B. Herder Book Co., printed in the United States of America by the Vail-Ballou Press, Binghamton, New York; imprimatur 25 April 1955; LCCN 57-5963; registered 8 January 1957, A265753); title and copyright pages read in the Internet Archive's public preview of scans sourcesofcatholi00denz and sourcesofcatholi0000royj, whose full text is lending-only; text taken from a scan of the Loreto Publications reprint, ISBN 1-930278-22-5",
+  "translator": "Roy J. Deferrari",
+  "first_published": 1957,
+  "source_url": "https://archive.org/details/sourcesofcatholi00denz",
+  "status": "pd-us-non-renewal",
+  "rights_holder": null,
+  "renewal_search": {
+   "date": "2026-11-04",
+   "where": "Catalog of Copyright Entries renewal records 1950-2001 as transcribed by NYPL (github.com/NYPL/cce-renewals, data/ at commit ebb6156); the 1984 and 1985 files, which cover the 28th-year renewal window for a 1957 copyright, are complete (renewals dated in all twelve months of each year; 20,302 renewals of 1957 originals in the 1985 file). Also the US Copyright Office public records search (publicrecords.copyright.gov), keyword searches. The Stanford Copyright Renewal Database refuses automated access and was not searched.",
+   "query": "every year file, case-insensitive: registration number A265753; titles 'sources of catholic dogma', 'catholic dogma', 'sources of cath', 'symbolorum', 'enchiridion', 'dogma'; names 'denzinger' and variants, 'deferrari' and variants, 'rahner'; claimants 'herder', 'b. herder', 'herder book', 'loreto'. Copyright Office: 'sources of catholic dogma', 'Denzinger', 'Enchiridion symbolorum', 'B. Herder Book Co.', 'Loreto Publications'",
+   "result": "no renewal found for the 1957 translation. 'deferrari' matches 7 entries, all other titles; 'enchiridion' matches 4, all Epictetus or Erasmus; 'rahner' matches 3, all unrelated; 'herder' matches no B. Herder Book Co. claim. Controls found: Atlas Shrugged (1957, renewed 7 January 1985), The Cat in the Hat (1957), and a 1957 Catholic title, On the Truth of the Catholic Faith (A272705, renewed 4 January 1985, also found at the Copyright Office as RE0000242700). 48 originals dated 8 January 1957 and neighbouring A2655xx-A2660xx numbers are present in the data."
+  },
+  "credit_line": "Translated by Roy J. Deferrari (1957)",
+  "checked_by": "Carter",
+  "checked_on": "2026-11-04",
+  "planned_for": "1.2e"
  },
  {
   "work": "Ad Gentes",

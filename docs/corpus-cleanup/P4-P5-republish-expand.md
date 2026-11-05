@@ -20,7 +20,7 @@ Finding IDs C-01 to C-30 refer to the 6 Oct 2026 corpus reviews, merged in `docs
 4. 4.2 checks accuracy only: targeted assertions on staging and on production. There is no baseline to compare against, because Carter dropped 0.3 on 30 Oct 2026 (Decision log "Baseline eval (0.3)").
 5. Storage facts for P4 (0.5 and 0.6, 30 Oct 2026). Supabase is on Pro, so neither the `VACUUM FULL` peak (near 600 MB) nor the apply's (490 to 590 MB, 4.0) meets a read-only limit; its disk was 36% used. Qdrant is a Free cluster with 1 GiB of RAM and no backups. The new collection keeps today's in-memory vector setting (4.0 step 5), and the old collection is the rollback path.
 6. P5 starts only after the P4 cutover and its rollback window close. Every P5 publish goes through 2.2w, each with its own named apply in a reviewed change to the lock file. No P5 publish uses today's delete-based prune (`writers/reader_writer.py`).
-7. 5.2 (rights inventory) can run in parallel from now, and every addition PR waits for its row.
+7. 5.2 (rights inventory) can run in parallel from now, and every addition PR waits for its row. 5.0 (how Denzinger is handled) is decided before any addition starts.
 8. Order for P5 code is 5.1a genre and issuer filters, then 5.1c, then the four 5.1b PRs in order (5.1b.1 to 5.1b.4).
 9. 5.1b depends on 5.1a because the old key `encyclicals` becomes "papal documents of genre `encyclical`" after the merge.
 10. Then 5.3a (Roman Curia, from the parked branch), 5.4, 5.5, 5.6a, 5.3b, 5.6b, and 5.6c one work at a time. 5.6c and the Roman Catechism in 5.5 reuse the OCR tool and gate built in Phase 1 as 1.2f (D9).
@@ -577,6 +577,26 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Production safety:** Stored data no longer has old keys (5.1b.3 check). An old tab still open would send an old key, which `resolve_search_plan` drops, returning 400 only if nothing valid remains. The log check shows this traffic is gone. Rollback is a revert plus re-widening the constraint (additive).
 - **Needs Carter:** Approve applying the migration. Decide on the web legacy map (step 5).
 - **Out of scope:** Renaming source directories under `datapipeline/sources/`.
+
+### 5.0. Decide how Denzinger is handled
+
+- **Type:** decision, with research.
+- **Depends on:** R9. Decided after the P4 cutover and before any addition (5.3a onward) starts.
+- **Goal:** Settle for good how TheoCorpus uses *The Sources of Catholic Dogma*, Deferrari's 1957 English of Denzinger's *Enchiridion Symbolorum* (Decision log "Denzinger: extracts now, decide before expansion", Carter, 4 Nov 2026).
+- **Current state:**
+  - Used only as extracts placed in their own documents, decree text only (Decision log "Deferrari's Denzinger: decree text only (R9)"). Deferrari's row is approved. What the book holds and what it fills so far: `docs/research/R9-council-gap-leads.md`.
+  - The book has over 2,300 numbered entries, from creeds and councils to papal and Holy Office documents, many of them outside the corpus today.
+- **Changes:** Choose one, then open the items it needs:
+  1. Denzinger as its own collection: the whole book, with its numbering and order, readable and citable as "Denz. 714".
+  2. All its parts placed where they belong: every extract goes into its own document, and the book itself does not appear.
+  3. Both.
+- **Research first:** The rights position of the 1954 German edition's editorial work, since options 1 and 3 use the headings, notes, numbering and selection that 1.2e leaves out. Whether the book's modern papal texts can be used. A map of its entries to the corpus: which are duplicates, which fill a gap, and which are new. What each option costs in OCR, in Qdrant and in the 1.2e rule.
+- **Acceptance checks:** Carter's choice is in the Decision log, and the items it needs are in this plan.
+- **Production safety:** Decision and research only.
+- **Needs Carter:** The choice.
+- **Out of scope:** Publishing anything. Each option's work is its own item.
+
+---
 
 ### 5.2. Rights inventory completed for every planned source
 
