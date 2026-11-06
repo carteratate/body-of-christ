@@ -696,6 +696,19 @@ async def test_rollback_rederives_reader_access(world, monkeypatch):
     assert row["reader_access"] == "excerpt"
 
 
+async def test_rollback_never_opens_beyond_the_snapshot(world):
+    """Carter, 6 Nov 2026: the inventory describes the published edition, and a re-sourced
+    work keeps its ID, so a rollback to an excerpt-only snapshot stays excerpt-only."""
+    await _sql(world, "UPDATE documents SET reader_access = 'excerpt' WHERE id = $1::uuid", DOC_A)
+    await _stage(world)
+    await _apply(world)
+    [row] = await world.fetch("SELECT reader_access FROM documents WHERE id = $1::uuid", DOC_A)
+    assert row["reader_access"] == "full"
+    await _rollback(world)
+    [row] = await world.fetch("SELECT reader_access FROM documents WHERE id = $1::uuid", DOC_A)
+    assert row["reader_access"] == "excerpt"
+
+
 # --------------------------------------------------------------------------- cleanup
 
 async def test_cleanup_drops_staging_only(world):

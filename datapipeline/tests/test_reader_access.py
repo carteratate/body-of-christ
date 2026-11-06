@@ -101,6 +101,49 @@ def test_a_status_change_flips_reader_access_on_the_next_sync():
     assert asyncio.run(RA.sync(conn, granted, apply=True)).changes == []
 
 
+def test_sync_will_not_open_an_older_edition_under_its_replacements_row():
+    # A re-sourced council keeps its ID; its row describes the new edition (1.2e).
+    live = {**_row("1", "First Lateran Council", "excerpt"), "url": "https://old"}
+    conn = FakeConn([live])
+    table = _table(_entry("1", "First Lateran Council", "pd-us-non-renewal"))
+    result = asyncio.run(RA.sync(conn, table, apply=True, urls={"1": "https://new"}))
+    assert [(c.document_id, c.after, c.reason) for c in result.held] == \
+        [("1", "excerpt", RA.OTHER_EDITION)]
+    assert (result.changes, result.unmatched) == ([], [])
+    assert result.totals == {"full": 0, "excerpt": 1}
+    assert live["reader_access"] == "excerpt"
+
+
+def test_sync_opens_the_new_edition_once_it_is_live():
+    live = {**_row("1", "First Lateran Council", "excerpt"), "url": "https://new"}
+    table = _table(_entry("1", "First Lateran Council", "pd-us-non-renewal"))
+    result = asyncio.run(RA.sync(FakeConn([live]), table, apply=True,
+                                 urls={"1": "https://new"}))
+    assert result.held == [] and live["reader_access"] == "full"
+
+
+def test_a_document_with_no_url_is_not_held():
+    table = _table(_entry("1", "Isaiah", "pd-dedicated"))
+    live = _row("1", "Isaiah", "excerpt")
+    result = asyncio.run(RA.sync(FakeConn([live]), table, apply=True, urls={"1": "https://x"}))
+    assert result.held == [] and live["reader_access"] == "full"
+
+
+def test_a_closing_status_is_never_held():
+    # The guard only stops an opening: an uncleared row still closes the live document.
+    live = {**_row("1", "Libertas", "full"), "url": "https://old"}
+    table = _table(_entry("1", "Libertas", "unknown"))
+    asyncio.run(RA.sync(FakeConn([live]), table, apply=True, urls={"1": "https://new"}))
+    assert live["reader_access"] == "excerpt"
+
+
+@pytest.mark.parametrize("a,b,out", [("full", "full", "full"), ("full", "excerpt", "excerpt"),
+                                     ("excerpt", "full", "excerpt"),
+                                     ("excerpt", "excerpt", "excerpt")])
+def test_stricter(a, b, out):
+    assert RA.stricter(a, b) == out
+
+
 def test_sync_keeps_a_relabelled_live_document_matched():
     # Live keeps a document's old label until the next publish; its row has the new one.
     conn = FakeConn([_row("1", "Fragments.", "full")])

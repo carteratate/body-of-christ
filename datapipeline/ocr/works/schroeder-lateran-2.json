@@ -13,6 +13,8 @@
   "start": "^\\[Schroeder Introduction\\]",
   "end": "^From H\\. J\\. Schroeder",
   "drop": "^Note \\d+\\.",
+  "opens": "^Text\\s*[.:]",
+  "closes": "^(?:Comment|Summary|CANON|Canon)\\b",
   "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
  },
  "names": [],
