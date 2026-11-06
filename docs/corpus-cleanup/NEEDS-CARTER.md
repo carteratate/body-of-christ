@@ -209,6 +209,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **1.2e and 4.1b** [before any reader-access sync]. The Lateran I, II and IV rows already read `pd-us-non-renewal`, so `reader_access.py --apply` must not run before their P4 apply: it would open the Tanner text still live.
 - **1.2e and 5.5** [Phase 1]. Fordham's transcriptions of Schroeder's Lateran I, II and IV and of the 1923 Roman Catechism carry a notice that their electronic form is copyright and not licensed for commercial use. Use them as the text, or only to check our own OCR of the scans. Recommended answer: only to check the OCR, as with ecatholic2000 (R6).
   Answered 2026-10-05: use Fordham's transcriptions only to check the OCR of the Schroeder and 1923 Catechism scans, as with ecatholic2000.
+- **1.3a** [Phase 1]. The spec gave Haerent Animo's real first paragraph a new anchor, but `haerent-animo/2` has always named that paragraph. Keep its anchor and permanent ID? Recommended answer: keep.
+  Answered 2026-11-05: keep, as recommended (Decision log "Haerent Animo's first paragraph (1.3a)").
 - **1.3b** [Phase 1]. Confirm which three documents are the "Jubilee bulls" filed as encyclicals. Also decide whether Ineffabilis Deus and Munificentissimus Deus are labeled "apostolic constitution" or "bull". The spec gives no recommendation.
   Answered 2026-11-04: the three are Peregrinantes (1749), Salutis Nostrae (1774) and Quod Hoc Ineunte (1824), all `bull`. Ineffabilis Deus is `bull`, Munificentissimus Deus is `apostolic-constitution`, and Apostolica Constitutio stays `encyclical`.
 - **1.4a** [Phase 1]. Keep `song-of-solomon` inside link addresses while the book's title changes to "Song of Songs". Users never see the address. Recommended answer is keep.

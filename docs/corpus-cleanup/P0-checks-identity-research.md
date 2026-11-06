@@ -585,7 +585,7 @@ Conventions used in this file:
   - `scripts/export_live_snapshot.py` copies no `document_chapters`. Every stored `chunk_count` matched on 6 Oct, but the stored chapter order and labels have never been compared with the passages (synthesis section 5).
 - **Changes:**
   - Health rules, in `health.py` and `health_patterns.json`, with check ids in 0.1b's form:
-    - `R9_trailing_heading` (report): a passage whose last paragraph is under 90 characters, has no final punctuation, starts with a capital and has a following passage. 1.3a makes it block in the papal collections.
+    - `R9_trailing_heading` (report until 1.3a, block since): a passage whose last paragraph is under 90 characters, has no final punctuation, starts with a capital and has a following passage. 1.3a makes it block in the papal collections.
     - `R10_site_boilerplate` (block): "wysiwyg", "subscribe for a membership", "Webmaster", "promotional messages", "papalencyclicals", "HTML document", "HTML tag", "bulk operations". Its 3 hits on master (`council-of-trent/sec-0/21`, `cum-sancta-mater-ecclesia/4`, `exsurge-domine/41/p3`) are `known_defects.json` entries, `fixed_by` 1.2b and 1.3a.
     - `R11_papal_editorial` (report): "Holy Father addressed", "Translation by", "translation editing", or a run of "[N-M]" range markers, in a papal passage.
     - `R12_note_caller` (report): Opus A-012's two patterns, Opus-2 B-005's spaced caller after sentence punctuation (excluding a number followed by a Bible book abbreviation), "[ N ]" and "(N*)", outside the Bible and canon law.
