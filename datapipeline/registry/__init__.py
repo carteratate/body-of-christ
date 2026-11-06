@@ -635,8 +635,6 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
         d = built.get(r["document_id"])
         if r.get("closed_by") or d is None or PIECE_MARK not in r["old_anchor"]:
             continue
-        if unit_anchor(r["old_anchor"]) != unit_anchor(r["new_anchor"]):
-            continue                   # into another unit: its text was traced there (1.3a)
         if MOVED_MARK in row_of[r["old_passage_id"]]["anchor"]:
             continue                   # its anchor is built; it names a new ID now
         if unit_anchor(r["new_anchor"]) != unit_anchor(r["old_anchor"]):

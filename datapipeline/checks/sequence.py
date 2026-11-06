@@ -315,6 +315,10 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
         in_source |= MISPRINTED_NUMBERS.get(slug, set())
         printed = " ".join(u.text for u in units if u.region == "body")
         in_source |= {int(m) for m in _RUN_ON_NUMBER.findall(printed)}
+        # Numbers 1.3a recovers are required, not just allowed.
+        gaps = {n for a, b in zip(source, source[1:]) for n in range(a + 1, b)}
+        recovered = (in_source & gaps) | ({1} if source[:1] == [2] else set())
+        source = sorted(set(source) | recovered)
     built: dict[int, set[str]] = defaultdict(set)
     for p in document.passages:
         m = _SECTION_REF.search(unit_reference(p.reference))

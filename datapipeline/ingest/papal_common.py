@@ -84,6 +84,8 @@ _HEADING_MAX = 90
 _FINAL_PUNCTUATION = re.compile(r"[.!?:;,\"”’)\]…]$")
 _NUMBERED_HEADING_MAX = 80
 _BOLD_HEADING_MAX = 200
+# As `structure.CHAPTER_SIZE_LIMIT`: no document should open with this much under one label.
+_LONG_OPENING = 50_000
 # Headings that name a division of the document. A document printing at least two has
 # them as its chapters and every other heading opens a section inside one.
 _MAJOR = re.compile(
@@ -544,6 +546,11 @@ def _body_tokens(items: list[_Item], numbered: dict[int, tuple[int, str]],
                      or next(j for j in range(i + 1, last + 1) if j not in heads) in numbered):
             heads.add(i)
     is_chapter = _chapter_test([items[i].text for i in heads])
+    # A document whose first division comes very late: its earlier headings are chapters too.
+    first = min((i for i in heads if is_chapter(items[i].text)
+                 and not _INTRODUCTION.match(items[i].text)), default=start)
+    early = {i for i in heads if i < first} \
+        if sum(len(items[i].text) for i in range(start, first)) > _LONG_OPENING else set()
 
     toks: list[Token] = []
     cur: list | None = None   # [number, [parts], [segments]]
@@ -564,7 +571,7 @@ def _body_tokens(items: list[_Item], numbered: dict[int, tuple[int, str]],
             cur = [n, [body] if body else [], [Segment(item.segment.locator, body)]]
         elif i in heads:
             flush()
-            if is_chapter(item.text):
+            if is_chapter(item.text) or i in early:
                 label, segments = item.text, [item.segment]
                 if _BARE_MAJOR.match(item.text) and i < last and i + 1 not in numbered \
                         and len(items[i + 1].text) < _BOLD_HEADING_MAX \

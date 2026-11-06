@@ -174,6 +174,20 @@ def test_callers_go_and_numbers_stay():
         "It is so. For this, sess. 24 On Reform."
 
 
+@pytest.mark.parametrize("citation", [
+    "God is love (cf. 1 Jn 4:16).", "New creation. 2 Cor 5:17.", "Hope (cf. 1 Pt 3:15).",
+    "As written. 1 Tim 2:5.", "See 1 Thess 5:19.",
+])
+def test_a_book_keeps_its_number(citation):
+    assert strip_bare_callers(citation) == citation
+
+
+def test_a_wrapped_caller_leaves_no_empty_marker():
+    assert strip_note_callers("to nothing)[ ]: so says ( ) he") == "to nothing): so says he"
+    html = f'<p>1. It is so (<a href="#n1">1</a>). {LONG}</p><p>2. {LONG}</p>'
+    assert "()" not in strip_note_callers(_paras(tokens(_page(html)))[0].text)
+
+
 def test_syllabus_ends_at_its_last_proposition():
     body = "".join(f"<p>{n}. Proposition number {n} of the list.</p>" for n in range(1, 81))
     toks = tokens(_page(body + f"<p>{LONG}</p><p>{LONG}</p>"), "syllabus-of-errors")
@@ -433,3 +447,28 @@ def test_a_word_beginning_part_is_no_division():
 def test_short_line_closing_on_a_reference_is_a_heading(tmp_path):
     doc = _build(f'<p>1. {LONG}</p><p>"We cannot but speak" (Acts 4:20)</p><p>2. {LONG}</p>', tmp_path)
     assert doc.passages[1].content.startswith('"We cannot but speak"')
+
+
+def test_a_very_long_opening_takes_its_headings_as_chapters(tmp_path):
+    long = "These words are long enough to read as a real paragraph of the document. " * 45
+    body = "".join(f"<p>{n}. {long}</p>" for n in range(1, 8))
+    body += f"<p>8. {long}</p><p><i>Is hope individualistic?</i></p>" + "".join(
+        f"<p>{n}. {long}</p>" for n in range(9, 18))
+    body += f"<p><b>I. Prayer as a school of hope</b></p><p>18. {long}</p>" \
+        f"<p><b>II. Action and suffering</b></p><p>19. {long}</p>"
+    labels = list(dict.fromkeys(p.chapter_label for p in _build(body, tmp_path).passages))
+    assert labels == ["Introduction", "Is hope individualistic?", "I. Prayer as a school of hope",
+                      "II. Action and suffering"]
+
+
+@vendored
+def test_mulieris_dignitatem_keeps_its_book_numbers(built):
+    text = " ".join(p.content for p in built["mulieris-dignitatem"].passages)
+    assert "1 Jn 4:16" in text and "2 Cor 5:17" in text
+    assert not re.search(r"\(cf\. (?:Cor|Pt|Tm)\b", text)
+
+
+@vendored
+def test_no_empty_markers(built):
+    assert [p.anchor for d in built.values() for p in d.passages
+            if re.search(r"\(\s*\)|\[\s*\]", p.content)] == []

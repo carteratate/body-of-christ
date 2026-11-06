@@ -591,3 +591,17 @@ def test_report_checks_every_collection_the_pipeline_builds():
 
     assert set(report.COLLECTIONS) == set(SOURCE_ADAPTERS)
     assert set(report.SECTION_COLLECTIONS) | set(report.THML_COLLECTIONS) <= set(report.COLLECTIONS)
+
+
+def test_numbered_paragraphs_require_what_1_3a_recovers():
+    from checks.source_text import SourceUnit
+    from model import Document, Passage
+    units = [SourceUnit("x.html", str(n), f"{n} text", "body") for n in (2, 3, 5)]
+    units[1] = SourceUnit("x.html", "3", "Text. 4. The Church speaks here.", "body")
+    def doc(*numbers):
+        return Document(id="d", collection="encyclicals", title="T", passages=[
+            Passage(content="x", reference=f"T, §{n}", anchor=f"t/{n}", chapter_key="c",
+                    chapter_label="c", position=i) for i, n in enumerate(numbers)])
+    assert Q.numbered_paragraphs(doc(1, 2, 3, 4, 5), units).missing == []
+    assert Q.numbered_paragraphs(doc(2, 3, 4, 5), units).missing == ["1"]
+    assert Q.numbered_paragraphs(doc(1, 2, 3, 5), units).missing == ["4"]

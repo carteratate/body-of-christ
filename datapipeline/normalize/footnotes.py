@@ -20,7 +20,13 @@ _PAREN_CALLER = re.compile(r"(?<=[A-Za-z\"”’.,;:!?)])\s?\(\d{1,3}\)")
 _GLUED_CALLER = re.compile(r"(?<=[a-z\"”’)][.,;:])\d{1,3}(?=\s|$|[A-Z“\"])")
 _BARE_CALLER = re.compile(r"(?<=[.!?\"”’)…])\s\d{1,3}(?=\s+[A-Z“\"‘]|\s*$)", re.MULTILINE)
 # "sess. 24 On Reformation": a number in a citation, not a caller.
-_CITATION_WORD = re.compile(r"\b(?:bk|sess|ch|cap|tit|vol|no|nos|art|can|lib|p|pp|n|dist)\.$")
+_CITATION_WORD = re.compile(r"\b(?:cf|bk|sess|ch|cap|tit|vol|no|nos|art|can|lib|p|pp|n|dist)\.$",
+                            re.IGNORECASE)
+# "1 Jn": a number that belongs to the book after it. Removing it names another book.
+_NUMBERED_BOOK = re.compile(r"\s+(?:Cor|Jn|John|Pt|Pet|Peter|Tim|Tm|Thes|Th|Sam|Sm|Kgs|Kg|Kings|Chr"
+                            r"|Mac|Macc|Mc|Esd)\b")
+# What a dropped caller leaves when the source wrapped it: "( )", "[ ]".
+_EMPTY_MARKER = re.compile(r"\s*[\[(]\s*[\])]")
 
 
 def drop_caller_elements(el) -> None:
@@ -37,12 +43,14 @@ def drop_caller_elements(el) -> None:
 
 def strip_note_callers(text: str) -> str:
     """Remove the callers that are plain text."""
-    return _GLUED_CALLER.sub("", _PAREN_CALLER.sub("", _BRACKET_CALLER.sub("", text)))
+    text = _GLUED_CALLER.sub("", _PAREN_CALLER.sub("", _BRACKET_CALLER.sub("", text)))
+    return _EMPTY_MARKER.sub("", text)
 
 
 def strip_bare_callers(text: str) -> str:
     """Remove numbers standing alone after a sentence, for sources that print their
-    callers so; a caller is never preceded by a citation's abbreviation."""
+    callers so. A caller never follows a citation's abbreviation or opens a numbered book."""
     def keep_citation(m: re.Match) -> str:
-        return m.group(0) if _CITATION_WORD.search(text, max(0, m.start() - 8), m.start()) else ""
+        citation = _CITATION_WORD.search(text, max(0, m.start() - 8), m.start())
+        return m.group(0) if citation or _NUMBERED_BOOK.match(text, m.end()) else ""
     return _BARE_CALLER.sub(keep_citation, text)

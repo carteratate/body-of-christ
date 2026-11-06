@@ -56,13 +56,6 @@
   "added_by": "1.10b"
  },
  {
-  "passage_id": "e6b32105-7afc-5ce8-9d95-8f25f197dfb2",
-  "document_id": "3071fe45-c09f-522d-a0b5-88bbc00acdcf",
-  "anchor": "salvifici-doloris/6",
-  "reason": "Same text: its footnote callers left it, which breaks the shingles the score compares.",
-  "added_by": "1.3a"
- },
- {
   "passage_id": "1afbc16e-a995-53c6-a920-a42bfb82e302",
   "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
   "anchor": "vi.iv.ii.v",
@@ -103,6 +96,20 @@
   "anchor": "viii.vi.ii",
   "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
   "added_by": "1.10b"
+ },
+ {
+  "passage_id": "9c4f966d-dd04-5fa8-96d2-446bb8f3f4db",
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "anchor": "pastores-gregis/56/from-e333",
+  "reason": "Reviewed for 1.10c: drifted before 2.1. The live piece (/p2) opened at paragraph e335 (\"The Church of Christ, in her mark of catholicity\", after the stray note number 217), and 2.1 paired it with this piece by text. Its opening words are still here, and e333 still opens this piece; the piece now ends with e336, so the live text from e337 (\"In accordance with the teaching of the Second Vatican Council\") opens /from-e337.",
+  "added_by": "1.10c"
+ },
+ {
+  "passage_id": "4430e97b-be19-51fb-92e2-43ef94b34ce6",
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "anchor": "pastores-gregis/8/from-e43",
+  "reason": "Reviewed for 1.10c: drifted before 2.1. The live piece (/p2) opened inside paragraph e45 (\"For this reason, the unity of the episcopate\"), and 2.1 paired it with this piece by text. Its opening words are still here, and e43 still opens this piece; the piece now ends with e47, so the live text from e48 (\"It is thus that the power of the College of Bishops\") opens /from-e48.",
+  "added_by": "1.10c"
  },
  {
   "passage_id": "7daceb07-5273-5038-a161-108db845115a",
@@ -257,13 +264,6 @@
   "anchor": "iii.iii.viii.xxxi",
   "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
   "added_by": "1.10b"
- },
- {
-  "passage_id": "909b6d54-b51b-5f26-a14c-c5176ca3d6c5",
-  "document_id": "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec",
-  "anchor": "pastores-dabo-vobis/41/from-e254",
-  "reason": "The cut in this long paragraph moved earlier when its callers left, so the piece gained the opening of the paragraph and keeps its own opening words further in.",
-  "added_by": "1.3a"
  },
  {
   "passage_id": "e4e2a9c0-4365-58d6-b22b-e7375008dc3d",
