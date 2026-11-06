@@ -17,7 +17,9 @@ _SUP_CALLER = re.compile(r"^\W*\d{1,3}\*?\W*$")
 _LINK_CALLER = re.compile(r"^\W*\d{1,3}\W*$")
 _BRACKET_CALLER = re.compile(r"(?<=\S)\s*\[\s*\d{1,3}\s*\]")
 _PAREN_CALLER = re.compile(r"(?<=[A-Za-z\"”’.,;:!?)])\s?\(\d{1,3}\)")
-_GLUED_CALLER = re.compile(r"(?<=[a-z\"”’)][.,;:])\d{1,3}(?=\s|$|[A-Z“\"])")
+_GLUED_CALLER = re.compile(r"(?<=[a-z\"”’)][.,;:])\d{1,3}(?=\s|$|[A-Z“\"])"
+                           r"(?!\s+(?:Cor|Jn|John|Pt|Pet|Peter|Tim|Tm|Thes|Th|Sam|Sm|Kgs|Kg|Kings"
+                           r"|Chr|Mac|Macc|Mc|Esd)\b)")
 _BARE_CALLER = re.compile(r"(?<=[.!?\"”’)…])\s\d{1,3}(?=\s+[A-Z“\"‘]|\s*$)", re.MULTILINE)
 # "sess. 24 On Reformation": a number in a citation, not a caller.
 _CITATION_WORD = re.compile(r"\b(?:cf|bk|sess|ch|cap|tit|vol|no|nos|art|can|lib|p|pp|n|dist)\.$",

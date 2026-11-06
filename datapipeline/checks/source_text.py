@@ -343,7 +343,9 @@ _SITE_TEXT = {"cum-sancta-mater-ecclesia.html": re.compile(r"Perform bulk operat
               "exsurge-domine.html": re.compile(r"\{.*$", re.S)}
 _NUMBER_ONLY = re.compile(r"^\W*\d{1,3}\*?\W*$")
 _TEXT_CALLER = re.compile(r"(?<=[A-Za-z\"”’.,;:!?)])\s?\(\d{1,3}\)"
-                          r"|(?<=[a-z\"”’)][.,;:])\d{1,3}(?=\s|$|[A-Z“\"])")
+                          r"|(?<=[a-z\"”’)][.,;:])\d{1,3}(?=\s|$|[A-Z“\"])"
+                          r"(?!\s+(?:Cor|Jn|John|Pt|Pet|Peter|Tim|Tm|Thes|Th|Sam|Sm|Kgs|Kg|Kings"
+                          r"|Chr|Mac|Macc|Mc|Esd)\b)")
 # Sources that print callers as plain numbers after a sentence.
 _BARE_CALLER_FILES = ("annus-qui-hunc.html", "mulieris-dignitatem.html")
 _BARE_CALLER = re.compile(r"(?<=[.!?\"”’)…])(?<![Cc]f\.)\s\d{1,3}(?=\s+[A-Z“\"‘]|\s*$)"

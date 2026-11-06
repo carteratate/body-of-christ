@@ -182,6 +182,11 @@ def test_a_book_keeps_its_number(citation):
     assert strip_bare_callers(citation) == citation
 
 
+def test_a_glued_number_before_a_book_is_no_caller():
+    assert strip_note_callers("love (cf.1 Jn 4:16).") == "love (cf.1 Jn 4:16)."
+    assert strip_note_callers("points out.9 Next") == "points out. Next"
+
+
 def test_a_wrapped_caller_leaves_no_empty_marker():
     assert strip_note_callers("to nothing)[ ]: so says ( ) he") == "to nothing): so says he"
     html = f'<p>1. It is so (<a href="#n1">1</a>). {LONG}</p><p>2. {LONG}</p>'
