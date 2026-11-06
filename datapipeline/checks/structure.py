@@ -41,7 +41,7 @@ from collections import Counter, defaultdict
 from bs4 import BeautifulSoup
 
 from checks.coverage import match_key, measurable, normalize, split_sentences
-from checks.source_text import SOURCES, SourceUnit
+from checks.source_text import PAPAL_COLLECTIONS, SOURCES, SourceUnit
 from ingest.pieces import unit_reference
 from model import Document
 
@@ -50,7 +50,6 @@ DATAPIPELINE = os.path.dirname(CHECKS_DIR)
 SUMMA_CORRECTIONS = os.path.join(DATAPIPELINE, "ingest", "summa_corrections.json")
 
 CONTIGUOUS_COLLECTIONS = ("bible", "canon-law", "catechism", "summa")
-PAPAL_COLLECTIONS = ("apostolic-exhortations", "encyclicals", "papal-documents")
 CHAPTER_SIZE_LIMIT = 50_000
 CHAPTER_RUN_MIN = 3
 SYLLABUS_PROPOSITIONS = 80
@@ -246,7 +245,7 @@ def syllabus_body_boundary(documents: list[Document], units: list[SourceUnit]) -
     failing = []
     if numbers != set(range(1, SYLLABUS_PROPOSITIONS + 1)):
         failing.append(f"propositions:{len(numbers)}")
-    body = [u for u in units if u.region == "body"]
+    body = [u for u in units if u.region in ("body", "apparatus")]
     last = next((i for i, u in enumerate(body) if u.unit_id == str(SYLLABUS_PROPOSITIONS)), None)
     if last is not None:
         text = match_key(normalize(" ".join(p.content for d in docs for p in d.passages)))

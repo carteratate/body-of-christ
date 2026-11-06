@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 from checks.coverage import _PassageText, documents_by_file, match_key, measurable
 from checks.coverage import split_sentences
-from checks.source_text import SourceUnit
+from checks.source_text import PAPAL_COLLECTIONS, SourceUnit
 from identity import unit_anchor
 from ingest.pieces import unit_reference
 from model import Document
@@ -288,6 +288,11 @@ def source_section_numbers(units: list[SourceUnit]) -> list[int]:
 
 
 _SECTION_REF = re.compile(r"§(\d+)\s*$")
+# 1.3a's number fixes: numbers a source misprints, which it never prints as such.
+MISPRINTED_NUMBERS = {"aeterni-patris": {21}, "mediator-dei": {106},
+                      "menti-nostrae": {53, 54}, "pacem-in-terris": {95}}
+# A paragraph number inside a block.
+_RUN_ON_NUMBER = re.compile(r"(?<![\d.])(\d{1,3})\.\s+(?=[A-Z“\"])")
 
 
 def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> SequenceResult:
@@ -302,6 +307,14 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
     # and restarted note numbers aside: a built number found here is not invented.
     in_source = {int(u.unit_id) for u in units
                  if u.region == "body" and u.unit_id and u.unit_id.isdigit()}
+    # A source numbering from 2 prints its first paragraph without a number (1.3a).
+    if document.collection in PAPAL_COLLECTIONS:
+        if source[:1] == [2]:
+            in_source.add(1)
+        slug = (document.metadata or {}).get("source_key", "").rsplit("/", 1)[-1]
+        in_source |= MISPRINTED_NUMBERS.get(slug, set())
+        printed = " ".join(u.text for u in units if u.region == "body")
+        in_source |= {int(m) for m in _RUN_ON_NUMBER.findall(printed)}
     built: dict[int, set[str]] = defaultdict(set)
     for p in document.passages:
         m = _SECTION_REF.search(unit_reference(p.reference))
