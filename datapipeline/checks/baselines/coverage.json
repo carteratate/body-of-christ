@@ -1,14 +1,14 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "HEAD db72c35",
+  "apostolic-exhortations": "feat/1.3a-papal-parser 77d01df",
   "bible": "feat/1.10c-piece-citations 269d968",
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
   "councils": "feat/1.2e-1-lateran-schroeder b511d17",
-  "encyclicals": "HEAD db72c35",
+  "encyclicals": "feat/1.3a-papal-parser 77d01df",
   "medieval": "feat/1.10c-piece-citations 269d968",
-  "papal-documents": "HEAD db72c35",
+  "papal-documents": "feat/1.3a-papal-parser 77d01df",
   "summa": "feat/coverage-checks cfee751"
  },
  "files": {
@@ -1653,8 +1653,8 @@
    "pct": 99.85
   },
   "papal-documents/mulieris-dignitatem.html": {
-   "body_chars": 140029,
-   "covered_chars": 138805,
+   "body_chars": 140140,
+   "covered_chars": 138916,
    "pct": 99.13
   },
   "papal-documents/novo-millennio-ineunte.html": {
@@ -2480,8 +2480,8 @@
   "404f3fab-39e8-5520-b027-9b821b6384e4": {
    "collection": "papal-documents",
    "source_file": "mulieris-dignitatem.html",
-   "body_chars": 140029,
-   "covered_chars": 138805,
+   "body_chars": 140140,
+   "covered_chars": 138916,
    "pct": 99.13
   },
   "408091b7-f2ac-51c2-b903-7483e7645e8a": {

@@ -7,7 +7,9 @@
   "new_anchor": "laudato-si/246/from-e775",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "0066869a-28fb-5274-a847-c4d3e88a948e",
@@ -2904,11 +2906,31 @@
   "added_by": "1.10c"
  },
  {
+  "document_id": "2f8106f8-19ac-5c3f-a2d4-360b98c4059b",
+  "old_passage_id": "e8b43b43-0094-5417-a2fa-6d761a86803b",
+  "old_anchor": "probe-noscitis-venerabiles/preamble/from-e8-2",
+  "new_passage_id": "06a8117e-af8d-5eb3-a88c-bc0180ac42a1",
+  "new_anchor": "probe-noscitis-venerabiles/1/from-e8-2",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "30556229-eadf-5d12-8fad-50c69642d2b8",
+  "old_passage_id": "85d677f9-39a3-53da-ab24-3642e5d21069",
+  "old_anchor": "decet-quam-maxime/preamble/from-e10",
+  "new_passage_id": "39c84bcb-dd19-53c4-b63c-3669e34d06ca",
+  "new_anchor": "decet-quam-maxime/1/from-e10",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
   "document_id": "30556229-eadf-5d12-8fad-50c69642d2b8",
   "old_passage_id": "e0b6a905-369c-5560-9ed4-db24e84085dd",
   "old_anchor": "decet-quam-maxime/preamble/from-e10-2",
-  "new_passage_id": "85d677f9-39a3-53da-ab24-3642e5d21069",
-  "new_anchor": "decet-quam-maxime/preamble/from-e10",
+  "new_passage_id": "39c84bcb-dd19-53c4-b63c-3669e34d06ca",
+  "new_anchor": "decet-quam-maxime/1/from-e10",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -4961,23 +4983,123 @@
  },
  {
   "document_id": "3f6118ed-3afa-56f0-9980-31f50a996520",
+  "old_passage_id": "51507554-a16c-5638-a76b-b4c1f31a5c28",
+  "old_anchor": "redemptoris-mater/28/from-e99",
+  "new_passage_id": "b4c2f577-892f-5e67-93be-8da7e9e30775",
+  "new_anchor": "redemptoris-mater/28",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "3f6118ed-3afa-56f0-9980-31f50a996520",
+  "old_passage_id": "56d5de0d-17c7-5e30-9d2c-60906749b5e5",
+  "old_anchor": "redemptoris-mater/36/from-e121",
+  "new_passage_id": "9e65eb3e-a658-5537-9a0f-0f1ac4db3717",
+  "new_anchor": "redemptoris-mater/37",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "3f6118ed-3afa-56f0-9980-31f50a996520",
+  "old_passage_id": "3deb57a2-6ba9-5764-a336-feca003cc48c",
+  "old_anchor": "redemptoris-mater/36/from-e122",
+  "new_passage_id": "4ebe05f4-702e-522b-b16a-8307d499f9f4",
+  "new_anchor": "redemptoris-mater/37/from-e122",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "3f6118ed-3afa-56f0-9980-31f50a996520",
   "old_passage_id": "cf422a24-9fd5-50c0-992d-1ffcf4f6c878",
   "old_anchor": "redemptoris-mater/36/p2",
-  "new_passage_id": "3deb57a2-6ba9-5764-a336-feca003cc48c",
-  "new_anchor": "redemptoris-mater/36/from-e122",
+  "new_passage_id": "4ebe05f4-702e-522b-b16a-8307d499f9f4",
+  "new_anchor": "redemptoris-mater/37/from-e122",
   "kind": "merged",
   "reason": "its text now lies inside this passage",
   "added_by": "2.1"
  },
  {
   "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
+  "old_passage_id": "0d87687f-4d83-559d-a6bf-41491165a8d8",
+  "old_anchor": "mulieris-dignitatem/11/from-e80",
+  "new_passage_id": "53935ec5-53ab-5b9a-9b24-536b12665458",
+  "new_anchor": "mulieris-dignitatem/11/from-e78",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
+  "old_passage_id": "472fc78d-c4fd-5580-a023-a15f79443731",
+  "old_anchor": "mulieris-dignitatem/13/from-e97",
+  "new_passage_id": "93c7d469-03e8-587f-851b-3c095bd74e71",
+  "new_anchor": "mulieris-dignitatem/13/from-e96",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
+  "old_passage_id": "91fb8847-b806-5e12-9477-a6161a869b46",
+  "old_anchor": "mulieris-dignitatem/24/from-e161",
+  "new_passage_id": "9b7b49fe-4ecc-52e9-a4c2-752997557cae",
+  "new_anchor": "mulieris-dignitatem/24",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
+  "old_passage_id": "485a3015-43cd-5411-a8aa-d4b05cccb88c",
+  "old_anchor": "mulieris-dignitatem/27/from-e176",
+  "new_passage_id": "a75c922f-9109-5b75-8ebe-35dc811f889e",
+  "new_anchor": "mulieris-dignitatem/27",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
+  "old_passage_id": "b688fc75-5b78-5fbe-9bd7-317a4658444f",
+  "old_anchor": "mulieris-dignitatem/27/from-e179",
+  "new_passage_id": "7badfc93-8e21-50d5-bf19-de7ec7ab4446",
+  "new_anchor": "mulieris-dignitatem/27/from-e177",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
+  "old_passage_id": "f17f2286-b7b4-59b0-a436-a0ec6c543fe3",
+  "old_anchor": "mulieris-dignitatem/3/from-e23",
+  "new_passage_id": "f043a91a-46f4-5a8a-bdb5-7520a2650a11",
+  "new_anchor": "mulieris-dignitatem/3",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
   "old_passage_id": "e75c135b-272c-5527-9719-4fc8e42382a9",
   "old_anchor": "mulieris-dignitatem/3/from-e23-2",
-  "new_passage_id": "f17f2286-b7b4-59b0-a436-a0ec6c543fe3",
-  "new_anchor": "mulieris-dignitatem/3/from-e23",
+  "new_passage_id": "f043a91a-46f4-5a8a-bdb5-7520a2650a11",
+  "new_anchor": "mulieris-dignitatem/3",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "404f3fab-39e8-5520-b027-9b821b6384e4",
+  "old_passage_id": "447898a2-6606-5bbe-b4bf-762f760198e3",
+  "old_anchor": "mulieris-dignitatem/7/from-e48",
+  "new_passage_id": "235efea1-51fa-5817-8b68-f5f0dee6a21a",
+  "new_anchor": "mulieris-dignitatem/7/from-e47",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "408091b7-f2ac-51c2-b903-7483e7645e8a",
@@ -5111,6 +5233,66 @@
  },
  {
   "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "c19d89e1-7a33-5307-8fa3-e1dc2e0544c7",
+  "old_anchor": "pastores-gregis/10/from-e60",
+  "new_passage_id": "fdf30a5c-d125-5dee-b226-dd15b05e8566",
+  "new_anchor": "pastores-gregis/10",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "326b1c10-7229-5f15-8e6c-2b6668001400",
+  "old_anchor": "pastores-gregis/12/from-e75",
+  "new_passage_id": "6e96e987-dd0d-5520-ae5d-c19136d7caf0",
+  "new_anchor": "pastores-gregis/12",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "c93f34d2-1b03-51be-94f3-a031ef6b0892",
+  "old_anchor": "pastores-gregis/13/from-e84",
+  "new_passage_id": "ea2eae7f-1e3c-527d-8f5a-9f380cd304fb",
+  "new_anchor": "pastores-gregis/13/from-e82",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "5b84e1ff-697e-566e-99c0-1e35ae89737b",
+  "old_anchor": "pastores-gregis/35/from-e209",
+  "new_passage_id": "92102ef2-9e6e-5fcb-9693-8dd7a1727207",
+  "new_anchor": "pastores-gregis/35",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "51789b28-7ce7-5193-af7c-b246fc3f03b0",
+  "old_anchor": "pastores-gregis/43/from-e262",
+  "new_passage_id": "c9106313-62a1-51c1-8267-6193d6221fcf",
+  "new_anchor": "pastores-gregis/43",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "d16025bc-5a99-55ba-9f72-b6ee49b227fe",
+  "old_anchor": "pastores-gregis/47/from-e287",
+  "new_passage_id": "ee28b705-7998-583e-a596-4ab2f8845258",
+  "new_anchor": "pastores-gregis/47",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
   "old_passage_id": "e4dafe53-5e78-55f5-9354-c3bb75cdcd2b",
   "old_anchor": "pastores-gregis/55/from-e327-2",
   "new_passage_id": "09c9580e-b401-5465-8598-f9aa45b1f708",
@@ -5121,20 +5303,90 @@
  },
  {
   "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "9c4f966d-dd04-5fa8-96d2-446bb8f3f4db",
+  "old_anchor": "pastores-gregis/56/from-e333",
+  "new_passage_id": "1beeb96c-5873-5f02-9406-fcc329dce3fa",
+  "new_anchor": "pastores-gregis/56",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "9caa440f-754e-5d8c-b447-fba97db10a21",
+  "old_anchor": "pastores-gregis/56/from-e337",
+  "new_passage_id": "76ec9e45-ee65-5627-8fbb-e820771adc1f",
+  "new_anchor": "pastores-gregis/56/from-e334",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
   "old_passage_id": "615d43d9-2558-5215-a5a8-801074575bb6",
   "old_anchor": "pastores-gregis/56/from-e337-2",
-  "new_passage_id": "9caa440f-754e-5d8c-b447-fba97db10a21",
-  "new_anchor": "pastores-gregis/56/from-e337",
+  "new_passage_id": "76ec9e45-ee65-5627-8fbb-e820771adc1f",
+  "new_anchor": "pastores-gregis/56/from-e334",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
  },
  {
   "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "d106bd5a-1a54-520c-bc15-ae702f83f117",
+  "old_anchor": "pastores-gregis/59/from-e357",
+  "new_passage_id": "16ef3de0-8a5f-5f30-b241-2c5cc416118a",
+  "new_anchor": "pastores-gregis/59",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "8c012b62-297e-5e73-87c9-33d0991c37dd",
+  "old_anchor": "pastores-gregis/63/from-e376",
+  "new_passage_id": "4d67326e-a4c5-59d1-b539-8a1565571590",
+  "new_anchor": "pastores-gregis/63",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "6bf38b00-cb91-5aaa-b2ee-141a20807cf6",
+  "old_anchor": "pastores-gregis/73/from-e435",
+  "new_passage_id": "33699242-23ab-5e7b-9928-bca18e925c7c",
+  "new_anchor": "pastores-gregis/73",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "4430e97b-be19-51fb-92e2-43ef94b34ce6",
+  "old_anchor": "pastores-gregis/8/from-e43",
+  "new_passage_id": "41e291bc-566c-56a9-b379-481146d948a3",
+  "new_anchor": "pastores-gregis/8",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "old_passage_id": "1aace1b8-e22c-5baf-8539-c74ed6b8bb13",
+  "old_anchor": "pastores-gregis/8/from-e48",
+  "new_passage_id": "145ceb0c-c9fd-50b7-b6f2-4e3084ea9511",
+  "new_anchor": "pastores-gregis/8/from-e46",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
   "old_passage_id": "7bb59e45-90bb-513d-8bec-b05ac1e2f7d9",
   "old_anchor": "pastores-gregis/8/from-e48-2",
-  "new_passage_id": "1aace1b8-e22c-5baf-8539-c74ed6b8bb13",
-  "new_anchor": "pastores-gregis/8/from-e48",
+  "new_passage_id": "145ceb0c-c9fd-50b7-b6f2-4e3084ea9511",
+  "new_anchor": "pastores-gregis/8/from-e46",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -5158,6 +5410,46 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "453ec4c8-6094-519d-8a06-2b2041f19d72",
+  "old_passage_id": "5d079d74-507a-5ac1-a840-0e0b902a44a1",
+  "old_anchor": "dives-in-misericordia/10/from-e89",
+  "new_passage_id": "ebd338b7-e7eb-5e4f-be3b-eb9198b1f88e",
+  "new_anchor": "dives-in-misericordia/10",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "453ec4c8-6094-519d-8a06-2b2041f19d72",
+  "old_passage_id": "addf155f-c17f-5612-985c-f397a9a1010f",
+  "old_anchor": "dives-in-misericordia/13/from-e110",
+  "new_passage_id": "d733f00d-ab51-5b54-b82f-a1b2ee5e4650",
+  "new_anchor": "dives-in-misericordia/13/from-e109",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "453ec4c8-6094-519d-8a06-2b2041f19d72",
+  "old_passage_id": "335d3569-3074-554a-a4ad-f9652aca3188",
+  "old_anchor": "dives-in-misericordia/14/from-e128",
+  "new_passage_id": "f1ce644b-d5e3-5bfa-8bde-ce5e8e200318",
+  "new_anchor": "dives-in-misericordia/14/from-e127",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "453ec4c8-6094-519d-8a06-2b2041f19d72",
+  "old_passage_id": "97750bd8-a337-5ded-ad94-eb3d674f8f7c",
+  "old_anchor": "dives-in-misericordia/9/from-e81",
+  "new_passage_id": "51baf92e-f340-5889-9ce5-c05c20a2dd68",
+  "new_anchor": "dives-in-misericordia/9",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "462aeb50-8fbb-5ac3-9ab2-60cdf8283d45",
@@ -5207,7 +5499,9 @@
   "new_anchor": "fratelli-tutti/287/from-e576",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "49437294-5526-5a1b-b2df-3022c0c36e56",
@@ -6086,6 +6380,16 @@
   "added_by": "1.2e-1"
  },
  {
+  "document_id": "4a88d63a-84b9-58e0-8196-4a0998a6311a",
+  "old_passage_id": "3823aab8-1ad2-5d64-bccc-fc94b45ee196",
+  "old_anchor": "centesimus-annus/48/from-e172",
+  "new_passage_id": "291719b7-65fe-5e9c-bd6b-196db9a7b12a",
+  "new_anchor": "centesimus-annus/48",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
   "document_id": "4c96eac3-f3f1-549c-84cf-070661393073",
   "old_passage_id": "362682bd-ab9a-5045-b2b3-b840097e5365",
   "old_anchor": "vi.v.i/from-p12",
@@ -6456,6 +6760,66 @@
   "added_by": "1.10b"
  },
  {
+  "document_id": "4d9fa1b9-bed6-5917-b397-987d21bff46f",
+  "old_passage_id": "e7a36101-8786-5183-9c19-cc8986d3a676",
+  "old_anchor": "sollicitudo-rei-socialis/31/from-e152",
+  "new_passage_id": "d26d38a6-5482-5a96-8879-6e94f47a56d3",
+  "new_anchor": "sollicitudo-rei-socialis/31",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "4d9fa1b9-bed6-5917-b397-987d21bff46f",
+  "old_passage_id": "426ed8e6-bb50-5d39-8e7d-083789871d15",
+  "old_anchor": "sollicitudo-rei-socialis/39/from-e198",
+  "new_passage_id": "b6395e8c-8395-5daa-aed9-e51d13927b76",
+  "new_anchor": "sollicitudo-rei-socialis/39",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "c06834a3-bbf9-531d-aab8-0fc9b50e0059",
+  "old_anchor": "ecclesia-in-asia/13/from-e78",
+  "new_passage_id": "4530d0bc-d4df-50f3-8bf2-94836e4fc556",
+  "new_anchor": "ecclesia-in-asia/13",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "d9303cde-1ac2-5e7f-b23f-95c12f659001",
+  "old_anchor": "ecclesia-in-asia/16/from-e96",
+  "new_passage_id": "bd9dc1e0-7ddf-5497-94a3-0e4b80a85c4e",
+  "new_anchor": "ecclesia-in-asia/16",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "14fd3570-59e0-505e-b27d-d74c63891575",
+  "old_anchor": "ecclesia-in-asia/20/from-e117",
+  "new_passage_id": "bff3e250-cb8b-585d-982a-738d69c34564",
+  "new_anchor": "ecclesia-in-asia/20",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "f8cfb75f-943c-51d3-851e-2bb98dfabbbc",
+  "old_anchor": "ecclesia-in-asia/20/from-e119",
+  "new_passage_id": "784978ef-c256-5092-8639-e181366e7e88",
+  "new_anchor": "ecclesia-in-asia/20/from-e118",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
   "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
   "old_passage_id": "0e62424a-56f4-5c5a-9a7e-e14e6660afe8",
   "old_anchor": "ecclesia-in-asia/22/from-e132-2",
@@ -6464,6 +6828,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "98964065-92b0-528b-af79-fde8da790a3b",
+  "old_anchor": "ecclesia-in-asia/24/from-e143",
+  "new_passage_id": "3f01486c-9bf0-58da-83ca-8694f639864b",
+  "new_anchor": "ecclesia-in-asia/24",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
@@ -6487,6 +6861,26 @@
  },
  {
   "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "0a3d84af-f218-5260-8b66-fe56ba9adf42",
+  "old_anchor": "ecclesia-in-asia/31/from-e175",
+  "new_passage_id": "be45cd3e-6073-5324-a075-a19d306863ee",
+  "new_anchor": "ecclesia-in-asia/31",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
+  "old_passage_id": "81663487-941a-5f6e-8cbb-565c10079ce9",
+  "old_anchor": "ecclesia-in-asia/34/from-e194",
+  "new_passage_id": "431bf177-13cc-5297-a959-be28633bf13d",
+  "new_anchor": "ecclesia-in-asia/34",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "4dbf7902-d2a2-5bc6-81f8-09b7e0fba119",
   "old_passage_id": "81debafb-f05b-561a-9ef0-0c50e577fc73",
   "old_anchor": "ecclesia-in-asia/44/from-e231-2",
   "new_passage_id": "5bcac21a-bc94-569f-b171-327daa07d920",
@@ -6497,13 +6891,25 @@
  },
  {
   "document_id": "5017df8e-c59c-5945-a5ec-c5a0b4ad1378",
+  "old_passage_id": "83efcc18-008e-56fa-aa9b-23686bf4671e",
+  "old_anchor": "christifideles-laici/23/from-e161",
+  "new_passage_id": "0afbb11f-37ad-5856-ad9e-c4498ca16623",
+  "new_anchor": "christifideles-laici/23/from-e160",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "5017df8e-c59c-5945-a5ec-c5a0b4ad1378",
   "old_passage_id": "5d170811-f086-5378-95c1-ffa7fad942e3",
   "old_anchor": "christifideles-laici/64/from-e542-2",
   "new_passage_id": "e8ab81f7-9037-56e8-991a-787369885343",
   "new_anchor": "christifideles-laici/64/from-e542",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "5017df8e-c59c-5945-a5ec-c5a0b4ad1378",
@@ -6513,7 +6919,9 @@
   "new_anchor": "christifideles-laici/64/from-e588",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -7077,6 +7485,16 @@
  },
  {
   "document_id": "5286cbe3-2d3b-57e0-bdff-f349086d1e04",
+  "old_passage_id": "a2cae1b9-b1f8-5ac4-96f2-89d1c81ff96b",
+  "old_anchor": "evangelium-vitae/25/from-e106",
+  "new_passage_id": "c6d15677-ce1f-5d7b-b5c7-72140b77a69b",
+  "new_anchor": "evangelium-vitae/25",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "5286cbe3-2d3b-57e0-bdff-f349086d1e04",
   "old_passage_id": "1a6e2a49-4a32-5189-89e2-84b7d0c5e691",
   "old_anchor": "evangelium-vitae/43/from-e183-2",
   "new_passage_id": "1b29e2ca-865f-5a8b-89fa-495564a51a79",
@@ -7104,6 +7522,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "5286cbe3-2d3b-57e0-bdff-f349086d1e04",
+  "old_passage_id": "fbc1f01d-444e-5cb5-aabd-b5053aa72b12",
+  "old_anchor": "evangelium-vitae/97/from-e396",
+  "new_passage_id": "52f9d515-258e-5d26-a804-10401d0a67b2",
+  "new_anchor": "evangelium-vitae/97",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "534d8fb1-683c-5968-a13f-9f0ec60a8db7",
@@ -7177,10 +7605,20 @@
  },
  {
   "document_id": "565014a7-ab75-5a97-8564-ceabcdc6e9c2",
+  "old_passage_id": "0eb417dd-582d-5bde-8190-1584097d9902",
+  "old_anchor": "charitate-christi/preamble/from-e12",
+  "new_passage_id": "f95f0b00-24f4-5dd1-97e0-90148195cc02",
+  "new_anchor": "charitate-christi/1/from-e12",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "565014a7-ab75-5a97-8564-ceabcdc6e9c2",
   "old_passage_id": "cc515d96-c5ff-5760-ba9d-508e56763114",
   "old_anchor": "charitate-christi/preamble/from-e12-2",
-  "new_passage_id": "0eb417dd-582d-5bde-8190-1584097d9902",
-  "new_anchor": "charitate-christi/preamble/from-e12",
+  "new_passage_id": "f95f0b00-24f4-5dd1-97e0-90148195cc02",
+  "new_anchor": "charitate-christi/1/from-e12",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -7567,6 +8005,26 @@
  },
  {
   "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
+  "old_passage_id": "7bd393ee-3adf-53fd-8f0c-c42dad9bee4c",
+  "old_anchor": "exsurge-domine/41/from-e58",
+  "new_passage_id": "06e6fdd3-5546-50fc-b97b-c22697d9c2b6",
+  "new_anchor": "exsurge-domine/closing/from-e59",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
+  "old_passage_id": "8a23a9ce-2e47-55f4-99da-4474943421ca",
+  "old_anchor": "exsurge-domine/41/from-e62",
+  "new_passage_id": "6442aa09-78ae-5d41-9ae4-53c0a98f2e53",
+  "new_anchor": "exsurge-domine/closing/from-e62",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
   "old_passage_id": "d6814e23-5b26-5d5a-ad0d-6ecc7de1c3c7",
   "old_anchor": "exsurge-domine/preamble/from-e12-2",
   "new_passage_id": "1b00344e-6c20-5b91-99c6-24002a837f82",
@@ -7923,7 +8381,9 @@
   "new_anchor": "syllabus-of-errors/80/from-e98",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "6e9f0854-4460-5044-b0ed-c13355cd90fe",
@@ -8173,7 +8633,9 @@
   "new_anchor": "evangelii-gaudium/288/from-e519",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "756cdf3e-f9fa-594d-9f86-0b776413abf4",
@@ -8183,7 +8645,9 @@
   "new_anchor": "evangelii-gaudium/288/from-e552",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "756cdf3e-f9fa-594d-9f86-0b776413abf4",
@@ -8193,7 +8657,9 @@
   "new_anchor": "evangelii-gaudium/288/from-e605",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "756cdf3e-f9fa-594d-9f86-0b776413abf4",
@@ -8203,7 +8669,9 @@
   "new_anchor": "evangelii-gaudium/288/from-e651",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "760c4195-f5be-5141-90fc-8958fccd06ba",
@@ -8404,6 +8872,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "83ef10a9-f7a6-594c-b29d-bf96bf9dccbd",
+  "old_passage_id": "6eea6b2b-2b63-5d8a-bc68-126da96af0e1",
+  "old_anchor": "menti-nostrae/126-2",
+  "new_passage_id": "2ceaf467-25b7-5262-b8b2-44661a647b70",
+  "new_anchor": "menti-nostrae/126",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "841b4e0a-225f-5090-a4c0-36d8bf1a2f63",
@@ -8906,6 +9384,16 @@
   "added_by": "1.10c"
  },
  {
+  "document_id": "86c14cf0-1aa6-50c1-a49e-c1a2061df4e3",
+  "old_passage_id": "23464441-5e04-5d19-ac07-828cc6077d24",
+  "old_anchor": "dominum-et-vivificantem/55/from-e198",
+  "new_passage_id": "86090213-3b76-5606-bfc2-30a1548b3e05",
+  "new_anchor": "dominum-et-vivificantem/55",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
   "document_id": "89201a06-a747-53a5-8248-43e5a5cb5fae",
   "old_passage_id": "327e7b6c-e4b9-551a-ab9e-d3acae92abbd",
   "old_anchor": "iii.ix.ii/from-p2-2",
@@ -9023,7 +9511,9 @@
   "new_anchor": "magnifica-humanitas/245/from-e526",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "927d6248-3117-5b1c-bb92-feec32f70c55",
@@ -9033,7 +9523,9 @@
   "new_anchor": "magnifica-humanitas/245/from-e553",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "927d6248-3117-5b1c-bb92-feec32f70c55",
@@ -9043,7 +9535,9 @@
   "new_anchor": "magnifica-humanitas/245/from-e493",
   "kind": "merged",
   "reason": "its text now lies inside this passage",
-  "added_by": "2.1"
+  "added_by": "2.1",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "927d6248-3117-5b1c-bb92-feec32f70c55",
@@ -9053,7 +9547,9 @@
   "new_anchor": "magnifica-humanitas/245/from-e553",
   "kind": "merged",
   "reason": "its text now lies inside this passage",
-  "added_by": "2.1"
+  "added_by": "2.1",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "9551480f-ab8c-5ab5-b46c-72b07cec3755",
@@ -12405,7 +12901,9 @@
   "new_anchor": "gaudete-et-exsultate/177/from-e377",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "aff19604-39c5-5a31-abfa-05b01e21495c",
@@ -13552,6 +14050,16 @@
   "added_by": "1.10b"
  },
  {
+  "document_id": "c20261d3-53ae-525a-b85a-6008a6069562",
+  "old_passage_id": "1405848c-6b86-555d-b319-b0611a689ec2",
+  "old_anchor": "annus-qui-hunc/2",
+  "new_passage_id": "51292dbe-347b-50c7-af90-2418ad173c75",
+  "new_anchor": "annus-qui-hunc/preamble",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
   "document_id": "c254a3b6-c2cd-5425-8205-a447b91c0bdb",
   "old_passage_id": "64866211-10a0-511f-95a8-8ea0b5949e02",
   "old_anchor": "deus-caritas-est/31/from-e81-2",
@@ -13562,6 +14070,26 @@
   "added_by": "1.10c"
  },
  {
+  "document_id": "c5faaf87-76a5-57f0-990f-ab3c646953a7",
+  "old_passage_id": "3b6dd617-91ae-5dcd-8f0e-f0bc71c6532e",
+  "old_anchor": "rerum-novarum/25/from-e37",
+  "new_passage_id": "4f7f4b95-c5dd-5b23-b92f-93e8fe0ac7db",
+  "new_anchor": "rerum-novarum/27",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "c5faaf87-76a5-57f0-990f-ab3c646953a7",
+  "old_passage_id": "9449d1ba-5abf-5886-b5bf-5c3c0ff7a436",
+  "old_anchor": "rerum-novarum/29/from-e43",
+  "new_passage_id": "0575ef2e-989c-566a-a9c3-c9a2e6ab6cdf",
+  "new_anchor": "rerum-novarum/32",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
   "document_id": "c62b660d-5518-5b2e-b85d-808f2099bd5f",
   "old_passage_id": "616cfc8c-bbd3-5725-afed-ab603905405d",
   "old_anchor": "ecclesia-in-medio-oriente/100/from-e187-2",
@@ -13569,7 +14097,9 @@
   "new_anchor": "ecclesia-in-medio-oriente/100/from-e187",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "c62b660d-5518-5b2e-b85d-808f2099bd5f",
@@ -13579,7 +14109,9 @@
   "new_anchor": "ecclesia-in-medio-oriente/100/from-e253",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -14404,6 +14936,26 @@
   "added_by": "2.1"
  },
  {
+  "document_id": "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec",
+  "old_passage_id": "95dfbb3d-9a2a-5d13-a0be-6f52150c0652",
+  "old_anchor": "pastores-dabo-vobis/74/from-e435",
+  "new_passage_id": "fc9dd179-4378-5dfd-bd6c-42eb43506b08",
+  "new_anchor": "pastores-dabo-vobis/74",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec",
+  "old_passage_id": "1001a1ef-9ab1-5352-95ae-5a1795297c10",
+  "old_anchor": "pastores-dabo-vobis/74/from-e438",
+  "new_passage_id": "fd428979-cddd-591c-82ec-0c225440e74d",
+  "new_anchor": "pastores-dabo-vobis/74/from-e436",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
   "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
   "old_passage_id": "8624bd77-76ba-56c7-9f49-197b95066130",
   "old_anchor": "iv/from-p16-2",
@@ -14452,6 +15004,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "d008b160-5c71-5092-b5e8-641bbf4ef282",
+  "old_passage_id": "f7f8a3ec-4b7a-5602-a777-1f0a2fc86ee0",
+  "old_anchor": "redemptor-hominis/12/from-e57",
+  "new_passage_id": "baa11d75-b33d-557f-b52d-06dea9673b39",
+  "new_anchor": "redemptor-hominis/12",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "d28f81f6-1dd8-595f-b129-b7b225e09109",
@@ -15779,6 +16341,46 @@
  },
  {
   "document_id": "e628dac2-d1fe-536e-b463-f10e3865b819",
+  "old_passage_id": "6b2cd76a-7aad-5b1c-94e4-2e7bbc719f7f",
+  "old_anchor": "ecclesia-in-oceania/16/from-e93",
+  "new_passage_id": "3982b7f5-ed79-525f-8088-6ce66eedf7df",
+  "new_anchor": "ecclesia-in-oceania/16",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "e628dac2-d1fe-536e-b463-f10e3865b819",
+  "old_passage_id": "06ee5069-89d1-514f-a62c-e114f2d6398e",
+  "old_anchor": "ecclesia-in-oceania/18/from-e112",
+  "new_passage_id": "0b3c9fe1-7ca8-53f7-8045-b46421b4d2d4",
+  "new_anchor": "ecclesia-in-oceania/18/from-e111",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "e628dac2-d1fe-536e-b463-f10e3865b819",
+  "old_passage_id": "91293e86-018f-5c74-b5dd-242672fdd707",
+  "old_anchor": "ecclesia-in-oceania/45/from-e223",
+  "new_passage_id": "f490f5cb-cce3-5887-92e2-a5651f332862",
+  "new_anchor": "ecclesia-in-oceania/45",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "e628dac2-d1fe-536e-b463-f10e3865b819",
+  "old_passage_id": "44726746-eefd-5908-ae09-951272ff1ee4",
+  "old_anchor": "ecclesia-in-oceania/48/from-e234",
+  "new_passage_id": "a3cbc8a8-d068-56ae-9ecf-ad96ab7239e7",
+  "new_anchor": "ecclesia-in-oceania/48",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "e628dac2-d1fe-536e-b463-f10e3865b819",
   "old_passage_id": "e7f4df34-8bcb-5cfa-9bae-280ce6136fc9",
   "old_anchor": "ecclesia-in-oceania/49/from-e241-2",
   "new_passage_id": "d1cc75c4-1184-5599-af3c-8c757af50f22",
@@ -15786,6 +16388,26 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "e628dac2-d1fe-536e-b463-f10e3865b819",
+  "old_passage_id": "a7e8be0a-03b4-5acb-9773-064a6655fd2e",
+  "old_anchor": "ecclesia-in-oceania/53/from-e258",
+  "new_passage_id": "7a877238-1f5e-5fae-bf0c-8c913c99b224",
+  "new_anchor": "ecclesia-in-oceania/prayer-1",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "e628dac2-d1fe-536e-b463-f10e3865b819",
+  "old_passage_id": "88515ff9-e8cd-5602-bc19-0b15e570c3a6",
+  "old_anchor": "ecclesia-in-oceania/9/from-e54",
+  "new_passage_id": "a7b7d5fa-0ca0-5322-9454-9a4a4d6a9640",
+  "new_anchor": "ecclesia-in-oceania/9",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "e73bb326-8ba6-5334-b79e-3a15c9892581",
@@ -16025,7 +16647,9 @@
   "new_anchor": "dilexi-te/121/from-e198",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "ea854784-24b5-594c-968f-c1a878cf569c",
@@ -16035,7 +16659,9 @@
   "new_anchor": "dilexi-te/121/from-e220",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "ea854784-24b5-594c-968f-c1a878cf569c",
@@ -16045,7 +16671,9 @@
   "new_anchor": "dilexi-te/121/from-e264",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3a",
+  "closed_on": "2026-11-05"
  },
  {
   "document_id": "eb26cfd2-ba51-56b7-b9cd-8b5fe7c8d852",
@@ -16126,6 +16754,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "ef57a4a0-0811-5189-a42b-cf488f19592b",
+  "old_passage_id": "99926830-0131-50ee-a4ea-d14a6c03e27f",
+  "old_anchor": "reconciliatio-et-paenitentia/23/from-e187",
+  "new_passage_id": "30e77131-3b1f-5647-b011-b0fa65e2ace5",
+  "new_anchor": "reconciliatio-et-paenitentia/23",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
  },
  {
   "document_id": "ef7c21a8-92fa-51b8-823f-89094bf6f565",
@@ -16719,10 +17357,20 @@
  },
  {
   "document_id": "f5599f77-bc4d-5d4c-96de-dd9a40d71291",
+  "old_passage_id": "6c22ece5-c24f-50de-b28d-73e01f362ac5",
+  "old_anchor": "christianae-reipublicae/preamble/from-e11",
+  "new_passage_id": "d77ceae3-3395-55fc-abad-e198ea7df4c5",
+  "new_anchor": "christianae-reipublicae/1/from-e11",
+  "kind": "merged",
+  "reason": "its text now lies in this passage",
+  "added_by": "1.3a"
+ },
+ {
+  "document_id": "f5599f77-bc4d-5d4c-96de-dd9a40d71291",
   "old_passage_id": "3e4b4f99-9c8f-56ae-b963-1508fa5ea6b0",
   "old_anchor": "christianae-reipublicae/preamble/from-e11-2",
-  "new_passage_id": "6c22ece5-c24f-50de-b28d-73e01f362ac5",
-  "new_anchor": "christianae-reipublicae/preamble/from-e11",
+  "new_passage_id": "d77ceae3-3395-55fc-abad-e198ea7df4c5",
+  "new_anchor": "christianae-reipublicae/1/from-e11",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
