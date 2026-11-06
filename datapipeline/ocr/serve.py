@@ -8,10 +8,16 @@ from __future__ import annotations
 
 import html
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import parse_qs
+from pathlib import Path
+from urllib.parse import parse_qs, quote
+from urllib.request import urlopen
 
 from ocr.gate import evaluate, record, start_check
-from ocr.work import WorkConfig, WorkDir
+from ocr.work import WORK_ROOT, WorkConfig, WorkDir
+
+# Page images, fetched once and served from here: a phone loading dozens of large scans
+# straight from the Internet Archive stops getting them.
+IMAGE_CACHE = WORK_ROOT / "_page_images"
 
 STYLE = """
 :root { color-scheme: light dark; }
@@ -29,6 +35,16 @@ textarea { width: 100%; font-size: 16px; box-sizing: border-box; }
 
 def page_image(config: WorkConfig, leaf: int) -> str:
     return f"https://archive.org/download/{config.scan}/page/n{leaf}.jpg"
+
+
+def cached_image(config: WorkConfig, leaf: int, cache: Path = IMAGE_CACHE) -> Path:
+    path = cache / config.scan / f"n{leaf}.jpg"
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with urlopen(page_image(config, leaf), timeout=60) as response:
+            data = response.read()
+        path.write_bytes(data)
+    return path
 
 
 def render(workdirs: list[WorkDir]) -> str:
@@ -52,8 +68,8 @@ def render(workdirs: list[WorkDir]) -> str:
                 state = "<span class=done>Matches</span>"
             elif e["result"] == "differences":
                 state = f"<span class=diff>Differs: {html.escape(e['differences'] or '')}</span>"
-            images = "".join(f"<a href='{page_image(wd.config, leaf)}'>"
-                             f"<img loading=lazy src='{page_image(wd.config, leaf)}'></a>"
+            images = "".join(f"<a href='/page/{wd.config.work}/{leaf}.jpg'>"
+                             f"<img loading=lazy src='/page/{wd.config.work}/{leaf}.jpg'></a>"
                              for leaf in p.leaves)
             key = f"{html.escape(wd.config.work)}|{html.escape(p.id)}"
             out.append(
@@ -71,6 +87,10 @@ def render(workdirs: list[WorkDir]) -> str:
 
 def serve(workdirs: list[WorkDir], by: str, port: int) -> None:
     by_work = {wd.config.work: wd for wd in workdirs}
+    for wd in workdirs:
+        for leaf in {leaf for p in wd.passages()
+                     if p.id in {e["id"] for e in start_check(wd)["sample"]} for leaf in p.leaves}:
+            cached_image(wd.config, leaf)
 
     class Handler(BaseHTTPRequestHandler):
         def _send(self, status: int, body: str = "", location: str | None = None) -> None:
@@ -84,6 +104,17 @@ def serve(workdirs: list[WorkDir], by: str, port: int) -> None:
             self.wfile.write(data)
 
         def do_GET(self) -> None:
+            parts = self.path.strip("/").removesuffix(".jpg").split("/")
+            if len(parts) == 3 and parts[0] == "page" and parts[1] in by_work \
+                    and parts[2].isdigit():
+                data = cached_image(by_work[parts[1]].config, int(parts[2])).read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "image/jpeg")
+                self.send_header("Content-Length", str(len(data)))
+                self.send_header("Cache-Control", "max-age=86400")
+                self.end_headers()
+                self.wfile.write(data)
+                return
             self._send(200, render(workdirs))
 
         def do_POST(self) -> None:
@@ -97,7 +128,7 @@ def serve(workdirs: list[WorkDir], by: str, port: int) -> None:
             except (KeyError, ValueError) as exc:
                 self._send(400, html.escape(str(exc)))
                 return
-            self._send(303, location="/")
+            self._send(303, location="/#" + quote(form["key"][0]))
 
         def log_message(self, *args) -> None:
             pass
