@@ -1,14 +1,14 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "feat/1.3a-papal-parser 77d01df",
+  "apostolic-exhortations": "feat/1.3a-papal-parser 3333fea",
   "bible": "feat/1.10c-piece-citations 269d968",
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
   "councils": "feat/1.2e-1-lateran-schroeder b511d17",
-  "encyclicals": "feat/1.3a-papal-parser 77d01df",
+  "encyclicals": "feat/1.3a-papal-parser 3333fea",
   "medieval": "feat/1.10c-piece-citations 269d968",
-  "papal-documents": "feat/1.3a-papal-parser 77d01df",
+  "papal-documents": "feat/1.3a-papal-parser 3333fea",
   "summa": "feat/coverage-checks cfee751"
  },
  "files": {
@@ -993,8 +993,8 @@
    "pct": 100.0
   },
   "encyclicals/annus-qui-hunc.html": {
-   "body_chars": 64270,
-   "covered_chars": 63835,
+   "body_chars": 64284,
+   "covered_chars": 63849,
    "pct": 99.32
   },
   "encyclicals/apostolica-constitutio.html": {
@@ -3922,8 +3922,8 @@
   "c20261d3-53ae-525a-b85a-6008a6069562": {
    "collection": "encyclicals",
    "source_file": "annus-qui-hunc.html",
-   "body_chars": 64270,
-   "covered_chars": 63835,
+   "body_chars": 64284,
+   "covered_chars": 63849,
    "pct": 99.32
   },
   "c254a3b6-c2cd-5425-8205-a447b91c0bdb": {
