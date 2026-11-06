@@ -20,6 +20,7 @@ from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
+from ingest.councils_schroeder import WORKS as SCHROEDER_WORKS, build_schroeder
 from ingest.pieces import (Segment, element_locator, name_pieces, number_elements,
                            pack_text, piece_reference,
                            unique_unit_anchors)
@@ -243,6 +244,13 @@ def build_documents() -> list[Document]:
         manifest = json.load(f)
     docs: list[Document] = []
     for entry in manifest:
+        if entry["council"] in SCHROEDER_WORKS:
+            # The Tanner page stays vendored; no builder reads it (Carter, 4 Nov 2026).
+            docs.append(build_schroeder(
+                entry, resolve_document_id("councils", _source_key(entry),
+                                           ("councils", entry["council"], entry["council"])),
+                _source_key(entry)))
+            continue
         with open(os.path.join(_SRC, entry["file"]), "rb") as f:
             soup = BeautifulSoup(f.read(), "lxml")
         if entry["group"] == "vatican-ii":

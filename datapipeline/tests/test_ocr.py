@@ -410,3 +410,112 @@ def test_demo_work_config_loads():
     assert config.model == "claude-sonnet-5-5" and config.ceiling_usd == 2.0
     assert config.sample == SampleRule(0.25, 5, 20, "work")
     assert config.model in correct_mod.PRICES
+
+
+# --- units, fixes and the frozen text (1.2e) ------------------------------------------
+
+from ocr.fixes import apply_fixes, freeze, read_text  # noqa: E402
+from ocr.furniture import Paragraph  # noqa: E402
+from ocr.units import SchroederCanons, get_units, strip_note_calls  # noqa: E402
+
+
+def _paras(*texts):
+    return [Paragraph(t, t, [1]) for t in texts]
+
+
+def test_schroeder_units_keep_only_the_text_of_each_canon():
+    units = SchroederCanons().split(_paras(
+        "History. The council met.", "CANON I", "Summary. A digest.",
+        "Text. The first canon.", "It goes on here.", "Comment. His remarks.",
+        "More remarks.", "CANON 2", "Summary. Another.", "Text, The second canon."))
+    assert [u.id for u in units] == ["canon-1", "canon-2"]
+    assert [[p.text for p in u.paragraphs] for u in units] == [
+        ["The first canon.", "It goes on here."], ["The second canon."]]
+
+
+def test_a_lost_heading_is_numbered_by_counting_texts():
+    units = SchroederCanons().split(_paras(
+        "CANON 1", "Text. One.", "Summary. Lost heading.", "Text. Two.", "CANON 3", "Text. Three."))
+    assert [u.id for u in units] == ["canon-1", "canon-2", "canon-3"]
+
+
+def test_a_heading_sharing_a_paragraph_with_its_summary_closes_the_canon():
+    units = SchroederCanons().split(_paras(
+        "Text. One.", "CANON 2 Summary. The digest.", "Text. Two."))
+    assert [[p.text for p in u.paragraphs] for u in units] == [["One."], ["Two."]]
+
+
+def test_a_heading_that_disagrees_with_the_count_stops_the_split():
+    with pytest.raises(ValueError, match="canon heading 5"):
+        SchroederCanons().split(_paras("CANON 1", "Text. One.", "CANON 5", "Text. Two."))
+
+
+def test_unknown_units_are_refused():
+    with pytest.raises(ValueError, match="no OCR units"):
+        get_units("nonsense")
+
+
+@pytest.mark.parametrize("before,after", [
+    ("could arise.°", "could arise."),
+    ("the Church.’®", "the Church."),
+    ("null and void.*?", "null and void."),
+    ("of all dignity.” Next.", "of all dignity. Next."),
+    ("He said, “Go in peace.” Next.", "He said, “Go in peace.” Next."),
+    ("Who is he? Next.", "Who is he? Next."),
+    ("in * the text", "in the text"),
+])
+def test_note_calls_go_and_quotations_stay(before, after):
+    assert strip_note_calls(before) == after
+
+
+def _fixed_work(tmp_path, fixes):
+    works = tmp_path / "works"
+    works.mkdir()
+    (works / "w.fixes.json").write_text(json.dumps(fixes), encoding="utf-8")
+    config = SimpleNamespace(work="w")
+    wd = SimpleNamespace(config=config, _p=[OcrPassage("canon-1", [1], ["1"], "raw", "the shail be")])
+    wd.passages = lambda: wd._p
+    wd.save_passages = lambda ps: None
+    return wd, works
+
+
+def test_fixes_apply_on_the_final_text_and_keep_the_rest(tmp_path):
+    wd, works = _fixed_work(tmp_path, [
+        {"passage": "canon-1", "find": "shail", "replace": "shall", "why": "print"}])
+    assert apply_fixes(wd, works) == 1
+    assert wd._p[0].text == "the shall be"
+    assert wd._p[0].cleaned == "the shail be"
+
+
+@pytest.mark.parametrize("fix,message", [
+    ({"passage": "canon-1", "find": "absent", "replace": "x", "why": "print"}, "0 times"),
+    ({"passage": "canon-9", "find": "the", "replace": "x", "why": "print"}, "no passage"),
+    ({"passage": "canon-1", "find": "the", "replace": "x", "why": ""}, "says why"),
+])
+def test_a_fix_that_does_not_fit_stops_the_run(tmp_path, fix, message):
+    wd, works = _fixed_work(tmp_path, [fix])
+    with pytest.raises(ValueError, match=message):
+        apply_fixes(wd, works)
+
+
+def test_the_check_hashes_the_fixed_text():
+    # The sampled text is hashed through `text`, so a later fix makes the check stale.
+    p = OcrPassage("canon-1", [1], ["1"], "raw", "the shail be")
+    before = p.text
+    p.fixed = "the shall be"
+    assert p.text != before and p.base == before
+
+
+def test_freeze_writes_the_text_the_adapter_reads(tmp_path, monkeypatch):
+    config = WorkConfig.from_dict({
+        "work": "w", "title": "T", "scan": "scan-id", "djvu_xml": "synthetic_djvu.xml",
+        "page_numbers": "synthetic_page_numbers.json", "pages": ["1", "3"],
+        "baseline": {"path": "baseline.html", "start": "^START", "end": "^END"}})
+    wd = WorkDir(config, tmp_path / "work")
+    wd.save_passages([OcrPassage("canon-1", [1], ["1"], "raw", "cleaned", fixed="final")])
+    monkeypatch.setattr("ocr.fixes.evaluate", lambda w: SimpleNamespace(status="pending"))
+    freeze(wd, tmp_path / "texts")
+    data = read_text("w", tmp_path / "texts")
+    assert data["gate"] == "pending"
+    assert data["metadata"] == {"text_source": "ocr", "scan_id": "scan-id"}
+    assert data["passages"][0]["text"] == "final"

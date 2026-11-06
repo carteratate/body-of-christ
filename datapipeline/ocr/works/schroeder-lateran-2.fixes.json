@@ -1,0 +1,32 @@
+[
+ {
+  "passage": "canon-4",
+  "find": "dis-\n\ncome to an end, alienatum se a fratrum communione cognoscat; nec eum recipi liceat, nisi in sequenti synodo fuerit absolutus (c.12, D. XVIII); similarly the Synods of Agde (506) in canon 35 (c.13, D.XVIII), of Tarragona (516) in canon 6 (c.14, D.XVIII, etc. The same penalty is imposed by the Sixth Synod of Carthage (401) in canon 14 on a bishop who should promote a monk not of his diocese to the clerical state, or appoint such a one superior of a monastery within his diocese (Hefele-Leclercq, II, 129).\n\n13 Innocent III distinguished between intercourse or communication knowingly held with one excommunicated in crimine criminoso, that is, giving advice or aid of any kind in the crime for which the excommunication was incurred, and ordinary communication, that is, ordinary conversation with, or praying or eating with the one excommunicated. The former was punished with major, the latter with minor excommunication (c.29, X, De sentent. excomm., V, 39).\n\n14 Kober, Der Kirchenbann, Tubingen, 1863; Hollweck, Die kirchlichen Strafgesetze, Mainz, 1899. sensions",
+  "replace": "dissensions",
+  "why": "Page-foot notes 12–14 read into the sentence across pp. 199–200; p. 200 prints \"dissensions\"."
+ },
+ {
+  "passage": "canon-7",
+  "find": "each ot n:\n\ner,",
+  "replace": "each other,",
+  "why": "A pen mark on the scan; p. 201 prints \"each other,\"."
+ },
+ {
+  "passage": "canon-11",
+  "find": "engaged\n\n19 Cf. canon 2 of I Lateran. in agriculture",
+  "replace": "engaged in agriculture",
+  "why": "Page-foot note 19 read into the sentence; pp. 202–203."
+ },
+ {
+  "passage": "canon-20",
+  "find": "faculta-tem",
+  "replace": "facultatem",
+  "why": "A word broken at a line end."
+ },
+ {
+  "passage": "canon-22",
+  "find": "confréres",
+  "replace": "confrères",
+  "why": "Accent misread; p. 209 prints \"confrères\"."
+ }
+]

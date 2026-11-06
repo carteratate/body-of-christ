@@ -336,6 +336,7 @@ def clean_work(workdir, sources=None, force: bool = False,
 
     from ocr.layout import get_layout
     from ocr.pages import leaves_for_pages, load_pages, read_page_numbers
+    from ocr.units import get_units
     from ocr.work import PASSAGE_WORDS, SOURCES, OcrPassage, group_passages
 
     config = workdir.config
@@ -353,11 +354,20 @@ def clean_work(workdir, sources=None, force: bool = False,
             f"{config.page_numbers} on only {agree} of {read} pages; the scan's images and "
             "its page map are out of step")
     number = {p.leaf: p.number for p in pages}
+    if config.units:
+        units = get_units(config.units).split(result.paragraphs)
+        if config.unit_count is not None and len(units) != config.unit_count:
+            raise RuntimeError(f"{config.work}: {len(units)} units read, the work prints "
+                               f"{config.unit_count}")
+        groups = [(u.id, u.paragraphs) for u in units]
+    else:
+        groups = [(f"{i:04d}", group) for i, group in enumerate(
+            group_passages(result.paragraphs, passage_words or PASSAGE_WORDS), 1)]
     passages = []
-    for i, group in enumerate(group_passages(result.paragraphs, passage_words or PASSAGE_WORDS), 1):
+    for passage_id, group in groups:
         leaves_ = sorted({leaf for para in group for leaf in para.leaves})
         passages.append(OcrPassage(
-            id=f"{i:04d}", leaves=leaves_, pages=[number[x] for x in leaves_],
+            id=passage_id, leaves=leaves_, pages=[number[x] for x in leaves_],
             raw_ocr="\n\n".join(para.raw for para in group),
             cleaned="\n\n".join(para.text for para in group)))
     workdir.save_passages(passages)

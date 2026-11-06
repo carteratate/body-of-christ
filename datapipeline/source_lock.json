@@ -210,76 +210,10 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.txt",
-  "sha256": "987f676e6524fbb9eae5b0f7967d937a78c7e6677c8577eb27bef880bb074e68",
-  "bytes": 2032979,
-  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_djvu.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
-  "sha256": "a7ea0993231b0d003a2819775c57a72af21b85f40c27ec116078d8a18300c72f",
-  "bytes": 25115096,
-  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
-  "acquired": "2026-11-02",
-  "hashed_on": "2026-11-02",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
-  "sha256": "a6e905368f94648a8a4c63897623d4245366f153ac4946f42e41588da5e4f34c",
-  "bytes": 134743,
-  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
-  "acquired": "2026-11-02",
-  "hashed_on": "2026-11-02",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/councils/creeds2.xml",
   "sha256": "412c952ff096d7e09a1f2d9e838e9652f0fedcbf7e8d6f3999c27e69ab69091e",
   "bytes": 4065931,
   "url": "https://ccel.org/ccel/s/schaff/creeds2.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/councils/fordham-lateran1.html",
-  "sha256": "0d1786718621aa68bfe5782098ac5eaa0eb1db5eb00e21c748190878ce5c3ea9",
-  "bytes": 79745,
-  "url": "https://sourcebooks.fordham.edu/basis/lateran1.asp",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/councils/fordham-lateran2.html",
-  "sha256": "5bd5b921112519dc340452c871d23aa61f48e3d0bae7b0f6032403c9e2f22bc9",
-  "bytes": 83314,
-  "url": "https://sourcebooks.fordham.edu/basis/lateran2.asp",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/councils/fordham-lateran4.html",
-  "sha256": "9dca933d4c2aca78af0f3b9fcd58c6f1a263e1602ad9bc6bd2939ee797389db4",
-  "bytes": 218572,
-  "url": "https://sourcebooks.fordham.edu/basis/lateran4.asp",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
@@ -3398,6 +3332,39 @@
  },
  {
   "collection": "councils",
+  "path": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.txt",
+  "sha256": "987f676e6524fbb9eae5b0f7967d937a78c7e6677c8577eb27bef880bb074e68",
+  "bytes": 2032979,
+  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_djvu.txt",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+  "sha256": "a7ea0993231b0d003a2819775c57a72af21b85f40c27ec116078d8a18300c72f",
+  "bytes": 25115096,
+  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+  "acquired": "2026-11-02",
+  "hashed_on": "2026-11-02",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+  "sha256": "a6e905368f94648a8a4c63897623d4245366f153ac4946f42e41588da5e4f34c",
+  "bytes": 134743,
+  "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+  "acquired": "2026-11-02",
+  "hashed_on": "2026-11-02",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
   "path": "councils/ecum-01-council-of-nicaea.html",
   "sha256": "c94514a9a7762df51c4bb15c2e2c6c455318ebeda333991508b1c9ae6866ab84",
   "bytes": 110844,
@@ -3595,6 +3562,39 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/fordham-lateran1.html",
+  "sha256": "0d1786718621aa68bfe5782098ac5eaa0eb1db5eb00e21c748190878ce5c3ea9",
+  "bytes": 79745,
+  "url": "https://sourcebooks.fordham.edu/basis/lateran1.asp",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/fordham-lateran2.html",
+  "sha256": "5bd5b921112519dc340452c871d23aa61f48e3d0bae7b0f6032403c9e2f22bc9",
+  "bytes": 83314,
+  "url": "https://sourcebooks.fordham.edu/basis/lateran2.asp",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/fordham-lateran4.html",
+  "sha256": "9dca933d4c2aca78af0f3b9fcd58c6f1a263e1602ad9bc6bd2939ee797389db4",
+  "bytes": 218572,
+  "url": "https://sourcebooks.fordham.edu/basis/lateran4.asp",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "councils",

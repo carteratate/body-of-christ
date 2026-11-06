@@ -93,10 +93,6 @@
   "fixed_by": "1.2e",
   "description": "92.86% covered: text inside lists, divs and bracketed spans dropped; replaced by Schroeder"
  },
- "coverage.councils.ecum-09-first-lateran-council.html": {
-  "fixed_by": "1.2e",
-  "description": "87.69% covered: text inside lists, divs and bracketed spans dropped; replaced by Schroeder"
- },
  "coverage.councils.ecum-16-council-of-constance.html": {
   "fixed_by": "1.2e",
   "description": "93.65% covered: text inside lists, divs and bracketed spans dropped; replaced by Schroeder"
@@ -1087,20 +1083,10 @@
   "description": "Council of Nicaea: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Council of Nicaea — The Letter of the Synod in Nicaea to the Egyptians"]
  },
- "labels.unique_reference:councils/37829660-f962-5b93-b9a7-c79b5d03f170": {
-  "fixed_by": "1.2e",
-  "description": "First Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["First Lateran Council — Text"]
- },
  "labels.unique_reference:councils/4451c2f8-e836-58ab-a2eb-495a9cacef89": {
   "fixed_by": "1.1",
   "description": "Dei Verbum: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Dei Verbum, §1", "Dei Verbum, §10", "Dei Verbum, §11", "Dei Verbum, §2", "Dei Verbum, §3", "Dei Verbum, §4", "Dei Verbum, §5", "Dei Verbum, §6", "Dei Verbum, §7", "Dei Verbum, §8", "Dei Verbum, §9"]
- },
- "labels.unique_reference:councils/49b534a0-0692-5f8c-8ab7-9da0288e4de1": {
-  "fixed_by": "1.2e",
-  "description": "Fourth Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Fourth Lateran Council — C O N S T I T U T I O N S", "Fourth Lateran Council — C O N S T I T U T I O N S (part 1 of 2)", "Fourth Lateran Council — C O N S T I T U T I O N S (part 2 of 2)", "Fourth Lateran Council — Introduction"]
  },
  "labels.unique_reference:councils/51599a74-556f-577c-9828-88b5472baf2f": {
   "fixed_by": "1.2e",
@@ -1121,11 +1107,6 @@
   "fixed_by": "1.1",
   "description": "Gaudium et Spes: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Gaudium et Spes, §1", "Gaudium et Spes, §10", "Gaudium et Spes, §11", "Gaudium et Spes, §12", "Gaudium et Spes, §13", "Gaudium et Spes, §14", "Gaudium et Spes, §15", "Gaudium et Spes, §16", "Gaudium et Spes, §17", "Gaudium et Spes, §18", "Gaudium et Spes, §19", "Gaudium et Spes, §2", "Gaudium et Spes, §20", "Gaudium et Spes, §21", "Gaudium et Spes, §22", "Gaudium et Spes, §23", "Gaudium et Spes, §24", "Gaudium et Spes, §25", "Gaudium et Spes, §26", "Gaudium et Spes, §3", "Gaudium et Spes, §31", "Gaudium et Spes, §34", "Gaudium et Spes, §4", "Gaudium et Spes, §5", "Gaudium et Spes, §6", "Gaudium et Spes, §7", "Gaudium et Spes, §8", "Gaudium et Spes, §9"]
- },
- "labels.unique_reference:councils/6410138e-f599-5155-a615-fc79250cf608": {
-  "fixed_by": "1.2e",
-  "description": "Second Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Second Lateran Council — CANONS"]
  },
  "labels.unique_reference:councils/6eb88704-07df-52f6-b8bf-64f2e026c23a": {
   "fixed_by": "1.2e",
@@ -1236,14 +1217,6 @@
   "fixed_by": "1.9",
   "description": "Anselm's Cur Deus Homo: chapter labels lack their book (\"Chapter I\" in each book); 1.9 labels them \"Book First · Chapter I\" (Carter, 2 Nov 2026)",
   "units": ["Anselm's Cur Deus Homo, Chapter I", "Anselm's Cur Deus Homo, Chapter III", "Anselm's Cur Deus Homo, Chapter IV", "Anselm's Cur Deus Homo, Chapter V", "Anselm's Cur Deus Homo, Chapter VI", "Anselm's Cur Deus Homo, Chapter VIII (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter VIII (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XIII", "Anselm's Cur Deus Homo, Chapter XIV", "Anselm's Cur Deus Homo, Chapter XIX (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter XIX (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XV", "Anselm's Cur Deus Homo, Chapter XXI", "Anselm's Cur Deus Homo, Chapter XXII"]
- },
- "release.anchor_reuse:councils/ddfa6898-270f-5fc6-914d-08a3b98c99a5": {
-  "fixed_by": "1.2e",
-  "description": "First Lateran: live printed the editor's introduction unsplit as sec-0/1 and canon 1 as sec-0/1-2; the build splits the introduction, so the unchanged unit-naming rule gives canon 1 sec-0/1 and the introduction sec-0/1-2. 2.1's registry keeps each ID on its own text (canon 1 ddfa6898, the introduction e507d54e); only the two anchor strings are swapped. The council item that rebuilds First Lateran removes the introduction (rule-g-editorial), which frees both"
- },
- "release.anchor_reuse:councils/e507d54e-55da-583b-b7b6-c4617f59c9fe": {
-  "fixed_by": "1.2e",
-  "description": "First Lateran: live printed the editor's introduction unsplit as sec-0/1 and canon 1 as sec-0/1-2; the build splits the introduction, so the unchanged unit-naming rule gives canon 1 sec-0/1 and the introduction sec-0/1-2. 2.1's registry keeps each ID on its own text (canon 1 ddfa6898, the introduction e507d54e); only the two anchor strings are swapped. The council item that rebuilds First Lateran removes the introduction (rule-g-editorial), which frees both"
  },
  "roles.summa.objection-after-replies:summa": {
   "fixed_by": "1.7",

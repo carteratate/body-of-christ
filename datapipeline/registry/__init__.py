@@ -637,6 +637,8 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
             continue
         if MOVED_MARK in row_of[r["old_passage_id"]]["anchor"]:
             continue                   # its anchor is built; it names a new ID now
+        if unit_anchor(r["new_anchor"]) != unit_anchor(r["old_anchor"]):
+            continue                   # a rebuilt source's unit, named by hand (1.2e)
         holder = _holder(r["old_anchor"], d)
         if holder is None:
             held = [p for p in piece_holders(r["old_anchor"], d) if p.anchor == r["new_anchor"]]

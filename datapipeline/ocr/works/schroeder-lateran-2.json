@@ -1,0 +1,22 @@
+{
+ "work": "schroeder-lateran-2",
+ "title": "Second Lateran Council, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 195–213",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": ["195", "213"],
+ "layout": "single-column",
+ "units": "schroeder-canons",
+ "unit_count": 30,
+ "baseline": {
+  "path": "councils/fordham-lateran2.html",
+  "start": "^\\[Schroeder Introduction\\]",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {"fraction": 0.25, "minimum": 5, "maximum": 20, "unit": "work"}
+}

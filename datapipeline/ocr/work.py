@@ -5,12 +5,16 @@ range, the layout, the clean baseline, the per-work names, the correction model 
 spend ceiling, and the sample rule. The work directory (`ocr_work/<work>/`, gitignored)
 holds everything derived from the scan:
 
-- `passages.json`: per passage, `raw_ocr`, `cleaned` and `corrected` side by side, with
-  its pages and the outcome of correction;
+- `passages.json`: per passage, `raw_ocr`, `cleaned`, `corrected` and `fixed` side by
+  side, with its pages and the outcome of correction;
 - `cleanup.json`: the per-page removal log, the line-end breaks and the notes;
 - `runs.json`: each correction run's model, prompt version, tokens and cost;
 - `check.json`: the person's check, with its seed, sample and results;
 - `gate.md`: the report.
+
+Two tracked files sit beside the config: `ocr/works/<work>.fixes.json`, the edits a person
+made against the page images, and `ocr/texts/<work>.json`, the final text an adapter reads,
+frozen because a correction run cannot be repeated word for word.
 """
 from __future__ import annotations
 
@@ -22,6 +26,7 @@ from pathlib import Path
 
 DATAPIPELINE = Path(__file__).resolve().parents[1]
 WORKS_DIR = Path(__file__).resolve().parent / "works"
+TEXTS_DIR = Path(__file__).resolve().parent / "texts"
 WORK_ROOT = DATAPIPELINE / "ocr_work"
 SOURCES = DATAPIPELINE / "sources"
 
@@ -67,6 +72,8 @@ class WorkConfig:
     pages: tuple[str, str]       # first and last printed page
     baseline: Baseline
     layout: str = "single-column"
+    units: str | None = None     # ocr/units.py; None groups paragraphs into passages
+    unit_count: int | None = None   # how many units the work prints
     names: tuple[str, ...] = ()
     model: str = "claude-sonnet-5-5"
     ceiling_usd: float = 2.00
@@ -111,12 +118,17 @@ class OcrPassage:
     cleaned: str
     corrected: str | None = None
     correction: Correction = field(default_factory=Correction)
+    fixed: str | None = None     # `base` with the work's tracked fixes applied
+
+    @property
+    def base(self) -> str:
+        """The model's correction where it was accepted, else the script-cleaned text."""
+        return self.corrected if self.correction.status == "accepted" and self.corrected else self.cleaned
 
     @property
     def text(self) -> str:
-        """The text that goes on: the model's correction where it was accepted, else the
-        script-cleaned text."""
-        return self.corrected if self.correction.status == "accepted" and self.corrected else self.cleaned
+        """The text that goes on: `base`, with any fixes a person made."""
+        return self.fixed if self.fixed is not None else self.base
 
     def page_ref(self) -> str:
         nums = [p for p in self.pages if p]

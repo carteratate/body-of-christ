@@ -1,0 +1,194 @@
+[
+ {
+  "passage": "canon-1",
+  "find": "one essence, substance,",
+  "replace": "one essense, substance,",
+  "why": "The model changed the printer's spelling; p. 238 prints \"essense\"."
+ },
+ {
+  "passage": "canon-1",
+  "find": "common essence undivided",
+  "replace": "common essense undivided",
+  "why": "The model changed the printer's spelling; p. 238 prints \"essense\"."
+ },
+ {
+  "passage": "canon-1",
+  "find": "their suc-is effected",
+  "replace": "their successors.\n\nBut the sacrament of baptism, which by the invocation of each Person of the Trinity, namely, of the Father, Son, and Holy Ghost, is effected",
+  "why": "The last lines of p. 238 were filed as a note; restored from the page."
+ },
+ {
+  "passage": "canon-4",
+  "find": "danger to souls\n\nFOURTH LATERAN COUNCIL 245\n\nand derogatory",
+  "replace": "danger to souls and derogatory",
+  "why": "The running head of p. 245 read into the sentence."
+ },
+ {
+  "passage": "canon-8",
+  "find": "From\n\n11 Cf. canon 17 of the Second Council of Lyons. these",
+  "replace": "From these",
+  "why": "Page-foot note 11 read into the sentence."
+ },
+ {
+  "passage": "canon-16",
+  "find": "use red\n\ngarments",
+  "replace": "use red or green garments",
+  "why": "A pen mark over \"or green\" on the scan; p. 257 prints them."
+ },
+ {
+  "passage": "canon-50",
+  "find": "bondage.“",
+  "replace": "bondage.",
+  "why": "A note call read as a quotation mark."
+ },
+ {
+  "passage": "canon-50",
+  "find": "especially",
+  "replace": "epecially",
+  "why": "The model changed the printer's spelling; p. 279 prints \"epecially\"."
+ },
+ {
+  "passage": "canon-57",
+  "find": "confréres",
+  "replace": "confrères",
+  "why": "Accent misread, as on p. 209."
+ },
+ {
+  "passage": "canon-71",
+  "find": "Mes-sana",
+  "replace": "Messana",
+  "why": "A word broken at a line end."
+ },
+ {
+  "passage": "canon-23",
+  "find": "“or the",
+  "replace": "for the",
+  "why": "Pen marks on the scan garbled this; p. 264 prints \"for the\"."
+ },
+ {
+  "passage": "canon-23",
+  "find": "church*must",
+  "replace": "church must",
+  "why": "Pen marks on the scan garbled this; p. 264 prints \"church must\"."
+ },
+ {
+  "passage": "canon-23",
+  "find": "devolves ' upon",
+  "replace": "devolves upon",
+  "why": "Pen marks on the scan garbled this; p. 264 prints \"devolves upon\"."
+ },
+ {
+  "passage": "canon-23",
+  "find": "superibr",
+  "replace": "superior",
+  "why": "Pen marks on the scan garbled this; p. 264 prints \"superior\"."
+ },
+ {
+  "passage": "canon-23",
+  "find": "delay; more",
+  "replace": "delay more",
+  "why": "Pen marks on the scan garbled this; p. 264 prints \"delay more\"."
+ },
+ {
+  "passage": "canon-23",
+  "find": "of chapter",
+  "replace": "of the chapter",
+  "why": "Pen marks on the scan garbled this; p. 264 prints \"of the chapter\"."
+ },
+ {
+  "passage": "canon-23",
+  "find": "‘suitable",
+  "replace": "suitable",
+  "why": "Pen marks on the scan garbled this; p. 264 prints \"suitable\"."
+ },
+ {
+  "passage": "canon-24",
+  "find": "_be",
+  "replace": "be",
+  "why": "Pen marks on the scan garbled this; p. 265 prints \"be\"."
+ },
+ {
+  "passage": "canon-24",
+  "find": "(Whoever",
+  "replace": "Whoever",
+  "why": "Pen marks on the scan garbled this; p. 265 prints \"Whoever\"."
+ },
+ {
+  "passage": "canon-24",
+  "find": "electlpm",
+  "replace": "election",
+  "why": "Pen marks on the scan garbled this; p. 265 prints \"election\"."
+ },
+ {
+  "passage": "canon-24",
+  "find": "afor Nid",
+  "replace": "aforesaid",
+  "why": "Pen marks on the scan garbled this; p. 265 prints \"aforesaid\"."
+ },
+ {
+  "passage": "canon-24",
+  "find": "unless fe be",
+  "replace": "unless he be",
+  "why": "Pen marks on the scan garbled this; p. 265 prints \"unless he be\"."
+ },
+ {
+  "passage": "canon-24",
+  "find": "nedd~be",
+  "replace": "need be",
+  "why": "Pen marks on the scan garbled this; p. 265 prints \"need be\"."
+ },
+ {
+  "passage": "canon-24",
+  "find": "élections",
+  "replace": "elections",
+  "why": "Pen marks on the scan garbled this; p. 265 prints \"elections\"."
+ },
+ {
+  "passage": "canon-3",
+  "find": "under the appearance",
+  "replace": "under “the appearance",
+  "why": "The model removed a printed quotation mark; p. 244 prints it."
+ },
+ {
+  "passage": "canon-3",
+  "find": "ecclesiastical Censure",
+  "replace": "ecclesiastical censure",
+  "why": "A pen mark read as a capital; p. 242 prints \"censure\"."
+ },
+ {
+  "passage": "canon-8",
+  "find": "subjects that is, of Clerics)",
+  "replace": "subjects (that is, of clerics)",
+  "why": "A pen mark over the words; p. 248 prints \"(that is, of clerics)\"."
+ },
+ {
+  "passage": "canon-8",
+  "find": "lower rank). but",
+  "replace": "lower rank) but",
+  "why": "A pen mark read as a stop; p. 249 prints no stop."
+ },
+ {
+  "passage": "canon-46",
+  "find": "common needs, But",
+  "replace": "common needs. But",
+  "why": "A stop read as a comma; p. 276 prints a stop."
+ },
+ {
+  "passage": "canon-64",
+  "find": "same order, But",
+  "replace": "same order. But",
+  "why": "A stop read as a comma; p. 288 prints a stop."
+ },
+ {
+  "passage": "canon-37",
+  "find": "before a Judge",
+  "replace": "before a judge",
+  "why": "Misread capital; p. 272 prints \"a judge\"."
+ },
+ {
+  "passage": "canon-51",
+  "find": "a suitable, and fixed",
+  "replace": "a suitable and fixed",
+  "why": "A speck in the margin read as a comma; p. 280 prints none."
+ }
+]
