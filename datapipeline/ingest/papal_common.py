@@ -139,7 +139,8 @@ _ENTITY_FIXES = {"&quuot;": "”"}
 _NUMBER_FIXES = {
     "aeterni-patris": {"Z 1. But": 21},
     "mediator-dei": {"100. These methods": 106},
-    "menti-nostrae": {"63. Still another": 53, "64. Finally, We wish": 54},
+    "menti-nostrae": {"63. Still another": 53, "64. Finally, We wish": 54,
+                      "126. Ordinarily": 125},
     "pacem-in-terris": {"90. In the first place": 95},
 }
 # Sources that print their callers as plain numbers after a sentence.
@@ -401,7 +402,7 @@ def _split_run_on(items: list[_Item], numbered: dict[int, tuple[int, str]]) -> l
         for n in reversed(missing):
             cut = re.compile(rf"(?<=[.!?\"”’)\]])\s+(?={n}\.\s+[A-Z“\"])")
             # A short head before the number is a heading run on to it.
-            cut_short = re.compile(rf"^.{{1,60}}?\s+(?={n}\.\s+[A-Z“\"])")
+            cut_short = re.compile(rf"^(?:[A-Z][\w’'-]*\s+){{1,6}}(?={n}\.\s+[A-Z“\"])")
             for i in range(b - 1, a - 1, -1):
                 m = cut.search(out[i].text) or cut_short.search(out[i].text)
                 if m:

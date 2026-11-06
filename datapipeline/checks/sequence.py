@@ -290,9 +290,23 @@ def source_section_numbers(units: list[SourceUnit]) -> list[int]:
 _SECTION_REF = re.compile(r"§(\d+)\s*$")
 # 1.3a's number fixes: numbers a source misprints, which it never prints as such.
 MISPRINTED_NUMBERS = {"aeterni-patris": {21}, "mediator-dei": {106},
-                      "menti-nostrae": {53, 54}, "pacem-in-terris": {95}}
-# A paragraph number inside a block.
-_RUN_ON_NUMBER = re.compile(r"(?<![\d.])(\d{1,3})\.\s+(?=[A-Z“\"])")
+                      "menti-nostrae": {53, 54, 125}, "pacem-in-terris": {95}}
+# A paragraph number inside a block, as the parser splits it: after a finished sentence, or
+# after a short heading run on to it. A number after a word is a citation ("chapter 2.").
+_RUN_ON_NUMBER = re.compile(
+    r"(?:(?<=[.!?\"”’)\]])\s+|^(?:[A-Z][\w’'-]*\s+){1,6})(\d{1,3})\.\s+(?=[A-Z“\"])")
+# The length of unnumbered prose the parser reads as a first paragraph.
+IMPLICIT_FIRST_MIN = 200
+
+
+def _opens_with_prose(units: list[SourceUnit]) -> bool:
+    """Whether unnumbered prose long enough to be a first paragraph precedes the numbers."""
+    for u in units:
+        if u.region == "body" and u.unit_id:
+            return False
+        if u.region == "body" and len(u.text) > IMPLICIT_FIRST_MIN:
+            return True
+    return False
 
 
 def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> SequenceResult:
@@ -313,11 +327,13 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
             in_source.add(1)
         slug = (document.metadata or {}).get("source_key", "").rsplit("/", 1)[-1]
         in_source |= MISPRINTED_NUMBERS.get(slug, set())
-        printed = " ".join(u.text for u in units if u.region == "body")
-        in_source |= {int(m) for m in _RUN_ON_NUMBER.findall(printed)}
+        in_source |= {int(n) for u in units if u.region == "body"
+                      for n in _RUN_ON_NUMBER.findall(" ".join(u.text.split()))}
         # Numbers 1.3a recovers are required, not just allowed.
         gaps = {n for a, b in zip(source, source[1:]) for n in range(a + 1, b)}
-        recovered = (in_source & gaps) | ({1} if source[:1] == [2] else set())
+        recovered = in_source & gaps
+        if source[:1] == [2] and _opens_with_prose(units):
+            recovered.add(1)
         source = sorted(set(source) | recovered)
     built: dict[int, set[str]] = defaultdict(set)
     for p in document.passages:

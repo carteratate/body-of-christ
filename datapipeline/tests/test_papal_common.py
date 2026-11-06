@@ -477,3 +477,11 @@ def test_mulieris_dignitatem_keeps_its_book_numbers(built):
 def test_no_empty_markers(built):
     assert [p.anchor for d in built.values() for p in d.passages
             if re.search(r"\(\s*\)|\[\s*\]", p.content)] == []
+
+
+@vendored
+def test_menti_nostrae_keeps_paragraphs_125_and_126_apart(built):
+    by_label = {p.unit_label: p for p in built["menti-nostrae"].passages}
+    assert by_label["§125"].anchor == "menti-nostrae/126"
+    assert "\n\nOrdinarily, carrying out" in by_label["§125"].content
+    assert by_label["§126"].anchor == "menti-nostrae/126-2"

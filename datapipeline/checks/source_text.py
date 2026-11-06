@@ -348,9 +348,19 @@ _TEXT_CALLER = re.compile(r"(?<=[A-Za-z\"”’.,;:!?)])\s?\(\d{1,3}\)"
                           r"|Chr|Mac|Macc|Mc|Esd)\b)")
 # Sources that print callers as plain numbers after a sentence.
 _BARE_CALLER_FILES = ("annus-qui-hunc.html", "mulieris-dignitatem.html")
-_BARE_CALLER = re.compile(r"(?<=[.!?\"”’)…])(?<![Cc]f\.)\s\d{1,3}(?=\s+[A-Z“\"‘]|\s*$)"
+_CITATION_BEFORE = re.compile(r"\b(?:cf|bk|sess|ch|cap|tit|vol|no|nos|art|can|lib|p|pp|n|dist)\.$",
+                              re.IGNORECASE)
+_BARE_CALLER = re.compile(r"(?<=[.!?\"”’)…])\s\d{1,3}(?=\s+[A-Z“\"‘]|\s*$)"
                           r"(?!\s+(?:Cor|Jn|John|Pt|Pet|Peter|Tim|Tm|Thes|Th|Sam|Sm|Kgs|Kg|Kings|Chr"
                           r"|Mac|Macc|Mc|Esd)\b)")
+
+
+def _drop_bare_callers(text: str) -> str:
+    """The bare numbers of `_BARE_CALLER_FILES`, a citation's number apart ("sess. 24 On")."""
+    def keep_citation(m: re.Match) -> str:
+        cited = _CITATION_BEFORE.search(text, max(0, m.start() - 8), m.start())
+        return m.group(0) if cited else ""
+    return _BARE_CALLER.sub(keep_citation, text)
 
 
 def _mark_callers(main: Tag) -> None:
@@ -447,7 +457,7 @@ def html_units(path: str, source_file: str | None = None,
                 kept = m.group(2)
             body_text = _TEXT_CALLER.sub("", _FENCED.sub("", kept))
             if source_file in _BARE_CALLER_FILES:
-                body_text = _BARE_CALLER.sub("", body_text)
+                body_text = _drop_bare_callers(body_text)
         units.append(SourceUnit(source_file, unit_id,
                                 body_text if region == "body" else block.text, region))
         rendered.append(block.list_number if region == "body" else None)
