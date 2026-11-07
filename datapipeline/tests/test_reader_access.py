@@ -54,8 +54,10 @@ class FakeConn:
     def __init__(self, rows):
         self.rows = rows
         self.updates = []
+        self.queries = []
 
     async def fetch(self, sql, *args):
+        self.queries.append(sql)
         return self.rows
 
     async def execute(self, sql, *args):
@@ -120,6 +122,15 @@ def test_sync_opens_the_new_edition_once_it_is_live():
     result = asyncio.run(RA.sync(FakeConn([live]), table, apply=True,
                                  urls={"1": "https://new"}))
     assert result.held == [] and live["reader_access"] == "full"
+
+
+def test_only_an_applying_sync_locks_the_rows():
+    # A rollback must not change an edition between the sync's check and its write.
+    conn = FakeConn([_row("1", "Libertas", "full")])
+    table = _table(_entry("1", "Libertas", "pd-us-pre-1931"))
+    asyncio.run(RA.sync(conn, table, apply=False))
+    asyncio.run(RA.sync(conn, table, apply=True))
+    assert ["FOR UPDATE" in q for q in conn.queries] == [False, True]
 
 
 def test_sync_closes_an_older_edition_already_open():
