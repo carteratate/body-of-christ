@@ -7,7 +7,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
 from bs4 import BeautifulSoup
-from ingest.encyclicals import _tokens, build_documents
+from ingest.encyclicals import build_documents
+from ingest.papal_common import tokens as _tokens
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "encyclicals")
 _vendored = os.path.exists(os.path.join(_SRC, "manifest.json"))
@@ -74,7 +75,7 @@ def test_layout_b_documents_recovered():
 
 
 def test_is_shouting_distinguishes_masthead_from_greeting():
-    from ingest.encyclicals import _is_shouting
+    from ingest.papal_common import is_shouting as _is_shouting
     assert _is_shouting("ENCYCLICAL LETTER CARITAS IN VERITATE OF THE SUPREME PONTIFF")
     assert _is_shouting("INTRODUCTION")
     assert not _is_shouting("To Our Venerable Brethren the Patriarchs and Bishops")
@@ -82,7 +83,7 @@ def test_is_shouting_distinguishes_masthead_from_greeting():
 
 
 def test_strip_leading_caps_removes_latin_incipit():
-    from ingest.encyclicals import _strip_leading_caps
+    from ingest.papal_common import strip_leading_caps as _strip_leading_caps
     assert _strip_leading_caps("IOANNES PAULUS PP. II EVANGELIUM VITAE To the Bishops") \
         == "To the Bishops"
     assert _strip_leading_caps("To Our Venerable Brethren") == "To Our Venerable Brethren"

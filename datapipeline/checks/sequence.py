@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 from checks.coverage import _PassageText, documents_by_file, match_key, measurable
 from checks.coverage import split_sentences
-from checks.source_text import SourceUnit
+from checks.source_text import PAPAL_COLLECTIONS, SourceUnit
 from identity import unit_anchor
 from ingest.pieces import unit_reference
 from model import Document
@@ -288,6 +288,30 @@ def source_section_numbers(units: list[SourceUnit]) -> list[int]:
 
 
 _SECTION_REF = re.compile(r"§(\d+)\s*$")
+# 1.3a's number fixes: numbers a source misprints, which it never prints as such.
+MISPRINTED_NUMBERS = {"aeterni-patris": {21}, "mediator-dei": {106},
+                      "menti-nostrae": {53, 54, 125}, "pacem-in-terris": {95}}
+# A paragraph number inside a block, as the parser splits it: after a finished sentence, or
+# after a short heading run on to it. A number after a word is a citation ("chapter 2.").
+_RUN_ON_NUMBER = re.compile(
+    r"(?:(?<=[.!?\"”’)\]])\s+|^(?:[A-Z][\w’'-]*\s+){1,6})(\d{1,3})\.\s+(?=[A-Z“\"])")
+_CITATION_END = re.compile(r"\b(?:cf|vol|no|nos|p|pp|n|ch|chap|bk|art|can|sess|sect|cap|tit)\.$",
+                           re.IGNORECASE)
+_DATING_LINE = re.compile(r"^(?:Given|Done|\[?Dated|From the Vatican|From Rome)\b")
+_SALUTATION = re.compile(r"^To\b|(?:Greetings?|Blessing|Benediction)[.!:]?$")
+# The length of unnumbered prose the parser reads as a first paragraph.
+IMPLICIT_FIRST_MIN = 200
+
+
+def _opens_with_prose(units: list[SourceUnit]) -> bool:
+    """Whether unnumbered prose long enough to be a first paragraph precedes the numbers."""
+    for u in units:
+        if u.region == "body" and u.unit_id:
+            return False
+        if u.region == "body" and len(u.text) > IMPLICIT_FIRST_MIN \
+                and not _SALUTATION.search(u.text.strip()):
+            return True
+    return False
 
 
 def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> SequenceResult:
@@ -302,6 +326,27 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
     # and restarted note numbers aside: a built number found here is not invented.
     in_source = {int(u.unit_id) for u in units
                  if u.region == "body" and u.unit_id and u.unit_id.isdigit()}
+    # A source numbering from 2 prints its first paragraph without a number (1.3a).
+    if document.collection in PAPAL_COLLECTIONS:
+        if source[:1] == [2]:
+            in_source.add(1)
+        slug = (document.metadata or {}).get("source_key", "").rsplit("/", 1)[-1]
+        in_source |= MISPRINTED_NUMBERS.get(slug, set())
+        in_source |= {int(m.group(1)) for u in units if u.region == "body"
+                      for text in [" ".join(u.text.split())]
+                      for m in _RUN_ON_NUMBER.finditer(text)
+                      if not _CITATION_END.search(text[:m.start(1)].rstrip())}
+        # A site numbers the closing date; the parser joins it to the paragraph before.
+        dated = {int(u.unit_id) for u in units if u.region == "body" and u.unit_id
+                 and u.unit_id.isdigit() and _DATING_LINE.match(u.text.strip())
+                 and len(u.text) < 300 and re.search(r"\b(?:1\d{3}|20\d{2})\b|[Pp]ontificate", u.text)}
+        source = [n for n in source if n not in dated]
+        # Numbers 1.3a recovers are required, not just allowed.
+        gaps = {n for a, b in zip(source, source[1:]) for n in range(a + 1, b)}
+        recovered = in_source & gaps
+        if source[:1] == [2] and _opens_with_prose(units):
+            recovered.add(1)
+        source = sorted(set(source) | recovered)
     built: dict[int, set[str]] = defaultdict(set)
     for p in document.passages:
         m = _SECTION_REF.search(unit_reference(p.reference))

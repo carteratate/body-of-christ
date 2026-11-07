@@ -422,7 +422,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 | `datapipeline/stages/parse.py:4-19` | V5 `BUILDERS` keyed by collection | .3 |
 | `datapipeline/enrichment/prompts/classification.py:185-221`, `enrichment/prompts/generation/__init__.py:6-20` | V5 enrichment guidance keyed by collection | .3 |
 | `datapipeline/scripts/vendor_sources.py:629-636`, `scripts/audit_sources.py:148-151` | vendor and audit registries keyed by source directory | leave the source directory names; keys only if they double as collection keys (they do not after .3) |
-| `datapipeline/ingest/*.py` (`encyclicals.py:172`, `apostolic_exhortations.py:155`, `papal_documents.py:155`, `canon_law.py:86`, `thml_doc.py:89`) | collection string used both as the emitted collection and as a `document_id()` input | .3 changes only the emitted collection; ids come from the 2.1 registry |
+| `datapipeline/ingest/*.py` (`papal_common.py`, which the three papal wrappers call with their `COLLECTION`; `canon_law.py:86`, `thml_doc.py:89`) | collection string used both as the emitted collection and as a `document_id()` input | .3 changes only the emitted collection; ids come from the 2.1 registry |
 | `datapipeline/README.md` adapter table, `datapipeline/SOURCES.md` | docs | .3 |
 | `apps/web/src/lib/collections.ts:10-19` | `COLLECTIONS` with keys, labels, colors | .2 |
 | `apps/web/src/app/globals.css:33-42` | `--color-collection-*` tokens | .2 adds, .4 removes |

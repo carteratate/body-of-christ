@@ -36,6 +36,9 @@ SEGMENT_BREAK = "\u2029"
 REGIONS = ("body", "note", "toc", "heading", "apparatus")
 
 
+PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+
+
 class SourceUnit(NamedTuple):
     source_file: str      # path relative to sources/<collection>/
     unit_id: str | None   # div id, "<BOOK>/<chapter>/<verse>", paragraph or canon number
@@ -223,6 +226,11 @@ _HTML_DROP = ("script", "style", "noscript", "nav", "header", "footer", "form", 
 # A notes heading, or a horizontal rule followed by numbered notes, starts the notes.
 # papalencyclicals.net heads its notes "REFERENCES:".
 _NOTES_HEADING = re.compile(r"^(?:end|foot)?notes?\b|^references:?$", re.IGNORECASE)
+# A papal paragraph number that lost its point ("14 If we read"), read only when it is the
+# next number.
+_UNDOTTED_NUMBER = re.compile(r"^\s*(\d{1,3})\s+([A-Z“\"].*)", re.DOTALL)
+# How many blocks after a horizontal rule note 1 may sit.
+_NOTE_REACH = 3
 _NOTE_START = re.compile(r"^\s*(?:\[\s*1\s*\]|\(\s*1\s*\)|1\s*\.|1\s)")
 _BRACKET_NOTE_START = re.compile(r"^\s*(?:\[\s*1\s*\]|\(\s*1\s*\))")
 _SITE_CHROME = re.compile(
@@ -262,6 +270,16 @@ class _Block(NamedTuple):
     tag: str
     text: str
     all_link: bool   # every letter and digit sits inside an <a href>
+    list_number: int | None = None   # the number an <ol> item renders with
+
+
+def _list_number(el: Tag) -> int | None:
+    """An `<ol>` item's rendered number, honouring the list's `start`."""
+    parent = el.parent
+    if el.name != "li" or parent is None or parent.name != "ol":
+        return None
+    earlier = sum(1 for sib in el.find_previous_siblings("li"))
+    return int(parent.get("start") or 1) + earlier
 
 
 def _html_blocks(main: Tag) -> list[_Block]:
@@ -274,7 +292,8 @@ def _html_blocks(main: Tag) -> list[_Block]:
         def flush() -> None:
             text = "".join(buf)
             if text.strip():
-                blocks.append(_Block(block_tag, text, linked[0] == linked[1]))
+                blocks.append(_Block(block_tag, text, linked[0] == linked[1],
+                                     _list_number(el)))
             buf.clear()
             linked[0] = linked[1] = 0
 
@@ -312,34 +331,92 @@ def _html_blocks(main: Tag) -> list[_Block]:
     return blocks
 
 
-def html_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
+# The footnote callers of the papal collections, whose adapters drop them (C-17): a numeric
+# <sup>, an in-page link holding only a number, and "(35)" or a digit glued after a word.
+# Written here again, not imported, for the reason in this module's docstring.
+_CALLER_OPEN, _CALLER_CLOSE = "\ue000", "\ue001"
+_FENCED = re.compile(f"{_CALLER_OPEN}(.*?){_CALLER_CLOSE}")
+# The last paragraph of a document whose page runs on past it with the site's own extracts.
+_LAST_PARAGRAPH = {"syllabus-of-errors.html": "80"}
+# Site text inside a page (C-05): from the match to the end of the body is apparatus.
+_SITE_TEXT = {"cum-sancta-mater-ecclesia.html": re.compile(r"Perform bulk operations\b.*$", re.S),
+              "exsurge-domine.html": re.compile(r"\{.*$", re.S)}
+_NUMBER_ONLY = re.compile(r"^\W*\d{1,3}\*?\W*$")
+_TEXT_CALLER = re.compile(r"(?<=[A-Za-z\"”’.,;:!?)])\s?\(\d{1,3}\)"
+                          r"|(?<=[a-z\"”’)][.,;:])\d{1,3}(?=\s|$|[A-Z“\"])"
+                          r"(?!\s+(?:Cor|Jn|John|Pt|Pet|Peter|Tim|Tm|Thes|Th|Sam|Sm|Kgs|Kg|Kings"
+                          r"|Chr|Mac|Macc|Mc|Esd)\b)")
+# Sources that print callers as plain numbers after a sentence.
+_BARE_CALLER_FILES = ("annus-qui-hunc.html", "mulieris-dignitatem.html")
+_CITATION_BEFORE = re.compile(r"\b(?:cf|bk|sess|ch|cap|tit|vol|no|nos|art|can|lib|p|pp|n|dist)\.$",
+                              re.IGNORECASE)
+_BARE_CALLER = re.compile(r"(?<=[.!?\"”’)…])\s\d{1,3}(?=\s+[A-Z“\"‘]|\s*$)"
+                          r"(?!\s+(?:Cor|Jn|John|Pt|Pet|Peter|Tim|Tm|Thes|Th|Sam|Sm|Kgs|Kg|Kings|Chr"
+                          r"|Mac|Macc|Mc|Esd)\b)")
+
+
+def _drop_bare_callers(text: str) -> str:
+    """The bare numbers of `_BARE_CALLER_FILES`, a citation's number apart ("sess. 24 On")."""
+    def keep_citation(m: re.Match) -> str:
+        cited = _CITATION_BEFORE.search(text, max(0, m.start() - 8), m.start())
+        return m.group(0) if cited else ""
+    return _BARE_CALLER.sub(keep_citation, text)
+
+
+def _mark_callers(main: Tag) -> None:
+    """Fence each marked caller, so the notes are found on the unchanged text and only
+    body units lose it."""
+    for tag in main.find_all(["sup", "a"]):
+        if tag.decomposed or tag.find_parent("sup") is not None:
+            continue
+        text = tag.get_text(strip=True)
+        if (tag.name == "sup" or (tag.get("href") or "").startswith("#")) \
+                and _NUMBER_ONLY.match(text or "x"):
+            tag.string = f"{_CALLER_OPEN}{text}{_CALLER_CLOSE}"
+
+
+def html_units(path: str, source_file: str | None = None,
+               papal: bool = False) -> list[SourceUnit]:
     """vatican.va and papalencyclicals.net HTML. Body is the visible text of the main
     content element, one unit per block (<p>, <li>, <div>, table cell, …). Text after
     the first notes marker is "note": a notes heading ("Notes", "NOTES", "ENDNOTES",
     "REFERENCES:"), a horizontal rule followed by note 1 when note 1 is bracketed or the
-    body has already used paragraph number 1, or a block that opens with "[1]". Headings are "heading"; blocks that
-    are entirely links (language bars, tables of contents) are "toc"; site footers are
-    "apparatus". unit_id is the leading paragraph or canon number."""
+    body has already used paragraph number 1, or a block that opens with "[1]". Headings
+    are "heading"; blocks that are entirely links (language bars, tables of contents) are
+    "toc"; site footers are "apparatus". unit_id is the leading paragraph or canon number;
+    in a body that prints no number it is the number an `<ol>` item renders with.
+
+    With `papal`, for the three papal collections: note 1 may sit up to three blocks after
+    the rule, and any paragraph number counts (many print no "1."); body text loses its
+    footnote callers, as the parser's does; a number that lost its point is read when it is
+    the next one."""
     source_file = source_file or os.path.basename(path)
     with open(path, "rb") as f:
         soup = BeautifulSoup(f.read(), "lxml")
     for tag in soup.find_all(_HTML_DROP):
         tag.decompose()
-    blocks = _html_blocks(_html_main(soup))
+    main = _html_main(soup)
+    if papal:
+        _mark_callers(main)
+    blocks = _html_blocks(main)
 
     units: list[SourceUnit] = []
+    rendered: list[int | None] = []
     in_notes = False
-    seen_para_one = False
+    seen_number = False
+    last_number = 0
     for i, block in enumerate(blocks):
         if block.tag == "hr":
             if in_notes:
                 continue
-            nxt = next((b for b in blocks[i + 1:] if b.tag != "hr" and b.text.strip()), None)
-            if nxt is not None:
-                lead = " ".join(nxt.text.split())
-                if _BRACKET_NOTE_START.match(lead) or (seen_para_one and _NOTE_START.match(lead)):
+            following = [b for b in blocks[i + 1:] if b.tag != "hr" and b.text.strip()]
+            for nxt in following[:_NOTE_REACH if papal else 1]:
+                lead = " ".join(_FENCED.sub(r"\1", nxt.text).split())
+                if _BRACKET_NOTE_START.match(lead) or (seen_number and _NOTE_START.match(lead)):
                     in_notes = True
             continue
+        raw = block.text
+        block = block._replace(text=_FENCED.sub(r"\1", raw))
         text = " ".join(block.text.split())
         if not in_notes and units and _BRACKET_NOTE_START.match(text) and text.startswith("["):
             in_notes = True     # "[1] …" with its rule outside the main element
@@ -353,6 +430,13 @@ def html_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
         if number:
             # The number is the unit's identity, not its text: adapters drop it.
             body_text = _LEADING_NUMBER.sub("", block.text, count=1)
+            if unit_id.isdigit():
+                last_number = int(unit_id)
+        elif papal and not in_notes:
+            undotted = _UNDOTTED_NUMBER.match(block.text)
+            if undotted and int(undotted.group(1)) == last_number + 1:
+                unit_id, body_text = undotted.group(1), undotted.group(2)
+                last_number += 1
         if in_notes:
             region = "note"
         elif _SITE_CHROME.search(text):
@@ -363,13 +447,44 @@ def html_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
             region = "heading"
         else:
             region = "body"
-            if unit_id == "1" and _PARA_NUMBER.match(text):
-                seen_para_one = True
+            if _PARA_NUMBER.match(text) and (papal or unit_id == "1"):
+                seen_number = True
         if in_notes and _SITE_CHROME.search(text):
             region = "apparatus"
+        if papal and region == "body":
+            kept = _LEADING_NUMBER.sub("", raw, count=1) if number else raw
+            if unit_id and not number and (m := _UNDOTTED_NUMBER.match(raw)):
+                kept = m.group(2)
+            body_text = _TEXT_CALLER.sub("", _FENCED.sub("", kept))
+            if source_file in _BARE_CALLER_FILES:
+                body_text = _drop_bare_callers(body_text)
         units.append(SourceUnit(source_file, unit_id,
                                 body_text if region == "body" else block.text, region))
-    return units
+        rendered.append(block.list_number if region == "body" else None)
+    if papal and not any(u.unit_id for u in units if u.region == "body"):
+        units = [u if n is None else u._replace(unit_id=str(n))
+                 for u, n in zip(units, rendered)]
+    return _site_text_to_apparatus(units, source_file)
+
+
+def _site_text_to_apparatus(units: list[SourceUnit], source_file: str) -> list[SourceUnit]:
+    """The units of a page's site text, per `_LAST_PARAGRAPH` and `_SITE_TEXT`."""
+    last, site = _LAST_PARAGRAPH.get(source_file), _SITE_TEXT.get(source_file)
+    end = None
+    for i, u in enumerate(units):
+        if u.region != "body":
+            continue
+        if last is not None and u.unit_id == last:
+            end = i
+        elif site is not None and site.search(u.text):
+            units = units[:i] + [u._replace(text=site.sub("", u.text))] + units[i + 1:]
+            end = i
+        if end is not None:
+            break
+    if end is None:
+        return units
+    return units[:end + 1] + [u._replace(region="apparatus") if u.region == "body" else u
+                              for u in units[end + 1:]]
 
 
 # --------------------------------------------------------------------------- USFM
@@ -594,7 +709,7 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
     if source_file.endswith(".html"):
-        return html_units(path, source_file)
+        return html_units(path, source_file, papal=collection in PAPAL_COLLECTIONS)
     if source_file.endswith(".usfm"):
         return usfm_units(path, source_file)
     if source_file.endswith("ccc-us.json"):

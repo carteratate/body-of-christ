@@ -42,7 +42,9 @@ def _rules(document):
 
 def test_r9_trailing_heading():
     bad = _doc(_p(PROSE + "\n\nDark Clouds Over a Closed World", anchor="a"), _p(anchor="b"))
-    assert "R9_trailing_heading" in _rules(bad)
+    [v] = [v for v in health.check_documents("encyclicals", [bad])
+           if v.rule == "R9_trailing_heading"]
+    assert v.severity == "block"       # since 1.3a
     # A last line with final punctuation, a passage with one line, the last passage, and
     # a collection outside the papal three are silent.
     for good in (_doc(_p(PROSE + "\n\nAnd so it ends.", anchor="a"), _p(anchor="b")),
@@ -126,10 +128,10 @@ def test_summa_bracket_numbers():
 
 
 def test_tracked_rules_group_by_document():
-    document = _doc(_p(PROSE + "\n\nA Heading", anchor="a"), _p("the æons", anchor="b"),
-                    _p(anchor="c"), title="Of the Manichæans")
+    document = _doc(_p(PROSE + " Holy Father addressed them.", anchor="a"),
+                    _p("the æons", anchor="b"), _p(anchor="c"), title="Of the Manichæans")
     ids = health.tracked_check_ids(health.check_documents("encyclicals", [document]))
-    assert ids == {"health.R9_trailing_heading:encyclicals/doc-1": ["a"],
+    assert ids == {"health.R11_papal_editorial:encyclicals/doc-1": ["a"],
                    "health.no_ligatures:encyclicals/doc-1": ["b", "(document)"]}
     # Untracked report rules (R13, R14) are never grouped into a check.
     assert not any("R13" in k or "R14" in k for k in ids)
@@ -579,7 +581,7 @@ def test_outline_skips_a_document_with_no_current_outline_and_a_snapshot_without
     ("labels.roman_case:medieval/doc-1", "medieval"),
     ("registry.unique_title_per_collection:church-fathers", "church-fathers"),
     ("text.canon_law.ligature_corruption:canon-law", "canon-law"),
-    ("health.R9_trailing_heading:encyclicals/doc-1", "encyclicals"),
+    ("health.R11_papal_editorial:encyclicals/doc-1", "encyclicals"),
     ("coverage.bible.superscriptions", "bible"),
     ("sentinel.ccc_1471_definition", "catechism"),
     ("sentinel.sirach_prologue", "bible"),

@@ -7,7 +7,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
 from bs4 import BeautifulSoup
-from ingest.apostolic_exhortations import _tokens, build_documents
+from ingest.apostolic_exhortations import build_documents
+from ingest.papal_common import tokens as _tokens
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "apostolic-exhortations")
 _vendored = os.path.exists(os.path.join(_SRC, "manifest.json"))

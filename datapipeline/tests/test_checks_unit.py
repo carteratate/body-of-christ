@@ -591,3 +591,75 @@ def test_report_checks_every_collection_the_pipeline_builds():
 
     assert set(report.COLLECTIONS) == set(SOURCE_ADAPTERS)
     assert set(report.SECTION_COLLECTIONS) | set(report.THML_COLLECTIONS) <= set(report.COLLECTIONS)
+
+
+def test_numbered_paragraphs_require_what_1_3a_recovers():
+    from checks.source_text import SourceUnit
+    from model import Document, Passage
+    units = [SourceUnit("x.html", str(n), f"{n} text", "body") for n in (2, 3, 5)]
+    units[1] = SourceUnit("x.html", "3", "Text. 4. The Church speaks here.", "body")
+    units.insert(0, SourceUnit("x.html", None, "An opening paragraph. " * 12, "body"))
+    def doc(*numbers):
+        return Document(id="d", collection="encyclicals", title="T", passages=[
+            Passage(content="x", reference=f"T, §{n}", anchor=f"t/{n}", chapter_key="c",
+                    chapter_label="c", position=i) for i, n in enumerate(numbers)])
+    assert Q.numbered_paragraphs(doc(1, 2, 3, 4, 5), units).missing == []
+    assert Q.numbered_paragraphs(doc(2, 3, 4, 5), units).missing == ["1"]
+    assert Q.numbered_paragraphs(doc(1, 2, 3, 5), units).missing == ["4"]
+
+
+def test_a_citation_number_is_not_a_recovered_paragraph():
+    from checks.source_text import SourceUnit
+    from model import Document, Passage
+    units = [SourceUnit("x.html", "1", "Text.", "body"),
+             SourceUnit("x.html", "3", "A long paragraph going on and on, as in chapter 2. The next.", "body"),
+             SourceUnit("x.html", "4", "Text.", "body")]
+    doc = Document(id="d", collection="encyclicals", title="T", passages=[
+        Passage(content="x", reference=f"T, §{n}", anchor=f"t/{n}", chapter_key="c",
+                chapter_label="c", position=i) for i, n in enumerate((1, 3, 4))])
+    assert Q.numbered_paragraphs(doc, units).missing == []
+
+
+def test_no_first_paragraph_is_required_without_opening_prose():
+    from checks.source_text import SourceUnit
+    from model import Document, Passage
+    units = [SourceUnit("x.html", None, "To the Bishops.", "body"),
+             SourceUnit("x.html", "2", "Text.", "body"), SourceUnit("x.html", "3", "Text.", "body")]
+    doc = Document(id="d", collection="encyclicals", title="T", passages=[
+        Passage(content="x", reference=f"T, §{n}", anchor=f"t/{n}", chapter_key="c",
+                chapter_label="c", position=i) for i, n in enumerate((2, 3))])
+    assert Q.numbered_paragraphs(doc, units).missing == []
+
+
+def test_coverage_keeps_a_citation_number():
+    from checks.source_text import _drop_bare_callers
+    assert _drop_bare_callers("It is so. 3 For this, sess. 24 On Reform.") == \
+        "It is so. For this, sess. 24 On Reform."
+
+
+def _papal_doc(*numbers):
+    from model import Document, Passage
+    return Document(id="d", collection="encyclicals", title="T", passages=[
+        Passage(content="x", reference=f"T, §{n}", anchor=f"t/{n}", chapter_key="c",
+                chapter_label="c", position=i) for i, n in enumerate(numbers)])
+
+
+def test_a_citation_number_with_a_point_is_no_paragraph():
+    from checks.source_text import SourceUnit
+    units = [SourceUnit("x.html", "1", "Text, see vol. 2. The next sentence.", "body"),
+             SourceUnit("x.html", "3", "Text.", "body"), SourceUnit("x.html", "4", "Text.", "body")]
+    assert Q.numbered_paragraphs(_papal_doc(1, 3, 4), units).missing == []
+
+
+def test_a_long_greeting_asks_for_no_first_paragraph():
+    from checks.source_text import SourceUnit
+    units = [SourceUnit("x.html", None, "To the Bishops " * 20 + "Apostolic Benediction.", "body"),
+             SourceUnit("x.html", "2", "Text.", "body"), SourceUnit("x.html", "3", "Text.", "body")]
+    assert Q.numbered_paragraphs(_papal_doc(2, 3), units).missing == []
+
+
+def test_a_numbered_closing_date_is_not_required():
+    from checks.source_text import SourceUnit
+    units = [SourceUnit("x.html", "1", "Text.", "body"), SourceUnit("x.html", "2", "Text.", "body"),
+             SourceUnit("x.html", "3", "Given at Rome, 1 May 1900.", "body")]
+    assert Q.numbered_paragraphs(_papal_doc(1, 2), units).missing == []

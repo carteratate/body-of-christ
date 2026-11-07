@@ -1,9 +1,10 @@
 """Passage health rules (corpus-cleanup item 0.1b).
 
-Block rules (H1 to H5, and R10) describe passages that are never useful: blank text,
-page-number or punctuation debris, broken positions and anchors, a website's own text. `refuse_block_violations` runs them in
+Block rules (H1 to H5, R10, and R9 in the papal collections) describe passages that are
+never useful: blank text, page-number or punctuation debris, broken positions and anchors,
+a website's own text, a heading stranded at the end of a passage. `refuse_block_violations` runs them in
 `CollectionPublicationRunner._validate_documents`, before any store is acquired, and
-refuses the publication. Report rules (R1 to R9, R11 to R14 and the named rules after them)
+refuses the publication. Report rules (R1 to R8, R11 to R14 and the named rules after them)
 count softer problems per collection, so P1 PRs can show them falling; they never block.
 0.1d added R9 to R14, `no_ligatures` and `summa_bracket_numbers` for the 6 Oct 2026 corpus
 reviews.
@@ -40,16 +41,16 @@ PATTERNS_PATH = os.path.join(DATAPIPELINE, "health_patterns.json")
 KNOWN_DEFECTS_PATH = os.path.join(DATAPIPELINE, "checks", "known_defects.json")
 
 BLOCK_RULES = ("H1_blank", "H2_debris", "H3_positions", "H4_anchor_unique",
-               "H5_anchor_nonempty", "R10_site_boilerplate")
+               "H5_anchor_nonempty", "R10_site_boilerplate", "R9_trailing_heading")
 REPORT_RULES = ("R1_short", "R2_footer", "R3_note_start", "R4_dup_text",
                 "R5_repeated_reference", "R6_joined_paragraphs", "R7_non_english",
-                "R8_anchor_suffix", "R9_trailing_heading", "R11_papal_editorial",
+                "R8_anchor_suffix", "R11_papal_editorial",
                 "R12_note_caller", "R13_lower_start", "R14_hyphen_space", "no_ligatures",
                 "summa_bracket_numbers")
 # Report rules whose hits an item has promised to clear (REVIEW-GAPS-PLAN section 6). Each
 # is one known defect per collection that lists its passages; the other report rules are
 # counted only.
-TRACKED_REPORT_RULES = ("R9_trailing_heading", "R11_papal_editorial", "R12_note_caller",
+TRACKED_REPORT_RULES = ("R11_papal_editorial", "R12_note_caller",
                         "no_ligatures", "summa_bracket_numbers")
 RULES = BLOCK_RULES + REPORT_RULES
 
@@ -118,7 +119,10 @@ def _violation(rule: str, severity: Severity, collection: str, document: Documen
 
 def _block(collection: str, document: Document) -> list[Violation]:
     out: list[Violation] = []
-    boilerplate = load_patterns()["R10_site_boilerplate"]["all"]
+    patterns = load_patterns()
+    boilerplate = patterns["R10_site_boilerplate"]["all"]
+    heading = patterns["R9_trailing_heading"]
+    heading_end = re.compile(heading["final_punctuation"])
 
     anchors = Counter(p.anchor for p in document.passages)
 
@@ -132,7 +136,7 @@ def _block(collection: str, document: Document) -> list[Violation]:
             f"{len(positions)} passages; index {first} holds position {positions[first]}")
 
     reported: set[str] = set()
-    for p in document.passages:
+    for i, p in enumerate(document.passages):
         text = p.content.strip()
         if not text:
             add("H1_blank", p, "content is empty after strip()")
@@ -151,6 +155,12 @@ def _block(collection: str, document: Document) -> list[Violation]:
         found = [s for s in boilerplate if s.lower() in lowered]
         if found:
             add("R10_site_boilerplate", p, f"contains {', '.join(found)}")
+        if collection in heading["collections"] and i + 1 < len(document.passages):
+            lines = [line.strip() for line in p.content.split("\n") if line.strip()]
+            last = lines[-1] if lines else ""
+            if len(lines) > 1 and len(last) < heading["max_chars"] \
+                    and last[:1].isupper() and not heading_end.search(last):
+                add("R9_trailing_heading", p, f"ends with a {len(last)}-character line")
     return out
 
 
@@ -174,9 +184,6 @@ def _report(collection: str, document: Document, patterns: dict) -> list[Violati
     lang = patterns["R7_non_english"]
     function_words = set(lang["function_words"])
 
-    heading = patterns["R9_trailing_heading"]
-    trailing_heading = collection in heading["collections"]
-    heading_end = re.compile(heading["final_punctuation"])
     editorial = ([re.compile(x) for x in patterns["R11_papal_editorial"]["patterns"]]
                  if collection in patterns["R11_papal_editorial"]["collections"] else [])
     callers_rule = patterns["R12_note_caller"]
@@ -229,13 +236,6 @@ def _report(collection: str, document: Document, patterns: dict) -> list[Violati
 
         if "--" in p.anchor:
             add("R8_anchor_suffix", p, "label-derived disambiguation suffix")
-
-        if trailing_heading and i + 1 < len(document.passages):
-            paragraphs = [line.strip() for line in p.content.split("\n") if line.strip()]
-            last = paragraphs[-1] if paragraphs else ""
-            if len(paragraphs) > 1 and len(last) < heading["max_chars"] \
-                    and last[:1].isupper() and not heading_end.search(last):
-                add("R9_trailing_heading", p, f"ends with a {len(last)}-character line")
 
         found = [m.pattern for m in editorial if m.search(p.content)]
         if found:
