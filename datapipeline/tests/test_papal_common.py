@@ -485,3 +485,28 @@ def test_menti_nostrae_keeps_paragraphs_125_and_126_apart(built):
     assert by_label["§125"].anchor == "menti-nostrae/126"
     assert "\n\nOrdinarily, carrying out" in by_label["§125"].content
     assert by_label["§126"].anchor == "menti-nostrae/126-2"
+
+
+def test_a_numbered_closing_date_joins_the_last_paragraph(tmp_path):
+    doc = _build(f"<p>1. {LONG}</p><p>2. {LONG}</p><p>3. Given at Rome, 1 May 1900.</p>", tmp_path)
+    assert [p.unit_label for p in doc.passages] == ["§1", "§2"]
+    assert doc.passages[-1].content.endswith("Given at Rome, 1 May 1900.")
+
+
+def test_a_last_paragraph_opening_on_given_is_no_date(tmp_path):
+    doc = _build(f"<p>1. {LONG}</p><p>2. Given these facts, we ask you to pray.</p>", tmp_path)
+    assert [p.unit_label for p in doc.passages] == ["§1", "§2"]
+
+
+def test_a_citation_number_opens_no_paragraph():
+    html = f"<p>1. {LONG} see vol. 2. The next sentence goes on.</p><p>3. {LONG}</p><p>4. {LONG}</p>"
+    paras = _paras(tokens(_page(html)))
+    assert [t.number for t in paras] == [1, 3, 4]
+    assert "vol. 2. The next" in paras[0].text
+
+
+@vendored
+def test_no_card_is_only_a_date(built):
+    assert [p.anchor for d in built.values() for p in d.passages
+            if len(p.content) < 300 and re.match(r"\[?(?:Given|Dated)\b", p.content)
+            and re.search(r"\d{4}|[Pp]ontificate", p.content)] == []

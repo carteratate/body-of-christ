@@ -635,3 +635,31 @@ def test_coverage_keeps_a_citation_number():
     from checks.source_text import _drop_bare_callers
     assert _drop_bare_callers("It is so. 3 For this, sess. 24 On Reform.") == \
         "It is so. For this, sess. 24 On Reform."
+
+
+def _papal_doc(*numbers):
+    from model import Document, Passage
+    return Document(id="d", collection="encyclicals", title="T", passages=[
+        Passage(content="x", reference=f"T, §{n}", anchor=f"t/{n}", chapter_key="c",
+                chapter_label="c", position=i) for i, n in enumerate(numbers)])
+
+
+def test_a_citation_number_with_a_point_is_no_paragraph():
+    from checks.source_text import SourceUnit
+    units = [SourceUnit("x.html", "1", "Text, see vol. 2. The next sentence.", "body"),
+             SourceUnit("x.html", "3", "Text.", "body"), SourceUnit("x.html", "4", "Text.", "body")]
+    assert Q.numbered_paragraphs(_papal_doc(1, 3, 4), units).missing == []
+
+
+def test_a_long_greeting_asks_for_no_first_paragraph():
+    from checks.source_text import SourceUnit
+    units = [SourceUnit("x.html", None, "To the Bishops " * 20 + "Apostolic Benediction.", "body"),
+             SourceUnit("x.html", "2", "Text.", "body"), SourceUnit("x.html", "3", "Text.", "body")]
+    assert Q.numbered_paragraphs(_papal_doc(2, 3), units).missing == []
+
+
+def test_a_numbered_closing_date_is_not_required():
+    from checks.source_text import SourceUnit
+    units = [SourceUnit("x.html", "1", "Text.", "body"), SourceUnit("x.html", "2", "Text.", "body"),
+             SourceUnit("x.html", "3", "Given at Rome, 1 May 1900.", "body")]
+    assert Q.numbered_paragraphs(_papal_doc(1, 2), units).missing == []

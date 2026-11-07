@@ -115,7 +115,13 @@ _SENTENCE_STOP = re.compile(r"[.!?][\"”’]*$")
 _IMPLICIT_MIN = 200
 # Text under a heading shorter than this is an epigraph, whatever follows it.
 _EPIGRAPH_MAX = 200
-_DATING = re.compile(r"^(?:Given\b|Done\b|Dated\b|From the Vatican\b|From Rome\b)")
+_DATING = re.compile(r"^(?:Given\b|Done\b|\[?Dated\b|From the Vatican\b|From Rome\b)")
+# What marks a dating line as a date, in a line short enough to be one.
+_DATED = re.compile(r"\b(?:1[0-9]{3}|20[0-9]{2})\b|[Pp]ontificate")
+_DATE_CARD_MAX = 300
+# A citation's abbreviation: the number after it is no paragraph ("see vol. 2.").
+_CITATION_END = re.compile(r"\b(?:cf|vol|no|nos|p|pp|n|ch|chap|bk|art|can|sess|sect|cap|tit)\.$",
+                           re.IGNORECASE)
 _SIGNED = re.compile(r"^.{0,30}\b(?:Pope|PP)\.?$")
 _SHORT_PASSAGE = 20
 # A signature line: a pope's name.
@@ -404,7 +410,9 @@ def _split_run_on(items: list[_Item], numbered: dict[int, tuple[int, str]]) -> l
             # A short head before the number is a heading run on to it.
             cut_short = re.compile(rf"^(?:[A-Z][\w’'-]*\s+){{1,6}}(?={n}\.\s+[A-Z“\"])")
             for i in range(b - 1, a - 1, -1):
-                m = cut.search(out[i].text) or cut_short.search(out[i].text)
+                found = [x for x in cut.finditer(out[i].text)
+                         if not _CITATION_END.search(out[i].text[:x.start()])]
+                m = found[0] if found else cut_short.search(out[i].text)
                 if m:
                     head, tail = out[i].text[:m.start()].rstrip() or out[i].text[:m.end()].rstrip(), \
                         out[i].text[m.end():]
@@ -738,6 +746,13 @@ def tokens(soup, slug: str | None = None) -> list[Token]:
     if not numbered:
         return _unnumbered_tokens(items)
     items = items[:_reset_cut(items, numbered)]
+    # A site numbers the closing date as a last paragraph; it joins the one before.
+    last = max(numbered)
+    if len(numbered) > 1 and _DATING.match(numbered[last][1]) \
+            and _DATED.search(numbered[last][1]) and len(numbered[last][1]) < _DATE_CARD_MAX:
+        body = numbered.pop(last)[1]
+        items[last] = items[last]._replace(text=body,
+                                           segment=Segment(items[last].segment.locator, body))
     closing: list[_Item] = []
     end = _end_of(numbered, _LAST_PARAGRAPH.get(slug))
     if end is not None:

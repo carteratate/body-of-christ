@@ -295,6 +295,10 @@ MISPRINTED_NUMBERS = {"aeterni-patris": {21}, "mediator-dei": {106},
 # after a short heading run on to it. A number after a word is a citation ("chapter 2.").
 _RUN_ON_NUMBER = re.compile(
     r"(?:(?<=[.!?\"”’)\]])\s+|^(?:[A-Z][\w’'-]*\s+){1,6})(\d{1,3})\.\s+(?=[A-Z“\"])")
+_CITATION_END = re.compile(r"\b(?:cf|vol|no|nos|p|pp|n|ch|chap|bk|art|can|sess|sect|cap|tit)\.$",
+                           re.IGNORECASE)
+_DATING_LINE = re.compile(r"^(?:Given|Done|\[?Dated|From the Vatican|From Rome)\b")
+_SALUTATION = re.compile(r"^To\b|(?:Greetings?|Blessing|Benediction)[.!:]?$")
 # The length of unnumbered prose the parser reads as a first paragraph.
 IMPLICIT_FIRST_MIN = 200
 
@@ -304,7 +308,8 @@ def _opens_with_prose(units: list[SourceUnit]) -> bool:
     for u in units:
         if u.region == "body" and u.unit_id:
             return False
-        if u.region == "body" and len(u.text) > IMPLICIT_FIRST_MIN:
+        if u.region == "body" and len(u.text) > IMPLICIT_FIRST_MIN \
+                and not _SALUTATION.search(u.text.strip()):
             return True
     return False
 
@@ -327,8 +332,15 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
             in_source.add(1)
         slug = (document.metadata or {}).get("source_key", "").rsplit("/", 1)[-1]
         in_source |= MISPRINTED_NUMBERS.get(slug, set())
-        in_source |= {int(n) for u in units if u.region == "body"
-                      for n in _RUN_ON_NUMBER.findall(" ".join(u.text.split()))}
+        in_source |= {int(m.group(1)) for u in units if u.region == "body"
+                      for text in [" ".join(u.text.split())]
+                      for m in _RUN_ON_NUMBER.finditer(text)
+                      if not _CITATION_END.search(text[:m.start(1)].rstrip())}
+        # A site numbers the closing date; the parser joins it to the paragraph before.
+        dated = {int(u.unit_id) for u in units if u.region == "body" and u.unit_id
+                 and u.unit_id.isdigit() and _DATING_LINE.match(u.text.strip())
+                 and len(u.text) < 300 and re.search(r"\b(?:1\d{3}|20\d{2})\b|[Pp]ontificate", u.text)}
+        source = [n for n in source if n not in dated]
         # Numbers 1.3a recovers are required, not just allowed.
         gaps = {n for a, b in zip(source, source[1:]) for n in range(a + 1, b)}
         recovered = in_source & gaps
