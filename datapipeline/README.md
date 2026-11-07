@@ -231,7 +231,7 @@ python3 reader_access.py           # dry run: lists every document that would ch
 python3 reader_access.py --apply   # writes them in one transaction
 ```
 
-A document whose live URL differs from its row's `source_url` is listed as held and stays excerpt-only: its row describes the edition a coming publish brings.
+A document whose live URL differs from its row's `source_url` is listed as held and made excerpt-only, even if it is open now: its row describes the edition a coming publish brings.
 
 The sync writes nothing but this one derived column, so unlike the repair tools above
 it needs no publish-lock entry. Its `--apply` is still a live change: run the dry run

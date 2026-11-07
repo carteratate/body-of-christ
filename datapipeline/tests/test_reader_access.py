@@ -122,6 +122,16 @@ def test_sync_opens_the_new_edition_once_it_is_live():
     assert result.held == [] and live["reader_access"] == "full"
 
 
+def test_sync_closes_an_older_edition_already_open():
+    live = {**_row("1", "First Lateran Council", "full"), "url": "https://old"}
+    table = _table(_entry("1", "First Lateran Council", "pd-us-non-renewal"))
+    result = asyncio.run(RA.sync(FakeConn([live]), table, apply=True, urls={"1": "https://new"}))
+    assert [(c.before, c.after, c.reason) for c in result.changes] == \
+        [("full", "excerpt", RA.OTHER_EDITION)]
+    assert [c.document_id for c in result.held] == ["1"]
+    assert result.unmatched == [] and live["reader_access"] == "excerpt"
+
+
 def test_a_document_with_no_url_is_not_held():
     table = _table(_entry("1", "Isaiah", "pd-dedicated"))
     live = _row("1", "Isaiah", "excerpt")

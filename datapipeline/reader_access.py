@@ -25,11 +25,11 @@ while any live document has no row: falling closed is right for a publish, but h
 would silently block a public-domain text.
 
 A row describes the edition a build publishes, and the document ID outlives an edition: a
-re-sourced work keeps its ID. So `sync` will not open a document whose live `metadata.url`
-differs from its row's `source_url`: the live text is still the older edition, and its
-replacement's status does not cover it. Such a document stays excerpt-only, is listed as
-held, and opens with the publish that brings the new edition. A rollback likewise never
-leaves a document more open than its snapshot (`stricter`).
+re-sourced work keeps its ID. So `sync` makes a document excerpt-only, whatever it is now,
+when its live `metadata.url` differs from its row's `source_url`: the live text is still
+the older edition, and its replacement's status does not cover it. Such a document is
+listed as held and opens with the publish that brings the new edition. A rollback likewise
+never leaves a document more open than its snapshot (`stricter`).
 
 Plan decision D12 in docs/2026-09-28-corpus-cleanup-plan.md.
 """
@@ -133,7 +133,7 @@ class Plan:
     # that is really public domain, so `sync` refuses to apply while any exist.
     unmatched: list[Change]
     totals: dict[str, int]
-    # Documents the inventory would open, kept excerpt-only: the live text is another
+    # Documents the inventory calls cleared, made excerpt-only: the live text is another
     # edition than the row's. Not an error: they open with the publish.
     held: list[Change] = field(default_factory=list)
 
@@ -147,16 +147,16 @@ _DOCUMENTS_SQL = ("SELECT id, collection, title, reader_access, metadata->>'url'
 
 
 async def plan(conn, table: dict[str, str] | None = None,
-               urls: dict[str, str | None] | None = None) -> Plan:
+               urls: dict[str, str | None] | None = None, *, lock: bool = False) -> Plan:
     """What a sync would do: every live document whose reader_access disagrees with the
     inventory, every document the inventory did not decide, every document held at
-    excerpt because its live text is another edition, and the resulting totals."""
+    excerpt because its live text is another edition, and the resulting totals. With
+    `lock`, inside a transaction, the rows stay as read until it ends."""
     changes, unmatched, held = [], [], []
     totals = {FULL: 0, EXCERPT: 0}
-    for row in await conn.fetch(_DOCUMENTS_SQL):
+    for row in await conn.fetch(_DOCUMENTS_SQL + (" FOR UPDATE" if lock else "")):
         after, reason = resolve(str(row["id"]), table)
-        if after == FULL and row["reader_access"] != FULL \
-                and other_edition(str(row["id"]), row.get("url"), urls):
+        if after == FULL and other_edition(str(row["id"]), row.get("url"), urls):
             after, reason = EXCERPT, OTHER_EDITION
             held.append(Change(str(row["id"]), row["collection"], row["title"],
                                row["reader_access"], after, reason))
@@ -176,17 +176,20 @@ async def sync(conn, table: dict[str, str] | None = None, *, apply: bool,
                allow_unmatched: bool = False,
                urls: dict[str, str | None] | None = None) -> Plan:
     """Bring every document's reader_access in line with the inventory. With
-    apply=False this only reports; with apply=True it writes in one transaction, and
-    refuses while any document is unmatched unless allow_unmatched is set."""
-    result = await plan(conn, table, urls)
-    if apply and result.unmatched and not allow_unmatched:
-        raise UnmatchedDocuments(
-            f"REFUSING: {len(result.unmatched)} live document(s) have no row in the "
-            "rights inventory. Fix the inventory, or pass --allow-unmatched to block "
-            "them deliberately."
-        )
-    if apply and result.changes:
-        async with conn.transaction():
+    apply=False this only reports; with apply=True it decides and writes in one
+    transaction, with the rows locked so a rollback cannot change an edition between the
+    two, and refuses while any document is unmatched unless allow_unmatched is set."""
+    if not apply:
+        return await plan(conn, table, urls)
+    async with conn.transaction():
+        result = await plan(conn, table, urls, lock=True)
+        if result.unmatched and not allow_unmatched:
+            raise UnmatchedDocuments(
+                f"REFUSING: {len(result.unmatched)} live document(s) have no row in the "
+                "rights inventory. Fix the inventory, or pass --allow-unmatched to block "
+                "them deliberately."
+            )
+        if result.changes:
             for to in (FULL, EXCERPT):
                 ids = [c.document_id for c in result.changes if c.after == to]
                 if ids:
