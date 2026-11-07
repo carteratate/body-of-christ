@@ -1,14 +1,14 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "feat/1.3a-papal-parser 3333fea",
+  "apostolic-exhortations": "feat/1.3a-papal-parser 8075859",
   "bible": "feat/1.10c-piece-citations 269d968",
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
   "councils": "feat/1.2e-1-lateran-schroeder b511d17",
-  "encyclicals": "feat/1.3a-papal-parser 3333fea",
+  "encyclicals": "feat/1.3a-papal-parser 8075859",
   "medieval": "feat/1.10c-piece-citations 269d968",
-  "papal-documents": "feat/1.3a-papal-parser 3333fea",
+  "papal-documents": "feat/1.3a-papal-parser 8075859",
   "summa": "feat/coverage-checks cfee751"
  },
  "files": {
