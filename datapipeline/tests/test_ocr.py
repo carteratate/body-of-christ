@@ -19,7 +19,7 @@ from ocr.label import is_scanned, label_passage, ocr_metadata, scanned_text
 from ocr.layout import get_layout
 from ocr.pages import Line, Page, load_pages
 from ocr.report import write as write_report
-from ocr.work import (Baseline, OcrPassage, SampleRule, WorkConfig, WorkDir,
+from ocr.work import (SOURCES, Baseline, OcrPassage, SampleRule, WorkConfig, WorkDir,
                       baseline_text)
 from ocr.words import unrecognized_rate
 
@@ -545,3 +545,14 @@ def test_a_baseline_can_take_only_the_units_text(tmp_path):
         "<p>More of his view.</p><p>Text. Another.</p><p>END</p>", encoding="utf-8")
     baseline = Baseline("b.html", "^START", "^END", opens="^Text", closes="^Comment")
     assert baseline_text(baseline, tmp_path) == ["Text. A canon.", "It goes on.", "Text. Another."]
+
+
+@pytest.mark.skipif(not (SOURCES / "councils" / "fordham-lateran1.html").exists(),
+                    reason="needs the gitignored datapipeline/sources/")
+@pytest.mark.parametrize("work,canons", [("schroeder-lateran-1", 22), ("schroeder-lateran-2", 30),
+                                         ("schroeder-lateran-4", 71)])
+def test_council_baselines_hold_every_canon_and_no_editor_text(work, canons):
+    paragraphs = baseline_text(WorkConfig.load(work).baseline)
+    assert sum(p.startswith("Text") for p in paragraphs) == canons
+    assert not [p[:40] for p in paragraphs
+                if re.match(r"(?i)(?:summary|comment|canon\s+\d|note\s*\d|\[note)", p)]
