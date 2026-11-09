@@ -6,10 +6,12 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 
+from app import corpus_lifecycle, corpus_schema
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.rag.steps import document_facts
 from app.reader_access import access_fields, document_access
 from app.models.bookmarks import (
     BookmarkChunk,
@@ -158,56 +160,103 @@ async def list_bookmarks(
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
     try:
-        rows = await pool.fetch(
-            """
-            SELECT b.id, b.chunk_id, b.created_at, b.note,
-                   c.content, c.reference, c.anchor, c.chapter_key, c.unit_label,
-                   c.document_id,
-                   d.collection, d.title AS document_title, d.author
-            FROM bookmarks b
-            JOIN chunks c ON c.id = b.chunk_id
-            JOIN documents d ON d.id = c.document_id
-            WHERE b.user_id = $1
-            ORDER BY b.created_at DESC, b.id DESC
-            """,
-            user.user_id,
-        )
-        access = await document_access(pool, [row["document_id"] for row in rows])
+        # Retired rows are joined on purpose and resolved (2.4a): a bookmark whose
+        # passage left the corpus is marked, never dropped, and keeps its note.
+        async def saved(schema: corpus_schema.CorpusSchema):
+            found = await pool.fetch(_list_sql(schema), user.user_id)
+            return found, await corpus_lifecycle.resolve_saved(
+                pool, found, schema, _BOOKMARK_PASSAGE_SQL)
+
+        rows, (resolutions, targets) = await corpus_schema.run_with_fallback(saved, pool)
+        # What each bookmark shows: its own passage, or the one it moved to. A removed
+        # passage shows no text, so it takes no notes or facts.
+        shown = {}
+        for row in rows:
+            resolution = resolutions.get(str(row["chunk_id"]), corpus_lifecycle.CURRENT)
+            if resolution.status == "removed":
+                continue
+            target = (targets.get(resolution.redirect.chunk_id)
+                      if resolution.status == "moved" else None)
+            shown[str(row["chunk_id"])] = target or row
+        access = await document_access(
+            pool, {row["document_id"] for row in [*rows, *shown.values()]})
     except Exception as exc:
         logger.error("list_bookmarks query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
     notes = await fetch_footnotes(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in rows
+        (str(row["chunk_id"]), row["content"]) for row in shown.values()
         if has_footnotes(row["collection"], row["document_title"])
     ])
+    facts, _ = await document_facts.fetch_best_effort(pool, [
+        str(row["chunk_id"]) for row in shown.values()
+    ])
 
-    return BookmarkListResponse(
-        bookmarks=[
-            BookmarkResponse(
-                id=str(row["id"]),
-                chunk_id=str(row["chunk_id"]),
-                created_at=row["created_at"].isoformat(),
-                note=row["note"],
-                chunk=BookmarkChunk(
-                    content=row["content"],
-                    footnotes=notes.get(str(row["chunk_id"]), []),
-                    source=BookmarkSource(
-                        collection=row["collection"],
-                        document_title=row["document_title"],
-                        author=row["author"],
-                        reference=row["reference"],
-                        document_id=str(row["document_id"]),
-                        anchor=row["anchor"],
-                        chapter_key=row["chapter_key"],
-                        unit_label=row["unit_label"],
-                        **access_fields(access, row["document_id"], row["unit_label"]),
-                    ),
-                ),
-            )
-            for row in rows
-        ]
-    )
+    def chunk(row, display) -> BookmarkChunk:
+        source_row = display if display is not None else row
+        passage = facts.get(str(source_row["chunk_id"]))
+        card_access = access_fields(access, source_row["document_id"], source_row["unit_label"])
+        return BookmarkChunk(
+            # A removed passage shows no text (Carter, 9 Nov 2026).
+            content=display["content"] if display is not None else "",
+            footnotes=notes.get(str(display["chunk_id"]), []) if display is not None else [],
+            source=BookmarkSource(**{
+                "collection": source_row["collection"],
+                "document_title": source_row["document_title"],
+                "author": source_row["author"],
+                "reference": source_row["reference"],
+                "document_id": str(source_row["document_id"]),
+                "anchor": source_row["anchor"],
+                "chapter_key": source_row["chapter_key"],
+                "unit_label": source_row["unit_label"],
+                **card_access,
+                # Facts and passage fields (2.4a); their author replaces the row's.
+                **(passage.source_fields(card_access["source_credit"]) if passage else {}),
+            }),
+        )
+
+    bookmarks = []
+    for row in rows:
+        resolution = resolutions.get(str(row["chunk_id"]), corpus_lifecycle.CURRENT)
+        bookmarks.append(BookmarkResponse(
+            id=str(row["id"]),
+            chunk_id=str(row["chunk_id"]),
+            created_at=row["created_at"].isoformat(),
+            note=row["note"],
+            chunk=chunk(row, shown.get(str(row["chunk_id"]))),
+            status=resolution.status,
+            tombstone=resolution.tombstone,
+            redirect=resolution.redirect,
+        ))
+    return BookmarkListResponse(bookmarks=bookmarks)
+
+
+def _list_sql(schema: corpus_schema.CorpusSchema) -> str:
+    """The user's bookmarks. With 0042, each row also says whether its passage is
+    current; without it, the SQL is today's."""
+    current = (",\n                   c.retired_at IS NULL AND d.retired_at IS NULL AS current"
+               if schema.lifecycle else "")
+    return f"""
+            SELECT b.id, b.chunk_id, b.created_at, b.note,
+                   {_BOOKMARK_COLUMNS}{current}
+            FROM bookmarks b
+            JOIN chunks c ON c.id = b.chunk_id
+            JOIN documents d ON d.id = c.document_id
+            WHERE b.user_id = $1
+            ORDER BY b.created_at DESC, b.id DESC
+            """
+
+
+_BOOKMARK_COLUMNS = """c.content, c.reference, c.anchor, c.chapter_key, c.unit_label,
+                   c.document_id,
+                   d.collection, d.title AS document_title, d.author"""
+
+# The passages moved bookmarks now point at (2.4a).
+_BOOKMARK_PASSAGE_SQL = f"""
+    SELECT c.id AS chunk_id, {_BOOKMARK_COLUMNS}
+    FROM chunks c JOIN documents d ON d.id = c.document_id
+    WHERE c.id = ANY($1::uuid[])
+"""
 
 
 @router.delete("/bookmarks/{bookmark_id}")

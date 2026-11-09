@@ -6,6 +6,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
+from app import corpus_schema
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
@@ -19,23 +20,30 @@ _sources_cache_ts: float = 0.0
 _SOURCES_TTL: float = 3600.0
 
 # chunk_count is precomputed at publication (migration 0037). COALESCE counts chunks
-# only for a document with no current outline.
+# only for a document with no current outline. Retired documents and passages (0042,
+# corpus cleanup 2.4a) are left out; `{visible_c}` and `{visible_d}` are empty without
+# 0042. A retirement shows here after the API restart that follows a publish (4.1b).
 _SOURCES_SQL = """
     SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
            NULLIF(d.translation, '') AS translation, d.metadata,
            COALESCE(d.chunk_count,
-                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id))::int AS chunk_count
-    FROM documents d
+                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id{visible_c}))::int AS chunk_count
+    FROM documents d WHERE true{visible_d}
     ORDER BY d.collection, d.year NULLS LAST, d.title
 """
 # The same on a database without 0037, so the API can deploy before it is applied.
 _PRE_OUTLINE_SOURCES_SQL = """
     SELECT d.id::text AS id, d.collection, d.title, d.author, d.year,
            NULLIF(d.translation, '') AS translation, d.metadata,
-           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)::int AS chunk_count
-    FROM documents d
+           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id{visible_c})::int AS chunk_count
+    FROM documents d WHERE true{visible_d}
     ORDER BY d.collection, d.year NULLS LAST, d.title
 """
+
+
+def _visible(sql: str, schema: corpus_schema.CorpusSchema) -> str:
+    return (sql.replace("{visible_c}", schema.visible("c"))
+               .replace("{visible_d}", schema.visible("d")))
 
 
 # Excerpt-only documents (issue #265). Read on every request, not cached with the
@@ -115,10 +123,15 @@ def _cached_corpus() -> SourcesResponse | None:
 async def _load_corpus(conn) -> SourcesResponse:
     global _sources_cache, _sources_cache_ts
 
-    try:
-        rows = await conn.fetch(_SOURCES_SQL)
-    except asyncpg.UndefinedColumnError:
-        rows = await conn.fetch(_PRE_OUTLINE_SOURCES_SQL)
+    async def load(schema: corpus_schema.CorpusSchema):
+        try:
+            return await conn.fetch(_visible(_SOURCES_SQL, schema))
+        except asyncpg.UndefinedColumnError as exc:
+            if "chunk_count" not in str(exc):
+                raise
+            return await conn.fetch(_visible(_PRE_OUTLINE_SOURCES_SQL, schema))
+
+    rows = await corpus_schema.run_with_fallback(load, conn)
     sources = [
         SourceDocument(
             id=r["id"], collection=r["collection"], title=r["title"],

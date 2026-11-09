@@ -41,7 +41,7 @@ _EVALUATE_SYSTEM = (
     "Chunked by pericope (named passage units for the 66 protocanonical books) "
     "or by chapter (deuterocanonicals). Coverage spans: Pentateuch law and "
     "narrative, historical books, wisdom literature (Job, Proverbs, "
-    "Ecclesiastes, Song of Solomon, Wisdom, Sirach), Psalms, prophetic books "
+    "Ecclesiastes, Song of Songs (Song of Solomon), Wisdom, Sirach), Psalms, prophetic books "
     "(major and minor), the four Gospels, Acts, Pauline and general epistles, "
     "and Revelation.\n"
     "STRONGEST FOR: scriptural foundations of any doctrine, moral teaching "

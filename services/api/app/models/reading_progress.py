@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Literal, Optional
+
+from app.models.corpus import Tombstone
 
 
 class ReadingProgressUpdate(BaseModel):
@@ -16,6 +18,10 @@ class ReadingProgressItem(BaseModel):
     collection: str
     document_title: str
     author: Optional[str] = None
+    # "removed" (with the tombstone) only on the single-document GET for a retired
+    # document; lists leave such rows out (2.4a).
+    status: Literal["current", "removed"] = "current"
+    tombstone: Optional[Tombstone] = None
 
 
 class ReadingProgressListResponse(BaseModel):

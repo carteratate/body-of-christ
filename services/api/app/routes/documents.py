@@ -6,13 +6,17 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from app import corpus_lifecycle, corpus_schema
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.catechism_contents import catechism_contents
 from app.derived_contents import derive_summa_contents
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
-from app.reader_access import restricted_error, source_url
+from app.corpus_lifecycle import CorpusLifecycleError
+from app.corpus_schema import CorpusSchema
+from app.reader_access import restricted_error, source_credit, source_url
+from app.models.corpus import DocumentFacts, RedirectedFrom, WorkInfo
 from app.models.documents import (
     ContentsNode, DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
 )
@@ -27,21 +31,40 @@ _bearer = HTTPBearer(auto_error=False)
 # published. A document whose chunk_count is NULL has no current outline, and its
 # structure is derived from chunks as before; `outline_ready` selects the path. The
 # COALESCE evaluates the count subquery only for such a document.
-_OUTLINE_COLUMNS = """d.chunk_count IS NOT NULL AS outline_ready,
+#
+# Retired passages and documents (migration 0042, corpus cleanup 2.4a) are never read
+# as part of a document: every chunks query below adds `CorpusSchema.visible`, which is
+# empty on a database without 0042, and the outline already leaves retired rows out.
+def _outline_columns(visible: str) -> str:
+    return f"""d.chunk_count IS NOT NULL AS outline_ready,
            COALESCE(d.chunk_count,
-                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id)) AS cnt"""
+                    (SELECT count(*) FROM chunks c WHERE c.document_id = d.id{visible})) AS cnt"""
+
+
 # The same columns on a database without 0037, so the API can deploy before it is applied.
-_PRE_OUTLINE_COLUMNS = """false AS outline_ready,
-           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id) AS cnt"""
+def _pre_outline_columns(visible: str) -> str:
+    return f"""false AS outline_ready,
+           (SELECT count(*) FROM chunks c WHERE c.document_id = d.id{visible}) AS cnt"""
 
 
-def _document_sql(*, access: bool, outline: bool) -> str:
+# Document facts (0042), for DocumentResponse.facts.
+_FACT_COLUMNS = """,
+           d.date_display, d.genre, d.issuer, d.issuer_label, d.certainty,
+           d.attribution_note, d.notes, d.source_credit,
+           d.superseded_by::text AS superseded_by, d.superseded_note"""
+
+
+def _document_sql(*, access: bool, outline: bool,
+                  schema: CorpusSchema = corpus_schema.LEGACY) -> str:
     """The document row. Without 0041 (`access` false) every document reads as full,
-    so the API can deploy before that migration is applied (issue #265)."""
+    so the API can deploy before that migration is applied (issue #265). Without 0042
+    nothing is retired and there are no facts."""
+    visible = schema.visible("c")
     return f"""
     SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
            {"d.reader_access" if access else "'full'"} AS reader_access,
-           {_OUTLINE_COLUMNS if outline else _PRE_OUTLINE_COLUMNS}
+           {_outline_columns(visible) if outline else _pre_outline_columns(visible)},
+           {"d.retired_at IS NOT NULL" if schema.retired else "false"} AS retired{_FACT_COLUMNS if schema.facts else ""}
     FROM documents d WHERE d.id = $1
 """
 
@@ -54,7 +77,7 @@ _OUTLINE_TOC_SQL = """
 """
 _LEGACY_TOC_SQL = """
     SELECT chapter_key, chapter_label
-    FROM chunks WHERE document_id = $1 AND chapter_key IS NOT NULL
+    FROM chunks c WHERE document_id = $1 AND chapter_key IS NOT NULL{visible}
     GROUP BY chapter_key, chapter_label
     ORDER BY min(position)
 """
@@ -63,7 +86,7 @@ _OUTLINE_FIRST_CHAPTER_SQL = """
     SELECT chapter_key FROM document_chapters WHERE document_id = $1 AND ordinal = 1
 """
 _LEGACY_FIRST_CHAPTER_SQL = """
-    SELECT chapter_key FROM chunks WHERE document_id = $1 AND chapter_key IS NOT NULL
+    SELECT chapter_key FROM chunks c WHERE document_id = $1 AND chapter_key IS NOT NULL{visible}
     ORDER BY position LIMIT 1
 """
 
@@ -75,7 +98,7 @@ _OUTLINE_NEIGHBORS_SQL = """
     FROM document_chapters c WHERE c.document_id = $1 AND c.chapter_key = $2
 """
 _LEGACY_CHAPTER_KEYS_SQL = """
-    SELECT chapter_key FROM chunks WHERE document_id = $1 AND chapter_key IS NOT NULL
+    SELECT chapter_key FROM chunks c WHERE document_id = $1 AND chapter_key IS NOT NULL{visible}
     GROUP BY chapter_key ORDER BY min(position)
 """
 
@@ -88,7 +111,7 @@ _CONTENTS_SQL = """
            dc.anchor IS NOT NULL AND NOT EXISTS (
                SELECT 1 FROM chunks c
                WHERE c.document_id = dc.document_id AND c.anchor = dc.anchor
-                 AND c.chapter_key = dc.chapter_key
+                 AND c.chapter_key = dc.chapter_key{visible}
            ) AS anchor_missing
     FROM document_contents dc WHERE dc.document_id = $1 ORDER BY dc.ordinal
 """
@@ -111,22 +134,40 @@ async def require_document_access(
     token_hash = hashlib.sha256(guest_token.encode()).hexdigest()
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
-            allowed = await conn.fetchval(
-                """SELECT EXISTS (
-                       SELECT 1 FROM guest_trials gt
-                       JOIN guest_trial_retrievals gr ON gr.guest_trial_id=gt.id
-                       JOIN chunks c ON c.id=gr.chunk_id
-                       WHERE gt.session_token_hash=$1 AND c.document_id=$2
-                         AND gt.created_at > now() - interval '30 days'
-                         AND gt.claimed_by IS NULL
-                   )""",
-                token_hash, doc_uuid,
-            )
+            async def check(schema: CorpusSchema) -> bool:
+                return await conn.fetchval(_guest_access_sql(schema), token_hash, doc_uuid)
+
+            allowed = await corpus_schema.run_with_fallback(check, conn)
     except Exception as exc:
         logger.error("guest document access check failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
     if not allowed:
         raise HTTPException(status_code=403, detail="Document is not part of this guest session")
+
+
+_GUEST_SESSION = """FROM guest_trials gt
+                       JOIN guest_trial_retrievals gr ON gr.guest_trial_id=gt.id
+                       JOIN chunks c ON c.id=gr.chunk_id"""
+_GUEST_LIVE = """AND gt.created_at > now() - interval '30 days'
+                         AND gt.claimed_by IS NULL"""
+
+
+def _guest_access_sql(schema: CorpusSchema) -> str:
+    """Whether the guest retrieved a passage of the document. With redirects (0042,
+    2.4a), also a document a redirect leads to from a passage the guest retrieved or
+    its document, so a moved result still opens."""
+    redirected = f""" OR EXISTS (
+                       SELECT 1 {_GUEST_SESSION}
+                       JOIN corpus_redirects r
+                         ON r.old_id = gr.chunk_id OR r.old_document_id = c.document_id
+                       WHERE gt.session_token_hash=$1 AND r.new_document_id=$2
+                         {_GUEST_LIVE}
+                   )""" if schema.redirects else ""
+    return f"""SELECT EXISTS (
+                       SELECT 1 {_GUEST_SESSION}
+                       WHERE gt.session_token_hash=$1 AND c.document_id=$2
+                         {_GUEST_LIVE}
+                   ){redirected}"""
 
 
 def _parse_doc_id(doc_id: str) -> uuid.UUID:
@@ -143,13 +184,19 @@ def _require_pool() -> asyncpg.Pool:
     return pool
 
 
-async def _fetch_document(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> asyncpg.Record:
+async def _fetch_document(conn: asyncpg.Connection, doc_uuid: uuid.UUID,
+                          schema: CorpusSchema = corpus_schema.LEGACY) -> asyncpg.Record:
+    """The document row, or the reader's answer for one that is gone: 410 with its
+    tombstone when it was removed, 404 with its redirect when it moved (2.4a), and
+    today's 404 otherwise."""
     # Fall back one migration at a time, and only for the column actually missing:
-    # a missing outline must never also switch off the reader_access check.
+    # a missing outline must never also switch off the reader_access check. A missing
+    # 0042 column reaches `run_with_fallback`, which retries the request without 0042.
     access = outline = True
     while True:
         try:
-            doc_row = await conn.fetchrow(_document_sql(access=access, outline=outline), doc_uuid)
+            doc_row = await conn.fetchrow(
+                _document_sql(access=access, outline=outline, schema=schema), doc_uuid)
             break
         except asyncpg.UndefinedColumnError as exc:
             if access and "reader_access" in str(exc):
@@ -162,12 +209,53 @@ async def _fetch_document(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> asyn
                 outline = False
             else:
                 raise
+    if doc_row is None or doc_row.get("retired"):
+        resolution = await corpus_lifecycle.resolve_document(conn, doc_uuid, schema)
+        if resolution is not None:
+            raise CorpusLifecycleError(resolution)
+        if doc_row is not None:
+            logger.warning("document %s is retired but has no tombstone or redirect; "
+                           "serving it", doc_uuid)
     if doc_row is None:
         raise HTTPException(status_code=404, detail="Document not found")
     return doc_row
 
 
-def _document_response(doc_row) -> DocumentResponse:
+_WORKS_SQL = """
+    SELECT work_key, ordinal, title, author, certainty, attribution_note, notes,
+           date_display, year, genre, clavis_ref
+    FROM document_works WHERE document_id = $1 ORDER BY ordinal
+"""
+
+
+async def _fetch_works(conn: asyncpg.Connection, doc_uuid: uuid.UUID,
+                       schema: CorpusSchema) -> list[WorkInfo]:
+    if not schema.works:
+        return []
+    return [WorkInfo(**dict(r)) for r in await conn.fetch(_WORKS_SQL, doc_uuid)]
+
+
+def _document_facts(doc_row) -> DocumentFacts | None:
+    """The document's facts (0042), or None without them. An excerpt-only document's
+    required notice wins over the stored credit, as on search cards."""
+    if "genre" not in doc_row.keys():
+        return None
+    required = None
+    if doc_row["reader_access"] == "excerpt":
+        required = source_credit(doc_row["collection"],
+                                 source_url(doc_row["collection"], doc_row["metadata"]),
+                                 doc_row["title"])
+    return DocumentFacts(
+        year=doc_row["year"], date_display=doc_row["date_display"],
+        translation=doc_row["translation"] or None, genre=doc_row["genre"],
+        issuer=doc_row["issuer"], issuer_label=doc_row["issuer_label"],
+        certainty=doc_row["certainty"], attribution_note=doc_row["attribution_note"],
+        notes=doc_row["notes"], source_credit=required or doc_row["source_credit"],
+        superseded_by=doc_row["superseded_by"], superseded_note=doc_row["superseded_note"],
+    )
+
+
+def _document_response(doc_row, works: list[WorkInfo] | None = None) -> DocumentResponse:
     access = doc_row["reader_access"]
     return DocumentResponse(
         id=str(doc_row["id"]), collection=doc_row["collection"], title=doc_row["title"],
@@ -175,7 +263,12 @@ def _document_response(doc_row) -> DocumentResponse:
         chunk_count=doc_row["cnt"], reader_access=access,
         source_url=(source_url(doc_row["collection"], doc_row["metadata"])
                     if access == "excerpt" else None),
+        facts=_document_facts(doc_row), works=works or [],
     )
+
+
+def _with_visible(sql: str, schema: CorpusSchema) -> str:
+    return sql.replace("{visible}", schema.visible("c"))
 
 
 def _require_full_reader(doc_row) -> None:
@@ -187,6 +280,7 @@ def _require_full_reader(doc_row) -> None:
 
 async def _neighbor_keys(
     conn: asyncpg.Connection, doc_uuid: uuid.UUID, chapter_key: str, outline_ready: bool,
+    schema: CorpusSchema = corpus_schema.LEGACY,
 ) -> tuple[str | None, str | None]:
     """Return the previous and next chapter keys around `chapter_key`."""
     if outline_ready:
@@ -202,7 +296,8 @@ async def _neighbor_keys(
             doc_uuid, chapter_key,
         )
 
-    keys = [r["chapter_key"] for r in await conn.fetch(_LEGACY_CHAPTER_KEYS_SQL, doc_uuid)]
+    keys = [r["chapter_key"] for r in await conn.fetch(
+        _with_visible(_LEGACY_CHAPTER_KEYS_SQL, schema), doc_uuid)]
     idx = keys.index(chapter_key) if chapter_key in keys else 0
     prev_key = keys[idx - 1] if idx > 0 else None
     next_key = keys[idx + 1] if idx + 1 < len(keys) else None
@@ -219,27 +314,32 @@ async def get_document(
     pool = _require_pool()
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
-            doc_row = await _fetch_document(conn, doc_uuid)
+            async def load(schema: CorpusSchema):
+                doc_row = await _fetch_document(conn, doc_uuid, schema)
+                return doc_row, await _fetch_works(conn, doc_uuid, schema)
+
+            doc_row, works = await corpus_schema.run_with_fallback(load, conn)
     except HTTPException:
         raise
     except Exception as exc:
         logger.error("get_document query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
-    return _document_response(doc_row)
+    return _document_response(doc_row, works)
 
 
 # The paragraph numbers each Catechism passage holds, for the stopgap tree.
 _CATECHISM_PARAGRAPHS_SQL = """
 SELECT chapter_key, anchor, metadata->'ccc_paragraphs' AS paragraphs
-FROM chunks
-WHERE document_id = $1 AND jsonb_typeof(metadata->'ccc_paragraphs') = 'array'
+FROM chunks c
+WHERE document_id = $1 AND jsonb_typeof(metadata->'ccc_paragraphs') = 'array'{visible}
 ORDER BY position
 """
 
 
-async def _fetch_contents_rows(conn: asyncpg.Connection, doc_uuid: uuid.UUID) -> list:
+async def _fetch_contents_rows(conn: asyncpg.Connection, doc_uuid: uuid.UUID,
+                               schema: CorpusSchema = corpus_schema.LEGACY) -> list:
     try:
-        return await conn.fetch(_CONTENTS_SQL, doc_uuid)
+        return await conn.fetch(_with_visible(_CONTENTS_SQL, schema), doc_uuid)
     except asyncpg.UndefinedTableError:
         # Migration 0040 is not applied: no document has a contents tree yet.
         return []
@@ -305,14 +405,22 @@ async def get_document_toc(
     pool = _require_pool()
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
-            doc_row = await _fetch_document(conn, doc_uuid)
-            _require_full_reader(doc_row)
-            toc_sql = _OUTLINE_TOC_SQL if doc_row["outline_ready"] else _LEGACY_TOC_SQL
-            chapter_rows = await conn.fetch(toc_sql, doc_uuid)
-            contents_rows = await _fetch_contents_rows(conn, doc_uuid)
-            catechism_passages = []
-            if not contents_rows and doc_row["collection"] == "catechism":
-                catechism_passages = await conn.fetch(_CATECHISM_PARAGRAPHS_SQL, doc_uuid)
+            async def load(schema: CorpusSchema):
+                doc_row = await _fetch_document(conn, doc_uuid, schema)
+                _require_full_reader(doc_row)
+                toc_sql = (_OUTLINE_TOC_SQL if doc_row["outline_ready"]
+                           else _with_visible(_LEGACY_TOC_SQL, schema))
+                chapter_rows = await conn.fetch(toc_sql, doc_uuid)
+                contents_rows = await _fetch_contents_rows(conn, doc_uuid, schema)
+                catechism_passages = []
+                if not contents_rows and doc_row["collection"] == "catechism":
+                    catechism_passages = await conn.fetch(
+                        _with_visible(_CATECHISM_PARAGRAPHS_SQL, schema), doc_uuid)
+                works = await _fetch_works(conn, doc_uuid, schema)
+                return doc_row, chapter_rows, contents_rows, catechism_passages, works
+
+            (doc_row, chapter_rows, contents_rows, catechism_passages,
+             works) = await corpus_schema.run_with_fallback(load, conn)
     except HTTPException:
         raise
     except Exception as exc:
@@ -332,8 +440,52 @@ async def get_document_toc(
         contents = catechism_contents(
             [(r["chapter_key"], r["anchor"], r["paragraphs"]) for r in catechism_passages],
             [c.chapter_key for c in chapters])
-    return TocResponse(document=_document_response(doc_row), chapters=chapters,
+    return TocResponse(document=_document_response(doc_row, works), chapters=chapters,
                        contents=contents)
+
+
+_PASSAGE_FIELDS = """,
+                   language, note, work_key, passage_author,
+                   superseded_by::text AS superseded_by"""
+
+
+def _passages_sql(schema: CorpusSchema) -> str:
+    """One chapter's passages. History passages (rule F) are not retired, so they come
+    with their chapter and the reader shows them as earlier text."""
+    return f"""SELECT id, anchor, chapter_key, chapter_label, unit_label, reference, content{_PASSAGE_FIELDS if schema.facts else ""}
+                   FROM chunks c WHERE document_id=$1 AND chapter_key=$2{schema.visible("c")} ORDER BY position"""
+
+
+async def _anchor_chapter(conn, doc_uuid: uuid.UUID, anchor: str,
+                          schema: CorpusSchema) -> str | None:
+    row = await conn.fetchrow(
+        f"SELECT chapter_key FROM chunks c WHERE document_id=$1 AND anchor=$2{schema.visible('c')}",
+        doc_uuid, anchor)
+    return row["chapter_key"] if row else None
+
+
+async def _follow_location(conn, doc_row, doc_uuid: uuid.UUID, *, anchor: str | None,
+                           chapter: str | None, schema: CorpusSchema):
+    """An anchor or chapter the document no longer shows: the location its redirect
+    names, as (document row, document id, chapter_key, anchor, redirected_from), or
+    None when nothing explains it. A removed passage raises 410 with its tombstone."""
+    resolution = await corpus_lifecycle.resolve_location(
+        conn, doc_uuid, anchor=anchor, chapter=chapter, schema=schema)
+    if resolution is None:
+        return None
+    if resolution.status == "removed":
+        raise CorpusLifecycleError(resolution)
+    target = resolution.redirect
+    target_uuid = uuid.UUID(target.document_id)
+    if target_uuid != doc_uuid:
+        doc_row = await _fetch_document(conn, target_uuid, schema)
+        _require_full_reader(doc_row)
+    chapter_key = target.chapter_key
+    if chapter_key is None and target.anchor:
+        chapter_key = await _anchor_chapter(conn, target_uuid, target.anchor, schema)
+    origin = RedirectedFrom(document_id=str(doc_uuid), anchor=anchor if not chapter else None,
+                            chapter_key=chapter)
+    return doc_row, target_uuid, chapter_key, target.anchor, origin
 
 
 @router.get("/documents/{doc_id}/reader", response_model=ReaderChapter)
@@ -343,39 +495,60 @@ async def get_document_reader(
     chapter: str | None = Query(default=None, description="chapter_key to load directly"),
     user: AuthUser | None = Depends(require_document_access),
 ) -> ReaderChapter:
-    """Return one chapter section of clean passages, with prev/next chapter keys."""
+    """Return one chapter section of clean passages, with prev/next chapter keys.
+
+    An anchor or chapter that moved (2.4a) answers with the chapter it moved to, which
+    may be in another document, with `redirected_from` naming the request. An anchor of
+    a removed passage, including one carrying 2.2w's `#retired-<release>` suffix, is
+    410 with the passage's tombstone."""
     doc_uuid = _parse_doc_id(doc_id)
     pool = _require_pool()
     try:
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
-            doc_row = await _fetch_document(conn, doc_uuid)
-            _require_full_reader(doc_row)
+            async def load(schema: CorpusSchema):
+                doc_row = await _fetch_document(conn, doc_uuid, schema)
+                _require_full_reader(doc_row)
+                target_uuid, highlight, redirected_from = doc_uuid, anchor, None
 
-            # Resolve target chapter_key (explicit chapter > anchor > first chapter).
-            chapter_key = chapter
-            if chapter_key is None and anchor:
-                row = await conn.fetchrow(
-                    "SELECT chapter_key FROM chunks WHERE document_id=$1 AND anchor=$2",
-                    doc_uuid, anchor)
-                chapter_key = row["chapter_key"] if row else None
-            if chapter_key is None:
-                first_sql = (_OUTLINE_FIRST_CHAPTER_SQL if doc_row["outline_ready"]
-                             else _LEGACY_FIRST_CHAPTER_SQL)
-                row = await conn.fetchrow(first_sql, doc_uuid)
-                if row is None:
-                    raise HTTPException(status_code=404, detail="Document has no readable passages")
-                chapter_key = row["chapter_key"]
+                # Resolve target chapter_key (explicit chapter > anchor > first chapter).
+                chapter_key = chapter
+                if chapter_key is None and anchor:
+                    chapter_key = await _anchor_chapter(conn, doc_uuid, anchor, schema)
+                    if chapter_key is None:
+                        followed = await _follow_location(
+                            conn, doc_row, doc_uuid, anchor=anchor, chapter=None, schema=schema)
+                        if followed is not None:
+                            (doc_row, target_uuid, chapter_key, highlight,
+                             redirected_from) = followed
+                if chapter_key is None:
+                    first_sql = (_OUTLINE_FIRST_CHAPTER_SQL if doc_row["outline_ready"]
+                                 else _with_visible(_LEGACY_FIRST_CHAPTER_SQL, schema))
+                    row = await conn.fetchrow(first_sql, target_uuid)
+                    if row is None:
+                        raise HTTPException(status_code=404, detail="Document has no readable passages")
+                    chapter_key = row["chapter_key"]
 
-            passage_rows = await conn.fetch(
-                """SELECT id, anchor, chapter_key, chapter_label, unit_label, reference, content
-                   FROM chunks WHERE document_id=$1 AND chapter_key=$2 ORDER BY position""",
-                doc_uuid, chapter_key,
-            )
-            if not passage_rows:
-                raise HTTPException(status_code=404, detail="Chapter not found")
+                passage_rows = await conn.fetch(_passages_sql(schema), target_uuid, chapter_key)
+                if not passage_rows and chapter is not None and redirected_from is None:
+                    followed = await _follow_location(
+                        conn, doc_row, doc_uuid, anchor=None, chapter=chapter, schema=schema)
+                    if followed is not None and followed[2] is not None:
+                        (doc_row, target_uuid, chapter_key, _,
+                         redirected_from) = followed
+                        highlight = anchor
+                        passage_rows = await conn.fetch(
+                            _passages_sql(schema), target_uuid, chapter_key)
+                if not passage_rows:
+                    raise HTTPException(status_code=404, detail="Chapter not found")
 
-            prev_key, next_key = await _neighbor_keys(
-                conn, doc_uuid, chapter_key, doc_row["outline_ready"])
+                prev_key, next_key = await _neighbor_keys(
+                    conn, target_uuid, chapter_key, doc_row["outline_ready"], schema)
+                works = await _fetch_works(conn, target_uuid, schema)
+                return (doc_row, chapter_key, passage_rows, prev_key, next_key, highlight,
+                        redirected_from, works)
+
+            (doc_row, chapter_key, passage_rows, prev_key, next_key, highlight,
+             redirected_from, works) = await corpus_schema.run_with_fallback(load, conn)
     except HTTPException:
         raise
     except Exception as exc:
@@ -387,10 +560,14 @@ async def get_document_reader(
             id=str(r["id"]), anchor=r["anchor"], chapter_key=r["chapter_key"],
             chapter_label=r["chapter_label"], unit_label=r["unit_label"],
             reference=r["reference"], content=r["content"],
+            **({key: r[key] for key in ("language", "note", "work_key", "passage_author",
+                                        "superseded_by")}
+               if "language" in r.keys() else {}),
         ) for r in passage_rows
     ]
     return ReaderChapter(
-        document=_document_response(doc_row), chapter_key=chapter_key,
+        document=_document_response(doc_row, works), chapter_key=chapter_key,
         chapter_label=passage_rows[0]["chapter_label"], passages=passages,
-        prev_chapter_key=prev_key, next_chapter_key=next_key, highlight_anchor=anchor,
+        prev_chapter_key=prev_key, next_chapter_key=next_key, highlight_anchor=highlight,
+        redirected_from=redirected_from,
     )

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
+from app.models.corpus import DocumentFacts, PassageStatus, Redirect, Tombstone
 from app.models.search import Footnote
 
 
@@ -29,6 +30,11 @@ class BookmarkSource(BaseModel):
     source_url: Optional[str] = None
     # The rights holder's credit line, shown right after the passage (excerpt-only).
     source_credit: Optional[str] = None
+    # Same as ChunkSource (2.4a).
+    facts: Optional[DocumentFacts] = None
+    language: Optional[str] = None
+    passage_note: Optional[str] = None
+    passage_author: Optional[str] = None
 
 
 class BookmarkChunk(BaseModel):
@@ -44,6 +50,10 @@ class BookmarkResponse(BaseModel):
     created_at: str
     note: Optional[str] = None
     chunk: Optional[BookmarkChunk] = None
+    # Same as ChunkResult (2.4a); the note is kept in every state.
+    status: PassageStatus = "current"
+    tombstone: Optional[Tombstone] = None
+    redirect: Optional[Redirect] = None
 
 
 class BookmarkListResponse(BaseModel):

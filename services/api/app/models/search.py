@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
+from app.models.corpus import DocumentFacts, PassageStatus, Redirect, Tombstone
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 
 
@@ -38,6 +39,11 @@ class ChunkSource(BaseModel):
     source_url: Optional[str] = None
     # The rights holder's credit line, shown right after the passage (excerpt-only).
     source_credit: Optional[str] = None
+    # Corpus cleanup 2.4a, from migration 0042; absent on a database without it.
+    facts: Optional[DocumentFacts] = None
+    language: Optional[str] = None        # ISO 639 code; None means English
+    passage_note: Optional[str] = None
+    passage_author: Optional[str] = None  # a quoted author, shown instead of `author`
 
 
 class ContextPart(BaseModel):
@@ -89,6 +95,12 @@ class ChunkResult(BaseModel):
     context: Optional[AttachedContext] = None
     # The passage's footnotes (issue #279); [] for every passage without them.
     footnotes: list[Footnote] = Field(default_factory=list)
+    # A saved result whose passage left the corpus (2.4a). "removed": `tombstone` says
+    # why and `content` is empty. "moved": `redirect` says where, and `content` and
+    # `source` are the passage it moved to.
+    status: PassageStatus = "current"
+    tombstone: Optional[Tombstone] = None
+    redirect: Optional[Redirect] = None
 
 
 class SearchDoneResponse(BaseModel):
