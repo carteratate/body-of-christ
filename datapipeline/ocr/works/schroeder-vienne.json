@@ -1,0 +1,39 @@
+{
+ "work": "schroeder-vienne",
+ "title": "Council of Vienne, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 365–442",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": [
+  "365",
+  "442"
+ ],
+ "layout": "single-column",
+ "units": "schroeder-canons",
+ "unit_count": 39,
+ "unit_series": [
+  21,
+  18
+ ],
+ "unit_closes": [
+  "^We have thus far considered only those decrees"
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

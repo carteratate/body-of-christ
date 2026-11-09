@@ -1,0 +1,146 @@
+[
+ {
+  "passage": "canon-2",
+  "find": "chosen by themselves, In this palace",
+  "replace": "chosen by themselves. In this palace",
+  "why": "Stop read as a comma; p. 331 prints \"themselves. In this palace\""
+ },
+ {
+  "passage": "canon-2",
+  "find": "after the expiration of the ten days. But should it happen",
+  "replace": "after the expiration of the ten days.\n\nBut should it happen",
+  "why": "p. 333 opens a paragraph at \"But should it happen\""
+ },
+ {
+  "passage": "canon-2",
+  "find": "is in no wise to be remitted, Moreover",
+  "replace": "is in no wise to be remitted. Moreover",
+  "why": "Stop read as a comma; p. 334 prints \"remitted. Moreover\""
+ },
+ {
+  "passage": "canon-4",
+  "find": "before his election has been confirmed, All who act",
+  "replace": "before his election has been confirmed. All who act",
+  "why": "Stop read as a comma; p. 337 prints \"confirmed. All who act\""
+ },
+ {
+  "passage": "canon-8",
+  "find": "by it todo anything",
+  "replace": "by it to do anything",
+  "why": "p. 339 prints \"to do\""
+ },
+ {
+  "passage": "canon-14",
+  "find": "received priestly orders, Nor may",
+  "replace": "received priestly orders. Nor may",
+  "why": "Stop read as a comma; p. 344 prints \"orders. Nor may\""
+ },
+ {
+  "passage": "canon-15",
+  "find": "(suspended) ordinaries.“",
+  "replace": "(suspended) ordinaries.",
+  "why": "Note call 49 read as a quotation mark; p. 344 ends \"ordinaries.\""
+ },
+ {
+  "passage": "canon-18",
+  "find": "recourse must be had to the Apostolic See, In bestowing",
+  "replace": "recourse must be had to the Apostolic See. In bestowing",
+  "why": "Stop read as a comma; p. 347 prints \"Apostolic See. In bestowing\""
+ },
+ {
+  "passage": "canon-26",
+  "find": "destroyed, ye decree",
+  "replace": "destroyed, we decree",
+  "why": "A pen mark over the word; p. 356 prints \"we decree\""
+ },
+ {
+  "passage": "canon-26",
+  "find": "association, par any; individual",
+  "replace": "association, nor any individual",
+  "why": "Pen marks over the words; p. 356 prints \"association, nor any individual\""
+ },
+ {
+  "passage": "canon-26",
+  "find": "incur Ipso facto excommunication",
+  "replace": "incur ipso facto excommunication",
+  "why": "p. 356 prints \"ipso\""
+ },
+ {
+  "passage": "canon-26",
+  "find": "omn1 privilegio",
+  "replace": "omni privilegio",
+  "why": "p. 356 prints \"omni privilegio\""
+ },
+ {
+  "passage": "canon-27",
+  "find": "of the locality, of to his vicar",
+  "replace": "of the locality, or to his vicar",
+  "why": "p. 357 prints \"or to his vicar\""
+ },
+ {
+  "passage": "canon-27",
+  "find": "bound to make\n\nOe 8 cee renin fate\n\necclesiastical burial",
+  "replace": "bound to make satisfaction for the remainder. All religious and others who dare in contravention of this constitution to admit notorious usurers to ecclesiastical burial",
+  "why": "A pen underline made the OCR lose two lines; p. 357 prints \"satisfaction for the remainder. All religious and others who dare in contravention of this constitution to admit notorious usurers to ecclesiastical burial\""
+ },
+ {
+  "passage": "canon-27",
+  "find": "may serve aS a witness",
+  "replace": "may serve as a witness",
+  "why": "p. 357 prints \"as\""
+ },
+ {
+  "passage": "canon-31",
+  "find": "The same\n\nFirst Council of Lyons, canon 12. sentence is incurred",
+  "replace": "The same sentence is incurred",
+  "why": "Note 73 at the foot of p. 359 read into the sentence; p. 360 continues \"sentence is incurred\""
+ },
+ {
+  "passage": "canon-32",
+  "find": "from which they ina moment of pride",
+  "replace": "from which they in a moment of pride",
+  "why": "p. 361 prints \"in a moment\""
+ },
+ {
+  "passage": "canon-32",
+  "find": "and straight the things that are crooked. That the aforesaid things",
+  "replace": "and straight the things that are crooked.\n\nThat the aforesaid things",
+  "why": "p. 361 opens a paragraph at \"That the aforesaid things\""
+ },
+ {
+  "passage": "canon-32",
+  "find": "have also given-us valuable",
+  "replace": "have also given us valuable",
+  "why": "p. 361 prints \"given us\""
+ },
+ {
+  "passage": "canon-32",
+  "find": "state of religion, or oe order,",
+  "replace": "state of religion, or order,",
+  "why": "A speck in the margin read as a word; p. 361 prints \"or order,\""
+ },
+ {
+  "passage": "canon-32",
+  "find": "Gregory (IX) of happy mem: ory,",
+  "replace": "Gregory (IX) of happy memory,",
+  "why": "p. 362 prints \"mem-ory\" broken at the line end"
+ },
+ {
+  "passage": "canon-32",
+  "find": "the discordant\n\nfy elements be brought together in the fulness of peace, or at least to\n\ncs the strict observance",
+  "replace": "the discordant elements be brought together in the fulness of peace, or at least to the strict observance",
+  "why": "Pen marks in the margin of p. 363 broke the paragraph and were read as letters; p. 363 prints one paragraph"
+ },
+ {
+  "passage": "canon-32",
+  "find": "the affairs of the Ofte €rucified.",
+  "replace": "the affairs of the One crucified.",
+  "why": "A pen has written over \"One\" and the \"c\" on p. 363; p. 361 and Lyons I canon 18 (p. 316) print \"the One crucified\""
+ },
+ {
+  "passage": "canon-32",
+  "find": "give suitable ad-\n\nT A full remission of their sins, that is, a plenary indulgence. vice and assistance",
+  "replace": "give suitable advice and assistance",
+  "why": "Note 77 at the foot of p. 363 read into the word; p. 364 continues \"vice and assistance\""
+ }
+]

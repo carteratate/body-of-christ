@@ -1,0 +1,14 @@
+[
+ {
+  "passage": "canon-12",
+  "find": "justiciary.\"' If anyone",
+  "replace": "justiciary. If anyone",
+  "why": "Note call 11 read as marks; p. 225 prints \"justiciary.\" and no quotation."
+ },
+ {
+  "passage": "canon-20",
+  "find": "though forgiveness -hreugh the sacrament of penance) shall not be denied him, he shall, however, be deprived. of Christian burial. t",
+  "replace": "though forgiveness (through the sacrament of penance) shall not be denied him, he shall, however, be deprived of Christian burial.",
+  "why": "Pen strokes across the print; p. 231 prints \"forgiveness (through the sacrament of penance) shall not be denied him, he shall, however, be deprived of Christian burial.\""
+ }
+]
