@@ -627,6 +627,7 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G9 | Lateran V | Sessions 2–6; session 8's bulls on peace and the Bohemians and on reform; session 9's exhortation to peace; session 10's decree on the Pragmatic Sanction; session 11's French agreements and Pastor aeternus gregem; session 12's two constitutions | — |
 | G10 | Vatican I | Session 1, decree of opening | — |
 | G11 | Vatican I | Session 2, profession of faith (Schaff's 1564 profession does not stand in; see Vatican I) | — |
+| G12 | Lyons I; Vienne | Lyons I's constitution I 7, "Legates and benefices"; Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves both out (pp. 316–317, 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | — |
 
 Partial texts (Constantinople IV's canons, Lateran I's canons 15 and 16, Lyons II's
 constitution I, Constance's session 43, Vienne's Exivi de paradiso, Lateran V's seven
