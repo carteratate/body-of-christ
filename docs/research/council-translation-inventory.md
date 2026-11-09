@@ -619,7 +619,7 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G1 | Ephesus | Nestorius's second letter to Cyril (condemned text) | Chrystal 1895, pp. 155–166 |
 | G2 | Nicaea II | The four anathemas concerning holy images | Mendham 1850, pp. 442–443; Hefele vol. 5 (1896), p. 376 |
 | G3 | Constantinople IV | Definition of the eighth synod | — |
-| G4 | Lyons I | Bull deposing the emperor Frederick II | — |
+| G4 | Lyons I | Bull deposing the emperor Frederick II | Giles's Matthew Paris (1853), vol. 2, pp. 77–86; a follow-up to 1.2e-2 takes it (Carter, 9 Nov 2026; `2026-11-09-giles-matthew-paris-and-schroeder-trent.md`) |
 | G5 | Vienne | Bulls on the Templars and the Holy Land, [1]–[8] | — |
 | G6 | Constance | Sessions 1, 3, 4, 5 (Haec sancta), 8, 12, 13, 14, 15, 21, 37, 39 (Frequens and four others), 40, 44, 45: every document listed for them above | Foxe, Cattley ed., vol. 3, for the sentences of sessions 8 and 15 |
 | G7 | Constance | Session 43's closing declaration | — |
@@ -627,7 +627,7 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G9 | Lateran V | Sessions 2–6; session 8's bulls on peace and the Bohemians and on reform; session 9's exhortation to peace; session 10's decree on the Pragmatic Sanction; session 11's French agreements and Pastor aeternus gregem; session 12's two constitutions | — |
 | G10 | Vatican I | Session 1, decree of opening | — |
 | G11 | Vatican I | Session 2, profession of faith (Schaff's 1564 profession does not stand in; see Vatican I) | — |
-| G12 | Lyons I; Vienne | Lyons I's constitution I 7, "Legates and benefices"; Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves both out (pp. 316–317, 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | — |
+| G12 | Lyons I; Vienne | Lyons I's constitution I 7, "Legates and benefices"; Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves both out (pp. 316–317, 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | Lyons I's I 7: Giles's Matthew Paris (1853), vol. 2, pp. 96–97, taken by the same follow-up |
 
 Partial texts (Constantinople IV's canons, Lateran I's canons 15 and 16, Lyons II's
 constitution I, Constance's session 43, Vienne's Exivi de paradiso, Lateran V's seven
