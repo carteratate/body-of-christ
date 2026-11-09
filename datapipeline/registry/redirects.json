@@ -2603,10 +2603,30 @@
  },
  {
   "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "492a452a-bc95-5835-9f95-8c4ba8296916",
+  "old_anchor": "second-council-of-lyons/sec-3/5",
+  "new_passage_id": "634ccbae-a94f-5807-b491-4d24c7c3a0cc",
+  "new_anchor": "second-council-of-lyons/canon/32/from-p3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
   "old_passage_id": "1dbe1c32-2627-50d1-857b-defb22441386",
   "old_anchor": "second-council-of-lyons/sec-4/10",
   "new_passage_id": "785825ce-c820-5096-b2f9-52c4339c7c34",
   "new_anchor": "second-council-of-lyons/canon/3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "35fbde4e-4027-5d5a-9757-aae25b911275",
+  "old_anchor": "second-council-of-lyons/sec-4/14-2",
+  "new_passage_id": "b06686bd-0a0d-50b0-a46e-4f27b991ce63",
+  "new_anchor": "second-council-of-lyons/canon/25",
   "kind": "split",
   "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-2"
@@ -8609,6 +8629,16 @@
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "e771ffc7-a424-51ec-9c3c-9f0365291b02",
+  "old_anchor": "first-council-of-lyons/sec-3/21",
+  "new_passage_id": "9e433891-50ca-5679-929e-444dba9e7438",
+  "new_anchor": "first-council-of-lyons/series-1/canon/17",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "72752edc-4bdf-55b1-b13d-66149a79dfad",
   "old_anchor": "first-council-of-lyons/sec-3/21/from-e69-2",
   "new_passage_id": "9e433891-50ca-5679-929e-444dba9e7438",
@@ -8631,8 +8661,8 @@
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "4f06f085-a0da-5a5f-91c2-37b58cf1265f",
   "old_anchor": "first-council-of-lyons/sec-3/23",
-  "new_passage_id": "81c5b0fc-6d69-5aee-8677-ae736ef35e7d",
-  "new_anchor": "first-council-of-lyons/series-2/canon/9",
+  "new_passage_id": "8dd01925-dc8f-5098-ad5a-904fa96aa266",
+  "new_anchor": "first-council-of-lyons/series-1/canon/13",
   "kind": "split",
   "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-2"
@@ -8659,6 +8689,16 @@
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "b206dca8-fd8c-514d-b5ab-f7fa8e6b5c6f",
+  "old_anchor": "first-council-of-lyons/sec-3/27",
+  "new_passage_id": "bbc586c0-d1af-5fc2-8486-d164996dbae4",
+  "new_anchor": "first-council-of-lyons/series-1/canon/16",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "f31dadfe-ba11-5e61-9aab-dc00e334d8b0",
   "old_anchor": "first-council-of-lyons/sec-3/27/from-e90-2",
   "new_passage_id": "bbc586c0-d1af-5fc2-8486-d164996dbae4",
@@ -8681,10 +8721,20 @@
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "0fb57e43-42a4-5ebf-ab87-cec5ebc73614",
   "old_anchor": "first-council-of-lyons/sec-3/3",
-  "new_passage_id": "b206dca8-fd8c-514d-b5ab-f7fa8e6b5c6f",
+  "new_passage_id": "812e1745-8457-53b6-8e34-caf646eb877d",
   "new_anchor": "first-council-of-lyons/series-1/canon/15",
   "kind": "merged",
   "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "a900ce7c-c9fb-5ac0-88a6-e6bdf3874a9b",
+  "old_anchor": "first-council-of-lyons/sec-3/30",
+  "new_passage_id": "6eccc078-75e6-516d-aadb-3a5bd7085451",
+  "new_anchor": "first-council-of-lyons/series-1/canon/18/from-p1-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
   "added_by": "1.2e-2"
  },
  {
