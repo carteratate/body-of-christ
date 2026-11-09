@@ -7,7 +7,8 @@ Removed, by position and by patterns repeated across pages, and logged per page:
 - signature marks: a short letter-and-number mark on the bottom line ("B2", "12*");
 - catchwords: a single word alone at the bottom right that repeats the next page's first
   word;
-- specks: a "line" with no letter or digit (a scan edge or a smudge read as "|").
+- specks: a "line" with no letter or digit (a scan edge or a smudge read as "|"), and
+  whatever stands above a page's running head (a pen mark read as "i re tne pee").
 
 Notes at the foot of a page (a block that opens with a note marker after a gap, set
 tighter than the body) are not deleted: they go to their own stream, so a sentence that
@@ -35,6 +36,12 @@ from ocr.words import fold, is_known, words
 
 # Fractions of the page height that count as its top and bottom margins.
 TOP_BAND = 0.07
+# Some pages are scanned lower (Schroeder pp. 301–442, at up to 14%). A first line down to
+# here is a running head only on firm evidence: the page's number, or letters that recur
+# as a head.
+HEAD_BAND = 0.18
+# Lines that can stand above a running head as marks on the scan.
+MARKS_ABOVE_HEAD = 3
 BOTTOM_BAND = 0.80
 # A running head recurs as the top line of at least this many pages.
 REPEATED_HEAD_PAGES = 3
@@ -154,6 +161,48 @@ def _top_kind(line: Line, page: Page, heads: _Head) -> str | None:
     return None
 
 
+def _numbered_head(line: Line, page: Page) -> bool:
+    tokens = line.text.split()
+    return (line.top < HEAD_BAND * page.height and len(tokens) > 1
+            and page.number in (tokens[0], tokens[-1]))
+
+
+def _low_head(line: Line, page: Page, heads: _Head) -> bool:
+    """A running head below the top band: the page's number at one end, or recurring."""
+    return _numbered_head(line, page) or (line.top < HEAD_BAND * page.height
+                                          and heads.repeated(line.text))
+
+
+def _top_furniture(lines: list[Line], page: Page, heads: _Head) -> list[Removal]:
+    """Take the running head, a page number set apart from it, and any mark above it off
+    the top of `lines`."""
+    out: list[Removal] = []
+
+    def take(kind: str) -> None:
+        out.append(Removal(page.leaf, page.number, kind, lines.pop(0).text))
+
+    # Marks stand above a head only where the head is sure: it carries the page's number.
+    # A council's title page has none, and its title lines stay.
+    above = 0 if lines and _low_head(lines[0], page, heads) else next(
+        (k for k, ln in enumerate(lines[:MARKS_ABOVE_HEAD + 1]) if _numbered_head(ln, page)), 0)
+    for _ in range(above):
+        take("speck")
+    if not lines:
+        return out
+    if lines[0].top < TOP_BAND * page.height:
+        kind = _top_kind(lines[0], page, heads)
+        if kind:
+            take(kind)
+    elif _low_head(lines[0], page, heads):
+        take("running_head")
+    else:
+        return out
+    if out and out[-1].kind == "running_head" and lines and _PAGE_NUMBER.match(lines[0].text) \
+            and lines[0].top < HEAD_BAND * page.height:
+        take("page_number")
+    return out
+
+
 def _bottom_kind(line: Line, page: Page, next_first: str) -> str | None:
     text = line.text.strip()
     if _PAGE_NUMBER.match(text):
@@ -224,7 +273,7 @@ def clean_pages(pages: list[Page], layout: Layout | None = None) -> CleanResult:
     ordered = [layout.reading_order(p) for p in pages]
 
     tops = [lines[0].text for p, lines in zip(pages, ordered)
-            if lines and lines[0].top < TOP_BAND * p.height]
+            if lines and lines[0].top < HEAD_BAND * p.height]
     heads = _Head(tops)
 
     # Top furniture first, so each page's first body word is known for catchwords.
@@ -234,10 +283,8 @@ def clean_pages(pages: list[Page], layout: Layout | None = None) -> CleanResult:
         for line in [ln for ln in lines if not _HAS_ALNUM.search(ln.text)]:
             result.removals.append(Removal(page.leaf, page.number, "speck", line.text))
             lines.remove(line)
-        if lines and lines[0].top < TOP_BAND * page.height:
-            kind = _top_kind(lines[0], page, heads)
-            if kind:
-                result.removals.append(Removal(page.leaf, page.number, kind, lines.pop(0).text))
+        for removal in _top_furniture(lines, page, heads):
+            result.removals.append(removal)
         kept.append(lines)
 
     bodies: list[list[Line]] = []
@@ -355,7 +402,8 @@ def clean_work(workdir, sources=None, force: bool = False,
             "its page map are out of step")
     number = {p.leaf: p.number for p in pages}
     if config.units:
-        units = get_units(config.units).split(result.paragraphs)
+        units = get_units(config.units).split(result.paragraphs, config.unit_series,
+                                                config.unit_closes)
         if config.unit_count is not None and len(units) != config.unit_count:
             raise RuntimeError(f"{config.work}: {len(units)} units read, the work prints "
                                f"{config.unit_count}")

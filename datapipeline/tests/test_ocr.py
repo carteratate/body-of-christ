@@ -417,7 +417,7 @@ def test_demo_work_config_loads():
 
 from ocr.fixes import apply_fixes, freeze, read_text  # noqa: E402
 from ocr.furniture import Paragraph  # noqa: E402
-from ocr.units import SchroederCanons, get_units, strip_note_calls  # noqa: E402
+from ocr.units import SchroederCanons, get_units, strip_note_calls, strip_stray_quotes  # noqa: E402
 
 
 def _paras(*texts):
@@ -556,3 +556,94 @@ def test_council_baselines_hold_every_canon_and_no_editor_text(work, canons):
     assert sum(p.startswith("Text") for p in paragraphs) == canons
     assert not [p[:40] for p in paragraphs
                 if re.match(r"(?i)(?:summary|comment|canon\s+\d|note\s*\d|\[note)", p)]
+
+
+# --- running heads set low, two series, misread labels (1.2e-2) ------------------------
+
+def _low_page(leaf, number, top_lines, first_top=360):
+    lines = [Line(t, 300, first_top + 80 * k, 1700, first_top + 60 + 80 * k)
+             for k, t in enumerate(top_lines)]
+    body_top = first_top + 80 * len(top_lines) + 40
+    lines += [Line(f"Body line {k} of the page with ordinary words in it", 150,
+                   body_top + 75 * k, 1850, body_top + 60 + 75 * k) for k in range(5)]
+    return Page(leaf, 2000, 4000, lines, number=number)
+
+
+def test_a_running_head_set_low_on_the_page_goes_with_marks_above_it():
+    # Below the 7% band (Schroeder pp. 301-442 sit up to 14% down), the page's number
+    # marks the head; a pen mark above it goes too, and a title page keeps its title.
+    pages = [_low_page(0, "301", ["FIRST COUNCIL OF LYONS 301"]),
+             _low_page(1, "306", ["i re tne pee", "306 DECREES OF THE COUNCILS"], first_top=180),
+             _low_page(2, "371", ["COUNCIL OF VIENNE", "371"]),
+             _low_page(3, "373", ["COUNCIL OF VIENNE 373"]),
+             _low_page(4, "375", ["COUNCIL OF VIENNE 375"]),
+             _low_page(5, "324", ["THE FOURTEENTH GENERAL COUNCIL (1274)", "Second Council of Lyons"])]
+    result = clean_pages(pages)
+    assert [(r.page, r.kind, r.text) for r in result.removals] == [
+        ("301", "running_head", "FIRST COUNCIL OF LYONS 301"),
+        ("306", "speck", "i re tne pee"), ("306", "running_head", "306 DECREES OF THE COUNCILS"),
+        ("371", "running_head", "COUNCIL OF VIENNE"), ("371", "page_number", "371"),
+        ("373", "running_head", "COUNCIL OF VIENNE 373"),
+        ("375", "running_head", "COUNCIL OF VIENNE 375")]
+    body = " ".join(p.text for p in result.paragraphs)
+    assert "THE FOURTEENTH GENERAL COUNCIL" in body and "Second Council of Lyons" in body
+
+
+def test_two_series_restart_the_count_and_name_their_units():
+    units = SchroederCanons().split(_paras(
+        "CANON 1", "Text. One.", "CANON 2", "Text. Two.", "An editor's bridge.",
+        "SECOND SERIES", "CANON I", "Text. Again one."), series=(2, 1),
+        closes=("^An editor's bridge",))
+    assert [(u.id, [p.text for p in u.paragraphs]) for u in units] == [
+        ("series-1-canon-1", ["One."]), ("series-1-canon-2", ["Two."]),
+        ("series-2-canon-1", ["Again one."])]
+
+
+def test_a_series_count_that_the_text_does_not_fill_stops_the_split():
+    with pytest.raises(ValueError, match="series"):
+        SchroederCanons().split(_paras("CANON 1", "Text. One."), series=(2, 1))
+
+
+def test_a_text_label_inside_a_summary_paragraph_opens_the_canon():
+    units = SchroederCanons().split(_paras(
+        "CANON 1", "Summary. Votes are void. Text. In elections we condemn.",
+        "CANON 2", "Sey. Roads must be watched.: Text, Desiring above all things."))
+    assert [[p.text for p in u.paragraphs] for u in units] == [
+        ["In elections we condemn."], ["Desiring above all things."]]
+
+
+def test_a_paragraph_opening_with_a_misread_label_never_joins_the_text():
+    units = SchroederCanons().split(_paras(
+        "CANON 1", "Text. One.", "Conrment. His remarks.", "More of his remarks."))
+    assert [[p.text for p in u.paragraphs] for u in units] == [["One."]]
+    with pytest.raises(ValueError, match="unknown word"):
+        SchroederCanons().split(_paras("CANON 1", "Text. One.", "Zqxw. Not a word."))
+
+
+def test_a_latin_clause_after_a_comma_stays_in_the_text():
+    units = SchroederCanons().split(_paras("CANON 1", "Text. One.", "Quoniam, ut ait Apostolus."))
+    assert [p.text for p in units[0].paragraphs] == ["One.", "Quoniam, ut ait Apostolus."]
+
+
+def test_a_heading_with_a_misread_digit_does_not_overrule_the_count():
+    # "CANON I10" is a printed 10 with a mark read as "I"; "CANON §" a printed 5.
+    units = SchroederCanons().split(_paras(
+        "CANON 1", "Text. One.", "CANON I10", "Text. Two.", "CANON §", "Text. Three."))
+    assert [u.id for u in units] == ["canon-1", "canon-2", "canon-3"]
+    with pytest.raises(ValueError, match="canon heading 110"):
+        SchroederCanons().split(_paras("CANON 1", "Text. One.", "CANON 110", "Text. Two."))
+
+
+def test_his_citation_of_the_clementines_is_dropped():
+    units = SchroederCanons().split(_paras(
+        "CANON 1", "Text. The decree ends here. (C. un., in Clem., De foro competenti, II, 2.)"))
+    assert units[0].paragraphs[0].text == "The decree ends here."
+
+
+@pytest.mark.parametrize("before,after", [
+    ("clear ‘proof in regard", "clear proof in regard"),
+    ("shall ‘ permit strangers", "shall permit strangers"),
+    ("He said ‘go’, and God’s word.", "He said ‘go’, and God’s word."),
+])
+def test_an_opening_single_quote_that_nothing_closes_goes(before, after):
+    assert strip_stray_quotes(before) == after
