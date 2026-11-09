@@ -14,12 +14,13 @@ from model import Passage
 from ocr import correct as correct_mod
 from ocr.correct import ModelReply, allowed_words, changed_words, judge, run_correction
 from ocr.furniture import clean_pages, clean_work
-from ocr.gate import draw_sample, evaluate, rate_check, record, start_check
+from ocr.gate import draw_sample, evaluate, rate_check, record, start_check, text_hash
 from ocr.label import is_scanned, label_passage, ocr_metadata, scanned_text
 from ocr.layout import get_layout
 from ocr.pages import Line, Page, load_pages
 from ocr.report import write as write_report
-from ocr.work import Baseline, OcrPassage, SampleRule, WorkConfig, WorkDir
+from ocr.work import (SOURCES, Baseline, OcrPassage, SampleRule, WorkConfig, WorkDir,
+                      baseline_text)
 from ocr.words import unrecognized_rate
 
 FIXTURES = Path(__file__).parent / "fixtures" / "ocr"
@@ -519,3 +520,39 @@ def test_freeze_writes_the_text_the_adapter_reads(tmp_path, monkeypatch):
     assert data["gate"] == "pending"
     assert data["metadata"] == {"text_source": "ocr", "scan_id": "scan-id"}
     assert data["passages"][0]["text"] == "final"
+
+
+def test_a_verdict_on_text_that_has_changed_is_refused(tmp_path):
+    config = WorkConfig.from_dict({
+        "work": "w", "title": "T", "scan": "s", "djvu_xml": "x", "page_numbers": "n",
+        "pages": ["1", "3"], "baseline": {"path": "b", "start": "s", "end": "e"},
+        "sample": {"fraction": 1.0, "minimum": 1, "maximum": 1}})
+    wd = WorkDir(config, tmp_path)
+    wd.save_passages([OcrPassage("canon-1", [1], ["1"], "raw", "the text shown")])
+    start_check(wd, seed=1)
+    shown = text_hash("the text shown")
+    wd.save_passages([OcrPassage("canon-1", [1], ["1"], "raw", "a revised text")])
+    with pytest.raises(ValueError, match="changed since"):
+        record(wd, "canon-1", "matches", "P", shown_sha256=shown)
+    assert wd.check()["sample"][0]["result"] == "pending"
+    record(wd, "canon-1", "matches", "P", shown_sha256=text_hash("a revised text"))
+    assert wd.check()["sample"][0]["result"] == "matches"
+
+
+def test_a_baseline_can_take_only_the_units_text(tmp_path):
+    (tmp_path / "b.html").write_text(
+        "<p>START History.</p><p>Text. A canon.</p><p>It goes on.</p><p>Comment. His view.</p>"
+        "<p>More of his view.</p><p>Text. Another.</p><p>END</p>", encoding="utf-8")
+    baseline = Baseline("b.html", "^START", "^END", opens="^Text", closes="^Comment")
+    assert baseline_text(baseline, tmp_path) == ["Text. A canon.", "It goes on.", "Text. Another."]
+
+
+@pytest.mark.skipif(not (SOURCES / "councils" / "fordham-lateran1.html").exists(),
+                    reason="needs the gitignored datapipeline/sources/")
+@pytest.mark.parametrize("work,canons", [("schroeder-lateran-1", 22), ("schroeder-lateran-2", 30),
+                                         ("schroeder-lateran-4", 71)])
+def test_council_baselines_hold_every_canon_and_no_editor_text(work, canons):
+    paragraphs = baseline_text(WorkConfig.load(work).baseline)
+    assert sum(p.startswith("Text") for p in paragraphs) == canons
+    assert not [p[:40] for p in paragraphs
+                if re.match(r"(?i)(?:summary|comment|canon\s+\d|note\s*\d|\[note)", p)]

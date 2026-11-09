@@ -54,12 +54,16 @@ class SampleRule:
 class Baseline:
     """A clean typed text of the same period: HTML paragraphs from the one matching
     `start` up to (not including) the one matching `end`, minus paragraphs matching
-    `drop`, with `strip` removed from the rest."""
+    `drop`, with `strip` removed from the rest. With `opens` and `closes`, only the runs
+    from a paragraph matching `opens` to one matching `closes`, so a work measured on its
+    units is compared with the same kind of text."""
     path: str
     start: str
     end: str
     drop: str | None = None
     strip: str | None = None
+    opens: str | None = None
+    closes: str | None = None
 
 
 @dataclass(frozen=True)
@@ -217,7 +221,15 @@ def baseline_text(baseline: Baseline, sources: Path = SOURCES) -> list[str]:
     start = next(i for i, p in enumerate(paras) if re.search(baseline.start, p))
     end = next(i for i, p in enumerate(paras) if i > start and re.search(baseline.end, p))
     out = []
+    inside = baseline.opens is None
     for p in paras[start:end]:
+        if baseline.opens:
+            if re.search(baseline.opens, p):
+                inside = True
+            elif re.search(baseline.closes, p):
+                inside = False
+            if not inside:
+                continue
         if baseline.drop and re.search(baseline.drop, p):
             continue
         if baseline.strip:

@@ -509,8 +509,11 @@ async def _load_snapshot_into_staging(conn, rows: dict[str, list[dict]]) -> None
     for table in rw.STAGED_TABLES:
         await conn.execute(f"DELETE FROM staging.{table}")
     for d in rows["documents"]:
-        # D12: never the snapshot's value; the inventory as it stands now.
-        d["reader_access"] = reader_access.access_for(d["id"])
+        # D12: the stricter of the snapshot and the inventory as it stands now. The
+        # inventory alone would open an older edition under its replacement's row, and
+        # the snapshot alone would reopen a text whose permission was withdrawn.
+        d["reader_access"] = reader_access.stricter(d["reader_access"],
+                                                    reader_access.access_for(d["id"]))
         await conn.execute(rw._DOCUMENT_SQL, *[d[c] for c in rw.DOCUMENT_COLUMNS])
     await conn.executemany(rw._WORK_SQL, [tuple(r[c] for c in rw.WORK_COLUMNS)
                                           for r in rows["document_works"]])

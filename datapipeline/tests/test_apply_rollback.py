@@ -8,6 +8,7 @@ import json
 import uuid
 from dataclasses import replace
 
+import asyncpg
 import pytest
 
 import reader_access
@@ -694,6 +695,45 @@ async def test_rollback_rederives_reader_access(world, monkeypatch):
     await _rollback(world)
     [row] = await world.fetch("SELECT reader_access FROM documents WHERE id = $1::uuid", DOC_A)
     assert row["reader_access"] == "excerpt"
+
+
+async def test_rollback_never_opens_beyond_the_snapshot(world):
+    """Carter, 6 Nov 2026: the inventory describes the published edition, and a re-sourced
+    work keeps its ID, so a rollback to an excerpt-only snapshot stays excerpt-only."""
+    await _sql(world, "UPDATE documents SET reader_access = 'excerpt' WHERE id = $1::uuid", DOC_A)
+    await _stage(world)
+    await _apply(world)
+    [row] = await world.fetch("SELECT reader_access FROM documents WHERE id = $1::uuid", DOC_A)
+    assert row["reader_access"] == "full"
+    await _rollback(world)
+    [row] = await world.fetch("SELECT reader_access FROM documents WHERE id = $1::uuid", DOC_A)
+    assert row["reader_access"] == "excerpt"
+
+
+async def test_sync_decides_and_writes_on_locked_rows(world):
+    """A rollback that restores an older edition cannot slip between the sync's check and
+    its write: the sync holds the rows, so the rollback waits for it."""
+    await _sql(world, """UPDATE documents SET metadata = '{"url": "https://old"}'::jsonb
+                         WHERE id = $1::uuid""", DOC_A)
+    table, urls = {DOC_A: "full"}, {DOC_A: "https://new"}
+    conn = await world.connect()
+    other = await world.connect()
+    try:
+        async with conn.transaction():
+            result = await reader_access.plan(conn, table, urls, lock=True)
+            assert [c.document_id for c in result.held] == [DOC_A]
+            await other.execute("SET lock_timeout = '200ms'")
+            with pytest.raises(asyncpg.exceptions.LockNotAvailableError):
+                await other.execute(
+                    "UPDATE documents SET metadata = '{}'::jsonb WHERE id = $1::uuid", DOC_A)
+        result = await reader_access.sync(conn, table, apply=True, allow_unmatched=True,
+                                           urls=urls)
+        assert [c.document_id for c in result.held] == [DOC_A]
+        [row] = await conn.fetch("SELECT reader_access FROM documents WHERE id = $1::uuid", DOC_A)
+        assert row["reader_access"] == "excerpt"
+    finally:
+        await other.close()
+        await conn.close()
 
 
 # --------------------------------------------------------------------------- cleanup

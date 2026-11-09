@@ -99,8 +99,11 @@ def start_check(workdir: WorkDir, seed: int | None = None, redraw: bool = False)
 
 
 def record(workdir: WorkDir, passage_id: str, result: str, by: str,
-           differences: str | None = None, wording_changed: bool = False) -> dict:
-    """Record a person's check of one sampled passage against the page image."""
+           differences: str | None = None, wording_changed: bool = False,
+           shown_sha256: str | None = None) -> dict:
+    """Record a person's check of one sampled passage against the page image.
+    `shown_sha256` is the hash of the text they were shown: a verdict on text that has
+    since changed is refused."""
     if result not in ("matches", "differences"):
         raise ValueError("result is 'matches' or 'differences'")
     if result == "differences" and not differences:
@@ -112,6 +115,9 @@ def record(workdir: WorkDir, passage_id: str, result: str, by: str,
     if entry is None:
         raise ValueError(f"{passage_id} is not in the sample")
     text = next(p.text for p in workdir.passages() if p.id == passage_id)
+    if shown_sha256 is not None and shown_sha256 != text_hash(text):
+        raise ValueError(f"{passage_id} changed since this page was loaded: reload and "
+                         "check it again")
     entry.update(result=result, differences=differences if result == "differences" else None,
                  wording_changed=bool(wording_changed) if result == "differences" else False,
                  checked_by=by, checked_on=date.today().isoformat(),

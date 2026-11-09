@@ -54,8 +54,10 @@ class FakeConn:
     def __init__(self, rows):
         self.rows = rows
         self.updates = []
+        self.queries = []
 
     async def fetch(self, sql, *args):
+        self.queries.append(sql)
         return self.rows
 
     async def execute(self, sql, *args):
@@ -99,6 +101,68 @@ def test_a_status_change_flips_reader_access_on_the_next_sync():
     assert [(c.title, c.after) for c in result.changes] == [("Libertas", "full")]
     assert [r["reader_access"] for r in conn.rows] == ["full", "full"]
     assert asyncio.run(RA.sync(conn, granted, apply=True)).changes == []
+
+
+def test_sync_will_not_open_an_older_edition_under_its_replacements_row():
+    # A re-sourced council keeps its ID; its row describes the new edition (1.2e).
+    live = {**_row("1", "First Lateran Council", "excerpt"), "url": "https://old"}
+    conn = FakeConn([live])
+    table = _table(_entry("1", "First Lateran Council", "pd-us-non-renewal"))
+    result = asyncio.run(RA.sync(conn, table, apply=True, urls={"1": "https://new"}))
+    assert [(c.document_id, c.after, c.reason) for c in result.held] == \
+        [("1", "excerpt", RA.OTHER_EDITION)]
+    assert (result.changes, result.unmatched) == ([], [])
+    assert result.totals == {"full": 0, "excerpt": 1}
+    assert live["reader_access"] == "excerpt"
+
+
+def test_sync_opens_the_new_edition_once_it_is_live():
+    live = {**_row("1", "First Lateran Council", "excerpt"), "url": "https://new"}
+    table = _table(_entry("1", "First Lateran Council", "pd-us-non-renewal"))
+    result = asyncio.run(RA.sync(FakeConn([live]), table, apply=True,
+                                 urls={"1": "https://new"}))
+    assert result.held == [] and live["reader_access"] == "full"
+
+
+def test_only_an_applying_sync_locks_the_rows():
+    # A rollback must not change an edition between the sync's check and its write.
+    conn = FakeConn([_row("1", "Libertas", "full")])
+    table = _table(_entry("1", "Libertas", "pd-us-pre-1931"))
+    asyncio.run(RA.sync(conn, table, apply=False))
+    asyncio.run(RA.sync(conn, table, apply=True))
+    assert ["FOR UPDATE" in q for q in conn.queries] == [False, True]
+
+
+def test_sync_closes_an_older_edition_already_open():
+    live = {**_row("1", "First Lateran Council", "full"), "url": "https://old"}
+    table = _table(_entry("1", "First Lateran Council", "pd-us-non-renewal"))
+    result = asyncio.run(RA.sync(FakeConn([live]), table, apply=True, urls={"1": "https://new"}))
+    assert [(c.before, c.after, c.reason) for c in result.changes] == \
+        [("full", "excerpt", RA.OTHER_EDITION)]
+    assert [c.document_id for c in result.held] == ["1"]
+    assert result.unmatched == [] and live["reader_access"] == "excerpt"
+
+
+def test_a_document_with_no_url_is_not_held():
+    table = _table(_entry("1", "Isaiah", "pd-dedicated"))
+    live = _row("1", "Isaiah", "excerpt")
+    result = asyncio.run(RA.sync(FakeConn([live]), table, apply=True, urls={"1": "https://x"}))
+    assert result.held == [] and live["reader_access"] == "full"
+
+
+def test_a_closing_status_is_never_held():
+    # The guard only stops an opening: an uncleared row still closes the live document.
+    live = {**_row("1", "Libertas", "full"), "url": "https://old"}
+    table = _table(_entry("1", "Libertas", "unknown"))
+    asyncio.run(RA.sync(FakeConn([live]), table, apply=True, urls={"1": "https://new"}))
+    assert live["reader_access"] == "excerpt"
+
+
+@pytest.mark.parametrize("a,b,out", [("full", "full", "full"), ("full", "excerpt", "excerpt"),
+                                     ("excerpt", "full", "excerpt"),
+                                     ("excerpt", "excerpt", "excerpt")])
+def test_stricter(a, b, out):
+    assert RA.stricter(a, b) == out
 
 
 def test_sync_keeps_a_relabelled_live_document_matched():

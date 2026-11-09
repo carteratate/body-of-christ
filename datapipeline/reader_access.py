@@ -24,13 +24,20 @@ relabel waiting for the next publish cannot unmatch a live document. `--apply` r
 while any live document has no row: falling closed is right for a publish, but here it
 would silently block a public-domain text.
 
+A row describes the edition a build publishes, and the document ID outlives an edition: a
+re-sourced work keeps its ID. So `sync` makes a document excerpt-only, whatever it is now,
+when its live `metadata.url` differs from its row's `source_url`: the live text is still
+the older edition, and its replacement's status does not cover it. Such a document is
+listed as held and opens with the publish that brings the new edition. A rollback likewise
+never leaves a document more open than its snapshot (`stricter`).
+
 Plan decision D12 in docs/2026-09-28-corpus-cleanup-plan.md.
 """
 from __future__ import annotations
 
 import argparse
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import lru_cache
 
 import rights_inventory
@@ -69,6 +76,7 @@ def _default_access_by_id() -> dict[str, str]:
 # because it has no row.
 INVENTORY = "inventory"
 NO_ROW = "no-row"
+OTHER_EDITION = "other-edition"
 
 
 def resolve(document_id: str, table: dict[str, str] | None = None) -> tuple[str, str]:
@@ -86,6 +94,25 @@ def access_for(document_id: str, table: dict[str, str] | None = None) -> str:
 
 def access_for_document(doc) -> str:
     return access_for(doc.id)
+
+
+def stricter(a: str, b: str) -> str:
+    """The more closed of two reader access values."""
+    return EXCERPT if EXCERPT in (a, b) else FULL
+
+
+@lru_cache(maxsize=1)
+def _default_source_urls() -> dict[str, str | None]:
+    return {i: e["source_url"]
+            for i, e in rights_inventory.by_document_id(rights_inventory.load()).items()}
+
+
+def other_edition(document_id: str, live_url: str | None,
+                  urls: dict[str, str | None] | None = None) -> bool:
+    """Whether the live document is a different edition from the one its row describes.
+    A document or row with no URL says nothing either way."""
+    row_url = (_default_source_urls() if urls is None else urls).get(document_id)
+    return bool(live_url and row_url and live_url != row_url)
 
 
 @dataclass(frozen=True)
@@ -106,47 +133,63 @@ class Plan:
     # that is really public domain, so `sync` refuses to apply while any exist.
     unmatched: list[Change]
     totals: dict[str, int]
+    # Documents the inventory calls cleared, made excerpt-only: the live text is another
+    # edition than the row's. Not an error: they open with the publish.
+    held: list[Change] = field(default_factory=list)
 
 
 class UnmatchedDocuments(RuntimeError):
     pass
 
 
-_DOCUMENTS_SQL = "SELECT id, collection, title, reader_access FROM documents"
+_DOCUMENTS_SQL = ("SELECT id, collection, title, reader_access, metadata->>'url' AS url "
+                  "FROM documents")
 
 
-async def plan(conn, table: dict[str, str] | None = None) -> Plan:
+async def plan(conn, table: dict[str, str] | None = None,
+               urls: dict[str, str | None] | None = None, *, lock: bool = False) -> Plan:
     """What a sync would do: every live document whose reader_access disagrees with the
-    inventory, every document the inventory did not decide, and the resulting totals."""
-    changes, unmatched = [], []
+    inventory, every document the inventory did not decide, every document held at
+    excerpt because its live text is another edition, and the resulting totals. With
+    `lock`, inside a transaction, the rows stay as read until it ends."""
+    changes, unmatched, held = [], [], []
     totals = {FULL: 0, EXCERPT: 0}
-    for row in await conn.fetch(_DOCUMENTS_SQL):
+    for row in await conn.fetch(_DOCUMENTS_SQL + (" FOR UPDATE" if lock else "")):
         after, reason = resolve(str(row["id"]), table)
+        if after == FULL and other_edition(str(row["id"]), row.get("url"), urls):
+            after, reason = EXCERPT, OTHER_EDITION
+            held.append(Change(str(row["id"]), row["collection"], row["title"],
+                               row["reader_access"], after, reason))
         totals[after] += 1
         entry = Change(str(row["id"]), row["collection"], row["title"],
                        row["reader_access"], after, reason)
-        if reason != INVENTORY:
+        if reason == NO_ROW:
             unmatched.append(entry)
         if after != row["reader_access"]:
             changes.append(entry)
     order = lambda c: (c.collection, c.title, c.document_id)
-    return Plan(sorted(changes, key=order), sorted(unmatched, key=order), totals)
+    return Plan(sorted(changes, key=order), sorted(unmatched, key=order), totals,
+                sorted(held, key=order))
 
 
 async def sync(conn, table: dict[str, str] | None = None, *, apply: bool,
-               allow_unmatched: bool = False) -> Plan:
+               allow_unmatched: bool = False,
+               urls: dict[str, str | None] | None = None) -> Plan:
     """Bring every document's reader_access in line with the inventory. With
-    apply=False this only reports; with apply=True it writes in one transaction, and
-    refuses while any document is unmatched unless allow_unmatched is set."""
-    result = await plan(conn, table)
-    if apply and result.unmatched and not allow_unmatched:
-        raise UnmatchedDocuments(
-            f"REFUSING: {len(result.unmatched)} live document(s) have no row in the "
-            "rights inventory. Fix the inventory, or pass --allow-unmatched to block "
-            "them deliberately."
-        )
-    if apply and result.changes:
-        async with conn.transaction():
+    apply=False this only reports; with apply=True it decides and writes in one
+    transaction, with the rows locked so a rollback cannot change an edition between the
+    two, and refuses while any document is unmatched unless allow_unmatched is set."""
+    if not apply:
+        return await plan(conn, table, urls)
+    async with conn.transaction():
+        result = await plan(conn, table, urls, lock=True)
+        if result.unmatched and not allow_unmatched:
+            raise UnmatchedDocuments(
+                f"REFUSING: {len(result.unmatched)} live document(s) have no row in the "
+                "rights inventory. Fix the inventory, or pass --allow-unmatched to block "
+                "them deliberately."
+            )
+        if result.changes:
             for to in (FULL, EXCERPT):
                 ids = [c.document_id for c in result.changes if c.after == to]
                 if ids:
@@ -170,6 +213,8 @@ async def _main(apply: bool, allow_unmatched: bool) -> None:
                   f"  [{c.reason}]  ({c.document_id})")
         for c in result.unmatched:
             print(f"UNMATCHED ({c.reason}): {c.collection} {c.title!r} ({c.document_id})")
+        for c in result.held:
+            print(f"HELD ({c.reason}): {c.collection} {c.title!r} ({c.document_id})")
         print(f"{len(result.changes)} document(s) would change. After the sync: "
               f"{result.totals[FULL]} full, {result.totals[EXCERPT]} excerpt; "
               f"{len(result.unmatched)} unmatched.")

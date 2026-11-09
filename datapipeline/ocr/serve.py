@@ -7,12 +7,13 @@ holds the work directory, and open it from a phone or laptop:
 from __future__ import annotations
 
 import html
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote
 from urllib.request import urlopen
 
-from ocr.gate import evaluate, record, start_check
+from ocr.gate import evaluate, record, start_check, text_hash
 from ocr.work import WORK_ROOT, WorkConfig, WorkDir
 
 # Page images, fetched once and served from here: a phone loading dozens of large scans
@@ -76,6 +77,7 @@ def render(workdirs: list[WorkDir]) -> str:
                 f"<h2 id='{key}'>{html.escape(p.id)}, {html.escape(p.page_ref())} {state}</h2>"
                 f"<div class=pair><div class=text>{html.escape(p.text)}</div><div>{images}</div></div>"
                 f"<form method=post><input type=hidden name=key value='{key}'>"
+                f"<input type=hidden name=shown value='{text_hash(p.text)}'>"
                 "<button name=result value=matches>Matches</button>"
                 "<details><summary>It differs</summary>"
                 "<textarea name=what rows=2 placeholder='What differs'></textarea>"
@@ -87,6 +89,8 @@ def render(workdirs: list[WorkDir]) -> str:
 
 def serve(workdirs: list[WorkDir], by: str, port: int) -> None:
     by_work = {wd.config.work: wd for wd in workdirs}
+    # One check.json per work, read and rewritten whole, under a threaded server.
+    recording = threading.Lock()
     for wd in workdirs:
         for leaf in {leaf for p in wd.passages()
                      if p.id in {e["id"] for e in start_check(wd)["sample"]} for leaf in p.leaves}:
@@ -124,7 +128,9 @@ def serve(workdirs: list[WorkDir], by: str, port: int) -> None:
             result = form["result"][0]
             what = form.get("what", [""])[0].strip() or None
             try:
-                record(by_work[work], passage, result, by, what, "wording" in form)
+                with recording:
+                    record(by_work[work], passage, result, by, what, "wording" in form,
+                           shown_sha256=form["shown"][0])
             except (KeyError, ValueError) as exc:
                 self._send(400, html.escape(str(exc)))
                 return
