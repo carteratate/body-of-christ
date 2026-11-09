@@ -2583,13 +2583,83 @@
  },
  {
   "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "bea4d3d0-1d5a-56cb-bf28-acff7523efef",
+  "old_anchor": "second-council-of-lyons/canon/1a",
+  "new_passage_id": "3ebe12ad-9469-59e7-a868-ac26a1b2f0af",
+  "new_anchor": "second-council-of-lyons/canon/32",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "e4c65396-69d7-532a-bd12-6e63e5ed61be",
+  "old_anchor": "second-council-of-lyons/sec-3/4/from-e22-2",
+  "new_passage_id": "5a900388-9f17-5276-8439-18a4b0494d29",
+  "new_anchor": "second-council-of-lyons/canon/32/from-p2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "1dbe1c32-2627-50d1-857b-defb22441386",
+  "old_anchor": "second-council-of-lyons/sec-4/10",
+  "new_passage_id": "785825ce-c820-5096-b2f9-52c4339c7c34",
+  "new_anchor": "second-council-of-lyons/canon/3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
   "old_passage_id": "cbafdc22-ffc4-5625-8a18-edde2c7a5a90",
   "old_anchor": "second-council-of-lyons/sec-4/14-2/from-e91-2",
   "new_passage_id": "b06686bd-0a0d-50b0-a46e-4f27b991ce63",
-  "new_anchor": "second-council-of-lyons/sec-4/14-2/from-e91",
+  "new_anchor": "second-council-of-lyons/canon/25",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "595a5ecb-f173-5e67-bf26-96bdfc0128de",
+  "old_anchor": "second-council-of-lyons/sec-4/20",
+  "new_passage_id": "8188d7b9-7ad8-506f-8681-74c1d6eb5b57",
+  "new_anchor": "second-council-of-lyons/canon/20",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "317390b7-2f48-5a53-9715-7ed23a36d0e2",
+  "old_anchor": "second-council-of-lyons/sec-4/7",
+  "new_passage_id": "6b25ea00-4964-597e-8314-3fb6d44f58b8",
+  "new_anchor": "second-council-of-lyons/canon/2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "552c75b4-3965-510f-a4ef-31894fe54644",
+  "old_anchor": "second-council-of-lyons/sec-4/8",
+  "new_passage_id": "a13a4946-4044-5012-a9e2-f259399b327b",
+  "new_anchor": "second-council-of-lyons/canon/2/from-p3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "old_passage_id": "85cf8990-2a9f-5156-b627-fbeb2bc17cbd",
+  "old_anchor": "second-council-of-lyons/sec-4/9",
+  "new_passage_id": "a13a4946-4044-5012-a9e2-f259399b327b",
+  "new_anchor": "second-council-of-lyons/canon/2/from-p3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
@@ -7454,6 +7524,36 @@
   "added_by": "1.10b"
  },
  {
+  "document_id": "51599a74-556f-577c-9828-88b5472baf2f",
+  "old_passage_id": "c32013c2-80a7-590e-a4ca-035366aa9769",
+  "old_anchor": "third-lateran-council/sec-2/27",
+  "new_passage_id": "24e80c96-e52f-5505-8a2e-8a1207abb1c1",
+  "new_anchor": "third-lateran-council/canon/27/from-p2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "51599a74-556f-577c-9828-88b5472baf2f",
+  "old_passage_id": "2e70d9e1-d985-5f4f-bdd3-f34c1b820d22",
+  "old_anchor": "third-lateran-council/sec-2/27/from-e43-2",
+  "new_passage_id": "24e80c96-e52f-5505-8a2e-8a1207abb1c1",
+  "new_anchor": "third-lateran-council/canon/27/from-p2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "51599a74-556f-577c-9828-88b5472baf2f",
+  "old_passage_id": "4d892bbe-7b34-5290-8fb6-5b328489ae59",
+  "old_anchor": "third-lateran-council/sec-2/9",
+  "new_passage_id": "878ddfba-2f8c-542c-b579-58ce4a035a32",
+  "new_anchor": "third-lateran-council/canon/9",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
   "document_id": "51f1b4df-505c-571a-be5c-208d11aa6936",
   "old_passage_id": "8618741c-ff1d-5776-81d7-c38bc09c2736",
   "old_anchor": "tobit/1/1/from-1-17-2",
@@ -8403,37 +8503,199 @@
   "new_anchor": "first-council-of-lyons/sec-2/7/from-e24",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "44872290-d1a1-5220-bc55-5a1f4dca0baf",
+  "old_anchor": "first-council-of-lyons/sec-3/12",
+  "new_passage_id": "994636e7-f358-5c3c-9d57-87def60e6dfd",
+  "new_anchor": "first-council-of-lyons/series-1/canon/9",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "7f3b093a-a816-5601-960c-15274de2d39e",
+  "old_anchor": "first-council-of-lyons/sec-3/13-2",
+  "new_passage_id": "7142c94b-c69f-50bb-aaf9-d3b050b647d7",
+  "new_anchor": "first-council-of-lyons/series-1/canon/10",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "2ba28ffe-4cb6-5756-819e-da3130a0a013",
+  "old_anchor": "first-council-of-lyons/sec-3/14",
+  "new_passage_id": "0e164e44-696e-5409-a311-ac8214b3f038",
+  "new_anchor": "first-council-of-lyons/series-2/canon/1",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "8181cd85-ea0c-5b43-96ce-9562d460253f",
+  "old_anchor": "first-council-of-lyons/sec-3/14-2",
+  "new_passage_id": "390f1c1f-453a-5ff4-ab09-424397a54d51",
+  "new_anchor": "first-council-of-lyons/series-2/canon/3",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "27e4e16f-2e05-5927-bea2-ead7ebc1508b",
+  "old_anchor": "first-council-of-lyons/sec-3/15",
+  "new_passage_id": "5d152d26-6006-57a5-8e99-ffb7d331a641",
+  "new_anchor": "first-council-of-lyons/series-1/canon/6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "691eb62c-3376-5c6a-ba34-cd7fde27d46a",
+  "old_anchor": "first-council-of-lyons/sec-3/15-2",
+  "new_passage_id": "2890e784-d0e1-5c97-a86a-508b45e6d6eb",
+  "new_anchor": "first-council-of-lyons/series-2/canon/4",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "c9c700d8-2490-50ea-9b04-8e6f89d38392",
+  "old_anchor": "first-council-of-lyons/sec-3/16",
+  "new_passage_id": "e2755715-9c90-594d-8019-2ef0ce2a6690",
+  "new_anchor": "first-council-of-lyons/series-2/canon/2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "479e1d99-d7f1-5f47-a428-772096f14792",
+  "old_anchor": "first-council-of-lyons/sec-3/2",
+  "new_passage_id": "10a7b765-f7a6-5eb3-bb58-424a01138b09",
+  "new_anchor": "first-council-of-lyons/series-1/canon/2",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "0f931e30-f5e3-5ef3-ac40-cec8bb93df9b",
+  "old_anchor": "first-council-of-lyons/sec-3/2-2",
+  "new_passage_id": "bc98de44-c9b4-5827-a2cd-bd4721e6aae4",
+  "new_anchor": "first-council-of-lyons/series-1/canon/14",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "88ca3837-66e4-51f5-a52f-e4a1b406af69",
+  "old_anchor": "first-council-of-lyons/sec-3/20",
+  "new_passage_id": "8120d683-3600-56fa-ae4b-378549690cdd",
+  "new_anchor": "first-council-of-lyons/series-2/canon/5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "72752edc-4bdf-55b1-b13d-66149a79dfad",
   "old_anchor": "first-council-of-lyons/sec-3/21/from-e69-2",
   "new_passage_id": "9e433891-50ca-5679-929e-444dba9e7438",
-  "new_anchor": "first-council-of-lyons/sec-3/21/from-e69",
+  "new_anchor": "first-council-of-lyons/series-1/canon/17",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "edf2bf2e-c72c-57e7-80c0-6307d0e92484",
+  "old_anchor": "first-council-of-lyons/sec-3/22",
+  "new_passage_id": "48476531-cf01-532d-bffc-81e7f377f8d3",
+  "new_anchor": "first-council-of-lyons/series-2/canon/8",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "4f06f085-a0da-5a5f-91c2-37b58cf1265f",
+  "old_anchor": "first-council-of-lyons/sec-3/23",
+  "new_passage_id": "81c5b0fc-6d69-5aee-8677-ae736ef35e7d",
+  "new_anchor": "first-council-of-lyons/series-2/canon/9",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "56492406-56e0-5b25-b23b-e4e9aa8fc687",
   "old_anchor": "first-council-of-lyons/sec-3/23/from-e80-2",
   "new_passage_id": "8dd01925-dc8f-5098-ad5a-904fa96aa266",
-  "new_anchor": "first-council-of-lyons/sec-3/23/from-e80",
+  "new_anchor": "first-council-of-lyons/series-1/canon/13",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "fd9d64d0-09bd-5d47-92dc-d94f09b36d60",
+  "old_anchor": "first-council-of-lyons/sec-3/24",
+  "new_passage_id": "7b91ccd1-eab7-56ff-87e2-4a9cd52d42f9",
+  "new_anchor": "first-council-of-lyons/series-1/canon/13/from-p1-2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "f31dadfe-ba11-5e61-9aab-dc00e334d8b0",
   "old_anchor": "first-council-of-lyons/sec-3/27/from-e90-2",
   "new_passage_id": "bbc586c0-d1af-5fc2-8486-d164996dbae4",
-  "new_anchor": "first-council-of-lyons/sec-3/27/from-e90",
+  "new_anchor": "first-council-of-lyons/series-1/canon/16",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "bceacce1-ab29-5710-9692-8a5924414fb3",
+  "old_anchor": "first-council-of-lyons/sec-3/29",
+  "new_passage_id": "daf0658c-2e9c-5548-98a9-cb062cb0d86b",
+  "new_anchor": "first-council-of-lyons/series-1/canon/18",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "0fb57e43-42a4-5ebf-ab87-cec5ebc73614",
+  "old_anchor": "first-council-of-lyons/sec-3/3",
+  "new_passage_id": "b206dca8-fd8c-514d-b5ab-f7fa8e6b5c6f",
+  "new_anchor": "first-council-of-lyons/series-1/canon/15",
+  "kind": "merged",
+  "reason": "Tanner's heading of this canon",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "dd90ae5f-7f9f-50ac-953f-571d3c74e70c",
+  "old_anchor": "first-council-of-lyons/sec-3/30/from-e95",
+  "new_passage_id": "2b3a1c75-8458-5030-ba8d-1f1fc4813400",
+  "new_anchor": "first-council-of-lyons/series-1/canon/18/from-p5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
@@ -8443,7 +8705,29 @@
   "new_anchor": "first-council-of-lyons/sec-3/30/from-e95",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "490cf399-4c91-5190-9888-a6d2b4885a74",
+  "old_anchor": "first-council-of-lyons/sec-3/30/from-e95-2",
+  "new_passage_id": "2b3a1c75-8458-5030-ba8d-1f1fc4813400",
+  "new_anchor": "first-council-of-lyons/series-1/canon/18/from-p5",
+  "kind": "merged",
+  "reason": "its successor's text now lies in this passage",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "108a401d-0370-5647-8017-d6d89f472b38",
+  "old_anchor": "first-council-of-lyons/sec-3/31",
+  "new_passage_id": "2b3a1c75-8458-5030-ba8d-1f1fc4813400",
+  "new_anchor": "first-council-of-lyons/series-1/canon/18/from-p5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -8885,13 +9169,65 @@
  },
  {
   "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "7c255556-1622-54f6-a5d0-eac559285068",
+  "old_anchor": "council-of-vienne/canon/26",
+  "new_passage_id": "871acda1-a3e5-5154-899c-cb760f73674c",
+  "new_anchor": "council-of-vienne/series-1/canon/13",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
   "old_passage_id": "151341d2-82f4-5f14-8d99-838105b50c14",
   "old_anchor": "council-of-vienne/sec-0/13/from-e34-2",
   "new_passage_id": "6b7d1aa4-2c00-59a1-ae94-585cddc2fa0d",
   "new_anchor": "council-of-vienne/sec-0/13/from-e34",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "842d925b-6b2d-5c15-beff-9198e8b39cbd",
+  "old_anchor": "council-of-vienne/sec-0/29",
+  "new_passage_id": "0bdeb177-c59c-574e-a9ee-d8c3bf034bf5",
+  "new_anchor": "council-of-vienne/series-1/canon/1/from-p3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "a1ab636e-78a2-5c05-a1aa-f6ee9e1abd7c",
+  "old_anchor": "council-of-vienne/sec-0/30",
+  "new_passage_id": "6346dd72-0c8f-53c0-bd8a-261332c534b5",
+  "new_anchor": "council-of-vienne/series-2/canon/4",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "44c118be-0dab-52b3-8fa0-90a8149d387a",
+  "old_anchor": "council-of-vienne/sec-0/31",
+  "new_passage_id": "e6adf554-b27b-5055-abdc-84f3cab12f7e",
+  "new_anchor": "council-of-vienne/series-1/canon/2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "3d50ee26-732e-52f7-bfb0-7ff1bf18ae4b",
+  "old_anchor": "council-of-vienne/sec-0/31/from-e88",
+  "new_passage_id": "e6adf554-b27b-5055-abdc-84f3cab12f7e",
+  "new_anchor": "council-of-vienne/series-1/canon/2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
@@ -8901,7 +9237,29 @@
   "new_anchor": "council-of-vienne/sec-0/31/from-e88",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "286cd113-2a31-501e-ab09-63dcc902db7f",
+  "old_anchor": "council-of-vienne/sec-0/31/from-e88-2",
+  "new_passage_id": "e6adf554-b27b-5055-abdc-84f3cab12f7e",
+  "new_anchor": "council-of-vienne/series-1/canon/2",
+  "kind": "merged",
+  "reason": "its successor's text now lies in this passage",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "436f7016-47de-5daf-b92e-712c93507442",
+  "old_anchor": "council-of-vienne/sec-0/33/from-e92",
+  "new_passage_id": "83403fe4-8e37-5481-99e4-98d1574a456f",
+  "new_anchor": "council-of-vienne/series-1/canon/2/from-p5",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
@@ -8911,7 +9269,149 @@
   "new_anchor": "council-of-vienne/sec-0/33/from-e92",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "1746e255-f133-54cc-8921-7ec5408b494b",
+  "old_anchor": "council-of-vienne/sec-0/33/from-e92-2",
+  "new_passage_id": "83403fe4-8e37-5481-99e4-98d1574a456f",
+  "new_anchor": "council-of-vienne/series-1/canon/2/from-p5",
+  "kind": "merged",
+  "reason": "its successor's text now lies in this passage",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "f1b02ea3-a28f-5704-ba4f-4923c83a8479",
+  "old_anchor": "council-of-vienne/sec-0/34",
+  "new_passage_id": "480db8c9-a15d-5d56-849c-84f06f8ff99b",
+  "new_anchor": "council-of-vienne/series-2/canon/12",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "bbbcf876-59c4-5b83-8b45-f61c5863e45f",
+  "old_anchor": "council-of-vienne/sec-0/35",
+  "new_passage_id": "a8c976f2-ec87-52e4-99c0-cecda27617e4",
+  "new_anchor": "council-of-vienne/series-2/canon/12/from-p5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "9a75ee4b-65a4-5796-9cb2-c3c68507ac2a",
+  "old_anchor": "council-of-vienne/sec-0/36",
+  "new_passage_id": "4961550f-57fb-5621-b46d-7f5cc44e8f6a",
+  "new_anchor": "council-of-vienne/series-2/canon/12/from-p8",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "67bd34b0-d1a9-5793-93e1-c1b57b4853fa",
+  "old_anchor": "council-of-vienne/sec-0/37",
+  "new_passage_id": "4961550f-57fb-5621-b46d-7f5cc44e8f6a",
+  "new_anchor": "council-of-vienne/series-2/canon/12/from-p8",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "6700ca7a-2882-5f36-8e1f-392c820527fa",
+  "old_anchor": "council-of-vienne/sec-0/39",
+  "new_passage_id": "2f2785a7-4cc4-5967-a288-d308a706a512",
+  "new_anchor": "council-of-vienne/series-1/canon/20",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "7bc2cb6e-a94b-5357-8b8d-c82b93f585f9",
+  "old_anchor": "council-of-vienne/sec-0/40",
+  "new_passage_id": "04d5a868-ac9f-5553-a184-5852a105ca9e",
+  "new_anchor": "council-of-vienne/series-1/canon/9",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "80062a0b-4a4e-5efc-9861-3d4f78f854d5",
+  "old_anchor": "council-of-vienne/sec-0/41",
+  "new_passage_id": "0642cc28-2f7f-5aaa-9f0a-59bbfeca0288",
+  "new_anchor": "council-of-vienne/series-1/canon/11",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "00c4867f-7abd-5c13-9014-44adcaf971c8",
+  "old_anchor": "council-of-vienne/sec-0/42",
+  "new_passage_id": "537c3f37-07e1-57e7-8cbc-def8c7cbc292",
+  "new_anchor": "council-of-vienne/series-1/canon/13/from-p4",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "72d4ae91-2020-56a0-ac5c-288eadd08cc3",
+  "old_anchor": "council-of-vienne/sec-0/43",
+  "new_passage_id": "537c3f37-07e1-57e7-8cbc-def8c7cbc292",
+  "new_anchor": "council-of-vienne/series-1/canon/13/from-p4",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "30c93161-c49c-5cc1-a2f3-393cb81fd9f7",
+  "old_anchor": "council-of-vienne/sec-0/44",
+  "new_passage_id": "ca691000-6575-5ef5-8a22-0487a6f79205",
+  "new_anchor": "council-of-vienne/series-1/canon/6",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "3b8ecbe7-7b79-53d9-9eef-5448516cbd6b",
+  "old_anchor": "council-of-vienne/sec-0/45",
+  "new_passage_id": "4d725d65-3df1-5584-a4d0-70717c34e09a",
+  "new_anchor": "council-of-vienne/series-2/canon/15",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "3f6b0d63-3c5f-59ac-84d9-18158e787b74",
+  "old_anchor": "council-of-vienne/sec-0/48",
+  "new_passage_id": "a1773ac1-28d9-5d3b-bb7d-d8da43fc2191",
+  "new_anchor": "council-of-vienne/series-1/canon/17/from-p2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "db4e895f-717d-5e69-87f7-5c4c34c9999a",
+  "old_anchor": "council-of-vienne/sec-0/49",
+  "new_passage_id": "10be72da-25ea-571f-a106-7ffa7852809d",
+  "new_anchor": "council-of-vienne/series-2/canon/17",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
@@ -8921,7 +9421,79 @@
   "new_anchor": "council-of-vienne/sec-0/5/from-e19",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "ecae9bce-48b0-56fa-9536-343ca1d9735f",
+  "old_anchor": "council-of-vienne/sec-0/50",
+  "new_passage_id": "a4ba6ab0-5dfe-5a9f-a3c9-cf26db6279fc",
+  "new_anchor": "council-of-vienne/series-1/canon/21",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "3231e9af-ba7a-5112-aadb-af99c2a84a15",
+  "old_anchor": "council-of-vienne/sec-0/51",
+  "new_passage_id": "13f1ed0a-0a3c-5453-b35d-3095d22a4434",
+  "new_anchor": "council-of-vienne/series-1/canon/21/from-p2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "d4c70c1d-82fd-5daf-9450-33521db976d2",
+  "old_anchor": "council-of-vienne/sec-0/52",
+  "new_passage_id": "866aef43-3985-5759-b14a-cd6fb9a76057",
+  "new_anchor": "council-of-vienne/series-1/canon/21/from-p3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "fd6417d8-85b5-50ae-a404-49865405f655",
+  "old_anchor": "council-of-vienne/sec-0/53",
+  "new_passage_id": "866aef43-3985-5759-b14a-cd6fb9a76057",
+  "new_anchor": "council-of-vienne/series-1/canon/21/from-p3",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "e502b3d7-6cf6-59d7-b6b5-ea92dd7ac6fd",
+  "old_anchor": "council-of-vienne/sec-0/55",
+  "new_passage_id": "8eb3d24e-6342-54f2-9b48-6065be7702be",
+  "new_anchor": "council-of-vienne/series-1/canon/21/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "6afceec1-e15b-5376-b3b1-0b409ee879ee",
+  "old_anchor": "council-of-vienne/sec-0/57",
+  "new_passage_id": "8eb3d24e-6342-54f2-9b48-6065be7702be",
+  "new_anchor": "council-of-vienne/series-1/canon/21/from-p6",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "ce1f89e6-fa0c-5d3a-88ae-7f59e32dcce6",
+  "old_anchor": "council-of-vienne/sec-0/58/from-e174",
+  "new_passage_id": "bb9e0007-823d-50f4-92b1-6fbce8b1763b",
+  "new_anchor": "council-of-vienne/series-1/canon/21/from-p6-2",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
@@ -8931,7 +9503,19 @@
   "new_anchor": "council-of-vienne/sec-0/58/from-e174",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "old_passage_id": "fcda82c9-e277-5c7e-92cc-975efbe055a2",
+  "old_anchor": "council-of-vienne/sec-0/58/from-e174-2",
+  "new_passage_id": "bb9e0007-823d-50f4-92b1-6fbce8b1763b",
+  "new_anchor": "council-of-vienne/series-1/canon/21/from-p6-2",
+  "kind": "merged",
+  "reason": "its successor's text now lies in this passage",
+  "added_by": "1.2e-2"
  },
  {
   "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
@@ -8941,7 +9525,9 @@
   "new_anchor": "council-of-vienne/sec-0/6/from-e21",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
@@ -8951,7 +9537,9 @@
   "new_anchor": "council-of-vienne/sec-0/9/from-e26",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-2",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "85bd14cc-fd8a-5e72-a126-fc5b4c3e6ebd",

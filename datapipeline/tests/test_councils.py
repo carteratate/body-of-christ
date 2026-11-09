@@ -149,6 +149,33 @@ def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
     assert all(len(p.content) <= 4000 for p in doc.passages)
 
 
+def _quotations_balance(text: str) -> bool:
+    """Every “ is closed, where a quotation running over several paragraphs opens each
+    of them with “ and closes only at its end (Vienne's quotation of Super cathedram)."""
+    open_ = False
+    for para in text.split("\n\n"):
+        body = para
+        if open_:
+            if not para.startswith("“"):
+                return False
+            body = para[1:]
+        depth = 1 if open_ else 0
+        for ch in body:
+            depth += {"“": 1, "”": -1}.get(ch, 0)
+            if depth < 0:
+                return False
+        if depth > 1:
+            return False
+        open_ = depth == 1
+    return not open_
+
+
+def test_quotations_may_run_over_paragraphs():
+    assert _quotations_balance("He said: “One.\n\n“Two.” Done.")
+    assert not _quotations_balance("He said: “One.\n\nTwo.")
+    assert not _quotations_balance("One.” Two.")
+
+
 @pytest.mark.parametrize("work", schroeder.WORKS.values())
 def test_frozen_text_marks_balance_and_sentences_start_clean(work):
     # What a word-level comparison misses: a lost bracket or quotation mark, or a stop
@@ -156,7 +183,7 @@ def test_frozen_text_marks_balance_and_sentences_start_clean(work):
     for unit in read_text(work)["passages"]:
         text = unit["text"]
         assert text.count("(") == text.count(")"), unit["id"]
-        assert text.count("“") == text.count("”"), unit["id"]
+        assert _quotations_balance(text), unit["id"]
         assert not re.search(r", But\b|\. (?:but|and|the)\b", text), unit["id"]
 
 

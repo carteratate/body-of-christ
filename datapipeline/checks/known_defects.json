@@ -259,11 +259,6 @@
   "description": "Orientalium Ecclesiarum: 23 passages hold footnote callers (C-17)",
   "units": ["orientalium-ecclesiarum/10", "orientalium-ecclesiarum/11", "orientalium-ecclesiarum/13", "orientalium-ecclesiarum/14", "orientalium-ecclesiarum/15", "orientalium-ecclesiarum/16", "orientalium-ecclesiarum/17", "orientalium-ecclesiarum/18", "orientalium-ecclesiarum/19", "orientalium-ecclesiarum/2", "orientalium-ecclesiarum/20", "orientalium-ecclesiarum/21", "orientalium-ecclesiarum/22", "orientalium-ecclesiarum/23", "orientalium-ecclesiarum/24", "orientalium-ecclesiarum/25", "orientalium-ecclesiarum/26", "orientalium-ecclesiarum/27", "orientalium-ecclesiarum/28", "orientalium-ecclesiarum/4", "orientalium-ecclesiarum/5", "orientalium-ecclesiarum/7", "orientalium-ecclesiarum/8"]
  },
- "health.R12_note_caller:councils/237081c4-64d8-52d2-a19e-66d6e5f01f1f": {
-  "fixed_by": "1.2b",
-  "description": "Second Council of Lyons: 1 passages hold footnote callers (C-17)",
-  "units": ["second-council-of-lyons/sec-4/21"]
- },
  "health.R12_note_caller:councils/28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
   "fixed_by": "1.1",
   "description": "Presbyterorum Ordinis: 21 passages hold footnote callers (C-17)",
@@ -399,11 +394,6 @@
   "description": "Apostolicam Actuositatem: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Apostolicam Actuositatem, §1", "Apostolicam Actuositatem, §10", "Apostolicam Actuositatem, §2", "Apostolicam Actuositatem, §3", "Apostolicam Actuositatem, §4", "Apostolicam Actuositatem, §5", "Apostolicam Actuositatem, §6", "Apostolicam Actuositatem, §7", "Apostolicam Actuositatem, §8", "Apostolicam Actuositatem, §9"]
  },
- "labels.unique_reference:councils/237081c4-64d8-52d2-a19e-66d6e5f01f1f": {
-  "fixed_by": "1.2e",
-  "description": "Second Council of Lyons: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Second Council of Lyons — I (part 1 of 2)", "Second Council of Lyons — I (part 2 of 2)", "Second Council of Lyons — II", "Second Council of Lyons — II, §20", "Second Council of Lyons — Introduction"]
- },
  "labels.unique_reference:councils/28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
   "fixed_by": "1.1",
   "description": "Presbyterorum Ordinis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
@@ -424,11 +414,6 @@
   "description": "Dei Verbum: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Dei Verbum, §1", "Dei Verbum, §10", "Dei Verbum, §11", "Dei Verbum, §2", "Dei Verbum, §3", "Dei Verbum, §4", "Dei Verbum, §5", "Dei Verbum, §6", "Dei Verbum, §7", "Dei Verbum, §8", "Dei Verbum, §9"]
  },
- "labels.unique_reference:councils/51599a74-556f-577c-9828-88b5472baf2f": {
-  "fixed_by": "1.2e",
-  "description": "Third Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Third Lateran Council — Introduction"]
- },
  "labels.unique_reference:councils/5972a5c6-4f04-5ef0-901d-d9a4a189fc0f": {
   "fixed_by": "1.2c",
   "description": "Council of Ephesus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
@@ -443,11 +428,6 @@
   "fixed_by": "1.1",
   "description": "Gaudium et Spes: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Gaudium et Spes, §1", "Gaudium et Spes, §10", "Gaudium et Spes, §11", "Gaudium et Spes, §12", "Gaudium et Spes, §13", "Gaudium et Spes, §14", "Gaudium et Spes, §15", "Gaudium et Spes, §16", "Gaudium et Spes, §17", "Gaudium et Spes, §18", "Gaudium et Spes, §19", "Gaudium et Spes, §2", "Gaudium et Spes, §20", "Gaudium et Spes, §21", "Gaudium et Spes, §22", "Gaudium et Spes, §23", "Gaudium et Spes, §24", "Gaudium et Spes, §25", "Gaudium et Spes, §26", "Gaudium et Spes, §3", "Gaudium et Spes, §31", "Gaudium et Spes, §34", "Gaudium et Spes, §4", "Gaudium et Spes, §5", "Gaudium et Spes, §6", "Gaudium et Spes, §7", "Gaudium et Spes, §8", "Gaudium et Spes, §9"]
- },
- "labels.unique_reference:councils/6eb88704-07df-52f6-b8bf-64f2e026c23a": {
-  "fixed_by": "1.2e",
-  "description": "First Council of Lyons: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["First Council of Lyons — Bull Deposing The Emperor Frederick II", "First Council of Lyons — CONSTITUTIONS", "First Council of Lyons — CONSTITUTIONS (part 1 of 2)", "First Council of Lyons — CONSTITUTIONS (part 2 of 2)", "First Council of Lyons — CONSTITUTIONS, §2", "First Council of Lyons — INTRODUCTION"]
  },
  "labels.unique_reference:councils/6f6474ba-c632-5bdb-a550-b8d5c61797a9": {
   "fixed_by": "1.1",
@@ -468,11 +448,6 @@
   "fixed_by": "1.2c",
   "description": "Council of Chalcedon: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Council of Chalcedon — Definition of the faith", "Council of Chalcedon — Introduction", "Council of Chalcedon — The letter of Pope Leo to Flavian, bishop of Constantinople, about Eutyches"]
- },
- "labels.unique_reference:councils/8548da71-b46a-5411-ac69-204ccf7322e0": {
-  "fixed_by": "1.2e",
-  "description": "Council of Vienne: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Vienne — Text", "Council of Vienne — Text (part 1 of 2)", "Council of Vienne — Text (part 2 of 2)", "Council of Vienne, Canon 1", "Council of Vienne, Canon 2", "Council of Vienne, Canon 3", "Council of Vienne, Canon 4", "Council of Vienne, Canon 5", "Council of Vienne, Canon 6", "Council of Vienne, Canon 7", "Council of Vienne, Canon 8"]
  },
  "labels.unique_reference:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
   "fixed_by": "1.1",
