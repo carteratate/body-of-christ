@@ -472,8 +472,14 @@ async def test_single_reading_progress_of_a_removed_document_carries_the_tombsto
 
 async def test_a_redirect_to_a_passage_later_removed_shows_the_removal(db, cluster):
     """A moved to B, then a later publish removed B: A shows B's tombstone, not its own
-    retired text."""
+    retired text, even while another result's chain takes a second hop."""
     cluster.sql(f"""
+        INSERT INTO corpus_redirects (entity, old_id, old_document_id, old_anchor, new_id,
+                                      new_document_id, new_anchor, kind, publish_id)
+        VALUES ('passage', '{P_ORPHAN}', '{LIVE}', 'c3/p1', '{P_REMOVED}', '{LIVE}',
+                'c1/p2#retired-rel-1', 'moved', 'rel-1'),
+               ('passage', '{P_REMOVED}', '{LIVE}', 'c1/p2#retired-rel-1', '{P_TAKER}',
+                '{LIVE}', 'c1/p2', 'moved', 'rel-1');
         INSERT INTO corpus_publishes (id, collections, qdrant_collection)
         VALUES ('rel-2', ARRAY['church-fathers'], 'chunks-rel-2');
         UPDATE chunks SET retired_at = now(), position = -1000003 WHERE id = '{P_NEW}';
@@ -489,8 +495,11 @@ async def test_a_redirect_to_a_passage_later_removed_shows_the_removal(db, clust
         assert results[P_OLD].status == "removed"
         assert results[P_OLD].content == ""
         assert results[P_OLD].tombstone.public_reason == "Editor-written."
+        assert results[P_ORPHAN].status == "moved"
+        assert results[P_ORPHAN].redirect.chunk_id == P_TAKER
     finally:
         cluster.sql(f"""
+            DELETE FROM corpus_redirects WHERE old_id IN ('{P_ORPHAN}', '{P_REMOVED}');
             DELETE FROM corpus_tombstones WHERE publish_id = 'rel-2';
             UPDATE chunks SET retired_at = NULL, position = 2 WHERE id = '{P_NEW}';
             DELETE FROM corpus_publishes WHERE id = 'rel-2';

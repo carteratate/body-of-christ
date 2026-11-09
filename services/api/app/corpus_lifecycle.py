@@ -138,6 +138,7 @@ async def _follow_passage_redirects(conn, ids: set[str],
     out: dict[str, Redirect] = {}
     pending = {i: i for i in ids}       # original id -> id at the current hop
     first: dict[str, dict] = {}
+    last: dict[str, str] = {}           # original id -> furthest non-current id reached
     for _ in range(_MAX_HOPS):
         if not pending:
             break
@@ -158,8 +159,8 @@ async def _follow_passage_redirects(conn, ids: set[str],
             if state.get(row["new_id"]):
                 out[orig] = redirect(row).model_copy(update={"kind": first[orig]["kind"]})
             else:
-                pending[orig] = row["new_id"]
-    return out, {orig: at for orig, at in pending.items() if at != orig}
+                pending[orig] = last[orig] = row["new_id"]
+    return out, last
 
 
 async def resolve_passages(conn, ids, schema: CorpusSchema) -> dict[str, Resolution]:
