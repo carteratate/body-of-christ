@@ -198,11 +198,16 @@ async def resolve_passages(conn, ids, schema: CorpusSchema) -> dict[str, Resolut
     if pending and schema.redirects:
         retired_documents = {states[i]["document_id"] for i in pending
                              if states[i]["document_retired"]}
-        moved = await _follow_document_redirects(conn, retired_documents)
+        moved, last = await _follow_document_redirects(conn, retired_documents)
+        removed = (await _document_tombstones(conn, last.values())
+                   if schema.tombstones else {})
         for i in list(pending):
             r = moved.get(states[i]["document_id"])
             if r is not None:
                 out[i] = Resolution("moved", redirect=r)
+                pending.discard(i)
+            elif (t := removed.get(last.get(states[i]["document_id"]))) is not None:
+                out[i] = Resolution("removed", tombstone=t)
                 pending.discard(i)
 
     for i in pending:
@@ -212,10 +217,15 @@ async def resolve_passages(conn, ids, schema: CorpusSchema) -> dict[str, Resolut
     return out
 
 
-async def _follow_document_redirects(conn, ids: set[str]) -> dict[str, Redirect]:
+async def _follow_document_redirects(conn, ids: set[str],
+                                     ) -> tuple[dict[str, Redirect], dict[str, str]]:
+    """Old document ID -> the redirect to a live document, up to three hops, and, for a
+    chain that ends at a document that is not live, its last ID (whose tombstone then
+    explains the old one), as `_follow_passage_redirects` does for passages."""
     out: dict[str, Redirect] = {}
     pending = {i: i for i in ids}
     first: dict[str, dict] = {}
+    last: dict[str, str] = {}
     for _ in range(_MAX_HOPS):
         if not pending:
             break
@@ -237,8 +247,15 @@ async def _follow_document_redirects(conn, ids: set[str]) -> dict[str, Redirect]
             if row["new_document_id"] in live:
                 out[orig] = redirect(row).model_copy(update={"kind": first[orig]["kind"]})
             else:
-                pending[orig] = row["new_document_id"]
-    return out
+                pending[orig] = last[orig] = row["new_document_id"]
+    return out, last
+
+
+async def _document_tombstones(conn, ids) -> dict[str, Tombstone]:
+    ids = {i for i in ids if i}
+    if not ids:
+        return {}
+    return {r["id"]: tombstone(r) for r in await conn.fetch(_TOMBSTONE_SQL, [], _uuids(ids))}
 
 
 async def resolve_document(conn, doc_id, schema: CorpusSchema) -> Resolution | None:
@@ -252,9 +269,14 @@ async def resolve_document(conn, doc_id, schema: CorpusSchema) -> Resolution | N
         if rows:
             return Resolution("removed", tombstone=tombstone(rows[0]))
     if schema.redirects:
-        moved = await _follow_document_redirects(conn, {doc_id})
+        moved, last = await _follow_document_redirects(conn, {doc_id})
         if doc_id in moved:
             return Resolution("moved", redirect=moved[doc_id])
+        # A -> B, then B removed: A shows B's removal.
+        if schema.tombstones and doc_id in last:
+            removed = (await _document_tombstones(conn, [last[doc_id]])).get(last[doc_id])
+            if removed is not None:
+                return Resolution("removed", tombstone=removed)
     return None
 
 

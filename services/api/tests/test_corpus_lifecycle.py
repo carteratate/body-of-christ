@@ -541,3 +541,30 @@ async def test_guest_reaches_the_end_of_a_redirect_chain(db, cluster):
         await require_document_access(COUNCIL, _Request(GUEST_TOKEN), None)
     finally:
         cluster.sql(f"DELETE FROM corpus_redirects WHERE old_id = '{P_NEW}'")
+
+
+async def test_a_redirected_document_whose_destination_was_removed_shows_the_removal(db, cluster):
+    """OLD -> LIVE, then a later publish removed LIVE: OLD answers 410 with LIVE's
+    tombstone, not a stale current document."""
+    cluster.sql(f"""
+        INSERT INTO corpus_publishes (id, collections, qdrant_collection)
+        VALUES ('rel-3', ARRAY['church-fathers'], 'chunks-rel-3');
+        UPDATE documents SET retired_at = now() WHERE id = '{LIVE}';
+        INSERT INTO corpus_tombstones (entity, id, document_id, retired_at, publish_id,
+            removal_key, rule, reason_code, public_reason, church_act, snapshot)
+        VALUES ('document', '{LIVE}', '{LIVE}', now(), 'rel-3', 'rm-5', 'A', 'rule-a',
+                'Not by Gregory.', NULL, '{{"collection": "church-fathers", "title": "Works"}}');
+    """)
+    try:
+        for call in (lambda: get_document(OLD, user=_user()),
+                     lambda: get_document_reader(OLD, anchor=None, chapter=None, user=_user())):
+            with pytest.raises(CorpusLifecycleError) as raised:
+                await call()
+            assert raised.value.status_code == 410
+            assert raised.value.body["tombstone"]["public_reason"] == "Not by Gregory."
+    finally:
+        cluster.sql(f"""
+            DELETE FROM corpus_tombstones WHERE publish_id = 'rel-3';
+            UPDATE documents SET retired_at = NULL WHERE id = '{LIVE}';
+            DELETE FROM corpus_publishes WHERE id = 'rel-3';
+        """)
