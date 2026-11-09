@@ -632,3 +632,20 @@ async def test_progress_of_a_removed_document_with_no_passages_left_carries_the_
             UPDATE chunks SET document_id = '{GONE}', position = -1000000, anchor = 'p1'
             WHERE id = '{P_GONE}';
         """)
+
+
+async def test_a_chapter_redirect_to_a_readable_chapter_with_removed_passages_opens_it(
+        db, cluster):
+    """c1 holds current passages and a removed one: a redirect to it opens it."""
+    cluster.sql(f"""
+        INSERT INTO corpus_redirects (entity, old_id, old_document_id, old_anchor, new_id,
+                                      new_document_id, new_anchor, kind, publish_id)
+        VALUES ('chapter', NULL, '{LIVE}', 'oldc', NULL, '{LIVE}', 'c1', 'moved', 'rel-1');
+    """)
+    try:
+        chapter = await get_document_reader(LIVE, anchor=None, chapter="oldc", user=_user())
+        assert chapter.chapter_key == "c1"
+        assert [p.id for p in chapter.passages] == [P_CURRENT, P_TAKER]
+        assert chapter.redirected_from.chapter_key == "oldc"
+    finally:
+        cluster.sql("DELETE FROM corpus_redirects WHERE old_anchor = 'oldc'")

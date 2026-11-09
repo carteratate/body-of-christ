@@ -328,6 +328,7 @@ async def resolve_location(conn, doc_id, *, anchor: str | None, chapter: str | N
         return None
     column = "anchor" if entity == "anchor" else "chapter_key"
     first = last = None
+    reached = False                     # the chain ends where a visible passage is
     at_doc, at_key = doc_uuid, old
     if schema.redirects:
         # Each publish adds redirects from the locations live at that moment, so an
@@ -344,10 +345,11 @@ async def resolve_location(conn, doc_id, *, anchor: str | None, chapter: str | N
             if await conn.fetchval(
                     f"SELECT EXISTS (SELECT 1 FROM chunks WHERE document_id = $1 "
                     f"AND {column} = $2 AND retired_at IS NULL)", at_doc, at_key):
+                reached = True
                 break
     retired = _retired_anchor if entity == "anchor" else _retired_chapter
     if last is not None:
-        if (at_doc, at_key) != (doc_uuid, old):
+        if not reached:
             # The chain ends at a location no visible passage carries: the redirect or
             # removal of what was there, when it has one.
             resolved = await retired(conn, at_doc, at_key, schema)
