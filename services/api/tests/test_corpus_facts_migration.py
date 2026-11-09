@@ -259,10 +259,15 @@ def test_genre_accepts_only_the_d5_vocabulary(migrated):
 
 
 def test_genre_seed_matches_registry_module(migrated):
+    # 0042's seed, less the genres a later migration deleted (0044 moved `bull` to
+    # corpus_forms), is the module's list in order.
     text = SCHEMA_MIGRATION.read_text()
     values = text.split("INSERT INTO corpus_genres (key) VALUES", 1)[1].split(";", 1)[0]
-    seeded = tuple(re.findall(r"\('([a-z-]+)'\)", values))
+    deleted = set(re.findall(r"DELETE FROM corpus_genres WHERE key = '([a-z-]+)'",
+                             (MIGRATIONS / "0044_document_form.sql").read_text()))
+    seeded = tuple(g for g in re.findall(r"\('([a-z-]+)'\)", values) if g not in deleted)
     assert seeded == _all_genres()
+    migrated.migrate("0044_document_form.sql")
     assert [r[0] for r in migrated("SELECT key FROM corpus_genres ORDER BY key")] == sorted(
         _all_genres())
 
