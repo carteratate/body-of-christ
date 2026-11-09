@@ -325,7 +325,8 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - Today's Qdrant collection has a keyword index on `collection` only (`datapipeline/qdrant_schema.py:28-29`). After P4, the collection behind `chunks_live` carries `genre` and `issuer` in every point's payload, written by 2.2w (D5), with keyword indexes created at 4.1b step 1. This item needs no payload writer of its own.
   - Genre is currently in `documents.metadata` for 16 documents only (plan, "Corrections"). 2.3 puts real values in the registry and the P4 apply writes them to `documents.genre` and `documents.issuer`.
   - The genre vocabulary is defined once, in 2.1's Python genre module `datapipeline/registry/genres.py` (D5, D11), lowercase and hyphenated everywhere, with `other` for anything unlisted. 2.2a's `corpus_genres` table is seeded from it. Adding a value is a normal PR that changes the module and adds the row by migration.
-    - Papal: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `bull`, `letter`.
+    - Papal: `encyclical`, `apostolic-exhortation`, `apostolic-letter`, `apostolic-constitution`, `motu-proprio`, `letter`.
+    - A papal document's form (`bull`, `brief`, or none) is not a genre since 9 Nov 2026: it lives in `documents.form` (0044, lookup `corpus_forms`, values from `PAPAL_FORMS` in the same module). Whether form gets a filter of its own is the follow-up that carries it to live data.
     - Roman Curia: `declaration`, `instruction`, `doctrinal-note`, `note`, `response`, `norms`, `considerations`, `commentary`.
     - Catechisms and law: `catechism`, `compendium`, `code`, `law`.
     - Writers: `treatise`, `manual`, `sermon`, `commentary`, `poem`, `rule`.
