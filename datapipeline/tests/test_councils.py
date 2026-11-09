@@ -124,7 +124,11 @@ import rights_inventory  # noqa: E402
 SCHROEDER_ENTRY = {"council": "First Lateran Council", "year": 1123, "council_number": 9,
                    "url": "https://www.papalencyclicals.net/councils/ecum09.htm"}
 CANON_COUNTS = {"First Lateran Council": 22, "Second Lateran Council": 30,
-                "Fourth Lateran Council": 71}
+                "Third Lateran Council": 27, "Fourth Lateran Council": 71,
+                "First Council of Lyons": 27, "Second Council of Lyons": 32,
+                "Council of Vienne": 39}
+# Councils Schroeder prints in two series (Carter, 9 Nov 2026).
+SERIES = {"First Council of Lyons": (18, 9), "Council of Vienne": (21, 18)}
 EDITOR_WORDS = re.compile(r"\b(?:Comment|Summary)\.|Hefele|Mansi|Denzinger|DECREES OF THE COUNCILS")
 
 
@@ -136,8 +140,11 @@ def _schroeder(entry=SCHROEDER_ENTRY, **kw):
 def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
     entry = {**SCHROEDER_ENTRY, "council": council}
     doc = _schroeder(entry)
-    assert sorted({p.unit_label for p in doc.passages}, key=lambda u: int(u.split()[1])) == \
-        [f"Canon {n}" for n in range(1, count + 1)]
+    units = list(dict.fromkeys((p.chapter_key, p.unit_label) for p in doc.passages))
+    series = SERIES.get(council, (count,))
+    assert [len([u for u in units if u[0] == key]) for key in dict.fromkeys(k for k, _ in units)] \
+        == list(series)
+    assert len(units) == count
     assert not [p.anchor for p in doc.passages if EDITOR_WORDS.search(p.content)]
     assert all(len(p.content) <= 4000 for p in doc.passages)
 
@@ -191,6 +198,20 @@ def test_schroeder_anchors_are_canon_numbers_in_his_order():
     assert [p.position for p in doc.passages] == list(range(22))
 
 
+def test_a_council_in_two_series_names_both():
+    doc = _schroeder({**SCHROEDER_ENTRY, "council": "First Council of Lyons"})
+    units = list(dict.fromkeys((p.anchor.split("/from-")[0], p.chapter_key, p.chapter_label)
+                               for p in doc.passages))
+    assert units[0] == ("first-council-of-lyons/series-1/canon/1",
+                        "first-council-of-lyons/series-1", "Canons, first series")
+    assert units[18] == ("first-council-of-lyons/series-2/canon/1",
+                         "first-council-of-lyons/series-2", "Canons, second series")
+    assert [u[0] for u in units] == [f"first-council-of-lyons/series-{s}/canon/{n}"
+                                     for s, k in ((1, 18), (2, 9)) for n in range(1, k + 1)]
+    second = next(p for p in doc.passages if p.anchor == "first-council-of-lyons/series-2/canon/4")
+    assert second.reference == "First Council of Lyons, Second series, Canon 4"
+
+
 def test_a_held_council_emits_no_passages_and_keeps_its_document():
     doc = _schroeder(held=frozenset({"First Lateran Council"}))
     assert doc.id == "doc-id" and doc.passages == []
@@ -223,3 +244,16 @@ def test_schroeder_councils_route_through_their_frozen_document_ids():
 def test_every_work_config_matches_its_canon_count():
     for council, work in schroeder.WORKS.items():
         assert WorkConfig.load(work).unit_count == CANON_COUNTS[council]
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored manifest")
+@pytest.mark.parametrize("council,unit", [
+    ("Council of Vienne", "council-of-vienne/series-1/canon/21"),     # Exivi de paradiso
+    ("Second Council of Lyons", "second-council-of-lyons/canon/32"),  # Zelus fidei
+])
+def test_abridged_texts_carry_their_note_on_every_piece(council, unit):
+    # Schroeder's condensed texts are published with a note on each passage (Carter,
+    # 4 Nov 2026).
+    passages = _built(council).passages
+    noted = {p.anchor for p in passages if p.note == "Abridged in Schroeder (1937)."}
+    assert noted == {p.anchor for p in passages if p.anchor.split("/from-")[0] == unit}
