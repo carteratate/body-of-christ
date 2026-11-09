@@ -83,3 +83,23 @@ describe("readerHref", () => {
       .toBe(`/reader/doc-a?from=search&returnKey=${key}`);
   });
 });
+
+describe("retired anchors (corpus cleanup 2.4a)", () => {
+  // 2.2w keeps a retired passage's anchor as `<anchor>#retired-<release>` when a current
+  // passage takes it. The `#` must reach the reader as part of the anchor, not as a
+  // URL fragment.
+  const anchor = "c1/p2#retired-rel-1";
+
+  it("encodes the # as %23 so it is not read as a fragment", () => {
+    const href = readerHref({ docId: "doc-a", origin: "saved", returnKey: null, anchor });
+    expect(href).toBe("/reader/doc-a?from=saved&anchor=c1%2Fp2%23retired-rel-1");
+    const url = new URL(href, "https://theo-corpus.com");
+    expect(url.hash).toBe("");
+    expect(url.searchParams.get("anchor")).toBe(anchor);
+  });
+
+  it("does the same for the guest reader", () => {
+    const href = readerHref({ docId: "doc-a", origin: "search", returnKey: null, anchor, guest: true });
+    expect(new URL(href, "https://theo-corpus.com").searchParams.get("anchor")).toBe(anchor);
+  });
+});

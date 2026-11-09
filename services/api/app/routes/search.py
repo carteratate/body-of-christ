@@ -9,6 +9,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 
+from app import corpus_lifecycle, corpus_schema
 from app.config import settings
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
@@ -29,7 +30,7 @@ from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipeline import run_search_pipeline
 from app.rag.search_plan import SearchPlan, SearchPlanError, resolve_search_plan
-from app.rag.steps import fetch_context, stitch
+from app.rag.steps import document_facts, fetch_context, stitch
 from app.rag.steps.types import RankedChunk
 
 logger = logging.getLogger(__name__)
@@ -299,6 +300,35 @@ async def _build_restore_context(rows) -> dict:
     }
 
 
+_RESTORE_COLUMNS = """c.id AS chunk_id, c.content, c.reference, c.position, c.anchor, c.chapter_key,
+                       c.unit_label,
+                       d.collection, d.title AS document_title, d.author, d.id AS document_id"""
+
+
+def _restore_sql(schema: corpus_schema.CorpusSchema) -> str:
+    """The saved results. With 0042, each row also says whether its passage is current;
+    without it, the SQL is today's."""
+    current = (",\n                       c.retired_at IS NULL AND d.retired_at IS NULL AS current"
+               if schema.lifecycle else "")
+    return f"""
+                SELECT r.rank, r.reranker_score, r.explanation,
+                       {_RESTORE_COLUMNS}{current}
+                FROM retrievals r
+                JOIN chunks c ON c.id = r.chunk_id
+                JOIN documents d ON d.id = c.document_id
+                WHERE r.search_id = $1
+                ORDER BY r.rank ASC
+                """
+
+
+# The passages moved results now point at (2.4a).
+_RESTORE_PASSAGE_SQL = f"""
+    SELECT {_RESTORE_COLUMNS}
+    FROM chunks c JOIN documents d ON d.id = c.document_id
+    WHERE c.id = ANY($1::uuid[])
+"""
+
+
 @router.get("/searches/{search_id}/results", response_model=SearchResultsResponse)
 async def get_search_results(
     search_id: str,
@@ -326,26 +356,31 @@ async def get_search_results(
             )
             if search_row is None:
                 raise HTTPException(status_code=404, detail="Search not found")
-            rows = await pool.fetch(
-                """
-                SELECT r.rank, r.reranker_score, r.explanation,
-                       c.id AS chunk_id, c.content, c.reference, c.position, c.anchor, c.chapter_key,
-                       c.unit_label,
-                       d.collection, d.title AS document_title, d.author, d.id AS document_id
-                FROM retrievals r
-                JOIN chunks c ON c.id = r.chunk_id
-                JOIN documents d ON d.id = c.document_id
-                WHERE r.search_id = $1
-                ORDER BY r.rank ASC
-                """,
-                search_uuid,
-            )
-            # Inside the timeout on purpose: this is a second round trip on the same
+            # Retired rows are joined on purpose and resolved below (2.4a): a saved
+            # result whose passage left the corpus is marked, never dropped.
+            async def saved(schema: corpus_schema.CorpusSchema):
+                found = await pool.fetch(_restore_sql(schema), search_uuid)
+                return found, await corpus_lifecycle.resolve_saved(
+                    pool, found, schema, _RESTORE_PASSAGE_SQL)
+
+            rows, (resolutions, targets) = await corpus_schema.run_with_fallback(saved, pool)
+            # What each saved result shows: its own row, or the passage it moved to.
+            # Removed results show no text, so they take no context, notes or facts.
+            shown = {}
+            for row in rows:
+                resolution = resolutions.get(str(row["chunk_id"]), corpus_lifecycle.CURRENT)
+                if resolution.status == "removed":
+                    continue
+                target = (targets.get(resolution.redirect.chunk_id)
+                          if resolution.status == "moved" else None)
+                shown[str(row["chunk_id"])] = target or row
+            # Inside the timeout on purpose: these are more round trips on the same
             # pool, and the block exists so a saturated pool cannot leave History
             # loading indefinitely. Outside it, a stall here would hang the request
             # past the 8s bound with nothing to stop it.
-            context = await _restore_context(rows)
-            access = await document_access(pool, [row["document_id"] for row in rows])
+            context = await _restore_context(list(shown.values()))
+            access = await document_access(
+                pool, {row["document_id"] for row in [*rows, *shown.values()]})
     except HTTPException:
         raise
     except TimeoutError as exc:
@@ -358,33 +393,52 @@ async def get_search_results(
     # Outside the restore deadline: optional notes must never turn a restore into a
     # 504. `fetch_footnotes` bounds itself and falls back to none.
     notes = await fetch_footnotes(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in rows
+        (str(row["chunk_id"]), row["content"]) for row in shown.values()
         if has_footnotes(row["collection"], row["document_title"])
     ])
+    # Outside the deadline for the same reason; bounded on its own (2.4a).
+    facts, _ = await document_facts.fetch_best_effort(pool, [
+        str(row["chunk_id"]) for row in shown.values()
+    ])
 
-    results = [
-        ChunkResult(
-            chunk_id=str(row["chunk_id"]),
-            content=row["content"],
-            source=ChunkSource(
-                collection=row["collection"],
-                document_title=row["document_title"],
-                author=row["author"],
-                reference=row["reference"],
-                document_id=str(row["document_id"]),
-                position=row["position"],
-                anchor=row["anchor"],
-                chapter_key=row["chapter_key"],
-                unit_label=row["unit_label"],
-                **access_fields(access, row["document_id"], row["unit_label"]),
-            ),
+    def source(row) -> ChunkSource:
+        passage = facts.get(str(row["chunk_id"]))
+        card_access = access_fields(access, row["document_id"], row["unit_label"])
+        return ChunkSource(**{
+            "collection": row["collection"],
+            "document_title": row["document_title"],
+            "author": row["author"],
+            "reference": row["reference"],
+            "document_id": str(row["document_id"]),
+            "position": row["position"],
+            "anchor": row["anchor"],
+            "chapter_key": row["chapter_key"],
+            "unit_label": row["unit_label"],
+            **card_access,
+            # Facts and passage fields (2.4a); their author, from the document or its
+            # work, replaces the row's.
+            **(passage.source_fields(card_access["source_credit"]) if passage else {}),
+        })
+
+    results = []
+    for row in rows:
+        chunk_id = str(row["chunk_id"])
+        resolution = resolutions.get(chunk_id, corpus_lifecycle.CURRENT)
+        display = shown.get(chunk_id)
+        results.append(ChunkResult(
+            chunk_id=chunk_id,
+            # A removed passage shows no text (Carter, 9 Nov 2026): its tombstone gives
+            # the title, author, reference and reason instead.
+            content=display["content"] if display is not None else "",
+            source=source(display if display is not None else row),
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],
-            context=context.get(str(row["chunk_id"])),
-            footnotes=notes.get(str(row["chunk_id"]), []),
-        )
-        for row in rows
-    ]
+            context=context.get(str(display["chunk_id"])) if display is not None else None,
+            footnotes=notes.get(str(display["chunk_id"]), []) if display is not None else [],
+            status=resolution.status,
+            tombstone=resolution.tombstone,
+            redirect=resolution.redirect,
+        ))
 
     expected_count = int(search_row["result_count"] or 0)
     restore_status = (

@@ -4,6 +4,7 @@ import uuid
 import asyncpg
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app import corpus_lifecycle, corpus_schema
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
@@ -36,32 +37,68 @@ def _item(row) -> ReadingProgressItem:
     )
 
 
+# The chapter label comes from a visible passage (2.4a). A row whose document is
+# retired has none, so it drops out of lists; the single-document GET reads it with
+# `visible` empty, to say the document was removed.
 _SELECT_BASE = """
     SELECT rp.document_id, rp.chapter_key, rp.anchor, rp.updated_at,
            d.collection, d.title AS document_title, d.author,
-           chapter.chapter_label
+           chapter.chapter_label{retired}
     FROM reading_progress rp
     JOIN documents d ON d.id = rp.document_id
     JOIN LATERAL (
         SELECT c.chapter_label
         FROM chunks c
         WHERE c.document_id = rp.document_id
-          AND c.chapter_key = rp.chapter_key
+          AND c.chapter_key = rp.chapter_key{visible}
         ORDER BY c.position
         LIMIT 1
     ) chapter ON true
 """
 
 
-async def _fetch_readable(fetch, where: str, *args):
-    """Run `_SELECT_BASE + where` with excerpt-only documents filtered out. On a database
-    without 0041 there is nothing to filter, so the query runs without it."""
-    try:
-        return await fetch(_SELECT_BASE + where.replace("{readable}", _READABLE), *args)
-    except asyncpg.UndefinedColumnError as exc:
-        if "reader_access" not in str(exc):
-            raise
-        return await fetch(_SELECT_BASE + where.replace("{readable}", ""), *args)
+def _select(schema: corpus_schema.CorpusSchema, *, hide_retired: bool) -> str:
+    return (_SELECT_BASE
+            .replace("{retired}", ",\n           d.retired_at IS NOT NULL AS retired"
+                     if schema.retired else "")
+            .replace("{visible}", schema.visible("c") if hide_retired else ""))
+
+
+async def _fetch_readable(fetch, where: str, *args, hide_retired: bool = True):
+    """Run `_SELECT_BASE + where` with excerpt-only documents filtered out, and with
+    retired passages and documents left out unless `hide_retired` is false. On a
+    database without 0041 there is no excerpt filter, and without 0042 nothing is
+    retired, so the query runs without them."""
+    async def run(schema: corpus_schema.CorpusSchema):
+        where_ = where.replace("{visible}", schema.visible("d") if hide_retired else "")
+        try:
+            return await fetch(_select(schema, hide_retired=hide_retired)
+                               + where_.replace("{readable}", _READABLE), *args)
+        except asyncpg.UndefinedColumnError as exc:
+            if "reader_access" not in str(exc):
+                raise
+            return await fetch(_select(schema, hide_retired=hide_retired)
+                               + where_.replace("{readable}", ""), *args)
+
+    return await corpus_schema.run_with_fallback(run, get_pool())
+
+
+async def _fetch_retired_progress(pool, user_id, doc_uuid):
+    """The progress row of a retired document, labelled with its chapter key, or None
+    (also on a database without 0042)."""
+    schema = await corpus_schema.current(pool)
+    if not schema.lifecycle:
+        return None
+    return await pool.fetchrow(
+        """
+        SELECT rp.document_id, rp.chapter_key, rp.anchor, rp.updated_at,
+               d.collection, d.title AS document_title, d.author,
+               rp.chapter_key AS chapter_label, true AS retired
+        FROM reading_progress rp JOIN documents d ON d.id = rp.document_id
+        WHERE rp.user_id = $1 AND rp.document_id = $2 AND d.retired_at IS NOT NULL
+        """,
+        user_id, doc_uuid,
+    )
 
 
 @router.get("/reading-progress", response_model=ReadingProgressListResponse)
@@ -75,7 +112,7 @@ async def list_reading_progress(
     try:
         rows = await _fetch_readable(
             pool.fetch,
-            " WHERE rp.user_id = $1{readable} ORDER BY rp.updated_at DESC LIMIT $2",
+            " WHERE rp.user_id = $1{readable}{visible} ORDER BY rp.updated_at DESC LIMIT $2",
             user.user_id,
             limit,
         )
@@ -103,13 +140,28 @@ async def get_reading_progress(
             " WHERE rp.user_id = $1 AND rp.document_id = $2{readable}",
             user.user_id,
             doc_uuid,
+            hide_retired=False,
         )
+        if row is None:
+            # A retired document can have lost the progress row's chapter altogether (a
+            # rollback moves a new document's passages back where they came from), so
+            # it is found without the chapter join.
+            row = await _fetch_retired_progress(pool, user.user_id, doc_uuid)
+        resolution = None
+        if row is not None and row.get("retired"):
+            # The progress row is kept; its "continue reading" entry shows why the
+            # document left (2.4a).
+            schema = await corpus_schema.current(pool)
+            resolution = await corpus_lifecycle.resolve_document(pool, doc_uuid, schema)
     except Exception as exc:
         logger.error("get_reading_progress failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
     if row is None:
         raise HTTPException(status_code=404, detail="Reading progress not found")
-    return _item(row)
+    item = _item(row)
+    if resolution is not None and resolution.status == "removed":
+        item = item.model_copy(update={"status": "removed", "tombstone": resolution.tombstone})
+    return item
 
 
 @router.put("/reading-progress/{doc_id}", response_model=ReadingProgressItem)
@@ -135,19 +187,23 @@ async def put_reading_progress(
         raise restricted_error(access.source_url)
 
     try:
-        location = await pool.fetchrow(
-            """
+        # Only a visible passage is a reading location (2.4a).
+        async def find(schema: corpus_schema.CorpusSchema):
+            return await pool.fetchrow(
+                f"""
             SELECT c.chapter_label
             FROM chunks c
             WHERE c.document_id = $1 AND c.chapter_key = $2
-              AND ($3::text IS NULL OR c.anchor = $3)
+              AND ($3::text IS NULL OR c.anchor = $3){schema.visible("c")}
             ORDER BY c.position
             LIMIT 1
             """,
-            doc_uuid,
-            body.chapter_key,
-            body.anchor,
-        )
+                doc_uuid,
+                body.chapter_key,
+                body.anchor,
+            )
+
+        location = await corpus_schema.run_with_fallback(find, pool)
     except Exception as exc:
         logger.error("put_reading_progress validation failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc

@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import Literal, Optional
 
+from app.models.corpus import DocumentFacts, RedirectedFrom, WorkInfo
+
 
 class DocumentResponse(BaseModel):
     id: str
@@ -16,6 +18,11 @@ class DocumentResponse(BaseModel):
     reader_access: Literal["full", "excerpt"] = "full"
     # The official edition, for an excerpt-only document; None otherwise.
     source_url: Optional[str] = None
+    # Corpus cleanup 2.4a, from migration 0042. A retired document is never returned
+    # here (410 or 404 instead), so `status` is always "current".
+    facts: Optional[DocumentFacts] = None
+    works: list[WorkInfo] = []
+    status: Literal["current"] = "current"
 
 
 class ReaderChunk(BaseModel):
@@ -46,6 +53,14 @@ class ReaderPassage(BaseModel):
     unit_label: Optional[str] = None
     reference: Optional[str] = None
     content: str
+    # Corpus cleanup 2.4a, from migration 0042.
+    language: Optional[str] = None
+    note: Optional[str] = None
+    work_key: Optional[str] = None
+    passage_author: Optional[str] = None
+    # Set only on a history passage (rule F): the ID of the current passage that
+    # replaced it. Shown as earlier text beside that passage, never in the flow.
+    superseded_by: Optional[str] = None
 
 
 class ReaderChapter(BaseModel):
@@ -56,6 +71,10 @@ class ReaderChapter(BaseModel):
     prev_chapter_key: Optional[str] = None
     next_chapter_key: Optional[str] = None
     highlight_anchor: Optional[str] = None
+    # The anchor or chapter the request named, when it had moved and the API followed
+    # its redirect (2.4a). `document` is then where it moved to, which may be another
+    # document, and `highlight_anchor` is its new anchor.
+    redirected_from: Optional[RedirectedFrom] = None
 
 
 class TocEntry(BaseModel):

@@ -43,3 +43,49 @@ def test_chunk_source_accepts_anchor():
 def test_chunk_source_anchor_defaults_none():
     src = ChunkSource(collection="bible", document_title="John", document_id="d")
     assert src.anchor is None
+
+
+# --- corpus cleanup 2.4a: every added field is optional ------------------------------
+
+def test_a_chunk_event_without_the_2_4a_fields_validates():
+    from app.models.search import ChunkResult
+
+    result = ChunkResult.model_validate({
+        "chunk_id": "c", "content": "x",
+        "source": {"collection": "bible", "document_title": "John", "document_id": "d"},
+    })
+    assert result.status == "current"
+    assert (result.tombstone, result.redirect) == (None, None)
+    assert (result.source.facts, result.source.language, result.source.passage_note,
+            result.source.passage_author) == (None, None, None, None)
+
+
+def test_bookmarks_documents_passages_and_progress_default_the_2_4a_fields():
+    from app.models.bookmarks import BookmarkResponse, BookmarkSource
+    from app.models.reading_progress import ReadingProgressItem
+
+    bookmark = BookmarkResponse(id="b", chunk_id="c", created_at="t")
+    assert (bookmark.status, bookmark.tombstone, bookmark.redirect) == ("current", None, None)
+    source = BookmarkSource(collection="bible", document_title="John", document_id="d")
+    assert source.facts is None and source.passage_author is None
+    document = _doc()
+    assert (document.facts, document.works, document.status) == (None, [], "current")
+    passage = ReaderPassage(id="p", anchor="a", chapter_key="c", chapter_label="C", content="x")
+    assert (passage.language, passage.note, passage.work_key, passage.passage_author,
+            passage.superseded_by) == (None, None, None, None, None)
+    chapter = ReaderChapter(document=_doc(), chapter_key="c", chapter_label="C", passages=[])
+    assert chapter.redirected_from is None
+    item = ReadingProgressItem(document_id="d", chapter_key="c", chapter_label="C",
+                               updated_at="t", collection="bible", document_title="John")
+    assert (item.status, item.tombstone) == ("current", None)
+
+
+def test_document_facts_accepts_only_the_four_certainty_labels():
+    import pytest
+    from pydantic import ValidationError
+
+    from app.models.corpus import DocumentFacts
+
+    assert DocumentFacts(certainty="disputed").certainty == "disputed"
+    with pytest.raises(ValidationError):
+        DocumentFacts(certainty="probably")

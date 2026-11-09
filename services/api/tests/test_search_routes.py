@@ -503,3 +503,51 @@ def test_restore_timeout_returns_bounded_gateway_timeout():
 
     assert response.status_code == 504
     assert response.json()["detail"] == "Saved search took too long to load"
+
+
+def test_restore_without_0042_is_unchanged():
+    """Corpus cleanup 2.4a: on a database without 0042 the restore runs today's SQL and
+    returns today's response, plus the new optional fields at their defaults."""
+    pool = AsyncMock()
+    pool.fetchrow.return_value = {
+        "id": SEARCH_ID, "query": "providence", "filters": {"collections": ["bible"]},
+        "result_count": 1,
+    }
+    row = {
+        "rank": 1, "reranker_score": 0.5, "explanation": "Relevant",
+        "chunk_id": "00000000-0000-0000-0000-000000000012", "content": "In the beginning",
+        "reference": "Gen 1:1", "position": 0, "anchor": "gen/1/1", "chapter_key": "gen/1",
+        "unit_label": None, "collection": "bible", "document_title": "Genesis",
+        "author": None, "document_id": "00000000-0000-0000-0000-000000000013",
+    }
+    pool.fetch.return_value = [row]
+    with patch("app.routes.search.get_pool", return_value=pool):
+        response = _client().get(f"/v1/searches/{SEARCH_ID}/results")
+
+    sql = pool.fetch.await_args_list[0].args[0]
+    assert "retired_at" not in sql and "corpus_" not in sql
+    assert pool.fetch.await_count == 1  # no resolution or facts queries
+    assert response.status_code == 200
+    body = response.json()
+    result = body["results"][0]
+    added_source = {k: result["source"].pop(k)
+                    for k in ("facts", "language", "passage_note", "passage_author")}
+    added_result = {k: result.pop(k) for k in ("status", "tombstone", "redirect")}
+    assert added_source == dict.fromkeys(added_source)
+    assert added_result == {"status": "current", "tombstone": None, "redirect": None}
+    assert body == {
+        "search_id": SEARCH_ID, "query": "providence", "filters": {"collections": ["bible"]},
+        "results": [{
+            "chunk_id": row["chunk_id"], "content": "In the beginning",
+            "source": {
+                "collection": "bible", "document_title": "Genesis", "author": None,
+                "reference": "Gen 1:1", "document_id": row["document_id"], "position": 0,
+                "anchor": "gen/1/1", "chapter_key": "gen/1", "unit_label": None,
+                "reader_access": "full", "source_url": None, "source_credit": None,
+            },
+            "reranker_score": 0.5, "explanation": "Relevant", "context": None,
+            "footnotes": [],
+        }],
+        "restore_status": "complete", "expected_result_count": 1,
+        "delivery_outcome": None, "outcome": None, "collection_outcomes": None,
+    }

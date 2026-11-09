@@ -599,3 +599,20 @@ describe("reader refusal for excerpt-only documents (issue #265)", () => {
     }
   });
 });
+
+describe("retired anchors (corpus cleanup 2.4a)", () => {
+  it("sends a #retired-<release> anchor to the API unchanged, encoded as %23", async () => {
+    const { getReaderChapter } = await import("./api");
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({}), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      await getReaderChapter("t", "doc", { anchor: "c1/p2#retired-rel-1" });
+      const requested = String((fetchMock.mock.calls[0] as unknown[])[0]);
+      expect(requested).toBe("/v1/documents/doc/reader?anchor=c1%2Fp2%23retired-rel-1");
+      expect(new URL(requested, "https://theo-corpus.com").searchParams.get("anchor"))
+        .toBe("c1/p2#retired-rel-1");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});

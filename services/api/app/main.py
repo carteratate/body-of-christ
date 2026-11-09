@@ -14,6 +14,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from app import corpus_schema
+from app.corpus_lifecycle import CorpusLifecycleError
 from app.db import close_pool, get_pool, init_pool
 from app.rag.api_keys import close_api_keys, init_api_keys, is_ready as hyde_is_ready
 from app.rag.steps.embed import close_embed, init_embed, is_ready as embed_is_ready
@@ -123,6 +125,8 @@ async def lifespan(app: FastAPI):
         await init_pool()
     except Exception as exc:
         logger.warning("DB pool init failed (%s); starting without DB", exc.__class__.__name__)
+    # Which corpus-cleanup objects (0042) exist; re-read lazily every five minutes.
+    await corpus_schema.current()
     if not settings.internal_api_secret:
         logger.warning("INTERNAL_API_SECRET is not set — all requests will bypass the secret check")
     init_embed()
@@ -161,6 +165,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="theocorpus-api", lifespan=lifespan)
+
+
+@app.exception_handler(CorpusLifecycleError)
+async def _corpus_lifecycle_error(request: Request, exc: CorpusLifecycleError) -> JSONResponse:
+    """A removed (410, with its tombstone) or moved (404, with its redirect) document or
+    passage in the reader (corpus cleanup 2.4a)."""
+    return JSONResponse(status_code=exc.status_code, content=exc.body)
+
 
 class InternalSecretMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):

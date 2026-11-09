@@ -61,7 +61,12 @@ vi.mock("./ReaderChrome", () => ({
 
 vi.mock("./ContentsDrawer", () => ({ ContentsDrawer: () => null }));
 vi.mock("./ChapterSection", () => ({
-  ChapterSection: ({ chapter }: { chapter: ReaderChapter }) => <section data-chapter-key={chapter.chapter_key}>{chapter.chapter_label}</section>,
+  ChapterSection: ({ chapter }: { chapter: ReaderChapter }) => (
+    <section data-chapter-key={chapter.chapter_key}>
+      {chapter.chapter_label}
+      {chapter.passages.map((p) => <p key={p.id} id={`anchor-${p.anchor}`}>{p.content}</p>)}
+    </section>
+  ),
 }));
 
 function deferred<T>() {
@@ -940,5 +945,31 @@ describe("DocumentReader excerpt-only documents (issue #265)", () => {
 
     expect(await screen.findByText("The full text of this document isn't available on TheoCorpus yet.")).toBeTruthy();
     expect(screen.queryByRole("link", { name: /Read the full text/ })).toBeNull();
+  });
+});
+
+describe("retired anchors (corpus cleanup 2.4a)", () => {
+  it("sends a #retired-<release> anchor back unchanged and finds its element by ID", async () => {
+    const anchor = "c1/p2#retired-rel-1";
+    navigation.params = new Map([["anchor", anchor], ["from", "saved"]]);
+    const scrolled: string[] = [];
+    const scrollIntoView = vi.fn(function (this: HTMLElement) { scrolled.push(this.id); });
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { value: scrollIntoView, configurable: true });
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string) => ({
+      ...chapter(docId, "c1"),
+      passages: [{ id: "p", anchor, chapter_key: "c1", chapter_label: "C1", content: "text" }],
+      highlight_anchor: anchor,
+    }));
+
+    try {
+      render(<DocumentReader docId="doc-a" />);
+
+      await waitFor(() => expect(scrolled).toContain(`anchor-${anchor}`));
+      expect(api.getReaderChapter.mock.calls[0][2]).toMatchObject({ anchor });
+      // A CSS selector would choke on the `#` and `/`; getElementById does not.
+      expect(() => document.querySelector(`#anchor-${anchor}`)).toThrow();
+    } finally {
+      delete (HTMLElement.prototype as { scrollIntoView?: unknown }).scrollIntoView;
+    }
   });
 });

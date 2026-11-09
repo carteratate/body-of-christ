@@ -39,3 +39,10 @@ def test_extract_scores_from_markdown_fenced():
 def test_extract_scores_raises_on_no_array():
     with pytest.raises(ValueError, match="No JSON array"):
         _extract_scores("No valid JSON here")
+
+
+def test_the_prompt_names_the_song_of_songs_by_both_titles():
+    """1.4a renames the book "Song of Songs" at the Phase 4 apply, after this deploys (C-24)."""
+    from app.routes.evaluate import _EVALUATE_SYSTEM
+
+    assert "Song of Songs (Song of Solomon)" in _EVALUATE_SYSTEM

@@ -20,6 +20,8 @@ def pytest_configure(config):
     # stubbed calls exceeded the per-minute budget. The limiter itself is covered by
     # a dedicated test that sets the limit explicitly.
     os.environ.setdefault("COHERE_MAX_CALLS_PER_MINUTE", "0")
+    # Registered here, not at collection: a module-level `pytestmark` uses it on import.
+    config.addinivalue_line("markers", "real_corpus_schema: probe the corpus schema for real")
 
 
 import pytest
@@ -84,3 +86,18 @@ def _no_flipbook_check():
     _publication.checked_at = time.monotonic()
     yield
     _publication.republished, _publication.task = False, None
+
+
+# Corpus cleanup 2.4a reads `corpus_schema.current()` before building SQL. Fakes answer
+# every query alike, so the probe is pinned to "no 0042" (today's SQL and responses)
+# unless a test opts in with @pytest.mark.real_corpus_schema or sets the cache itself.
+@pytest.fixture(autouse=True)
+def _legacy_corpus_schema(request, monkeypatch):
+    from app import corpus_schema
+
+    corpus_schema.invalidate()
+    if not request.node.get_closest_marker("real_corpus_schema"):
+        monkeypatch.setattr(corpus_schema, "_cached", corpus_schema.LEGACY)
+        monkeypatch.setattr(corpus_schema, "_cached_at", float("inf"))
+    yield
+    corpus_schema.invalidate()

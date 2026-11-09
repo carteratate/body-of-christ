@@ -21,7 +21,7 @@ from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipelines.registry import PIPELINES, PipelineConfig
 from app.rag.pipelines.runner import PipelineExecutionError, run as run_pipeline
 from app.rag.search_plan import SearchPlan, resolve_search_plan
-from app.rag.steps import stitch
+from app.rag.steps import document_facts, stitch
 from app.rag.steps import explain
 from app.rag.steps.cost_tracker import PRICING_EFFECTIVE_DATE, CostTracker
 from app.rag.steps.explain import stream as stream_explanation
@@ -204,6 +204,22 @@ async def _footnotes_for(results) -> dict[str, list[dict]]:
         (r.chunk_id, r.content) for r in results
         if has_footnotes(r.collection, r.document_title)
     ])
+
+
+async def _facts_for(results, pipeline_result: PipelineResult,
+                     ) -> dict[str, document_facts.PassageFacts]:
+    """Document facts for the final results (2.4a). Best-effort: on failure the chunk
+    events go out without them, and the failure is a recovery, not a degradation,
+    since retrieval and ranking are untouched."""
+    facts, error = await document_facts.fetch_best_effort(
+        get_pool(), [r.chunk_id for r in results])
+    if error is not None:
+        pipeline_result.recovery_events.append({
+            "stage": "document_facts", "reason": type(error).__name__,
+            "action": "results_without_facts", "scope": None,
+            "details": {"message": str(error)[:300]},
+        })
+    return facts
 
 
 async def _persist_empty_search(
@@ -394,9 +410,15 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         # Step 6 — Yield chunk events
         # ------------------------------------------------------------------
-        access = await _document_access_for(final_results)
-        notes = await _footnotes_for(final_results)
+        # Three independent lookups, each best-effort, run together: every round trip
+        # here is time before the first card.
+        access, notes, facts = await asyncio.gather(
+            _document_access_for(final_results),
+            _footnotes_for(final_results),
+            _facts_for(final_results, pipeline_result),
+        )
         for chunk in final_results:
+            card_access = access_fields(access, chunk.document_id, chunk.unit_label)
             yield {
                 "type": "chunk",
                 "chunk_id": chunk.chunk_id,
@@ -412,7 +434,11 @@ async def run_search_pipeline(
                     "unit_label": chunk.unit_label,
                     # Excerpt-only documents (issue #265): the card links to the
                     # source instead of the reader.
-                    **access_fields(access, chunk.document_id, chunk.unit_label),
+                    **card_access,
+                    # Document facts and passage fields (2.4a), with the author from
+                    # Postgres; absent before 0042, so the event is today's.
+                    **(facts[chunk.chunk_id].source_fields(card_access["source_credit"])
+                       if chunk.chunk_id in facts else {}),
                 },
                 "reranker_score": (
                     None if chunk.score_source == "rrf_fallback"

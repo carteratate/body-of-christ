@@ -226,6 +226,7 @@ All decided by Carter on 28 September 2026.
 | On the Incarnation timing (1.8d) | Lawson's text is not retired early. It stays until the Phase 4 apply replaces it. The procedure in 2.2w stays available if Carter reopens this. | Decided by Carter on 4 Nov 2026. The work is already excerpt-only, and the early step needs 2.2b, 2.4a and 2.4b, which Phase 4 needs anyway, so it would gain little and take the work out of search. |
 | Whole Fathers works (1.8e) | None of the dropped whole works is added before Phase 4 except Asterius Urbanus (1.8c). The rest go through 5.6a with normal rule checks. | Decided by Carter on 4 Nov 2026. This keeps the order of fixing first and expanding after. A later publish loses nothing, and the checks keep the works from being forgotten. |
 | Anselm and Gaunilo (1.9) | Gaunilo's "In Behalf of the Fool" and "Anselm's Apologetic" come in together after Phase 4, with 5.6b, once Gaunilo has his rule check. | Decided by Carter on 4 Nov 2026. The reply makes sense only beside the objection it answers. |
+| Removed passages in saved searches and bookmarks (2.4a) | A removed passage shows no text. Its card or notice shows the title, author, reference and one plain sentence of reason, with the Church act where one exists, and a "Read it at <site>" link where `read_elsewhere_url` is set. | Decided by Carter on 9 Nov 2026. Keeping the text under a banner would keep excluded text on screen; the tombstone still tells the reader what was there and why it left. |
 
 ## Corrections to the handoff doc
 
