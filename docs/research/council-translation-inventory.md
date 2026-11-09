@@ -206,7 +206,7 @@ decides whether its allowlist takes them (see "Percival's units").
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Bull deposing the emperor Frederick II | "Bull Deposing The Emperor Frederick II" | Not printed; Schroeder's history reports the deposition (p. 300) | **gap** |
-| Constitutions I 1–22 and II 1–5 | "Constitutions" | pp. 301–316 (first series, 1–18) and pp. 317–323 (second series, 1–9) | covered: 27 units each, about 90% of Tanner's length overall. Schroeder groups them in another order (his 13–16 and 18 are Tanner's II 1–5; his 17 is Tanner's I 18); 1.2e aligns them |
+| Constitutions I 1–22 and II 1–5 | "Constitutions" | pp. 301–316 (first series, 1–18) and pp. 317–323 (second series, 1–9) | **partial**: 27 units each, but not the same 27. Tanner's I 7, "Legates and benefices", is not printed; Schroeder's second-series canon 6 (on the exempt) is not in Tanner (found by 1.2e-2's concordance, 9 Nov 2026). Schroeder groups them in another order (his 13–16 and 18 are Tanner's II 1–5; his 17 is Tanner's I 18) |
 
 ### 14. Lyons II (1274) — Schroeder
 
@@ -223,7 +223,7 @@ decides whether its allowlist takes them (see "Percival's units").
 | Introduction | "Introduction" | — | Tanner summary |
 | Bulls on the Templars and the Holy Land [1]–[8] (Tanner prints them in smaller type: "considerable doubt that a document is the work of the council") | "[Bulls and ordinances of the Roman curia concerning the order of the Templars…]" | Not printed; Schroeder's history names Vox in excelso (p. 369) | **gap** |
 | Decree [1], on the faith (Fidei catholicae) | "Decrees" [1] | p. 372, first series canon 1 | covered |
-| Decrees [2]–[37] | "Decrees" | pp. 379–442: first series 2–20, second series 1–18 | covered. Schroeder has 39 units against Tanner's 38 and orders them his own way; 1.2e aligns them |
+| Decrees [2]–[37] | "Decrees" | pp. 379–442: first series 2–20, second series 1–18 | **partial**: Tanner's [12], on a tithe granted for a time, is not printed; Schroeder's second-series canons 3 and 8 are not in Tanner, which is why he has 39 units against Tanner's 38 (found by 1.2e-2's concordance, 9 Nov 2026). He orders them his own way |
 | Decree on the Beghards and Beguines (Ad nostrum; **condemned text read at the council**: eight errors) | "Decrees" [28] | pp. 389–390, first series canon 6 | covered |
 | Exivi de paradiso | "Decrees" [38] | pp. 406–413, first series canon 21 | **partial**: abbreviated ("Owing to its length, abbreviations will be made", p. 407); about 3,600 words against Tanner's 4,900 |
 
