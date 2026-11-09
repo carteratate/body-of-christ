@@ -12,8 +12,10 @@ Each round Sol reviews, you fix what holds up, and Sol checks again.
 The user is not in the loop. Fix, decline, and dispute findings yourself; the
 user reviews once, at the end, from your report.
 
-Make the most minimal possible changes to appease Sol. Be careful of scope
-creep and don't be scared to push back.
+Fix the cause, not the reported scenario: state the rule the code should
+follow, make the smallest change that makes it hold, and check the
+neighbouring cases that rule covers. Stay out of code the finding does not
+touch, and don't be scared to push back.
 
 ## Budget
 
@@ -129,9 +131,11 @@ You fix; Sol never does. Check each finding and severity yourself. Another
 path, rare case, or small cost is a nit, whatever label it came with, except
 a failure or recovery path in code that writes or publishes data.
 
-- Agree: smallest fix. Prefer delete or narrow over new lock, cache,
-  helper, or option. Fix the case that happened. Add one focused test
-  that fails without the fix, if intent needs it.
+- Agree: smallest fix that makes the rule hold. Prefer delete or narrow over
+  new lock, cache, helper, or option. Before sending, check the cases next
+  to the reported one that the fix changes (a new guard: what else does it
+  refuse?). Add one focused test that fails without the fix, if intent needs
+  it.
 - Disagree: say why, with evidence (file:line, test, output).
 - Out of scope or nit: decline in one line. List as follow-up.
 
