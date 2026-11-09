@@ -154,14 +154,21 @@ _GUEST_LIVE = """AND gt.created_at > now() - interval '30 days'
 
 def _guest_access_sql(schema: CorpusSchema) -> str:
     """Whether the guest retrieved a passage of the document. With redirects (0042,
-    2.4a), also a document a redirect leads to from a passage the guest retrieved or
-    its document, so a moved result still opens."""
+    2.4a), also a document that redirects lead to, up to three hops, from a passage the
+    guest retrieved or its document, so a moved result still opens."""
     redirected = f""" OR EXISTS (
-                       SELECT 1 {_GUEST_SESSION}
-                       JOIN corpus_redirects r
-                         ON r.old_id = gr.chunk_id OR r.old_document_id = c.document_id
-                       WHERE gt.session_token_hash=$1 AND r.new_document_id=$2
-                         {_GUEST_LIVE}
+                       WITH RECURSIVE reach (document_id, passage_id, hops) AS (
+                           SELECT c.document_id, gr.chunk_id, 0 {_GUEST_SESSION}
+                           WHERE gt.session_token_hash=$1
+                             {_GUEST_LIVE}
+                           UNION
+                           SELECT r.new_document_id, r.new_id, reach.hops + 1
+                           FROM reach JOIN corpus_redirects r
+                             ON r.old_id = reach.passage_id
+                             OR r.old_document_id = reach.document_id
+                           WHERE reach.hops < 3
+                       )
+                       SELECT 1 FROM reach WHERE document_id=$2
                    )""" if schema.redirects else ""
     return f"""SELECT EXISTS (
                        SELECT 1 {_GUEST_SESSION}

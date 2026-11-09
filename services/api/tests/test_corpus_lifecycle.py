@@ -504,3 +504,40 @@ async def test_a_redirect_to_a_passage_later_removed_shows_the_removal(db, clust
             UPDATE chunks SET retired_at = NULL, position = 2 WHERE id = '{P_NEW}';
             DELETE FROM corpus_publishes WHERE id = 'rel-2';
         """)
+
+
+async def test_reader_follows_anchor_and_chapter_redirect_chains(db, cluster):
+    """Each publish adds redirects from what was live then: old -> middle -> new."""
+    cluster.sql(f"""
+        INSERT INTO corpus_redirects (entity, old_id, old_document_id, old_anchor, new_id,
+                                      new_document_id, new_anchor, kind, publish_id)
+        VALUES ('anchor', NULL, '{LIVE}', 'oldest/anchor', NULL, '{LIVE}', 'old/anchor',
+                'renumbered', 'rel-1'),
+               ('chapter', NULL, '{LIVE}', 'oldestch', NULL, '{LIVE}', 'oldch', 'moved',
+                'rel-1');
+    """)
+    try:
+        by_anchor = await get_document_reader(LIVE, anchor="oldest/anchor", chapter=None,
+                                              user=_user())
+        assert (by_anchor.chapter_key, by_anchor.highlight_anchor) == ("c2", "c2/p1")
+        assert by_anchor.redirected_from.anchor == "oldest/anchor"
+        by_chapter = await get_document_reader(LIVE, anchor=None, chapter="oldestch",
+                                               user=_user())
+        assert by_chapter.chapter_key == "c2"
+        assert by_chapter.redirected_from.chapter_key == "oldestch"
+    finally:
+        cluster.sql("DELETE FROM corpus_redirects WHERE old_anchor IN ('oldest/anchor', 'oldestch')")
+
+
+async def test_guest_reaches_the_end_of_a_redirect_chain(db, cluster):
+    # P_OLD_DOC -> P_NEW (LIVE) -> P_COUNCIL (COUNCIL): two hops from what the guest saw.
+    cluster.sql(f"""
+        INSERT INTO corpus_redirects (entity, old_id, old_document_id, old_anchor, new_id,
+                                      new_document_id, new_anchor, kind, publish_id)
+        VALUES ('passage', '{P_NEW}', '{LIVE}', 'c2/p1', '{P_COUNCIL}', '{COUNCIL}', 'can/1',
+                'moved', 'rel-1');
+    """)
+    try:
+        await require_document_access(COUNCIL, _Request(GUEST_TOKEN), None)
+    finally:
+        cluster.sql(f"DELETE FROM corpus_redirects WHERE old_id = '{P_NEW}'")

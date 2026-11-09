@@ -258,11 +258,24 @@ async def resolve_document(conn, doc_id, schema: CorpusSchema) -> Resolution | N
     return None
 
 
+async def _retired_anchor(conn, doc_uuid: uuid.UUID, anchor: str,
+                          schema: CorpusSchema) -> Resolution | None:
+    """The resolution of the retired passage that carries `anchor`, if not current."""
+    passage = await conn.fetchval(
+        "SELECT id::text FROM chunks WHERE document_id = $1 AND anchor = $2",
+        doc_uuid, anchor)
+    if passage is None:
+        return None
+    resolved = (await resolve_passages(conn, [passage], schema)).get(passage)
+    return resolved if resolved is not None and resolved.status != "current" else None
+
+
 async def resolve_location(conn, doc_id, *, anchor: str | None, chapter: str | None,
                            schema: CorpusSchema) -> Resolution | None:
     """An `?anchor=` or `?chapter=` that no visible passage of the document carries:
-    moved (an anchor or chapter redirect, or the redirect of the retired passage the
-    anchor names), removed (that passage's tombstone), or None.
+    moved (an anchor or chapter redirect, followed up to three hops to a location a
+    visible passage carries, or the redirect of the retired passage the anchor names),
+    removed (that passage's tombstone), or None.
 
     An anchor that a current passage gave up carries the suffix `#retired-<release>` on
     the retired row (2.2w); a link holding the suffix finds that row here."""
@@ -272,21 +285,36 @@ async def resolve_location(conn, doc_id, *, anchor: str | None, chapter: str | N
     entity, old = ("anchor", anchor) if anchor else ("chapter", chapter)
     if old is None:
         return None
+    column = "anchor" if entity == "anchor" else "chapter_key"
+    first = last = None
+    at_doc, at_key = doc_uuid, old
     if schema.redirects:
-        row = await conn.fetchrow(
-            f"SELECT {_REDIRECT_COLUMNS} FROM corpus_redirects "
-            "WHERE entity = $1 AND old_document_id = $2 AND old_anchor = $3",
-            entity, doc_uuid, old)
-        if row is not None:
-            return Resolution("moved", redirect=redirect(row))
-    if anchor:
-        passage = await conn.fetchval(
-            "SELECT id::text FROM chunks WHERE document_id = $1 AND anchor = $2",
-            doc_uuid, anchor)
-        if passage is not None:
-            resolved = (await resolve_passages(conn, [passage], schema)).get(passage)
-            if resolved is not None and resolved.status != "current":
+        # Each publish adds redirects from the locations live at that moment, so an
+        # old link can need several hops (old -> middle -> new).
+        for _ in range(_MAX_HOPS):
+            row = await conn.fetchrow(
+                f"SELECT {_REDIRECT_COLUMNS} FROM corpus_redirects "
+                "WHERE entity = $1 AND old_document_id = $2 AND old_anchor = $3",
+                entity, at_doc, at_key)
+            if row is None or row["new_anchor"] is None:
+                break
+            first, last = first or row, row
+            at_doc, at_key = uuid.UUID(row["new_document_id"]), row["new_anchor"]
+            if await conn.fetchval(
+                    f"SELECT EXISTS (SELECT 1 FROM chunks WHERE document_id = $1 "
+                    f"AND {column} = $2 AND retired_at IS NULL)", at_doc, at_key):
+                break
+    if last is not None:
+        if entity == "anchor" and (at_doc, at_key) != (doc_uuid, old):
+            # The chain ends at an anchor no visible passage carries: that passage's
+            # own redirect or tombstone, when it has one.
+            resolved = await _retired_anchor(conn, at_doc, at_key, schema)
+            if resolved is not None:
                 return resolved
+        return Resolution("moved", redirect=redirect(last).model_copy(
+            update={"kind": first["kind"]}))
+    if anchor:
+        return await _retired_anchor(conn, doc_uuid, anchor, schema)
     return None
 
 
