@@ -568,3 +568,67 @@ async def test_a_redirected_document_whose_destination_was_removed_shows_the_rem
             UPDATE documents SET retired_at = NULL WHERE id = '{LIVE}';
             DELETE FROM corpus_publishes WHERE id = 'rel-3';
         """)
+
+
+async def test_a_redirect_to_a_chapter_later_removed_shows_the_removal(db, cluster):
+    """oldch3 -> gonech, then a later publish removed every passage of gonech."""
+    gone = "00000000-0000-0000-0000-0000000000cb"
+    cluster.sql(f"""
+        INSERT INTO chunks (id, document_id, position, anchor, chapter_key, chapter_label,
+                            reference, content, retired_at)
+        VALUES ('{gone}', '{LIVE}', -1000010, 'g/p1', 'gonech', 'Gone', 'Works 9.1', 'gone',
+                now());
+        INSERT INTO corpus_tombstones (entity, id, document_id, retired_at, publish_id,
+            removal_key, rule, reason_code, public_reason, church_act, snapshot)
+        VALUES ('passage', '{gone}', '{LIVE}', now(), 'rel-1', 'rm-6', 'G',
+                'rule-g-editorial', 'Editor-written chapter.', NULL, '{{"title": "Works"}}');
+        INSERT INTO corpus_redirects (entity, old_id, old_document_id, old_anchor, new_id,
+                                      new_document_id, new_anchor, kind, publish_id)
+        VALUES ('chapter', NULL, '{LIVE}', 'oldch3', NULL, '{LIVE}', 'gonech', 'moved', 'rel-1');
+    """)
+    try:
+        for chapter in ("oldch3", "gonech"):
+            with pytest.raises(CorpusLifecycleError) as raised:
+                await get_document_reader(LIVE, anchor=None, chapter=chapter, user=_user())
+            assert raised.value.status_code == 410
+            assert raised.value.body["tombstone"]["public_reason"] == "Editor-written chapter."
+    finally:
+        cluster.sql(f"""
+            DELETE FROM corpus_redirects WHERE old_anchor = 'oldch3';
+            DELETE FROM corpus_tombstones WHERE id = '{gone}';
+            DELETE FROM chunks WHERE id = '{gone}';
+        """)
+
+
+async def test_a_passage_redirect_points_where_its_target_is_now(db, cluster):
+    """A later publish moved P_NEW in place (same ID, new anchor): the stored redirect
+    coordinates are stale, so the live row decides."""
+    cluster.sql(f"UPDATE chunks SET anchor = 'c2/p1-moved' WHERE id = '{P_NEW}'")
+    try:
+        results = {r.chunk_id: r for r in
+                   (await get_search_results(SEARCH, user=_user())).results}
+        assert results[P_OLD].redirect.anchor == "c2/p1-moved"
+        chapter = await get_document_reader(LIVE, anchor="c1/p3", chapter=None, user=_user())
+        assert (chapter.chapter_key, chapter.highlight_anchor) == ("c2", "c2/p1-moved")
+    finally:
+        cluster.sql(f"UPDATE chunks SET anchor = 'c2/p1' WHERE id = '{P_NEW}'")
+
+
+async def test_progress_of_a_removed_document_with_no_passages_left_carries_the_tombstone(
+        db, cluster):
+    """A rollback moves a new document's passages back where they came from and gives
+    it a rolled-back tombstone; progress made in between still explains itself."""
+    cluster.sql(f"""
+        UPDATE chunks SET document_id = '{LIVE}', position = -1000020, anchor = 'gone/p1'
+        WHERE id = '{P_GONE}';
+    """)
+    try:
+        item = await get_reading_progress(GONE, user=_user())
+        assert item.status == "removed"
+        assert item.chapter_label == "p"
+        assert item.tombstone.reason_code == "awaiting-permission"
+    finally:
+        cluster.sql(f"""
+            UPDATE chunks SET document_id = '{GONE}', position = -1000000, anchor = 'p1'
+            WHERE id = '{P_GONE}';
+        """)

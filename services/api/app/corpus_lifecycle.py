@@ -117,7 +117,7 @@ _REDIRECT_COLUMNS = """entity, old_id::text AS old_id, old_document_id::text AS 
        new_anchor, kind"""
 
 _STATE_SQL = """
-    SELECT c.id::text AS id, c.document_id::text AS document_id,
+    SELECT c.id::text AS id, c.document_id::text AS document_id, c.anchor,
            c.retired_at IS NULL AND d.retired_at IS NULL AS current,
            d.retired_at IS NOT NULL AS document_retired
     FROM chunks c JOIN documents d ON d.id = c.document_id
@@ -152,12 +152,17 @@ async def _follow_passage_redirects(conn, ids: set[str],
             break
         for orig, row in hops.items():
             first.setdefault(orig, row)
-        state = {r["id"]: r["current"] for r in await conn.fetch(
+        state = {r["id"]: r for r in await conn.fetch(
             _STATE_SQL, _uuids({r["new_id"] for r in hops.values()}))}
         pending = {}
         for orig, row in hops.items():
-            if state.get(row["new_id"]):
-                out[orig] = redirect(row).model_copy(update={"kind": first[orig]["kind"]})
+            target = state.get(row["new_id"])
+            if target is not None and target["current"]:
+                # Where the target is now: a later publish can move it, keeping its ID
+                # (D1), after this redirect was written.
+                out[orig] = redirect(row).model_copy(update={
+                    "kind": first[orig]["kind"], "document_id": target["document_id"],
+                    "anchor": target["anchor"]})
             else:
                 pending[orig] = last[orig] = row["new_id"]
     return out, last
@@ -292,6 +297,20 @@ async def _retired_anchor(conn, doc_uuid: uuid.UUID, anchor: str,
     return resolved if resolved is not None and resolved.status != "current" else None
 
 
+async def _retired_chapter(conn, doc_uuid: uuid.UUID, chapter_key: str,
+                           schema: CorpusSchema) -> Resolution | None:
+    """A chapter whose passages are all retired: the removal of one of them, if any
+    was removed (a moved chapter has a chapter redirect instead)."""
+    ids = [r["id"] for r in await conn.fetch(
+        "SELECT id::text AS id FROM chunks WHERE document_id = $1 AND chapter_key = $2 "
+        "AND retired_at IS NOT NULL ORDER BY position DESC", doc_uuid, chapter_key)]
+    if not ids:
+        return None
+    resolved = await resolve_passages(conn, ids, schema)
+    return next((resolved[i] for i in ids
+                 if i in resolved and resolved[i].status == "removed"), None)
+
+
 async def resolve_location(conn, doc_id, *, anchor: str | None, chapter: str | None,
                            schema: CorpusSchema) -> Resolution | None:
     """An `?anchor=` or `?chapter=` that no visible passage of the document carries:
@@ -326,18 +345,17 @@ async def resolve_location(conn, doc_id, *, anchor: str | None, chapter: str | N
                     f"SELECT EXISTS (SELECT 1 FROM chunks WHERE document_id = $1 "
                     f"AND {column} = $2 AND retired_at IS NULL)", at_doc, at_key):
                 break
+    retired = _retired_anchor if entity == "anchor" else _retired_chapter
     if last is not None:
-        if entity == "anchor" and (at_doc, at_key) != (doc_uuid, old):
-            # The chain ends at an anchor no visible passage carries: that passage's
-            # own redirect or tombstone, when it has one.
-            resolved = await _retired_anchor(conn, at_doc, at_key, schema)
+        if (at_doc, at_key) != (doc_uuid, old):
+            # The chain ends at a location no visible passage carries: the redirect or
+            # removal of what was there, when it has one.
+            resolved = await retired(conn, at_doc, at_key, schema)
             if resolved is not None:
                 return resolved
         return Resolution("moved", redirect=redirect(last).model_copy(
             update={"kind": first["kind"]}))
-    if anchor:
-        return await _retired_anchor(conn, doc_uuid, anchor, schema)
-    return None
+    return await retired(conn, doc_uuid, old, schema)
 
 
 async def resolve_saved(conn, rows, schema: CorpusSchema, passage_sql: str,

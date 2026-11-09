@@ -83,6 +83,24 @@ async def _fetch_readable(fetch, where: str, *args, hide_retired: bool = True):
     return await corpus_schema.run_with_fallback(run, get_pool())
 
 
+async def _fetch_retired_progress(pool, user_id, doc_uuid):
+    """The progress row of a retired document, labelled with its chapter key, or None
+    (also on a database without 0042)."""
+    schema = await corpus_schema.current(pool)
+    if not schema.lifecycle:
+        return None
+    return await pool.fetchrow(
+        """
+        SELECT rp.document_id, rp.chapter_key, rp.anchor, rp.updated_at,
+               d.collection, d.title AS document_title, d.author,
+               rp.chapter_key AS chapter_label, true AS retired
+        FROM reading_progress rp JOIN documents d ON d.id = rp.document_id
+        WHERE rp.user_id = $1 AND rp.document_id = $2 AND d.retired_at IS NOT NULL
+        """,
+        user_id, doc_uuid,
+    )
+
+
 @router.get("/reading-progress", response_model=ReadingProgressListResponse)
 async def list_reading_progress(
     limit: int = Query(default=6, ge=1, le=10),
@@ -124,6 +142,11 @@ async def get_reading_progress(
             doc_uuid,
             hide_retired=False,
         )
+        if row is None:
+            # A retired document can have lost the progress row's chapter altogether (a
+            # rollback moves a new document's passages back where they came from), so
+            # it is found without the chapter join.
+            row = await _fetch_retired_progress(pool, user.user_id, doc_uuid)
         resolution = None
         if row is not None and row.get("retired"):
             # The progress row is kept; its "continue reading" entry shows why the
