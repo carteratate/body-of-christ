@@ -129,9 +129,12 @@ def _uuids(ids) -> list[uuid.UUID]:
     return [uuid.UUID(str(i)) for i in ids]
 
 
-async def _follow_passage_redirects(conn, ids: set[str]) -> dict[str, Redirect]:
+async def _follow_passage_redirects(conn, ids: set[str],
+                                    ) -> tuple[dict[str, Redirect], dict[str, str]]:
     """Old passage ID -> the redirect to a current passage, following up to three hops.
-    The redirect's kind is the first hop's: that is the change the reader made."""
+    The redirect's kind is the first hop's: that is the change the reader made. Also
+    returns, for a chain that ends at a passage that is not current, its last ID, so a
+    later removal of the target is shown as removed rather than as the old text."""
     out: dict[str, Redirect] = {}
     pending = {i: i for i in ids}       # original id -> id at the current hop
     first: dict[str, dict] = {}
@@ -156,7 +159,7 @@ async def _follow_passage_redirects(conn, ids: set[str]) -> dict[str, Redirect]:
                 out[orig] = redirect(row).model_copy(update={"kind": first[orig]["kind"]})
             else:
                 pending[orig] = row["new_id"]
-    return out
+    return out, {orig: at for orig, at in pending.items() if at != orig}
 
 
 async def resolve_passages(conn, ids, schema: CorpusSchema) -> dict[str, Resolution]:
@@ -171,18 +174,22 @@ async def resolve_passages(conn, ids, schema: CorpusSchema) -> dict[str, Resolut
     if not pending:
         return out
 
+    terminal: dict[str, str] = {}
     if schema.redirects:
-        for i, r in (await _follow_passage_redirects(conn, pending)).items():
+        moved, terminal = await _follow_passage_redirects(conn, pending)
+        for i, r in moved.items():
             out[i] = Resolution("moved", redirect=r)
         pending -= set(out)
 
     if pending and schema.tombstones:
         documents = {states[i]["document_id"] for i in pending}
-        rows = await conn.fetch(_TOMBSTONE_SQL, _uuids(pending), _uuids(documents))
+        rows = await conn.fetch(_TOMBSTONE_SQL, _uuids(pending | set(terminal.values())),
+                                _uuids(documents))
         passage = {r["id"]: r for r in rows if r["entity"] == "passage"}
         document = {r["id"]: r for r in rows if r["entity"] == "document"}
         for i in list(pending):
-            row = passage.get(i) or document.get(states[i]["document_id"])
+            row = (passage.get(i) or document.get(states[i]["document_id"])
+                   or passage.get(terminal.get(i)))
             if row is not None:
                 out[i] = Resolution("removed", tombstone=tombstone(row))
                 pending.discard(i)

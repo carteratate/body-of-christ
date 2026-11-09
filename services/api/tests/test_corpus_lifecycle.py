@@ -468,3 +468,30 @@ async def test_single_reading_progress_of_a_removed_document_carries_the_tombsto
     assert item.chapter_label == "Letter"
     live = await get_reading_progress(LIVE, user=_user())
     assert live.status == "current" and live.tombstone is None
+
+
+async def test_a_redirect_to_a_passage_later_removed_shows_the_removal(db, cluster):
+    """A moved to B, then a later publish removed B: A shows B's tombstone, not its own
+    retired text."""
+    cluster.sql(f"""
+        INSERT INTO corpus_publishes (id, collections, qdrant_collection)
+        VALUES ('rel-2', ARRAY['church-fathers'], 'chunks-rel-2');
+        UPDATE chunks SET retired_at = now(), position = -1000003 WHERE id = '{P_NEW}';
+        INSERT INTO corpus_tombstones (entity, id, document_id, retired_at, publish_id,
+            removal_key, rule, reason_code, public_reason, church_act, snapshot)
+        VALUES ('passage', '{P_NEW}', '{LIVE}', now(), 'rel-2', 'rm-4', 'G',
+                'rule-g-editorial', 'Editor-written.', NULL,
+                '{{"collection": "church-fathers", "title": "Works", "reference": "Works 2.1"}}');
+    """)
+    try:
+        results = {r.chunk_id: r for r in
+                   (await get_search_results(SEARCH, user=_user())).results}
+        assert results[P_OLD].status == "removed"
+        assert results[P_OLD].content == ""
+        assert results[P_OLD].tombstone.public_reason == "Editor-written."
+    finally:
+        cluster.sql(f"""
+            DELETE FROM corpus_tombstones WHERE publish_id = 'rel-2';
+            UPDATE chunks SET retired_at = NULL, position = 2 WHERE id = '{P_NEW}';
+            DELETE FROM corpus_publishes WHERE id = 'rel-2';
+        """)
