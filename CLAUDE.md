@@ -180,8 +180,14 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   metadata, `/sources` and the 403 keep the cover URL.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
-  Places for what the cleanup decides. 2.2w's writer fills them, the search path does not
-  read them yet, and every existing row is live and searchable. Document facts on `documents` (`genre` → the
+  Places for what the cleanup decides. 2.2w's writer fills them, and every existing row
+  is live and searchable. The search path does not read them yet (2.2b). The API's
+  results, reader, history restore, bookmarks, `/sources` and reading progress do (2.4a):
+  `app/corpus_schema.py` says which objects exist and builds today's SQL without them, and
+  `app/corpus_lifecycle.py` turns a retired row into `moved` (redirect) or `removed`
+  (tombstone, shown without its text). The reader answers a removed document or passage
+  with 410 `{"detail": "removed", "tombstone"}` and a moved one with 404
+  `{"detail": "moved", "redirect"}`. Document facts on `documents` (`genre` → the
   `corpus_genres` lookup, seeded from `datapipeline/registry/genres.py`; `issuer` slug and
   `issuer_label`; `date_display`, `certainty`, `attribution_note`, `notes`,
   `source_credit`, `clavis_ref`, `superseded_by`/`superseded_note`). Works inside one
@@ -201,8 +207,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   in-process run read it, read-only (`app/db.py`); the API server refuses to start with
   anything but `public`. All new objects: RLS on, no
   policies, revoked from `anon`/`authenticated`. A `documents.source_credit` column now
-  exists beside the API's derived `source_credit` (`app/reader_access.py`); which wins is
-  2.4a's decision. Apply 0043 right after 0042: 0042 is catalog-only (milliseconds under
+  exists beside the API's derived `source_credit` (`app/reader_access.py`). The derived
+  one stays the top-level field; `facts.source_credit` carries the column, except that an
+  excerpt-only document's required notice replaces it (2.4a). Apply 0043 right after 0042: 0042 is catalog-only (milliseconds under
   ACCESS EXCLUSIVE), 0043 validates under locks that do not block reads.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
@@ -377,7 +384,7 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
 | DELETE | `/searches/{id}` | Retrievals cascade |
-| GET | `/documents/{id}`, `/{id}/toc`, `/{id}/reader` | Reader: metadata, chapter list, one chapter. `/toc` and `/reader` return 403 `reader_restricted` for an excerpt-only document (§4) |
+| GET | `/documents/{id}`, `/{id}/toc`, `/{id}/reader` | Reader: metadata, chapter list, one chapter. `/toc` and `/reader` return 403 `reader_restricted` for an excerpt-only document (§4); all three return 410 with a tombstone or 404 with a redirect for a retired one (§4, 2.4a) |
 | GET/PUT | `/reading-progress`, `/reading-progress/{doc_id}` | Reader position |
 | GET | `/sources` | All documents with chunk counts and `reader_access`; the list is cached 1h in memory, reader access is read fresh |
 | POST | `/evaluate`, `/evaluate/explain` | Collection scoring; 10/day |
