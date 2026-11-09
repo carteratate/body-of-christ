@@ -25,8 +25,12 @@ creep and don't be scared to push back.
 - Stop early if a round returns only nits. Declined nits and comment,
   doc, or format-only fixes need no new round.
 - One reviewer only. Sol must not start subagents or reviewers.
+- Up to 3 loops per change. Each agreement is followed by a fresh review of
+  the whole diff (step 6); if it finds a blocker or should, it is round 1 of
+  the next loop, with the round budget reset.
 - Keep a ledger: id, severity, outcome, usage per round from Codex's output.
-  Never guess it.
+  Never guess it. Number rounds across loops (r1, r2, ...) and note where each
+  loop starts and its `thread_id`.
 
 ## 1. Scope
 
@@ -109,7 +113,9 @@ You own this codebase and you are the one who merges. Read surrounding code.
 Find bugs, broken callers, mismatch with intent.
 Skip style unless it hides a bug. Hold to the smallest change. Flag code,
 tests, or guards the intent does not need. Other paths, rare cases, small
-perf, extra compat: nits.
+perf, extra compat: nits. Exception: in code that writes or publishes data
+(migrations, publish, rollback, store repair), failure and recovery paths are
+in intent.
 blocker = intended case wrong. should = real bug callers will hit, in intent. nit = rest.
 Would you merge this code as it stands? Answer that first.
 Reply:
@@ -120,7 +126,8 @@ S1 [blocker|should|nit] <file>:<line> <claim>. Fix: <suggestion> (stable ids)
 ## 3. Answer findings
 
 You fix; Sol never does. Check each finding and severity yourself. Another
-path, rare case, or small cost is a nit, whatever label it came with.
+path, rare case, or small cost is a nit, whatever label it came with, except
+a failure or recovery path in code that writes or publishes data.
 
 - Agree: smallest fix. Prefer delete or narrow over new lock, cache,
   helper, or option. Fix the case that happened. Add one focused test
@@ -140,24 +147,49 @@ evidence), the same base diff command, and the change since last round. Tell
 Sol: open ids and changed code only. Mark each old id `resolved` or
 `still open: <reason>`, then answer again: would you merge this code now?
 
-## 5. Stop and ship
+## 5. End of a loop
 
 Agreed: MERGE on the current behavior diff, no blocker or should open,
-no concern of your own. Stuck: an item stays disputed after two replies,
-or budget ends. Do not ask the user mid-loop; put both sides in the report,
-2-3 lines each, and the user decides. Budget end is not approval.
+no concern of your own. Go to step 6. Stuck: an item stays disputed after
+two replies, or budget ends. Go to step 7 with no fresh review. Do not ask
+the user mid-loop; put both sides in the report, 2-3 lines each, and the
+user decides. Budget end is not approval.
+
+## 6. Fresh review
+
+A resumed Sol checks its own findings; it does not re-read the whole change.
+Before shipping, a new Sol reads all of it.
+
+Skip this step if the loop agreed in its round 1 and behavior code has not
+changed since: that round was already a fresh full review.
+
+Otherwise start a new `codex exec` (not `resume`) with the round 1 brief:
+same base and diff command, current checks, no ledger. Verify it as any
+round (session log, `git status`).
+
+- MERGE, or nits only: ship (step 7).
+- A blocker or should: this review is round 1 of the next loop. Save its
+  `thread_id` and continue at step 3. When a finding repeats one you
+  declined, dispute it with the earlier reason; the round 2 brief carries the
+  ledger.
+- Stop and report instead of starting the loop if it would be loop 4. Say
+  whether the cause looks like diff size or missing test coverage.
+
+## 7. Ship and report
 
 Do not push during the loop. Push after agreement only if the user asked
 to push, ship, or update the PR. If you push to a PR, add above the model
 blurb:
 
-`Reviewed with sol-loop: <N> rounds with <model> on high. Sol verdict: would merge`.
+`Reviewed with sol-loop: <L> loops, <N> rounds with <model> on high. Fresh review: would merge`.
 
-Write `on high` only if every round's session log showed it.
+Write `on high` only if every round's session log showed it. Under it, list
+each declined or disputed finding with its one-line reason, so a later reviewer
+sees what was weighed.
 
-Report: rounds, model and effort, what Sol changed, diff size before/after,
-fixed and declined findings with reasons, disputes with both sides, usage per
-round, pushed or not.
+Report: loops and rounds, each fresh review's verdict, model and effort, what
+Sol changed, diff size before/after, fixed and declined findings with reasons,
+disputes with both sides, usage per round, pushed or not.
 
 ---
 
