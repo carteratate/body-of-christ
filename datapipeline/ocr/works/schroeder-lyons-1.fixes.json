@@ -1,0 +1,188 @@
+[
+ {
+  "passage": "series-1-canon-3",
+  "find": "the éection be held",
+  "replace": "the election be held",
+  "why": "p. 303 prints \"election\" (the mark over the e is a speck, not an accent)"
+ },
+ {
+  "passage": "series-1-canon-3",
+  "find": "voce iforum qui",
+  "replace": "voce illorum qui",
+  "why": "p. 303 prints \"illorum\""
+ },
+ {
+  "passage": "series-1-canon-12",
+  "find": "(excommunicatione major!)",
+  "replace": "(excommunicatione majori)",
+  "why": "p. 306 prints \"(excommunicatione majori)\""
+ },
+ {
+  "passage": "series-1-canon-12",
+  "find": "by which sucha one",
+  "replace": "by which such a one",
+  "why": "p. 306 prints \"such a one\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "Desiting above",
+  "replace": "Desiring above",
+  "why": "p. 311 prints \"Desiring\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "to rernove that",
+  "replace": "to remove that",
+  "why": "p. 311 prints \"remove\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "entered Pokind,",
+  "replace": "entered Poland,",
+  "why": "p. 311 prints \"Poland\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "Christian anties, it-may",
+  "replace": "Christian armies, it may",
+  "why": "p. 311 prints \"armies, it may\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "the earth teing bereaved",
+  "replace": "the earth being bereaved",
+  "why": "p. 311 prints \"being\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "fail and-terminate",
+  "replace": "fail and terminate",
+  "why": "p. 311 prints \"and terminate\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "further ap-ptoach toward",
+  "replace": "further approach toward",
+  "why": "p. 311 prints \"ap-proach\" broken at the line end"
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "by which that a race can",
+  "replace": "by which that race can",
+  "why": "p. 311 prints \"by which that race can\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "may appear \"necessary,",
+  "replace": "may appear necessary,",
+  "why": "p. 311 has no quotation mark before \"necessary\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "contribute abundantly towatd",
+  "replace": "contribute abundantly toward",
+  "why": "p. 311 prints \"toward\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "contribute pro-prtionately",
+  "replace": "contribute proportionately",
+  "why": "p. 311 prints \"pro-portionately\" broken at the line end"
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "present one to ene Oo other Christians",
+  "replace": "present one to other Christians",
+  "why": "Pen marks in the margin read as words; p. 311 prints \"the present one to other Christians\""
+ },
+ {
+  "passage": "series-1-canon-16",
+  "find": "may gain entrance,",
+  "replace": "may gain entrance.",
+  "why": "p. 311 ends \"gain entrance.\""
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "deposition is required.’?",
+  "replace": "deposition is required.",
+  "why": "Note call 12 read as marks; p. 312 ends \"required.\""
+ },
+ {
+  "passage": "series-2-canon-3",
+  "find": "is introduced wid proved",
+  "replace": "is introduced and proved",
+  "why": "p. 319 prints \"and proved\""
+ },
+ {
+  "passage": "series-2-canon-3",
+  "find": "clear proof.in regard",
+  "replace": "clear proof in regard",
+  "why": "p. 319 prints \"proof in regard\""
+ },
+ {
+  "passage": "series-2-canon-3",
+  "find": "adjudicated, doea not",
+  "replace": "adjudicated, does not",
+  "why": "p. 319 prints \"does\""
+ },
+ {
+  "passage": "series-2-canon-3",
+  "find": "observing this-provision",
+  "replace": "observing this provision",
+  "why": "p. 319 prints \"this provision\""
+ },
+ {
+  "passage": "series-2-canon-3",
+  "find": "publicly excommuni- cated",
+  "replace": "publicly excommunicated",
+  "why": "p. 319 prints \"excommuni-cated\" broken at the line end"
+ },
+ {
+  "passage": "series-2-canon-4",
+  "find": "manifold penalties.\"",
+  "replace": "manifold penalties.",
+  "why": "Note call 18 read as a mark; p. 320 ends \"penalties.\""
+ },
+ {
+  "passage": "series-2-canon-8",
+  "find": "petitions to-be absolved",
+  "replace": "petitions to be absolved",
+  "why": "p. 323 prints \"to be absolved\""
+ },
+ {
+  "passage": "series-2-canon-8",
+  "find": "except in-matters",
+  "replace": "except in matters",
+  "why": "p. 323 prints \"in matters\""
+ },
+ {
+  "passage": "series-2-canon-8",
+  "find": "Jn answer",
+  "replace": "In answer",
+  "why": "p. 323 prints \"In answer\""
+ },
+ {
+  "passage": "series-2-canon-8",
+  "find": "may not-be removed",
+  "replace": "may not be removed",
+  "why": "p. 323 prints \"not be removed\""
+ },
+ {
+  "passage": "series-2-canon-8",
+  "find": "canonically imposed. In regard to the second point",
+  "replace": "canonically imposed.\n\nIn regard to the second point",
+  "why": "p. 323 opens a paragraph at \"In regard to the second point\""
+ },
+ {
+  "passage": "series-2-canon-8",
+  "find": "proof to’be avoided",
+  "replace": "proof to be avoided",
+  "why": "p. 323 prints \"to be avoided\""
+ },
+ {
+  "passage": "series-2-canon-9",
+  "find": "in the constitutions. 1 Kober, Der Kirchenbann, pp. 172.",
+  "replace": "in the constitutions.",
+  "why": "Note 19 at the foot of p. 323 (it belongs to canon 7) read into the text; p. 323 ends the canon at \"constitutions.\""
+ }
+]

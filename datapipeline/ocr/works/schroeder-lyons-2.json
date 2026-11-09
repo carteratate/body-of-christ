@@ -1,0 +1,32 @@
+{
+ "work": "schroeder-lyons-2",
+ "title": "Second Council of Lyons, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 324–364",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": [
+  "324",
+  "364"
+ ],
+ "layout": "single-column",
+ "units": "schroeder-canons",
+ "unit_count": 32,
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

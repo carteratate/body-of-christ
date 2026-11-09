@@ -7,6 +7,8 @@ each one on the ID its Tanner canon had, whatever number Tanner gave it.
 """
 from __future__ import annotations
 
+import re
+
 from config import settings
 from identity import anchor as make_anchor, slugify
 from ingest.pieces import Segment, name_pieces, pack_text, piece_reference
@@ -24,24 +26,45 @@ TEXT_REPLACED = "Schroeder (1937) replaces Tanner"
 WORKS = {
     "First Lateran Council": "schroeder-lateran-1",
     "Second Lateran Council": "schroeder-lateran-2",
+    "Third Lateran Council": "schroeder-lateran-3",
     "Fourth Lateran Council": "schroeder-lateran-4",
+    "First Council of Lyons": "schroeder-lyons-1",
+    "Second Council of Lyons": "schroeder-lyons-2",
+    "Council of Vienne": "schroeder-vienne",
 }
+# A council printed in two series names both: `<council>/series-K/canon/N`, each series
+# its own chapter (Carter, 9 Nov 2026). One series is `<council>/canon/N`.
+SERIES_LABELS = {1: "Canons, first series", 2: "Canons, second series"}
 # D9's fallback: a council that has not passed the OCR gate when the P4 build is cut goes
 # here and its adapter emits no passages. Its document ID stays frozen, and 4.1b's removal
 # entries explain its Tanner passages.
 HELD: frozenset[str] = frozenset()
 
 
-def _canon_number(unit_id: str) -> str:
-    return unit_id.removeprefix("canon-")
+_UNIT_ID = re.compile(r"^(?:series-(\d+)-)?canon-(\d+)$")
+
+
+def _unit(unit_id: str) -> tuple[int | None, str]:
+    """(series or None, Schroeder's canon number) of an OCR unit id."""
+    m = _UNIT_ID.match(unit_id)
+    if not m:
+        raise ValueError(f"not a Schroeder canon unit: {unit_id}")
+    return (int(m.group(1)) if m.group(1) else None), m.group(2)
 
 
 def _passages(council: str, year: int, text: dict) -> list[Passage]:
     slug = slugify(council)
-    chapter_key = make_anchor(slug, "canons")
     out: list[Passage] = []
     for unit in text["passages"]:
-        number = _canon_number(unit["id"])
+        series, number = _unit(unit["id"])
+        if series is None:
+            chapter_key, chapter_label = make_anchor(slug, "canons"), "Canons"
+            unit_anchor = make_anchor(slug, "canon", number)
+            base = f"{council}, Canon {number}"
+        else:
+            chapter_key, chapter_label = make_anchor(slug, f"series-{series}"), SERIES_LABELS[series]
+            unit_anchor = make_anchor(slug, f"series-{series}", "canon", number)
+            base = f"{council}, {SERIES_LABELS[series].split(', ')[1].capitalize()}, Canon {number}"
         paragraphs = [clean_text(p) for p in unit["text"].split("\n\n") if p.strip()]
         body = "\n\n".join(paragraphs)
         segments = [Segment(f"p{k}", p) for k, p in enumerate(paragraphs, 1)]
@@ -49,13 +72,11 @@ def _passages(council: str, year: int, text: dict) -> list[Passage]:
         meta = {"council": council, "year": year, "url": SCAN_URL,
                 "pages": [p for p in dict.fromkeys(unit["pages"]) if p],
                 "text_replaced": TEXT_REPLACED, **text["metadata"]}
-        base = f"{council}, Canon {number}"
-        unit_anchor = make_anchor(slug, "canon", number)
         for k, (piece, (anchor, held)) in enumerate(
                 zip(pieces, name_pieces(unit_anchor, body, pieces, segments)), 1):
             out.append(Passage(content=piece,
                                reference=piece_reference(base, None, None, k, len(pieces)),
-                               anchor=anchor, chapter_key=chapter_key, chapter_label="Canons",
+                               anchor=anchor, chapter_key=chapter_key, chapter_label=chapter_label,
                                position=len(out), unit_label=f"Canon {number}", metadata=meta,
                                source_units=held))
     return out

@@ -1,0 +1,776 @@
+[
+ {
+  "passage": "series-1-canon-2",
+  "find": "for the future memory hereof. “Having been",
+  "replace": "for the future memory hereof.\n\n“Having been",
+  "why": "p. 379 opens a paragraph at \"Having been elevated\""
+ },
+ {
+  "passage": "series-1-canon-2",
+  "find": "for the ex-ditation of the Catholic faith",
+  "replace": "for the exaltation of the Catholic faith",
+  "why": "p. 379 prints \"ex-altation\" broken at the line end"
+ },
+ {
+  "passage": "series-1-canon-2",
+  "find": "churches or the\n\n48 Peter Lombard speaks of the two opinions without, however, committing himself to a decision in favor of either one (IV Sent, dist. 4,c. 7). So also does Pope Innocent II in a brief to the Archbishop of Arles in 1201 (c.3, X, De baptisio, III, 42). cemeteries of the friars.",
+  "replace": "churches or the cemeteries of the friars.",
+  "why": "Note 45 at the foot of p. 379 read into the sentence; p. 380 continues \"cemeteries of the friars.\""
+ },
+ {
+  "passage": "series-1-canon-2",
+  "find": "and in neighboring Cities and dioceses",
+  "replace": "and in neighboring cities and dioceses",
+  "why": "p. 380 prints \"cities\""
+ },
+ {
+  "passage": "series-1-canon-2",
+  "find": "ought to be granted them.” “To this decree",
+  "replace": "ought to be granted them.\n\n“To this decree",
+  "why": "Note call 46 read as a quotation mark; p. 381 opens a paragraph at \"To this decree\", and the quotation continues"
+ },
+ {
+  "passage": "series-1-canon-2",
+  "find": "shall be given to the parochial clergy.’ In order",
+  "replace": "shall be given to the parochial clergy. In order",
+  "why": "Note call 47 read as a quotation mark; p. 381 prints \"clergy. In order\""
+ },
+ {
+  "passage": "series-1-canon-2",
+  "find": "enlist them as colabor-ers in the field",
+  "replace": "enlist them as colaborers in the field",
+  "why": "p. 382 prints \"colabor-ers\" broken at the line end"
+ },
+ {
+  "passage": "series-1-canon-4",
+  "find": "the banquets of seculars, do not during",
+  "replace": "the banquets of seculars; do not during",
+  "why": "A pen underline hides part of the mark; p. 387 prints \"seculars;\""
+ },
+ {
+  "passage": "series-1-canon-6",
+  "find": "about the sufferings of Christ.\" Under the cloak",
+  "replace": "about the sufferings of Christ. Under the cloak",
+  "why": "Note call 68 read as a quotation mark; p. 390 prints \"Christ. Under the cloak\""
+ },
+ {
+  "passage": "series-1-canon-6",
+  "find": "constitute a grave danger to souls, But, since",
+  "replace": "constitute a grave danger to souls. But, since",
+  "why": "Stop read as a comma; p. 390 prints \"souls. But, since\""
+ },
+ {
+  "passage": "series-1-canon-7",
+  "find": "they carry out per se Ipsos vel alios",
+  "replace": "they carry out per se ipsos vel alios",
+  "why": "p. 392 prints \"ipsos\""
+ },
+ {
+  "passage": "series-1-canon-8",
+  "find": "if the said assignment has been mate,",
+  "replace": "if the said assignment has been made,",
+  "why": "A pen mark over the word; p. 394 prints \"made\""
+ },
+ {
+  "passage": "series-1-canon-9",
+  "find": "the sacred canons are strictly observed.\"",
+  "replace": "the sacred canons are strictly observed.",
+  "why": "Note call 73 read as a quotation mark; p. 395 ends \"observed.\""
+ },
+ {
+  "passage": "series-1-canon-14",
+  "find": "their office.\n\nYour er",
+  "replace": "their office.",
+  "why": "p. 401: text ends at 'office.'; 'Your er' is the handwritten word 'Usurers' beside the CANON 15 heading"
+ },
+ {
+  "passage": "series-1-canon-15",
+  "find": "same way as\n\nthey would",
+  "replace": "same way as they would",
+  "why": "p. 401: one sentence, no paragraph break"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "excommun™ cation",
+  "replace": "excommunication",
+  "why": "p. 402: 'excommuni-/cation' joined"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "let him be excommunicate by",
+  "replace": "let him be excommunicated by",
+  "why": "p. 402: printed 'excommunicated'"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "censu7c",
+  "replace": "censure",
+  "why": "p. 402"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "all Gefs",
+  "replace": "all fiefs",
+  "why": "p. 402"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "all these\n\nd secular clergy- Its 82 This decree is an echo of the struggle between the regular an\n\nof archbishops 4” restrictions indicate that it was the outcume of abuses on the part\n\nd in annoying ao bishops when passing through exempt territory, abuses that consiste\n\nreise jurisdiction oppressing religious in one way or another and attempting to exe\n\ng, for the malice where they had none. At times papal exemption meant little or nothin and machinations of the prelates were often more powerful than a papal decret shall revert",
+  "replace": "all these shall revert",
+  "why": "pp. 402-403: footnote 82 read into the text between 'all these' (last line p. 402) and 'shall revert' (first line p. 403); remove it"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "benofices",
+  "replace": "benefices",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "the piace in",
+  "replace": "the place in",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "continucs",
+  "replace": "continues",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "th3t also whercin",
+  "replace": "that also wherein",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "becomcs",
+  "replace": "becomes",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "neighboring Cities",
+  "replace": "neighboring cities",
+  "why": "p. 403: lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "when he Presents",
+  "replace": "when he presents",
+  "why": "p. 403: lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "any cf the",
+  "replace": "any of the",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "punishment On those",
+  "replace": "punishment on those",
+  "why": "p. 403: lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "offender Ought",
+  "replace": "offender ought",
+  "why": "p. 403: lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "'vertheless",
+  "replace": "Nevertheless",
+  "why": "p. 403: 'Nevertheless' at line start"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "procecd",
+  "replace": "proceed",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "im-Pudence",
+  "replace": "impudence",
+  "why": "p. 403: 'im-/pudence' joined, lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "f anyone in the aforesaid",
+  "replace": "If anyone in the aforesaid",
+  "why": "p. 403: first letter lost at edge"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "the Sentence of",
+  "replace": "the sentence of",
+  "why": "p. 403: lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "as Possible",
+  "replace": "as possible",
+  "why": "p. 403: lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "the Oman pontiff",
+  "replace": "the Roman pontiff",
+  "why": "p. 403"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "the Same censure",
+  "replace": "the same censure",
+  "why": "p. 403: lower case"
+ },
+ {
+  "passage": "series-1-canon-17",
+  "find": "one guiity of such conduct",
+  "replace": "one guilty of such conduct",
+  "why": "A broken l in the type on p. 402, which reads like \"guiity\"; the word printed is \"guilty\""
+ },
+ {
+  "passage": "series-1-canon-18",
+  "find": "sum mons",
+  "replace": "summons",
+  "why": "p. 404: 'sum-/mons' joined"
+ },
+ {
+  "passage": "series-1-canon-18",
+  "find": "extorted A the",
+  "replace": "extorted in the",
+  "why": "p. 404"
+ },
+ {
+  "passage": "series-1-canon-18",
+  "find": "by tne",
+  "replace": "by the",
+  "why": "p. 404"
+ },
+ {
+  "passage": "series-1-canon-18",
+  "find": "void, ane we",
+  "replace": "void, and we",
+  "why": "p. 404"
+ },
+ {
+  "passage": "series-1-canon-18",
+  "find": "have: curred",
+  "replace": "have incurred",
+  "why": "p. 404: 'have in-/curred'"
+ },
+ {
+  "passage": "series-1-canon-18",
+  "find": "publish thos penalties",
+  "replace": "publish those penalties",
+  "why": "p. 404"
+ },
+ {
+  "passage": "series-1-canon-19",
+  "find": "that Srcal nobles",
+  "replace": "that some nobles",
+  "why": "p. 404"
+ },
+ {
+  "passage": "series-1-canon-19",
+  "find": "under ecclesis ab interdict",
+  "replace": "under ecclesiastical interdict",
+  "why": "p. 404"
+ },
+ {
+  "passage": "series-1-canon-19",
+  "find": "celebrate¢ P licly",
+  "replace": "celebrated publicly",
+  "why": "pp. 404-405: 'celebrated pub-/licly'"
+ },
+ {
+  "passage": "series-1-canon-19",
+  "find": "clergy and People",
+  "replace": "clergy and people",
+  "why": "p. 405: lower case"
+ },
+ {
+  "passage": "series-1-canon-19",
+  "find": "excesses So grave",
+  "replace": "excesses so grave",
+  "why": "p. 405: lower case"
+ },
+ {
+  "passage": "series-1-canon-20",
+  "find": "they.demand",
+  "replace": "they demand",
+  "why": "p. 405: pen mark read as a stop; 'de-/mand'"
+ },
+ {
+  "passage": "series-1-canon-20",
+  "find": "have re-\n\nse to violence",
+  "replace": "have recourse to violence",
+  "why": "p. 405: 're-/course' (pen stroke over 'course'); no paragraph break"
+ },
+ {
+  "passage": "series-1-canon-20",
+  "find": "TeCeive",
+  "replace": "receive",
+  "why": "p. 405"
+ },
+ {
+  "passage": "series-1-canon-20",
+  "find": "the Will of",
+  "replace": "the will of",
+  "why": "p. 405: lower case"
+ },
+ {
+  "passage": "series-1-canon-20",
+  "find": "For their ©rses",
+  "replace": "For their horses",
+  "why": "p. 405"
+ },
+ {
+  "passage": "series-1-canon-20",
+  "find": "if this 1s Inconvenient",
+  "replace": "if this is inconvenient",
+  "why": "p. 406: 'is in-/convenient'"
+ },
+ {
+  "passage": "series-1-canon-20",
+  "find": "porta regulatls",
+  "replace": "porta regularis",
+  "why": "p. 406"
+ },
+ {
+  "passage": "series-1-canon-21",
+  "find": "private consistories. Wherefore, after",
+  "replace": "private consistories.\n\nWherefore, after",
+  "why": "p. 407: 'Wherefore, after having submitted' begins an indented paragraph"
+ },
+ {
+  "passage": "series-1-canon-21",
+  "find": "to enter that they are bound",
+  "replace": "to know that they are bound",
+  "why": "p. 408: printed 'to know'"
+ },
+ {
+  "passage": "series-2-canon-2",
+  "find": "bishop ” or",
+  "replace": "bishop or",
+  "why": "p. 414: footnote call 92 only; no quotation mark"
+ },
+ {
+  "passage": "series-2-canon-2",
+  "find": "cus tomarily",
+  "replace": "customarily",
+  "why": "p. 414: word broken at line end"
+ },
+ {
+  "passage": "series-2-canon-2",
+  "find": "We do not wish",
+  "replace": "we do not wish",
+  "why": "p. 414: lower-case 'we'"
+ },
+ {
+  "passage": "series-2-canon-5",
+  "find": "prae-bendas",
+  "replace": "praebendas",
+  "why": "p. 417: 'prae-' hyphen is a line-end break"
+ },
+ {
+  "passage": "series-2-canon-7",
+  "find": "deceitful.'! The",
+  "replace": "deceitful. The",
+  "why": "p. 419: footnote call 110 read as garbage"
+ },
+ {
+  "passage": "series-2-canon-8",
+  "find": "intercourse with them,",
+  "replace": "intercourse with them.",
+  "why": "p. 421: full stop before the citation"
+ },
+ {
+  "passage": "series-2-canon-10",
+  "find": "clerics, espe-\n\n121 Miller, pp. 614 f. cially those",
+  "replace": "clerics, especially those",
+  "why": "pp. 423-424: footnote 121 (Müller, pp. 614 f.) read into the sentence; 'espe-cially' broken across the page"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "with Monastic moderation",
+  "replace": "with monastic moderation",
+  "why": "p. 425: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "in place of the Capuche with",
+  "replace": "in place of the capuche with",
+  "why": "p. 425: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "modest design.’*4 In",
+  "replace": "modest design. In",
+  "why": "p. 425: footnote call 124 read as garbage"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "long and full Sleeves of",
+  "replace": "long and full sleeves of",
+  "why": "p. 425: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "abbots, Priors, or those",
+  "replace": "abbots, priors, or those",
+  "why": "p. 425: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "At the divine Office",
+  "replace": "At the divine office",
+  "why": "p. 425: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "(as was Said above)",
+  "replace": "(as was said above)",
+  "why": "p. 426: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "prior claustralis.’*~",
+  "replace": "prior claustralis.",
+  "why": "p. 426: footnote call 125 read as garbage"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "weary of the Sweet yoke",
+  "replace": "weary of the sweet yoke",
+  "why": "p. 426: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "for no other Purpose than",
+  "replace": "for no other purpose than",
+  "why": "p. 427: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "sufficient to Maintain two",
+  "replace": "sufficient to maintain two",
+  "why": "p. 427: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "unite such Priories to",
+  "replace": "unite such priories to",
+  "why": "p. 427: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "monks of those Places that",
+  "replace": "monks of those places that",
+  "why": "p. 427: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "priories Must within",
+  "replace": "priories must within",
+  "why": "p. 427: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "expressly made Profession in",
+  "replace": "expressly made profession in",
+  "why": "p. 427: lower case"
+ },
+ {
+  "passage": "series-2-canon-12",
+  "find": "Innocent III??? of",
+  "replace": "Innocent III of",
+  "why": "p. 428: footnote call 127 read as garbage"
+ },
+ {
+  "passage": "series-2-canon-13",
+  "find": "pertain to their tights",
+  "replace": "pertain to their rights",
+  "why": "p. 429: 'rights'"
+ },
+ {
+  "passage": "series-2-canon-13",
+  "find": "ex- €mptions",
+  "replace": "exemptions",
+  "why": "p. 429: word broken at line end ('ex-emptions')"
+ },
+ {
+  "passage": "series-2-canon-14",
+  "find": "excommunication an interdict",
+  "replace": "excommunication and interdict",
+  "why": "p. 430: 'and'"
+ },
+ {
+  "passage": "series-2-canon-14",
+  "find": "their own sou! and",
+  "replace": "their own soul and",
+  "why": "p. 430: 'soul'"
+ },
+ {
+  "passage": "series-2-canon-14",
+  "find": "suita ble",
+  "replace": "suitable",
+  "why": "p. 430: word broken at line end"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "permitted. {Others",
+  "replace": "permitted. Others",
+  "why": "p. 431: '{' is a pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "due them;|they",
+  "replace": "due them; they",
+  "why": "p. 431: '|' is a pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "properties. \\Those",
+  "replace": "properties. Those",
+  "why": "p. 431: '\\' is a pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "prison. [here are",
+  "replace": "prison. There are",
+  "why": "p. 431: 'There' (T overwritten by a pen stroke)"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "parish.\\ Others",
+  "replace": "parish. Others",
+  "why": "p. 431: pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "obey.\\Moreover",
+  "replace": "obey. Moreover",
+  "why": "p. 431: pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "measures.\\Contrary",
+  "replace": "measures. Contrary",
+  "why": "p. 431: pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "jus patrona-tus with",
+  "replace": "jus patronatus with",
+  "why": "p. 431: 'patrona-' is a line-end break"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "obligations.\\Just",
+  "replace": "obligations. Just",
+  "why": "p. 431: pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "for their execution, hey restrain",
+  "replace": "for their execution. They restrain",
+  "why": "p. 431: full stop after 'execution', then 'They' (T overwritten by a pen stroke)"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "religious.\\When",
+  "replace": "religious. When",
+  "why": "p. 431: pen mark"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "jus patrona-tus, bishops",
+  "replace": "jus patronatus, bishops",
+  "why": "p. 432: 'patrona-' is a line-end break"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "send to ——_ 7 the monasteries",
+  "replace": "send to the monasteries",
+  "why": "p. 432: marginal pen line read as garbage"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "jus patro-natus",
+  "replace": "jus patronatus",
+  "why": "p. 432: 'patro-' is a line-end break"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "vatl-ous",
+  "replace": "various",
+  "why": "p. 432: 'vari-ous' broken at line end"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "Some sel for",
+  "replace": "Some sell for",
+  "why": "p. 432: 'sell'"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "Others destroy manasteries",
+  "replace": "Others destroy monasteries",
+  "why": "p. 432: 'monasteries' (pen underline)"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "hosp! tals",
+  "replace": "hospitals",
+  "why": "p. 432: 'hospi-tals' broken at line end"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "In ge” eral",
+  "replace": "In general",
+  "why": "p. 432: 'gen-eral' broken at line end"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "losses on religious; especially",
+  "replace": "losses on religious, especially",
+  "why": "p. 432: comma after 'religious'"
+ },
+ {
+  "passage": "series-2-canon-15",
+  "find": "prop\" erties",
+  "replace": "properties",
+  "why": "pp. 432-433: 'prop-erties' broken across the page"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "Viaticum,|solemnize matrimony,’*-/or who",
+  "replace": "Viaticum, solemnize matrimony, or who",
+  "why": "p. 435: pen marks and footnote call 142 read as garbage"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "outside the cages expressed",
+  "replace": "outside the cases expressed",
+  "why": "p. 435: 'cases' (pen stroke through the s)"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "Apostolic See, lor who",
+  "replace": "Apostolic See, or who",
+  "why": "p. 435: pen mark"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "(to use their own words neu ipso facto",
+  "replace": "(to use their own words), incur ipso facto",
+  "why": "p. 435: 'words), incur' (pen stroke over the comma)"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "obtained absolution: no appeal",
+  "replace": "obtained absolution; no appeal",
+  "why": "p. 435: semicolon"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "in this matter. “~~~ ~ ~",
+  "replace": "in this matter.",
+  "why": "p. 435: pen line after 'matter.' read as garbage"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "disparagingly of.the prelates",
+  "replace": "disparagingly of the prelates",
+  "why": "p. 435: no stop; a pen caret"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "churches;\\{o publish",
+  "replace": "churches; to publish",
+  "why": "p. 435: pen mark over 't'"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "indulgences,\\in the",
+  "replace": "indulgences, in the",
+  "why": "p. 435: pen mark"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "way of restitution \\to bring",
+  "replace": "way of restitution; to bring",
+  "why": "p. 435: semicolon after 'restitution'; pen mark"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "detriment of others a Xe) absolve",
+  "replace": "detriment of others; to absolve",
+  "why": "p. 435: 'others; to absolve' (pen mark)"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "ordinaries; wlanreasonably",
+  "replace": "ordinaries; unreasonably",
+  "why": "p. 435: footnote call 143 and pen mark read as garbage"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "to mainthin their",
+  "replace": "to maintain their",
+  "why": "p. 435: 'maintain' (pen mark)"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "delegated by us\\and",
+  "replace": "delegated by us and",
+  "why": "p. 435: pen mark"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "such a$ are",
+  "replace": "such as are",
+  "why": "p. 435: 'as' (pen mark)"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "pre-Scribed",
+  "replace": "prescribed",
+  "why": "p. 435: 'pre-scribed' broken at line end"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "unless, on Occasion of such excesses, Within a month they make plenary Satisfaction",
+  "replace": "unless, on occasion of such excesses, within a month they make plenary satisfaction",
+  "why": "p. 435: lower case 'occasion', 'within', 'satisfaction' (pen overline)"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "concerned, icur_eo ipso",
+  "replace": "concerned, incur eo ipso",
+  "why": "p. 435: 'incur eo ipso' (pen underline)"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "whatever tenor.;",
+  "replace": "whatever tenor.",
+  "why": "p. 435: full stop only"
+ },
+ {
+  "passage": "series-2-canon-16",
+  "find": "administer to, clerics",
+  "replace": "administer to clerics",
+  "why": "A pen caret read as a comma; p. 435 prints \"administer to clerics\""
+ },
+ {
+  "passage": "series-2-canon-18",
+  "find": "ecclesiastical censures in general",
+  "replace": "ecclesiastical consures in general",
+  "why": "p. 441: printed 'consures' (printer's misprint for 'censures'); keep only if the printer's spelling rule applies to obvious misprints"
+ }
+]

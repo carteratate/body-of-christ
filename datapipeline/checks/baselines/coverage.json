@@ -5,7 +5,7 @@
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
-  "councils": "feat/1.2e-1-lateran-schroeder b511d17",
+  "councils": "feat/1.2e-2-lyons-vienne 7a6b9ae",
   "encyclicals": "feat/1.3a-papal-parser 8075859",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
@@ -836,26 +836,6 @@
    "body_chars": 68304,
    "covered_chars": 63429,
    "pct": 92.86
-  },
-  "councils/ecum-11-third-lateran-council.html": {
-   "body_chars": 45750,
-   "covered_chars": 45750,
-   "pct": 100.0
-  },
-  "councils/ecum-13-first-council-of-lyons.html": {
-   "body_chars": 76499,
-   "covered_chars": 76336,
-   "pct": 99.79
-  },
-  "councils/ecum-14-second-council-of-lyons.html": {
-   "body_chars": 68880,
-   "covered_chars": 68448,
-   "pct": 99.37
-  },
-  "councils/ecum-15-council-of-vienne.html": {
-   "body_chars": 6454,
-   "covered_chars": 6241,
-   "pct": 96.7
   },
   "councils/ecum-16-council-of-constance.html": {
    "body_chars": 130013,
@@ -2162,13 +2142,6 @@
    "covered_chars": 10383,
    "pct": 100.0
   },
-  "237081c4-64d8-52d2-a19e-66d6e5f01f1f": {
-   "collection": "councils",
-   "source_file": "ecum-14-second-council-of-lyons.html",
-   "body_chars": 68880,
-   "covered_chars": 68448,
-   "pct": 99.37
-  },
   "24045146-8f8f-5865-adfb-b93e97780dd6": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/40-MALeng-web-c.usfm",
@@ -2680,13 +2653,6 @@
    "covered_chars": 355430,
    "pct": 100.0
   },
-  "51599a74-556f-577c-9828-88b5472baf2f": {
-   "collection": "councils",
-   "source_file": "ecum-11-third-lateran-council.html",
-   "body_chars": 45750,
-   "covered_chars": 45750,
-   "pct": 100.0
-  },
   "51f1b4df-505c-571a-be5c-208d11aa6936": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/41-TOBeng-web-c.usfm",
@@ -3023,13 +2989,6 @@
    "covered_chars": 44447,
    "pct": 100.0
   },
-  "6eb88704-07df-52f6-b8bf-64f2e026c23a": {
-   "collection": "councils",
-   "source_file": "ecum-13-first-council-of-lyons.html",
-   "body_chars": 76499,
-   "covered_chars": 76336,
-   "pct": 99.79
-  },
   "6f2c7319-5974-57db-9317-ad5ad2020d15": {
    "collection": "apostolic-exhortations",
    "source_file": "querida-amazonia.html",
@@ -3239,13 +3198,6 @@
    "body_chars": 10955,
    "covered_chars": 10955,
    "pct": 100.0
-  },
-  "8548da71-b46a-5411-ac69-204ccf7322e0": {
-   "collection": "councils",
-   "source_file": "ecum-15-council-of-vienne.html",
-   "body_chars": 6454,
-   "covered_chars": 6241,
-   "pct": 96.7
   },
   "85bd14cc-fd8a-5e72-a126-fc5b4c3e6ebd": {
    "collection": "medieval",

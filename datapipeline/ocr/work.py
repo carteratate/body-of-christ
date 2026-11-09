@@ -78,6 +78,8 @@ class WorkConfig:
     layout: str = "single-column"
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
+    unit_series: tuple[int, ...] | None = None   # units per series, where it prints several
+    unit_closes: tuple[str, ...] = ()   # the editor's unlabelled paragraphs that close a unit
     names: tuple[str, ...] = ()
     model: str = "claude-sonnet-5-5"
     ceiling_usd: float = 2.00
@@ -88,6 +90,9 @@ class WorkConfig:
         d = dict(d)
         d["pages"] = tuple(d["pages"])
         d["names"] = tuple(d.get("names", ()))
+        d["unit_closes"] = tuple(d.get("unit_closes", ()))
+        if d.get("unit_series") is not None:
+            d["unit_series"] = tuple(d["unit_series"])
         d["baseline"] = Baseline(**d["baseline"])
         d["sample"] = SampleRule(**d.get("sample", {}))
         return cls(**d)

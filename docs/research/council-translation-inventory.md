@@ -206,7 +206,7 @@ decides whether its allowlist takes them (see "Percival's units").
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
 | Bull deposing the emperor Frederick II | "Bull Deposing The Emperor Frederick II" | Not printed; Schroeder's history reports the deposition (p. 300) | **gap** |
-| Constitutions I 1–22 and II 1–5 | "Constitutions" | pp. 301–316 (first series, 1–18) and pp. 317–323 (second series, 1–9) | covered: 27 units each, about 90% of Tanner's length overall. Schroeder groups them in another order (his 13–16 and 18 are Tanner's II 1–5; his 17 is Tanner's I 18); 1.2e aligns them |
+| Constitutions I 1–22 and II 1–5 | "Constitutions" | pp. 301–316 (first series, 1–18) and pp. 317–323 (second series, 1–9) | **partial**: 27 units each, but not the same 27. Tanner's I 7, "Legates and benefices", is not printed; Schroeder's second-series canon 6 (on the exempt) is not in Tanner (found by 1.2e-2's concordance, 9 Nov 2026). Schroeder groups them in another order (his 13–16 and 18 are Tanner's II 1–5; his 17 is Tanner's I 18) |
 
 ### 14. Lyons II (1274) — Schroeder
 
@@ -223,7 +223,7 @@ decides whether its allowlist takes them (see "Percival's units").
 | Introduction | "Introduction" | — | Tanner summary |
 | Bulls on the Templars and the Holy Land [1]–[8] (Tanner prints them in smaller type: "considerable doubt that a document is the work of the council") | "[Bulls and ordinances of the Roman curia concerning the order of the Templars…]" | Not printed; Schroeder's history names Vox in excelso (p. 369) | **gap** |
 | Decree [1], on the faith (Fidei catholicae) | "Decrees" [1] | p. 372, first series canon 1 | covered |
-| Decrees [2]–[37] | "Decrees" | pp. 379–442: first series 2–20, second series 1–18 | covered. Schroeder has 39 units against Tanner's 38 and orders them his own way; 1.2e aligns them |
+| Decrees [2]–[37] | "Decrees" | pp. 379–442: first series 2–20, second series 1–18 | **partial**: Tanner's [12], on a tithe granted for a time, is not printed; Schroeder's second-series canons 3 and 8 are not in Tanner, which is why he has 39 units against Tanner's 38 (found by 1.2e-2's concordance, 9 Nov 2026). He orders them his own way |
 | Decree on the Beghards and Beguines (Ad nostrum; **condemned text read at the council**: eight errors) | "Decrees" [28] | pp. 389–390, first series canon 6 | covered |
 | Exivi de paradiso | "Decrees" [38] | pp. 406–413, first series canon 21 | **partial**: abbreviated ("Owing to its length, abbreviations will be made", p. 407); about 3,600 words against Tanner's 4,900 |
 
@@ -619,7 +619,7 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G1 | Ephesus | Nestorius's second letter to Cyril (condemned text) | Chrystal 1895, pp. 155–166 |
 | G2 | Nicaea II | The four anathemas concerning holy images | Mendham 1850, pp. 442–443; Hefele vol. 5 (1896), p. 376 |
 | G3 | Constantinople IV | Definition of the eighth synod | — |
-| G4 | Lyons I | Bull deposing the emperor Frederick II | — |
+| G4 | Lyons I | Bull deposing the emperor Frederick II | Giles's Matthew Paris (1853), vol. 2, pp. 77–86; a follow-up to 1.2e-2 takes it (Carter, 9 Nov 2026; `2026-11-09-giles-matthew-paris-and-schroeder-trent.md`) |
 | G5 | Vienne | Bulls on the Templars and the Holy Land, [1]–[8] | — |
 | G6 | Constance | Sessions 1, 3, 4, 5 (Haec sancta), 8, 12, 13, 14, 15, 21, 37, 39 (Frequens and four others), 40, 44, 45: every document listed for them above | Foxe, Cattley ed., vol. 3, for the sentences of sessions 8 and 15 |
 | G7 | Constance | Session 43's closing declaration | — |
@@ -627,6 +627,7 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G9 | Lateran V | Sessions 2–6; session 8's bulls on peace and the Bohemians and on reform; session 9's exhortation to peace; session 10's decree on the Pragmatic Sanction; session 11's French agreements and Pastor aeternus gregem; session 12's two constitutions | — |
 | G10 | Vatican I | Session 1, decree of opening | — |
 | G11 | Vatican I | Session 2, profession of faith (Schaff's 1564 profession does not stand in; see Vatican I) | — |
+| G12 | Lyons I; Vienne | Lyons I's constitution I 7, "Legates and benefices"; Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves both out (pp. 316–317, 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | Lyons I's I 7: Giles's Matthew Paris (1853), vol. 2, pp. 96–97, taken by the same follow-up |
 
 Partial texts (Constantinople IV's canons, Lateran I's canons 15 and 16, Lyons II's
 constitution I, Constance's session 43, Vienne's Exivi de paradiso, Lateran V's seven

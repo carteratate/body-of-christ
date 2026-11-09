@@ -18,12 +18,6 @@
   "why": "The last lines of p. 238 were filed as a note; restored from the page."
  },
  {
-  "passage": "canon-4",
-  "find": "danger to souls\n\nFOURTH LATERAN COUNCIL 245\n\nand derogatory",
-  "replace": "danger to souls and derogatory",
-  "why": "The running head of p. 245 read into the sentence."
- },
- {
   "passage": "canon-8",
   "find": "From\n\n11 Cf. canon 17 of the Second Council of Lyons. these",
   "replace": "From these",
