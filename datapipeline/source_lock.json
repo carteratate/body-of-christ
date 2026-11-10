@@ -1843,11 +1843,11 @@
  {
   "collection": "apostolic-exhortations",
   "path": "apostolic-exhortations/manifest.json",
-  "sha256": "532a8b54d83a2dcb08ed742f1f49bb599e916bb9fcdbea0f0af9dee91f7c0b04",
-  "bytes": 8855,
+  "sha256": "440aa3b4c971320e0945196c46da789c71f5fc758d938c07150105662701f1d9",
+  "bytes": 13080,
   "url": null,
-  "acquired": "unknown-before-2026-09-29",
-  "hashed_on": "2026-10-04",
+  "acquired": "2026-11-09",
+  "hashed_on": "2026-11-09",
   "role": "adapter-auxiliary"
  },
  {
@@ -4409,11 +4409,11 @@
  {
   "collection": "encyclicals",
   "path": "encyclicals/manifest.json",
-  "sha256": "010c2357554ca81a10d5e53eef4a6169eab040db0a4ee45e807717a133d733f1",
-  "bytes": 31117,
+  "sha256": "2c21878ee15fecf074bea8831ecbe883eb9bf39614e9151df3cb97e4e2018974",
+  "bytes": 48555,
   "url": null,
-  "acquired": "unknown-before-2026-09-29",
-  "hashed_on": "2026-10-04",
+  "acquired": "2026-11-09",
+  "hashed_on": "2026-11-09",
   "role": "adapter-auxiliary"
  },
  {
@@ -5159,11 +5159,11 @@
  {
   "collection": "papal-documents",
   "path": "papal-documents/manifest.json",
-  "sha256": "54d149bcf6f1e74f1df057bc2c4977872b4b9073566daf3e938e0815a0c99d27",
-  "bytes": 4026,
+  "sha256": "3260a0a561cbe0caf03e6d2ff9052d225e1d6df52397b23e694645de3adf11e6",
+  "bytes": 5992,
   "url": null,
-  "acquired": "unknown-before-2026-09-29",
-  "hashed_on": "2026-10-04",
+  "acquired": "2026-11-09",
+  "hashed_on": "2026-11-09",
   "role": "adapter-auxiliary"
  },
  {
