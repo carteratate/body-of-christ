@@ -6,7 +6,7 @@
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
   "councils": "feat/1.2e-4-constantinople-4-lateran-5 b1fbaaa",
-  "encyclicals": "feat/1.3a-papal-parser 8075859",
+  "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
   "summa": "feat/coverage-checks cfee751"
@@ -992,11 +992,6 @@
    "covered_chars": 170762,
    "pct": 99.87
   },
-  "encyclicals/casti-connubii.html": {
-   "body_chars": 105049,
-   "covered_chars": 105049,
-   "pct": 100.0
-  },
   "encyclicals/centesimus-annus.html": {
    "body_chars": 152748,
    "covered_chars": 152382,
@@ -1077,21 +1072,6 @@
    "covered_chars": 96285,
    "pct": 99.91
   },
-  "encyclicals/divini-redemptoris.html": {
-   "body_chars": 71984,
-   "covered_chars": 71984,
-   "pct": 100.0
-  },
-  "encyclicals/divino-afflante-spiritu.html": {
-   "body_chars": 57952,
-   "covered_chars": 57952,
-   "pct": 100.0
-  },
-  "encyclicals/divinum-illud-munus.html": {
-   "body_chars": 35609,
-   "covered_chars": 35491,
-   "pct": 99.67
-  },
   "encyclicals/dominum-et-vivificantem.html": {
    "body_chars": 171826,
    "covered_chars": 171686,
@@ -1101,11 +1081,6 @@
    "body_chars": 92976,
    "covered_chars": 92752,
    "pct": 99.76
-  },
-  "encyclicals/ecclesiam-suam.html": {
-   "body_chars": 100471,
-   "covered_chars": 100471,
-   "pct": 100.0
   },
   "encyclicals/etsi-multa.html": {
    "body_chars": 31063,
@@ -1162,20 +1137,120 @@
    "covered_chars": 15387,
    "pct": 100.0
   },
-  "encyclicals/humanae-vitae.html": {
-   "body_chars": 36437,
-   "covered_chars": 36437,
+  "encyclicals/hf_ben-xv_enc_15091920_spiritus-paraclitus.html": {
+   "body_chars": 71750,
+   "covered_chars": 71750,
    "pct": 100.0
   },
-  "encyclicals/humani-generis.html": {
-   "body_chars": 36057,
-   "covered_chars": 36057,
+  "encyclicals/hf_j-xxiii_enc_11041963_pacem.html": {
+   "body_chars": 86159,
+   "covered_chars": 86159,
    "pct": 100.0
   },
-  "encyclicals/immortale-dei.html": {
-   "body_chars": 53354,
-   "covered_chars": 53354,
+  "encyclicals/hf_j-xxiii_enc_15051961_mater.html": {
+   "body_chars": 121418,
+   "covered_chars": 121418,
    "pct": 100.0
+  },
+  "encyclicals/hf_l-xiii_enc_01111885_immortale-dei.html": {
+   "body_chars": 53356,
+   "covered_chars": 53356,
+   "pct": 100.0
+  },
+  "encyclicals/hf_l-xiii_enc_09051897_divinum-illud-munus.html": {
+   "body_chars": 35504,
+   "covered_chars": 35504,
+   "pct": 100.0
+  },
+  "encyclicals/hf_l-xiii_enc_15051891_rerum-novarum.html": {
+   "body_chars": 79577,
+   "covered_chars": 79539,
+   "pct": 99.95
+  },
+  "encyclicals/hf_l-xiii_enc_18111893_providentissimus-deus.html": {
+   "body_chars": 60252,
+   "covered_chars": 59744,
+   "pct": 99.16
+  },
+  "encyclicals/hf_l-xiii_enc_20061888_libertas.html": {
+   "body_chars": 56339,
+   "covered_chars": 56339,
+   "pct": 100.0
+  },
+  "encyclicals/hf_l-xiii_enc_28051902_mirae-caritatis.html": {
+   "body_chars": 38386,
+   "covered_chars": 38386,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-vi_enc_03091965_mysterium.html": {
+   "body_chars": 47851,
+   "covered_chars": 47851,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-vi_enc_06081964_ecclesiam.html": {
+   "body_chars": 104988,
+   "covered_chars": 104988,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-vi_enc_25071968_humanae-vitae.html": {
+   "body_chars": 39560,
+   "covered_chars": 39249,
+   "pct": 99.21
+  },
+  "encyclicals/hf_p-x_enc_19070908_pascendi-dominici-gregis.html": {
+   "body_chars": 124237,
+   "covered_chars": 124237,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-xi_enc_11121925_quas-primas.html": {
+   "body_chars": 35048,
+   "covered_chars": 34848,
+   "pct": 99.43
+  },
+  "encyclicals/hf_p-xi_enc_14031937_mit-brennender-sorge.html": {
+   "body_chars": 45633,
+   "covered_chars": 45633,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-xi_enc_19301231_casti-connubii.html": {
+   "body_chars": 104896,
+   "covered_chars": 104896,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-xi_enc_19310515_quadragesimo-anno.html": {
+   "body_chars": 114179,
+   "covered_chars": 113916,
+   "pct": 99.77
+  },
+  "encyclicals/hf_p-xi_enc_19370319_divini-redemptoris.html": {
+   "body_chars": 71857,
+   "covered_chars": 71857,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-xii_apc_19501101_munificentissimus-deus.html": {
+   "body_chars": 36343,
+   "covered_chars": 36343,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-xii_enc_12081950_humani-generis.html": {
+   "body_chars": 36233,
+   "covered_chars": 35941,
+   "pct": 99.19
+  },
+  "encyclicals/hf_p-xii_enc_20111947_mediator-dei.html": {
+   "body_chars": 144900,
+   "covered_chars": 144900,
+   "pct": 100.0
+  },
+  "encyclicals/hf_p-xii_enc_29061943_mystici-corporis-christi.html": {
+   "body_chars": 105539,
+   "covered_chars": 105330,
+   "pct": 99.8
+  },
+  "encyclicals/hf_p-xii_enc_30091943_divino-afflante-spiritu.html": {
+   "body_chars": 58069,
+   "covered_chars": 57816,
+   "pct": 99.56
   },
   "encyclicals/in-dominico-agro.html": {
    "body_chars": 10096,
@@ -1232,11 +1307,6 @@
    "covered_chars": 10107,
    "pct": 100.0
   },
-  "encyclicals/libertas.html": {
-   "body_chars": 56612,
-   "covered_chars": 56335,
-   "pct": 99.51
-  },
   "encyclicals/lumen-fidei.html": {
    "body_chars": 100548,
    "covered_chars": 100548,
@@ -1252,19 +1322,9 @@
    "covered_chars": 232209,
    "pct": 100.0
   },
-  "encyclicals/mater-et-magistra.html": {
-   "body_chars": 117499,
-   "covered_chars": 117499,
-   "pct": 100.0
-  },
   "encyclicals/maximae-quidem.html": {
    "body_chars": 6826,
    "covered_chars": 6826,
-   "pct": 100.0
-  },
-  "encyclicals/mediator-dei.html": {
-   "body_chars": 145040,
-   "covered_chars": 145040,
    "pct": 100.0
   },
   "encyclicals/meridionali-americae.html": {
@@ -1272,35 +1332,10 @@
    "covered_chars": 1790,
    "pct": 100.0
   },
-  "encyclicals/mirae-caritatis.html": {
-   "body_chars": 38420,
-   "covered_chars": 38420,
-   "pct": 100.0
-  },
   "encyclicals/mirari-vos.html": {
    "body_chars": 24416,
    "covered_chars": 23506,
    "pct": 96.27
-  },
-  "encyclicals/mit-brennender-sorge.html": {
-   "body_chars": 45758,
-   "covered_chars": 45758,
-   "pct": 100.0
-  },
-  "encyclicals/munificentissimus-deus.html": {
-   "body_chars": 36419,
-   "covered_chars": 36419,
-   "pct": 100.0
-  },
-  "encyclicals/mysterium-fidei.html": {
-   "body_chars": 46403,
-   "covered_chars": 46403,
-   "pct": 100.0
-  },
-  "encyclicals/mystici-corporis-christi.html": {
-   "body_chars": 105578,
-   "covered_chars": 105578,
-   "pct": 100.0
   },
   "encyclicals/neminem-vestrum.html": {
    "body_chars": 26492,
@@ -1342,16 +1377,6 @@
    "covered_chars": 8383,
    "pct": 100.0
   },
-  "encyclicals/pacem-in-terris.html": {
-   "body_chars": 84550,
-   "covered_chars": 84480,
-   "pct": 99.92
-  },
-  "encyclicals/pascendi-dominici-gregis.html": {
-   "body_chars": 127300,
-   "covered_chars": 126420,
-   "pct": 99.31
-  },
   "encyclicals/peregrinantes.html": {
    "body_chars": 14940,
    "covered_chars": 14940,
@@ -1377,16 +1402,6 @@
    "covered_chars": 10822,
    "pct": 100.0
   },
-  "encyclicals/providentissimus-deus.html": {
-   "body_chars": 60004,
-   "covered_chars": 59496,
-   "pct": 99.15
-  },
-  "encyclicals/quadragesimo-anno.html": {
-   "body_chars": 114109,
-   "covered_chars": 114109,
-   "pct": 100.0
-  },
   "encyclicals/quae-in-patriarchatu.html": {
    "body_chars": 14251,
    "covered_chars": 14251,
@@ -1410,11 +1425,6 @@
   "encyclicals/quartus-supra.html": {
    "body_chars": 52857,
    "covered_chars": 52857,
-   "pct": 100.0
-  },
-  "encyclicals/quas-primas.html": {
-   "body_chars": 34981,
-   "covered_chars": 34981,
    "pct": 100.0
   },
   "encyclicals/quas-vestro.html": {
@@ -1472,11 +1482,6 @@
    "covered_chars": 178067,
    "pct": 99.92
   },
-  "encyclicals/rerum-novarum.html": {
-   "body_chars": 79564,
-   "covered_chars": 79564,
-   "pct": 100.0
-  },
   "encyclicals/respicientes.html": {
    "body_chars": 18328,
    "covered_chars": 18328,
@@ -1510,11 +1515,6 @@
   "encyclicals/spe-salvi.html": {
    "body_chars": 104940,
    "covered_chars": 104940,
-   "pct": 100.0
-  },
-  "encyclicals/spiritus-paraclitus.html": {
-   "body_chars": 71716,
-   "covered_chars": 71716,
    "pct": 100.0
   },
   "encyclicals/summa-quae.html": {
@@ -1686,10 +1686,10 @@
  "documents": {
   "0016133e-3fe7-58d4-b2bb-51f7821ddf4e": {
    "collection": "encyclicals",
-   "source_file": "divinum-illud-munus.html",
-   "body_chars": 35609,
-   "covered_chars": 35491,
-   "pct": 99.67
+   "source_file": "hf_l-xiii_enc_09051897_divinum-illud-munus.html",
+   "body_chars": 35504,
+   "covered_chars": 35504,
+   "pct": 100.0
   },
   "003835b1-4a8b-54d1-bf6b-95845fb53ab9": {
    "collection": "encyclicals",
@@ -1966,10 +1966,10 @@
   },
   "17157215-3ef5-5b22-860a-f34895fc3c03": {
    "collection": "encyclicals",
-   "source_file": "pascendi-dominici-gregis.html",
-   "body_chars": 127300,
-   "covered_chars": 126420,
-   "pct": 99.31
+   "source_file": "hf_p-x_enc_19070908_pascendi-dominici-gregis.html",
+   "body_chars": 124237,
+   "covered_chars": 124237,
+   "pct": 100.0
   },
   "1731004f-ea5b-52a1-b533-56ae9377b7fe": {
    "collection": "church-fathers",
@@ -2085,9 +2085,9 @@
   },
   "1deb4103-9269-59ae-84c3-d9a691ef458c": {
    "collection": "encyclicals",
-   "source_file": "spiritus-paraclitus.html",
-   "body_chars": 71716,
-   "covered_chars": 71716,
+   "source_file": "hf_ben-xv_enc_15091920_spiritus-paraclitus.html",
+   "body_chars": 71750,
+   "covered_chars": 71750,
    "pct": 100.0
   },
   "1e6cffc3-1345-5e63-8bfa-dc12c5455d49": {
@@ -2225,10 +2225,10 @@
   },
   "2ba4a890-2d51-5a84-b6ab-4923a0487ea2": {
    "collection": "encyclicals",
-   "source_file": "providentissimus-deus.html",
-   "body_chars": 60004,
-   "covered_chars": 59496,
-   "pct": 99.15
+   "source_file": "hf_l-xiii_enc_18111893_providentissimus-deus.html",
+   "body_chars": 60252,
+   "covered_chars": 59744,
+   "pct": 99.16
   },
   "2beb29ac-130e-5647-85d7-843ddd676b7c": {
    "collection": "encyclicals",
@@ -2435,10 +2435,10 @@
   },
   "3f772bb4-2141-5389-be2b-34c0743b4395": {
    "collection": "encyclicals",
-   "source_file": "divino-afflante-spiritu.html",
-   "body_chars": 57952,
-   "covered_chars": 57952,
-   "pct": 100.0
+   "source_file": "hf_p-xii_enc_30091943_divino-afflante-spiritu.html",
+   "body_chars": 58069,
+   "covered_chars": 57816,
+   "pct": 99.56
   },
   "404f3fab-39e8-5520-b027-9b821b6384e4": {
    "collection": "papal-documents",
@@ -2470,10 +2470,10 @@
   },
   "42ca08d2-ea08-5b1c-b016-b4d75609a9c7": {
    "collection": "encyclicals",
-   "source_file": "quadragesimo-anno.html",
-   "body_chars": 114109,
-   "covered_chars": 114109,
-   "pct": 100.0
+   "source_file": "hf_p-xi_enc_19310515_quadragesimo-anno.html",
+   "body_chars": 114179,
+   "covered_chars": 113916,
+   "pct": 99.77
   },
   "433cf2af-194e-549f-b45d-85562d5b8b19": {
    "collection": "apostolic-exhortations",
@@ -2603,9 +2603,9 @@
   },
   "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9": {
    "collection": "encyclicals",
-   "source_file": "mysterium-fidei.html",
-   "body_chars": 46403,
-   "covered_chars": 46403,
+   "source_file": "hf_p-vi_enc_03091965_mysterium.html",
+   "body_chars": 47851,
+   "covered_chars": 47851,
    "pct": 100.0
   },
   "4d9fa1b9-bed6-5917-b397-987d21bff46f": {
@@ -3016,9 +3016,9 @@
   },
   "73eb7fdd-b401-5a95-a21e-0b0e9ce72188": {
    "collection": "encyclicals",
-   "source_file": "immortale-dei.html",
-   "body_chars": 53354,
-   "covered_chars": 53354,
+   "source_file": "hf_l-xiii_enc_01111885_immortale-dei.html",
+   "body_chars": 53356,
+   "covered_chars": 53356,
    "pct": 100.0
   },
   "756cdf3e-f9fa-594d-9f86-0b776413abf4": {
@@ -3135,10 +3135,10 @@
   },
   "82653425-7c72-5856-970e-57172da435fa": {
    "collection": "encyclicals",
-   "source_file": "pacem-in-terris.html",
-   "body_chars": 84550,
-   "covered_chars": 84480,
-   "pct": 99.92
+   "source_file": "hf_j-xxiii_enc_11041963_pacem.html",
+   "body_chars": 86159,
+   "covered_chars": 86159,
+   "pct": 100.0
   },
   "82d38756-6fba-5af7-9905-fd508a620f38": {
    "collection": "medieval",
@@ -3156,9 +3156,9 @@
   },
   "82e56c74-062f-5e8b-9da3-38f2c168fec2": {
    "collection": "encyclicals",
-   "source_file": "mit-brennender-sorge.html",
-   "body_chars": 45758,
-   "covered_chars": 45758,
+   "source_file": "hf_p-xi_enc_14031937_mit-brennender-sorge.html",
+   "body_chars": 45633,
+   "covered_chars": 45633,
    "pct": 100.0
   },
   "830a2c63-f968-5861-9a10-c1ee3c6ee79d": {
@@ -3317,10 +3317,10 @@
   },
   "959d1577-6f86-5f12-91dd-c4df9bef8dd4": {
    "collection": "encyclicals",
-   "source_file": "libertas.html",
-   "body_chars": 56612,
-   "covered_chars": 56335,
-   "pct": 99.51
+   "source_file": "hf_l-xiii_enc_20061888_libertas.html",
+   "body_chars": 56339,
+   "covered_chars": 56339,
+   "pct": 100.0
   },
   "96584290-90c2-50bc-9d3d-c353b8969e1f": {
    "collection": "church-fathers",
@@ -3373,9 +3373,9 @@
   },
   "999807dc-d537-51ce-a67c-149de0fd8992": {
    "collection": "encyclicals",
-   "source_file": "mirae-caritatis.html",
-   "body_chars": 38420,
-   "covered_chars": 38420,
+   "source_file": "hf_l-xiii_enc_28051902_mirae-caritatis.html",
+   "body_chars": 38386,
+   "covered_chars": 38386,
    "pct": 100.0
   },
   "9a6599ee-ac40-5017-a2c6-7aad2cf14296": {
@@ -3408,10 +3408,10 @@
   },
   "9c331b8c-1f07-5c5a-8375-d70d7ca92ee8": {
    "collection": "encyclicals",
-   "source_file": "quas-primas.html",
-   "body_chars": 34981,
-   "covered_chars": 34981,
-   "pct": 100.0
+   "source_file": "hf_p-xi_enc_11121925_quas-primas.html",
+   "body_chars": 35048,
+   "covered_chars": 34848,
+   "pct": 99.43
   },
   "9cef439f-e906-5eb4-b096-ad30e27be3b7": {
    "collection": "encyclicals",
@@ -3471,9 +3471,9 @@
   },
   "a2c444e7-7708-5fc7-9dd0-ab4bd21e11f0": {
    "collection": "encyclicals",
-   "source_file": "mediator-dei.html",
-   "body_chars": 145040,
-   "covered_chars": 145040,
+   "source_file": "hf_p-xii_enc_20111947_mediator-dei.html",
+   "body_chars": 144900,
+   "covered_chars": 144900,
    "pct": 100.0
   },
   "a395004b-2647-502c-b391-4cf96c7401c1": {
@@ -3534,9 +3534,9 @@
   },
   "a9c1215f-d6e9-5cfb-9cd3-4f11376cc2c3": {
    "collection": "encyclicals",
-   "source_file": "ecclesiam-suam.html",
-   "body_chars": 100471,
-   "covered_chars": 100471,
+   "source_file": "hf_p-vi_enc_06081964_ecclesiam.html",
+   "body_chars": 104988,
+   "covered_chars": 104988,
    "pct": 100.0
   },
   "a9dfa0cc-a39d-5962-9068-231edc7d02fe": {
@@ -3625,9 +3625,9 @@
   },
   "ac479404-9c2d-529b-8782-1f812f43c804": {
    "collection": "encyclicals",
-   "source_file": "divini-redemptoris.html",
-   "body_chars": 71984,
-   "covered_chars": 71984,
+   "source_file": "hf_p-xi_enc_19370319_divini-redemptoris.html",
+   "body_chars": 71857,
+   "covered_chars": 71857,
    "pct": 100.0
   },
   "ad120ce1-d694-50d9-9732-3843f5d755be": {
@@ -3779,9 +3779,9 @@
   },
   "bc0e3979-fac3-5132-a10d-fcc2659b0b7c": {
    "collection": "encyclicals",
-   "source_file": "mater-et-magistra.html",
-   "body_chars": 117499,
-   "covered_chars": 117499,
+   "source_file": "hf_j-xxiii_enc_15051961_mater.html",
+   "body_chars": 121418,
+   "covered_chars": 121418,
    "pct": 100.0
   },
   "bc50283d-09b3-542c-90ce-6154851c64be": {
@@ -3884,9 +3884,9 @@
   },
   "c3bfda64-97c2-56d3-8091-eb24c93e7931": {
    "collection": "encyclicals",
-   "source_file": "casti-connubii.html",
-   "body_chars": 105049,
-   "covered_chars": 105049,
+   "source_file": "hf_p-xi_enc_19301231_casti-connubii.html",
+   "body_chars": 104896,
+   "covered_chars": 104896,
    "pct": 100.0
   },
   "c3c6834c-efcf-518a-b90b-25eacd6a6091": {
@@ -3912,10 +3912,10 @@
   },
   "c5faaf87-76a5-57f0-990f-ab3c646953a7": {
    "collection": "encyclicals",
-   "source_file": "rerum-novarum.html",
-   "body_chars": 79564,
-   "covered_chars": 79564,
-   "pct": 100.0
+   "source_file": "hf_l-xiii_enc_15051891_rerum-novarum.html",
+   "body_chars": 79577,
+   "covered_chars": 79539,
+   "pct": 99.95
   },
   "c62b660d-5518-5b2e-b85d-808f2099bd5f": {
    "collection": "apostolic-exhortations",
@@ -4255,10 +4255,10 @@
   },
   "e7f59083-cf95-54ad-a42b-979022ed7921": {
    "collection": "encyclicals",
-   "source_file": "humani-generis.html",
-   "body_chars": 36057,
-   "covered_chars": 36057,
-   "pct": 100.0
+   "source_file": "hf_p-xii_enc_12081950_humani-generis.html",
+   "body_chars": 36233,
+   "covered_chars": 35941,
+   "pct": 99.19
   },
   "e847b8bb-ce69-528e-9eda-5173a795ec18": {
    "collection": "church-fathers",
@@ -4339,10 +4339,10 @@
   },
   "eeb0178b-9ee0-5713-8a67-279a06e66589": {
    "collection": "encyclicals",
-   "source_file": "mystici-corporis-christi.html",
-   "body_chars": 105578,
-   "covered_chars": 105578,
-   "pct": 100.0
+   "source_file": "hf_p-xii_enc_29061943_mystici-corporis-christi.html",
+   "body_chars": 105539,
+   "covered_chars": 105330,
+   "pct": 99.8
   },
   "eee1a6b6-6e6c-5c84-8a31-e071b361efb3": {
    "collection": "encyclicals",
@@ -4437,9 +4437,9 @@
   },
   "f6b90ce5-915f-5951-811c-ad4132bafd99": {
    "collection": "encyclicals",
-   "source_file": "munificentissimus-deus.html",
-   "body_chars": 36419,
-   "covered_chars": 36419,
+   "source_file": "hf_p-xii_apc_19501101_munificentissimus-deus.html",
+   "body_chars": 36343,
+   "covered_chars": 36343,
    "pct": 100.0
   },
   "f6c464a4-98e0-52be-9599-49d778fca15e": {
@@ -4479,10 +4479,10 @@
   },
   "f97326ef-e316-5a1b-98b9-b04b716fade3": {
    "collection": "encyclicals",
-   "source_file": "humanae-vitae.html",
-   "body_chars": 36437,
-   "covered_chars": 36437,
-   "pct": 100.0
+   "source_file": "hf_p-vi_enc_25071968_humanae-vitae.html",
+   "body_chars": 39560,
+   "covered_chars": 39249,
+   "pct": 99.21
   },
   "f9ca2dc5-6b49-534d-8d15-0a34c1dbc215": {
    "collection": "councils",

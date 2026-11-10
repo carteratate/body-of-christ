@@ -289,8 +289,9 @@ def source_section_numbers(units: list[SourceUnit]) -> list[int]:
 
 _SECTION_REF = re.compile(r"§(\d+)\s*$")
 # 1.3a's number fixes: numbers a source misprints, which it never prints as such.
-MISPRINTED_NUMBERS = {"aeterni-patris": {21}, "mediator-dei": {106},
-                      "menti-nostrae": {53, 54, 125}, "pacem-in-terris": {95}}
+MISPRINTED_NUMBERS = {"aeterni-patris": {21}, "humanae-vitae": {14}, "libertas": {28},
+                      "mediator-dei": {106}, "menti-nostrae": {53, 54, 125},
+                      "pacem-in-terris": {95}}
 # A paragraph number inside a block, as the parser splits it: after a finished sentence, or
 # after a short heading run on to it. A number after a word is a citation ("chapter 2.").
 _RUN_ON_NUMBER = re.compile(
@@ -298,19 +299,33 @@ _RUN_ON_NUMBER = re.compile(
 _CITATION_END = re.compile(r"\b(?:cf|vol|no|nos|p|pp|n|ch|chap|bk|art|can|sess|sect|cap|tit)\.$",
                            re.IGNORECASE)
 _DATING_LINE = re.compile(r"^(?:Given|Done|\[?Dated|From the Vatican|From Rome)\b")
-_SALUTATION = re.compile(r"^To\b|(?:Greetings?|Blessing|Benediction)[.!:]?$")
-# The length of unnumbered prose the parser reads as a first paragraph.
+# An address or a salutation, as the parser reads a long greeting: "To examine into the
+# nature …" (Mirae Caritatis §1) addresses no one.
+_SALUTATION = re.compile(
+    r"^To\s+(?:[A-Z]|all\b|the\b)|(?:Greetings?|Blessing|Benediction)[.!:]?$")
+_SALUTED = re.compile(r"(?:Greetings?|Blessing|Benediction)[.!:]?$")
+_SENTENCE_STOP = re.compile(r"[.!?][\"”’]*$")
+# The length of unnumbered prose the parser reads as a first paragraph; after the
+# salutation, a finished paragraph of PREFACE_MIN is one however short (Pacem in Terris).
 IMPLICIT_FIRST_MIN = 200
+PREFACE_MIN = 100
 
 
 def _opens_with_prose(units: list[SourceUnit]) -> bool:
     """Whether unnumbered prose long enough to be a first paragraph precedes the numbers."""
+    saluted = False
     for u in units:
         if u.region == "body" and u.unit_id:
             return False
-        if u.region == "body" and len(u.text) > IMPLICIT_FIRST_MIN \
-                and not _SALUTATION.search(u.text.strip()):
+        if u.region != "body":
+            continue
+        text = u.text.strip()
+        if len(u.text) > IMPLICIT_FIRST_MIN and not _SALUTATION.search(text):
             return True
+        if saluted and len(text) >= PREFACE_MIN and _SENTENCE_STOP.search(text) \
+                and not _SALUTATION.search(text):
+            return True
+        saluted = bool(_SALUTED.search(text))
     return False
 
 

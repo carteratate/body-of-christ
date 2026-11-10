@@ -244,6 +244,30 @@ def test_numbered_paragraphs_gap_duplicate_and_out_of_range():
     assert result.out_of_range == ["9"]
 
 
+def _body(text, unit_id=None):
+    return S.SourceUnit("d.html", unit_id, text, "body")
+
+
+def test_a_short_paragraph_after_the_salutation_is_a_first_paragraph():
+    # The parser's rule (1.3c, Pacem in Terris §1), so the check requires its §1.
+    greeting = [_body("To Our Venerable Brethren the Patriarchs."),
+                _body("Venerable Brethren, Health and Apostolic Benediction.")]
+    short = _body("Peace on Earth can never be established, never guaranteed, except by "
+                  "the diligent observance of the divinely established order.")
+    assert Q._opens_with_prose(greeting + [short, _body("Text.", "2")])
+    run_on = _body("When it first pleased God to raise Us to the See of Peter, He gave Us "
+                   "this charge, in these words:")
+    assert not Q._opens_with_prose(greeting + [run_on, _body("Text.", "2")])
+
+
+def test_a_long_paragraph_opening_with_to_is_no_address():
+    # Mirae Caritatis §1, "To examine into the nature …", against a long address.
+    prose = _body("To examine into the nature and to promote the effects " + "x " * 120)
+    address = _body("To Our Venerable Brethren, the Patriarchs " + "x " * 120)
+    assert Q._opens_with_prose([prose, _body("Text.", "2")])
+    assert not Q._opens_with_prose([address, _body("Text.", "2")])
+
+
 def test_canons_missing_glued_and_cross_reference():
     passages = [_passage("Text of canon one.", anchor="can/1"),
                 _passage("Text of two.Can. 3 §1. Glued text. See can. 1 and Can. 1, §2.",

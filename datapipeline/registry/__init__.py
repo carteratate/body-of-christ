@@ -645,6 +645,9 @@ def reconcile(registry: WorkRegistry, documents: list[Document], *, item: str,
             holder = held[0] if held else None
         if holder is None and settle is not None:
             holder = _settled(settle, r["old_passage_id"], r["old_anchor"], d)
+        if holder is None and not piece_holders(r["old_anchor"], d) \
+                and any(p.anchor == r["new_anchor"] for p in d.passages):
+            continue                   # a rebuilt source's piece, named by hand (1.3c)
         if holder is None:
             problems.append(f"{r['old_anchor']} ({r['old_passage_id']}): no single piece "
                             "now holds its opening unit")

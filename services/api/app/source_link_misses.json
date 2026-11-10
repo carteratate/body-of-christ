@@ -22,6 +22,7 @@
   "0c930baa-93e2-5e13-8d74-1e9116f9b523",
   "0dacf612-419c-5e6b-84cc-5a16c210746f",
   "11133ff5-264b-5311-a7fa-fd1f99215dfd",
+  "12304cf9-0613-5a1c-8910-29f7c3702b32",
   "155c48cd-a1d4-5ff1-96f8-6bb54feea49a",
   "16190f4b-3d43-5a6a-a595-56a1cbb482a8",
   "16bd0c5e-1644-555f-9e12-0662b3f85a20",
@@ -43,6 +44,7 @@
   "20b18c15-8882-589a-860a-20b52f652d0b",
   "21c5c8f1-960b-5c47-9016-fa6c713676e8",
   "22f4ee19-97eb-5954-a5a0-b81a037defa0",
+  "2400ec18-a5e3-50a1-b226-e01e05f9293d",
   "2453ea9f-b0e8-5bb5-8bf8-7364dec3b606",
   "25bee8d4-de11-51ea-bcfa-773851758feb",
   "25e04ce3-9a74-557d-a70e-7985b581dd0e",
@@ -73,6 +75,7 @@
   "4c6ffa3a-008f-56fe-990d-8df72f91c572",
   "4e005ac7-c447-532e-a339-73954fb651b6",
   "4e4500f0-e46f-52ac-be89-1fc3a253b4dc",
+  "4f0aa9ca-053e-501e-9de7-458fbb3b4175",
   "521ce075-6a81-58bb-9bc9-f4293877e3d6",
   "56122ae0-9ade-5345-848a-4549b77224f8",
   "565d9992-48a4-5b35-a9bc-dd7cf8db52b3",
@@ -112,6 +115,7 @@
   "7fcf4f26-9542-5730-a342-9f3d6b8fd069",
   "82cedf9f-54ed-5af0-9dc0-99b768b695dc",
   "83940062-b253-5064-85cd-d7f92f419a3a",
+  "83e6efc5-3e1c-5cfa-8fc2-430b227e0c66",
   "84156efa-57a7-5e8b-baf8-d67bcec93769",
   "851482aa-a351-5512-bd99-6b586604f4e9",
   "85fc5570-5844-5005-9dd5-c4cd0f84297e",
@@ -151,6 +155,7 @@
   "a7d4c5b0-54d2-5611-bbad-d28a11e5b0ab",
   "a8ee44d5-32c2-5be6-9920-263b9ebd21e3",
   "a98f889e-09d0-5310-823d-c571b2391143",
+  "ac82c55b-89cc-5c82-aa24-f2fce80ba0a3",
   "acbf97e2-b397-5d9a-87f3-47bb67e35eca",
   "adc6e60d-5e72-58ed-8d62-96943b9aee1a",
   "afde0bc1-46ca-568f-a6fc-d3154c9575d0",
@@ -170,6 +175,7 @@
   "c567eb16-15e8-5f87-8695-0f9bc2ad6669",
   "c616968f-830e-5135-a7c2-7cf1509708cb",
   "c68d1949-5754-57cf-88ee-2c1066a71c19",
+  "c6c312be-2702-544f-b074-e0e72ea39b08",
   "c8eebf88-3247-5033-85a4-dab0384ada00",
   "c93fb9b4-74ba-5b55-90f7-ccdad4ab3d85",
   "ca0b6bab-a88e-5fbe-922c-3f1f0625b8ef",
@@ -186,6 +192,7 @@
   "db1c1c2b-a6dd-5441-9e47-03c930e9d396",
   "dc54a062-9245-523e-bde5-db58fdd934aa",
   "dcd54eb9-f9f3-527f-ae51-e0e9db2477e0",
+  "dfdd4b23-b01d-57b7-a60b-b2ea2c671a89",
   "e094a045-d627-5abb-b650-b45434832b00",
   "e3b0bba9-2366-5fd1-8c9e-68c3fbc97aa8",
   "e49b1125-a10c-5b1b-9ac5-ab73fa107858",
@@ -214,5 +221,46 @@
   "ff1e99b4-b955-557b-b849-24db6ab351e2",
   "ff49331d-bb56-52a3-8a50-7b4f7b80cdda",
   "ff8f03eb-aaf0-5f3b-acf4-38847a495dc8"
- ]
+ ],
+ "from_build": {
+  "generated": "2026-11-10",
+  "source_keys": [
+   "encyclicals/casti-connubii",
+   "encyclicals/divini-redemptoris",
+   "encyclicals/divino-afflante-spiritu",
+   "encyclicals/divinum-illud-munus",
+   "encyclicals/ecclesiam-suam",
+   "encyclicals/humanae-vitae",
+   "encyclicals/humani-generis",
+   "encyclicals/immortale-dei",
+   "encyclicals/libertas",
+   "encyclicals/mater-et-magistra",
+   "encyclicals/mediator-dei",
+   "encyclicals/mirae-caritatis",
+   "encyclicals/mit-brennender-sorge",
+   "encyclicals/munificentissimus-deus",
+   "encyclicals/mysterium-fidei",
+   "encyclicals/mystici-corporis-christi",
+   "encyclicals/pacem-in-terris",
+   "encyclicals/pascendi-dominici-gregis",
+   "encyclicals/providentissimus-deus",
+   "encyclicals/quadragesimo-anno",
+   "encyclicals/quas-primas",
+   "encyclicals/rerum-novarum",
+   "encyclicals/spiritus-paraclitus"
+  ],
+  "counts": {
+   "found": 1956,
+   "missing": 7
+  },
+  "chunk_ids": [
+   "12304cf9-0613-5a1c-8910-29f7c3702b32",
+   "2400ec18-a5e3-50a1-b226-e01e05f9293d",
+   "4f0aa9ca-053e-501e-9de7-458fbb3b4175",
+   "83e6efc5-3e1c-5cfa-8fc2-430b227e0c66",
+   "ac82c55b-89cc-5c82-aa24-f2fce80ba0a3",
+   "c6c312be-2702-544f-b074-e0e72ea39b08",
+   "dfdd4b23-b01d-57b7-a60b-b2ea2c671a89"
+  ]
+ }
 }

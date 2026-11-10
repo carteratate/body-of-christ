@@ -27,6 +27,9 @@ JSON file of `{passage_id: reason}` instead, one reviewed reason per passage; a 
 reason keeps that passage's existing kept_text.json entry as it stands (its text has not
 changed since that review), and a passage the file does not name is a problem.
 
+A passage that declares `text_replaced` (a new translation, 1.3c; an amended canon) is
+exempt from that check, as from the release report's.
+
 Writes the registry files only when nothing is left unexplained and the result
 validates; otherwise prints the problems and exits 1. A Phase 1 item runs it once its
 adapter change is done, and commits the registry with that change.
@@ -76,12 +79,19 @@ def holder_by_text(text: str, candidates: list):
     return candidates[scores.index(best)] if best and scores.count(best) == 1 else None
 
 
+def _replaced(passage) -> bool:
+    """A passage whose unit's text was replaced on purpose (`text_replaced`: a new
+    translation, an amended canon) is not held to its live text, as in the release report."""
+    return bool((passage.metadata or {}).get("text_replaced"))
+
+
 def lost_text(live: dict[str, str]):
     """A `registry.reconcile` moved: for a piece under the stability threshold, the piece
     of its unit that now holds its live text, when that is another piece."""
     def moved(passage_id: str, passage, document):
         text = live.get(passage_id)
-        if not text or R.similarity(text, passage.content) >= R.ANCHOR_STABILITY_THRESHOLD:
+        if not text or _replaced(passage) \
+                or R.similarity(text, passage.content) >= R.ANCHOR_STABILITY_THRESHOLD:
             return None
         unit = unit_anchor(passage.anchor)
         return holder_by_text(text, [p for p in document.passages
@@ -97,7 +107,8 @@ def low_scores(rows: list[dict], documents: list, live: dict[str, str]) -> list[
         for p in d.passages:
             row = by_anchor.get((d.id, p.anchor))
             text = live.get(row["passage_id"]) if row else None
-            if text and R.similarity(text, p.content) < R.ANCHOR_STABILITY_THRESHOLD:
+            if text and not _replaced(p) \
+                    and R.similarity(text, p.content) < R.ANCHOR_STABILITY_THRESHOLD:
                 out.append({"passage_id": row["passage_id"], "document_id": d.id,
                             "anchor": p.anchor})
     return out

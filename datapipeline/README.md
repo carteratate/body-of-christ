@@ -177,6 +177,11 @@ the passages that keep the plain URL. Rerun it with `--write` right after the ap
 live passages), in a small PR, whenever a publish changes passages of a document whose `metadata.url` is on
 vatican.va: a new passage the list does not know gets a fragment that may not match, which
 opens the page at the top, as before 2.4e.
+A PR that moves documents onto vatican.va (1.3c) checks them before their publish with
+`--build <collection> --source-key <key> ... --write`: it reads those documents from the
+build, under the passage IDs they will carry live, and replaces only their entries, kept
+under `from_build`. A live `--write` keeps the `from_build` entries it does not read, so the
+list holds them until the documents are live on vatican.va and the live run takes over.
 
 An adapter change that moves passage boundaries updates the passage registry (2.1) in the
 same PR: `python3 scripts/reconcile_registry.py --item <id> --collection <name>
@@ -184,7 +189,17 @@ same PR: `python3 scripts/reconcile_registry.py --item <id> --collection <name>
 piece whose opening paragraph no longer opens one, and gives a piece whose text moved
 elsewhere a new ID with a redirect. A piece that keeps its opening words but scores under
 the stability threshold is listed as a problem until a person checks it and reruns with
-`--kept-reason`, which records it in `registry/kept_text.json`.
+`--kept-reason`, which records it in `registry/kept_text.json`. A passage whose metadata
+declares `text_replaced` (a new translation, an amended canon) is not held to its live text,
+as in the release report.
+
+A papal document whose text moves to another edition (1.3c, 1.3d) is aligned with its old
+one first: `python3 scripts/align_editions.py --collection <name> [--slug <slug>] --out
+<file>` pairs the two editions' paragraphs by the names, numbers and rarer words they
+share, and lists every place where that pairing differs from their numbering, for a person
+to review. The reviewed result goes into `ingest/papal_anchors.json` (which live anchor a
+built paragraph carries) and the redirects; the alignment itself reads both editions by
+their own numbering.
 
 A stage also builds each staged document's **reader outline** (chapter list and passage
 count, `supabase/migrations/0037_document_outline.sql`) in staging with

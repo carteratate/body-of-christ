@@ -171,7 +171,7 @@
   "not_after": [
    "\\b[ivxlc]+[.,;]?[\"”’)]?$",
    "\\d[.:][\"”’)]?$",
-   "\\b(?:[Vv]er|[Bb]k|sess|cap|constitut|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm)\\.[\"”’)]?$"
+   "\\b(?:[Vv]er|[Bb]k|sess|cap|constitut|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm|Trin)\\.[\"”’)]?$"
   ]
  },
  "R13_lower_start": {

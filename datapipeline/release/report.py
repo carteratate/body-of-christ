@@ -22,6 +22,10 @@ When the snapshot has document_chapters.jsonl (0.1d), the stored reader outline 
 compared with the outline the live passages give (release/outline.py), as
 release.outline_matches checks; report.md says when the snapshot has no such file.
 
+An excerpt-only document whose rights row records an `excerpt_basis` (5.2) must stay
+within its limits, as release.excerpt_basis checks: no passage over the basis's word
+limit, and the text taken from the site it names.
+
 report.md also lists each build document's contents tree (#250): its node count, the
 chapters no node opens, or the reason the tree breaks the contract.
 
@@ -48,6 +52,7 @@ if DATAPIPELINE not in sys.path:
 
 import contents  # noqa: E402
 import health  # noqa: E402
+import rights_inventory  # noqa: E402
 from checks import health as health_cli  # noqa: E402
 from checks import report as checks_report  # noqa: E402
 from model import Document  # noqa: E402
@@ -91,6 +96,16 @@ def verify_snapshot(directory: str, index_path: str = SNAPSHOT_INDEX) -> tuple[d
                 problems.append(f"snapshot.json differs from the {os.path.basename(index_path)} "
                                 f"entry for {meta.get('date')}")
     return meta, problems
+
+
+def excerpt_failures(built: list[Document]) -> list[R.Failure]:
+    """`release.excerpt_basis`: each built document whose rights row's `excerpt_basis`
+    it breaks (`rights_inventory.excerpt_failures`)."""
+    return [R.Failure("excerpt_basis", d.collection, d.id,
+                      R.default_passage_id(d, p) if p is not None else d.id,
+                      p.anchor if p is not None else None, None, detail)
+            for d, p, detail in rights_inventory.excerpt_failures(built,
+                                                                  rights_inventory.load())]
 
 
 def old_passages(snapshot: dict[str, list[Document]]) -> list[R.OldPassage]:
@@ -505,6 +520,8 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
     outline_checks = outline.outline_failures(snapshot_dir, live)
     if outline_checks:
         result.failures.extend(outline_checks)
+    # 5.2: an excerpt-only document stays within its allowed-use basis's limits.
+    result.failures.extend(excerpt_failures(built))
     references = {}
     references_path = os.path.join(snapshot_dir, "references.json")
     if os.path.exists(references_path):

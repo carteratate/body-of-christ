@@ -156,6 +156,24 @@ def test_a_redirect_into_another_unit_is_left_alone():
     assert rec.problems == [] and rec.redirects == [redirect]
 
 
+def test_a_redirect_named_by_hand_inside_a_rebuilt_sources_unit_stays():
+    # A new source numbers its blocks afresh (1.3c's vatican.va pages): the old piece's
+    # locator is in no built piece, so the piece rule cannot place it, and the redirect
+    # a person named stands while its target is built.
+    w = work()
+    old = row(w["document_id"], "ii.i/from-p3", status="redirected")
+    unit = row(w["document_id"], "ii.i")
+    later = row(w["document_id"], "ii.i/from-e9")
+    redirect = {"document_id": w["document_id"], "old_passage_id": old["passage_id"],
+                "old_anchor": old["anchor"], "new_passage_id": unit["passage_id"],
+                "new_anchor": "ii.i", "kind": "merged", "reason": "r", "added_by": "x"}
+    reg = valid_registry(passages=[old, unit, later], redirects=[redirect])
+    built = [passage("ii.i", source_units=(("e8", 0),)),
+             passage("ii.i/from-e9", position=1, source_units=(("e9", 0),))]
+    rec = registry.reconcile(reg, [document(built)], item="test", today=TODAY)
+    assert rec.problems == [] and rec.redirects == [redirect]
+
+
 # --------------------------------------------------------------------------- document IDs
 
 def test_frozen_id_wins_over_label_derived_id():

@@ -6736,6 +6736,22 @@
   "detail": "Footnote callers in the text; their notes are not printed in the corpus (C-17)."
  },
  {
+  "id": "rm-0621",
+  "scope": "passage",
+  "collection": "encyclicals",
+  "document_id": "1deb4103-9269-59ae-84c3-d9a691ef458c",
+  "anchor": "spiritus-paraclitus/preamble",
+  "passage_id": "bf45c8eb-9925-5911-b06a-f5f858d7dc28",
+  "reason": "superseded-translation",
+  "detail": "The address, which vatican.va prints in the heading, not as text (1.3c)",
+  "tombstone": "This was the address of the papalencyclicals.net translation. TheoCorpus now uses the Holy See's English text from vatican.va, which prints the address only in its heading.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.3c",
+  "added_on": "2026-11-09"
+ },
+ {
   "id": "rm-0415",
   "scope": "class",
   "passage_id": null,
@@ -7237,6 +7253,22 @@
   "anchor": null,
   "reason": "note-split-off",
   "detail": "Footnote callers in the text; their notes are not printed in the corpus (C-17)."
+ },
+ {
+  "id": "rm-0622",
+  "scope": "passage",
+  "collection": "encyclicals",
+  "document_id": "3f772bb4-2141-5389-be2b-34c0743b4395",
+  "anchor": "divino-afflante-spiritu/preamble",
+  "passage_id": "de0b4fee-2a36-59aa-825a-81c292abb644",
+  "reason": "superseded-translation",
+  "detail": "The address, which vatican.va prints in the heading, not as text (1.3c)",
+  "tombstone": "This was the address of the papalencyclicals.net translation. TheoCorpus now uses the Holy See's English text from vatican.va, which prints the address only in its heading.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.3c",
+  "added_on": "2026-11-09"
  },
  {
   "id": "rm-0402",

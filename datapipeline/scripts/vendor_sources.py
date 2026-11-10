@@ -179,36 +179,36 @@ ENCYCLICALS = [
     ("Quod Nunquam",              "Pope Pius IX",       1875, "https://www.papalencyclicals.net/pius09/p9quodnu.htm"),
     # Pope Leo XIII (1878–1903)
     ("Aeterni Patris",            "Pope Leo XIII",      1879, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_04081879_aeterni-patris.html"),
-    ("Immortale Dei",             "Pope Leo XIII",     1885, "https://www.papalencyclicals.net/leo13/l13sta.htm"),
-    ("Libertas",                  "Pope Leo XIII",     1888, "https://www.papalencyclicals.net/leo13/l13liber.htm"),
-    ("Rerum Novarum",             "Pope Leo XIII",     1891, "https://www.papalencyclicals.net/leo13/l13rerum.htm"),
-    ("Providentissimus Deus",     "Pope Leo XIII",     1893, "https://www.papalencyclicals.net/leo13/l13provi.htm"),
-    ("Divinum Illud Munus",       "Pope Leo XIII",     1897, "https://www.papalencyclicals.net/leo13/l13divin.htm"),
-    ("Mirae Caritatis",           "Pope Leo XIII",     1902, "https://www.papalencyclicals.net/leo13/l13mirae.htm"),
+    ("Immortale Dei",             "Pope Leo XIII",     1885, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_01111885_immortale-dei.html"),
+    ("Libertas",                  "Pope Leo XIII",     1888, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_20061888_libertas.html"),
+    ("Rerum Novarum",             "Pope Leo XIII",     1891, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_15051891_rerum-novarum.html"),
+    ("Providentissimus Deus",     "Pope Leo XIII",     1893, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_18111893_providentissimus-deus.html"),
+    ("Divinum Illud Munus",       "Pope Leo XIII",     1897, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_09051897_divinum-illud-munus.html"),
+    ("Mirae Caritatis",           "Pope Leo XIII",     1902, "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_28051902_mirae-caritatis.html"),
     # Pope Pius X (1903–1914)
-    ("Pascendi Dominici Gregis",  "Pope Pius X",       1907, "https://www.papalencyclicals.net/pius10/p10pasce.htm"),
+    ("Pascendi Dominici Gregis",  "Pope Pius X",       1907, "https://www.vatican.va/content/pius-x/en/encyclicals/documents/hf_p-x_enc_19070908_pascendi-dominici-gregis.html"),
     # Pope Benedict XV (1914–1922)
-    ("Spiritus Paraclitus",       "Pope Benedict XV",  1920, "https://www.papalencyclicals.net/ben15/b15sp.htm"),
+    ("Spiritus Paraclitus",       "Pope Benedict XV",  1920, "https://www.vatican.va/content/benedict-xv/en/encyclicals/documents/hf_ben-xv_enc_15091920_spiritus-paraclitus.html"),
     # Pope Pius XI (1922–1939)
-    ("Quas Primas",               "Pope Pius XI",      1925, "https://www.papalencyclicals.net/pius11/p11prima.htm"),
-    ("Casti Connubii",            "Pope Pius XI",      1930, "https://www.papalencyclicals.net/pius11/p11casti.htm"),
-    ("Quadragesimo Anno",         "Pope Pius XI",      1931, "https://www.papalencyclicals.net/pius11/p11quadr.htm"),
-    ("Mit Brennender Sorge",      "Pope Pius XI",      1937, "https://www.papalencyclicals.net/pius11/p11brenn.htm"),
-    ("Divini Redemptoris",        "Pope Pius XI",      1937, "https://www.papalencyclicals.net/pius11/p11divin.htm"),
+    ("Quas Primas",               "Pope Pius XI",      1925, "https://www.vatican.va/content/pius-xi/en/encyclicals/documents/hf_p-xi_enc_11121925_quas-primas.html"),
+    ("Casti Connubii",            "Pope Pius XI",      1930, "https://www.vatican.va/content/pius-xi/en/encyclicals/documents/hf_p-xi_enc_19301231_casti-connubii.html"),
+    ("Quadragesimo Anno",         "Pope Pius XI",      1931, "https://www.vatican.va/content/pius-xi/en/encyclicals/documents/hf_p-xi_enc_19310515_quadragesimo-anno.html"),
+    ("Mit Brennender Sorge",      "Pope Pius XI",      1937, "https://www.vatican.va/content/pius-xi/en/encyclicals/documents/hf_p-xi_enc_14031937_mit-brennender-sorge.html"),
+    ("Divini Redemptoris",        "Pope Pius XI",      1937, "https://www.vatican.va/content/pius-xi/en/encyclicals/documents/hf_p-xi_enc_19370319_divini-redemptoris.html"),
     # Pope Pius XII (1939–1958)
-    ("Mystici Corporis Christi",  "Pope Pius XII",     1943, "https://www.papalencyclicals.net/pius12/p12mysti.htm"),
-    ("Divino Afflante Spiritu",   "Pope Pius XII",     1943, "https://www.papalencyclicals.net/pius12/p12divin.htm"),
-    ("Mediator Dei",              "Pope Pius XII",     1947, "https://www.papalencyclicals.net/pius12/p12media.htm"),
-    ("Humani Generis",            "Pope Pius XII",     1950, "https://www.papalencyclicals.net/pius12/p12human.htm"),
-    ("Munificentissimus Deus",    "Pope Pius XII",     1950, "https://www.papalencyclicals.net/pius12/p12munif.htm"),
+    ("Mystici Corporis Christi",  "Pope Pius XII",     1943, "https://www.vatican.va/content/pius-xii/en/encyclicals/documents/hf_p-xii_enc_29061943_mystici-corporis-christi.html"),
+    ("Divino Afflante Spiritu",   "Pope Pius XII",     1943, "https://www.vatican.va/content/pius-xii/en/encyclicals/documents/hf_p-xii_enc_30091943_divino-afflante-spiritu.html"),
+    ("Mediator Dei",              "Pope Pius XII",     1947, "https://www.vatican.va/content/pius-xii/en/encyclicals/documents/hf_p-xii_enc_20111947_mediator-dei.html"),
+    ("Humani Generis",            "Pope Pius XII",     1950, "https://www.vatican.va/content/pius-xii/en/encyclicals/documents/hf_p-xii_enc_12081950_humani-generis.html"),
+    ("Munificentissimus Deus",    "Pope Pius XII",     1950, "https://www.vatican.va/content/pius-xii/en/apost_constitutions/documents/hf_p-xii_apc_19501101_munificentissimus-deus.html"),
     # Pope John XXIII (1958–1963)
-    ("Mater et Magistra",         "Pope John XXIII",   1961, "https://www.papalencyclicals.net/john23/j23mater.htm"),
-    ("Pacem in Terris",           "Pope John XXIII",   1963, "https://www.papalencyclicals.net/john23/j23pacem.htm"),
+    ("Mater et Magistra",         "Pope John XXIII",   1961, "https://www.vatican.va/content/john-xxiii/en/encyclicals/documents/hf_j-xxiii_enc_15051961_mater.html"),
+    ("Pacem in Terris",           "Pope John XXIII",   1963, "https://www.vatican.va/content/john-xxiii/en/encyclicals/documents/hf_j-xxiii_enc_11041963_pacem.html"),
     # Pope Paul VI (1963–1978)
-    ("Ecclesiam Suam",            "Pope Paul VI",      1964, "https://www.papalencyclicals.net/paul06/p6eccles.htm"),
-    ("Mysterium Fidei",           "Pope Paul VI",      1965, "https://www.papalencyclicals.net/paul06/p6myster.htm"),
+    ("Ecclesiam Suam",            "Pope Paul VI",      1964, "https://www.vatican.va/content/paul-vi/en/encyclicals/documents/hf_p-vi_enc_06081964_ecclesiam.html"),
+    ("Mysterium Fidei",           "Pope Paul VI",      1965, "https://www.vatican.va/content/paul-vi/en/encyclicals/documents/hf_p-vi_enc_03091965_mysterium.html"),
     ("Populorum Progressio",      "Pope Paul VI",      1967, "https://www.vatican.va/content/paul-vi/en/encyclicals/documents/hf_p-vi_enc_26031967_populorum.html"),
-    ("Humanae Vitae",             "Pope Paul VI",      1968, "https://www.papalencyclicals.net/paul06/p6humana.htm"),
+    ("Humanae Vitae",             "Pope Paul VI",      1968, "https://www.vatican.va/content/paul-vi/en/encyclicals/documents/hf_p-vi_enc_25071968_humanae-vitae.html"),
     ("Evangelii Nuntiandi",       "Pope Paul VI",      1975, "https://www.vatican.va/content/paul-vi/en/apost_exhortations/documents/hf_p-vi_exh_19751208_evangelii-nuntiandi.html"),
     # Pope John Paul II (1978–2005)
     ("Redemptor Hominis",         "Pope John Paul II", 1979, "https://www.vatican.va/content/john-paul-ii/en/encyclicals/documents/hf_jp-ii_enc_04031979_redemptor-hominis.html"),
@@ -380,6 +380,28 @@ def _papal_entry(coll_dir: str, title: str, author: str, year: int, url: str, sl
     return entry
 
 
+# Documents whose source moved from papalencyclicals.net to vatican.va's English (1.3c).
+# `<slug>.html` stays the papalencyclicals.net file, vendored but unread, so the vatican.va
+# page keeps its own file name.
+_MOVED_TO_VATICAN = frozenset({
+    "immortale-dei", "libertas", "rerum-novarum", "providentissimus-deus",
+    "divinum-illud-munus", "mirae-caritatis", "pascendi-dominici-gregis",
+    "spiritus-paraclitus", "quas-primas", "casti-connubii", "quadragesimo-anno",
+    "mit-brennender-sorge", "divini-redemptoris", "mystici-corporis-christi",
+    "divino-afflante-spiritu", "mediator-dei", "humani-generis", "munificentissimus-deus",
+    "mater-et-magistra", "pacem-in-terris", "ecclesiam-suam", "mysterium-fidei",
+    "humanae-vitae",
+})
+
+
+def _papal_file_name(slug: str, url: str) -> str:
+    if slug in _MOVED_TO_VATICAN:
+        if "://www.vatican.va/" not in url:
+            raise SystemExit(f"{slug}: 1.3c takes its text from vatican.va, not {url}")
+        return url.rsplit("/", 1)[1]
+    return slug + ".html"
+
+
 def vendor_encyclicals(force: bool) -> None:
     d = os.path.join(_SOURCES, "encyclicals")
     os.makedirs(d, exist_ok=True)
@@ -390,7 +412,7 @@ def vendor_encyclicals(force: bool) -> None:
             base_slug = _slug(title)
             slug = base_slug if base_slug not in seen_slugs else f"{base_slug}-{year}"
             seen_slugs.add(slug)
-            fname = slug + ".html"
+            fname = _papal_file_name(slug, url)
             if not (os.path.exists(os.path.join(d, fname)) and not force):
                 data = _fetch(client, url)
                 if data is None:

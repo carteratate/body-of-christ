@@ -523,3 +523,126 @@ def test_genre_and_form_reach_document_metadata(tmp_path):
 def test_a_manifest_without_genre_is_refused(tmp_path):
     with pytest.raises(ValueError, match="no genre"):
         _build(f"<p>1. {LONG}</p>", tmp_path, form="bull")
+
+
+# --------------------------------------------------------------------------- 1.3c
+
+def test_rule_set_inside_inline_markup_still_opens_the_notes():
+    # vatican.va's Quas Primas: `<i><font><hr/></font></i>`, which lxml moves into an
+    # empty paragraph.
+    html = (f"<p>1. {LONG}</p><p>2. {LONG}</p><i><font><hr/></font></i>"
+            "<p>1. Eph. iii, 9.</p><p>2. Dan. vii, 13-14.</p><p>3. Num. xxiv, 19.</p>")
+    assert [t.number for t in _paras(tokens(_page(html)))] == [1, 2]
+
+
+@pytest.mark.parametrize("misprint", ["28, The Church", "2 8. The Church", "Z 28. The Church"])
+def test_a_misprinted_number_loses_only_its_number(monkeypatch, misprint):
+    # Libertas prints "28," and Humanae Vitae "1<b>4.</b>", read as "1 4.".
+    monkeypatch.setitem(papal_common._NUMBER_FIXES, "a-letter", {misprint: 3})
+    html = (f"<p>1. {LONG}</p><p>2. {LONG}</p><p>{misprint}, indeed. {LONG}</p>"
+            f"<p>4. {LONG}</p>")
+    paras = _paras(tokens(_page(html), "a-letter"))
+    assert [t.number for t in paras] == [1, 2, 3, 4]
+    assert paras[2].text.startswith("The Church, indeed. These words")
+
+
+def test_a_first_paragraph_opening_with_to_is_no_address(tmp_path):
+    # Mirae Caritatis §1: "To examine into the nature …".
+    doc = _build(f"<p>To Our Venerable Brethren, the Patriarchs.</p><p>Venerable Brethren, "
+                 f"Health and Apostolic Benediction.</p><p>To examine into the nature. {LONG}</p>"
+                 f"<p>2. {LONG}</p>", tmp_path)
+    assert doc.passages[0].anchor == "a-letter/preamble"
+    assert doc.passages[1].unit_label == "§1"
+    assert doc.passages[1].content.startswith("To examine")
+
+
+def test_a_short_first_paragraph_after_the_salutation(tmp_path):
+    # Pacem in Terris §1 is 180 characters, under the implicit first paragraph's 200.
+    short = "Peace on Earth can never be established, never guaranteed, except by the " \
+            "diligent observance of the divinely established order."
+    doc = _build(f"<p>To Our Venerable Brethren.</p><p>Venerable Brethren, Health and "
+                 f"Apostolic Benediction.</p><p>{short}</p><p>2. {LONG}</p>", tmp_path)
+    assert [p.unit_label for p in doc.passages] == [None, "§1", "§2"]
+    assert doc.passages[1].content == short
+
+
+def test_short_prose_after_the_salutation_running_on_stays_in_the_preamble(tmp_path):
+    # Ubi Primum: the line before the quotation ends on a colon, and §1 is its own block.
+    lead = "When it first pleased God to raise Us to the supreme See, He entrusted to Us " \
+           "the power of the Vicar of Christ, as these words declare:"
+    doc = _build(f"<p>To Our Venerable Brothers.</p><p>Venerable Brothers, Greetings and "
+                 f"Apostolic Benediction.</p><p>{lead}</p><p>{LONG}</p><p>2. {LONG}</p>",
+                 tmp_path)
+    assert lead in doc.passages[0].content
+    assert doc.passages[1].unit_label == "§1"
+
+
+def test_lost_spaces_go_back_only_where_listed(monkeypatch, tmp_path):
+    monkeypatch.setitem(papal_common._LOST_SPACES, "a-letter", {"haveseen": "have seen"})
+    body = f"<p>1. We haveseen it,and said so; hesaw it. {LONG}</p><p>2. {LONG}</p>"
+    assert "We have seen it, and said so; hesaw it." in _build(body, tmp_path).passages[0].content
+    other = _build(body, tmp_path, slug="b-letter", title="B Letter").passages[0].content
+    assert "We haveseen it,and said so" in other
+
+
+def test_a_new_translation_declares_its_text_replaced(monkeypatch, tmp_path):
+    body = f"<p>1. {LONG}</p><p>2. {LONG}</p>"
+    monkeypatch.setitem(papal_common._NEW_TRANSLATION, "a-letter", None)
+    assert {p.metadata.get("text_replaced") for p in _build(body, tmp_path).passages} \
+        == {papal_common.TEXT_REPLACED}
+    monkeypatch.setitem(papal_common._NEW_TRANSLATION, "a-letter", frozenset({"2"}))
+    assert [p.metadata.get("text_replaced") for p in _build(body, tmp_path).passages] \
+        == [None, papal_common.TEXT_REPLACED]
+
+
+# The 23 modern documents taken from vatican.va's English (1.3c).
+FROM_VATICAN = (
+    "immortale-dei", "libertas", "rerum-novarum", "providentissimus-deus",
+    "divinum-illud-munus", "mirae-caritatis", "pascendi-dominici-gregis",
+    "spiritus-paraclitus", "quas-primas", "casti-connubii", "quadragesimo-anno",
+    "mit-brennender-sorge", "divini-redemptoris", "mystici-corporis-christi",
+    "divino-afflante-spiritu", "mediator-dei", "humani-generis", "munificentissimus-deus",
+    "mater-et-magistra", "pacem-in-terris", "ecclesiam-suam", "mysterium-fidei",
+    "humanae-vitae",
+)
+
+
+def test_the_vatican_documents_are_the_vendor_scripts():
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), "scripts"))
+    import vendor_sources
+
+    assert vendor_sources._MOVED_TO_VATICAN == frozenset(FROM_VATICAN)
+    urls = {vendor_sources._slug(t): u for t, _, _, u in vendor_sources.ENCYCLICALS}
+    assert all(urls[s].startswith("https://www.vatican.va/content/") for s in FROM_VATICAN)
+    assert set(papal_common._NEW_TRANSLATION) <= set(FROM_VATICAN)
+    assert set(papal_common._LOST_SPACES) <= set(FROM_VATICAN)
+
+
+@vendored
+def test_the_vatican_documents_come_from_vatican_va(built):
+    for slug in FROM_VATICAN:
+        doc = built[slug]
+        assert doc.metadata["url"].startswith("https://www.vatican.va/content/"), slug
+        assert not any("papalencyclicals" in p.content.lower() for p in doc.passages), slug
+
+
+@vendored
+def test_mysterium_fidei_paragraphs_keep_the_ids_of_their_live_text(built):
+    # The old text printed no numbers, so its anchors were places: vatican.va's §1 is the
+    # live /3. Each paragraph carries the anchor of the first live unit it holds.
+    doc = built["mysterium-fidei"]
+    first = {p.unit_label: p.anchor for p in doc.passages if "/from-" not in p.anchor}
+    assert first["§1"] == "mysterium-fidei/3"
+    assert first["§30"] == "mysterium-fidei/34"
+    assert first["§10"] == "mysterium-fidei/para-10"
+    assert first["§76"] == "mysterium-fidei/93"
+    assert doc.passages[0].anchor == "mysterium-fidei/1"
+
+
+@vendored
+def test_the_lost_spaces_are_back(built):
+    from ocr.words import words
+
+    for slug, joins in papal_common._LOST_SPACES.items():
+        left = set(joins) & set(words(" ".join(p.content for p in built[slug].passages)))
+        assert joins and not left, (slug, sorted(left))

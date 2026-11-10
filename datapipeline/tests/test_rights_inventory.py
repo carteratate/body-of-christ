@@ -131,3 +131,47 @@ def test_inventory_matches_the_built_works_exactly():
     stale = sorted((R.key(rows[i]), k) for i, k in built.items() if R.key(rows[i]) != k)
     assert stale == [], "inventory labels that differ from the build"
     assert len(set(built.values())) == len(built), "two built works share an inventory key"
+
+
+def test_excerpt_basis_records_the_statement_and_its_conditions():
+    rows = [e for e in ENTRIES if "excerpt_basis" in e]
+    assert len(rows) >= 23, "1.3c's LEV rows carry the first basis"
+    for entry in rows:
+        basis = entry["excerpt_basis"]
+        assert sorted(basis) == sorted(R.EXCERPT_BASIS_FIELDS), R.key(entry)
+        # Excerpt-only: a cleared row needs no basis, and a basis is no clearance.
+        assert entry["status"] == "in-copyright", R.key(entry)
+        assert basis["statement"] and basis["wording"] and basis["conditions"], R.key(entry)
+        assert basis["url"].startswith("https://"), R.key(entry)
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", basis["read_on"]), R.key(entry)
+        assert basis["word_limit"] is None or basis["word_limit"] > 0, R.key(entry)
+
+
+def test_lev_rows_were_taken_from_vatican_va():
+    # Decision log "LEV texts from vatican.va": the text is taken from vatican.va.
+    for entry in ENTRIES:
+        basis = entry.get("excerpt_basis") or {}
+        if "Santa Sede" in basis.get("wording", ""):
+            assert basis["source_host"] == "www.vatican.va", R.key(entry)
+            assert entry["source_url"].startswith("https://www.vatican.va/"), R.key(entry)
+            assert entry["rights_holder"] == "Libreria Editrice Vaticana", R.key(entry)
+
+
+def test_excerpt_failures_hold_a_document_to_its_basis():
+    from model import Document, Passage
+
+    def doc(url, words):
+        passage = Passage(content=" ".join(["word"] * words), reference="r", anchor="d/1",
+                          chapter_key="d/c", chapter_label="c", position=0)
+        return Document(id="d", collection="encyclicals", title="T", author="A",
+                        metadata={"url": url}, passages=[passage])
+
+    basis = {"word_limit": 100, "source_host": "www.vatican.va"}
+    rows = [{"document_id": "d", "excerpt_basis": basis}]
+    assert R.excerpt_failures([doc("https://www.vatican.va/x", 100)], rows) == []
+    over = R.excerpt_failures([doc("https://www.vatican.va/x", 101)], rows)
+    assert [(p.anchor, d) for _, p, d in over] == [("d/1", "101 words, over the basis's limit of 100")]
+    elsewhere = R.excerpt_failures([doc("https://www.papalencyclicals.net/x", 5)], rows)
+    assert [p for _, p, _ in elsewhere] == [None]
+    assert R.excerpt_failures([doc("https://example.org/x", 500)],
+                              [{"document_id": "d", "status": "unknown"}]) == []
