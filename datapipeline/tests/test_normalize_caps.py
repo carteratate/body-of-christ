@@ -21,11 +21,3 @@ def test_smart_title_case_handles_single_word_shouting_names():
     assert smart_title_case("CLEMENT OF ROME") == "Clement of Rome"
     # already well-cased titles are left intact
     assert smart_title_case("First Epistle to the Corinthians") == "First Epistle to the Corinthians"
-
-
-def test_smart_title_case_capitalizes_after_quotes_and_colons():
-    from normalize.caps import smart_title_case
-    assert smart_title_case('"I BELIEVE" - "WE BELIEVE"') == '"I Believe" - "We Believe"'
-    assert smart_title_case("MAN: THE IMAGE OF GOD") == "Man: The Image of God"
-    assert smart_title_case('"HE DESCENDED INTO HELL. ON THE THIRD DAY HE ROSE AGAIN"') == \
-        '"He Descended into Hell. On the Third Day He Rose Again"'

@@ -1061,3 +1061,12 @@ def test_the_size_threshold_ignores_markers():
 def test_a_numbered_in_brief_paragraph_is_still_flagged():
     node = _make_node(_make_para("IN BRIEF", ref_ccc=200), _make_para("y" * 600, ref_ccc=201))
     assert chunk_nodes([node], ["toc-9"])[0][2]["is_in_brief"] is True
+
+
+def test_titles_capitalize_each_phrase():
+    t = _catechism._title
+    assert t('"I BELIEVE" - "WE BELIEVE"') == '"I Believe" - "We Believe"'
+    assert t("MAN: THE IMAGE OF GOD") == "Man: The Image of God"
+    assert t('"HE DESCENDED INTO HELL. ON THE THIRD DAY HE ROSE AGAIN"') == \
+        '"He Descended into Hell. On the Third Day He Rose Again"'
+    assert t("YOU SHALL LOVE YOUR NEIGHBOR AS YOURSELF") == "You Shall Love Your Neighbor as Yourself"

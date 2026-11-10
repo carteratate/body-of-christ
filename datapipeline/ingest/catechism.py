@@ -473,11 +473,21 @@ def heading_text(node_id: str, text: str) -> str:
     return " ".join(text.split())
 
 
+def _title(text: str) -> str:
+    """A heading's title in title case: `smart_title_case`, then each phrase opening with
+    a capital, also after an opening quote, a colon, a full stop or a dash ('"He
+    Descended into Hell. On the Third Day"'), and "into", "at" and "as" lowercase."""
+    text = smart_title_case(text)
+    text = re.sub(r"(?<=\s)(Into|At|As)(?=\s)", lambda m: m[1].lower(), text)
+    return re.sub(r"(^|[:.]\s+|\s[-–—]\s+)([\"“‘']?)([a-z])",
+                  lambda m: m[1] + m[2] + m[3].upper(), text)
+
+
 def chapters(source: dict) -> dict[str, tuple[str, str]]:
     """(chapter_key, chapter_label) for every node of `toc_link_tree`: its nearest
     Prologue, Part, Section, Chapter or Article, itself included. The key is the path of
     levels ("ccc/part-3/section-2/chapter-2/article-5"), the label their names and the
-    nearest one's title ("Part Three, Section Two, Chapter Two, Article 5, The Fifth
+    nearest one's title (`_title`; "Part Three, Section Two, Chapter Two, Article 5, The Fifth
     Commandment"). Sub-headings ("I. Respect for Human Life", "IN BRIEF", "Paragraph 1.")
     belong to the chapter above them."""
     toc = source["toc_nodes"]
@@ -496,7 +506,7 @@ def chapters(source: dict) -> dict[str, tuple[str, str]]:
             number = _NUMBER_WORDS.get(word) or int(word)
             path = path + (f"{level}-{number}",)
             names = names + (f"{level.capitalize()} {word.capitalize()}",)
-            title = smart_title_case(m[3].strip())
+            title = _title(m[3].strip())
             here = (make_anchor("ccc", *path), ", ".join(names + ((title,) if title else ())))
         if here is None:
             raise ValueError(f"catechism: heading {node_id} ({text!r}) is under no part")
