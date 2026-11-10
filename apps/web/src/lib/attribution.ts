@@ -76,6 +76,22 @@ export function formatAttribution(
   return credited;
 }
 
+/**
+ * The reference without its leading "<author> — ", which ThML references carry
+ * ("Justin Martyr — The First Apology, Chapter VI"). The prefix goes when it is the
+ * card's author, or when what follows starts with the document's title: once the
+ * card shows the registry's author ("Pseudo-Justin"), it no longer matches the name
+ * the reference was built with.
+ */
+export function withoutAuthorPrefix(reference: string, documentTitle: string, author: string | null): string {
+  const cut = reference.indexOf(" — ");
+  if (cut <= 0) return reference;
+  const prefix = reference.slice(0, cut);
+  const rest = reference.slice(cut + 3);
+  if ((author && prefix === author) || (documentTitle && rest.startsWith(documentTitle))) return rest;
+  return reference;
+}
+
 /** The date to show: the registry's display date ("c. 397–400") over the bare year. */
 export function formatDate(facts?: DocumentFacts | null, fallbackYear?: number | null): string | null {
   const display = text(facts?.date_display);

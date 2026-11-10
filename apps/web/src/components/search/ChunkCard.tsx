@@ -30,7 +30,7 @@ import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/read
 import { SourceLink } from "@/components/common/SourceLink";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
-import { certaintyTag, formatAttribution, formatDate, sourceCreditOf } from "@/lib/attribution";
+import { certaintyTag, formatAttribution, formatDate, sourceCreditOf, withoutAuthorPrefix } from "@/lib/attribution";
 import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/PassageFacts";
 import { parseTombstone, removalStatusLabel, type Tombstone } from "@/lib/corpus-lifecycle";
 
@@ -40,22 +40,6 @@ function hexToRgb(color: string): string {
   const g = parseInt(color.slice(3, 5), 16);
   const b = parseInt(color.slice(5, 7), 16);
   return `${r},${g},${b}`;
-}
-
-/**
- * The reference without its leading "<author> — ", which ThML references carry
- * ("Justin Martyr — The First Apology, Chapter VI"). The prefix goes when it is the
- * card's author, or when what follows starts with the document's title: once the
- * card shows the registry's author ("Pseudo-Justin"), it no longer matches the name
- * the reference was built with.
- */
-export function withoutAuthorPrefix(reference: string, documentTitle: string, author: string | null): string {
-  const cut = reference.indexOf(" — ");
-  if (cut <= 0) return reference;
-  const prefix = reference.slice(0, cut);
-  const rest = reference.slice(cut + 3);
-  if ((author && prefix === author) || (documentTitle && rest.startsWith(documentTitle))) return rest;
-  return reference;
 }
 
 /** The desktop citation. A Fathers reference that does not already name its

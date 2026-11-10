@@ -518,6 +518,31 @@ describe("BookmarkCard corpus cleanup fields (2.4b)", () => {
     expect((screen.getByLabelText("Your note") as HTMLTextAreaElement).value).toBe("My thoughts on this.");
   });
 
+  it("names the corrected author, drops the stale one from the reference, and copies it", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    renderBookmark({}, { source: { ...source, facts: { certainty: "pseudonymous", date_display: "3rd century" } } });
+    expect(screen.getByText("Pseudo-Justin · 3rd century")).toBeTruthy();
+    expect(screen.getByText("pseudonymous")).toBeTruthy();
+    expect(screen.getByText("Hortatory Address to the Greeks, Chapter I")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+    expect(writeText.mock.calls[0][0]).toContain("Hortatory Address to the Greeks, Chapter I (Pseudo-Justin)");
+    expect(writeText.mock.calls[0][0]).not.toContain("Justin Martyr");
+  });
+
+  it("names a quoted Father on a Catena bookmark", () => {
+    renderBookmark({}, {
+      source: { ...source, collection: "medieval", author: "Thomas Aquinas", document_title: "Catena Aurea", reference: "Catena Aurea, Matthew 5", passage_author: "Chrysostom" },
+    });
+    expect(screen.getByText("Chrysostom, quoted in Thomas Aquinas's Catena Aurea")).toBeTruthy();
+  });
+
+  it("shows no attribution line and today's reference without facts", () => {
+    renderBookmark({});
+    expect(screen.getByText("Justin Martyr — Hortatory Address to the Greeks, Chapter I")).toBeTruthy();
+    expect(screen.queryByText(/Pseudo-Justin/)).toBeNull();
+  });
+
   it("marks a moved passage", () => {
     renderBookmark({ status: "moved", redirect: { kind: "renumbered", document_id: source.document_id, chunk_id: "new" } });
     expect(screen.getByText("This passage was renumbered in a corpus update.")).toBeTruthy();
