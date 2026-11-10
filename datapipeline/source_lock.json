@@ -210,17 +210,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/councils/creeds2.xml",
-  "sha256": "412c952ff096d7e09a1f2d9e838e9652f0fedcbf7e8d6f3999c27e69ab69091e",
-  "bytes": 4065931,
-  "url": "https://ccel.org/ccel/s/schaff/creeds2.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/councils/npnf214.xml",
   "sha256": "4ae3cb29edcb7b8e58bb9246049243c464b6839f88f6730f98b80122770b9bb4",
   "bytes": 3196008,
@@ -3349,6 +3338,17 @@
   "url": "https://archive.org/download/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
   "acquired": "2026-11-02",
   "hashed_on": "2026-11-02",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/creeds2.xml",
+  "sha256": "412c952ff096d7e09a1f2d9e838e9652f0fedcbf7e8d6f3999c27e69ab69091e",
+  "bytes": 4065931,
+  "url": "https://ccel.org/ccel/s/schaff/creeds2.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
   "note": "on disk, not read by the collection's adapter"
  },

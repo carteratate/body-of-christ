@@ -8124,6 +8124,66 @@
   "added_by": "1.10c"
  },
  {
+  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
+  "old_passage_id": "7b58c3b0-cb60-5366-86f3-259ffe7a0589",
+  "old_anchor": "first-vatican-council/sec-10/7",
+  "new_passage_id": "7d5cbe26-fde6-5054-9b89-1a2f9f660080",
+  "new_anchor": "first-vatican-council/dei-filius/chapter-3/from-p5",
+  "kind": "merged",
+  "reason": "this one holds its text: Manning's translation of the same text",
+  "added_by": "1.2d"
+ },
+ {
+  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
+  "old_passage_id": "1ab590cd-ed9e-5e68-a02f-f08dfb3d5f5d",
+  "old_anchor": "first-vatican-council/sec-11/8",
+  "new_passage_id": "c07e0dd4-b6e6-5f97-a703-f424f608571e",
+  "new_anchor": "first-vatican-council/dei-filius/chapter-4/from-p4",
+  "kind": "merged",
+  "reason": "this one holds its text: Manning's translation of the same text",
+  "added_by": "1.2d"
+ },
+ {
+  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
+  "old_passage_id": "116f0388-5038-5249-9b83-511abf091044",
+  "old_anchor": "first-vatican-council/sec-15/9",
+  "new_passage_id": "58f579fc-3bb3-5145-9958-22181b888151",
+  "new_anchor": "first-vatican-council/dei-filius/conclusion",
+  "kind": "split",
+  "reason": "its text is spread over Dei Filius's conclusion and Pastor Aeternus; this one holds most of it: Manning's translation of the same text",
+  "added_by": "1.2d"
+ },
+ {
+  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
+  "old_passage_id": "c7876bd3-2b9b-5ab4-8994-b19dea83406d",
+  "old_anchor": "first-vatican-council/sec-7/4",
+  "new_passage_id": "f9ef80a0-559c-5006-9975-4d79e63dde2e",
+  "new_anchor": "first-vatican-council/dei-filius/prologue/from-p7",
+  "kind": "split",
+  "reason": "its text is spread over the prologue's two passages; this one holds most of it: Manning's translation of the same text",
+  "added_by": "1.2d"
+ },
+ {
+  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
+  "old_passage_id": "8c77a991-05b9-5561-8afa-fddcb64982e5",
+  "old_anchor": "first-vatican-council/sec-8/5",
+  "new_passage_id": "51a0733c-cb7b-5115-8893-d9fd76d060ec",
+  "new_anchor": "first-vatican-council/dei-filius/chapter-1",
+  "kind": "merged",
+  "reason": "this one holds its text: Manning's translation of the same text",
+  "added_by": "1.2d"
+ },
+ {
+  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
+  "old_passage_id": "59395e18-0a7a-5ca9-ac64-3060f62d82c3",
+  "old_anchor": "first-vatican-council/sec-9/6",
+  "new_passage_id": "2922e4b5-025c-5a3c-a501-a734f7abb3fc",
+  "new_anchor": "first-vatican-council/dei-filius/chapter-2",
+  "kind": "merged",
+  "reason": "this one holds its text: Manning's translation of the same text",
+  "added_by": "1.2d"
+ },
+ {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
   "old_passage_id": "5d8c2160-dc95-56f6-9995-4374d3eb6207",
   "old_anchor": "iv.vii.ii/from-p23",

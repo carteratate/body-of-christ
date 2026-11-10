@@ -4971,7 +4971,7 @@
   "author": null,
   "collection": "councils",
   "source_path": "councils/creeds2.xml",
-  "document_id": null,
+  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
   "edition": "Philip Schaff, The Creeds of Christendom, vol. 2, sixth edition, revised by David S. Schaff (New York: Harper, 1931), as reprinted (CCEL header: Sixth Edition; verso: Copyright 1877 by Harper & Brothers, 1905 and 1919 by David S. Schaff). The Vatican I text matches the 1877 edition (1878 printing) word for word",
   "translator": "Henry Edward Manning (English of the Vatican decrees, from Petri Privilegium, London, 1871)",
   "first_published": 1931,
@@ -4988,7 +4988,7 @@
   "credit_line": "Sourced via CCEL.org",
   "checked_by": "Carter",
   "checked_on": "2026-10-05",
-  "planned_for": "1.2d"
+  "planned_for": null
  },
  {
   "work": "Council of Nicaea",
@@ -5127,24 +5127,6 @@
   "first_published": 1848,
   "source_url": "https://www.papalencyclicals.net/councils/trent/the-complete-text.htm",
   "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "First Vatican Council",
-  "author": null,
-  "collection": "councils",
-  "source_path": "councils/ecum-20-first-vatican-council.html",
-  "document_id": "5c3cb0a3-883a-5f43-a747-b5e7196e68e1",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/councils/ecum20.htm",
-  "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,
   "credit_line": null,

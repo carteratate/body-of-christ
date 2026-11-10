@@ -5,7 +5,7 @@
   "canon-law": "feat/1.5a-canon-law-parser 16888ad",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
-  "councils": "HEAD bb76d19",
+  "councils": "feat/1.2d-vatican-i-schaff 510e710",
   "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
@@ -836,11 +836,6 @@
    "body_chars": 535924,
    "covered_chars": 207246,
    "pct": 38.67
-  },
-  "councils/ecum-20-first-vatican-council.html": {
-   "body_chars": 44079,
-   "covered_chars": 6030,
-   "pct": 13.68
   },
   "councils/vat2-ad-gentes.html": {
    "body_chars": 88029,

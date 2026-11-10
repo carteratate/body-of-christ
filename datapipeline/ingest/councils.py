@@ -20,6 +20,7 @@ from normalize.text import clean_text
 from normalize.caps import title_case_shouting
 from normalize.footnotes import strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
+from ingest.councils_schaff import SOURCE_FILE as SCHAFF_FILE, build_schaff
 from ingest.councils_schroeder import WORKS as SCHROEDER_WORKS, build_schroeder
 from ingest.pieces import (Segment, element_locator, name_pieces, number_elements,
                            pack_text, piece_reference,
@@ -250,6 +251,13 @@ def build_documents() -> list[Document]:
                 entry, resolve_document_id("councils", _source_key(entry),
                                            ("councils", entry["council"], entry["council"])),
                 _source_key(entry)))
+            continue
+        if entry["council"] == "First Vatican Council":
+            # Manning's English in Schaff (1.2d); the Tanner page stays vendored, unread.
+            docs.append(build_schaff(
+                entry, resolve_document_id("councils", _source_key(entry),
+                                           ("councils", entry["council"], entry["council"])),
+                _source_key(entry), os.path.join(_SRC, SCHAFF_FILE)))
             continue
         with open(os.path.join(_SRC, entry["file"]), "rb") as f:
             soup = BeautifulSoup(f.read(), "lxml")

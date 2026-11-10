@@ -52,10 +52,6 @@
   "fixed_by": "1.2b",
   "description": "38.67% covered: text inside lists and divs dropped"
  },
- "coverage.councils.ecum-20-first-vatican-council.html": {
-  "fixed_by": "1.2d",
-  "description": "13.68% covered: most of the text dropped; replaced by Schaff"
- },
  "coverage.councils.vat2-ad-gentes.html": {
   "fixed_by": "1.1",
   "description": "29.99% covered: continuation paragraphs dropped"
@@ -470,10 +466,6 @@
  "sentinel.trent_total": {
   "fixed_by": "1.2b",
   "description": "Trent loses text inside lists and divs"
- },
- "sentinel.vatican_i_total": {
-  "fixed_by": "1.2d",
-  "description": "Vatican I keeps a fraction of the text"
  },
  "sequence.bible_verses.duplicated:ESG/8": {
   "fixed_by": "1.4a",
