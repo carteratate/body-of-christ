@@ -138,7 +138,7 @@ pages. Tanner sections are Tanner's headings as the vendored page prints them.
 
 Tanner's introduction names canons 29 and 30 without printing them. Percival prints both,
 as extracts of the acts (`xi.xviii.xxx`, `.xxxi`). They are not Tanner documents; 1.2c
-decides whether its allowlist takes them (see "Percival's units").
+decides whether its allowlist takes them (see "Percival's units"). It does, each with a note that it was not enacted as a canon (Carter, 10 Nov 2026).
 
 ### 5. Constantinople II (553) — Percival
 
