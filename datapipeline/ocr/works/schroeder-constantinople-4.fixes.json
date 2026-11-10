@@ -1,0 +1,8 @@
+[
+ {
+  "passage": "canon-19",
+  "find": "be-\n\nn PL, CXIX, 943. take himself",
+  "replace": "betake himself",
+  "why": "p. 171-172: footnote ('PL, CXIX, 943.') read into the text across the page break; 'be-'/'take' is a line-end hyphen to join, and no paragraph break"
+ }
+]

@@ -1,0 +1,65 @@
+{
+ "work": "deferrari-constantinople-4",
+ "title": "Fourth Council of Constantinople, canons 1, 3, 11, 12, 17 (extract) and 21, from Deferrari, The Sources of Catholic Dogma (1957), pp. 135–139, Loreto reprint",
+ "scan": "sources-of-catholic-dogma-loreto-reprint",
+ "pdf": "councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf",
+ "pdf_page_offset": 31,
+ "margin_numbers": true,
+ "pages": [
+  "135",
+  "139"
+ ],
+ "layout": "parallel-left",
+ "units": "deferrari",
+ "unit_bounds": [
+  {
+   "id": "canon/1",
+   "first": "^\\(Text of Anastasius:?\\)\\s*Canon",
+   "heading": "^\\(Text of Anastasius:?\\)\\s*Canon\\s*1\\W*"
+  },
+  {
+   "id": "canon/3",
+   "first": "^\\W{0,2}Can\\.\\s*3\\.",
+   "heading": "^\\W{0,2}Can\\.\\s*3\\.\\s*"
+  },
+  {
+   "id": "canon/11",
+   "first": "^\\W{0,2}Can\\.\\s*1\\s?[1Il]\\.",
+   "heading": "^\\W{0,2}Can\\.\\s*1\\s?[1Il]\\.\\s*"
+  },
+  {
+   "id": "canon/12",
+   "first": "^\\W{0,2}Can\\.\\s*12\\.",
+   "heading": "^\\W{0,2}Can\\.\\s*12\\.\\s*"
+  },
+  {
+   "id": "canon/17/extract",
+   "first": "^\\W{0,2}Fro\\S*\\s+Can\\.\\s*17",
+   "heading": "^\\W{0,2}Fro\\S*\\s+Can\\.\\s*17\\.?\\s*"
+  },
+  {
+   "id": "canon/21",
+   "first": "^\\W{0,2}Can\\.\\s*2\\s?[1Il]",
+   "heading": "^\\W{0,2}Can\\.\\s*2\\s?[1Il]\\s*\\W?\\s*",
+   "last": "senior Ro\\S*\\.\\W*$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

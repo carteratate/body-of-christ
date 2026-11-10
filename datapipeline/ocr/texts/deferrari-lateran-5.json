@@ -1,0 +1,23 @@
+{
+ "work": "deferrari-lateran-5",
+ "title": "Fifth Lateran Council, Pastor aeternus gregem (extract), from Deferrari, The Sources of Catholic Dogma (1957), pp. 238–239, Loreto reprint",
+ "metadata": {
+  "text_source": "ocr",
+  "scan_id": "sources-of-catholic-dogma-loreto-reprint"
+ },
+ "gate": "pass",
+ "passages": [
+  {
+   "id": "session-11/pastor-aeternus-gregem",
+   "pages": [
+    "238",
+    "239"
+   ],
+   "leaves": [
+    269,
+    270
+   ],
+   "text": "Nor should this move us, that the sanction [pragmatic] itself, and the things contained in it were proclaimed in the Council of Basle …, since all these acts were made after the translation of that same Council of Basle from the place of the assembly at Basle, and therefore could have no weight, since it is clearly established that the Roman Pontiff alone, possessing as it were authority over all Councils, has full right and power of proclaiming Councils, or transferring and dissolving them, not only according to the testimony of Sacred Scripture, from the words of the holy Fathers and even of other Roman Pontiffs, of our predecessors, and from the decrees of the holy canons, but also from the particular acknowledgment of these same Councils."
+  }
+ ]
+}

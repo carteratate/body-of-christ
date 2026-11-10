@@ -1,0 +1,72 @@
+{
+ "work": "schroeder-lateran-5",
+ "title": "Fifth Lateran Council, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 487–508",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": [
+  "487",
+  "508"
+ ],
+ "layout": "single-column",
+ "units": "headed",
+ "unit_closes": [
+  "^\\W{0,2}From the bu\\S*\\s"
+ ],
+ "unit_bounds": [
+  {
+   "id": "session-8/apostolici-regiminis",
+   "first": "^\\W{0,2}From the bull Apo\\S+ regiminis",
+   "heading": "^\\W{0,2}From the bull [^:]*:\\s*"
+  },
+  {
+   "id": "session-9/supernae-dispositionis-arbitrio",
+   "first": "^\\W{0,2}From the bull Supernae dispositionis",
+   "heading": "^\\W{0,2}From the bull [^:]*:\\s*"
+  },
+  {
+   "id": "session-10/inter-multiplices",
+   "first": "^\\W{0,2}From the bull Inter multiplices",
+   "heading": "^\\W{0,2}From the bull [^:]*:\\s*"
+  },
+  {
+   "id": "session-10/regimini-universalis-ecclesiae",
+   "first": "^\\W{0,2}From the bull Regimini universalis",
+   "heading": "^\\W{0,2}From the bull [^:]*:\\s*"
+  },
+  {
+   "id": "session-10/inter-sollicitudines",
+   "first": "^\\W{0,2}From the bull Inter sollicitudines",
+   "heading": "^\\W{0,2}From the bull [^:]*:\\s*"
+  },
+  {
+   "id": "session-11/supernae-majestatis-praesidio",
+   "first": "^\\W{0,2}From the bull Supernae majestatis",
+   "heading": "^\\W{0,2}From the bull [^:]*:\\s*"
+  },
+  {
+   "id": "session-11/dum-intra-mentis-arcana",
+   "first": "^\\W{0,2}From the bull Dum intra",
+   "heading": "^\\W{0,2}From the bull [^:]*:\\s*",
+   "last": "expresso vot"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}
