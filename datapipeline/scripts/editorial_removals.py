@@ -187,17 +187,25 @@ def _under(unit: str, divs: set[str]) -> str | None:
 
 def holder(document, chapter_key: str, order: list[str], locator: str) -> str | None:
     """The anchor of the built passage of `chapter_key` that held `locator`, or, for a
-    paragraph the build dropped, the one holding the next paragraph it kept."""
+    paragraph the build dropped, the one holding the next paragraph it kept, or at a
+    chapter's end the one holding the last paragraph before it."""
     pieces = [p for p in document.passages if p.chapter_key == chapter_key]
     if not pieces:
         return None
     if len(pieces) == 1:
         return pieces[0].anchor
+
+    def holding(loc: str):
+        return next((p.anchor for p in pieces if any(u == loc for u, _ in p.source_units)),
+                    None)
+
     start = order.index(locator) if locator in order else 0
     for loc in order[start:]:
-        for p in pieces:
-            if any(u == loc for u, _ in p.source_units):
-                return p.anchor
+        if (anchor := holding(loc)) is not None:
+            return anchor
+    for loc in reversed(order[:start]):
+        if (anchor := holding(loc)) is not None:
+            return anchor
     return pieces[0].anchor
 
 

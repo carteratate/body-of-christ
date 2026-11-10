@@ -185,6 +185,16 @@ def test_removed_units_logged_with_judgment(built, monkeypatch):
         f"rm-{n:04d}" for n in range(2, 2 + len(entries))}
 
 
+def test_trailing_removal_names_the_last_piece():
+    from types import SimpleNamespace as N
+    pieces = [N(chapter_key="c", anchor="c", source_units=(("p2", 0),)),
+              N(chapter_key="c", anchor="c/from-p3", source_units=(("p3", 0), ("p4", 9)))]
+    document = N(passages=pieces)
+    order = ["p1", "p2", "p3", "p4", "p5", "p6"]
+    assert editorial_removals.holder(document, "c", order, "p1") == "c"           # next kept
+    assert editorial_removals.holder(document, "c", order, "p6") == "c/from-p3"   # at the end
+
+
 def test_unexplained_changes_catches_lost_author_words():
     before = "Epistle I.\n\n1. Cyprian to Cornelius, greeting. We read [of God] your letter."
     after = "1. Cyprian to Cornelius, greeting. We read your letter."
