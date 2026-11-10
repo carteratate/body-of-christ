@@ -1092,7 +1092,7 @@ PERCIVAL_UNITS = {
                            "letter-to-john-of-antioch"],
     "Council of Chalcedon": ["tome-of-leo", "condemnation-of-dioscorus", "definition",
                              "decree-on-jerusalem-and-antioch", "decree-on-the-bishop-of-ephesus",
-                             "decree-on-nicomedia", *[f"canon/{n}" for n in range(1, 29)]],
+                             "decree-on-nicomedia", *[f"canon/{n}" for n in range(1, 31)]],
     "Second Council of Constantinople": ["sentence", *[f"anathema/{n}" for n in range(1, 15)]],
     "Third Council of Constantinople": ["sentence-against-the-monothelites", "definition",
                                         "letter-to-agatho"],
@@ -1158,6 +1158,21 @@ def test_nestorius_letter_is_rejected_voice_and_hefeles_anathemas_say_where_they
     assert not others
 
 
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+def test_chalcedons_canons_29_and_30_say_they_were_not_enacted_as_canons():
+    # Passages of the fourth session's minutes that later Greek collections count as
+    # canons (Carter, 10 Nov 2026).
+    canons = {p.anchor: p for p in _percival_built("Council of Chalcedon").passages}
+    for n in (29, 30):
+        assert canons[f"council-of-chalcedon/canon/{n}"].note == (
+            "Not enacted as a canon: a passage from the minutes of the fourth session, which "
+            f"later Greek collections count as canon {n}.")
+    assert all(canons[f"council-of-chalcedon/canon/{n}"].note is None for n in range(1, 29))
+    assert "Apostolic throne [of Rome], said" in canons["council-of-chalcedon/canon/30"].content
+    assert not re.search(r"Ancient Epitome|Hefele|From the Fourth Session",
+                         canons["council-of-chalcedon/canon/29"].content)
+
+
 def test_tanners_councils_1_to_7_go_where_their_text_went():
     reg = work_registry.current()
     # A live passage that was one whole canon or anathema keeps its ID under the new anchor.
@@ -1166,13 +1181,13 @@ def test_tanners_councils_1_to_7_go_where_their_text_went():
     assert kept["first-council-of-constantinople/sec-5/8"] == "first-council-of-constantinople/canon/1"
     assert kept["council-of-ephesus/sec-5/12"] == "council-of-ephesus/anathema/12"
     assert kept["second-council-of-nicaea/sec-26/26"] == "second-council-of-nicaea/canon/22"
+    assert kept["council-of-chalcedon/sec-3/19"] == "council-of-chalcedon/canon/30"
     open_ = {r["old_anchor"]: r["new_anchor"] for r in reg.redirects if not r.get("closed_by")}
     assert open_["council-of-ephesus/sec-3/3"] == "council-of-ephesus/nestorius-second-letter"
     assert open_["council-of-nicaea/sec-2/2"] == "council-of-nicaea/creed"
     removed = {e["anchor"]: e for e in work_registry.open_removals(reg)}
     assert removed["council-of-nicaea/sec-1/1"]["reason"] == "rule-g-editorial"
     assert removed["second-council-of-nicaea/sec-26/27"]["reason"] == "debris"
-    assert removed["council-of-chalcedon/sec-3/19"]["reason"] == "other-author"
     gap = removed["second-council-of-constantinople/sec-3/9"]
     assert gap["reason"] == "translation-in-preparation" and "(gap G13)" in gap["detail"]
     docs = {percival_document_id(c) for c in PERCIVAL_UNITS}

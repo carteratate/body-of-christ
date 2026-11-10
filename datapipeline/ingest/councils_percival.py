@@ -54,6 +54,12 @@ HEADING_CLASSES = frozenset({"c14", "c31", "c34", "c44", "c46", "c50"})
 # Before a text's first paragraph, c35 is a title as well (eight of Nicaea II's canon
 # titles); inside one it is the text's own (the creeds named in Chalcedon's Definition).
 TITLE_CLASS = "c35"
+# Words where CCEL's transcription departs from the print, each read on the page image of
+# the 1900 edition (Internet Archive `sevenecumenicalc00perc`): (paragraph id, CCEL's text,
+# the print's, the page).
+CORRECTIONS = (
+    ("xi.xviii.xxxi-p3", "throne for Rome]", "throne [of Rome]", "291"),
+)
 _NOTES = re.compile(r"^Notes?\.$|^Note [IVX]+\.$")
 _EDITOR_LINE = re.compile(r"^\(.*\)\.?$|^\[.*\]\.?$", re.DOTALL)
 
@@ -151,8 +157,12 @@ COUNCILS: dict[str, list[Text]] = {
              "Decree on the Bishop of Ephesus (Session XII)", "xi.xvi"),
         Text("decree-on-nicomedia", "Decree on Nicomedia", "decree-on-nicomedia",
              "Decree on Nicomedia (Session XIII)", "xi.xvii"),
-        # Canons 1 to 28; Percival's 29 and 30 (`xi.xviii.xxx`, `.xxxi`) are left out.
         *_canons("xi.xviii", _ROMAN[:28]),
+        # Not enacted as canons: passages of the fourth session's minutes that later Greek
+        # collections count as canons 29 and 30 (each with a registry note; Carter, 10 Nov
+        # 2026). Percival prints each with the debate around it; the notes after it go.
+        Text("canon/29", "Canon 29", "canons", "Canons", "xi.xviii.xxx", first="p2", last="p7"),
+        Text("canon/30", "Canon 30", "canons", "Canons", "xi.xviii.xxxi", first="p2", last="p8"),
     ],
     "Second Council of Constantinople": [
         Text("sentence", "The Sentence of the Synod", "sentence", "The Sentence of the Synod",
@@ -216,6 +226,7 @@ def _paragraphs(div, text: Text) -> list[_Paragraph]:
         body, marks = _unmark(_block_text(el, _NOTE_MARK, texts))
         if len(marks) != len(texts):
             raise ValueError(f"{div_id}-{pid}: a note outside the paragraph's text")
+        body, marks = _corrected(f"{div_id}-{pid}", body, marks)
         if _NOTES.match(body):
             break
         title = el.get("class") in HEADING_CLASSES or (el.get("class") == TITLE_CLASS and not out)
@@ -230,6 +241,18 @@ def _paragraphs(div, text: Text) -> list[_Paragraph]:
     if not out:
         raise ValueError(f"{div_id}: no text")
     return out
+
+
+def _corrected(pid: str, body: str, marks: list[int]) -> tuple[str, list[int]]:
+    for at, find, replace, _ in CORRECTIONS:
+        if at != pid:
+            continue
+        k = body.find(find)
+        if k < 0 or body.count(find) != 1:
+            raise ValueError(f"{pid}: correction {find!r} does not occur once")
+        body = body[:k] + replace + body[k + len(find):]
+        marks = [m + len(replace) - len(find) if m > k else m for m in marks]
+    return body, marks
 
 
 _PART = re.compile(r"^(.+?)(?:-\d{2})?$")
