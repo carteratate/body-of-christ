@@ -1692,6 +1692,36 @@
   "added_by": "1.10b"
  },
  {
+  "document_id": "17157215-3ef5-5b22-860a-f34895fc3c03",
+  "old_passage_id": "d9d996ff-3f19-58e1-990c-6abfc0dc8d96",
+  "old_anchor": "pascendi-dominici-gregis/36/from-e54",
+  "new_passage_id": "c4c7d8a6-73a7-5ae2-ad4b-e75d7a8637fd",
+  "new_anchor": "pascendi-dominici-gregis/36",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "17157215-3ef5-5b22-860a-f34895fc3c03",
+  "old_passage_id": "f5bf95dd-5665-5dee-8628-7b3eec2ea0e7",
+  "old_anchor": "pascendi-dominici-gregis/39/from-e58-2",
+  "new_passage_id": "d642c5ed-c169-5592-b7d9-df256ed96ee5",
+  "new_anchor": "pascendi-dominici-gregis/39/from-e86",
+  "kind": "merged",
+  "reason": "vatican.va's text divides this paragraph at other places; this piece now holds its opening words",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "17157215-3ef5-5b22-860a-f34895fc3c03",
+  "old_passage_id": "8ded16d0-df7b-5ab1-85fc-a69e625e7de6",
+  "old_anchor": "pascendi-dominici-gregis/42/from-e63",
+  "new_passage_id": "f482ceea-3563-58a5-a55a-0f49de4ac7c9",
+  "new_anchor": "pascendi-dominici-gregis/42",
+  "kind": "merged",
+  "reason": "vatican.va's text divides this paragraph at other places; this piece now holds its opening words",
+  "added_by": "1.3c"
+ },
+ {
   "document_id": "17b7747f-273b-5841-b415-16dea3192635",
   "old_passage_id": "3c30931d-82be-52b7-98d9-095009c59339",
   "old_anchor": "iii.iv.vii/from-p3-2",
@@ -6848,6 +6878,176 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "010587cc-53f3-5e07-834c-0acbedd56c50",
+  "old_anchor": "mysterium-fidei/2",
+  "new_passage_id": "87b2acb7-cd11-5fcf-bd92-8831ba687593",
+  "new_anchor": "mysterium-fidei/1",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "5ea3d364-2801-5a7b-94be-1c53e6fdf95c",
+  "old_anchor": "mysterium-fidei/25",
+  "new_passage_id": "b99684df-6ec7-5250-9887-cd0781871a77",
+  "new_anchor": "mysterium-fidei/24",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "20f81ac5-8318-5dd0-852b-2502ecf2bf7f",
+  "old_anchor": "mysterium-fidei/27",
+  "new_passage_id": "1cfb53be-0156-5083-b977-2f286b5b2698",
+  "new_anchor": "mysterium-fidei/26",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "108518ee-0194-5cbc-9af1-7e85524ccb97",
+  "old_anchor": "mysterium-fidei/32",
+  "new_passage_id": "b1800f5b-ac0d-5842-a928-2b2aae7fd043",
+  "new_anchor": "mysterium-fidei/31",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "86e27bd4-daf0-56ba-abf8-0d4edc91e2f2",
+  "old_anchor": "mysterium-fidei/35",
+  "new_passage_id": "f69314bd-d649-5700-b380-61293deeb4cd",
+  "new_anchor": "mysterium-fidei/34",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "c9180ccc-f209-591f-800a-d95268703af1",
+  "old_anchor": "mysterium-fidei/36",
+  "new_passage_id": "f69314bd-d649-5700-b380-61293deeb4cd",
+  "new_anchor": "mysterium-fidei/34",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "198f377d-7538-5659-8cd0-905746f65b60",
+  "old_anchor": "mysterium-fidei/37",
+  "new_passage_id": "f69314bd-d649-5700-b380-61293deeb4cd",
+  "new_anchor": "mysterium-fidei/34",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "5c9ce9ef-c962-5f23-bd09-10994c7349fc",
+  "old_anchor": "mysterium-fidei/39",
+  "new_passage_id": "4014a09d-eaf3-5739-b429-8b582c142cb5",
+  "new_anchor": "mysterium-fidei/38",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "5ddfcf3d-b241-5558-83c8-758fcc29955b",
+  "old_anchor": "mysterium-fidei/41",
+  "new_passage_id": "e81f684a-f0c0-5ece-aee4-f617ebf7507d",
+  "new_anchor": "mysterium-fidei/40",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "d6beb9ea-a98b-526c-b626-ff19f5cc6210",
+  "old_anchor": "mysterium-fidei/45",
+  "new_passage_id": "430f7a66-c137-59f4-a7cd-ff0643c1ee2d",
+  "new_anchor": "mysterium-fidei/44",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "f01b9e3e-35f0-5e52-98f3-41bb2a09440b",
+  "old_anchor": "mysterium-fidei/49",
+  "new_passage_id": "ac20b4e2-69ed-5f6b-9acf-d17f6cff1c27",
+  "new_anchor": "mysterium-fidei/48",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "ae351e70-61f7-5b31-9c28-80aa57e36f80",
+  "old_anchor": "mysterium-fidei/50",
+  "new_passage_id": "ac20b4e2-69ed-5f6b-9acf-d17f6cff1c27",
+  "new_anchor": "mysterium-fidei/48",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "39cfeae6-91c6-5546-920d-fc3b32df78d7",
+  "old_anchor": "mysterium-fidei/51",
+  "new_passage_id": "ac20b4e2-69ed-5f6b-9acf-d17f6cff1c27",
+  "new_anchor": "mysterium-fidei/48",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "adf43efd-ebd8-5201-b2f3-66359e0af889",
+  "old_anchor": "mysterium-fidei/66",
+  "new_passage_id": "971cfd48-25ee-5dbf-b6f2-59393c03c4cc",
+  "new_anchor": "mysterium-fidei/65",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "a35cfa12-0dbc-5be4-9739-a607b9935a80",
+  "old_anchor": "mysterium-fidei/81",
+  "new_passage_id": "fa3a6850-a521-5786-8602-c737bbc97b59",
+  "new_anchor": "mysterium-fidei/80",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "074d43a2-142c-52f0-a73a-69883274ef5f",
+  "old_anchor": "mysterium-fidei/83",
+  "new_passage_id": "b7ac546d-8c55-5b8e-a634-7ba8dcb95b56",
+  "new_anchor": "mysterium-fidei/82",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
+ },
+ {
+  "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
+  "old_passage_id": "3038fcf6-cd1a-5f1a-a897-86772e8e9446",
+  "old_anchor": "mysterium-fidei/92",
+  "new_passage_id": "b22cc791-d6e9-5736-9dd7-e4cb9d1fc662",
+  "new_anchor": "mysterium-fidei/91",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside the paragraph it opens",
+  "added_by": "1.3c"
  },
  {
   "document_id": "4d9fa1b9-bed6-5917-b397-987d21bff46f",
@@ -12780,6 +12980,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "a9c1215f-d6e9-5cfb-9cd3-4f11376cc2c3",
+  "old_passage_id": "edb5f3f5-adbc-5e70-bfdc-210f9867723f",
+  "old_anchor": "ecclesiam-suam/63",
+  "new_passage_id": "9ff5040f-572c-5c3a-a708-776def7e8186",
+  "new_anchor": "ecclesiam-suam/62",
+  "kind": "merged",
+  "reason": "vatican.va's translation prints this text inside its §62",
+  "added_by": "1.3c"
  },
  {
   "document_id": "a9dfa0cc-a39d-5962-9068-231edc7d02fe",
