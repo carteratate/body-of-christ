@@ -32,7 +32,7 @@ import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
 import { certaintyTag, formatAttribution, formatDate, sourceCreditOf } from "@/lib/attribution";
 import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/PassageFacts";
-import { parseTombstone, type Tombstone } from "@/lib/corpus-lifecycle";
+import { parseTombstone, removalStatusLabel, type Tombstone } from "@/lib/corpus-lifecycle";
 
 function hexToRgb(color: string): string {
   if (!color.startsWith("#") || color.length < 7) return "196,151,42";
@@ -153,37 +153,74 @@ export function ChunkCard(props: ChunkCardProps) {
   return <CurrentChunkCard {...props} />;
 }
 
+/**
+ * A saved result whose passage was removed: the same stained-glass card as its
+ * neighbours, collapsed to its citation with "Removed" where the score would be.
+ * Opening it shows why, and no text (Carter, 9 Nov 2026).
+ */
 function RemovedChunkCard({ result, tombstone, isGuest = false }: {
   result: ChunkResult;
   tombstone: Tombstone;
   isGuest?: boolean;
 }) {
-  const { source } = result;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const { source, chunk_id } = result;
   const collectionMeta = getCollectionMeta(source.collection);
   const color = collectionMeta?.color ?? "var(--color-brand-accent)";
+  const rgb = hexToRgb(collectionMeta?.hex ?? "#C4972A");
   const title = tombstone.title || source.document_title;
   const author = tombstone.author ?? source.author;
-  const reference = tombstone.reference ?? source.reference;
-  const shownReference = reference ? withoutAuthorPrefix(reference, title, author) : null;
+  const displayAuthor = author?.trim() === "Catholic Church" ? null : author;
+  const reference = primaryCitation(source.collection, title, tombstone.reference ?? source.reference, author);
+  const compactReference = mobileCitation(source.collection, title, tombstone.reference ?? source.reference, author);
+  const status = removalStatusLabel(tombstone);
+  const badge = <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium sm:max-w-none" style={{ borderColor: color, color }}>{collectionMeta?.label ?? source.collection}</span>;
+  const statusTag = (
+    <span className="absolute right-[18px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded border border-brand-muted/50 px-1.5 text-[11px] text-brand-muted max-sm:right-0">
+      {status}
+    </span>
+  );
   return (
-    <article
-      aria-label={`${title}: ${tombstone.public_reason}`}
-      className="min-w-0 overflow-hidden rounded-lg border border-brand-muted/30 bg-brand-surface p-4"
+    <div
+      className="min-w-0 overflow-hidden"
       data-testid="removed-chunk-card"
+      style={{ borderRadius: "8px", border: `1px solid rgba(${rgb},0.7)`, background: `rgba(${rgb},0.32)` }}
     >
-      <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2">
-        <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>
-          {collectionMeta?.label ?? source.collection}
-        </span>
-        <span className="min-w-0 text-sm font-semibold leading-tight text-brand-primary">{title}</span>
+      <div className="flex h-[96px] items-stretch p-3 sm:h-[68px]" style={{ borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none" }}>
+        <button
+          type="button"
+          onClick={() => setIsExpanded((value) => !value)}
+          aria-label={`${isExpanded ? "Collapse" : "Expand"} result: ${[collectionMeta?.label, displayAuthor, reference, status].filter(Boolean).join(", ")}`}
+          aria-expanded={isExpanded}
+          aria-controls={`chunk-body-${chunk_id}`}
+          className="relative flex min-h-11 min-w-0 flex-1 items-center rounded-md bg-transparent text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-accent"
+        >
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 pr-24 sm:hidden">
+            <div className="flex min-w-0 items-center gap-2">
+              {badge}
+              {displayAuthor && <span className="min-w-0 flex-1 truncate text-xs leading-tight text-brand-muted">{displayAuthor}</span>}
+            </div>
+            <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-muted">{compactReference}</p>
+          </div>
+          <div className="hidden min-w-0 flex-1 items-center gap-2 pr-[150px] sm:flex">
+            {badge}
+            <div className="grid min-w-0 flex-1 grid-rows-[1rem_1rem] content-center overflow-hidden">
+              <p className="truncate text-xs leading-tight text-brand-muted">{displayAuthor ?? "\u00a0"}</p>
+              <span className="truncate text-sm font-semibold leading-tight text-brand-muted">{reference}</span>
+            </div>
+          </div>
+          {statusTag}
+          {isExpanded
+            ? <ChevronUp size={15} className="absolute right-0 top-[-3px] text-brand-muted sm:top-[-5px]" />
+            : <ChevronDown size={15} className="absolute right-0 top-[-3px] text-brand-muted sm:top-[-5px]" />}
+        </button>
       </div>
-      {(author || (shownReference && shownReference !== title)) && (
-        <p className="mb-3 text-xs leading-snug text-brand-muted">
-          {[author, shownReference !== title ? shownReference : null].filter(Boolean).join(" · ")}
-        </p>
+      {isExpanded && (
+        <div id={`chunk-body-${chunk_id}`} style={{ padding: "16px" }}>
+          <RemovalNotice tombstone={tombstone} isGuest={isGuest} />
+        </div>
       )}
-      <RemovalNotice tombstone={tombstone} isGuest={isGuest} />
-    </article>
+    </div>
   );
 }
 

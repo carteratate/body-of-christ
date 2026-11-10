@@ -53,6 +53,11 @@ export function removalHeading(tombstone: Pick<Tombstone, "reason_code">): strin
   return HELD_REASONS.has(tombstone.reason_code) ? "Not available on TheoCorpus" : "Removed from TheoCorpus";
 }
 
+/** The short tag a collapsed card shows in place of its score. */
+export function removalStatusLabel(tombstone: Pick<Tombstone, "reason_code">): string {
+  return HELD_REASONS.has(tombstone.reason_code) ? "Not available" : "Removed";
+}
+
 /** "Read it at papalencyclicals.net", or null when the tombstone names no usable link. */
 export function readElsewhere(tombstone: Pick<Tombstone, "read_elsewhere_url">): { href: string; label: string } | null {
   const href = tombstone.read_elsewhere_url;

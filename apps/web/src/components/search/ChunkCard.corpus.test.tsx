@@ -160,11 +160,20 @@ describe("removed passage", () => {
     },
   }, { document_title: "De Principiis", author: "Origen", reference: "Origen — De Principiis, Book I · Chapter I" });
 
-  it("shows the title, author, reference, reason and Church act, and no text or actions", () => {
+  it("stays collapsed like its neighbours, with Removed where the score would be", () => {
     renderCard(removed);
     const card = screen.getByTestId("removed-chunk-card");
-    expect(within(card).getByText("De Principiis")).toBeTruthy();
-    expect(within(card).getByText("Origen · De Principiis, Book I · Chapter I")).toBeTruthy();
+    expect(card.getAttribute("style")).toContain("background: rgba(");
+    expect(within(card).getAllByText("Origen").length).toBeGreaterThan(0);
+    expect(within(card).getAllByText("De Principiis, Book I · Chapter I").length).toBeGreaterThan(0);
+    expect(within(card).getByText("Removed")).toBeTruthy();
+    expect(screen.queryByText(/condemned Origen by name/)).toBeNull();
+  });
+
+  it("shows the reason and Church act once opened, and no text or actions", async () => {
+    renderCard(removed);
+    await expand();
+    const card = screen.getByTestId("removed-chunk-card");
     expect(within(card).getByText("Removed from TheoCorpus")).toBeTruthy();
     expect(within(card).getByText(/condemned Origen by name/)).toBeTruthy();
     expect(within(card).getByText("Church act: Second Council of Constantinople, anathema 11, 553")).toBeTruthy();
@@ -174,7 +183,7 @@ describe("removed passage", () => {
     expect(screen.queryByRole("link", { name: "Open in Context" })).toBeNull();
   });
 
-  it("links to where a held text can still be read", () => {
+  it("links to where a held text can still be read", async () => {
     renderCard(result({
       status: "removed",
       content: "",
@@ -185,6 +194,8 @@ describe("removed passage", () => {
         retired_at: "2026-12-01T00:00:00Z", title: "Mirari Vos", author: "Pope Gregory XVI",
       },
     }, { collection: "encyclicals", document_title: "Mirari Vos", author: "Pope Gregory XVI", reference: null }));
+    expect(screen.getByText("Not available")).toBeTruthy();
+    await expand();
     expect(screen.getByText("Not available on TheoCorpus")).toBeTruthy();
     const link = screen.getByRole("link", { name: /Read it at papalencyclicals.net/ });
     expect(link.getAttribute("href")).toBe("https://www.papalencyclicals.net/greg16/g16mirar.htm");
