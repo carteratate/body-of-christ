@@ -18,6 +18,7 @@ not an adapter leaves the note inline.
 """
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import os
@@ -108,14 +109,40 @@ def editorial_divs(source_file: str, path: str = EDITORIAL_DIVS_PATH) -> set[str
         return {r["div"] for r in json.load(f) if r["file"] == source_file}
 
 
+REMOVALS_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             "registry", "removals.json")
+_removed_paragraphs: dict[str, frozenset[str]] = {}
+
+
+def removed_paragraphs(path: str = REMOVALS_PATH) -> frozenset[str]:
+    """The sha1s of whole paragraphs rule G takes out of a chapter that stays (1.8a's
+    `span` entries: a translator's credit, an "Argument", a letter's title line), as
+    `ingest.editorial.span_sha1` keys them. The removal registry says they are an
+    editor's, so they are apparatus, not body the build lost."""
+    if path not in _removed_paragraphs:
+        with open(path, encoding="utf-8") as f:
+            _removed_paragraphs[path] = frozenset(
+                e["span"]["sha1"] for e in json.load(f)
+                if e.get("scope") == "span" and e.get("reason") == "rule-g-editorial"
+                and (e.get("span") or {}).get("sha1"))
+    return _removed_paragraphs[path]
+
+
+def _paragraph_sha1(text: str) -> str:
+    return hashlib.sha1(" ".join(text.replace(SEGMENT_BREAK, " ").split())
+                        .encode("utf-8")).hexdigest()
+
+
 def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     """ThML (CCEL XML). Body is <p> and <verse> text inside div1 to div6 (a <verse>
     holds a poem or a quoted hymn as <l> lines); <note> is "note"; <scripCom> and <pb>
     carry no text and are ignored. unit_id is the nearest ancestor div's id. Divs
-    listed in editorial_divs.json, and everything inside them, are "apparatus"."""
+    listed in editorial_divs.json, and everything inside them, are "apparatus", and so
+    is a paragraph the removal registry records as rule G's (`removed_paragraphs`)."""
     source_file = source_file or os.path.basename(path)
     root = _read_thml(path)
     editorial = editorial_divs(source_file)
+    removed = removed_paragraphs()
     units: list[SourceUnit] = []
 
     def walk(el, div_id: str | None, region: str, in_div: bool) -> None:
@@ -132,8 +159,10 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                                             _thml_text(child, skip_notes=False), "note"))
             elif tag in ("p", "verse"):
                 if in_div:
-                    units.append(SourceUnit(source_file, div_id,
-                                            _thml_text(child, skip_notes=True), region))
+                    text = _thml_text(child, skip_notes=True)
+                    own = "apparatus" if region == "body" and _paragraph_sha1(text) in removed \
+                        else region
+                    units.append(SourceUnit(source_file, div_id, text, own))
                     # A note inside the paragraph is its own unit.
                     for note in child.iter("note"):
                         units.append(SourceUnit(source_file, div_id,

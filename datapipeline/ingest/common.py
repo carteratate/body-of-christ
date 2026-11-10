@@ -126,16 +126,23 @@ def direct_blocks(elem) -> list:
     return [child for child in elem if child.tag in BLOCK_TAGS]
 
 
-def direct_blocks_text(elem) -> tuple[str, list[tuple[int, str]]]:
+def direct_blocks_text(elem, edit=None) -> tuple[str, list[tuple[int, str]]]:
     """`_direct_p_text`, and each removed note as (the offset in that text where it
     stood, its text), so a passage cut from it can count the notes it lost
-    (`editor_note_count`) and keep the scripture references as footnotes."""
+    (`editor_note_count`) and keep the scripture references as footnotes.
+
+    `edit(block, text, notes)`, when given, edits each block's text as read with its
+    note marks and returns it with the notes it keeps; an empty text drops the block
+    (rule G, `ingest.editorial.ChapterEdit`)."""
     parts: list[str] = []
     notes: list[tuple[int, str]] = []
     at = 0
     for block in direct_blocks(elem):
         texts: list[str] = []
-        text, marks = _unmark(_block_text(block, _NOTE_MARK, texts))
+        marked = _block_text(block, _NOTE_MARK, texts)
+        if edit is not None:
+            marked, texts = edit(block, marked, texts)
+        text, marks = _unmark(marked)
         if len(marks) != len(texts):
             raise ValueError(f"{block.get('id')}: a note outside the block's text lines")
         if not text:
@@ -692,29 +699,34 @@ def _book_label(elem) -> str | None:
     return None
 
 
-def iter_chapters(work_root, parent_map):
+def iter_chapters(work_root, parent_map, skip=None):
     """Yield (book_label|None, chapter_elem) for the content-bearing divs under
     work_root, at whatever depth they occur (work→chapter or work→book→chapter).
     A chapter is any div with direct <p> children; its book is the nearest ancestor
-    book division. Chapters under skippable front-matter ancestors are omitted.
+    book division. Chapters under skippable front-matter ancestors are omitted, and so
+    are chapters `skip(div)` accepts, or under a div it accepts (rule G's editorial
+    divs, `ingest.editorial.Editor.skip`).
     """
+    def skippable(div) -> bool:
+        return _cf_skippable(div.get("title") or "") or (skip is not None and skip(div))
+
     for elem in work_root.iter():
         tag = elem.tag
         if elem is work_root or not (isinstance(tag, str) and tag.startswith("div")):
             continue
         if not _has_direct_p(elem):
             continue
-        skip = _cf_skippable(elem.get("title") or "")
+        skipped = skippable(elem)
         book = None
         cur = parent_map.get(elem)
-        while cur is not None and cur is not work_root:
-            if _cf_skippable(cur.get("title") or ""):
-                skip = True
+        while not skipped and cur is not None and cur is not work_root:
+            if skippable(cur):
+                skipped = True
                 break
             if book is None:
                 book = _book_label(cur)
             cur = parent_map.get(cur)
-        if skip:
+        if skipped:
             continue
         yield book, elem
 
