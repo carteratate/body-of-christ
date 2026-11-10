@@ -612,3 +612,150 @@ def test_tanners_constance_and_basel_ferrara_florence_go_where_their_text_went()
     rows = [r for r in reg.passages if r["document_id"] in (
         "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205", "706adce0-8af2-5a30-877b-82e701601a53")]
     assert not [r["anchor"] for r in rows if r["status"] == "active" and "/sec-" in r["anchor"]]
+
+
+# --- Vatican I from Schaff's Creeds of Christendom (1.2d) ----------------------------------
+
+from ingest import councils_schaff as schaff  # noqa: E402
+from ingest.scripture_notes import scripture_reference  # noqa: E402
+
+VATICAN_I = {"council": "First Vatican Council", "year": 1870, "council_number": 20,
+             "url": "https://www.papalencyclicals.net/councils/ecum20.htm"}
+_LA = '<td style="width:50%;vertical-align:top{style}"><span lang="LA"><i>{text}</i></span></td>'
+_EN = '<td style="width:50%;vertical-align:top{style}">{text}</td>'
+
+
+def _row(latin, english, style=""):
+    return f"<tr>{_LA.format(style=style, text=latin)}{_EN.format(style=style, text=english)}</tr>"
+
+
+SCHAFF_XML = f"""<?xml version="1.0"?>
+<ThML><ThML.body><div2 id="v.ii">
+<div3 type="Section" title="The Orthodox Confession of the Eastern Church, A.D. 1643." id="v.ii.i">
+<pb n="234" id="v.ii.i-Page_234" />
+<p>[The Latin text from Acta et Decreta ... The English translation from Manning.]</p>
+<table>
+{_row("Constitutio Dogmatica de Fide Catholica", "Dogmatic Constitution on the Catholic Faith.", ";text-align:center")}
+{_row("Sessio III.", "<i>Published in the Third Session held April</i> 24, 1870.", ";text-align:center")}
+{_row("PIUS EPISCOPUS", "PIUS, BISHOP, SERVANT OF THE SERVANTS OF GOD.", ";text-align:center")}
+{_row("Dei Filius et generis humani Redemptor, Dominus Noster, quae non est", "Our Lord Jesus Christ promised that he would be with the Church, and his words: 'My Spirit that is in thee shall not depart.'<note place='foot' n='1'><p>Isaiah lix. 21.</p></note> He placed over the universal", ";text-indent:1em")}
+</table>
+<pb n="235" id="v.ii.i-Page_235" />
+<table>
+{_row("Ecclesiam et est", "Church the blessed Peter.<note place='foot' n='2'><p>From Sermon IV. chap. ii. of St. Leo the Great.</p></note> So it is.")}
+{_row("Caput I.", "Chapter I.", ";text-align:center")}
+{_row("De Deo", "Of God, the Creator of all Things.", ";text-align:center")}
+{_row("Sancta catholica", "The holy Catholic Church believes that there is one true and living God.", ";text-indent:1em")}
+{_row("Canones.", "Canons.", ";text-align:center")}
+{_row("I.", "I.", ";text-align:center")}
+{_row("De Deo", "Of God, the Creator of all things.", ";text-align:center")}
+{_row("1. Si quis", "1. If any one shall deny one true God: let him be anathema.", ";text-indent:1em")}
+{_row("2. Si quis", "2. If any one shall say that nothing exists but matter: let him", ";text-indent:1em")}
+{_row("anathema sit", "be anathema.")}
+{_row("Itaque", "Therefore, we entreat all the faithful.", ";text-indent:1em")}
+</table>
+</div3></div2></ThML.body></ThML>
+"""
+
+
+def _schaff_doc(tmp_path, monkeypatch):
+    monkeypatch.setattr(schaff, "CORRECTIONS", ())     # they name words of the real file
+    path = tmp_path / "creeds2.xml"
+    path.write_text(SCHAFF_XML, encoding="utf-8")
+    return schaff.build_schaff(VATICAN_I, "doc-id", "councils/ecum-20-first-vatican-council",
+                               str(path))
+
+
+def test_schaff_keeps_english_cell_only(tmp_path, monkeypatch):
+    doc = _schaff_doc(tmp_path, monkeypatch)
+    text = " ".join(p.content for p in doc.passages)
+    assert "Our Lord Jesus Christ" in text and "If any one shall deny" in text
+    for latin in ("Dei Filius et generis", "quae non est", "Si quis", "anathema sit", "Itaque"):
+        assert latin not in text
+    # Schaff's headings and Manning's session line are labels, not text.
+    assert "Published in the Third Session" not in text and "Canons." not in text
+    assert [p.anchor for p in doc.passages] == [f"first-vatican-council/dei-filius/{u}" for u in (
+        "prologue", "chapter-1", "canons-1/canon-1", "canons-1/canon-2", "conclusion")]
+    assert [p.chapter_label for p in doc.passages][1:3] == [
+        "Dei Filius, Chapter I: Of God, the Creator of all Things",
+        "Dei Filius, Canons I: Of God, the Creator of all things"]
+    assert doc.passages[2].content == "If any one shall deny one true God: let him be anathema."
+    assert doc.passages[2].reference == "First Vatican Council, Dei Filius, Canon I.1"
+
+
+def test_schaff_joins_english_across_page_tables(tmp_path, monkeypatch):
+    doc = _schaff_doc(tmp_path, monkeypatch)
+    prologue = doc.passages[0]
+    assert prologue.content.split("\n\n") == [
+        "Pius, Bishop, Servant of the Servants of God.",
+        "Our Lord Jesus Christ promised that he would be with the Church, and his words: "
+        "'My Spirit that is in thee shall not depart.' He placed over the universal Church "
+        "the blessed Peter. So it is."]
+    assert prologue.metadata["pages"] == ["234", "235"]
+    # The scripture note stays as a footnote after its word; Schaff's other note goes.
+    note, = prologue.metadata["footnotes"]
+    assert note["text"] == "Isaiah lix. 21."
+    assert prologue.content[:note["at"]].endswith("shall not depart.'")
+    assert "Leo the Great" not in prologue.content
+    # A canon running on into the next cell stays one canon.
+    assert doc.passages[3].content == "If any one shall say that nothing exists but matter: let him be anathema."
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+def test_schaff_prints_both_constitutions_whole():
+    doc = _built("First Vatican Council")
+    units = _units(doc)
+    df = [u for u in units if "/dei-filius/" in u]
+    pa = [u for u in units if "/pastor-aeternus/" in u]
+    assert [u for u in df if "/chapter-" in u] == [
+        f"first-vatican-council/dei-filius/chapter-{n}" for n in range(1, 5)]
+    assert [u.split("/dei-filius/")[1] for u in df if "/canons-" in u] == [
+        f"canons-{g}/canon-{n}" for g, k in ((1, 5), (2, 4), (3, 6), (4, 3)) for n in range(1, k + 1)]
+    assert pa == ["first-vatican-council/pastor-aeternus/prologue"] + [
+        f"first-vatican-council/pastor-aeternus/chapter-{n}" for n in range(1, 5)]
+    chapter_4 = " ".join(p.content for p in doc.passages
+                         if p.anchor.startswith("first-vatican-council/pastor-aeternus/chapter-4"))
+    assert "is possessed of that infallibility" in chapter_4
+    # CCEL heads Pastor Aeternus's first chapter "Chapter IV."; the print reads "Chapter I.".
+    first = next(p for p in doc.passages if p.anchor.endswith("/pastor-aeternus/chapter-1"))
+    assert first.unit_label == "Chapter I"
+    assert "true and good" in " ".join(p.content for p in doc.passages)   # CORRECTIONS
+    assert doc.metadata["held_text_url"] == VATICAN_I["url"]
+    assert doc.translation == schaff.TRANSLATION
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+def test_schaff_passages_hold_no_latin_and_no_editors_notes():
+    latin = {"et", "est", "quae", "non"}
+    for p in _built("First Vatican Council").passages:
+        words = re.findall(r"[a-zæœ]+", p.content.lower())
+        assert sum(w in latin for w in words) <= 0.05 * len(words), p.anchor
+        for note in p.metadata.get("footnotes", []):
+            assert scripture_reference(note["text"]) == note["text"], p.anchor
+            assert re.search(r"\w[.,;:'!?]*$", p.content[:note["at"]]), (p.anchor, note)
+        assert not re.search(r"Labbe|Benedictine|From the (?:Acts|Bull|Brief|letter|Formula)",
+                             p.content), p.anchor
+
+
+def test_tanners_vatican_i_goes_where_its_text_went():
+    reg = work_registry.current()
+    v = "first-vatican-council"
+    open_ = {r["old_anchor"]: r["new_anchor"] for r in reg.redirects if not r.get("closed_by")}
+    assert open_[f"{v}/sec-8/5"] == f"{v}/dei-filius/chapter-1"
+    assert open_[f"{v}/sec-15/9"] == f"{v}/dei-filius/conclusion"
+    removed = {e["anchor"]: e for e in work_registry.open_removals(reg)}
+    assert removed[f"{v}/sec-1/1"]["reason"] == "rule-g-editorial"
+    for anchor, gap in ((f"{v}/sec-3/2", "G10"), (f"{v}/sec-5/3", "G11")):
+        assert removed[anchor]["reason"] == "translation-in-preparation"
+        assert f"(gap {gap})" in removed[anchor]["detail"]
+        assert removed[anchor]["tombstone"] == "This text is not available on TheoCorpus at present."
+    rows = [r for r in reg.passages if r["document_id"] == "5c3cb0a3-883a-5f43-a747-b5e7196e68e1"]
+    assert not [r["anchor"] for r in rows if r["status"] == "active" and "/sec-" in r["anchor"]]
+
+
+def test_vatican_i_rights_row_is_schaffs():
+    rows = [r for r in rights_inventory.load()
+            if r["document_id"] == "5c3cb0a3-883a-5f43-a747-b5e7196e68e1"]
+    row, = rows
+    assert row["source_path"] == "councils/creeds2.xml" and row["status"] == "pd-us-non-renewal"
+    assert row["planned_for"] is None

@@ -10,7 +10,8 @@ from __future__ import annotations
 
 import re
 
-# Book names as the ANF and NPNF notes print them (measured on the vendored sources).
+# Book names as the ANF and NPNF notes print them (measured on the vendored sources), and
+# Schaff's "Coloss." (1.2d).
 _BOOKS = (
     "Genesis|Gen|Exodus|Exod|Ex|Leviticus|Levit|Lev|Numbers|Numb|Num|Deuteronomy|Deut|"
     "Joshua|Josh|Judges|Judg|Ruth|Samuel|Sam|Kings|Chronicles|Chron|Ezra|Nehemiah|Neh|"
@@ -22,8 +23,8 @@ _BOOKS = (
     "Jonah|Jon|Micah|Mic|Nahum|Nah|Habakkuk|Habak|Hab|Zephaniah|Zeph|Sophon|Haggai|Hagg|"
     "Hag|Zechariah|Zech|Malachi|Mal|Matthew|Matt|Mark|Luke|John|Acts of Apostles|Acts|"
     "Romans|Rom|Corinthians|Cor|Galatians|Gal|Ephesians|Ephes|Eph|Philippians|Philipp|Phil|"
-    "Colossians|Col|Thessalonians|Thess|Timothy|Tim|Titus|Tit|Philemon|Philem|Hebrews|Heb|"
-    "James|Jas|Peter|Pet|Jude|Revelation|Rev|Apocalypse|Apoc"
+    "Colossians|Coloss|Col|Thessalonians|Thess|Timothy|Tim|Titus|Tit|Philemon|Philem|"
+    "Hebrews|Heb|James|Jas|Peter|Pet|Jude|Revelation|Rev|Apocalypse|Apoc"
 )
 _BOOK = rf"(?:(?:[1-4]|I{{1,3}})\s?)?(?:St\.\s)?(?:{_BOOKS})\.?"
 _ROMAN = r"[ivxlc]+"
