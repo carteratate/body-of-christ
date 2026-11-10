@@ -224,7 +224,11 @@ class Bounded:
     its first and last paragraph: Giles's Matthew Paris prints the deposition bull and
     Lyons I's decrees inside his chronicle (1.2e). A bound is `{"id", "first", "last"}`,
     `first` and `last` patterns searched in the paragraphs' text; the text runs from the
-    first paragraph `first` matches to the next one `last` matches, inclusive.
+    first paragraph `first` matches to the next one `last` matches, inclusive. A bound may
+    also name `start` and `end`, patterns searched in that first and last paragraph, where a
+    text opens or closes inside a paragraph: it then runs from the start of `start`'s match
+    to the end of `end`'s (Hefele's four anathemas, among the other acclamations of the
+    session, 1.2c).
 
     A text longer than a passage is cut, between paragraphs, into passages of about
     `PASSAGE_WORDS` (`<id>-01`, `<id>-02`, ...), so correction and the person's check see
@@ -255,18 +259,80 @@ class Bounded:
                 raise ValueError(f"{bound['id']}: no paragraph closes it with {bound['last']!r}")
             if paragraphs[first].continues:
                 raise ValueError(f"{bound['id']}: opens inside a paragraph")
-            text = [replace(p, text=self._unquoted(p.text)) for p in paragraphs[first:last + 1]]
+            text = self._kept(_cut(paragraphs[first:last + 1], bound), bound)
             groups = group_passages(text, PASSAGE_WORDS)
             units.extend(Unit(bound["id"] if len(groups) == 1 else f"{bound['id']}-{k:02d}", g)
                          for k, g in enumerate(groups, 1))
             after = last + 1
         return units
 
+    def _kept(self, paragraphs: list, bound: dict) -> list:
+        """A bounded text's paragraphs as they go on."""
+        return [replace(p, text=self._unquoted(p.text)) for p in paragraphs]
+
     def _unquoted(self, text: str) -> str:
         def mend(m: re.Match) -> str:
             before, after = m.string[:m.start()], m.string[m.end():]
             return "" if not before or not after else " "
         text = self._DOUBLE_QUOTES.sub(mend, text)
+        return re.sub(r" {2,}", " ", text).strip()
+
+
+def _cut(paragraphs: list, bound: dict) -> list:
+    """`paragraphs` with the first opened at `bound`'s `start` and the last closed at the
+    end of its `end`, where it names them."""
+    paragraphs = list(paragraphs)
+    if bound.get("end"):
+        m = re.search(bound["end"], paragraphs[-1].text)
+        if m is None:
+            raise ValueError(f"{bound['id']}: its last paragraph holds no {bound['end']!r}")
+        paragraphs[-1] = replace(paragraphs[-1], text=paragraphs[-1].text[:m.end()].strip())
+    if bound.get("start"):
+        m = re.search(bound["start"], paragraphs[0].text)
+        if m is None:
+            raise ValueError(f"{bound['id']}: its first paragraph holds no {bound['start']!r}")
+        paragraphs[0] = replace(paragraphs[0], text=paragraphs[0].text[m.start():].strip())
+    return paragraphs
+
+
+class ChrystalLetter(Bounded):
+    """Nestorius's second letter to Cyril in James Chrystal's *Authoritative
+    Christianity*, vol. 1 (1895), pp. 155–166, without his summaries or notes (R9; Carter,
+    4 Nov 2026; 1.2c). Beyond `Bounded`:
+
+    - his summaries go: each opens a paragraph with "[Section" and runs, over as many
+      paragraphs and pages as it takes, to the paragraph that closes its bracket ("]",
+      or "|" as the OCR reads it);
+    - so do his note calls ("(290)"), with the comma a call between two commas leaves
+      doubled ("long suffering, (292), and", "“Anointed,” (299), and"); his notes are kept apart by `note_opens`;
+    - quotation marks stay: they are the letter's own, quoting Scripture and Cyril;
+    - words in square brackets inside a sentence ("[at Nicaea]", "[that is]") are his
+      insertions in the translation and stay, as Deferrari's do."""
+    name = "chrystal"
+
+    _SUMMARY_OPENS = re.compile(r"^\W{0,2}\[Section\b", re.IGNORECASE)
+    _SUMMARY_CLOSES = re.compile(r"[\]|]\W*$")
+    _CALL = re.compile(r"\s?\(\d{3}\)([,.;:]?)")
+
+    def _kept(self, paragraphs: list, bound: dict) -> list:
+        out, summary = [], False
+        for para in paragraphs:
+            if not summary and self._SUMMARY_OPENS.match(para.text):
+                summary = True
+            if summary:
+                summary = not self._SUMMARY_CLOSES.search(para.text)
+                continue
+            out.append(replace(para, text=self._without_calls(para.text)))
+        if summary:
+            raise ValueError(f"{bound['id']}: a summary opens and does not close")
+        return out
+
+    def _without_calls(self, text: str) -> str:
+        def drop(m: re.Match) -> str:
+            mark = m.group(1)
+            before = text[:m.start()].rstrip().rstrip("’”'\"")
+            return "" if mark and before.endswith(mark) else mark
+        text = self._CALL.sub(drop, text)
         return re.sub(r" {2,}", " ", text).strip()
 
 
@@ -403,7 +469,8 @@ class DeferrariExtracts(Headed):
 
 
 UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons(), Bounded.name: Bounded(),
-                           Headed.name: Headed(), DeferrariExtracts.name: DeferrariExtracts()}
+                           Headed.name: Headed(), DeferrariExtracts.name: DeferrariExtracts(),
+                           ChrystalLetter.name: ChrystalLetter()}
 
 
 def get_units(name: str) -> Units:

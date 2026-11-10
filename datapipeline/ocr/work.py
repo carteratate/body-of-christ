@@ -83,12 +83,15 @@ class WorkConfig:
     broken_words_continue: bool = False   # a broken word's rest never opens a paragraph
     max_paragraph_words: int | None = None   # cut longer paragraphs at a sentence end
     paragraph_opens: tuple[str, ...] = ()   # lines that open a paragraph the clean-up misses
+    rule_lines: tuple[str, ...] = ()   # printed rules the OCR reads as letters, one line each
+    note_opens: tuple[str, ...] = ()   # the line opening each page's notes, where the measure misses
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
     unit_series: tuple[int, ...] | None = None   # units per series, where it prints several
     unit_closes: tuple[str, ...] = ()   # the editor's unlabelled paragraphs that close a unit
     unit_bounds: tuple[dict, ...] = ()  # bounded units: each text's first and last paragraph
     names: tuple[str, ...] = ()
+    check_note: str = ""         # what the check page tells the person about this work's text
     model: str = "claude-sonnet-5-5"
     ceiling_usd: float = 2.00
     sample: SampleRule = field(default_factory=SampleRule)
@@ -100,6 +103,8 @@ class WorkConfig:
         d["names"] = tuple(d.get("names", ()))
         d["unit_closes"] = tuple(d.get("unit_closes", ()))
         d["paragraph_opens"] = tuple(d.get("paragraph_opens", ()))
+        d["rule_lines"] = tuple(d.get("rule_lines", ()))
+        d["note_opens"] = tuple(d.get("note_opens", ()))
         d["unit_bounds"] = tuple(d.get("unit_bounds", ()))
         if d.get("unit_series") is not None:
             d["unit_series"] = tuple(d["unit_series"])
@@ -231,12 +236,14 @@ def group_passages(paragraphs: list, target_words: int = PASSAGE_WORDS) -> list[
 
 
 def baseline_text(baseline: Baseline, sources: Path = SOURCES) -> list[str]:
-    """The baseline's paragraphs as plain text."""
+    """The baseline's paragraphs as plain text: an HTML page's, or a ThML file's (Percival,
+    for the councils' scans of 1.2c)."""
     from bs4 import BeautifulSoup
 
     html = (sources / baseline.path).read_bytes()
+    parser = "xml" if baseline.path.endswith(".xml") else "lxml"
     paras = [re.sub(r"\s+", " ", p.get_text(" ")).strip()
-             for p in BeautifulSoup(html, "lxml").find_all("p")]
+             for p in BeautifulSoup(html, parser).find_all("p")]
     start = next(i for i, p in enumerate(paras) if re.search(baseline.start, p))
     end = next(i for i, p in enumerate(paras) if i > start and re.search(baseline.end, p))
     out = []
