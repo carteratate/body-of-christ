@@ -19713,13 +19713,1295 @@
  },
  {
   "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "fbc70223-5ebc-5229-aa00-85b0592b8362",
+  "old_anchor": "council-of-trent/canon/11",
+  "new_passage_id": "9bcf0631-2de5-5667-9b74-1cbb7d8cd667",
+  "new_anchor": "council-of-trent/session-21/canons-on-communion-under-both-species/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "60218952-8f8a-5c4c-b0d9-e8cdd681ba1b",
+  "old_anchor": "council-of-trent/canon/ii",
+  "new_passage_id": "a8c10015-0a8f-55c8-a2ca-d729dc2819d3",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "cad36ba4-adcd-533a-8a88-f21ea177de8f",
+  "old_anchor": "council-of-trent/canon/ii-2",
+  "new_passage_id": "241cef22-4b61-5376-8670-9a99c86acae7",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0ae9a64d-f171-56dd-b1b4-797661f6eb9e",
+  "old_anchor": "council-of-trent/canon/ii-3",
+  "new_passage_id": "68b70926-a114-5afd-8d81-c777077eeb0f",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "6cd3ebac-3abb-530e-9599-bed7cfa96eb8",
+  "old_anchor": "council-of-trent/canon/ii-4",
+  "new_passage_id": "c7aa190f-bbfe-5c67-b667-d194d437bc68",
+  "new_anchor": "council-of-trent/session-7/canons-on-confirmation/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a4754f52-fd08-5786-9698-603199f23a0d",
+  "old_anchor": "council-of-trent/canon/ii-5",
+  "new_passage_id": "8439731e-d41a-57a7-9ddd-63580d6a7b89",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "623c5045-2ea6-522c-aff4-9fb456fa07f6",
+  "old_anchor": "council-of-trent/canon/ii-6",
+  "new_passage_id": "491c7595-6f69-55dd-8c7b-a68bc4a62b65",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "2aa7ef9a-374e-5969-ba08-d033c232d44d",
+  "old_anchor": "council-of-trent/canon/ii-7",
+  "new_passage_id": "59571ebb-fc3b-5035-b6ab-ec0d9ccb6582",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a440f814-f16a-5dbb-9e0b-8e5fd3a03efb",
+  "old_anchor": "council-of-trent/canon/iii",
+  "new_passage_id": "8b017122-9c08-5f11-a085-4fb38574f1ce",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "90ffd614-c2e7-5113-8af7-4c645bc48f83",
+  "old_anchor": "council-of-trent/canon/iii-10",
+  "new_passage_id": "f62de69b-4914-5a64-9b83-bfc5585504b3",
+  "new_anchor": "council-of-trent/session-23/canons-on-the-sacrament-of-order/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "9c3cfb69-6867-59dd-99c1-36eddc74f49c",
+  "old_anchor": "council-of-trent/canon/iii-11",
+  "new_passage_id": "38984aab-4274-5378-aced-2e10854e596b",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "25c3f4df-de40-5705-9469-397d83edf5ba",
+  "old_anchor": "council-of-trent/canon/iii-2",
+  "new_passage_id": "45b53bb7-75b8-5b9d-bf36-34f94a69654b",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "e0be5ac3-c60b-5143-b5fd-9aa225a3f21e",
+  "old_anchor": "council-of-trent/canon/iii-3",
+  "new_passage_id": "50920f7d-5cff-51fb-9515-5f20e21d9dec",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "cb569bf3-faf4-5120-b646-107bc32b9959",
+  "old_anchor": "council-of-trent/canon/iii-4",
+  "new_passage_id": "df80d8f7-8471-5e7b-a43d-39a270b471fe",
+  "new_anchor": "council-of-trent/session-7/canons-on-confirmation/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ebd952c5-c9b3-5920-a8c9-8ebb0fa1ec60",
+  "old_anchor": "council-of-trent/canon/iii-5",
+  "new_passage_id": "51ffd753-a292-55d4-a1bf-fd379616637d",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "bd5b977f-4060-557e-90a8-1b4c40cf0f90",
+  "old_anchor": "council-of-trent/canon/iii-6",
+  "new_passage_id": "8f7a1a8f-418a-5bd3-8030-c6864bb551af",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "91a91a09-2c64-56bb-96b1-1df92577fbb8",
+  "old_anchor": "council-of-trent/canon/iii-7",
+  "new_passage_id": "fb4855b2-c7c9-536c-9f82-8d34abd1d87e",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-sacrament-of-extreme-unction/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "df32d9ca-b7e9-5c73-815e-60b166ed258e",
+  "old_anchor": "council-of-trent/canon/iii-8",
+  "new_passage_id": "ad3efde6-6d20-5c6f-b713-057cc92ae810",
+  "new_anchor": "council-of-trent/session-21/canons-on-communion-under-both-species/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "13fa7cee-88ca-57e0-8d37-e6f1087be549",
+  "old_anchor": "council-of-trent/canon/iii-9",
+  "new_passage_id": "e5c096a5-349e-5e7c-a9d2-19da29db61f8",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a62d767b-5069-53bb-b1a3-7ec1a7ab3510",
+  "old_anchor": "council-of-trent/canon/iv",
+  "new_passage_id": "e77afdcb-625b-5d6c-8794-bb2e8cf63523",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "611f0013-4800-5adb-8100-2aa04177b88a",
+  "old_anchor": "council-of-trent/canon/iv-2",
+  "new_passage_id": "b7808cff-4589-5480-a974-7c96de83285c",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "2b8e4569-7511-5181-8e7a-3caaa165ff39",
+  "old_anchor": "council-of-trent/canon/iv-3",
+  "new_passage_id": "35bd4b70-9615-582d-b6b1-e206e19c90cc",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a7070008-833f-57c1-90a4-4d304a2f0523",
+  "old_anchor": "council-of-trent/canon/iv-4",
+  "new_passage_id": "5f106bec-4435-560d-beb3-34cffa8e5b24",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-sacrament-of-extreme-unction/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "095c0a93-3a42-5b3b-a647-ba87f00613b6",
+  "old_anchor": "council-of-trent/canon/iv-5",
+  "new_passage_id": "1f942840-5750-554d-84be-832debf33476",
+  "new_anchor": "council-of-trent/session-21/canons-on-communion-under-both-species/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c611968f-c588-5b62-9949-43cfcb38a1e3",
+  "old_anchor": "council-of-trent/canon/iv-6",
+  "new_passage_id": "6d9be34c-fe26-593b-a51c-2c57cc05fccc",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ea23f819-234f-5035-ae66-d249bed79962",
+  "old_anchor": "council-of-trent/canon/iv-7",
+  "new_passage_id": "9bf3d243-cce2-5648-a89e-639add8e0ad8",
+  "new_anchor": "council-of-trent/session-23/canons-on-the-sacrament-of-order/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "f78e03c9-a366-557f-b4b5-74ca5d2e8376",
+  "old_anchor": "council-of-trent/canon/iv-8",
+  "new_passage_id": "67382416-acb2-51ce-8631-37dcf170c5b1",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "7871e054-855f-594b-a4d6-8af17f4406f6",
+  "old_anchor": "council-of-trent/canon/ix",
+  "new_passage_id": "57084805-4a0c-5175-98dd-1d3cc0c57542",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-9",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "3435449c-e26b-5880-96b3-06f3a5d042f9",
+  "old_anchor": "council-of-trent/canon/ix-2",
+  "new_passage_id": "4fab04e6-7bab-5ba5-8295-1bab2d666321",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-9",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "b695ca70-ee07-520c-8487-d60053685932",
+  "old_anchor": "council-of-trent/canon/ix-3",
+  "new_passage_id": "2fdfeb06-5f9a-5fee-8a3e-5750e7e3832e",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-9",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ab7b62d5-03b8-561e-9c40-9fdd399af2d0",
+  "old_anchor": "council-of-trent/canon/ix-4",
+  "new_passage_id": "9712b367-ab78-5be0-a77a-eaf3706dbf0b",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-9",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "545c0e6b-ca96-5509-a49b-11b788992045",
+  "old_anchor": "council-of-trent/canon/ix-5",
+  "new_passage_id": "28ebd126-f7c5-5c47-8a04-341e6bd34394",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-9",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "3b2dd00d-913e-50be-9b5f-860a92677626",
+  "old_anchor": "council-of-trent/canon/ix-6",
+  "new_passage_id": "85c7879b-8e7e-586f-969a-f32e716ed4e3",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-9",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "1d53e47a-47da-5240-adc4-125359e15e3b",
+  "old_anchor": "council-of-trent/canon/li",
+  "new_passage_id": "40b5d0e8-81ae-5a47-be5b-390ca8a1db9a",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0f3f8468-5623-52b1-ae20-df836d1057de",
+  "old_anchor": "council-of-trent/canon/v",
+  "new_passage_id": "4bdb1421-46f2-51b7-b83f-0c0f4390ad94",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "fe527959-f2d7-5885-b851-ba1be3d8e81f",
+  "old_anchor": "council-of-trent/canon/v-2",
+  "new_passage_id": "2b055fa6-242c-5748-aa91-a0d0874a4f3b",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8d54f140-d14e-5854-a55d-cba11d9fa9cb",
+  "old_anchor": "council-of-trent/canon/v-3",
+  "new_passage_id": "42da4605-e674-57f2-b8da-50df037081ca",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a430861a-6616-536e-ae11-70e4bb113852",
+  "old_anchor": "council-of-trent/canon/v-4",
+  "new_passage_id": "be4fce68-43d6-5534-8c7d-0166be813b93",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "1d48766a-9fb0-5979-a101-402f3dc5cd31",
+  "old_anchor": "council-of-trent/canon/v-5",
+  "new_passage_id": "bb19718a-e98b-586f-9d2b-44eccd2f8451",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a49ea027-a9dd-52dc-8b3a-ec2450c53b72",
+  "old_anchor": "council-of-trent/canon/v-6",
+  "new_passage_id": "fd8dd8cf-14bd-55d5-927a-0f9c51d4c2fe",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "4509a3c5-84f7-54a7-bb12-e72a59c41c83",
+  "old_anchor": "council-of-trent/canon/v-7",
+  "new_passage_id": "f51f808a-cdbd-55d5-90ab-0027698609f7",
+  "new_anchor": "council-of-trent/session-23/canons-on-the-sacrament-of-order/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "3b7d3387-0aa1-5c88-b43d-277383fd7898",
+  "old_anchor": "council-of-trent/canon/v-8",
+  "new_passage_id": "5b1ce7b3-8a4a-5190-84d5-7d1deff005c1",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-5",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a0c6687f-8259-506a-a60c-8937e6f81b9c",
+  "old_anchor": "council-of-trent/canon/vi",
+  "new_passage_id": "06872934-4502-5ed3-8bca-16d6773b0dbd",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "cb004495-5c2e-53db-ac9c-4024d1bef2c7",
+  "old_anchor": "council-of-trent/canon/vi-2",
+  "new_passage_id": "c904cebb-3a6d-5213-9a83-12ad73fb4b79",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "d2b6d713-8d46-574b-ab25-45b991d594f3",
+  "old_anchor": "council-of-trent/canon/vi-3",
+  "new_passage_id": "7a8951e8-1ffb-515b-8ef6-c91cda6e9d6a",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "852f2c39-ddea-5911-830a-5a7ebb222991",
+  "old_anchor": "council-of-trent/canon/vi-4",
+  "new_passage_id": "7d0c1456-5d08-5be2-9eb8-6ba5a7acb1a9",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "783b2f32-5f28-55bf-8df8-77dbea3c04e9",
+  "old_anchor": "council-of-trent/canon/vi-5",
+  "new_passage_id": "6c2d786d-14bd-52df-a358-5f5b06023f2a",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "34b40e42-c746-5f12-bf35-f3b14e32787f",
+  "old_anchor": "council-of-trent/canon/vi-6",
+  "new_passage_id": "4ca60630-f7dd-5362-acdb-e62797804001",
+  "new_anchor": "council-of-trent/session-23/canons-on-the-sacrament-of-order/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "481ee402-ebcd-566b-998c-b64ffccc1d2d",
+  "old_anchor": "council-of-trent/canon/vii",
+  "new_passage_id": "b9219574-e643-5a1c-b626-d2ed1985cbf4",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "936de90f-f20e-5346-8c87-db3f49e6f977",
+  "old_anchor": "council-of-trent/canon/vii-2",
+  "new_passage_id": "0287df8c-9627-57bd-bd6d-fe158f8ede28",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "d917424e-0cab-5a96-a37e-ebc5cf5782a0",
+  "old_anchor": "council-of-trent/canon/vii-3",
+  "new_passage_id": "6ad38dd9-0416-5a69-89fe-dbbd80284903",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "7f1c2bb6-8129-5785-bef5-aeae1462818b",
+  "old_anchor": "council-of-trent/canon/vii-4",
+  "new_passage_id": "75297d85-8e5e-5a36-b2f0-5989b92bf8f5",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "4a930144-aec1-5ffd-ac0e-19f4a52e1b42",
+  "old_anchor": "council-of-trent/canon/vii-5",
+  "new_passage_id": "f5e6f38d-9fd0-5d30-b365-c0a9c847f1e6",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "1a8b9a89-7381-5cfd-88e9-425e3b039def",
+  "old_anchor": "council-of-trent/canon/vii-6",
+  "new_passage_id": "0371e365-21cb-5974-9b14-d4a91a0eb94e",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "6c14f958-3e1d-5468-af03-9c3451567392",
+  "old_anchor": "council-of-trent/canon/vii-7",
+  "new_passage_id": "ed509481-2987-5827-b147-7a23b639bcad",
+  "new_anchor": "council-of-trent/session-23/canons-on-the-sacrament-of-order/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "474e7532-3037-5f84-a474-1e7f548bef98",
+  "old_anchor": "council-of-trent/canon/viii",
+  "new_passage_id": "278aeacd-c09a-510a-a2c6-45323e4a3a55",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "3e84beeb-b664-5508-83d7-aec8361f2960",
+  "old_anchor": "council-of-trent/canon/viii-2",
+  "new_passage_id": "ff603d99-f3d9-5c72-b69d-5ad4085942f2",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "204a569e-8315-5924-891f-49ce98bc2570",
+  "old_anchor": "council-of-trent/canon/viii-3",
+  "new_passage_id": "5f8ea117-d341-5ed1-938e-80eace8518a8",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8505823e-7829-5282-9043-fb162b8367d1",
+  "old_anchor": "council-of-trent/canon/viii-4",
+  "new_passage_id": "40787774-edfd-546e-a3a1-69be29e1141e",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "6fa8a9c6-0e86-5a96-8072-c53a06852f6a",
+  "old_anchor": "council-of-trent/canon/viii-5",
+  "new_passage_id": "22528fe9-e2b6-5c4e-8c56-a96c7f86f42a",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "239efd5b-1228-57d6-9fc8-f23d2a547971",
+  "old_anchor": "council-of-trent/canon/viii-6",
+  "new_passage_id": "b737d616-93fc-53ed-8734-6fb6c76fa8c0",
+  "new_anchor": "council-of-trent/session-22/canons-on-the-sacrifice-of-the-mass/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "62645b77-c4df-5711-b0f5-42f2e31246a0",
+  "old_anchor": "council-of-trent/canon/viii-7",
+  "new_passage_id": "fa4c7839-5a5c-56b2-8e7c-b3e44c3e1058",
+  "new_anchor": "council-of-trent/session-23/canons-on-the-sacrament-of-order/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "e1063d08-1c54-5e40-9701-35a5fd297fa7",
+  "old_anchor": "council-of-trent/canon/viii-8",
+  "new_passage_id": "a877de1a-c736-5f9f-bbe6-ea0755daf059",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-8",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "825c3c66-52aa-559e-abf5-e49a31a97714",
+  "old_anchor": "council-of-trent/canon/vli",
+  "new_passage_id": "f360ca84-9377-5fb5-8747-7c8ea8624e1a",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-7",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "38ed90c6-0459-5592-be9b-35f4b47a738a",
+  "old_anchor": "council-of-trent/canon/x",
+  "new_passage_id": "7a83c51d-30e2-534d-ab43-ac748822045f",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-10",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c76c8376-3a7f-5942-80f6-52aaa4b5e6eb",
+  "old_anchor": "council-of-trent/canon/x-2",
+  "new_passage_id": "9792ff34-12f6-5c40-8634-3ddbf459577f",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-10",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "7683e97c-79e5-596b-b7e4-091196dcfd3c",
+  "old_anchor": "council-of-trent/canon/x-3",
+  "new_passage_id": "302b116a-a5ce-5f64-8633-5adaae19a69f",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-10",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "051f9d30-3142-5eb7-850e-de18402e199d",
+  "old_anchor": "council-of-trent/canon/x-4",
+  "new_passage_id": "392acd42-9b9d-51a1-bc70-8b145ea97169",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-10",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0991cdd9-58ff-5b85-aba5-37ba6a205a48",
+  "old_anchor": "council-of-trent/canon/x-5",
+  "new_passage_id": "5c64cb41-04d7-5041-9049-93cef2e37965",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-10",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "cf9e17a7-2879-5909-b01b-8a53575a60c4",
+  "old_anchor": "council-of-trent/canon/xi",
+  "new_passage_id": "02364196-ef43-5578-a4f5-68d242618543",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-11",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "2423c7e2-a447-5ff7-b933-13c6ce8e22ab",
+  "old_anchor": "council-of-trent/canon/xi-2",
+  "new_passage_id": "2b285045-8bf7-58d8-9cfb-520eeb8574e8",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-11",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0e9b8eb3-a7f5-5cfa-b3bf-84a39db2e5c8",
+  "old_anchor": "council-of-trent/canon/xi-3",
+  "new_passage_id": "c5007dcb-e655-5f90-8fcd-5e2748f33d28",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-11",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "b91f1a6e-34f3-5b52-954d-27ffd296598f",
+  "old_anchor": "council-of-trent/canon/xi-4",
+  "new_passage_id": "e312ccb1-d652-5349-9b55-2c315a187cc3",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-11",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "2bb00de4-cb34-58dd-bca4-9ef9384dcf12",
+  "old_anchor": "council-of-trent/canon/xi-5",
+  "new_passage_id": "9284508f-3fc0-5328-9ddd-d421e752dba9",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-11",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "e0939062-373d-54ea-92bd-ee18d24c1cb2",
+  "old_anchor": "council-of-trent/canon/xii",
+  "new_passage_id": "d6df76e6-cd09-53b6-81a1-bf571a2c31e3",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-12",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "4598cb6d-39de-5b05-9adc-d24f4216a738",
+  "old_anchor": "council-of-trent/canon/xii-2",
+  "new_passage_id": "fac4f481-7bf2-5dcc-b42c-1a4776fb7424",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-12",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "059a3d47-2352-5d8a-a929-4a7b07b9a8d0",
+  "old_anchor": "council-of-trent/canon/xii-3",
+  "new_passage_id": "f576a29e-7f29-537c-b795-a66f27a401e5",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-12",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "f792deca-528c-5d84-8f7b-be463d0238e7",
+  "old_anchor": "council-of-trent/canon/xii-4",
+  "new_passage_id": "e5092f56-3cf0-5434-afe9-1d6b12adeff7",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-12",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "3225d32c-5cfe-5df2-8d9c-9c33948078dd",
+  "old_anchor": "council-of-trent/canon/xiii",
+  "new_passage_id": "34863ae0-244d-564e-a6ff-f4a73c6e6f3e",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-13",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "83d09127-7f65-5190-9bb4-0982f5126d1e",
+  "old_anchor": "council-of-trent/canon/xiii-2",
+  "new_passage_id": "191ccadb-6aa8-590c-a386-0c084f67c6ea",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-13",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "bb6c8639-2106-5a41-8bfa-63b85be3e153",
+  "old_anchor": "council-of-trent/canon/xiii-3",
+  "new_passage_id": "18e549a6-60c5-5ee5-8dc6-1bda518e29c1",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-13",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "32fefcbc-2c64-5c94-b4f7-ca73afe8d8d4",
+  "old_anchor": "council-of-trent/canon/xiii-4",
+  "new_passage_id": "750d256e-0e5e-50bb-b99f-9193512de509",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-13",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "fd8a1e14-8d21-5782-af3d-a29eaf9f7755",
+  "old_anchor": "council-of-trent/canon/xiv",
+  "new_passage_id": "5421317c-52bb-5f84-87e6-a311246d00f8",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-14",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "463487bc-e2c1-5358-986f-e85f1dda5244",
+  "old_anchor": "council-of-trent/canon/xiv-2",
+  "new_passage_id": "31de3553-7f05-50cd-8279-d64f1ce29345",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-14",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "5faf82f6-d78c-59bd-bc73-414569c22baa",
+  "old_anchor": "council-of-trent/canon/xiv-3",
+  "new_passage_id": "f4d0c974-087e-55f4-b952-7cfcd8235cb7",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-14",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "817986ed-3157-5b63-9bfa-9dbec649d3b0",
+  "old_anchor": "council-of-trent/canon/xv",
+  "new_passage_id": "dcdd63a0-ed12-570e-90fd-c6dd55289701",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-15",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a85b9b62-16d1-5699-b482-09504ff4b350",
+  "old_anchor": "council-of-trent/canon/xv-2",
+  "new_passage_id": "b759ec72-ccea-52be-9026-d14d4435debd",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-15",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a2d22e7d-8a07-51fa-a4a8-3833b0865dd3",
+  "old_anchor": "council-of-trent/canon/xvi",
+  "new_passage_id": "94c1d820-dc75-565c-b2c9-49012cfdb1b0",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-16",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "3854e2c8-1db6-5e5b-b468-0c2b08a4fc77",
+  "old_anchor": "council-of-trent/canon/xvii",
+  "new_passage_id": "caa1d9a4-6a3a-51a0-9a1d-5b074f13de3a",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-17",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "153eb43b-f55f-568c-baea-0d63b5c88560",
+  "old_anchor": "council-of-trent/canon/xviii",
+  "new_passage_id": "2bd65d35-2a23-5147-9cbe-fb96133d26e7",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-18",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0bc7ebb8-0491-5a8d-a656-bdf448cf4abe",
+  "old_anchor": "council-of-trent/canon/xx",
+  "new_passage_id": "cd684d5f-7aa2-598d-8fd1-12d7ea47106e",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-20",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "98008bd5-4bfe-5916-9e08-d3e9f75da18b",
+  "old_anchor": "council-of-trent/canon/xxi",
+  "new_passage_id": "0df4bcd6-82b3-5b49-a6c7-98791a7a8089",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-21",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "99da4aac-f48a-58b0-8f18-6ea24e8387fa",
+  "old_anchor": "council-of-trent/canon/xxii",
+  "new_passage_id": "74ddcd58-3ffc-5852-900b-28126e77b7bf",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-22",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "faa60e72-9781-5c91-9054-9a1d7e3f5ffe",
+  "old_anchor": "council-of-trent/canon/xxiii",
+  "new_passage_id": "87b07b25-a780-57f2-9ac6-1df4f5de0345",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-23",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "5715865e-54b3-5de7-8166-3746591d6a46",
+  "old_anchor": "council-of-trent/canon/xxiv",
+  "new_passage_id": "f00222d6-09ad-5a56-92f6-440032c52093",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-24",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "97c2c345-3c03-5909-b178-12938d758a8b",
+  "old_anchor": "council-of-trent/canon/xxix",
+  "new_passage_id": "9c6f75a5-5759-52ac-a6be-39792ad5f759",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-29",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "90b745b3-b1e0-53aa-9a7e-482976cf20ef",
+  "old_anchor": "council-of-trent/canon/xxv",
+  "new_passage_id": "7a6b8673-a94e-5948-97f0-2fb54e4e265f",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-25",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "1f8b77c3-93c3-57d9-9046-13660a2487f5",
+  "old_anchor": "council-of-trent/canon/xxvi",
+  "new_passage_id": "11a20649-3868-57ff-bd72-3fb37a52c4f2",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-26",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "f6e1eed1-2055-5943-aa62-f91fa98f75b0",
+  "old_anchor": "council-of-trent/canon/xxvii",
+  "new_passage_id": "c3f82342-a2f4-5548-8e63-96d4e585c980",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-27",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a25782ec-c6df-538c-8127-3312c49f016a",
+  "old_anchor": "council-of-trent/canon/xxviii",
+  "new_passage_id": "6515e540-1875-555b-ab25-c19150d03574",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-28",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c993b39c-5380-59a6-8654-b641ff8105ec",
+  "old_anchor": "council-of-trent/canon/xxx",
+  "new_passage_id": "ebf67992-a83c-58ad-9ac9-71d97e2a4c64",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-30",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "87019bc4-79b7-542b-b6e5-ca8148e603e6",
+  "old_anchor": "council-of-trent/canon/xxxi",
+  "new_passage_id": "23f46330-481a-548c-a44b-86d5befd5571",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-31",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "48f5b035-81dc-5555-ad16-931b4f71fab8",
+  "old_anchor": "council-of-trent/canon/xxxii",
+  "new_passage_id": "d946a145-098e-5cdd-bce0-8ebb6439f48a",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-32",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ce1a6a65-a272-5236-bbc0-005dcc67c043",
+  "old_anchor": "council-of-trent/canon/xxxiii",
+  "new_passage_id": "78be226c-dc95-5b0b-ab00-f3b43121875d",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-33",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "2990475c-f8ef-5c03-b783-a425244f1d01",
+  "old_anchor": "council-of-trent/sec-0/1",
+  "new_passage_id": "d977a396-ff88-5894-a34e-421e6979dcfe",
+  "new_anchor": "council-of-trent/session-5/decree-concerning-original-sin",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "666960dd-0035-5c75-939f-69f641563003",
+  "old_anchor": "council-of-trent/sec-0/1-2",
+  "new_passage_id": "7a7a62b0-43d8-5522-a6b0-618b67519422",
+  "new_anchor": "council-of-trent/bulls/indiction",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "60b8d9e5-a204-559c-b3ac-62d819f9745f",
+  "old_anchor": "council-of-trent/sec-0/1-2/from-e8-2",
+  "new_passage_id": "1b73eeb0-ab55-5991-bfed-11080f1c6756",
+  "new_anchor": "council-of-trent/bulls/indiction/from-p2-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8542b2c5-ee7d-525e-9c49-0c3795c8fd46",
+  "old_anchor": "council-of-trent/sec-0/1-2/from-e8-3",
+  "new_passage_id": "1b73eeb0-ab55-5991-bfed-11080f1c6756",
+  "new_anchor": "council-of-trent/bulls/indiction/from-p2-2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0e5e337d-9816-5cc1-9d44-3ac8d3dec4c6",
+  "old_anchor": "council-of-trent/sec-0/1-2/from-e8-4",
+  "new_passage_id": "381b2e45-0a4f-5fbb-9c90-804ae70a12f8",
+  "new_anchor": "council-of-trent/bulls/indiction/from-p2-3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "d5a3a15b-eaa9-55a7-bc57-6efdf837ea0e",
+  "old_anchor": "council-of-trent/sec-0/1-2/from-e8-5",
+  "new_passage_id": "ced45343-b147-5698-8411-1ea32f3c82f4",
+  "new_anchor": "council-of-trent/bulls/indiction/from-p2-4",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 4 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "2cb23290-b95f-56e5-bd1f-1636f19267ee",
+  "old_anchor": "council-of-trent/sec-0/1-2/from-e8-6",
+  "new_passage_id": "cd64d76d-948a-5c78-a1f6-e964bf3fc279",
+  "new_anchor": "council-of-trent/bulls/indiction/from-p2-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document (a piece the 1.10c build cut and no publish carried)",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "eb48cb40-831c-5e9c-a59a-44a4ba3a04f6",
+  "old_anchor": "council-of-trent/sec-0/1-2/from-e8-7",
+  "new_passage_id": "19253c4d-34ff-5641-b83e-e364cbbbb7a1",
+  "new_anchor": "council-of-trent/bulls/indiction/from-p2-7",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
   "old_passage_id": "287e2bfc-3682-5eab-a60f-ae0f1235058b",
   "old_anchor": "council-of-trent/sec-0/1/p6",
   "new_passage_id": "eb48cb40-831c-5e9c-a59a-44a4ba3a04f6",
   "new_anchor": "council-of-trent/sec-0/1-2/from-e8-7",
   "kind": "merged",
   "reason": "its text now lies inside this passage",
-  "added_by": "2.1"
+  "added_by": "2.1",
+  "closed_by": "1.2b",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "287e2bfc-3682-5eab-a60f-ae0f1235058b",
+  "old_anchor": "council-of-trent/sec-0/1/p6",
+  "new_passage_id": "cd64d76d-948a-5c78-a1f6-e964bf3fc279",
+  "new_anchor": "council-of-trent/bulls/indiction/from-p2-6",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 5 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0d2a53af-2321-562d-b925-a13be2e542f8",
+  "old_anchor": "council-of-trent/sec-0/10",
+  "new_passage_id": "376dd98f-62ec-5576-8161-996a12c1193f",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-11",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "4ca7a645-8ab3-5046-a34e-5b62756a530e",
+  "old_anchor": "council-of-trent/sec-0/11",
+  "new_passage_id": "3783f626-7924-59ca-8a7f-37c48bc575c7",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-19",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "de5fdc60-a337-5ede-8fca-97a2509b3fdb",
+  "old_anchor": "council-of-trent/sec-0/12",
+  "new_passage_id": "491362b3-f0a4-5853-99ef-4b81b4feca86",
+  "new_anchor": "council-of-trent/session-6/decree-on-reformation/chapter-1/from-p3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "e3e9fe07-3314-5ddb-b5bd-0b6460bb2969",
+  "old_anchor": "council-of-trent/sec-0/13",
+  "new_passage_id": "f85d48af-1cd1-5954-a6b2-dc841bfd928d",
+  "new_anchor": "council-of-trent/session-7/decree-on-the-sacraments/proem",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "02f2626d-2c9d-57af-8d8b-88fe9c27abd9",
+  "old_anchor": "council-of-trent/sec-0/14",
+  "new_passage_id": "7167ad47-e572-58fb-8f11-53132ec233b6",
+  "new_anchor": "council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "125ea3e4-3cad-50e0-bc5e-bc6c8746519f",
+  "old_anchor": "council-of-trent/sec-0/15",
+  "new_passage_id": "e78f74f6-0587-5fe5-ac47-0b187fc284b9",
+  "new_anchor": "council-of-trent/session-7/canons-on-baptism/canon-9",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8f6768f3-9b52-519f-9d14-79477b315544",
+  "old_anchor": "council-of-trent/sec-0/16",
+  "new_passage_id": "a271d037-6aa4-5883-8cd2-d72a39b23507",
+  "new_anchor": "council-of-trent/session-7/decree-on-reformation/chapter-3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 4 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "833b6794-d5a8-5eb2-a88e-3c2c39e6a8d7",
+  "old_anchor": "council-of-trent/sec-0/16/from-e184-2",
+  "new_passage_id": "da0d95bc-6d28-5357-9e23-e9ac0b1e1976",
+  "new_anchor": "council-of-trent/bulls/transfer/from-p2-2",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "f4ef8402-d876-5679-b99c-4ae1b4bc2660",
+  "old_anchor": "council-of-trent/sec-0/17",
+  "new_passage_id": "da0d95bc-6d28-5357-9e23-e9ac0b1e1976",
+  "new_anchor": "council-of-trent/bulls/transfer/from-p2-2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 6 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "faf80272-6fd9-5ec0-b416-96eabc9a2791",
+  "old_anchor": "council-of-trent/sec-0/17/from-e196-2",
+  "new_passage_id": "3474549a-77f2-5a67-823d-2207ad0e8536",
+  "new_anchor": "council-of-trent/bulls/resumption/from-p2-2",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8bcd3048-356e-592e-b153-7eb230cc9756",
+  "old_anchor": "council-of-trent/sec-0/18",
+  "new_passage_id": "3474549a-77f2-5a67-823d-2207ad0e8536",
+  "new_anchor": "council-of-trent/bulls/resumption/from-p2-2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 29 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c47803cf-c739-5fcf-8606-71dd7da37c58",
+  "old_anchor": "council-of-trent/sec-0/19",
+  "new_passage_id": "27001062-611b-5f9b-92b3-b7a747493c0a",
+  "new_anchor": "council-of-trent/session-13/decree-concerning-the-most-holy-sacrament-of-the-eucharist/chapter-5",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "18d7b88c-9fb2-5825-9b42-38af4af1c024",
+  "old_anchor": "council-of-trent/sec-0/2",
+  "new_passage_id": "d977a396-ff88-5894-a34e-421e6979dcfe",
+  "new_anchor": "council-of-trent/session-5/decree-concerning-original-sin",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0d43bb58-0782-55a1-88da-ae2c3f554bb5",
+  "old_anchor": "council-of-trent/sec-0/2-2",
+  "new_passage_id": "bb4055a5-0af3-5a3b-9ae3-0a58db42aeb3",
+  "new_anchor": "council-of-trent/session-2/decree-touching-the-manner-of-living/from-p3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 20 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "74e2dec9-b786-5516-8704-076aa382e414",
+  "old_anchor": "council-of-trent/sec-0/2-2/from-e28",
+  "new_passage_id": "0208b249-279d-58f2-b2ff-6d8c00aa0df5",
+  "new_anchor": "council-of-trent/session-3/decree-touching-the-symbol-of-faith",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document (a piece the 1.10c build cut and no publish carried)",
+  "added_by": "1.2b"
  },
  {
   "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
@@ -19729,7 +21011,489 @@
   "new_anchor": "council-of-trent/sec-0/2-2/from-e28",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2b",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "fa6e5d7d-92d2-5a81-bb95-4929c2143586",
+  "old_anchor": "council-of-trent/sec-0/2-2/from-e28-2",
+  "new_passage_id": "0208b249-279d-58f2-b2ff-6d8c00aa0df5",
+  "new_anchor": "council-of-trent/session-3/decree-touching-the-symbol-of-faith",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "01aadb23-8256-5d8b-9053-eafedef77d2a",
+  "old_anchor": "council-of-trent/sec-0/20",
+  "new_passage_id": "b0ab375c-7ed1-550f-94af-d6fd3b740212",
+  "new_anchor": "council-of-trent/session-13/canons-on-the-most-holy-sacrament-of-the-eucharist/canon-10",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c2c5060b-0179-5594-8690-5935037638da",
+  "old_anchor": "council-of-trent/sec-0/22",
+  "new_passage_id": "dbf5f7c7-c0ea-59a1-8b9f-12c3e344bcbc",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "51d45702-3782-5302-98fe-5ed32a173b90",
+  "old_anchor": "council-of-trent/sec-0/23",
+  "new_passage_id": "c22b3b7b-93c6-5cc4-aa3f-86e0af461129",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-most-holy-sacrament-of-penance/canon-12",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "d13c3015-f9ef-540a-ad28-f44fc32411df",
+  "old_anchor": "council-of-trent/sec-0/24",
+  "new_passage_id": "f1e87cf9-a9e5-5a6f-a252-9dbd28cc9f13",
+  "new_anchor": "council-of-trent/session-14/canons-on-the-sacrament-of-extreme-unction/canon-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "684d9c96-b06b-508d-ac3b-aef162ac0b84",
+  "old_anchor": "council-of-trent/sec-0/25",
+  "new_passage_id": "5e418d67-104c-5201-82d6-a59ac9ef554f",
+  "new_anchor": "council-of-trent/session-14/decree-on-reformation/proem",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 12 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "7282252a-dc79-5fb9-b850-585cf41a9109",
+  "old_anchor": "council-of-trent/sec-0/26",
+  "new_passage_id": "cb561683-b319-5bdd-8f49-8b5d6bd00459",
+  "new_anchor": "council-of-trent/session-15/safe-conduct-given-to-the-protestants/from-p2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8e5a70f0-e95b-52d6-b527-d316ce350840",
+  "old_anchor": "council-of-trent/sec-0/26/from-e314-2",
+  "new_passage_id": "c1bf4cc6-06ed-5afa-9944-c202b3a54891",
+  "new_anchor": "council-of-trent/bulls/celebration",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 6 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "414826e0-1443-5630-aa3b-e7d282639141",
+  "old_anchor": "council-of-trent/sec-0/26/from-e314-3",
+  "new_passage_id": "d9c2bfd8-8e26-526c-97b1-ff883a4643ca",
+  "new_anchor": "council-of-trent/bulls/celebration/from-p2-3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "afe927d4-1099-5338-bd6b-f42e593ae4a6",
+  "old_anchor": "council-of-trent/sec-0/27",
+  "new_passage_id": "d52af8c0-f2c0-5c5f-9ced-722317c816b6",
+  "new_anchor": "council-of-trent/session-18/safe-conduct-granted-to-the-german-nation",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 20 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ffa412e7-1a8f-5b97-9ec3-828d144a2728",
+  "old_anchor": "council-of-trent/sec-0/27/from-e326-2",
+  "new_passage_id": "2d23e1b2-e66e-50bf-bfd2-7a1164095c51",
+  "new_anchor": "council-of-trent/session-18/safe-conduct-granted-to-the-german-nation/from-p2-2",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "13e9cfca-a18b-5606-bbd0-b615fac2de25",
+  "old_anchor": "council-of-trent/sec-0/28",
+  "new_passage_id": "748b0ff9-5ec1-58d4-be2e-57961af1e727",
+  "new_anchor": "council-of-trent/session-18/safe-conduct-granted-to-the-german-nation/from-p3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "9bd91955-a370-5c86-8d3c-7295ec516a5d",
+  "old_anchor": "council-of-trent/sec-0/29",
+  "new_passage_id": "ff1e22c9-ed14-531d-97c6-01424226626f",
+  "new_anchor": "council-of-trent/session-21/canons-on-communion-under-both-species/conclusion",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "26c5fec7-db3e-5748-b8ea-9aee86d85001",
+  "old_anchor": "council-of-trent/sec-0/3",
+  "new_passage_id": "31c1c80d-c487-537c-81cb-925bca8561c5",
+  "new_anchor": "council-of-trent/session-4/decree-concerning-the-edition-and-the-use-of-the-sacred-books",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a4c5cb94-f2ef-5a2d-87c8-4596d5a9623d",
+  "old_anchor": "council-of-trent/sec-0/3-2",
+  "new_passage_id": "d977a396-ff88-5894-a34e-421e6979dcfe",
+  "new_anchor": "council-of-trent/session-5/decree-concerning-original-sin",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "7322b7bc-a569-5f8b-bc87-65306a33fd7b",
+  "old_anchor": "council-of-trent/sec-0/30",
+  "new_passage_id": "8da12026-7817-5cb1-a060-498056d7a58f",
+  "new_anchor": "council-of-trent/session-22/decree-on-the-celebration-of-mass",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "46220a86-a1d5-56a6-8d0b-20252fbf9e25",
+  "old_anchor": "council-of-trent/sec-0/31",
+  "new_passage_id": "c7d4061b-a214-585a-87cd-3e79beda0b24",
+  "new_anchor": "council-of-trent/session-23/canons-on-the-sacrament-of-order/canon-2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 120 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "cd2f4022-e3a6-5da4-b322-221f2b9650bd",
+  "old_anchor": "council-of-trent/sec-0/32",
+  "new_passage_id": "daff525d-e7e8-55a2-ac17-600926df07c8",
+  "new_anchor": "council-of-trent/session-23/decree-on-reformation/chapter-1",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "f85b31c2-dabf-59cb-bc6e-049f8b4e6450",
+  "old_anchor": "council-of-trent/sec-0/32/from-e418-2",
+  "new_passage_id": "eeca29ad-46af-531a-8b9b-eba15bd39499",
+  "new_anchor": "council-of-trent/session-23/decree-on-reformation/chapter-1/from-p2-2",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "b217bde0-de5a-5e2b-9edc-c817bf990308",
+  "old_anchor": "council-of-trent/sec-0/33",
+  "new_passage_id": "eeca29ad-46af-531a-8b9b-eba15bd39499",
+  "new_anchor": "council-of-trent/session-23/decree-on-reformation/chapter-1/from-p2-2",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ba714855-4fee-5e22-bbae-9ab6c9685fce",
+  "old_anchor": "council-of-trent/sec-0/34",
+  "new_passage_id": "33e7abca-ba9c-5424-86ba-b472e892b237",
+  "new_anchor": "council-of-trent/session-23/decree-on-reformation/chapter-18/from-p3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c66b6d9f-73dd-5bc0-8bed-3cbc75ece180",
+  "old_anchor": "council-of-trent/sec-0/34/from-e441-2",
+  "new_passage_id": "33e7abca-ba9c-5424-86ba-b472e892b237",
+  "new_anchor": "council-of-trent/session-23/decree-on-reformation/chapter-18/from-p3",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text (a piece the 1.10c build cut and no publish carried)",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c3ba8e3a-f8a0-53f3-a786-e409a043d139",
+  "old_anchor": "council-of-trent/sec-0/35",
+  "new_passage_id": "0446e0df-4f8c-5eb1-be86-6555163cffa6",
+  "new_anchor": "council-of-trent/session-23/decree-on-reformation/chapter-18/from-p4",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c8d254fa-7308-55e9-a378-53ece4d20514",
+  "old_anchor": "council-of-trent/sec-0/36",
+  "new_passage_id": "0446e0df-4f8c-5eb1-be86-6555163cffa6",
+  "new_anchor": "council-of-trent/session-23/decree-on-reformation/chapter-18/from-p4",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8ea942bb-6db8-5a5c-ac9f-14afadfe08c5",
+  "old_anchor": "council-of-trent/sec-0/37",
+  "new_passage_id": "701aa808-55ea-5ab5-ba47-553418d2f66c",
+  "new_anchor": "council-of-trent/session-24/canons-on-the-sacrament-of-matrimony/canon-6",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "d230d593-e6f2-56c4-b27d-0b9840b14ced",
+  "old_anchor": "council-of-trent/sec-0/38",
+  "new_passage_id": "6f7d4669-7394-5bcf-b921-f7ba1ada4472",
+  "new_anchor": "council-of-trent/session-24/decree-on-the-reformation-of-marriage/chapter-1/from-p2-2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "5342c2be-3437-5ece-9c7f-8c4604867a21",
+  "old_anchor": "council-of-trent/sec-0/39",
+  "new_passage_id": "c2f59127-a0d1-5802-8ae6-83a76e1a8bd4",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-1",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "76e35ce9-4526-550d-b112-093bb74ccabb",
+  "old_anchor": "council-of-trent/sec-0/4",
+  "new_passage_id": "8219defa-d34a-5bb2-b813-3a3d3f5bcfc0",
+  "new_anchor": "council-of-trent/session-4/decree-concerning-the-edition-and-the-use-of-the-sacred-books/from-p3",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "6d86d08b-5acd-5d68-aaf1-c234d9a700be",
+  "old_anchor": "council-of-trent/sec-0/4-2",
+  "new_passage_id": "1b43c1bc-873a-5abd-a414-3d0f7bc06f6a",
+  "new_anchor": "council-of-trent/session-5/decree-concerning-original-sin/from-p6",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "74062d6b-366b-5746-94cd-3c67ca2c3e6c",
+  "old_anchor": "council-of-trent/sec-0/40",
+  "new_passage_id": "f5b9773c-ba36-58ca-8ef9-e26749dcff64",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-1/from-p5",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "cf22df07-1f71-5e2f-9fd0-ef6b02c8529d",
+  "old_anchor": "council-of-trent/sec-0/41",
+  "new_passage_id": "73c60546-ddbc-5e0b-89af-ee7b93d38d82",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-3",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "71345b6d-edf4-56f0-80aa-226d73aff490",
+  "old_anchor": "council-of-trent/sec-0/42",
+  "new_passage_id": "c4205b74-19c3-57c4-a0f8-e4c5008594e5",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-3/from-p5",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 4 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "570afb25-f07f-5237-b3c1-0df53fdc46e2",
+  "old_anchor": "council-of-trent/sec-0/42/from-e510-2",
+  "new_passage_id": "1ca98d32-410b-5176-b208-884608e1a922",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-12/from-p3",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "0f70a61d-2326-52c1-b562-9c5d95482ca6",
+  "old_anchor": "council-of-trent/sec-0/43",
+  "new_passage_id": "9deb9450-6971-5dcf-a41d-d33eac5f35bf",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-12/from-p4",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "fbeebdb7-654f-5229-9207-cd918a87d552",
+  "old_anchor": "council-of-trent/sec-0/44",
+  "new_passage_id": "85306e4f-e489-5b5e-b68d-0a7bbd037f5f",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-13/from-p5",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "b980d347-68e3-5283-939d-be8ea9270348",
+  "old_anchor": "council-of-trent/sec-0/45",
+  "new_passage_id": "d231279b-f1ac-59ce-b8cc-4910993aaf4c",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-18/from-p3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "fed57abe-15ec-53b6-9961-4bba1f00101a",
+  "old_anchor": "council-of-trent/sec-0/46",
+  "new_passage_id": "243492c5-b25b-5a7e-90cd-e2e4374dfe31",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-18/from-p5",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "43833b91-dd80-5e4f-b5ce-3544817705be",
+  "old_anchor": "council-of-trent/sec-0/47",
+  "new_passage_id": "231ecf34-6a2b-5d9c-9280-5181d1b0395e",
+  "new_anchor": "council-of-trent/session-24/decree-on-reformation/chapter-20/from-p6",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "febbfa70-6c24-57d1-970e-d1e3bf6d7bc7",
+  "old_anchor": "council-of-trent/sec-0/48",
+  "new_passage_id": "9f385fc8-7afb-5811-91b4-130a91f6f489",
+  "new_anchor": "council-of-trent/session-25/on-the-invocation-of-saints-and-on-sacred-images/from-p4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "03b478cf-6b1c-5f5a-a780-800b5a496df5",
+  "old_anchor": "council-of-trent/sec-0/49",
+  "new_passage_id": "f25844ca-7a5b-58a3-819c-b43ea8d653d7",
+  "new_anchor": "council-of-trent/session-25/on-regulars-and-nuns/chapter-2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "aa3dd2d3-e49c-501b-a2a0-b40bd036e4ef",
+  "old_anchor": "council-of-trent/sec-0/5",
+  "new_passage_id": "1b43c1bc-873a-5abd-a414-3d0f7bc06f6a",
+  "new_anchor": "council-of-trent/session-5/decree-concerning-original-sin/from-p6",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ac20f7ec-5e4a-5abe-9bbd-41f4f8f614db",
+  "old_anchor": "council-of-trent/sec-0/5-2",
+  "new_passage_id": "1b43c1bc-873a-5abd-a414-3d0f7bc06f6a",
+  "new_anchor": "council-of-trent/session-5/decree-concerning-original-sin/from-p6",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "a2f8cfc8-32b7-57d2-af58-a7c810e250ab",
+  "old_anchor": "council-of-trent/sec-0/50",
+  "new_passage_id": "fd39db0e-f7d8-5705-9ca6-7c87908b134e",
+  "new_anchor": "council-of-trent/session-25/on-regulars-and-nuns/chapter-9",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "8d7e9b26-9afe-5370-a090-119f2fb829e7",
+  "old_anchor": "council-of-trent/sec-0/51",
+  "new_passage_id": "54588bec-2b1f-59a2-ba19-6328a4fbdf70",
+  "new_anchor": "council-of-trent/session-25/on-regulars-and-nuns/chapter-19",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 4 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "81283c32-66dd-523a-b5cf-7fc7aa90adf8",
+  "old_anchor": "council-of-trent/sec-0/52",
+  "new_passage_id": "601414e9-a199-5fa6-9da9-633d48dccef4",
+  "new_anchor": "council-of-trent/session-25/decree-on-reformation/chapter-3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "00ce2614-67ac-5f77-82bc-890a69679498",
+  "old_anchor": "council-of-trent/sec-0/53",
+  "new_passage_id": "bed4a6bb-b5c2-56c3-9408-2ba4ba434340",
+  "new_anchor": "council-of-trent/session-25/decree-on-reformation/chapter-6/from-p3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "c448cc0e-628f-576f-a865-719abd2b59f3",
+  "old_anchor": "council-of-trent/sec-0/54",
+  "new_passage_id": "e7139b00-d6af-5289-a7d7-8181aa131d0d",
+  "new_anchor": "council-of-trent/session-25/decree-on-reformation/chapter-8/from-p3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "1f96366d-cae6-57ed-a011-73fdbd9c862d",
+  "old_anchor": "council-of-trent/sec-0/54/from-e601",
+  "new_passage_id": "d47a1f14-7aef-597d-bb57-abfaa33becd9",
+  "new_anchor": "council-of-trent/session-25/decree-on-reformation/chapter-9/from-p4",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text (a piece the 1.10c build cut and no publish carried)",
+  "added_by": "1.2b"
  },
  {
   "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
@@ -19739,7 +21503,79 @@
   "new_anchor": "council-of-trent/sec-0/54/from-e601",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2b",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "3329b147-a257-51ac-ab6f-7b121bbd5caa",
+  "old_anchor": "council-of-trent/sec-0/54/from-e601-2",
+  "new_passage_id": "d47a1f14-7aef-597d-bb57-abfaa33becd9",
+  "new_anchor": "council-of-trent/session-25/decree-on-reformation/chapter-9/from-p4",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text (a piece the 1.10c build cut and no publish carried)",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "88417efb-d422-55b9-8c24-706671eaf8af",
+  "old_anchor": "council-of-trent/sec-0/55",
+  "new_passage_id": "d47a1f14-7aef-597d-bb57-abfaa33becd9",
+  "new_anchor": "council-of-trent/session-25/decree-on-reformation/chapter-9/from-p4",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 4 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "96c8ecf1-8c44-5b5d-b78e-97adb76edbc7",
+  "old_anchor": "council-of-trent/sec-0/56",
+  "new_passage_id": "2201c5d5-39d8-51b4-bd9f-0fd948c107d7",
+  "new_anchor": "council-of-trent/session-25/decree-on-reformation/chapter-14/from-p3",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "207427b6-3c8d-5204-9c65-718b66cdd602",
+  "old_anchor": "council-of-trent/sec-0/57",
+  "new_passage_id": "74cc81ea-1c80-5fe8-b207-01235cf3fc49",
+  "new_anchor": "council-of-trent/session-25/on-receiving-and-observing-the-decrees-of-the-council",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "e5989178-157a-5503-a4ca-b9c9c430af55",
+  "old_anchor": "council-of-trent/sec-0/58",
+  "new_passage_id": "1b968e3f-2bf2-5d06-87da-b91b44de7fa7",
+  "new_anchor": "council-of-trent/session-25/acclamations",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "eee73c64-11d8-542c-962b-69d0bc42f10d",
+  "old_anchor": "council-of-trent/sec-0/59",
+  "new_passage_id": "ab27ff70-32e5-55e3-9451-1c35664b6bc2",
+  "new_anchor": "council-of-trent/confirmation",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "339d2581-5ea4-5981-970c-f669f1105cc5",
+  "old_anchor": "council-of-trent/sec-0/59/from-e668",
+  "new_passage_id": "b9331133-7558-52d4-9e77-07dca4bc2e96",
+  "new_anchor": "council-of-trent/bulls/confirmation",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document (a piece the 1.10c build cut and no publish carried)",
+  "added_by": "1.2b"
  },
  {
   "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
@@ -19749,7 +21585,89 @@
   "new_anchor": "council-of-trent/sec-0/59/from-e668",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2b",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "4ffb6e8d-bf71-5e2d-8a32-5d682fc49768",
+  "old_anchor": "council-of-trent/sec-0/59/from-e668-2",
+  "new_passage_id": "b9331133-7558-52d4-9e77-07dca4bc2e96",
+  "new_anchor": "council-of-trent/bulls/confirmation",
+  "kind": "merged",
+  "reason": "Trent rebuilt by session: this passage holds its text",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "ddab0917-d663-5081-b2d4-b7015dea140e",
+  "old_anchor": "council-of-trent/sec-0/6",
+  "new_passage_id": "8e31e5d9-0710-5619-a196-a0084ce1039f",
+  "new_anchor": "council-of-trent/session-5/decree-on-reformation/chapter-1",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 3 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "b4965c05-ebec-51fe-9b6f-d818bc4821a1",
+  "old_anchor": "council-of-trent/sec-0/60",
+  "new_passage_id": "429b903d-9826-569e-a4ff-92f204a69e57",
+  "new_anchor": "council-of-trent/bulls/confirmation/from-p3",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "6909a1cb-9a7a-5f2d-980d-d280b3685579",
+  "old_anchor": "council-of-trent/sec-0/61",
+  "new_passage_id": "0e89edff-c134-51ee-b896-04e469e6f65b",
+  "new_anchor": "council-of-trent/bulls/confirmation/from-p5",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 7 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "cf766438-efd3-545f-8261-8faa326346a0",
+  "old_anchor": "council-of-trent/sec-0/61/from-e671-2",
+  "new_passage_id": "2f44a2cc-6e28-5c1f-b0d7-48d5bce72e4f",
+  "new_anchor": "council-of-trent/bulls/confirmation/from-p5-2",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document (a piece the 1.10c build cut and no publish carried)",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "65517fcb-e08b-517c-8bc5-560a6a0c2e4b",
+  "old_anchor": "council-of-trent/sec-0/7",
+  "new_passage_id": "f43912dd-a448-5a3b-acbe-6d4af4a994f2",
+  "new_anchor": "council-of-trent/session-5/decree-on-reformation/chapter-2",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "87a97c4b-5e28-559d-a7e1-9600d7fe802b",
+  "old_anchor": "council-of-trent/sec-0/8",
+  "new_passage_id": "e51bf18c-980a-54c3-aad8-85f3b9ed04a0",
+  "new_anchor": "council-of-trent/session-5/decree-on-reformation/chapter-2/from-p6",
+  "kind": "split",
+  "reason": "Trent rebuilt by session: its text is spread over 2 passages; this one holds its opening",
+  "added_by": "1.2b"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "old_passage_id": "545a0e55-4157-5d1b-935f-a4f8a3e08202",
+  "old_anchor": "council-of-trent/sec-0/9",
+  "new_passage_id": "e0071071-d949-54ed-9f57-d5849ff360bc",
+  "new_anchor": "council-of-trent/session-6/canons-on-justification/canon-4",
+  "kind": "moved",
+  "reason": "Trent rebuilt by session: the same text, cited by its session and document",
+  "added_by": "1.2b"
  },
  {
   "document_id": "e5d235f3-a5f2-513e-90e7-04eedc71bf33",
