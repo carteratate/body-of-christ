@@ -115,6 +115,7 @@ def test_document_ids_unique():
 
 # --- Councils from Schroeder (1.2e) ---------------------------------------------------
 
+from ingest import councils_deferrari as deferrari  # noqa: E402
 from ingest import councils_schroeder as schroeder  # noqa: E402
 from ocr.fixes import read_text  # noqa: E402
 from ocr.work import WorkConfig  # noqa: E402
@@ -126,7 +127,10 @@ SCHROEDER_ENTRY = {"council": "First Lateran Council", "year": 1123, "council_nu
 CANON_COUNTS = {"First Lateran Council": 22, "Second Lateran Council": 30,
                 "Third Lateran Council": 27, "Fourth Lateran Council": 71,
                 "First Council of Lyons": 27, "Second Council of Lyons": 32,
-                "Council of Vienne": 39}
+                "Council of Vienne": 39, "Fourth Council of Constantinople": 27,
+                "Fifth Lateran Council": 7}
+# Schroeder's canons whose text Deferrari's replaces (1.2e-4).
+REPLACED = {"Fourth Council of Constantinople": 5}
 # Councils Schroeder prints in two series (Carter, 9 Nov 2026).
 SERIES = {"First Council of Lyons": (18, 9), "Council of Vienne": (21, 18)}
 EDITOR_WORDS = re.compile(r"\b(?:Comment|Summary)\.|Hefele|Mansi|Denzinger|DECREES OF THE COUNCILS")
@@ -137,7 +141,7 @@ def _schroeder(entry=SCHROEDER_ENTRY, **kw):
 
 
 def _canons(doc):
-    """The document's passages from Schroeder, without the texts Giles supplies."""
+    """The document's passages from Schroeder, without the texts Giles or Deferrari supply."""
     return [p for p in doc.passages if p.metadata["scan_id"] == "DisciplinaryCouncils"]
 
 
@@ -146,7 +150,10 @@ def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
     entry = {**SCHROEDER_ENTRY, "council": council}
     doc = _schroeder(entry)
     units = list(dict.fromkeys((p.chapter_key, p.unit_label) for p in _canons(doc)))
+    count -= REPLACED.get(council, 0)
     series = SERIES.get(council, (count,))
+    if council == "Fifth Lateran Council":      # a chapter per session
+        series = (1, 1, 3, 2)
     assert [len([u for u in units if u[0] == key]) for key in dict.fromkeys(k for k, _ in units)] \
         == list(series)
     assert len(units) == count
@@ -181,7 +188,8 @@ def test_quotations_may_run_over_paragraphs():
     assert not _quotations_balance("One.” Two.")
 
 
-@pytest.mark.parametrize("work", schroeder.WORKS.values())
+@pytest.mark.parametrize("work", [*schroeder.WORKS.values(),
+                                  *(w for w, _ in deferrari.WORKS.values())])
 def test_frozen_text_marks_balance_and_sentences_start_clean(work):
     # What a word-level comparison misses: a lost bracket or quotation mark, or a stop
     # read as a comma or a comma as a stop.
@@ -189,6 +197,7 @@ def test_frozen_text_marks_balance_and_sentences_start_clean(work):
         text = unit["text"]
         assert text.count("(") == text.count(")"), unit["id"]
         assert _quotations_balance(text), unit["id"]
+        assert text.count('"') % 2 == 0, unit["id"]          # Deferrari's are straight
         assert not re.search(r", But\b|\. (?:but|and|the)\b", text), unit["id"]
 
 
@@ -198,7 +207,9 @@ def test_every_word_of_the_frozen_text_reaches_a_passage(council):
     def words(text):
         return re.findall(r"\w+", text)
     doc = _schroeder({**SCHROEDER_ENTRY, "council": council})
-    frozen = read_text(schroeder.WORKS[council])["passages"]
+    replaced = {"canon-" + s.replaces.rsplit("/", 1)[1]
+                for s in deferrari.WORKS.get(council, ("", ()))[1] if s.replaces}
+    frozen = [u for u in read_text(schroeder.WORKS[council])["passages"] if u["id"] not in replaced]
     assert words(" ".join(p.content for p in _canons(doc))) == \
         words(" ".join(u["text"] for u in frozen))
 
@@ -275,7 +286,8 @@ def test_schroeder_councils_route_through_their_frozen_document_ids():
 
 def test_every_work_config_matches_its_canon_count():
     for council, work in schroeder.WORKS.items():
-        assert WorkConfig.load(work).unit_count == CANON_COUNTS[council]
+        config = WorkConfig.load(work)
+        assert (config.unit_count or len(config.unit_bounds)) == CANON_COUNTS[council]
 
 
 @pytest.mark.skipif(not _vendored, reason="needs the vendored manifest")
@@ -376,3 +388,120 @@ def test_tanners_bull_redirects_to_the_giles_passage_holding_each_part():
     old = {r["old_passage_id"] for r in lyons}
     assert not [e for e in work_registry.open_removals(reg) if e.get("passage_id") in old]
     assert not [e for e in work_registry.open_removals(reg) if "(gap G4)" in e["detail"]]
+
+
+# --- Constantinople IV and Lateran V, with Deferrari's texts (1.2e-4, Carter, 9 Nov 2026) --
+
+CONSTANTINOPLE_IV = {**SCHROEDER_ENTRY, "council": "Fourth Council of Constantinople", "year": 870}
+LATERAN_V = {**SCHROEDER_ENTRY, "council": "Fifth Lateran Council", "year": 1517}
+DEFERRARI_SCAN = "sources-of-catholic-dogma-loreto-reprint"
+SUMMARY_NOTE = "Summarised by Schroeder (1937); not the full text of this canon."
+ANASTASIUS_NOTE = "From the Latin of Anastasius, in R. J. Deferrari's translation of Denzinger (1957)."
+EXTRACT_NOTE = ("Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic "
+                "Dogma (1957).")
+
+
+def _units(doc):
+    return list(dict.fromkeys(p.anchor.split("/from-")[0] for p in doc.passages))
+
+
+def test_constantinople_iv_takes_deferraris_canons_and_keeps_schroeders_summary_of_17():
+    doc = _schroeder(CONSTANTINOPLE_IV)
+    slug = "fourth-council-of-constantinople"
+    expected = [f"{slug}/canons/{n}" for n in range(1, 28)]
+    expected.insert(17, f"{slug}/canons/17/extract")
+    assert _units(doc) == expected
+    by_unit = {p.anchor.split("/from-")[0]: p for p in doc.passages}
+    deferrari_units = {f"{slug}/canons/{n}" for n in (1, 3, 11, 12, 21)} | {f"{slug}/canons/17/extract"}
+    for unit, p in by_unit.items():
+        assert p.metadata["scan_id"] == (DEFERRARI_SCAN if unit in deferrari_units else "DisciplinaryCouncils")
+        assert p.chapter_label == "Canons"
+    extract = by_unit[f"{slug}/canons/17/extract"]
+    assert extract.unit_label == "Canon 17" and extract.content.startswith("… Moreover")
+    assert extract.metadata["text_replaced"] == deferrari.TEXT_REPLACED
+    assert doc.translation == f"{schroeder.TRANSLATION}; {deferrari.TRANSLATION}"
+
+
+def test_lateran_v_is_built_by_session_with_each_bull_under_its_latin_title():
+    doc = _schroeder(LATERAN_V)
+    slug = "fifth-lateran-council"
+    assert _units(doc) == [f"{slug}/{u}" for u in (
+        "session-8/apostolici-regiminis", "session-9/supernae-dispositionis-arbitrio",
+        "session-10/inter-multiplices", "session-10/regimini-universalis-ecclesiae",
+        "session-10/inter-sollicitudines", "session-11/supernae-majestatis-praesidio",
+        "session-11/pastor-aeternus-gregem", "session-11/dum-intra-mentis-arcana")]
+    first = doc.passages[0]
+    assert (first.chapter_key, first.chapter_label, first.unit_label, first.reference) == (
+        f"{slug}/session-8", "Session 8", "Apostolici regiminis",
+        "Fifth Lateran Council, Session 8, Apostolici regiminis (part 1 of 2)")
+    pastor = next(p for p in doc.passages if p.anchor.endswith("pastor-aeternus-gregem"))
+    assert pastor.metadata["scan_id"] == DEFERRARI_SCAN and pastor.chapter_label == "Session 11"
+    assert not [p.anchor for p in doc.passages if re.search(
+        r"\b(?:second|third) part of (?:this|the) constitution\b|\bHefele\b|\bHardouin\b", p.content)]
+
+
+@pytest.mark.parametrize("work", [w for w, _ in deferrari.WORKS.values()])
+def test_deferrari_frozen_text_is_decree_text_only(work):
+    for unit in read_text(work)["passages"]:
+        text = unit["text"]
+        assert not re.search(r"\b\d{3,4}[a-z]?\b", text), unit["id"]       # Denzinger's numbers
+        assert not re.search(r"\[(?:see|cf\.)|\[[^\]]*\d+\s?:\s?\d+", text), unit["id"]
+        assert not re.search(r"Anastasius:|\bCan\.\s*\d", text), unit["id"]
+
+
+@pytest.mark.parametrize("council", ["Fourth Council of Constantinople", "Fifth Lateran Council"])
+def test_every_word_of_deferraris_frozen_text_reaches_a_passage(council):
+    def words(text):
+        return re.findall(r"\w+", text)
+    doc = _schroeder({**SCHROEDER_ENTRY, "council": council})
+    work, _ = deferrari.WORKS[council]
+    assert words(" ".join(p.content for p in doc.passages if p.metadata["scan_id"] == DEFERRARI_SCAN)) \
+        == words(" ".join(u["text"] for u in read_text(work)["passages"]))
+
+
+def test_deferrari_frozen_texts_passed_the_gate():
+    for work, _ in deferrari.WORKS.values():
+        assert read_text(work)["gate"] == "pass", work
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored manifest")
+def test_constantinople_iv_and_lateran_v_carry_their_notes_on_every_piece():
+    for council in ("Fourth Council of Constantinople", "Fifth Lateran Council"):
+        for p in _built(council).passages:
+            unit = p.anchor.split("/from-")[0]
+            if unit.endswith(("/canons/17/extract", "/pastor-aeternus-gregem")):
+                expected = EXTRACT_NOTE
+            elif p.metadata["scan_id"] == DEFERRARI_SCAN:
+                expected = ANASTASIUS_NOTE
+            elif council == "Fifth Lateran Council":
+                expected = "Abridged in Schroeder (1937)."
+            else:
+                expected = SUMMARY_NOTE
+            assert p.note == expected, p.anchor
+
+
+def test_tanners_passages_go_where_their_text_went():
+    reg = work_registry.current()
+    open_ = {r["old_anchor"]: r["new_anchor"] for r in reg.redirects if not r.get("closed_by")}
+    # Tanner's text of the part of canon 17 Deferrari prints, and of Pastor aeternus.
+    assert open_["fourth-council-of-constantinople/sec-1/19"] == \
+        "fourth-council-of-constantinople/canons/17/extract"
+    assert open_["fifth-lateran-council/sec-0/58"] == "fifth-lateran-council/session-11/pastor-aeternus-gregem"
+    rows = {r["live_anchor"]: r for r in reg.passages
+            if r["document_id"] == "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61"}
+    # The two live passages that are still one canon keep their IDs.
+    assert rows["fourth-council-of-constantinople/sec-1/17"]["anchor"] == \
+        "fourth-council-of-constantinople/canons/16"
+    assert rows["fourth-council-of-constantinople/sec-1/18"]["anchor"] == \
+        "fourth-council-of-constantinople/canons/17"
+    # The credit line under the old `canon/1` retires, and no build reuses its anchor.
+    assert rows["fourth-council-of-constantinople/canon/1"]["status"] == "retired"
+
+
+def test_deferraris_edition_is_listed_on_both_councils_rows():
+    rows = {r["work"]: r for r in rights_inventory.load()
+            if r["source_path"] == "councils/DisciplinaryCouncils/"}
+    for council in ("Fourth Council of Constantinople", "Fifth Lateran Council"):
+        also, = rows[council]["also_from"]
+        assert also["source_path"] == "councils/sources-of-catholic-dogma/"
+        assert also["status"] == "pd-us-non-renewal" and also["translator"] == "Roy J. Deferrari"

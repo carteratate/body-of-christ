@@ -1,0 +1,68 @@
+[
+ {
+  "passage": "canon/1",
+  "find": "and with a\n\nLoud voice",
+  "replace": "and with a loud voice",
+  "why": "p. 136: 'loud voice' continues the sentence on the full-width line (not indented, lower-case 'loud'); no paragraph break"
+ },
+ {
+  "passage": "canon/3",
+  "find": "precious Cross.\n\nIf, therefore",
+  "replace": "precious Cross. If, therefore",
+  "why": "p. 137: 'If, therefore' starts the full-width line flush left, not indented; no paragraph break"
+ },
+ {
+  "passage": "canon/11",
+  "find": "of Christ\" [Matt. 3: 12; Luke 3: 17] this",
+  "replace": "of Christ\" this",
+  "why": "p. 137: Bible reference [Matt. 3:12; Luke 3:17] left in the text"
+ },
+ {
+  "passage": "canon/17/extract",
+  "find": "some~ thing",
+  "replace": "something",
+  "why": "p. 138: line-end hyphen 'some-/thing' misread as '~'"
+ },
+ {
+  "passage": "canon/17/extract",
+  "find": "specta~ tors",
+  "replace": "spectators",
+  "why": "p. 138: line-end hyphen 'specta-/tors' misread as '~'"
+ },
+ {
+  "passage": "canon/21",
+  "find": "receives Me\" rMatt. 10:4°1: \"and",
+  "replace": "receives Me\": \"and",
+  "why": "p. 138: Bible reference [Matt. 10:40] misread and left in the text"
+ },
+ {
+  "passage": "canon/21",
+  "find": "spurns me\" ILuke 10: 16 J, was",
+  "replace": "spurns me\", was",
+  "why": "p. 138: Bible reference [Luke 10:16] misread and left in the text"
+ },
+ {
+  "passage": "canon/21",
+  "find": "follovving",
+  "replace": "following",
+  "why": "p. 139: OCR 'vv' for 'w'"
+ },
+ {
+  "passage": "canon/21",
+  "find": "hoIy church",
+  "replace": "holy church",
+  "why": "p. 139: OCR capital I for l"
+ },
+ {
+  "passage": "canon/21",
+  "find": "whateyer",
+  "replace": "whatever",
+  "why": "p. 139: OCR y for v"
+ },
+ {
+  "passage": "canon/21",
+  "find": "the Su-pren1e Pontiffs",
+  "replace": "the Supreme Pontiffs",
+  "why": "p. 139: line-end hyphen 'Su-/preme' kept and 'm' misread as 'n1'"
+ }
+]
