@@ -4689,7 +4689,22 @@
   "credit_line": "Translated by H. J. Schroeder (1937)",
   "checked_by": "Carter",
   "checked_on": "2026-10-05",
-  "planned_for": null
+  "planned_for": null,
+  "also_from": [
+   {
+    "texts": "The bull deposing the emperor Frederick II (pp. 77–86) and constitution I 7, \"Of the duty of the legate\" (pp. 96–97)",
+    "edition": "Matthew Paris's English History, from the year 1235 to 1273, translated from the Latin by J. A. Giles, vol. 2 (London: Henry G. Bohn, 1853; Bohn's Antiquarian Library); Internet Archive scan matthewparisseng02pari",
+    "translator": "J. A. Giles",
+    "first_published": 1853,
+    "source_path": "councils/matthewparisseng02pari/",
+    "source_url": "https://archive.org/details/matthewparisseng02pari",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": "Translated by J. A. Giles (1853)",
+    "checked_by": null,
+    "checked_on": null
+   }
+  ]
  },
  {
   "work": "First Lateran Council",

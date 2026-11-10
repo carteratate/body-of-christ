@@ -18,8 +18,32 @@ LIVE_DOCUMENT_IDS_MD5 = "851d07063f85e4c612be1b2d44b695fb"
 def test_every_entry_has_required_fields_and_known_status():
     for entry in ENTRIES:
         # A closed set: an extra field is where reasoning would creep in.
-        assert sorted(entry) == sorted(R.REQUIRED_FIELDS), R.key(entry)
+        assert sorted(set(entry) - set(R.OPTIONAL_FIELDS)) == sorted(R.REQUIRED_FIELDS), \
+            R.key(entry)
         assert entry["status"] in R.STATUSES, f"{R.key(entry)}: status {entry['status']!r}"
+
+
+def test_other_editions_record_the_same_facts_and_a_known_status():
+    rows = [e for e in ENTRIES if "also_from" in e]
+    assert rows, "Lyons I lists Giles's Matthew Paris"
+    for entry in rows:
+        assert entry["also_from"] and entry["document_id"], R.key(entry)
+        for edition in entry["also_from"]:
+            assert sorted(edition) == sorted(R.ALSO_FROM_FIELDS), R.key(entry)
+            assert edition["status"] in R.STATUSES, R.key(entry)
+            assert edition["status"] != "pd-us-non-renewal" or all(
+                (edition["renewal_search"] or {}).get(f) for f in R.RENEWAL_SEARCH_FIELDS)
+            assert bool(edition["checked_by"]) == bool(edition["checked_on"]), R.key(entry)
+            assert (R.SOURCES / edition["source_path"]).is_dir() or not R.SOURCES.is_dir()
+
+
+def test_reader_access_takes_the_strictest_edition():
+    from reader_access import EXCERPT, FULL, access_by_id
+
+    row = {"document_id": "d", "status": "pd-us-pre-1931"}
+    assert access_by_id([row]) == {"d": FULL}
+    assert access_by_id([{**row, "also_from": [{"status": "pd-us-pre-1931"}]}]) == {"d": FULL}
+    assert access_by_id([{**row, "also_from": [{"status": "in-copyright"}]}]) == {"d": EXCERPT}
 
 
 def test_keys_unique_and_sorted():
