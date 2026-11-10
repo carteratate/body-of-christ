@@ -12,9 +12,11 @@ so a provider added without an init call fails here rather than in production.
 """
 from __future__ import annotations
 
+import json
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from qdrant_client.models import AliasDescription, CollectionsAliasesResponse
 
 from app.rag.steps import hyde_luna, rerank
 
@@ -113,13 +115,62 @@ async def test_live_search_readiness_checks_database_and_qdrant():
     pool = AsyncMock()
     pool.fetchval.return_value = 1
     qdrant = AsyncMock()
+    qdrant.get_aliases.return_value = CollectionsAliasesResponse(aliases=[])
     qdrant.get_collection.return_value = object()
     with (
         patch.object(main, "get_pool", return_value=pool),
         patch.object(main, "get_qdrant_client", return_value=qdrant),
     ):
-        live = await main._live_search_readiness()
+        live, read = await main._live_search_readiness()
 
     assert live == {"database": True, "qdrant": True}
+    assert read == {"qdrant_read": "chunks", "qdrant_target": "chunks",
+                    "qdrant_searchable_filter": False}
     pool.fetchval.assert_awaited_once_with("SELECT 1")
     qdrant.get_collection.assert_awaited_once_with("chunks")
+
+
+@pytest.mark.asyncio
+async def test_health_reports_alias_and_target(monkeypatch):
+    """With `QDRANT_READ_COLLECTION=chunks_live`, /health/search names the alias and the
+    collection it points at, and checks that collection (corpus cleanup 2.2b)."""
+    from app import main
+
+    monkeypatch.setattr(main.settings, "qdrant_read_collection", "chunks_live")
+    pool = AsyncMock()
+    pool.fetchval.return_value = 1
+    qdrant = AsyncMock()
+    qdrant.get_aliases.return_value = CollectionsAliasesResponse(aliases=[
+        AliasDescription(alias_name="other", collection_name="elsewhere"),
+        AliasDescription(alias_name="chunks_live", collection_name="chunks"),
+    ])
+    qdrant.get_collection.return_value = object()
+    with (
+        patch.object(main, "get_pool", return_value=pool),
+        patch.object(main, "get_qdrant_client", return_value=qdrant),
+        patch.object(main, "_search_readiness", return_value={"qdrant": True}),
+    ):
+        response = await main.health_search()
+
+    body = json.loads(response.body)
+    assert response.status_code == 200
+    assert body["qdrant_read"] == "chunks_live"
+    assert body["qdrant_target"] == "chunks"
+    qdrant.get_collection.assert_awaited_once_with("chunks")
+
+
+@pytest.mark.asyncio
+async def test_health_reports_no_target_when_qdrant_fails():
+    from app import main
+
+    qdrant = AsyncMock()
+    qdrant.get_aliases.side_effect = OSError("down")
+    with (
+        patch.object(main, "get_pool", return_value=None),
+        patch.object(main, "get_qdrant_client", return_value=qdrant),
+    ):
+        live, read = await main._live_search_readiness()
+
+    assert live["qdrant"] is False
+    assert read == {"qdrant_read": "chunks", "qdrant_target": None,
+                    "qdrant_searchable_filter": None}

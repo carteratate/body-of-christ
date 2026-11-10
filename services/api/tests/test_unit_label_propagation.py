@@ -30,7 +30,9 @@ def _fts_row(**over):
 # --- hop 1: the FTS query must ask Postgres for the column ---
 
 def test_fts_query_selects_unit_label():
-    assert "unit_label" in retrieve_fts._SQL
+    from app.corpus_schema import LEGACY
+
+    assert "unit_label" in retrieve_fts.build_sql(LEGACY)
 
 
 # --- hop 2: RRF builds ChunkCandidate from raw dicts ---

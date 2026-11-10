@@ -5,7 +5,7 @@ import asyncio
 import logging
 
 from app.config import settings
-from app.rag.qdrant_client import QDRANT_COLLECTION, get_qdrant_client
+from app.rag.qdrant_client import get_qdrant_client, read_collection, searchable_indexed
 from app.rag.steps import degradation
 from app.rag.steps.types import RetrievalPath
 
@@ -27,11 +27,20 @@ async def _search_vector(
     if client is None:
         raise RuntimeError("Qdrant client not initialised")
 
+    # Only an explicit `searchable = false` hides a point (corpus cleanup 2.2b). A point
+    # without the field does not match `must_not`, so it stays searchable; retired
+    # passages are absent from a published collection. Strict mode refuses the filter
+    # until the field is indexed, so it waits for the index.
+    must_not = (
+        [FieldCondition(key="searchable", match=MatchValue(value=False))]
+        if await searchable_indexed() else None
+    )
     response = await client.query_points(
-        collection_name=QDRANT_COLLECTION,
+        collection_name=read_collection(),
         query=vec,
         query_filter=Filter(
             must=[FieldCondition(key="collection", match=MatchValue(value=collection))],
+            must_not=must_not,
         ),
         limit=limit,
         with_payload=True,

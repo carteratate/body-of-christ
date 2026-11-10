@@ -4,8 +4,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import asyncpg
 import pytest
+from qdrant_client.models import FieldCondition, MatchValue
 
 from app.config import settings
+from app.rag import qdrant_client
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS
 from app.rag.steps import degradation
 from app.rag.steps.types import ChunkCandidate, RetrievalPath
@@ -114,8 +116,11 @@ def _mock_query_response(points):
 
 
 @pytest.mark.asyncio
-async def test_search_vector_applies_collection_filter():
-    """Qdrant search must use a collection filter, return correct keys, and have no must_not."""
+async def test_search_vector_excludes_only_explicit_unsearchable(monkeypatch):
+    """Qdrant search filters on the collection and leaves out only points marked
+    `searchable = false` (corpus cleanup 2.2b): nothing else."""
+    monkeypatch.setattr(qdrant_client, "_searchable_indexed", True)
+    monkeypatch.setattr(qdrant_client, "_searchable_checked_at", float("inf"))
     mock_client = AsyncMock()
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([
         _scored_point("aaaaaaaa-0000-0000-0000-000000000001", "bible"),
@@ -131,11 +136,93 @@ async def test_search_vector_applies_collection_filter():
 
     call_kwargs = mock_client.query_points.call_args.kwargs
     filt = call_kwargs["query_filter"]
-    assert any(
-        hasattr(cond, "key") and cond.key == "collection"
-        for cond in filt.must
-    )
+    assert filt.must == [
+        FieldCondition(key="collection", match=MatchValue(value="bible")),
+    ]
+    assert filt.must_not == [
+        FieldCondition(key="searchable", match=MatchValue(value=False)),
+    ]
+    assert filt.should is None and filt.min_should is None
+    assert call_kwargs["collection_name"] == "chunks"
+
+
+@pytest.mark.asyncio
+async def test_search_vector_does_not_filter_on_searchable_until_it_is_indexed():
+    """Strict mode refuses a filter on an unindexed field, so before the index exists
+    the query is today's: a collection filter and nothing else."""
+    mock_client = AsyncMock()
+    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
+
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
+        await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+
+    filt = mock_client.query_points.call_args.kwargs["query_filter"]
+    assert filt.must == [FieldCondition(key="collection", match=MatchValue(value="bible"))]
     assert filt.must_not is None
+
+
+def _collection_info(payload_schema: dict):
+    from qdrant_client.models import PayloadIndexInfo
+
+    info = MagicMock()
+    info.payload_schema = {
+        key: PayloadIndexInfo(data_type=kind, points=1) for key, kind in payload_schema.items()
+    }
+    return info
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("schema,expected", [
+    ({"collection": "keyword"}, False),
+    ({"collection": "keyword", "searchable": "keyword"}, False),
+    ({"collection": "keyword", "searchable": "bool"}, True),
+])
+async def test_searchable_index_check_reads_the_read_collections_schema(
+    monkeypatch, schema, expected,
+):
+    from qdrant_client.models import AliasDescription, CollectionsAliasesResponse
+
+    monkeypatch.setattr(settings, "qdrant_read_collection", "chunks_live")
+    client = AsyncMock()
+    client.get_aliases.return_value = CollectionsAliasesResponse(aliases=[
+        AliasDescription(alias_name="chunks_live", collection_name="chunks-rel"),
+    ])
+    client.get_collection.return_value = _collection_info(schema)
+    monkeypatch.setattr(qdrant_client, "_client", client)
+
+    assert await qdrant_client.searchable_indexed() is expected
+    assert await qdrant_client.searchable_indexed() is expected
+    client.get_collection.assert_awaited_once_with("chunks-rel")
+
+
+@pytest.mark.asyncio
+async def test_a_failed_searchable_index_check_keeps_the_last_answer(monkeypatch):
+    client = AsyncMock()
+    client.get_aliases.return_value = MagicMock(aliases=[])
+    client.get_collection.return_value = _collection_info({"searchable": "bool"})
+    monkeypatch.setattr(qdrant_client, "_client", client)
+    assert await qdrant_client.searchable_indexed() is True
+
+    monkeypatch.setattr(qdrant_client, "_searchable_checked_at", float("-inf"))
+    client.get_collection.side_effect = OSError("down")
+    assert await qdrant_client.searchable_indexed() is True
+
+    qdrant_client.forget_searchable_index()
+    assert await qdrant_client.searchable_indexed() is False
+
+
+@pytest.mark.asyncio
+async def test_search_vector_uses_configured_read_collection(monkeypatch):
+    monkeypatch.setenv("QDRANT_READ_COLLECTION", "chunks_live")
+    monkeypatch.setattr(settings, "qdrant_read_collection",
+                        type(settings)().qdrant_read_collection)
+    mock_client = AsyncMock()
+    mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
+
+    with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
+        await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+
+    assert mock_client.query_points.call_args.kwargs["collection_name"] == "chunks_live"
 
 
 @pytest.mark.asyncio

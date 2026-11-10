@@ -21,6 +21,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from app.corpus_schema import LEGACY
 from app.rag.steps import fetch_context, stitch
 from app.rag.steps.types import RankedChunk
 
@@ -658,18 +659,18 @@ def test_the_lookup_fetches_every_role_not_just_the_determination():
     """Replies need objections and objections need determinations, and splitting a
     shared key into articles needs the sed contra to see the boundary. A query filtered
     to one label cannot serve any of that."""
-    assert "unit_label LIKE" not in fetch_context._SQL
-    assert "unit_label =" not in fetch_context._SQL
+    assert "unit_label LIKE" not in fetch_context.build_sql(LEGACY)
+    assert "unit_label =" not in fetch_context.build_sql(LEGACY)
 
 
 def test_the_lookup_orders_by_position():
     """Position ordering is what splits a shared key back into articles and what keeps a
     split determination in reading order rather than presenting its halves backwards."""
-    assert "ORDER BY c.document_id, c.chapter_key, c.position" in fetch_context._SQL
+    assert "ORDER BY c.document_id, c.chapter_key, c.position" in fetch_context.build_sql(LEGACY)
 
 
 def test_the_lookup_is_restricted_to_the_summa():
-    assert "d.collection = 'summa'" in fetch_context._SQL
+    assert "d.collection = 'summa'" in fetch_context.build_sql(LEGACY)
 
 
 def test_a_fetched_part_carries_every_field_that_reaches_the_browser():

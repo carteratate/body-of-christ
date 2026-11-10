@@ -4,11 +4,31 @@ from __future__ import annotations
 import logging
 import time
 
+from app import corpus_schema
 from app.db import get_pool
 from app.rag.steps import degradation
 from app.rag.steps.types import ChunkCandidate
 
 logger = logging.getLogger(__name__)
+
+_LEGACY_SQL = (
+    "SELECT id::text, position, annotation, chapter_key, unit_label "
+    "FROM chunks WHERE id = ANY($1::uuid[])"
+)
+
+
+def build_sql(schema: corpus_schema.CorpusSchema) -> str:
+    """Without 0042, today's lookup. With it, each row also says whether search must
+    not show it (`hidden`: not searchable, retired, or in a retired document)."""
+    searchable = schema.searchable_sql("c", "d")
+    if not searchable:
+        return _LEGACY_SQL
+    return (
+        "SELECT c.id::text AS id, c.position, c.annotation, c.chapter_key, c.unit_label, "
+        f"NOT (TRUE{searchable}) AS hidden "
+        "FROM chunks c JOIN documents d ON d.id = c.document_id "
+        "WHERE c.id = ANY($1::uuid[])"
+    )
 
 
 def _collections_missing_positions(
@@ -24,7 +44,8 @@ def _collections_missing_positions(
 async def run(
     candidates: dict[str, list[ChunkCandidate]],
 ) -> dict[str, list[ChunkCandidate]]:
-    """Fill in position=None candidates by querying Postgres, and drop orphans.
+    """Fill in position=None candidates by querying Postgres, and drop orphans and
+    hidden rows.
 
     Qdrant payloads omit position; FTS rows already have it. A position=None
     candidate whose id is absent from the `chunks` table is an orphaned Qdrant
@@ -32,6 +53,12 @@ async def run(
     have no `chunks` row, so surfacing them would break the reader, and
     persisting them fails the retrievals/bookmarks/feedback FK on chunks.id —
     aborting the whole search. Fills positions in place; returns a filtered dict.
+
+    A candidate whose row Postgres hides from search (corpus cleanup 2.2b) is dropped
+    too: a Qdrant point that disagrees with Postgres, as in the seconds between a
+    publish's apply and its alias switch. That is expected, so it is logged but not
+    recorded as a degradation. When this lookup is skipped, the Qdrant `searchable`
+    filter is the only guard.
     """
     pool = get_pool()
     if pool is None:
@@ -55,10 +82,8 @@ async def run(
     try:
         async with pool.acquire() as conn:
             t_acquired = time.perf_counter()
-            rows = await conn.fetch(
-                "SELECT id::text, position, annotation, chapter_key, unit_label "
-                "FROM chunks WHERE id = ANY($1::uuid[])",
-                missing_ids,
+            rows = await corpus_schema.run_with_fallback(
+                lambda schema: conn.fetch(build_sql(schema), missing_ids), conn,
             )
             t_queried = time.perf_counter()
         pos_map = {r["id"]: r["position"] for r in rows}
@@ -67,6 +92,7 @@ async def run(
         ann_map = {r["id"]: r.get("annotation") for r in rows}
         chapter_map = {r["id"]: r.get("chapter_key") for r in rows}
         unit_map = {r["id"]: r.get("unit_label") for r in rows}
+        hidden_ids = {r["id"] for r in rows if r.get("hidden")}
         logger.info(
             "fetch_positions: ids=%d acquire=%.3fs query=%.3fs total=%.3fs",
             len(missing_ids),
@@ -93,6 +119,7 @@ async def run(
     filtered: dict[str, list[ChunkCandidate]] = {}
     dropped = 0
     dropped_by_collection: dict[str, int] = {}
+    hidden = 0
     for col, col_list in candidates.items():
         kept: list[ChunkCandidate] = []
         for c in col_list:
@@ -100,6 +127,9 @@ async def run(
                 if c.chunk_id not in present_ids:
                     dropped += 1
                     dropped_by_collection[col] = dropped_by_collection.get(col, 0) + 1
+                    continue
+                if c.chunk_id in hidden_ids:
+                    hidden += 1
                     continue
                 c.position = pos_map[c.chunk_id]
                 # Qdrant payloads carry no annotation; FTS rows already have one
@@ -117,6 +147,12 @@ async def run(
             kept.append(c)
         filtered[col] = kept
 
+    if hidden:
+        logger.warning(
+            "fetch_positions: dropped %d candidate(s) whose row is not searchable or "
+            "retired (Qdrant disagrees with Postgres)",
+            hidden,
+        )
     if dropped:
         logger.warning(
             "fetch_positions: dropped %d orphaned candidate(s) absent from chunks "

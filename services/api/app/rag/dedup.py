@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 import math
 
-from app.rag.qdrant_client import QDRANT_COLLECTION, get_qdrant_client
+from app.rag.qdrant_client import get_qdrant_client, read_collection
 from app.rag.steps.types import RankedChunk
 
 logger = logging.getLogger(__name__)
@@ -230,7 +230,7 @@ async def apply_dedup(
         if client is not None:
             try:
                 points = await client.retrieve(
-                    collection_name=QDRANT_COLLECTION,
+                    collection_name=read_collection(),
                     ids=list(close_ids),
                     with_vectors=True,
                 )
