@@ -76,7 +76,9 @@ SENTINELS = (
     Sentinel("dei_verbum_12", "councils", 1500, "Dei Verbum §12, characters"),
     Sentinel("gaudium_et_spes_total", "councils", 200_000, "Gaudium et Spes, characters"),
     Sentinel("trent_total", "councils", 500_000, "Council of Trent, characters"),
-    Sentinel("vatican_i_total", "councils", 50_000, "First Vatican Council, characters"),
+    # All Schaff prints of the council, both constitutions in Manning's English, is 41,090
+    # characters; sessions 1 and 2 are gaps G10 and G11 (Carter, 10 Nov 2026, 1.2d).
+    Sentinel("vatican_i_total", "councils", 40_000, "First Vatican Council, characters"),
     Sentinel("daniel_13", "bible", 1, "Daniel 13, passages"),
     Sentinel("daniel_14", "bible", 1, "Daniel 14, passages"),
     Sentinel("summa_i_q71", "summa", 1, "Summa I q.71, passages"),
