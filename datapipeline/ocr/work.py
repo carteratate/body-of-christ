@@ -76,10 +76,14 @@ class WorkConfig:
     pages: tuple[str, str]       # first and last printed page
     baseline: Baseline
     layout: str = "single-column"
+    leaf_offset: int = 0         # scan leaves the XML leaves out before its first page
+    broken_words_continue: bool = False   # a broken word's rest never opens a paragraph
+    max_paragraph_words: int | None = None   # cut longer paragraphs at a sentence end
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
     unit_series: tuple[int, ...] | None = None   # units per series, where it prints several
     unit_closes: tuple[str, ...] = ()   # the editor's unlabelled paragraphs that close a unit
+    unit_bounds: tuple[dict, ...] = ()  # bounded units: each text's first and last paragraph
     names: tuple[str, ...] = ()
     model: str = "claude-sonnet-5-5"
     ceiling_usd: float = 2.00
@@ -91,6 +95,7 @@ class WorkConfig:
         d["pages"] = tuple(d["pages"])
         d["names"] = tuple(d.get("names", ()))
         d["unit_closes"] = tuple(d.get("unit_closes", ()))
+        d["unit_bounds"] = tuple(d.get("unit_bounds", ()))
         if d.get("unit_series") is not None:
             d["unit_series"] = tuple(d["unit_series"])
         d["baseline"] = Baseline(**d["baseline"])
@@ -128,6 +133,7 @@ class OcrPassage:
     corrected: str | None = None
     correction: Correction = field(default_factory=Correction)
     fixed: str | None = None     # `base` with the work's tracked fixes applied
+    continues: bool = False      # opens inside the paragraph the passage before it ends
 
     @property
     def base(self) -> str:

@@ -1,7 +1,9 @@
 """What a person settles after the model: tracked fixes, and the frozen final text.
 
 `ocr/works/<work>.fixes.json` lists edits checked against the page images, each
-`{"passage", "find", "replace", "why"}`. `find` must occur exactly once, so a fix that no
+`{"passage", "find", "replace", "why"}`, or `{"passage", "continues": true, "why"}` for a
+passage whose first paragraph runs on from the passage before it where the clean-up saw
+a paragraph break. `find` must occur exactly once, so a fix that no
 longer fits its passage stops the run instead of doing nothing. They are not bound by the
 model's 2% limit: a person, not a model, made them, and each says why. A passage's fixes
 are applied to its corrected text in the order listed, and the sampled check runs on the
@@ -38,7 +40,13 @@ def apply_fixes(workdir: WorkDir, works_dir: Path = WORKS_DIR) -> int:
         if passage is None:
             raise ValueError(f"fix names no passage: {fix['passage']}")
         if not fix.get("why"):
-            raise ValueError(f"{fix['passage']}: a fix says why ({fix['find']!r})")
+            raise ValueError(f"{fix['passage']}: a fix says why ({fix.get('find')!r})")
+        if "find" not in fix:
+            if fix.get("continues") is not True:
+                raise ValueError(f"{fix['passage']}: a fix without `find` joins the passage "
+                                 "to the paragraph before it, with `continues: true`")
+            passage.continues = True
+            continue
         text = passage.text
         if text.count(fix["find"]) != 1:
             raise ValueError(f"{fix['passage']}: {fix['find']!r} occurs "
@@ -57,7 +65,8 @@ def freeze(workdir: WorkDir, texts_dir: Path = TEXTS_DIR) -> Path:
         "title": config.title,
         "metadata": ocr_metadata(config.scan),
         "gate": result.status,
-        "passages": [{"id": p.id, "pages": p.pages, "leaves": p.leaves, "text": p.text}
+        "passages": [{"id": p.id, "pages": p.pages, "leaves": p.leaves, "text": p.text,
+                      **({"continues": True} if p.continues else {})}
                      for p in workdir.passages()],
     }
     texts_dir.mkdir(parents=True, exist_ok=True)

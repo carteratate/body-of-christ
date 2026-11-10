@@ -647,3 +647,96 @@ def test_his_citation_of_the_clementines_is_dropped():
 ])
 def test_an_opening_single_quote_that_nothing_closes_goes(before, after):
     assert strip_stray_quotes(before) == after
+
+
+# --- Giles's Matthew Paris (1.2e) ------------------------------------------------------
+
+from ocr.furniture import _joined  # noqa: E402
+from ocr.pages import read_page_numbers  # noqa: E402
+from ocr.units import Bounded  # noqa: E402
+
+
+def _body(texts, indent_first=()):
+    """A page whose lines are `texts`; a line in `indent_first` is drawn indented."""
+    return Page(0, 2000, 3000, [Line(t, 400 if k in indent_first else 150, 300 + 75 * k,
+                                     1850, 360 + 75 * k) for k, t in enumerate(texts)])
+
+
+def test_page_numbers_follow_a_leaf_left_out_of_the_images(tmp_path):
+    path = tmp_path / "n.json"
+    path.write_text(json.dumps({"pages": [{"leafNum": 5, "pageNumber": "3"}]}))
+    assert read_page_numbers(path) == {5: "3"}
+    assert read_page_numbers(path, leaf_offset=1) == {4: "3"}
+    assert make_config().leaf_offset == 0
+
+
+def test_a_broken_words_rest_opens_no_paragraph_where_the_work_says_so():
+    # Giles's OCR misplaces the box of "ration" after "delibe-", so it reads as indented.
+    page = _body(["It needed long delibe-", "ration of the matter at hand,",
+                  "and nothing more was said."], indent_first={1})
+    assert len(clean_pages([page]).paragraphs) == 2
+    joined = clean_pages([page], broken_words_continue=True).paragraphs
+    assert [p.text for p in joined] == [
+        "It needed long deliberation of the matter at hand, and nothing more was said."]
+
+
+def test_bohns_signature_marks_are_furniture():
+    for mark in ("VOL. II. G", "g2"):
+        page = _body([f"Ordinary words on line {k} of this page run on" for k in range(5)])
+        page.lines.append(Line(mark, 150, 2700, 600, 2760))
+        result = clean_pages([page])
+        assert [r.kind for r in result.removals] == ["signature"], mark
+
+
+def test_a_long_paragraph_is_cut_at_a_clause_end_and_joined_back():
+    lines = ["one two three four five six,", "seven eight nine ten", "eleven twelve thirteen.",
+             "fourteen fifteen sixteen"]
+    paras = clean_pages([_body(lines)], max_paragraph_words=6).paragraphs
+    assert [(p.text, p.continues) for p in paras] == [
+        ("one two three four five six,", False),
+        ("seven eight nine ten eleven twelve thirteen.", True),
+        ("fourteen fifteen sixteen", True)]
+    assert _joined([(p.text, p.continues) for p in paras]) == " ".join(lines)
+    assert _joined([("A.", False), ("B.", False)]) == "A.\n\nB."
+
+
+def test_bounded_units_take_each_text_and_drop_its_double_quotes():
+    paras = _paras("The chronicle.", "“ Innocent, bishop, &c.", "“ He said ‘go’. ”",
+                   "More chronicle.", "“ Of the legate. ”", "After.")
+    units = Bounded().split(paras, bounds=(
+        {"id": "bull", "first": "Innocent", "last": "said"},
+        {"id": "legate", "first": "Of the legate", "last": "legate"}))
+    assert [(u.id, [p.text for p in u.paragraphs]) for u in units] == [
+        ("bull", ["Innocent, bishop, &c.", "He said ‘go’."]), ("legate", ["Of the legate."])]
+
+
+def test_a_bounded_text_longer_than_a_passage_is_numbered_in_parts():
+    words = " ".join(["word"] * 300)
+    units = Bounded().split(_paras(f"Start {words}.", f"{words} end."),
+                            bounds=({"id": "bull", "first": "^Start", "last": "end\\.$"},))
+    assert [u.id for u in units] == ["bull-01", "bull-02"]
+
+
+def test_bounded_units_refuse_a_missing_bound_or_a_start_inside_a_paragraph():
+    with pytest.raises(ValueError, match="no paragraph"):
+        Bounded().split(_paras("Text."), bounds=({"id": "x", "first": "Nowhere", "last": "."},))
+    cut = [Paragraph("Earlier,", "", [1]), Paragraph("Start here.", "", [1], continues=True)]
+    with pytest.raises(ValueError, match="inside a paragraph"):
+        Bounded().split(cut, bounds=({"id": "x", "first": "Start", "last": "here"},))
+    with pytest.raises(ValueError, match="by bounds"):
+        SchroederCanons().split(_paras("Text. One."), bounds=({"id": "x"},))
+
+
+def test_a_fix_can_join_a_passage_to_the_paragraph_before_it(tmp_path):
+    config = make_config(work="w")
+    wd = WorkDir(config, tmp_path / "work")
+    wd.save_passages([OcrPassage("a-01", [1], ["1"], "raw", "That"),
+                      OcrPassage("a-02", [1], ["1"], "raw", "the Church")])
+    (tmp_path / "w.fixes.json").write_text(json.dumps(
+        [{"passage": "a-02", "continues": True, "why": "one sentence over the page"}]))
+    apply_fixes(wd, tmp_path)
+    assert [p.continues for p in wd.passages()] == [False, True]
+    (tmp_path / "w.fixes.json").write_text(json.dumps(
+        [{"passage": "a-02", "why": "no find and no join"}]))
+    with pytest.raises(ValueError, match="continues"):
+        apply_fixes(wd, tmp_path)
