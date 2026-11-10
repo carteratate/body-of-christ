@@ -19,7 +19,7 @@ from urllib.parse import urlparse
 import asyncpg
 from fastapi import HTTPException
 
-from app import catechism_pages
+from app import catechism_pages, source_links
 
 logger = logging.getLogger(__name__)
 
@@ -108,17 +108,30 @@ async def document_access(conn, document_ids) -> dict[str, DocumentAccess]:
 
 
 def access_fields(access: dict[str, DocumentAccess], document_id,
-                  unit_label: str | None = None) -> dict:
+                  unit_label: str | None = None, *, chunk_id=None,
+                  content: str | None = None) -> dict:
     """The `reader_access`, `source_url` and `source_credit` fields of a passage's source.
 
     A passage of a document that links to the USCCB's Catechism flipbook links to the
-    page where its first paragraph (`unit_label`, "§1127") starts, not the cover."""
+    page where its first paragraph (`unit_label`, "§1127") starts, not the cover. One
+    whose document links to its own page on vatican.va links to the passage's opening
+    words there with a text fragment (2.4e, `source_links.py`); pass no content for a
+    passage that shows none."""
     a = access.get(str(document_id), FULL_ACCESS)
-    url = a.source_url
-    if url == catechism_pages.COVER_URL:
-        url = catechism_pages.page_url(unit_label) or url
-    return {"reader_access": a.reader_access, "source_url": url,
+    return {"reader_access": a.reader_access,
+            "source_url": passage_source_url(a.source_url, unit_label, chunk_id, content),
             "source_credit": a.source_credit}
+
+
+def passage_source_url(url: str | None, unit_label: str | None = None, chunk_id=None,
+                       content: str | None = None) -> str | None:
+    """A document's source URL narrowed to one passage where the source allows it."""
+    if url == catechism_pages.COVER_URL:
+        return catechism_pages.page_url(unit_label) or url
+    # A collection's fallback URL is an index page, not one holding the passage's text.
+    if url and content and url not in _COLLECTION_SOURCE_URLS.values():
+        return source_links.passage_url(url, chunk_id, content)
+    return url
 
 
 def restricted_error(source: str | None) -> HTTPException:
