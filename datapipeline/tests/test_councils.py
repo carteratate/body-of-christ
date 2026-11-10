@@ -136,11 +136,16 @@ def _schroeder(entry=SCHROEDER_ENTRY, **kw):
     return schroeder.build_schroeder(entry, "doc-id", "councils/ecum-09", **kw)
 
 
+def _canons(doc):
+    """The document's passages from Schroeder, without the texts Giles supplies."""
+    return [p for p in doc.passages if p.metadata["scan_id"] == "DisciplinaryCouncils"]
+
+
 @pytest.mark.parametrize("council,count", CANON_COUNTS.items())
 def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
     entry = {**SCHROEDER_ENTRY, "council": council}
     doc = _schroeder(entry)
-    units = list(dict.fromkeys((p.chapter_key, p.unit_label) for p in doc.passages))
+    units = list(dict.fromkeys((p.chapter_key, p.unit_label) for p in _canons(doc)))
     series = SERIES.get(council, (count,))
     assert [len([u for u in units if u[0] == key]) for key in dict.fromkeys(k for k, _ in units)] \
         == list(series)
@@ -194,7 +199,7 @@ def test_every_word_of_the_frozen_text_reaches_a_passage(council):
         return re.findall(r"\w+", text)
     doc = _schroeder({**SCHROEDER_ENTRY, "council": council})
     frozen = read_text(schroeder.WORKS[council])["passages"]
-    assert words(" ".join(p.content for p in doc.passages)) == \
+    assert words(" ".join(p.content for p in _canons(doc))) == \
         words(" ".join(u["text"] for u in frozen))
 
 
@@ -228,7 +233,7 @@ def test_schroeder_anchors_are_canon_numbers_in_his_order():
 def test_a_council_in_two_series_names_both():
     doc = _schroeder({**SCHROEDER_ENTRY, "council": "First Council of Lyons"})
     units = list(dict.fromkeys((p.anchor.split("/from-")[0], p.chapter_key, p.chapter_label)
-                               for p in doc.passages))
+                               for p in _canons(doc)))
     assert units[0] == ("first-council-of-lyons/series-1/canon/1",
                         "first-council-of-lyons/series-1", "Canons, first series")
     assert units[18] == ("first-council-of-lyons/series-2/canon/1",
@@ -284,3 +289,90 @@ def test_abridged_texts_carry_their_note_on_every_piece(council, unit):
     passages = _built(council).passages
     noted = {p.anchor for p in passages if p.note == "Abridged in Schroeder (1937)."}
     assert noted == {p.anchor for p in passages if p.anchor.split("/from-")[0] == unit}
+
+
+# --- Giles's Matthew Paris for Lyons I (1.2e, Carter, 9 Nov 2026) ----------------------
+
+from ingest import councils_giles as giles  # noqa: E402
+
+LYONS_I = {**SCHROEDER_ENTRY, "council": "First Council of Lyons", "year": 1245}
+BULL = "first-council-of-lyons/deposition"
+LEGATE = "first-council-of-lyons/duty-of-the-legate"
+GILES_NOTE = "Matthew Paris's version, in J. A. Giles's translation (1853)."
+# Tanner's bull (G4, retired in 1.2e-2) and the Giles passage holding each part of it,
+# matched by content since the two translations share no wording.
+BULL_REDIRECTS = {
+    "sec-2/5": "deposition", "sec-2/6": "deposition/from-p1-2", "sec-2/7": "deposition/from-p2",
+    "sec-2/7/from-e24": "deposition/from-p2", "sec-2/7/from-e24-2": "deposition/from-p2",
+    "sec-2/8": "deposition/from-p2-2", "sec-2/9": "deposition/from-p2-3",
+    "sec-2/10": "deposition/from-p2-3", "sec-2/11": "deposition/from-p2-4",
+    "sec-2/12": "deposition/from-p2-5"}
+
+
+def _giles(doc):
+    return [p for p in doc.passages if p.metadata["scan_id"] == "matthewparisseng02pari"]
+
+
+def test_giles_texts_stand_before_and_after_the_canons_under_his_headings():
+    doc = _schroeder(LYONS_I)
+    chapters = list(dict.fromkeys((p.chapter_key, p.chapter_label) for p in doc.passages))
+    assert chapters == [
+        (BULL, "How the pope excommunicated the emperor Frederick at the council of Lyons"),
+        ("first-council-of-lyons/series-1", "Canons, first series"),
+        ("first-council-of-lyons/series-2", "Canons, second series"),
+        (LEGATE, "Of the duty of the legate")]
+    assert [p.position for p in doc.passages] == list(range(len(doc.passages)))
+    assert doc.translation == "H. J. Schroeder (1937); J. A. Giles (1853)"
+    assert _schroeder().translation == schroeder.TRANSLATION
+
+
+def test_every_word_of_the_giles_text_reaches_a_passage_and_cuts_rejoin_unbroken():
+    def words(text):
+        return re.findall(r"\w+", text)
+    passages = _giles(_schroeder(LYONS_I))
+    frozen = read_text("giles-matthew-paris-lyons-1")
+    assert words(" ".join(p.content for p in passages)) == \
+        words(" ".join(u["text"] for u in frozen["passages"]))
+    # One sentence runs over pp. 78-79; the clean-up's cut there is joined back.
+    assert "through him. That the Church also wished" in passages[0].content
+    assert not any(p.content.endswith(" St.") for p in passages)
+    assert all(len(p.content) <= 4000 for p in passages)
+
+
+def test_giles_frozen_text_passed_the_gate_and_carries_no_double_quotes():
+    frozen = read_text("giles-matthew-paris-lyons-1")
+    assert frozen["gate"] == "pass"
+    for unit in frozen["passages"]:
+        assert not re.search(r"[\"“”]", unit["text"]), unit["id"]
+        assert unit["text"].count("(") == unit["text"].count(")"), unit["id"]
+
+
+def test_giles_passages_carry_the_source_label_and_not_the_replaced_text_flag():
+    for p in _giles(_schroeder(LYONS_I)):
+        assert p.metadata["text_source"] == "ocr" and p.metadata["url"] == giles.SCAN_URL
+        assert "text_replaced" not in p.metadata and p.metadata["pages"]
+
+
+def test_a_closing_saint_moves_to_the_next_piece():
+    assert giles._abbreviations_kept(["in the person of St.", "Peter, 'Whatever"]) == \
+        ["in the person of", "St. Peter, 'Whatever"]
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored manifest")
+def test_every_giles_passage_carries_the_note_and_the_bull_its_date():
+    notes = {p.anchor: p.note for p in _giles(_built("First Council of Lyons"))}
+    assert set(notes) and all(n.startswith(GILES_NOTE) for n in notes.values())
+    assert notes[BULL] == GILES_NOTE + " Matthew Paris dates the bull 16 July; " \
+                                       "the council's acts give 17 July."
+    assert notes[LEGATE] == GILES_NOTE
+
+
+def test_tanners_bull_redirects_to_the_giles_passage_holding_each_part():
+    reg = work_registry.load_registry()
+    lyons = [r for r in reg.redirects if r.get("added_by") == "1.2e-3"]
+    prefix = "first-council-of-lyons/"
+    assert {r["old_anchor"].removeprefix(prefix): r["new_anchor"].removeprefix(prefix)
+            for r in lyons} == BULL_REDIRECTS
+    old = {r["old_passage_id"] for r in lyons}
+    assert not [e for e in work_registry.open_removals(reg) if e.get("passage_id") in old]
+    assert not [e for e in work_registry.open_removals(reg) if "(gap G4)" in e["detail"]]

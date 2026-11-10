@@ -10,6 +10,7 @@ from __future__ import annotations
 import re
 
 from config import settings
+from ingest import councils_giles as giles
 from identity import anchor as make_anchor, slugify
 from ingest.pieces import Segment, name_pieces, pack_text, piece_reference
 from model import Document, Passage
@@ -86,9 +87,18 @@ def build_schroeder(entry: dict, document_id: str, source_key: str,
                     held: frozenset[str] = HELD) -> Document:
     council = entry["council"]
     work = WORKS[council]
-    passages = [] if council in held else _passages(council, entry["year"], read_text(work))
+    passages: list[Passage] = []
+    translation = TRANSLATION
+    if council not in held:
+        # Texts Schroeder does not print come from Giles's Matthew Paris (councils_giles).
+        before, after = giles.passages(council, entry["year"])
+        passages = before + _passages(council, entry["year"], read_text(work)) + after
+        for k, passage in enumerate(passages):
+            passage.position = k
+        if before or after:
+            translation = f"{TRANSLATION}; {giles.TRANSLATION}"
     return Document(id=document_id, collection="councils", title=council, author=None,
-                    year=entry["year"], translation=TRANSLATION,
+                    year=entry["year"], translation=translation,
                     metadata={"url": SCAN_URL, "held_text_url": entry["url"],
                               "council_number": entry.get("council_number"),
                               "source_key": source_key, "source_file": SOURCE_DIR,
