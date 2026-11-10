@@ -79,6 +79,24 @@ def test_argument_paragraph_dropped(built):
     assert "Vehemence" not in letter.content
 
 
+def test_argument_after_a_chapter_number_without_a_dash_dropped():
+    lines = ["Chapter XXXI. Argument.—Novatian concludes that God is one.",
+             "Therefore God the Father, the founder and creator of all things, is one."]
+    assert editorial.strip_editorial_lines(lines) == lines[1:]
+
+
+@pytest.mark.sources
+@pytest.mark.skipif(not os.path.isdir(_SRC), reason="church-fathers sources not vendored")
+def test_r4_contents_headings_are_span_entries():
+    """R4 (section 4, rule 2): the heading paragraphs above the Refutation's seven book
+    contents are span entries of their own, on the passages that keep the contents."""
+    divs = {div for _, div in editorial.AUTHORIAL_CONTENTS}
+    spans = [e for e in registry.load_registry().removals
+             if e["added_by"] == "1.8a" and e["scope"] == "span" and e["anchor"] in divs]
+    assert {e["anchor"] for e in spans} == divs
+    assert any(e["span"]["excerpt"] == "Contents." for e in spans)
+
+
 def test_letter_title_line_dropped_greeting_kept(built):
     _, letter = _letter(built[0])
     assert letter.content.startswith("1. Firmilian to Testius, his brother in the Lord, greeting.")

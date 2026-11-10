@@ -1928,7 +1928,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 287
+   "count": 273
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -1965,6 +1965,576 @@
   "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
   "church_act": null,
   "span": null,
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1760",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "305b8531692e33f0d6c4d139736bae8c8612cb73",
+   "excerpt": "Chapter I. Argument.—Novatian, with the View of Treating of the Trinity, Sets Forth from the Rule of Faith that We Shou…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1761",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "100f904ede4aacf9b4f00b33a526d6d61c69d561",
+   "excerpt": "Chapter II. Argument.—God is Above All Things, Himself Containing All Things, Immense, Eternal, Transcending the Mind o…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1762",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "277ec4ba63654035e51e86b335f705f21d3e2a72",
+   "excerpt": "Chapter III. Argument.—That God is the Founder of All Things, Their Lord and Parent, is Proved from the Holy Scriptures."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1767",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.ix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8341a15139fc51876bb13f0c6ddd0bd2dd7ee979",
+   "excerpt": "Chapter VIII. Argument.—It is This God, Therefore, that the Church Has Known and Adores; And to Him the Testimony of Th…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1763",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c39e917547e14046c1c11c718fb682b06e23f1de",
+   "excerpt": "Chapter IV. Argument.—Moreover, He is Good, Always the Same, Immutable, One and Only, Infinite; And His Own Name Can Ne…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1764",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c86ce6dace1677b9c125840fcd166b61d417f8bc",
+   "excerpt": "Chapter V. Argument.—If We Regard the Anger, and Indignation, and Hatred of God Described in the Sacred Pages, We Must…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1765",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "13459325d62d55bf24d6ba285a99a3e9f8eca3c1",
+   "excerpt": "Chapter VI. Argument.—And That, Although Scripture Often Changes the Divine Appearance into a Human Form, Yet the Measu…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1766",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.viii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d892cb42dad836d8abb00984e736fe15e83ddea1",
+   "excerpt": "Chapter VII. Argument.—Moreover, that When God is Called a Spirit, Brightness, and Light, God is Not Sufficiently Expre…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1768",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.x",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "aa8b7a465d194258f176bee5aedfb5dc7701e3cc",
+   "excerpt": "Chapter IX. Argument.—Further, that the Same Rule of Truth Teaches Us to Believe, After the Father, Also in the Son of…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1769",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c8925a7a52f93d11e69501959ec68ff319dd6fad",
+   "excerpt": "Chapter X. Argument.—That Jesus Christ is the Son of God and Truly Man, as Opposed to the Fancies of Heretics, Who Deny…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1770",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8c6fb6150551419dfd1ec3b45ee08c8f6095b65a",
+   "excerpt": "Chapter XII. Argument.—That Christ is God, is Proved by the Authority of the Old Testament Scriptures."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1771",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d0df9db2880032e1aa68ba4bc47dd6530c31c764",
+   "excerpt": "Chapter XIII. Argument.—That the Same Truth is Proved from the Sacred Writings of the New Covenant."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1776",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "94153268ac85c64b301ba29416869e905aa141ca",
+   "excerpt": "Chapter XVIII. Argument.—Moreover Also, from the Fact that He Who Was Seen of Abraham is Called God; Which Cannot Be Un…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1772",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c899fa3b45afab7022c60eb862f65f437945799c",
+   "excerpt": "Chapter XIV. Argument.—The Author Prosecutes the Same Argument."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1773",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e132f80395b92eceb2675a5f8316ae29dad5c04d",
+   "excerpt": "Chapter XV. Argument.—Again He Proves from the Gospel that Christ is God."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1774",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a0545430a0b0e28874170441aba076245f127b9f",
+   "excerpt": "Chapter XVI. Argument.—Again from the Gospel He Proves Christ to Be God."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1775",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "527b250e49d9379b53a1fac7109716d2e28d79ee",
+   "excerpt": "Chapter XVII. Argument.—It Is, Moreover, Proved by Moses in the Beginning of the Holy Scriptures."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1777",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9bf17cb05b3f9e56f6116b135940ef4d6093e0f7",
+   "excerpt": "Chapter XIX. Argument.—That God Also Appeared to Jacob as an Angel; Namely, the Son of God."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1778",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f8aee5afca7ad3c256f0a8c65bf1cc5f70dfe062",
+   "excerpt": "Chapter XX. Argument.—It is Proved from the Scriptures that Christ Was Called an Angel. But Yet It is Shown from Other…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1779",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ea6602b863d57e68d246b61501bae286cd72a860",
+   "excerpt": "Chapter XXI. Argument.—That the Same Divine Majesty is Again Confirmed in Christ by Other Scriptures."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1780",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "74a085411097a4bb732d3692642d87209046954f",
+   "excerpt": "Chapter XXII. Argument—That the Same Divine Majesty is in Christ, He Once More Asserts by Other Scriptures."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1781",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "4f58d3d6f8576222150c336408353b34baf53c86",
+   "excerpt": "Chapter XXIII. Argument.—And This is So Manifest, that Some Heretics Have Thought Him to Be God the Father, Others that…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1786",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6dead8c4a9bd6691a9f71d5474bfa1fb3679f305",
+   "excerpt": "Chapter XXVIII. Argument.—He Proves Also that the Words Spoken to Philip Make Nothing for the Sabellians."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1782",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "54674a1db5710163a2dc4089bae46c4cb2aea35a",
+   "excerpt": "Chapter XXIV. Argument.—That These Have Therefore Erred, by Thinking that There Was No Difference Between the Son of Go…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1783",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8c952623f7802aaea2e776c8fd01d45a4c83ca5a",
+   "excerpt": "Chapter XXV. Argument.—And that It Does Not Follow Thence, that Because Christ Died It Must Also Be Received that God D…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1784",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "74daa78f575422291c72b3a95ae7072dcf4b58d7",
+   "excerpt": "Chapter XXVI. Argument.—Moreover, Against the Sabellians He Proves that the Father is One, the Son Another."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1785",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1e36828245385902c1d9221105ee085b29e60e8f",
+   "excerpt": "Chapter XXVII. Argument.—He Skilfully Replies to a Passage Which the Heretics Employed in Defence of Their Own Opinion."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1787",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "fa8604915e2a63189e114c40a82deec8a514490e",
+   "excerpt": "Chapter XXIX. Argument.—He Next Teaches Us that the Authority of the Faith Enjoins, After the Father and the Son, to Be…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1788",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e1fb4e29978c8a4319c47876a4275dca98277894",
+   "excerpt": "Chapter XXX. Argument.—In Fine, Notwithstanding the Said Heretics Have Gathered the Origin of Their Error from Consider…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1789",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "0f23bbcf-1d0a-5bf3-849e-05e52a693da8",
+  "anchor": "vi.iii.xxxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a8ba4fd39e6a29dfc31fcd5da96bba460cad6147",
+   "excerpt": "Chapter XXXI. Argument.—But that God, the Son of God, Born of God the Father from Everlasting, Who Was Always in the Fa…"
+  },
   "judgment": null,
   "added_by": "1.8a",
   "added_on": "2026-11-10"
@@ -3078,7 +3648,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 37
+   "count": 35
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -3098,6 +3668,139 @@
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
    "count": 2
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1790",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": "vi.iv.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "60c54a17be0f5c99b0f9b8c97c76c3ca2b6b3938",
+   "excerpt": "Chapter I. Argument.—Novatian, a Roman Presbyter, During His Retirement at the Time of the Decian Persecution, Being Ur…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1791",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": "vi.iv.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1af443f34cb41f2bb366a8e97f05a5c2895baa5f",
+   "excerpt": "Chapter II. Argument.—He First of All Asserts that the Law is Spiritual; And Thence, Man’s First Food Was Only the Frui…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1792",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": "vi.iv.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e3de17b1e813ff4c0fa44cdc8a45b12b448deae0",
+   "excerpt": "Chapter III. Argument.—And Thus Unclean Animals are Not to Be Reproached, Lest the Reproach Be Thrown Upon Their Author…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1793",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": "vi.iv.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f65806fad60265010cb6c732fc7a68374a417226",
+   "excerpt": "Chapter IV. Argument.—To These Things Also Was Added Another Reason for Prohibiting Many Kinds of Meats to the Jews; To…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1794",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": "vi.iv.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8cd702b78ac2bf3789fe06c00d25d721a3d217e3",
+   "excerpt": "Chapter V. Argument.—But There Was a Limit to the Use of These Shadows or Figures; For Afterwards, When the End of the…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1795",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": "vi.iv.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "783a774b264563e9ef75effc0b27ae98615166f4",
+   "excerpt": "Chapter VI. Argument.—But, on the Ground that Liberty in Meats is Granted to Us, There is No Permission of Luxury, Ther…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1796",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "anchor": "vi.iv.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5df9f384d3de806de532a43bcf6861a3abf96cc0",
+   "excerpt": "Chapter VII. Argument.—Moreover, We Must Be Careful that No One Should Think that This Licence May Be Carried to Such a…"
   },
   "judgment": null,
   "added_by": "1.8a",
@@ -10072,7 +10775,7 @@
   "added_on": "2026-11-01"
  },
  {
-  "id": "rm-1686",
+  "id": "rm-1797",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -10084,7 +10787,26 @@
   "church_act": null,
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
-   "count": 25
+   "count": 2
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1737",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.i.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e4e5b69d384e3a975483d161107bcbe97f0fa1b3",
+   "excerpt": "The Refutation of All Heresies."
   },
   "judgment": null,
   "added_by": "1.8a",
@@ -10104,6 +10826,196 @@
   "span": {
    "sha1": "4ccad15dbb7c7709f38231bcf176df0f01e5c264",
    "excerpt": "[Translated by the Rev. J. H. MacMahon, M.A.]"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1738",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.i.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1739",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.i.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8f2e0a4ea879bec61afa97848419828643138c7f",
+   "excerpt": "Book I."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1740",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.i.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1741",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.i.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e14babaab4e81f053bf32cfef20433ac6b83f66e",
+   "excerpt": "Contents."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1742",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.iii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "dfd36843c8f27a49776d222c40063421fa2c927c",
+   "excerpt": "Book V."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1743",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.iii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1744",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.iii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e14babaab4e81f053bf32cfef20433ac6b83f66e",
+   "excerpt": "Contents."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1745",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.iv.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d51f62abba92f1812bbc63f036461221ef8aee87",
+   "excerpt": "Book VI."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1746",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.iv.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1747",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.iv.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e14babaab4e81f053bf32cfef20433ac6b83f66e",
+   "excerpt": "Contents."
   },
   "judgment": null,
   "added_by": "1.8a",
@@ -10153,6 +11065,234 @@
   "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
   "church_act": null,
   "span": null,
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1748",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.v.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5e11aa4afc2ef38c858e9ab16b4b73456e24f392",
+   "excerpt": "Book VII."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1749",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.v.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1750",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.v.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e14babaab4e81f053bf32cfef20433ac6b83f66e",
+   "excerpt": "Contents."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1751",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.vi.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "57e63fc0439b41a56fa0a4ec201a9bf677137b6a",
+   "excerpt": "Book VIII."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1752",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.vi.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1753",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.vi.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e14babaab4e81f053bf32cfef20433ac6b83f66e",
+   "excerpt": "Contents."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1754",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.vii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0009b0c1339ae58f38a66ded529b644cba12e598",
+   "excerpt": "Book IX."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1755",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.vii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1756",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.vii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e14babaab4e81f053bf32cfef20433ac6b83f66e",
+   "excerpt": "Contents."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1757",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.viii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "836d235893bb66b6fb4f94686dd22500e5e0aa9a",
+   "excerpt": "Book X."
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1758",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.viii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1759",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.viii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a rule line), as R4 lists; the chapter label keeps the same information",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e14babaab4e81f053bf32cfef20433ac6b83f66e",
+   "excerpt": "Contents."
+  },
   "judgment": null,
   "added_by": "1.8a",
   "added_on": "2026-11-10"

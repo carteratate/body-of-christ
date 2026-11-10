@@ -132,7 +132,7 @@ def summa_adjacent_duplicates(documents: list[Document]) -> Failures:
 
 # --------------------------------------------------------------------------- editorial
 
-ARGUMENT_LINE = re.compile(r"^(Chapter [IVXLC]+\.?\s*[—-]+\s*)?Argument\s*[.:—]")
+ARGUMENT_LINE = re.compile(r"^(Chapter [IVXLC]+\.?\s*[—-]*\s*)?Argument\s*[.:—]")
 # R4 (docs/research/R4-refutation.md): the Refutation's book summaries are Hippolytus's own.
 AUTHORIAL_ARGUMENTS = frozenset({"church-fathers/third-century-2.xml#iii.iii"})
 CHAPTER_TITLE_LINE = re.compile(r"^(?:Chapter|Chap\.) [IVXLC\d]+\.?\s*[—–-]+\s*\S")

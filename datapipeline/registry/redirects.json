@@ -3473,10 +3473,20 @@
  },
  {
   "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "old_passage_id": "4ef5dbbd-a38d-5405-80eb-7ce58b860647",
+  "old_anchor": "vi.iv.vi/from-p2",
+  "new_passage_id": "3279f9d6-0c0d-5846-a604-5e66012ead3f",
+  "new_anchor": "vi.iv.vi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
   "old_passage_id": "904df936-4dfa-56f9-89ab-d95177f939ba",
   "old_anchor": "vi.iv.vi/from-p2-2",
-  "new_passage_id": "4ef5dbbd-a38d-5405-80eb-7ce58b860647",
-  "new_anchor": "vi.iv.vi/from-p2",
+  "new_passage_id": "3279f9d6-0c0d-5846-a604-5e66012ead3f",
+  "new_anchor": "vi.iv.vi",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"

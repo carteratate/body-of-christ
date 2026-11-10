@@ -15,7 +15,9 @@ the entries 1.8a added before (`added_by: "1.8a"`):
   edition source line and bracketed comment cut from a passage that survives, anchored
   on the built passage that held it, with the sha1 of the removed text and an excerpt;
 - one `class` entry per document for its heading lines (rule, number and title lines
-  that repeat what the chapter label says), with their count.
+  that repeat what the chapter label says), with their count; R4's heading lines above
+  the Refutation's book contents are `span` entries instead;
+- and it keeps 1.10b's per-document note counts in step with the build.
 
 Every entry's `judgment` is the sentence of the removed text that holds an authenticity
 word (`ingest.editorial.judgment`), unless `NOT_JUDGMENTS` records that the sentence was
@@ -55,6 +57,8 @@ DETAIL = {
     "provenance": "The editor's source line for the fragment (C-22)",
     "bracket": "A bracketed comment by the editor inside the text",
     "section": "The editor's note under its own heading at the end of the chapter",
+    "r4-heading": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a "
+                  "rule line), as R4 lists; the chapter label keeps the same information",
 }
 EXCERPT = 120
 
@@ -282,8 +286,9 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
             if removed and d is None:
                 problems.append(f"{source_key}#{div}: removals in a document not built")
             continue
+        r4 = (source_key.split("/", 1)[1].split("#")[0], div) in editorial.AUTHORIAL_CONTENTS
         for r in removed:
-            if r.kind == "heading":
+            if r.kind == "heading" and not r4:
                 headings[d.id] += 1
                 heading_text[d.id].append((source_key, f"{div}-{r.block}", r.text))
                 continue
@@ -292,8 +297,10 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
                 problems.append(f"{source_key}#{div}: {r.kind} {r.block} in no built passage")
                 continue
             text = " ".join(r.text.split())
+            # R4 (section 4, rule 2) asks for each heading paragraph of the Refutation's
+            # book contents as a span entry of its own.
             e = entry(scope="span", document_id=d.id, anchor=anchor,
-                      detail=DETAIL[r.kind],
+                      detail=DETAIL["r4-heading" if r.kind == "heading" else r.kind],
                       span={"sha1": hashlib.sha1(text.encode("utf-8")).hexdigest(),
                             "excerpt": _excerpt(text)})
             e["_text"] = text
@@ -336,6 +343,28 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
     return entries, found, problems
 
 
+def sync_note_counts(removals: list[dict], documents: list, today: str) -> None:
+    """1.10b's per-document note counts (`class` entries) follow the build: a note inside
+    editor matter 1.8a removes is no longer one the passages lost. An entry whose
+    document keeps no note closes (entries are never deleted)."""
+    counts = {d.id: sum((p.metadata or {}).get("editor_note_count", 0) for p in d.passages)
+              for d in documents}
+    for e in removals:
+        if e.get("added_by") != "1.10b" or e["scope"] != "class" or e.get("closed_by") \
+                or e["collection"] != COLLECTION:
+            continue
+        n = counts.get(e["document_id"], 0)
+        if n:
+            e["span"] = {**e["span"], "count": n}
+        else:
+            e["closed_by"], e["closed_on"] = ITEM, today
+
+
+def _entry_key(e: dict) -> tuple:
+    return (e["scope"], e["document_id"], e.get("anchor"),
+            json.dumps(e.get("span"), sort_keys=True))
+
+
 def plan(reg: registry.WorkRegistry, entries: list[dict], found: list):
     """The registry with `entries` in place of 1.8a's earlier ones and the judgments
     copied into works.json, and the judgments not yet reviewed (nothing is planned while
@@ -343,13 +372,16 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list):
     kept = [e for e in reg.removals if e.get("added_by") != ITEM
             or e.get("collection") != COLLECTION]
     number = max(int(e["id"].split("-")[1]) for e in reg.removals) + 1
-    previous = {(e["scope"], e["document_id"], e.get("anchor"), json.dumps(e.get("span"),
-                 sort_keys=True)): e["id"] for e in reg.removals if e.get("added_by") == ITEM}
+    # An entry keeps its ID across runs: the same scope, anchor and span, counted in
+    # order, since one passage can lose the same text twice (two rule lines).
+    previous: dict[tuple, list[str]] = defaultdict(list)
+    for e in reg.removals:
+        if e.get("added_by") == ITEM:
+            previous[_entry_key(e)].append(e["id"])
     for e in entries:
-        key = (e["scope"], e["document_id"], e.get("anchor"), json.dumps(e.get("span"),
-               sort_keys=True))
-        if key in previous:
-            e["id"] = previous[key]
+        ids = previous.get(_entry_key(e))
+        if ids:
+            e["id"] = ids.pop(0)
         else:
             e["id"] = f"rm-{number:04d}"
             number += 1
@@ -367,9 +399,12 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list):
             e = {**next(x for x in entries if x.get("passage_id") == r["new_passage_id"]),
                  "anchor": old["live_anchor"], "passage_id": old["passage_id"],
                  "judgment": None}
-            key = ("passage", e["document_id"], e["anchor"], "null")
-            e["id"] = previous.get(key) or f"rm-{number:04d}"
-            number += 0 if key in previous else 1
+            ids = previous.get(_entry_key(e))
+            if ids:
+                e["id"] = ids.pop(0)
+            else:
+                e["id"] = f"rm-{number:04d}"
+                number += 1
             entries.append(e)
             retiring.add(old["passage_id"])
     passages = [dict(r) for r in reg.passages]
@@ -421,6 +456,8 @@ def main(argv: list[str] | None = None) -> int:
         print("\n".join(problems))
         return 1
     updated, unreviewed = plan(reg, entries, found)
+    if updated is not None:
+        sync_note_counts(updated.removals, documents, args.today)
     for key, source_key, element, quote in unreviewed:
         print(f"UNREVIEWED {key} {source_key} {element}: {quote}")
     print(Counter(e["scope"] for e in entries), f"{len(found)} judgments")

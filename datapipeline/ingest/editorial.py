@@ -71,7 +71,7 @@ CREDIT_LINE = re.compile(r"^\[(?:Translated by .*|(?:Circa|Oxford number|a\.\s?d
 NUMBER_LINE = re.compile(
     r"^(?:(?:Chapter|Chap|Book|Epistle|Letter|Treatise|Canon|Topic|Fragment|Section|Part"
     r"|Discourse|Homily|Oration)\.?\s+)?(?:[IVXLCDM]+|\d+)\.?$", re.IGNORECASE)
-ARGUMENT_LINE = re.compile(r"^(?:Chapter [IVXLC]+\.?\s*[—-]+\s*)?Argument\s*[.:—]")
+ARGUMENT_LINE = re.compile(r"^(?:Chapter [IVXLC]+\.?\s*[—-]*\s*)?Argument\s*[.:—]")
 CHAPTER_TITLE_LINE = re.compile(r"^(?:Chapter|Chap\.) (?P<n>[IVXLC\d]+)\.?\s*[—–-]+\s*(?P<t>\S.*)$")
 LETTER_NUMBER_LINE = re.compile(r"^(?:Epistle|Letter) [IVXLC]+\.")
 # An edition's source line on a paragraph of its own (C-22): an edition abbreviation
