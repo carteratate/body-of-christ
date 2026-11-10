@@ -24,30 +24,6 @@
   "fixed_by": "1.8e",
   "description": "91.57% covered: whole works holding their text directly in a div dropped (1.8e), pre-chapter greetings (1.8c), and <verse> blocks (1.10b)"
  },
- "coverage.councils.ecum-01-council-of-nicaea.html": {
-  "fixed_by": "1.2c",
-  "description": "30.24% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
- },
- "coverage.councils.ecum-03-council-of-ephesus.html": {
-  "fixed_by": "1.2c",
-  "description": "67.11% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
- },
- "coverage.councils.ecum-04-council-of-chalcedon.html": {
-  "fixed_by": "1.2c",
-  "description": "91.13% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
- },
- "coverage.councils.ecum-05-second-council-of-constantinople.html": {
-  "fixed_by": "1.2c",
-  "description": "67.1% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
- },
- "coverage.councils.ecum-06-third-council-of-constantinople.html": {
-  "fixed_by": "1.2c",
-  "description": "74.52% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
- },
- "coverage.councils.ecum-07-second-council-of-nicaea.html": {
-  "fixed_by": "1.2c",
-  "description": "86.01% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
- },
  "coverage.councils.ecum-19-council-of-trent.html": {
   "fixed_by": "1.2b",
   "description": "38.67% covered: text inside lists and divs dropped"
@@ -194,45 +170,10 @@
   "description": "Moral Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
   "units": ["Moral Treatises of St. Augustin, Section 1", "Moral Treatises of St. Augustin, Section 10", "Moral Treatises of St. Augustin, Section 11", "Moral Treatises of St. Augustin, Section 11 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 11 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 12", "Moral Treatises of St. Augustin, Section 13", "Moral Treatises of St. Augustin, Section 14", "Moral Treatises of St. Augustin, Section 15", "Moral Treatises of St. Augustin, Section 16", "Moral Treatises of St. Augustin, Section 17", "Moral Treatises of St. Augustin, Section 18", "Moral Treatises of St. Augustin, Section 19", "Moral Treatises of St. Augustin, Section 2", "Moral Treatises of St. Augustin, Section 20", "Moral Treatises of St. Augustin, Section 21", "Moral Treatises of St. Augustin, Section 21 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 21 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 22", "Moral Treatises of St. Augustin, Section 23", "Moral Treatises of St. Augustin, Section 24", "Moral Treatises of St. Augustin, Section 25", "Moral Treatises of St. Augustin, Section 26", "Moral Treatises of St. Augustin, Section 27", "Moral Treatises of St. Augustin, Section 28", "Moral Treatises of St. Augustin, Section 29", "Moral Treatises of St. Augustin, Section 3", "Moral Treatises of St. Augustin, Section 30", "Moral Treatises of St. Augustin, Section 31", "Moral Treatises of St. Augustin, Section 32", "Moral Treatises of St. Augustin, Section 33", "Moral Treatises of St. Augustin, Section 34", "Moral Treatises of St. Augustin, Section 34 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 34 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 35", "Moral Treatises of St. Augustin, Section 36", "Moral Treatises of St. Augustin, Section 37", "Moral Treatises of St. Augustin, Section 38", "Moral Treatises of St. Augustin, Section 39", "Moral Treatises of St. Augustin, Section 4", "Moral Treatises of St. Augustin, Section 4 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 4 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 40", "Moral Treatises of St. Augustin, Section 40 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 40 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 41", "Moral Treatises of St. Augustin, Section 42", "Moral Treatises of St. Augustin, Section 43", "Moral Treatises of St. Augustin, Section 5", "Moral Treatises of St. Augustin, Section 6", "Moral Treatises of St. Augustin, Section 7", "Moral Treatises of St. Augustin, Section 8", "Moral Treatises of St. Augustin, Section 8 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 8 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 9", "Moral Treatises of St. Augustin, Section 9 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 9 (part 2 of 2)", "Moral Treatises of St. Augustin, Translator’s Preface"]
  },
- "labels.unique_reference:councils/2f25da58-028b-5944-ba0c-fcb5aa76c709": {
-  "fixed_by": "1.2c",
-  "description": "Council of Nicaea: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Nicaea — The Letter of the Synod in Nicaea to the Egyptians"]
- },
- "labels.unique_reference:councils/5972a5c6-4f04-5ef0-901d-d9a4a189fc0f": {
-  "fixed_by": "1.2c",
-  "description": "Council of Ephesus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Ephesus — Letter of Cyril to John of Antioch about peace", "Council of Ephesus — Second letter of Nestorius to Cyril", "Council of Ephesus — Synodical letter about the expulsion of the eastern bishops (et al.)", "Council of Ephesus — Third letter of Cyril to Nestorius"]
- },
- "labels.unique_reference:councils/70d99be3-5a1c-5435-9507-f45e457c1376": {
-  "fixed_by": "1.2c",
-  "description": "First Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["First Council of Constantinople — 6", "First Council of Constantinople — A letter of the bishops gathered in Constantinople", "First Council of Constantinople — INTRODUCTION"]
- },
- "labels.unique_reference:councils/758019ee-d1fe-59c6-97cd-3b9ab03ae8a9": {
-  "fixed_by": "1.2c",
-  "description": "Council of Chalcedon: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Chalcedon — Definition of the faith", "Council of Chalcedon — Introduction", "Council of Chalcedon — The letter of Pope Leo to Flavian, bishop of Constantinople, about Eutyches"]
- },
- "labels.unique_reference:councils/998f9723-f905-5de8-8838-2ff4596e9651": {
-  "fixed_by": "1.2c",
-  "description": "Second Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Second Council of Constantinople — Introduction", "Second Council of Constantinople — Sentence against the “Three Chapters”", "Second Council of Constantinople — Sentence against the “Three Chapters” (part 1 of 2)", "Second Council of Constantinople — Sentence against the “Three Chapters” (part 2 of 2)"]
- },
- "labels.unique_reference:councils/a1f27f39-1821-5eb8-b17f-fc9bd994c776": {
-  "fixed_by": "1.2c",
-  "description": "Second Council of Nicaea: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Second Council of Nicaea — 22", "Second Council of Nicaea — Definition", "Second Council of Nicaea — INTRODUCTION"]
- },
  "labels.unique_reference:councils/e33e591b-9e2e-5059-974f-28c8e4ab6aae": {
   "fixed_by": "1.2b",
   "description": "Council of Trent: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Council of Trent — Text", "Council of Trent — Text (part 1 of 2)", "Council of Trent — Text (part 2 of 2)", "Council of Trent, Canon II", "Council of Trent, Canon III", "Council of Trent, Canon IV", "Council of Trent, Canon IX", "Council of Trent, Canon V", "Council of Trent, Canon VI", "Council of Trent, Canon VII", "Council of Trent, Canon VIII", "Council of Trent, Canon X", "Council of Trent, Canon XI", "Council of Trent, Canon XII", "Council of Trent, Canon XIII", "Council of Trent, Canon XIV", "Council of Trent, Canon XV"]
- },
- "labels.unique_reference:councils/f9ca2dc5-6b49-534d-8d15-0a34c1dbc215": {
-  "fixed_by": "1.2c",
-  "description": "Third Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Third Council of Constantinople — Exposition of faith"]
  },
  "labels.unique_reference:medieval/82d38756-6fba-5af7-9905-fd508a620f38": {
   "fixed_by": "1.9",
