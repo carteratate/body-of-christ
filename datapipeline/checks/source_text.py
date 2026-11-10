@@ -239,6 +239,28 @@ _SITE_CHROME = re.compile(
     re.IGNORECASE)
 # "12. Text", and "131.Later" where the source left out the space (but not "1.5").
 _PARA_NUMBER = re.compile(r"^\s*(\d{1,4})\s*\.(?=\s|$|[^\d\s])")
+# Canon law pages' notes on amendments, and a canon's reference to the amending act (1.5a).
+_CANON_NOTE = re.compile(
+    r"^(?:\(\s*:\s*indicates that|\(\s*:\s*Indica che|\[\s*(?:Earlier|Original) version"
+    r"|\(\s*(?:earlier version|precedente versione)\s*\)|Cf\.?:?\s|For Can\.|For the new text"
+    r"|Can\.?\s*\d+\s*(?:§\s*\d+\.?)?\s*:\s*(?:Cf|Apostolic|Rescript)|\[\s*(?:Italian|Latin)\s*\]"
+    r"|Rescriptum ex Audientia)", re.IGNORECASE)
+_CANON_ACT_REF = re.compile(r"\s*(?:\[[^\[\]]*\b(?:19|20)\d\d\s*\)?\s*\]"
+                            r"|\(\s*(?:Cf\.|Apostolic Letter|Rescript)[^()]*\b(?:19|20)\d\d\b[^()]*\))")
+_CANON_SPELLING = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                               "normalize", "canon_spelling.json")
+
+
+def _canon_respell(text: str) -> str:
+    """The reviewed corrections of the source's lost ff and ffi ligatures, which the
+    parser applies to the canons that print them (C-16)."""
+    with open(_CANON_SPELLING, encoding="utf-8") as f:
+        rows = json.load(f)["corrections"]
+    for r in rows:
+        text = re.sub(rf"\b{re.escape(r['broken'])}\b", r["corrected"], text)
+    return text
+
+
 _CANON_NUMBER = re.compile(r"^\W*n?\s*Can\.\s*(\d+)")
 _LEADING_NUMBER = re.compile(r"^\s*(?:\d{1,4}\s*\.|\W*n?\s*Can\.\s*\d+\.?)\s*")
 
@@ -376,7 +398,7 @@ def _mark_callers(main: Tag) -> None:
 
 
 def html_units(path: str, source_file: str | None = None,
-               papal: bool = False) -> list[SourceUnit]:
+               papal: bool = False, canon_law: bool = False) -> list[SourceUnit]:
     """vatican.va and papalencyclicals.net HTML. Body is the visible text of the main
     content element, one unit per block (<p>, <li>, <div>, table cell, …). Text after
     the first notes marker is "note": a notes heading ("Notes", "NOTES", "ENDNOTES",
@@ -389,12 +411,21 @@ def html_units(path: str, source_file: str | None = None,
     With `papal`, for the three papal collections: note 1 may sit up to three blocks after
     the rule, and any paragraph number counts (many print no "1."); body text loses its
     footnote callers, as the parser's does; a number that lost its point is read when it is
-    the next one."""
+    the next one.
+
+    With `canon_law`, the amendment marker (a brown "n" beside an amended canon) is not
+    text and is dropped, the page's notes on amendments (the marker legend, "Cf." lines,
+    version headings) are notes, and a canon's bracketed reference to the amending act
+    is not its text, as the parser reads them (1.5a)."""
     source_file = source_file or os.path.basename(path)
     with open(path, "rb") as f:
         soup = BeautifulSoup(f.read(), "lxml")
     for tag in soup.find_all(_HTML_DROP):
         tag.decompose()
+    if canon_law:
+        for tag in soup.find_all("font"):
+            if (tag.get("color") or "").lower() == "#663300" and tag.get_text(strip=True) == "n":
+                tag.replace_with(" ")
     main = _html_main(soup)
     if papal:
         _mark_callers(main)
@@ -451,6 +482,11 @@ def html_units(path: str, source_file: str | None = None,
                 seen_number = True
         if in_notes and _SITE_CHROME.search(text):
             region = "apparatus"
+        if canon_law and region == "body":
+            if _CANON_NOTE.match(text):
+                region = "note"
+            else:
+                body_text = _canon_respell(_CANON_ACT_REF.sub("", body_text))
         if papal and region == "body":
             kept = _LEADING_NUMBER.sub("", raw, count=1) if number else raw
             if unit_id and not number and (m := _UNDOTTED_NUMBER.match(raw)):
@@ -709,7 +745,8 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
     if source_file.endswith(".html"):
-        return html_units(path, source_file, papal=collection in PAPAL_COLLECTIONS)
+        return html_units(path, source_file, papal=collection in PAPAL_COLLECTIONS,
+                          canon_law=collection == "canon-law")
     if source_file.endswith(".usfm"):
         return usfm_units(path, source_file)
     if source_file.endswith("ccc-us.json"):

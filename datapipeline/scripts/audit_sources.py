@@ -96,34 +96,19 @@ def audit_councils() -> None:
 
 
 def audit_canon_law() -> None:
-    d = os.path.join(_SOURCES, "canon-law")
     sys.path.insert(0, _ROOT)
-    from ingest.canon_law import parse_canon_page, _context_key  # noqa: E402
-    pages = _load_manifest(d, "pages.json")
-    all_canons = []
-    for m in pages:
-        soup_path = os.path.join(d, m["file"])
-        with open(soup_path, "rb") as f:
-            html = f.read().decode("utf-8", "replace")
-        all_canons.extend(parse_canon_page(html))
-    # dedup by canon number
-    seen, uniq = set(), []
-    for num, text, ctx in sorted(all_canons, key=lambda x: x[0]):
-        if num not in seen:
-            seen.add(num)
-            uniq.append((num, text, ctx))
-    sizes = [len(t) for _, t, _ in uniq]
-    over = [n for n, t, _ in uniq if len(t) > 3500]
-    books = {ctx["book"] for _, _, ctx in uniq if ctx["book"]}
-    titles = {(ctx["book"], ctx["title"]) for _, _, ctx in uniq if ctx["title"]}
-    chapters = {_context_key(ctx) for _, _, ctx in uniq}
-    print(f"\n  unique canons:   {len(uniq)}")
+    from ingest.canon_law import build_documents  # noqa: E402
+    passages = [p for p in build_documents()[0].passages if p.searchable]
+    sizes = [len(p.content) for p in passages]
+    over = [p.metadata["canon"] for p in passages if len(p.content) > 3500]
+    books = {p.metadata["book"] for p in passages}
+    chapters = {p.chapter_key for p in passages}
+    print(f"\n  unique canons:   {len(passages)}")
     print(f"  canon size:      min={min(sizes)} max={max(sizes)} "
           f"mean={sum(sizes)//len(sizes)}")
     print(f"  canons > 3500:   {len(over)}  {over[:10]}")
     print(f"  books:           {len(books)}")
-    print(f"  (book,title):    {len(titles)} distinct")
-    print(f"  full ctx groups: {len(chapters)} distinct")
+    print(f"  chapter keys:    {len(chapters)} distinct")
     print(f"  sample books:    {sorted(books)[:8]}")
 
 

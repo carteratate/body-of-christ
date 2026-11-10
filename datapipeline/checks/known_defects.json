@@ -29,22 +29,6 @@
   "description": "117 psalms lack their title (\\d) in the passage of their first verse (C-11)",
   "units": ["PSA/100", "PSA/101", "PSA/102", "PSA/103", "PSA/108", "PSA/109", "PSA/11", "PSA/110", "PSA/119", "PSA/12", "PSA/120", "PSA/121", "PSA/122", "PSA/123", "PSA/124", "PSA/125", "PSA/126", "PSA/127", "PSA/128", "PSA/129", "PSA/13", "PSA/130", "PSA/131", "PSA/132", "PSA/133", "PSA/134", "PSA/138", "PSA/139", "PSA/14", "PSA/140", "PSA/141", "PSA/142", "PSA/143", "PSA/144", "PSA/145", "PSA/15", "PSA/16", "PSA/17", "PSA/18", "PSA/19", "PSA/20", "PSA/21", "PSA/22", "PSA/23", "PSA/24", "PSA/25", "PSA/26", "PSA/27", "PSA/28", "PSA/29", "PSA/3", "PSA/30", "PSA/31", "PSA/32", "PSA/34", "PSA/35", "PSA/36", "PSA/37", "PSA/38", "PSA/39", "PSA/4", "PSA/40", "PSA/41", "PSA/42", "PSA/44", "PSA/45", "PSA/46", "PSA/47", "PSA/48", "PSA/49", "PSA/5", "PSA/50", "PSA/51", "PSA/52", "PSA/53", "PSA/54", "PSA/55", "PSA/56", "PSA/57", "PSA/58", "PSA/59", "PSA/6", "PSA/60", "PSA/61", "PSA/62", "PSA/63", "PSA/64", "PSA/65", "PSA/66", "PSA/67", "PSA/68", "PSA/69", "PSA/7", "PSA/70", "PSA/72", "PSA/73", "PSA/74", "PSA/75", "PSA/76", "PSA/77", "PSA/78", "PSA/79", "PSA/8", "PSA/80", "PSA/81", "PSA/82", "PSA/83", "PSA/84", "PSA/85", "PSA/86", "PSA/87", "PSA/88", "PSA/89", "PSA/9", "PSA/90", "PSA/92", "PSA/98"]
  },
- "coverage.canon-law.cic_lib1-cann96-123_en.html": {
-  "fixed_by": "1.5a",
-  "description": "90.03% covered: glued, missing or superseded canons"
- },
- "coverage.canon-law.cic_lib2-cann607-709_en.html": {
-  "fixed_by": "1.5a",
-  "description": "92.7% covered: glued, missing or superseded canons"
- },
- "coverage.canon-law.cic_lib4-cann834-878_en.html": {
-  "fixed_by": "1.5a",
-  "description": "94.43% covered: glued, missing or superseded canons"
- },
- "coverage.canon-law.cic_lib7-cann1671-1716_en.html": {
-  "fixed_by": "1.5a",
-  "description": "78.64% covered: glued, missing or superseded canons (pages 1671–1691: the 2015 amended text is not the one kept)"
- },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
   "description": "93.22% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
@@ -650,46 +634,6 @@
   "description": "1 verse (16:24) outside every KJV pericope range",
   "units": ["ROM/16/24"]
  },
- "sequence.canons.duplicated:112": {
-  "fixed_by": "1.5a",
-  "description": "Canon 112: its heading sits inside the previous canon's passage"
- },
- "sequence.canons.duplicated:1308": {
-  "fixed_by": "1.5a",
-  "description": "Canon 1308: amended text glued into the previous canon; superseded text published as the canon"
- },
- "sequence.canons.duplicated:1310": {
-  "fixed_by": "1.5a",
-  "description": "Canon 1310: amended text glued into the previous canon; superseded text published as the canon"
- },
- "sequence.canons.duplicated:238": {
-  "fixed_by": "1.5a",
-  "description": "Canon 238: its heading sits inside the previous canon's passage"
- },
- "sequence.canons.duplicated:689": {
-  "fixed_by": "1.5a",
-  "description": "Canon 689: its heading sits inside the previous canon's passage"
- },
- "sequence.canons.missing:112": {
-  "fixed_by": "1.5a",
-  "description": "Canon 112 has no passage: glued into the previous canon"
- },
- "sequence.canons.missing:1330": {
-  "fixed_by": "1.5a",
-  "description": "Canon 1330 has no passage: its heading sits in <b> outside any <p>"
- },
- "sequence.canons.missing:238": {
-  "fixed_by": "1.5a",
-  "description": "Canon 238 has no passage: glued into the previous canon"
- },
- "sequence.canons.missing:266": {
-  "fixed_by": "1.5a",
-  "description": "Canon 266 has no passage: glued inside the new text of 265"
- },
- "sequence.canons.missing:689": {
-  "fixed_by": "1.5a",
-  "description": "Canon 689 has no passage: glued into the previous canon"
- },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-ad-gentes.html": {
   "fixed_by": "1.1",
   "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
@@ -1060,16 +1004,6 @@
   "fixed_by": "1.9",
   "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
  },
- "structure.canon_law.chapter_number_agreement:canon-law": {
-  "fixed_by": "1.5a",
-  "description": "100 canons carry a chapter number other than the source's (C-13)",
-  "units": ["1481", "1482", "1483", "1484", "1485", "1486", "1487", "1488", "1489", "1490", "1496", "1497", "1498", "1499", "1500", "1507", "1508", "1509", "1510", "1511", "1512", "1539", "1540", "1541", "1542", "1543", "1544", "1545", "1546", "1547", "1548", "1549", "1550", "1551", "1552", "1553", "1554", "1555", "1556", "1557", "1558", "1559", "1560", "1561", "1562", "1563", "1564", "1565", "1566", "1567", "1568", "1569", "1570", "1571", "1572", "1573", "1574", "1575", "1576", "1577", "1578", "1579", "1580", "1581", "1582", "1583", "1584", "1585", "1586", "1596", "1597", "1628", "1629", "1630", "1631", "1632", "1633", "1634", "1635", "1636", "1637", "1638", "1639", "1640", "1645", "1646", "1647", "1648", "1720", "1721", "1722", "1723", "1724", "1725", "1726", "1727", "1728", "1729", "1730", "1731"]
- },
- "structure.chapter_contiguous:canon-law": {
-  "fixed_by": "1.5a",
-  "description": "17 canon-law chapter keys hold passages that are not one run (C-13)",
-  "units": ["canon-law/book-ii/conferences-of-major-superiors/c", "canon-law/book-ii/special-norms-for-associations-of-the-laity/c", "canon-law/book-ii/title-i/c", "canon-law/book-ii/title-ii/c", "canon-law/book-iv/sponsors/c", "canon-law/book-iv/the-celebration-of-the-sacrament/c", "canon-law/book-iv/title-i/c", "canon-law/book-iv/title-ii/c", "canon-law/book-iv/title-iii/c", "canon-law/book-iv/title-iv/c", "canon-law/book-vi/title-i/c", "canon-law/book-vi/title-ii/c", "canon-law/book-vi/title-iii/c", "canon-law/book-vi/title-v/c", "canon-law/book-vi/title-vi/c", "canon-law/book-vii/title-iii/chapter-i", "canon-law/book-vii/title-iv/chapter-i"]
- },
  "structure.chapter_sequence:councils/1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
   "fixed_by": "1.1",
   "description": "Apostolicam Actuositatem: numbered chapter labels skip or repeat (C-20)",
@@ -1124,11 +1058,6 @@
   "fixed_by": "1.7",
   "description": "5 article keys hold two disputations or no determination (C-07; R7: I q.117 a.2 is not reply-only)",
   "units": ["FP_Q117_A2", "FP_Q68_A2", "SS_Q123_A10", "SS_Q64_A7", "SS_Q66_A5"]
- },
- "text.canon_law.ligature_corruption:canon-law": {
-  "fixed_by": "1.5a",
-  "description": "18 canons hold V or Y for a lost ff or ffi ligature (C-16)",
-  "units": ["1040", "1044", "1068", "1095", "1127", "1143", "1144", "1146", "1200", "1222", "1287", "1290", "253", "761", "768", "771", "820", "998"]
  },
  "text.summa.adjacent-duplicate-parts:summa": {
   "fixed_by": "1.7",

@@ -1482,6 +1482,158 @@
   "added_on": "2026-11-05"
  },
  {
+  "id": "rm-0623",
+  "scope": "class",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law.parse_canon_page (notes region)",
+   "count": 15
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": null,
+  "reason": "rule-g-editorial",
+  "detail": "The vatican.va pages' notes on amendments, kept in the last canon of 15 pages (cc. 123, 297, 329, 572, 606, 694, 695, 700, 709, 730, 780, 878, 1165, 1309, 1716): the marker legend, the \"Cf.\" lines naming the amending acts, the version headings, a rescript's text. The superseded canon texts printed with them are kept as history passages, not removed."
+ },
+ {
+  "id": "rm-0624",
+  "scope": "class",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law._is_marker",
+   "count": 20
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": null,
+  "reason": "debris",
+  "detail": "The page's amendment marker, a brown \"n\" beside an amended canon, read as a letter of the text in 20 live canons (\"nCan.\", \"n§2.\"). The canon keeps it as metadata: amended."
+ },
+ {
+  "id": "rm-0625",
+  "scope": "span",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law._ACT_BRACKET",
+   "starts": "[Cf. Letter of the Holy Father"
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/230",
+  "reason": "rule-g-editorial",
+  "detail": "The page's bracketed reference to the Holy Father's letter of 10 January 2021, after §1."
+ },
+ {
+  "id": "rm-0626",
+  "scope": "span",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law._ACT_BRACKET",
+   "starts": "(Apostolic Letter in the form of 'Motu Proprio' Authenticum charismatis"
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/579",
+  "reason": "rule-g-editorial",
+  "detail": "The page's reference to the amending act, in parentheses after the canon."
+ },
+ {
+  "id": "rm-0627",
+  "scope": "span",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law._ACT_BRACKET",
+   "starts": "(Cf. Rescriptum ex Audientia Ss.mi"
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/588",
+  "reason": "rule-g-editorial",
+  "detail": "The page's reference to the rescript of 18 May 2022, in parentheses inside §2."
+ },
+ {
+  "id": "rm-0628",
+  "scope": "span",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law._ACT_BRACKET",
+   "starts": "[Apostolic Letter issued “Motu proprio” Recognitum Librum VI"
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/695",
+  "reason": "rule-g-editorial",
+  "detail": "The page's bracketed reference to the amending act, after §1."
+ },
+ {
+  "id": "rm-0629",
+  "scope": "span",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law._ACT_BRACKET",
+   "starts": "[Rescriptum ex Audientia Sanctissimi"
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/699",
+  "reason": "rule-g-editorial",
+  "detail": "The page's bracketed reference to the rescript of 25 March 2026, after §2."
+ },
+ {
+  "id": "rm-0630",
+  "scope": "span",
+  "passage_id": null,
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.canon_law._ACT_NOTE",
+   "starts": "Apostolic Letter issued “Motu Proprio” of the Supreme Pontiff Francis modifying the terms of recourse"
+  },
+  "judgment": null,
+  "added_by": "1.5a",
+  "added_on": "2026-11-10",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/700",
+  "reason": "rule-g-editorial",
+  "detail": "The page's note introducing the canon's 2023 text (\"In canon 700 CIC … the canon in question being formulated as follows:\"), and the guillemets quoting it."
+ },
+ {
   "id": "rm-0001",
   "scope": "class",
   "collection": "church-fathers",
