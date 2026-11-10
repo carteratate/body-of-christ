@@ -2,6 +2,8 @@
 the vendored page, as a browser would, and lists the passages that keep the plain URL."""
 import json
 
+import pytest
+
 from checks import source_links as SL
 
 PAGE = """<html><head><title>Gaudium et Spes</title><script>var only = "in the mystery";
@@ -58,13 +60,18 @@ def test_a_repeat_counts_as_found_only_when_the_passage_is_the_first(tmp_path):
     assert outcomes == {"gs22": "found", "n8": "found", "n16": "repeated", "gone": "missing",
                         "short": "no-fragment", "heading": "found", "nopage": "no-page"}
     assert sum(by_document["Gaudium et Spes"].values()) == 7
+    assert "miss rate" in SL.report(outcomes, by_document)
 
     out = tmp_path / "misses.json"
+    # A run missing a vendored page must not replace the list.
+    with pytest.raises(SystemExit):
+        SL.write_misses(outcomes, str(out))
+    assert not out.exists()
+    del outcomes["nopage"]
     assert SL.write_misses(outcomes, str(out)) == ["gone", "n16"]
     data = json.loads(out.read_text())
     assert data["chunk_ids"] == ["gone", "n16"]
     assert data["counts"]["found"] == 3
-    assert "miss rate" in SL.report(outcomes, by_document)
 
 
 def test_the_check_uses_the_api_rule():

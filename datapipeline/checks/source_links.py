@@ -154,6 +154,11 @@ async def _read_passages(database_url: str) -> list[dict]:
 
 
 def write_misses(outcomes: dict[str, str], path: str = MISSES) -> list[str]:
+    """Replace the list. Refuses when a page was not found: the vendored sources are
+    gitignored, and a list written without them would drop known misses."""
+    if "no-page" in outcomes.values():
+        raise SystemExit("some vendored pages are missing (see no-page above); "
+                         "the list was not rewritten")
     misses = sorted(i for i, o in outcomes.items() if o in ("missing", "repeated"))
     counts = Counter(outcomes.values())
     with open(path, "w") as f:
