@@ -475,20 +475,10 @@
   "description": "Ad Gentes: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Ad Gentes, §1", "Ad Gentes, §10", "Ad Gentes, §11", "Ad Gentes, §12", "Ad Gentes, §13", "Ad Gentes, §14", "Ad Gentes, §15", "Ad Gentes, §16", "Ad Gentes, §17", "Ad Gentes, §18", "Ad Gentes, §19", "Ad Gentes, §2", "Ad Gentes, §20", "Ad Gentes, §21", "Ad Gentes, §23", "Ad Gentes, §24", "Ad Gentes, §25", "Ad Gentes, §26", "Ad Gentes, §3", "Ad Gentes, §4", "Ad Gentes, §5", "Ad Gentes, §6", "Ad Gentes, §7", "Ad Gentes, §8", "Ad Gentes, §9"]
  },
- "labels.unique_reference:councils/d9189059-da4c-5528-aea5-3ec35864c077": {
-  "fixed_by": "1.2e",
-  "description": "Fifth Lateran Council: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Fifth Lateran Council — Text", "Fifth Lateran Council — Text (part 1 of 2)", "Fifth Lateran Council — Text (part 2 of 2)"]
- },
  "labels.unique_reference:councils/e33e591b-9e2e-5059-974f-28c8e4ab6aae": {
   "fixed_by": "1.2b",
   "description": "Council of Trent: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Council of Trent — Text", "Council of Trent — Text (part 1 of 2)", "Council of Trent — Text (part 2 of 2)", "Council of Trent, Canon II", "Council of Trent, Canon III", "Council of Trent, Canon IV", "Council of Trent, Canon IX", "Council of Trent, Canon V", "Council of Trent, Canon VI", "Council of Trent, Canon VII", "Council of Trent, Canon VIII", "Council of Trent, Canon X", "Council of Trent, Canon XI", "Council of Trent, Canon XII", "Council of Trent, Canon XIII", "Council of Trent, Canon XIV", "Council of Trent, Canon XV"]
- },
- "labels.unique_reference:councils/ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61": {
-  "fixed_by": "1.2e",
-  "description": "Fourth Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Fourth Council of Constantinople — INTRODUCTION"]
  },
  "labels.unique_reference:councils/f9ca2dc5-6b49-534d-8d15-0a34c1dbc215": {
   "fixed_by": "1.2c",

@@ -38,7 +38,7 @@ WORKS: dict[str, tuple[str, tuple[Placed, ...]]] = {
         Placed("canon/3", "canons/3", "Canon 3", replaces="canons/3"),
         Placed("canon/11", "canons/11", "Canon 11", replaces="canons/11"),
         Placed("canon/12", "canons/12", "Canon 12", replaces="canons/12"),
-        Placed("canon/17/extract", "canons/17/extract", "Canon 17", after="canons/17"),
+        Placed("canon/17/extract", "canons/17/extract", "Canon 17 (extract)", after="canons/17"),
         Placed("canon/21", "canons/21", "Canon 21", replaces="canons/21"),
     )),
     "Fifth Lateran Council": ("deferrari-lateran-5", (

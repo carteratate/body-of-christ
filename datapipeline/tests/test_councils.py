@@ -417,7 +417,7 @@ def test_constantinople_iv_takes_deferraris_canons_and_keeps_schroeders_summary_
         assert p.metadata["scan_id"] == (DEFERRARI_SCAN if unit in deferrari_units else "DisciplinaryCouncils")
         assert p.chapter_label == "Canons"
     extract = by_unit[f"{slug}/canons/17/extract"]
-    assert extract.unit_label == "Canon 17" and extract.content.startswith("… Moreover")
+    assert extract.unit_label == "Canon 17 (extract)" and extract.content.startswith("… Moreover")
     assert extract.metadata["text_replaced"] == deferrari.TEXT_REPLACED
     assert doc.translation == f"{schroeder.TRANSLATION}; {deferrari.TRANSLATION}"
 
