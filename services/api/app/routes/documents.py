@@ -15,7 +15,8 @@ from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.corpus_lifecycle import CorpusLifecycleError
 from app.corpus_schema import CorpusSchema
-from app.reader_access import restricted_error, source_credit, source_url
+from app.reader_access import (passage_source_url, restricted_error, source_credit,
+                               source_url)
 from app.models.corpus import DocumentFacts, RedirectedFrom, WorkInfo
 from app.models.documents import (
     ContentsNode, DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
@@ -278,11 +279,24 @@ def _with_visible(sql: str, schema: CorpusSchema) -> str:
     return sql.replace("{visible}", schema.visible("c"))
 
 
-def _require_full_reader(doc_row) -> None:
+def _require_full_reader(doc_row, passage=None) -> None:
     """Refuse the full text of an excerpt-only document (issue #265), for guests and
-    signed-in readers alike."""
+    signed-in readers alike. With the passage the request named (a row with `id` and
+    `content`), the source link opens at that passage where it can (2.4e)."""
     if doc_row["reader_access"] == "excerpt":
-        raise restricted_error(source_url(doc_row["collection"], doc_row["metadata"]))
+        url = source_url(doc_row["collection"], doc_row["metadata"])
+        if passage is not None:
+            url = passage_source_url(url, chunk_id=passage["id"], content=passage["content"])
+        raise restricted_error(url)
+
+
+async def _restricted_passage(conn, doc_row, anchor: str | None, schema: CorpusSchema):
+    """The visible passage an anchor names in an excerpt-only document, for its 403."""
+    if doc_row["reader_access"] != "excerpt" or not anchor:
+        return None
+    return await conn.fetchrow(
+        f"SELECT id, content FROM chunks c WHERE document_id=$1 AND anchor=$2{schema.visible('c')}",
+        doc_row["id"], anchor)
 
 
 async def _neighbor_keys(
@@ -514,7 +528,8 @@ async def get_document_reader(
         async with pool.acquire(timeout=POOL_ACQUIRE_TIMEOUT_SECONDS) as conn:
             async def load(schema: CorpusSchema):
                 doc_row = await _fetch_document(conn, doc_uuid, schema)
-                _require_full_reader(doc_row)
+                _require_full_reader(
+                    doc_row, await _restricted_passage(conn, doc_row, anchor, schema))
                 target_uuid, highlight, redirected_from = doc_uuid, anchor, None
 
                 # Resolve target chapter_key (explicit chapter > anchor > first chapter).

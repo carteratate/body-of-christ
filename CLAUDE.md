@@ -178,6 +178,13 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   for one flipbook publication (its GUID): the API checks the live GUID once a day in the
   background and links to the cover on a mismatch until the table is rebuilt. Document
   metadata, `/sources` and the 403 keep the cover URL.
+  A **vatican.va** passage's `source_url` carries a text fragment (`#:~:text=`) of its
+  opening words, so a supporting browser scrolls to it (2.4e, `app/source_links.py`); so
+  does the reader's 403 when its request names an anchor. Only documents whose own
+  `metadata.url` is the vatican.va page get one (not Canon Law's index). Passages the
+  check `datapipeline/checks/source_links.py` cannot place on the vendored page keep the
+  plain URL through `app/source_link_misses.json`, which it generates; rerun it after a
+  publish that changes those passages.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row

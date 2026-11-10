@@ -169,6 +169,15 @@ saved rows each outcome touches. Its `report.md` holds no passage text unless ru
 `--no-public`. A passage moved to another collection is found only when both collections
 are in the run; `--collection all` covers every move.
 
+Excerpt-only passages from vatican.va link to their opening words on the page with a text
+fragment (item 2.4e, `services/api/app/source_links.py`). `python3 -m checks.source_links`
+looks for every fragment in the vendored page, reading the live passages read-only, and
+reports the miss rate; with `--write` it rewrites `services/api/app/source_link_misses.json`,
+the passages that keep the plain URL. Rerun it with `--write` right after the apply (it reads
+live passages), in a small PR, whenever a publish changes passages of a document whose `metadata.url` is on
+vatican.va: a new passage the list does not know gets a fragment that may not match, which
+opens the page at the top, as before 2.4e.
+
 An adapter change that moves passage boundaries updates the passage registry (2.1) in the
 same PR: `python3 scripts/reconcile_registry.py --item <id> --collection <name>
 --snapshot releases/snapshots/<date>` adds a row for each new piece, redirects each live

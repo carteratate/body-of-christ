@@ -418,7 +418,8 @@ async def run_search_pipeline(
             _facts_for(final_results, pipeline_result),
         )
         for chunk in final_results:
-            card_access = access_fields(access, chunk.document_id, chunk.unit_label)
+            card_access = access_fields(access, chunk.document_id, chunk.unit_label,
+                                        chunk_id=chunk.chunk_id, content=chunk.content)
             yield {
                 "type": "chunk",
                 "chunk_id": chunk.chunk_id,
