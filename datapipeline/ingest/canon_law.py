@@ -147,7 +147,8 @@ _LEGEND = re.compile(r"^\(\s*:?\s*(?:indicates that the text corresponds|Indica 
 _VERSION = re.compile(r"^[\[(]\s*(?:Earlier|Original|precedente)\s+version|"
                       r"^\(\s*(?:earlier version|precedente versione)\s*\)", re.IGNORECASE)
 _CONTINUATION = re.compile(r"^(?:§\s*\d|\d+\s*[/°]|\d+\.\s)")
-_STRUCTURE = re.compile(r"^(?:BOOK|PART|SECTION|TITLE|CHAPTER|ART\.|ARTICLE)\b")
+_STRUCTURE = re.compile(r"^(?:(?:BOOK|PART|SECTION|TITLE|CHAPTER|ARTICLE)\b"
+                        r"|(?:Book|Part|Section|Title|Chapter|Art\.|ART\.)\s*[IVXLC\d]+\b)")
 # The page's bracketed reference to an amending act, inside a canon (cc. 230, 588, 695,
 # 699, 579): "[Cf. <act> (10 January 2021)]", "[<act>, 25 March 2026]", "(Cf. <act>, 18
 # May 2022 – <dicastery>)", "(Apostolic Letter … 1st November 2020)". Rule G editorial text.
@@ -290,9 +291,15 @@ def parse_canon_page(html: str, file: str = "",
     _wrap_loose_canons(soup)
     entries = list(toc or [])
     i = 0
-    while i < len(entries) and entries[i][0] is None:      # the file opens these
-        path = _enter(path, entries[i][1])
-        i += 1
+
+    def advance() -> None:
+        # An index entry with no anchor opens where the one before it opened (the top
+        # of the file for the first): consume it with its predecessor.
+        nonlocal i, path
+        while i < len(entries) and entries[i][0] is None:
+            path = _enter(path, entries[i][1])
+            i += 1
+    advance()
     names = {id(a): a["name"].rstrip(".") for a in soup.find_all("a") if a.get("name")}
 
     canons: list[CanonText] = []
@@ -303,11 +310,17 @@ def parse_canon_page(html: str, file: str = "",
     last_old: CanonText | None = None   # the superseded text the next note follows
 
     for block in _blocks(soup):
-        if region == "body":
+        heading = False
+        if region != "superseded":     # a note ends at a heading, which opens here
             for a in block.find_all("a"):
                 if id(a) in names and i < len(entries) and entries[i][0] == names[id(a)]:
                     path = _enter(path, entries[i][1])
                     i += 1
+                    advance()
+                    heading = True
+        if heading:                    # an indexed heading is never canon text
+            region, current = "body", None
+            continue
         if block.name == "hr":
             if canons and region == "body":
                 region = "note"
@@ -427,6 +440,8 @@ def read_pages(base: str = _SRC) -> tuple[list[CanonText], list[str]]:
     """Every printed canon text of every page, in reading order, and the dropped notes."""
     with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:
         pages = [p for p in json.load(f) if p.get("parsed", True)]
+    # Headings carry from page to page, so read in canon order, not manifest order.
+    pages.sort(key=lambda p: int(re.search(r"cann(\d+)", p["file"]).group(1)))
     toc = _toc(base)
     texts: list[CanonText] = []
     notes: list[str] = []

@@ -226,6 +226,32 @@ def test_heading_path_from_index_resets_lower_levels():
     assert paths[879] == ["Part I: The Sacraments", "Title II: Confirmation"]
 
 
+def test_heading_after_note_and_unanchored_entries_open_in_place():
+    toc = [("PART_II", Heading("PART", "II", "Hierarchy")),
+           ("SECTION_II", Heading("SECTION", "II", "Particular Churches")),
+           (None, Heading("TITLE", "I", "Particular Churches")),
+           ("CHAPTER_II", Heading("CHAPTER", "II", "Bishops")),
+           ("Art._1", Heading("ARTICLE", "1", "Bishops in General")),
+           ("TITLE_V", Heading("TITLE", "V", "Associations"))]
+    canons, _ = parse_canon_page(_page("""
+<p><a name="PART_II">PART II.</a></p>
+<p><a name="SECTION_II">SECTION II.</a></p>
+<p>Can. 368 Particular churches are dioceses.</p>
+<p><a name="CHAPTER_II.">CHAPTER II.</a></p>
+<p><a name="Art._1.">Art. 1.</a></p>
+<p>Can. 375 Bishops are pastors.</p>
+<p>____________________</p>
+<p>Apostolic Letter issued modifying Canons 295-296, 8 August 2023</p>
+<p><a name="TITLE_V.">TITLE V.</a></p>
+<p>Can. 298 In the Church there are associations.</p>"""), toc=toc)
+    paths = {c.number: [h.level for h in c.path] for c in canons}
+    assert paths[368] == ["PART", "SECTION", "TITLE"]
+    assert paths[375] == ["PART", "SECTION", "TITLE", "CHAPTER", "ARTICLE"]
+    assert paths[298] == ["PART", "SECTION", "TITLE"]
+    assert canons[-1].path[-1].title == "Associations"
+    assert not any("Art." in c.content for c in canons)
+
+
 def test_spelling_corrections_apply_only_to_listed_canons():
     fixes = {253: [("diVerent", "different")]}
     assert _respell(253, "that diVerent teachers", fixes) == "that different teachers"
@@ -322,6 +348,7 @@ def test_no_footer_marker_or_note_debris(doc):
         assert not text.startswith("—"), p.anchor
         assert "n§" not in text, p.anchor
         assert not re.search(r"[a-z,]\n[a-z(]", text), p.anchor
+        assert not re.search(r"(^|\n)(Art\.|ART\.|[A-Z]{3,}( [A-Z,]{2,})+)", text), p.anchor
 
 
 @vendored
@@ -343,6 +370,9 @@ def test_heading_paths_follow_the_index(canons):
     assert "Part III: Sacred Places and Times — Title I: Sacred Places" in path(1205)
     assert canons[849].chapter_key != canons[1166].chapter_key != canons[1205].chapter_key
     assert path(265).endswith("Chapter II: The Enrollment, or Incardination, of Clerics")
+    assert "Title V: Associations of the Christian Faithful" in path(298)
+    assert "Section II" in path(431) and "Title I: Particular Churches" in path(368)
+    assert path(157).endswith("Article 1: Free Conferral")
     assert "Chapter II" in path(1481) and "Chapter I:" not in path(1481)
     keys = [p.chapter_key for p in sorted(canons.values(), key=lambda p: p.position)]
     runs = [k for i, k in enumerate(keys) if i == 0 or keys[i - 1] != k]
