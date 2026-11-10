@@ -40,11 +40,11 @@ def _chapter_label(elem) -> str:
     return f"Chapter {n}" if n else "Section"
 
 
-def paragraph_segments(elem) -> list[Segment]:
+def paragraph_segments(elem, edit=None) -> list[Segment]:
     """The div's direct paragraphs and verse blocks, as `_direct_p_text` reads them, each
     named by its `id` without the div's own id in front (`ii.iii-p5` in div `ii.iii` is
     `p5`, a verse block `ii.iii-p5.1` is `p5.1`), or, with no id, `n<k>`: its ordinal
-    among the div's `<p>` and `<verse>` children."""
+    among the div's `<p>` and `<verse>` children. `edit` is `direct_blocks_text`'s."""
     div = elem.get("id") or ""
     out, k = [], 0
     for child in elem:
@@ -52,6 +52,8 @@ def paragraph_segments(elem) -> list[Segment]:
             continue
         k += 1
         text = _block_text(child)
+        if edit is not None and text:
+            text = edit(child, text, [])[0]
         if not text:
             continue
         pid = child.get("id")
@@ -101,10 +103,12 @@ def _reference(title: str, label: str) -> str:
 
 def make_doc(*, collection: str, filename: str, author: str, title: str,
              chapters: list, source_key: str, year: int | None = None,
-             extra_meta: dict | None = None) -> Document | None:
+             extra_meta: dict | None = None, editor=None) -> Document | None:
     """Build one Document from (book|None, chapter_elem) pairs. Returns None if empty.
     `source_key` names the work in the source (file, plus the work div's id when the
-    file holds several works); the registry freezes the document ID under it."""
+    file holds several works); the registry freezes the document ID under it.
+    `editor` (`ingest.editorial.Editor`), when given, takes the editors' lines and
+    brackets out of each chapter (rule G, 1.8a)."""
     if not chapters:
         return None
     # ANF and NPNF headings end in a period ("Methodius.", "Fragments."), and some spell
@@ -115,8 +119,7 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
     passages: list[Passage] = []
     pos = 0
     for book, elem in chapters:
-        raw, removed = direct_blocks_text(elem)
-        if not raw or len(direct_text_with_notes(elem)) < 100:
+        if len(direct_text_with_notes(elem)) < 100:
             continue
         self_book = _book_label(elem)
         if book is None and self_book:
@@ -124,6 +127,13 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             core = "Introduction"
         else:
             core = _chapter_label(elem)
+        chapter = editor.chapter(elem, core) if editor is not None else None
+        edit = chapter.edit if chapter is not None else None
+        raw, removed = direct_blocks_text(elem, edit)
+        if not raw:
+            continue
+        if chapter is not None and chapter.label_title:
+            core = chapter.label_title
         core = fold_ligatures(core)
         if book:
             book_clean = fold_ligatures(smart_title_case(book))
@@ -141,7 +151,7 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             meta.update(extra_meta)
         # Pieces hold whole paragraphs and verse blocks (1.10c); `raw` joins them so.
         parts = [p.text for p in pack_units([(None, b) for b in raw.split("\n\n")], maxc)]
-        named = name_pieces(ch_key, raw, parts, paragraph_segments(elem))
+        named = name_pieces(ch_key, raw, parts, paragraph_segments(elem, edit))
         for k, (part, (anchor, units), notes) in enumerate(zip(
                 parts, named, notes_per_piece(raw, parts, removed)), 1):
             # Notes are editor material (rule G): their count is kept, and the scripture

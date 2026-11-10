@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ThML>
+<ThML.head><electronicEdInfo><authorID>testius</authorID><bookID>anf99</bookID></electronicEdInfo></ThML.head>
+<ThML.body>
+<div1 id="ii" title="Testius." type="Part">
+<div2 id="ii.i" title="The Epistles of Testius." type="Work">
+<div3 id="ii.i.i" n="I" shorttitle="Epistle I" title="Firmilian, Bishop of Caesarea, to Testius, Against the Letter of Stephen. A.D. 256." type="Epistle">
+<p class="c43" id="ii.i.i-p1"><span class="c1" id="ii.i.i-p1.1">The Epistles of Testius.</span></p>
+<p class="c25" id="ii.i.i-p2">————————————</p>
+<p class="c43" id="ii.i.i-p3"><span class="c17" id="ii.i.i-p3.1">Epistle I.<note id="ii.i.i-p3.2" n="1" place="end"><p class="endnote" id="ii.i.i-p4">Oxford ed.: Ep. lxxv.</p></note></span></p>
+<p class="c43" id="ii.i.i-p5"><span class="c1" id="ii.i.i-p5.1">Firmilian, Bishop of Caesarea, to Testius, Against the Letter of Stephen. <span class="sc" id="ii.i.i-p5.2">a.d.</span> 256.</span></p>
+<p class="c26" id="ii.i.i-p6"><i>Argument</i>.—Firmilian Agrees with Testius, with a Little More Vehemence and Acerbity Than Becomes a Bishop.</p>
+<p class="c43" id="ii.i.i-p7">[Translated by the Rev. A. Translator, M.A.]</p>
+<p class="c18" id="ii.i.i-p8">1. Firmilian to Testius, his brother in the Lord, greeting. We have received by Rogatianus the letter you sent, and we give thanks to the Lord [of God] that it has come about that we are united in heart, though far apart in body.</p>
+<p class="c18" id="ii.i.i-p9">2. But they who are of the other part say that the custom of Rome holds, and we answer that custom without truth is the antiquity of error [See Elucidation VI.] and nothing more.</p>
+<p class="c18" id="ii.i.i-p10">On Luke. Mai, Script. vet. collectio nova, vol. ix. p. 645.</p>
+<p class="c18" id="ii.i.i-p11">3. Therefore let each keep the truth he has received, and let peace be kept among the brethren in all the churches that are of one mind.</p>
+<h4 id="ii.i.i-h1">General Note by the American Editor.</h4>
+<p class="c18" id="ii.i.i-p12">This letter shows how little the bishops of Rome were then thought to rule the other churches, and its genuine tone is beyond question.</p>
+</div3>
+<div3 id="ii.i.ii" n="II" shorttitle="Elucidations" title="Elucidations." type="Section">
+<div4 id="ii.i.ii.i" n="I" shorttitle="I" title="I." type="Section">
+<p class="c18" id="ii.i.ii.i-p1">This letter is thought spurious by some, though the editors of Oxford receive it, and I see no reason to doubt that it is the letter Firmilian sent, for its matter agrees with all we know of the dispute between Stephen and the African bishops.</p>
+</div4>
+</div3>
+</div2>
+<div2 id="ii.ii" title="The Banquet of the Testing Virgins." type="Work">
+<div3 id="ii.ii.i" n="I" shorttitle="Chapter I" title="Virginity a Plant from Heaven." type="Chapter">
+<p class="c28" id="ii.ii.i-p1"><span class="c1" id="ii.ii.i-p1.1">Chapter I.—Virginity a Plant from Heaven, Introduced Late.</span></p>
+<p class="c18" id="ii.ii.i-p2">For truly by a great stretch of power the plant of virginity was sent down to men from heaven, and for this reason it was not revealed to the first generations, while the race of men was still small.</p>
+</div3>
+</div2>
+</div1>
+</ThML.body>
+</ThML>

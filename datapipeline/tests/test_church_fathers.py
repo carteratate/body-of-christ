@@ -82,7 +82,9 @@ def _cut_length(content: str) -> int:
 
 def test_split_passages_have_complete_reader_boundaries():
     docs = build_all()
-    assert len(docs) == 128
+    # 127 since 1.8a: Asterius Urbanus's only passage was its Elucidation; 1.8c parses
+    # his text and brings the document back.
+    assert len(docs) == 127
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:

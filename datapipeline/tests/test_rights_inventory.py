@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "851d07063f85e4c612be1b2d44b695fb"
+LIVE_DOCUMENT_IDS_MD5 = "51fff3a71a9caddc8c332bb0942d9df6"   # 420 since 1.8a: Asterius Urbanus
 
 
 def test_every_entry_has_required_fields_and_known_status():
@@ -124,7 +124,18 @@ def test_inventory_matches_the_built_works_exactly():
     # Planned rows (R6) describe works not built yet and have no ID; the PR that builds
     # one clears its planned_for and fills in its document_id.
     assert sorted(set(ids) - set(rows)) == [], "built works with no inventory entry"
-    assert sorted(set(rows) - set(ids)) == [], "inventory entries for works no longer built"
+    # A registered work whose every passage the removal registry retires builds no
+    # document until a later item restores its text (Asterius Urbanus: 1.8a removed its
+    # one passage, an Elucidation; 1.8c parses his text). Its row stays.
+    import registry
+    reg = registry.load_registry()
+    by_doc: dict[str, set[str]] = {}
+    for r in reg.passages:
+        by_doc.setdefault(r["document_id"], set()).add(r["status"])
+    emptied = {d for d, statuses in by_doc.items() if "active" not in statuses
+               and "retired" in statuses}
+    assert sorted(set(rows) - set(ids) - emptied) == [], \
+        "inventory entries for works no longer built"
     # The readable fields follow the build, so a relabel updates its row in the same PR.
     built = {d.id: k for c, docs in documents.items()
              for d, k in zip(docs, R.work_keys({c: docs}))}
