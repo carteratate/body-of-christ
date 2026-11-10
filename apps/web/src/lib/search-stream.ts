@@ -1,5 +1,12 @@
 import { parseFootnotes, type Footnote } from "./footnotes";
 import { readerAccessValue, type ReaderAccess } from "./reader-access";
+import { parseFacts, type DocumentFacts } from "./attribution";
+import {
+  parsePassageLifecycle,
+  type PassageStatus,
+  type Redirect,
+  type Tombstone,
+} from "./corpus-lifecycle";
 
 export interface ChunkSource {
   collection: string;
@@ -19,13 +26,20 @@ export interface ChunkSource {
    * identify it rather than presenting it as his teaching.
    */
   unit_label?: string | null;
-  metadata?: Record<string, unknown> | null;
   /** "excerpt": the document's rights are not cleared, so the card links to
    *  `source_url` instead of the reader (issue #265). Absent means full. */
   reader_access?: ReaderAccess | null;
   source_url?: string | null;
   /** The rights holder's credit line, shown right after an excerpt-only passage. */
   source_credit?: string | null;
+  /** Translation, date, attribution, notes and credit (corpus cleanup 2.4a). Absent
+   *  from an older API and when the facts query failed; the card then shows today's. */
+  facts?: DocumentFacts | null;
+  /** ISO 639 code; null means English. */
+  language?: string | null;
+  passage_note?: string | null;
+  /** A quoted author (a Father in the Catena Aurea), shown instead of `author`. */
+  passage_author?: string | null;
 }
 
 /** One passage attached to a matched Summa passage to make it intelligible. */
@@ -58,6 +72,12 @@ export interface ChunkResult {
   context?: AttachedContext | null;
   /** The passage's footnotes, shown with it (issue #279). Absent means none. */
   footnotes?: Footnote[];
+  /** A saved result whose passage left the corpus or moved (2.4a). "removed": the
+   *  tombstone says why and `content` is empty. "moved": `content` and `source` are
+   *  the passage it moved to. Absent means current. */
+  status?: PassageStatus;
+  tombstone?: Tombstone | null;
+  redirect?: Redirect | null;
 }
 
 export type SearchOutcome = "success" | "degraded_success" | "no_candidates";
@@ -166,6 +186,10 @@ function optionalString(value: unknown): string | undefined {
   return requiredString(value);
 }
 
+function optionalText(value: unknown): string | null {
+  return typeof value === "string" ? value : null;
+}
+
 function nullableNumber(value: unknown): number | null {
   if (value === undefined || value === null) return null;
   if (typeof value !== "number" || !Number.isFinite(value)) invalid();
@@ -213,8 +237,6 @@ function normalizeContext(value: unknown): AttachedContext | null {
 function normalizePassage(event: Record<string, unknown>): ChunkResult {
   if (!isRecord(event.source)) invalid();
   const source = event.source;
-  const metadata = source.metadata;
-  if (metadata !== undefined && metadata !== null && !isRecord(metadata)) invalid();
   const content = requiredString(event.content);
 
   return {
@@ -230,16 +252,21 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
       anchor: nullableString(source.anchor),
       chapter_key: nullableString(source.chapter_key),
       unit_label: nullableString(source.unit_label),
-      metadata: metadata ?? null,
       reader_access: readerAccessValue(source.reader_access),
       source_url: nullableString(source.source_url),
       source_credit: nullableString(source.source_credit),
+      // Display-only extras: a malformed one is dropped, never the passage.
+      facts: parseFacts(source.facts),
+      language: optionalText(source.language),
+      passage_note: optionalText(source.passage_note),
+      passage_author: optionalText(source.passage_author),
     },
     reranker_score: nullableNumber(event.reranker_score),
     explanation: nullableString(event.explanation),
     context: normalizeContext(event.context),
     // Never fail a passage over its notes: a bad entry is dropped, not the passage.
     footnotes: parseFootnotes(event.footnotes, content),
+    ...parsePassageLifecycle(event),
   };
 }
 

@@ -7,6 +7,15 @@ import {
 } from "./search-stream";
 import { excerptSourceUrl, READER_RESTRICTED_CODE, type ReaderAccess } from "./reader-access";
 import type { Footnote } from "./footnotes";
+import type { DocumentFacts, WorkInfo } from "./attribution";
+import {
+  parseRedirect,
+  parseTombstone,
+  type PassageStatus,
+  type Redirect,
+  type RedirectedFrom,
+  type Tombstone,
+} from "./corpus-lifecycle";
 
 export {
   SearchStreamProtocolError,
@@ -92,6 +101,10 @@ export interface DocumentInfo {
   /** Issue #265: "excerpt" documents have no reader; link to `source_url`. */
   reader_access?: ReaderAccess;
   source_url?: string | null;
+  /** Corpus cleanup 2.4a: date, attribution, notes and credit, and the works inside
+   *  the document with their own attribution. Absent from an older API. */
+  facts?: DocumentFacts | null;
+  works?: WorkInfo[];
 }
 
 export interface ReaderPassage {
@@ -102,6 +115,13 @@ export interface ReaderPassage {
   unit_label: string | null;
   reference: string | null;
   content: string;
+  /** Corpus cleanup 2.4a; all optional. */
+  language?: string | null;
+  note?: string | null;
+  work_key?: string | null;
+  passage_author?: string | null;
+  /** Set only on a history passage: the ID of the current passage that replaced it. */
+  superseded_by?: string | null;
 }
 
 export interface ReaderChapter {
@@ -112,6 +132,9 @@ export interface ReaderChapter {
   prev_chapter_key: string | null;
   next_chapter_key: string | null;
   highlight_anchor: string | null;
+  /** What the request named when the API followed a redirect from it (2.4a);
+   *  `document` is then where it moved to, which may be another document. */
+  redirected_from?: RedirectedFrom | null;
 }
 
 export interface TocEntry {
@@ -159,6 +182,11 @@ export interface BookmarkChunkInfo {
     reader_access?: ReaderAccess | null;
     source_url?: string | null;
     source_credit?: string | null;
+    /** See ChunkSource.facts (corpus cleanup 2.4a). */
+    facts?: DocumentFacts | null;
+    language?: string | null;
+    passage_note?: string | null;
+    passage_author?: string | null;
   };
   /** See ChunkResult.footnotes (issue #279). */
   footnotes?: Footnote[];
@@ -170,6 +198,10 @@ export interface Bookmark {
   created_at: string;
   note: string | null;
   chunk: BookmarkChunkInfo | null;
+  /** See ChunkResult.status (2.4a). The note is kept in every state. */
+  status?: PassageStatus;
+  tombstone?: Tombstone | null;
+  redirect?: Redirect | null;
 }
 
 // ── V2 Preferences ─────────────────────────────────────────────────────────
@@ -394,7 +426,35 @@ export class ReaderRestrictedError extends Error {
   }
 }
 
+/** The document or passage the reader asked for was removed (2.4a): 410 with its
+ *  tombstone, which the reader shows in place of the text. */
+export class ReaderRemovedError extends Error {
+  constructor(readonly tombstone: Tombstone) {
+    super("Reader removed");
+    this.name = "ReaderRemovedError";
+  }
+}
+
+/** The document or passage the reader asked for moved (2.4a): 404 with where to. */
+export class ReaderMovedError extends Error {
+  constructor(readonly redirect: Redirect) {
+    super("Reader moved");
+    this.name = "ReaderMovedError";
+  }
+}
+
 async function throwReaderFailure(res: Response): Promise<never> {
+  if (res.status === 410 || res.status === 404) {
+    const body = await res.clone().json().catch(() => null) as Record<string, unknown> | null;
+    if (res.status === 410 && body?.detail === "removed") {
+      const tombstone = parseTombstone(body.tombstone);
+      if (tombstone) throw new ReaderRemovedError(tombstone);
+    }
+    if (res.status === 404 && body?.detail === "moved") {
+      const redirect = parseRedirect(body.redirect);
+      if (redirect) throw new ReaderMovedError(redirect);
+    }
+  }
   if (res.status === 403) {
     const body = await res.json().catch(() => null) as { detail?: unknown } | null;
     const detail = body?.detail as { code?: unknown; source_url?: unknown } | undefined;
@@ -442,6 +502,9 @@ export interface ReadingProgress {
   collection: string;
   document_title: string;
   author: string | null;
+  /** "removed" (with the tombstone) only on the single-document GET (2.4a). */
+  status?: "current" | "removed";
+  tombstone?: Tombstone | null;
 }
 
 export async function listReadingProgress(token: string, limit = 6, signal?: AbortSignal): Promise<ReadingProgress[]> {
@@ -736,6 +799,8 @@ export interface SourceDocument {
   /** Issue #265: an "excerpt" document is listed but links to `source_url`. */
   reader_access?: ReaderAccess;
   source_url?: string | null;
+  /** Corpus cleanup 2.4b reads these when the API sends them; /sources does not yet. */
+  facts?: DocumentFacts | null;
 }
 
 export async function getSources(token: string): Promise<SourceDocument[]> {

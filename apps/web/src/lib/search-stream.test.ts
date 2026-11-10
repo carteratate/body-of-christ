@@ -122,7 +122,10 @@ describe("consumeSearchStream", () => {
         anchor: "a/1",
         chapter_key: null,
         unit_label: null,
-        metadata: null,
+        facts: null,
+        language: null,
+        passage_note: null,
+        passage_author: null,
         reader_access: null,
         source_url: null,
         source_credit: null,
@@ -458,5 +461,55 @@ describe("passage footnotes (issue #279)", () => {
     ].join("")), cb);
 
     expect(cb.onChunk.mock.calls[0][0].footnotes).toEqual([]);
+  });
+});
+
+describe("consumeSearchStream corpus cleanup fields (2.4a, 2.4b)", () => {
+  function streamOf(event: Record<string, unknown>) {
+    return new Response([
+      "data: " + JSON.stringify(event),
+      "data: " + JSON.stringify({ type: "done", search_id: "s", result_count: 1 }),
+      "",
+    ].join("\n")).body!;
+  }
+  const base = {
+    type: "chunk",
+    chunk_id: "p",
+    content: "Text",
+    source: { collection: "church-fathers", document_title: "T", author: "Pseudo-Justin", reference: null, document_id: "d" },
+    reranker_score: 0.5,
+    explanation: null,
+  };
+
+  it("carries facts and the passage fields", async () => {
+    const onChunk = vi.fn();
+    await consumeSearchStream(streamOf({
+      ...base,
+      source: {
+        ...base.source,
+        facts: { certainty: "pseudonymous", year: 200, source_credit: "Sourced via CCEL.org", unknown: 1 },
+        language: "la", passage_note: "Note.", passage_author: "Chrysostom",
+      },
+    }), { onChunk, onExplanationDelta: vi.fn(), onDone: vi.fn(), onError: vi.fn(), onRateLimit: vi.fn() });
+    expect(onChunk.mock.calls[0][0].source).toMatchObject({
+      facts: { certainty: "pseudonymous", year: 200, source_credit: "Sourced via CCEL.org" },
+      language: "la", passage_note: "Note.", passage_author: "Chrysostom",
+    });
+    expect(onChunk.mock.calls[0][0].source.facts).not.toHaveProperty("unknown");
+  });
+
+  it("drops malformed facts instead of the passage", async () => {
+    const onChunk = vi.fn();
+    const onError = vi.fn();
+    await consumeSearchStream(streamOf({ ...base, source: { ...base.source, facts: "bad", language: 3 } }),
+      { onChunk, onExplanationDelta: vi.fn(), onDone: vi.fn(), onError, onRateLimit: vi.fn() });
+    expect(onError).not.toHaveBeenCalled();
+    expect(onChunk.mock.calls[0][0].source).toMatchObject({ facts: null, language: null });
+  });
+
+  it("leaves a passage without lifecycle fields without status keys", async () => {
+    const onChunk = vi.fn();
+    await consumeSearchStream(streamOf(base), { onChunk, onExplanationDelta: vi.fn(), onDone: vi.fn(), onError: vi.fn(), onRateLimit: vi.fn() });
+    expect(onChunk.mock.calls[0][0]).not.toHaveProperty("status");
   });
 });

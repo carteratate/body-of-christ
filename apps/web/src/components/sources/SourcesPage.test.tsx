@@ -118,3 +118,21 @@ describe("SourcesPage excerpt-only documents (issue #265)", () => {
     expect(screen.getByRole("link", { name: /Rerum Novarum/ }).getAttribute("href")).toMatch(/^\/reader\/doc-2\?/);
   });
 });
+
+describe("SourcesPage Bible book order (C-24)", () => {
+  // Every title /v1/sources returns today (read 10 Nov 2026), and the titles the
+  // rebuilt Bible gives the books (1.4a, `datapipeline/ingest/bible.py`), which
+  // rename "Song of Solomon" to "Song of Songs" at the Phase 4 publish.
+  const LIVE = "1 Chronicles|1 Corinthians|1 John|1 Kings|1 Maccabees|1 Peter|1 Samuel|1 Thessalonians|1 Timothy|2 Chronicles|2 Corinthians|2 John|2 Kings|2 Maccabees|2 Peter|2 Samuel|2 Thessalonians|2 Timothy|3 John|Acts|Amos|Baruch|Colossians|Daniel|Deuteronomy|Ecclesiastes|Ephesians|Esther|Exodus|Ezekiel|Ezra|Galatians|Genesis|Habakkuk|Haggai|Hebrews|Hosea|Isaiah|James|Jeremiah|Job|Joel|John|Jonah|Joshua|Jude|Judges|Judith|Lamentations|Leviticus|Luke|Malachi|Mark|Matthew|Micah|Nahum|Nehemiah|Numbers|Obadiah|Philemon|Philippians|Proverbs|Psalms|Revelation|Romans|Ruth|Sirach|Song of Solomon|Titus|Tobit|Wisdom|Zechariah|Zephaniah".split("|");
+  const REBUILT = [...LIVE.filter((t) => t !== "Song of Solomon"), "Song of Songs"];
+
+  it("ranks every Bible title, under both names of the Song of Songs", async () => {
+    const { bookRank } = await import("./SourcesPage");
+    for (const title of [...LIVE, ...REBUILT]) expect(bookRank(title), title).toBeLessThan(73);
+    expect(new Set(LIVE.map(bookRank)).size).toBe(73);
+    expect(new Set(REBUILT.map(bookRank)).size).toBe(73);
+    expect(bookRank("Song of Songs")).toBe(bookRank("Song of Solomon"));
+    expect(bookRank("Song of Songs")).toBe(bookRank("Ecclesiastes") + 1);
+    expect(bookRank("Unknown Book")).toBe(73);
+  });
+});

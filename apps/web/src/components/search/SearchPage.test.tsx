@@ -548,6 +548,32 @@ describe("SearchPage restore lifecycle", () => {
     )).toBeTruthy();
   });
 
+  it("counts a removed Passage as present: no unavailable notice (2.4b)", async () => {
+    apiMocks.getSearchResults.mockResolvedValue({
+      ...restored("Restore with a removal"),
+      results: [streamedPassage, {
+        ...streamedPassage,
+        chunk_id: "passage-2",
+        content: "",
+        status: "removed",
+        tombstone: {
+          entity: "passage", rule: "G", reason_code: "note-split-off",
+          public_reason: "This card was a footnote to the document's text, not the text itself.",
+          retired_at: "2026-12-01T00:00:00Z", title: "Pastores Gregis",
+        },
+      }],
+      restore_status: "complete",
+      expected_result_count: 2,
+    });
+    render(<SearchPage />);
+
+    expect(await screen.findByText(/Grace perfects nature/)).toBeTruthy();
+    // Both reach the results list (the card itself is covered in ChunkCard.corpus.test).
+    expect(screen.getByTestId("search-results").querySelectorAll("[data-explanation]")).toHaveLength(2);
+    expect(screen.queryByText(/remain available/)).toBeNull();
+    expect(screen.queryByText("Saved results are no longer available")).toBeNull();
+  });
+
   it("shows restore unavailable when no saved Passages remain", async () => {
     apiMocks.getSearchResults.mockResolvedValue({
       ...restored("Unavailable restored query"),
