@@ -63,6 +63,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-01 (later): all 30 rows approved, including the seven extract or abridged printings and the two Clement XIV documents translated from the French (rows set `checked_by: Carter`, `checked_on: 2026-11-01`).
   Answered 2026-11-01 (later): "Scan: Internet Archive" is dropped from all credit lines, R6's rows included. This leaves 80 planned 5.6c rows with no credit line; their wording is due with 5.6c (see R6-editions.md, Credit lines).
 - **1.3c** [Phase 1]. Approve vendoring the vatican.va English pages of the 25 modern papal documents, and review the PR's paragraph-alignment mismatch list.
+  Answered 2026-11-09: the 23 downloads are approved (Haerent Animo and Menti Nostrae left for 1.3d). Vendored the same day to `datapipeline/sources/_incoming/encyclicals/<vatican.va file name>` and locked there.
 
 ### Phase 2
 
