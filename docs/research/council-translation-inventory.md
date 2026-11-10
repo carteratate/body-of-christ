@@ -383,7 +383,7 @@ text is a gap, nothing is listed until a replacement exists.
 
 | Council | Text | In which source | Note |
 |---|---|---|---|
-| Ephesus | Nestorius's second letter to Cyril | Tanner (live `council-of-ephesus/sec-3/3/p1` to `sec-3/6`); not in Percival; Chrystal (R9) | Listed from 1.2c |
+| Ephesus | Nestorius's second letter to Cyril | Tanner (live `council-of-ephesus/sec-3/3/p1` to `sec-3/6`); not in Percival; Chrystal (R9) | Built by 1.2c from Chrystal at `council-of-ephesus/nestorius-second-letter` (4 pieces), each row already `voice = "rejected"` |
 | Nicaea II | Definition of the iconoclast synod of Hieria (754), read and refuted at session 6 | Not in Tanner; Percival `xvi.x` prints an "Epitome" of it with his bracketed summaries | Only if 1.2c's allowlist takes it (recommended: no) |
 | Vienne | Eight errors of the Beghards and Beguines in Ad nostrum | Tanner [28]; Schroeder pp. 389–390 | The listed errors are the rejected voice; the decree around them is the council's |
 | Constance | Wyclif's 45 articles (session 8) | Tanner; Deferrari (R9) | Listed from 1.2e |
@@ -616,8 +616,6 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 
 | # | Council | Text | Lead found |
 |---|---|---|---|
-| G1 | Ephesus | Nestorius's second letter to Cyril (condemned text) | Chrystal 1895, pp. 155–166 |
-| G2 | Nicaea II | The four anathemas concerning holy images | Mendham 1850, pp. 442–443; Hefele vol. 5 (1896), p. 376 |
 | G3 | Constantinople IV | Definition of the eighth synod | — |
 | G5 | Vienne | Bulls on the Templars and the Holy Land, [1]–[8] | — |
 | G6 | Constance | Sessions 1, 3, 4, 5 (Haec sancta), 8, 12, 13, 14, 15, 21, 37, 39 (Frequens and four others), 40, 44, 45: every document listed for them above | Foxe, Cattley ed., vol. 3, for the sentences of sessions 8 and 15 |
@@ -627,6 +625,8 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G10 | Vatican I | Session 1, decree of opening | — |
 | G11 | Vatican I | Session 2, profession of faith (Schaff's 1564 profession does not stand in; see Vatican I) | — |
 | G12 | Vienne | Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves it out (pp. 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | — |
+
+G1 (Nestorius's second letter) and G2 (Nicaea II's four anathemas) left the register when 1.2c took them from Chrystal (1895) and Hefele (1896), as R9 found (Carter, 4 Nov 2026). Their numbers are not reused.
 
 G4 (Lyons I's bull deposing Frederick II) and Lyons I's constitution I 7, first listed under G12, left the register when 1.2e took them from Giles's translation of Matthew Paris (1853), vol. 2, pp. 77–86 and 96–97 (Carter, 9 Nov 2026). G4's number is not reused.
 
