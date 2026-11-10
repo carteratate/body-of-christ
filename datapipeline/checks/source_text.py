@@ -368,6 +368,11 @@ _TEXT_CALLER = re.compile(r"(?<=[A-Za-z\"”’.,;:!?)])\s?\(\d{1,3}\)"
                           r"|(?<=[a-z\"”’)][.,;:])\d{1,3}(?=\s|$|[A-Z“\"])"
                           r"(?!\s+(?:Cor|Jn|John|Pt|Pet|Peter|Tim|Tm|Thes|Th|Sam|Sm|Kgs|Kg|Kings"
                           r"|Chr|Mac|Macc|Mc|Esd)\b)")
+# The Vatican II pages' callers, which the councils parser drops (1.1): "(9)" and the
+# starred "(21*)" after a word or a closing mark, "[ 40 ]", and the "[ ]" a linked number
+# leaves.
+_VAT2_CALLER = re.compile(r"(?<=[A-Za-z\"”’.,;:!?)\]])\s?\(\d{1,3}\*?\)"
+                          r"|(?<=\S)\s*\[\s*\d{0,3}\s*\]")
 # Sources that print callers as plain numbers after a sentence.
 _BARE_CALLER_FILES = ("annus-qui-hunc.html", "mulieris-dignitatem.html")
 _CITATION_BEFORE = re.compile(r"\b(?:cf|bk|sess|ch|cap|tit|vol|no|nos|art|can|lib|p|pp|n|dist)\.$",
@@ -398,7 +403,8 @@ def _mark_callers(main: Tag) -> None:
 
 
 def html_units(path: str, source_file: str | None = None,
-               papal: bool = False, canon_law: bool = False) -> list[SourceUnit]:
+               papal: bool = False, canon_law: bool = False,
+               vatican2: bool = False) -> list[SourceUnit]:
     """vatican.va and papalencyclicals.net HTML. Body is the visible text of the main
     content element, one unit per block (<p>, <li>, <div>, table cell, …). Text after
     the first notes marker is "note": a notes heading ("Notes", "NOTES", "ENDNOTES",
@@ -416,7 +422,10 @@ def html_units(path: str, source_file: str | None = None,
     With `canon_law`, the amendment marker (a brown "n" beside an amended canon) is not
     text and is dropped, the page's notes on amendments (the marker legend, "Cf." lines,
     version headings) are notes, and a canon's bracketed reference to the amending act
-    is not its text, as the parser reads them (1.5a)."""
+    is not its text, as the parser reads them (1.5a).
+
+    With `vatican2`, for the Vatican II pages of the councils collection, body text loses
+    its footnote callers, as the parser's does (1.1)."""
     source_file = source_file or os.path.basename(path)
     with open(path, "rb") as f:
         soup = BeautifulSoup(f.read(), "lxml")
@@ -427,7 +436,7 @@ def html_units(path: str, source_file: str | None = None,
             if (tag.get("color") or "").lower() == "#663300" and tag.get_text(strip=True) == "n":
                 tag.replace_with(" ")
     main = _html_main(soup)
-    if papal:
+    if papal or vatican2:
         _mark_callers(main)
     blocks = _html_blocks(main)
 
@@ -487,6 +496,9 @@ def html_units(path: str, source_file: str | None = None,
                 region = "note"
             else:
                 body_text = _canon_respell(_CANON_ACT_REF.sub("", body_text))
+        if vatican2 and region == "body":
+            kept = _LEADING_NUMBER.sub("", raw, count=1) if number else raw
+            body_text = _VAT2_CALLER.sub("", _FENCED.sub("", kept))
         if papal and region == "body":
             kept = _LEADING_NUMBER.sub("", raw, count=1) if number else raw
             if unit_id and not number and (m := _UNDOTTED_NUMBER.match(raw)):
@@ -748,7 +760,8 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return thml_units(path, source_file)
     if source_file.endswith(".html"):
         return html_units(path, source_file, papal=collection in PAPAL_COLLECTIONS,
-                          canon_law=collection == "canon-law")
+                          canon_law=collection == "canon-law",
+                          vatican2=collection == "councils" and source_file.startswith("vat2-"))
     if source_file.endswith(".usfm"):
         return usfm_units(path, source_file)
     if source_file.endswith("ccc-us.json"):

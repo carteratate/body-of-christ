@@ -307,6 +307,10 @@ _SECTION_REF = re.compile(r"§(\d+)\s*$")
 MISPRINTED_NUMBERS = {"aeterni-patris": {21}, "humanae-vitae": {14}, "libertas": {28},
                       "mediator-dei": {106}, "menti-nostrae": {53, 54, 125},
                       "pacem-in-terris": {95}}
+# 1.1's Vatican II numbers: sections the English page numbers otherwise, which the parser
+# numbers as the Latin does (Sacrosanctum Concilium's "81." for 87; Optatam Totius's "21."
+# for 22, the English printing no 21).
+LATIN_NUMBERS = {"vat2-sacrosanctum-concilium": {87}, "vat2-optatam-totius": {22}}
 # A paragraph number inside a block, as the parser splits it: after a finished sentence, or
 # after a short heading run on to it. A number after a word is a citation ("chapter 2.").
 _RUN_ON_NUMBER = re.compile(
@@ -351,11 +355,14 @@ def numbered_paragraphs(document: Document, units: list[SourceUnit]) -> Sequence
     catches footnotes read as sections) or appears nowhere in the source body as a
     leading number (a section the adapter invented inside a gap in the numbering)."""
     source = source_section_numbers(units)
-    top = max(source, default=0)
     # Every leading number in the body, before source_section_numbers sets list items
     # and restarted note numbers aside: a built number found here is not invented.
     in_source = {int(u.unit_id) for u in units
                  if u.region == "body" and u.unit_id and u.unit_id.isdigit()}
+    latin = LATIN_NUMBERS.get((document.metadata or {}).get("source_key", "").rsplit("/", 1)[-1],
+                              set())
+    in_source |= latin
+    top = max(source + sorted(latin), default=0)
     # A source numbering from 2 prints its first paragraph without a number (1.3a).
     if document.collection in PAPAL_COLLECTIONS:
         if source[:1] == [2]:
