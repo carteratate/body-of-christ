@@ -12,15 +12,15 @@ const COLLECTION_DESCRIPTIONS: Record<string, string> = {
   councils:
     "The proceedings and documents of the ecumenical councils, the formal gatherings of the world's bishops that define doctrine and address Church affairs. The corpus includes councils from Nicaea (325 AD) through the Second Vatican Council (1962-1965). Council documents are among the most authoritative sources in Catholic theology, defining core beliefs such as the Trinity, the Incarnation, and the nature of the Church.",
   "church-fathers":
-    "Writings of the early Christian theologians and bishops from roughly the 1st through 8th centuries, including Ignatius of Antioch, Justin Martyr, Origen, Athanasius, Augustine, and John Chrysostom. The Fathers interpreted Scripture, defended the faith against heresies, and laid the theological foundations the Church still stands on. Essential for understanding how Christian doctrine developed in its earliest centuries.",
+    "Writings of the early Christian theologians and bishops from roughly the 1st through 5th centuries, including Ignatius of Antioch, Justin Martyr, Irenaeus, Athanasius, and Augustine. The Fathers interpreted Scripture, defended the faith against heresies, and laid the theological foundations the Church still stands on. Essential for understanding how Christian doctrine developed in its earliest centuries.",
   medieval:
-    "Theological and philosophical works from the medieval period (roughly 9th through 15th centuries), including scholastic theologians, mystics, and canonists beyond Aquinas. Figures such as Anselm of Canterbury, Bonaventure, Hildegard of Bingen, and Duns Scotus. A rich tradition of rigorous intellectual inquiry paired with deep spiritual reflection, valuable for those interested in how the Church thought through faith and reason across the Middle Ages.",
+    "Theological and philosophical works beyond Aquinas, from Boethius (6th century) through the late Middle Ages, including Anselm of Canterbury, Bernard of Clairvaux, and Thomas à Kempis. A rich tradition of rigorous intellectual inquiry paired with deep spiritual reflection, valuable for those interested in how the Church thought through faith and reason across the Middle Ages.",
   "canon-law":
     "The Code of Canon Law (1983), the body of laws governing the Latin Church. Enacted by Pope John Paul II, it codifies the rights and obligations of the faithful, the structure of Church governance, the sacraments, and ecclesiastical procedures. Useful for understanding how the Church operates as an institution and the legal framework underlying pastoral practice.",
   "apostolic-exhortations":
-    "Post-synodal documents in which popes synthesize the work of a bishops' synod and offer pastoral guidance to the Church. Notable examples include Evangelii Gaudium (Francis, 2013) on the joy of the Gospel and Familiaris Consortio (John Paul II, 1981) on marriage and family. More pastoral in tone than encyclicals, these documents often address how Catholic teaching should be lived in contemporary life.",
+    "Apostolic exhortations, in which popes encourage the faithful and offer pastoral guidance on living the faith. Many follow a synod of bishops and gather up its work. Notable examples include Evangelii Gaudium (Francis, 2013) on the joy of the Gospel and Familiaris Consortio (John Paul II, 1981) on marriage and family. More pastoral in tone than encyclicals, these documents often address how Catholic teaching should be lived in contemporary life.",
   "papal-documents":
-    "A broader category of official papal writings, including apostolic constitutions, apostolic letters, motu proprios, and bulls, that don't fall neatly into the categories above. These documents address a wide range of matters: defining dogmas (such as the Immaculate Conception), reforming Church structures, and issuing pastoral directives. Helpful for tracing specific decisions and pronouncements across pontificates.",
+    "Other official papal writings that don't fall neatly into the categories above: papal bulls, apostolic letters, and a motu proprio. They range from bulls of the 14th to 16th centuries, such as Unam Sanctam (Boniface VIII, 1302) and Exsurge Domine (Leo X, 1520), to modern apostolic letters such as Salvifici Doloris on human suffering and Ordinatio Sacerdotalis on priestly ordination. Helpful for tracing specific decisions and pronouncements across pontificates.",
 };
 
 export function AboutPage() {
@@ -39,7 +39,7 @@ export function AboutPage() {
             surrounding suffering, virtue, justice, grace, salvation, human
             nature, and more. Those conversations have occurred over
             Scripture, catechisms, encyclicals, writings of the early church
-            fathers, church counsels, etc. TheoCorpus
+            fathers, church councils, etc. TheoCorpus
             brings their wisdom together into one place, allowing you to explore
             the Catholic tradition through the people who built, defended, and
             passed down the fullness of the faith.
