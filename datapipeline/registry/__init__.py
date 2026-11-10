@@ -138,6 +138,16 @@ def resolve_document_id(collection: str, source_key: str, fallback_parts: tuple,
             or identity.document_id(*fallback_parts))
 
 
+def anchor_slug(collection: str, source_key: str,
+                registry: WorkRegistry | None = None) -> str | None:
+    """A registered work's `anchor_slug`: the first anchor segment its passages keep when
+    its title changes (Song of Songs keeps `song-of-solomon`, 1.4a). None when unset."""
+    for w in (registry or current()).works:
+        if w.get("collection") == collection and w.get("source_key") == source_key:
+            return w.get("anchor_slug")
+    return None
+
+
 def resolve_passage_id(document_id: str, anchor: str,
                        registry: WorkRegistry | None = None) -> str:
     """The frozen ID of the unit this anchor names, else `identity.passage_id` (a

@@ -9,7 +9,9 @@ sits in a few units of a large file or in text the extractor used to call a head
   lines, still counts.
 - `coverage.bible.superscriptions`: each Psalm title (USFM `\\d`, which the extractor now
   counts as body text) is in the passage holding its psalm's first verse (C-11, Opus-2
-  B-004). One check; its units are the psalms ("PSA/51").
+  B-004). Psalm 119's later letter headings (BETH, GIMEL, …) head its later stanzas, so
+  only a psalm's first title is held to its first passage; the rest must be in one of
+  that psalm's passages (1.4a). One check; its units are the psalms ("PSA/51").
 - `sentinel.ccc_1471_definition`: the sentence of CCC 1471 that defines an indulgence is in
   a passage. The test holds only its hash and length, no text: the sentence is found in
   the source by its hash, then looked for in the passages.
@@ -75,23 +77,38 @@ def catechism_paragraph_words(documents: list[Document], units: list[SourceUnit]
 
 
 def bible_superscriptions(documents: list[Document], units: list[SourceUnit]) -> dict[str, list[str]]:
-    """Psalms whose `\\d` title is not in the passage holding their first verse."""
+    """Psalms whose first `\\d` title is not in the passage holding their first verse, or
+    one of whose later `\\d` lines (Psalm 119's letters) is not in one of their passages
+    directly before the opening words of the verse it heads."""
     titles: dict[str, list[str]] = {}
+    heads: dict[str, list[str]] = {}     # a later title with the verse after it
+    pending: str | None = None
     for u in units:
-        if u.region == "body" and (u.unit_id or "").endswith("/d"):
+        if u.region != "body" or not u.unit_id:
+            continue
+        if u.unit_id.endswith("/d"):
             psalm = u.unit_id.rsplit("/", 1)[0]
             titles.setdefault(psalm, []).append(u.text)
+            pending = psalm if len(titles[psalm]) > 1 else None
+        elif pending is not None:
+            heads.setdefault(pending, []).append(f"{titles[pending][-1]} {u.text[:60]}")
+            pending = None
     if not titles:
         return {}
     psalms = next((d for d in documents if d.title == "Psalms"), None)
     first: dict[str, str] = {}
+    every: dict[str, list[str]] = {}
     for p in psalms.passages if psalms else []:
         chapter = p.chapter_key.rsplit("/", 1)[-1]
-        first.setdefault(chapter, match_key(normalize(p.content)))
+        key = match_key(normalize(p.content))
+        first.setdefault(chapter, key)
+        every.setdefault(chapter, []).append(key)
     failing = []
     for psalm, texts in titles.items():
-        held = first.get(psalm.split("/")[1], "")
-        if any(match_key(normalize(t)) not in held for t in texts):
+        chapter = psalm.split("/")[1]
+        later = [match_key(normalize(h)) for h in heads.get(psalm, [])]
+        if match_key(normalize(texts[0])) not in first.get(chapter, "") or any(
+                not any(h in c for c in every.get(chapter, [])) for h in later):
             failing.append(psalm)
     return {"coverage.bible.superscriptions": sorted(failing, key=lambda x: int(x.split("/")[1]))
             } if failing else {}

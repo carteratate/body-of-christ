@@ -89,20 +89,25 @@ _MANIFEST_COLLECTIONS = ("apostolic-exhortations", "councils", "encyclicals",
                          "papal-documents", "medieval")
 
 
-def _bible_titles(sources: str) -> dict[str, str]:
-    """USFM file → book title, from the file's \\toc2 short name. Greek-text books carry
-    a " (Greek)" suffix the documents do not."""
+def _bible_titles(sources: str) -> dict[str, tuple[str, str]]:
+    """USFM file → (`bible/<code>` source key, book title), from the file's \\id code and
+    \\toc2 short name. Greek-text books carry a " (Greek)" suffix the documents do not.
+    The source key places a renamed book (Song of Songs, 1.4a); the title places a
+    document written before source keys."""
     out = {}
     base = os.path.join(sources, "bible", _BIBLE_DIR)
     for name in sorted(os.listdir(base)):
         if not name.endswith(".usfm"):
             continue
+        code, title = "", ""
         with open(os.path.join(base, name), encoding="utf-8", errors="replace") as f:
             for line in f:
-                if line.startswith("\\toc2 "):
+                if line.startswith("\\id ") and not code:
+                    code = line[4:].split()[0] if line[4:].split() else ""
+                elif line.startswith("\\toc2 "):
                     title = re.sub(r"\s*\(Greek\)\s*$", "", line[6:].strip())
-                    out[f"{_BIBLE_DIR}/{name}"] = title
                     break
+        out[f"{_BIBLE_DIR}/{name}"] = (f"bible/{code}", title)
     return out
 
 
@@ -117,13 +122,16 @@ def documents_by_file(collection: str, documents: list[Document], files: list[st
         with open(os.path.join(sources, collection, "manifest.json"), encoding="utf-8") as f:
             by_url = {e["url"]: e["file"] for e in json.load(f) if e.get("url")}
     titles = _bible_titles(sources) if collection == "bible" else {}
-    file_by_title = {t: f for f, t in titles.items()}
+    file_by_key = {k: f for f, (k, _) in titles.items()}
+    file_by_title = {t: f for f, (_, t) in titles.items()}
     for doc in documents:
         meta = doc.metadata or {}
         if meta.get("source_file") in out:
             out[meta["source_file"]].append(doc)
         elif meta.get("url") in by_url and by_url[meta["url"]] in out:
             out[by_url[meta["url"]]].append(doc)
+        elif collection == "bible" and file_by_key.get(meta.get("source_key")) in out:
+            out[file_by_key[meta["source_key"]]].append(doc)
         elif collection == "bible" and file_by_title.get(doc.title) in out:
             out[file_by_title[doc.title]].append(doc)
         elif collection in ("canon-law", "catechism", "summa") and len(documents) == 1:
