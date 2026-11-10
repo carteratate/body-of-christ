@@ -401,9 +401,10 @@ async def get_search_results(
         str(row["chunk_id"]) for row in shown.values()
     ])
 
-    def source(row) -> ChunkSource:
+    def source(row, content: str | None) -> ChunkSource:
         passage = facts.get(str(row["chunk_id"]))
-        card_access = access_fields(access, row["document_id"], row["unit_label"])
+        card_access = access_fields(access, row["document_id"], row["unit_label"],
+                                    chunk_id=row["chunk_id"], content=content)
         return ChunkSource(**{
             "collection": row["collection"],
             "document_title": row["document_title"],
@@ -430,7 +431,8 @@ async def get_search_results(
             # A removed passage shows no text (Carter, 9 Nov 2026): its tombstone gives
             # the title, author, reference and reason instead.
             content=display["content"] if display is not None else "",
-            source=source(display if display is not None else row),
+            source=(source(display, display["content"]) if display is not None
+                    else source(row, None)),
             reranker_score=row["reranker_score"],
             explanation=row["explanation"],
             context=context.get(str(display["chunk_id"])) if display is not None else None,

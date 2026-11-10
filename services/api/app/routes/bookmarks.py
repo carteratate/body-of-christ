@@ -195,7 +195,10 @@ async def list_bookmarks(
     def chunk(row, display) -> BookmarkChunk:
         source_row = display if display is not None else row
         passage = facts.get(str(source_row["chunk_id"]))
-        card_access = access_fields(access, source_row["document_id"], source_row["unit_label"])
+        card_access = access_fields(
+            access, source_row["document_id"], source_row["unit_label"],
+            chunk_id=source_row["chunk_id"],
+            content=display["content"] if display is not None else None)
         return BookmarkChunk(
             # A removed passage shows no text (Carter, 9 Nov 2026).
             content=display["content"] if display is not None else "",
