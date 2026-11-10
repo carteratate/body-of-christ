@@ -26,7 +26,7 @@ from typing import NamedTuple
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from config import settings
-from identity import anchor as make_anchor
+from identity import anchor as make_anchor, unit_anchor
 from ingest.pieces import (ORDINAL_ATTR, Segment, element_locator, name_pieces,
                            number_elements, pack_text, piece_reference, unique_unit_anchors)
 from model import Document, Passage
@@ -34,7 +34,7 @@ from normalize.boilerplate import strip_boilerplate
 from normalize.caps import smart_title_case
 from normalize.footnotes import (drop_caller_elements, strip_bare_callers,
                                  strip_footnote_markers, strip_note_callers)
-from normalize.text import clean_text
+from normalize.text import clean_text, repair_sentence_joins
 from registry import ANCHOR_SCHEME, resolve_document_id
 
 log = logging.getLogger(__name__)
@@ -106,7 +106,11 @@ _GREETING = re.compile(
     r"^(?:To\b|Venerable\b|Beloved\b|Dearly\b|Dear\b|Greetings?\b|Health\b|Clement\b|Our Greetings"
     r"|Pius\b|Gregory\b|Leo\b|Benedict\b)|(?:Greetings?|Blessing|Benediction)[.!:]?$")
 # A long paragraph is a greeting only as an address or when it ends in the salutation.
-_LONG_GREETING = re.compile(r"^To\b|(?:Greetings?|Blessing|Benediction)[.!:]?$")
+# An address names whom it is to ("To Our Venerable Brethren", "To all the Patriarchs"),
+# which "To examine into the nature …" (Mirae Caritatis §1) does not.
+_LONG_GREETING = re.compile(
+    r"^To\s+(?:[A-Z]|all\b|the\b)|(?:Greetings?|Blessing|Benediction)[.!:]?$")
+_SALUTATION = re.compile(r"(?:Greetings?|Blessing|Benediction)[.!:]?$")
 _PREFACE_MIN = 100
 _SENTENCE_END = re.compile(r"[.!?…;:,][\"”’)]*$")
 # A "[N-M]" paragraph range, which only a table of contents prints.
@@ -140,17 +144,44 @@ _SITE_CUT = {
 # Lines an editor or translator wrote about the document (C-18), never emitted.
 _EDITORIAL = re.compile(r"Holy Father addressed|Translation by")
 _ENTITY_FIXES = {"&quuot;": "”"}
+# The number as misprinted, which a fix replaces: "Z 1. ", "1 4. " (split by markup), "28, ".
+_MISPRINTED_NUMBER = re.compile(r"^(?:[A-Z] )?\d[\d ]*[.,]\s+")
 # Printed numbers that are misprints, keyed by the paragraph's opening words (as 1.1's
 # section fixes are): the number the run of paragraphs leaves free for them.
 _NUMBER_FIXES = {
     "aeterni-patris": {"Z 1. But": 21},
+    "humanae-vitae": {"1 4. Therefore": 14},
+    "libertas": {"28, The Church": 28},
     "mediator-dei": {"100. These methods": 106},
     "menti-nostrae": {"63. Still another": 53, "64. Finally, We wish": 54,
                       "126. Ordinarily": 125},
     "pacem-in-terris": {"90. In the first place": 95},
 }
+# Documents whose text is vatican.va's translation in place of papalencyclicals.net's
+# (1.3c): each unit keeps its anchor and ID where it is the same paragraph (aligned by
+# `scripts/align_editions.py` and reviewed), and declares its text replaced for the release
+# report's stability check. None marks every unit; a set names the units whose text changed
+# where the rest of the document is the same translation.
+TEXT_REPLACED = "vatican.va replaces papalencyclicals.net"
+_NEW_TRANSLATION: dict[str, frozenset[str] | None] = {
+    "ecclesiam-suam": None,
+    "humanae-vitae": None,
+    "mysterium-fidei": None,
+    "pacem-in-terris": None,
+    "pascendi-dominici-gregis": None,
+}
 # Sources that print their callers as plain numbers after a sentence.
 _BARE_CALLERS = ("annus-qui-hunc", "mulieris-dignitatem")
+
+# Sources whose HTML lost the space at each of its line ends (vatican.va's Divinum Illud
+# Munus and Mirae Caritatis: "We haveseen good"). The space goes back only in the words
+# `papal_spaces.json` lists, each checked against papalencyclicals.net's text of the same
+# translation (1.3c), and after a comma or semicolon run into a word. Nothing else changes.
+_SPACES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "papal_spaces.json")
+with open(_SPACES_FILE, encoding="utf-8") as _f:
+    _LOST_SPACES: dict[str, dict[str, str]] = json.load(_f)
+_JOINED = re.compile(r"[^\W\d_]+(?:['’][^\W\d_]+)*")
+_LOST_SPACE_AFTER_PUNCTUATION = re.compile(r"(?<=[a-z])([,;])(?=[A-Za-z])")
 
 # Units whose plain anchor is taken: while live it named other text, so the unit keeps
 # the anchor holding its own ID, or takes one never live (D1). Keyed by slug, then by the
@@ -293,8 +324,13 @@ def _stream(main) -> list:
     for el in main.find_all(["p", "li", "h2", "h3", "h4", "hr"]):
         if el.name == "li" and el.find("p") is not None:
             continue
-        if any(id(parent) in taken for parent in el.parents):
+        if id(el) in taken or any(id(parent) in taken for parent in el.parents):
             continue
+        rule = el.find("hr") if el.name != "hr" else None
+        if rule is not None and not el.get_text(strip=True):
+            # A rule set inside inline markup (vatican.va's Quas Primas: `<i><font><hr>`),
+            # which lxml moves into an empty paragraph: the rule is what the block holds.
+            el = rule
         taken.add(id(el))
         out.append(el)
     return out
@@ -391,7 +427,7 @@ def _fix_numbers(items: list[_Item], slug: str | None) -> list[_Item]:
     for item in items:
         for opening, n in _NUMBER_FIXES.get(slug, {}).items():
             if item.text.startswith(opening):
-                text = f"{n}. {item.text.split('. ', 1)[1]}"
+                text = f"{n}. {item.text[_MISPRINTED_NUMBER.match(item.text).end():]}"
                 log.info("%s: %r is paragraph %d", slug, opening, n)
                 item = item._replace(text=text, segment=Segment(item.segment.locator, text))
         out.append(item)
@@ -620,6 +656,12 @@ def _is_prose(item: _Item) -> bool:
             and not _all_link(item.el) and (len(text) >= _PREFACE_MIN or text[:1] == '"'))
 
 
+def _saluted(out: list[Token]) -> bool:
+    """Whether the greeting has closed on its salutation ("… Health and Apostolic
+    Benediction."): the prose after it is the text, however short (Pacem in Terris §1)."""
+    return bool(out) and out[-1].kind == "preamble" and _SALUTATION.search(out[-1].text) is not None
+
+
 def _pre_tokens(items: list[_Item], first_number: int) -> tuple[list[Token], list[_Item]]:
     """Tokens before the first printed number, and the items left over: the headings of
     the paragraph that follows. The greeting is the preamble, up to the
@@ -665,7 +707,9 @@ def _pre_tokens(items: list[_Item], first_number: int) -> tuple[list[Token], lis
                 out.append(Token("section", None, text, [item.segment]))
             shouted = True
         elif first_number == 2:
-            if para or (len(text) > _IMPLICIT_MIN and not _LONG_GREETING.search(text)):
+            if para or (len(text) > _IMPLICIT_MIN and not _LONG_GREETING.search(text)) \
+                    or (_saluted(out) and _is_prose(item) and _SENTENCE_STOP.search(text)
+                        and not _GREETING.search(text)):
                 para.append(item)
             elif not _short_line(text) or _GREETING.search(text):
                 out.append(Token("preamble", None, text, [item.segment]))
@@ -792,11 +836,17 @@ def _chapter_label(text: str) -> str:
 def _clean(text: str, slug: str) -> str:
     for wrong, right in _ENTITY_FIXES.items():
         text = text.replace(wrong, right)
+    spaces = _LOST_SPACES.get(slug)
+    if spaces:
+        text = _LOST_SPACE_AFTER_PUNCTUATION.sub(r"\1 ", text)
+        text = _JOINED.sub(lambda m: spaces.get(m.group(0), m.group(0)), text)
     cut = _SITE_CUT.get(slug)
     if cut:
         text = cut.sub("", text)
     text = _TRAILING_NOTES_HEADING.sub("", text)
     text = strip_note_callers(clean_text(strip_footnote_markers(strip_boilerplate(text))))
+    # A caller between two sentences ('soul?"(23) This') leaves them joined once it goes.
+    text = repair_sentence_joins(text)
     return strip_bare_callers(text) if slug in _BARE_CALLERS else text
 
 
@@ -925,6 +975,11 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
             emit(text, None, _anchor(slug, str(n)), ckey, clabel, None, segments)
 
     passages = _passages(units, title, meta)
+    if slug in _NEW_TRANSLATION:
+        changed = _NEW_TRANSLATION[slug]
+        for p in passages:
+            if changed is None or unit_anchor(p.anchor).split("/", 1)[1] in changed:
+                p.metadata = {**p.metadata, "text_replaced": TEXT_REPLACED}
     _log_short(title, passages)
     metadata = {"url": entry["url"], "source_url": entry["url"], "pope": author,
                 "source_key": source_key, "anchor_scheme": ANCHOR_SCHEME,

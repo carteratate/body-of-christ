@@ -35,3 +35,23 @@ def test_null_without_an_earlier_entry_is_a_problem():
     kept, problems = kept_entries(LOW, PRIOR, "1.10c", reasons={"a": None, "b": None})
     assert [e["passage_id"] for e in kept] == ["a"]
     assert "no kept_text entry" in problems[0]
+
+
+def test_a_passage_whose_text_was_replaced_is_not_held_to_its_live_text():
+    # 1.3c: a new translation keeps its paragraph's ID and declares `text_replaced`, as the
+    # release report's stability check reads it.
+    from model import Document, Passage
+    from reconcile_registry import lost_text, low_scores
+
+    def doc(**metadata):
+        p = Passage(content="An entirely different wording of the paragraph.", reference="r",
+                    anchor="d/1", chapter_key="d/c", chapter_label="c", position=0,
+                    metadata=metadata)
+        return Document(id="d", collection="encyclicals", title="T", passages=[p])
+
+    rows = [{"passage_id": "a", "document_id": "d", "anchor": "d/1", "status": "active"}]
+    live = {"a": "The live text of this paragraph, in the old translation of it."}
+    assert [e["passage_id"] for e in low_scores(rows, [doc()], live)] == ["a"]
+    replaced = doc(text_replaced="vatican.va replaces papalencyclicals.net")
+    assert low_scores(rows, [replaced], live) == []
+    assert lost_text(live)("a", replaced.passages[0], replaced) is None

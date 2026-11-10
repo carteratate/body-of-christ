@@ -56,11 +56,20 @@ REQUIRED_FIELDS = (
 # edition here, with its own rights facts (Carter, 9 Nov 2026: Lyons I's bull and I 7 come
 # from Giles's Matthew Paris, the rest from Schroeder). The row's own fields describe the
 # edition most of the document comes from.
-OPTIONAL_FIELDS = ("also_from",)
+OPTIONAL_FIELDS = ("also_from", "excerpt_basis")
 ALSO_FROM_FIELDS = (
     "texts", "edition", "translator", "first_published", "source_path", "source_url",
     "status", "renewal_search", "credit_line", "checked_by", "checked_on",
 )
+
+# Optional, on an excerpt-only (`in-copyright`) row: the published statement that allows
+# the use without permission, and every condition or limit it sets (5.2; Decision log
+# "Excerpt-only needs an allowed-use basis"). `word_limit` caps every passage's words and
+# `source_host` names the site the text must be taken from; the release report checks
+# both (`excerpt_failures`). The other conditions are kept as the statement words them.
+# 1.3c records the first, for the LEV texts taken from vatican.va.
+EXCERPT_BASIS_FIELDS = ("statement", "url", "wording", "read_on", "conditions", "word_limit",
+                        "source_host")
 
 RENEWAL_SEARCH_FIELDS = ("date", "where", "query", "result")
 # Who ran the search, when it was not Carter. Optional.
@@ -120,3 +129,28 @@ def work_keys(documents_by_collection: dict[str, list],
                 raise ValueError(f"{collection}: cannot resolve the source of {doc.title!r}")
             keys.append((collection, path, doc.title, doc.author))
     return keys
+
+
+def excerpt_failures(documents: list, entries: list[dict]) -> list[tuple]:
+    """(document, passage or None, detail) for each built document that breaks a limit
+    of its row's `excerpt_basis`: a passage over `word_limit` words, or text taken from
+    another site than `source_host`."""
+    from urllib.parse import urlparse
+
+    rows = by_document_id(entries)
+    out = []
+    for doc in documents:
+        basis = (rows.get(doc.id) or {}).get("excerpt_basis")
+        if not basis:
+            continue
+        host = basis.get("source_host")
+        url = (doc.metadata or {}).get("url") or ""
+        if host and urlparse(url).hostname != host:
+            out.append((doc, None, f"its text is from {url or 'no URL'}, not {host}"))
+        limit = basis.get("word_limit")
+        if limit:
+            longest = max(doc.passages, key=lambda p: len(p.content.split()), default=None)
+            if longest is not None and len(longest.content.split()) > limit:
+                out.append((doc, longest, f"{len(longest.content.split())} words, over the "
+                                          f"basis's limit of {limit}"))
+    return out

@@ -79,3 +79,28 @@ def test_the_check_uses_the_api_rule():
     assert SL.source_links.__file__.endswith("services/api/app/source_links.py")
     assert SL.source_links.fragment_text("22. The truth is that only in the mystery of man") \
         == "The truth is that only in the mystery"
+
+
+def test_a_build_run_changes_only_its_documents_entries_and_a_live_run_keeps_them(tmp_path):
+    # 1.3c: the 23 papal documents reach vatican.va only at the publish, so their
+    # passages are checked from the build, under the IDs they will carry live.
+    out = tmp_path / "misses.json"
+    SL.write_misses({"live-a": "missing", "live-b": "found"}, str(out))
+    SL.write_misses({"built-a": "repeated", "built-b": "found"}, str(out),
+                    build_keys=["encyclicals/humanae-vitae"])
+    data = json.loads(out.read_text())
+    assert data["chunk_ids"] == ["built-a", "live-a"]
+    assert data["counts"] == {"found": 1, "missing": 1}
+    assert data["from_build"]["source_keys"] == ["encyclicals/humanae-vitae"]
+    assert data["from_build"]["chunk_ids"] == ["built-a"]
+    # Rerun from the build: its documents' entries are replaced, not added to.
+    SL.write_misses({"built-a": "found", "built-c": "missing"}, str(out),
+                    build_keys=["encyclicals/humanae-vitae"])
+    assert json.loads(out.read_text())["chunk_ids"] == ["built-c", "live-a"]
+    # A live run before the publish does not read them, so it keeps them...
+    SL.write_misses({"live-a": "found"}, str(out))
+    assert json.loads(out.read_text())["chunk_ids"] == ["built-c"]
+    # ... and once they are live, the live run's outcome replaces them.
+    SL.write_misses({"live-a": "found", "built-c": "found"}, str(out))
+    data = json.loads(out.read_text())
+    assert data["chunk_ids"] == [] and "from_build" not in data
