@@ -1,0 +1,54 @@
+{
+ "work": "deferrari-constance",
+ "title": "Council of Constance, Wyclif's and Hus's articles and two extracts, from Deferrari, The Sources of Catholic Dogma (1957), pp. 208–218, Loreto reprint",
+ "scan": "sources-of-catholic-dogma-loreto-reprint",
+ "pdf": "councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf",
+ "pdf_page_offset": 31,
+ "margin_numbers": true,
+ "pages": [
+  "208",
+  "218"
+ ],
+ "layout": "single-column",
+ "units": "deferrari",
+ "unit_bounds": [
+  {
+   "id": "session-8/wyclif-articles",
+   "first": "^\\W{0,2}[I1l]\\.\\s+In the sacrament of the altar",
+   "last": "^\\W{0,2}45\\.\\s"
+  },
+  {
+   "id": "session-13/communion-under-one-kind",
+   "first": "^\\W{0,2}Since in some parts of the world",
+   "last": "heretical depravity\\.\\W*$"
+  },
+  {
+   "id": "session-15/hus-articles",
+   "first": "^\\W{0,2}1\\.\\s+One and only is",
+   "last": "^\\W{0,2}30\\.\\s"
+  },
+  {
+   "id": "session-15/tyrannicide",
+   "first": "^\\W{0,2}The holy Synod, July 6",
+   "last": "heretics\\W*$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

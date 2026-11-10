@@ -1,0 +1,44 @@
+[
+ {
+  "passage": "session-43/decree/1",
+  "find": "we,'? with",
+  "replace": "we, with",
+  "why": "p. 453: Footnote call 13 after 'we,' read as \"'?\"; remove it."
+ },
+ {
+  "passage": "session-43/decree/3",
+  "find": "during their vacancies",
+  "replace": "during their vacanies",
+  "why": "p. 453: the page prints 'vacanies'; the model's 'vacancies' is put back to the printer's spelling, as 'essense' and 'consures' were"
+ },
+ {
+  "passage": "session-43/decree/4",
+  "find": "more Stringent",
+  "replace": "more stringent",
+  "why": "p. 453: Page prints lower-case 'stringent'."
+ },
+ {
+  "passage": "session-43/decree/6",
+  "find": "By US: however",
+  "replace": "By us, however",
+  "why": "p. 454: Page prints 'By us,' (lower case, comma)."
+ },
+ {
+  "passage": "session-43/decree/6",
+  "find": "consent 0 our",
+  "replace": "consent of our",
+  "why": "p. 454: Page prints 'of' at the line end."
+ },
+ {
+  "passage": "session-43/decree/6",
+  "find": "con sulting",
+  "replace": "consulting",
+  "why": "p. 454: Line-end hyphenation 'con-/sulting' joined with a stray space."
+ },
+ {
+  "passage": "session-43/decree/6",
+  "find": "ecclesiastica persons",
+  "replace": "ecclesiastical persons",
+  "why": "p. 454: Page prints 'ecclesiastical' at line end; final 'l' lost."
+ }
+]
