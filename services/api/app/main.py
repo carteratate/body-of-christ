@@ -27,10 +27,12 @@ from app.rag.steps.llm_rerank.openai_provider import close as close_luna, init a
 from app.rag.steps.llm_rerank.openai_provider import PROVIDER as luna_provider
 from app.rag.steps.explain import close_explain, init_explain
 from app.rag.qdrant_client import (
-    QDRANT_COLLECTION,
     close_qdrant,
     get_qdrant_client,
     init_qdrant,
+    read_collection,
+    resolve_read_target,
+    searchable_indexed,
 )
 from app.routes.bookmarks import router as bookmarks_router
 from app.routes.documents import router as documents_router
@@ -65,14 +67,21 @@ def _search_readiness() -> dict[str, bool]:
     }
 
 
-async def _live_search_readiness() -> dict[str, bool]:
+async def _live_search_readiness() -> tuple[dict[str, bool], dict[str, str | None]]:
     """Run bounded, non-billable checks for dependencies that expose a safe ping.
 
     Model providers expose initialization state separately because validating their
     credentials would require a billable inference request. The response names this
     distinction explicitly instead of presenting configuration as live connectivity.
+
+    Also returns what search reads in Qdrant: `qdrant_read`, the configured collection
+    or alias, `qdrant_target`, the collection it resolves to, and
+    `qdrant_searchable_filter`, whether search filters on `searchable` (both None when
+    the check failed).
     """
     live = {"database": False, "qdrant": False}
+    qdrant = {"qdrant_read": read_collection(), "qdrant_target": None,
+              "qdrant_searchable_filter": None}
     pool = get_pool()
     if pool is not None:
         try:
@@ -82,15 +91,19 @@ async def _live_search_readiness() -> dict[str, bool]:
             logger.warning("search health: database live check failed")
     client = get_qdrant_client()
     if client is not None:
+        async def _check_qdrant() -> tuple[str, bool]:
+            target = await resolve_read_target(client)
+            await client.get_collection(target)
+            return target, await searchable_indexed()
+
         try:
-            await asyncio.wait_for(
-                client.get_collection(QDRANT_COLLECTION),
-                timeout=3.0,
-            )
-            live["qdrant"] = True
+            target, filtered = await asyncio.wait_for(_check_qdrant(), timeout=3.0)
         except Exception:
             logger.warning("search health: qdrant live check failed")
-    return live
+        else:
+            qdrant["qdrant_target"], qdrant["qdrant_searchable_filter"] = target, filtered
+            live["qdrant"] = True
+    return live, qdrant
 
 
 async def _db_keepalive() -> None:
@@ -131,6 +144,11 @@ async def lifespan(app: FastAPI):
         logger.warning("INTERNAL_API_SECRET is not set — all requests will bypass the secret check")
     init_embed()
     init_qdrant()
+    # Whether search can filter on `searchable` yet (2.2b); re-read every five minutes.
+    try:
+        await asyncio.wait_for(searchable_indexed(), timeout=5.0)
+    except TimeoutError:
+        logger.warning("Qdrant searchable index check timed out; will retry on first search")
     init_api_keys()
     init_hyde_luna()
     init_rerank()
@@ -228,7 +246,7 @@ async def health_db() -> dict:
 @app.get("/health/search")
 async def health_search() -> JSONResponse:
     initialized = _search_readiness()
-    live = await _live_search_readiness()
+    live, qdrant = await _live_search_readiness()
     ok = all(initialized.values()) and all(live.values())
     return JSONResponse(
         status_code=200 if ok else 503,
@@ -236,6 +254,7 @@ async def health_search() -> JSONResponse:
             "ok": ok,
             "initialized": initialized,
             "live": live,
+            **qdrant,
             "note": (
                 "Model-provider credentials are configuration-checked only; validating "
                 "them requires a billable inference request."

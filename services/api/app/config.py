@@ -53,6 +53,11 @@ class Settings(BaseSettings):
     # Qdrant (vector search)
     qdrant_url: str = Field(validation_alias="QDRANT_URL")
     qdrant_api_key: str = Field(validation_alias="QDRANT_API_KEY")
+    # The collection, or alias, search reads (corpus cleanup 2.2b). Production reads the
+    # alias `chunks_live`, which a publish switches to its new collection. The
+    # datapipeline writes through its own `QDRANT_WRITE_COLLECTION`, so the API never
+    # reads a collection that is still being built.
+    qdrant_read_collection: str = Field(default="chunks", validation_alias="QDRANT_READ_COLLECTION")
 
     # OpenAI (embeddings)
     openai_api_key: str = Field(validation_alias="OPENAI_API_KEY")

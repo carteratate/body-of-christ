@@ -188,7 +188,9 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row
-  is live and searchable. The search path does not read them yet (2.2b). The API's
+  is live and searchable. Search skips a passage that is not searchable, retired or in a
+  retired document (2.2b): full-text search, Summa stitching and the position lookup
+  filter in SQL, and vector search filters on the Qdrant payload's `searchable`. The API's
   results, reader, history restore, bookmarks, `/sources` and reading progress do (2.4a):
   `app/corpus_schema.py` says which objects exist and builds today's SQL without them, and
   `app/corpus_lifecycle.py` turns a retired row into `moved` (redirect) or `removed`
@@ -237,6 +239,11 @@ Migrations 0001–0034, 0036–0038 and 0040–0044 are committed; `0035_studies
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
 repo. Qdrant owns all vector search. Production holds one Qdrant collection, `chunks`; the
 V5 `facets` and `questions` collections exist only if a V5 `embed` run creates them.
+The API reads the collection or alias `QDRANT_READ_COLLECTION` names (default `chunks`;
+production is to read the alias `chunks_live`, which a 2.2w publish switches), and
+`/health/search` reports it and its target. Production's Qdrant runs in **strict mode**: it
+refuses a filter on a payload field with no index, so the API filters on `searchable`
+only once the read collection has that boolean index (`qdrant_client.searchable_indexed`).
 The 237 MB HNSW index over `content_embedding` was dropped in 0033's sibling, 0032. Leave
 the columns themselves alone: all-NULL columns cost zero bytes, and `DROP COLUMN` does not
 rewrite the table, so removing them would reclaim nothing.

@@ -57,6 +57,24 @@ def test_cosine_sim_opposite_vectors_returns_minus_one():
 # ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
+async def test_neighbor_fetch_reads_configured_collection(monkeypatch):
+    """The near-duplicate check reads vectors from the collection search reads, so it
+    follows the alias `chunks_live` (corpus cleanup 2.2b)."""
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "qdrant_read_collection", "chunks_live")
+    a = _chunk("aaaa-0000-0000-0000-000000000001", "doc1", "CCC", 0.9, position=1)
+    b = _chunk("bbbb-0000-0000-0000-000000000002", "doc1", "CCC", 0.7, position=2)
+    mock_client = AsyncMock()
+    mock_client.retrieve = AsyncMock(return_value=[])
+
+    with patch("app.rag.dedup.get_qdrant_client", return_value=mock_client):
+        await apply_dedup([a, b])
+
+    assert mock_client.retrieve.call_args.kwargs["collection_name"] == "chunks_live"
+
+
+@pytest.mark.asyncio
 async def test_dedup_drops_lower_scorer_when_close_and_cosine_high():
     """Position ≤2 apart AND cosine > 0.9 → lower scorer dropped."""
     a = _chunk("aaaa-0000-0000-0000-000000000001", "doc1", "CCC", 0.9, position=1)

@@ -44,6 +44,12 @@ class CorpusSchema:
         """`AND <alias>.retired_at IS NULL`, or "" without 0042."""
         return f" AND {alias}.retired_at IS NULL" if self.retired else ""
 
+    def searchable_sql(self, chunk: str, document: str) -> str:
+        """The predicates that keep a passage out of search (item 2.2b): not searchable,
+        retired, or in a retired document. "" without 0042."""
+        sql = f" AND {chunk}.searchable" if self.searchable else ""
+        return sql + self.visible(chunk) + self.visible(document)
+
     @property
     def lifecycle(self) -> bool:
         """Whether retired rows can exist and be explained: anything else is current."""

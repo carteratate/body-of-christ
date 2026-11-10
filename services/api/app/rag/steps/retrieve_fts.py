@@ -7,23 +7,29 @@ import random
 
 import asyncpg
 
+from app import corpus_schema
 from app.config import settings
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.rag.steps import degradation
 
 logger = logging.getLogger(__name__)
 
-_SQL = """
+_SQL_TEMPLATE = """
     SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.chapter_key, c.position,
            c.annotation, c.unit_label, c.document_id::text AS document_id,
            d.title AS document_title, d.author, d.collection
     FROM chunks c
     JOIN documents d ON c.document_id = d.id
     WHERE d.collection = $1
-      AND c.search_vector @@ plainto_tsquery('english', $2)
+      AND c.search_vector @@ plainto_tsquery('english', $2){searchable}
     ORDER BY ts_rank(c.search_vector, plainto_tsquery('english', $2)) DESC
     LIMIT $3
 """
+
+
+def build_sql(schema: corpus_schema.CorpusSchema) -> str:
+    """Today's SQL without 0042, byte for byte; with it, only searchable live rows."""
+    return _SQL_TEMPLATE.format(searchable=schema.searchable_sql("c", "d"))
 
 
 _TRANSIENT_CONNECTION_ERRORS = (
@@ -64,7 +70,10 @@ async def _search_fts(collection: str, query_text: str, limit: int) -> list[dict
             await asyncio.sleep(0.15 + random.random() * 0.20)
             continue
         try:
-            rows = await conn.fetch(_SQL, collection, query_text, limit)
+            rows = await corpus_schema.run_with_fallback(
+                lambda schema: conn.fetch(build_sql(schema), collection, query_text, limit),
+                conn,
+            )
         except _TRANSIENT_CONNECTION_ERRORS:
             if attempt:
                 raise

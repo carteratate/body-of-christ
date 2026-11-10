@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import logging
 
+from app import corpus_schema
 from app.db import get_pool
 from app.rag.steps import degradation
 from app.rag.steps.types import RankedChunk
@@ -34,15 +35,23 @@ logger = logging.getLogger(__name__)
 # twice over: it is the order the neighbour scans walk, and it is what keeps a split
 # determination (109 of 3,120 keys) in reading order rather than presenting its halves
 # backwards.
-_SQL = """
+#
+# A passage search would not return (not searchable, retired, or in a retired document;
+# corpus cleanup 2.2b) is left out, so it is never attached. A card whose parts are all
+# hidden gets no attachment, as on a failed lookup.
+_SQL_TEMPLATE = """
     SELECT c.id::text AS chunk_id, c.content, c.reference, c.anchor, c.chapter_key,
            c.position, c.unit_label, c.document_id::text AS document_id,
            d.title AS document_title, d.author, d.collection
     FROM chunks c JOIN documents d ON d.id = c.document_id
     WHERE c.chapter_key = ANY($1::text[])
-      AND d.collection = 'summa'
+      AND d.collection = 'summa'{searchable}
     ORDER BY c.document_id, c.chapter_key, c.position
 """
+
+
+def build_sql(schema: corpus_schema.CorpusSchema) -> str:
+    return _SQL_TEMPLATE.format(searchable=schema.searchable_sql("c", "d"))
 
 
 def _to_chunk(row) -> RankedChunk:
@@ -91,7 +100,10 @@ async def articles(chapter_keys: set[str]) -> dict[tuple[str, str], list[RankedC
         return {}
 
     try:
-        rows = await pool.fetch(_SQL, sorted(chapter_keys))
+        keys = sorted(chapter_keys)
+        rows = await corpus_schema.run_with_fallback(
+            lambda schema: pool.fetch(build_sql(schema), keys), pool,
+        )
     except Exception as exc:
         logger.warning("fetch_context: lookup failed: %s", exc)
         degradation.record_recovery(

@@ -22,9 +22,23 @@ def pytest_configure(config):
     os.environ.setdefault("COHERE_MAX_CALLS_PER_MINUTE", "0")
     # Registered here, not at collection: a module-level `pytestmark` uses it on import.
     config.addinivalue_line("markers", "real_corpus_schema: probe the corpus schema for real")
+    config.addinivalue_line(
+        "markers", "qdrant_live: needs a real Qdrant server at QDRANT_TEST_URL (skipped without)",
+    )
 
 
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def _forget_searchable_index():
+    """Corpus cleanup 2.2b caches whether Qdrant has the `searchable` index; one test's
+    answer must not reach the next. Without a client the check answers False."""
+    from app.rag import qdrant_client
+
+    qdrant_client.forget_searchable_index()
+    yield
+    qdrant_client.forget_searchable_index()
 
 
 @pytest.fixture(autouse=True)
