@@ -1,1 +1,20 @@
-[]
+[
+ {
+  "sha1": "57b376665dfd2217b276d541b872af80e33a64af",
+  "file": "on-the-holy-trinity.xml",
+  "p_id": "iv.iv-p7",
+  "excerpt": "[A discourse delivered before a council of the whole North African Episcopate assembled at Hippo-Regius.]"
+ },
+ {
+  "sha1": "fd0360afca6e706677480324dab7a0d131b11341",
+  "file": "on-the-holy-trinity.xml",
+  "p_id": "iv.v-p2",
+  "excerpt": "[De Fide Rerum Quæ Non Videntur.]"
+ },
+ {
+  "sha1": "148b4621ad30fa8881ac6ce1fd5cb970b527b1e1",
+  "file": "second-century.xml",
+  "p_id": "v.iii.xxv-p2",
+  "excerpt": "[This concluding chapter is of itself a masterpiece, and comforts my own soul unspeakably, as proving that this life is "
+ }
+]

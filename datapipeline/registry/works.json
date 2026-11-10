@@ -4781,7 +4781,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iii.iv.i.xiii.i-p1",
+     "quote": "Doubtful Fragments on the Pentateuch.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -4810,7 +4818,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iii.v.i.i-p2",
+     "quote": "Containing Dubious and Spurious Pieces.",
+     "verdict": "spurious",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -4868,7 +4884,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.v.xiii",
+     "quote": "But you will say where is the proof of such interpolations? The greatly celebrated Benedictine edition reads as the interpolated column does, and who would not credit Baluzius? Now note, Baluzius rejected these interpolations and others; but, dying (a.d.",
+     "verdict": "interpolated",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -4926,7 +4950,57 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.vii.i",
+     "quote": "Translator’s Introduction to Treatises Attributed to Cyprian on Questionable Authority. ———————————— The treatises which follow are usually classed under the doubtful works of Cyprian.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    },
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.vii.i",
+     "quote": "Baluzius, however, gives the two first, On the Public Shows, and On the Glory of Martyrdom, among the genuine Opuscula, and says: “I have not thought it fit to prejudice any one amid the diversity of opinions on the subject, but have refrained from separating the following from the genuine works of",
+     "verdict": "genuine",
+     "overridden_by_plan": true
+    },
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.vii.i",
+     "quote": "The text, however, is undoubtedly far less to be depended upon than in the case of the genuine works. The treatises On the Discipline and Benefit of Chastity and the Exhortation to Repentance are generally placed under the Opuscula dubia.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    },
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.vii.i",
+     "quote": "The former was first edited by Baluzius, with the title “Epistle of an Unknown Author.” Its Cyprianic authorship was maintained by Bellarmin, Pamelius, and others; while Erasmus, Tillemont, and others have rejected it as spurious.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    },
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.vii.i",
+     "quote": "The second treatise was first published by Joannes Chrysostomus Trombellius (in 1751), who regarded it as a genuine work of Cyprian’s.",
+     "verdict": "genuine",
+     "overridden_by_plan": true
+    },
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.vii.i",
+     "quote": "treatise, consisting merely of a collection of quotations from Scripture, in the manner of the Testimonies against the Jews, may probably be attributed to him with as much reason as the Testimonies. It is, however, right to add, that Professor Blunt quotes from the Treatise on the Glory of Martyrdom",
+     "verdict": "attributed",
+     "overridden_by_plan": true
+    },
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "iv.vii.ii-p1",
+     "quote": "Treatises Attributed to Cyprian on Questionable Authority.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -4955,7 +5029,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-2.xml",
+     "element_id": "v.iii.iv",
+     "quote": "600.) I have been unable to get a copy of the work of John de Soynes on Montanism, which possibly throws some light upon the Dialogue with Proclus, attributed to him by Photius.",
+     "verdict": "attributed",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -5100,7 +5182,29 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-3.xml",
+     "element_id": "iii.iii.i.ii",
+     "quote": "But it is very doubtful whether it be a genuine work; and, to my mind, it is most fairly treated by Lardner, to whose elaborate chapter concerning Gregory every scholar must refer.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    },
+    {
+     "source_file": "third-century-3.xml",
+     "element_id": "iii.iii.i.ii",
+     "quote": "Burton, in his edition of Bishop Bull’s works, almost overrules that learned prelate’s inclination to think it genuine, in the following words: “Hanc formulam minime esse Gregorii authenticam…multis haud spernendis argumentis demonstrat Lardner.” Lardner thinks it a fabrication of the fourth century",
+     "verdict": "spurious",
+     "overridden_by_plan": false
+    },
+    {
+     "source_file": "third-century-3.xml",
+     "element_id": "iii.iii.iii.xii",
+     "quote": "18.) This is a genuine epistle, all but the eleventh canon.",
+     "verdict": "genuine",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -5129,7 +5233,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-3.xml",
+     "element_id": "iii.iv.v.v",
+     "quote": "The titles of these Homilies are the work of much later editors; and interpolations probably occur frequently, by the same hands.",
+     "verdict": "interpolated",
+     "overridden_by_plan": true
+    }
+   ]
   },
   "works": []
  },
@@ -5390,7 +5502,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-3.xml",
+     "element_id": "vi.ix.i",
+     "quote": "But there is a work bearing the title of An Exposition of the Chapters of the Acts of the Apostles, which is attributed by many to him, although others ascribe it to Euthalius, bishop of Sulce.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -5709,7 +5829,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century-3.xml",
+     "element_id": "xi.ix.ii",
+     "quote": "It appeared in Sir Henry Savile’s edition of Chrysostom ascribed to that Father.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -6289,7 +6417,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-century.xml",
+     "element_id": "vi.viii.ii",
+     "quote": "Elucidation. ———————————— This golden letter, doubtless genuine, was attended with very great consequences, of which we shall gather more hereafter.",
+     "verdict": "genuine",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -6376,7 +6512,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-fourth-century.xml",
+     "element_id": "iii.iv.xxi",
+     "quote": "311.” On the dubious passages he remarks:— “The first and most important of these is, indeed, wanting in twenty-eight mss., but is found in nineteen.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -6434,7 +6578,22 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-fourth-century.xml",
+     "element_id": "iii.vi.iii",
+     "quote": "There is no ms authority for ascribing the above to Lactantius.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    },
+    {
+     "source_file": "third-fourth-century.xml",
+     "element_id": "iii.vi.iii",
+     "quote": "“It does not, in the least, come up to the purity and eloquence of his style,” says Dupin; and the same candid author notes the “adoration of the cross” as fatal to any such claim. Of the following poem, on Easter, Dupin says: “It is attributed to Venantius upon the testimony of some mss.",
+     "verdict": "spurious",
+     "overridden_by_plan": true
+    }
+   ]
   },
   "works": []
  },
@@ -6695,7 +6854,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-fourth-century.xml",
+     "element_id": "v.ii.i",
+     "quote": "dition of the Apostolic Fathers is encyclopedic in its treatment of the subject; and I had hardly corrected the last proofs of the fragments ascribed to Asterius Urbanus when I discovered, in one of his notes on Polycarp, a most brilliant elucidation of a matter which I had supposed involved in twof",
+     "verdict": "attributed",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -6724,7 +6891,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "third-fourth-century.xml",
+     "element_id": "vi.ii.xx",
+     "quote": "Indeed, if the Victorinus mentioned by Jerome be the same as our author, the mention of Genseric proves the subsequent interpolation of his works. 18.",
+     "verdict": "interpolated",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
