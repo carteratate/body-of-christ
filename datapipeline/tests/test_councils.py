@@ -1011,7 +1011,8 @@ PERCIVAL_XML = """<?xml version="1.0"?>
 </div3>
 <div3 id="v.ii.ii" title="Excursus on Sees."><p id="v.ii.ii-p1" class="c18">An excursus on sees.</p></div3>
 <div3 id="v.ii.iii" title="Canon II.">
-<p id="v.ii.iii-p1" class="c34">Canon II.</p>
+<p id="v.ii.iii-p1" class="c46">Canon II.</p>
+<p id="v.ii.iii-p1a" class="c35">That the clergy are to obey.</p>
 <p id="v.ii.iii-p2" class="c18">(Probably adopted at a later council.)</p>
 <p id="v.ii.iii-p3" class="c18">Let the clergy obey their bishop.</p>
 <p id="v.ii.iii-p4" class="c31">Notes.</p>
@@ -1022,6 +1023,7 @@ PERCIVAL_XML = """<?xml version="1.0"?>
 <p id="v.iii-p1" class="c14">The Synodal Letter.</p>
 <p id="v.iii-p2" class="c31">(Found in Labbe, Concilia, Tom. II.)</p>
 <p id="v.iii-p3" class="c18">To the Church of the city, greeting.</p>
+<p id="v.iii-p3a" class="c35">The Creed of the Fathers.</p>
 <p id="v.iii-p4" class="c19">[Next was read the letter of the emperor.]</p>
 <p id="v.iii-p5" class="c19">We have decreed what is written above.</p>
 </div2>
@@ -1047,12 +1049,14 @@ def test_percival_allowlist_drops_epitome_and_notes(tmp_path, monkeypatch):
     doc = _example(tmp_path, monkeypatch)
     text = " ".join(p.content for p in doc.passages)
     for editor in ("Historical", "Ancient Epitome", "Zonaras", "renewed", "excursus", "Van Espen",
-                   "Probably adopted", "Found in", "Next was read", "province\"", "Some read"):
+                   "Probably adopted", "Found in", "Next was read", "province\"", "Some read",
+                   "Canon II", "That the clergy"):
         assert editor not in text, editor
     assert [p.content for p in doc.passages] == [
         "Let no bishop leave his see without the consent of the synod of the province.",
         "Let the clergy obey their bishop.",
-        "To the Church of the city, greeting.\n\nWe have decreed what is written above."]
+        "To the Church of the city, greeting.\n\nThe Creed of the Fathers.\n\n"
+        "We have decreed what is written above."]
 
 
 def test_percival_canon_anchors(tmp_path, monkeypatch):

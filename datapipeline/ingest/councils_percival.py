@@ -10,7 +10,7 @@ anathemas against Origen and the iconoclast definition are left out (Decision lo
 
 Inside an allowed div the council's text runs from its first paragraph to the one before
 "Notes." or "Note.": from there on are the Ancient Epitome, the commentators and Percival's
-notes. Headings (`HEADING_CLASSES`), Percival's source lines in parentheses ("(Found in
+notes. Headings (`HEADING_CLASSES`, and `TITLE_CLASS` before a text's first paragraph), Percival's source lines in parentheses ("(Found in
 …)") and his bracketed connecting notes ("[Next was read …]") go wherever they stand.
 His `<note>`s are editor material (1.10b); each one's scripture reference stays as the
 passage's footnote, after the word it followed (`ingest.scripture_notes`).
@@ -47,9 +47,13 @@ URL = "https://ccel.org/ccel/schaff/npnf214"
 TRANSLATION = "Henry R. Percival, ed., The Seven Ecumenical Councils (NPNF2 vol. 14, 1900)"
 TEXT_REPLACED = "Percival (NPNF2-14) replaces Tanner"
 # Paragraph classes that are headings in CCEL's ThML: the div's title (c14), "Canon I."
-# (c34), the Greek collections' title of each of Nicaea II's canons (c50), a letter's title
-# line (c44). Class c31 is a heading too, and also marks "Notes.", which ends the text.
-HEADING_CLASSES = frozenset({"c14", "c31", "c34", "c44", "c50"})
+# (c34, and c46 on Chalcedon's VIII and XIII), the Greek collections' title of each of
+# Nicaea II's canons (c50), a letter's title line (c44). Class c31 is a heading too, and
+# also marks "Notes.", which ends the text.
+HEADING_CLASSES = frozenset({"c14", "c31", "c34", "c44", "c46", "c50"})
+# Before a text's first paragraph, c35 is a title as well (eight of Nicaea II's canon
+# titles); inside one it is the text's own (the creeds named in Chalcedon's Definition).
+TITLE_CLASS = "c35"
 _NOTES = re.compile(r"^Notes?\.$|^Note [IVX]+\.$")
 _EDITOR_LINE = re.compile(r"^\(.*\)\.?$|^\[.*\]\.?$", re.DOTALL)
 
@@ -214,7 +218,8 @@ def _paragraphs(div, text: Text) -> list[_Paragraph]:
             raise ValueError(f"{div_id}-{pid}: a note outside the paragraph's text")
         if _NOTES.match(body):
             break
-        if body and el.get("class") not in HEADING_CLASSES and not _EDITOR_LINE.match(body):
+        title = el.get("class") in HEADING_CLASSES or (el.get("class") == TITLE_CLASS and not out)
+        if body and not title and not _EDITOR_LINE.match(body):
             out.append(_Paragraph(pid, body, list(zip(marks, texts))))
         if pid == text.last:
             break
