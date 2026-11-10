@@ -1853,6 +1853,76 @@
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "2ab4d2d1-0b4f-512e-896e-bdc690bad95b",
+  "old_anchor": "iv.v.ii/from-p13",
+  "new_passage_id": "4cdf76da-2071-5ac0-9fc2-b7f33c8d82b3",
+  "new_anchor": "iv.v.ii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "b9218351-c11b-5310-9180-693710795fdb",
+  "old_anchor": "iv.v.ii/from-p19",
+  "new_passage_id": "5ff83732-42cd-543c-afe6-518e93ea5532",
+  "new_anchor": "iv.v.ii/from-p17",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "241bbb3d-8b3b-5db9-a68b-2dadfb161e72",
+  "old_anchor": "iv.v.ii/from-p26",
+  "new_passage_id": "d19abed7-bdae-528c-9663-d6dc081860f0",
+  "new_anchor": "iv.v.ii/from-p22",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "080d8fbb-612b-5c33-acdf-127d4def4a13",
+  "old_anchor": "iv.v.ii/from-p34",
+  "new_passage_id": "1b2c690f-2c88-5abf-9ad7-d3e476880bc4",
+  "new_anchor": "iv.v.ii/from-p30",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "91f4ab64-5ace-5c0d-83a1-4f03a429ca6a",
+  "old_anchor": "iv.v.ii/from-p42",
+  "new_passage_id": "12179d9e-23c5-5821-8001-5ab3b48faa68",
+  "new_anchor": "iv.v.ii/from-p37",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "a4466038-d9d2-5252-abd6-096c0d111b9c",
+  "old_anchor": "iv.v.ii/from-p47",
+  "new_passage_id": "d947f2d9-3061-5670-b8f8-216189fdd436",
+  "new_anchor": "iv.v.ii/from-p44",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "682840fd-2752-5489-b500-b38337e81be2",
+  "old_anchor": "iv.v.ii/from-p50",
+  "new_passage_id": "a02275a5-192c-5877-835f-358351c003e7",
+  "new_anchor": "iv.v.ii/from-p49",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
   "old_passage_id": "29c66906-c454-5afe-948f-ada61534e9c0",
   "old_anchor": "iv.v.iii/from-p107",
   "new_passage_id": "53df36d5-6a91-54cf-9b8c-45625f619ef3",
@@ -1870,6 +1940,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "28a72a6c-1e16-5f50-ac14-4a68e5e95f07",
+  "old_anchor": "iv.v.iii/from-p12",
+  "new_passage_id": "127af3f8-ae89-5bed-a0a9-645a8f7e2cea",
+  "new_anchor": "iv.v.iii/from-p11",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -1960,6 +2040,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "c507d2fd-7b09-5334-886c-b8ebd790ad46",
+  "old_anchor": "iv.v.iii/from-p8",
+  "new_passage_id": "7a4ae1af-1031-52d4-9909-1cf2c65092a7",
+  "new_anchor": "iv.v.iii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2163,13 +2253,25 @@
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "2cd2821a-d4ce-5030-954a-547d025d3e59",
+  "old_anchor": "iv.v.vi/from-p14",
+  "new_passage_id": "d3d76a02-0710-58d6-8198-3300b389ed23",
+  "new_anchor": "iv.v.vi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
   "old_passage_id": "8b72ca85-1e94-52b9-bc39-e1fa6833d302",
   "old_anchor": "iv.v.vi/from-p16",
   "new_passage_id": "2cd2821a-d4ce-5030-954a-547d025d3e59",
   "new_anchor": "iv.v.vi/from-p14",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2333,13 +2435,45 @@
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "c2b9be23-8b7d-55d7-9630-4c71c030105e",
+  "old_anchor": "iv.v.x/from-p11",
+  "new_passage_id": "d69eadb1-2a9e-5809-bc21-7f93e351dcbd",
+  "new_anchor": "iv.v.x",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "0734ee07-b372-5af2-874c-9ee50f52b7e9",
+  "old_anchor": "iv.v.x/from-p17",
+  "new_passage_id": "4d3d5a94-6d53-56a2-9af0-299c19f11a66",
+  "new_anchor": "iv.v.x/from-p13",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
   "old_passage_id": "77061f83-5cc0-5639-b6e0-38290a887091",
   "old_anchor": "iv.v.x/from-p21",
   "new_passage_id": "0734ee07-b372-5af2-874c-9ee50f52b7e9",
   "new_anchor": "iv.v.x/from-p17",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "51b104e7-8448-5aab-8957-50a8313ed4f5",
+  "old_anchor": "iv.v.x/from-p24",
+  "new_passage_id": "77061f83-5cc0-5639-b6e0-38290a887091",
+  "new_anchor": "iv.v.x/from-p21",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2349,7 +2483,29 @@
   "new_anchor": "iv.v.x/from-p24",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "8ed7689e-6a29-5366-a6c6-88ad1507d1d1",
+  "old_anchor": "iv.v.x/from-p33",
+  "new_passage_id": "602ac309-2f7e-57dc-a96d-73ba69b7ad66",
+  "new_anchor": "iv.v.x/from-p26",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "old_passage_id": "3e8b52b1-6c08-59a1-be46-b2207189064e",
+  "old_anchor": "iv.v.x/from-p42",
+  "new_passage_id": "cbc045ab-5661-5fb3-8a59-01a249f6d064",
+  "new_anchor": "iv.v.x/from-p37",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2469,7 +2625,9 @@
   "new_anchor": "iv.v.xiii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2479,7 +2637,9 @@
   "new_anchor": "iv.v.xiii/from-p41",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2489,7 +2649,9 @@
   "new_anchor": "iv.v.xiii/from-p59",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2499,7 +2661,9 @@
   "new_anchor": "iv.v.xiii/from-p75",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
@@ -2509,7 +2673,9 @@
   "new_anchor": "iv.v.xiii/from-p89",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "1d496a39-f816-530f-9fa8-bb26d015ddce",
@@ -3307,10 +3473,20 @@
  },
  {
   "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
+  "old_passage_id": "4ef5dbbd-a38d-5405-80eb-7ce58b860647",
+  "old_anchor": "vi.iv.vi/from-p2",
+  "new_passage_id": "3279f9d6-0c0d-5846-a604-5e66012ead3f",
+  "new_anchor": "vi.iv.vi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
   "old_passage_id": "904df936-4dfa-56f9-89ab-d95177f939ba",
   "old_anchor": "vi.iv.vi/from-p2-2",
-  "new_passage_id": "4ef5dbbd-a38d-5405-80eb-7ce58b860647",
-  "new_anchor": "vi.iv.vi/from-p2",
+  "new_passage_id": "3279f9d6-0c0d-5846-a604-5e66012ead3f",
+  "new_anchor": "vi.iv.vi",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -7287,7 +7463,9 @@
   "new_anchor": "vi.v.vi/from-p45",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9",
@@ -7875,6 +8053,16 @@
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "old_passage_id": "298ea8dd-3258-5c6c-a0a7-e0077251fcab",
+  "old_anchor": "iii.iv.i.xiii.i/from-p37",
+  "new_passage_id": "32916e28-e0e6-5523-926d-423ee173ff5d",
+  "new_anchor": "iii.iv.i.xiii.i",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
   "old_passage_id": "d81401e2-b203-5137-a150-bfc747ecec9d",
   "old_anchor": "iii.iv.i.xiv.i/from-p23",
   "new_passage_id": "048f12f7-4973-50fc-804f-505097b62301",
@@ -8032,6 +8220,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "old_passage_id": "7a1e7431-8498-51e0-916f-2fc1fba287fe",
+  "old_anchor": "iii.iv.ii.ii/from-p10",
+  "new_passage_id": "a4dd74c8-c568-5fd6-b1cb-df57945b5964",
+  "new_anchor": "iii.iv.ii.ii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8537,10 +8735,20 @@
  },
  {
   "document_id": "5a05852b-4193-518f-9d01-afd796291979",
+  "old_passage_id": "f9693a14-bb0d-5046-b3f3-a484daf3155d",
+  "old_anchor": "vi.ix.ii.lii/from-p2",
+  "new_passage_id": "13ca8f73-9660-5c87-896b-e07c7d821705",
+  "new_anchor": "vi.ix.ii.lii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "5a05852b-4193-518f-9d01-afd796291979",
   "old_passage_id": "d133e323-0e34-550d-8ab4-b699b1298b88",
   "old_anchor": "vi.ix.ii.lii/from-p2-2",
-  "new_passage_id": "f9693a14-bb0d-5046-b3f3-a484daf3155d",
-  "new_anchor": "vi.ix.ii.lii/from-p2",
+  "new_passage_id": "13ca8f73-9660-5c87-896b-e07c7d821705",
+  "new_anchor": "vi.ix.ii.lii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -8557,10 +8765,20 @@
  },
  {
   "document_id": "5a05852b-4193-518f-9d01-afd796291979",
+  "old_passage_id": "b651db74-5e01-51cc-997c-e7a92540c1b4",
+  "old_anchor": "vi.ix.ii.viii/from-p2",
+  "new_passage_id": "5ba37b64-4c05-5112-8892-45e355dd6012",
+  "new_anchor": "vi.ix.ii.viii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "5a05852b-4193-518f-9d01-afd796291979",
   "old_passage_id": "cd9099ec-3496-5008-9e18-c307b8a77cc3",
   "old_anchor": "vi.ix.ii.viii/from-p2-2",
-  "new_passage_id": "b651db74-5e01-51cc-997c-e7a92540c1b4",
-  "new_anchor": "vi.ix.ii.viii/from-p2",
+  "new_passage_id": "5ba37b64-4c05-5112-8892-45e355dd6012",
+  "new_anchor": "vi.ix.ii.viii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -8583,7 +8801,9 @@
   "new_anchor": "vi.ix.iv.c",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "5a05852b-4193-518f-9d01-afd796291979",
@@ -8744,6 +8964,16 @@
   "kind": "merged",
   "reason": "this one holds its text: Manning's translation of the same text",
   "added_by": "1.2d"
+ },
+ {
+  "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
+  "old_passage_id": "f62bc8c0-eb9a-55f2-ab9d-c00a8faae104",
+  "old_anchor": "iv.vii.ii/from-p11",
+  "new_passage_id": "7a66cb01-72c3-5151-90bc-4b834faac587",
+  "new_anchor": "iv.vii.ii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -11227,7 +11457,9 @@
   "new_anchor": "xii.iii.ix",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
@@ -11471,10 +11703,20 @@
  },
  {
   "document_id": "8d817baf-5149-5641-91ab-ad994870956a",
+  "old_passage_id": "3195b811-5f75-523a-8797-0e097e052756",
+  "old_anchor": "vi.iii.ii.i/from-p5",
+  "new_passage_id": "47a51394-156b-58ca-a112-bc0e4a276d20",
+  "new_anchor": "vi.iii.ii.i",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "8d817baf-5149-5641-91ab-ad994870956a",
   "old_passage_id": "05d4dadf-58af-58ce-b4d3-9ef6e2e00338",
   "old_anchor": "vi.iii.ii.i/from-p5-2",
-  "new_passage_id": "3195b811-5f75-523a-8797-0e097e052756",
-  "new_anchor": "vi.iii.ii.i/from-p5",
+  "new_passage_id": "47a51394-156b-58ca-a112-bc0e4a276d20",
+  "new_anchor": "vi.iii.ii.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -13633,10 +13875,20 @@
  },
  {
   "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
+  "old_passage_id": "2b24e701-3dae-5e13-b93f-4b0a155cea1c",
+  "old_anchor": "iv.iii.xxii/from-p2",
+  "new_passage_id": "68f53667-2a78-5958-8ef2-b4fc30032c17",
+  "new_anchor": "iv.iii.xxii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
   "old_passage_id": "1591bfb4-9b75-59c4-bcc2-db87f645d0d5",
   "old_anchor": "iv.iii.xxii/from-p2-2",
-  "new_passage_id": "2b24e701-3dae-5e13-b93f-4b0a155cea1c",
-  "new_anchor": "iv.iii.xxii/from-p2",
+  "new_passage_id": "68f53667-2a78-5958-8ef2-b4fc30032c17",
+  "new_anchor": "iv.iii.xxii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -13653,20 +13905,40 @@
  },
  {
   "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
+  "old_passage_id": "ec74a143-b60d-5375-ac5b-56a8ccc4ec43",
+  "old_anchor": "iv.iii.xxvii/from-p2",
+  "new_passage_id": "c695b8fa-eefb-565b-8d9a-f906b7a5ae9c",
+  "new_anchor": "iv.iii.xxvii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
   "old_passage_id": "e07860e7-d38c-5f63-8731-3095bdeacf91",
   "old_anchor": "iv.iii.xxvii/from-p2-2",
-  "new_passage_id": "ec74a143-b60d-5375-ac5b-56a8ccc4ec43",
-  "new_anchor": "iv.iii.xxvii/from-p2",
+  "new_passage_id": "c695b8fa-eefb-565b-8d9a-f906b7a5ae9c",
+  "new_anchor": "iv.iii.xxvii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
  },
  {
   "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
+  "old_passage_id": "7abc96d8-ec67-5baa-8133-1d41ef95c925",
+  "old_anchor": "iv.iii.xxxi/from-p2",
+  "new_passage_id": "11dee6ff-9236-5b66-bf8f-a8d70dcff5cc",
+  "new_anchor": "iv.iii.xxxi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
   "old_passage_id": "0c5ec740-0302-5e19-8feb-a4d549802fa9",
   "old_anchor": "iv.iii.xxxi/from-p2-2",
-  "new_passage_id": "7abc96d8-ec67-5baa-8133-1d41ef95c925",
-  "new_anchor": "iv.iii.xxxi/from-p2",
+  "new_passage_id": "11dee6ff-9236-5b66-bf8f-a8d70dcff5cc",
+  "new_anchor": "iv.iii.xxxi",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -14573,13 +14845,45 @@
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "c72fb056-2adb-58b2-b96c-c36cb78e954b",
+  "old_anchor": "iv.iv.lviii/from-p11",
+  "new_passage_id": "d428afcf-3f45-5c70-aa45-d992c593b56e",
+  "new_anchor": "iv.iv.lviii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "53df48f3-d633-572d-b8c7-1a2222e341db",
+  "old_anchor": "iv.iv.lviii/from-p15",
+  "new_passage_id": "2c3c7381-e6ca-525a-93c9-4178b39085c0",
+  "new_anchor": "iv.iv.lviii/from-p12",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "b9b98863-f620-5bcd-bd8d-2b9d857e413b",
+  "old_anchor": "iv.iv.lxi/from-p10",
+  "new_passage_id": "eead0208-5070-5551-8fa4-1a0ba9001be6",
+  "new_anchor": "iv.iv.lxi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
   "old_passage_id": "18e28baf-4f2f-5fd8-a047-2e38ed51e0d1",
   "old_anchor": "iv.iv.lxi/from-p15",
   "new_passage_id": "b9b98863-f620-5bcd-bd8d-2b9d857e413b",
   "new_anchor": "iv.iv.lxi/from-p10",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14603,13 +14907,33 @@
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "40fefdd9-7725-5eb9-8586-296bf5ac437b",
+  "old_anchor": "iv.iv.lxiii/from-p10",
+  "new_passage_id": "6454bf50-cc77-5fd3-849f-f03c5eab62e7",
+  "new_anchor": "iv.iv.lxiii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
   "old_passage_id": "36f538c5-d4a2-5722-8684-3424c85fc725",
   "old_anchor": "iv.iv.lxiii/from-p17",
-  "new_passage_id": "40fefdd9-7725-5eb9-8586-296bf5ac437b",
-  "new_anchor": "iv.iv.lxiii/from-p10",
+  "new_passage_id": "11434add-cd5b-533d-a6bd-9a9625ca9857",
+  "new_anchor": "iv.iv.lxiii/from-p16",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "2bfbf515-3706-5f39-a932-765241f56ff6",
+  "old_anchor": "iv.iv.lxiv/from-p10",
+  "new_passage_id": "3336cd5b-9ae8-5201-8b2f-61db14b6350a",
+  "new_anchor": "iv.iv.lxiv",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14619,7 +14943,9 @@
   "new_anchor": "iv.iv.lxiv/from-p10",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14783,13 +15109,33 @@
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "5e5dc8d0-85f8-5ed2-8408-f2275886696c",
+  "old_anchor": "iv.iv.lxxiii/from-p16",
+  "new_passage_id": "3c9d26d5-3535-59c3-98b7-0887da5eb8a6",
+  "new_anchor": "iv.iv.lxxiii/from-p12",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
   "old_passage_id": "2a4f42d9-366e-50b8-9a7e-f11be8b161ef",
   "old_anchor": "iv.iv.lxxiii/from-p21",
-  "new_passage_id": "5e5dc8d0-85f8-5ed2-8408-f2275886696c",
-  "new_anchor": "iv.iv.lxxiii/from-p16",
+  "new_passage_id": "a9677072-824f-5ccd-a011-4e597f2df160",
+  "new_anchor": "iv.iv.lxxiii/from-p18",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "0c95aab8-aadf-52fb-b1ee-d3444101472f",
+  "old_anchor": "iv.iv.lxxiii/from-p25",
+  "new_passage_id": "a9677072-824f-5ccd-a011-4e597f2df160",
+  "new_anchor": "iv.iv.lxxiii/from-p18",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14799,7 +15145,29 @@
   "new_anchor": "iv.iv.lxxiii/from-p25",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "8805ffe2-dced-5844-b027-4682d823c451",
+  "old_anchor": "iv.iv.lxxiii/from-p30",
+  "new_passage_id": "5529cba5-63bc-59e1-b6ef-5184b07fe7eb",
+  "new_anchor": "iv.iv.lxxiii/from-p26",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "2df3196b-aa5a-5021-ac69-19b1b65d7aae",
+  "old_anchor": "iv.iv.lxxiii/from-p9",
+  "new_passage_id": "f38db808-a3a6-56e0-85ef-34b54cdd3555",
+  "new_anchor": "iv.iv.lxxiii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14893,6 +15261,16 @@
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "0f6d5838-afe0-5e06-b71d-7f35a5012911",
+  "old_anchor": "iv.iv.lxxvii/from-p9",
+  "new_passage_id": "221d462f-37d7-5621-b0ca-9649d5392231",
+  "new_anchor": "iv.iv.lxxvii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
   "old_passage_id": "de70c848-363d-584d-96b4-3871a8fb3390",
   "old_anchor": "iv.iv.lxxxi/from-p6-2",
   "new_passage_id": "0d1bf2f0-feac-5f6e-a254-24ce0909a8f8",
@@ -14909,7 +15287,9 @@
   "new_anchor": "iv.iv.lxxxiii/from-p96",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14919,7 +15299,9 @@
   "new_anchor": "iv.iv.lxxxiii/from-p110",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14929,7 +15311,9 @@
   "new_anchor": "iv.iv.lxxxiii/from-p31",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14939,7 +15323,9 @@
   "new_anchor": "iv.iv.lxxxiii/from-p51",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14949,7 +15335,9 @@
   "new_anchor": "iv.iv.lxxxiii/from-p70",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14959,7 +15347,9 @@
   "new_anchor": "iv.iv.lxxxiii/from-p83",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -14969,7 +15359,29 @@
   "new_anchor": "iv.iv.lxxxiii/from-p91",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "4838e607-310e-5f02-9b63-0d3b4833fc1b",
+  "old_anchor": "iv.iv.vi/from-p23",
+  "new_passage_id": "652425a3-2f47-54e4-8231-8a600c559081",
+  "new_anchor": "iv.iv.vi/from-p15",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "fcd6caae-38b9-51d4-98ab-7af2ebd938e7",
+  "old_anchor": "iv.iv.vi/from-p9",
+  "new_passage_id": "cc3b6fb8-bb70-5e0d-abce-2fe8600f90e9",
+  "new_anchor": "iv.iv.vi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -15013,6 +15425,16 @@
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "31becbfd-e792-5490-be09-6c9170149647",
+  "old_anchor": "iv.iv.xliv/from-p9",
+  "new_passage_id": "e65a9bdc-8324-5991-8d1b-a9a18a8589b3",
+  "new_anchor": "iv.iv.xliv",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
   "old_passage_id": "71944976-775f-5507-a5e8-44449be26a38",
   "old_anchor": "iv.iv.xlv/from-p9-2",
   "new_passage_id": "0adf9744-d43f-5d6c-a68e-a99525fed66a",
@@ -15020,6 +15442,26 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "2b7ec101-086b-57f0-b2b4-3513ab51a644",
+  "old_anchor": "iv.iv.xv/from-p10",
+  "new_passage_id": "c3fa86ed-7962-5112-82ba-27ca351470c6",
+  "new_anchor": "iv.iv.xv/from-p9",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "e37e552c-0a4a-5253-8c30-981684211d76",
+  "old_anchor": "iv.iv.xv/from-p8",
+  "new_passage_id": "227a25a1-62fa-5216-8ed4-75b1938d5c6c",
+  "new_anchor": "iv.iv.xv",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
@@ -15050,6 +15492,36 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "51edf676-923d-54a0-a717-42f1772f4806",
+  "old_anchor": "iv.iv.xxvi/from-p10",
+  "new_passage_id": "0bbc7e48-86e6-53b8-bd33-72d0b7c3feff",
+  "new_anchor": "iv.iv.xxvi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "5fa84281-f6e8-5dcd-b9d4-a4b91014cd30",
+  "old_anchor": "iv.iv.xxxii/from-p7",
+  "new_passage_id": "107cc679-9746-51d0-83b2-0d6f5be5b9b5",
+  "new_anchor": "iv.iv.xxxii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "old_passage_id": "b0937c50-a841-5c2f-a04f-c3812c93ab68",
+  "old_anchor": "iv.iv.xxxvi/from-p9",
+  "new_passage_id": "87d3c21a-c869-59ed-ab56-79ad4f87b473",
+  "new_anchor": "iv.iv.xxxvi",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
  },
  {
   "document_id": "abf69de0-a1e2-53ce-8283-541924c6ea32",
@@ -17463,7 +17935,9 @@
   "new_anchor": "iii.iii.ix/from-p13-2",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -17473,7 +17947,9 @@
   "new_anchor": "iii.iii.ix/from-p26",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -17483,7 +17959,9 @@
   "new_anchor": "iii.iii.ix/from-p37",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -17493,7 +17971,9 @@
   "new_anchor": "iii.iii.ix/from-p72",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
@@ -19543,10 +20023,20 @@
  },
  {
   "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
+  "old_passage_id": "6a5091ba-c65b-529f-87db-4db59fdf6476",
+  "old_anchor": "xi.iii.iii.vii/from-p2",
+  "new_passage_id": "c07ad6d4-98c3-5ea6-bb1d-7ebcc8762ae1",
+  "new_anchor": "xi.iii.iii.vii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
   "old_passage_id": "e805c404-323b-5e2e-b1cb-29af5a782e88",
   "old_anchor": "xi.iii.iii.vii/from-p2-2",
-  "new_passage_id": "6a5091ba-c65b-529f-87db-4db59fdf6476",
-  "new_anchor": "xi.iii.iii.vii/from-p2",
+  "new_passage_id": "c07ad6d4-98c3-5ea6-bb1d-7ebcc8762ae1",
+  "new_anchor": "xi.iii.iii.vii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -19603,6 +20093,16 @@
  },
  {
   "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
+  "old_passage_id": "8f4a0827-aa75-535b-9852-d59a7319c43a",
+  "old_anchor": "xi.iii.xii.ii/from-p28",
+  "new_passage_id": "671656d9-38be-5880-81f3-3e907ca77359",
+  "new_anchor": "xi.iii.xii.ii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
   "old_passage_id": "f32a252d-3b56-56a9-b18f-b5fdf2def076",
   "old_anchor": "xi.iii.xii.iii/from-p23",
   "new_passage_id": "af6b5abd-ce56-56bf-8256-a2566460b5c6",
@@ -19613,10 +20113,30 @@
  },
  {
   "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
+  "old_passage_id": "e16d8764-6b3a-57d3-85ec-8b762e69d78f",
+  "old_anchor": "xi.iii.xii.iii/from-p25",
+  "new_passage_id": "af6b5abd-ce56-56bf-8256-a2566460b5c6",
+  "new_anchor": "xi.iii.xii.iii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
+  "old_passage_id": "b373c36b-3847-5a73-810d-089f8a7f4a4f",
+  "old_anchor": "xi.iii.xii.iii/from-p49",
+  "new_passage_id": "e33a0997-f5e0-5f86-b9c6-37520a8dbeef",
+  "new_anchor": "xi.iii.xii.iii/from-p27",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "debb22d8-702c-5df3-952c-6df5cd720e42",
   "old_passage_id": "fd731b97-b175-574e-abd5-b66659c1a194",
   "old_anchor": "xi.iii.xii.iii/from-p53",
-  "new_passage_id": "b373c36b-3847-5a73-810d-089f8a7f4a4f",
-  "new_anchor": "xi.iii.xii.iii/from-p49",
+  "new_passage_id": "e33a0997-f5e0-5f86-b9c6-37520a8dbeef",
+  "new_anchor": "xi.iii.xii.iii/from-p27",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
@@ -19863,10 +20383,20 @@
  },
  {
   "document_id": "e73bb326-8ba6-5334-b79e-3a15c9892581",
+  "old_passage_id": "1e271259-e35f-5357-b14e-3000f77f0690",
+  "old_anchor": "iii.iii.ii.xiii/from-p2",
+  "new_passage_id": "997bcb63-c142-5e30-976c-1716d44e6587",
+  "new_anchor": "iii.iii.ii.xiii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "e73bb326-8ba6-5334-b79e-3a15c9892581",
   "old_passage_id": "700080ff-8ebb-5056-ba30-29c75a6910f0",
   "old_anchor": "iii.iii.ii.xiii/from-p2-2",
-  "new_passage_id": "1e271259-e35f-5357-b14e-3000f77f0690",
-  "new_anchor": "iii.iii.ii.xiii/from-p2",
+  "new_passage_id": "997bcb63-c142-5e30-976c-1716d44e6587",
+  "new_anchor": "iii.iii.ii.xiii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -19889,7 +20419,9 @@
   "new_anchor": "vi.ii.xx",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "e847b8bb-ce69-528e-9eda-5173a795ec18",
@@ -19899,7 +20431,9 @@
   "new_anchor": "vi.ii.xx/from-p29",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "e9a89249-e5dd-5103-a05b-5d0b20dfa093",
@@ -21087,7 +21621,9 @@
   "new_anchor": "vi.ix.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8a",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
@@ -21101,10 +21637,20 @@
  },
  {
   "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
+  "old_passage_id": "7d4dcb71-5360-530d-a793-ecd8796a9ce8",
+  "old_anchor": "vi.ix.ii/from-p30",
+  "new_passage_id": "17c2e558-97a9-55df-8668-ac8fa0b740ff",
+  "new_anchor": "vi.ix.ii",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.8a"
+ },
+ {
+  "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
   "old_passage_id": "46ee0068-8f3a-5ff8-9c4c-f097bc772002",
   "old_anchor": "vi.ix.ii/from-p51",
-  "new_passage_id": "7d4dcb71-5360-530d-a793-ecd8796a9ce8",
-  "new_anchor": "vi.ix.ii/from-p30",
+  "new_passage_id": "207e5638-8110-541f-a7e2-6b929671dfd9",
+  "new_anchor": "vi.ix.ii/from-p33",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"

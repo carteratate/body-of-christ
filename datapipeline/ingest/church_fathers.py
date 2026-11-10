@@ -18,6 +18,7 @@ import defusedxml.ElementTree as ET
 from model import Document
 from normalize.caps import smart_title_case
 from ingest.common import iter_chapters, _build_parent_map, _cf_skippable
+from ingest.editorial import Editor
 from ingest.thml_doc import distinct_titles, make_doc
 
 _SRC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "church-fathers")
@@ -34,11 +35,15 @@ def _read_root(path: str):
         return ET.fromstring(_strip_doctype(f.read()))
 
 
-def _make_doc(filename, author, title, chapters, work=None):
+def _source_key(filename, work=None) -> str:
+    return f"church-fathers/{filename}" + (f"#{work.get('id')}" if work is not None else "")
+
+
+def _make_doc(filename, author, title, chapters, work=None, editor=None):
     """`work` is the div holding the work when the file holds several."""
-    key = f"church-fathers/{filename}" + (f"#{work.get('id')}" if work is not None else "")
     return make_doc(collection="church-fathers", filename=filename, author=author,
-                    title=title, chapters=chapters, source_key=key)
+                    title=title, chapters=chapters, source_key=_source_key(filename, work),
+                    editor=editor)
 
 
 def build_documents(path: str) -> list[Document]:
@@ -69,19 +74,26 @@ def build_documents(path: str) -> list[Document]:
                 docs.append(d)
     else:
         # Multi-author volume: div1 = father, div2 = work (else father itself is the work).
+        # These are the ANF volumes, where rule G takes the editors' matter out (1.8a).
         for d1 in div1s:
             father = smart_title_case((d1.get("title") or "").strip())
+            editor = Editor(filename, _source_key(filename, d1), parent_map)
+            if editor.skip(d1):
+                continue
             works = [w for w in d1.iter("div2") if not _cf_skippable(w.get("title") or "")]
             if works:
                 for w in works:
+                    editor = Editor(filename, _source_key(filename, w), parent_map)
+                    if editor.skip(w):
+                        continue
                     title = smart_title_case((w.get("title") or "").strip()) or father
-                    d = _make_doc(filename, father, title, list(iter_chapters(w, parent_map)),
-                                  work=w)
+                    chapters = list(iter_chapters(w, parent_map, editor.skip))
+                    d = _make_doc(filename, father, title, chapters, work=w, editor=editor)
                     if d:
                         docs.append(d)
             else:
-                d = _make_doc(filename, father, father, list(iter_chapters(d1, parent_map)),
-                              work=d1)
+                chapters = list(iter_chapters(d1, parent_map, editor.skip))
+                d = _make_doc(filename, father, father, chapters, work=d1, editor=editor)
                 if d:
                     docs.append(d)
     return docs

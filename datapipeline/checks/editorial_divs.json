@@ -268,8 +268,78 @@
  {
   "collection": "church-fathers",
   "file": "third-century-2.xml",
+  "div": "iii.iii.ii.lii",
+  "title": "Note.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iii.iii.ix",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iii.iii.x",
+  "title": "General Note.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iii.iv.ii.ix",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iii.v.vi",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
   "div": "iv.ii",
   "title": "Introductory Notice to Cyprian",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iv.iv.lxxxiii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iv.v.xiii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iv.vi.ii",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iv.vii.i",
+  "title": "Translator's Introduction.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "iv.vii.vi",
+  "title": "Elucidations.",
   "item": "1.8a"
  },
  {
@@ -282,8 +352,22 @@
  {
   "collection": "church-fathers",
   "file": "third-century-2.xml",
+  "div": "v.iii.iv",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
   "div": "vi.ii",
   "title": "Introductory Notice to Novatian, a Roman Presbyter",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "vi.iii.xxxiii",
+  "title": "Two Notes by the American Editor.",
   "item": "1.8a"
  },
  {
@@ -298,6 +382,13 @@
   "file": "third-century-2.xml",
   "div": "vii.iv.i",
   "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-2.xml",
+  "div": "vii.iv.iii",
+  "title": "Note by the Edinburgh Translator.",
   "item": "1.8a"
  },
  {
@@ -317,8 +408,78 @@
  {
   "collection": "church-fathers",
   "file": "third-century-3.xml",
+  "div": "iii.iii.i.ii",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iii.iii.xii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iii.iv.xx",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iv.i.xxv",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iv.ii.ii",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iv.iii.xiii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iv.iv.ix",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iv.v.v",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iii.iv.vi.ii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
   "div": "iv.ii",
   "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "iv.iii.ii.xv",
+  "title": "Elucidations.",
   "item": "1.8a"
  },
  {
@@ -368,6 +529,76 @@
   "file": "third-century-3.xml",
   "div": "vi.ii",
   "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.iii.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.iv.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.iv.iii",
+  "title": "Note by the American Editor.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.ix.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.v.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.vi.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.vii.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.viii.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.x.i",
+  "title": "Translator's Biographical Notice.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "vi.x.vi",
+  "title": "Elucidations.",
   "item": "1.8a"
  },
  {
@@ -429,6 +660,20 @@
  {
   "collection": "church-fathers",
   "file": "third-century-3.xml",
+  "div": "xi.iii.xiii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "xi.ix.ii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century-3.xml",
   "div": "xi.vii",
   "title": "General Note",
   "item": "1.8a"
@@ -449,6 +694,13 @@
  },
  {
   "collection": "church-fathers",
+  "file": "third-century-3.xml",
+  "div": "xii.iii.ix",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
   "file": "third-century.xml",
   "div": "ii",
   "title": "Introductory Notice",
@@ -459,6 +711,62 @@
   "file": "third-century.xml",
   "div": "iii.ii.vii",
   "title": "Elucidations",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.iii.iii",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.iv.xviii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.ix.xviii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.v.iii",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.vi.xiv",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.vii.xviii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.viii.xxiii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "iii.x.ii",
+  "title": "Elucidations.",
   "item": "1.8a"
  },
  {
@@ -485,8 +793,22 @@
  {
   "collection": "church-fathers",
   "file": "third-century.xml",
+  "div": "iv.iii.xlii",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
   "div": "v.ii.i",
   "title": "Introductory Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "v.ii.lxxxi",
+  "title": "Elucidation.",
   "item": "1.8a"
  },
  {
@@ -561,6 +883,27 @@
  },
  {
   "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.ix.iv.c",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.v.vi",
+  "title": "Elucidations.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-century.xml",
+  "div": "vi.viii.ii",
+  "title": "Elucidation.",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
   "file": "third-fourth-century.xml",
   "div": "ii",
   "title": "Introductory Notice",
@@ -583,8 +926,36 @@
  {
   "collection": "church-fathers",
   "file": "third-fourth-century.xml",
+  "div": "iii.iv.xxi",
+  "title": "General Note by the American Editor",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "iii.v.liii",
+  "title": "Elucidation",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "iii.vi.iii",
+  "title": "General Note",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
   "div": "ix.i",
   "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "ix.iii.ix",
+  "title": "Elucidation",
   "item": "1.8a"
  },
  {
@@ -599,6 +970,20 @@
   "file": "third-fourth-century.xml",
   "div": "v.i",
   "title": "Introductory Notice",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "v.ii.i",
+  "title": "Elucidation",
+  "item": "1.8a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "third-fourth-century.xml",
+  "div": "vi.ii.xx",
+  "title": "General Notes by the American Editor",
   "item": "1.8a"
  },
  {

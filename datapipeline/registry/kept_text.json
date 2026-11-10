@@ -7,6 +7,55 @@
   "added_by": "1.10b"
  },
  {
+  "passage_id": "443aeea8-c09d-5dda-9389-9e970e4c54ea",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": "iv.v.i",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
+  "passage_id": "4cdf76da-2071-5ac0-9fc2-b7f33c8d82b3",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": "iv.v.ii",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
+  "passage_id": "7a4ae1af-1031-52d4-9909-1cf2c65092a7",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": "iv.v.iii",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
+  "passage_id": "2da16da2-38d6-5ad7-8516-4601df77be6d",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": "iv.v.iv",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
+  "passage_id": "467ee691-8f85-559e-a397-a86868340975",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": "iv.v.ix",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
+  "passage_id": "d3d76a02-0710-58d6-8198-3300b389ed23",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": "iv.v.vi",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
+  "passage_id": "f0237635-64cb-508b-a8bb-69e3927f2dc9",
+  "document_id": "198c81e9-e119-5153-b4b2-a436574d067a",
+  "anchor": "iv.v.vii",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
   "passage_id": "f8de9d42-4c09-5135-9f9c-3a30244db585",
   "document_id": "22369abb-5ee4-50d2-85c8-fdf4da8fc2ce",
   "anchor": "viii.ix.i",
@@ -17,8 +66,8 @@
   "passage_id": "807e8df9-18f4-5ac0-a12b-a1789c4de082",
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
   "anchor": "iv.iii.i.i",
-  "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
-  "added_by": "1.10b"
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
  },
  {
   "passage_id": "ba545a2a-c752-5aaf-942f-5a9d93204d93",
@@ -31,8 +80,8 @@
   "passage_id": "339b94f7-20f2-5c73-b3c5-ef83f3ba2b12",
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
   "anchor": "iv.iii.i.v.i",
-  "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
-  "added_by": "1.10b"
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
  },
  {
   "passage_id": "626bcaa9-82fc-5905-8df8-4482aa7d8130",
@@ -45,15 +94,15 @@
   "passage_id": "9d836eb6-7846-5f45-8adb-ad1923094a7f",
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
   "anchor": "iv.iii.ii.v",
-  "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
-  "added_by": "1.10b"
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
  },
  {
   "passage_id": "4cb358d2-4162-508a-8910-5b4ea3ecce5f",
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
   "anchor": "iv.iii.ii.xi",
-  "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
-  "added_by": "1.10b"
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
  },
  {
   "passage_id": "e6b32105-7afc-5ce8-9d95-8f25f197dfb2",
@@ -108,8 +157,8 @@
   "passage_id": "7daceb07-5273-5038-a161-108db845115a",
   "document_id": "44fd52c3-fdef-518e-a463-a3273f39764c",
   "anchor": "iii.iv.v.i",
-  "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
-  "added_by": "1.10b"
+  "reason": "Its live text was only the editor's heading \"Four Homilies.\" and his note on the first homily (the note went with 1.10b, the heading with 1.8a); the unit is still the first homily's div, which now opens on the homily's own title and text.",
+  "added_by": "1.8a"
  },
  {
   "passage_id": "4d028c23-67e7-5559-9ad3-6f85081ba5c9",
@@ -217,6 +266,20 @@
   "added_by": "1.5a"
  },
  {
+  "passage_id": "929c37ad-dd66-5653-a784-31c21fc1ef6e",
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "anchor": "iv.iv.ii",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
+  "passage_id": "f38db808-a3a6-56e0-85ef-34b54cdd3555",
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "anchor": "iv.iv.lxxiii",
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
+ },
+ {
   "passage_id": "aa2364d4-b127-5486-bf27-0a9267caa4d7",
   "document_id": "b270ebca-051e-5094-8370-758ad599d9ca",
   "anchor": "iv.i.xi.ii",
@@ -234,8 +297,8 @@
   "passage_id": "3dc3635a-3af4-567b-a03d-a4c83d9244bc",
   "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
   "anchor": "iii.iii.i.i",
-  "reason": "Reviewed with Carter on 1 Nov 2026: it still opens on its live opening words. It scores low because 1.10b removed the notes that were much of its live text, read verse it lacked, or moved its later text into the next piece.",
-  "added_by": "1.10b"
+  "reason": "Its text lost only the editor's matter rule G removes (1.8a): heading, title, \"Argument\" or credit lines at its top, or bracketed comments. It still opens on its own opening words, and the author's words are unchanged, checked word for word (test_author_text_unchanged).",
+  "added_by": "1.8a"
  },
  {
   "passage_id": "a9540297-873a-581f-b28b-f87994cefa23",

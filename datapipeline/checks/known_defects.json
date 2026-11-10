@@ -32,35 +32,10 @@
   "fixed_by": "5.6b",
   "description": "88.36% covered: Anselm's own prefaces (1.9) and Gaunilo's reply with Anselm's answer (5.6b) dropped"
  },
- "editorial.argument_lines:church-fathers/198c81e9-e119-5153-b4b2-a436574d067a": {
-  "fixed_by": "1.8a",
-  "description": "The Treatises of Cyprian.: 10 passages open with an editor's Argument summary (C-12)",
-  "units": ["iv.v.i", "iv.v.ii", "iv.v.iii", "iv.v.iv", "iv.v.ix", "iv.v.v", "iv.v.vi", "iv.v.vii", "iv.v.viii", "iv.v.x"]
- },
- "editorial.argument_lines:church-fathers/2ddaa182-a332-559f-8bfb-e72b56a12953": {
-  "fixed_by": "1.8a",
-  "description": "Anonymous Treatise on Re-baptism.: 1 passages open with an editor's Argument summary (C-12)",
-  "units": ["vii.iv.ii"]
- },
- "editorial.argument_lines:church-fathers/5d75dc92-df2c-5421-904f-4249590ff48a": {
-  "fixed_by": "1.8a",
-  "description": "Treatises Attributed to Cyprian on Questionable Authority.: 2 passages open with an editor's Argument summary (C-12)",
-  "units": ["iv.vii.ii", "iv.vii.iii"]
- },
  "editorial.argument_lines:church-fathers/5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
   "fixed_by": "1.8b",
   "description": "On Christian Doctrine: 4 passages open with an editor's Argument summary (C-12)",
   "units": ["IV_1", "v.iv", "v.v", "v.vi"]
- },
- "editorial.argument_lines:church-fathers/9e93f3ef-cd33-598f-9aac-f2a5886d3e21": {
-  "fixed_by": "1.8a",
-  "description": "The Octavius of Minucius Felix.: 41 passages open with an editor's Argument summary (C-12)",
-  "units": ["iv.iii.i", "iv.iii.ii", "iv.iii.iii", "iv.iii.iv", "iv.iii.ix", "iv.iii.v", "iv.iii.vi", "iv.iii.vii", "iv.iii.viii", "iv.iii.x", "iv.iii.xi", "iv.iii.xii", "iv.iii.xiii", "iv.iii.xiv", "iv.iii.xix", "iv.iii.xl", "iv.iii.xli", "iv.iii.xv", "iv.iii.xvi", "iv.iii.xvii", "iv.iii.xviii", "iv.iii.xx", "iv.iii.xxi", "iv.iii.xxii", "iv.iii.xxiii", "iv.iii.xxiv", "iv.iii.xxix", "iv.iii.xxv", "iv.iii.xxvi", "iv.iii.xxvii", "iv.iii.xxviii", "iv.iii.xxx", "iv.iii.xxxi", "iv.iii.xxxii", "iv.iii.xxxiii", "iv.iii.xxxiv", "iv.iii.xxxix", "iv.iii.xxxv", "iv.iii.xxxvi", "iv.iii.xxxvii", "iv.iii.xxxviii"]
- },
- "editorial.argument_lines:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
-  "fixed_by": "1.8a",
-  "description": "The Epistles of Cyprian.: 82 passages open with an editor's Argument summary (C-12)",
-  "units": ["iv.iv.i", "iv.iv.ii", "iv.iv.iii", "iv.iv.iv", "iv.iv.ix", "iv.iv.l", "iv.iv.li", "iv.iv.lii", "iv.iv.liii", "iv.iv.liv", "iv.iv.lix", "iv.iv.lv", "iv.iv.lvi", "iv.iv.lvii", "iv.iv.lviii", "iv.iv.lx", "iv.iv.lxi", "iv.iv.lxii", "iv.iv.lxiii", "iv.iv.lxiv", "iv.iv.lxix", "iv.iv.lxv", "iv.iv.lxvi", "iv.iv.lxvii", "iv.iv.lxviii", "iv.iv.lxx", "iv.iv.lxxi", "iv.iv.lxxii", "iv.iv.lxxiii", "iv.iv.lxxiv", "iv.iv.lxxix", "iv.iv.lxxv", "iv.iv.lxxvi", "iv.iv.lxxvii", "iv.iv.lxxviii", "iv.iv.lxxx", "iv.iv.lxxxi", "iv.iv.lxxxii", "iv.iv.v", "iv.iv.vi", "iv.iv.vii", "iv.iv.viii", "iv.iv.x", "iv.iv.xi", "iv.iv.xii", "iv.iv.xiii", "iv.iv.xiv", "iv.iv.xix", "iv.iv.xl", "iv.iv.xli", "iv.iv.xlii", "iv.iv.xliii", "iv.iv.xliv", "iv.iv.xlix", "iv.iv.xlv", "iv.iv.xlvi", "iv.iv.xlvii", "iv.iv.xlviii", "iv.iv.xv", "iv.iv.xvi", "iv.iv.xvii", "iv.iv.xviii", "iv.iv.xx", "iv.iv.xxi", "iv.iv.xxii", "iv.iv.xxiii", "iv.iv.xxiv", "iv.iv.xxix", "iv.iv.xxv", "iv.iv.xxvi", "iv.iv.xxvii", "iv.iv.xxviii", "iv.iv.xxx", "iv.iv.xxxi", "iv.iv.xxxii", "iv.iv.xxxiii", "iv.iv.xxxiv", "iv.iv.xxxix", "iv.iv.xxxv", "iv.iv.xxxvi", "iv.iv.xxxvii", "iv.iv.xxxviii"]
  },
  "editorial.argument_lines:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
   "fixed_by": "1.8b",
@@ -72,11 +47,6 @@
   "description": "City of God: 22 passages open with an editor's Argument summary (C-12)",
   "units": ["II_1", "iv.III", "iv.IV", "iv.IX", "iv.V", "iv.VI", "iv.VII", "iv.VIII", "iv.X", "iv.XI", "iv.XII", "iv.XIII", "iv.XIV", "iv.XIX", "iv.XV", "iv.XVI", "iv.XVII", "iv.XVIII", "iv.XX", "iv.XXI", "iv.XXII", "iv.ii"]
  },
- "editorial.chapter_title_lines:church-fathers/3717ce05-ad42-5ec3-b3ce-ff3964908e05": {
-  "fixed_by": "1.8a",
-  "description": "To His Wife.: 14 passages open with a later editor's chapter title (G-1)",
-  "units": ["iii.v.i.ii", "iii.v.i.iii", "iii.v.i.iv", "iii.v.i.v", "iii.v.i.vi", "iii.v.i.vii", "iii.v.i.viii", "iii.v.ii.ii", "iii.v.ii.iii", "iii.v.ii.iv", "iii.v.ii.v", "iii.v.ii.vi", "iii.v.ii.vii", "iii.v.ii.viii"]
- },
  "editorial.chapter_title_lines:church-fathers/5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
   "fixed_by": "1.8b",
   "description": "On Christian Doctrine: 150 passages open with a later editor's chapter title (G-1)",
@@ -86,16 +56,6 @@
   "fixed_by": "1.8b",
   "description": "Doctrinal Treatises of St. Augustin: 380 passages open with a later editor's chapter title (G-1)",
   "units": ["iv.i.iii.i", "iv.i.iii.ii", "iv.i.iii.iii", "iv.i.iii.iv", "iv.i.iii.ix", "iv.i.iii.v", "iv.i.iii.vi", "iv.i.iii.vii", "iv.i.iii.viii", "iv.i.iii.x", "iv.i.iii.xi", "iv.i.iii.xii", "iv.i.iii.xiii", "iv.i.iv.ii", "iv.i.iv.iii", "iv.i.iv.iv", "iv.i.iv.ix", "iv.i.iv.v", "iv.i.iv.vi", "iv.i.iv.vii", "iv.i.iv.viii", "iv.i.iv.x", "iv.i.iv.xi", "iv.i.iv.xii", "iv.i.iv.xiii", "iv.i.iv.xiv", "iv.i.iv.xix", "iv.i.iv.xv", "iv.i.iv.xvi", "iv.i.iv.xvii", "iv.i.iv.xviii", "iv.i.ix.i", "iv.i.ix.ii", "iv.i.ix.iii", "iv.i.ix.iv", "iv.i.ix.v", "iv.i.ix.vi", "iv.i.v.ii", "iv.i.v.iii", "iv.i.v.iv", "iv.i.v.ix", "iv.i.v.v", "iv.i.v.vi", "iv.i.v.vii", "iv.i.v.viii", "iv.i.v.x", "iv.i.v.xi", "iv.i.v.xii", "iv.i.vi.ii", "iv.i.vi.iii", "iv.i.vi.iv", "iv.i.vi.ix", "iv.i.vi.v", "iv.i.vi.vi", "iv.i.vi.vii", "iv.i.vi.viii", "iv.i.vi.x", "iv.i.vi.xi", "iv.i.vi.xii", "iv.i.vi.xiii", "iv.i.vi.xiv", "iv.i.vi.xix", "iv.i.vi.xv", "iv.i.vi.xvi", "iv.i.vi.xvii", "iv.i.vi.xviii", "iv.i.vi.xx", "iv.i.vi.xxi", "iv.i.vi.xxii", "iv.i.vii.i", "iv.i.vii.ii", "iv.i.vii.iii", "iv.i.vii.iv", "iv.i.vii.ix", "iv.i.vii.v", "iv.i.vii.vi", "iv.i.vii.vii", "iv.i.vii.viii", "iv.i.vii.x", "iv.i.vii.xi", "iv.i.vii.xii", "iv.i.vii.xiii", "iv.i.vii.xiv", "iv.i.vii.xv", "iv.i.vii.xvi", "iv.i.viii.i", "iv.i.viii.ii", "iv.i.viii.iii", "iv.i.viii.iv", "iv.i.viii.ix", "iv.i.viii.v", "iv.i.viii.vi", "iv.i.viii.vii", "iv.i.viii.viii", "iv.i.viii.x", "iv.i.x.ii", "iv.i.x.iii", "iv.i.x.iv", "iv.i.x.ix", "iv.i.x.v", "iv.i.x.vi", "iv.i.x.vii", "iv.i.x.viii", "iv.i.x.x", "iv.i.x.xi", "iv.i.xi.i", "iv.i.xi.ii", "iv.i.xi.iii", "iv.i.xi.iv", "iv.i.xi.ix", "iv.i.xi.v", "iv.i.xi.vi", "iv.i.xi.vii", "iv.i.xi.viii", "iv.i.xi.x", "iv.i.xi.xi", "iv.i.xi.xii", "iv.i.xii.i", "iv.i.xii.ii", "iv.i.xii.iii", "iv.i.xii.iv", "iv.i.xii.ix", "iv.i.xii.v", "iv.i.xii.vi", "iv.i.xii.vii", "iv.i.xii.viii", "iv.i.xii.x", "iv.i.xii.xi", "iv.i.xii.xii", "iv.i.xiii.i", "iv.i.xiii.ii", "iv.i.xiii.iii", "iv.i.xiii.iv", "iv.i.xiii.ix", "iv.i.xiii.v", "iv.i.xiii.vi", "iv.i.xiii.vii", "iv.i.xiii.viii", "iv.i.xiii.x", "iv.i.xiii.xi", "iv.i.xiv.i", "iv.i.xiv.ii", "iv.i.xiv.iii", "iv.i.xiv.iv", "iv.i.xiv.ix", "iv.i.xiv.v", "iv.i.xiv.vi", "iv.i.xiv.vii", "iv.i.xiv.viii", "iv.i.xiv.x", "iv.i.xiv.xi", "iv.i.xiv.xii", "iv.i.xiv.xiii", "iv.i.xiv.xiv", "iv.i.xiv.xv", "iv.i.xv.i", "iv.i.xv.ii", "iv.i.xv.iii", "iv.i.xv.iv", "iv.i.xv.ix", "iv.i.xv.v", "iv.i.xv.vi", "iv.i.xv.vii", "iv.i.xv.viii", "iv.i.xv.x", "iv.i.xv.xi", "iv.i.xv.xii", "iv.i.xv.xiii", "iv.i.xv.xiv", "iv.i.xv.xix", "iv.i.xv.xv", "iv.i.xv.xvi", "iv.i.xv.xvii", "iv.i.xv.xviii", "iv.i.xv.xx", "iv.i.xvi.i", "iv.i.xvi.ii", "iv.i.xvi.iii", "iv.i.xvi.iv", "iv.i.xvi.ix", "iv.i.xvi.v", "iv.i.xvi.vi", "iv.i.xvi.vii", "iv.i.xvi.viii", "iv.i.xvi.x", "iv.i.xvi.xi", "iv.i.xvi.xii", "iv.i.xvi.xiii", "iv.i.xvi.xiv", "iv.i.xvi.xix", "iv.i.xvi.xv", "iv.i.xvi.xvi", "iv.i.xvi.xvii", "iv.i.xvi.xviii", "iv.i.xvii.i", "iv.i.xvii.ii", "iv.i.xvii.iii", "iv.i.xvii.iv", "iv.i.xvii.ix", "iv.i.xvii.v", "iv.i.xvii.vi", "iv.i.xvii.vii", "iv.i.xvii.viii", "iv.i.xvii.x", "iv.i.xvii.xi", "iv.i.xvii.xii", "iv.i.xvii.xiii", "iv.i.xvii.xiv", "iv.i.xvii.xix", "iv.i.xvii.xv", "iv.i.xvii.xvi", "iv.i.xvii.xvii", "iv.i.xvii.xviii", "iv.i.xvii.xx", "iv.i.xvii.xxi", "iv.i.xvii.xxii", "iv.i.xvii.xxiii", "iv.i.xvii.xxiv", "iv.i.xvii.xxv", "iv.i.xvii.xxvi", "iv.i.xvii.xxvii", "iv.i.xvii.xxviii", "iv.ii.c", "iv.ii.ci", "iv.ii.cii", "iv.ii.ciii", "iv.ii.civ", "iv.ii.cix", "iv.ii.cv", "iv.ii.cvi", "iv.ii.cvii", "iv.ii.cviii", "iv.ii.cx", "iv.ii.cxi", "iv.ii.cxii", "iv.ii.cxiii", "iv.ii.cxiv", "iv.ii.cxix", "iv.ii.cxv", "iv.ii.cxvi", "iv.ii.cxvii", "iv.ii.cxviii", "iv.ii.cxx", "iv.ii.cxxi", "iv.ii.cxxii", "iv.ii.cxxiii", "iv.ii.cxxiv", "iv.ii.iii", "iv.ii.iv", "iv.ii.ix", "iv.ii.l", "iv.ii.li", "iv.ii.lii", "iv.ii.liii", "iv.ii.liv", "iv.ii.lix", "iv.ii.lv", "iv.ii.lvi", "iv.ii.lvii", "iv.ii.lviii", "iv.ii.lx", "iv.ii.lxi", "iv.ii.lxii", "iv.ii.lxiii", "iv.ii.lxiv", "iv.ii.lxix", "iv.ii.lxv", "iv.ii.lxvi", "iv.ii.lxvii", "iv.ii.lxviii", "iv.ii.lxx", "iv.ii.lxxi", "iv.ii.lxxii", "iv.ii.lxxiii", "iv.ii.lxxiv", "iv.ii.lxxix", "iv.ii.lxxv", "iv.ii.lxxvi", "iv.ii.lxxvii", "iv.ii.lxxviii", "iv.ii.lxxx", "iv.ii.lxxxi", "iv.ii.lxxxii", "iv.ii.lxxxiii", "iv.ii.lxxxiv", "iv.ii.lxxxix", "iv.ii.lxxxv", "iv.ii.lxxxvi", "iv.ii.lxxxvii", "iv.ii.lxxxviii", "iv.ii.v", "iv.ii.vi", "iv.ii.vii", "iv.ii.viii", "iv.ii.x", "iv.ii.xc", "iv.ii.xci", "iv.ii.xcii", "iv.ii.xciii", "iv.ii.xciv", "iv.ii.xcix", "iv.ii.xcv", "iv.ii.xcvi", "iv.ii.xcvii", "iv.ii.xcviii", "iv.ii.xi", "iv.ii.xii", "iv.ii.xiii", "iv.ii.xiv", "iv.ii.xix", "iv.ii.xl", "iv.ii.xli", "iv.ii.xlii", "iv.ii.xliii", "iv.ii.xliv", "iv.ii.xlix", "iv.ii.xlv", "iv.ii.xlvi", "iv.ii.xlvii", "iv.ii.xlviii", "iv.ii.xv", "iv.ii.xvi", "iv.ii.xvii", "iv.ii.xviii", "iv.ii.xx", "iv.ii.xxi", "iv.ii.xxii", "iv.ii.xxiii", "iv.ii.xxiv", "iv.ii.xxix", "iv.ii.xxv", "iv.ii.xxvi", "iv.ii.xxvii", "iv.ii.xxviii", "iv.ii.xxx", "iv.ii.xxxi", "iv.ii.xxxii", "iv.ii.xxxiii", "iv.ii.xxxiv", "iv.ii.xxxix", "iv.ii.xxxv", "iv.ii.xxxvi", "iv.ii.xxxvii", "iv.ii.xxxviii", "iv.iii.ii", "iv.iii.iii", "iv.iii.iv", "iv.iii.ix", "iv.iii.v", "iv.iii.vi", "iv.iii.vii", "iv.iii.viii", "iv.iii.x", "iv.iii.xi", "iv.iii.xii", "iv.iii.xiii", "iv.iii.xiv", "iv.iii.xix", "iv.iii.xv", "iv.iii.xvi", "iv.iii.xvii", "iv.iii.xviii", "iv.iii.xx", "iv.iii.xxi", "iv.iii.xxii", "iv.iii.xxiii", "iv.iii.xxiv", "iv.iii.xxv", "iv.iii.xxvi", "iv.iii.xxvii", "iv.iii.xxviii", "iv.iv.iii", "iv.iv.iv", "iv.iv.ix", "iv.iv.v", "iv.iv.vi", "iv.iv.vii", "iv.iv.viii", "iv.iv.x", "iv.iv.xi"]
- },
- "editorial.chapter_title_lines:church-fathers/debb22d8-702c-5df3-952c-6df5cd720e42": {
-  "fixed_by": "1.8a",
-  "description": "The Banquet of the Ten Virgins; or Concerning Chastity.: 74 passages open with a later editor's chapter title (G-1)",
-  "units": ["xi.iii.ii.ii", "xi.iii.ii.iii", "xi.iii.ii.iv", "xi.iii.ii.v", "xi.iii.iii.ii", "xi.iii.iii.iii", "xi.iii.iii.iv", "xi.iii.iii.v", "xi.iii.iii.vi", "xi.iii.iii.vii", "xi.iii.iv.ii", "xi.iii.iv.iii", "xi.iii.iv.iv", "xi.iii.iv.ix", "xi.iii.iv.v", "xi.iii.iv.vi", "xi.iii.iv.vii", "xi.iii.iv.viii", "xi.iii.iv.x", "xi.iii.iv.xi", "xi.iii.iv.xii", "xi.iii.iv.xiii", "xi.iii.iv.xiv", "xi.iii.ix.ii", "xi.iii.ix.iii", "xi.iii.ix.iv", "xi.iii.ix.ix", "xi.iii.ix.v", "xi.iii.ix.vi", "xi.iii.ix.vii", "xi.iii.ix.viii", "xi.iii.ix.x", "xi.iii.ix.xi", "xi.iii.ix.xii", "xi.iii.ix.xiii", "xi.iii.ix.xiv", "xi.iii.ix.xv", "xi.iii.ix.xvi", "xi.iii.ix.xvii", "xi.iii.v.ii", "xi.iii.v.iii", "xi.iii.v.iv", "xi.iii.v.v", "xi.iii.v.vi", "xi.iii.vi.ii", "xi.iii.vi.iii", "xi.iii.vi.iv", "xi.iii.vi.v", "xi.iii.vi.vi", "xi.iii.vi.vii", "xi.iii.vi.viii", "xi.iii.vii.ii", "xi.iii.vii.iii", "xi.iii.vii.iv", "xi.iii.vii.v", "xi.iii.viii.ii", "xi.iii.viii.iii", "xi.iii.viii.iv", "xi.iii.viii.ix", "xi.iii.viii.v", "xi.iii.viii.vi", "xi.iii.viii.vii", "xi.iii.viii.viii", "xi.iii.x.ii", "xi.iii.x.iii", "xi.iii.x.iv", "xi.iii.x.v", "xi.iii.xi.ii", "xi.iii.xi.iii", "xi.iii.xi.iv", "xi.iii.xi.v", "xi.iii.xi.vi", "xi.iii.xii.ii", "xi.iii.xii.iii"]
- },
- "editorial.chapter_title_lines:church-fathers/e73bb326-8ba6-5334-b79e-3a15c9892581": {
-  "fixed_by": "1.8a",
-  "description": "On the Apparel of Women.: 20 passages open with a later editor's chapter title (G-1)",
-  "units": ["iii.iii.i.ii", "iii.iii.i.iii", "iii.iii.i.iv", "iii.iii.i.ix", "iii.iii.i.v", "iii.iii.i.vi", "iii.iii.i.vii", "iii.iii.i.viii", "iii.iii.ii.ii", "iii.iii.ii.iii", "iii.iii.ii.iv", "iii.iii.ii.ix", "iii.iii.ii.v", "iii.iii.ii.vi", "iii.iii.ii.vii", "iii.iii.ii.viii", "iii.iii.ii.x", "iii.iii.ii.xi", "iii.iii.ii.xii", "iii.iii.ii.xiii"]
  },
  "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/TP_Q16_A3/p3": {
   "fixed_by": "1.7",
@@ -145,11 +105,6 @@
   "description": "The Extant Works and Fragments of Hippolytus: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
   "units": ["The Extant Works and Fragments of Hippolytus, Section I", "The Extant Works and Fragments of Hippolytus, Section I (part 1 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 2 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 3 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 4 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 5 of 5)", "The Extant Works and Fragments of Hippolytus, Section II", "The Extant Works and Fragments of Hippolytus, Section III", "The Extant Works and Fragments of Hippolytus, Section IV", "The Extant Works and Fragments of Hippolytus, Section IX", "The Extant Works and Fragments of Hippolytus, Section V", "The Extant Works and Fragments of Hippolytus, Section VI", "The Extant Works and Fragments of Hippolytus, Section VII", "The Extant Works and Fragments of Hippolytus, Section VIII", "The Extant Works and Fragments of Hippolytus, Section X", "The Extant Works and Fragments of Hippolytus, Section XI"]
  },
- "labels.unique_reference:church-fathers/685b8763-d3f3-5bb7-bf9f-c34efedaadf5": {
-  "fixed_by": "1.8c",
-  "description": "Acknowledged Writings: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
-  "units": ["Acknowledged Writings, Elucidations"]
- },
  "labels.unique_reference:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
   "fixed_by": "1.8b",
   "description": "Doctrinal Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
@@ -159,11 +114,6 @@
   "fixed_by": "1.8c",
   "description": "Epistle to the Ephesians: Shorter and Longer Versions: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
   "units": ["Epistle to the Ephesians: Shorter and Longer Versions, Chapter XX"]
- },
- "labels.unique_reference:church-fathers/debb22d8-702c-5df3-952c-6df5cd720e42": {
-  "fixed_by": "1.8c",
-  "description": "The Banquet of the Ten Virgins; or Concerning Chastity: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
-  "units": ["The Banquet of the Ten Virgins; or Concerning Chastity, Chapter I", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter I (part 1 of 2)", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter I (part 2 of 2)", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter II", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter III", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter IV", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter IX", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter V", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter VI", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter VII", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter VIII", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter X", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter XII", "The Banquet of the Ten Virgins; or Concerning Chastity, Chapter XIII"]
  },
  "labels.unique_reference:church-fathers/f39c025e-78a6-5737-a94f-7896c84fc857": {
   "fixed_by": "1.8b",

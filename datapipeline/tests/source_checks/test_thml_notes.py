@@ -99,8 +99,10 @@ def test_summa_is_read_as_before():
 def test_note_class_entries_match_the_build(built):
     counts = {d.id: sum((p.metadata or {}).get("editor_note_count", 0) for p in d.passages)
               for c in THML for d in built[c]}
+    # An entry closes when a later item removes every note it counted (1.8a's editor
+    # matter held all of two documents' notes).
     entries = {e["document_id"]: e["span"]["count"] for e in registry.load_registry().removals
-               if e["added_by"] == "1.10b" and e["scope"] == "class"}
+               if e["added_by"] == "1.10b" and e["scope"] == "class" and not e.get("closed_by")}
     assert entries == {d: n for d, n in counts.items() if n}
 
 

@@ -132,7 +132,7 @@ def summa_adjacent_duplicates(documents: list[Document]) -> Failures:
 
 # --------------------------------------------------------------------------- editorial
 
-ARGUMENT_LINE = re.compile(r"^(Chapter [IVXLC]+\.?\s*[—-]+\s*)?Argument\s*[.:—]")
+ARGUMENT_LINE = re.compile(r"^(Chapter [IVXLC]+\.?\s*[—-]*\s*)?Argument\s*[.:—]")
 # R4 (docs/research/R4-refutation.md): the Refutation's book summaries are Hippolytus's own.
 AUTHORIAL_ARGUMENTS = frozenset({"church-fathers/third-century-2.xml#iii.iii"})
 CHAPTER_TITLE_LINE = re.compile(r"^(?:Chapter|Chap\.) [IVXLC\d]+\.?\s*[—–-]+\s*\S")
@@ -227,12 +227,40 @@ def resolved_author(document: Document, passage) -> str:
     return document.author or ""
 
 
+_source_roots: dict[str, object] = {}
+
+
+def source_letter_lines(document: Document, chapter_key: str) -> list[str] | None:
+    """The opening paragraphs of a letter's div as the source prints them, notes left
+    out, or None when the source file is not at hand. Rule G takes the editor's number
+    and title lines out of the passages (1.8a), so the sender is read here, where they
+    still are, until 1.8c records it as the letter's author."""
+    from checks.source_text import SOURCES, _read_thml
+    from ingest.common import _block_text, direct_blocks
+
+    meta = document.metadata or {}
+    path = os.path.join(SOURCES, document.collection, meta.get("source_file") or "")
+    if not meta.get("source_file") or not os.path.exists(path):
+        return None
+    if path not in _source_roots:
+        _source_roots[path] = {el.get("id"): el for el in _read_thml(path).iter()
+                               if el.get("id")}
+    div = _source_roots[path].get(chapter_key)
+    if div is None:
+        return None
+    lines = [_block_text(b) for b in direct_blocks(div)]
+    return [line for line in lines if line][:8]
+
+
 def letter_sender(document: Document, letter: list) -> str | None:
     """The sender of one letter, from the editor's title line (the paragraph after the
     "Epistle N." line), or None when the letter has no such lines, the title line
     addresses someone ("To …"), or the title or the greeting opens with the document's
-    author ("Cyprian to the Lapsed"; "1. Cyprian to Cæcilius")."""
-    lines = [line for p in letter for line in _paragraphs(p.content)][:8]
+    author ("Cyprian to the Lapsed"; "1. Cyprian to Cæcilius"). The lines are the
+    source's (`source_letter_lines`) where it is at hand, else the passages'."""
+    lines = source_letter_lines(document, letter[0].chapter_key)
+    if lines is None:
+        lines = [line for p in letter for line in _paragraphs(p.content)][:8]
     number = next((i for i, line in enumerate(lines[:4]) if LETTER_NUMBER_LINE.match(line)), None)
     if number is None or number + 1 >= len(lines):
         return None
