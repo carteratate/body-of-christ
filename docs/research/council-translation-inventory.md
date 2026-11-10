@@ -205,8 +205,8 @@ decides whether its allowlist takes them (see "Percival's units").
 | Document | Tanner section | Replacement and location | Status |
 |---|---|---|---|
 | Introduction | "Introduction" | — | Tanner summary |
-| Bull deposing the emperor Frederick II | "Bull Deposing The Emperor Frederick II" | Not printed; Schroeder's history reports the deposition (p. 300) | **gap** |
-| Constitutions I 1–22 and II 1–5 | "Constitutions" | pp. 301–316 (first series, 1–18) and pp. 317–323 (second series, 1–9) | **partial**: 27 units each, but not the same 27. Tanner's I 7, "Legates and benefices", is not printed; Schroeder's second-series canon 6 (on the exempt) is not in Tanner (found by 1.2e-2's concordance, 9 Nov 2026). Schroeder groups them in another order (his 13–16 and 18 are Tanner's II 1–5; his 17 is Tanner's I 18) |
+| Bull deposing the emperor Frederick II | "Bull Deposing The Emperor Frederick II" | Not in Schroeder (his history reports the deposition, p. 300). Giles's Matthew Paris (1853), vol. 2, pp. 77–86 | covered (Giles; 1.2e, Carter, 9 Nov 2026) |
+| Constitutions I 1–22 and II 1–5 | "Constitutions" | pp. 301–316 (first series, 1–18) and pp. 317–323 (second series, 1–9) | **partial**: 27 units each, but not the same 27. Tanner's I 7, "Legates and benefices", is not printed, and comes from Giles's Matthew Paris (1853), vol. 2, pp. 96–97, "Of the duty of the legate" (1.2e, Carter, 9 Nov 2026); Schroeder's second-series canon 6 (on the exempt) is not in Tanner (found by 1.2e-2's concordance, 9 Nov 2026). Schroeder groups them in another order (his 13–16 and 18 are Tanner's II 1–5; his 17 is Tanner's I 18) |
 
 ### 14. Lyons II (1274) — Schroeder
 
@@ -619,7 +619,6 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G1 | Ephesus | Nestorius's second letter to Cyril (condemned text) | Chrystal 1895, pp. 155–166 |
 | G2 | Nicaea II | The four anathemas concerning holy images | Mendham 1850, pp. 442–443; Hefele vol. 5 (1896), p. 376 |
 | G3 | Constantinople IV | Definition of the eighth synod | — |
-| G4 | Lyons I | Bull deposing the emperor Frederick II | Giles's Matthew Paris (1853), vol. 2, pp. 77–86; a follow-up to 1.2e-2 takes it (Carter, 9 Nov 2026; `2026-11-09-giles-matthew-paris-and-schroeder-trent.md`) |
 | G5 | Vienne | Bulls on the Templars and the Holy Land, [1]–[8] | — |
 | G6 | Constance | Sessions 1, 3, 4, 5 (Haec sancta), 8, 12, 13, 14, 15, 21, 37, 39 (Frequens and four others), 40, 44, 45: every document listed for them above | Foxe, Cattley ed., vol. 3, for the sentences of sessions 8 and 15 |
 | G7 | Constance | Session 43's closing declaration | — |
@@ -627,7 +626,9 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G9 | Lateran V | Sessions 2–6; session 8's bulls on peace and the Bohemians and on reform; session 9's exhortation to peace; session 10's decree on the Pragmatic Sanction; session 11's French agreements and Pastor aeternus gregem; session 12's two constitutions | — |
 | G10 | Vatican I | Session 1, decree of opening | — |
 | G11 | Vatican I | Session 2, profession of faith (Schaff's 1564 profession does not stand in; see Vatican I) | — |
-| G12 | Lyons I; Vienne | Lyons I's constitution I 7, "Legates and benefices"; Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves both out (pp. 316–317, 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | Lyons I's I 7: Giles's Matthew Paris (1853), vol. 2, pp. 96–97, taken by the same follow-up |
+| G12 | Vienne | Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves it out (pp. 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | — |
+
+G4 (Lyons I's bull deposing Frederick II) and Lyons I's constitution I 7, first listed under G12, left the register when 1.2e took them from Giles's translation of Matthew Paris (1853), vol. 2, pp. 77–86 and 96–97 (Carter, 9 Nov 2026). G4's number is not reused.
 
 Partial texts (Constantinople IV's canons, Lateran I's canons 15 and 16, Lyons II's
 constitution I, Constance's session 43, Vienne's Exivi de paradiso, Lateran V's seven
