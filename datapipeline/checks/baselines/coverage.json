@@ -2,7 +2,7 @@
  "measured_on": {
   "apostolic-exhortations": "feat/1.3a-papal-parser 8075859",
   "bible": "feat/1.4a-bible-every-verse 66c7561",
-  "canon-law": "feat/coverage-checks cfee751",
+  "canon-law": "feat/1.5a-canon-law-parser 16888ad",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
   "councils": "HEAD bb76d19",
@@ -583,9 +583,9 @@
    "pct": 100.0
   },
   "canon-law/cic_lib1-cann96-123_en.html": {
-   "body_chars": 14656,
-   "covered_chars": 13195,
-   "pct": 90.03
+   "body_chars": 14418,
+   "covered_chars": 14418,
+   "pct": 100.0
   },
   "canon-law/cic_lib2-cann204-207_en.html": {
    "body_chars": 1968,
@@ -593,9 +593,9 @@
    "pct": 100.0
   },
   "canon-law/cic_lib2-cann208-329_en.html": {
-   "body_chars": 56270,
-   "covered_chars": 54498,
-   "pct": 96.85
+   "body_chars": 55816,
+   "covered_chars": 55667,
+   "pct": 99.73
   },
   "canon-law/cic_lib2-cann330-367_en.html": {
    "body_chars": 19496,
@@ -613,24 +613,24 @@
    "pct": 100.0
   },
   "canon-law/cic_lib2-cann460-572_en.html": {
-   "body_chars": 52953,
-   "covered_chars": 52549,
-   "pct": 99.24
+   "body_chars": 52746,
+   "covered_chars": 52746,
+   "pct": 100.0
   },
   "canon-law/cic_lib2-cann573-606_en.html": {
-   "body_chars": 13562,
-   "covered_chars": 13407,
-   "pct": 98.86
+   "body_chars": 12567,
+   "covered_chars": 12567,
+   "pct": 100.0
   },
   "canon-law/cic_lib2-cann607-709_en.html": {
-   "body_chars": 52379,
-   "covered_chars": 48553,
-   "pct": 92.7
+   "body_chars": 51657,
+   "covered_chars": 50608,
+   "pct": 97.97
   },
   "canon-law/cic_lib2-cann710-730_en.html": {
-   "body_chars": 9049,
-   "covered_chars": 8675,
-   "pct": 95.87
+   "body_chars": 8892,
+   "covered_chars": 8892,
+   "pct": 100.0
   },
   "canon-law/cic_lib2-cann731-746_en.html": {
    "body_chars": 5214,
@@ -643,9 +643,9 @@
    "pct": 100.0
   },
   "canon-law/cic_lib3-cann756-780_en.html": {
-   "body_chars": 9464,
-   "covered_chars": 9301,
-   "pct": 98.28
+   "body_chars": 9196,
+   "covered_chars": 9196,
+   "pct": 100.0
   },
   "canon-law/cic_lib3-cann781-792_en.html": {
    "body_chars": 4570,
@@ -653,8 +653,8 @@
    "pct": 100.0
   },
   "canon-law/cic_lib3-cann793-821_en.html": {
-   "body_chars": 9293,
-   "covered_chars": 9293,
+   "body_chars": 9295,
+   "covered_chars": 9295,
    "pct": 100.0
   },
   "canon-law/cic_lib3-cann822-833_en.html": {
@@ -663,18 +663,18 @@
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann1166-1190_en.html": {
-   "body_chars": 7311,
-   "covered_chars": 7311,
+   "body_chars": 7312,
+   "covered_chars": 7312,
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann1191-1204_en.html": {
-   "body_chars": 3752,
-   "covered_chars": 3752,
+   "body_chars": 3754,
+   "covered_chars": 3754,
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann1205-1243_en.html": {
-   "body_chars": 9313,
-   "covered_chars": 9313,
+   "body_chars": 9314,
+   "covered_chars": 9314,
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann1244-1253_en.html": {
@@ -683,9 +683,9 @@
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann834-878_en.html": {
-   "body_chars": 19943,
-   "covered_chars": 18832,
-   "pct": 94.43
+   "body_chars": 19464,
+   "covered_chars": 19464,
+   "pct": 100.0
   },
   "canon-law/cic_lib4-cann879-958_en.html": {
    "body_chars": 23984,
@@ -698,19 +698,19 @@
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann998-1165_en.html": {
-   "body_chars": 59224,
-   "covered_chars": 57929,
-   "pct": 97.81
+   "body_chars": 58879,
+   "covered_chars": 58879,
+   "pct": 100.0
   },
   "canon-law/cic_lib5-cann1254-1310_en.html": {
-   "body_chars": 25867,
-   "covered_chars": 25867,
+   "body_chars": 25599,
+   "covered_chars": 25599,
    "pct": 100.0
   },
   "canon-law/cic_lib6-cann1311-1363_en.html": {
    "body_chars": 59246,
-   "covered_chars": 58824,
-   "pct": 99.29
+   "covered_chars": 59246,
+   "pct": 100.0
   },
   "canon-law/cic_lib6-cann1364-1399_en.html": {
    "body_chars": 16185,
@@ -719,8 +719,8 @@
   },
   "canon-law/cic_lib7-cann1400-1500_en.html": {
    "body_chars": 35468,
-   "covered_chars": 34953,
-   "pct": 98.55
+   "covered_chars": 35468,
+   "pct": 100.0
   },
   "canon-law/cic_lib7-cann1501-1670_en.html": {
    "body_chars": 57859,
@@ -728,9 +728,9 @@
    "pct": 99.93
   },
   "canon-law/cic_lib7-cann1671-1716_en.html": {
-   "body_chars": 28379,
-   "covered_chars": 22316,
-   "pct": 78.64
+   "body_chars": 28112,
+   "covered_chars": 28079,
+   "pct": 99.88
   },
   "canon-law/cic_lib7-cann1717-1731_en.html": {
    "body_chars": 6169,
@@ -3546,9 +3546,9 @@
   "aa889573-50b2-5a1d-9264-f309583c0c1b": {
    "collection": "canon-law",
    "source_file": "cic_lib1-cann1-6_en.html",
-   "body_chars": 740672,
-   "covered_chars": 722614,
-   "pct": 97.56
+   "body_chars": 736278,
+   "covered_chars": 734550,
+   "pct": 99.77
   },
   "aab0848e-3b88-5a1c-9dbd-a6897abf4e79": {
    "collection": "church-fathers",

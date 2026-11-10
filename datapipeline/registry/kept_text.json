@@ -210,6 +210,13 @@
   "added_by": "1.10b"
  },
  {
+  "passage_id": "9a374f48-5f57-5e66-af9e-99aebbf0e17b",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/1384",
+  "reason": "Checked on 10 Nov 2026 (1.5a): the same one-sentence canon. The live text opens with the Book VI dash and runs words together (\"incurs alatae sententiaeexcommunication\"); 1.5a's parser drops the dash and keeps the source's word breaks, which a sentence this short scores as a large change.",
+  "added_by": "1.5a"
+ },
+ {
   "passage_id": "aa2364d4-b127-5486-bf27-0a9267caa4d7",
   "document_id": "b270ebca-051e-5094-8370-758ad599d9ca",
   "anchor": "iv.i.xi.ii",

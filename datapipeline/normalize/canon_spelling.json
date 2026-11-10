@@ -1,0 +1,100 @@
+{
+ "description": "Reviewed spelling corrections for the Code of Canon Law (item 1.5a, C-16). The vatican.va English pages print capital V for a lost \"ff\" ligature and Y for \"ffi\" in these words; ingest/canon_law.py replaces each listed word in its canon only, and fails the build if the word is not there. There is no global V or Y replacement.",
+ "corrections": [
+  {
+   "canon": 253,
+   "broken": "diVerent",
+   "corrected": "different"
+  },
+  {
+   "canon": 761,
+   "broken": "diVusion",
+   "corrected": "diffusion"
+  },
+  {
+   "canon": 768,
+   "broken": "aVairs",
+   "corrected": "affairs"
+  },
+  {
+   "canon": 771,
+   "broken": "suYcient",
+   "corrected": "sufficient"
+  },
+  {
+   "canon": 820,
+   "broken": "oVer",
+   "corrected": "offer"
+  },
+  {
+   "canon": 820,
+   "broken": "eVort",
+   "corrected": "effort"
+  },
+  {
+   "canon": 998,
+   "broken": "suVering",
+   "corrected": "suffering"
+  },
+  {
+   "canon": 1040,
+   "broken": "aVected",
+   "corrected": "affected"
+  },
+  {
+   "canon": 1044,
+   "broken": "aVected",
+   "corrected": "affected"
+  },
+  {
+   "canon": 1068,
+   "broken": "aYrmation",
+   "corrected": "affirmation"
+  },
+  {
+   "canon": 1095,
+   "broken": "suVer",
+   "corrected": "suffer"
+  },
+  {
+   "canon": 1127,
+   "broken": "diYculties",
+   "corrected": "difficulties"
+  },
+  {
+   "canon": 1143,
+   "broken": "aVront",
+   "corrected": "affront"
+  },
+  {
+   "canon": 1144,
+   "broken": "aVront",
+   "corrected": "affront"
+  },
+  {
+   "canon": 1146,
+   "broken": "aVront",
+   "corrected": "affront"
+  },
+  {
+   "canon": 1200,
+   "broken": "aYrmed",
+   "corrected": "affirmed"
+  },
+  {
+   "canon": 1222,
+   "broken": "suVers",
+   "corrected": "suffers"
+  },
+  {
+   "canon": 1287,
+   "broken": "oVered",
+   "corrected": "offered"
+  },
+  {
+   "canon": 1290,
+   "broken": "eVects",
+   "corrected": "effects"
+  }
+ ]
+}
