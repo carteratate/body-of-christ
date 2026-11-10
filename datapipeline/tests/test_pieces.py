@@ -182,7 +182,7 @@ def test_bible_pieces_cite_their_own_verses():
     pieces = _pieces("Tobit", 5, verses, content, "tobit/5/1", whole_reference="Tobit 5")
     assert len(pieces) > 1
     last = 0
-    for text, ref, label, anchor, _ in pieces:
+    for text, ref, label, anchor, *_ in pieces:
         first_v = int(label)
         markers = [int(m) for m in re.findall(r"\{\{v:(\d+)\}\}", text)]
         assert not text.startswith("{{v:")
