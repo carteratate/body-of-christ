@@ -2722,6 +2722,96 @@
   "added_by": "1.2e-2"
  },
  {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "00d110df-8495-573e-a62e-713cc83a85a2",
+  "old_anchor": "malachi/1/1",
+  "new_passage_id": "17df0302-410a-5859-875d-795e180dc1ae",
+  "new_anchor": "malachi/nv/1/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "940ef5c6-991b-5a7c-ad20-8d0b662edc71",
+  "old_anchor": "malachi/1/6",
+  "new_passage_id": "5bc19a1f-9bf9-5154-9cb2-27366ae28234",
+  "new_anchor": "malachi/nv/1/6",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "0b41a662-ed4e-54d4-ae9c-640c37066cbc",
+  "old_anchor": "malachi/2/1",
+  "new_passage_id": "d558e03c-27ea-5756-befd-b62e267707c1",
+  "new_anchor": "malachi/nv/2/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "1c443559-3588-5f54-8f8e-4e11d906c50c",
+  "old_anchor": "malachi/2/10",
+  "new_passage_id": "ed1cb4c4-b9d3-58db-b958-891a7f9809d1",
+  "new_anchor": "malachi/nv/2/10",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "b648d935-a5ff-53de-9425-fa248a1fdd26",
+  "old_anchor": "malachi/2/17",
+  "new_passage_id": "a11f02aa-0ed4-513d-95f0-0552e027e4e8",
+  "new_anchor": "malachi/nv/2/17",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "98dcb8f7-7525-5623-b1af-881ab7b80e68",
+  "old_anchor": "malachi/3/1",
+  "new_passage_id": "c8fd2f39-7b60-53a1-940e-4369a729a9d9",
+  "new_anchor": "malachi/nv/3/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "39c60f14-3c09-5e9a-9e08-246eca7bf432",
+  "old_anchor": "malachi/3/13",
+  "new_passage_id": "328d3e79-b708-59cd-86ef-37f3d6070536",
+  "new_anchor": "malachi/nv/3/13",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "5f925e3c-6a12-56f2-9841-b0a40a3d3cc1",
+  "old_anchor": "malachi/3/6",
+  "new_passage_id": "0e2e38f2-25e4-59f0-b97f-cb1ef958dbb5",
+  "new_anchor": "malachi/nv/3/6",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "24045146-8f8f-5865-adfb-b93e97780dd6",
+  "old_passage_id": "32d38afb-d4c0-5b06-b630-c80ed1e32b3b",
+  "old_anchor": "malachi/4/1",
+  "new_passage_id": "e3296b73-107d-59d7-a3a0-d9b87144329b",
+  "new_anchor": "malachi/nv/3/19",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
   "document_id": "2444aae2-01c7-5f06-be45-a14be10fddfc",
   "old_passage_id": "7801a3ea-f215-5092-8761-4d05a1176cf3",
   "old_anchor": "iv.iii.i.i/from-p24",
@@ -3024,6 +3114,86 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "0124b758-1609-5889-8438-483e22efe731",
+  "old_anchor": "jonah/1/1",
+  "new_passage_id": "c4e2e4c0-1363-5e3b-a325-ec43039dd5f8",
+  "new_anchor": "jonah/nv/1/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "6e6e8e60-796e-5e98-90a4-e9cdd1df349c",
+  "old_anchor": "jonah/1/11",
+  "new_passage_id": "38a05e3b-cc5c-59ac-9bf0-4643823bf2a1",
+  "new_anchor": "jonah/nv/1/11",
+  "kind": "split",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "9dfd7e1b-2098-5921-98e4-e56454b92bd7",
+  "old_anchor": "jonah/1/4",
+  "new_passage_id": "116fb781-9671-5333-883b-de8c2caa7dfd",
+  "new_anchor": "jonah/nv/1/4",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "68c18179-3885-5395-bfd2-e0a3999debd5",
+  "old_anchor": "jonah/2/1",
+  "new_passage_id": "24f516d4-07a9-5e33-991e-1db5f41e19a2",
+  "new_anchor": "jonah/nv/2/1",
+  "kind": "merged",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "e5e99623-d074-52c0-8350-d2280865202d",
+  "old_anchor": "jonah/3/1",
+  "new_passage_id": "088fdf49-f11e-52d4-ad4c-2101a7ab5aef",
+  "new_anchor": "jonah/nv/3/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "558fd3bc-621a-5dbd-8d36-784cdceebe99",
+  "old_anchor": "jonah/3/5",
+  "new_passage_id": "76026c0c-4dd8-5d9c-952a-7ebc76552d8f",
+  "new_anchor": "jonah/nv/3/5",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "4a239a8c-a89b-555d-a118-b799d1809f3b",
+  "old_anchor": "jonah/4/1",
+  "new_passage_id": "f9ed6b26-b384-5277-87e1-bc3c42b479f2",
+  "new_anchor": "jonah/nv/4/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "2e227e08-9120-559e-9be1-c5cffb2672bc",
+  "old_passage_id": "ad19c5a3-d23e-5b98-bd16-bb1b2f759bbf",
+  "old_anchor": "jonah/4/5",
+  "new_passage_id": "88a455ea-d1a9-56ef-9808-af595f811f33",
+  "new_anchor": "jonah/nv/4/5",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
  },
  {
   "document_id": "2f22d9b5-b1fe-51e0-abf9-56685860ce61",
@@ -5620,6 +5790,96 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "7814727d-ab96-59ac-b5b6-29dc8fbd0549",
+  "old_anchor": "joel/1/1",
+  "new_passage_id": "5e91a7fd-91c2-5994-868a-448396cebed2",
+  "new_anchor": "joel/nv/1/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "13f12ed5-6c65-5c90-b720-96ff1caf3771",
+  "old_anchor": "joel/1/13",
+  "new_passage_id": "37f8b59f-000d-57a4-a78b-3e8530f3a688",
+  "new_anchor": "joel/nv/1/13",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "996cc872-705b-58a2-bcd2-9e6694a64a2f",
+  "old_anchor": "joel/1/8",
+  "new_passage_id": "e8df7842-84cc-501e-8819-c8870f136209",
+  "new_anchor": "joel/nv/1/8",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "e719cd9f-a1b9-5a12-8875-6aefa8663876",
+  "old_anchor": "joel/2/1",
+  "new_passage_id": "dd3b6401-6ddb-5285-816b-e9135fc6ce93",
+  "new_anchor": "joel/nv/2/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "9b38ef1a-6956-567d-a2bc-f4b3f4c1f38e",
+  "old_anchor": "joel/2/12",
+  "new_passage_id": "641bc074-bdbe-5075-b840-f78837929b6d",
+  "new_anchor": "joel/nv/2/12",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "3c10b17c-0dfc-53b7-8899-26a44ce01f4b",
+  "old_anchor": "joel/2/18",
+  "new_passage_id": "aeb2e441-9590-5fa8-8872-f87b1a8858e8",
+  "new_anchor": "joel/nv/2/18",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "05e5aa88-832c-55e5-90d6-1ce5cbffe212",
+  "old_anchor": "joel/2/28",
+  "new_passage_id": "ecb62b61-f26d-5f74-991f-dff49fa2174d",
+  "new_anchor": "joel/nv/3/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "adf80343-43a0-5e75-8668-0304bdfc5bbd",
+  "old_anchor": "joel/3/1",
+  "new_passage_id": "5b278934-d6ff-58ad-a858-d397a7e1e583",
+  "new_anchor": "joel/nv/4/1",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
+ },
+ {
+  "document_id": "46de14ac-d399-5ce6-8b1f-44cf65e26bf2",
+  "old_passage_id": "d2159eb6-9f42-517c-a0e5-d67ff30130f2",
+  "old_anchor": "joel/3/17",
+  "new_passage_id": "eda1e394-ad8f-55c8-8db1-b05a8c4350a0",
+  "new_anchor": "joel/nv/4/17",
+  "kind": "renumbered",
+  "reason": "Nova Vulgata numbering",
+  "added_by": "1.4b"
  },
  {
   "document_id": "47a453c1-7456-572e-9049-22b4d6fa6006",
