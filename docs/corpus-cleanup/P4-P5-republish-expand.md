@@ -83,6 +83,7 @@ P4 and P5 assume these have merged. Each spec below names the ones it needs.
 | 2.3 | Document metadata, including genre and issuer for every document, in the registry and staging (applied at the P4 apply, not early, D7) |
 | 2.4a, 2.4b | API payloads and web rendering for tombstones and redirects. Both must be live before the P4 apply |
 | 2.4d, 3.4 | The rejected-voice role (C-01): 3.4's ranges in the registry, 2.4d's API and web handling, live before the P4 apply |
+| 2.4f | Passage text labels (scanned edition, unofficial canon English) and the amended-canon Latin link in the API and on opened passages, live before the P4 apply |
 | 2.2c | The `search_vector` migration (C-16), applied in 4.0's window before staging |
 | 0.1d, R7 | The checks for the 6 Oct review findings; the Summa against an independent edition, which 1.7 waits for |
 | R1, R6 | Rule A dating and Church-act checks; edition and provenance per planned source |
@@ -221,7 +222,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 ### 4.1b. Production cutover runbook
 
 - **Type:** ops, with one small PR (the lock-file change)
-- **Depends on:** 4.0 (including 2.2c's migration), 4.1a (rehearsal passed), 4.2 pre-cutover run passed, 2.2w, 2.2b (API reads `chunks_live`), 2.4a, 2.4b and 2.4d live, P1 to P3 merged, 3.4 included.
+- **Depends on:** 4.0 (including 2.2c's migration), 4.1a (rehearsal passed), 4.2 pre-cutover run passed, 2.2w, 2.2b (API reads `chunks_live`), 2.4a, 2.4b, 2.4d and 2.4f live, P1 to P3 merged, 3.4 included.
 - **Goal:** Switch production from the old corpus to the cleaned one in minutes, with a tested rollback. Users see the corrected corpus (Vatican II and Trent recovered, removals shown as tombstones, correct labels); bookmarks and history keep working.
 - **Current state:**
   - After 2.2b the API reads Qdrant through the alias `chunks_live`, which points at `chunks` (2.2b ops steps). The datapipeline writer takes a target collection name from 2.2w.
