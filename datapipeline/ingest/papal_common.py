@@ -926,11 +926,23 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
 
     passages = _passages(units, title, meta)
     _log_short(title, passages)
+    metadata = {"url": entry["url"], "source_url": entry["url"], "pope": author,
+                "source_key": source_key, "anchor_scheme": ANCHOR_SCHEME,
+                "genre": _genre(entry, source_key)}
+    if entry.get("form"):
+        metadata["form"] = entry["form"]
     return Document(id=did, collection=collection, title=title, author=author,
-                    year=entry["year"],
-                    metadata={"url": entry["url"], "source_url": entry["url"], "pope": author,
-                              "source_key": source_key, "anchor_scheme": ANCHOR_SCHEME},
-                    passages=passages)
+                    year=entry["year"], metadata=metadata, passages=passages)
+
+
+def _genre(entry: dict, source_key: str) -> str:
+    """The manifest's genre (1.3b), which the release report shows and 2.3 copies into the
+    registry. A manifest vendored before 1.3b has none: re-vendor rather than guess."""
+    if not entry.get("genre"):
+        raise ValueError(f"{source_key}: the manifest has no genre; run "
+                         "`python3 scripts/vendor_sources.py --collection <collection>` "
+                         "to copy it from papal_genres.csv")
+    return entry["genre"]
 
 
 def _with_headings(headings: list[Token], segments: list[Segment]) -> list[Segment]:

@@ -14,6 +14,7 @@ Idempotent: skips a file that already exists unless --force is given.
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import os
@@ -355,6 +356,30 @@ def vendor_church_fathers(force: bool) -> None:
     _write_manifest(d, manifest)
 
 
+@functools.cache
+def _papal_labels() -> dict:
+    sys.path.insert(0, _ROOT)
+    import papal_genres
+
+    return papal_genres.load()
+
+
+def _papal_entry(coll_dir: str, title: str, author: str, year: int, url: str, slug: str,
+                 fname: str) -> dict:
+    """A papal manifest entry with its genre and form from the tracked papal_genres.csv
+    (1.3b), so a re-vendor keeps them. A document with no row there stops the vendor."""
+    collection = os.path.basename(coll_dir)
+    labels = _papal_labels().get(slug)
+    if labels is None or labels.collection != collection:
+        raise SystemExit(f"papal_genres.csv has no row for {collection}/{slug}; add one, "
+                         "citing the document's heading, before vendoring it")
+    entry = {"title": title, "author": author, "year": year, "url": url, "slug": slug,
+             "file": fname, "genre": labels.genre}
+    if labels.form:
+        entry["form"] = labels.form
+    return entry
+
+
 def vendor_encyclicals(force: bool) -> None:
     d = os.path.join(_SOURCES, "encyclicals")
     os.makedirs(d, exist_ok=True)
@@ -374,8 +399,7 @@ def vendor_encyclicals(force: bool) -> None:
                 time.sleep(_DELAY)
             else:
                 print(f"  skip (exists): {fname}")
-            manifest.append({"title": title, "author": author, "year": year,
-                             "url": url, "slug": slug, "file": fname})
+            manifest.append(_papal_entry(d, title, author, year, url, slug, fname))
     _write_manifest(d, manifest)
 
 
@@ -439,8 +463,7 @@ def vendor_apostolic_exhortations(force: bool) -> None:
                 time.sleep(_DELAY)
             else:
                 print(f"  skip (exists): {fname}")
-            manifest.append({"title": title, "author": author, "year": year,
-                             "url": url, "slug": slug, "file": fname})
+            manifest.append(_papal_entry(d, title, author, year, url, slug, fname))
     _write_manifest(d, manifest)
 
 
@@ -485,8 +508,7 @@ def vendor_papal_documents(force: bool) -> None:
                 time.sleep(_DELAY)
             else:
                 print(f"  skip (exists): {fname}")
-            manifest.append({"title": title, "author": author, "year": year,
-                             "url": url, "slug": slug, "file": fname})
+            manifest.append(_papal_entry(d, title, author, year, url, slug, fname))
     _write_manifest(d, manifest)
 
 

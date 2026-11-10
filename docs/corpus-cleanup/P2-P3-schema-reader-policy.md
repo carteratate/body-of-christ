@@ -680,7 +680,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 ### 2.3. Document facts in the registry
 
 - **Type:** PR (registry fields, validation, and the facts section of the release report)
-- **Depends on:** 2.1 (work registry with frozen IDs), 0.2 (rights inventory, for source credits), 2.2a (columns), 2.2w (the writer that stages them). 1.3b decides corrected papal genres; this item carries whatever 1.3b decides.
+- **Depends on:** 2.1 (work registry with frozen IDs), 0.2 (rights inventory, for source credits), 2.2a (columns), 2.2w (the writer that stages them). 1.3b decides corrected papal genres, in `datapipeline/papal_genres.csv` and each papal document's `metadata["genre"]`; this item carries whatever 1.3b decides. 1.3b also records each papal document's form (`metadata["form"]`), which a follow-up carries to `documents.form`.
 - **Goal:** Every document gets its real genre, issuer, display date, translation, source credit and, where a rule F text is superseded, its supersession link, so cards and the reader can show them and 5.1a can filter on genre and issuer. The values are written by 2.2w into staging and reach users at the Phase 4 apply (D7).
 - **Current state:**
   - Empty fields measured 29 Sep, by collection:
