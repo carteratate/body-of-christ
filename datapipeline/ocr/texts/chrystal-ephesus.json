@@ -5,7 +5,7 @@
   "text_source": "ocr",
   "scan_id": "authoritative01chry"
  },
- "gate": "pending",
+ "gate": "pass",
  "passages": [
   {
    "id": "letter-01",
