@@ -2790,6 +2790,25 @@
   "added_on": "2026-11-01"
  },
  {
+  "id": "rm-1726",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "1d496a39-f816-530f-9fa8-bb26d015ddce",
+  "anchor": "iii.iii.xxiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "920cdb11d8d91b2c673a258798d064b7e424cc28",
+   "excerpt": "It is worth while to direct attention to (book vi. cap. 2) what our author has said of “true worship,” just now, when t…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
   "id": "rm-0021",
   "scope": "class",
   "collection": "church-fathers",
@@ -5237,6 +5256,139 @@
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1719",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": "iii.ii.iv.xxx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8c8261fae965948b9ede18050d892c81f8f1a794",
+   "excerpt": "______________"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1720",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": "iii.ii.iv.xxx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e512fbcc88056ee56f7c31130693596a21785a98",
+   "excerpt": "(On cap. 29.)"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1721",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": "iii.ii.iv.xxx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bff8d4e479343224c22d31acfa157dafa51c2cc3",
+   "excerpt": "Here we should look for something also concerning the Holy Spirit. But our author’s principle is doubtless a reflection…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1722",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": "iii.ii.iv.xxx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "27407dbfbe392f89111719f8cccd7e4d0b9ca15d",
+   "excerpt": "(On cap. 30.)"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1723",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": "iii.ii.iv.xxx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0093688461e93a21d1f8e6cc8612ac169d571523",
+   "excerpt": "The simplicity with which our author gives a note of the Catholic Church, in accordance with African canons and the tea…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1724",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": "iii.ii.vii.xxvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "39cf42666daaf0e5d6e52017a38f076c5e84d3fb",
+   "excerpt": "____________________"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1725",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+  "anchor": "iii.ii.vii.xxvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "26107515ecba654e68b2c1ad1fb0b5fca5f9f23c",
+   "excerpt": "For remarks on the dubious passages which bear upon that of p. 221, supra, see the General Note suffixed to the tractat…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
  },
  {
   "id": "rm-0079",
@@ -11254,11 +11406,30 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 207
+   "count": 206
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1727",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fd6550b9-0122-5f2e-86ff-cb992d719a9e",
+  "anchor": "ix.viii.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note under its own heading at the end of the chapter",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "3378530adf671109d07b529cfd6bceabf6312c89",
+   "excerpt": "Comparing the Teaching with chapters xxv. and xxvi. of these Constitutions, it seems to me that the nature of the eucha…"
+  },
+  "judgment": null,
+  "added_by": "1.8a",
+  "added_on": "2026-11-10"
  },
  {
   "id": "rm-1316",

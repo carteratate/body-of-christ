@@ -54,6 +54,7 @@ DETAIL = {
                     "recorded by 1.8c",
     "provenance": "The editor's source line for the fragment (C-22)",
     "bracket": "A bracketed comment by the editor inside the text",
+    "section": "The editor's note under its own heading at the end of the chapter",
 }
 EXCERPT = 120
 
@@ -100,6 +101,7 @@ NOT_JUDGMENTS: dict[str, str] = {
     "7e2fdedf0b99": "same judgment as c5361de18c1a",
     "e032a47489dc": "same judgment as aa76ee1ac016",
     "f3d6d5cae4c3": "same judgment as 2b445c86951f",
+    "853c2cbfb962": "a cross-reference to 2b445c86951f's note",
 }
 # The verdict for each flagged sentence that is an authenticity judgment (sha1 of the
 # sentence -> (verdict, overridden_by_plan)). The plan's "Labels for works that stay"

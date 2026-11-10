@@ -84,9 +84,17 @@ def test_letter_title_line_dropped_greeting_kept(built):
     assert letter.content.startswith("1. Firmilian to Testius, his brother in the Lord, greeting.")
     assert "Against the Letter of Stephen" not in letter.content
     edit = next(e for _, div, e in built[1] if div == "ii.i.i")
-    assert [(r.block, r.kind) for r in edit.removed if r.kind != "bracket"] == [
+    assert [(r.block, r.kind) for r in edit.removed if r.kind not in ("bracket", "section")] == [
         ("p1", "heading"), ("p2", "heading"), ("p3", "heading"), ("p5", "letter-title"),
         ("p6", "argument"), ("p7", "credit"), ("p10", "provenance")]
+
+
+def test_editor_section_under_a_heading_dropped(built):
+    _, letter = _letter(built[0])
+    assert letter.content.endswith("in all the churches that are of one mind.")
+    assert "bishops of Rome" not in letter.content
+    edit = next(e for _, div, e in built[1] if div == "ii.i.i")
+    assert [(r.block, r.kind) for r in edit.removed if r.kind == "section"] == [("p12", "section")]
 
 
 def test_chapter_title_moves_to_label(built):
@@ -159,14 +167,19 @@ def test_removed_units_logged_with_judgment(built, monkeypatch):
     _, unreviewed = editorial_removals.plan(reg, entries, found)
     assert unreviewed, "a judgment nobody has read is not copied"
     quote = retired["judgment"]
-    monkeypatch.setattr(editorial_removals, "VERDICTS",
-                        {editorial_removals.sentence_key(quote): ("spurious", False)})
+    note = next(e for e in entries if e["detail"] == editorial_removals.DETAIL["section"])
+    assert note["judgment"].startswith("This letter shows how little")
+    monkeypatch.setattr(editorial_removals, "VERDICTS", {
+        editorial_removals.sentence_key(quote): ("spurious", False),
+        editorial_removals.sentence_key(note["judgment"]): ("genuine", False)})
     updated, unreviewed = editorial_removals.plan(reg, entries, found)
     assert unreviewed == []
     work = next(w for w in updated.works if w["document_id"] == letters.id)
-    assert work["attribution"]["editorial_judgments"] == [{
-        "source_file": "thml_editorial.xml", "element_id": "ii.i.ii", "quote": quote,
-        "verdict": "spurious", "overridden_by_plan": False}]
+    assert work["attribution"]["editorial_judgments"] == [
+        {"source_file": "thml_editorial.xml", "element_id": "ii.i.ii", "quote": quote,
+         "verdict": "spurious", "overridden_by_plan": False},
+        {"source_file": "thml_editorial.xml", "element_id": "ii.i.i-p12",
+         "quote": note["judgment"], "verdict": "genuine", "overridden_by_plan": False}]
     assert next(r for r in updated.passages if r["passage_id"] == pid)["status"] == "retired"
     assert {e["id"] for e in updated.removals if e["added_by"] == "1.8a"} == {
         f"rm-{n:04d}" for n in range(2, 2 + len(entries))}

@@ -40,6 +40,14 @@ EDITORIAL_DIV_TITLE = re.compile(
     r"notice|introduction|preface)|introductory (?:note|notice).*|prefatory notice.*"
     r"|title pages?|contents|note")
 
+# A heading inside an author's chapter that opens an editor's section running to the
+# next heading or the chapter's end ("General Notes by the American Editor." after
+# Lactantius, Institutes IV.30; "General notice" after Apostolic Constitutions VII).
+EDITORIAL_HEADING = re.compile(
+    r"elucidations?|general (?:notes?|notices?)(?: by the american editor)?|(?:two )?notes? "
+    r"by the (?:american editor|edinburgh translator)|introductory (?:note|notice).*")
+_HEADINGS = frozenset(f"h{n}" for n in range(1, 7))
+
 # R4 (docs/research/R4-refutation-contents.md, section 4): the Refutation's book tables
 # of contents are Hippolytus's own, so these "Contents." divs stay passages.
 AUTHORIAL_CONTENTS = frozenset({
@@ -351,14 +359,20 @@ class ChapterEdit:
         div = elem.get("id") or ""
         self.locators = {id(b): _locator(b, div, k) for k, b in enumerate(blocks, 1)}
         self.order = [self.locators[id(b)] for b in blocks]   # paragraphs, reading order
-        kept = [(b, t) for b, t in ((b, _block_text(b)) for b in blocks) if t]
+        sections = _editor_sections(elem)
+        self.removed: list[Removed] = [
+            Removed(self.locators[id(b)], "section", t) for b in blocks
+            if id(b) in sections and (t := _block_text(b))]
+        kept = [(b, t) for b, t in ((b, _block_text(b)) for b in blocks)
+                if t and id(b) not in sections]
         v = classify_lines([t for _, t in kept], titles, own_title=own_title,
                            argument_lines=argument_lines,
                            chapter_title_to_label=chapter_title_to_label)
         self.label_title = v.label_title
         self._read: set[int] = set()
         self.dropped = {id(kept[i][0]): kind for i, kind in v.drop.items()}
-        self.removed: list[Removed] = [
+        self.dropped.update((i, "section") for i in sections)
+        self.removed += [
             Removed(self.locators[id(kept[i][0])], kind, kept[i][1])
             for i, kind in sorted(v.drop.items()) if kind != "label"]
         self.label_line = next((kept[i][1] for i, kind in v.drop.items() if kind == "label"),
@@ -379,6 +393,34 @@ class ChapterEdit:
             notes = [n for n, at in zip(notes, marks)
                      if not any(a <= at < b for a, b in cuts)]
         return out, notes
+
+
+def _editor_sections(elem) -> set[int]:
+    """The `id()`s of a chapter's paragraphs that stand under an editor's heading
+    (`EDITORIAL_HEADING`), up to the next other heading."""
+    from ingest.common import _strip_tags
+    from xml.etree.ElementTree import tostring
+
+    out: set[int] = set()
+    level = 0                                  # the open section's heading level, or 0
+    previous = None
+    for child in elem:
+        if child.tag in _HEADINGS:
+            text = " ".join(_strip_tags(tostring(child, encoding="unicode",
+                                                 method="xml")).split())
+            n = int(child.tag[1])
+            if EDITORIAL_HEADING.fullmatch(text.replace("\u2019", "'").rstrip(".").lower()):
+                level = n
+                # The rule line printed above the heading opens the section.
+                if previous is not None and RULE_LINE.match(_block_text(previous) or "x"):
+                    out.add(id(previous))
+            elif level and n <= level and not NUMBER_LINE.match(text):
+                level = 0                      # an author's heading ends it; "I." does not
+        elif child.tag in ("p", "verse"):
+            if level:
+                out.add(id(child))
+            previous = child
+    return out
 
 
 def _locator(block, div: str, k: int) -> str:
