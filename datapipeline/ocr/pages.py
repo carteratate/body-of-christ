@@ -26,6 +26,8 @@ class Line:
     # Each word with its left and right edge, where the reader gives them (`pdf.py`), and
     # the source's own reading of it where the reader mended it.
     words: tuple[tuple, ...] = ()
+    # A number stood in the margin beside the line and was taken out (`margin_numbers`).
+    numbered: bool = False
 
     @property
     def reading(self) -> str:
