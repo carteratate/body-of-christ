@@ -625,6 +625,7 @@ vendored Tanner files stay. R9 checked the leads below and Deferrari's *The Sour
 | G10 | Vatican I | Session 1, decree of opening | — |
 | G11 | Vatican I | Session 2, profession of faith (Schaff's 1564 profession does not stand in; see Vatican I) | — |
 | G12 | Vienne | Vienne's decree [12], on a tithe granted for a time. Schroeder's own choice of conciliar decrees leaves it out (pp. 370–372, 413); added by 1.2e-2 (Carter, 9 Nov 2026) | — |
+| G13 | Constantinople II | The council's closing sentence after the fourteen anathemas ("Such then are the assertions we confess …"), which Percival does not print; added by 1.2c (Carter, 10 Nov 2026) | — |
 
 G1 (Nestorius's second letter) and G2 (Nicaea II's four anathemas) left the register when 1.2c took them from Chrystal (1895) and Hefele (1896), as R9 found (Carter, 4 Nov 2026). Their numbers are not reused.
 
