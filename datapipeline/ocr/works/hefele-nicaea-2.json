@@ -1,0 +1,37 @@
+{
+ "work": "hefele-nicaea-2",
+ "title": "Second Council of Nicaea, the four anathemas concerning holy images, from Hefele, A History of the Councils of the Church, vol. 5, translated by W. R. Clark (1896), p. 376",
+ "scan": "ahistoryofthecou05hefeuoft",
+ "djvu_xml": "councils/ahistoryofthecou05hefeuoft/ahistoryofthecou05hefeuoft_djvu.xml",
+ "page_numbers": "councils/ahistoryofthecou05hefeuoft/ahistoryofthecou05hefeuoft_page_numbers.json",
+ "pages": [
+  "376",
+  "376"
+ ],
+ "layout": "single-column",
+ "leaf_offset": 1,
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "anathemas",
+   "first": "If anyone does not con\\s?fess that Christ",
+   "last": "written or\\s+unwritten, let him be anathema",
+   "start": "If anyone does not con\\s?fess that Christ",
+   "end": "written or\\s+unwritten, let him be anathema\\s?!"
+  }
+ ],
+ "baseline": {
+  "path": "councils/npnf214.xml",
+  "start": "^To the most religious and beloved of God, fellow minister Nestorius",
+  "end": "^Extracts from the Acts"
+ },
+ "check_note": "Only the four anathemas are taken, from “If anyone does not confess” to “written or unwritten, let him be anathema!”; the acclamations before and after them on the page are left out on purpose.",
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

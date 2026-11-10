@@ -988,3 +988,225 @@ def test_vatican_i_rights_row_is_schaffs():
     row, = rows
     assert row["source_path"] == "councils/creeds2.xml" and row["status"] == "pd-us-non-renewal"
     assert row["planned_for"] is None
+
+
+# --- 1.2c: councils 1 to 7 from Percival ---------------------------------------------------------
+
+from ingest import councils_percival as percival  # noqa: E402
+
+PERCIVAL_XML = """<?xml version="1.0"?>
+<ThML><ThML.body>
+<div1 id="v" title="The Council of Example.">
+<div2 id="v.i" title="Historical Introduction."><p id="v.i-p1" class="c18">The council met in a city.</p></div2>
+<div2 id="v.ii" title="The Canons.">
+<div3 id="v.ii.i" title="Canon I.">
+<p id="v.ii.i-p1" class="c14">The Canons of the Council.</p>
+<p id="v.ii.i-p2" class="c34">Canon I.</p>
+<p id="v.ii.i-p3" class="c18">Let no bishop leave his see without the consent of the synod<note n="1" id="v.ii.i-p3.1">Some read "province".</note> of the province.</p>
+<p id="v.ii.i-p4" class="c31">Notes.</p>
+<p id="v.ii.i-p5" class="c30">Ancient Epitome of Canon I.</p>
+<p id="v.ii.i-p6" class="c35">A bishop shall not leave his see.</p>
+<p id="v.ii.i-p7" class="c36">Zonaras.</p>
+<p id="v.ii.i-p8" class="c18">This canon was often renewed.</p>
+</div3>
+<div3 id="v.ii.ii" title="Excursus on Sees."><p id="v.ii.ii-p1" class="c18">An excursus on sees.</p></div3>
+<div3 id="v.ii.iii" title="Canon II.">
+<p id="v.ii.iii-p1" class="c46">Canon II.</p>
+<p id="v.ii.iii-p1a" class="c35">That the clergy are to obey.</p>
+<p id="v.ii.iii-p2" class="c18">(Probably adopted at a later council.)</p>
+<p id="v.ii.iii-p3" class="c18">Let the clergy obey their bishop.</p>
+<p id="v.ii.iii-p4" class="c31">Notes.</p>
+<p id="v.ii.iii-p5" class="c18">Van Espen remarks on it.</p>
+</div3>
+</div2>
+<div2 id="v.iii" title="The Synodal Letter.">
+<p id="v.iii-p1" class="c14">The Synodal Letter.</p>
+<p id="v.iii-p2" class="c31">(Found in Labbe, Concilia, Tom. II.)</p>
+<p id="v.iii-p3" class="c18">To the Church of the city, greeting.</p>
+<p id="v.iii-p3a" class="c35">The Creed of the Fathers.</p>
+<p id="v.iii-p4" class="c19">[Next was read the letter of the emperor.]</p>
+<p id="v.iii-p5" class="c19">We have decreed what is written above.</p>
+</div2>
+</div1>
+</ThML.body></ThML>"""
+EXAMPLE = {"council": "Council of Example", "year": 400, "council_number": 1,
+           "url": "https://www.papalencyclicals.net/councils/ecum01.htm",
+           "file": "ecum-01-council-of-example.html"}
+EXAMPLE_TEXTS = [*percival._canons("v.ii", ["i", "iii"]),
+                 percival.Text("synodal-letter", "The Synodal Letter", "synodal-letter",
+                               "The Synodal Letter", "v.iii")]
+
+
+def _example(tmp_path, monkeypatch):
+    path = tmp_path / "npnf.xml"
+    path.write_text(PERCIVAL_XML, encoding="utf-8")
+    monkeypatch.setattr(percival, "COUNCILS", {"Council of Example": EXAMPLE_TEXTS})
+    return percival.build_percival(EXAMPLE, "doc-id", "councils/ecum-01-council-of-example",
+                                   percival.read_divs(str(path)))
+
+
+def test_percival_allowlist_drops_epitome_and_notes(tmp_path, monkeypatch):
+    doc = _example(tmp_path, monkeypatch)
+    text = " ".join(p.content for p in doc.passages)
+    for editor in ("Historical", "Ancient Epitome", "Zonaras", "renewed", "excursus", "Van Espen",
+                   "Probably adopted", "Found in", "Next was read", "province\"", "Some read",
+                   "Canon II", "That the clergy"):
+        assert editor not in text, editor
+    assert [p.content for p in doc.passages] == [
+        "Let no bishop leave his see without the consent of the synod of the province.",
+        "Let the clergy obey their bishop.",
+        "To the Church of the city, greeting.\n\nThe Creed of the Fathers.\n\n"
+        "We have decreed what is written above."]
+
+
+def test_percival_canon_anchors(tmp_path, monkeypatch):
+    doc = _example(tmp_path, monkeypatch)
+    assert [(p.anchor, p.reference, p.chapter_key) for p in doc.passages] == [
+        ("council-of-example/canon/1", "Council of Example, Canon 1", "council-of-example/canons"),
+        ("council-of-example/canon/2", "Council of Example, Canon 2", "council-of-example/canons"),
+        ("council-of-example/synodal-letter", "Council of Example, The Synodal Letter",
+         "council-of-example/synodal-letter")]
+    assert all(p.metadata["text_replaced"] == percival.TEXT_REPLACED for p in doc.passages)
+    assert doc.metadata["held_text_url"] == EXAMPLE["url"]
+
+
+def test_percival_refuses_a_text_that_does_not_end_where_named(tmp_path, monkeypatch):
+    monkeypatch.setattr(percival, "COUNCILS", {"Council of Example": [
+        percival.Text("canon/1", "Canon 1", "canons", "Canons", "v.ii.i", last="p8")]})
+    path = tmp_path / "npnf.xml"
+    path.write_text(PERCIVAL_XML, encoding="utf-8")
+    with pytest.raises(ValueError, match="does not end at p8"):
+        percival.build_percival(EXAMPLE, "doc-id", "k", percival.read_divs(str(path)))
+
+
+# What the 1.2a inventory lists for each council, as Percival prints it (and R9's two texts).
+PERCIVAL_UNITS = {
+    "Council of Nicaea": ["creed", *[f"canon/{n}" for n in range(1, 21)], "synodal-letter"],
+    "First Council of Constantinople": ["creed", "letter-to-theodosius",
+                                        *[f"canon/{n}" for n in range(1, 8)], "synodical-letter"],
+    "Council of Ephesus": ["cyril-second-letter", "nestorius-second-letter", "cyril-third-letter",
+                           *[f"anathema/{n}" for n in range(1, 13)], "decree-against-nestorius",
+                           "synodical-letter", *[f"canon/{n}" for n in range(1, 9)],
+                           "letter-to-pamphylia", "letter-to-celestine",
+                           "definition-against-the-messalians", "decree-on-euprepius-and-cyril",
+                           "letter-to-john-of-antioch"],
+    "Council of Chalcedon": ["tome-of-leo", "condemnation-of-dioscorus", "definition",
+                             "decree-on-jerusalem-and-antioch", "decree-on-the-bishop-of-ephesus",
+                             "decree-on-nicomedia", *[f"canon/{n}" for n in range(1, 31)]],
+    "Second Council of Constantinople": ["sentence", *[f"anathema/{n}" for n in range(1, 15)]],
+    "Third Council of Constantinople": ["sentence-against-the-monothelites", "definition",
+                                        "letter-to-agatho"],
+    "Second Council of Nicaea": ["definition", "anathemas", *[f"canon/{n}" for n in range(1, 23)],
+                                 "letter-to-the-emperors"],
+}
+_PERCIVAL_BUILT: dict = {}
+
+
+def _percival_built(council):
+    if not _PERCIVAL_BUILT:
+        for d in build_documents():
+            if d.title in PERCIVAL_UNITS:
+                _PERCIVAL_BUILT[d.title] = work_registry.apply_overrides(d)
+    return _PERCIVAL_BUILT[council]
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+@pytest.mark.parametrize("council", PERCIVAL_UNITS)
+def test_percival_prints_every_text_the_inventory_lists(council):
+    doc = _percival_built(council)
+    slug = re.sub(r"[^a-z0-9]+", "-", council.lower()).strip("-")
+    assert _units(doc) == [f"{slug}/{u}" for u in PERCIVAL_UNITS[council]]
+    assert doc.metadata["held_text_url"].startswith("https://www.papalencyclicals.net/councils/")
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+@pytest.mark.parametrize("council", PERCIVAL_UNITS)
+def test_percival_passages_hold_no_editors_matter(council):
+    for p in _percival_built(council).passages:
+        assert not re.search(r"Ancient Epitome|Excursus|Zonaras|Balsamon|Aristenus|Labbe|"
+                             r"\(Found in|^Notes?\.|\[Section|\(\d{3}\)", p.content), p.anchor
+        for note in p.metadata.get("footnotes", []):
+            assert scripture_reference(note["text"]) == note["text"], p.anchor
+
+
+@pytest.mark.parametrize("work", ["chrystal-ephesus", "hefele-nicaea-2"])
+def test_percivals_scanned_texts_passed_the_gate_and_their_marks_balance(work):
+    frozen = read_text(work)
+    assert frozen["gate"] == "pass"
+    text = " ".join(u["text"] for u in frozen["passages"])
+    assert text.count("(") == text.count(")") and text.count("[") == text.count("]")
+    assert _quotations_balance(text)
+    assert not re.search(r"\(\d{3}\)|Section|[‘’]{2}|\b[A-Z]{2,} [A-Z]{2,} [A-Z]{2,}\b", text)
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+def test_nestorius_letter_is_rejected_voice_and_hefeles_anathemas_say_where_they_come_from():
+    letter = [p for p in _percival_built("Council of Ephesus").passages
+              if p.anchor.startswith("council-of-ephesus/nestorius-second-letter")]
+    assert len(letter) > 1 and all(p.voice == "rejected" for p in letter)
+    assert all(p.metadata["text_source"] == "ocr" and p.metadata["scan_id"] == "authoritative01chry"
+               for p in letter)
+    assert letter[0].content.startswith("To the most religious and most dear-to-God")
+    assert letter[-1].content.endswith("and to God most dear.")
+    anathemas, = [p for p in _percival_built("Second Council of Nicaea").passages
+                  if p.anchor == "second-council-of-nicaea/anathemas"]
+    assert anathemas.note == "From Hefele's account of the session, in W. R. Clark's translation (1896)."
+    assert anathemas.content.count("let him be anathema!") == 4
+    assert "Chrystal" in _percival_built("Council of Ephesus").translation
+    others = [p for d in PERCIVAL_UNITS for p in _percival_built(d).passages
+              if p.voice and not p.anchor.startswith("council-of-ephesus/nestorius-second-letter")]
+    assert not others
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+def test_chalcedons_canons_29_and_30_say_they_were_not_enacted_as_canons():
+    # Passages of the fourth session's minutes that later Greek collections count as
+    # canons (Carter, 10 Nov 2026).
+    canons = {p.anchor: p for p in _percival_built("Council of Chalcedon").passages}
+    for n in (29, 30):
+        assert canons[f"council-of-chalcedon/canon/{n}"].note == (
+            "Not enacted as a canon: a passage from the minutes of the fourth session, which "
+            f"later Greek collections count as canon {n}.")
+    assert all(canons[f"council-of-chalcedon/canon/{n}"].note is None for n in range(1, 29))
+    assert "Apostolic throne [of Rome], said" in canons["council-of-chalcedon/canon/30"].content
+    assert not re.search(r"Ancient Epitome|Hefele|From the Fourth Session",
+                         canons["council-of-chalcedon/canon/29"].content)
+
+
+def test_tanners_councils_1_to_7_go_where_their_text_went():
+    reg = work_registry.current()
+    # A live passage that was one whole canon or anathema keeps its ID under the new anchor.
+    kept = {r["live_anchor"]: r["anchor"] for r in reg.passages if r["status"] == "active"
+            and "/sec-" in r["live_anchor"] and r["anchor"] != r["live_anchor"]}
+    assert kept["first-council-of-constantinople/sec-5/8"] == "first-council-of-constantinople/canon/1"
+    assert kept["council-of-ephesus/sec-5/12"] == "council-of-ephesus/anathema/12"
+    assert kept["second-council-of-nicaea/sec-26/26"] == "second-council-of-nicaea/canon/22"
+    assert kept["council-of-chalcedon/sec-3/19"] == "council-of-chalcedon/canon/30"
+    open_ = {r["old_anchor"]: r["new_anchor"] for r in reg.redirects if not r.get("closed_by")}
+    assert open_["council-of-ephesus/sec-3/3"] == "council-of-ephesus/nestorius-second-letter"
+    assert open_["council-of-nicaea/sec-2/2"] == "council-of-nicaea/creed"
+    removed = {e["anchor"]: e for e in work_registry.open_removals(reg)}
+    assert removed["council-of-nicaea/sec-1/1"]["reason"] == "rule-g-editorial"
+    assert removed["second-council-of-nicaea/sec-26/27"]["reason"] == "debris"
+    gap = removed["second-council-of-constantinople/sec-3/9"]
+    assert gap["reason"] == "translation-in-preparation" and "(gap G13)" in gap["detail"]
+    docs = {percival_document_id(c) for c in PERCIVAL_UNITS}
+    assert not [r["anchor"] for r in reg.passages
+                if r["document_id"] in docs and r["status"] == "active" and "/sec-" in r["anchor"]]
+
+
+def percival_document_id(council):
+    row, = [r for r in rights_inventory.load()
+            if r["work"] == council and r["source_path"] == "councils/npnf214.xml"]
+    return row["document_id"]
+
+
+def test_councils_1_to_7_rights_rows_are_percivals():
+    rows = [r for r in rights_inventory.load()
+            if r["collection"] == "councils" and r["work"] in PERCIVAL_UNITS]
+    assert {r["source_path"] for r in rows} == {"councils/npnf214.xml"}
+    assert all(r["document_id"] and r["status"] == "pd-us-pre-1931" and r["planned_for"] is None
+               for r in rows)
+    also = {r["work"]: [a["source_path"] for a in r.get("also_from", [])] for r in rows}
+    assert also["Council of Ephesus"] == ["councils/authoritative01chry/"]
+    assert also["Second Council of Nicaea"] == ["councils/ahistoryofthecou05hefeuoft/"]

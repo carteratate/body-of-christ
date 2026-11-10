@@ -59,13 +59,14 @@ def render(workdirs: list[WorkDir]) -> str:
            "<meta name=viewport content='width=device-width, initial-scale=1'>",
            f"<title>OCR check</title><style>{STYLE}</style>",
            "<h1>OCR check against the page images</h1>",
-           "<p>Compare each passage with its page, word for word. Schroeder's summaries, "
+           "<p>Compare each passage with its page, word for word. The editor's summaries, "
            "comments and notes are left out on purpose, and so are the small note numbers "
            "in the text. Line breaks and italics do not matter.</p>"]
     for wd in workdirs:
         check = start_check(wd)
         result = evaluate(wd)
-        out.append(f"<h1>{html.escape(wd.config.title)}</h1>"
+        note = f"<p>{html.escape(wd.config.check_note)}</p>" if wd.config.check_note else ""
+        out.append(f"<h1>{html.escape(wd.config.title)}</h1>{note}"
                    f"<p>{result.checked} of {result.required} checked.</p>")
         passages = {p.id: p for p in wd.passages()}
         for e in check["sample"]:

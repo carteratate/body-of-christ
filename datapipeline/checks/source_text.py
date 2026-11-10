@@ -733,10 +733,13 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
         if collection == "councils":
             # A council rebuilt from another source is not built from its Tanner page,
             # which stays vendored; its canon count is its check (1.2e). So is Vatican I's,
-            # built from Schaff, whose chapter and canon counts are its check (1.2d).
+            # built from Schaff, whose chapter and canon counts are its check (1.2d), and
+            # councils 1 to 7's, built from Percival (1.2c).
+            from ingest.councils_percival import COUNCILS
             from ingest.councils_schroeder import WORKS
             entries = [e for e in entries
-                       if e["council"] not in WORKS and e["council"] != "First Vatican Council"]
+                       if e["council"] not in WORKS and e["council"] not in COUNCILS
+                       and e["council"] != "First Vatican Council"]
         return [e["file"] for e in entries]
     if collection == "canon-law":
         with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:

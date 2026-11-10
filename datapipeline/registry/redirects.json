@@ -3316,6 +3316,36 @@
   "added_by": "1.10c"
  },
  {
+  "document_id": "2f25da58-028b-5944-ba0c-fcb5aa76c709",
+  "old_passage_id": "23fcce06-64b8-54a2-be93-9cb61d118f98",
+  "old_anchor": "council-of-nicaea/sec-2/2",
+  "new_passage_id": "e57660f1-ef98-5a4c-b54b-70f79b44205c",
+  "new_anchor": "council-of-nicaea/creed",
+  "kind": "merged",
+  "reason": "this one holds its text: the end of the creed's anathema; Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "2f25da58-028b-5944-ba0c-fcb5aa76c709",
+  "old_passage_id": "ec47d3e2-be42-5a67-a902-cb0b63f59257",
+  "old_anchor": "council-of-nicaea/sec-4/3",
+  "new_passage_id": "13e48688-1cda-5f85-9986-8cf14d17bc7d",
+  "new_anchor": "council-of-nicaea/synodal-letter/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "2f25da58-028b-5944-ba0c-fcb5aa76c709",
+  "old_passage_id": "90caffd0-80c8-54b1-9e10-a330cef9fb3f",
+  "old_anchor": "council-of-nicaea/sec-4/4",
+  "new_passage_id": "13e48688-1cda-5f85-9986-8cf14d17bc7d",
+  "new_anchor": "council-of-nicaea/synodal-letter/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
   "document_id": "2f8106f8-19ac-5c3f-a2d4-360b98c4059b",
   "old_passage_id": "e8b43b43-0094-5417-a2fa-6d761a86803b",
   "old_anchor": "probe-noscitis-venerabiles/preamble/from-e8-2",
@@ -8325,13 +8355,175 @@
  },
  {
   "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "bf08644c-37cb-502b-9d66-976632897e19",
+  "old_anchor": "council-of-ephesus/sec-11/15",
+  "new_passage_id": "f7842755-284a-525b-b4cd-62da71f71f70",
+  "new_anchor": "council-of-ephesus/letter-to-john-of-antioch",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: the formula of union, which Percival prints inside Cyril's letter to John",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "1a1489e7-a9d0-5b96-be18-804c3e4440a2",
+  "old_anchor": "council-of-ephesus/sec-12/16",
+  "new_passage_id": "614d68de-5595-5e42-b5a0-3659a6dc2000",
+  "new_anchor": "council-of-ephesus/letter-to-john-of-antioch/from-p8",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "51fe25eb-9ebf-5965-ba0e-6ce0ab969bbf",
+  "old_anchor": "council-of-ephesus/sec-12/17",
+  "new_passage_id": "413f013d-3ad6-56d5-b898-fa6fdeebb5e4",
+  "new_anchor": "council-of-ephesus/letter-to-john-of-antioch/from-p17",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "d6a2a57e-7904-5849-9ae2-69a363f75680",
+  "old_anchor": "council-of-ephesus/sec-12/18",
+  "new_passage_id": "413f013d-3ad6-56d5-b898-fa6fdeebb5e4",
+  "new_anchor": "council-of-ephesus/letter-to-john-of-antioch/from-p17",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "5cd6d6eb-34e5-5ad5-a512-f3c525c7d727",
+  "old_anchor": "council-of-ephesus/sec-2/2",
+  "new_passage_id": "c943a3df-01a3-50a4-b662-0c3e216ec583",
+  "new_anchor": "council-of-ephesus/cyril-second-letter",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "ba703538-1058-571e-8263-5b847bd7085f",
+  "old_anchor": "council-of-ephesus/sec-3/3",
+  "new_passage_id": "664b1a8c-4147-52d6-8407-599f16f5da22",
+  "new_anchor": "council-of-ephesus/nestorius-second-letter",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Chrystal's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "35eacf97-0efd-5742-929f-bf4d1fce1a6e",
+  "old_anchor": "council-of-ephesus/sec-3/3/from-e24",
+  "new_passage_id": "4d664fe6-7351-5b28-a292-af44b889fa78",
+  "new_anchor": "council-of-ephesus/nestorius-second-letter/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Chrystal's translation of the same text, a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
   "old_passage_id": "bdaf4943-8bb1-5a7c-94c8-15d0b84a172a",
   "old_anchor": "council-of-ephesus/sec-3/3/from-e24-2",
   "new_passage_id": "35eacf97-0efd-5742-929f-bf4d1fce1a6e",
   "new_anchor": "council-of-ephesus/sec-3/3/from-e24",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2c",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "bdaf4943-8bb1-5a7c-94c8-15d0b84a172a",
+  "old_anchor": "council-of-ephesus/sec-3/3/from-e24-2",
+  "new_passage_id": "4d664fe6-7351-5b28-a292-af44b889fa78",
+  "new_anchor": "council-of-ephesus/nestorius-second-letter/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Chrystal's translation of the same text, a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "5e4f92fb-0e03-5ac6-9c23-12af683e904b",
+  "old_anchor": "council-of-ephesus/sec-3/4",
+  "new_passage_id": "fc3858d6-91cd-5a7b-8a8c-4269c41eb6da",
+  "new_anchor": "council-of-ephesus/nestorius-second-letter/from-p2-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Chrystal's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "f246920c-21ea-539c-9d43-e25a6e8f160f",
+  "old_anchor": "council-of-ephesus/sec-3/5",
+  "new_passage_id": "4d664fe6-7351-5b28-a292-af44b889fa78",
+  "new_anchor": "council-of-ephesus/nestorius-second-letter/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Chrystal's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "38a846bf-fa34-58ad-add7-4e99b14649db",
+  "old_anchor": "council-of-ephesus/sec-3/6",
+  "new_passage_id": "a92c89d8-faf4-5224-b17c-3acfb4fb3064",
+  "new_anchor": "council-of-ephesus/nestorius-second-letter/from-p6-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Chrystal's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "ed4ac15e-91b1-51c6-8d4b-33f6270dae2e",
+  "old_anchor": "council-of-ephesus/sec-4/7",
+  "new_passage_id": "c611e293-957a-5938-8aaa-7481b3277cbf",
+  "new_anchor": "council-of-ephesus/cyril-third-letter/from-p15",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "2bc5f658-74df-5b0b-939c-f4d8a0f87ba6",
+  "old_anchor": "council-of-ephesus/sec-4/8",
+  "new_passage_id": "26b62602-0aae-50e0-a17e-6b40bbae3314",
+  "new_anchor": "council-of-ephesus/cyril-third-letter/from-p17",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "57027739-c388-5e50-8ee7-7bc07be15d59",
+  "old_anchor": "council-of-ephesus/sec-7/10",
+  "new_passage_id": "a35fdd49-9eb1-567b-b72b-1536cd679be2",
+  "new_anchor": "council-of-ephesus/synodical-letter",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "bbaf0b0d-b8fe-5095-9377-dce73251c87a",
+  "old_anchor": "council-of-ephesus/sec-7/11",
+  "new_passage_id": "2c789225-f906-57ac-bbbc-804567408186",
+  "new_anchor": "council-of-ephesus/canon/5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "old_passage_id": "11d62ab2-f832-57e4-adb5-42abb97da9ab",
+  "old_anchor": "council-of-ephesus/sec-8/12",
+  "new_passage_id": "b8a3c9d6-4759-58c3-a5d7-8b3063ca28a5",
+  "new_anchor": "council-of-ephesus/canon/7",
+  "kind": "merged",
+  "reason": "this one holds its text: the acts' words before the decree on the creed, which Percival prints as canon VII",
+  "added_by": "1.2c"
  },
  {
   "document_id": "5a05852b-4193-518f-9d01-afd796291979",
@@ -9935,13 +10127,75 @@
  },
  {
   "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
+  "old_passage_id": "9a9e020a-1010-5a18-9d23-fe55a68820c4",
+  "old_anchor": "first-council-of-constantinople/sec-10/14",
+  "new_passage_id": "90c6a5c4-31cf-5539-ae71-060e3a3d5594",
+  "new_anchor": "first-council-of-constantinople/canon/6",
+  "kind": "merged",
+  "reason": "this one holds its text: the end of canon 6, which Percival prints whole",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
+  "old_passage_id": "281b9148-57d4-5842-ae75-d07e566f1745",
+  "old_anchor": "first-council-of-constantinople/sec-3/5",
+  "new_passage_id": "ed55e7e6-6fd6-54f8-a066-57e3fa928b0d",
+  "new_anchor": "first-council-of-constantinople/synodical-letter",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
+  "old_passage_id": "53df03cf-0dab-58f0-80f5-e549888151a6",
+  "old_anchor": "first-council-of-constantinople/sec-3/6",
+  "new_passage_id": "d5c7590f-833d-5584-a81e-d8a59a287551",
+  "new_anchor": "first-council-of-constantinople/synodical-letter/from-p6-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
+  "old_passage_id": "7967bac2-28fd-5012-8195-0b2bd8e45add",
+  "old_anchor": "first-council-of-constantinople/sec-3/6/from-e26",
+  "new_passage_id": "65f2b55a-dd69-5616-90ed-88547fdde173",
+  "new_anchor": "first-council-of-constantinople/synodical-letter/from-p9",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text, a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
   "old_passage_id": "db6e0303-d7d6-5afb-80a9-c3c9dccee73b",
   "old_anchor": "first-council-of-constantinople/sec-3/6/from-e26-2",
   "new_passage_id": "7967bac2-28fd-5012-8195-0b2bd8e45add",
   "new_anchor": "first-council-of-constantinople/sec-3/6/from-e26",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2c",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
+  "old_passage_id": "db6e0303-d7d6-5afb-80a9-c3c9dccee73b",
+  "old_anchor": "first-council-of-constantinople/sec-3/6/from-e26-2",
+  "new_passage_id": "65f2b55a-dd69-5616-90ed-88547fdde173",
+  "new_anchor": "first-council-of-constantinople/synodical-letter/from-p9",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text, a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
+  "old_passage_id": "cf3c0afd-5bb5-5207-b2d6-8d56560b03ce",
+  "old_anchor": "first-council-of-constantinople/sec-3/7",
+  "new_passage_id": "65f2b55a-dd69-5616-90ed-88547fdde173",
+  "new_anchor": "first-council-of-constantinople/synodical-letter/from-p9",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
  },
  {
   "document_id": "756cdf3e-f9fa-594d-9f86-0b776413abf4",
@@ -9990,6 +10244,166 @@
   "added_by": "1.10c",
   "closed_by": "1.3a",
   "closed_on": "2026-11-05"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "d5ed08a4-a0b1-5e0a-96dc-e6b2a61e66bf",
+  "old_anchor": "council-of-chalcedon/sec-2/10",
+  "new_passage_id": "725463a6-8ae6-5214-a571-a97047330d89",
+  "new_anchor": "council-of-chalcedon/tome-of-leo/from-p8-3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "5866c13e-1e73-5758-b561-a68ad617ac47",
+  "old_anchor": "council-of-chalcedon/sec-2/3",
+  "new_passage_id": "8a1f1dee-c1eb-5f2f-ae75-06646470148e",
+  "new_anchor": "council-of-chalcedon/tome-of-leo",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "6fc98fe5-463e-5b5d-882a-e7ce98312b8c",
+  "old_anchor": "council-of-chalcedon/sec-2/4",
+  "new_passage_id": "92f78b7d-f53d-5e40-9592-12dbfe427d4d",
+  "new_anchor": "council-of-chalcedon/tome-of-leo/from-p5-2",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "af8e33a0-3ae2-5af5-a53c-3889f76ffe01",
+  "old_anchor": "council-of-chalcedon/sec-2/5",
+  "new_passage_id": "457bcc2e-1106-5856-b09d-83c9408030a6",
+  "new_anchor": "council-of-chalcedon/tome-of-leo/from-p7",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "9525ad75-d7da-572f-b97c-1754a0e1d818",
+  "old_anchor": "council-of-chalcedon/sec-2/6",
+  "new_passage_id": "cda3c58f-a7f1-5ab7-8bd9-b0867884f05d",
+  "new_anchor": "council-of-chalcedon/tome-of-leo/from-p7-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "180465dc-020b-5414-8575-dda9b5995fd2",
+  "old_anchor": "council-of-chalcedon/sec-2/7",
+  "new_passage_id": "cda3c58f-a7f1-5ab7-8bd9-b0867884f05d",
+  "new_anchor": "council-of-chalcedon/tome-of-leo/from-p7-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "c41df8ae-009d-5e4c-9323-8bc306a99ef4",
+  "old_anchor": "council-of-chalcedon/sec-2/8",
+  "new_passage_id": "b7772628-6377-52b9-bd9e-3116b82c9986",
+  "new_anchor": "council-of-chalcedon/tome-of-leo/from-p8",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "7fe82be3-d59c-5eb7-936a-53d9048633ac",
+  "old_anchor": "council-of-chalcedon/sec-2/9",
+  "new_passage_id": "6272b56a-5986-518a-821b-d5c459b6e002",
+  "new_anchor": "council-of-chalcedon/tome-of-leo/from-p8-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "202b0ed0-26cc-5b5a-a6f0-191ffffb5ce5",
+  "old_anchor": "council-of-chalcedon/sec-3/11",
+  "new_passage_id": "bf27ef31-26e4-5f49-b0a6-851dcaec0cf1",
+  "new_anchor": "council-of-chalcedon/definition",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "4678c3fd-15da-54e0-a146-d27965ab996f",
+  "old_anchor": "council-of-chalcedon/sec-3/12",
+  "new_passage_id": "76996444-5ad2-502e-8e68-815d9b603009",
+  "new_anchor": "council-of-chalcedon/definition/from-p10",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "2db520cc-d86b-5fe0-ad63-24114313f4ef",
+  "old_anchor": "council-of-chalcedon/sec-3/13",
+  "new_passage_id": "434101cf-4763-5b4c-811f-d4999bea5f77",
+  "new_anchor": "council-of-chalcedon/canon/4",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "aa9d1715-1d84-5978-ad19-e974d00aadea",
+  "old_anchor": "council-of-chalcedon/sec-3/14",
+  "new_passage_id": "549c0d21-d5aa-5311-b4d8-afbbc4dc64fb",
+  "new_anchor": "council-of-chalcedon/canon/10",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "2773e1fd-f0e4-5231-9ea7-b72b203c348a",
+  "old_anchor": "council-of-chalcedon/sec-3/15",
+  "new_passage_id": "28190f10-6c31-5c65-be50-ba19d2980cd5",
+  "new_anchor": "council-of-chalcedon/canon/12",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "0aa51546-ca27-5d00-85db-7852ca560863",
+  "old_anchor": "council-of-chalcedon/sec-3/16",
+  "new_passage_id": "c42b19f6-d80b-58cf-9e2f-a4bab2f7d8ce",
+  "new_anchor": "council-of-chalcedon/canon/17",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "81aa6a3b-4727-5501-a4f8-a641ec0ed1d0",
+  "old_anchor": "council-of-chalcedon/sec-3/17",
+  "new_passage_id": "54cf5dba-1b78-5f82-9c31-21d07875b4f7",
+  "new_anchor": "council-of-chalcedon/canon/23",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9",
+  "old_passage_id": "40abb2a9-8e63-50a7-81c7-41d4d9700a37",
+  "old_anchor": "council-of-chalcedon/sec-3/18",
+  "new_passage_id": "9ae47866-63c3-51a1-841e-0ba6c8ecc232",
+  "new_anchor": "council-of-chalcedon/canon/28",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
  },
  {
   "document_id": "760c4195-f5be-5141-90fc-8958fccd06ba",
@@ -11645,13 +12059,115 @@
  },
  {
   "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "8bfb3f82-5a39-5b7a-a1e5-ead7e427b1ba",
+  "old_anchor": "second-council-of-constantinople/sec-2/3",
+  "new_passage_id": "43bb0d4d-8097-5be0-aab2-2ae16be78f92",
+  "new_anchor": "second-council-of-constantinople/sentence",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "1c733869-94a9-50e8-bd85-fd3ff486db25",
+  "old_anchor": "second-council-of-constantinople/sec-2/4",
+  "new_passage_id": "7e3106dc-bd60-5958-882b-2f2353c11ebc",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p10",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "5785908f-f620-515f-887c-b866a34a1622",
+  "old_anchor": "second-council-of-constantinople/sec-2/4/from-e18",
+  "new_passage_id": "7e3106dc-bd60-5958-882b-2f2353c11ebc",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p10",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text, a piece the 1.10c build cut and no publish carried",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
   "old_passage_id": "a7c3da04-1cd3-5f8c-9424-7d28b4c626e9",
   "old_anchor": "second-council-of-constantinople/sec-2/4/from-e18-2",
   "new_passage_id": "5785908f-f620-515f-887c-b866a34a1622",
   "new_anchor": "second-council-of-constantinople/sec-2/4/from-e18",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2c",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "a7c3da04-1cd3-5f8c-9424-7d28b4c626e9",
+  "old_anchor": "second-council-of-constantinople/sec-2/4/from-e18-2",
+  "new_passage_id": "7e3106dc-bd60-5958-882b-2f2353c11ebc",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p10",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "d717f746-9587-598a-9a5d-b7e667dc1890",
+  "old_anchor": "second-council-of-constantinople/sec-2/5",
+  "new_passage_id": "84227d99-3a8b-5489-916c-fc68d87c3d1e",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p14",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "d7fbad72-ee6b-59eb-86aa-2edd6f364dab",
+  "old_anchor": "second-council-of-constantinople/sec-2/6",
+  "new_passage_id": "6402750c-7540-56d7-975b-4345d1d66a05",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p20",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "40c2e15b-6687-53ec-8b43-38fb0e61f01a",
+  "old_anchor": "second-council-of-constantinople/sec-2/6/from-e22-2",
+  "new_passage_id": "356dc1d7-ee6e-5061-a548-c04bc0b2a188",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p21",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "cae0668d-4b7a-5c65-a703-a792a7afe24f",
+  "old_anchor": "second-council-of-constantinople/sec-2/7",
+  "new_passage_id": "356dc1d7-ee6e-5061-a548-c04bc0b2a188",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p21",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "79f8c469-a9c2-5037-b8f9-cb2355df61fc",
+  "old_anchor": "second-council-of-constantinople/sec-2/7/from-e24-2",
+  "new_passage_id": "9b4c551b-cdec-5401-8f09-aacc38cfafc5",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p21-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
+  "old_passage_id": "a4a3ff85-4344-5c45-a27a-5032b30e2ece",
+  "old_anchor": "second-council-of-constantinople/sec-2/8",
+  "new_passage_id": "ce76602e-9ac0-5161-94f6-2f3762693134",
+  "new_anchor": "second-council-of-constantinople/sentence/from-p25",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
  },
  {
   "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
@@ -13174,6 +13690,26 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "a1f27f39-1821-5eb8-b17f-fc9bd994c776",
+  "old_passage_id": "c78e53ad-5253-57c3-a3d1-965cc8c583fe",
+  "old_anchor": "second-council-of-nicaea/sec-2/3",
+  "new_passage_id": "13ccd0ff-af05-56b6-a5f8-cd4440777ecc",
+  "new_anchor": "second-council-of-nicaea/definition",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "a1f27f39-1821-5eb8-b17f-fc9bd994c776",
+  "old_passage_id": "c2e2fe41-cfa8-5fa2-bc72-6d841f9cadc0",
+  "old_anchor": "second-council-of-nicaea/sec-2/4",
+  "new_passage_id": "0f0a4595-2cd4-5d0f-926e-5737bb642653",
+  "new_anchor": "second-council-of-nicaea/definition/from-p8",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
  },
  {
   "document_id": "a2036bab-a233-516b-8cd9-60c69277b1cb",
@@ -20502,6 +21038,46 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "f9ca2dc5-6b49-534d-8d15-0a34c1dbc215",
+  "old_passage_id": "f129a177-e432-5756-b829-84c3adb856f9",
+  "old_anchor": "third-council-of-constantinople/sec-2/2",
+  "new_passage_id": "b5f5bd38-0fdd-5bc5-9c41-4cecd2916cd8",
+  "new_anchor": "third-council-of-constantinople/definition",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "f9ca2dc5-6b49-534d-8d15-0a34c1dbc215",
+  "old_passage_id": "7c775199-e049-5f98-9ecd-00b2bcf685d9",
+  "old_anchor": "third-council-of-constantinople/sec-2/3",
+  "new_passage_id": "ac47dbb7-d652-54dc-bf86-ddf772fe38ec",
+  "new_anchor": "third-council-of-constantinople/definition/from-p8",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "f9ca2dc5-6b49-534d-8d15-0a34c1dbc215",
+  "old_passage_id": "e9a841ee-48d2-5047-948d-bd446499ffde",
+  "old_anchor": "third-council-of-constantinople/sec-2/4",
+  "new_passage_id": "8eca33d9-8cda-5e26-9db2-5cf2ec5febd6",
+  "new_anchor": "third-council-of-constantinople/definition/from-p8-2",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Percival's translation of the same text",
+  "added_by": "1.2c"
+ },
+ {
+  "document_id": "f9ca2dc5-6b49-534d-8d15-0a34c1dbc215",
+  "old_passage_id": "636a5673-ab33-5be7-9fb9-7b5cc1e17dcb",
+  "old_anchor": "third-council-of-constantinople/sec-2/5",
+  "new_passage_id": "5d3098df-2044-5e26-a753-506e6e7a5e8c",
+  "new_anchor": "third-council-of-constantinople/definition/from-p11",
+  "kind": "merged",
+  "reason": "this one holds its text: Percival's translation of the same text",
+  "added_by": "1.2c"
  },
  {
   "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",

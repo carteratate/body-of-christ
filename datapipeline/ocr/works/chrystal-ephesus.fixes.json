@@ -1,0 +1,607 @@
+[
+ {
+  "passage": "letter-01",
+  "find": "“To the",
+  "replace": "To the",
+  "why": "p. 155: Chrystal sets the letter's heading in quotation marks; the letter is its own text here, so they go (no word changes)"
+ },
+ {
+  "passage": "letter-01",
+  "find": "Lord’?.",
+  "replace": "Lord.",
+  "why": "p. 155: Chrystal sets the letter's heading in quotation marks; the letter is its own text here, so they go (no word changes)"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘‘ The",
+  "replace": "“The",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-02",
+  "find": "as τέ respects",
+  "replace": "as it respects",
+  "why": "pp. 155–156: the print reads “it”"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘ Very",
+  "replace": "‘Very",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘ Light",
+  "replace": "‘Light",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-02",
+  "find": "down, tock on",
+  "replace": "down, took on",
+  "why": "pp. 155–156: the print reads “took”"
+ },
+ {
+  "passage": "letter-02",
+  "find": "put ona man,’",
+  "replace": "put on a man,’",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘vose again.’’’ ‘These",
+  "replace": "‘rose again.’” These",
+  "why": "pp. 155–156: the print reads “‘rose again.’” These”"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘‘ Give",
+  "replace": "“Give",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-02",
+  "find": "& > forin",
+  "replace": "* * for in",
+  "why": "pp. 155–156: the print reads “* * for in”"
+ },
+ {
+  "passage": "letter-02",
+  "find": "thee’?.",
+  "replace": "thee”.",
+  "why": "pp. 155–156: the print reads “thee”.”"
+ },
+ {
+  "passage": "letter-02",
+  "find": "“\" Give attendance,’’",
+  "replace": "“Give attendance,”",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘This:",
+  "replace": "This:",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-02",
+  "find": "coeternal",
+  "replace": "co-eternal",
+  "why": "pp. 155–156: the print reads “co-eternal”"
+ },
+ {
+  "passage": "letter-02",
+  "find": "NOR THAT THE DIVINITY WHICH IS CO-ETERNAL WITH THE FATHER WAS LATELY BORN,",
+  "replace": "nor that the Divinity which is co-eternal with the Father was lately born,",
+  "why": "pp. 155–156: Chrystal's emphasis in small capitals, set in the letter's own case"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘* We believe”?",
+  "replace": "“We believe”",
+  "why": "pp. 155–156: the print reads ““We believe””"
+ },
+ {
+  "passage": "letter-02",
+  "find": "‘‘zz’’",
+  "replace": "“in”",
+  "why": "pp. 155–156: the print reads ““in””"
+ },
+ {
+  "passage": "letter-02",
+  "find": "“‘ Lord",
+  "replace": "“Lord",
+  "why": "pp. 155–156: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-03",
+  "find": "᾿ς His Son,’",
+  "replace": "“His Son,”",
+  "why": "pp. 156–157: the print reads ““His Son,””"
+ },
+ {
+  "passage": "letter-03",
+  "find": "‘‘ Sole-Born Son.’",
+  "replace": "“Sole-Born Son.”",
+  "why": "pp. 156–157: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-03",
+  "find": "‘‘ Lord,’ ‘‘ Jesus,’ ‘‘ Anotnted,’’",
+  "replace": "“Lord,” “Jesus,” “Anointed,”",
+  "why": "pp. 156–157: the print reads ““Lord,” “Jesus,” “Anointed,””"
+ },
+ {
+  "passage": "letter-03",
+  "find": "‘‘ Sole-Born’’",
+  "replace": "“Sole-Born”",
+  "why": "pp. 156–157: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-03",
+  "find": "‘‘Soz’’",
+  "replace": "“Son”",
+  "why": "pp. 156–157: the print reads ““Son””"
+ },
+ {
+  "passage": "letter-03",
+  "find": "© Anointed,’",
+  "replace": "“Anointed,”",
+  "why": "pp. 156–157: the print reads ““Anointed,””"
+ },
+ {
+  "passage": "letter-03",
+  "find": "‘‘ Let",
+  "replace": "“Let",
+  "why": "pp. 156–157: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-03",
+  "find": "God’?.",
+  "replace": "God”.",
+  "why": "pp. 156–157: the print reads “God”.”"
+ },
+ {
+  "passage": "letter-03",
+  "find": "as tothe words:",
+  "replace": "as to the words:",
+  "why": "pp. 156–157: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-03",
+  "find": "words: ‘‘ He became",
+  "replace": "words: “He became",
+  "why": "pp. 156–157: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-03",
+  "find": "cross’.",
+  "replace": "cross”.",
+  "why": "pp. 156–157: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-03",
+  "find": "“4 nointed’’",
+  "replace": "“Anointed”",
+  "why": "pp. 156–157: the print reads ““Anointed””"
+ },
+ {
+  "passage": "letter-04",
+  "find": "‘and of",
+  "replace": "and of",
+  "why": "pp. 157–158: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-04",
+  "find": "with out",
+  "replace": "without",
+  "why": "pp. 157–158: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-04",
+  "find": "THOSE HOLY FATHERS MAKE MENTION OF NO BIRTH",
+  "replace": "those holy Fathers make mention of no birth",
+  "why": "pp. 157–158: Chrystal's emphasis in small capitals, set in the letter's own case"
+ },
+ {
+  "passage": "letter-05",
+  "find": "statement. For. He",
+  "replace": "statement. For He",
+  "why": "pp. 158–159: the print reads “For”"
+ },
+ {
+  "passage": "letter-05",
+  "find": "Exa¢tness",
+  "replace": "Exactness",
+  "why": "pp. 158–159: the print reads “Exactness”"
+ },
+ {
+  "passage": "letter-05",
+  "find": "belong tothe [divine]",
+  "replace": "belong to the [divine]",
+  "why": "pp. 158–159: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-05",
+  "find": "‘‘ Destroy",
+  "replace": "“Destroy",
+  "why": "pp. 158–159: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-05",
+  "find": "days [ will",
+  "replace": "days I will",
+  "why": "pp. 158–159: the print reads “I”"
+ },
+ {
+  "passage": "letter-05",
+  "find": "it up. He",
+  "replace": "it up.” He",
+  "why": "pp. 158–159: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-05",
+  "find": "days tt shall",
+  "replace": "days it shall",
+  "why": "pp. 158–159: the print reads “it”"
+ },
+ {
+  "passage": "letter-05",
+  "find": "shall δὲ raised",
+  "replace": "shall be raised",
+  "why": "pp. 158–159: the print reads “be”"
+ },
+ {
+  "passage": "letter-05",
+  "find": "remarks, 1 am",
+  "replace": "remarks, I am",
+  "why": "pp. 158–159: the print reads “I”"
+ },
+ {
+  "passage": "letter-06",
+  "find": "@ ézrth",
+  "replace": "a birth",
+  "why": "p. 161: the print reads “a birth”"
+ },
+ {
+  "passage": "letter-06",
+  "find": "suffering zot of",
+  "replace": "suffering not of",
+  "why": "p. 161: the print reads “not”"
+ },
+ {
+  "passage": "letter-06",
+  "find": "appellation ‘‘ Bringer forth",
+  "replace": "appellation “Bringer forth",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "One,’’",
+  "replace": "One,”",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "not ‘‘ Bringer Forth",
+  "replace": "not “Bringer Forth",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "God’’.",
+  "replace": "God”.",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "‘‘ Zhe book,’’",
+  "replace": "“The book,”",
+  "why": "p. 161: the print reads ““The book,””"
+ },
+ {
+  "passage": "letter-06",
+  "find": "says, ‘‘ of the",
+  "replace": "says, “of the",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "Abraham’’.",
+  "replace": "Abraham”.",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "‘‘ And",
+  "replace": "“And",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "who ts called",
+  "replace": "who is called",
+  "why": "p. 161: the print reads “is”"
+ },
+ {
+  "passage": "letter-06",
+  "find": "Anointed’’.",
+  "replace": "Anointed”.",
+  "why": "p. 161: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-06",
+  "find": "‘‘T7he",
+  "replace": "“The",
+  "why": "p. 161: the print reads ““The”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "* 3 she",
+  "replace": "* * she",
+  "why": "pp. 161–163: the print reads “*”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "Ghost’’.",
+  "replace": "Ghost”.",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "passage: ‘‘7he mother",
+  "replace": "passage: “The mother",
+  "why": "pp. 161–163: the print reads ““The”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "there’’;",
+  "replace": "there”;",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘W2th",
+  "replace": "“With",
+  "why": "pp. 161–163: the print reads ““With”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "Jesus’’;",
+  "replace": "Jesus”;",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘ That",
+  "replace": "“That",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "which ἐς conceived",
+  "replace": "which is conceived",
+  "why": "pp. 161–163: the print reads “is”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "her ts of",
+  "replace": "her is of",
+  "why": "pp. 161–163: the print reads “is”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "Ghost’’;",
+  "replace": "Ghost”;",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘Take",
+  "replace": "“Take",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "and free into",
+  "replace": "and flee into",
+  "why": "pp. 161–163: the print reads “flee”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "Egypt’’;",
+  "replace": "Egypt”;",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘ Concerning",
+  "replace": "“Concerning",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "to the flesh’’; and this",
+  "replace": "to the flesh”; and this",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘ God",
+  "replace": "“God",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "in the flesh’’; and again;",
+  "replace": "in the flesh”; and again;",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "again; ‘‘ Anointed died",
+  "replace": "again; “Anointed died",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "sins’;",
+  "replace": "sins”;",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "and; ‘‘ Anointed hath",
+  "replace": "and; “Anointed hath",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "flesh”’;",
+  "replace": "flesh”;",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘Thzs ἐδ\"",
+  "replace": "“This is”",
+  "why": "pp. 161–163: the print reads ““This is””"
+ },
+ {
+  "passage": "letter-07",
+  "find": "but), ‘‘y body",
+  "replace": "but), “my body",
+  "why": "pp. 161–163: the print reads ““my”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "which ts broken",
+  "replace": "which is broken",
+  "why": "pp. 161–163: the print reads “is”"
+ },
+ {
+  "passage": "letter-07",
+  "find": "sins’’.",
+  "replace": "sins”.",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘What’’",
+  "replace": "“What”",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "‘‘ think",
+  "replace": "“think",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-07",
+  "find": "A nointed",
+  "replace": "Anointed",
+  "why": "pp. 161–163: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-08",
+  "find": "hand 2",
+  "replace": "hand?”",
+  "why": "pp. 163–165: the print reads “hand?””"
+ },
+ {
+  "passage": "letter-08",
+  "find": "“‘ appropriation,’’",
+  "replace": "“appropriation,”",
+  "why": "pp. 163–165: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-08",
+  "find": "‘‘ appropriation,’’",
+  "replace": "“appropriation,”",
+  "why": "pp. 163–165: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-08",
+  "find": "‘‘appropriation’’",
+  "replace": "“appropriation”",
+  "why": "pp. 163–165: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-08",
+  "find": "‘‘ Meditate",
+  "replace": "“Meditate",
+  "why": "pp. 163–165: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-08",
+  "find": "these things, give",
+  "replace": "these things; give",
+  "why": "pp. 163–165: the print reads “things;”"
+ },
+ {
+  "passage": "letter-08",
+  "find": "all’’;",
+  "replace": "all”;",
+  "why": "pp. 163–165: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-09",
+  "find": "hoid-ing",
+  "replace": "holding",
+  "why": "pp. 165–166: the print reads “holding”"
+ },
+ {
+  "passage": "letter-09",
+  "find": "‘‘ Zhe",
+  "replace": "“The",
+  "why": "pp. 165–166: the print reads ““The”"
+ },
+ {
+  "passage": "letter-09",
+  "find": "seas’’.",
+  "replace": "seas”.",
+  "why": "pp. 165–166: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-09",
+  "find": "do¢trine",
+  "replace": "doctrine",
+  "why": "pp. 165–166: the print reads “doctrine”"
+ },
+ {
+  "passage": "letter-09",
+  "find": "Church, ‘‘7he house",
+  "replace": "Church, “The house",
+  "why": "pp. 165–166: the print reads ““The”"
+ },
+ {
+  "passage": "letter-09",
+  "find": "stronger’. ‘These",
+  "replace": "stronger”. These",
+  "why": "pp. 165–166: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-09",
+  "find": "tosuchaone. ‘We",
+  "replace": "to such a one. “We",
+  "why": "pp. 165–166: quotation marks as printed; Chrystal's doubled single marks set as double"
+ },
+ {
+  "passage": "letter-09",
+  "find": "God’’. 1",
+  "replace": "God”. I",
+  "why": "pp. 165–166: the print reads “God”. I”"
+ },
+ {
+  "passage": "letter-09",
+  "find": "dear’’.",
+  "replace": "dear.",
+  "why": "p. 166: Chrystal closes the letter with a quotation mark that nothing in the letter opens; it goes, as the heading's do (no word changes)"
+ },
+ {
+  "passage": "letter-07",
+  "continues": true,
+  "why": "p. 161: “* * * she was, found” continues the quotation of Matthew the passage before ends with; the asterisks are indented, not a new paragraph"
+ }
+]
