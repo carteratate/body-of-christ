@@ -10,6 +10,14 @@ text lands in exactly one passage.
   - A Psalm title (\\d) opens the verse it precedes; Sirach's prologue is its own
     passage, `sirach/prologue`.
 
+Numbering (1.4b): WEB-C follows the KJV's verse numbers. `bible_versification.csv` moves
+the verses where the Nova Vulgata, which the Catechism and the Lectionary cite, numbers
+them differently (Joel, Malachi and Jonah; Romans's doxology to 16:25-27). It is applied
+when the USFM is loaded, so grouping, references and chapter keys all use the Nova
+Vulgata's numbers; passage metadata `source_ref` keeps WEB-C's. A renumbered passage's
+anchor carries the segment `nv` (`joel/nv/3/1`), so no anchor live under WEB-C's numbers
+comes to name different text (D1).
+
 USFM format notes:
   - \\id CODE ...       — book identifier (e.g. MAT)
   - \\c N               — chapter N starts
@@ -116,6 +124,10 @@ _DEFAULT_USFM_SUBDIR = os.path.join("sources", "bible", "eng-web-c_usfm")
 _DEFAULT_PERICOPE_PATH = os.path.join("sources", "bible", "PericopeGroupedKJVVerses.json")
 # Tracked, not vendored: WEB-C-native groups the KJV file lacks or misnumbers (1.4a).
 _EXTRA_PERICOPE_PATH = "bible_extra_pericopes.csv"
+# Tracked: verses WEB-C numbers differently from the Nova Vulgata (1.4b).
+_VERSIFICATION_PATH = "bible_versification.csv"
+# The anchor segment of a passage numbered by the Nova Vulgata where WEB-C differs.
+NV_SEGMENT = "nv"
 
 
 # ---------------------------------------------------------------------------
@@ -140,6 +152,10 @@ class BookVerses:
     # A Psalm title (\\d) by the verse it precedes: Psalm 119's letter headings too.
     titles: dict[tuple[int, int], str] = field(default_factory=dict)
     prologue: str = ""      # Sirach's prologue (\\ip after \\is1 ... Prologue)
+    # Renumbering (1.4b): each moved verse's WEB-C (chapter, verse) by its new one, and
+    # the book's table entry; None for a book `bible_versification.csv` does not name.
+    source_of: dict[tuple[int, int], tuple[int, int]] = field(default_factory=dict)
+    versification: "BookVersification | None" = None
 
 
 # ---------------------------------------------------------------------------
@@ -268,12 +284,111 @@ def _book_code_from_usfm(path: str) -> str | None:
     return None
 
 
-def load_usfm_directory(usfm_dir: str) -> dict[str, BookVerses]:
+# ---------------------------------------------------------------------------
+# Versification (1.4b)
+# ---------------------------------------------------------------------------
+
+_VERSIFICATION_SCOPES = ("book", "passage")
+
+
+@dataclass
+class BookVersification:
+    """One book's rows of `bible_versification.csv`. `moves` maps each moved verse's
+    WEB-C (chapter, verse) to the Nova Vulgata's. `scope` says which passages carry the
+    `nv` anchor segment: `book`, every passage of the book, so it has one scheme (Joel,
+    Malachi, Jonah); `passage`, only a passage holding a moved verse (Romans's doxology,
+    where nothing else moves)."""
+    book: str
+    scope: str
+    moves: dict[tuple[int, int], tuple[int, int]] = field(default_factory=dict)
+
+
+def _verse_range(text: str) -> list[tuple[int, int]]:
+    """'2:28-2:32' as its verses. A range stays inside one chapter."""
+    start, end = text.split("-")
+    (sc, sv), (ec, ev) = ((int(x) for x in part.split(":")) for part in (start, end))
+    if sc != ec or ev < sv:
+        raise ValueError(f"versification range {text!r} must run forward inside one chapter")
+    return [(sc, v) for v in range(sv, ev + 1)]
+
+
+def load_versification(path: str) -> dict[str, BookVersification]:
+    """Read and check `bible_versification.csv`: each row moves a run of verses as a block,
+    so its source and target ranges have the same length; no verse moves twice, no two
+    verses land on one number, and a book's rows agree on their scope."""
+    books: dict[str, BookVersification] = {}
+    with open(path, encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            source, target = _verse_range(row["source"]), _verse_range(row["target"])
+            if len(source) != len(target):
+                raise ValueError(f"{row['book']} {row['source']}: the target range "
+                                 f"{row['target']} has another length")
+            if row["scope"] not in _VERSIFICATION_SCOPES:
+                raise ValueError(f"{row['book']} {row['source']}: scope {row['scope']!r}")
+            if not row.get("authority"):
+                raise ValueError(f"{row['book']} {row['source']}: no authority")
+            book = books.setdefault(row["book"], BookVersification(row["book"], row["scope"]))
+            if book.scope != row["scope"]:
+                raise ValueError(f"{row['book']}: rows disagree on scope")
+            for s, t in zip(source, target):
+                if s in book.moves:
+                    raise ValueError(f"{row['book']} {s[0]}:{s[1]} moves twice")
+                book.moves[s] = t
+    for book in books.values():
+        landed = Counter(book.moves.values())
+        twice = sorted(t for t, n in landed.items() if n > 1)
+        if twice:
+            raise ValueError(f"{book.book}: two verses land on {twice}")
+    return books
+
+
+def moves_by_code(path: str | None = None) -> dict[str, dict[tuple[int, int], tuple[int, int]]]:
+    """The tracked table's moves keyed by USFM book code (`JOL`), for checks that read
+    the USFM's own verse numbers (0.1a)."""
+    path = path or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                _VERSIFICATION_PATH)
+    by_name = {name: code for code, name in _USFM_CODE_TO_BOOK.items()}
+    return {by_name[name]: t.moves for name, t in load_versification(path).items()}
+
+
+def renumber(name: str, verse_map: dict[tuple[int, int], str],
+             titles: dict[tuple[int, int], str], table: BookVersification
+             ) -> tuple[dict[tuple[int, int], str], dict[tuple[int, int], str],
+                        dict[tuple[int, int], tuple[int, int]]]:
+    """The book's verses and titles under the table's numbers, and each moved verse's
+    WEB-C number by its new one. A moved verse may land on a number the source leaves
+    empty (WEB-C's bare Romans 16:25 marker), never on a verse with text that stays."""
+    missing = sorted(set(table.moves) - set(verse_map))
+    if missing:
+        raise ValueError(f"{name}: the versification table moves verses the source "
+                         f"lacks: {missing}")
+    out = {k: v for k, v in verse_map.items() if k not in table.moves}
+    source_of: dict[tuple[int, int], tuple[int, int]] = {}
+    for s, t in table.moves.items():
+        if out.get(t, "").strip():
+            raise ValueError(f"{name}: {s[0]}:{s[1]} would land on {t[0]}:{t[1]}, "
+                             "which has text")
+        out[t] = verse_map[s]
+        source_of[t] = s
+    moved_titles = {table.moves.get(k, k): v for k, v in titles.items()}
+    return out, moved_titles, source_of
+
+
+def load_usfm_directory(usfm_dir: str, versification: dict[str, BookVersification] | None = None
+                        ) -> dict[str, BookVerses]:
     """Load all USFM files in a directory.
 
     Returns a dict of {canonical_book_name: BookVerses}.
-    Files that do not map to a known canonical name are skipped.
+    Files that do not map to a known canonical name are skipped. A book `versification`
+    names is renumbered by it (1.4b); None reads the tracked table.
     """
+    if versification is None:
+        versification = load_versification(
+            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                         _VERSIFICATION_PATH))
+    unknown = sorted(set(versification) - set(_USFM_CODE_TO_BOOK.values()))
+    if unknown:
+        raise ValueError(f"versification table names unknown books: {unknown}")
     books: dict[str, BookVerses] = {}
     for fname in sorted(os.listdir(usfm_dir)):
         if not fname.endswith(".usfm"):
@@ -287,6 +402,11 @@ def load_usfm_directory(usfm_dir: str) -> dict[str, BookVerses]:
             continue
         testament = _BOOK_TESTAMENT.get(canonical, "OT")
         verse_map = parse_usfm_file(path)
+        titles = parse_usfm_titles(path)
+        table = versification.get(canonical)
+        source_of: dict[tuple[int, int], tuple[int, int]] = {}
+        if table is not None:
+            verse_map, titles, source_of = renumber(canonical, verse_map, titles, table)
         verse_list = [
             Verse(canonical, ch, v, text)
             for (ch, v), text in sorted(verse_map.items())
@@ -297,8 +417,10 @@ def load_usfm_directory(usfm_dir: str) -> dict[str, BookVerses]:
             testament=testament,
             verses=verse_list,
             usfm_path=path,
-            titles=parse_usfm_titles(path),
+            titles=titles,
             prologue=parse_usfm_prologue(path),
+            source_of=source_of,
+            versification=table,
         )
     return books
 
@@ -382,9 +504,10 @@ def _format_reference(book: str, sc: int, sv: int, ec: int, ev: int) -> str:
 
 @dataclass
 class ExtraPericope:
-    """A row of `bible_extra_pericopes.csv`: a WEB-C-numbered group the KJV file lacks
-    (Susanna, the Esther additions) or misnumbers (Daniel 3). A row wins over the KJV
-    pericopes for every verse it holds, and bounds its own group."""
+    """A row of `bible_extra_pericopes.csv`: a group the KJV file lacks (Susanna, the
+    Esther additions) or misnumbers (Daniel 3). A row wins over the KJV pericopes for
+    every verse it holds, and bounds its own group. Rows use the published numbers: WEB-C's,
+    or the Nova Vulgata's where `bible_versification.csv` moves a verse (Jonah 2:1-11)."""
     book: str
     start_chapter: int
     start_verse: int
@@ -408,6 +531,18 @@ def load_extra_pericopes(path: str) -> dict[str, list[ExtraPericope]]:
                 row["book"], sc, sv, ec, ev, row["title"],
                 {k: row[k] for k in _REF_COLUMNS if row.get(k)}))
     return grouped
+
+
+def renumber_pericope(p: Pericope, table: BookVersification | None) -> Pericope:
+    """A KJV pericope with its ends moved by the versification table. The KJV file numbers
+    verses as WEB-C does wherever the table moves one (Joel, Malachi, Jonah), except that it
+    has no verse at WEB-C's Romans 14:24: its "Doxology" already sits at 16:25-27, which no
+    row moves. A pericope moved across a chapter is cut there like any other."""
+    if table is None:
+        return p
+    sc, sv = table.moves.get((p.start_chapter, p.start_verse), (p.start_chapter, p.start_verse))
+    ec, ev = table.moves.get((p.end_chapter, p.end_verse), (p.end_chapter, p.end_verse))
+    return Pericope(p.title, p.book, sc, sv, ec, ev)
 
 
 def _holds(p, chapter: int, verse: int) -> bool:
@@ -507,14 +642,14 @@ def _last_with_text(units: list[tuple[str, str]], piece) -> int:
 
 def _pieces(book: str, chapter: int, verses: list[tuple[int, int, str]], content: str,
             base_anchor: str, whole_reference: str | None = None
-            ) -> list[tuple[str, str, str, str, tuple]]:
-    """(content, reference, unit_label, anchor, source_units) for each piece of one
+            ) -> list[tuple[str, str, str, str, tuple, tuple[str, str]]]:
+    """(content, reference, unit_label, anchor, source_units, (first, last)) for each piece of one
     pericope part or chapter (1.10c). Pieces hold whole verses and cite the verses whose
     text they hold; a later piece opens on its first verse, which its `unit_label`
     carries in place of a marker. Only a verse longer than one card is cut (Esther 8:13,
     Greek addition E, 1.4a); pieces that would then cite the same verses add "(part j of
     m)" among themselves. `whole_reference` cites a unit that is not split (a chapter
-    cited as "Tobit 3")."""
+    cited as "Tobit 3"). `(first, last)` are the `chapter:verse` labels it cites."""
     units = _verse_units(content, chapter, verses[0][1])
     packed = pack_units(units, settings.MAX_PASSAGE_CHARS, sep="")
     texts = [p.text for p in packed]
@@ -528,6 +663,7 @@ def _pieces(book: str, chapter: int, verses: list[tuple[int, int, str]], content
     seen: Counter = Counter()
     out = []
     for p, ref, (anchor, held) in zip(packed, refs, named):
+        cited = (units[p.first][0], units[_last_with_text(units, p)][0])
         if shared[ref] > 1:
             seen[ref] += 1
             ref = piece_reference(ref, None, None, seen[ref], shared[ref])
@@ -536,7 +672,7 @@ def _pieces(book: str, chapter: int, verses: list[tuple[int, int, str]], content
         if p is not packed[0] and lead:
             text = text[lead.end():]
             held = tuple((loc, max(0, at - lead.end())) for loc, at in held)
-        out.append((text, ref, units[p.first][0].split(":")[1], anchor, held))
+        out.append((text, ref, units[p.first][0].split(":")[1], anchor, held, cited))
     return out
 
 
@@ -566,16 +702,25 @@ def check_complete(book: BookVerses, placed: set[tuple[int, int]],
         raise ValueError(f"{book.name}: the prologue reaches no passage")
 
 
+def _source_label(book: BookVerses, label: str) -> str:
+    """A `chapter:verse` label in WEB-C's numbers."""
+    ch, v = (int(x) for x in label.split(":"))
+    sc, sv = book.source_of.get((ch, v), (ch, v))
+    return f"{sc}:{sv}"
+
+
 def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C",
                     pericope_path: str | None = None,
-                    extra_path: str | None = None) -> list[Document]:
+                    extra_path: str | None = None,
+                    versification_path: str | None = None) -> list[Document]:
     """Build one Document per book; passages = verse groups (`group_verses`), each split
     to fit a card. Raises when a verse, a title or the prologue reaches no passage."""
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     usfm_dir = usfm_dir or os.path.join(root_dir, _DEFAULT_USFM_SUBDIR)
     pericope_map = load_pericopes(pericope_path or os.path.join(root_dir, _DEFAULT_PERICOPE_PATH))
     extra_map = load_extra_pericopes(extra_path or os.path.join(root_dir, _EXTRA_PERICOPE_PATH))
-    books = load_usfm_directory(usfm_dir)
+    books = load_usfm_directory(usfm_dir, load_versification(
+        versification_path or os.path.join(root_dir, _VERSIFICATION_PATH)))
 
     docs: list[Document] = []
     for name, book in sorted(books.items()):
@@ -594,7 +739,9 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C",
                 position=0,
                 metadata={"testament": book.testament, "translation": translation}))
 
-        pericopes = pericope_map.get(_PERICOPE_BOOK.get(name, name), [])
+        pericopes = [renumber_pericope(p, book.versification)
+                     for p in pericope_map.get(_PERICOPE_BOOK.get(name, name), [])]
+        whole_book_nv = book.versification is not None and book.versification.scope == "book"
         extras = extra_map.get(name, [])
         verses = _with_titles(book)
         if pericopes or extras:
@@ -608,18 +755,26 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C",
             content = clean_text(_join_with_verse_markers(g.verses))
             if not content:
                 continue
-            base_anchor = make_anchor(book_slug, g.chapter, g.verses[0][1])
+            # Nova Vulgata numbers get their own anchors (1.4b): every passage of a book
+            # renumbered whole, else a passage holding a moved verse (Romans 16:25-27).
+            nv = whole_book_nv or any((ch, v) in book.source_of for ch, v, _ in g.verses)
+            scheme = (book_slug, NV_SEGMENT) if nv else (book_slug,)
+            base_anchor = make_anchor(*scheme, g.chapter, g.verses[0][1])
+            chapter_key = make_anchor(*(scheme if whole_book_nv else (book_slug,)), g.chapter)
             whole = None if pericopes or extras else f"{name} {g.chapter}"
             metadata = {"testament": book.testament, "translation": translation}
             if g.title:
                 metadata = {"pericope": g.title, **metadata, **g.refs}
-            for piece, ref, label, anchor, units in _pieces(
+            for piece, ref, label, anchor, units, (first, last) in _pieces(
                     name, g.chapter, g.verses, content, base_anchor, whole_reference=whole):
+                extra = {"source_ref": piece_reference(
+                    name, _source_label(book, first), _source_label(book, last), 1, 1)} \
+                    if nv else {}
                 passages.append(Passage(
                     content=piece, reference=ref, anchor=anchor,
-                    chapter_key=make_anchor(book_slug, g.chapter),
+                    chapter_key=chapter_key,
                     chapter_label=f"{name} {g.chapter}", position=len(passages),
-                    unit_label=label, metadata=dict(metadata), source_units=units,
+                    unit_label=label, metadata={**metadata, **extra}, source_units=units,
                 ))
             placed.update((ch, v) for ch, v, _ in g.verses)
 
