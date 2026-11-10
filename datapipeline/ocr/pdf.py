@@ -10,9 +10,10 @@ maps it to the printed page: printed = leaf - offset.
 Each line keeps its words with their positions (`Line.words`), which a layout needs to
 cut parallel columns apart and the clean-up needs to find margin numbers. Superscript
 digits (note calls, "Dionysius,³") are left out here, by size and height above the
-line, since the text layer gives them as ordinary digits: each is logged. Where the text
-layer reads "m" as "n1" or "111" and "w" as "\\v", the word is mended if that makes it
-a known word; the raw lines keep what the layer read.
+line, since the text layer gives them as ordinary digits: each is logged. A word the
+layer misreads in its usual ways ("con1mand") is mended where that makes it a known word
+(`mended`); each word keeps the layer's reading beside it, and `raw_ocr` is built from
+that reading (`Line.reading`), so the audit trail shows what the layer said.
 """
 from __future__ import annotations
 
@@ -48,13 +49,13 @@ class Char:
 # The text layer's usual misreadings of letters inside a word: "m" as "n1", "111", "nl"
 # or "ln" ("con1mand", "trans111it", "sonletimes", "eculnenical"), "w" as "\\v"
 # ("\\vhich"), "f" as "£" ("£rom"), "o" as "0" ("n10ve"). Applied in this order, and kept
-# only where the result is a known word and the reading is not (`_mended`).
+# only where the result is a known word and the reading is not (`mended`).
 _MISREAD = ((re.compile(r"(?<=[a-z])0|0(?=[a-z])"), "o"), (re.compile(r"111"), "m"),
             (re.compile(r"(?<=[a-z])n1|n1(?=[a-z])"), "m"), (re.compile(r"nl|ln"), "m"),
             (re.compile(r"\\v"), "w"), (re.compile(r"£"), "f"))
 
 
-def _mended(word: str) -> str:
+def mended(word: str) -> str:
     """`word` with the text layer's misreadings of letters mended, where that makes it a
     known word. Punctuation around the word is kept."""
     from ocr.words import is_known
@@ -177,8 +178,9 @@ def read_pdf(path: str | Path, leaves: range, page_offset: int,
                 line = _strip_superscripts(line, leaf, log)
                 if not line:
                     continue
-                words = tuple((_mended("".join(c.text for c in w)), round(_box(w)[0] * SCALE),
-                               round(_box(w)[2] * SCALE)) for w in line)
+                read = ["".join(c.text for c in w) for w in line]
+                words = tuple((mended(r), round(_box(w)[0] * SCALE), round(_box(w)[2] * SCALE), r)
+                              for r, w in zip(read, line))
                 x0, top, x1, bottom = _box([c for w in line for c in w])
                 out.lines.append(Line(" ".join(w[0] for w in words), round(x0 * SCALE),
                                       round(top * SCALE), round(x1 * SCALE),

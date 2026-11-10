@@ -746,7 +746,7 @@ def test_a_fix_can_join_a_passage_to_the_paragraph_before_it(tmp_path):
 
 from ocr.furniture import _strip_margin_numbers  # noqa: E402
 from ocr.layout import ParallelLeft  # noqa: E402
-from ocr.pdf import _mended  # noqa: E402
+from ocr.pdf import mended as _mended  # noqa: E402
 from ocr.units import DeferrariExtracts, Headed  # noqa: E402
 
 
@@ -889,3 +889,10 @@ def test_a_passage_the_fixes_emptied_is_not_drawn_or_counted(workdir):
     assert passages[0].id not in check["population"]
     assert passages[0].id not in [e["id"] for e in check["sample"]]
     assert not evaluate(workdir, ["A clean baseline sentence."]).stale
+
+
+def test_raw_ocr_keeps_the_text_layers_reading_of_a_mended_word():
+    words = (("the", 100, 150, "the"), ("command", 160, 300, "con1mand"), ("of", 310, 340, "of"))
+    line = Line("the command of", 100, 100, 340, 125, words=words)
+    para, = clean_pages([Page(0, 1000, 1400, [line], number="1")]).paragraphs
+    assert para.text == "the command of" and para.raw == "the con1mand of"

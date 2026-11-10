@@ -16649,10 +16649,10 @@
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
   "old_passage_id": "b24926ab-7fb0-539f-b81e-b4bae1f11726",
   "old_anchor": "fifth-lateran-council/sec-0/62/from-e182-2",
-  "new_passage_id": "2a81f3ed-c221-5fd5-b8e3-86a39724c30f",
-  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana/from-p15",
-  "kind": "split",
-  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "new_passage_id": "f9ed9dad-feab-5fee-8299-81bcfa474904",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
   "added_by": "1.2e-4"
  },
  {

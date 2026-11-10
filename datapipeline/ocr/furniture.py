@@ -438,7 +438,7 @@ def _paragraph(lines: list[tuple[Page, Line]], seen: Counter, log: list[HyphenBr
         else:
             text = f"{text} {piece}"
     leaves = sorted({page.leaf for page, _ in lines})
-    raw = "\n".join(line.text for _, line in lines)
+    raw = "\n".join(line.reading for _, line in lines)
     return Paragraph(clean_text(text), raw, leaves, continues)
 
 
