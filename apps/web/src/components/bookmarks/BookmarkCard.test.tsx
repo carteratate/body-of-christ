@@ -462,3 +462,65 @@ describe("BookmarkCard footnotes (issue #279)", () => {
     expect(copied.endsWith(CREDIT)).toBe(true);
   });
 });
+
+describe("BookmarkCard corpus cleanup fields (2.4b)", () => {
+  const source = {
+    collection: "church-fathers",
+    document_title: "Hortatory Address to the Greeks",
+    author: "Pseudo-Justin",
+    reference: "Justin Martyr — Hortatory Address to the Greeks, Chapter I",
+    document_id: "11111111-1111-4111-8111-111111111111",
+    anchor: "hortatory/1",
+    chapter_key: "hortatory/1",
+  };
+  function renderBookmark(overrides: Record<string, unknown>, chunk: Record<string, unknown> = {}) {
+    render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-1", chunk_id: "chunk-1", note: "My thoughts on this.", created_at: "2026-08-08T00:00:00Z",
+          chunk: { content: "Wherefore, O Greeks…", source, ...chunk },
+          ...overrides,
+        }}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+  }
+
+  it("shows the translation, notes and the credit under the text, the credit last", () => {
+    renderBookmark({}, {
+      source: { ...source, facts: { translation: "Translated by Marcus Dods", attribution_note: "Not by Justin Martyr.", source_credit: "Sourced via CCEL.org" } },
+    });
+    const lines = [...screen.getByTestId("passage-facts").querySelectorAll("p")].map((p) => p.textContent);
+    expect(lines).toEqual(["Translated by Marcus Dods", "Not by Justin Martyr.", "Sourced via CCEL.org"]);
+  });
+
+  it("shows a removed passage's reason without its text, and keeps the note editable", async () => {
+    renderBookmark({
+      status: "removed",
+      chunk: { content: "", source },
+      tombstone: {
+        entity: "passage", rule: "G", reason_code: "rule-g-editorial",
+        public_reason: "This card was written by an editor of the source, not by the document's author.",
+        retired_at: "2026-12-01T00:00:00Z", title: "Hortatory Address to the Greeks", author: "Pseudo-Justin",
+      },
+    });
+    expect(screen.getByText("Removed from TheoCorpus")).toBeTruthy();
+    expect(screen.getByText(/written by an editor of the source/)).toBeTruthy();
+    expect(screen.queryByText("Wherefore, O Greeks…")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Copy passage" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Open passage in context" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Remove bookmark" })).toBeTruthy();
+    expect(screen.getByText("My thoughts on this.")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Edit" }));
+    expect((screen.getByLabelText("Your note") as HTMLTextAreaElement).value).toBe("My thoughts on this.");
+  });
+
+  it("marks a moved passage", () => {
+    renderBookmark({ status: "moved", redirect: { kind: "renumbered", document_id: source.document_id, chunk_id: "new" } });
+    expect(screen.getByText("This passage was renumbered in a corpus update.")).toBeTruthy();
+    expect(screen.getByText("Wherefore, O Greeks…")).toBeTruthy();
+  });
+});

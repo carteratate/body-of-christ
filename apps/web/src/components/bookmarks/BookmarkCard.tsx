@@ -11,7 +11,9 @@ import { readerHref } from "@/lib/readerNavigation";
 import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink, ThemedTooltip } from "@/components/common";
-import { SourceCredit } from "@/components/common/SourceLink";
+import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/PassageFacts";
+import { sourceCreditOf } from "@/lib/attribution";
+import { parseTombstone } from "@/lib/corpus-lifecycle";
 import { PassageNotes, PassageText } from "@/components/common/PassageText";
 
 const NOTE_MAX = 3000;
@@ -59,6 +61,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   const collectionMeta = getCollectionMeta(collection);
   const borderColor = collectionMeta?.color ?? "var(--color-brand-accent)";
   const displayReference = reference ?? document_title;
+  // A removed passage shows why, and no text; the user's note stays (2.4a, 2.4b).
+  const tombstone = bookmark.status === "removed" ? parseTombstone(bookmark.tombstone) : null;
 
   // ── Remove bookmark ───────────────────────────────────────────────────────
   async function handleRemove() {
@@ -86,7 +90,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   // An excerpt-only document has no reader; link to its source instead (#265).
   const excerptOnly = isExcerptOnly(source);
   const sourceHref = excerptSourceUrl(source);
-  const sourceCredit = excerptSourceCredit(source);
+  const sourceCredit = sourceCreditOf(source.facts, excerptSourceCredit(source));
   const contextHref = readerHref({
     docId: source.document_id,
     origin: "saved",
@@ -149,7 +153,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
-          {sourceHref ? (
+          {tombstone ? null : sourceHref ? (
             <ThemedTooltip label="Read the full text at its source.">
               <a
                 href={sourceHref}
@@ -177,16 +181,38 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
           <ThemedTooltip label="Remove this passage from Saved Passages.">
             <button onClick={handleRemove} disabled={removing} aria-label="Remove bookmark" className="p-1.5 rounded text-sm transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><BookmarkIcon size={16} className="text-brand-accent" /></button>
           </ThemedTooltip>
-          <ThemedTooltip label="Copy">
-            <button onClick={handleCopy} aria-label="Copy passage" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><Copy size={16} /></button>
-          </ThemedTooltip>
+          {!tombstone && (
+            <ThemedTooltip label="Copy">
+              <button onClick={handleCopy} aria-label="Copy passage" className="p-1.5 rounded text-sm text-brand-muted transition-colors hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"><Copy size={16} /></button>
+            </ThemedTooltip>
+          )}
         </div>
       </div>
 
-      {/* Passage content */}
-      <PassageText content={content} footnotes={footnotes} />
-      <PassageNotes footnotes={footnotes} />
-      {sourceCredit && <SourceCredit text={sourceCredit} />}
+      {/* Passage content, or why it is gone */}
+      {tombstone ? (
+        <>
+          <p className="-mt-1 mb-3 text-xs text-brand-muted">
+            {[tombstone.title || document_title, tombstone.author ?? source.author].filter(Boolean).join(" · ")}
+          </p>
+          <RemovalNotice tombstone={tombstone} />
+        </>
+      ) : (
+        <>
+          {bookmark.status === "moved" && <MovedNote kind={bookmark.redirect?.kind} />}
+          <PassageText content={content} footnotes={footnotes} />
+          <PassageNotes footnotes={footnotes} />
+          <PassageFacts
+            facts={source.facts}
+            passageNote={source.passage_note}
+            language={source.language}
+            credit={sourceCredit}
+            supersededHref={source.facts?.superseded_by
+              ? readerHref({ docId: source.facts.superseded_by, origin: "saved", returnKey: null })
+              : null}
+          />
+        </>
+      )}
 
       {/* ── Note section ──────────────────────────────────────────────────── */}
       <div

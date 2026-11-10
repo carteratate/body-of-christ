@@ -27,9 +27,12 @@ import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { readerHref } from "@/lib/readerNavigation";
 import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
-import { SourceCredit, SourceLink } from "@/components/common/SourceLink";
+import { SourceLink } from "@/components/common/SourceLink";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
+import { certaintyTag, formatAttribution, formatDate, sourceCreditOf } from "@/lib/attribution";
+import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/PassageFacts";
+import { parseTombstone, type Tombstone } from "@/lib/corpus-lifecycle";
 
 function hexToRgb(color: string): string {
   if (!color.startsWith("#") || color.length < 7) return "196,151,42";
@@ -39,21 +42,53 @@ function hexToRgb(color: string): string {
   return `${r},${g},${b}`;
 }
 
-function mobileCitation(
+/**
+ * The reference without its leading "<author> — ", which ThML references carry
+ * ("Justin Martyr — The First Apology, Chapter VI"). The prefix goes when it is the
+ * card's author, or when what follows starts with the document's title: once the
+ * card shows the registry's author ("Pseudo-Justin"), it no longer matches the name
+ * the reference was built with.
+ */
+export function withoutAuthorPrefix(reference: string, documentTitle: string, author: string | null): string {
+  const cut = reference.indexOf(" — ");
+  if (cut <= 0) return reference;
+  const prefix = reference.slice(0, cut);
+  const rest = reference.slice(cut + 3);
+  if ((author && prefix === author) || (documentTitle && rest.startsWith(documentTitle))) return rest;
+  return reference;
+}
+
+/** The desktop citation. A Fathers reference that does not already name its
+ *  document gets the title in front; one that does is not doubled (Opus-2 B-011). */
+export function primaryCitation(
   collection: string,
   documentTitle: string,
   reference: string | null,
   author: string | null,
 ): string {
-  let citation = reference?.trim() || documentTitle;
+  if (!reference) return documentTitle;
+  if (collection !== "church-fathers" || !documentTitle) return reference;
+  const bare = withoutAuthorPrefix(reference, documentTitle, author);
+  if (bare.startsWith(documentTitle)) return bare;
+  return `${documentTitle}, ${reference}`;
+}
 
-  if (author && citation.startsWith(`${author} — `)) {
-    citation = citation.slice(author.length + 3);
-  }
+export function mobileCitation(
+  collection: string,
+  documentTitle: string,
+  reference: string | null,
+  author: string | null,
+): string {
+  const citation = withoutAuthorPrefix(reference?.trim() || documentTitle, documentTitle, author);
 
   if (collection === "summa") {
+    // Today's references: "Summa Theologiae, First Part, Question 19 - …, Article 9 - Whether …".
     const match = citation.match(/^[^,]+,\s*(.+?),\s*Question\s+(\d+).*?,\s*Article\s+(\d+)/i);
     if (match) return `${match[1]} · Q. ${match[2]} · Art. ${match[3]}`;
+    // 1.7's: "Summa Theologiae II-II, q. 64, a. 6, co.: Whether …" (the part may hold a
+    // comma: "Suppl., App. 1"). The role tag beside it already names the piece.
+    const cited = citation.match(/^Summa Theologiae\s+(.+?),\s*q\.\s*(\d+),\s*a\.\s*(\d+)/i);
+    if (cited) return `${cited[1]} · Q. ${cited[2]} · Art. ${cited[3]}`;
   }
 
   if (collection === "canon-law") {
@@ -86,6 +121,16 @@ function RoleTag({ role, color }: { role: string; color: string }) {
   );
 }
 
+/** "disputed", "pseudonymous" or "anonymous" beside the author: a sibling of the
+ *  truncating author text, for the same reason as RoleTag. */
+function CertaintyTag({ tag }: { tag: string }) {
+  return (
+    <span className="ml-1.5 shrink-0 whitespace-nowrap rounded border border-brand-muted/40 px-1 text-[10px] leading-tight text-brand-muted">
+      {tag}
+    </span>
+  );
+}
+
 interface ChunkCardProps {
   result: ChunkResult;
   index: number;
@@ -99,7 +144,50 @@ interface ChunkCardProps {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export function ChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
+export function ChunkCard(props: ChunkCardProps) {
+  // A saved result whose passage was removed shows why, and no text (2.4a, 2.4b).
+  // A restored search reaches here without the stream decoder, so the tombstone is
+  // checked here: a removal with no sentence to show renders as today.
+  const tombstone = props.result.status === "removed" ? parseTombstone(props.result.tombstone) : null;
+  if (tombstone) return <RemovedChunkCard result={props.result} tombstone={tombstone} isGuest={props.isGuest} />;
+  return <CurrentChunkCard {...props} />;
+}
+
+function RemovedChunkCard({ result, tombstone, isGuest = false }: {
+  result: ChunkResult;
+  tombstone: Tombstone;
+  isGuest?: boolean;
+}) {
+  const { source } = result;
+  const collectionMeta = getCollectionMeta(source.collection);
+  const color = collectionMeta?.color ?? "var(--color-brand-accent)";
+  const title = tombstone.title || source.document_title;
+  const author = tombstone.author ?? source.author;
+  const reference = tombstone.reference ?? source.reference;
+  const shownReference = reference ? withoutAuthorPrefix(reference, title, author) : null;
+  return (
+    <article
+      aria-label={`${title}: ${tombstone.public_reason}`}
+      className="min-w-0 overflow-hidden rounded-lg border border-brand-muted/30 bg-brand-surface p-4"
+      data-testid="removed-chunk-card"
+    >
+      <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2">
+        <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>
+          {collectionMeta?.label ?? source.collection}
+        </span>
+        <span className="min-w-0 text-sm font-semibold leading-tight text-brand-primary">{title}</span>
+      </div>
+      {(author || (shownReference && shownReference !== title)) && (
+        <p className="mb-3 text-xs leading-snug text-brand-muted">
+          {[author, shownReference !== title ? shownReference : null].filter(Boolean).join(" · ")}
+        </p>
+      )}
+      <RemovalNotice tombstone={tombstone} isGuest={isGuest} />
+    </article>
+  );
+}
+
+function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
   const searchParams = useSearchParams();
   const { chunk_id, content, source } = result;
   // Presentation only. Copying and saving still address the passage the user matched.
@@ -117,14 +205,24 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
   const hex = collectionMeta?.hex ?? "#C4972A";
   const rgb = hexToRgb(hex);
 
-  const primaryReference =
-    collection === "church-fathers" && reference && document_title
-      ? `${document_title}, ${reference}`
-      : reference ?? document_title;
+  const primaryReference = primaryCitation(collection, document_title, reference, author);
 
-  const displayAuthor = author?.trim() === "Catholic Church" ? null : author;
+  // Who wrote it (2.4b): the registry's attribution ("Pseudo-Justin"), a quoted
+  // Father's name on a Catena passage, and how sure the attribution is. Without facts
+  // these are today's author and nothing else.
+  const facts = source.facts ?? null;
+  const attributionOptions = { work: facts?.work_title ?? document_title };
+  const attribution = formatAttribution(author, facts, source.passage_author, attributionOptions);
+  const headerAuthor = formatAttribution(author, facts, source.passage_author, { ...attributionOptions, certainty: false });
+  const certainty = certaintyTag(facts?.certainty);
+  const date = formatDate(facts);
+  const displayAuthor = headerAuthor?.trim() === "Catholic Church"
+    ? null
+    : [headerAuthor, date].filter(Boolean).join(" · ") || null;
   const showAuthor = !!displayAuthor;
-  const includeAuthorInCopy = !!author && (collection === "church-fathers" || collection === "encyclicals");
+  const includeAuthorInCopy = !!attribution && (
+    collection === "church-fathers" || collection === "encyclicals" || !!source.passage_author || !!certainty
+  );
   const compactReference = mobileCitation(collection, document_title, reference, author);
 
   const { toast, showToast, dismissToast } = useToast();
@@ -172,7 +270,8 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
 
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
-    const citation = includeAuthorInCopy ? `${primaryReference} (${author})` : primaryReference;
+    // The attributed author, so a copied Pseudo-Justin passage is not credited to Justin.
+    const citation = includeAuthorInCopy ? `${primaryReference} (${attribution})` : primaryReference;
     // The role goes in the citation, not the body: the body is the passage as written,
     // and the clipboard is the one place this text leaves the app entirely.
     const cited = role ? `${citation}, ${role}` : citation;
@@ -197,7 +296,8 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
   // An excerpt-only document has no reader; the card links to its source (#265).
   const excerptOnly = isExcerptOnly(source);
   const sourceHref = excerptSourceUrl(source);
-  const sourceCredit = excerptSourceCredit(source);
+  // Shown only once the card is opened (Decision log, "Source credits").
+  const sourceCredit = sourceCreditOf(facts, excerptSourceCredit(source));
   const canOpenContext = UUID_RE.test(document_id) && !excerptOnly;
   const contextHref = readerHref({
     docId: document_id,
@@ -248,13 +348,14 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
-  const translation = collection === "bible" && source.metadata?.translation
-    ? ` · ${String(source.metadata.translation)}`
+  const translation = collection === "bible" && facts?.translation?.trim()
+    ? ` · ${facts.translation.trim()}`
     : "";
   const badgeLabel = `${collectionMeta?.label ?? collection}${translation}`;
   const accessibleSummary = [
     badgeLabel,
     displayAuthor,
+    certainty,
     primaryReference,
     role,
     result.reranker_score !== null ? `${Math.round(result.reranker_score * 100)}% relevance` : null,
@@ -287,6 +388,7 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
               <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
               {role && <RoleTag role={role} color={color} />}
               {displayAuthor && <span className="min-w-0 flex-1 truncate text-xs leading-tight text-brand-muted">{displayAuthor}</span>}
+              {certainty && <CertaintyTag tag={certainty} />}
             </div>
             <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-primary">{compactReference}</p>
           </div>
@@ -306,7 +408,14 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
             <div className="flex min-w-0 flex-1 items-center gap-2 pr-[70px]">
               <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
               <div className="grid min-w-0 flex-1 grid-rows-[1rem_1rem] content-center overflow-hidden">
-                <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
+                {certainty ? (
+                  <div className="flex min-w-0 items-baseline">
+                    <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
+                    <CertaintyTag tag={certainty} />
+                  </div>
+                ) : (
+                  <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
+                )}
                 <div className="flex min-w-0 items-baseline">
                   <span className="truncate text-sm font-semibold leading-tight text-brand-primary">{primaryReference}</span>
                   {role && <RoleTag role={role} color={color} />}
@@ -337,12 +446,21 @@ export function ChunkCard({ result, index, searchId, token, isGuest = false, onE
           {attached?.relation === "answers" && (
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
+          {result.status === "moved" && <MovedNote kind={result.redirect?.kind} />}
           <PassageText content={content} footnotes={footnotes} />
           <PassageNotes footnotes={footnotes} />
           {attached?.relation === "answered_by" && (
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
-          {sourceCredit && <SourceCredit text={sourceCredit} />}
+          <PassageFacts
+            facts={facts}
+            passageNote={source.passage_note}
+            language={source.language}
+            credit={sourceCredit}
+            supersededHref={facts?.superseded_by && !isGuest
+              ? readerHref({ docId: facts.superseded_by, origin: "search", returnKey: null })
+              : null}
+          />
 
           <RelevanceExplanation explanation={result.explanation} chunkId={chunk_id} color={color} rgb={rgb} />
 

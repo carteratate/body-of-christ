@@ -616,3 +616,37 @@ describe("retired anchors (corpus cleanup 2.4a)", () => {
     }
   });
 });
+
+describe("reader answers for removed and moved documents (corpus cleanup 2.4b)", () => {
+  async function failWith(status: number, body: unknown) {
+    const { getReaderChapter } = await import("./api");
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify(body), { status })));
+    try {
+      return await getReaderChapter("t", "doc", { anchor: "a" }).then(() => null, (error: unknown) => error);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  }
+
+  it("turns a 410 into a ReaderRemovedError carrying the tombstone", async () => {
+    const { ReaderRemovedError } = await import("./api");
+    const error = await failWith(410, {
+      detail: "removed",
+      tombstone: { entity: "passage", rule: "G", reason_code: "debris", public_reason: "A heading.", retired_at: "2026-12-01T00:00:00Z" },
+    });
+    expect(error).toBeInstanceOf(ReaderRemovedError);
+    expect((error as InstanceType<typeof ReaderRemovedError>).tombstone.public_reason).toBe("A heading.");
+  });
+
+  it("turns a 404 with a redirect into a ReaderMovedError", async () => {
+    const { ReaderMovedError } = await import("./api");
+    const error = await failWith(404, { detail: "moved", redirect: { kind: "moved", document_id: "doc-b", anchor: "x" } });
+    expect(error).toBeInstanceOf(ReaderMovedError);
+    expect((error as InstanceType<typeof ReaderMovedError>).redirect).toMatchObject({ document_id: "doc-b", anchor: "x" });
+  });
+
+  it("keeps a plain 404 as today's not-found error", async () => {
+    const error = await failWith(404, { detail: "Document not found" });
+    expect((error as Error).message).toBe("API error 404");
+  });
+});

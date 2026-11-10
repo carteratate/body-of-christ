@@ -66,6 +66,31 @@ export function readerHref({
   return `${guest ? "/reader/guest" : "/reader"}/${encodeURIComponent(docId)}?${params.toString()}`;
 }
 
+/**
+ * Where a moved document or passage is now (2.4a), as a reader URL that keeps how
+ * the reader was entered (`from`, `returnKey`, a guest's preview and guide flags).
+ */
+export function movedReaderHref(redirect: { document_id: string; anchor?: string | null; chapter_key?: string | null }, {
+  origin, returnKey, isGuest, guideBack, preview,
+}: {
+  origin: ReaderOrigin;
+  returnKey: string | null;
+  isGuest: boolean;
+  guideBack: boolean;
+  preview: boolean;
+}): string {
+  return readerHref({
+    docId: redirect.document_id,
+    origin,
+    returnKey: isReaderReturnKey(returnKey) ? returnKey : null,
+    anchor: redirect.anchor,
+    chapter: redirect.chapter_key,
+    guest: isGuest,
+    guideBack,
+    preview,
+  });
+}
+
 export function isReaderReturnKey(value: string | null): value is string {
   return value !== null && KEY_RE.test(value);
 }

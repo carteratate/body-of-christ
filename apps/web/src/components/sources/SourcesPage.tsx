@@ -11,6 +11,7 @@ import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink } from "@/components/common";
 import { LIFT } from "@/lib/lift";
 import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
+import { certaintyTag, formatAttribution, formatDate, formatTranslation } from "@/lib/attribution";
 
 /** How the Library's rows link to the reader: one href per document, one same-tab hook. */
 interface DocOpener {
@@ -54,19 +55,17 @@ function SourceMark({ doc }: { doc: SourceDocument }) {
   );
 }
 
-// Full name for Bible translation codes shown in the sources list.
-const TRANSLATION_LABELS: Record<string, string> = {
-  "WEB-C": "World English Bible, Catholic Edition",
-};
 
 // Canonical Catholic ordering of the 73 books, used to sort the Bible book grid
 // (the /v1/sources API returns books alphabetically since they carry no year).
-const BOOK_ORDER: string[] = [
+// A book with two names lists both at one rank: 1.4a renames "Song of Solomon" to
+// "Song of Songs" at the Phase 4 publish, and either may be live (C-24).
+const BOOK_ORDER: (string | string[])[] = [
   "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy",
   "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings",
   "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah", "Tobit", "Judith",
   "Esther", "1 Maccabees", "2 Maccabees",
-  "Job", "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon", "Wisdom", "Sirach",
+  "Job", "Psalms", "Proverbs", "Ecclesiastes", ["Song of Songs", "Song of Solomon"], "Wisdom", "Sirach",
   "Isaiah", "Jeremiah", "Lamentations", "Baruch", "Ezekiel", "Daniel",
   "Hosea", "Joel", "Amos", "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk",
   "Zephaniah", "Haggai", "Zechariah", "Malachi",
@@ -77,9 +76,9 @@ const BOOK_ORDER: string[] = [
   "1 John", "2 John", "3 John", "Jude", "Revelation",
 ];
 const BOOK_RANK: Record<string, number> = Object.fromEntries(
-  BOOK_ORDER.map((name, i) => [name, i]),
+  BOOK_ORDER.flatMap((names, i) => (Array.isArray(names) ? names : [names]).map((name) => [name, i])),
 );
-function bookRank(title: string): number {
+export function bookRank(title: string): number {
   return BOOK_RANK[title] ?? BOOK_ORDER.length; // unknown titles sort to the end
 }
 
@@ -164,7 +163,7 @@ function BibleSection({ docs, opener }: { docs: SourceDocument[]; opener: DocOpe
       <ul className="space-y-1.5">
         {Object.entries(byTranslation).map(([code, books]) => {
           const totalPassages = books.reduce((sum, b) => sum + b.chunk_count, 0);
-          const label = TRANSLATION_LABELS[code] ?? code;
+          const label = formatTranslation(code) ?? code;
           const orderedBooks = [...books].sort((a, b) => bookRank(a.title) - bookRank(b.title));
           return (
             <ExpandableGroup
@@ -282,10 +281,11 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
 }
 
 function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
-  const parts: string[] = [];
-  if (doc.author) parts.push(doc.author);
-  if (doc.year) parts.push(String(doc.year));
-  const attribution = parts.join(", ");
+  const attribution = [
+    formatAttribution(doc.author, doc.facts, null, { certainty: false }),
+    formatDate(doc.facts, doc.year),
+  ].filter(Boolean).join(", ");
+  const certainty = certaintyTag(doc.facts?.certainty);
 
   return (
     <li>
@@ -298,6 +298,9 @@ function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
           <span className="text-brand-primary text-sm">{doc.title}</span>
           {attribution && (
             <span className="text-brand-muted text-xs ml-2">{attribution}</span>
+          )}
+          {certainty && (
+            <span className="ml-1.5 rounded border border-brand-muted/40 px-1 text-[10px] text-brand-muted">{certainty}</span>
           )}
           {doc.translation && (
             <span className="text-brand-muted text-xs ml-1">· {doc.translation}</span>

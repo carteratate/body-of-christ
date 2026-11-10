@@ -2,14 +2,18 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { BookOpen, ChevronLeft, Search } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
-import { getReadingProgress, ReaderRestrictedError, type ContentsNode, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
+import { getReadingProgress, ReaderMovedError, ReaderRemovedError, ReaderRestrictedError, type ContentsNode, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
 import { ReaderRestrictedNotice } from "./ReaderRestrictedNotice";
+import { ReaderRemovedNotice } from "./ReaderRemovedNotice";
+import { certaintyTag, formatAttribution, formatDate, formatTranslation, factNotes, type WorkInfo } from "@/lib/attribution";
+import type { Tombstone } from "@/lib/corpus-lifecycle";
+import { SourceCredit } from "@/components/common/SourceLink";
 import { getCollectionMeta } from "@/lib/collections";
 import { LIFT } from "@/lib/lift";
-import { hasReaderReturnMarker, isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
@@ -67,6 +71,11 @@ interface Props {
 export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props) {
   const { token } = useAppContext();
   const params = useSearchParams();
+  // Read through a ref: the load effect must not re-run when the router object does.
+  const router = useRouter();
+  const routerRef = useRef(router);
+  const guideBack = params.get("guideBack") === "1";
+  const preview = params.get("preview") === "1";
   const originParam = params.get("from");
   const origin = (originParam && ORIGINS.has(originParam) ? originParam : "library") as ReaderOrigin;
   const returnKey = params.get("returnKey");
@@ -80,6 +89,8 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const [failedRequest, setFailedRequest] = useState<string | null>(null);
   // The request the API refused because the document is excerpt-only (issue #265).
   const [restricted, setRestricted] = useState<{ request: string; sourceUrl: string | null } | null>(null);
+  // The request the API answered 410: the document was removed (2.4a).
+  const [removed, setRemoved] = useState<{ request: string; tombstone: Tombstone } | null>(null);
   const [retryKey, setRetryKey] = useState(0);
   const [guestToken, setGuestToken] = useState("");
   const requestRef = useRef(0);
@@ -91,6 +102,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const requestKey = `${signedIn ? "signed-in" : guestToken || "signed-out"}:${docId}:${retryKey}`;
 
   useEffect(() => { tokenRef.current = token; }, [token]);
+  useEffect(() => { routerRef.current = router; }, [router]);
   useEffect(() => { if (isGuest) queueMicrotask(() => setGuestToken(getGuestSessionToken())); }, [isGuest]);
 
   useEffect(() => {
@@ -124,7 +136,13 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       }).catch(() => undefined);
     }).catch((caught) => {
       if (requestId !== requestRef.current) return;
+      if (caught instanceof ReaderMovedError) {
+        // The document moved: open where it went, keeping how the reader was entered.
+        routerRef.current.replace(movedReaderHref(caught.redirect, { origin, returnKey, isGuest, guideBack, preview }));
+        return;
+      }
       if (caught instanceof ReaderRestrictedError) setRestricted({ request: requestKey, sourceUrl: caught.sourceUrl });
+      if (caught instanceof ReaderRemovedError) setRemoved({ request: requestKey, tombstone: caught.tombstone });
       setFailedRequest(requestKey);
     });
 
@@ -135,7 +153,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       controller.abort();
       requestRef.current += 1;
     };
-  }, [docId, guestToken, isGuest, requestKey, retryKey, signedIn]);
+  }, [docId, guestToken, guideBack, isGuest, origin, preview, requestKey, retryKey, returnKey, signedIn]);
 
   const loading = resolvedRequest !== requestKey && failedRequest !== requestKey;
   const error = failedRequest === requestKey;
@@ -184,6 +202,18 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
     );
   }
 
+  if (error && removed?.request === requestKey) {
+    return (
+      <ReaderRemovedNotice
+        tombstone={removed.tombstone}
+        header={mobileHeader}
+        onBack={goBack}
+        backPending={backPending}
+        isGuest={isGuest}
+      />
+    );
+  }
+
   if (error && restricted?.request === requestKey) {
     return (
       <ReaderRestrictedNotice
@@ -212,7 +242,17 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
 
   const collectionMeta = getCollectionMeta(documentInfo.collection);
   const language = sectionLanguage(documentInfo.collection);
-  const attribution = [documentInfo.author, documentInfo.year, documentInfo.translation].filter(Boolean).join(" · ");
+  const facts = documentInfo.facts ?? null;
+  const attribution = [
+    formatAttribution(documentInfo.author, facts),
+    formatDate(facts, documentInfo.year),
+    formatTranslation(facts?.translation ?? documentInfo.translation),
+  ].filter(Boolean).join(" · ");
+  const certainty = certaintyTag(facts?.certainty);
+  const notes = factNotes(facts);
+  const superseded = facts?.superseded_note?.trim() || null;
+  const works = documentInfo.works ?? [];
+  const credit = facts?.source_credit?.trim() || null;
 
   return (
     <div className="flex h-full min-w-0 flex-col bg-brand-bg">
@@ -230,7 +270,26 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
               {collectionMeta?.label ?? documentInfo.collection}
             </span>
             <h1 className="mt-3 font-brand text-2xl font-semibold text-brand-accent sm:text-3xl">{documentInfo.title}</h1>
-            {attribution && <p className="mt-1 text-sm text-brand-muted">{attribution}</p>}
+            {attribution && (
+              <p className="mt-1 text-sm text-brand-muted">
+                {attribution}
+                {certainty && <span className="ml-2 rounded border border-brand-muted/40 px-1 text-[11px]">{certainty}</span>}
+              </p>
+            )}
+            {(notes.length > 0 || superseded) && (
+              <div className="mt-3 space-y-1 text-sm leading-snug text-brand-muted">
+                {notes.map((note) => <p key={note}>{note}</p>)}
+                {superseded && (
+                  <p>
+                    {superseded}
+                    {facts?.superseded_by && !isGuest && (
+                      <> <a href={movedReaderHref({ document_id: facts.superseded_by }, { origin, returnKey: null, isGuest, guideBack: false, preview: false })} className="text-brand-accent hover:underline">Read the current text</a></>
+                    )}
+                  </p>
+                )}
+              </div>
+            )}
+            {works.length > 0 && <WorksList works={works} />}
             <p className="mt-3 text-sm text-brand-muted">
               {documentInfo.chunk_count.toLocaleString()} passages · {contents
                 ? treeSummary(contents)
@@ -250,6 +309,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 </button>
               )}
             </div>
+            {credit && <SourceCredit text={credit} />}
           </section>
 
           {contents ? (
@@ -341,6 +401,33 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
           )}
         </main>
       </div>
+    </div>
+  );
+}
+
+/** The works inside a document (D6), each with its own attribution. */
+function WorksList({ works }: { works: WorkInfo[] }) {
+  return (
+    <div className="mt-4">
+      <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-brand-muted">Works in this volume</h2>
+      <ul className="mt-2 space-y-1.5 text-sm">
+        {works.map((work) => {
+          const label = [
+            formatAttribution(work.author, { certainty: work.certainty }, null, { certainty: false }),
+            formatDate({ date_display: work.date_display, year: work.year }),
+          ].filter(Boolean).join(" · ");
+          const tag = certaintyTag(work.certainty);
+          const notes = factNotes({ attribution_note: work.attribution_note, notes: work.notes });
+          return (
+            <li key={work.work_key}>
+              <span className="text-brand-primary">{work.title}</span>
+              {label && <span className="ml-2 text-xs text-brand-muted">{label}</span>}
+              {tag && <span className="ml-1.5 rounded border border-brand-muted/40 px-1 text-[10px] text-brand-muted">{tag}</span>}
+              {notes.map((note) => <p key={note} className="text-xs leading-snug text-brand-muted">{note}</p>)}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

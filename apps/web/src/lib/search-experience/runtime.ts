@@ -61,9 +61,9 @@ function freezePassage(passage: Passage): Passage {
     ...passage,
     source: {
       ...passage.source,
-      metadata: passage.source.metadata == null
-        ? passage.source.metadata
-        : structuredClone(passage.source.metadata),
+      facts: passage.source.facts == null
+        ? passage.source.facts
+        : structuredClone(passage.source.facts),
     },
     context,
   });

@@ -265,21 +265,21 @@ describe("search-experience runtime", () => {
     expect(runtime.read()).toMatchObject({ status: "idle" });
   });
 
-  it("copies and freezes nested Passage metadata before exposing it", () => {
+  it("copies and freezes a Passage's facts before exposing them", () => {
     const { runtime, runs } = authenticatedFixture();
     const transportPassage = passage("p1");
-    transportPassage.source.metadata = { citation: { page: 12 } };
+    transportPassage.source.facts = { year: 397, notes: "First note" };
     runtime.send({ type: "submit", request: REQUEST });
     const runId = runtime.read().runId;
     runs[0].callbacks.onPassage(transportPassage);
     runs[0].callbacks.onDone("search-1", 1, "success", {}, true);
     runtime.send({ type: "animation", runId, milestone: "ready-to-reveal" });
-    transportPassage.source.metadata.citation = { page: 99 };
+    transportPassage.source.facts.notes = "Changed";
 
     const current = runtime.read();
     if (current.status !== "active-search") throw new Error("Expected active search");
-    expect(current.passages[0].source.metadata).toEqual({ citation: { page: 12 } });
-    expect(Object.isFrozen((current.passages[0].source.metadata as { citation: object }).citation)).toBe(true);
+    expect(current.passages[0].source.facts).toEqual({ year: 397, notes: "First note" });
+    expect(Object.isFrozen(current.passages[0].source.facts)).toBe(true);
   });
 
   it("aborts the previous run and rejects its transport and animation events", () => {

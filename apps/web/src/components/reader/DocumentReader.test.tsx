@@ -973,3 +973,100 @@ describe("retired anchors (corpus cleanup 2.4a)", () => {
     }
   });
 });
+
+describe("removed and moved documents (corpus cleanup 2.4b)", () => {
+  const tombstone = {
+    entity: "document" as const, rule: "", reason_code: "awaiting-permission",
+    public_reason: "This translation is not available on TheoCorpus at present.",
+    read_elsewhere_url: "https://www.papalencyclicals.net/greg16/g16mirar.htm",
+    retired_at: "2026-12-01T00:00:00Z", title: "Mirari Vos", author: "Pope Gregory XVI",
+  };
+
+  it("shows the removal page for a 410, with where the text can still be read", async () => {
+    const { ReaderRemovedError } = await import("@/lib/api");
+    navigation.params = new Map([["anchor", "mirari-vos/1#retired-p4"], ["from", "saved"]]);
+    api.getReaderChapter.mockRejectedValue(new ReaderRemovedError(tombstone));
+
+    render(<DocumentReader docId="doc-a" />);
+
+    expect(await screen.findByText("Mirari Vos")).toBeTruthy();
+    expect(screen.getByText("Pope Gregory XVI")).toBeTruthy();
+    expect(screen.getByText("Not available on TheoCorpus")).toBeTruthy();
+    expect(screen.getByText(tombstone.public_reason)).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Read it at papalencyclicals.net/ }).getAttribute("href"))
+      .toBe(tombstone.read_elsewhere_url);
+    expect(screen.queryByText("This document couldn't be loaded.")).toBeNull();
+    // The suffixed anchor went to the API unchanged.
+    expect(api.getReaderChapter.mock.calls[0][2]).toMatchObject({ anchor: "mirari-vos/1#retired-p4" });
+    expect(api.putReadingProgress).not.toHaveBeenCalled();
+  });
+
+  it("shows the removal page on the document overview", async () => {
+    const { ReaderRemovedError } = await import("@/lib/api");
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockRejectedValue(new ReaderRemovedError(tombstone));
+
+    render(<DocumentReader docId="doc-a" />);
+
+    expect(await screen.findByText(tombstone.public_reason)).toBeTruthy();
+    expect(screen.queryByText("This document overview couldn't be loaded.")).toBeNull();
+  });
+
+  it("replaces the URL with where a moved passage went, keeping from and returnKey", async () => {
+    const { ReaderMovedError } = await import("@/lib/api");
+    const returnKey = "22222222-2222-4222-8222-222222222222";
+    navigation.params = new Map([["anchor", "old/1"], ["from", "saved"], ["returnKey", returnKey]]);
+    api.getReaderChapter.mockRejectedValue(new ReaderMovedError({ kind: "split", document_id: "doc-b", anchor: "new/1" }));
+
+    render(<DocumentReader docId="doc-a" />);
+
+    await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith(
+      `/reader/doc-b?from=saved&returnKey=${returnKey}&anchor=new%2F1`,
+    ));
+  });
+
+  it("replaces the URL when the overview's document moved", async () => {
+    const { ReaderMovedError } = await import("@/lib/api");
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockRejectedValue(new ReaderMovedError({ kind: "moved", document_id: "doc-b" }));
+
+    render(<DocumentReader docId="doc-a" />);
+
+    await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith("/reader/doc-b?from=library"));
+  });
+
+  it("opens the other document when the API followed a redirect into it", async () => {
+    navigation.params = new Map([["anchor", "old/1"], ["from", "search"]]);
+    api.getReaderChapter.mockImplementation(async () => ({
+      ...chapter("doc-b", "c1"),
+      highlight_anchor: "new/1",
+      redirected_from: { document_id: "doc-a", anchor: "old/1" },
+    }));
+
+    render(<DocumentReader docId="doc-a" />);
+
+    await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith("/reader/doc-b?from=search&anchor=new%2F1"));
+  });
+
+  it("highlights the new anchor when the redirect stays in the document", async () => {
+    navigation.params = new Map([["anchor", "old/1"], ["from", "search"]]);
+    const scrolled: string[] = [];
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+      value: vi.fn(function (this: HTMLElement) { scrolled.push(this.id); }), configurable: true,
+    });
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string) => ({
+      ...chapter(docId, "c1"),
+      passages: [{ id: "p", anchor: "new/1", chapter_key: "c1", chapter_label: "C1", content: "text" }],
+      highlight_anchor: "new/1",
+      redirected_from: { document_id: docId, anchor: "old/1" },
+    }));
+
+    try {
+      render(<DocumentReader docId="doc-a" />);
+      await waitFor(() => expect(scrolled).toContain("anchor-new/1"));
+      expect(navigation.replace).not.toHaveBeenCalled();
+    } finally {
+      delete (HTMLElement.prototype as { scrollIntoView?: unknown }).scrollIntoView;
+    }
+  });
+});

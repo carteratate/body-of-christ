@@ -1,15 +1,18 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
 import {
   putReadingProgress,
   type DocumentInfo,
   type ReaderChapter,
   type TocEntry,
+  ReaderMovedError,
+  ReaderRemovedError,
   ReaderRestrictedError,
 } from "@/lib/api";
+import type { Redirect, Tombstone } from "@/lib/corpus-lifecycle";
 import {
   invalidateReaderDocument,
   isChapterCached,
@@ -25,12 +28,13 @@ import { ReaderChrome, type ReaderFontSize, type ReaderSpacing } from "./ReaderC
 import { saveFeedbackContext } from "@/lib/feedbackContext";
 import { ReaderChapterSkeleton, ReaderOverviewSkeleton, ReaderPageSkeleton } from "@/components/common/PageSkeletons";
 import { DocumentOverview } from "./DocumentOverview";
-import { isReaderReturnKey, type ReaderOrigin } from "@/lib/readerNavigation";
+import { isReaderReturnKey, movedReaderHref, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
 import { ReaderRestrictedNotice } from "./ReaderRestrictedNotice";
+import { ReaderRemovedNotice } from "./ReaderRemovedNotice";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
 
@@ -59,6 +63,11 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   const { token } = useAppContext();
   const [guestToken, setGuestToken] = useState("");
   const params = useSearchParams();
+  // Read through a ref: the load effect must not re-run when the router object does.
+  const router = useRouter();
+  const routerRef = useRef(router);
+  const guideBackParam = params.get("guideBack") === "1";
+  const previewParam = params.get("preview") === "1";
   const initialAnchor = params.get("anchor");
   const initialChapter = params.get("chapter");
   const originParam = params.get("from");
@@ -84,6 +93,8 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   const [error, setError] = useState<string | null>(null);
   // Set when the API refuses an excerpt-only document (issue #265).
   const [restricted, setRestricted] = useState<{ sourceUrl: string | null } | null>(null);
+  // Set when the API answers 410: the document or passage was removed (2.4a).
+  const [removed, setRemoved] = useState<Tombstone | null>(null);
   const [initialRetryKey, setInitialRetryKey] = useState(0);
   const [chapterLoading, setChapterLoading] = useState<string | null>(null);
   const [chapterError, setChapterError] = useState<{ key: string; mode: "append" | "replace" } | null>(null);
@@ -108,7 +119,13 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
   const canRead = Boolean(token) || Boolean(guestToken);
 
   useEffect(() => { tokenRef.current = token; }, [token]);
+  useEffect(() => { routerRef.current = router; }, [router]);
   useEffect(() => { if (isGuest) queueMicrotask(() => setGuestToken(getGuestSessionToken())); }, [isGuest]);
+
+  // Opens where a moved document or passage went, in place of this URL (2.4a).
+  const moveTo = useCallback((redirect: Pick<Redirect, "document_id" | "anchor" | "chapter_key">) => {
+    routerRef.current.replace(movedReaderHref(redirect, { origin, returnKey, isGuest, guideBack: guideBackParam, preview: previewParam }));
+  }, [guideBackParam, isGuest, origin, previewParam, returnKey]);
 
   const readerAccess = useCallback((): ReaderAccess => ({
     token: tokenRef.current,
@@ -171,6 +188,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     setResolvedDocId(null);
     setError(null);
     setRestricted(null);
+    setRemoved(null);
     setLoading(true);
     setDoc(null);
     setToc(null);
@@ -195,6 +213,13 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
           throw caught;
         }
         if (!alive) return;
+        // The API followed a redirect into another document: put that document in
+        // the URL, so the chapters loaded from here on come from it.
+        if (chapter.redirected_from && chapter.document.id !== docId) {
+          moveTo({ document_id: chapter.document.id, anchor: chapter.highlight_anchor, chapter_key: chapter.chapter_key });
+          return;
+        }
+        if (chapter.redirected_from) setHighlight(chapter.highlight_anchor);
         setDoc(chapter.document);
         setChapters([chapter]);
         setCurrentKey(chapter.chapter_key);
@@ -204,7 +229,11 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
       } catch (caught) {
         if (!alive || (caught as DOMException).name === "AbortError") return;
         if (caught instanceof ReaderRestrictedError) setRestricted({ sourceUrl: caught.sourceUrl });
-        else setError("Failed to load");
+        else if (caught instanceof ReaderRemovedError) setRemoved(caught.tombstone);
+        else if (caught instanceof ReaderMovedError) {
+          moveTo(caught.redirect);
+          return;
+        } else setError("Failed to load");
       } finally {
         if (alive) setLoading(false);
       }
@@ -217,7 +246,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
       chapterRequestRef.current += 1;
       replacePendingRef.current = false;
     };
-  }, [canRead, docId, initialAnchor, initialChapter, initialRetryKey, isGuest, readerAccess, requestToc]);
+  }, [canRead, docId, initialAnchor, initialChapter, initialRetryKey, isGuest, moveTo, readerAccess, requestToc]);
 
   // Both responses carry the document's passage count. If they disagree, the
   // corpus was republished while one of them sat in the cache. Either could be
@@ -393,6 +422,17 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     saveFeedbackContext({ category: "content", origin: "reader", route: "/reader", document_id: docId });
   }
 
+  if (removed) {
+    return (
+      <ReaderRemovedNotice
+        tombstone={removed}
+        header={<ReaderMobileStatusHeader />}
+        onBack={goBack}
+        backPending={back.pending}
+        isGuest={isGuest}
+      />
+    );
+  }
   if (restricted) {
     return (
       <ReaderRestrictedNotice
