@@ -77,10 +77,6 @@
   "fixed_by": "1.2c",
   "description": "86.01% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
  },
- "coverage.councils.ecum-08-fourth-council-of-constantinople.html": {
-  "fixed_by": "1.2e",
-  "description": "92.86% covered: text inside lists, divs and bracketed spans dropped; replaced by Schroeder"
- },
  "coverage.councils.ecum-16-council-of-constance.html": {
   "fixed_by": "1.2e",
   "description": "93.65% covered: text inside lists, divs and bracketed spans dropped; replaced by Schroeder"
@@ -313,11 +309,6 @@
   "fixed_by": "1.1",
   "description": "Ad Gentes: 22 passages hold footnote callers (C-17)",
   "units": ["ad-gentes/1", "ad-gentes/14", "ad-gentes/14-2", "ad-gentes/15", "ad-gentes/18", "ad-gentes/2", "ad-gentes/22", "ad-gentes/23", "ad-gentes/25", "ad-gentes/28", "ad-gentes/29", "ad-gentes/3", "ad-gentes/31", "ad-gentes/38", "ad-gentes/39", "ad-gentes/4", "ad-gentes/40", "ad-gentes/41", "ad-gentes/42", "ad-gentes/7", "ad-gentes/8", "ad-gentes/9"]
- },
- "health.R12_note_caller:councils/d9189059-da4c-5528-aea5-3ec35864c077": {
-  "fixed_by": "1.2b",
-  "description": "Fifth Lateran Council: 1 passages hold footnote callers (C-17)",
-  "units": ["fifth-lateran-council/sec-0/33"]
  },
  "health.summa_bracket_numbers:summa/31b2bc0a-0b16-5002-822a-26d3215dd256": {
   "fixed_by": "1.7",
