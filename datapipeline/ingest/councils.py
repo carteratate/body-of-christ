@@ -1,9 +1,8 @@
-"""Ecumenical Councils ingestion (dual pipeline).
+"""Ecumenical Councils ingestion.
 
-One Document per council (ecumenical 1-20) or per Vatican II document. Passages:
-one per canon / numbered paragraph; plain prose accumulates to the size cap.
-Chapters group by header (h2/h3/h4 or CHAPTER N); header-less prose forms a
-single 'Text' chapter.
+One Document per council (ecumenical 1-20) or per Vatican II document. Each council
+is built from its own source: Percival (1.2c), Schroeder (1.2e), Waterworth (Trent,
+1.2b), Schaff (Vatican I, 1.2d) and vatican.va's Vatican II pages (1.1), here.
 """
 from __future__ import annotations
 
@@ -19,14 +18,15 @@ from config import settings
 from identity import anchor as make_anchor, slugify
 from model import Document, Passage
 from normalize.text import clean_text
-from normalize.caps import smart_title_case, title_case_shouting
-from normalize.footnotes import drop_caller_elements, strip_footnote_markers
+from normalize.caps import smart_title_case
+from normalize.footnotes import drop_caller_elements
 from normalize.boilerplate import strip_boilerplate
 from ingest.councils_percival import (COUNCILS as PERCIVAL_COUNCILS, SOURCE_FILE as PERCIVAL_FILE,
                                       build_percival, read_divs)
 from ingest.councils_schaff import SOURCE_FILE as SCHAFF_FILE, build_schaff
 from ingest.councils_schroeder import WORKS as SCHROEDER_WORKS, build_schroeder
-from ingest.pieces import (ORDINAL_ATTR, Segment, element_locator, name_pieces,
+from ingest.councils_trent import build_trent
+from ingest.pieces import (ORDINAL_ATTR, Segment, name_pieces,
                            number_elements, pack_text, piece_reference,
                            unique_unit_anchors)
 from registry import ANCHOR_SCHEME, resolve_document_id
@@ -34,30 +34,10 @@ from registry import ANCHOR_SCHEME, resolve_document_id
 log = logging.getLogger(__name__)
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "councils")
-_CANON = re.compile(r"^(?:Canon|Can\.?)\s+(\d+|[IVXLCDM]+)[\.\:]?\s*(.*)", re.IGNORECASE | re.DOTALL)
-_NUM = re.compile(r"^(\d+)\s*\.\s+(.+)", re.DOTALL)
-_CHAPTER = re.compile(r"^CHAPTER\s+([IVXLCDM]+)\b\.?\s*(.*)", re.IGNORECASE | re.DOTALL)
-# Tanner's edition numbers many medieval-council canons as a leading "[1a]." etc.
-_LEAD_CANON = re.compile(r"^\[(\d+[a-z]?)\]\s*\.?\s*(.*)", re.DOTALL)
-# Editorial brackets: page markers ([Page 45]), footnote refs ([3]), notes.
-_BRACKET = re.compile(r"\[[^\]]*\]")
 _CHROME = re.compile(
     r"automatically notified|more information about this site|fan of our facebook"
     r"|^search tips$|^sitemap$|return to (?:the )?home", re.IGNORECASE)
-_MIN = 40
-_TARGET = 2200
 _BUCKET = 20   # §-paragraphs per chapter when a doc has no chapter headings
-
-
-def _declutter(text: str) -> str:
-    """Drop editorial bracket spans (page/footnote markers, notes) and tidy."""
-    return re.sub(r"\s{2,}", " ", _BRACKET.sub(" ", text)).strip()
-
-
-def _chapter_label_from(m: re.Match) -> str:
-    roman = m.group(1).upper()
-    rest = _declutter(m.group(2) or "").strip(" .:-")
-    return f"Chapter {roman}" + (f": {title_case_shouting(rest)}" if rest else "")
 
 
 def _strip_chrome(soup) -> None:
@@ -65,16 +45,12 @@ def _strip_chrome(soup) -> None:
         tag.decompose()
 
 
-def _tanner_clean(body: str) -> str:
-    return clean_text(strip_footnote_markers(strip_boilerplate(_declutter(body))))
-
-
 class _Builder:
     """Accumulates the units of one council document, then names them: each unit's
     anchor is unique (`ingest.pieces.unique_unit_anchors`) and its pieces are named by
     the source element they open with."""
 
-    def __init__(self, clean=_tanner_clean):
+    def __init__(self, clean):
         self.units: list[tuple] = []
         self.clean = clean
 
@@ -106,77 +82,6 @@ class _Builder:
 def _source_key(entry: dict) -> str:
     """The council manifest has no slug; its file name, without extension, serves."""
     return "councils/" + os.path.splitext(entry["file"])[0]
-
-
-def build_ecumenical(entry: dict, soup: BeautifulSoup) -> Document:
-    number_elements(soup)
-    _strip_chrome(soup)
-    council = entry["council"]
-    cslug = slugify(council)
-    did = resolve_document_id("councils", _source_key(entry), ("councils", council, council))
-    b = _Builder()
-    meta = {"council": council, "year": entry["year"], "url": entry["url"]}
-    sec_ord, sec_key, sec_label = 0, make_anchor(cslug, "sec-0"), "Text"
-    prose: list[Segment] = []
-    seq = 0
-
-    def flush_prose() -> None:
-        nonlocal seq, prose
-        if not prose:
-            return
-        seq += 1
-        b.add(body="\n\n".join(seg.text for seg in prose), ref=f"{council} — {sec_label}",
-              base_anchor=make_anchor(cslug, f"sec-{sec_ord}", seq),
-              ckey=sec_key, clabel=sec_label, unit=None, meta=meta, segments=prose)
-        prose = []
-
-    for el in soup.find_all(["h1", "h2", "h3", "h4", "p"]):
-        t = el.get_text(" ", strip=True)
-        if not t or _CHROME.search(t):
-            continue
-        if el.name in ("h2", "h3", "h4"):
-            flush_prose()
-            sec_ord += 1
-            sec_key = make_anchor(cslug, f"sec-{sec_ord}")
-            mch = _CHAPTER.match(t)
-            sec_label = _chapter_label_from(mch) if mch else title_case_shouting(_declutter(t))
-            continue
-        if len(t) < _MIN:
-            continue
-        mc, mn, ml = _CANON.match(t), _NUM.match(t), _LEAD_CANON.match(t)
-        if mc:
-            flush_prose()
-            num = mc.group(1)
-            b.add(body=_declutter(t), ref=f"{council}, Canon {num}",
-                  base_anchor=make_anchor(cslug, "canon", num),
-                  ckey=sec_key, clabel=sec_label, unit=f"Canon {num}", meta=meta,
-                  segments=[Segment(element_locator(el), t)])
-        elif ml:
-            flush_prose()
-            num = ml.group(1)
-            b.add(body=_declutter(ml.group(2).strip()), ref=f"{council}, Canon {num}",
-                  base_anchor=make_anchor(cslug, "canon", num),
-                  ckey=sec_key, clabel=sec_label, unit=f"Canon {num}", meta=meta,
-                  segments=[Segment(element_locator(el), t)])
-        elif mn:
-            flush_prose()
-            num = mn.group(1)
-            b.add(body=_declutter(mn.group(2).strip()), ref=f"{council} — {sec_label}, §{num}",
-                  base_anchor=make_anchor(cslug, f"sec-{sec_ord}", num),
-                  ckey=sec_key, clabel=sec_label, unit=f"§{num}", meta=meta,
-                  segments=[Segment(element_locator(el), t)])
-        else:
-            decl = _declutter(t)
-            if len(decl) >= _MIN:
-                prose.append(Segment(element_locator(el), decl))
-                if sum(len(x.text) for x in prose) >= _TARGET:
-                    flush_prose()
-    flush_prose()
-    return Document(id=did, collection="councils", title=council, author=None,
-                    year=entry["year"], metadata={"url": entry["url"],
-                    "council_number": entry.get("council_number"),
-                    "source_key": _source_key(entry), "anchor_scheme": ANCHOR_SCHEME},
-                    passages=b.passages)
 
 
 # --------------------------------------------------------------------------- Vatican II
@@ -580,8 +485,14 @@ def build_documents() -> list[Document]:
             continue
         with open(os.path.join(_SRC, entry["file"]), "rb") as f:
             soup = BeautifulSoup(f.read(), "lxml")
-        if entry["group"] == "vatican-ii":
+        if entry["council"] == "Council of Trent":
+            # Waterworth's text, parsed whole by session (1.2b).
+            docs.append(build_trent(
+                entry, soup, resolve_document_id("councils", _source_key(entry),
+                                                 ("councils", entry["council"], entry["council"])),
+                _source_key(entry)))
+        elif entry["group"] == "vatican-ii":
             docs.append(build_vatican2(entry, soup))
         else:
-            docs.append(build_ecumenical(entry, soup))
+            raise ValueError(f"councils: no builder for {entry['council']}")
     return docs

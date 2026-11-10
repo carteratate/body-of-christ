@@ -7,26 +7,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
 from bs4 import BeautifulSoup
-from ingest.councils import build_ecumenical, build_vatican2, build_documents
+from ingest.councils import build_vatican2, build_documents
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "councils")
 _vendored = os.path.exists(os.path.join(_SRC, "manifest.json"))
-
-CANON_HTML = """<html><body>
-<h2>Canons</h2>
-<p>Canon 1. If anyone says that the world was not created, let him be anathema and rejected.</p>
-<p>Canon 2. If anyone denies the divine nature, let him be condemned by the holy synod here.</p>
-</body></html>"""
-
-
-def test_ecumenical_canon_passages_have_unit_and_anchor():
-    entry = {"council": "Council of Trent", "document": "Council of Trent", "year": 1563,
-             "group": "ecumenical-1-20", "file": "x.html", "url": "http://example"}
-    passages = build_ecumenical(entry, BeautifulSoup(CANON_HTML, "lxml")).passages
-    assert [p.unit_label for p in passages] == ["Canon 1", "Canon 2"]
-    assert passages[0].anchor.startswith("council-of-trent/canon/1")
-    assert not passages[0].content.lstrip().startswith("[")
-
 
 # --- Vatican II (1.1) ----------------------------------------------------------------
 
@@ -1210,3 +1194,179 @@ def test_councils_1_to_7_rights_rows_are_percivals():
     also = {r["work"]: [a["source_path"] for a in r.get("also_from", [])] for r in rows}
     assert also["Council of Ephesus"] == ["councils/authoritative01chry/"]
     assert also["Second Council of Nicaea"] == ["councils/ahistoryofthecou05hefeuoft/"]
+
+
+# --- 1.2b: Trent from Waterworth -----------------------------------------------------------
+
+from ingest import councils_trent as trent  # noqa: E402
+from normalize.text import clean_text  # noqa: E402
+
+TRENT = {"council": "Council of Trent", "document": "Council of Trent", "year": 1563,
+         "group": "ecumenical-1-20", "file": "ecum-19-council-of-trent.html",
+         "url": "https://www.papalencyclicals.net/councils/trent/the-complete-text.htm"}
+TRENT_ID = "e33e591b-9e2e-5059-974f-28c8e4ab6aae"
+
+# The page's markup: bare text after a <center> and between <br>s, headings as <center>
+# lines or paragraphs of their own, the print's page numbers in <strong>.
+TRENT_HTML = """<html><body><article><div class="entry-content">
+<p><strong>[Page 1]</strong></p>
+<p></p><center>THE BULL OF INDICTION<br/>
+OF THE SACRED ECUMENICAL AND GENERAL COUNCIL OF TRENT</center>PAUL, bishop, servant of the servants of God, for the future memory hereof.
+<p>At the beginning of this our pontificate we would fain have remedied the evils, in order to <strong>[Page 2]</strong> maintain the Christian religion.</p>
+<p>Blosius.</p>
+<p><center>SESSION THE SIXTH,</center>Celebrated on the thirteenth day of the month of January, 1547.</p>
+<p><center>DECREE ON JUSTIFICATION</center><center>Proem.</center>Whereas there is, at this time, a certain erroneous doctrine disseminated touching Justification.</p>
+<p><center>CHAPTER I.<br/>
+On the Inability of Nature and of the Law to justify man.</center>The holy Synod declares first, that all men had lost their innocence.<br/>
+<br/>
+Bare text that the page sets between breaks, with no paragraph of its own.</p>
+<p>CHAPTER II.</p>
+<p>On the dispensation and mystery of Christ's advent.</p>
+<p>Whence it came to pass, that the heavenly Father sent unto men Jesus Christ.</p>
+<p><center>ON JUSTIFICATION</center>CANON I.-If any one saith, that man may be justified by his own works; let him be anathema.</p>
+<p>CANON II.-lf any one saith, that the grace of God is given only for this; let him be anathema.</p>
+<p>Web content composed with the free online wysiwyg HTML editor. Please subscribe for a membership to remove promotional messages from the edited documents.</p>
+<p><center>INDICTION OF THE NEXT SESSION</center>Doth it please you, that the next ensuing Session be celebrated on the Thursday?</p>
+<p><center>SESSION THE SEVENTH,</center>Celebrated on the third day of the month of March, MDXLVII.</p>
+<p><center>DECREE ON THE SACRAMENTS</center>Proem.</p>
+<p>For the completion of the salutary doctrine on Justification, it hath seemed suitable to treat of the Sacraments.</p>
+<p><center>ON THE SACRAMENTS IN GENERAL</center>CANON I.-If any one saith, that the sacraments of the New Law were not all instituted by Jesus Christ; let him be anathema.</p>
+</div></article></body></html>"""
+
+
+def _trent():
+    return trent.build_trent(TRENT, BeautifulSoup(TRENT_HTML, "lxml"), TRENT_ID,
+                             "councils/ecum-19-council-of-trent")
+
+
+def test_trent_bare_text_between_br_is_kept():
+    by = {p.anchor: p for p in _trent().passages}
+    assert by["council-of-trent/bulls/indiction"].content.split("\n\n") == [
+        "PAUL, bishop, servant of the servants of God, for the future memory hereof.",
+        "At the beginning of this our pontificate we would fain have remedied the evils, in "
+        "order to maintain the Christian religion.",
+        "Blosius."]
+    chapter = by["council-of-trent/session-6/decree-on-justification/chapter-1"]
+    assert chapter.content.split("\n\n") == [
+        "On the Inability of Nature and of the Law to justify man.",
+        "The holy Synod declares first, that all men had lost their innocence.",
+        "Bare text that the page sets between breaks, with no paragraph of its own."]
+    # The print's page numbers become metadata; the site's advert goes (C-05).
+    assert by["council-of-trent/bulls/indiction"].metadata["pages"] == ["1", "2"]
+    text = " ".join(p.content for p in by.values())
+    assert "[Page" not in text and "wysiwyg" not in text
+
+
+def test_trent_center_headings_become_structure():
+    doc = _trent()
+    assert doc.author == "Council of Trent" and doc.translation == trent.TRANSLATION
+    s6, s7 = "council-of-trent/session-6", "council-of-trent/session-7"
+    assert [p.anchor for p in doc.passages] == [
+        "council-of-trent/bulls/indiction",
+        f"{s6}/decree-on-justification/proem",
+        f"{s6}/decree-on-justification/chapter-1",
+        f"{s6}/decree-on-justification/chapter-2",
+        f"{s6}/canons-on-justification/canon-1",
+        f"{s6}/canons-on-justification/canon-2",
+        f"{s6}/indiction-of-the-next-session",
+        f"{s7}/decree-on-the-sacraments/proem",
+        f"{s7}/canons-on-the-sacraments-in-general/canon-1"]
+    by = {p.anchor: p for p in doc.passages}
+    proem = by[f"{s6}/decree-on-justification/proem"]
+    # The session's dating line opens its first document.
+    assert proem.content.startswith("Celebrated on the thirteenth day")
+    assert proem.chapter_key == f"{s6}/decree-on-justification"
+    assert proem.chapter_label == "Session 6: Decree on Justification"
+    # A chapter set as a paragraph, with its title in the next one.
+    second = by[f"{s6}/decree-on-justification/chapter-2"]
+    assert second.unit_label == "Chapter II"
+    assert second.content.startswith("On the dispensation and mystery of Christ's advent.\n\n")
+    assert second.reference == "Council of Trent, Session 6, Decree on Justification, Chapter II"
+    assert by[f"{s7}/decree-on-the-sacraments/proem"].content.startswith(
+        "Celebrated on the third day of the month of March, MDXLVII.\n\nFor the completion")
+
+
+def test_trent_canon_anchor_includes_session():
+    by = {p.anchor: p for p in _trent().passages}
+    first = by["council-of-trent/session-6/canons-on-justification/canon-1"]
+    other = by["council-of-trent/session-7/canons-on-the-sacraments-in-general/canon-1"]
+    assert first.id != other.id or first.anchor != other.anchor
+    assert first.unit_label == "Canon I"
+    assert first.chapter_label == "Session 6: Canons on Justification"
+    assert first.reference == "Council of Trent, Session 6, Canons on Justification, Canon I"
+    assert first.content == ("If any one saith, that man may be justified by his own works; "
+                             "let him be anathema.")
+    # The page's "lf" for "If".
+    assert by["council-of-trent/session-6/canons-on-justification/canon-2"].content.startswith(
+        "If any one saith, that the grace of God")
+    assert other.reference == ("Council of Trent, Session 7, Canons on the Sacraments in "
+                               "General, Canon I")
+
+
+def _trent_built():
+    return _built("Council of Trent")
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+def test_trent_parses_every_session_and_keeps_its_text():
+    doc = _trent_built()
+    units = _units(doc)
+    sessions = {int(m.group(1)) for u in units
+                if (m := re.match(r"council-of-trent/session-(\d+)/", u))}
+    assert sessions == set(range(1, 26))
+    count = lambda prefix, kind: sum(1 for u in units if u.startswith(
+        f"council-of-trent/{prefix}/{kind}-"))
+    assert count("session-6/decree-on-justification", "chapter") == 16
+    assert count("session-6/canons-on-justification", "canon") == 33
+    assert count("session-7/canons-on-the-sacraments-in-general", "canon") == 13
+    assert count("session-13/decree-concerning-the-most-holy-sacrament-of-the-eucharist",
+                 "chapter") == 8
+    assert count("session-13/canons-on-the-most-holy-sacrament-of-the-eucharist", "canon") == 11
+    assert [u for u in units if u.startswith("council-of-trent/bulls/")] == [
+        f"council-of-trent/bulls/{b}" for b in
+        ("indiction", "transfer", "resumption", "celebration", "confirmation")]
+    # No anchor carries a collision suffix.
+    assert not [u for u in units
+                if not re.fullmatch(r"(?:chapter|canon)-\d+|[a-z-]*[a-z]", u.rsplit("/", 1)[1])]
+    # At least 97% of the article's text, less the site's text and the headings.
+    with open(os.path.join(_SRC, TRENT["file"]), "rb") as f:
+        article = BeautifulSoup(f.read(), "lxml").find("div", class_="entry-content")
+    blocks = [b for b in trent._blocks(article)
+              if not trent._is_heading(b) and not trent._CHROME.search(b.text)]
+    joined = re.sub(r"\s+", " ", " ".join(p.content for p in doc.passages))
+    total = kept = 0
+    for b in blocks:
+        text = trent._CANON.sub(r"\2", clean_text(b.text))
+        total += len(text)
+        kept += len(text) * (text[3:] in joined)
+    assert kept >= 0.97 * total, (kept, total)
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored councils")
+def test_trent_text_has_no_site_text_or_print_furniture():
+    for p in _trent_built().passages:
+        assert not re.search(r"\[Page \d+\]|wysiwyg|^CANON |^CHAPTER |This title is missing",
+                             p.content), p.anchor
+
+
+def test_trents_old_passages_follow_their_text():
+    reg = work_registry.current()
+    open_ = {r["old_anchor"]: r for r in reg.redirects if not r.get("closed_by")}
+    t = "council-of-trent"
+    # Canon numbers restarted in every session; each old canon goes to its own.
+    assert open_[f"{t}/canon/ii"]["new_anchor"] == f"{t}/session-6/canons-on-justification/canon-2"
+    assert open_[f"{t}/canon/ii-2"]["new_anchor"] == \
+        f"{t}/session-7/canons-on-the-sacraments-in-general/canon-2"
+    assert open_[f"{t}/canon/ii"]["kind"] == "moved"
+    assert open_[f"{t}/sec-0/29"]["new_anchor"] == \
+        f"{t}/session-21/canons-on-communion-under-both-species/conclusion"
+    removed = {e["anchor"]: e for e in work_registry.open_removals(reg)}
+    advert = removed[f"{t}/sec-0/21"]
+    assert (advert["reason"], advert["tombstone"]) == (
+        "debris", "This card held website text, not the Council's.")
+    rows = [r for r in reg.passages if r["document_id"] == TRENT_ID]
+    old = [r for r in rows if re.match(rf"{t}/(?:sec-0|canon)/", r["anchor"])]
+    assert len(old) == 192 and not [r for r in old if r["status"] == "active"]
+    # Every old row is explained: a redirect, or the advert's removal.
+    explained = set(r["old_passage_id"] for r in open_.values()) | {advert["passage_id"]}
+    assert not [r["anchor"] for r in old if r["passage_id"] not in explained]
