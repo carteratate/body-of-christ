@@ -240,7 +240,7 @@ NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhe
 repo. Qdrant owns all vector search. Production holds one Qdrant collection, `chunks`; the
 V5 `facets` and `questions` collections exist only if a V5 `embed` run creates them.
 The API reads the collection or alias `QDRANT_READ_COLLECTION` names (default `chunks`;
-production is to read the alias `chunks_live`, which a 2.2w publish switches), and
+production reads the alias `chunks_live` since 10 Nov 2026; a 2.2w publish switches it), and
 `/health/search` reports it and its target. Production's Qdrant runs in **strict mode**: it
 refuses a filter on a payload field with no index, so the API filters on `searchable`
 only once the read collection has that boolean index (`qdrant_client.searchable_indexed`).
