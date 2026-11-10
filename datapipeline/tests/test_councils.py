@@ -18,12 +18,6 @@ CANON_HTML = """<html><body>
 <p>Canon 2. If anyone denies the divine nature, let him be condemned by the holy synod here.</p>
 </body></html>"""
 
-VAT2_HTML = """<html><body>
-<p><strong>CHAPTER I</strong></p>
-<p>1. In His goodness and wisdom God chose to reveal Himself and to make known the mystery of His will.</p>
-<p>2. By this revelation the invisible God out of the abundance of His love speaks to men as friends.</p>
-</body></html>"""
-
 
 def test_ecumenical_canon_passages_have_unit_and_anchor():
     entry = {"council": "Council of Trent", "document": "Council of Trent", "year": 1563,
@@ -34,43 +28,176 @@ def test_ecumenical_canon_passages_have_unit_and_anchor():
     assert not passages[0].content.lstrip().startswith("[")
 
 
-def test_vatican2_numbered_paragraphs_under_chapter():
-    entry = {"council": "Second Vatican Council", "document": "Dei Verbum",
-             "document_type": "constitution", "year": 1965, "group": "vatican-ii",
+# --- Vatican II (1.1) ----------------------------------------------------------------
+
+def _v2(title, html, document_type="constitution"):
+    entry = {"council": "Second Vatican Council", "document": title,
+             "document_type": document_type, "year": 1965, "group": "vatican-ii",
              "file": "x.html", "url": "http://example"}
-    d = build_vatican2(entry, BeautifulSoup(VAT2_HTML, "lxml"))
-    assert d.title == "Dei Verbum"
-    assert d.metadata["council"] == "Second Vatican Council"
-    assert [p.unit_label for p in d.passages] == ["§1", "§2"]
-    assert any("Chapter" in p.chapter_label for p in d.passages)
+    return build_vatican2(entry, BeautifulSoup(html, "lxml"))
 
 
-# Bug 1+4: chapters marked with <b>, a trailing table-of-contents copy, and a
-# <p><b> double-hit must all be handled — content split onto the real chapters,
-# trailing TOC ignored, no phantom/duplicated chapters.
-VAT2_BOLD_HTML = """<html><body>
-<p><b>CHAPTER I</b></p>
-<p>1. In His goodness God chose to reveal Himself and to make known the mystery of His will to men.</p>
-<p>2. By this revelation the invisible God speaks to men as friends and lives among them in friendship.</p>
-<b>CHAPTER II</b>
-<p>3. In His gracious goodness God has seen to it that what He had revealed for salvation would abide.</p>
-<p>Chapter I</p>
-<p>Chapter II</p>
+VAT2_HTML = """<html><body>
+<p align="right">[ <a href="/ar">AR</a> - EN - <a href="/fr">FR</a> ]</p>
+<p>DOGMATIC CONSTITUTION ON DIVINE REVELATION <b>DEI VERBUM</b></p>
+<center><b>CHAPTER I</b><p><b>REVELATION ITSELF</b></p></center>
+<p>1. In His goodness and wisdom God chose to reveal Himself and to make known the mystery of His will.(1)</p>
+<p>As a sacred synod has affirmed, God can be known with certainty from created reality. (2)</p>
+<p>2. By this revelation the invisible God out of the abundance of His love speaks to men as friends.</p>
+<hr/><p><b>NOTES</b></p>
+<p>1. Cf. Eph. 1:9.</p>
+<p>2. Cf. Rom. 1:20, which the synod quotes at length in its second section here.</p>
+<p>3. Ibid.</p>
 </body></html>"""
 
 
-def test_vatican2_detects_bold_chapters_ignores_trailing_toc():
-    entry = {"council": "Second Vatican Council", "document": "Dei Verbum",
-             "document_type": "constitution", "year": 1965, "group": "vatican-ii",
-             "file": "x.html", "url": "http://example"}
-    d = build_vatican2(entry, BeautifulSoup(VAT2_BOLD_HTML, "lxml"))
-    labels = [p.chapter_label for p in d.passages]
+def test_vatican2_numbered_paragraphs_under_chapter():
+    d = _v2("Dei Verbum", VAT2_HTML)
+    assert d.title == "Dei Verbum" and d.author == "Second Vatican Council"
+    assert d.metadata["council"] == "Second Vatican Council"
+    assert [p.unit_label for p in d.passages] == ["§1", "§2"]
+    assert [p.anchor for p in d.passages] == ["dei-verbum/1", "dei-verbum/2"]
+    assert {p.chapter_label for p in d.passages} == {"Chapter I: Revelation Itself"}
+
+
+def test_vatican2_continuations_join_their_section():
+    first = _v2("Dei Verbum", VAT2_HTML).passages[0]
+    assert first.content == ("In His goodness and wisdom God chose to reveal Himself and to make "
+                             "known the mystery of His will.\n\nAs a sacred synod has affirmed, "
+                             "God can be known with certainty from created reality.")
+
+
+def test_vatican2_stops_at_notes_heading():
+    for heading in ("NOTES", "ENDNOTES", "Footnotes"):
+        d = _v2("Dei Verbum", VAT2_HTML.replace("<b>NOTES</b>", heading))
+        assert len(d.passages) == 2
+        text = " ".join(p.content for p in d.passages)
+        assert "Cf." not in text and "Ibid" not in text and "(1)" not in text
+
+
+def test_vatican2_notes_numbering_restart_is_not_a_section():
+    html = """<html><body>
+<p>1. The first section of the decree, which is long enough to be a section of its own.</p>
+<p>2. The second section, which sets out a list of norms that follow in order below.</p>
+<p>1. A norm numbered inside the second section, which is not a section of the decree.</p>
+<p>2. Another such norm; the running count expects 3, so this is still the second section.</p>
+<p>3. The third section of the decree, which closes it before the notes begin below.</p>
+<p>ENDNOTES</p><p>Chapter I</p>
+<p>1. Cf. Matt. 28:19.</p><p>2. Cf. Mark 16:15.</p><p>3. Cf. Luke 24:47.</p><p>4. Cf. John 20:21.</p>
+</body></html>"""
+    d = _v2("Ad Gentes", html, "decree")
     assert [p.unit_label for p in d.passages] == ["§1", "§2", "§3"]
-    # §1,§2 under Chapter I; §3 under Chapter II — two distinct real chapters.
-    assert labels[0] == labels[1] == "Chapter I"
-    assert labels[2] == "Chapter II"
-    # exactly two chapters (no phantom from the <p><b> double-hit or trailing TOC)
-    assert len({p.chapter_key for p in d.passages}) == 2
+    assert "A norm numbered inside" in d.passages[1].content
+    assert "Another such norm" in d.passages[1].content
+
+
+def test_vatican2_preface_before_section_one():
+    plain = """<html><body>
+<p>DECREE ON PRIESTLY TRAINING OPTATAM TOTIUS</p>
+<p>Animated by the spirit of Christ, this sacred synod is fully aware that renewal depends on priests.</p>
+<center><b>I.</b><p><b>THE PROGRAM OF PRIESTLY TRAINING</b></p></center>
+<p>1. Since only general laws can be made where there exists a wide variety of nations and regions.</p>
+</body></html>"""
+    d = _v2("Optatam Totius", plain, "decree")
+    assert [(p.anchor, p.reference, p.chapter_label) for p in d.passages] == [
+        ("optatam-totius/preface", "Optatam Totius, Preface", "Preface"),
+        ("optatam-totius/1", "Optatam Totius, §1", "I. The Program of Priestly Training")]
+    headed = """<html><body>
+<center><b>INTRODUCTION</b></center>
+<p>The Sacred Ecumenical Council has considered with care how extremely important education is.</p>
+<p><b><i>1. The Meaning of the Universal Right to an Education</i></b></p>
+<p>All men of every race, condition and age have an inalienable right to an education.</p>
+<center><b>CONCLUSION</b></center>
+<p>The Fathers of this holy synod have pursued the work begun, and close with an exhortation.</p>
+</body></html>"""
+    d = _v2("Gravissimum Educationis", headed, "declaration")
+    assert [(p.anchor, p.unit_label, p.chapter_label) for p in d.passages] == [
+        ("gravissimum-educationis/preface", "Introduction", "Introduction"),
+        ("gravissimum-educationis/1", "§1", "1. The Meaning of the Universal Right to an Education"),
+        ("gravissimum-educationis/conclusion", "Conclusion", "Conclusion")]
+    assert d.passages[1].content.startswith(
+        "The Meaning of the Universal Right to an Education\n\nAll men of every race")
+
+
+LG_HTML = """<html><body>
+<center><b>CHAPTER I</b><p><b>THE MYSTERY OF THE CHURCH</b></p></center>
+<p>1. Christ is the Light of nations. Because this is so, this Sacred Synod eagerly desires (1) it.</p>
+<p>2. The eternal Father, by a free and hidden plan of His own wisdom and goodness, created the world.</p>
+<p>Each and all these items which are set forth in this dogmatic Constitution have met with approval.</p>
+<p><i>Given in Rome at St. Peter's on November 21, 1964.</i></p>
+<center><b>APPENDIX <br/> From the Acts of the Council*</b></center>
+<center><b><i>'NOTIFICATIONES' GIVEN BY THE SECRETARY GENERAL</i></b></center>
+<p>A question has arisen regarding the precise theological note which should be attached to it.</p>
+<p><b><i>Preliminary Note of Explanation </i></b></p>
+<p>The Commission has decided to preface the assessment of the Modi with general observations.</p>
+<p>1. "College" is not understood in a strictly juridical sense, that is as a group of equals.</p>
+<p>2. A person becomes a member of the College by virtue of Episcopal consecration [munus].</p>
+<p>N.B. Without hierarchical communion the ontologico-sacramental function cannot be exercised.</p>
+<center><b>+ PERICLE FELICI </b><br/><i>Titular Archbishop of Samosata</i></center>
+<p><b>NOTES</b></p><p>1 Cf. Mk. 16:15.</p>
+</body></html>"""
+
+
+def test_vatican2_nota_praevia_has_own_anchors():
+    d = _v2("Lumen Gentium", LG_HTML)
+    got = [(p.anchor, p.reference, p.chapter_label) for p in d.passages]
+    assert got == [
+        ("lumen-gentium/1", "Lumen Gentium, §1", "Chapter I: The Mystery of the Church"),
+        ("lumen-gentium/2", "Lumen Gentium, §2", "Chapter I: The Mystery of the Church"),
+        ("lumen-gentium/promulgation", "Lumen Gentium, Promulgation", "Promulgation"),
+        ("lumen-gentium/notificationes",
+         "Lumen Gentium, Notificationes of the Secretary General",
+         "Notificationes of the Secretary General"),
+        ("lumen-gentium/nota-praevia/1", "Lumen Gentium, Preliminary Note of Explanation, 1",
+         "Preliminary Note of Explanation"),
+        ("lumen-gentium/nota-praevia/2", "Lumen Gentium, Preliminary Note of Explanation, 2",
+         "Preliminary Note of Explanation")]
+    by = {p.anchor: p.content for p in d.passages}
+    assert by["lumen-gentium/promulgation"].endswith("Given in Rome at St. Peter's on November 21, 1964.")
+    assert by["lumen-gentium/nota-praevia/1"].startswith("The Commission has decided")
+    # The page's own words stay, brackets included; the signature closes the Note.
+    assert "[munus]" in by["lumen-gentium/nota-praevia/2"]
+    assert by["lumen-gentium/nota-praevia/2"].endswith("+ PERICLE FELICI Titular Archbishop of Samosata")
+    assert "(1)" not in by["lumen-gentium/1"]
+
+
+def _numbered(numbers, extra):
+    body = "\n".join(f"<p>{n}. Section {n} of the document, long enough to stand as a section here.</p>"
+                     for n in numbers)
+    return f"<html><body>{body}{extra}</body></html>"
+
+
+def test_vatican2_section_number_fix_applied():
+    html = _numbered(range(1, 87), "<p>81. In order that the divine office may be prayed better.</p>"
+                     "<p>88. The next section, which follows the corrected one in its proper place.</p>")
+    d = _v2("Sacrosanctum Concilium", html)
+    by = {p.unit_label: p for p in d.passages}
+    assert by["§87"].anchor == "sacrosanctum-concilium/87"
+    assert by["§87"].content.startswith("In order that the divine office")
+    assert [p.unit_label for p in d.passages] == [f"§{n}" for n in range(1, 89)]
+    html = _numbered(range(1, 21), "<p>But since it is necessary for the students to learn the art.</p>"
+                     "<p>21. Since priestly training must be continued after the seminary.</p>")
+    d = _v2("Optatam Totius", html, "decree")
+    assert [(p.anchor, p.unit_label) for p in d.passages[-2:]] == [
+        ("optatam-totius/para-21", "§21"), ("optatam-totius/22", "§22")]
+
+
+def test_vatican2_subheadings_open_the_next_section_and_bare_chapters_take_their_title():
+    html = """<html><body>
+<center><b>CHAPTER</b><p><b>VI SACRED MUSIC</b></p></center>
+<p>1. The musical tradition of the universal Church is a treasure of inestimable value, greater.</p>
+<p><b>A) General norms</b></p>
+<p>2. Regulation of the sacred liturgy depends solely on the authority of the Church, that is.</p>
+<p><b>PART II</b></p><p><b>SOME PROBLEMS OF SPECIAL URGENCY</b></p>
+<center><b>CHAPTER I</b><p><b>FOSTERING THE NOBILITY OF MARRIAGE</b></p></center>
+<p>3. The well-being of the individual person and of human and Christian society is intimately linked.</p>
+</body></html>"""
+    d = _v2("Gaudium et Spes", html)
+    assert [p.chapter_label for p in d.passages] == [
+        "Chapter VI: Sacred Music", "Chapter VI: Sacred Music",
+        "Part II, Chapter I: Fostering the Nobility of Marriage"]
+    assert d.passages[1].content.startswith("A) General norms\n\nRegulation of the sacred liturgy")
+    assert d.passages[0].content.endswith("greater.")
 
 
 VAT2_FLAT_HTML = """<html><body>
@@ -82,15 +209,117 @@ VAT2_FLAT_HTML = """<html><body>
 
 
 def test_vatican2_headerless_falls_back_to_paragraph_buckets():
-    entry = {"council": "Second Vatican Council", "document": "Dignitatis Humanae",
-             "document_type": "declaration", "year": 1965, "group": "vatican-ii",
-             "file": "x.html", "url": "http://example"}
-    d = build_vatican2(entry, BeautifulSoup(VAT2_FLAT_HTML, "lxml"))
+    d = _v2("Dignitatis Humanae", VAT2_FLAT_HTML, "declaration")
     assert len(d.passages) == 25
     labels = {p.chapter_label for p in d.passages}
     # 25 paragraphs in buckets of 20 → "Paragraphs 1–20" and "Paragraphs 21–40"
     assert labels == {"Paragraphs 1–20", "Paragraphs 21–40"}
     assert all(p.anchor and p.chapter_key for p in d.passages)
+
+
+# The sections of each document, as the Latin numbers them (Optatam Totius 22: Carter,
+# 10 Nov 2026).
+V2_SECTIONS = {"Dei Verbum": 26, "Lumen Gentium": 69, "Sacrosanctum Concilium": 130,
+               "Gaudium et Spes": 93, "Ad Gentes": 42, "Presbyterorum Ordinis": 22,
+               "Apostolicam Actuositatem": 33, "Optatam Totius": 22, "Perfectae Caritatis": 25,
+               "Christus Dominus": 44, "Unitatis Redintegratio": 24,
+               "Orientalium Ecclesiarum": 30, "Inter Mirifica": 24,
+               "Gravissimum Educationis": 12, "Nostra Aetate": 5, "Dignitatis Humanae": 15}
+
+
+def _vatican2():
+    return [d for d in build_documents() if d.title in V2_SECTIONS]
+
+
+@pytest.mark.skipif(not _vendored, reason="councils not vendored")
+def test_vatican2_every_section_once():
+    for d in _vatican2():
+        sections = [p.unit_label for p in d.passages
+                    if p.unit_label.startswith("§") and "/from-" not in p.anchor]
+        assert sections == [f"§{n}" for n in range(1, V2_SECTIONS[d.title] + 1)], d.title
+        assert d.author == "Second Vatican Council"
+
+
+@pytest.mark.skipif(not _vendored, reason="councils not vendored")
+def test_vatican2_keeps_the_page_body():
+    from checks.coverage import coverage
+    from checks.source_text import file_units
+    docs = _vatican2()
+    units = [u for d in docs
+             for u in file_units("councils", d.metadata["source_key"].split("/", 1)[1] + ".html")]
+    result = coverage("councils", docs, units)
+    for d in docs:
+        assert result.documents[d.id].pct >= 99, (d.title, result.documents[d.id].pct)
+    assert sum(r.body_chars for r in result.documents.values()) > 900_000
+
+
+@pytest.mark.skipif(not _vendored, reason="councils not vendored")
+def test_vatican2_no_passage_is_a_note_or_holds_a_caller():
+    from checks.structure import chapter_sequence
+    from health import check_documents
+    docs = _vatican2()
+    for d in docs:
+        for p in d.passages:
+            assert not p.content.startswith(("Cf.", "cf.", "See ", "Ibid")), p.anchor
+    assert not [v for v in check_documents("councils", docs) if v.rule == "R12_note_caller"]
+    assert chapter_sequence("councils", docs) == {}
+
+
+@pytest.mark.skipif(not _vendored, reason="councils not vendored")
+def test_nostra_aetate_4_keeps_the_passage_on_the_passion():
+    d, = [d for d in _vatican2() if d.title == "Nostra Aetate"]
+    four = " ".join(p.content for p in d.passages if p.unit_label == "§4")
+    assert "what happened in His passion cannot be charged against all the Jews" in four
+    assert len(four) > 3500
+
+
+@pytest.mark.skipif(not _vendored, reason="councils not vendored")
+def test_vatican2_chapters_carry_number_and_title():
+    by = {d.title: list(dict.fromkeys(p.chapter_label for p in d.passages)) for d in _vatican2()}
+    lg = [x for x in by["Lumen Gentium"] if x.startswith("Chapter ")]
+    assert [x.split(":")[0] for x in lg] == [f"Chapter {n}" for n in
+                                            "I II III IV V VI VII VIII".split()]
+    assert lg[6] == ("Chapter VII: The Eschatological Nature of the Pilgrim Church and Its "
+                     "Union with the Church in Heaven")
+    assert by["Lumen Gentium"][-3:] == ["Promulgation", "Notificationes of the Secretary General",
+                                        "Preliminary Note of Explanation"]
+    sc = [x for x in by["Sacrosanctum Concilium"] if x.startswith("Chapter ")]
+    assert [x.split(":")[0] for x in sc] == [f"Chapter {n}" for n in "I II III IV V VI VII".split()]
+    assert "Chapter VI: Sacred Music" in sc
+    assert by["Sacrosanctum Concilium"][-1] == "Appendix: Declaration on the Revision of the Calendar"
+    gs = by["Gaudium et Spes"]
+    assert len(gs) == len(set(gs)) and "Part II, Chapter I: Fostering the Nobility of Marriage and the Family" in gs
+    lg_by = {p.anchor: p for d in _vatican2() if d.title == "Lumen Gentium" for p in d.passages}
+    assert [a for a in lg_by if "nota-praevia" in a] == [
+        f"lumen-gentium/nota-praevia/{n}" for n in range(1, 5)]
+    for n in (48, 49, 50, 51):    # eschatology and purgatory (C-20)
+        assert lg_by[f"lumen-gentium/{n}"].chapter_label.startswith("Chapter VII:")
+
+
+def test_vatican2_registry_keeps_each_unit_on_its_id():
+    reg = work_registry.current()
+    rows = {(r["document_id"], r["live_anchor"]): r for r in reg.passages}
+    sc, ot, lg, ge = ("29bf3975-5f39-5550-a949-6767cb666695", "b58729e8-fa6e-5b91-9d66-b0734050a471",
+                      "c1b748c6-a250-5ca1-a087-4f6be5e75bbb", "6f6474ba-c632-5bdb-a550-b8d5c61797a9")
+    # The same unit under its corrected anchor keeps its ID.
+    assert rows[(sc, "sacrosanctum-concilium/81-2")]["anchor"] == "sacrosanctum-concilium/87"
+    assert rows[(ot, "optatam-totius/21")]["anchor"] == "optatam-totius/22"
+    for n in range(1, 5):
+        row = rows[(lg, f"lumen-gentium/{n}-2")]
+        assert (row["anchor"], row["status"]) == (f"lumen-gentium/nota-praevia/{n}", "active")
+    # A footnote card retires; a live footnote's anchor is never a section's.
+    removed = {e["anchor"]: e for e in work_registry.open_removals(reg) if e["anchor"]}
+    for anchor in ("dei-verbum/5-2", "nostra-aetate/11", "gravissimum-educationis/2"):
+        assert removed[anchor]["reason"] == "note-split-off"
+        assert removed[anchor]["tombstone"] == ("This card was a footnote to the Council's "
+                                                "text, not the text itself.")
+    assert rows[(ge, "gravissimum-educationis/1")]["status"] == "active"
+    assert not [r for r in reg.passages if r["document_id"] == ge and r["status"] == "active"
+                and r["anchor"] in {f"gravissimum-educationis/{n}" for n in (2, 3, 4, 5, 6, 8, 9, 10, 11)}]
+    # A sub-paragraph card set apart from its section follows its text there.
+    redirects = {r["old_anchor"]: r for r in reg.redirects if not r.get("closed_by")}
+    assert redirects["sacrosanctum-concilium/2-2"]["new_anchor"] == "sacrosanctum-concilium/22"
+    assert redirects["sacrosanctum-concilium/2-2"]["kind"] == "merged"
 
 
 @pytest.mark.skipif(not _vendored, reason="councils not vendored")

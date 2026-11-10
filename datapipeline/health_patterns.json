@@ -155,7 +155,7 @@
   ]
  },
  "R12_note_caller": {
-  "_comment": "A footnote caller left in the text (C-17): Opus A-012's \"(N)\"/\"(N*)\" after a word and a digit glued after punctuation, Opus-2 B-005's number after sentence punctuation and a space (not before a Bible book), and \"[ N ]\". not_after skips a match whose preceding 16 characters end like a Scripture citation (\"Rom. i.\", \"3:16.\"). Summa brackets are summa_bracket_numbers'.",
+  "_comment": "A footnote caller left in the text (C-17): Opus A-012's \"(N)\"/\"(N*)\" after a word and a digit glued after punctuation, Opus-2 B-005's number after sentence punctuation and a space (not before a Bible book), and \"[ N ]\". not_after skips a match whose preceding 16 characters end like a Scripture citation (\"Rom. i.\", \"3:16.\") or a reference (\"cf. 1 C,or. 3:7\", a misprint in vatican.va's Ad Gentes 40, 1.1). Summa brackets are summa_bracket_numbers'.",
   "skip_collections": [
    "bible",
    "canon-law",
@@ -171,7 +171,7 @@
   "not_after": [
    "\\b[ivxlc]+[.,;]?[\"”’)]?$",
    "\\d[.:][\"”’)]?$",
-   "\\b(?:[Vv]er|[Bb]k|sess|cap|constitut|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm|Trin)\\.[\"”’)]?$"
+   "\\b(?:[Vv]er|[Bb]k|[Cc]f|sess|cap|constitut|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm|Trin)\\.[\"”’)]?$"
   ]
  },
  "R13_lower_start": {

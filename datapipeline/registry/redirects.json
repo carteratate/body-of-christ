@@ -3042,6 +3042,116 @@
   "added_by": "1.10c"
  },
  {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "c91a4b11-ca61-5012-a9e3-410f3d4de83b",
+  "old_anchor": "sacrosanctum-concilium/1-2",
+  "new_passage_id": "7bf15083-cf62-5022-940e-04d7413b6ae2",
+  "new_anchor": "sacrosanctum-concilium/5",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "879f8afe-740d-56b9-89f1-195de92e4b0c",
+  "old_anchor": "sacrosanctum-concilium/1-3",
+  "new_passage_id": "5c836e0a-c8c9-5fac-b809-ef457938ebb3",
+  "new_anchor": "sacrosanctum-concilium/57",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "0cbd25d4-d886-5bad-af44-07742c4c512d",
+  "old_anchor": "sacrosanctum-concilium/2-2",
+  "new_passage_id": "5e2b295d-8071-5805-97f3-c9b57cac92e2",
+  "new_anchor": "sacrosanctum-concilium/22",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "36ff301e-7143-5992-94fe-92a82b7aef3f",
+  "old_anchor": "sacrosanctum-concilium/2-3",
+  "new_passage_id": "0644b9d6-a67b-5a02-86dc-1c3eb46f6cea",
+  "new_anchor": "sacrosanctum-concilium/36",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "de0b56da-c4fa-519c-a402-5e28504e57cb",
+  "old_anchor": "sacrosanctum-concilium/2-4",
+  "new_passage_id": "5c836e0a-c8c9-5fac-b809-ef457938ebb3",
+  "new_anchor": "sacrosanctum-concilium/57",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "67f5f658-f19d-5e4e-aa06-4e4994ffec8f",
+  "old_anchor": "sacrosanctum-concilium/2-5",
+  "new_passage_id": "5c836e0a-c8c9-5fac-b809-ef457938ebb3",
+  "new_anchor": "sacrosanctum-concilium/57",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "f6aeedf2-569d-53d1-8d40-4b4f976fc210",
+  "old_anchor": "sacrosanctum-concilium/2-6",
+  "new_passage_id": "362caad4-a2e2-5e8f-91d6-18f5db77d5b4",
+  "new_anchor": "sacrosanctum-concilium/101",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "46068ea1-4fa1-5124-b31f-5f8139bc61fa",
+  "old_anchor": "sacrosanctum-concilium/3-2",
+  "new_passage_id": "5e2b295d-8071-5805-97f3-c9b57cac92e2",
+  "new_anchor": "sacrosanctum-concilium/22",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "e7bff5b3-00d7-50ff-b726-69d788ac4221",
+  "old_anchor": "sacrosanctum-concilium/3-3",
+  "new_passage_id": "0644b9d6-a67b-5a02-86dc-1c3eb46f6cea",
+  "new_anchor": "sacrosanctum-concilium/36",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "da5ff669-c6e2-5d9c-bd08-3cce100eb7c4",
+  "old_anchor": "sacrosanctum-concilium/3-4",
+  "new_passage_id": "362caad4-a2e2-5e8f-91d6-18f5db77d5b4",
+  "new_anchor": "sacrosanctum-concilium/101",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "29bf3975-5f39-5550-a949-6767cb666695",
+  "old_passage_id": "0763c8dc-6019-5954-b648-0d5943079e5f",
+  "old_anchor": "sacrosanctum-concilium/4-2",
+  "new_passage_id": "0644b9d6-a67b-5a02-86dc-1c3eb46f6cea",
+  "new_anchor": "sacrosanctum-concilium/36",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
   "document_id": "2b91ea4c-ae68-5d30-a886-a88b118528bf",
   "old_passage_id": "154fd429-0ab5-5810-950d-ee2a990e85db",
   "old_anchor": "job/31/1/from-31-23-2",
@@ -15540,6 +15650,36 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "bd4adb5d-500e-5995-ab95-3f61fdc92067",
+  "old_passage_id": "000c448a-f2af-5e76-8864-5f279260866c",
+  "old_anchor": "christus-dominus/2-2",
+  "new_passage_id": "6a3481f4-1487-500c-acf2-b6dab9e8e976",
+  "new_anchor": "christus-dominus/38",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "bd4adb5d-500e-5995-ab95-3f61fdc92067",
+  "old_passage_id": "aa667e09-3a3b-50dc-aa12-e0f95de0c8e8",
+  "old_anchor": "christus-dominus/3-2",
+  "new_passage_id": "790e5890-469a-5f2a-92de-8292f897c917",
+  "new_anchor": "christus-dominus/35",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
+ },
+ {
+  "document_id": "bd4adb5d-500e-5995-ab95-3f61fdc92067",
+  "old_passage_id": "a2d79efa-823c-5048-a475-273cba76514e",
+  "old_anchor": "christus-dominus/6-2",
+  "new_passage_id": "f53b9d5e-360e-5afe-8d15-e4e436b5bd35",
+  "new_anchor": "christus-dominus/35/from-e120",
+  "kind": "merged",
+  "reason": "a sub-paragraph or list item set apart from its section, which now holds it",
+  "added_by": "1.1"
  },
  {
   "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
