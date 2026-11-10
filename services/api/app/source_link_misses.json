@@ -93,6 +93,7 @@
   "6389474f-3903-54db-a574-cae098f44e18",
   "644dfe67-3712-5df1-a9ad-a3b1f38b9e9d",
   "64b9050b-cd37-593a-a917-b6d3502c0fd3",
+  "65be47aa-fc27-5447-a5f8-e1d3ccb090e5",
   "65d7c99a-e452-53bd-a957-25c360bfaf73",
   "66f72385-82db-548e-b766-c87564939a0d",
   "6b9bedb6-5e2c-5564-8352-030e263a0a3a",
@@ -203,6 +204,7 @@
   "e84cc616-4401-5859-96e8-910c57e8550d",
   "e9d202b9-5a59-55c7-b827-d3d181f48b23",
   "eb704326-67d2-5df7-a7d4-ac43474c64ac",
+  "ebc14888-6d7b-5971-a7c5-2cac64af6c2b",
   "f04e02da-1c8d-5bba-8c6c-68834dda1de3",
   "f2ffc783-3948-54a9-a42e-58a026f06f55",
   "f303a55b-a69d-54df-8cd9-12cd43f67f05",
@@ -225,6 +227,22 @@
  "from_build": {
   "generated": "2026-11-10",
   "source_keys": [
+   "councils/vat2-ad-gentes",
+   "councils/vat2-apostolicam-actuositatem",
+   "councils/vat2-christus-dominus",
+   "councils/vat2-dei-verbum",
+   "councils/vat2-dignitatis-humanae",
+   "councils/vat2-gaudium-et-spes",
+   "councils/vat2-gravissimum-educationis",
+   "councils/vat2-inter-mirifica",
+   "councils/vat2-lumen-gentium",
+   "councils/vat2-nostra-aetate",
+   "councils/vat2-optatam-totius",
+   "councils/vat2-orientalium-ecclesiarum",
+   "councils/vat2-perfectae-caritatis",
+   "councils/vat2-presbyterorum-ordinis",
+   "councils/vat2-sacrosanctum-concilium",
+   "councils/vat2-unitatis-redintegratio",
    "encyclicals/casti-connubii",
    "encyclicals/divini-redemptoris",
    "encyclicals/divino-afflante-spiritu",
@@ -250,17 +268,21 @@
    "encyclicals/spiritus-paraclitus"
   ],
   "counts": {
-   "found": 1956,
-   "missing": 7
+   "found": 663,
+   "missing": 2,
+   "repeated": 1
   },
   "chunk_ids": [
    "12304cf9-0613-5a1c-8910-29f7c3702b32",
    "2400ec18-a5e3-50a1-b226-e01e05f9293d",
+   "282487aa-bca0-5d09-877a-eb032dd8b903",
    "4f0aa9ca-053e-501e-9de7-458fbb3b4175",
+   "65be47aa-fc27-5447-a5f8-e1d3ccb090e5",
    "83e6efc5-3e1c-5cfa-8fc2-430b227e0c66",
    "ac82c55b-89cc-5c82-aa24-f2fce80ba0a3",
    "c6c312be-2702-544f-b074-e0e72ea39b08",
-   "dfdd4b23-b01d-57b7-a60b-b2ea2c671a89"
+   "dfdd4b23-b01d-57b7-a60b-b2ea2c671a89",
+   "ebc14888-6d7b-5971-a7c5-2cac64af6c2b"
   ]
  }
 }

@@ -52,70 +52,6 @@
   "fixed_by": "1.2b",
   "description": "38.67% covered: text inside lists and divs dropped"
  },
- "coverage.councils.vat2-ad-gentes.html": {
-  "fixed_by": "1.1",
-  "description": "29.99% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-apostolicam-actuositatem.html": {
-  "fixed_by": "1.1",
-  "description": "28.1% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-christus-dominus.html": {
-  "fixed_by": "1.1",
-  "description": "37.95% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-dei-verbum.html": {
-  "fixed_by": "1.1",
-  "description": "74.98% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-dignitatis-humanae.html": {
-  "fixed_by": "1.1",
-  "description": "42.32% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-gaudium-et-spes.html": {
-  "fixed_by": "1.1",
-  "description": "29.62% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-gravissimum-educationis.html": {
-  "fixed_by": "1.1",
-  "description": "0.61% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-inter-mirifica.html": {
-  "fixed_by": "1.1",
-  "description": "67.32% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-lumen-gentium.html": {
-  "fixed_by": "1.1",
-  "description": "46.84% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-nostra-aetate.html": {
-  "fixed_by": "1.1",
-  "description": "21.22% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-optatam-totius.html": {
-  "fixed_by": "1.1",
-  "description": "51.72% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-orientalium-ecclesiarum.html": {
-  "fixed_by": "1.1",
-  "description": "79.6% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-perfectae-caritatis.html": {
-  "fixed_by": "1.1",
-  "description": "44.02% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-presbyterorum-ordinis.html": {
-  "fixed_by": "1.1",
-  "description": "36.63% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-sacrosanctum-concilium.html": {
-  "fixed_by": "1.1",
-  "description": "65.65% covered: continuation paragraphs dropped"
- },
- "coverage.councils.vat2-unitatis-redintegratio.html": {
-  "fixed_by": "1.1",
-  "description": "37.65% covered: continuation paragraphs dropped"
- },
  "coverage.medieval.proslogium-monologium-and-cur-deus-homo.xml": {
   "fixed_by": "5.6b",
   "description": "88.36% covered: Anselm's own prefaces (1.9) and Gaunilo's reply with Anselm's answer (5.6b) dropped"
@@ -198,71 +134,6 @@
   "description": "The Confessions of Saint Augustine: 1 passages hold footnote callers (C-17). The source prints them as plain digits after the sentence (\"remains immutably.2 It is good\") and has no <note> for them, so 1.10b's note strip cannot remove them",
   "units": ["viii.xi"]
  },
- "health.R12_note_caller:councils/137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
-  "fixed_by": "1.1",
-  "description": "Nostra Aetate: 2 passages hold footnote callers (C-17)",
-  "units": ["nostra-aetate/11", "nostra-aetate/3"]
- },
- "health.R12_note_caller:councils/13b94869-cf9c-590d-9573-66f1bd6ea457": {
-  "fixed_by": "1.1",
-  "description": "Unitatis Redintegratio: 10 passages hold footnote callers (C-17)",
-  "units": ["unitatis-redintegratio/1", "unitatis-redintegratio/15", "unitatis-redintegratio/15-2", "unitatis-redintegratio/18", "unitatis-redintegratio/2", "unitatis-redintegratio/21", "unitatis-redintegratio/22", "unitatis-redintegratio/3", "unitatis-redintegratio/6", "unitatis-redintegratio/7"]
- },
- "health.R12_note_caller:councils/1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
-  "fixed_by": "1.1",
-  "description": "Apostolicam Actuositatem: 14 passages hold footnote callers (C-17)",
-  "units": ["apostolicam-actuositatem/1", "apostolicam-actuositatem/12", "apostolicam-actuositatem/13", "apostolicam-actuositatem/17", "apostolicam-actuositatem/19", "apostolicam-actuositatem/2", "apostolicam-actuositatem/20", "apostolicam-actuositatem/25", "apostolicam-actuositatem/26", "apostolicam-actuositatem/27", "apostolicam-actuositatem/28", "apostolicam-actuositatem/3", "apostolicam-actuositatem/32", "apostolicam-actuositatem/4"]
- },
- "health.R12_note_caller:councils/1d8e4438-b930-5fa4-93cb-b393786064fa": {
-  "fixed_by": "1.1",
-  "description": "Orientalium Ecclesiarum: 23 passages hold footnote callers (C-17)",
-  "units": ["orientalium-ecclesiarum/10", "orientalium-ecclesiarum/11", "orientalium-ecclesiarum/13", "orientalium-ecclesiarum/14", "orientalium-ecclesiarum/15", "orientalium-ecclesiarum/16", "orientalium-ecclesiarum/17", "orientalium-ecclesiarum/18", "orientalium-ecclesiarum/19", "orientalium-ecclesiarum/2", "orientalium-ecclesiarum/20", "orientalium-ecclesiarum/21", "orientalium-ecclesiarum/22", "orientalium-ecclesiarum/23", "orientalium-ecclesiarum/24", "orientalium-ecclesiarum/25", "orientalium-ecclesiarum/26", "orientalium-ecclesiarum/27", "orientalium-ecclesiarum/28", "orientalium-ecclesiarum/4", "orientalium-ecclesiarum/5", "orientalium-ecclesiarum/7", "orientalium-ecclesiarum/8"]
- },
- "health.R12_note_caller:councils/28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
-  "fixed_by": "1.1",
-  "description": "Presbyterorum Ordinis: 21 passages hold footnote callers (C-17)",
-  "units": ["presbyterorum-ordinis/1", "presbyterorum-ordinis/10", "presbyterorum-ordinis/11", "presbyterorum-ordinis/12", "presbyterorum-ordinis/14", "presbyterorum-ordinis/15", "presbyterorum-ordinis/15-2", "presbyterorum-ordinis/16", "presbyterorum-ordinis/17", "presbyterorum-ordinis/18", "presbyterorum-ordinis/19", "presbyterorum-ordinis/2", "presbyterorum-ordinis/20", "presbyterorum-ordinis/21", "presbyterorum-ordinis/3", "presbyterorum-ordinis/4", "presbyterorum-ordinis/5", "presbyterorum-ordinis/6", "presbyterorum-ordinis/7", "presbyterorum-ordinis/8", "presbyterorum-ordinis/9"]
- },
- "health.R12_note_caller:councils/4451c2f8-e836-58ab-a2eb-495a9cacef89": {
-  "fixed_by": "1.1",
-  "description": "Dei Verbum: 6 passages hold footnote callers (C-17)",
-  "units": ["dei-verbum/1-4", "dei-verbum/11", "dei-verbum/19", "dei-verbum/25", "dei-verbum/8-2", "dei-verbum/9"]
- },
- "health.R12_note_caller:councils/5f0ff7e9-3b76-5c1f-949f-4980a943244b": {
-  "fixed_by": "1.1",
-  "description": "Dignitatis Humanae: 7 passages hold footnote callers (C-17)",
-  "units": ["dignitatis-humanae/1", "dignitatis-humanae/10", "dignitatis-humanae/11", "dignitatis-humanae/13", "dignitatis-humanae/14", "dignitatis-humanae/15", "dignitatis-humanae/6"]
- },
- "health.R12_note_caller:councils/62f7a128-a847-588b-84f0-51d33294b236": {
-  "fixed_by": "1.1",
-  "description": "Gaudium et Spes: 30 passages hold footnote callers (C-17)",
-  "units": ["gaudium-et-spes/10", "gaudium-et-spes/13", "gaudium-et-spes/14", "gaudium-et-spes/16", "gaudium-et-spes/17", "gaudium-et-spes/21", "gaudium-et-spes/22", "gaudium-et-spes/25", "gaudium-et-spes/26", "gaudium-et-spes/27", "gaudium-et-spes/32", "gaudium-et-spes/34", "gaudium-et-spes/35", "gaudium-et-spes/38", "gaudium-et-spes/39", "gaudium-et-spes/40", "gaudium-et-spes/42", "gaudium-et-spes/43", "gaudium-et-spes/45", "gaudium-et-spes/48", "gaudium-et-spes/49", "gaudium-et-spes/54", "gaudium-et-spes/57", "gaudium-et-spes/62", "gaudium-et-spes/64", "gaudium-et-spes/66", "gaudium-et-spes/68", "gaudium-et-spes/69", "gaudium-et-spes/74", "gaudium-et-spes/75"]
- },
- "health.R12_note_caller:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
-  "fixed_by": "1.1",
-  "description": "Perfectae Caritatis: 1 passages hold footnote callers (C-17)",
-  "units": ["perfectae-caritatis/25"]
- },
- "health.R12_note_caller:councils/b4285357-dc78-5c8b-98f1-b50fdf6c83e1": {
-  "fixed_by": "1.1",
-  "description": "Inter Mirifica: 1 passages hold footnote callers (C-17)",
-  "units": ["inter-mirifica/24"]
- },
- "health.R12_note_caller:councils/bd4adb5d-500e-5995-ab95-3f61fdc92067": {
-  "fixed_by": "1.1",
-  "description": "Christus Dominus: 10 passages hold footnote callers (C-17)",
-  "units": ["christus-dominus/1", "christus-dominus/12", "christus-dominus/15", "christus-dominus/16", "christus-dominus/3", "christus-dominus/3-2", "christus-dominus/4", "christus-dominus/43", "christus-dominus/5", "christus-dominus/6"]
- },
- "health.R12_note_caller:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
-  "fixed_by": "1.1",
-  "description": "Lumen Gentium: 60 passages hold footnote callers (C-17)",
-  "units": ["lumen-gentium/1", "lumen-gentium/10", "lumen-gentium/11", "lumen-gentium/12", "lumen-gentium/13", "lumen-gentium/14", "lumen-gentium/15", "lumen-gentium/16", "lumen-gentium/17", "lumen-gentium/19", "lumen-gentium/2", "lumen-gentium/20", "lumen-gentium/21", "lumen-gentium/22", "lumen-gentium/23", "lumen-gentium/24", "lumen-gentium/25", "lumen-gentium/26", "lumen-gentium/27", "lumen-gentium/28", "lumen-gentium/29", "lumen-gentium/3", "lumen-gentium/30", "lumen-gentium/32", "lumen-gentium/35", "lumen-gentium/36", "lumen-gentium/38", "lumen-gentium/39", "lumen-gentium/4", "lumen-gentium/40", "lumen-gentium/42", "lumen-gentium/43", "lumen-gentium/44", "lumen-gentium/45", "lumen-gentium/46", "lumen-gentium/48", "lumen-gentium/49", "lumen-gentium/5", "lumen-gentium/50", "lumen-gentium/51", "lumen-gentium/52", "lumen-gentium/53", "lumen-gentium/54", "lumen-gentium/55", "lumen-gentium/56", "lumen-gentium/57", "lumen-gentium/58", "lumen-gentium/59", "lumen-gentium/60", "lumen-gentium/62", "lumen-gentium/63", "lumen-gentium/64", "lumen-gentium/65", "lumen-gentium/66", "lumen-gentium/67", "lumen-gentium/68", "lumen-gentium/69", "lumen-gentium/7", "lumen-gentium/8", "lumen-gentium/9"]
- },
- "health.R12_note_caller:councils/c1d5382f-c7c7-564d-989a-89775b36fd58": {
-  "fixed_by": "1.1",
-  "description": "Ad Gentes: 22 passages hold footnote callers (C-17)",
-  "units": ["ad-gentes/1", "ad-gentes/14", "ad-gentes/14-2", "ad-gentes/15", "ad-gentes/18", "ad-gentes/2", "ad-gentes/22", "ad-gentes/23", "ad-gentes/25", "ad-gentes/28", "ad-gentes/29", "ad-gentes/3", "ad-gentes/31", "ad-gentes/38", "ad-gentes/39", "ad-gentes/4", "ad-gentes/40", "ad-gentes/41", "ad-gentes/42", "ad-gentes/7", "ad-gentes/8", "ad-gentes/9"]
- },
  "health.summa_bracket_numbers:summa/31b2bc0a-0b16-5002-822a-26d3215dd256": {
   "fixed_by": "1.7",
   "description": "39 Summa passages hold a bracketed cross-reference number (C-22)",
@@ -323,60 +194,15 @@
   "description": "Moral Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
   "units": ["Moral Treatises of St. Augustin, Section 1", "Moral Treatises of St. Augustin, Section 10", "Moral Treatises of St. Augustin, Section 11", "Moral Treatises of St. Augustin, Section 11 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 11 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 12", "Moral Treatises of St. Augustin, Section 13", "Moral Treatises of St. Augustin, Section 14", "Moral Treatises of St. Augustin, Section 15", "Moral Treatises of St. Augustin, Section 16", "Moral Treatises of St. Augustin, Section 17", "Moral Treatises of St. Augustin, Section 18", "Moral Treatises of St. Augustin, Section 19", "Moral Treatises of St. Augustin, Section 2", "Moral Treatises of St. Augustin, Section 20", "Moral Treatises of St. Augustin, Section 21", "Moral Treatises of St. Augustin, Section 21 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 21 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 22", "Moral Treatises of St. Augustin, Section 23", "Moral Treatises of St. Augustin, Section 24", "Moral Treatises of St. Augustin, Section 25", "Moral Treatises of St. Augustin, Section 26", "Moral Treatises of St. Augustin, Section 27", "Moral Treatises of St. Augustin, Section 28", "Moral Treatises of St. Augustin, Section 29", "Moral Treatises of St. Augustin, Section 3", "Moral Treatises of St. Augustin, Section 30", "Moral Treatises of St. Augustin, Section 31", "Moral Treatises of St. Augustin, Section 32", "Moral Treatises of St. Augustin, Section 33", "Moral Treatises of St. Augustin, Section 34", "Moral Treatises of St. Augustin, Section 34 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 34 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 35", "Moral Treatises of St. Augustin, Section 36", "Moral Treatises of St. Augustin, Section 37", "Moral Treatises of St. Augustin, Section 38", "Moral Treatises of St. Augustin, Section 39", "Moral Treatises of St. Augustin, Section 4", "Moral Treatises of St. Augustin, Section 4 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 4 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 40", "Moral Treatises of St. Augustin, Section 40 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 40 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 41", "Moral Treatises of St. Augustin, Section 42", "Moral Treatises of St. Augustin, Section 43", "Moral Treatises of St. Augustin, Section 5", "Moral Treatises of St. Augustin, Section 6", "Moral Treatises of St. Augustin, Section 7", "Moral Treatises of St. Augustin, Section 8", "Moral Treatises of St. Augustin, Section 8 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 8 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 9", "Moral Treatises of St. Augustin, Section 9 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 9 (part 2 of 2)", "Moral Treatises of St. Augustin, Translator’s Preface"]
  },
- "labels.unique_reference:councils/137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
-  "fixed_by": "1.1",
-  "description": "Nostra Aetate: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Nostra Aetate, §2", "Nostra Aetate, §5"]
- },
- "labels.unique_reference:councils/13b94869-cf9c-590d-9573-66f1bd6ea457": {
-  "fixed_by": "1.1",
-  "description": "Unitatis Redintegratio: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Unitatis Redintegratio, §10", "Unitatis Redintegratio, §15", "Unitatis Redintegratio, §19", "Unitatis Redintegratio, §2", "Unitatis Redintegratio, §21", "Unitatis Redintegratio, §22", "Unitatis Redintegratio, §23"]
- },
- "labels.unique_reference:councils/1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
-  "fixed_by": "1.1",
-  "description": "Apostolicam Actuositatem: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Apostolicam Actuositatem, §1", "Apostolicam Actuositatem, §10", "Apostolicam Actuositatem, §2", "Apostolicam Actuositatem, §3", "Apostolicam Actuositatem, §4", "Apostolicam Actuositatem, §5", "Apostolicam Actuositatem, §6", "Apostolicam Actuositatem, §7", "Apostolicam Actuositatem, §8", "Apostolicam Actuositatem, §9"]
- },
- "labels.unique_reference:councils/28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
-  "fixed_by": "1.1",
-  "description": "Presbyterorum Ordinis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Presbyterorum Ordinis, §1", "Presbyterorum Ordinis, §10", "Presbyterorum Ordinis, §11", "Presbyterorum Ordinis, §12", "Presbyterorum Ordinis, §13", "Presbyterorum Ordinis, §14", "Presbyterorum Ordinis, §15", "Presbyterorum Ordinis, §16", "Presbyterorum Ordinis, §18", "Presbyterorum Ordinis, §19", "Presbyterorum Ordinis, §2", "Presbyterorum Ordinis, §20", "Presbyterorum Ordinis, §22", "Presbyterorum Ordinis, §34", "Presbyterorum Ordinis, §4", "Presbyterorum Ordinis, §40", "Presbyterorum Ordinis, §41", "Presbyterorum Ordinis, §5", "Presbyterorum Ordinis, §55", "Presbyterorum Ordinis, §58", "Presbyterorum Ordinis, §6", "Presbyterorum Ordinis, §7", "Presbyterorum Ordinis, §8", "Presbyterorum Ordinis, §9"]
- },
- "labels.unique_reference:councils/29bf3975-5f39-5550-a949-6767cb666695": {
-  "fixed_by": "1.1",
-  "description": "Sacrosanctum Concilium: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Sacrosanctum Concilium, §1", "Sacrosanctum Concilium, §2", "Sacrosanctum Concilium, §3", "Sacrosanctum Concilium, §4", "Sacrosanctum Concilium, §81"]
- },
  "labels.unique_reference:councils/2f25da58-028b-5944-ba0c-fcb5aa76c709": {
   "fixed_by": "1.2c",
   "description": "Council of Nicaea: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Council of Nicaea — The Letter of the Synod in Nicaea to the Egyptians"]
  },
- "labels.unique_reference:councils/4451c2f8-e836-58ab-a2eb-495a9cacef89": {
-  "fixed_by": "1.1",
-  "description": "Dei Verbum: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Dei Verbum, §1", "Dei Verbum, §10", "Dei Verbum, §11", "Dei Verbum, §2", "Dei Verbum, §3", "Dei Verbum, §4", "Dei Verbum, §5", "Dei Verbum, §6", "Dei Verbum, §7", "Dei Verbum, §8", "Dei Verbum, §9"]
- },
  "labels.unique_reference:councils/5972a5c6-4f04-5ef0-901d-d9a4a189fc0f": {
   "fixed_by": "1.2c",
   "description": "Council of Ephesus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Council of Ephesus — Letter of Cyril to John of Antioch about peace", "Council of Ephesus — Second letter of Nestorius to Cyril", "Council of Ephesus — Synodical letter about the expulsion of the eastern bishops (et al.)", "Council of Ephesus — Third letter of Cyril to Nestorius"]
- },
- "labels.unique_reference:councils/5f0ff7e9-3b76-5c1f-949f-4980a943244b": {
-  "fixed_by": "1.1",
-  "description": "Dignitatis Humanae: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Dignitatis Humanae, §1", "Dignitatis Humanae, §14", "Dignitatis Humanae, §15", "Dignitatis Humanae, §2", "Dignitatis Humanae, §3", "Dignitatis Humanae, §4", "Dignitatis Humanae, §5", "Dignitatis Humanae, §6", "Dignitatis Humanae, §7", "Dignitatis Humanae, §8"]
- },
- "labels.unique_reference:councils/62f7a128-a847-588b-84f0-51d33294b236": {
-  "fixed_by": "1.1",
-  "description": "Gaudium et Spes: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Gaudium et Spes, §1", "Gaudium et Spes, §10", "Gaudium et Spes, §11", "Gaudium et Spes, §12", "Gaudium et Spes, §13", "Gaudium et Spes, §14", "Gaudium et Spes, §15", "Gaudium et Spes, §16", "Gaudium et Spes, §17", "Gaudium et Spes, §18", "Gaudium et Spes, §19", "Gaudium et Spes, §2", "Gaudium et Spes, §20", "Gaudium et Spes, §21", "Gaudium et Spes, §22", "Gaudium et Spes, §23", "Gaudium et Spes, §24", "Gaudium et Spes, §25", "Gaudium et Spes, §26", "Gaudium et Spes, §3", "Gaudium et Spes, §31", "Gaudium et Spes, §34", "Gaudium et Spes, §4", "Gaudium et Spes, §5", "Gaudium et Spes, §6", "Gaudium et Spes, §7", "Gaudium et Spes, §8", "Gaudium et Spes, §9"]
- },
- "labels.unique_reference:councils/6f6474ba-c632-5bdb-a550-b8d5c61797a9": {
-  "fixed_by": "1.1",
-  "description": "Gravissimum Educationis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Gravissimum Educationis, §1", "Gravissimum Educationis, §12", "Gravissimum Educationis, §7"]
  },
  "labels.unique_reference:councils/70d99be3-5a1c-5435-9507-f45e457c1376": {
   "fixed_by": "1.2c",
@@ -388,11 +214,6 @@
   "description": "Council of Chalcedon: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Council of Chalcedon — Definition of the faith", "Council of Chalcedon — Introduction", "Council of Chalcedon — The letter of Pope Leo to Flavian, bishop of Constantinople, about Eutyches"]
  },
- "labels.unique_reference:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
-  "fixed_by": "1.1",
-  "description": "Perfectae Caritatis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Perfectae Caritatis, §1"]
- },
  "labels.unique_reference:councils/998f9723-f905-5de8-8838-2ff4596e9651": {
   "fixed_by": "1.2c",
   "description": "Second Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
@@ -402,21 +223,6 @@
   "fixed_by": "1.2c",
   "description": "Second Council of Nicaea: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Second Council of Nicaea — 22", "Second Council of Nicaea — Definition", "Second Council of Nicaea — INTRODUCTION"]
- },
- "labels.unique_reference:councils/bd4adb5d-500e-5995-ab95-3f61fdc92067": {
-  "fixed_by": "1.1",
-  "description": "Christus Dominus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Christus Dominus, §1", "Christus Dominus, §11", "Christus Dominus, §14", "Christus Dominus, §15", "Christus Dominus, §16", "Christus Dominus, §18", "Christus Dominus, §19", "Christus Dominus, §2", "Christus Dominus, §20", "Christus Dominus, §21", "Christus Dominus, §3", "Christus Dominus, §4", "Christus Dominus, §5", "Christus Dominus, §6", "Christus Dominus, §7", "Christus Dominus, §8"]
- },
- "labels.unique_reference:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
-  "fixed_by": "1.1",
-  "description": "Lumen Gentium: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Lumen Gentium, §1", "Lumen Gentium, §2", "Lumen Gentium, §3", "Lumen Gentium, §4"]
- },
- "labels.unique_reference:councils/c1d5382f-c7c7-564d-989a-89775b36fd58": {
-  "fixed_by": "1.1",
-  "description": "Ad Gentes: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Ad Gentes, §1", "Ad Gentes, §10", "Ad Gentes, §11", "Ad Gentes, §12", "Ad Gentes, §13", "Ad Gentes, §14", "Ad Gentes, §15", "Ad Gentes, §16", "Ad Gentes, §17", "Ad Gentes, §18", "Ad Gentes, §19", "Ad Gentes, §2", "Ad Gentes, §20", "Ad Gentes, §21", "Ad Gentes, §23", "Ad Gentes, §24", "Ad Gentes, §25", "Ad Gentes, §26", "Ad Gentes, §3", "Ad Gentes, §4", "Ad Gentes, §5", "Ad Gentes, §6", "Ad Gentes, §7", "Ad Gentes, §8", "Ad Gentes, §9"]
  },
  "labels.unique_reference:councils/e33e591b-9e2e-5059-974f-28c8e4ab6aae": {
   "fixed_by": "1.2b",
@@ -443,18 +249,6 @@
   "description": "4 sed contras R7 attests are folded into an objection (C-04)",
   "units": ["FS_Q46_A7-p5", "SS_Q140_A2-p5", "SS_Q56_A1-p5", "SS_Q56_A2-p5"]
  },
- "sentinel.dei_verbum_12": {
-  "fixed_by": "1.1",
-  "description": "Dei Verbum §12 keeps only its first paragraph"
- },
- "sentinel.gaudium_et_spes_total": {
-  "fixed_by": "1.1",
-  "description": "Gaudium et Spes loses its continuation paragraphs"
- },
- "sentinel.nostra_aetate_4": {
-  "fixed_by": "1.1",
-  "description": "Nostra Aetate §4 keeps only its first paragraph (155 characters)"
- },
  "sentinel.summa_i_q71": {
   "fixed_by": "1.7",
   "description": "Part I q.71 holds its article directly in the div3"
@@ -471,96 +265,6 @@
   "fixed_by": "1.4a",
   "description": "Esther 8:13 holds Greek addition E (4,183 characters, R3), longer than one card, so it is cut across two pieces (\"Esther 8:12–13\", \"Esther 8:13\"). 1.4a cannot shorten it: the Decision log (Esther additions numbering, R3) keeps WEB-C's verse numbers, so there are no lettered verses to cut at. Left for Carter to reassign or accept.",
   "units": ["ESG/8/13"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-ad-gentes.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
-  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "25", "26"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-apostolicam-actuositatem.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
-  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-christus-dominus.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
-  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "11", "14", "15", "16", "18", "19", "20", "21"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-dei-verbum.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
-  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-dignitatis-humanae.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
-  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "14", "15"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-gaudium-et-spes.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §5, §6 …",
-  "units": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "31", "34"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-gravissimum-educationis.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §7, §12",
-  "units": ["1", "7", "12"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-lumen-gentium.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4",
-  "units": ["1", "2", "3", "4"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-nostra-aetate.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §2, §5",
-  "units": ["2", "5"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-perfectae-caritatis.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1",
-  "units": ["1"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-presbyterorum-ordinis.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §4, §5, §6, §7 …",
-  "units": ["1", "2", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "18", "19", "20", "22", "34", "40", "41", "55", "58"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-sacrosanctum-concilium.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §1, §2, §3, §4, §81",
-  "units": ["1", "2", "3", "4", "81"]
- },
- "sequence.numbered_paragraphs.duplicated:councils/vat2-unitatis-redintegratio.html": {
-  "fixed_by": "1.1",
-  "description": "numbered footnotes read as sections, giving second passages for §2, §10, §15, §19, §21, §22 …",
-  "units": ["2", "10", "15", "19", "21", "22", "23"]
- },
- "sequence.numbered_paragraphs.out_of_range:councils/vat2-dignitatis-humanae.html": {
-  "fixed_by": "1.1",
-  "description": "8 footnote numbers above the last section read as sections",
-  "units": ["23", "31", "32", "33", "34", "35", "37", "38"]
- },
- "sequence.numbered_paragraphs.out_of_range:councils/vat2-gravissimum-educationis.html": {
-  "fixed_by": "1.1",
-  "description": "24 footnote numbers above the last section read as sections",
-  "units": ["13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36"]
- },
- "sequence.numbered_paragraphs.out_of_range:councils/vat2-nostra-aetate.html": {
-  "fixed_by": "1.1",
-  "description": "2 footnote numbers above the last section read as sections",
-  "units": ["11", "12"]
- },
- "sequence.numbered_paragraphs.out_of_range:councils/vat2-presbyterorum-ordinis.html": {
-  "fixed_by": "1.1",
-  "description": "34 footnote numbers above the last section read as sections",
-  "units": ["23", "24", "26", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "51", "52", "55", "56", "57", "58", "59", "60", "64", "65", "66", "67", "68"]
- },
- "sequence.numbered_paragraphs.out_of_range:councils/vat2-unitatis-redintegratio.html": {
-  "fixed_by": "1.1",
-  "description": "3 footnote numbers above the last section read as sections",
-  "units": ["27", "36", "38"]
  },
  "sequence.summa_articles.missing:FP_Q71": {
   "fixed_by": "1.7",
@@ -841,41 +545,6 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#vi.i": {
   "fixed_by": "1.9",
   "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
- },
- "structure.chapter_sequence:councils/1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
-  "fixed_by": "1.1",
-  "description": "Apostolicam Actuositatem: numbered chapter labels skip or repeat (C-20)",
-  "units": ["repeat:III", "repeat:IV", "repeat:V", "repeat:VI"]
- },
- "structure.chapter_sequence:councils/29bf3975-5f39-5550-a949-6767cb666695": {
-  "fixed_by": "1.1",
-  "description": "Sacrosanctum Concilium: numbered chapter labels skip or repeat (C-20)",
-  "units": ["gap:V-VII"]
- },
- "structure.chapter_sequence:councils/4451c2f8-e836-58ab-a2eb-495a9cacef89": {
-  "fixed_by": "1.1",
-  "description": "Dei Verbum: numbered chapter labels skip or repeat (C-20)",
-  "units": ["repeat:I", "repeat:II", "repeat:III", "repeat:IV", "repeat:V", "repeat:VI"]
- },
- "structure.chapter_sequence:councils/62f7a128-a847-588b-84f0-51d33294b236": {
-  "fixed_by": "1.1",
-  "description": "Gaudium et Spes: numbered chapter labels skip or repeat (C-20)",
-  "units": ["repeat:I", "repeat:I", "repeat:II", "repeat:III", "repeat:IV"]
- },
- "structure.chapter_sequence:councils/bd4adb5d-500e-5995-ab95-3f61fdc92067": {
-  "fixed_by": "1.1",
-  "description": "Christus Dominus: numbered chapter labels skip or repeat (C-20)",
-  "units": ["repeat:I", "repeat:II", "repeat:III"]
- },
- "structure.chapter_sequence:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
-  "fixed_by": "1.1",
-  "description": "Lumen Gentium: numbered chapter labels skip or repeat (C-20)",
-  "units": ["gap:VI-VIII"]
- },
- "structure.chapter_sequence:councils/c1d5382f-c7c7-564d-989a-89775b36fd58": {
-  "fixed_by": "1.1",
-  "description": "Ad Gentes: numbered chapter labels skip or repeat (C-20)",
-  "units": ["repeat:II", "repeat:III", "repeat:IV", "repeat:V", "repeat:VI"]
  },
  "structure.embedded_work_labelled:church-fathers/9e03c96d-8295-5e5e-a4d3-3570ddcf0415": {
   "fixed_by": "1.8c",

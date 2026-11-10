@@ -5,7 +5,7 @@
   "canon-law": "feat/1.5a-canon-law-parser 16888ad",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
-  "councils": "feat/1.2d-vatican-i-schaff 510e710",
+  "councils": "feat/1.1-vatican-ii-sections 16709fc",
   "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
@@ -838,84 +838,84 @@
    "pct": 38.67
   },
   "councils/vat2-ad-gentes.html": {
-   "body_chars": 88029,
-   "covered_chars": 26399,
-   "pct": 29.99
+   "body_chars": 87684,
+   "covered_chars": 87684,
+   "pct": 100.0
   },
   "councils/vat2-apostolicam-actuositatem.html": {
-   "body_chars": 61527,
-   "covered_chars": 17292,
-   "pct": 28.1
+   "body_chars": 61350,
+   "covered_chars": 61350,
+   "pct": 100.0
   },
   "councils/vat2-christus-dominus.html": {
-   "body_chars": 54336,
-   "covered_chars": 20630,
-   "pct": 37.97
+   "body_chars": 54198,
+   "covered_chars": 54198,
+   "pct": 100.0
   },
   "councils/vat2-dei-verbum.html": {
-   "body_chars": 28331,
-   "covered_chars": 21243,
-   "pct": 74.98
+   "body_chars": 28163,
+   "covered_chars": 28163,
+   "pct": 100.0
   },
   "councils/vat2-dignitatis-humanae.html": {
-   "body_chars": 28790,
-   "covered_chars": 12185,
-   "pct": 42.32
+   "body_chars": 28622,
+   "covered_chars": 28415,
+   "pct": 99.28
   },
   "councils/vat2-gaudium-et-spes.html": {
-   "body_chars": 195616,
-   "covered_chars": 57940,
-   "pct": 29.62
+   "body_chars": 195002,
+   "covered_chars": 195002,
+   "pct": 100.0
   },
   "councils/vat2-gravissimum-educationis.html": {
-   "body_chars": 23438,
-   "covered_chars": 143,
-   "pct": 0.61
+   "body_chars": 23290,
+   "covered_chars": 23290,
+   "pct": 100.0
   },
   "councils/vat2-inter-mirifica.html": {
-   "body_chars": 19351,
-   "covered_chars": 13027,
-   "pct": 67.32
+   "body_chars": 19345,
+   "covered_chars": 19345,
+   "pct": 100.0
   },
   "councils/vat2-lumen-gentium.html": {
-   "body_chars": 153489,
-   "covered_chars": 71892,
-   "pct": 46.84
+   "body_chars": 150926,
+   "covered_chars": 150888,
+   "pct": 99.97
   },
   "councils/vat2-nostra-aetate.html": {
-   "body_chars": 9281,
-   "covered_chars": 1969,
-   "pct": 21.22
+   "body_chars": 9225,
+   "covered_chars": 9225,
+   "pct": 100.0
   },
   "councils/vat2-optatam-totius.html": {
    "body_chars": 28979,
-   "covered_chars": 14989,
-   "pct": 51.72
+   "covered_chars": 28979,
+   "pct": 100.0
   },
   "councils/vat2-orientalium-ecclesiarum.html": {
-   "body_chars": 17106,
-   "covered_chars": 13617,
-   "pct": 79.6
+   "body_chars": 16968,
+   "covered_chars": 16968,
+   "pct": 100.0
   },
   "councils/vat2-perfectae-caritatis.html": {
-   "body_chars": 28957,
-   "covered_chars": 12748,
-   "pct": 44.02
+   "body_chars": 28954,
+   "covered_chars": 28954,
+   "pct": 100.0
   },
   "councils/vat2-presbyterorum-ordinis.html": {
-   "body_chars": 66965,
-   "covered_chars": 24529,
-   "pct": 36.63
+   "body_chars": 66291,
+   "covered_chars": 66291,
+   "pct": 100.0
   },
   "councils/vat2-sacrosanctum-concilium.html": {
-   "body_chars": 73033,
-   "covered_chars": 47947,
-   "pct": 65.65
+   "body_chars": 72996,
+   "covered_chars": 72996,
+   "pct": 100.0
   },
   "councils/vat2-unitatis-redintegratio.html": {
-   "body_chars": 41032,
-   "covered_chars": 15448,
-   "pct": 37.65
+   "body_chars": 40860,
+   "covered_chars": 40860,
+   "pct": 100.0
   },
   "encyclicals/a-quo-die.html": {
    "body_chars": 26865,
@@ -1917,16 +1917,16 @@
   "137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
    "collection": "councils",
    "source_file": "vat2-nostra-aetate.html",
-   "body_chars": 9281,
-   "covered_chars": 1969,
-   "pct": 21.22
+   "body_chars": 9225,
+   "covered_chars": 9225,
+   "pct": 100.0
   },
   "13b94869-cf9c-590d-9573-66f1bd6ea457": {
    "collection": "councils",
    "source_file": "vat2-unitatis-redintegratio.html",
-   "body_chars": 41032,
-   "covered_chars": 15448,
-   "pct": 37.65
+   "body_chars": 40860,
+   "covered_chars": 40860,
+   "pct": 100.0
   },
   "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a": {
    "collection": "church-fathers",
@@ -2015,9 +2015,9 @@
   "1b432ce6-ff64-5a1f-ae2e-a075e67d2b6c": {
    "collection": "councils",
    "source_file": "vat2-apostolicam-actuositatem.html",
-   "body_chars": 61527,
-   "covered_chars": 17292,
-   "pct": 28.1
+   "body_chars": 61350,
+   "covered_chars": 61350,
+   "pct": 100.0
   },
   "1c341d85-24a7-5603-8f72-8fb20d25292b": {
    "collection": "encyclicals",
@@ -2064,9 +2064,9 @@
   "1d8e4438-b930-5fa4-93cb-b393786064fa": {
    "collection": "councils",
    "source_file": "vat2-orientalium-ecclesiarum.html",
-   "body_chars": 17106,
-   "covered_chars": 13617,
-   "pct": 79.6
+   "body_chars": 16968,
+   "covered_chars": 16968,
+   "pct": 100.0
   },
   "1deb4103-9269-59ae-84c3-d9a691ef458c": {
    "collection": "encyclicals",
@@ -2155,9 +2155,9 @@
   "28f0d5d5-9bf6-531a-862a-0a9ffed7c8ac": {
    "collection": "councils",
    "source_file": "vat2-presbyterorum-ordinis.html",
-   "body_chars": 66965,
-   "covered_chars": 24529,
-   "pct": 36.63
+   "body_chars": 66291,
+   "covered_chars": 66291,
+   "pct": 100.0
   },
   "29897c86-0820-5f41-a3f6-951743a69566": {
    "collection": "encyclicals",
@@ -2176,9 +2176,9 @@
   "29bf3975-5f39-5550-a949-6767cb666695": {
    "collection": "councils",
    "source_file": "vat2-sacrosanctum-concilium.html",
-   "body_chars": 73033,
-   "covered_chars": 47947,
-   "pct": 65.65
+   "body_chars": 72996,
+   "covered_chars": 72996,
+   "pct": 100.0
   },
   "29e36b93-c859-56d0-9993-54c2fd175491": {
    "collection": "bible",
@@ -2470,9 +2470,9 @@
   "4451c2f8-e836-58ab-a2eb-495a9cacef89": {
    "collection": "councils",
    "source_file": "vat2-dei-verbum.html",
-   "body_chars": 28331,
-   "covered_chars": 21243,
-   "pct": 74.98
+   "body_chars": 28163,
+   "covered_chars": 28163,
+   "pct": 100.0
   },
   "446bb0ed-f885-563e-a958-e905e49be4dc": {
    "collection": "encyclicals",
@@ -2726,13 +2726,6 @@
    "covered_chars": 69134,
    "pct": 100.0
   },
-  "5c3cb0a3-883a-5f43-a747-b5e7196e68e1": {
-   "collection": "councils",
-   "source_file": "ecum-20-first-vatican-council.html",
-   "body_chars": 44079,
-   "covered_chars": 6030,
-   "pct": 13.68
-  },
   "5cb63db1-86aa-5d34-86ba-00a90eb0a909": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/29-HOSeng-web-c.usfm",
@@ -2771,9 +2764,9 @@
   "5f0ff7e9-3b76-5c1f-949f-4980a943244b": {
    "collection": "councils",
    "source_file": "vat2-dignitatis-humanae.html",
-   "body_chars": 28790,
-   "covered_chars": 12185,
-   "pct": 42.32
+   "body_chars": 28622,
+   "covered_chars": 28415,
+   "pct": 99.28
   },
   "5f210d1e-1be7-54fa-a09d-f1dd6f3f315a": {
    "collection": "church-fathers",
@@ -2827,9 +2820,9 @@
   "62f7a128-a847-588b-84f0-51d33294b236": {
    "collection": "councils",
    "source_file": "vat2-gaudium-et-spes.html",
-   "body_chars": 195616,
-   "covered_chars": 57940,
-   "pct": 29.62
+   "body_chars": 195002,
+   "covered_chars": 195002,
+   "pct": 100.0
   },
   "638693a3-342c-5614-9c9a-dd6817faf862": {
    "collection": "papal-documents",
@@ -2974,9 +2967,9 @@
   "6f6474ba-c632-5bdb-a550-b8d5c61797a9": {
    "collection": "councils",
    "source_file": "vat2-gravissimum-educationis.html",
-   "body_chars": 23438,
-   "covered_chars": 143,
-   "pct": 0.61
+   "body_chars": 23290,
+   "covered_chars": 23290,
+   "pct": 100.0
   },
   "7073bae0-a0fd-5c22-8e36-8cf493f15af2": {
    "collection": "church-fathers",
@@ -3205,9 +3198,9 @@
   "88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
    "collection": "councils",
    "source_file": "vat2-perfectae-caritatis.html",
-   "body_chars": 28957,
-   "covered_chars": 12748,
-   "pct": 44.02
+   "body_chars": 28954,
+   "covered_chars": 28954,
+   "pct": 100.0
   },
   "891ae0fa-5a7f-518c-9d1c-9ad4f180bc77": {
    "collection": "encyclicals",
@@ -3674,9 +3667,9 @@
   "b4285357-dc78-5c8b-98f1-b50fdf6c83e1": {
    "collection": "councils",
    "source_file": "vat2-inter-mirifica.html",
-   "body_chars": 19351,
-   "covered_chars": 13027,
-   "pct": 67.32
+   "body_chars": 19345,
+   "covered_chars": 19345,
+   "pct": 100.0
   },
   "b4be5b7e-a593-5f02-b288-d111f16e8989": {
    "collection": "encyclicals",
@@ -3696,8 +3689,8 @@
    "collection": "councils",
    "source_file": "vat2-optatam-totius.html",
    "body_chars": 28979,
-   "covered_chars": 14989,
-   "pct": 51.72
+   "covered_chars": 28979,
+   "pct": 100.0
   },
   "b8babc97-15ff-5c15-8e25-bba0eca51786": {
    "collection": "apostolic-exhortations",
@@ -3779,9 +3772,9 @@
   "bd4adb5d-500e-5995-ab95-3f61fdc92067": {
    "collection": "councils",
    "source_file": "vat2-christus-dominus.html",
-   "body_chars": 54336,
-   "covered_chars": 20630,
-   "pct": 37.97
+   "body_chars": 54198,
+   "covered_chars": 54198,
+   "pct": 100.0
   },
   "bdb26799-46d1-56d9-ab96-44dfc8bb0e6c": {
    "collection": "bible",
@@ -3807,9 +3800,9 @@
   "c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
    "collection": "councils",
    "source_file": "vat2-lumen-gentium.html",
-   "body_chars": 153489,
-   "covered_chars": 71892,
-   "pct": 46.84
+   "body_chars": 150926,
+   "covered_chars": 150888,
+   "pct": 99.97
   },
   "c1bcdc39-8e8a-5806-9dcc-2fc05482baad": {
    "collection": "church-fathers",
@@ -3821,9 +3814,9 @@
   "c1d5382f-c7c7-564d-989a-89775b36fd58": {
    "collection": "councils",
    "source_file": "vat2-ad-gentes.html",
-   "body_chars": 88029,
-   "covered_chars": 26399,
-   "pct": 29.99
+   "body_chars": 87684,
+   "covered_chars": 87684,
+   "pct": 100.0
   },
   "c1dd7a2a-5604-56e2-888f-bb093a183314": {
    "collection": "bible",
