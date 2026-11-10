@@ -13,7 +13,7 @@ p. 42.
 | Text | In Giles | Notes |
 |---|---|---|
 | Bull deposing Frederick II (gap G4) | Yes, full: vol. 2, pp. 77–86, "How the pope excommunicated the emperor Frederick at the council of Lyons" | Dated 16 July (Tanner: 17 July). Opening and closing read on the scan; the middle's completeness inferred from length and continuity |
-| Lyons I constitution I 7, "Legates and benefices" (G12) | Yes, full: vol. 2, pp. 96–97, "Of the duty of the legate" | Matthew Paris's version (Tanner's "M"). One clause is mistranslated: "shall assume … the full duties of the legateship" for "however full their legatine power" |
+| Lyons I constitution I 7, "Legates and benefices" (G12) | Yes, full: vol. 2, pp. 96–97, "Of the duty of the legate" | Matthew Paris's version (Tanner's "M"). Giles turns a clause of Paris's Latin (Luard, *Chronica majora*, 1877, vol. 4, p. 467), "sive suarum ecclesiarum praetextu legationis sibi vendicent dignitatem" (or claim the dignity of legate by reason of their churches), into "shall assume to themselves the full duties of the legateship"; "quantumcunque plenam legationem optineant" is his "whenever they hold the full rank of legate". Corrected 9 Nov 2026 against Luard: this row first matched "shall assume …" to "quantumcunque …" |
 | Lyons I's other constitutions | pp. 87–102: II 5 and Tanner's I 1–16, 19–21 | Not needed (Schroeder prints them). Giles says some passages were "unintelligible" to him (note, p. 102); I 1 reads "days' journey" for "persons" |
 
 Decided by Carter on 9 Nov 2026: a follow-up PR takes the deposition bull and I 7 from

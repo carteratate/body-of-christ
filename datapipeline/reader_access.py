@@ -62,8 +62,10 @@ def access_for_status(status: str) -> str:
 
 
 def access_by_id(inventory: list[dict]) -> dict[str, str]:
-    """Reader access by document ID, for every built work's row."""
-    return {document_id: access_for_status(e["status"])
+    """Reader access by document ID, for every built work's row: excerpt when any edition
+    the document draws on (`also_from` included) grants only that."""
+    return {document_id: (EXCERPT if EXCERPT in {access_for_status(s)
+                                                 for s in rights_inventory.statuses(e)} else FULL)
             for document_id, e in rights_inventory.by_document_id(inventory).items()}
 
 

@@ -4,7 +4,8 @@ Removed, by position and by patterns repeated across pages, and logged per page:
 - running heads: the top line of a page when it carries the page's number, or when its
   letters recur as the top line of other pages;
 - page numbers: a top or bottom line that is only a number;
-- signature marks: a short letter-and-number mark on the bottom line ("B2", "12*");
+- signature marks: a short letter-and-number mark on the bottom line ("B2", "12*"), or
+  Bohn's ("VOL. II. G", "g2");
 - catchwords: a single word alone at the bottom right that repeats the next page's first
   word;
 - specks: a "line" with no letter or digit (a scan edge or a smudge read as "|"), and
@@ -62,6 +63,8 @@ CARRIED_NOTE_BAND = 0.25
 
 _PAGE_NUMBER = re.compile(r"^\W*(?:\d{1,4}|[ivxlcdm]{1,8})\W*$", re.IGNORECASE)
 _SIGNATURE = re.compile(r"^(?=.*\w)[A-Z]{0,3}\s?\d{0,3}\s?\*?$")
+# Bohn's signatures: "VOL. II. G" on a gathering's first leaf, "g2" on its third page.
+_VOLUME_SIGNATURE = re.compile(r"^VOL\.?\s+[IVXL]+\.?\s+[A-Z]{1,2}\d?$|^[a-z]{1,2}\d$")
 # A note opens with its number or symbol ("1 Mansi", "4Mention", "* See"); OCR often
 # reads the superscript as a stray mark ("$For", "® Zorell"). Opening quotes and
 # brackets are left out: body lines start with them.
@@ -70,6 +73,8 @@ _HEAD_NUMBER = re.compile(r"^\d{1,4}\s+\D|\D\s+\d{1,4}$")
 _LINE_END_BREAK = re.compile(r"([^\W\d_]+)[-¬]$")
 _LINE_START_WORD = re.compile(r"^([^\W\d_]+)")
 _HAS_ALNUM = re.compile(r"[^\W_]")
+# A line ending a sentence or a clause, with any closing quotation mark or bracket after it.
+_CLAUSE_END = re.compile(r"[.,;:?!][\"'”’)\]]*$")
 
 
 @dataclass
@@ -101,6 +106,7 @@ class Paragraph:
     text: str                 # script-cleaned
     raw: str                  # the OCR lines as read, one per line
     leaves: list[int]
+    continues: bool = False   # cut from the paragraph before it at a sentence end
 
 
 @dataclass
@@ -210,7 +216,7 @@ def _bottom_kind(line: Line, page: Page, next_first: str) -> str | None:
     if (len(text.split()) == 1 and line.x0 > page.width / 2 and next_first
             and _first_word(text) == next_first):
         return "catchword"
-    if len(text) <= 8 and _SIGNATURE.match(text):
+    if (len(text) <= 8 and _SIGNATURE.match(text)) or _VOLUME_SIGNATURE.match(text):
         return "signature"
     return None
 
@@ -246,9 +252,16 @@ def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[
     return lines, []
 
 
-def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool]) -> list[bool]:
+def _continues_word(prev: Line, line: Line) -> bool:
+    return bool(_LINE_END_BREAK.search(prev.text) and _LINE_START_WORD.match(line.text))
+
+
+def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool],
+                      broken_words_continue: bool = False) -> list[bool]:
     """For each line, whether it opens a paragraph. `page_start[i]` marks a line that is
-    the first body line of its page."""
+    the first body line of its page. With `broken_words_continue`, the rest of a word
+    broken at the line end never opens one: some scans misplace its box (Giles: "ration"
+    read as indented after "delibe-")."""
     starts = []
     height = statistics.median([ln.height for ln in lines]) if lines else 1
     for i, line in enumerate(lines):
@@ -259,6 +272,9 @@ def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool]) -> 
         near = lines[max(0, i - 3):i] + lines[i + 1:i + 4]
         left = statistics.median([ln.x0 for ln in near]) if near else line.x0
         right = statistics.median([ln.x1 for ln in near]) if near else prev.x1
+        if broken_words_continue and _continues_word(prev, line):
+            starts.append(False)
+            continue
         indented = line.x0 - left > INDENT * width
         prev_short = prev.x1 < right - SHORT_LINE * width
         capital = line.text[:1].isupper() or line.text[:1].isdigit()
@@ -267,7 +283,13 @@ def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool]) -> 
     return starts
 
 
-def clean_pages(pages: list[Page], layout: Layout | None = None) -> CleanResult:
+def clean_pages(pages: list[Page], layout: Layout | None = None,
+                broken_words_continue: bool = False,
+                max_paragraph_words: int | None = None) -> CleanResult:
+    """The pages' body paragraphs, notes and removals. With `max_paragraph_words`, a
+    paragraph is cut at the first line ending a sentence or a clause once it holds that
+    many words, and the part after the cut `continues` it: a page-long paragraph is too
+    much for one correction call or one check against the page images."""
     layout = layout or SingleColumn()
     result = CleanResult()
     ordered = [layout.reading_order(p) for p in pages]
@@ -310,27 +332,36 @@ def clean_pages(pages: list[Page], layout: Layout | None = None) -> CleanResult:
     for page, body in zip(pages, bodies):
         if not body:
             continue
-        page_starts = _paragraph_starts(body, page.width, [j == 0 for j in range(len(body))])
+        page_starts = _paragraph_starts(body, page.width, [j == 0 for j in range(len(body))],
+                                        broken_words_continue)
         if flat:
             # A page's first line continues the previous page's paragraph unless indented.
             near = body[1:4]
             left = statistics.median([ln.x0 for ln in near]) if near else body[0].x0
-            page_starts[0] = body[0].x0 - left > INDENT * page.width
+            page_starts[0] = body[0].x0 - left > INDENT * page.width and not (
+                broken_words_continue and _continues_word(flat[-1][1], body[0]))
         flat.extend((page, ln) for ln in body)
         starts.extend(page_starts)
 
     current: list[tuple[Page, Line]] = []
+    continues = False
     for k, (page, line) in enumerate(flat):
         if starts[k] and current:
-            result.paragraphs.append(_paragraph(current, seen, result.hyphens))
-            current = []
+            result.paragraphs.append(_paragraph(current, seen, result.hyphens, continues))
+            current, continues = [], False
         current.append((page, line))
+        if (max_paragraph_words and k + 1 < len(flat) and not starts[k + 1]
+                and _CLAUSE_END.search(line.text)
+                and sum(len(ln.text.split()) for _, ln in current) >= max_paragraph_words):
+            result.paragraphs.append(_paragraph(current, seen, result.hyphens, continues))
+            current, continues = [], True
     if current:
-        result.paragraphs.append(_paragraph(current, seen, result.hyphens))
+        result.paragraphs.append(_paragraph(current, seen, result.hyphens, continues))
     return result
 
 
-def _paragraph(lines: list[tuple[Page, Line]], seen: Counter, log: list[HyphenBreak]) -> Paragraph:
+def _paragraph(lines: list[tuple[Page, Line]], seen: Counter, log: list[HyphenBreak],
+               continues: bool = False) -> Paragraph:
     text = ""
     for k, (page, line) in enumerate(lines):
         piece = line.text.strip()
@@ -358,7 +389,16 @@ def _paragraph(lines: list[tuple[Page, Line]], seen: Counter, log: list[HyphenBr
             text = f"{text} {piece}"
     leaves = sorted({page.leaf for page, _ in lines})
     raw = "\n".join(line.text for _, line in lines)
-    return Paragraph(clean_text(text), raw, leaves)
+    return Paragraph(clean_text(text), raw, leaves, continues)
+
+
+def _joined(parts: list[tuple[str, bool]]) -> str:
+    """Paragraphs joined by a blank line, and a part cut at a sentence end back onto the
+    one before it."""
+    out = ""
+    for k, (text, continues) in enumerate(parts):
+        out += ("" if not k else " " if continues else "\n\n") + text
+    return out
 
 
 def page_map_agreement(removals: list[Removal]) -> tuple[int, int]:
@@ -391,9 +431,10 @@ def clean_work(workdir, sources=None, force: bool = False,
     if not force and any(p.correction.status != "pending" for p in workdir.passages()):
         raise RuntimeError(f"{config.work}: passages already corrected; clean again with force")
     numbers_path = sources / config.page_numbers
-    leaves = leaves_for_pages(read_page_numbers(numbers_path), *config.pages)
-    pages = load_pages(sources / config.djvu_xml, numbers_path, leaves)
-    result = clean_pages(pages, get_layout(config.layout))
+    leaves = leaves_for_pages(read_page_numbers(numbers_path, config.leaf_offset), *config.pages)
+    pages = load_pages(sources / config.djvu_xml, numbers_path, leaves, config.leaf_offset)
+    result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
+                         config.max_paragraph_words)
     agree, read = page_map_agreement(result.removals)
     if read and agree * 2 < read:
         raise RuntimeError(
@@ -403,7 +444,7 @@ def clean_work(workdir, sources=None, force: bool = False,
     number = {p.leaf: p.number for p in pages}
     if config.units:
         units = get_units(config.units).split(result.paragraphs, config.unit_series,
-                                                config.unit_closes)
+                                                config.unit_closes, config.unit_bounds)
         if config.unit_count is not None and len(units) != config.unit_count:
             raise RuntimeError(f"{config.work}: {len(units)} units read, the work prints "
                                f"{config.unit_count}")
@@ -416,8 +457,9 @@ def clean_work(workdir, sources=None, force: bool = False,
         leaves_ = sorted({leaf for para in group for leaf in para.leaves})
         passages.append(OcrPassage(
             id=passage_id, leaves=leaves_, pages=[number[x] for x in leaves_],
-            raw_ocr="\n\n".join(para.raw for para in group),
-            cleaned="\n\n".join(para.text for para in group)))
+            raw_ocr=_joined([(para.raw, para.continues) for para in group]),
+            cleaned=_joined([(para.text, para.continues) for para in group]),
+            continues=group[0].continues))
     workdir.save_passages(passages)
     workdir.save_cleanup({
         "pages": [{"leaf": p.leaf, "page": p.number} for p in pages],

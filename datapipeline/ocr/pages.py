@@ -79,10 +79,14 @@ def read_djvu_xml(path: str | Path, leaves: range | None = None) -> list[Page]:
     return pages
 
 
-def read_page_numbers(path: str | Path) -> dict[int, str]:
-    """Leaf → printed page number, from `_page_numbers.json` (leaves without one omitted)."""
+def read_page_numbers(path: str | Path, leaf_offset: int = 0) -> dict[int, str]:
+    """Leaf → printed page number, from `_page_numbers.json` (leaves without one omitted).
+
+    The map counts the scan's leaves; the XML holds only the leaves the Archive puts in
+    its page images, counted from 0. Where it leaves out leaves before the first page (a
+    colour card), `leaf_offset` says how many, so a map's leaf L is the XML's L - offset."""
     data = json.loads(Path(path).read_text(encoding="utf-8"))
-    return {int(p["leafNum"]): str(p["pageNumber"])
+    return {int(p["leafNum"]) - leaf_offset: str(p["pageNumber"])
             for p in data.get("pages", []) if p.get("pageNumber")}
 
 
@@ -95,10 +99,10 @@ def leaves_for_pages(numbers: dict[int, str], first: str, last: str) -> range:
 
 
 def load_pages(xml: str | Path, page_numbers: str | Path | None,
-               leaves: range | None = None) -> list[Page]:
+               leaves: range | None = None, leaf_offset: int = 0) -> list[Page]:
     pages = read_djvu_xml(xml, leaves)
     if page_numbers:
-        numbers = read_page_numbers(page_numbers)
+        numbers = read_page_numbers(page_numbers, leaf_offset)
         for page in pages:
             page.number = numbers.get(page.leaf)
     return pages

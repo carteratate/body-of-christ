@@ -3608,6 +3608,28 @@
  },
  {
   "collection": "councils",
+  "path": "councils/matthewparisseng02pari/matthewparisseng02pari_djvu.xml",
+  "sha256": "1026d8573187df6eafd05f437687205b6c533b1dab5d5297f810e9ede10d474b",
+  "bytes": 17136459,
+  "url": "https://archive.org/download/matthewparisseng02pari/matthewparisseng02pari_djvu.xml",
+  "acquired": "2026-11-09",
+  "hashed_on": "2026-11-09",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/matthewparisseng02pari/matthewparisseng02pari_page_numbers.json",
+  "sha256": "0a129a16450d776734a2c93425cc19a6193d83c25426845d95c9dab328deaf68",
+  "bytes": 94059,
+  "url": "https://archive.org/download/matthewparisseng02pari/matthewparisseng02pari_page_numbers.json",
+  "acquired": "2026-11-09",
+  "hashed_on": "2026-11-09",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
   "path": "councils/vat2-ad-gentes.html",
   "sha256": "1ab5c4fea2ab2a5864bd81e60b0524b8ad447c08e3d22ae483b84819aaef5387",
   "bytes": 122003,

@@ -212,6 +212,18 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-09: yes, both join the gap register as G12.
 - **1.2e** [Phase 1, found in 1.2e-2]. Giles's 1853 translation of Matthew Paris prints Lyons I's deposition bull (G4) and constitution I 7 (G12) in full. Take them from it in a follow-up PR, each with a note that it is Matthew Paris's version? Recommended answer: yes. Details: `docs/research/2026-11-09-giles-matthew-paris-and-schroeder-trent.md`.
   Answered 2026-11-09: yes, in a follow-up PR after 1.2e-2.
+- **1.2e** [Phase 1, Giles follow-up]. Giles's I 7 misreads one clause of Matthew Paris's Latin (Luard's edition, *Chronica majora*, 1877, vol. 4, p. 467): "sive suarum ecclesiarum praetextu legationis sibi vendicent dignitatem" (legates who claim legatine rank by reason of their churches) becomes "shall assume to themselves the full duties of the legateship". Publish as printed with no comment, quote the Latin in a note or footnote, or hold I 7? Recommended answer: quote the Latin in a note.
+  Answered 2026-11-09: publish Giles's text as printed, with no note or footnote on the clause.
+- **1.2e** [Phase 1, Giles follow-up]. The note on each Giles passage. Recommended answer: "Matthew Paris's version, in J. A. Giles's translation (1853)."
+  Answered 2026-11-09: as recommended, on every passage of both texts.
+- **1.2e** [Phase 1, Giles follow-up]. The chapter labels for the two texts. Recommended answer: Giles's printed heading for I 7, "Of the duty of the legate", and our own label for the bull.
+  Answered 2026-11-09: Giles's printed headings for both, since he is the source: "How the pope excommunicated the emperor Frederick at the council of Lyons" (vol. 2, p. 77) and "Of the duty of the legate" (p. 96).
+- **1.2e** [Phase 1, Giles follow-up]. The ten retired G4 passages (Tanner's bull, `first-council-of-lyons/sec-2/5` to `sec-2/12`) now have a successor. Keep their removals, redirect all ten to the bull's first passage, or redirect each to the Giles passage holding the same part of the bull, matched by content since the two translations share no wording? Recommended answer: each to its matching passage.
+  Answered 2026-11-09: redirects, each to its matching passage, with the pairings listed in the PR.
+- **1.2e** [Phase 1, Giles follow-up]. Giles dates the bull 16 July; Tanner has 17 July. Recommended answer: the document keeps 17 July, and the bull's first passage adds "Matthew Paris dates the bull 16 July; the council's acts give 17 July." to its note.
+  Answered 2026-11-09: as recommended.
+- **1.2e and 0.2** [Phase 1, Giles follow-up]. The rights inventory allows one row per document, and Lyons I's document now draws on Schroeder (1937) and Giles (1853). Keep one row with an optional `also_from` list of other editions, widen the row's text fields, or allow a second row? Recommended answer: one row with `also_from`.
+  Answered 2026-11-09: one row, with an optional `also_from` list.
 - **1.2b** [later]. No renewal was found for Schroeder's 1941 *Canons and Decrees of the Council of Trent*. Record the finding and a draft rights row, and keep Trent on Waterworth? Recommended answer: yes; no usable open scan exists yet.
   Answered 2026-11-09: yes; a finding only, with no build change.
 - **1.2e and 4.1b** [before any reader-access sync]. The Lateran I, II and IV rows already read `pd-us-non-renewal`, so `reader_access.py --apply` must not run before their P4 apply: it would open the Tanner text still live.

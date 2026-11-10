@@ -8517,6 +8517,76 @@
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "0303f6fc-455d-5c1e-aff6-ac6028b0f27b",
+  "old_anchor": "first-council-of-lyons/sec-2/10",
+  "new_passage_id": "933156b3-42c6-5d38-92d9-d3d54a513ac1",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2-3",
+  "kind": "split",
+  "reason": "the charge of heresy; its text now lies in several passages, this one holds most of it: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "8493f5fc-b394-504c-b000-a933440de287",
+  "old_anchor": "first-council-of-lyons/sec-2/11",
+  "new_passage_id": "b2903d6f-238d-5327-b467-aa3789e70b0c",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2-4",
+  "kind": "split",
+  "reason": "the sentence of deposition; its text now lies in several passages, this one holds most of it: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "36130526-6ef2-5038-8bed-60f96e1a20cb",
+  "old_anchor": "first-council-of-lyons/sec-2/12",
+  "new_passage_id": "e5efc97b-85a9-5e2d-8b51-b91a45c0bfa1",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2-5",
+  "kind": "merged",
+  "reason": "the dating clause: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "acc09afc-de18-5210-8fb1-f37d44e73904",
+  "old_anchor": "first-council-of-lyons/sec-2/5",
+  "new_passage_id": "6674e7cf-0a48-5c4a-ada3-0db5d7a1b389",
+  "new_anchor": "first-council-of-lyons/deposition",
+  "kind": "merged",
+  "reason": "the bull's opening, to the offer of satisfaction: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "5d4a8c2f-244b-5f7d-b73e-12918735b9db",
+  "old_anchor": "first-council-of-lyons/sec-2/6",
+  "new_passage_id": "92cc22b6-9501-582e-8e77-f78677dc2890",
+  "new_anchor": "first-council-of-lyons/deposition/from-p1-2",
+  "kind": "split",
+  "reason": "the embassies and summons to the council; its text now lies in several passages, this one holds most of it: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "595ffcd9-9912-5d62-bf1a-46ff6ba75d8a",
+  "old_anchor": "first-council-of-lyons/sec-2/7",
+  "new_passage_id": "5e832785-21cc-5d3e-90fd-bbb4871b6db0",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2",
+  "kind": "merged",
+  "reason": "the charge of perjury: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "b9ed9070-6535-57f6-9ce9-79c82c48360e",
+  "old_anchor": "first-council-of-lyons/sec-2/7/from-e24",
+  "new_passage_id": "5e832785-21cc-5d3e-90fd-bbb4871b6db0",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2",
+  "kind": "split",
+  "reason": "the arrest of the cardinals and the seizure of the Church's lands; its text now lies in several passages, this one holds most of it: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
   "old_passage_id": "4d6e1bcf-0566-54f0-9da2-42c2b4512ebd",
   "old_anchor": "first-council-of-lyons/sec-2/7/from-e24-2",
   "new_passage_id": "b9ed9070-6535-57f6-9ce9-79c82c48360e",
@@ -8526,6 +8596,36 @@
   "added_by": "1.10c",
   "closed_by": "1.2e-2",
   "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "4d6e1bcf-0566-54f0-9da2-42c2b4512ebd",
+  "old_anchor": "first-council-of-lyons/sec-2/7/from-e24-2",
+  "new_passage_id": "5e832785-21cc-5d3e-90fd-bbb4871b6db0",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut from the same charge: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "261a04f8-b571-5804-b67e-3be5bde71d9d",
+  "old_anchor": "first-council-of-lyons/sec-2/8",
+  "new_passage_id": "f269e094-404c-57cb-925c-c6e53e306291",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2-2",
+  "kind": "merged",
+  "reason": "the charge of breaking the peace: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "old_passage_id": "6839a459-542f-55e4-bfaf-18d8262b98df",
+  "old_anchor": "first-council-of-lyons/sec-2/9",
+  "new_passage_id": "933156b3-42c6-5d38-92d9-d3d54a513ac1",
+  "new_anchor": "first-council-of-lyons/deposition/from-p2-3",
+  "kind": "split",
+  "reason": "the charge of sacrilege; its text now lies in several passages, this one holds most of it: Giles's translation (1853) of the same part of the bull, matched by content",
+  "added_by": "1.2e-3"
  },
  {
   "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",

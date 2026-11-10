@@ -1,0 +1,61 @@
+{
+ "work": "giles-matthew-paris-lyons-1",
+ "title": "First Council of Lyons, from Matthew Paris's English History, translated by J. A. Giles, vol. 2 (1853), pp. 77–97",
+ "scan": "matthewparisseng02pari",
+ "djvu_xml": "councils/matthewparisseng02pari/matthewparisseng02pari_djvu.xml",
+ "page_numbers": "councils/matthewparisseng02pari/matthewparisseng02pari_page_numbers.json",
+ "pages": [
+  "77",
+  "97"
+ ],
+ "layout": "single-column",
+ "leaf_offset": 1,
+ "broken_words_continue": true,
+ "max_paragraph_words": 250,
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "deposition",
+   "first": "^\\W{0,4}Innocent, bishop, servant of the servants of God",
+   "last": "year of our pontificate\\.\\W*$"
+  },
+  {
+   "id": "duty-of-the-legate",
+   "first": "^\\W{0,4}It is the duty of our office",
+   "last": "hold fuller powers\\.\\W*$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [
+  "Abbeville",
+  "Acerra",
+  "Albano",
+  "Battacius",
+  "Benevento",
+  "Facundus",
+  "Honorius",
+  "Hospitallers",
+  "Portua",
+  "Preneste",
+  "Sessa",
+  "Thomasius",
+  "Tullian",
+  "Vinea"
+ ],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

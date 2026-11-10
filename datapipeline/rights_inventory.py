@@ -52,6 +52,16 @@ REQUIRED_FIELDS = (
     "checked_by", "checked_on", "planned_for",
 )
 
+# Optional. A work whose document also holds texts from another edition lists each such
+# edition here, with its own rights facts (Carter, 9 Nov 2026: Lyons I's bull and I 7 come
+# from Giles's Matthew Paris, the rest from Schroeder). The row's own fields describe the
+# edition most of the document comes from.
+OPTIONAL_FIELDS = ("also_from",)
+ALSO_FROM_FIELDS = (
+    "texts", "edition", "translator", "first_published", "source_path", "source_url",
+    "status", "renewal_search", "credit_line", "checked_by", "checked_on",
+)
+
 RENEWAL_SEARCH_FIELDS = ("date", "where", "query", "result")
 # Who ran the search, when it was not Carter. Optional.
 RENEWAL_SEARCH_OPTIONAL = ("searched_by",)
@@ -70,6 +80,11 @@ def load(path: Path = INVENTORY_PATH) -> list[dict]:
 
 def key(entry: dict) -> tuple[str, str, str, str | None]:
     return entry["collection"], entry["source_path"], entry["work"], entry["author"]
+
+
+def statuses(entry: dict) -> list[str]:
+    """The rights status of every edition a work's document draws on."""
+    return [entry["status"]] + [e["status"] for e in entry.get("also_from", [])]
 
 
 def by_document_id(entries: list[dict]) -> dict[str, dict]:

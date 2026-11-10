@@ -9,7 +9,7 @@ it, as layouts do.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from difflib import SequenceMatcher
 from typing import Protocol
 
@@ -28,11 +28,12 @@ class Units(Protocol):
     name: str
 
     def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
-              closes: tuple[str, ...] = ()) -> list[Unit]:
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
         """The units of a work's paragraphs, in order. `series` gives the number of units
         in each series of a work printed in more than one; `closes` are patterns of the
-        editor's paragraphs that carry no label. Raises when the text does not have the
-        shape the work's config says."""
+        editor's paragraphs that carry no label; `bounds` are the texts a work takes from
+        pages that print others. Raises when the text does not have the shape the work's
+        config says."""
 
 
 _LABELS = ("summary", "comment", "text", "canon")
@@ -79,7 +80,9 @@ class SchroederCanons:
     _FIRST_WORD = re.compile(r"^\W{0,2}([A-Za-z][A-Za-z'’]{1,11})[.,:]\s")
 
     def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
-              closes: tuple[str, ...] = ()) -> list[Unit]:
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        if bounds:
+            raise ValueError("Schroeder's canons are found by their labels, not by bounds")
         close_res = [re.compile(c) for c in closes]
         bounds = list(series or ())
         units: list[Unit] = []
@@ -147,7 +150,7 @@ class SchroederCanons:
             raise ValueError(f"series {bounds}: read {number} canons in series {in_series}")
         for unit in units:
             last = unit.paragraphs[-1]
-            unit.paragraphs[-1] = type(last)(self._CITATION.sub("", last.text), last.raw, last.leaves)
+            unit.paragraphs[-1] = replace(last, text=self._CITATION.sub("", last.text))
         return units
 
 
@@ -204,10 +207,61 @@ def strip_stray_quotes(text: str) -> str:
 
 
 def _with_text(para, text: str):
-    return type(para)(strip_stray_quotes(strip_note_calls(text)), para.raw, para.leaves)
+    return replace(para, text=strip_stray_quotes(strip_note_calls(text)))
 
 
-UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons()}
+class Bounded:
+    """Texts a work takes from pages that print other matter around them, each named by
+    its first and last paragraph: Giles's Matthew Paris prints the deposition bull and
+    Lyons I's decrees inside his chronicle (1.2e). A bound is `{"id", "first", "last"}`,
+    `first` and `last` patterns searched in the paragraphs' text; the text runs from the
+    first paragraph `first` matches to the next one `last` matches, inclusive.
+
+    A text longer than a passage is cut, between paragraphs, into passages of about
+    `PASSAGE_WORDS` (`<id>-01`, `<id>-02`, ...), so correction and the person's check see
+    a few pages at a time; a work's `max_paragraph_words` keeps its paragraphs short
+    enough for that. Double quotation marks are taken out: Giles quotes the whole
+    document, opening each of its paragraphs with one, and its own quotations are single."""
+    name = "bounded"
+
+    _DOUBLE_QUOTES = re.compile(r"\s?[\"“”]\s?")
+
+    def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        from ocr.work import PASSAGE_WORDS, group_passages
+
+        if series or closes or not bounds:
+            raise ValueError("bounded units take bounds, and no series or closes")
+        units: list[Unit] = []
+        after = 0
+        for bound in bounds:
+            first = next((k for k in range(after, len(paragraphs))
+                          if re.search(bound["first"], paragraphs[k].text)), None)
+            if first is None:
+                raise ValueError(f"{bound['id']}: no paragraph after the last text opens "
+                                 f"with {bound['first']!r}")
+            last = next((k for k in range(first, len(paragraphs))
+                         if re.search(bound["last"], paragraphs[k].text)), None)
+            if last is None:
+                raise ValueError(f"{bound['id']}: no paragraph closes it with {bound['last']!r}")
+            if paragraphs[first].continues:
+                raise ValueError(f"{bound['id']}: opens inside a paragraph")
+            text = [replace(p, text=self._unquoted(p.text)) for p in paragraphs[first:last + 1]]
+            groups = group_passages(text, PASSAGE_WORDS)
+            units.extend(Unit(bound["id"] if len(groups) == 1 else f"{bound['id']}-{k:02d}", g)
+                         for k, g in enumerate(groups, 1))
+            after = last + 1
+        return units
+
+    def _unquoted(self, text: str) -> str:
+        def mend(m: re.Match) -> str:
+            before, after = m.string[:m.start()], m.string[m.end():]
+            return "" if not before or not after else " "
+        text = self._DOUBLE_QUOTES.sub(mend, text)
+        return re.sub(r" {2,}", " ", text).strip()
+
+
+UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons(), Bounded.name: Bounded()}
 
 
 def get_units(name: str) -> Units:
