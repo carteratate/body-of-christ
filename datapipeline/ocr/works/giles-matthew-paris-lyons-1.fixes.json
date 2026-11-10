@@ -1,0 +1,271 @@
+[
+ {
+  "passage": "deposition-01",
+  "find": "servants of God, <£'c. — In the presence",
+  "replace": "servants of God, &c. — In the presence",
+  "why": "p. 77: stray marks (\"<£'c.\" for \"&c.\")"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "formerly of ^lodena; and",
+  "replace": "formerly of Modena; and",
+  "why": "p. 78: misread letter"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "well-beloved son WiUiam, cardinal-priest",
+  "replace": "well-beloved son William, cardinal-priest",
+  "why": "p. 78: misread letters"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "were inspired vrith zeal",
+  "replace": "were inspired with zeal",
+  "why": "p. 78: misread letters"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "that we and oiu* brethi'en, as far",
+  "replace": "that we and our brethren, as far",
+  "why": "p. 78: misread letters (two words)"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "on our behali', to hear",
+  "replace": "on our behalf, to hear",
+  "why": "p. 78: misread letters"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "the said piince, might",
+  "replace": "the said prince, might",
+  "why": "p. 78: misread letter"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "if the Chui'ch had injui-ed him",
+  "replace": "if the Church had injured him",
+  "why": "p. 78: misread letters (two words)"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "improper way (wliich she did",
+  "replace": "improper way (which she did",
+  "why": "p. 78: misread letters"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "his proper condition j and if",
+  "replace": "his proper condition; and if",
+  "why": "p. 78: punctuation (\"j\" for \";\")"
+ },
+ {
+  "passage": "deposition-02",
+  "find": "say that the Chm*ch,",
+  "replace": "say that the Church,",
+  "why": "p. 78: misread letters"
+ },
+ {
+  "passage": "deposition-03",
+  "find": "had injured liim in any way",
+  "replace": "had injured him in any way",
+  "why": "p. 78: misread letters"
+ },
+ {
+  "passage": "deposition-03",
+  "find": "excommunication wluch it had",
+  "replace": "excommunication which it had",
+  "why": "p. 78: misread letters"
+ },
+ {
+  "passage": "deposition-03",
+  "find": "against him imjustly, and",
+  "replace": "against him unjustly, and",
+  "why": "p. 78: misread letter"
+ },
+ {
+  "passage": "deposition-03",
+  "find": "the said Church bv him. or liis followers",
+  "replace": "the said Church by him, or his followers",
+  "why": "p. 78: misread letters (\"bv\", \"liis\") and punctuation (full stop for comma after \"him\")"
+ },
+ {
+  "passage": "deposition-03",
+  "find": "through him. That A.D. 1245.] THE EMPEROU EXCOSIilUNlCATED. 7^",
+  "replace": "through him. That",
+  "why": "p. 79: page furniture (running head and page number of p. 79) in text"
+ },
+ {
+  "passage": "deposition-06",
+  "find": "and, at Ms decease, to",
+  "replace": "and, at his decease, to",
+  "why": "p. 80: misread letters"
+ },
+ {
+  "passage": "deposition-06",
+  "find": "he has pix)ved himself a daring",
+  "replace": "he has proved himself a daring",
+  "why": "p. 80: misread letters"
+ },
+ {
+  "passage": "deposition-06",
+  "find": "St. Nicholas in the TuUian prison",
+  "replace": "St. Nicholas in the Tullian prison",
+  "why": "p. 80: misread letters"
+ },
+ {
+  "passage": "deposition-06",
+  "find": "He lias moreover endeavoured mth all Lis power",
+  "replace": "He has moreover endeavoured with all his power",
+  "why": "p. 81: misread letters (three words: \"lias\", \"mth\", \"Lis\")"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "namely, that, ' 'Whatever ye shall bind",
+  "replace": "namely, that, 'Whatever ye shall bind",
+  "why": "p. 81: added stray single quotation mark"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "on earth, sliall be bound",
+  "replace": "on earth, shall be bound",
+  "why": "p. 81: misread letters"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "authority of the Eoman chm-ch);",
+  "replace": "authority of the Roman church);",
+  "why": "p. 81: misread letters (two words)"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "possessions also of the Koman church",
+  "replace": "possessions also of the Roman church",
+  "why": "p. 81: misread capital"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "the duchy of Bene-vento (the walls",
+  "replace": "the duchy of Benevento (the walls",
+  "why": "p. 81: wrong join: line-end hyphen kept (\"Bene-/vento\")"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "towers of wliicli he caused",
+  "replace": "towers of which he caused",
+  "why": "p. 81: misread letters"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "in parts of Tuscan}?- and Lombardy",
+  "replace": "in parts of Tuscany and Lombardy",
+  "why": "p. 81: misread letter / stray marks"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "exceptions, lie dared to occupy",
+  "replace": "exceptions, he dared to occupy",
+  "why": "p. 81: misread letters"
+ },
+ {
+  "passage": "deposition-07",
+  "find": "he had no poAver by right",
+  "replace": "he had no power by right",
+  "why": "p. 81: misread letter"
+ },
+ {
+  "passage": "deposition-12",
+  "find": "pious places. ISTow these, then,",
+  "replace": "pious places. Now these, then,",
+  "why": "p. 85: misread letters"
+ },
+ {
+  "passage": "deposition-12",
+  "find": "him; since ci\\'il law declares",
+  "replace": "him; since civil law declares",
+  "why": "p. 85: misread letter / stray mark"
+ },
+ {
+  "passage": "deposition-12",
+  "find": "have been detected inde\\iating, even",
+  "replace": "have been detected in deviating, even",
+  "why": "p. 85: misread letter and missing word break (\"in deviating\")"
+ },
+ {
+  "passage": "deposition-12",
+  "find": "judgment and rule ol the Catholic",
+  "replace": "judgment and rule of the Catholic",
+  "why": "p. 85: misread letter; the print's \"f\" is damaged and reads as \"t\" (\"ot\")"
+ },
+ {
+  "passage": "deposition-12",
+  "find": "has been reduced by Mm to such",
+  "replace": "has been reduced by him to such",
+  "why": "p. 85: misread letters"
+ },
+ {
+  "passage": "deposition-12",
+  "find": "attack the Eoman church in manifold ways,",
+  "replace": "attack the Roman church in manifold ways,",
+  "why": "p. 85: misread capital"
+ },
+ {
+  "passage": "duty-of-the-legate",
+  "find": "*• It is the duty",
+  "replace": "It is the duty",
+  "why": "p. 96: stray marks where the opening double quote stood"
+ },
+ {
+  "passage": "duty-of-the-legate",
+  "find": "office to pro^dde for the relief",
+  "replace": "office to provide for the relief",
+  "why": "p. 96: misread letters"
+ },
+ {
+  "passage": "duty-of-the-legate",
+  "find": "relief of om-subjects; for",
+  "replace": "relief of our subjects; for",
+  "why": "p. 96: misread letters and missing word break"
+ },
+ {
+  "passage": "duty-of-the-legate",
+  "find": "rest in their tranquilHty, and",
+  "replace": "rest in their tranquillity, and",
+  "why": "p. 96: misread letter"
+ },
+ {
+  "passage": "duty-of-the-legate",
+  "find": "or on the busmess of their",
+  "replace": "or on the business of their",
+  "why": "p. 97: misread letters"
+ },
+ {
+  "passage": "duty-of-the-legate",
+  "find": "thought proper esjDecially to grant",
+  "replace": "thought proper especially to grant",
+  "why": "p. 97: misread letters"
+ },
+ {
+  "passage": "duty-of-the-legate",
+  "find": "so we wisli them to hold",
+  "replace": "so we wish them to hold",
+  "why": "p. 97: misread letters"
+ },
+ {
+  "passage": "deposition-12",
+  "find": "the kingdom ot Sicily",
+  "replace": "the kingdom of Sicily",
+  "why": "p. 85: the print's \"f\" is damaged and reads as \"t\" (\"ot\"), as in \"rule of the\" two lines up; \"of his yoke\" on the same page shows the letter whole"
+ },
+ {
+  "passage": "deposition-04",
+  "continues": true,
+  "why": "pp. 78–79: one sentence runs over the page (\"That / the Church also wished\"); the misread running head of p. 79 made the clean-up read a paragraph break"
+ },
+ {
+  "passage": "deposition-13",
+  "find": "Peter, ' Whatever",
+  "replace": "Peter, 'Whatever",
+  "why": "p. 86: the OCR put a space after the opening quotation mark"
+ }
+]
