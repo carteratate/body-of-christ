@@ -14,7 +14,9 @@ Removed, by position and by patterns repeated across pages, and logged per page:
 Notes at the foot of a page (a block that opens with a note marker after a gap, set
 tighter than the body) are not deleted: they go to their own stream, so a sentence that
 runs across a page break is not split by them, and the body text the gate measures does
-not include them.
+not include them. A work whose notes the measure misses names the line that opens each
+page's notes (`note_opens`), and a printed rule the OCR reads as letters by its line
+(`rule_lines`).
 
 A word broken across a line end ("ec-" / "clesiastical") is joined when the joined form
 is in the word list or occurs unbroken elsewhere in the work; otherwise it keeps its
@@ -85,7 +87,7 @@ class Removal:
     leaf: int
     page: str | None
     kind: str        # running_head | page_number | signature | catchword | speck |
-                     # margin_number | note_call (`pdf.py`)
+                     # margin_number | note_call (`pdf.py`) | rule
     text: str
 
 
@@ -335,7 +337,9 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
                 broken_words_continue: bool = False,
                 max_paragraph_words: int | None = None,
                 margin_numbers: bool = False,
-                paragraph_opens: tuple[str, ...] = ()) -> CleanResult:
+                paragraph_opens: tuple[str, ...] = (),
+                rule_lines: tuple[str, ...] = (),
+                note_opens: tuple[str, ...] = ()) -> CleanResult:
     """The pages' body paragraphs, notes and removals. With `max_paragraph_words`, a
     paragraph is cut at the first line ending a sentence or a clause once it holds that
     many words, and the part after the cut `continues` it: a page-long paragraph is too
@@ -344,7 +348,13 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     `paragraph_opens` are patterns, each matching the start of exactly one line, that
     open a paragraph the clean-up would join to the one before: a decree whose heading
     the OCR lost and whose first line opens a page (Basel's decree 3, p. 475). One that
-    matches no line, or more than one, raises."""
+    matches no line, or more than one, raises.
+
+    `rule_lines` and `note_opens` take patterns the same way. A rule line is a printed rule
+    the OCR reads as letters ("ee SS ---ς-ς---", Chrystal), removed as furniture. A
+    `note_opens` line opens its page's notes, which then run to the page's end, in place
+    of the measure of gaps and line spacing: Chrystal sets his notes almost the size of
+    his text, and a note carried over from the page before opens with no marker."""
     layout = layout or SingleColumn()
     result = CleanResult()
     ordered = [layout.reading_order(p) for p in pages]
@@ -358,11 +368,16 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     heads = _Head(tops)
 
     # Top furniture first, so each page's first body word is known for catchwords.
+    rules = _one_line_each(rule_lines, ordered, "rule_lines")
+    opens = _one_line_each(note_opens, ordered, "note_opens")
     kept: list[list[Line]] = []
     for page, lines in zip(pages, ordered):
         lines = list(lines)
         for line in [ln for ln in lines if not _HAS_ALNUM.search(ln.text)]:
             result.removals.append(Removal(page.leaf, page.number, "speck", line.text))
+            lines.remove(line)
+        for line in [ln for ln in lines if id(ln) in rules]:
+            result.removals.append(Removal(page.leaf, page.number, "rule", line.text))
             lines.remove(line)
         for removal in _top_furniture(lines, page, heads):
             result.removals.append(removal)
@@ -377,7 +392,11 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
             if not kind:
                 break
             result.removals.append(Removal(page.leaf, page.number, kind, lines.pop().text))
-        body, notes = _split_notes(lines, page, after_note)
+        if note_opens:
+            k = next((k for k, ln in enumerate(lines) if id(ln) in opens), len(lines))
+            body, notes = lines[:k], lines[k:]
+        else:
+            body, notes = _split_notes(lines, page, after_note)
         if notes:
             result.notes.append(Note(page.leaf, page.number, "\n".join(ln.text for ln in notes)))
         after_note = bool(notes)
@@ -405,11 +424,8 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
         flat.extend((page, ln) for ln in body)
         starts.extend(page_starts)
 
-    for pattern in paragraph_opens:
-        hits = [k for k, (_, line) in enumerate(flat) if re.match(pattern, line.text)]
-        if len(hits) != 1:
-            raise ValueError(f"paragraph_opens {pattern!r} matches {len(hits)} lines, not one")
-        starts[hits[0]] = True
+    opened = _one_line_each(paragraph_opens, [[ln for _, ln in flat]], "paragraph_opens")
+    starts = [s or id(ln) in opened for s, (_, ln) in zip(starts, flat)]
 
     current: list[tuple[Page, Line]] = []
     continues = False
@@ -426,6 +442,18 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     if current:
         result.paragraphs.append(_paragraph(current, seen, result.hyphens, continues))
     return result
+
+
+def _one_line_each(patterns: tuple[str, ...], pages: list[list[Line]], what: str) -> set[int]:
+    """The ids of the lines `patterns` name, each pattern matching the start of exactly
+    one line of `pages`; one that matches none, or more than one, raises."""
+    out: set[int] = set()
+    for pattern in patterns:
+        hits = [ln for lines in pages for ln in lines if re.match(pattern, ln.text)]
+        if len(hits) != 1:
+            raise ValueError(f"{what} {pattern!r} matches {len(hits)} lines, not one")
+        out.add(id(hits[0]))
+    return out
 
 
 def _paragraph(lines: list[tuple[Page, Line]], seen: Counter, log: list[HyphenBreak],
@@ -510,7 +538,7 @@ def clean_work(workdir, sources=None, force: bool = False,
         pages = load_pages(sources / config.djvu_xml, numbers_path, leaves, config.leaf_offset)
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
                          config.max_paragraph_words, config.margin_numbers,
-                         config.paragraph_opens)
+                         config.paragraph_opens, config.rule_lines, config.note_opens)
     number = {p.leaf: p.number for p in pages}
     result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")
                            for c in note_calls)

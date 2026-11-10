@@ -952,3 +952,69 @@ def test_deferrari_units_drop_a_label_opening_a_paragraph_and_a_remark_set_over_
     assert [p.text for p in unit.paragraphs] == [
         "In the name of the Trinity we define.", "It has likewise defined.",
         "But since the form of the words is fixed, it is so."]
+
+
+# --- 1.2c: Hefele's anathemas, Chrystal's Nestorius ------------------------------------------
+
+from ocr.units import ChrystalLetter  # noqa: E402
+
+
+def _body_and_notes(top, words="the letter runs on across the whole width of the page"):
+    return Line(words, 100, top, 900, top + 25)
+
+
+def test_rule_lines_go_as_furniture_and_each_names_one_line():
+    lines = [_body_and_notes(100 + 40 * k) for k in range(3)]
+    lines.insert(1, Line("ee SS ---ς-ς---ο--- --ο------", 100, 130, 900, 150))
+    page = Page(0, 1000, 2000, lines, "157")
+    result = clean_pages([page], rule_lines=("^ee SS ---",))
+    assert [r.kind for r in result.removals] == ["rule"]
+    assert "SS" not in result.paragraphs[0].text
+    with pytest.raises(ValueError, match="matches 3 lines"):
+        clean_pages([page], rule_lines=("^the letter",))
+
+
+def test_note_opens_starts_the_pages_notes_where_the_measure_sees_none():
+    # Chrystal's notes are set almost the size of his text, with no extra space, and a note
+    # carried over from the page before opens with no marker.
+    body = [_body_and_notes(100 + 40 * k) for k in range(3)]
+    notes = [Line("Surely after such language as this, both Cyril and the Church", 100, 220, 900, 245),
+             Line("(309). The Greek is as follows", 140, 260, 900, 285)]
+    page = Page(0, 1000, 2000, body + notes, "158")
+    assert len(clean_pages([page]).notes) == 0
+    result = clean_pages([page], note_opens=("^Surely after such language",))
+    assert [n.text.split("\n")[0][:6] for n in result.notes] == ["Surely"]
+    assert "Surely" not in " ".join(p.text for p in result.paragraphs)
+
+
+def test_a_bounded_text_can_open_and_close_inside_a_paragraph():
+    paras = _paras("Anathema to John! If anyone does not confess that Christ, let him be anathema! "
+                   "If anyone rejects the tradition, let him be anathema! Eternal remembrance.")
+    unit, = Bounded().split(paras, bounds=({"id": "anathemas", "first": "If anyone",
+                                            "last": "rejects", "start": "If anyone does not",
+                                            "end": "rejects the tradition, let him be anathema!"},))
+    assert unit.paragraphs[0].text == ("If anyone does not confess that Christ, let him be "
+                                       "anathema! If anyone rejects the tradition, let him be anathema!")
+    with pytest.raises(ValueError, match="holds no"):
+        Bounded().split(paras, bounds=({"id": "x", "first": "If", "last": "If", "end": "Nowhere"},))
+
+
+def test_chrystal_units_drop_his_summaries_and_note_calls_and_keep_quotes():
+    paras = _paras("“To the most religious Cyril, Nestorius wishes joy in the Lord” (290).",
+                   "[Section I. Nestorius brands St. Cyril's Epistle as insulting to him",
+                   "and of course His Inman also. |",
+                   "The insults directed against us in thy admirable (291) Letter, I dismiss as "
+                   "worthy of a physicians’ long suffering, (292), and the words “Lord,” (299), and "
+                   "“Son” the names [that is] common to both.",
+                   "[SEcTION IV. Nestorius thanks Cyril.]",
+                   "May you continue strong, O brother, and to God most dear” (346).")
+    unit, = ChrystalLetter().split(paras, bounds=({"id": "letter", "first": "^“To the",
+                                                   "last": "most dear"},))
+    assert [p.text for p in unit.paragraphs] == [
+        "“To the most religious Cyril, Nestorius wishes joy in the Lord”.",
+        "The insults directed against us in thy admirable Letter, I dismiss as worthy of a "
+        "physicians’ long suffering, and the words “Lord,” and “Son” the names [that is] "
+        "common to both.",
+        "May you continue strong, O brother, and to God most dear”."]
+    with pytest.raises(ValueError, match="does not close"):
+        ChrystalLetter().split(paras[:2], bounds=({"id": "x", "first": "^“To", "last": "Section"},))

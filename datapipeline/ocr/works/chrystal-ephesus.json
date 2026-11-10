@@ -1,0 +1,61 @@
+{
+ "work": "chrystal-ephesus",
+ "title": "Council of Ephesus, Nestorius's second letter to Cyril, from James Chrystal, Authoritative Christianity: The Third World Council, vol. 1 (1895), pp. 155–166",
+ "scan": "authoritative01chry",
+ "djvu_xml": "councils/authoritative01chry/authoritative01chry_djvu.xml",
+ "page_numbers": "councils/authoritative01chry/authoritative01chry_page_numbers.json",
+ "pages": [
+  "155",
+  "166"
+ ],
+ "layout": "single-column",
+ "leaf_offset": 1,
+ "max_paragraph_words": 250,
+ "rule_lines": [
+  "^__ τον ee Oe cane",
+  "^EA NI Aa δι δον",
+  "^ee SS ---",
+  "^earned Pete μ"
+ ],
+ "note_opens": [
+  "^\\(290\\)\\. The Greek heading",
+  "^\\(295\\)",
+  "^\\(303\\)\\. Greek",
+  "^Surely after such language",
+  "^torius denies the second birth",
+  "^\\(317\\)\\. The Greek",
+  "^\\(327\\)\\. \\|",
+  "^\\(332\\)\\. I have followed",
+  "^given the latter\\. I have translated",
+  "^feAp\\)",
+  "^\\(345\\) 08\\)"
+ ],
+ "paragraph_opens": [
+  "^\\[Section I\\.",
+  "^\\[Section II\\.",
+  "^\\[Section III\\.",
+  "^\\[SEcTION IV\\."
+ ],
+ "units": "chrystal",
+ "unit_bounds": [
+  {
+   "id": "letter",
+   "first": "^\\W{0,3}T[oy] the most religious and most dear-to-God",
+   "last": "to God most dear\\W+\\(346\\)\\.?$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/npnf214.xml",
+  "start": "^To the most religious and beloved of God, fellow minister Nestorius",
+  "end": "^Extracts from the Acts"
+ },
+ "check_note": "Left out on purpose: Chrystal's bracketed summaries ([Section I.] and the rest), his notes and note numbers such as (290). Set differently from the print, with no word changed: his double quotation marks, printed as two single marks, are set as double; the words he set in small capitals for emphasis are in the letter's ordinary case; the quotation marks he puts round the letter's heading and close are gone. His words in square brackets inside a sentence, such as [at Nicaea], are his translation and stay.",
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

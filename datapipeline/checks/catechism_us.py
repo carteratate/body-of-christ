@@ -204,7 +204,8 @@ def openings(build: "catechism.Build", source: dict, live: list[dict]) -> dict:
         else:
             ident = key_to_line.get(key, ("inserted", key))
         new_units.append((ident, text))
-    build_open = _walk([(p.anchor, p.content) for p in build.document.passages], new_units)
+    build_open = _walk([(p.anchor, p.content) for p in build.document.passages
+                        if p.superseded_by_anchor is None], new_units)   # not history (1.6)
 
     removed, changed, unresolved, headed = [], [], [], []
     for anchor, (ident, words, first) in live_open.items():
@@ -288,6 +289,8 @@ def report(build: "catechism.Build", source: dict, live: list[dict] | None) -> d
     # Reconstruction: the passages hold every unit in reading order, each once.
     held: list[str] = []
     for passage in build.document.passages:
+        if passage.superseded_by_anchor is not None:
+            continue                     # 1.6's history passage holds no US item
         for key in build.held[passage.anchor]:
             if not held or held[-1] != key:
                 held.append(key)

@@ -5,7 +5,7 @@
   "canon-law": "feat/1.5a-canon-law-parser 16888ad",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8a-anf-editorial-strip 8df87eb",
-  "councils": "feat/1.1-vatican-ii-sections 16709fc",
+  "councils": "feat/1.2c-councils-percival a1ff8ae",
   "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
@@ -796,41 +796,6 @@
    "body_chars": 2233538,
    "covered_chars": 2067828,
    "pct": 92.58
-  },
-  "councils/ecum-01-council-of-nicaea.html": {
-   "body_chars": 19592,
-   "covered_chars": 5925,
-   "pct": 30.24
-  },
-  "councils/ecum-02-first-council-of-constantinople.html": {
-   "body_chars": 22260,
-   "covered_chars": 22100,
-   "pct": 99.28
-  },
-  "councils/ecum-03-council-of-ephesus.html": {
-   "body_chars": 57186,
-   "covered_chars": 38391,
-   "pct": 67.13
-  },
-  "councils/ecum-04-council-of-chalcedon.html": {
-   "body_chars": 48136,
-   "covered_chars": 43866,
-   "pct": 91.13
-  },
-  "councils/ecum-05-second-council-of-constantinople.html": {
-   "body_chars": 41199,
-   "covered_chars": 27643,
-   "pct": 67.1
-  },
-  "councils/ecum-06-third-council-of-constantinople.html": {
-   "body_chars": 11935,
-   "covered_chars": 8894,
-   "pct": 74.52
-  },
-  "councils/ecum-07-second-council-of-nicaea.html": {
-   "body_chars": 36828,
-   "covered_chars": 31675,
-   "pct": 86.01
   },
   "councils/ecum-19-council-of-trent.html": {
    "body_chars": 535924,
@@ -2264,13 +2229,6 @@
    "covered_chars": 24882,
    "pct": 100.0
   },
-  "2f25da58-028b-5944-ba0c-fcb5aa76c709": {
-   "collection": "councils",
-   "source_file": "ecum-01-council-of-nicaea.html",
-   "body_chars": 19592,
-   "covered_chars": 5925,
-   "pct": 30.24
-  },
   "2f3a4d5c-57b7-53ac-881a-a135bea7e6e9": {
    "collection": "encyclicals",
    "source_file": "probe-nostis.html",
@@ -2705,13 +2663,6 @@
    "covered_chars": 7825,
    "pct": 97.07
   },
-  "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f": {
-   "collection": "councils",
-   "source_file": "ecum-03-council-of-ephesus.html",
-   "body_chars": 57186,
-   "covered_chars": 38391,
-   "pct": 67.13
-  },
   "5a05852b-4193-518f-9d01-afd796291979": {
    "collection": "church-fathers",
    "source_file": "third-century.xml",
@@ -2971,13 +2922,6 @@
    "covered_chars": 4639,
    "pct": 100.0
   },
-  "70d99be3-5a1c-5435-9507-f45e457c1376": {
-   "collection": "councils",
-   "source_file": "ecum-02-first-council-of-constantinople.html",
-   "body_chars": 22260,
-   "covered_chars": 22100,
-   "pct": 99.28
-  },
   "73eb7fdd-b401-5a95-a21e-0b0e9ce72188": {
    "collection": "encyclicals",
    "source_file": "hf_l-xiii_enc_01111885_immortale-dei.html",
@@ -2991,13 +2935,6 @@
    "body_chars": 274839,
    "covered_chars": 271504,
    "pct": 98.79
-  },
-  "758019ee-d1fe-59c6-97cd-3b9ab03ae8a9": {
-   "collection": "councils",
-   "source_file": "ecum-04-council-of-chalcedon.html",
-   "body_chars": 48136,
-   "covered_chars": 43866,
-   "pct": 91.13
   },
   "760c4195-f5be-5141-90fc-8958fccd06ba": {
    "collection": "church-fathers",
@@ -3328,13 +3265,6 @@
    "covered_chars": 15386,
    "pct": 88.84
   },
-  "998f9723-f905-5de8-8838-2ff4596e9651": {
-   "collection": "councils",
-   "source_file": "ecum-05-second-council-of-constantinople.html",
-   "body_chars": 41199,
-   "covered_chars": 27643,
-   "pct": 67.1
-  },
   "999807dc-d537-51ce-a67c-149de0fd8992": {
    "collection": "encyclicals",
    "source_file": "hf_l-xiii_enc_28051902_mirae-caritatis.html",
@@ -3411,13 +3341,6 @@
    "body_chars": 108962,
    "covered_chars": 108931,
    "pct": 99.97
-  },
-  "a1f27f39-1821-5eb8-b17f-fc9bd994c776": {
-   "collection": "councils",
-   "source_file": "ecum-07-second-council-of-nicaea.html",
-   "body_chars": 36828,
-   "covered_chars": 31675,
-   "pct": 86.01
   },
   "a2036bab-a233-516b-8cd9-60c69277b1cb": {
    "collection": "bible",
@@ -4440,13 +4363,6 @@
    "body_chars": 39560,
    "covered_chars": 39249,
    "pct": 99.21
-  },
-  "f9ca2dc5-6b49-534d-8d15-0a34c1dbc215": {
-   "collection": "councils",
-   "source_file": "ecum-06-third-council-of-constantinople.html",
-   "body_chars": 11935,
-   "covered_chars": 8894,
-   "pct": 74.52
   },
   "f9e64ef8-6874-5784-b75c-ceaf4c081d29": {
    "collection": "church-fathers",

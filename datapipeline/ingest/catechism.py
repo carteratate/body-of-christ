@@ -19,10 +19,17 @@ Three-tier strategy
 
 IN BRIEF rule: any chunk whose leading section header is exactly "IN BRIEF",
 or whose raw_text begins with "IN BRIEF", is flagged is_in_brief=True.
+
+Each numbered paragraph's text opens with its number, "§2267 " (1.6, Decision log
+"Catechism paragraph markers (1.6)"), and each passage cites the paragraphs it holds.
+Chapters are the source's Prologue, Parts, Sections, Chapters and Articles (`chapters`).
+The 1997 text of §2267 is kept as an unsearchable history passage after the passage that
+holds the 2018 text (rule F, D11).
 """
 from __future__ import annotations
 
 import json
+from collections import Counter
 from dataclasses import dataclass
 import os
 import re
@@ -35,6 +42,9 @@ from normalize.text import clean_text  # noqa: E402
 from config import settings  # noqa: E402
 from ingest.common import split_display_passage  # noqa: E402
 from ingest import catechism_us  # noqa: E402
+from ingest.catechism_headings import TEXT_FIXES, TITLE_FIXES  # noqa: E402
+from ingest.pieces import RANGE, piece_reference  # noqa: E402
+from normalize.caps import smart_title_case  # noqa: E402
 from registry import ANCHOR_SCHEME, resolve_document_id  # noqa: E402
 
 _DEFAULT_SRC = os.path.join(
@@ -50,14 +60,25 @@ _HEADER_MAX_CHARS = 120
 # Paragraph / element helpers
 # ---------------------------------------------------------------------------
 
+def marker(number: int) -> str:
+    """What opens a numbered paragraph's text: "§2267 ", the form `unit_label` uses."""
+    return f"§{number} "
+
+
 def _para_text(paragraph: dict) -> str:
+    """The paragraph's text, opened by its number's marker when the paragraph starts
+    with a `ref-ccc` element (every numbered paragraph in the source does)."""
     parts: list[str] = []
+    number = None
     for el in paragraph.get("elements", []):
         if el.get("type") == "text":
             t = el.get("text", "")
             if t:
                 parts.append(t)
-    return " ".join(parts).strip()
+        elif el.get("type") == "ref-ccc" and not parts and el.get("ref_number") is not None:
+            number = el["ref_number"]
+    text = " ".join(parts).strip()
+    return marker(number) + text if text and number is not None else text
 
 
 def extract_node_text(node: dict) -> tuple[str, list[int]]:
@@ -140,30 +161,34 @@ def split_large_node(node: dict) -> list[tuple[str, list[int], bool]]:
 # Reference formatting
 # ---------------------------------------------------------------------------
 
-def make_reference(ccc_paragraphs: list[int], node_id: str, is_partial: bool = False) -> str:
-    """Build a human-readable CCC reference string."""
+def make_reference(ccc_paragraphs: list[int], node_id: str) -> str:
+    """The citation of the paragraphs a passage holds: "CCC §N", "CCC §N–M" for a run,
+    "CCC §N, §M" otherwise. Pieces that would share one get "(part 1 of 2)" from
+    `piece_reference` in `build`."""
     if not ccc_paragraphs:
         return f"CCC [{node_id}]"
 
-    suffix = " (part)" if is_partial else ""
-
     if len(ccc_paragraphs) == 1:
-        return f"CCC §{ccc_paragraphs[0]}{suffix}"
+        return f"CCC §{ccc_paragraphs[0]}"
 
     consecutive = all(
         ccc_paragraphs[i + 1] == ccc_paragraphs[i] + 1
         for i in range(len(ccc_paragraphs) - 1)
     )
     if consecutive:
-        return f"CCC §{ccc_paragraphs[0]}–{ccc_paragraphs[-1]}{suffix}"
+        return f"CCC §{ccc_paragraphs[0]}{RANGE}{ccc_paragraphs[-1]}"
 
     joined = ", ".join(f"§{n}" for n in ccc_paragraphs)
-    return f"CCC {joined}{suffix}"
+    return f"CCC {joined}"
 
 
 # ---------------------------------------------------------------------------
 # Three-tier chunker
 # ---------------------------------------------------------------------------
+
+# "IN BRIEF" opening a node's text, behind a paragraph's "§N " if it is numbered.
+_IN_BRIEF = re.compile(r"(?:§\d+ )?IN BRIEF")
+
 
 def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, dict, int]]:
     """Apply three-tier chunking strategy to an ordered list of page nodes."""
@@ -187,10 +212,11 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
         prefix = pending_prefix
         pending_prefix = ""
 
-        # Tier 3 (Large): split at internal section headers
-        if len(raw_text) > _LARGE_THRESHOLD and len(ccc_paragraphs) > 0:
+        # Tier 3 (Large): split at internal section headers. The size is the text's
+        # without its "§N " markers, so the markers (1.6) split no node that was whole.
+        size = len(raw_text) - sum(len(marker(n)) for n in ccc_paragraphs)
+        if size > _LARGE_THRESHOLD and len(ccc_paragraphs) > 0:
             sections = split_large_node(node)
-            n_sections = len(sections)
             carry = prefix
 
             for i, (sec_text, sec_paras, is_brief) in enumerate(sections):
@@ -206,8 +232,7 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
                 sec_content = (carry + "\n\n" + sec_text).strip() if carry else sec_text
                 carry = ""
 
-                is_partial = n_sections > 1
-                ref = make_reference(sec_paras, node_id, is_partial=is_partial)
+                ref = make_reference(sec_paras, node_id)
                 meta: dict = {
                     "path": node_id,
                     "ccc_paragraphs": sec_paras,
@@ -223,8 +248,8 @@ def chunk_nodes(nodes: list[dict], node_ids: list[str]) -> list[tuple[str, str, 
         content = (prefix + "\n\n" + raw_text).strip() if prefix else raw_text
 
         # If the first paragraph text is "IN BRIEF" (header or numbered), it appears
-        # first in raw_text — so a single startswith covers both cases.
-        is_brief = raw_text.lstrip().startswith("IN BRIEF")
+        # first in raw_text, so one match covers both cases.
+        is_brief = bool(_IN_BRIEF.match(raw_text.lstrip()))
 
         ref = make_reference(ccc_paragraphs, node_id)
         meta = {
@@ -318,6 +343,8 @@ def _footnotes_for(items: dict, held: list[tuple[str | None, str, int]], clean: 
         if key is None or key not in items:      # a source line kept as printed
             continue
         raw = items[key]["text"]         # the offsets are into the US text as fetched
+        if items[key]["kind"] == "paragraph":
+            start += len(marker(items[key]["n"]))    # the text opens with "§N "
         for note in items[key]["footnotes"]:
             x = start + len(clean_text(raw[:note["at"]]))
             want = _last_word(raw[:note["at"]])
@@ -339,6 +366,34 @@ def _piece_spans(clean: str, pieces: list[str]) -> list[tuple[int, int]]:
         spans.append((start, start + len(piece)))
         cursor = start + len(piece)
     return spans
+
+
+def _cut(clean: str, held: list[tuple[str | None, str, int]]) -> list[tuple[int, int]]:
+    """Each display piece's span in a chunk's text. The cuts are those of the text
+    without its "§N " markers, so adding the markers (1.6) moves no piece boundary and
+    no piece's ID: a marker at a cut opens the piece after it."""
+    marks = []                            # (offset in the text without markers, length)
+    removed = 0
+    for key, _, start in held:
+        m = _PARAGRAPH_KEY.match(key or "")
+        if m and clean.startswith(marker(int(m[1])), start):
+            marks.append((start - removed, len(marker(int(m[1])))))
+            removed += marks[-1][1]
+    bare, at = [], 0
+    for b, length in marks:
+        start = b + sum(n for x, n in marks if x < b)
+        bare.append(clean[at:start])
+        at = start + length
+    bare.append(clean[at:])
+    text = "".join(bare)
+
+    def marked(offset: int) -> int:
+        # Only markers before `offset` move it: one exactly at a cut is the first thing
+        # in the piece after it.
+        return offset + sum(n for b, n in marks if b < offset)
+
+    pieces = split_display_passage(text, settings.MAX_PASSAGE_CHARS)
+    return [(marked(lo), marked(hi)) for lo, hi in _piece_spans(text, pieces)]
 
 
 def _split_notes(spans: list[tuple[int, int]], notes: list[dict]) -> list[list[dict]]:
@@ -400,6 +455,89 @@ def _piece_names(unit: str, spans: list[tuple[int, int]],
     return out
 
 
+# ---------------------------------------------------------------------------
+# Chapters: the source's Prologue, Parts, Sections, Chapters and Articles
+# ---------------------------------------------------------------------------
+
+_LEVEL = re.compile(r"^(PART|SECTION|CHAPTER|ARTICLE)\s+(ONE|TWO|THREE|FOUR|\d+)\b:?\s*(.*)$",
+                    re.I)
+_NUMBER_WORDS = {"ONE": 1, "TWO": 2, "THREE": 3, "FOUR": 4}
+
+
+def heading_text(node_id: str, text: str) -> str:
+    """A `toc_nodes` heading with the source's misprints corrected, from the table the
+    stopgap contents tree also reads (`catechism_headings`)."""
+    text = TITLE_FIXES.get(node_id, text)
+    for wrong, right in TEXT_FIXES:
+        text = text.replace(wrong, right)
+    return " ".join(text.split())
+
+
+def _title(text: str) -> str:
+    """A heading's title in title case: `smart_title_case`, then each phrase opening with
+    a capital, also after an opening quote, a colon, a full stop or a dash ('"He
+    Descended into Hell. On the Third Day"'), and "into", "at" and "as" lowercase."""
+    text = smart_title_case(text)
+    text = re.sub(r"(?<=\s)(Into|At|As)(?=\s)", lambda m: m[1].lower(), text)
+    return re.sub(r"(^|[:.]\s+|\s[-–—]\s+)([\"“‘']?)([a-z])",
+                  lambda m: m[1] + m[2] + m[3].upper(), text)
+
+
+def chapters(source: dict) -> dict[str, tuple[str, str]]:
+    """(chapter_key, chapter_label) for every node of `toc_link_tree`: its nearest
+    Prologue, Part, Section, Chapter or Article, itself included. The key is the path of
+    levels ("ccc/part-3/section-2/chapter-2/article-5"), the label their names and the
+    nearest one's title (`_title`; "Part Three, Section Two, Chapter Two, Article 5, The Fifth
+    Commandment"). Sub-headings ("I. Respect for Human Life", "IN BRIEF", "Paragraph 1.")
+    belong to the chapter above them."""
+    toc = source["toc_nodes"]
+    out: dict[str, tuple[str, str]] = {}
+
+    def visit(link: dict, path: tuple[str, ...], names: tuple[str, ...],
+              here: tuple[str, str] | None) -> None:
+        node_id = link["id"]
+        text = heading_text(node_id, toc[node_id]["text"])
+        m = _LEVEL.match(text)
+        if text.upper() == "PROLOGUE":
+            path, names = ("prologue",), ()
+            here = (make_anchor("ccc", *path), "Prologue")
+        elif m:
+            level, word = m[1].lower(), m[2].upper()
+            number = _NUMBER_WORDS.get(word) or int(word)
+            path = path + (f"{level}-{number}",)
+            names = names + (f"{level.capitalize()} {word.capitalize()}",)
+            title = _title(m[3].strip())
+            here = (make_anchor("ccc", *path), ", ".join(names + ((title,) if title else ())))
+        if here is None:
+            raise ValueError(f"catechism: heading {node_id} ({text!r}) is under no part")
+        out[node_id] = here
+        for child in link["children"]:
+            visit(child, path, names, here)
+
+    for link in source["toc_link_tree"]:
+        visit(link, (), (), None)
+    return out
+
+
+# The 1997 text of §2267, replaced on 2 August 2018, is kept as history (rule F, D11).
+HISTORY_1997 = 2267
+HISTORY_1997_REFERENCE = "CCC §2267 (1997 text, in force until 2 August 2018)"
+
+
+def _history_1997(old_text: str, current: Passage, position: int) -> Passage:
+    """The 1997 text of §2267 as the source prints it (vatican.va's English, citation in
+    brackets), after the passage holding its 2018 text and in its chapter."""
+    return Passage(
+        content=clean_text(marker(HISTORY_1997) + old_text),
+        reference=HISTORY_1997_REFERENCE,
+        anchor=f"{current.anchor}/history-1997",
+        chapter_key=current.chapter_key, chapter_label=current.chapter_label,
+        position=position, unit_label=f"§{HISTORY_1997}",
+        metadata={"path": current.metadata["path"], "ccc_paragraphs": [HISTORY_1997],
+                  "is_in_brief": False, "footnotes": []},
+        searchable=False, superseded_by_anchor=current.anchor)
+
+
 @dataclass
 class Build:
     document: Document
@@ -427,11 +565,12 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
     placement = _Placement(_units(page_nodes))
 
     did = resolve_document_id("catechism", "catechism", ("catechism",))
+    chapter_of = chapters(data)
     passages: list[Passage] = []
     pos = 0
     seen: set[str] = set()
     held_by: dict[str, list[str | None]] = {}
-    for content, reference, meta, _ in raw_chunks:
+    for content, _, meta, _ in raw_chunks:
         clean = clean_text(content)
         held = placement.place(clean)
         if len(clean) < _MIN_CONTENT:
@@ -440,31 +579,45 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
         notes = _footnotes_for(alignment.items, held, clean)
         paras = meta.get("ccc_paragraphs") or []
         first = paras[0] if paras else None
-        chapter_no = (first // 100) if first else 0
+        chapter_key, chapter_label = chapter_of[meta["path"]]
         # A chunk with no numbered paragraph is anchored on its node's path in the source.
         base = make_anchor("ccc", first) if first else make_anchor("ccc", meta["path"])
         unit, k = base, 1
         while unit in seen:
             k += 1
             unit = f"{base}-{k}"
-        pieces = split_display_passage(clean, settings.MAX_PASSAGE_CHARS)
-        spans = _piece_spans(clean, pieces)
-        for (piece, (lo, hi), piece_notes, (anchor, units)) in zip(
-                pieces, spans, _split_notes(spans, notes), _piece_names(unit, spans, held)):
+        spans = _cut(clean, held)
+        pieces = [clean[lo:hi] for lo, hi in spans]
+        named = _piece_names(unit, spans, held)
+        # Each piece cites the paragraphs it holds: those opening in it, and the one it
+        # continues. Pieces of one paragraph would cite alike, so they say which part.
+        cited = [[int(n) for n, _ in units] if len(pieces) > 1 else paras
+                 for _, units in named]
+        refs = [make_reference(c, meta["path"]) for c in cited]
+        shared = Counter(refs)
+        part: Counter = Counter()
+        for (piece, (lo, hi), piece_notes, (anchor, units), piece_paras, ref) in zip(
+                pieces, spans, _split_notes(spans, notes), named, cited, refs):
+            if shared[ref] > 1:
+                part[ref] += 1
+                ref = piece_reference(ref, None, None, part[ref], shared[ref])
             seen.add(anchor)
-            piece_meta = {**meta, "footnotes": piece_notes}
+            piece_meta = {**meta, "ccc_paragraphs": piece_paras, "footnotes": piece_notes}
             held_by[anchor] = [key for key, text, start in held
                                if start < hi and start + len(clean_text(text)) > lo]
             replaced = [TEXT_REPLACED[n] for n in TEXT_REPLACED if f"p{n}" in held_by[anchor]]
             if replaced:
                 piece_meta["text_replaced"] = "; ".join(replaced)
             passages.append(Passage(
-                content=piece, reference=reference, anchor=anchor,
-                chapter_key=make_anchor("ccc", "part", str(chapter_no)),
-                chapter_label=(f"CCC §§{chapter_no * 100}–{chapter_no * 100 + 99}" if first else "CCC"),
-                position=pos, unit_label=(f"§{first}" if first else None), metadata=piece_meta,
-                source_units=units))
+                content=piece, reference=ref, anchor=anchor,
+                chapter_key=chapter_key, chapter_label=chapter_label,
+                position=pos, unit_label=(f"§{piece_paras[0]}" if piece_paras else None),
+                metadata=piece_meta, source_units=units))
             pos += 1
+            if any(key == f"p{HISTORY_1997}" and lo <= start < hi for key, _, start in held):
+                passages.append(_history_1997(alignment.old_paragraphs[HISTORY_1997],
+                                              passages[-1], pos))
+                pos += 1
     if placement.next != len(placement.units):
         raise ValueError("catechism: text after the last passage was not placed")
     document = Document(id=did, collection="catechism",

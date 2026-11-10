@@ -210,17 +210,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/councils/npnf214.xml",
-  "sha256": "4ae3cb29edcb7b8e58bb9246049243c464b6839f88f6730f98b80122770b9bb4",
-  "bytes": 3196008,
-  "url": "https://ccel.org/ccel/s/schaff/npnf214.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/roman-curia/compendium-of-the-social-doctrine-of-the-church.html",
   "sha256": "85e585bed01b303e67ddbef64f1be03b0e9b4c638151df3ea1d4a6f5e361f525",
   "bytes": 1160524,
@@ -3343,6 +3332,50 @@
  },
  {
   "collection": "councils",
+  "path": "councils/ahistoryofthecou05hefeuoft/ahistoryofthecou05hefeuoft_djvu.xml",
+  "sha256": "d4be7f3be65dea42efec40fa899ca9ab9a41735289ff6ac9e26f3029f63fcec3",
+  "bytes": 15496454,
+  "url": "https://archive.org/download/ahistoryofthecou05hefeuoft/ahistoryofthecou05hefeuoft_djvu.xml",
+  "acquired": "2026-11-10",
+  "hashed_on": "2026-11-10",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/ahistoryofthecou05hefeuoft/ahistoryofthecou05hefeuoft_page_numbers.json",
+  "sha256": "4984c6864efffcc08e792462d23e72a2eb25b242a9f739916097a8a31b27d799",
+  "bytes": 85473,
+  "url": "https://archive.org/download/ahistoryofthecou05hefeuoft/ahistoryofthecou05hefeuoft_page_numbers.json",
+  "acquired": "2026-11-10",
+  "hashed_on": "2026-11-10",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/authoritative01chry/authoritative01chry_djvu.xml",
+  "sha256": "a8542074ede4a85c586ac7208ca63755b71d7ba50705f064dd8fb75be0b2c2f2",
+  "bytes": 33674089,
+  "url": "https://archive.org/download/authoritative01chry/authoritative01chry_djvu.xml",
+  "acquired": "2026-11-10",
+  "hashed_on": "2026-11-10",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/authoritative01chry/authoritative01chry_page_numbers.json",
+  "sha256": "ae89489a7e6f552dc74300fb35cfb7d9017ea8189ad034718a49093ea95d5d15",
+  "bytes": 147980,
+  "url": "https://archive.org/download/authoritative01chry/authoritative01chry_page_numbers.json",
+  "acquired": "2026-11-10",
+  "hashed_on": "2026-11-10",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
   "path": "councils/creeds2.xml",
   "sha256": "412c952ff096d7e09a1f2d9e838e9652f0fedcbf7e8d6f3999c27e69ab69091e",
   "bytes": 4065931,
@@ -3614,6 +3647,17 @@
   "url": "https://archive.org/download/matthewparisseng02pari/matthewparisseng02pari_page_numbers.json",
   "acquired": "2026-11-09",
   "hashed_on": "2026-11-09",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "councils",
+  "path": "councils/npnf214.xml",
+  "sha256": "4ae3cb29edcb7b8e58bb9246049243c464b6839f88f6730f98b80122770b9bb4",
+  "bytes": 3196008,
+  "url": "https://ccel.org/ccel/s/schaff/npnf214.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
   "note": "on disk, not read by the collection's adapter"
  },

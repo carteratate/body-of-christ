@@ -1,6 +1,56 @@
 {
- "toc_link_tree": [],
- "toc_nodes": {},
+ "toc_link_tree": [
+  {
+   "id": "toc-1",
+   "children": [
+    {
+     "id": "toc-2",
+     "children": []
+    }
+   ]
+  },
+  {
+   "id": "toc-3",
+   "children": [
+    {
+     "id": "toc-4",
+     "children": [
+      {
+       "id": "toc-5",
+       "children": []
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "toc_nodes": {
+  "toc-1": {
+   "id": "toc-1",
+   "indent_level": 1,
+   "text": "PROLOGUE"
+  },
+  "toc-2": {
+   "id": "toc-2",
+   "indent_level": 2,
+   "text": "I. The life of man - to know and love God"
+  },
+  "toc-3": {
+   "id": "toc-3",
+   "indent_level": 1,
+   "text": "PART THREE: LIFE IN CHRIST"
+  },
+  "toc-4": {
+   "id": "toc-4",
+   "indent_level": 4,
+   "text": "Article 5 THE FIFTH COMMANDMENT"
+  },
+  "toc-5": {
+   "id": "toc-5",
+   "indent_level": 5,
+   "text": "I. Respect for Human Life"
+  }
+ },
  "ccc_refs": {},
  "meta": {
   "fixture": true

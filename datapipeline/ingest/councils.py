@@ -22,6 +22,8 @@ from normalize.text import clean_text
 from normalize.caps import smart_title_case, title_case_shouting
 from normalize.footnotes import drop_caller_elements, strip_footnote_markers
 from normalize.boilerplate import strip_boilerplate
+from ingest.councils_percival import (COUNCILS as PERCIVAL_COUNCILS, SOURCE_FILE as PERCIVAL_FILE,
+                                      build_percival, read_divs)
 from ingest.councils_schaff import SOURCE_FILE as SCHAFF_FILE, build_schaff
 from ingest.councils_schroeder import WORKS as SCHROEDER_WORKS, build_schroeder
 from ingest.pieces import (ORDINAL_ATTR, Segment, element_locator, name_pieces,
@@ -552,7 +554,16 @@ def build_documents() -> list[Document]:
     with open(os.path.join(_SRC, "manifest.json"), encoding="utf-8") as f:
         manifest = json.load(f)
     docs: list[Document] = []
+    percival = None
     for entry in manifest:
+        if entry["council"] in PERCIVAL_COUNCILS:
+            # Percival (1.2c); the Tanner page stays vendored, unread (Carter, 4 Nov 2026).
+            percival = percival or read_divs(os.path.join(_SRC, PERCIVAL_FILE))
+            docs.append(build_percival(
+                entry, resolve_document_id("councils", _source_key(entry),
+                                           ("councils", entry["council"], entry["council"])),
+                _source_key(entry), percival))
+            continue
         if entry["council"] in SCHROEDER_WORKS:
             # The Tanner page stays vendored; no builder reads it (Carter, 4 Nov 2026).
             docs.append(build_schroeder(

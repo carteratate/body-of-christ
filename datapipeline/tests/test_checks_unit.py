@@ -299,6 +299,18 @@ def test_ccc_paragraph_ranges_and_pieces():
     assert result.duplicated == ["3"]
 
 
+def test_ccc_paragraphs_read_every_piece_and_skip_history():
+    # Since 1.6 each piece cites its own paragraphs; a paragraph two pieces share counts
+    # once, and the history passage of §2267 repeats it on purpose.
+    history = _passage("x", "CCC §2 (1997 text, in force until 2 August 2018)", "ccc/1/history-1997")
+    history.superseded_by_anchor = "ccc/1"
+    passages = [_passage("x", "CCC §1–2", "ccc/1"), _passage("x", "CCC §2–3", "ccc/1/from-2-2"),
+                _passage("x", "CCC §4 (part 1 of 2)", "ccc/4"), history,
+                _passage("x", "CCC §4 (part 2 of 2)", "ccc/4/from-4-2")]
+    result = Q.ccc_paragraphs([_doc(passages)])
+    assert result.missing[:1] == ["5"] and result.duplicated == []
+
+
 def test_bible_verses_from_references():
     units = [S.SourceUnit("x.usfm", f"DAG/{c}/{v}", "text", "body")
              for c, v in [(12, 1), (12, 2), (13, 1), (13, 2), (14, 1)]]

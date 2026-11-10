@@ -1,0 +1,14 @@
+[
+ {
+  "passage": "anathemas",
+  "find": "does not con fess that",
+  "replace": "does not confess that",
+  "why": "p. 376: a word broken at the line end (\"con-\" / \"fess\"); the OCR lost the hyphen"
+ },
+ {
+  "passage": "anathemas",
+  "find": "allow the ex planation of",
+  "replace": "allow the explanation of",
+  "why": "p. 376: a word broken at the line end (\"ex-\" / \"planation\"); the OCR lost the hyphen"
+ }
+]
