@@ -23,6 +23,8 @@ class Line:
     x1: int
     bottom: int
     column: int = 0      # index of the djvu PAGECOLUMN the line came from
+    # Each word with its left and right edge, where the reader gives them (`pdf.py`).
+    words: tuple[tuple[str, int, int], ...] = ()
 
     @property
     def height(self) -> int:

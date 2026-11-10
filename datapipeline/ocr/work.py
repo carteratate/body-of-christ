@@ -70,11 +70,14 @@ class Baseline:
 class WorkConfig:
     work: str
     title: str
-    scan: str                    # the Internet Archive identifier
-    djvu_xml: str                # paths relative to datapipeline/sources/
-    page_numbers: str
+    scan: str                    # the Internet Archive identifier, or the PDF scan's name
     pages: tuple[str, str]       # first and last printed page
     baseline: Baseline
+    djvu_xml: str = ""           # paths relative to datapipeline/sources/
+    page_numbers: str = ""
+    pdf: str = ""                # a PDF with a text layer, read instead (`pdf.py`)
+    pdf_page_offset: int = 0     # PDF page index (from 0) minus the printed page number
+    margin_numbers: bool = False   # numbers printed in the margins are furniture
     layout: str = "single-column"
     leaf_offset: int = 0         # scan leaves the XML leaves out before its first page
     broken_words_continue: bool = False   # a broken word's rest never opens a paragraph
@@ -110,6 +113,9 @@ class WorkConfig:
         return sources / rel
 
     def scan_url(self, leaf: int | None = None) -> str:
+        if self.pdf:
+            # Not online: the vendored file, at the PDF's page (counted from 1).
+            return f"sources/{self.pdf}" + (f"#page={leaf + 1}" if leaf is not None else "")
         url = f"https://archive.org/details/{self.scan}"
         return f"{url}/page/n{leaf}/mode/1up" if leaf is not None else url
 

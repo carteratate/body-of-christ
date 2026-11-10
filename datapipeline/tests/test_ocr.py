@@ -740,3 +740,152 @@ def test_a_fix_can_join_a_passage_to_the_paragraph_before_it(tmp_path):
         [{"passage": "a-02", "why": "no find and no join"}]))
     with pytest.raises(ValueError, match="continues"):
         apply_fixes(wd, tmp_path)
+
+
+# --- 1.2e-4: Deferrari's PDF, parallel columns, headed units ---------------------------
+
+from ocr.furniture import _strip_margin_numbers  # noqa: E402
+from ocr.layout import ParallelLeft  # noqa: E402
+from ocr.pdf import _mended  # noqa: E402
+from ocr.units import DeferrariExtracts, Headed  # noqa: E402
+
+
+@pytest.mark.parametrize("read, mended", [
+    ("con1mand", "command"), ("trans111it", "transmit"), ("\\vhich,", "which,"), ("£ro111", "from"),
+    ("sonletimes", "sometimes"), ("eculnenical", "ecumenical"), ("n10ve", "move"),
+    ("only", "only"), ("1415", "1415"), ("Isaias", "Isaias"), ("Annenians", "Annenians"),
+])
+def test_text_layer_misreadings_are_mended_only_into_known_words(read, mended):
+    assert _mended(read) == mended
+
+
+def _wline(top, *words):
+    """A line of (text, x0, x1) words, as `pdf.py` gives it."""
+    return Line(" ".join(w[0] for w in words), words[0][1], top, words[-1][2], top + 25,
+                words=tuple(words))
+
+
+def _row(top, left, right=None):
+    """A line of six words across the left column, and optionally the right one."""
+    words = [(w, 120 + 100 * k, 190 + 100 * k) for k, w in enumerate(left.split())]
+    if right:
+        words += [(w, 760 + 100 * k, 830 + 100 * k) for k, w in enumerate(right.split())]
+    return _wline(top, *words)
+
+
+def test_parallel_left_keeps_the_left_column_and_lines_across_the_page():
+    full = _wline(300, *[(f"w{k}", 120 + 100 * k, 190 + 100 * k) for k in range(12)])
+    page = Page(0, 1400, 2200, [
+        _row(100, "one two three four five six", "Greek alpha beta gamma delta epsilon"),
+        _row(150, "seven eight nine ten eleven twelve", "Greek zeta eta theta iota kappa"),
+        _row(200, "thirteen fourteen fifteen sixteen seventeen eighteen", "Greek lambda mu nu xi omicron"),
+        _wline(250, ("anathema.", 760, 900)),           # the right column alone
+        full])
+    kept = ParallelLeft().reading_order(page)
+    assert [ln.text for ln in kept] == [
+        "one two three four five six", "seven eight nine ten eleven twelve",
+        "thirteen fourteen fifteen sixteen seventeen eighteen", full.text]
+
+
+def test_parallel_left_leaves_a_page_without_columns_whole():
+    # One wide space near the middle of running text is not a gutter.
+    wide = _wline(100, *[(f"a{k}", 120 + 100 * k, 190 + 100 * k) for k in range(6)],
+                  *[(f"b{k}", 760 + 100 * k, 830 + 100 * k) for k in range(6)])
+    page = Page(0, 1400, 2200, [wide, _row(150, "one two three four five six seven")])
+    assert ParallelLeft().reading_order(page) == sorted(page.lines, key=lambda ln: (ln.top, ln.x0))
+
+
+def test_parallel_left_needs_each_lines_words():
+    with pytest.raises(ValueError, match="needs each line's words"):
+        ParallelLeft().reading_order(Page(0, 1400, 2200, [Line("text", 100, 100, 900, 125)]))
+
+
+def test_margin_numbers_go_and_an_articles_own_number_stays():
+    body = [(w, 200 + 90 * k, 270 + 90 * k) for k, w in enumerate("a b c d e f g h i j".split())]
+    lines = [_wline(100, ("6.", 200, 230), *body[1:]),
+             _wline(150, *body, ("586", 1250, 1310)),          # right margin
+             _wline(200, ("337", 100, 160), *body),            # left margin
+             _wline(250, ("1415", 1250, 1330))]                # a margin number alone
+    kept, removed = _strip_margin_numbers(lines, Page(0, 1400, 2200, lines))
+    assert [ln.words[0][0] for ln in kept] == ["6.", "a", "a"]
+    assert all("586" not in ln.text and "337" not in ln.text for ln in kept)
+    assert sorted(r.text for r in removed) == ["1415", "337", "586"]
+
+
+def test_headed_units_run_from_each_opening_to_the_next_and_take_the_heading_off():
+    paras = _paras("History of the council.", "From the bull Alpha (session I, 1513): First text.",
+                   "More of the first.", "2", "Second text.", "End of the second.", "Index.")
+    bounds = ({"id": "session-1/alpha", "first": "^From the bull Alpha",
+               "heading": "^From the bull [^:]*:\\s*"},
+              {"id": "session-1/beta", "first": "^Second text", "last": "^End of"})
+    units = Headed().split(paras, bounds=bounds)
+    assert [(u.id, [p.text for p in u.paragraphs]) for u in units] == [
+        ("session-1/alpha", ["First text.", "More of the first."]),
+        ("session-1/beta", ["Second text.", "End of the second."])]
+
+
+@pytest.mark.parametrize("paras, bounds, message", [
+    (("Alpha.", "3", "More."), ({"id": "a", "first": "^Alpha", "last": "^More"},), "heading inside"),
+    (("Alpha.", "From the bull Gamma: text."), ({"id": "a", "first": "^Alpha", "last": "Gamma"},),
+     "heading inside"),
+    (("Alpha.",), ({"id": "a", "first": "^Beta", "last": "x"},), "no paragraph"),
+    (("Alpha.", "Beta."), ({"id": "a", "first": "^Alpha"},), "needs `last`"),
+])
+def test_headed_units_raise_on_doubt(paras, bounds, message):
+    with pytest.raises(ValueError, match=message):
+        Headed().split(_paras(*paras), closes=("^From the bull",), bounds=bounds)
+
+
+def test_deferrari_units_drop_his_labels_and_references_and_keep_the_translators_words():
+    paras = _paras('We say: "Thy light [law] is a lamp" [Ps. 118:105], and so [see n. 595] on.',
+                   "[The procession of the Holy Spirit]",
+                   "(The decrees for Greeks and Armenians ... follow.)",
+                   "Christ spoke [Luke 3: 17J this; the sanction [pragmatic] itself.")
+    unit, = DeferrariExtracts().split(paras, bounds=({"id": "x", "first": "^We say", "last": "itself"},))
+    assert [p.text for p in unit.paragraphs] == [
+        'We say: "Thy light [law] is a lamp", and so on.',
+        "Christ spoke this; the sanction [pragmatic] itself."]
+
+
+def test_a_comment_inside_a_canons_paragraph_closes_it():
+    units = SchroederCanons().split(_paras(
+        "CANON 1", "Text. The canon reads so. Comment. Schroeder explains it.",
+        "CANON 2", "Text. Another canon.", "More of it. Comment. His view."))
+    assert [[p.text for p in u.paragraphs] for u in units] == [
+        ["The canon reads so."], ["Another canon.", "More of it."]]
+
+
+def test_a_heading_at_the_foot_of_a_page_is_not_a_note():
+    body = [Line(f"line {k} of the body text runs across the page", 100, 200 + 40 * k, 900,
+                 225 + 40 * k) for k in range(20)]
+    heading = Line("‘CANON 10", 400, 1060, 560, 1085)
+    summary = [Line("Summary. A short summary set tight under it.", 100, 1092 + 30 * k, 900,
+                    1112 + 30 * k) for k in range(3)]
+    result = clean_pages([Page(0, 1000, 1400, body + [heading] + summary, number="166")])
+    assert not result.notes
+    assert any("CANON 10" in p.text for p in result.paragraphs)
+
+
+DEFERRARI_PDF = SOURCES / "councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf"
+
+
+@pytest.mark.skipif(not DEFERRARI_PDF.exists(), reason="the vendored PDF is not in this checkout")
+def test_the_pdf_reader_gives_lines_with_words_and_the_printed_page():
+    from ocr.pdf import read_pdf
+    calls = []
+    page, = read_pdf(DEFERRARI_PDF, range(166, 167), 31, calls)
+    assert page.number == "135"
+    assert all(ln.words for ln in page.lines)
+    first = next(ln for ln in page.lines if ln.text.startswith("(Text of Anastasius"))
+    assert first.words[-1][0] == "336"                  # the margin number, as a word
+    assert any(c.text == "3" for c in calls)            # "Dionysius,³"
+
+
+def test_a_passage_the_fixes_emptied_is_not_drawn_or_counted(workdir):
+    passages = workdir.passages()
+    passages[0].fixed = ""            # wholly a note read into the text, taken out
+    workdir.save_passages(passages)
+    check = start_check(workdir, seed=7)
+    assert passages[0].id not in check["population"]
+    assert passages[0].id not in [e["id"] for e in check["sample"]]
+    assert not evaluate(workdir, ["A clean baseline sentence."]).stale
