@@ -63,6 +63,9 @@ def test_bible_piece_ranges_match_their_verses(built):
     for d in built["bible"]:
         chapters = Counter(unit_anchor(p.anchor) for p in d.passages)
         for p in d.passages:
+            if p.anchor.endswith("/prologue"):  # Sirach's prologue cites no verses (1.4a)
+                assert p.reference == f"{d.title}, Prologue", p.reference
+                continue
             m = _RANGE.match(unit_reference(p.reference))
             assert m and m["book"] == d.title, p.reference
             if m["v1"] is None:                 # a whole chapter, "Tobit 3": not split

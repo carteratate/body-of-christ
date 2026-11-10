@@ -1585,18 +1585,28 @@
   "document_id": "12ffdbe3-6498-55b7-bef6-afbf368461ea",
   "old_passage_id": "990f3a8a-99c7-5b32-9b65-4e1b7d386c4c",
   "old_anchor": "psalms/119/1-5",
-  "new_passage_id": "8de835e8-eaf2-5242-85da-778bcd24a721",
-  "new_anchor": "psalms/119/1/from-119-143",
+  "new_passage_id": "e4b63884-ef94-5ac7-981c-006ec2b0ab60",
+  "new_anchor": "psalms/119/1/from-119-142",
   "kind": "merged",
   "reason": "its text now lies inside this passage",
   "added_by": "2.1"
  },
  {
   "document_id": "12ffdbe3-6498-55b7-bef6-afbf368461ea",
+  "old_passage_id": "8de835e8-eaf2-5242-85da-778bcd24a721",
+  "old_anchor": "psalms/119/1/from-119-143",
+  "new_passage_id": "e4b63884-ef94-5ac7-981c-006ec2b0ab60",
+  "new_anchor": "psalms/119/1/from-119-142",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.4a"
+ },
+ {
+  "document_id": "12ffdbe3-6498-55b7-bef6-afbf368461ea",
   "old_passage_id": "dbf8b66c-4e8a-5bd2-b48d-b323450d08d6",
   "old_anchor": "psalms/119/1/from-119-145-2",
-  "new_passage_id": "8de835e8-eaf2-5242-85da-778bcd24a721",
-  "new_anchor": "psalms/119/1/from-119-143",
+  "new_passage_id": "e4b63884-ef94-5ac7-981c-006ec2b0ab60",
+  "new_anchor": "psalms/119/1/from-119-142",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -12233,10 +12243,20 @@
  },
  {
   "document_id": "9e3bf9bd-efe3-50f5-81bc-6849f12d70a4",
+  "old_passage_id": "f83f922a-c5bf-59a2-8e58-066c6b880ec9",
+  "old_anchor": "numbers/16/1/from-16-27",
+  "new_passage_id": "d76c346c-2a61-5461-bd70-3dd041df1959",
+  "new_anchor": "numbers/16/1/from-16-19",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.4a"
+ },
+ {
+  "document_id": "9e3bf9bd-efe3-50f5-81bc-6849f12d70a4",
   "old_passage_id": "bc3cc027-e78e-56fe-aecf-d8fd5a7824a5",
   "old_anchor": "numbers/16/1/from-16-27-2",
-  "new_passage_id": "f83f922a-c5bf-59a2-8e58-066c6b880ec9",
-  "new_anchor": "numbers/16/1/from-16-27",
+  "new_passage_id": "d76c346c-2a61-5461-bd70-3dd041df1959",
+  "new_anchor": "numbers/16/1/from-16-19",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"

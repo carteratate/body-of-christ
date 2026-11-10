@@ -120,6 +120,20 @@ def test_unplaceable_document_raises():
         C.documents_by_file("catechism", [_doc([], "A"), _doc([], "B")], ["ccc.json"])
 
 
+
+def test_bible_document_placed_by_source_key_after_a_rename(tmp_path):
+    # Song of Songs (1.4a): the file's \\toc2 still says "Song of Solomon"; the document's
+    # source key places it.
+    base = tmp_path / "bible" / "eng-web-c_usfm"
+    base.mkdir(parents=True)
+    (base / "23-SNGeng-web-c.usfm").write_text("\\id SNG\n\\toc2 Song of Solomon\n\\c 1\n")
+    renamed = _doc([], "Song of Songs", collection="bible", metadata={"source_key": "bible/SNG"})
+    old = _doc([], "Song of Solomon", collection="bible")
+    name = "eng-web-c_usfm/23-SNGeng-web-c.usfm"
+    for doc in (renamed, old):
+        assert C.documents_by_file("bible", [doc], [name], sources=str(tmp_path)) == {name: [doc]}
+
+
 # --------------------------------------------------------------------------- extractors
 
 HTML = """<html><head><meta charset="utf-8"></head><body><div class="entry-content">

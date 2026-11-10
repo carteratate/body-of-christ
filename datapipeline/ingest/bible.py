@@ -1,14 +1,20 @@
 """WEB-C (World English Bible — Catholic) ingestion via USFM files.
 
-Chunking strategy:
-  - 66 canonical books:  one chunk per named pericope
-                         (boundaries from PericopeGroupedKJVVerses.json)
-  - 7 deuterocanonical books: one chunk per chapter
+Chunking strategy (1.4a): the USFM verse list drives the build, so every verse with
+text lands in exactly one passage.
+  - A verse belongs to the first row of `bible_extra_pericopes.csv` that holds it, else
+    to the KJV pericope (PericopeGroupedKJVVerses.json) that holds it and starts
+    latest, else to the group of the verse before it in the same chapter.
+  - Passages never cross a chapter; a group longer than one card is split (1.10c).
+  - Books with no pericopes (the deuterocanonical books): one passage per chapter.
+  - A Psalm title (\\d) opens the verse it precedes; Sirach's prologue is its own
+    passage, `sirach/prologue`.
 
 USFM format notes:
   - \\id CODE ...       — book identifier (e.g. MAT)
   - \\c N               — chapter N starts
   - \\v N text          — verse N text (may wrap to continuation lines)
+  - \\d text            — a Psalm title, before the verse it precedes
   - \\w word|strong="H1234"\\w*  — Strong's markup (word extracted, rest stripped)
   - \\f ... \\f*        — footnote (stripped)
   - \\x ... \\x*        — cross-reference (stripped)
@@ -17,6 +23,7 @@ USFM format notes:
 """
 from __future__ import annotations
 
+import csv
 import json
 import os
 import re
@@ -34,7 +41,7 @@ from identity import anchor as make_anchor, slugify  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
 from ingest.pieces import Segment, name_pieces, pack_units, piece_reference  # noqa: E402
-from registry import ANCHOR_SCHEME, resolve_document_id  # noqa: E402
+from registry import ANCHOR_SCHEME, anchor_slug, resolve_document_id  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Canonical book name → testament
@@ -47,7 +54,7 @@ _BOOK_TESTAMENT: dict[str, str] = {
     "1 Samuel": "OT", "2 Samuel": "OT", "1 Kings": "OT", "2 Kings": "OT",
     "1 Chronicles": "OT", "2 Chronicles": "OT", "Ezra": "OT", "Nehemiah": "OT",
     "Esther": "OT", "Job": "OT", "Psalms": "OT", "Proverbs": "OT",
-    "Ecclesiastes": "OT", "Song of Solomon": "OT", "Isaiah": "OT",
+    "Ecclesiastes": "OT", "Song of Songs": "OT", "Isaiah": "OT",
     "Jeremiah": "OT", "Lamentations": "OT", "Ezekiel": "OT", "Daniel": "OT",
     "Hosea": "OT", "Joel": "OT", "Amos": "OT", "Obadiah": "OT",
     "Jonah": "OT", "Micah": "OT", "Nahum": "OT", "Habakkuk": "OT",
@@ -79,7 +86,7 @@ _USFM_CODE_TO_BOOK: dict[str, str] = {
     # we map it to canonical "Esther" for document title purposes.
     "ESG": "Esther",
     "JOB": "Job", "PSA": "Psalms", "PRO": "Proverbs", "ECC": "Ecclesiastes",
-    "SNG": "Song of Solomon",
+    "SNG": "Song of Songs",
     "ISA": "Isaiah", "JER": "Jeremiah", "LAM": "Lamentations",
     "EZK": "Ezekiel",
     # WEB-C uses DAG (Daniel with Greek additions); map to canonical "Daniel".
@@ -101,22 +108,14 @@ _USFM_CODE_TO_BOOK: dict[str, str] = {
     "REV": "Revelation",
 }
 
-# Books chunked per-chapter (one chunk per chapter).
-# Psalms pericopes in the JSON only define 5 "Book of Psalms" blobs, so we
-# route it here for one-chunk-per-psalm (150 chunks total).
-_DEUTEROCANONICAL_BOOKS: frozenset[str] = frozenset({
-    "Tobit", "Judith", "1 Maccabees", "2 Maccabees", "Wisdom", "Baruch",
-    "Psalms",
-})
-
-# Books chunked per USFM \b stanza marker (requires usfm_path on BookVerses).
-_STANZA_BOOKS: frozenset[str] = frozenset({
-    "Sirach",
-})
+# Book titles that differ from the KJV pericope file's book names.
+_PERICOPE_BOOK: dict[str, str] = {"Song of Songs": "Song of Solomon"}
 
 # Default source paths (relative to the datapipeline root directory).
 _DEFAULT_USFM_SUBDIR = os.path.join("sources", "bible", "eng-web-c_usfm")
 _DEFAULT_PERICOPE_PATH = os.path.join("sources", "bible", "PericopeGroupedKJVVerses.json")
+# Tracked, not vendored: WEB-C-native groups the KJV file lacks or misnumbers (1.4a).
+_EXTRA_PERICOPE_PATH = "bible_extra_pericopes.csv"
 
 
 # ---------------------------------------------------------------------------
@@ -138,6 +137,9 @@ class BookVerses:
     testament: str          # "OT" | "NT"
     verses: list[Verse] = field(default_factory=list)
     usfm_path: str = ""     # absolute path to source .usfm file
+    # A Psalm title (\\d) by the verse it precedes: Psalm 119's letter headings too.
+    titles: dict[tuple[int, int], str] = field(default_factory=dict)
+    prologue: str = ""      # Sirach's prologue (\\ip after \\is1 ... Prologue)
 
 
 # ---------------------------------------------------------------------------
@@ -205,7 +207,10 @@ def parse_usfm_file(path: str) -> dict[tuple[int, int], str]:
             if current_verse is not None and current_chapter > 0:
                 # Skip pure structural markers with no text payload.
                 # A line is continuation if it's not a new \\c / \\v / \\id header.
-                if re.match(r"^\\(id|ide|h|toc|mt|imt|ms|mr|s|sr|r|d|sp|b|li|lim|cls)\b", line):
+                # A numbered heading (\\s1, \\ms1) is structural too: WEB-C's
+                # "THE SONG OF THE THREE HOLY CHILDREN" followed Daniel 3:23 (1.4a).
+                if re.match(r"^\\(id|ide|h|toc|mt|imt|ms\d*|mr|s\d*|sr|r|d|sp|b|li|lim|cls)\b",
+                            line):
                     # These are always structural — reset verse context.
                     current_verse = None
                     continue
@@ -220,63 +225,37 @@ def parse_usfm_file(path: str) -> dict[tuple[int, int], str]:
     return verses
 
 
-def parse_usfm_stanzas(path: str) -> list[list[tuple[int, int, str]]]:
-    """Parse a USFM file into stanza groups defined by \\b (blank-line) markers.
-
-    Returns a list of stanzas; each stanza is a list of (chapter, verse, clean_text).
-    A \\b line flushes the accumulated verses as a completed stanza.
-    A \\c (chapter) line also flushes so stanzas never cross chapter boundaries.
-    """
-    stanzas: list[list[tuple[int, int, str]]] = []
-    current: list[tuple[int, int, str]] = []
-    current_chapter: int = 0
-    current_verse: int | None = None
-
+def parse_usfm_titles(path: str) -> dict[tuple[int, int], str]:
+    """Each \\d line's cleaned text, keyed by the (chapter, verse) of the next verse."""
+    titles: dict[tuple[int, int], str] = {}
+    chapter, pending = 0, []
     with open(path, encoding="utf-8", errors="replace") as fh:
-        for raw_line in fh:
-            line = raw_line.rstrip("\n\r")
+        for line in fh:
+            if m := re.match(r"^\\c\s+(\d+)", line):
+                chapter = int(m.group(1))
+            elif re.match(r"^\\d\b", line):
+                pending.append(_clean_usfm_text(line[2:]))
+            elif (m := re.match(r"^\\v\s+(\d+)", line)) and pending:
+                titles[(chapter, int(m.group(1)))] = " ".join(t for t in pending if t)
+                pending = []
+    if pending:
+        raise ValueError(f"{path}: a \\d title with no verse after it")
+    return titles
 
-            # Stanza break: \b as its own line (optional trailing whitespace).
-            if re.match(r"^\\b\s*$", line):
-                if current:
-                    stanzas.append(current)
-                    current = []
-                current_verse = None
-                continue
 
-            # Chapter marker: flush current stanza before switching chapters.
-            c_match = re.match(r"^\\c\s+(\d+)", line)
-            if c_match:
-                if current:
-                    stanzas.append(current)
-                    current = []
-                current_chapter = int(c_match.group(1))
-                current_verse = None
-                continue
-
-            # Verse marker: start a new verse entry in the current stanza.
-            v_match = re.match(r"^\\v\s+(\d+)\s*(.*)", line)
-            if v_match and current_chapter > 0:
-                current_verse = int(v_match.group(1))
-                text = _clean_usfm_text(v_match.group(2))
-                current.append((current_chapter, current_verse, text))
-                continue
-
-            # Continuation line for current verse.
-            if current_verse is not None and current_chapter > 0:
-                if re.match(r"^\\(id|ide|h|toc|mt|imt|ms|mr|s|sr|r|d|sp|li|lim|cls)\b", line):
-                    current_verse = None
-                    continue
-                cleaned = _clean_usfm_text(line)
-                if cleaned and current:
-                    ch, v, prev = current[-1]
-                    if ch == current_chapter and v == current_verse:
-                        current[-1] = (ch, v, f"{prev} {cleaned}")
-
-    if current:
-        stanzas.append(current)
-
-    return stanzas
+def parse_usfm_prologue(path: str) -> str:
+    """The \\ip paragraphs after a \\is1 heading naming the Prologue (Sirach), joined.
+    Other \\ip lines are WEB-C's own introductions and are not Scripture."""
+    out, inside = [], False
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            if line.startswith("\\is1") and "Prologue" in line:
+                inside = True
+            elif inside and line.startswith("\\ip"):
+                out.append(_clean_usfm_text(line[3:]))
+            elif inside and line.strip():
+                break
+    return " ".join(t for t in out if t)
 
 
 def _book_code_from_usfm(path: str) -> str | None:
@@ -318,6 +297,8 @@ def load_usfm_directory(usfm_dir: str) -> dict[str, BookVerses]:
             testament=testament,
             verses=verse_list,
             usfm_path=path,
+            titles=parse_usfm_titles(path),
+            prologue=parse_usfm_prologue(path),
         )
     return books
 
@@ -396,124 +377,83 @@ def _format_reference(book: str, sc: int, sv: int, ec: int, ev: int) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Chunking
+# Grouping verses into pericopes (1.4a)
 # ---------------------------------------------------------------------------
 
-def collect_pericope_verses(
-    verse_map: dict[tuple[int, int], str],
-    start_chapter: int,
-    start_verse: int,
-    end_chapter: int,
-    end_verse: int,
-) -> list[tuple[int, int, str]]:
-    """Return (chapter, verse, text) tuples within [start, end] inclusive."""
-    result = []
-    for (ch, v), text in sorted(verse_map.items()):
-        if (ch, v) < (start_chapter, start_verse):
-            continue
-        if (ch, v) > (end_chapter, end_verse):
-            continue
-        result.append((ch, v, text))
-    return result
+@dataclass
+class ExtraPericope:
+    """A row of `bible_extra_pericopes.csv`: a WEB-C-numbered group the KJV file lacks
+    (Susanna, the Esther additions) or misnumbers (Daniel 3). A row wins over the KJV
+    pericopes for every verse it holds, and bounds its own group."""
+    book: str
+    start_chapter: int
+    start_verse: int
+    end_chapter: int
+    end_verse: int
+    title: str
+    # Whole-addition ranges in other numberings (Esther only; R3, Decision log).
+    refs: dict[str, str] = field(default_factory=dict)
 
 
-def chunk_canonical_book(
-    book: BookVerses,
-    pericopes: list[Pericope],
-    translation: str,
-) -> Iterator[tuple[str, str, dict, int]]:
-    """Yield (content, reference, metadata, position) for a canonical book.
-
-    One chunk per pericope. Empty chunks are skipped.
-    """
-    verse_map: dict[tuple[int, int], str] = {
-        (v.chapter, v.verse): v.text for v in book.verses
-    }
-    position = 0
-    for p in pericopes:
-        verses = collect_pericope_verses(
-            verse_map, p.start_chapter, p.start_verse, p.end_chapter, p.end_verse
-        )
-        if not verses:
-            continue
-        content = " ".join(text for _, _, text in verses)
-        if not content.strip():
-            continue
-        reference = _format_reference(
-            book.name, p.start_chapter, p.start_verse, p.end_chapter, p.end_verse
-        )
-        metadata = {
-            "pericope": p.title,
-            "book": book.name,
-            "testament": book.testament,
-            "translation": translation,
-        }
-        yield content, reference, metadata, position
-        position += 1
+_REF_COLUMNS = ("nv_ref", "lxx_ref", "nab_ref")
 
 
-def chunk_deuterocanonical_book(
-    book: BookVerses,
-    translation: str,
-) -> Iterator[tuple[str, str, dict, int]]:
-    """Yield (content, reference, metadata, position) for a deuterocanonical book.
-
-    One chunk per chapter. Empty chapters are skipped.
-    """
-    chapters: dict[int, list[str]] = {}
-    for v in book.verses:
-        chapters.setdefault(v.chapter, []).append(v.text)
-
-    position = 0
-    for ch in sorted(chapters):
-        texts = chapters[ch]
-        content = " ".join(texts)
-        if not content.strip():
-            continue
-        reference = f"{book.name} {ch}"
-        metadata = {
-            "book": book.name,
-            "chapter": ch,
-            "testament": book.testament,
-            "translation": translation,
-        }
-        yield content, reference, metadata, position
-        position += 1
+def load_extra_pericopes(path: str) -> dict[str, list[ExtraPericope]]:
+    grouped: dict[str, list[ExtraPericope]] = {}
+    with open(path, encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            sc, sv = (int(x) for x in row["start"].split(":"))
+            ec, ev = (int(x) for x in row["end"].split(":"))
+            grouped.setdefault(row["book"], []).append(ExtraPericope(
+                row["book"], sc, sv, ec, ev, row["title"],
+                {k: row[k] for k in _REF_COLUMNS if row.get(k)}))
+    return grouped
 
 
-def chunk_stanza_book(
-    book_name: str,
-    testament: str,
-    stanzas: list[list[tuple[int, int, str]]],
-    translation: str,
-    min_chars: int = 50,
-) -> Iterator[tuple[str, str, dict, int]]:
-    """Yield (content, reference, metadata, position) for a stanza-chunked book.
+def _holds(p, chapter: int, verse: int) -> bool:
+    return (p.start_chapter, p.start_verse) <= (chapter, verse) <= (p.end_chapter, p.end_verse)
 
-    One chunk per stanza. Stanzas whose joined text is shorter than min_chars
-    are skipped (handles near-empty stanzas from headings or footnote-only verses).
-    """
-    position = 0
-    for stanza_idx, stanza_verses in enumerate(stanzas):
-        if not stanza_verses:
-            continue
-        content = " ".join(text for _, _, text in stanza_verses)
-        if len(content) < min_chars:
-            continue
 
-        start_ch, start_v, _ = stanza_verses[0]
-        end_ch, end_v, _ = stanza_verses[-1]
-        reference = _format_reference(book_name, start_ch, start_v, end_ch, end_v)
+@dataclass
+class VerseGroup:
+    """Consecutive verses of one chapter that make one passage (before splitting)."""
+    chapter: int
+    verses: list[tuple[int, int, str]]
+    title: str | None
+    refs: dict[str, str] = field(default_factory=dict)
 
-        metadata = {
-            "book": book_name,
-            "chapter": start_ch,
-            "stanza": stanza_idx,
-            "testament": testament,
-            "translation": translation,
-        }
-        yield content, reference, metadata, position
-        position += 1
+
+def group_verses(verses: list[Verse], pericopes: list[Pericope],
+                 extras: list[ExtraPericope]) -> list[VerseGroup]:
+    """Every verse in order, each in exactly one group. A verse belongs to the first
+    extra row that holds it; else to the KJV pericope that holds it and starts latest,
+    so an overlap goes to the pericope that opens on it (Numbers 16:28-37); else to the
+    group of the verse before it in the same chapter, the story the KJV file cut short
+    (Mark 2:28). Carter, 10 Nov 2026."""
+    groups: list[VerseGroup] = []
+    last_key = None
+    for v in verses:
+        extra = next((i for i, e in enumerate(extras) if _holds(e, v.chapter, v.verse)), None)
+        if extra is not None:
+            key = ("extra", extra)
+        else:
+            held = [i for i, p in enumerate(pericopes) if _holds(p, v.chapter, v.verse)]
+            if held:
+                latest = max(held, key=lambda i: ((pericopes[i].start_chapter,
+                                                   pericopes[i].start_verse), -i))
+                key = ("kjv", latest)
+            elif groups and groups[-1].chapter == v.chapter:
+                key = last_key
+            else:
+                key = ("none", v.chapter, v.verse)
+        if key != last_key or groups[-1].chapter != v.chapter:
+            kind, idx = key[0], key[1]
+            source = extras[idx] if kind == "extra" else pericopes[idx] if kind == "kjv" else None
+            groups.append(VerseGroup(v.chapter, [], source.title if source else None,
+                                     dict(source.refs) if kind == "extra" else {}))
+        groups[-1].verses.append((v.chapter, v.verse, v.text))
+        last_key = key
+    return groups
 
 
 # ---------------------------------------------------------------------------
@@ -532,15 +472,6 @@ def _join_with_verse_markers(verse_tuples: list[tuple[int, int, str]]) -> str:
         else:
             parts.append("{{v:%d}} %s" % (v, text))
     return " ".join(parts)
-
-
-def clamp_pericopes_to_chapters(title, verses):
-    """Group a pericope's (chapter, verse, text) list into per-chapter parts so
-    a passage never crosses a chapter boundary. Returns [(chapter, [verses...])]."""
-    out = []
-    for chapter, group in groupby(verses, key=lambda v: v[0]):
-        out.append((chapter, list(group)))
-    return out
 
 
 def slugify_book(name: str) -> str:
@@ -609,73 +540,93 @@ def _pieces(book: str, chapter: int, verses: list[tuple[int, int, str]], content
     return out
 
 
-def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C") -> list[Document]:
-    """Build one Document per book; passages = pericope sections clamped to chapters."""
+def _with_titles(book: BookVerses) -> list[Verse]:
+    """The book's verses, a Psalm title opening the verse it precedes (C-11, Carter
+    9 Oct 2026): no marker or number of its own."""
+    return [Verse(v.book, v.chapter, v.verse,
+                  f"{book.titles[(v.chapter, v.verse)]} {v.text}".strip()
+                  if (v.chapter, v.verse) in book.titles else v.text)
+            for v in book.verses]
+
+
+def check_complete(book: BookVerses, placed: set[tuple[int, int]],
+                   prologue_placed: bool) -> None:
+    """Raise unless every verse with text, every title and the prologue reached a
+    passage. A verse with no text (Sirach 1:5) is excused."""
+    verses = {(v.chapter, v.verse) for v in book.verses}
+    stray = sorted(set(book.titles) - verses)
+    if stray:
+        raise ValueError(f"{book.name}: titles before no verse: {stray}")
+    expected = {(v.chapter, v.verse) for v in _with_titles(book) if v.text.strip()}
+    missing = sorted(expected - placed)
+    if missing:
+        raise ValueError(f"{book.name}: {len(missing)} verses reach no passage, "
+                         f"first {missing[:5]}")
+    if book.prologue and not prologue_placed:
+        raise ValueError(f"{book.name}: the prologue reaches no passage")
+
+
+def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C",
+                    pericope_path: str | None = None,
+                    extra_path: str | None = None) -> list[Document]:
+    """Build one Document per book; passages = verse groups (`group_verses`), each split
+    to fit a card. Raises when a verse, a title or the prologue reaches no passage."""
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     usfm_dir = usfm_dir or os.path.join(root_dir, _DEFAULT_USFM_SUBDIR)
-    pericope_map = load_pericopes(os.path.join(root_dir, _DEFAULT_PERICOPE_PATH))
+    pericope_map = load_pericopes(pericope_path or os.path.join(root_dir, _DEFAULT_PERICOPE_PATH))
+    extra_map = load_extra_pericopes(extra_path or os.path.join(root_dir, _EXTRA_PERICOPE_PATH))
     books = load_usfm_directory(usfm_dir)
 
     docs: list[Document] = []
     for name, book in sorted(books.items()):
-        did = resolve_document_id("bible", f"bible/{book.book_code}",
-                                  ("bible", translation, name))
-        book_slug = slugify_book(name)
-        verse_map = {(v.chapter, v.verse): v.text for v in book.verses}
+        source_key = f"bible/{book.book_code}"
+        did = resolve_document_id("bible", source_key, ("bible", translation, name))
+        # The registry keeps a renamed book's old slug, so no anchor changes (1.4a).
+        book_slug = anchor_slug("bible", source_key) or slugify_book(name)
         passages: list[Passage] = []
-        pos = 0
+        placed: set[tuple[int, int]] = set()
 
-        for p in pericope_map.get(name, []):
-            verses = collect_pericope_verses(verse_map, p.start_chapter, p.start_verse,
-                                             p.end_chapter, p.end_verse)
-            if not verses:
+        if book.prologue:
+            passages.append(Passage(
+                content=clean_text(book.prologue), reference=f"{name}, Prologue",
+                anchor=make_anchor(book_slug, "prologue"),
+                chapter_key=make_anchor(book_slug, "prologue"), chapter_label="Prologue",
+                position=0,
+                metadata={"testament": book.testament, "translation": translation}))
+
+        pericopes = pericope_map.get(_PERICOPE_BOOK.get(name, name), [])
+        extras = extra_map.get(name, [])
+        verses = _with_titles(book)
+        if pericopes or extras:
+            groups = group_verses(verses, pericopes, extras)
+        else:
+            # Books without pericopes (deuterocanonical): one group per chapter.
+            groups = [VerseGroup(ch, [(v.chapter, v.verse, v.text) for v in vs], None)
+                      for ch, vs in groupby(verses, key=lambda v: v.chapter)]
+
+        for g in groups:
+            content = clean_text(_join_with_verse_markers(g.verses))
+            if not content:
                 continue
-            for chapter, chap_verses in clamp_pericopes_to_chapters(p.title, verses):
-                content = clean_text(_join_with_verse_markers(chap_verses))
-                if not content:
-                    continue
-                first_v = chap_verses[0][1]
-                base_anchor = make_anchor(book_slug, chapter, first_v)
-                for piece, ref, label, anchor, units in _pieces(
-                        name, chapter, chap_verses, content, base_anchor):
-                    passages.append(Passage(
-                        content=piece, reference=ref, anchor=anchor,
-                        chapter_key=make_anchor(book_slug, chapter),
-                        chapter_label=f"{name} {chapter}", position=pos,
-                        unit_label=label,
-                        metadata={"pericope": p.title, "testament": book.testament,
-                                  "translation": translation},
-                        source_units=units,
-                    ))
-                    pos += 1
+            base_anchor = make_anchor(book_slug, g.chapter, g.verses[0][1])
+            whole = None if pericopes or extras else f"{name} {g.chapter}"
+            metadata = {"testament": book.testament, "translation": translation}
+            if g.title:
+                metadata = {"pericope": g.title, **metadata, **g.refs}
+            for piece, ref, label, anchor, units in _pieces(
+                    name, g.chapter, g.verses, content, base_anchor, whole_reference=whole):
+                passages.append(Passage(
+                    content=piece, reference=ref, anchor=anchor,
+                    chapter_key=make_anchor(book_slug, g.chapter),
+                    chapter_label=f"{name} {g.chapter}", position=len(passages),
+                    unit_label=label, metadata=dict(metadata), source_units=units,
+                ))
+            placed.update((ch, v) for ch, v, _ in g.verses)
 
-        # Books without pericopes (deuterocanonical, Psalms): one passage per chapter.
-        if not passages:
-            for chapter, items in groupby(sorted(verse_map.items()),
-                                          key=lambda kv: kv[0][0]):
-                cv = list(items)
-                cv_as_triples = [(ch, v, t) for (ch, v), t in cv]
-                content = clean_text(_join_with_verse_markers(cv_as_triples))
-                if not content:
-                    continue
-                first_v = cv[0][0][1]
-                base_anchor = make_anchor(book_slug, chapter, first_v)
-                for piece, ref, label, anchor, units in _pieces(
-                        name, chapter, cv_as_triples, content, base_anchor,
-                        whole_reference=f"{name} {chapter}"):
-                    passages.append(Passage(
-                        content=piece, reference=ref, anchor=anchor,
-                        chapter_key=make_anchor(book_slug, chapter),
-                        chapter_label=f"{name} {chapter}", position=pos,
-                        unit_label=label,
-                        metadata={"testament": book.testament, "translation": translation},
-                        source_units=units,
-                    ))
-                    pos += 1
-
+        check_complete(book, placed, prologue_placed=bool(book.prologue))
         docs.append(Document(id=did, collection="bible", title=name, translation=translation,
                              metadata={"testament": book.testament,
-                                       "source_key": f"bible/{book.book_code}",
+                                       "source_key": source_key,
                                        "anchor_scheme": ANCHOR_SCHEME},
                              passages=passages))
     return docs

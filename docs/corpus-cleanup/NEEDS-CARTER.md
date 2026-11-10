@@ -262,6 +262,10 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-10: (a), put back only the missing spaces from the reviewed list (Decision log "Lost spaces in two vatican.va pages (1.3c)").
 - **1.4a** [Phase 1]. Keep `song-of-solomon` inside link addresses while the book's title changes to "Song of Songs". Users never see the address. Recommended answer is keep.
   Answered 2026-11-04: keep. The address can appear in a reader link's URL, which does no harm.
+- **1.4a** [Phase 1]. Most of the missing verses are the last lines of a story the KJV pericope list cut short (Mark 2:28, Isaiah 55:9–13, 1 Kings 8:62–66, Romans 16:24). Should each join the story just before it in the same chapter, or become its own untitled passage, as the spec's change list read literally? Recommended answer is join the story before (found while implementing, 10 Nov 2026).
+  Answered 2026-11-10: join the story before. That passage keeps its anchor and ID and grows by the verse (Decision log "Bible verses outside every pericope (1.4a)").
+- **1.4a** [Phase 1]. Numbers 16:28–37 lie in two KJV pericopes ("Korah, Dathan, and Abiram" 16:1–37 and "The Earth Swallows and Fire Consumes" 16:28–40), so they are published twice. Should they go to the first pericope, as the spec said, or to the later one, which opens on them and whose title describes them? Recommended answer is the later one (found while implementing, 10 Nov 2026).
+  Answered 2026-11-10: the later one. Both passages keep their anchors and IDs (Decision log "Bible verses in two pericopes (1.4a)").
 - **1.4b** [Phase 1]. Renumber only Joel and Malachi to the Church's official Latin Bible numbering, or every place where Church documents cite a different chapter. Recommended answer is Joel and Malachi now, the rest as a later issue.
   Answered 2026-11-04: Joel and Malachi now, the rest as a later issue.
   Answered 2026-11-04 (later the same day): add Jonah and Romans's doxology to 1.4b, after citation counts showed Church documents cite them. The rest is #317.
