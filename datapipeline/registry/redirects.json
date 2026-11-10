@@ -16163,7 +16163,29 @@
   "new_anchor": "fifth-lateran-council/sec-0/11/from-e48",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "f563af8e-d262-577d-997f-068060297e53",
+  "old_anchor": "fifth-lateran-council/sec-0/14",
+  "new_passage_id": "e0320351-0943-5e9a-a066-ce9ca1cf8693",
+  "new_anchor": "fifth-lateran-council/session-8/apostolici-regiminis",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "b61d9c2d-6829-543c-8484-348d4c6b4942",
+  "old_anchor": "fifth-lateran-council/sec-0/15",
+  "new_passage_id": "e0320351-0943-5e9a-a066-ce9ca1cf8693",
+  "new_anchor": "fifth-lateran-council/session-8/apostolici-regiminis",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16173,7 +16195,9 @@
   "new_anchor": "fifth-lateran-council/sec-0/21/from-e83",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16183,7 +16207,29 @@
   "new_anchor": "fifth-lateran-council/sec-0/23/from-e88",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "ae6f1b5c-9349-51a0-b7b2-2b99c95d1ac1",
+  "old_anchor": "fifth-lateran-council/sec-0/26",
+  "new_passage_id": "fedd77fd-0924-5c00-943b-f86fd96d2b91",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "1ad351ac-9303-5aaa-885a-00cfac374ec4",
+  "old_anchor": "fifth-lateran-council/sec-0/26/from-e95",
+  "new_passage_id": "fedd77fd-0924-5c00-943b-f86fd96d2b91",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16193,7 +16239,129 @@
   "new_anchor": "fifth-lateran-council/sec-0/26/from-e95",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "5c688c9b-6efe-525f-b3d9-7ba08590e639",
+  "old_anchor": "fifth-lateran-council/sec-0/26/from-e95-2",
+  "new_passage_id": "fedd77fd-0924-5c00-943b-f86fd96d2b91",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "a051f0c1-387f-58be-860d-58ac141e2aad",
+  "old_anchor": "fifth-lateran-council/sec-0/27",
+  "new_passage_id": "1aa973b9-5685-5c43-901f-ded3d4bb5e1d",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p4",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "78174a84-4c24-5075-86c5-13f2a2b7b934",
+  "old_anchor": "fifth-lateran-council/sec-0/28",
+  "new_passage_id": "1aa973b9-5685-5c43-901f-ded3d4bb5e1d",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p4",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "0420e2b3-24c5-5b8a-8298-7af45f219100",
+  "old_anchor": "fifth-lateran-council/sec-0/29",
+  "new_passage_id": "689f8a93-3f60-5a1e-ba58-727c7b64c9a6",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p8",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "f8c03f3d-9558-51ef-83aa-aa5324418516",
+  "old_anchor": "fifth-lateran-council/sec-0/30",
+  "new_passage_id": "bbbe8aec-acc4-5291-bf2f-5bf3d8f3e56b",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p15",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "50d0cf2f-d6a6-56df-aaa2-5a62aa8c50e6",
+  "old_anchor": "fifth-lateran-council/sec-0/31",
+  "new_passage_id": "bbbe8aec-acc4-5291-bf2f-5bf3d8f3e56b",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p15",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "0ddbd58e-5c8d-5c3d-a519-4d0a960ab133",
+  "old_anchor": "fifth-lateran-council/sec-0/32",
+  "new_passage_id": "3cf1f963-3fa9-58bb-89bb-ed0319f5e983",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p22",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "fc95372f-a613-5558-941f-3355d9ec60b4",
+  "old_anchor": "fifth-lateran-council/sec-0/33",
+  "new_passage_id": "3cf1f963-3fa9-58bb-89bb-ed0319f5e983",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p22",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "9990f5e9-7cb4-5a78-8111-ec0d7cd24d71",
+  "old_anchor": "fifth-lateran-council/sec-0/34",
+  "new_passage_id": "0f9d9f08-bf24-521a-9e2c-92001f12fbea",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p29",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "3ffaf8aa-136e-5fa9-b73b-9ea2483df9d6",
+  "old_anchor": "fifth-lateran-council/sec-0/35",
+  "new_passage_id": "0f9d9f08-bf24-521a-9e2c-92001f12fbea",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p29",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "4917b69a-b582-552e-9009-b9c288501ea0",
+  "old_anchor": "fifth-lateran-council/sec-0/36",
+  "new_passage_id": "b7590619-8551-5198-9abf-dd9a71d3d18b",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p32",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "60a7cdcd-e289-5406-810d-2fccbb9d1c1f",
+  "old_anchor": "fifth-lateran-council/sec-0/36/from-e120",
+  "new_passage_id": "b7590619-8551-5198-9abf-dd9a71d3d18b",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p32",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16203,7 +16371,139 @@
   "new_anchor": "fifth-lateran-council/sec-0/36/from-e120",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "f21bd3e2-9683-5298-ad5b-6f312ae5f0db",
+  "old_anchor": "fifth-lateran-council/sec-0/36/from-e120-2",
+  "new_passage_id": "b7590619-8551-5198-9abf-dd9a71d3d18b",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p32",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "e4801596-311a-58b2-b33b-41e16cb9e1fa",
+  "old_anchor": "fifth-lateran-council/sec-0/37",
+  "new_passage_id": "b7590619-8551-5198-9abf-dd9a71d3d18b",
+  "new_anchor": "fifth-lateran-council/session-9/supernae-dispositionis-arbitrio/from-p32",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "74993cb9-3dfd-5f11-ac3f-1f6dc37eb9f6",
+  "old_anchor": "fifth-lateran-council/sec-0/38",
+  "new_passage_id": "77e089e5-c724-5baf-9952-1de9a74c2c07",
+  "new_anchor": "fifth-lateran-council/session-10/inter-multiplices",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "ab3eff63-ca0b-5187-8168-691f0e784953",
+  "old_anchor": "fifth-lateran-council/sec-0/39",
+  "new_passage_id": "77e089e5-c724-5baf-9952-1de9a74c2c07",
+  "new_anchor": "fifth-lateran-council/session-10/inter-multiplices",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "c2ed2880-7e64-57ac-be53-9d39043f9d25",
+  "old_anchor": "fifth-lateran-council/sec-0/40",
+  "new_passage_id": "74468bf3-f0a0-58fd-9d24-30f44e79e48a",
+  "new_anchor": "fifth-lateran-council/session-10/inter-multiplices/from-p3",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "c5e986ef-6fcd-524b-8f75-9051456e08ed",
+  "old_anchor": "fifth-lateran-council/sec-0/41",
+  "new_passage_id": "2eba458d-45e0-55c7-9550-6120a46e9379",
+  "new_anchor": "fifth-lateran-council/session-10/regimini-universalis-ecclesiae",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "61334692-9fa3-5e71-b25a-9451f4f60224",
+  "old_anchor": "fifth-lateran-council/sec-0/42",
+  "new_passage_id": "2eba458d-45e0-55c7-9550-6120a46e9379",
+  "new_anchor": "fifth-lateran-council/session-10/regimini-universalis-ecclesiae",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "c75afe16-c384-5c88-a16e-b64ce5bdfe34",
+  "old_anchor": "fifth-lateran-council/sec-0/43",
+  "new_passage_id": "2eba458d-45e0-55c7-9550-6120a46e9379",
+  "new_anchor": "fifth-lateran-council/session-10/regimini-universalis-ecclesiae",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "ff9afad0-e99b-5452-b39e-552c11dc4f8d",
+  "old_anchor": "fifth-lateran-council/sec-0/44",
+  "new_passage_id": "c610b0f9-5bff-5c5b-b1a5-4d9e7cfc9403",
+  "new_anchor": "fifth-lateran-council/session-10/regimini-universalis-ecclesiae/from-p5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "dd71ce25-4142-58ef-906a-f8693531b6a1",
+  "old_anchor": "fifth-lateran-council/sec-0/45",
+  "new_passage_id": "cbc1eb43-72d7-5b1d-98aa-3c466f3c78df",
+  "new_anchor": "fifth-lateran-council/session-10/regimini-universalis-ecclesiae/from-p8",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "a3099208-1fcb-5bee-834a-7a81a8404e4a",
+  "old_anchor": "fifth-lateran-council/sec-0/46",
+  "new_passage_id": "8233333a-173b-52d2-a390-0ad6a9a944d5",
+  "new_anchor": "fifth-lateran-council/session-10/regimini-universalis-ecclesiae/from-p11",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "8404d8da-5f4c-5c2e-bff8-878d94014432",
+  "old_anchor": "fifth-lateran-council/sec-0/47",
+  "new_passage_id": "7c230e0d-7d9e-562e-9836-9b3142306c5e",
+  "new_anchor": "fifth-lateran-council/session-10/inter-sollicitudines",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "d2bede71-0b1c-5be4-8ea4-f22df4de8ea5",
+  "old_anchor": "fifth-lateran-council/sec-0/47/from-e147",
+  "new_passage_id": "7c230e0d-7d9e-562e-9836-9b3142306c5e",
+  "new_anchor": "fifth-lateran-council/session-10/inter-sollicitudines",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16213,7 +16513,19 @@
   "new_anchor": "fifth-lateran-council/sec-0/47/from-e147",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "e321352f-7881-5fe7-b8c5-4d96f6bff7ff",
+  "old_anchor": "fifth-lateran-council/sec-0/47/from-e147-2",
+  "new_passage_id": "7c230e0d-7d9e-562e-9836-9b3142306c5e",
+  "new_anchor": "fifth-lateran-council/session-10/inter-sollicitudines",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16223,7 +16535,9 @@
   "new_anchor": "fifth-lateran-council/sec-0/49/from-e156",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16233,7 +16547,49 @@
   "new_anchor": "fifth-lateran-council/sec-0/50/from-e158",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "7a608854-f449-52be-872b-d3fc583be111",
+  "old_anchor": "fifth-lateran-council/sec-0/51",
+  "new_passage_id": "66dbad9b-4a49-5942-9b4a-f66843e44243",
+  "new_anchor": "fifth-lateran-council/session-11/supernae-majestatis-praesidio",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "c4feac82-e512-5cf0-a25a-52f27a15a26d",
+  "old_anchor": "fifth-lateran-council/sec-0/52",
+  "new_passage_id": "a264f002-26e9-5ebf-8d79-30c96f28a9d5",
+  "new_anchor": "fifth-lateran-council/session-11/supernae-majestatis-praesidio/from-p4",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "91c9cb33-941f-5b8a-8775-0ea51445a619",
+  "old_anchor": "fifth-lateran-council/sec-0/58",
+  "new_passage_id": "77dcb5ec-ff37-5cf0-96af-1d0860430115",
+  "new_anchor": "fifth-lateran-council/session-11/pastor-aeternus-gregem",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "af315f18-ec1a-506d-8c2a-11741bdace65",
+  "old_anchor": "fifth-lateran-council/sec-0/58/from-e173",
+  "new_passage_id": "77dcb5ec-ff37-5cf0-96af-1d0860430115",
+  "new_anchor": "fifth-lateran-council/session-11/pastor-aeternus-gregem",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Deferrari's extract of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16243,7 +16599,39 @@
   "new_anchor": "fifth-lateran-council/sec-0/58/from-e173",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "5d1798af-ed19-5b31-a54f-e8a4c86941f3",
+  "old_anchor": "fifth-lateran-council/sec-0/58/from-e173-2",
+  "new_passage_id": "77dcb5ec-ff37-5cf0-96af-1d0860430115",
+  "new_anchor": "fifth-lateran-council/session-11/pastor-aeternus-gregem",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Deferrari's extract of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "6a364108-1595-5393-8195-9d2e931e2ae9",
+  "old_anchor": "fifth-lateran-council/sec-0/62",
+  "new_passage_id": "f9ed9dad-feab-5fee-8299-81bcfa474904",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "7f35e080-7232-5495-9822-ff004b7d04f9",
+  "old_anchor": "fifth-lateran-council/sec-0/62/from-e182",
+  "new_passage_id": "f9ed9dad-feab-5fee-8299-81bcfa474904",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16253,7 +16641,39 @@
   "new_anchor": "fifth-lateran-council/sec-0/62/from-e182",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "b24926ab-7fb0-539f-b81e-b4bae1f11726",
+  "old_anchor": "fifth-lateran-council/sec-0/62/from-e182-2",
+  "new_passage_id": "f9ed9dad-feab-5fee-8299-81bcfa474904",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "ae7cf0e4-5a7a-5b30-b41a-9fbcfa510e12",
+  "old_anchor": "fifth-lateran-council/sec-0/63",
+  "new_passage_id": "2a81f3ed-c221-5fd5-b8e3-86a39724c30f",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana/from-p15",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "bd1928a9-5acb-54d2-a52b-ec7b646e186e",
+  "old_anchor": "fifth-lateran-council/sec-0/63/from-e184",
+  "new_passage_id": "2a81f3ed-c221-5fd5-b8e3-86a39724c30f",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana/from-p15",
+  "kind": "merged",
+  "reason": "a piece the 1.10c build cut and no publish carried: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16263,7 +16683,29 @@
   "new_anchor": "fifth-lateran-council/sec-0/63/from-e184",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "48f2dc01-2258-58b3-9c19-ed9e39c452e3",
+  "old_anchor": "fifth-lateran-council/sec-0/63/from-e184-2",
+  "new_passage_id": "2a81f3ed-c221-5fd5-b8e3-86a39724c30f",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana/from-p15",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's abridgment of the same part of the bull",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
+  "old_passage_id": "dcba94d2-3d07-5978-9ee2-4d20e5db0616",
+  "old_anchor": "fifth-lateran-council/sec-0/64",
+  "new_passage_id": "2a81f3ed-c221-5fd5-b8e3-86a39724c30f",
+  "new_anchor": "fifth-lateran-council/session-11/dum-intra-mentis-arcana/from-p15",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's abridgment of the same decree",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16273,7 +16715,9 @@
   "new_anchor": "fifth-lateran-council/sec-0/65/from-e191",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16283,7 +16727,9 @@
   "new_anchor": "fifth-lateran-council/sec-0/66/from-e194",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16293,7 +16739,9 @@
   "new_anchor": "fifth-lateran-council/sec-0/67/from-e196",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
@@ -16303,7 +16751,9 @@
   "new_anchor": "fifth-lateran-council/sec-0/68/from-e198",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
  },
  {
   "document_id": "dac28881-f92b-5c94-991a-5b244e2d49c3",
@@ -17475,13 +17925,155 @@
  },
  {
   "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "2de5aac1-62f7-5bcb-9221-e898b10c8c5b",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/10",
+  "new_passage_id": "f73b29f6-2056-57b1-9c46-480594c3d2f1",
+  "new_anchor": "fourth-council-of-constantinople/canons/3",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "3ea98024-910e-5acd-bf35-3b67a98f6efd",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/11",
+  "new_passage_id": "8b9c102b-94de-5978-a717-814efb50ac17",
+  "new_anchor": "fourth-council-of-constantinople/canons/5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "8a2065a4-5992-5184-9947-daf8e5854c03",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/12",
+  "new_passage_id": "3e8bff25-5c16-5b6a-bbdc-e2cebde7568c",
+  "new_anchor": "fourth-council-of-constantinople/canons/6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "1ae4459f-ce5e-59bf-834c-56421a954646",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/13",
+  "new_passage_id": "adbf42d0-99ee-5a65-8418-ccbb82033016",
+  "new_anchor": "fourth-council-of-constantinople/canons/9",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "f90a3b0b-1628-569f-9304-4e3465c43bb5",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/14",
+  "new_passage_id": "1e036b02-3be1-5615-8b6f-a69d99decdca",
+  "new_anchor": "fourth-council-of-constantinople/canons/11",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "d3c9c38c-8d5e-5262-9c1b-43ceb92f3660",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/15",
+  "new_passage_id": "2ec45893-a52c-5432-beb7-f31a0afcda0e",
+  "new_anchor": "fourth-council-of-constantinople/canons/14",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "aa2379b0-0989-51e9-ab7f-712c20dfaa23",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/16",
+  "new_passage_id": "24925425-905c-5c56-b8c2-4bb3d83703dd",
+  "new_anchor": "fourth-council-of-constantinople/canons/15",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "9f592d93-69f5-56c2-aba4-882b9e526028",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/19",
+  "new_passage_id": "7ba8bd94-1e52-5fbe-a4d5-e333209ee8c1",
+  "new_anchor": "fourth-council-of-constantinople/canons/17/extract",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's text of the same part of canon 17",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "1e8f9f8b-ac6c-5c63-b2c8-ef8f08341150",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/20",
+  "new_passage_id": "59af9c2f-d435-55eb-8f46-d462a3350727",
+  "new_anchor": "fourth-council-of-constantinople/canons/19",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "6286d15f-7c9f-5a8b-8233-d05ac933d4d6",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/21",
+  "new_passage_id": "36cf1aa6-abba-5cd2-8362-3582bbf83cc0",
+  "new_anchor": "fourth-council-of-constantinople/canons/21",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "2f7bf9d8-c77a-5763-868b-3ea109cf8379",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/22",
+  "new_passage_id": "a93eafba-5869-5907-a068-8c67030695e7",
+  "new_anchor": "fourth-council-of-constantinople/canons/23",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "77f71d64-db14-57b3-852e-c39c9adfd9df",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/23",
+  "new_passage_id": "c4bb1f43-04d8-5a20-abd9-1103f10b1bb9",
+  "new_anchor": "fourth-council-of-constantinople/canons/25",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "72e5996d-c384-535f-a6c2-fd0b6f5cb645",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/24",
+  "new_passage_id": "0485996b-1d97-5da2-bea9-d7f8116e1654",
+  "new_anchor": "fourth-council-of-constantinople/canons/27",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
   "old_passage_id": "277add57-44ef-5187-b001-e4639d4f78b5",
   "old_anchor": "fourth-council-of-constantinople/sec-1/3/from-e20-2",
   "new_passage_id": "77e317f0-8581-5eb8-9a29-0d64a001e503",
   "new_anchor": "fourth-council-of-constantinople/sec-1/3/from-e20",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-4",
+  "closed_on": "2026-11-09"
+ },
+ {
+  "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
+  "old_passage_id": "6bedcdfc-052f-56ee-bc76-8e9fafd7b3b9",
+  "old_anchor": "fourth-council-of-constantinople/sec-1/9",
+  "new_passage_id": "24fbeb8d-23dd-519b-9704-b4b90097c7ae",
+  "new_anchor": "fourth-council-of-constantinople/canons/1",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it",
+  "added_by": "1.2e-4"
  },
  {
   "document_id": "ef57a4a0-0811-5189-a42b-cf488f19592b",

@@ -74,6 +74,9 @@ class SchroederCanons:
     _TEXT_INSIDE = re.compile(r"(?<=[.:;!?”’)\]])\W{0,3}\s+\W{0,2}Text[.,:]\s+")
     # Editor's parts that close a canon's text.
     _CLOSE = re.compile(r"^\W{0,2}(?:Comment|Summary)[.,:]\s")
+    # "Comment." inside a paragraph, after a sentence end: the clean-up missed the break
+    # before it (Constantinople IV canon 17, p. 171). The canon ends there.
+    _CLOSE_INSIDE = re.compile(r"(?<=[.:;!?”’)\]])\W{0,3}\s+\W{0,2}Comment[.,:]\s+(?=[A-Z])")
     # His citation of the decree in the Clementines, closing its text (Vienne): "(C. 1, in
     # Clem., De rescript., I, 2.)". Editor's matter (rule G).
     _CITATION = re.compile(r"\s*\(C\.\s?(?:\d+|un\.),?\s+in\s+C[il]em\.[^()]{0,80}\)\s*$")
@@ -104,9 +107,10 @@ class SchroederCanons:
                                  f"comes next" + (f" in series {in_series}" if bounds else ""))
             heading = None
             uid = f"series-{in_series}-canon-{number}" if bounds else f"canon-{number}"
-            unit = Unit(uid, [_with_text(para, body)])
+            closed = self._CLOSE_INSIDE.search(body)
+            unit = Unit(uid, [_with_text(para, body[:closed.start()] if closed else body)])
             units.append(unit)
-            return unit
+            return None if closed else unit
 
         for para in paragraphs:
             text = para.text
@@ -134,6 +138,11 @@ class SchroederCanons:
                 open_unit = None
                 continue
             if open_unit is None:
+                continue
+            inside = self._CLOSE_INSIDE.search(text)
+            if inside:
+                open_unit.paragraphs.append(_with_text(para, text[:inside.start()]))
+                open_unit = None
                 continue
             first = self._FIRST_WORD.match(text)
             if first and not is_known(first.group(1)):
@@ -261,7 +270,110 @@ class Bounded:
         return re.sub(r" {2,}", " ", text).strip()
 
 
-UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons(), Bounded.name: Bounded()}
+class Headed:
+    """Texts a work names in its config, in the order printed, where the print gives no
+    label every text shares: Schroeder's numbered decrees of Constance and Basel, Lateran
+    V's bulls ("From the bull …"), Deferrari's extracts (1.2e). A bound is
+    `{"id", "first", "last"?, "heading"?}`: `first` is searched in the paragraph that
+    opens the text, after the last text's end; the text runs to the paragraph `last`
+    matches, or, without `last`, to the paragraph before the next text's `first`. The
+    last text needs `last`. `heading` is the editor's heading the opening paragraph
+    starts with, taken off ("From the bull … (session …):", "Can. 3."); a paragraph that
+    holds only the heading goes.
+
+    Nothing between a text's opening and its end is let out but a bare number set as a
+    heading ("4") where it ends the text: the next decree's number. A bare number
+    anywhere else, or a paragraph a work's `closes` patterns match (a heading no bound
+    names), raises, so a person looks. A text longer than a passage is cut into passages
+    of about `PASSAGE_WORDS`, `<id>-01`, `<id>-02`, ..., as `Bounded` does."""
+    name = "headed"
+
+    _BARE_NUMBER = re.compile(r"^\W{0,2}[0-9IlO]{1,2}\W{0,2}$")
+
+    def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        from ocr.work import PASSAGE_WORDS, group_passages
+
+        if series or not bounds:
+            raise ValueError(f"{self.name} units take bounds, and no series")
+        if "last" not in bounds[-1]:
+            raise ValueError(f"{bounds[-1]['id']}: the last text needs `last`")
+        close_res = [re.compile(c) for c in closes]
+        starts, after = [], 0
+        for bound in bounds:
+            k = next((k for k in range(after, len(paragraphs))
+                      if re.search(bound["first"], paragraphs[k].text)), None)
+            if k is None:
+                raise ValueError(f"{bound['id']}: no paragraph after the last text opens "
+                                 f"with {bound['first']!r}")
+            if paragraphs[k].continues:
+                raise ValueError(f"{bound['id']}: opens inside a paragraph")
+            starts.append(k)
+            after = k + 1
+        units: list[Unit] = []
+        for i, (bound, start) in enumerate(zip(bounds, starts)):
+            end = starts[i + 1] if i + 1 < len(starts) else len(paragraphs)
+            if "last" in bound:
+                last = next((j for j in range(start, end)
+                             if re.search(bound["last"], paragraphs[j].text)), None)
+                if last is None:
+                    raise ValueError(f"{bound['id']}: no paragraph before the next text "
+                                     f"closes it with {bound['last']!r}")
+                end = last + 1
+            body = list(paragraphs[start:end])
+            while body and self._BARE_NUMBER.match(body[-1].text):
+                body.pop()
+            if bound.get("heading"):
+                opening = re.sub(bound["heading"], "", body[0].text, count=1).strip()
+                if opening == body[0].text.strip():
+                    raise ValueError(f"{bound['id']}: its opening does not start with "
+                                     f"{bound['heading']!r}")
+                body = ([replace(body[0], text=opening)] if opening else []) + body[1:]
+            for para in body:
+                if self._BARE_NUMBER.match(para.text) or any(c.search(para.text) for c in close_res):
+                    raise ValueError(f"{bound['id']}: a heading inside the text: {para.text[:80]!r}")
+            text = [q for q in (self._cleaned(p) for p in body) if q.text]
+            if not text:
+                raise ValueError(f"{bound['id']}: no text")
+            groups = group_passages(text, PASSAGE_WORDS)
+            units.extend(Unit(bound["id"] if len(groups) == 1 else f"{bound['id']}-{k:02d}", g)
+                         for k, g in enumerate(groups, 1))
+        return units
+
+    def _cleaned(self, para):
+        return _with_text(para, para.text)
+
+
+class DeferrariExtracts(Headed):
+    """Deferrari's *Sources of Catholic Dogma* (1957), decree text only (R9, Carter, 4 Nov
+    2026): Denzinger's headings, notes and numbers stay out. Beyond `Headed`:
+
+    - a paragraph wholly in square brackets is an editor's label ("[The procession of
+      the Holy Spirit]", "[De novissimis]"), and one wholly in round brackets an editor's
+      remark ("(The decrees for Greeks and Armenians ... follow.)"): both go;
+    - a bracketed reference goes: a Bible reference with chapter and verse ("[Ps.
+      18:9]", "[II Thess. 2: 14]", the OCR often reading "]" as "J") or a reference to
+      Denzinger's numbers ("[see n. 595]");
+    - words in brackets that the sentence reads ("Thy light [law]") are the translator's
+      and stay.
+
+    The margin numbers are furniture (`furniture.py`, `margin_numbers`), and a list's
+    own numbers ("6. God ought to obey the devil.") stand in the text and stay."""
+    name = "deferrari"
+
+    _LABEL = re.compile(r"^\s*(?:\[[^\[\]]*[\]J]|\([^()]*\))\W*$")
+    _REFERENCE = re.compile(r"\s?\[(?:(?:see|cf\.)\s[^\[\]]{0,60}|[^\[\]]{0,30}?\d+\s?:\s?\d+"
+                            r"[^\[\]]{0,40}?)[\]J](?=\W|$)")
+
+    def _cleaned(self, para):
+        if self._LABEL.match(para.text):
+            return replace(para, text="")
+        text = re.sub(r" {2,}", " ", self._REFERENCE.sub("", para.text)).strip()
+        return _with_text(para, text)
+
+
+UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons(), Bounded.name: Bounded(),
+                           Headed.name: Headed(), DeferrariExtracts.name: DeferrariExtracts()}
 
 
 def get_units(name: str) -> Units:

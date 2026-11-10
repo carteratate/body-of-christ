@@ -27,7 +27,7 @@ from __future__ import annotations
 import re
 import statistics
 from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from difflib import SequenceMatcher
 
 from normalize.text import clean_text
@@ -69,6 +69,9 @@ _VOLUME_SIGNATURE = re.compile(r"^VOL\.?\s+[IVXL]+\.?\s+[A-Z]{1,2}\d?$|^[a-z]{1,
 # reads the superscript as a stray mark ("$For", "® Zorell"). Opening quotes and
 # brackets are left out: body lines start with them.
 _NOTE_START = re.compile(r"^(?:\d{1,2}|[^\w\s(\[“\"])\s?\S")
+# A heading set apart at the foot of a page ("CANON 10") is never a note, even after a
+# speck the OCR reads as a mark ("‘CANON 10", Schroeder p. 166).
+_HEADING = re.compile(r"^\W{0,2}[A-Z]{4,}\s+[0-9IlO]{1,3}\W*$")
 _HEAD_NUMBER = re.compile(r"^\d{1,4}\s+\D|\D\s+\d{1,4}$")
 _LINE_END_BREAK = re.compile(r"([^\W\d_]+)[-¬]$")
 _LINE_START_WORD = re.compile(r"^([^\W\d_]+)")
@@ -81,7 +84,8 @@ _CLAUSE_END = re.compile(r"[.,;:?!][\"'”’)\]]*$")
 class Removal:
     leaf: int
     page: str | None
-    kind: str        # running_head | page_number | signature | catchword | speck
+    kind: str        # running_head | page_number | signature | catchword | speck |
+                     # margin_number | note_call (`pdf.py`)
     text: str
 
 
@@ -221,6 +225,15 @@ def _bottom_kind(line: Line, page: Page, next_first: str) -> str | None:
     return None
 
 
+def _usual_gap(lines: list[Line]) -> float:
+    """The usual space between lines where their boxes are tight to the letters, as in a
+    PDF's text layer (its lines carry their words): a note's or a paragraph's extra space
+    is measured beyond it. The djvu's line boxes leave little space, so it is 0 there."""
+    if not lines or not lines[0].words:
+        return 0
+    return statistics.median([max(0, b.top - a.bottom) for a, b in zip(lines, lines[1:])] or [0])
+
+
 def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[Line], list[Line]]:
     """(body, notes): the block at the foot of the page that opens with a note marker
     after a gap and is set tighter than the body, or that continues a note from the
@@ -231,6 +244,7 @@ def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[
     # Notes sit in the lower part of the printed text, which on a short last page can be
     # well above the middle of the image.
     floor = lines[0].top + NOTE_REGION * (lines[-1].bottom - lines[0].top)
+    usual = _usual_gap(lines)
     for i in range(1, len(lines)):
         line, prev = lines[i], lines[i - 1]
         if line.top < floor:
@@ -241,15 +255,45 @@ def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[
         tighter = (block_pitch is not None and body_pitch is not None
                    and block_pitch < NOTE_PITCH * body_pitch)
         if len(block) == 1:
-            tighter = gap > NOTE_GAP * height
+            tighter = gap - usual > NOTE_GAP * height
         # A note carried over from the previous page has no marker; it must then be the
         # foot of the page and start at the left margin, not a centred heading.
         carried = (after_note and line.top > page.height * (1 - CARRIED_NOTE_BAND)
                    and line.x0 - min(ln.x0 for ln in body[-3:]) < INDENT * page.width)
-        opens = bool(_NOTE_START.match(line.text)) or carried
+        opens = (bool(_NOTE_START.match(line.text)) or carried) and not _HEADING.match(line.text)
         if opens and gap > NOTE_GAP * height and tighter:
             return body, block
     return lines, []
+
+
+# A number printed in the margin beside a line (Denzinger's numbers in Deferrari: "336",
+# "2147a"). An article's own number ("6.") stands inside the text block and stays.
+_MARGIN_NUMBER = re.compile(r"^\d{3,4}[a-z]?$")
+# How far outside the text block a margin number stands at least, as a fraction of the
+# page width.
+MARGIN_SLACK = 0.004
+
+
+def _strip_margin_numbers(lines: list[Line], page: Page) -> tuple[list[Line], list[Removal]]:
+    """`lines` without the numbers standing outside the text block, which needs each
+    line's words (`pdf.py`). A line left with no words goes."""
+    full = [ln for ln in lines if len(ln.words) >= 6]
+    if not full:
+        return lines, []
+    left = statistics.median(ln.x0 for ln in full) - MARGIN_SLACK * page.width
+    right = statistics.median(ln.x1 for ln in full) + MARGIN_SLACK * page.width
+    kept, removed = [], []
+    for ln in lines:
+        margin = [w for w in ln.words if _MARGIN_NUMBER.match(w[0]) and (w[2] < left or w[1] > right)]
+        if not margin:
+            kept.append(ln)
+            continue
+        removed.extend(Removal(page.leaf, page.number, "margin_number", w[0]) for w in margin)
+        rest = tuple(w for w in ln.words if w not in margin)
+        if rest:
+            kept.append(replace(ln, text=" ".join(w[0] for w in rest), x0=rest[0][1],
+                                x1=rest[-1][2], words=rest))
+    return kept, removed
 
 
 def _continues_word(prev: Line, line: Line) -> bool:
@@ -264,6 +308,7 @@ def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool],
     read as indented after "delibe-")."""
     starts = []
     height = statistics.median([ln.height for ln in lines]) if lines else 1
+    usual = _usual_gap(lines)
     for i, line in enumerate(lines):
         if i == 0:
             starts.append(True)
@@ -278,14 +323,15 @@ def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool],
         indented = line.x0 - left > INDENT * width
         prev_short = prev.x1 < right - SHORT_LINE * width
         capital = line.text[:1].isupper() or line.text[:1].isdigit()
-        gap = (not page_start[i]) and line.top - prev.bottom > PARAGRAPH_GAP * height
+        gap = (not page_start[i]) and line.top - prev.bottom - usual > PARAGRAPH_GAP * height
         starts.append(indented or gap or (prev_short and capital))
     return starts
 
 
 def clean_pages(pages: list[Page], layout: Layout | None = None,
                 broken_words_continue: bool = False,
-                max_paragraph_words: int | None = None) -> CleanResult:
+                max_paragraph_words: int | None = None,
+                margin_numbers: bool = False) -> CleanResult:
     """The pages' body paragraphs, notes and removals. With `max_paragraph_words`, a
     paragraph is cut at the first line ending a sentence or a clause once it holds that
     many words, and the part after the cut `continues` it: a page-long paragraph is too
@@ -293,6 +339,10 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     layout = layout or SingleColumn()
     result = CleanResult()
     ordered = [layout.reading_order(p) for p in pages]
+    if margin_numbers:
+        for k, page in enumerate(pages):
+            ordered[k], removed = _strip_margin_numbers(ordered[k], page)
+            result.removals.extend(removed)
 
     tops = [lines[0].text for p, lines in zip(pages, ordered)
             if lines and lines[0].top < HEAD_BAND * p.height]
@@ -388,7 +438,7 @@ def _paragraph(lines: list[tuple[Page, Line]], seen: Counter, log: list[HyphenBr
         else:
             text = f"{text} {piece}"
     leaves = sorted({page.leaf for page, _ in lines})
-    raw = "\n".join(line.text for _, line in lines)
+    raw = "\n".join(line.reading for _, line in lines)
     return Paragraph(clean_text(text), raw, leaves, continues)
 
 
@@ -430,18 +480,27 @@ def clean_work(workdir, sources=None, force: bool = False,
     sources = sources or SOURCES
     if not force and any(p.correction.status != "pending" for p in workdir.passages()):
         raise RuntimeError(f"{config.work}: passages already corrected; clean again with force")
-    numbers_path = sources / config.page_numbers
-    leaves = leaves_for_pages(read_page_numbers(numbers_path, config.leaf_offset), *config.pages)
-    pages = load_pages(sources / config.djvu_xml, numbers_path, leaves, config.leaf_offset)
+    note_calls = []
+    if config.pdf:
+        from ocr.pdf import read_pdf
+        first, last = (int(n) + config.pdf_page_offset for n in config.pages)
+        pages = read_pdf(sources / config.pdf, range(first, last + 1), config.pdf_page_offset,
+                         note_calls)
+    else:
+        numbers_path = sources / config.page_numbers
+        leaves = leaves_for_pages(read_page_numbers(numbers_path, config.leaf_offset), *config.pages)
+        pages = load_pages(sources / config.djvu_xml, numbers_path, leaves, config.leaf_offset)
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
-                         config.max_paragraph_words)
+                         config.max_paragraph_words, config.margin_numbers)
+    number = {p.leaf: p.number for p in pages}
+    result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")
+                           for c in note_calls)
     agree, read = page_map_agreement(result.removals)
     if read and agree * 2 < read:
         raise RuntimeError(
             f"{config.work}: the page numbers printed on the pages agree with "
             f"{config.page_numbers} on only {agree} of {read} pages; the scan's images and "
             "its page map are out of step")
-    number = {p.leaf: p.number for p in pages}
     if config.units:
         units = get_units(config.units).split(result.paragraphs, config.unit_series,
                                                 config.unit_closes, config.unit_bounds)

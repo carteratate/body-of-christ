@@ -1,0 +1,39 @@
+{
+ "work": "deferrari-lateran-5",
+ "title": "Fifth Lateran Council, Pastor aeternus gregem (extract), from Deferrari, The Sources of Catholic Dogma (1957), pp. 238–239, Loreto reprint",
+ "scan": "sources-of-catholic-dogma-loreto-reprint",
+ "pdf": "councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf",
+ "pdf_page_offset": 31,
+ "margin_numbers": true,
+ "pages": [
+  "238",
+  "239"
+ ],
+ "layout": "single-column",
+ "units": "deferrari",
+ "unit_bounds": [
+  {
+   "id": "session-11/pastor-aeternus-gregem",
+   "first": "^\\W{0,2}Nor should this move us",
+   "last": "acknowl\\S*\\s+of these same Councils\\.\\W*$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

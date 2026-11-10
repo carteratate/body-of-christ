@@ -42,6 +42,12 @@ def cached_image(config: WorkConfig, leaf: int, cache: Path = IMAGE_CACHE) -> Pa
     path = cache / config.scan / f"n{leaf}.jpg"
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
+        if config.pdf:
+            # A PDF scan is not online: its page is drawn from the vendored file.
+            from ocr.pdf import render_page
+            from ocr.work import SOURCES
+            render_page(SOURCES / config.pdf, leaf, dpi=200).convert("L").save(path, "JPEG", quality=85)
+            return path
         with urlopen(page_image(config, leaf), timeout=60) as response:
             data = response.read()
         path.write_bytes(data)

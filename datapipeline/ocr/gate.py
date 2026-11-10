@@ -70,7 +70,9 @@ def start_check(workdir: WorkDir, seed: int | None = None, redraw: bool = False)
     existing = workdir.check()
     if existing and not redraw:
         return existing
-    passages = {p.id: p for p in workdir.passages()}
+    # A passage a person's fixes emptied (wholly a note read into the text) has nothing
+    # to check against the page.
+    passages = {p.id: p for p in workdir.passages() if p.text.strip()}
     if not passages:
         raise RuntimeError(f"{workdir.config.work}: no passages; run the clean-up first")
     rule = workdir.config.sample
@@ -144,9 +146,10 @@ def evaluate(workdir: WorkDir, baseline: list[str] | None = None) -> GateResult:
     if baseline is None:
         baseline = baseline_text(config.baseline)
     rate = rate_check(passages, baseline, config.names)
-    required = config.sample.size(len(passages))
+    checkable = [p for p in passages if p.text.strip()]      # as `start_check` draws
+    required = config.sample.size(len(checkable))
     check = workdir.check() or {"sample": []}
-    current = {p.id: text_hash(p.text) for p in passages}
+    current = {p.id: text_hash(p.text) for p in checkable}
 
     pending, stale, wording, checked = [], [], [], 0
     redraw = bool(check["sample"]) and check.get("population") != sorted(current)
