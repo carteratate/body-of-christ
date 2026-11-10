@@ -77,10 +77,6 @@
   "fixed_by": "1.2c",
   "description": "86.01% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
  },
- "coverage.councils.ecum-16-council-of-constance.html": {
-  "fixed_by": "1.2e",
-  "description": "93.65% covered: text inside lists, divs and bracketed spans dropped; replaced by Schroeder"
- },
  "coverage.councils.ecum-19-council-of-trent.html": {
   "fixed_by": "1.2b",
   "description": "38.67% covered: text inside lists and divs dropped"
@@ -275,11 +271,6 @@
   "description": "Gaudium et Spes: 30 passages hold footnote callers (C-17)",
   "units": ["gaudium-et-spes/10", "gaudium-et-spes/13", "gaudium-et-spes/14", "gaudium-et-spes/16", "gaudium-et-spes/17", "gaudium-et-spes/21", "gaudium-et-spes/22", "gaudium-et-spes/25", "gaudium-et-spes/26", "gaudium-et-spes/27", "gaudium-et-spes/32", "gaudium-et-spes/34", "gaudium-et-spes/35", "gaudium-et-spes/38", "gaudium-et-spes/39", "gaudium-et-spes/40", "gaudium-et-spes/42", "gaudium-et-spes/43", "gaudium-et-spes/45", "gaudium-et-spes/48", "gaudium-et-spes/49", "gaudium-et-spes/54", "gaudium-et-spes/57", "gaudium-et-spes/62", "gaudium-et-spes/64", "gaudium-et-spes/66", "gaudium-et-spes/68", "gaudium-et-spes/69", "gaudium-et-spes/74", "gaudium-et-spes/75"]
  },
- "health.R12_note_caller:councils/706adce0-8af2-5a30-877b-82e701601a53": {
-  "fixed_by": "1.2b",
-  "description": "Council of Basel-Ferrara-Florence: 5 passages hold footnote callers (C-17)",
-  "units": ["council-of-basel-ferrara-florence/sec-0/14", "council-of-basel-ferrara-florence/sec-0/2", "council-of-basel-ferrara-florence/sec-0/25/from-e103", "council-of-basel-ferrara-florence/sec-0/3", "council-of-basel-ferrara-florence/sec-0/97"]
- },
  "health.R12_note_caller:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
   "fixed_by": "1.1",
   "description": "Perfectae Caritatis: 1 passages hold footnote callers (C-17)",
@@ -294,11 +285,6 @@
   "fixed_by": "1.1",
   "description": "Christus Dominus: 10 passages hold footnote callers (C-17)",
   "units": ["christus-dominus/1", "christus-dominus/12", "christus-dominus/15", "christus-dominus/16", "christus-dominus/3", "christus-dominus/3-2", "christus-dominus/4", "christus-dominus/43", "christus-dominus/5", "christus-dominus/6"]
- },
- "health.R12_note_caller:councils/bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
-  "fixed_by": "1.2b",
-  "description": "Council of Constance: 4 passages hold footnote callers (C-17)",
-  "units": ["council-of-constance/sec-50/50", "council-of-constance/sec-50/51", "council-of-constance/sec-50/52", "council-of-constance/sec-50/53"]
  },
  "health.R12_note_caller:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
   "fixed_by": "1.1",
@@ -425,11 +411,6 @@
   "description": "Gravissimum Educationis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Gravissimum Educationis, §1", "Gravissimum Educationis, §12", "Gravissimum Educationis, §7"]
  },
- "labels.unique_reference:councils/706adce0-8af2-5a30-877b-82e701601a53": {
-  "fixed_by": "1.2e",
-  "description": "Council of Basel-Ferrara-Florence: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Basel-Ferrara-Florence — Text", "Council of Basel-Ferrara-Florence — Text (part 1 of 2)", "Council of Basel-Ferrara-Florence — Text (part 2 of 2)"]
- },
  "labels.unique_reference:councils/70d99be3-5a1c-5435-9507-f45e457c1376": {
   "fixed_by": "1.2c",
   "description": "First Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
@@ -459,11 +440,6 @@
   "fixed_by": "1.1",
   "description": "Christus Dominus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Christus Dominus, §1", "Christus Dominus, §11", "Christus Dominus, §14", "Christus Dominus, §15", "Christus Dominus, §16", "Christus Dominus, §18", "Christus Dominus, §19", "Christus Dominus, §2", "Christus Dominus, §20", "Christus Dominus, §21", "Christus Dominus, §3", "Christus Dominus, §4", "Christus Dominus, §5", "Christus Dominus, §6", "Christus Dominus, §7", "Christus Dominus, §8"]
- },
- "labels.unique_reference:councils/bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
-  "fixed_by": "1.2e",
-  "description": "Council of Constance: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Constance — FOOTNOTES", "Council of Constance — INTRODUCTION 1", "Council of Constance — SESSION 1 – 16 November 1414", "Council of Constance — SESSION 13 – 15 June 1415", "Council of Constance — SESSION 14 – 4 July 1415", "Council of Constance — SESSION 15 – 6 July 1415", "Council of Constance — SESSION 15 – 6 July 1415, §1", "Council of Constance — SESSION 15 – 6 July 1415, §10", "Council of Constance — SESSION 15 – 6 July 1415, §11", "Council of Constance — SESSION 15 – 6 July 1415, §12", "Council of Constance — SESSION 15 – 6 July 1415, §13", "Council of Constance — SESSION 15 – 6 July 1415, §14", "Council of Constance — SESSION 15 – 6 July 1415, §15", "Council of Constance — SESSION 15 – 6 July 1415, §16", "Council of Constance — SESSION 15 – 6 July 1415, §17", "Council of Constance — SESSION 15 – 6 July 1415, §18", "Council of Constance — SESSION 15 – 6 July 1415, §19", "Council of Constance — SESSION 15 – 6 July 1415, §2", "Council of Constance — SESSION 15 – 6 July 1415, §20", "Council of Constance — SESSION 15 – 6 July 1415, §21", "Council of Constance — SESSION 15 – 6 July 1415, §22", "Council of Constance — SESSION 15 – 6 July 1415, §23", "Council of Constance — SESSION 15 – 6 July 1415, §24", "Council of Constance — SESSION 15 – 6 July 1415, §25", "Council of Constance — SESSION 15 – 6 July 1415, §26", "Council of Constance — SESSION 15 – 6 July 1415, §27", "Council of Constance — SESSION 15 – 6 July 1415, §28", "Council of Constance — SESSION 15 – 6 July 1415, §29", "Council of Constance — SESSION 15 – 6 July 1415, §3", "Council of Constance — SESSION 15 – 6 July 1415, §30", "Council of Constance — SESSION 15 – 6 July 1415, §4", "Council of Constance — SESSION 15 – 6 July 1415, §5", "Council of Constance — SESSION 15 – 6 July 1415, §6", "Council of Constance — SESSION 15 – 6 July 1415, §7", "Council of Constance — SESSION 15 – 6 July 1415, §8", "Council of Constance — SESSION 15 – 6 July 1415, §9", "Council of Constance — SESSION 39 – 9 October 1417", "Council of Constance — SESSION 4 – 30 March 1415", "Council of Constance — SESSION 5 – 6 April 1415", "Council of Constance — SESSION 8 – 4 May 1415", "Council of Constance — Second Introduction", "Council of Constance — – 23 MARCH 1418"]
  },
  "labels.unique_reference:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
   "fixed_by": "1.1",
