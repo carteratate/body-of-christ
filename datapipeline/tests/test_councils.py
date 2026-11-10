@@ -1360,6 +1360,9 @@ def test_trents_old_passages_follow_their_text():
     assert open_[f"{t}/canon/ii"]["kind"] == "moved"
     assert open_[f"{t}/sec-0/29"]["new_anchor"] == \
         f"{t}/session-21/canons-on-communion-under-both-species/conclusion"
+    # A passage goes to the one holding its opening words: sec-0/31 opens with session 22's
+    # prorogation line, then runs into session 23's canons.
+    assert open_[f"{t}/sec-0/31"]["new_anchor"] == f"{t}/session-22/indiction-of-the-next-session"
     removed = {e["anchor"]: e for e in work_registry.open_removals(reg)}
     advert = removed[f"{t}/sec-0/21"]
     assert (advert["reason"], advert["tombstone"]) == (
