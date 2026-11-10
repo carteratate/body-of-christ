@@ -134,22 +134,24 @@ _CCC_REF = re.compile(r"§(\d+)(?:–(\d+))?")
 
 def ccc_paragraphs(documents: list[Document]) -> SequenceResult:
     """Paragraphs 1 to 2865 each present once, read from passage references
-    ("CCC §1–5", "CCC §12, §14 (part)") and unit labels."""
+    ("CCC §1–5", "CCC §12, §14", "CCC §2267 (part 1 of 2)") and unit labels. The pieces
+    of one unit each cite their own paragraphs (1.6), so a unit counts the union of its
+    pieces'; a paragraph two pieces share counts once. History passages (rule F) repeat
+    a paragraph on purpose and are not counted."""
     counts: Counter = Counter()
     for doc in documents:
-        seen: set[str] = set()
+        by_unit: dict[str, set[int]] = {}
         for p in doc.passages:
-            base = _anchor_base(p.anchor)
-            if base in seen:
+            if p.superseded_by_anchor:
                 continue
-            seen.add(base)
-            numbers: set[int] = set()
-            for m in _CCC_REF.finditer(p.reference):
+            numbers = by_unit.setdefault(_anchor_base(p.anchor), set())
+            for m in _CCC_REF.finditer(unit_reference(p.reference)):
                 lo = int(m[1])
                 hi = int(m[2]) if m[2] else lo
                 numbers.update(range(lo, hi + 1))
             if p.unit_label:
                 numbers.update(int(n) for n in re.findall(r"§(\d+)", p.unit_label))
+        for numbers in by_unit.values():
             counts.update(numbers)
     return SequenceResult(
         missing=[str(n) for n in range(1, CCC_LAST + 1) if not counts[n]],
