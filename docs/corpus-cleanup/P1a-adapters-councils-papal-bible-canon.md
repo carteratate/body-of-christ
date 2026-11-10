@@ -514,6 +514,7 @@ These apply to every PR below and are not repeated in each item.
   - Together they hold 2,199 live passages, with 120 saved retrievals, no bookmarks and 1 reading position.
   - The texts differ: papalencyclicals.net's Humanae Vitae §1 opens "The most serious duty of transmitting human life", vatican.va's "The transmission of human life is a most serious role".
   - The 86 older papal documents (Benedict XIV to Pius IX, Unam Sanctam, Exsurge Domine, Sublimis Deus) have no English on vatican.va and are not in this item.
+- **Scope (Carter, 9 Nov 2026):** 23 documents. vatican.va has no English for Haerent Animo (1908) or Menti Nostrae (1950), so they move to 1.3d, which searches for a public-domain English printing of each and holds it for permission if none is found. Wherever this section says 25, read 23.
 - **Changes:**
   1. Vendor each vatican.va English page through `scripts/vendor_sources.py` into `sources/<collection>/`, with URL, SHA-256 and retrieval date in the manifest, and point the 25 manifest entries at them. The papalencyclicals.net files stay vendored but unread. Each entry keeps its genre and form from `datapipeline/papal_genres.csv` (1.3b), whose rows for 23 of these documents already cite the vatican.va English page. vatican.va has no English text of the other two, Haerent Animo (1908) and Menti Nostrae (1950), found by 1.3b on 9 Nov 2026 (their pages are Italian and Latin; Menti Nostrae's English page is empty); see Needs Carter.
   2. Build them with 1.3a's parser (vatican.va's `div.documento` and old-layout extractors, endnotes after the `<hr>`).
@@ -527,8 +528,8 @@ These apply to every PR below and are not repeated in each item.
   - 1.3b's genre table cites vatican.va's heading for each of the 25.
   - After the apply, each of the 25 shows the LEV credit and links to its vatican.va page.
 - **Production safety:** Nothing changes live before the Phase 4 apply (D7). Document IDs are unchanged; passage IDs follow D1 as above.
-- **Needs Carter:** Approve the 25 downloads. Review the alignment mismatch list. Added by 1.3b (9 Nov 2026): vatican.va has no English text of Haerent Animo or Menti Nostrae, so this item can take only 23 documents from it; decide whether those two keep their papalencyclicals.net text (and go to R8 and 1.3d with the older documents) or are handled another way.
-- **Out of scope:** The 86 older papal documents (R8, 1.3d). The full reader for these 25 (5.2's step, after their fixes pass the coverage checks).
+- **Needs Carter:** Approve the 25 downloads. Review the alignment mismatch list. Answered 9 Nov 2026: Haerent Animo and Menti Nostrae, which have no English on vatican.va, go to 1.3d (Scope, above).
+- **Out of scope:** The 86 older papal documents (R8, 1.3d), and Haerent Animo and Menti Nostrae (1.3d). The full reader for these 25 (5.2's step, after their fixes pass the coverage checks).
 
 ### 1.3d. Older papal documents from public-domain printings
 
@@ -536,6 +537,7 @@ These apply to every PR below and are not repeated in each item.
 - **Depends on:** R8 (its verdicts, in the scope Carter approves), 1.3a (the shared papal parser), 1.2f (the scanned-text cleanup tool and gate, for printings with no clean transcription), 2.1, 0.2.
 - **Goal:** Each older papal document R8 traces to a public-domain English printing takes its text from that printing, cleared for the full reader with an honest credit ("Translation from *The Catholic Magazine and Review*, 1833"). Each document R8 finds no printing for is held for permission (removal reason `awaiting-permission`): kept in the database, never shown or searched, so that no papal text with unknown rights is published and the set can return in one step if permission is granted (Decision log "Older papal translations: held for permission", Carter, 1 Nov 2026).
 - **R9 (Carter, 4 Nov 2026):** Four held documents gain extracts from Deferrari's Denzinger, with a note on each passage and the rest still held: Exsurge Domine's 41 propositions keep the site's text, which is Deferrari's, and carry `voice = "rejected"`; Vix Pervenit, Singulari Nos and Quanto Conficiamur Moerore take his text (`docs/research/R9-council-gap-leads.md`, section 5). Each needs its own rights row, citing the row for the book.
+- **Also in scope (Carter, 9 Nov 2026):** Haerent Animo (Pius X, 1908) and Menti Nostrae (Pius XII, 1950), from 1.3c, since vatican.va has no English for them. R8 did not search them, so this item does, by R8's method, before building them: Haerent Animo for a printing dated before 1931, Menti Nostrae for a later printing whose copyright was not renewed. Each then follows step 1, 5 or 6 below, like the older documents. Live on 9 Nov 2026: 102 and 147 passages, 4 and 6 saved results.
 - **Current state:** see R8. 1.3a parses the site's text of these documents; this item replaces it where R8 finds a printing.
 - **Changes:**
   1. For each "found" document: vendor the printing through the holding folder (a Wikisource transcription with its scan, or the scan's text through 1.2f's cleanup and gate), and build it with 1.3a's parser rules plus an extractor for the printing's layout.
@@ -555,7 +557,7 @@ These apply to every PR below and are not repeated in each item.
   - 3.4's rejected-voice ranges (Exsurge Domine §1–41, the Syllabus §1–80) are re-checked against the new text.
 - **Production safety:** Nothing changes live before the Phase 4 apply (D7). Document IDs are unchanged; passage IDs follow D1.
 - **Needs Carter:** Approve the downloads and the list of documents held for permission. Review the numbering mismatch list.
-- **Out of scope:** The 25 modern documents (1.3c). Translating anything.
+- **Out of scope:** The 23 modern documents 1.3c takes from vatican.va. Translating anything.
 
 ### 1.3b. Papal genre metadata
 
