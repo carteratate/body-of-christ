@@ -143,8 +143,8 @@ the API reads the staged corpus with no write access: its pool sets `search_path
 connection, and refuses a connection those settings do not hold on, or a database with no
 staged corpus. The API server itself
 refuses to start with anything but `public`, so this is for in-process runs such as the
-pre-cutover checks (item 4.2). It covers Postgres only: vector search needs
-`QDRANT_READ_COLLECTION`, which arrives with item 2.2b.
+pre-cutover checks (item 4.2). It covers Postgres only: point vector search at the staged
+collection with `QDRANT_READ_COLLECTION=chunks-<release>` (item 2.2b).
 
 The document checks include the health block rules in `health.py` (item 0.1b): blank
 text, page-number or punctuation debris, positions that are not `0..n-1`, duplicate
