@@ -1482,6 +1482,25 @@
   "added_on": "2026-11-05"
  },
  {
+  "id": "rm-0623",
+  "scope": "span",
+  "collection": "bible",
+  "document_id": "5ec478ab-5d1d-596a-b7cf-f54747d840fa",
+  "anchor": "daniel/3/19",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "WEB-C's section heading \"THE SONG OF THE THREE HOLY CHILDREN\" (\\s1), read as the end of Daniel 3:23",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "bible",
+   "starts": "THE SONG OF THE THREE HOLY CHILDREN"
+  },
+  "judgment": null,
+  "added_by": "1.4a",
+  "added_on": "2026-11-10"
+ },
+ {
   "id": "rm-0001",
   "scope": "class",
   "collection": "church-fathers",
