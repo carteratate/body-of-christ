@@ -30,6 +30,8 @@ from ingest.bible import (
     check_complete,
     group_verses,
     load_pericopes,
+    load_usfm_directory,
+    load_versification,
     parse_usfm_file,
     parse_usfm_prologue,
     parse_usfm_titles,
@@ -279,11 +281,14 @@ def test_reference_format_uses_en_dash():
 # ---------------------------------------------------------------------------
 
 _HEADER = "book,start,end,title,nv_ref,lxx_ref,nab_ref\n"
+_VERSIFICATION_HEADER = "book,source,target,scope,authority\n"
 
 
-def _world(tmp_path, books: dict[str, str], pericopes: list[tuple], extras: str = ""):
-    """A USFM directory, a KJV pericope file and an extra-pericope CSV under tmp_path.
-    `books` maps a file name to its USFM text; `pericopes` holds (title, start, end)."""
+def _world(tmp_path, books: dict[str, str], pericopes: list[tuple], extras: str = "",
+           versification: str = ""):
+    """A USFM directory, a KJV pericope file, an extra-pericope CSV and a versification
+    table under tmp_path. `books` maps a file name to its USFM text; `pericopes` holds
+    (title, start, end)."""
     import json
     usfm = tmp_path / "usfm"
     usfm.mkdir()
@@ -294,7 +299,10 @@ def _world(tmp_path, books: dict[str, str], pericopes: list[tuple], extras: str 
                                 "Verses": []} for t, s, e in pericopes]), encoding="utf-8")
     csv_path = tmp_path / "extra.csv"
     csv_path.write_text(_HEADER + extras, encoding="utf-8")
-    return dict(usfm_dir=str(usfm), pericope_path=str(kjv), extra_path=str(csv_path))
+    table = tmp_path / "versification.csv"
+    table.write_text(_VERSIFICATION_HEADER + versification, encoding="utf-8")
+    return dict(usfm_dir=str(usfm), pericope_path=str(kjv), extra_path=str(csv_path),
+                versification_path=str(table))
 
 
 def _build(world) -> dict:
@@ -498,6 +506,159 @@ def test_parse_usfm_titles_and_prologue(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# 1.4b: Nova Vulgata numbering
+# ---------------------------------------------------------------------------
+
+_NV = "Nova Vulgata"
+
+
+def _summary(doc):
+    return [(p.anchor, p.reference, p.chapter_key, p.metadata.get("source_ref"))
+            for p in doc.passages]
+
+
+def test_versification_moves_joel_2_28_to_3_1(tmp_path):
+    joel = r"""
+        \id JOL
+        \c 2
+        \p
+        \v 27 You will know that I am in the middle of Israel.
+        \v 28 It will happen afterward, that I will pour out my Spirit on all flesh;
+        \v 29 and also on the servants I will pour out my Spirit.
+        \c 3
+        \p
+        \v 1 For, behold, in those days,
+        \v 2 I will gather all nations.
+    """
+    world = _world(tmp_path, {"29-JOL.usfm": joel},
+                   [("Restoration", "Joel 2:27", "Joel 2:27"), ("Spirit", "Joel 2:28", "Joel 2:29"),
+                    ("Nations", "Joel 3:1", "Joel 3:2")],
+                   versification=f"Joel,2:28-2:29,3:1-3:2,book,{_NV}\n"
+                                 f"Joel,3:1-3:2,4:1-4:2,book,{_NV}\n")
+    doc = _build(world)["Joel"]
+    assert _summary(doc) == [
+        ("joel/nv/2/27", "Joel 2:27", "joel/nv/2", "Joel 2:27"),
+        ("joel/nv/3/1", "Joel 3:1–2", "joel/nv/3", "Joel 2:28–29"),
+        ("joel/nv/4/1", "Joel 4:1–2", "joel/nv/4", "Joel 3:1–2")]
+    spirit = doc.passages[1]
+    assert (spirit.chapter_label, spirit.unit_label, spirit.metadata["pericope"]) == (
+        "Joel 3", "1", "Spirit")
+    assert spirit.content.startswith("It will happen afterward") and "{{v:2}} and also" in \
+        spirit.content
+
+
+def test_versification_moves_malachi_4_to_3_19(tmp_path):
+    malachi = r"""
+        \id MAL
+        \c 3
+        \p
+        \v 18 Then you will again discern between the righteous and the wicked.
+        \c 4
+        \p
+        \v 1 For behold, the day comes, burning like a furnace;
+        \v 2 But to you who fear my name shall the sun of righteousness arise.
+    """
+    world = _world(tmp_path, {"39-MAL.usfm": malachi},
+                   [("Remembrance", "Malachi 3:18", "Malachi 3:18"),
+                    ("The Day", "Malachi 4:1", "Malachi 4:2")],
+                   versification=f"Malachi,4:1-4:2,3:19-3:20,book,{_NV}\n")
+    doc = _build(world)["Malachi"]
+    assert _summary(doc) == [
+        ("malachi/nv/3/18", "Malachi 3:18", "malachi/nv/3", "Malachi 3:18"),
+        ("malachi/nv/3/19", "Malachi 3:19–20", "malachi/nv/3", "Malachi 4:1–2")]
+    assert "{{v:20}} But to you" in doc.passages[1].content
+
+
+def test_versification_moves_jonah_1_17_to_2_1(tmp_path):
+    # Carter, 10 Nov 2026: the fish verse opens the prayer, by a row of the extra table
+    # in the published numbers; the KJV pericope alone would leave it a passage of its own.
+    jonah = r"""
+        \id JON
+        \c 1
+        \p
+        \v 16 Then the men feared the LORD exceedingly.
+        \v 17 The LORD prepared a huge fish to swallow up Jonah.
+        \c 2
+        \p
+        \v 1 Then Jonah prayed to the LORD, his God, out of the fish’s belly.
+        \v 2 He said, “I called because of my affliction to the LORD.
+    """
+    world = _world(tmp_path, {"32-JON.usfm": jonah},
+                   [("Cast into the Sea", "Jonah 1:16", "Jonah 1:17"),
+                    ("Prayer", "Jonah 2:1", "Jonah 2:2")],
+                   extras="Jonah,2:1,2:3,Prayer,,,\n",
+                   versification=f"Jonah,1:17-1:17,2:1-2:1,book,{_NV}\n"
+                                 f"Jonah,2:1-2:2,2:2-2:3,book,{_NV}\n")
+    doc = _build(world)["Jonah"]
+    assert _summary(doc) == [
+        ("jonah/nv/1/16", "Jonah 1:16", "jonah/nv/1", "Jonah 1:16"),
+        ("jonah/nv/2/1", "Jonah 2:1–3", "jonah/nv/2", "Jonah 1:17–2:2")]
+    assert doc.passages[1].content.startswith("The LORD prepared a huge fish")
+    (tmp_path / "kjv-only").mkdir()
+    without_row = _build(_world(tmp_path / "kjv-only", {"32-JON.usfm": jonah},
+                                [("Cast into the Sea", "Jonah 1:16", "Jonah 1:17"),
+                                 ("Prayer", "Jonah 2:1", "Jonah 2:2")],
+                                versification=f"Jonah,1:17-1:17,2:1-2:1,book,{_NV}\n"
+                                              f"Jonah,2:1-2:2,2:2-2:3,book,{_NV}\n"))["Jonah"]
+    assert [p.reference for p in without_row.passages] == ["Jonah 1:16", "Jonah 2:1",
+                                                            "Jonah 2:2–3"]
+
+
+def test_romans_doxology_is_16_25_to_27(tmp_path):
+    # WEB-C prints the doxology at 14:24-26 and leaves a bare 16:25 marker; 16:24 stays.
+    romans = r"""
+        \id ROM
+        \c 14
+        \p
+        \v 23 But he who doubts is condemned if he eats.
+        \v 24 Now to him who is able to establish you
+        \v 25 but now is revealed,
+        \v 26 to the only wise God, through Jesus Christ, to whom be the glory forever! Amen.
+        \c 16
+        \p
+        \v 23 Gaius, my host, greets you.
+        \v 24 The grace of our Lord Jesus Christ be with you all! Amen.
+        \v 25 \f + \fr 16:25 \ft TR places Romans 14:24-26 at the end of Romans.\f*
+    """
+    world = _world(tmp_path, {"75-ROM.usfm": romans},
+                   [("Love", "Romans 14:23", "Romans 14:23"),
+                    ("Greetings", "Romans 16:23", "Romans 16:23"),
+                    ("Doxology", "Romans 16:25", "Romans 16:27")],
+                   versification=f"Romans,14:24-14:26,16:25-16:27,passage,{_NV}\n")
+    doc = _build(world)["Romans"]
+    assert _summary(doc) == [
+        ("romans/14/23", "Romans 14:23", "romans/14", None),
+        ("romans/16/23", "Romans 16:23–24", "romans/16", None),
+        ("romans/nv/16/25", "Romans 16:25–27", "romans/16", "Romans 14:24–26")]
+    assert doc.passages[2].metadata["pericope"] == "Doxology"
+    assert doc.passages[2].content.startswith("Now to him who is able")
+
+
+def test_versification_table_refuses_a_bad_row(tmp_path):
+    def table(rows):
+        path = tmp_path / "v.csv"
+        path.write_text(_VERSIFICATION_HEADER + rows, encoding="utf-8")
+        return str(path)
+    with pytest.raises(ValueError, match="another length"):
+        load_versification(table(f"Joel,2:28-2:32,3:1-3:4,book,{_NV}\n"))
+    with pytest.raises(ValueError, match="inside one chapter"):
+        load_versification(table(f"Joel,2:28-3:2,3:1-3:7,book,{_NV}\n"))
+    with pytest.raises(ValueError, match="two verses land"):
+        load_versification(table(f"Joel,2:1-2:2,3:1-3:2,book,{_NV}\nJoel,2:3-2:3,3:2-3:2,book,{_NV}\n"))
+    with pytest.raises(ValueError, match="disagree on scope"):
+        load_versification(table(f"Joel,2:1-2:1,3:1-3:1,book,{_NV}\nJoel,2:2-2:2,3:2-3:2,passage,{_NV}\n"))
+    # Landing on a verse that keeps its text is refused; on an empty marker it is not.
+    mark = tmp_path / "usfm"
+    mark.mkdir()
+    (mark / "41-MRK.usfm").write_text("\\id MRK\n\\c 1\n\\v 1 One.\n\\v 2 Two.\n",
+                                      encoding="utf-8")
+    with pytest.raises(ValueError, match="which has text"):
+        load_usfm_directory(str(mark), load_versification(table(f"Mark,1:1-1:1,1:2-1:2,book,{_NV}\n")))
+    with pytest.raises(ValueError, match="source lacks"):
+        load_usfm_directory(str(mark), load_versification(table(f"Mark,1:3-1:3,1:4-1:4,book,{_NV}\n")))
+
+
+# ---------------------------------------------------------------------------
 # Vendored source (skipped where the WEB-C files are not vendored)
 # ---------------------------------------------------------------------------
 
@@ -552,7 +713,69 @@ def test_vendored_restored_passages(vendored_docs):
     assert at("Daniel", "daniel/14/1").metadata["pericope"] == "Bel and the Dragon"
     assert "HOLY CHILDREN" not in at("Daniel", "daniel/3/19").content
     assert at("Esther", "esther/10/4").metadata["nab_ref"] == "Esther F:1–11"
-    assert at("Romans", "romans/14/24").reference == "Romans 14:24–26"
+    assert at("Romans", "romans/nv/16/25").reference == "Romans 16:25–27"
     assert at("Numbers", "numbers/16/28").reference == "Numbers 16:28–40"
     assert at("Mark", "mark/2/23").reference == "Mark 2:23–28"
     assert at("Sirach", "sirach/prologue").content.startswith("WHEREAS many and great things")
+
+
+_RENUMBERED = ("Joel", "Malachi", "Jonah")
+
+
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_renumbered_books_use_nv_anchor_segment(vendored_docs):
+    from collections import Counter
+    books = load_usfm_directory(os.path.join(_ROOT, "sources", "bible", "eng-web-c_usfm"))
+    def chapters(name):
+        counted = Counter(v.chapter for v in books[name].verses if v.text.strip())
+        return [counted[c] for c in sorted(counted)]
+    assert chapters("Joel") == [20, 27, 5, 21]
+    assert chapters("Malachi") == [14, 17, 24]
+    assert chapters("Jonah") == [16, 11, 10, 11]
+    assert chapters("Romans")[13] == 23 and chapters("Romans")[15] == 27
+    for name in _RENUMBERED:
+        slug = name.lower()
+        for p in vendored_docs[name].passages:
+            assert p.anchor.startswith(f"{slug}/nv/"), p.anchor
+            assert p.chapter_key.startswith(f"{slug}/nv/"), p.chapter_key
+            assert p.metadata["source_ref"].startswith(name), p.metadata
+    by_anchor = {p.anchor: p for d in vendored_docs.values() for p in d.passages}
+    assert by_anchor["joel/nv/3/1"].content.startswith("“It will happen afterward, that I will pour")
+    assert by_anchor["malachi/nv/3/19"].metadata["source_ref"] == "Malachi 4:1–6"
+    assert by_anchor["jonah/nv/2/1"].reference == "Jonah 2:1–11"
+    assert by_anchor["jonah/nv/2/1"].content.startswith("The LORD prepared a huge fish")
+    assert [p.anchor for p in vendored_docs["Romans"].passages if "/nv/" in p.anchor] == \
+        ["romans/nv/16/25"]
+    assert by_anchor["romans/16/21"].reference == "Romans 16:21–24"
+    # The doxology's registry row was relabelled, never live: it keeps the ID 1.4a froze.
+    rom = vendored_docs["Romans"].id
+    assert registry.resolve_passage_id(rom, "romans/nv/16/25") == \
+        "5410d634-8f68-5f3d-bbe5-46abb6c7e761"
+
+
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_every_old_joel_malachi_and_jonah_passage_has_a_redirect(vendored_docs):
+    """Each WEB-C-numbered row redirects to the Nova Vulgata passage now holding its
+    first verse, and no WEB-C anchor is built again (D1)."""
+    import re
+    reg = registry.current()
+    table = load_versification(os.path.join(_ROOT, "bible_versification.csv"))
+    open_from = {r["old_passage_id"]: r for r in registry.open_redirects(reg)}
+    for name in _RENUMBERED:
+        doc = vendored_docs[name]
+        built = {p.anchor: p for p in doc.passages}
+        old = [r for r in reg.passages if r["document_id"] == doc.id and "/nv/" not in r["anchor"]]
+        assert len(old) == {"Joel": 9, "Malachi": 9, "Jonah": 8}[name]
+        for row in old:
+            assert row["status"] == "redirected" and row["anchor"] not in built
+            redirect = open_from[row["passage_id"]]
+            assert redirect["kind"] in ("renumbered", "split", "merged")
+            target = built[redirect["new_anchor"]]
+            _, c, v = row["anchor"].split("/")
+            nc, nv = table[name].moves.get((int(c), int(v)), (int(c), int(v)))
+            held = {int(target.unit_label)} | {int(x) for x in
+                                               re.findall(r"\{\{v:(\d+)\}\}", target.content)}
+            assert target.chapter_key.endswith(f"/{nc}") and nv in held, (row["anchor"], target.anchor)
+    kinds = {r["old_anchor"]: r["kind"] for r in open_from.values()
+             if r["old_anchor"] in ("joel/2/28", "jonah/1/11", "jonah/2/1")}
+    assert kinds == {"joel/2/28": "renumbered", "jonah/1/11": "split", "jonah/2/1": "merged"}

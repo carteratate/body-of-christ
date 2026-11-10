@@ -14,6 +14,7 @@ from checks.coverage import _PassageText, documents_by_file, match_key, measurab
 from checks.coverage import split_sentences
 from checks.source_text import PAPAL_COLLECTIONS, SourceUnit
 from identity import unit_anchor
+from ingest.bible import moves_by_code
 from ingest.pieces import unit_reference
 from model import Document
 
@@ -62,9 +63,12 @@ _BIBLE_REF = re.compile(r"^(?P<book>.+?) (?P<c1>\d+)(?::(?P<v1>\d+)(?:–(?:(?P<
 def bible_verses(documents: list[Document], units: list[SourceUnit]) -> SequenceResult:
     """Every USFM verse with text falls inside some passage's verse range, read from
     the passage reference ("Esther 4:4–17", "Genesis 1:1–2:3", "Psalms 23"). A prologue
-    ("Sirach, Prologue") cites no verses and is measured by its sentinel."""
+    ("Sirach, Prologue") cites no verses and is measured by its sentinel. Verses are
+    read under the published numbers: the USFM's, moved by `bible_versification.csv`
+    where the Nova Vulgata differs (1.4b), in the USFM's order."""
     files = sorted({u.source_file for u in units})
     placed = documents_by_file("bible", documents, files)
+    moves = moves_by_code()
     result = SequenceResult()
     for name in files:
         # A Psalm title's unit id ends in "/d": unnumbered, so not a verse.
@@ -72,6 +76,8 @@ def bible_verses(documents: list[Document], units: list[SourceUnit]) -> Sequence
                   if u.source_file == name and u.region == "body" and u.unit_id
                   and u.unit_id.rsplit("/", 1)[-1].isdigit()]
         code = verses[0].split("/")[0] if verses else ""
+        if code in moves:
+            verses = [_moved(v, moves[code]) for v in verses]
         order = {v: i for i, v in enumerate(verses)}
         by_chapter: dict[int, list[int]] = defaultdict(list)
         for v in verses:
@@ -113,6 +119,12 @@ def bible_verses(documents: list[Document], units: list[SourceUnit]) -> Sequence
         result.missing += [v for v in verses if not hits[v]]
         result.duplicated += [v for v in verses if hits[v] > 1]
     return result
+
+
+def _moved(unit_id: str, moves: dict[tuple[int, int], tuple[int, int]]) -> str:
+    code, c, v = unit_id.split("/")
+    c, v = moves.get((int(c), int(v)), (int(c), int(v)))
+    return f"{code}/{c}/{v}"
 
 
 # --------------------------------------------------------------------------- Catechism
