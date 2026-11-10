@@ -896,3 +896,59 @@ def test_raw_ocr_keeps_the_text_layers_reading_of_a_mended_word():
     line = Line("the command of", 100, 100, 340, 125, words=words)
     para, = clean_pages([Page(0, 1000, 1400, [line], number="1")]).paragraphs
     assert para.text == "the command of" and para.raw == "the con1mand of"
+
+
+# --- 1.2e-5: Deferrari's numbered lists, lost decree headings ---------------------------------
+
+
+def _article(top, number, words, margin=None, indent=230):
+    """A line of an article in Deferrari's lists: its own number, then words; his margin
+    number, where given, stands left of the text block."""
+    out = [(margin, 100, 160)] if margin else []
+    out.append((f"{number}.", indent, indent + 40))
+    out += [(w, indent + 60 + 90 * k, indent + 130 + 90 * k) for k, w in enumerate(words.split())]
+    return _wline(top, *out)
+
+
+def test_margin_numbers_go_on_a_page_where_most_lines_open_with_one():
+    # Wyclif's articles, p. 210: nearly every full line opens with a margin number, so the
+    # text block is measured without them.
+    lines = [_article(100 + 50 * k, k + 1, "a b c d e f g h", margin=str(602 + k)) for k in range(6)]
+    lines.append(_wline(400, *[(w, 200 + 90 * k, 270 + 90 * k) for k, w in enumerate("x y z q r s".split())]))
+    kept, removed = _strip_margin_numbers(lines, Page(0, 1400, 2200, lines))
+    assert sorted(r.text for r in removed) == [str(602 + k) for k in range(6)]
+    assert [ln.words[0][0] for ln in kept[:6]] == [f"{k + 1}." for k in range(6)]
+    assert all(ln.numbered for ln in kept[:6]) and not kept[6].numbered
+
+
+def test_a_line_that_carried_a_margin_number_opens_a_paragraph():
+    # One-line articles under each other, none indented against its neighbours: each still
+    # opens a paragraph, since Denzinger numbers each.
+    lines = [_article(100 + 40 * k, k + 26, "the prayer avails no one", margin=str(606 + k)) for k in range(3)]
+    result = clean_pages([Page(0, 1400, 2200, lines, "210")], margin_numbers=True)
+    assert [p.text for p in result.paragraphs] == [f"{k + 26}. the prayer avails no one" for k in range(3)]
+
+
+def test_paragraph_opens_starts_a_paragraph_where_a_lost_heading_left_none():
+    lines = [Line(f"line {k} of the decree runs right across the page", 100, 100 + 40 * k, 900, 125 + 40 * k)
+             for k in range(4)]
+    lines[2] = Line("Since from the indiscreet imposition of interdicts the", 100, 180, 900, 205)
+    page = Page(0, 1000, 2000, lines, "475")
+    assert len(clean_pages([page]).paragraphs) == 1
+    paras = clean_pages([page], paragraph_opens=("^Since from the indiscreet",)).paragraphs
+    assert [p.text.split()[0] for p in paras] == ["line", "Since"]
+    with pytest.raises(ValueError, match="matches 0 lines"):
+        clean_pages([page], paragraph_opens=("^No such line",))
+
+
+def test_deferrari_units_drop_a_label_opening_a_paragraph_and_a_remark_set_over_two():
+    paras = _paras("[The procession of the Holy Spirit] In the name of the Trinity we define.",
+                   "[De novissimisJ 2 It has likewise defined.",
+                   "(The decrees for Greeks and Armenians of the ecumenical",
+                   "Synod accepted by the Roman Church follow.)",
+                   "But since the form of the words is fixed, it is so.")
+    unit, = DeferrariExtracts().split(paras, bounds=({"id": "x", "first": "^\\[The procession",
+                                                      "last": "it is so"},))
+    assert [p.text for p in unit.paragraphs] == [
+        "In the name of the Trinity we define.", "It has likewise defined.",
+        "But since the form of the words is fixed, it is so."]

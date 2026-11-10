@@ -1,0 +1,14 @@
+[
+ {
+  "passage": "session-15/hus-articles-01",
+  "find": "reasonably regard-Pontiff, is the head",
+  "replace": "reasonably regarding himself or anyone else that he was the head of a particular church, nor is the Roman Pontiff the head of a particular Roman Church.\n\n11. It is not necessary to believe that the one whosoever is the Roman Pontiff, is the head",
+  "why": "p. 212: the last three lines (the end of article 10 and the start of 11) were filed with the notes; restored from the page"
+ },
+ {
+  "passage": "session-15/tyrannicide",
+  "find": "doctrine are heretics …",
+  "replace": "doctrine are heretics. …",
+  "why": "p. 218: The page prints \"heretics. . . .\": a full stop followed by the three-dot ellipsis, so the text is missing the stop (low stakes; keep the text's own ellipsis character)."
+ }
+]

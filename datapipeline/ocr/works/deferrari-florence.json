@@ -1,0 +1,49 @@
+{
+ "work": "deferrari-florence",
+ "title": "Council of Florence, the decrees for the Greeks, the Armenians and the Jacobites (extracts), from Deferrari, The Sources of Catholic Dogma (1957), pp. 219–230, Loreto reprint",
+ "scan": "sources-of-catholic-dogma-loreto-reprint",
+ "pdf": "councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf",
+ "pdf_page_offset": 31,
+ "margin_numbers": true,
+ "pages": [
+  "219",
+  "230"
+ ],
+ "layout": "single-column",
+ "units": "deferrari",
+ "unit_bounds": [
+  {
+   "id": "florence-session-6/laetentur-caeli",
+   "first": "^\\W{0,2}\\[The procession of the Holy Spirit",
+   "last": "in the sacred canons\\.\\W*$"
+  },
+  {
+   "id": "florence-session-8/exultate-deo",
+   "first": "^\\W{0,2}In the fifth place we have reduced",
+   "last": "contracted is perpetual\\.\\W*$"
+  },
+  {
+   "id": "florence-session-11/cantate-domino",
+   "first": "^\\W{0,2}The sacrosanct Roman Church, founded",
+   "last": "true body of Christ\\.\\W*$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

@@ -1,0 +1,139 @@
+[
+ {
+  "passage": "florence-session-6/laetentur-caeli-02",
+  "find": "sacrifices of Masses,\n\nMsi XXXI 1030 D f. (1696 D f.); Hrd IX 422 B f. (986 BE.); BR(T) 5, 41 a E.; MER 1,335 b f.; Hfl VII 737 (746) ff.; d. Bar(Th) about 1439 n. 1 ff.; n. 8 (28, 282 h f.); cf. M Th Cc 5, 452 ff.\n\n2 On the origin of this definition, cf. \"Gregorianum\" 18 (1937) 337 ff. [G. Hofmann, S.J.]. ",
+  "replace": "sacrifices of Masses, ",
+  "why": "pp. 219–220: footnotes 1 and 2 of p. 219 read into the sentence where it crosses the page; it runs on 'Masses, prayers'"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-04",
+  "find": "Alexander,1 the",
+  "replace": "Alexander, the",
+  "why": "p. 222: note call 1 after 'Alexander,'"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "continues": true,
+  "why": "pp. 222–223: the sentence runs on from 'flowed' to 'from the side of Christ'; the footnote at the page foot broke it"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "find": "1 From Pseudo-Isidore (P. Hinschius, D~cretales Pseudo-Isidorianae, Lipsiae: 1863, P·99). ",
+  "replace": "",
+  "why": "p. 222: footnote 1 read into the text where the sentence crosses the page"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "find": "Julius,! the",
+  "replace": "Julius, the",
+  "why": "p. 223: note call 1 after 'Julius,', read as '!'"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "find": "vvith",
+  "replace": "with",
+  "why": "p. 223: the text layer's 'vv' for 'w'; the model's correction of this passage was rejected (10 words over its limit of 9)"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "find": "ll1ade",
+  "replace": "made",
+  "why": "p. 223: the text layer's 'll1' for 'm'"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "find": "ll1ultitude",
+  "replace": "multitude",
+  "why": "p. 223: the text layer's 'll1' for 'm'"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "find": "Arll1enians",
+  "replace": "Armenians",
+  "why": "p. 223: the text layer's 'll1' for 'm'"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-05",
+  "find": "they carryon corporal",
+  "replace": "they carry on corporal",
+  "why": "p. 223: two words, read as one"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-08",
+  "find": "conferred: 1 just",
+  "replace": "conferred: just",
+  "why": "p. 224: note call 1 after 'conferred:'"
+ },
+ {
+  "passage": "florence-session-11/cantate-domino-01",
+  "find": "beginning.\" 1 Whatever",
+  "replace": "beginning.\" Whatever",
+  "why": "p. 226: note call 1 after the quotation"
+ },
+ {
+  "passage": "florence-session-11/cantate-domino-07",
+  "find": "Lord [Matt. IS: I I ], ",
+  "replace": "Lord, ",
+  "why": "p. 229: Bible reference [Matt. 15:11], its digits read as letters, left in the text"
+ },
+ {
+  "passage": "florence-session-11/cantate-domino-07",
+  "find": "strangled [Acts IS:29] befitted",
+  "replace": "strangled befitted",
+  "why": "p. 229: Bible reference [Acts 15:29], its digits read as letters, left in the text"
+ },
+ {
+  "passage": "florence-session-11/cantate-domino-07",
+  "find": "clean\" [Tit. I: IS], with",
+  "replace": "clean\", with",
+  "why": "p. 229: Bible reference [Tit. 1:15], its digits read as letters, left in the text"
+ },
+ {
+  "passage": "florence-session-6/laetentur-caeli-01",
+  "find": "And that all things, which are the Father's, the Father Himself has given in begetting His only begotten Son; without being Father, the Son Himself possesses this from the Father, that the Holy Spirit proceeds from the Son from whom He was moreover eternally begotten.",
+  "replace": "And since all that the Father has, the Father himself, in begetting, has given to His only begotten Son, with the exception of Fatherhood, the very fact that the Holy Spirit proceeds from the Son, the Son himself has from the Father eternally, by whom He was begotten also eternally.",
+  "why": "p. 219, n. 691: the book's corrigenda (the sheet at the front of the reprint, PDF page index 1; leaf 763 of the 1957 printing) give this sentence for lines 12 to 16; its wording is the sheet's, and the sentence's closing stop is the page's"
+ },
+ {
+  "passage": "florence-session-11/cantate-domino-01",
+  "find": "persons are one God,\n\n\"Because",
+  "replace": "persons are one God, and not three gods, because the three have one substance, one essence, one nature, one divinity, one immensity, one eternity, where no opposition of relationship interferes.\n\n\"Because",
+  "why": "p. 225: the last three lines of n. 703 above the notes were filed with them; restored from the page, without note call 2"
+ },
+ {
+  "passage": "florence-session-11/cantate-domino-01",
+  "find": "one eternity, where",
+  "replace": "one eternity and all these things are one, where",
+  "why": "p. 225, n. 703: the book's corrigenda (PDF page index 1; leaf 763 of the 1957 printing): add 'and all these things are one' after 'one eternity'"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-01",
+  "find": "each and everyone in himself",
+  "replace": "each and every one in himself",
+  "why": "p. 221: The page prints \"every one\" as two words."
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-02",
+  "find": " (cf. John 3: 5).",
+  "replace": ".",
+  "why": "p. 221: Deferrari's reference to John 3:5, printed in parentheses where his others are bracketed; an editor's reference, not the decree's text"
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-02",
+  "find": "Holy Ghost 1 or:",
+  "replace": "Holy Ghost or:",
+  "why": "p. 221: The \"1\" is a footnote call (note: \"Many Greeks so baptize.\")."
+ },
+ {
+  "passage": "florence-session-8/exultate-deo-03",
+  "find": " [cf. I Cor. 1:23]",
+  "replace": "",
+  "why": "p. 222: Deferrari's bracketed Bible reference after \"foolishness\"\" is editorial and must be removed."
+ },
+ {
+  "passage": "florence-session-11/cantate-domino-02",
+  "find": " [The books of the canon follow, cf. n. invisible;",
+  "replace": "\n\nBesides it anathematizes the madness of the Manichaeans, who have established two first principles, one of the visible, and another of the invisible;",
+  "why": "p. 226: The editor's bracket \"[The books of the canon follow, cf. n. 784; EB n. 32].\" must go, and the lost lines of n. 707 (a new numbered paragraph, 'Besides it anathematizes ... another of the') are restored before 'invisible;' at the top of p. 227."
+ }
+]

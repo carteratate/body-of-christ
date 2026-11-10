@@ -5,7 +5,7 @@
   "canon-law": "feat/coverage-checks cfee751",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
-  "councils": "feat/1.2e-4-constantinople-4-lateran-5 b1fbaaa",
+  "councils": "HEAD bb76d19",
   "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
@@ -831,16 +831,6 @@
    "body_chars": 36828,
    "covered_chars": 31675,
    "pct": 86.01
-  },
-  "councils/ecum-16-council-of-constance.html": {
-   "body_chars": 130013,
-   "covered_chars": 121759,
-   "pct": 93.65
-  },
-  "councils/ecum-17-council-of-basel-ferrara-florence.html": {
-   "body_chars": 322148,
-   "covered_chars": 316780,
-   "pct": 98.33
   },
   "councils/ecum-19-council-of-trent.html": {
    "body_chars": 535924,
@@ -2993,13 +2983,6 @@
    "covered_chars": 143,
    "pct": 0.61
   },
-  "706adce0-8af2-5a30-877b-82e701601a53": {
-   "collection": "councils",
-   "source_file": "ecum-17-council-of-basel-ferrara-florence.html",
-   "body_chars": 322148,
-   "covered_chars": 316780,
-   "pct": 98.33
-  },
   "7073bae0-a0fd-5c22-8e36-8cf493f15af2": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
@@ -3818,13 +3801,6 @@
    "body_chars": 181617,
    "covered_chars": 179875,
    "pct": 99.04
-  },
-  "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
-   "collection": "councils",
-   "source_file": "ecum-16-council-of-constance.html",
-   "body_chars": 130013,
-   "covered_chars": 121759,
-   "pct": 93.65
   },
   "bffdc129-866b-5ea9-b7d6-c0cb65a19262": {
    "collection": "encyclicals",

@@ -4,8 +4,9 @@ The text comes through the OCR tool (1.2f), one unit per canon or decree, frozen
 `ocr/texts/<work>.json`. Schroeder's history, summaries, commentary and notes never reach
 it. A canon's anchor is `<council>/canon/<Schroeder's number>`; the passage registry keeps
 each one on the ID its Tanner canon had, whatever number Tanner gave it. A council rebuilt
-by session (Lateran V) names each text `<council>/session-N/<Latin title>`, each session
-a chapter (Carter, 9 Nov 2026). Deferrari's texts join their council's document
+by session (Constance, Basel-Ferrara-Florence, Lateran V) names each text
+`<council>/session-N/<text>`, by its Latin title or, for Schroeder's numbered decrees,
+`decree/N`, each session a chapter (Carter, 9 Nov 2026). Deferrari's texts join their council's document
 (`councils_deferrari`).
 """
 from __future__ import annotations
@@ -39,6 +40,8 @@ WORKS = {
     "Council of Vienne": "schroeder-vienne",
     "Fourth Council of Constantinople": "schroeder-constantinople-4",
     "Fifth Lateran Council": "schroeder-lateran-5",
+    "Council of Constance": "schroeder-constance",
+    "Council of Basel-Ferrara-Florence": "schroeder-basel",
 }
 # A council printed in two series names both: `<council>/series-K/canon/N`, each series
 # its own chapter (Carter, 9 Nov 2026). One series is `<council>/canon/N`.
@@ -54,9 +57,12 @@ HELD: frozenset[str] = frozenset()
 
 
 _UNIT_ID = re.compile(r"^(?:series-(\d+)-)?canon-(\d+)$")
-# A text of a council rebuilt by session: `session-N/<name>` (Lateran V's bulls), with
-# `-NN` on each part of a text cut for correction and the check.
-_SESSION_UNIT = re.compile(r"^(session-(\d+))/([a-z0-9/-]+?)(?:-(\d{2}))?$")
+# A text of a council rebuilt by session: `session-N/<name>` (Lateran V's bulls,
+# Constance's `session-43/decree/N`), with `-NN` on each part of a text cut for correction
+# and the check. Basel-Ferrara-Florence's sessions are numbered afresh at each place, so
+# they carry it: `basel-session-N`, `florence-session-N`.
+_SESSION_UNIT = re.compile(r"^((?:(basel|ferrara|florence)-)?session-(\d+))/([a-z0-9/-]+?)(?:-(\d{2}))?$")
+_PLACES = ("basel", "ferrara", "florence")
 
 
 @dataclass
@@ -81,8 +87,25 @@ def _unit(unit_id: str) -> tuple[int | None, str]:
 
 
 def _title(name: str) -> str:
-    """A bull's label from its anchor name: "apostolici-regiminis" → "Apostolici regiminis"."""
-    return name.replace("-", " ").capitalize()
+    """A text's label from its anchor name: "apostolici-regiminis" → "Apostolici
+    regiminis", "decree/3" → "Decree 3"."""
+    return name.replace("/", " ").replace("-", " ").capitalize()
+
+
+def session_label(chapter: str) -> str:
+    """A session's chapter label: "session-8" → "Session 8", "florence-session-6" →
+    "Florence, Session 6"."""
+    m = _SESSION_UNIT.match(f"{chapter}/x")
+    session = f"Session {m.group(3)}"
+    return f"{m.group(2).capitalize()}, {session}" if m.group(2) else session
+
+
+def session_order(tail: str) -> tuple[int, int]:
+    """Where a text of a council rebuilt by session falls: by place, then session."""
+    m = _SESSION_UNIT.match(tail)
+    if not m:
+        raise ValueError(f"not a session text: {tail}")
+    return (_PLACES.index(m.group(2)) if m.group(2) else 0), int(m.group(3))
 
 
 def _schroeder_texts(council: str, text: dict) -> list[_Text]:
@@ -92,14 +115,15 @@ def _schroeder_texts(council: str, text: dict) -> list[_Text]:
         pages = [p for p in unit["pages"] if p]
         session = _SESSION_UNIT.match(unit["id"])
         if session:
-            tail, number, name = f"{session.group(1)}/{session.group(3)}", session.group(2), session.group(3)
+            chapter, name = session.group(1), session.group(4)
+            tail = f"{chapter}/{name}"
             if out and out[-1].tail == tail:
                 out[-1].body += (" " if unit.get("continues") else "\n\n") + unit["text"]
                 out[-1].pages += pages
                 continue
-            out.append(_Text(tail, session.group(1), f"Session {number}", _title(name),
-                             f"{council}, Session {number}, {_title(name)}", unit["text"],
-                             pages, meta))
+            label = session_label(chapter)
+            out.append(_Text(tail, chapter, label, _title(name),
+                             f"{council}, {label}, {_title(name)}", unit["text"], pages, meta))
             continue
         series, number = _unit(unit["id"])
         if series is None:
@@ -117,7 +141,9 @@ def _schroeder_texts(council: str, text: dict) -> list[_Text]:
 
 def _with_deferrari(council: str, texts: list[_Text]) -> list[_Text]:
     """`texts` with Deferrari's in place: each replaces the Schroeder text of its unit or
-    follows the one it names, in its chapter."""
+    follows the one it names, in its chapter. A text in a session Schroeder does not print
+    (Constance's, Florence's) is its own chapter, placed by session: before the first
+    text of a later session, after any of its own."""
     meta, placed = deferrari.texts(council)
     if not placed:
         return texts
@@ -125,6 +151,14 @@ def _with_deferrari(council: str, texts: list[_Text]) -> list[_Text]:
     out = list(texts)
     for spot, body, pages in placed:
         target = spot.replaces or spot.after
+        if target is None:
+            chapter = _SESSION_UNIT.match(spot.anchor).group(1)
+            label = session_label(chapter)
+            order = session_order(spot.anchor)
+            k = next((k for k, t in enumerate(out) if session_order(t.tail) > order), len(out))
+            out.insert(k, _Text(spot.anchor, chapter, label, spot.label,
+                                f"{council}, {label}, {spot.label}", body, pages, meta))
+            continue
         k = next((k for k, t in enumerate(out) if t.tail == target), None)
         if k is None:
             raise ValueError(f"{council}: Deferrari's {spot.unit} names no text {target}")

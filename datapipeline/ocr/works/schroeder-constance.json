@@ -1,0 +1,78 @@
+{
+ "work": "schroeder-constance",
+ "title": "Council of Constance, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 453–455",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": [
+  "453",
+  "455"
+ ],
+ "layout": "single-column",
+ "units": "headed",
+ "unit_bounds": [
+  {
+   "id": "session-43/decree/1",
+   "first": "^\\W{0,2}Wishing to remove what is derogatory"
+  },
+  {
+   "id": "session-43/decree/2",
+   "first": "^\\W{0,2}Since, in regard to the unions"
+  },
+  {
+   "id": "session-43/decree/3",
+   "first": "^\\W{0,2}The revenues of churches"
+  },
+  {
+   "id": "session-43/decree/4",
+   "first": "^\\W{0,2}Many constitutions have in the past"
+  },
+  {
+   "id": "session-43/decree/5",
+   "first": "^\\W{0,2}Since benefices are granted"
+  },
+  {
+   "id": "session-43/decree/6",
+   "first": "^\\W{0,2}We command and decree that the laws forbidding"
+  },
+  {
+   "id": "session-43/decree/7",
+   "first": "^\\W{0,2}Among other excesses of prelates",
+   "last": "applied to that church\\.\\W*$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [
+  "archdiaconate",
+  "cardinalitial",
+  "conditione",
+  "eo",
+  "exemptionis",
+  "facto",
+  "generaliter",
+  "incorporations",
+  "ipso",
+  "jure",
+  "justitia",
+  "mediante",
+  "obediences",
+  "Quum",
+  "simoniacally"
+ ],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

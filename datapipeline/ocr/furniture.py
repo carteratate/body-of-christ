@@ -277,11 +277,14 @@ MARGIN_SLACK = 0.004
 def _strip_margin_numbers(lines: list[Line], page: Page) -> tuple[list[Line], list[Removal]]:
     """`lines` without the numbers standing outside the text block, which needs each
     line's words (`pdf.py`). A line left with no words goes."""
-    full = [ln for ln in lines if len(ln.words) >= 6]
+    # The text block's edges, measured without the numbers: on a page of a numbered list
+    # most full lines open with one (Wyclif's articles, p. 210).
+    full = [words for words in (tuple(w for w in ln.words if not _MARGIN_NUMBER.match(w[0]))
+                                for ln in lines) if len(words) >= 6]
     if not full:
         return lines, []
-    left = statistics.median(ln.x0 for ln in full) - MARGIN_SLACK * page.width
-    right = statistics.median(ln.x1 for ln in full) + MARGIN_SLACK * page.width
+    left = statistics.median(words[0][1] for words in full) - MARGIN_SLACK * page.width
+    right = statistics.median(words[-1][2] for words in full) + MARGIN_SLACK * page.width
     kept, removed = [], []
     for ln in lines:
         margin = [w for w in ln.words if _MARGIN_NUMBER.match(w[0]) and (w[2] < left or w[1] > right)]
@@ -292,7 +295,7 @@ def _strip_margin_numbers(lines: list[Line], page: Page) -> tuple[list[Line], li
         rest = tuple(w for w in ln.words if w not in margin)
         if rest:
             kept.append(replace(ln, text=" ".join(w[0] for w in rest), x0=rest[0][1],
-                                x1=rest[-1][2], words=rest))
+                                x1=rest[-1][2], words=rest, numbered=True))
     return kept, removed
 
 
@@ -331,11 +334,17 @@ def _paragraph_starts(lines: list[Line], width: int, page_start: list[bool],
 def clean_pages(pages: list[Page], layout: Layout | None = None,
                 broken_words_continue: bool = False,
                 max_paragraph_words: int | None = None,
-                margin_numbers: bool = False) -> CleanResult:
+                margin_numbers: bool = False,
+                paragraph_opens: tuple[str, ...] = ()) -> CleanResult:
     """The pages' body paragraphs, notes and removals. With `max_paragraph_words`, a
     paragraph is cut at the first line ending a sentence or a clause once it holds that
     many words, and the part after the cut `continues` it: a page-long paragraph is too
-    much for one correction call or one check against the page images."""
+    much for one correction call or one check against the page images.
+
+    `paragraph_opens` are patterns, each matching the start of exactly one line, that
+    open a paragraph the clean-up would join to the one before: a decree whose heading
+    the OCR lost and whose first line opens a page (Basel's decree 3, p. 475). One that
+    matches no line, or more than one, raises."""
     layout = layout or SingleColumn()
     result = CleanResult()
     ordered = [layout.reading_order(p) for p in pages]
@@ -390,8 +399,17 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
             left = statistics.median([ln.x0 for ln in near]) if near else body[0].x0
             page_starts[0] = body[0].x0 - left > INDENT * page.width and not (
                 broken_words_continue and _continues_word(flat[-1][1], body[0]))
+        # Denzinger's margin number stands beside the first line of the text it numbers,
+        # so that line opens a paragraph: in a list, item after item (Wyclif's articles).
+        page_starts = [s or ln.numbered for s, ln in zip(page_starts, body)]
         flat.extend((page, ln) for ln in body)
         starts.extend(page_starts)
+
+    for pattern in paragraph_opens:
+        hits = [k for k, (_, line) in enumerate(flat) if re.match(pattern, line.text)]
+        if len(hits) != 1:
+            raise ValueError(f"paragraph_opens {pattern!r} matches {len(hits)} lines, not one")
+        starts[hits[0]] = True
 
     current: list[tuple[Page, Line]] = []
     continues = False
@@ -491,7 +509,8 @@ def clean_work(workdir, sources=None, force: bool = False,
         leaves = leaves_for_pages(read_page_numbers(numbers_path, config.leaf_offset), *config.pages)
         pages = load_pages(sources / config.djvu_xml, numbers_path, leaves, config.leaf_offset)
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
-                         config.max_paragraph_words, config.margin_numbers)
+                         config.max_paragraph_words, config.margin_numbers,
+                         config.paragraph_opens)
     number = {p.leaf: p.number for p in pages}
     result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")
                            for c in note_calls)

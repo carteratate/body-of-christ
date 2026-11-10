@@ -7,8 +7,10 @@ Loreto reprint's PDF (`ocr/pdf.py`), frozen in `ocr/texts/<work>.json`. Denzinge
 headings, notes and numbers never reach it.
 
 Each text either replaces Schroeder's text of the same unit (Constantinople IV's canons
-1, 3, 11, 12 and 21, which Schroeder only summarises) or follows a named one (the extract
-of canon 17 after Schroeder's summary of it; Pastor aeternus gregem in session 11).
+1, 3, 11, 12 and 21, which Schroeder only summarises), follows a named one (the extract
+of canon 17 after Schroeder's summary of it; Pastor aeternus gregem in session 11), or
+stands in a session Schroeder does not print, its own chapter, in session order
+(Constance's sessions 8, 13 and 15; Florence's 6, 8 and 11).
 """
 from __future__ import annotations
 
@@ -28,7 +30,7 @@ class Placed:
     anchor: str                # its anchor under the council
     label: str                 # its unit label
     replaces: str | None = None  # the Schroeder text (anchor under the council) it replaces
-    after: str | None = None     # or the one it follows
+    after: str | None = None     # or the one it follows; neither: its own session's chapter
 
 
 # By the manifest's council name: the work and its texts.
@@ -45,6 +47,22 @@ WORKS: dict[str, tuple[str, tuple[Placed, ...]]] = {
         Placed("session-11/pastor-aeternus-gregem", "session-11/pastor-aeternus-gregem",
                "Pastor aeternus gregem",
                after="session-11/supernae-majestatis-praesidio"),
+    )),
+    # Sessions Schroeder does not print, each its own chapter, placed by session.
+    "Council of Constance": ("deferrari-constance", (
+        Placed("session-8/wyclif-articles", "session-8/wyclif-articles", "Articles of Wyclif"),
+        Placed("session-13/communion-under-one-kind", "session-13/communion-under-one-kind",
+               "Communion under one kind"),
+        Placed("session-15/hus-articles", "session-15/hus-articles", "Articles of Hus"),
+        Placed("session-15/tyrannicide", "session-15/tyrannicide", "Tyrannicide"),
+    )),
+    "Council of Basel-Ferrara-Florence": ("deferrari-florence", (
+        Placed("florence-session-6/laetentur-caeli", "florence-session-6/laetentur-caeli",
+               "Laetentur caeli"),
+        Placed("florence-session-8/exultate-deo", "florence-session-8/exultate-deo",
+               "Exultate Deo"),
+        Placed("florence-session-11/cantate-domino", "florence-session-11/cantate-domino",
+               "Cantate Domino"),
     )),
 }
 

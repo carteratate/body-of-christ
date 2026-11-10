@@ -128,7 +128,8 @@ CANON_COUNTS = {"First Lateran Council": 22, "Second Lateran Council": 30,
                 "Third Lateran Council": 27, "Fourth Lateran Council": 71,
                 "First Council of Lyons": 27, "Second Council of Lyons": 32,
                 "Council of Vienne": 39, "Fourth Council of Constantinople": 27,
-                "Fifth Lateran Council": 7}
+                "Fifth Lateran Council": 7, "Council of Constance": 7,
+                "Council of Basel-Ferrara-Florence": 15}
 # Schroeder's canons whose text Deferrari's replaces (1.2e-4).
 REPLACED = {"Fourth Council of Constantinople": 5}
 # Councils Schroeder prints in two series (Carter, 9 Nov 2026).
@@ -154,6 +155,8 @@ def test_schroeder_prints_every_canon_and_nothing_of_his_own(council, count):
     series = SERIES.get(council, (count,))
     if council == "Fifth Lateran Council":      # a chapter per session
         series = (1, 1, 3, 2)
+    if council == "Council of Basel-Ferrara-Florence":    # sessions 20 and 21
+        series = (4, 11)
     assert [len([u for u in units if u[0] == key]) for key in dict.fromkeys(k for k, _ in units)] \
         == list(series)
     assert len(units) == count
@@ -188,16 +191,29 @@ def test_quotations_may_run_over_paragraphs():
     assert not _quotations_balance("One.” Two.")
 
 
+# Quotations the page opens and never closes: "from things sacrificed to idols, … from things
+# strangled" (Cantate Domino, Deferrari p. 229).
+PRINTED_UNCLOSED_QUOTE = {"florence-session-11/cantate-domino-07"}
+
+
 @pytest.mark.parametrize("work", [*schroeder.WORKS.values(),
                                   *(w for w, _ in deferrari.WORKS.values())])
 def test_frozen_text_marks_balance_and_sentences_start_clean(work):
     # What a word-level comparison misses: a lost bracket or quotation mark, or a stop
-    # read as a comma or a comma as a stop.
+    # read as a comma or a comma as a stop. A unit that `continues` the one before is
+    # checked with it: a quotation can run across the cut (Exultate Deo, p. 222).
+    units: list[dict] = []
     for unit in read_text(work)["passages"]:
+        if unit.get("continues") and units:
+            units[-1] = {"id": units[-1]["id"], "text": f"{units[-1]['text']} {unit['text']}"}
+        else:
+            units.append(unit)
+    for unit in units:
         text = unit["text"]
         assert text.count("(") == text.count(")"), unit["id"]
         assert _quotations_balance(text), unit["id"]
-        assert text.count('"') % 2 == 0, unit["id"]          # Deferrari's are straight
+        if unit["id"] not in PRINTED_UNCLOSED_QUOTE:
+            assert text.count('"') % 2 == 0, unit["id"]      # Deferrari's are straight
         assert not re.search(r", But\b|\. (?:but|and|the)\b", text), unit["id"]
 
 
@@ -444,12 +460,15 @@ def test_lateran_v_is_built_by_session_with_each_bull_under_its_latin_title():
 def test_deferrari_frozen_text_is_decree_text_only(work):
     for unit in read_text(work)["passages"]:
         text = unit["text"]
-        assert not re.search(r"\b\d{3,4}[a-z]?\b", text), unit["id"]       # Denzinger's numbers
+        # Denzinger's numbers; a date the sentence gives is the text's ("July 6, 1415").
+        undated = re.sub(r"[A-Z][a-z]+ \d{1,2}, \d{4}\b", "", text)
+        assert not re.search(r"\b\d{3,4}[a-z]?\b", undated), unit["id"]
         assert not re.search(r"\[(?:see|cf\.)|\[[^\]]*\d+\s?:\s?\d+", text), unit["id"]
         assert not re.search(r"Anastasius:|\bCan\.\s*\d", text), unit["id"]
 
 
-@pytest.mark.parametrize("council", ["Fourth Council of Constantinople", "Fifth Lateran Council"])
+@pytest.mark.parametrize("council", ["Fourth Council of Constantinople", "Fifth Lateran Council",
+                                     "Council of Constance", "Council of Basel-Ferrara-Florence"])
 def test_every_word_of_deferraris_frozen_text_reaches_a_passage(council):
     def words(text):
         return re.findall(r"\w+", text)
@@ -501,7 +520,95 @@ def test_tanners_passages_go_where_their_text_went():
 def test_deferraris_edition_is_listed_on_both_councils_rows():
     rows = {r["work"]: r for r in rights_inventory.load()
             if r["source_path"] == "councils/DisciplinaryCouncils/"}
-    for council in ("Fourth Council of Constantinople", "Fifth Lateran Council"):
+    for council in ("Fourth Council of Constantinople", "Fifth Lateran Council",
+                    "Council of Constance", "Council of Basel-Ferrara-Florence"):
+        assert rows[council]["document_id"] and rows[council]["planned_for"] is None
         also, = rows[council]["also_from"]
         assert also["source_path"] == "councils/sources-of-catholic-dogma/"
         assert also["status"] == "pd-us-non-renewal" and also["translator"] == "Roy J. Deferrari"
+
+
+# --- Constance and Basel-Ferrara-Florence, with Deferrari's texts (1.2e-5) ------------------
+
+CONSTANCE = {**SCHROEDER_ENTRY, "council": "Council of Constance", "year": 1418}
+BASEL_FLORENCE = {**SCHROEDER_ENTRY, "council": "Council of Basel-Ferrara-Florence", "year": 1445}
+ARTICLES_NOTE = ("Articles the council condemned, not its teaching. Its sentence is not available on "
+                 "TheoCorpus at present. Translated by R. J. Deferrari (1957).")
+
+
+def test_constance_is_built_by_session_with_deferraris_texts_before_session_43():
+    doc = _schroeder(CONSTANCE)
+    slug = "council-of-constance"
+    assert _units(doc) == [f"{slug}/{u}" for u in (
+        "session-8/wyclif-articles", "session-13/communion-under-one-kind",
+        "session-15/hus-articles", "session-15/tyrannicide",
+        *(f"session-43/decree/{n}" for n in range(1, 8)))]
+    labels = {p.anchor.split("/from-")[0]: (p.chapter_key, p.chapter_label, p.unit_label) for p in doc.passages}
+    assert labels[f"{slug}/session-8/wyclif-articles"] == (f"{slug}/session-8", "Session 8", "Articles of Wyclif")
+    assert labels[f"{slug}/session-43/decree/3"] == (f"{slug}/session-43", "Session 43", "Decree 3")
+    # One article to a paragraph, packed into passages; the lists keep their own numbers.
+    wyclif = "\n\n".join(p.content for p in doc.passages if "/wyclif-articles" in p.anchor).split("\n\n")
+    hus = "\n\n".join(p.content for p in doc.passages if "/hus-articles" in p.anchor).split("\n\n")
+    assert [int(a.split(".")[0]) for a in wyclif] == list(range(1, 46))
+    assert [int(a.split(".")[0]) for a in hus] == list(range(1, 31))
+    assert doc.translation == f"{schroeder.TRANSLATION}; {deferrari.TRANSLATION}"
+
+
+def test_basel_ferrara_florence_names_the_place_of_each_session():
+    doc = _schroeder(BASEL_FLORENCE)
+    slug = "council-of-basel-ferrara-florence"
+    assert _units(doc) == [f"{slug}/{u}" for u in (
+        *(f"basel-session-20/decree/{n}" for n in range(1, 5)),
+        *(f"basel-session-21/decree/{n}" for n in range(5, 16)),
+        "florence-session-6/laetentur-caeli", "florence-session-8/exultate-deo",
+        "florence-session-11/cantate-domino")]
+    first = doc.passages[0]
+    assert (first.chapter_key, first.chapter_label, first.unit_label) == (
+        f"{slug}/basel-session-20", "Basel, Session 20", "Decree 1")
+    cantate = next(p for p in doc.passages if p.anchor.endswith("/cantate-domino"))
+    assert (cantate.chapter_label, cantate.reference.split(" (")[0]) == (
+        "Florence, Session 11", "Council of Basel-Ferrara-Florence, Florence, Session 11, Cantate Domino")
+    # The corrigenda of n. 691 and n. 703 are applied.
+    text = " ".join(p.content for p in doc.passages)
+    assert "And since all that the Father has, the Father himself, in begetting" in text
+    assert "one eternity and all these things are one, where" in text
+    assert "(The decrees for Greeks" not in text and "[The books of the canon" not in text
+
+
+@pytest.mark.skipif(not _vendored, reason="needs the vendored manifest")
+def test_constance_and_basel_ferrara_florence_carry_their_notes_on_every_piece():
+    for council in ("Council of Constance", "Council of Basel-Ferrara-Florence"):
+        for p in _built(council).passages:
+            unit = p.anchor.split("/from-")[0]
+            if unit.endswith(("/wyclif-articles", "/hus-articles")):
+                expected = ARTICLES_NOTE
+            elif p.metadata["scan_id"] == DEFERRARI_SCAN:
+                expected = EXTRACT_NOTE
+            elif unit.endswith("/session-43/decree/1"):
+                expected = "Abridged in Schroeder (1937)."
+            else:
+                expected = None
+            assert p.note == expected, p.anchor
+
+
+def test_tanners_constance_and_basel_ferrara_florence_go_where_their_text_went():
+    reg = work_registry.current()
+    open_ = {r["old_anchor"]: r["new_anchor"] for r in reg.redirects if not r.get("closed_by")}
+    con, bff = "council-of-constance", "council-of-basel-ferrara-florence"
+    # Each of Wyclif's and Hus's articles to the passage holding the same article.
+    assert open_[f"{con}/sec-10/1"] == f"{con}/session-8/wyclif-articles"
+    assert open_[f"{con}/sec-10/45"].startswith(f"{con}/session-8/wyclif-articles")
+    assert open_[f"{con}/sec-17/1-2"] == f"{con}/session-15/hus-articles"
+    assert open_[f"{con}/sec-15/19"] == f"{con}/session-13/communion-under-one-kind"
+    assert open_[f"{con}/sec-17/27-3"] == f"{con}/session-15/tyrannicide"
+    assert open_[f"{con}/sec-46/44"] == f"{con}/session-43/decree/1"
+    assert open_[f"{bff}/sec-0/29"] == f"{bff}/basel-session-20/decree/1"
+    assert open_[f"{bff}/sec-0/64"] == f"{bff}/florence-session-6/laetentur-caeli"
+    removed = {e["anchor"]: e for e in work_registry.open_removals(reg)}
+    assert "(gap G7)" in removed[f"{con}/sec-46/47"]["detail"]
+    assert removed[f"{con}/sec-17/1"]["reason"] == "translation-in-preparation"   # the 58 articles
+    assert removed[f"{bff}/sec-0/1"]["reason"] == "rule-g-editorial"
+    # Every live passage of the two councils has an outcome; none keeps its ID.
+    rows = [r for r in reg.passages if r["document_id"] in (
+        "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205", "706adce0-8af2-5a30-877b-82e701601a53")]
+    assert not [r["anchor"] for r in rows if r["status"] == "active" and "/sec-" in r["anchor"]]
