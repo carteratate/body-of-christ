@@ -1070,3 +1070,54 @@ describe("removed and moved documents (corpus cleanup 2.4b)", () => {
     }
   });
 });
+
+describe("corpus cleanup 2.4b: overview and later chapters", () => {
+  it("keeps the overview's translation code when the API sends no facts", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockResolvedValue({
+      document: { ...documentInfo("doc-a"), author: "Anon", year: 1990, translation: "WEB-C" },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "Chapter A" }],
+    });
+    render(<DocumentReader docId="doc-a" />);
+    expect(await screen.findByText("Anon · 1990 · WEB-C")).toBeTruthy();
+  });
+
+  it("names the translation in full when the API sends facts", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockResolvedValue({
+      document: { ...documentInfo("doc-a"), author: "Anon", year: 1990, translation: "WEB-C", facts: { translation: "WEB-C" } },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "Chapter A" }],
+    });
+    render(<DocumentReader docId="doc-a" />);
+    expect(await screen.findByText("Anon · 1990 · World English Bible, Catholic Edition")).toBeTruthy();
+  });
+
+  it("shows the removal page when a later chapter was removed", async () => {
+    const { ReaderRemovedError } = await import("@/lib/api");
+    navigation.params = new Map([["chapter", "chapter-a"], ["from", "library"]]);
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => {
+      if (options.chapter === "chapter-b") {
+        throw new ReaderRemovedError({ entity: "passage", rule: "G", reason_code: "debris", public_reason: "A heading only.", retired_at: "" });
+      }
+      return chapter(docId, "chapter-a");
+    });
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    fireEvent.click(screen.getByRole("button", { name: "Jump B" }));
+    expect(await screen.findByText("A heading only.")).toBeTruthy();
+  });
+
+  it("opens the other document when a later chapter moved into it", async () => {
+    navigation.params = new Map([["chapter", "chapter-a"], ["from", "library"]]);
+    api.getReaderChapter.mockImplementation(async (_token: string, docId: string, options: { chapter?: string }) => (
+      options.chapter === "chapter-b"
+        ? { ...chapter("doc-b", "chapter-z"), redirected_from: { document_id: docId, chapter_key: "chapter-b" } }
+        : chapter(docId, "chapter-a")
+    ));
+    render(<DocumentReader docId="doc-a" />);
+    await screen.findByText("doc-a chapter-a");
+    fireEvent.click(screen.getByRole("button", { name: "Jump B" }));
+    await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith("/reader/doc-b?from=library&chapter=chapter-z"));
+    expect(screen.queryByText("doc-b chapter-z")).toBeNull();
+  });
+});

@@ -351,6 +351,11 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     try {
       const chapter = await loadCachedChapter(access, docId, key);
       if (requestId !== chapterRequestRef.current) return;
+      // The chapter moved into another document since the contents were loaded.
+      if (chapter.redirected_from && chapter.document.id !== docId) {
+        moveTo({ document_id: chapter.document.id, anchor: chapter.highlight_anchor, chapter_key: chapter.chapter_key });
+        return;
+      }
       setChapters((previous) => {
         if (mode === "replace") return [chapter];
         if (previous.some((item) => item.chapter_key === key)) return previous;
@@ -364,6 +369,10 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         scrollRef.current?.scrollTo({ top: 0 });
       }
     } catch (caught) {
+      if (requestId === chapterRequestRef.current) {
+        if (caught instanceof ReaderRemovedError) { setRemoved(caught.tombstone); return; }
+        if (caught instanceof ReaderMovedError) { moveTo(caught.redirect); return; }
+      }
       // A missing chapter usually means the contents in memory predate a
       // republish; refresh them so the reader can navigate by current keys.
       if (isNotFoundError(caught)) invalidateReaderDocument(access, docId);
@@ -379,7 +388,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         setChapterLoading(null);
       }
     }
-  }, [docId, readerAccess, requestToc]);
+  }, [docId, moveTo, readerAccess, requestToc]);
 
   const jump = useCallback((key: string) => {
     void loadChapter(key, "replace");

@@ -246,7 +246,8 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const attribution = [
     formatAttribution(documentInfo.author, facts),
     formatDate(facts, documentInfo.year),
-    formatTranslation(facts?.translation ?? documentInfo.translation),
+    // Without facts the line is today's, code and all.
+    facts ? formatTranslation(facts.translation ?? documentInfo.translation) : documentInfo.translation,
   ].filter(Boolean).join(" · ");
   const certainty = certaintyTag(facts?.certainty);
   const notes = factNotes(facts);
