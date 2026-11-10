@@ -288,7 +288,7 @@ class Headed:
     of about `PASSAGE_WORDS`, `<id>-01`, `<id>-02`, ..., as `Bounded` does."""
     name = "headed"
 
-    _BARE_NUMBER = re.compile(r"^\W{0,2}[0-9IlO]{1,2}\W{0,2}$")
+    _BARE_NUMBER = re.compile(r"^\W{0,2}[0-9IlOo]{1,2}\W{0,2}$")
 
     def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
               closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
@@ -348,12 +348,15 @@ class DeferrariExtracts(Headed):
     """Deferrari's *Sources of Catholic Dogma* (1957), decree text only (R9, Carter, 4 Nov
     2026): Denzinger's headings, notes and numbers stay out. Beyond `Headed`:
 
-    - a paragraph wholly in square brackets is an editor's label ("[The procession of
-      the Holy Spirit]", "[De novissimis]"), and one wholly in round brackets an editor's
-      remark ("(The decrees for Greeks and Armenians ... follow.)"): both go;
+    - a paragraph wholly in square brackets is an editor's label, and one wholly in
+      round brackets an editor's remark ("(The decrees for Greeks and Armenians ...
+      follow.)"), even where the clean-up set it over two paragraphs: both go;
+    - so does a label opening a paragraph before its first sentence ("[The procession
+      of the Holy Spirit] In the name of ...", "[De novissimis] It has likewise ..."),
+      with the note call after it that the text layer reads as a digit;
     - a bracketed reference goes: a Bible reference with chapter and verse ("[Ps.
       18:9]", "[II Thess. 2: 14]", the OCR often reading "]" as "J") or a reference to
-      Denzinger's numbers ("[see n. 595]");
+      Denzinger's numbers ("[see n. 595]", "[n. 696]");
     - words in brackets that the sentence reads ("Thy light [law]") are the translator's
       and stay.
 
@@ -362,13 +365,40 @@ class DeferrariExtracts(Headed):
     name = "deferrari"
 
     _LABEL = re.compile(r"^\s*(?:\[[^\[\]]*[\]J]|\([^()]*\))\W*$")
-    _REFERENCE = re.compile(r"\s?\[(?:(?:see|cf\.)\s[^\[\]]{0,60}|[^\[\]]{0,30}?\d+\s?:\s?\d+"
+    _OPENING_LABEL = re.compile(r"^\s*\[[^\[\]\d]{1,60}[\]J](?:\s+\d)?\s+(?=[A-Z])")
+    _REFERENCE = re.compile(r"\s?\[(?:(?:see|cf\.)\s[^\[\]]{0,60}|n\.\s?\d+[a-z]?|[^\[\]]{0,30}?\d+\s?:\s?\d+"
                             r"[^\[\]]{0,40}?)[\]J](?=\W|$)")
+
+    def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        return super().split(self._labels_joined(paragraphs), series, closes, bounds)
+
+    def _labels_joined(self, paragraphs: list) -> list:
+        """`paragraphs` with a label or remark the clean-up set over two or more joined
+        into one, where together they are wholly bracketed."""
+        out, k = [], 0
+        while k < len(paragraphs):
+            para = paragraphs[k]
+            opening = para.text.lstrip()[:1]
+            if opening in "([" and opening and not self._LABEL.match(para.text):
+                closing = ")" if opening == "(" else "]"
+                for j in range(k + 1, min(k + 3, len(paragraphs))):
+                    text = " ".join(p.text for p in paragraphs[k:j + 1])
+                    if text.count(opening) == text.count(closing) and self._LABEL.match(text):
+                        group = paragraphs[k:j + 1]
+                        para = replace(para, text=text, raw="\n".join(p.raw for p in group),
+                                       leaves=sorted({x for p in group for x in p.leaves}))
+                        k = j
+                        break
+            out.append(para)
+            k += 1
+        return out
 
     def _cleaned(self, para):
         if self._LABEL.match(para.text):
             return replace(para, text="")
-        text = re.sub(r" {2,}", " ", self._REFERENCE.sub("", para.text)).strip()
+        text = self._OPENING_LABEL.sub("", para.text, count=1)
+        text = re.sub(r" {2,}", " ", self._REFERENCE.sub("", text)).strip()
         return _with_text(para, text)
 
 

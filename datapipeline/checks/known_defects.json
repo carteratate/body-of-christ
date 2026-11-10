@@ -16,19 +16,6 @@
   "fixed_by": "3.2",
   "description": "The Martyrdom of Polycarp is credited to its martyr with no note (C-15)"
  },
- "coverage.bible.eng-web-c_usfm/43-ESGeng-web-c.usfm": {
-  "fixed_by": "1.4a",
-  "description": "86.44% covered: verses outside every KJV pericope range"
- },
- "coverage.bible.eng-web-c_usfm/66-DAGeng-web-c.usfm": {
-  "fixed_by": "1.4a",
-  "description": "74.53% covered: verses outside every KJV pericope range"
- },
- "coverage.bible.superscriptions": {
-  "fixed_by": "1.4a",
-  "description": "117 psalms lack their title (\\d) in the passage of their first verse (C-11)",
-  "units": ["PSA/100", "PSA/101", "PSA/102", "PSA/103", "PSA/108", "PSA/109", "PSA/11", "PSA/110", "PSA/119", "PSA/12", "PSA/120", "PSA/121", "PSA/122", "PSA/123", "PSA/124", "PSA/125", "PSA/126", "PSA/127", "PSA/128", "PSA/129", "PSA/13", "PSA/130", "PSA/131", "PSA/132", "PSA/133", "PSA/134", "PSA/138", "PSA/139", "PSA/14", "PSA/140", "PSA/141", "PSA/142", "PSA/143", "PSA/144", "PSA/145", "PSA/15", "PSA/16", "PSA/17", "PSA/18", "PSA/19", "PSA/20", "PSA/21", "PSA/22", "PSA/23", "PSA/24", "PSA/25", "PSA/26", "PSA/27", "PSA/28", "PSA/29", "PSA/3", "PSA/30", "PSA/31", "PSA/32", "PSA/34", "PSA/35", "PSA/36", "PSA/37", "PSA/38", "PSA/39", "PSA/4", "PSA/40", "PSA/41", "PSA/42", "PSA/44", "PSA/45", "PSA/46", "PSA/47", "PSA/48", "PSA/49", "PSA/5", "PSA/50", "PSA/51", "PSA/52", "PSA/53", "PSA/54", "PSA/55", "PSA/56", "PSA/57", "PSA/58", "PSA/59", "PSA/6", "PSA/60", "PSA/61", "PSA/62", "PSA/63", "PSA/64", "PSA/65", "PSA/66", "PSA/67", "PSA/68", "PSA/69", "PSA/7", "PSA/70", "PSA/72", "PSA/73", "PSA/74", "PSA/75", "PSA/76", "PSA/77", "PSA/78", "PSA/79", "PSA/8", "PSA/80", "PSA/81", "PSA/82", "PSA/83", "PSA/84", "PSA/85", "PSA/86", "PSA/87", "PSA/88", "PSA/89", "PSA/9", "PSA/90", "PSA/92", "PSA/98"]
- },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
   "description": "93.22% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
@@ -60,10 +47,6 @@
  "coverage.councils.ecum-07-second-council-of-nicaea.html": {
   "fixed_by": "1.2c",
   "description": "86.01% covered: text inside lists, divs and bracketed spans dropped; replaced by Percival"
- },
- "coverage.councils.ecum-16-council-of-constance.html": {
-  "fixed_by": "1.2e",
-  "description": "93.65% covered: text inside lists, divs and bracketed spans dropped; replaced by Schroeder"
  },
  "coverage.councils.ecum-19-council-of-trent.html": {
   "fixed_by": "1.2b",
@@ -259,11 +242,6 @@
   "description": "Gaudium et Spes: 30 passages hold footnote callers (C-17)",
   "units": ["gaudium-et-spes/10", "gaudium-et-spes/13", "gaudium-et-spes/14", "gaudium-et-spes/16", "gaudium-et-spes/17", "gaudium-et-spes/21", "gaudium-et-spes/22", "gaudium-et-spes/25", "gaudium-et-spes/26", "gaudium-et-spes/27", "gaudium-et-spes/32", "gaudium-et-spes/34", "gaudium-et-spes/35", "gaudium-et-spes/38", "gaudium-et-spes/39", "gaudium-et-spes/40", "gaudium-et-spes/42", "gaudium-et-spes/43", "gaudium-et-spes/45", "gaudium-et-spes/48", "gaudium-et-spes/49", "gaudium-et-spes/54", "gaudium-et-spes/57", "gaudium-et-spes/62", "gaudium-et-spes/64", "gaudium-et-spes/66", "gaudium-et-spes/68", "gaudium-et-spes/69", "gaudium-et-spes/74", "gaudium-et-spes/75"]
  },
- "health.R12_note_caller:councils/706adce0-8af2-5a30-877b-82e701601a53": {
-  "fixed_by": "1.2b",
-  "description": "Council of Basel-Ferrara-Florence: 5 passages hold footnote callers (C-17)",
-  "units": ["council-of-basel-ferrara-florence/sec-0/14", "council-of-basel-ferrara-florence/sec-0/2", "council-of-basel-ferrara-florence/sec-0/25/from-e103", "council-of-basel-ferrara-florence/sec-0/3", "council-of-basel-ferrara-florence/sec-0/97"]
- },
  "health.R12_note_caller:councils/88c5b670-accc-5b2a-b936-7b1c205b3ffa": {
   "fixed_by": "1.1",
   "description": "Perfectae Caritatis: 1 passages hold footnote callers (C-17)",
@@ -278,11 +256,6 @@
   "fixed_by": "1.1",
   "description": "Christus Dominus: 10 passages hold footnote callers (C-17)",
   "units": ["christus-dominus/1", "christus-dominus/12", "christus-dominus/15", "christus-dominus/16", "christus-dominus/3", "christus-dominus/3-2", "christus-dominus/4", "christus-dominus/43", "christus-dominus/5", "christus-dominus/6"]
- },
- "health.R12_note_caller:councils/bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
-  "fixed_by": "1.2b",
-  "description": "Council of Constance: 4 passages hold footnote callers (C-17)",
-  "units": ["council-of-constance/sec-50/50", "council-of-constance/sec-50/51", "council-of-constance/sec-50/52", "council-of-constance/sec-50/53"]
  },
  "health.R12_note_caller:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
   "fixed_by": "1.1",
@@ -409,11 +382,6 @@
   "description": "Gravissimum Educationis: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Gravissimum Educationis, §1", "Gravissimum Educationis, §12", "Gravissimum Educationis, §7"]
  },
- "labels.unique_reference:councils/706adce0-8af2-5a30-877b-82e701601a53": {
-  "fixed_by": "1.2e",
-  "description": "Council of Basel-Ferrara-Florence: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Basel-Ferrara-Florence — Text", "Council of Basel-Ferrara-Florence — Text (part 1 of 2)", "Council of Basel-Ferrara-Florence — Text (part 2 of 2)"]
- },
  "labels.unique_reference:councils/70d99be3-5a1c-5435-9507-f45e457c1376": {
   "fixed_by": "1.2c",
   "description": "First Council of Constantinople: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
@@ -443,11 +411,6 @@
   "fixed_by": "1.1",
   "description": "Christus Dominus: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
   "units": ["Christus Dominus, §1", "Christus Dominus, §11", "Christus Dominus, §14", "Christus Dominus, §15", "Christus Dominus, §16", "Christus Dominus, §18", "Christus Dominus, §19", "Christus Dominus, §2", "Christus Dominus, §20", "Christus Dominus, §21", "Christus Dominus, §3", "Christus Dominus, §4", "Christus Dominus, §5", "Christus Dominus, §6", "Christus Dominus, §7", "Christus Dominus, §8"]
- },
- "labels.unique_reference:councils/bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
-  "fixed_by": "1.2e",
-  "description": "Council of Constance: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Constance — FOOTNOTES", "Council of Constance — INTRODUCTION 1", "Council of Constance — SESSION 1 – 16 November 1414", "Council of Constance — SESSION 13 – 15 June 1415", "Council of Constance — SESSION 14 – 4 July 1415", "Council of Constance — SESSION 15 – 6 July 1415", "Council of Constance — SESSION 15 – 6 July 1415, §1", "Council of Constance — SESSION 15 – 6 July 1415, §10", "Council of Constance — SESSION 15 – 6 July 1415, §11", "Council of Constance — SESSION 15 – 6 July 1415, §12", "Council of Constance — SESSION 15 – 6 July 1415, §13", "Council of Constance — SESSION 15 – 6 July 1415, §14", "Council of Constance — SESSION 15 – 6 July 1415, §15", "Council of Constance — SESSION 15 – 6 July 1415, §16", "Council of Constance — SESSION 15 – 6 July 1415, §17", "Council of Constance — SESSION 15 – 6 July 1415, §18", "Council of Constance — SESSION 15 – 6 July 1415, §19", "Council of Constance — SESSION 15 – 6 July 1415, §2", "Council of Constance — SESSION 15 – 6 July 1415, §20", "Council of Constance — SESSION 15 – 6 July 1415, §21", "Council of Constance — SESSION 15 – 6 July 1415, §22", "Council of Constance — SESSION 15 – 6 July 1415, §23", "Council of Constance — SESSION 15 – 6 July 1415, §24", "Council of Constance — SESSION 15 – 6 July 1415, §25", "Council of Constance — SESSION 15 – 6 July 1415, §26", "Council of Constance — SESSION 15 – 6 July 1415, §27", "Council of Constance — SESSION 15 – 6 July 1415, §28", "Council of Constance — SESSION 15 – 6 July 1415, §29", "Council of Constance — SESSION 15 – 6 July 1415, §3", "Council of Constance — SESSION 15 – 6 July 1415, §30", "Council of Constance — SESSION 15 – 6 July 1415, §4", "Council of Constance — SESSION 15 – 6 July 1415, §5", "Council of Constance — SESSION 15 – 6 July 1415, §6", "Council of Constance — SESSION 15 – 6 July 1415, §7", "Council of Constance — SESSION 15 – 6 July 1415, §8", "Council of Constance — SESSION 15 – 6 July 1415, §9", "Council of Constance — SESSION 39 – 9 October 1417", "Council of Constance — SESSION 4 – 30 March 1415", "Council of Constance — SESSION 5 – 6 April 1415", "Council of Constance — SESSION 8 – 4 May 1415", "Council of Constance — Second Introduction", "Council of Constance — – 23 MARCH 1418"]
  },
  "labels.unique_reference:councils/c1b748c6-a250-5ca1-a087-4f6be5e75bbb": {
   "fixed_by": "1.1",
@@ -484,14 +447,6 @@
   "description": "4 sed contras R7 attests are folded into an objection (C-04)",
   "units": ["FS_Q46_A7-p5", "SS_Q140_A2-p5", "SS_Q56_A1-p5", "SS_Q56_A2-p5"]
  },
- "sentinel.daniel_13": {
-  "fixed_by": "1.4a",
-  "description": "Susanna (Daniel 13) is outside every KJV pericope"
- },
- "sentinel.daniel_14": {
-  "fixed_by": "1.4a",
-  "description": "Bel and the Dragon (Daniel 14) is outside every KJV pericope"
- },
  "sentinel.dei_verbum_12": {
   "fixed_by": "1.1",
   "description": "Dei Verbum §12 keeps only its first paragraph"
@@ -503,10 +458,6 @@
  "sentinel.nostra_aetate_4": {
   "fixed_by": "1.1",
   "description": "Nostra Aetate §4 keeps only its first paragraph (155 characters)"
- },
- "sentinel.sirach_prologue": {
-  "fixed_by": "1.4a",
-  "description": "the Prologue of Sirach reaches no passage (C-11)"
  },
  "sentinel.summa_i_q71": {
   "fixed_by": "1.7",
@@ -526,113 +477,8 @@
  },
  "sequence.bible_verses.duplicated:ESG/8": {
   "fixed_by": "1.4a",
-  "description": "Esther 8:13 holds Greek addition E (4,183 characters, R3), longer than one card, so it is cut across two pieces (\"Esther 8:12–13\", \"Esther 8:13\"). Lettered verses for the additions (R3, 1.4a) shorten it.",
+  "description": "Esther 8:13 holds Greek addition E (4,183 characters, R3), longer than one card, so it is cut across two pieces (\"Esther 8:12–13\", \"Esther 8:13\"). 1.4a cannot shorten it: the Decision log (Esther additions numbering, R3) keeps WEB-C's verse numbers, so there are no lettered verses to cut at. Left for Carter to reassign or accept.",
   "units": ["ESG/8/13"]
- },
- "sequence.bible_verses.duplicated:NUM/16": {
-  "fixed_by": "1.4a",
-  "description": "10 verses (16:28 to 37) in two overlapping KJV pericopes, published twice",
-  "units": ["NUM/16/28", "NUM/16/29", "NUM/16/30", "NUM/16/31", "NUM/16/32", "NUM/16/33", "NUM/16/34", "NUM/16/35", "NUM/16/36", "NUM/16/37"]
- },
- "sequence.bible_verses.missing:1KI/8": {
-  "fixed_by": "1.4a",
-  "description": "5 verses (8:62 to 66) outside every KJV pericope range",
-  "units": ["1KI/8/62", "1KI/8/63", "1KI/8/64", "1KI/8/65", "1KI/8/66"]
- },
- "sequence.bible_verses.missing:2CH/35": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (35:27) outside every KJV pericope range",
-  "units": ["2CH/35/27"]
- },
- "sequence.bible_verses.missing:2KI/4": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (4:18) outside every KJV pericope range",
-  "units": ["2KI/4/18"]
- },
- "sequence.bible_verses.missing:DAG/13": {
-  "fixed_by": "1.4a",
-  "description": "64 verses (13:1 to 64) outside every KJV pericope range",
-  "units": ["DAG/13/1", "DAG/13/2", "DAG/13/3", "DAG/13/4", "DAG/13/5", "DAG/13/6", "DAG/13/7", "DAG/13/8", "DAG/13/9", "DAG/13/10", "DAG/13/11", "DAG/13/12", "DAG/13/13", "DAG/13/14", "DAG/13/15", "DAG/13/16", "DAG/13/17", "DAG/13/18", "DAG/13/19", "DAG/13/20", "DAG/13/21", "DAG/13/22", "DAG/13/23", "DAG/13/24", "DAG/13/25", "DAG/13/26", "DAG/13/27", "DAG/13/28", "DAG/13/29", "DAG/13/30", "DAG/13/31", "DAG/13/32", "DAG/13/33", "DAG/13/34", "DAG/13/35", "DAG/13/36", "DAG/13/37", "DAG/13/38", "DAG/13/39", "DAG/13/40", "DAG/13/41", "DAG/13/42", "DAG/13/43", "DAG/13/44", "DAG/13/45", "DAG/13/46", "DAG/13/47", "DAG/13/48", "DAG/13/49", "DAG/13/50", "DAG/13/51", "DAG/13/52", "DAG/13/53", "DAG/13/54", "DAG/13/55", "DAG/13/56", "DAG/13/57", "DAG/13/58", "DAG/13/59", "DAG/13/60", "DAG/13/61", "DAG/13/62", "DAG/13/63", "DAG/13/64"]
- },
- "sequence.bible_verses.missing:DAG/14": {
-  "fixed_by": "1.4a",
-  "description": "42 verses (14:1 to 42) outside every KJV pericope range",
-  "units": ["DAG/14/1", "DAG/14/2", "DAG/14/3", "DAG/14/4", "DAG/14/5", "DAG/14/6", "DAG/14/7", "DAG/14/8", "DAG/14/9", "DAG/14/10", "DAG/14/11", "DAG/14/12", "DAG/14/13", "DAG/14/14", "DAG/14/15", "DAG/14/16", "DAG/14/17", "DAG/14/18", "DAG/14/19", "DAG/14/20", "DAG/14/21", "DAG/14/22", "DAG/14/23", "DAG/14/24", "DAG/14/25", "DAG/14/26", "DAG/14/27", "DAG/14/28", "DAG/14/29", "DAG/14/30", "DAG/14/31", "DAG/14/32", "DAG/14/33", "DAG/14/34", "DAG/14/35", "DAG/14/36", "DAG/14/37", "DAG/14/38", "DAG/14/39", "DAG/14/40", "DAG/14/41", "DAG/14/42"]
- },
- "sequence.bible_verses.missing:DAG/3": {
-  "fixed_by": "1.4a",
-  "description": "67 verses (3:31 to 97) outside every KJV pericope range",
-  "units": ["DAG/3/31", "DAG/3/32", "DAG/3/33", "DAG/3/34", "DAG/3/35", "DAG/3/36", "DAG/3/37", "DAG/3/38", "DAG/3/39", "DAG/3/40", "DAG/3/41", "DAG/3/42", "DAG/3/43", "DAG/3/44", "DAG/3/45", "DAG/3/46", "DAG/3/47", "DAG/3/48", "DAG/3/49", "DAG/3/50", "DAG/3/51", "DAG/3/52", "DAG/3/53", "DAG/3/54", "DAG/3/55", "DAG/3/56", "DAG/3/57", "DAG/3/58", "DAG/3/59", "DAG/3/60", "DAG/3/61", "DAG/3/62", "DAG/3/63", "DAG/3/64", "DAG/3/65", "DAG/3/66", "DAG/3/67", "DAG/3/68", "DAG/3/69", "DAG/3/70", "DAG/3/71", "DAG/3/72", "DAG/3/73", "DAG/3/74", "DAG/3/75", "DAG/3/76", "DAG/3/77", "DAG/3/78", "DAG/3/79", "DAG/3/80", "DAG/3/81", "DAG/3/82", "DAG/3/83", "DAG/3/84", "DAG/3/85", "DAG/3/86", "DAG/3/87", "DAG/3/88", "DAG/3/89", "DAG/3/90", "DAG/3/91", "DAG/3/92", "DAG/3/93", "DAG/3/94", "DAG/3/95", "DAG/3/96", "DAG/3/97"]
- },
- "sequence.bible_verses.missing:DEU/1": {
-  "fixed_by": "1.4a",
-  "description": "4 verses (1:5 to 8) outside every KJV pericope range",
-  "units": ["DEU/1/5", "DEU/1/6", "DEU/1/7", "DEU/1/8"]
- },
- "sequence.bible_verses.missing:ESG/10": {
-  "fixed_by": "1.4a",
-  "description": "11 verses (10:4 to 14) outside every KJV pericope range",
-  "units": ["ESG/10/4", "ESG/10/5", "ESG/10/6", "ESG/10/7", "ESG/10/8", "ESG/10/9", "ESG/10/10", "ESG/10/11", "ESG/10/12", "ESG/10/13", "ESG/10/14"]
- },
- "sequence.bible_verses.missing:ESG/4": {
-  "fixed_by": "1.4a",
-  "description": "30 verses (4:18 to 47) outside every KJV pericope range",
-  "units": ["ESG/4/18", "ESG/4/19", "ESG/4/20", "ESG/4/21", "ESG/4/22", "ESG/4/23", "ESG/4/24", "ESG/4/25", "ESG/4/26", "ESG/4/27", "ESG/4/28", "ESG/4/29", "ESG/4/30", "ESG/4/31", "ESG/4/32", "ESG/4/33", "ESG/4/34", "ESG/4/35", "ESG/4/36", "ESG/4/37", "ESG/4/38", "ESG/4/39", "ESG/4/40", "ESG/4/41", "ESG/4/42", "ESG/4/43", "ESG/4/44", "ESG/4/45", "ESG/4/46", "ESG/4/47"]
- },
- "sequence.bible_verses.missing:EXO/6": {
-  "fixed_by": "1.4a",
-  "description": "3 verses (6:28 to 30) outside every KJV pericope range",
-  "units": ["EXO/6/28", "EXO/6/29", "EXO/6/30"]
- },
- "sequence.bible_verses.missing:ISA/16": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (16:14) outside every KJV pericope range",
-  "units": ["ISA/16/14"]
- },
- "sequence.bible_verses.missing:ISA/55": {
-  "fixed_by": "1.4a",
-  "description": "5 verses (55:9 to 13) outside every KJV pericope range",
-  "units": ["ISA/55/9", "ISA/55/10", "ISA/55/11", "ISA/55/12", "ISA/55/13"]
- },
- "sequence.bible_verses.missing:JDG/19": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (19:30) outside every KJV pericope range",
-  "units": ["JDG/19/30"]
- },
- "sequence.bible_verses.missing:JDG/4": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (4:24) outside every KJV pericope range",
-  "units": ["JDG/4/24"]
- },
- "sequence.bible_verses.missing:JER/20": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (20:18) outside every KJV pericope range",
-  "units": ["JER/20/18"]
- },
- "sequence.bible_verses.missing:JOS/22": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (22:34) outside every KJV pericope range",
-  "units": ["JOS/22/34"]
- },
- "sequence.bible_verses.missing:MRK/11": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (11:26) outside every KJV pericope range",
-  "units": ["MRK/11/26"]
- },
- "sequence.bible_verses.missing:MRK/2": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (2:28) outside every KJV pericope range",
-  "units": ["MRK/2/28"]
- },
- "sequence.bible_verses.missing:ROM/14": {
-  "fixed_by": "1.4a",
-  "description": "3 verses (14:24 to 26) outside every KJV pericope range",
-  "units": ["ROM/14/24", "ROM/14/25", "ROM/14/26"]
- },
- "sequence.bible_verses.missing:ROM/16": {
-  "fixed_by": "1.4a",
-  "description": "1 verse (16:24) outside every KJV pericope range",
-  "units": ["ROM/16/24"]
  },
  "sequence.numbered_paragraphs.duplicated:councils/vat2-ad-gentes.html": {
   "fixed_by": "1.1",

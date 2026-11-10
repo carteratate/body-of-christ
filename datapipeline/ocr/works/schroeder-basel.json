@@ -1,0 +1,100 @@
+{
+ "work": "schroeder-basel",
+ "title": "Council of Basel-Ferrara-Florence, Schroeder, Disciplinary Decrees of the General Councils (1937), pp. 473–479",
+ "scan": "DisciplinaryCouncils",
+ "djvu_xml": "councils/DisciplinaryCouncils/DisciplinaryCouncils_djvu.xml",
+ "page_numbers": "councils/DisciplinaryCouncils/DisciplinaryCouncils_page_numbers.json",
+ "pages": [
+  "473",
+  "479"
+ ],
+ "layout": "single-column",
+ "paragraph_opens": [
+  "^\\W{0,4}Since from the indiscreet",
+  "^contracted, even if confirmed under oath"
+ ],
+ "units": "headed",
+ "unit_bounds": [
+  {
+   "id": "basel-session-20/decree/1",
+   "first": "Every cleric, whatever may be his status",
+   "heading": "^\\W{0,2}[I1l][\\s_]+(?=Every)"
+  },
+  {
+   "id": "basel-session-20/decree/2",
+   "first": "^\\W{0,2}To avoid scandals and numerous dangers"
+  },
+  {
+   "id": "basel-session-20/decree/3",
+   "first": "^\\W{0,4}Since from the indiscreet"
+  },
+  {
+   "id": "basel-session-20/decree/4",
+   "first": "^\\W{0,2}That processes or actions at law"
+  },
+  {
+   "id": "basel-session-21/decree/5",
+   "first": "^\\W{0,2}In the name of the Holy Spirit this council decrees"
+  },
+  {
+   "id": "basel-session-21/decree/6",
+   "first": "^\\W{0,2}Whoever, having a colored title"
+  },
+  {
+   "id": "basel-session-21/decree/7",
+   "first": "^\\W{0,2}This holy council decrees that in all cathedral"
+  },
+  {
+   "id": "basel-session-21/decree/8",
+   "first": "^\\W{0,2}Whosoever is not present at matins"
+  },
+  {
+   "id": "basel-session-21/decree/9",
+   "first": "With regard to those who say the divine office",
+   "heading": "^\\W{0,2}9[\\s_]+(?=With)"
+  },
+  {
+   "id": "basel-session-21/decree/10",
+   "first": "^\\W{0,2}Everyone holding an ecclesiastical benefice"
+  },
+  {
+   "id": "basel-session-21/decree/11",
+   "first": "^\\W{0,2}That all things may proceed with order"
+  },
+  {
+   "id": "basel-session-21/decree/12",
+   "first": "^\\W{0,2}The abuses now existing in some churches"
+  },
+  {
+   "id": "basel-session-21/decree/13",
+   "first": "^\\W{0,2}contracted, even if confirmed"
+  },
+  {
+   "id": "basel-session-21/decree/14",
+   "first": "^\\W{0,2}The council forbids that a chapter"
+  },
+  {
+   "id": "basel-session-21/decree/15",
+   "first": "^\\W{0,2}In some churches during certain celebrations",
+   "last": "severer penalties\\.\\W*$"
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

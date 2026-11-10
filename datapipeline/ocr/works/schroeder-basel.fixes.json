@@ -1,0 +1,145 @@
+[
+ {
+  "passage": "basel-session-21/decree/5-01",
+  "find": "for the con- 7 firmation",
+  "replace": "for the confirmation",
+  "why": "p. 475: line-end hyphen 'con-/firmation'; a speck in the margin read as '7'"
+ },
+ {
+  "passage": "basel-session-21/decree/5-01",
+  "find": "installations, and Le\n\nOnce they were known as such, and the penalty for such unlawful intercourse was Minor excommunication. The large number of excommunications, through abuse of the censure on the part of the authorities, gave rise to much scandal and many inconveniences, to remove which Martin V in the above constitution restricted unlawful intercourse to that held with the two classes of persons indicated above. The Ad evitanda scandala (Hefele-Leclercq. VII, 548) is not a decree that was issued by Martin sacro approbante concilio. It was in the first place an indult granted by him to the German nation and became part of the Concordat concluded between the Holy See and that nation. In granting this indult, however, the Pope wished\n\nBe years, as the other provisions of the that it should continue in force not for a\n\ne German ncordat, but always, He wished, moreover, that it should extend not to th",
+  "replace": "installations, and",
+  "why": "p. 475: the rest of footnote 14 (from p. 474), read into the decree where the text breaks at the page foot; 'Le' is a speck. The decree goes on at p. 476 with 'investitures'"
+ },
+ {
+  "passage": "basel-session-21/decree/5-02",
+  "continues": true,
+  "why": "pp. 475–476: the sentence runs on from 'installations, and' to 'investitures'; the passage was cut there for the check"
+ },
+ {
+  "passage": "basel-session-21/decree/5-02",
+  "find": "e special nation only, but to all the faithful (omnibus Christi fidelibus), and sinc Copies could be obtained of each provision of the Concordat, this one, because it extended to all the faithful and hence many copies of it were in circulation, came to be known as a bull or constitution. Hefele-Leclercq, VII, 540, note 2. ",
+  "replace": "",
+  "why": "p. 475: the end of footnote 14, read into the decree's text"
+ },
+ {
+  "passage": "basel-session-21/decree/13",
+  "find": "contracted, even if confirmed",
+  "replace": "That abuse also, so manifestly incongruous with divine worship, by which some canons contract debts with the agreement that they will satisfy their creditors at a specified time or absent themselves from the divine offices, is hereby abolished, and every obligation so contracted, even if confirmed",
+  "why": "p. 478: the decree's first four lines (under the heading 13, at the page foot) were filed as a note; restored from the page"
+ },
+ {
+  "passage": "basel-session-20/decree/2",
+  "find": "interdict.1*",
+  "replace": "interdict.",
+  "why": "p. 474: note call 14 after 'interdict.'"
+ },
+ {
+  "passage": "basel-session-20/decree/3",
+  "find": "published _ ot made",
+  "replace": "published or made",
+  "why": "p. 475: 'or' at the line start, read under specks as '_ ot'"
+ },
+ {
+  "passage": "basel-session-20/decree/4",
+  "find": "termi- = nated",
+  "replace": "terminated",
+  "why": "p. 475: line-end hyphen 'termi-/nated'; a speck read as '='"
+ },
+ {
+  "passage": "basel-session-21/decree/12",
+  "find": "decreed tha’ those",
+  "replace": "decreed that those",
+  "why": "p. 478: 'that' at the curved edge of the line, its 't' read as '’'"
+ },
+ {
+  "passage": "basel-session-20/decree/1",
+  "find": "Let Provincial synods",
+  "replace": "Let provincial synods",
+  "why": "p. 473: Page prints lower-case 'provincial'."
+ },
+ {
+  "passage": "basel-session-20/decree/1",
+  "find": "by the Supreme pontiff",
+  "replace": "by the supreme pontiff",
+  "why": "p. 473: Page prints lower-case 'supreme'."
+ },
+ {
+  "passage": "basel-session-20/decree/3",
+  "find": ".. Since from",
+  "replace": "Since from",
+  "why": "p. 475: Specks in the margin read as '..'; the paragraph begins 'Since'."
+ },
+ {
+  "passage": "basel-session-20/decree/3",
+  "find": "him oF compelled",
+  "replace": "him or compelled",
+  "why": "p. 475: Page prints 'or'."
+ },
+ {
+  "passage": "basel-session-20/decree/4",
+  "find": "the fame complaint",
+  "replace": "the same complaint",
+  "why": "p. 475: Page prints 'same'."
+ },
+ {
+  "passage": "basel-session-20/decree/4",
+  "find": "interlocutory,/ Sentence",
+  "replace": "interlocutory sentence",
+  "why": "p. 475: Page prints 'interlocutory' at line end and 'sentence' lower case; margin specks read as ',/'."
+ },
+ {
+  "passage": "basel-session-20/decree/4",
+  "find": "judgment. “ He",
+  "replace": "judgment. He",
+  "why": "p. 475: No quotation mark on the page; margin speck."
+ },
+ {
+  "passage": "basel-session-20/decree/4",
+  "find": "decision 18 rendered",
+  "replace": "decision is rendered",
+  "why": "p. 475: Page prints 'is'."
+ },
+ {
+  "passage": "basel-session-21/decree/5-02",
+  "find": "the bene-dictio,",
+  "replace": "the benedictio,",
+  "why": "p. 476: Line-end hyphen: the page breaks \"bene-/dictio\" across lines 3-4; the word is benedictio."
+ },
+ {
+  "passage": "basel-session-21/decree/5-02",
+  "find": "primi fructus of anything",
+  "replace": "primi fructus or anything",
+  "why": "p. 476: The page prints \"primi fructus or anything else\"; OCR read \"or\" as \"of\"."
+ },
+ {
+  "passage": "basel-session-21/decree/8",
+  "find": "end of the first Psalm,",
+  "replace": "end of the first psalm,",
+  "why": "p. 477: The page prints lowercase \"psalm,\" at the start of line 3."
+ },
+ {
+  "passage": "basel-session-21/decree/8",
+  "find": "some responsible Person,",
+  "replace": "some responsible person,",
+  "why": "p. 477: The page prints lowercase \"person,\" at the start of the line."
+ },
+ {
+  "passage": "basel-session-21/decree/9",
+  "find": "that 18, Outside the choir",
+  "replace": "that is, outside the choir",
+  "why": "p. 477: The page prints \"that is, outside the choir\"; OCR misread \"is,\" as \"18,\" and capitalized \"outside\"."
+ },
+ {
+  "passage": "basel-session-21/decree/9",
+  "find": "tempteth God.” +5",
+  "replace": "tempteth God.”",
+  "why": "p. 478: \"+5\" is footnote call 15 (Ecclus. 18:23) misread; remove it."
+ },
+ {
+  "passage": "basel-session-21/decree/12",
+  "find": "be duly penalize by",
+  "replace": "be duly penalized by",
+  "why": "p. 478: The page prints \"penalized\" at the line end; the final \"d\" was lost."
+ }
+]

@@ -61,7 +61,8 @@ _BIBLE_REF = re.compile(r"^(?P<book>.+?) (?P<c1>\d+)(?::(?P<v1>\d+)(?:–(?:(?P<
 
 def bible_verses(documents: list[Document], units: list[SourceUnit]) -> SequenceResult:
     """Every USFM verse with text falls inside some passage's verse range, read from
-    the passage reference ("Esther 4:4–17", "Genesis 1:1–2:3", "Psalms 23")."""
+    the passage reference ("Esther 4:4–17", "Genesis 1:1–2:3", "Psalms 23"). A prologue
+    ("Sirach, Prologue") cites no verses and is measured by its sentinel."""
     files = sorted({u.source_file for u in units})
     placed = documents_by_file("bible", documents, files)
     result = SequenceResult()
@@ -84,6 +85,8 @@ def bible_verses(documents: list[Document], units: list[SourceUnit]) -> Sequence
                 if (base, p.reference) in seen:
                     continue
                 seen.add((base, p.reference))
+                if p.reference.endswith(", Prologue"):
+                    continue                 # Sirach's prologue: unnumbered, no verses (1.4a)
                 m = _BIBLE_REF.match(unit_reference(p.reference))
                 if not m:
                     result.out_of_range.append(f"{code}:{p.reference}")

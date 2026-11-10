@@ -1585,18 +1585,28 @@
   "document_id": "12ffdbe3-6498-55b7-bef6-afbf368461ea",
   "old_passage_id": "990f3a8a-99c7-5b32-9b65-4e1b7d386c4c",
   "old_anchor": "psalms/119/1-5",
-  "new_passage_id": "8de835e8-eaf2-5242-85da-778bcd24a721",
-  "new_anchor": "psalms/119/1/from-119-143",
+  "new_passage_id": "e4b63884-ef94-5ac7-981c-006ec2b0ab60",
+  "new_anchor": "psalms/119/1/from-119-142",
   "kind": "merged",
   "reason": "its text now lies inside this passage",
   "added_by": "2.1"
  },
  {
   "document_id": "12ffdbe3-6498-55b7-bef6-afbf368461ea",
+  "old_passage_id": "8de835e8-eaf2-5242-85da-778bcd24a721",
+  "old_anchor": "psalms/119/1/from-119-143",
+  "new_passage_id": "e4b63884-ef94-5ac7-981c-006ec2b0ab60",
+  "new_anchor": "psalms/119/1/from-119-142",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.4a"
+ },
+ {
+  "document_id": "12ffdbe3-6498-55b7-bef6-afbf368461ea",
   "old_passage_id": "dbf8b66c-4e8a-5bd2-b48d-b323450d08d6",
   "old_anchor": "psalms/119/1/from-119-145-2",
-  "new_passage_id": "8de835e8-eaf2-5242-85da-778bcd24a721",
-  "new_anchor": "psalms/119/1/from-119-143",
+  "new_passage_id": "e4b63884-ef94-5ac7-981c-006ec2b0ab60",
+  "new_anchor": "psalms/119/1/from-119-142",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -9087,7 +9097,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/10/from-e39",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9097,7 +9109,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/11/from-e48",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9107,7 +9121,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/13/from-e63",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9117,7 +9133,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/14/from-e70",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9127,7 +9145,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/17/from-e82",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9137,7 +9157,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/24/from-e100",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9147,7 +9169,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/25/from-e103",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9157,7 +9181,69 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/27/from-e110",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "11918277-fcbe-57ec-b76a-efdff96c35ef",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/29",
+  "new_passage_id": "8ee36cd4-0e7d-5bc1-90b3-a0007dd0494a",
+  "new_anchor": "council-of-basel-ferrara-florence/basel-session-20/decree/1",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "540a5bfd-68d7-592f-bc9a-d3b4b1379a5c",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/30",
+  "new_passage_id": "8ee36cd4-0e7d-5bc1-90b3-a0007dd0494a",
+  "new_anchor": "council-of-basel-ferrara-florence/basel-session-20/decree/1",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "988ae0b0-f705-5398-8540-e2defbff7815",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/31",
+  "new_passage_id": "383a7f58-8510-58cf-809f-2e09f8229549",
+  "new_anchor": "council-of-basel-ferrara-florence/basel-session-21/decree/5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "1d4511b5-12fa-5f95-acd8-a5d4a9266428",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/32",
+  "new_passage_id": "839495df-328c-5b66-b70f-904dc37bdb1b",
+  "new_anchor": "council-of-basel-ferrara-florence/basel-session-21/decree/7",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "4d48e2e5-73de-576e-b31b-a3a32eb7f82b",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/33",
+  "new_passage_id": "28a98768-0a83-5109-a329-ce019eb801d0",
+  "new_anchor": "council-of-basel-ferrara-florence/basel-session-21/decree/9",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "93961c6e-5751-52f6-b5f2-1860be302491",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/34",
+  "new_passage_id": "0627fa93-6600-51bd-83fb-201885af4a36",
+  "new_anchor": "council-of-basel-ferrara-florence/basel-session-21/decree/15",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9167,7 +9253,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/36/from-e153",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9177,7 +9265,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/38/from-e159",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9187,7 +9277,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/40/from-e163",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9197,7 +9289,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/41/from-e165",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9207,7 +9301,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/44/from-e172",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9217,7 +9313,9 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/47/from-e184",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9227,7 +9325,79 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/52/from-e196",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "e938eb92-3d5e-585c-8fe1-59703a728029",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/64",
+  "new_passage_id": "40d889af-52e7-55cc-b7a8-8fba00740de1",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-6/laetentur-caeli",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "5a3f30c8-656a-565b-9b33-f4ba3b18dde3",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/73",
+  "new_passage_id": "a6aba66f-59ac-560e-815b-98b4d92b8c62",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-8/exultate-deo",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "c212b331-5cbb-554b-be4a-19d3759e7ad5",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/74",
+  "new_passage_id": "a6aba66f-59ac-560e-815b-98b4d92b8c62",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-8/exultate-deo",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "c98b547a-745c-5db8-8d26-922ad2d83a13",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/75/p1",
+  "new_passage_id": "93128b1d-2473-59b6-911a-a703cc6caf71",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-8/exultate-deo/from-p4",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "ec9b593f-5f50-5a4d-9cf1-faf698db0070",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/75/p2",
+  "new_passage_id": "93128b1d-2473-59b6-911a-a703cc6caf71",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-8/exultate-deo/from-p4",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "28fe2317-c5a2-5200-a069-8dbaeab078d9",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/76",
+  "new_passage_id": "c5429859-1828-5502-a075-321e21ebabbe",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-8/exultate-deo/from-p5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "b6ea849e-3a6e-5b7a-bd82-80b9d9399bd4",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/77",
+  "new_passage_id": "d825fc28-f5db-52ee-9db5-774080850567",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-8/exultate-deo/from-p7",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9237,7 +9407,39 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/90/from-e351",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "bf8bb9fa-1ed0-5714-9778-75b74df5d8e1",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/91",
+  "new_passage_id": "ed0abf5c-982b-505b-b03d-a97da61f3cec",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "3ad969d1-3d02-59cc-bffe-77a48955424e",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/92",
+  "new_passage_id": "b4488082-d3e4-5606-8e4c-6fa0a6e03f67",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "5875b5a2-4b67-522c-aad4-811eaa44fa63",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/92/from-e356",
+  "new_passage_id": "b4488082-d3e4-5606-8e4c-6fa0a6e03f67",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text, a piece the 1.10c build cut",
+  "added_by": "1.2e-5"
  },
  {
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
@@ -9247,7 +9449,59 @@
   "new_anchor": "council-of-basel-ferrara-florence/sec-0/92/from-e356",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "1237b12c-e13e-57d3-b941-5ea98a3a3625",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/92/from-e356-2",
+  "new_passage_id": "b4488082-d3e4-5606-8e4c-6fa0a6e03f67",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino/from-p6",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text, a piece the 1.10c build cut",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "dd699da8-c940-5146-987b-0232a9828020",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/93",
+  "new_passage_id": "5ed3753f-efac-5b3b-8756-560c0c3f133e",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino/from-p8",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "371cc492-9bb8-5878-9eb3-d1874d42baa7",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/94",
+  "new_passage_id": "0ae09a43-81e5-5766-9957-c3516e708ac4",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino/from-p10",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "edee45cd-bf37-5a9b-8c8e-166649b6d12e",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/95",
+  "new_passage_id": "998cdd85-ae5a-577d-9973-7960cb7957d4",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino/from-p11",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "old_passage_id": "d6e82a43-516f-5421-bb38-b84e08aaf806",
+  "old_anchor": "council-of-basel-ferrara-florence/sec-0/97",
+  "new_passage_id": "80755681-85fd-5246-ae2c-248ba15d8a03",
+  "new_anchor": "council-of-basel-ferrara-florence/florence-session-11/cantate-domino/from-p13",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
  },
  {
   "document_id": "70d99be3-5a1c-5435-9507-f45e457c1376",
@@ -12233,10 +12487,20 @@
  },
  {
   "document_id": "9e3bf9bd-efe3-50f5-81bc-6849f12d70a4",
+  "old_passage_id": "f83f922a-c5bf-59a2-8e58-066c6b880ec9",
+  "old_anchor": "numbers/16/1/from-16-27",
+  "new_passage_id": "d76c346c-2a61-5461-bd70-3dd041df1959",
+  "new_anchor": "numbers/16/1/from-16-19",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.4a"
+ },
+ {
+  "document_id": "9e3bf9bd-efe3-50f5-81bc-6849f12d70a4",
   "old_passage_id": "bc3cc027-e78e-56fe-aecf-d8fd5a7824a5",
   "old_anchor": "numbers/16/1/from-16-27-2",
-  "new_passage_id": "f83f922a-c5bf-59a2-8e58-066c6b880ec9",
-  "new_anchor": "numbers/16/1/from-16-27",
+  "new_passage_id": "d76c346c-2a61-5461-bd70-3dd041df1959",
+  "new_anchor": "numbers/16/1/from-16-19",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
@@ -14959,13 +15223,455 @@
  },
  {
   "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a63f5d8a-ba1e-5896-b23e-a554a39b2c1b",
+  "old_anchor": "council-of-constance/sec-10/1",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "32eba14d-144c-5fc9-afaf-2716c7c00a8f",
+  "old_anchor": "council-of-constance/sec-10/10",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "e65f51f1-deb7-59dc-bccc-3d748b8dfa1a",
+  "old_anchor": "council-of-constance/sec-10/11",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "31cd2d77-bcc4-54e0-8027-44095fa4efb2",
+  "old_anchor": "council-of-constance/sec-10/12",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "9526227a-d8a3-501f-8927-3e401731ce6a",
+  "old_anchor": "council-of-constance/sec-10/13",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "273a0489-9966-5eb5-bdd8-925fa25ede7b",
+  "old_anchor": "council-of-constance/sec-10/14-2",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "9ec213ac-c24b-5baa-9061-5203001fe80b",
+  "old_anchor": "council-of-constance/sec-10/15",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
   "old_passage_id": "5df3682a-2a76-5a31-ba8e-d69476a288fe",
   "old_anchor": "council-of-constance/sec-10/15-2/from-e122-2",
   "new_passage_id": "24332518-1713-5a56-b034-e332da23a043",
   "new_anchor": "council-of-constance/sec-10/15-2/from-e122",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "71694dd4-1300-5c71-92c0-8cb54be7a6cb",
+  "old_anchor": "council-of-constance/sec-10/16",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "1923b3ca-f878-5847-acc4-fc1d05727b6d",
+  "old_anchor": "council-of-constance/sec-10/17",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a209aea7-c2a1-5881-aa2e-afe18b6c1138",
+  "old_anchor": "council-of-constance/sec-10/18",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "157d8dd4-3474-55f3-b092-bc1221cac701",
+  "old_anchor": "council-of-constance/sec-10/19",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "67ed8634-1f85-5199-b15b-3bc7b9cdd84f",
+  "old_anchor": "council-of-constance/sec-10/2",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "41f24c65-9f0c-5cf7-b3aa-36f8532fe5ba",
+  "old_anchor": "council-of-constance/sec-10/20",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "dfe1e0e4-def5-5457-a95b-054c1a3c74d3",
+  "old_anchor": "council-of-constance/sec-10/21",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "8c99f760-5634-5494-a159-8b95de90a36c",
+  "old_anchor": "council-of-constance/sec-10/22",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "df5ddef7-c74e-5877-97e8-4de681b3c552",
+  "old_anchor": "council-of-constance/sec-10/23",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "d14f9627-fbcd-5c02-a178-cf5fb816f8f0",
+  "old_anchor": "council-of-constance/sec-10/24",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a74d71a8-e33d-5dc2-b819-dd37b9e20818",
+  "old_anchor": "council-of-constance/sec-10/25",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "4494ab80-5037-5378-a564-5c072775880e",
+  "old_anchor": "council-of-constance/sec-10/26",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "e427afa7-1fd3-59a7-9be3-dd1944531b23",
+  "old_anchor": "council-of-constance/sec-10/27",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "00607698-029c-523e-86ff-2e681bba7fd1",
+  "old_anchor": "council-of-constance/sec-10/28",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "855b48fd-740a-539a-97ca-7194ebb876ef",
+  "old_anchor": "council-of-constance/sec-10/29",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "e5104aed-9875-5dff-bc35-048917c20138",
+  "old_anchor": "council-of-constance/sec-10/3",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "d598c0d1-1a48-509f-b8ab-2a6a26cb9d77",
+  "old_anchor": "council-of-constance/sec-10/30",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "4aa4bbc8-6f6a-540c-bf0e-448fc69f8bae",
+  "old_anchor": "council-of-constance/sec-10/31",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "fbd66e37-2269-54b2-a7e3-9e76b033a5b5",
+  "old_anchor": "council-of-constance/sec-10/32",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "eaeb1a56-c759-5c17-98e9-669d2dfdaa9d",
+  "old_anchor": "council-of-constance/sec-10/33",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "6570b58f-6de9-5756-bbb5-77ac060ca906",
+  "old_anchor": "council-of-constance/sec-10/34",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a6dba14b-a8ca-53ba-a9a9-b84f38aa884f",
+  "old_anchor": "council-of-constance/sec-10/35",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "babd122d-2733-555b-8f71-f3881e2eab33",
+  "old_anchor": "council-of-constance/sec-10/36",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "d0155d78-c7b4-532a-8d29-5c8ba5975858",
+  "old_anchor": "council-of-constance/sec-10/37",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "66484ee7-badf-537f-a9da-e5ff651f9d65",
+  "old_anchor": "council-of-constance/sec-10/38",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "dfa2a56f-5829-54d4-bd15-d6fa0391f1a4",
+  "old_anchor": "council-of-constance/sec-10/39",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "6c93c7da-ab8c-580c-8c30-2b7673e240fa",
+  "old_anchor": "council-of-constance/sec-10/4",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "cda953ea-66de-5911-b652-828aace00e8b",
+  "old_anchor": "council-of-constance/sec-10/40",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a7c159a1-79f6-5adb-b2e4-a642abdececc",
+  "old_anchor": "council-of-constance/sec-10/41",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a4a037a2-8efa-5634-a7cb-091b3fc1593f",
+  "old_anchor": "council-of-constance/sec-10/42",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a805bab5-516a-5fea-9c96-365d34c179a0",
+  "old_anchor": "council-of-constance/sec-10/43",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "29ad504e-f231-5378-9eb4-be6764a15bd6",
+  "old_anchor": "council-of-constance/sec-10/44",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "338adbd4-f7d5-5447-856f-78e1288e6a0b",
+  "old_anchor": "council-of-constance/sec-10/45",
+  "new_passage_id": "5698714a-79da-5aff-b3b1-3ccfbcc98953",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "1ab89754-77e0-5d60-aa6c-802bde1173ad",
+  "old_anchor": "council-of-constance/sec-10/5",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "936ac86e-21d3-55fa-8d57-e416876b5d42",
+  "old_anchor": "council-of-constance/sec-10/7",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "be20bfa1-0d58-5411-accc-efb386f72d5f",
+  "old_anchor": "council-of-constance/sec-10/8",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "33662119-22f7-5cf9-884b-62bae5de63e0",
+  "old_anchor": "council-of-constance/sec-10/9",
+  "new_passage_id": "74b25bee-2750-5894-956a-144da8a11e00",
+  "new_anchor": "council-of-constance/session-8/wyclif-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
  },
  {
   "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
@@ -14975,7 +15681,359 @@
   "new_anchor": "council-of-constance/sec-14/17/from-e137",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.2e-5",
+  "closed_on": "2026-11-10"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "8fb0d866-511f-5d62-ba48-988323485782",
+  "old_anchor": "council-of-constance/sec-15/19",
+  "new_passage_id": "dfb4e0b8-f8c6-5c05-b043-0ef8d7277f53",
+  "new_anchor": "council-of-constance/session-13/communion-under-one-kind",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "ea225371-a13d-53f1-a90f-44d22502a83b",
+  "old_anchor": "council-of-constance/sec-17/1-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "ba01af46-97d1-53a6-9bca-5a60f83801ae",
+  "old_anchor": "council-of-constance/sec-17/10-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "b8db29b0-8ac2-511c-a712-81934543705e",
+  "old_anchor": "council-of-constance/sec-17/11-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "7e425c10-0cfe-5a58-b5eb-5f948be7de1e",
+  "old_anchor": "council-of-constance/sec-17/12-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "2b645400-aff7-5d94-8133-f715fb8abf09",
+  "old_anchor": "council-of-constance/sec-17/13-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "ec8038b2-d012-5e1f-995c-20500dcf9d37",
+  "old_anchor": "council-of-constance/sec-17/14-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "6e5adfa1-1829-5517-9a2d-76d20caf6a1f",
+  "old_anchor": "council-of-constance/sec-17/15-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "859303af-4d54-571e-b7d4-38d8edea8604",
+  "old_anchor": "council-of-constance/sec-17/16-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "05146ad0-d144-514a-9983-8bc2b4713ce6",
+  "old_anchor": "council-of-constance/sec-17/17-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "97431707-115f-5fe5-a19f-ac841eb70295",
+  "old_anchor": "council-of-constance/sec-17/18-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "735e851f-9c66-55e9-8c90-7f9ec4fcc0ae",
+  "old_anchor": "council-of-constance/sec-17/19-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "7c45fd3a-ef2a-5071-8181-64130e849b85",
+  "old_anchor": "council-of-constance/sec-17/2-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "7bc874de-8835-5752-aa48-3222211d0ac2",
+  "old_anchor": "council-of-constance/sec-17/20-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a0a6b333-0412-5aa2-80cf-979eaa603b09",
+  "old_anchor": "council-of-constance/sec-17/21-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a721f77e-dbf7-5802-983f-1e4191f1ff8e",
+  "old_anchor": "council-of-constance/sec-17/22-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "a32e4d36-060e-5d6d-926f-5508f823d5d9",
+  "old_anchor": "council-of-constance/sec-17/23-3",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "f2f1673b-cf3e-5a85-b7f0-24e031e9406a",
+  "old_anchor": "council-of-constance/sec-17/24-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "f83ce5f3-b72e-5f82-a864-37788bd85719",
+  "old_anchor": "council-of-constance/sec-17/25-3",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "bfbc13fc-d25a-52db-9cd9-0a65ea0cd13b",
+  "old_anchor": "council-of-constance/sec-17/26-3",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "da40f38c-33a3-5399-94f2-f3104151b873",
+  "old_anchor": "council-of-constance/sec-17/27-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "f4790a09-4118-5338-aa92-78de07f4b037",
+  "old_anchor": "council-of-constance/sec-17/27-3",
+  "new_passage_id": "a6c4fa76-0961-59e4-8396-cbba710e8e80",
+  "new_anchor": "council-of-constance/session-15/tyrannicide",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's extract of the same text",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "28a77638-7be9-5308-aef2-80c144c734a8",
+  "old_anchor": "council-of-constance/sec-17/28-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "c98844e1-18cd-5ac8-808f-cc4fa7b32ca4",
+  "old_anchor": "council-of-constance/sec-17/29-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "91b045ea-60d8-5be7-a294-3c7ee0213ba5",
+  "old_anchor": "council-of-constance/sec-17/3-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "9f612259-65f5-5c6e-808b-3efbb7768b7e",
+  "old_anchor": "council-of-constance/sec-17/30-2",
+  "new_passage_id": "b8d1c383-03b3-5ed1-ac5d-4bc0a0108ebe",
+  "new_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "202abfe2-20f2-5491-8176-4ea46f7fef3d",
+  "old_anchor": "council-of-constance/sec-17/4-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "0d2a78d9-1f04-56c2-b532-1bd395b25598",
+  "old_anchor": "council-of-constance/sec-17/5-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "62d62671-8ad3-5d94-98f0-7850c08797eb",
+  "old_anchor": "council-of-constance/sec-17/6-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "f3eb0e9f-b833-5c39-bace-0395ba03e2e7",
+  "old_anchor": "council-of-constance/sec-17/7-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "7ace8842-be36-530a-9fb1-179762c11b2b",
+  "old_anchor": "council-of-constance/sec-17/8-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "f79878da-849c-5fe5-9dcc-9afd25dee96f",
+  "old_anchor": "council-of-constance/sec-17/9-2",
+  "new_passage_id": "b2da7670-0002-58b8-aad0-a0350b1639fc",
+  "new_anchor": "council-of-constance/session-15/hus-articles",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Deferrari's translation of the same article",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "85b8533f-592d-56c0-bc85-58efebf43225",
+  "old_anchor": "council-of-constance/sec-46/44",
+  "new_passage_id": "124e9a9c-bf73-5789-9618-ba1e2dd67c44",
+  "new_anchor": "council-of-constance/session-43/decree/1",
+  "kind": "merged",
+  "reason": "its opening no longer opens a passage; this one holds its text: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "76d4e72b-3bbf-5c32-a34c-a32b1f716864",
+  "old_anchor": "council-of-constance/sec-46/45",
+  "new_passage_id": "5a81100b-a4d1-54c1-8ecf-d54a47726e4c",
+  "new_anchor": "council-of-constance/session-43/decree/5",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
+ },
+ {
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "old_passage_id": "7111ea91-2eae-5a19-ab57-93e0c7f4651b",
+  "old_anchor": "council-of-constance/sec-46/46",
+  "new_passage_id": "900e0fbe-ed27-58b9-97f0-338e5a1beec8",
+  "new_anchor": "council-of-constance/session-43/decree/7",
+  "kind": "split",
+  "reason": "its text now lies in several passages; this one holds most of it: Schroeder's translation of the same decree",
+  "added_by": "1.2e-5"
  },
  {
   "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",

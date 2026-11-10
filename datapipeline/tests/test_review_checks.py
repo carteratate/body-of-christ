@@ -496,6 +496,43 @@ def test_bible_superscriptions(tmp_path):
     assert unit_coverage.bible_superscriptions([held], units) == {}
 
 
+
+PSALM_119 = (r"\id PSA" "\n" r"\c 119" "\n" r"\d ALEPH" "\n" r"\q1" "\n"
+             r"\v 1 Blessed are those whose ways are blameless." "\n"
+             r"\d BETH" "\n" r"\q1" "\n" r"\v 2 How can a young man keep his way pure?" "\n")
+
+
+def test_bible_superscriptions_later_letters_head_their_verse(tmp_path):
+    # Psalm 119's later letters (1.4a) need not sit in the first passage, but each must
+    # open the verse it heads in one of the psalm's passages.
+    path = tmp_path / "20-PSA.usfm"
+    path.write_text(PSALM_119)
+    units = usfm_units(str(path))
+
+    def psalm(*texts):
+        return _doc(*[_p(t, anchor=f"psalms/119/{i}", chapter_key="psalms/119")
+                      for i, t in enumerate(texts, 1)], title="Psalms", collection="bible")
+
+    held = psalm("ALEPH Blessed are those whose ways are blameless.",
+                 "{{v:2}} BETH How can a young man keep his way pure?")
+    assert unit_coverage.bible_superscriptions([held], units) == {}
+    # BETH somewhere else in the psalm (or missing) does not count.
+    elsewhere = psalm("ALEPH Blessed are those whose ways are blameless. BETH",
+                      "{{v:2}} How can a young man keep his way pure?")
+    assert unit_coverage.bible_superscriptions([elsewhere], units) == {
+        "coverage.bible.superscriptions": ["PSA/119"]}
+
+
+def test_bible_verses_skip_a_prologue(monkeypatch):
+    units = [SourceUnit("46-SIR.usfm", "SIR/1/1", "All wisdom comes from the Lord.", "body")]
+    doc = _doc(_p("Whereas many things.", anchor="sirach/prologue", reference="Sirach, Prologue"),
+               _p("All wisdom comes from the Lord.", anchor="sirach/1/1", reference="Sirach 1"),
+               title="Sirach", collection="bible")
+    monkeypatch.setattr(seq, "documents_by_file", lambda c, docs, files, *a: {f: [doc] for f in files})
+    result = seq.bible_verses([doc], units)
+    assert not result.missing and not result.out_of_range
+
+
 def test_ccc_1471_definition_by_hash(monkeypatch):
     sentence = "A defining sentence of this paragraph is written here for the test."
     key = match_key(split_sentences(sentence)[0])

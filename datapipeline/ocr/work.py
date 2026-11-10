@@ -82,6 +82,7 @@ class WorkConfig:
     leaf_offset: int = 0         # scan leaves the XML leaves out before its first page
     broken_words_continue: bool = False   # a broken word's rest never opens a paragraph
     max_paragraph_words: int | None = None   # cut longer paragraphs at a sentence end
+    paragraph_opens: tuple[str, ...] = ()   # lines that open a paragraph the clean-up misses
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
     unit_series: tuple[int, ...] | None = None   # units per series, where it prints several
@@ -98,6 +99,7 @@ class WorkConfig:
         d["pages"] = tuple(d["pages"])
         d["names"] = tuple(d.get("names", ()))
         d["unit_closes"] = tuple(d.get("unit_closes", ()))
+        d["paragraph_opens"] = tuple(d.get("paragraph_opens", ()))
         d["unit_bounds"] = tuple(d.get("unit_bounds", ()))
         if d.get("unit_series") is not None:
             d["unit_series"] = tuple(d["unit_series"])

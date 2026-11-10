@@ -15,22 +15,24 @@ import io
 import textwrap
 import unittest.mock as mock
 
+import pytest
+
+import registry
 from ingest.bible import (
     _clean_usfm_text,
     _format_reference,
     _parse_ref,
-    _DEUTEROCANONICAL_BOOKS,
-    _STANZA_BOOKS,
     BookVerses,
+    ExtraPericope,
     Verse,
     Pericope,
-    collect_pericope_verses,
-    chunk_canonical_book,
-    chunk_deuterocanonical_book,
-    chunk_stanza_book,
+    build_documents,
+    check_complete,
+    group_verses,
     load_pericopes,
     parse_usfm_file,
-    parse_usfm_stanzas,
+    parse_usfm_prologue,
+    parse_usfm_titles,
 )
 
 
@@ -247,180 +249,6 @@ def test_load_pericopes_returns_correct_structure():
 
 
 # ---------------------------------------------------------------------------
-# collect_pericope_verses
-# ---------------------------------------------------------------------------
-
-def _make_verse_map(entries: list[tuple[int, int, str]]) -> dict[tuple[int, int], str]:
-    return {(ch, v): text for ch, v, text in entries}
-
-
-def test_pericope_chunk_collects_correct_verses():
-    """collect_pericope_verses returns exactly the verses within [start, end]."""
-    verse_map = _make_verse_map([
-        (1, 1, "verse 1:1"), (1, 2, "verse 1:2"), (1, 3, "verse 1:3"),
-        (2, 1, "verse 2:1"), (2, 2, "verse 2:2"),
-    ])
-    result = collect_pericope_verses(verse_map, 1, 2, 2, 1)
-    assert len(result) == 3
-    texts = [t for _, _, t in result]
-    assert "verse 1:1" not in texts
-    assert "verse 1:2" in texts
-    assert "verse 1:3" in texts
-    assert "verse 2:1" in texts
-    assert "verse 2:2" not in texts
-
-
-def test_pericope_chunk_single_chapter():
-    """Verses restricted to a single chapter range."""
-    verse_map = _make_verse_map([
-        (5, 1, "a"), (5, 2, "b"), (5, 3, "c"), (5, 4, "d"),
-    ])
-    result = collect_pericope_verses(verse_map, 5, 2, 5, 3)
-    assert len(result) == 2
-    assert result[0][2] == "b"
-    assert result[1][2] == "c"
-
-
-def test_pericope_chunk_inclusive_endpoints():
-    """Start and end verses are both included."""
-    verse_map = _make_verse_map([(1, 1, "start"), (1, 2, "middle"), (1, 3, "end")])
-    result = collect_pericope_verses(verse_map, 1, 1, 1, 3)
-    assert len(result) == 3
-
-
-# ---------------------------------------------------------------------------
-# chunk_canonical_book
-# ---------------------------------------------------------------------------
-
-def _make_book(name: str, testament: str, verse_entries: list[tuple[int, int, str]]) -> BookVerses:
-    verses = [Verse(name, ch, v, text) for ch, v, text in verse_entries]
-    return BookVerses(name=name, book_code="TST", testament=testament, verses=verses)
-
-
-def test_canonical_chunk_content_and_reference():
-    """chunk_canonical_book yields correct content and reference for a pericope."""
-    book = _make_book("Genesis", "OT", [
-        (1, 1, "In the beginning"), (1, 2, "The earth was empty"),
-        (2, 1, "The heavens were finished"),
-    ])
-    pericopes = [
-        Pericope(
-            title="Creation",
-            book="Genesis",
-            start_chapter=1, start_verse=1,
-            end_chapter=2, end_verse=1,
-        )
-    ]
-    chunks = list(chunk_canonical_book(book, pericopes, "WEB-C"))
-    assert len(chunks) == 1
-    content, reference, metadata, position = chunks[0]
-    assert "In the beginning" in content
-    assert "The earth was empty" in content
-    assert "The heavens were finished" in content
-    assert reference == "Genesis 1:1–2:1"
-    assert metadata["pericope"] == "Creation"
-    assert metadata["book"] == "Genesis"
-    assert metadata["testament"] == "OT"
-    assert metadata["translation"] == "WEB-C"
-    assert position == 0
-
-
-def test_canonical_chunk_skips_empty_pericopes():
-    """Pericopes with no matching verses in the book are skipped."""
-    book = _make_book("Matthew", "NT", [(5, 1, "Blessed are the poor")])
-    pericopes = [
-        Pericope("First", "Matthew", 5, 1, 5, 1),
-        Pericope("Missing", "Matthew", 99, 1, 99, 5),  # no matching verses
-    ]
-    chunks = list(chunk_canonical_book(book, pericopes, "WEB-C"))
-    assert len(chunks) == 1
-    assert chunks[0][3] == 0  # position 0
-
-
-def test_canonical_chunk_positions_sequential():
-    """Position counter increments correctly across chunks."""
-    book = _make_book("Romans", "NT", [
-        (1, 1, "Paul a servant"), (1, 2, "called to be an apostle"),
-        (1, 3, "of his Son"), (2, 1, "Therefore you are without excuse"),
-    ])
-    pericopes = [
-        Pericope("A", "Romans", 1, 1, 1, 2),
-        Pericope("B", "Romans", 1, 3, 1, 3),
-        Pericope("C", "Romans", 2, 1, 2, 1),
-    ]
-    chunks = list(chunk_canonical_book(book, pericopes, "WEB-C"))
-    assert len(chunks) == 3
-    positions = [c[3] for c in chunks]
-    assert positions == [0, 1, 2]
-
-
-# ---------------------------------------------------------------------------
-# chunk_deuterocanonical_book
-# ---------------------------------------------------------------------------
-
-def test_deuterocanonical_chunk_per_chapter():
-    """chunk_deuterocanonical_book yields exactly one chunk per chapter."""
-    book = _make_book("Tobit", "OT", [
-        (1, 1, "The book of Tobit"), (1, 2, "son of Tobiel"),
-        (2, 1, "When I returned"), (2, 2, "to my house"),
-        (3, 1, "I was grieved"),
-    ])
-    chunks = list(chunk_deuterocanonical_book(book, "WEB-C"))
-    assert len(chunks) == 3
-    refs = [c[1] for c in chunks]
-    assert refs == ["Tobit 1", "Tobit 2", "Tobit 3"]
-
-
-def test_deuterocanonical_chapter_content_concatenated():
-    """All verse texts within a chapter are joined."""
-    book = _make_book("Wisdom", "OT", [
-        (1, 1, "Love righteousness"), (1, 2, "you who judge the earth"),
-    ])
-    chunks = list(chunk_deuterocanonical_book(book, "WEB-C"))
-    assert len(chunks) == 1
-    content = chunks[0][0]
-    assert "Love righteousness" in content
-    assert "you who judge the earth" in content
-
-
-def test_deuterocanonical_metadata_includes_chapter():
-    """Metadata for deuterocanonical chunks includes 'chapter' key."""
-    book = _make_book("Judith", "OT", [(2, 1, "Nebuchadnezzar spoke")])
-    chunks = list(chunk_deuterocanonical_book(book, "WEB-C"))
-    assert len(chunks) == 1
-    _, _, metadata, _ = chunks[0]
-    assert metadata["chapter"] == 2
-    assert metadata["book"] == "Judith"
-    assert metadata["testament"] == "OT"
-    assert metadata["translation"] == "WEB-C"
-
-
-def test_deuterocanonical_skips_empty_chapters():
-    """Chapters with no text are skipped."""
-    book = _make_book("Sirach", "OT", [
-        (1, 1, "All wisdom"),
-        (2, 1, ""),           # empty text
-        (3, 1, "Honor your father"),
-    ])
-    chunks = list(chunk_deuterocanonical_book(book, "WEB-C"))
-    refs = [c[1] for c in chunks]
-    assert "Sirach 1" in refs
-    assert "Sirach 3" in refs
-    assert "Sirach 2" not in refs
-    assert len(chunks) == 2
-
-
-def test_deuterocanonical_positions_sequential():
-    """Position values are 0-indexed and sequential."""
-    book = _make_book("Baruch", "OT", [
-        (1, 1, "These are words"), (2, 1, "The Lord our God"), (3, 1, "Hear O Israel"),
-    ])
-    chunks = list(chunk_deuterocanonical_book(book, "WEB-C"))
-    positions = [c[3] for c in chunks]
-    assert positions == [0, 1, 2]
-
-
-# ---------------------------------------------------------------------------
 # Reference format
 # ---------------------------------------------------------------------------
 
@@ -447,199 +275,284 @@ def test_reference_format_uses_en_dash():
 
 
 # ---------------------------------------------------------------------------
-# Psalms routing
+# 1.4a: every verse, extra pericopes, titles, prologue, Song of Songs
 # ---------------------------------------------------------------------------
 
-def test_psalms_in_deuterocanonical_books():
-    """Psalms must be routed through per-chapter chunking, not pericope chunking."""
-    assert "Psalms" in _DEUTEROCANONICAL_BOOKS
+_HEADER = "book,start,end,title,nv_ref,lxx_ref,nab_ref\n"
 
 
-# ---------------------------------------------------------------------------
-# parse_usfm_stanzas
-# ---------------------------------------------------------------------------
+def _world(tmp_path, books: dict[str, str], pericopes: list[tuple], extras: str = ""):
+    """A USFM directory, a KJV pericope file and an extra-pericope CSV under tmp_path.
+    `books` maps a file name to its USFM text; `pericopes` holds (title, start, end)."""
+    import json
+    usfm = tmp_path / "usfm"
+    usfm.mkdir()
+    for name, text in books.items():
+        (usfm / name).write_text(textwrap.dedent(text).lstrip(), encoding="utf-8")
+    kjv = tmp_path / "kjv.json"
+    kjv.write_text(json.dumps([{"Pericope": t, "Reference Start": s, "Reference End": e,
+                                "Verses": []} for t, s, e in pericopes]), encoding="utf-8")
+    csv_path = tmp_path / "extra.csv"
+    csv_path.write_text(_HEADER + extras, encoding="utf-8")
+    return dict(usfm_dir=str(usfm), pericope_path=str(kjv), extra_path=str(csv_path))
 
-_STANZA_USFM = textwrap.dedent(r"""
-    \id SIR
+
+def _build(world) -> dict:
+    return {d.title: d for d in build_documents(**world)}
+
+
+_MARK = r"""
+    \id MRK
+    \c 2
+    \p
+    \v 1 One.
+    \v 2 Two.
+    \v 3 Three.
+    \c 3
+    \v 1 Four.
+    \v 2 Five.
+"""
+
+
+def test_every_usfm_verse_lands_in_a_passage(tmp_path):
+    # Mark 2:3 is outside every pericope: it joins the story before it (Carter,
+    # 10 Nov 2026), so that passage keeps its anchor and grows by a verse.
+    world = _world(tmp_path, {"71-MRK.usfm": _MARK},
+                   [("Sabbath", "Mark 2:1", "Mark 2:2"), ("Healing", "Mark 3:1", "Mark 3:2")])
+    mark = _build(world)["Mark"]
+    assert [(p.anchor, p.reference) for p in mark.passages] == [
+        ("mark/2/1", "Mark 2:1–3"), ("mark/3/1", "Mark 3:1–2")]
+    assert "{{v:3}} Three." in mark.passages[0].content
+    assert mark.passages[0].metadata["pericope"] == "Sabbath"
+
+
+def test_overlapping_pericopes_give_the_verses_to_the_later_one(tmp_path):
+    # Numbers 16:28-37 sits in two KJV pericopes; the one that opens on it keeps it.
+    world = _world(tmp_path, {"71-MRK.usfm": _MARK},
+                   [("Korah", "Mark 2:1", "Mark 2:3"), ("Earth", "Mark 2:2", "Mark 3:2")])
+    mark = _build(world)["Mark"]
+    assert [(p.anchor, p.reference, p.metadata["pericope"]) for p in mark.passages] == [
+        ("mark/2/1", "Mark 2:1", "Korah"), ("mark/2/2", "Mark 2:2–3", "Earth"),
+        ("mark/3/1", "Mark 3:1–2", "Earth")]
+
+
+def test_a_gap_at_a_chapter_start_is_its_own_untitled_passage():
+    verses = [Verse("Mark", 3, 1, "Four."), Verse("Mark", 3, 2, "Five.")]
+    groups = group_verses(verses, [Pericope("Healing", "Mark", 3, 2, 3, 2)], [])
+    assert [(g.title, [v for _, v, _ in g.verses]) for g in groups] == [
+        (None, [1]), ("Healing", [2])]
+
+
+_ESTHER = r"""
+    \id ESG
+    \c 4
+    \p
+    \v 17 Hebrew seventeen.
+    \v 18 [Mordecai prays.
+    \v 19 There is no one who can oppose you.
+    \v 29 And queen Esther took refuge in the Lord.
+    \v 30 She put on garments of distress.]
+"""
+
+
+def test_extra_pericope_labels_apply(tmp_path):
+    extras = ("Esther,4:18,4:19,Addition C: Mordecai's prayer,Esther 4:17a–m,Esther 4:17a–i,"
+              "Esther C:1–11\n"
+              "Esther,4:29,4:30,Addition C: Esther's prayer,Esther 4:17n–kk,Esther 4:17k–z,"
+              "Esther C:12–30\n")
+    # The KJV pericope runs to 4:17 only; a row beats it even where they overlap.
+    world = _world(tmp_path, {"43-ESG.usfm": _ESTHER},
+                   [("Esther's Resolve", "Esther 4:17", "Esther 4:29")], extras)
+    esther = _build(world)["Esther"]
+    by_anchor = {p.anchor: p for p in esther.passages}
+    assert list(by_anchor) == ["esther/4/17", "esther/4/18", "esther/4/29"]
+    assert by_anchor["esther/4/17"].reference == "Esther 4:17"
+    mordecai, queen = by_anchor["esther/4/18"], by_anchor["esther/4/29"]
+    assert mordecai.reference == "Esther 4:18–19"
+    assert mordecai.metadata["pericope"] == "Addition C: Mordecai's prayer"
+    assert (mordecai.metadata["nv_ref"], mordecai.metadata["lxx_ref"],
+            mordecai.metadata["nab_ref"]) == ("Esther 4:17a–m", "Esther 4:17a–i", "Esther C:1–11")
+    assert (queen.metadata["nv_ref"], queen.metadata["lxx_ref"],
+            queen.metadata["nab_ref"]) == ("Esther 4:17n–kk", "Esther 4:17k–z", "Esther C:12–30")
+    assert "nv_ref" not in by_anchor["esther/4/17"].metadata
+
+
+def test_song_of_songs_title_keeps_frozen_id_and_anchor_slug(tmp_path):
+    song = r"""
+        \id SNG
+        \c 1
+        \p
+        \v 1 The Song of songs, which is Solomon’s.
+        \v 2 Let him kiss me with the kisses of his mouth.
+    """
+    # The KJV file still names the book "Song of Solomon".
+    world = _world(tmp_path, {"22-SNG.usfm": song},
+                   [("The Song", "Song of Solomon 1:1", "Song of Solomon 1:2")])
+    doc = _build(world)["Song of Songs"]
+    assert doc.id == "9df0b246-febf-52e3-b56f-fa7bf1c002de"
+    p = doc.passages[0]
+    assert (p.anchor, p.chapter_key) == ("song-of-solomon/1/1", "song-of-solomon/1")
+    assert (p.reference, p.chapter_label) == ("Song of Songs 1:1–2", "Song of Songs 1")
+    assert p.metadata["pericope"] == "The Song"
+    frozen = registry.current().row_by_anchor[(doc.id, "song-of-solomon/1/1")]["passage_id"]
+    assert registry.resolve_passage_id(doc.id, p.anchor) == frozen
+
+
+_PSALMS = r"""
+    \id PSA
+    \c 3
+    \d A Psalm by David, when he fled from Absalom his son.
+    \q1
+    \v 1 LORD, how my adversaries have increased!
+    \v 2 Many say of my soul,
+    \c 119
+    \d ALEPH
+    \q1
+    \v 1 Blessed are those whose ways are blameless.
+    \v 2 Blessed are those who keep his statutes.
+    \d BETH
+    \q1
+    \v 3 How can a young man keep his way pure?
+"""
+
+
+def test_psalm_title_opens_first_passage(tmp_path):
+    world = _world(tmp_path, {"20-PSA.usfm": _PSALMS},
+                   [("Book 1", "Psalms 3:1", "Psalms 3:2"), ("Book 5", "Psalms 119:1", "Psalms 119:3")])
+    psalms = _build(world)["Psalms"]
+    first = psalms.passages[0]
+    assert (first.anchor, first.reference, first.unit_label) == ("psalms/3/1", "Psalms 3:1–2", "1")
+    assert first.content.startswith(
+        "A Psalm by David, when he fled from Absalom his son. LORD, how my adversaries")
+    # Psalm 119's letters head their stanzas: the later one opens the verse it precedes.
+    assert psalms.passages[1].content.startswith("ALEPH Blessed are those")
+    assert "{{v:3}} BETH How can a young man" in psalms.passages[1].content
+
+
+def test_numbered_heading_is_not_read_as_verse_text(tmp_path):
+    daniel = r"""
+        \id DAG
+        \c 3
+        \p
+        \v 23 These three men fell down bound.
+        \s1 THE SONG OF THE THREE HOLY CHILDREN\f + \fr 3:24 \ft a note\f*
+        \p
+        \v 24 They walked in the midst of the fire.
+    """
+    path = tmp_path / "dag.usfm"
+    path.write_text(textwrap.dedent(daniel).lstrip(), encoding="utf-8")
+    verses = parse_usfm_file(str(path))
+    assert verses[(3, 23)] == "These three men fell down bound."
+
+
+_SIRACH = r"""
+    \id SIR Ecclesiasticus
+    \h Sirach
+    \ip \bk The Wisdom of Jesus the Son of Sirach\bk* is recognized as Deuterocanonical Scripture.
+    \is1 The Prologue of the Wisdom of Jesus the Son of Sirach.
+    \ip WHEREAS many and great things have been delivered to us by the law.
     \c 1
     \b
     \q1
     \v 1 All wisdom comes from the Lord,
-    \q2 and is with him forever.
-    \v 2 Who can count the sand of the seas,
-    \b
-    \v 3 The fear of the Lord is glory, exultation,
-    \v 4 Whoever fears the Lord, it will go well for him.
-    \c 2
-    \v 1 My son, if you come to serve the Lord,
-    \v 2 prepare your soul for temptation.
-    \b
-    \v 3 Set your heart right, and endure.
-""").lstrip()
+    \v 2 Who can count the sand of the seas?
+"""
 
 
-def _write_stanza_usfm(content: str) -> str:
-    import tempfile
-    f = tempfile.NamedTemporaryFile(suffix=".usfm", mode="w", encoding="utf-8", delete=False)
-    f.write(content)
-    f.close()
-    return f.name
+def test_sirach_prologue_is_its_own_passage(tmp_path):
+    world = _world(tmp_path, {"46-SIR.usfm": _SIRACH}, [])
+    sirach = _build(world)["Sirach"]
+    prologue, chapter = sirach.passages
+    assert (prologue.anchor, prologue.reference, prologue.chapter_key, prologue.chapter_label,
+            prologue.position) == ("sirach/prologue", "Sirach, Prologue", "sirach/prologue",
+                                   "Prologue", 0)
+    assert prologue.content == "WHEREAS many and great things have been delivered to us by the law."
+    # WEB-C's own introduction is not Scripture and reaches no passage.
+    assert all("Deuterocanonical" not in p.content for p in sirach.passages)
+    assert (chapter.anchor, chapter.reference, chapter.position) == ("sirach/1/1", "Sirach 1", 1)
 
 
-def test_parse_usfm_stanzas_count():
-    """\\b markers and chapter boundaries together define stanza count."""
-    path = _write_stanza_usfm(_STANZA_USFM)
-    try:
-        stanzas = parse_usfm_stanzas(path)
-        # ch1: 2 stanzas (each \\b flushes); ch2: 2 stanzas (\\c flush + \\b flush)
-        assert len(stanzas) == 4
-    finally:
-        os.unlink(path)
+def test_check_complete_raises_on_a_lost_verse_or_prologue():
+    book = BookVerses("Mark", "MRK", "NT", [Verse("Mark", 2, 1, "One."), Verse("Mark", 2, 2, ""),
+                                           Verse("Mark", 2, 3, "Three.")])
+    check_complete(book, {(2, 1), (2, 3)}, prologue_placed=False)    # 2:2 has no text
+    with pytest.raises(ValueError, match="1 verses reach no passage"):
+        check_complete(book, {(2, 1)}, prologue_placed=False)
+    book.titles = {(2, 2): "A title"}       # a title gives an empty verse text to place
+    with pytest.raises(ValueError, match="reach no passage"):
+        check_complete(book, {(2, 1), (2, 3)}, prologue_placed=False)
+    book.titles, book.prologue = {}, "Whereas"
+    with pytest.raises(ValueError, match="prologue"):
+        check_complete(book, {(2, 1), (2, 3)}, prologue_placed=False)
 
 
-def test_parse_usfm_stanzas_first_stanza_verses():
-    """First stanza contains exactly the verses before the first \\b in ch1."""
-    path = _write_stanza_usfm(_STANZA_USFM)
-    try:
-        stanzas = parse_usfm_stanzas(path)
-        stanza0 = stanzas[0]
-        assert len(stanza0) == 2
-        ch, v, text = stanza0[0]
-        assert ch == 1 and v == 1
-        assert "All wisdom" in text
-    finally:
-        os.unlink(path)
-
-
-def test_parse_usfm_stanzas_chapter_boundary_flush():
-    """\\c marker flushes current stanza; ch2's first verses become a new stanza."""
-    path = _write_stanza_usfm(_STANZA_USFM)
-    try:
-        stanzas = parse_usfm_stanzas(path)
-        ch2_stanzas = [s for s in stanzas if s and s[0][0] == 2]
-        assert len(ch2_stanzas) == 2
-        assert ch2_stanzas[0][0] == (2, 1, "My son, if you come to serve the Lord,")
-    finally:
-        os.unlink(path)
-
-
-def test_parse_usfm_stanzas_clean_text():
-    """Verse text in stanzas has USFM markers stripped (\\q1, \\q2, etc.)."""
-    path = _write_stanza_usfm(_STANZA_USFM)
-    try:
-        stanzas = parse_usfm_stanzas(path)
-        for stanza in stanzas:
-            for ch, v, text in stanza:
-                assert "\\q" not in text
-                assert "\\v" not in text
-    finally:
-        os.unlink(path)
-
-
-def test_parse_usfm_stanzas_verse_tuple_structure():
-    """Each verse in a stanza is a (chapter: int, verse: int, text: str) tuple."""
-    path = _write_stanza_usfm(_STANZA_USFM)
-    try:
-        stanzas = parse_usfm_stanzas(path)
-        for stanza in stanzas:
-            for item in stanza:
-                assert len(item) == 3
-                ch, v, text = item
-                assert isinstance(ch, int)
-                assert isinstance(v, int)
-                assert isinstance(text, str) and text
-    finally:
-        os.unlink(path)
+def test_parse_usfm_titles_and_prologue(tmp_path):
+    psa, sir = tmp_path / "psa.usfm", tmp_path / "sir.usfm"
+    psa.write_text(textwrap.dedent(_PSALMS).lstrip(), encoding="utf-8")
+    sir.write_text(textwrap.dedent(_SIRACH).lstrip(), encoding="utf-8")
+    assert parse_usfm_titles(str(psa)) == {
+        (3, 1): "A Psalm by David, when he fled from Absalom his son.",
+        (119, 1): "ALEPH", (119, 3): "BETH"}
+    assert parse_usfm_prologue(str(psa)) == ""
+    assert parse_usfm_prologue(str(sir)).startswith("WHEREAS")
 
 
 # ---------------------------------------------------------------------------
-# chunk_stanza_book
+# Vendored source (skipped where the WEB-C files are not vendored)
 # ---------------------------------------------------------------------------
 
-_TEST_STANZAS: list[list[tuple[int, int, str]]] = [
-    [(1, 1, "All wisdom comes from the Lord"), (1, 2, "and is with him forever")],
-    [(1, 3, "The fear of the Lord is glory exultation"), (1, 4, "Whoever fears the Lord")],
-    [(2, 1, "My son if you come to serve the Lord"), (2, 2, "prepare your soul for temptation")],
-    [(2, 3, "x")],   # too short — must be skipped
-]
+_ROOT = os.path.join(os.path.dirname(__file__), "..")
+_vendored = os.path.isdir(os.path.join(_ROOT, "sources", "bible", "eng-web-c_usfm"))
 
 
-def test_chunk_stanza_book_skips_short_stanzas():
-    """Stanzas whose joined text is below min_chars are skipped."""
-    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
-    assert len(chunks) == 3
+@pytest.fixture(scope="module")
+def vendored_docs():
+    return {d.title: d for d in build_documents()}
 
 
-def test_chunk_stanza_book_reference_same_chapter():
-    """Same-chapter stanza reference uses 'Book ch:sv–ev' format."""
-    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
-    _, ref, _, _ = chunks[0]
-    assert ref == "Sirach 1:1–2"
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_vendored_every_verse_once_and_daniel_chapters(vendored_docs):
+    import re
+    from collections import Counter
+    from ingest.bible import load_usfm_directory
+    books = load_usfm_directory(os.path.join(_ROOT, "sources", "bible", "eng-web-c_usfm"))
+    assert len(books) == len(vendored_docs) == 73
+    for name, book in books.items():
+        seen: Counter = Counter()
+        last = None
+        for p in vendored_docs[name].passages:
+            if p.anchor.endswith("/prologue"):
+                continue
+            chapter = int(p.chapter_key.rsplit("/", 1)[1])
+            held = [int(p.unit_label)] + [int(n) for n in re.findall(r"\{\{v:(\d+)\}\}", p.content)]
+            if (chapter, held[0]) == last:
+                held = held[1:]     # a verse cut across pieces continues here (Esther 8:13)
+            seen.update((chapter, v) for v in held)
+            last = (chapter, held[-1]) if held else last
+        # Every verse with text is in exactly one passage; a verse with none (Sirach 1:5,
+        # Romans 16:25) may be left out.
+        with_text = {(v.chapter, v.verse) for v in book.verses if v.text.strip()}
+        assert with_text <= set(seen) <= {(v.chapter, v.verse) for v in book.verses}, name
+        assert max(seen.values()) == 1, (name, [k for k, n in seen.items() if n > 1])
+    daniel = Counter(v.chapter for v in books["Daniel"].verses)
+    assert [daniel[c] for c in range(1, 15)] == [21, 49, 97, 37, 31, 28, 28, 27, 27, 21, 45,
+                                                13, 64, 42]
 
 
-def test_chunk_stanza_book_reference_single_verse():
-    """Single-verse stanza uses 'Book ch:v' (no range)."""
-    single = [[(3, 5, "A" * 30)]]
-    chunks = list(chunk_stanza_book("Sirach", "OT", single, "WEB-C", min_chars=20))
-    _, ref, _, _ = chunks[0]
-    assert ref == "Sirach 3:5"
-
-
-def test_chunk_stanza_book_reference_cross_chapter():
-    """Cross-chapter stanza reference spans both chapter numbers."""
-    cross = [[(1, 40, "end of chapter one content here"), (2, 1, "start of chapter two content here")]]
-    chunks = list(chunk_stanza_book("Sirach", "OT", cross, "WEB-C", min_chars=20))
-    _, ref, _, _ = chunks[0]
-    assert ref == "Sirach 1:40–2:1"
-
-
-def test_chunk_stanza_book_content_joins_verses():
-    """Content is all verse texts joined with spaces."""
-    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
-    content, _, _, _ = chunks[0]
-    assert "All wisdom comes from the Lord" in content
-    assert "and is with him forever" in content
-
-
-def test_chunk_stanza_book_metadata():
-    """Metadata contains book, chapter (of first verse), stanza index, testament, translation."""
-    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
-    _, _, meta, _ = chunks[0]
-    assert meta["book"] == "Sirach"
-    assert meta["chapter"] == 1
-    assert "stanza" in meta
-    assert meta["testament"] == "OT"
-    assert meta["translation"] == "WEB-C"
-
-
-def test_chunk_stanza_book_positions_sequential():
-    """Position values are 0-indexed and sequential across yielded chunks."""
-    chunks = list(chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C", min_chars=20))
-    positions = [c[3] for c in chunks]
-    assert positions == list(range(len(chunks)))
-
-
-def test_chunk_stanza_book_returns_iterator():
-    """chunk_stanza_book is a generator (yields lazily)."""
-    import types
-    result = chunk_stanza_book("Sirach", "OT", _TEST_STANZAS, "WEB-C")
-    assert isinstance(result, types.GeneratorType)
-
-
-# ---------------------------------------------------------------------------
-# Routing constants
-# ---------------------------------------------------------------------------
-
-def test_sirach_not_in_deuterocanonical_books():
-    """Sirach must be removed from _DEUTEROCANONICAL_BOOKS once _STANZA_BOOKS exists."""
-    assert "Sirach" not in _DEUTEROCANONICAL_BOOKS
-
-
-def test_sirach_in_stanza_books():
-    """Sirach must be in _STANZA_BOOKS so build_documents uses stanza chunking."""
-    assert "Sirach" in _STANZA_BOOKS
-
-
-def test_stanza_books_not_overlap_deuterocanonical():
-    """_STANZA_BOOKS and _DEUTEROCANONICAL_BOOKS must be disjoint."""
-    assert _STANZA_BOOKS.isdisjoint(_DEUTEROCANONICAL_BOOKS)
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_vendored_restored_passages(vendored_docs):
+    def at(title, anchor):
+        return next(p for p in vendored_docs[title].passages if p.anchor == anchor)
+    assert at("Psalms", "psalms/51/1").content.startswith(
+        "For the Chief Musician. A Psalm by David, when Nathan the prophet came to him")
+    assert at("Daniel", "daniel/3/24").metadata["pericope"] == \
+        "Prayer of Azariah and Song of the Three"
+    assert at("Daniel", "daniel/3/91").reference == "Daniel 3:91–97"
+    assert at("Daniel", "daniel/13/1").metadata["pericope"] == "Susanna"
+    assert at("Daniel", "daniel/14/1").metadata["pericope"] == "Bel and the Dragon"
+    assert "HOLY CHILDREN" not in at("Daniel", "daniel/3/19").content
+    assert at("Esther", "esther/10/4").metadata["nab_ref"] == "Esther F:1–11"
+    assert at("Romans", "romans/14/24").reference == "Romans 14:24–26"
+    assert at("Numbers", "numbers/16/28").reference == "Numbers 16:28–40"
+    assert at("Mark", "mark/2/23").reference == "Mark 2:23–28"
+    assert at("Sirach", "sirach/prologue").content.startswith("WHEREAS many and great things")

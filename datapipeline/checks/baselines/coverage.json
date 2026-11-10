@@ -1,11 +1,11 @@
 {
  "measured_on": {
   "apostolic-exhortations": "feat/1.3a-papal-parser 8075859",
-  "bible": "feat/1.10c-piece-citations 269d968",
-  "canon-law": "worktree-bridge-cse_01MzvQVhAqo9MUAtH1SmLFwB 66c7561",
+  "bible": "feat/1.4a-bible-every-verse 66c7561",
+  "canon-law": "feat/1.5a-canon-law-parser 16888ad",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.10c-piece-citations 269d968",
-  "councils": "feat/1.2e-4-constantinople-4-lateran-5 b1fbaaa",
+  "councils": "HEAD bb76d19",
   "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
@@ -169,8 +169,8 @@
   },
   "bible/eng-web-c_usfm/03-EXOeng-web-c.usfm": {
    "body_chars": 157153,
-   "covered_chars": 156904,
-   "pct": 99.84
+   "covered_chars": 157153,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/04-LEVeng-web-c.usfm": {
    "body_chars": 117492,
@@ -184,18 +184,18 @@
   },
   "bible/eng-web-c_usfm/06-DEUeng-web-c.usfm": {
    "body_chars": 137116,
-   "covered_chars": 136511,
-   "pct": 99.56
+   "covered_chars": 137116,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/07-JOSeng-web-c.usfm": {
    "body_chars": 92892,
-   "covered_chars": 92785,
-   "pct": 99.88
+   "covered_chars": 92892,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/08-JDGeng-web-c.usfm": {
    "body_chars": 91952,
-   "covered_chars": 91531,
-   "pct": 99.54
+   "covered_chars": 91870,
+   "pct": 99.91
   },
   "bible/eng-web-c_usfm/09-RUTeng-web-c.usfm": {
    "body_chars": 12281,
@@ -214,13 +214,13 @@
   },
   "bible/eng-web-c_usfm/12-1KIeng-web-c.usfm": {
    "body_chars": 118603,
-   "covered_chars": 117543,
-   "pct": 99.11
+   "covered_chars": 118603,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/13-2KIeng-web-c.usfm": {
    "body_chars": 113810,
-   "covered_chars": 113735,
-   "pct": 99.93
+   "covered_chars": 113810,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/14-1CHeng-web-c.usfm": {
    "body_chars": 103624,
@@ -229,8 +229,8 @@
   },
   "bible/eng-web-c_usfm/15-2CHeng-web-c.usfm": {
    "body_chars": 131883,
-   "covered_chars": 131783,
-   "pct": 99.92
+   "covered_chars": 131883,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/16-EZReng-web-c.usfm": {
    "body_chars": 38209,
@@ -249,8 +249,8 @@
   },
   "bible/eng-web-c_usfm/20-PSAeng-web-c.usfm": {
    "body_chars": 196485,
-   "covered_chars": 193957,
-   "pct": 98.71
+   "covered_chars": 196401,
+   "pct": 99.96
   },
   "bible/eng-web-c_usfm/21-PROeng-web-c.usfm": {
    "body_chars": 73638,
@@ -269,13 +269,13 @@
   },
   "bible/eng-web-c_usfm/24-ISAeng-web-c.usfm": {
    "body_chars": 177045,
-   "covered_chars": 175520,
-   "pct": 99.14
+   "covered_chars": 176587,
+   "pct": 99.74
   },
   "bible/eng-web-c_usfm/25-JEReng-web-c.usfm": {
    "body_chars": 209291,
-   "covered_chars": 209104,
-   "pct": 99.91
+   "covered_chars": 209203,
+   "pct": 99.96
   },
   "bible/eng-web-c_usfm/26-LAMeng-web-c.usfm": {
    "body_chars": 15941,
@@ -359,8 +359,8 @@
   },
   "bible/eng-web-c_usfm/43-ESGeng-web-c.usfm": {
    "body_chars": 38143,
-   "covered_chars": 32969,
-   "pct": 86.44
+   "covered_chars": 38143,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/45-WISeng-web-c.usfm": {
    "body_chars": 55956,
@@ -389,8 +389,8 @@
   },
   "bible/eng-web-c_usfm/66-DAGeng-web-c.usfm": {
    "body_chars": 78310,
-   "covered_chars": 58364,
-   "pct": 74.53
+   "covered_chars": 78310,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/70-MATeng-web-c.usfm": {
    "body_chars": 117150,
@@ -399,8 +399,8 @@
   },
   "bible/eng-web-c_usfm/71-MRKeng-web-c.usfm": {
    "body_chars": 72975,
-   "covered_chars": 72830,
-   "pct": 99.8
+   "covered_chars": 72975,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/72-LUKeng-web-c.usfm": {
    "body_chars": 124358,
@@ -419,8 +419,8 @@
   },
   "bible/eng-web-c_usfm/75-ROMeng-web-c.usfm": {
    "body_chars": 48329,
-   "covered_chars": 47851,
-   "pct": 99.01
+   "covered_chars": 48329,
+   "pct": 100.0
   },
   "bible/eng-web-c_usfm/76-1COeng-web-c.usfm": {
    "body_chars": 46561,
@@ -831,16 +831,6 @@
    "body_chars": 36828,
    "covered_chars": 31675,
    "pct": 86.01
-  },
-  "councils/ecum-16-council-of-constance.html": {
-   "body_chars": 130013,
-   "covered_chars": 121759,
-   "pct": 93.65
-  },
-  "councils/ecum-17-council-of-basel-ferrara-florence.html": {
-   "body_chars": 322148,
-   "covered_chars": 316780,
-   "pct": 98.33
   },
   "councils/ecum-19-council-of-trent.html": {
    "body_chars": 535924,
@@ -1709,8 +1699,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/24-ISAeng-web-c.usfm",
    "body_chars": 177045,
-   "covered_chars": 175520,
-   "pct": 99.14
+   "covered_chars": 176587,
+   "pct": 99.74
   },
   "01abb5ad-1a95-5435-aa5b-62b04e87e1f2": {
    "collection": "church-fathers",
@@ -1912,8 +1902,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/20-PSAeng-web-c.usfm",
    "body_chars": 196485,
-   "covered_chars": 193957,
-   "pct": 98.71
+   "covered_chars": 196401,
+   "pct": 99.96
   },
   "1302988d-7dbc-5bc0-9005-838053111c45": {
    "collection": "apostolic-exhortations",
@@ -2269,8 +2259,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/75-ROMeng-web-c.usfm",
    "body_chars": 48329,
-   "covered_chars": 47851,
-   "pct": 99.01
+   "covered_chars": 48329,
+   "pct": 100.0
   },
   "2f22d9b5-b1fe-51e0-abf9-56685860ce61": {
    "collection": "church-fathers",
@@ -2521,8 +2511,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/15-2CHeng-web-c.usfm",
    "body_chars": 131883,
-   "covered_chars": 131783,
-   "pct": 99.92
+   "covered_chars": 131883,
+   "pct": 100.0
   },
   "46864455-e2e3-5d9f-b84d-c4c14d7bb2ac": {
    "collection": "encyclicals",
@@ -2780,8 +2770,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/66-DAGeng-web-c.usfm",
    "body_chars": 78310,
-   "covered_chars": 58364,
-   "pct": 74.53
+   "covered_chars": 78310,
+   "pct": 100.0
   },
   "5f0ff7e9-3b76-5c1f-949f-4980a943244b": {
    "collection": "councils",
@@ -2878,8 +2868,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/06-DEUeng-web-c.usfm",
    "body_chars": 137116,
-   "covered_chars": 136511,
-   "pct": 99.56
+   "covered_chars": 137116,
+   "pct": 100.0
   },
   "66287a86-1fc8-5183-99c8-2ec70772bca4": {
    "collection": "bible",
@@ -2993,13 +2983,6 @@
    "covered_chars": 143,
    "pct": 0.61
   },
-  "706adce0-8af2-5a30-877b-82e701601a53": {
-   "collection": "councils",
-   "source_file": "ecum-17-council-of-basel-ferrara-florence.html",
-   "body_chars": 322148,
-   "covered_chars": 316780,
-   "pct": 98.33
-  },
   "7073bae0-a0fd-5c22-8e36-8cf493f15af2": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
@@ -3081,8 +3064,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/71-MRKeng-web-c.usfm",
    "body_chars": 72975,
-   "covered_chars": 72830,
-   "pct": 99.8
+   "covered_chars": 72975,
+   "pct": 100.0
   },
   "7dcaaf94-4605-52e9-9b96-80347d38cbdd": {
    "collection": "encyclicals",
@@ -3487,8 +3470,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/07-JOSeng-web-c.usfm",
    "body_chars": 92892,
-   "covered_chars": 92785,
-   "pct": 99.88
+   "covered_chars": 92892,
+   "pct": 100.0
   },
   "a558e370-226c-5ac5-b01b-916adbe6b256": {
    "collection": "church-fathers",
@@ -3711,8 +3694,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/25-JEReng-web-c.usfm",
    "body_chars": 209291,
-   "covered_chars": 209104,
-   "pct": 99.91
+   "covered_chars": 209203,
+   "pct": 99.96
   },
   "b58729e8-fa6e-5b91-9d66-b0734050a471": {
    "collection": "councils",
@@ -3818,13 +3801,6 @@
    "body_chars": 181617,
    "covered_chars": 179875,
    "pct": 99.04
-  },
-  "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205": {
-   "collection": "councils",
-   "source_file": "ecum-16-council-of-constance.html",
-   "body_chars": 130013,
-   "covered_chars": 121759,
-   "pct": 93.65
   },
   "bffdc129-866b-5ea9-b7d6-c0cb65a19262": {
    "collection": "encyclicals",
@@ -4012,8 +3988,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/13-2KIeng-web-c.usfm",
    "body_chars": 113810,
-   "covered_chars": 113735,
-   "pct": 99.93
+   "covered_chars": 113810,
+   "pct": 100.0
   },
   "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec": {
    "collection": "apostolic-exhortations",
@@ -4061,8 +4037,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/08-JDGeng-web-c.usfm",
    "body_chars": 91952,
-   "covered_chars": 91531,
-   "pct": 99.54
+   "covered_chars": 91870,
+   "pct": 99.91
   },
   "d2b71f9f-111c-5f1b-9a43-5a897b13730c": {
    "collection": "church-fathers",
@@ -4278,8 +4254,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/03-EXOeng-web-c.usfm",
    "body_chars": 157153,
-   "covered_chars": 156904,
-   "pct": 99.84
+   "covered_chars": 157153,
+   "pct": 100.0
   },
   "ea58df56-89c8-581e-ae09-9d16af8c37b8": {
    "collection": "bible",
@@ -4320,8 +4296,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/12-1KIeng-web-c.usfm",
    "body_chars": 118603,
-   "covered_chars": 117543,
-   "pct": 99.11
+   "covered_chars": 118603,
+   "pct": 100.0
   },
   "ecfd05c0-32a2-5153-9054-d3ab06c56c2c": {
    "collection": "church-fathers",
@@ -4544,8 +4520,8 @@
    "collection": "bible",
    "source_file": "eng-web-c_usfm/43-ESGeng-web-c.usfm",
    "body_chars": 38143,
-   "covered_chars": 32969,
-   "pct": 86.44
+   "covered_chars": 38143,
+   "pct": 100.0
   },
   "fd3c4120-5f9a-590e-a1de-792de0414fb3": {
    "collection": "encyclicals",
