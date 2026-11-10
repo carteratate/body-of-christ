@@ -64,7 +64,7 @@ def test_extract_text_ignores_ref_and_anchor_elements():
         ]
     }]}
     text, paras = extract_node_text(node)
-    assert text == "Main content."
+    assert text == "§5 Main content."     # a numbered paragraph opens with its marker (1.6)
     assert paras == [5]
 
 
@@ -90,7 +90,7 @@ def test_extract_text_multiple_text_elements_joined_with_space():
         ]
     }]}
     text, _ = extract_node_text(node)
-    assert text == "Part one. Part two."
+    assert text == "§10 Part one. Part two."
 
 
 def test_extract_text_skips_empty_paragraphs():
@@ -291,7 +291,7 @@ def test_multiple_stubs_all_merged_into_next_chunk():
 def test_no_stub_no_prefix_in_content():
     normal = _make_node(_make_para("x" * 600, ref_ccc=20))
     content = chunk_nodes([normal], ["toc-1"])[0][0]
-    assert content == "x" * 600
+    assert content == "§20 " + "x" * 600
 
 
 def test_stub_followed_by_another_stub_then_normal():
@@ -386,11 +386,9 @@ def test_tier3_second_chunk_starts_with_header():
     assert result[1][0].startswith("Chapter One")
 
 
-def test_tier3_references_include_part_for_numbered_sections():
+def test_tier3_references_cite_each_sections_own_paragraphs():
     result = chunk_nodes([_large_node_with_headers()], ["toc-100"])
-    for _, ref, meta, _ in result:
-        if meta["ccc_paragraphs"]:
-            assert "(part)" in ref
+    assert [ref for _, ref, _, _ in result] == ["CCC §200", "CCC §201"]
 
 
 def test_tier3_positions_are_sequential():
@@ -410,8 +408,7 @@ def test_tier3_in_brief_section_flagged():
 
 
 def test_tier3_unnumbered_section_reference_has_no_part_suffix():
-    """A Tier-3 split section with no CCC paragraph numbers gets 'CCC [node_id]',
-    not 'CCC [node_id] (part)' — make_reference ignores is_partial when list is empty."""
+    """A Tier-3 split section with no CCC paragraph numbers gets 'CCC [node_id]'."""
     node = _make_node(
         _make_para("Intro section."),             # no ref_ccc → first section has no paras
         _make_para("Heading A"),                  # section header
@@ -459,24 +456,6 @@ def test_make_ref_consecutive_range():
 
 def test_make_ref_non_contiguous():
     assert make_reference([100, 102, 105], "x") == "CCC §100, §102, §105"
-
-
-def test_make_ref_single_partial():
-    assert make_reference([50], "x", is_partial=True) == "CCC §50 (part)"
-
-
-def test_make_ref_range_partial():
-    assert make_reference([50, 51, 52], "x", is_partial=True) == "CCC §50–52 (part)"
-
-
-def test_make_ref_non_contiguous_partial():
-    assert make_reference([50, 52], "x", is_partial=True) == "CCC §50, §52 (part)"
-
-
-def test_make_ref_empty_with_is_partial_no_part_suffix():
-    result = make_reference([], "toc-5", is_partial=True)
-    assert result == "CCC [toc-5]"
-    assert "(part)" not in result
 
 
 def test_make_ref_two_consecutive():
@@ -533,7 +512,7 @@ def test_short_continuation_lines_kept_once(us_build):
     assert content.count(us_text) == 1
     assert content.count("preached everywhere") == 1
     # The heading glued onto the last line is still its own heading, after the paragraph.
-    assert f"{us_text}\n\nII. HANDING ON THE FAITH\n\nThose who welcomed" in content
+    assert f"{us_text}\n\nII. HANDING ON THE FAITH\n\n§3 Those who welcomed" in content
 
 
 def test_headings_use_us_text(us_build):
@@ -546,7 +525,7 @@ def test_headings_use_us_text(us_build):
     assert "The Decalogue and the natural law" in _passage_with(us_build, 3).content
     assert "SECTION TWO\n\nTHE TEN COMMANDMENTS" in second
     # A heading the source lacks is inserted where it belongs.
-    assert 'THE TEN COMMANDMENTS\n\n"Teacher, what must I do …?"\n\nTeacher, what good' in second
+    assert 'THE TEN COMMANDMENTS\n\n"Teacher, what must I do …?"\n\n§5 Teacher, what good' in second
     assert _passage_with(us_build, 7).content.startswith("ARTICLE 5\n\nTHE FIFTH COMMANDMENT\n\n")
 
 
@@ -619,7 +598,9 @@ def test_report_reconstructs_and_classifies(us_build):
 def _in_brief_fixture(tmp_path):
     def P(*els):
         return {"attrs": {}, "elements": list(els)}
-    src = {"page_nodes": {
+    src = {"toc_link_tree": [{"id": f"toc-{k}", "children": []} for k in range(1, 5)],
+           "toc_nodes": {f"toc-{k}": {"text": "PROLOGUE"} for k in range(1, 5)},
+           "page_nodes": {
         "toc-1": {"paragraphs": [P({"type": "ref-ccc", "ref_number": 1}, {"type": "text", "text": "First teaching."})]},
         "toc-2": {"paragraphs": [P({"type": "text", "text": "IN BRIEF"}),
                                  P({"type": "ref-ccc", "ref_number": 2}, {"type": "text", "text": "A first summary."})]},
@@ -707,7 +688,9 @@ def _mini(tmp_path, source_paragraphs, us_items, name="mini"):
             n, text = x
             return {"attrs": {}, "elements": [{"type": "ref-ccc", "ref_number": n}, {"type": "text", "text": text}]}
         return {"attrs": {}, "elements": [{"type": "text", "text": x}]}
-    src = {"page_nodes": {"toc-1": {"paragraphs": [P(x) for x in source_paragraphs]}}}
+    src = {"page_nodes": {"toc-1": {"paragraphs": [P(x) for x in source_paragraphs]}},
+           "toc_link_tree": [{"id": "toc-1", "children": []}],
+           "toc_nodes": {"toc-1": {"text": "PROLOGUE"}}}
     us = {"items": us_items}
     (tmp_path / f"{name}_src.json").write_text(json.dumps(src))
     (tmp_path / f"{name}_us.json").write_text(json.dumps(us))
@@ -740,7 +723,7 @@ def test_structural_titles_match_across_level_words(tmp_path):
                   [(1, "First teaching here."), "Article 2", '"OUR FATHER WHO ART IN HEAVEN"', (2, "Second.")],
                   [_para(1, "First teaching here."), _head('Chapter 2: "Our Father Who art in Heaven"', "structure"),
                    _para(2, "Second.")])
-    assert 'First teaching here.\n\nArticle 2\n\n"OUR FATHER WHO ART IN HEAVEN"\n\nSecond.' \
+    assert '§1 First teaching here.\n\nArticle 2\n\n"OUR FATHER WHO ART IN HEAVEN"\n\n§2 Second.' \
         in build.document.passages[0].content
     match = next(m for m in build.alignment.matches if m.after == 1)
     assert len(match.headings) == 1 and not match.inserted
@@ -786,7 +769,7 @@ def test_a_heading_glued_to_its_paragraph_line_is_left_out_of_the_old_text(tmp_p
                   [(1, 'He made all things.  God creates "out of nothing"'), (2, "Second.")],
                   [_para(1, "He made all things."), _head('God creates "out of nothing"'), _para(2, "Second.")])
     assert build.alignment.old_paragraphs[1] == "He made all things."
-    assert 'He made all things.\n\nGod creates "out of nothing"\n\nSecond.' in build.document.passages[0].content
+    assert '§1 He made all things.\n\nGod creates "out of nothing"\n\n§2 Second.' in build.document.passages[0].content
 
 
 def test_ccc_2267_declares_its_replaced_text(us_build):
@@ -803,7 +786,7 @@ def test_a_heading_only_section_carries_into_the_next_passage():
         {"paragraphs": [_make_para("Second teaching.", ref_ccc=2)]},
     ]
     chunks = chunk_nodes(nodes, ["toc-1", "toc-2"])
-    assert chunks[-1][0].startswith("II. THE NEXT PART\n\nSecond teaching.")
+    assert chunks[-1][0].startswith("II. THE NEXT PART\n\n§2 Second teaching.")
 
 
 def test_a_note_printed_twice_is_allowed_only_word_for_word():
@@ -829,7 +812,7 @@ def test_section_two_of_part_one_is_printed_once(tmp_path):
                    _head("THE CREEDS"), _para(185, "Whoever says I believe.")])
     text = "\n\n".join(p.content for p in build.document.passages)
     assert text.count("SECTION TWO") == 1 and text.count("THE CREEDS") == 1
-    assert "The Credo\n\nSECTION TWO\n\nTHE PROFESSION OF THE CHRISTIAN FAITH\n\nI. THE CREEDS\n\nWhoever" in text
+    assert "The Credo\n\nSECTION TWO\n\nTHE PROFESSION OF THE CHRISTIAN FAITH\n\nI. THE CREEDS\n\n§185 Whoever" in text
     match = next(m for m in build.alignment.matches if m.after == 184)
     assert not match.inserted
     assert [match.lines[i].text for i in match.unmatched] == ["The Credo"]
@@ -903,3 +886,187 @@ def test_the_vendored_corrections_all_apply():
 ])
 def test_a_marker_inside_corrected_words_keeps_its_place(find, replace, at, want):
     assert _cu._move_offset(at, 0, find, replace) == want
+
+
+# ---------------------------------------------------------------------------
+# 1.6 (#168): paragraph markers, references, chapters, the 1997 text of §2267
+# ---------------------------------------------------------------------------
+
+import re  # noqa: E402
+
+from ingest.pieces import PART_SUFFIX, unit_reference  # noqa: E402
+
+_MARKER = re.compile(r"(?:^|(?<=\n\n))§(\d+) ")
+
+
+def _current(build):
+    return [p for p in build.document.passages if p.superseded_by_anchor is None]
+
+
+def test_ccc_2267_uses_2018_text(us_build):
+    current = _passage_with(us_build, 2267)
+    assert "Recourse to the death penalty" in current.content
+    assert "practically non-existent" not in current.content
+    [history] = [p for p in us_build.document.passages if p.anchor.endswith("/history-1997")]
+    assert history.anchor == f"{current.anchor}/history-1997"
+    assert history.content.startswith("§2267 The traditional teaching of the Church")
+    assert "practically non-existent" in history.content
+    assert history.searchable is False
+    assert history.superseded_by_anchor == current.anchor
+    assert history.reference == "CCC §2267 (1997 text, in force until 2 August 2018)"
+    assert history.chapter_key == current.chapter_key
+    # It follows the passage holding the 2018 text, and declares no replaced text.
+    passages = us_build.document.passages
+    assert passages.index(history) == passages.index(current) + 1
+    assert "text_replaced" not in history.metadata
+    from registry import history_problems
+    assert history_problems(us_build.document) == []
+
+
+def test_no_part_suffix(us_build):
+    refs = [p.reference for p in us_build.document.passages]
+    assert not any(r.endswith(" (part)") for r in refs)
+    suffixed = [r for r in refs if "(part" in r]
+    assert suffixed and all(PART_SUFFIX.search(r) for r in suffixed)
+
+
+def test_pieces_of_one_paragraph_say_which_part(us_build):
+    pieces = [p for p in us_build.document.passages if p.metadata["ccc_paragraphs"] == [2269]]
+    assert [p.reference for p in pieces] == ["CCC §2269 (part 1 of 2)", "CCC §2269 (part 2 of 2)"]
+
+
+def references_match_markers(passages):
+    """The paragraphs each passage cites, lists and is labelled by are the markers in its
+    text, after the paragraph it continues when it opens inside one (a later piece)."""
+    for p in passages:
+        if p.superseded_by_anchor:
+            continue
+        markers = [int(n) for n in _MARKER.findall(p.content)]
+        continued = []
+        if not markers or markers[0] != p.metadata["ccc_paragraphs"][0]:
+            assert "/from-" in p.anchor, p.anchor
+            continued = [int(p.source_units[0][0])]
+        numbers = continued + markers
+        cited = [n for lo, hi in re.findall(r"§(\d+)(?:–(\d+))?", unit_reference(p.reference))
+                 for n in range(int(lo), int(hi or lo) + 1)]
+        assert cited == numbers == p.metadata["ccc_paragraphs"], p.anchor
+        assert p.unit_label == f"§{numbers[0]}", p.anchor
+
+
+def test_references_match_markers(us_build):
+    references_match_markers(us_build.document.passages)
+
+
+def test_every_numbered_paragraph_opens_with_its_marker(us_build):
+    markers = [int(n) for p in _current(us_build) for n in _MARKER.findall(p.content)]
+    assert markers == [1, 2, 3, 4, 5, 6, 7, 2267, 2268, 2269]
+
+
+def test_footnotes_still_follow_their_words(us_build):
+    # The markers move every offset after them; each note still follows its word.
+    by_n = {note["n"]: note for item in us_build.alignment.items.values()
+            for note in item["footnotes"]}
+    for p in _current(us_build):
+        for note in p.metadata["footnotes"]:
+            item = next(i for i in us_build.alignment.items.values()
+                        if any(n["n"] == note["n"] for n in i["footnotes"]))
+            want = re.findall(r"[^\W_]+", item["text"][:by_n[note["n"]]["at"]])[-1]
+            assert re.findall(r"[^\W_]+", p.content[:note["at"]])[-1] == want
+
+
+def test_every_passage_lists_its_paragraphs(us_build):
+    for p in us_build.document.passages:
+        paras = p.metadata["ccc_paragraphs"]
+        assert paras and all(isinstance(n, int) for n in paras), p.anchor
+
+
+def test_chapter_labels_are_headings(us_build):
+    for p in us_build.document.passages:
+        assert not re.match(r"^CCC §§", p.chapter_label)
+        assert p.chapter_key.startswith(("ccc/part-", "ccc/prologue")), p.chapter_key
+    chapters = [(p.chapter_key, p.chapter_label) for p in us_build.document.passages]
+    assert list(dict.fromkeys(chapters)) == [
+        ("ccc/prologue", "Prologue"),
+        ("ccc/part-3", "Part Three, Life in Christ"),
+        ("ccc/part-3/article-5", "Part Three, Article 5, The Fifth Commandment")]
+
+
+def _toc(*nodes):
+    """A source with only a contents tree: (id, text, children) tuples."""
+    def link(node):
+        return {"id": node[0], "children": [link(c) for c in node[2]]}
+    flat = {}
+
+    def walk(node):
+        flat[node[0]] = {"text": node[1]}
+        for c in node[2]:
+            walk(c)
+    for n in nodes:
+        walk(n)
+    return {"toc_link_tree": [link(n) for n in nodes], "toc_nodes": flat}
+
+
+def test_heading_text_corrections():
+    source = _toc(("toc-8", "PART ONE: THE PROFESSION OF FAITH", [
+        ("toc-45", "SECTION TWO I. THE CREEDS", [
+            ("toc-55", "CHAPTER TWO I BELIEVE IN JESUS CHRIST, THE ONLY SON OF GOD", [
+                ("toc-75", 'Article 7 "FROM THENCE HE WILL COME AGAlN TO JUDGE THE LIVING AND THE DEAD"',
+                 [("toc-76", "I. He Will Come Again in Glory", [])])])])]),
+        ("toc-206", "PART THREE: LIFE IN CHRIST", [
+            ("toc-207", "SECTION ONE MAN'S VOCATION LIFE IN THE SPIRIT", [
+                ("toc-246", "CHAPTER TWO THE HUMAN COMMUNION", [])])]))
+    got = _catechism.chapters(source)
+    assert got["toc-45"] == ("ccc/part-1/section-2",
+                             "Part One, Section Two, The Profession of the Christian Faith")
+    assert got["toc-75"] == ("ccc/part-1/section-2/chapter-2/article-7",
+                             'Part One, Section Two, Chapter Two, Article 7, "From Thence He '
+                             'Will Come Again to Judge the Living and the Dead"')
+    assert got["toc-76"] == got["toc-75"]           # a sub-heading is in its article
+    assert got["toc-207"][1] == "Part Three, Section One, Man's Vocation: Life in the Spirit"
+    assert got["toc-246"][1] == "Part Three, Section One, Chapter Two, The Human Community"
+    assert not any("AGAlN" in label for _, label in got.values())
+
+
+def test_a_heading_under_no_part_is_refused():
+    with pytest.raises(ValueError, match="under no part"):
+        _catechism.chapters(_toc(("toc-1", "I. Something", [])))
+
+
+def test_markers_move_no_cut():
+    # The pieces are cut where they would be without the markers (no piece ID moves).
+    from config import settings
+    from ingest.common import split_display_passage
+    paragraphs = [(n, ("Sentence number %d is here. " % n) * 40) for n in range(1, 6)]
+    bare = "\n\n".join(t.strip() for _, t in paragraphs)
+    clean = "\n\n".join(f"§{n} {t.strip()}" for n, t in paragraphs)
+    held, at = [], 0
+    for n, t in paragraphs:
+        held.append((f"p{n}", f"§{n} {t.strip()}", at))
+        at += len(f"§{n} {t.strip()}") + 2
+    spans = _catechism._cut(clean, held)
+    marked = [clean[lo:hi] for lo, hi in spans]
+    assert [_MARKER.sub("", m) for m in marked] == split_display_passage(bare, settings.MAX_PASSAGE_CHARS)
+    assert len(marked) > 1 and all(m.startswith("§") or not m.startswith("Sentence 1") for m in marked)
+
+
+def test_the_size_threshold_ignores_markers():
+    # A node just under the threshold stays whole although its markers take it over.
+    text = "x" * (_catechism._LARGE_THRESHOLD - 20)
+    node = _make_node(_make_para(text[:1990], ref_ccc=1000), _make_para("Heading"),
+                      _make_para(text[1990:], ref_ccc=1001))
+    assert len(extract_node_text(node)[0]) > _catechism._LARGE_THRESHOLD
+    assert len(chunk_nodes([node], ["toc-9"])) == 1
+
+
+def test_a_numbered_in_brief_paragraph_is_still_flagged():
+    node = _make_node(_make_para("IN BRIEF", ref_ccc=200), _make_para("y" * 600, ref_ccc=201))
+    assert chunk_nodes([node], ["toc-9"])[0][2]["is_in_brief"] is True
+
+
+def test_titles_capitalize_each_phrase():
+    t = _catechism._title
+    assert t('"I BELIEVE" - "WE BELIEVE"') == '"I Believe" - "We Believe"'
+    assert t("MAN: THE IMAGE OF GOD") == "Man: The Image of God"
+    assert t('"HE DESCENDED INTO HELL. ON THE THIRD DAY HE ROSE AGAIN"') == \
+        '"He Descended into Hell. On the Third Day He Rose Again"'
+    assert t("YOU SHALL LOVE YOUR NEIGHBOR AS YOURSELF") == "You Shall Love Your Neighbor as Yourself"
