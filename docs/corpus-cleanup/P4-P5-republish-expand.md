@@ -713,7 +713,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Rule F is current text only in search, superseded versions as labeled linked history.
   - The supersession link is `documents.superseded_by` (2.2a, D5): each older text points to the current text that replaces it.
 - **Changes:**
-  1. `vendor_sources.py`. Add Ubicumque et Semper (2010, motu proprio) to `PAPAL_DOCUMENTS`, and Amoris Laetitia (2016) to `APOSTOLIC_EXHORTATIONS` from its vatican.va English PDF with the text extracted (Decision log "Amoris Laetitia"), and regenerate manifests. They publish into `papal` with genres `motu-proprio` and `apostolic-exhortation`. A New Hope for Lebanon is not added (rule E, revised 29 Oct 2026).
+  1. `vendor_sources.py`. Each new papal entry needs a row in `datapipeline/papal_genres.csv` first (genre, form, evidence; 1.3b), or the vendor run stops. Add Ubicumque et Semper (2010, motu proprio) to `PAPAL_DOCUMENTS`, and Amoris Laetitia (2016) to `APOSTOLIC_EXHORTATIONS` from its vatican.va English PDF with the text extracted (Decision log "Amoris Laetitia"), and regenerate manifests. They publish into `papal` with genres `motu-proprio` and `apostolic-exhortation`. A New Hope for Lebanon is not added (rule E, revised 29 Oct 2026).
   2. UDG.
      - New adapter `datapipeline/ingest/universal_law.py` emitting collection `church-law`.
      - Document "Universi Dominici Gregis (as amended 2013)" is searchable, with anchors by number and section and author "Pope John Paul II" with the amendment note.

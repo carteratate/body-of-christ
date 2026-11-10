@@ -32,11 +32,12 @@ def _paras(toks):
     return [t for t in toks if t.kind == "para"]
 
 
-def _build(body: str, tmp_path, slug="a-letter", title="A Letter"):
+def _build(body: str, tmp_path, slug="a-letter", title="A Letter", **labels):
     (tmp_path / f"{slug}.html").write_text(f'<div class="entry-content">{body}</div>',
                                            encoding="utf-8")
     entry = {"slug": slug, "title": title, "author": "Pius", "year": 1900,
-             "file": f"{slug}.html", "url": "https://example.org/a"}
+             "file": f"{slug}.html", "url": "https://example.org/a",
+             **(labels or {"genre": "encyclical"})}
     return papal_common.build_document(entry, "encyclicals", str(tmp_path))
 
 
@@ -510,3 +511,15 @@ def test_no_card_is_only_a_date(built):
     assert [p.anchor for d in built.values() for p in d.passages
             if len(p.content) < 300 and re.match(r"\[?(?:Given|Dated)\b", p.content)
             and re.search(r"\d{4}|[Pp]ontificate", p.content)] == []
+
+
+def test_genre_and_form_reach_document_metadata(tmp_path):
+    doc = _build(f"<p>1. {LONG}</p>", tmp_path, genre="encyclical", form="brief")
+    assert doc.metadata["genre"] == "encyclical" and doc.metadata["form"] == "brief"
+    assert all("genre" not in (p.metadata or {}) for p in doc.passages)
+    assert "form" not in _build(f"<p>1. {LONG}</p>", tmp_path).metadata
+
+
+def test_a_manifest_without_genre_is_refused(tmp_path):
+    with pytest.raises(ValueError, match="no genre"):
+        _build(f"<p>1. {LONG}</p>", tmp_path, form="bull")
