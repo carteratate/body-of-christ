@@ -91,18 +91,18 @@ async def _live_search_readiness() -> tuple[dict[str, bool], dict[str, str | Non
             logger.warning("search health: database live check failed")
     client = get_qdrant_client()
     if client is not None:
-        async def _check_qdrant() -> str:
+        async def _check_qdrant() -> tuple[str, bool]:
             target = await resolve_read_target(client)
             await client.get_collection(target)
-            return target
+            return target, await searchable_indexed()
 
         try:
-            qdrant["qdrant_target"] = await asyncio.wait_for(_check_qdrant(), timeout=3.0)
-            live["qdrant"] = True
+            target, filtered = await asyncio.wait_for(_check_qdrant(), timeout=3.0)
         except Exception:
             logger.warning("search health: qdrant live check failed")
         else:
-            qdrant["qdrant_searchable_filter"] = await searchable_indexed()
+            qdrant["qdrant_target"], qdrant["qdrant_searchable_filter"] = target, filtered
+            live["qdrant"] = True
     return live, qdrant
 
 
