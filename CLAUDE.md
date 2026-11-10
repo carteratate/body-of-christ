@@ -211,6 +211,11 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   one stays the top-level field; `facts.source_credit` carries the column, except that an
   excerpt-only document's required notice replaces it (2.4a). Apply 0043 right after 0042: 0042 is catalog-only (milliseconds under
   ACCESS EXCLUSIVE), 0043 validates under locks that do not block reads.
+- `documents.form`, `corpus_forms` — a papal document's **form** (0044, Carter 9 Nov 2026):
+  `bull` or `brief`, how the papal chancery issued it, NULL where none is recorded. It sits
+  beside `documents.genre`, which is the document's kind (Ineffabilis Deus: genre
+  `apostolic-constitution`, form `bull`); `bull` left `corpus_genres` in 0044. The values come
+  from `PAPAL_FORMS` in `datapipeline/registry/genres.py`. Nothing writes the column yet.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -219,7 +224,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0043 are committed; `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0044 are committed; `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the

@@ -344,7 +344,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - `test_existing_rows_are_live_and_searchable`: every seeded chunk has `retired_at IS NULL` and `searchable = true`; every document `retired_at IS NULL`.
     - `test_voice_accepts_only_rejected`: `voice` is NULL on every seeded chunk, accepts `rejected` and rejects any other value (C-01, D5).
     - `test_genre_accepts_only_the_d5_vocabulary`: every value in 2.1's `registry/genres.py` `ALL_GENRES` is present and accepted; `apostolic exhortation` and `essay` are rejected.
-    - `test_genre_seed_matches_registry_module`: the migration's `INSERT INTO corpus_genres` list equals `ALL_GENRES`, read from the Python module (a plain file read, so the API test suite needs no datapipeline import).
+    - `test_genre_seed_matches_registry_module`: the migration's `INSERT INTO corpus_genres` list equals `ALL_GENRES`, read from the Python module (a plain file read, so the API test suite needs no datapipeline import). Since 0044 (9 Nov 2026) the list compared is 0042's seed less the genres 0044 deletes: `bull` moved to `corpus_forms`, with `documents.form` beside `documents.genre`.
     - `test_issuer_is_a_slug_and_label_is_free_text`: `pope-leo-xiii` is accepted in `issuer`, `Pope Leo XIII` is rejected there and accepted in `issuer_label`.
     - `test_history_passage_links_and_is_not_searchable`: a chunk with `superseded_by` set to another chunk's ID and `searchable = true` fails the CHECK; with `searchable = false` it passes.
     - `test_tombstone_reason_uses_registry_list`: every 2.1 reason and `rolled-back` are accepted; `condemned_by_name` is rejected; `rolled-back` requires a NULL `removal_key` and every other reason requires one.

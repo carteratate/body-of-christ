@@ -277,6 +277,11 @@ def test_history_passage_shape():
 
 # --------------------------------------------------------------------------- the work model
 
+def test_forms_are_their_own_vocabulary():
+    assert genres.PAPAL_FORMS == ("bull", "brief")
+    assert not set(genres.PAPAL_FORMS) & set(genres.ALL_GENRES)
+
+
 def test_genre_values_are_lowercase_hyphenated_and_unique():
     assert len(genres.ALL_GENRES) == len(set(genres.ALL_GENRES))
     assert all(re.fullmatch(r"[a-z]+(-[a-z]+)*", g) for g in genres.ALL_GENRES)
