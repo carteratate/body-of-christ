@@ -234,6 +234,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-09: both as recommended.
 - **1.2e** [Phase 1, last four councils]. Wyclif's 45 and Hus's 30 articles: one passage per article, or each list packed into passages of the usual size, an article to a paragraph? Recommended answer: packed, as Vienne's Beghard errors were.
   Answered 2026-11-09: packed.
+- **1.2e** [Phase 1, found in 1.2e-4]. Constantinople IV's live anchor `fourth-council-of-constantinople/canon/1` names Tanner's credit line, which retires as debris, and a retired anchor is never reused, so canon 1 cannot take `canon/1`. Name all 27 `fourth-council-of-constantinople/canons/N` (the extract `canons/17/extract`), or keep `canon/N` and give canon 1 another name? Recommended answer: `canons/N` for all 27.
+  Answered 2026-11-09: `canons/N`, as recommended.
 - **1.2e** [Phase 1, last four councils]. Reading Deferrari's PDF. Recommended answer: pypdfium2 (BSD and Apache licences) reads the text layer with character positions and draws the page images; a fresh OCR of every page (RapidOCR, run outside the repository) is a second reading, and each place it disagrees with the text layer is settled on the page image as a tracked fix.
   Answered 2026-11-09: yes, if it is the best way to deal with these problems.
 - **1.2b** [later]. No renewal was found for Schroeder's 1941 *Canons and Decrees of the Council of Trent*. Record the finding and a draft rights row, and keep Trent on Waterworth? Recommended answer: yes; no usable open scan exists yet.
