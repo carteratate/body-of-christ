@@ -19,6 +19,7 @@ Merge order follows the plan's "Phase and PR plan" table.
 7. **2.4a** API payloads carry document facts, tombstones and redirects; the reader, `/sources`, history and bookmarks hide retired rows or mark them.
 8. **2.4b** Web cards, reader, bookmarks and history render the new fields, the source credit on opened passages, tombstones and redirects. Must be live before any tombstone exists.
 9. **2.4d** The rejected-voice role (C-01) reaches the rerankers, the explanation model, the card and the reader. Must be live before the Phase 4 apply.
+9a. **2.4f** Passage text labels (scanned edition, unofficial canon English) and the amended-canon Latin link, carried by the API and shown on opened passages. Must be live before the Phase 4 apply.
 10. **3.3** Non-English passages flagged not searchable in the registry. Takes effect at the Phase 4 apply.
 11. **3.2** Labels, certainty and notes in the registry. Takes effect at the Phase 4 apply.
 12. **3.1** Removals recorded by anchor in the removal registry (D4). Blocked by R1. Applied at 4.1b through 2.2w.
@@ -890,7 +891,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - The no-facts snapshots in `ChunkCard.corpus.test.tsx` were recorded by running the same test against master's `ChunkCard`, so they hold today's output, not this item's. The Fathers citation fix (Opus-2 B-011) changes one thing on today's data: a desktop Fathers card no longer prints its title twice.
   - The reader's 410 and 404-with-redirect become `ReaderRemovedError` and `ReaderMovedError` in `lib/api.ts`. A chapter answered with `redirected_from` naming another document replaces the URL with that document (`movedReaderHref` in `lib/readerNavigation.ts`), so later chapter loads read from it.
   - `/v1/sources` sends no `facts`, so the Library's formatters fall back to today's author and year until it does.
-- **Needs Carter:** Answered 10 Nov 2026: the tombstone wording pattern (Decision log "Removal notice wording (2.4b)"). Where the credit shows is settled by the Decision log. Found by this item, open: the scanned-text label (1.2f), the canon-law text labels and the amended-canon Latin link (1.5a) reach no API field, so they are not shown; a follow-up is proposed (NEEDS-CARTER section B, 2.4b).
+- **Needs Carter:** Answered 10 Nov 2026: the tombstone wording pattern (Decision log "Removal notice wording (2.4b)"). Where the credit shows is settled by the Decision log. Found by this item, open: the scanned-text label (1.2f), the canon-law text labels and the amended-canon Latin link (1.5a) reach no API field, so they are not shown; item 2.4f carries them (Carter, 10 Nov 2026).
 - **Out of scope:** The About page rewrite (5.7). Genre and issuer filter controls (5.1a). Any change to search lifecycle state in `lib/search-experience/` beyond counting moved and removed results as present.
 
 ---
@@ -986,6 +987,30 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Production safety:** API change only; the link stays the same document URL, so a fragment that fails to match opens the page as today. No data change.
 - **Needs Carter:** None.
 - **Out of scope:** Full-reader access for LEV texts (Decision log "LEV texts from vatican.va", 5.2). Links into the papalencyclicals.net texts, which stay on their document URL.
+
+---
+
+### 2.4f. Passage text labels and the amended-canon Latin link
+
+- **Type:** PR (API and web)
+- **Depends on:** 2.4a and 2.4b merged (the facts query and the opened card it extends). 1.5b for the canon-law fields: it writes the metadata this item reads. 1.2f's label is already written (`datapipeline/ocr/label.py`). Must be deployed before 4.1b (Decision log "Passage text labels (2.4f)").
+- **Goal:** A reader can tell when a passage's text came from a scanned edition, when a canon's English is an unofficial translation with the Latin as the official text, and where to read the Latin of an amended canon that has no English. Earlier specs promised these labels to 2.4b, but the API sends no field for them (found by 2.4b, 10 Nov 2026).
+- **Current state:**
+  - 1.2f labels every passage built from scanned text with `chunks.metadata` `{"text_source": "ocr", "scan_id": ...}` (`datapipeline/ocr/label.py`). 1.2f's spec says 2.4b shows "a label such as 'Text from a scanned edition' when the passage is opened".
+  - 1.5b (open, #158) is to write `metadata["text_status"] = "unofficial_english"` and `metadata["official_latin_url"]` on the canons that show the L'Osservatore Romano English. Its label is fixed by the Decision log ("Canon law English and amendments (R2)"): "Unofficial English translation (L'Osservatore Romano). The Latin text is official." It also retires canons with no English (reason `translation-in-preparation`) with the tombstone "Canon N was amended in YEAR; no English translation is available", which promises a link to the Latin on vatican.va.
+  - 2.4a's facts query (`services/api/app/rag/steps/document_facts.py`) reads no passage `metadata`. `Tombstone.read_elsewhere_url` is set for a passage-scope `translation-in-preparation` removal only in the `councils` collection (2.4a As built), so an amended canon's notice would have no link.
+  - None of these passages is live before the Phase 4 apply, so nothing is missing from the site today.
+- **Changes:**
+  - API: the facts query also reads `chunks.metadata->>'text_source'`, `->>'text_status'` and `->>'official_latin_url'`, and the passage fields gain `text_source`, `text_status` and `official_latin_url` (all optional, default null) on `ChunkSource`, `BookmarkSource` and `ReaderPassage`. Only these three keys leave the API; the rest of `metadata` stays internal.
+  - API: `read_elsewhere_url` for a `canon-law` passage-scope `translation-in-preparation` tombstone is that canon's Latin page on vatican.va. 1.5b records it where the retired row can reach it (for example a per-anchor map in the Code's document `metadata`, as `held_text_url` serves councils); the exact place is settled with 1.5b's PR.
+  - Web: `search-stream.ts` decodes the three fields once. The opened card, the bookmark and the reader passage show, in the facts block before the credit: "Text from a scanned edition" when `text_source` is `ocr`; for `unofficial_english`, the Decision log's sentence with "The Latin text is official" linking to `official_latin_url`. A collapsed card shows neither.
+- **Acceptance checks:**
+  - API: a passage with each key gets the field; a passage without them, and a database without the keys, gives today's payload (golden test as 2.4a's); a canon-law `translation-in-preparation` tombstone carries the Latin link; a councils one is unchanged.
+  - Web: each label renders on the opened card, the bookmark and the reader passage, never on a collapsed card; a result without the fields renders exactly as today (the 2.4b snapshots).
+  - `python3 -m pytest tests/`, `npm run lint`, `npm test`, `npm run build`.
+- **Production safety:** Read-only API change and additive optional fields. No live passage carries these keys before the Phase 4 apply, so the site is unchanged until then.
+- **Needs Carter:** Approve the scanned-text label wording ("Text from a scanned edition" is 1.2f's suggestion).
+- **Out of scope:** OCR quality itself (1.2f). Which canons get unofficial English (1.5b, R2).
 
 ---
 
