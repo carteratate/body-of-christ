@@ -136,6 +136,21 @@ describe("result card body (opened)", () => {
     expect(screen.getByText("The new text")).toBeTruthy();
   });
 
+  it("shows and copies an embedded work's citation without its document's title", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    renderCard(result({}, {
+      author: "Lactantius", document_title: "The Divine Institutes",
+      reference: "Epitome of the Divine Institutes, Chapter I",
+      facts: { work_title: "Epitome of the Divine Institutes" },
+    }));
+    expect(screen.getAllByText("Epitome of the Divine Institutes, Chapter I").length).toBeGreaterThan(0);
+    await expand();
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+    expect(writeText.mock.calls[0][0]).toContain("Epitome of the Divine Institutes, Chapter I");
+    expect(writeText.mock.calls[0][0]).not.toContain("The Divine Institutes, Epitome");
+  });
+
   it("copies the attributed author, so a Pseudo-Justin passage is not credited to Justin", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.assign(navigator, { clipboard: { writeText } });
@@ -181,6 +196,24 @@ describe("removed passage", () => {
     expect(screen.queryByRole("button", { name: /bookmark|Save passage/i })).toBeNull();
     expect(screen.queryByRole("button", { name: /relevant/i })).toBeNull();
     expect(screen.queryByRole("link", { name: "Open in Context" })).toBeNull();
+  });
+
+  it("shows a forgery removed on scholarship with no Church act line", async () => {
+    renderCard(result({
+      status: "removed",
+      content: "",
+      tombstone: {
+        entity: "passage", rule: "B", reason_code: "rule-b",
+        public_reason: "Removed because most scholars judge this longer version the work of a heterodox compiler, not Ignatius.",
+        church_act: null,
+        retired_at: "2026-12-01T00:00:00Z",
+        title: "Epistle to the Ephesians", author: "Ignatius of Antioch", reference: null,
+      },
+    }, { document_title: "Epistle to the Ephesians", author: "Ignatius of Antioch", reference: null }));
+    await expand();
+    const card = screen.getByTestId("removed-chunk-card");
+    expect(within(card).getByText(/heterodox compiler/)).toBeTruthy();
+    expect(within(card).queryByText(/Church act:/)).toBeNull();
   });
 
   it("links to where a held text can still be read", async () => {
@@ -235,6 +268,10 @@ describe("citations (Opus-2 B-003, B-011)", () => {
       .toBe("Hortatory Address to the Greeks, Chapter I");
     expect(primaryCitation("church-fathers", "First Apology", "Chapter VI", "Justin Martyr"))
       .toBe("First Apology, Chapter VI");
+    // A work inside the document cites itself, and is not prefixed (1.8c).
+    expect(primaryCitation("church-fathers", "The Divine Institutes",
+      "Epitome of the Divine Institutes, Chapter I", "Lactantius", "Epitome of the Divine Institutes"))
+      .toBe("Epitome of the Divine Institutes, Chapter I");
     expect(primaryCitation("councils", "Second Council of Lyons", "Second Council of Lyons — II", null))
       .toBe("Second Council of Lyons — II");
   });

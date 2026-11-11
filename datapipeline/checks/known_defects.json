@@ -1,8 +1,8 @@
 {
  "attribution.letter_sender:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
-  "fixed_by": "1.8c",
-  "description": "The Epistles of Cyprian.: 16 letters written by others are credited to the collection's author; Epistle XXX (Novatian) is removed by 3.1 (C-02)",
-  "units": ["iv.iv.ii", "iv.iv.lxxiv", "iv.iv.lxxix", "iv.iv.lxxvii", "iv.iv.lxxviii", "iv.iv.xlix", "iv.iv.xlv", "iv.iv.xlvii", "iv.iv.xvi", "iv.iv.xviii", "iv.iv.xx", "iv.iv.xxi", "iv.iv.xxix", "iv.iv.xxv", "iv.iv.xxx", "iv.iv.xxxviii"]
+  "fixed_by": "3.1",
+  "description": "The Epistles of Cyprian: Epistle XXX, which Novatian wrote for the Roman clergy, is credited to no sender; 3.1 removes it under rule A (C-02). 1.8c credits the other 15 letters by others to their senders",
+  "units": ["iv.iv.xxx"]
  },
  "attribution.narrative_of_author_death:church-fathers/841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {
   "fixed_by": "3.2",
@@ -18,11 +18,11 @@
  },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
-  "description": "93.22% covered: whole works holding their text directly in a div dropped (1.8e), and pre-chapter greetings (1.8c)"
+  "description": "92.44% covered: whole works holding their text directly in a div dropped (1.8e)"
  },
  "coverage.church-fathers.third-fourth-century.xml": {
   "fixed_by": "1.8e",
-  "description": "91.57% covered: whole works holding their text directly in a div dropped (1.8e), pre-chapter greetings (1.8c), and <verse> blocks (1.10b)"
+  "description": "93.01% covered: whole works holding their text directly in a div dropped (1.8e), and <verse> blocks (1.10b)"
  },
  "coverage.medieval.proslogium-monologium-and-cur-deus-homo.xml": {
   "fixed_by": "5.6b",
@@ -87,25 +87,10 @@
   "description": "Fragments: 8 labels title-case a Roman numeral (C-22)",
   "units": ["vii.ii.ii", "vii.ii.iii", "vii.ii.iv", "vii.ii.ix", "vii.ii.vi", "vii.ii.vi/from-p2-2", "vii.ii.vii", "vii.ii.viii"]
  },
- "labels.unique_reference:church-fathers/44fd52c3-fdef-518e-a463-a3273f39764c": {
-  "fixed_by": "1.8c",
-  "description": "Dubious or Spurious Writings: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
-  "units": ["Dubious or Spurious Writings, Elucidations", "Dubious or Spurious Writings, Section I", "Dubious or Spurious Writings, Section II", "Dubious or Spurious Writings, Section III", "Dubious or Spurious Writings, Section IV", "Dubious or Spurious Writings, Section V", "Dubious or Spurious Writings, Section VI", "Dubious or Spurious Writings, Section VII"]
- },
- "labels.unique_reference:church-fathers/506ebe31-239c-509c-ba5e-b6c822d002df": {
-  "fixed_by": "1.8c",
-  "description": "The Extant Works and Fragments of Hippolytus: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
-  "units": ["The Extant Works and Fragments of Hippolytus, Section I", "The Extant Works and Fragments of Hippolytus, Section I (part 1 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 2 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 3 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 4 of 5)", "The Extant Works and Fragments of Hippolytus, Section I (part 5 of 5)", "The Extant Works and Fragments of Hippolytus, Section II", "The Extant Works and Fragments of Hippolytus, Section III", "The Extant Works and Fragments of Hippolytus, Section IV", "The Extant Works and Fragments of Hippolytus, Section IX", "The Extant Works and Fragments of Hippolytus, Section V", "The Extant Works and Fragments of Hippolytus, Section VI", "The Extant Works and Fragments of Hippolytus, Section VII", "The Extant Works and Fragments of Hippolytus, Section VIII", "The Extant Works and Fragments of Hippolytus, Section X", "The Extant Works and Fragments of Hippolytus, Section XI"]
- },
  "labels.unique_reference:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
   "fixed_by": "1.8b",
   "description": "Doctrinal Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
   "units": ["Doctrinal Treatises of St. Augustin, Chapter 1", "Doctrinal Treatises of St. Augustin, Chapter 12", "Doctrinal Treatises of St. Augustin, Chapter 24", "Doctrinal Treatises of St. Augustin, Chapter 3", "Doctrinal Treatises of St. Augustin, Chapter 5", "Doctrinal Treatises of St. Augustin, Chapter 6", "Doctrinal Treatises of St. Augustin, Chapter 7", "Doctrinal Treatises of St. Augustin, Chapter 8 (part 1 of 2)", "Doctrinal Treatises of St. Augustin, Chapter 8 (part 2 of 2)", "Doctrinal Treatises of St. Augustin, Section 1", "Doctrinal Treatises of St. Augustin, Section 10 (part 1 of 2)", "Doctrinal Treatises of St. Augustin, Section 10 (part 2 of 2)", "Doctrinal Treatises of St. Augustin, Section 11", "Doctrinal Treatises of St. Augustin, Section 12", "Doctrinal Treatises of St. Augustin, Section 14", "Doctrinal Treatises of St. Augustin, Section 15", "Doctrinal Treatises of St. Augustin, Section 16", "Doctrinal Treatises of St. Augustin, Section 17", "Doctrinal Treatises of St. Augustin, Section 2", "Doctrinal Treatises of St. Augustin, Section 3", "Doctrinal Treatises of St. Augustin, Section 4", "Doctrinal Treatises of St. Augustin, Section 5", "Doctrinal Treatises of St. Augustin, Section 6", "Doctrinal Treatises of St. Augustin, Section 7", "Doctrinal Treatises of St. Augustin, Section 8", "Doctrinal Treatises of St. Augustin, Section 9"]
- },
- "labels.unique_reference:church-fathers/c1bcdc39-8e8a-5806-9dcc-2fc05482baad": {
-  "fixed_by": "1.8c",
-  "description": "Epistle to the Ephesians: Shorter and Longer Versions: two chapters share a label (works or discourses restart their numbering, or two chapters print one number); left to 1.8c's labels and works (Carter, 2 Nov 2026)",
-  "units": ["Epistle to the Ephesians: Shorter and Longer Versions, Chapter XX"]
  },
  "labels.unique_reference:church-fathers/f39c025e-78a6-5737-a94f-7896c84fc857": {
   "fixed_by": "1.8b",
@@ -152,74 +137,6 @@
   "fixed_by": "1.7",
   "description": "Prologue of the First Part of the Second Part (no div4) is dropped"
  },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#iv.ii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Philippians\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#iv.iv": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"The Martyrdom of Polycarp\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.ii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Ephesians: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.iii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Magnesians: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.iv": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Trallians: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.v": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Romans: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.vi": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Philadelphians: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.vii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Smyrnæans: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.viii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to Polycarp: Shorter and Longer Versions\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.x": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to Polycarp: Syriac Version\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xi": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Ephesians: Syriac Version\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Romans: Syriac Version\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xiv": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Tarsians\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xix": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to Mary at Neapolis\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xv": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Antiochians\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xvi": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to Hero, a Deacon of Antioch\" sits directly in the work div and is skipped"
- },
- "sequence.thml_chapters.missing:church-fathers/apostolic fathers.xml#v.xvii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"Epistle to the Philippians\" sits directly in the work div and is skipped"
- },
  "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.V.i": {
   "fixed_by": "1.8b",
   "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
@@ -239,10 +156,6 @@
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#iii.iii": {
   "fixed_by": "1.8e",
   "description": "whole work \"Fragments\" holds its text directly in its div and is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/second-century.xml#v.ii": {
-  "fixed_by": "1.8c",
-  "description": "pre-chapter greeting of \"A Plea for the Christians\" sits directly in the work div and is skipped"
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#vi.v": {
   "fixed_by": "1.8e",
@@ -327,10 +240,6 @@
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#iv.i": {
   "fixed_by": "1.8e",
   "description": "whole work \"On Easter\" holds its text directly in its div and is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#v.ii": {
-  "fixed_by": "1.8c",
-  "description": "\"The Extant Writings of Asterius Urbanus\": the work's text is not parsed (1.8e item 9)"
  },
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#vi.i": {
   "fixed_by": "1.8e",
@@ -420,20 +329,10 @@
   "fixed_by": "1.9",
   "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
  },
- "structure.embedded_work_labelled:church-fathers/9e03c96d-8295-5e5e-a4d3-3570ddcf0415": {
-  "fixed_by": "1.8c",
-  "description": "The Divine Institutes: a run of chapters without a book or work label after booked chapters (C-15)",
-  "units": ["iii.ii.viii.ii"]
- },
  "structure.embedded_work_labelled:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
   "fixed_by": "1.8b",
   "description": "Doctrinal Treatises of St. Augustin: a run of chapters without a book or work label after booked chapters (C-15)",
   "units": ["iv.ii.iii", "iv.iii.ii", "iv.iv.ii"]
- },
- "structure.embedded_work_labelled:church-fathers/e73bb326-8ba6-5334-b79e-3a15c9892581": {
-  "fixed_by": "1.8c",
-  "description": "On the Apparel of Women.: a run of chapters without a book or work label after booked chapters (C-15)",
-  "units": ["iii.iii.ii.i"]
  },
  "structure.summa.one-disputation-per-article:summa": {
   "fixed_by": "1.7",

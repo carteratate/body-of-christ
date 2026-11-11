@@ -86,4 +86,8 @@ def test_thml_references_carry_no_author(built):
         for d in built[c]:
             assert [p.reference for p in d.passages if " — " in p.reference
                     and p.reference.startswith(f"{d.author} — ")] == [], d.title
-            assert all(p.reference.startswith(f"{d.title}, ") for p in d.passages), d.title
+            # A work inside another may cite itself (the Epitome, 1.8c).
+            titles = {w.work_key: w.title for w in d.works}
+            assert all(p.reference.startswith(f"{d.title}, ")
+                       or p.reference.startswith(f"{titles.get(p.work_key)}, ")
+                       for p in d.passages), d.title

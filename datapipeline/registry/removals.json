@@ -1891,7 +1891,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 49
+   "count": 50
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -2743,7 +2743,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 63
+   "count": 55
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -2767,6 +2767,822 @@
   "judgment": null,
   "added_by": "1.8a",
   "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-1915",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.i",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d70981bb74576c4ae86f3314bb386236bed17f59",
+   "excerpt": "Balsamon. The present canons treat of those who have in the persecution denied the faith, and are doing penance. And th…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1916",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.i",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "fedf3c407360185b4b1f3eee98337fa6b93f88a3",
+   "excerpt": "Zonaras. Amongst those who in these turbulent times denied the faith, the holy Peter makes a distinction, and says, tha…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1917",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's heading over the canons",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6237ce30031309165c018ac065cc6025b64b2140",
+   "excerpt": "The Canons of the Blessed Peter, Archbishop of Alexandria, as They are Given in His Sermon on Penitence."
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1918",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.ii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "743f6a8f14467258c185840745608bba1b0e6a5d",
+   "excerpt": "Balsamon. This canon enacts that those who have only been evil entreated in prison, and who without torment have lapsed…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1919",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.ii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "13dfefa4b8ef4feedbd54565e9204b5fbeb151c8",
+   "excerpt": "Zonaras. In the second order, he places those who have only been thrown into prison, and evil entreated in the dungeon,…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1920",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.iii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "2eec1a366f2ad4e5a7079a44afcd231414a3731f",
+   "excerpt": "Balsamon. Those who from fear only and timidity deserted the faith, and then had an eye towards repentance, the canon p…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1921",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.iii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "26a69a62c462288c900e3bc3c4eaf2e286cb7c85",
+   "excerpt": "Zonaras. But those, he says, who having suffered no hardness, have deserted from fear only and timidity, in that they o…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1922",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.iv",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "65c953dba2443031a1b25bb9a23e00c622ea75f2",
+   "excerpt": "Balsamon. What has been previously said of the lapsed, has been said of the repentant. But against those who are unrepe…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1923",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.iv",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9eb234d1a04f8f4139558417fee07f69e23a1bf7",
+   "excerpt": "Zonaras. What has been previously said of the lapsed, has been said of the repentant. Against those whom, from desperat…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1932",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.ix/from-p2-2",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9634530d74c456950ff4d27b606b517dc9f40b77",
+   "excerpt": "Balsamon. Those who have but just arisen from sleep, and especially if they were weighed down with a heavy and profound…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1933",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.ix/from-p2-2",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "28c0c2975954c6d611fb831d717e807c993823d1",
+   "excerpt": "Zonaras. Those who have recently arisen from sleep, especially if they were oppressed with a heavy sleep, have no stead…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1924",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.v",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e0470e496f5de1b174aca2c8f8818963a7996903",
+   "excerpt": "Balsamon. But if any have pretended to approach the altars, or to write their denial of the faith, and have not done th…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1925",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.v",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d9419874cae18b37fe4b26a3567c899da2cc71ee",
+   "excerpt": "Zonaras. But if any have pretended to approach the altars, or to write their denial of the faith, but have not nakedly…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1926",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.vi",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bf44cb1df29d1f53def2410d2a23a402e6bb4339",
+   "excerpt": "Balsamon. The slaves who under the commands and threatenings of their masters offered sacrifice, this father punishes w…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1927",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.vi",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "09a24f3a3d6a3a9a1a883967c56666beb96e064a",
+   "excerpt": "Zonaras. Some have sent their own Christian servants, even against their will, to offer sacrifice in their stead. These…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1928",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.vii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "46d53d2b9098035a0fbb256f77a40d7521368545",
+   "excerpt": "Balsamon. But upon the freemen, or the masters of the servant compelled to sacrifice, he enjoins a punishment of three…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1929",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.vii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "946b3eaf1db6145efb3f3cbf654c5ca36af2457c",
+   "excerpt": "Zonaras. But upon the freemen, that is, the masters of the servants who were compelled to sacrifice, he enjoins a penal…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1930",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.viii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "746b117cbe6aa4486cd92b92d73fc026cbd19127",
+   "excerpt": "Balsamon. Some had had information laid against them before the tyrant, and had been delivered up, or themselves had of…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1931",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.viii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a9335b44cffe684a06ad240fbe63571c4676082f",
+   "excerpt": "Zonaras. But, says he, if any have had information laid against them before the tyrants, and have been delivered up, or…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1934",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.x",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c308b32b4b3a474d3d9200e89b4ca804544cf975",
+   "excerpt": "Balsamon. The father having spoken of those who of their own accord went over to the contest of martyrdom, now also spe…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1935",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.x",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ee2411a1785bca54b6d72b63534478137c353330",
+   "excerpt": "Zonaras. The father having spoken of those who have of their own accord exposed themselves to the contest of martyrdom,…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1936",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.x",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "3f03b51aec5e6191e5bc17589cf9d5fffd13682d",
+   "excerpt": "Moreover, let those apply their minds to what is in this place brought forward by this great father and holy martyr, wh…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1937",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xi",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "4254ea564659253ae740f5d436dcbb2c016045e8",
+   "excerpt": "Balsamon. The saint having said before that those who of their own accord entered upon the contest and lapsed, and did…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1938",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xi",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bf46961a033c93de3c32351e0b79e97acdd2fbb3",
+   "excerpt": "Zonaras. The meaning of the present canon is as follows:—Those, he says, who set in the fervour of the persecution, tha…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1939",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "164cf217ba8dcee3bee9cd25d65bbb3675264a68",
+   "excerpt": "Balsamon. After that the saint had finished his discourse concerning those who of their own accord had offered themselv…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1940",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8fce70a89496cb5e4514339feed7a751d4f22216",
+   "excerpt": "Zonaras. But those, he says, are not to be reprehended who have paid money down, and thus escaped, and maintained their…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1941",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xiii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "12fe4fc3692c5990b00e568b5877525bd4a64417",
+   "excerpt": "Balsamon. But if any, says he, have left their good and gone away, lest they should be detailed and brought into peril,…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1942",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xiii",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "239b581f21a09b192c594db28162f23edf999bc8",
+   "excerpt": "Zonaras. But if any, says he, have left their possessions, and have gone away, lest being detained they should be endan…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1913",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xiii/from-p13",
+  "passage_id": "f603b9dd-7a56-5672-a88c-40e9f38c6ae6",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1943",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xiv",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cbf2066ccdffa5e9bd9aea0f4d4e6eb12e00176b",
+   "excerpt": "Balsamon. Those who by the violence of the tyrant seemed to eat meat that had been offered to idols, or to drink wine f…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1944",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xiv",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ab7255c1cfcadec153558713389f35815d7b1c9a",
+   "excerpt": "Zonaras. Those who chastised the blessed martyrs, after many torments, in the case of some violently poured into their…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1945",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xv",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "878ba0cf9abad6d17eabb599b1077cd58212203f",
+   "excerpt": "Balsamon. Conformably to the sixty-fourth Apostolical canon, which decrees that we are not to fast on the Sabbath, with…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1946",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "ix.iv.xv",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "dae040cc35bb972d21d693d7b18af74a39cd5371",
+   "excerpt": "Zonaras. Always, says he, are the fourth and sixth days of every week to be kept as fasts; nor will any one find fault…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1902",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-i/p2",
+  "passage_id": "c4fc377e-7762-5485-a6cf-1d250bb39b0c",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1903",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-ix/p2",
+  "passage_id": "a6ccb9c0-1499-5f9d-b572-6c7cebb8c0ee",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1904",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-v/p2",
+  "passage_id": "028afd3b-8378-5343-90ef-1c7689acecf2",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1905",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-viii/p2",
+  "passage_id": "5be55dc9-5af1-5732-8159-95df98fb27ac",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1906",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-x/p2",
+  "passage_id": "7af260b3-3a90-57f7-9185-0ad1ea5768cb",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1907",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-x/p3",
+  "passage_id": "4c154c9d-8164-58b9-82e0-27ecdcdd0dba",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1908",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-x/p4",
+  "passage_id": "a0a2b3da-e5ae-53d8-901e-e795758b4169",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1909",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-x/p5",
+  "passage_id": "9789b468-630f-548f-9a7d-9c3dd193260e",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1910",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-xi/p2",
+  "passage_id": "169264d8-5a75-55a6-b26b-4dc97e4d15e8",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1911",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-xi/p3",
+  "passage_id": "34614d55-cb41-5efd-b5b9-22987d77a3b0",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1912",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-xiii/p2",
+  "passage_id": "ad22e4e3-ed5a-59a8-be15-9f11455386fb",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1914",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "150366ad-2c5f-52a4-80ee-2c1a3a3bf55a",
+  "anchor": "the-canonical-epistle-with-the-commentaries-of-theodore-balsamon-and-john-zonaras/canon-xiv/p2",
+  "passage_id": "529553f6-bccf-55a7-8da7-0568e5be868b",
+  "reason": "other-author",
+  "detail": "Commentary by Theodore Balsamon and John Zonaras, 12th-century Byzantine canonists, printed by the editor",
+  "tombstone": "This passage was a later commentary by other writers, not Peter's text.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0015",
@@ -4061,7 +4877,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 79
+   "count": 80
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -4598,7 +5414,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 30
+   "count": 31
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -4617,7 +5433,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 57
+   "count": 58
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -5263,6 +6079,25 @@
   "closed_on": "2026-11-10"
  },
  {
+  "id": "rm-1947",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "6dea18c5-8901-5df5-9dec-b1b662064776",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 31
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
   "id": "rm-1377",
   "scope": "passage",
   "collection": "church-fathers",
@@ -5758,11 +6593,182 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 67
+   "count": 38
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1894",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.i/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "93a5f82e2d1496a8dfecbee2b25440430a5dcc1d",
+   "excerpt": "Having obtained good proof that thy mind is fixed in God as upon an immoveable rock, I loudly glorify [His name] that I…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1895",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.ii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bda50fb2b0534dc28d76b98f3c7c20e9d9ee9fad",
+   "excerpt": "If thou lovest the good disciples, no thanks are due to thee on that account; but rather seek by meekness to subdue the…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1896",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.iii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "afd7e7443e1c6f9f7992a8d38a449ff0e2ea7aef",
+   "excerpt": "Let not those who seem worthy of credit, but teach strange doctrines, fill thee with apprehension. Stand firm, as does…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1897",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.iv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e45ef15e24435b635f2f8c2199039448486eaf60",
+   "excerpt": "Let not the widows be neglected. Be thou, after the Lord, their protector and friend. Let nothing be done without thy c…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1898",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.v/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0dffc4dc3f1d9ee77ea4e2569f2b35f70b8d6b0e",
+   "excerpt": "Flee evil arts; but all the more discourse in public regarding them. Speak to my sisters, that they love the Lord, and…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1899",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.vi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6e1cf8582fbb82e9ee6c3f59d79ae4c4bd028899",
+   "excerpt": "Give ye heed to the bishop, that God also may give heed to you. My soul be for theirs that are submissive to the bishop…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1900",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.vii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "094fbbb3a819a44bf6f065129e910d09f3bada28",
+   "excerpt": "Seeing that the Church which is at Antioch in Syria is, as report has informed me, at peace, through your prayers, I al…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1901",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii.viii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "4884219bd17ee81e51cc8c672bb81d43d53c10d3",
+   "excerpt": "Inasmuch, therefore, as I have not been able to write to all Churches, because I must suddenly sail from Troas to Neapo…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1893",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "anchor": "v.viii/salutation",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8d7bb00008a949593623bc4520ee6ecb3ce4f3e8",
+   "excerpt": "Ignatius, bishop of Antioch, and a witness for Jesus Christ, to Polycarp, Bishop of the Church of the Smyrnæans, or rat…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0071",
@@ -5977,11 +6983,201 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 58
+   "count": 35
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1858",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.i/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "291359fab335f8f8703bc2413df83af3372497d7",
+   "excerpt": "Through prayer to God I have obtained the privilege of seeing your most worthy faces, even as I earnestly begged might…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1859",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.ii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "016affcf34dfc529c445c612ce1afe3ebb63d86e",
+   "excerpt": "For it is not my desire that ye should please men, but God, even as also ye do please Him. For neither shall I ever her…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1860",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.iii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c9eb36f587d5a56de6009e82a7899ab6cef8fd67",
+   "excerpt": "Ye have never envied any one; ye have taught others. Now I desire that those things may be confirmed [by your conduct],…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1861",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.iv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "3e95e6a3b9e424ee53b5420bec609afcbdd834e3",
+   "excerpt": "I write to all the Churches, and impress on them all, that I shall willingly die for God, unless ye hinder me. I beseec…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1866",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.ix/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ff131d09ff37491bbba44bdd48535a3753814268",
+   "excerpt": "Remember in your prayers the Church which is in Syria, which, instead of me, has now for its shepherd the Lord, who say…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1862",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.v/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "45abd99089d6d78a0d4bb5fc545d5a291639fa24",
+   "excerpt": "From Syria even unto Rome I fight with beasts, both by land and sea, both by night and day, being bound to ten leopards…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1863",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.vi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c721a36885581e043552fec93b9117ca14ccb7c9",
+   "excerpt": "All the ends of the world, and all the kingdoms of this earth, shall profit me nothing. It is better for me to die for…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1864",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.vii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "20f53b7fcee21e50a0d79ae0bfd5d695221d4b9f",
+   "excerpt": "The prince of this world would fain carry me away, and corrupt my disposition towards God. Let none of you, therefore,…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1865",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v.viii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5159705fefda19f286339f3101b03cafebedd9a2",
+   "excerpt": "I no longer wish to live after the manner of men, and my desire shall be fulfilled if ye consent. “I am crucified with…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1857",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "anchor": "v.v/salutation",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "fa6e58b2424919b333f1dffb74107136b10d279c",
+   "excerpt": "Ignatius, who is also called Theophorus, to the Church which has obtained mercy, through the majesty of the Most High G…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0077",
@@ -10753,11 +11949,315 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 96
+   "count": 27
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1828",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.i/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8349f312a758723dfa53f54546c7b64f8530e132",
+   "excerpt": "Having been informed of your godly love, so well-ordered, I rejoiced greatly, and determined to commune with you in the…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1829",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.ii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6bc7a420c3a5c0a7b2c6e0e44cd1541bc1a7ac67",
+   "excerpt": "Since, then, I have had the privilege of seeing you, through Damas your most worthy bishop, and through your worthy pre…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1830",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.iii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "37a5f4e7a28ade6bf24afa4e8c4400ce446d362a",
+   "excerpt": "Now it becomes you also not to despise the age of your bishop, but to yield him all reverence, according to the will of…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1831",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.iv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "779e464f3102631cbbab6f7369ee6d0b66a7a1dc",
+   "excerpt": "It is fitting, then, not only to be called Christians, but to be so in reality. For it is not the being called so, but…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1836",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.ix/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d7176b3e7bea6778c7f51e570b9d3b144b6e7e53",
+   "excerpt": "If, then, those who were conversant with the ancient Scriptures came to newness of hope, expecting the coming of Christ…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1832",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.v/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7316a13c249d309a1c72d4c98fa3a86ce8463685",
+   "excerpt": "Seeing, then, all things have an end, and there is set before us life upon our observance [of God’s precepts], but deat…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1833",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.vi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "af9264a97bdcf3bde9ae768b5a020951bf8df01e",
+   "excerpt": "Since therefore I have, in the persons before mentioned, beheld the whole multitude of you in faith and love, I exhort…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1834",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.vii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "09008ecf28796fc22b65e057f49f8622298b6512",
+   "excerpt": "As therefore the Lord does nothing without the Father, for says He, “I can of mine own self do nothing,” so do ye, neit…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1835",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.viii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "095fb62cc5df6efe99f27aa5c66db1401ccc378a",
+   "excerpt": "Be not deceived with strange doctrines, “nor give heed to fables and endless genealogies,” and things in which the Jews…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1837",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.x/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "52a800c277f3645b8d3487a595b92fa31f7720a7",
+   "excerpt": "Let us not, therefore, be insensible to His kindness. For were He to reward us according to our works, we should cease…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1838",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.xi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a12bf4b2d52876eaaf600ea53e05fc659f3a422a",
+   "excerpt": "These things [I address to you], my beloved, not that I know any of you to be in such a state; but, as less than any of…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1839",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.xii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "791bac6f29bed75e6ae7ba50a33fa68e17834ce3",
+   "excerpt": "May I enjoy you in all respects, if indeed I be worthy! For though I am bound, I am not worthy to be compared to one of…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1840",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.xiii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "3a1cc9641342306c9f4def89c46a3d9bab0fd3e6",
+   "excerpt": "Study, therefore, to be established in the doctrines of the Lord and the apostles, that so all things, whatsoever ye do…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1841",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.xiv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "070725d5de468616b03321f12ac518b523100419",
+   "excerpt": "Knowing as I do that ye are full of all good, I have but briefly exhorted you in the love of Jesus Christ. Be mindful o…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1842",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii.xv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d7757351e1f3d66693daced7395ba0f728f07cb6",
+   "excerpt": "The Ephesians from Smyrna (whence I also write to you), who are here for the glory of God, as ye also are, who have in…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1827",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "anchor": "v.iii/salutation",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b1477d0b007c547c98b14175b0f911ff78f72c8f",
+   "excerpt": "Ignatius, who is also called Theophorus, to the [Church] blessed in the grace of God the Father, in Jesus Christ our Sa…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0091",
@@ -10772,11 +12272,429 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 142
+   "count": 53
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1806",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.i/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d395c62b477321e25f4d12d197c73506b0c5c196",
+   "excerpt": "I have become acquainted with your greatly-desired name in God, which ye have acquired by the habit of righteousness, a…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1807",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.ii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8ec3c721046fb2fb479b9204fa08cbbf7d43a68c",
+   "excerpt": "As to our fellow-servant Burrhus, your deacon in regard to God and blessed in all things, I pray that he may continue b…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1808",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.iii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "745b4e151f0b85e057158453d099f1482a309b8f",
+   "excerpt": "I do not issue orders to you, as if I were some great person. For though I am bound for His name, I am not yet perfect…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1809",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.iv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "53145374f67d371b3646a65e712d55564387797f",
+   "excerpt": "Wherefore it is fitting that ye also should run together in accordance with the will of the bishop who by God’s appoint…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1814",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.ix/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9da77a57af2e095ec0aebb201838056a19300d32",
+   "excerpt": "Nevertheless, I have heard of some who have passed in among you, holding the wicked doctrine of the strange and evil sp…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1810",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.v/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0cb65f5d667bde51c3c9341daa03adb9631e03f7",
+   "excerpt": "For if I, in this brief space of time, have enjoyed such fellowship with your bishop —I mean not of a mere human, but o…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1811",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.vi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "97af16b0af9fc15e7e86662d3246e5aac6cce396",
+   "excerpt": "The more, therefore, you see the bishop silent, the more do you reverence him. For we ought to receive every one whom t…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1812",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.vii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7daa5fc429967879d24ee6083d428c311911753e",
+   "excerpt": "But some most worthless persons are in the habit of carrying about the name [of Jesus Christ] in wicked guile, while ye…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1813",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.viii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d4814c57ee8aa90c52e8dcbd02deb4a3f6a87c65",
+   "excerpt": "Let not then any one deceive you, as indeed ye are not deceived; for ye are wholly devoted to God. For when there is no…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1815",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.x/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9543618358e11fafaf271fc5507d522d35108757",
+   "excerpt": "And pray ye without ceasing in behalf of other men; for there is hope of the repentance, that they may attain to God. F…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1816",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ca2872d04cc922b7e31f0d0d78f99d752b22a284",
+   "excerpt": "The last times are come upon us. Let us therefore be of a reverent spirit, and fear the long-suffering of God, lest we…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1817",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e006ac49d09107d71f0be20ff14c545fa28c9a59",
+   "excerpt": "I know both who I am, and to whom I write. I am the very insignificant Ignatius, who have my lot with those who are exp…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1818",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xiii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cf1e58a8740fb3781598ba9f77bc8d856af5dfc2",
+   "excerpt": "Take heed, then, often to come together to give thanks to God, and show forth His praise. For when ye come frequently t…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1819",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xiv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "14784453f26b8f1568761b07ad6934ff6cca2f0c",
+   "excerpt": "Wherefore none of the devices of the devil shall be hidden from you, if, like Paul, ye perfectly possess that faith and…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1824",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xix/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "06d30c814160b82353e9faa2e0b6dccdad158838",
+   "excerpt": "Now the virginity of Mary was hidden from the prince of this world, as was also her offspring, and the death of the Lor…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1820",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6fdefad49942b138c882099157f3252f46e9e7cd",
+   "excerpt": "It is better for a man to be silent and be [a Christian], than to talk and not to be one. “The kingdom of God is not in…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1821",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xvi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "edf8b5e7d0dcf2671ed6a376191cb752549aea40",
+   "excerpt": "Do not err, my brethren. Those that corrupt families shall not inherit the kingdom of God. And if those that corrupt me…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1822",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xvii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c41990bfb1e97e602d7844c1b04cdae742bd01da",
+   "excerpt": "For this end did the Lord suffer the ointment to be poured upon His head, that His Church might breathe forth immortali…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1823",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xviii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e808e71f16b1bdb9939bafe8eefc9c3eac2b6d5a",
+   "excerpt": "The cross of Christ is indeed a stumbling-block to those that do not believe, but to the believing it is salvation and…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1825",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xx/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cf8decd407811c467db4e73ab25a96476afd3b96",
+   "excerpt": "Stand fast, brethren, in the faith of Jesus Christ, and in His love, in His passion, and in His resurrection. Do ye all…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1826",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii.xxii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0bc03d0baeccc0b8e6302f60342d7736f683be37",
+   "excerpt": "My soul be for yours and theirs whom, for the honour of God, ye have sent to Smyrna; whence also I write to you, giving…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1805",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "anchor": "v.ii/salutation",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5714f5e2f5dfadff8463ace66df8c626fbbacbcb",
+   "excerpt": "Ignatius, who is also called Theophorus, to the Church which is at Ephesus, in Asia, deservedly most happy, being bless…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0092",
@@ -10845,7 +12763,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 8
+   "count": 9
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -12461,7 +14379,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 59
+   "count": 61
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -12515,11 +14433,277 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 88
+   "count": 45
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1880",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.i/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d8b654749db2316ab9a469d5627b40e2ea290c1f",
+   "excerpt": "I Glorify the God and Father of our Lord Jesus Christ, who by Him has given you such wisdom. For I have observed that y…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1881",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.ii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e86dbd906162a23c15827dcd60673680c906f911",
+   "excerpt": "Now, He suffered all these things for us; and He suffered them really, and not in appearance only, even as also He trul…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1882",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.iii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "3806c8779cba61ec135e708e03e78e2b39513be3",
+   "excerpt": "And I know that He was possessed of a body not only in His being born and crucified, but I also know that He was so aft…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1883",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.iv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b4bfbf54cc46111f487a2d07fba0b8e3f0084b31",
+   "excerpt": "I give you these instructions, beloved, assured that ye also hold the same opinions [as I do]. But I guard you beforeha…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1888",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.ix/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c770c5c8f7f4e11b9e92a45b228912d5164f4af5",
+   "excerpt": "Moreover, it is in accordance with reason that we should return to soberness [of conduct], and, while yet we have oppor…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1884",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.v/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "003af6f129c4dc730f7a563ed33403f37312efe0",
+   "excerpt": "Some have ignorantly denied Him, and advocate falsehood rather than the truth. These persons neither have the prophecie…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1885",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.vi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "4afe2abf49e93af97a627e382b993fc7ab746f04",
+   "excerpt": "Let no man deceive himself. Unless he believes that Christ Jesus has lived in the flesh, and shall confess His cross an…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1886",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.vii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d9515be9fbbd867129a3fed1286b3c7dee49d07d",
+   "excerpt": "They are ashamed of the cross; they mock at the passion; they make a jest of the resurrection. They are the offspring o…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1887",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.viii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b08059f897df27696f7e7249a361785866caac60",
+   "excerpt": "See that ye all follow the bishop, even as Christ Jesus does the Father, and the presbytery as ye would the apostles. D…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1889",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.x/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "feb723f41eac261bf9388d9c3ce209aa27ac99ab",
+   "excerpt": "Ye have done well in receiving Philo, and Gaius, and Agathopus, who, being the servants of Christ, have followed me for…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1890",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.xi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "725a7e21d2994d8fa5f04201fd1ab90fdeb02624",
+   "excerpt": "Your prayers have reached to the Church of Antioch, and it is at peace. Coming from that place bound, I salute all; I w…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1891",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.xii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9bc896174d3ebcd89dc1eea9d87e80f44e5b4653",
+   "excerpt": "The love of your brethren at Troas salutes you; whence also I write to you by Burgus, whom ye sent with me, together wi…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1892",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii.xiii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a572443cdab483d609d4757acbbf5667b62546c6",
+   "excerpt": "I salute the families of my brethren, with their wives and children, and those that are ever virgins, and the widows. B…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1879",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "anchor": "v.vii/salutation",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "db5c733b2e0f455b1eaf82dcd77ecea50c9459d4",
+   "excerpt": "Ignatius, who is also called Theophorus, to the Church of God the most high Father, and His beloved Son Jesus Christ, w…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0123",
@@ -12534,11 +14718,239 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 89
+   "count": 29
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1868",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.i/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e0c4cf9202c524dadb7b819eb41c752c84ec0ffb",
+   "excerpt": "Having beheld your bishop, I know that he was not selected to undertake the ministry which pertains to the common [weal…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1869",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.ii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1a29477eb5ea5c9a3bb4d59d4ba6a39988662c3a",
+   "excerpt": "Wherefore, as children of light and truth, avoid the dividing of your unity, and the wicked doctrine of the heretics, f…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1870",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.iii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "68e45b477997a1dba00fabad2003f60164c312a9",
+   "excerpt": "Keep yourselves, then, from those evil plants which Jesus Christ does not tend, but that wild beast, the destroyer of m…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1871",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.iv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "4cef3b2e5faa6f2e6a2178d7e457e06a5d916a5d",
+   "excerpt": "I have confidence of you in the Lord, that ye will be of no other mind. Wherefore I write boldly to your love, which is…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1876",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.ix/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f154f3c4588a042e45f7619f120bdbccaae7e1a0",
+   "excerpt": "The priests indeed, and the ministers of the word, are good; but the High Priest is better, to whom the holy of holies…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1872",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.v/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0d0c26f08b8153c31c192e0d78ad48c4d00fe849",
+   "excerpt": "My brethren, I am greatly enlarged in loving you; and rejoicing exceedingly [over you], I seek to secure your safety. Y…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1873",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.vi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1a662e2d61ae786e149fcdd679e41c4eca4085d1",
+   "excerpt": "If any one preaches the one God of the law and the prophets, but denies Christ to be the Son of God, he is a liar, even…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1874",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.vii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eb69298db1dcf8b0d55eff4ac7648d9f3a4626bf",
+   "excerpt": "For though some would have deceived me according to the flesh, yet my spirit is not deceived; for I have received it fr…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1875",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.viii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ae56feb5633bfd4e825d1afbd183ce37a750a7c5",
+   "excerpt": "I therefore did what belonged to me, as a man devoted to unity; adding this also, that where there is diversity of judg…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1877",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.x/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e68ba4bcfab2355b7799a4abb7bd509adbd30b99",
+   "excerpt": "Since, according to your prayers, and the compassion which ye feel in Christ Jesus, it is reported to me that the Churc…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1878",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi.xi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "95d309e024445eb0f1dac1627f8920a7a7c6b616",
+   "excerpt": "Now, as to Philo the deacon, a man of Cilicia, of high reputation, who still ministers to me in the word of God, along…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1867",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "anchor": "v.vi/salutation",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "85a59db6961743b369bb914b8fb70b7474c20d50",
+   "excerpt": "Ignatius, who is also called Theophorus, to the Church of God the Father, and of the Lord Jesus Christ, which is at Phi…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0124",
@@ -12623,11 +15035,277 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 86
+   "count": 33
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-1844",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.i/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "41a089837b6b00eab720b8818da0487ecbf9e634",
+   "excerpt": "I know that ye possess an unblameable and sincere mind in patience, and that not only for present use, but as a permane…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1845",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.ii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "624bce9628d1b954f96525955d29324dc0a6ee70",
+   "excerpt": "Be ye subject to the bishop as to the Lord, for “he watches for your souls, as one that shall give account to God.” Whe…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1846",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.iii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f72e5791c37af0223437a8e25aa137bd980688cc",
+   "excerpt": "And do ye reverence them as Christ Jesus, of whose place they are the keepers, even as the bishop is the representative…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1847",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.iv/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cb8a2cac271c952cc0101868d7fa446b3ad64b66",
+   "excerpt": "But I measure myself, that I may not perish through boasting: but it is good to glory in the Lord. And even though I we…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1852",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.ix/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "2903069bde1aa19dff392a9adca4981a46d77f20",
+   "excerpt": "Stop your ears, therefore, when any one speaks to you at variance with Jesus Christ, the Son of God, who was descended…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1848",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.v/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9ecd5bb62466051b0a64533cada4929041e29e41",
+   "excerpt": "For might not I write to you things more full of mystery? But I fear to do so, lest I should inflict injury on you who…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1849",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.vi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "dbabab807f01ab5477492d1bdc8b053d3589dd9a",
+   "excerpt": "I therefore, yet not I, out the love of Jesus Christ, “entreat you that ye all speak the same thing, and that there be…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1850",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.vii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bc9d130a115105ff23e0e80d8cf002fe41a1b184",
+   "excerpt": "Be on your guard, therefore, against such persons, that ye admit not of a snare for your own souls. And act so that you…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1851",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.viii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7d04050028eefa77a50712dea947b153f9f2d38c",
+   "excerpt": "Now I write these things unto you, not that I know there are any such persons among you; nay, indeed I hope that God wi…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1853",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.x/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0419c26054816d261b966a903446ec76abac2bf2",
+   "excerpt": "But if, as some that are without God, that is, the unbelieving, say, He became man in appearance [only], that He did no…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1854",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.xi/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6a0566922018b373224b6e089098a57acf97910d",
+   "excerpt": "Do ye also avoid those wicked offshoots of his, Simon his firstborn son, and Menander, and Basilides, and all his wicke…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1855",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.xii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f49b3e7929bfc2b7132a828a7727330ba9054248",
+   "excerpt": "I salute you from Smyrna, together with the Churches of God which are with me, whose rulers have refreshed me in every…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1856",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv.xiii/short",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8828a1707a014cf70b64a8b7200f88a1a1d8b6a6",
+   "excerpt": "The love of the Smyrnæans and Ephesians salutes you. Remember our Church which is in Syria, from which I am not worthy…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1843",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "anchor": "v.iv/salutation",
+  "passage_id": null,
+  "reason": "rule-b",
+  "detail": "The longer recension of the letter, printed beside the shorter. Removed under rule B on the majority of standard scholarship, which judges its compiler heterodox; no Church act names it. The shorter recension stays (Decision log \"Genuine Ignatius letters\", \"Rule B on scholarship alone\")",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5b9c1926a2f8bad096d93f9525b0a8ca73ce2923",
+   "excerpt": "Ignatius, who is also called Theophorus, to the holy Church which is at Tralles, beloved by God the Father, and Jesus C…"
+  },
+  "judgment": null,
+  "added_by": "1.8c",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0126",

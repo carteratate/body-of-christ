@@ -43,17 +43,21 @@ function hexToRgb(color: string): string {
 }
 
 /** The desktop citation. A Fathers reference that does not already name its
- *  document gets the title in front; one that does is not doubled (Opus-2 B-011). */
+ *  document gets the title in front; one that does is not doubled (Opus-2 B-011).
+ *  Nor is one that names the work inside the document it belongs to (the Epitome
+ *  of the Divine Institutes, 1.8c). */
 export function primaryCitation(
   collection: string,
   documentTitle: string,
   reference: string | null,
   author: string | null,
+  workTitle: string | null = null,
 ): string {
   if (!reference) return documentTitle;
   if (collection !== "church-fathers" || !documentTitle) return reference;
   const bare = withoutAuthorPrefix(reference, documentTitle, author);
   if (bare.startsWith(documentTitle)) return bare;
+  if (workTitle && bare.startsWith(`${workTitle}, `)) return bare;
   return `${documentTitle}, ${reference}`;
 }
 
@@ -155,7 +159,8 @@ function RemovedChunkCard({ result, tombstone, isGuest = false }: {
   const title = tombstone.title || source.document_title;
   const author = tombstone.author ?? source.author;
   const displayAuthor = author?.trim() === "Catholic Church" ? null : author;
-  const reference = primaryCitation(source.collection, title, tombstone.reference ?? source.reference, author);
+  const reference = primaryCitation(source.collection, title, tombstone.reference ?? source.reference, author,
+    source.facts?.work_title);
   const compactReference = mobileCitation(source.collection, title, tombstone.reference ?? source.reference, author);
   const status = removalStatusLabel(tombstone);
   const badge = <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium sm:max-w-none" style={{ borderColor: color, color }}>{collectionMeta?.label ?? source.collection}</span>;
@@ -226,12 +231,11 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   const hex = collectionMeta?.hex ?? "#C4972A";
   const rgb = hexToRgb(hex);
 
-  const primaryReference = primaryCitation(collection, document_title, reference, author);
-
   // Who wrote it (2.4b): the registry's attribution ("Pseudo-Justin"), a quoted
   // Father's name on a Catena passage, and how sure the attribution is. Without facts
   // these are today's author and nothing else.
   const facts = source.facts ?? null;
+  const primaryReference = primaryCitation(collection, document_title, reference, author, facts?.work_title);
   const attributionOptions = { work: facts?.work_title ?? document_title };
   const attribution = formatAttribution(author, facts, source.passage_author, attributionOptions);
   const headerAuthor = formatAttribution(author, facts, source.passage_author, { ...attributionOptions, certainty: false });

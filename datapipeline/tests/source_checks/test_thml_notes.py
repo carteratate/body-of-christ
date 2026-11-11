@@ -76,6 +76,8 @@ def test_every_verse_block_of_a_built_chapter_is_read(built):
         divs = {e.get("id"): e for e in _root(collection, name).iter()
                 if isinstance(e.tag, str) and e.tag.startswith("div")}
         for key, members in chapters.items():
+            if key not in divs:
+                continue        # a whole work's section, cut at its headings (1.8c)
             read = " " + " ".join(w for p in members for w in words(p.content)) + " "
             for block in direct_blocks(divs[key]):
                 if block.tag != "verse":
@@ -102,7 +104,8 @@ def test_note_class_entries_match_the_build(built):
     # An entry closes when a later item removes every note it counted (1.8a's editor
     # matter held all of two documents' notes).
     entries = {e["document_id"]: e["span"]["count"] for e in registry.load_registry().removals
-               if e["added_by"] == "1.10b" and e["scope"] == "class" and not e.get("closed_by")}
+               if e["scope"] == "class" and e["span"].get("rule") == "common._p_text_without_notes"
+               and not e.get("closed_by")}
     assert entries == {d: n for d, n in counts.items() if n}
 
 

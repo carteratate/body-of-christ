@@ -325,6 +325,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 
   The spec proposes yes to both.
   Answered 2026-11-04: yes to both.
+- **1.8c (rule B on scholarship)** [Phase 1]. The long Ignatian recension leaves the corpus under rule B because most scholars judge its compiler heterodox; no Church document condemns it. The removal registry's checker refused any rule-B entry without a Church act. Should a rule-B removal be allowed to rest on the scholarship alone? Recommended answer: yes, with the scholarly basis stated in the entry's detail, and no "Church act:" line on its notice.
+  Answered 2026-11-11: yes. A rule-B entry with no Church act passes when its detail states the scholarly basis, and its removal notice shows the reason with no "Church act:" line.
 - **1.8d** [Phase 1, acted on in Phase 2]. The current translation of Athanasius's On the Incarnation (Lawson, 1944) is still under copyright. Hide it before Phase 4 (early retirement), or leave it visible until Phase 4 replaces it with Robertson's public-domain translation. Hiding it waits for 2.2a, 2.2b, 2.4a and 2.4b to ship. Deleting it is not an option, because that would erase a user's saved search. The spec gives no recommendation.
   Answered 2026-11-04: leave it visible until Phase 4 replaces it. The work is already excerpt-only.
 - **1.8e** [Phase 1]. About 30 whole works in the downloaded Fathers volumes never reach the corpus. Choose which to add. Recommended answer is none before Phase 4 except Asterius Urbanus, and the rest later with normal rule checks.

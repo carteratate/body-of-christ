@@ -119,16 +119,16 @@ _removed_paragraphs: dict[str, frozenset[str]] = {}
 
 
 def removed_paragraphs(path: str = REMOVALS_PATH) -> frozenset[str]:
-    """The sha1s of whole paragraphs rule G takes out of a chapter that stays (1.8a's
-    `span` entries: a translator's credit, an "Argument", a letter's title line), as
-    `ingest.editorial.span_sha1` keys them. The removal registry says they are an
-    editor's, so they are apparatus, not body the build lost."""
+    """The sha1s of whole paragraphs the removal registry's `span` entries take out of a
+    chapter that stays, as `ingest.editorial.span_sha1` keys them: rule G's editor lines
+    (1.8a: a translator's credit, an "Argument", a letter's title line), the longer
+    Ignatian recension (rule B) and the commentators in Peter's canons (1.8c). The
+    registry explains them, so they are apparatus, not body the build lost."""
     if path not in _removed_paragraphs:
         with open(path, encoding="utf-8") as f:
             _removed_paragraphs[path] = frozenset(
                 e["span"]["sha1"] for e in json.load(f)
-                if e.get("scope") == "span" and e.get("reason") == "rule-g-editorial"
-                and (e.get("span") or {}).get("sha1"))
+                if e.get("scope") == "span" and (e.get("span") or {}).get("sha1"))
     return _removed_paragraphs[path]
 
 
@@ -159,7 +159,7 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     holds a poem or a quoted hymn as <l> lines); <note> is "note"; <scripCom> and <pb>
     carry no text and are ignored. unit_id is the nearest ancestor div's id. Divs
     listed in editorial_divs.json, and everything inside them, are "apparatus", and so
-    is a paragraph the removal registry records as rule G's (`removed_paragraphs`)."""
+    is a paragraph a removal registry span entry records (`removed_paragraphs`)."""
     source_file = source_file or os.path.basename(path)
     root = _read_thml(path)
     editorial = editorial_divs(source_file)
