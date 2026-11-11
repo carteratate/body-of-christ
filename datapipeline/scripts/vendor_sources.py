@@ -614,7 +614,29 @@ def vendor_canon_law(force: bool) -> None:
             else:
                 print(f"  skip (exists): {fname}")
             manifest.append({"url": url, "file": fname})
+        _vendor_canon_overrides(client, d, force)
     _write_manifest(d, manifest, name="pages.json")
+
+
+def _vendor_canon_overrides(client: httpx.Client, coll_dir: str, force: bool) -> None:
+    """overrides.json (1.5b): the L'Osservatore Romano English of the De concordia inter
+    Codices canons, from the EWTN reprint, and the tracked index that pins each text by
+    hash. The page itself is not kept; its sha256 is recorded with every override."""
+    sys.path.insert(0, _ROOT)
+    from datetime import date
+
+    from ingest import canon_overrides
+
+    if os.path.exists(canon_overrides.OVERRIDES) and not force:
+        print("  skip (exists): overrides.json")
+        return
+    page = _fetch(client, canon_overrides.EWTN_URL)
+    if page is None:
+        print("  ABORT: could not fetch the De concordia reprint", file=sys.stderr)
+        return
+    rows = canon_overrides.build_overrides(page, date.today().isoformat())
+    canon_overrides.write(rows)
+    print(f"  saved: overrides.json ({len(rows)} overrides) and canon_overrides_index.csv")
 
 
 def _stamp(coll_dir: str, entry: dict) -> dict:
