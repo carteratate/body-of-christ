@@ -1699,7 +1699,9 @@
   "new_anchor": "ix.iv.xiii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8c",
+  "closed_on": "2026-11-11"
  },
  {
   "document_id": "17157215-3ef5-5b22-860a-f34895fc3c03",
@@ -11672,6 +11674,86 @@
   "added_by": "1.10b"
  },
  {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "58cf55cd-cbd2-53b4-9792-58228524c0ae",
+  "old_anchor": "v.viii.i",
+  "new_passage_id": "c2d896c5-b99a-50f9-9a67-d01f59a4b5db",
+  "new_anchor": "v.viii.i/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "dd87999c-dc9b-571f-83e3-41d7a06241fa",
+  "old_anchor": "v.viii.ii",
+  "new_passage_id": "a27d900f-69fd-5377-a47c-c4f554876730",
+  "new_anchor": "v.viii.ii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "f04b4df2-6808-5cc1-9bf8-09ea51c61efc",
+  "old_anchor": "v.viii.iii",
+  "new_passage_id": "f92d2384-aba9-5c60-8253-876f94e6939e",
+  "new_anchor": "v.viii.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "a5eb936a-4cd7-5cdb-ab79-7af8ca1f1d3a",
+  "old_anchor": "v.viii.iv",
+  "new_passage_id": "fb10f14e-898b-5e25-9544-93fbd7fa1348",
+  "new_anchor": "v.viii.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "15698c83-8548-584a-9e3b-e1173c2c1b73",
+  "old_anchor": "v.viii.v",
+  "new_passage_id": "cbc424e9-05f7-591a-ac77-6837a7fe7656",
+  "new_anchor": "v.viii.v/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "57b696f7-609b-5f32-a476-b7dd23b0916c",
+  "old_anchor": "v.viii.vi",
+  "new_passage_id": "96125769-de0e-5c80-8e71-2014635216ff",
+  "new_anchor": "v.viii.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "81fea25a-396d-5ae2-9150-c5fc48d13974",
+  "old_anchor": "v.viii.vii",
+  "new_passage_id": "6698ee47-6e50-525f-bfcd-3e497f4ec4a0",
+  "new_anchor": "v.viii.vii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "89853cef-d079-5d55-bd37-4b02a9236f20",
+  "old_passage_id": "5c846d03-20ca-56cd-88f1-d821d4283f98",
+  "old_anchor": "v.viii.viii",
+  "new_passage_id": "6e859865-fc8d-58a5-b76a-f8224d1b6835",
+  "new_anchor": "v.viii.viii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
   "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
   "old_passage_id": "0c24432e-27bf-5452-b486-8045df0e6cf6",
   "old_anchor": "iii.vi.i/from-p3-2",
@@ -12298,6 +12380,106 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "465a036e-f9ba-57ac-af09-457e722dc028",
+  "old_anchor": "v.v.i",
+  "new_passage_id": "1ed8db75-17f1-57a7-98da-4d2dad8e3c73",
+  "new_anchor": "v.v.i/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "26b170a8-6d1d-569e-8e77-8d0b05d7c5cf",
+  "old_anchor": "v.v.ii",
+  "new_passage_id": "62ea4fca-629f-546a-b84c-7c59726666c2",
+  "new_anchor": "v.v.ii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "01f38170-c85b-5952-a140-bdfc65110a46",
+  "old_anchor": "v.v.iii",
+  "new_passage_id": "df9ad144-718c-5cdd-85fe-502e724bdd14",
+  "new_anchor": "v.v.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "1006d64c-23a4-5239-878c-ffdf1afbbb14",
+  "old_anchor": "v.v.iv",
+  "new_passage_id": "87088b91-4bff-56ad-a75f-c9b796def5d8",
+  "new_anchor": "v.v.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "562e3d42-8e87-54c7-99e2-4a0d7b455ef7",
+  "old_anchor": "v.v.ix",
+  "new_passage_id": "a1f76423-80ea-5df8-8070-0e738b6d9267",
+  "new_anchor": "v.v.ix/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "a0321cfa-3ee0-5474-96fe-2847204dd547",
+  "old_anchor": "v.v.v",
+  "new_passage_id": "5ad659e0-d332-563a-aad9-dacd6a10c7fe",
+  "new_anchor": "v.v.v/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "2e0a89fd-160b-5d32-9425-ae3e48331897",
+  "old_anchor": "v.v.vi",
+  "new_passage_id": "1ae465e6-7420-5214-9667-600a3d660818",
+  "new_anchor": "v.v.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "fb82c371-1be6-50da-ba58-cc6d40ef9d40",
+  "old_anchor": "v.v.vii",
+  "new_passage_id": "3824836e-a640-55cf-a002-f9a7b6af5861",
+  "new_anchor": "v.v.vii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "1656150f-58dc-5dee-97d6-84a550147944",
+  "old_anchor": "v.v.viii",
+  "new_passage_id": "f4aff96b-0dd2-5d7b-89d1-43bda8254504",
+  "new_anchor": "v.v.viii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "995d76f9-c666-5c34-8bc3-89d495526ec9",
+  "old_passage_id": "e5568e26-2013-56a7-9c86-5532dc386f21",
+  "old_anchor": "v.v.x",
+  "new_passage_id": "7a928551-0095-5c70-bee5-3da5bc923bf9",
+  "new_anchor": "v.v.x/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
  },
  {
   "document_id": "998f9723-f905-5de8-8838-2ff4596e9651",
@@ -16639,6 +16821,36 @@
  },
  {
   "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "d82edab7-bc08-5edf-af21-d5bb0311810c",
+  "old_anchor": "v.iii.i",
+  "new_passage_id": "35c94bbb-bda7-57f9-8f9e-94a9541b1a70",
+  "new_anchor": "v.iii.i/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "76df8f4e-4964-5e8c-bc88-6890fb424dfb",
+  "old_anchor": "v.iii.ii",
+  "new_passage_id": "43003dff-016b-5576-813e-dff1d1a8e3d2",
+  "new_anchor": "v.iii.ii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "bb83b270-e14d-568f-9541-7ac7e69d56ed",
+  "old_anchor": "v.iii.iii",
+  "new_passage_id": "a5756966-db4e-5ce4-a6b9-0783bddd661d",
+  "new_anchor": "v.iii.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
   "old_passage_id": "cce3df4e-44f5-539d-a797-44e6db27a428",
   "old_anchor": "v.iii.iii/from-p6",
   "new_passage_id": "bb83b270-e14d-568f-9541-7ac7e69d56ed",
@@ -16651,13 +16863,143 @@
  },
  {
   "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "cce3df4e-44f5-539d-a797-44e6db27a428",
+  "old_anchor": "v.iii.iii/from-p6",
+  "new_passage_id": "a5756966-db4e-5ce4-a6b9-0783bddd661d",
+  "new_anchor": "v.iii.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
   "old_passage_id": "2024033d-74e9-577b-ba55-cccb60ab0d55",
   "old_anchor": "v.iii.iii/from-p6-2",
-  "new_passage_id": "cce3df4e-44f5-539d-a797-44e6db27a428",
-  "new_anchor": "v.iii.iii/from-p6",
+  "new_passage_id": "a5756966-db4e-5ce4-a6b9-0783bddd661d",
+  "new_anchor": "v.iii.iii/short",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "be460f03-4156-5c30-9459-6393d143c602",
+  "old_anchor": "v.iii.iv",
+  "new_passage_id": "d3f55bdc-fa94-5e1b-a226-db57ca27feab",
+  "new_anchor": "v.iii.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "94143836-3077-5a88-907f-4c72b55e22ab",
+  "old_anchor": "v.iii.ix",
+  "new_passage_id": "4412776d-54ab-5b84-81df-ea1c3924d905",
+  "new_anchor": "v.iii.ix/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "4595f536-83ea-5322-a28c-b070a1299991",
+  "old_anchor": "v.iii.v",
+  "new_passage_id": "f8c16166-321d-59c1-b15c-3b8643a188b1",
+  "new_anchor": "v.iii.v/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "a1297d8a-fba9-5c9c-85a4-2670c069fe29",
+  "old_anchor": "v.iii.vi",
+  "new_passage_id": "446ec912-73f5-51ed-8fc9-c56e0db853ec",
+  "new_anchor": "v.iii.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "92707c5f-93b6-5f61-8350-16c41897c94f",
+  "old_anchor": "v.iii.vii",
+  "new_passage_id": "4d39f2ce-911f-5ae1-9075-c390352f51c5",
+  "new_anchor": "v.iii.vii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "5e0c79a8-090b-5140-843c-f512eebd7d2a",
+  "old_anchor": "v.iii.viii",
+  "new_passage_id": "c8570442-173f-546b-b431-08ec2e698293",
+  "new_anchor": "v.iii.viii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "847139f5-a561-566e-a6fe-fe1c1589b2f9",
+  "old_anchor": "v.iii.x",
+  "new_passage_id": "b5907648-112d-5950-9e96-14089b3c654d",
+  "new_anchor": "v.iii.x/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "a936c90d-d1dc-51c8-9351-02778cdb59a8",
+  "old_anchor": "v.iii.xi",
+  "new_passage_id": "ba802f86-7b2d-5be4-a151-993a488ceb09",
+  "new_anchor": "v.iii.xi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "ba03ae35-0fad-5d6d-a17f-9018dc6721e4",
+  "old_anchor": "v.iii.xii",
+  "new_passage_id": "580a0f92-ad60-5994-a474-4c316cd92c63",
+  "new_anchor": "v.iii.xii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "a0ce47b7-371c-5354-8466-6998f4552ddf",
+  "old_anchor": "v.iii.xiii",
+  "new_passage_id": "6af5aa9a-bab3-5e99-b616-721ca1d4f159",
+  "new_anchor": "v.iii.xiii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "b38ad799-eafd-5c93-834b-78395acb3019",
+  "old_anchor": "v.iii.xiv",
+  "new_passage_id": "8fa3d0fc-79d5-56fe-a245-4faf6cc419e9",
+  "new_anchor": "v.iii.xiv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "bb72e2f6-128d-585b-b601-8081e68f7de9",
+  "old_passage_id": "5c9d2b8b-2dd7-5796-82df-2178906b5f16",
+  "old_anchor": "v.iii.xv",
+  "new_passage_id": "d6016019-65b3-5088-a462-98c61d6f869b",
+  "new_anchor": "v.iii.xv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
  },
  {
   "document_id": "bd4adb5d-500e-5995-ab95-3f61fdc92067",
@@ -17505,13 +17847,233 @@
  },
  {
   "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "49ba30b3-c641-5534-b0a7-b11cedd945cb",
+  "old_anchor": "v.ii.i",
+  "new_passage_id": "3456dde4-ea50-5d64-8043-d2eee774d8d7",
+  "new_anchor": "v.ii.i/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "c0ee2cb5-737e-5382-93dc-3f8408e74c1b",
+  "old_anchor": "v.ii.ii",
+  "new_passage_id": "ab28f0fa-5bf6-5cb3-86a4-82496b18db92",
+  "new_anchor": "v.ii.ii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "d516dc00-2847-5cce-9689-4c0b025f84a3",
+  "old_anchor": "v.ii.iii",
+  "new_passage_id": "57c3a78b-d91c-5387-bebe-c65d84e53b7d",
+  "new_anchor": "v.ii.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "e75db471-a64b-59d4-b153-dea50c406eca",
+  "old_anchor": "v.ii.iv",
+  "new_passage_id": "4f1a39a8-439c-559e-b1d5-87d105d2ae42",
+  "new_anchor": "v.ii.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "6a38ec4e-f03e-5904-9505-bf346f3e409a",
+  "old_anchor": "v.ii.ix",
+  "new_passage_id": "01b52287-c6e5-513d-a501-f04102b21084",
+  "new_anchor": "v.ii.ix/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
   "old_passage_id": "b9cd8c5a-77d3-5793-8842-fb63c9bcb3ae",
   "old_anchor": "v.ii.ix/from-p5",
-  "new_passage_id": "6a38ec4e-f03e-5904-9505-bf346f3e409a",
-  "new_anchor": "v.ii.ix",
+  "new_passage_id": "01b52287-c6e5-513d-a501-f04102b21084",
+  "new_anchor": "v.ii.ix/short",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "7902454e-ac0c-52d0-879b-423b1fd9635b",
+  "old_anchor": "v.ii.v",
+  "new_passage_id": "dcd1eeaf-f1a8-59af-9b82-5b98061ccc38",
+  "new_anchor": "v.ii.v/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "53fd33e3-b05e-5654-ae01-15fb3965a39a",
+  "old_anchor": "v.ii.vi",
+  "new_passage_id": "0a0a85bb-546d-5556-82b2-03dc37f01ee4",
+  "new_anchor": "v.ii.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "bbf7e920-10cf-5f1d-bd0a-c49ca9f66bea",
+  "old_anchor": "v.ii.vii",
+  "new_passage_id": "ef40ca0f-730e-5b0b-80fd-d4350eb981f0",
+  "new_anchor": "v.ii.vii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "efd92bfe-d153-5fcb-a7b2-351e981c517c",
+  "old_anchor": "v.ii.viii",
+  "new_passage_id": "08c3eab2-5710-5d1d-bcf9-da085eadd2f5",
+  "new_anchor": "v.ii.viii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "711af93d-f9b0-5e9a-aa80-8d5a0f7a09a5",
+  "old_anchor": "v.ii.x",
+  "new_passage_id": "775c8cc6-ab5f-5f9e-9db6-f0bddc84fc1e",
+  "new_anchor": "v.ii.x/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "76d7ca75-a875-5d54-8c7d-98a2324c39f0",
+  "old_anchor": "v.ii.xi",
+  "new_passage_id": "43acba8c-f027-579a-91bb-e2b88d660ea9",
+  "new_anchor": "v.ii.xi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "da9a61ab-21c7-5e32-b0b3-670f234a0706",
+  "old_anchor": "v.ii.xii",
+  "new_passage_id": "48c63b56-5e2c-5fad-9cb4-596a77e644ee",
+  "new_anchor": "v.ii.xii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "4d6ffbf2-4adc-5238-8d60-eab667a7cf1e",
+  "old_anchor": "v.ii.xiii",
+  "new_passage_id": "005e06e4-9f0d-5125-ac8b-9fd36c3ee7e1",
+  "new_anchor": "v.ii.xiii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "232a5720-3314-5fea-b339-2460bbc57d1f",
+  "old_anchor": "v.ii.xiv",
+  "new_passage_id": "4035db72-17fd-545c-b715-d6909760085d",
+  "new_anchor": "v.ii.xiv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "898b5781-c823-53f3-af57-98fd503fcc66",
+  "old_anchor": "v.ii.xix",
+  "new_passage_id": "ecd25fc5-f500-5139-a6a8-5bcf88473872",
+  "new_anchor": "v.ii.xix/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "6926299e-6ecb-5b3d-9199-0baf7664b78e",
+  "old_anchor": "v.ii.xv",
+  "new_passage_id": "5ccf4a58-d554-5a5c-a331-935410b2bcc8",
+  "new_anchor": "v.ii.xv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "a867b428-d9e4-5bfe-9e83-60a382b64fad",
+  "old_anchor": "v.ii.xvi",
+  "new_passage_id": "95b0c129-e862-5182-ad65-0ad58788a545",
+  "new_anchor": "v.ii.xvi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "7d50f19e-239e-56f3-aaa0-27cc3dd2902d",
+  "old_anchor": "v.ii.xvii",
+  "new_passage_id": "dc12c25d-c7af-5a39-89de-66e60b72bf6b",
+  "new_anchor": "v.ii.xvii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "4a60e9bb-be25-5c18-8830-9465da6afe9a",
+  "old_anchor": "v.ii.xviii",
+  "new_passage_id": "2cb70cd1-65b4-5576-8c9b-3e4d5b4efcba",
+  "new_anchor": "v.ii.xviii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "a2b3467d-9634-5563-9042-0b7d4dd889e1",
+  "old_anchor": "v.ii.xx",
+  "new_passage_id": "f5da1911-7c97-5971-9b4a-d2d9c5ba5e84",
+  "new_anchor": "v.ii.xx/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "375dee66-65ed-5a0d-b6af-3bdffd9e62ee",
+  "old_anchor": "v.ii.xxi",
+  "new_passage_id": "f5da1911-7c97-5971-9b4a-d2d9c5ba5e84",
+  "new_anchor": "v.ii.xx/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "c1bcdc39-8e8a-5806-9dcc-2fc05482baad",
+  "old_passage_id": "620cf708-418c-5fe0-819f-34f520ca6ce5",
+  "old_anchor": "v.ii.xxii",
+  "new_passage_id": "1249cf5d-e392-53fc-910d-48d5c98b5b6c",
+  "new_anchor": "v.ii.xxii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
  },
  {
   "document_id": "c20261d3-53ae-525a-b85a-6008a6069562",
@@ -23532,6 +24094,266 @@
   "added_by": "1.2c"
  },
  {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "893d997f-a0e6-5848-be9f-6525ce17d2c5",
+  "old_anchor": "v.vii.i",
+  "new_passage_id": "8802be71-66a2-59c1-a584-f9b775439c17",
+  "new_anchor": "v.vii.i/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "7f6ce8c4-92c4-5cd2-9e4c-ebabf7e1a4aa",
+  "old_anchor": "v.vii.ii",
+  "new_passage_id": "594282d5-3ced-5082-9d52-969554f9d8e8",
+  "new_anchor": "v.vii.ii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "98a097d7-d942-5de3-a116-26f7c915054b",
+  "old_anchor": "v.vii.iii",
+  "new_passage_id": "c6f9098d-a62a-5f05-bba4-ad4b7e0b2f96",
+  "new_anchor": "v.vii.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "283e3fbe-e97e-5c23-8446-8d16ef68e156",
+  "old_anchor": "v.vii.iv",
+  "new_passage_id": "d2996c6e-63e5-58d8-b86c-05dacd41d8f7",
+  "new_anchor": "v.vii.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "7b067790-471e-586f-b6e1-c365b80db758",
+  "old_anchor": "v.vii.ix",
+  "new_passage_id": "7f53882a-1d8a-503d-b894-ad9d8ce8bf5b",
+  "new_anchor": "v.vii.ix/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "07213a6a-6bd0-509f-831b-680367d12b45",
+  "old_anchor": "v.vii.v",
+  "new_passage_id": "d3010483-d407-53fe-809b-c6c27d7bf999",
+  "new_anchor": "v.vii.v/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "82ccb96d-a6ec-56e6-8049-90f32d64799a",
+  "old_anchor": "v.vii.vi",
+  "new_passage_id": "c9501ab1-d240-5b74-a6a1-0782e3668f26",
+  "new_anchor": "v.vii.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "bee2cb54-312e-5b9a-8054-b9fa4e1f6375",
+  "old_anchor": "v.vii.vii",
+  "new_passage_id": "c9c74e6c-0f74-5c87-878a-2f2751ec47e5",
+  "new_anchor": "v.vii.vii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "b63c1d10-354b-574e-ada4-a27588c14ba6",
+  "old_anchor": "v.vii.viii",
+  "new_passage_id": "07fa4b72-8b24-5b3e-ba3a-6bf654ec31d9",
+  "new_anchor": "v.vii.viii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "aa3f476c-33ce-54dc-ac31-c6c451f40bf6",
+  "old_anchor": "v.vii.x",
+  "new_passage_id": "ab55a868-b2e3-5b3b-ad40-2f2efc1bf534",
+  "new_anchor": "v.vii.x/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "b71baa39-d568-58f3-ab8e-df57deed1999",
+  "old_anchor": "v.vii.xi",
+  "new_passage_id": "15920274-12e2-589b-b5f0-4b58728f5780",
+  "new_anchor": "v.vii.xi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "bc29a2c4-2434-5bfa-806c-3720004cc9e7",
+  "old_anchor": "v.vii.xii",
+  "new_passage_id": "bc622d57-f240-5a61-957e-95b28ed86195",
+  "new_anchor": "v.vii.xii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "f9e64ef8-6874-5784-b75c-ceaf4c081d29",
+  "old_passage_id": "694a85ed-2891-57b7-b116-6fef87124297",
+  "old_anchor": "v.vii.xiii",
+  "new_passage_id": "06915ce1-aca9-5fae-9f7e-c95a11d1da78",
+  "new_anchor": "v.vii.xiii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "eb1e33a1-eaee-5653-8568-7d5ea32f0e57",
+  "old_anchor": "v.vi.i",
+  "new_passage_id": "c986f04a-c9ef-5de3-84ec-84068656301d",
+  "new_anchor": "v.vi.i/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "dedc8b5e-45fa-5cd1-994c-6c73737a2573",
+  "old_anchor": "v.vi.ii",
+  "new_passage_id": "c0bd5fba-e1a4-5e6f-872b-13c7dd0f510b",
+  "new_anchor": "v.vi.ii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "f76f2da8-7de3-5e02-ad6f-22b48a7de334",
+  "old_anchor": "v.vi.iii",
+  "new_passage_id": "ed73fa4b-5052-5f42-8992-e877181addf5",
+  "new_anchor": "v.vi.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "803ec50b-7504-5a6d-ba34-9432a55ddcc5",
+  "old_anchor": "v.vi.iv",
+  "new_passage_id": "c19aa457-c1bd-5644-995f-0cef32aae4f7",
+  "new_anchor": "v.vi.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "b495280e-8ebf-541c-b085-8f6d11468a59",
+  "old_anchor": "v.vi.iv/from-p3-2",
+  "new_passage_id": "c19aa457-c1bd-5644-995f-0cef32aae4f7",
+  "new_anchor": "v.vi.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "976cc0a7-7bc9-5499-a8f3-699b1d04f1ed",
+  "old_anchor": "v.vi.ix",
+  "new_passage_id": "6deb8448-3808-5e72-9015-a81a890f9c6f",
+  "new_anchor": "v.vi.ix/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "b9cd477b-55ee-5189-9c11-7139420999d8",
+  "old_anchor": "v.vi.v",
+  "new_passage_id": "eaa9c41d-78a3-5b8c-8779-83608d2641e7",
+  "new_anchor": "v.vi.v/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "b3313a41-9024-563d-ae25-b4c3192e06f5",
+  "old_anchor": "v.vi.vi",
+  "new_passage_id": "ad42edcd-0a00-5ac3-993a-59ded5ed2bb7",
+  "new_anchor": "v.vi.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "7c264101-0e69-511e-8fd3-351121b7e6b9",
+  "old_anchor": "v.vi.vi/from-p7",
+  "new_passage_id": "ad42edcd-0a00-5ac3-993a-59ded5ed2bb7",
+  "new_anchor": "v.vi.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "838c5832-a505-58c7-831c-2918aa759383",
+  "old_anchor": "v.vi.vii",
+  "new_passage_id": "a35e63a3-a7d1-5b51-9a74-5fab6205dc58",
+  "new_anchor": "v.vi.vii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "f5740076-6af4-504d-9946-6adc89a08bad",
+  "old_anchor": "v.vi.viii",
+  "new_passage_id": "a9ccc538-4965-53d9-82ea-033f97ef412a",
+  "new_anchor": "v.vi.viii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "941a69b4-e6f3-51bd-a2b7-18603bec0534",
+  "old_anchor": "v.vi.x",
+  "new_passage_id": "cfbf7f15-5055-5aa2-8225-346f13f04d29",
+  "new_anchor": "v.vi.x/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fa2cd483-2f8e-54fe-9a65-06cea946280f",
+  "old_passage_id": "d2c1435f-1e78-59b4-9c7c-2ee287ab1f13",
+  "old_anchor": "v.vi.xi",
+  "new_passage_id": "174b4473-b747-59b2-be40-f08448a77384",
+  "new_anchor": "v.vi.xi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
   "document_id": "faf07b54-7968-53f3-891e-d8683f9c271d",
   "old_passage_id": "e90605c7-243c-5e1d-be6b-c9792d6a2b7b",
   "old_anchor": "vi.ix.i/from-p4-2",
@@ -23585,13 +24407,143 @@
  },
  {
   "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "94336404-b36c-5c62-a507-11daba542293",
+  "old_anchor": "v.iv.i",
+  "new_passage_id": "b7a9387d-7b02-5c32-b787-dcc9aa3aa689",
+  "new_anchor": "v.iv.i/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "c2280a14-3c1b-50f2-8a57-4a4e3b27e7e6",
+  "old_anchor": "v.iv.ii",
+  "new_passage_id": "ec77c817-0cd1-57d9-b212-12161688e856",
+  "new_anchor": "v.iv.ii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "e95180a3-106c-5a0a-ba9e-c97ea31b0cff",
+  "old_anchor": "v.iv.iii",
+  "new_passage_id": "0d00f4e3-69ec-5d71-a39e-ae12ed401444",
+  "new_anchor": "v.iv.iii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "1dc49efd-7f02-5e5b-8365-8281ddb8a42f",
+  "old_anchor": "v.iv.iv",
+  "new_passage_id": "16b50881-de97-5bd4-9415-23536207649b",
+  "new_anchor": "v.iv.iv/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "90592fde-1619-5722-8d08-9188730502bd",
+  "old_anchor": "v.iv.ix",
+  "new_passage_id": "06d85bc6-5a07-5c07-9272-07a4df13b14f",
+  "new_anchor": "v.iv.ix/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "910bcbb0-91be-5094-88b9-a0ff21e924aa",
+  "old_anchor": "v.iv.v",
+  "new_passage_id": "8e41efe8-48f2-5026-9270-f133b5ed4345",
+  "new_anchor": "v.iv.v/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "298ab0e4-7566-5b34-b36d-30f2f5072219",
+  "old_anchor": "v.iv.vi",
+  "new_passage_id": "2e009c9b-5dd2-5a35-a6d0-56a9e13ecd3a",
+  "new_anchor": "v.iv.vi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "82a8c51e-b507-5e1a-ba82-df86c13ab53d",
+  "old_anchor": "v.iv.vii",
+  "new_passage_id": "f1f0f8a6-657e-5e98-bc09-4f8967767a2e",
+  "new_anchor": "v.iv.vii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "c3960840-be20-5b4c-a1a5-09def17177ba",
+  "old_anchor": "v.iv.viii",
+  "new_passage_id": "3a61aa09-df0d-5fdd-90c8-2ed77bc82503",
+  "new_anchor": "v.iv.viii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "5d78b1a4-60bb-5390-94e8-408614bd1a0f",
+  "old_anchor": "v.iv.x",
+  "new_passage_id": "cbc2edc6-3b32-50dc-9236-914de9ee0690",
+  "new_anchor": "v.iv.x/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
   "old_passage_id": "64b8c9cb-9eb0-5b43-be68-44af92f7b671",
   "old_anchor": "v.iv.x/from-p5-2",
-  "new_passage_id": "5d78b1a4-60bb-5390-94e8-408614bd1a0f",
-  "new_anchor": "v.iv.x",
+  "new_passage_id": "cbc2edc6-3b32-50dc-9236-914de9ee0690",
+  "new_anchor": "v.iv.x/short",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "4a793c79-8944-54a5-b813-e85faa612f1e",
+  "old_anchor": "v.iv.xi",
+  "new_passage_id": "a8fd11df-cc51-572e-849d-19be1f40ca35",
+  "new_anchor": "v.iv.xi/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "9b83bea0-bf7e-5990-95b4-9717c0fc298b",
+  "old_anchor": "v.iv.xii",
+  "new_passage_id": "7b1c5039-9eb6-5540-a6b2-bded8f45352f",
+  "new_anchor": "v.iv.xii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
+ },
+ {
+  "document_id": "fc317c73-9b67-5801-b894-22420c91168a",
+  "old_passage_id": "d9910742-9e42-5230-85b0-dbd4896fcaea",
+  "old_anchor": "v.iv.xiii",
+  "new_passage_id": "5b1ed702-ca0d-5ed5-973c-a603c459814f",
+  "new_anchor": "v.iv.xiii/short",
+  "kind": "split",
+  "reason": "the passage held both Ignatian recensions; the shorter stays",
+  "added_by": "1.8c"
  },
  {
   "document_id": "fc355007-b825-5a68-bdb7-f2732d4a79b9",
