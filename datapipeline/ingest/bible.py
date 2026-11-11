@@ -6,7 +6,9 @@ text lands in exactly one passage.
     to the KJV pericope (PericopeGroupedKJVVerses.json) that holds it and starts
     latest, else to the group of the verse before it in the same chapter.
   - Passages never cross a chapter; a group longer than one card is split (1.10c).
-  - Books with no pericopes (the deuterocanonical books): one passage per chapter.
+  - The deuterocanonical books have no pericopes (1.4c): the USFM's paragraphs (\\p), or
+    stanzas (\\b) in Wisdom and Sirach, are grouped into passages of about 600 to 1,800
+    characters (`group_paragraphs`). They carry no title and are cited by verse range.
   - A Psalm title (\\d) opens the verse it precedes; Sirach's prologue is its own
     passage, `sirach/prologue`.
 
@@ -128,6 +130,8 @@ _EXTRA_PERICOPE_PATH = "bible_extra_pericopes.csv"
 _VERSIFICATION_PATH = "bible_versification.csv"
 # The anchor segment of a passage numbered by the Nova Vulgata where WEB-C differs.
 NV_SEGMENT = "nv"
+# Books passaged by their own paragraphs or stanzas, not KJV pericopes (1.4c).
+PARAGRAPH_BOOKS = ("TOB", "JDT", "WIS", "SIR", "BAR", "1MA", "2MA")
 
 
 # ---------------------------------------------------------------------------
@@ -156,6 +160,8 @@ class BookVerses:
     # the book's table entry; None for a book `bible_versification.csv` does not name.
     source_of: dict[tuple[int, int], tuple[int, int]] = field(default_factory=dict)
     versification: "BookVersification | None" = None
+    # Verses that open a paragraph (\\p) or stanza (\\b), and every chapter's first (1.4c).
+    paragraph_starts: set[tuple[int, int]] = field(default_factory=set)
 
 
 # ---------------------------------------------------------------------------
@@ -272,6 +278,59 @@ def parse_usfm_prologue(path: str) -> str:
             elif inside and line.strip():
                 break
     return " ".join(t for t in out if t)
+
+
+_BREAK = re.compile(r"^\\(p|b)\b")
+
+
+def parse_usfm_paragraph_starts(path: str) -> set[tuple[int, int]]:
+    """The (chapter, verse) of each verse that opens a paragraph (\\p) or a stanza (\\b),
+    and of each chapter's first verse. A passage never splits a verse, so a verse a break
+    falls inside goes with the paragraph holding most of its text: 1 Maccabees 14:27
+    opens the decree that fills most of it, and 2 Maccabees 6:28, whose last sentence
+    opens a paragraph, stays with the one before."""
+    starts: set[tuple[int, int]] = set()
+    chapter, verse = 0, None
+    pending = False             # a break since the last text: the next verse may open
+    broken = False              # a break has fallen inside the current verse
+    before = after = 0          # the current verse's characters before and after it
+
+    def close_verse() -> bool:
+        """Whether the verse after the current one opens a paragraph."""
+        if broken and after > before:
+            starts.add((chapter, verse))
+        return broken and after <= before
+
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            if m := re.match(r"^\\c\s+(\d+)", line):
+                if verse is not None:
+                    close_verse()
+                chapter, verse, pending = int(m.group(1)), None, True
+                continue
+            if not chapter:
+                continue
+            if m := re.match(r"^\\v\s+(\d+)\s*(.*)", line):
+                if verse is not None and close_verse():
+                    pending = True
+                verse = int(m.group(1))
+                if pending:
+                    starts.add((chapter, verse))
+                pending, broken = False, False
+                before, after = len(_clean_usfm_text(m.group(2))), 0
+                continue
+            text = _clean_usfm_text(re.sub(r"^\\\S+", "", line))
+            if _BREAK.match(line):
+                pending = True
+            if verse is None or not text:
+                continue
+            if pending:                 # text after a break, before any verse: mid-verse
+                broken, pending = True, False
+            if broken:
+                after += len(text)
+            else:
+                before += len(text)
+    return starts
 
 
 def _book_code_from_usfm(path: str) -> str | None:
@@ -421,6 +480,9 @@ def load_usfm_directory(usfm_dir: str, versification: dict[str, BookVersificatio
             prologue=parse_usfm_prologue(path),
             source_of=source_of,
             versification=table,
+            paragraph_starts=({(table.moves.get(k, k) if table else k)
+                               for k in parse_usfm_paragraph_starts(path)}
+                              if code in PARAGRAPH_BOOKS else set()),
         )
     return books
 
@@ -592,6 +654,73 @@ def group_verses(verses: list[Verse], pericopes: list[Pericope],
 
 
 # ---------------------------------------------------------------------------
+# Grouping paragraphs into passages (1.4c)
+# ---------------------------------------------------------------------------
+
+# A passage of the paragraph books aims at PARAGRAPH_TARGET characters and stays inside
+# PARAGRAPH_MIN to PARAGRAPH_MAX where the paragraphs allow; it falls under PARAGRAPH_FLOOR
+# or runs past PARAGRAPH_CEILING only where one paragraph is longer than PARAGRAPH_MAX.
+PARAGRAPH_MIN, PARAGRAPH_MAX = 600, 1800
+PARAGRAPH_FLOOR, PARAGRAPH_CEILING = 300, 2200
+PARAGRAPH_TARGET = 1200
+_OUT_OF_BAND, _FORBIDDEN = 500, 100_000
+
+
+def _group_content(verses: list[tuple[int, int, str]]) -> str:
+    return clean_text(_join_with_verse_markers(verses))
+
+
+def _grouping_cost(length: int, longest_paragraph: int) -> float:
+    """How far a passage of `length` characters is from the aim. Under the floor, or past
+    the ceiling without a paragraph longer than PARAGRAPH_MAX in it, only when nothing
+    else is possible; outside the band rather than far from the target; past
+    PARAGRAPH_MAX worse than under PARAGRAPH_MIN, since a long card reads worse than a
+    short one."""
+    cost = ((length - PARAGRAPH_TARGET) / 100) ** 2
+    if length < PARAGRAPH_FLOOR:
+        cost += _FORBIDDEN
+    if length < PARAGRAPH_MIN:
+        cost += _OUT_OF_BAND + (PARAGRAPH_MIN - length)
+    if length > PARAGRAPH_MAX:
+        cost += _OUT_OF_BAND + 5 * (length - PARAGRAPH_MAX)
+    if length > PARAGRAPH_CEILING and longest_paragraph <= PARAGRAPH_MAX:
+        cost += _FORBIDDEN
+    return cost
+
+
+def group_paragraphs(verses: list[Verse], starts: set[tuple[int, int]]) -> list[VerseGroup]:
+    """Consecutive paragraphs of each chapter grouped into untitled passages (1.4c,
+    Carter 4 Nov 2026): every verse once and in order, a passage never crossing a chapter
+    or splitting a verse (or a paragraph). Each chapter's grouping is the one with the
+    least total `_grouping_cost`, so a short paragraph joins a neighbour rather than
+    standing alone."""
+    groups: list[VerseGroup] = []
+    for chapter, in_chapter in groupby(verses, key=lambda v: v.chapter):
+        paragraphs: list[list[tuple[int, int, str]]] = []
+        for v in in_chapter:
+            if not paragraphs or (v.chapter, v.verse) in starts:
+                paragraphs.append([])
+            paragraphs[-1].append((v.chapter, v.verse, v.text))
+        sizes = [len(_group_content(p)) for p in paragraphs]
+        # best[j]: the least cost of grouping the first j paragraphs; cut[j]: where the
+        # last group of that grouping starts.
+        best, cut = [0.0] + [float("inf")] * len(paragraphs), [0] * (len(paragraphs) + 1)
+        for j in range(1, len(paragraphs) + 1):
+            for i in range(j):
+                length = len(_group_content([v for p in paragraphs[i:j] for v in p]))
+                cost = best[i] + _grouping_cost(length, max(sizes[i:j]))
+                if cost < best[j]:
+                    best[j], cut[j] = cost, i
+        bounds, j = [], len(paragraphs)
+        while j:
+            bounds.append((cut[j], j))
+            j = cut[j]
+        for i, j in reversed(bounds):
+            groups.append(VerseGroup(chapter, [v for p in paragraphs[i:j] for v in p], None))
+    return groups
+
+
+# ---------------------------------------------------------------------------
 # Canonical passage builder — passage = pericope clamped to chapter
 # ---------------------------------------------------------------------------
 
@@ -641,24 +770,19 @@ def _last_with_text(units: list[tuple[str, str]], piece) -> int:
 
 
 def _pieces(book: str, chapter: int, verses: list[tuple[int, int, str]], content: str,
-            base_anchor: str, whole_reference: str | None = None
-            ) -> list[tuple[str, str, str, str, tuple, tuple[str, str]]]:
+            base_anchor: str) -> list[tuple[str, str, str, str, tuple, tuple[str, str]]]:
     """(content, reference, unit_label, anchor, source_units, (first, last)) for each piece of one
     pericope part or chapter (1.10c). Pieces hold whole verses and cite the verses whose
     text they hold; a later piece opens on its first verse, which its `unit_label`
     carries in place of a marker. Only a verse longer than one card is cut (Esther 8:13,
     Greek addition E, 1.4a); pieces that would then cite the same verses add "(part j of
-    m)" among themselves. `whole_reference` cites a unit that is not split (a chapter
-    cited as "Tobit 3"). `(first, last)` are the `chapter:verse` labels it cites."""
+    m)" among themselves. `(first, last)` are the `chapter:verse` labels it cites."""
     units = _verse_units(content, chapter, verses[0][1])
     packed = pack_units(units, settings.MAX_PASSAGE_CHARS, sep="")
     texts = [p.text for p in packed]
     named = name_pieces(base_anchor, content, texts, _verse_segments(verses))
-    if len(packed) == 1 and whole_reference:
-        refs = [whole_reference]
-    else:
-        refs = [piece_reference(book, units[p.first][0], units[_last_with_text(units, p)][0],
-                                1, 1) for p in packed]
+    refs = [piece_reference(book, units[p.first][0], units[_last_with_text(units, p)][0],
+                            1, 1) for p in packed]
     shared = Counter(refs)
     seen: Counter = Counter()
     out = []
@@ -744,12 +868,14 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C",
         whole_book_nv = book.versification is not None and book.versification.scope == "book"
         extras = extra_map.get(name, [])
         verses = _with_titles(book)
-        if pericopes or extras:
-            groups = group_verses(verses, pericopes, extras)
+        if book.book_code in PARAGRAPH_BOOKS:
+            if pericopes or extras:
+                raise ValueError(f"{name}: pericopes for a book passaged by its paragraphs")
+            groups = group_paragraphs(verses, book.paragraph_starts)
         else:
-            # Books without pericopes (deuterocanonical): one group per chapter.
-            groups = [VerseGroup(ch, [(v.chapter, v.verse, v.text) for v in vs], None)
-                      for ch, vs in groupby(verses, key=lambda v: v.chapter)]
+            # A verse no pericope holds joins the group before it (a book with none
+            # would be one group per chapter).
+            groups = group_verses(verses, pericopes, extras)
 
         for g in groups:
             content = clean_text(_join_with_verse_markers(g.verses))
@@ -761,12 +887,11 @@ def build_documents(usfm_dir: str | None = None, translation: str = "WEB-C",
             scheme = (book_slug, NV_SEGMENT) if nv else (book_slug,)
             base_anchor = make_anchor(*scheme, g.chapter, g.verses[0][1])
             chapter_key = make_anchor(*(scheme if whole_book_nv else (book_slug,)), g.chapter)
-            whole = None if pericopes or extras else f"{name} {g.chapter}"
             metadata = {"testament": book.testament, "translation": translation}
             if g.title:
                 metadata = {"pericope": g.title, **metadata, **g.refs}
             for piece, ref, label, anchor, units, (first, last) in _pieces(
-                    name, g.chapter, g.verses, content, base_anchor, whole_reference=whole):
+                    name, g.chapter, g.verses, content, base_anchor):
                 extra = {"source_ref": piece_reference(
                     name, _source_label(book, first), _source_label(book, last), 1, 1)} \
                     if nv else {}
