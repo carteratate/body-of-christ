@@ -72,6 +72,14 @@ _UNMANIFESTED_URLS = {
     "summa/summa.xml": "https://ccel.org/ccel/a/aquinas/summa.xml",
 }
 
+# Adapter inputs that vendor_sources.py builds from a fetched page rather than copying it,
+# in collections whose manifest does not name them, with the page they come from.
+_DERIVED_INPUTS = {
+    # 1.5b: the De concordia inter Codices English (ingest/canon_overrides.py).
+    "canon-law/overrides.json":
+        "https://www.ewtn.com/catholicism/library/de-concordia-inter-codices-7264",
+}
+
 # Vendored files no registered adapter publishes, with the reason on record.
 _UNREGISTERED_NOTES = {
     "apostolic-exhortations/a-new-hope-for-lebanon.html": "scheduled for PR 5.4",
@@ -122,6 +130,8 @@ def _role_and_url(sources: Path, collection: str, rel: str,
                   manifest_name: str | None, named: dict[str, dict]) -> tuple[str, str | None]:
     """Classify one file of a registered collection."""
     file_in_collection = rel.split("/", 1)[1]
+    if rel in _DERIVED_INPUTS:
+        return "adapter-input", _DERIVED_INPUTS[rel]
     selects = _GLOB_SELECTED.get(collection)
     if selects is not None:
         url = named.get(file_in_collection, {}).get("url")

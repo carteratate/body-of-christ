@@ -3159,6 +3159,16 @@
  },
  {
   "collection": "canon-law",
+  "path": "canon-law/overrides.json",
+  "sha256": "74a7659ea0a5b7baf407467cfeeb49ee5ddaea0272ceb6cad88e6c15059fa549",
+  "bytes": 10404,
+  "url": "https://www.ewtn.com/catholicism/library/de-concordia-inter-codices-7264",
+  "acquired": "2026-11-11",
+  "hashed_on": "2026-11-11",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "canon-law",
   "path": "canon-law/pages.json",
   "sha256": "d5cd23c0df88d2fe590da2111922fd53f4fbc170ae901c9accff5bccb8eea28c",
   "bytes": 11701,

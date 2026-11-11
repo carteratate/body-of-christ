@@ -2,7 +2,7 @@
  "measured_on": {
   "apostolic-exhortations": "feat/1.3a-papal-parser 8075859",
   "bible": "feat/1.4a-bible-every-verse 66c7561",
-  "canon-law": "feat/1.5a-canon-law-parser 16888ad",
+  "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8a-anf-editorial-strip 8df87eb",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
@@ -583,8 +583,8 @@
    "pct": 100.0
   },
   "canon-law/cic_lib1-cann96-123_en.html": {
-   "body_chars": 14418,
-   "covered_chars": 14418,
+   "body_chars": 12828,
+   "covered_chars": 12828,
    "pct": 100.0
   },
   "canon-law/cic_lib2-cann204-207_en.html": {
@@ -593,8 +593,8 @@
    "pct": 100.0
   },
   "canon-law/cic_lib2-cann208-329_en.html": {
-   "body_chars": 55816,
-   "covered_chars": 55667,
+   "body_chars": 55120,
+   "covered_chars": 54971,
    "pct": 99.73
   },
   "canon-law/cic_lib2-cann330-367_en.html": {
@@ -613,19 +613,19 @@
    "pct": 100.0
   },
   "canon-law/cic_lib2-cann460-572_en.html": {
-   "body_chars": 52746,
-   "covered_chars": 52746,
+   "body_chars": 52336,
+   "covered_chars": 52336,
    "pct": 100.0
   },
   "canon-law/cic_lib2-cann573-606_en.html": {
-   "body_chars": 12567,
-   "covered_chars": 12567,
+   "body_chars": 12248,
+   "covered_chars": 12248,
    "pct": 100.0
   },
   "canon-law/cic_lib2-cann607-709_en.html": {
-   "body_chars": 51657,
-   "covered_chars": 50608,
-   "pct": 97.97
+   "body_chars": 48885,
+   "covered_chars": 48348,
+   "pct": 98.9
   },
   "canon-law/cic_lib2-cann710-730_en.html": {
    "body_chars": 8892,
@@ -683,8 +683,8 @@
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann834-878_en.html": {
-   "body_chars": 19464,
-   "covered_chars": 19464,
+   "body_chars": 18733,
+   "covered_chars": 18733,
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann879-958_en.html": {
@@ -3450,9 +3450,9 @@
   "aa889573-50b2-5a1d-9264-f309583c0c1b": {
    "collection": "canon-law",
    "source_file": "cic_lib1-cann1-6_en.html",
-   "body_chars": 736278,
-   "covered_chars": 734550,
-   "pct": 99.77
+   "body_chars": 729760,
+   "covered_chars": 728544,
+   "pct": 99.83
   },
   "aab0848e-3b88-5a1c-9dbd-a6897abf4e79": {
    "collection": "church-fathers",

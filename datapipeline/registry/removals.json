@@ -1558,6 +1558,38 @@
   "detail": "The page's bracketed reference to the Holy Father's letter of 10 January 2021, after §1."
  },
  {
+  "id": "rm-1805",
+  "scope": "passage",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/295",
+  "passage_id": "022eca24-70ee-5511-a1c5-942817492f02",
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: the current text has no English. Le Prelature personali (2023), Italian with the canon in Latin.",
+  "tombstone": "Canon 295 was amended in 2023; no English translation is available.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.5b",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1806",
+  "scope": "passage",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/296",
+  "passage_id": "3375a059-2145-5c0b-8615-47a3af7149bf",
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: the current text has no English. Le Prelature personali (2023), Italian with the canon in Latin.",
+  "tombstone": "Canon 296 was amended in 2023; no English translation is available.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.5b",
+  "added_on": "2026-11-11"
+ },
+ {
   "id": "rm-0877",
   "scope": "span",
   "passage_id": null,
@@ -1575,6 +1607,22 @@
   "anchor": "can/579",
   "reason": "rule-g-editorial",
   "detail": "The page's reference to the amending act, in parentheses after the canon."
+ },
+ {
+  "id": "rm-1807",
+  "scope": "passage",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/579",
+  "passage_id": "3d4038d5-189a-52cc-91af-0a6e389a3129",
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: the current text has no English. Authenticum charismatis (2020), canon in Latin only.",
+  "tombstone": "Canon 579 was amended in 2020; no English translation is available.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.5b",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0878",
@@ -1615,6 +1663,22 @@
   "detail": "The page's bracketed reference to the amending act, after §1."
  },
  {
+  "id": "rm-1808",
+  "scope": "passage",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/695",
+  "passage_id": "11768aef-f4f6-5285-97d2-a1fe58dd720f",
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: the current text has no English. Recognitum Librum VI (2022), §1 in Latin only; §2 has English but a canon is never part English.",
+  "tombstone": "Canon 695 was amended in 2022; no English translation is available.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.5b",
+  "added_on": "2026-11-11"
+ },
+ {
   "id": "rm-0880",
   "scope": "span",
   "passage_id": null,
@@ -1651,6 +1715,38 @@
   "anchor": "can/700",
   "reason": "rule-g-editorial",
   "detail": "The page's note introducing the canon's 2023 text (\"In canon 700 CIC … the canon in question being formulated as follows:\"), and the guillemets quoting it."
+ },
+ {
+  "id": "rm-1809",
+  "scope": "passage",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/700",
+  "passage_id": "e985db15-6dde-58ad-9222-8e7c5cc1aeb8",
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: the current text has no English. Expedit ut iura (2023), canon in Latin only.",
+  "tombstone": "Canon 700 was amended in 2023; no English translation is available.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.5b",
+  "added_on": "2026-11-11"
+ },
+ {
+  "id": "rm-1810",
+  "scope": "passage",
+  "collection": "canon-law",
+  "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
+  "anchor": "can/868",
+  "passage_id": "8559e47c-c102-50bb-92b9-38f0636da9ce",
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: the current text has no English. De concordia inter Codices (2016); §3's only L'Osservatore Romano witness is unchecked against print, so the whole canon waits (NEEDS-CARTER C).",
+  "tombstone": "Canon 868 was amended in 2016; no English translation is available.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.5b",
+  "added_on": "2026-11-11"
  },
  {
   "id": "rm-0001",

@@ -16,6 +16,7 @@ from ingest.canon_law import (
     CanonText, Heading, _book_for, _respell, _spelling, amending_act, build_documents,
     choose_current, deduplicate_urls, history_year, parse_canon_page, read_pages,
 )
+from ingest.canon_overrides import NO_ENGLISH
 from registry import history_problems
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "canon-law")
@@ -305,7 +306,8 @@ def canons(doc):
 @vendored
 def test_canon_numbers_are_exactly_1_to_1752(doc, canons):
     current = [p.metadata["canon"] for p in doc.passages if p.superseded_by_anchor is None]
-    assert sorted(current) == list(range(1, 1753))
+    # Less the canons rule E retires (1.5b, tests/test_canon_overrides.py).
+    assert sorted(current) == [n for n in range(1, 1753) if n not in NO_ENGLISH]
     assert all(p.anchor == f"can/{n}" for n, p in canons.items())
     assert [p.position for p in doc.passages] == list(range(len(doc.passages)))
 
@@ -328,8 +330,9 @@ def test_history_passages(doc):
     assert history and not history_problems(doc)
     by = {p.anchor: p for p in history}
     assert "three years" in by["can/686/history-1983"].content
-    assert "ten days" in by["can/700/history-2022"].content
-    assert "confirmed by the Holy See" in by["can/700/history-1983"].content
+    assert "Apostolic See" in by["can/1308/history-1983"].content.split("\n")[0]
+    # A canon rule E retires keeps no history (1.5b): c. 700's two earlier texts are gone.
+    assert not [a for a in by if int(a.split("/")[1]) in NO_ENGLISH]
     for p in history:
         assert not p.searchable
         assert re.fullmatch(r"can/\d+/history-\d{4}", p.anchor)
@@ -357,7 +360,10 @@ def test_amended_list_equals_marker_list(canons):
     current, _ = choose_current(texts)
     marked = sorted(n for n, t in current.items() if t.marked)
     amended = sorted(n for n, p in canons.items() if p.metadata.get("amended"))
-    assert amended == marked
+    # 1.5b: the canons rule E retires have no passage, and the De concordia marriage
+    # canons, which the page prints unmarked in their 1983 English, are amended.
+    marriage = {1108, 1109, 1111, 1112, 1116, 1127}
+    assert amended == sorted((set(marked) - set(NO_ENGLISH)) | marriage)
     assert len(marked) == 27
 
 

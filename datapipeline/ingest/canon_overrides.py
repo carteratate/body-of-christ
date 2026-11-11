@@ -36,7 +36,9 @@ STATUSES = ("official", UNOFFICIAL_ENGLISH)
 CHANGES = ("replace", "add")
 
 DE_CONCORDIA = {
-    "title": "Apostolic Letter issued Motu Proprio De concordia inter Codices",
+    # As the canon pages title it (c. 111's amended_by).
+    "title": ("Apostolic Letter issued 'Motu Proprio' “De concordia inter Codices” "
+              "modifying some norms of the Code of Canon Law"),
     "url": "https://www.vatican.va/content/francesco/la/apost_letters/documents/"
            "papa-francesco-lettera-ap_20160531_de-concordia-inter-codices.html",
 }
@@ -57,6 +59,13 @@ ARTICLES = {
     10: (1116, "§3", "add"),
     11: (1127, "§1", "replace"),
 }
+# The canons whose new text the page prints, in Latin, with the 1983 English as its
+# earlier version (1.5a builds that history passage). The page prints the other De
+# concordia canons in their 1983 English as if current, so the adapter keeps that English
+# as their history passage.
+PAGE_PRINTS_LATIN = frozenset({111, 112, 535})
+TEXT_REPLACED = {True: "unofficial English replaces Latin",
+                 False: "2016 amendment, in unofficial English"}
 
 
 @dataclass(frozen=True)
@@ -81,6 +90,12 @@ NO_ENGLISH = {
                          "20230402-motu-proprio-expedit-ut-iura.html"),
     868: NoEnglish(2016, DE_CONCORDIA["url"]),
 }
+
+
+def latin_urls() -> dict[str, str]:
+    """Each retired canon's anchor and its Latin on vatican.va: the Code's
+    `metadata.official_latin_urls`, which the reader's notice links (2.4f)."""
+    return {f"can/{n}": NO_ENGLISH[n].latin_url for n in sorted(NO_ENGLISH)}
 
 
 def tombstone(canon: int) -> str:

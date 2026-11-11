@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 from checks.coverage import _PassageText, documents_by_file, match_key, measurable
 from checks.coverage import split_sentences
-from checks.source_text import PAPAL_COLLECTIONS, SourceUnit
+from checks.source_text import PAPAL_COLLECTIONS, SourceUnit, withheld_canons
 from identity import unit_anchor
 from ingest.bible import moves_by_code
 from ingest.pieces import unit_reference
@@ -171,7 +171,10 @@ _CANON_HEADING = re.compile(r"(?:^|[\n.])\s*n?Can\.\s*(\d+)")
 def canons(documents: list[Document]) -> SequenceResult:
     """Canons 1 to 1752 each the subject of exactly one passage anchored can/<n>, and
     no passage whose text holds another canon's "Can. <m>" heading. A canon whose
-    heading sits inside another canon's passage is reported as duplicated."""
+    heading sits inside another canon's passage is reported as duplicated. A canon the
+    removal registry retires for having no English (rule E, 1.5b) must have no passage:
+    it is not missing, and a passage for it is out of range."""
+    withheld = {int(n) for n in withheld_canons()}
     anchored: Counter = Counter()
     glued: list[str] = []
     for doc in documents:
@@ -185,9 +188,11 @@ def canons(documents: list[Document]) -> SequenceResult:
                     glued.append(h[1])
     duplicated = [str(n) for n in sorted(anchored) if anchored[n] > 1] + glued
     return SequenceResult(
-        missing=[str(n) for n in range(1, CANON_LAST + 1) if not anchored[n]],
+        missing=[str(n) for n in range(1, CANON_LAST + 1)
+                 if not anchored[n] and n not in withheld],
         duplicated=_numeric_sort(duplicated),
-        out_of_range=[str(n) for n in sorted(anchored) if not 1 <= n <= CANON_LAST])
+        out_of_range=[str(n) for n in sorted(anchored)
+                      if not 1 <= n <= CANON_LAST or n in withheld])
 
 
 # --------------------------------------------------------------------------- Summa

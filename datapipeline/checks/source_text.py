@@ -9,7 +9,9 @@ belongs to:
 - "toc": tables of contents and navigation links;
 - "heading": headings and titles;
 - "apparatus": page furniture that is none of the above (title pages, indexes, language
-  bars, site footers, the editor's introduction to a Bible book).
+  bars, site footers, the editor's introduction to a Bible book);
+- "withheld": the work's own text that rule E keeps out of the corpus because it has no
+  English (1.5b): Latin, and the canons the removal registry retires for it.
 
 Nothing here imports from `ingest/`, so a parser defect cannot hide itself by being
 shared. Where a sentence of body text is interrupted by a note, the note's position is
@@ -29,12 +31,14 @@ from typing import NamedTuple
 import defusedxml.ElementTree as ET
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
+from checks.language import latin_runs
+
 SOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sources")
 
 # Separates two stretches of text that must not be read as one sentence.
 SEGMENT_BREAK = "\u2029"
 
-REGIONS = ("body", "note", "toc", "heading", "apparatus")
+REGIONS = ("body", "note", "toc", "heading", "apparatus", "withheld")
 
 
 PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
@@ -126,6 +130,23 @@ def removed_paragraphs(path: str = REMOVALS_PATH) -> frozenset[str]:
                 if e.get("scope") == "span" and e.get("reason") == "rule-g-editorial"
                 and (e.get("span") or {}).get("sha1"))
     return _removed_paragraphs[path]
+
+
+_withheld_canons: dict[str, frozenset[str]] = {}
+
+
+def withheld_canons(path: str = REMOVALS_PATH) -> frozenset[str]:
+    """The canon numbers whose passage the removal registry retires because their current
+    text has no English (rule E, 1.5b)."""
+    if path not in _withheld_canons:
+        with open(path, encoding="utf-8") as f:
+            _withheld_canons[path] = frozenset(
+                e["anchor"].split("/")[1] for e in json.load(f)
+                if e.get("collection") == "canon-law" and e.get("scope") == "passage"
+                and e.get("reason") == "translation-in-preparation"
+                and re.fullmatch(r"can/\d+", e.get("anchor") or "")
+                and not e.get("closed_by"))
+    return _withheld_canons[path]
 
 
 def _paragraph_sha1(text: str) -> str:
@@ -451,7 +472,10 @@ def html_units(path: str, source_file: str | None = None,
     With `canon_law`, the amendment marker (a brown "n" beside an amended canon) is not
     text and is dropped, the page's notes on amendments (the marker legend, "Cf." lines,
     version headings) are notes, and a canon's bracketed reference to the amending act
-    is not its text, as the parser reads them (1.5a).
+    is not its text, as the parser reads them (1.5a). Body text rule E keeps out is
+    "withheld" (1.5b): a block holding a Latin run, and every block of a canon the removal
+    registry retires for having no English, from its "Can. N" block to the next canon or
+    heading, its superseded texts included.
 
     With `vatican2`, for the Vatican II pages of the councils collection, body text loses
     its footnote callers, as the parser's does (1.1)."""
@@ -471,6 +495,8 @@ def html_units(path: str, source_file: str | None = None,
 
     units: list[SourceUnit] = []
     rendered: list[int | None] = []
+    withheld = withheld_canons() if canon_law else frozenset()
+    canon: str | None = None
     in_notes = False
     seen_number = False
     last_number = 0
@@ -520,11 +546,17 @@ def html_units(path: str, source_file: str | None = None,
                 seen_number = True
         if in_notes and _SITE_CHROME.search(text):
             region = "apparatus"
+        if canon_law and region == "heading":
+            canon = None
         if canon_law and region == "body":
             if _CANON_NOTE.match(text):
                 region = "note"
             else:
+                if number and _CANON_NUMBER.match(text):
+                    canon = unit_id
                 body_text = _canon_respell(_CANON_ACT_REF.sub("", body_text))
+                if canon in withheld or latin_runs(body_text):
+                    region = "withheld"
         if vatican2 and region == "body":
             kept = _LEADING_NUMBER.sub("", raw, count=1) if number else raw
             body_text = _VAT2_CALLER.sub("", _FENCED.sub("", kept))
