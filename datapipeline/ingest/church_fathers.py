@@ -334,9 +334,9 @@ def _anf_chapters(filename, work, parent_map, editor):
             if w is not None:
                 if w.get("id") not in works:
                     works[w.get("id")] = _container_work(w, len(works) + 1)
-                # A chapter that is the work, or carries its name, needs no prefix.
-                prefix = _WORK_TITLE_FIX.get(w.get("id")) or _chapter_label(w)
-                if w is elem or _chapter_label(elem).casefold() == prefix.casefold():
+                # The label names the work, unless the chapter's own label already does.
+                prefix = works[w.get("id")].title
+                if _chapter_label(elem).casefold() == prefix.casefold():
                     prefix = None
                 plan = ChapterPlan(work_key=w.get("id"), work_label=prefix)
         else:
@@ -349,7 +349,8 @@ def _anf_chapters(filename, work, parent_map, editor):
                                          title=title)
                 label = re.sub(r"^(?:The )?Preface$", "Preface",
                                re.sub(r"^Chap\. ", "Chapter ", _chapter_label(elem)))
-                plan = ChapterPlan(label=label, work_key=holder, work_label=prefix)
+                plan = ChapterPlan(label=label, work_key=holder, work_label=prefix,
+                                   cites=title)
         chapters.append((book, elem, plan))
     opening = _opening(filename, work) if chapters else None
     if opening:

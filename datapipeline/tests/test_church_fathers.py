@@ -278,3 +278,15 @@ def test_epitome_is_its_own_work(fathers):
     assert {p.work_key for p in epitome} == {"iii.ii.viii"}
     assert [w.title for w in d.works] == ["Epitome of the Divine Institutes"]
     assert all(p.chapter_label.startswith("Epitome · ") for p in epitome)
+    assert all(p.reference.startswith("Epitome of the Divine Institutes, ") for p in epitome)
+    assert not [p.reference for p in epitome if "The Divine Institutes" in p.reference]
+
+
+def test_container_labels_name_their_work(fathers):
+    d = _doc(fathers, "third-century-2.xml#iv.v")
+    assert d.passages[0].chapter_label.startswith("On the Unity of the Church · ")
+    letters = _doc(fathers, "third-century-2.xml#iv.iv")
+    labels = {p.chapter_label for p in letters.passages if p.work_key == "iv.iv.lxxiv"}
+    assert labels == {"Firmilian of Caesarea, to Cyprian · Epistle LXXIV"}
+    assert {p.chapter_label for p in letters.passages if p.work_key == "iv.iv.i"} \
+        == {"Epistle I"}

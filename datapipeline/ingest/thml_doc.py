@@ -34,6 +34,8 @@ class ChapterPlan:
     anchor: str | None = None       # the unit's anchor, in place of the div id
     work_key: str | None = None     # the work of a container document it belongs to (D6)
     work_label: str | None = None   # set before the book in the label, as a book is
+    cites: str | None = None        # the title its reference cites in place of the
+                                    # document's: a work inside another (C-15)
     any_length: bool = False        # kept however short (a letter's greeting)
 
 
@@ -187,7 +189,9 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
                     piece_meta["footnotes"] = refs
             passages.append(Passage(
                 content=content,
-                reference=piece_reference(_reference(title, label), None, None,
+                reference=piece_reference(
+                    _reference(plan.cites, " · ".join(x for x in (book_clean, core) if x))
+                    if plan.cites else _reference(title, label), None, None,
                                           k, len(parts)),
                 anchor=anchor, chapter_key=ch_key, chapter_label=label,
                 position=pos, unit_label=None, metadata=piece_meta, source_units=units,
