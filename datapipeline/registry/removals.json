@@ -26189,6 +26189,22 @@
   "added_on": "2026-11-09"
  },
  {
+  "id": "rm-1804",
+  "scope": "passage",
+  "collection": "councils",
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "anchor": "council-of-trent/sec-0/21",
+  "passage_id": "b752e937-aa0b-5c7c-9ec2-38c1a0190d42",
+  "reason": "debris",
+  "detail": "Website text, not the Council's: a web editor's advert (C-05)",
+  "tombstone": "This card held website text, not the Council's.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.2b",
+  "added_on": "2026-11-10"
+ },
+ {
   "id": "rm-0612",
   "scope": "passage",
   "collection": "councils",

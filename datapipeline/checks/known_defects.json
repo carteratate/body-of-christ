@@ -24,10 +24,6 @@
   "fixed_by": "1.8e",
   "description": "91.57% covered: whole works holding their text directly in a div dropped (1.8e), pre-chapter greetings (1.8c), and <verse> blocks (1.10b)"
  },
- "coverage.councils.ecum-19-council-of-trent.html": {
-  "fixed_by": "1.2b",
-  "description": "38.67% covered: text inside lists and divs dropped"
- },
  "coverage.medieval.proslogium-monologium-and-cur-deus-homo.xml": {
   "fixed_by": "5.6b",
   "description": "88.36% covered: Anselm's own prefaces (1.9) and Gaunilo's reply with Anselm's answer (5.6b) dropped"
@@ -60,10 +56,6 @@
  "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/TP_Q16_A3/p3": {
   "fixed_by": "1.7",
   "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
- },
- "health.R10_site_boilerplate:councils/e33e591b-9e2e-5059-974f-28c8e4ab6aae#council-of-trent/sec-0/21": {
-  "fixed_by": "1.2b",
-  "description": "Council of Trent: website text in the passage (C-05)"
  },
  "health.R12_note_caller:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
   "fixed_by": "1.8b",
@@ -120,11 +112,6 @@
   "description": "Moral Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
   "units": ["Moral Treatises of St. Augustin, Section 1", "Moral Treatises of St. Augustin, Section 10", "Moral Treatises of St. Augustin, Section 11", "Moral Treatises of St. Augustin, Section 11 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 11 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 12", "Moral Treatises of St. Augustin, Section 13", "Moral Treatises of St. Augustin, Section 14", "Moral Treatises of St. Augustin, Section 15", "Moral Treatises of St. Augustin, Section 16", "Moral Treatises of St. Augustin, Section 17", "Moral Treatises of St. Augustin, Section 18", "Moral Treatises of St. Augustin, Section 19", "Moral Treatises of St. Augustin, Section 2", "Moral Treatises of St. Augustin, Section 20", "Moral Treatises of St. Augustin, Section 21", "Moral Treatises of St. Augustin, Section 21 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 21 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 22", "Moral Treatises of St. Augustin, Section 23", "Moral Treatises of St. Augustin, Section 24", "Moral Treatises of St. Augustin, Section 25", "Moral Treatises of St. Augustin, Section 26", "Moral Treatises of St. Augustin, Section 27", "Moral Treatises of St. Augustin, Section 28", "Moral Treatises of St. Augustin, Section 29", "Moral Treatises of St. Augustin, Section 3", "Moral Treatises of St. Augustin, Section 30", "Moral Treatises of St. Augustin, Section 31", "Moral Treatises of St. Augustin, Section 32", "Moral Treatises of St. Augustin, Section 33", "Moral Treatises of St. Augustin, Section 34", "Moral Treatises of St. Augustin, Section 34 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 34 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 35", "Moral Treatises of St. Augustin, Section 36", "Moral Treatises of St. Augustin, Section 37", "Moral Treatises of St. Augustin, Section 38", "Moral Treatises of St. Augustin, Section 39", "Moral Treatises of St. Augustin, Section 4", "Moral Treatises of St. Augustin, Section 4 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 4 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 40", "Moral Treatises of St. Augustin, Section 40 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 40 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 41", "Moral Treatises of St. Augustin, Section 42", "Moral Treatises of St. Augustin, Section 43", "Moral Treatises of St. Augustin, Section 5", "Moral Treatises of St. Augustin, Section 6", "Moral Treatises of St. Augustin, Section 7", "Moral Treatises of St. Augustin, Section 8", "Moral Treatises of St. Augustin, Section 8 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 8 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 9", "Moral Treatises of St. Augustin, Section 9 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 9 (part 2 of 2)", "Moral Treatises of St. Augustin, Translator’s Preface"]
  },
- "labels.unique_reference:councils/e33e591b-9e2e-5059-974f-28c8e4ab6aae": {
-  "fixed_by": "1.2b",
-  "description": "Council of Trent: units cited alike (prose sections flushed as several units under one heading, or numbers read twice); rebuilt by the council's own item",
-  "units": ["Council of Trent — Text", "Council of Trent — Text (part 1 of 2)", "Council of Trent — Text (part 2 of 2)", "Council of Trent, Canon II", "Council of Trent, Canon III", "Council of Trent, Canon IV", "Council of Trent, Canon IX", "Council of Trent, Canon V", "Council of Trent, Canon VI", "Council of Trent, Canon VII", "Council of Trent, Canon VIII", "Council of Trent, Canon X", "Council of Trent, Canon XI", "Council of Trent, Canon XII", "Council of Trent, Canon XIII", "Council of Trent, Canon XIV", "Council of Trent, Canon XV"]
- },
  "labels.unique_reference:medieval/82d38756-6fba-5af7-9905-fd508a620f38": {
   "fixed_by": "1.9",
   "description": "Anselm's Cur Deus Homo: chapter labels lack their book (\"Chapter I\" in each book); 1.9 labels them \"Book First · Chapter I\" (Carter, 2 Nov 2026)",
@@ -147,10 +134,6 @@
  "sentinel.summa_i_q72": {
   "fixed_by": "1.7",
   "description": "Part I q.72 holds its article directly in the div3"
- },
- "sentinel.trent_total": {
-  "fixed_by": "1.2b",
-  "description": "Trent loses text inside lists and divs"
  },
  "sequence.bible_verses.duplicated:ESG/8": {
   "fixed_by": "1.4a",

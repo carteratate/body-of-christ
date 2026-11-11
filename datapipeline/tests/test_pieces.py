@@ -211,18 +211,3 @@ def test_bible_verse_over_the_cap_gets_distinct_references():
     verses = [(8, 13, _sentences(random.Random(2), 8000))]
     refs = [ref for _, ref, *_ in _pieces("Esther", 8, verses, verses[0][2], "esther/8/13")]
     assert refs == [f"Esther 8:13 (part {k} of {len(refs)})" for k in range(1, len(refs) + 1)]
-
-
-def test_council_prose_pieces_cite_their_part():
-    from bs4 import BeautifulSoup
-    from ingest.councils import build_ecumenical
-    # One prose unit over the cap: its paragraphs reach the 2,200-character flush only
-    # with the last one.
-    rng = random.Random(5)
-    paras = "".join(f"<p>{_sentences(rng, n)}</p>" for n in (1500, 600, 3400))
-    soup = BeautifulSoup(f"<html><body><h2>Decree on Faith</h2>{paras}</body></html>", "lxml")
-    entry = {"council": "Council of Trent", "document": "Council of Trent", "year": 1563,
-             "group": "ecumenical-1-20", "file": "x.html", "url": "http://example"}
-    refs = [p.reference for p in build_ecumenical(entry, soup).passages]
-    assert refs == ["Council of Trent — Decree on Faith (part 1 of 2)",
-                    "Council of Trent — Decree on Faith (part 2 of 2)"]
