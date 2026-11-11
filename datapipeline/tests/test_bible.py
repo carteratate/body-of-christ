@@ -933,10 +933,8 @@ def test_vendored_deutero_passage_sizes(vendored_docs):
 def test_every_old_deutero_passage_redirects_to_its_first_verse(vendored_docs):
     """Each chapter's first passage keeps its anchor and the ID frozen for it; every other
     row of the seven books that is not built is redirected (`split` or `merged`) to the
-    passage holding its first verse, and every open redirect into them lands on a built
-    passage. The first verse is the one users see: `wisdom/14/1/from-14-19` keeps the ID of
-    the live piece that opens at 14:27 (1.10c named it by where its build cut, unpublished)."""
-    live_opening = {"wisdom/14/1/from-14-19": (14, 27)}
+    passage holding its first verse. A row never published opens where its anchor says;
+    a live one is checked against its live text (the next test)."""
     reg = registry.current()
     open_from = {r["old_passage_id"]: r for r in registry.open_redirects(reg)}
     for name in _PARAGRAPH_BOOK_TITLES:
@@ -956,7 +954,52 @@ def test_every_old_deutero_passage_redirects_to_its_first_verse(vendored_docs):
             target = built[redirect["new_anchor"]]
             if redirect.get("added_by") == "1.4c":
                 assert redirect["kind"] in ("split", "merged")
-                parts = row["anchor"].split("/")
-                c, v = (parts[3].split("-")[1:3] if len(parts) > 3 else parts[1:3])
-                opening = live_opening.get(row["anchor"], (int(c), int(v)))
-                assert opening in _held(target), (row["anchor"], target.anchor)
+                if row["frozen_on"] != "2026-10-30":
+                    parts = row["anchor"].split("/")
+                    c, v = (parts[3].split("-")[1:3] if len(parts) > 3 else parts[1:3])
+                    assert (int(c), int(v)) in _held(target), (row["anchor"], target.anchor)
+
+
+_SNAPSHOT = os.path.join(_ROOT, "releases", "snapshots", "2026-10-31", "passages.jsonl.gz")
+
+
+@pytest.mark.skipif(not (_vendored and os.path.exists(_SNAPSHOT)),
+                    reason="WEB-C USFM or the 31 Oct 2026 snapshot not here")
+def test_live_deutero_passages_redirect_to_their_live_opening_verse(vendored_docs):
+    """Every open redirect from a live passage of the seven books lands on the passage
+    holding the first verse of the text users saw. A live piece (`tobit/1/1-2`) carries
+    the chapter's unit_label; it opens on its first verse marker, or, opening inside a
+    verse, continues the last verse of the live passage before it (Tobit 1:22)."""
+    import gzip
+    import json
+    import re
+    ids = {vendored_docs[name].id: name for name in _PARAGRAPH_BOOK_TITLES}
+    live: dict[str, list[dict]] = {}
+    with gzip.open(_SNAPSHOT, "rt", encoding="utf-8") as fh:
+        for line in fh:
+            p = json.loads(line)
+            if p["document_id"] in ids:
+                live.setdefault(p["document_id"], []).append(p)
+    opening: dict[str, tuple[int, int]] = {}
+    for passages in live.values():
+        last = None
+        for p in sorted(passages, key=lambda p: p["position"]):
+            chapter = int(p["chapter_key"].rsplit("/", 1)[1])
+            markers = [int(n) for n in re.findall(r"\{\{v:(\d+)\}\}", p["content"])]
+            piece = "-" in p["anchor"].rsplit("/", 1)[1] and not p["anchor"].endswith("-1")
+            if p["content"].startswith("{{v:"):
+                first = markers[0]
+            elif piece:
+                first = last[1]
+            else:
+                first = int(p["unit_label"])
+            opening[p["id"]] = (chapter, first)
+            last = (chapter, (markers or [first])[-1])
+    checked = 0
+    for r in registry.open_redirects(registry.current()):
+        if r["document_id"] in ids and r["old_passage_id"] in opening:
+            target = next(p for p in vendored_docs[ids[r["document_id"]]].passages
+                          if p.anchor == r["new_anchor"])
+            assert opening[r["old_passage_id"]] in _held(target), (r["old_anchor"], target.anchor)
+            checked += 1
+    assert checked == 73
