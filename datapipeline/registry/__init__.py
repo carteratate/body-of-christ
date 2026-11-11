@@ -65,6 +65,9 @@ TOMBSTONE_MAX = 300
 OVERRIDES = ("searchable", "language", "passage_author", "voice", "unit_label", "note")
 
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+# A rule-B removal with no Church act rests on the majority of standard scholarship, which
+# its detail states (Carter, 11 Nov 2026).
+_SCHOLARLY_BASIS = re.compile(r"\bscholarship\b", re.IGNORECASE)
 
 
 # --------------------------------------------------------------------------- loading
@@ -508,7 +511,11 @@ def _validate_removals(registry: WorkRegistry, documents: dict) -> list[str]:
                     out.append(f"removal {name}: anchor {key[1]} is also a redirect target")
         if reason in ("rule-a", "rule-b"):
             act = e.get("church_act")
-            if not act:
+            if not act and reason == "rule-b":
+                if not _SCHOLARLY_BASIS.search(e.get("detail") or ""):
+                    out.append(f"removal {name}: a rule-b removal cites its Church act, or "
+                               "states its scholarly basis in its detail")
+            elif not act:
                 out.append(f"removal {name}: a {reason} removal cites its Church act")
             else:
                 out += [f"removal {name}: {p}" for p in _act_problems(act, effect=False)]

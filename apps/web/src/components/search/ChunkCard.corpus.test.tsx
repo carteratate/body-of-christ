@@ -183,6 +183,24 @@ describe("removed passage", () => {
     expect(screen.queryByRole("link", { name: "Open in Context" })).toBeNull();
   });
 
+  it("shows a forgery removed on scholarship with no Church act line", async () => {
+    renderCard(result({
+      status: "removed",
+      content: "",
+      tombstone: {
+        entity: "passage", rule: "B", reason_code: "rule-b",
+        public_reason: "Removed because most scholars judge this longer version the work of a heterodox compiler, not Ignatius.",
+        church_act: null,
+        retired_at: "2026-12-01T00:00:00Z",
+        title: "Epistle to the Ephesians", author: "Ignatius of Antioch", reference: null,
+      },
+    }, { document_title: "Epistle to the Ephesians", author: "Ignatius of Antioch", reference: null }));
+    await expand();
+    const card = screen.getByTestId("removed-chunk-card");
+    expect(within(card).getByText(/heterodox compiler/)).toBeTruthy();
+    expect(within(card).queryByText(/Church act:/)).toBeNull();
+  });
+
   it("links to where a held text can still be read", async () => {
     renderCard(result({
       status: "removed",
