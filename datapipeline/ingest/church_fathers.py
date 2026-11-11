@@ -126,6 +126,8 @@ _LETTER_SENDERS = {
     "iv.iv.lxxviii": ("Lucius and the brethren with him", "Cyprian"),
     "iv.iv.lxxix": ("Felix, Jader, Polianus and the martyrs at the mines", "Cyprian"),
 }
+# Epistle XXX: written by Novatian for the Roman clergy, credited to no one (above).
+_UNCREDITED_LETTERS = frozenset({"iv.iv.xxx"})
 # A work inside a document that is otherwise one work (C-15), by (file, document div):
 # {work div: (title, label prefix)}.
 _EMBEDDED_WORKS = {
@@ -297,7 +299,8 @@ def _container_work(div, ordinal: int) -> Work:
         return Work(work_key=key, ordinal=ordinal, title=f"{sender[0]}, to {sender[1]}",
                     author=sender[0])
     if key.startswith("iv.iv.") and div.get("shorttitle"):      # one of Cyprian's letters
-        return Work(work_key=key, ordinal=ordinal, title=smart_title_case(div.get("shorttitle")))
+        return Work(work_key=key, ordinal=ordinal, title=smart_title_case(div.get("shorttitle")),
+                    author=None if key in _UNCREDITED_LETTERS else "Cyprian")
     return Work(work_key=key, ordinal=ordinal,
                 title=_WORK_TITLE_FIX.get(key) or _work_title(div))
 
@@ -306,6 +309,12 @@ def _anf_chapters(filename, work, parent_map, editor):
     """(chapters with their plans, works) for one ANF work div."""
     key = (filename, work.get("id"))
     if key in _WHOLE_WORK_DIVS:
+        # Its child divs are the editor's (Asterius's Elucidation): skipped, and so
+        # recorded for the removal registry (1.8a). Any other would be text lost.
+        for div in work:
+            if isinstance(div.tag, str) and div.tag.startswith("div") and not editor.skip(div):
+                raise ValueError(f"{filename}#{div.get('id')}: a whole work's child div "
+                                 "that is not an editor's")
         sections = [s for s in _sections(work, parent_map) if not editor.skip(s)]
         return [(None, s, ChapterPlan(label=_heading_label(s.get("title"))))
                 for s in sections], []

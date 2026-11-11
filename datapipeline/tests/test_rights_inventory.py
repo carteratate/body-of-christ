@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "51fff3a71a9caddc8c332bb0942d9df6"   # 420 since 1.8a: Asterius Urbanus
+LIVE_DOCUMENT_IDS_MD5 = "851d07063f85e4c612be1b2d44b695fb"   # 421: 1.8c restored Asterius
 
 
 def test_every_entry_has_required_fields_and_known_status():

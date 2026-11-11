@@ -350,7 +350,8 @@ def sync_note_counts(removals: list[dict], documents: list, today: str) -> None:
     counts = {d.id: sum((p.metadata or {}).get("editor_note_count", 0) for p in d.passages)
               for d in documents}
     for e in removals:
-        if e.get("added_by") != "1.10b" or e["scope"] != "class" or e.get("closed_by") \
+        if e["scope"] != "class" or (e.get("span") or {}).get("rule") != \
+                "common._p_text_without_notes" or e.get("closed_by") \
                 or e["collection"] != COLLECTION:
             continue
         n = counts.get(e["document_id"], 0)
