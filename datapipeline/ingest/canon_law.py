@@ -2,7 +2,10 @@
 
 Reads the vendored vatican.va canon pages from sources/canon-law/ and builds a
 single Document with one Passage per canon, plus one unsearchable history passage
-for each superseded text a page prints (rule F, D11; item 1.5a).
+for each superseded text a page prints (rule F, D11; item 1.5a). Canons whose current
+text the page lacks in English are then fixed by `canon_overrides` (1.5b): the De
+concordia inter Codices canons take an unofficial English, and the canons with no
+English are not built at all (rule E).
 
 Each page is read in two steps, segment first and then match: every block (a <p>,
 or a loose "Can. N" run outside any <p>) is split at its <br>s, the amendment
@@ -28,6 +31,7 @@ from dataclasses import dataclass, field
 from bs4 import BeautifulSoup, NavigableString, Tag
 
 from identity import anchor as make_anchor
+from ingest import canon_overrides
 from model import Document, Passage
 from normalize.caps import smart_title_case
 from normalize.text import clean_text
@@ -532,10 +536,28 @@ def build_documents() -> list[Document]:
         if cur is not None and not cur.acts and not cur.note_acts:
             cur.note_acts = [a for o in olds for a in o.note_acts]
     fixes = _spelling()
+    overrides = canon_overrides.load()
 
     did = resolve_document_id("canon-law", "canon-law", ("canon-law",))
     passages: list[Passage] = []
+
+    def add_history(num: int, year: int, content: str, key: str, label: str,
+                    levels: dict) -> None:
+        passages.append(Passage(
+            content=content,
+            reference=f"Code of Canon Law, Can. {num} (text in force from {year})",
+            anchor=f"can/{num}/history-{year}",
+            chapter_key=key, chapter_label=label,
+            position=len(passages), unit_label=f"Can. {num} (text in force from {year})",
+            metadata={"book": _book_for(num), **levels, "canon": num,
+                      "history_of": num, "in_force_from": year},
+            searchable=False, superseded_by_anchor=make_anchor("can", num)))
+
     for num in sorted(current):
+        if num in canon_overrides.NO_ENGLISH:
+            # Rule E (1.5b): no English for its current text, so no passage, current or
+            # history; the removal registry retires the live one with a tombstone.
+            continue
         cur = current[num]
         key, label, levels = _path_parts(num, cur.path)
         meta = {"book": _book_for(num), **levels, "canon": num}
@@ -545,8 +567,24 @@ def build_documents() -> list[Document]:
             meta["amended_by"] = {"title": act.title, "url": act.url} if act else None
         if num in _TEXT_REPLACED:
             meta["text_replaced"] = "current text replaces superseded version"
+        content = _respell(num, clean_text(cur.content), fixes)
+        superseded_english = None
+        if num in overrides:
+            page_latin = num in canon_overrides.PAGE_PRINTS_LATIN
+            if page_latin != bool(history.get(num)) or page_latin != cur.marked:
+                raise ValueError(f"canon {num}: the page's versions do not match "
+                                 "canon_overrides.PAGE_PRINTS_LATIN")
+            if not page_latin:
+                # The page prints the 1983 English as current: it becomes history.
+                superseded_english = content
+                meta["amended"] = True
+                meta["amended_by"] = dict(canon_overrides.DE_CONCORDIA)
+            content = canon_overrides.apply(num, content, overrides[num])
+            meta["text_status"] = canon_overrides.UNOFFICIAL_ENGLISH
+            meta["official_latin_url"] = overrides[num][0].official_latin_url
+            meta["text_replaced"] = canon_overrides.TEXT_REPLACED[page_latin]
         passages.append(Passage(
-            content=_respell(num, clean_text(cur.content), fixes),
+            content=content,
             reference=f"Code of Canon Law, Can. {num}",
             anchor=make_anchor("can", num),
             chapter_key=key, chapter_label=label,
@@ -557,19 +595,19 @@ def build_documents() -> list[Document]:
             if year in seen:
                 raise ValueError(f"canon {num}: two superseded texts from {year}")
             seen.add(year)
-            passages.append(Passage(
-                content=_respell(num, clean_text(old.content), fixes),
-                reference=f"Code of Canon Law, Can. {num} (text in force from {year})",
-                anchor=f"can/{num}/history-{year}",
-                chapter_key=key, chapter_label=label,
-                position=len(passages), unit_label=f"Can. {num} (text in force from {year})",
-                metadata={"book": _book_for(num), **levels, "canon": num,
-                          "history_of": num, "in_force_from": year},
-                searchable=False, superseded_by_anchor=make_anchor("can", num)))
+            add_history(num, year, _respell(num, clean_text(old.content), fixes),
+                        key, label, levels)
+        if superseded_english is not None:
+            add_history(num, _CODE_YEAR, superseded_english, key, label, levels)
+    missing = (set(overrides) | set(canon_overrides.NO_ENGLISH)) - set(current)
+    if missing:
+        raise ValueError(f"canons {sorted(missing)} are overridden or retired but not built")
     return [Document(id=did, collection="canon-law", title="Code of Canon Law (1983)",
                      author="Catholic Church", year=1983,
                      metadata={"source": "vatican.va", "source_key": "canon-law",
-                               "anchor_scheme": ANCHOR_SCHEME},
+                               "anchor_scheme": ANCHOR_SCHEME,
+                               "official_latin_urls": canon_overrides.latin_urls()},
+                     notes=canon_overrides.document_note(),
                      passages=passages)]
 
 
