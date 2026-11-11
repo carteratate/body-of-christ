@@ -28,11 +28,13 @@ from ingest.bible import (
     Pericope,
     build_documents,
     check_complete,
+    group_paragraphs,
     group_verses,
     load_pericopes,
     load_usfm_directory,
     load_versification,
     parse_usfm_file,
+    parse_usfm_paragraph_starts,
     parse_usfm_prologue,
     parse_usfm_titles,
 )
@@ -477,7 +479,8 @@ def test_sirach_prologue_is_its_own_passage(tmp_path):
     assert prologue.content == "WHEREAS many and great things have been delivered to us by the law."
     # WEB-C's own introduction is not Scripture and reaches no passage.
     assert all("Deuterocanonical" not in p.content for p in sirach.passages)
-    assert (chapter.anchor, chapter.reference, chapter.position) == ("sirach/1/1", "Sirach 1", 1)
+    assert (chapter.anchor, chapter.reference, chapter.position) == \
+        ("sirach/1/1", "Sirach 1:1–2", 1)
 
 
 def test_check_complete_raises_on_a_lost_verse_or_prologue():
@@ -508,6 +511,109 @@ def test_parse_usfm_titles_and_prologue(tmp_path):
 # ---------------------------------------------------------------------------
 # 1.4b: Nova Vulgata numbering
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Deuterocanonical paragraph passages (1.4c)
+# ---------------------------------------------------------------------------
+
+def _prose(words: int, seed: str) -> str:
+    return " ".join(f"{seed}{i}" for i in range(words)) + "."
+
+
+def _tobit(paragraphs_by_chapter: dict[int, list[list[int]]]) -> str:
+    """Tobit USFM: each chapter's paragraphs, each paragraph a list of verse sizes in
+    words (about 7 characters a word)."""
+    lines = [r"\id TOB"]
+    for chapter, paragraphs in paragraphs_by_chapter.items():
+        lines.append(rf"\c {chapter}")
+        verse = 0
+        for paragraph in paragraphs:
+            lines.append(r"\p")
+            for words in paragraph:
+                verse += 1
+                lines.append(rf"\v {verse} {_prose(words, f'w{chapter}x{verse}x')}")
+    return "\n".join(lines) + "\n"
+
+
+def _verses_of(p) -> list[int]:
+    import re
+    return [int(p.unit_label)] + [int(n) for n in re.findall(r"\{\{v:(\d+)\}\}", p.content)]
+
+
+def test_parse_usfm_paragraph_starts(tmp_path):
+    path = tmp_path / "41-TOB.usfm"
+    path.write_text(textwrap.dedent(r"""
+        \id TOB
+        \c 1
+        \v 1 One.
+        \v 2 Two.
+        \p
+        \v 3 Three, a long verse whose last words
+        \p open a paragraph.
+        \v 4 Four.
+        \v 5 Five,
+        \p and a paragraph that holds most of verse five.
+        \v 6 Six.
+        \b
+        \q1
+        \v 7 Seven,
+        \b
+        \q1 still seven and most of it after the stanza break.
+        \v 8 Eight.
+        \c 2
+        \p A heading-like line before the first verse.
+        \v 1 One.
+    """).lstrip(), encoding="utf-8")
+    # A verse a break falls inside goes with the paragraph holding most of it: verse 3
+    # stays before its break, so verse 4 opens; verses 5 and 7 open theirs. A chapter's
+    # first verse always opens one.
+    assert parse_usfm_paragraph_starts(str(path)) == {(1, 1), (1, 3), (1, 4), (1, 5), (1, 7),
+                                                       (2, 1)}
+
+
+def test_deutero_groups_paragraphs_within_cap(tmp_path):
+    # Eight paragraphs of about 400 characters: grouped two or three to a passage, each
+    # within 600 to 1,800 characters, none cut inside a paragraph, all untitled.
+    world = _world(tmp_path, {"41-TOB.usfm": _tobit({1: [[30, 25]] * 8})}, [])
+    tobit = _build(world)["Tobit"]
+    assert len(tobit.passages) > 1
+    starts = {1 + 2 * k for k in range(8)}
+    verses = []
+    for p in tobit.passages:
+        assert 600 <= len(p.content) <= 1800, (p.reference, len(p.content))
+        held = _verses_of(p)
+        assert held[0] in starts and held[-1] + 1 in starts | {17}
+        assert p.anchor == f"tobit/1/{held[0]}"
+        assert p.reference == f"Tobit 1:{held[0]}–{held[-1]}"
+        assert "pericope" not in p.metadata
+        verses += held
+    assert verses == list(range(1, 17))
+
+
+def test_deutero_never_crosses_chapter(tmp_path):
+    # Chapter 1 ends in a short paragraph and chapter 2 opens with one: each stays in its
+    # own chapter, joined to its neighbour there rather than left under 300 characters.
+    world = _world(tmp_path, {"41-TOB.usfm": _tobit({1: [[60, 60], [10]], 2: [[10], [60, 60]]})},
+                   [])
+    tobit = _build(world)["Tobit"]
+    assert [(p.anchor, p.reference) for p in tobit.passages] == \
+        [("tobit/1/1", "Tobit 1:1–3"), ("tobit/2/1", "Tobit 2:1–3")]
+    for p in tobit.passages:
+        assert p.chapter_key == f"tobit/{p.anchor.split('/')[1]}"
+
+
+def test_deutero_short_paragraph_joins_a_long_one_rather_than_stand_alone():
+    # A paragraph over 1,800 characters stands alone, but a paragraph under 300 beside
+    # it joins it rather than be a passage of its own (Tobit 14:1-2).
+    from ingest.bible import _group_content
+    verses = [Verse("Tobit", 14, 1, _prose(30, "a"))] + \
+        [Verse("Tobit", 14, v, _prose(80, f"b{v}")) for v in range(2, 8)] + \
+        [Verse("Tobit", 14, v, _prose(80, f"c{v}")) for v in range(8, 10)]
+    groups = group_paragraphs(verses, {(14, 1), (14, 2), (14, 8)})
+    assert [[v for _, v, _ in g.verses] for g in groups] == [[1, 2, 3, 4, 5, 6, 7], [8, 9]]
+    sizes = [len(_group_content(g.verses)) for g in groups]
+    assert sizes[0] > 2200 and 600 <= sizes[1] <= 1800, sizes
+
 
 _NV = "Nova Vulgata"
 
@@ -779,3 +885,125 @@ def test_every_old_joel_malachi_and_jonah_passage_has_a_redirect(vendored_docs):
     kinds = {r["old_anchor"]: r["kind"] for r in open_from.values()
              if r["old_anchor"] in ("joel/2/28", "jonah/1/11", "jonah/2/1")}
     assert kinds == {"joel/2/28": "renumbered", "jonah/1/11": "split", "jonah/2/1": "merged"}
+
+
+_PARAGRAPH_BOOK_TITLES = ("Tobit", "Judith", "Wisdom", "Sirach", "Baruch", "1 Maccabees",
+                          "2 Maccabees")
+
+
+def _held(p) -> list[tuple[int, int]]:
+    import re
+    chapter = int(p.chapter_key.rsplit("/", 1)[1])
+    return [(chapter, int(p.unit_label))] + \
+        [(chapter, int(v)) for v in re.findall(r"\{\{v:(\d+)\}\}", p.content)]
+
+
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_vendored_deutero_passage_sizes(vendored_docs):
+    """Every passage of the seven books is 300 to 2,200 characters, except one holding a
+    paragraph longer than that. Wisdom 15:7-19 can meet neither bound (297 characters
+    after a paragraph of 2,022): Carter approved joining them as one passage of 2,329
+    characters (11 Nov 2026, NEEDS-CARTER.md)."""
+    from ingest.bible import PARAGRAPH_CEILING, _group_content
+    approved_exceptions = {"Wisdom 15:7–19": 2329}
+    books = load_usfm_directory(os.path.join(_ROOT, "sources", "bible", "eng-web-c_usfm"))
+    for name in _PARAGRAPH_BOOK_TITLES:
+        book = books[name]
+        paragraph_of, sizes, current = {}, [], []
+        for v in book.verses:
+            if (v.chapter, v.verse) in book.paragraph_starts or not current \
+                    or current[-1][0] != v.chapter:
+                if current:
+                    sizes.append(len(_group_content(current)))
+                current = []
+            current.append((v.chapter, v.verse, v.text))
+            paragraph_of[(v.chapter, v.verse)] = len(sizes)
+        sizes.append(len(_group_content(current)))
+        for p in vendored_docs[name].passages:
+            if p.anchor.endswith("/prologue"):
+                continue
+            assert p.anchor == f"{p.chapter_key}/{p.unit_label}" or "/from-" in p.anchor
+            assert "pericope" not in p.metadata and p.reference.startswith(f"{name} ")
+            longest = max(sizes[paragraph_of[k]] for k in _held(p))
+            assert 300 <= len(p.content) <= 2200 or longest > PARAGRAPH_CEILING \
+                or approved_exceptions.get(p.reference) == len(p.content), \
+                (p.reference, len(p.content))
+        assert len(vendored_docs[name].passages) > \
+            {"Tobit": 16, "Judith": 25, "Wisdom": 25, "Sirach": 60, "Baruch": 12,
+             "1 Maccabees": 47, "2 Maccabees": 37}[name]
+
+
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_every_old_deutero_passage_redirects_to_its_first_verse(vendored_docs):
+    """Each chapter's first passage keeps its anchor and the ID frozen for it; every other
+    row of the seven books that is not built is redirected (`split` or `merged`) to the
+    passage holding its first verse. A row never published opens where its anchor says;
+    a live one is checked against its live text (the next test)."""
+    reg = registry.current()
+    open_from = {r["old_passage_id"]: r for r in registry.open_redirects(reg)}
+    for name in _PARAGRAPH_BOOK_TITLES:
+        doc = vendored_docs[name]
+        built = {p.anchor: p for p in doc.passages}
+        rows = [r for r in reg.passages if r["document_id"] == doc.id]
+        chapters = {p.chapter_key for p in doc.passages if not p.anchor.endswith("/prologue")}
+        for key in chapters:
+            first = next(r for r in rows if r["anchor"] == f"{key}/1")
+            assert first["status"] == "active" and first["frozen_on"] == "2026-10-30", key
+        for row in rows:
+            if row["anchor"] in built:
+                assert row["status"] == "active", row["anchor"]
+                continue
+            assert row["status"] == "redirected", row["anchor"]
+            redirect = open_from[row["passage_id"]]
+            target = built[redirect["new_anchor"]]
+            if redirect.get("added_by") == "1.4c":
+                assert redirect["kind"] in ("split", "merged")
+                if row["frozen_on"] != "2026-10-30":
+                    parts = row["anchor"].split("/")
+                    c, v = (parts[3].split("-")[1:3] if len(parts) > 3 else parts[1:3])
+                    assert (int(c), int(v)) in _held(target), (row["anchor"], target.anchor)
+
+
+_SNAPSHOT = os.path.join(_ROOT, "releases", "snapshots", "2026-10-31", "passages.jsonl.gz")
+
+
+@pytest.mark.skipif(not (_vendored and os.path.exists(_SNAPSHOT)),
+                    reason="WEB-C USFM or the 31 Oct 2026 snapshot not here")
+def test_live_deutero_passages_redirect_to_their_live_opening_verse(vendored_docs):
+    """Every open redirect from a live passage of the seven books lands on the passage
+    holding the first verse of the text users saw. A live piece (`tobit/1/1-2`) carries
+    the chapter's unit_label; it opens on its first verse marker, or, opening inside a
+    verse, continues the last verse of the live passage before it (Tobit 1:22)."""
+    import gzip
+    import json
+    import re
+    ids = {vendored_docs[name].id: name for name in _PARAGRAPH_BOOK_TITLES}
+    live: dict[str, list[dict]] = {}
+    with gzip.open(_SNAPSHOT, "rt", encoding="utf-8") as fh:
+        for line in fh:
+            p = json.loads(line)
+            if p["document_id"] in ids:
+                live.setdefault(p["document_id"], []).append(p)
+    opening: dict[str, tuple[int, int]] = {}
+    for passages in live.values():
+        last = None
+        for p in sorted(passages, key=lambda p: p["position"]):
+            chapter = int(p["chapter_key"].rsplit("/", 1)[1])
+            markers = [int(n) for n in re.findall(r"\{\{v:(\d+)\}\}", p["content"])]
+            piece = "-" in p["anchor"].rsplit("/", 1)[1] and not p["anchor"].endswith("-1")
+            if p["content"].startswith("{{v:"):
+                first = markers[0]
+            elif piece:
+                first = last[1]
+            else:
+                first = int(p["unit_label"])
+            opening[p["id"]] = (chapter, first)
+            last = (chapter, (markers or [first])[-1])
+    checked = 0
+    for r in registry.open_redirects(registry.current()):
+        if r["document_id"] in ids and r["old_passage_id"] in opening:
+            target = next(p for p in vendored_docs[ids[r["document_id"]]].passages
+                          if p.anchor == r["new_anchor"])
+            assert opening[r["old_passage_id"]] in _held(target), (r["old_anchor"], target.anchor)
+            checked += 1
+    assert checked == 73

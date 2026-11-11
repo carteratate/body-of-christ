@@ -179,7 +179,7 @@ def test_bible_pieces_cite_their_own_verses():
     from normalize.text import clean_text
     verses = _verses(30, 300)
     content = clean_text(_join_with_verse_markers(verses))
-    pieces = _pieces("Tobit", 5, verses, content, "tobit/5/1", whole_reference="Tobit 5")
+    pieces = _pieces("Tobit", 5, verses, content, "tobit/5/1")
     assert len(pieces) > 1
     last = 0
     for text, ref, label, anchor, *_ in pieces:
@@ -194,12 +194,13 @@ def test_bible_pieces_cite_their_own_verses():
     assert last == 30
 
 
-def test_bible_whole_chapter_keeps_its_chapter_reference():
+def test_bible_unsplit_passage_cites_its_verse_range():
+    # Even a passage holding a whole chapter is cited by its verses (1.4c, Carter
+    # 4 Nov 2026), not as "Tobit 5".
     from ingest.bible import _join_with_verse_markers, _pieces
     verses = _verses(3, 100)
-    (piece,) = _pieces("Tobit", 5, verses, _join_with_verse_markers(verses), "tobit/5/1",
-                       whole_reference="Tobit 5")
-    assert piece[1] == "Tobit 5" and piece[2] == "1"
+    (piece,) = _pieces("Tobit", 5, verses, _join_with_verse_markers(verses), "tobit/5/1")
+    assert piece[1] == "Tobit 5:1–3" and piece[2] == "1"
 
 
 def test_bible_verse_over_the_cap_gets_distinct_references():
