@@ -638,8 +638,15 @@ These apply to every PR below and are not repeated in each item.
   - No Qdrant point and no visible chunk belongs to a document or passage held for permission (the release report counts them, expecting 0).
   - 3.4's rejected-voice ranges (Exsurge Domine §1–41, the Syllabus §1–80) are re-checked against the new text.
 - **Production safety:** Nothing changes live before the Phase 4 apply (D7). Document IDs are unchanged; passage IDs follow D1.
-- **Needs Carter:** Approve the downloads and the list of documents held for permission. Review the numbering mismatch list.
+- **Needs Carter:** Approve the downloads and the list of documents held for permission. Review the numbering mismatch list. Answered 12 Nov 2026: each document's outcome is its row in ADR 0001, and the 55 downloads are approved; Haerent Animo's and Menti Nostrae's printings were found and their rows approved (R8, section 8).
 - **Out of scope:** The 23 modern documents 1.3c takes from vatican.va. Translating anything.
+- **As built, 1.3d-1 (12 Nov 2026):** the held documents; the downloads; Haerent Animo and Menti Nostrae.
+  - Held. 51 `document`-scope entries, `awaiting-permission`, rm-2101 to rm-2151 (a block clear of the IDs other items were adding at the time), one per ADR 0001 row marked "Held for permission"; `tests/test_papal_held.py` holds the table and the entries together, and keeps each held document's rights row `unknown` with its papalencyclicals.net source. `papal_common.build_documents` emits nothing for a document an open `document` removal holds, so 0.1c's `bad_removal` check stays meaningful for them.
+  - Redirects inside a held document. Nine older redirects (1.10c, 1.3a, 2.1) join pieces of held documents; their targets are not built while the document is held. They stay open for the document's return, and both the release report (`release/remap.py`) and the stage (`retirements.compute`) now let a `document` removal explain every passage of its document, a redirected one included.
+  - Release report against the 31 Oct snapshot, encyclicals: no failing check; 891 live passages removed, 756 of them the held documents' (135 before this PR), and 32 saved retrievals on removed passages. papal-documents is unchanged (no document there is held).
+  - Downloads. The 55 files sit in `sources/_incoming/<collection>/<scan>/` (encyclicals, papal-documents for Unam Sanctam and Sublimis Deus, apostolic-exhortations for the two exhortations), locked with their URLs. Three Google scans have no `_page_numbers.json` (Ubi Primum 1824, the 1777 *Interesting Letters*, the 1855 *Official Documents*); the clean-up needs a page map for them, which the PR that builds them supplies.
+  - Haerent Animo and Menti Nostrae: found (R8, section 8); rows `pd-us-pre-1931` and `pd-us-non-renewal`, `planned_for: "1.3d"`, approved by Carter on 12 Nov 2026. ADR 0001's table gains both rows (87).
+  - Not yet built: every document with a printing or an extract keeps papalencyclicals.net's text until its group's PR.
 
 ### 1.3b. Papal genre metadata
 
