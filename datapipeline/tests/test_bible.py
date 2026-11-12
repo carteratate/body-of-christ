@@ -283,7 +283,7 @@ def test_reference_format_uses_en_dash():
 # ---------------------------------------------------------------------------
 
 _HEADER = "book,start,end,title,nv_ref,lxx_ref,nab_ref\n"
-_VERSIFICATION_HEADER = "book,source,target,scope,authority\n"
+_VERSIFICATION_HEADER = "book,source,target,scope,authority,evidence\n"
 
 
 def _world(tmp_path, books: dict[str, str], pericopes: list[tuple], extras: str = "",
@@ -615,7 +615,7 @@ def test_deutero_short_paragraph_joins_a_long_one_rather_than_stand_alone():
     assert sizes[0] > 2200 and 600 <= sizes[1] <= 1800, sizes
 
 
-_NV = "Nova Vulgata"
+_NV = "Nova Vulgata,cited so by the Catechism"
 
 
 def _summary(doc):
@@ -710,6 +710,37 @@ def test_versification_moves_jonah_1_17_to_2_1(tmp_path):
                                                             "Jonah 2:2–3"]
 
 
+def test_passage_scope_moves_a_chapter_break_and_keeps_other_anchors(tmp_path):
+    # WEB-C ends Hosea 11 with "Ephraim surrounds me with lies", which the Nova Vulgata
+    # numbers 12:1 (#317). Only passages holding a moved verse take the `nv` segment, so
+    # Hosea 11:11 keeps its anchor and chapter key; the moved verse opens chapter 12's
+    # passage through an extra row, not a passage of its own.
+    hosea = r"""
+        \id HOS
+        \c 11
+        \p
+        \v 11 They will come trembling like a bird out of Egypt.
+        \v 12 Ephraim surrounds me with lies.
+        \c 12
+        \p
+        \v 1 Ephraim feeds on wind.
+        \v 2 Yahweh also has a controversy with Judah.
+    """
+    pericopes = [("Love", "Hosea 11:11", "Hosea 11:12"), ("Reproof", "Hosea 12:1", "Hosea 12:2")]
+    table = f"Hosea,11:12-11:12,12:1-12:1,passage,{_NV}\nHosea,12:1-12:2,12:2-12:3,passage,{_NV}\n"
+    doc = _build(_world(tmp_path, {"28-HOS.usfm": hosea}, pericopes,
+                        extras="Hosea,12:1,12:3,Reproof,,,\n", versification=table))["Hosea"]
+    assert _summary(doc) == [
+        ("hosea/11/11", "Hosea 11:11", "hosea/11", None),
+        ("hosea/nv/12/1", "Hosea 12:1–3", "hosea/12", "Hosea 11:12–12:2")]
+    assert doc.passages[1].content.startswith("Ephraim surrounds me with lies")
+    (tmp_path / "kjv-only").mkdir()
+    without_row = _build(_world(tmp_path / "kjv-only", {"28-HOS.usfm": hosea}, pericopes,
+                                versification=table))["Hosea"]
+    assert [p.reference for p in without_row.passages] == ["Hosea 11:11", "Hosea 12:1",
+                                                            "Hosea 12:2–3"]
+
+
 def test_romans_doxology_is_16_25_to_27(tmp_path):
     # WEB-C prints the doxology at 14:24-26 and leaves a bare 16:25 marker; 16:24 stays.
     romans = r"""
@@ -753,6 +784,9 @@ def test_versification_table_refuses_a_bad_row(tmp_path):
         load_versification(table(f"Joel,2:1-2:2,3:1-3:2,book,{_NV}\nJoel,2:3-2:3,3:2-3:2,book,{_NV}\n"))
     with pytest.raises(ValueError, match="disagree on scope"):
         load_versification(table(f"Joel,2:1-2:1,3:1-3:1,book,{_NV}\nJoel,2:2-2:2,3:2-3:2,passage,{_NV}\n"))
+    # Every row says why it moves the verses (#317).
+    with pytest.raises(ValueError, match="no evidence"):
+        load_versification(table("Joel,2:1-2:1,3:1-3:1,book,Nova Vulgata,\n"))
     # Landing on a verse that keeps its text is refused; on an empty marker it is not.
     mark = tmp_path / "usfm"
     mark.mkdir()
@@ -802,7 +836,8 @@ def test_vendored_every_verse_once_and_daniel_chapters(vendored_docs):
         assert with_text <= set(seen) <= {(v.chapter, v.verse) for v in book.verses}, name
         assert max(seen.values()) == 1, (name, [k for k, n in seen.items() if n > 1])
     daniel = Counter(v.chapter for v in books["Daniel"].verses)
-    assert [daniel[c] for c in range(1, 15)] == [21, 49, 97, 37, 31, 28, 28, 27, 27, 21, 45,
+    # Nova Vulgata chapter breaks (#317): 3:98-100 and 6:1 are WEB-C 4:1-3 and 5:31.
+    assert [daniel[c] for c in range(1, 15)] == [21, 49, 100, 34, 30, 29, 28, 27, 27, 21, 45,
                                                 13, 64, 42]
 
 
@@ -885,6 +920,94 @@ def test_every_old_joel_malachi_and_jonah_passage_has_a_redirect(vendored_docs):
     kinds = {r["old_anchor"]: r["kind"] for r in open_from.values()
              if r["old_anchor"] in ("joel/2/28", "jonah/1/11", "jonah/2/1")}
     assert kinds == {"joel/2/28": "renumbered", "jonah/1/11": "split", "jonah/2/1": "merged"}
+
+
+# #317: Nova Vulgata chapter breaks in Daniel and Hosea (Carter, 12 Nov 2026). Old row
+# anchor -> (new anchor, kind); every other passage of the two books keeps its anchor and ID.
+_NV_PASSAGE_MOVES = {
+    "daniel/4/1": ("daniel/nv/3/98", "renumbered"),
+    "daniel/4/4": ("daniel/nv/4/1", "renumbered"),
+    "daniel/4/19": ("daniel/nv/4/16", "renumbered"),
+    "daniel/4/28": ("daniel/nv/4/25", "renumbered"),
+    "daniel/4/34": ("daniel/nv/4/31", "renumbered"),
+    "daniel/6/1": ("daniel/nv/6/1", "merged"),
+    "daniel/6/10": ("daniel/nv/6/11", "renumbered"),
+    "daniel/6/25": ("daniel/nv/6/26", "renumbered"),
+    "hosea/2/1": ("hosea/nv/2/3", "renumbered"),
+    "hosea/2/14": ("hosea/nv/2/16", "renumbered"),
+    "hosea/12/1": ("hosea/nv/12/1", "merged"),
+    "hosea/14/1": ("hosea/nv/14/2", "renumbered"),
+    "hosea/14/4": ("hosea/nv/14/5", "renumbered"),
+}
+
+
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_daniel_and_hosea_use_nova_vulgata_chapter_breaks(vendored_docs):
+    from collections import Counter
+    books = load_usfm_directory(os.path.join(_ROOT, "sources", "bible", "eng-web-c_usfm"))
+    def chapters(name):
+        counted = Counter(v.chapter for v in books[name].verses if v.text.strip())
+        return [counted[c] for c in sorted(counted)]
+    # Checked against the Nova Vulgata on vatican.va (12 Nov 2026). NV divides WEB-C's
+    # Hosea 2:23 into 2:25-26; verse divisions inside a chapter stay WEB-C's (1.4b).
+    assert chapters("Daniel")[2:6] == [100, 34, 30, 29]
+    assert chapters("Hosea") == [9, 25, 5, 19, 15, 11, 16, 14, 17, 15, 11, 15, 15, 10]
+    by_anchor = {p.anchor: p for name in ("Daniel", "Hosea") for p in vendored_docs[name].passages}
+    def at(anchor):
+        p = by_anchor[anchor]
+        return p.reference, p.chapter_key, p.metadata.get("source_ref")
+    assert at("daniel/nv/3/98") == ("Daniel 3:98–100", "daniel/3", "Daniel 4:1–3")
+    assert at("daniel/nv/4/1") == ("Daniel 4:1–15", "daniel/4", "Daniel 4:4–18")
+    assert at("daniel/5/13") == ("Daniel 5:13–30", "daniel/5", None)
+    assert at("daniel/nv/6/1") == ("Daniel 6:1–10", "daniel/6", "Daniel 5:31–6:9")
+    assert at("daniel/nv/6/11") == ("Daniel 6:11–25", "daniel/6", "Daniel 6:10–24")
+    assert at("hosea/1/1") == ("Hosea 1:1–9", "hosea/1", None)
+    assert at("hosea/nv/2/1") == ("Hosea 2:1–2", "hosea/2", "Hosea 1:10–11")
+    assert at("hosea/nv/2/16") == ("Hosea 2:16–25", "hosea/2", "Hosea 2:14–23")
+    assert at("hosea/11/8") == ("Hosea 11:8–11", "hosea/11", None)
+    assert at("hosea/nv/12/1") == ("Hosea 12:1–15", "hosea/12", "Hosea 11:12–12:14")
+    assert at("hosea/13/15") == ("Hosea 13:15", "hosea/13", None)
+    assert at("hosea/nv/14/1") == ("Hosea 14:1", "hosea/14", "Hosea 13:16")
+    assert at("hosea/nv/14/2") == ("Hosea 14:2–4", "hosea/14", "Hosea 14:1–3")
+    assert by_anchor["daniel/nv/4/1"].content.startswith("I, Nebuchadnezzar, was at rest")
+    assert by_anchor["daniel/nv/6/1"].content.startswith("Darius the Mede received")
+    assert by_anchor["hosea/nv/2/1"].content.startswith("Yet the number of the children")
+    assert by_anchor["hosea/nv/14/2"].content.startswith("Israel, return to")
+    # A passage holding no moved verse keeps its anchor; one holding a moved verse has `nv`.
+    for name in ("Daniel", "Hosea"):
+        book = books[name]
+        for p in vendored_docs[name].passages:
+            moved = any(k in book.source_of for k in _held(p))
+            assert ("/nv/" in p.anchor) == moved, p.anchor
+            assert "/nv/" not in p.chapter_key and ("source_ref" in p.metadata) == moved
+
+
+@pytest.mark.skipif(not _vendored, reason="WEB-C USFM not vendored")
+def test_every_old_daniel_and_hosea_passage_has_a_redirect(vendored_docs):
+    """Each row whose verses #317 renumbers redirects to the passage now holding its first
+    verse; every other row of the two books is still built, with its frozen ID (D1)."""
+    reg = registry.current()
+    table = load_versification(os.path.join(_ROOT, "bible_versification.csv"))
+    open_from = {r["old_passage_id"]: r for r in registry.open_redirects(reg)
+                 if r.get("added_by") == "1.4b-2"}
+    seen = set()
+    for name in ("Daniel", "Hosea"):
+        doc = vendored_docs[name]
+        built = {p.anchor: p for p in doc.passages}
+        for row in (r for r in reg.passages if r["document_id"] == doc.id):
+            if row["anchor"] not in _NV_PASSAGE_MOVES:
+                assert row["status"] == "redirected" or row["anchor"] in built, row["anchor"]
+                assert row["passage_id"] not in open_from, row["anchor"]
+                continue
+            seen.add(row["anchor"])
+            new_anchor, kind = _NV_PASSAGE_MOVES[row["anchor"]]
+            redirect = open_from[row["passage_id"]]
+            assert row["status"] == "redirected" and row["anchor"] not in built
+            assert (redirect["new_anchor"], redirect["kind"]) == (new_anchor, kind)
+            assert redirect["new_passage_id"] == registry.resolve_passage_id(doc.id, new_anchor)
+            _, c, v = row["anchor"].split("/")
+            assert table[name].moves[(int(c), int(v))] in _held(built[new_anchor])
+    assert seen == set(_NV_PASSAGE_MOVES) and len(open_from) == len(_NV_PASSAGE_MOVES)
 
 
 _PARAGRAPH_BOOK_TITLES = ("Tobit", "Judith", "Wisdom", "Sirach", "Baruch", "1 Maccabees",

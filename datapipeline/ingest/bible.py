@@ -14,7 +14,8 @@ text lands in exactly one passage.
 
 Numbering (1.4b): WEB-C follows the KJV's verse numbers. `bible_versification.csv` moves
 the verses where the Nova Vulgata, which the Catechism and the Lectionary cite, numbers
-them differently (Joel, Malachi and Jonah; Romans's doxology to 16:25-27). It is applied
+them differently (Joel, Malachi and Jonah; Romans's doxology to 16:25-27; chapter breaks in
+Daniel and Hosea). Each row names its authority and the evidence for it. It is applied
 when the USFM is loaded, so grouping, references and chapter keys all use the Nova
 Vulgata's numbers; passage metadata `source_ref` keeps WEB-C's. A renumbered passage's
 anchor carries the segment `nv` (`joel/nv/3/1`), so no anchor live under WEB-C's numbers
@@ -356,7 +357,7 @@ class BookVersification:
     WEB-C (chapter, verse) to the Nova Vulgata's. `scope` says which passages carry the
     `nv` anchor segment: `book`, every passage of the book, so it has one scheme (Joel,
     Malachi, Jonah); `passage`, only a passage holding a moved verse (Romans's doxology,
-    where nothing else moves)."""
+    Daniel, Hosea), so every other passage keeps its anchor and ID."""
     book: str
     scope: str
     moves: dict[tuple[int, int], tuple[int, int]] = field(default_factory=dict)
@@ -386,6 +387,8 @@ def load_versification(path: str) -> dict[str, BookVersification]:
                 raise ValueError(f"{row['book']} {row['source']}: scope {row['scope']!r}")
             if not row.get("authority"):
                 raise ValueError(f"{row['book']} {row['source']}: no authority")
+            if not row.get("evidence"):
+                raise ValueError(f"{row['book']} {row['source']}: no evidence")
             book = books.setdefault(row["book"], BookVersification(row["book"], row["scope"]))
             if book.scope != row["scope"]:
                 raise ValueError(f"{row['book']}: rows disagree on scope")
@@ -597,9 +600,10 @@ def load_extra_pericopes(path: str) -> dict[str, list[ExtraPericope]]:
 
 def renumber_pericope(p: Pericope, table: BookVersification | None) -> Pericope:
     """A KJV pericope with its ends moved by the versification table. The KJV file numbers
-    verses as WEB-C does wherever the table moves one (Joel, Malachi, Jonah), except that it
-    has no verse at WEB-C's Romans 14:24: its "Doxology" already sits at 16:25-27, which no
-    row moves. A pericope moved across a chapter is cut there like any other."""
+    verses as WEB-C does wherever the table moves one (Joel, Malachi, Jonah, Daniel, Hosea),
+    except that it has no verse at WEB-C's Romans 14:24: its "Doxology" already sits at
+    16:25-27, which no row moves. A pericope moved across a chapter is cut there like any
+    other (Daniel 5:13-31, Hosea 11:8-12)."""
     if table is None:
         return p
     sc, sv = table.moves.get((p.start_chapter, p.start_verse), (p.start_chapter, p.start_verse))
