@@ -160,3 +160,34 @@ def test_treatise_headings_in_question_titles_lose_their_range_and_letter():
     [part] = derive_summa_contents(chapters)
     assert [q.short_label for q in part.children] == [
         "Q. 71 · Evil Habits, i.e. Vices and Sins", "Q. 77 · By Sins Committed in Buying and Selling"]
+
+
+def test_prologue_chapters_are_prologue_nodes():
+    """1.7's build: a question's prologue opens its question, and a treatise prologue
+    (I-II, III) sits under its Part; neither counts as an article."""
+    q2 = f"{FP}/question-2-the-existence-of-god-three-articles"
+    tree = derive_summa_contents([
+        (f"{q2}/prologue", "Question 2 - The Existence of God (Three Articles) — Prologue"),
+        (f"{q2}/article-1-whether", "Question 2 - The Existence of God (Three Articles) — "
+         "Article 1 - Whether the existence of God is self-evident?"),
+        (f"{FS}/prologue", "Prologue"),
+        (f"{FS}/question-1-of-mans-last-end-eight-articles/article-1-whether-end",
+         "Question 1 - Of Man's Last End (EIGHT ARTICLES) — "
+         "Article 1 - Whether it belongs to man to act for an end?"),
+    ])
+    assert _shape(tree) == [
+        ("I", "part", "I · First Part", "Q. 2", [
+            ("I/q2", "question", "Q. 2 · The Existence of God", "1 article", [
+                ("I/q2/prologue", "prologue", "Prologue", None, []),
+                ("I/q2/a1", "article", "Art. 1 · Whether the existence of God is self-evident?",
+                 None, []),
+            ]),
+        ]),
+        ("I-II", "part", "I-II · First Part of the Second Part", "Q. 1", [
+            ("I-II/0/prologue", "prologue", "Prologue", None, []),
+            ("I-II/q1", "question", "Q. 1 · Of Man's Last End", "1 article", [
+                ("I-II/q1/a1", "article", "Art. 1 · Whether it belongs to man to act for an end?",
+                 None, []),
+            ]),
+        ]),
+    ]

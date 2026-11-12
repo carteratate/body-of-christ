@@ -17,6 +17,10 @@ PART_NAMES = {
 # (e.g. "[*Cf. FP, Q[12]]"), so allow a complete "[...]" group inside.
 _BRACKET_STAR = re.compile(r"\s*\[\*(?:[^\[\]]|\[[^\]]*\])*\]")
 _QQ_RANGE = re.compile(r"QQ\[(\d+)\]\s*-\s*\[?(\d+)\]?")
+# A source cross-reference number left in brackets (C-22): a lone "QQ[83]", a number
+# after a comma or semicolon ("De Anima iii, 21,[22]", "Mat. 1:20;[2]:13"), and the
+# Sentences' distinction ("Sent. iv, D[29]").
+_CROSS_REF = re.compile(r"\b(QQ|D)\[(\d+)\]|([,;])\s*\[(\d+)\]")
 _AA_PAIR = re.compile(r"AA\[(\d+)\]\s*,\s*(\d+)")
 _AA = re.compile(r"AA\[(\d+)\]")
 _Q = re.compile(r"\bQ\[(\d+)\]")
@@ -29,6 +33,8 @@ _PART_TOKEN = re.compile(r"\b(FP|FS|SS|SP|TP|XP)\b")
 def expand_apparatus(text: str) -> str:
     text = _BRACKET_STAR.sub("", text)
     text = _QQ_RANGE.sub(r"Qq. \1–\2", text)
+    text = _CROSS_REF.sub(lambda m: f"{'Qq' if m[1] == 'QQ' else 'D'}. {m[2]}" if m[1]
+                          else f"{m[3]} {m[4]}", text)
     text = _AA_PAIR.sub(r"Aa. \1, \2", text)
     text = _AA.sub(r"Aa. \1", text)
     text = _Q.sub(r"Q. \1", text)

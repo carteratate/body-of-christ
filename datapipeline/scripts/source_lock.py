@@ -72,6 +72,16 @@ _UNMANIFESTED_URLS = {
     "summa/summa.xml": "https://ccel.org/ccel/a/aquinas/summa.xml",
 }
 
+# The printed English editions the Summa's restored units were read from (1.7, R7): OCR
+# text of archive.org scans, kept so `ingest/summa_recovered.json` can be checked against
+# them. The adapter reads only summa.xml.
+SUMMA_PRINT_SCANS = ("onprayercontempl00thomuoft", "summatheologi15thom",
+                     "summatheologicao0004thom", "summatheologicao0005thom",
+                     "summatheologicao0006thom", "summatheologicao0007thom")
+_UNMANIFESTED_URLS.update({
+    f"summa/{scan}/{scan}_djvu.txt": f"https://archive.org/download/{scan}/{scan}_djvu.txt"
+    for scan in SUMMA_PRINT_SCANS})
+
 # Adapter inputs that vendor_sources.py builds from a fetched page rather than copying it,
 # in collections whose manifest does not name them, with the page they come from.
 _DERIVED_INPUTS = {
@@ -146,6 +156,8 @@ def _role_and_url(sources: Path, collection: str, rel: str,
         if file_in_collection in named:
             return "adapter-input", named[file_in_collection].get("url")
         return "vendored-unregistered", None
+    if collection == "summa" and rel != "summa/summa.xml":
+        return "vendored-unregistered", _UNMANIFESTED_URLS.get(rel)
     if collection == "bible":
         url = (_UNMANIFESTED_URLS["bible/eng-web-c_usfm/"] if "/eng-web-c_usfm/" in rel
                else _UNMANIFESTED_URLS.get(rel))
@@ -207,7 +219,9 @@ def _entry(collection: str, rel: str, path: Path, role: str, url: str | None,
         "hashed_on": old.get("hashed_on") if unchanged else today,
         "role": role,
     }
-    note = note or _UNREGISTERED_NOTES.get(rel)
+    note = note or _UNREGISTERED_NOTES.get(rel) or (
+        "the printed edition summa_recovered.json's text is read from (1.7)"
+        if rel.startswith("summa/") and rel != "summa/summa.xml" else None)
     if role == "vendored-unregistered":
         entry["note"] = note or "on disk, not read by the collection's adapter"
     return entry

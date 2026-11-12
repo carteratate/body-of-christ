@@ -10261,7 +10261,87 @@
   "credit_line": "Sourced via CCEL.org",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": null
+  "planned_for": null,
+  "also_from": [
+   {
+    "texts": "I q.76 a.3 objection 3 (p. 35), I q.80 a.2 reply 3 (p. 126) and I q.89 a.3 the second sed contra (p. 243), which the CCEL text lacks",
+    "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I, QQ. LXXV-CII, second and revised edition (London: Burns Oates & Washbourne, imprimatur 1922)",
+    "translator": "Fathers of the English Dominican Province",
+    "first_published": 1922,
+    "source_path": "summa/summatheologicao0004thom/",
+    "source_url": "https://archive.org/details/summatheologicao0004thom",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
+   },
+   {
+    "texts": "I q.112 a.2 the first half of reply 1 (p. 119) and I q.117 a.2 the end of the sed contra and the opening of the determination (p. 180), restored inside the CCEL paragraphs",
+    "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I, QQ. CIII-CXIX, second and revised edition (London: Burns Oates & Washbourne, 1922)",
+    "translator": "Fathers of the English Dominican Province",
+    "first_published": 1922,
+    "source_path": "summa/summatheologicao0005thom/",
+    "source_url": "https://archive.org/details/summatheologicao0005thom",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
+   },
+   {
+    "texts": "I-II q.4 a.4 reply 1 (p. 58) and I-II q.29 a.3 replies 2 and 3 (p. 343), which the CCEL text lacks",
+    "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I-II, QQ. I-XLVIII, second edition (London: Burns Oates & Washbourne, 1927)",
+    "translator": "Fathers of the English Dominican Province",
+    "first_published": 1927,
+    "source_path": "summa/summatheologicao0006thom/",
+    "source_url": "https://archive.org/details/summatheologicao0006thom",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
+   },
+   {
+    "texts": "I-II q.88 a.4 the sed contra (p. 485), which the CCEL text lacks",
+    "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I-II, QQ. XLIX-LXXXIX, second edition (London: Burns Oates & Washbourne, imprimatur 1927)",
+    "translator": "Fathers of the English Dominican Province",
+    "first_published": 1927,
+    "source_path": "summa/summatheologicao0007thom/",
+    "source_url": "https://archive.org/details/summatheologicao0007thom",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
+   },
+   {
+    "texts": "III q.7 a.5 \"inasmuch as these\" (p. 111), where the CCEL text misprints \"a[9]\"",
+    "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part III, QQ. I-XXVI, first edition (London: R. & T. Washbourne, 1913)",
+    "translator": "Fathers of the English Dominican Province",
+    "first_published": 1913,
+    "source_path": "summa/summatheologi15thom/",
+    "source_url": "https://archive.org/details/summatheologi15thom",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
+   },
+   {
+    "texts": "II-II q.182 a.4 the sed contra (p. 249), missing from the Dominican translation itself",
+    "edition": "Hugh Pope, O.P., On Prayer and the Contemplative Life by S. Thomas Aquinas (London: R. & T. Washbourne, 1914)",
+    "translator": "Hugh Pope, O.P.",
+    "first_published": 1914,
+    "source_path": "summa/onprayercontempl00thomuoft/",
+    "source_url": "https://archive.org/details/onprayercontempl00thomuoft",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
+   }
+  ]
  },
  {
   "work": "On the Two Commandments of Charity and the Ten Commandments of the Law",
