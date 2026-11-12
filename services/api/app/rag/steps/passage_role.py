@@ -5,11 +5,31 @@ INVERT the passage's meaning — 10,517 chunks (39.3% of the collection) are obj
 Aquinas states in order to REFUTE — so every model that reads a passage needs it: both
 rerankers, and the explanation model that writes the prose a user actually reads.
 
-Two call sites need the same decision, which is why it lives here rather than being
-re-implemented in each: `rerank_docs` (Cohere document + listwise card) and
-`steps.explain`.
+Every caller needs the same decision, which is why it lives here rather than being
+re-implemented in each: `rerank_docs` (Cohere document + listwise card),
+`steps.explain` and the eval judge (`compare/judge.py`).
+
+A passage can also carry `voice = "rejected"` (corpus cleanup 2.4d): it states a
+position its own document rejects, such as a condemned proposition or an opponent's
+speech. Those callers add `rejected_note` to that passage, and `REJECTED_INSTRUCTION`
+to the prompt once when any passage in the request has it. With no rejected passage
+every prompt is exactly what it was before the field existed.
 """
 from __future__ import annotations
+
+from collections.abc import Iterable
+
+REJECTED = "rejected"
+
+# Given to a model once per request, only when at least one passage in it is rejected.
+REJECTED_INSTRUCTION = (
+    "REJECTED POSITIONS: a passage with a line beginning 'Rejected position' states a "
+    "view its own document rejects: a condemned proposition, an opponent's argument, a "
+    "letter a council condemned. The label in brackets says whose position it is. Never "
+    "present such a passage as the teaching of its document, its author or the Church. "
+    "It can still be what the question asks for, such as what was condemned or what an "
+    "opponent argued; say whose position it is and that the document rejects it."
+)
 
 
 def display_role(unit_label: str | None, reference: str | None) -> str | None:
@@ -36,3 +56,20 @@ def display_role(unit_label: str | None, reference: str | None) -> str | None:
     if reference and unit_label in reference:
         return None
     return unit_label
+
+
+def rejected_note(voice: str | None, unit_label: str | None) -> str | None:
+    """The fixed line a model sees for a rejected passage, or None for any other.
+
+    Built from the label even when `display_role` suppresses it, so the line always
+    says whose position it is.
+    """
+    if voice != REJECTED:
+        return None
+    label = f" ({unit_label})" if unit_label else ""
+    return f"Rejected position{label}: the document states this in order to reject it."
+
+
+def any_rejected(chunks: Iterable) -> bool:
+    """Whether a request needs `REJECTED_INSTRUCTION`."""
+    return any(getattr(chunk, "voice", None) == REJECTED for chunk in chunks)

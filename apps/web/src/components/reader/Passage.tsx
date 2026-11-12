@@ -3,6 +3,8 @@
 import { useId, useState } from "react";
 import type { ReaderPassage } from "@/lib/api";
 import { renderVerseMarkers } from "@/lib/verse-markers";
+import { rejectedLabel } from "@/lib/passageRole";
+import { RejectedLabel } from "@/components/common/RejectedLabel";
 
 export function Passage({ passage, highlighted, history = [], highlightAnchor = null }: {
   passage: ReaderPassage;
@@ -12,11 +14,15 @@ export function Passage({ passage, highlighted, history = [], highlightAnchor = 
   /** Opens the older wording a link points at. */
   highlightAnchor?: string | null;
 }) {
+  // A position the document rejects (2.4d): its label above the text, in place of the
+  // inline marker, so it is read before the passage is.
+  const rejected = rejectedLabel(passage);
   return (
     <>
       {passage.passage_author && (
         <p className="mb-1 text-xs font-medium text-brand-muted">{passage.passage_author}</p>
       )}
+      {rejected && <RejectedLabel label={rejected} className="mb-1" />}
       <p
         id={`anchor-${passage.anchor}`}
         className="text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] text-brand-primary mb-3"
@@ -25,7 +31,7 @@ export function Passage({ passage, highlighted, history = [], highlightAnchor = 
           ...(highlighted ? { background: "rgba(196,151,42,0.16)", borderRadius: 4, padding: "2px 4px" } : {}),
         }}
       >
-        {passage.unit_label && (
+        {passage.unit_label && !rejected && (
           <sup className="text-brand-muted mr-1" style={{ fontSize: 10 }}>{passage.unit_label}</sup>
         )}
         {renderVerseMarkers(passage.content)}

@@ -19,7 +19,8 @@ import {
 import { AttachedPassage } from "./AttachedPassage";
 import { RelevanceExplanation } from "./RelevanceExplanation";
 import { getCollectionMeta } from "@/lib/collections";
-import { displayRole } from "@/lib/passageRole";
+import { displayRole, rejectedLabel } from "@/lib/passageRole";
+import { RejectedLabel } from "@/components/common/RejectedLabel";
 import { stripVerseMarkers } from "@/lib/verse-markers";
 import { contentWithMarkers, footnotesCopyText, parseFootnotes } from "@/lib/footnotes";
 import { PassageNotes, PassageText } from "@/components/common/PassageText";
@@ -224,7 +225,12 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   // The passage's own role. Ingest moved "Objection N" out of `content`, so without this
   // an objection reads as a flat assertion wherever it travels without its attachment —
   // collapsed, copied, or announced.
-  const role = displayRole(collection, source.unit_label, reference);
+  //
+  // A position the document rejects (2.4d) shows its label above the text instead,
+  // muted, in the header and the body, and in brackets in the copied citation; the
+  // role tag would repeat it.
+  const rejected = rejectedLabel(source);
+  const role = rejected ? null : displayRole(collection, source.unit_label, reference);
 
   const collectionMeta = getCollectionMeta(collection);
   const color = collectionMeta?.color ?? "var(--color-brand-accent)";
@@ -299,7 +305,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
     const citation = includeAuthorInCopy ? `${primaryReference} (${attribution})` : primaryReference;
     // The role goes in the citation, not the body: the body is the passage as written,
     // and the clipboard is the one place this text leaves the app entirely.
-    const cited = role ? `${citation}, ${role}` : citation;
+    const cited = rejected ? `${citation} [${rejected}]` : role ? `${citation}, ${role}` : citation;
     // The rights holder's credit travels with the text (the USCCB requires it after
     // any Catechism excerpt).
     const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
@@ -383,6 +389,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
     certainty,
     primaryReference,
     role,
+    rejected,
     result.reranker_score !== null ? `${Math.round(result.reranker_score * 100)}% relevance` : null,
   ].filter(Boolean).join(", ");
 
@@ -415,7 +422,8 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
               {displayAuthor && <span className="min-w-0 flex-1 truncate text-xs leading-tight text-brand-muted">{displayAuthor}</span>}
               {certainty && <CertaintyTag tag={certainty} />}
             </div>
-            <p className="line-clamp-2 text-sm font-semibold leading-tight text-brand-primary">{compactReference}</p>
+            {rejected && <RejectedLabel label={rejected} className="truncate text-[11px] leading-tight" />}
+            <p className={`${rejected ? "line-clamp-1" : "line-clamp-2"} text-sm font-semibold leading-tight text-brand-primary`}>{compactReference}</p>
           </div>
           {result.reranker_score !== null && (
             <span
@@ -432,7 +440,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
           <div className="hidden min-w-0 flex-1 items-center sm:flex">
             <div className="flex min-w-0 flex-1 items-center gap-2 pr-[70px]">
               <span className="inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
-              <div className="grid min-w-0 flex-1 grid-rows-[1rem_1rem] content-center overflow-hidden">
+              <div className={`grid min-w-0 flex-1 ${rejected ? "grid-rows-[0.875rem_0.875rem_1rem]" : "grid-rows-[1rem_1rem]"} content-center overflow-hidden`}>
                 {certainty ? (
                   <div className="flex min-w-0 items-baseline">
                     <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
@@ -441,6 +449,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
                 ) : (
                   <p className="truncate text-xs leading-tight text-brand-muted">{showAuthor ? displayAuthor : "\u00a0"}</p>
                 )}
+                {rejected && <RejectedLabel label={rejected} className="truncate text-[11px] leading-tight" />}
                 <div className="flex min-w-0 items-baseline">
                   <span className="truncate text-sm font-semibold leading-tight text-brand-primary">{primaryReference}</span>
                   {role && <RoleTag role={role} color={color} />}
@@ -472,6 +481,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
           {result.status === "moved" && <MovedNote kind={result.redirect?.kind} />}
+          {rejected && <RejectedLabel label={rejected} className="mb-1.5" />}
           <PassageText content={content} footnotes={footnotes} />
           <PassageNotes footnotes={footnotes} />
           {attached?.relation === "answered_by" && (

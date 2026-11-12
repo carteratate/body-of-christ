@@ -35,6 +35,7 @@ class BookmarkSource(BaseModel):
     language: Optional[str] = None
     passage_note: Optional[str] = None
     passage_author: Optional[str] = None
+    voice: Optional[Literal["rejected"]] = None  # same as ChunkSource (2.4d)
 
 
 class BookmarkChunk(BaseModel):

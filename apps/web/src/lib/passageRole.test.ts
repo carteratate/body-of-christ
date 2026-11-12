@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { displayRole } from "./passageRole";
+import { displayRole, rejectedLabel } from "./passageRole";
 
 describe("displayRole", () => {
   it("names a Summa objection, which reads as a flat assertion without it", () => {
@@ -37,5 +37,22 @@ describe("displayRole", () => {
 
   it("handles a missing citation without suppressing the role", () => {
     expect(displayRole("summa", "Objection 4", null)).toBe("Objection 4");
+  });
+});
+
+describe("rejectedLabel", () => {
+  it("is the unit label of a rejected passage", () => {
+    expect(rejectedLabel({ voice: "rejected", unit_label: " Condemned proposition 10 " }))
+      .toBe("Condemned proposition 10");
+  });
+
+  it("still marks a rejected passage that has no label", () => {
+    expect(rejectedLabel({ voice: "rejected", unit_label: null })).toBe("Rejected position");
+  });
+
+  it("is null for any other passage", () => {
+    expect(rejectedLabel({ unit_label: "Objection 1" })).toBeNull();
+    expect(rejectedLabel({ voice: null, unit_label: "Objection 1" })).toBeNull();
+    expect(rejectedLabel({ voice: "affirmed", unit_label: "Objection 1" })).toBeNull();
   });
 });
