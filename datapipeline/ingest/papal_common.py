@@ -35,7 +35,7 @@ from normalize.caps import smart_title_case
 from normalize.footnotes import (drop_caller_elements, strip_bare_callers,
                                  strip_footnote_markers, strip_note_callers)
 from normalize.text import clean_text, repair_sentence_joins
-from registry import ANCHOR_SCHEME, resolve_document_id
+from registry import ANCHOR_SCHEME, removed_document_ids, resolve_document_id
 
 log = logging.getLogger(__name__)
 
@@ -1048,6 +1048,11 @@ def _log_short(title: str, passages: list[Passage]) -> None:
 
 
 def build_documents(collection: str, src_dir: str) -> list[Document]:
+    """Every manifest entry but a document an open `document` removal holds (1.3d, ADR
+    0001): it emits nothing, so a publish retires its rows and keeps them."""
     with open(os.path.join(src_dir, "manifest.json"), encoding="utf-8") as f:
         manifest = json.load(f)
-    return [build_document(e, collection, src_dir) for e in manifest]
+    held = removed_document_ids()
+    return [build_document(e, collection, src_dir) for e in manifest
+            if resolve_document_id(collection, f"{collection}/{e['slug']}",
+                                   (collection, e["slug"])) not in held]

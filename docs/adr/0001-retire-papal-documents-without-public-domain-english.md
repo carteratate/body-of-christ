@@ -62,7 +62,9 @@ Every document marked "Not found so far" was searched in all of these:
 
 Not searched, because they refuse this server: HathiTrust full text, and Google Books (quota). *The Tablet*'s own archive was not searched beyond the Internet Archive's volumes. Each held document lists these as not searched.
 
-## The 85 documents
+## The 85 documents, and two from 1.3c
+
+Haerent Animo (1908) and Menti Nostrae (1950) joined from 1.3c, since vatican.va has no English for them (Carter, 9 Nov 2026); 1.3d searched them by R8's method.
 
 Outcomes: a public-domain printing (built from it in 1.3d); an extract only (published with its gaps held); or **held for permission** (no printing found in the places listed above).
 
@@ -153,3 +155,5 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1874 | Vix Dum A Nobis | Pius IX | `vix-dum-a-nobis` | Public-domain printing: Appletons' Annual Cyclopaedia for 1874, 1875 |
 | 1875 | Graves Ac Diuturnae | Pius IX | `graves-ac-diuturnae` | Public-domain printing: Appletons' Annual Cyclopaedia for 1875, 1876 |
 | 1875 | Quod Nunquam | Pius IX | `quod-nunquam` | Public-domain printing: Appletons' Annual Cyclopaedia for 1875, 1876 |
+| 1908 | Haerent Animo | Pius X | `haerent-animo` | Public-domain printing: the Official English Version (Dublin: Browne and Nolan, 1908), in *Cardinal Mercier's Retreat to his Priests* (Bruges, 1912) |
+| 1950 | Menti Nostrae | Pius XII | `menti-nostrae` | Public-domain printing (copyright not renewed): NCWC's translation in *The Catholic Mind*, January 1951 |
