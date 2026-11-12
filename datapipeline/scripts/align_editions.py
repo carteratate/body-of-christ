@@ -1,9 +1,8 @@
 """Align two editions of a document paragraph by paragraph (corpus-cleanup 1.3c, 1.3d).
 
     cd datapipeline
-    python3 scripts/align_editions.py --snapshot releases/snapshots/<date>
-                                      --collection encyclicals [--slug <slug> ...]
-                                      [--out <file.md>]
+    python3 scripts/align_editions.py --collection encyclicals [--slug <slug> ...]
+                                      [--printings [--raw]] [--out <file.md>]
 
 A document whose translation is replaced keeps a unit's anchor and ID only where the new
 edition's unit is the same paragraph (D1). Two translations share few word sequences, so
@@ -19,8 +18,14 @@ Each live unit then has one of these results:
 Both editions are built by their own printed numbering, without the document's entry in
 `ingest/papal_anchors.json`: which live anchor a built unit carries is what the reviewed
 alignment decides. The report lists every unit that is not a plain match, with both
-editions' opening words, for a person to review. It reads the live snapshot (gitignored), so it holds passage text
+editions' opening words, for a person to review. It reads the vendored pages (gitignored), so it holds passage text
 only in the local file it writes; the PR quotes only the anchors and scores.
+
+With `--printings` (1.3d), the new edition is a public-domain printing that prints no
+paragraph numbers, so it is built by the `units` of `ingest/papal_printings.json`, which
+say which site paragraph each printed block is: a row then marks a place where the
+content pairs otherwise. `--raw` pairs the site's units with the printed blocks one by
+one instead, named by their locators, which is how a printing's `units` are drafted.
 """
 from __future__ import annotations
 
@@ -196,20 +201,29 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--slug", action="append",
                     help="limit to these slugs (default: every manifest entry whose file "
                          "is not the old edition's)")
+    ap.add_argument("--printings", action="store_true",
+                    help="align the documents built from a public-domain printing (1.3d, "
+                         "ingest/papal_printings.json) with the site's page")
+    ap.add_argument("--raw", action="store_true",
+                    help="with --printings: pair the site's units with the printing's blocks "
+                         "one by one, to draft a printing's `units`")
     ap.add_argument("--out", help="write the review list, with opening words, here")
     args = ap.parse_args(argv)
 
     from checks.report import placeholder_credentials
 
     placeholder_credentials()
-    from ingest import papal_common
+    from ingest import papal_common, papal_printings
 
     src = os.path.join(DATAPIPELINE, "sources", args.collection)
     with open(os.path.join(src, "manifest.json"), encoding="utf-8") as f:
         manifest = {e["slug"]: e for e in json.load(f)}
-    slugs = args.slug or [s for s, e in manifest.items()
-                          if e["file"] != args.old_file.format(slug=s)
-                          and os.path.exists(os.path.join(src, args.old_file.format(slug=s)))]
+    if args.printings:
+        slugs = args.slug or [s for s in manifest if papal_printings.printing(args.collection, s)]
+    else:
+        slugs = args.slug or [s for s, e in manifest.items()
+                              if e["file"] != args.old_file.format(slug=s)
+                              and os.path.exists(os.path.join(src, args.old_file.format(slug=s)))]
     lines = ["# Paragraph alignment", ""]
     total = 0
     for slug in slugs:
@@ -220,12 +234,25 @@ def main(argv: list[str] | None = None) -> int:
         try:
             before = papal_common.build_document(
                 dict(entry, file=args.old_file.format(slug=slug)), args.collection, src)
-            after = papal_common.build_document(entry, args.collection, src)
+            if args.printings:
+                # The printing by the reviewed `units` (which unit each block is), or with
+                # --raw each block on its own, named by its locator.
+                printing = papal_printings.printing(args.collection, slug)
+                if args.raw:
+                    after = None
+                    new = [Unit(f"{slug}/{loc}", text)
+                           for loc, text in papal_printings.blocks_of(printing, src)
+                           if not any(text.startswith(e["opens"]) for e in printing.editorial)]
+                else:
+                    after = papal_printings.build_document(entry, args.collection, src)
+            else:
+                after = papal_common.build_document(entry, args.collection, src)
         finally:
             if overrides is not None:
                 papal_common._UNIT_ANCHORS[slug] = overrides
         old = units_of(before.passages, lambda p: p.anchor, lambda p: p.content)
-        new = units_of(after.passages, lambda p: p.anchor, lambda p: p.content)
+        if after is not None:
+            new = units_of(after.passages, lambda p: p.anchor, lambda p: p.content)
         rows = outcomes(align(old, new))
         total += len(rows)
         print(f"{slug}: {len(old)} old units, {len(new)} new, {len(rows)} to review")
