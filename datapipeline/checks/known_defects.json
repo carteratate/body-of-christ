@@ -28,39 +28,9 @@
   "fixed_by": "5.6b",
   "description": "88.36% covered: Anselm's own prefaces (1.9) and Gaunilo's reply with Anselm's answer (5.6b) dropped"
  },
- "editorial.argument_lines:church-fathers/5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
-  "fixed_by": "1.8b",
-  "description": "On Christian Doctrine: 4 passages open with an editor's Argument summary (C-12)",
-  "units": ["IV_1", "v.iv", "v.v", "v.vi"]
- },
- "editorial.argument_lines:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
-  "fixed_by": "1.8b",
-  "description": "Doctrinal Treatises of St. Augustin: 1 passages open with an editor's Argument summary (C-12)",
-  "units": ["iv.ii.ii"]
- },
- "editorial.argument_lines:church-fathers/dac28881-f92b-5c94-991a-5b244e2d49c3": {
-  "fixed_by": "1.8b",
-  "description": "City of God: 22 passages open with an editor's Argument summary (C-12)",
-  "units": ["II_1", "iv.III", "iv.IV", "iv.IX", "iv.V", "iv.VI", "iv.VII", "iv.VIII", "iv.X", "iv.XI", "iv.XII", "iv.XIII", "iv.XIV", "iv.XIX", "iv.XV", "iv.XVI", "iv.XVII", "iv.XVIII", "iv.XX", "iv.XXI", "iv.XXII", "iv.ii"]
- },
- "editorial.chapter_title_lines:church-fathers/5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
-  "fixed_by": "1.8b",
-  "description": "On Christian Doctrine: 150 passages open with a later editor's chapter title (G-1)",
-  "units": ["v.IV_1.1", "v.IV_1.10", "v.IV_1.11", "v.IV_1.12", "v.IV_1.13", "v.IV_1.14", "v.IV_1.15", "v.IV_1.16", "v.IV_1.17", "v.IV_1.18", "v.IV_1.19", "v.IV_1.2", "v.IV_1.20", "v.IV_1.21", "v.IV_1.22", "v.IV_1.23", "v.IV_1.24", "v.IV_1.25", "v.IV_1.26", "v.IV_1.27", "v.IV_1.28", "v.IV_1.29", "v.IV_1.3", "v.IV_1.30", "v.IV_1.31", "v.IV_1.4", "v.IV_1.5", "v.IV_1.6", "v.IV_1.7", "v.IV_1.8", "v.IV_1.9", "v.iv.i", "v.iv.ii", "v.iv.iii", "v.iv.iv", "v.iv.ix", "v.iv.v", "v.iv.vi", "v.iv.vii", "v.iv.viii", "v.iv.x", "v.iv.xi", "v.iv.xii", "v.iv.xiii", "v.iv.xiv", "v.iv.xix", "v.iv.xl", "v.iv.xv", "v.iv.xvi", "v.iv.xvii", "v.iv.xviii", "v.iv.xx", "v.iv.xxi", "v.iv.xxii", "v.iv.xxiii", "v.iv.xxiv", "v.iv.xxix", "v.iv.xxv", "v.iv.xxvi", "v.iv.xxvii", "v.iv.xxviii", "v.iv.xxx", "v.iv.xxxi", "v.iv.xxxii", "v.iv.xxxiii", "v.iv.xxxiv", "v.iv.xxxix", "v.iv.xxxv", "v.iv.xxxvi", "v.iv.xxxvii", "v.iv.xxxviii", "v.v.i", "v.v.ii", "v.v.iii", "v.v.iv", "v.v.ix", "v.v.v", "v.v.vi", "v.v.vii", "v.v.viii", "v.v.x", "v.v.xi", "v.v.xii", "v.v.xiii", "v.v.xiv", "v.v.xix", "v.v.xl", "v.v.xli", "v.v.xlii", "v.v.xv", "v.v.xvi", "v.v.xvii", "v.v.xviii", "v.v.xx", "v.v.xxi", "v.v.xxii", "v.v.xxiii", "v.v.xxiv", "v.v.xxix", "v.v.xxv", "v.v.xxvi", "v.v.xxvii", "v.v.xxviii", "v.v.xxx", "v.v.xxxi", "v.v.xxxii", "v.v.xxxiii", "v.v.xxxiv", "v.v.xxxix", "v.v.xxxv", "v.v.xxxvi", "v.v.xxxvii", "v.v.xxxviii", "v.vi.i", "v.vi.ii", "v.vi.iii", "v.vi.iv", "v.vi.ix", "v.vi.v", "v.vi.vi", "v.vi.vii", "v.vi.viii", "v.vi.x", "v.vi.xi", "v.vi.xii", "v.vi.xiii", "v.vi.xiv", "v.vi.xix", "v.vi.xv", "v.vi.xvi", "v.vi.xvii", "v.vi.xviii", "v.vi.xx", "v.vi.xxi", "v.vi.xxii", "v.vi.xxiii", "v.vi.xxiv", "v.vi.xxix", "v.vi.xxv", "v.vi.xxvi", "v.vi.xxvii", "v.vi.xxviii", "v.vi.xxx", "v.vi.xxxi", "v.vi.xxxii", "v.vi.xxxiii", "v.vi.xxxiv", "v.vi.xxxv", "v.vi.xxxvi", "v.vi.xxxvii"]
- },
- "editorial.chapter_title_lines:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
-  "fixed_by": "1.8b",
-  "description": "Doctrinal Treatises of St. Augustin: 380 passages open with a later editor's chapter title (G-1)",
-  "units": ["iv.i.iii.i", "iv.i.iii.ii", "iv.i.iii.iii", "iv.i.iii.iv", "iv.i.iii.ix", "iv.i.iii.v", "iv.i.iii.vi", "iv.i.iii.vii", "iv.i.iii.viii", "iv.i.iii.x", "iv.i.iii.xi", "iv.i.iii.xii", "iv.i.iii.xiii", "iv.i.iv.ii", "iv.i.iv.iii", "iv.i.iv.iv", "iv.i.iv.ix", "iv.i.iv.v", "iv.i.iv.vi", "iv.i.iv.vii", "iv.i.iv.viii", "iv.i.iv.x", "iv.i.iv.xi", "iv.i.iv.xii", "iv.i.iv.xiii", "iv.i.iv.xiv", "iv.i.iv.xix", "iv.i.iv.xv", "iv.i.iv.xvi", "iv.i.iv.xvii", "iv.i.iv.xviii", "iv.i.ix.i", "iv.i.ix.ii", "iv.i.ix.iii", "iv.i.ix.iv", "iv.i.ix.v", "iv.i.ix.vi", "iv.i.v.ii", "iv.i.v.iii", "iv.i.v.iv", "iv.i.v.ix", "iv.i.v.v", "iv.i.v.vi", "iv.i.v.vii", "iv.i.v.viii", "iv.i.v.x", "iv.i.v.xi", "iv.i.v.xii", "iv.i.vi.ii", "iv.i.vi.iii", "iv.i.vi.iv", "iv.i.vi.ix", "iv.i.vi.v", "iv.i.vi.vi", "iv.i.vi.vii", "iv.i.vi.viii", "iv.i.vi.x", "iv.i.vi.xi", "iv.i.vi.xii", "iv.i.vi.xiii", "iv.i.vi.xiv", "iv.i.vi.xix", "iv.i.vi.xv", "iv.i.vi.xvi", "iv.i.vi.xvii", "iv.i.vi.xviii", "iv.i.vi.xx", "iv.i.vi.xxi", "iv.i.vi.xxii", "iv.i.vii.i", "iv.i.vii.ii", "iv.i.vii.iii", "iv.i.vii.iv", "iv.i.vii.ix", "iv.i.vii.v", "iv.i.vii.vi", "iv.i.vii.vii", "iv.i.vii.viii", "iv.i.vii.x", "iv.i.vii.xi", "iv.i.vii.xii", "iv.i.vii.xiii", "iv.i.vii.xiv", "iv.i.vii.xv", "iv.i.vii.xvi", "iv.i.viii.i", "iv.i.viii.ii", "iv.i.viii.iii", "iv.i.viii.iv", "iv.i.viii.ix", "iv.i.viii.v", "iv.i.viii.vi", "iv.i.viii.vii", "iv.i.viii.viii", "iv.i.viii.x", "iv.i.x.ii", "iv.i.x.iii", "iv.i.x.iv", "iv.i.x.ix", "iv.i.x.v", "iv.i.x.vi", "iv.i.x.vii", "iv.i.x.viii", "iv.i.x.x", "iv.i.x.xi", "iv.i.xi.i", "iv.i.xi.ii", "iv.i.xi.iii", "iv.i.xi.iv", "iv.i.xi.ix", "iv.i.xi.v", "iv.i.xi.vi", "iv.i.xi.vii", "iv.i.xi.viii", "iv.i.xi.x", "iv.i.xi.xi", "iv.i.xi.xii", "iv.i.xii.i", "iv.i.xii.ii", "iv.i.xii.iii", "iv.i.xii.iv", "iv.i.xii.ix", "iv.i.xii.v", "iv.i.xii.vi", "iv.i.xii.vii", "iv.i.xii.viii", "iv.i.xii.x", "iv.i.xii.xi", "iv.i.xii.xii", "iv.i.xiii.i", "iv.i.xiii.ii", "iv.i.xiii.iii", "iv.i.xiii.iv", "iv.i.xiii.ix", "iv.i.xiii.v", "iv.i.xiii.vi", "iv.i.xiii.vii", "iv.i.xiii.viii", "iv.i.xiii.x", "iv.i.xiii.xi", "iv.i.xiv.i", "iv.i.xiv.ii", "iv.i.xiv.iii", "iv.i.xiv.iv", "iv.i.xiv.ix", "iv.i.xiv.v", "iv.i.xiv.vi", "iv.i.xiv.vii", "iv.i.xiv.viii", "iv.i.xiv.x", "iv.i.xiv.xi", "iv.i.xiv.xii", "iv.i.xiv.xiii", "iv.i.xiv.xiv", "iv.i.xiv.xv", "iv.i.xv.i", "iv.i.xv.ii", "iv.i.xv.iii", "iv.i.xv.iv", "iv.i.xv.ix", "iv.i.xv.v", "iv.i.xv.vi", "iv.i.xv.vii", "iv.i.xv.viii", "iv.i.xv.x", "iv.i.xv.xi", "iv.i.xv.xii", "iv.i.xv.xiii", "iv.i.xv.xiv", "iv.i.xv.xix", "iv.i.xv.xv", "iv.i.xv.xvi", "iv.i.xv.xvii", "iv.i.xv.xviii", "iv.i.xv.xx", "iv.i.xvi.i", "iv.i.xvi.ii", "iv.i.xvi.iii", "iv.i.xvi.iv", "iv.i.xvi.ix", "iv.i.xvi.v", "iv.i.xvi.vi", "iv.i.xvi.vii", "iv.i.xvi.viii", "iv.i.xvi.x", "iv.i.xvi.xi", "iv.i.xvi.xii", "iv.i.xvi.xiii", "iv.i.xvi.xiv", "iv.i.xvi.xix", "iv.i.xvi.xv", "iv.i.xvi.xvi", "iv.i.xvi.xvii", "iv.i.xvi.xviii", "iv.i.xvii.i", "iv.i.xvii.ii", "iv.i.xvii.iii", "iv.i.xvii.iv", "iv.i.xvii.ix", "iv.i.xvii.v", "iv.i.xvii.vi", "iv.i.xvii.vii", "iv.i.xvii.viii", "iv.i.xvii.x", "iv.i.xvii.xi", "iv.i.xvii.xii", "iv.i.xvii.xiii", "iv.i.xvii.xiv", "iv.i.xvii.xix", "iv.i.xvii.xv", "iv.i.xvii.xvi", "iv.i.xvii.xvii", "iv.i.xvii.xviii", "iv.i.xvii.xx", "iv.i.xvii.xxi", "iv.i.xvii.xxii", "iv.i.xvii.xxiii", "iv.i.xvii.xxiv", "iv.i.xvii.xxv", "iv.i.xvii.xxvi", "iv.i.xvii.xxvii", "iv.i.xvii.xxviii", "iv.ii.c", "iv.ii.ci", "iv.ii.cii", "iv.ii.ciii", "iv.ii.civ", "iv.ii.cix", "iv.ii.cv", "iv.ii.cvi", "iv.ii.cvii", "iv.ii.cviii", "iv.ii.cx", "iv.ii.cxi", "iv.ii.cxii", "iv.ii.cxiii", "iv.ii.cxiv", "iv.ii.cxix", "iv.ii.cxv", "iv.ii.cxvi", "iv.ii.cxvii", "iv.ii.cxviii", "iv.ii.cxx", "iv.ii.cxxi", "iv.ii.cxxii", "iv.ii.cxxiii", "iv.ii.cxxiv", "iv.ii.iii", "iv.ii.iv", "iv.ii.ix", "iv.ii.l", "iv.ii.li", "iv.ii.lii", "iv.ii.liii", "iv.ii.liv", "iv.ii.lix", "iv.ii.lv", "iv.ii.lvi", "iv.ii.lvii", "iv.ii.lviii", "iv.ii.lx", "iv.ii.lxi", "iv.ii.lxii", "iv.ii.lxiii", "iv.ii.lxiv", "iv.ii.lxix", "iv.ii.lxv", "iv.ii.lxvi", "iv.ii.lxvii", "iv.ii.lxviii", "iv.ii.lxx", "iv.ii.lxxi", "iv.ii.lxxii", "iv.ii.lxxiii", "iv.ii.lxxiv", "iv.ii.lxxix", "iv.ii.lxxv", "iv.ii.lxxvi", "iv.ii.lxxvii", "iv.ii.lxxviii", "iv.ii.lxxx", "iv.ii.lxxxi", "iv.ii.lxxxii", "iv.ii.lxxxiii", "iv.ii.lxxxiv", "iv.ii.lxxxix", "iv.ii.lxxxv", "iv.ii.lxxxvi", "iv.ii.lxxxvii", "iv.ii.lxxxviii", "iv.ii.v", "iv.ii.vi", "iv.ii.vii", "iv.ii.viii", "iv.ii.x", "iv.ii.xc", "iv.ii.xci", "iv.ii.xcii", "iv.ii.xciii", "iv.ii.xciv", "iv.ii.xcix", "iv.ii.xcv", "iv.ii.xcvi", "iv.ii.xcvii", "iv.ii.xcviii", "iv.ii.xi", "iv.ii.xii", "iv.ii.xiii", "iv.ii.xiv", "iv.ii.xix", "iv.ii.xl", "iv.ii.xli", "iv.ii.xlii", "iv.ii.xliii", "iv.ii.xliv", "iv.ii.xlix", "iv.ii.xlv", "iv.ii.xlvi", "iv.ii.xlvii", "iv.ii.xlviii", "iv.ii.xv", "iv.ii.xvi", "iv.ii.xvii", "iv.ii.xviii", "iv.ii.xx", "iv.ii.xxi", "iv.ii.xxii", "iv.ii.xxiii", "iv.ii.xxiv", "iv.ii.xxix", "iv.ii.xxv", "iv.ii.xxvi", "iv.ii.xxvii", "iv.ii.xxviii", "iv.ii.xxx", "iv.ii.xxxi", "iv.ii.xxxii", "iv.ii.xxxiii", "iv.ii.xxxiv", "iv.ii.xxxix", "iv.ii.xxxv", "iv.ii.xxxvi", "iv.ii.xxxvii", "iv.ii.xxxviii", "iv.iii.ii", "iv.iii.iii", "iv.iii.iv", "iv.iii.ix", "iv.iii.v", "iv.iii.vi", "iv.iii.vii", "iv.iii.viii", "iv.iii.x", "iv.iii.xi", "iv.iii.xii", "iv.iii.xiii", "iv.iii.xiv", "iv.iii.xix", "iv.iii.xv", "iv.iii.xvi", "iv.iii.xvii", "iv.iii.xviii", "iv.iii.xx", "iv.iii.xxi", "iv.iii.xxii", "iv.iii.xxiii", "iv.iii.xxiv", "iv.iii.xxv", "iv.iii.xxvi", "iv.iii.xxvii", "iv.iii.xxviii", "iv.iv.iii", "iv.iv.iv", "iv.iv.ix", "iv.iv.v", "iv.iv.vi", "iv.iv.vii", "iv.iv.viii", "iv.iv.x", "iv.iv.xi"]
- },
  "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/TP_Q16_A3/p3": {
   "fixed_by": "1.7",
   "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
- },
- "health.R12_note_caller:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
-  "fixed_by": "1.8b",
-  "description": "The Confessions of Saint Augustine: 1 passages hold footnote callers (C-17). The source prints them as plain digits after the sentence (\"remains immutably.2 It is good\") and has no <note> for them, so 1.10b's note strip cannot remove them",
-  "units": ["viii.xi"]
  },
  "health.summa_bracket_numbers:summa/31b2bc0a-0b16-5002-822a-26d3215dd256": {
   "fixed_by": "1.7",
@@ -86,16 +56,6 @@
   "fixed_by": "1.9",
   "description": "Fragments: 8 labels title-case a Roman numeral (C-22)",
   "units": ["vii.ii.ii", "vii.ii.iii", "vii.ii.iv", "vii.ii.ix", "vii.ii.vi", "vii.ii.vi/from-p2-2", "vii.ii.vii", "vii.ii.viii"]
- },
- "labels.unique_reference:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
-  "fixed_by": "1.8b",
-  "description": "Doctrinal Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
-  "units": ["Doctrinal Treatises of St. Augustin, Chapter 1", "Doctrinal Treatises of St. Augustin, Chapter 12", "Doctrinal Treatises of St. Augustin, Chapter 24", "Doctrinal Treatises of St. Augustin, Chapter 3", "Doctrinal Treatises of St. Augustin, Chapter 5", "Doctrinal Treatises of St. Augustin, Chapter 6", "Doctrinal Treatises of St. Augustin, Chapter 7", "Doctrinal Treatises of St. Augustin, Chapter 8 (part 1 of 2)", "Doctrinal Treatises of St. Augustin, Chapter 8 (part 2 of 2)", "Doctrinal Treatises of St. Augustin, Section 1", "Doctrinal Treatises of St. Augustin, Section 10 (part 1 of 2)", "Doctrinal Treatises of St. Augustin, Section 10 (part 2 of 2)", "Doctrinal Treatises of St. Augustin, Section 11", "Doctrinal Treatises of St. Augustin, Section 12", "Doctrinal Treatises of St. Augustin, Section 14", "Doctrinal Treatises of St. Augustin, Section 15", "Doctrinal Treatises of St. Augustin, Section 16", "Doctrinal Treatises of St. Augustin, Section 17", "Doctrinal Treatises of St. Augustin, Section 2", "Doctrinal Treatises of St. Augustin, Section 3", "Doctrinal Treatises of St. Augustin, Section 4", "Doctrinal Treatises of St. Augustin, Section 5", "Doctrinal Treatises of St. Augustin, Section 6", "Doctrinal Treatises of St. Augustin, Section 7", "Doctrinal Treatises of St. Augustin, Section 8", "Doctrinal Treatises of St. Augustin, Section 9"]
- },
- "labels.unique_reference:church-fathers/f39c025e-78a6-5737-a94f-7896c84fc857": {
-  "fixed_by": "1.8b",
-  "description": "Moral Treatises of St. Augustin: its works restart their chapter and section numbering; 1.8b splits the volume into its works, so each is cited by its own title (NEEDS-CARTER 1.8b; Carter, 2 Nov 2026)",
-  "units": ["Moral Treatises of St. Augustin, Section 1", "Moral Treatises of St. Augustin, Section 10", "Moral Treatises of St. Augustin, Section 11", "Moral Treatises of St. Augustin, Section 11 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 11 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 12", "Moral Treatises of St. Augustin, Section 13", "Moral Treatises of St. Augustin, Section 14", "Moral Treatises of St. Augustin, Section 15", "Moral Treatises of St. Augustin, Section 16", "Moral Treatises of St. Augustin, Section 17", "Moral Treatises of St. Augustin, Section 18", "Moral Treatises of St. Augustin, Section 19", "Moral Treatises of St. Augustin, Section 2", "Moral Treatises of St. Augustin, Section 20", "Moral Treatises of St. Augustin, Section 21", "Moral Treatises of St. Augustin, Section 21 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 21 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 22", "Moral Treatises of St. Augustin, Section 23", "Moral Treatises of St. Augustin, Section 24", "Moral Treatises of St. Augustin, Section 25", "Moral Treatises of St. Augustin, Section 26", "Moral Treatises of St. Augustin, Section 27", "Moral Treatises of St. Augustin, Section 28", "Moral Treatises of St. Augustin, Section 29", "Moral Treatises of St. Augustin, Section 3", "Moral Treatises of St. Augustin, Section 30", "Moral Treatises of St. Augustin, Section 31", "Moral Treatises of St. Augustin, Section 32", "Moral Treatises of St. Augustin, Section 33", "Moral Treatises of St. Augustin, Section 34", "Moral Treatises of St. Augustin, Section 34 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 34 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 35", "Moral Treatises of St. Augustin, Section 36", "Moral Treatises of St. Augustin, Section 37", "Moral Treatises of St. Augustin, Section 38", "Moral Treatises of St. Augustin, Section 39", "Moral Treatises of St. Augustin, Section 4", "Moral Treatises of St. Augustin, Section 4 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 4 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 40", "Moral Treatises of St. Augustin, Section 40 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 40 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 41", "Moral Treatises of St. Augustin, Section 42", "Moral Treatises of St. Augustin, Section 43", "Moral Treatises of St. Augustin, Section 5", "Moral Treatises of St. Augustin, Section 6", "Moral Treatises of St. Augustin, Section 7", "Moral Treatises of St. Augustin, Section 8", "Moral Treatises of St. Augustin, Section 8 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 8 (part 2 of 2)", "Moral Treatises of St. Augustin, Section 9", "Moral Treatises of St. Augustin, Section 9 (part 1 of 2)", "Moral Treatises of St. Augustin, Section 9 (part 2 of 2)", "Moral Treatises of St. Augustin, Translator’s Preface"]
  },
  "labels.unique_reference:medieval/82d38756-6fba-5af7-9905-fd508a620f38": {
   "fixed_by": "1.9",
@@ -136,22 +96,6 @@
  "sequence.summa_articles.missing:FS.i.i": {
   "fixed_by": "1.7",
   "description": "Prologue of the First Part of the Second Part (no div4) is dropped"
- },
- "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.V.i": {
-  "fixed_by": "1.8b",
-  "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
- },
- "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.VI.i": {
-  "fixed_by": "1.8b",
-  "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
- },
- "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.VII.i": {
-  "fixed_by": "1.8b",
-  "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
- },
- "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#v.iii": {
-  "fixed_by": "1.8b",
-  "description": "Augustine's own \"Preface\" is dropped as front matter (new; author text, not editorial)"
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#iii.iii": {
   "fixed_by": "1.8e",
@@ -328,11 +272,6 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#vi.i": {
   "fixed_by": "1.9",
   "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
- },
- "structure.embedded_work_labelled:church-fathers/b270ebca-051e-5094-8370-758ad599d9ca": {
-  "fixed_by": "1.8b",
-  "description": "Doctrinal Treatises of St. Augustin: a run of chapters without a book or work label after booked chapters (C-15)",
-  "units": ["iv.ii.iii", "iv.iii.ii", "iv.iv.ii"]
  },
  "structure.summa.one-disputation-per-article:summa": {
   "fixed_by": "1.7",

@@ -100,6 +100,22 @@
  {
   "collection": "church-fathers",
   "file": "city-of-god.xml",
+  "div": "II_1",
+  "title": "Book II",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "IV_1",
+  "title": "Book IV",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
   "div": "iii",
   "title": "Editor’s Preface",
   "item": "1.8b"
@@ -107,9 +123,231 @@
  {
   "collection": "church-fathers",
   "file": "city-of-god.xml",
+  "div": "iv",
+  "title": "City of God",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.III",
+  "title": "Book III",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.IV",
+  "title": "Book IV",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.IX",
+  "title": "Book IX",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.V",
+  "title": "Book V",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.VI",
+  "title": "Book VI",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.VII",
+  "title": "Book VII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.VIII",
+  "title": "Book VIII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.X",
+  "title": "Book X",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XI",
+  "title": "Book XI",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XII",
+  "title": "Book XII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XIII",
+  "title": "Book XIII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XIV",
+  "title": "Book XIV",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XIX",
+  "title": "Book XIX",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XV",
+  "title": "Book XV",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XVI",
+  "title": "Book XVI",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XVII",
+  "title": "Book XVII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XVIII",
+  "title": "Book XVIII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XX",
+  "title": "Book XX",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XXI",
+  "title": "Book XXI",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.XXII",
+  "title": "Book XXII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "iv.ii",
+  "title": "Book I",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "v",
+  "title": "On Christian Doctrine",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
   "div": "v.i",
   "title": "Introductory Note by the Editor",
   "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "v.ii",
+  "title": "Contents of Christian Doctrine",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "v.iv",
+  "title": "Book I",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "v.v",
+  "title": "Book II",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "city-of-god.xml",
+  "div": "v.vi",
+  "title": "Book III",
+  "item": "1.8b",
+  "own_text": true
  },
  {
   "collection": "church-fathers",
@@ -121,9 +359,174 @@
  {
   "collection": "church-fathers",
   "file": "on-the-holy-trinity.xml",
+  "div": "iv.i",
+  "title": "On the Holy Trinity",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.i",
+  "title": "Introductory Essay",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.ii",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.iii",
+  "title": "Book I",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.iv",
+  "title": "Book II",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.ix",
+  "title": "Book VII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.v",
+  "title": "Book III",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.vi",
+  "title": "Book IV",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.vii",
+  "title": "Book V",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.viii",
+  "title": "Book VI",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.x",
+  "title": "Book VIII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.xi",
+  "title": "Book IX",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.xii",
+  "title": "Book X",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.xiii",
+  "title": "Book XI",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.xiv",
+  "title": "Book XII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.xv",
+  "title": "Book XIII",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.xvi",
+  "title": "Book XIV",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.i.xvii",
+  "title": "Book XV",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.ii",
+  "title": "The Enchiridion",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
   "div": "iv.ii.i",
   "title": "Introductory Notice",
   "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.ii.ii",
+  "title": "Argument",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.iii",
+  "title": "On the Catechising of the Uninstructed",
+  "item": "1.8b",
+  "own_text": true
  },
  {
   "collection": "church-fathers",
@@ -135,8 +538,175 @@
  {
   "collection": "church-fathers",
   "file": "on-the-holy-trinity.xml",
+  "div": "iv.iv",
+  "title": "A Treatise on Faith and the Creed",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
   "div": "iv.iv.i",
   "title": "Introductory Notice",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.v",
+  "title": "Concerning Faith of Things Not Seen",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.vi",
+  "title": "On the Profit of Believing",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.vi.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "iv.vii",
+  "title": "On the Creed",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.i",
+  "title": "On Continence",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.ii",
+  "title": "On the Good of Marriage",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.ii.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.iii",
+  "title": "Of Holy Virginity",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.iii.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.iv",
+  "title": "On the Good of Widowhood",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.iv.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.ix",
+  "title": "On Care to Be Had for the Dead",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.ix.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.v",
+  "title": "On Lying",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.v.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.vi",
+  "title": "Against Lying",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.vi.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.vii",
+  "title": "Of the Work of Monks",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.vii.i",
+  "title": "Translator’s Preface",
+  "item": "1.8b"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.viii",
+  "title": "On Patience",
+  "item": "1.8b",
+  "own_text": true
+ },
+ {
+  "collection": "church-fathers",
+  "file": "on-the-holy-trinity.xml",
+  "div": "v.viii.i",
+  "title": "Translator’s Preface",
   "item": "1.8b"
  },
  {
