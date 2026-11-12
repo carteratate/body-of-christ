@@ -23,6 +23,13 @@ so `checks.report.check_scope` reads its collection from the id:
   second determination run, no objection run restarting at "Objection 1" after the
   determination, and a determination unless R7 confirmed the article as reply-only
   (C-07, Sol A-003). Units: the article div ids.
+- `summa.reply-only-articles:summa`: the articles with no determination are exactly the
+  ones R7's corrections file lists as reply-only (I q.74 a.3 and q.91 a.4; C-14, Sol
+  A-014). Units: "missing:<article>" for an article without one, "listed:<article>" for
+  a listed article that has one.
+- `summa.argument-numbering:summa`: each article's objections are numbered 1 to n in
+  order, the source's markers as corrected by R7, recovered units included (C-14, Sol
+  A-015). Units: the article ids (`metadata["article"]`).
 - `embedded_work_labelled:<collection>/<document_id>`: in a ThML document, a run of
   CHAPTER_RUN_MIN or more chapters numbered with no book prefix, after chapters that carry
   one, belongs to a work or a book (C-15, Opus-2 B-013). Units: the run's first chapter key.
@@ -289,6 +296,39 @@ def article_id(passage) -> str:
     return parts[1] if len(parts) > 2 else passage.chapter_key
 
 
+def summa_articles_built(documents: list[Document]) -> dict[str, list]:
+    """Each built article's passages, by the article id the adapter records (1.7)."""
+    out: dict[str, list] = defaultdict(list)
+    for d in documents:
+        for p in d.passages:
+            article = (p.metadata or {}).get("article")
+            if article:
+                out[article].append(p)
+    return out
+
+
+def summa_reply_only(documents: list[Document], reply_only: set[str]) -> Failures:
+    failing = []
+    for article, passages in sorted(summa_articles_built(documents).items()):
+        has = any(summa_role(p.unit_label) == "determination" for p in passages)
+        if not has and article not in reply_only:
+            failing.append(f"missing:{article}")
+        elif has and article in reply_only:
+            failing.append(f"listed:{article}")
+    return {"structure.summa.reply-only-articles:summa": failing} if failing else {}
+
+
+def summa_argument_numbering(documents: list[Document]) -> Failures:
+    failing = []
+    for article, passages in sorted(summa_articles_built(documents).items()):
+        labels = [k for k, _ in itertools.groupby(
+            p.unit_label for p in passages if summa_role(p.unit_label) == "objection")]
+        numbers = [int(label.split()[-1]) for label in labels]
+        if numbers != list(range(1, len(numbers) + 1)):
+            failing.append(article)
+    return {"structure.summa.argument-numbering:summa": failing} if failing else {}
+
+
 def summa_one_disputation(documents: list[Document], reply_only: set[str]) -> Failures:
     failing = []
     for d in documents:
@@ -378,6 +418,8 @@ def run(collection: str, documents: list[Document], *,
     if collection == "summa":
         corrections = load_summa_corrections() if corrections is None else corrections
         out.update(summa_one_disputation(documents, reply_only_articles(corrections)))
+        out.update(summa_reply_only(documents, reply_only_articles(corrections)))
+        out.update(summa_argument_numbering(documents))
     if collection in ("church-fathers", "medieval"):
         out.update(embedded_work_labelled(collection, documents))
     return out

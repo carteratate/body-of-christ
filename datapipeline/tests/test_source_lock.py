@@ -314,3 +314,18 @@ def test_scoped_write_after_a_move_drops_the_incoming_entry(tree):
     paths = {e["path"] for e in json.loads(lock.read_text())}
     assert "encyclicals/new.html" in paths and "_incoming/encyclicals/new.html" not in paths
     assert not any(source_lock.verify(sources, lock, COLLECTIONS, None).values())
+
+
+def test_summa_print_scans_are_unread_editions_with_their_url(tree):
+    """1.7: the OCR text of the printed editions the restored units come from is kept
+    beside summa.xml, which is all the adapter reads."""
+    sources, lock = tree
+    scan = "summatheologicao0004thom"
+    (sources / "summa" / scan).mkdir()
+    (sources / "summa" / scan / f"{scan}_djvu.txt").write_text("Obj. 3.", encoding="utf-8")
+    run("--write", sources, lock)
+    by_path = {e["path"]: e for e in json.loads(lock.read_text())}
+    entry = by_path[f"summa/{scan}/{scan}_djvu.txt"]
+    assert entry["role"] == "vendored-unregistered" and "1.7" in entry["note"]
+    assert entry["url"] == f"https://archive.org/download/{scan}/{scan}_djvu.txt"
+    assert by_path["summa/summa.xml"]["role"] == "adapter-input"

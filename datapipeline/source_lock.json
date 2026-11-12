@@ -6299,6 +6299,17 @@
  },
  {
   "collection": "summa",
+  "path": "summa/onprayercontempl00thomuoft/onprayercontempl00thomuoft_djvu.txt",
+  "sha256": "168289891a7ab3993b2ca0e9f58bef3f4ef6f17f2869f5c8521232de391166cb",
+  "bytes": 502472,
+  "url": "https://archive.org/download/onprayercontempl00thomuoft/onprayercontempl00thomuoft_djvu.txt",
+  "acquired": "2026-10-30",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
+ },
+ {
+  "collection": "summa",
   "path": "summa/summa.xml",
   "sha256": "550eb0b0758f119dfe50346e43072026e8c3070d806d4942025525fb24fb7f5b",
   "bytes": 18855316,
@@ -6306,5 +6317,60 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "summa",
+  "path": "summa/summatheologi15thom/summatheologi15thom_djvu.txt",
+  "sha256": "e7fb001e2ddb8bcaaab0aa843693e8d3395513bdb208abb71d0b323009f7b7d1",
+  "bytes": 817925,
+  "url": "https://archive.org/download/summatheologi15thom/summatheologi15thom_djvu.txt",
+  "acquired": "2026-10-30",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
+ },
+ {
+  "collection": "summa",
+  "path": "summa/summatheologicao0004thom/summatheologicao0004thom_djvu.txt",
+  "sha256": "51e52fdb89c3760a59d5584026b1ad63e13b97f7db277ecdc846b9cb43aea1bb",
+  "bytes": 864007,
+  "url": "https://archive.org/download/summatheologicao0004thom/summatheologicao0004thom_djvu.txt",
+  "acquired": "2026-10-30",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
+ },
+ {
+  "collection": "summa",
+  "path": "summa/summatheologicao0005thom/summatheologicao0005thom_djvu.txt",
+  "sha256": "8d9b69531160ab200392e29491803bb7c7385eb6b1a4d51449d3e699a5075380",
+  "bytes": 462178,
+  "url": "https://archive.org/download/summatheologicao0005thom/summatheologicao0005thom_djvu.txt",
+  "acquired": "2026-10-30",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
+ },
+ {
+  "collection": "summa",
+  "path": "summa/summatheologicao0006thom/summatheologicao0006thom_djvu.txt",
+  "sha256": "3676323f6d6b786675c1f4eb1083c84327f3ebbde2e2b1a45b0bd9cd5b1ef677",
+  "bytes": 1241878,
+  "url": "https://archive.org/download/summatheologicao0006thom/summatheologicao0006thom_djvu.txt",
+  "acquired": "2026-10-30",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
+ },
+ {
+  "collection": "summa",
+  "path": "summa/summatheologicao0007thom/summatheologicao0007thom_djvu.txt",
+  "sha256": "d3ac3596920ba735144bf068723c787e171812a5ed65b2c13460b52212dcc29e",
+  "bytes": 1178540,
+  "url": "https://archive.org/download/summatheologicao0007thom/summatheologicao0007thom_djvu.txt",
+  "acquired": "2026-10-30",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
  }
 ]

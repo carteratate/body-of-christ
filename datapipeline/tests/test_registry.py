@@ -701,11 +701,17 @@ def test_summa_adapter_builds_no_anchor_from_a_label():
 
 
 def test_second_summa_part_in_one_paragraph_takes_2(tmp_path):
+    """A part opens inside a paragraph only where R7's corrections file says so
+    (`parts`, as in I q.108 a.8); it takes the paragraph's anchor plus `-2`."""
     text = _ARTICLE.format(second="Objection 2").replace(
         '</p>\n<p id="FP_Q1_A1-p3"><b>On the contrary,</b>', " On the contrary,")
     path = tmp_path / "summa-merged.xml"
     path.write_text(text, encoding="utf-8")
-    anchors = [p.anchor for p in summa.build_document(str(path)).passages]
+    assert len(summa.build_document(str(path)).passages) == 4   # a phrase opens nothing
+    parts = [{"opens_with": "Objection 2:", "role": "objection"},
+             {"opens_with": "On the contrary,", "role": "sed-contra", "anchor_suffix": "-2"}]
+    corrections = {"paragraphs": {"FP_Q1_A1-p2": {"parts": parts}}, "articles": {}}
+    anchors = [p.anchor for p in summa.build_document(str(path), corrections).passages]
     assert anchors[1:3] == ["summa/FP_Q1_A1/p2", "summa/FP_Q1_A1/p2-2"]
 
 

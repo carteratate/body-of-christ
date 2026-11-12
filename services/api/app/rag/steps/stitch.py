@@ -347,12 +347,15 @@ def assemble(chunks: list[RankedChunk],
         )
     if incomplete:
         # INFO, not WARNING, and deliberately so. The two warnings above mean the stores
-        # have come apart and someone should act. This one means the CORPUS is missing a
-        # passage — 16 articles hold no determination (12 lost to a splitter bug whose
-        # fix is committed but unapplied, 1 phrased "I answer with Augustine", 3 absent
-        # from the source) and 26 replies name an objection number their article does not
-        # contain. Raising it to WARNING would fire on ordinary searches over known-bad
-        # data and teach an operator to skim past the two lines that do need action.
+        # have come apart and someone should act. This one means the CORPUS has no
+        # passage to complete the card. As 1.7 builds the Summa, 2 articles hold no
+        # determination (I q.74 a.3 and q.91 a.4, whose Latin has none either) and 32
+        # replies name an objection number their article does not contain: each answers a
+        # sed contra argument, which the Leonine numbers after the objections, and records
+        # it in `reply_targets` (stitching that reads it is a retrieval follow-up). Until
+        # the Summa is republished, the live corpus has the old splitter's gaps too.
+        # Raising it to WARNING would fire on ordinary searches over known-bad data and
+        # teach an operator to skim past the two lines that do need action.
         #
         # Logged at all because the alternative is silence: the passage is located, the
         # article is fetched, nothing errors, and the card simply renders without the

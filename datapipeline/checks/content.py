@@ -15,6 +15,22 @@ Summa (units are anchors, or paragraph ids where a paragraph has no passage of i
   folded into an objection (C-04, Sol follow-up B-001). Units: source paragraph ids.
 - `text.summa.adjacent-duplicate-parts:summa`: no two adjacent parts of one article have
   the same text (C-14, Sol A-012).
+- `roles.summa.unbold-paragraph-openings:summa`: no part holds, at the start of one of its
+  later paragraphs, a canonical opening ("On the contrary", "I answer that", "The
+  contrary, however", "Reply OBJ") that should have opened a part of its own (C-14, Sol
+  A-016, B-001). Units: anchors.
+- `attribution.summa.editor-supplied-replies:summa`: every paragraph R7's corrections file
+  flags as editorial or editor-supplied is excluded from the build, recorded in the
+  document's `excluded_paragraphs`, and anchors no passage (C-04, Sol A-019). Units:
+  source paragraph ids.
+- `context.summa.reply-targets:summa`: every argument a passage answers
+  (`metadata["reply_targets"]`) is in its article: an objection numbered so, or a sed
+  contra with that number; or a unit the corrections file records as missing, in an
+  article whose first passage carries the reader note (C-14, Sol A-017; Decision log
+  "Summa reply targets (1.7)"). Units: "<anchor>:<target>".
+- `labels.summa_reference_has_question:summa`: every article passage's reference ends
+  with ": " and the article's question, the same for the whole article (Decision log
+  "Summa citation form (1.7)"). Units: anchors.
 
 Church Fathers and medieval (`:<collection>/<document_id>`, units are anchors):
 - `editorial.argument_lines`: no paragraph is an editor's "Argument" summary (C-12),
@@ -32,8 +48,7 @@ Church Fathers and medieval (`:<collection>/<document_id>`, units are anchors):
 - `labels.unique_reference`: no two passages of a document share a reference (1.10c).
   Split pieces cite their own text, so a shared reference is two units cited alike: two
   chapters with one label, or a paragraph number the adapter reads twice. Not run on the
-  Summa and the Catechism until 1.7 and 1.6 adopt the piece citations. Units: the shared
-  references.
+  Catechism until 1.6 adopts the piece citations. Units: the shared references.
 - `labels.roman_case`: no Roman numeral title-cased ("Ii", "Vi") in a chapter or unit label
   (C-22, Opus A-022). Run on every collection.
 
@@ -56,7 +71,10 @@ import re
 import unicodedata
 from collections import Counter, defaultdict
 
-from checks.structure import (article_id, load_summa_corrections, summa_role)
+from checks.structure import (article_id, load_summa_corrections, summa_articles_built,
+                              summa_role)
+from identity import unit_anchor
+from ingest.pieces import unit_reference
 from model import Document
 
 CHECKS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -128,6 +146,82 @@ def summa_adjacent_duplicates(documents: list[Document]) -> Failures:
                     and _same_text(a.content) == _same_text(b.content)):
                 anchors.append(b.anchor)
     return {"text.summa.adjacent-duplicate-parts:summa": anchors} if anchors else {}
+
+
+_UNBOLD_OPENING = re.compile(r"\n\n(?:On the contrary\b|I answer that\b|The contrary, however|"
+                            r"(?:Reply|Replies) OBJ\b)")
+
+
+def summa_unbold_openings(documents: list[Document]) -> Failures:
+    anchors = [p.anchor for d in documents for p in d.passages
+               if _UNBOLD_OPENING.search(p.content)]
+    return {"roles.summa.unbold-paragraph-openings:summa": anchors} if anchors else {}
+
+
+def summa_editor_supplied(documents: list[Document], corrections: dict) -> Failures:
+    flagged = [pid for pid, f in corrections.get("paragraphs", {}).items()
+               if f.get("flag") in ("editorial", "editor-supplied")]
+    failing = []
+    for d in documents:
+        excluded = {e["paragraph"] for e in (d.metadata or {}).get("excluded_paragraphs", [])}
+        built = {unit_anchor(p.anchor) for p in d.passages}
+        for pid in flagged:
+            div, _, para = pid.rpartition("-")
+            if pid not in excluded or f"summa/{div}/{para}" in built:
+                failing.append(pid)
+    return ({"attribution.summa.editor-supplied-replies:summa": sorted(set(failing))}
+            if failing else {})
+
+
+_SED_CONTRA_CITED = re.compile(r", sed contra(?: (\d+))?:")
+_AD_CITED = re.compile(r", ad ([\d ,and]+):")
+
+
+def summa_reply_targets(documents: list[Document], corrections: dict) -> Failures:
+    articles = corrections.get("articles", {})
+    held: dict[str, set[int]] = defaultdict(set)
+    for pid, f in corrections.get("paragraphs", {}).items():
+        article = f.get("move_to") or pid.rpartition("-")[0]
+        held[article] |= {int(t.split()[1]) for t in f.get("holds", []) if t.startswith("sc ")}
+    failing = []
+    for article, passages in sorted(summa_articles_built(documents).items()):
+        objections = {int(p.unit_label.split()[-1]) for p in passages
+                      if summa_role(p.unit_label) == "objection"}
+        # A sed contra's further arguments are its later paragraphs ("Further, …").
+        sed_contras = set(held[article])
+        paragraphs = 1 + sum(p.content.count("\n\n") for p in passages
+                             if summa_role(p.unit_label) == "sed-contra")
+        if any(summa_role(p.unit_label) == "sed-contra" for p in passages):
+            sed_contras |= set(range(1, paragraphs + 1))
+        for p in passages:
+            m = _SED_CONTRA_CITED.search(p.reference)
+            if m:
+                sed_contras.add(int(m.group(1) or 1))
+        noted = bool(passages[0].note)
+        missing = {m["unit"] for m in articles.get(article, {}).get("missing", [])}
+        for p in passages:
+            # The translators print an answered sed contra as an objection ("Objection 4:
+            # On the other hand"); the reply's Latin number ("ad 4") then names it.
+            cited = {int(n) for n in re.findall(r"\d+", _AD_CITED.search(p.reference)[1])} \
+                if _AD_CITED.search(p.reference) else set()
+            for target in (p.metadata or {}).get("reply_targets", []):
+                kind, n = target.split()
+                found = int(n) in (objections if kind == "obj" else sed_contras) or (
+                    kind == "sc" and cited and cited <= objections)
+                if not found and not (target in missing and noted):
+                    failing.append(f"{unit_anchor(p.anchor)}:{target}")
+    failing = list(dict.fromkeys(failing))
+    return {"context.summa.reply-targets:summa": failing} if failing else {}
+
+
+def summa_reference_has_question(documents: list[Document]) -> Failures:
+    failing = []
+    for article, passages in summa_articles_built(documents).items():
+        questions = {unit_reference(p.reference).partition(": ")[2] for p in passages}
+        if len(questions) != 1 or not next(iter(questions)).strip():
+            failing += [p.anchor for p in passages]
+    return ({"labels.summa_reference_has_question:summa": sorted(failing)}
+            if failing else {})
 
 
 # --------------------------------------------------------------------------- editorial
@@ -357,8 +451,8 @@ def roman_case(collection: str, documents: list[Document]) -> Failures:
     return out
 
 
-# Collections whose adapters do not yet cite each piece on its own (1.7, 1.6).
-UNIQUE_REFERENCE_PENDING = ("summa", "catechism")
+# Collections whose adapters do not yet cite each piece on its own (1.6).
+UNIQUE_REFERENCE_PENDING = ("catechism",)
 
 
 def unique_references(collection: str, documents: list[Document]) -> Failures:
@@ -403,6 +497,10 @@ def run(collection: str, documents: list[Document], *, corrections: dict | None 
         out.update(summa_objection_after_replies(documents))
         out.update(summa_sed_contra_boundaries(documents, corrections))
         out.update(summa_adjacent_duplicates(documents))
+        out.update(summa_unbold_openings(documents))
+        out.update(summa_editor_supplied(documents, corrections))
+        out.update(summa_reply_targets(documents, corrections))
+        out.update(summa_reference_has_question(documents))
     if collection in THML_COLLECTIONS:
         out.update(argument_lines(collection, documents))
         out.update(chapter_title_lines(collection, documents))

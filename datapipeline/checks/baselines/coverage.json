@@ -9,7 +9,7 @@
   "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
-  "summa": "feat/coverage-checks cfee751"
+  "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
   "apostolic-exhortations/africae-munus.html": {
@@ -1628,9 +1628,9 @@
    "pct": 98.96
   },
   "summa/summa.xml": {
-   "body_chars": 14064656,
-   "covered_chars": 13760907,
-   "pct": 97.84
+   "body_chars": 14059391,
+   "covered_chars": 14048828,
+   "pct": 99.92
   }
  },
  "documents": {
@@ -2274,9 +2274,9 @@
   "31b2bc0a-0b16-5002-822a-26d3215dd256": {
    "collection": "summa",
    "source_file": "summa.xml",
-   "body_chars": 14064656,
-   "covered_chars": 13760907,
-   "pct": 97.84
+   "body_chars": 14059391,
+   "covered_chars": 14048828,
+   "pct": 99.92
   },
   "320fa162-8968-5d63-b791-30de4220ec01": {
    "collection": "encyclicals",

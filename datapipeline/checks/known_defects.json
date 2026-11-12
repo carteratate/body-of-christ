@@ -53,19 +53,10 @@
   "description": "Doctrinal Treatises of St. Augustin: 380 passages open with a later editor's chapter title (G-1)",
   "units": ["iv.i.iii.i", "iv.i.iii.ii", "iv.i.iii.iii", "iv.i.iii.iv", "iv.i.iii.ix", "iv.i.iii.v", "iv.i.iii.vi", "iv.i.iii.vii", "iv.i.iii.viii", "iv.i.iii.x", "iv.i.iii.xi", "iv.i.iii.xii", "iv.i.iii.xiii", "iv.i.iv.ii", "iv.i.iv.iii", "iv.i.iv.iv", "iv.i.iv.ix", "iv.i.iv.v", "iv.i.iv.vi", "iv.i.iv.vii", "iv.i.iv.viii", "iv.i.iv.x", "iv.i.iv.xi", "iv.i.iv.xii", "iv.i.iv.xiii", "iv.i.iv.xiv", "iv.i.iv.xix", "iv.i.iv.xv", "iv.i.iv.xvi", "iv.i.iv.xvii", "iv.i.iv.xviii", "iv.i.ix.i", "iv.i.ix.ii", "iv.i.ix.iii", "iv.i.ix.iv", "iv.i.ix.v", "iv.i.ix.vi", "iv.i.v.ii", "iv.i.v.iii", "iv.i.v.iv", "iv.i.v.ix", "iv.i.v.v", "iv.i.v.vi", "iv.i.v.vii", "iv.i.v.viii", "iv.i.v.x", "iv.i.v.xi", "iv.i.v.xii", "iv.i.vi.ii", "iv.i.vi.iii", "iv.i.vi.iv", "iv.i.vi.ix", "iv.i.vi.v", "iv.i.vi.vi", "iv.i.vi.vii", "iv.i.vi.viii", "iv.i.vi.x", "iv.i.vi.xi", "iv.i.vi.xii", "iv.i.vi.xiii", "iv.i.vi.xiv", "iv.i.vi.xix", "iv.i.vi.xv", "iv.i.vi.xvi", "iv.i.vi.xvii", "iv.i.vi.xviii", "iv.i.vi.xx", "iv.i.vi.xxi", "iv.i.vi.xxii", "iv.i.vii.i", "iv.i.vii.ii", "iv.i.vii.iii", "iv.i.vii.iv", "iv.i.vii.ix", "iv.i.vii.v", "iv.i.vii.vi", "iv.i.vii.vii", "iv.i.vii.viii", "iv.i.vii.x", "iv.i.vii.xi", "iv.i.vii.xii", "iv.i.vii.xiii", "iv.i.vii.xiv", "iv.i.vii.xv", "iv.i.vii.xvi", "iv.i.viii.i", "iv.i.viii.ii", "iv.i.viii.iii", "iv.i.viii.iv", "iv.i.viii.ix", "iv.i.viii.v", "iv.i.viii.vi", "iv.i.viii.vii", "iv.i.viii.viii", "iv.i.viii.x", "iv.i.x.ii", "iv.i.x.iii", "iv.i.x.iv", "iv.i.x.ix", "iv.i.x.v", "iv.i.x.vi", "iv.i.x.vii", "iv.i.x.viii", "iv.i.x.x", "iv.i.x.xi", "iv.i.xi.i", "iv.i.xi.ii", "iv.i.xi.iii", "iv.i.xi.iv", "iv.i.xi.ix", "iv.i.xi.v", "iv.i.xi.vi", "iv.i.xi.vii", "iv.i.xi.viii", "iv.i.xi.x", "iv.i.xi.xi", "iv.i.xi.xii", "iv.i.xii.i", "iv.i.xii.ii", "iv.i.xii.iii", "iv.i.xii.iv", "iv.i.xii.ix", "iv.i.xii.v", "iv.i.xii.vi", "iv.i.xii.vii", "iv.i.xii.viii", "iv.i.xii.x", "iv.i.xii.xi", "iv.i.xii.xii", "iv.i.xiii.i", "iv.i.xiii.ii", "iv.i.xiii.iii", "iv.i.xiii.iv", "iv.i.xiii.ix", "iv.i.xiii.v", "iv.i.xiii.vi", "iv.i.xiii.vii", "iv.i.xiii.viii", "iv.i.xiii.x", "iv.i.xiii.xi", "iv.i.xiv.i", "iv.i.xiv.ii", "iv.i.xiv.iii", "iv.i.xiv.iv", "iv.i.xiv.ix", "iv.i.xiv.v", "iv.i.xiv.vi", "iv.i.xiv.vii", "iv.i.xiv.viii", "iv.i.xiv.x", "iv.i.xiv.xi", "iv.i.xiv.xii", "iv.i.xiv.xiii", "iv.i.xiv.xiv", "iv.i.xiv.xv", "iv.i.xv.i", "iv.i.xv.ii", "iv.i.xv.iii", "iv.i.xv.iv", "iv.i.xv.ix", "iv.i.xv.v", "iv.i.xv.vi", "iv.i.xv.vii", "iv.i.xv.viii", "iv.i.xv.x", "iv.i.xv.xi", "iv.i.xv.xii", "iv.i.xv.xiii", "iv.i.xv.xiv", "iv.i.xv.xix", "iv.i.xv.xv", "iv.i.xv.xvi", "iv.i.xv.xvii", "iv.i.xv.xviii", "iv.i.xv.xx", "iv.i.xvi.i", "iv.i.xvi.ii", "iv.i.xvi.iii", "iv.i.xvi.iv", "iv.i.xvi.ix", "iv.i.xvi.v", "iv.i.xvi.vi", "iv.i.xvi.vii", "iv.i.xvi.viii", "iv.i.xvi.x", "iv.i.xvi.xi", "iv.i.xvi.xii", "iv.i.xvi.xiii", "iv.i.xvi.xiv", "iv.i.xvi.xix", "iv.i.xvi.xv", "iv.i.xvi.xvi", "iv.i.xvi.xvii", "iv.i.xvi.xviii", "iv.i.xvii.i", "iv.i.xvii.ii", "iv.i.xvii.iii", "iv.i.xvii.iv", "iv.i.xvii.ix", "iv.i.xvii.v", "iv.i.xvii.vi", "iv.i.xvii.vii", "iv.i.xvii.viii", "iv.i.xvii.x", "iv.i.xvii.xi", "iv.i.xvii.xii", "iv.i.xvii.xiii", "iv.i.xvii.xiv", "iv.i.xvii.xix", "iv.i.xvii.xv", "iv.i.xvii.xvi", "iv.i.xvii.xvii", "iv.i.xvii.xviii", "iv.i.xvii.xx", "iv.i.xvii.xxi", "iv.i.xvii.xxii", "iv.i.xvii.xxiii", "iv.i.xvii.xxiv", "iv.i.xvii.xxv", "iv.i.xvii.xxvi", "iv.i.xvii.xxvii", "iv.i.xvii.xxviii", "iv.ii.c", "iv.ii.ci", "iv.ii.cii", "iv.ii.ciii", "iv.ii.civ", "iv.ii.cix", "iv.ii.cv", "iv.ii.cvi", "iv.ii.cvii", "iv.ii.cviii", "iv.ii.cx", "iv.ii.cxi", "iv.ii.cxii", "iv.ii.cxiii", "iv.ii.cxiv", "iv.ii.cxix", "iv.ii.cxv", "iv.ii.cxvi", "iv.ii.cxvii", "iv.ii.cxviii", "iv.ii.cxx", "iv.ii.cxxi", "iv.ii.cxxii", "iv.ii.cxxiii", "iv.ii.cxxiv", "iv.ii.iii", "iv.ii.iv", "iv.ii.ix", "iv.ii.l", "iv.ii.li", "iv.ii.lii", "iv.ii.liii", "iv.ii.liv", "iv.ii.lix", "iv.ii.lv", "iv.ii.lvi", "iv.ii.lvii", "iv.ii.lviii", "iv.ii.lx", "iv.ii.lxi", "iv.ii.lxii", "iv.ii.lxiii", "iv.ii.lxiv", "iv.ii.lxix", "iv.ii.lxv", "iv.ii.lxvi", "iv.ii.lxvii", "iv.ii.lxviii", "iv.ii.lxx", "iv.ii.lxxi", "iv.ii.lxxii", "iv.ii.lxxiii", "iv.ii.lxxiv", "iv.ii.lxxix", "iv.ii.lxxv", "iv.ii.lxxvi", "iv.ii.lxxvii", "iv.ii.lxxviii", "iv.ii.lxxx", "iv.ii.lxxxi", "iv.ii.lxxxii", "iv.ii.lxxxiii", "iv.ii.lxxxiv", "iv.ii.lxxxix", "iv.ii.lxxxv", "iv.ii.lxxxvi", "iv.ii.lxxxvii", "iv.ii.lxxxviii", "iv.ii.v", "iv.ii.vi", "iv.ii.vii", "iv.ii.viii", "iv.ii.x", "iv.ii.xc", "iv.ii.xci", "iv.ii.xcii", "iv.ii.xciii", "iv.ii.xciv", "iv.ii.xcix", "iv.ii.xcv", "iv.ii.xcvi", "iv.ii.xcvii", "iv.ii.xcviii", "iv.ii.xi", "iv.ii.xii", "iv.ii.xiii", "iv.ii.xiv", "iv.ii.xix", "iv.ii.xl", "iv.ii.xli", "iv.ii.xlii", "iv.ii.xliii", "iv.ii.xliv", "iv.ii.xlix", "iv.ii.xlv", "iv.ii.xlvi", "iv.ii.xlvii", "iv.ii.xlviii", "iv.ii.xv", "iv.ii.xvi", "iv.ii.xvii", "iv.ii.xviii", "iv.ii.xx", "iv.ii.xxi", "iv.ii.xxii", "iv.ii.xxiii", "iv.ii.xxiv", "iv.ii.xxix", "iv.ii.xxv", "iv.ii.xxvi", "iv.ii.xxvii", "iv.ii.xxviii", "iv.ii.xxx", "iv.ii.xxxi", "iv.ii.xxxii", "iv.ii.xxxiii", "iv.ii.xxxiv", "iv.ii.xxxix", "iv.ii.xxxv", "iv.ii.xxxvi", "iv.ii.xxxvii", "iv.ii.xxxviii", "iv.iii.ii", "iv.iii.iii", "iv.iii.iv", "iv.iii.ix", "iv.iii.v", "iv.iii.vi", "iv.iii.vii", "iv.iii.viii", "iv.iii.x", "iv.iii.xi", "iv.iii.xii", "iv.iii.xiii", "iv.iii.xiv", "iv.iii.xix", "iv.iii.xv", "iv.iii.xvi", "iv.iii.xvii", "iv.iii.xviii", "iv.iii.xx", "iv.iii.xxi", "iv.iii.xxii", "iv.iii.xxiii", "iv.iii.xxiv", "iv.iii.xxv", "iv.iii.xxvi", "iv.iii.xxvii", "iv.iii.xxviii", "iv.iv.iii", "iv.iv.iv", "iv.iv.ix", "iv.iv.v", "iv.iv.vi", "iv.iv.vii", "iv.iv.viii", "iv.iv.x", "iv.iv.xi"]
  },
- "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/TP_Q16_A3/p3": {
-  "fixed_by": "1.7",
-  "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
- },
  "health.R12_note_caller:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
   "fixed_by": "1.8b",
   "description": "The Confessions of Saint Augustine: 1 passages hold footnote callers (C-17). The source prints them as plain digits after the sentence (\"remains immutably.2 It is good\") and has no <note> for them, so 1.10b's note strip cannot remove them",
   "units": ["viii.xi"]
- },
- "health.summa_bracket_numbers:summa/31b2bc0a-0b16-5002-822a-26d3215dd256": {
-  "fixed_by": "1.7",
-  "description": "39 Summa passages hold a bracketed cross-reference number (C-22)",
-  "units": ["summa/FP_Q111_A3/p6", "summa/FP_Q17_A3/p4", "summa/FS_Q100_A9/p6", "summa/FS_Q1_A6/p3", "summa/FS_Q25_A4/p2", "summa/FS_Q27_A2/p2", "summa/FS_Q34_A1/p6", "summa/FS_Q35_A1/p6", "summa/FS_Q4_A3/p3", "summa/FS_Q84_A4/p8", "summa/SS_Q114_A1/p7", "summa/SS_Q117_A5/p4", "summa/SS_Q118_A5/p3", "summa/SS_Q122_A5/p2", "summa/SS_Q122_A6/p3", "summa/SS_Q123_A10/p16", "summa/SS_Q124_A3/p6", "summa/SS_Q141_A1/p4", "summa/SS_Q141_A3/p3", "summa/SS_Q143_A1/p6", "summa/SS_Q145_A2/p6", "summa/SS_Q147_A2/p4", "summa/SS_Q14_A1/p6/from-p8", "summa/SS_Q24_A11/p7", "summa/SS_Q28_A4/p5", "summa/SS_Q53_A2/p4", "summa/SS_Q72_A1/p8", "summa/SS_Q81_A5/p4", "summa/SS_Q82_A1/p4", "summa/SS_Q89_A1/p4", "summa/SS_Q95_A2/p6", "summa/TP_Q18_A1/p11", "summa/TP_Q18_A1/p7", "summa/TP_Q37_A4/p2", "summa/TP_Q7_A5/p6", "summa/TP_Q80_A1/p6", "summa/TP_Q86_A4/p4", "summa/XP_Q47_A1/p6", "summa/XP_Q98_A2/p12"]
  },
  "labels.roman_case:church-fathers/0066869a-28fb-5274-a847-c4d3e88a948e": {
   "fixed_by": "1.9",
@@ -102,40 +93,10 @@
   "description": "Anselm's Cur Deus Homo: chapter labels lack their book (\"Chapter I\" in each book); 1.9 labels them \"Book First · Chapter I\" (Carter, 2 Nov 2026)",
   "units": ["Anselm's Cur Deus Homo, Chapter I", "Anselm's Cur Deus Homo, Chapter III", "Anselm's Cur Deus Homo, Chapter IV", "Anselm's Cur Deus Homo, Chapter V", "Anselm's Cur Deus Homo, Chapter VI", "Anselm's Cur Deus Homo, Chapter VIII (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter VIII (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XIII", "Anselm's Cur Deus Homo, Chapter XIV", "Anselm's Cur Deus Homo, Chapter XIX (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter XIX (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XV", "Anselm's Cur Deus Homo, Chapter XXI", "Anselm's Cur Deus Homo, Chapter XXII"]
  },
- "roles.summa.objection-after-replies:summa": {
-  "fixed_by": "1.7",
-  "description": "2 replies labelled as objections after the determination (C-04)",
-  "units": ["summa/SS_Q172_A1/p11", "summa/XP_Q77_A4/p11"]
- },
- "roles.summa.variant-sed-contra-boundaries:summa": {
-  "fixed_by": "1.7",
-  "description": "4 sed contras R7 attests are folded into an objection (C-04)",
-  "units": ["FS_Q46_A7-p5", "SS_Q140_A2-p5", "SS_Q56_A1-p5", "SS_Q56_A2-p5"]
- },
- "sentinel.summa_i_q71": {
-  "fixed_by": "1.7",
-  "description": "Part I q.71 holds its article directly in the div3"
- },
- "sentinel.summa_i_q72": {
-  "fixed_by": "1.7",
-  "description": "Part I q.72 holds its article directly in the div3"
- },
  "sequence.bible_verses.duplicated:ESG/8": {
   "fixed_by": "1.4a",
   "description": "Esther 8:13 holds Greek addition E (4,183 characters, R3), longer than one card, so it is cut across two pieces (\"Esther 8:12–13\", \"Esther 8:13\"). 1.4a cannot shorten it: the Decision log (Esther additions numbering, R3) keeps WEB-C's verse numbers, so there are no lettered verses to cut at. Left for Carter to reassign or accept.",
   "units": ["ESG/8/13"]
- },
- "sequence.summa_articles.missing:FP_Q71": {
-  "fixed_by": "1.7",
-  "description": "FP_Q71 is a one-article question with no div4 and is dropped"
- },
- "sequence.summa_articles.missing:FP_Q72": {
-  "fixed_by": "1.7",
-  "description": "FP_Q72 is a one-article question with no div4 and is dropped"
- },
- "sequence.summa_articles.missing:FS.i.i": {
-  "fixed_by": "1.7",
-  "description": "Prologue of the First Part of the Second Part (no div4) is dropped"
  },
  "sequence.thml_chapters.missing:church-fathers/city-of-god.xml#iv.V.i": {
   "fixed_by": "1.8b",
@@ -333,15 +294,5 @@
   "fixed_by": "1.8b",
   "description": "Doctrinal Treatises of St. Augustin: a run of chapters without a book or work label after booked chapters (C-15)",
   "units": ["iv.ii.iii", "iv.iii.ii", "iv.iv.ii"]
- },
- "structure.summa.one-disputation-per-article:summa": {
-  "fixed_by": "1.7",
-  "description": "5 article keys hold two disputations or no determination (C-07; R7: I q.117 a.2 is not reply-only)",
-  "units": ["FP_Q117_A2", "FP_Q68_A2", "SS_Q123_A10", "SS_Q64_A7", "SS_Q66_A5"]
- },
- "text.summa.adjacent-duplicate-parts:summa": {
-  "fixed_by": "1.7",
-  "description": "a sed contra printed twice (C-14)",
-  "units": ["summa/FS_Q20_A6/p6"]
  }
 }
