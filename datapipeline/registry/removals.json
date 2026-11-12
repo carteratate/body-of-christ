@@ -6612,7 +6612,7 @@
   "tombstone": null,
   "church_act": null,
   "span": {
-   "rule": "ingest.church_fathers.CONFESSIONS_CALLERS",
+   "rule": "ingest.editorial.PLAIN_CALLERS",
    "count": 4
   },
   "judgment": null,
