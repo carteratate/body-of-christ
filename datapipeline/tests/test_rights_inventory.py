@@ -119,7 +119,12 @@ def test_inventory_matches_the_built_works_exactly():
     documents = {c: SOURCE_ADAPTERS[c]() for c in SOURCE_ADAPTERS}
     # The 421 live document IDs (0.2 acceptance): the built inputs are the ones in use.
     ids = sorted(d.id for docs in documents.values() for d in docs)
-    assert hashlib.md5(",".join(ids).encode()).hexdigest() == LIVE_DOCUMENT_IDS_MD5
+    # A document held for permission (1.3d, ADR 0001) builds nothing; it is still live
+    # until the apply, and its row stays for its return.
+    import registry
+    held = registry.removed_document_ids()
+    assert hashlib.md5(",".join(sorted(set(ids) | held)).encode()).hexdigest() \
+        == LIVE_DOCUMENT_IDS_MD5
     rows = R.by_document_id(ENTRIES)
     # Planned rows (R6) describe works not built yet and have no ID; the PR that builds
     # one clears its planned_for and fills in its document_id.
@@ -127,14 +132,13 @@ def test_inventory_matches_the_built_works_exactly():
     # A registered work whose every passage the removal registry retires builds no
     # document until a later item restores its text (Asterius Urbanus: 1.8a removed its
     # one passage, an Elucidation; 1.8c parses his text). Its row stays.
-    import registry
     reg = registry.load_registry()
     by_doc: dict[str, set[str]] = {}
     for r in reg.passages:
         by_doc.setdefault(r["document_id"], set()).add(r["status"])
     emptied = {d for d, statuses in by_doc.items() if "active" not in statuses
                and "retired" in statuses}
-    assert sorted(set(rows) - set(ids) - emptied) == [], \
+    assert sorted(set(rows) - set(ids) - emptied - held) == [], \
         "inventory entries for works no longer built"
     # The readable fields follow the build, so a relabel updates its row in the same PR.
     built = {d.id: k for c, docs in documents.items()

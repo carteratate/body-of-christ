@@ -801,6 +801,12 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
             entries = [e for e in entries
                        if e["council"] not in WORKS and e["council"] not in COUNCILS
                        and e["council"] != "First Vatican Council"]
+        if collection in PAPAL_COLLECTIONS:
+            # A document held for permission (1.3d, ADR 0001) is not built from its page.
+            from registry import removed_document_ids, resolve_document_id
+            held = removed_document_ids()
+            entries = [e for e in entries if resolve_document_id(
+                collection, f"{collection}/{e['slug']}", (collection, e["slug"])) not in held]
         return [e["file"] for e in entries]
     if collection == "canon-law":
         with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:
