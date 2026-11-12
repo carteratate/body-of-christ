@@ -160,6 +160,19 @@ def test_document_removal_explains_every_passage():
     assert {r.removal for r in result.rows} == {"rm-2"} and result.failures == []
 
 
+def test_document_removal_outranks_a_redirect_inside_the_document():
+    """A held document keeps its redirects for its return (1.3d); while held, its removal
+    explains every passage, including a redirected one whose target is not built."""
+    entry = {"id": "rm-3", "scope": "document", "document_id": OTHER, "anchor": None}
+    redirect = {"document_id": OTHER, "old_passage_id": "o1", "old_anchor": "a",
+                "new_passage_id": "o2", "new_anchor": "b", "kind": "merged",
+                "reason": "its text now lies in this passage", "added_by": "1.3a"}
+    result = R.remap([old("o1", "a", text("a"), 0, OTHER), old("o2", "b", text("b"), 1, OTHER)],
+                     [doc(new("s/1", text("z"), 0))],
+                     R.Registry(removals=[entry], redirects=[redirect]))
+    assert {r.removal for r in result.rows} == {"rm-3"} and result.failures == []
+
+
 def test_each_old_passage_has_exactly_one_outcome():
     a, b, c, d = (text(s) for s in "abcd")
     olds = [old(pid("s/1"), "s/1", a, 0), old("old-b", "x/2", b, 1),

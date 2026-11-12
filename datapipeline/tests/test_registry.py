@@ -755,3 +755,30 @@ def test_work_registry_is_independent_copy():
     registry.reconcile(reg, [document([passage("ii.i"), passage("ii.ix", position=1)])],
                        item="test", today=TODAY)
     assert reg.passages == snapshot
+
+
+def test_a_held_documents_removal_outranks_its_redirects_at_stage():
+    """A held document keeps its open redirects for its return (1.3d, ADR 0001); while it
+    is held, the stage tombstones every passage it had, a redirected one included."""
+    from datetime import datetime, timezone
+
+    import retirements
+
+    w = work()
+    old = row(w["document_id"], "ii.x", passage_id="a", status="redirected")
+    target = row(w["document_id"], "ii.i")
+    redirect = {"document_id": w["document_id"], "old_passage_id": "a", "old_anchor": "ii.x",
+                "new_passage_id": target["passage_id"], "new_anchor": "ii.i",
+                "kind": "merged", "reason": "test", "added_by": "test"}
+    held = removal(scope="document", anchor=None, passage_id=None,
+                   reason="awaiting-permission", tombstone="Held.")
+    reg = valid_registry(passages=[target, old], redirects=[redirect], removals=[held])
+    live = [retirements.LivePassage(pid, w["document_id"], COLLECTION, anchor, "ii", "II",
+                                    "ref", n, "A Work", "An Author")
+            for n, (pid, anchor) in enumerate((("a", "ii.x"), (target["passage_id"], "ii.i")))]
+    out = retirements.compute(live, [retirements.LiveDocument(w["document_id"], COLLECTION,
+                                                              "A Work", "An Author")],
+                              [], reg, release="r", at=datetime.now(timezone.utc))
+    assert out.problems == [] and out.redirects == []
+    assert sorted(t["id"] for t in out.tombstones) == sorted(
+        ["a", target["passage_id"], w["document_id"]])

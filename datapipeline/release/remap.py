@@ -394,7 +394,11 @@ def remap(old: list[OldPassage], new: list[Document], registry: Registry | None 
     failures: list[Failure] = []
     pending: dict[str, list[OldPassage]] = defaultdict(list)
     for o in old:
-        if o.id in redirects:
+        if o.document_id in removed_documents and o.id not in by_id:
+            # A held document's redirects stay open for its return (1.3d, ADR 0001); while
+            # it is held, its removal explains every passage it had.
+            rows[o.id] = _removed(o, removed_documents[o.document_id]["id"])
+        elif o.id in redirects:
             row, failure = _redirect_row(o, redirects[o.id], by_id)
             rows[o.id] = row
             if failure:
