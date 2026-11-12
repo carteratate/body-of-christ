@@ -86,8 +86,9 @@ def _cut_length(content: str) -> int:
 def test_split_passages_have_complete_reader_boundaries():
     docs = build_all()
     # 127 after 1.8a, whose rule G took Asterius Urbanus's only passage, his Elucidation;
-    # 128 since 1.8c parses his text and brings the document back.
-    assert len(docs) == 128
+    # 128 since 1.8c parses his text and brings the document back; 142 since 1.8b splits
+    # the two Augustine treatise volumes into their 16 works.
+    assert len(docs) == 142
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
@@ -290,3 +291,98 @@ def test_container_labels_name_their_work(fathers):
     assert labels == {"Firmilian of Caesarea, to Cyprian · Epistle LXXIV"}
     assert {p.chapter_label for p in letters.passages if p.work_key == "iv.iv.i"} \
         == {"Epistle I"}
+
+
+# --------------------------------------------------------------------------- 1.8b
+
+_NPNF103 = "on-the-holy-trinity.xml"
+_TREATISES = ["On the Holy Trinity", "The Enchiridion", "On the Catechising of the Uninstructed",
+              "A Treatise on Faith and the Creed", "Concerning Faith of Things Not Seen",
+              "On the Profit of Believing", "On the Creed", "On Continence",
+              "On the Good of Marriage", "Of Holy Virginity", "On the Good of Widowhood",
+              "On Lying", "Against Lying", "Of the Work of Monks", "On Patience",
+              "On Care to Be Had for the Dead"]
+
+
+def _npnf(fathers, *files):
+    return [d for d in fathers if d.metadata["source_file"] in files]
+
+
+def test_treatise_volumes_split_into_their_works(fathers):
+    docs = _npnf(fathers, _NPNF103)
+    assert [d.title for d in docs] == _TREATISES
+    assert {d.author for d in docs} == {"Augustine"}
+    by_title = {d.title: d.id for d in docs}
+    # The two volumes' frozen IDs stay with the work holding most of each.
+    assert by_title["On the Holy Trinity"] == "b270ebca-051e-5094-8370-758ad599d9ca"
+    assert by_title["On Continence"] == "f39c025e-78a6-5737-a94f-7896c84fc857"
+    reg = registry.current()
+    for d in docs:
+        assert reg.document_by_key[("church-fathers", d.metadata["source_key"])] == d.id
+
+
+def test_no_duplicate_suffix_keys_in_npnf103(fathers):
+    keys = [p.chapter_key for d in _npnf(fathers, _NPNF103) for p in d.passages]
+    assert keys and not [k for k in keys if "--" in k]
+
+
+def test_npnf_argument_paragraphs_dropped(fathers):
+    docs = _npnf(fathers, "city-of-god.xml")
+    assert {d.title for d in docs} == {"City of God", "On Christian Doctrine"}
+    assert not [p.anchor for d in docs for p in d.passages
+                if any(line.startswith("Argument") for line in p.content.split("\n\n"))]
+
+
+def test_npnf_editorial_matter_gone(fathers):
+    docs = _npnf(fathers, _NPNF103, "city-of-god.xml")
+    texts = [(p.anchor, p.chapter_label, p.content) for d in docs for p in d.passages]
+    for needle in ("Shedd", "Translator’s Preface", "Translated by", "Contents of Christian"):
+        assert not [a for a, label, c in texts if needle in c or needle in label], needle
+    # The books' own text was only title lines and the editors' summary.
+    assert not [a for a, label, _ in texts if label.endswith("· Introduction")]
+    assert not [a for a, _, c in texts if c.startswith("In which the unity and equality")]
+
+
+def test_augustine_book_prefaces_kept(fathers):
+    trinity = _doc(fathers, f"{_NPNF103}#iv.i")
+    preface = next(p for p in trinity.passages if p.chapter_label == "Book II · Preface")
+    assert preface.content.startswith("When men seek to know God")
+    labels = {p.chapter_label for d in _npnf(fathers, "city-of-god.xml") for p in d.passages}
+    assert {"Book V · Preface", "Book VI · Preface", "Book VII · Preface"} <= labels
+    doctrine = _doc(fathers, "city-of-god.xml#v")
+    assert doctrine.passages[0].chapter_label.startswith("Preface: Showing that to teach rules")
+
+
+def test_retractations_quotes_kept_and_labeled(fathers):
+    docs = _npnf(fathers, _NPNF103, "city-of-god.xml")
+    kept = [(d, p) for d in docs for p in d.passages
+            if re.match(r"^Retractations [IV]+\.\d+$", p.chapter_label)]
+    assert len(kept) >= 9
+    assert {d.author for d, _ in kept} == {"Augustine"}
+    assert all(p.metadata["from"] == "Retractations" for _, p in kept)
+    lying = next(p for d, p in kept if d.title == "Against Lying")
+    assert lying.chapter_label == "Retractations II.60"
+    assert lying.content.startswith("Then also I wrote a Book against Lying")
+    assert "From the Retractations" not in lying.content
+    letter = next(p for p in _doc(fathers, f"{_NPNF103}#iv.i").passages
+                  if p.chapter_label == "Letter to Aurelius")
+    assert letter.content.startswith("To the most blessed Lord")
+
+
+def test_editors_chapter_titles_move_to_labels(fathers):
+    trinity = _doc(fathers, f"{_NPNF103}#iv.i")
+    first = next(p for p in trinity.passages if p.chapter_key == "iv.i.iii.i")
+    assert first.chapter_label.startswith("Book I · Chapter 1: This Work is Written Against")
+    assert not first.content.startswith("Chapter")
+    # City of God's chapter titles are the ancient capitula and stay in the text.
+    city = _doc(fathers, "city-of-god.xml#iv")
+    chapter = next(p for p in city.passages if p.chapter_key == "iv.ii.ii")
+    assert chapter.content.startswith("Chapter 1.—")
+
+
+def test_confessions_plain_callers_removed(fathers):
+    confessions = _doc(fathers, "confessions.xml")
+    p = next(p for p in confessions.passages if p.chapter_key == "viii.xi")
+    assert "remains immutably. It is good" in p.content
+    assert "my gooodness." in p.content
+    assert not re.search(r"[a-z][.,]\d", p.content)

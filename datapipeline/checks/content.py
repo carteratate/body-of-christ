@@ -137,11 +137,15 @@ ARGUMENT_LINE = re.compile(r"^(Chapter [IVXLC]+\.?\s*[—-]*\s*)?Argument\s*[.:�
 AUTHORIAL_ARGUMENTS = frozenset({"church-fathers/third-century-2.xml#iii.iii"})
 CHAPTER_TITLE_LINE = re.compile(r"^(?:Chapter|Chap\.) [IVXLC\d]+\.?\s*[—–-]+\s*\S")
 # The works whose chapter titles are a later editor's (Decision log "Editors' chapter
-# titles in passage text", 9 Oct 2026), by source key: On the Trinity and On Christian
-# Doctrine (NPNF, 1.8b); the Banquet, On the Apparel of Women and To His Wife (ANF, 1.8a).
-# City of God's titles are the ancient capitula and stay.
+# titles in passage text", 9 Oct 2026), by source key: On the Trinity, the Enchiridion, On
+# the Catechising of the Uninstructed, Faith and the Creed and On Christian Doctrine (NPNF,
+# 1.8b, which split the treatise volume into its works); the Banquet, On the Apparel of
+# Women and To His Wife (ANF, 1.8a). City of God's titles are the ancient capitula and stay.
 CHAPTER_TITLE_WORKS = frozenset({
-    "church-fathers/on-the-holy-trinity.xml#iv",
+    "church-fathers/on-the-holy-trinity.xml#iv.i",
+    "church-fathers/on-the-holy-trinity.xml#iv.ii",
+    "church-fathers/on-the-holy-trinity.xml#iv.iii",
+    "church-fathers/on-the-holy-trinity.xml#iv.iv",
     "church-fathers/city-of-god.xml#v",
     "church-fathers/third-century-3.xml#xi.iii",
     "church-fathers/third-century.xml#iii.iii",
