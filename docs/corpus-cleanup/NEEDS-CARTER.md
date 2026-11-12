@@ -319,6 +319,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-31: in place (asked during 0.1d). R7's questions 1, 3 and 4 stay open for 1.7.
 - **1.8b** [Phase 1]. Split two Augustine volumes ("Doctrinal Treatises", "Moral Treatises") into their 16 separate works, so On Lying is cited as On Lying. Bookmarks survive either way. Recommended answer is yes.
   Answered 2026-11-04: yes.
+- **1.8b** [Phase 1]. On the Trinity's translator's preface also prints Augustine's own letter to Bishop Aurelius (Epistle 174), the prologue he asked to have set before the fifteen books. Keep it as a passage of On the Holy Trinity, labelled "Letter to Aurelius", or let it go with the preface? Recommended answer: keep it.
+  Answered 2026-11-12: keep it.
 - **1.8c** [Phase 1]. Two points.
   - Label the Shepherd of Hermas's author as "Hermas" and its books "The Shepherd: Visions", "Commandments" and "Similitudes".
   - Remove the Balsamon and Zonaras commentary printed inside Peter of Alexandria's canons, rather than keep it under their own names.
