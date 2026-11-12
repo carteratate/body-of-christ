@@ -4,7 +4,7 @@
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
-  "church-fathers": "feat/1.8b-npnf-augustine-strip 74b5329",
+  "church-fathers": "feat/1.8b-npnf-augustine-strip f3efbf5",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "feat/1.3c-vatican-papal d9ca04c",
   "medieval": "feat/1.10c-piece-citations 269d968",
@@ -753,8 +753,8 @@
    "pct": 100.0
   },
   "church-fathers/city-of-god.xml": {
-   "body_chars": 2763688,
-   "covered_chars": 2753153,
+   "body_chars": 2765229,
+   "covered_chars": 2754694,
    "pct": 99.62
   },
   "church-fathers/confessions.xml": {
@@ -2729,9 +2729,9 @@
   "5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
    "collection": "church-fathers",
    "source_file": "city-of-god.xml",
-   "body_chars": 358078,
-   "covered_chars": 347599,
-   "pct": 97.07
+   "body_chars": 359764,
+   "covered_chars": 349285,
+   "pct": 97.09
   },
   "5ec478ab-5d1d-596a-b7cf-f54747d840fa": {
    "collection": "bible",
@@ -4108,8 +4108,8 @@
   "dac28881-f92b-5c94-991a-5b244e2d49c3": {
    "collection": "church-fathers",
    "source_file": "city-of-god.xml",
-   "body_chars": 2405610,
-   "covered_chars": 2405554,
+   "body_chars": 2405465,
+   "covered_chars": 2405409,
    "pct": 100.0
   },
   "db3c5936-fd8e-5113-b60a-bd21373b3918": {

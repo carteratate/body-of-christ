@@ -82,6 +82,10 @@ KEPT_QUOTES: tuple[KeptQuote, ...] = (
     KeptQuote("on-the-holy-trinity.xml", "v.ix.i", "v.ix.i-p2", "v.ix.i-p2",
               "The book, On care to be had for the dead", "my venerable fellow-bishop Paulinus.",
               "Retractations II.64", "Retractations"),
+    # On Christian Doctrine, the editor's introductory note.
+    KeptQuote("city-of-god.xml", "v.i", "v.i-p4", "v.i-p4",
+              "Finding that the books on Christian Doctrine", "‘On Sacraments or Philosophy.’",
+              "Retractations II.4", "Retractations"),
     # City of God, translator's preface: "the account given by Augustin himself".
     KeptQuote("city-of-god.xml", "iv.i", "iv.i-p3", "iv.i-p5",
               "Rome having been stormed", "and called them The City of God.",

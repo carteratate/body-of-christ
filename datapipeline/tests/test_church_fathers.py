@@ -350,7 +350,10 @@ def test_augustine_book_prefaces_kept(fathers):
     labels = {p.chapter_label for d in _npnf(fathers, "city-of-god.xml") for p in d.passages}
     assert {"Book V · Preface", "Book VI · Preface", "Book VII · Preface"} <= labels
     doctrine = _doc(fathers, "city-of-god.xml#v")
-    assert doctrine.passages[0].chapter_label.startswith("Preface: Showing that to teach rules")
+    assert [p.chapter_label for p in doctrine.passages[:2]] == [
+        "Retractations II.4",
+        "Preface: Showing that to teach rules for the interpretation of Scripture is not a "
+        "superfluous task"]
 
 
 def test_retractations_quotes_kept_and_labeled(fathers):
