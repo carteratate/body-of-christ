@@ -12,6 +12,11 @@ Today's chapters look like:
 Three of 3,120 labels differ: an article title with no "Article N - " prefix, and two
 appendix articles under "Two Articles on Purgatory", a question with no number. A key
 or label this module cannot read makes it return None, and the reader keeps the flat list.
+
+1.7's build adds prologue chapters: a question's own ("…/<question-slug>/prologue",
+labelled "Question 2 - … — Prologue"), the first child of its question, and the treatise
+prologues of I-II and III ("summa/<part-slug>/prologue", labelled "Prologue"), a child of
+their Part.
 """
 from __future__ import annotations
 
@@ -78,12 +83,15 @@ def derive_summa_contents(chapters: list[tuple[str, str | None]]) -> list[Conten
     last_question_slug: str | None = None
     for chapter_key, chapter_label in chapters:
         segments = chapter_key.split("/")
+        treatise_prologue = len(segments) == 3 and segments[2] == "prologue"
+        if treatise_prologue:
+            segments = [*segments[:2], "", "prologue"]
         if len(segments) != 4 or segments[0] != "summa" or not chapter_label:
             return None
         _, part_slug, question_slug, _article_slug = segments
         part = _part(part_slug)
         question_text, sep, article_text = chapter_label.partition(" — ")
-        if part is None or not sep:
+        if part is None or not (sep or treatise_prologue):
             return None
 
         # Keys are short citation-like paths ("I-II/q1/a1"), not the 188-character
@@ -99,6 +107,17 @@ def derive_summa_contents(chapters: list[tuple[str, str | None]]) -> list[Conten
             part_questions[numeral] = []
             last_question_slug = None
         questions = parts[-1].children
+
+        if treatise_prologue:
+            key = f"{numeral}/{len(questions)}/prologue"
+            if key in seen:
+                return None
+            seen.add(key)
+            questions.append(ContentsNode(
+                key=key, kind="prologue", label="Prologue", short_label="Prologue",
+                chapter_key=chapter_key, children=[]))
+            last_question_slug = None
+            continue
 
         if question_slug != last_question_slug:
             last_question_slug = question_slug
@@ -119,6 +138,16 @@ def derive_summa_contents(chapters: list[tuple[str, str | None]]) -> list[Conten
                 key=question_key, kind="question", label=title, short_label=short_label,
                 chapter_key=chapter_key, children=[]))
         question = questions[-1]
+
+        if _article_slug == "prologue":
+            key = f"{question.key}/prologue"
+            if key in seen:
+                return None
+            seen.add(key)
+            question.children.append(ContentsNode(
+                key=key, kind="prologue", label="Prologue", short_label="Prologue",
+                chapter_key=chapter_key, children=[]))
+            continue
 
         match = _ARTICLE.match(article_text)
         title = _uncap(match.group(2) if match else article_text)
@@ -141,5 +170,7 @@ def derive_summa_contents(chapters: list[tuple[str, str | None]]) -> list[Conten
             low, high = min(numbers), max(numbers)
             part.range_label = f"Q. {low}" if low == high else f"Qq. {low}–{high}"
         for question in part.children:
-            question.range_label = _count(len(question.children), "article")
+            if question.kind == "question":
+                articles = [n for n in question.children if n.kind == "article"]
+                question.range_label = _count(len(articles), "article")
     return parts or None

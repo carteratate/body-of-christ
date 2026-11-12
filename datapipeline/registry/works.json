@@ -14196,7 +14196,22 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "summa.xml",
+     "element_id": "FS_Q102_A6-p33",
+     "quote": "The Reply to the Tenth Objection is lacking in the codices. The solution given here is found in some editions, and was supplied by Nicolai.",
+     "verdict": "interpolated",
+     "overridden_by_plan": false
+    },
+    {
+     "source_file": "summa.xml",
+     "element_id": "TP_Q57_A4-p3",
+     "quote": "This objection with its solution is omitted in the Leonine edition as not being in the original manuscript.",
+     "verdict": "interpolated",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  }

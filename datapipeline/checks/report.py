@@ -127,7 +127,7 @@ def sentinel_value(sentinel: Sentinel, documents: list[Document],
     if name in ("summa_i_q71", "summa_i_q72"):
         q = name[-2:]
         return sum(1 for d in documents for p in d.passages
-                   if re.search(rf"First Part, Question {q}\b", p.reference))
+                   if re.search(rf"^Summa Theologiae I, q\. {q}, a\. 1\b", p.reference))
     raise ValueError(name)
 
 

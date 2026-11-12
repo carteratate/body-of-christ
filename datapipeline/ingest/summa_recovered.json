@@ -1,0 +1,143 @@
+{
+ "about": "Text the vendored Summa (sources/summa/summa.xml, CCEL) lost, restored from an existing English edition (corpus-cleanup 1.7; R7, docs/research/R7-summa-structure.md, section 6; Decision log 'The Summa against an independent edition (R7)' and 'Summa text lost inside a paragraph (1.7, R7 question 2)'). TheoCorpus makes no translation of its own: every text here is an edition's printed words, read from the archive.org scan named in 'editions' (the OCR text is vendored at sources/summa/<archive>/) and proofread against the page image. References inside the text are written as CCEL writes them elsewhere in the same translation ('(De Anima iii, 11)', '(Q[72], A[5], ad 1)'), so the adapter expands them the same way. 'units' are whole units, each emitted as its own passage after the paragraph 'after', anchored '<article>/recovered-<n>' (2.1). 'in_place' restores words lost inside a paragraph CCEL kept, or a word it garbled (III q.7 a.5's \"a[9]\" for \"as\"): 'find' occurs exactly once in that paragraph's text and is replaced by 'replace'; the passage keeps its anchor and ID (D1), and 'parts' opens a further part inside the paragraph, as in summa_corrections.json.",
+ "editions": {
+  "dom1-v15": {
+   "archive": "summatheologi15thom",
+   "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part III, QQ. I-XXVI, first edition (London: R. & T. Washbourne, 1913)"
+  },
+  "dom2-v4": {
+   "archive": "summatheologicao0004thom",
+   "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I, QQ. LXXV-CII, second and revised edition (London: Burns Oates & Washbourne, imprimatur 1922)"
+  },
+  "dom2-v5": {
+   "archive": "summatheologicao0005thom",
+   "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I, QQ. CIII-CXIX, second and revised edition (London: Burns Oates & Washbourne, 1922)"
+  },
+  "dom2-v6": {
+   "archive": "summatheologicao0006thom",
+   "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I-II, QQ. I-XLVIII, second edition (London: Burns Oates & Washbourne, 1927)"
+  },
+  "dom2-v7": {
+   "archive": "summatheologicao0007thom",
+   "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Part I-II, QQ. XLIX-LXXXIX, second edition (London: Burns Oates & Washbourne, imprimatur 1927)"
+  },
+  "pope1914": {
+   "archive": "onprayercontempl00thomuoft",
+   "edition": "Hugh Pope, O.P., On Prayer and the Contemplative Life by S. Thomas Aquinas (London: R. & T. Washbourne, 1914)"
+  }
+ },
+ "units": [
+  {
+   "article": "FP_Q76_A3",
+   "unit": "obj 3",
+   "after": "FP_Q76_A3-p3",
+   "source": "dom2-v4",
+   "page": "35",
+   "leaf": 47,
+   "text": "Further, the Philosopher says (De Gener. Animal. ii, 3) that the embryo is an animal before it is a man. But this would be impossible if the essence of the sensitive soul were the same as that of the intellectual soul; for an animal is such by its sensitive soul, while a man is a man by the intellectual soul. Therefore in man the essence of the sensitive soul is not the same as the essence of the intellectual soul."
+  },
+  {
+   "article": "FP_Q80_A2",
+   "unit": "ad 3",
+   "after": "FP_Q80_A2-p8",
+   "source": "dom2-v4",
+   "page": "126",
+   "leaf": 138,
+   "text": "As the Philosopher says (De Anima iii, 11), a universal opinion does not move except by means of a particular opinion; and in like manner the higher appetite moves by means of the lower: and therefore there are not two distinct motive powers following the intellect and the sense."
+  },
+  {
+   "article": "FP_Q89_A3",
+   "unit": "sc 2",
+   "after": "FP_Q89_A3-p4",
+   "source": "dom2-v4",
+   "page": "243",
+   "leaf": 255,
+   "text": "Further, if the soul as soon as separated gained knowledge of all natural things, the efforts of men to know would be vain and profitless. But this would be unreasonable. Therefore the separated soul does not know all natural things."
+  },
+  {
+   "article": "FS_Q4_A4",
+   "unit": "ad 1",
+   "after": "FS_Q4_A4-p6",
+   "source": "dom2-v6",
+   "page": "58",
+   "leaf": 70,
+   "text": "Augustine is speaking of the knowledge of that truth which is not the very Essence of goodness."
+  },
+  {
+   "article": "FS_Q29_A3",
+   "unit": "ad 2",
+   "after": "FS_Q29_A3-p9",
+   "source": "dom2-v6",
+   "page": "343",
+   "leaf": 355,
+   "text": "Hatred would never overcome love, were it not for the greater love to which that hatred corresponds. Thus man loves himself, more than he loves his friend, and because he loves himself, his friend is hateful to him, if he oppose him."
+  },
+  {
+   "article": "FS_Q29_A3",
+   "unit": "ad 3",
+   "after": "FS_Q29_A3-p9",
+   "source": "dom2-v6",
+   "page": "343",
+   "leaf": 355,
+   "text": "The reason why we act with greater insistence in repelling what is hateful, is because we feel hatred more keenly."
+  },
+  {
+   "article": "FS_Q88_A4",
+   "unit": "sc 1",
+   "after": "FS_Q88_A4-p5",
+   "source": "dom2-v7",
+   "page": "485",
+   "leaf": 497,
+   "text": "On the contrary, Things that differ infinitely are not changed into one another. Now venial and mortal sin differ infinitely, as is evident from what has been said above (Q[72], A[5], ad 1; Q[87], A[5], ad 1). Therefore a venial sin cannot become mortal."
+  },
+  {
+   "article": "SS_Q182_A4",
+   "unit": "sc 1",
+   "after": "SS_Q182_A4-p4",
+   "source": "pope1914",
+   "page": "249",
+   "leaf": 273,
+   "text": "S. Gregory says: \"The active life precedes the contemplative in the order of time, for from good works a man passes to contemplation.\""
+  }
+ ],
+ "in_place": [
+  {
+   "paragraph": "FP_Q112_A2-p8",
+   "unit": "ad 1",
+   "source": "dom2-v5",
+   "page": "119",
+   "leaf": 131,
+   "find": "It may also be said",
+   "replace": "As in the missions of the Divine Persons there is a visible mission, in regard to the corporeal creature, and an invisible mission, in regard to a spiritual effect; so likewise in the angelic missions, there is an external mission, in respect of some administration of corporeal things---and on such a mission not all the angels are sent,---and an interior mission, in respect of some intellectual effect, just as one angel enlightens another---and in this way all the angels are sent.\n\nIt may also be said"
+  },
+  {
+   "paragraph": "FP_Q117_A2-p5",
+   "unit": "sc 1 (end) and co (opening)",
+   "source": "dom2-v5",
+   "page": "180",
+   "leaf": 192,
+   "find": "every Divine enlightenment to the superior angels",
+   "replace": "every Divine enlightenment is borne to men by the ministry of the angels. Therefore angels are not instructed by men concerning Divine things. I answer that, As stated above (Q[107], A[2]), the inferior angels can indeed speak to the superior angels",
+   "parts": [
+    {
+     "opens_with": "On the contrary,",
+     "role": "sed-contra"
+    },
+    {
+     "opens_with": "I answer that,",
+     "role": "determination",
+     "anchor_suffix": "-2"
+    }
+   ]
+  },
+  {
+   "paragraph": "TP_Q7_A5-p6",
+   "unit": "co",
+   "source": "dom1-v15",
+   "page": "111",
+   "leaf": 125,
+   "find": "inasmuch a[9] these",
+   "replace": "inasmuch as these"
+  }
+ ]
+}

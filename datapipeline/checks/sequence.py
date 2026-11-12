@@ -197,65 +197,43 @@ def canons(documents: list[Document]) -> SequenceResult:
 
 # --------------------------------------------------------------------------- Summa
 
-# An editor's note inside a Summa title: "OF ENJOYMENT [*Or, Fruition], WHICH IS …".
-_TITLE_NOTE = re.compile(r"\[\*(?:[^\[\]]|\[[^\]]*\])*\]")
-
-
-def _title_key(text: str) -> str:
-    """A div title as compared with passage references: editor's notes removed, then
-    letters and digits only. "Question. 71 - ON THE WORK…" and "Question 71 - On the
-    Work…" agree."""
-    return match_key(_TITLE_NOTE.sub(" ", text).lower())
-
-
 def summa_articles(documents: list[Document], units: list[SourceUnit],
                    articles: list[tuple[str, str, str, str]]) -> SequenceResult:
     """Every article in summa.xml built exactly once, and no built article the source
     lacks. `articles` is (id, part title, question title, article title) for every div4,
-    and for every question div3 that holds its text directly ("one article" questions
-    such as FP_Q71, and the Prologue of the First Part of the Second Part), whose
-    article title is "".
+    for every question div3 that holds its text directly ("one article" questions such
+    as FP_Q71), whose article title is "", and for the three articles R7 found inside
+    another article's div (C-07), under the ids its corrections file gives them.
 
-    A built article is a group of passages sharing a chapter_key: its objections, sed
-    contra, answer, replies and split pieces. Each group is matched, by its reference, to
-    the source article whose question number and title it names (the longest such title,
-    so "Whether God exists" does not also claim "Whether God exists in all things").
-    A source article no group matches is missing, one that two groups match is
-    duplicated, and a group that matches no source article is out of range. Part names
-    are not compared: the adapter rewrites "(XP)" as "Supplement". Repeated text inside
-    one group is 0.1b's duplicate-text rule, not this check."""
-    groups: dict[str, str] = {}
+    A built article is the passages whose `metadata["article"]` names it (1.7): its
+    objections, sed contra, answer, replies and split pieces. A source article no
+    passage names is missing; one whose passages sit in more than one chapter is
+    duplicated; a built article the list lacks is out of range. A question's prologue
+    names no article. Repeated text inside one article is 0.1b's duplicate-text rule,
+    not this check."""
+    chapters: dict[str, set[str]] = defaultdict(set)
     for d in documents:
         for p in d.passages:
-            groups.setdefault(p.chapter_key or p.reference, _title_key(p.reference))
+            article = (p.metadata or {}).get("article")
+            if article:
+                chapters[article].add(p.chapter_key)
     ids: Counter = Counter(a[0] for a in articles)
     result = SequenceResult()
-    matchers = []
-    for art_id, _part, question, article in articles:
-        # The question's number and the article's own title, or for a question holding
-        # its text directly the question's title.
-        number = re.search(r"(\d+)", question)
-        q = re.compile(rf"question{number[1]}(?!\d)" if number else "")
-        title = _title_key(article) if article else _title_key(question.split(" - ", 1)[-1])
-        matchers.append((art_id, q, title))
-    hits: Counter = Counter()
-    for group, ref in groups.items():
-        found = [(len(title), art_id) for art_id, q, title in matchers
-                 if title in ref and q.search(ref)]
-        if found:
-            hits[max(found)[1]] += 1
-        else:
-            result.out_of_range.append(group)
-    for art_id, _q, _title in matchers:
-        if not hits[art_id]:
-            result.missing.append(art_id)
-    result.duplicated = [a for a in dict.fromkeys(a for a, _q, _t in matchers)
-                         if hits[a] > 1 or ids[a] > 1]
+    result.missing = [a for a in dict.fromkeys(ids) if a not in chapters]
+    result.duplicated = [a for a in dict.fromkeys(ids)
+                         if ids[a] > 1 or len(chapters.get(a, ())) > 1]
+    result.out_of_range = sorted(a for a in chapters if a not in ids)
     return result
 
 
+# A question's div id. The Prologue of I-II (FS.i.i) is a div3 holding text directly,
+# but a treatise prologue, not a one-article question (1.7).
+_SUMMA_QUESTION_ID = re.compile(r"^(FP|FS|SS|TP|XP|AP1|AP2)_Q\d+$")
+
+
 def summa_article_list(path: str) -> list[tuple[str, str, str, str]]:
-    """(id, part, question, article) for the Summa's articles, read from the ThML."""
+    """(id, part, question, article) for the Summa's articles, read from the ThML, and
+    the three R7 split out of another article's div (C-07)."""
     from checks.source_text import _read_thml
 
     root = _read_thml(path)
@@ -267,9 +245,15 @@ def summa_article_list(path: str) -> list[tuple[str, str, str, str]]:
             if div4s:
                 out += [(d.get("id") or "", part, div3.get("title") or "", d.get("title") or "")
                         for d in div4s]
-            elif any(len("".join(p.itertext()).strip()) >= THML_CHAPTER_MIN_CHARS
-                     for p in div3.iter("p")):
+            elif _SUMMA_QUESTION_ID.match(div3.get("id") or "") and any(
+                    len("".join(p.itertext()).strip()) >= THML_CHAPTER_MIN_CHARS
+                    for p in div3.iter("p")):
                 out.append((div3.get("id") or "", part, div3.get("title") or "", ""))
+    from checks.structure import load_summa_corrections
+
+    for art_id, facts in load_summa_corrections().get("articles", {}).items():
+        if facts.get("from_div"):
+            out.append((art_id, "", "", ""))
     return out
 
 
