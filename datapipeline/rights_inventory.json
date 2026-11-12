@@ -7504,24 +7504,6 @@
   "planned_for": "1.3d"
  },
  {
-  "work": "Mirari Vos",
-  "author": "Pope Gregory XVI",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/mirari-vos.html",
-  "document_id": "891ae0fa-5a7f-518c-9d1c-9ad4f180bc77",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/greg16/g16mirar.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Neminem Vestrum",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
@@ -8588,7 +8570,7 @@
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
   "source_path": "encyclicals/wikisource-catholic-magazine-and-review-v3/",
-  "document_id": null,
+  "document_id": "891ae0fa-5a7f-518c-9d1c-9ad4f180bc77",
   "edition": "The Catholic Magazine and Review, vol. 3 (Birmingham, 1833), 'Gregory XVI's Encyclical Letter', transcribed on Wikisource from the scan 'Catholic Magazine And Review, Volume 3 and Volume 4, 1833.djvu' (pages 69-80). A different translation from papalencyclicals.net's, which is modern",
   "translator": null,
   "first_published": 1833,
@@ -8599,7 +8581,7 @@
   "credit_line": "Translation from The Catholic Magazine and Review (1833). Text: Wikisource",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Gravibus Ecclesiae",
