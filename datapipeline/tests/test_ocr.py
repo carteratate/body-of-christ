@@ -736,6 +736,9 @@ def test_a_fix_can_join_a_passage_to_the_paragraph_before_it(tmp_path):
         [{"passage": "a-02", "continues": True, "why": "one sentence over the page"}]))
     apply_fixes(wd, tmp_path)
     assert [p.continues for p in wd.passages()] == [False, True]
+    (tmp_path / "w.fixes.json").write_text("[]")   # the join taken out again no longer holds
+    apply_fixes(wd, tmp_path)
+    assert [p.continues for p in wd.passages()] == [False, False]
     (tmp_path / "w.fixes.json").write_text(json.dumps(
         [{"passage": "a-02", "why": "no find and no join"}]))
     with pytest.raises(ValueError, match="continues"):

@@ -615,7 +615,7 @@ def clean_work(workdir, sources=None, force: bool = False,
             id=passage_id, leaves=leaves_, pages=[number[x] for x in leaves_],
             raw_ocr=_joined([(para.raw, para.continues) for para in group]),
             cleaned=_joined([(para.text, para.continues) for para in group]),
-            continues=group[0].continues))
+            continues=group[0].continues, cut=group[0].continues))
     workdir.save_passages(passages)
     workdir.save_cleanup({
         "pages": [{"leaf": p.leaf, "page": p.number} for p in pages],

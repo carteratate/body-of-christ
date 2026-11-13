@@ -35,6 +35,7 @@ def apply_fixes(workdir: WorkDir, works_dir: Path = WORKS_DIR) -> int:
     by_id = {p.id: p for p in passages}
     for p in passages:
         p.fixed = None
+        p.continues = p.cut   # a `continues` fix taken out of the file no longer holds
     for fix in fixes:
         passage = by_id.get(fix["passage"])
         if passage is None:
