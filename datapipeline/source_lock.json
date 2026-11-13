@@ -309,50 +309,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/appletonsannualc14newyuoft/appletonsannualc14newyuoft_djvu.xml",
-  "sha256": "44dc4c96a26ab03da49aa42dfd200762d4ef4169e5bc24c9de8359384b9ad7e4",
-  "bytes": 67387982,
-  "url": "https://archive.org/download/appletonsannualc14newyuoft/appletonsannualc14newyuoft_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/appletonsannualc14newyuoft/appletonsannualc14newyuoft_page_numbers.json",
-  "sha256": "e7e4fc8e71dd543b73bfab6574ff3d618674adf99b71437c182072655e31c71f",
-  "bytes": 142379,
-  "url": "https://archive.org/download/appletonsannualc14newyuoft/appletonsannualc14newyuoft_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_djvu.xml",
-  "sha256": "b5f2953bd07dcbbdc6408e981908e8d1a061f44fccddd27d72aa32ba7ef05a89",
-  "bytes": 63826793,
-  "url": "https://archive.org/download/appletonsannualc15newyuoft/appletonsannualc15newyuoft_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_page_numbers.json",
-  "sha256": "bc6eab0e06d6086a82d070c497d0860c8c452ea61043c0b0b50fa0f8248252af",
-  "bytes": 134726,
-  "url": "https://archive.org/download/appletonsannualc15newyuoft/appletonsannualc15newyuoft_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_djvu.xml",
   "sha256": "a466ef201cf6f7146086e7000ddc039d4b74f8edb041fadbbf5f9712bb52f513",
   "bytes": 464502,
@@ -698,17 +654,6 @@
   "sha256": "4dab251a508d90f51f6ec3cb269d9d8ce7ca1d90a05504aa8cb3d60322b2bffa",
   "bytes": 3526,
   "url": "https://archive.org/download/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/wikisource-encyclical-announcing-a-jubilee-1874/encyclical-letter-announcing-a-jubilee.html",
-  "sha256": "20c0b9bda2ff4701e3583028c3572be4872e1b37bd58c289d70ccc6546c09377",
-  "bytes": 94606,
-  "url": "https://en.wikisource.org/wiki/Encyclical_Letter_by_Pope_Pius_IX_Announcing_a_Jubilee",
   "acquired": "2026-11-12",
   "hashed_on": "2026-11-12",
   "role": "vendored-unregistered",
@@ -4472,6 +4417,50 @@
  },
  {
   "collection": "encyclicals",
+  "path": "encyclicals/appletonsannualc14newyuoft/appletonsannualc14newyuoft_djvu.xml",
+  "sha256": "44dc4c96a26ab03da49aa42dfd200762d4ef4169e5bc24c9de8359384b9ad7e4",
+  "bytes": 67387982,
+  "url": "https://archive.org/download/appletonsannualc14newyuoft/appletonsannualc14newyuoft_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/appletonsannualc14newyuoft/appletonsannualc14newyuoft_page_numbers.json",
+  "sha256": "e7e4fc8e71dd543b73bfab6574ff3d618674adf99b71437c182072655e31c71f",
+  "bytes": 142379,
+  "url": "https://archive.org/download/appletonsannualc14newyuoft/appletonsannualc14newyuoft_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_djvu.xml",
+  "sha256": "b5f2953bd07dcbbdc6408e981908e8d1a061f44fccddd27d72aa32ba7ef05a89",
+  "bytes": 63826793,
+  "url": "https://archive.org/download/appletonsannualc15newyuoft/appletonsannualc15newyuoft_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_page_numbers.json",
+  "sha256": "bc6eab0e06d6086a82d070c497d0860c8c452ea61043c0b0b50fa0f8248252af",
+  "bytes": 134726,
+  "url": "https://archive.org/download/appletonsannualc15newyuoft/appletonsannualc15newyuoft_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
   "path": "encyclicals/beneficia-dei.html",
   "sha256": "eb8a2ce75c361503b97ff9687bd4990be3dfdd0b4e1975cba6e161b28116203b",
   "bytes": 98511,
@@ -5974,6 +5963,17 @@
   "acquired": "2026-11-12",
   "hashed_on": "2026-11-12",
   "role": "adapter-input"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/wikisource-encyclical-announcing-a-jubilee-1874/encyclical-letter-announcing-a-jubilee.html",
+  "sha256": "20c0b9bda2ff4701e3583028c3572be4872e1b37bd58c289d70ccc6546c09377",
+  "bytes": 94606,
+  "url": "https://en.wikisource.org/wiki/Encyclical_Letter_by_Pope_Pius_IX_Announcing_a_Jubilee",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "medieval",

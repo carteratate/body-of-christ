@@ -1,0 +1,40 @@
+{
+ "work": "appletons-1875-graves-ac-diuturnae",
+ "title": "Graves ac Diuturnae, in The American Annual Cyclopaedia ... of the Year 1875 (New York: Appleton, 1876), Roman Catholic Church, pp. 691–692",
+ "scan": "appletonsannualc15newyuoft",
+ "djvu_xml": "encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_djvu.xml",
+ "page_numbers": "encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_page_numbers.json",
+ "pages": [
+  "687",
+  "692"
+ ],
+ "layout": "two-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "leaf_offset": 1,
+ "unit_bounds": [
+  {
+   "id": "graves-ac-diuturnae",
+   "first": "^To our Venerable Brothers and Bishops",
+   "last": "PIUS IX\\., Pope\\.$",
+   "keep_quotes": true
+  }
+ ],
+ "paragraph_opens": [
+  "^The Catholic bishops of Switzerland met"
+ ]
+}

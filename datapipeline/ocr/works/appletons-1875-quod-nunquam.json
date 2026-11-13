@@ -1,0 +1,40 @@
+{
+ "work": "appletons-1875-quod-nunquam",
+ "title": "Quod Nunquam, in The American Annual Cyclopaedia ... of the Year 1875 (New York: Appleton, 1876), Roman Catholic Church, pp. 689–690",
+ "scan": "appletonsannualc15newyuoft",
+ "djvu_xml": "encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_djvu.xml",
+ "page_numbers": "encyclicals/appletonsannualc15newyuoft/appletonsannualc15newyuoft_page_numbers.json",
+ "pages": [
+  "687",
+  "692"
+ ],
+ "layout": "two-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "leaf_offset": 1,
+ "unit_bounds": [
+  {
+   "id": "quod-nunquam",
+   "first": "^To our Venerable Brethren the Archbishops",
+   "last": "^Given at Rome, the 5th February",
+   "keep_quotes": true
+  }
+ ],
+ "paragraph_opens": [
+  "^To our Venerable Brethren the Archbishops"
+ ]
+}
