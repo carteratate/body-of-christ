@@ -365,8 +365,8 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     ordered = [layout.reading_order(p) for p in pages]
     # The long s is a letter form of s, not a letter: a printing set before about 1800
     # (Diu Satis, 1.3d) is read with it written out, as the ligatures are.
-    ordered = [[replace(ln, text=ln.text.replace("ſ", "s")) if "ſ" in ln.text else ln
-                for ln in lines] for lines in ordered]
+    ordered = [[replace(ln, text=ln.text.replace("ſ", "s"), source=ln.reading)
+                if "ſ" in ln.text else ln for ln in lines] for lines in ordered]
     if watermark:
         stamp = re.compile(watermark)
         for k, page in enumerate(pages):

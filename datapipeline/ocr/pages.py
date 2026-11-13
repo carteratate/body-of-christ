@@ -28,10 +28,14 @@ class Line:
     words: tuple[tuple, ...] = ()
     # A number stood in the margin beside the line and was taken out (`margin_numbers`).
     numbered: bool = False
+    # The source's reading of a line whose letter forms were written out (the long s).
+    source: str | None = None
 
     @property
     def reading(self) -> str:
         """The line as the source reads it, before any mending of misread letters."""
+        if self.source is not None:
+            return self.source
         if self.words and len(self.words[0]) > 3:
             return " ".join(w[3] for w in self.words)
         return self.text
