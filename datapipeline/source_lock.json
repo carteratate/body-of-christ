@@ -276,28 +276,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_djvu.xml",
-  "sha256": "a466ef201cf6f7146086e7000ddc039d4b74f8edb041fadbbf5f9712bb52f513",
-  "bytes": 464502,
-  "url": "https://archive.org/download/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_page_numbers.json",
-  "sha256": "03b54c423ab5ecda2bd9ed1f27c58e147afba2ab8f4590c17ade44c215813cb4",
-  "bytes": 4756,
-  "url": "https://archive.org/download/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/interestinglett00xivgoog/interestinglett00xivgoog_djvu.xml",
   "sha256": "ba4a5026f239e7776a21e2bdc187886afd5332229e0a662a04dbedd79fe5a1ce",
   "bytes": 6232983,
@@ -4248,6 +4226,28 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_djvu.xml",
+  "sha256": "a466ef201cf6f7146086e7000ddc039d4b74f8edb041fadbbf5f9712bb52f513",
+  "bytes": 464502,
+  "url": "https://archive.org/download/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_page_numbers.json",
+  "sha256": "03b54c423ab5ecda2bd9ed1f27c58e147afba2ab8f4590c17ade44c215813cb4",
+  "bytes": 4756,
+  "url": "https://archive.org/download/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "encyclicals",

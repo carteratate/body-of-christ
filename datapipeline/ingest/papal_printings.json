@@ -2316,8 +2316,7 @@
    },
    {
     "opens": "And that God may be made",
-    "unit": "+",
-    "until": "Moreover, Venerable Brethren"
+    "unit": "+"
    },
    {
     "opens": "Moreover, Venerable Brethren",
@@ -2556,6 +2555,175 @@
    {
     "opens": "In the meantime, receive",
     "unit": 8
+   }
+  ]
+ },
+ "encyclicals/diu-satis": {
+  "source": "ocr",
+  "work": "rayment-1800-diu-satis",
+  "file": "bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/",
+  "url": "https://archive.org/details/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
+  "translation": "An Encyclical Letter of Our Most Holy Father Pope Pius VII., translated by the Rev. Benedict Rayment (London, 1800)",
+  "editorial": [
+   {
+    "opens": "TO ALL OUR VENERABLE BRETHREN,",
+    "why": "The address set in capitals as a heading; the parser drops a capitals heading at the head of a preamble (papal_common.strip_leading_caps), as for every papal document, and the greeting below opens the letter."
+   },
+   {
+    "opens": "PATRIARCHS, PRIMATES, ARCHBISHOPS",
+    "why": "The rest of the address in capitals (as above)."
+   },
+   {
+    "opens": "POPE PIUS VII.",
+    "why": "The pope's name set as a heading, as Mirari Vos's \"POPE GREGORY XVI\"."
+   },
+   {
+    "opens": "GREETING.",
+    "why": "The heading's last line in capitals, before the greeting itself (as above)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Our silence, as it appears",
+    "unit": 1
+   },
+   {
+    "opens": "Never was Satan",
+    "unit": 2
+   },
+   {
+    "opens": "The wisdom, the magnanimity",
+    "unit": "+",
+    "until": "His bright example"
+   },
+   {
+    "opens": "His bright example",
+    "unit": 3
+   },
+   {
+    "opens": "Driven in a most inhuman",
+    "unit": "+"
+   },
+   {
+    "opens": "But with what feeling",
+    "unit": 4
+   },
+   {
+    "opens": "But where is the man",
+    "unit": 5,
+    "until": "What more convincing"
+   },
+   {
+    "opens": "What more convincing",
+    "unit": 6
+   },
+   {
+    "opens": "To this day there",
+    "unit": "+"
+   },
+   {
+    "opens": "Thus in our age",
+    "unit": 7,
+    "until": "This, Venerable Brethren, we mention"
+   },
+   {
+    "opens": "This, Venerable Brethren, we mention",
+    "unit": 8
+   },
+   {
+    "opens": "It is, in a more particular",
+    "unit": 9,
+    "until": "The towns, cities"
+   },
+   {
+    "opens": "The towns, cities",
+    "unit": 10
+   },
+   {
+    "opens": "It is therefore our duty",
+    "unit": 11
+   },
+   {
+    "opens": "We therefore, Venerable Brethren, pray",
+    "unit": "+",
+    "until": "Admit no one"
+   },
+   {
+    "opens": "Admit no one",
+    "unit": 12,
+    "until": "I could wish"
+   },
+   {
+    "opens": "I could wish",
+    "unit": 13
+   },
+   {
+    "opens": "You must also attend",
+    "unit": "+",
+    "until": "Do not then suffer"
+   },
+   {
+    "opens": "Do not then suffer",
+    "unit": 14
+   },
+   {
+    "opens": "To leave nothing short",
+    "unit": "+",
+    "until": "But you are not only"
+   },
+   {
+    "opens": "But you are not only",
+    "unit": 15
+   },
+   {
+    "opens": "“To discriminate",
+    "unit": "+"
+   },
+   {
+    "opens": "In this cause",
+    "unit": 16
+   },
+   {
+    "opens": "Is there amongst us",
+    "unit": 17
+   },
+   {
+    "opens": "We have still another",
+    "unit": 18
+   },
+   {
+    "opens": "Nor can we remain silent",
+    "unit": 19
+   },
+   {
+    "opens": "All christian kings",
+    "unit": "+"
+   },
+   {
+    "opens": "We hope to see them",
+    "unit": "+"
+   },
+   {
+    "opens": "I cannot conclude",
+    "unit": 20,
+    "until": "There is not a nation"
+   },
+   {
+    "opens": "There is not a nation",
+    "unit": 21
+   },
+   {
+    "opens": "It only remains",
+    "unit": "+",
+    "until": "In the mean time we are"
+   },
+   {
+    "opens": "In the mean time we are",
+    "unit": 22
    }
   ]
  }

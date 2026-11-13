@@ -5769,7 +5769,7 @@
   "author": "Pope Pius VII",
   "collection": "encyclicals",
   "source_path": "encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/",
-  "document_id": null,
+  "document_id": "bc50283d-09b3-542c-90ce-6154851c64be",
   "edition": "An Encyclical Letter of Our Most Holy Father Pope Pius VII. to All the Catholic Bishops. Translated from the Latin original, by the Rev. Benedict Rayment (London: Keating, Brown and Keating, MDCCC), ending 'Given at Venice ... the 15th day of May, in the year of the Lord 1800'. A different translation from papalencyclicals.net's. Internet Archive scan (ECCO) bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
   "translator": "Benedict Rayment",
   "first_published": 1800,
@@ -5780,7 +5780,7 @@
   "credit_line": "Translated by Benedict Rayment (1800)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Respicientes",
@@ -6102,24 +6102,6 @@
   "rights_holder": "Libreria Editrice Vaticana",
   "renewal_search": null,
   "credit_line": "Text: Libreria Editrice Vaticana",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Diu Satis",
-  "author": "Pope Pius VII",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/diu-satis.html",
-  "document_id": "bc50283d-09b3-542c-90ce-6154851c64be",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius07/p7diusat.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
