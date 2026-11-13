@@ -46,9 +46,13 @@ REDIRECT_COLUMNS = ("entity", "old_id", "old_document_id", "old_anchor", "new_id
                     "new_document_id", "new_anchor", "kind", "publish_id")
 
 # Columns compared between staging and live. Defaults are left out: `LIKE` copies an
-# identity column's sequence under another name.
+# identity column's sequence under another name. A column's place is its rank, not its
+# attribute number, which keeps a gap where a column was dropped (2.2c's drop-and-add
+# path before Postgres 17) that `LIKE` closes.
 _SHAPE_SQL = """
-SELECT table_name, column_name, data_type, is_nullable, is_generated, ordinal_position
+SELECT table_name, column_name, data_type, is_nullable, is_generated,
+       coalesce(generation_expression, '') AS generation_expression,
+       row_number() OVER (PARTITION BY table_name ORDER BY ordinal_position) AS ordinal_position
 FROM information_schema.columns
 WHERE table_schema = $1 AND table_name = ANY($2::text[])
 ORDER BY table_name, ordinal_position
@@ -68,10 +72,13 @@ async def staging_exists(conn: asyncpg.Connection) -> bool:
 
 
 async def staging_shape_problems(conn: asyncpg.Connection) -> list[str]:
-    """How the staging tables differ in columns from the live ones; empty when equal."""
+    """How the staging tables differ in columns from the live ones; empty when equal.
+    Generation expressions count: a migration that redefines a generated column (2.2c's
+    search_vector) leaves staging made before it on the old one."""
     def shape(rows):
         return {(r["table_name"], r["column_name"]):
-                (r["data_type"], r["is_nullable"], r["is_generated"], r["ordinal_position"])
+                (r["data_type"], r["is_nullable"], r["is_generated"],
+                 r["generation_expression"], r["ordinal_position"])
                 for r in rows}
     live = shape(await conn.fetch(_SHAPE_SQL, "public", list(STAGED_TABLES)))
     staged = shape(await conn.fetch(_SHAPE_SQL, "staging", list(STAGED_TABLES)))

@@ -32,10 +32,13 @@ _MAX_HOPS = 3
 
 # Reasons whose text can still be read elsewhere, by removal scope (1.2a, 1.3d; Carter,
 # 31 Oct, 1 Nov and 4 Nov 2026; ADR 0001). A council gap passage (`passage` scope,
-# `translation-in-preparation`) links out only in the councils collection.
+# `translation-in-preparation`) links out only in the councils collection. An amended
+# canon with no English (`canon-law`, the same reason) links to its own Latin (2.4f).
 _ELSEWHERE_DOCUMENT_REASONS = frozenset({"translation-in-preparation", "awaiting-permission"})
 _ELSEWHERE_PASSAGE_REASONS = frozenset({"awaiting-permission"})
 _ELSEWHERE_COUNCIL_PASSAGE_REASONS = frozenset({"translation-in-preparation"})
+_ELSEWHERE_CANON_PASSAGE_REASONS = frozenset({"translation-in-preparation"})
+_RETIRED_SUFFIX = "#retired-"
 
 
 def _http_url(value) -> str | None:
@@ -43,14 +46,26 @@ def _http_url(value) -> str | None:
 
 
 def read_elsewhere_url(reason_code: str, collection: str | None, document_scope: bool,
-                       metadata: dict | None) -> str | None:
+                       metadata: dict | None, anchor: str | None = None) -> str | None:
     """Where a removed text can still be read, or None.
 
     Set for a retired document, or a passage of one, removed for permission or for a
     translation in preparation; for a passage removed alone awaiting permission; and for
     a councils passage removed alone for a translation in preparation (a gap passage).
     The link is the document's `metadata.held_text_url` when set (a partly rebuilt
-    document or a rebuilt council with gaps), otherwise its `metadata.url`."""
+    document or a rebuilt council with gaps), otherwise its `metadata.url`.
+
+    A canon-law passage removed alone for a translation in preparation (a canon amended
+    with no English, 1.5b) links to that canon's Latin on vatican.va: the Code's
+    `metadata.official_latin_urls` keyed by the passage's anchor (`can/295`), with any
+    `#retired-<release>` suffix 2.2w added dropped. No entry, no link: the Code's own
+    URL is an index page that does not hold the canon (2.4f)."""
+    if (not document_scope and collection == "canon-law"
+            and reason_code in _ELSEWHERE_CANON_PASSAGE_REASONS):
+        latin = (metadata or {}).get("official_latin_urls")
+        if not anchor or not isinstance(latin, dict):
+            return None
+        return _http_url(latin.get(anchor.split(_RETIRED_SUFFIX, 1)[0]))
     if document_scope:
         allowed = reason_code in _ELSEWHERE_DOCUMENT_REASONS
     else:
@@ -71,7 +86,8 @@ def tombstone(row) -> Tombstone:
         entity=row["entity"], rule=row["rule"], reason_code=row["reason_code"],
         public_reason=row["public_reason"], church_act=row["church_act"],
         read_elsewhere_url=read_elsewhere_url(row["reason_code"], collection,
-                                              document_scope, row["metadata"]),
+                                              document_scope, row["metadata"],
+                                              row["anchor"]),
         retired_at=row["retired_at"],
         title=snapshot.get("title"), author=snapshot.get("author"),
         reference=snapshot.get("reference"),
@@ -103,11 +119,12 @@ CURRENT = Resolution("current")
 _TOMBSTONE_SQL = """
     SELECT t.entity, t.id::text AS id, t.document_id::text AS document_id, t.retired_at,
            t.rule, t.reason_code, t.public_reason, t.church_act, t.snapshot,
-           d.collection, d.metadata,
+           d.collection, d.metadata, c.anchor,
            EXISTS (SELECT 1 FROM corpus_tombstones dt
                    WHERE dt.entity = 'document' AND dt.id = t.document_id) AS document_scope
     FROM corpus_tombstones t
     LEFT JOIN documents d ON d.id = t.document_id
+    LEFT JOIN chunks c ON t.entity = 'passage' AND c.id = t.id
     WHERE (t.entity = 'passage' AND t.id = ANY($1::uuid[]))
        OR (t.entity = 'document' AND t.id = ANY($2::uuid[]))
 """

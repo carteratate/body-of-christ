@@ -549,3 +549,121 @@ describe("BookmarkCard corpus cleanup fields (2.4b)", () => {
     expect(screen.getByText("Wherefore, O Greeks…")).toBeTruthy();
   });
 });
+
+describe("BookmarkCard rejected voice (corpus cleanup 2.4d)", () => {
+  const LABEL = "Caecilius, pagan objection; answered by Octavius";
+  const TEXT = "All things in human affairs are doubtful, uncertain and unsettled.";
+
+  function renderBookmark(source: Record<string, unknown> = {}) {
+    return render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-voice",
+          chunk_id: "chunk-voice",
+          note: null,
+          created_at: "2026-11-12T00:00:00Z",
+          chunk: {
+            content: TEXT,
+            source: {
+              collection: "church-fathers",
+              document_title: "The Octavius",
+              author: "Minucius Felix",
+              reference: "The Octavius, Chapter V",
+              document_id: "11111111-1111-4111-8111-111111111111",
+              anchor: "octavius/5",
+              chapter_key: "octavius-5",
+              unit_label: LABEL,
+              voice: "rejected",
+              ...source,
+            },
+          },
+        } as never}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+  }
+
+  it("sets the text off as a quotation under a caption naming whose it is", () => {
+    renderBookmark();
+    const caption = screen.getByText(LABEL).closest("p")!;
+    expect(caption.textContent).toBe(`${LABEL} · a position the document rejects`);
+    expect(caption.className).toContain("text-brand-muted");
+    const quoted = screen.getByText(TEXT).closest("[data-voice='rejected']")!;
+    expect(quoted.className).toContain("italic");
+    expect(caption.compareDocumentPosition(quoted) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("adds the label to the copied citation in brackets", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    renderBookmark();
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+    expect(writeText.mock.calls[0][0]).toBe(
+      `${TEXT} — The Octavius, Chapter V [${LABEL}] (church-fathers)`,
+    );
+  });
+
+  it("renders exactly as today without the field", () => {
+    // Recorded from master's BookmarkCard, before 2.4d.
+    vi.spyOn(crypto, "randomUUID").mockReturnValue("11111111-1111-4111-8111-111111111111");
+    const { container } = renderBookmark({ voice: undefined });
+    expect(container.innerHTML.replace(/_r_[0-9a-z]+_|«r[0-9a-z]+»|:r[0-9a-z]+:/g, "«id»"))
+      .toMatchSnapshot();
+  });
+});
+
+describe("BookmarkCard text labels (corpus cleanup 2.4f)", () => {
+  const LATIN = "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html";
+
+  function renderBookmark(source: Record<string, unknown>) {
+    return render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-labels",
+          chunk_id: "chunk-labels",
+          note: null,
+          created_at: "2026-11-12T00:00:00Z",
+          chunk: {
+            content: "Only those marriages are valid…",
+            source: {
+              collection: "canon-law",
+              document_title: "Code of Canon Law",
+              author: null,
+              reference: "Can. 1108",
+              document_id: "11111111-1111-4111-8111-111111111111",
+              anchor: "can/1108",
+              chapter_key: "book-4",
+              facts: { source_credit: "© Libreria Editrice Vaticana" },
+              ...source,
+            },
+          },
+        } as never}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+  }
+
+  it("shows the unofficial-English line, Latin linked, before the credit", () => {
+    renderBookmark({ text_status: "unofficial_english", official_latin_url: LATIN });
+    const lines = [...screen.getByTestId("passage-facts").querySelectorAll("p")].map((p) => p.textContent);
+    expect(lines[0]).toMatch(/^Unofficial English translation \(L’Osservatore Romano\)\. The Latin text is official/);
+    expect(lines.at(-1)).toBe("© Libreria Editrice Vaticana");
+    expect(screen.getByRole("link", { name: /The Latin text is official/ }).getAttribute("href")).toBe(LATIN);
+  });
+
+  it("shows the scanned-edition label", () => {
+    renderBookmark({ text_source: "ocr" });
+    expect(screen.getByTestId("text-label").textContent).toBe("Text from a scanned edition");
+  });
+
+  it("shows no label for an unknown value", () => {
+    renderBookmark({ text_source: "typed", text_status: "official" });
+    expect(screen.queryByTestId("text-label")).toBeNull();
+  });
+});

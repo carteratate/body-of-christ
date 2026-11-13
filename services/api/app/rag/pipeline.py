@@ -440,6 +440,9 @@ async def run_search_pipeline(
                     # Postgres; absent before 0042, so the event is today's.
                     **(facts[chunk.chunk_id].source_fields(card_access["source_credit"])
                        if chunk.chunk_id in facts else {}),
+                    # A position the document rejects (2.4d), as the rerankers saw it.
+                    # Sent only when set, so every event today is unchanged.
+                    **({"voice": chunk.voice} if chunk.voice else {}),
                 },
                 "reranker_score": (
                     None if chunk.score_source == "rrf_fallback"
@@ -560,6 +563,7 @@ async def run_search_pipeline(
                     explain_chunk.content, chunk.reference, chunk.collection, query,
                     unit_label=chunk.unit_label,
                     cost_tracker=explanation_cost,
+                    voice=chunk.voice,
                 ):
                     accumulated_text += delta
                     yield {"type": "explanation_delta", "chunk_id": chunk.chunk_id, "delta": delta}

@@ -18,14 +18,15 @@ WITH_0042 = corpus_schema.CorpusSchema(retired=True, searchable=True, facts=True
 def _row(**overrides):
     row = {
         "chunk_id": CHUNK, "language": None, "note": "A note.",
-        "passage_author": None, "author": "Justin Martyr", "year": 155,
+        "passage_author": None, "voice": None, "author": "Justin Martyr", "year": 155,
         "translation": "Ante-Nicene Fathers", "date_display": "c. 155", "genre": "treatise",
         "issuer": None, "issuer_label": None, "certainty": "genuine",
         "attribution_note": None, "notes": None, "source_credit": "Sourced via CCEL.org",
         "superseded_by": None, "superseded_note": None, "work_title": None,
         "work_author": None, "work_year": None, "work_date_display": None,
         "work_genre": None, "work_certainty": None, "work_attribution_note": None,
-        "work_notes": None,
+        "work_notes": None, "text_source": None, "text_status": None,
+        "official_latin_url": None,
     }
     row.update(overrides)
     return row
@@ -121,3 +122,94 @@ async def test_without_0042_no_query_runs_and_the_event_is_todays():
         "collection", "document_title", "author", "reference", "document_id", "anchor",
         "chapter_key", "unit_label", "reader_access", "source_url", "source_credit"}
     assert source["author"] == "Payload Author"
+
+
+# --- voice (corpus cleanup 2.4d) ---
+
+async def test_no_voice_field_in_the_chunk_event_when_unset(with_0042):
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row()]))
+    assert "voice" not in _chunk_event(await _events(pool, _result()))["source"]
+
+
+async def test_a_rejected_passage_is_marked_in_the_chunk_event(with_0042):
+    result = _result()
+    result.chunks[0].voice = "rejected"
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row()]))
+    assert _chunk_event(await _events(pool, result))["source"]["voice"] == "rejected"
+
+
+def test_saved_searches_and_bookmarks_read_voice_from_the_facts_row():
+    """Restore and bookmarks build their source from `source_fields`."""
+    from app.rag.steps.document_facts import _passage_facts, _sql
+
+    assert "c.voice" in _sql(works=True)
+    assert _passage_facts(_row(voice="rejected")).source_fields()["voice"] == "rejected"
+    assert "voice" not in _passage_facts(_row()).source_fields()
+
+
+def test_reader_passages_carry_voice_with_0042():
+    from app.routes.documents import _passages_sql
+
+    assert "voice" in _passages_sql(WITH_0042)
+    assert "voice" not in _passages_sql(corpus_schema.LEGACY)
+
+
+# --- text labels (corpus cleanup 2.4f) ---
+
+LATIN = "https://www.vatican.va/content/francesco/la/motu_proprio/documents/de-concordia.html"
+
+
+async def test_no_text_label_fields_in_the_chunk_event_when_unset(with_0042):
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row()]))
+    source = _chunk_event(await _events(pool, _result()))["source"]
+    assert not {"text_source", "text_status", "official_latin_url"} & set(source)
+
+
+async def test_a_scanned_passage_is_labelled_in_the_chunk_event(with_0042):
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row(text_source="ocr")]))
+    source = _chunk_event(await _events(pool, _result()))["source"]
+    assert source["text_source"] == "ocr"
+    assert not {"text_status", "official_latin_url"} & set(source)
+
+
+async def test_an_unofficial_english_canon_carries_its_latin_link(with_0042):
+    row = _row(text_status="unofficial_english", official_latin_url=LATIN)
+    source = _chunk_event(await _events(MagicMock(fetch=AsyncMock(return_value=[row])),
+                                        _result()))["source"]
+    assert source["text_status"] == "unofficial_english"
+    assert source["official_latin_url"] == LATIN
+
+
+def test_only_the_three_keys_and_known_values_leave_the_api():
+    """The SQL names three metadata keys and never the whole column; unknown values and
+    a non-web link are dropped rather than sent."""
+    from app.rag.steps.document_facts import _passage_facts, _sql
+
+    sql = _sql(works=True)
+    for key in ("text_source", "text_status", "official_latin_url"):
+        assert f"c.metadata->>'{key}'" in sql
+    assert "c.metadata," not in sql and "c.metadata " not in sql
+    odd = _row(text_source="typed", text_status="official", official_latin_url="javascript:x")
+    fields = _passage_facts(odd).source_fields()
+    assert not {"text_source", "text_status", "official_latin_url"} & set(fields)
+
+
+def test_saved_searches_and_bookmarks_read_text_labels_from_the_facts_row():
+    from app.models.bookmarks import BookmarkSource
+    from app.models.search import ChunkSource
+    from app.rag.steps.document_facts import _passage_facts
+
+    fields = _passage_facts(_row(text_source="ocr", text_status="unofficial_english",
+                                 official_latin_url=LATIN)).source_fields()
+    base = {"collection": "canon-law", "document_title": "Code", "document_id": DOC}
+    for model in (ChunkSource, BookmarkSource):
+        parsed = model(**base, **fields)
+        assert (parsed.text_source, parsed.text_status, parsed.official_latin_url) == (
+            "ocr", "unofficial_english", LATIN)
+
+
+def test_reader_passages_carry_text_labels_with_0042():
+    from app.routes.documents import _passages_sql
+
+    assert "official_latin_url" in _passages_sql(WITH_0042)
+    assert "metadata" not in _passages_sql(corpus_schema.LEGACY)

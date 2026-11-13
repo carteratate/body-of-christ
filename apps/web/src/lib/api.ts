@@ -2,8 +2,11 @@ import {
   consumeSearchStream,
   type ChunkResult,
   type CollectionOutcome,
+  type PassageVoice,
   type SearchOutcome,
   type SearchStreamCallbacks,
+  type TextSource,
+  type TextStatus,
 } from "./search-stream";
 import { excerptSourceUrl, READER_RESTRICTED_CODE, type ReaderAccess } from "./reader-access";
 import type { Footnote } from "./footnotes";
@@ -25,8 +28,12 @@ export {
   type CollectionOutcome,
   type ContextPart,
   type DeliveryOutcome,
+  type PassageTextLabels,
+  type PassageVoice,
   type SearchOutcome,
   type SearchStreamCallbacks,
+  type TextSource,
+  type TextStatus,
 } from "./search-stream";
 
 const API_URL = "";
@@ -120,6 +127,12 @@ export interface ReaderPassage {
   note?: string | null;
   work_key?: string | null;
   passage_author?: string | null;
+  /** See ChunkSource.voice (corpus cleanup 2.4d). */
+  voice?: PassageVoice | null;
+  /** See PassageTextLabels (corpus cleanup 2.4f). */
+  text_source?: TextSource | null;
+  text_status?: TextStatus | null;
+  official_latin_url?: string | null;
   /** Set only on a history passage: the ID of the current passage that replaced it. */
   superseded_by?: string | null;
 }
@@ -187,6 +200,12 @@ export interface BookmarkChunkInfo {
     language?: string | null;
     passage_note?: string | null;
     passage_author?: string | null;
+    /** See ChunkSource.voice (corpus cleanup 2.4d). */
+    voice?: PassageVoice | null;
+    /** See PassageTextLabels (corpus cleanup 2.4f). */
+    text_source?: TextSource | null;
+    text_status?: TextStatus | null;
+    official_latin_url?: string | null;
   };
   /** See ChunkResult.footnotes (issue #279). */
   footnotes?: Footnote[];
