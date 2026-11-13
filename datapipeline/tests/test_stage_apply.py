@@ -414,6 +414,19 @@ async def test_stage_refuses_while_staging_holds_another_publish(world):
                                                 collections=("medieval",)))
 
 
+async def test_stage_refuses_staging_made_before_a_generated_column_changed(world):
+    """2.2c: the search_vector migration rewrites live only. Staging made earlier keeps
+    the old expression, so the stage refuses until 4.0's window recreates it."""
+    world.cluster.psql(world.database, (pg_corpus.MIGRATIONS /
+                       "0045_search_vector_markers_and_reference.sql").read_text(), single=True)
+    with pytest.raises(ValueError, match=r"staging\.chunks\.search_vector is"):
+        await world.runner().stage(STAGE)
+
+    world.cluster.psql(world.database,
+                       "SELECT drop_corpus_staging(); SELECT create_corpus_staging();")
+    await world.runner().stage(STAGE)
+
+
 async def test_a_refused_stage_leaves_no_ownership_for_a_retry(world):
     """A Qdrant collection of the publish's name that no earlier stage made is refused,
     and the refusal writes no publish row, so a retry is refused too and the
