@@ -34,7 +34,7 @@ class CorpusSchema:
     retired: bool       # chunks.retired_at and documents.retired_at exist
     searchable: bool    # chunks.searchable exists
     # documents.genre ... superseded_note, and the passage fields chunks.language,
-    # note, passage_author, work_key and superseded_by. All come from 0042.
+    # note, passage_author, work_key, superseded_by and voice. All come from 0042.
     facts: bool
     works: bool         # document_works exists
     tombstones: bool    # corpus_tombstones exists
@@ -63,7 +63,8 @@ _FACT_COLUMNS = {
     "documents": ("genre", "issuer", "issuer_label", "date_display", "certainty",
                   "attribution_note", "notes", "source_credit", "superseded_by",
                   "superseded_note"),
-    "chunks": ("language", "note", "passage_author", "work_key", "superseded_by"),
+    "chunks": ("language", "note", "passage_author", "work_key", "superseded_by",
+               "voice"),
 }
 
 _PROBE_SQL = """

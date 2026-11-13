@@ -18,7 +18,7 @@ WITH_0042 = corpus_schema.CorpusSchema(retired=True, searchable=True, facts=True
 def _row(**overrides):
     row = {
         "chunk_id": CHUNK, "language": None, "note": "A note.",
-        "passage_author": None, "author": "Justin Martyr", "year": 155,
+        "passage_author": None, "voice": None, "author": "Justin Martyr", "year": 155,
         "translation": "Ante-Nicene Fathers", "date_display": "c. 155", "genre": "treatise",
         "issuer": None, "issuer_label": None, "certainty": "genuine",
         "attribution_note": None, "notes": None, "source_credit": "Sourced via CCEL.org",
@@ -121,3 +121,33 @@ async def test_without_0042_no_query_runs_and_the_event_is_todays():
         "collection", "document_title", "author", "reference", "document_id", "anchor",
         "chapter_key", "unit_label", "reader_access", "source_url", "source_credit"}
     assert source["author"] == "Payload Author"
+
+
+# --- voice (corpus cleanup 2.4d) ---
+
+async def test_no_voice_field_in_the_chunk_event_when_unset(with_0042):
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row()]))
+    assert "voice" not in _chunk_event(await _events(pool, _result()))["source"]
+
+
+async def test_a_rejected_passage_is_marked_in_the_chunk_event(with_0042):
+    result = _result()
+    result.chunks[0].voice = "rejected"
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row()]))
+    assert _chunk_event(await _events(pool, result))["source"]["voice"] == "rejected"
+
+
+def test_saved_searches_and_bookmarks_read_voice_from_the_facts_row():
+    """Restore and bookmarks build their source from `source_fields`."""
+    from app.rag.steps.document_facts import _passage_facts, _sql
+
+    assert "c.voice" in _sql(works=True)
+    assert _passage_facts(_row(voice="rejected")).source_fields()["voice"] == "rejected"
+    assert "voice" not in _passage_facts(_row()).source_fields()
+
+
+def test_reader_passages_carry_voice_with_0042():
+    from app.routes.documents import _passages_sql
+
+    assert "voice" in _passages_sql(WITH_0042)
+    assert "voice" not in _passages_sql(corpus_schema.LEGACY)

@@ -8,6 +8,18 @@ import {
   type Tombstone,
 } from "./corpus-lifecycle";
 
+/**
+ * "rejected": the passage states a position its own document rejects — a condemned
+ * proposition, an opponent's speech, a Summa objection (corpus cleanup 2.4d). The UI
+ * shows its `unit_label` above the text so it is never read as the document's teaching.
+ */
+export type PassageVoice = "rejected";
+
+/** The voice a payload names, or null for anything else (the API sends only these). */
+export function passageVoice(value: unknown): PassageVoice | null {
+  return value === "rejected" ? value : null;
+}
+
 export interface ChunkSource {
   collection: string;
   document_title: string;
@@ -40,6 +52,9 @@ export interface ChunkSource {
   passage_note?: string | null;
   /** A quoted author (a Father in the Catena Aurea), shown instead of `author`. */
   passage_author?: string | null;
+  /** See PassageVoice. Absent from an older API and for every passage until the
+   *  corpus cleanup's Phase 4 apply. */
+  voice?: PassageVoice | null;
 }
 
 /** One passage attached to a matched Summa passage to make it intelligible. */
@@ -260,6 +275,7 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
       language: optionalText(source.language),
       passage_note: optionalText(source.passage_note),
       passage_author: optionalText(source.passage_author),
+      voice: passageVoice(source.voice),
     },
     reranker_score: nullableNumber(event.reranker_score),
     explanation: nullableString(event.explanation),

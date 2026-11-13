@@ -44,6 +44,9 @@ class ChunkSource(BaseModel):
     language: Optional[str] = None        # ISO 639 code; None means English
     passage_note: Optional[str] = None
     passage_author: Optional[str] = None  # a quoted author, shown instead of `author`
+    # "rejected": the passage states a position its document rejects (2.4d). The card
+    # shows `unit_label` above the text.
+    voice: Optional[Literal["rejected"]] = None
 
 
 class ContextPart(BaseModel):

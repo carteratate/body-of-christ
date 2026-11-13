@@ -57,6 +57,8 @@ def _rrf_merge(paths: list[RetrievalPath], top_n: int, k: int) -> list[dict]:
                     # run for, so pre-reconcile this is None on the vector path and
                     # fetch_positions backfills it from Postgres before reranking.
                     "unit_label": row.get("unit_label"),
+                    # Same rule as unit_label (corpus cleanup 2.4d).
+                    "voice": row.get("voice"),
                 }
 
     scores = {chunk_id: sum(by_family.values()) for chunk_id, by_family in family_scores.items()}
@@ -117,6 +119,7 @@ def run(
                 position=e.get("position"),
                 annotation=e.get("annotation"),
                 unit_label=e.get("unit_label"),
+                voice=e.get("voice"),
             )
             for e in merged
         ]

@@ -37,7 +37,12 @@ logger = logging.getLogger(__name__)
 #   the since-removed pointwise reranker's passage record). Objections are 39.3% of
 #   the Summa, so this deliberately changes their scoring and v1/v2 quality numbers
 #   are NOT comparable.
-LLM_RERANK_CONTRACT_VERSION = "structured-positional-v2-passage-role"
+#   v2 -> v3 (2026-11-12): REJECTED VOICE (corpus cleanup 2.4d). A card whose passage
+#   has `voice = "rejected"` carries a "Rejected position (...)" line, and the system
+#   prompt gains one instruction when any card does. Byte-identical without one, and
+#   no live passage has the field before the Phase 4 apply, so v2 and v3 scores agree
+#   until then; afterwards they are not comparable.
+LLM_RERANK_CONTRACT_VERSION = "structured-positional-v3-rejected-voice"
 
 # Cohere has no prompt, but `rerank_docs.cohere_document` now injects the unit label
 # into the document text, so its INPUT changed on the same date. A `cohere_only`
@@ -45,7 +50,8 @@ LLM_RERANK_CONTRACT_VERSION = "structured-positional-v2-passage-role"
 # post-change `hyde_cohere` runs record `None` alike and silently pool into one
 # comparison. The two versions are tracked separately because the changes are
 # independent — a future prompt-only edit must not imply Cohere's input moved.
-COHERE_RERANK_CONTRACT_VERSION = "cohere-doc-v2-passage-role"
+# v3 (2026-11-12): the rejected-voice line joins the document, as on the listwise card.
+COHERE_RERANK_CONTRACT_VERSION = "cohere-doc-v3-rejected-voice"
 
 
 def contract_version(config: "RerankConfig") -> str | None:
