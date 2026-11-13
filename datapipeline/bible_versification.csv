@@ -1,7 +1,17 @@
-book,source,target,scope,authority
-Joel,2:28-2:32,3:1-3:5,book,Nova Vulgata (vatican.va; checked 10 Nov 2026)
-Joel,3:1-3:21,4:1-4:21,book,Nova Vulgata (vatican.va; checked 10 Nov 2026)
-Jonah,1:17-1:17,2:1-2:1,book,Nova Vulgata (vatican.va; checked 10 Nov 2026)
-Jonah,2:1-2:10,2:2-2:11,book,Nova Vulgata (vatican.va; checked 10 Nov 2026)
-Malachi,4:1-4:6,3:19-3:24,book,Nova Vulgata (vatican.va; checked 10 Nov 2026)
-Romans,14:24-14:26,16:25-16:27,passage,Nova Vulgata (vatican.va; checked 10 Nov 2026)
+book,source,target,scope,authority,evidence
+Joel,2:28-2:32,3:1-3:5,book,Nova Vulgata (vatican.va; checked 10 Nov 2026),Catechism and Lectionary cite the outpouring of the Spirit as Joel 3:1-5 (1.4b)
+Joel,3:1-3:21,4:1-4:21,book,Nova Vulgata (vatican.va; checked 10 Nov 2026),follows Joel 3:1-5 (1.4b)
+Jonah,1:17-1:17,2:1-2:1,book,Nova Vulgata (vatican.va; checked 10 Nov 2026),Catechism cites the three days in the fish as Jonah 2:1 (1.4b count; 4 Nov 2026)
+Jonah,2:1-2:10,2:2-2:11,book,Nova Vulgata (vatican.va; checked 10 Nov 2026),follows Jonah 2:1 (1.4b)
+Malachi,4:1-4:6,3:19-3:24,book,Nova Vulgata (vatican.va; checked 10 Nov 2026),Nova Vulgata Malachi has 3 chapters (1.4b; Carter 4 Nov 2026)
+Romans,14:24-14:26,16:25-16:27,passage,Nova Vulgata (vatican.va; checked 10 Nov 2026),cited as Romans 16:25-27 6 times outside the Bible; the Catechism twice (1.4b count; 4 Nov 2026)
+Daniel,4:1-4:3,3:98-3:100,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),NV prints 3:98-100 (Aramaic 3:31-33); NABRE and the NAB on vatican.va the same
+Daniel,4:4-4:37,4:1-4:34,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),"NV, NABRE and NAB: Daniel 4 has 34 verses"
+Daniel,5:31-5:31,6:1-6:1,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),NV and NAB: Darius receives the kingdom at 6:1; Lectionary 506 reads Daniel 6:12-28
+Daniel,6:1-6:28,6:2-6:29,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),Lectionary 506 reads Daniel 6:12-28 (WEB-C 6:11-27); NV and NAB: Daniel 6 has 29 verses
+Hosea,1:10-1:11,2:1-2:2,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),Catechism 441 cites Hos 2:1 for sons of the living God; NV and NAB: Hosea 1 has 9 verses
+Hosea,2:1-2:23,2:3-2:25,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),Catechism 2787 cites Hos 2:21-22 (the espousal) and 2380 Hos 2:7; Lectionary 383 reads Hosea 2:16 17c-18 21-22; NV divides WEB-C 2:23 into 2:25-26
+Hosea,11:12-11:12,12:1-12:1,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),NV and NAB: Ephraim surrounds me with lies opens Hosea 12
+Hosea,12:1-12:14,12:2-12:15,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),NV and NAB: Hosea 12 has 15 verses
+Hosea,13:16-13:16,14:1-14:1,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),NV and NAB: Samaria shall bear her guilt is Hosea 14:1
+Hosea,14:1-14:9,14:2-14:10,passage,Nova Vulgata (vatican.va; checked 12 Nov 2026),Lectionary 387 and Friday of the third week of Lent read Hosea 14:2-10

@@ -466,7 +466,7 @@ async def get_document_toc(
 
 
 _PASSAGE_FIELDS = """,
-                   language, note, work_key, passage_author,
+                   language, note, work_key, passage_author, voice,
                    superseded_by::text AS superseded_by"""
 
 
@@ -583,7 +583,7 @@ async def get_document_reader(
             chapter_label=r["chapter_label"], unit_label=r["unit_label"],
             reference=r["reference"], content=r["content"],
             **({key: r[key] for key in ("language", "note", "work_key", "passage_author",
-                                        "superseded_by")}
+                                        "voice", "superseded_by")}
                if "language" in r.keys() else {}),
         ) for r in passage_rows
     ]

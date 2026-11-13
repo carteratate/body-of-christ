@@ -19,12 +19,14 @@ _LEGACY_SQL = (
 
 def build_sql(schema: corpus_schema.CorpusSchema) -> str:
     """Without 0042, today's lookup. With it, each row also says whether search must
-    not show it (`hidden`: not searchable, retired, or in a retired document)."""
+    not show it (`hidden`: not searchable, retired, or in a retired document), and
+    carries its `voice` (2.4d)."""
     searchable = schema.searchable_sql("c", "d")
-    if not searchable:
+    if not searchable and not schema.facts:
         return _LEGACY_SQL
+    voice = "c.voice, " if schema.facts else ""
     return (
-        "SELECT c.id::text AS id, c.position, c.annotation, c.chapter_key, c.unit_label, "
+        f"SELECT c.id::text AS id, c.position, c.annotation, c.chapter_key, c.unit_label, {voice}"
         f"NOT (TRUE{searchable}) AS hidden "
         "FROM chunks c JOIN documents d ON d.id = c.document_id "
         "WHERE c.id = ANY($1::uuid[])"
@@ -92,6 +94,7 @@ async def run(
         ann_map = {r["id"]: r.get("annotation") for r in rows}
         chapter_map = {r["id"]: r.get("chapter_key") for r in rows}
         unit_map = {r["id"]: r.get("unit_label") for r in rows}
+        voice_map = {r["id"]: r.get("voice") for r in rows}
         hidden_ids = {r["id"] for r in rows if r.get("hidden")}
         logger.info(
             "fetch_positions: ids=%d acquire=%.3fs query=%.3fs total=%.3fs",
@@ -144,6 +147,10 @@ async def run(
                 # this backfill shrinks to nothing as the reconcile rolls out.
                 if c.unit_label is None:
                     c.unit_label = unit_map.get(c.chunk_id)
+                # Same again for voice (2.4d): a point written before 2.2w set the
+                # field reaches the rerankers with Postgres's value.
+                if c.voice is None:
+                    c.voice = voice_map.get(c.chunk_id)
             kept.append(c)
         filtered[col] = kept
 

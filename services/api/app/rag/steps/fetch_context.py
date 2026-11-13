@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 # hidden gets no attachment, as on a failed lookup.
 _SQL_TEMPLATE = """
     SELECT c.id::text AS chunk_id, c.content, c.reference, c.anchor, c.chapter_key,
-           c.position, c.unit_label, c.document_id::text AS document_id,
+           c.position, c.unit_label{voice}, c.document_id::text AS document_id,
            d.title AS document_title, d.author, d.collection
     FROM chunks c JOIN documents d ON d.id = c.document_id
     WHERE c.chapter_key = ANY($1::text[])
@@ -51,7 +51,8 @@ _SQL_TEMPLATE = """
 
 
 def build_sql(schema: corpus_schema.CorpusSchema) -> str:
-    return _SQL_TEMPLATE.format(searchable=schema.searchable_sql("c", "d"))
+    return _SQL_TEMPLATE.format(voice=", c.voice" if schema.facts else "",
+                                searchable=schema.searchable_sql("c", "d"))
 
 
 def _to_chunk(row) -> RankedChunk:
@@ -64,7 +65,7 @@ def _to_chunk(row) -> RankedChunk:
         # relevance judgement.
         reranker_score=0.0, include=True, anchor=row["anchor"],
         chapter_key=row["chapter_key"], position=row["position"],
-        unit_label=row["unit_label"], score_source="stitched",
+        unit_label=row["unit_label"], voice=row.get("voice"), score_source="stitched",
     )
 
 

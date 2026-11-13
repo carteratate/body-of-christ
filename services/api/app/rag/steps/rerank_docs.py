@@ -14,7 +14,7 @@ narrative. Do not reach for `annotation_prose()` in this module.
 """
 from __future__ import annotations
 
-from app.rag.steps.passage_role import display_role
+from app.rag.steps.passage_role import display_role, rejected_note
 from app.rag.steps.types import ChunkCandidate
 
 
@@ -31,9 +31,16 @@ def cohere_document(candidate: ChunkCandidate) -> str:
     role = display_role(candidate.unit_label, ref)
     if role:
         head = f"{head} [{role}]"
+    # A rejected passage's note is its own line straight after the header, ahead of
+    # anything Cohere might truncate (2.4d).
+    note = rejected_note(candidate.voice, candidate.unit_label)
+    if note:
+        head = f"{head}\n{note}\n"
+    else:
+        head = f"{head} "
     if candidate.annotation:
-        return f"{head} {candidate.annotation}\n{candidate.content}"
-    return f"{head} {candidate.content}"
+        return f"{head}{candidate.annotation}\n{candidate.content}"
+    return f"{head}{candidate.content}"
 
 
 def llm_card(candidate: ChunkCandidate) -> str:
@@ -56,6 +63,9 @@ def llm_card(candidate: ChunkCandidate) -> str:
         head = f"{head} — {role}"
 
     lines = [head]
+    note = rejected_note(candidate.voice, candidate.unit_label)
+    if note:
+        lines.append(note)
     if candidate.annotation:
         lines.append(candidate.annotation)
     lines.append(candidate.content)

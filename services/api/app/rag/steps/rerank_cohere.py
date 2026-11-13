@@ -192,6 +192,7 @@ def _as_ranked(
         position=candidate.position,
         annotation=candidate.annotation,
         unit_label=candidate.unit_label,
+        voice=candidate.voice,
         score_source=score_source,
     )
 
