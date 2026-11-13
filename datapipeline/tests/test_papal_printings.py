@@ -9,7 +9,7 @@ import re
 
 import pytest
 
-from ingest import papal_printings
+from ingest import papal_common, papal_printings
 from ingest.papal_printings import Printing, Unit, apply_fixes, printed_tokens
 
 _DATAPIPELINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -142,7 +142,7 @@ def test_an_extract_holds_what_its_printing_lacks():
             continue
         extracts += 1
         slug = p.key.split("/", 1)[1]
-        assert held == {f"{slug}/{n}" for n in p.omits}, p.key
+        assert held == {papal_common._anchor(slug, str(n)) for n in p.omits}, p.key
         assert not held & {x.anchor for x in doc.passages}, p.key
         assert doc.metadata["held_text_url"] == _manifest(doc.collection)[slug]["url"], p.key
         assert doc.notes and "not available on TheoCorpus" in doc.notes, p.key

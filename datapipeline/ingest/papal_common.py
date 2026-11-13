@@ -35,7 +35,7 @@ from normalize.caps import smart_title_case
 from normalize.footnotes import (drop_caller_elements, strip_bare_callers,
                                  strip_footnote_markers, strip_note_callers)
 from normalize.text import clean_text, repair_sentence_joins
-from registry import ANCHOR_SCHEME, removed_document_ids, resolve_document_id
+from registry import ANCHOR_SCHEME, drop_removed, removed_document_ids, resolve_document_id
 
 log = logging.getLogger(__name__)
 
@@ -1070,8 +1070,10 @@ def build_documents(collection: str, src_dir: str) -> list[Document]:
     from ingest import papal_printings
 
     held = removed_document_ids()
+    # A document published in part from the site's page (Exsurge Domine's propositions,
+    # R9) leaves out the passages an open `passage` removal holds, as a printing does.
     return [papal_printings.build_document(e, collection, src_dir)
             if papal_printings.printing(collection, e["slug"])
-            else build_document(e, collection, src_dir) for e in manifest
+            else drop_removed(build_document(e, collection, src_dir)) for e in manifest
             if resolve_document_id(collection, f"{collection}/{e['slug']}",
                                    (collection, e["slug"])) not in held]

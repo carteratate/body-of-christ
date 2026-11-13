@@ -32,7 +32,7 @@ import functools
 import json
 import os
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from bs4 import BeautifulSoup
 
@@ -80,6 +80,8 @@ class Printing:
     # missing, for the reader's overview.
     omits: tuple[int | str, ...] = ()
     notes: str | None = None
+    # A reader note on every passage (Deferrari's extracts, R9: "Extract, in ...").
+    passage_note: str | None = None
 
     @property
     def folder(self) -> str:
@@ -107,7 +109,8 @@ def printings() -> dict[str, Printing]:
                             editorial=tuple(d.get("editorial", ())),
                             fixes=tuple(d.get("fixes", ())),
                             numbered=d.get("numbered", True),
-                            omits=tuple(d.get("omits", ())), notes=d.get("notes"))
+                            omits=tuple(d.get("omits", ())), notes=d.get("notes"),
+                            passage_note=d.get("passage_note"))
     return out
 
 
@@ -256,4 +259,6 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
         entry, collection, toks, url=p.url, text_replaced=p.text_replaced,
         translation=p.translation, metadata=metadata, passage_metadata=label)
     doc.notes = p.notes
+    if p.passage_note:
+        doc.passages = [replace(x, note=p.passage_note) for x in doc.passages]
     return doc
