@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 _SQL_TEMPLATE = """
     SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.chapter_key, c.position,
-           c.annotation, c.unit_label, c.document_id::text AS document_id,
+           c.annotation, c.unit_label{voice}, c.document_id::text AS document_id,
            d.title AS document_title, d.author, d.collection
     FROM chunks c
     JOIN documents d ON c.document_id = d.id
@@ -28,8 +28,10 @@ _SQL_TEMPLATE = """
 
 
 def build_sql(schema: corpus_schema.CorpusSchema) -> str:
-    """Today's SQL without 0042, byte for byte; with it, only searchable live rows."""
-    return _SQL_TEMPLATE.format(searchable=schema.searchable_sql("c", "d"))
+    """Today's SQL without 0042, byte for byte; with it, only searchable live rows, and
+    each row's `voice` (2.4d), so a candidate found only by keyword search carries it."""
+    return _SQL_TEMPLATE.format(voice=", c.voice" if schema.facts else "",
+                                searchable=schema.searchable_sql("c", "d"))
 
 
 _TRANSIENT_CONNECTION_ERRORS = (

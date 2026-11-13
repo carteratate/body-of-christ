@@ -58,6 +58,9 @@ class ReaderPassage(BaseModel):
     note: Optional[str] = None
     work_key: Optional[str] = None
     passage_author: Optional[str] = None
+    # "rejected": a position the document states in order to reject it (2.4d). The
+    # reader shows `unit_label` above the text.
+    voice: Optional[Literal["rejected"]] = None
     # Set only on a history passage (rule F): the ID of the current passage that
     # replaced it. Shown as earlier text beside that passage, never in the flow.
     superseded_by: Optional[str] = None

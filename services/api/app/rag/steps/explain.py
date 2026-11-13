@@ -6,7 +6,7 @@ from collections.abc import AsyncGenerator
 import openai
 
 from app.config import settings
-from app.rag.steps.passage_role import display_role
+from app.rag.steps.passage_role import REJECTED_INSTRUCTION, display_role, rejected_note
 from app.rag.steps.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
@@ -83,6 +83,7 @@ async def stream(
     query: str,
     unit_label: str | None = None,
     cost_tracker: CostTracker | None = None,
+    voice: str | None = None,
 ) -> AsyncGenerator[str, None]:
     """Async generator that yields text deltas from the explanation as they arrive.
 
@@ -105,6 +106,13 @@ async def stream(
     if role:
         ref_label = f"{ref_label} — {role}"
     user_message = f"Question: {query}\n\nPassage ({ref_label}): {chunk_content}"
+    system = _EXPLAIN_SYSTEM
+    # A rejected passage (2.4d): its note goes above the passage, outside its text,
+    # and the instruction joins the system prompt for this request only.
+    note = rejected_note(voice, unit_label)
+    if note:
+        user_message = f"Question: {query}\n\n{note}\nPassage ({ref_label}): {chunk_content}"
+        system = f"{_EXPLAIN_SYSTEM}\n\n{REJECTED_INSTRUCTION}"
 
     for attempt in range(_MAX_RETRIES):
         tokens_started = False
@@ -114,7 +122,7 @@ async def stream(
                 reasoning_effort=REASONING_EFFORT,
                 max_completion_tokens=220,
                 messages=[
-                    {"role": "system", "content": _EXPLAIN_SYSTEM},
+                    {"role": "system", "content": system},
                     {"role": "user", "content": user_message},
                 ],
                 stream=True,

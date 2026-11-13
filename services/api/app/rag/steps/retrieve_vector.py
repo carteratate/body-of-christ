@@ -71,6 +71,8 @@ async def _search_vector(
             # Present only for collections the payload reconcile has run for;
             # fetch_positions backfills it from Postgres for the rest.
             "unit_label": payload.get("unit_label"),
+            # Written by 2.2w on every point; fetch_positions backfills a point without it.
+            "voice": payload.get("voice"),
             "position": None,
             "annotation": None,
         })
