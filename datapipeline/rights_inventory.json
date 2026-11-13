@@ -5913,7 +5913,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/cihm_51176/",
-  "document_id": null,
+  "document_id": "49227f30-0b32-544c-adda-9180a888fc2b",
   "edition": "Edward John [Horan], by the Grace of God and the Favor of the Apostolic See, Bishop of Kingston: to the Clergy and Laity of our Diocess ([Kingston, 1859]), pastoral letter printing the Encyclical Letter of His Holiness Pope Pius IX in full, ending Given at Rome, at St. Peters, this 27th day of April. CIHM microfiche. A different translation from papalencyclicals.net's. Internet Archive scan cihm_51176",
   "translator": null,
   "first_published": 1859,
@@ -5924,7 +5924,7 @@
   "credit_line": "Translation published by the Bishop of Kingston (1859)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Exultavit Cor Nostrum",
@@ -6026,24 +6026,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/ben14/b14cumre.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Cum Sancta Mater Ecclesia",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/cum-sancta-mater-ecclesia.html",
-  "document_id": "49227f30-0b32-544c-adda-9180a888fc2b",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9cumsan.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,

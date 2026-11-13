@@ -1,0 +1,174 @@
+[
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": "ro eating",
+  "replace": "repeating",
+  "why": "p. 1: misread on the page; the print reads \"repeating\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": "a1.d again crying Pace,",
+  "replace": "and again crying Peace,",
+  "why": "p. 1: misread on the page; the print reads \"and again crying Peace,\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": "sad ery of",
+  "replace": "sad cry of",
+  "why": "p. 1: misread on the page; the print reads \"cry\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": "unniversary",
+  "replace": "anniversary",
+  "why": "p. 1: misread on the page; the print reads \"anniversary\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": "aND APOSTOLIC BENEDICTION:\n\nAta",
+  "replace": "AND APOSTOLIC BENEDICTION:\n\nAt a",
+  "why": "p. 1: misread on the page; the print reads \"AND APOSTOLIC BENEDICTION: At a\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": "Apostolic See,\n\nVENERABLE",
+  "replace": "Apostolic See.\n\nVENERABLE",
+  "why": "p. 1: misread on the page; the print reads \"See.\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": " other\n\nOrdinaries ",
+  "replace": " other Ordinaries ",
+  "why": "p. 1: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-01",
+  "find": " IX. Zo our",
+  "replace": " IX.\n\nTo our",
+  "why": "p. 1: the address in italics, misread (\"Zo\"), and run into the heading; the print sets it as its own paragraph, ending \"Apostolic See.\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-02",
+  "find": "Mercies, But follow.\n\n2",
+  "replace": "Mercies. But follow-",
+  "why": "pp. 1–2: misread on the page, and the page number \"2\" read into the text; the print reads \"Mercies. But follow-\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-02",
+  "find": "most Wished for",
+  "replace": "most wished for",
+  "why": "pp. 1–2: misread on the page; the print reads \"wished\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "Vener-wble",
+  "replace": "Venerable",
+  "why": "p. 2: misread on the page; the print reads \"Venerable\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "good wi!l which",
+  "replace": "good will which",
+  "why": "p. 2: misread on the page; the print reads \"will\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "to-take this oceasion of.",
+  "replace": "to take this occasion of",
+  "why": "p. 2: misread on the page; the print reads \"to take this occasion of\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "above-m ntioned",
+  "replace": "above-mentioned",
+  "why": "p. 2: misread on the page; the print reads \"above-mentioned\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "lligh has entrusted:",
+  "replace": "High has entrusted",
+  "why": "p. 2: misread on the page; the print reads \"High has entrusted\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "abundant fruit. may",
+  "replace": "abundant fruit may",
+  "why": "p. 2: misread on the page; the print reads \"fruit\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "by Ilis omnipotent",
+  "replace": "by His omnipotent",
+  "why": "p. 2: misread on the page; the print reads \"His\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "all'with",
+  "replace": "all with",
+  "why": "p. 2: misread on the page; the print reads \"all with\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "with Ilis divine",
+  "replace": "with His divine",
+  "why": "p. 2: misread on the page; the print reads \"His\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "carth—that",
+  "replace": "earth—that",
+  "why": "p. 2: misread on the page; the print reads \"earth—that\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "away, cxen.to the",
+  "replace": "away, even to the",
+  "why": "p. 2: misread on the page; the print reads \"even to\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "_dTe may turn away.",
+  "replace": "He may turn away",
+  "why": "p. 2: misread on the page; the print reads \"He may turn away\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "begutten",
+  "replace": "begotten",
+  "why": "p. 2: misread on the page; the print reads \"begotten\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "Wheretore,",
+  "replace": "Wherefore,",
+  "why": "p. 2: misread on the page; the print reads \"Wherefore,\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "find": "tu fly also to:",
+  "replace": "to fly also to",
+  "why": "p. 2: misread on the page; the print reads \"to fly also to\""
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-04",
+  "find": "Lord 185). In",
+  "replace": "Lord 1859. In",
+  "why": "p. 2: the last figure of the year is broken in the print (it reads \"185\"), read as \")\"; the year is 1859, the date of the letter and of the pastoral"
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-04",
+  "find": "‘Given at",
+  "replace": "Given at",
+  "why": "p. 2: the bishop quotes the whole letter, setting a quotation mark at its opening and before the dating line; the clean-up drops the quotation marks (here misread as ‘), and the text is the letter"
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-02",
+  "continues": true,
+  "why": "p. 1: the sentence runs on from the passage before (\"to pray unto the Most High God, that He may grant\")"
+ },
+ {
+  "passage": "cum-sancta-mater-ecclesia-03",
+  "continues": true,
+  "why": "pp. 1–2: the word \"follow-ing\" runs over the page"
+ }
+]

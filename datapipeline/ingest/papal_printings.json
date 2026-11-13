@@ -2225,5 +2225,47 @@
     "unit": 32
    }
   ]
+ },
+ "encyclicals/cum-sancta-mater-ecclesia": {
+  "source": "ocr",
+  "work": "horan-1859-cum-sancta-mater-ecclesia",
+  "file": "cihm_51176/",
+  "url": "https://archive.org/details/cihm_51176",
+  "translation": "Pastoral letter of Edward John Horan, Bishop of Kingston ([Kingston, 1859])",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER OF HIS HOLINESS",
+    "why": "The pastoral's heading over the letter, not the letter (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "To our venerable Brethren",
+    "unit": "preamble"
+   },
+   {
+    "opens": "VENERABLE BRETHREN, HEALTH",
+    "unit": "preamble"
+   },
+   {
+    "opens": "At a time when",
+    "unit": 1,
+    "until": "And with these words of peace"
+   },
+   {
+    "opens": "And with these words of peace",
+    "unit": 2,
+    "until": "We do not doubt"
+   },
+   {
+    "opens": "We do not doubt",
+    "unit": 3,
+    "until": "Lastly, there is nothing"
+   },
+   {
+    "opens": "Lastly, there is nothing",
+    "unit": 4
+   }
+  ]
  }
 }
