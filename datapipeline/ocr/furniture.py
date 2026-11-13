@@ -363,6 +363,10 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     layout = layout or SingleColumn()
     result = CleanResult()
     ordered = [layout.reading_order(p) for p in pages]
+    # The long s is a letter form of s, not a letter: a printing set before about 1800
+    # (Diu Satis, 1.3d) is read with it written out, as the ligatures are.
+    ordered = [[replace(ln, text=ln.text.replace("ſ", "s")) if "ſ" in ln.text else ln
+                for ln in lines] for lines in ordered]
     if watermark:
         stamp = re.compile(watermark)
         for k, page in enumerate(pages):
@@ -587,7 +591,9 @@ def clean_work(workdir, sources=None, force: bool = False,
     result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")
                            for c in note_calls)
     agree, read = page_map_agreement(result.removals)
-    if read and agree * 2 < read:
+    # A work that names its leaves' pages itself (`leaf_pages`) was set from the images;
+    # small page numbers in parentheses the OCR misreads do not overrule it (Diu Satis).
+    if read and agree * 2 < read and not config.leaf_pages:
         raise RuntimeError(
             f"{config.work}: the page numbers printed on the pages agree with "
             f"{config.page_numbers} on only {agree} of {read} pages; the scan's images and "

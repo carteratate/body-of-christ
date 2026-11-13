@@ -1064,6 +1064,13 @@ def test_parallel_right_keeps_the_right_column_and_lines_across_the_page():
     assert get_layout("parallel-right").name == "parallel-right"
 
 
+def test_long_s_is_written_out():
+    body = [Line(f"Ordinary words on line {k} of this page run on", 150, 300 + 75 * k, 1850, 360 + 75 * k)
+            for k in range(6)] + [Line("moſt ſolicitude, which theſe times require.", 150, 760, 1850, 820)]
+    text = "\n".join(p.text for p in clean_pages([Page(0, 2000, 3000, body)]).paragraphs)
+    assert "most solicitude, which these times require." in text and "ſ" not in text
+
+
 def test_watermark_is_taken_out_of_the_line_it_was_read_into():
     body = [Line(f"Ordinary words on line {k} of this page run on", 150, 300 + 75 * k, 1850, 360 + 75 * k)
             for k in range(6)]
