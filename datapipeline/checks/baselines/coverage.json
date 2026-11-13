@@ -4,7 +4,7 @@
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
-  "church-fathers": "feat/1.8b-npnf-augustine-strip f3efbf5",
+  "church-fathers": "feat/1.8b-npnf-augustine-strip 43116e3",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "feat/1.3d-1-held-papal-documents 0f3fb97",
   "medieval": "feat/1.10c-piece-citations 269d968",
