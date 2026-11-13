@@ -874,13 +874,23 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
     path = os.path.join(src_dir, entry["file"])
     with open(path, "rb") as f:
         soup = BeautifulSoup(f.read(), "lxml")
+    return document_from_tokens(entry, collection, tokens(soup, entry["slug"]))
+
+
+def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
+                         url: str | None = None, text_replaced: str | None = None,
+                         translation: str = "", metadata: dict | None = None) -> Document:
+    """A document from its tokens, by the rules every papal source shares. A document
+    built from another edition than its manifest's page (1.3d's printings) names that
+    edition's `url`, the `text_replaced` every passage declares, its `translation`, and any
+    further document `metadata`."""
     slug, author = entry["slug"], entry["author"]
-    toks = tokens(soup, slug)
+    url = url or entry["url"]
     title = _disambiguate_title(entry["title"], slug, entry["year"])
     source_key = f"{collection}/{slug}"
     did = resolve_document_id(collection, source_key, (collection, slug))
     has_sec = any(t.kind == "section" for t in toks)
-    meta = {"pope": author, "url": entry["url"], "source_url": entry["url"]}
+    meta = {"pope": author, "url": url, "source_url": url}
     units: list[_Unit] = []
 
     def emit(content: str, ref: str | None, base_anchor: str, ckey: str, clabel: str,
@@ -975,19 +985,23 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
             emit(text, None, _anchor(slug, str(n)), ckey, clabel, None, segments)
 
     passages = _passages(units, title, meta)
-    if slug in _NEW_TRANSLATION:
+    if text_replaced:
+        for p in passages:
+            p.metadata = {**p.metadata, "text_replaced": text_replaced}
+    elif slug in _NEW_TRANSLATION:
         changed = _NEW_TRANSLATION[slug]
         for p in passages:
             if changed is None or unit_anchor(p.anchor).split("/", 1)[1] in changed:
                 p.metadata = {**p.metadata, "text_replaced": TEXT_REPLACED}
     _log_short(title, passages)
-    metadata = {"url": entry["url"], "source_url": entry["url"], "pope": author,
+    doc_meta = {"url": url, "source_url": url, "pope": author,
                 "source_key": source_key, "anchor_scheme": ANCHOR_SCHEME,
-                "genre": _genre(entry, source_key)}
+                "genre": _genre(entry, source_key), **(metadata or {})}
     if entry.get("form"):
-        metadata["form"] = entry["form"]
+        doc_meta["form"] = entry["form"]
     return Document(id=did, collection=collection, title=title, author=author,
-                    year=entry["year"], metadata=metadata, passages=passages)
+                    year=entry["year"], translation=translation, metadata=doc_meta,
+                    passages=passages)
 
 
 def _genre(entry: dict, source_key: str) -> str:
@@ -1052,7 +1066,11 @@ def build_documents(collection: str, src_dir: str) -> list[Document]:
     0001): it emits nothing, so a publish retires its rows and keeps them."""
     with open(os.path.join(src_dir, "manifest.json"), encoding="utf-8") as f:
         manifest = json.load(f)
+    from ingest import papal_printings
+
     held = removed_document_ids()
-    return [build_document(e, collection, src_dir) for e in manifest
+    return [papal_printings.build_document(e, collection, src_dir)
+            if papal_printings.printing(collection, e["slug"])
+            else build_document(e, collection, src_dir) for e in manifest
             if resolve_document_id(collection, f"{collection}/{e['slug']}",
                                    (collection, e["slug"])) not in held]
