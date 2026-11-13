@@ -809,22 +809,24 @@ describe("ChunkCard rejected voice (corpus cleanup 2.4d)", () => {
     );
   }
 
-  it("shows the label in the collapsed header", () => {
+  it("keeps the collapsed header as it was: no label", () => {
+    // Carter, 12 Nov 2026: the header shows the author and the reference only.
     renderResult(condemned());
     const header = screen.getByRole("button", { expanded: false });
-    expect(header.textContent).toContain(LABEL);
-    expect(header.getAttribute("aria-label")).toContain(LABEL);
+    expect(header.textContent).not.toContain(LABEL);
+    expect(screen.queryByText(LABEL)).toBeNull();
   });
 
-  it("shows the label above the text when opened", async () => {
+  it("sets the opened text off as a quotation under a caption naming whose it is", async () => {
     renderResult(condemned());
     await userEvent.click(screen.getByRole("button", { expanded: false }));
-    const body = document.getElementById("chunk-body-00000000-0000-0000-0000-000000000031")!;
-    const label = [...body.querySelectorAll("p")].find((p) => p.textContent === LABEL)!;
-    const text = screen.getByText(TEXT);
-    expect(label).toBeTruthy();
-    expect(label.className).toContain("text-brand-muted");
-    expect(label.compareDocumentPosition(text) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const caption = screen.getByText(LABEL).closest("p")!;
+    expect(caption.textContent).toBe(`${LABEL} · a position the document rejects`);
+    expect(caption.className).toContain("text-brand-muted");
+    const quoted = screen.getByText(TEXT).closest("[data-voice='rejected']")!;
+    expect(quoted.className).toContain("border-l-2");
+    expect(quoted.className).toContain("italic");
+    expect(caption.compareDocumentPosition(quoted) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("adds the label to the copied citation in brackets", async () => {
@@ -838,14 +840,14 @@ describe("ChunkCard rejected voice (corpus cleanup 2.4d)", () => {
     );
   });
 
-  it("labels a Summa objection with voice once, not also with its role tag", () => {
+  it("leaves a Summa objection's header role tag as it was", () => {
     renderResult(condemned({
       collection: "summa", document_title: "Summa Theologiae", author: "Thomas Aquinas",
       reference: "Summa Theologiae I-II, q. 109, a. 2", unit_label: "Objection 1",
     }));
     const header = screen.getByRole("button", { expanded: false });
-    expect(header.textContent).toContain("Objection 1");
-    expect(header.textContent).not.toContain("· Objection 1");
+    expect(header.textContent).toContain("· Objection 1");
+    expect(header.textContent).not.toContain("a position the document rejects");
   });
 
   it("renders exactly as today without the field", async () => {

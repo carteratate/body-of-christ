@@ -29,12 +29,13 @@ function passage(overrides: Partial<ReaderPassage> = {}): ReaderPassage {
 }
 
 describe("Passage", () => {
-  it("shows a rejected passage's label above its text, not inline", () => {
+  it("sets a rejected passage off as a quotation under a caption, not an inline marker", () => {
     const { container } = render(<Passage passage={passage()} highlighted={false} />);
-    const label = screen.getByText(LABEL);
-    expect(label.tagName).toBe("P");
-    expect(label.className).toContain("text-brand-muted");
-    expect(label.compareDocumentPosition(screen.getByText(TEXT)) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const caption = screen.getByText(LABEL).closest("p")!;
+    expect(caption.textContent).toBe(`${LABEL} · a position the document rejects`);
+    const quoted = screen.getByText(TEXT).closest("[data-voice='rejected']")!;
+    expect(quoted.className).toContain("border-l-2");
+    expect(caption.compareDocumentPosition(quoted) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(container.querySelector("sup")).toBeNull();
   });
 

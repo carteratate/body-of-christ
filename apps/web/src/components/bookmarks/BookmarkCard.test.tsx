@@ -586,11 +586,14 @@ describe("BookmarkCard rejected voice (corpus cleanup 2.4d)", () => {
     );
   }
 
-  it("shows the label above the text", () => {
+  it("sets the text off as a quotation under a caption naming whose it is", () => {
     renderBookmark();
-    const label = screen.getByText(LABEL);
-    expect(label.className).toContain("text-brand-muted");
-    expect(label.compareDocumentPosition(screen.getByText(TEXT)) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const caption = screen.getByText(LABEL).closest("p")!;
+    expect(caption.textContent).toBe(`${LABEL} · a position the document rejects`);
+    expect(caption.className).toContain("text-brand-muted");
+    const quoted = screen.getByText(TEXT).closest("[data-voice='rejected']")!;
+    expect(quoted.className).toContain("italic");
+    expect(caption.compareDocumentPosition(quoted) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("adds the label to the copied citation in brackets", async () => {

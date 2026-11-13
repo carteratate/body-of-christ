@@ -15,7 +15,7 @@ import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/Pass
 import { certaintyTag, formatAttribution, formatDate, sourceCreditOf, withoutAuthorPrefix } from "@/lib/attribution";
 import { parseTombstone } from "@/lib/corpus-lifecycle";
 import { PassageNotes, PassageText } from "@/components/common/PassageText";
-import { RejectedLabel } from "@/components/common/RejectedLabel";
+import { RejectedVoice } from "@/components/common/RejectedVoice";
 import { rejectedLabel } from "@/lib/passageRole";
 
 const NOTE_MAX = 3000;
@@ -228,8 +228,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
       ) : (
         <>
           {bookmark.status === "moved" && <MovedNote kind={bookmark.redirect?.kind} />}
-          {rejected && <RejectedLabel label={rejected} className="mb-1.5" />}
-          <PassageText content={content} footnotes={footnotes} />
+          <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} /></RejectedVoice>
           <PassageNotes footnotes={footnotes} />
           <PassageFacts
             facts={source.facts}
