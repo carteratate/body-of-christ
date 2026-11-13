@@ -28,11 +28,32 @@ def read_fixes(work: str, works_dir: Path = WORKS_DIR) -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
 
 
-def apply_fixes(workdir: WorkDir, works_dir: Path = WORKS_DIR) -> int:
-    """Rebuild every passage's `fixed` text from the fixes file. Returns the fixes applied."""
+def _recover_cuts(workdir: WorkDir, passages: list, **clean) -> None:
+    """A run cleaned before `cut` was recorded: clean its pages again, aside, for the
+    clean-up's own cuts. The passages' corrections stay as they are."""
+    import tempfile
+
+    from ocr.furniture import clean_work
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fresh = WorkDir(workdir.config, root=Path(tmp))
+        clean_work(fresh, **clean)
+        cuts = {p.id: p.cut for p in fresh.passages()}
+    for p in passages:
+        if p.cut is None:
+            if p.id not in cuts:
+                raise ValueError(f"{p.id}: not in a fresh clean-up; clean the work again")
+            p.cut = cuts[p.id]
+
+
+def apply_fixes(workdir: WorkDir, works_dir: Path = WORKS_DIR, **clean) -> int:
+    """Rebuild every passage's `fixed` text from the fixes file. Returns the fixes applied.
+    `clean` passes `sources` and `passage_words` to a clean-up that recovers missing cuts."""
     fixes = read_fixes(workdir.config.work, works_dir)
     passages = workdir.passages()
     by_id = {p.id: p for p in passages}
+    if any(p.cut is None for p in passages):
+        _recover_cuts(workdir, passages, **clean)
     for p in passages:
         p.fixed = None
         p.continues = p.cut   # a `continues` fix taken out of the file no longer holds
