@@ -3087,5 +3087,33 @@
    33
   ],
   "notes": "This English printing (The Rambler, 1850) omits paragraphs 21–24, 26 and 31–33; they are not available on TheoCorpus at present."
+ },
+ "encyclicals/qui-nuper": {
+  "source": "ocr",
+  "work": "dublin-review-1859-qui-nuper",
+  "file": "sim_dublin-review_1859-09_47/",
+  "url": "https://archive.org/details/sim_dublin-review_1859-09_47",
+  "translation": "The Dublin Review, new series vol. 47 (London, September 1859)",
+  "editorial": [
+   {
+    "opens": "And then the Holy Father exhorted",
+    "why": "The Review's own words between its two quotations (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "The seditious movement",
+    "unit": 1
+   },
+   {
+    "opens": "For the rest we openly declare",
+    "unit": 3
+   }
+  ],
+  "omits": [
+   "preamble",
+   2
+  ],
+  "notes": "This English printing (The Dublin Review, 1859) quotes paragraph 1 and part of paragraph 3; the address, paragraph 2 and the rest of paragraph 3 are not available on TheoCorpus at present."
  }
 }

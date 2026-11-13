@@ -7630,24 +7630,6 @@
   "planned_for": null
  },
  {
-  "work": "Qui Nuper",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/qui-nuper.html",
-  "document_id": "bb9956d5-402b-5829-bd42-77d02a763007",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9quinup.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Quo Graviora (1833)",
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
@@ -7814,8 +7796,8 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_dublin-review_1859-09_47/",
-  "document_id": null,
-  "edition": "The Dublin Review, new series vol. 47 (London, September 1859), 'The Massacre of Perugia', pp. 198-199: the opening paragraph and most of paragraph 3 quoted; paragraph 2 summarised only. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan sim_dublin-review_1859-09_47 (also in The Rambler, September 1859)",
+  "document_id": "bb9956d5-402b-5829-bd42-77d02a763007",
+  "edition": "The Dublin Review, new series vol. 47 (London, September 1859), 'The Massacre of Perugia', pp. 198-199: the opening paragraph (running on into the first words of paragraph 2) and the middle of paragraph 3 quoted; the rest of paragraph 2 summarised only, and the address not given. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan sim_dublin-review_1859-09_47 (also in The Rambler, September 1859)",
   "translator": null,
   "first_published": 1859,
   "source_url": "https://archive.org/details/sim_dublin-review_1859-09_47",
@@ -7825,7 +7807,7 @@
   "credit_line": "Translation from The Dublin Review (1859), extract",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Quanta Cura (1864)",

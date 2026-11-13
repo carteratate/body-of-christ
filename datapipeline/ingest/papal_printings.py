@@ -73,11 +73,12 @@ class Printing:
     # False where the site's page prints no paragraph numbers either (Sublimis Deus): its
     # units keep their places as anchors and cite no number (1.3a).
     numbered: bool = True
-    # An extract or abridgement (1.3d step 6): the site's paragraphs the printing lacks.
+    # An extract or abridgement (1.3d step 6): the site's paragraphs the printing lacks, by
+    # number, or "preamble" where it lacks the site's address (Qui Nuper).
     # They are held for permission (a `passage`-scope `awaiting-permission` removal each),
     # the site's page stays the document's `held_text_url`, and `notes` say what is
     # missing, for the reader's overview.
-    omits: tuple[int, ...] = ()
+    omits: tuple[int | str, ...] = ()
     notes: str | None = None
 
     @property
@@ -243,7 +244,7 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
     # `source_file` names the printing's folder, as its rights row does (`source_path`).
     # 0.1a's coverage does not measure it (the site's page is not this document's source;
     # `tests/test_papal_printings.py` measures the printing).
-    built = {t.number for t in toks if t.number is not None}
+    built = {t.number if t.number is not None else t.kind for t in toks}
     if built & set(p.omits):
         raise ValueError(f"{p.key}: units both printed and omitted: {sorted(built & set(p.omits))}")
     if bool(p.omits) != bool(p.notes):

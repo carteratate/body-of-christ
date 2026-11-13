@@ -33146,6 +33146,38 @@
   "added_on": "2026-11-12"
  },
  {
+  "id": "rm-2210",
+  "scope": "passage",
+  "collection": "encyclicals",
+  "document_id": "bb9956d5-402b-5829-bd42-77d02a763007",
+  "anchor": "qui-nuper/2",
+  "passage_id": "835f0482-1d7a-59fa-aa4e-0c72b7d346d3",
+  "reason": "awaiting-permission",
+  "detail": "Paragraph 2 is not in the public-domain printing (The Dublin Review, 1859, which quotes paragraph 1 and part of paragraph 3); the only English of it is Carlen's 1981 translation, held until its publisher grants permission (ADR 0001).",
+  "tombstone": "This translation is not available on TheoCorpus at present.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.3d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-2209",
+  "scope": "passage",
+  "collection": "encyclicals",
+  "document_id": "bb9956d5-402b-5829-bd42-77d02a763007",
+  "anchor": "qui-nuper/preamble",
+  "passage_id": "ec633b94-9f59-57ab-9807-69b38cfdfc1b",
+  "reason": "awaiting-permission",
+  "detail": "The address is not in the public-domain printing (The Dublin Review, 1859, which quotes paragraph 1 and part of paragraph 3); the only English of it is Carlen's 1981 translation, held until its publisher grants permission (ADR 0001).",
+  "tombstone": "This translation is not available on TheoCorpus at present.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.3d",
+  "added_on": "2026-11-13"
+ },
+ {
   "id": "rm-0409",
   "scope": "class",
   "passage_id": null,
