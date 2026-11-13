@@ -1032,6 +1032,15 @@ def test_only_pages_reads_the_pages_named(tmp_path, sources):
                    sources=sources, passage_words=20)
 
 
+def test_leaf_pages_name_the_pages_without_a_page_map(tmp_path, sources):
+    """A work that names each leaf's printed page reads them without the scan's map."""
+    w = WorkDir(make_config(page_numbers="", leaf_pages={"0": "10", "1": "11", "2": "12"}),
+                root=tmp_path / "w")
+    clean_work(w, sources=sources, passage_words=20)
+    assert {p for passage in w.passages() for p in passage.pages} <= {"10", "11", "12"}
+    assert w.passages()
+
+
 def test_parallel_right_keeps_the_right_column_and_lines_across_the_page():
     from ocr.layout import ParallelRight
 
