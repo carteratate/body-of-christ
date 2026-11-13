@@ -132,6 +132,8 @@ TheoCorpus makes no translation of its own. For each unit below, the proposed ed
 | II-II q.182 a.4 s.c. | s. c. [CT 46231] | Hugh Pope, *On Prayer and the Contemplative Life* (1914), a different translator | 249 | [leaf 273](https://archive.org/details/onprayercontempl00thomuoft/page/n273) | none in the Dominican translation |
 | II-II q.20 a.3 general reply | ad arg. | none found | — | — | Recommended: no recovery and no reader note, since it is a six-word formula ("Hence the replies to the objections are clear") and the article loses no argument |
 
+Correction (1.7, 12 Nov 2026): III q.7 a.10's sed contra is not lost. CCEL prints it at the end of objection 3's paragraph (`TP_Q7_A10-p4`), opening with a lowercase "on the contrary,", so the inventory read no marker. The corrections file now splits that paragraph (`parts`, the sed contra at `p4-2`) instead of listing a missing unit, and no text is taken from the 1913 edition for it.
+
 Places searched for II-II q.182 a.4 beyond the Dominican printings: the London (1922) and New York (1922) issues of II-II QQ. 171–189; Rickaby's *Aquinas Ethicus* vol. II (1896), which abridges q.182 a.4 to reply 3; a web search, which found Pope's translation and Freddoso's modern translation (copyrighted, so usable only with permission); Google Books (its anonymous API quota was exhausted) and HathiTrust full-text search (it refused the request), neither of which could be searched.
 
 Proposed rows for `datapipeline/rights_inventory.json`, in its existing format, to add in 1.7's PR once Carter approves the editions (public facts only):

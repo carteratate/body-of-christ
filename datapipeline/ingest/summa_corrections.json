@@ -4785,6 +4785,30 @@
    "defect": "translators",
    "source_note": "reply 3 is in the print but not in the Leonine text (the translators' base text has it)"
   },
+  "TP_Q7_A10-p4": {
+   "parts": [
+    {
+     "opens_with": "Objection 3:",
+     "role": "objection"
+    },
+    {
+     "opens_with": "on the contrary,",
+     "role": "sed-contra",
+     "anchor_suffix": "-2"
+    }
+   ],
+   "class": "source-error",
+   "defect": "ccel",
+   "latin": [
+    "III q. 7 a. 10 s. c. [CT 47160]"
+   ],
+   "printed": {
+    "source": "dom2-v15",
+    "page": "127",
+    "leaf": 139
+   },
+   "note": "the sed contra is not lost: CCEL prints it inside objection 3's paragraph, opening 'on the contrary,' in lower case (found by 1.7; R7 listed it as an omission)"
+  },
   "TP_Q83_A2-p7": {
    "role": "sed-contra",
    "number": 1,
@@ -5193,27 +5217,6 @@
    "from_div": "SS_Q66_A5",
    "first_paragraph": "SS_Q66_A5-p10",
    "latin": "II-II q. 66 a. 6"
-  },
-  "TP_Q7_A10": {
-   "missing": [
-    {
-     "unit": "sc 1",
-     "missing": true,
-     "after": "TP_Q7_A10-p4",
-     "latin": "III q. 7 a. 10 s. c. [CT 47160]",
-     "defect": "ccel",
-     "printed": {
-      "source": "dom2-v15",
-      "page": "127",
-      "leaf": 139
-     },
-     "printed_also": {
-      "source": "dom1-v15",
-      "page": "120",
-      "leaf": 134
-     }
-    }
-   ]
   }
  }
 }

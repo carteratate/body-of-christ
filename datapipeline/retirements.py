@@ -140,7 +140,9 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
             if staged_by_id[p.id][0].id != p.document_id:
                 out.moved.append(p.id)
             continue
-        declared = redirects.get(p.id)
+        # A held document's redirects stay open for its return (1.3d, ADR 0001); while it
+        # is held, its removal explains every passage it had.
+        declared = None if p.document_id in removed_documents else redirects.get(p.id)
         if declared:
             targets = [r["new_passage_id"] for r in declared]
             missing = [t for t in targets if t not in staged_by_id]

@@ -4365,6 +4365,246 @@
  },
  {
   "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "eb9fd387-e01c-574f-8cf3-b54cbebf3f6c",
+  "old_anchor": "summa/FP_Q114_A4/p9-2",
+  "new_passage_id": "f81d1544-552d-53b9-9466-c2df2e599b78",
+  "new_anchor": "summa/FP_Q114_A4/p9",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "09dab1a4-2f5f-54a7-96f7-1db2c025a18c",
+  "old_anchor": "summa/FP_Q39_A6/p6-2",
+  "new_passage_id": "784b8515-e3ad-548c-9f8f-60ab1cccc2ab",
+  "new_anchor": "summa/FP_Q39_A6/p6",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "18cb8343-dbd0-51c4-a21b-1c8eb52fdc91",
+  "old_anchor": "summa/FP_Q39_A8/p7/from-p16",
+  "new_passage_id": "0433bd3d-792a-59a5-a2f3-b352872d2607",
+  "new_anchor": "summa/FP_Q39_A8/p16",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "2cf6f179-e17c-5855-8d7a-f7cd850e14ac",
+  "old_anchor": "summa/FP_Q79_A4/p13-2",
+  "new_passage_id": "7ac90d92-b533-5d39-abfd-c7e9bf248e99",
+  "new_anchor": "summa/FP_Q79_A4/p13",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "3ee55dfe-caf9-5977-9736-97de073b6f26",
+  "old_anchor": "summa/FP_Q81_A3/p7",
+  "new_passage_id": "0517979f-86e1-5d3d-ade5-5ca6cf42bbf4",
+  "new_anchor": "summa/FP_Q81_A3/p6",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "d05d9acb-dcdb-53e4-9471-049b63b893ca",
+  "old_anchor": "summa/FP_Q87_A1/p6/from-p7-2",
+  "new_passage_id": "6f60dac4-ab4f-569e-89a9-92b884295c20",
+  "new_anchor": "summa/FP_Q87_A1/p6/from-p7",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "19532f4b-baf9-5e49-9f5c-9deab8b107e7",
+  "old_anchor": "summa/FS_Q102_A5/p35/from-p39",
+  "new_passage_id": "fd5b56a9-9dae-54cf-aa87-8ed0f76e0f13",
+  "new_anchor": "summa/FS_Q102_A5/p35/from-p38",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "88e56d66-ae93-5735-ad50-99efaea7deb6",
+  "old_anchor": "summa/FS_Q102_A5/p35/from-p41",
+  "new_passage_id": "5aa0052d-000a-5a5e-b731-ced7093f440a",
+  "new_anchor": "summa/FS_Q102_A5/p39/from-p41",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "0ba1f3d0-296c-56db-a3b2-3bb8ba9ce6a4",
+  "old_anchor": "summa/FS_Q107_A2/p11-2",
+  "new_passage_id": "50774364-f0fe-5427-b493-0fc2dac75af5",
+  "new_anchor": "summa/FS_Q107_A2/p11",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "e4adf140-04ed-52b2-b2dc-6616049e76c3",
+  "old_anchor": "summa/FS_Q20_A6/p6",
+  "new_passage_id": "863923bd-26df-53c3-b001-f2d25045bd8c",
+  "new_anchor": "summa/FS_Q20_A6/p5",
+  "kind": "merged",
+  "reason": "a second copy of the same sed contra (C-14)",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "ac954554-5021-591d-9d37-ab09885391f2",
+  "old_anchor": "summa/FS_Q33_A4/p7-2",
+  "new_passage_id": "359030ea-6a1c-5a52-876d-0d9862af5fb0",
+  "new_anchor": "summa/FS_Q33_A4/p7",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "5803fcc8-6918-5a60-8178-140784a8b557",
+  "old_anchor": "summa/FS_Q87_A7/p5-2",
+  "new_passage_id": "cefb5591-ba87-5991-9c2e-79eb694e51cf",
+  "new_anchor": "summa/FS_Q87_A7/p5",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "dbe57e77-bbc8-5b07-a325-81df5f3d64b2",
+  "old_anchor": "summa/FS_Q89_A1/p9-2",
+  "new_passage_id": "99ada9f1-f22c-5f2a-8554-23fee8d1a4df",
+  "new_anchor": "summa/FS_Q89_A1/p9",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "544f4127-aae8-547f-bb8a-d155d11df897",
+  "old_anchor": "summa/SS_Q22_A2/p9",
+  "new_passage_id": "1a739ef7-f48f-5d7c-a252-f2085bbca2ad",
+  "new_anchor": "summa/SS_Q22_A2/p6",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "f6cc2bc6-ea9f-5135-918c-a8602218f5ea",
+  "old_anchor": "summa/SS_Q40_A1/p6-2",
+  "new_passage_id": "04c8ff12-354a-58af-aa66-7c592cdeda89",
+  "new_anchor": "summa/SS_Q40_A1/p6",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "20f28b5e-c1b1-5996-9da9-a04520a1a0fa",
+  "old_anchor": "summa/SS_Q95_A8/p6/from-p11",
+  "new_passage_id": "f48b905c-d38c-5f7e-9541-6e61d1c1565f",
+  "new_anchor": "summa/SS_Q95_A8/p6/from-p10",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "2aced23f-f2a7-5450-ba0a-b2d95ce44dc9",
+  "old_anchor": "summa/TP_Q34_A2/p4-2",
+  "new_passage_id": "74e51c45-2a67-51ae-b6a4-9e1c61a39d85",
+  "new_anchor": "summa/TP_Q34_A2/p4",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "d3dd26e2-0db2-55aa-981c-f7c1f0aef472",
+  "old_anchor": "summa/TP_Q35_A5/p6-2",
+  "new_passage_id": "4a98788f-5b00-5ab2-afdc-70e85d462eeb",
+  "new_anchor": "summa/TP_Q35_A5/p6",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "c7dfbacf-233c-5984-9f35-7c6af7fe5ecb",
+  "old_anchor": "summa/TP_Q35_A5/p6-2/from-p8",
+  "new_passage_id": "78bb71f6-8127-5326-8e74-c9fcc99f90a2",
+  "new_anchor": "summa/TP_Q35_A5/p6/from-p8",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "6452c655-28aa-5459-9cfa-b9d288bcf4fd",
+  "old_anchor": "summa/TP_Q45_A2/p7",
+  "new_passage_id": "4c038ac2-f3da-591c-9561-35f8f621be93",
+  "new_anchor": "summa/TP_Q45_A2/p6",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "08370ce1-e11f-5e0a-84a7-c247f801e3fb",
+  "old_anchor": "summa/XP_Q70_A1/p12/from-p12-2",
+  "new_passage_id": "729bd8cb-66eb-513b-9f02-bc81c1f60e7c",
+  "new_anchor": "summa/XP_Q70_A1/p12",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "793b10ce-cb90-542f-853c-7dd9dd9eb47f",
+  "old_anchor": "summa/XP_Q70_A3/p6-2",
+  "new_passage_id": "e189d730-62dd-5fe7-a6b3-d3e5d62ae538",
+  "new_anchor": "summa/XP_Q70_A3/p6",
+  "kind": "merged",
+  "reason": "its text now lies inside this passage",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "607c7058-2a6f-5b0b-9b55-5330a4bd77bf",
+  "old_anchor": "summa/XP_Q82_A3/p8/from-p9-2",
+  "new_passage_id": "e8df154a-65da-5e77-a961-d0604f8c88c4",
+  "new_anchor": "summa/XP_Q82_A3/p8/from-p9",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "old_passage_id": "6aa05964-fe8a-5fd6-91c9-feda5df63ee6",
+  "old_anchor": "summa/XP_Q96_A1/p10/from-p11-2",
+  "new_passage_id": "891785ac-75eb-50fd-bc9a-2af8ea892979",
+  "new_anchor": "summa/XP_Q96_A1/p10/from-p11",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "1.7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
   "old_passage_id": "ae3150ed-058f-509f-8225-af30de2f7eb8",
   "old_anchor": "summa/first-part-of-the-second-part-first-part-of-the-second-part-qq-1-114/question-102-of-the-causes-of-the-ceremonial-precepts-six-articles/article-4-whether-sufficient-reason-can-be-assigned-for-the-ceremonies-pertaining-to-holy-things/20",
   "new_passage_id": "70967a2d-8f58-5f64-a01e-ecb8fa207c2f",
@@ -4637,8 +4877,8 @@
   "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
   "old_passage_id": "e194c097-78db-5454-bc99-d2bfa9f56237",
   "old_anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-70-of-the-quality-of-the-soul-after-leaving-the-body-and-of-the-punishment-inflicted-on-it-by-material-fire-three-articles/article-1-whether-the-sensitive-powers-remain-in-the-separated-soul/9",
-  "new_passage_id": "08370ce1-e11f-5e0a-84a7-c247f801e3fb",
-  "new_anchor": "summa/XP_Q70_A1/p12/from-p12-2",
+  "new_passage_id": "729bd8cb-66eb-513b-9f02-bc81c1f60e7c",
+  "new_anchor": "summa/XP_Q70_A1/p12",
   "kind": "merged",
   "reason": "its text now lies inside this passage",
   "added_by": "2.1"

@@ -704,11 +704,17 @@ def test_summa_adapter_builds_no_anchor_from_a_label():
 
 
 def test_second_summa_part_in_one_paragraph_takes_2(tmp_path):
+    """A part opens inside a paragraph only where R7's corrections file says so
+    (`parts`, as in I q.108 a.8); it takes the paragraph's anchor plus `-2`."""
     text = _ARTICLE.format(second="Objection 2").replace(
         '</p>\n<p id="FP_Q1_A1-p3"><b>On the contrary,</b>', " On the contrary,")
     path = tmp_path / "summa-merged.xml"
     path.write_text(text, encoding="utf-8")
-    anchors = [p.anchor for p in summa.build_document(str(path)).passages]
+    assert len(summa.build_document(str(path)).passages) == 4   # a phrase opens nothing
+    parts = [{"opens_with": "Objection 2:", "role": "objection"},
+             {"opens_with": "On the contrary,", "role": "sed-contra", "anchor_suffix": "-2"}]
+    corrections = {"paragraphs": {"FP_Q1_A1-p2": {"parts": parts}}, "articles": {}}
+    anchors = [p.anchor for p in summa.build_document(str(path), corrections).passages]
     assert anchors[1:3] == ["summa/FP_Q1_A1/p2", "summa/FP_Q1_A1/p2-2"]
 
 
@@ -760,3 +766,30 @@ def test_work_registry_is_independent_copy():
     registry.reconcile(reg, [document([passage("ii.i"), passage("ii.ix", position=1)])],
                        item="test", today=TODAY)
     assert reg.passages == snapshot
+
+
+def test_a_held_documents_removal_outranks_its_redirects_at_stage():
+    """A held document keeps its open redirects for its return (1.3d, ADR 0001); while it
+    is held, the stage tombstones every passage it had, a redirected one included."""
+    from datetime import datetime, timezone
+
+    import retirements
+
+    w = work()
+    old = row(w["document_id"], "ii.x", passage_id="a", status="redirected")
+    target = row(w["document_id"], "ii.i")
+    redirect = {"document_id": w["document_id"], "old_passage_id": "a", "old_anchor": "ii.x",
+                "new_passage_id": target["passage_id"], "new_anchor": "ii.i",
+                "kind": "merged", "reason": "test", "added_by": "test"}
+    held = removal(scope="document", anchor=None, passage_id=None,
+                   reason="awaiting-permission", tombstone="Held.")
+    reg = valid_registry(passages=[target, old], redirects=[redirect], removals=[held])
+    live = [retirements.LivePassage(pid, w["document_id"], COLLECTION, anchor, "ii", "II",
+                                    "ref", n, "A Work", "An Author")
+            for n, (pid, anchor) in enumerate((("a", "ii.x"), (target["passage_id"], "ii.i")))]
+    out = retirements.compute(live, [retirements.LiveDocument(w["document_id"], COLLECTION,
+                                                              "A Work", "An Author")],
+                              [], reg, release="r", at=datetime.now(timezone.utc))
+    assert out.problems == [] and out.redirects == []
+    assert sorted(t["id"] for t in out.tombstones) == sorted(
+        ["a", target["passage_id"], w["document_id"]])

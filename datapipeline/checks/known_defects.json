@@ -28,15 +28,6 @@
   "fixed_by": "5.6b",
   "description": "88.36% covered: Anselm's own prefaces (1.9) and Gaunilo's reply with Anselm's answer (5.6b) dropped"
  },
- "health.H2_debris:summa/31b2bc0a-0b16-5002-822a-26d3215dd256#summa/TP_Q16_A3/p3": {
-  "fixed_by": "1.7",
-  "description": "III q.16 a.3 piece 0 is a lone \".\"; 1.7 retires it with a removal-registry entry (reason debris)"
- },
- "health.summa_bracket_numbers:summa/31b2bc0a-0b16-5002-822a-26d3215dd256": {
-  "fixed_by": "1.7",
-  "description": "39 Summa passages hold a bracketed cross-reference number (C-22)",
-  "units": ["summa/FP_Q111_A3/p6", "summa/FP_Q17_A3/p4", "summa/FS_Q100_A9/p6", "summa/FS_Q1_A6/p3", "summa/FS_Q25_A4/p2", "summa/FS_Q27_A2/p2", "summa/FS_Q34_A1/p6", "summa/FS_Q35_A1/p6", "summa/FS_Q4_A3/p3", "summa/FS_Q84_A4/p8", "summa/SS_Q114_A1/p7", "summa/SS_Q117_A5/p4", "summa/SS_Q118_A5/p3", "summa/SS_Q122_A5/p2", "summa/SS_Q122_A6/p3", "summa/SS_Q123_A10/p16", "summa/SS_Q124_A3/p6", "summa/SS_Q141_A1/p4", "summa/SS_Q141_A3/p3", "summa/SS_Q143_A1/p6", "summa/SS_Q145_A2/p6", "summa/SS_Q147_A2/p4", "summa/SS_Q14_A1/p6/from-p8", "summa/SS_Q24_A11/p7", "summa/SS_Q28_A4/p5", "summa/SS_Q53_A2/p4", "summa/SS_Q72_A1/p8", "summa/SS_Q81_A5/p4", "summa/SS_Q82_A1/p4", "summa/SS_Q89_A1/p4", "summa/SS_Q95_A2/p6", "summa/TP_Q18_A1/p11", "summa/TP_Q18_A1/p7", "summa/TP_Q37_A4/p2", "summa/TP_Q7_A5/p6", "summa/TP_Q80_A1/p6", "summa/TP_Q86_A4/p4", "summa/XP_Q47_A1/p6", "summa/XP_Q98_A2/p12"]
- },
  "labels.roman_case:church-fathers/0066869a-28fb-5274-a847-c4d3e88a948e": {
   "fixed_by": "1.9",
   "description": "Fragments from the Lost Writings of Irenæus: 54 labels title-case a Roman numeral (C-22)",
@@ -62,40 +53,10 @@
   "description": "Anselm's Cur Deus Homo: chapter labels lack their book (\"Chapter I\" in each book); 1.9 labels them \"Book First · Chapter I\" (Carter, 2 Nov 2026)",
   "units": ["Anselm's Cur Deus Homo, Chapter I", "Anselm's Cur Deus Homo, Chapter III", "Anselm's Cur Deus Homo, Chapter IV", "Anselm's Cur Deus Homo, Chapter V", "Anselm's Cur Deus Homo, Chapter VI", "Anselm's Cur Deus Homo, Chapter VIII (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter VIII (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XIII", "Anselm's Cur Deus Homo, Chapter XIV", "Anselm's Cur Deus Homo, Chapter XIX (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter XIX (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XV", "Anselm's Cur Deus Homo, Chapter XXI", "Anselm's Cur Deus Homo, Chapter XXII"]
  },
- "roles.summa.objection-after-replies:summa": {
-  "fixed_by": "1.7",
-  "description": "2 replies labelled as objections after the determination (C-04)",
-  "units": ["summa/SS_Q172_A1/p11", "summa/XP_Q77_A4/p11"]
- },
- "roles.summa.variant-sed-contra-boundaries:summa": {
-  "fixed_by": "1.7",
-  "description": "4 sed contras R7 attests are folded into an objection (C-04)",
-  "units": ["FS_Q46_A7-p5", "SS_Q140_A2-p5", "SS_Q56_A1-p5", "SS_Q56_A2-p5"]
- },
- "sentinel.summa_i_q71": {
-  "fixed_by": "1.7",
-  "description": "Part I q.71 holds its article directly in the div3"
- },
- "sentinel.summa_i_q72": {
-  "fixed_by": "1.7",
-  "description": "Part I q.72 holds its article directly in the div3"
- },
  "sequence.bible_verses.duplicated:ESG/8": {
   "fixed_by": "1.4a",
   "description": "Esther 8:13 holds Greek addition E (4,183 characters, R3), longer than one card, so it is cut across two pieces (\"Esther 8:12–13\", \"Esther 8:13\"). 1.4a cannot shorten it: the Decision log (Esther additions numbering, R3) keeps WEB-C's verse numbers, so there are no lettered verses to cut at. Left for Carter to reassign or accept.",
   "units": ["ESG/8/13"]
- },
- "sequence.summa_articles.missing:FP_Q71": {
-  "fixed_by": "1.7",
-  "description": "FP_Q71 is a one-article question with no div4 and is dropped"
- },
- "sequence.summa_articles.missing:FP_Q72": {
-  "fixed_by": "1.7",
-  "description": "FP_Q72 is a one-article question with no div4 and is dropped"
- },
- "sequence.summa_articles.missing:FS.i.i": {
-  "fixed_by": "1.7",
-  "description": "Prologue of the First Part of the Second Part (no div4) is dropped"
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#iii.iii": {
   "fixed_by": "1.8e",
@@ -272,15 +233,5 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#vi.i": {
   "fixed_by": "1.9",
   "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
- },
- "structure.summa.one-disputation-per-article:summa": {
-  "fixed_by": "1.7",
-  "description": "5 article keys hold two disputations or no determination (C-07; R7: I q.117 a.2 is not reply-only)",
-  "units": ["FP_Q117_A2", "FP_Q68_A2", "SS_Q123_A10", "SS_Q64_A7", "SS_Q66_A5"]
- },
- "text.summa.adjacent-duplicate-parts:summa": {
-  "fixed_by": "1.7",
-  "description": "a sed contra printed twice (C-14)",
-  "units": ["summa/FS_Q20_A6/p6"]
  }
 }

@@ -329,50 +329,37 @@ def test_bible_verses_from_references():
     assert result.duplicated == ["DAG/12/2"]
 
 
-def test_summa_articles_match_on_question_number_and_article_title():
-    articles = [("FP_Q1_A1", "FIRST PART", "Question. 1 - THE NATURE [*Or, Kind] (ONE)",
-                 "Article. 1 - Whether it is?"),
-                ("FP_Q71", "FIRST PART", "Question. 71 - ON THE FIFTH DAY (ONE ARTICLE)", "")]
-    doc = _doc([_passage("x", "Summa Theologiae, First Part, Question 1 - The Nature (ONE), "
-                              "Article 1 - Whether it is?")], collection="summa")
-    assert Q.summa_articles([doc], [], articles).missing == ["FP_Q71"]
+def _article_passage(article, chapter_key, anchor="a", label=None):
+    p = _passage("x", "Summa Theologiae I, q. 1, a. 1: Whether?", anchor, label,
+                 chapter_key=chapter_key)
+    p.metadata = {"article": article} if article else {}
+    return p
 
 
 SUMMA_ARTICLES = [
     ("FP_Q2_A3", "FIRST PART", "Question. 2 - THE EXISTENCE OF GOD", "Article. 3 - Whether God exists?"),
-    ("FP_Q8_A1", "FIRST PART", "Question. 8 - THE EXISTENCE OF GOD IN THINGS",
-     "Article. 1 - Whether God exists in all things?"),
+    ("FP_Q71", "FIRST PART", "Question. 71 - ON THE FIFTH DAY (ONE ARTICLE)", ""),
 ]
 
 
-def _summa_ref(q, article):
-    return f"Summa Theologiae, First Part, Question {q} - Topic, {article}"
-
-
-def test_summa_article_pieces_count_once_and_longest_title_wins():
-    # Objection, answer and a split piece share the article's chapter_key; the Q8 article's
-    # title contains the Q2 title, but the question number keeps them apart.
-    a3, a1 = _summa_ref(2, "Article 3 - Whether God exists?"), \
-        _summa_ref(8, "Article 1 - Whether God exists in all things?")
-    doc = _doc([_passage("x", a3, "q2/a3/0", "Objection 1", chapter_key="q2/a3"),
-                _passage("x", a3, "q2/a3/1", "I answer that", chapter_key="q2/a3"),
-                _passage("x", a3, "q2/a3/2", "I answer that", chapter_key="q2/a3"),
-                _passage("x", a1, "q8/a1/0", "Objection 1", chapter_key="q8/a1")],
+def test_summa_article_matches_on_the_recorded_article():
+    """1.7: an article is the passages whose metadata names it; a question's prologue
+    names none and is not an article."""
+    doc = _doc([_article_passage(None, "q2/prologue"),
+                _article_passage("FP_Q2_A3", "q2/a3", "a1", "Objection 1"),
+                _article_passage("FP_Q2_A3", "q2/a3", "a2", "I answer that")],
                collection="summa")
-    assert Q.summa_articles([doc], [], SUMMA_ARTICLES).ok
+    assert Q.summa_articles([doc], [], SUMMA_ARTICLES).missing == ["FP_Q71"]
 
 
 def test_summa_article_built_twice_and_invented_article():
-    a3 = _summa_ref(2, "Article 3 - Whether God exists?")
-    doc = _doc([_passage("x", a3, "q2/a3/0", chapter_key="q2/a3"),
-                _passage("x", a3, "q2/a3--2/0", chapter_key="q2/a3--2"),
-                _passage("x", _summa_ref(8, "Article 1 - Whether God exists in all things?"),
-                         "q8/a1/0", chapter_key="q8/a1"),
-                _passage("x", _summa_ref(9999, "Article 1 - Whether this was invented?"),
-                         "q9999/a1/0", chapter_key="q9999/a1")], collection="summa")
+    doc = _doc([_article_passage("FP_Q2_A3", "q2/a3"),
+                _article_passage("FP_Q2_A3", "q2/a3-again"),
+                _article_passage("FP_Q71", "q71/article-1"),
+                _article_passage("FP_Q9999_A1", "q9999/a1")], collection="summa")
     result = Q.summa_articles([doc], [], SUMMA_ARTICLES)
     assert (result.missing, result.duplicated, result.out_of_range) == (
-        [], ["FP_Q2_A3"], ["q9999/a1"])
+        [], ["FP_Q2_A3"], ["FP_Q9999_A1"])
 
 
 def test_thml_chapter_needs_half_its_characters():

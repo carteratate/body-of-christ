@@ -1,5 +1,6 @@
 """The shared papal parser (corpus-cleanup 1.3a), on synthetic pages so CI runs it; the
 vendored checks at the end need the sources."""
+import json
 import os
 import re
 import sys
@@ -247,8 +248,13 @@ def test_taken_anchors_name_a_never_live_unit(monkeypatch, tmp_path):
 
 @pytest.fixture(scope="module")
 def built():
-    docs = encyclicals.build_documents() + apostolic_exhortations.build_documents() \
-        + papal_documents.build_documents()
+    # Every manifest entry, the documents 1.3d holds for permission included: the parser
+    # still has to read them for their return.
+    docs = []
+    for module in (encyclicals, apostolic_exhortations, papal_documents):
+        with open(os.path.join(module._SRC, "manifest.json"), encoding="utf-8") as f:
+            docs += [papal_common.build_document(e, module.COLLECTION, module._SRC)
+                     for e in json.load(f)]
     return {d.metadata["source_key"].split("/", 1)[1]: d for d in docs}
 
 
