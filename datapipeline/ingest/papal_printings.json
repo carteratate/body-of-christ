@@ -3309,5 +3309,81 @@
    9
   ],
   "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraph 9; it is not available on TheoCorpus at present."
+ },
+ "encyclicals/salutis-nostrae": {
+  "source": "ocr",
+  "work": "interesting-letters-1777-salutis-nostrae",
+  "file": "interestinglett00xivgoog/",
+  "url": "https://archive.org/details/interestinglett00xivgoog",
+  "translation": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.), translated from the French (Newcastle, 1777)",
+  "units": [
+   {
+    "opens": "Clement, Bishop, servant",
+    "unit": "preamble"
+   },
+   {
+    "opens": "THE Author of our salvation",
+    "unit": 1,
+    "until": "As this is the only thing"
+   },
+   {
+    "opens": "As this is the only thing",
+    "unit": 2
+   },
+   {
+    "opens": "Although in the exercise",
+    "unit": "+"
+   },
+   {
+    "opens": "In conformity, therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "Now nothing can contribute",
+    "unit": "+"
+   },
+   {
+    "opens": "We invite you, therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "O all ye, who are children",
+    "unit": 5
+   },
+   {
+    "opens": "Come, run therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "But the most affecting",
+    "unit": "+"
+   },
+   {
+    "opens": "As to you, our Venerable",
+    "unit": 6
+   },
+   {
+    "opens": "If there be any among you",
+    "unit": "+"
+   },
+   {
+    "opens": "Neither can we doubt",
+    "unit": 7
+   },
+   {
+    "opens": "But to the end that these presents",
+    "unit": 8
+   },
+   {
+    "opens": "Given at Rome, at St. Mary-Major",
+    "unit": "+"
+   }
+  ],
+  "omits": [
+   3,
+   4,
+   9
+  ],
+  "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraphs 3, 4 and 9 and shortens paragraphs 2 and 8 to \"&c.\"; what it leaves out is not available on TheoCorpus at present."
  }
 }
