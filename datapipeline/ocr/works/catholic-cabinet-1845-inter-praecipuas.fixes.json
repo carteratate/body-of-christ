@@ -1,0 +1,485 @@
+[
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "ye dso, being",
+  "replace": "ye also, being",
+  "why": "pp. 230–231: misread on the page; the print reads \"also,\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "adds: — Ye,",
+  "replace": "adds:—Ye,",
+  "why": "pp. 230–231: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "as fJut/ do",
+  "replace": "as they do",
+  "why": "pp. 230–231: misread on the page; the print reads \"they\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "many Oikgs hard",
+  "replace": "many things hard",
+  "why": "pp. 230–231: misread on the page; the print reads \"things\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "Paul — they",
+  "replace": "Paul—they",
+  "why": "pp. 230–231: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "Apostles —",
+  "replace": "Apostles—",
+  "why": "pp. 230–231: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "infidels.\n\nYoa arc but",
+  "replace": "infidels.\n\nYou are but",
+  "why": "pp. 230–231: misread on the page; the print reads \"You are\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "( verbeux fophistcj)",
+  "replace": "(verbeux sophiste,)",
+  "why": "pp. 230–231: misread on the page; the print reads \"(verbeux sophiste,)\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "ddirant, )",
+  "replace": "delirant,)",
+  "why": "pp. 230–231: misread on the page; the print reads \"delirant,)\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "wo* man, to the lighiheaded",
+  "replace": "woman, to the lightheaded",
+  "why": "pp. 230–231: misread on the page; the print reads \"woman, to the lightheaded\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "inlerpreter,",
+  "replace": "interpreter,",
+  "why": "pp. 230–231: misread on the page; the print reads \"interpreter,\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "of— pretending",
+  "replace": "of—pretending",
+  "why": "pp. 230–231: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "tongue ]",
+  "replace": "tongue;",
+  "why": "pp. 230–231: misread on the page; the print reads \"tongue;\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "tnseigmmens de Idfoiy)",
+  "replace": "enseignemens de la foi,)",
+  "why": "pp. 230–231: misread on the page; the print reads \"enseignemens de la foi,)\""
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "Apostolical — Amongst",
+  "replace": "Apostolical—Amongst",
+  "why": "pp. 230–231: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-01",
+  "find": "JLLL PATRIABCHS, FHIMATES,",
+  "replace": "ALL PATRIARCHS, PRIMATES,",
+  "why": "pp. 230–231: misread on the page; the print reads \"ALL PATRIARCHS, PRIMATES,\""
+ },
+ {
+  "passage": "inter-praecipuas-02",
+  "find": "fathers — in",
+  "replace": "fathers—in",
+  "why": "p. 231: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-02",
+  "find": "interpreters --errors",
+  "replace": "interpreters—errors",
+  "why": "p. 231: misread on the page; the print reads \"interpreters—errors\""
+ },
+ {
+  "passage": "inter-praecipuas-03",
+  "find": "religion — you",
+  "replace": "religion—you",
+  "why": "pp. 231–232: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-03",
+  "find": "Pontifif",
+  "replace": "Pontiff",
+  "why": "pp. 231–232: misread on the page; the print reads \"Pontiff\""
+ },
+ {
+  "passage": "inter-praecipuas-03",
+  "find": "Benedict XIIL, of",
+  "replace": "Benedict XIII., of",
+  "why": "pp. 231–232: misread on the page; the print reads \"XIII.,\""
+ },
+ {
+  "passage": "inter-praecipuas-03",
+  "find": "frequentlyj in the provincial\n\nTox.- 2. 31",
+  "replace": "frequently, in the provincial",
+  "why": "pp. 231–232: misread on the page, and the printer's signature line (\"VOL. 2. 31\") read into the text, removed; the print reads \"frequently, in the provincial\""
+ },
+ {
+  "passage": "inter-praecipuas-03",
+  "find": "and eipoond the",
+  "replace": "and expound the",
+  "why": "pp. 231–232: misread on the page; the print reads \"expound\""
+ },
+ {
+  "passage": "inter-praecipuas-03",
+  "find": "recommends Uiat there",
+  "replace": "recommends that there",
+  "why": "pp. 231–232: misread on the page; the print reads \"that\""
+ },
+ {
+  "passage": "inter-praecipuas-04",
+  "find": "Fathers^",
+  "replace": "Fathers,",
+  "why": "pp. 232–233: misread on the page; the print reads \"Fathers,\""
+ },
+ {
+  "passage": "inter-praecipuas-04",
+  "find": "accompafded by noia",
+  "replace": "accompanied by notes",
+  "why": "pp. 232–233: misread on the page; the print reads \"accompanied by notes\""
+ },
+ {
+  "passage": "inter-praecipuas-04",
+  "find": "should he approved",
+  "replace": "should be approved",
+  "why": "pp. 232–233: misread on the page; the print reads \"be\""
+ },
+ {
+  "passage": "inter-praecipuas-04",
+  "find": "(rdaiivement aux Bibles vulgaircs,)",
+  "replace": "(relativement aux Bibles vulgaires.)",
+  "why": "pp. 232–233: misread on the page; the print reads \"(relativement aux Bibles vulgaires.)\""
+ },
+ {
+  "passage": "inter-praecipuas-04",
+  "find": "Innocent HI., of",
+  "replace": "Innocent III., of",
+  "why": "pp. 232–233: misread on the page; the print reads \"III.,\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "with r^rd to",
+  "replace": "with regard to",
+  "why": "p. 233: misread on the page; the print reads \"regard\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "Pius VIIL, of",
+  "replace": "Pius VIII., of",
+  "why": "p. 233: misread on the page; the print reads \"VIII.,\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "Mohilif. Af\\er him",
+  "replace": "Mohilif. After him",
+  "why": "p. 233: misread on the page; the print reads \"After\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "efibrts,",
+  "replace": "efforts,",
+  "why": "p. 233: misread on the page; the print reads \"efforts,\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "auctoremjideiy",
+  "replace": "auctorem fidei,",
+  "why": "p. 233: misread on the page; the print reads \"auctorem fidei,\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "Pius VL in",
+  "replace": "Pius VI. in",
+  "why": "p. 233: misread on the page; the print reads \"VI.\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "Jahsenius",
+  "replace": "Jansenius",
+  "why": "p. 233: misread on the page; the print reads \"Jansenius\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "indispensi-ble that no autliority",
+  "replace": "indispensible that no authority",
+  "why": "p. 233: misread on the page; the print reads \"indispensible that no authority\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "find": "Apostolical Sec, as",
+  "replace": "Apostolical See, as",
+  "why": "p. 233: misread on the page; the print reads \"See,\""
+ },
+ {
+  "passage": "inter-praecipuas-06",
+  "find": "manoeuvres",
+  "replace": "manœuvres",
+  "why": "p. 233: the print sets the ligature (œ), which the correction spelled out"
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "find": "liberty,\"",
+  "replace": "liberty,”",
+  "why": "pp. 233–234: misread on the page; the print reads \"liberty,”\""
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "find": "Romans, \" the principles",
+  "replace": "Romans, “the principles",
+  "why": "pp. 233–234: misread on the page; the print reads \"“the\""
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "find": "object — viz.,",
+  "replace": "object—viz.,",
+  "why": "pp. 233–234: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "find": "(Foederis",
+  "replace": "(Fœderis",
+  "why": "pp. 233–234: the print sets the ligature (œ), which the correction spelled out"
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "find": "manoeuvres,",
+  "replace": "manœuvres,",
+  "why": "pp. 233–234: the print sets the ligature (œ), which the correction spelled out"
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "find": "sacraments — always",
+  "replace": "sacraments—always",
+  "why": "pp. 233–234: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "find": "tongue ;",
+  "replace": "tongue;",
+  "why": "pp. 233–234: spacing"
+ },
+ {
+  "passage": "inter-praecipuas-08",
+  "find": "\" liberty of conscience\"",
+  "replace": "“liberty of conscience”",
+  "why": "p. 234: misread on the page; the print reads \"“liberty of conscience”\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "Italic,\")",
+  "replace": "Italie,”)",
+  "why": "pp. 234–235: misread on the page; the print reads \"Italie,”)\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "Italy\" ( ^< Pastes",
+  "replace": "Italy” (“Fastes",
+  "why": "pp. 234–235: misread on the page; the print reads \"Italy” (“Fastes\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "'' Calendar",
+  "replace": "“Calendar",
+  "why": "pp. 234–235: misread on the page; the print reads \"“Calendar\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "Reformation,\"",
+  "replace": "Reformation,”",
+  "why": "pp. 234–235: misread on the page; the print reads \"Reformation,”\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "eited '< The",
+  "replace": "cited “The",
+  "why": "pp. 234–235: misread on the page; the print reads \"cited “The\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "with (be aid",
+  "replace": "with the aid",
+  "why": "pp. 234–235: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "reader ill respect hr the Churoh",
+  "replace": "readers all respect for the Church",
+  "why": "pp. 234–235: misread on the page; the print reads \"readers all respect for the Church\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "disseminate w6r8C books",
+  "replace": "disseminate worse books",
+  "why": "pp. 234–235: misread on the page; the print reads \"worse\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "secretlj",
+  "replace": "secretly",
+  "why": "pp. 234–235: misread on the page; the print reads \"secretly\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "individuali",
+  "replace": "individuals",
+  "why": "pp. 234–235: misread on the page; the print reads \"individuals\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "afliliatc",
+  "replace": "affiliate",
+  "why": "pp. 234–235: misread on the page; the print reads \"affiliate\""
+ },
+ {
+  "passage": "inter-praecipuas-09",
+  "find": "to theix country,",
+  "replace": "to their country,",
+  "why": "pp. 234–235: misread on the page; the print reads \"their\""
+ },
+ {
+  "passage": "inter-praecipuas-10",
+  "find": "manoeuvres.",
+  "replace": "manœuvres.",
+  "why": "p. 235: the print sets the ligature (œ), which the correction spelled out"
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "of tlie Sovereign",
+  "replace": "of the Sovereign",
+  "why": "pp. 235–236: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "auxilit-ries,",
+  "replace": "auxiliaries,",
+  "why": "pp. 235–236: misread on the page; the print reads \"auxiliaries,\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "oonUf^ion of the Chriitum League; horn",
+  "replace": "contagion of the Christian League; from",
+  "why": "pp. 235–236: misread on the page; the print reads \"contagion of the Christian League; from\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "to )abour carefully",
+  "replace": "to labour carefully",
+  "why": "pp. 235–236: misread on the page; the print reads \"labour\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "IB oonvenient",
+  "replace": "in convenient",
+  "why": "pp. 235–236: misread on the page; the print reads \"in convenient\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "solioitiide,",
+  "replace": "solicitude,",
+  "why": "pp. 235–236: misread on the page; the print reads \"solicitude,\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "prescriptions.\n\nAe for",
+  "replace": "prescriptions.\n\nAs for",
+  "why": "pp. 235–236: misread on the page; the print reads \"As\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "whatsoever writer) we",
+  "replace": "whatsoever writer, we",
+  "why": "pp. 235–236: misread on the page; the print reads \"writer,\""
+ },
+ {
+  "passage": "inter-praecipuas-11",
+  "find": "societies*",
+  "replace": "societies,",
+  "why": "pp. 235–236: misread on the page; the print reads \"societies,\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "(Signed) Gkegoky XVI.,",
+  "replace": "(Signed) Gregory XVI.,",
+  "why": "pp. 236–237: misread on the page; the print reads \"Gregory\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "flock o( Jesus",
+  "replace": "flock of Jesus",
+  "why": "pp. 236–237: misread on the page; the print reads \"of\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "our caase, the",
+  "replace": "our cause, the",
+  "why": "pp. 236–237: misread on the page; the print reads \"cause,\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "and oonunit to",
+  "replace": "and commit to",
+  "why": "pp. 236–237: misread on the page; the print reads \"commit\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "liberty.\n\nfiut, above",
+  "replace": "liberty.\n\nBut, above",
+  "why": "pp. 236–237: misread on the page; the print reads \"But,\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "that, onoe liberty",
+  "replace": "that, once liberty",
+  "why": "pp. 236–237: misread on the page; the print reads \"once\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "but they^ notwithstanding,",
+  "replace": "but they, notwithstanding,",
+  "why": "pp. 236–237: misread on the page; the print reads \"they,\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "indiflerent",
+  "replace": "indifferent",
+  "why": "pp. 236–237: misread on the page; the print reads \"indifferent\""
+ },
+ {
+  "passage": "inter-praecipuas-13",
+  "find": "tlie Catholio",
+  "replace": "the Catholic",
+  "why": "pp. 236–237: misread on the page; the print reads \"the Catholic\""
+ },
+ {
+  "passage": "inter-praecipuas-05",
+  "continues": true,
+  "why": "pp. 232–233: the sentence runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "inter-praecipuas-07",
+  "continues": true,
+  "why": "pp. 233–234: the sentence runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "inter-praecipuas-08",
+  "continues": true,
+  "why": "p. 234: the sentence runs on from the passage before; the passage was cut at a page's end"
+ }
+]

@@ -1900,5 +1900,153 @@
     "unit": 37
    }
   ]
+ },
+ "encyclicals/inter-praecipuas": {
+  "source": "ocr",
+  "work": "catholic-cabinet-1845-inter-praecipuas",
+  "file": "catholiccabinet01unkngoog/",
+  "url": "https://archive.org/details/catholiccabinet01unkngoog",
+  "translation": "The Catholic Cabinet, and Chronicle of Religious Intelligence, vol. 1 (St. Louis, 1845)",
+  "editorial": [
+   {
+    "opens": "CIRCULAR LETTER FROM HIS HOLINESS",
+    "why": "The magazine's title over the letter, not the letter (rule G)."
+   },
+   {
+    "opens": "TO ALL PATRIARCHS",
+    "why": "The magazine's subtitle in capitals naming the addressees; the greeting below is the letter's own address."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brothers, health",
+    "unit": "preamble",
+    "until": "Amongst the many"
+   },
+   {
+    "opens": "Amongst the many",
+    "unit": 1
+   },
+   {
+    "opens": "You are but too well aware",
+    "unit": 2
+   },
+   {
+    "opens": "After having quoted",
+    "unit": "+"
+   },
+   {
+    "opens": "You see what was even",
+    "unit": "+",
+    "until": "This is the reason why"
+   },
+   {
+    "opens": "This is the reason why",
+    "unit": 3
+   },
+   {
+    "opens": "In the first place",
+    "unit": "+"
+   },
+   {
+    "opens": "The same disposition",
+    "unit": "+"
+   },
+   {
+    "opens": "But, to return to Bibles",
+    "unit": 4
+   },
+   {
+    "opens": "Hence the warning",
+    "unit": "+",
+    "until": "Notwithstanding this, some new"
+   },
+   {
+    "opens": "Notwithstanding this, some new",
+    "unit": 5
+   },
+   {
+    "opens": "But we find this audacious",
+    "unit": "+"
+   },
+   {
+    "opens": "Consequently, even before",
+    "unit": 6
+   },
+   {
+    "opens": "We have good cause",
+    "unit": 7
+   },
+   {
+    "opens": "The partisans of the Bible",
+    "unit": 8,
+    "until": "Amongst the sectarians of whom"
+   },
+   {
+    "opens": "Amongst the sectarians of whom",
+    "unit": 9
+   },
+   {
+    "opens": "This is why, determined",
+    "unit": "+"
+   },
+   {
+    "opens": "They hope to obtain",
+    "unit": "+"
+   },
+   {
+    "opens": "Scarcely were we made aware",
+    "unit": 10
+   },
+   {
+    "opens": "Wherefore, having consulted",
+    "unit": 11
+   },
+   {
+    "opens": "Let all know then",
+    "unit": "+"
+   },
+   {
+    "opens": "As for yourselves",
+    "unit": 12
+   },
+   {
+    "opens": "Be more careful",
+    "unit": "+"
+   },
+   {
+    "opens": "Finally, as it is the part",
+    "unit": "+"
+   },
+   {
+    "opens": "We are bound not to exclude",
+    "unit": "+"
+   },
+   {
+    "opens": "Moreover, venerable brothers",
+    "unit": 13
+   },
+   {
+    "opens": "Let us not doubt",
+    "unit": 14
+   },
+   {
+    "opens": "But, above all",
+    "unit": 15
+   },
+   {
+    "opens": "We conclude with giving",
+    "unit": 16
+   },
+   {
+    "opens": "Given at Rome from the basilic",
+    "unit": "+"
+   },
+   {
+    "opens": "(Signed) Gregory",
+    "unit": "+",
+    "why": "The signature, printed in small capitals after \"(Signed)\", which the closing rule does not read as one; it closes the letter as other signatures do."
+   }
+  ]
  }
 }

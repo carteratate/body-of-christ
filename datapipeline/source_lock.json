@@ -4426,6 +4426,28 @@
  },
  {
   "collection": "encyclicals",
+  "path": "encyclicals/catholiccabinet01unkngoog/catholiccabinet01unkngoog_djvu.xml",
+  "sha256": "25269b86ce1ded940ada338c9b8d2e5d267015700974f1b993793cc97f958cb3",
+  "bytes": 32034588,
+  "url": "https://archive.org/download/catholiccabinet01unkngoog/catholiccabinet01unkngoog_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/catholiccabinet01unkngoog/catholiccabinet01unkngoog_page_numbers.json",
+  "sha256": "7912f250499925f5256fbd0cc572cd537c3ee221517260aad2d4830f2f8fc328",
+  "bytes": 133203,
+  "url": "https://archive.org/download/catholiccabinet01unkngoog/catholiccabinet01unkngoog_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
   "path": "encyclicals/centesimus-annus.html",
   "sha256": "9813dee57b4c27b9eef5b24707fccd51b187b26c880c60e3ffc7aecadc5454bc",
   "bytes": 224796,

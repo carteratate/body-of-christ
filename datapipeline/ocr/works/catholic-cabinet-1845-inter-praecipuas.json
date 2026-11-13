@@ -1,0 +1,26 @@
+{
+ "work": "catholic-cabinet-1845-inter-praecipuas",
+ "title": "Inter Praecipuas, in The Catholic Cabinet, and Chronicle of Religious Intelligence, vol. 1 (St. Louis, 1845), \"Circular letter from His Holiness the Pope\", pp. 230–237 (p. 230 misprinted \"240\")",
+ "scan": "catholiccabinet01unkngoog",
+ "djvu_xml": "encyclicals/catholiccabinet01unkngoog/catholiccabinet01unkngoog_djvu.xml",
+ "page_numbers": "",
+ "pages": ["230", "237"],
+ "layout": "single-column",
+ "watermark": "Digitized by \\S+",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {"fraction": 0.25, "minimum": 5, "maximum": 20, "unit": "work"},
+ "units": "bounded",
+ "unit_bounds": [
+  {"id": "inter-praecipuas", "first": "^CIRCULAR LETTER FROM HIS HOLINESS", "last": "Signed\\)", "keep_quotes": true}
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "leaf_pages": {"249": "230", "250": "231", "251": "232", "252": "233", "253": "234", "254": "235", "255": "236", "256": "237"}
+}
