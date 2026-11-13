@@ -1,0 +1,26 @@
+[
+ {
+  "passage": "levate-01",
+  "find": "their prey: they",
+  "replace": "their prey; they",
+  "why": "p. 681: misread on the page; the print reads \"prey; they\""
+ },
+ {
+  "passage": "levate-01",
+  "find": "written Lie. Called",
+  "replace": "written “Lie.” Called",
+  "why": "p. 681: the quotation marks round \"Lie.\" dropped in the reading; the print reads “Lie.”"
+ },
+ {
+  "passage": "levate-01",
+  "find": "Hence now all",
+  "replace": "Hence flow all",
+  "why": "p. 681: misread on the page (\"iiow\", which the model correction took as \"now\"); the print reads \"Hence flow\""
+ },
+ {
+  "passage": "levate-01",
+  "find": " said: We ",
+  "replace": " said:\n\nWe ",
+  "why": "p. 681: the quotation is set as its own paragraph, below the Cyclopaedia's words that introduce it"
+ }
+]

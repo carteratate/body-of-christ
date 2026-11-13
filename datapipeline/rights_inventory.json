@@ -5607,8 +5607,8 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/americanannualcyv7dapp/",
-  "document_id": null,
-  "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1867 (New York: D. Appleton, 1868), Roman Catholic Church, about pp. 680-681: about 400 words of the encyclical, the site's preamble and the first part of paragraph 2 (from 'We adore the inscrutable judgments of God' to 'the conduct of the Subalpine Government'), printed as the Pope's words of October 1867; it lacks the rest of paragraph 2 and paragraphs 3-10. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan americanannualcyv7dapp",
+  "document_id": "13215d9a-cc71-5ef0-a2c0-cd6da3319691",
+  "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1867 (New York: D. Appleton, 1868), Roman Catholic Church, p. 681: about 400 words of the encyclical, most of paragraph 1 and the first part of paragraph 2 (from 'We adore the inscrutable judgments of God' to 'the conduct of the Subalpine Government'), printed as the Pope's words in an allocution of 19 October 1867; it lacks the address, the rest of paragraph 2 and paragraphs 3-10. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan americanannualcyv7dapp",
   "translator": null,
   "first_published": 1868,
   "source_url": "https://archive.org/details/americanannualcyv7dapp",
@@ -5618,7 +5618,7 @@
   "credit_line": "Translation from Appletons' Annual Cyclopaedia (1868), extract",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Annus Qui Hunc",
@@ -7177,24 +7177,6 @@
   "credit_line": "Translation from Letters of the Late Bishop England to the Hon. John Forsyth (Baltimore, 1844)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": null
- },
- {
-  "work": "Levate",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/levate.html",
-  "document_id": "13215d9a-cc71-5ef0-a2c0-cd6da3319691",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9levate.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
   "planned_for": null
  },
  {

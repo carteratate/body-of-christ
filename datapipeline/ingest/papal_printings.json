@@ -3159,5 +3159,40 @@
    13
   ],
   "notes": "This English printing (The Rambler, 1860) quotes paragraph 6 and parts of paragraphs 3, 5, 7 and 8; the address and paragraphs 1–2, 4 and 9–13 are not available on TheoCorpus at present."
+ },
+ "encyclicals/levate": {
+  "source": "ocr",
+  "work": "appletons-1867-levate",
+  "file": "americanannualcyv7dapp/",
+  "url": "https://archive.org/details/americanannualcyv7dapp",
+  "translation": "The American Annual Cyclopaedia and Register of Important Events of the Year 1867 (New York, 1868)",
+  "editorial": [
+   {
+    "opens": "The Garibaldian revolution",
+    "why": "The Cyclopaedia's words introducing the quotation (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "We adore the inscrutable",
+    "unit": 1
+   },
+   {
+    "opens": "By ruffians of this sort",
+    "unit": 2
+   }
+  ],
+  "omits": [
+   "preamble",
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "notes": "This English printing (The American Annual Cyclopaedia, 1868) quotes most of paragraph 1 and the first part of paragraph 2; the address, the rest of paragraph 2 and paragraphs 3–10 are not available on TheoCorpus at present."
  }
 }
