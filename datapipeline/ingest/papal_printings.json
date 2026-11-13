@@ -3385,5 +3385,74 @@
    9
   ],
   "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraphs 3, 4 and 9 and shortens paragraphs 2 and 8 to \"&c.\"; what it leaves out is not available on TheoCorpus at present."
+ },
+ "encyclicals/traditi-humilitati": {
+  "source": "ocr",
+  "work": "jesuit-1829-traditi-humilitati",
+  "file": "sim_jesuit-or-catholic-sentinel_1829-11-14_1_11/",
+  "url": "https://archive.org/details/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11",
+  "translation": "The Jesuit, or Catholic Sentinel (Boston), vol. 1 (14 November 1829)",
+  "units": [
+   {
+    "opens": "To our Brothers, the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Pius VIII. Pope",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Ready to take possession",
+    "unit": 1
+   },
+   {
+    "opens": "However, notwithstanding the consolation",
+    "unit": 3
+   },
+   {
+    "opens": "We are speaking to you of evils",
+    "unit": "+"
+   },
+   {
+    "opens": "Sacred things are unworthily",
+    "unit": "+"
+   },
+   {
+    "opens": "This is the object of the dark",
+    "unit": 4
+   },
+   {
+    "opens": "Venerable brothers, the people must",
+    "unit": "+"
+   },
+   {
+    "opens": "Another object of our vigilance",
+    "unit": 5
+   },
+   {
+    "opens": "It is, besides your duty",
+    "unit": 6
+   },
+   {
+    "opens": "Among these secret societies",
+    "unit": 7
+   },
+   {
+    "opens": "There is still, regard being had",
+    "unit": 10
+   },
+   {
+    "opens": "May the kings and princes",
+    "unit": 12
+   }
+  ],
+  "omits": [
+   2,
+   8,
+   9,
+   11,
+   13
+  ],
+  "notes": "This English printing (The Jesuit, Boston, 1829) is abridged: it shortens several paragraphs and omits paragraphs 2, 8, 9, 11 and 13; what it leaves out is not available on TheoCorpus at present."
  }
 }

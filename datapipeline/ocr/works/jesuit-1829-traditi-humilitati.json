@@ -1,0 +1,41 @@
+{
+ "work": "jesuit-1829-traditi-humilitati",
+ "title": "Traditi Humilitati, in The Jesuit, or Catholic Sentinel (Boston), vol. 1 no. 11, 14 November 1829, \"The Pope's Encyclical Letter\", p. 86, abridged",
+ "scan": "sim_jesuit-or-catholic-sentinel_1829-11-14_1_11",
+ "djvu_xml": "encyclicals/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11_djvu.xml",
+ "page_numbers": "",
+ "pages": [
+  "86",
+  "86"
+ ],
+ "layout": "three-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "traditi-humilitati",
+   "first": "^To our Brothers",
+   "last": "afflicted by such",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "names": [],
+ "leaf_pages": {
+  "5": "86"
+ }
+}
