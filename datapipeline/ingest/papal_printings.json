@@ -1670,5 +1670,235 @@
     "unit": 6
    }
   ]
+ },
+ "encyclicals/qui-pluribus": {
+  "source": "ocr",
+  "work": "uscm-1847-qui-pluribus",
+  "file": "USCatholicMagazineMonthlyReviewV6/",
+  "url": "https://archive.org/details/USCatholicMagazineMonthlyReviewV6",
+  "translation": "The United States Catholic Magazine and Monthly Review, vol. 6 (Baltimore, 1847)",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER OF POPE PIUS IX,",
+    "why": "The magazine's title over the letter, not the letter (rule G)."
+   },
+   {
+    "opens": "TO THE CATHOLIC HIERARCHY THROUGHOUT",
+    "why": "The rest of the magazine's title (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren,",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Health and Apostolic Benediction.",
+    "unit": "preamble"
+   },
+   {
+    "opens": "We who, during many years",
+    "unit": 1
+   },
+   {
+    "opens": "Hence, fully conscious",
+    "unit": 2
+   },
+   {
+    "opens": "Our consolation is that",
+    "unit": "+"
+   },
+   {
+    "opens": "Hence, when first",
+    "unit": 3
+   },
+   {
+    "opens": "Wherefore, scarcely have we",
+    "unit": "+"
+   },
+   {
+    "opens": "None of you, venerable brethren",
+    "unit": 4
+   },
+   {
+    "opens": "We shudder indeed",
+    "unit": "+"
+   },
+   {
+    "opens": "For you know, venerable brethren",
+    "unit": "+",
+    "until": "And the more easily to delude"
+   },
+   {
+    "opens": "And the more easily to delude",
+    "unit": 5
+   },
+   {
+    "opens": "Hence, with a preposterous",
+    "unit": 6
+   },
+   {
+    "opens": "Nor is the fallacy",
+    "unit": 7
+   },
+   {
+    "opens": "For who is ignorant",
+    "unit": "+"
+   },
+   {
+    "opens": "But how numerous",
+    "unit": 8,
+    "until": "all which shine forth"
+   },
+   {
+    "opens": "all which shine forth",
+    "unit": 9
+   },
+   {
+    "opens": "Hence, too, plainly appears",
+    "unit": 10,
+    "until": "For this is the chief of churches"
+   },
+   {
+    "opens": "For this is the chief of churches",
+    "unit": 11,
+    "until": "We, therefore, who, by the inscrutable"
+   },
+   {
+    "opens": "We, therefore, who, by the inscrutable",
+    "unit": 12
+   },
+   {
+    "opens": "You are already well acquainted",
+    "unit": 13,
+    "until": "This, also, is the tendency"
+   },
+   {
+    "opens": "This, also, is the tendency",
+    "unit": 14,
+    "until": "Still, to the same point"
+   },
+   {
+    "opens": "Still, to the same point",
+    "unit": 15,
+    "until": "To this point tends that infamous"
+   },
+   {
+    "opens": "To this point tends that infamous",
+    "unit": 16,
+    "until": "Again, to this same point"
+   },
+   {
+    "opens": "Again, to this same point",
+    "unit": 17
+   },
+   {
+    "opens": "Lastly, to this point tends",
+    "unit": "+"
+   },
+   {
+    "opens": "From this overflow",
+    "unit": 18
+   },
+   {
+    "opens": "Therefore, in such vicissitudes",
+    "unit": 19
+   },
+   {
+    "opens": "That it becomes you",
+    "unit": "+",
+    "until": "In order, therefore, to preserve"
+   },
+   {
+    "opens": "In order, therefore, to preserve",
+    "unit": 20
+   },
+   {
+    "opens": "And with equal constancy",
+    "unit": "+"
+   },
+   {
+    "opens": "And “as it is great piety",
+    "unit": 21
+   },
+   {
+    "opens": "And as you know that your ministry",
+    "unit": "+"
+   },
+   {
+    "opens": "This also, venerable brothers",
+    "unit": 22
+   },
+   {
+    "opens": "Apply yourselves to inculcate",
+    "unit": "+"
+   },
+   {
+    "opens": "Now, as there is nothing",
+    "unit": 23
+   },
+   {
+    "opens": "Therefore, as you very well know",
+    "unit": 24
+   },
+   {
+    "opens": "You are not ignorant that you ought",
+    "unit": "+"
+   },
+   {
+    "opens": "You know that the clergy",
+    "unit": 25,
+    "until": "That rightly treating"
+   },
+   {
+    "opens": "That rightly treating",
+    "unit": 26
+   },
+   {
+    "opens": "In your episcopal solicitude",
+    "unit": 27
+   },
+   {
+    "opens": "As you are not ignorant",
+    "unit": 28
+   },
+   {
+    "opens": "Moreover, understanding",
+    "unit": 29,
+    "until": "If we have spoken at length"
+   },
+   {
+    "opens": "If we have spoken at length",
+    "unit": 30
+   },
+   {
+    "opens": "Finally, most dear brethren",
+    "unit": 31
+   },
+   {
+    "opens": "Advance with all your power",
+    "unit": 32
+   },
+   {
+    "opens": "As we love you all",
+    "unit": 33
+   },
+   {
+    "opens": "We confidently hope",
+    "unit": 34
+   },
+   {
+    "opens": "To obtain the happy",
+    "unit": 35
+   },
+   {
+    "opens": "And that the most merciful God",
+    "unit": 36
+   },
+   {
+    "opens": "Finally, as the presage",
+    "unit": 37
+   }
+  ]
  }
 }

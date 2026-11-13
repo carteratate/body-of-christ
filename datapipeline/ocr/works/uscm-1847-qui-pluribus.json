@@ -1,0 +1,38 @@
+{
+ "work": "uscm-1847-qui-pluribus",
+ "title": "Qui Pluribus, in The United States Catholic Magazine and Monthly Review, vol. 6 (Baltimore: John Murphy, 1847), \"Encyclical letter of Pope Pius IX, to the Catholic hierarchy throughout the world\", pp. 151–160",
+ "scan": "USCatholicMagazineMonthlyReviewV6",
+ "djvu_xml": "encyclicals/USCatholicMagazineMonthlyReviewV6/USCatholicMagazineMonthlyReviewV6_djvu.xml",
+ "page_numbers": "encyclicals/USCatholicMagazineMonthlyReviewV6/USCatholicMagazineMonthlyReviewV6_page_numbers.json",
+ "pages": [
+  "151",
+  "160"
+ ],
+ "layout": "two-column",
+ "watermark": "Digitized by \\S+",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "qui-pluribus",
+   "first": "^ENCYCLICAL LETTER OF POPE PIUS IX",
+   "last": "^of our pontificate\\.|first year\\s+of our pontificate",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true
+}

@@ -4207,6 +4207,28 @@
  },
  {
   "collection": "encyclicals",
+  "path": "encyclicals/USCatholicMagazineMonthlyReviewV6/USCatholicMagazineMonthlyReviewV6_djvu.xml",
+  "sha256": "b2cf0f35e5c936c1070707ad4f192f98bd6823e2a9a714d890bded65e99c9ddc",
+  "bytes": 37336279,
+  "url": "https://archive.org/download/USCatholicMagazineMonthlyReviewV6/USCatholicMagazineMonthlyReviewV6_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/USCatholicMagazineMonthlyReviewV6/USCatholicMagazineMonthlyReviewV6_page_numbers.json",
+  "sha256": "1c560c62f9c7787097f8bee7bb7758c9d7e956b4150ba03dbcd555fd4e09057a",
+  "bytes": 136156,
+  "url": "https://archive.org/download/USCatholicMagazineMonthlyReviewV6/USCatholicMagazineMonthlyReviewV6_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
   "path": "encyclicals/a-quo-die.html",
   "sha256": "296afcaa894bf4e461df08200337e5ec0c05f9e997327c10ed35f87e2f2f9f7d",
   "bytes": 119890,
