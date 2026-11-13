@@ -1411,5 +1411,213 @@
     "unit": 16
    }
   ]
+ },
+ "encyclicals/inter-multiplices": {
+  "source": "ocr",
+  "work": "metropolitan-1853-inter-multiplices",
+  "file": "metropolitanmont01balt/",
+  "url": "https://archive.org/details/metropolitanmont01balt",
+  "translation": "The Metropolitan (Baltimore), vol. 1 (June 1853)",
+  "units": [
+   {
+    "opens": "To our well beloved Sons",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Pius PP. IX. Well beloved",
+    "unit": "preamble"
+   },
+   {
+    "opens": "In the midst of the multiplied",
+    "unit": 1,
+    "until": "We do not feel less satisfaction"
+   },
+   {
+    "opens": "We do not feel less satisfaction",
+    "unit": 2,
+    "until": "But in reminding you of all"
+   },
+   {
+    "opens": "But in reminding you of all",
+    "unit": 3,
+    "until": "This, well beloved sons and venerable brethren, we ask"
+   },
+   {
+    "opens": "This, well beloved sons and venerable brethren, we ask",
+    "unit": 4,
+    "until": "Thus, that illustrious clergy"
+   },
+   {
+    "opens": "Thus, that illustrious clergy",
+    "unit": 5
+   },
+   {
+    "opens": "You are, as we are",
+    "unit": "+",
+    "until": "And here we cannot refrain"
+   },
+   {
+    "opens": "And here we cannot refrain",
+    "unit": 6,
+    "until": "Moreover, your wisdom"
+   },
+   {
+    "opens": "Moreover, your wisdom",
+    "unit": 7
+   },
+   {
+    "opens": "And here we cannot avoid",
+    "unit": "+"
+   },
+   {
+    "opens": "Before terminating this letter",
+    "unit": 8
+   }
+  ]
+ },
+ "encyclicals/apostolicae-nostrae-caritatis": {
+  "source": "ocr",
+  "work": "metropolitan-1854-apostolicae-nostrae-caritatis",
+  "file": "sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9/",
+  "url": "https://archive.org/details/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9",
+  "translation": "The Metropolitan (Baltimore), vol. 2 (October 1854)",
+  "units": [
+   {
+    "opens": "To our Venerable Brethren the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "PIUS IX., P.P.",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble",
+    "until": "In looking with the solicitude"
+   },
+   {
+    "opens": "In looking with the solicitude",
+    "unit": 1
+   },
+   {
+    "opens": "Therefore, it is, that in the midst",
+    "unit": 2
+   },
+   {
+    "opens": "It is for that purpose",
+    "unit": 3
+   },
+   {
+    "opens": "Explain to the faithful",
+    "unit": "+"
+   },
+   {
+    "opens": "We earnestly desire",
+    "unit": 4
+   },
+   {
+    "opens": "That the faithful confided",
+    "unit": 5
+   },
+   {
+    "opens": "To work, therefore",
+    "unit": 6
+   },
+   {
+    "opens": "And again, let nothing",
+    "unit": "+"
+   },
+   {
+    "opens": "In conclusion, as a pledge",
+    "unit": 7
+   }
+  ]
+ },
+ "encyclicals/amantissimi-redemptoris": {
+  "source": "ocr",
+  "work": "metropolitan-1858-amantissimi-redemptoris",
+  "file": "sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7/",
+  "url": "https://archive.org/details/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7",
+  "translation": "The Metropolitan (Baltimore), new series vol. 1 (August 1858)",
+  "units": [
+   {
+    "opens": "To all the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "The goodness and charity",
+    "unit": 1,
+    "until": "Thus in the unbloody sacrifice"
+   },
+   {
+    "opens": "Thus in the unbloody sacrifice",
+    "unit": 2,
+    "until": "Such is the pure oblation"
+   },
+   {
+    "opens": "Such is the pure oblation",
+    "unit": 3,
+    "until": "There is nothing then, greater"
+   },
+   {
+    "opens": "There is nothing then, greater",
+    "unit": 4
+   },
+   {
+    "opens": "Now, it is in favor of mankind",
+    "unit": 5,
+    "until": "By the returns on the state"
+   },
+   {
+    "opens": "By the returns on the state",
+    "unit": 6
+   },
+   {
+    "opens": "Full of extreme solicitude",
+    "unit": 7,
+    "until": "After having weighed"
+   },
+   {
+    "opens": "After having weighed",
+    "unit": 8
+   },
+   {
+    "opens": "It is, therefore, that we declare",
+    "unit": "+",
+    "until": "Wishing also in the love"
+   },
+   {
+    "opens": "Wishing also in the love",
+    "unit": 9,
+    "until": "In giving these decisions"
+   },
+   {
+    "opens": "In giving these decisions",
+    "unit": 10
+   },
+   {
+    "opens": "We entertain no doubt",
+    "unit": "+",
+    "until": "And as you very well know"
+   },
+   {
+    "opens": "And as you very well know",
+    "unit": 11,
+    "until": "In fine, nothing is more"
+   },
+   {
+    "opens": "In fine, nothing is more",
+    "unit": 12,
+    "until": "Be assured that we"
+   },
+   {
+    "opens": "Be assured that we",
+    "unit": 13
+   }
+  ]
  }
 }

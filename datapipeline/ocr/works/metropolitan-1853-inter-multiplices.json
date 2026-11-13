@@ -1,0 +1,38 @@
+{
+ "work": "metropolitan-1853-inter-multiplices",
+ "title": "Inter Multiplices, in The Metropolitan (Baltimore), vol. 1 no. 5 (June 1853), pp. 232–235",
+ "scan": "metropolitanmont01balt",
+ "djvu_xml": "encyclicals/metropolitanmont01balt/metropolitanmont01balt_djvu.xml",
+ "page_numbers": "encyclicals/metropolitanmont01balt/metropolitanmont01balt_page_numbers.json",
+ "pages": [
+  "232",
+  "235"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "inter-multiplices",
+   "first": "^To OUR WELL BELOVED SONS",
+   "last": "^PIUS PP\\. IX\\.?$",
+   "keep_quotes": true
+  }
+ ],
+ "leaf_offset": 1,
+ "broken_words_continue": true,
+ "max_paragraph_words": 250
+}

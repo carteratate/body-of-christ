@@ -5585,24 +5585,6 @@
   "planned_for": null
  },
  {
-  "work": "Amantissimi Redemptoris",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/amantissimi-redemptoris.html",
-  "document_id": "115bdbfd-9de8-5d54-a970-7e3cafdeba63",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9amant1.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Amantissimus",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
@@ -5675,24 +5657,6 @@
   "planned_for": null
  },
  {
-  "work": "Apostolicae Nostrae Caritatis",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/apostolicae-nostrae-caritatis.html",
-  "document_id": "d6ecb3a9-6a32-568a-817d-53b1390a55f7",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9aposto.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Appetente Sacro",
   "author": "Pope Clement XIII",
   "collection": "encyclicals",
@@ -5708,6 +5672,24 @@
   "credit_line": null,
   "checked_by": null,
   "checked_on": null,
+  "planned_for": null
+ },
+ {
+  "work": "Gravibus Ecclesiae",
+  "author": "Pope Pius IX",
+  "collection": "encyclicals",
+  "source_path": "encyclicals/appletonsannualc14newyuoft/",
+  "document_id": "3bcae73a-4e86-5cfb-9bf7-efc71fd6969d",
+  "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1874, new series vol. 14 (New York: D. Appleton, 1875), Roman Catholic Church, pp. 753-756: 'Encyclical Letter of Pope Pius IX., announcing a Jubilee', in full. A different translation from papalencyclicals.net's. Internet Archive scan appletonsannualc14newyuoft, read through the OCR clean-up with Wikisource's unproofread transcription ('Encyclical Letter by Pope Pius IX Announcing a Jubilee', from the scan americanannualc10unkngoog) as a second reading (Carter, 12 Nov 2026)",
+  "translator": null,
+  "first_published": 1875,
+  "source_url": "https://archive.org/details/appletonsannualc14newyuoft",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translation from Appletons' Annual Cyclopaedia (1875)",
+  "checked_by": "Carter",
+  "checked_on": "2026-11-01",
   "planned_for": null
  },
  {
@@ -7216,24 +7198,6 @@
   "planned_for": null
  },
  {
-  "work": "Inter Multiplices",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/inter-multiplices.html",
-  "document_id": "dddc9eb5-4c5a-55a2-9202-f93453fe900e",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9interm.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Inter Praecipuas",
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
@@ -7454,7 +7418,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/metropolitanmont01balt/",
-  "document_id": null,
+  "document_id": "dddc9eb5-4c5a-55a2-9202-f93453fe900e",
   "edition": "The Metropolitan, a Monthly Magazine Devoted to Religion, Education, Literature and General Information (Baltimore: John Murphy), vol. 1 no. 5, June 1853 (single-issue scan sim_metropolitan-a-monthly-magazine-devoted-to-religion_1853-06_1_5): the encyclical to the French bishops in full, ending Given at Rome the 21st of March ... of our Pontificate the seventh. Pius PP. IX. A different translation from papalencyclicals.net's. Internet Archive scan metropolitanmont01balt",
   "translator": null,
   "first_published": 1853,
@@ -7465,7 +7429,7 @@
   "credit_line": "Translation from The Metropolitan (Baltimore, 1853)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Neminem Vestrum",
@@ -8066,7 +8030,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9/",
-  "document_id": null,
+  "document_id": "d6ecb3a9-6a32-568a-817d-53b1390a55f7",
   "edition": "The Metropolitan (Baltimore: John Murphy), vol. 2 no. 9, October 1854: the encyclical in full, ending Given at St. Peters at Rome, August [1] ... the ninth year of our Pontificate. Pius IX, Pope, followed by Archbishop Francis Patrick Kenrick pastoral publishing it. A different translation from papalencyclicals.net's. Internet Archive scan sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9",
   "translator": null,
   "first_published": 1854,
@@ -8077,14 +8041,14 @@
   "credit_line": "Translation from The Metropolitan (Baltimore, 1854)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Amantissimi Redemptoris",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7/",
-  "document_id": null,
+  "document_id": "115bdbfd-9de8-5d54-a970-7e3cafdeba63",
   "edition": "The Metropolitan, a Monthly Magazine Devoted to Religion, Education, Literature and General Information (Baltimore: John Murphy), new series vol. 1 no. 7, August 1858, Record of Events: Encyclical Letter of Pope Pius the Ninth to all the Patriarchs, Primates, Archbishops, Bishops and other Ordinaries, in full. A different translation from papalencyclicals.net's. Internet Archive scan sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7",
   "translator": null,
   "first_published": 1858,
@@ -8095,7 +8059,7 @@
   "credit_line": "Translation from The Metropolitan (Baltimore, 1858)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Nostis Et Nobiscum",
@@ -8453,24 +8417,6 @@
   "rights_holder": null,
   "renewal_search": null,
   "credit_line": "Translation from The Catholic Magazine and Review (1833). Text: Wikisource",
-  "checked_by": "Carter",
-  "checked_on": "2026-11-01",
-  "planned_for": null
- },
- {
-  "work": "Gravibus Ecclesiae",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/appletonsannualc14newyuoft/",
-  "document_id": "3bcae73a-4e86-5cfb-9bf7-efc71fd6969d",
-  "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1874, new series vol. 14 (New York: D. Appleton, 1875), Roman Catholic Church, pp. 753-756: 'Encyclical Letter of Pope Pius IX., announcing a Jubilee', in full. A different translation from papalencyclicals.net's. Internet Archive scan appletonsannualc14newyuoft, read through the OCR clean-up with Wikisource's unproofread transcription ('Encyclical Letter by Pope Pius IX Announcing a Jubilee', from the scan americanannualc10unkngoog) as a second reading (Carter, 12 Nov 2026)",
-  "translator": null,
-  "first_published": 1875,
-  "source_url": "https://archive.org/details/appletonsannualc14newyuoft",
-  "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Translation from Appletons' Annual Cyclopaedia (1875)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
   "planned_for": null

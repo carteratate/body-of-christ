@@ -1,0 +1,37 @@
+{
+ "work": "metropolitan-1854-apostolicae-nostrae-caritatis",
+ "title": "Apostolicae Nostrae Caritatis, in The Metropolitan (Baltimore), vol. 2 no. 9 (October 1854), Record of Events, pp. 576–578",
+ "scan": "sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9",
+ "djvu_xml": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9_djvu.xml",
+ "page_numbers": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9_page_numbers.json",
+ "pages": [
+  "576",
+  "578"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "apostolicae-nostrae-caritatis",
+   "first": "^To our Venerable Brethren the Patriarchs",
+   "last": "^PIUS \\[?X\\.?, POPE",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true
+}

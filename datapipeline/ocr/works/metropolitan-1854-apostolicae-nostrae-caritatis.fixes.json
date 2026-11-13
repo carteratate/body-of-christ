@@ -1,0 +1,312 @@
+[
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " to\n\nsor raise",
+  "replace": " to raise",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " of\n\nonl which",
+  "replace": " of which",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " the\n\nadr special",
+  "replace": " the special",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": "\n\npie human society.\n\nthe ",
+  "replace": " human society.\n\n",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " attempt\n\nabe to",
+  "replace": " attempt to",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": "in-firn surrections,",
+  "replace": "insurrections,",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " all\n\npet laws",
+  "replace": " all laws",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " of\n\nfor every",
+  "replace": " of every",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " the\n\nhav Catholic",
+  "replace": " the Catholic",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": "so man misfortunes",
+  "replace": "so many misfortunes",
+  "why": "p. 576: misread on the page; the print reads \"many\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": "misfortunes. hat is",
+  "replace": "misfortunes. What is",
+  "why": "p. 576: misread on the page; the print reads \"What\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " not\n\ncral ignorant",
+  "replace": " not ignorant",
+  "why": "p. 576: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": "Benediction! —In looking",
+  "replace": "Benediction! — In looking",
+  "why": "p. 576: spacing"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": "VeNneRABLE Bretruren,",
+  "replace": "Venerable Brethren,",
+  "why": "p. 576: misread on the page; the print reads \"Venerable Brethren,\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-01",
+  "find": " other\n\nOrdinaries ",
+  "replace": " other Ordinaries ",
+  "why": "p. 576: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "continues": true,
+  "why": "p. 576: \"whence we expect all help will come\" runs on from the passage before"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": " incensed. oy:",
+  "replace": " incensed.",
+  "why": "pp. 576–577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": "en-eavor,",
+  "replace": "endeavor,",
+  "why": "pp. 576–577: misread on the page; the print reads \"endeavor,\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": "already ex-\n\n, to",
+  "replace": "already expressed, to",
+  "why": "pp. 576–577: misread on the page; the print reads \"expressed,\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": " Church. It ",
+  "replace": " Church.\n\nIt ",
+  "why": "pp. 576–577: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": "\n\n* The obituary of Lieut. Toby, and account of his conversion, in our September No., should have been eredited to the Catholic Herald.",
+  "replace": "",
+  "why": "pp. 576–577: the magazine's footnote on its September number (\"The obituary of Lieut. Toby ...\"), read into the text, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": "He — cause",
+  "replace": "He may cause",
+  "why": "pp. 576–577: misread on the page; the print reads \"may\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": " in\n\nand supplicating",
+  "replace": " in supplicating",
+  "why": "pp. 576–577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-02",
+  "find": "Ou: come. ",
+  "replace": "come. ",
+  "why": "pp. 576–577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "soon givea decision",
+  "replace": "soon give a decision",
+  "why": "p. 577: spacing"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": " to lays the",
+  "replace": " to the",
+  "why": "p. 577: \"lays\" is letters of the facing page read into the margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "of eate for",
+  "replace": "of Mercies for",
+  "why": "p. 577: misread on the page; the print reads \"Mercies\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "dissipate.’’ * ",
+  "replace": "dissipate.”\n\n",
+  "why": "p. 577: misread on the page; the print reads \"dissipate.”\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "men; thereis no",
+  "replace": "men; there is no",
+  "why": "p. 577: spacing"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "the “rt of",
+  "replace": "the fury of",
+  "why": "p. 577: misread on the page; the print reads \"fury\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "— “ is the",
+  "replace": "— “is the",
+  "why": "p. 577: spacing"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "rd. ‘* Prayer ’’",
+  "replace": "Lord. “Prayer”",
+  "why": "p. 577: misread on the page; the print reads \"Lord. “Prayer”\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-03",
+  "find": "in rayer, if",
+  "replace": "in prayer, if",
+  "why": "p. 577: misread on the page; the print reads \"prayer,\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "V3 ‘oimplore",
+  "replace": "to implore",
+  "why": "p. 577: misread on the page; the print reads \"to implore\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "to I-pray with",
+  "replace": "to pray with",
+  "why": "p. 577: misread on the page; the print reads \"pray\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "ve li-and",
+  "replace": "and",
+  "why": "p. 577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "called t» share",
+  "replace": "called to share",
+  "why": "p. 577: misread on the page; the print reads \"to\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "other ly le\n\nwomen ",
+  "replace": "other women ",
+  "why": "p. 577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": " to\n\nnuns, ",
+  "replace": " to nuns, ",
+  "why": "p. 577: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "wish, S-nd\n\nwhether ",
+  "replace": "wish, whether ",
+  "why": "p. 577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": " designation,\n\nthe ",
+  "replace": " designation, the ",
+  "why": "p. 577: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "to to\n\naccord ",
+  "replace": "to accord ",
+  "why": "p. 577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "making in\n\nthe ",
+  "replace": "making the ",
+  "why": "p. 577: letters of the facing page, read into this page's margin, removed"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "other;”’",
+  "replace": "other;”",
+  "why": "p. 577: misread on the page; the print reads \"other;”\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "words, ‘ In virtue",
+  "replace": "words, “In virtue",
+  "why": "p. 577: misread on the page; the print reads \"“In\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "aiietel, ill\n\n",
+  "replace": "printed, ",
+  "why": "p. 577: the page reads \"printed,\"; the OCR read \"aiietel\", and \"ill\" is letters of the facing page read into the margin"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "185] —letters",
+  "replace": "1851 — letters",
+  "why": "p. 577: misread on the page; the print reads \"1851 — letters\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-05",
+  "find": "known b Our",
+  "replace": "known by Our",
+  "why": "p. 577: misread on the page; the print reads \"by\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-06",
+  "continues": true,
+  "why": "p. 578: \"turn away the scourges brought upon us\" runs on from p. 577"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-06",
+  "find": "St. Chrysostom, XV. Homily on the Incomprehensible Nature of God. Against the Anomeans. ",
+  "replace": "",
+  "why": "pp. 577–578: the footnote citing St. Chrysostom, read into the text, removed (a citation, apparatus)"
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-07",
+  "find": "imeaditieindaio.",
+  "replace": "guardianship.",
+  "why": "p. 578: the page reads \"guardianship\"; the OCR read \"imeaditieindaio\""
+ },
+ {
+  "passage": "apostolicae-nostrae-caritatis-07",
+  "find": "encourage. ments,",
+  "replace": "encouragements,",
+  "why": "p. 578: misread on the page; the print reads \"encouragements,\""
+ }
+]

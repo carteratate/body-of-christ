@@ -1,0 +1,128 @@
+[
+ {
+  "passage": "inter-multiplices-01",
+  "find": "liealth and apostolic\n\n",
+  "replace": "health and apostolic ",
+  "why": "p. 232: misread on the page; the print reads \"health and apostolic\""
+ },
+ {
+  "passage": "inter-multiplices-01",
+  "find": "Bishops op France.",
+  "replace": "Bishops of France.",
+  "why": "p. 232: misread on the page; the print reads \"of\""
+ },
+ {
+  "passage": "inter-multiplices-01",
+  "find": "OUR WELL BELOVED SONS, THE CARDINALS, AND OUR VENERABLE BRO-THERS,",
+  "replace": "our well beloved Sons, the Cardinals, and our Venerable Brothers,",
+  "why": "p. 232: misread on the page; the print reads \"our well beloved Sons, the Cardinals, and our Venerable Brothers,\""
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "many diocesses in",
+  "replace": "many dioceses in",
+  "why": "pp. 232–233: the page reads \"dioceses\" (checked on all four occurrences)"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "reestablished,",
+  "replace": "re-established,",
+  "why": "pp. 232–233: misread on the page; the print reads \"re-established,\""
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "diocesses,",
+  "replace": "dioceses,",
+  "why": "pp. 232–233: the page reads \"dioceses\" (checked on all four occurrences)"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "your diocesses the",
+  "replace": "your dioceses the",
+  "why": "pp. 232–233: the page reads \"dioceses\" (checked on all four occurrences)"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "diocesses",
+  "replace": "dioceses",
+  "why": "pp. 232–233: the page reads \"dioceses\" (checked on all four occurrences)"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "must join4 We",
+  "replace": "must join. We",
+  "why": "pp. 232–233: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "are due,f which,",
+  "replace": "are due, which,",
+  "why": "pp. 232–233: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "mistress*",
+  "replace": "mistress",
+  "why": "pp. 232–233: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "error,\"*",
+  "replace": "error,”",
+  "why": "pp. 232–233: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "truth,\" \"and",
+  "replace": "truth,” “and",
+  "why": "pp. 232–233: misread on the page; the print reads \"truth,” “and\""
+ },
+ {
+  "passage": "inter-multiplices-02",
+  "find": "says: \" They will",
+  "replace": "says: “They will",
+  "why": "pp. 232–233: misread on the page; the print reads \"“They\""
+ },
+ {
+  "passage": "inter-multiplices-05",
+  "find": "religion.*",
+  "replace": "religion.",
+  "why": "pp. 234–235: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "inter-multiplices-05",
+  "find": "soft fight of",
+  "replace": "soft light of",
+  "why": "pp. 234–235: misread on the page; the print reads \"light\""
+ },
+ {
+  "passage": "inter-multiplices-06",
+  "find": "coutumier\"",
+  "replace": "coutumier,”",
+  "why": "p. 235: misread on the page; the print reads \"coutumier,”\""
+ },
+ {
+  "passage": "inter-multiplices-06",
+  "find": "de VEglise Gallicane",
+  "replace": "de l’Eglise Gallicane",
+  "why": "p. 235: misread on the page; the print reads \"l’Eglise\""
+ },
+ {
+  "passage": "inter-multiplices-06",
+  "find": "entitled, \" Sur la",
+  "replace": "entitled, “Sur la",
+  "why": "p. 235: misread on the page; the print reads \"“Sur\""
+ },
+ {
+  "passage": "inter-multiplices-07",
+  "find": "concord. \"f",
+  "replace": "concord.”",
+  "why": "p. 235: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "inter-multiplices-07",
+  "find": "know \" has placed",
+  "replace": "know “has placed",
+  "why": "p. 235: misread on the page; the print reads \"“has\""
+ }
+]
