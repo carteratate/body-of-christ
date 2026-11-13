@@ -7360,24 +7360,6 @@
   "planned_for": null
  },
  {
-  "work": "Nullis Certe Verbis",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/nullis-certe-verbis.html",
-  "document_id": "1c341d85-24a7-5603-8f72-8fb20d25292b",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9nullis.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Ineffabilis Deus",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
@@ -7904,8 +7886,8 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_rambler-a-catholic-journal-and-review_1860-03_2_6/",
-  "document_id": null,
-  "edition": "The Rambler, new series vol. 2 (London, March 1860), Contemporary Events: an extract; by R8's estimate it holds paragraphs 3 and 6-8 and lacks at least 9 and 11-13, which 1.3d's alignment settles. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
+  "document_id": "1c341d85-24a7-5603-8f72-8fb20d25292b",
+  "edition": "The Rambler, new series vol. 2 (London, March 1860), Contemporary Events, Foreign Affairs, p. 419: an extract, quoting paragraph 6 and parts of paragraphs 3, 5, 7 and 8 (its omissions marked by ellipses); it lacks the address and paragraphs 1-2, 4 and 9-13. Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
   "translator": null,
   "first_published": 1860,
   "source_url": "https://archive.org/details/sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
@@ -7915,7 +7897,7 @@
   "credit_line": "Translation from The Rambler (1860), extract",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Ubi Primum (1849)",

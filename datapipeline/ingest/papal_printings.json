@@ -3115,5 +3115,49 @@
    2
   ],
   "notes": "This English printing (The Dublin Review, 1859) quotes paragraph 1 and part of paragraph 3; the address, paragraph 2 and the rest of paragraph 3 are not available on TheoCorpus at present."
+ },
+ "encyclicals/nullis-certe-verbis": {
+  "source": "ocr",
+  "work": "rambler-1860-nullis-certe-verbis",
+  "file": "sim_rambler-a-catholic-journal-and-review_1860-03_2_6/",
+  "url": "https://archive.org/details/sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
+  "translation": "The Rambler, new series vol. 2 (London, March 1860)",
+  "units": [
+   {
+    "opens": "From every part of the Catholic",
+    "unit": 3,
+    "until": "In his letter, the exalted"
+   },
+   {
+    "opens": "In his letter, the exalted",
+    "unit": 5
+   },
+   {
+    "opens": "Every one of you",
+    "unit": 6,
+    "until": "And, among other things"
+   },
+   {
+    "opens": "And, among other things",
+    "unit": 7,
+    "until": "And we did not omit"
+   },
+   {
+    "opens": "And we did not omit",
+    "unit": 8
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   4,
+   9,
+   10,
+   11,
+   12,
+   13
+  ],
+  "notes": "This English printing (The Rambler, 1860) quotes paragraph 6 and parts of paragraphs 3, 5, 7 and 8; the address and paragraphs 1–2, 4 and 9–13 are not available on TheoCorpus at present."
  }
 }
