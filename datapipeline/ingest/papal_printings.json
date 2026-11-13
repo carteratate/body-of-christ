@@ -1317,5 +1317,99 @@
     "unit": "+"
    }
   ]
+ },
+ "encyclicals/respicientes": {
+  "source": "ocr",
+  "work": "appletons-1870-respicientes",
+  "file": "bwb_P9-CSD-414/",
+  "url": "https://archive.org/details/bwb_P9-CSD-414",
+  "translation": "The American Annual Cyclopaedia for 1870 (New York: Appleton, 1871)",
+  "units": [
+   {
+    "opens": "Pius IX., by Divine Providence Pope",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble",
+    "until": "Having regard to all"
+   },
+   {
+    "opens": "Having regard to all",
+    "unit": 1
+   },
+   {
+    "opens": "Venerable brethren, the history",
+    "unit": 2,
+    "until": "You are well aware how"
+   },
+   {
+    "opens": "You are well aware how",
+    "unit": 3
+   },
+   {
+    "opens": "Neither is any man ignorant",
+    "unit": "+",
+    "until": "It is, moreover, true that we"
+   },
+   {
+    "opens": "It is, moreover, true that we",
+    "unit": 4,
+    "until": "But these attempts not succeeding"
+   },
+   {
+    "opens": "But these attempts not succeeding",
+    "unit": 5
+   },
+   {
+    "opens": "In so many conflicts",
+    "unit": 6
+   },
+   {
+    "opens": "And now, when things were",
+    "unit": 7,
+    "until": "We in truth could not but"
+   },
+   {
+    "opens": "We in truth could not but",
+    "unit": 8
+   },
+   {
+    "opens": "“Let us remember",
+    "unit": "+"
+   },
+   {
+    "opens": "Therefore, adhering",
+    "unit": 9
+   },
+   {
+    "opens": "And ever since that day",
+    "unit": 10
+   },
+   {
+    "opens": "We cannot here",
+    "unit": 11
+   },
+   {
+    "opens": "As to ourselves",
+    "unit": 12
+   },
+   {
+    "opens": "But since our admonitions",
+    "unit": 13
+   },
+   {
+    "opens": "But, calling to mind",
+    "unit": 14
+   },
+   {
+    "opens": "In order to obtain from the Divine",
+    "unit": 15
+   },
+   {
+    "opens": "And now, we ask of God",
+    "unit": 16
+   }
+  ]
  }
 }

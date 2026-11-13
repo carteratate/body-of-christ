@@ -331,28 +331,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/bwb_P9-CSD-414/bwb_P9-CSD-414_djvu.xml",
-  "sha256": "82899c1bc93834b0ab972d8011960fb14f82e1362e29cb970e03722b04484923",
-  "bytes": 63501545,
-  "url": "https://archive.org/download/bwb_P9-CSD-414/bwb_P9-CSD-414_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/bwb_P9-CSD-414/bwb_P9-CSD-414_page_numbers.json",
-  "sha256": "f4cfc6fd41d07cbba2e66a2e41645d8b47d429f21e955e9e8a46451b30291f12",
-  "bytes": 136867,
-  "url": "https://archive.org/download/bwb_P9-CSD-414/bwb_P9-CSD-414_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/catholiccabinet01unkngoog/catholiccabinet01unkngoog_djvu.xml",
   "sha256": "25269b86ce1ded940ada338c9b8d2e5d267015700974f1b993793cc97f958cb3",
   "bytes": 32034588,
@@ -4468,6 +4446,28 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/bwb_P9-CSD-414/bwb_P9-CSD-414_djvu.xml",
+  "sha256": "82899c1bc93834b0ab972d8011960fb14f82e1362e29cb970e03722b04484923",
+  "bytes": 63501545,
+  "url": "https://archive.org/download/bwb_P9-CSD-414/bwb_P9-CSD-414_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/bwb_P9-CSD-414/bwb_P9-CSD-414_page_numbers.json",
+  "sha256": "f4cfc6fd41d07cbba2e66a2e41645d8b47d429f21e955e9e8a46451b30291f12",
+  "bytes": 136867,
+  "url": "https://archive.org/download/bwb_P9-CSD-414/bwb_P9-CSD-414_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "encyclicals",

@@ -5805,7 +5805,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/bwb_P9-CSD-414/",
-  "document_id": null,
+  "document_id": "cc81769d-2c6a-5735-9562-a4cb600edb41",
   "edition": "The American Annual Cyclopaedia and Register of Important Events of the Year 1870, vol. 10 (New York: D. Appleton, 1871), 'Roman Catholic Church' article: the encyclical of 1 November 1870 in full, ending 'Given at Rome, at St. Peter's, the 1st day of November ... of our Pontificate'. A different translation from papalencyclicals.net's. Internet Archive scan bwb_P9-CSD-414",
   "translator": null,
   "first_published": 1871,
@@ -5816,7 +5816,7 @@
   "credit_line": "Translation from Appletons' Annual Cyclopaedia (1871)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Caritas in Veritate",
@@ -7967,24 +7967,6 @@
   "rights_holder": "Libreria Editrice Vaticana",
   "renewal_search": null,
   "credit_line": "Text: Libreria Editrice Vaticana",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Respicientes",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/respicientes.html",
-  "document_id": "cc81769d-2c6a-5735-9562-a4cb600edb41",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9respic.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
