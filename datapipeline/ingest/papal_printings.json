@@ -2481,5 +2481,82 @@
     "unit": 25
    }
   ]
+ },
+ "encyclicals/ubi-primum-1849": {
+  "source": "ocr",
+  "work": "uscm-1849-ubi-primum",
+  "file": "sim_united-states-catholic-magazine_1849-03-31_8_13/",
+  "url": "https://archive.org/details/sim_united-states-catholic-magazine_1849-03-31_8_13",
+  "translation": "The United States Catholic Magazine, vol. 8 no. 13 (Baltimore, 1849)",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER OF OUR HOLY FATHER",
+    "why": "The magazine's title over the letter (rule G)."
+   },
+   {
+    "opens": "IN LATIN, WITH A TRANSLATION",
+    "why": "The magazine's note on its Latin and English columns (rule G)."
+   },
+   {
+    "opens": "TO OUR VENERABLE BROTHERS THE PATRIARCHS",
+    "why": "The address set in capitals as a heading across both columns; the parser drops a capitals heading at the head of a preamble (papal_common.strip_leading_caps), as for every papal document, and the greeting below opens the letter."
+   },
+   {
+    "opens": "POPE PIUS IX.",
+    "why": "The pope's name set as a heading over the English column, as Mirari Vos's \"POPE GREGORY XVI\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren, health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "When, by no merit",
+    "unit": 1,
+    "until": "This most pious wish"
+   },
+   {
+    "opens": "This most pious wish",
+    "unit": 2,
+    "until": "Moreover, Venerable Brethren, a great many"
+   },
+   {
+    "opens": "Moreover, Venerable Brethren, a great many",
+    "unit": 3,
+    "until": "To us these wishes"
+   },
+   {
+    "opens": "To us these wishes",
+    "unit": 4,
+    "until": "For you all know"
+   },
+   {
+    "opens": "For you all know",
+    "unit": 5
+   },
+   {
+    "opens": "For these reasons",
+    "unit": "+"
+   },
+   {
+    "opens": "Wherefore, Venerable Brethren",
+    "unit": 6,
+    "until": "And, as we have already granted"
+   },
+   {
+    "opens": "And, as we have already granted",
+    "unit": 7
+   },
+   {
+    "opens": "We have no doubt",
+    "unit": "+",
+    "until": "In the meantime, receive"
+   },
+   {
+    "opens": "In the meantime, receive",
+    "unit": 8
+   }
+  ]
  }
 }

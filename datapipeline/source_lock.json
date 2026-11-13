@@ -408,28 +408,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_djvu.xml",
-  "sha256": "c14e1ef3c5279dc6c27b27a5b3deeea57d91ab0a54cb77df6ae636dcfa80f1f7",
-  "bytes": 1327538,
-  "url": "https://archive.org/download/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_page_numbers.json",
-  "sha256": "4dab251a508d90f51f6ec3cb269d9d8ce7ca1d90a05504aa8cb3d60322b2bffa",
-  "bytes": 3526,
-  "url": "https://archive.org/download/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/roman-curia/compendium-of-the-social-doctrine-of-the-church.html",
   "sha256": "85e585bed01b303e67ddbef64f1be03b0e9b4c638151df3ea1d4a6f5e361f525",
   "bytes": 1160524,
@@ -5758,6 +5736,28 @@
   "sha256": "a2d076b1782580e03c0f105473cee0158bfc3a2fd884e09963b2f1c55502b77a",
   "bytes": 11093,
   "url": "https://archive.org/download/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_djvu.xml",
+  "sha256": "c14e1ef3c5279dc6c27b27a5b3deeea57d91ab0a54cb77df6ae636dcfa80f1f7",
+  "bytes": 1327538,
+  "url": "https://archive.org/download/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_page_numbers.json",
+  "sha256": "4dab251a508d90f51f6ec3cb269d9d8ce7ca1d90a05504aa8cb3d60322b2bffa",
+  "bytes": 3526,
+  "url": "https://archive.org/download/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_page_numbers.json",
   "acquired": "2026-11-12",
   "hashed_on": "2026-11-12",
   "role": "vendored-unregistered",

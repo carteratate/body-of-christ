@@ -7994,7 +7994,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/",
-  "document_id": null,
+  "document_id": "db3c5936-fd8e-5113-b60a-bd21373b3918",
   "edition": "The United States Catholic Magazine (Baltimore), vol. 8, no. 13, 31 March 1849, 'Encyclical letter of Our Holy Father Pope Pius IX, in Latin, with a translation for this magazine', ending 'Given at Gaeta, February 2, 1849'. A different translation from papalencyclicals.net's (from Papal Documents on Mary, 1954). Internet Archive scan sim_united-states-catholic-magazine_1849-03-31_8_13",
   "translator": null,
   "first_published": 1849,
@@ -8005,7 +8005,7 @@
   "credit_line": "Translation from The United States Catholic Magazine (1849)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Singulari Nos",
@@ -8179,24 +8179,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/pius09/p9ubipr1.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Ubi Primum (1849)",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/ubi-primum-1849.html",
-  "document_id": "db3c5936-fd8e-5113-b60a-bd21373b3918",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9ubipr2.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,

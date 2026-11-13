@@ -1,0 +1,389 @@
+[
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": " Catholic\n\ncs Church,",
+  "replace": " Catholic Church,",
+  "why": "pp. 198–199: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "cheer-A earn St ali fully",
+  "replace": "cheerfully",
+  "why": "pp. 198–199: misread on the page; the print reads \"cheerfully\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "cur pre-a decessor",
+  "replace": "our predecessor",
+  "why": "pp. 198–199: misread on the page; the print reads \"our predecessor\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "‘ Jm-tere ®S maculatam.”",
+  "replace": "“Immaculatam.”",
+  "why": "pp. 198–199: misread on the page; the print reads \"“Immaculatam.”\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": " of\n\ngies the",
+  "replace": " of the",
+  "why": "pp. 198–199: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "\n\nee\n\nOe UNITED STATES CATHOLIC MAGAZINE. ”\n\n199\n\nere",
+  "replace": "",
+  "why": "pp. 198–199: the running head, the page number \"199\" and marks from the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "in publi, in",
+  "replace": "in public, in",
+  "why": "pp. 198–199: misread on the page; the print reads \"public,\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "eongrega-ane SST _ tions, especially the distingnished Order ol",
+  "replace": "congregations, especially the distinguished Order of",
+  "why": "pp. 198–199: marks from the column rule and the Latin column read into the text, removed; and misread on the page; the print reads \"congregations, especially the distinguished Order of\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "mostvenerable",
+  "replace": "most venerable",
+  "why": "pp. 198–199: spacing"
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "atiest-ed",
+  "replace": "attested",
+  "why": "pp. 198–199: misread on the page; the print reads \"attested\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "XVI, 'of blessed",
+  "replace": "XVI, of blessed",
+  "why": "pp. 198–199: misread on the page; the print reads \"of\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "sublime chait of",
+  "replace": "sublime chair of",
+  "why": "pp. 198–199: misread on the page; the print reads \"chair\""
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": " Providence, | we",
+  "replace": " Providence, we",
+  "why": "pp. 198–199: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": "but | by ",
+  "replace": "but by ",
+  "why": "pp. 198–199: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": " apostolical\n\nbenediction:\n\n",
+  "replace": " apostolical benediction:\n\n",
+  "why": "pp. 198–199: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "ubi-primum-1849-01",
+  "find": " IX. Venerable ",
+  "replace": " IX.\n\nVenerable ",
+  "why": "pp. 198–199: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": " our\n\nPontificate,",
+  "replace": " our supreme Pontificate,",
+  "why": "p. 199: the clean-up read \"supreme\" after the page-end line and set it at the head of the next passage; the print reads \"our supreme Pontificate,\""
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": " name.\n\nHence, ",
+  "replace": " name. Hence, ",
+  "why": "p. 199: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": "the most’ Blessed",
+  "replace": "the most Blessed",
+  "why": "p. 199: misread on the page; the print reads \"most\""
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": "¢reate surprise among\n\namie “Oe",
+  "replace": "create surprise among",
+  "why": "p. 199: marks from the column rule and the Latin column read into the text, removed; and misread on the page; the print reads \"create surprise among\""
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": "for thei genius,",
+  "replace": "for their genius,",
+  "why": "p. 199: misread on the page; the print reads \"their\""
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": "been*wanting,",
+  "replace": "been wanting,",
+  "why": "p. 199: misread on the page; the print reads \"been wanting,\""
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": "Imm«culate",
+  "replace": "Immaculate",
+  "why": "p. 199: misread on the page; the print reads \"Immaculate\""
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "find": "np ae a Virgin ",
+  "replace": "Virgin ",
+  "why": "p. 199: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "through Mary.”;",
+  "replace": "through Mary.”",
+  "why": "pp. 199–200: note marks calling the magazine's footnotes (citations, left out as apparatus) removed; and misread on the page, the print reads \"through Mary.”\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "that al! should",
+  "replace": "that all should",
+  "why": "pp. 199–200: misread on the page; the print reads \"all\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "… be cause",
+  "replace": ". . . . because",
+  "why": "pp. 199–200: misread on the page; the print reads \". . . . because\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "through.her",
+  "replace": "through her",
+  "why": "pp. 199–200: misread on the page; the print reads \"through her\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "grace, i! there",
+  "replace": "grace, if there",
+  "why": "pp. 199–200: misread on the page; the print reads \"if\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "ground o! our",
+  "replace": "ground of our",
+  "why": "pp. 199–200: misread on the page; the print reads \"of\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "sor rowing",
+  "replace": "sorrowing",
+  "why": "pp. 199–200: spacing"
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "incredible grief agitates",
+  "replace": "incredible grief, agitates",
+  "why": "pp. 199–200: misread on the page; the print reads \"grief,\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "of evi which",
+  "replace": "of evil which",
+  "why": "pp. 199–200: misread on the page; the print reads \"evil\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "sins, an/ calm",
+  "replace": "sins, and calm",
+  "why": "pp. 199–200: misread on the page; the print reads \"and\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "divine | wrath ",
+  "replace": "divine wrath ",
+  "why": "pp. 199–200: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "God, wil deign",
+  "replace": "God, will deign",
+  "why": "pp. 199–200: misread on the page; the print reads \"will\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "as wel as",
+  "replace": "as well as",
+  "why": "pp. 199–200: misread on the page; the print reads \"well\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "labors an/ necessities,",
+  "replace": "labors and necessities,",
+  "why": "pp. 199–200: misread on the page; the print reads \"and\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "Jamentable misfo. tunes,",
+  "replace": "lamentable misfortunes,",
+  "why": "pp. 199–200: misread on the page; the print reads \"lamentable misfortunes,\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "maternal! hear, |",
+  "replace": "maternal heart,",
+  "why": "pp. 199–200: misread on the page; the print reads \"maternal heart,\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "with | the ",
+  "replace": "with the ",
+  "why": "pp. 199–200: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "saved they | from",
+  "replace": "saved them from",
+  "why": "pp. 199–200: marks from the column rule and the Latin column read into the text, removed; and misread on the page; the print reads \"them\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "«. saults",
+  "replace": "assaults",
+  "why": "pp. 199–200: misread on the page; the print reads \"assaults\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "rescued thy | Christian",
+  "replace": "rescued the Christian",
+  "why": "pp. 199–200: marks from the column rule and the Latin column read into the text, removed; and misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "* all fy) |",
+  "replace": "all full",
+  "why": "pp. 199–200: misread on the page; the print reads \"all full\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "who, * place between",
+  "replace": "who, “placed between",
+  "why": "pp. 199–200: note marks calling the magazine's footnotes (citations, left out as apparatus) removed; and misread on the page, the print reads \"who, “placed between\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "God,” * who ",
+  "replace": "God,” who ",
+  "why": "pp. 199–200: note marks calling the magazine's footnotes (citations, left out as apparatus) removed; and misread on the page, the print reads \"God,” who \""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "deeision which should’",
+  "replace": "decision which should",
+  "why": "pp. 199–200: misread on the page; the print reads \"decision which should\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "enlighten oar spirit",
+  "replace": "enlighten our spirit",
+  "why": "pp. 199–200: misread on the page; the print reads \"our\""
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "find": "supreme have ",
+  "replace": "have ",
+  "why": "pp. 199–200: the word \"supreme\" restored to its place before \"Pontificate\" (the clean-up had moved it)"
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": " you, | each",
+  "replace": " you, each",
+  "why": "p. 200: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "solicitac le,",
+  "replace": "solicitude,",
+  "why": "p. 200: misread on the page; the print reads \"solicitude,\""
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "emt-late",
+  "replace": "emulate",
+  "why": "p. 200: misread on the page; the print reads \"emulate\""
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "illastrious",
+  "replace": "illustrious",
+  "why": "p. 200: misread on the page; the print reads \"illustrious\""
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "of theit _ deliberations.",
+  "replace": "of their deliberations.",
+  "why": "p. 200: marks from the column rule and the Latin column read into the text, removed; and misread on the page; the print reads \"their\""
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "to | their ",
+  "replace": "to their ",
+  "why": "p. 200: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": " and _ their",
+  "replace": " and their",
+  "why": "p. 200: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": " venerable _ brethren,",
+  "replace": " venerable brethren,",
+  "why": "p. 200: marks from the column rule and the Latin column read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "theologi- | cal",
+  "replace": "theological",
+  "why": "p. 200: marks from the column rule and the Latin column read into the text, removed; and misread on the page; the print reads \"theological\""
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "for thei! piety",
+  "replace": "for their piety",
+  "why": "p. 200: misread on the page; the print reads \"their\""
+ },
+ {
+  "passage": "ubi-primum-1849-04",
+  "find": "appointed « number",
+  "replace": "appointed a number",
+  "why": "p. 200: misread on the page; the print reads \"a\""
+ },
+ {
+  "passage": "ubi-primum-1849-05",
+  "find": "diocesses,",
+  "replace": "dioceses,",
+  "why": "p. 201: the correction's spelling; the print reads \"dioceses\""
+ },
+ {
+  "passage": "ubi-primum-1849-02",
+  "continues": true,
+  "why": "p. 199: the paragraph runs on from the passage before"
+ },
+ {
+  "passage": "ubi-primum-1849-03",
+  "continues": true,
+  "why": "pp. 199–200: the paragraph runs on from the passage before"
+ },
+ {
+  "passage": "ubi-primum-1849-05",
+  "continues": true,
+  "why": "pp. 200–201: the sentence runs over the page"
+ }
+]
