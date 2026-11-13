@@ -73,6 +73,7 @@ class WorkConfig:
     scan: str                    # the Internet Archive identifier, or the PDF scan's name
     pages: tuple[str, str]       # first and last printed page
     baseline: Baseline
+    only_pages: tuple[str, ...] = ()   # within `pages`, the pages read (a facing Latin page left out)
     djvu_xml: str = ""           # paths relative to datapipeline/sources/
     page_numbers: str = ""
     pdf: str = ""                # a PDF with a text layer, read instead (`pdf.py`)
@@ -84,6 +85,7 @@ class WorkConfig:
     max_paragraph_words: int | None = None   # cut longer paragraphs at a sentence end
     paragraph_opens: tuple[str, ...] = ()   # lines that open a paragraph the clean-up misses
     rule_lines: tuple[str, ...] = ()   # printed rules the OCR reads as letters, one line each
+    watermark: str | None = None   # a scanner's stamp on every page ("Digitized by Google")
     note_opens: tuple[str, ...] = ()   # the line opening each page's notes, where the measure misses
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
@@ -100,6 +102,7 @@ class WorkConfig:
     def from_dict(cls, d: dict) -> "WorkConfig":
         d = dict(d)
         d["pages"] = tuple(d["pages"])
+        d["only_pages"] = tuple(d.get("only_pages", ()))
         d["names"] = tuple(d.get("names", ()))
         d["unit_closes"] = tuple(d.get("unit_closes", ()))
         d["paragraph_opens"] = tuple(d.get("paragraph_opens", ()))

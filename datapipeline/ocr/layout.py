@@ -2,7 +2,8 @@
 
 A work's config names its layout. `single-column` is one block of text read top to
 bottom. `parallel-left` keeps the left of two parallel columns (Deferrari's Constantinople
-IV: Anastasius's Latin on the left, the Greek on the right). A page in two columns of
+IV: Anastasius's Latin on the left, the Greek on the right); `parallel-right` keeps the
+right (Unam Sanctam's English beside its Latin, 1.3d). A page in two columns of
 running text, or in parallel Latin and English columns (R8: Unam Sanctam, Ubi Primum
 1849), would be another `Layout` that returns the lines it keeps in reading order;
 `furniture.py` works on whatever a layout returns, so adding one does not change the
@@ -94,7 +95,34 @@ class ParallelLeft:
         return None
 
 
-LAYOUTS: dict[str, Layout] = {SingleColumn.name: SingleColumn(), ParallelLeft.name: ParallelLeft()}
+class ParallelRight:
+    """The right column where a page sets an original and its translation side by side,
+    each column its own lines (a djvu scan: the Catholic Historical Review prints Unam
+    Sanctam's Latin on the left and Curley's English on the right, 1.3d), and every line
+    that runs across both columns, read top to bottom.
+
+    The text block runs from the left edge of most lines to the right edge of most
+    lines; a line lies in the right column when it starts right of the block's middle,
+    and runs across when it starts left of the middle and ends right of it by more than
+    `ACROSS` of the page width. Lines of the left column are left out."""
+    name = "parallel-right"
+
+    ACROSS = 0.1
+
+    def reading_order(self, page: Page) -> list[Line]:
+        lines = sorted(page.lines, key=lambda ln: (ln.top, ln.x0))
+        if not lines:
+            return lines
+        lefts = sorted(ln.x0 for ln in lines)
+        rights = sorted(ln.x1 for ln in lines)
+        middle = (lefts[len(lefts) // 10] + rights[-1 - len(rights) // 10]) / 2
+        across = self.ACROSS * page.width
+        return [ln for ln in lines
+                if ln.x0 >= middle or (ln.x0 < middle and ln.x1 > middle + across)]
+
+
+LAYOUTS: dict[str, Layout] = {SingleColumn.name: SingleColumn(), ParallelLeft.name: ParallelLeft(),
+                              ParallelRight.name: ParallelRight()}
 
 
 def get_layout(name: str) -> Layout:

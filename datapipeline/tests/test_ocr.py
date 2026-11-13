@@ -1018,3 +1018,51 @@ def test_chrystal_units_drop_his_summaries_and_note_calls_and_keep_quotes():
         "May you continue strong, O brother, and to God most dear”."]
     with pytest.raises(ValueError, match="does not close"):
         ChrystalLetter().split(paras[:2], bounds=({"id": "x", "first": "^“To", "last": "Section"},))
+
+
+# ------------------------------------------------- 1.3d: papal printings' scans
+
+def test_only_pages_reads_the_pages_named(tmp_path, sources):
+    """A printing that faces its Latin with the English reads only the English pages."""
+    w = WorkDir(make_config(only_pages=("10", "12")), root=tmp_path / "w")
+    clean_work(w, sources=sources, passage_words=20)
+    assert {p for passage in w.passages() for p in passage.pages} <= {"10", "12"}
+    with pytest.raises(ValueError, match="only_pages"):
+        clean_work(WorkDir(make_config(only_pages=("10", "99")), root=tmp_path / "x"),
+                   sources=sources, passage_words=20)
+
+
+def test_parallel_right_keeps_the_right_column_and_lines_across_the_page():
+    from ocr.layout import ParallelRight
+
+    lines = [Line("The text of the Bull runs thus:", 460, 100, 2150, 140)]
+    for k in range(8):
+        lines.append(Line(f"Latin line {k}", 460, 200 + 60 * k, 1270, 240 + 60 * k))
+        lines.append(Line(f"English line {k}", 1335, 200 + 60 * k, 2145, 240 + 60 * k))
+    kept = [ln.text for ln in ParallelRight().reading_order(Page(0, 2500, 3800, lines))]
+    assert kept == ["The text of the Bull runs thus:"] + [f"English line {k}" for k in range(8)]
+    assert get_layout("parallel-right").name == "parallel-right"
+
+
+def test_watermark_is_taken_out_of_the_line_it_was_read_into():
+    body = [Line(f"Ordinary words on line {k} of this page run on", 150, 300 + 75 * k, 1850, 360 + 75 * k)
+            for k in range(6)]
+    page = Page(0, 2000, 3000, body + [
+        Line("Digitized by LjOOQle", 1200, 2700, 1800, 2750),
+        Line("Digitized by CjOOQle principles, to attain the truth.", 150, 760, 1850, 820)])
+    result = clean_pages([page], watermark=r"Digitized by \S+")
+    text = "\n".join(p.text for p in result.paragraphs)
+    assert "Digitized" not in text and "principles, to attain the truth." in text
+    assert [r.kind for r in result.removals].count("watermark") == 2
+
+
+def test_bounded_text_keeps_its_quotes_when_asked():
+    from ocr.furniture import Paragraph
+    from ocr.units import Bounded
+
+    paras = [Paragraph('He wrote: "Mirari vos" is cited.', "", [0]),
+             Paragraph("Given at Rome, 1864.", "", [0])]
+    bound = {"id": "t", "first": "^He wrote", "last": "^Given"}
+    dropped = Bounded().split(paras, bounds=(bound,))[0].paragraphs[0].text
+    kept = Bounded().split(paras, bounds=({**bound, "keep_quotes": True},))[0].paragraphs[0].text
+    assert '"' not in dropped and kept == 'He wrote: "Mirari vos" is cited.'
