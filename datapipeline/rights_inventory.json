@@ -6035,24 +6035,6 @@
   "planned_for": null
  },
  {
-  "work": "Cum Summi",
-  "author": "Pope Clement XIV",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/cum-summi.html",
-  "document_id": "0331a922-e070-507b-a723-88e5a832f491",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/clem14/c14cumsu.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Decet Quam Maxime",
   "author": "Pope Clement XIV",
   "collection": "encyclicals",
@@ -7094,8 +7076,8 @@
   "author": "Pope Clement XIV",
   "collection": "encyclicals",
   "source_path": "encyclicals/interestinglett00xivgoog/",
-  "document_id": null,
-  "edition": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.) Translated from the French edition published at Paris (Newcastle: printed by T. Saint, for W. Charnley, 1777), Appendix: 'An Encyclical, or Circular Letter, addressed to all the Patriarchs, Primates, Archbishops, and Bishops, on his Exaltation to the Pontificate' (12 December 1769). Translated from the French, not directly from the Latin. A different translation from papalencyclicals.net's, and abridged: it omits paragraph 9 (the announcement of the accompanying Jubilee letter). Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan interestinglett00xivgoog (also ECCO bim_eighteenth-century_interesting-letters-of-p_clement-xiv-pope_1777_2_0)",
+  "document_id": "0331a922-e070-507b-a723-88e5a832f491",
+  "edition": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.) Translated from the French edition published at Paris (Newcastle: printed by T. Saint, for W. Charnley, 1777), Appendix: 'An Encyclical, or Circular Letter, addressed to all the Patriarchs, Primates, Archbishops, and Bishops, on his Exaltation to the Pontificate' (12 December 1769), pp. 379-386. Translated from the French, not directly from the Latin. A different translation from papalencyclicals.net's, and abridged: it omits paragraph 9 (the announcement of the accompanying Jubilee letter). Only the paragraphs it holds are published; the rest are held for permission (1.3d step 6). Internet Archive scan interestinglett00xivgoog (also ECCO bim_eighteenth-century_interesting-letters-of-p_clement-xiv-pope_1777_2_0)",
   "translator": null,
   "first_published": 1777,
   "source_url": "https://archive.org/details/interestinglett00xivgoog",
@@ -7105,7 +7087,7 @@
   "credit_line": "Translation from Interesting Letters of the Late Pope Clement XIV (1777), abridged",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Salutis Nostrae",

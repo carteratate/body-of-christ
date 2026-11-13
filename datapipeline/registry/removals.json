@@ -29286,6 +29286,22 @@
   "added_on": "2026-11-05"
  },
  {
+  "id": "rm-2229",
+  "scope": "passage",
+  "collection": "encyclicals",
+  "document_id": "0331a922-e070-507b-a723-88e5a832f491",
+  "anchor": "cum-summi/9",
+  "passage_id": "418eff6e-7dce-5424-8220-ed5d218b34bf",
+  "reason": "awaiting-permission",
+  "detail": "Paragraph 9 is not in the public-domain printing (Interesting Letters of Clement XIV, 1777, which omits the announcement of the accompanying Jubilee letter); the only English of it is Carlen's 1981 translation, held until its publisher grants permission (ADR 0001).",
+  "tombstone": "This translation is not available on TheoCorpus at present.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.3d",
+  "added_on": "2026-11-13"
+ },
+ {
   "id": "rm-2112",
   "scope": "document",
   "collection": "encyclicals",

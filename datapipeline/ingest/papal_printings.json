@@ -3194,5 +3194,120 @@
    10
   ],
   "notes": "This English printing (The American Annual Cyclopaedia, 1868) quotes most of paragraph 1 and the first part of paragraph 2; the address, the rest of paragraph 2 and paragraphs 3–10 are not available on TheoCorpus at present."
+ },
+ "encyclicals/cum-summi": {
+  "source": "ocr",
+  "work": "interesting-letters-1777-cum-summi",
+  "file": "interestinglett00xivgoog/",
+  "url": "https://archive.org/details/interestinglett00xivgoog",
+  "translation": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.), translated from the French (Newcastle, 1777)",
+  "units": [
+   {
+    "opens": "To all the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "CLEMENT XIV",
+    "unit": "preamble"
+   },
+   {
+    "opens": "To our Venerable Brethren",
+    "unit": "preamble"
+   },
+   {
+    "opens": "WHEN we consider the duties",
+    "unit": 1
+   },
+   {
+    "opens": "But it is the work of the Lord",
+    "unit": "+"
+   },
+   {
+    "opens": "While we cast our eyes",
+    "unit": 2
+   },
+   {
+    "opens": "In the first place",
+    "unit": 3
+   },
+   {
+    "opens": "Intrusted, as his Vicar",
+    "unit": "+"
+   },
+   {
+    "opens": "There never was a time",
+    "unit": 4
+   },
+   {
+    "opens": "A fresh motive this",
+    "unit": "+"
+   },
+   {
+    "opens": "You will succeed in this glorious",
+    "unit": "+",
+    "until": "Let us draw only from scripture"
+   },
+   {
+    "opens": "Let us draw only from scripture",
+    "unit": 5
+   },
+   {
+    "opens": "Such is the connection",
+    "unit": "+"
+   },
+   {
+    "opens": "We therefore exhort you",
+    "unit": 6
+   },
+   {
+    "opens": "When you have by your application",
+    "unit": "+"
+   },
+   {
+    "opens": "By thus labouring",
+    "unit": "+"
+   },
+   {
+    "opens": "It would undoubtedly be superfluous",
+    "unit": 7
+   },
+   {
+    "opens": "If you have an ardent desire",
+    "unit": "+"
+   },
+   {
+    "opens": "When people are convinced",
+    "unit": "+"
+   },
+   {
+    "opens": "Since therefore, Venerable",
+    "unit": "+",
+    "until": "And think not, Venerable"
+   },
+   {
+    "opens": "And think not, Venerable",
+    "unit": 8
+   },
+   {
+    "opens": "Ah! What can appear",
+    "unit": "+"
+   },
+   {
+    "opens": "Oh that we could",
+    "unit": "+"
+   },
+   {
+    "opens": "As a pledge of our love",
+    "unit": 10
+   },
+   {
+    "opens": "Rome, at St. Mary-Major",
+    "unit": "+"
+   }
+  ],
+  "omits": [
+   9
+  ],
+  "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraph 9; it is not available on TheoCorpus at present."
  }
 }
