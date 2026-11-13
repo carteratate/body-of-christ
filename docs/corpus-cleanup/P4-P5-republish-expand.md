@@ -130,15 +130,39 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
      ```
      Check the dashboard for disk use (36% on 30 Oct 2026).
   2. Disk check. If disk use plus the peak estimate would pass 85% of the provisioned disk, stop and ask Carter. It is not expected to trigger: 0.6 measured 36% on 30 Oct 2026, and the peak adds about 250 MiB. Do not work around it by dropping indexes, which would break full-text search during the window.
-  3. Quiet window (Carter approves the time). In one `psql` session:
-     ```sql
-     set lock_timeout = '5s';        -- fail fast instead of queueing every search behind the lock
-     set statement_timeout = 0;
-     \timing on
-     vacuum (full, verbose, analyze) chunks;
-     ```
-     If the lock is not acquired within 5 s, retry once a minute; do not raise `lock_timeout`.
-     In the same window, apply 2.2c's migration, which redefines `search_vector` (C-16, decided by Carter on 9 Oct 2026). It rewrites `chunks` and rebuilds its indexes as `VACUUM FULL` does, so run it first, measure, and run `VACUUM FULL` only if the measurement shows space left to reclaim. Never run two rewrites back to back without measuring the size between them; each has the peak described above. The migration must be applied before 4.1b step 1. Right after it, run `drop_corpus_staging(); create_corpus_staging();`, because 0043 created the staging tables with the old expression and `CREATE TABLE IF NOT EXISTS` would keep them.
+  3. Quiet window (Carter approves the time). It applies 2.2c's migration, `supabase/migrations/0045_search_vector_markers_and_reference.sql`, which redefines `search_vector` (C-16, decided by Carter on 9 Oct 2026), and then runs `VACUUM FULL` only if the measurement shows space left to reclaim. The migration rewrites `chunks` and rebuilds its indexes as `VACUUM FULL` does, so it comes first. Never run two rewrites back to back without measuring the size between them; each has the peak described above. The migration must be applied before 4.1b step 1. All in one `psql` session:
+     1. Check that staging holds no publish, since step 3.3 drops it. Both must return 0 rows; if not, stop and ask Carter:
+        ```sql
+        select id from corpus_publishes where cleaned_up_at is null and discarded_at is null;
+        select 'chunks' t, count(*) from staging.chunks having count(*) > 0
+        union all select 'documents', count(*) from staging.documents having count(*) > 0;
+        ```
+     2. Apply the migration. It sets its own `lock_timeout = '5s'` and `statement_timeout = 0` for its transaction, drops the GIN index, rewrites the column (`SET EXPRESSION` on Postgres 17) and builds the index again:
+        ```sql
+        \timing on
+        \i supabase/migrations/0045_search_vector_markers_and_reference.sql
+        ```
+        Run it as one transaction (`psql --single-transaction -f …`, or `begin;` … `\i` … `commit;`). If the lock is not acquired within 5 s, it fails and changes nothing; retry once a minute, and do not raise `lock_timeout`. Measured locally on 12 Nov 2026 (Postgres 16 on the Lenovo, a restore of the 31 Oct snapshot's 54,555 passages without `metadata`, drop-and-add path): 9.4 s, `chunks` 186 MB before and 181 MB after. Production's Micro compute is slower and its rows carry `metadata`, so expect several times that; search and the reader pause for all of it.
+     3. Recreate staging, because 0043 created the staging tables with the old expression, `CREATE TABLE IF NOT EXISTS` would keep them, and 2.2w's shape check refuses a stage until they match:
+        ```sql
+        select drop_corpus_staging();
+        select create_corpus_staging();
+        analyze chunks;  -- the rewrite leaves search_vector without statistics
+        ```
+     4. Record the migration in the Supabase ledger (`supabase_migrations.schema_migrations`) the way 0042 and 0043 were recorded (`NEEDS-CARTER.md`, 2.2a).
+     5. Measure with the step 1 queries. Then, only if heap plus TOAST is still well above the live row bytes:
+        ```sql
+        set lock_timeout = '5s';
+        set statement_timeout = 0;
+        vacuum (full, verbose, analyze) chunks;
+        ```
+     6. Check the rewrite, which must return 0, and that keyword search finds `canon 1055`, `ccc 2267` and `john 3` (4.2's keyword-search checks):
+        ```sql
+        select count(*) from chunks where search_vector is distinct from
+          setweight(to_tsvector('english', regexp_replace(content, '\{\{v:\d+\}\}', ' ', 'g')), 'A')
+          || setweight(to_tsvector('english', regexp_replace(coalesce(reference, ''), '[§:;,.()–—-]', ' ', 'g')), 'B');
+        ```
+     Rollback, if search misbehaves: apply 0004's expression the same way (`alter table chunks alter column search_vector set expression as (to_tsvector('english', content))`, with the index dropped first and built after, in one transaction), then step 3.3 again. Neither direction loses data.
   4. Measure again with the step 1 queries. Record duration, before and after sizes, and WAL size.
   5. Qdrant (settled from 0.5, 30 Oct 2026). From 4.1b step 1 until the old collection is deleted after the rollback window, the cluster holds two full collections (today's `chunks` and the new one, each with every passage). 4.1b creates the new collection with today's settings, `on_disk=False` for vectors and the HNSW graph in memory (decided by Carter on 30 Oct 2026). Two collections fit the Free cluster's 1 GiB: Qdrant stores in-memory vectors as `InRamChunkedMmap`, a file-backed mapping it loads up front, so their 335 MB is page cache the kernel can reclaim, and the memory Qdrant cannot give back is about 52 MB today (0.5). If both collections' vectors do not fit in the cache, the cost is page faults and slower search, not an out-of-memory restart. 4.2's pre-cutover run times searches on the new collection. If they are too slow, Carter chooses between a paid Qdrant tier for the cutover month and the slower search.
   6. Apply peak. After 4.1a's rehearsal reports the peak database size through staging and apply, record it next to the projection above. Nothing is decided unless it would fail step 2's disk check. P5's limits are 5.2's stop.
