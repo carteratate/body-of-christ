@@ -1,0 +1,14 @@
+[
+ {
+  "passage": "singulari-nos",
+  "find": "truth\" [I Tim. 3: 15].",
+  "replace": "truth\".",
+  "why": "pp. 404–405: Deferrari's bracketed Bible reference, an editor's addition, taken out, as in the earlier Deferrari works"
+ },
+ {
+  "passage": "singulari-nos",
+  "find": "wise\" [cf. Rom. 12:3],",
+  "replace": "wise\",",
+  "why": "pp. 404–405: Deferrari's bracketed Bible reference, an editor's addition, taken out, as in the earlier Deferrari works"
+ }
+]

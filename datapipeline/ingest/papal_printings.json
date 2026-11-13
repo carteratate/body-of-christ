@@ -3454,5 +3454,120 @@
    13
   ],
   "notes": "This English printing (The Jesuit, Boston, 1829) is abridged: it shortens several paragraphs and omits paragraphs 2, 8, 9, 11 and 13; what it leaves out is not available on TheoCorpus at present."
+ },
+ "encyclicals/vix-pervenit": {
+  "source": "ocr",
+  "file": "../councils/sources-of-catholic-dogma/",
+  "url": "https://archive.org/details/sourcesofcatholi00denz",
+  "translation": "R. J. Deferrari, The Sources of Catholic Dogma (St. Louis, 1957), from Denzinger's Enchiridion",
+  "passage_note": "Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic Dogma (1957).",
+  "work": "deferrari-vix-pervenit",
+  "units": [
+   {
+    "opens": "1. That species of sin",
+    "unit": 3
+   },
+   {
+    "opens": "2. Nor may any defense",
+    "unit": "+"
+   },
+   {
+    "opens": "3. But by this",
+    "unit": "+"
+   },
+   {
+    "opens": "4. But, just as",
+    "unit": "+"
+   },
+   {
+    "opens": "5. But this must be",
+    "unit": "+"
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "notes": "Only an extract of this encyclical is given, in R. J. Deferrari's translation of Denzinger (1957): the five teachings on usury in paragraph 3. The rest is not available on TheoCorpus at present."
+ },
+ "encyclicals/singulari-nos": {
+  "source": "ocr",
+  "file": "../councils/sources-of-catholic-dogma/",
+  "url": "https://archive.org/details/sourcesofcatholi00denz",
+  "translation": "R. J. Deferrari, The Sources of Catholic Dogma (St. Louis, 1957), from Denzinger's Enchiridion",
+  "passage_note": "Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic Dogma (1957).",
+  "work": "deferrari-singulari-nos",
+  "units": [
+   {
+    "opens": "But it is a very mournful thing",
+    "unit": 8
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   9
+  ],
+  "notes": "Only an extract of this encyclical is given, in R. J. Deferrari's translation of Denzinger (1957): paragraph 8. The rest is not available on TheoCorpus at present."
+ },
+ "encyclicals/quanto-conficiamur-moerore": {
+  "source": "ocr",
+  "file": "../councils/sources-of-catholic-dogma/",
+  "url": "https://archive.org/details/sourcesofcatholi00denz",
+  "translation": "R. J. Deferrari, The Sources of Catholic Dogma (St. Louis, 1957), from Denzinger's Enchiridion",
+  "passage_note": "Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic Dogma (1957).",
+  "work": "deferrari-quanto-conficiamur-moerore",
+  "units": [
+   {
+    "opens": "And here, beloved Sons",
+    "unit": 7,
+    "until": "But, the Catholic dogma"
+   },
+   {
+    "opens": "But, the Catholic dogma",
+    "unit": 8
+   },
+   {
+    "opens": "But, God forbid",
+    "unit": 9
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21
+  ],
+  "notes": "Only extracts of this encyclical are given, in R. J. Deferrari's translation of Denzinger (1957): paragraph 7, the first part of paragraph 8, and paragraph 9. The rest is not available on TheoCorpus at present."
  }
 }

@@ -9985,7 +9985,9 @@
   "new_anchor": "exsurge-domine/closing/from-e59",
   "kind": "merged",
   "reason": "its text now lies in this passage",
-  "added_by": "1.3a"
+  "added_by": "1.3a",
+  "closed_by": "1.3d",
+  "closed_on": "2026-11-13"
  },
  {
   "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
@@ -9995,7 +9997,9 @@
   "new_anchor": "exsurge-domine/closing/from-e62",
   "kind": "merged",
   "reason": "its text now lies in this passage",
-  "added_by": "1.3a"
+  "added_by": "1.3a",
+  "closed_by": "1.3d",
+  "closed_on": "2026-11-13"
  },
  {
   "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
@@ -10005,7 +10009,9 @@
   "new_anchor": "exsurge-domine/preamble/from-e12",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "1.3d",
+  "closed_on": "2026-11-13"
  },
  {
   "document_id": "6410138e-f599-5155-a615-fc79250cf608",
@@ -24992,6 +24998,16 @@
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
   "added_by": "1.10b"
+ },
+ {
+  "document_id": "f4987a29-60eb-5834-9cf0-045324a8f1b0",
+  "old_passage_id": "05a63539-727c-59df-893e-7df864396a3a",
+  "old_anchor": "vix-pervenit/3/from-e16",
+  "new_passage_id": "461ee0c9-975c-5a18-a66d-01fe5fd2be65",
+  "new_anchor": "vix-pervenit/3/from-p4",
+  "kind": "merged",
+  "reason": "its text, the fifth teaching on usury, now lies in this passage, in Deferrari's translation",
+  "added_by": "1.3d"
  },
  {
   "document_id": "f54576c1-723f-53b7-a6d0-f19945eb97c7",
