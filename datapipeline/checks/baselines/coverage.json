@@ -4,7 +4,7 @@
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
-  "church-fathers": "feat/1.8b-npnf-augustine-strip 43116e3",
+  "church-fathers": "worktree-bridge-cse_01MzvQVk1Tp45YFpw72ihCvk 047867d",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "feat/1.3d-2-wikisource-pair bc02506",
   "medieval": "feat/1.10c-piece-citations 269d968",
@@ -762,10 +762,10 @@
    "covered_chars": 597242,
    "pct": 100.0
   },
-  "church-fathers/incarnation.xml": {
-   "body_chars": 127340,
-   "covered_chars": 127340,
-   "pct": 100.0
+  "church-fathers/npnf204.xml": {
+   "body_chars": 137123,
+   "covered_chars": 137092,
+   "pct": 99.98
   },
   "church-fathers/on-the-holy-trinity.xml": {
    "body_chars": 2211805,
@@ -3413,10 +3413,10 @@
   },
   "cf235300-e37d-5a7a-a421-f50efff38355": {
    "collection": "church-fathers",
-   "source_file": "incarnation.xml",
-   "body_chars": 127340,
-   "covered_chars": 127340,
-   "pct": 100.0
+   "source_file": "npnf204.xml",
+   "body_chars": 137123,
+   "covered_chars": 137092,
+   "pct": 99.98
   },
   "cf8278dd-3523-576c-b85a-1402077bdae3": {
    "collection": "church-fathers",
