@@ -17,6 +17,7 @@ from identity import passage_id
 from model import Document, Work
 from publication import StageRequest, StageRefused
 from tests import pg_corpus
+from writers import reader_writer
 from tests.stage_world import (DOC_A, DOC_B, DOC_S, LIVE, World, contents_tree, passage,
                                pid)
 
@@ -419,7 +420,15 @@ async def test_stage_refuses_staging_made_before_a_generated_column_changed(worl
     the old expression, so the stage refuses until 4.0's window recreates it."""
     world.cluster.psql(world.database, (pg_corpus.MIGRATIONS /
                        "0045_search_vector_markers_and_reference.sql").read_text(), single=True)
-    with pytest.raises(ValueError, match=r"staging\.chunks\.search_vector is"):
+    conn = await world.connect()
+    try:
+        problems = await reader_writer.staging_shape_problems(conn)
+    finally:
+        await conn.close()
+    # Before Postgres 17 the column also moves to the end, so later columns differ too.
+    [vector] = [p for p in problems if p.startswith("staging.chunks.search_vector is")]
+    assert "to_tsvector('english'::regconfig, content)" in vector
+    with pytest.raises(ValueError, match="the staging tables differ from live"):
         await world.runner().stage(STAGE)
 
     world.cluster.psql(world.database,
