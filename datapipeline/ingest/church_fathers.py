@@ -412,7 +412,13 @@ class _SectionEditor(Editor):
     loses only its "§5." number, a heading the label repeats."""
 
     def chapter(self, elem, label):
-        edit = super().chapter(elem, label)
+        return self._sectioned(super().chapter(elem, label), elem, label)
+
+    def _sectioned(self, edit, elem, label):
+        """`edit` with the section's heading or number taken out; its `again()` (the
+        audit's fresh edit, `tests/test_editorial.py`) takes out the same."""
+        plain = edit.again
+        edit.again = lambda: self._sectioned(plain(), elem, label)
         n = int(label.removeprefix("Section "))
         lead = next(b for b in direct_blocks(elem)
                     if _block_text(b) and id(b) not in edit.dropped)
