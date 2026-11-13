@@ -254,17 +254,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/TheEncyclicalLetterOfPopeLeoTheXI/TheEncyclicalLetterOfPopeLeoTheXI_djvu.xml",
-  "sha256": "b657d10a2c1eea8115f9d6609932defdaac2701028084c586b256b0dc2553136",
-  "bytes": 1042935,
-  "url": "https://archive.org/download/TheEncyclicalLetterOfPopeLeoTheXI/TheEncyclicalLetterOfPopeLeoTheXI_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/americanannualcyv7dapp/americanannualcyv7dapp_djvu.xml",
   "sha256": "f20e234f1a1da161fb00a22a74156c9f869aaa2824c93e21c76506d8b1113c51",
   "bytes": 65891594,
@@ -4072,6 +4061,17 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/TheEncyclicalLetterOfPopeLeoTheXI/TheEncyclicalLetterOfPopeLeoTheXI_djvu.xml",
+  "sha256": "b657d10a2c1eea8115f9d6609932defdaac2701028084c586b256b0dc2553136",
+  "bytes": 1042935,
+  "url": "https://archive.org/download/TheEncyclicalLetterOfPopeLeoTheXI/TheEncyclicalLetterOfPopeLeoTheXI_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "encyclicals",

@@ -1,0 +1,538 @@
+[
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "\n\n(a) Serm.3. de Natali ipsius hab. i a au< assump. suse ad Smi pont. ‘musiis. Ed. Bal. f r\n\n12",
+  "replace": "",
+  "why": "pp. 11–12: the pamphlet's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "cousolation,",
+  "replace": "consolation,",
+  "why": "pp. 11–12: misread on the page; the print reads \"consolation,\""
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "not, alas l been",
+  "replace": "not, alas! been",
+  "why": "pp. 11–12: misread on the page; the print reads \"alas!\""
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "our ioy, and",
+  "replace": "our joy, and",
+  "why": "pp. 11–12: misread on the page; the print reads \"joy,\""
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "you, — to",
+  "replace": "you,—to",
+  "why": "pp. 11–12: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "us (a).”\n\nWe desired.",
+  "replace": "us.”\n\nWe desired,",
+  "why": "pp. 11–12: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "we contide not",
+  "replace": "we confide not",
+  "why": "pp. 11–12: misread on the page; the print reads \"confide\""
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "feared; 1 have",
+  "replace": "feared; I have",
+  "why": "pp. 11–12: misread on the page; the print reads \"I\""
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "“ Lord, 1",
+  "replace": "“Lord, I",
+  "why": "pp. 11–12: misread on the page; the print reads \"“Lord, I\""
+ },
+ {
+  "passage": "ubi-primum-1824-01",
+  "find": "TRANSLATION,\n\n’TO",
+  "replace": "TRANSLATION.\n\nTO",
+  "why": "pp. 11–12: misread on the page; the print reads \"TRANSLATION.\" and \"TO OUR\" (a stray mark before it)"
+ },
+ {
+  "passage": "ubi-primum-1824-02",
+  "find": "declaring (c), “ and",
+  "replace": "declaring, “and",
+  "why": "p. 12: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed; the quotation mark set close"
+ },
+ {
+  "passage": "ubi-primum-1824-02",
+  "find": "words: “ Feed the",
+  "replace": "words: “Feed the",
+  "why": "p. 12: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-02",
+  "find": "Peter ( b ) instructed ",
+  "replace": "Peter instructed ",
+  "why": "p. 12: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-02",
+  "find": "siandments,",
+  "replace": "mandments,",
+  "why": "p. 12: misread on the page; the print reads \"mandments,\" (the word \"com-mandments\" runs over the page)"
+ },
+ {
+  "passage": "ubi-primum-1824-03",
+  "find": "words (e): “Whereas\n\n(£) Epist. 1. ch. 5. (c) Ibid. (d) Ses. 23. cap. 18.'\n\n(«) Seas. 23. de Ref. cap. 1.\n\n13",
+  "replace": "words: “Whereas",
+  "why": "pp. 12–13: the pamphlet's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1824-03",
+  "find": "Trent ( d ),",
+  "replace": "Trent,",
+  "why": "pp. 12–13: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-03",
+  "find": "Timothy, “ do not",
+  "replace": "Timothy, “do not",
+  "why": "pp. 12–13: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "arisen^ ami erfee",
+  "replace": "arisen, and arise",
+  "why": "pp. 13–14: misread on the page (a later reader struck through these words in ink; the print beneath reads \"arisen, and arise\")"
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "sevo** mre",
+  "replace": "severe are",
+  "why": "pp. 13–14: misread on the page (a later reader struck through these words in ink; the print beneath reads \"severe are\")"
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "mind: “ In this",
+  "replace": "mind: “In this",
+  "why": "pp. 13–14: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "Great ( g ) be ",
+  "replace": "Great be ",
+  "why": "pp. 13–14: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "the Ghurch, and",
+  "replace": "the Church, and",
+  "why": "pp. 13–14: misread on the page; the print reads \"Church,\""
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "exam« pies",
+  "replace": "examples",
+  "why": "pp. 13–14: misread on the page; the print reads \"examples\""
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "merits (/).",
+  "replace": "merits.",
+  "why": "pp. 13–14: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "to hare written",
+  "replace": "to have written",
+  "why": "pp. 13–14: misread on the page; the print reads \"have\""
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "14\n\nIt would be sufficient.",
+  "replace": "It would be sufficient,",
+  "why": "pp. 13–14: the page number \"14\" read into the text, removed; and \"sufficient.\" misread, the print reads \"sufficient,\""
+ },
+ {
+  "passage": "ubi-primum-1824-05",
+  "find": "food from, the",
+  "replace": "food from the",
+  "why": "pp. 13–14: misread on the page; the print reads \"from\""
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "\n\n(f) S. Leo, Ser. 5. de Nat. ipsius. (g) S. Leo, ibid. ( k ) In Bp. ad Gal. Lil. 3. ch. 5. (») S. Leo, ibid.\n\n(/) Ep. ad Rom. cap. 18.\n\n15\n\n",
+  "replace": " ",
+  "why": "pp. 14–15: the pamphlet's footnotes (citations, left out as apparatus), the page number read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "us (I ): “ I",
+  "replace": "us: “I",
+  "why": "pp. 14–15: misread on the page; the print reads \"us: “I\""
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "whatever sectis most",
+  "replace": "whatever sect is most",
+  "why": "pp. 14–15: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "teaching «that God",
+  "replace": "teaching that God",
+  "why": "pp. 14–15: misread on the page; the print reads \"that\""
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "“tmlyln-eml",
+  "replace": "only in civil",
+  "why": "pp. 14–15: misread on the page (a later reader struck through these words in ink; the print beneath reads \"only in civil\")"
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "Latitude narianism",
+  "replace": "Latitudinarianism",
+  "why": "pp. 14–15: misread on the page; the print reads \"Latitudinarianism\""
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "has rakea from",
+  "replace": "has raked from",
+  "why": "pp. 14–15: misread on the page; the print reads \"raked\""
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "thte pastors themselves (i).",
+  "replace": "the pastors themselves.",
+  "why": "pp. 14–15: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "be pot only",
+  "replace": "be not only",
+  "why": "pp. 14–15: misread on the page; the print reads \"not\""
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "disciples, “ Lo, 1 am",
+  "replace": "disciples, “Lo, I am",
+  "why": "pp. 14–15: misread on the page; the print reads \"“Lo, I\""
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "that “ He does",
+  "replace": "that “He does",
+  "why": "pp. 14–15: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "speaks (A): “ It",
+  "replace": "speaks: “It",
+  "why": "pp. 14–15: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed; the quotation mark set close"
+ },
+ {
+  "passage": "ubi-primum-1824-06",
+  "find": "closely.",
+  "replace": "closely,",
+  "why": "pp. 14–15: misread on the page; the print reads \"closely,\""
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "reasonable man 1 and",
+  "replace": "reasonable man? and",
+  "why": "p. 15: misread on the page; the print reads \"man?\""
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "ap- * proved",
+  "replace": "approved",
+  "why": "p. 15: misread on the page; the print reads \"approved\""
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "which Was rejected",
+  "replace": "which was rejected",
+  "why": "p. 15: misread on the page; the print reads \"was\""
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "Latitucli-narianism,",
+  "replace": "Latitudinarianism,",
+  "why": "p. 15: misread on the page; the print reads \"Latitudinarianism,\""
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "in words. Revelation",
+  "replace": "in words, Revelation",
+  "why": "p. 15: misread on the page; the print reads \"words,\""
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "the B Catholic ",
+  "replace": "the Catholic ",
+  "why": "p. 15: a mark on the page (a dot between \"the\" and \"Catholic\") read as \"B\", removed"
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "(n) testifies, foolishly asserted ^that",
+  "replace": "testifies, foolishly asserted, that",
+  "why": "p. 15: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "once imbibed whereas,",
+  "replace": "once imbibed;” whereas,",
+  "why": "p. 15: misread on the page; the print reads \"imbibed;”\""
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "that “ faith was",
+  "replace": "that “faith was",
+  "why": "p. 15: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-07",
+  "find": "Eusebius (m) relates ",
+  "replace": "Eusebius relates ",
+  "why": "p. 15: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "John (9);",
+  "replace": "John;",
+  "why": "pp. 15–16: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "sense ( p ),",
+  "replace": "sense,",
+  "why": "pp. 15–16: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "wise (o),",
+  "replace": "wise,",
+  "why": "pp. 15–16: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "(m) Lib. $. Hist. Eccl. («) De Haeresibus, Num, 72.\n\n16\n\n",
+  "replace": "",
+  "why": "pp. 15–16: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": " amongst \" the",
+  "replace": " amongst the",
+  "why": "pp. 15–16: a stray mark read as a quotation mark, removed (the italic quotation has no mark here)"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "WeJutve,",
+  "replace": "We have,",
+  "why": "pp. 15–16: misread on the page (a later reader struck through these words in ink; the print beneath reads \"We have,\")"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "him — that",
+  "replace": "him—that",
+  "why": "pp. 15–16: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "true — nay,",
+  "replace": "true—nay,",
+  "why": "pp. 15–16: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-08",
+  "find": "truejphilosophy,",
+  "replace": "true philosophy,",
+  "why": "pp. 15–16: misread on the page; the print reads \"true philosophy,\""
+ },
+ {
+  "passage": "ubi-primum-1824-09",
+  "find": "We also. Venerable",
+  "replace": "We also, Venerable",
+  "why": "p. 16: misread on the page; the print reads \"also,\""
+ },
+ {
+  "passage": "ubi-primum-1824-09",
+  "find": "Mohilow — in",
+  "replace": "Mohilow—in",
+  "why": "p. 16: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-09",
+  "find": "Briefs — one",
+  "replace": "Briefs—one",
+  "why": "p. 16: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-09",
+  "find": "Devil (s).”",
+  "replace": "Devil.”",
+  "why": "p. 16: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-09",
+  "find": "wit: “ that, by",
+  "replace": "wit: “that, by",
+  "why": "p. 16: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-09",
+  "find": "translate — or rather to pervert — the",
+  "replace": "translate—or rather to pervert—the",
+  "why": "p. 16: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-09",
+  "find": "Trent (r),",
+  "replace": "Trent,",
+  "why": "p. 16: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-10",
+  "find": "words ( t ): “ For",
+  "replace": "words: “For",
+  "why": "pp. 16–17: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed; the quotation mark set close"
+ },
+ {
+  "passage": "ubi-primum-1824-10",
+  "find": "( 0 ) 1 Cor. cap. 1. (p) Ad Rom. 1 cap 28. ( 9 ) Apoc. cap. 1. v. 4. (r) Seas. 4. de Ed, et u«n Sac. Lib. («) S. Hir. in Cap. 1 Ep. ad Gal.\n\n17\n\n",
+  "replace": "",
+  "why": "pp. 16–17: the pamphlet's footnotes (citations, left out as apparatus), the page number read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1824-11",
+  "find": "therefore.",
+  "replace": "therefore,",
+  "why": "p. 17: misread on the page; the print reads \"therefore,\""
+ },
+ {
+  "passage": "ubi-primum-1824-11",
+  "find": "said ( aa ): “ If",
+  "replace": "said: “If",
+  "why": "p. 17: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed; the quotation mark set close"
+ },
+ {
+  "passage": "ubi-primum-1824-11",
+  "find": "of truth which",
+  "replace": "of truth;” which",
+  "why": "p. 17: misread on the page; the print reads \"truth;”\""
+ },
+ {
+  "passage": "ubi-primum-1824-11",
+  "find": "(z) saying, “ the",
+  "replace": "saying, “the",
+  "why": "p. 17: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed; the quotation mark set close"
+ },
+ {
+  "passage": "ubi-primum-1824-11",
+  "find": "them (y): “ Whosoever",
+  "replace": "them: “Whosoever",
+  "why": "p. 17: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed; the quotation mark set close"
+ },
+ {
+  "passage": "ubi-primum-1824-11",
+  "find": "heir (x).",
+  "replace": "heir.",
+  "why": "p. 17: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-11",
+  "find": "teaches (y) by ",
+  "replace": "teaches by ",
+  "why": "p. 17: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "says (cc),",
+  "replace": "says,",
+  "why": "pp. 17–18: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "not giveu to",
+  "replace": "not given to",
+  "why": "pp. 17–18: misread on the page; the print reads \"given\""
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "to Caesar, if",
+  "replace": "to Cæsar, if",
+  "why": "pp. 17–18: the print sets the ligature (æ), which the correction spelled out"
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "Caesar’s",
+  "replace": "Cæsar’s",
+  "why": "pp. 17–18: the print sets the ligature (æ), which the correction spelled out"
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "oflemporal",
+  "replace": "of temporal",
+  "why": "pp. 17–18: misread on the page; the print reads \"of temporal\""
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "ingulf us/’ » Again, ",
+  "replace": "ingulf us.”\n\nAgain, ",
+  "why": "pp. 17–18: misread on the page; the print reads \"us.”\""
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "Augustine ( bb) t",
+  "replace": "Augustine,",
+  "why": "pp. 17–18: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "find": "( t ) Tract. 18. in Fab. cap. 5. ( u ) Ser. 2. do Nat. ip*. ( x ) S. Leo. Ser. 3. super eodem. (y) S. Luc. cap. 10. (s) 1 Tim. cap. 3. (oa) Lib. 4. ad Catech. cap. 13.\n\nC\n\nDglc\n\n19\n\n",
+  "replace": "",
+  "why": "pp. 17–18: the pamphlet's footnotes (citations, left out as apparatus), the page number and the printer's signature mark \"C\" read into the text, removed"
+ },
+ {
+  "passage": "ubi-primum-1824-13",
+  "find": "we impart from",
+  "replace": "we impart, from",
+  "why": "p. 18: misread on the page; the print reads \"impart,\""
+ },
+ {
+  "passage": "ubi-primum-1824-13",
+  "find": "me (dd)”",
+  "replace": "me.”",
+  "why": "p. 18: a note letter calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "ubi-primum-1824-13",
+  "find": "Lord, “ Holy Father,",
+  "replace": "Lord, “Holy Father,",
+  "why": "p. 18: spacing"
+ },
+ {
+  "passage": "ubi-primum-1824-02",
+  "continues": true,
+  "why": "p. 12: the paragraph runs on from the passage before"
+ },
+ {
+  "passage": "ubi-primum-1824-04",
+  "continues": true,
+  "why": "p. 13: the paragraph runs on from the passage before"
+ },
+ {
+  "passage": "ubi-primum-1824-10",
+  "continues": true,
+  "why": "pp. 16–17: the paragraph runs over the page; the footnotes at the foot of the page made the clean-up read a break"
+ },
+ {
+  "passage": "ubi-primum-1824-12",
+  "continues": true,
+  "why": "pp. 17–18: the paragraph runs over the page; the footnotes at the foot of the page made the clean-up read a break"
+ }
+]

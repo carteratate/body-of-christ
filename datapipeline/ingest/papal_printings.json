@@ -2336,5 +2336,150 @@
     "unit": 6
    }
   ]
+ },
+ "encyclicals/ubi-primum-1824": {
+  "source": "ocr",
+  "work": "dublin-1824-ubi-primum",
+  "file": "TheEncyclicalLetterOfPopeLeoTheXI/",
+  "url": "https://archive.org/details/TheEncyclicalLetterOfPopeLeoTheXI",
+  "translation": "The Encyclical Letter of Pope Leo the XII. ... with an English Translation of the Same (Dublin: Richard Coyne, 1824)",
+  "editorial": [
+   {
+    "opens": "TRANSLATION.",
+    "why": "The pamphlet's heading over the English, which faces nothing: the Latin precedes it (rule G)."
+   },
+   {
+    "opens": "TO OUR VENERABLE BRETHREN",
+    "why": "The address set in capitals as a heading; the parser drops a capitals heading at the head of a preamble (papal_common.strip_leading_caps), as for every papal document, and the greeting below opens the letter."
+   },
+   {
+    "opens": "LEO THE XII. POPE",
+    "why": "The pope's name set as a heading, as Mirari Vos's \"POPE GREGORY XVI\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "As soon as we had been raised",
+    "unit": 1
+   },
+   {
+    "opens": "We desired, Venerable",
+    "unit": 2
+   },
+   {
+    "opens": "You know, Venerable Brethren, that the apostle Peter",
+    "unit": 3
+   },
+   {
+    "opens": "From this you will easily",
+    "unit": "+"
+   },
+   {
+    "opens": "We would wish to remind",
+    "unit": 4
+   },
+   {
+    "opens": "The things relating to those",
+    "unit": 5
+   },
+   {
+    "opens": "You know, Venerable Brethren, how important",
+    "unit": 6
+   },
+   {
+    "opens": "The foregoing terrific",
+    "unit": 7
+   },
+   {
+    "opens": "Those bishops, moreover",
+    "unit": 8
+   },
+   {
+    "opens": "It is to themselves",
+    "unit": 9
+   },
+   {
+    "opens": "It would be sufficient",
+    "unit": 10
+   },
+   {
+    "opens": "But how numerous",
+    "unit": 11
+   },
+   {
+    "opens": "Attend closely",
+    "unit": "+",
+    "until": "But wherefore these remarks?"
+   },
+   {
+    "opens": "But wherefore these remarks?",
+    "unit": 12
+   },
+   {
+    "opens": "Truly this error",
+    "unit": 13
+   },
+   {
+    "opens": "There have not been wanting",
+    "unit": 14
+   },
+   {
+    "opens": "But, oh! the depth",
+    "unit": 15
+   },
+   {
+    "opens": "Shall we dwell further",
+    "unit": 16
+   },
+   {
+    "opens": "You are aware, Venerable Brethren, that a certain Society",
+    "unit": 17
+   },
+   {
+    "opens": "To avert this plague",
+    "unit": 18
+   },
+   {
+    "opens": "We also, Venerable Brethren",
+    "unit": 19,
+    "until": "Which truth is not only proved"
+   },
+   {
+    "opens": "Which truth is not only proved",
+    "unit": 20
+   },
+   {
+    "opens": "Behold then",
+    "unit": 21
+   },
+   {
+    "opens": "But if any person",
+    "unit": 22
+   },
+   {
+    "opens": "Do ye therefore",
+    "unit": 23
+   },
+   {
+    "opens": "Be not disheartened",
+    "unit": "+"
+   },
+   {
+    "opens": "Again, therefore",
+    "unit": 24
+   },
+   {
+    "opens": "The duty of our servitude",
+    "unit": "+"
+   },
+   {
+    "opens": "Lastly, we beseech you",
+    "unit": 25
+   }
+  ]
  }
 }

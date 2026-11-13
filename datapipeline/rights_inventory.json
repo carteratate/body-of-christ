@@ -5463,7 +5463,7 @@
   "author": "Pope Leo XII",
   "collection": "encyclicals",
   "source_path": "encyclicals/TheEncyclicalLetterOfPopeLeoTheXI/",
-  "document_id": null,
+  "document_id": "82e3ba38-e236-5d0b-bf1f-30a7a50b209f",
   "edition": "The Encyclical Letter of Pope Leo the XII. to His Venerable Brethren ... with an English Translation of the Same; to which are annexed Pastoral Instructions by the R.C. Archbishops and Bishops ... throughout Ireland (Dublin: Richard Coyne, publisher to the Roman Catholic Bishops of Ireland, 1824). A different translation from papalencyclicals.net's. Internet Archive scan TheEncyclicalLetterOfPopeLeoTheXI",
   "translator": null,
   "first_published": 1824,
@@ -5474,7 +5474,7 @@
   "credit_line": "Translation published by the Catholic bishops of Ireland (Dublin, 1824)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Syllabus of Errors",
@@ -8161,24 +8161,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/pius09/p9ubinos.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Ubi Primum (1824)",
-  "author": "Pope Leo XII",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/ubi-primum-1824.html",
-  "document_id": "82e3ba38-e236-5d0b-bf1f-30a7a50b209f",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/leo12/l12ubipr.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,

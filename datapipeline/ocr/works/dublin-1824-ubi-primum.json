@@ -1,0 +1,48 @@
+{
+ "work": "dublin-1824-ubi-primum",
+ "title": "Ubi Primum (Leo XII), in The Encyclical Letter of Pope Leo the XII. ... with an English Translation of the Same (Dublin: Richard Coyne, 1824), \"Translation\", pp. 11–18",
+ "scan": "TheEncyclicalLetterOfPopeLeoTheXI",
+ "djvu_xml": "encyclicals/TheEncyclicalLetterOfPopeLeoTheXI/TheEncyclicalLetterOfPopeLeoTheXI_djvu.xml",
+ "page_numbers": "",
+ "pages": [
+  "11",
+  "18"
+ ],
+ "layout": "single-column",
+ "watermark": "Digitized\\s*(by)?\\s*\\S*",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "ubi-primum-1824",
+   "first": "^TRANSLATION",
+   "last": "first year of our Pontificate",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "leaf_pages": {
+  "15": "11",
+  "16": "12",
+  "17": "13",
+  "18": "14",
+  "19": "15",
+  "20": "16",
+  "21": "17",
+  "22": "18"
+ }
+}
