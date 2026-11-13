@@ -126,6 +126,29 @@ def test_printed_documents_point_at_their_printing():
             assert "papalencyclicals" not in x.content.lower(), x.anchor
 
 
+@vendored
+def test_an_extract_holds_what_its_printing_lacks():
+    """An extract's missing paragraphs are each held for permission, the site's page stays
+    its held text, and its notes name them (1.3d step 6)."""
+    import registry
+
+    removals = registry.load_registry().removals
+    extracts = 0
+    for p, doc in _built():
+        held = {r["anchor"] for r in removals if r["document_id"] == doc.id
+                and r["scope"] == "passage" and r["reason"] == "awaiting-permission"}
+        if not p.omits:
+            assert not held and "held_text_url" not in doc.metadata and not doc.notes, p.key
+            continue
+        extracts += 1
+        slug = p.key.split("/", 1)[1]
+        assert held == {f"{slug}/{n}" for n in p.omits}, p.key
+        assert not held & {x.anchor for x in doc.passages}, p.key
+        assert doc.metadata["held_text_url"] == _manifest(doc.collection)[slug]["url"], p.key
+        assert doc.notes and "not available on TheoCorpus" in doc.notes, p.key
+    assert extracts
+
+
 def test_printed_documents_have_their_rights_row():
     """The printing's row carries the document; the site's `unknown` row is gone."""
     import registry
