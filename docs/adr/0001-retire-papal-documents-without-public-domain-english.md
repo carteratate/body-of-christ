@@ -140,7 +140,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1863 | Quanto Conficiamur Moerore | Pius IX | `quanto-conficiamur-moerore` | Partial only (Deferrari, 1957; R9): one passage published, the rest held for permission |
 | 1864 | Maximae Quidem | Pius IX | `maximae-quidem` | **Held for permission** |
 | 1864 | Quanta Cura (1864) | Pius IX | `quanta-cura-1864` | Public-domain printing: Dublin Review, 1865 |
-| 1864 | Syllabus of Errors | Pius IX | `syllabus-of-errors` | Public-domain printing: Fessler, True and False Infallibility, 1875 |
+| 1864 | Syllabus of Errors | Pius IX | `syllabus-of-errors` | Public-domain printing: The Syllabus for the People (New York, 1875), bound with Fessler's True and False Infallibility |
 | 1865 | Meridionali Americae | Pius IX | `meridionali-americae` | **Held for permission** |
 | 1867 | Levate | Pius IX | `levate` | Partial only (Appletons' Annual Cyclopaedia for 1867): published, about 400 words (the preamble and the start of paragraph 2); the rest held for permission |
 | 1870 | Respicientes | Pius IX | `respicientes` | Public-domain printing: Appletons' Annual Cyclopaedia for 1870, 1871 |
@@ -150,7 +150,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1872 | Quae In Patriarchatu | Pius IX | `quae-in-patriarchatu` | **Held for permission** |
 | 1873 | Etsi Multa | Pius IX | `etsi-multa` | Public-domain printing: Philadelphia pamphlet, [1874] |
 | 1873 | Quartus Supra | Pius IX | `quartus-supra` | **Held for permission** |
-| 1874 | Gravibus Ecclesiae | Pius IX | `gravibus-ecclesiae` | Public-domain printing: Appletons' Annual Cyclopaedia, 1875 (Wikisource) |
+| 1874 | Gravibus Ecclesiae | Pius IX | `gravibus-ecclesiae` | Public-domain printing: Appletons' Annual Cyclopaedia for 1874, 1875 (built from the scan; Wikisource's transcription is unchecked) |
 | 1874 | Omnem Sollicitudinem | Pius IX | `omnem-sollicitudinem` | **Held for permission** |
 | 1874 | Vix Dum A Nobis | Pius IX | `vix-dum-a-nobis` | Public-domain printing: Appletons' Annual Cyclopaedia for 1874, 1875 |
 | 1875 | Graves Ac Diuturnae | Pius IX | `graves-ac-diuturnae` | Public-domain printing: Appletons' Annual Cyclopaedia for 1875, 1876 |
