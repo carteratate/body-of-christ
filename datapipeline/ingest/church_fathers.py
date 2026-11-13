@@ -26,12 +26,20 @@ from normalize.caps import smart_title_case
 from normalize.text import fold_ligatures
 from ingest.common import (_block_text, _build_parent_map, _cf_skippable, _strip_tags,
                            direct_blocks, iter_chapters)
-from ingest.editorial import Editor, strip_editorial_lines
+from ingest.editorial import PLAIN_CALLERS, Editor, strip_editorial_lines
+from ingest.editorial_keep import QuoteEdit, kept_quotes
 from ingest.thml_doc import ChapterPlan, _chapter_label, distinct_titles, make_doc
 
 _SRC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "church-fathers")
 _SINGLE_AUTHOR = {"confessions.xml": "Augustine", "incarnation.xml": "Athanasius"}
 _AUGUSTINE_FILES = {"city-of-god.xml", "on-the-holy-trinity.xml"}
+
+# ------------------------------------------------------------------ 1.8b: NPNF Augustine
+
+# The treatise volume whose div2s are each a work: "Doctrinal Treatises" and "Moral
+# Treatises" split into their 16 works, the one exception to D6 (Carter, 4 Nov 2026).
+# The registry pins On the Holy Trinity and On Continence to the two volumes' IDs.
+_WORK_PER_DIV2 = frozenset({"on-the-holy-trinity.xml"})
 
 # ------------------------------------------------------------------ 1.8c: names
 
@@ -383,6 +391,77 @@ def _anf_document(filename, father, work, parent_map, d1):
                      works=works)
 
 
+# ------------------------------------------------------------------ NPNF Augustine (1.8b)
+
+def _npnf_front_matter(title: str) -> bool:
+    """Front matter, except a "Preface": in these volumes that is Augustine's own (City
+    of God V to VII, On Christian Doctrine); the translators' are `Editor.skip`'s."""
+    return _cf_skippable(title) and title.strip().rstrip(".").lower() != "preface"
+
+
+class _AugustineEditor(Editor):
+    """Rule G for an NPNF Augustine work, and the quotations of Augustine kept from the
+    editors' matter it skips (`ingest.editorial_keep`)."""
+
+    def __init__(self, source_file, source_key, parent_map, quotes):
+        super().__init__(source_file, source_key, parent_map, book_text=True)
+        self.quotes = {q.anchor: q for q in quotes}
+
+    def chapter(self, elem, label):
+        quote = self.quotes.get(elem.get("id"))
+        return QuoteEdit(quote) if quote else super().chapter(elem, label)
+
+
+def _quote_chapter(quote, div, parent_map):
+    """A kept quotation as a chapter div of its own, `<div>/<slug>`, holding the
+    paragraphs it spans."""
+    blocks = direct_blocks(div)
+    ids = [b.get("id") for b in blocks]
+    chapter = Element("div4", {"id": quote.anchor, "title": quote.label})
+    for b in blocks[ids.index(quote.first):ids.index(quote.last) + 1]:
+        chapter.append(b)
+    parent_map[chapter] = div
+    quoted_in = (div.get("title") or "").strip().rstrip(".").replace("’", "'").lower()
+    return (None, chapter, ChapterPlan(label=quote.label, any_length=True,
+                                       meta={"from": quote.source, "quoted_in": quoted_in}))
+
+
+def _augustine_document(filename, work, parent_map):
+    """One NPNF Augustine work: City of God, On Christian Doctrine, or one of the 16
+    treatises. Author Augustine; the editors' matter goes (rule G), Augustine's prefaces
+    and the quotations of him in it stay."""
+    source_key = _source_key(filename, work)
+    divs = {e.get("id"): e for e in work.iter() if e.get("id")}
+    quotes = [q for q in kept_quotes(filename) if q.div in divs]
+    editor = _AugustineEditor(filename, source_key, parent_map, quotes)
+    if direct_blocks(work):
+        editor.title_page(work)
+    order = {id(e): k for k, e in enumerate(work.iter())}
+    chapters = [(order[id(elem)], 0, (book, elem)) for book, elem in
+                iter_chapters(work, parent_map, editor.skip, front_matter=_npnf_front_matter)]
+    chapters += [(order[id(divs[q.div])], k, _quote_chapter(q, divs[q.div], parent_map))
+                 for k, q in enumerate(quotes, 1)]
+    title = smart_title_case((work.get("title") or "").strip())
+    return _make_doc(filename, "Augustine", title, [c for *_, c in sorted(chapters)],
+                     work=work, editor=editor)
+
+
+class _CallerEditor:
+    """Takes the Confessions' four plain-digit footnote callers out (1.8b); nothing else."""
+
+    def chapter(self, elem, label):
+        return self
+
+    label_title = None
+
+    def edit(self, block, marked, notes):
+        for printed, without in PLAIN_CALLERS.get(("confessions.xml", block.get("id")), ()):
+            if marked.count(printed) != 1:
+                raise ValueError(f"{block.get('id')}: {printed!r} is not printed once")
+            marked = marked.replace(printed, without)
+        return marked, notes
+
+
 def build_documents(path: str) -> list[Document]:
     filename = os.path.basename(path)
     if filename == "summa.xml":
@@ -395,18 +474,20 @@ def build_documents(path: str) -> list[Document]:
     if single:
         title = smart_title_case((root.findtext(".//DC.Title") or "Unknown").strip())
         chapters = list(iter_chapters(root, parent_map))
-        d = _make_doc(filename, single, title, chapters)
+        editor = _CallerEditor() if filename == "confessions.xml" else None
+        d = _make_doc(filename, single, title, chapters, editor=editor)
         if d:
             docs.append(d)
         return docs
 
     div1s = [d for d in root.iter("div1") if not _cf_skippable(d.get("title") or "")]
     if filename in _AUGUSTINE_FILES:
-        # div1 = work; author is always Augustine.
-        for d1 in div1s:
-            title = smart_title_case((d1.get("title") or "").strip())
-            d = _make_doc(filename, "Augustine", title, list(iter_chapters(d1, parent_map)),
-                          work=d1)
+        # div1 = work, or in the treatise volume div2 = work (1.8b); author Augustine.
+        works = ([w for d1 in div1s for w in d1.findall("div2")
+                  if not _cf_skippable(w.get("title") or "")]
+                 if filename in _WORK_PER_DIV2 else div1s)
+        for w in works:
+            d = _augustine_document(filename, w, parent_map)
             if d:
                 docs.append(d)
     else:

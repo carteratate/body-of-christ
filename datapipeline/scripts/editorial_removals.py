@@ -1,16 +1,18 @@
 """Removal registry entries for what rule G takes out of the ANF volumes (corpus-cleanup
-1.8a), generated from a build.
+1.8a) and the NPNF Augustine volumes (1.8b), generated from a build.
 
     cd datapipeline
     python3 scripts/editorial_removals.py --snapshot releases/snapshots/<date>
                                           [--today YYYY-MM-DD] [--dry-run]
 
 Builds the Church Fathers with `ingest.editorial.recording()` on and writes, in place of
-the entries 1.8a added before (`added_by: "1.8a"`):
+the entries the item added before (`added_by`; 1.8a's are the ANF volumes', 1.8b's the
+NPNF Augustine volumes'):
 
 - a `passage` entry for each live passage of an editorial div the build now skips
-  (Elucidations, editors' notes, translators' notices and introductions), by its live
-  anchor and frozen passage ID, with a tombstone;
+  (Elucidations, editors' notes, translators' notices and introductions), and of a
+  chapter or title page whose text was all the editors' (1.8b: the books' summaries,
+  the treatises' title pages), by its live anchor and frozen passage ID, with a tombstone;
 - a `span` entry for each translator credit, "Argument" summary, letter title line,
   edition source line and bracketed comment cut from a passage that survives, anchored
   on the built passage that held it, with the sha1 of the removed text and an excerpt;
@@ -24,6 +26,8 @@ word (`ingest.editorial.judgment`), unless `NOT_JUDGMENTS` records that the sent
 read and is not one. Each judgment is copied into its work's
 `attribution.editorial_judgments` in works.json with the verdict `VERDICTS` gives it
 (rule G: judgments first). `--dry-run` prints the counts and the judgments found.
+Run so, it writes 1.8a's entries; 1.8b's script, `scripts/augustine_registry.py`, calls
+`generate` and `plan` for the NPNF files with the volumes split into their works.
 """
 from __future__ import annotations
 
@@ -41,14 +45,22 @@ if DATAPIPELINE not in sys.path:
     sys.path.insert(0, DATAPIPELINE)
 
 import registry  # noqa: E402
-from ingest import editorial  # noqa: E402
+from ingest import editorial, editorial_keep  # noqa: E402
 from publication import build  # noqa: E402
 
 ITEM = "1.8a"
 COLLECTION = "church-fathers"
+# The files each item's entries cover: 1.8b's are the NPNF Augustine volumes that carry
+# rule G's editor (the Confessions has none), 1.8a's every other.
+NPNF_FILES = frozenset({"city-of-god.xml", "on-the-holy-trinity.xml"})
+ITEMS = ("1.8a", "1.8b")
 REASON = "rule-g-editorial"
 TOMBSTONE = ("This passage was an editor's note and was removed because TheoCorpus shows "
              "only the authors' own words.")
+# A passage that held a quotation of Augustine kept as a passage of its own (1.8b).
+TOMBSTONE_QUOTED = ("This passage was an editor's note and was removed because TheoCorpus "
+                    "shows only the authors' own words. The words of Augustine it quoted are "
+                    "kept as their own passage, {labels}.")
 DETAIL = {
     "credit": "The translator's credit line",
     "argument": "The editor's \"Argument\" summary at the head of the chapter (C-12)",
@@ -59,7 +71,16 @@ DETAIL = {
     "section": "The editor's note under its own heading at the end of the chapter",
     "r4-heading": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a "
                   "rule line), as R4 lists; the chapter label keeps the same information",
+    "summary": "The editors' summary of the book",
 }
+# A chapter whose text was all the editors', by what it held (1.8b).
+WHOLE_DETAIL = {
+    "argument": "The book's heading lines and the editor's \"Argument\" summary of it (C-12), "
+                "not the author's text",
+    "summary": "The book's heading lines and the Benedictine editors' summary of it, not the "
+               "author's text",
+}
+
 EXCERPT = 120
 
 # Sentences the judgment scan flags that were read and are not about who wrote a work
@@ -106,6 +127,18 @@ NOT_JUDGMENTS: dict[str, str] = {
     "e032a47489dc": "same judgment as aa76ee1ac016",
     "f3d6d5cae4c3": "same judgment as 2b445c86951f",
     "853c2cbfb962": "a cross-reference to 2b445c86951f's note",
+    # 1.8b, the NPNF Augustine volumes.
+    "9bf899ad3d37": "forget",
+    "440c1c17a604": "forgotten",
+    "981ecf335847": "forgiveness",
+    "2d744fbd1449": "a doctrine ascribed to the Father, not authorship",
+    "bf60422b19dd": "a spurious trinitarianism, not a text",
+    "4be31de4e7d0": "genuine devotional feeling",
+    "7f2de6eff96a": "Rome's disgrace ascribed to her citizens",
+    "45e3cb69942a": "an Argument: the empire ascribed to God",
+    "74a39b0132bc": "an Argument: the empire attributed to false gods",
+    "79ebee362a30": "an Argument: calamities attributed to the Christian religion",
+    "b02e664a0a01": "an Argument: doubtful signification of words",
 }
 # The verdict for each flagged sentence that is an authenticity judgment (sha1 of the
 # sentence -> (verdict, overridden_by_plan)). The plan's "Labels for works that stay"
@@ -145,6 +178,12 @@ VERDICTS: dict[str, tuple[str, bool]] = {
     "f32599e6da24": ("dubious", False),
     "373d5afdec04": ("attributed", False),
     "1db1965fd779": ("attributed", False),
+    # 1.8b: the Benedictine editors' and translators' notices of three of Augustine's
+    # short works, each defending it as his: Concerning Faith of Things Not Seen, On
+    # Continence, On Patience.
+    "e8927593402c": ("genuine", False),
+    "e0b99fa9854e": ("genuine", False),
+    "8e71e6c7e4ed": ("genuine", False),
 }
 
 
@@ -213,46 +252,85 @@ def holder(document, chapter_key: str, order: list[str], locator: str) -> str | 
     return pieces[0].anchor
 
 
+def item_of(file: str) -> str:
+    """The item whose entries cover a source file's removals."""
+    return "1.8b" if file in NPNF_FILES else "1.8a"
+
+
+def _file_of(source_key: str) -> str:
+    return source_key.split("/", 1)[1].split("#")[0]
+
+
 def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[str, str],
-             today: str, source_dir: str | None = None):
+             today: str, source_dir: str | None = None, item: str = ITEM):
     """The entries for a build (`documents`, built with `log` recording), the judgments
     found as (entry, work source key, element id, sentence), and any problems. `live`
-    holds the live text of the collection's passages by ID."""
+    holds the live text of the collection's passages by ID. Only the files `item` covers
+    (`item_of`) are read."""
     by_key = {d.metadata["source_key"]: d for d in documents}
 
     skipped: dict[str, set[str]] = defaultdict(set)      # source file -> skipped div ids
     titles: dict[tuple[str, str], str] = {}              # (file, div) -> its title
+    # (file, div) -> the text a chapter or title page whose text was all the editors'
+    # held, and the entry's detail (1.8b).
+    whole: dict[tuple[str, str], tuple[str, str]] = {}
     chapters = []
     for source_key, div, edit in log:
-        file = source_key.split("/", 1)[1].split("#")[0]
+        file = _file_of(source_key)
+        if item_of(file) != item:
+            continue
         if isinstance(edit, str):
             skipped[file].add(div)
             titles[(file, div)] = edit.rstrip(".")
+        elif isinstance(edit, editorial.TitlePage):
+            whole[(file, div)] = ("\n\n".join(edit.paragraphs),
+                                  f"The title page of {edit.title.rstrip('.')}, by its "
+                                  f"editors, not the author (div {div})")
         else:
             chapters.append((source_key, div, edit))
 
     entries: list[dict] = []
     problems: list[str] = []
     judgments: list[tuple[dict, str, str]] = []           # (entry, work source_key, element)
-    div_entries: dict[tuple[str, str], tuple[str, list[dict]]] = {}
+    div_entries: dict[tuple[str, str], tuple[str, list[dict], str]] = {}
 
     def entry(**kw) -> dict:
         e = {"id": None, "scope": None, "collection": COLLECTION, "document_id": None,
              "anchor": None, "passage_id": None, "reason": REASON, "detail": None,
              "tombstone": None, "church_act": None, "span": None, "judgment": None,
-             "added_by": ITEM, "added_on": today}
+             "added_by": item, "added_on": today}
         e.update(kw)
         return e
 
-    # Passages of the skipped editorial divs.
+    # Chapters whose text was all the editors': no built passage holds them.
+    kept_chapters = []
+    for source_key, div, edit in chapters:
+        d = by_key.get(source_key)
+        if d is not None and not any(p.chapter_key == div for p in d.passages) \
+                and edit.removed:
+            kinds = {r.kind for r in edit.removed}
+            kind = "argument" if "argument" in kinds else "summary" if "summary" in kinds \
+                else None
+            if kind is None:
+                problems.append(f"{source_key}#{div}: a chapter left with no text that held "
+                                "neither an argument nor a summary")
+                continue
+            whole[(_file_of(source_key), div)] = (
+                "\n\n".join(r.text for r in edit.removed),
+                f"{WHOLE_DETAIL[kind]} (div {div})")
+        else:
+            kept_chapters.append((source_key, div, edit))
+
+    # Passages of the skipped editorial divs, and of the chapters and title pages above.
     # Active rows, and on a rerun the rows this script retired before.
-    mine = {e["passage_id"] for e in reg.removals if e.get("added_by") == ITEM}
+    mine = {e["passage_id"] for e in reg.removals if e.get("added_by") == item}
     rows = [r for r in reg.passages
             if r["status"] == "active" or (r["status"] == "retired" and r["passage_id"] in mine)]
-    redirected_by_me = {r["old_passage_id"] for r in reg.redirects if r.get("closed_by") == ITEM}
+    redirected_by_me = {r["old_passage_id"] for r in reg.redirects if r.get("closed_by") == item}
     rows = [r for r in rows if r["passage_id"] not in redirected_by_me]
-    doc_files = {w["document_id"]: (w["source_key"], w["source_key"].split("/", 1)[1].split("#")[0])
-                 for w in reg.works if w["collection"] == COLLECTION}
+    doc_files = {w["document_id"]: (w["source_key"], _file_of(w["source_key"]))
+                 for w in reg.works if w["collection"] == COLLECTION
+                 and item_of(_file_of(w["source_key"])) == item}
     built = {(d.id, p.anchor) for d in documents for p in d.passages}
     for r in rows:
         if r["document_id"] not in doc_files or (r["document_id"], r["anchor"]) in built:
@@ -260,33 +338,43 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
         source_key, file = doc_files[r["document_id"]]
         unit = r["anchor"].split("/")[0]
         div = _under(unit, skipped.get(file, set()))
-        if div is None:
+        tombstone = TOMBSTONE
+        if div is not None:
+            detail = f"{titles[(file, div)]}, by an editor or translator, not the author " \
+                     f"(div {div})"
+            quoted = [q.label for q in editorial_keep.kept_quotes(file) if q.div == div]
+            if quoted:
+                tombstone = TOMBSTONE_QUOTED.format(labels=" and ".join(
+                    f"\u201c{label}\u201d" for label in quoted))
+        elif (file, unit) in whole:
+            div, detail = unit, whole[(file, unit)][1]
+        else:
             continue                  # a recut piece: registry.reconcile redirects it
         # The div's judgments are read once, from its whole text, and each entry names
         # the first that its own live text holds (a piece cut after the snapshot was
         # never live and names none).
         text = live.get(r["passage_id"]) or ""
         e = entry(scope="passage", document_id=r["document_id"], anchor=r["live_anchor"],
-                  passage_id=r["passage_id"], tombstone=TOMBSTONE,
-                  detail=f"{titles[(file, div)]}, by an editor or translator, not the "
-                         f"author (div {div})")
+                  passage_id=r["passage_id"], tombstone=tombstone, detail=detail)
         e["_text"] = text
         entries.append(e)
         if (file, div) not in div_entries:
-            div_entries[(file, div)] = (source_key, [])
+            div_entries[(file, div)] = (
+                source_key, [], whole[(file, div)][0] if (file, div) in whole
+                else div_text(file, div, source_dir))
         div_entries[(file, div)][1].append(e)
 
     # Lines and brackets cut from passages that stay, and heading counts.
     headings: Counter = Counter()
     heading_text: dict[str, list[tuple[str, str, str]]] = defaultdict(list)
-    for source_key, div, edit in chapters:
+    for source_key, div, edit in kept_chapters:
         d = by_key.get(source_key)
         removed = [r for r in edit.removed if r.kind != "label"]
         if not removed or d is None:
             if removed and d is None:
                 problems.append(f"{source_key}#{div}: removals in a document not built")
             continue
-        r4 = (source_key.split("/", 1)[1].split("#")[0], div) in editorial.AUTHORIAL_CONTENTS
+        r4 = (_file_of(source_key), div) in editorial.AUTHORIAL_CONTENTS
         for r in removed:
             if r.kind == "heading" and not r4:
                 headings[d.id] += 1
@@ -317,8 +405,8 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
 
     # Judgments first.
     found = []
-    for (file, div), (source_key, members) in sorted(div_entries.items()):
-        quotes = [q for q in editorial.judgments(div_text(file, div, source_dir))
+    for (file, div), (source_key, members, div_text_) in sorted(div_entries.items()):
+        quotes = [q for q in editorial.judgments(div_text_)
                   if sentence_key(q) not in NOT_JUDGMENTS]
         for e in members:
             own = " ".join(e.pop("_text").split())
@@ -343,22 +431,24 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
     return entries, found, problems
 
 
-def sync_note_counts(removals: list[dict], documents: list, today: str) -> None:
+def sync_note_counts(removals: list[dict], documents: list, today: str,
+                     item: str = ITEM) -> None:
     """1.10b's per-document note counts (`class` entries) follow the build: a note inside
     editor matter 1.8a removes is no longer one the passages lost. An entry whose
-    document keeps no note closes (entries are never deleted)."""
+    document keeps no note closes (entries are never deleted). Only the documents of the
+    files `item` covers are synced."""
     counts = {d.id: sum((p.metadata or {}).get("editor_note_count", 0) for p in d.passages)
-              for d in documents}
+              for d in documents if item_of(_file_of(d.metadata["source_key"])) == item}
     for e in removals:
         if e["scope"] != "class" or (e.get("span") or {}).get("rule") != \
                 "common._p_text_without_notes" or e.get("closed_by") \
-                or e["collection"] != COLLECTION:
+                or e["collection"] != COLLECTION or e["document_id"] not in counts:
             continue
         n = counts.get(e["document_id"], 0)
         if n:
             e["span"] = {**e["span"], "count": n}
         else:
-            e["closed_by"], e["closed_on"] = ITEM, today
+            e["closed_by"], e["closed_on"] = item, today
 
 
 def _entry_key(e: dict) -> tuple:
@@ -366,18 +456,18 @@ def _entry_key(e: dict) -> tuple:
             json.dumps(e.get("span"), sort_keys=True))
 
 
-def plan(reg: registry.WorkRegistry, entries: list[dict], found: list):
-    """The registry with `entries` in place of 1.8a's earlier ones and the judgments
+def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str = ITEM):
+    """The registry with `entries` in place of the item's earlier ones and the judgments
     copied into works.json, and the judgments not yet reviewed (nothing is planned while
     any are)."""
-    kept = [e for e in reg.removals if e.get("added_by") != ITEM
+    kept = [e for e in reg.removals if e.get("added_by") != item
             or e.get("collection") != COLLECTION]
     number = max(int(e["id"].split("-")[1]) for e in reg.removals) + 1
     # An entry keeps its ID across runs: the same scope, anchor and span, counted in
     # order, since one passage can lose the same text twice (two rule lines).
     previous: dict[tuple, list[str]] = defaultdict(list)
     for e in reg.removals:
-        if e.get("added_by") == ITEM:
+        if e.get("added_by") == item:
             previous[_entry_key(e)].append(e["id"])
     for e in entries:
         ids = previous.get(_entry_key(e))
@@ -392,9 +482,9 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list):
     rows = {r["passage_id"]: r for r in reg.passages}
     redirects = [dict(r) for r in reg.redirects]
     for r in redirects:
-        if (r.get("closed_by") or ITEM) != ITEM or r["new_passage_id"] not in retiring:
+        if (r.get("closed_by") or item) != item or r["new_passage_id"] not in retiring:
             continue
-        r["closed_by"], r["closed_on"] = ITEM, entries[0]["added_on"]
+        r["closed_by"], r["closed_on"] = item, entries[0]["added_on"]
         old = rows[r["old_passage_id"]]
         if old["passage_id"] not in retiring:
             e = {**next(x for x in entries if x.get("passage_id") == r["new_passage_id"]),

@@ -37,6 +37,7 @@ class ChapterPlan:
     cites: str | None = None        # the title its reference cites in place of the
                                     # document's: a work inside another (C-15)
     any_length: bool = False        # kept however short (a letter's greeting)
+    meta: dict | None = None        # added to its passages' metadata (1.8b's quotations)
 
 
 # The Panegyric's chapters carry the editor's "Argument I" as their short title (1.8c).
@@ -172,6 +173,8 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             meta["book"] = book_clean
         if extra_meta:
             meta.update(extra_meta)
+        if plan.meta:
+            meta.update(plan.meta)
         # Pieces hold whole paragraphs and verse blocks (1.10c); `raw` joins them so.
         parts = [p.text for p in pack_units([(None, b) for b in raw.split("\n\n")], maxc)]
         named = name_pieces(plan.anchor or ch_key, raw, parts,

@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "851d07063f85e4c612be1b2d44b695fb"   # 421: 1.8c restored Asterius
+LIVE_DOCUMENT_IDS_MD5 = "caa73c68c74bfe4506b5aca070235de5"   # 435: 1.8b split the Augustine volumes
 
 
 def test_every_entry_has_required_fields_and_known_status():
@@ -117,7 +117,8 @@ def test_inventory_matches_the_built_works_exactly():
     from publication import SOURCE_ADAPTERS
 
     documents = {c: SOURCE_ADAPTERS[c]() for c in SOURCE_ADAPTERS}
-    # The 421 live document IDs (0.2 acceptance): the built inputs are the ones in use.
+    # The built document IDs (0.2 acceptance: the 421 live ones, and 1.8b's 14 new works):
+    # the built inputs are the ones in use.
     ids = sorted(d.id for docs in documents.values() for d in docs)
     # A document held for permission (1.3d, ADR 0001) builds nothing; it is still live
     # until the apply, and its row stays for its return.

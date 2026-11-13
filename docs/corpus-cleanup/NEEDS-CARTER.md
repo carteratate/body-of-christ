@@ -330,6 +330,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-12: 1.7 ships on the comparison R7 completed (its 10 Supplement corrections apply). A separate GitHub issue, labelled `corpus-cleanup`, finishes the Supplement against the Leonine page images: about 200 articles, plus the six articles with no separate replies (XP q.26 a.2, q.33 a.2, q.58 a.4, q.71 a.10, q.87 a.3, q.96 a.12). 1.7's "As built" notes link it.
 - **1.8b** [Phase 1]. Split two Augustine volumes ("Doctrinal Treatises", "Moral Treatises") into their 16 separate works, so On Lying is cited as On Lying. Bookmarks survive either way. Recommended answer is yes.
   Answered 2026-11-04: yes.
+- **1.8b** [Phase 1]. On the Trinity's translator's preface also prints Augustine's own letter to Bishop Aurelius (Epistle 174), the prologue he asked to have set before the fifteen books. Keep it as a passage of On the Holy Trinity, labelled "Letter to Aurelius", or let it go with the preface? Recommended answer: keep it.
+  Answered 2026-11-12: keep it.
 - **1.8c** [Phase 1]. Two points.
   - Label the Shepherd of Hermas's author as "Hermas" and its books "The Shepherd: Visions", "Commandments" and "Similitudes".
   - Remove the Balsamon and Zonaras commentary printed inside Peter of Alexandria's canons, rather than keep it under their own names.
