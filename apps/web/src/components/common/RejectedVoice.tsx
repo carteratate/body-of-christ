@@ -23,3 +23,9 @@ export function RejectedVoice({ label, children }: { label: string | null; child
     </>
   );
 }
+
+/** The muted caption above an opened passage naming its role in its document
+ *  ("Objection 1", "Reply to Objection 2"), for a passage that is not a rejected voice. */
+export function RoleCaption({ role }: { role: string }) {
+  return <p className="mb-1 text-xs font-semibold text-brand-muted">{role}</p>;
+}

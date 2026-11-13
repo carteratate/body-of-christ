@@ -7,9 +7,10 @@
  * nothing in the text, the citation, or the collection tag to say whose position it is.
  * Rendered or copied unmarked, it presents the opposite of his teaching as his teaching.
  *
- * The attached-passage feature fixes this for the expanded card. This covers everywhere
- * else the passage travels alone: the collapsed header, the clipboard, the accessible
- * name.
+ * The attached-passage feature adds Aquinas's answer to the opened card. This names the
+ * passage's own role wherever its text travels: the caption above the opened text, the
+ * clipboard, the accessible name. The collapsed header shows no text, so it carries no
+ * role (Carter, 12 Nov 2026).
  *
  * Returns null when there is no role, and for collections whose `unit_label` is a
  * locator rather than an argumentative role ("Can. 1055 §1", "§17") — naming those adds
