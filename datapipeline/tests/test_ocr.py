@@ -1116,3 +1116,18 @@ def test_two_column_reads_the_head_then_left_then_right_by_row():
         + ["left line 6 first half", "and its second half"]
     assert kept[10:] == [f"right column line {k} of running text here" for k in range(6)] \
         + ["- anew right column line 6 of text"]
+
+
+def test_three_column_reads_each_column_in_turn():
+    from ocr.layout import ThreeColumn
+
+    lines = [Line("THE JESUIT.", 1300, 300, 2000, 340)]
+    for k in range(6):
+        for c, x in enumerate((240, 1290, 2340)):
+            lines.append(Line(f"column {c} line {k} of the running text", x, 440 + 48 * k, x + 1000, 480 + 48 * k))
+    lines.append(Line("A HEADING ACROSS ALL THREE COLUMNS OF THE PAGE", 240, 800, 3340, 840))
+    lines.append(Line("column 0 after the heading of the page", 240, 880, 1240, 920))
+    kept = [ln.text for ln in ThreeColumn().reading_order(Page(0, 3584, 4816, lines))]
+    assert kept[0] == "THE JESUIT."
+    assert kept[1:19] == [f"column {c} line {k} of the running text" for c in range(3) for k in range(6)]
+    assert kept[19:] == ["A HEADING ACROSS ALL THREE COLUMNS OF THE PAGE", "column 0 after the heading of the page"]

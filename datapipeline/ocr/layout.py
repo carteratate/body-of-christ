@@ -4,7 +4,8 @@ A work's config names its layout. `single-column` is one block of text read top 
 bottom. `parallel-left` keeps the left of two parallel columns (Deferrari's Constantinople
 IV: Anastasius's Latin on the left, the Greek on the right); `parallel-right` keeps the
 right (Unam Sanctam's English beside its Latin, 1.3d); `two-column` reads running text in
-two columns, the left then the right (Appletons' Annual Cyclopaedia, 1.3d). A page in two columns of
+two columns, the left then the right (Appletons' Annual Cyclopaedia, 1.3d); `three-column` reads
+three (The Jesuit, 1.3d). A page in two columns of
 running text, or in parallel Latin and English columns (R8: Unam Sanctam, Ubi Primum
 1849), would be another `Layout` that returns the lines it keeps in reading order;
 `furniture.py` works on whatever a layout returns, so adding one does not change the
@@ -187,8 +188,51 @@ class TwoColumn:
         return out
 
 
+class ThreeColumn:
+    """Running text in three columns (The Jesuit, Boston 1829, 1.3d): each column top to
+    bottom, left to right, after what stands above the running text, as `TwoColumn`.
+    A line's column is the third of the text block its centre falls in; a line wider than
+    one and a half columns runs across them (a heading) and divides the page into bands."""
+    name = "three-column"
+
+    TEXT_WORDS = 6
+
+    def reading_order(self, page: Page) -> list[Line]:
+        lines = sorted(page.lines, key=lambda ln: (ln.top, ln.x0))
+        if not lines:
+            return lines
+        lefts = sorted(ln.x0 for ln in lines)
+        rights = sorted(ln.x1 for ln in lines)
+        left, right = lefts[len(lefts) // 10], rights[-1 - len(rights) // 10]
+        third = (right - left) / 3
+        text_top = min((ln.top for ln in lines if len(ln.text.split()) >= self.TEXT_WORDS),
+                       default=0)
+        out: list[Line] = [ln for ln in lines if ln.bottom <= text_top]
+        band: list[Line] = []
+
+        def column(ln: Line) -> int:
+            return min(2, max(0, int(((ln.x0 + ln.x1) / 2 - left) // third)))
+
+        def flush() -> None:
+            for k in range(3):
+                out.extend(_rows([ln for ln in band if column(ln) == k]))
+            band.clear()
+
+        for ln in lines:
+            if ln.bottom <= text_top:
+                continue
+            if ln.x1 - ln.x0 > 1.5 * third:
+                flush()
+                out.append(ln)
+            else:
+                band.append(ln)
+        flush()
+        return out
+
+
 LAYOUTS: dict[str, Layout] = {SingleColumn.name: SingleColumn(), ParallelLeft.name: ParallelLeft(),
-                              ParallelRight.name: ParallelRight(), TwoColumn.name: TwoColumn()}
+                              ParallelRight.name: ParallelRight(), TwoColumn.name: TwoColumn(),
+                              ThreeColumn.name: ThreeColumn()}
 
 
 def get_layout(name: str) -> Layout:
