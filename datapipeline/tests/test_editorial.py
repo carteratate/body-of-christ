@@ -225,16 +225,16 @@ def test_unexplained_changes_catches_lost_author_words():
 @pytest.mark.sources
 @pytest.mark.skipif(not os.path.isdir(_SRC), reason="church-fathers sources not vendored")
 def test_author_text_unchanged():
-    """Every chapter of the vendored ANF volumes loses only what its record lists: the
-    author's words are unchanged (1.8a, coverage check)."""
+    """Every chapter of the vendored ANF and NPNF Augustine volumes loses only what its
+    record lists: the author's words are unchanged (1.8a and 1.8b, coverage check)."""
     from ingest.church_fathers import build_all
 
     with editorial.recording() as log:
         build_all()
     failing = {}
     for key, div, edit in log:
-        if isinstance(edit, str):
-            continue
+        if not isinstance(edit, editorial.ChapterEdit):
+            continue                       # a skipped div or a title page
         before = direct_blocks_text(edit.elem)[0]
         after = direct_blocks_text(edit.elem, edit.again().edit)[0]
         removed = [r.text for r in edit.removed] + [edit.label_line or ""]
@@ -242,3 +242,60 @@ def test_author_text_unchanged():
         if problems:
             failing[f"{key}#{div}"] = problems
     assert failing == {}
+
+
+# --------------------------------------------------------------------------- 1.8b
+
+def test_book_text_is_all_the_editors():
+    v = editorial.classify_lines(["The City of God.", "Book I.", "————————",
+                                  "Argument—Augustin censures the pagans."], book_text=True)
+    assert v.drop == {0: "heading", 1: "heading", 2: "heading", 3: "argument"}
+    v = editorial.classify_lines(["Book X.", "————————", "In which there is shown to be another "
+                                  "trinity in the mind of man."], book_text=True)
+    assert v.drop == {0: "heading", 1: "heading", 2: "summary"}
+    with pytest.raises(ValueError):
+        editorial.classify_lines(["Book X.", "————", "A summary.", "And more text."],
+                                 book_text=True)
+
+
+def test_preface_title_moves_to_label():
+    v = editorial.classify_lines(
+        ["Preface.—Why Augustin Writes of the Trinity.", "1. I would have them believe."],
+        chapter_title_to_label=True)
+    assert v.label_title == "Preface: Why Augustin Writes of the Trinity"
+    assert v.drop == {0: "label"}
+    v = editorial.classify_lines(
+        ["Preface.", "Showing that to teach rules for the interpretation of Scripture is not a "
+         "superfluous task.", "1. There are certain rules."],
+        frozenset({"preface"}), chapter_title_to_label=True)
+    assert v.label_title.startswith("Preface: Showing that to teach rules")
+    assert v.drop == {0: "heading", 1: "label"}
+    # Outside the works the Decision log names, the line stays.
+    assert editorial.classify_lines(["Preface.—Why Augustin Writes."]).label_title is None
+
+
+def test_quote_edit_keeps_only_the_quotation():
+    from xml.etree.ElementTree import Element
+
+    from ingest.editorial_keep import KeptQuote, QuoteEdit
+    q = KeptQuote("vol.xml", "v.vi.i", "v.vi.i-p2", "v.vi.i-p2", "Then also",
+                  "It begins: Multa.", "Retractations II.60", "Retractations")
+    block = Element("p", {"id": "v.vi.i-p2"})
+    marked = "“ Then also I wrote⁣ a Book against Lying. It begins: Multa.”"
+    text, notes = QuoteEdit(q).edit(block, marked, ["a note"])
+    assert text == "Then also I wrote⁣ a Book against Lying. It begins: Multa."
+    assert notes == ["a note"]
+    text, notes = QuoteEdit(q._replace(start="a Book")).edit(block, marked, ["a note"])
+    assert text.startswith("a Book") and notes == []
+
+
+def test_npnf_removals_generated_for_their_own_item():
+    assert editorial_removals.item_of("on-the-holy-trinity.xml") == "1.8b"
+    assert editorial_removals.item_of("city-of-god.xml") == "1.8b"
+    assert editorial_removals.item_of("third-century.xml") == "1.8a"
+    entries = [e for e in registry.current().removals if e.get("added_by") == "1.8b"
+               and e["scope"] == "passage"]
+    assert entries and all(e["reason"] == "rule-g-editorial" and e["tombstone"]
+                           for e in entries)
+    quoted = [e for e in entries if "Retractations II.60" in e["tombstone"]]
+    assert len(quoted) == 1

@@ -4383,10 +4383,192 @@
   "work_id": "church-fathers/on-the-holy-trinity/iv",
   "document_id": "b270ebca-051e-5094-8370-758ad599d9ca",
   "collection": "church-fathers",
-  "source_key": "church-fathers/on-the-holy-trinity.xml#iv",
-  "title": "Doctrinal Treatises of St. Augustin",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#iv.i",
+  "title": "On the Holy Trinity",
   "author": "Augustine",
   "frozen_on": "2026-10-30",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/iv.ii",
+  "document_id": "f38eed21-08f6-500b-abd7-60fd5ba9eb5d",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#iv.ii",
+  "title": "The Enchiridion",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/iv.iii",
+  "document_id": "2b63e99e-01d6-5d8e-8b7b-8d3e24b6695a",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#iv.iii",
+  "title": "On the Catechising of the Uninstructed",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/iv.iv",
+  "document_id": "651697d9-8c30-5204-be8e-beb54b80a68b",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#iv.iv",
+  "title": "A Treatise on Faith and the Creed",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/iv.v",
+  "document_id": "3ff1f1d7-da63-5b47-afff-6473e8b50410",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#iv.v",
+  "title": "Concerning Faith of Things Not Seen",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": [
+    {
+     "source_file": "on-the-holy-trinity.xml",
+     "element_id": "iv.v",
+     "quote": "Concerning Faith of Things Not Seen [De Fide Rerum Quæ Non Videntur.] This tract was thought spurious by some, but is known to be St.",
+     "verdict": "genuine",
+     "overridden_by_plan": false
+    }
+   ]
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/iv.vi",
+  "document_id": "9a3661e6-dc89-509f-b191-ec2adbf5c695",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#iv.vi",
+  "title": "On the Profit of Believing",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/iv.vii",
+  "document_id": "8bfbc6cc-ca4a-5e0e-b80b-f76cb1f0222b",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#iv.vii",
+  "title": "On the Creed",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
   "status": "active",
   "supersedes": [],
   "rule_a": {
@@ -4412,8 +4594,8 @@
   "work_id": "church-fathers/on-the-holy-trinity/v",
   "document_id": "f39c025e-78a6-5737-a94f-7896c84fc857",
   "collection": "church-fathers",
-  "source_key": "church-fathers/on-the-holy-trinity.xml#v",
-  "title": "Moral Treatises of St. Augustin",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.i",
+  "title": "On Continence",
   "author": "Augustine",
   "frozen_on": "2026-10-30",
   "status": "active",
@@ -4433,7 +4615,255 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
+   "editorial_judgments": [
+    {
+     "source_file": "on-the-holy-trinity.xml",
+     "element_id": "v.i",
+     "quote": "Erasmus is therefore wrong in ascribing it to Hugo on the ground of the style, which is not unlike that of the earlier discourses.",
+     "verdict": "genuine",
+     "overridden_by_plan": false
+    }
+   ]
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.ii",
+  "document_id": "e5f016c7-8320-50a0-886e-27a1400dab5c",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.ii",
+  "title": "On the Good of Marriage",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
    "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.iii",
+  "document_id": "37a98c7b-a494-586b-9c2f-5ea0897d8d10",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.iii",
+  "title": "Of Holy Virginity",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.iv",
+  "document_id": "4b7822aa-cbef-50bb-a0ac-21815888dee2",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.iv",
+  "title": "On the Good of Widowhood",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.ix",
+  "document_id": "b8747784-548d-5eba-8ab6-b36b75f58e51",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.ix",
+  "title": "On Care to Be Had for the Dead",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.v",
+  "document_id": "f736bb7e-eaca-553a-928f-2554b846ead7",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.v",
+  "title": "On Lying",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.vi",
+  "document_id": "d5938437-edde-503d-8c58-95b74bd276f3",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.vi",
+  "title": "Against Lying",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.vii",
+  "document_id": "99fd3a90-64e1-5993-97c0-46d4105da25d",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.vii",
+  "title": "Of the Work of Monks",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": []
+ },
+ {
+  "work_id": "church-fathers/on-the-holy-trinity/v.viii",
+  "document_id": "6d52640c-5a62-5cf4-baeb-d41b8219458f",
+  "collection": "church-fathers",
+  "source_key": "church-fathers/on-the-holy-trinity.xml#v.viii",
+  "title": "On Patience",
+  "author": "Augustine",
+  "frozen_on": "2026-11-12",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": [
+    {
+     "source_file": "on-the-holy-trinity.xml",
+     "element_id": "v.viii.i",
+     "quote": "12.); yet they feel themselves bound to retain it among the genuine works by Augustin’s own testimony, who mentions both this piece and that On Continence in his Epistle to Darius, 231.",
+     "verdict": "genuine",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },

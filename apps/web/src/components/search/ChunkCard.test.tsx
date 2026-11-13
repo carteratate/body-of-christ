@@ -848,3 +848,71 @@ describe("ChunkCard rejected voice (corpus cleanup 2.4d)", () => {
     }
   });
 });
+
+describe("ChunkCard text labels (corpus cleanup 2.4f)", () => {
+  const LATIN = "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html";
+  const ORE = "Unofficial English translation (L’Osservatore Romano). The Latin text is official.";
+
+  function canon(source: Record<string, unknown> = {}) {
+    return {
+      chunk_id: "00000000-0000-0000-0000-000000001108",
+      content: "Only those marriages are valid which are contracted before the local ordinary…",
+      source: {
+        collection: "canon-law",
+        document_title: "Code of Canon Law",
+        author: null,
+        reference: "Can. 1108",
+        document_id: "00000000-0000-0000-0000-000000000002",
+        position: 1108,
+        anchor: "can/1108",
+        facts: { source_credit: "© Libreria Editrice Vaticana" },
+        text_status: "unofficial_english",
+        official_latin_url: LATIN,
+        ...source,
+      },
+      reranker_score: 0.81,
+      explanation: "Relevant",
+    };
+  }
+
+  function renderResult(result: ReturnType<typeof canon>) {
+    return render(
+      <ChunkCard result={result as never} index={0} searchId="00000000-0000-0000-0000-000000000003" token="token" />,
+    );
+  }
+
+  it("shows neither label on the collapsed card", () => {
+    renderResult(canon());
+    renderResult(canon({ text_status: null, official_latin_url: null, text_source: "ocr" }));
+    expect(screen.queryByText(/Unofficial English/)).toBeNull();
+    expect(screen.queryByText("Text from a scanned edition")).toBeNull();
+  });
+
+  it("shows the unofficial-English line with the Latin linked, before the credit", async () => {
+    renderResult(canon());
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    const lines = [...screen.getByTestId("passage-facts").querySelectorAll("p")].map((p) => p.textContent);
+    // The link's screen-reader note sits inside the sentence.
+    expect(lines).toEqual([
+      "Unofficial English translation (L’Osservatore Romano). The Latin text is official (opens in a new tab).",
+      "© Libreria Editrice Vaticana",
+    ]);
+    const link = screen.getByRole("link", { name: /The Latin text is official/ });
+    expect(link.getAttribute("href")).toBe(LATIN);
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+  });
+
+  it("shows the scanned-edition label when the passage is opened", async () => {
+    renderResult(canon({ collection: "church-fathers", text_status: null, official_latin_url: null, text_source: "ocr", facts: null }));
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.getByTestId("text-label").textContent).toBe("Text from a scanned edition");
+  });
+
+  it("keeps the sentence without a link when the Latin's address is missing", async () => {
+    renderResult(canon({ official_latin_url: null }));
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.getByTestId("text-label").textContent).toBe(ORE);
+    expect(screen.queryByRole("link", { name: /The Latin text is official/ })).toBeNull();
+  });
+});

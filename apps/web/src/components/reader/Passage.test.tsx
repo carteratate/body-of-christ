@@ -45,3 +45,29 @@ describe("Passage", () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 });
+
+describe("Passage text labels (corpus cleanup 2.4f)", () => {
+  const LATIN = "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html";
+  const plain = { unit_label: null, voice: undefined, content: "Only those marriages are valid…" };
+
+  it("shows the unofficial-English line under the text, Latin linked", () => {
+    render(<Passage passage={passage({ ...plain, text_status: "unofficial_english", official_latin_url: LATIN })} highlighted={false} />);
+    const label = screen.getByTestId("text-label");
+    expect(label.textContent).toMatch(/^Unofficial English translation \(L’Osservatore Romano\)\. The Latin text is official/);
+    expect(label.closest("div")!.className).toContain("text-brand-muted");
+    expect(screen.getByRole("link", { name: /The Latin text is official/ }).getAttribute("href")).toBe(LATIN);
+    const text = screen.getByText(plain.content);
+    expect(text.compareDocumentPosition(label) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("shows the scanned-edition label", () => {
+    render(<Passage passage={passage({ ...plain, text_source: "ocr" })} highlighted={false} />);
+    expect(screen.getByTestId("text-label").textContent).toBe("Text from a scanned edition");
+  });
+
+  it("adds nothing without the fields", () => {
+    const { container } = render(<Passage passage={passage(plain)} highlighted={false} />);
+    expect(screen.queryByTestId("text-label")).toBeNull();
+    expect(container.querySelectorAll("p")).toHaveLength(1);
+  });
+});

@@ -11,6 +11,7 @@ import {
   submitLabel,
   type ChunkResult,
 } from "@/lib/api";
+import { passageTextLabels } from "@/lib/search-stream";
 import {
   trackBookmarkCreated,
   trackBookmarkDeleted,
@@ -464,6 +465,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
             passageNote={source.passage_note}
             language={source.language}
             credit={sourceCredit}
+            textLabels={passageTextLabels(source)}
             supersededHref={facts?.superseded_by && !isGuest
               ? readerHref({ docId: facts.superseded_by, origin: "search", returnKey: null })
               : null}

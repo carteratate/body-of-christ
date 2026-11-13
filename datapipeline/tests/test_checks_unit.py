@@ -469,6 +469,32 @@ def test_editorial_div_is_apparatus_and_flagged_if_published(tmp_path, monkeypat
     assert Q.thml_chapters([doc], long_editorial, {"ed"}).out_of_range == []
 
 
+def test_own_text_div_and_kept_quotation(tmp_path, monkeypatch):
+    """1.8b: a div whose own paragraphs are the editor's is apparatus there and body in
+    its chapters; a kept quotation of the author inside an editorial div is body under
+    its passage's chapter key, the editor's lead-in apparatus."""
+    from ingest import editorial_keep
+
+    monkeypatch.setattr(S, "editorial_divs", lambda f: {"ii.p"} if f == "vol.xml" else set())
+    monkeypatch.setattr(S, "editorial_own_text", lambda f: {"ii"} if f == "vol.xml" else set())
+    quote = editorial_keep.KeptQuote("vol.xml", "ii.p", "ii.p-p1", "ii.p-p1", "I wrote",
+                                     "this book.", "Retractations I.1", "Retractations")
+    monkeypatch.setattr(S, "kept_quotes", lambda f: [quote] if f == "vol.xml" else [])
+    path = tmp_path / "vol.xml"
+    path.write_text("""<?xml version="1.0"?><ThML><ThML.body><div1 id="ii" title="Book I">
+<p>Argument—The editor's summary of the book, long enough to measure.</p>
+<div2 id="ii.p" title="Preface"><p id="ii.p-p1">From the Retractations: I wrote
+this book.</p></div2>
+<div2 id="ii.i" title="Chapter I"><p>The author's own chapter, long enough to measure.</p></div2>
+</div1></ThML.body></ThML>""", encoding="utf-8")
+    units = [(u.unit_id, " ".join(u.text.split()), u.region) for u in S.thml_units(str(path))]
+    assert ("ii", "Argument—The editor's summary of the book, long enough to measure.",
+            "apparatus") in units
+    assert ("ii.p/retractations", "I wrote this book.", "body") in units
+    assert ("ii.p", "From the Retractations:", "apparatus") in units
+    assert ("ii.i", "The author's own chapter, long enough to measure.", "body") in units
+
+
 def test_coverage_entry_reported_fixed_at_threshold():
     cov = C.CoverageResult("councils", {
         "a.html": C.FileCoverage("a.html", [], body_chars=100, covered_chars=96),
@@ -489,7 +515,8 @@ def test_editorial_divs_file_is_well_formed():
     keys = [(r["collection"], r["file"], r["div"]) for r in rows]
     assert len(keys) == len(set(keys))
     for r in rows:
-        assert set(r) == {"collection", "file", "div", "title", "item"}
+        assert set(r) - {"own_text"} == {"collection", "file", "div", "title", "item"}
+        assert r.get("own_text", True) is True, r
         assert r["item"] in ("1.8a", "1.8b", "1.9"), r
 
 

@@ -47,6 +47,13 @@ class ChunkSource(BaseModel):
     # "rejected": the passage states a position its document rejects (2.4d). The card
     # shows `unit_label` above the text.
     voice: Optional[Literal["rejected"]] = None
+    # From the passage's metadata (2.4f), shown when the passage is opened. "ocr": the
+    # text came from a scanned edition (1.2f). "unofficial_english": a canon in the
+    # L'Osservatore Romano English, whose Latin at `official_latin_url` is official
+    # (1.5b). The live event sends them only when set.
+    text_source: Optional[Literal["ocr"]] = None
+    text_status: Optional[Literal["unofficial_english"]] = None
+    official_latin_url: Optional[str] = None
 
 
 class ContextPart(BaseModel):

@@ -8,6 +8,7 @@ import {
   type RedirectKind,
   type Tombstone,
 } from "@/lib/corpus-lifecycle";
+import type { PassageTextLabels } from "@/lib/search-stream";
 import { IntentLink } from "./NavPending";
 import { SourceCredit } from "./SourceLink";
 
@@ -22,26 +23,69 @@ export function languageName(code: string | null | undefined): string | null {
   return LANGUAGE_NAMES[code] ?? code;
 }
 
+/** Wording approved by Carter on 12 Nov 2026 (1.2f's suggestion). */
+export const SCANNED_TEXT_LABEL = "Text from a scanned edition";
+
+/** True when the labels would render anything. */
+export function hasTextLabels(labels: PassageTextLabels | null | undefined): boolean {
+  return Boolean(labels?.text_source || labels?.text_status);
+}
+
+/**
+ * Where the passage's text came from (corpus cleanup 2.4f): a scanned edition (1.2f),
+ * or a canon's unofficial English whose Latin is official, with the Latin linked
+ * (Decision log, "Canon law English and amendments (R2)"). One paragraph per label,
+ * styled by the caller's block. Shown only where the passage is opened.
+ */
+export function TextLabels({ labels }: { labels: PassageTextLabels | null | undefined }) {
+  if (!labels || !hasTextLabels(labels)) return null;
+  const latin = labels.official_latin_url;
+  return (
+    <>
+      {labels.text_source === "ocr" && <p data-testid="text-label">{SCANNED_TEXT_LABEL}</p>}
+      {labels.text_status === "unofficial_english" && (
+        <p data-testid="text-label">
+          Unofficial English translation (L’Osservatore Romano).{" "}
+          {latin ? (
+            <a
+              href={latin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-accent underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            >
+              The Latin text is official<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          ) : "The Latin text is official"}.
+        </p>
+      )}
+    </>
+  );
+}
+
 /**
  * What an opened passage says about its text, under the text (corpus cleanup 2.4b):
- * the translation, then the notes, then the source credit, which stays last. Shown
+ * the translation, then where the text came from (2.4f), then the notes, then the
+ * source credit, which stays last. Shown
  * only where the passage is opened (the expanded search card, the bookmark), never
  * on a collapsed card (Decision log, "Source credits"). Renders nothing without facts
  * except the credit, so a response without them looks as it did.
  */
-export function PassageFacts({ facts, passageNote, language, credit, supersededHref }: {
+export function PassageFacts({ facts, passageNote, language, credit, supersededHref, textLabels }: {
   facts: DocumentFacts | null | undefined;
   passageNote?: string | null;
   language?: string | null;
   credit: string | null;
   /** The reader link for the current text, when `facts.superseded_by` names one. */
   supersededHref?: string | null;
+  /** Decoded by `passageTextLabels` (2.4f). */
+  textLabels?: PassageTextLabels | null;
 }) {
   const translation = formatTranslation(facts?.translation);
   const notes = factNotes(facts, passageNote);
   const superseded = facts?.superseded_note?.trim() || null;
   const languageLabel = languageName(language);
-  if (!translation && notes.length === 0 && !superseded && !languageLabel) {
+  if (!translation && notes.length === 0 && !superseded && !languageLabel
+      && !hasTextLabels(textLabels)) {
     return credit ? <SourceCredit text={credit} /> : null;
   }
   return (
@@ -50,6 +94,7 @@ export function PassageFacts({ facts, passageNote, language, credit, supersededH
         <p>This passage is in {languageLabel}; it is not included in search.</p>
       )}
       {translation && <p>{/^translat/i.test(translation) ? translation : `Translation: ${translation}`}</p>}
+      <TextLabels labels={textLabels} />
       {notes.map((note) => <p key={note}>{note}</p>)}
       {superseded && (
         <p>
