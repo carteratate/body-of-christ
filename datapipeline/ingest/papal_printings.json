@@ -2048,5 +2048,182 @@
     "why": "The signature, printed in small capitals after \"(Signed)\", which the closing rule does not read as one; it closes the letter as other signatures do."
    }
   ]
+ },
+ "encyclicals/etsi-multa": {
+  "source": "ocr",
+  "work": "philadelphia-1874-etsi-multa",
+  "file": "encyclicalletter00cath_6/",
+  "url": "https://archive.org/details/encyclicalletter00cath_6",
+  "translation": "Encyclical Letter of Our Most Holy Lord Pius IX (Philadelphia: McLaughlin Brothers, [1874])",
+  "units": [
+   {
+    "opens": "Venerable Brethren;",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Health and the Apostolic",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Although many grievous",
+    "unit": 1
+   },
+   {
+    "opens": "Of late, indeed",
+    "unit": "+",
+    "until": "There ring still"
+   },
+   {
+    "opens": "There ring still",
+    "unit": 2
+   },
+   {
+    "opens": "We have now seen",
+    "unit": "+"
+   },
+   {
+    "opens": "It is not however",
+    "unit": 3
+   },
+   {
+    "opens": "You are well aware",
+    "unit": 4
+   },
+   {
+    "opens": "In Our Allocution",
+    "unit": "+"
+   },
+   {
+    "opens": "After the forcible banishment",
+    "unit": 5,
+    "until": "Moreover, parish priests"
+   },
+   {
+    "opens": "Moreover, parish priests",
+    "unit": 6
+   },
+   {
+    "opens": "We, therefore, as required",
+    "unit": 7
+   },
+   {
+    "opens": "These are sad and sorrowful",
+    "unit": 8,
+    "until": "In the meantime, by a decree"
+   },
+   {
+    "opens": "In the meantime, by a decree",
+    "unit": 9
+   },
+   {
+    "opens": "We thank God",
+    "unit": 10
+   },
+   {
+    "opens": "This noble constancy",
+    "unit": 11
+   },
+   {
+    "opens": "Beside many grievous wrongs",
+    "unit": 12,
+    "until": "Moreover, in order to subvert"
+   },
+   {
+    "opens": "Moreover, in order to subvert",
+    "unit": 13
+   },
+   {
+    "opens": "Thus the Holy Church",
+    "unit": 14
+   },
+   {
+    "opens": "No wonder, therefore",
+    "unit": 15,
+    "until": "Of a truth, Venerable Brothers"
+   },
+   {
+    "opens": "Of a truth, Venerable Brothers",
+    "unit": 16,
+    "until": "From this divine command"
+   },
+   {
+    "opens": "From this divine command",
+    "unit": 17
+   },
+   {
+    "opens": "Since these things are so, you will",
+    "unit": 18,
+    "until": "For that cause they are now"
+   },
+   {
+    "opens": "For that cause they are now",
+    "unit": 19
+   },
+   {
+    "opens": "We should indeed have gladly",
+    "unit": "+"
+   },
+   {
+    "opens": "The things which We have",
+    "unit": 20
+   },
+   {
+    "opens": "Nor is this the end",
+    "unit": 21
+   },
+   {
+    "opens": "The attempts, indeed",
+    "unit": 22
+   },
+   {
+    "opens": "Nevertheless, those unhappy",
+    "unit": 23
+   },
+   {
+    "opens": "But these men, going on",
+    "unit": 24
+   },
+   {
+    "opens": "Hence the holy martyr",
+    "unit": 25
+   },
+   {
+    "opens": "We, therefore, who have been placed",
+    "unit": 26
+   },
+   {
+    "opens": "From these facts",
+    "unit": 27
+   },
+   {
+    "opens": "Neither are matters",
+    "unit": "+"
+   },
+   {
+    "opens": "Some of you may perhaps",
+    "unit": 28,
+    "until": "From their first beginnings"
+   },
+   {
+    "opens": "From their first beginnings",
+    "unit": 29
+   },
+   {
+    "opens": "Since these things are so, do you",
+    "unit": 30
+   },
+   {
+    "opens": "To conclude",
+    "unit": 31
+   },
+   {
+    "opens": "Disturbed, therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "Meanwhile, in testimony",
+    "unit": 32
+   }
+  ]
  }
 }

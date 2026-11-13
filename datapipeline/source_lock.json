@@ -4672,6 +4672,28 @@
  },
  {
   "collection": "encyclicals",
+  "path": "encyclicals/encyclicalletter00cath_6/encyclicalletter00cath_6_djvu.xml",
+  "sha256": "572fb2e65d456f61a13ac2706926366faf5af1ca83c514f7132742b9ca54b667",
+  "bytes": 483519,
+  "url": "https://archive.org/download/encyclicalletter00cath_6/encyclicalletter00cath_6_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/encyclicalletter00cath_6/encyclicalletter00cath_6_page_numbers.json",
+  "sha256": "0e5db5792ff3559473b0b85b4e8b51b1b6fdc15a9d9c8b0e441d556ade57c3be",
+  "bytes": 4151,
+  "url": "https://archive.org/download/encyclicalletter00cath_6/encyclicalletter00cath_6_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
   "path": "encyclicals/etsi-multa.html",
   "sha256": "5a51a3f2133274ce7c3c0266f9ea9234a24acbf0e1a7a4ff5cca63f0206fd6ae",
   "bytes": 123322,
