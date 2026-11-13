@@ -18,6 +18,7 @@ from app.corpus_schema import CorpusSchema
 from app.reader_access import (passage_source_url, restricted_error, source_credit,
                                source_url)
 from app.models.corpus import DocumentFacts, RedirectedFrom, WorkInfo
+from app.rag.steps import document_facts
 from app.models.documents import (
     ContentsNode, DocumentResponse, ReaderPassage, ReaderChapter, TocEntry, TocResponse,
 )
@@ -465,9 +466,9 @@ async def get_document_toc(
                        contents=contents)
 
 
-_PASSAGE_FIELDS = """,
+_PASSAGE_FIELDS = f""",
                    language, note, work_key, passage_author, voice,
-                   superseded_by::text AS superseded_by"""
+                   superseded_by::text AS superseded_by, {document_facts.TEXT_LABEL_COLUMNS}"""
 
 
 def _passages_sql(schema: CorpusSchema) -> str:
@@ -585,6 +586,8 @@ async def get_document_reader(
             **({key: r[key] for key in ("language", "note", "work_key", "passage_author",
                                         "voice", "superseded_by")}
                if "language" in r.keys() else {}),
+            # Scanned edition, unofficial English and the Latin's link (2.4f).
+            **(document_facts.text_labels(r) if "text_source" in r.keys() else {}),
         ) for r in passage_rows
     ]
     return ReaderChapter(

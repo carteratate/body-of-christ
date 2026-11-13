@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   consumeSearchStream,
+  passageTextLabels,
   SearchStreamProtocolError,
   type SearchStreamCallbacks,
 } from "./search-stream";
@@ -127,6 +128,9 @@ describe("consumeSearchStream", () => {
         passage_note: null,
         passage_author: null,
         voice: null,
+        text_source: null,
+        text_status: null,
+        official_latin_url: null,
         reader_access: null,
         source_url: null,
         source_credit: null,
@@ -531,5 +535,20 @@ describe("passage voice (corpus cleanup 2.4d)", () => {
     expect(await decodedVoice(undefined)).toBeNull();
     expect(await decodedVoice("affirmed")).toBeNull();
     expect(await decodedVoice(7)).toBeNull();
+  });
+});
+
+describe("passageTextLabels (corpus cleanup 2.4f)", () => {
+  it("keeps the known values and a web link", () => {
+    expect(passageTextLabels({
+      text_source: "ocr", text_status: "unofficial_english", official_latin_url: "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html",
+    })).toEqual({ text_source: "ocr", text_status: "unofficial_english", official_latin_url: "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html" });
+  });
+
+  it("drops unknown values and a link that is not a web address", () => {
+    expect(passageTextLabels({
+      text_source: "typed", text_status: "official", official_latin_url: "javascript:alert(1)",
+    })).toEqual({ text_source: null, text_status: null, official_latin_url: null });
+    expect(passageTextLabels({})).toEqual({ text_source: null, text_status: null, official_latin_url: null });
   });
 });

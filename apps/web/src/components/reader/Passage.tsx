@@ -5,6 +5,8 @@ import type { ReaderPassage } from "@/lib/api";
 import { renderVerseMarkers } from "@/lib/verse-markers";
 import { rejectedLabel } from "@/lib/passageRole";
 import { RejectedVoice } from "@/components/common/RejectedVoice";
+import { TextLabels, hasTextLabels } from "@/components/common/PassageFacts";
+import { passageTextLabels } from "@/lib/search-stream";
 
 export function Passage({ passage, highlighted, history = [], highlightAnchor = null }: {
   passage: ReaderPassage;
@@ -17,6 +19,8 @@ export function Passage({ passage, highlighted, history = [], highlightAnchor = 
   // A position the document rejects (2.4d): set off as a quotation under a caption
   // naming whose it is, which replaces the inline marker.
   const rejected = rejectedLabel(passage);
+  // Where the text came from (2.4f): a scanned edition, or unofficial canon English.
+  const textLabels = passageTextLabels(passage);
   return (
     <>
       {passage.passage_author && (
@@ -37,6 +41,11 @@ export function Passage({ passage, highlighted, history = [], highlightAnchor = 
           {renderVerseMarkers(passage.content)}
         </p>
       </RejectedVoice>
+      {hasTextLabels(textLabels) && (
+        <div className="-mt-1 mb-3 space-y-1 text-xs leading-snug text-brand-muted">
+          <TextLabels labels={textLabels} />
+        </div>
+      )}
       {passage.note && <p className="-mt-1 mb-3 text-xs leading-snug text-brand-muted">{passage.note}</p>}
       {history.map((older) => <EarlierText key={older.id} passage={older} initiallyOpen={older.anchor === highlightAnchor} />)}
     </>

@@ -4,11 +4,11 @@
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
-  "church-fathers": "feat/1.8c-fathers-labels-ignatius 9561c6c",
+  "church-fathers": "feat/1.8b-npnf-augustine-strip 43116e3",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-3-same-translation 2aa5527",
+  "encyclicals": "feat/1.3d-3-same-translation bd6ce91",
   "medieval": "feat/1.10c-piece-citations 269d968",
-  "papal-documents": "feat/1.3d-3-same-translation 2aa5527",
+  "papal-documents": "feat/1.3d-3-same-translation bd6ce91",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -753,13 +753,13 @@
    "pct": 100.0
   },
   "church-fathers/city-of-god.xml": {
-   "body_chars": 2801755,
-   "covered_chars": 2787132,
-   "pct": 99.48
+   "body_chars": 2765229,
+   "covered_chars": 2754694,
+   "pct": 99.62
   },
   "church-fathers/confessions.xml": {
-   "body_chars": 597248,
-   "covered_chars": 597248,
+   "body_chars": 597242,
+   "covered_chars": 597242,
    "pct": 100.0
   },
   "church-fathers/incarnation.xml": {
@@ -768,9 +768,9 @@
    "pct": 100.0
   },
   "church-fathers/on-the-holy-trinity.xml": {
-   "body_chars": 2267380,
-   "covered_chars": 2267380,
-   "pct": 100.0
+   "body_chars": 2211805,
+   "covered_chars": 2170350,
+   "pct": 98.13
   },
   "church-fathers/second-century.xml": {
    "body_chars": 2476627,
@@ -1830,6 +1830,13 @@
    "covered_chars": 17859,
    "pct": 100.0
   },
+  "2b63e99e-01d6-5d8e-8b7b-8d3e24b6695a": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 151023,
+   "covered_chars": 148459,
+   "pct": 98.3
+  },
   "2b91ea4c-ae68-5d30-a886-a88b118528bf": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/19-JOBeng-web-c.usfm",
@@ -1949,6 +1956,13 @@
    "covered_chars": 11797,
    "pct": 100.0
   },
+  "37a98c7b-a494-586b-9c2f-5ea0897d8d10": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 101339,
+   "covered_chars": 101339,
+   "pct": 100.0
+  },
   "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
@@ -1990,6 +2004,13 @@
    "body_chars": 58069,
    "covered_chars": 57816,
    "pct": 99.56
+  },
+  "3ff1f1d7-da63-5b47-afff-6473e8b50410": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 29682,
+   "covered_chars": 29682,
+   "pct": 100.0
   },
   "404f3fab-39e8-5520-b027-9b821b6384e4": {
    "collection": "papal-documents",
@@ -2123,6 +2144,13 @@
    "body_chars": 5275,
    "covered_chars": 5240,
    "pct": 99.34
+  },
+  "4b7822aa-cbef-50bb-a0ac-21815888dee2": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 63132,
+   "covered_chars": 63132,
+   "pct": 100.0
   },
   "4c96eac3-f3f1-549c-84cf-070661393073": {
    "collection": "church-fathers",
@@ -2274,9 +2302,9 @@
   "5e3992d5-a8bb-583b-aaf9-41fedcd890d3": {
    "collection": "church-fathers",
    "source_file": "city-of-god.xml",
-   "body_chars": 360213,
-   "covered_chars": 360213,
-   "pct": 100.0
+   "body_chars": 359764,
+   "covered_chars": 349285,
+   "pct": 97.09
   },
   "5ec478ab-5d1d-596a-b7cf-f54747d840fa": {
    "collection": "bible",
@@ -2369,6 +2397,13 @@
    "covered_chars": 15897,
    "pct": 100.0
   },
+  "651697d9-8c30-5204-be8e-beb54b80a68b": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 56749,
+   "covered_chars": 56080,
+   "pct": 98.82
+  },
   "658d9cfa-0ef5-5890-ad20-2c260a80d6e3": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/06-DEUeng-web-c.usfm",
@@ -2430,6 +2465,13 @@
    "source_file": "apostolic fathers.xml",
    "body_chars": 5830,
    "covered_chars": 5830,
+   "pct": 100.0
+  },
+  "6d52640c-5a62-5cf4-baeb-d41b8219458f": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 42479,
+   "covered_chars": 42479,
    "pct": 100.0
   },
   "6d70b756-76dd-5cde-99b1-66e5eed4a589": {
@@ -2533,8 +2575,8 @@
   "7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
    "collection": "church-fathers",
    "source_file": "confessions.xml",
-   "body_chars": 597248,
-   "covered_chars": 597248,
+   "body_chars": 597242,
+   "covered_chars": 597242,
    "pct": 100.0
   },
   "7f6bc9ae-3566-5deb-8dbe-895238288fda": {
@@ -2691,6 +2733,13 @@
    "covered_chars": 13545,
    "pct": 84.99
   },
+  "8bfbc6cc-ca4a-5e0e-b80b-f76cb1f0222b": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 28819,
+   "covered_chars": 28819,
+   "pct": 100.0
+  },
   "8d817baf-5149-5641-91ab-ad994870956a": {
    "collection": "church-fathers",
    "source_file": "third-century-3.xml",
@@ -2780,6 +2829,20 @@
    "source_file": "hf_l-xiii_enc_28051902_mirae-caritatis.html",
    "body_chars": 38386,
    "covered_chars": 38386,
+   "pct": 100.0
+  },
+  "99fd3a90-64e1-5993-97c0-46d4105da25d": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 104939,
+   "covered_chars": 104939,
+   "pct": 100.0
+  },
+  "9a3661e6-dc89-509f-b191-ec2adbf5c695": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 90055,
+   "covered_chars": 90055,
    "pct": 100.0
   },
   "9a6599ee-ac40-5017-a2c6-7aad2cf14296": {
@@ -3002,9 +3065,9 @@
   "b270ebca-051e-5094-8370-758ad599d9ca": {
    "collection": "church-fathers",
    "source_file": "on-the-holy-trinity.xml",
-   "body_chars": 1550354,
-   "covered_chars": 1550354,
-   "pct": 100.0
+   "body_chars": 963520,
+   "covered_chars": 937437,
+   "pct": 97.29
   },
   "b272129f-8595-5982-aefa-c62598e9076f": {
    "collection": "bible",
@@ -3039,6 +3102,13 @@
    "source_file": "vat2-optatam-totius.html",
    "body_chars": 28979,
    "covered_chars": 28979,
+   "pct": 100.0
+  },
+  "b8747784-548d-5eba-8ab6-b36b75f58e51": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 57471,
+   "covered_chars": 57471,
    "pct": 100.0
   },
   "b8babc97-15ff-5c15-8e25-bba0eca51786": {
@@ -3363,6 +3433,13 @@
    "covered_chars": 56865,
    "pct": 100.0
   },
+  "d5938437-edde-503d-8c58-95b74bd276f3": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 97920,
+   "covered_chars": 97920,
+   "pct": 100.0
+  },
   "d6cc48e2-30e8-5c73-aba2-9890c339531f": {
    "collection": "papal-documents",
    "source_file": "rosarium-virginis-mariae.html",
@@ -3401,9 +3478,9 @@
   "dac28881-f92b-5c94-991a-5b244e2d49c3": {
    "collection": "church-fathers",
    "source_file": "city-of-god.xml",
-   "body_chars": 2430704,
-   "covered_chars": 2426919,
-   "pct": 99.84
+   "body_chars": 2405465,
+   "covered_chars": 2405409,
+   "pct": 100.0
   },
   "db3c5936-fd8e-5113-b60a-bd21373b3918": {
    "collection": "encyclicals",
@@ -3473,6 +3550,13 @@
    "source_file": "third-century.xml",
    "body_chars": 38535,
    "covered_chars": 38535,
+   "pct": 100.0
+  },
+  "e5f016c7-8320-50a0-886e-27a1400dab5c": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 72327,
+   "covered_chars": 72327,
    "pct": 100.0
   },
   "e628dac2-d1fe-536e-b463-f10e3865b819": {
@@ -3636,11 +3720,18 @@
    "covered_chars": 47779,
    "pct": 97.82
   },
+  "f38eed21-08f6-500b-abd7-60fd5ba9eb5d": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 182946,
+   "covered_chars": 170807,
+   "pct": 93.36
+  },
   "f39c025e-78a6-5737-a94f-7896c84fc857": {
    "collection": "church-fathers",
    "source_file": "on-the-holy-trinity.xml",
-   "body_chars": 717026,
-   "covered_chars": 717026,
+   "body_chars": 69627,
+   "covered_chars": 69627,
    "pct": 100.0
   },
   "f4987a29-60eb-5834-9cf0-045324a8f1b0": {
@@ -3677,6 +3768,13 @@
    "body_chars": 33378,
    "covered_chars": 33176,
    "pct": 99.39
+  },
+  "f736bb7e-eaca-553a-928f-2554b846ead7": {
+   "collection": "church-fathers",
+   "source_file": "on-the-holy-trinity.xml",
+   "body_chars": 99777,
+   "covered_chars": 99777,
+   "pct": 100.0
   },
   "f827d42e-fca5-5277-82be-64cdc1feb467": {
    "collection": "church-fathers",

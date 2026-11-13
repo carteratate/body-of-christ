@@ -614,3 +614,56 @@ describe("BookmarkCard rejected voice (corpus cleanup 2.4d)", () => {
       .toMatchSnapshot();
   });
 });
+
+describe("BookmarkCard text labels (corpus cleanup 2.4f)", () => {
+  const LATIN = "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html";
+
+  function renderBookmark(source: Record<string, unknown>) {
+    return render(
+      <BookmarkCard
+        bookmark={{
+          id: "bookmark-labels",
+          chunk_id: "chunk-labels",
+          note: null,
+          created_at: "2026-11-12T00:00:00Z",
+          chunk: {
+            content: "Only those marriages are valid…",
+            source: {
+              collection: "canon-law",
+              document_title: "Code of Canon Law",
+              author: null,
+              reference: "Can. 1108",
+              document_id: "11111111-1111-4111-8111-111111111111",
+              anchor: "can/1108",
+              chapter_key: "book-4",
+              facts: { source_credit: "© Libreria Editrice Vaticana" },
+              ...source,
+            },
+          },
+        } as never}
+        token="token"
+        onRemove={vi.fn().mockResolvedValue(undefined)}
+        onNoteUpdated={vi.fn()}
+        showToast={vi.fn()}
+      />,
+    );
+  }
+
+  it("shows the unofficial-English line, Latin linked, before the credit", () => {
+    renderBookmark({ text_status: "unofficial_english", official_latin_url: LATIN });
+    const lines = [...screen.getByTestId("passage-facts").querySelectorAll("p")].map((p) => p.textContent);
+    expect(lines[0]).toMatch(/^Unofficial English translation \(L’Osservatore Romano\)\. The Latin text is official/);
+    expect(lines.at(-1)).toBe("© Libreria Editrice Vaticana");
+    expect(screen.getByRole("link", { name: /The Latin text is official/ }).getAttribute("href")).toBe(LATIN);
+  });
+
+  it("shows the scanned-edition label", () => {
+    renderBookmark({ text_source: "ocr" });
+    expect(screen.getByTestId("text-label").textContent).toBe("Text from a scanned edition");
+  });
+
+  it("shows no label for an unknown value", () => {
+    renderBookmark({ text_source: "typed", text_status: "official" });
+    expect(screen.queryByTestId("text-label")).toBeNull();
+  });
+});

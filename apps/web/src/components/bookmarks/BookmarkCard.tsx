@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Bookmark as BookmarkIcon, BookOpen, Copy, ExternalLink, Pencil, Plus } from "lucide-react";
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
+import { passageTextLabels } from "@/lib/search-stream";
 import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { stripVerseMarkers } from "@/lib/verse-markers";
@@ -235,6 +236,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
             passageNote={source.passage_note}
             language={source.language}
             credit={sourceCredit}
+            textLabels={passageTextLabels(source)}
             supersededHref={source.facts?.superseded_by
               ? readerHref({ docId: source.facts.superseded_by, origin: "saved", returnKey: null })
               : null}
