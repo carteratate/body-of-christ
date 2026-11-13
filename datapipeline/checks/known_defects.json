@@ -26,32 +26,7 @@
  },
  "coverage.medieval.proslogium-monologium-and-cur-deus-homo.xml": {
   "fixed_by": "5.6b",
-  "description": "88.36% covered: Anselm's own prefaces (1.9) and Gaunilo's reply with Anselm's answer (5.6b) dropped"
- },
- "labels.roman_case:church-fathers/0066869a-28fb-5274-a847-c4d3e88a948e": {
-  "fixed_by": "1.9",
-  "description": "Fragments from the Lost Writings of Irenæus: 54 labels title-case a Roman numeral (C-22)",
-  "units": ["ix.viii.ii", "ix.viii.iii", "ix.viii.iii/from-p1-2", "ix.viii.iv", "ix.viii.ix", "ix.viii.li", "ix.viii.lii", "ix.viii.liii", "ix.viii.liv", "ix.viii.lv", "ix.viii.lv/from-p10", "ix.viii.vi", "ix.viii.vii", "ix.viii.viii", "ix.viii.xi", "ix.viii.xii", "ix.viii.xiii", "ix.viii.xiv", "ix.viii.xiv/from-p1-2", "ix.viii.xix", "ix.viii.xl", "ix.viii.xli", "ix.viii.xlii", "ix.viii.xliii", "ix.viii.xliv", "ix.viii.xlix", "ix.viii.xlv", "ix.viii.xlvi", "ix.viii.xlvii", "ix.viii.xlviii", "ix.viii.xv", "ix.viii.xvi", "ix.viii.xvii", "ix.viii.xviii", "ix.viii.xx", "ix.viii.xxi", "ix.viii.xxii", "ix.viii.xxiii", "ix.viii.xxiv", "ix.viii.xxix", "ix.viii.xxv", "ix.viii.xxvi", "ix.viii.xxvii", "ix.viii.xxviii", "ix.viii.xxx", "ix.viii.xxxi", "ix.viii.xxxii", "ix.viii.xxxiii", "ix.viii.xxxiv", "ix.viii.xxxix", "ix.viii.xxxv", "ix.viii.xxxvi", "ix.viii.xxxvii", "ix.viii.xxxviii"]
- },
- "labels.roman_case:church-fathers/22369abb-5ee4-50d2-85c8-fdf4da8fc2ce": {
-  "fixed_by": "1.9",
-  "description": "Other Fragments from the Lost Writings of Justin: 16 labels title-case a Roman numeral (C-22)",
-  "units": ["viii.ix.ii", "viii.ix.iii", "viii.ix.iv", "viii.ix.ix", "viii.ix.vi", "viii.ix.vii", "viii.ix.viii", "viii.ix.xi", "viii.ix.xii", "viii.ix.xiii", "viii.ix.xiv", "viii.ix.xix", "viii.ix.xv", "viii.ix.xvi", "viii.ix.xvii", "viii.ix.xviii"]
- },
- "labels.roman_case:church-fathers/7f04ae49-2ffe-5cdf-acd9-2b7e8576b441": {
-  "fixed_by": "1.9",
-  "description": "The Confessions of Saint Augustine: 2 labels title-case a Roman numeral (C-22)",
-  "units": ["xiii.xi", "xiii.xi/from-p3"]
- },
- "labels.roman_case:church-fathers/efc282b4-fe6a-5162-9e1b-8748c686dde1": {
-  "fixed_by": "1.9",
-  "description": "Fragments: 8 labels title-case a Roman numeral (C-22)",
-  "units": ["vii.ii.ii", "vii.ii.iii", "vii.ii.iv", "vii.ii.ix", "vii.ii.vi", "vii.ii.vi/from-p2-2", "vii.ii.vii", "vii.ii.viii"]
- },
- "labels.unique_reference:medieval/82d38756-6fba-5af7-9905-fd508a620f38": {
-  "fixed_by": "1.9",
-  "description": "Anselm's Cur Deus Homo: chapter labels lack their book (\"Chapter I\" in each book); 1.9 labels them \"Book First · Chapter I\" (Carter, 2 Nov 2026)",
-  "units": ["Anselm's Cur Deus Homo, Chapter I", "Anselm's Cur Deus Homo, Chapter III", "Anselm's Cur Deus Homo, Chapter IV", "Anselm's Cur Deus Homo, Chapter V", "Anselm's Cur Deus Homo, Chapter VI", "Anselm's Cur Deus Homo, Chapter VIII (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter VIII (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter X (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XIII", "Anselm's Cur Deus Homo, Chapter XIV", "Anselm's Cur Deus Homo, Chapter XIX (part 1 of 2)", "Anselm's Cur Deus Homo, Chapter XIX (part 2 of 2)", "Anselm's Cur Deus Homo, Chapter XV", "Anselm's Cur Deus Homo, Chapter XXI", "Anselm's Cur Deus Homo, Chapter XXII"]
+  "description": "90.26% covered: Gaunilo's reply with Anselm's answer (5.6b) dropped"
  },
  "sequence.bible_verses.duplicated:ESG/8": {
   "fixed_by": "1.4a",
@@ -174,14 +149,6 @@
   "fixed_by": "1.8e",
   "description": "whole work \"The Liturgy of the Blessed Apostles\" holds its text directly in its div and is dropped"
  },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#iii.i": {
-  "fixed_by": "1.9",
-  "description": "Anselm's own preface (div iii.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#iv.i": {
-  "fixed_by": "1.9",
-  "description": "Anselm's own preface (div iv.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
- },
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.i": {
   "fixed_by": "5.6b",
   "description": "\"In Behalf of the Fool\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
@@ -229,9 +196,5 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.x": {
   "fixed_by": "5.6b",
   "description": "\"Chapter X\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
- },
- "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#vi.i": {
-  "fixed_by": "1.9",
-  "description": "Anselm's own preface (div vi.i) is dropped as front matter (new; author text, behind a one-line editor's summary)"
  }
 }

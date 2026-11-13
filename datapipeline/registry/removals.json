@@ -5373,7 +5373,7 @@
   "church_act": null,
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
-   "count": 11
+   "count": 12
   },
   "judgment": null,
   "added_by": "1.8a",
@@ -5475,7 +5475,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 715
+   "count": 714
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -5494,7 +5494,7 @@
   "church_act": null,
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
-   "count": 72
+   "count": 73
   },
   "judgment": "Doubtful Fragments on the Pentateuch.",
   "added_by": "1.8a",
@@ -16257,7 +16257,7 @@
   "church_act": null,
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
-   "count": 1
+   "count": 2
   },
   "judgment": null,
   "added_by": "1.8a",
@@ -35854,6 +35854,22 @@
   "added_on": "2026-11-01"
  },
  {
+  "id": "rm-3016",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "807935f8-f62c-53b6-baae-0fd9f7a0aa20",
+  "anchor": "imitation-of-christ/foreword",
+  "passage_id": "30881b92-ae11-51c3-ac31-3b2c76cd4cb4",
+  "reason": "rule-g-editorial",
+  "detail": "Foreword, by an editor or translator, not the author (div ii)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": "Theories most popular at the moment ascribe the Imitation to two or three men, members of the Brethren of the Common Life, an association of priests organized in the Netherlands in the latter half of the fourteenth century.",
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
   "id": "rm-0128",
   "scope": "class",
   "collection": "medieval",
@@ -35871,6 +35887,86 @@
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-3019",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/a-note-on-the-translation",
+  "passage_id": "04924f5a-7e86-5eac-996c-52bda61bb9da",
+  "reason": "rule-g-editorial",
+  "detail": "A Note on the Translation, by an editor or translator, not the author (div vii)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3020",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/chronological-table",
+  "passage_id": "07dd7efc-da9e-5b08-95d3-563a43edcd8a",
+  "reason": "rule-g-editorial",
+  "detail": "Chronological Table, by an editor or translator, not the author (div x)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3017",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/editorial-note/p1",
+  "passage_id": "6edb56a3-f8d6-55c3-bae9-a4865e890bb0",
+  "reason": "rule-g-editorial",
+  "detail": "Editorial Note, by an editor or translator, not the author (div ix)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3018",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/editorial-note/p2",
+  "passage_id": "1b9631e4-341a-5f14-8e51-9e9478a7348c",
+  "reason": "rule-g-editorial",
+  "detail": "Editorial Note, by an editor or translator, not the author (div ix)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3021",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/section",
+  "passage_id": "070fabfb-31d0-5ec0-9046-c52342f2c21f",
+  "reason": "rule-g-editorial",
+  "detail": "Chronological Table, by an editor or translator, not the author (div x)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
  },
  {
   "id": "rm-0129",
