@@ -2267,5 +2267,74 @@
     "unit": 4
    }
   ]
+ },
+ "encyclicals/exultavit-cor-nostrum": {
+  "source": "ocr",
+  "work": "quebec-1852-exultavit-cor-nostrum",
+  "file": "cihm_52209/",
+  "url": "https://archive.org/details/cihm_52209",
+  "translation": "Pastoral Letter of His Grace the Archbishop of Quebec ([Quebec, 1852])",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER",
+    "why": "The pastoral's heading over the letter, not the letter (rule G)."
+   },
+   {
+    "opens": "OF OUR HOLY FATHER POPE PIUS IX., ORDERING",
+    "why": "The rest of the pastoral's heading (rule G)."
+   },
+   {
+    "opens": "AND ANNOUNCING A NEW JUBILEE.",
+    "why": "The rest of the pastoral's heading (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brothers—Health",
+    "unit": "preamble",
+    "until": "Our heart rejoiced"
+   },
+   {
+    "opens": "Our heart rejoiced",
+    "unit": 1
+   },
+   {
+    "opens": "But if, on the one",
+    "unit": 2
+   },
+   {
+    "opens": "In the midst of so many",
+    "unit": 3
+   },
+   {
+    "opens": "For he who asks",
+    "unit": "+"
+   },
+   {
+    "opens": "Let us come, then",
+    "unit": "+"
+   },
+   {
+    "opens": "And that God may be made",
+    "unit": "+",
+    "until": "Moreover, Venerable Brethren"
+   },
+   {
+    "opens": "Moreover, Venerable Brethren",
+    "unit": 4
+   },
+   {
+    "opens": "And in order that the Faithful",
+    "unit": "+"
+   },
+   {
+    "opens": "We entertain this firm hope",
+    "unit": 5
+   },
+   {
+    "opens": "Finally, as an anticipatory",
+    "unit": 6
+   }
+  ]
  }
 }

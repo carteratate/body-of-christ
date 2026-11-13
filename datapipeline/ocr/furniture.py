@@ -87,7 +87,7 @@ class Removal:
     leaf: int
     page: str | None
     kind: str        # running_head | page_number | signature | catchword | speck |
-                     # margin_number | note_call (`pdf.py`) | rule | watermark
+                     # margin_number | note_call (`pdf.py`) | rule | watermark | edge_strip
     text: str
 
 
@@ -569,10 +569,20 @@ def clean_work(workdir, sources=None, force: bool = False,
         if missing:
             raise ValueError(f"{config.work}: only_pages {sorted(missing)} are not in its pages")
         pages = [p for p in pages if p.number in config.only_pages]
+    strips: list[Removal] = []
+    if config.edge_strip:
+        # The cut-off lines of the page before, which the frame caught at its left edge
+        # (the Archbishop of Quebec's pastoral on microfiche, 1.3d).
+        for page in pages:
+            edge = config.edge_strip * page.width
+            strips += [Removal(page.leaf, page.number, "edge_strip", ln.text)
+                       for ln in page.lines if ln.x0 < edge]
+            page.lines = [ln for ln in page.lines if ln.x0 >= edge]
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
                          config.max_paragraph_words, config.margin_numbers,
                          config.paragraph_opens, config.rule_lines, config.note_opens,
                          config.watermark)
+    result.removals.extend(strips)
     number = {p.leaf: p.number for p in pages}
     result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")
                            for c in note_calls)

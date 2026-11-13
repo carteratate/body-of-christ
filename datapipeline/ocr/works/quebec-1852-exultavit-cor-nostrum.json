@@ -1,0 +1,44 @@
+{
+ "work": "quebec-1852-exultavit-cor-nostrum",
+ "title": "Exultavit Cor Nostrum, in Pastoral Letter of His Grace the Archbishop of Quebec on the Occasion of the Jubilee ([Quebec, 1852]), \"Encyclical letter of Our Holy Father Pope Pius IX., ordering prayers and announcing a new Jubilee\", pp. 7–10",
+ "scan": "cihm_52209",
+ "djvu_xml": "encyclicals/cihm_52209/cihm_52209_djvu.xml",
+ "page_numbers": "",
+ "pages": [
+  "7",
+  "10"
+ ],
+ "layout": "single-column",
+ "edge_strip": 0.1,
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "exultavit-cor-nostrum",
+   "first": "^ENCYCLICAL LETTER",
+   "last": "Pope$",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "leaf_pages": {
+  "7": "7",
+  "8": "8",
+  "9": "9",
+  "10": "10"
+ }
+}

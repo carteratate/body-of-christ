@@ -89,6 +89,9 @@ class WorkConfig:
     paragraph_opens: tuple[str, ...] = ()   # lines that open a paragraph the clean-up misses
     rule_lines: tuple[str, ...] = ()   # printed rules the OCR reads as letters, one line each
     watermark: str | None = None   # a scanner's stamp on every page ("Digitized by Google")
+    # A microfilm frame that also catches the previous page's right edge: lines starting
+    # within this fraction of the image's width from its left edge are that strip (1.3d).
+    edge_strip: float = 0.0
     note_opens: tuple[str, ...] = ()   # the line opening each page's notes, where the measure misses
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints

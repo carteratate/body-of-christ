@@ -1041,6 +1041,17 @@ def test_leaf_pages_name_the_pages_without_a_page_map(tmp_path, sources):
     assert w.passages()
 
 
+def test_edge_strip_drops_the_previous_pages_cut_off_lines(tmp_path, sources):
+    """A microfilm frame that also caught the page before's edge reads only its own
+    page: lines starting within the strip go, logged as `edge_strip`."""
+    w = WorkDir(make_config(edge_strip=0.09), root=tmp_path / "w")   # 180 of 2000 pixels
+    clean_work(w, sources=sources, passage_words=20)
+    dropped = [r for r in w.cleanup()["removals"] if r["kind"] == "edge_strip"]
+    assert dropped
+    kept = " ".join(p.cleaned for p in w.passages())
+    assert all(r["text"] not in kept for r in dropped)
+
+
 def test_parallel_right_keeps_the_right_column_and_lines_across_the_page():
     from ocr.layout import ParallelRight
 

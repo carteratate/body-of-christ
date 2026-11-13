@@ -5931,7 +5931,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/cihm_52209/",
-  "document_id": null,
+  "document_id": "25fb09e6-6c9b-56ce-b50b-e9dc03bc79a7",
   "edition": "Pastoral Letter of His Grace the Archbishop of Quebec on the Occasion of the Jubilee Granted by Our Holy Father Pope Pius IX by His Apostolic Letters Bearing Date the 21 November 1851 ([Quebec, 1852]; caption title; given at the Archiepiscopal Palace of Quebec, 23 April 1852), which includes the Encyclical Letter in full, from 'Our heart rejoiced in the Lord, Venerable Brothers' to 'of Our Pontificate the sixth. Pius IX, Pope'. CIHM microfiche of the copy in the Library of the Seminary of Quebec. A different translation from papalencyclicals.net's. (An 1851 Canadian printing, cihm_43402, omits the opening paragraph.) Internet Archive scan cihm_52209",
   "translator": null,
   "first_published": 1852,
@@ -5942,7 +5942,7 @@
   "credit_line": "Translation published by the Archbishop of Quebec (1852)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Commissum Divinitus",
@@ -6278,24 +6278,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/ben14/b14exquo.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Exultavit Cor Nostrum",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/exultavit-cor-nostrum.html",
-  "document_id": "25fb09e6-6c9b-56ce-b50b-e9dc03bc79a7",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9exulta.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,
