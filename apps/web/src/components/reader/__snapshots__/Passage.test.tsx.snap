@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Passage > renders exactly as today without the field 1`] = `"<p id="anchor-exsurge-domine/31" class="text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] text-brand-primary mb-3" style="font-family: Georgia, serif; background: rgba(196, 151, 42, 0.16); border-radius: 4px; padding: 2px 4px;"><sup class="text-brand-muted mr-1" style="font-size: 10px;">Condemned proposition 31 (condemned by Leo X, Exsurge Domine)</sup>In every good work the just man sins.</p>"`;

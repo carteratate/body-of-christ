@@ -46,7 +46,7 @@ def _sql(works: bool) -> str:
     join = ("LEFT JOIN document_works w ON w.document_id = c.document_id "
             "AND w.work_key = c.work_key" if works else "")
     return f"""
-    SELECT c.id::text AS chunk_id, c.language, c.note, c.passage_author,
+    SELECT c.id::text AS chunk_id, c.language, c.note, c.passage_author, c.voice,
            d.author, d.year, NULLIF(d.translation, '') AS translation, d.date_display,
            d.genre, d.issuer, d.issuer_label, d.certainty, d.attribution_note, d.notes,
            d.source_credit, d.superseded_by::text AS superseded_by, d.superseded_note,
@@ -65,6 +65,7 @@ class PassageFacts:
     language: str | None
     passage_note: str | None
     passage_author: str | None
+    voice: str | None = None
 
     def source_fields(self, required_credit: str | None = None) -> dict:
         """The fields this adds to a passage's `source`, author included.
@@ -73,9 +74,13 @@ class PassageFacts:
         facts = self.facts
         if required_credit:
             facts = facts.model_copy(update={"source_credit": required_credit})
-        return {"author": self.author, "facts": facts.model_dump(),
-                "language": self.language, "passage_note": self.passage_note,
-                "passage_author": self.passage_author}
+        fields = {"author": self.author, "facts": facts.model_dump(),
+                  "language": self.language, "passage_note": self.passage_note,
+                  "passage_author": self.passage_author}
+        # Only when set (2.4d): a saved search or bookmark marks a rejected passage.
+        if self.voice:
+            fields["voice"] = self.voice
+        return fields
 
 
 def _passage_facts(row) -> PassageFacts:
@@ -89,7 +94,7 @@ def _passage_facts(row) -> PassageFacts:
         author=(row["work_author"] if in_work and row["work_author"] else row["author"]),
         facts=DocumentFacts(**values, work_title=row["work_title"]),
         language=row["language"], passage_note=row["note"],
-        passage_author=row["passage_author"],
+        passage_author=row["passage_author"], voice=row["voice"],
     )
 
 

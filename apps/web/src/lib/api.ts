@@ -2,6 +2,7 @@ import {
   consumeSearchStream,
   type ChunkResult,
   type CollectionOutcome,
+  type PassageVoice,
   type SearchOutcome,
   type SearchStreamCallbacks,
 } from "./search-stream";
@@ -25,6 +26,7 @@ export {
   type CollectionOutcome,
   type ContextPart,
   type DeliveryOutcome,
+  type PassageVoice,
   type SearchOutcome,
   type SearchStreamCallbacks,
 } from "./search-stream";
@@ -120,6 +122,8 @@ export interface ReaderPassage {
   note?: string | null;
   work_key?: string | null;
   passage_author?: string | null;
+  /** See ChunkSource.voice (corpus cleanup 2.4d). */
+  voice?: PassageVoice | null;
   /** Set only on a history passage: the ID of the current passage that replaced it. */
   superseded_by?: string | null;
 }
@@ -187,6 +191,8 @@ export interface BookmarkChunkInfo {
     language?: string | null;
     passage_note?: string | null;
     passage_author?: string | null;
+    /** See ChunkSource.voice (corpus cleanup 2.4d). */
+    voice?: PassageVoice | null;
   };
   /** See ChunkResult.footnotes (issue #279). */
   footnotes?: Footnote[];

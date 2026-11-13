@@ -749,17 +749,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
-  "sha256": "669dd355f6fa7e656ad0622aa89dca08cd8cb72f0a62ed25ed93ddb5bbe2fd3e",
-  "bytes": 147442,
-  "url": "https://en.wikisource.org/wiki/Catholic_Magazine_and_Review/Volume_3/Gregory_XVI%27s_Encyclical_Letter",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/wikisource-encyclical-announcing-a-jubilee-1874/encyclical-letter-announcing-a-jubilee.html",
   "sha256": "20c0b9bda2ff4701e3583028c3572be4872e1b37bd58c289d70ccc6546c09377",
   "bytes": 94606,
@@ -6018,6 +6007,16 @@
   "url": "https://www.papalencyclicals.net/ben14/b14vixpe.htm",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "sha256": "669dd355f6fa7e656ad0622aa89dca08cd8cb72f0a62ed25ed93ddb5bbe2fd3e",
+  "bytes": 147442,
+  "url": "https://en.wikisource.org/wiki/Catholic_Magazine_and_Review/Volume_3/Gregory_XVI%27s_Encyclical_Letter",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
   "role": "adapter-input"
  },
  {

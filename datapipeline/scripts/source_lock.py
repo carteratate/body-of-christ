@@ -109,6 +109,16 @@ _UNREGISTERED_DIR_NOTES = {
 ROLES = ("adapter-input", "adapter-auxiliary", "vendored-unregistered")
 
 
+def _printing_inputs() -> dict[str, str]:
+    """Transcriptions a papal adapter reads in place of the manifest's page (1.3d,
+    `ingest/papal_printings.json`), by path under sources/, with their URL. A scanned
+    printing is read through its frozen OCR text, so its scan files are not listed."""
+    path = DATAPIPELINE / "ingest" / "papal_printings.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {f"{key.split('/', 1)[0]}/{d['file']}": d["url"] for key, d in data.items()
+            if not key.startswith("_") and d.get("source") == "wikisource"}
+
+
 def registered_collections() -> list[str]:
     sys.path.insert(0, str(DATAPIPELINE))
     from publication import SOURCE_ADAPTERS
@@ -142,6 +152,9 @@ def _role_and_url(sources: Path, collection: str, rel: str,
     file_in_collection = rel.split("/", 1)[1]
     if rel in _DERIVED_INPUTS:
         return "adapter-input", _DERIVED_INPUTS[rel]
+    printed = _printing_inputs()
+    if rel in printed:
+        return "adapter-input", printed[rel]
     selects = _GLOB_SELECTED.get(collection)
     if selects is not None:
         url = named.get(file_in_collection, {}).get("url")

@@ -1,0 +1,151 @@
+{
+ "_doc": "Per document: the printing a 1.3d document is built from. See ingest/papal_printings.py.",
+ "encyclicals/mirari-vos": {
+  "source": "wikisource",
+  "file": "wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "url": "https://en.wikisource.org/wiki/Catholic_Magazine_and_Review/Volume_3/Gregory_XVI%27s_Encyclical_Letter",
+  "translation": "The Catholic Magazine and Review, vol. 3 (Birmingham, 1833)",
+  "editorial": [
+   {
+    "opens": "We take the liberty of extracting",
+    "why": "The magazine's introduction to the letter, not the letter (rule G)."
+   },
+   {
+    "opens": "POPE GREGORY XVI",
+    "why": "The magazine's heading over the greeting."
+   }
+  ],
+  "fixes": [
+   {
+    "find": "who commands die winds",
+    "replace": "who commands the winds",
+    "why": "The page (scan p. 79, printed p. 65) reads \"the winds\"; the transcription has \"die\"."
+   },
+   {
+    "find": "May this our seal for",
+    "replace": "May this our zeal for",
+    "why": "The page (scan p. 79) reads \"zeal\"; the transcription has \"seal\"."
+   },
+   {
+    "find": "by their licentiousne so far",
+    "replace": "by their licentiousness so far",
+    "why": "The page (scan p. 74) reads \"licentiousness\"; the transcription drops its last letters."
+   },
+   {
+    "find": "carried about oh all occasions",
+    "replace": "carried about on all occasions",
+    "why": "The page (scan p. 76) reads \"on\"; the transcription has \"oh\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Encyclical Letter of our most holy Father",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren,",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Health and Apostolical Benediction.",
+    "unit": "preamble"
+   },
+   {
+    "opens": "We doubt not but you are",
+    "unit": 1
+   },
+   {
+    "opens": "Meanwhile, another cause for Our silence",
+    "unit": 2
+   },
+   {
+    "opens": "But having at length taken possession",
+    "unit": 3
+   },
+   {
+    "opens": "In sorrow, and with a mind",
+    "unit": 4
+   },
+   {
+    "opens": "We speak, Venerable Brethren, of what",
+    "unit": 5
+   },
+   {
+    "opens": "These things, Venerable Brethren, and many",
+    "unit": 6
+   },
+   {
+    "opens": "Now you will best correspond with",
+    "unit": 7
+   },
+   {
+    "opens": "To this point, therefore, your labours",
+    "unit": 8
+   },
+   {
+    "opens": "It would moreover be a crime,",
+    "unit": 9
+   },
+   {
+    "opens": "Again, as it is evident that",
+    "unit": 10
+   },
+   {
+    "opens": "And here We wish to see",
+    "unit": 11
+   },
+   {
+    "opens": "Then on the subject of honorable",
+    "unit": 12
+   },
+   {
+    "opens": "But let us turn to another",
+    "unit": 13
+   },
+   {
+    "opens": "From this polluted fountain of \"Indifference,\"",
+    "unit": 14
+   },
+   {
+    "opens": "Hither tends that worst and never",
+    "unit": 15
+   },
+   {
+    "opens": "Far other hath been the discipline",
+    "unit": 16
+   },
+   {
+    "opens": "Having moreover heard that doctrines are",
+    "unit": 17
+   },
+   {
+    "opens": "It was to preserve their character",
+    "unit": 18
+   },
+   {
+    "opens": "These illustrious examples of unshaken subjection",
+    "unit": 19
+   },
+   {
+    "opens": "Nor can we augur more consoling",
+    "unit": 20
+   },
+   {
+    "opens": "But in addition to the other",
+    "unit": 21
+   },
+   {
+    "opens": "With a heavy heart, but with",
+    "unit": 22
+   },
+   {
+    "opens": "May this our zeal for the",
+    "unit": 23
+   },
+   {
+    "opens": "But that all may have a",
+    "unit": 24
+   }
+  ]
+ }
+}

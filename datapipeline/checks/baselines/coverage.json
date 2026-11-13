@@ -6,7 +6,7 @@
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8b-npnf-augustine-strip 43116e3",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-1-held-papal-documents 0f3fb97",
+  "encyclicals": "feat/1.3d-2-wikisource-pair bc02506",
   "medieval": "feat/1.10c-piece-citations 269d968",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
   "summa": "feat/1.7-summa-adapter 74b5329"
@@ -1151,11 +1151,6 @@
    "body_chars": 232209,
    "covered_chars": 232209,
    "pct": 100.0
-  },
-  "encyclicals/mirari-vos.html": {
-   "body_chars": 24416,
-   "covered_chars": 23506,
-   "pct": 96.27
   },
   "encyclicals/nostis-et-nobiscum.html": {
    "body_chars": 33398,
@@ -2743,13 +2738,6 @@
    "body_chars": 28954,
    "covered_chars": 28954,
    "pct": 100.0
-  },
-  "891ae0fa-5a7f-518c-9d1c-9ad4f180bc77": {
-   "collection": "encyclicals",
-   "source_file": "mirari-vos.html",
-   "body_chars": 24416,
-   "covered_chars": 23506,
-   "pct": 96.27
   },
   "89201a06-a747-53a5-8248-43e5a5cb5fae": {
    "collection": "church-fathers",
