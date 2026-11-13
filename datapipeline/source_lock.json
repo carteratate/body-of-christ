@@ -265,28 +265,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/TheTrueAndFalse/TheTrueAndFalse_djvu.xml",
-  "sha256": "f4e99484d37402b00be447ac594d262a0e4c5a4e070bc86d9eb01917999c4341",
-  "bytes": 8669897,
-  "url": "https://archive.org/download/TheTrueAndFalse/TheTrueAndFalse_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/TheTrueAndFalse/TheTrueAndFalse_page_numbers.json",
-  "sha256": "dc13a479356e9ee259d19f7903012fa5b97f1257f8f013f7148ea87199253e16",
-  "bytes": 67589,
-  "url": "https://archive.org/download/TheTrueAndFalse/TheTrueAndFalse_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/USCatholicMagazineMonthlyReviewV6/USCatholicMagazineMonthlyReviewV6_djvu.xml",
   "sha256": "b2cf0f35e5c936c1070707ad4f192f98bd6823e2a9a714d890bded65e99c9ddc",
   "bytes": 37336279,
@@ -595,28 +573,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_djvu.xml",
-  "sha256": "deeaedc4bd01264f9befd4786318712845e3bc70e4c427824c09532869cf6e1e",
-  "bytes": 12465602,
-  "url": "https://archive.org/download/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_page_numbers.json",
-  "sha256": "2eb2eea191fc8ec4973e4b4f4969c9aeb4dba04d0dac333b270d618985727510",
-  "bytes": 54598,
-  "url": "https://archive.org/download/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11_djvu.xml",
   "sha256": "a3c1e7459b6f8ffab8ab118710fa3537b8ef81df54da644487503bfec6799c04",
   "bytes": 1013034,
@@ -753,50 +709,6 @@
   "sha256": "20c0b9bda2ff4701e3583028c3572be4872e1b37bd58c289d70ccc6546c09377",
   "bytes": 94606,
   "url": "https://en.wikisource.org/wiki/Encyclical_Letter_by_Pope_Pius_IX_Announcing_a_Jubilee",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/papal-documents/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_djvu.xml",
-  "sha256": "892bf0c8519326ad2df55e18c3c477b9ef3dd5aa236c6924fb9e0885a70413a0",
-  "bytes": 11182846,
-  "url": "https://archive.org/download/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/papal-documents/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_page_numbers.json",
-  "sha256": "f5ad5837e32144ab12f80cff2dc46bf4a5ce27d375aaa0cdab0a5e6c46e4e966",
-  "bytes": 94636,
-  "url": "https://archive.org/download/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/papal-documents/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_djvu.xml",
-  "sha256": "5d034a09d5a60b37d8ec3332953831c5f38bd90e7ee6cb52c2c1c61f16f91e76",
-  "bytes": 7275925,
-  "url": "https://archive.org/download/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/papal-documents/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_page_numbers.json",
-  "sha256": "b6bdbaf0137bc94d3b4ac9f1a0e2ab54163dcc1c65253334da2167d0d93562e8",
-  "bytes": 35261,
-  "url": "https://archive.org/download/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_page_numbers.json",
   "acquired": "2026-11-12",
   "hashed_on": "2026-11-12",
   "role": "vendored-unregistered",
@@ -4438,6 +4350,28 @@
  },
  {
   "collection": "encyclicals",
+  "path": "encyclicals/TheTrueAndFalse/TheTrueAndFalse_djvu.xml",
+  "sha256": "f4e99484d37402b00be447ac594d262a0e4c5a4e070bc86d9eb01917999c4341",
+  "bytes": 8669897,
+  "url": "https://archive.org/download/TheTrueAndFalse/TheTrueAndFalse_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/TheTrueAndFalse/TheTrueAndFalse_page_numbers.json",
+  "sha256": "dc13a479356e9ee259d19f7903012fa5b97f1257f8f013f7148ea87199253e16",
+  "bytes": 67589,
+  "url": "https://archive.org/download/TheTrueAndFalse/TheTrueAndFalse_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
   "path": "encyclicals/a-quo-die.html",
   "sha256": "296afcaa894bf4e461df08200337e5ec0c05f9e997327c10ed35f87e2f2f9f7d",
   "bytes": 119890,
@@ -5820,6 +5754,28 @@
  },
  {
   "collection": "encyclicals",
+  "path": "encyclicals/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_djvu.xml",
+  "sha256": "deeaedc4bd01264f9befd4786318712845e3bc70e4c427824c09532869cf6e1e",
+  "bytes": 12465602,
+  "url": "https://archive.org/download/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_page_numbers.json",
+  "sha256": "2eb2eea191fc8ec4973e4b4f4969c9aeb4dba04d0dac333b270d618985727510",
+  "bytes": 54598,
+  "url": "https://archive.org/download/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
   "path": "encyclicals/singulari-nos.html",
   "sha256": "92708437197cd0bd622fadeccfbbeec2a83f59e3bec1141326ce2dc169f5e7fc",
   "bytes": 100428,
@@ -6071,6 +6027,28 @@
  },
  {
   "collection": "papal-documents",
+  "path": "papal-documents/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_djvu.xml",
+  "sha256": "892bf0c8519326ad2df55e18c3c477b9ef3dd5aa236c6924fb9e0885a70413a0",
+  "bytes": 11182846,
+  "url": "https://archive.org/download/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "papal-documents",
+  "path": "papal-documents/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_page_numbers.json",
+  "sha256": "f5ad5837e32144ab12f80cff2dc46bf4a5ce27d375aaa0cdab0a5e6c46e4e966",
+  "bytes": 94636,
+  "url": "https://archive.org/download/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "papal-documents",
   "path": "papal-documents/dies-domini.html",
   "sha256": "41e1ea5870804d1a763dfa88a17220cd0ff3ca0a1fe454d62a629a850fa5a95a",
   "bytes": 180966,
@@ -6188,6 +6166,28 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "papal-documents",
+  "path": "papal-documents/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_djvu.xml",
+  "sha256": "5d034a09d5a60b37d8ec3332953831c5f38bd90e7ee6cb52c2c1c61f16f91e76",
+  "bytes": 7275925,
+  "url": "https://archive.org/download/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "papal-documents",
+  "path": "papal-documents/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_page_numbers.json",
+  "sha256": "b6bdbaf0137bc94d3b4ac9f1a0e2ab54163dcc1c65253334da2167d0d93562e8",
+  "bytes": 35261,
+  "url": "https://archive.org/download/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "papal-documents",

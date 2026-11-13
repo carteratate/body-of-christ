@@ -1,0 +1,20 @@
+[
+ {
+  "passage": "quanta-cura-01",
+  "find": "VENERABLE BRETHREN,\n\nHEALTH AND APOSTOLIC BENEDICTION.",
+  "replace": "Venerable Brethren,\n\nHealth and Apostolic Benediction.",
+  "why": "p. 501: the greeting is set in small capitals, which the OCR reads as capitals; written with capitals as the site and the Wikisource transcriptions write small capitals"
+ },
+ {
+  "passage": "quanta-cura-06",
+  "find": "Therefore, by Our\n\nVOL, Iv.—no. vill. [New Series.] 2 M Apostolic Authority",
+  "replace": "Therefore, by Our Apostolic Authority",
+  "why": "p. 507: the printer's signature line at the foot of the page (\"VOL. IV.—NO. VIII. [New Series.] 2 M\"), which broke the sentence into two paragraphs"
+ },
+ {
+  "passage": "quanta-cura-08",
+  "find": "so great a mass\n\n2mM2 of errors",
+  "replace": "so great a mass of errors",
+  "why": "p. 509: the printer's signature (\"2 M 2\") at the foot of the page, which broke the sentence into two paragraphs"
+ }
+]

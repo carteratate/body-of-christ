@@ -147,5 +147,760 @@
     "unit": 24
    }
   ]
+ },
+ "encyclicals/quanta-cura-1864": {
+  "source": "ocr",
+  "work": "dublin-review-quanta-cura-1864",
+  "file": "sim_dublin-review_1865-04_4/",
+  "url": "https://archive.org/details/sim_dublin-review_1865-04_4",
+  "translation": "The Dublin Review, new series vol. 4 (London, April 1865)",
+  "editorial": [
+   {
+    "opens": "PIUS PP. IX.",
+    "why": "The pope's name set as a heading over the greeting, as Mirari Vos's \"POPE GREGORY XVI\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "THE ENCYCLICAL LETTER",
+    "unit": "omit",
+    "until": "To our Venerable Brethren",
+    "why": "The magazine's title over the letter (\"THE ENCYCLICAL LETTER of Our most Holy Father the Pope, Pius IX.\"), set as one paragraph with the address."
+   },
+   {
+    "opens": "To our Venerable Brethren",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren,",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Health and Apostolic Benediction.",
+    "unit": "preamble",
+    "until": "With how great care"
+   },
+   {
+    "opens": "With how great care",
+    "unit": 1
+   },
+   {
+    "opens": "But now, as is well known",
+    "unit": 2
+   },
+   {
+    "opens": "But, although we have not omitted",
+    "unit": 3
+   },
+   {
+    "opens": "And, since where religion",
+    "unit": 4
+   },
+   {
+    "opens": "Others meanwhile, reviving",
+    "unit": 5
+   },
+   {
+    "opens": "Amidst, therefore, such great",
+    "unit": 6
+   },
+   {
+    "opens": "And besides these things",
+    "unit": 7
+   },
+   {
+    "opens": "Therefore, in this Our Letter",
+    "unit": 8
+   },
+   {
+    "opens": "But if always, Venerable Brethren",
+    "unit": 9
+   },
+   {
+    "opens": "By these Letters therefore",
+    "unit": 10
+   },
+   {
+    "opens": "“Let us implore,”",
+    "unit": 11
+   },
+   {
+    "opens": "Lastly, imploring",
+    "unit": 12
+   }
+  ]
+ },
+ "papal-documents/sublimis-deus": {
+  "source": "ocr",
+  "work": "macnutt-sublimis-deus",
+  "file": "bartholomewdelas00macnuoft/",
+  "url": "https://archive.org/details/bartholomewdelas00macnuoft",
+  "translation": "F. A. MacNutt, Bartholomew de Las Casas (1909)",
+  "numbered": false,
+  "units": [
+   {
+    "opens": "Paul III Pope",
+    "unit": "preamble"
+   },
+   {
+    "opens": "The sublime God",
+    "unit": 1
+   },
+   {
+    "opens": "The enemy of the human race",
+    "unit": 2
+   },
+   {
+    "opens": "We, who, though unworthy",
+    "unit": 3
+   },
+   {
+    "opens": "By virtue of our apostolic authority",
+    "unit": 4
+   }
+  ]
+ },
+ "papal-documents/unam-sanctam": {
+  "source": "ocr",
+  "work": "curley-unam-sanctam",
+  "file": "sim_catholic-historical-review_1927-07_7_2/",
+  "url": "https://archive.org/details/sim_catholic-historical-review_1927-07_7_2",
+  "translation": "M. Mildred Curley, The Catholic Historical Review, new series vol. 7 (July 1927)",
+  "numbered": false,
+  "units": [
+   {
+    "opens": "Urged by faith",
+    "unit": "preface"
+   },
+   {
+    "opens": "We venerate this Church",
+    "unit": 1
+   },
+   {
+    "opens": "However, one sword",
+    "unit": 2
+   },
+   {
+    "opens": "For, according to the Blessed",
+    "unit": 3
+   }
+  ]
+ },
+ "encyclicals/syllabus-of-errors": {
+  "source": "ocr",
+  "work": "syllabus-for-the-people",
+  "file": "TheTrueAndFalse/",
+  "url": "https://archive.org/details/TheTrueAndFalse",
+  "translation": "The Syllabus for the People, by a Monk of St. Augustine's, Ramsgate (New York, 1875)",
+  "units": [
+   {
+    "opens": "§ I. Pantheism, Naturalism,",
+    "unit": "section"
+   },
+   {
+    "opens": "1. There exists no",
+    "unit": 1
+   },
+   {
+    "opens": "Allocution Maxima quidem, June",
+    "unit": "+"
+   },
+   {
+    "opens": "2. All action of",
+    "unit": 2
+   },
+   {
+    "opens": "3. Human reason, without",
+    "unit": 3
+   },
+   {
+    "opens": "4. All the truths",
+    "unit": 4
+   },
+   {
+    "opens": "Ibid., and Encyclical Qui",
+    "unit": "+"
+   },
+   {
+    "opens": "5. Divine revelation is",
+    "unit": 5
+   },
+   {
+    "opens": "Ibid.",
+    "unit": "+"
+   },
+   {
+    "opens": "6. The faith of",
+    "unit": 6
+   },
+   {
+    "opens": "Ibid.",
+    "unit": "+"
+   },
+   {
+    "opens": "7. The prophecies and",
+    "unit": 7
+   },
+   {
+    "opens": "Ibid.",
+    "unit": "+"
+   },
+   {
+    "opens": "§ II. Moderate Rationalism.",
+    "unit": "section"
+   },
+   {
+    "opens": "8. As human reason",
+    "unit": 8
+   },
+   {
+    "opens": "Allocution Singulari quadam, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "9. All the dogmas",
+    "unit": 9
+   },
+   {
+    "opens": "Letters to the Archbishop",
+    "unit": "+"
+   },
+   {
+    "opens": "10. As the philosopher",
+    "unit": 10
+   },
+   {
+    "opens": "Ibid, Dec. 11th, 1862.",
+    "unit": "+"
+   },
+   {
+    "opens": "11. The Church not",
+    "unit": 11
+   },
+   {
+    "opens": "Ibid, Dec. 21st, 1863.",
+    "unit": "+"
+   },
+   {
+    "opens": "12. The decrees of",
+    "unit": 12
+   },
+   {
+    "opens": "13. The method and",
+    "unit": 13
+   },
+   {
+    "opens": "14. Philosophy is to",
+    "unit": 14
+   },
+   {
+    "opens": "N.B. — To the",
+    "unit": "epigraph"
+   },
+   {
+    "opens": "§ III. Indifferentism. Latitudinarianism.",
+    "unit": "section"
+   },
+   {
+    "opens": "15. Every man is",
+    "unit": 15
+   },
+   {
+    "opens": "Allocution Maxima quidem, June",
+    "unit": "+"
+   },
+   {
+    "opens": "16. Man may in",
+    "unit": 16
+   },
+   {
+    "opens": "Encyclical Qui pluribus, Nov.",
+    "unit": "+"
+   },
+   {
+    "opens": "17. Good hope at",
+    "unit": 17
+   },
+   {
+    "opens": "Encyclical Quanto conficiamur, August",
+    "unit": "+"
+   },
+   {
+    "opens": "18. Protestantism is nothing",
+    "unit": 18
+   },
+   {
+    "opens": "Encyclical Noscitis, Dec. 8th,",
+    "unit": "+"
+   },
+   {
+    "opens": "§ IV. Socialism, Communism,",
+    "unit": "section"
+   },
+   {
+    "opens": "Pests of this kind",
+    "unit": "epigraph"
+   },
+   {
+    "opens": "§ V. Errors concerning",
+    "unit": "section"
+   },
+   {
+    "opens": "19. The Church is",
+    "unit": 19
+   },
+   {
+    "opens": "Allocution Singulari quadam, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "20. The ecclesiastical power",
+    "unit": 20
+   },
+   {
+    "opens": "Allocution Meminit, Sept. 20th,",
+    "unit": "+"
+   },
+   {
+    "opens": "21. The Church has",
+    "unit": 21
+   },
+   {
+    "opens": "Apostolic Letter Multiplices, June",
+    "unit": "+"
+   },
+   {
+    "opens": "22. The obligation by",
+    "unit": 22
+   },
+   {
+    "opens": "Letter to the Archbishop",
+    "unit": "+"
+   },
+   {
+    "opens": "23. Roman Pontiffs and",
+    "unit": 23
+   },
+   {
+    "opens": "Apostolic Letter Multiplices, June",
+    "unit": "+"
+   },
+   {
+    "opens": "24. The Church has",
+    "unit": 24
+   },
+   {
+    "opens": "25. Beside the power",
+    "unit": 25
+   },
+   {
+    "opens": "26. The Church has",
+    "unit": 26
+   },
+   {
+    "opens": "Allocution Nunquam fore, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "27. The sacred ministers",
+    "unit": 27
+   },
+   {
+    "opens": "Allocution Maxima quidem, June",
+    "unit": "+"
+   },
+   {
+    "opens": "28. It is not",
+    "unit": 28
+   },
+   {
+    "opens": "Allocution Nunquam fore, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "29. Favours granted by",
+    "unit": 29
+   },
+   {
+    "opens": "30. The immunity of",
+    "unit": 30
+   },
+   {
+    "opens": "Apostolic Letter Multiplices, June",
+    "unit": "+"
+   },
+   {
+    "opens": "31. The ecclesiastical Forum",
+    "unit": 31
+   },
+   {
+    "opens": "Allocution Nunquam fore, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "32. The personal immunity",
+    "unit": 32
+   },
+   {
+    "opens": "Letter to the Bishop",
+    "unit": "+"
+   },
+   {
+    "opens": "33. It does not",
+    "unit": 33
+   },
+   {
+    "opens": "34. The teaching of",
+    "unit": 34
+   },
+   {
+    "opens": "Apostolic Letter Ad Apostolicæ,",
+    "unit": "+"
+   },
+   {
+    "opens": "35. There is nothing",
+    "unit": 35
+   },
+   {
+    "opens": "Ibid.",
+    "unit": "+"
+   },
+   {
+    "opens": "36. The definition of",
+    "unit": 36
+   },
+   {
+    "opens": "Ibid.",
+    "unit": "+"
+   },
+   {
+    "opens": "37. National Churches, withdrawn",
+    "unit": 37
+   },
+   {
+    "opens": "Allocution Multis gravibusque, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "38. The Roman Pontiffs",
+    "unit": 38
+   },
+   {
+    "opens": "Apostolic Letter Ad Apostolicæ,",
+    "unit": "+"
+   },
+   {
+    "opens": "§ VI. Errors about",
+    "unit": "section"
+   },
+   {
+    "opens": "39. The State, as",
+    "unit": 39
+   },
+   {
+    "opens": "Allocution Maxima quidem, June",
+    "unit": "+"
+   },
+   {
+    "opens": "40. The teaching of",
+    "unit": 40
+   },
+   {
+    "opens": "Encyclical Qui pluribus, Nov.",
+    "unit": "+"
+   },
+   {
+    "opens": "41. The Civil Government,",
+    "unit": 41
+   },
+   {
+    "opens": "Apostolic Letter, Ad Apostolicæ,",
+    "unit": "+"
+   },
+   {
+    "opens": "42. In the case",
+    "unit": 42
+   },
+   {
+    "opens": "43. The Secular power",
+    "unit": 43
+   },
+   {
+    "opens": "Allocution Multis gravibusque, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "44. The Civil Authority",
+    "unit": 44
+   },
+   {
+    "opens": "Allocution In Consistoriali, Nov.",
+    "unit": "+"
+   },
+   {
+    "opens": "45. The entire government",
+    "unit": 45
+   },
+   {
+    "opens": "Allocution Quibus luctuosissimis, Sept.",
+    "unit": "+"
+   },
+   {
+    "opens": "46. Moreover, even in",
+    "unit": 46
+   },
+   {
+    "opens": "Allocution Nunquam fore, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "47. The best theory",
+    "unit": 47
+   },
+   {
+    "opens": "Epistle to the Archbishop",
+    "unit": "+"
+   },
+   {
+    "opens": "48. Catholics may approve",
+    "unit": 48
+   },
+   {
+    "opens": "49. The Civil power",
+    "unit": 49
+   },
+   {
+    "opens": "Allocution Maxima quidem, June",
+    "unit": "+"
+   },
+   {
+    "opens": "50. Lay authority possesses",
+    "unit": 50
+   },
+   {
+    "opens": "Allocution Nunquam fore, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "51. And further, the",
+    "unit": 51
+   },
+   {
+    "opens": "Allocution Acerbissimam, Sept. 17th,",
+    "unit": "+"
+   },
+   {
+    "opens": "52. Government can, by",
+    "unit": 52
+   },
+   {
+    "opens": "Allocution Nunquam fore, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "53. The laws enacted",
+    "unit": 53
+   },
+   {
+    "opens": "Allocution Acerbissimam, Sept. 27th,",
+    "unit": "+"
+   },
+   {
+    "opens": "54. Kings and princes",
+    "unit": 54
+   },
+   {
+    "opens": "Apostolic Letter Multiplices inter,",
+    "unit": "+"
+   },
+   {
+    "opens": "55. The Church ought",
+    "unit": 55
+   },
+   {
+    "opens": "Allocution Acerbissimam, Sept. 27th,",
+    "unit": "+"
+   },
+   {
+    "opens": "§ VII. Errors concerning",
+    "unit": "section"
+   },
+   {
+    "opens": "56. Moral laws do",
+    "unit": 56
+   },
+   {
+    "opens": "Allocution Maxima quidem, June",
+    "unit": "+"
+   },
+   {
+    "opens": "57. The science of",
+    "unit": 57
+   },
+   {
+    "opens": "58. No other forces",
+    "unit": 58
+   },
+   {
+    "opens": "59. Right consists in",
+    "unit": 59
+   },
+   {
+    "opens": "60. Authority is nothing",
+    "unit": 60
+   },
+   {
+    "opens": "61. The injustice of",
+    "unit": 61
+   },
+   {
+    "opens": "Allocution Jamdudum cernimus, March",
+    "unit": "+"
+   },
+   {
+    "opens": "62. The principle of",
+    "unit": 62
+   },
+   {
+    "opens": "Allocution Novos, Sept. 28th,",
+    "unit": "+"
+   },
+   {
+    "opens": "63. It is lawful",
+    "unit": 63
+   },
+   {
+    "opens": "Encyclical Qui pluribus, Nov.",
+    "unit": "+"
+   },
+   {
+    "opens": "64. The violation of",
+    "unit": 64
+   },
+   {
+    "opens": "Allocution Quibus quantisque, April",
+    "unit": "+"
+   },
+   {
+    "opens": "§ VIII. Errors concerning",
+    "unit": "section"
+   },
+   {
+    "opens": "65. The doctrine that",
+    "unit": 65
+   },
+   {
+    "opens": "Apostolical Letter Ad Apostolicæ,",
+    "unit": "+"
+   },
+   {
+    "opens": "66. The sacrament of",
+    "unit": 66
+   },
+   {
+    "opens": "67. By the law",
+    "unit": 67
+   },
+   {
+    "opens": "68. The Church has",
+    "unit": 68
+   },
+   {
+    "opens": "Apostolic Letter Multiplices inter,",
+    "unit": "+"
+   },
+   {
+    "opens": "69. In the dark",
+    "unit": 69
+   },
+   {
+    "opens": "Apostolic Letter Ad Apostolicæ,",
+    "unit": "+"
+   },
+   {
+    "opens": "70. The Canons of",
+    "unit": 70
+   },
+   {
+    "opens": "71. The form of",
+    "unit": 71
+   },
+   {
+    "opens": "72. Boniface VIII. was",
+    "unit": 72
+   },
+   {
+    "opens": "73. In force of",
+    "unit": 73
+   },
+   {
+    "opens": "74. Matrimonial causes and",
+    "unit": 74
+   },
+   {
+    "opens": "N.B. — To the",
+    "unit": "epigraph"
+   },
+   {
+    "opens": "§ IX. Errors regarding",
+    "unit": "section"
+   },
+   {
+    "opens": "75. The children of",
+    "unit": 75
+   },
+   {
+    "opens": "Ibid.",
+    "unit": "+"
+   },
+   {
+    "opens": "76. The abolition of",
+    "unit": 76
+   },
+   {
+    "opens": "Allocution Quibus quantisque, April",
+    "unit": "+"
+   },
+   {
+    "opens": "N.B. — Besides these",
+    "unit": "epigraph"
+   },
+   {
+    "opens": "§ X. Errors having",
+    "unit": "section"
+   },
+   {
+    "opens": "77. In the present",
+    "unit": 77
+   },
+   {
+    "opens": "Allocution Nemo vestrum, July",
+    "unit": "+"
+   },
+   {
+    "opens": "78. Hence it has",
+    "unit": 78
+   },
+   {
+    "opens": "Allocution Acerbissimam, Sept. 27th,",
+    "unit": "+"
+   },
+   {
+    "opens": "79. Moreover it is",
+    "unit": 79
+   },
+   {
+    "opens": "Allocution Nunquam fore, Dec.",
+    "unit": "+"
+   },
+   {
+    "opens": "80. The Roman Pontiff",
+    "unit": 80
+   },
+   {
+    "opens": "Allocution Jamdudum cernimus, March",
+    "unit": "+"
+   }
+  ]
  }
 }

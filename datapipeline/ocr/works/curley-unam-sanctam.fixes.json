@@ -1,0 +1,77 @@
+[
+ {
+  "passage": "unam-sanctam-01",
+  "find": "This is the tunic of the Lord,\n\n195 EPISODE IN CONFLICT BETWEEN BONIFACE AND PHILIP",
+  "replace": "This is the tunic of the Lord,",
+  "why": "p. 195: the running head and page number, set lower than the clean-up looks for heads, read as a paragraph"
+ },
+ {
+  "passage": "unam-sanctam-02",
+  "continues": true,
+  "why": "p. 195: the sentence runs on from p. 194 (\"the tunic of the Lord, the seamless tunic\"); the running head between them made a paragraph break"
+ },
+ {
+  "passage": "unam-sanctam-02",
+  "find": "subjected to spiritual power SISTER M. MILDRED CURLEY, PH.D.",
+  "replace": "subjected to spiritual power",
+  "why": "p. 196: the running head (\"SISTER M. MILDRED CURLEY, PH.D.\") read onto the end of p. 195's last line"
+ },
+ {
+  "passage": "unam-sanctam-03",
+  "continues": true,
+  "why": "p. 196: \"For since the Apostle said\" opens the page without an indent; the paragraph runs on from p. 195"
+ },
+ {
+  "passage": "unam-sanctam-03",
+  "find": "concerning the Church and the\n\necclesiastical power",
+  "replace": "concerning the Church and the ecclesiastical power",
+  "why": "p. 196: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "unam-sanctam-03",
+  "find": "Therefore, if the\n\nterrestrial power err",
+  "replace": "Therefore, if the terrestrial power err",
+  "why": "p. 196: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "unam-sanctam-03",
+  "find": "judged by the spiritual power;\n\nbut if a minor",
+  "replace": "judged by the spiritual power; but if a minor",
+  "why": "p. 196: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "unam-sanctam-03",
+  "find": "has not been good.\n\nThus is accomplished",
+  "replace": "has not been good. Thus is accomplished",
+  "why": "p. 196: \"Thus is accomplished\" runs on in the same line (\"been good. Thus is accomplished the\")"
+ },
+ {
+  "passage": "unam-sanctam-03",
+  "find": "(I. Cor. II, 15). This\n\n197 EPISODE IN CONFLICT BETWEEN BONIFACE AND PHILIP",
+  "replace": "(I. Cor. II, 15). This",
+  "why": "p. 197: the running head and page number read as a paragraph"
+ },
+ {
+  "passage": "unam-sanctam-04",
+  "continues": true,
+  "why": "p. 197: the sentence runs on from p. 196 (\"This authority, however\")"
+ },
+ {
+  "passage": "unam-sanctam-04",
+  "find": "his sue-cessors by",
+  "replace": "his successors by",
+  "why": "p. 197: \"suc-cessors\" broken at a line end and misread (this passage kept its cleaned text: the model's answer changed its paragraphs)"
+ },
+ {
+  "passage": "unam-sanctam-04",
+  "find": "in Heaven,’ ete. (Matt.",
+  "replace": "in Heaven,’ etc. (Matt.",
+  "why": "p. 197: \"etc.\" misread"
+ },
+ {
+  "passage": "unam-sanctam-04",
+  "find": "every human crea-\n\nture be subject",
+  "replace": "every human creature be subject",
+  "why": "p. 197: \"crea-ture\" broken at the column's last line; one word in one paragraph"
+ }
+]
