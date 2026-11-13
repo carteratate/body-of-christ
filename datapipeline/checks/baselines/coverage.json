@@ -6,9 +6,9 @@
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8b-npnf-augustine-strip 43116e3",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-6-extracts ca15349",
+  "encyclicals": "feat/1.3d-6-extracts 0f4b2ea",
   "medieval": "feat/1.10c-piece-citations 269d968",
-  "papal-documents": "feat/1.3d-6-extracts ca15349",
+  "papal-documents": "feat/1.3d-6-extracts 0f4b2ea",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -1152,11 +1152,6 @@
    "covered_chars": 115561,
    "pct": 99.93
   },
-  "papal-documents/exsurge-domine.html": {
-   "body_chars": 20050,
-   "covered_chars": 6725,
-   "pct": 33.54
-  },
   "papal-documents/misericordia-et-misera.html": {
    "body_chars": 40188,
    "covered_chars": 40127,
@@ -2116,13 +2111,6 @@
    "body_chars": 21881,
    "covered_chars": 21831,
    "pct": 99.77
-  },
-  "616dfaea-6099-593e-951f-2b017a7ec938": {
-   "collection": "papal-documents",
-   "source_file": "exsurge-domine.html",
-   "body_chars": 20050,
-   "covered_chars": 6725,
-   "pct": 33.54
   },
   "61fbb9cb-7924-588f-82b1-f789439a2603": {
    "collection": "apostolic-exhortations",

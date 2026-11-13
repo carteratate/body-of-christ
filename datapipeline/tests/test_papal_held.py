@@ -105,3 +105,15 @@ def test_extracts_hold_exactly_what_the_adr_names():
         expected = ({"preamble"} if m.group("address") else set()) | {
             papal_common._anchor(slug, n).split("/", 1)[1] for n in _numbers(m.group("numbers") or "")}
         assert {a.split("/")[0] for a in held} == expected, slug
+
+
+def test_exsurge_domine_propositions_are_labelled_rejected():
+    """Exsurge Domine is published only in its 41 condemned propositions, which are
+    Deferrari's translation (R9): each row keeps its ID and says whose words they are."""
+    doc = _works()["exsurge-domine"]["document_id"]
+    rows = {r["anchor"]: r for r in registry.current().passages if r["document_id"] == doc}
+    for n in range(1, 42):
+        row = rows[f"exsurge-domine/{n}"]
+        assert row["status"] == "active" and row.get("voice") == "rejected", n
+        assert row.get("note", "").startswith("Propositions of Martin Luther that the bull "
+                                              "condemned"), n
