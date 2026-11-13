@@ -1,0 +1,42 @@
+{
+ "work": "england-1844-in-supremo-apostolatus",
+ "title": "In Supremo Apostolatus, in Letters of the Late Bishop England to the Hon. John Forsyth (Baltimore: John Murphy, 1844), \"The same in English\", pp. ix–xi",
+ "scan": "lettersoflatebis00engl_0",
+ "djvu_xml": "encyclicals/lettersoflatebis00engl_0/lettersoflatebis00engl_0_djvu.xml",
+ "page_numbers": "",
+ "pages": [
+  "ix",
+  "xi"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "unit_bounds": [
+  {
+   "id": "in-supremo-apostolatus",
+   "first": "^GREGORY XVI, POPE\\.",
+   "last": "year of our pontificate\\.",
+   "keep_quotes": true
+  }
+ ],
+ "leaf_pages": {
+  "14": "ix",
+  "15": "x",
+  "16": "xi"
+ }
+}

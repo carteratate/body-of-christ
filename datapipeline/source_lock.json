@@ -430,28 +430,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/lettersoflatebis00engl_0/lettersoflatebis00engl_0_djvu.xml",
-  "sha256": "fde9cb7bef0c45b6bd57309682553f9a7b90b69e2924156220fb13704615d388",
-  "bytes": 5589655,
-  "url": "https://archive.org/download/lettersoflatebis00engl_0/lettersoflatebis00engl_0_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/encyclicals/lettersoflatebis00engl_0/lettersoflatebis00engl_0_page_numbers.json",
-  "sha256": "0466c589f6bf3b1d585b7c0972b6884212ca1bd1a275da8b7f407ce7485d20e9",
-  "bytes": 27820,
-  "url": "https://archive.org/download/lettersoflatebis00engl_0/lettersoflatebis00engl_0_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/officialdocumen00ixgoog/officialdocumen00ixgoog_djvu.xml",
   "sha256": "c02b8008d753c7b609377076dd7b0fe55e2b9486afd9cc8788a07ebe7eddf4db",
   "bytes": 1405193,
@@ -5120,6 +5098,28 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/lettersoflatebis00engl_0/lettersoflatebis00engl_0_djvu.xml",
+  "sha256": "fde9cb7bef0c45b6bd57309682553f9a7b90b69e2924156220fb13704615d388",
+  "bytes": 5589655,
+  "url": "https://archive.org/download/lettersoflatebis00engl_0/lettersoflatebis00engl_0_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/lettersoflatebis00engl_0/lettersoflatebis00engl_0_page_numbers.json",
+  "sha256": "0466c589f6bf3b1d585b7c0972b6884212ca1bd1a275da8b7f407ce7485d20e9",
+  "bytes": 27820,
+  "url": "https://archive.org/download/lettersoflatebis00engl_0/lettersoflatebis00engl_0_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "encyclicals",

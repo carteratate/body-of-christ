@@ -7108,24 +7108,6 @@
   "planned_for": null
  },
  {
-  "work": "In Supremo Apostolatus",
-  "author": "Pope Gregory XVI",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/in-supremo-apostolatus.html",
-  "document_id": "4b3489b7-1fa4-530a-9d2b-af1513f6030d",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/greg16/g16sup.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Incredibili",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
@@ -7292,7 +7274,7 @@
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
   "source_path": "encyclicals/lettersoflatebis00engl_0/",
-  "document_id": null,
+  "document_id": "4b3489b7-1fa4-530a-9d2b-af1513f6030d",
   "edition": "Letters of the Late Bishop England to the Hon. John Forsyth, on the Subject of Domestic Slavery: to which are prefixed copies, in Latin and English, of the Pope's apostolic letter (Baltimore: John Murphy, 1844), English section 'The same in English'. A different, deliberately literal translation from papalencyclicals.net's. Internet Archive scan lettersoflatebis00engl_0",
   "translator": null,
   "first_published": 1844,
@@ -7303,7 +7285,7 @@
   "credit_line": "Translation from Letters of the Late Bishop England to the Hon. John Forsyth (Baltimore, 1844)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Levate",

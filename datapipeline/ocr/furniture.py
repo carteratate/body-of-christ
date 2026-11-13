@@ -550,6 +550,14 @@ def clean_work(workdir, sources=None, force: bool = False,
         first, last = (int(n) + config.pdf_page_offset for n in config.pages)
         pages = read_pdf(sources / config.pdf, range(first, last + 1), config.pdf_page_offset,
                          note_calls)
+    elif config.leaf_pages:
+        # A scan with no page map, or one that leaves out a page the work needs: the
+        # work names each leaf's printed page itself (1.3d).
+        numbers = {int(leaf): page for leaf, page in config.leaf_pages.items()}
+        leaves = leaves_for_pages(numbers, *config.pages)
+        pages = load_pages(sources / config.djvu_xml, None, leaves)
+        for page in pages:
+            page.number = numbers.get(page.leaf)
     else:
         numbers_path = sources / config.page_numbers
         leaves = leaves_for_pages(read_page_numbers(numbers_path, config.leaf_offset), *config.pages)

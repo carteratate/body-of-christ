@@ -1619,5 +1619,56 @@
     "unit": 13
    }
   ]
+ },
+ "encyclicals/in-supremo-apostolatus": {
+  "source": "ocr",
+  "work": "england-1844-in-supremo-apostolatus",
+  "file": "lettersoflatebis00engl_0/",
+  "url": "https://archive.org/details/lettersoflatebis00engl_0",
+  "translation": "Letters of the Late Bishop England to the Hon. John Forsyth (Baltimore, 1844)",
+  "editorial": [
+   {
+    "opens": "GREGORY XVI, POPE.",
+    "why": "The pope's name set as a heading over the letter, as Mirari Vos's \"POPE GREGORY XVI\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "For the future memory",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Placed at the supreme height",
+    "unit": 1
+   },
+   {
+    "opens": "When, indeed, the light",
+    "unit": "+"
+   },
+   {
+    "opens": "Universally, however",
+    "unit": 2,
+    "until": "To which refer the apostolic letter"
+   },
+   {
+    "opens": "To which refer the apostolic letter",
+    "unit": 3,
+    "until": "These ordinances of the said pontiffs"
+   },
+   {
+    "opens": "These ordinances of the said pontiffs",
+    "unit": 4,
+    "until": "And, in our times, also, Pius VII"
+   },
+   {
+    "opens": "And, in our times, also, Pius VII",
+    "unit": 5,
+    "until": "We, indeed, with apostolic authority"
+   },
+   {
+    "opens": "We, indeed, with apostolic authority",
+    "unit": 6
+   }
+  ]
  }
 }

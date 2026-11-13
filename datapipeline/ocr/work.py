@@ -81,6 +81,9 @@ class WorkConfig:
     margin_numbers: bool = False   # numbers printed in the margins are furniture
     layout: str = "single-column"
     leaf_offset: int = 0         # scan leaves the XML leaves out before its first page
+    # Each leaf's printed page, given by the work where the scan has no page map or its
+    # map leaves out a page the work reads (1.3d); used instead of `page_numbers`.
+    leaf_pages: dict[str, str] = field(default_factory=dict)
     broken_words_continue: bool = False   # a broken word's rest never opens a paragraph
     max_paragraph_words: int | None = None   # cut longer paragraphs at a sentence end
     paragraph_opens: tuple[str, ...] = ()   # lines that open a paragraph the clean-up misses
