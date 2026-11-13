@@ -18,7 +18,7 @@ from xml.etree.ElementTree import tostring as et_tostring  # serialization only
 from config import settings
 from model import Document, Passage, Work
 from normalize.text import clean_text, fold_ligatures
-from normalize.caps import smart_title_case
+from normalize.caps import roman_capitals, smart_title_case
 from ingest.common import _block_text, _book_label, direct_blocks_text, direct_text_with_notes
 from ingest.pieces import Segment, name_pieces, pack_units, piece_reference, piece_spans
 from ingest.scripture_notes import scripture_reference
@@ -42,6 +42,16 @@ class ChapterPlan:
 
 # The Panegyric's chapters carry the editor's "Argument I" as their short title (1.8c).
 _ARGUMENT_SHORTTITLE = re.compile(r"^Argument ([IVXLC]+)$")
+# A label taken from a long title keeps the whole title up to this length, and past it is
+# cut at the last word boundary before it (1.9; Bernard's titles run to about 125).
+LABEL_MAX_CHARS = 140
+
+
+def _clip(head: str) -> str:
+    if len(head) <= LABEL_MAX_CHARS:
+        return head
+    cut = head[:LABEL_MAX_CHARS + 1].rsplit(None, 1)[0]
+    return cut.rstrip(" ,;:.—-")
 
 
 def _chapter_label(elem) -> str:
@@ -58,7 +68,7 @@ def _chapter_label(elem) -> str:
         return f"Chapter {n}"
     head = re.split(r"\.?—|—", title)[0].strip().rstrip(".")
     if head:
-        return smart_title_case(head[:60])
+        return smart_title_case(_clip(head))
     return f"Chapter {n}" if n else "Section"
 
 
@@ -143,6 +153,9 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
     maxc = settings.MAX_PASSAGE_CHARS
     passages: list[Passage] = []
     pos = 0
+    elems = {id(c[1]) for c in chapters}
+    parents = {id(c[1]) for c in chapters
+               if any(a is not c[1] and id(a) in elems for a in c[1].iter())}
     for book, elem, *rest in chapters:
         plan = rest[0] if rest else ChapterPlan()
         if len(direct_text_with_notes(elem)) < 100 and not plan.any_length:
@@ -151,19 +164,21 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
         if plan.label:
             core = plan.label
         elif book is None and self_book:
+            # A book's own text above its chapters is its introduction; a book with no
+            # chapters of its own (Boethius's five) is labelled by its name alone (1.9).
             book = self_book
-            core = "Introduction"
+            core = "Introduction" if id(elem) in parents else None
         else:
             core = _chapter_label(elem)
-        chapter = editor.chapter(elem, core) if editor is not None else None
+        chapter = editor.chapter(elem, core or book) if editor is not None else None
         edit = chapter.edit if chapter is not None else None
         raw, removed = direct_blocks_text(elem, edit)
         if not raw:
             continue
         if chapter is not None and chapter.label_title:
             core = chapter.label_title
-        core = fold_ligatures(core)
-        book_clean = fold_ligatures(smart_title_case(book)) if book else None
+        core = roman_capitals(fold_ligatures(core)) if core else None
+        book_clean = roman_capitals(fold_ligatures(smart_title_case(book))) if book else None
         label = " · ".join(x for x in (plan.work_label, book_clean, core) if x)
         ch_key = elem.get("id")
         if not ch_key:

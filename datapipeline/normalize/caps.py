@@ -34,3 +34,18 @@ def smart_title_case(text: str) -> str:
         words = text.split()
         return " ".join(_title_word(w, i == 0) for i, w in enumerate(words))
     return title_case_shouting(text)
+
+
+# A word of Roman-numeral letters, capital first, that title-casing lowered ("Ii.", "Xiv"),
+# and the numerals it may be: the same test as checks.content.roman_case (C-22).
+_TITLE_CASED_ROMAN = re.compile(r"\b[IVXLC][ivxlc]+\b")
+_VALID_ROMAN = re.compile(r"^(?=[IVXLC])C{0,3}(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})$")
+
+
+def roman_capitals(label: str) -> str:
+    """`label` with each title-cased Roman numeral back in capitals: "Ii." is "II.",
+    "Chapter Xi" is "Chapter XI". Words that are no valid numeral ("Civil", "Ill") stay."""
+    def repl(m: re.Match) -> str:
+        word = m.group(0)
+        return word.upper() if _VALID_ROMAN.match(word.upper()) else word
+    return _TITLE_CASED_ROMAN.sub(repl, label)
